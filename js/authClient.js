@@ -1,7 +1,30 @@
 const Auth = (() => {
   const TOKEN_KEY = 'll_token';
+  const GUEST_KEY = 'll_guest';
   let cloudEnabled = null;
   let localMode = false;
+
+  function isGuest() {
+    return localStorage.getItem(GUEST_KEY) === '1';
+  }
+
+  function clearGuest() {
+    localStorage.removeItem(GUEST_KEY);
+  }
+
+  function continueAsGuest() {
+    clearGuest();
+    localStorage.setItem(GUEST_KEY, '1');
+    setToken('');
+    applyUser({
+      name: 'Guest',
+      email: 'guest@lexiloop.app',
+      avatar: 'G',
+      plan: 'free',
+      pro: false,
+      guest: true,
+    });
+  }
 
   function getToken() {
     return localStorage.getItem(TOKEN_KEY) || '';
@@ -74,7 +97,7 @@ const Auth = (() => {
   }
 
   async function pushSync() {
-    if (localMode || !getToken()) return;
+    if (localMode || !getToken() || isGuest()) return;
     await api('user-sync', {
       method: 'PUT',
       headers: authHeaders(),
@@ -102,6 +125,7 @@ const Auth = (() => {
       body: JSON.stringify({ name, email, password }),
     });
     if (!res.ok) throw new Error(mapAuthError(data.error));
+    clearGuest();
     setToken(data.token);
     applyUser(data.user);
     await pullSync();
@@ -118,6 +142,7 @@ const Auth = (() => {
       body: JSON.stringify({ email, password }),
     });
     if (!res.ok) throw new Error(mapAuthError(data.error));
+    clearGuest();
     setToken(data.token);
     applyUser(data.user);
     await pullSync();
@@ -126,6 +151,19 @@ const Auth = (() => {
 
   async function bootstrap() {
     await checkCloudAuth();
+
+    if (isGuest()) {
+      applyUser({
+        name: 'Guest',
+        email: 'guest@lexiloop.app',
+        avatar: 'G',
+        plan: 'free',
+        pro: false,
+        guest: true,
+      });
+      return true;
+    }
+
     if (localMode) {
       if (S.user) return true;
       return false;
@@ -150,6 +188,7 @@ const Auth = (() => {
 
   function logout() {
     setToken('');
+    clearGuest();
     S.user = null;
     localStorage.removeItem('ll_user');
   }
@@ -192,6 +231,9 @@ const Auth = (() => {
     bootstrap,
     logout,
     pushSync,
+    continueAsGuest,
+    clearGuest,
+    isGuest,
     isLocalMode: () => localMode,
   };
 })();
