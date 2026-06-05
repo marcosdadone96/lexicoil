@@ -1,4 +1,4 @@
-# LexiLoop ó Private Beta
+# LexiLoop ù Private Beta
 
 Share this link with testers:
 
@@ -8,26 +8,27 @@ Oral mode: **https://lexiloop.netlify.app/oral.html**
 
 ## For testers (copy & send)
 
-> Hi! I'm testing **LexiLoop** ó an AI exam trainer for official **English** (Cambridge / IELTS) and **German** (Goethe) exams.
+> Hi! I'm testing **LexiLoop** ù an AI exam trainer for official **English** (Cambridge / IELTS) and **German** (Goethe) exams.
 >
 > **Try it:** https://lexiloop.netlify.app  
 > Click **"Continue without account"** to start instantly (no sign-up needed).
+> On the level screen, use **"Try demo exam (no AI)"** ù fixed exam with full correction, no Claude credits.
 >
 > **What to try:**
 > 1. Pick German or English ? choose a level ? generate a full exam  
-> 2. Quick modules (Reading / Listening / Writing) ó work without AI quota limits on structure  
-> 3. Flashcard deck ó save words in Practice mode  
-> 4. Oral mode ó record and get AI feedback  
+> 2. Quick modules (Reading / Listening / Writing) ù work without AI quota limits on structure  
+> 3. Flashcard deck ù save words in Practice mode  
+> 4. Oral mode ù record and get AI feedback  
 >
 > **Feedback:** reply to this message or email marcosdadra@gmail.com with subject `LexiLoop Beta Feedback`
 >
-> *Private beta ó features may change.*
+> *Private beta ù features may change.*
 
 ## What works without sign-up
 
 - Full UI navigation
 - Guest mode (progress saved in browser only)
-- Quick exam modules
+- **Demo exams** ù one fixed exam per level (DE + EN), with full correction, no AI
 - Flashcards (local)
 
 ## What needs an account
@@ -37,13 +38,14 @@ Oral mode: **https://lexiloop.netlify.app/oral.html**
 
 ## What needs Anthropic credits (server)
 
-- Full AI exam generation
+- Full **AI-generated** exams (new content each time)
+- Quick modules (Reading / Listening / Writing / Gap-Fill)
 - Oral evaluation
 - Vocabulary AI lookup
 
 ## Owner checklist before sharing
 
 - [ ] `ANTHROPIC_API_KEY` set in Netlify (secret)
-- [ ] `AUTH_JWT_SECRET` set in Netlify (secret) ó optional for guest-only testing
+- [ ] `AUTH_JWT_SECRET` set in Netlify (secret) ù optional for guest-only testing
 - [ ] Trigger deploy after env changes
 - [ ] Test guest flow once yourself

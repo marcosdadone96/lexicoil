@@ -143,7 +143,7 @@ header{padding:26px 0 22px;display:flex;align-items:center;justify-content:space
 .badge-purple{background:var(--purple-bg);color:var(--purple);border:.5px solid rgba(167,139,250,.25)}
 .badge-green{background:var(--green-bg);color:var(--green);border:.5px solid rgba(93,232,160,.25)}
 .badge-orange{background:var(--orange-bg);color:var(--orange);border:.5px solid rgba(249,115,22,.25)}
-.quick-card{background:var(--bg2);border:.5px solid var(--border);border-radius:var(--r-lg);padding:20px 22px}
+.quick-card{background:var(--bg2);border:.5px solid var(--border);border-radius:var(--r-lg);padding:20px 22px;margin-bottom:13px}
 .quick-card h3{font-size:14px;font-weight:700;margin-bottom:4px}
 .quick-card p{font-size:12px;color:var(--text2);font-weight:400;margin-bottom:14px;line-height:1.5}
 .quick-btns{display:flex;gap:6px;flex-wrap:wrap}
@@ -175,6 +175,20 @@ header{padding:26px 0 22px;display:flex;align-items:center;justify-content:space
 .btn-start{width:100%;background:var(--accent);color:#000;border:none;border-radius:var(--r);padding:14px;font-family:'Syne',sans-serif;font-size:14px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:10px}
 .btn-start:hover{background:var(--accent2);transform:translateY(-1px)}
 .btn-start:disabled{opacity:.35;cursor:not-allowed;transform:none}
+.btn-demo{width:100%;background:var(--green-bg);border:.5px solid rgba(93,232,160,.35);border-radius:var(--r);padding:13px;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--green);cursor:pointer;transition:all .2s;margin-top:9px;letter-spacing:.04em}
+.btn-demo:hover:not(:disabled){border-color:var(--green);background:rgba(93,232,160,.15);transform:translateY(-1px)}
+.btn-demo:disabled{opacity:.35;cursor:not-allowed;background:transparent;border-color:var(--border2);color:var(--text3)}
+.exam-badge.demo{background:var(--green-bg);color:var(--green);border-color:rgba(93,232,160,.25)}
+.corr-wrap{margin-top:22px;display:flex;flex-direction:column;gap:14px}
+.corr-mod{background:var(--bg2);border:.5px solid var(--border);border-radius:var(--r-lg);padding:18px 20px}
+.corr-mod h3{font-size:13px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.corr-row{display:flex;flex-direction:column;gap:6px;padding:10px 12px;border-radius:8px;margin-bottom:8px;font-size:12px;line-height:1.55}
+.corr-row.ok{background:var(--green-bg);border:.5px solid rgba(93,232,160,.2)}
+.corr-row.bad{background:rgba(255,90,90,.08);border:.5px solid rgba(255,90,90,.2)}
+.corr-q{font-weight:700;color:var(--text)}
+.corr-ans{color:var(--text2)}
+.corr-fix{color:var(--green);font-weight:600;margin-top:3px}
+.corr-model{margin-top:12px;padding:12px;background:var(--bg3);border-radius:8px;font-size:12px;line-height:1.65;color:var(--text2);white-space:pre-wrap}
 /* LOADING */
 #loadingScreen{display:none;text-align:center;padding:100px 0;animation:fadeUp .3s ease}
 .loader-orbit{width:48px;height:48px;border-radius:50%;border:1.5px solid var(--border2);border-top-color:var(--accent);animation:spin .7s linear infinite;margin:0 auto 22px}
@@ -490,7 +504,7 @@ header{padding:26px 0 22px;display:flex;align-items:center;justify-content:space
   </div>
   <div class="beta-banner">
     <span style="font-size:22px;line-height:1">🧪</span>
-    <p><b>Private beta</b> — you're testing an early version of LexiLoop. AI exams need server credits; flashcards and quick modules always work. Send feedback to <a href="mailto:marcosdadra@gmail.com?subject=LexiLoop%20Beta%20Feedback" style="color:var(--accent);text-decoration:none;font-weight:700">marcosdadra@gmail.com</a>.</p>
+    <p><b>Private beta</b> — you're testing an early version of LexiLoop. Try a <b>demo exam</b> (no AI credits) from any level screen. AI exams need server credits; flashcards always work. Send feedback to <a href="mailto:marcosdadra@gmail.com?subject=LexiLoop%20Beta%20Feedback" style="color:var(--accent);text-decoration:none;font-weight:700">marcosdadra@gmail.com</a>.</p>
     <button class="btn-sm" onclick="location.href='oral.html'">🎙 Oral mode</button>
   </div>
   <div class="home-eyebrow"><span></span>Official exam preparation · English & German · A1–C2</div>
@@ -571,6 +585,8 @@ header{padding:26px 0 22px;display:flex;align-items:center;justify-content:space
   </div>
   <div id="quotaWarning" style="display:none;background:var(--orange-bg);border:.5px solid rgba(249,115,22,.3);border-radius:var(--r);padding:12px 16px;font-size:13px;color:var(--orange);margin-bottom:14px"></div>
   <button class="btn-start" id="btnStart" disabled onclick="handleGenerateExam()">Generate Exam →</button>
+  <button class="btn-demo" id="btnDemo" disabled onclick="startDemoExam()">Try demo exam (no AI) →</button>
+  <p style="font-size:11px;color:var(--text3);margin-top:10px;line-height:1.55;text-align:center">Demo exams are fixed samples with full correction. No Claude credits needed.</p>
 </div>
 
 <!-- LOADING -->
@@ -652,6 +668,7 @@ header{padding:26px 0 22px;display:flex;align-items:center;justify-content:space
 
 <script src="js/authClient.js"></script>
 <script src="js/claudeClient.js"></script>
+<script src="js/demoExams.js"></script>
 <script>
 // ═══════════════════════════════════════════
 // STATE
@@ -662,7 +679,7 @@ const S={
   user:null,flashcards:[],fcLang:'es',fcTab:'all',
   veQuestions:[],veIndex:0,veScore:0,veAudio:false,
   timerInt:null,timerSec:0,history:[],quickMod:null,studyIdx:0,
-  savedExams:[],listenPlays:2
+  savedExams:[],listenPlays:2,isDemo:false
 };
 const LEVELS={
   de:[{code:'A1',name:'Start Deutsch 1',desc:'Goethe A1',time:65},{code:'A2',name:'Start Deutsch 2',desc:'Goethe A2',time:65},{code:'B1',name:'Zertifikat B1',desc:'Goethe B1',time:90},{code:'B2',name:'Goethe B2',desc:'Goethe B2',time:105},{code:'C1',name:'Goethe C1',desc:'Goethe C1',time:150},{code:'C2',name:'Goethe C2',desc:'Goethe C2',time:180}],
@@ -831,13 +848,17 @@ function renderLevels(){
   const ey=document.getElementById('lvlEyebrow');
   if(ey)ey.textContent=S.subject==='de'?'Goethe-Institut · A1–C2':'Cambridge CEFR · A1–C2';
   document.getElementById('levelsGrid').innerHTML=LEVELS[S.subject].map(l=>`<div class="level-card" id="lc_${l.code}" onclick="pickLevel('${l.code}')"><div class="lc-code">${l.code}</div><div class="lc-name">${l.name}</div><div class="lc-desc">${l.desc}</div><div class="lc-time">⏱ ${l.time} min</div></div>`).join('');
-  S.level=null;document.getElementById('btnStart').disabled=true;
+  S.level=null;
+  document.getElementById('btnStart').disabled=true;
+  const db=document.getElementById('btnDemo');if(db)db.disabled=true;
 }
 function pickLevel(c){
   S.level=c;
   document.querySelectorAll('.level-card').forEach(x=>x.classList.remove('selected'));
   document.getElementById('lc_'+c)?.classList.add('selected');
   if(canGenerate()) document.getElementById('btnStart').disabled=false;
+  const db=document.getElementById('btnDemo');
+  if(db) db.disabled=false;
 }
 function selectMode(m){
   S.mode=m;
@@ -852,7 +873,19 @@ function handleGenerateExam(){
   if(!canGenerate()){showUpgrade();return;}
   generateExam();
 }
+function startDemoExam(){
+  if(!S.subject||!S.level)return;
+  if(typeof DemoExams==='undefined'){
+    alert('Demo exams failed to load. Refresh the page and try again.');
+    return;
+  }
+  const exam=DemoExams.get(S.subject,S.level);
+  if(!exam){alert('Demo exam not available for this level.');return;}
+  S.isDemo=true;S.answers={};S.gapAnswers={};S.quickMod=null;S.examData=exam;
+  hideAll();renderExam();
+}
 async function generateExam(){
+  S.isDemo=false;
   const topic=S.subject==='de'?pick(TOPICS_DE):pick(TOPICS_EN);
   S.answers={};S.gapAnswers={};S.quickMod=null;
   hideAll();show('loadingScreen');
@@ -1030,7 +1063,8 @@ function renderExam(){
     const lang=isDE?'de-DE':'en-GB';
     secs+=`<section class="module-wrap"><div class="module-tag tag-sprechen">Module 4 — ${isDE?'Sprechen':'Speaking'}</div><h2 class="module-title">${isDE?'Sprechen':'Speaking'}</h2><p class="module-desc">${d.sprechen.situation}</p><div class="speak-points">${d.sprechen.points.map(p=>`<div class="speak-point">• ${p}</div>`).join('')}</div><div class="starter-msg"><div class="starter-av">👤</div><div><div class="starter-who">${d.sprechen.roleB}</div><div class="starter-line">"${d.sprechen.starterLine}"</div></div></div><button class="btn-sm blue" onclick="speak(${JSON.stringify(d.sprechen.starterLine)},'${lang}')" style="margin-bottom:10px">🔊 Hear starter</button><div style="font-size:12px;color:var(--text3);margin-bottom:7px">${isDE?`Deine Antwort (mind. ${d.sprechen.minExchanges} Wechsel, nutze <b>Ich:</b>):`:`Your response (min ${d.sprechen.minExchanges} exchanges, use <b>Me:</b>):`}</div><textarea class="write-field" id="speakAns" style="min-height:180px" placeholder="${isDE?'Ich:':'Me:'}" oninput="updProg()"></textarea></section>`;
   }
-  const bc=isQ?'quick':isPrac?'practice':'real',bl=isQ?('Quick: '+S.quickMod):isPrac?'Practice':'Real Exam';
+  const isDemo=!!d.demo;
+  const bc=isDemo?'demo':isQ?'quick':isPrac?'practice':'real',bl=isDemo?'Demo Exam':isQ?('Quick: '+S.quickMod):isPrac?'Practice':'Real Exam';
   scr.innerHTML=`<div class="exam-topbar"><div class="exam-meta"><span class="exam-badge ${bc}">${bl}</span><span class="exam-badge">${d.level}</span><span class="exam-title">${d.lang==='de'?'🇩🇪':'🇬🇧'} ${d.topic}</span>${timerH}</div><div class="exam-actions"><button class="btn-sm" onclick="goHome()">🏠 Home</button>${isPrac?`<button class="btn-sm purple" onclick="goFlashcards()">🗂️ Deck (<span id="dkCnt">${S.flashcards.length}</span>)</button>`:''}<button class="btn-sm" onclick="saveCurrentExam()">💾 Save</button></div></div><div class="progress-wrap"><div class="progress-row"><span>Progress</span><span id="pctTxt">0%</span></div><div class="progress-track"><div class="progress-fill" id="progFill" style="width:0%"></div></div></div>${practH}${langH}${secs}<div class="submit-bar"><button class="btn-sm" onclick="goHome()">🏠 Home</button><div style="display:flex;gap:7px;flex-wrap:wrap"><button class="btn-sm" onclick="saveCurrentExam()">💾 Save Exam</button><button class="btn-sm accent" id="submitBtn" onclick="submitExam()">${isDE?'Abgeben & Ergebnis':'Submit & Get Results'} →</button></div></div>`;
   scr.querySelectorAll('input[type=radio]').forEach(r=>r.addEventListener('change',updProg));
   updProg();
@@ -1089,38 +1123,181 @@ function updW(){
 }
 
 // ═══════════════════════════════════════════
-// SUBMIT EXAM
+// SUBMIT EXAM + CORRECTION
 // ═══════════════════════════════════════════
+function ansLabel(q, val, isDE) {
+  if (!val) return '—';
+  if (q.type === 'multiple') {
+    const opt = q.options?.find((o) => o[0] === val);
+    return opt ? opt.slice(3) : val;
+  }
+  if (val === 'R' || val === 'T') return isDE ? 'Richtig' : 'True';
+  return isDE ? 'Falsch' : 'False';
+}
+function correctLabel(q, isDE) {
+  return ansLabel(q, q.correct, isDE);
+}
+function countSpeakExchanges(text, isDE) {
+  const re = isDE ? /^\s*Ich\s*:/gim : /^\s*Me\s*:/gim;
+  return (text.match(re) || []).length;
+}
+function gradeWriting(schreiben, writeAns) {
+  const words = writeAns.split(/\s+/).filter((x) => x).length;
+  const min = schreiben.minWords || 40;
+  let score = 35;
+  let note = `You wrote ${words} words (minimum ${min}).`;
+  if (words >= min) {
+    score = words >= min * 1.15 ? 85 : 72;
+    note = `Word count OK (${words}/${min}). Compare your text with the model answer below.`;
+  } else if (words >= min * 0.6) {
+    score = 55;
+    note = `Almost enough words (${words}/${min}). Add more detail.`;
+  }
+  return { score, note, words, min };
+}
+function gradeSpeaking(sprechen, speakAns, isDE) {
+  const exchanges = countSpeakExchanges(speakAns, isDE);
+  const min = sprechen.minExchanges || 3;
+  let score = 30;
+  let note = isDE
+    ? `Du hast ${exchanges} Antwort(en) mit „Ich:“ geschrieben (mindestens ${min}).`
+    : `You wrote ${exchanges} reply line(s) starting with “Me:” (minimum ${min}).`;
+  if (exchanges >= min && speakAns.length > 30) {
+    score = 80;
+    note += isDE ? ' Gute Länge — vergleiche mit dem Muster.' : ' Good length — compare with the model below.';
+  } else if (exchanges >= min || speakAns.length > 40) {
+    score = 62;
+  }
+  return { score, note, exchanges, min };
+}
+function buildCorrection(d, isDE, writeAns, speakAns) {
+  const parts = [];
+  const pushQ = (mod, title, items) => {
+    if (!items.length) return;
+    parts.push({ mod, title, items });
+  };
+  if (d.lesen) {
+    pushQ(
+      'lesen',
+      isDE ? 'Leseverstehen' : 'Reading',
+      d.lesen.questions.map((q, i) => {
+        const user = S.answers['lesen_' + q.id];
+        const ok = user === q.correct;
+        return {
+          ok,
+          q: `Q${i + 1}: ${q.question}`,
+          yours: ansLabel(q, user, isDE),
+          correct: correctLabel(q, isDE),
+        };
+      })
+    );
+  }
+  if (d.horen) {
+    pushQ(
+      'horen',
+      isDE ? 'Hörverstehen' : 'Listening',
+      d.horen.questions.map((q, i) => {
+        const user = S.answers['horen_' + q.id];
+        const ok = user === q.correct;
+        return {
+          ok,
+          q: `Q${i + 1}: ${q.question}`,
+          yours: ansLabel(q, user, isDE),
+          correct: correctLabel(q, isDE),
+        };
+      })
+    );
+  }
+  if (d.gapfill) {
+    pushQ(
+      'gapfill',
+      isDE ? 'Lückentext' : 'Gap-Fill',
+      d.gapfill.sentences.map((s, i) => {
+        const user = (S.gapAnswers[s.id] || '').trim();
+        const ok = user.toLowerCase() === s.answer.toLowerCase();
+        return {
+          ok,
+          q: `Gap ${i + 1}: ${s.text.replace('[BLANK]', '___')}`,
+          yours: user || '—',
+          correct: s.answer,
+        };
+      })
+    );
+  }
+  const writing = d.schreiben ? gradeWriting(d.schreiben, writeAns) : null;
+  const speaking = d.sprechen ? gradeSpeaking(d.sprechen, speakAns, isDE) : null;
+  return { parts, writing, speaking };
+}
+function renderCorrectionHtml(corr, d, isDE) {
+  if (!corr.parts.length && !corr.writing && !corr.speaking) return '';
+  let html = `<div class="corr-wrap"><h2 style="font-size:16px;font-weight:700;margin-bottom:4px">${isDE ? 'Detaillierte Korrektur' : 'Detailed correction'}</h2>`;
+  corr.parts.forEach((sec) => {
+    html += `<div class="corr-mod"><h3>${sec.title}</h3>`;
+    sec.items.forEach((it) => {
+      html += `<div class="corr-row ${it.ok ? 'ok' : 'bad'}"><div class="corr-q">${it.ok ? '✓' : '✗'} ${it.q}</div><div class="corr-ans">${isDE ? 'Deine Antwort' : 'Your answer'}: <b>${esc(it.yours)}</b></div>${it.ok ? '' : `<div class="corr-fix">${isDE ? 'Richtig' : 'Correct'}: ${esc(it.correct)}</div>`}</div>`;
+    });
+    html += '</div>';
+  });
+  if (corr.writing && d.schreiben) {
+    html += `<div class="corr-mod"><h3>${isDE ? 'Schreiben' : 'Writing'} · ${corr.writing.score}%</h3><div class="corr-row ${corr.writing.score >= 70 ? 'ok' : 'bad'}"><div class="corr-ans">${esc(corr.writing.note)}</div></div>`;
+    if (d.schreiben.feedback?.length) {
+      html += `<div style="font-size:11px;color:var(--text3);margin:8px 0 6px;font-weight:700;text-transform:uppercase;letter-spacing:.06em">${isDE ? 'Checkliste' : 'Checklist'}</div><ul style="font-size:12px;color:var(--text2);line-height:1.7;padding-left:18px;margin-bottom:10px">${d.schreiben.feedback.map((f) => `<li>${esc(f)}</li>`).join('')}</ul>`;
+    }
+    if (d.schreiben.modelAnswer) {
+      html += `<div style="font-size:11px;font-weight:700;color:var(--text3);margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em">${isDE ? 'Musterantwort' : 'Model answer'}</div><div class="corr-model">${esc(d.schreiben.modelAnswer)}</div>`;
+    }
+    html += '</div>';
+  }
+  if (corr.speaking && d.sprechen) {
+    html += `<div class="corr-mod"><h3>${isDE ? 'Sprechen' : 'Speaking'} · ${corr.speaking.score}%</h3><div class="corr-row ${corr.speaking.score >= 70 ? 'ok' : 'bad'}"><div class="corr-ans">${esc(corr.speaking.note)}</div></div>`;
+    if (d.sprechen.feedback?.length) {
+      html += `<ul style="font-size:12px;color:var(--text2);line-height:1.7;padding-left:18px;margin:10px 0">${d.sprechen.feedback.map((f) => `<li>${esc(f)}</li>`).join('')}</ul>`;
+    }
+    if (d.sprechen.modelAnswer) {
+      html += `<div style="font-size:11px;font-weight:700;color:var(--text3);margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em">${isDE ? 'Musterdialog' : 'Model dialogue'}</div><div class="corr-model">${esc(d.sprechen.modelAnswer)}</div>`;
+    }
+    html += '</div>';
+  }
+  html += '</div>';
+  return html;
+}
+function esc(s) {
+  return String(s || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
 async function submitExam(){
   stopTimer();
   const d=S.examData;if(!d)return;
   const isDE=d.lang==='de';
-  let correct=0,total=0,moduleScores={lesen:null,horen:null,gapfill:null,schreiben:null,sprechen:null};
-  // Lesen
-  if(d.lesen){let c=0;d.lesen.questions.forEach(q=>{const key='lesen_'+q.id,ans=S.answers[key];if(ans===q.correct)c++;total++;});correct+=c;moduleScores.lesen=Math.round(c/d.lesen.questions.length*100);}
-  // Hören
-  if(d.horen){let c=0;d.horen.questions.forEach(q=>{const key='horen_'+q.id,ans=S.answers[key];if(ans===q.correct)c++;total++;});correct+=c;moduleScores.horen=Math.round(c/d.horen.questions.length*100);}
-  // Gap fill
-  if(d.gapfill){let c=0;d.gapfill.sentences.forEach(s=>{const ans=(S.gapAnswers[s.id]||'').trim().toLowerCase();if(ans===s.answer.toLowerCase())c++;total++;});correct+=c;moduleScores.gapfill=Math.round(c/d.gapfill.sentences.length*100);}
-  // Writing
   const writeAns=document.getElementById('writeAns')?.value.trim()||'';
-  if(d.schreiben){moduleScores.schreiben=writeAns.split(/\s+/).filter(x=>x).length>=d.schreiben.minWords?75:40;correct+=(moduleScores.schreiben/100);total+=1;}
-  // Speaking
   const speakAns=document.getElementById('speakAns')?.value.trim()||'';
-  if(d.sprechen){moduleScores.sprechen=speakAns.length>20?70:35;correct+=(moduleScores.sprechen/100);total+=1;}
+  let correct=0,total=0,moduleScores={lesen:null,horen:null,gapfill:null,schreiben:null,sprechen:null};
+  if(d.lesen){let c=0;d.lesen.questions.forEach(q=>{const key='lesen_'+q.id,ans=S.answers[key];if(ans===q.correct)c++;total++;});correct+=c;moduleScores.lesen=Math.round(c/d.lesen.questions.length*100);}
+  if(d.horen){let c=0;d.horen.questions.forEach(q=>{const key='horen_'+q.id,ans=S.answers[key];if(ans===q.correct)c++;total++;});correct+=c;moduleScores.horen=Math.round(c/d.horen.questions.length*100);}
+  if(d.gapfill){let c=0;d.gapfill.sentences.forEach(s=>{const ans=(S.gapAnswers[s.id]||'').trim().toLowerCase();if(ans===s.answer.toLowerCase())c++;total++;});correct+=c;moduleScores.gapfill=Math.round(c/d.gapfill.sentences.length*100);}
+  if(d.schreiben){
+    const w=gradeWriting(d.schreiben,writeAns);
+    moduleScores.schreiben=w.score;correct+=w.score/100;total+=1;
+  }
+  if(d.sprechen){
+    const sp=gradeSpeaking(d.sprechen,speakAns,isDE);
+    moduleScores.sprechen=sp.score;correct+=sp.score/100;total+=1;
+  }
   const score=total?Math.round(correct/total*100):0;
-  // Save to history
-  const entry={id:Date.now(),date:new Date().toLocaleDateString(),topic:d.topic,level:d.level,lang:d.lang,score,moduleScores,mode:S.mode};
+  const correction=buildCorrection(d,isDE,writeAns,speakAns);
+  const entry={id:Date.now(),date:new Date().toLocaleDateString(),topic:d.topic,level:d.level,lang:d.lang,score,moduleScores,mode:S.mode,demo:!!d.demo};
   S.history.unshift(entry);saveHist();
-  // Show results
-  renderResults(score,moduleScores,d,isDE,writeAns,speakAns,entry.id);
+  renderResults(score,moduleScores,d,isDE,writeAns,speakAns,entry.id,correction);
 }
 
-function renderResults(score,mods,d,isDE,writeAns,speakAns,entryId){
+function renderResults(score,mods,d,isDE,writeAns,speakAns,entryId,correction){
   hideAll();
   const scr=document.getElementById('resultsScreen');scr.style.display='block';
   const cls=score>=70?'pass':score>=50?'mid':'fail';
   const label=score>=70?(isDE?'Bestanden ✓':'Pass ✓'):score>=50?(isDE?'Knapp':'Close'):isDE?'Nicht bestanden':'Fail';
+  const corrHtml=correction?renderCorrectionHtml(correction,d,isDE):'';
   let modCards='';
   if(mods.lesen!=null)modCards+=`<div class="ms-card"><div class="ms-score" style="color:${mods.lesen>=70?'var(--green)':mods.lesen>=50?'var(--accent)':'var(--red)'}">${mods.lesen}%</div><div class="ms-label">${isDE?'Lesen':'Reading'}</div></div>`;
   if(mods.horen!=null)modCards+=`<div class="ms-card"><div class="ms-score" style="color:${mods.horen>=70?'var(--green)':mods.horen>=50?'var(--accent)':'var(--red)'}">${mods.horen}%</div><div class="ms-label">${isDE?'Hören':'Listening'}</div></div>`;
@@ -1134,8 +1311,9 @@ function renderResults(score,mods,d,isDE,writeAns,speakAns,entryId){
       <div class="res-label">${label} — ${d.level} ${d.lang==='de'?'🇩🇪':'🇬🇧'} ${d.topic}</div>
     </div>
     <div class="module-scores-grid">${modCards}</div>
-    ${writeAns?`<div class="text-display"><h3>${isDE?'Deine Antwort — Schreiben':'Your Writing Response'}</h3><div class="readable-text" style="white-space:pre-wrap">${writeAns}</div></div>`:''}
-    ${speakAns?`<div class="text-display"><h3>${isDE?'Deine Antwort — Sprechen':'Your Speaking Notes'}</h3><div class="readable-text" style="white-space:pre-wrap">${speakAns}</div></div>`:''}
+    ${writeAns?`<div class="text-display"><h3>${isDE?'Deine Antwort — Schreiben':'Your Writing Response'}</h3><div class="readable-text" style="white-space:pre-wrap">${esc(writeAns)}</div></div>`:''}
+    ${speakAns?`<div class="text-display"><h3>${isDE?'Deine Antwort — Sprechen':'Your Speaking Notes'}</h3><div class="readable-text" style="white-space:pre-wrap">${esc(speakAns)}</div></div>`:''}
+    ${corrHtml}
     <div style="display:flex;gap:9px;flex-wrap:wrap;margin-top:22px">
       <button class="btn-sm accent" onclick="saveCurrentExam()">💾 Save Exam</button>
       <button class="btn-sm" onclick="goHistory()">📊 View Progress</button>
