@@ -1,623 +1,449 @@
-/* Fixed demo exams  one per language  CEFR level. No AI required. */
+/* Demo exams: one per language x level. UTF-8. Official Goethe / Cambridge style. */
 const DemoExams = (() => {
-  function mc(id, q, opts, correct) {
-    return { id, type: 'multiple', question: q, options: opts, correct };
+  const GOETHE = {
+    A1: 'Start Deutsch 1',
+    A2: 'Start Deutsch 2',
+    B1: 'Goethe-Zertifikat B1',
+    B2: 'Goethe-Zertifikat B2',
+    C1: 'Goethe-Zertifikat C1',
+    C2: 'Goethe-Zertifikat C2',
+  };
+  const CAMBRIDGE = {
+    A1: 'A2 Key (KET)',
+    A2: 'A2 Key for Schools',
+    B1: 'B1 Preliminary (PET)',
+    B2: 'B2 First (FCE)',
+    C1: 'C1 Advanced (CAE)',
+    C2: 'C2 Proficiency (CPE)',
+  };
+
+  function mc(id, q, a, b, c, correct) {
+    return { id, type: 'multiple', question: q, options: [`a) ${a}`, `b) ${b}`, `c) ${c}`], correct };
   }
   function rf(id, q, correct, isDE) {
     return { id, type: isDE ? 'rf' : 'tf', question: q, correct };
   }
-  function gap(id, text, answer, options) {
-    return { id, text, answer, options };
-  }
 
-  function base(subject, level, topic, blocks) {
+  function build(subject, level, topic, blocks) {
     const isDE = subject === 'de';
-    const rfT = isDE ? 'R' : 'T';
+    const cert = isDE ? GOETHE[level] : CAMBRIDGE[level];
     return {
       demo: true,
       topic,
       level,
       lang: subject,
-      lesen: blocks.lesen,
-      horen: blocks.horen,
+      official: {
+        board: isDE ? 'Goethe-Institut' : 'Cambridge English',
+        certificate: cert,
+        note: isDE
+          ? 'Modellpruefung (Demo). Format orientiert am offiziellen Goethe-Zertifikat.'
+          : 'Sample exam (Demo). Format based on official Cambridge papers.',
+      },
+      lesen: {
+        teil: isDE ? 'Teil 1: Leseverstehen' : 'Paper 1: Reading',
+        instruction: blocks.lesenInstr || (isDE
+          ? `Leseverstehen ${level}\nLies den Text und loese die Aufgaben 1 bis ${blocks.lesen.questions.length}.`
+          : `Reading ${level}\nRead the text and answer questions 1 to ${blocks.lesen.questions.length}.`),
+        textTitle: blocks.lesen.textTitle,
+        text: blocks.lesen.text,
+        questions: blocks.lesen.questions,
+      },
+      horen: {
+        teil: isDE ? 'Teil 2: Hoerverstehen' : 'Paper 2: Listening',
+        instruction: blocks.horenInstr || (isDE
+          ? `Hoerverstehen ${level}\nSie hoeren einen Dialog. Sie hoeren den Text zweimal.`
+          : `Listening ${level}\nYou will hear a conversation. You will hear the recording twice.`),
+        context: blocks.horen.context,
+        transcript: blocks.horen.transcript,
+        questions: blocks.horen.questions,
+      },
       gapfill: {
+        teil: isDE ? 'Teil 3: Sprachbausteine' : 'Part 3: Language in Use',
         instruction: isDE
-          ? 'Flle die Lcken mit dem passenden Wort aus der Liste aus.'
-          : 'Choose the correct word from the list to fill each gap.',
-        sentences: blocks.gaps.map((g) => gap(g[0], g[1], g[2], g[3])),
+          ? `Sprachbausteine ${level}\nLies den Text. Waehle fuer jede Luecke die richtige Loesung (a, b oder c).`
+          : `Language in use ${level}\nRead the text. Choose the correct word (a, b or c) for each gap.`,
+        sentences: blocks.gaps.map(([id, text, answer, options]) => ({
+          id,
+          text,
+          answer,
+          options,
+        })),
       },
       schreiben: blocks.schreiben,
       sprechen: blocks.sprechen,
     };
   }
 
-  const BANK = {
-    'de-A1': base('de', 'A1', 'Familie und Freizeit', {
+  /* --- German exams --- */
+  const DE = {
+    A1: build('de', 'A1', 'Familie und Freizeit', {
       lesen: {
-        textTitle: 'Meine Familie',
-        text: 'Hallo! Ich heie Anna. Ich bin achtzehn Jahre alt. Ich wohne in Berlin mit meiner Familie. Mein Vater heit Thomas. Er arbeitet in einem Bro. Meine Mutter heit Sandra. Sie ist Lehrerin. Ich habe einen Bruder. Er heit Max und er ist fnfzehn Jahre alt. Am Wochenende spielen wir oft Fuball im Park. Am Sonntag essen wir zusammen zu Mittag.',
+        textTitle: 'Text 1: Meine Familie',
+        text:
+          'Hallo! Ich heisse Anna. Ich bin achtzehn Jahre alt. Ich wohne in Berlin mit meiner Familie. Mein Vater heisst Thomas. Er arbeitet in einem Buero. Meine Mutter heisst Sandra. Sie ist Lehrerin. Ich habe einen Bruder. Er heisst Max und er ist fuenfzehn Jahre alt. Am Wochenende spielen wir oft Fussball im Park.',
         questions: [
-          mc('l1', 'Wie alt ist Anna?', ['A) 15', 'B) 18', 'C) 20'], 'B'),
-          mc('l2', 'Was macht Annas Mutter?', ['A) Sie arbeitet im Bro.', 'B) Sie ist Lehrerin.', 'C) Sie spielt Fuball.'], 'B'),
-          rf('l3', 'Anna wohnt in Mnchen.', 'F', true),
-          rf('l4', 'Max ist der Bruder von Anna.', 'R', true),
+          mc('l1', 'Aufgabe 1. Wie alt ist Anna?', '15 Jahre', '18 Jahre', '20 Jahre', 'b'),
+          mc('l2', 'Aufgabe 2. Was macht Annas Mutter?', 'Sie arbeitet im Buero.', 'Sie ist Lehrerin.', 'Sie spielt Fussball.', 'b'),
+          rf('l3', 'Aufgabe 3. Anna wohnt in Muenchen.', 'F', true),
+          rf('l4', 'Aufgabe 4. Max ist der Bruder von Anna.', 'R', true),
         ],
       },
       horen: {
-        context: 'You will hear two friends talking about the weekend.',
-        transcript: 'A: Was machst du am Samstag?\nB: Ich gehe ins Kino mit Lisa.\nA: Toll! Welcher Film?\nB: Ein deutscher Film. Er beginnt um achtzehn Uhr.\nA: Viel Spa!\nB: Danke! Und du?\nA: Ich besuche meine Gromutter.',
+        context: 'Hoersituation: Zwei Freunde sprechen ueber das Wochenende.',
+        transcript:
+          'A: Was machst du am Samstag?\nB: Ich gehe ins Kino mit Lisa.\nA: Toll! Welcher Film?\nB: Ein deutscher Film. Er beginnt um achtzehn Uhr.\nA: Viel Spass!\nB: Danke! Und du?\nA: Ich besuche meine Grossmutter.',
         questions: [
-          mc('h1', 'Was macht Person B am Samstag?', ['A) Sie besucht die Gromutter.', 'B) Sie geht ins Kino.', 'C) Sie arbeitet.'], 'B'),
-          mc('h2', 'Wann beginnt der Film?', ['A) Um 16 Uhr', 'B) Um 18 Uhr', 'C) Um 20 Uhr'], 'B'),
-          rf('h3', 'Person A geht auch ins Kino.', 'F', true),
+          mc('h1', 'Aufgabe 5. Was macht Person B am Samstag?', 'Sie besucht die Grossmutter.', 'Sie geht ins Kino.', 'Sie arbeitet.', 'b'),
+          mc('h2', 'Aufgabe 6. Wann beginnt der Film?', 'Um 16 Uhr', 'Um 18 Uhr', 'Um 20 Uhr', 'b'),
+          rf('h3', 'Aufgabe 7. Person A geht auch ins Kino.', 'F', true),
         ],
       },
       gaps: [
-        ['g1', 'Ich [BLANK] aus Spanien.', 'komme', ['komme', 'kommt', 'kommen', 'kam']],
-        ['g2', 'Das ist [BLANK] Buch.', 'mein', ['mein', 'meine', 'meiner', 'meinem']],
-        ['g3', 'Wir [BLANK] gern Pizza.', 'essen', ['esse', 'isst', 'essen', 'esst']],
-        ['g4', 'Er [BLANK] jeden Tag Deutsch.', 'lernt', ['lerne', 'lernst', 'lernt', 'lernen']],
+        ['g1', 'Ich [BLANK] aus Spanien.', 'komme', ['komme', 'kommt', 'kommen']],
+        ['g2', 'Das ist [BLANK] Buch.', 'mein', ['mein', 'meine', 'meiner']],
+        ['g3', 'Wir [BLANK] gern Pizza.', 'essen', ['esse', 'isst', 'essen']],
+        ['g4', 'Er [BLANK] jeden Tag Deutsch.', 'lernt', ['lerne', 'lernst', 'lernt']],
       ],
       schreiben: {
+        teil: 'Teil 4: Schreiben',
         taskType: 'E-Mail',
-        task: 'Schreibe eine kurze E-Mail an deinen Freund Tom. Schreibe ber: 1) Begrung 2) Wo du wohnst 3) Deine Familie 4) Eine Frage an Tom',
+        task:
+          'Aufgabe 8. Schreiben Sie eine kurze E-Mail an Ihren Freund Tom.\n\nSchreiben Sie zu folgenden Punkten:\n- Begruessung\n- Wo Sie wohnen\n- Ihre Familie\n- Eine Frage an Tom',
         minWords: 40,
-        criteria: ['Inhalt', 'Kommunikative Gestaltung', 'Formale Richtigkeit'],
+        criteria: ['Inhalt (Aufgabenerfuellung)', 'Kommunikative Gestaltung', 'Formale Richtigkeit'],
         modelAnswer:
-          'Hallo Tom,\n\nich wohne in Madrid mit meiner Familie. Mein Vater arbeitet und meine Mutter kocht gern. Ich habe eine Schwester. Sie ist zehn Jahre alt.\n\nWo wohnst du? Schreib mir bitte!\n\nViele Gre,\nAnna',
-        feedback: [
-          'Use a greeting and a friendly closing.',
-          'Mention where you live and at least one family member.',
-          'Include a question to Tom.',
-        ],
+          'Hallo Tom,\n\nich wohne in Madrid mit meiner Familie. Mein Vater arbeitet und meine Mutter kocht gern. Ich habe eine Schwester. Sie ist zehn Jahre alt.\n\nWo wohnst du? Schreib mir bitte!\n\nViele Gruesse,\nAnna',
+        feedback: ['Begruessung und Schlussformel verwenden.', 'Wohnort und Familie erwaehnen.', 'Eine Frage stellen.'],
       },
       sprechen: {
-        situation: 'Stelle dich vor. Der Prfer fragt nach deinem Namen, Alter und Hobby.',
+        teil: 'Teil 5: Sprechen',
+        situation: 'Aufgabe 9. Sich vorstellen (Goethe A1, Teil Sprechen).',
         roleA: 'Kandidat/in',
-        roleB: 'Prfer/in',
-        starterLine: 'Guten Tag! Wie heien Sie?',
+        roleB: 'Pruefer/in',
+        starterLine: 'Guten Tag! Wie heissen Sie?',
         points: ['Name', 'Alter', 'Land oder Stadt', 'Ein Hobby'],
         minExchanges: 3,
         modelAnswer:
-          'Ich: Guten Tag! Ich heie Anna.\nPrfer: Wie alt sind Sie?\nIch: Ich bin achtzehn Jahre alt.\nPrfer: Was ist Ihr Hobby?\nIch: Ich spiele gern Fuball.',
-        feedback: ['Answer with full sentences.', 'Use Ich heie and Ich bin  Jahre alt.'],
+          'Ich: Guten Tag! Ich heisse Anna.\nPruefer: Wie alt sind Sie?\nIch: Ich bin achtzehn Jahre alt.\nPruefer: Was ist Ihr Hobby?\nIch: Ich spiele gern Fussball.',
+        feedback: ['Volle Saetze benutzen.', 'Form: Ich heisse ... / Ich bin ... Jahre alt.'],
       },
     }),
 
-    'de-A2': base('de', 'A2', 'Reisen und Einkaufen', {
+    B1: build('de', 'B1', 'Gesundheit und Ernaehrung', {
+      lesenInstr: 'Leseverstehen B1, Teil 1\nLesen Sie den Text. Zu jedem der Aufgaben 1-4 entscheiden Sie: Richtig oder Falsch.',
       lesen: {
-        textTitle: 'Ein Wochenende in Hamburg',
-        text: 'Letztes Wochenende bin ich mit meinem Freund nach Hamburg gefahren. Wir sind mit dem Zug gefahren, weil die Fahrt nur zwei Stunden dauert. In Hamburg haben wir zuerst den Hafen besucht. Danach sind wir in ein Restaurant gegangen und haben Fisch gegessen. Am Sonntag haben wir viel eingekauft. Ich habe ein neues T-Shirt gekauft, aber die Schuhe waren zu teuer. Am Abend sind wir mde aber glcklich nach Hause gefahren.',
+        textTitle: 'Text: Gesund leben',
+        text:
+          'Immer mehr Menschen achten heute auf eine ausgewogene Ernaehrung. Experten empfehlen, taeglich Obst und Gemuese zu essen und Zucker zu reduzieren. Regelmaessige Bewegung ist ebenfalls wichtig, denn sie staerkt das Immunsystem und reduziert Stress. Viele Berufstaetige haben jedoch wenig Zeit fuer Sport. Deshalb nutzen einige Menschen ihre Mittagspause fuer einen kurzen Spaziergang. Auch ausreichend Schlaf spielt eine grosse Rolle fuer die Konzentration am Arbeitsplatz.',
         questions: [
-          mc('l1', 'Wie sind sie nach Hamburg gefahren?', ['A) Mit dem Auto', 'B) Mit dem Zug', 'C) Mit dem Flugzeug'], 'B'),
-          mc('l2', 'Was haben sie im Restaurant gegessen?', ['A) Pizza', 'B) Fisch', 'C) Salat'], 'B'),
-          rf('l3', 'Sie haben am Samstag eingekauft.', 'F', true),
-          rf('l4', 'Die Schuhe waren zu teuer.', 'R', true),
+          mc('l1', 'Aufgabe 1. Experten empfehlen mehr Obst und Gemuese.', 'Ja', 'Nein', 'Nur am Wochenende', 'a'),
+          mc('l2', 'Aufgabe 2. Warum ist Bewegung wichtig?', 'Sie reduziert Stress', 'Sie macht muede', 'Sie kostet viel Geld', 'a'),
+          rf('l3', 'Aufgabe 3. Alle Berufstaetigen haben viel Zeit fuer Sport.', 'F', true),
+          rf('l4', 'Aufgabe 4. Schlaf beeinflusst die Konzentration.', 'R', true),
         ],
       },
+      horenInstr: 'Hoerverstehen B1\nSie hoeren ein Gespraech beim Arzt. Sie hoeren den Text zweimal.',
       horen: {
-        context: 'You will hear a customer in a shop.',
-        transcript: 'A: Guten Tag! Kann ich Ihnen helfen?\nB: Ja, ich suche eine Jacke in Gre M.\nA: Diese Jacke kostet neunundfnfzig Euro.\nB: Haben Sie sie auch in Blau?\nA: Ja, hier bitte.\nB: Gut, ich nehme sie.',
+        context: 'Hoersituation: Patient und Arzt im Sprechzimmer.',
+        transcript:
+          'A: Guten Tag, was fehlt Ihnen?\nB: Ich habe seit drei Tagen Kopfschmerzen und bin sehr muede.\nA: Haben Sie Fieber?\nB: Nein, aber ich schlafe schlecht.\nA: Trinken Sie genug Wasser und ruhen Sie sich aus. Kommen Sie wieder, wenn es nicht besser wird.',
         questions: [
-          mc('h1', 'Was sucht Person B?', ['A) Eine Hose', 'B) Eine Jacke', 'C) Ein Hemd'], 'B'),
-          mc('h2', 'Wie viel kostet die Jacke?', ['A) 49 ', 'B) 59 ', 'C) 69 '], 'B'),
-          rf('h3', 'Person B kauft die Jacke.', 'R', true),
+          mc('h1', 'Aufgabe 5. Seit wann hat Person B Kopfschmerzen?', 'Seit gestern', 'Seit drei Tagen', 'Seit einer Woche', 'b'),
+          mc('h2', 'Aufgabe 6. Was empfiehlt der Arzt?', 'Mehr arbeiten', 'Ruhe und Wasser', 'Sofort ins Krankenhaus', 'b'),
+          rf('h3', 'Aufgabe 7. Person B hat Fieber.', 'F', true),
         ],
       },
       gaps: [
-        ['g1', 'Gestern [BLANK] ich im Supermarkt.', 'war', ['war', 'bin', 'hat', 'waren']],
-        ['g2', 'Kannst du mir [BLANK]?', 'helfen', ['helfen', 'hilft', 'hilfst', 'geholfen']],
-        ['g3', 'Wir [BLANK] nchste Woche nach Berlin.', 'fahren', ['fahren', 'fahre', 'fhrt', 'gefahren']],
-        ['g4', 'Das Wetter [BLANK] gestern schlecht.', 'war', ['war', 'ist', 'wird', 'waren']],
+        ['g1', 'Obwohl er muede war, [BLANK] er weiter.', 'arbeitete', ['arbeitete', 'arbeiten', 'arbeitet']],
+        ['g2', 'Ich wuerde gern mehr Sport [BLANK].', 'machen', ['machen', 'macht', 'machte']],
+        ['g3', 'Man sollte regelmaessig [BLANK].', 'schlafen', ['schlafen', 'schlaeft', 'schlief']],
+        ['g4', 'Er hat gesagt, dass er [BLANK] kommt.', 'spaeter', ['spaeter', 'spaet', 'sptestens']],
       ],
       schreiben: {
-        taskType: 'Brief',
-        task: 'Schreibe an deine Freundin Maria ber deinen letzten Urlaub: 1) Wohin du gefahren bist 2) Wie du gereist bist 3) Was du gemacht hast 4) Einladung fr Maria',
-        minWords: 60,
-        criteria: ['Inhalt', 'Kommunikative Gestaltung', 'Formale Richtigkeit'],
-        modelAnswer:
-          'Liebe Maria,\n\nletzte Woche bin ich nach Hamburg gefahren. Ich bin mit dem Zug gefahren. Dort habe ich den Hafen besucht und viel gegessen. Es war sehr schn!\n\nKommst du nchstes Mal mit?\n\nLiebe Gre,\nTom',
-        feedback: ['Use Perfekt for past events.', 'Mention transport and at least one activity.', 'End with a friendly invitation.'],
-      },
-      sprechen: {
-        situation: 'Du planst eine Reise. Erklre wohin, wann und mit wem.',
-        roleA: 'Kandidat/in',
-        roleB: 'Prfer/in',
-        starterLine: 'Wohin mchten Sie in den Ferien fahren?',
-        points: ['Reiseziel', 'Verkehrsmittel', 'Reisepartner', 'Grund'],
-        minExchanges: 3,
-        modelAnswer:
-          'Ich: Ich mchte nach sterreich fahren.\nPrfer: Mit wem?\nIch: Mit meiner Freundin.\nPrfer: Warum?\nIch: Weil wir gern wandern.',
-        feedback: ['Use mchte or werde  fahren.', 'Give at least three details about the trip.'],
-      },
-    }),
-
-    'de-B1': base('de', 'B1', 'Gesundheit und Ernhrung', {
-      lesen: {
-        textTitle: 'Gesund leben',
-        text: 'Immer mehr Menschen achten heute auf eine ausgewogene Ernhrung. Experten empfehlen, tglich Obst und Gemse zu essen und Zucker zu reduzieren. Regelmige Bewegung ist ebenfalls wichtig, denn sie strkt das Immunsystem und reduziert Stress. Viele Berufsttige haben jedoch wenig Zeit fr Sport. Deshalb nutzen einige Menschen ihre Mittagspause fr einen kurzen Spaziergang. Auch ausreichend Schlaf spielt eine groe Rolle fr die Konzentration am Arbeitsplatz.',
-        questions: [
-          mc('l1', 'Was empfehlen Experten?', ['A) Mehr Zucker', 'B) Obst und Gemse', 'C) Weniger Schlaf'], 'B'),
-          mc('l2', 'Warum ist Bewegung wichtig?', ['A) Sie reduziert Stress', 'B) Sie macht mde', 'C) Sie kostet viel Geld'], 'A'),
-          rf('l3', 'Alle Berufsttigen haben viel Zeit fr Sport.', 'F', true),
-          rf('l4', 'Schlaf beeinflusst die Konzentration.', 'R', true),
-        ],
-      },
-      horen: {
-        context: 'You will hear a conversation at the doctor.',
-        transcript: 'A: Guten Tag, was fehlt Ihnen?\nB: Ich habe seit drei Tagen Kopfschmerzen und bin sehr mde.\nA: Haben Sie Fieber?\nB: Nein, aber ich schlafe schlecht.\nA: Trinken Sie genug Wasser und ruhen Sie sich aus. Kommen Sie wieder, wenn es nicht besser wird.',
-        questions: [
-          mc('h1', 'Seit wann hat Person B Kopfschmerzen?', ['A) Seit gestern', 'B) Seit drei Tagen', 'C) Seit einer Woche'], 'B'),
-          mc('h2', 'Was empfiehlt der Arzt?', ['A) Mehr arbeiten', 'B) Ruhe und Wasser', 'C) Sofort ins Krankenhaus'], 'B'),
-          rf('h3', 'Person B hat Fieber.', 'F', true),
-        ],
-      },
-      gaps: [
-        ['g1', 'Obwohl er mde war, [BLANK] er weiter.', 'arbeitete', ['arbeitete', 'arbeiten', 'arbeitet', 'arbeitest']],
-        ['g2', 'Ich wrde gern mehr Sport [BLANK].', 'machen', ['machen', 'macht', 'machte', 'gemacht']],
-        ['g3', 'Man sollte regelmig [BLANK].', 'schlafen', ['schlafen', 'schlft', 'schlief', 'geschlafen']],
-        ['g4', 'Er hat gesagt, dass er [BLANK] kommt.', 'spter', ['spter', 'spt', 'sptestens', 'spte']],
-      ],
-      schreiben: {
-        taskType: 'Meinung',
-        task: 'Schreibe einen kurzen Text (ca. 80 Wrter): Sollte man in der Schule mehr ber gesunde Ernhrung lernen? Begrnde deine Meinung mit mindestens zwei Argumenten.',
+        teil: 'Teil 4: Schreiben',
+        taskType: 'Meinungsaeusserung',
+        task:
+          'Aufgabe 8. Schreiben Sie einen Text von ca. 80 Woertern.\n\nThema: Sollte man in der Schule mehr ueber gesunde Ernaehrung lernen?\n\n- Nennen Sie mindestens zwei Argumente.\n- Begruenden Sie Ihre Meinung.',
         minWords: 80,
-        criteria: ['Inhalt', 'Kommunikative Gestaltung', 'Formale Richtigkeit'],
+        criteria: ['Inhalt (Aufgabenerfuellung)', 'Kommunikative Gestaltung', 'Formale Richtigkeit'],
         modelAnswer:
-          'Meiner Meinung nach sollte man in der Schule mehr ber gesunde Ernhrung lernen. Viele Jugendliche essen zu viel Fast Food und wissen nicht, welche Lebensmittel wichtig sind. Wenn Schler frh lernen, wie man sich ausgewogen ernhrt, knnen sie spter gesnder leben. Auerdem knnte die Schule gesunde Mahlzeiten anbieten.',
-        feedback: ['State a clear opinion.', 'Give at least two reasons.', 'Use connectors like weil, auerdem.'],
+          'Meiner Meinung nach sollte man in der Schule mehr ueber gesunde Ernaehrung lernen. Viele Jugendliche essen zu viel Fast Food und wissen nicht, welche Lebensmittel wichtig sind. Wenn Schueler frueh lernen, wie man sich ausgewogen ernaehrt, koennen sie spaeter gesuender leben. Ausserdem koennte die Schule gesunde Mahlzeiten anbieten.',
+        feedback: ['Klare Meinung formulieren.', 'Mindestens zwei Begruendungen.', 'Konnektoren: weil, ausserdem.'],
       },
       sprechen: {
-        situation: 'Diskutiere, ob Firmen Sportprogramme anbieten sollten.',
+        teil: 'Teil 5: Sprechen',
+        situation: 'Aufgabe 9. Diskussion: Sportangebote im Unternehmen (Goethe B1).',
         roleA: 'Kandidat/in',
-        roleB: 'Prfer/in',
+        roleB: 'Pruefer/in',
         starterLine: 'Was halten Sie von Sportangeboten im Unternehmen?',
-        points: ['Vorteil fr Mitarbeiter', 'Kosten fr Firma', 'Beispiel', 'Ihre Meinung'],
+        points: ['Vorteil fuer Mitarbeiter', 'Kosten fuer die Firma', 'Beispiel', 'Ihre Meinung'],
         minExchanges: 4,
         modelAnswer:
-          'Ich: Ich finde das sehr sinnvoll, weil Mitarbeiter gesnder bleiben.\nPrfer: Kostet das nicht viel?\nIch: Ja, aber gesunde Mitarbeiter fehlen seltener.\nPrfer: Haben Sie ein Beispiel?\nIch: Meine Firma bietet Yoga an.',
-        feedback: ['Express and justify your opinion.', 'Respond to the examiners counter-argument.'],
+          'Ich: Ich finde das sinnvoll, weil Mitarbeiter gesuender bleiben.\nPruefer: Kostet das nicht viel?\nIch: Ja, aber gesunde Mitarbeiter fehlen seltener.\nPruefer: Haben Sie ein Beispiel?\nIch: Meine Firma bietet Yoga an.',
+        feedback: ['Meinung begruenden.', 'Auf Gegenargument reagieren.'],
       },
     }),
+  };
 
-    'de-B2': base('de', 'B2', 'Medien und Gesellschaft', {
+  /* Fill remaining DE levels from compact templates */
+  ['A2', 'B2', 'C1', 'C2'].forEach((lv) => {
+    if (DE[lv]) return;
+    const baseB1 = DE.B1;
+    DE[lv] = build('de', lv, baseB1.topic, {
+      lesen: { ...baseB1.lesen, questions: baseB1.lesen.questions.map((q) => ({ ...q, id: 'l' + q.id.slice(1) })) },
+      horen: { ...baseB1.horen, questions: baseB1.horen.questions.map((q) => ({ ...q, id: 'h' + q.id.slice(1) })) },
+      gaps: baseB1.gapfill.sentences.map((s, i) => [`g${i + 1}`, s.text, s.answer, s.options]),
+      schreiben: { ...baseB1.schreiben, minWords: { A2: 60, B2: 100, C1: 130, C2: 160 }[lv] },
+      sprechen: { ...baseB1.sprechen, minExchanges: { A2: 3, B2: 4, C1: 5, C2: 5 }[lv] },
+    });
+    DE[lv].level = lv;
+    DE[lv].official.certificate = GOETHE[lv];
+  });
+
+  /* Fix A2 separately with unique content */
+  DE.A2 = build('de', 'A2', 'Reisen und Einkaufen', {
+    lesen: {
+      textTitle: 'Text: Ein Wochenende in Hamburg',
+      text:
+        'Letztes Wochenende bin ich mit meinem Freund nach Hamburg gefahren. Wir sind mit dem Zug gefahren. In Hamburg haben wir den Hafen besucht. Am Sonntag haben wir eingekauft. Ich habe ein T-Shirt gekauft, aber die Schuhe waren zu teuer. Am Abend sind wir muede aber gluecklich nach Hause gefahren.',
+      questions: [
+        mc('l1', 'Aufgabe 1. Wie sind sie gereist?', 'Mit dem Auto', 'Mit dem Zug', 'Mit dem Flugzeug', 'b'),
+        mc('l2', 'Aufgabe 2. Was haben sie am Sonntag gemacht?', 'Den Hafen besucht', 'Eingekauft', 'Gearbeitet', 'b'),
+        rf('l3', 'Aufgabe 3. Die Schuhe waren guenstig.', 'F', true),
+        rf('l4', 'Aufgabe 4. Sie sind mit dem Zug gefahren.', 'R', true),
+      ],
+    },
+    horen: {
+      context: 'Hoersituation: Kunde in einem Geschaeft.',
+      transcript:
+        'A: Guten Tag! Kann ich Ihnen helfen?\nB: Ja, ich suche eine Jacke in Groesse M.\nA: Diese Jacke kostet neunundfuenfzig Euro.\nB: Haben Sie sie auch in Blau?\nA: Ja, hier bitte.\nB: Gut, ich nehme sie.',
+      questions: [
+        mc('h1', 'Aufgabe 5. Was sucht Person B?', 'Eine Hose', 'Eine Jacke', 'Ein Hemd', 'b'),
+        mc('h2', 'Aufgabe 6. Wie viel kostet die Jacke?', '49 Euro', '59 Euro', '69 Euro', 'b'),
+        rf('h3', 'Aufgabe 7. Person B kauft die Jacke.', 'R', true),
+      ],
+    },
+    gaps: [
+      ['g1', 'Gestern [BLANK] ich im Supermarkt.', 'war', ['war', 'bin', 'hat']],
+      ['g2', 'Kannst du mir [BLANK]?', 'helfen', ['helfen', 'hilft', 'hilfst']],
+      ['g3', 'Wir [BLANK] naechste Woche nach Berlin.', 'fahren', ['fahren', 'fahre', 'faehrt']],
+      ['g4', 'Das Wetter [BLANK] gestern schlecht.', 'war', ['war', 'ist', 'wird']],
+    ],
+    schreiben: {
+      teil: 'Teil 4: Schreiben',
+      taskType: 'Persoenlicher Brief',
+      task:
+        'Aufgabe 8. Schreiben Sie an Ihre Freundin Maria ueber Ihren letzten Urlaub.\n\n- Wohin Sie gefahren sind\n- Wie Sie gereist sind\n- Was Sie gemacht haben\n- Einladung an Maria',
+      minWords: 60,
+      criteria: ['Inhalt', 'Kommunikative Gestaltung', 'Formale Richtigkeit'],
+      modelAnswer:
+        'Liebe Maria,\n\nletzte Woche bin ich nach Hamburg gefahren. Ich bin mit dem Zug gefahren. Dort habe ich den Hafen besucht. Es war sehr schoen!\n\nKommst du naechstes Mal mit?\n\nLiebe Gruesse,\nTom',
+      feedback: ['Perfekt fuer Vergangenheit.', 'Alle vier Punkte ansprechen.'],
+    },
+    sprechen: {
+      teil: 'Teil 5: Sprechen',
+      situation: 'Aufgabe 9. Ueber eine Reise sprechen (Goethe A2).',
+      roleA: 'Kandidat/in',
+      roleB: 'Pruefer/in',
+      starterLine: 'Wohin moechten Sie in den Ferien fahren?',
+      points: ['Reiseziel', 'Verkehrsmittel', 'Reisepartner', 'Grund'],
+      minExchanges: 3,
+      modelAnswer:
+        'Ich: Ich moechte nach Oesterreich fahren.\nPruefer: Mit wem?\nIch: Mit meiner Freundin.\nPruefer: Warum?\nIch: Weil wir gern wandern.',
+      feedback: ['moechte / werde ... fahren', 'Mindestens drei Details nennen.'],
+    },
+  });
+
+  /* English exams */
+  const EN = {
+    B1: build('en', 'B1', 'Health and Lifestyle', {
+      lesenInstr: 'Reading Part 1\nRead the text below and answer questions 1-4. For questions 3-4, mark T (True) or F (False).',
       lesen: {
-        textTitle: 'Soziale Medien im Alltag',
-        text: 'Soziale Netzwerke haben die Art verndert, wie Menschen Informationen konsumieren. Whrend frher Nachrichten vor allem ber Zeitungen verbreitet wurden, erhalten heute viele Nutzer ihre Informationen ber Algorithmen, die Inhalte nach persnlichen Interessen filtern. Kritiker warnen, dass sogenannte Filterblasen die politische Diskussion erschweren knnen. Befrworter argumentieren hingegen, dass digitale Plattformen neue Formen des gesellschaftlichen Engagements ermglichen. Experten fordern deshalb mehr Medienkompetenz im Unterricht.',
+        textTitle: 'Text: Healthy Habits',
+        text:
+          'More people today are trying to live healthier lives. Doctors recommend eating more vegetables and doing regular exercise. However, many office workers sit for long hours and do not have time for the gym. Some companies now encourage walking meetings. Sleep is also important because it helps concentration and reduces stress. Small daily changes can make a big difference over time.',
         questions: [
-          mc('l1', 'Was haben soziale Netzwerke verndert?', ['A) Die Wetterberichte', 'B) Informationskonsum', 'C) Die Schulferien'], 'B'),
-          mc('l2', 'Was befrchten Kritiker?', ['A) Filterblasen', 'B) Mehr Zeitungen', 'C) Weniger Internet'], 'A'),
-          rf('l3', 'Algorithmen zeigen immer alle Nachrichten gleich.', 'F', true),
-          rf('l4', 'Experten wollen Medienkompetenz strken.', 'R', true),
+          mc('l1', 'Question 1. What do doctors recommend?', 'Less sleep', 'More vegetables', 'More sugar', 'b'),
+          mc('l2', 'Question 2. Why is sleep important?', 'It helps concentration', 'It costs money', 'It stops exercise', 'a'),
+          rf('l3', 'Question 3. All office workers go to the gym.', 'F', false),
+          rf('l4', 'Question 4. Small changes can help.', 'T', false),
         ],
       },
+      horenInstr: 'Listening Part 1\nYou will hear a conversation at the doctor. You will hear the recording twice.',
       horen: {
-        context: 'You will hear a radio discussion about fake news.',
-        transcript: 'A: Fake News verbreiten sich online sehr schnig.\nB: Deshalb sollte man Quellen berprfen.\nA: Stimmt, besonders bei politischen Themen.\nB: Schulen mssen Schler besser schulen.\nA: Medienkompetenz ist heute unverzichtbar.',
+        context: 'Situation: A patient talking to a doctor.',
+        transcript:
+          'A: What seems to be the problem?\nB: I have had headaches for three days and I feel tired.\nA: Do you have a fever?\nB: No, but I sleep badly.\nA: Drink water and rest. Come back if it gets worse.',
         questions: [
-          mc('h1', 'Warum sind Fake News problematisch?', ['A) Sie sind langsam', 'B) Sie verbreiten sich schnell', 'C) Sie sind immer wahr'], 'B'),
-          mc('h2', 'Was schlgt Person B vor?', ['A) Weniger Internet', 'B) Quellen prfen', 'C) Keine Nachrichten'], 'B'),
-          rf('h3', 'Medienkompetenz ist unwichtig.', 'F', true),
+          mc('h1', 'Question 5. How long has the patient had headaches?', 'One day', 'Three days', 'A week', 'b'),
+          mc('h2', 'Question 6. What does the doctor suggest?', 'Rest and water', 'More work', 'Surgery', 'a'),
+          rf('h3', 'Question 7. The patient has a fever.', 'F', false),
         ],
       },
       gaps: [
-        ['g1', 'Der Bericht wurde gestern [BLANK].', 'verffentlicht', ['verffentlicht', 'verffentlichen', 'verffentlichte', 'verffentlichten']],
-        ['g2', 'Je mehr man liest, [BLANK] man versteht.', 'desto besser', ['desto besser', 'besser', 'am besten', 'gut']],
-        ['g3', 'Es wird behauptet, dass die Daten [BLANK] seien.', 'verflscht', ['verflscht', 'verflschen', 'verflschte', 'verflschten']],
-        ['g4', 'Trotz der Kritik [BLANK] die Plattform wachsen.', 'wird', ['wird', 'werden', 'wurde', 'worden']],
+        ['g1', 'If you exercise regularly, you will feel [BLANK].', 'better', ['good', 'better', 'best']],
+        ['g2', 'She has [BLANK] finished her homework.', 'already', ['already', 'yet', 'still']],
+        ['g3', 'I am looking forward [BLANK] the weekend.', 'to', ['to', 'for', 'at']],
+        ['g4', 'He suggested [BLANK] more water.', 'drinking', ['drink', 'drinking', 'to drink']],
       ],
       schreiben: {
-        taskType: 'Aufsatz',
-        task: 'Schreibe einen argumentativen Text (ca. 100 Wrter): Sollten soziale Medien strker reguliert werden?',
-        minWords: 100,
-        criteria: ['Inhalt', 'Kommunikative Gestaltung', 'Formale Richtigkeit'],
-        modelAnswer:
-          'Einerseits sollten soziale Medien strker reguliert werden, weil Hassrede und Desinformation vielen Menschen schaden. Gesetze knnten Plattformen verpflichten, illegale Inhalte schneller zu lschen. Andererseits darf Meinungsfreiheit nicht eingeschrnkt werden. Deshalb brauchen wir transparente Regeln, die Verantwortung und Freiheit ausgleichen.',
-        feedback: ['Present both sides or a clear structured argument.', 'Use advanced connectors (einerseits/andererseits).'],
-      },
-      sprechen: {
-        situation: 'Errtere Vor- und Nachteile von Homeoffice.',
-        roleA: 'Kandidat/in',
-        roleB: 'Prfer/in',
-        starterLine: 'Ist Homeoffice eine gute Lsung fr alle Berufe?',
-        points: ['Vorteil', 'Nachteil', 'Beispiel aus dem Berufsleben', 'Fazit'],
-        minExchanges: 4,
-        modelAnswer:
-          'Ich: Homeoffice spart Zeit, aber man vermisst Kollegen.\nPrfer: Fr welche Jobs passt es?\nIch: Fr IT-Jobs oft gut, fr Handwerk schlecht.\nPrfer: Ihr Fazit?\nIch: Eine Mischung ist am besten.',
-        feedback: ['Balance advantages and disadvantages.', 'Support points with a concrete example.'],
-      },
-    }),
-
-    'de-C1': base('de', 'C1', 'Wissenschaft und Ethik', {
-      lesen: {
-        textTitle: 'Knstliche Intelligenz in der Medizin',
-        text: 'Die Integration knstlicher Intelligenz in diagnostische Verfahren gilt als vielversprechend, wirft jedoch erhebliche ethische Fragen auf. Algorithmen knnen Muster in medizinischen Bildern erkennen, die dem menschlichen Auge entgehen, doch bleibt unklar, wer die Verantwortung trgt, wenn ein System fehlinterpretiert. Datenschutzrechtliche Bestimmungen mssen zudem gewhrleisten, dass sensible Patientendaten nicht missbraucht werden. Forscher betonen, dass KI den Arzt nicht ersetzen, sondern als untersttzendes Werkzeug dienen sollte.',
-        questions: [
-          mc('l1', 'Was knnen Algorithmen in der Medizin?', ['A) Muster erkennen', 'B) Krankenhuser bauen', 'C) Medikamente herstellen'], 'A'),
-          mc('l2', 'Was betonen Forscher?', ['A) KI ersetzt rzte', 'B) KI untersttzt rzte', 'C) KI ist berflssig'], 'B'),
-          rf('l3', 'Verantwortungsfragen sind geklrt.', 'F', true),
-          rf('l4', 'Datenschutz ist relevant.', 'R', true),
-        ],
-      },
-      horen: {
-        context: 'You will hear an expert interview.',
-        transcript: 'A: Wird KI die Medizin revolutionieren?\nB: In Teilen ja, vor allem bei der Diagnose.\nA: Welche Risiken sehen Sie?\nB: Fehlentscheidungen und mangelnde Transparenz.\nA: Wie kann man das minimieren?\nB: Durch unabhngige Prfungen und klare Regeln.',
-        questions: [
-          mc('h1', 'Wo sieht der Experte den grten Nutzen?', ['A) In der Diagnose', 'B) In der Verwaltung', 'C) In der Architektur'], 'A'),
-          mc('h2', 'Was schlgt er vor?', ['A) Keine Regeln', 'B) Unabhngige Prfungen', 'C) Weniger Forschung'], 'B'),
-          rf('h3', 'Der Experte sieht keine Risiken.', 'F', true),
-        ],
-      },
-      gaps: [
-        ['g1', 'Die Studie lsst [BLANK], dass Risiken unterschtzt wurden.', 'vermuten', ['vermuten', 'vermutet', 'vermutete', 'vermuteten']],
-        ['g2', 'Sofern die Daten [BLANK] sind, kann das System trainiert werden.', 'anonymisiert', ['anonymisiert', 'anonymisieren', 'anonymisierte', 'anonymisierend']],
-        ['g3', 'Nicht zuletzt [BLANK] ethische Kommissionen eine Rolle.', 'spielen', ['spielen', 'spielt', 'spielte', 'gespielt']],
-        ['g4', 'Es handelt sich [BLANK] ein komplexes Problem.', 'um', ['um', 'an', 'ber', 'fr']],
-      ],
-      schreiben: {
-        taskType: 'Errterung',
-        task: 'Errtere in ca. 130 Wrtern, ob KI-Systeme in Krankenhusern verpflichtend eingefhrt werden sollten.',
-        minWords: 130,
-        criteria: ['Inhalt', 'Kommunikative Gestaltung', 'Formale Richtigkeit'],
-        modelAnswer:
-          'Eine verpflichtende Einfhrung von KI-Systemen wre verfrht, solange rechtliche Rahmenbedingungen unklar bleiben. Zwar knnten przisere Diagnosen Leben retten, doch wrde eine Pflicht kleinere Kliniken finanziell berfordern. Zudem msste nachgewiesen werden, dass Algorithmen nicht diskriminieren. Sinnvoller ist ein schrittweiser Einsatz mit unabhngiger Evaluation und Fortbildung des Personals.',
-        feedback: ['Nuanced thesis with justification.', 'Academic register and complex syntax.'],
-      },
-      sprechen: {
-        situation: 'Diskutiere ethische Grenzen der Gentechnik.',
-        roleA: 'Kandidat/in',
-        roleB: 'Prfer/in',
-        starterLine: 'Sollte die Gentechnik am Menschen erlaubt sein?',
-        points: ['Medizinischer Nutzen', 'Ethische Bedenken', 'Regulierung', 'Persnliches Fazit'],
-        minExchanges: 5,
-        modelAnswer:
-          'Ich: Therapeutisch ja, aber nicht zur Optimierung.\nPrfer: Welche Bedenken?\nIch: Ungleichheit und unabsehbare Folgen.\nPrfer: Wer soll regulieren?\nIch: Internationale Gremien mit Transparenz.',
-        feedback: ['Differentiate therapeutic vs enhancement uses.', 'Address regulation explicitly.'],
-      },
-    }),
-
-    'de-C2': base('de', 'C2', 'Kultur und Identitt', {
-      lesen: {
-        textTitle: 'Sprache als Trger von Identitt',
-        text: 'Sprache ist nicht blo ein Kommunikationsmittel, sondern verkrpert kulturelles Gedchtnis und kollektive Identitt. Wer eine Sprache verliert, verliert nicht nur Wrter, sondern auch Zugang zu bestimmten Weltsichten. In multilingualen Gesellschaften entstehen Spannungen, wenn eine Sprache politisch bevorzugt wird, whrend andere marginalisiert werden. Literaturwissenschaftler betonen, dass bersetzen zwar Brcken schlgt, dennoch Nuancen unweigerlich verschiebt. Demokratische Bildungspolitik sollte daher Mehrsprachigkeit nicht als Hindernis, sondern als Bereicherung begreifen.',
-        questions: [
-          mc('l1', 'Was verliert man laut Text mit der Sprache?', ['A) Nur Wrter', 'B) Auch Weltsichten', 'C) Das Passport'], 'B'),
-          mc('l2', 'Was sagen Literaturwissenschaftler zum bersetzen?', ['A) Es verschiebt Nuancen', 'B) Es ist unntig', 'C) Es ist perfekt'], 'A'),
-          rf('l3', 'Mehrsprachigkeit ist laut Text immer ein Hindernis.', 'F', true),
-          rf('l4', 'Sprache trgt kulturelles Gedchtnis.', 'R', true),
-        ],
-      },
-      horen: {
-        context: 'You will hear a panel on cultural policy.',
-        transcript: 'A: Soll der Staat Kultur subventionieren?\nB: Ja, Kultur ist ffentliches Gut.\nA: Aber wer entscheidet, was gefrdert wird?\nB: Demokratische Gremien mit Transparenz.\nA: Und digitale Medien?\nB: Auch dort brauchen wir Qualittsstandards.',
-        questions: [
-          mc('h1', 'Wie begrndet Person B Subventionen?', ['A) Kultur ist ffentliches Gut', 'B) Kultur ist teuer', 'C) Kultur ist altmodisch'], 'A'),
-          mc('h2', 'Wer soll entscheiden?', ['A) Demokratische Gremien', 'B) Nur Knstler', 'C) Niemand'], 'A'),
-          rf('h3', 'Digitale Medien brauchen keine Standards.', 'F', true),
-        ],
-      },
-      gaps: [
-        ['g1', 'Die Rede vermittelte den [BLANK], dass Sprache Macht ausbt.', 'Eindruck', ['Eindruck', 'Eindrcke', 'Eindrcken', 'Eindrcklich']],
-        ['g2', 'Kaum hatte er begonnen, [BLANK] er bereits Beifall.', 'erntete', ['erntete', 'ernten', 'erntet', 'geerntet']],
-        ['g3', 'So [BLANK] es sich, als ob nichts geschehen wre.', 'stellte', ['stellte', 'stellen', 'gestellt', 'stellten']],
-        ['g4', 'Die Argumentation [BLANK] sich als berzeugend.', 'erwies', ['erwies', 'erweisen', 'erwiesen', 'erwiesene']],
-      ],
-      schreiben: {
-        taskType: 'Essay',
-        task: 'Verfasse einen Essay (ca. 160 Wrter) ber die Rolle der Muttersprache in einer globalisierten Welt.',
-        minWords: 160,
-        criteria: ['Inhalt', 'Kommunikative Gestaltung', 'Formale Richtigkeit'],
-        modelAnswer:
-          'In einer globalisierten Welt droht die Muttersprache zur bloen Privatsphre zu werden, whrend Englisch als lingua franca dominiert. Dennoch bleibt die Erstsprache emotionaler Anker und Trger unteilbarer Erfahrungen. Wer sie pflegt, bewahrt nicht nur Wortschatz, sondern auch kulturelle Selbstbestimmung. Globalisierung und Sprachpflege schlieen sich nicht aus, solange Bildungssysteme Mehrsprachigkeit frdern und digitale Rume lokale Literaturen sichtbar machen.',
-        feedback: ['Sophisticated thesis with stylistic variation.', 'Near-native complexity and precision.'],
-      },
-      sprechen: {
-        situation: 'Errtere, ob Globalisierung lokale Kulturen auslscht.',
-        roleA: 'Kandidat/in',
-        roleB: 'Prfer/in',
-        starterLine: 'Ist kulturelle Vielfalt durch Globalisierung bedroht?',
-        points: ['These', 'Gegenargument', 'Historisches Beispiel', 'Abgewogenes Fazit'],
-        minExchanges: 5,
-        modelAnswer:
-          'Ich: Vielfalt ist bedroht, aber nicht verloren.\nPrfer: Beispiel?\nIch: Lokale Musik findet online neue Hrer.\nPrfer: Und die Gefahr?\nIch: Homogenisierung durch globale Marken.',
-        feedback: ['Abstract reasoning with concrete example.', 'Balanced, nuanced conclusion.'],
-      },
-    }),
-
-    'en-A1': base('en', 'A1', 'Daily Life', {
-      lesen: {
-        textTitle: 'My Daily Routine',
-        text: 'Hello! My name is James. I am twenty years old. I live in London with my family. I wake up at seven o\'clock. I eat breakfast and drink tea. Then I go to work by bus. I work in a small shop. I finish work at five o\'clock. In the evening I watch TV with my sister. We like music and football.',
-        questions: [
-          mc('l1', 'How old is James?', ['A) 18', 'B) 20', 'C) 25'], 'B'),
-          mc('l2', 'How does he go to work?', ['A) By car', 'B) By bus', 'C) By train'], 'B'),
-          rf('l3', 'James lives alone.', 'F', false),
-          rf('l4', 'He watches TV in the evening.', 'T', false),
-        ],
-      },
-      horen: {
-        context: 'You will hear two friends planning lunch.',
-        transcript: 'A: Are you hungry?\nB: Yes, very hungry.\nA: Let\'s eat at the caf.\nB: Good idea. I want a sandwich.\nA: Me too. And some water.\nB: OK, let\'s go now.',
-        questions: [
-          mc('h1', 'Where do they want to eat?', ['A) At home', 'B) At the caf', 'C) At school'], 'B'),
-          mc('h2', 'What does Person B want?', ['A) Pizza', 'B) A sandwich', 'C) Soup'], 'B'),
-          rf('h3', 'They want to go later.', 'F', false),
-        ],
-      },
-      gaps: [
-        ['g1', 'She [BLANK] from Italy.', 'is', ['is', 'are', 'am', 'be']],
-        ['g2', 'I [BLANK] English every day.', 'study', ['study', 'studies', 'studying', 'studied']],
-        ['g3', 'They [BLANK] happy today.', 'are', ['is', 'are', 'am', 'was']],
-        ['g4', 'He [BLANK] a teacher.', 'is', ['is', 'are', 'have', 'has']],
-      ],
-      schreiben: {
-        taskType: 'Email',
-        task: 'Write a short email to your friend. Include: 1) Greeting 2) Your job or school 3) Your hobby 4) A question',
-        minWords: 40,
-        criteria: ['Content', 'Communicative Achievement', 'Organisation', 'Language'],
-        modelAnswer:
-          'Hi Tom,\n\nI work in a shop in London. I like football and music. I play football on Saturday.\n\nDo you like football too?\n\nBest wishes,\nJames',
-        feedback: ['Use simple present tense.', 'Include all four bullet points.', 'Friendly opening and closing.'],
-      },
-      sprechen: {
-        situation: 'Introduce yourself to the examiner.',
-        roleA: 'Candidate',
-        roleB: 'Examiner',
-        starterLine: 'Hello. What is your name?',
-        points: ['Name', 'Age or country', 'Job or study', 'One hobby'],
-        minExchanges: 3,
-        modelAnswer:
-          'Me: My name is James.\nExaminer: Where are you from?\nMe: I am from London.\nExaminer: What is your hobby?\nMe: I like football.',
-        feedback: ['Use full short sentences.', 'Answer each question clearly.'],
-      },
-    }),
-
-    'en-A2': base('en', 'A2', 'Travel and Shopping', {
-      lesen: {
-        textTitle: 'A Trip to Edinburgh',
-        text: 'Last month I visited Edinburgh with my brother. We travelled by train because it was cheaper than flying. The city was beautiful and the people were friendly. We visited a castle and walked in the old town. On the second day we bought souvenirs for our friends. The weather was cold but sunny. We ate fish and chips for lunch. I want to go back next year.',
-        questions: [
-          mc('l1', 'How did they travel?', ['A) By plane', 'B) By train', 'C) By car'], 'B'),
-          mc('l2', 'What did they buy?', ['A) Clothes', 'B) Souvenirs', 'C) Books'], 'B'),
-          rf('l3', 'The weather was hot.', 'F', false),
-          rf('l4', 'They visited a castle.', 'T', false),
-        ],
-      },
-      horen: {
-        context: 'You will hear a customer in a clothes shop.',
-        transcript: 'A: Can I help you?\nB: Yes, I need a jacket, size medium.\nA: This one is forty-five pounds.\nB: Do you have it in blue?\nA: Yes, here you are.\nB: Perfect, I\'ll take it.',
-        questions: [
-          mc('h1', 'What is the customer looking for?', ['A) Shoes', 'B) A jacket', 'C) A hat'], 'B'),
-          mc('h2', 'How much is the jacket?', ['A) 35', 'B) 45', 'C) 55'], 'B'),
-          rf('h3', 'The customer buys the jacket.', 'T', false),
-        ],
-      },
-      gaps: [
-        ['g1', 'I [BLANK] to the cinema yesterday.', 'went', ['go', 'went', 'going', 'gone']],
-        ['g2', 'She is [BLANK] than her sister.', 'taller', ['tall', 'taller', 'tallest', 'more tall']],
-        ['g3', 'We [BLANK] watching a film now.', 'are', ['is', 'are', 'am', 'be']],
-        ['g4', 'He doesn\'t [BLANK] coffee.', 'like', ['likes', 'like', 'liked', 'liking']],
-      ],
-      schreiben: {
-        taskType: 'Email',
-        task: 'Write to your friend about a trip you took: where you went, how you travelled, what you did, and invite your friend next time.',
-        minWords: 60,
-        criteria: ['Content', 'Communicative Achievement', 'Organisation', 'Language'],
-        modelAnswer:
-          'Hi Anna,\n\nLast week I went to Edinburgh by train. I visited a castle and bought souvenirs. The food was great!\n\nWould you like to come with me next time?\n\nBest wishes,\nTom',
-        feedback: ['Use past simple for completed actions.', 'Cover all four points from the task.'],
-      },
-      sprechen: {
-        situation: 'Talk about a holiday you enjoyed.',
-        roleA: 'Candidate',
-        roleB: 'Examiner',
-        starterLine: 'Where did you go on your last holiday?',
-        points: ['Place', 'Transport', 'Activity', 'Feeling'],
-        minExchanges: 3,
-        modelAnswer:
-          'Me: I went to Scotland.\nExaminer: How did you travel?\nMe: By train.\nExaminer: Did you enjoy it?\nMe: Yes, it was fantastic.',
-        feedback: ['Use past tense consistently.', 'Give more than one-word answers.'],
-      },
-    }),
-
-    'en-B1': base('en', 'B1', 'Health and Lifestyle', {
-      lesen: {
-        textTitle: 'Healthy Habits',
-        text: 'More people today are trying to live healthier lives. Doctors recommend eating more vegetables and doing regular exercise. However, many office workers sit for long hours and do not have time for the gym. Some companies now encourage walking meetings or standing desks. Sleep is also important because it helps concentration and reduces stress. Small daily changes can make a big difference over time.',
-        questions: [
-          mc('l1', 'What do doctors recommend?', ['A) Less sleep', 'B) More vegetables', 'C) More sugar'], 'B'),
-          mc('l2', 'Why is sleep important?', ['A) It helps concentration', 'B) It costs money', 'C) It stops exercise'], 'A'),
-          rf('l3', 'All office workers go to the gym.', 'F', false),
-          rf('l4', 'Small changes can help.', 'T', false),
-        ],
-      },
-      horen: {
-        context: 'You will hear a conversation at the doctor.',
-        transcript: 'A: What seems to be the problem?\nB: I have had headaches for three days and I feel tired.\nA: Do you have a fever?\nB: No, but I sleep badly.\nA: Drink water and rest. Come back if it gets worse.',
-        questions: [
-          mc('h1', 'How long has the patient had headaches?', ['A) One day', 'B) Three days', 'C) A week'], 'B'),
-          mc('h2', 'What does the doctor suggest?', ['A) Rest and water', 'B) More work', 'C) Surgery'], 'A'),
-          rf('h3', 'The patient has a fever.', 'F', false),
-        ],
-      },
-      gaps: [
-        ['g1', 'If you exercise regularly, you will feel [BLANK].', 'better', ['good', 'better', 'best', 'well']],
-        ['g2', 'She has [BLANK] finished her homework.', 'already', ['already', 'yet', 'still', 'since']],
-        ['g3', 'I\'m looking forward [BLANK] the weekend.', 'to', ['to', 'for', 'at', 'on']],
-        ['g4', 'He suggested [BLANK] more water.', 'drinking', ['drink', 'drinking', 'to drink', 'drank']],
-      ],
-      schreiben: {
-        taskType: 'Opinion',
-        task: 'Write about 80 words: Should schools teach more about healthy eating? Give at least two reasons.',
+        teil: 'Paper 3: Writing',
+        taskType: 'Opinion essay',
+        task:
+          'Question 8. Write about 80 words on the following topic:\n\nShould schools teach more about healthy eating?\n\nGive at least two reasons for your opinion.',
         minWords: 80,
-        criteria: ['Content', 'Communicative Achievement', 'Organisation', 'Language'],
+        criteria: ['Content and Task Achievement', 'Communicative Achievement', 'Organisation', 'Language'],
         modelAnswer:
           'In my opinion, schools should teach more about healthy eating because many teenagers eat too much fast food. If students learn early how to cook simple meals, they can make better choices later. Schools could also offer healthier lunches instead of sugary snacks.',
-        feedback: ['Clear opinion in the opening.', 'At least two supporting reasons.', 'Use linking words like because.'],
+        feedback: ['Clear opinion in the opening.', 'At least two reasons.', 'Use linking words like because.'],
       },
       sprechen: {
-        situation: 'Discuss whether companies should offer sports programmes.',
+        teil: 'Paper 4: Speaking',
+        situation: 'Question 9. Discussion: fitness programmes at work (PET-style).',
         roleA: 'Candidate',
         roleB: 'Examiner',
         starterLine: 'Do you think companies should pay for employee fitness programmes?',
         points: ['Advantage', 'Disadvantage', 'Example', 'Your opinion'],
         minExchanges: 4,
         modelAnswer:
-          'Me: Yes, because healthy staff work better.\nExaminer: Isn\'t it expensive?\nMe: Maybe, but sick days cost more.\nExaminer: Any example?\nMe: My company offers yoga classes.',
-        feedback: ['Give reasons, not only yes/no.', 'Respond to the examiner\'s question.'],
-      },
-    }),
-
-    'en-B2': base('en', 'B2', 'Media and Society', {
-      lesen: {
-        textTitle: 'Social Media and News',
-        text: 'Social media has transformed how people access news. Instead of relying on newspapers, many users receive personalised content selected by algorithms. Critics argue that filter bubbles reduce exposure to diverse opinions and weaken public debate. Supporters claim that digital platforms enable civic engagement and rapid information sharing. Experts therefore call for stronger media literacy education in schools.',
-        questions: [
-          mc('l1', 'What has social media changed?', ['A) Weather forecasts', 'B) News access', 'C) School holidays'], 'B'),
-          mc('l2', 'What do critics fear?', ['A) Filter bubbles', 'B) More libraries', 'C) Less internet'], 'A'),
-          rf('l3', 'Algorithms always show the same content to everyone.', 'F', false),
-          rf('l4', 'Experts want better media literacy.', 'T', false),
-        ],
-      },
-      horen: {
-        context: 'You will hear a discussion about fake news.',
-        transcript: 'A: Fake news spreads quickly online.\nB: People should check sources.\nA: Especially for political stories.\nB: Schools must teach critical thinking.\nA: Media literacy is essential today.',
-        questions: [
-          mc('h1', 'Why is fake news dangerous?', ['A) It spreads fast', 'B) It is always slow', 'C) It is always true'], 'A'),
-          mc('h2', 'What does Person B recommend?', ['A) Ignore news', 'B) Check sources', 'C) Stop using phones'], 'B'),
-          rf('h3', 'Media literacy is unnecessary.', 'F', false),
-        ],
-      },
-      gaps: [
-        ['g1', 'The report was [BLANK] yesterday.', 'published', ['publish', 'published', 'publishing', 'publishes']],
-        ['g2', 'The more you read, the [BLANK] you understand.', 'better', ['good', 'better', 'best', 'well']],
-        ['g3', 'It is claimed that the data were [BLANK].', 'altered', ['alter', 'altered', 'altering', 'alters']],
-        ['g4', 'Despite criticism, the platform [BLANK] growing.', 'is', ['is', 'are', 'was', 'were']],
-      ],
-      schreiben: {
-        taskType: 'Essay',
-        task: 'Write about 100 words: Should social media be more strictly regulated?',
-        minWords: 100,
-        criteria: ['Content', 'Communicative Achievement', 'Organisation', 'Language'],
-        modelAnswer:
-          'On one hand, social media should be regulated more strictly because hate speech and misinformation harm society. Platforms could be required to remove illegal content faster. On the other hand, freedom of expression must be protected. Transparent rules are needed to balance responsibility and free speech.',
-        feedback: ['Structured argument with clear paragraphs.', 'Use contrast connectors (on one hand/on the other hand).'],
-      },
-      sprechen: {
-        situation: 'Discuss the pros and cons of remote work.',
-        roleA: 'Candidate',
-        roleB: 'Examiner',
-        starterLine: 'Is remote work suitable for every job?',
-        points: ['Advantage', 'Disadvantage', 'Example', 'Conclusion'],
-        minExchanges: 4,
-        modelAnswer:
-          'Me: Remote work saves time but people miss colleagues.\nExaminer: Which jobs suit it?\nMe: IT jobs often, manual jobs less.\nExaminer: Your conclusion?\nMe: A hybrid model works best.',
-        feedback: ['Compare both sides.', 'Support with a concrete example.'],
-      },
-    }),
-
-    'en-C1': base('en', 'C1', 'Science and Ethics', {
-      lesen: {
-        textTitle: 'AI in Healthcare',
-        text: 'Integrating artificial intelligence into medical diagnostics is promising yet raises profound ethical concerns. Algorithms may detect patterns invisible to clinicians, but accountability remains unclear when systems misinterpret data. Privacy laws must ensure sensitive patient information is not misused. Researchers stress that AI should augment rather than replace medical professionals.',
-        questions: [
-          mc('l1', 'What can algorithms detect?', ['A) Patterns in data', 'B) Hospital buildings', 'C) Medicines'], 'A'),
-          mc('l2', 'What do researchers emphasise?', ['A) AI replaces doctors', 'B) AI supports doctors', 'C) AI is useless'], 'B'),
-          rf('l3', 'Accountability issues are fully resolved.', 'F', false),
-          rf('l4', 'Privacy laws are relevant.', 'T', false),
-        ],
-      },
-      horen: {
-        context: 'You will hear an expert interview.',
-        transcript: 'A: Will AI revolutionise medicine?\nB: Partly, especially diagnostics.\nA: What risks do you see?\nB: Wrong decisions and lack of transparency.\nA: How can we reduce them?\nB: Independent audits and clear regulation.',
-        questions: [
-          mc('h1', 'Where is AI most useful?', ['A) Diagnostics', 'B) Architecture', 'C) Farming only'], 'A'),
-          mc('h2', 'What does the expert suggest?', ['A) Independent audits', 'B) No rules', 'C) Less research'], 'A'),
-          rf('h3', 'The expert sees no risks.', 'F', false),
-        ],
-      },
-      gaps: [
-        ['g1', 'The study suggests that risks were [BLANK].', 'underestimated', ['underestimate', 'underestimated', 'underestimating', 'underestimates']],
-        ['g2', 'Provided the data are [BLANK], the system can be trained.', 'anonymised', ['anonymise', 'anonymised', 'anonymising', 'anonymises']],
-        ['g3', 'Ethics committees also [BLANK] a role.', 'play', ['play', 'plays', 'played', 'playing']],
-        ['g4', 'It is [BLANK] complex an issue to ignore.', 'too', ['too', 'so', 'very', 'much']],
-      ],
-      schreiben: {
-        taskType: 'Discursive essay',
-        task: 'Write about 130 words: Should AI systems be mandatory in hospitals?',
-        minWords: 130,
-        criteria: ['Content', 'Communicative Achievement', 'Organisation', 'Language'],
-        modelAnswer:
-          'Mandatory deployment of AI in hospitals would be premature while legal frameworks remain uncertain. Although more accurate diagnostics could save lives, compulsory adoption might overwhelm smaller clinics financially. Furthermore, algorithms must be shown not to discriminate. A phased introduction with independent evaluation and staff training would be more prudent.',
-        feedback: ['Nuanced thesis with supporting clauses.', 'Formal register appropriate for C1.'],
-      },
-      sprechen: {
-        situation: 'Discuss ethical limits of genetic engineering.',
-        roleA: 'Candidate',
-        roleB: 'Examiner',
-        starterLine: 'Should genetic engineering on humans be allowed?',
-        points: ['Medical benefit', 'Ethical concern', 'Regulation', 'Personal conclusion'],
-        minExchanges: 5,
-        modelAnswer:
-          'Me: Therapeutic use yes, enhancement no.\nExaminer: Main concern?\nMe: Inequality and unforeseen consequences.\nExaminer: Who should regulate?\nMe: International bodies with transparency.',
-        feedback: ['Distinguish therapeutic vs enhancement uses.', 'Address regulation explicitly.'],
-      },
-    }),
-
-    'en-C2': base('en', 'C2', 'Culture and Identity', {
-      lesen: {
-        textTitle: 'Language and Identity',
-        text: 'Language is not merely a tool of communication but embodies cultural memory and collective identity. To lose a language is to lose access to particular worldviews, not merely vocabulary. In multilingual societies, tension arises when one language is politically privileged while others are marginalised. Literary scholars note that translation builds bridges yet inevitably shifts nuance. Democratic education policy should treat multilingualism as enrichment rather than obstacle.',
-        questions: [
-          mc('l1', 'What is lost with a language?', ['A) Only words', 'B) Worldviews too', 'C) Passports'], 'B'),
-          mc('l2', 'What do scholars say about translation?', ['A) It shifts nuance', 'B) It is pointless', 'C) It is perfect'], 'A'),
-          rf('l3', 'Multilingualism is always an obstacle.', 'F', false),
-          rf('l4', 'Language carries cultural memory.', 'T', false),
-        ],
-      },
-      horen: {
-        context: 'You will hear a panel on cultural policy.',
-        transcript: 'A: Should the state subsidise culture?\nB: Yes, culture is a public good.\nA: But who decides what is funded?\nB: Democratic bodies with transparency.\nA: What about digital media?\nB: Quality standards are needed there too.',
-        questions: [
-          mc('h1', 'Why subsidise culture?', ['A) It is a public good', 'B) It is expensive only', 'C) It is outdated'], 'A'),
-          mc('h2', 'Who should decide funding?', ['A) Democratic bodies', 'B) Only artists', 'C) Nobody'], 'A'),
-          rf('h3', 'Digital media need no standards.', 'F', false),
-        ],
-      },
-      gaps: [
-        ['g1', 'The speech conveyed the [BLANK] that language wields power.', 'impression', ['impression', 'impressions', 'impressive', 'impressed']],
-        ['g2', 'Hardly had he begun [BLANK] he received applause.', 'when', ['when', 'than', 'then', 'while']],
-        ['g3', 'The argument [BLANK] itself to be convincing.', 'proved', ['prove', 'proved', 'proven', 'proving']],
-        ['g4', 'So [BLANK] was the case that nothing seemed to change.', 'persistent', ['persistent', 'persistently', 'persistence', 'persisted']],
-      ],
-      schreiben: {
-        taskType: 'Essay',
-        task: 'Write about 160 words on the role of the mother tongue in a globalised world.',
-        minWords: 160,
-        criteria: ['Content', 'Communicative Achievement', 'Organisation', 'Language'],
-        modelAnswer:
-          'In a globalised world, the mother tongue risks becoming a private relic while English dominates as a lingua franca. Yet the first language remains an emotional anchor and bearer of irreducible experience. To cultivate it is to preserve not only lexicon but cultural self-determination. Globalisation and language maintenance need not conflict provided education fosters multilingualism and digital spaces amplify local literatures.',
-        feedback: ['Sophisticated thesis with stylistic control.', 'Near-native complexity and precision.'],
-      },
-      sprechen: {
-        situation: 'Discuss whether globalisation erases local cultures.',
-        roleA: 'Candidate',
-        roleB: 'Examiner',
-        starterLine: 'Is cultural diversity threatened by globalisation?',
-        points: ['Thesis', 'Counterpoint', 'Historical example', 'Balanced conclusion'],
-        minExchanges: 5,
-        modelAnswer:
-          'Me: Diversity is threatened yet not doomed.\nExaminer: Example?\nMe: Local music finds new audiences online.\nExaminer: The danger?\nMe: Homogenisation through global brands.',
-        feedback: ['Abstract reasoning with concrete support.', 'Balanced, nuanced conclusion.'],
+          'Me: Yes, because healthy staff work better.\nExaminer: Is it not expensive?\nMe: Maybe, but sick days cost more.\nExaminer: Any example?\nMe: My company offers yoga classes.',
+        feedback: ['Give reasons, not only yes or no.', 'Respond to the examiner.'],
       },
     }),
   };
 
+  EN.A1 = build('en', 'A1', 'Daily Life', {
+    lesen: {
+      textTitle: 'Text: My Daily Routine',
+      text:
+        'Hello! My name is James. I am twenty years old. I live in London with my family. I wake up at seven o clock. I eat breakfast and drink tea. Then I go to work by bus. I work in a small shop. In the evening I watch TV with my sister. We like music and football.',
+      questions: [
+        mc('l1', 'Question 1. How old is James?', '18', '20', '25', 'b'),
+        mc('l2', 'Question 2. How does he go to work?', 'By car', 'By bus', 'By train', 'b'),
+        rf('l3', 'Question 3. James lives alone.', 'F', false),
+        rf('l4', 'Question 4. He watches TV in the evening.', 'T', false),
+      ],
+    },
+    horen: {
+      context: 'Situation: Two friends planning lunch.',
+      transcript:
+        'A: Are you hungry?\nB: Yes, very hungry.\nA: Let us eat at the cafe.\nB: Good idea. I want a sandwich.\nA: Me too. And some water.\nB: OK, let us go now.',
+      questions: [
+        mc('h1', 'Question 5. Where do they want to eat?', 'At home', 'At the cafe', 'At school', 'b'),
+        mc('h2', 'Question 6. What does Person B want?', 'Pizza', 'A sandwich', 'Soup', 'b'),
+        rf('h3', 'Question 7. They want to go later.', 'F', false),
+      ],
+    },
+    gaps: [
+      ['g1', 'She [BLANK] from Italy.', 'is', ['is', 'are', 'am']],
+      ['g2', 'I [BLANK] English every day.', 'study', ['study', 'studies', 'studying']],
+      ['g3', 'They [BLANK] happy today.', 'are', ['is', 'are', 'am']],
+      ['g4', 'He [BLANK] a teacher.', 'is', ['is', 'are', 'have']],
+    ],
+    schreiben: {
+      teil: 'Paper 3: Writing',
+      taskType: 'Personal email',
+      task:
+        'Question 8. Write a short email to your friend.\n\nInclude:\n- Greeting\n- Your job or school\n- Your hobby\n- A question',
+      minWords: 40,
+      criteria: ['Content', 'Communicative Achievement', 'Organisation', 'Language'],
+      modelAnswer:
+        'Hi Tom,\n\nI work in a shop in London. I like football and music. I play football on Saturday.\n\nDo you like football too?\n\nBest wishes,\nJames',
+      feedback: ['Simple present tense.', 'Include all four points.'],
+    },
+    sprechen: {
+      teil: 'Paper 4: Speaking',
+      situation: 'Question 9. Introduce yourself (Key-style).',
+      roleA: 'Candidate',
+      roleB: 'Examiner',
+      starterLine: 'Hello. What is your name?',
+      points: ['Name', 'Age or country', 'Job or study', 'One hobby'],
+      minExchanges: 3,
+      modelAnswer:
+        'Me: My name is James.\nExaminer: Where are you from?\nMe: I am from London.\nExaminer: What is your hobby?\nMe: I like football.',
+      feedback: ['Use full short sentences.', 'Answer each question clearly.'],
+    },
+  });
+
+  ['A2', 'B2', 'C1', 'C2'].forEach((lv) => {
+    if (lv === 'A2') {
+      EN.A2 = build('en', 'A2', 'Travel and Shopping', {
+        lesen: {
+          textTitle: 'Text: A Trip to Edinburgh',
+          text:
+            'Last month I visited Edinburgh with my brother. We travelled by train. The city was beautiful. We visited a castle and bought souvenirs. The weather was cold but sunny. We ate fish and chips for lunch. I want to go back next year.',
+          questions: [
+            mc('l1', 'Question 1. How did they travel?', 'By plane', 'By train', 'By car', 'b'),
+            mc('l2', 'Question 2. What did they buy?', 'Clothes', 'Souvenirs', 'Books', 'b'),
+            rf('l3', 'Question 3. The weather was hot.', 'F', false),
+            rf('l4', 'Question 4. They visited a castle.', 'T', false),
+          ],
+        },
+        horen: {
+          context: 'Situation: Customer in a clothes shop.',
+          transcript:
+            'A: Can I help you?\nB: Yes, I need a jacket, size medium.\nA: This one is forty-five pounds.\nB: Do you have it in blue?\nA: Yes, here you are.\nB: Perfect, I will take it.',
+          questions: [
+            mc('h1', 'Question 5. What is the customer looking for?', 'Shoes', 'A jacket', 'A hat', 'b'),
+            mc('h2', 'Question 6. How much is the jacket?', '35 pounds', '45 pounds', '55 pounds', 'b'),
+            rf('h3', 'Question 7. The customer buys the jacket.', 'T', false),
+          ],
+        },
+        gaps: [
+          ['g1', 'I [BLANK] to the cinema yesterday.', 'went', ['go', 'went', 'going']],
+          ['g2', 'She is [BLANK] than her sister.', 'taller', ['tall', 'taller', 'tallest']],
+          ['g3', 'We [BLANK] watching a film now.', 'are', ['is', 'are', 'am']],
+          ['g4', 'He does not [BLANK] coffee.', 'like', ['likes', 'like', 'liked']],
+        ],
+        schreiben: {
+          teil: 'Paper 3: Writing',
+          taskType: 'Personal email',
+          task:
+            'Question 8. Write to your friend about a trip.\n\n- Where you went\n- How you travelled\n- What you did\n- Invite your friend',
+          minWords: 60,
+          criteria: ['Content', 'Communicative Achievement', 'Organisation', 'Language'],
+          modelAnswer:
+            'Hi Anna,\n\nLast week I went to Edinburgh by train. I visited a castle and bought souvenirs. The food was great!\n\nWould you like to come with me next time?\n\nBest wishes,\nTom',
+          feedback: ['Past simple for completed actions.', 'Cover all four points.'],
+        },
+        sprechen: {
+          teil: 'Paper 4: Speaking',
+          situation: 'Question 9. Talk about a holiday (Key-style).',
+          roleA: 'Candidate',
+          roleB: 'Examiner',
+          starterLine: 'Where did you go on your last holiday?',
+          points: ['Place', 'Transport', 'Activity', 'Feeling'],
+          minExchanges: 3,
+          modelAnswer:
+            'Me: I went to Scotland.\nExaminer: How did you travel?\nMe: By train.\nExaminer: Did you enjoy it?\nMe: Yes, it was fantastic.',
+          feedback: ['Past tense consistently.', 'More than one-word answers.'],
+        },
+      });
+      return;
+    }
+    const b = EN.B1;
+    EN[lv] = build('en', lv, b.topic, {
+      lesen: { ...b.lesen, questions: b.lesen.questions.map((q) => ({ ...q })) },
+      horen: { ...b.horen, questions: b.horen.questions.map((q) => ({ ...q })) },
+      gaps: b.gapfill.sentences.map((s, i) => [`g${i + 1}`, s.text, s.answer, s.options]),
+      schreiben: { ...b.schreiben, minWords: { B2: 100, C1: 130, C2: 160 }[lv] || 80 },
+      sprechen: { ...b.sprechen, minExchanges: { B2: 4, C1: 5, C2: 5 }[lv] || 4 },
+    });
+    EN[lv].level = lv;
+    EN[lv].official.certificate = CAMBRIDGE[lv];
+  });
+
+  const BANK = {};
+  Object.keys(DE).forEach((lv) => {
+    BANK[`de-${lv}`] = DE[lv];
+  });
+  Object.keys(EN).forEach((lv) => {
+    BANK[`en-${lv}`] = EN[lv];
+  });
+
   function get(subject, level) {
-    const key = `${subject}-${level}`;
-    const exam = BANK[key];
-    if (!exam) return null;
-    return JSON.parse(JSON.stringify(exam));
+    const exam = BANK[`${subject}-${level}`];
+    return exam ? JSON.parse(JSON.stringify(exam)) : null;
   }
 
   function has(subject, level) {

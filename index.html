@@ -189,6 +189,12 @@ header{padding:26px 0 22px;display:flex;align-items:center;justify-content:space
 .corr-ans{color:var(--text2)}
 .corr-fix{color:var(--green);font-weight:600;margin-top:3px}
 .corr-model{margin-top:12px;padding:12px;background:var(--bg3);border-radius:8px;font-size:12px;line-height:1.65;color:var(--text2);white-space:pre-wrap}
+.off-header{background:var(--bg2);border:.5px solid var(--border);border-radius:var(--r-lg);padding:22px 24px;margin-bottom:24px}
+.off-board{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text3);margin-bottom:6px}
+.off-cert{font-family:'Instrument Serif',serif;font-size:26px;margin-bottom:4px}
+.off-note{font-size:12px;color:var(--text2);line-height:1.6;margin-top:8px}
+.off-instr{background:var(--bg3);border-left:3px solid var(--accent);padding:12px 14px;margin-bottom:16px;font-size:12px;color:var(--text2);line-height:1.65;white-space:pre-wrap}
+.off-teil{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:6px}
 /* LOADING */
 #loadingScreen{display:none;text-align:center;padding:100px 0;animation:fadeUp .3s ease}
 .loader-orbit{width:48px;height:48px;border-radius:50%;border:1.5px solid var(--border2);border-top-color:var(--accent);animation:spin .7s linear infinite;margin:0 auto 22px}
@@ -1035,37 +1041,56 @@ function updTimer(){const el=document.getElementById('timerVal');if(!el)return;c
 // ═══════════════════════════════════════════
 // RENDER EXAM
 // ═══════════════════════════════════════════
+function esc(s) {
+  return String(s || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+function renderOfficialHeader(d,isDE){
+  if(!d.demo||!d.official)return '';
+  const o=d.official;
+  return `<div class="off-header"><div class="off-board">${o.board}</div><div class="off-cert">${o.certificate}</div><div class="off-note">${o.note}</div></div>`;
+}
 function renderExam(){
   hideAll();
   const scr=document.getElementById('examScreen');scr.innerHTML='';scr.style.display='block';
-  const d=S.examData,isDE=d.lang==='de',isPrac=S.mode==='practice',isQ=!!S.quickMod;
+  const d=S.examData,isDE=d.lang==='de',isPrac=S.mode==='practice',isQ=!!S.quickMod,isOff=!!d.demo;
   const rfT=isDE?'Richtig':'True',rfF=isDE?'Falsch':'False',trK=isDE?'R':'T';
-  const timerH=(!isPrac&&!isQ)?`<div class="timer-wrap">⏱ <span class="timer-val" id="timerVal">--:--</span></div>`:'';
-  const practH=isPrac?`<div style="background:var(--blue-bg);border:.5px solid rgba(93,184,232,.2);border-radius:8px;padding:9px 13px;font-size:12px;color:var(--blue);margin-bottom:14px">💡 <b>Practice Mode:</b> Hover any word for translation + audio. Click <b>+ Save to Deck</b> to add to flashcards.</div>`:'';
+  const timerH=(!isPrac&&!isQ)?`<div class="timer-wrap"><span class="timer-val" id="timerVal">--:--</span></div>`:'';
+  const practH=isPrac?`<div style="background:var(--blue-bg);border:.5px solid rgba(93,184,232,.2);border-radius:8px;padding:9px 13px;font-size:12px;color:var(--blue);margin-bottom:14px"><b>Practice Mode:</b> Hover any word for translation + audio. Click <b>+ Save to Deck</b> to add to flashcards.</div>`:'';
   const langH=isPrac?`<div style="display:flex;align-items:center;gap:7px;margin-bottom:14px;flex-wrap:wrap"><span style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em">Translate to:</span>${LANGS.map(l=>`<button class="vt-lb ex-lb${S.vocabLang===l.code?' active':''}" onclick="setVL('${l.code}',this)">${l.l}</button>`).join('')}</div>`:'';
   let secs='';
   if(d.lesen&&(!isQ||S.quickMod==='reading')){
-    secs+=`<section class="module-wrap"><div class="module-tag tag-lesen">Module 1 — ${isDE?'Leseverstehen':'Reading'}</div><h2 class="module-title">${isDE?'Leseverstehen':'Reading Comprehension'}</h2><p class="module-desc">${isDE?'Lies den Text sorgfältig und beantworte die Fragen.':'Read the text carefully and answer the questions.'}</p><div class="text-display"><h3>${d.lesen.textTitle}</h3><div class="readable-text">${isPrac?wrapW(d.lesen.text,'lesen'):d.lesen.text.replace(/\n/g,'<br>')}</div></div>${d.lesen.questions.map((q,i)=>renderQ(q,i+1,'lesen',rfT,rfF,trK)).join('')}</section><hr class="section-div">`;
+    const teil=d.lesen.teil||(isDE?'Leseverstehen':'Reading');
+    const instr=d.lesen.instruction||(isDE?'Lies den Text sorgfaeltig und beantworte die Fragen.':'Read the text carefully and answer the questions.');
+    secs+=`<section class="module-wrap"><div class="module-tag tag-lesen">${teil}</div><h2 class="module-title">${isDE?'Leseverstehen':'Reading Comprehension'}</h2>${isOff?`<div class="off-instr">${esc(instr)}</div>`:`<p class="module-desc">${instr}</p>`}<div class="text-display"><h3>${d.lesen.textTitle}</h3><div class="readable-text">${isPrac?wrapW(d.lesen.text,'lesen'):d.lesen.text.replace(/\n/g,'<br>')}</div></div>${d.lesen.questions.map((q,i)=>renderQ(q,i+1,'lesen',rfT,rfF,trK,isOff)).join('')}</section><hr class="section-div">`;
   }
   if(d.horen&&(!isQ||S.quickMod==='listening')){
     S.listenPlays=2;
     const isRL=!isPrac;
-    const lisH=isRL?`<div class="listen-box" id="listenBox"><span class="listen-icon">🎧</span><div class="listen-info" id="listenInfo">You can play this audio <b>2 times</b> (as in the real exam)</div><div class="wave" id="listenWave">${'<div class="wb paused"></div>'.repeat(9)}</div><button class="btn-sm blue" id="listenBtn" onclick="playListening()" style="margin:0 auto">▶ Play Audio</button><div style="font-size:11px;color:var(--text3);margin-top:10px;font-style:italic">Transcript shown after both plays.</div></div>`:`<div class="text-display"><div class="audio-chip">🎧 Transcript</div><div class="readable-text">${isPrac?wrapW(d.horen.transcript,'horen'):d.horen.transcript.replace(/\n/g,'<br>')}</div></div>`;
-    secs+=`<section class="module-wrap"><div class="module-tag tag-horen">Module 2 — ${isDE?'Hörverstehen':'Listening'}</div><h2 class="module-title">${isDE?'Hörverstehen':'Listening'}</h2><p class="module-desc">${d.horen.context}</p>${lisH}${d.horen.questions.map((q,i)=>renderQ(q,i+1,'horen',rfT,rfF,trK)).join('')}</section><hr class="section-div">`;
+    const teil=d.horen.teil||(isDE?'Hoerverstehen':'Listening');
+    const instr=d.horen.instruction||d.horen.context;
+    const lisH=isRL?`<div class="listen-box" id="listenBox"><div class="listen-info" id="listenInfo">${isDE?'Sie hoeren den Text <b>zweimal</b> (wie in der echten Pruefung).':'You can play this audio <b>2 times</b> (as in the real exam).'}</div><div class="wave" id="listenWave">${'<div class="wb paused"></div>'.repeat(9)}</div><button class="btn-sm blue" id="listenBtn" onclick="playListening()" style="margin:0 auto">${isDE?'Audio abspielen':'Play Audio'}</button><div style="font-size:11px;color:var(--text3);margin-top:10px;font-style:italic">${isDE?'Transkript nach beiden Wiedergaben verfuegbar.':'Transcript shown after both plays.'}</div></div>`:`<div class="text-display"><div class="audio-chip">${isDE?'Transkript':'Transcript'}</div><div class="readable-text">${isPrac?wrapW(d.horen.transcript,'horen'):d.horen.transcript.replace(/\n/g,'<br>')}</div></div>`;
+    secs+=`<section class="module-wrap"><div class="module-tag tag-horen">${teil}</div><h2 class="module-title">${isDE?'Hoerverstehen':'Listening'}</h2>${isOff?`<div class="off-instr">${esc(instr)}</div>`:`<p class="module-desc">${d.horen.context}</p>`}${lisH}${d.horen.questions.map((q,i)=>renderQ(q,i+1,'horen',rfT,rfF,trK,isOff)).join('')}</section><hr class="section-div">`;
   }
   if(d.gapfill&&(!isQ||S.quickMod==='gapfill')){
-    secs+=renderGapSec(d.gapfill,isDE)+'<hr class="section-div">';
+    secs+=renderGapSec(d.gapfill,isDE,isOff)+'<hr class="section-div">';
   }
   if(d.schreiben&&(!isQ||S.quickMod==='writing')){
-    secs+=`<section class="module-wrap"><div class="module-tag tag-schreiben">Module 3 — ${isDE?'Schreiben':'Writing'}</div><h2 class="module-title">${isDE?'Schreiben':'Writing'}</h2><p class="module-desc">${isDE?`Schreibe ${d.schreiben.taskType}. Mindestens ${d.schreiben.minWords} Wörter.`:`Write a ${d.schreiben.taskType}. Minimum ${d.schreiben.minWords} words.`}</p><div class="write-brief"><h3>${isDE?'Aufgabe':'Task'}</h3><p>${d.schreiben.task}</p><div class="criteria-chips">${d.schreiben.criteria.map(c=>`<span class="criteria-chip">${c}</span>`).join('')}</div></div><textarea class="write-field" id="writeAns" placeholder="${isDE?'Schreibe hier auf Deutsch…':'Write your text here in English…'}" oninput="updW()"></textarea><div class="word-meter" id="wordMeter">0 words — min ${d.schreiben.minWords}</div></section><hr class="section-div">`;
+    const teil=d.schreiben.teil||(isDE?'Schreiben':'Writing');
+    const taskHtml=isOff?`<div class="write-brief"><h3>${isDE?'Aufgabe':'Task'}</h3><div class="off-instr" style="margin-bottom:0;border-left-color:var(--orange)">${esc(d.schreiben.task)}</div><div class="criteria-chips" style="margin-top:12px">${d.schreiben.criteria.map(c=>`<span class="criteria-chip">${c}</span>`).join('')}</div></div>`:`<div class="write-brief"><h3>${isDE?'Aufgabe':'Task'}</h3><p>${d.schreiben.task}</p><div class="criteria-chips">${d.schreiben.criteria.map(c=>`<span class="criteria-chip">${c}</span>`).join('')}</div></div>`;
+    secs+=`<section class="module-wrap"><div class="module-tag tag-schreiben">${teil}</div><h2 class="module-title">${isDE?'Schreiben':'Writing'}</h2><p class="module-desc">${isDE?`Mindestens ${d.schreiben.minWords} Woerter.`:`Minimum ${d.schreiben.minWords} words.`}</p>${taskHtml}<textarea class="write-field" id="writeAns" placeholder="${isDE?'Schreiben Sie hier auf Deutsch...':'Write your text here in English...'}" oninput="updW()"></textarea><div class="word-meter" id="wordMeter">0 ${isDE?'Woerter':'words'} — min ${d.schreiben.minWords}</div></section><hr class="section-div">`;
   }
   if(d.sprechen&&!isQ){
     const lang=isDE?'de-DE':'en-GB';
-    secs+=`<section class="module-wrap"><div class="module-tag tag-sprechen">Module 4 — ${isDE?'Sprechen':'Speaking'}</div><h2 class="module-title">${isDE?'Sprechen':'Speaking'}</h2><p class="module-desc">${d.sprechen.situation}</p><div class="speak-points">${d.sprechen.points.map(p=>`<div class="speak-point">• ${p}</div>`).join('')}</div><div class="starter-msg"><div class="starter-av">👤</div><div><div class="starter-who">${d.sprechen.roleB}</div><div class="starter-line">"${d.sprechen.starterLine}"</div></div></div><button class="btn-sm blue" onclick="speak(${JSON.stringify(d.sprechen.starterLine)},'${lang}')" style="margin-bottom:10px">🔊 Hear starter</button><div style="font-size:12px;color:var(--text3);margin-bottom:7px">${isDE?`Deine Antwort (mind. ${d.sprechen.minExchanges} Wechsel, nutze <b>Ich:</b>):`:`Your response (min ${d.sprechen.minExchanges} exchanges, use <b>Me:</b>):`}</div><textarea class="write-field" id="speakAns" style="min-height:180px" placeholder="${isDE?'Ich:':'Me:'}" oninput="updProg()"></textarea></section>`;
+    const teil=d.sprechen.teil||(isDE?'Sprechen':'Speaking');
+    secs+=`<section class="module-wrap"><div class="module-tag tag-sprechen">${teil}</div><h2 class="module-title">${isDE?'Sprechen':'Speaking'}</h2><p class="module-desc">${d.sprechen.situation}</p><div class="speak-points">${d.sprechen.points.map(p=>`<div class="speak-point">${p}</div>`).join('')}</div><div class="starter-msg"><div class="starter-av">${isDE?'P':'E'}</div><div><div class="starter-who">${d.sprechen.roleB}</div><div class="starter-line">${d.sprechen.starterLine}</div></div></div><button class="btn-sm blue" onclick="speak(${JSON.stringify(d.sprechen.starterLine)},'${lang}')" style="margin-bottom:10px">${isDE?'Anfangssatz anhoeren':'Hear starter line'}</button><div style="font-size:12px;color:var(--text3);margin-bottom:7px">${isDE?`Ihre Antwort (mind. ${d.sprechen.minExchanges} Wechsel, Format <b>Ich:</b>):`:`Your response (min ${d.sprechen.minExchanges} exchanges, format <b>Me:</b>):`}</div><textarea class="write-field" id="speakAns" style="min-height:180px" placeholder="${isDE?'Ich:':'Me:'}" oninput="updProg()"></textarea></section>`;
   }
   const isDemo=!!d.demo;
   const bc=isDemo?'demo':isQ?'quick':isPrac?'practice':'real',bl=isDemo?'Demo Exam':isQ?('Quick: '+S.quickMod):isPrac?'Practice':'Real Exam';
-  scr.innerHTML=`<div class="exam-topbar"><div class="exam-meta"><span class="exam-badge ${bc}">${bl}</span><span class="exam-badge">${d.level}</span><span class="exam-title">${d.lang==='de'?'🇩🇪':'🇬🇧'} ${d.topic}</span>${timerH}</div><div class="exam-actions"><button class="btn-sm" onclick="goHome()">🏠 Home</button>${isPrac?`<button class="btn-sm purple" onclick="goFlashcards()">🗂️ Deck (<span id="dkCnt">${S.flashcards.length}</span>)</button>`:''}<button class="btn-sm" onclick="saveCurrentExam()">💾 Save</button></div></div><div class="progress-wrap"><div class="progress-row"><span>Progress</span><span id="pctTxt">0%</span></div><div class="progress-track"><div class="progress-fill" id="progFill" style="width:0%"></div></div></div>${practH}${langH}${secs}<div class="submit-bar"><button class="btn-sm" onclick="goHome()">🏠 Home</button><div style="display:flex;gap:7px;flex-wrap:wrap"><button class="btn-sm" onclick="saveCurrentExam()">💾 Save Exam</button><button class="btn-sm accent" id="submitBtn" onclick="submitExam()">${isDE?'Abgeben & Ergebnis':'Submit & Get Results'} →</button></div></div>`;
+  const titleTxt=isOff?(d.official?.certificate||d.topic):(isDE?'Deutsch':'English')+' — '+d.topic;
+  scr.innerHTML=`${renderOfficialHeader(d,isDE)}<div class="exam-topbar"><div class="exam-meta"><span class="exam-badge ${bc}">${bl}</span><span class="exam-badge">${d.level}</span><span class="exam-title">${titleTxt}</span>${timerH}</div><div class="exam-actions"><button class="btn-sm" onclick="goHome()">${isDE?'Startseite':'Home'}</button>${isPrac?`<button class="btn-sm purple" onclick="goFlashcards()">Deck (<span id="dkCnt">${S.flashcards.length}</span>)</button>`:''}<button class="btn-sm" onclick="saveCurrentExam()">${isDE?'Speichern':'Save'}</button></div></div><div class="progress-wrap"><div class="progress-row"><span>${isDE?'Fortschritt':'Progress'}</span><span id="pctTxt">0%</span></div><div class="progress-track"><div class="progress-fill" id="progFill" style="width:0%"></div></div></div>${practH}${langH}${secs}<div class="submit-bar"><button class="btn-sm" onclick="goHome()">${isDE?'Startseite':'Home'}</button><div style="display:flex;gap:7px;flex-wrap:wrap"><button class="btn-sm" onclick="saveCurrentExam()">${isDE?'Pruefung speichern':'Save Exam'}</button><button class="btn-sm accent" id="submitBtn" onclick="submitExam()">${isDE?'Abgeben und Ergebnis':'Submit and Get Results'} →</button></div></div>`;
   scr.querySelectorAll('input[type=radio]').forEach(r=>r.addEventListener('change',updProg));
   updProg();
   if(!isPrac&&!isQ){const ld=LEVELS[S.subject||'de'].find(l=>l.code===S.level)||{time:90};startTimer(ld.time);}
@@ -1090,17 +1115,24 @@ function playListening(){
     }
   },500);
 }
-function renderGapSec(gf,isDE){
+function renderGapSec(gf,isDE,isOff){
+  const label=isOff?(gf.teil||(isDE?'Teil 3: Sprachbausteine':'Part 3: Language in Use')):(isDE?'Lueckentext':'Fill in the Blanks');
+  const gapLbl=isDE?'Luecke':'Gap';
   const s=gf.sentences.map((s,i)=>{
     const pts=s.text.split('[BLANK]');
-    return `<div class="question-block"><div class="q-number">Gap ${i+1}</div><div style="font-size:14px;line-height:2.2;color:var(--text)">${pts[0]}<input class="gap-input" id="gap_${s.id}" placeholder="___" oninput="S.gapAnswers['${s.id}']=this.value;updProg()" autocomplete="off">${pts[1]||''}</div><div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:7px">${s.options.map(o=>`<button class="quick-btn" onclick="document.getElementById('gap_${s.id}').value='${o}';S.gapAnswers['${s.id}']='${o}';updProg()" style="font-size:11px;padding:3px 9px">${o}</button>`).join('')}</div></div>`;
+    return `<div class="question-block"><div class="q-number">${gapLbl} ${i+1}</div><div style="font-size:14px;line-height:2.2;color:var(--text)">${pts[0]}<input class="gap-input" id="gap_${s.id}" placeholder="___" oninput="S.gapAnswers['${s.id}']=this.value;updProg()" autocomplete="off">${pts[1]||''}</div><div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:7px">${s.options.map(o=>`<button class="quick-btn" onclick="document.getElementById('gap_${s.id}').value='${o}';S.gapAnswers['${s.id}']='${o}';updProg()" style="font-size:11px;padding:3px 9px">${o}</button>`).join('')}</div></div>`;
   }).join('');
-  return `<section class="module-wrap"><div class="module-tag tag-gap">Gap-Fill Exercise</div><h2 class="module-title">${isDE?'Lückentext':'Fill in the Blanks'}</h2><p class="module-desc">${gf.instruction}</p>${s}</section>`;
+  const body=isOff?`<div class="off-instr">${esc(gf.instruction)}</div>`:`<p class="module-desc">${gf.instruction}</p>`;
+  return `<section class="module-wrap"><div class="module-tag tag-gap">${label}</div><h2 class="module-title">${isDE?'Sprachbausteine':'Language in Use'}</h2>${body}${s}</section>`;
 }
-function renderQ(q,num,mod,rfT,rfF,trK){
+function renderQ(q,num,mod,rfT,rfF,trK,isOff){
   const isRF=q.type==='rf'||q.type==='tf';
-  if(!isRF){return `<div class="question-block"><div class="q-number">Question ${num}</div><div class="q-text">${q.question}</div><div class="options">${q.options.map(opt=>{const val=opt[0];return `<label class="opt"><input type="radio" name="${mod}_${q.id}" value="${val}" onchange="S.answers['${mod}_${q.id}']=this.value;this.closest('.options').querySelectorAll('.opt').forEach(o=>o.classList.remove('selected'));this.closest('.opt').classList.add('selected')"><span>${opt}</span></label>`;}).join('')}</div></div>`;}
-  return `<div class="question-block"><div class="q-number">${rfT}/${rfF} — Q${num}</div><div class="q-text">${q.question}</div><div class="rf-row"><button class="rf-btn" onclick="setRF('${mod}_${q.id}','${trK}',this,'sel-r')">✓ ${rfT}</button><button class="rf-btn" onclick="setRF('${mod}_${q.id}','F',this,'sel-f')">✗ ${rfF}</button></div></div>`;
+  const head=isOff?q.question:(isRF?`${rfT}/${rfF} — Q${num}`:`Question ${num}`);
+  const sub=isOff?'':`<div class="q-text">${q.question}</div>`;
+  if(!isRF){
+    return `<div class="question-block"><div class="q-number">${head}</div>${sub}<div class="options">${q.options.map(opt=>{const val=opt[0];return `<label class="opt"><input type="radio" name="${mod}_${q.id}" value="${val}" onchange="S.answers['${mod}_${q.id}']=this.value;this.closest('.options').querySelectorAll('.opt').forEach(o=>o.classList.remove('selected'));this.closest('.opt').classList.add('selected')"><span>${opt}</span></label>`;}).join('')}</div></div>`;
+  }
+  return `<div class="question-block"><div class="q-number">${head}</div>${sub}<div class="rf-row"><button class="rf-btn" onclick="setRF('${mod}_${q.id}','${trK}',this,'sel-r')">${rfT}</button><button class="rf-btn" onclick="setRF('${mod}_${q.id}','F',this,'sel-f')">${rfF}</button></div></div>`;
 }
 function setRF(k,v,btn,cls){S.answers[k]=v;btn.parentElement.querySelectorAll('.rf-btn').forEach(b=>b.classList.remove('sel-r','sel-f'));btn.classList.add(cls);updProg();}
 function updProg(){
@@ -1129,7 +1161,7 @@ function ansLabel(q, val, isDE) {
   if (!val) return '—';
   if (q.type === 'multiple') {
     const opt = q.options?.find((o) => o[0] === val);
-    return opt ? opt.slice(3) : val;
+    return opt ? opt.slice(3).trim() : val;
   }
   if (val === 'R' || val === 'T') return isDE ? 'Richtig' : 'True';
   return isDE ? 'Falsch' : 'False';
@@ -1260,12 +1292,6 @@ function renderCorrectionHtml(corr, d, isDE) {
   }
   html += '</div>';
   return html;
-}
-function esc(s) {
-  return String(s || '')
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
 }
 async function submitExam(){
   stopTimer();
