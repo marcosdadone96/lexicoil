@@ -1,0 +1,750 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LexiLoop — Oral Mode (IELTS & Goethe)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0E0E10; --bg2:#16161A; --bg3:#1E1E24;
+  --surface:#242429; --surface2:#2C2C33;
+  --border:rgba(255,255,255,0.07); --border2:rgba(255,255,255,0.14);
+  --text:#F2F2F0; --text2:#9A9A94; --text3:#5A5A56;
+  --accent:#E8C547; --accent2:#F0D876; --accent-dim:rgba(232,197,71,0.12);
+  --red:#E85D5D; --red-bg:rgba(232,93,93,0.10);
+  --green:#5DE8A0; --green-bg:rgba(93,232,160,0.10);
+  --blue:#5DB8E8; --blue-bg:rgba(93,184,232,0.10);
+  --purple:#A78BFA; --purple-bg:rgba(167,139,250,0.10);
+  --orange:#F97316; --orange-bg:rgba(249,115,22,0.10);
+  --r:10px; --r-lg:16px;
+}
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0 }
+html { scroll-behavior:smooth }
+body { font-family:'Syne',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; overflow-x:hidden }
+::-webkit-scrollbar { width:4px } ::-webkit-scrollbar-track { background:var(--bg) } ::-webkit-scrollbar-thumb { background:var(--surface2); border-radius:2px }
+
+/* ── LAYOUT ── */
+.app { max-width:760px; margin:0 auto; padding:0 24px 120px }
+header { padding:26px 0 22px; display:flex; align-items:center; justify-content:space-between; border-bottom:.5px solid var(--border) }
+.logo { display:flex; align-items:center; gap:10px }
+.logo-mark { font-family:'Instrument Serif',serif; font-size:22px; font-style:italic; color:var(--accent); letter-spacing:-1px }
+.logo-name { font-size:14px; font-weight:700; letter-spacing:.12em; text-transform:uppercase }
+.logo-sep { width:1px; height:18px; background:var(--border2); margin:0 4px }
+.logo-badge { font-size:10px; font-weight:700; padding:3px 9px; border-radius:100px; background:var(--purple-bg); color:var(--purple); border:.5px solid rgba(167,139,250,.25); letter-spacing:.06em; text-transform:uppercase }
+
+/* ── API BANNER ── */
+#apiBanner { background:var(--bg2); border:.5px solid var(--border2); border-radius:var(--r); padding:12px 16px; margin-top:20px; display:flex; align-items:center; gap:10px; flex-wrap:wrap; font-size:12px }
+#apiKeyInput { flex:1; min-width:200px; background:var(--bg3); border:.5px solid var(--border2); border-radius:6px; padding:6px 10px; font-size:12px; color:var(--text); font-family:'DM Mono',monospace; outline:none }
+#apiKeyInput:focus { border-color:var(--accent) }
+.btn-sm-accent { background:var(--accent); color:#000; border:none; border-radius:6px; padding:6px 14px; font-size:12px; font-weight:700; cursor:pointer; font-family:'Syne',sans-serif }
+
+/* ── EXAM CONFIG ── */
+#configScreen { padding:40px 0; animation:fadeUp .4s ease }
+.screen-eyebrow { font-size:11px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--text3); margin-bottom:10px }
+.screen-title { font-family:'Instrument Serif',serif; font-size:36px; margin-bottom:6px }
+.screen-title em { color:var(--accent); font-style:italic }
+.screen-sub { font-size:13px; color:var(--text2); margin-bottom:32px; font-weight:400; line-height:1.7 }
+.config-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px }
+.config-card { background:var(--bg2); border:.5px solid var(--border); border-radius:var(--r-lg); padding:18px; cursor:pointer; transition:all .2s }
+.config-card:hover { border-color:var(--border2); background:var(--bg3) }
+.config-card.selected { border-color:var(--accent); background:var(--accent-dim) }
+.cc-label { font-size:10px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--text3); margin-bottom:6px }
+.config-card.selected .cc-label { color:var(--accent) }
+.cc-title { font-size:15px; font-weight:700; margin-bottom:3px }
+.cc-sub { font-size:12px; color:var(--text2); font-weight:400; line-height:1.5 }
+.levels-row { display:flex; gap:8px; margin-bottom:24px; flex-wrap:wrap }
+.level-pill { font-size:12px; font-weight:700; padding:8px 16px; border-radius:100px; border:.5px solid var(--border2); background:var(--bg2); cursor:pointer; transition:all .2s; color:var(--text2) }
+.level-pill:hover { border-color:var(--accent); color:var(--accent) }
+.level-pill.selected { background:var(--accent); color:#000; border-color:var(--accent) }
+.btn-start-oral { width:100%; background:var(--accent); color:#000; border:none; border-radius:var(--r); padding:15px; font-family:'Syne',sans-serif; font-size:15px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; cursor:pointer; transition:all .2s; display:flex; align-items:center; justify-content:center; gap:10px }
+.btn-start-oral:hover { background:var(--accent2); transform:translateY(-1px) }
+.btn-start-oral:disabled { opacity:.35; cursor:not-allowed; transform:none }
+
+/* ── ORAL EXAM SCREEN ── */
+#examScreen { display:none; padding:32px 0; animation:fadeUp .4s ease }
+.exam-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:28px; flex-wrap:wrap; gap:10px }
+.exam-info { display:flex; align-items:center; gap:8px; flex-wrap:wrap }
+.exam-tag { font-size:10px; font-weight:700; padding:4px 10px; border-radius:100px; letter-spacing:.06em; text-transform:uppercase }
+.tag-exam { background:var(--purple-bg); color:var(--purple); border:.5px solid rgba(167,139,250,.25) }
+.tag-level { background:var(--accent-dim); color:var(--accent); border:.5px solid rgba(232,197,71,.25) }
+.tag-task { background:var(--blue-bg); color:var(--blue); border:.5px solid rgba(93,184,232,.25) }
+.btn-cancel { background:none; border:.5px solid var(--border2); border-radius:8px; padding:6px 14px; font-family:'Syne',sans-serif; font-size:12px; font-weight:600; color:var(--text3); cursor:pointer; transition:all .2s }
+.btn-cancel:hover { color:var(--text); border-color:var(--border2) }
+
+/* task card */
+.task-card { background:var(--bg2); border:.5px solid var(--border); border-radius:var(--r-lg); padding:24px 28px; margin-bottom:20px; position:relative; overflow:hidden }
+.task-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,var(--purple),var(--blue)) }
+.task-label { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--text3); margin-bottom:10px }
+.task-text { font-size:17px; font-weight:600; line-height:1.6; color:var(--text); margin-bottom:14px }
+.task-hints { display:flex; gap:8px; flex-wrap:wrap }
+.task-hint { font-size:11px; padding:4px 10px; border-radius:6px; background:var(--surface); color:var(--text2); border:.5px solid var(--border) }
+
+/* recorder */
+.recorder-zone { background:var(--bg2); border:.5px solid var(--border); border-radius:var(--r-lg); padding:28px; margin-bottom:20px; text-align:center }
+.mic-ring { width:88px; height:88px; border-radius:50%; border:1.5px solid var(--border2); display:flex; align-items:center; justify-content:center; margin:0 auto 16px; position:relative; cursor:pointer; transition:all .3s }
+.mic-ring:hover { border-color:var(--purple) }
+.mic-ring.recording { border-color:var(--red); animation:pulseRing 1.4s ease-in-out infinite }
+.mic-ring.processing { border-color:var(--accent); animation:spin .8s linear infinite }
+.mic-icon { font-size:34px; transition:all .3s }
+.mic-btn { background:none; border:none; cursor:pointer; padding:0 }
+.recorder-status { font-size:13px; font-weight:600; color:var(--text2); margin-bottom:10px }
+.recorder-status.recording { color:var(--red) }
+.recorder-status.processing { color:var(--accent) }
+.timer { font-family:'DM Mono',monospace; font-size:22px; font-weight:500; color:var(--text); margin-bottom:14px; min-height:32px }
+.waveform { display:flex; align-items:center; justify-content:center; gap:3px; height:32px; margin-bottom:20px }
+.wave-bar { width:3px; background:var(--purple); border-radius:2px; transition:height .1s; opacity:.5 }
+.wave-bar.active { opacity:1; animation:wave 1s ease-in-out infinite }
+.wave-bar:nth-child(1) { animation-delay:0s }
+.wave-bar:nth-child(2) { animation-delay:.1s }
+.wave-bar:nth-child(3) { animation-delay:.2s }
+.wave-bar:nth-child(4) { animation-delay:.3s }
+.wave-bar:nth-child(5) { animation-delay:.2s }
+.wave-bar:nth-child(6) { animation-delay:.1s }
+.wave-bar:nth-child(7) { animation-delay:0s }
+.recorder-btns { display:flex; gap:10px; justify-content:center; flex-wrap:wrap }
+.btn-rec { padding:10px 24px; border-radius:100px; font-family:'Syne',sans-serif; font-size:13px; font-weight:700; cursor:pointer; transition:all .2s; border:none }
+.btn-rec-start { background:var(--red); color:#fff }
+.btn-rec-start:hover { opacity:.9 }
+.btn-rec-stop { background:var(--surface); color:var(--text); border:.5px solid var(--border2) }
+.btn-rec-stop:hover { background:var(--surface2) }
+.btn-rec-eval { background:var(--accent); color:#000 }
+.btn-rec-eval:hover { background:var(--accent2) }
+.btn-rec-eval:disabled { opacity:.35; cursor:not-allowed }
+
+/* transcript box */
+.transcript-box { background:var(--bg3); border:.5px solid var(--border2); border-radius:var(--r); padding:16px 18px; margin-bottom:16px; min-height:80px; font-size:14px; line-height:1.8; color:var(--text); font-weight:400; display:none }
+.transcript-box.visible { display:block }
+.transcript-label { font-size:10px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--text3); margin-bottom:8px }
+.transcript-editable { outline:none; min-height:48px; color:var(--text) }
+.transcript-editable:empty::before { content:'Your transcript will appear here...'; color:var(--text3) }
+
+/* browser warning */
+.browser-warn { background:var(--orange-bg); border:.5px solid rgba(249,115,22,.3); border-radius:var(--r); padding:12px 16px; font-size:12px; color:var(--orange); margin-bottom:16px; display:none }
+
+/* ── RESULTS SCREEN ── */
+#resultsScreen { display:none; padding:32px 0; animation:fadeUp .4s ease }
+.results-header { text-align:center; margin-bottom:32px }
+.results-exam-name { font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--text3); margin-bottom:8px }
+.results-score-ring { width:120px; height:120px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-direction:column; margin:0 auto 16px; border:2px solid var(--border2); position:relative }
+.results-score-ring.pass { border-color:var(--green) }
+.results-score-ring.mid { border-color:var(--accent) }
+.results-score-ring.fail { border-color:var(--red) }
+.score-big { font-size:38px; font-weight:800; letter-spacing:-2px; font-family:'DM Mono',monospace; line-height:1 }
+.score-big.pass { color:var(--green) }
+.score-big.mid { color:var(--accent) }
+.score-big.fail { color:var(--red) }
+.score-denom { font-size:12px; color:var(--text3); margin-top:2px }
+.results-level { font-size:13px; font-weight:700; color:var(--text2); margin-bottom:6px }
+.results-summary { font-size:14px; color:var(--text2); font-style:italic; font-weight:400; line-height:1.7; max-width:520px; margin:0 auto; font-family:'Instrument Serif',serif }
+
+.criteria-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:20px }
+.criteria-card { background:var(--bg2); border:.5px solid var(--border); border-radius:var(--r-lg); padding:18px }
+.crit-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px }
+.crit-name { font-size:12px; font-weight:700; color:var(--text2); letter-spacing:.04em }
+.crit-score { font-size:18px; font-weight:800; font-family:'DM Mono',monospace }
+.crit-score.high { color:var(--green) }
+.crit-score.mid { color:var(--accent) }
+.crit-score.low { color:var(--red) }
+.crit-bar-track { height:4px; background:var(--surface); border-radius:2px; overflow:hidden }
+.crit-bar-fill { height:100%; border-radius:2px; transition:width 1.2s cubic-bezier(.4,0,.2,1) }
+.fill-high { background:var(--green) }
+.fill-mid { background:var(--accent) }
+.fill-low { background:var(--red) }
+
+.feedback-block { background:var(--bg2); border:.5px solid var(--border); border-radius:var(--r-lg); padding:20px 22px; margin-bottom:12px }
+.fb-title { font-size:12px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--text3); margin-bottom:12px; display:flex; align-items:center; gap:8px }
+.fb-list { display:flex; flex-direction:column; gap:8px }
+.fb-item { display:flex; align-items:flex-start; gap:10px; font-size:13px; color:var(--text2); line-height:1.6; font-weight:400 }
+.fb-dot { width:6px; height:6px; border-radius:50%; flex-shrink:0; margin-top:5px }
+.dot-red { background:var(--red) }
+.dot-green { background:var(--green) }
+
+.transcript-review { background:var(--bg3); border:.5px solid var(--border); border-radius:var(--r); padding:16px 18px; margin-bottom:20px }
+.tr-label { font-size:10px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--text3); margin-bottom:8px }
+.tr-text { font-size:13px; color:var(--text2); line-height:1.8; font-weight:400 }
+
+.results-actions { display:flex; gap:10px; flex-wrap:wrap }
+.btn-retry { flex:1; background:var(--surface); border:.5px solid var(--border2); border-radius:var(--r); padding:13px; font-family:'Syne',sans-serif; font-size:13px; font-weight:700; color:var(--text); cursor:pointer; transition:all .2s; text-align:center }
+.btn-retry:hover { background:var(--surface2) }
+.btn-new { flex:2; background:var(--accent); color:#000; border:none; border-radius:var(--r); padding:13px; font-family:'Syne',sans-serif; font-size:13px; font-weight:800; cursor:pointer; transition:all .2s; text-align:center }
+.btn-new:hover { background:var(--accent2) }
+
+/* ── LOADING ── */
+#loadingScreen { display:none; text-align:center; padding:100px 0; animation:fadeUp .3s ease }
+.loader-orbit { width:48px; height:48px; border-radius:50%; border:1.5px solid var(--border2); border-top-color:var(--accent); animation:spin .7s linear infinite; margin:0 auto 22px }
+.loader-title { font-size:18px; font-weight:700; margin-bottom:6px }
+.loader-sub { font-size:13px; color:var(--text2); font-weight:400 }
+.loader-steps { display:flex; flex-direction:column; gap:6px; margin-top:20px; text-align:left; max-width:240px; margin-left:auto; margin-right:auto }
+.loader-step { font-size:12px; color:var(--text3); display:flex; align-items:center; gap:8px; transition:color .3s }
+.loader-step.active { color:var(--accent) }
+.loader-step.done { color:var(--green) }
+.ls-dot { width:6px; height:6px; border-radius:50%; background:currentColor; flex-shrink:0 }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp { from { opacity:0; transform:translateY(14px) } to { opacity:1; transform:translateY(0) } }
+@keyframes spin { to { transform:rotate(360deg) } }
+@keyframes pulseRing { 0%,100% { box-shadow:0 0 0 0 rgba(232,93,93,0.4) } 50% { box-shadow:0 0 0 12px rgba(232,93,93,0) } }
+@keyframes wave { 0%,100% { height:6px } 50% { height:24px } }
+@keyframes pulse { 0%,100% { opacity:1 } 50% { opacity:.4 } }
+
+@media(max-width:600px) {
+  .config-grid, .criteria-grid { grid-template-columns:1fr }
+  .results-score-ring { width:100px; height:100px }
+  .score-big { font-size:32px }
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <a href="index.html" class="logo" style="text-decoration:none;color:inherit">
+      <span class="logo-mark">ℒ</span>
+      <span class="logo-name">LexiLoop</span>
+      <div class="logo-sep"></div>
+      <span style="font-size:11px;color:var(--text3);letter-spacing:.06em">Oral Mode</span>
+    </a>
+    <span class="logo-badge">🎙 Beta</span>
+  </header>
+
+  <!-- API Banner -->
+  <div id="apiBanner">
+    <span style="color:var(--accent);font-weight:700">⚠ API Key required</span>
+    <input id="apiKeyInput" placeholder="sk-ant-api03-..." />
+    <button class="btn-sm-accent" onclick="saveKey()">Save</button>
+    <a href="https://console.anthropic.com/settings/keys" target="_blank" style="color:var(--blue);font-size:11px;white-space:nowrap">Get API key →</a>
+  </div>
+
+  <!-- ══ CONFIG SCREEN ══ -->
+  <div id="configScreen">
+    <div style="margin-top:44px">
+      <div class="screen-eyebrow">AI oral exam</div>
+      <h1 class="screen-title">Choose your <em>exam</em></h1>
+      <p class="screen-sub">Claude acts as an official examiner and evaluates your oral production using each certification's real scoring rubric.</p>
+
+      <div class="config-grid" id="examGrid">
+        <div class="config-card" data-exam="IELTS" onclick="selectExam(this)">
+          <div class="cc-label">English</div>
+          <div class="cc-title">🇬🇧 IELTS</div>
+          <div class="cc-sub">International English Language Testing System. Recognised in 140 countries.</div>
+        </div>
+        <div class="config-card selected" data-exam="Goethe" onclick="selectExam(this)">
+          <div class="cc-label">German</div>
+          <div class="cc-title">🇩🇪 Goethe-Zertifikat</div>
+          <div class="cc-sub">Official Goethe-Institut certification. Recognised worldwide.</div>
+        </div>
+      </div>
+
+      <div style="margin-bottom:8px;margin-top:20px">
+        <div class="screen-eyebrow" style="margin-bottom:12px">CEFR Level</div>
+        <div class="levels-row" id="levelsRow">
+          <div class="level-pill" data-level="A2" onclick="selectLevel(this)">A2</div>
+          <div class="level-pill selected" data-level="B1" onclick="selectLevel(this)">B1</div>
+          <div class="level-pill" data-level="B2" onclick="selectLevel(this)">B2</div>
+          <div class="level-pill" data-level="C1" onclick="selectLevel(this)">C1</div>
+          <div class="level-pill" data-level="C2" onclick="selectLevel(this)">C2</div>
+        </div>
+      </div>
+
+      <button class="btn-start-oral" id="btnStartExam" onclick="startExam()">
+        🎙 Start oral exam
+      </button>
+    </div>
+  </div>
+
+  <!-- ══ EXAM SCREEN ══ -->
+  <div id="examScreen">
+    <div class="exam-header">
+      <div class="exam-info">
+        <span class="exam-tag tag-exam" id="tagExam">Goethe</span>
+        <span class="exam-tag tag-level" id="tagLevel">B1</span>
+        <span class="exam-tag tag-task" id="tagTask">Oral production</span>
+      </div>
+      <button class="btn-cancel" onclick="goConfig()">✕ Cancel</button>
+    </div>
+
+    <div class="task-card" id="taskCard">
+      <div class="task-label">Task — Read and prepare (2 min)</div>
+      <div class="task-text" id="taskText">Loading task...</div>
+      <div class="task-hints" id="taskHints"></div>
+    </div>
+
+    <div class="browser-warn" id="browserWarn">
+      ⚠ Your browser does not support the Web Speech API. Use Chrome or Edge for automatic capture, or type your answer directly below.
+    </div>
+
+    <div class="recorder-zone">
+      <button class="mic-btn" onclick="toggleRecording()" id="micBtn">
+        <div class="mic-ring" id="micRing">
+          <span class="mic-icon" id="micIcon">🎙</span>
+        </div>
+      </button>
+      <div class="recorder-status" id="recStatus">Tap the microphone to start</div>
+      <div class="timer" id="timerDisplay"></div>
+      <div class="waveform" id="waveform">
+        <div class="wave-bar" style="height:6px"></div>
+        <div class="wave-bar" style="height:10px"></div>
+        <div class="wave-bar" style="height:8px"></div>
+        <div class="wave-bar" style="height:14px"></div>
+        <div class="wave-bar" style="height:10px"></div>
+        <div class="wave-bar" style="height:8px"></div>
+        <div class="wave-bar" style="height:6px"></div>
+      </div>
+      <div class="recorder-btns">
+        <button class="btn-rec btn-rec-start" id="btnRecStart" onclick="startRecording()">● Record</button>
+        <button class="btn-rec btn-rec-stop" id="btnRecStop" onclick="stopRecording()" style="display:none">■ Stop</button>
+        <button class="btn-rec btn-rec-eval" id="btnEval" onclick="evaluate()" disabled>⚡ Evaluate with AI</button>
+      </div>
+    </div>
+
+    <div class="transcript-box" id="transcriptBox">
+      <div class="transcript-label">Transcript — you can edit it before evaluating</div>
+      <div class="transcript-editable" id="transcriptEl" contenteditable="true"></div>
+    </div>
+  </div>
+
+  <!-- ══ LOADING ══ -->
+  <div id="loadingScreen">
+    <div class="loader-orbit"></div>
+    <div class="loader-title">Evaluating your oral production</div>
+    <div class="loader-sub">Claude is analysing your response...</div>
+    <div class="loader-steps">
+      <div class="loader-step active" id="ls1"><div class="ls-dot"></div>Processing transcript</div>
+      <div class="loader-step" id="ls2"><div class="ls-dot"></div>Applying official rubric</div>
+      <div class="loader-step" id="ls3"><div class="ls-dot"></div>Generating detailed feedback</div>
+    </div>
+  </div>
+
+  <!-- ══ RESULTS SCREEN ══ -->
+  <div id="resultsScreen">
+    <div class="results-header">
+      <div class="results-exam-name" id="resExamName">Goethe B1 — Oral production</div>
+      <div class="results-score-ring" id="scoreRing">
+        <div class="score-big" id="scoreBig">--</div>
+        <div class="score-denom">/ 100</div>
+      </div>
+      <div class="results-level" id="resLevel"></div>
+      <div class="results-summary" id="resSummary"></div>
+    </div>
+
+    <div class="criteria-grid" id="criteriaGrid"></div>
+
+    <div class="feedback-block">
+      <div class="fb-title"><span style="color:var(--red)">✕</span> Errors detected</div>
+      <div class="fb-list" id="erroresList"></div>
+    </div>
+
+    <div class="feedback-block">
+      <div class="fb-title"><span style="color:var(--green)">↑</span> Priority improvements</div>
+      <div class="fb-list" id="mejorasList"></div>
+    </div>
+
+    <div class="transcript-review">
+      <div class="tr-label">Your answer (transcript)</div>
+      <div class="tr-text" id="resTranscript"></div>
+    </div>
+
+    <div class="results-actions">
+      <button class="btn-retry" onclick="retryExam()">🔄 Retry same task</button>
+      <button class="btn-new" onclick="goConfig()">New task →</button>
+    </div>
+  </div>
+
+</div><!-- /app -->
+
+<script>
+// ══════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════
+const S = {
+  apiKey: localStorage.getItem('ll_apikey') || '',
+  exam: 'Goethe',
+  level: 'B1',
+  task: null,
+  transcript: '',
+  recording: false,
+  recognition: null,
+  timerInterval: null,
+  timerSeconds: 0,
+  hasSpeechAPI: 'webkitSpeechRecognition' in window || 'SpeechRecognition' in window
+};
+
+// ══════════════════════════════════════════
+// TASKS DATABASE
+// ══════════════════════════════════════════
+const TASKS = {
+  IELTS: {
+    A2: {
+      text: "Describe your hometown. What do you like and dislike about it? Would you recommend it to visitors?",
+      hints: ["Location & size", "Things to do", "Food or culture", "Personal opinion"]
+    },
+    B1: {
+      text: "Some people think that social media has more negative effects than positive ones. To what extent do you agree? Give reasons and examples from your experience.",
+      hints: ["State your position", "Positive effects", "Negative effects", "Balanced conclusion"]
+    },
+    B2: {
+      text: "Many cities around the world are experiencing rapid urbanisation. What are the main challenges this creates, and how can governments address them effectively?",
+      hints: ["Housing pressure", "Infrastructure strain", "Environmental impact", "Policy solutions"]
+    },
+    C1: {
+      text: "To what extent should governments regulate the use of artificial intelligence in the workplace? Consider both the economic benefits and the social implications.",
+      hints: ["Economic efficiency", "Job displacement risk", "Ethical concerns", "Role of regulation"]
+    },
+    C2: {
+      text: "The relationship between language and thought has long been debated. Does the language we speak fundamentally shape the way we perceive reality, or is thought independent of language?",
+      hints: ["Sapir-Whorf hypothesis", "Universal cognition argument", "Linguistic relativity", "Personal synthesis"]
+    }
+  },
+  Goethe: {
+    A2: {
+      text: "Beschreiben Sie Ihre Lieblingsfreizeit. Was machen Sie gerne in Ihrer Freizeit und warum?",
+      hints: ["Favorite activity", "Why you like it", "With whom", "How often"]
+    },
+    B1: {
+      text: "Viele Menschen arbeiten heute von zu Hause. Was sind die Vor- und Nachteile des Homeoffice? Wie sehen Sie das?",
+      hints: ["Advantages", "Disadvantages", "Your opinion", "Personal example"]
+    },
+    B2: {
+      text: "In Deutschland wird viel über Klimaschutz diskutiert. Welche Maßnahmen halten Sie für besonders wirksam, und wo sehen Sie die größten Herausforderungen?",
+      hints: ["Concrete measures", "Main challenges", "Individual vs state responsibility", "Your position"]
+    },
+    C1: {
+      text: "Welche Rolle sollte die Schule bei der politischen Bildung junger Menschen spielen? Diskutieren Sie Chancen und Risiken einer stärkeren politischen Erziehung.",
+      hints: ["Current role of school", "Risk of indoctrination", "Citizenship benefits", "Your proposal"]
+    },
+    C2: {
+      text: "Inwiefern kann Literatur dazu beitragen, gesellschaftliche Missstände sichtbar zu machen und Veränderungen anzustoßen? Erörtern Sie anhand konkreter Beispiele.",
+      hints: ["Literary examples", "Mechanisms of influence", "Limits of literature", "Critical synthesis"]
+    }
+  }
+};
+
+// ══════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════
+function init() {
+  if (S.apiKey) {
+    document.getElementById('apiBanner').innerHTML =
+      `<span style="color:var(--green)">✓ API Key saved</span><span style="color:var(--text3);flex:1">Claude is ready to evaluate.</span><button onclick="clearKey()" style="background:var(--surface);border:.5px solid var(--border2);border-radius:6px;padding:4px 10px;font-size:11px;color:var(--text2);cursor:pointer;font-family:'Syne',sans-serif">Change</button>`;
+  }
+  if (!S.hasSpeechAPI) {
+    document.getElementById('browserWarn').style.display = 'block';
+  }
+}
+
+function saveKey() {
+  const v = document.getElementById('apiKeyInput')?.value.trim();
+  if (!v || !v.startsWith('sk-')) { alert('Key must start with sk-ant-...'); return; }
+  S.apiKey = v;
+  localStorage.setItem('ll_apikey', v);
+  init();
+}
+function clearKey() { S.apiKey = ''; localStorage.removeItem('ll_apikey'); location.reload(); }
+
+// ══════════════════════════════════════════
+// CONFIG
+// ══════════════════════════════════════════
+function selectExam(el) {
+  document.querySelectorAll('#examGrid .config-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  S.exam = el.dataset.exam;
+}
+function selectLevel(el) {
+  document.querySelectorAll('#levelsRow .level-pill').forEach(p => p.classList.remove('selected'));
+  el.classList.add('selected');
+  S.level = el.dataset.level;
+}
+
+function startExam() {
+  if (!S.apiKey) { alert('Enter your Anthropic API Key first.'); return; }
+  const taskData = TASKS[S.exam]?.[S.level];
+  if (!taskData) { alert('Exam/level combination not available.'); return; }
+  S.task = taskData;
+  S.transcript = '';
+
+  document.getElementById('tagExam').textContent = S.exam;
+  document.getElementById('tagLevel').textContent = S.level;
+  document.getElementById('taskText').textContent = taskData.text;
+  const hintsEl = document.getElementById('taskHints');
+  hintsEl.innerHTML = taskData.hints.map(h => `<span class="task-hint">💡 ${h}</span>`).join('');
+
+  document.getElementById('transcriptBox').classList.remove('visible');
+  document.getElementById('transcriptEl').textContent = '';
+  document.getElementById('btnEval').disabled = true;
+  resetRecorder();
+
+  show('examScreen');
+}
+
+function goConfig() { resetRecorder(); show('configScreen'); }
+
+// ══════════════════════════════════════════
+// RECORDING
+// ══════════════════════════════════════════
+let recognition = null;
+
+function toggleRecording() {
+  if (S.recording) stopRecording(); else startRecording();
+}
+
+function startRecording() {
+  if (!S.hasSpeechAPI) {
+    document.getElementById('transcriptBox').classList.add('visible');
+    document.getElementById('transcriptEl').focus();
+    document.getElementById('recStatus').textContent = 'Type your answer directly';
+    document.getElementById('btnEval').disabled = false;
+    return;
+  }
+
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  recognition = new SpeechRecognition();
+
+  const langMap = { IELTS:'en-GB', Goethe:'de-DE' };
+  recognition.lang = langMap[S.exam] || 'en-GB';
+  recognition.continuous = true;
+  recognition.interimResults = true;
+
+  let finalText = '';
+  recognition.onresult = (e) => {
+    let interim = '';
+    for (let i = e.resultIndex; i < e.results.length; i++) {
+      if (e.results[i].isFinal) finalText += e.results[i][0].transcript + ' ';
+      else interim += e.results[i][0].transcript;
+    }
+    const display = finalText + interim;
+    document.getElementById('transcriptEl').textContent = display;
+    S.transcript = finalText.trim();
+    if (display.trim()) {
+      document.getElementById('transcriptBox').classList.add('visible');
+      document.getElementById('btnEval').disabled = false;
+    }
+  };
+
+  recognition.onerror = (e) => {
+    if (e.error === 'not-allowed') {
+      alert('Microphone permission denied. Enable it in your browser settings.');
+    }
+    stopRecording();
+  };
+
+  recognition.onend = () => { if (S.recording) stopRecording(); };
+
+  recognition.start();
+  S.recording = true;
+
+  // UI
+  document.getElementById('micRing').classList.add('recording');
+  document.getElementById('recStatus').textContent = 'Recording...';
+  document.getElementById('recStatus').className = 'recorder-status recording';
+  document.getElementById('btnRecStart').style.display = 'none';
+  document.getElementById('btnRecStop').style.display = '';
+  document.querySelectorAll('.wave-bar').forEach(b => b.classList.add('active'));
+
+  // Timer
+  S.timerSeconds = 0;
+  S.timerInterval = setInterval(() => {
+    S.timerSeconds++;
+    const m = String(Math.floor(S.timerSeconds/60)).padStart(2,'0');
+    const s = String(S.timerSeconds%60).padStart(2,'0');
+    document.getElementById('timerDisplay').textContent = m + ':' + s;
+  }, 1000);
+}
+
+function stopRecording() {
+  if (recognition) { try { recognition.stop(); } catch(e){} recognition = null; }
+  S.recording = false;
+
+  clearInterval(S.timerInterval);
+  document.getElementById('micRing').classList.remove('recording');
+  document.getElementById('recStatus').textContent = 'Recording finished';
+  document.getElementById('recStatus').className = 'recorder-status';
+  document.getElementById('btnRecStart').style.display = '';
+  document.getElementById('btnRecStop').style.display = 'none';
+  document.querySelectorAll('.wave-bar').forEach(b => b.classList.remove('active'));
+
+  // Use content from editable div
+  const edited = document.getElementById('transcriptEl').textContent.trim();
+  if (edited) S.transcript = edited;
+}
+
+function resetRecorder() {
+  stopRecording();
+  S.transcript = '';
+  document.getElementById('timerDisplay').textContent = '';
+  document.getElementById('recStatus').textContent = 'Tap the microphone to start';
+  document.getElementById('recStatus').className = 'recorder-status';
+  document.getElementById('btnEval').disabled = true;
+  document.getElementById('transcriptBox').classList.remove('visible');
+  document.getElementById('transcriptEl').textContent = '';
+}
+
+// ══════════════════════════════════════════
+// EVALUATE WITH CLAUDE
+// ══════════════════════════════════════════
+async function evaluate() {
+  // Get latest transcript (may have been hand-edited)
+  const editedTranscript = document.getElementById('transcriptEl').textContent.trim();
+  const transcript = editedTranscript || S.transcript;
+
+  if (!transcript || transcript.length < 10) {
+    alert('Transcript is empty or too short. Record your answer first.');
+    return;
+  }
+  if (!S.apiKey) { alert('API Key not configured.'); return; }
+
+  show('loadingScreen');
+  animateLoaderSteps();
+
+  const systemPrompt = `You are a certified official examiner for the ${S.exam} exam at ${S.level} level.
+Your task is to evaluate a candidate's oral production.
+
+The candidate was asked to respond to this task:
+"${S.task.text}"
+
+This is the transcript of what the candidate said:
+"${transcript}"
+
+Evaluate using the official ${S.exam} rubric. Reply ONLY with a valid JSON object — no text before or after, no markdown code blocks. The JSON must have exactly this structure:
+{
+  "scores": {
+    "coherencia": <number 0-25>,
+    "gramatica": <number 0-25>,
+    "vocabulario": <number 0-25>,
+    "fluidez": <number 0-25>
+  },
+  "total": <number 0-100>,
+  "nivel_detectado": "<A1|A2|B1|B2|C1|C2>",
+  "errores": ["<specific error 1>", "<specific error 2>", "<specific error 3>"],
+  "mejoras": ["<priority improvement 1>", "<priority improvement 2>", "<priority improvement 3>"],
+  "resumen": "<Professional examiner feedback in English, 1-2 sentences>"
+}`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': S.apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content: systemPrompt }]
+      })
+    });
+
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.error?.message || 'API error');
+    }
+
+    const data = await res.json();
+    const raw = data.content.map(b => b.text || '').join('').trim();
+
+    // Parse JSON — strip markdown fences if present
+    const clean = raw.replace(/```json|```/g, '').trim();
+    const result = JSON.parse(clean);
+
+    renderResults(result, transcript);
+  } catch (err) {
+    show('examScreen');
+    alert('Evaluation error: ' + err.message + '\n\nCheck your API Key and connection.');
+  }
+}
+
+function animateLoaderSteps() {
+  const steps = ['ls1','ls2','ls3'];
+  let i = 0;
+  const int = setInterval(() => {
+    if (i > 0) {
+      document.getElementById(steps[i-1]).classList.remove('active');
+      document.getElementById(steps[i-1]).classList.add('done');
+    }
+    if (i < steps.length) {
+      document.getElementById(steps[i]).classList.add('active');
+      i++;
+    } else {
+      clearInterval(int);
+    }
+  }, 900);
+}
+
+// ══════════════════════════════════════════
+// RENDER RESULTS
+// ══════════════════════════════════════════
+function renderResults(r, transcript) {
+  const total = Math.round(r.total);
+  const grade = total >= 70 ? 'pass' : total >= 50 ? 'mid' : 'fail';
+
+  document.getElementById('resExamName').textContent = `${S.exam} ${S.level} — Oral production`;
+  document.getElementById('scoreBig').textContent = total;
+  document.getElementById('scoreBig').className = `score-big ${grade}`;
+  document.getElementById('scoreRing').className = `results-score-ring ${grade}`;
+  document.getElementById('resLevel').textContent = `Detected level: ${r.nivel_detectado || S.level}`;
+  document.getElementById('resSummary').textContent = r.resumen || '';
+  document.getElementById('resTranscript').textContent = transcript;
+
+  // Criteria cards
+  const criteria = [
+    { key:'coherencia', label:'Coherence' },
+    { key:'gramatica', label:'Grammar' },
+    { key:'vocabulario', label:'Vocabulary' },
+    { key:'fluidez', label:'Fluency' }
+  ];
+  const grid = document.getElementById('criteriaGrid');
+  grid.innerHTML = criteria.map(c => {
+    const val = Math.round(r.scores?.[c.key] || 0);
+    const g = val >= 18 ? 'high' : val >= 12 ? 'mid' : 'low';
+    const pct = (val / 25 * 100).toFixed(0);
+    return `<div class="criteria-card">
+      <div class="crit-header">
+        <span class="crit-name">${c.label}</span>
+        <span class="crit-score ${g}">${val}<span style="font-size:11px;font-weight:400;color:var(--text3)">/25</span></span>
+      </div>
+      <div class="crit-bar-track"><div class="crit-bar-fill fill-${g}" style="width:0%" data-pct="${pct}"></div></div>
+    </div>`;
+  }).join('');
+
+  // Animate bars after render
+  setTimeout(() => {
+    document.querySelectorAll('.crit-bar-fill').forEach(b => {
+      b.style.width = b.dataset.pct + '%';
+    });
+  }, 80);
+
+  // Errors
+  document.getElementById('erroresList').innerHTML = (r.errores || []).map(e =>
+    `<div class="fb-item"><div class="fb-dot dot-red"></div>${e}</div>`
+  ).join('');
+
+  // Improvements
+  document.getElementById('mejorasList').innerHTML = (r.mejoras || []).map(m =>
+    `<div class="fb-item"><div class="fb-dot dot-green"></div>${m}</div>`
+  ).join('');
+
+  show('resultsScreen');
+}
+
+function retryExam() {
+  resetRecorder();
+  show('examScreen');
+}
+
+// ══════════════════════════════════════════
+// SCREEN MANAGEMENT
+// ══════════════════════════════════════════
+const SCREENS = ['configScreen','examScreen','loadingScreen','resultsScreen'];
+function show(id) {
+  SCREENS.forEach(s => document.getElementById(s).style.display = 'none');
+  document.getElementById(id).style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ══════════════════════════════════════════
+window.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>

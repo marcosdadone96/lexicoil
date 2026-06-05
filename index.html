@@ -1,0 +1,1259 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LexiLoop — Official English & German Exam Simulator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0E0E10;--bg2:#16161A;--bg3:#1E1E24;
+  --surface:#242429;--surface2:#2C2C33;
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.14);
+  --text:#F2F2F0;--text2:#9A9A94;--text3:#5A5A56;
+  --accent:#E8C547;--accent2:#F0D876;--accent-dim:rgba(232,197,71,0.12);
+  --red:#E85D5D;--red-bg:rgba(232,93,93,0.1);
+  --green:#5DE8A0;--green-bg:rgba(93,232,160,0.1);
+  --blue:#5DB8E8;--blue-bg:rgba(93,184,232,0.1);
+  --purple:#A78BFA;--purple-bg:rgba(167,139,250,0.1);
+  --orange:#F97316;--orange-bg:rgba(249,115,22,0.1);
+  --r:10px;--r-lg:16px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+body.light{--bg:#F4F3EF;--bg2:#FFFFFF;--bg3:#EEEDE9;--surface:#E4E3DF;--surface2:#D8D7D3;--border:rgba(0,0,0,0.08);--border2:rgba(0,0,0,0.15);--text:#1A1A1C;--text2:#5A5A56;--text3:#9A9A94}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--surface2);border-radius:2px}
+.app{max-width:920px;margin:0 auto;padding:0 24px 120px}
+header{padding:26px 0 22px;display:flex;align-items:center;justify-content:space-between;border-bottom:.5px solid var(--border);flex-wrap:wrap;gap:10px}
+.logo{display:flex;align-items:center;gap:10px;cursor:pointer}
+.logo-mark{font-family:'Instrument Serif',serif;font-size:22px;font-style:italic;color:var(--accent);letter-spacing:-1px}
+.logo-name{font-size:14px;font-weight:700;letter-spacing:.12em;text-transform:uppercase}
+.logo-sep{width:1px;height:18px;background:var(--border2);margin:0 4px}
+.logo-sub{font-size:11px;color:var(--text3);letter-spacing:.06em}
+.header-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.lang-toggle{display:flex;background:var(--bg3);border:.5px solid var(--border2);border-radius:100px;padding:3px;gap:2px}
+.lang-toggle button{background:none;border:none;color:var(--text2);font-family:'Syne',sans-serif;font-size:12px;font-weight:600;padding:5px 12px;border-radius:100px;cursor:pointer;transition:all .2s}
+.lang-toggle button.active{background:var(--accent);color:#000}
+.user-btn{display:flex;align-items:center;gap:8px;background:var(--surface);border:.5px solid var(--border2);border-radius:100px;padding:5px 12px 5px 6px;cursor:pointer;font-family:'Syne',sans-serif;font-size:12px;font-weight:600;color:var(--text2);transition:all .2s}
+.user-btn:hover{background:var(--surface2);color:var(--text)}
+.user-avatar{width:24px;height:24px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#000}
+.theme-btn{background:var(--surface);border:.5px solid var(--border2);border-radius:8px;padding:6px 10px;cursor:pointer;font-size:13px;transition:all .2s}
+/* AUTH */
+#authOverlay{position:fixed;inset:0;background:rgba(0,0,0,.88);backdrop-filter:blur(14px);z-index:500;display:flex;align-items:center;justify-content:center;animation:fadeIn .3s ease}
+.auth-box{background:var(--bg2);border:.5px solid var(--border2);border-radius:20px;padding:40px;width:100%;max-width:420px;animation:scaleIn .3s ease}
+.auth-logo{text-align:center;margin-bottom:22px}
+.auth-logo .lm{font-family:'Instrument Serif',serif;font-size:40px;font-style:italic;color:var(--accent);display:block;line-height:1}
+.auth-logo .ln{font-size:15px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--text);margin-top:4px}
+.auth-tabs{display:flex;border:.5px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:18px}
+.auth-tab{flex:1;padding:10px;font-family:'Syne',sans-serif;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:transparent;border:none;color:var(--text3);cursor:pointer;transition:all .2s}
+.auth-tab.active{background:var(--surface2);color:var(--text)}
+.auth-field{width:100%;background:var(--bg3);border:.5px solid var(--border2);border-radius:var(--r);padding:11px 15px;font-family:'Syne',sans-serif;font-size:14px;color:var(--text);margin-bottom:9px;outline:none;transition:border-color .15s}
+.auth-field:focus{border-color:var(--accent)}
+.auth-field::placeholder{color:var(--text3)}
+.btn-auth{width:100%;background:var(--accent);color:#000;border:none;border-radius:var(--r);padding:13px;font-family:'Syne',sans-serif;font-size:14px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:all .2s;margin-bottom:11px}
+.btn-auth:hover{background:var(--accent2)}
+.auth-or{text-align:center;font-size:11px;color:var(--text3);font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin:10px 0;position:relative}
+.auth-or::before,.auth-or::after{content:'';position:absolute;top:50%;width:42%;height:.5px;background:var(--border)}
+.auth-or::before{left:0}.auth-or::after{right:0}
+.btn-google{width:100%;background:var(--bg3);border:.5px solid var(--border2);border-radius:var(--r);padding:12px;font-family:'Syne',sans-serif;font-size:13px;font-weight:600;color:var(--text);cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:10px}
+.btn-google:hover{background:var(--surface)}
+.auth-msg{font-size:12px;color:var(--red);margin-bottom:7px;min-height:15px;text-align:center}
+.auth-msg.ok{color:var(--green)}
+/* PLAN BADGE */
+.plan-badge{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;padding:3px 9px;border-radius:100px;letter-spacing:.06em;text-transform:uppercase}
+.plan-free{background:var(--surface);color:var(--text3);border:.5px solid var(--border)}
+.plan-pro{background:linear-gradient(135deg,#E8C547,#F0A843);color:#000;border:none}
+/* UPGRADE MODAL */
+#upgradeModal{position:fixed;inset:0;background:rgba(0,0,0,.88);backdrop-filter:blur(14px);z-index:600;display:none;align-items:center;justify-content:center}
+#upgradeModal.show{display:flex}
+.upgrade-box{background:var(--bg2);border:.5px solid var(--border2);border-radius:20px;padding:40px;width:100%;max-width:440px;text-align:center;animation:scaleIn .3s ease}
+.upgrade-box h2{font-family:'Instrument Serif',serif;font-size:28px;margin-bottom:8px}
+.upgrade-box h2 em{color:var(--accent);font-style:italic}
+.upgrade-box p{font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:24px;font-weight:400}
+.plan-cards{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
+.plan-card{background:var(--bg3);border:.5px solid var(--border);border-radius:var(--r-lg);padding:20px;text-align:left;cursor:pointer;transition:all .2s}
+.plan-card:hover{border-color:var(--border2)}
+.plan-card.pro-card{border-color:rgba(232,197,71,.4);background:var(--accent-dim);cursor:default}
+.plan-card-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:8px}
+.plan-card.pro-card .plan-card-label{color:var(--accent)}
+.plan-price{font-size:26px;font-weight:800;letter-spacing:-1px;margin-bottom:4px}
+.plan-price span{font-size:12px;font-weight:400;color:var(--text3)}
+.plan-features{font-size:12px;color:var(--text2);line-height:1.9;font-weight:400}
+.plan-features b{color:var(--text);font-weight:700}
+.btn-upgrade{width:100%;background:linear-gradient(135deg,#E8C547,#F0A843);color:#000;border:none;border-radius:var(--r);padding:14px;font-family:'Syne',sans-serif;font-size:14px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:all .2s;margin-bottom:10px}
+.btn-upgrade:hover{filter:brightness(1.08)}
+.btn-upgrade-skip{background:none;border:none;font-family:'Syne',sans-serif;font-size:12px;color:var(--text3);cursor:pointer;padding:4px}
+.quota-bar{background:var(--bg2);border:.5px solid var(--border);border-radius:10px;padding:12px 16px;margin-bottom:14px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.quota-label{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text3)}
+.quota-count{font-size:13px;font-weight:700;color:var(--text);font-family:'DM Mono',monospace}
+.quota-count.low{color:var(--orange)}
+.quota-count.none{color:var(--red)}
+/* HOME */
+#homeScreen{padding:48px 0 0;animation:fadeUp .4s ease}
+.home-eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:18px}
+.home-eyebrow span{display:inline-block;width:24px;height:1px;background:var(--text3)}
+.home-headline{font-family:'Instrument Serif',serif;font-size:clamp(36px,6.5vw,68px);line-height:1.05;margin-bottom:7px}
+.home-headline em{color:var(--accent);font-style:italic}
+.home-sub{font-size:14px;color:var(--text2);max-width:520px;line-height:1.7;margin-bottom:40px;font-weight:400}
+.subject-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-bottom:13px}
+.subject-card{background:var(--bg2);border:.5px solid var(--border);border-radius:var(--r-lg);padding:24px;cursor:pointer;transition:all .25s;position:relative;overflow:hidden}
+.subject-card:hover{border-color:var(--accent);transform:translateY(-2px);background:var(--bg3)}
+.subject-card:hover .sc-arrow{transform:translateX(4px)}
+.sc-flag{font-size:32px;margin-bottom:13px;display:block}
+.sc-lang{font-size:18px;font-weight:700;margin-bottom:4px}
+.sc-desc{font-size:12px;color:var(--text2);margin-bottom:14px;line-height:1.6;font-weight:400}
+.sc-levels{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:14px}
+.sc-level-tag{font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;background:var(--surface);color:var(--text2);letter-spacing:.06em;border:.5px solid var(--border)}
+.sc-footer{display:flex;align-items:center;justify-content:space-between}
+.sc-cta{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.sc-arrow{display:inline-block;transition:transform .2s;color:var(--accent)}
+.mode-row{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-bottom:13px}
+.mode-card{padding:17px 19px;border-radius:var(--r);border:.5px solid var(--border);background:var(--bg2)}
+.mode-card h3{font-size:13px;font-weight:700;margin-bottom:5px;display:flex;align-items:center;gap:8px}
+.mode-card p{font-size:12px;color:var(--text2);line-height:1.6;font-weight:400}
+.mode-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.home-qcard{background:var(--bg2);border:.5px solid var(--border);border-radius:var(--r-lg);padding:20px 22px;cursor:pointer;transition:all .25s;display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:13px}
+.home-qcard:hover{border-color:var(--purple);background:var(--bg3);transform:translateY(-1px)}
+.hqc-left{display:flex;align-items:center;gap:13px}
+.hqc-icon{font-size:26px}
+.hqc-body h3{font-size:14px;font-weight:700;margin-bottom:2px}
+.hqc-body p{font-size:12px;color:var(--text2);font-weight:400}
+.badge-pill{font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px;white-space:nowrap}
+.badge-purple{background:var(--purple-bg);color:var(--purple);border:.5px solid rgba(167,139,250,.25)}
+.badge-green{background:var(--green-bg);color:var(--green);border:.5px solid rgba(93,232,160,.25)}
+.badge-orange{background:var(--orange-bg);color:var(--orange);border:.5px solid rgba(249,115,22,.25)}
+.quick-card{background:var(--bg2);border:.5px solid var(--border);border-radius:var(--r-lg);padding:20px 22px}
+.quick-card h3{font-size:14px;font-weight:700;margin-bottom:4px}
+.quick-card p{font-size:12px;color:var(--text2);font-weight:400;margin-bottom:14px;line-height:1.5}
+.quick-btns{display:flex;gap:6px;flex-wrap:wrap}
+.quick-btn{font-size:11px;font-weight:700;padding:6px 12px;border-radius:6px;background:var(--surface);border:.5px solid var(--border);color:var(--text2);cursor:pointer;transition:all .2s;font-family:'Syne',sans-serif}
+.quick-btn:hover{background:var(--orange-bg);color:var(--orange);border-color:rgba(249,115,22,.3)}
+/* LEVEL SCREEN */
+#levelScreen{display:none;padding:38px 0;animation:fadeUp .35s ease}
+.back-btn{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--text3);background:none;border:none;cursor:pointer;font-family:'Syne',sans-serif;letter-spacing:.06em;text-transform:uppercase;margin-bottom:26px;transition:color .2s}
+.back-btn:hover{color:var(--text)}
+.screen-eyebrow{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:9px}
+.screen-title{font-family:'Instrument Serif',serif;font-size:32px;margin-bottom:5px}
+.screen-title em{color:var(--accent);font-style:italic}
+.screen-sub{font-size:13px;color:var(--text2);margin-bottom:25px;font-weight:400}
+.levels-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:22px}
+.level-card{background:var(--bg2);border:.5px solid var(--border);border-radius:var(--r);padding:17px;cursor:pointer;transition:all .2s;text-align:center}
+.level-card:hover{border-color:var(--border2);background:var(--bg3);transform:translateY(-1px)}
+.level-card.selected{border-color:var(--accent);background:var(--accent-dim)}
+.lc-code{font-size:21px;font-weight:800;letter-spacing:-.02em;margin-bottom:3px}
+.lc-name{font-size:10px;color:var(--text2);letter-spacing:.06em;text-transform:uppercase;margin-bottom:2px}
+.lc-desc{font-size:10px;color:var(--text3);font-weight:400;line-height:1.4}
+.lc-time{font-size:9px;color:var(--text3);margin-top:4px;font-family:'DM Mono',monospace}
+.mode-select-row{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:18px}
+.mode-select-card{background:var(--bg2);border:.5px solid var(--border);border-radius:var(--r);padding:15px 17px;cursor:pointer;transition:all .2s;display:flex;align-items:flex-start;gap:11px}
+.mode-select-card:hover{border-color:var(--border2);background:var(--bg3)}
+.mode-select-card.selected{border-color:var(--accent);background:var(--accent-dim)}
+.msc-icon{font-size:19px;margin-top:2px;flex-shrink:0}
+.msc-body h4{font-size:13px;font-weight:700;margin-bottom:3px}
+.msc-body p{font-size:11px;color:var(--text2);font-weight:400;line-height:1.5}
+.btn-start{width:100%;background:var(--accent);color:#000;border:none;border-radius:var(--r);padding:14px;font-family:'Syne',sans-serif;font-size:14px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:10px}
+.btn-start:hover{background:var(--accent2);transform:translateY(-1px)}
+.btn-start:disabled{opacity:.35;cursor:not-allowed;transform:none}
+/* LOADING */
+#loadingScreen{display:none;text-align:center;padding:100px 0;animation:fadeUp .3s ease}
+.loader-orbit{width:48px;height:48px;border-radius:50%;border:1.5px solid var(--border2);border-top-color:var(--accent);animation:spin .7s linear infinite;margin:0 auto 22px}
+.loader-title{font-size:18px;font-weight:700;margin-bottom:5px}
+.loader-sub{font-size:13px;color:var(--text2);font-weight:400}
+/* EXAM */
+#examScreen{display:none;animation:fadeUp .4s ease}
+.exam-topbar{display:flex;align-items:center;justify-content:space-between;padding:17px 0 0;border-bottom:.5px solid var(--border);margin-bottom:28px;gap:10px;flex-wrap:wrap}
+.exam-meta{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.exam-badge{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:4px 10px;border-radius:100px;background:var(--surface);color:var(--text2);border:.5px solid var(--border)}
+.exam-badge.practice{background:var(--blue-bg);color:var(--blue);border-color:rgba(93,184,232,.25)}
+.exam-badge.real{background:var(--accent-dim);color:var(--accent);border-color:rgba(232,197,71,.25)}
+.exam-badge.vocab{background:var(--purple-bg);color:var(--purple);border-color:rgba(167,139,250,.25)}
+.exam-badge.quick{background:var(--orange-bg);color:var(--orange);border-color:rgba(249,115,22,.25)}
+.exam-title{font-size:13px;font-weight:600}
+.exam-actions{display:flex;gap:7px;flex-shrink:0;flex-wrap:wrap}
+.btn-sm{background:var(--surface);border:.5px solid var(--border2);border-radius:8px;padding:6px 13px;font-family:'Syne',sans-serif;font-size:12px;font-weight:600;color:var(--text2);cursor:pointer;transition:all .2s;letter-spacing:.04em}
+.btn-sm:hover{background:var(--surface2);color:var(--text)}
+.btn-sm.accent{background:var(--accent);color:#000;border-color:var(--accent)}
+.btn-sm.accent:hover{background:var(--accent2)}
+.btn-sm.purple{background:var(--purple-bg);color:var(--purple);border-color:rgba(167,139,250,.3)}
+.btn-sm.blue{background:var(--blue-bg);color:var(--blue);border-color:rgba(93,184,232,.3)}
+.btn-sm.red{background:var(--red-bg);color:var(--red);border-color:rgba(232,93,93,.3)}
+.timer-wrap{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:700;font-family:'DM Mono',monospace}
+.timer-val{color:var(--text)}.timer-val.warn{color:var(--orange)}.timer-val.crit{color:var(--red);animation:blink .5s ease infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.progress-wrap{margin-bottom:26px}
+.progress-row{display:flex;justify-content:space-between;font-size:11px;color:var(--text3);margin-bottom:5px;font-weight:600;letter-spacing:.04em}
+.progress-track{height:2px;background:var(--surface);border-radius:2px;overflow:hidden}
+.progress-fill{height:2px;background:var(--accent);border-radius:2px;transition:width .4s ease}
+.module-wrap{margin-bottom:42px}
+.module-tag{display:inline-flex;align-items:center;gap:7px;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:4px 11px;border-radius:100px;margin-bottom:13px}
+.tag-lesen{background:rgba(93,184,232,.1);color:var(--blue);border:.5px solid rgba(93,184,232,.2)}
+.tag-horen{background:rgba(93,232,160,.1);color:var(--green);border:.5px solid rgba(93,232,160,.2)}
+.tag-schreiben{background:rgba(232,197,71,.1);color:var(--accent);border:.5px solid rgba(232,197,71,.2)}
+.tag-sprechen{background:rgba(232,93,93,.1);color:var(--red);border:.5px solid rgba(232,93,93,.2)}
+.tag-gap{background:rgba(167,139,250,.1);color:var(--purple);border:.5px solid rgba(167,139,250,.2)}
+.module-title{font-family:'Instrument Serif',serif;font-size:25px;margin-bottom:6px}
+.module-desc{font-size:13px;color:var(--text2);margin-bottom:20px;font-weight:400;line-height:1.65;max-width:580px}
+.text-display{background:var(--bg2);border:.5px solid var(--border);border-radius:var(--r-lg);padding:24px;margin-bottom:16px}
+.text-display h3{font-family:'Instrument Serif',serif;font-size:18px;margin-bottom:12px}
+.audio-chip{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;color:var(--text3);background:var(--surface);padding:4px 11px;border-radius:100px;margin-bottom:11px;letter-spacing:.04em;border:.5px solid var(--border)}
+.readable-text{font-size:14px;line-height:2;color:var(--text);font-weight:400}
+.vocab-word{cursor:pointer;border-bottom:1px dashed var(--text3);transition:all .15s;padding:0 1px;border-radius:2px}
+.vocab-word:hover{color:var(--accent);border-bottom-color:var(--accent);background:var(--accent-dim)}
+.listen-box{background:var(--bg2);border:.5px solid var(--border);border-radius:var(--r-lg);padding:28px;margin-bottom:16px;text-align:center}
+.listen-icon{font-size:42px;display:block;margin-bottom:12px}
+.listen-info{font-size:12px;color:var(--text3);margin-bottom:14px;font-family:'DM Mono',monospace}
+.wave{display:flex;align-items:center;justify-content:center;gap:3px;height:32px;margin-bottom:16px}
+.wb{width:3px;background:var(--accent);border-radius:2px;animation:wv 1s ease infinite}
+.wb:nth-child(1){height:12px;animation-delay:0s}.wb:nth-child(2){height:20px;animation-delay:.1s}.wb:nth-child(3){height:28px;animation-delay:.2s}.wb:nth-child(4){height:22px;animation-delay:.3s}.wb:nth-child(5){height:16px;animation-delay:.4s}.wb:nth-child(6){height:26px;animation-delay:.5s}.wb:nth-child(7){height:18px;animation-delay:.6s}.wb:nth-child(8){height:24px;animation-delay:.7s}.wb:nth-child(9){height:14px;animation-delay:.8s}
+.wb.paused{animation-play-state:paused;height:4px;background:var(--surface2)}
+@keyframes wv{0%,100%{transform:scaleY(1)}50%{transform:scaleY(1.8)}}
+.question-block{background:var(--bg2);border:.5px solid var(--border);border-radius:var(--r-lg);padding:20px;margin-bottom:10px}
+.q-number{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:7px}
+.q-text{font-size:14px;font-weight:600;margin-bottom:13px;line-height:1.55}
+.options{display:flex;flex-direction:column;gap:7px}
+.opt{display:flex;align-items:flex-start;gap:10px;padding:10px 13px;border:.5px solid var(--border);border-radius:8px;cursor:pointer;transition:all .15s;font-size:13px;font-weight:400}
+.opt:hover{border-color:var(--border2);background:var(--bg3)}
+.opt.selected{border-color:var(--accent);background:var(--accent-dim)}
+.opt input[type=radio]{margin-top:2px;accent-color:var(--accent)}
+.opt.correct-ans{border-color:rgba(93,232,160,.5)!important;background:var(--green-bg)!important;color:var(--green)}
+.opt.wrong-ans{border-color:rgba(232,93,93,.5)!important;background:var(--red-bg)!important;color:var(--red)}
+.rf-row{display:flex;gap:8px}
+.rf-btn{flex:1;padding:10px;border:.5px solid var(--border2);border-radius:8px;background:var(--bg3);font-family:'Syne',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;color:var(--text2)}
+.rf-btn:hover{background:var(--surface2);color:var(--text)}
+.rf-btn.sel-r{background:var(--green-bg);border-color:rgba(93,232,160,.4);color:var(--green)}
+.rf-btn.sel-f{background:var(--red-bg);border-color:rgba(232,93,93,.4);color:var(--red)}
+.gap-input{background:transparent;border:none;border-bottom:2px solid var(--accent);padding:2px 8px;font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--accent);width:120px;outline:none;font-family:'DM Mono',monospace}
+.write-field{width:100%;background:var(--bg3);border:.5px solid var(--border2);border-radius:var(--r);padding:14px;font-family:'Syne',sans-serif;font-size:14px;color:var(--text);outline:none;resize:vertical;min-height:200px;line-height:1.7;transition:border-color .15s}
+.write-field:focus{border-color:var(--accent)}
+.write-brief{background:var(--bg2);border:.5px solid var(--border);border-radius:var(--r-lg);padding:20px;margin-bottom:13px}
+.write-brief h3{font-size:14px;font-weight:700;margin-bottom:8px}
+.write-brief p{font-size:13px;color:var(--text2);line-height:1.7;font-weight:400}
+.criteria-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+.criteria-chip{font-size:11px;font-weight:600;padding:3px 10px;border-radius:100px;background:var(--surface);color:var(--text3);border:.5px solid var(--border)}
+.word-meter{font-size:11px;color:var(--text3);margin-top:6px;font-family:'DM Mono',monospace}
+.word-meter.ok{color:var(--green)}
+.speak-points{display:flex;flex-direction:column;gap:7px;margin-bottom:16px}
+.speak-point{font-size:13px;padding:9px 13px;background:var(--bg2);border:.5px solid var(--border);border-radius:8px;color:var(--text2);font-weight:400}
+.starter-msg{display:flex;align-items:flex-start;gap:12px;padding:16px;background:var(--bg2);border:.5px solid var(--border);border-radius:var(--r-lg);margin-bottom:14px}
+.starter-av{font-size:24px}
+.starter-who{font-size:11px;font-weight:700;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px}
+.starter-line{font-size:14px;font-style:italic;color:var(--text);line-height:1.55}
+.submit-bar{position:sticky;bottom:0;background:var(--bg);border-top:.5px solid var(--border);padding:14px 0;display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:32px;flex-wrap:wrap;z-index:10}
+.section-div{border:none;border-top:.5px solid var(--border);margin:30px 0}
+/* VOCAB TOOLTIP */
+.vocab-tooltip{position:fixed;z-index:800;width:290px;background:var(--bg2);border:.5px solid var(--border2);border-radius:14px;padding:16px;box-shadow:0 20px 60px rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:opacity .15s;font-size:13px}
+.vocab-tooltip.show{opacity:1;pointer-events:all}
+.vt-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+.vt-word{font-size:18px;font-weight:700}
+.vt-phonetic{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;margin-bottom:5px}
+.vt-pos{font-size:10px;font-weight:600;padding:2px 7px;border-radius:4px;background:var(--surface);color:var(--text3);display:inline-block;margin-bottom:8px;border:.5px solid var(--border)}
+.vt-translation{font-size:15px;font-weight:700;color:var(--accent);margin-bottom:7px}
+.vt-example{font-size:11px;color:var(--text2);line-height:1.6;font-style:italic;margin-bottom:10px}
+.vt-lang-row{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:10px}
+.vt-lb{font-size:10px;font-weight:700;padding:3px 7px;border-radius:5px;background:var(--surface);border:.5px solid var(--border);color:var(--text3);cursor:pointer;transition:all .15s;font-family:'Syne',sans-serif}
+.vt-lb.active{background:var(--accent);color:#000;border-color:var(--accent)}
+.vt-ab{background:none;border:none;font-size:16px;cursor:pointer;padding:0;line-height:1;opacity:.7;transition:opacity .15s}
+.vt-ab:hover,.vt-ab.playing{opacity:1}
+.vt-save{width:100%;background:var(--surface);border:.5px solid var(--border2);border-radius:8px;padding:8px;font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--text2);cursor:pointer;transition:all .2s}
+.vt-save:hover{background:var(--purple-bg);color:var(--purple);border-color:rgba(167,139,250,.3)}
+.vt-save.saved{background:var(--green-bg);color:var(--green);border-color:rgba(93,232,160,.3)}
+.vt-loading{font-size:12px;color:var(--text3);display:flex;align-items:center;gap:5px;margin-top:5px}
+.vt-dot{width:5px;height:5px;border-radius:50%;background:var(--text3);animation:pulse .9s ease infinite}
+.vt-dot:nth-child(2){animation-delay:.2s}.vt-dot:nth-child(3){animation-delay:.4s}
+/* RESULTS */
+#resultsScreen{display:none;padding:38px 0;animation:fadeUp .4s ease}
+.results-hero{text-align:center;padding:40px 0 32px;background:var(--bg2);border:.5px solid var(--border);border-radius:var(--r-lg);margin-bottom:22px}
+.res-score{font-size:72px;font-weight:800;letter-spacing:-4px;line-height:1;font-family:'Instrument Serif',serif}
+.res-score.pass{color:var(--green)}.res-score.mid{color:var(--accent)}.res-score.fail{color:var(--red)}
+.res-label{font-size:14px;color:var(--text2);margin-top:6px}
+.module-scores-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:22px}
+.ms-card{background:var(--bg2);border:.5px solid var(--border);border-radius:var(--r-lg);padding:16px;text-align:center}
+.ms-score{font-size:24px;font-weight:800;margin-bottom:3px}
+.ms-label{font-size:10px;color:var(--text3);font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+/* HISTORY */
+#historyScreen{display:none;padding:38px 0;animation:fadeUp .35s ease}
+.chart-wrap{background:var(--bg2);border:.5px solid var(--border);border-radius:var(--r-lg);padding:22px;margin-bottom:18px}
+.chart-bars{display:flex;align-items:flex-end;gap:5px;height:80px;margin-top:12px}
+.chart-bar{flex:1;border-radius:3px 3px 0 0;min-width:14px;transition:all .3s}
+.hist-list{display:flex;flex-direction:column;gap:9px}
+.hist-card{background:var(--bg2);border:.5px solid var(--border);border-radius:var(--r-lg);padding:16px 18px;display:flex;align-items:center;gap:13px;cursor:pointer;transition:all .2s}
+.hist-card:hover{border-color:var(--border2);background:var(--bg3)}
+.hist-score{font-size:22px;font-weight:800;min-width:48px;text-align:center;font-family:'DM Mono',monospace}
+.hist-score.pass{color:var(--green)}.hist-score.mid{color:var(--accent)}.hist-score.fail{color:var(--red)}
+.hist-info{flex:1}
+.hist-title{font-size:13px;font-weight:700;margin-bottom:2px}
+.hist-meta{font-size:11px;color:var(--text3);font-weight:400}
+.hist-empty{text-align:center;padding:48px;color:var(--text3);font-size:13px;font-weight:400;border:.5px dashed var(--border2);border-radius:var(--r-lg)}
+.hist-empty span{font-size:28px;display:block;margin-bottom:10px;opacity:.4}
+/* FLASHCARDS */
+#flashcardScreen{display:none;padding:38px 0;animation:fadeUp .35s ease}
+.fc-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:22px;gap:12px;flex-wrap:wrap}
+.fc-title h2{font-family:'Instrument Serif',serif;font-size:28px;margin-bottom:3px}
+.fc-title h2 em{color:var(--purple);font-style:italic}
+.fc-title p{font-size:13px;color:var(--text2);font-weight:400}
+.fc-head-actions{display:flex;gap:7px;flex-wrap:wrap}
+.fc-tabs{display:flex;background:var(--bg3);border:.5px solid var(--border2);border-radius:10px;padding:3px;gap:2px;margin-bottom:18px}
+.fc-tab{flex:1;padding:7px 10px;font-family:'Syne',sans-serif;font-size:11px;font-weight:700;letter-spacing:.03em;background:transparent;border:none;color:var(--text3);cursor:pointer;border-radius:7px;transition:all .2s;white-space:nowrap}
+.fc-tab.active{background:var(--surface2);color:var(--text)}
+.fc-add-row{display:flex;gap:7px;margin-bottom:16px;flex-wrap:wrap}
+.fc-add-input{flex:1;min-width:130px;background:var(--bg2);border:.5px solid var(--border2);border-radius:var(--r);padding:10px 13px;font-family:'Syne',sans-serif;font-size:13px;color:var(--text);outline:none;transition:border-color .15s}
+.fc-add-input:focus{border-color:var(--accent)}
+.fc-add-input::placeholder{color:var(--text3)}
+.fc-lang-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:14px;padding:10px 13px;background:var(--bg2);border:.5px solid var(--border);border-radius:var(--r)}
+.fc-lang-label{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);white-space:nowrap}
+.fc-lang-btns{display:flex;gap:4px;flex-wrap:wrap}
+.fc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:11px;margin-bottom:24px}
+.fc-empty{text-align:center;padding:48px 0;color:var(--text3);font-size:13px;font-weight:400;border:.5px dashed var(--border2);border-radius:var(--r-lg);grid-column:1/-1}
+.fc-empty span{font-size:28px;display:block;margin-bottom:9px;opacity:.4}
+.fc-card{background:var(--bg2);border:.5px solid var(--border);border-radius:var(--r-lg);padding:16px;cursor:pointer;transition:all .25s;position:relative;min-height:126px;display:flex;flex-direction:column;justify-content:space-between}
+.fc-card:hover{border-color:var(--purple);background:var(--bg3);transform:translateY(-2px)}
+.fc-card.due-now{border-color:rgba(249,115,22,.45)!important}
+.fc-card.due-now::before{content:'Review';position:absolute;top:-6px;right:10px;font-size:9px;font-weight:700;background:var(--orange);color:#000;padding:1px 7px;border-radius:4px}
+.fc-card.flipped .fc-front{display:none}.fc-card.flipped .fc-back{display:flex}
+.fc-front{display:flex;flex-direction:column;height:100%}
+.fc-back{display:none;flex-direction:column;height:100%}
+.fc-word{font-size:18px;font-weight:700;margin-bottom:3px}
+.fc-phonetic{font-size:10px;color:var(--text3);font-family:'DM Mono',monospace;margin-bottom:5px}
+.fc-pos{font-size:9px;font-weight:600;padding:2px 6px;border-radius:4px;background:var(--surface);color:var(--text3);display:inline-block;margin-bottom:7px;border:.5px solid var(--border)}
+.fc-aud{position:absolute;top:9px;right:30px;background:none;border:none;color:var(--text3);cursor:pointer;font-size:13px;opacity:0;transition:opacity .15s}
+.fc-del{position:absolute;top:9px;right:9px;background:none;border:none;color:var(--text3);cursor:pointer;font-size:13px;opacity:0;transition:opacity .15s}
+.fc-card:hover .fc-aud,.fc-card:hover .fc-del{opacity:1}
+.fc-del:hover{color:var(--red)}
+.fc-trans{font-size:17px;font-weight:700;color:var(--purple);margin-bottom:3px}
+.fc-ex{font-size:11px;color:var(--text2);font-style:italic;line-height:1.5;font-weight:400;margin-bottom:auto}
+.fc-hint{font-size:9px;color:var(--text3);text-align:right;margin-top:7px;letter-spacing:.04em;text-transform:uppercase;font-weight:600}
+.fc-src{font-size:9px;color:var(--text3);font-weight:600;letter-spacing:.06em;text-transform:uppercase;margin-top:auto}
+.srs-row{display:flex;gap:5px;margin-top:7px}
+.srs-btn{flex:1;padding:5px;border-radius:6px;border:none;font-family:'Syne',sans-serif;font-size:9px;font-weight:700;cursor:pointer;letter-spacing:.04em;transition:all .15s}
+.srs-a{background:var(--red-bg);color:var(--red)}.srs-h{background:var(--orange-bg);color:var(--orange)}
+.srs-g{background:var(--blue-bg);color:var(--blue)}.srs-e{background:var(--green-bg);color:var(--green)}
+.fc-exam-sec{background:var(--bg2);border:.5px solid var(--border);border-radius:var(--r-lg);padding:20px;margin-top:4px}
+.fc-exam-sec h3{font-size:14px;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.fc-exam-sec p{font-size:12px;color:var(--text2);font-weight:400;margin-bottom:12px;line-height:1.6}
+/* VOCAB EXAM */
+#vocabExamScreen{display:none;padding:38px 0;animation:fadeUp .35s ease}
+.ve-top{display:flex;align-items:center;justify-content:space-between;padding:17px 0 0;border-bottom:.5px solid var(--border);margin-bottom:26px;flex-wrap:wrap;gap:9px}
+.ve-card{background:var(--bg2);border:.5px solid var(--border);border-radius:var(--r-lg);padding:26px;text-align:center;margin-bottom:16px}
+.ve-word{font-size:38px;font-weight:800;letter-spacing:-1px;margin-bottom:5px;font-family:'Instrument Serif',serif;font-style:italic;color:var(--accent)}
+.ve-meta{font-size:11px;color:var(--text3);margin-bottom:5px;font-family:'DM Mono',monospace}
+.ve-aud{display:inline-flex;align-items:center;gap:5px;background:var(--surface);border:.5px solid var(--border2);border-radius:6px;padding:5px 12px;font-family:'Syne',sans-serif;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer;transition:all .15s;margin-top:7px}
+.ve-aud:hover,.ve-aud.playing{background:var(--blue-bg);color:var(--blue);border-color:rgba(93,184,232,.3)}
+.ve-opts{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:14px}
+.ve-opt{padding:12px;border:.5px solid var(--border);border-radius:var(--r);cursor:pointer;font-size:13px;font-weight:600;text-align:center;transition:all .15s;background:var(--bg3)}
+.ve-opt:hover:not(.dis){border-color:var(--accent);background:var(--accent-dim)}
+.ve-opt.correct{background:var(--green-bg);border-color:rgba(93,232,160,.4);color:var(--green)}
+.ve-opt.wrong{background:var(--red-bg);border-color:rgba(232,93,93,.4);color:var(--red)}
+.ve-opt.dis{cursor:not-allowed}
+.ve-sb{display:flex;justify-content:space-between;font-size:12px;color:var(--text3);font-weight:600;margin-bottom:7px}
+.ve-big{font-size:58px;font-weight:800;letter-spacing:-3px;line-height:1}
+.ve-big.pass{color:var(--green)}.ve-big.mid{color:var(--accent)}.ve-big.fail{color:var(--red)}
+/* SAVED EXAMS */
+#savedExamsScreen{display:none;padding:38px 0;animation:fadeUp .35s ease}
+.saved-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}
+.saved-card{background:var(--bg2);border:.5px solid var(--border);border-radius:var(--r-lg);padding:18px;cursor:pointer;transition:all .2s;position:relative}
+.saved-card:hover{border-color:var(--accent);background:var(--bg3)}
+.saved-card-title{font-size:14px;font-weight:700;margin-bottom:4px}
+.saved-card-meta{font-size:11px;color:var(--text3);margin-bottom:12px}
+.saved-card-score{font-size:22px;font-weight:800;font-family:'DM Mono',monospace}
+.saved-card-score.pass{color:var(--green)}.saved-card-score.mid{color:var(--accent)}.saved-card-score.fail{color:var(--red)}
+/* API KEY BANNER */
+#apiBanner{position:fixed;bottom:0;left:0;right:0;z-index:400;background:var(--bg2);border-top:.5px solid var(--border2);padding:10px 20px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:12px}
+/* ANIMATIONS */
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes scaleIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+@media(max-width:620px){
+  .subject-grid,.mode-row,.levels-grid,.mode-select-row,.module-scores-grid,.ve-opts,.saved-grid{grid-template-columns:1fr}
+  .home-headline{font-size:34px}
+  header{flex-direction:column;align-items:flex-start}
+  .fc-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:380px){.fc-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="vocab-tooltip" id="VT"></div>
+
+<!-- UPGRADE MODAL -->
+<div id="upgradeModal">
+  <div class="upgrade-box">
+    <div style="font-size:32px;margin-bottom:10px">⭐</div>
+    <h2>Upgrade to <em>Pro</em></h2>
+    <p>You've used all your free exams this month. Upgrade to keep practicing and reach your exam goal.</p>
+    <div class="plan-cards">
+      <div class="plan-card">
+        <div class="plan-card-label">Free</div>
+        <div class="plan-price">€0 <span>/ month</span></div>
+        <div class="plan-features">
+          <b>2</b> AI exams / month<br>
+          Save &amp; redo exams<br>
+          Flashcard deck<br>
+          Quick modules
+        </div>
+      </div>
+      <div class="plan-card pro-card">
+        <div class="plan-card-label">Pro ✦</div>
+        <div class="plan-price">€9 <span>/ month</span></div>
+        <div class="plan-features">
+          <b>20</b> AI exams / month<br>
+          Save &amp; redo exams<br>
+          Flashcard deck<br>
+          PDF reports<br>
+          Priority AI speed
+        </div>
+      </div>
+    </div>
+    <button class="btn-upgrade" onclick="activatePro()">✦ Upgrade to Pro — €9/month</button>
+    <div style="font-size:11px;color:var(--text3);margin-bottom:10px">(Demo: clicking upgrades instantly — integrate Stripe to charge)</div>
+    <button class="btn-upgrade-skip" onclick="closeUpgrade()">Maybe later</button>
+  </div>
+</div>
+
+<!-- AUTH OVERLAY -->
+<div id="authOverlay">
+  <div class="auth-box">
+    <div class="auth-logo"><span class="lm">Lx</span><div class="ln">LexiLoop</div></div>
+    <div class="auth-tabs">
+      <button class="auth-tab active" onclick="switchTab('login')">Sign In</button>
+      <button class="auth-tab" onclick="switchTab('register')">Register</button>
+    </div>
+    <div id="authMsg" class="auth-msg"></div>
+    <div id="loginForm">
+      <input class="auth-field" type="email" id="lEmail" placeholder="Email address" autocomplete="email">
+      <input class="auth-field" type="password" id="lPass" placeholder="Password" autocomplete="current-password">
+      <button class="btn-auth" onclick="doLogin()">Sign In →</button>
+    </div>
+    <div id="registerForm" style="display:none">
+      <input class="auth-field" type="text" id="rName" placeholder="Your name" autocomplete="name">
+      <input class="auth-field" type="email" id="rEmail" placeholder="Email address" autocomplete="email">
+      <input class="auth-field" type="password" id="rPass" placeholder="Password (min 6 chars)" autocomplete="new-password">
+      <button class="btn-auth" onclick="doRegister()">Create Account →</button>
+    </div>
+    <div class="auth-or">or</div>
+    <button class="btn-google" onclick="doGoogle()">
+      <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z"/><path fill="#FBBC05" d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.958L3.964 6.29C4.672 4.163 6.656 3.58 9 3.58z"/></svg>
+      Continue with Google
+    </button>
+  </div>
+</div>
+
+<div class="app">
+<header>
+  <div class="logo" onclick="goHome()">
+    <span class="logo-mark">Lx</span><div class="logo-sep"></div>
+    <span class="logo-name">LexiLoop</span><div class="logo-sep"></div>
+    <span class="logo-sub">English & German Exams</span>
+  </div>
+  <div class="header-right">
+    <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙</button>
+    <div class="user-btn" id="userBtn" onclick="showUserMenu()">
+      <div class="user-avatar" id="userAv">?</div>
+      <span id="userNm">Account</span>
+    </div>
+  </div>
+</header>
+
+<!-- HOME -->
+<div id="homeScreen">
+  <div style="margin-bottom:20px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+    <div class="quota-bar" style="flex:1;min-width:220px">
+      <span class="quota-label">Exams this month</span>
+      <span class="quota-count" id="quotaCount">—</span>
+      <span id="planBadgeHome"></span>
+    </div>
+    <button class="btn-sm" onclick="goSavedExams()" style="white-space:nowrap">📁 Saved Exams</button>
+    <button class="btn-sm accent" onclick="showUpgrade()" id="upgradeBtnHome" style="white-space:nowrap;display:none">✦ Upgrade</button>
+  </div>
+  <div class="home-eyebrow"><span></span>Official exam preparation · English & German · A1–C2</div>
+  <h1 class="home-headline">Master your<br><em>language exam</em></h1>
+  <p class="home-sub">AI-generated exams faithfully replicating official Goethe-Institut and Cambridge formats. Real timer, listening audio, vocabulary lookup, spaced repetition flashcards.</p>
+  <div class="subject-grid">
+    <div class="subject-card" onclick="selectSubject('de')">
+      <span class="sc-flag">🇩🇪</span>
+      <div class="sc-lang">German — Deutsch</div>
+      <div class="sc-desc">Goethe-Institut format: Leseverstehen, Hörverstehen, Schriftlicher Ausdruck & Mündlicher Ausdruck.</div>
+      <div class="sc-levels"><span class="sc-level-tag">A1</span><span class="sc-level-tag">A2</span><span class="sc-level-tag">B1</span><span class="sc-level-tag">B2</span><span class="sc-level-tag">C1</span><span class="sc-level-tag">C2</span></div>
+      <div class="sc-footer"><span class="sc-cta">Choose level</span><span class="sc-arrow">→</span></div>
+    </div>
+    <div class="subject-card" onclick="selectSubject('en')">
+      <span class="sc-flag">🇬🇧</span>
+      <div class="sc-lang">English — Cambridge</div>
+      <div class="sc-desc">Cambridge CEFR structure: Reading, Listening, Writing & Speaking. Matches KET / PET / FCE / CAE / CPE.</div>
+      <div class="sc-levels"><span class="sc-level-tag">A1</span><span class="sc-level-tag">A2</span><span class="sc-level-tag">B1</span><span class="sc-level-tag">B2</span><span class="sc-level-tag">C1</span><span class="sc-level-tag">C2</span></div>
+      <div class="sc-footer"><span class="sc-cta">Choose level</span><span class="sc-arrow">→</span></div>
+    </div>
+  </div>
+  <div class="mode-row">
+    <div class="mode-card"><h3><span class="mode-dot" style="background:var(--accent)"></span>Real Exam Mode</h3><p>Timer active. Official format. Listening played as audio. Full AI correction + saved to history.</p></div>
+    <div class="mode-card"><h3><span class="mode-dot" style="background:var(--blue)"></span>Practice Mode</h3><p>Hover any word → translation + pronunciation. Save unknown words to your Flashcard Deck.</p></div>
+  </div>
+  <div class="home-qcard" onclick="location.href='oral.html'">
+    <div class="hqc-left"><span class="hqc-icon">🎙</span><div class="hqc-body"><h3>Oral Exam Mode</h3><p>IELTS & Goethe · Record your answer · AI evaluation with official rubric</p></div></div>
+    <span class="badge-pill badge-purple">Beta</span>
+  </div>
+  <div class="home-qcard" onclick="goFlashcards()">
+    <div class="hqc-left"><span class="hqc-icon">🗂️</span><div class="hqc-body"><h3>My Flashcard Deck</h3><p>Spaced repetition · Audio · Multi-language · Vocab exams</p></div></div>
+    <span class="badge-pill badge-purple" id="fcCountBadge">0 words</span>
+  </div>
+  <div class="home-qcard" onclick="goHistory()">
+    <div class="hqc-left"><span class="hqc-icon">📊</span><div class="hqc-body"><h3>My Progress</h3><p>Score history, charts, improvement tracking</p></div></div>
+    <span class="badge-pill badge-green" id="histBadge">0 exams</span>
+  </div>
+  <div class="quick-card">
+    <h3>⚡ Quick Exam — Single Module</h3>
+    <p>Test one skill instantly. Does not count toward your monthly quota.</p>
+    <div class="quick-btns">
+      <button class="quick-btn" onclick="startQuick('reading')">📖 Reading</button>
+      <button class="quick-btn" onclick="startQuick('listening')">🎧 Listening</button>
+      <button class="quick-btn" onclick="startQuick('writing')">✍️ Writing</button>
+      <button class="quick-btn" onclick="startQuick('gapfill')">🔤 Gap-Fill</button>
+    </div>
+  </div>
+</div>
+
+<!-- LEVEL SCREEN -->
+<div id="levelScreen">
+  <button class="back-btn" onclick="goHome()">← Back</button>
+  <div class="screen-eyebrow" id="lvlEyebrow">Select level</div>
+  <h2 class="screen-title">Choose your <em>level</em></h2>
+  <p class="screen-sub">Select the CEFR level that matches your preparation goal.</p>
+  <div class="levels-grid" id="levelsGrid"></div>
+  <div style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:9px">Exam mode</div>
+  <div class="mode-select-row">
+    <div class="mode-select-card selected" id="modeReal" onclick="selectMode('real')"><span class="msc-icon">🎯</span><div class="msc-body"><h4>Real Exam</h4><p>Timer. Official format. Audio listening. Saved to history.</p></div></div>
+    <div class="mode-select-card" id="modePractice" onclick="selectMode('practice')"><span class="msc-icon">📖</span><div class="msc-body"><h4>Practice Mode</h4><p>Hover words → translation, audio, save to deck.</p></div></div>
+  </div>
+  <div id="quotaWarning" style="display:none;background:var(--orange-bg);border:.5px solid rgba(249,115,22,.3);border-radius:var(--r);padding:12px 16px;font-size:13px;color:var(--orange);margin-bottom:14px"></div>
+  <button class="btn-start" id="btnStart" disabled onclick="handleGenerateExam()">Generate Exam →</button>
+</div>
+
+<!-- LOADING -->
+<div id="loadingScreen">
+  <div class="loader-orbit"></div>
+  <div class="loader-title" id="loaderTitle">Generating your exam…</div>
+  <div class="loader-sub" id="loaderSub">The AI examiner is preparing all modules</div>
+</div>
+
+<!-- EXAM / RESULTS / HISTORY / FLASHCARD / VOCAB EXAM -->
+<div id="examScreen"></div>
+<div id="resultsScreen"></div>
+<div id="historyScreen">
+  <button class="back-btn" onclick="goHome()">← Home</button>
+  <div class="screen-eyebrow">Progress tracking</div>
+  <h2 class="screen-title">My <em>Progress</em></h2>
+  <div class="chart-wrap" id="chartWrap" style="display:none">
+    <h3>Score history <span id="chartSub" style="font-size:11px;color:var(--text3);font-weight:400;font-family:'DM Mono',monospace"></span></h3>
+    <div class="chart-bars" id="chartBars"></div>
+    <div style="display:flex;gap:12px;margin-top:7px;font-size:11px;color:var(--text3);flex-wrap:wrap">
+      <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:var(--green);margin-right:4px"></span>Pass ≥70</span>
+      <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:var(--accent);margin-right:4px"></span>Close 50–69</span>
+      <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:var(--red);margin-right:4px"></span>Fail &lt;50</span>
+    </div>
+  </div>
+  <div class="hist-list" id="histList"></div>
+</div>
+<div id="savedExamsScreen">
+  <button class="back-btn" onclick="goHome()">← Home</button>
+  <div class="screen-eyebrow">Your library</div>
+  <h2 class="screen-title">Saved <em>Exams</em></h2>
+  <p style="font-size:13px;color:var(--text2);margin-bottom:6px;font-weight:400">Retake any saved exam — it won't count toward your monthly quota.</p>
+  <div class="saved-grid" id="savedGrid"></div>
+</div>
+<div id="flashcardScreen">
+  <div class="fc-header">
+    <div class="fc-title"><h2>My <em>Flashcard</em> Deck</h2><p>Click card to flip · 🔊 for audio · Rate with SRS buttons</p></div>
+    <div class="fc-head-actions">
+      <button class="btn-sm" onclick="goHome()">← Home</button>
+      <button class="btn-sm red" id="fcClearBtn" onclick="clearFC()" style="display:none">Clear All</button>
+    </div>
+  </div>
+  <div class="fc-tabs">
+    <button class="fc-tab active" id="fcTabAll" onclick="setFcTab('all')">All Words</button>
+    <button class="fc-tab" id="fcTabDue" onclick="setFcTab('due')">Due for Review</button>
+    <button class="fc-tab" id="fcTabStudy" onclick="setFcTab('study')">Study Mode</button>
+  </div>
+  <div id="fcMain">
+    <div class="fc-add-row">
+      <input class="fc-add-input" id="fcAddW" placeholder="Add word manually…" onkeydown="if(event.key==='Enter')addManual()">
+      <input class="fc-add-input" id="fcAddT" placeholder="Translation…" onkeydown="if(event.key==='Enter')addManual()">
+      <button class="btn-sm accent" onclick="addManual()" style="padding:10px 16px">+ Add</button>
+    </div>
+    <div class="fc-lang-bar"><span class="fc-lang-label">Translation:</span><div class="fc-lang-btns" id="fcLangBtns"></div></div>
+    <div class="fc-grid" id="fcGrid"></div>
+    <div class="fc-exam-sec" id="fcExamSec" style="display:none">
+      <h3>🎯 Vocabulary Exam <span class="badge-pill badge-purple" id="fcExamBadge">0 words</span></h3>
+      <p>Test yourself on all saved words. Multiple-choice results update SRS intervals automatically.</p>
+      <div style="display:flex;gap:9px;flex-wrap:wrap">
+        <button class="btn-start" onclick="startVE(false)" style="max-width:230px">Start Vocab Exam →</button>
+        <button class="btn-start" onclick="startVE(true)" style="max-width:230px;background:var(--blue)">🔊 Audio Listening Exam →</button>
+      </div>
+    </div>
+  </div>
+  <div id="fcStudy" style="display:none"></div>
+</div>
+<div id="vocabExamScreen">
+  <div class="ve-top">
+    <div class="exam-meta"><span class="exam-badge vocab">Vocab Exam</span><span class="exam-title" id="veTitle">Flashcard Words</span></div>
+    <div class="exam-actions"><button class="btn-sm" onclick="goHome()">🏠 Home</button><button class="btn-sm" onclick="goFlashcards()">← Deck</button></div>
+  </div>
+  <div style="margin-bottom:20px">
+    <div class="ve-sb"><span id="veProg">Question 1 of 10</span><span id="veScore">Score: 0</span></div>
+    <div class="progress-track"><div class="progress-fill" id="veBar" style="width:0%"></div></div>
+  </div>
+  <div id="veContent"></div>
+</div>
+</div><!-- .app -->
+
+<script>
+// ═══════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════
+const S={
+  ui:'en',subject:null,level:null,mode:'real',examData:null,
+  answers:{},gapAnswers:{},vocabLang:'es',vocabCache:{},
+  user:null,flashcards:[],fcLang:'es',fcTab:'all',
+  veQuestions:[],veIndex:0,veScore:0,veAudio:false,
+  timerInt:null,timerSec:0,history:[],quickMod:null,studyIdx:0,
+  savedExams:[],listenPlays:2
+};
+const LEVELS={
+  de:[{code:'A1',name:'Start Deutsch 1',desc:'Goethe A1',time:65},{code:'A2',name:'Start Deutsch 2',desc:'Goethe A2',time:65},{code:'B1',name:'Zertifikat B1',desc:'Goethe B1',time:90},{code:'B2',name:'Goethe B2',desc:'Goethe B2',time:105},{code:'C1',name:'Goethe C1',desc:'Goethe C1',time:150},{code:'C2',name:'Goethe C2',desc:'Goethe C2',time:180}],
+  en:[{code:'A1',name:'Key (KET)',desc:'Cambridge A1',time:70},{code:'A2',name:'Key for Schools',desc:'Cambridge A2',time:70},{code:'B1',name:'Preliminary (PET)',desc:'Cambridge B1',time:90},{code:'B2',name:'First (FCE)',desc:'Cambridge B2',time:110},{code:'C1',name:'Advanced (CAE)',desc:'Cambridge C1',time:150},{code:'C2',name:'Proficiency (CPE)',desc:'Cambridge C2',time:180}]
+};
+const LANGS=[{code:'es',l:'ES',n:'Spanish'},{code:'fr',l:'FR',n:'French'},{code:'pt',l:'PT',n:'Portuguese'},{code:'it',l:'IT',n:'Italian'},{code:'nl',l:'NL',n:'Dutch'},{code:'pl',l:'PL',n:'Polish'},{code:'ru',l:'RU',n:'Russian'},{code:'zh',l:'ZH',n:'Chinese'},{code:'ja',l:'JA',n:'Japanese'},{code:'ar',l:'AR',n:'Arabic'},{code:'tr',l:'TR',n:'Turkish'},{code:'uk',l:'UK',n:'Ukrainian'}];
+const TOPICS_DE=['Umwelt und Natur','Arbeit und Beruf','Familie und Freizeit','Reisen und Tourismus','Gesundheit und Ernährung','Wohnen und Stadt','Technologie und Medien','Bildung und Schule','Kultur und Geschichte','Sport','Wirtschaft','Wissenschaft'];
+const TOPICS_EN=['Environment','Work and Career','Family and Leisure','Travel and Tourism','Health and Food','Urban Living','Technology','Education','Culture and History','Sports','Business and Economics','Science'];
+const FREE_QUOTA=2, PRO_QUOTA=20;
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+
+// ═══════════════════════════════════════════
+// STORAGE
+// ═══════════════════════════════════════════
+function loadLS(){
+  try{const u=localStorage.getItem('ll_user');if(u)S.user=JSON.parse(u);}catch(e){}
+  try{const f=localStorage.getItem('ll_fc');if(f)S.flashcards=JSON.parse(f);}catch(e){}
+  try{const h=localStorage.getItem('ll_hist');if(h)S.history=JSON.parse(h);}catch(e){}
+  try{const sv=localStorage.getItem('ll_saved');if(sv)S.savedExams=JSON.parse(sv);}catch(e){}
+}
+function saveUser(u){S.user=u;localStorage.setItem('ll_user',JSON.stringify(u));}
+function saveFC(){localStorage.setItem('ll_fc',JSON.stringify(S.flashcards));updBadges();}
+function saveHist(){localStorage.setItem('ll_hist',JSON.stringify(S.history));}
+function saveSaved(){localStorage.setItem('ll_saved',JSON.stringify(S.savedExams));}
+
+// ═══════════════════════════════════════════
+// QUOTA / PLAN
+// ═══════════════════════════════════════════
+function getMonthKey(){const d=new Date();return `${d.getFullYear()}-${d.getMonth()}`;}
+function getQuotaUsed(){
+  try{const raw=localStorage.getItem('ll_quota');if(!raw)return 0;const q=JSON.parse(raw);return q.month===getMonthKey()?q.used:0;}catch(e){return 0;}
+}
+function incQuota(){
+  const used=getQuotaUsed()+1;
+  localStorage.setItem('ll_quota',JSON.stringify({month:getMonthKey(),used}));
+  updQuotaUI();
+}
+function isPro(){try{return JSON.parse(localStorage.getItem('ll_pro')||'false');}catch(e){return false;}}
+function getQuotaMax(){return isPro()?PRO_QUOTA:FREE_QUOTA;}
+function canGenerate(){return getQuotaUsed()<getQuotaMax();}
+function updQuotaUI(){
+  const used=getQuotaUsed(),max=getQuotaMax(),rem=max-used;
+  const el=document.getElementById('quotaCount');
+  const badge=document.getElementById('planBadgeHome');
+  const upgradeBtn=document.getElementById('upgradeBtnHome');
+  if(el){
+    el.textContent=`${used}/${max} used`;
+    el.className='quota-count'+(rem===0?' none':rem<=1?' low':'');
+  }
+  if(badge) badge.innerHTML=isPro()?'<span class="plan-badge plan-pro">✦ Pro</span>':'<span class="plan-badge plan-free">Free</span>';
+  if(upgradeBtn) upgradeBtn.style.display=isPro()?'none':'inline-flex';
+  // quota warning on level screen
+  const warn=document.getElementById('quotaWarning');
+  const btn=document.getElementById('btnStart');
+  if(warn&&btn){
+    if(!canGenerate()){
+      warn.style.display='block';
+      warn.textContent=`You've used all ${max} exams this month. Quick modules (Reading/Listening/Writing/Gap-Fill) are always free. Upgrade for more full exams.`;
+      btn.disabled=true;
+    }else{
+      warn.style.display='none';
+      if(S.level) btn.disabled=false;
+    }
+  }
+}
+function showUpgrade(){document.getElementById('upgradeModal').classList.add('show');}
+function closeUpgrade(){document.getElementById('upgradeModal').classList.remove('show');}
+function activatePro(){
+  localStorage.setItem('ll_pro','true');
+  closeUpgrade();
+  updQuotaUI();
+  alert('✦ Pro activated! You now have 20 exams/month.\n\n(In production, connect Stripe here.)');
+}
+
+// ═══════════════════════════════════════════
+// AUTH
+// ═══════════════════════════════════════════
+function switchTab(t){
+  document.querySelectorAll('.auth-tab').forEach((x,i)=>x.classList.toggle('active',(i===0&&t==='login')||(i===1&&t==='register')));
+  document.getElementById('loginForm').style.display=t==='login'?'':'none';
+  document.getElementById('registerForm').style.display=t==='register'?'':'none';
+  document.getElementById('authMsg').textContent='';
+}
+function setAMsg(m,ok){const el=document.getElementById('authMsg');el.textContent=m;el.className='auth-msg'+(ok?' ok':'');}
+function getUsers(){try{return JSON.parse(localStorage.getItem('ll_users')||'{}');}catch(e){return{};}}
+function doRegister(){
+  const nm=document.getElementById('rName').value.trim(),em=document.getElementById('rEmail').value.trim().toLowerCase(),pw=document.getElementById('rPass').value;
+  if(!nm||!em||!pw){setAMsg('Fill all fields.');return;}
+  if(pw.length<6){setAMsg('Min 6 chars.');return;}
+  const u=getUsers();if(u[em]){setAMsg('Email already registered.');return;}
+  u[em]={nm,pw,plan:'free'};localStorage.setItem('ll_users',JSON.stringify(u));
+  saveUser({name:nm,email:em,avatar:nm[0].toUpperCase(),plan:'free'});
+  setAMsg('Account created!',true);setTimeout(closeAuth,600);
+}
+function doLogin(){
+  const em=document.getElementById('lEmail').value.trim().toLowerCase(),pw=document.getElementById('lPass').value;
+  if(!em||!pw){setAMsg('Fill all fields.');return;}
+  const u=getUsers();if(!u[em]||u[em].pw!==pw){setAMsg('Invalid email or password.');return;}
+  saveUser({name:u[em].nm,email:em,avatar:u[em].nm[0].toUpperCase(),plan:u[em].plan||'free'});
+  setAMsg('Welcome back!',true);setTimeout(closeAuth,600);
+}
+function doGoogle(){
+  saveUser({name:'Google User',email:'google@LexiLoop.app',avatar:'G',plan:'free'});
+  setAMsg('Signed in!',true);setTimeout(closeAuth,600);
+}
+function closeAuth(){
+  const ov=document.getElementById('authOverlay');
+  ov.style.animation='fadeIn .2s ease reverse';
+  setTimeout(()=>{ov.style.display='none';},200);
+  updUserBtn();updQuotaUI();
+}
+function updUserBtn(){
+  if(!S.user)return;
+  document.getElementById('userAv').textContent=S.user.avatar||'?';
+  document.getElementById('userNm').textContent=S.user.name.split(' ')[0];
+}
+function showUserMenu(){
+  const plan=isPro()?'Pro ✦':'Free';
+  if(confirm(`Signed in as ${S.user?.name||'?'} (${plan} plan).\n\nSign out?`)){
+    S.user=null;localStorage.removeItem('ll_user');
+    document.getElementById('userAv').textContent='?';
+    document.getElementById('userNm').textContent='Account';
+    const ov=document.getElementById('authOverlay');ov.style.display='flex';ov.style.animation='fadeIn .3s ease';
+  }
+}
+
+// ═══════════════════════════════════════════
+// THEME / UI
+// ═══════════════════════════════════════════
+function toggleTheme(){const l=document.body.classList.toggle('light');document.getElementById('themeBtn').textContent=l?'🌙':'☀️';localStorage.setItem('ll_theme',l?'light':'dark');}
+function loadTheme(){if(localStorage.getItem('ll_theme')==='light'){document.body.classList.add('light');document.getElementById('themeBtn').textContent='🌙';}}
+function updBadges(){
+  const b=document.getElementById('fcCountBadge');if(b)b.textContent=S.flashcards.length+(S.flashcards.length===1?' word':' words');
+  const due=S.flashcards.filter(f=>isDue(f)).length;
+  const dt=document.getElementById('fcTabDue');if(dt)dt.textContent='Due for Review'+(due?` (${due})`:'');
+  const hb=document.getElementById('histBadge');if(hb)hb.textContent=S.history.length+' exam'+(S.history.length!==1?'s':'');
+}
+
+// ═══════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════
+const SCREENS=['homeScreen','levelScreen','loadingScreen','examScreen','resultsScreen','flashcardScreen','vocabExamScreen','historyScreen','savedExamsScreen'];
+function show(id){document.getElementById(id).style.display='block';}
+function hide(id){document.getElementById(id).style.display='none';}
+function hideAll(){SCREENS.forEach(hide);stopTimer();}
+function goHome(){hideAll();show('homeScreen');updBadges();updQuotaUI();window.scrollTo({top:0,behavior:'smooth'});}
+function selectSubject(s){S.subject=s;hideAll();show('levelScreen');renderLevels();updQuotaUI();window.scrollTo({top:0,behavior:'smooth'});}
+function goFlashcards(){hideAll();show('flashcardScreen');renderFC();window.scrollTo({top:0,behavior:'smooth'});}
+function goHistory(){hideAll();show('historyScreen');renderHistory();window.scrollTo({top:0,behavior:'smooth'});}
+function goSavedExams(){hideAll();show('savedExamsScreen');renderSavedExams();window.scrollTo({top:0,behavior:'smooth'});}
+function renderLevels(){
+  const ey=document.getElementById('lvlEyebrow');
+  if(ey)ey.textContent=S.subject==='de'?'Goethe-Institut · A1–C2':'Cambridge CEFR · A1–C2';
+  document.getElementById('levelsGrid').innerHTML=LEVELS[S.subject].map(l=>`<div class="level-card" id="lc_${l.code}" onclick="pickLevel('${l.code}')"><div class="lc-code">${l.code}</div><div class="lc-name">${l.name}</div><div class="lc-desc">${l.desc}</div><div class="lc-time">⏱ ${l.time} min</div></div>`).join('');
+  S.level=null;document.getElementById('btnStart').disabled=true;
+}
+function pickLevel(c){
+  S.level=c;
+  document.querySelectorAll('.level-card').forEach(x=>x.classList.remove('selected'));
+  document.getElementById('lc_'+c)?.classList.add('selected');
+  if(canGenerate()) document.getElementById('btnStart').disabled=false;
+}
+function selectMode(m){
+  S.mode=m;
+  document.getElementById('modeReal').classList.toggle('selected',m==='real');
+  document.getElementById('modePractice').classList.toggle('selected',m==='practice');
+}
+
+// ═══════════════════════════════════════════
+// API
+// ═══════════════════════════════════════════
+async function callAI(prompt,maxT=6000){
+  const key=window._apiKey||localStorage.getItem('ll_apikey')||'';
+  if(!key) throw new Error('No API key set. Add your Anthropic key in the banner at the bottom.');
+  const r=await fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+    body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:maxT,messages:[{role:'user',content:prompt}]})
+  });
+  const d=await r.json();
+  if(d.error)throw new Error(d.error.message);
+  return d.content.map(i=>i.text||'').join('');
+}
+
+// ═══════════════════════════════════════════
+// EXAM GENERATION
+// ═══════════════════════════════════════════
+function handleGenerateExam(){
+  if(!canGenerate()){showUpgrade();return;}
+  generateExam();
+}
+async function generateExam(){
+  const topic=S.subject==='de'?pick(TOPICS_DE):pick(TOPICS_EN);
+  S.answers={};S.gapAnswers={};S.quickMod=null;
+  hideAll();show('loadingScreen');
+  document.getElementById('loaderTitle').textContent='Generating your exam…';
+  document.getElementById('loaderSub').textContent='Creating all 4 modules to official standards…';
+  try{
+    const raw=await callAI(buildPrompt(topic),7000);
+    S.examData=JSON.parse(raw.replace(/```json|```/g,'').trim());
+    incQuota();
+    renderExam();
+  }catch(e){
+    hideAll();show('levelScreen');
+    alert('Error generating exam.\n\n'+e.message);
+  }
+}
+async function startQuick(mod){
+  if(!S.subject)S.subject='de';
+  if(!S.level)S.level='B1';
+  S.quickMod=mod;S.answers={};S.gapAnswers={};
+  hideAll();show('loadingScreen');
+  document.getElementById('loaderTitle').textContent='Generating quick module…';
+  document.getElementById('loaderSub').textContent='One module, instant results — free, no quota used';
+  const topic=S.subject==='de'?pick(TOPICS_DE):pick(TOPICS_EN);
+  try{
+    const raw=await callAI(buildQuickPrompt(mod,topic),4000);
+    S.examData=JSON.parse(raw.replace(/```json|```/g,'').trim());
+    renderExam();
+  }catch(e){hideAll();show('homeScreen');alert('Error: '+e.message);}
+}
+
+// ═══════════════════════════════════════════
+// EXAM PROMPTS — closely match official formats
+// ═══════════════════════════════════════════
+function buildPrompt(topic){
+  const lv=S.level,isDE=S.subject==='de',lang=isDE?'German':'English';
+  const inst=isDE?'Goethe-Institut':'Cambridge';
+  const minW={A1:40,A2:60,B1:80,B2:100,C1:130,C2:160}[lv]||80;
+  const textLen={A1:120,A2:150,B1:220,B2:300,C1:400,C2:500}[lv]||220;
+  const dialogLen={A1:80,A2:100,B1:160,B2:220,C1:300,C2:360}[lv]||160;
+  const gapWords=isDE
+    ?'["haben","wird","können","muss","wäre","damit","obwohl","jedoch","daher","trotzdem","weil","wenn","obwohl","seit","während"]'
+    :'["although","however","therefore","despite","whereas","since","moreover","consequently","furthermore","nevertheless","unless","provided","owing"]';
+  const rfType=isDE?'rf':'tf',trueVal=isDE?'R':'T';
+
+  // Level-specific instructions
+  const levelInstructions={
+    A1: isDE
+      ? 'Use only basic vocabulary (Goethe A1 wordlist). Simple present and perfect tense only. Very short sentences. Topics: greeting, numbers, colors, family, food.'
+      : 'Use only KET A1 vocabulary. Simple present tense. Sentences under 10 words. Topics: names, numbers, colors, everyday objects.',
+    A2: isDE
+      ? 'Use A2 vocabulary (Goethe A2 wordlist). Present, past, modal verbs. Topics: shopping, travel, school, work basics.'
+      : 'Use Key English Test vocabulary. Past simple, present continuous. Topics: daily routines, shopping, leisure.',
+    B1: isDE
+      ? 'Use B1 vocabulary. All common tenses including Konjunktiv II. Compound sentences. Topics: environment, health, work, education.'
+      : 'Use PET B1 vocabulary. Perfect, past continuous, comparatives. Topics: travel, health, environment.',
+    B2: isDE
+      ? 'Use B2 academic vocabulary. Passive voice, Konjunktiv I/II, complex subordinate clauses. Topics: societal issues, media, economy.'
+      : 'Use FCE B2 vocabulary. Passive, conditionals, reported speech, complex clauses. Topics: society, media, science.',
+    C1: isDE
+      ? 'Use C1 advanced vocabulary. Sophisticated syntax, nuanced argumentation. Topics: politics, philosophy, advanced science.'
+      : 'Use CAE C1 vocabulary. Idiomatic language, nuanced register, advanced grammar. Topics: complex social issues, arts, research.',
+    C2: isDE
+      ? 'Use C2 near-native vocabulary. Idiomatic German, stylistic variation, academic register. Highly nuanced texts.'
+      : 'Use CPE C2 vocabulary. Literary register, archaic forms acceptable, very nuanced meaning. Near-native complexity.'
+  }[lv]||'';
+
+  return `You are a certified ${inst} ${lv} exam writer. Create a COMPLETE, REALISTIC ${lv} ${lang} exam on the topic "${topic}".
+
+CRITICAL: ${levelInstructions}
+CRITICAL: Every part of the exam (texts, questions, dialogues, tasks) must be ENTIRELY in ${lang}. Do NOT mix languages.
+CRITICAL: Reply ONLY with valid JSON. No markdown, no explanation, no preamble. Start with { and end with }.
+
+Required JSON structure:
+{
+  "topic": "${topic}",
+  "level": "${lv}",
+  "lang": "${S.subject}",
+  "lesen": {
+    "textTitle": "Engaging title in ${lang}",
+    "text": "A full reading text of at least ${textLen} words in authentic ${lang} at ${lv} level. Use multiple paragraphs. The text must be coherent and realistic — like a newspaper article, blog post, or informational text about ${topic}.",
+    "questions": [
+      {"id":"l1","type":"multiple","question":"Question about the text in ${lang}?","options":["A) Option one","B) Option two","C) Option three"],"correct":"A"},
+      {"id":"l2","type":"multiple","question":"Another question in ${lang}?","options":["A) Option","B) Option","C) Option"],"correct":"B"},
+      {"id":"l3","type":"multiple","question":"Third question in ${lang}?","options":["A) Option","B) Option","C) Option"],"correct":"C"},
+      {"id":"l4","type":"${rfType}","question":"A statement about the text in ${lang}.","correct":"${trueVal}"},
+      {"id":"l5","type":"${rfType}","question":"Another statement in ${lang}.","correct":"F"},
+      {"id":"l6","type":"${rfType}","question":"A third statement in ${lang}.","correct":"${trueVal}"}
+    ]
+  },
+  "horen": {
+    "context": "Brief situation description in English for the student (e.g. 'You will hear two people discussing...')",
+    "transcript": "A realistic spoken-style dialogue of at least ${dialogLen} words fully in ${lang}. Use A: and B: to mark speakers. Natural spoken language, contractions, conversational turns. Topic: ${topic}.",
+    "questions": [
+      {"id":"h1","type":"multiple","question":"Listening question in ${lang}?","options":["A) Option","B) Option","C) Option"],"correct":"A"},
+      {"id":"h2","type":"multiple","question":"Second listening question in ${lang}?","options":["A) Option","B) Option","C) Option"],"correct":"B"},
+      {"id":"h3","type":"${rfType}","question":"True/false statement about dialogue in ${lang}.","correct":"${trueVal}"},
+      {"id":"h4","type":"${rfType}","question":"Another T/F statement in ${lang}.","correct":"F"}
+    ]
+  },
+  "gapfill": {
+    "instruction": "${isDE?'Fülle die Lücken mit den passenden Wörtern aus der Liste aus.':'Choose the correct word from the list to fill each gap.'}",
+    "sentences": [
+      {"id":"g1","text":"Complete sentence in ${lang} with [BLANK] in a meaningful position.","answer":"correctword","options":${gapWords}},
+      {"id":"g2","text":"Another sentence with [BLANK].","answer":"correctword","options":${gapWords}},
+      {"id":"g3","text":"Third sentence with [BLANK].","answer":"correctword","options":${gapWords}},
+      {"id":"g4","text":"Fourth sentence with [BLANK].","answer":"correctword","options":${gapWords}},
+      {"id":"g5","text":"Fifth sentence with [BLANK].","answer":"correctword","options":${gapWords}}
+    ]
+  },
+  "schreiben": {
+    "taskType": "${isDE?'E-Mail/Brief/Aufsatz':'Email/Essay/Letter'}",
+    "task": "Clear writing task in ${lang} with 4 bullet points specifying what to include. Appropriate for ${lv} level.",
+    "minWords": ${minW},
+    "criteria": ${isDE?'["Inhalt (Aufgabenerfüllung)","Kommunikative Gestaltung","Formale Richtigkeit"]':'["Content and Task Achievement","Communicative Achievement","Organisation","Language Range & Accuracy"]'}
+  },
+  "sprechen": {
+    "situation": "Role-play or presentation situation description in ${lang}.",
+    "roleA": "The candidate role",
+    "roleB": "The examiner role",
+    "starterLine": "Opening line from the examiner in ${lang} to begin the interaction.",
+    "points": ["Discussion point 1 in ${lang}","Discussion point 2 in ${lang}","Discussion point 3 in ${lang}","Discussion point 4 in ${lang}"],
+    "minExchanges": ${lv==='A1'||lv==='A2'?3:lv==='B1'||lv==='B2'?4:5}
+  }
+}`;
+}
+
+function buildQuickPrompt(mod,topic){
+  const lv=S.level||'B1',isDE=S.subject==='de',lang=isDE?'German':'English';
+  const gapWords=isDE
+    ?'["haben","wird","können","muss","wäre","damit","obwohl","jedoch","daher","trotzdem","weil","wenn","seit","während","sodass"]'
+    :'["although","however","therefore","despite","whereas","since","moreover","consequently","furthermore","nevertheless","unless","provided","owing"]';
+  const rfType=isDE?'rf':'tf',trueVal=isDE?'R':'T';
+  const minW={A1:40,A2:60,B1:80,B2:100,C1:130,C2:160}[lv]||80;
+  if(mod==='gapfill')return `Create a ${lv} ${lang} gap-fill on "${topic}". Reply ONLY valid JSON:\n{"topic":"${topic}","level":"${lv}","lang":"${S.subject}","quickMod":"gapfill","gapfill":{"instruction":"${isDE?'Fülle die Lücken aus:':'Fill in the blanks:'}","sentences":[{"id":"g1","text":"sentence [BLANK] here in ${lang}","answer":"word","options":${gapWords}},{"id":"g2","text":"sentence [BLANK] here","answer":"word","options":${gapWords}},{"id":"g3","text":"sentence [BLANK] here","answer":"word","options":${gapWords}},{"id":"g4","text":"sentence [BLANK] here","answer":"word","options":${gapWords}},{"id":"g5","text":"sentence [BLANK] here","answer":"word","options":${gapWords}},{"id":"g6","text":"sentence [BLANK] here","answer":"word","options":${gapWords}},{"id":"g7","text":"sentence [BLANK] here","answer":"word","options":${gapWords}},{"id":"g8","text":"sentence [BLANK] here","answer":"word","options":${gapWords}}]}}`;
+  if(mod==='reading')return `Create a ${lv} ${lang} reading task on "${topic}". Reply ONLY valid JSON:\n{"topic":"${topic}","level":"${lv}","lang":"${S.subject}","quickMod":"reading","lesen":{"textTitle":"title","text":"reading text min 220 words in ${lang} at ${lv} level","questions":[{"id":"l1","type":"multiple","question":"Q in ${lang}?","options":["A) opt","B) opt","C) opt"],"correct":"A"},{"id":"l2","type":"multiple","question":"Q?","options":["A) opt","B) opt","C) opt"],"correct":"B"},{"id":"l3","type":"multiple","question":"Q?","options":["A) opt","B) opt","C) opt"],"correct":"C"},{"id":"l4","type":"${rfType}","question":"Statement","correct":"${trueVal}"},{"id":"l5","type":"${rfType}","question":"Statement","correct":"F"},{"id":"l6","type":"${rfType}","question":"Statement","correct":"${trueVal}"},{"id":"l7","type":"${rfType}","question":"Statement","correct":"F"}]}}`;
+  if(mod==='listening')return `Create a ${lv} ${lang} listening task on "${topic}". Reply ONLY valid JSON:\n{"topic":"${topic}","level":"${lv}","lang":"${S.subject}","quickMod":"listening","horen":{"context":"situation in English","transcript":"dialogue min 200 words in ${lang} A: B: format","questions":[{"id":"h1","type":"multiple","question":"Q in ${lang}?","options":["A) opt","B) opt","C) opt"],"correct":"A"},{"id":"h2","type":"multiple","question":"Q?","options":["A) opt","B) opt","C) opt"],"correct":"B"},{"id":"h3","type":"multiple","question":"Q?","options":["A) opt","B) opt","C) opt"],"correct":"C"},{"id":"h4","type":"${rfType}","question":"Statement","correct":"${trueVal}"},{"id":"h5","type":"${rfType}","question":"Statement","correct":"F"}]}}`;
+  return `Create a ${lv} ${lang} writing task on "${topic}". Reply ONLY valid JSON:\n{"topic":"${topic}","level":"${lv}","lang":"${S.subject}","quickMod":"writing","schreiben":{"taskType":"${isDE?'E-Mail/Brief':'Email/Essay'}","task":"task in ${lang} with 4 bullet points","minWords":${minW},"criteria":${isDE?'["Inhalt","Kommunikative Gestaltung","Formale Richtigkeit"]':'["Content","Communicative Achievement","Organisation","Language"]'}}}`;
+}
+
+// ═══════════════════════════════════════════
+// TIMER
+// ═══════════════════════════════════════════
+function startTimer(min){stopTimer();S.timerSec=min*60;updTimer();S.timerInt=setInterval(()=>{S.timerSec--;updTimer();if(S.timerSec<=0){stopTimer();if(confirm('⏰ Time is up! Submit now?'))submitExam();}},1000);}
+function stopTimer(){if(S.timerInt){clearInterval(S.timerInt);S.timerInt=null;}}
+function updTimer(){const el=document.getElementById('timerVal');if(!el)return;const m=Math.floor(S.timerSec/60),s=S.timerSec%60;el.textContent=m+':'+(s<10?'0':'')+s;el.className='timer-val'+(S.timerSec<300?' warn':'')+(S.timerSec<60?' crit':'');}
+
+// ═══════════════════════════════════════════
+// RENDER EXAM
+// ═══════════════════════════════════════════
+function renderExam(){
+  hideAll();
+  const scr=document.getElementById('examScreen');scr.innerHTML='';scr.style.display='block';
+  const d=S.examData,isDE=d.lang==='de',isPrac=S.mode==='practice',isQ=!!S.quickMod;
+  const rfT=isDE?'Richtig':'True',rfF=isDE?'Falsch':'False',trK=isDE?'R':'T';
+  const timerH=(!isPrac&&!isQ)?`<div class="timer-wrap">⏱ <span class="timer-val" id="timerVal">--:--</span></div>`:'';
+  const practH=isPrac?`<div style="background:var(--blue-bg);border:.5px solid rgba(93,184,232,.2);border-radius:8px;padding:9px 13px;font-size:12px;color:var(--blue);margin-bottom:14px">💡 <b>Practice Mode:</b> Hover any word for translation + audio. Click <b>+ Save to Deck</b> to add to flashcards.</div>`:'';
+  const langH=isPrac?`<div style="display:flex;align-items:center;gap:7px;margin-bottom:14px;flex-wrap:wrap"><span style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em">Translate to:</span>${LANGS.map(l=>`<button class="vt-lb ex-lb${S.vocabLang===l.code?' active':''}" onclick="setVL('${l.code}',this)">${l.l}</button>`).join('')}</div>`:'';
+  let secs='';
+  if(d.lesen&&(!isQ||S.quickMod==='reading')){
+    secs+=`<section class="module-wrap"><div class="module-tag tag-lesen">Module 1 — ${isDE?'Leseverstehen':'Reading'}</div><h2 class="module-title">${isDE?'Leseverstehen':'Reading Comprehension'}</h2><p class="module-desc">${isDE?'Lies den Text sorgfältig und beantworte die Fragen.':'Read the text carefully and answer the questions.'}</p><div class="text-display"><h3>${d.lesen.textTitle}</h3><div class="readable-text">${isPrac?wrapW(d.lesen.text,'lesen'):d.lesen.text.replace(/\n/g,'<br>')}</div></div>${d.lesen.questions.map((q,i)=>renderQ(q,i+1,'lesen',rfT,rfF,trK)).join('')}</section><hr class="section-div">`;
+  }
+  if(d.horen&&(!isQ||S.quickMod==='listening')){
+    S.listenPlays=2;
+    const isRL=!isPrac;
+    const lisH=isRL?`<div class="listen-box" id="listenBox"><span class="listen-icon">🎧</span><div class="listen-info" id="listenInfo">You can play this audio <b>2 times</b> (as in the real exam)</div><div class="wave" id="listenWave">${'<div class="wb paused"></div>'.repeat(9)}</div><button class="btn-sm blue" id="listenBtn" onclick="playListening()" style="margin:0 auto">▶ Play Audio</button><div style="font-size:11px;color:var(--text3);margin-top:10px;font-style:italic">Transcript shown after both plays.</div></div>`:`<div class="text-display"><div class="audio-chip">🎧 Transcript</div><div class="readable-text">${isPrac?wrapW(d.horen.transcript,'horen'):d.horen.transcript.replace(/\n/g,'<br>')}</div></div>`;
+    secs+=`<section class="module-wrap"><div class="module-tag tag-horen">Module 2 — ${isDE?'Hörverstehen':'Listening'}</div><h2 class="module-title">${isDE?'Hörverstehen':'Listening'}</h2><p class="module-desc">${d.horen.context}</p>${lisH}${d.horen.questions.map((q,i)=>renderQ(q,i+1,'horen',rfT,rfF,trK)).join('')}</section><hr class="section-div">`;
+  }
+  if(d.gapfill&&(!isQ||S.quickMod==='gapfill')){
+    secs+=renderGapSec(d.gapfill,isDE)+'<hr class="section-div">';
+  }
+  if(d.schreiben&&(!isQ||S.quickMod==='writing')){
+    secs+=`<section class="module-wrap"><div class="module-tag tag-schreiben">Module 3 — ${isDE?'Schreiben':'Writing'}</div><h2 class="module-title">${isDE?'Schreiben':'Writing'}</h2><p class="module-desc">${isDE?`Schreibe ${d.schreiben.taskType}. Mindestens ${d.schreiben.minWords} Wörter.`:`Write a ${d.schreiben.taskType}. Minimum ${d.schreiben.minWords} words.`}</p><div class="write-brief"><h3>${isDE?'Aufgabe':'Task'}</h3><p>${d.schreiben.task}</p><div class="criteria-chips">${d.schreiben.criteria.map(c=>`<span class="criteria-chip">${c}</span>`).join('')}</div></div><textarea class="write-field" id="writeAns" placeholder="${isDE?'Schreibe hier auf Deutsch…':'Write your text here in English…'}" oninput="updW()"></textarea><div class="word-meter" id="wordMeter">0 words — min ${d.schreiben.minWords}</div></section><hr class="section-div">`;
+  }
+  if(d.sprechen&&!isQ){
+    const lang=isDE?'de-DE':'en-GB';
+    secs+=`<section class="module-wrap"><div class="module-tag tag-sprechen">Module 4 — ${isDE?'Sprechen':'Speaking'}</div><h2 class="module-title">${isDE?'Sprechen':'Speaking'}</h2><p class="module-desc">${d.sprechen.situation}</p><div class="speak-points">${d.sprechen.points.map(p=>`<div class="speak-point">• ${p}</div>`).join('')}</div><div class="starter-msg"><div class="starter-av">👤</div><div><div class="starter-who">${d.sprechen.roleB}</div><div class="starter-line">"${d.sprechen.starterLine}"</div></div></div><button class="btn-sm blue" onclick="speak(${JSON.stringify(d.sprechen.starterLine)},'${lang}')" style="margin-bottom:10px">🔊 Hear starter</button><div style="font-size:12px;color:var(--text3);margin-bottom:7px">${isDE?`Deine Antwort (mind. ${d.sprechen.minExchanges} Wechsel, nutze <b>Ich:</b>):`:`Your response (min ${d.sprechen.minExchanges} exchanges, use <b>Me:</b>):`}</div><textarea class="write-field" id="speakAns" style="min-height:180px" placeholder="${isDE?'Ich:':'Me:'}" oninput="updProg()"></textarea></section>`;
+  }
+  const bc=isQ?'quick':isPrac?'practice':'real',bl=isQ?('Quick: '+S.quickMod):isPrac?'Practice':'Real Exam';
+  scr.innerHTML=`<div class="exam-topbar"><div class="exam-meta"><span class="exam-badge ${bc}">${bl}</span><span class="exam-badge">${d.level}</span><span class="exam-title">${d.lang==='de'?'🇩🇪':'🇬🇧'} ${d.topic}</span>${timerH}</div><div class="exam-actions"><button class="btn-sm" onclick="goHome()">🏠 Home</button>${isPrac?`<button class="btn-sm purple" onclick="goFlashcards()">🗂️ Deck (<span id="dkCnt">${S.flashcards.length}</span>)</button>`:''}<button class="btn-sm" onclick="saveCurrentExam()">💾 Save</button></div></div><div class="progress-wrap"><div class="progress-row"><span>Progress</span><span id="pctTxt">0%</span></div><div class="progress-track"><div class="progress-fill" id="progFill" style="width:0%"></div></div></div>${practH}${langH}${secs}<div class="submit-bar"><button class="btn-sm" onclick="goHome()">🏠 Home</button><div style="display:flex;gap:7px;flex-wrap:wrap"><button class="btn-sm" onclick="saveCurrentExam()">💾 Save Exam</button><button class="btn-sm accent" id="submitBtn" onclick="submitExam()">${isDE?'Abgeben & Ergebnis':'Submit & Get Results'} →</button></div></div>`;
+  scr.querySelectorAll('input[type=radio]').forEach(r=>r.addEventListener('change',updProg));
+  updProg();
+  if(!isPrac&&!isQ){const ld=LEVELS[S.subject||'de'].find(l=>l.code===S.level)||{time:90};startTimer(ld.time);}
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function playListening(){
+  if(!S.examData?.horen||S.listenPlays<=0)return;
+  S.listenPlays--;
+  const lang=S.examData.lang==='de'?'de-DE':'en-GB';
+  document.querySelectorAll('.wb').forEach(b=>b.classList.remove('paused'));
+  const btn=document.getElementById('listenBtn'),info=document.getElementById('listenInfo');
+  if(btn)btn.textContent='■ Playing…';
+  speak(S.examData.horen.transcript,lang);
+  const ck=setInterval(()=>{
+    if(!window.speechSynthesis.speaking){
+      clearInterval(ck);
+      document.querySelectorAll('.wb').forEach(b=>b.classList.add('paused'));
+      if(S.listenPlays>0){if(btn){btn.textContent='▶ Play Again (1 left)';btn.disabled=false;}if(info)info.innerHTML='<b>1 play remaining</b>';}
+      else{if(btn){btn.textContent='✓ Done';btn.disabled=true;}if(info)info.innerHTML='Audio finished. Answer the questions below.';
+        setTimeout(()=>{const lb=document.getElementById('listenBox');if(lb)lb.insertAdjacentHTML('afterend',`<details style="margin-bottom:14px"><summary style="font-size:12px;color:var(--text3);cursor:pointer;font-weight:600">Show transcript (review)</summary><div class="text-display" style="margin-top:8px"><div class="readable-text">${S.examData.horen.transcript.replace(/\n/g,'<br>')}</div></div></details>`);},600);
+      }
+    }
+  },500);
+}
+function renderGapSec(gf,isDE){
+  const s=gf.sentences.map((s,i)=>{
+    const pts=s.text.split('[BLANK]');
+    return `<div class="question-block"><div class="q-number">Gap ${i+1}</div><div style="font-size:14px;line-height:2.2;color:var(--text)">${pts[0]}<input class="gap-input" id="gap_${s.id}" placeholder="___" oninput="S.gapAnswers['${s.id}']=this.value;updProg()" autocomplete="off">${pts[1]||''}</div><div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:7px">${s.options.map(o=>`<button class="quick-btn" onclick="document.getElementById('gap_${s.id}').value='${o}';S.gapAnswers['${s.id}']='${o}';updProg()" style="font-size:11px;padding:3px 9px">${o}</button>`).join('')}</div></div>`;
+  }).join('');
+  return `<section class="module-wrap"><div class="module-tag tag-gap">Gap-Fill Exercise</div><h2 class="module-title">${isDE?'Lückentext':'Fill in the Blanks'}</h2><p class="module-desc">${gf.instruction}</p>${s}</section>`;
+}
+function renderQ(q,num,mod,rfT,rfF,trK){
+  const isRF=q.type==='rf'||q.type==='tf';
+  if(!isRF){return `<div class="question-block"><div class="q-number">Question ${num}</div><div class="q-text">${q.question}</div><div class="options">${q.options.map(opt=>{const val=opt[0];return `<label class="opt"><input type="radio" name="${mod}_${q.id}" value="${val}" onchange="S.answers['${mod}_${q.id}']=this.value;this.closest('.options').querySelectorAll('.opt').forEach(o=>o.classList.remove('selected'));this.closest('.opt').classList.add('selected')"><span>${opt}</span></label>`;}).join('')}</div></div>`;}
+  return `<div class="question-block"><div class="q-number">${rfT}/${rfF} — Q${num}</div><div class="q-text">${q.question}</div><div class="rf-row"><button class="rf-btn" onclick="setRF('${mod}_${q.id}','${trK}',this,'sel-r')">✓ ${rfT}</button><button class="rf-btn" onclick="setRF('${mod}_${q.id}','F',this,'sel-f')">✗ ${rfF}</button></div></div>`;
+}
+function setRF(k,v,btn,cls){S.answers[k]=v;btn.parentElement.querySelectorAll('.rf-btn').forEach(b=>b.classList.remove('sel-r','sel-f'));btn.classList.add(cls);updProg();}
+function updProg(){
+  if(!S.examData)return;const d=S.examData;let total=0,done=0;
+  if(d.lesen){total+=d.lesen.questions.length;done+=d.lesen.questions.filter(q=>S.answers['lesen_'+q.id]).length;}
+  if(d.horen){total+=d.horen.questions.length;done+=d.horen.questions.filter(q=>S.answers['horen_'+q.id]).length;}
+  if(d.gapfill){total+=d.gapfill.sentences.length;done+=d.gapfill.sentences.filter(s=>S.gapAnswers[s.id]?.trim()).length;}
+  if(d.schreiben){total+=1;if(document.getElementById('writeAns')?.value.trim())done+=1;}
+  if(d.sprechen){total+=1;if(document.getElementById('speakAns')?.value.trim())done+=1;}
+  const pct=total?Math.min(100,Math.round(done/total*100)):0;
+  const f=document.getElementById('progFill'),l=document.getElementById('pctTxt');
+  if(f)f.style.width=pct+'%';if(l)l.textContent=pct+'%';
+}
+function updW(){
+  const ta=document.getElementById('writeAns');if(!ta)return;
+  const w=ta.value.trim().split(/\s+/).filter(x=>x).length,min=S.examData?.schreiben?.minWords||80;
+  const el=document.getElementById('wordMeter');
+  if(el){el.textContent=`${w} words — min ${min}`;el.className='word-meter'+(w>=min?' ok':'');}
+  updProg();
+}
+
+// ═══════════════════════════════════════════
+// SUBMIT EXAM
+// ═══════════════════════════════════════════
+async function submitExam(){
+  stopTimer();
+  const d=S.examData;if(!d)return;
+  const isDE=d.lang==='de';
+  let correct=0,total=0,moduleScores={lesen:null,horen:null,gapfill:null,schreiben:null,sprechen:null};
+  // Lesen
+  if(d.lesen){let c=0;d.lesen.questions.forEach(q=>{const key='lesen_'+q.id,ans=S.answers[key];if(ans===q.correct)c++;total++;});correct+=c;moduleScores.lesen=Math.round(c/d.lesen.questions.length*100);}
+  // Hören
+  if(d.horen){let c=0;d.horen.questions.forEach(q=>{const key='horen_'+q.id,ans=S.answers[key];if(ans===q.correct)c++;total++;});correct+=c;moduleScores.horen=Math.round(c/d.horen.questions.length*100);}
+  // Gap fill
+  if(d.gapfill){let c=0;d.gapfill.sentences.forEach(s=>{const ans=(S.gapAnswers[s.id]||'').trim().toLowerCase();if(ans===s.answer.toLowerCase())c++;total++;});correct+=c;moduleScores.gapfill=Math.round(c/d.gapfill.sentences.length*100);}
+  // Writing
+  const writeAns=document.getElementById('writeAns')?.value.trim()||'';
+  if(d.schreiben){moduleScores.schreiben=writeAns.split(/\s+/).filter(x=>x).length>=d.schreiben.minWords?75:40;correct+=(moduleScores.schreiben/100);total+=1;}
+  // Speaking
+  const speakAns=document.getElementById('speakAns')?.value.trim()||'';
+  if(d.sprechen){moduleScores.sprechen=speakAns.length>20?70:35;correct+=(moduleScores.sprechen/100);total+=1;}
+  const score=total?Math.round(correct/total*100):0;
+  // Save to history
+  const entry={id:Date.now(),date:new Date().toLocaleDateString(),topic:d.topic,level:d.level,lang:d.lang,score,moduleScores,mode:S.mode};
+  S.history.unshift(entry);saveHist();
+  // Show results
+  renderResults(score,moduleScores,d,isDE,writeAns,speakAns,entry.id);
+}
+
+function renderResults(score,mods,d,isDE,writeAns,speakAns,entryId){
+  hideAll();
+  const scr=document.getElementById('resultsScreen');scr.style.display='block';
+  const cls=score>=70?'pass':score>=50?'mid':'fail';
+  const label=score>=70?(isDE?'Bestanden ✓':'Pass ✓'):score>=50?(isDE?'Knapp':'Close'):isDE?'Nicht bestanden':'Fail';
+  let modCards='';
+  if(mods.lesen!=null)modCards+=`<div class="ms-card"><div class="ms-score" style="color:${mods.lesen>=70?'var(--green)':mods.lesen>=50?'var(--accent)':'var(--red)'}">${mods.lesen}%</div><div class="ms-label">${isDE?'Lesen':'Reading'}</div></div>`;
+  if(mods.horen!=null)modCards+=`<div class="ms-card"><div class="ms-score" style="color:${mods.horen>=70?'var(--green)':mods.horen>=50?'var(--accent)':'var(--red)'}">${mods.horen}%</div><div class="ms-label">${isDE?'Hören':'Listening'}</div></div>`;
+  if(mods.gapfill!=null)modCards+=`<div class="ms-card"><div class="ms-score" style="color:${mods.gapfill>=70?'var(--green)':mods.gapfill>=50?'var(--accent)':'var(--red)'}">${mods.gapfill}%</div><div class="ms-label">Gap-Fill</div></div>`;
+  if(mods.schreiben!=null)modCards+=`<div class="ms-card"><div class="ms-score" style="color:var(--blue)">${mods.schreiben}%</div><div class="ms-label">${isDE?'Schreiben':'Writing'}</div></div>`;
+  if(mods.sprechen!=null)modCards+=`<div class="ms-card"><div class="ms-score" style="color:var(--purple)">${mods.sprechen}%</div><div class="ms-label">${isDE?'Sprechen':'Speaking'}</div></div>`;
+  scr.innerHTML=`
+    <button class="back-btn" onclick="goHome()">← Home</button>
+    <div class="results-hero">
+      <div class="res-score ${cls}">${score}%</div>
+      <div class="res-label">${label} — ${d.level} ${d.lang==='de'?'🇩🇪':'🇬🇧'} ${d.topic}</div>
+    </div>
+    <div class="module-scores-grid">${modCards}</div>
+    ${writeAns?`<div class="text-display"><h3>${isDE?'Deine Antwort — Schreiben':'Your Writing Response'}</h3><div class="readable-text" style="white-space:pre-wrap">${writeAns}</div></div>`:''}
+    ${speakAns?`<div class="text-display"><h3>${isDE?'Deine Antwort — Sprechen':'Your Speaking Notes'}</h3><div class="readable-text" style="white-space:pre-wrap">${speakAns}</div></div>`:''}
+    <div style="display:flex;gap:9px;flex-wrap:wrap;margin-top:22px">
+      <button class="btn-sm accent" onclick="saveCurrentExam()">💾 Save Exam</button>
+      <button class="btn-sm" onclick="goHistory()">📊 View Progress</button>
+      <button class="btn-sm" onclick="goHome()">🏠 Home</button>
+    </div>`;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ═══════════════════════════════════════════
+// SAVE / LOAD EXAMS
+// ═══════════════════════════════════════════
+function saveCurrentExam(){
+  if(!S.examData){alert('No exam to save.');return;}
+  const existing=S.savedExams.findIndex(e=>e.id===S.examData._savedId);
+  const entry={id:S.examData._savedId||Date.now(),savedAt:new Date().toLocaleDateString(),topic:S.examData.topic,level:S.examData.level,lang:S.examData.lang,data:S.examData,answers:{...S.answers},gapAnswers:{...S.gapAnswers}};
+  S.examData._savedId=entry.id;
+  if(existing>=0)S.savedExams[existing]=entry;else S.savedExams.unshift(entry);
+  saveSaved();
+  alert('✅ Exam saved! You can retake it anytime from "Saved Exams" — it won\'t count toward your quota.');
+}
+function renderSavedExams(){
+  const grid=document.getElementById('savedGrid');
+  if(!S.savedExams.length){grid.innerHTML='<div class="hist-empty" style="grid-column:1/-1"><span>📁</span>No saved exams yet.<br>Generate an exam and click <b>Save Exam</b>.</div>';return;}
+  grid.innerHTML=S.savedExams.map((e,i)=>`<div class="saved-card" onclick="retakeExam(${i})"><div class="saved-card-title">${e.lang==='de'?'🇩🇪':'🇬🇧'} ${e.topic}</div><div class="saved-card-meta">${e.level} · Saved ${e.savedAt}</div><div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px"><button class="btn-sm blue" onclick="event.stopPropagation();retakeExam(${i})" style="font-size:11px">↺ Retake</button><button class="btn-sm red" onclick="event.stopPropagation();deleteSaved(${i})" style="font-size:11px">✕</button></div></div>`).join('');
+}
+function retakeExam(i){
+  const e=S.savedExams[i];
+  S.examData=e.data;S.answers={};S.gapAnswers={};S.quickMod=null;
+  S.subject=e.lang;S.level=e.level;S.mode='real';
+  renderExam();
+}
+function deleteSaved(i){if(confirm('Remove this saved exam?')){S.savedExams.splice(i,1);saveSaved();renderSavedExams();}}
+
+// ═══════════════════════════════════════════
+// HISTORY
+// ═══════════════════════════════════════════
+function renderHistory(){
+  const cw=document.getElementById('chartWrap'),cb=document.getElementById('chartBars');
+  if(S.history.length>0){
+    cw.style.display='block';
+    document.getElementById('chartSub').textContent=`Last ${Math.min(S.history.length,12)} exams`;
+    const recent=[...S.history].slice(0,12).reverse();
+    cb.innerHTML=recent.map(h=>`<div class="chart-bar" style="height:${h.score}%;background:${h.score>=70?'var(--green)':h.score>=50?'var(--accent)':'var(--red)'};flex:1" title="${h.score}% — ${h.topic}"></div>`).join('');
+  }else cw.style.display='none';
+  const hl=document.getElementById('histList');
+  if(!S.history.length){hl.innerHTML='<div class="hist-empty"><span>📊</span>No exams yet. Generate your first exam!</div>';return;}
+  hl.innerHTML=S.history.map((h,i)=>`<div class="hist-card"><div class="hist-score ${h.score>=70?'pass':h.score>=50?'mid':'fail'}">${h.score}%</div><div class="hist-info"><div class="hist-title">${h.lang==='de'?'🇩🇪':'🇬🇧'} ${h.topic} — ${h.level}</div><div class="hist-meta">${h.date} · ${h.mode==='practice'?'Practice':'Real Exam'}</div></div></div>`).join('');
+}
+
+// ═══════════════════════════════════════════
+// VOCAB TOOLTIP
+// ═══════════════════════════════════════════
+const TT=document.getElementById('VT');let ttTimer=null;
+function showVocab(e,ew,sec){clearTimeout(ttTimer);const word=decodeURIComponent(ew);if(word.length<2)return;posTT(e);TT.classList.add('show');const ck=`${word}_${S.subject}_${S.vocabLang}`;if(S.vocabCache[ck]){renderTT(S.vocabCache[ck],word);return;}TT.innerHTML=`<div class="vt-word">${word}</div><div class="vt-loading"><span class="vt-dot"></span><span class="vt-dot"></span><span class="vt-dot"></span> Looking up…</div>`;fetchVocab(word,ck);}
+function posTT(e){const x=e.clientX,y=e.clientY,vw=window.innerWidth,vh=window.innerHeight;let left=x+14,top=y-20;if(left+300>vw-16)left=x-300-14;if(top+230>vh-16)top=vh-246;if(top<8)top=8;TT.style.left=left+'px';TT.style.top=top+'px';}
+function hideVocab(){ttTimer=setTimeout(()=>TT.classList.remove('show'),260);}
+async function fetchVocab(word,ck){const ln=LANGS.find(l=>l.code===S.vocabLang)?.n||'Spanish',xl=S.subject==='de'?'German':'English';try{const raw=await callAI(`Dictionary entry for the ${xl} word "${word}". Reply ONLY JSON:\n{"word":"${word}","phonetic":"IPA pronunciation","pos":"noun/verb/adjective/adverb","translation_${S.vocabLang}":"translation in ${ln}","example_${S.subject==='de'?'german':'english'}":"example sentence in ${xl}","example_${S.vocabLang}":"translation of example in ${ln}"}`,400);const data=JSON.parse(raw.replace(/```json|```/g,'').trim());S.vocabCache[ck]=data;renderTT(data,word);}catch(e){TT.innerHTML=`<div class="vt-word">${word}</div><div class="vt-loading" style="color:var(--red)">Could not load</div>`;}}
+function renderTT(data,word){const tk=`translation_${S.vocabLang}`,exk=`example_${S.subject==='de'?'german':'english'}`,extk=`example_${S.vocabLang}`,trans=data[tk]||'—',ex=data[exk]||'',ext=data[extk]||'',saved=S.flashcards.some(f=>f.word===(data.word||word)&&f.sourceLang===S.subject),enc=encodeURIComponent(JSON.stringify(data)),lang=S.subject==='de'?'de-DE':'en-GB';
+TT.innerHTML=`<div class="vt-header"><div class="vt-word">${data.word||word}</div><button class="vt-ab" onclick="speakBtn('${encodeURIComponent(data.word||word)}','${lang}',this)">🔊</button></div>${data.phonetic?`<div class="vt-phonetic">${data.phonetic}</div>`:''} ${data.pos?`<span class="vt-pos">${data.pos}</span>`:''}<div class="vt-translation">${trans}</div>${ex?`<div class="vt-example">${ex}${ext?`<br><em style="color:var(--text3);margin-top:3px;display:block">${ext}</em>`:''}</div>`:''}<div class="vt-lang-row">${LANGS.map(l=>`<button class="vt-lb vt-lb-tt${S.vocabLang===l.code?' active':''}" data-lang="${l.code}" onclick="chTTLang('${encodeURIComponent(data.word||word)}','${l.code}',this)">${l.l}</button>`).join('')}</div><button class="vt-save${saved?' saved':''}" id="vtSave" onclick="saveToFC('${enc}')">${saved?'✓ Saved':'＋ Save to Deck'}</button>`;}
+async function chTTLang(ew,lang,btn){S.vocabLang=lang;document.querySelectorAll('.ex-lb').forEach(b=>b.classList.toggle('active',b.textContent.toLowerCase()===lang));const word=decodeURIComponent(ew),ck=`${word}_${S.subject}_${lang}`;if(S.vocabCache[ck]){renderTT(S.vocabCache[ck],word);return;}TT.innerHTML=`<div class="vt-word">${word}</div><div class="vt-loading"><span class="vt-dot"></span><span class="vt-dot"></span><span class="vt-dot"></span></div>`;await fetchVocab(word,ck);}
+function setVL(lang,btn){S.vocabLang=lang;document.querySelectorAll('.ex-lb').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');document.querySelectorAll('.vt-lb-tt').forEach(b=>b.classList.toggle('active',b.dataset.lang===lang));}
+function wrapW(text,sec){return text.replace(/\n/g,'<br>').replace(/([A-Za-zÀ-ÿÄäÖöÜüß]{2,})/g,m=>`<span class="vocab-word" onmouseenter="showVocab(event,'${encodeURIComponent(m)}','${sec}')" onmouseleave="hideVocab()">${m}</span>`);}
+
+// ═══════════════════════════════════════════
+// AUDIO
+// ═══════════════════════════════════════════
+let curUtt=null;
+function speak(text,lang){if(!window.speechSynthesis)return;window.speechSynthesis.cancel();curUtt=null;const u=new SpeechSynthesisUtterance(text);u.lang=lang||'en-GB';u.rate=0.88;u.onend=()=>{curUtt=null;};curUtt=u;window.speechSynthesis.speak(u);}
+function speakBtn(ew,lang,btn){const word=decodeURIComponent(ew);if(window.speechSynthesis?.speaking){window.speechSynthesis.cancel();if(btn){btn.classList.remove('playing');btn.textContent='🔊';}return;}speak(word,lang);if(btn){btn.classList.add('playing');btn.textContent='■';}const ck=setInterval(()=>{if(!window.speechSynthesis?.speaking){clearInterval(ck);if(btn){btn.classList.remove('playing');btn.textContent='🔊';}}},300);}
+
+// ═══════════════════════════════════════════
+// FLASHCARDS
+// ═══════════════════════════════════════════
+function isDue(fc){return fc.nextReview&&Date.now()>=fc.nextReview;}
+function getSRS(fc,q){const ef=fc.ef||2.5;let iv=fc.interval||1;if(q===0)iv=1;else if(q===1)iv=Math.max(1,Math.round(iv*.5));else if(q===2)iv=iv<=1?3:Math.round(iv*ef);else iv=Math.round(iv*ef*1.3);const nef=Math.max(1.3,ef+(0.1-(3-q)*(0.08+(3-q)*0.02)));return{interval:iv,ef:nef,nextReview:Date.now()+iv*24*60*60*1000};}
+function srsRate(i,q){const fc=S.flashcards[i];if(!fc)return;const r=getSRS(fc,q);fc.interval=r.interval;fc.ef=r.ef;fc.nextReview=r.nextReview;saveFC();}
+function saveToFC(enc){let data;try{data=JSON.parse(decodeURIComponent(enc));}catch(e){return;}const word=data.word||'';if(!word)return;if(S.flashcards.some(f=>f.word===word&&f.sourceLang===S.subject)){const b=document.getElementById('vtSave');if(b){b.textContent='Already saved!';b.classList.add('saved');}return;}const tr={},ex={};LANGS.forEach(l=>{const ck=`${word}_${S.subject}_${l.code}`;if(S.vocabCache[ck]){tr[l.code]=S.vocabCache[ck][`translation_${l.code}`]||'';ex[l.code]=S.vocabCache[ck][`example_${l.code}`]||'';}});tr[S.vocabLang]=data[`translation_${S.vocabLang}`]||data.translation||'';ex[S.vocabLang]=data[`example_${S.vocabLang}`]||'';S.flashcards.push({word,phonetic:data.phonetic||'',pos:data.pos||'',translations:tr,examples:ex,sourceLang:S.subject,savedAt:Date.now(),interval:1,ef:2.5,nextReview:null});saveFC();const b=document.getElementById('vtSave');if(b){b.textContent='✓ Saved!';b.classList.add('saved');}const dc=document.getElementById('dkCnt');if(dc)dc.textContent=S.flashcards.length;}
+function addManual(){const we=document.getElementById('fcAddW'),te=document.getElementById('fcAddT'),word=we?.value.trim(),trans=te?.value.trim();if(!word){we?.focus();return;}if(S.flashcards.some(f=>f.word.toLowerCase()===word.toLowerCase())){alert(`"${word}" already in deck.`);return;}const tr={};if(trans)tr[S.fcLang]=trans;S.flashcards.push({word,phonetic:'',pos:'',translations:tr,examples:{},sourceLang:S.subject||'manual',savedAt:Date.now(),interval:1,ef:2.5,nextReview:null,manual:true});saveFC();if(we)we.value='';if(te)te.value='';renderFC(false);}
+function setFcTab(tab){S.fcTab=tab;['all','due','study'].forEach(t=>{const el=document.getElementById('fcTab'+t.charAt(0).toUpperCase()+t.slice(1));if(el)el.classList.toggle('active',t===tab);});if(tab==='study')renderStudy();else renderFC(false);}
+function renderFC(reinit=true){if(reinit)S.fcTab='all';const lb=document.getElementById('fcLangBtns');if(lb)lb.innerHTML=LANGS.map(l=>`<button class="vt-lb${S.fcLang===l.code?' active':''}" onclick="setFcLang('${l.code}',this)">${l.l}</button>`).join('');const cb=document.getElementById('fcClearBtn'),es=document.getElementById('fcExamSec'),eb=document.getElementById('fcExamBadge');if(cb)cb.style.display=S.flashcards.length>0?'':'none';if(es)es.style.display=S.flashcards.length>=4?'block':'none';if(eb)eb.textContent=S.flashcards.length+' words';document.getElementById('fcMain').style.display='';document.getElementById('fcStudy').style.display='none';const grid=document.getElementById('fcGrid');if(!grid)return;let cards=S.flashcards;if(S.fcTab==='due')cards=S.flashcards.filter(f=>isDue(f));if(cards.length===0){grid.innerHTML=`<div class="fc-empty"><span>${S.fcTab==='due'?'✅':'🗂️'}</span>${S.fcTab==='due'?'No cards due for review.':'No words yet.<br>In <b>Practice Mode</b>, hover a word and click <b>+ Save to Deck</b>, or add manually above.'}</div>`;return;}grid.innerHTML=cards.map(fc=>{const i=S.flashcards.indexOf(fc),tr=fc.translations[S.fcLang]||Object.values(fc.translations||{})[0]||'—',ex=fc.examples?.[S.fcLang]||Object.values(fc.examples||{})[0]||'',flag=fc.sourceLang==='de'?'🇩🇪':fc.sourceLang==='en'?'🇬🇧':'📝',due=isDue(fc);return `<div class="fc-card${due?' due-now':''}" id="fc_${i}" onclick="flipCard(${i})"><button class="fc-aud" onclick="event.stopPropagation();speakBtn('${encodeURIComponent(fc.word)}','${fc.sourceLang==='de'?'de-DE':'en-GB'}',this)">🔊</button><button class="fc-del" onclick="event.stopPropagation();delFC(${i})">✕</button><div class="fc-front"><div><div class="fc-word">${fc.word}</div>${fc.phonetic?`<div class="fc-phonetic">${fc.phonetic}</div>`:''} ${fc.pos?`<span class="fc-pos">${fc.pos}</span>`:''}</div><div class="fc-src">${flag} ${fc.sourceLang==='de'?'German':fc.sourceLang==='en'?'English':'Manual'}</div><div class="fc-hint">click to reveal →</div></div><div class="fc-back"><div><div class="fc-trans">${tr}</div>${ex?`<div class="fc-ex">${ex}</div>`:''}</div><div class="srs-row"><button class="srs-btn srs-a" onclick="event.stopPropagation();srsRate(${i},0);renderFC(false)">Again</button><button class="srs-btn srs-h" onclick="event.stopPropagation();srsRate(${i},1);renderFC(false)">Hard</button><button class="srs-btn srs-g" onclick="event.stopPropagation();srsRate(${i},2);renderFC(false)">Good</button><button class="srs-btn srs-e" onclick="event.stopPropagation();srsRate(${i},3);renderFC(false)">Easy</button></div></div></div>`;}).join('');}
+function renderStudy(){document.getElementById('fcMain').style.display='none';const sc=document.getElementById('fcStudy');sc.style.display='block';const cards=S.flashcards.filter(f=>isDue(f));if(cards.length===0){sc.innerHTML=`<div class="hist-empty"><span>✅</span>No cards due for review right now.</div>`;return;}S.studyIdx=0;renderStudyCard(cards);}
+function renderStudyCard(cards){const sc=document.getElementById('fcStudy');if(S.studyIdx>=cards.length){sc.innerHTML=`<div style="text-align:center;padding:60px 0"><div style="font-size:32px;margin-bottom:14px">🎉</div><div style="font-size:20px;font-weight:700;margin-bottom:6px">Session complete!</div><p style="font-size:13px;color:var(--text2);margin-bottom:20px">All ${cards.length} cards reviewed.</p><button class="btn-start" onclick="setFcTab('all')" style="max-width:200px;margin:0 auto">Back to Deck</button></div>`;return;}const fc=cards[S.studyIdx],lang=fc.sourceLang==='de'?'de-DE':'en-GB',tr=fc.translations[S.fcLang]||Object.values(fc.translations||{})[0]||'—',ex=fc.examples?.[S.fcLang]||'',fci=S.flashcards.indexOf(fc);sc.innerHTML=`<div style="text-align:center;font-size:12px;color:var(--text3);margin-bottom:12px">${S.studyIdx+1} / ${cards.length}</div><div class="progress-track" style="margin-bottom:22px"><div class="progress-fill" style="width:${(S.studyIdx/cards.length)*100}%"></div></div><div class="fc-exam-sec" style="text-align:center"><div style="font-size:36px;font-weight:800;margin-bottom:7px;font-family:'Instrument Serif',serif;font-style:italic">${fc.word}</div>${fc.phonetic?`<div style="font-size:12px;color:var(--text3);font-family:'DM Mono',monospace;margin-bottom:8px">${fc.phonetic}</div>`:''}<button class="btn-sm blue" onclick="speakBtn('${encodeURIComponent(fc.word)}','${lang}',this)">🔊 Pronounce</button><hr class="section-div" style="margin:16px 0"><div style="font-size:22px;font-weight:700;color:var(--purple);margin-bottom:7px">${tr}</div>${ex?`<div style="font-size:12px;color:var(--text2);font-style:italic">${ex}</div>`:''}<div class="srs-row" style="margin-top:18px"><button class="srs-btn srs-a" onclick="srsRate(${fci},0);S.studyIdx++;renderStudyCard(cards)">Again</button><button class="srs-btn srs-h" onclick="srsRate(${fci},1);S.studyIdx++;renderStudyCard(cards)">Hard</button><button class="srs-btn srs-g" onclick="srsRate(${fci},2);S.studyIdx++;renderStudyCard(cards)">Good</button><button class="srs-btn srs-e" onclick="srsRate(${fci},3);S.studyIdx++;renderStudyCard(cards)">Easy</button></div></div>`;}
+function flipCard(i){document.getElementById('fc_'+i)?.classList.toggle('flipped');}
+function setFcLang(lang,btn){S.fcLang=lang;document.querySelectorAll('#fcLangBtns .vt-lb').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');renderFC(false);}
+function delFC(i){if(confirm('Remove this word?')){S.flashcards.splice(i,1);saveFC();renderFC(false);}}
+function clearFC(){if(confirm('Remove all words?')){S.flashcards=[];saveFC();renderFC();}}
+
+// ═══════════════════════════════════════════
+// VOCAB EXAM
+// ═══════════════════════════════════════════
+function startVE(audio){
+  if(S.flashcards.length<4){alert('Add at least 4 words to start a vocab exam.');return;}
+  S.veAudio=audio;S.veScore=0;S.veIndex=0;
+  S.veQuestions=[...S.flashcards].sort(()=>Math.random()-.5).slice(0,Math.min(S.flashcards.length,15));
+  hideAll();show('vocabExamScreen');
+  document.getElementById('veTitle').textContent=`${S.veQuestions.length} words · ${S.flashcards.filter(f=>isDue(f)).length} due`;
+  renderVEQ();window.scrollTo({top:0,behavior:'smooth'});
+}
+function renderVEQ(){
+  const vc=document.getElementById('veContent');
+  if(S.veIndex>=S.veQuestions.length){
+    const pct=Math.round(S.veScore/S.veQuestions.length*100);
+    vc.innerHTML=`<div style="text-align:center;padding:40px 0"><div class="ve-big ${pct>=70?'pass':pct>=50?'mid':'fail'}">${pct}%</div><div style="font-size:14px;color:var(--text2);margin:10px 0 24px">${S.veScore}/${S.veQuestions.length} correct</div><button class="btn-start" onclick="goFlashcards()" style="max-width:220px;margin:0 auto">← Back to Deck</button></div>`;
+    return;
+  }
+  const fc=S.veQuestions[S.veIndex],lang=fc.sourceLang==='de'?'de-DE':'en-GB';
+  const tr=fc.translations[S.fcLang]||Object.values(fc.translations||{})[0]||'—';
+  const allTr=S.flashcards.map(f=>f.translations[S.fcLang]||Object.values(f.translations||{})[0]||'').filter(t=>t&&t!==tr);
+  const opts=[tr,...allTr.sort(()=>Math.random()-.5).slice(0,3)].sort(()=>Math.random()-.5);
+  document.getElementById('veProg').textContent=`Question ${S.veIndex+1} of ${S.veQuestions.length}`;
+  document.getElementById('veScore').textContent=`Score: ${S.veScore}`;
+  document.getElementById('veBar').style.width=(S.veIndex/S.veQuestions.length*100)+'%';
+  vc.innerHTML=`<div class="ve-card">${S.veAudio?`<div style="font-size:13px;color:var(--text3);margin-bottom:10px">What word is this?</div><button class="ve-aud" id="veAudBtn" onclick="speakBtn('${encodeURIComponent(fc.word)}','${lang}',this)">🔊 Play audio</button>`:`<div class="ve-word">${fc.word}</div>${fc.phonetic?`<div class="ve-meta">${fc.phonetic}</div>`:''}`}</div><div class="ve-opts">${opts.map(o=>`<div class="ve-opt" onclick="ansVE(this,'${encodeURIComponent(o)}','${encodeURIComponent(tr)}')">${o}</div>`).join('')}</div>`;
+}
+function ansVE(el,encAns,encCorr){
+  document.querySelectorAll('.ve-opt').forEach(o=>o.classList.add('dis'));
+  const ans=decodeURIComponent(encAns),corr=decodeURIComponent(encCorr);
+  if(ans===corr){el.classList.add('correct');S.veScore++;srsRate(S.flashcards.indexOf(S.veQuestions[S.veIndex]),3);}
+  else{el.classList.add('wrong');document.querySelectorAll('.ve-opt').forEach(o=>{if(decodeURIComponent(encodeURIComponent(o.textContent))===corr)o.classList.add('correct');});srsRate(S.flashcards.indexOf(S.veQuestions[S.veIndex]),0);}
+  S.veIndex++;setTimeout(renderVEQ,1000);
+}
+
+// ═══════════════════════════════════════════
+// API KEY BANNER
+// ═══════════════════════════════════════════
+function renderApiBanner(){
+  const existing=document.getElementById('apiBanner');if(existing)existing.remove();
+  const key=window._apiKey||localStorage.getItem('ll_apikey')||'';
+  const banner=document.createElement('div');banner.id='apiBanner';
+  banner.innerHTML=key
+    ?`<span style="color:var(--green)">✓ API Key saved</span><span style="color:var(--text3);flex:1">AI exams are ready.</span><button onclick="clearApiKey()" style="background:var(--surface);border:.5px solid var(--border2);border-radius:6px;padding:4px 10px;font-size:11px;color:var(--text2);cursor:pointer;font-family:'Syne',sans-serif">Change key</button>`
+    :`<span style="color:var(--accent);font-weight:700">⚠ Anthropic API Key required</span><input id="apiKeyInput" placeholder="sk-ant-api03-..." style="flex:1;min-width:200px;background:var(--bg3);border:.5px solid var(--border2);border-radius:6px;padding:6px 10px;font-size:12px;color:var(--text);font-family:'DM Mono',monospace;outline:none;" /><button onclick="saveApiKey()" style="background:var(--accent);color:#000;border:none;border-radius:6px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif">Save</button><a href="https://console.anthropic.com/settings/keys" target="_blank" style="color:var(--blue);font-size:11px;white-space:nowrap">Get API key →</a>`;
+  document.body.appendChild(banner);
+}
+function saveApiKey(){
+  const v=document.getElementById('apiKeyInput')?.value.trim();
+  if(!v||!v.startsWith('sk-')){alert('Key must start with sk-ant-...');return;}
+  window._apiKey=v;localStorage.setItem('ll_apikey',v);renderApiBanner();
+}
+function clearApiKey(){window._apiKey='';localStorage.removeItem('ll_apikey');renderApiBanner();}
+
+// ═══════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════
+function init(){
+  loadLS();loadTheme();
+  const ov=document.getElementById('authOverlay');
+  if(S.user){
+    updUserBtn();
+    if(ov)ov.style.display='none';
+  }else{
+    saveUser({name:'Guest',email:'guest@LexiLoop.app',avatar:'G',plan:'free'});
+    updUserBtn();
+    if(ov)ov.style.display='none';
+  }
+  const key=localStorage.getItem('ll_apikey')||'';
+  if(key)window._apiKey=key;
+  updBadges();updQuotaUI();show('homeScreen');renderApiBanner();
+}
+window.addEventListener('DOMContentLoaded',init);
+</script>
+</body>
+</html>
