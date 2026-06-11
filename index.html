@@ -418,7 +418,6 @@ body.light,[data-theme='light'] body{background:var(--bg);color:var(--text)}
 .ms-score{font-size:24px;font-weight:800;margin-bottom:3px}
 .ms-label{font-size:10px;color:var(--text3);font-weight:600;letter-spacing:.06em;text-transform:uppercase}
 /* HISTORY */
-#historyScreen{display:none;padding:38px 0;animation:fadeUp .35s ease}
 .chart-wrap{background:var(--bg2);border:.5px solid var(--border);border-radius:var(--r-lg);padding:22px;margin-bottom:18px}
 .chart-bars{display:flex;align-items:flex-end;gap:5px;height:80px;margin-top:12px}
 .chart-bar{flex:1;border-radius:3px 3px 0 0;min-width:14px;transition:all .3s}
@@ -528,10 +527,6 @@ body.light,[data-theme='light'] body{background:var(--bg);color:var(--text)}
 .app-nav__item.active{background:var(--accent-dim);color:var(--accent);font-weight:700}
 .app-nav__group{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);padding:8px 14px 4px;flex-shrink:0}
 /* LEARNING LOOP */
-.loop-strip{display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding:12px 16px;background:var(--accent-dim);border:1px solid rgba(37,99,235,.15);border-radius:var(--r-lg);margin-bottom:20px;font-size:11px;font-weight:600;color:var(--text2)}
-.loop-strip strong{color:var(--accent);font-weight:700}
-.loop-step{display:inline-flex;align-items:center;gap:4px}
-.loop-arrow{color:var(--text3);font-size:10px}
 /* COACH DASHBOARD */
 /* GOAL DASHBOARD (app-screens pattern) */
 .goal-kicker{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin:0 0 14px}
@@ -1024,9 +1019,6 @@ body.light,[data-theme='light'] body{background:var(--bg);color:var(--text)}
 .setup-card:hover,.setup-card.selected{border-color:var(--accent);background:var(--accent-dim)}
 .setup-card h3{font-size:15px;font-weight:700;margin-bottom:4px}
 .setup-card p{font-size:12px;font-weight:600;color:var(--text2)}
-.progress-tabs{display:flex;gap:6px;margin-bottom:18px;flex-wrap:wrap}
-.progress-tab{font-size:12px;font-weight:700;padding:8px 14px;border-radius:99px;border:1px solid var(--border);background:var(--bg2);color:var(--text2);cursor:pointer}
-.progress-tab.active{background:var(--accent-dim);border-color:var(--accent);color:var(--accent)}
 .hist-card{cursor:pointer;transition:background .15s}
 .hist-card:hover{background:var(--bg3)}
 .demo-banner{background:var(--accent-dim);border:1px solid rgba(37,99,235,.25);border-radius:var(--r);padding:10px 14px;font-size:12px;font-weight:600;color:var(--text2);margin-bottom:14px}
@@ -1296,55 +1288,6 @@ body.light,[data-theme='light'] body{background:var(--bg);color:var(--text)}
 <div id="examScreen"></div>
 <div id="resultsScreen"></div>
 <div id="mistakeReviewScreen"></div>
-<div id="historyScreen">
-  <button class="back-btn" onclick="goHome()">← Dashboard</button>
-  <div class="loop-strip" style="margin-top:12px"><span class="loop-step"><strong>Progress</strong></span><span class="loop-arrow">→</span><span class="loop-step"><strong>Readiness</strong></span><span class="loop-arrow">→</span><span class="loop-step"><strong>Confidence</strong></span></div>
-  <div class="screen-eyebrow">Progress</div>
-  <h2 class="screen-title" style="font-family:var(--lc-font);font-weight:700;font-style:normal">Your <span style="color:var(--accent)">improvement</span></h2>
-  <div class="progress-tabs">
-    <button type="button" class="progress-tab active" id="progTabHistory" onclick="setProgressTab('history')">Exam history</button>
-    <button type="button" class="progress-tab" id="progTabReadiness" onclick="setProgressTab('readiness')">Readiness</button>
-    <button type="button" class="progress-tab" id="progTabStats" onclick="setProgressTab('stats')">Statistics</button>
-  </div>
-  <div id="progressPanelHistory">
-  <div class="coach-card" id="progressReadinessCard" style="margin-bottom:20px;padding:16px 20px;display:none">
-    <div class="coach-label">Exam readiness · <span id="progressProfileLabel"></span></div>
-    <div class="readiness-row">
-      <div class="readiness-bar"><div class="readiness-fill" id="progressReadinessFill" style="width:0%"></div></div>
-      <span class="readiness-estlbl" id="progressReadinessLbl">est. <b>—</b></span>
-    </div>
-  </div>
-  <div class="chart-wrap" id="chartWrap" style="display:none">
-    <h3>Score history <span id="chartSub" style="font-size:11px;color:var(--text3);font-weight:400;font-family:'DM Mono',monospace"></span></h3>
-    <div class="chart-bars" id="chartBars"></div>
-    <div style="display:flex;gap:12px;margin-top:7px;font-size:11px;color:var(--text3);flex-wrap:wrap">
-      <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:var(--green);margin-right:4px"></span>Pass ≥70</span>
-      <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:var(--accent);margin-right:4px"></span>Close 50–69</span>
-      <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:var(--red);margin-right:4px"></span>Fail &lt;50</span>
-    </div>
-  </div>
-  <div class="hist-list" id="histList"></div>
-  </div>
-  <div id="progressPanelReadiness" style="display:none">
-    <div class="coach-card" style="padding:16px 20px;margin-bottom:16px">
-      <div class="coach-label">Exam readiness</div>
-      <div class="readiness-row">
-        <div class="readiness-bar"><div class="readiness-fill" id="progressReadinessFill2" style="width:0%"></div></div>
-        <span class="readiness-estlbl" id="progressReadinessLbl2">est. <b>—</b></span>
-      </div>
-      <p id="progressReadinessHint" style="font-size:12px;font-weight:600;color:var(--text2);margin-top:12px;line-height:1.55"></p>
-    </div>
-    <ul class="weak-list" id="progressWeakList"></ul>
-  </div>
-  <div id="progressPanelStats" style="display:none">
-    <div class="stat-tiles" style="margin-bottom:16px">
-      <div class="stat-tile"><div class="stat-tile__val" id="statExams">0</div><div class="stat-tile__lbl">Exams</div></div>
-      <div class="stat-tile"><div class="stat-tile__val" id="statVocab">0</div><div class="stat-tile__lbl">Words saved</div></div>
-      <div class="stat-tile"><div class="stat-tile__val" id="statAvg">—</div><div class="stat-tile__lbl">Avg score</div></div>
-    </div>
-    <p style="font-size:12px;font-weight:600;color:var(--text2)">All statistics are scoped to your active exam profile.</p>
-  </div>
-</div>
 <div id="flashcardScreen">
   <div id="fcHubNav" style="display:none">
     <button type="button" class="back-btn" onclick="backFromDeckHub()">← <span id="fcHubBackLbl">Dashboard</span></button>
@@ -2177,10 +2120,6 @@ function readinessEstLabelHtml(pct,hasData){
   const qual=readinessQualLabel(pct);
   return 'est. <b>'+pct+'% ready</b> · '+qual;
 }
-function updateReadinessEstUi(fillEl,lblEl,pct,hasData){
-  if(fillEl)fillEl.style.width=(hasData?pct:0)+'%';
-  if(lblEl)lblEl.innerHTML=readinessEstLabelHtml(pct,hasData);
-}
 function formatGoalDateLine(goal){
   if(goal.examDate){
     const days=daysUntilExam(goal.examDate);
@@ -2907,32 +2846,6 @@ function saveExamProfile(){
   goHome();lcToast('Preparing for '+ExamProfile.getActiveLabel(),'success');
 }
 function userMenuProfile(){closeUserMenu();showProfileSetup();}
-function setProgressTab(tab){
-  ['history','readiness','stats'].forEach(t=>{
-    document.getElementById('progTab'+t.charAt(0).toUpperCase()+t.slice(1))?.classList.toggle('active',t===tab);
-    const p=document.getElementById('progressPanel'+t.charAt(0).toUpperCase()+t.slice(1));
-    if(p)p.style.display=t===tab?'block':'none';
-  });
-  if(tab==='readiness')renderProgressReadiness();
-  if(tab==='stats')renderProgressStats();
-}
-function renderProgressReadiness(){
-  const histLen=getProfileHistory().length;
-  const pct=getReadinessPct();
-  updateReadinessEstUi(document.getElementById('progressReadinessFill2'),document.getElementById('progressReadinessLbl2'),pct,histLen>0);
-  const h=document.getElementById('progressReadinessHint');
-  if(h)h.textContent=histLen?'Based on your last exams and mastered vocabulary in this profile.':'Complete a practice exam to see readiness.';
-  const w=document.getElementById('progressWeakList');
-  if(w){const areas=getWeakAreas();w.innerHTML=areas.length?areas.map(a=>'<li>'+esc(a)+'</li>').join(''):'<li class="weak-empty">No weak areas yet</li>';}
-}
-function renderProgressStats(){
-  const hist=getProfileHistory();
-  const fc=getProfileFlashcards();
-  const avg=hist.length?Math.round(hist.reduce((s,h)=>s+h.score,0)/hist.length):null;
-  const se=document.getElementById('statExams');if(se)se.textContent=hist.length;
-  const sv=document.getElementById('statVocab');if(sv)sv.textContent=fc.length;
-  const sa=document.getElementById('statAvg');if(sa)sa.textContent=avg!==null?avg+'%':'—';
-}
 function openMistakeReview(entryId){
   const hist=getProfileHistory();
   const entry=S.history.find(h=>h.id===entryId)||hist.find(h=>h.id===entryId);
@@ -2958,7 +2871,6 @@ function updBadges(){
   const fcLbl=fc.length+(fc.length===1?' word':' words');
   const b=document.getElementById('fcCountBadge');if(b)b.textContent=fcLbl;
   const dt=document.getElementById('fcTabDue');if(dt)dt.textContent='Due for Review'+(due?` (${due})`:'');
-  const hb=document.getElementById('histBadge');if(hb)hb.textContent=getProfileHistory().length+' exam'+(getProfileHistory().length!==1?'s':'');
   renderProfileBar();renderCoachDashboard();
   const home=document.getElementById('homeScreen');
   const ws=document.getElementById('goalWorkspaceScreen');
@@ -2971,15 +2883,6 @@ function getPreparingFor(){
   const hist=getProfileHistory();
   if(hist.length){const h=hist[0];return certLbl(h.lang,h.level);}
   return 'Choose your exam';
-}
-function getReadinessPct(){
-  const hist=getProfileHistory();
-  if(!hist.length)return 0;
-  const recent=hist.slice(0,5);
-  const avg=recent.reduce((s,h)=>s+h.score,0)/recent.length;
-  const mastered=getProfileFlashcards().filter(f=>f.interval&&f.interval>7).length;
-  const bonus=Math.min(15,mastered*2);
-  return Math.min(100,Math.round(avg*.85+bonus));
 }
 function getWeakAreas(){
   const topicScores={};
@@ -3034,10 +2937,7 @@ function runGoalCardAction(goalId,e){
 let _coachAction=null;
 function renderCoachDashboard(){
   const activeGoal=dashboardGoal();
-  const pct=activeGoal?getReadinessPctForGoal(activeGoal):getReadinessPct();
   const histLen=activeGoal?historyForGoal(activeGoal).length:getProfileHistory().length;
-  updateReadinessEstUi(document.getElementById('progressReadinessFill'),document.getElementById('progressReadinessLbl'),pct,histLen>0);
-  const pLbl=document.getElementById('progressProfileLabel');if(pLbl)pLbl.textContent=typeof ExamProfile!=='undefined'?ExamProfile.getActiveLabel():'';
   const weakEl=document.getElementById('coachWeakAreas');
   if(weakEl){
     const areas=activeGoal?getWeakAreasForGoal(activeGoal):getWeakAreas();
@@ -3083,7 +2983,7 @@ function showQuickPractice(){
 // ═══════════════════════════════════════════
 // NAVIGATION
 // ═══════════════════════════════════════════
-const SCREENS=['homeScreen','goalWorkspaceScreen','examConfigScreen','modeChooserScreen','profileSetupScreen','levelScreen','loadingScreen','examScreen','resultsScreen','mistakeReviewScreen','flashcardScreen','vocabExamScreen','historyScreen'];
+const SCREENS=['homeScreen','goalWorkspaceScreen','examConfigScreen','modeChooserScreen','profileSetupScreen','levelScreen','loadingScreen','examScreen','resultsScreen','mistakeReviewScreen','flashcardScreen','vocabExamScreen'];
 function show(id){document.getElementById(id).style.display='block';}
 function hide(id){document.getElementById(id).style.display='none';}
 function hideAll(){flushOpenStudySession();SCREENS.forEach(hide);stopTimer();showExamConfigFootbar(false);showModeChooserFootbar(false);}
@@ -4788,25 +4688,7 @@ function retakeExam(i,resume){
 }
 function deleteSaved(i){if(confirm('Remove this saved exam?')){S.savedExams.splice(i,1);saveSaved();const goal=getActiveGoal();if(goal&&document.getElementById('wsSavedGrid'))renderWsSavedExams(goal);}}
 
-// ═══════════════════════════════════════════
-// HISTORY
-// ═══════════════════════════════════════════
-function renderHistory(){
-  setProgressTab('history');
-  const hist=getProfileHistory();
-  const cw=document.getElementById('chartWrap'),cb=document.getElementById('chartBars');
-  const rc=document.getElementById('progressReadinessCard');
-  if(rc)rc.style.display=hist.length?'block':'none';
-  if(hist.length>0){
-    cw.style.display='block';
-    document.getElementById('chartSub').textContent=`Last ${Math.min(hist.length,12)} exams`;
-    const recent=[...hist].slice(0,12).reverse();
-    cb.innerHTML=recent.map(h=>`<div class="chart-bar" style="height:${h.score}%;background:${h.score>=70?'var(--green)':h.score>=50?'var(--accent)':'var(--red)'};flex:1" title="${h.score}% — ${h.topic}"></div>`).join('');
-  }else cw.style.display='none';
-  const hl=document.getElementById('histList');
-  if(!hist.length){hl.innerHTML='<div class="hist-empty"><span>📊</span>No exams yet for '+esc(getPreparingFor())+'. Generate your first exam!</div>';return;}
-  hl.innerHTML=hist.map((h)=>`<div class="hist-card" onclick="openMistakeReview(${h.id})"><div class="hist-score ${h.score>=70?'pass':h.score>=50?'mid':'fail'}">${h.score}%</div><div class="hist-info"><div class="hist-title">${h.lang==='de'?'🇩🇪':'🇬🇧'} ${esc(h.topic)} — ${h.level}</div><div class="hist-meta">${h.date} · ${h.guidedDemo?'Demo':normalizeMode(h.mode)==='practice'?'Practice':'Official'}${h.savedWords?.length?' · '+h.savedWords.length+' words':''}${h.markedWords?.length?' · '+h.markedWords.length+' marked':''}</div></div><span style="font-size:11px;color:var(--accent);font-weight:700">Review →</span></div>`).join('');
-}
+// History UI now lives in the workspace Progress tab (renderGoalHistoryHtml in workspaceUi.js).
 
 // ═══════════════════════════════════════════
 // VOCAB TOOLTIP
