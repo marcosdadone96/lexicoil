@@ -11,6 +11,19 @@ function sanitizeSync(raw) {
   const flashcards = Array.isArray(src.flashcards) ? src.flashcards.slice(0, 500) : [];
   const history = Array.isArray(src.history) ? src.history.slice(0, 200) : [];
   const savedExams = Array.isArray(src.savedExams) ? src.savedExams.slice(0, 50) : [];
+  const activityLog = Array.isArray(src.activityLog) ? src.activityLog.slice(0, 100) : [];
+  const studyTime =
+    src.studyTime && typeof src.studyTime === 'object'
+      ? {
+          streak: Math.max(0, Math.min(Number(src.studyTime.streak) || 0, 9999)),
+          lastActiveDay: String(src.studyTime.lastActiveDay || '').slice(0, 10),
+          monthKey: String(src.studyTime.monthKey || '').slice(0, 7),
+          monthSec: Math.max(0, Math.min(Number(src.studyTime.monthSec) || 0, 9999999)),
+          totalSec: Math.max(0, Math.min(Number(src.studyTime.totalSec) || 0, 99999999)),
+          byDay:
+            src.studyTime.byDay && typeof src.studyTime.byDay === 'object' ? src.studyTime.byDay : {},
+        }
+      : { streak: 0, lastActiveDay: '', monthKey: '', monthSec: 0, totalSec: 0, byDay: {} };
   const quota =
     src.quota && typeof src.quota === 'object'
       ? {
@@ -22,6 +35,8 @@ function sanitizeSync(raw) {
     flashcards,
     history,
     savedExams,
+    activityLog,
+    studyTime,
     quota,
     updatedAt: Date.now(),
   };

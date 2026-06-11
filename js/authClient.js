@@ -126,6 +126,11 @@ const Auth = (() => {
       flashcards: Array.isArray(S.flashcards) ? S.flashcards : read('lc_fc', []),
       history: Array.isArray(S.history) ? S.history : read('lc_hist', []),
       savedExams: Array.isArray(S.savedExams) ? S.savedExams : read('lc_saved', []),
+      activityLog: Array.isArray(S.activityLog) ? S.activityLog : read('lc_activity', []),
+      studyTime:
+        S.studyTime && typeof S.studyTime === 'object'
+          ? S.studyTime
+          : read('lc_time', typeof ActivityTrack !== 'undefined' ? ActivityTrack.defaultStudyTime() : {}),
     };
   }
 
@@ -142,13 +147,19 @@ const Auth = (() => {
             flashcards: Array.isArray(server.flashcards) ? server.flashcards : localBefore.flashcards,
             history: Array.isArray(server.history) ? server.history : localBefore.history,
             savedExams: Array.isArray(server.savedExams) ? server.savedExams : localBefore.savedExams,
+            activityLog: Array.isArray(server.activityLog) ? server.activityLog : localBefore.activityLog,
+            studyTime: server.studyTime && typeof server.studyTime === 'object' ? server.studyTime : localBefore.studyTime,
           };
     S.flashcards = merged.flashcards;
     S.history = merged.history;
     S.savedExams = merged.savedExams;
+    S.activityLog = merged.activityLog || [];
+    S.studyTime = merged.studyTime || (typeof ActivityTrack !== 'undefined' ? ActivityTrack.defaultStudyTime() : {});
     localStorage.setItem('lc_fc', JSON.stringify(S.flashcards));
     localStorage.setItem('lc_hist', JSON.stringify(S.history));
     localStorage.setItem('lc_saved', JSON.stringify(S.savedExams));
+    localStorage.setItem('lc_activity', JSON.stringify(S.activityLog));
+    localStorage.setItem('lc_time', JSON.stringify(S.studyTime));
     if (typeof updBadges === 'function') updBadges();
     if (typeof updQuotaUI === 'function') updQuotaUI();
     await pushSync();
@@ -164,6 +175,8 @@ const Auth = (() => {
           flashcards: S.flashcards,
           history: S.history,
           savedExams: S.savedExams,
+          activityLog: S.activityLog || [],
+          studyTime: S.studyTime || {},
         },
       }),
     });

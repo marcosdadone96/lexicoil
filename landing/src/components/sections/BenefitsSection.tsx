@@ -2,61 +2,46 @@ import { Container } from '@/components/ui/Container';
 
 const BENEFITS = [
   {
-    title: "Learn only what you don't know",
-    desc: 'Stop reviewing vocabulary you already mastered. Every session targets your actual gaps.',
-    icon: 'target',
+    title: 'Turn mistakes into progress',
+    desc: 'No wasted study time. Every wrong answer becomes your next targeted lesson.',
+    icon: '🎯',
   },
   {
-    title: 'Stop wasting study time',
-    desc: 'No more random word lists. Practice is driven by mistakes from real exam questions.',
-    icon: 'clock',
+    title: 'Know if you are ready',
+    desc: 'A clear readiness estimate per exam goal — walk in confident, not guessing.',
+    icon: '📈',
   },
   {
-    title: 'Improve exam scores faster',
-    desc: 'Focused repetition on weak areas compounds faster than generic courses.',
-    icon: 'chart',
-  },
-  {
-    title: 'Measure real progress',
-    desc: 'Track scores, history, and vocabulary growth across every mock exam you take.',
-    icon: 'stats',
-  },
-  {
-    title: 'Build confidence before exam day',
-    desc: "Walk into Goethe or Cambridge knowing you've drilled your personal weak spots.",
-    icon: 'confidence',
-  },
-  {
-    title: 'Official exam format',
-    desc: 'Reading, listening, writing, speaking - structured like the real certification papers.',
-    icon: 'exam',
+    title: 'Personalized in seconds',
+    desc: 'Generate a full mock exam from your own weak vocabulary whenever you want to practice.',
+    icon: '⚡',
   },
 ];
 
 export function BenefitsSection() {
   return (
-    <section className="section-pad">
-      <Container>
+    <section className="section-pad bg-[var(--bg-base)]">
+      <Container className="max-w-[1120px]">
         <div className="mx-auto max-w-2xl text-center">
+          <p className="lc-badge mb-4 mx-auto w-fit">Why LexiCoil</p>
           <h2 className="font-display text-3xl font-bold tracking-tight text-[var(--text-primary)] md:text-4xl lg:text-5xl">
-            What LexiCoil delivers today
+            Built to pass exams, not to play games
           </h2>
-          <p className="mt-4 text-lg text-[var(--text-secondary)]">
-            Not another language app. Adaptive exam preparation that respects your time.
-          </p>
         </div>
 
-        <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-14 grid gap-6 md:grid-cols-3">
           {BENEFITS.map((b) => (
-            <div key={b.title} className="surface-card p-6 transition hover:border-[var(--brand)]/30">
+            <div key={b.title} className="surface-card p-6 md:p-8">
               <span
-                className="inline-flex h-10 w-10 items-center justify-center rounded-xl text-xs font-bold uppercase text-[var(--brand)]"
+                className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl text-xl"
                 style={{ background: 'var(--brand-light)' }}
               >
-                {b.icon.slice(0, 2)}
+                {b.icon}
               </span>
-              <h3 className="mt-4 text-lg font-bold text-[var(--text-primary)]">{b.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-[var(--text-secondary)]">{b.desc}</p>
+              <h3 className="text-lg font-bold text-[var(--text-primary)]">{b.title}</h3>
+              <p className="mt-2 text-sm font-semibold leading-relaxed text-[var(--text-secondary)]">
+                {b.desc}
+              </p>
             </div>
           ))}
         </div>

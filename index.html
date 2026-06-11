@@ -38,8 +38,13 @@ body{font-family:var(--lc-font);background:var(--bg);color:var(--text);min-heigh
 [data-theme='dark'] body,body:not(.light){background:var(--bg);color:var(--text)}
 body.light,[data-theme='light'] body{background:var(--bg);color:var(--text)}
 [data-theme='dark']{--surface:#242429;--surface2:#2C2C33}
-.app{max-width:920px;margin:0 auto;padding:0 24px 120px}
-header{padding:26px 0 22px;display:flex;align-items:center;justify-content:space-between;border-bottom:.5px solid var(--border);flex-wrap:wrap;gap:10px}
+.app{max-width:1200px;margin:0 auto;padding:0 24px 120px}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border);gap:12px;flex-wrap:wrap}
+.topbar-brand{display:flex;align-items:center;gap:12px;cursor:pointer;min-width:0}
+.topbar-brand .logo-name{font-size:18px}
+.topbar-brand .logo-sub{font-size:13px;padding-left:12px;border-left:1px solid var(--border);margin-left:4px}
+.topbar-right{display:flex;align-items:center;gap:10px}
+#profileBar,#appNav{display:none!important}
 .logo{display:flex;align-items:center;gap:10px;cursor:pointer}
 .logo-icon{width:32px;height:32px;flex-shrink:0}
 .logo-mark{font-family:var(--lc-font),serif;font-size:22px;font-style:italic;color:var(--accent);letter-spacing:-1px}
@@ -532,9 +537,12 @@ header{padding:26px 0 22px;display:flex;align-items:center;justify-content:space
 /* GOAL DASHBOARD (app-screens pattern) */
 .goal-kicker{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin:0 0 14px}
 .goal-seclbl{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin:0 0 10px;display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
-.goal-grid{display:grid;gap:14px;grid-template-columns:1fr;margin-bottom:20px}
-@media(min-width:560px){.goal-grid{grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}}
-.goal-card{background:var(--bg2);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:var(--r-lg);padding:18px;transition:border-color .2s;position:relative;cursor:pointer}
+.goal-grid,.goal-row{display:grid;gap:16px;grid-template-columns:1fr;margin-bottom:18px}
+@media(min-width:560px){.goal-grid,.goal-row{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:900px){.goal-row{grid-template-columns:repeat(4,1fr)}}
+.goal-card{background:var(--surface,var(--bg2));border:1px solid var(--border);border-radius:var(--r-lg);padding:18px;transition:box-shadow .18s,transform .18s,border-color .18s;position:relative;cursor:pointer;box-shadow:var(--shadow-card,0 1px 3px rgba(15,23,42,.06))}
+.goal-card:not(.dashed):hover{box-shadow:0 12px 40px rgba(15,23,42,.1);transform:translateY(-2px)}
+.goal-card.active{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-dim)}
 .goal-card:not(.dashed):hover{border-color:var(--accent)}
 .goal-card-tools{position:absolute;top:14px;right:14px;display:flex;gap:6px;z-index:2}
 .goal-card-tool{width:32px;height:32px;border-radius:8px;border:1px solid var(--border);background:var(--bg2);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;font-family:var(--lc-font);font-size:14px;color:var(--text2);padding:0;transition:border-color .15s,color .15s}
@@ -542,8 +550,97 @@ header{padding:26px 0 22px;display:flex;align-items:center;justify-content:space
 .goal-card-tool--danger:hover{border-color:var(--red);color:var(--red)}
 .goal-card-tool svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .goal-card .goal-top{padding-right:72px}
-.goal-card.dashed{border:1.5px dashed var(--border);border-left:1.5px dashed var(--border);background:transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--text3);min-height:150px;cursor:pointer}
-.goal-card.dashed:hover{border-color:var(--accent);color:var(--accent)}
+.goal-card.dashed{border:1.5px dashed var(--border-strong,var(--border));background:transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--text3);min-height:200px;cursor:pointer;box-shadow:none}
+.goal-card.dashed:hover{border-color:var(--accent);color:var(--accent);transform:none}
+.goal-ring-row{display:flex;align-items:center;justify-content:space-between;margin:14px 0 16px}
+.goal-ring{position:relative;width:84px;height:84px;flex-shrink:0}
+.goal-ring svg{transform:rotate(-90deg);display:block}
+.goal-ring-lbl{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none}
+.goal-ring-pct{font-size:20px;font-weight:800;line-height:1;color:var(--text)}
+.goal-ring-cap{font-size:9px;color:var(--text3);margin-top:2px;font-weight:600}
+.goal-days{text-align:right}
+.goal-days-n{font-size:22px;font-weight:800;line-height:1;color:var(--text)}
+.goal-days-l{font-size:11px;color:var(--text3);font-weight:600}
+.goal-open{width:100%;border:1px solid var(--border);background:var(--elevated,var(--bg3));border-radius:var(--r-md,12px);padding:9px;font-weight:600;font-size:13px;color:var(--accent);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;font-family:var(--lc-font)}
+.goal-open:hover{background:var(--accent-dim)}
+.dash-sec-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin:8px 0 16px;flex-wrap:wrap}
+.dash-sec-head h1{font-size:26px;font-weight:700;letter-spacing:-.02em;color:var(--text)}
+.dash-sec-head p{font-size:14px;color:var(--text3);margin-top:2px;font-weight:500}
+.dash-head-actions{display:flex;gap:10px;flex-wrap:wrap}
+.dash-coach{display:flex;align-items:center;gap:20px;background:linear-gradient(120deg,var(--accent-dim),rgba(37,99,235,.06));border:1px solid var(--border);border-radius:var(--r-lg);padding:22px 26px;margin-bottom:18px;flex-wrap:wrap}
+.dash-coach-ico{width:54px;height:54px;border-radius:14px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0}
+.dash-coach-body{flex:1;min-width:200px}
+.dash-coach-body .dash-eyebrow{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:3px}
+.dash-coach-body h2{font-size:22px;font-weight:700;margin:0 0 4px;letter-spacing:-.01em;color:var(--text)}
+.dash-coach-body p{font-size:14px;color:var(--text2);margin:0;font-weight:500;line-height:1.45}
+.dash-coach-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px;align-items:center}
+.dash-coach-ws{background:var(--surface,var(--bg2));border:1px solid var(--border-strong,var(--border));color:var(--text2)}
+.dash-coach-ws:hover{border-color:var(--accent);color:var(--accent)}
+.dash-coach-art{flex-shrink:0;opacity:.85}
+.dash-kpi-row{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:16px}
+@media(min-width:700px){.dash-kpi-row{grid-template-columns:repeat(4,1fr)}}
+.dash-kpi{background:var(--surface,var(--bg2));border:1px solid var(--border);border-radius:var(--r-lg);padding:16px;box-shadow:var(--shadow-card,0 1px 3px rgba(15,23,42,.06))}
+.dash-kpi-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.dash-kpi-label{font-size:12px;color:var(--text3);font-weight:600}
+.dash-kpi-val{font-size:28px;font-weight:800;letter-spacing:-.02em;line-height:1;color:var(--text)}
+.dash-kpi-delta{font-size:12px;font-weight:600;color:var(--green);margin-top:4px}
+.dash-kpi-note{font-size:12px;color:var(--text3);margin-top:4px;font-weight:600}
+.dash-bottom-row{display:grid;grid-template-columns:1fr;gap:16px;margin-bottom:16px}
+@media(min-width:900px){.dash-bottom-row{grid-template-columns:1fr 1fr 1fr}}
+.dash-panel{background:var(--surface,var(--bg2));border:1px solid var(--border);border-radius:var(--r-lg);padding:18px;box-shadow:var(--shadow-card,0 1px 3px rgba(15,23,42,.06))}
+.dash-panel h3{font-size:13px;font-weight:700;margin-bottom:14px;color:var(--text2)}
+.dash-skill{margin-bottom:12px}
+.dash-skill-top{display:flex;align-items:center;justify-content:space-between;font-size:13px;margin-bottom:5px;font-weight:600}
+.dash-bar{height:7px;border-radius:999px;background:var(--elevated,var(--bg3));overflow:hidden}
+.dash-bar i{display:block;height:100%;border-radius:999px}
+.dash-panel-link{display:block;text-align:center;margin-top:10px;font-size:13px;font-weight:600;color:var(--accent);cursor:pointer;border-top:1px solid var(--border);padding-top:12px;background:none;border-left:none;border-right:none;border-bottom:none;font-family:var(--lc-font);width:100%}
+.dash-act{display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid var(--border)}
+.dash-act:last-of-type{border-bottom:none}
+.dash-act-ico{width:34px;height:34px;border-radius:9px;background:var(--elevated,var(--bg3));display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.dash-act-body{flex:1;min-width:0}
+.dash-act-title{font-size:13px;font-weight:600;color:var(--text)}
+.dash-act-sub{font-size:12px;color:var(--text3);font-weight:500}
+.dash-act-time{font-size:12px;color:var(--text3);white-space:nowrap}
+.dash-qa{display:flex;align-items:center;gap:12px;padding:11px;border:1px solid var(--border);border-radius:var(--r-md,12px);margin-bottom:8px;cursor:pointer;transition:border-color .15s,background .15s;background:var(--surface,var(--bg2))}
+.dash-qa:hover{border-color:var(--accent);background:var(--accent-dim)}
+.dash-qa-ico{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.dash-qa-body{flex:1;min-width:0}
+.dash-qa-title{font-size:13px;font-weight:600;color:var(--text)}
+.dash-qa-sub{font-size:12px;color:var(--text3);font-weight:500}
+.dash-qa-go{color:var(--text3);font-size:14px}
+.dash-foot{display:flex;align-items:center;justify-content:space-between;background:var(--accent-dim);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px 20px;margin-top:8px;flex-wrap:wrap;gap:12px}
+.dash-foot-l{display:flex;align-items:center;gap:12px}
+.dash-foot-ico{width:36px;height:36px;border-radius:10px;background:var(--surface,var(--bg2));display:flex;align-items:center;justify-content:center;font-size:17px}
+.dash-foot p{font-size:13px;color:var(--text2);font-weight:500;line-height:1.45;margin:0}
+.dash-foot b{color:var(--accent)}
+.btn-dash-ghost{font-family:var(--lc-font);font-weight:600;font-size:14px;border-radius:var(--r-md,12px);padding:10px 16px;cursor:pointer;border:1px solid var(--border-strong,var(--border2));background:var(--surface,var(--bg2));color:var(--text2)}
+.btn-dash-ghost:hover{border-color:var(--accent);color:var(--accent)}
+.btn-dash-ghost.on{border-color:var(--accent);color:var(--accent);background:var(--accent-dim)}
+.goal-drag-handle{position:absolute;top:14px;left:14px;width:28px;height:28px;border-radius:8px;border:1px solid var(--border);background:var(--bg2);display:inline-flex;align-items:center;justify-content:center;cursor:grab;font-size:12px;color:var(--text3);letter-spacing:-2px;z-index:2;touch-action:none}
+.goal-drag-handle:active{cursor:grabbing}
+.goal-card.has-drag .goal-top{padding-left:36px}
+.goal-card.dragging{opacity:.45;transform:none}
+.goal-card.drag-over{outline:2px dashed var(--accent);outline-offset:2px}
+.dash-custom-backdrop{position:fixed;inset:0;background:rgba(15,23,42,.45);z-index:900;display:flex;align-items:flex-end;justify-content:center;padding:0}
+@media(min-width:640px){.dash-custom-backdrop{align-items:center;padding:24px}}
+.dash-custom-panel{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-lg) var(--r-lg) 0 0;width:100%;max-width:480px;max-height:88vh;overflow:auto;padding:22px 20px 20px;box-shadow:0 20px 60px rgba(15,23,42,.2);animation:fadeUp .25s ease}
+@media(min-width:640px){.dash-custom-panel{border-radius:var(--r-lg)}}
+.dash-custom-panel h2{font-size:20px;font-weight:700;margin:0 0 4px;letter-spacing:-.02em}
+.dash-custom-lede{font-size:13px;font-weight:500;color:var(--text2);margin:0 0 18px;line-height:1.5}
+.dash-custom-seclbl{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin:0 0 10px}
+.dash-custom-list{display:flex;flex-direction:column;gap:8px;margin-bottom:18px}
+.dash-custom-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--border);border-radius:var(--r-md,12px);background:var(--bg3)}
+.dash-custom-item label{flex:1;font-size:13px;font-weight:600;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:10px}
+.dash-custom-item input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent);flex-shrink:0}
+.dash-custom-move{display:flex;flex-direction:column;gap:2px}
+.dash-custom-move button{width:28px;height:22px;border:1px solid var(--border);border-radius:6px;background:var(--bg2);font-family:var(--lc-font);font-size:11px;color:var(--text2);cursor:pointer;padding:0}
+.dash-custom-move button:hover{border-color:var(--accent);color:var(--accent)}
+.dash-custom-move button:disabled{opacity:.35;cursor:not-allowed}
+.dash-custom-note{font-size:12px;font-weight:600;color:var(--text3);margin:0 0 16px;line-height:1.5;padding:10px 12px;border-radius:var(--r);background:var(--accent-dim);border:1px solid var(--border)}
+.dash-custom-actions{display:flex;gap:10px;flex-wrap:wrap}
+.dash-custom-actions .btn-start{flex:1;min-width:140px;margin:0}
+.dash-kpi.is-hidden{display:none}
+.dash-panel-wrap.is-hidden{display:none}
 .goal-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:3px}
 .goal-name{font-size:18px;font-weight:700;color:var(--text)}
 .goal-pill{font-size:10px;font-weight:700;padding:3px 8px;border-radius:6px;background:var(--bg3);color:var(--text2)}
@@ -625,6 +722,57 @@ header{padding:26px 0 22px;display:flex;align-items:center;justify-content:space
 .ws-tab.on{background:var(--text);color:#fff;border-color:var(--text)}
 .ws-tabpanel{display:none}
 .ws-tabpanel.on{display:block}
+.ws-tabs-nav{display:flex;gap:0;margin:0 0 20px;border-bottom:1px solid var(--border)}
+.ws-tabs-nav-btn{min-height:44px;padding:0 18px 12px;border:none;border-bottom:2px solid transparent;background:none;font-family:var(--lc-font);font-size:14px;font-weight:600;color:var(--text3);cursor:pointer;margin-bottom:-1px}
+.ws-tabs-nav-btn:hover{color:var(--text2)}
+.ws-tabs-nav-btn.on{color:var(--text);border-bottom-color:var(--accent);font-weight:700}
+.ws-exam-grid{display:grid;gap:12px;grid-template-columns:1fr 1fr;margin-bottom:22px}
+@media(max-width:480px){.ws-exam-grid{grid-template-columns:1fr}}
+.ws-exam-card{display:flex;flex-direction:column;align-items:flex-start;text-align:left;min-height:108px;padding:16px;border-radius:var(--r-lg);border:1px solid var(--border);background:var(--bg2);cursor:pointer;font-family:var(--lc-font);transition:border-color .2s,transform .15s}
+.ws-exam-card:hover{border-color:var(--accent);transform:translateY(-1px)}
+.ws-exam-card-ic{font-size:22px;line-height:1;margin-bottom:8px}
+.ws-exam-card-title{font-size:15px;font-weight:700;color:var(--text);display:block}
+.ws-exam-card-desc{font-size:12px;font-weight:500;color:var(--text2);margin-top:4px;line-height:1.45}
+.ws-exam-card--official{border-color:rgba(16,185,129,.35);background:rgba(16,185,129,.08)}
+.ws-exam-card--official .ws-exam-card-title{color:var(--green)}
+.ws-exam-card--practice{border-color:rgba(59,130,246,.35);background:rgba(59,130,246,.08)}
+.ws-exam-card--practice .ws-exam-card-title{color:var(--blue)}
+.ws-exam-card--personal{border-color:rgba(139,92,246,.35);background:rgba(139,92,246,.08)}
+.ws-exam-card--personal .ws-exam-card-title{color:var(--purple)}
+.ws-exam-card--oral{border-color:rgba(245,158,11,.35);background:rgba(245,158,11,.08)}
+.ws-exam-card--oral .ws-exam-card-title{color:var(--orange)}
+.ws-recent-list{display:flex;flex-direction:column;gap:8px;margin-bottom:22px}
+.ws-recent-item{display:flex;align-items:center;gap:12px;width:100%;padding:12px 14px;border:1px solid var(--border);border-radius:var(--r);background:var(--bg2);cursor:pointer;font-family:var(--lc-font);text-align:left}
+.ws-recent-item:hover{border-color:var(--accent)}
+.ws-recent-score{min-width:44px;font-size:15px;font-weight:700;text-align:center}
+.ws-recent-score.pass{color:var(--green)}
+.ws-recent-score.mid{color:var(--accent)}
+.ws-recent-score.fail{color:var(--red)}
+.ws-recent-info{flex:1;min-width:0}
+.ws-recent-info b{display:block;font-size:14px;font-weight:700;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ws-recent-info span{font-size:12px;font-weight:600;color:var(--text3)}
+.ws-recent-cta{font-size:12px;font-weight:700;color:var(--accent);flex-shrink:0}
+.ws-recent-empty{font-size:13px;font-weight:600;color:var(--text3);margin:0 0 22px}
+.ws-vkpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px}
+@media(max-width:520px){.ws-vkpi-row{grid-template-columns:repeat(2,1fr)}}
+.ws-vkpi{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:12px 10px;text-align:center}
+.ws-vkpi b{display:block;font-size:20px;font-weight:700;color:var(--accent);line-height:1.2}
+.ws-vkpi span{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.04em}
+.vv-filter--static{cursor:default;pointer-events:none}
+.ws-prog-top{display:grid;gap:14px;grid-template-columns:1fr;margin-bottom:16px}
+@media(min-width:640px){.ws-prog-top{grid-template-columns:1fr 1fr}}
+.ws-prog-readiness{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.ws-prog-readiness-ring{position:relative;width:84px;height:84px;flex-shrink:0}
+.ws-prog-readiness-pct{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:var(--text)}
+.ws-skill-list{display:flex;flex-direction:column;gap:10px}
+.ws-skill-row{display:flex;align-items:center;gap:10px}
+.ws-skill-lbl{min-width:120px;font-size:12px;font-weight:600;color:var(--text2)}
+.ws-skill-bar{flex:1;height:8px;background:var(--bg3);border-radius:99px;overflow:hidden}
+.ws-skill-fill{height:100%;border-radius:99px;transition:width .4s ease}
+.ws-skill-pct{min-width:36px;font-size:12px;font-weight:700;color:var(--text);text-align:right}
+.ws-coach-banner--compact{padding:14px 16px;margin-bottom:14px}
+.ws-coach-banner--compact .ws-coach-lead{font-size:14px}
+.ws-coach-banner--compact .readiness-row{margin-top:8px}
 .ws-quota{margin-bottom:16px}
 .profile-bar--workspace .profile-bar__label{color:var(--accent)}
 .profile-bar--dash .profile-bar__change{display:inline-flex}
@@ -1016,14 +1164,14 @@ header{padding:26px 0 22px;display:flex;align-items:center;justify-content:space
 </div>
 
 <div class="app">
-<header>
-  <div class="logo" onclick="goToLanding()" title="Back to LexiCoil home">
-    <img class="logo-icon" src="/assets/brand/icon.svg" alt="" width="32" height="32"><div class="logo-sep"></div>
+<header class="topbar">
+  <div class="topbar-brand logo" onclick="goToLanding()" title="Back to LexiCoil home">
+    <img class="logo-icon" src="/assets/brand/icon.svg" alt="" width="34" height="34"><div class="logo-sep"></div>
     <span class="logo-name">Lexi<b>Coil</b></span><div class="logo-sep"></div>
     <span class="logo-sub">English & German Exams</span>
   </div>
-  <div class="header-right">
-    <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙</button>
+  <div class="topbar-right header-right">
+    <button class="theme-btn" id="themeBtn" onclick="toggleTheme()" title="Toggle theme">🌙</button>
     <div class="user-menu-wrap" id="userMenuWrap">
       <button type="button" class="user-btn" id="userBtn" onclick="toggleUserMenu(event)" aria-haspopup="true" aria-expanded="false">
         <div class="user-avatar" id="userAv">?</div>
@@ -1081,12 +1229,11 @@ header{padding:26px 0 22px;display:flex;align-items:center;justify-content:space
   <button class="btn-start" id="btnProfileSave" onclick="saveExamProfile()" disabled style="margin-top:20px">Start preparing →</button>
 </div>
 
-<!-- DASHBOARD — goal selection only -->
+<!-- DASHBOARD — coach + goals -->
 <div id="homeScreen">
-  <p class="goal-kicker">What exam are you preparing for?</p>
-  <p class="goal-lede" style="margin:0 0 18px">Select a goal to open your workspace — exams, vocabulary and progress live there.</p>
   <div id="homeGoalArea"></div>
 </div>
+<div id="dashCustomizeHost"></div>
 
 <!-- GOAL WORKSPACE -->
 <div id="goalWorkspaceScreen">
@@ -1396,7 +1543,8 @@ header{padding:26px 0 22px;display:flex;align-items:center;justify-content:space
 </div><!-- .app -->
 
 <script src="js/supabaseClient.js?v=9"></script>
-<script src="js/syncMerge.js?v=1"></script>
+<script src="js/activityTrack.js?v=1"></script>
+<script src="js/syncMerge.js?v=2"></script>
 <script src="js/authClient.js?v=9"></script>
 <script src="js/claudeClient.js?v=11"></script>
 <script src="js/engine/domain/lexicoilDomain.js?v=1"></script>
@@ -1434,6 +1582,11 @@ header{padding:26px 0 22px;display:flex;align-items:center;justify-content:space
 <script src="js/library/WeaknessEngine.js?v=1"></script>
 <script src="js/library/PracticeDictionary.js?v=1"></script>
 <script src="js/manualVocab.js?v=2"></script>
+<script src="js/goalStore.js?v=3"></script>
+<script src="js/dashboardLayout.js?v=2"></script>
+<script src="js/dashboardUi.js?v=3"></script>
+<script src="js/workspaceUi.js?v=2"></script>
+
 <script src="js/library/QuestionLibrary.js?v=1"></script>
 <script src="js/goetheDemoExams.js"></script>
 <script src="js/demoExams.js"></script>
@@ -1450,7 +1603,8 @@ const S={
   timerInt:null,timerSec:0,history:[],quickMod:null,studyIdx:0,
   savedExams:[],listenPlays:2,isDemo:false,examSavedWords:[],
   profileCert:null,profileLevel:null,
-  goals:[],activeGoalId:null,deckGoalFilter:null,fcTypeFilter:'all',wsTab:'overview'
+  goals:[],activeGoalId:null,deckGoalFilter:null,fcTypeFilter:'all',wsTab:'exams',
+  activityLog:[],studyTime:null,dashboardLayout:null
 };
 const LEVELS={
   de:[{code:'A1',name:'Start Deutsch 1',desc:'Goethe A1',time:65},{code:'A2',name:'Start Deutsch 2',desc:'Goethe A2',time:65},{code:'B1',name:'Zertifikat B1',desc:'Goethe B1',time:90},{code:'B2',name:'Goethe B2',desc:'Goethe B2',time:105},{code:'C1',name:'Goethe C1',desc:'Goethe C1',time:150},{code:'C2',name:'Goethe C2',desc:'Goethe C2',time:180}],
@@ -1493,43 +1647,26 @@ function loadLS(){
   try{const gr=localStorage.getItem('lc_goals');if(gr)S.goals=JSON.parse(gr);}catch(e){}
   if(!Array.isArray(S.goals))S.goals=[];
   try{const ag=localStorage.getItem('lc_active_goal');if(ag)S.activeGoalId=ag;}catch(e){}
-  let migrated=false;
-  if(S.goals.length===0){
-    try{
-      const g=localStorage.getItem('lc_goal');
-      if(g){
-        const o=JSON.parse(g);
-        if(o.subject&&o.level){
-          const goal={id:'goal_'+Date.now().toString(36),subject:o.subject,level:o.level,examDate:null,createdAt:Date.now()};
-          S.goals.push(goal);
-          S.activeGoalId=goal.id;
-          migrated=true;
-        }
-      }
-    }catch(e){}
+  try{const al=localStorage.getItem('lc_activity');if(al)S.activityLog=JSON.parse(al);}catch(e){}
+  if(!Array.isArray(S.activityLog))S.activityLog=[];
+  try{const lt=localStorage.getItem('lc_time');if(lt)S.studyTime=JSON.parse(lt);}catch(e){}
+  if(typeof ActivityTrack!=='undefined'){
+    S.studyTime=ActivityTrack.normalizeStudyTime(S.studyTime);
+    if(S.activityLog.length)S.studyTime=ActivityTrack.computeStudyTime(S.activityLog);
+    bootstrapActivityFromHistory();
   }
-  if(migrated)saveGoals();
-  ensureGoalSlugs();
+  S.dashboardLayout=loadDashboardLayout();
+  let migrated=GoalStore.migrateFromLegacy();
+  if(migrated)GoalStore.save();
   try{const as=localStorage.getItem('lc_active_session');if(as)S.activeSession=JSON.parse(as);}catch(e){}
   if(S.mode==='real')S.mode='official';
   if(S.activeSession?.mode==='real')S.activeSession.mode='official';
   if(S.activeSession&&(S.activeSession.mode==='official'||S.activeSession.mode==='real')){S.activeSession=null;localStorage.removeItem('lc_active_session');}
   S._officialInProgress=null;
-  try{const g=localStorage.getItem('lc_goal');if(g){const o=JSON.parse(g);if(o.subject)S.subject=o.subject;if(o.level)S.level=o.level;}}catch(e){}
   if(typeof ExamProfile!=='undefined')ExamProfile.migrateFromGoal();
-  const activeGoal=S.goals.find(g=>g.id===S.activeGoalId);
-  if(activeGoal){S.subject=activeGoal.subject;S.level=activeGoal.level;}
-  else{
-    const ap=typeof ExamProfile!=='undefined'?ExamProfile.getActive():null;
-    if(ap){S.subject=ap.subject;S.level=ap.level;}
-  }
+  GoalStore.afterLoad();
   ensureFcIds();
   S.fcSelected=new Set([...S.fcSelected].filter(id=>S.flashcards.some(f=>fcId(f)===id)));
-}
-function saveGoals(){
-  localStorage.setItem('lc_goals',JSON.stringify(S.goals));
-  if(S.activeGoalId)localStorage.setItem('lc_active_goal',S.activeGoalId);
-  else localStorage.removeItem('lc_active_goal');
 }
 function saveActiveSession(){
   if(S.activeSession&&normalizeMode(S.activeSession.mode)==='official')return;
@@ -1753,6 +1890,38 @@ function saveFC(){ensureFcIds();localStorage.setItem('lc_fc',JSON.stringify(S.fl
 function lcToast(msg,type='info',ms=3800){if(typeof showToast==='function')showToast(msg,type,ms);else alert(msg);}
 function saveHist(){localStorage.setItem('lc_hist',JSON.stringify(S.history));Auth.pushSync();}
 function saveSaved(){localStorage.setItem('lc_saved',JSON.stringify(S.savedExams));Auth.pushSync();}
+function saveActivity(){
+  if(typeof ActivityTrack!=='undefined'&&S.activityLog?.length)S.studyTime=ActivityTrack.computeStudyTime(S.activityLog);
+  localStorage.setItem('lc_activity',JSON.stringify(S.activityLog||[]));
+  localStorage.setItem('lc_time',JSON.stringify(S.studyTime||{}));
+  if(typeof Auth!=='undefined')Auth.pushSync();
+}
+function recordStudySession(meta){
+  if(!meta||typeof ActivityTrack==='undefined')return;
+  const next=ActivityTrack.recordSession({activityLog:S.activityLog,studyTime:S.studyTime},meta);
+  S.activityLog=next.activityLog;
+  S.studyTime=next.studyTime;
+  saveActivity();
+}
+function flushOpenStudySession(extra){
+  if(typeof ActivityTrack==='undefined')return;
+  const meta=ActivityTrack.flushSession(extra);
+  if(meta)recordStudySession(meta);
+}
+function bootstrapActivityFromHistory(){
+  if(S.activityLog.length||!S.history?.length)return;
+  S.activityLog=S.history.slice(0,40).map(h=>{
+    const ts=Date.parse(h.date)||Number(h.id)||Date.now();
+    const day=new Date(ts).toISOString().slice(0,10);
+    const mode=normalizeMode(h.mode)==='practice'?'Practice':'Official';
+    return{id:'hist_'+h.id,ts,day,type:'exam',goalId:null,label:mode+' exam · '+(h.topic||h.level||''),score:h.score!=null?h.score:null,sec:0};
+  });
+  saveActivity();
+}
+function getStudyStreak(){return typeof ActivityTrack!=='undefined'?ActivityTrack.getStreak({studyTime:S.studyTime}):0;}
+function getStudyMonthTime(){return typeof ActivityTrack!=='undefined'?ActivityTrack.getMonthSec({studyTime:S.studyTime}):0;}
+function formatStudyDuration(sec){return typeof ActivityTrack!=='undefined'?ActivityTrack.formatDuration(sec):'—';}
+function studySecForGoal(goal){return typeof ActivityTrack!=='undefined'?ActivityTrack.studySecForGoal(S.activityLog,goal):0;}
 
 // ═══════════════════════════════════════════
 // QUOTA / PLAN
@@ -2078,45 +2247,6 @@ function getProfileHistory(){
 // ═══════════════════════════════════════════
 // EXAM GOALS
 // ═══════════════════════════════════════════
-const _goalWizard={subject:'de',level:'B2',examDate:''};
-let _showGoalWizard=false;
-let _editingGoalId=null;
-function ensureGoalSlugs(){
-  if(!Array.isArray(S.goals))return;
-  const used=new Set();
-  let changed=false;
-  S.goals.forEach(g=>{
-    if(!g||typeof g!=='object')return;
-    let base=provSlug(g.subject)+'-'+String(g.level||'b1').toLowerCase();
-    let slug=base,n=2;
-    while(used.has(slug)){slug=base+'-'+n++;changed=true;}
-    if(g.slug!==slug){g.slug=slug;changed=true;}
-    used.add(slug);
-  });
-  if(changed)saveGoals();
-}
-function goalSlug(goal){return goal?.slug||(goal?provSlug(goal.subject)+'-'+String(goal.level).toLowerCase():'');}
-function findGoalBySlug(slug){
-  if(!slug)return null;
-  return S.goals.find(g=>goalSlug(g)===slug)||null;
-}
-function updateWorkspaceUrl(goal){
-  try{
-    if(goal)history.replaceState(null,'', '#/workspace/'+goalSlug(goal));
-    else history.replaceState(null,'', '#/');
-  }catch(_){}
-}
-function parseAppRoute(){
-  const raw=(location.hash||'').replace(/^#\/?/,'');
-  if(raw.startsWith('workspace/')){
-    if(!gateAppRoute())return true;
-    const slug=decodeURIComponent(raw.slice('workspace/'.length).split('/')[0]);
-    const goal=findGoalBySlug(slug);
-    if(goal){openGoalWorkspace(goal.id,S.wsTab||'overview',true);return true;}
-  }
-  if(raw===''||raw==='dashboard')return false;
-  return false;
-}
 function clearVocabHubFlashcardMode(){
   if(typeof _vocabHub!=='undefined'){
     _vocabHub.flashcardMode=false;
@@ -2142,39 +2272,10 @@ function setVocabHubFcLang(code,btn){
   if(btn)btn.classList.add('active');
   renderFcSingleView();
 }
-function setWsTab(tab){
-  if(tab!=='vocabulary')clearVocabHubFlashcardMode();
-  S.wsTab=tab;
-  renderGoalWorkspace();
-}
-function backToWorkspace(tab){
-  const id=S.activeGoalId;
-  if(id)openGoalWorkspace(id,tab||S.wsTab||'overview');
-  else goHome();
-}
-
-function goalLabel(goal){
-  if(typeof ExamProfile!=='undefined')return ExamProfile.certLabel(goal.subject,goal.level);
-  return certLbl(goal.subject,goal.level);
-}
-function deckForGoal(goal){return(S.flashcards||[]).filter(f=>f.sourceLang===goal.subject);}
-function dueForGoal(goal){return deckForGoal(goal).filter(isDue);}
 /** Deck view: when S.deckGoalFilter is set (goal hub), only that language; else ExamProfile filter. Used by renderFC, getSelectedFC, startVE, select*FC. */
 function getDeckViewCards(){
   if(S.deckGoalFilter)return(S.flashcards||[]).filter(f=>f.sourceLang===S.deckGoalFilter);
   return typeof ExamProfile!=='undefined'?ExamProfile.filterList(S.flashcards):S.flashcards;
-}
-function historyForGoal(goal){
-  return(S.history||[]).filter(h=>h.lang===goal.subject&&h.level===goal.level);
-}
-function getReadinessPctForGoal(goal){
-  const hist=historyForGoal(goal);
-  if(!hist.length)return 0;
-  const recent=hist.slice(0,5);
-  const avg=recent.reduce((s,h)=>s+h.score,0)/recent.length;
-  const mastered=deckForGoal(goal).filter(f=>f.interval&&f.interval>7).length;
-  const bonus=Math.min(15,mastered*2);
-  return Math.min(100,Math.round(avg*.85+bonus));
 }
 function readinessQualLabel(pct){
   if(pct<25)return 'early days';
@@ -2209,130 +2310,17 @@ function goalCardActionLabel(act){
   }
   return{title:act.title,sub:act.desc};
 }
-function daysUntilExam(examDate){
-  if(!examDate)return null;
-  const today=new Date();today.setHours(0,0,0,0);
-  const exam=new Date(examDate+'T00:00:00');
-  return Math.ceil((exam-today)/86400000);
+function readinessRingColor(pct){
+  if(pct>=70)return'var(--green)';
+  if(pct>=60)return'var(--amber,#f59e0b)';
+  if(pct>=50)return'var(--orange)';
+  return'var(--red)';
 }
-function goalPrimaryMetric(goal){
-  if(goal.examDate){
-    const days=daysUntilExam(goal.examDate);
-    if(days!==null){
-      const d=Math.max(0,days);
-      return{big:d,unit:d===1?'day left':'days left',label:'Until your exam'};
-    }
-  }
-  const due=dueForGoal(goal).length;
-  if(due>0)return{big:due,unit:due===1?'word due':'words due',label:'No exam date set'};
-  const exams=historyForGoal(goal).length;
-  return{big:exams,unit:exams===1?'exam done':'exams done',label:exams?'Keep practicing':'No exams yet'};
-}
-function syncGoalToProfile(goal){
-  if(!goal)return;
-  S.subject=goal.subject;S.level=goal.level;
-  if(typeof ExamProfile!=='undefined')ExamProfile.createProfile(goal.subject,goal.level);
-  try{localStorage.setItem('lc_goal',JSON.stringify({subject:goal.subject,level:goal.level}));}catch(e){}
-}
-function createGoal({subject,level,examDate}){
-  if(S.goals.some(g=>g.subject===subject&&g.level===level)){
-    lcToast('You already have a goal for '+goalLabel({subject,level})+'.','warn');
-    return null;
-  }
-  const goal={
-    id:'goal_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,7),
-    subject,level,
-    examDate:examDate||null,
-    createdAt:Date.now()
-  };
-  S.goals.push(goal);
-  S.activeGoalId=goal.id;
-  ensureGoalSlugs();
-  syncGoalToProfile(goal);
-  saveGoals();
-  _showGoalWizard=false;
-  _editingGoalId=null;
-  lcToast('Exam goal created: '+goalLabel(goal),'success');
-  openGoalWorkspace(goal.id,'overview');
-  return goal;
-}
-function updateGoal(id,{subject,level,examDate}){
-  const goal=S.goals.find(g=>g.id===id);
-  if(!goal)return null;
-  if(S.goals.some(g=>g.id!==id&&g.subject===subject&&g.level===level)){
-    lcToast('You already have a goal for '+goalLabel({subject,level})+'.','warn');
-    return null;
-  }
-  goal.subject=subject;
-  goal.level=level;
-  goal.examDate=examDate||null;
-  ensureGoalSlugs();
-  if(S.activeGoalId===id)syncGoalToProfile(goal);
-  saveGoals();
-  _showGoalWizard=false;
-  _editingGoalId=null;
-  renderHomeScreen();
-  renderProfileBar();
-  lcToast('Exam goal updated: '+goalLabel(goal),'success');
-  return goal;
-}
-function deleteGoal(id){
-  const i=S.goals.findIndex(g=>g.id===id);
-  if(i<0)return;
-  if(S.activeSession?.goalId===id)clearActiveSession();
-  if(S._officialInProgress?.goalId===id)S._officialInProgress=null;
-  S.goals.splice(i,1);
-  if(S.activeGoalId===id){
-    S.activeGoalId=S.goals[0]?.id||null;
-    if(S.activeGoalId)syncGoalToProfile(S.goals[0]);
-    else{S.subject=null;S.level=null;}
-  }
-  saveGoals();
-  updateWorkspaceUrl(null);
-  goHome();
-}
-function confirmDeleteGoal(id){
-  const goal=S.goals.find(g=>g.id===id);
-  if(!goal)return;
-  if(!confirm('Remove '+goalLabel(goal)+' from your goals? Your saved vocabulary and exam history stay in your account.'))return;
-  deleteGoal(id);
-  lcToast('Goal removed','success');
-}
-function editGoal(id){
-  const goal=S.goals.find(g=>g.id===id);
-  if(!goal)return;
-  _editingGoalId=id;
-  _goalWizard.subject=goal.subject;
-  _goalWizard.level=goal.level;
-  _goalWizard.examDate=goal.examDate||'';
-  _showGoalWizard=true;
-  renderHomeScreen();
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-function getActiveGoal(){
-  return S.goals.find(g=>g.id===S.activeGoalId)||null;
-}
-function getWeakAreasForGoal(goal){
-  if(typeof AnalyticsStore!=='undefined'){
-    const grammar=AnalyticsStore.getWeakGrammarTags(goal,3);
-    if(grammar.length)return grammar;
-  }
-  const topicScores={};
-  historyForGoal(goal).forEach(h=>{
-    if(h.tagStats?.grammarTags){
-      Object.entries(h.tagStats.grammarTags).forEach(([tag,s])=>{
-        if(s.total>=1)(topicScores[tag]=topicScores[tag]||[]).push(Math.round(s.correct/s.total*100));
-      });
-      return;
-    }
-    if(!h.topic)return;
-    (topicScores[h.topic]=topicScores[h.topic]||[]).push(h.score);
-  });
-  const weak=Object.entries(topicScores).map(([topic,scores])=>({topic,avg:scores.reduce((a,b)=>a+b,0)/scores.length})).filter(x=>x.avg<70).sort((a,b)=>a.avg-b.avg).slice(0,3).map(x=>x.topic);
-  if(weak.length)return weak;
-  const dueWords=dueForGoal(goal).slice(0,3).map(f=>f.word);
-  if(dueWords.length)return dueWords;
-  return [];
+function readinessRingSvg(pct,hasData){
+  const circ=226;
+  const off=hasData?Math.round(circ*(1-Math.min(100,Math.max(0,pct))/100)):circ;
+  const col=hasData?readinessRingColor(pct):'var(--border)';
+  return'<svg width="84" height="84" aria-hidden="true"><circle cx="42" cy="42" r="36" fill="none" stroke="var(--border)" stroke-width="8"/><circle cx="42" cy="42" r="36" fill="none" stroke="'+col+'" stroke-width="8" stroke-linecap="round" stroke-dasharray="'+circ+'" stroke-dashoffset="'+off+'"/></svg>';
 }
 function formatScoreAge(dateStr){
   if(!dateStr)return'recent';
@@ -2346,74 +2334,6 @@ function formatScoreAge(dateStr){
   const weeks=Math.floor(days/7);
   if(weeks<5)return weeks+' wks ago';
   return d.toLocaleDateString();
-}
-function wsGoalSubline(goal){
-  const due=dueForGoal(goal).length;
-  let subLine;
-  if(goal.examDate){
-    const days=daysUntilExam(goal.examDate);
-    const d=days!==null?Math.max(0,days):0;
-    subLine=d+' day'+(d===1?'':'s')+' left';
-    if(due>0)subLine+=' · <b>'+due+' word'+(due===1?'':'s')+' due for review</b>';
-  }else{
-    subLine='No exam date set · <button type="button" class="goal-cta" style="margin:0;padding:0;border:none;background:none;cursor:pointer" onclick="editGoal(\''+esc(goal.id)+'\')">Set date →</button>';
-    if(due>0)subLine+=' · <b>'+due+' due</b>';
-  }
-  return subLine;
-}
-function renderWsExamsHtml(goal){
-  const gid=esc(goal.id);
-  const level=goal.level;
-  const certName=typeof SubjectMeta!=='undefined'?SubjectMeta.get(goal.subject).cert:(goal.subject==='de'?'Goethe':goal.subject==='es'?'DELE':'Cambridge');
-  const due=dueForGoal(goal).length;
-  const deck=deckForGoal(goal).length;
-  const resume=getResumableSession(goal.id);
-  const resumeHtml=resume?`<div class="ws-resume"><div class="ws-resume-ic">⏸️</div><h3>You have a ${esc(resume.examData?.level||level)} exam in progress</h3><p>Saved in practice mode. Resume where you left off, or discard it and start fresh.</p><div class="ws-resume-actions"><button type="button" class="btn-sm accent" onclick="resumeExamSession()">Resume exam</button><button type="button" class="btn-sm" onclick="discardActiveSession()">Discard</button></div></div>`:'';
-  return`${resumeHtml}
-    <div class="ws-quota quota-bar">
-      <span id="planBadgeHome"></span>
-      <span class="quota-count" id="quotaCount">0/3 used</span>
-      <span style="font-size:12px;font-weight:600;color:var(--text2);flex:1" id="quotaHomeHint">Monthly exam quota for AI-generated exams.</span>
-      <button type="button" class="btn-sm accent" id="upgradeBtnHome" onclick="showUpgrade()">Upgrade</button>
-    </div>
-    <p class="ws-seclbl">Full exam</p>
-    <div class="ws-grid">
-      <div class="ws-act-card accent span" onclick="openModeChooser('${gid}')">
-        <h3>Full ${certName} ${level} exam</h3>
-        <p>All four skills — choose official (timed) or practice (translations + deck saves).</p>
-        <span class="ws-act-cta">Choose mode →</span>
-      </div>
-    </div>
-    <p class="ws-seclbl">Quick modules</p>
-    <div class="quick-btns" style="margin-bottom:18px">
-      <button class="quick-btn" onclick="startQuickForGoal('${gid}','reading')">Reading</button>
-      <button class="quick-btn" onclick="startQuickForGoal('${gid}','listening')">Listening</button>
-      <button class="quick-btn" onclick="startQuickForGoal('${gid}','writing')">Writing</button>
-      <button class="quick-btn" onclick="startQuickForGoal('${gid}','gapfill')">Speaking prep</button>
-    </div>
-    <p class="ws-seclbl">Personalized</p>
-    <div class="ws-grid">
-      <div class="ws-act-card" onclick="openExamConfigurator('${gid}')">
-        <span class="ws-act-meta">From your deck</span>
-        <h3>Personalized exam</h3>
-        <p>${due>0?'Built around '+due+' due word'+(due===1?'':'s')+'.':deck>0?deck+' words in your deck.':'Save words during practice to unlock.'}</p>
-        <span class="ws-act-cta">Configure →</span>
-      </div>
-      ${typeof QuestionLibrary!=='undefined'&&QuestionLibrary.hasLibrary(goal.subject,goal.level)?`<div class="ws-act-card" onclick="generateWeaknessExam('${gid}')"><span class="ws-act-meta">From your mistakes</span><h3>Weakness exam</h3><p>Targets your weakest grammar areas using library content only.</p><span class="ws-act-cta">Generate →</span></div>`:''}
-      <div class="ws-act-card" onclick="location.href='/demo'">
-        <h3>Sample exam</h3>
-        <p>Static preview — no account or quota.</p>
-        <span class="ws-act-cta">Open demo →</span>
-      </div>
-      <div class="ws-act-card" onclick="location.href='oral.html'">
-        <h3>Oral exam</h3>
-        <p>Speaking practice with AI evaluation.</p>
-        <span class="ws-act-cta">Open →</span>
-      </div>
-    </div>
-    <p class="ws-seclbl" style="margin-top:20px">Saved exams</p>
-    <p style="font-size:12px;font-weight:600;color:var(--text2);margin:0 0 12px">Retakes are free — they do not use your monthly quota.</p>
-    <div class="saved-grid" id="wsSavedGrid"></div>`;
 }
 const _vocabHub={goalId:null,filter:'all',selectedIds:new Set(),collapsed:new Set(),expanded:new Set(),flashcardMode:false,activity:null,veFromVocab:false};
 const VH_POS_ORDER=['noun','verb','adjective','adverb','other'];
@@ -2448,6 +2368,9 @@ function vocabHubFilteredDeck(goal){
   const deck=deckForGoal(goal);
   if(_vocabHub.filter==='due')return deck.filter(isDue);
   if(_vocabHub.filter==='struggling')return vocabHubStruggling(deck);
+  if(_vocabHub.filter==='new')return deck.filter(f=>!f.nextReview&&(f.interval==null||f.interval<=1));
+  if(_vocabHub.filter==='mastered')return deck.filter(f=>f.interval&&f.interval>7);
+  if(_vocabHub.filter==='difficult')return deck.filter(f=>(f.missCount||0)>=2);
   return deck;
 }
 function normalizeVocabDeckPos(goal){
@@ -2655,6 +2578,7 @@ function launchVocabHubFlashcards(){
   S.fcSingleIdx=0;
   S.fcSingleFlipped=false;
   S.fcTab='all';
+  if(typeof ActivityTrack!=='undefined')ActivityTrack.beginSession('flashcards',goal.id,'Flashcard review');
   refreshVocabHubPanel();
   window.scrollTo({top:0,behavior:'smooth'});
 }
@@ -2683,10 +2607,13 @@ function renderWsVocabularyHtml(goal){
   const deck=deckForGoal(goal);
   const dueN=dueForGoal(goal).length;
   const strugN=vocabHubStrugglingCount(goal);
+  const newN=countNewWords(goal);
+  const mastN=countMasteredWords(goal);
+  const diffN=countDifficultWords(goal);
   const filt=_vocabHub.filter||'all';
   const selN=vocabHubSelectedIds(goal).length;
   const filterChip=(key,lbl,n)=>'<button type="button" class="vv-filter'+(filt===key?' on':'')+'" onclick="setVocabHubFilter(\''+key+'\')">'+lbl+' · '+n+'</button>';
-  const filters=filterChip('all','All',deck.length)+filterChip('due','Due today',dueN)+filterChip('struggling','Struggling',strugN);
+  const filters=filterChip('all','All',deck.length)+filterChip('due','To review',dueN)+filterChip('new','New',newN)+filterChip('mastered','Mastered',mastN)+filterChip('difficult','Difficult',diffN)+filterChip('struggling','Struggling',strugN);
   const actionsHtml=deck.length?vocabHubLegendHtml(goal)+vocabHubActionsHtml(selN)+vocabHubSelNoteHtml(selN,deck.length):'';
   let bodyHtml='';
   if(!deck.length){
@@ -2694,216 +2621,7 @@ function renderWsVocabularyHtml(goal){
   }else{
     bodyHtml=vocabHubAccordionHtml(goal);
   }
-  return'<div class="vv-panel"><p class="vv-head">Your words · '+deck.length+' saved · '+esc(goalLabel(goal))+'</p><div class="vv-filters">'+filters+'</div>'+vocabHubManualAddHtml()+actionsHtml+bodyHtml+'</div>';
-}
-function renderGoalHistoryHtml(goal){
-  const hist=historyForGoal(goal);
-  const pct=getReadinessPctForGoal(goal);
-  const weak=getWeakAreasForGoal(goal);
-  const weakHtml=weak.length?'<ul class="ws-weak">'+weak.map(a=>'<li>'+esc(a)+'</li>').join('')+'</ul>':'<p style="font-size:13px;font-weight:600;color:var(--text3);margin:0">Complete a practice exam to identify weak areas.</p>';
-  let chartHtml='';
-  if(hist.length>0){
-    const recent=[...hist].slice(0,12).reverse();
-    chartHtml=`<div class="chart-wrap" style="display:block;margin-bottom:16px"><h3>Score history <span style="font-size:11px;color:var(--text3);font-weight:400">Last ${Math.min(hist.length,12)} exams</span></h3><div class="chart-bars">${recent.map(h=>`<div class="chart-bar" style="height:${h.score}%;background:${h.score>=70?'var(--green)':h.score>=50?'var(--accent)':'var(--red)'};flex:1" title="${h.score}% — ${esc(h.topic)}"></div>`).join('')}</div></div>`;
-  }
-  const listHtml=hist.length?hist.map(h=>`<div class="hist-card" onclick="openMistakeReview(${h.id})"><div class="hist-score ${h.score>=70?'pass':h.score>=50?'mid':'fail'}">${h.score}%</div><div class="hist-info"><div class="hist-title">${h.lang==='de'?'🇩🇪':'🇬🇧'} ${esc(h.topic)} — ${h.level}</div><div class="hist-meta">${h.date} · ${h.guidedDemo?'Demo':normalizeMode(h.mode)==='practice'?'Practice':'Official'}</div></div><span style="font-size:11px;color:var(--accent);font-weight:700">Review →</span></div>`).join('')
-    :'<div class="hist-empty"><span>📊</span>No exams yet for '+esc(goalLabel(goal))+'. Start in the Exams tab.</div>';
-  const deck=deckForGoal(goal).length;
-  const avg=hist.length?Math.round(hist.reduce((s,h)=>s+h.score,0)/hist.length):null;
-  return`
-    <div class="coach-card" style="padding:16px 20px;margin-bottom:16px">
-      <div class="coach-label">Exam readiness · ${esc(goalLabel(goal))}</div>
-      <div class="readiness-row"><div class="readiness-bar"><div class="readiness-fill" style="width:${hist.length?pct:0}%"></div></div><span class="readiness-estlbl">${readinessEstLabelHtml(pct,hist.length>0)}</span></div>
-      <p style="font-size:12px;font-weight:600;color:var(--text2);margin-top:12px;line-height:1.55">${hist.length?'Based on your recent exams and mastered vocabulary for this goal.':'Complete a practice exam to see readiness.'}</p>
-    </div>
-    <div class="stat-tiles" style="margin-bottom:16px">
-      <div class="stat-tile"><div class="stat-tile__val">${hist.length}</div><div class="stat-tile__lbl">Exams</div></div>
-      <div class="stat-tile"><div class="stat-tile__val">${deck}</div><div class="stat-tile__lbl">Words saved</div></div>
-      <div class="stat-tile"><div class="stat-tile__val">${avg!==null?avg+'%':'—'}</div><div class="stat-tile__lbl">Avg score</div></div>
-    </div>
-    <p class="ws-seclbl">Weak areas</p>
-    <div class="ws-panel" style="margin-bottom:16px">${weakHtml}</div>
-    ${chartHtml}
-    <p class="ws-seclbl">Exam history</p>
-    <div class="hist-list">${listHtml}</div>`;
-}
-function renderWsSavedExams(goal){
-  const grid=document.getElementById('wsSavedGrid');
-  if(!grid)return;
-  const list=S.savedExams.filter(e=>e.lang===goal.subject&&e.level===goal.level);
-  if(!list.length){grid.innerHTML='<div class="hist-empty" style="grid-column:1/-1"><span>📁</span>No saved exams for this goal yet.</div>';return;}
-  grid.innerHTML=list.map((e)=>{
-    const i=S.savedExams.indexOf(e);
-    const src=e.source||(e.data?.demo?'demo':e.data?.poolSource?'pool':'ai');
-    const srcLbl=src==='demo'?'Demo':(src==='pool'||src==='library')?'From library':'AI Generated';
-    const st=e.status||'in_progress';
-    const stLbl=st==='completed'?'Completed':st==='aborted'?'Aborted':'In progress';
-    const modeLbl=normalizeMode(e.mode)==='practice'?'Practice':'Official';
-    const scoreH=e.score!=null?`<div class="saved-card-score ${e.score>=70?'pass':e.score>=50?'mid':'fail'}">${e.score}%</div>`:'';
-    return `<div class="saved-card"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px"><div class="saved-card-title">${examFlag(e.lang)} ${esc(e.topic)}</div><span class="saved-src-badge">${srcLbl}</span></div><div class="saved-card-meta">${e.level} · ${modeLbl} · Saved ${e.savedAt}</div><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap"><span class="saved-status ${st}">${stLbl}</span>${scoreH}</div><div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn-sm" onclick="reviewSavedExam(${i})">Review</button><button class="btn-sm blue" onclick="retakeExam(${i})">↺ Retake</button><button class="btn-sm red" onclick="deleteSaved(${i})">✕</button></div></div>`;
-  }).join('');
-}
-function renderWsCoachBannerHtml(goal,act){
-  const weak=getWeakAreasForGoal(goal);
-  const histLen=historyForGoal(goal).length;
-  const pct=getReadinessPctForGoal(goal);
-  let leadHtml='';
-  if(weak.length){
-    leadHtml='<p class="ws-coach-lead">Your weak spot right now: '+esc(weak[0])+'</p>';
-    if(weak.length>1)leadHtml+='<p class="ws-coach-more">+'+(weak.length-1)+' more</p>';
-  }else{
-    leadHtml='<p class="ws-coach-lead">Take a practice exam to start your study plan</p>';
-  }
-  return`
-    <div class="coach-card coach-card--action ws-coach-banner">
-      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap">
-        <div style="flex:1;min-width:220px">
-          <div class="coach-label">Study coach</div>
-          ${leadHtml}
-          <p class="ws-coach-desc">${esc(act.desc)}</p>
-        </div>
-      </div>
-      <div class="readiness-row" style="margin-top:12px">
-        <div class="readiness-bar"><div class="readiness-fill" style="width:${histLen?pct:0}%"></div></div>
-        <span class="readiness-estlbl">${readinessEstLabelHtml(pct,histLen>0)}</span>
-      </div>
-      <button type="button" class="btn-sm accent" style="margin-top:14px" onclick="runRecommendedAction()">${esc(act.cta)}</button>
-    </div>`;
-}
-function wsOvTablerIcon(name){
-  const icons={
-    cards:'<rect x="4" y="4" width="16" height="16" rx="2"/><rect x="8" y="8" width="16" height="16" rx="2"/>',
-    stack:'<path d="M8 8h12v12H8z"/><path d="M4 4h12v12H4z"/>',
-    bolt:'<path d="M13 3L4 14h7l-1 7 9-11h-7l1-7z"/>',
-    gamepad:'<rect x="4" y="8" width="16" height="10" rx="3"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/><path d="M11 11v4"/>',
-    message:'<path d="M4 6h16v10H8l-4 4V6z"/>',
-    play:'<path d="M9 6v12l10-6z"/>',
-  };
-  const d=icons[name]||icons.cards;
-  return'<svg viewBox="0 0 24 24" aria-hidden="true">'+d+'</svg>';
-}
-function renderWsSectionBackBtn(){
-  return'<button type="button" class="back-btn ws-ov-back" onclick="setWsTab(\'overview\')">← Overview</button>';
-}
-function renderWsOverviewHtml(goal){
-  const vb=vocabOverviewBreakdown(goal);
-  const deckN=vb.total;
-  const dueN=vb.due;
-  const histLen=historyForGoal(goal).length;
-  const pct=histLen?getReadinessPctForGoal(goal):0;
-  const weak=getWeakAreasForGoal(goal);
-  const weakLbl=weak.length?esc(weak[0]):'Take a practice exam to start';
-  const weakSub=weak.length>1?'+'+(weak.length-1)+' more weak areas':'Complete exams to track weak topics';
-  const act=getRecommendedAction();
-  _coachAction=act.run;
-  return`
-    <div class="ws-ov-layout">
-      <div class="ws-ov-top">
-        <div class="ws-ov-card ws-ov-exams">
-          <h3>Exams</h3>
-          <div class="ws-ov-exam-btns">
-            <button type="button" class="ws-ov-exam-btn ws-ov-exam-btn--accent" onclick="startOverviewExam('official')">${wsOvTablerIcon('play')} Official</button>
-            <button type="button" class="ws-ov-exam-btn" onclick="startOverviewExam('practice')">${wsOvTablerIcon('stack')} Practice</button>
-          </div>
-        </div>
-        <div class="ws-ov-card ws-ov-progress">
-          <h3>Progress</h3>
-          <div class="readiness-row" style="margin-bottom:12px">
-            <div class="readiness-bar"><div class="readiness-fill" style="width:${histLen?pct:0}%"></div></div>
-            <span class="readiness-estlbl">${readinessEstLabelHtml(pct,histLen>0)}</span>
-          </div>
-          <div class="ws-ov-progress-copy">
-            <p class="ws-ov-progress-weak">${weakLbl}</p>
-            <p class="ws-ov-progress-sub">${esc(weakSub)}</p>
-            <button type="button" class="btn-sm accent" onclick="setWsTab('progress')">Review &amp; tips</button>
-          </div>
-        </div>
-      </div>
-      <div class="ws-ov-card ws-ov-vocab">
-        <h3>Vocabulary</h3>
-        <div class="ws-ov-vocab-count">${deckN}</div>
-        <p class="ws-ov-vocab-sub">${esc(vb.line)}${dueN?(' · '+dueN+' due today'):''}</p>
-        <button type="button" class="ws-ov-exam-btn ws-ov-exam-btn--accent" onclick="setWsTab('vocabulary')">Open vocabulary →</button>
-      </div>
-    </div>`;
-}
-async function startOverviewExam(mode){
-  const goal=getActiveGoal();
-  if(!goal){showAddGoalWizard();return;}
-  if(!canGenerate()){showUpgrade();return;}
-  const m=normalizeMode(mode);
-  if(m==='official')abortOfficialInProgress();
-  S.mode=m;
-  S.subject=goal.subject;
-  S.level=goal.level;
-  S.activeGoalId=goal.id;
-  syncGoalToProfile(goal);
-  saveGoals();
-  if(m==='practice')S.vocabLang=vocabLangFor(goal.subject);
-  selectMode(m);
-  initExamSession(m);
-  try{await generateExam();}catch(e){lcToast(e.message||'Exam generation failed','error');}
-}
-function renderGoalWorkspace(){
-  const goal=getActiveGoal();
-  const el=document.getElementById('goalWorkspaceContent');
-  if(!goal||!el)return;
-  const tab=S.wsTab||'overview';
-  const pct=getReadinessPctForGoal(goal);
-  const histLen=historyForGoal(goal).length;
-  const gid=esc(goal.id);
-  if(tab!=='overview')_coachAction=getRecommendedAction().run;
-  if(tab==='vocabulary')ensureVocabHubState(goal);
-  let bodyHtml='';
-  if(tab==='overview'){
-    bodyHtml=renderWsOverviewHtml(goal);
-  }else if(tab==='exams'){
-    bodyHtml=renderWsSectionBackBtn()+'<div id="wsPanelExams" class="ws-tabpanel on">'+renderWsExamsHtml(goal)+'</div>';
-  }else if(tab==='vocabulary'){
-    const vocabBack=_vocabHub.activity==='flashcards'?'':renderWsSectionBackBtn();
-    bodyHtml=vocabBack+'<div id="wsPanelVocabulary" class="ws-tabpanel on">'+renderWsVocabularyHtml(goal)+'</div>';
-  }else if(tab==='progress'){
-    bodyHtml=renderWsSectionBackBtn()+'<div id="wsPanelProgress" class="ws-tabpanel on">'+renderGoalHistoryHtml(goal)+'</div>';
-  }
-  el.innerHTML=`
-    <div class="ws-gh"><h1 class="ws-h1">${esc(goalLabel(goal))}</h1><span class="goal-pill">${goalPill(goal.subject)}</span>
-      <button type="button" class="profile-bar__change" style="margin-left:auto" onclick="editGoal('${gid}')">Edit goal</button>
-    </div>
-    <p class="ws-ghsub">${wsGoalSubline(goal)}</p>
-    <p class="ws-estline">${readinessEstLabelHtml(pct,histLen>0)} · based on your recent practice (not an official prediction)</p>
-    ${bodyHtml}`;
-  if(tab==='exams'){renderWsSavedExams(goal);updQuotaUI();}
-  if(tab==='vocabulary'&&_vocabHub.activity==='flashcards')renderFcSingleView();
-  const pb=document.getElementById('profileBar');
-  if(pb)pb.classList.toggle('profile-bar--workspace',true);
-  const pbl=document.getElementById('profileBarLabel');
-  if(pbl)pbl.textContent='Preparing for';
-}
-function openGoalWorkspace(id,tab,skipUrl){
-  if(!requireAppAuth())return;
-  const goal=S.goals.find(g=>g.id===id);
-  if(!goal)return;
-  S.activeGoalId=id;
-  if(tab)S.wsTab=tab;
-  syncGoalToProfile(goal);
-  saveGoals();
-  hideAll();
-  show('goalWorkspaceScreen');
-  setNavActive('dashboard');
-  if(!skipUrl)updateWorkspaceUrl(goal);
-  renderGoalWorkspace();
-  renderProfileBar();
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-function startQuickForGoal(goalId,mod){
-  const goal=S.goals.find(g=>g.id===goalId);
-  if(!goal)return;
-  S.activeGoalId=goal.id;
-  syncGoalToProfile(goal);
-  S.subject=goal.subject;
-  S.level=goal.level;
-  if(S.mode==='practice')S.vocabLang=vocabLangFor(goal.subject);
-  startQuick(mod);
+  return'<div class="vv-panel">'+renderWsVocabKpisHtml(goal)+renderWsVocabCategoriesHtml(goal)+'<p class="ws-seclbl">Smart lists</p><div class="vv-filters">'+filters+'</div>'+vocabHubManualAddHtml()+actionsHtml+bodyHtml+'</div>';
 }
 const _examConfig={goalId:null,selectedIds:new Set(),skills:new Set(['lesen','horen']),step:1};
 function showExamConfigFootbar(visible){
@@ -3076,7 +2794,7 @@ function openModeChooser(goalId){
 }
 function backFromModeChooser(){
   showModeChooserFootbar(false);
-  if(_modeChooser.goalId)openGoalWorkspace(_modeChooser.goalId,'overview');
+  if(_modeChooser.goalId)openGoalWorkspace(_modeChooser.goalId,'exams');
   else goHome();
 }
 function selectModeChooser(mode){
@@ -3246,122 +2964,6 @@ function deckHubStartQuiz(audio){
   deck.forEach(f=>S.fcSelected.add(fcId(f)));
   startVE(audio);
 }
-function openGoal(id){
-  const goal=S.goals.find(g=>g.id===id);
-  if(!goal)return;
-  S.activeGoalId=id;
-  syncGoalToProfile(goal);
-  saveGoals();
-  openGoalWorkspace(id,'overview');
-}
-function showAddGoalWizard(){
-  _showGoalWizard=true;
-  _editingGoalId=null;
-  _goalWizard.subject='de';
-  _goalWizard.level='B2';
-  _goalWizard.examDate='';
-  renderHomeScreen();
-}
-function cancelGoalWizard(){
-  _showGoalWizard=false;
-  _editingGoalId=null;
-  renderHomeScreen();
-}
-function selectWizSubject(subject){
-  _goalWizard.subject=subject;
-  renderHomeScreen();
-}
-function selectWizLevel(level){
-  _goalWizard.level=level;
-  renderHomeScreen();
-}
-function submitGoalWizard(){
-  const date=_goalWizard.examDate?String(_goalWizard.examDate).trim():null;
-  if(_editingGoalId){
-    updateGoal(_editingGoalId,{subject:_goalWizard.subject,level:_goalWizard.level,examDate:date||null});
-    return;
-  }
-  createGoal({subject:_goalWizard.subject,level:_goalWizard.level,examDate:date||null});
-}
-function renderGoalWizardHtml(isFirst){
-  const w=_goalWizard;
-  const cancelBtn=isFirst?'':`<button type="button" class="goal-wiz-cancel" onclick="cancelGoalWizard()">Cancel</button>`;
-  const intro=isFirst?`<div class="goal-empty"><h1 class="goal-h1">Let's set up your first exam goal</h1><p class="goal-lede">Tell us which certification you're preparing for. You can add more later.</p></div>`:(_editingGoalId?`<div class="goal-empty"><h1 class="goal-h1">Edit exam goal</h1><p class="goal-lede">Update certification, level, or exam date.</p></div>`:'');
-  return`${intro}
-  <div class="goal-wiz goal-card" style="cursor:default">
-    <p class="goal-step">Step 1 · Which exam?</p>
-    <div class="goal-tiles">
-      <div class="goal-tile${w.subject==='de'?' sel':''}" onclick="selectWizSubject('de')"><span class="goal-pill">German</span><h3>Goethe-Institut</h3><span>A1–C2 · official format</span></div>
-      <div class="goal-tile${w.subject==='en'?' sel':''}" onclick="selectWizSubject('en')"><span class="goal-pill">English</span><h3>Cambridge English</h3><span>A1–C2 · official format</span></div>
-      <div class="goal-tile${w.subject==='es'?' sel':''}" onclick="selectWizSubject('es')"><span class="goal-pill">Spanish</span><h3>DELE · Cervantes</h3><span>A1–C2 · official format</span></div>
-    </div>
-    <p class="goal-step">Step 2 · Which level?</p>
-    <div class="goal-levels">${['A1','A2','B1','B2','C1','C2'].map(l=>`<span class="goal-lvl${w.level===l?' sel':''}" onclick="selectWizLevel('${l}')">${l}</span>`).join('')}</div>
-    <p class="goal-step">Step 3 · Exam date <span class="goal-opt-note">(optional — powers your countdown)</span></p>
-    <input type="date" class="goal-date" id="wizExamDate" value="${esc(w.examDate||'')}" onchange="_goalWizard.examDate=this.value">
-    <div class="goal-wiz-actions">
-      <button type="button" class="btn-start" style="width:100%;max-width:none;margin:0" onclick="submitGoalWizard()">${_editingGoalId?'Save changes →':'Create exam goal →'}</button>
-      ${cancelBtn}
-    </div>
-  </div>`;
-}
-function renderGoalCardHtml(goal){
-  const words=deckForGoal(goal).length;
-  const due=dueForGoal(goal).length;
-  const pct=getReadinessPctForGoal(goal);
-  const histLen=historyForGoal(goal).length;
-  const weak=getWeakAreasForGoal(goal);
-  const act=getRecommendedActionForGoal(goal);
-  const disp=goalCardActionLabel(act);
-  const dateCls=goal.examDate?'goal-date':'goal-date muted';
-  const footWeak=weak.length?'Weak spot: '+esc(weak[0]):'Weak spot: —';
-  const gid=esc(goal.id);
-  return`<div class="goal-card" onclick="openGoal('${gid}')" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openGoal('${gid}');}">
-    <div class="goal-card-tools">
-      <button type="button" class="goal-card-tool" title="Edit goal" aria-label="Edit goal" onclick="event.stopPropagation();editGoal('${gid}')"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button>
-      <button type="button" class="goal-card-tool goal-card-tool--danger" title="Remove goal" aria-label="Remove goal" onclick="event.stopPropagation();confirmDeleteGoal('${gid}')"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
-    </div>
-    <div class="goal-top"><span class="goal-name">${esc(goalLabel(goal))}</span><span class="goal-pill">${goalPill(goal.subject)}</span></div>
-    <p class="${dateCls}">${esc(formatGoalDateLine(goal))}</p>
-    <button type="button" class="goal-next" onclick="runGoalCardAction('${gid}',event)" aria-label="${esc(disp.title)}">
-      <span class="goal-next-play" aria-hidden="true">▶</span>
-      <span class="goal-next-copy"><b>${esc(disp.title)}</b><span>${esc(disp.sub)}</span></span>
-      <span class="goal-next-go" aria-hidden="true">→</span>
-    </button>
-    <div class="goal-estrow"><div class="goal-estbar"><i style="width:${histLen?pct:0}%"></i></div><span class="goal-estlbl">${readinessEstLabelHtml(pct,histLen>0)}</span></div>
-    <div class="goal-foot"><span>${words} word${words===1?'':'s'} · ${due} due</span><span>${footWeak}</span></div>
-  </div>`;
-}
-function renderGoalCards(){
-  const cards=S.goals.map(g=>renderGoalCardHtml(g)).join('');
-  const addCard=`<div class="goal-card dashed" onclick="showAddGoalWizard()"><span class="goal-plus">+</span><span style="font-size:13px;font-weight:600;margin-top:6px">Add another exam</span></div>`;
-  return cards+addCard;
-}
-function renderHomeScreen(){
-  const area=document.getElementById('homeGoalArea');
-  if(!area)return;
-  const pb=document.getElementById('profileBar');
-  if(pb)pb.classList.remove('profile-bar--workspace');
-  const pbl=document.getElementById('profileBarLabel');
-  if(pbl)pbl.textContent='Exam goals';
-  if(S.goals.length===0){
-    _editingGoalId=null;
-    area.innerHTML=renderGoalWizardHtml(true);
-    return;
-  }
-  if(_showGoalWizard){
-    area.innerHTML=renderGoalWizardHtml(false)+`
-      <div class="goal-seclbl" style="margin-top:8px"><span>Your exam goals</span></div>
-      <div class="goal-grid">${renderGoalCards()}</div>`;
-    return;
-  }
-  area.innerHTML=`
-    <div class="goal-seclbl">
-      <span>Your exam goals</span>
-      <button type="button" class="goal-cta" onclick="showAddGoalWizard()">+ Add exam goal</button>
-    </div>
-    <div class="goal-grid">${renderGoalCards()}</div>`;
-}
 function renderProfileBar(){
   const el=document.getElementById('profileBarExam');
   const demo=document.getElementById('profileBarDemo');
@@ -3517,12 +3119,6 @@ function workspaceAction(tab,fn){
     if(fn)fn(goal);
   };
 }
-function prepGoalContext(goal){
-  if(!goal)return;
-  S.activeGoalId=goal.id;
-  syncGoalToProfile(goal);
-  saveGoals();
-}
 function getRecommendedActionForGoal(goal){
   if(!goal)return{title:'Set your first exam goal',desc:'Choose the certification you are preparing for.',cta:'Add goal →',run:()=>showAddGoalWizard()};
   const fc=deckForGoal(goal);
@@ -3552,14 +3148,17 @@ function runGoalCardAction(goalId,e){
 }
 let _coachAction=null;
 function renderCoachDashboard(){
-  const activeGoal=S.goals.find(g=>g.id===S.activeGoalId)||S.goals[0];
+  const activeGoal=dashboardGoal();
   const pct=activeGoal?getReadinessPctForGoal(activeGoal):getReadinessPct();
   const histLen=activeGoal?historyForGoal(activeGoal).length:getProfileHistory().length;
   updateReadinessEstUi(document.getElementById('progressReadinessFill'),document.getElementById('progressReadinessLbl'),pct,histLen>0);
   const pLbl=document.getElementById('progressProfileLabel');if(pLbl)pLbl.textContent=typeof ExamProfile!=='undefined'?ExamProfile.getActiveLabel():'';
   const weakEl=document.getElementById('coachWeakAreas');
-  if(weakEl){const areas=getWeakAreas();weakEl.innerHTML=areas.length?areas.map(a=>'<li>'+esc(a)+'</li>').join(''):'<li class="weak-empty">Complete a practice exam to identify weak areas</li>';}
-  const act=getRecommendedAction();_coachAction=act.run;
+  if(weakEl){
+    const areas=activeGoal?getWeakAreasForGoal(activeGoal):getWeakAreas();
+    weakEl.innerHTML=areas.length?areas.map(a=>'<li>'+esc(a)+'</li>').join(''):'<li class="weak-empty">Complete a practice exam to identify weak areas</li>';
+  }
+  const act=activeGoal?getRecommendedActionForGoal(activeGoal):getRecommendedAction();_coachAction=act.run;
   const t=document.getElementById('coachActionTitle');if(t)t.textContent=act.title;
   const d=document.getElementById('coachActionDesc');if(d)d.textContent=act.desc;
   const c=document.getElementById('coachActionCta');if(c)c.textContent=act.cta;
@@ -3579,7 +3178,7 @@ function navTo(section){
   if(section==='dashboard'){goHome();return;}
   const goal=getActiveGoal()||S.goals[0];
   if(section==='learn'){if(goal)openGoalWorkspace(goal.id,'vocabulary');else{goHome();lcToast('Add an exam goal first.','warn');}return;}
-  if(section==='practice'){if(goal)openGoalWorkspace(goal.id,'overview');else{goHome();lcToast('Add an exam goal first.','warn');}return;}
+  if(section==='practice'){if(goal)openGoalWorkspace(goal.id,'exams');else{goHome();lcToast('Add an exam goal first.','warn');}return;}
   if(section==='progress'){if(goal)openGoalWorkspace(goal.id,'progress');else{goHome();lcToast('Add an exam goal first.','warn');}return;}
 }
 function startMockExam(){
@@ -3605,8 +3204,23 @@ function showQuickPractice(){
 const SCREENS=['homeScreen','goalWorkspaceScreen','examConfigScreen','modeChooserScreen','profileSetupScreen','learnHubScreen','practiceHubScreen','levelScreen','loadingScreen','examScreen','resultsScreen','mistakeReviewScreen','flashcardScreen','vocabExamScreen','historyScreen','savedExamsScreen'];
 function show(id){document.getElementById(id).style.display='block';}
 function hide(id){document.getElementById(id).style.display='none';}
-function hideAll(){SCREENS.forEach(hide);stopTimer();showExamConfigFootbar(false);showModeChooserFootbar(false);}
-function goHome(){if(!requireAppAuth())return;clearVocabHubFlashcardMode();hideAll();show('homeScreen');setNavActive('dashboard');updateWorkspaceUrl(null);updBadges();updQuotaUI();renderHomeScreen();window.scrollTo({top:0,behavior:'smooth'});}
+function hideAll(){flushOpenStudySession();SCREENS.forEach(hide);stopTimer();showExamConfigFootbar(false);showModeChooserFootbar(false);}
+function goHome(){
+  if(!requireAppAuth())return;
+  clearVocabHubFlashcardMode();
+  hideAll();
+  show('homeScreen');
+  setNavActive('dashboard');
+  updateWorkspaceUrl(null);
+  if(S.goals.length===1){
+    S.activeGoalId=S.goals[0].id;
+    syncGoalToProfile(S.goals[0]);
+  }
+  updBadges();
+  updQuotaUI();
+  renderHomeScreen();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
 async function selectSubject(s){if(!requireAppAuth())return;S.subject=s;if(S.mode==='practice')S.vocabLang=typeof SubjectMeta!=='undefined'?SubjectMeta.vocabLang(s):(s==='de'?'en':'es');hideAll();show('levelScreen');renderLevels();if(typeof ExamLibrary!=='undefined'&&ExamLibrary.discoverLevels){try{await ExamLibrary.discoverLevels(s);}catch(_){}}renderLevels();updQuotaUI();window.scrollTo({top:0,behavior:'smooth'});}
 function goFlashcards(clearGoalFilter){
   const goal=getActiveGoal()||S.goals[0];
@@ -3645,7 +3259,20 @@ function renderLevels(){
 function pickLevel(c){
   S.level=c;
   if(typeof ExamProfile!=='undefined'&&S.subject)ExamProfile.createProfile(S.subject,c);
-  try{localStorage.setItem('lc_goal',JSON.stringify({subject:S.subject,level:c}));}catch(e){}
+  const match=S.goals.find(g=>g.subject===S.subject&&g.level===c);
+  if(match){
+    GoalStore.setActive(match.id);
+  }else{
+    const sameSub=S.goals.find(g=>g.subject===S.subject);
+    if(sameSub){
+      sameSub.level=c;
+      GoalStore.applyContext(sameSub);
+      GoalStore.save();
+      GoalStore.ensureSlugs();
+    }else if(!S.goals.length){
+      try{localStorage.setItem('lc_goal',JSON.stringify({subject:S.subject,level:c}));}catch(e){}
+    }
+  }
   document.querySelectorAll('.level-card').forEach(x=>x.classList.remove('selected'));
   document.getElementById('lc_'+c)?.classList.add('selected');
   document.getElementById('btnStart').disabled=!canGenerate();
@@ -4562,6 +4189,12 @@ function forEachGoetheNotes(d,fn){
 }
 function renderExam(){
   hideAll();
+  const goal=getActiveGoal();
+  if(typeof ActivityTrack!=='undefined'){
+    const qm=S.quickMod;
+    const lbl=qm?'Quick '+qm:(isPracticeMode()?'Practice exam':'Official exam');
+    ActivityTrack.beginSession(qm?'quick':'exam',goal?.id||S.activeGoalId,lbl);
+  }
   S.examSavedWords=[];
   if(!S.isDemo&&!S.quickMod){
     if(isPracticeMode())autosaveSession();
@@ -5090,6 +4723,10 @@ async function submitExam(){
   }
   if(typeof ExamProfile!=='undefined')ExamProfile.tagItem(entry);
   S.history.unshift(entry);saveHist();
+  const goal=getActiveGoal();
+  const modeLbl=normalizeMode(S.mode)==='practice'?'Practice':'Official';
+  const qm=S.quickMod;
+  flushOpenStudySession({type:qm?'quick':'exam',goalId:goal?.id||S.activeGoalId,label:(qm?'Quick '+qm+' · ':modeLbl+' exam · ')+(d.topic||d.level||''),score});
   const savedId=d._savedId||d._flightId;
   if(savedId){
     const si=S.savedExams.findIndex(e=>e.id===savedId);
@@ -5799,7 +5436,10 @@ function startVE(audio){
   if(pool.length<4){lcToast('Select at least 4 flashcards for the quiz.','warn');return;}
   S.veAudio=audio;S.veScore=0;S.veIndex=0;
   S.veQuestions=[...pool].sort(()=>Math.random()-.5).slice(0,Math.min(pool.length,15));
-  hideAll();show('vocabExamScreen');
+  hideAll();
+  const veGoal=getActiveGoal();
+  if(typeof ActivityTrack!=='undefined')ActivityTrack.beginSession('vocab_quiz',veGoal?.id,'Vocabulary quiz');
+  show('vocabExamScreen');
   document.getElementById('veTitle').textContent=`${S.veQuestions.length} words · ${pool.length} selected`;
   const veBack=document.querySelector('#vocabExamScreen .exam-actions .btn-sm:last-child');
   if(veBack){
@@ -5812,6 +5452,7 @@ function renderVEQ(){
   const vc=document.getElementById('veContent');
   if(S.veIndex>=S.veQuestions.length){
     const pct=Math.round(S.veScore/S.veQuestions.length*100);
+    flushOpenStudySession({type:'vocab_quiz',score:pct,label:'Vocabulary quiz · '+pct+'%'});
     const veDoneBtn=_vocabHub.veFromVocab?'backFromVocabQuiz()':'goFlashcards()';
     const veDoneLbl=_vocabHub.veFromVocab?'← Back to vocabulary':'← Back to Deck';
     vc.innerHTML=`<div style="text-align:center;padding:40px 0"><div class="ve-big ${pct>=70?'pass':pct>=50?'mid':'fail'}">${pct}%</div><div style="font-size:14px;color:var(--text2);margin:10px 0 24px">${S.veScore}/${S.veQuestions.length} correct</div><button class="btn-start" onclick="${veDoneBtn}" style="max-width:220px;margin:0 auto">${veDoneLbl}</button></div>`;

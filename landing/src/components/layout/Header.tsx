@@ -9,7 +9,8 @@ import { tryExamAsGuest } from '@/lib/tryExam';
 
 const NAV = [
   { label: 'How it works', href: '#how-it-works' },
-  { label: 'Exams', href: '#exams' },
+  { label: 'Product', href: '#exams' },
+  { label: 'Compare', href: '#compare' },
   { label: 'Pricing', href: '#pricing' },
   { label: 'FAQ', href: '#faq' },
 ];

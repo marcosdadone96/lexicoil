@@ -56,13 +56,36 @@
     return [...map.values()].slice(0, 50);
   }
 
+  function mergeActivity(local, server) {
+    if (typeof ActivityTrack !== 'undefined' && ActivityTrack.mergeActivity) {
+      return ActivityTrack.mergeActivity(local, server);
+    }
+    const map = new Map();
+    for (const a of [...(server || []), ...(local || [])]) {
+      if (!a || !a.id) continue;
+      const prev = map.get(a.id);
+      if (!prev || (a.ts || 0) >= (prev.ts || 0)) map.set(a.id, a);
+    }
+    return [...map.values()].sort((a, b) => (b.ts || 0) - (a.ts || 0)).slice(0, 100);
+  }
+
+  function mergeStudyTime(local, server, activityLog) {
+    if (typeof ActivityTrack !== 'undefined' && ActivityTrack.mergeStudyTime) {
+      return ActivityTrack.mergeStudyTime(local, server, activityLog);
+    }
+    return local && typeof local === 'object' ? local : server || {};
+  }
+
   window.mergeSyncPayload = function mergeSyncPayload(local, server) {
     const l = local && typeof local === 'object' ? local : {};
     const s = server && typeof server === 'object' ? server : {};
+    const activityLog = mergeActivity(l.activityLog, s.activityLog);
     return {
       flashcards: mergeFlashcards(l.flashcards, s.flashcards),
       history: mergeHistory(l.history, s.history),
       savedExams: mergeSavedExams(l.savedExams, s.savedExams),
+      activityLog,
+      studyTime: mergeStudyTime(l.studyTime, s.studyTime, activityLog),
     };
   };
 })();
