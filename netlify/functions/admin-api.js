@@ -16,13 +16,15 @@
  *   GET  /admin-api?action=staging_pending[&lang][&level][&limit] — pending staging candidates
  *   POST /admin-api  { action: 'approve_candidate', id }  — approve + maybe promote to pool
  *   POST /admin-api  { action: 'reject_candidate', id }   — reject staging candidate
+ *   POST /admin-api  { action: 'reset_quota', email }   — reset monthly exam count
  */
 
 const { getJwtSecret, verifyAuthToken } = require('./lib/authLib.js');
 const { corsHeaders, getBearer, parseJsonBody, jsonResponse } = require('./lib/http.js');
 const { getStoreForEvent } = require('./lib/blobStore.js');
 const { scanPool, purgePool } = require('./lib/poolPurge.js');
-const { syncPlanToBlob } = require('./lib/planSync.js');
+const { getMonthKey, maxForPlan, resolvePlan } = require('./lib/quotaLib.js');
+const { syncPlanToBlob, loadBlobUser } = require('./lib/planSync.js');
 const {
   loadStagingIndex,
   loadStagingCandidate,
@@ -201,6 +203,21 @@ exports.handler = async (event) => {
       }
       await updateCandidateStatus(store, lang, level, body.id, 'rejected');
       return jsonResponse(200, cors, { rejected: true });
+    }
+
+    if (action === 'reset_quota') {
+      if (!body.email) return jsonResponse(400, cors, { error: 'missing_email' });
+      const email = normalizeEmail(body.email);
+      const profile = await sb.getUserProfileByEmail(email);
+      if (!profile) return jsonResponse(404, cors, { error: 'user_not_found' });
+      const month = getMonthKey();
+      const ok = await sb.resetQuota(profile.id, month);
+      if (!ok) return jsonResponse(500, cors, { error: 'reset_failed' });
+      const store = getStoreForEvent(event);
+      const user = await loadBlobUser(store, email);
+      const plan = resolvePlan(user) || profile.plan || 'free';
+      await store.setJSON(`quota:${email}`, { used: 0, month, max: maxForPlan(plan) });
+      return jsonResponse(200, cors, { ok: true, email, used: 0, month });
     }
 
     return jsonResponse(400, cors, { error: 'unknown_action' });

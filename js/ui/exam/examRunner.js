@@ -130,8 +130,12 @@ function renderGoetheLesenPart(part,pi,isPrac,ui){
     });
   }else if(part.items){
     part.items.forEach((item,idx)=>{
-      h+=`<div class="off-sign"><div class="off-sign-label">Text ${idx+1}</div>${wrapW(item.signText,'lesen_'+pi+'_sign_'+idx,isPrac)}</div>`;
-      h+=renderQ(itemToQ(item,idx),idx+1,mod,ui.trueL,ui.falseL,ui.trueK,true);
+      if(item.signText||item.text){
+        h+=`<div class="off-sign"><div class="off-sign-label">Text ${idx+1}</div>${wrapW(item.signText||item.text,'lesen_'+pi+'_sign_'+idx,isPrac)}</div>`;
+      }
+      if(item.question&&(item.options?.length||item.correct)){
+        h+=renderQ(itemToQ(item,idx),idx+1,mod,ui.trueL,ui.falseL,ui.trueK,true);
+      }
     });
   }
   if(part.text){
@@ -360,6 +364,9 @@ function forEachGoetheNotes(d,fn){
   });
 }
 function renderExam(){
+  if(S.examData&&typeof normalizeExam==='function'){
+    S.examData=normalizeExam(S.examData);
+  }
   if(typeof BurnedRegistry!=='undefined'&&S.examData&&!S.isDemo&&S.examSource&&S.examSource!=='demo'&&!S.examData._fromSaved){try{BurnedRegistry.burnExam(S.examData);}catch(_){}}
   hideAll();
   const goal=getActiveGoal();
@@ -534,7 +541,7 @@ function renderQ(q,num,mod,rfT,rfF,trK,isOff){
   if(q.type==='rfn'){
     return `<div class="question-block"><div class="q-number">${head}</div>${sub}<div class="rf-row" style="flex-wrap:wrap"><button class="rf-btn" onclick="setRFN('${ak}','R',this)">R</button><button class="rf-btn" onclick="setRFN('${ak}','F',this)">F</button><button class="rf-btn" onclick="setRFN('${ak}','N',this)">N</button></div></div>`;
   }
-  if(q.type==='rf'||q.type==='tf'){
+  if(q.type==='rf'||q.type==='tf'||q.type==='richtig_falsch'||q.type==='true_false'){
     return `<div class="question-block"><div class="q-number">${head}</div>${sub}<div class="rf-row"><button class="rf-btn" onclick="setRF('${ak}','${trK}',this,'sel-r')">${rfT}</button><button class="rf-btn" onclick="setRF('${ak}','F',this,'sel-f')">${rfF}</button></div></div>`;
   }
   if(q.type==='person_multi'){

@@ -1,10 +1,13 @@
 /* Facade — pre-generated question library + dynamic exam assembly */
 const QuestionLibrary = (() => {
   function burnedExcludes(options) {
+    if (options && options.applyBurned === false) {
+      return { excludeIds: options.excludeIds, applyBurned: false };
+    }
     if (options && options.excludeIds) return { excludeIds: options.excludeIds, applyBurned: options.applyBurned };
     if (typeof BurnedRegistry !== 'undefined') {
       const { excludeIds } = BurnedRegistry.excludeSets();
-      return { excludeIds, applyBurned: true };
+      return { excludeIds, applyBurned: options?.applyBurned !== false };
     }
     return { excludeIds: undefined, applyBurned: false };
   }

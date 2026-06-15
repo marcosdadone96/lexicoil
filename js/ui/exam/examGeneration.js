@@ -76,7 +76,7 @@ function normalizeCambridgeExam(d){
   return d;
 }
 function normalizeGoetheQuestion(q,part){
-  if(q.type==='richtig_falsch'){q.type='rf';if(q.correct==='Richtig')q.correct='R';else if(q.correct==='Falsch')q.correct='F';}
+  if(q.type==='richtig_falsch'||q.type==='true_false'){q.type='rf';if(q.correct==='Richtig'||q.correct==='True')q.correct='R';else if(q.correct==='Falsch'||q.correct==='False')q.correct='F';}
   if(q.type==='ja_nein'){q.type='yn';if(q.correct==='Ja')q.correct='J';else if(q.correct==='Nein')q.correct='N';}
   if(q.type==='r_f_n')q.type='rfn';
   if(q.type==='person_match_abcd')q.type='abcd';
@@ -92,6 +92,28 @@ function normalizeGoetheQuestion(q,part){
     }
   }
 }
+function questionTypeAnswerable(q){
+  const t=String(q?.type||'multiple').toLowerCase();
+  if(['rf','tf','richtig_falsch','true_false','yn','ja_nein','rfn','r_f_n','gap_fill'].includes(t))return true;
+  if(t==='person_multi'||t==='abcd'||t==='matching'||t==='multiple'||t==='multiple_choice')return Array.isArray(q.options)&&q.options.length>0;
+  return Array.isArray(q.options)&&q.options.length>0;
+}
+function examHasUnanswerableQuestions(exam){
+  if(!exam||typeof exam!=='object')return false;
+  let bad=false;
+  const checkQ=(q)=>{if(q&&!questionTypeAnswerable(q))bad=true;};
+  (exam.lesenParts||[]).forEach(p=>{
+    (p.questions||[]).forEach(checkQ);
+    (p.items||[]).forEach(it=>{if(it.question)checkQ(it);});
+    (p.segments||[]).forEach(s=>(s.questions||[]).forEach(checkQ));
+  });
+  (exam.horenParts||[]).forEach(p=>{
+    (p.questions||[]).forEach(checkQ);
+    (p.segments||[]).forEach(s=>(s.questions||[]).forEach(checkQ));
+  });
+  return bad;
+}
+window.examHasUnanswerableQuestions=examHasUnanswerableQuestions;
 function sanitizeExamText(text){
   if(text==null||typeof text!=='string')return'';
   return text.replace(/<br\s*\/?>/gi,'\n').replace(/\r\n/g,'\n');
@@ -109,6 +131,16 @@ function sanitizeGoetheParts(d){
     (part.persons||[]).forEach(p=>{if(p.text)p.text=fixT(p.text);if(p.name)p.name=fixT(p.name);});
     (part.opinions||[]).forEach(o=>{if(o.text)o.text=fixT(o.text);if(o.name)o.name=fixT(o.name);});
     (part.items||[]).forEach(item=>{if(item.signText)item.signText=fixT(item.signText);if(item.text)item.text=fixT(item.text);});
+    if(part.items?.length&&!part.items.some(it=>it.signText||it.text)&&part.ads?.length){
+      if(!part.questions)part.questions=[];
+      part.items.forEach((item,i)=>{
+        if(!item.question)return;
+        const q={id:item.id||`l${pi+1}s${i+1}`,type:item.type||'matching',question:item.question,options:item.options,correct:item.correct};
+        normalizeGoetheQuestion(q,part);
+        part.questions.push(q);
+      });
+      part.items=[];
+    }
     (part.questions||[]).forEach((q,i)=>{if(!q.id)q.id='l'+(pi*10+i+1);normalizeGoetheQuestion(q,part);});
     (part.items||[]).forEach((item,i)=>{if(!item.id)item.id='l'+(pi*10+i+1);});
     (part.segments||[]).forEach(seg=>{(seg.questions||[]).forEach(q=>normalizeGoetheQuestion(q,part));});
@@ -761,6 +793,10 @@ async function generatePersonalExam(words,skills,goalId,opts){
       if(!srv.valid)throw Object.assign(new Error('Personal exam failed answer-key validation.'),{code:'exam_invalid'});
     }
     if(typeof commitExamQuota==='function')await commitExamQuota();
+    if(typeof normalizeExam==='function')S.examData=normalizeExam(S.examData);
+    if(examHasUnanswerableQuestions(S.examData)){
+      throw Object.assign(new Error('Generated exam has questions without answer options.'),{code:'exam_invalid'});
+    }
     if(lcExamPassesQualityGate(S.examData,configWords,POOL_CONTRIBUTE_COVERAGE)){
       if(S.examSource==='ai'){
         const depersonalized=buildPoolExamCopy(S.examData,genericPoolTopic(S.subject,S.level));

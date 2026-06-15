@@ -113,6 +113,20 @@ async function incrementQuota(userId) {
   return d2;
 }
 
+async function resetQuota(userId, month) {
+  const sb = getClient();
+  if (!sb) return false;
+  const m = month || currentMonth();
+  const { error } = await sb
+    .from('lc_user_quota')
+    .upsert(
+      { user_id: userId, month: m, used: 0, updated_at: new Date().toISOString() },
+      { onConflict: 'user_id,month' },
+    );
+  if (error) console.error('[supabaseAdmin] resetQuota:', error.message);
+  return !error;
+}
+
 // ── User preferences ──────────────────────────────────────────────────────────
 
 async function getPreferences(userId) {
@@ -405,6 +419,7 @@ module.exports = {
   setPlan,
   getQuota,
   incrementQuota,
+  resetQuota,
   getPreferences,
   upsertPreferences,
   getBurned,

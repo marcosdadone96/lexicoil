@@ -315,6 +315,7 @@
         <td style="color:var(--muted);font-size:11px">${fmtDate(u.created_at)}</td>
         <td>
           <button class="act" onclick="quickSetPlan('${esc(u.email)}','${u.plan==='pro'?'free':'pro'}')">→ ${u.plan==='pro'?'free':'pro'}</button>
+          <button class="act" onclick="resetUserQuota('${esc(u.email)}')">Reset quota</button>
         </td>
       </tr>`).join('');
   }
@@ -324,6 +325,12 @@
     const r = await api('POST', {}, { action: 'set_plan', email, plan });
     toast(r.ok ? '✓ Plan updated' : '✗ ' + (r.error || 'Error'));
     if (r.ok) loadUsers();
+  }
+
+  async function resetUserQuota(email) {
+    if (!confirm(`Reset monthly exam count for ${email}?`)) return;
+    const r = await api('POST', {}, { action: 'reset_quota', email });
+    toast(r.ok ? '✓ Quota reset to 0' : '✗ ' + (r.error || 'Error'));
   }
 
   // ── Pool ──────────────────────────────────────────────────────────────────

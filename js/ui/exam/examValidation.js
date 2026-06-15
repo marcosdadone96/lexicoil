@@ -14,10 +14,21 @@
     if (typeof isExamRenderable === 'function' && !isExamRenderable(normalized)) {
       return { ok: false, normalized: normalized };
     }
-    if (typeof isExamBlueprintComplete === 'function' && !isExamBlueprintComplete(normalized)) {
+    if (
+      typeof isExamBlueprintComplete === 'function' &&
+      !isExamBlueprintComplete(normalized) &&
+      !normalized.libraryBuilt &&
+      opts.source !== 'question-library'
+    ) {
       return { ok: false, normalized: normalized };
     }
     if (typeof lcExamPassesValidator === 'function' && !lcExamPassesValidator(normalized)) {
+      return { ok: false, normalized: normalized };
+    }
+    if (
+      typeof examHasUnanswerableQuestions === 'function' &&
+      examHasUnanswerableQuestions(normalized)
+    ) {
       return { ok: false, normalized: normalized };
     }
     return { ok: true, normalized: normalized };

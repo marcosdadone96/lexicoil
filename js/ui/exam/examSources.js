@@ -40,24 +40,34 @@
     deps = deps || defaultDeps();
     if (!deps.fetchExamFromPool) return null;
     deps.setLoaderStep('Loading curated exam\u2026', 'Finding a matching exam\u2026');
-    try {
-      var pooled = await deps.fetchExamFromPool(ctx.subject, ctx.level, ctx.seenIds || []);
-      if (!pooled || !pooled.found || !pooled.exam) return null;
-      if (typeof BurnedRegistry !== 'undefined' && BurnedRegistry.examTouchesBurned(pooled.exam)) return null;
-      var check = validateCandidate(pooled.exam, deps);
-      if (!check.ok) return null;
-      return {
-        source: 'pool',
-        examData: check.normalized,
-        topic: pooled.topic || check.normalized.topic || 'Curated exam',
-        poolId: pooled.id || null,
-        provenance: pooled.exam.provenance || null,
-        poolSource: true,
-      };
-    } catch (err) {
-      deps.lcDebug.warn('[exam] pool fetch failed:', err);
-      return null;
+    var seen = ctx.seenIds || [];
+    var excludeAttempts = seen.length ? [seen, []] : [[]];
+    for (var ei = 0; ei < excludeAttempts.length; ei++) {
+      try {
+        var pooled = await deps.fetchExamFromPool(ctx.subject, ctx.level, excludeAttempts[ei]);
+        if (!pooled || !pooled.found || !pooled.exam) continue;
+        if (
+          typeof BurnedRegistry !== 'undefined' &&
+          BurnedRegistry.examTouchesBurned(pooled.exam) &&
+          ei === 0
+        ) {
+          continue;
+        }
+        var check = validateCandidate(pooled.exam, deps, { source: 'pool' });
+        if (!check.ok) continue;
+        return {
+          source: 'pool',
+          examData: check.normalized,
+          topic: pooled.topic || check.normalized.topic || 'Curated exam',
+          poolId: pooled.id || null,
+          provenance: pooled.exam.provenance || null,
+          poolSource: true,
+        };
+      } catch (err) {
+        deps.lcDebug.warn('[exam] pool fetch failed:', err);
+      }
     }
+    return null;
   }
 
   async function fromQuestionLibrary(ctx, deps) {
@@ -66,19 +76,24 @@
       return null;
     }
     deps.setLoaderStep('Assembling exam\u2026', 'Building your exam from the question bank\u2026');
-    try {
-      var raw = await deps.QuestionLibrary.buildExam(ctx.subject, ctx.level);
-      var check = validateCandidate(raw, deps);
-      if (!check.ok) return null;
-      return {
-        source: 'question-library',
-        examData: check.normalized,
-        topic: check.normalized.topic || null,
-      };
-    } catch (err) {
-      deps.lcDebug.warn('[exam] question library build failed:', err);
-      return null;
+    var burnedAttempts = [true, false];
+    for (var bi = 0; bi < burnedAttempts.length; bi++) {
+      try {
+        var raw = await deps.QuestionLibrary.buildExam(ctx.subject, ctx.level, {
+          applyBurned: burnedAttempts[bi],
+        });
+        var check = validateCandidate(raw, deps, { source: 'question-library' });
+        if (!check.ok) continue;
+        return {
+          source: 'question-library',
+          examData: check.normalized,
+          topic: check.normalized.topic || null,
+        };
+      } catch (err) {
+        deps.lcDebug.warn('[exam] question library build failed:', err);
+      }
     }
+    return null;
   }
 
   async function fromExamLibrary(ctx, deps) {
@@ -113,10 +128,6 @@
   /**
    * Run non-AI sources in fixed order. Returns { status: 'hit', ... } or { status: 'continue' }
    * or { status: 'blocked', message } for Strategy B with genuinely no library.
-   *
-   * When a library exists but buildExam fails (e.g. BurnedRegistry exhausted), we return
-   * { status: 'continue', reason: 'library_exhausted' } so AI can serve as fallback rather
-   * than dead-ending the user.
    */
   async function runExamSourceCascade(ctx, deps) {
     deps = deps || defaultDeps();

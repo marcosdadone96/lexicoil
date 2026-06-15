@@ -114,6 +114,11 @@
     S.examData = normalized;
     S.examData.topic = topic;
     S.examSource = 'ai';
+    if (typeof examHasUnanswerableQuestions === 'function' && examHasUnanswerableQuestions(S.examData)) {
+      const e = new Error('AI returned questions without answer options.');
+      e.code = 'exam_invalid';
+      throw e;
+    }
     if (typeof contributeExamToPool === 'function') {
       contributeExamToPool(S.subject, S.level, topic, S.examData).catch(function () {});
     }
