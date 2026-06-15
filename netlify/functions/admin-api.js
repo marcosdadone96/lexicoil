@@ -12,9 +12,11 @@
  *   POST /admin-api  { action: 'scan_pool_blobs', lang, level }  — dry-run legacy scan (Blobs)
  *   POST /admin-api  { action: 'purge_pool_blobs', lang, level }  — purge legacy entries (Blobs)
  *   POST /admin-api  { action: 'set_plan', email, plan } — change user plan
+ *   POST /admin-api  { action: 'add_admin', email }      — add admin role
  *   GET  /admin-api?action=staging_pending[&lang][&level][&limit] — pending staging candidates
  *   POST /admin-api  { action: 'approve_candidate', id }  — approve + maybe promote to pool
  *   POST /admin-api  { action: 'reject_candidate', id }   — reject staging candidate
+ */
 
 const { getJwtSecret, verifyAuthToken } = require('./lib/authLib.js');
 const { corsHeaders, getBearer, parseJsonBody, jsonResponse } = require('./lib/http.js');
