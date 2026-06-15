@@ -72,10 +72,13 @@ npm run dev        # full Netlify Functions (auth, quota, pool, Stripe)
 | Plan | Limit |
 |------|-------|
 | Guest (no account) | 2 exam generations per device/IP |
-| Free (registered) | 2 exam generations per calendar month |
-| Pro (paid) | 20 exam generations per calendar month |
+| Free (registered) | 20 standard exam generations per calendar month |
+| Pro (paid) | 50 exam generations per calendar month |
 
-**Counts toward quota:** new exams from the library or AI.  
+**Free includes:** library/pool exams, flashcards, vocab quizzes.  
+**Pro adds:** personalized vocabulary exams, listening game, AI speaking practice, PDF reports.
+
+**Counts toward quota:** new exams delivered from the library, pool, or AI.  
 **Does not count:** retaking a **saved exam** you already generated.
 
 ## Email (optional)

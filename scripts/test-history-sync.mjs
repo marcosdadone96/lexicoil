@@ -22,7 +22,7 @@ console.log('\n=== test-history-sync ===\n');
 // Migration file exists
 const mig = readFileSync(path.join(ROOT, 'supabase/migrations/002_history_dedup.sql'), 'utf8');
 assert.match(mig, /entry_key TEXT/);
-assert.match(mig, /idx_history_user_entrykey/);
+assert.match(mig, /lc_user_history_user_entry_key/);
 console.log('OK  migration 002_history_dedup.sql present');
 
 // GET merge: blob rich history wins

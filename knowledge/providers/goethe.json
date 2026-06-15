@@ -4,106 +4,358 @@
   "languageId": "german",
   "levels": {
     "A1": {
-      "certificate": "Goethe-Zertifikat A1 (Start Deutsch 1)",
-      "totalMinutes": 65,
+      "certificate": "Goethe-Zertifikat A1",
+      "totalMinutes": 140,
       "modules": [
-        { "id": "lesen", "title": "Lesen", "minutes": 25, "parts": 3 },
-        { "id": "horen", "title": "Hören", "minutes": 20, "parts": 3 },
-        { "id": "schreiben", "title": "Schreiben", "minutes": 20, "parts": 1 },
-        { "id": "sprechen", "title": "Sprechen", "minutes": 15, "parts": 2 }
+        {
+          "id": "lesen",
+          "title": "Leseverstehen",
+          "minutes": 25,
+          "parts": 2
+        },
+        {
+          "id": "horen",
+          "title": "Hörverstehen",
+          "minutes": 40,
+          "parts": 2
+        },
+        {
+          "id": "grammatik",
+          "title": "Grammatik / Wortschatz",
+          "minutes": 0,
+          "parts": 1
+        },
+        {
+          "id": "schreiben",
+          "title": "Schreiben",
+          "minutes": 60,
+          "parts": 1
+        },
+        {
+          "id": "sprechen",
+          "title": "Sprechen",
+          "minutes": 15,
+          "parts": 2
+        }
       ],
       "taskTypes": {
-        "lesen": ["signs", "multiple_choice", "true_false"],
-        "horen": ["multiple_choice", "true_false"],
-        "schreiben": ["form_fill", "short_message"],
-        "sprechen": ["introduce_self", "picture_description"]
+        "lesen": [
+          "short_text_mcq",
+          "long_text_mcq"
+        ],
+        "horen": [
+          "short_dialogue_mcq",
+          "long_listening_mcq"
+        ],
+        "grammatik": [
+          "grammar_mcq"
+        ],
+        "schreiben": [
+          "writing_prompt"
+        ],
+        "sprechen": [
+          "speaking_prompt"
+        ]
       },
-      "scoring": { "passPercent": 60, "perModule": true }
+      "scoring": {
+        "passPercent": 60,
+        "perModule": true
+      }
     },
     "A2": {
       "certificate": "Goethe-Zertifikat A2",
-      "totalMinutes": 65,
+      "totalMinutes": 180,
       "modules": [
-        { "id": "lesen", "title": "Lesen", "minutes": 30, "parts": 4 },
-        { "id": "horen", "title": "Hören", "minutes": 30, "parts": 4 },
-        { "id": "schreiben", "title": "Schreiben", "minutes": 30, "parts": 1 },
-        { "id": "sprechen", "title": "Sprechen", "minutes": 15, "parts": 2 }
+        {
+          "id": "lesen",
+          "title": "Leseverstehen",
+          "minutes": 65,
+          "parts": 2
+        },
+        {
+          "id": "horen",
+          "title": "Hörverstehen",
+          "minutes": 40,
+          "parts": 2
+        },
+        {
+          "id": "grammatik",
+          "title": "Grammatik / Wortschatz",
+          "minutes": 0,
+          "parts": 1
+        },
+        {
+          "id": "schreiben",
+          "title": "Schreiben",
+          "minutes": 60,
+          "parts": 1
+        },
+        {
+          "id": "sprechen",
+          "title": "Sprechen",
+          "minutes": 15,
+          "parts": 2
+        }
       ],
       "taskTypes": {
-        "lesen": ["matching", "multiple_choice", "true_false"],
-        "horen": ["multiple_choice", "note_taking"],
-        "schreiben": ["email", "short_text"],
-        "sprechen": ["dialogue", "presentation"]
+        "lesen": [
+          "short_text_mcq",
+          "long_text_mcq"
+        ],
+        "horen": [
+          "short_dialogue_mcq",
+          "long_listening_mcq"
+        ],
+        "grammatik": [
+          "grammar_mcq"
+        ],
+        "schreiben": [
+          "writing_prompt"
+        ],
+        "sprechen": [
+          "speaking_prompt"
+        ]
       },
-      "scoring": { "passPercent": 60, "perModule": true }
+      "scoring": {
+        "passPercent": 60,
+        "perModule": true
+      }
     },
     "B1": {
       "certificate": "Goethe-Zertifikat B1",
-      "totalMinutes": 90,
+      "totalMinutes": 180,
       "modules": [
-        { "id": "lesen", "title": "Lesen", "minutes": 65, "parts": 5 },
-        { "id": "horen", "title": "Hören", "minutes": 40, "parts": 4 },
-        { "id": "schreiben", "title": "Schreiben", "minutes": 60, "parts": 1 },
-        { "id": "sprechen", "title": "Sprechen", "minutes": 15, "parts": 2 }
+        {
+          "id": "lesen",
+          "title": "Leseverstehen",
+          "minutes": 65,
+          "parts": 5
+        },
+        {
+          "id": "horen",
+          "title": "Hörverstehen",
+          "minutes": 40,
+          "parts": 4
+        },
+        {
+          "id": "schreiben",
+          "title": "Schreiben",
+          "minutes": 60,
+          "parts": 3
+        },
+        {
+          "id": "sprechen",
+          "title": "Sprechen",
+          "minutes": 15,
+          "parts": 3
+        }
       ],
       "taskTypes": {
-        "lesen": ["true_false", "multiple_choice", "matching", "gap_fill"],
-        "horen": ["multiple_choice", "note_taking", "true_false"],
-        "schreiben": ["opinion_email", "forum_post"],
-        "sprechen": ["pair_discussion", "presentation"]
+        "lesen": [
+          "richtig_falsch_texts",
+          "mcq_texts",
+          "matching",
+          "opinion_yes_no",
+          "multiple_choice_notice"
+        ],
+        "horen": [
+          "short_texts_rf_mcq",
+          "monologue_mcq",
+          "informal_conversation_rf",
+          "discussion_speaker_matching"
+        ],
+        "schreiben": [
+          "writing_prompt"
+        ],
+        "sprechen": [
+          "speaking_prompt"
+        ]
       },
-      "scoring": { "passPercent": 60, "perModule": true }
+      "scoring": {
+        "passPercent": 60,
+        "perModule": true
+      }
     },
     "B2": {
       "certificate": "Goethe-Zertifikat B2",
-      "totalMinutes": 105,
+      "totalMinutes": 180,
       "modules": [
-        { "id": "lesen", "title": "Lesen", "minutes": 65, "parts": 4 },
-        { "id": "horen", "title": "Hören", "minutes": 40, "parts": 4 },
-        { "id": "schreiben", "title": "Schreiben", "minutes": 75, "parts": 2 },
-        { "id": "sprechen", "title": "Sprechen", "minutes": 15, "parts": 2 }
+        {
+          "id": "lesen",
+          "title": "Leseverstehen",
+          "minutes": 65,
+          "parts": 5
+        },
+        {
+          "id": "horen",
+          "title": "Hörverstehen",
+          "minutes": 40,
+          "parts": 4
+        },
+        {
+          "id": "grammatik",
+          "title": "Grammatik / Wortschatz",
+          "minutes": 0,
+          "parts": 1
+        },
+        {
+          "id": "schreiben",
+          "title": "Schreiben",
+          "minutes": 60,
+          "parts": 3
+        },
+        {
+          "id": "sprechen",
+          "title": "Sprechen",
+          "minutes": 15,
+          "parts": 3
+        }
       ],
       "taskTypes": {
-        "lesen": ["multiple_choice", "gap_fill", "matching_headings"],
-        "horen": ["multiple_choice", "note_taking"],
-        "schreiben": ["argumentative_essay", "formal_letter"],
-        "sprechen": ["discussion", "presentation"]
+        "lesen": [
+          "long_text_mcq",
+          "matching",
+          "gap_article",
+          "mcq_texts"
+        ],
+        "horen": [
+          "short_dialogue_mcq",
+          "short_monologues",
+          "long_listening_mcq",
+          "discussion"
+        ],
+        "grammatik": [
+          "grammar_mcq"
+        ],
+        "schreiben": [
+          "writing_prompt"
+        ],
+        "sprechen": [
+          "speaking_prompt"
+        ]
       },
-      "scoring": { "passPercent": 60, "perModule": true }
+      "scoring": {
+        "passPercent": 60,
+        "perModule": true
+      }
     },
     "C1": {
       "certificate": "Goethe-Zertifikat C1",
-      "totalMinutes": 150,
-      "modules": [
-        { "id": "lesen", "title": "Lesen", "minutes": 70, "parts": 4 },
-        { "id": "horen", "title": "Hören", "minutes": 40, "parts": 4 },
-        { "id": "schreiben", "title": "Schreiben", "minutes": 80, "parts": 2 },
-        { "id": "sprechen", "title": "Sprechen", "minutes": 16, "parts": 2 }
-      ],
-      "taskTypes": {
-        "lesen": ["complex_multiple_choice", "gap_fill"],
-        "horen": ["note_taking", "multiple_choice"],
-        "schreiben": ["academic_essay", "analysis"],
-        "sprechen": ["presentation", "discussion"]
-      },
-      "scoring": { "passPercent": 60, "perModule": true }
-    },
-    "C2": {
-      "certificate": "Goethe-Zertifikat C2 (GDS)",
       "totalMinutes": 180,
       "modules": [
-        { "id": "lesen", "title": "Lesen", "minutes": 80, "parts": 4 },
-        { "id": "horen", "title": "Hören", "minutes": 35, "parts": 3 },
-        { "id": "schreiben", "title": "Schreiben", "minutes": 80, "parts": 2 },
-        { "id": "sprechen", "title": "Sprechen", "minutes": 15, "parts": 2 }
+        {
+          "id": "lesen",
+          "title": "Leseverstehen",
+          "minutes": 65,
+          "parts": 2
+        },
+        {
+          "id": "horen",
+          "title": "Hörverstehen",
+          "minutes": 40,
+          "parts": 2
+        },
+        {
+          "id": "grammatik",
+          "title": "Grammatik / Wortschatz",
+          "minutes": 0,
+          "parts": 1
+        },
+        {
+          "id": "schreiben",
+          "title": "Schreiben",
+          "minutes": 60,
+          "parts": 3
+        },
+        {
+          "id": "sprechen",
+          "title": "Sprechen",
+          "minutes": 15,
+          "parts": 3
+        }
       ],
       "taskTypes": {
-        "lesen": ["literary_analysis", "complex_gap_fill"],
-        "horen": ["lecture_notes", "discussion"],
-        "schreiben": ["literary_review", "argumentative_text"],
-        "sprechen": ["debate", "presentation"]
+        "lesen": [
+          "short_text_mcq",
+          "long_text_mcq"
+        ],
+        "horen": [
+          "short_dialogue_mcq",
+          "long_listening_mcq"
+        ],
+        "grammatik": [
+          "grammar_mcq"
+        ],
+        "schreiben": [
+          "writing_prompt"
+        ],
+        "sprechen": [
+          "speaking_prompt"
+        ]
       },
-      "scoring": { "passPercent": 60, "perModule": true }
+      "scoring": {
+        "passPercent": 60,
+        "perModule": true
+      }
+    },
+    "C2": {
+      "certificate": "Goethe-Zertifikat C2",
+      "totalMinutes": 180,
+      "modules": [
+        {
+          "id": "lesen",
+          "title": "Leseverstehen",
+          "minutes": 65,
+          "parts": 2
+        },
+        {
+          "id": "horen",
+          "title": "Hörverstehen",
+          "minutes": 40,
+          "parts": 2
+        },
+        {
+          "id": "grammatik",
+          "title": "Grammatik / Wortschatz",
+          "minutes": 0,
+          "parts": 1
+        },
+        {
+          "id": "schreiben",
+          "title": "Schreiben",
+          "minutes": 60,
+          "parts": 3
+        },
+        {
+          "id": "sprechen",
+          "title": "Sprechen",
+          "minutes": 15,
+          "parts": 3
+        }
+      ],
+      "taskTypes": {
+        "lesen": [
+          "short_text_mcq",
+          "long_text_mcq"
+        ],
+        "horen": [
+          "short_dialogue_mcq",
+          "long_listening_mcq"
+        ],
+        "grammatik": [
+          "grammar_mcq"
+        ],
+        "schreiben": [
+          "writing_prompt"
+        ],
+        "sprechen": [
+          "speaking_prompt"
+        ]
+      },
+      "scoring": {
+        "passPercent": 60,
+        "perModule": true
+      }
     }
   }
 }

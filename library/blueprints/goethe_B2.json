@@ -6,9 +6,21 @@
   "certificate": "Goethe-Zertifikat B2",
   "principle": "fixed_structure_dynamic_content",
   "difficultyDistribution": {
-    "easy": { "min": 1, "max": 3, "share": 0.2 },
-    "medium": { "min": 4, "max": 6, "share": 0.4 },
-    "hard": { "min": 7, "max": 10, "share": 0.4 }
+    "easy": {
+      "min": 1,
+      "max": 3,
+      "share": 0.2
+    },
+    "medium": {
+      "min": 4,
+      "max": 6,
+      "share": 0.4
+    },
+    "hard": {
+      "min": 7,
+      "max": 10,
+      "share": 0.4
+    }
   },
   "modules": [
     {
@@ -17,30 +29,96 @@
       "time": "65 Minuten",
       "parts": [
         {
+          "instruction": "Read the text and answer the questions.",
+          "questionTypes": [
+            "multiple_choice"
+          ],
           "teil": 1,
-          "slotType": "short_texts",
-          "label": "Kurze Texte — Überschriften / Zweck",
-          "instruction": "Lesen Sie die Texte und ordnen Sie die passende Überschrift oder den Zweck zu.",
-          "textCount": { "min": 4, "max": 5 },
-          "wordsPerText": { "min": 100, "max": 150 },
-          "questionTypes": ["multiple_choice", "multiple", "matching", "match"],
-          "questionsTotal": { "min": 4, "max": 5 },
-          "topicFocus": ["work", "technology", "culture", "daily_life"],
-          "layout": "items"
+          "slotType": "article",
+          "label": "Teil 1 — Text",
+          "itemsTotal": 6,
+          "layout": "passage_questions",
+          "wordsPerPassage": {
+            "min": 200,
+            "max": 350
+          },
+          "questionsTotal": {
+            "min": 6,
+            "max": 6
+          },
+          "taskFormat": "long_text_mcq"
         },
         {
+          "instruction": "Read the text and answer the questions.",
+          "questionTypes": [
+            "multiple_choice"
+          ],
           "teil": 2,
-          "slotType": "long_article",
-          "label": "Langer Artikel",
-          "instruction": "Lesen Sie den Artikel und beantworten Sie die Fragen zu Details, Inference und Haltung des Autors.",
-          "passageCount": 1,
-          "wordsPerPassage": { "min": 600, "max": 700 },
-          "questionTypes": ["multiple_choice", "multiple", "richtig_falsch", "true_false"],
-          "questionsTotal": { "min": 10, "max": 12 },
-          "topicFocus": ["environment", "digitalisation", "science", "migration"],
-          "requiresInference": true,
-          "requiresAttitude": true,
-          "layout": "passage_questions"
+          "slotType": "article",
+          "label": "Teil 2 — Text",
+          "itemsTotal": 6,
+          "layout": "passage_questions",
+          "wordsPerPassage": {
+            "min": 200,
+            "max": 350
+          },
+          "questionsTotal": {
+            "min": 6,
+            "max": 6
+          },
+          "taskFormat": "long_text_mcq"
+        },
+        {
+          "instruction": "Read the text and answer the questions.",
+          "questionTypes": [
+            "matching"
+          ],
+          "teil": 3,
+          "slotType": "matching",
+          "label": "Teil 3 — Zuordnung",
+          "itemsTotal": 6,
+          "layout": "items",
+          "questionsTotal": {
+            "min": 6,
+            "max": 6
+          },
+          "taskFormat": "matching"
+        },
+        {
+          "instruction": "Read the text and answer the questions.",
+          "questionTypes": [
+            "gap_fill"
+          ],
+          "teil": 4,
+          "slotType": "gap_article",
+          "label": "Teil 4 — Lückentext",
+          "itemsTotal": 6,
+          "layout": "passage_questions",
+          "wordsPerPassage": {
+            "min": 180,
+            "max": 300
+          },
+          "questionsTotal": {
+            "min": 6,
+            "max": 6
+          },
+          "taskFormat": "gap_article"
+        },
+        {
+          "instruction": "Read the text and answer the questions.",
+          "questionTypes": [
+            "multiple_choice"
+          ],
+          "teil": 5,
+          "slotType": "mcq_texts",
+          "label": "Teil 5 — Sachtexte",
+          "itemsTotal": 6,
+          "layout": "items",
+          "questionsTotal": {
+            "min": 6,
+            "max": 6
+          },
+          "taskFormat": "mcq_texts"
         }
       ]
     },
@@ -50,74 +128,268 @@
       "time": "40 Minuten",
       "parts": [
         {
+          "instruction": "Listen and answer the questions.",
+          "questionTypes": [
+            "multiple_choice"
+          ],
           "teil": 1,
-          "slotType": "long_audio",
-          "label": "Interview / Diskussion 1",
-          "instruction": "Hören Sie das Interview und beantworten Sie die Fragen.",
-          "audioCount": 1,
-          "questionTypes": ["multiple_choice", "multiple"],
-          "questionsTotal": { "min": 5, "max": 8 },
-          "topicFocus": ["work", "education", "technology"],
-          "requiresInference": true,
-          "layout": "segments"
+          "slotType": "short_dialogues",
+          "label": "Teil 1",
+          "itemsTotal": 8,
+          "layout": "segments",
+          "questionsTotal": {
+            "min": 8,
+            "max": 8
+          },
+          "taskFormat": "short_dialogue_mcq"
         },
         {
+          "instruction": "Listen and answer the questions.",
+          "questionTypes": [
+            "multiple_choice"
+          ],
           "teil": 2,
+          "slotType": "short_monologues",
+          "label": "Teil 2",
+          "itemsTotal": 6,
+          "layout": "segments",
+          "questionsTotal": {
+            "min": 6,
+            "max": 6
+          },
+          "taskFormat": "short_monologues"
+        },
+        {
+          "instruction": "Listen and answer the questions.",
+          "questionTypes": [
+            "multiple_choice"
+          ],
+          "teil": 3,
           "slotType": "long_audio",
-          "label": "Interview / Diskussion 2",
-          "instruction": "Hören Sie die Diskussion und beantworten Sie die Fragen.",
-          "audioCount": 1,
-          "questionTypes": ["multiple_choice", "multiple", "richtig_falsch", "true_false"],
-          "questionsTotal": { "min": 5, "max": 7 },
-          "topicFocus": ["environment", "culture", "migration"],
-          "requiresInference": true,
-          "layout": "segments"
+          "label": "Teil 3",
+          "itemsTotal": 8,
+          "layout": "segments",
+          "questionsTotal": {
+            "min": 8,
+            "max": 8
+          },
+          "taskFormat": "long_listening_mcq"
+        },
+        {
+          "instruction": "Listen and answer the questions.",
+          "questionTypes": [
+            "multiple_choice",
+            "richtig_falsch"
+          ],
+          "teil": 4,
+          "slotType": "discussion",
+          "label": "Teil 4",
+          "itemsTotal": 8,
+          "layout": "segments",
+          "questionsTotal": {
+            "min": 8,
+            "max": 8
+          },
+          "taskFormat": "discussion"
         }
       ]
     },
     {
       "id": "grammatik",
-      "title": "Sprachbausteine / Grammatik",
+      "title": "Grammatik / Wortschatz",
       "time": null,
       "parts": [
         {
+          "instruction": "Ergänzen Sie oder wählen Sie die richtige Antwort.",
           "teil": 1,
-          "slotType": "language_in_use",
-          "label": "Grammatik und Ausdruck",
-          "instruction": "Ergänzen Sie die Lücken oder formen Sie die Sätze um.",
-          "questionTypes": ["gap_fill", "multiple_choice", "multiple"],
-          "questionsTotal": { "min": 25, "max": 30 },
-          "grammarFocus": [
-            "g-de-b2-konj1",
-            "g-de-b2-nominal",
-            "g-de-b1-passiv",
-            "g-de-b1-konjunktiv",
-            "g-de-b1-relativ"
+          "slotType": "grammar_block",
+          "label": "Grammatik",
+          "questionTypes": [
+            "multiple_choice",
+            "multiple",
+            "gap_fill"
           ],
-          "connectorFocus": ["trotzdem", "dennoch", "daher", "obwohl"],
-          "layout": "questions"
+          "questionsTotal": {
+            "min": 12,
+            "max": 12
+          },
+          "layout": "questions",
+          "itemsTotal": 12,
+          "taskFormat": "grammar_mcq"
         }
       ]
     },
     {
       "id": "schreiben",
       "title": "Schreiben",
-      "time": "75 Minuten",
+      "time": "60 Minuten",
       "parts": [
         {
+          "instruction": "Schreiben Sie einen Text zu der folgenden Aufgabe.",
           "teil": 1,
-          "slotType": "formal_writing",
-          "label": "Formeller Schreibauftrag",
-          "instruction": "Verfassen Sie einen strukturierten Text zu der folgenden Aufgabe.",
+          "slotType": "writing_task",
+          "label": "Formular / Kurze Nachricht",
           "taskCount": 1,
-          "wordsTarget": { "min": 150, "max": 180 },
-          "taskTypes": ["essay", "complaint", "opinion", "formal_letter"],
-          "structuredParagraphs": true,
-          "questionTypes": ["short_answer"],
-          "questionsTotal": { "min": 1, "max": 1 },
-          "layout": "writing"
+          "wordsTarget": {
+            "min": 100,
+            "max": 140
+          },
+          "taskTypes": [
+            "form_fill",
+            "informal_message"
+          ],
+          "questionTypes": [
+            "short_answer"
+          ],
+          "questionsTotal": {
+            "min": 1,
+            "max": 1
+          },
+          "layout": "writing",
+          "itemsTotal": 1,
+          "taskFormat": "writing_prompt",
+          "wordsPerPassage": {
+            "min": 100,
+            "max": 140
+          }
+        },
+        {
+          "instruction": "Schreiben Sie einen Text zu der folgenden Aufgabe.",
+          "teil": 2,
+          "slotType": "writing_task",
+          "label": "E-Mail / Forumbeitrag",
+          "taskCount": 1,
+          "wordsTarget": {
+            "min": 100,
+            "max": 140
+          },
+          "taskTypes": [
+            "email",
+            "forum_post"
+          ],
+          "questionTypes": [
+            "short_answer"
+          ],
+          "questionsTotal": {
+            "min": 1,
+            "max": 1
+          },
+          "layout": "writing",
+          "itemsTotal": 1,
+          "taskFormat": "writing_prompt",
+          "wordsPerPassage": {
+            "min": 100,
+            "max": 140
+          }
+        },
+        {
+          "instruction": "Schreiben Sie einen Text zu der folgenden Aufgabe.",
+          "teil": 3,
+          "slotType": "writing_task",
+          "label": "Argumentativer Text",
+          "taskCount": 1,
+          "wordsTarget": {
+            "min": 100,
+            "max": 140
+          },
+          "taskTypes": [
+            "opinion_email",
+            "argumentative_essay"
+          ],
+          "questionTypes": [
+            "short_answer"
+          ],
+          "questionsTotal": {
+            "min": 1,
+            "max": 1
+          },
+          "layout": "writing",
+          "itemsTotal": 1,
+          "taskFormat": "writing_prompt",
+          "wordsPerPassage": {
+            "min": 100,
+            "max": 140
+          }
+        }
+      ]
+    },
+    {
+      "id": "sprechen",
+      "title": "Sprechen",
+      "time": "15 Minuten",
+      "parts": [
+        {
+          "instruction": "Bereiten Sie sich auf die mündliche Aufgabe vor.",
+          "teil": 1,
+          "slotType": "speaking_task",
+          "label": "Sich vorstellen / Fragen beantworten",
+          "taskCount": 1,
+          "taskTypes": [
+            "introduce_self",
+            "qa"
+          ],
+          "questionTypes": [
+            "short_answer"
+          ],
+          "questionsTotal": {
+            "min": 1,
+            "max": 1
+          },
+          "layout": "speaking",
+          "itemsTotal": 1,
+          "taskFormat": "speaking_prompt"
+        },
+        {
+          "instruction": "Bereiten Sie sich auf die mündliche Aufgabe vor.",
+          "teil": 2,
+          "slotType": "speaking_task",
+          "label": "Gemeinsame Aufgabe / Diskussion",
+          "taskCount": 1,
+          "taskTypes": [
+            "pair_discussion",
+            "picture_description"
+          ],
+          "questionTypes": [
+            "short_answer"
+          ],
+          "questionsTotal": {
+            "min": 1,
+            "max": 1
+          },
+          "layout": "speaking",
+          "itemsTotal": 1,
+          "taskFormat": "speaking_prompt"
+        },
+        {
+          "instruction": "Bereiten Sie sich auf die mündliche Aufgabe vor.",
+          "teil": 3,
+          "slotType": "speaking_task",
+          "label": "Präsentation / Meinung",
+          "taskCount": 1,
+          "taskTypes": [
+            "presentation",
+            "debate"
+          ],
+          "questionTypes": [
+            "short_answer"
+          ],
+          "questionsTotal": {
+            "min": 1,
+            "max": 1
+          },
+          "layout": "speaking",
+          "itemsTotal": 1,
+          "taskFormat": "speaking_prompt"
         }
       ]
     }
-  ]
+  ],
+  "structureVersion": 2,
+  "itemsTotalByModule": {
+    "lesen": 30,
+    "horen": 30,
+    "grammatik": 12,
+    "schreiben": 3,
+    "sprechen": 3
+  }
 }

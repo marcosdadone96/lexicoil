@@ -210,11 +210,31 @@ function goethePartHasContent(part,mod){
   if(mod==='sprechen')return!!(part.situation||part.points?.length||part.prompts?.length||part.examinerQuestions?.length||part.cardText||part.task);
   return false;
 }
+function isExamBlueprintComplete(d){
+  if(!d||typeof d!=='object')return false;
+  if(d.demo||d.guidedDemo||d.vocabPersonal)return true;
+  if(d.blueprintComplete===true)return true;
+  if(d.blueprintComplete===false)return false;
+  if(Array.isArray(d.blueprintCoverage)&&d.blueprintCoverage.length){
+    return d.blueprintCoverage.every(c=>c.complete);
+  }
+  if(d.goetheFormat){
+    const mods=['lesen','horen','schreiben','sprechen'];
+    return mods.every(m=>{
+      const parts=d[m+'Parts']||[];
+      return parts.some(p=>goethePartHasContent(p,m));
+    });
+  }
+  return true;
+}
 function isExamRenderable(d){
   if(!d||typeof d!=='object')return false;
   if(d.goetheFormat){
     const lp=(d.lesenParts||[]).some(p=>goethePartHasContent(p,'lesen'));
     const hp=(d.horenParts||[]).some(p=>goethePartHasContent(p,'horen'));
+    const sp=(d.sprechenParts||[]).some(p=>goethePartHasContent(p,'sprechen'));
+    const wp=(d.schreibenParts||[]).some(p=>goethePartHasContent(p,'schreiben'));
+    if(d.vocabPersonal||d.libraryBuilt)return lp||hp||sp||wp;
     return lp&&hp;
   }
   if(d.readingParts?.length||d.listeningParts?.length||d.lesenParts?.length||d.horenParts?.length){
@@ -244,6 +264,10 @@ function showExamError(e){
     lcToast('AI returned an exam with invalid answer keys. Please try again.','warn',5000);
     return;
   }
+  if(e.code==='exam_incomplete'){
+    lcToast('We couldn\'t assemble a complete exam right now. Please try again later.','error',6000);
+    return;
+  }
   const msg=e.message||'Unknown error';
   if(/json|parse|unterminated/i.test(msg)){
     lcToast('AI returned incomplete data. Please try again.','error',5000);
@@ -259,10 +283,30 @@ async function startQuick(mod){
   document.getElementById('loaderTitle').textContent='Generating quick module…';
   document.getElementById('loaderSub').textContent='One module, instant results — free, no quota used';
   const topic=await pickTopicForSubject();
+  const prepMsg='Content is being prepared for this level. Try another language/level.';
   try{
     if(!engineReady())throw new Error('Content engine not loaded');
+    const skillMap={reading:['lesen'],listening:['horen'],writing:['schreiben'],gapfill:['lesen']};
+    const skills=skillMap[mod]||['lesen'];
+    if(typeof QuestionLibrary!=='undefined'&&QuestionLibrary.hasLibrary(S.subject,S.level)){
+      S.examData=await QuestionLibrary.buildExam(S.subject,S.level,{skills});
+      S.examData=stripExamToSkills(S.examData,skills);
+      S.examData.quickMod=mod;
+      S.examSource='question-library';
+      renderExam();
+      return;
+    }
+    if(typeof liveAiDisabled==='function'&&liveAiDisabled(S.subject,S.level)){
+      backToWorkspace('exams');
+      lcToast(prepMsg,'warn',6000);
+      return;
+    }
     S.examData=await LexiCoilEngine.generateQuickExercise(S.subject,S.level,mod,topic,getGeneratorHooks());
+    S.examSource='ai';
     renderExam();
+    if(S.examSource==='ai'&&!S.examData.vocabPersonal&&!S.examData.reusedItems){
+      void contributeExamToStaging(S.subject,S.level,S.examData.topic||genericPoolTopic(S.subject,S.level),S.examData,{minCoverage:0});
+    }
   }catch(e){backToWorkspace('exams');lcToast('Quick module failed: '+e.message,'error');}
 }
 
@@ -286,6 +330,7 @@ function extractJsonBlock(raw){
   return s;
 }
 function salvageJson(text){
+  /** @deprecated Prefer structured engine output (phase 03); kept for legacy AI JSON repair. */
   let json=extractJsonBlock(text);
   for(let n=0;n<24;n++){
     try{return JSON.parse(json);}catch(e){
@@ -306,14 +351,14 @@ function mergeExamParts(...parts){
   let merged={};
   for(const part of chunks){
     const keys=Object.keys(part).filter(k=>EXAM_PART_KEYS.includes(k));
-    console.log('[merge] chunk keys:',keys,keys.map(k=>Array.isArray(part[k])?part[k].length+' items':typeof part[k]));
+    lcDebug.log('[merge] chunk keys:',keys,keys.map(k=>Array.isArray(part[k])?part[k].length+' items':typeof part[k]));
     for(const[k,v]of Object.entries(part)){
       if(EXAM_PART_KEYS.includes(k)&&Array.isArray(v))merged[k]=[...(merged[k]||[]),...v];
       else if(!(k in merged)||typeof v!=='object'||v===null||Array.isArray(v))merged[k]=v;
       else if(k==='modules')merged[k]={...merged[k],...v};
     }
   }
-  console.log('[merge] final keys:',Object.keys(merged).filter(k=>EXAM_PART_KEYS.includes(k)).map(k=>k+':'+(Array.isArray(merged[k])?merged[k].length:'?')));
+  lcDebug.log('[merge] final keys:',Object.keys(merged).filter(k=>EXAM_PART_KEYS.includes(k)).map(k=>k+':'+(Array.isArray(merged[k])?merged[k].length:'?')));
   return{...merged,topic:merged.topic||topic,level:merged.level||S.level,lang:merged.lang||S.subject};
 }
 function normalizeChunkObj(chunk,obj){
@@ -348,7 +393,7 @@ function validateChunkObj(chunk,obj){
   if(!key)return obj;
   if(Array.isArray(obj[key])&&obj[key].length>0)return obj;
   if(Array.isArray(obj[key])&&obj[key].length===0){
-    console.warn('[exam] chunk returned empty array for',key,'— accepting anyway');
+    lcDebug.warn('[exam] chunk returned empty array for',key,'— accepting anyway');
     return obj;
   }
   const aliases={
@@ -363,7 +408,7 @@ function validateChunkObj(chunk,obj){
   };
   for(const alt of(aliases[key]||[])){
     if(Array.isArray(obj[alt])&&obj[alt].length>0){
-      console.warn('[exam] chunk used alias',alt,'for',key,'— remapping');
+      lcDebug.warn('[exam] chunk used alias',alt,'for',key,'— remapping');
       obj[key]=obj[alt];
       return obj;
     }
@@ -386,12 +431,38 @@ function engineReady(){
 }
 async function generateExamChunks(topic,onStep){
   if(!engineReady())throw new Error('Content engine not loaded');
-  return LexiCoilEngine.generateExam(S.subject,S.level,topic,getGeneratorHooks(onStep));
+  const specExtra={};
+  const genOpts={};
+  const bpEnabled=typeof ExamGenerator!=='undefined'&&ExamGenerator.aiPathBlueprintsEnabled?.();
+  if(bpEnabled&&typeof ExamBlueprint!=='undefined'){
+    try{
+      const bp=await ExamBlueprint.load(S.subject,S.level);
+      if(bp){
+        specExtra.metadata={blueprint:bp};
+        genOpts.useBlueprint=true;
+      }
+    }catch(bpErr){lcDebug.warn('[exam] blueprint preload failed:',bpErr);}
+  }
+  return LexiCoilEngine.generateExam(S.subject,S.level,topic,getGeneratorHooks(onStep),{specExtra,...genOpts});
 }
 const POOL_COVERAGE_THRESHOLD=0.8;
 const POOL_CONTRIBUTE_COVERAGE=0.6;
+function applyPersonalTargetUsage(exam,words){
+  if(!exam||!words?.length)return exam;
+  if(typeof TargetUsage!=='undefined')TargetUsage.applyVerified(exam,words);
+  return exam;
+}
 function lcVocabCoverage(exam,words){
   if(!exam||!words?.length)return {ratio:0,found:0,total:0};
+  if(exam.targetUsageVerified?.length){
+    const found=exam.targetUsageVerified.length;
+    return {ratio:found/words.length,found,total:words.length};
+  }
+  if(Array.isArray(exam.targetUsage)&&exam.targetUsage.length&&typeof TargetUsage!=='undefined'){
+    const verified=TargetUsage.verifyTargetUsage(exam,exam.targetUsage);
+    const found=verified.length;
+    return {ratio:found/words.length,found,total:words.length};
+  }
   const blob=JSON.stringify(exam).toLowerCase();
   let found=0;
   words.forEach(w=>{
@@ -407,15 +478,21 @@ function lcExamHasPlaceholders(exam){
 function buildPoolExamCopy(exam,topic){
   const copy=JSON.parse(JSON.stringify(exam));
   delete copy.vocabPersonal;delete copy.vocabWords;delete copy.vocabSkills;
+  delete copy.targetUsage;delete copy.targetUsageVerified;
   delete copy.goalId;delete copy._savedId;delete copy._flightId;
   delete copy.poolSource;delete copy.poolId;delete copy.guidedDemo;
   copy.topic=topic;
   return copy;
 }
-function lcExamPassesValidator(exam){
+function lcValidatorStrict(){
+  if(typeof window!=='undefined'&&window.LC_VALIDATOR_STRICT==='1')return true;
+  return false;
+}
+function lcExamPassesValidator(exam,opts){
   if(typeof ExamValidator==='undefined')return true;
-  const r=new ExamValidator().validate(exam);
-  if(!r.valid)console.warn('[exam] answer-key validation failed:',r.errors);
+  const strict=opts?.strict??lcValidatorStrict();
+  const r=new ExamValidator().validate(exam,{strict,blueprint:opts?.blueprint});
+  if(!r.valid)lcDebug.warn('[exam] validation failed:',r.errors,r.warnings?.length?`(warnings: ${r.warnings.join(', ')})`:'');
   return r.valid;
 }
 async function lcValidateExamOnServer(exam,opts){
@@ -432,10 +509,10 @@ async function lcValidateExamOnServer(exam,opts){
     const data=await res.json().catch(()=>({}));
     if(res.ok&&data.valid)return {valid:true};
     if(res.status===422&&data.error==='exam_invalid'){
-      console.warn('[exam] server validation rejected:',data.validationErrors||data.message);
+      lcDebug.warn('[exam] server validation rejected:',data.validationErrors||data.message);
       return {valid:false,errors:data.validationErrors||[data.message]};
     }
-  }catch(e){console.warn('[exam] server validation unavailable:',e.message);}
+  }catch(e){lcDebug.warn('[exam] server validation unavailable:',e.message);}
   return {valid:true,skipped:true};
 }
 function lcExamPassesQualityGate(exam,words,minCoverage){
@@ -451,7 +528,22 @@ function lcExamPassesQualityGate(exam,words,minCoverage){
 function genericPoolTopic(lang,level){
   return `${certLbl(lang,level)} practice exam`;
 }
+async function contributeExamToStaging(lang,level,topic,exam,opts){
+  if(!exam||exam.vocabPersonal||exam.vocabWords?.length||exam.reusedItems)return;
+  if(typeof saveExamPartsToStaging!=='function')return;
+  const words=opts?.words;
+  const minCov=opts?.minCoverage??(words?.length?POOL_CONTRIBUTE_COVERAGE:0);
+  const complete=typeof isExamBlueprintComplete==='function'&&isExamBlueprintComplete(exam);
+  const passesQuality=lcExamPassesQualityGate(exam,words,minCov);
+  try{
+    await saveExamPartsToStaging(lang,level,exam,{complete:complete&&passesQuality,autoApprove:false});
+  }catch(err){lcDebug.warn('[staging] remote ingest failed:',err);}
+}
 async function contributeExamToPool(lang,level,topic,exam,opts){
+  if(typeof S!=='undefined'&&S.examSource==='ai'){
+    void contributeExamToStaging(lang,level,topic,exam,opts);
+  }
+  if(typeof lcStrategyBEnabled==='function'&&lcStrategyBEnabled())return;
   if(typeof saveExamToPool!=='function'||!exam)return;
   const words=opts?.words;
   const minCov=opts?.minCoverage??(words?.length?POOL_CONTRIBUTE_COVERAGE:0);
@@ -460,6 +552,7 @@ async function contributeExamToPool(lang,level,topic,exam,opts){
   try{await saveExamToPool(lang,level,clean.topic,clean);}catch(_){}
 }
 window.contributeExamToPool=contributeExamToPool;
+window.contributeExamToStaging=contributeExamToStaging;
 window.lcVocabCoverage=lcVocabCoverage;
 function stripExamToSkills(exam,skills){
   if(!exam||!skills?.length)return exam;
@@ -481,9 +574,11 @@ function stripExamToSkills(exam,skills){
 async function generateWeaknessExam(goalId){
   const goal=goalId?S.goals.find(g=>g.id===goalId):getActiveGoal();
   if(!goal){showAddGoalWizard();return;}
+  if(typeof requirePersonalized==='function'&&!requirePersonalized({message:'Personalized weakness exams require Pro.'}))return;
   if(!canGenerate()){showUpgrade();return;}
-  if(typeof QuestionLibrary==='undefined'||!QuestionLibrary.hasLibrary(goal.subject,goal.level)){
-    lcToast('Weakness exams require a question library for this level.','warn');return;
+  const servible=typeof isLevelServable==='function'&&isLevelServable(goal.subject,goal.level);
+  if(typeof QuestionLibrary==='undefined'||(!QuestionLibrary.hasLibrary(goal.subject,goal.level)&&!servible)){
+    lcToast('Personalized weakness exams require a servible question library for this level.','warn');return;
   }
   confirmQuotaUse(()=>runWeaknessExam(goal));
 }
@@ -501,11 +596,12 @@ async function runWeaknessExam(goal){
   initExamSession('practice');
   hideAll();
   show('loadingScreen');
-  document.getElementById('loaderTitle').textContent='Building weakness-focused exam…';
-  document.getElementById('loaderSub').textContent='Selecting questions for your weakest grammar areas…';
+  document.getElementById('loaderTitle').textContent='Building personalized exam…';
+  document.getElementById('loaderSub').textContent='70% weakness focus · 30% mixed reinforcement (library, no AI)…';
   try{
     S.examData=await QuestionLibrary.buildWeaknessExam(goal.subject,goal.level,goal);
     S.examData.weaknessExam=true;
+    S.examData.personalizedExam=!!S.examData.personalizedSplit;
     S.examData.goalId=goal.id;
     S.examSource='question-library';
     if(typeof commitExamQuota==='function')await commitExamQuota();
@@ -516,13 +612,52 @@ async function runWeaknessExam(goal){
     lcToast('Weakness exam failed: '+e.message,'error',5000);
   }
 }
-async function generatePersonalExam(words,skills,goalId){
+function launchHorenGame(words, lang, level){
+  if(typeof requirePersonalized==='function'&&!requirePersonalized({message:'The listening game is included with Pro.'}))return;
+  hideAll(); show('horenGameScreen');
+  const el=document.getElementById('horenGameMount');
+  if(!el||typeof HorenGame==='undefined'){lcToast('Listening game unavailable.','warn');return;}
+  HorenGame.mount(el, { words, lang, level, uiLang: lang==='es'?'es':'en' }, {
+    onComplete(result){
+      if(typeof AnalyticsStore!=='undefined'&&typeof AnalyticsStore.recordWordResults==='function'){
+        try{AnalyticsStore.recordWordResults((typeof getActiveGoal==='function')?getActiveGoal():null, result.detail);}catch(_){}
+      }
+    }
+  });
+}
+function exitHorenGame(){
+  if(typeof backToWorkspace==='function')backToWorkspace('vocabulary');
+  else if(typeof goHome==='function')goHome();
+}
+function startHorenGameFromHub(){
+  let words=[];
+  if(typeof getSelectedFC==='function'){ const sel=getSelectedFC(); if(sel&&sel.length) words=sel.map(c=>c.word); }
+  if(!words.length){
+    const goal=(typeof getActiveGoal==='function')?getActiveGoal():null;
+    if(goal&&Array.isArray(S.flashcards)) words=S.flashcards.filter(f=>f.sourceLang===goal.subject).map(f=>f.word);
+  }
+  words=[...new Set(words)].slice(0,12);
+  if(words.length<2){lcToast('Save at least 2 words to play.','warn');return;}
+  const goal=(typeof getActiveGoal==='function')?getActiveGoal():null;
+  launchHorenGame(words, goal?goal.subject:(S.subject||'de'), goal?goal.level:(S.level||'B1'));
+}
+window.exitHorenGame=exitHorenGame;
+window.startHorenGameFromHub=startHorenGameFromHub;
+async function generatePersonalExam(words,skills,goalId,opts){
   let configWords=words;
   let configSkills=skills;
   let configGoalId=goalId;
-  if(!configWords){
+  const skipBatching=!!(opts&&opts.skipBatching);
+  const goalRef=configGoalId?S.goals.find(g=>g.id===configGoalId):getActiveGoal();
+  if(skipBatching&&goalRef?.vocabPlan&&typeof VocabBatching!=='undefined'){
+    const batch=VocabBatching.nextBatch(goalRef.vocabPlan);
+    if(!batch){lcToast('All vocabulary batches completed.','success');return;}
+    configWords=batch;
+    configSkills=goalRef.vocabPlan.skills||configSkills||['lesen','horen'];
+    S.subject=goalRef.subject;S.level=goalRef.level;S.activeGoalId=goalRef.id;syncGoalToProfile(goalRef);
+  }else   if(!configWords){
     const cards=getSelectedFC();
-    if(cards.length<4){lcToast('Select at least 4 flashcards (All, Due, Last exam, or tick manually).','warn');return;}
+    if(cards.length<2){lcToast('Select at least 2 words.','warn');return;}
     const langs=[...new Set(cards.map(c=>c.sourceLang).filter(l=>l==='de'||l==='en'||l==='es'))];
     if(langs.length>1){lcToast('Select words from one language only.','warn');return;}
     S.subject=langs[0]||'de';
@@ -533,21 +668,44 @@ async function generatePersonalExam(words,skills,goalId){
     const goal=configGoalId?S.goals.find(g=>g.id===configGoalId):getActiveGoal();
     if(goal){S.subject=goal.subject;S.level=goal.level;S.activeGoalId=goal.id;syncGoalToProfile(goal);}
   }
-  if(!canGenerate()){showUpgrade();return;}
   configSkills=configSkills||['lesen','horen'];
+  if(typeof requirePersonalized==='function'&&!requirePersonalized({message:'Personalized vocabulary exams require Pro.'}))return;
+  if(!canGenerate()){showUpgrade();return;}
+  let libraryMatchCount;
+  if(typeof VocabBatching!=='undefined'&&!skipBatching){
+    if(typeof QuestionLibrary!=='undefined'&&QuestionLibrary.hasLibrary(S.subject,S.level)){
+      try{
+        const bank=await LibraryLoader.load(S.subject,S.level);
+        libraryMatchCount=(bank.questions||[]).filter(q=>ExamBuilder.questionContainsWords(q,bank,configWords)).length;
+      }catch(_){libraryMatchCount=undefined;}
+    }
+    if(goalRef&&configWords.length>VocabBatching.capacityFor(configSkills)){
+      goalRef.vocabPlan=VocabBatching.planBatches(configWords,configSkills,goalRef);
+      saveGoals();
+    }
+    if(goalRef?.vocabPlan&&!VocabBatching.coverage(goalRef.vocabPlan).finished){
+      const batch=VocabBatching.nextBatch(goalRef.vocabPlan);
+      if(batch)configWords=batch;
+    }
+  }
   S.mode='practice';S.isDemo=false;S.answers={};S.gapAnswers={};S.quickMod=null;
   initExamSession('practice');
   S.lastPersonalConfig={words:configWords,skills:configSkills,goalId:configGoalId||S.activeGoalId};
+  if(typeof VocabBatching!=='undefined'&&typeof HorenGame!=='undefined'&&VocabBatching.shouldUseGame(configWords,configSkills,libraryMatchCount)){
+    launchHorenGame(configWords,S.subject,S.level);return;
+  }
   hideAll();show('loadingScreen');
   document.getElementById('loaderTitle').textContent='Building your personal mock exam…';
   document.getElementById('loaderSub').textContent=`Weaving ${configWords.length} words into ${configSkillSummary(new Set(configSkills),S.subject)}…`;
   try{
     if(typeof fetchExamFromPool==='function'){
-      document.getElementById('loaderSub').textContent='Checking shared pool for a matching exam…';
+      document.getElementById('loaderSub').textContent='Looking for a matching exam…';
       try{
         const pooled=await fetchExamFromPool(S.subject,S.level,seenPoolIds(S.subject,S.level));
-        if(pooled?.found&&pooled.exam){
-          let candidate=normalizeExam(pooled.exam);
+        if(pooled?.found&&pooled.exam&&!(typeof BurnedRegistry!=='undefined'&&BurnedRegistry.examTouchesBurned(pooled.exam))){
+          const check=validateExamCandidate(pooled.exam);
+          let candidate=check.ok?check.normalized:null;
+          if(candidate){
           candidate=stripExamToSkills(JSON.parse(JSON.stringify(candidate)),configSkills);
           const cov=lcVocabCoverage(candidate,configWords);
           if(cov.ratio>=POOL_COVERAGE_THRESHOLD&&isExamRenderable(candidate)&&lcExamPassesValidator(candidate)&&!lcExamHasPlaceholders(candidate)){
@@ -561,16 +719,23 @@ async function generatePersonalExam(words,skills,goalId){
             S.examSource='pool';
             if(configGoalId||S.activeGoalId)S.examData.goalId=configGoalId||S.activeGoalId;
             S.examData.topic='Personal: '+configWords.slice(0,3).join(', ')+(configWords.length>3?'…':'');
+            if(typeof VocabBatching!=='undefined'&&goalRef?.vocabPlan){
+              VocabBatching.advance(goalRef.vocabPlan,configWords);
+              saveGoals();
+            }
             renderExam();
             return;
           }
+          }
         }
-      }catch(poolErr){console.warn('[personal] pool fetch failed:',poolErr);}
+      }catch(poolErr){lcDebug.warn('[personal] pool fetch failed:',poolErr);}
     }
     if(typeof QuestionLibrary!=='undefined'&&QuestionLibrary.hasLibrary(S.subject,S.level)){
       document.getElementById('loaderSub').textContent=`Assembling from library — ${configWords.length} words…`;
       S.examData=await QuestionLibrary.buildPersonalExam(S.subject,S.level,configWords,configSkills);
       S.examSource='question-library';
+    }else if(typeof lcStrategyBEnabled==='function'&&lcStrategyBEnabled()){
+      throw new Error('This level uses the question library only (live AI is disabled). Try fewer skills or regenerate from flashcards.');
     }else{
       document.getElementById('loaderSub').textContent=`Generating with AI — ${configWords.length} words, ${configSkillSummary(new Set(configSkills),S.subject)}…`;
       if(!engineReady())throw new Error('Content engine not loaded');
@@ -583,11 +748,12 @@ async function generatePersonalExam(words,skills,goalId){
     S.examData.vocabSkills=configSkills;
     if(configGoalId||S.activeGoalId)S.examData.goalId=configGoalId||S.activeGoalId;
     if(!S.examData.topic||S.examData.topic==='Personal vocabulary review')S.examData.topic='Personal: '+configWords.slice(0,3).join(', ')+(configWords.length>3?'…':'');
+    applyPersonalTargetUsage(S.examData,configWords);
     const coverage=lcVocabCoverage(S.examData,configWords);
     if(coverage.ratio<POOL_CONTRIBUTE_COVERAGE){
       lcToast(`Only ${Math.round(coverage.ratio*100)}% of your words appear in this exam (target ${Math.round(POOL_CONTRIBUTE_COVERAGE*100)}%+). You can regenerate from the configurator for better coverage.`,'warn',7000);
     }
-    if(S.examSource==='question-library'&&(!isExamRenderable(S.examData)||!lcExamPassesValidator(S.examData))){
+    if(S.examSource==='question-library'&&(!isExamRenderable(S.examData)||!lcExamPassesValidator(S.examData,{strict:false}))){
       throw new Error('Library assembly produced an invalid exam.');
     }
     if(typeof lcValidateExamOnServer==='function'){
@@ -596,7 +762,20 @@ async function generatePersonalExam(words,skills,goalId){
     }
     if(typeof commitExamQuota==='function')await commitExamQuota();
     if(lcExamPassesQualityGate(S.examData,configWords,POOL_CONTRIBUTE_COVERAGE)){
-      void contributeExamToPool(S.subject,S.level,genericPoolTopic(S.subject,S.level),S.examData,{words:configWords,minCoverage:POOL_CONTRIBUTE_COVERAGE});
+      if(S.examSource==='ai'){
+        const depersonalized=buildPoolExamCopy(S.examData,genericPoolTopic(S.subject,S.level));
+        void contributeExamToPool(S.subject,S.level,depersonalized.topic,depersonalized,{minCoverage:0});
+      }else{
+        void contributeExamToPool(S.subject,S.level,genericPoolTopic(S.subject,S.level),S.examData,{words:configWords,minCoverage:POOL_CONTRIBUTE_COVERAGE});
+      }
+    }
+    if(typeof VocabBatching!=='undefined'&&goalRef?.vocabPlan){
+      VocabBatching.advance(goalRef.vocabPlan,configWords);
+      saveGoals();
+      const cov=VocabBatching.coverage(goalRef.vocabPlan);
+      if(!cov.finished){
+        lcToast(VocabBatching.summary(goalRef.vocabPlan,S.subject)+'. Use “Next batch” on results when ready.','info',8000);
+      }
     }
     renderExam();
   }catch(e){
@@ -609,6 +788,12 @@ async function generatePersonalExam(words,skills,goalId){
     lcToast('Personal exam failed: '+e.message,'error',5000);
   }
 }
+
+function generateNextVocabBatch(goalId){
+  const gid=goalId||S.activeGoalId;
+  generatePersonalExam(null,null,gid,{skipBatching:true});
+}
+window.generateNextVocabBatch=generateNextVocabBatch;
 
 function inferLevelFromCards(cards){
   const levels=cards.map(c=>c.sourceExam?.level).filter(Boolean);
@@ -649,8 +834,7 @@ function selectLastExamFC(){
   ensureFcIds();
   const withExam=getDeckViewCards().filter(f=>f.sourceExam?.id);
   if(!withExam.length){
-    if(typeof showToast==='function')showToast('No words from an exam yet — use Practice Mode and save words.','warn');
-    else lcToast('No words from an exam yet — use Practice Mode and save words.','warn');
+    notify('No words from an exam yet — use Practice Mode and save words.','warn');
     return;
   }
   const latest=withExam.sort((a,b)=>(b.sourceExam.id||0)-(a.sourceExam.id||0))[0];
@@ -674,7 +858,11 @@ function updFCSelectUI(){
   if(cnt)cnt.textContent=n;
   if(pb)pb.textContent=n+' word'+(n===1?'':'s');
   if(eb)eb.textContent=n+' selected';
-  if(btn)btn.disabled=n<4;
+  if(btn){
+    const proOnly=typeof canUsePersonalized==='function'&&!canUsePersonalized();
+    btn.disabled=n<4||(!proOnly&&!canGenerate());
+    btn.textContent=proOnly?'Upgrade for personalized exams →':'Generate personal mock exam →';
+  }
   const lv=inferLevelFromCards(getSelectedFC());
   const sel=document.getElementById('fcPersonalLevel');
   if(sel&&lv)sel.value=lv;

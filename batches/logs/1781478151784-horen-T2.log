@@ -1,0 +1,21 @@
+
+Gemini batch generator — de/B1 × 1
+Prompt: batches/GEMINI_MASTER_PROMPT_de_B1.md
+
+── horen T2 · gesund-leben-01 ──
+Tema: Vortrag über gesunde Lebensweise
+Archivo: batches/merged/horen-t2-gesund-leben-01.json
+Llamando Gemini…
+Tokens: in=1657 out=2488
+Modelo: gemini-2.5-flash
+Guardado: batches/merged/horen-t2-gesund-leben-01.json (5 preguntas, 1 passages)
+Validando…
+
+== Validación de horen-t2-gesund-leben-01.json (de_B1) ==
+Preguntas: 5 | Pasajes: 1
+Esquema: ERR [{"instancePath":"/questions/0/options/0","schemaPath":"#/properties/questions/items/properties/options/items/type","keyword":"type","params":{"type":"string"},"message":"must be string"},{"instancePath":"/questions/0/options/1","schemaPath":"#/properties/questions/items/properties/options/items/type","keyword":"type","params":{"type":"string"},"message":"must be string"}]
+Colocación (Teile que mejora): Pool válido (Teil ya cubierto en 1 examen — OK para exámenes disjuntos)
+Sin problemas detectados ✅
+Error: Command failed: node scripts/validate-batch.mjs --lang de --level B1 --file "batches/merged/horen-t2-gesund-leben-01.json"
+
+Resumen: 0 OK, 1 fallidos

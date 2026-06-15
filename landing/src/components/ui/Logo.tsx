@@ -16,7 +16,7 @@ export function Logo({
   className = '',
   variant = 'default',
 }: Props) {
-  const iconSrc = variant === 'white' ? '/assets/brand/icon-white.svg' : '/assets/brand/icon.svg';
+  const iconSrc = variant === 'white' ? '/assets/brand/icon-white.svg' : '/assets/brand/icon.png';
 
   const inner = (
     <>

@@ -39,22 +39,24 @@ exports.handler = async (event) => {
   const base = origin.replace(/\/$/, '');
 
   const params = new URLSearchParams();
-  params.set('mode', 'payment');
+  params.set('mode', 'subscription');
   params.set('success_url', `${base}/?upgraded=1&session_id={CHECKOUT_SESSION_ID}`);
   params.set('cancel_url', `${base}/?cancelled=1`);
   params.set('client_reference_id', auth.email);
   params.set('customer_email', auth.email);
   params.set('metadata[email]', auth.email);
+  params.set('subscription_data[metadata][email]', auth.email);
   params.append('line_items[0][quantity]', '1');
   params.append('line_items[0][price_data][currency]', 'eur');
   params.append('line_items[0][price_data][unit_amount]', '999');
+  params.append('line_items[0][price_data][recurring][interval]', 'month');
   params.append(
     'line_items[0][price_data][product_data][name]',
-    'LexiCoil Pro - 20 exams/month',
+    'LexiCoil Pro - 12 exams/month',
   );
   params.append(
     'line_items[0][price_data][product_data][description]',
-    'One-time payment for Pro access this month (20 AI exam generations).',
+    'Monthly Pro subscription: 12 exam generations/month plus personalized vocabulary practice.',
   );
 
   const res = await fetch('https://api.stripe.com/v1/checkout/sessions', {

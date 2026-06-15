@@ -1,7 +1,7 @@
 // ═══════════════════════════════════════════
 // NAVIGATION
 // ═══════════════════════════════════════════
-const SCREENS=['homeScreen','goalWorkspaceScreen','examConfigScreen','oralPracticeScreen','profileSetupScreen','loadingScreen','examScreen','resultsScreen','mistakeReviewScreen','flashcardScreen','vocabExamScreen'];
+const SCREENS=['homeScreen','goalWorkspaceScreen','examConfigScreen','oralPracticeScreen','profileSetupScreen','loadingScreen','examScreen','resultsScreen','mistakeReviewScreen','flashcardScreen','vocabExamScreen','horenGameScreen'];
 function getActiveScreenId(){
   for(const id of SCREENS){
     const el=document.getElementById(id);
@@ -22,69 +22,30 @@ function _navCleanupDeckHub(){
   if(S.fcSelected)S.fcSelected.clear();
   S.deckGoalFilter=null;
 }
-function resolveNavBack(){
-  const screen=getActiveScreenId();
-  if(screen==='goalWorkspaceScreen'&&typeof _vocabHub!=='undefined'&&_vocabHub.activity==='flashcards'){
-    return{label:'Vocabulary',go:_navExitVocabFlashcards};
-  }
-  if(screen==='goalWorkspaceScreen'){
-    return{label:'Dashboard',go:goHome};
-  }
-  if(screen==='examConfigScreen'){
-    return{label:'Exams',go(){
-      showExamConfigFootbar(false);
-      const gid=typeof _examConfig!=='undefined'?_examConfig.goalId:null;
-      if(gid&&typeof openGoalWorkspace==='function')openGoalWorkspace(gid,'exams');
-      else goHome();
-    }};
-  }
-  if(screen==='oralPracticeScreen'){
-    return{label:'Exams',go(){
-      const gid=typeof _oralSession!=='undefined'?_oralSession.goalId:null;
-      if(gid&&typeof openGoalWorkspace==='function')openGoalWorkspace(gid,'exams');
-      else if(typeof backToWorkspace==='function')backToWorkspace('exams');
-      else goHome();
-    }};
-  }
-  if(screen==='flashcardScreen'){
-    if(S.deckGoalFilter&&S.activeGoalId){
-      return{label:'Vocabulary',go(){
-        _navCleanupDeckHub();
-        openGoalWorkspace(S.activeGoalId,'vocabulary');
-      }};
-    }
-    return{label:'Dashboard',go(){
-      _navCleanupDeckHub();
-      goHome();
-    }};
-  }
-  if(screen==='mistakeReviewScreen'){
-    return{label:'Progress',go(){backToWorkspace('progress');}};
-  }
-  if(screen==='resultsScreen'){
-    return{label:'Exams',go(){backToWorkspace('exams');}};
-  }
-  if(screen==='vocabExamScreen'){
-    if(typeof _vocabHub!=='undefined'&&_vocabHub.veFromVocab){
-      return{label:'Vocabulary',go(){
-        _vocabHub.veFromVocab=false;
-        const id=S.activeGoalId;
-        if(id)openGoalWorkspace(id,'vocabulary');
-        else goHome();
-      }};
-    }
-    return{label:'Deck',go(){goFlashcards();}};
-  }
-  if(screen==='profileSetupScreen'){
-    return{label:'Dashboard',go:goHome};
-  }
-  return{label:'Dashboard',go:goHome};
-}
 function navBackLabel(){
-  return resolveNavBack().label;
+  if(typeof LcRouter!=='undefined'&&LcRouter.backLabel)return LcRouter.backLabel();
+  return 'Dashboard';
 }
 function navBack(){
-  resolveNavBack().go();
+  const screen=getActiveScreenId();
+  if(screen==='goalWorkspaceScreen'&&typeof _vocabHub!=='undefined'&&_vocabHub.activity==='flashcards'){
+    _navExitVocabFlashcards();
+    if(typeof LcRouter!=='undefined'){
+      const goal=getActiveGoal();
+      if(goal){
+        LcRouter.navigate(LcRouter.goalPath(goal,'vocab'),{label:'Vocabulary',replace:true});
+      }
+    }
+    return;
+  }
+  if(screen==='flashcardScreen'){
+    _navCleanupDeckHub();
+  }
+  if(typeof LcRouter!=='undefined'&&LcRouter.back){
+    LcRouter.back();
+    return;
+  }
+  goHome();
 }
 function renderNavBackBtn(label){
   const lbl=label||navBackLabel();
@@ -114,11 +75,16 @@ function syncNavBackLabels(){
 function show(id){
   document.getElementById(id).style.display='block';
   syncNavBackLabels();
+  if(typeof LcA11y!=='undefined')LcA11y.onScreenShown(id);
 }
 function hide(id){document.getElementById(id).style.display='none';}
-function hideAll(){flushOpenStudySession();SCREENS.forEach(hide);stopTimer();showExamConfigFootbar(false);}
+function hideAll(){if(typeof unbindExamScrollTop==='function')unbindExamScrollTop();flushOpenStudySession();SCREENS.forEach(hide);stopTimer();showExamConfigFootbar(false);}
 function goHome(){
   if(!requireAppAuth())return;
+  if(typeof routerNavigate==='function'){
+    routerNavigate('#/',{label:'Dashboard',replace:false});
+    return;
+  }
   clearVocabHubFlashcardMode();
   hideAll();
   show('homeScreen');
@@ -140,6 +106,10 @@ function goFlashcards(clearGoalFilter){
     openDeckHub(goal.id);
     return;
   }
+  if(typeof routerNavigate==='function'){
+    routerNavigate('#/flashcards',{label:'Dashboard'});
+    return;
+  }
   hideAll();show('flashcardScreen');
   S.deckGoalFilter=null;
   renderDeckHub();
@@ -147,7 +117,14 @@ function goFlashcards(clearGoalFilter){
 }
 function goHistory(){
   const goal=getActiveGoal()||S.goals[0];
-  if(goal){openGoalWorkspace(goal.id,'progress');return;}
+  if(goal){
+    if(typeof LcRouter!=='undefined'){
+      LcRouter.navigate(LcRouter.goalPath(goal,'progress'),{label:'Progress'});
+      return;
+    }
+    openGoalWorkspace(goal.id,'progress');
+    return;
+  }
   goHome();
 }
 function setExamMode(m){

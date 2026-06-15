@@ -1,18 +1,17 @@
 'use strict';
 
-// ??? LexiCoil  quotaLib.js ???????????????????????????????????????????????????
-// Server-side quota management using Netlify Blobs.
-// Used by claudeProxy (ESM) via direct logic copy, and by CJS functions here.
-// ??????????????????????????????????????????????????????????????????????????????
+// LexiCoil â€” quotaLib.js
+// Server-side quota management using Netlify Blobs (CAS + idempotency).
 
 const crypto        = require('crypto');
 const { getStoreForEvent } = require('./blobStore.js');
+const { casWriteJson, readIdempotentResult, writeIdempotentResult } = require('./casBlob.js');
 const { verifyAuthToken, userKey } = require('./authLib.js');
 const { getBearer }  = require('./http.js');
 
 const GUEST_MAX     = 2;
-const FREE_MAX      = 2;
-const PRO_MAX       = 20;
+const FREE_MAX      = 5;
+const PRO_MAX       = 12;
 const GUEST_TTL_SEC = 30 * 24 * 60 * 60; // 30 days
 
 function getMonthKey() {
@@ -53,7 +52,7 @@ function maxForPlan(plan) {
   return FREE_MAX;
 }
 
-// Returns full quota state object  used by checkQuota and incrementQuota
+// Returns full quota state object ï¿½ used by checkQuota and incrementQuota
 async function getQuotaState(event) {
   const store = getStoreForEvent(event);
   const token = getBearer(event);
@@ -86,7 +85,7 @@ async function getQuotaState(event) {
     };
   }
 
-  // Guest  identified by IP hash
+  // Guest ï¿½ identified by IP hash
   const ipHash = hashIp(getClientIp(event));
   const gKey   = `guest_quota:${ipHash}`;
   let used = 0;
@@ -139,29 +138,82 @@ async function checkQuota(event) {
   };
 }
 
-// Call after a successful AI generation to persist the new count
-async function incrementQuota(state) {
-  if (!state || !state.ok) return null;
-  const s       = state.state || state;
-  const currentUsed = Math.min(Number(s.used) || 0, s.max);
-  if (currentUsed >= s.max) {
-    return { used: currentUsed, max: s.max, plan: s.plan, error: 'quota_exceeded' };
-  }
-  const newUsed = currentUsed + 1;
+function quotaIdemKey(scopeKey, requestId) {
+  return `${scopeKey}:idem:${requestId}`;
+}
 
-  if (s.authenticated) {
-    const payload = { used: newUsed, month: getMonthKey() };
-    await s.store.setJSON(s.qKey, payload);
-    return { used: newUsed, max: s.max, plan: s.plan };
+// Call after a successful AI generation to persist the new count (CAS + optional idempotency).
+async function incrementQuota(quotaCheck, opts = {}) {
+  if (!quotaCheck) return null;
+  const s = quotaCheck.state || quotaCheck;
+  if (!s || !s.ok || !s.store) return null;
+
+  const scopeKey = s.authenticated ? s.qKey : s.gKey;
+  const requestId = opts.requestId || s.requestId || null;
+  const month = getMonthKey();
+
+  if (requestId) {
+    const idemKey = quotaIdemKey(scopeKey, requestId);
+    const prior = await readIdempotentResult(s.store, idemKey);
+    if (prior) return prior;
   }
 
-  const payload = {
-    used:      newUsed,
-    createdAt: Date.now(),
-    expiresAt: s.expiresAt || (Date.now() + GUEST_TTL_SEC * 1000),
-  };
-  await s.store.setJSON(s.gKey, payload);
-  return { used: newUsed, max: GUEST_MAX, plan: 'guest' };
+  const result = await casWriteJson(
+    s.store,
+    scopeKey,
+    (current) => {
+      let used = 0;
+      let expiresAt = s.expiresAt;
+
+      if (s.authenticated) {
+        if (current && current.month === month) used = Number(current.used) || 0;
+      } else if (current) {
+        expiresAt = current.expiresAt || s.expiresAt;
+        used =
+          expiresAt && Date.now() > expiresAt ? 0 : Number(current.used) || 0;
+      }
+
+      const cappedUsed = Math.min(used, s.max);
+      if (cappedUsed >= s.max) {
+        return {
+          skip: true,
+          result: {
+            used: cappedUsed,
+            max: s.max,
+            plan: s.plan,
+            error: 'quota_exceeded',
+          },
+        };
+      }
+
+      const newUsed = cappedUsed + 1;
+      const version = (current?.version || 0) + 1;
+      const payload = s.authenticated
+        ? { used: newUsed, month, version }
+        : {
+            used: newUsed,
+            createdAt: current?.createdAt || Date.now(),
+            expiresAt: expiresAt || Date.now() + GUEST_TTL_SEC * 1000,
+            version,
+          };
+
+      return {
+        payload,
+        result: {
+          used: newUsed,
+          max: s.max,
+          plan: s.authenticated ? s.plan : 'guest',
+        },
+      };
+    },
+    { logTag: '[quota-cas]' },
+  );
+
+  if (requestId) {
+    const idemKey = quotaIdemKey(scopeKey, requestId);
+    return writeIdempotentResult(s.store, idemKey, result);
+  }
+  return result;
 }
 
 module.exports = {
@@ -172,6 +224,7 @@ module.exports = {
   getQuotaState,
   checkQuota,
   incrementQuota,
+  quotaIdemKey,
   maxForPlan,
   resolvePlan,
 };

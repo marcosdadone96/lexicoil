@@ -1,0 +1,22 @@
+
+Gemini batch generator — de/B1 × 1
+Prompt: batches/GEMINI_MASTER_PROMPT_de_B1.md
+
+── lesen T5 · hausordnung-wohnanlage-01 ──
+Tema: Hausordnung einer Wohnanlage
+Archivo: batches/merged/lesen-t5-hausordnung-wohnanlage-01.json
+Llamando Gemini…
+Tokens: in=1663 out=1971
+Modelo: gemini-2.5-flash
+Guardado: batches/merged/lesen-t5-hausordnung-wohnanlage-01.json (4 preguntas, 1 passages)
+Validando…
+
+== Validación de lesen-t5-hausordnung-wohnanlage-01.json (de_B1) ==
+Preguntas: 4 | Pasajes: 1
+Esquema: OK
+Colocación (Teile que mejora): Pool válido (Teil ya cubierto en 1 examen — OK para exámenes disjuntos)
+Sin problemas detectados ✅
+Validación OK
+Siguiente: node scripts/merge-bank-batch.mjs --lang de --level B1 --file batches/merged/lesen-t5-hausordnung-wohnanlage-01.json
+
+Resumen: 1 OK, 0 fallidos

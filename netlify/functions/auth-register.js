@@ -10,6 +10,7 @@ const {
   getTokenVersion,
 } = require('./lib/authLib.js');
 const { corsHeaders, parseJsonBody, jsonResponse } = require('./lib/http.js');
+const { parseFreeComboFromBody, ensureUserFreeCombo, freeComboForResponse } = require('./lib/freeComboLib.js');
 
 exports.handler = async (event) => {
   const cors = corsHeaders(event);
@@ -44,20 +45,27 @@ exports.handler = async (event) => {
     /* not found */
   }
 
-  const user = {
+  const user = ensureUserFreeCombo({
     name,
     email,
     passwordHash: bcrypt.hashSync(password, 10),
     plan: 'free',
     pro: false,
     createdAt: Date.now(),
-  };
+    freeCombo: parseFreeComboFromBody(body),
+  });
   await store.setJSON(key, user);
 
   const session = signAuthToken(email, name, getTokenVersion(user));
   return jsonResponse(200, cors, {
     token: session.token,
     expiresAt: session.expiresAt,
-    user: { name, email, plan: 'free', pro: false },
+    user: {
+      name,
+      email,
+      plan: 'free',
+      pro: false,
+      freeCombo: freeComboForResponse(user),
+    },
   });
 };

@@ -1,0 +1,80 @@
+{
+  "lang": "en",
+  "examType": "cambridge",
+  "levels": ["B1", "B2", "C1"],
+  "modules": {
+    "use_of_english": {
+      "teile": [1, 2, 3, 4],
+      "topics": {
+        "1": [
+          { "slugBase": "remote-work-cloze", "topic": "Multiple-choice cloze: remote work and office culture", "topicTag": "work" },
+          { "slugBase": "city-cycling-cloze", "topic": "Multiple-choice cloze: cycling in modern cities", "topicTag": "daily_life" },
+          { "slugBase": "healthy-eating-cloze", "topic": "Multiple-choice cloze: healthy eating habits", "topicTag": "health" },
+          { "slugBase": "social-media-cloze", "topic": "Multiple-choice cloze: social media and teenagers", "topicTag": "media" }
+        ],
+        "2": [
+          { "slugBase": "travel-word-formation", "topic": "Open cloze: sustainable travel trends", "topicTag": "travel" },
+          { "slugBase": "education-word-formation", "topic": "Open cloze: online learning platforms", "topicTag": "education" },
+          { "slugBase": "environment-word-formation", "topic": "Open cloze: plastic waste reduction", "topicTag": "environment" }
+        ],
+        "3": [
+          { "slugBase": "workplace-key-transform", "topic": "Key word transformation: workplace communication", "topicTag": "work" },
+          { "slugBase": "technology-key-transform", "topic": "Key word transformation: artificial intelligence", "topicTag": "technology" },
+          { "slugBase": "sport-key-transform", "topic": "Key word transformation: community sports clubs", "topicTag": "sport" }
+        ],
+        "4": [
+          { "slugBase": "error-correction-email", "topic": "Error correction: informal email about a trip", "topicTag": "travel" },
+          { "slugBase": "error-correction-review", "topic": "Error correction: restaurant review", "topicTag": "food" },
+          { "slugBase": "error-correction-notice", "topic": "Error correction: community centre notice", "topicTag": "culture" }
+        ]
+      }
+    },
+    "reading": {
+      "teile": [1],
+      "topics": {
+        "1": [
+          { "slugBase": "urban-gardening", "topic": "Long text: community gardens in British cities", "topicTag": "environment" },
+          { "slugBase": "volunteering-abroad", "topic": "Long text: volunteering programmes for young adults", "topicTag": "society" },
+          { "slugBase": "digital-detox", "topic": "Long text: digital detox weekends", "topicTag": "technology" },
+          { "slugBase": "local-food-markets", "topic": "Long text: farmers' markets and local food", "topicTag": "food" }
+        ]
+      }
+    },
+    "listening": {
+      "teile": [1, 2, 3, 4],
+      "topics": {
+        "1": [
+          { "slugBase": "train-announcements", "topic": "Short extracts: train station announcements and messages", "topicTag": "travel", "segments": ["Announcement", "Voicemail", "Radio clip", "Conversation", "Interview extract"] },
+          { "slugBase": "hotel-booking", "topic": "Short extracts: hotel and travel bookings", "topicTag": "travel", "segments": ["Phone call", "Advert", "Message", "Dialogue", "News snippet"] }
+        ],
+        "2": [
+          { "slugBase": "podcast-wellbeing", "topic": "Sentence completion: podcast about wellbeing at work", "topicTag": "health" },
+          { "slugBase": "radio-education", "topic": "Sentence completion: radio feature on adult education", "topicTag": "education" }
+        ],
+        "3": [
+          { "slugBase": "friends-weekend", "topic": "Multiple matching: friends planning a weekend trip", "topicTag": "daily_life" },
+          { "slugBase": "colleagues-project", "topic": "Multiple matching: colleagues discussing a project", "topicTag": "work" }
+        ],
+        "4": [
+          { "slugBase": "interview-climate", "topic": "Interview: expert on climate action in cities", "topicTag": "environment" },
+          { "slugBase": "interview-careers", "topic": "Interview: career changes after the pandemic", "topicTag": "work" }
+        ]
+      }
+    },
+    "writing": {
+      "teile": [1, 2],
+      "topics": [
+        { "slugBase": "email-friend-trip", "topicT1": "Email to a friend about a recent trip", "topicT2": "Article: Is tourism good for local communities?", "topicTag": "travel" },
+        { "slugBase": "email-colleague-event", "topicT1": "Email to a colleague about a work event", "topicT2": "Essay: Should schools ban mobile phones?", "topicTag": "education" },
+        { "slugBase": "letter-landlord", "topicT1": "Letter to a landlord about a repair", "topicT2": "Review: A film or book you enjoyed recently", "topicTag": "housing" },
+        { "slugBase": "note-boss-meeting", "topicT1": "Note to your boss requesting a meeting", "topicT2": "Article: The benefits of learning a foreign language", "topicTag": "work" }
+      ]
+    }
+  },
+  "priority": {
+    "use_of_english": [1, 2, 3, 4],
+    "reading": [1],
+    "listening": [2, 3, 4],
+    "writing": [1, 2]
+  }
+}

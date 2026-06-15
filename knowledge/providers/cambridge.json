@@ -4,105 +4,334 @@
   "languageId": "english",
   "levels": {
     "A1": {
-      "certificate": "A2 Key (KET) — A1 bridge",
-      "totalMinutes": 70,
+      "certificate": "Cambridge A1",
+      "totalMinutes": 195,
       "modules": [
-        { "id": "reading", "title": "Reading", "minutes": 30, "parts": 5 },
-        { "id": "listening", "title": "Listening", "minutes": 25, "parts": 4 },
-        { "id": "writing", "title": "Writing", "minutes": 30, "parts": 2 },
-        { "id": "speaking", "title": "Speaking", "minutes": 8, "parts": 2 }
+        {
+          "id": "use_of_english",
+          "title": "Reading and Use of English",
+          "minutes": 75,
+          "parts": 4
+        },
+        {
+          "id": "reading",
+          "title": "Reading",
+          "minutes": 0,
+          "parts": 1
+        },
+        {
+          "id": "writing",
+          "title": "Writing",
+          "minutes": 80,
+          "parts": 2
+        },
+        {
+          "id": "listening",
+          "title": "Listening",
+          "minutes": 40,
+          "parts": 4
+        }
       ],
       "taskTypes": {
-        "reading": ["multiple_choice", "true_false", "matching"],
-        "listening": ["multiple_choice", "gap_fill"],
-        "writing": ["sentence_completion", "short_message"],
-        "speaking": ["interview", "collaborative"]
+        "use_of_english": [
+          "multiple_choice_cloze",
+          "open_cloze",
+          "word_formation",
+          "key_word_transformation"
+        ],
+        "reading": [
+          "long_text"
+        ],
+        "writing": [
+          "essay",
+          "choice_writing"
+        ],
+        "listening": [
+          "dialogue_extracts",
+          "sentence_completion",
+          "dialogue_speakers",
+          "monologue"
+        ]
       },
-      "scoring": { "passPercent": 70, "scale": "Cambridge English Scale" }
+      "scoring": {
+        "passPercent": 70,
+        "scale": "Cambridge English Scale"
+      }
     },
     "A2": {
-      "certificate": "A2 Key (KET)",
-      "totalMinutes": 70,
+      "certificate": "Cambridge A2",
+      "totalMinutes": 195,
       "modules": [
-        { "id": "reading", "title": "Reading and Writing", "minutes": 60, "parts": 6 },
-        { "id": "listening", "title": "Listening", "minutes": 30, "parts": 5 },
-        { "id": "speaking", "title": "Speaking", "minutes": 8, "parts": 2 }
+        {
+          "id": "use_of_english",
+          "title": "Reading and Use of English",
+          "minutes": 75,
+          "parts": 4
+        },
+        {
+          "id": "reading",
+          "title": "Reading",
+          "minutes": 0,
+          "parts": 1
+        },
+        {
+          "id": "writing",
+          "title": "Writing",
+          "minutes": 80,
+          "parts": 2
+        },
+        {
+          "id": "listening",
+          "title": "Listening",
+          "minutes": 40,
+          "parts": 4
+        }
       ],
       "taskTypes": {
-        "reading": ["multiple_choice", "matching", "gap_fill"],
-        "listening": ["multiple_choice", "matching"],
-        "writing": ["email", "picture_story"],
-        "speaking": ["interview", "collaborative"]
+        "use_of_english": [
+          "multiple_choice_cloze",
+          "open_cloze",
+          "word_formation",
+          "key_word_transformation"
+        ],
+        "reading": [
+          "long_text"
+        ],
+        "writing": [
+          "essay",
+          "choice_writing"
+        ],
+        "listening": [
+          "dialogue_extracts",
+          "sentence_completion",
+          "dialogue_speakers",
+          "monologue"
+        ]
       },
-      "scoring": { "passPercent": 70, "scale": "Cambridge English Scale" }
+      "scoring": {
+        "passPercent": 70,
+        "scale": "Cambridge English Scale"
+      }
     },
     "B1": {
-      "certificate": "B1 Preliminary (PET)",
-      "totalMinutes": 90,
+      "certificate": "Cambridge B1",
+      "totalMinutes": 195,
       "modules": [
-        { "id": "reading", "title": "Reading", "minutes": 45, "parts": 5 },
-        { "id": "listening", "title": "Listening", "minutes": 30, "parts": 4 },
-        { "id": "writing", "title": "Writing", "minutes": 45, "parts": 2 },
-        { "id": "speaking", "title": "Speaking", "minutes": 12, "parts": 2 }
+        {
+          "id": "use_of_english",
+          "title": "Reading and Use of English",
+          "minutes": 75,
+          "parts": 4
+        },
+        {
+          "id": "reading",
+          "title": "Reading",
+          "minutes": 0,
+          "parts": 1
+        },
+        {
+          "id": "writing",
+          "title": "Writing",
+          "minutes": 80,
+          "parts": 2
+        },
+        {
+          "id": "listening",
+          "title": "Listening",
+          "minutes": 40,
+          "parts": 4
+        }
       ],
       "taskTypes": {
-        "reading": ["multiple_choice", "true_false", "matching"],
-        "listening": ["multiple_choice", "gap_fill"],
-        "writing": ["email", "story"],
-        "speaking": ["interview", "discussion"]
+        "use_of_english": [
+          "multiple_choice_cloze",
+          "open_cloze",
+          "word_formation",
+          "key_word_transformation"
+        ],
+        "reading": [
+          "long_text"
+        ],
+        "writing": [
+          "essay",
+          "choice_writing"
+        ],
+        "listening": [
+          "dialogue_extracts",
+          "sentence_completion",
+          "dialogue_speakers",
+          "monologue"
+        ]
       },
-      "scoring": { "passPercent": 70, "scale": "Cambridge English Scale" }
+      "scoring": {
+        "passPercent": 70,
+        "scale": "Cambridge English Scale"
+      }
     },
     "B2": {
       "certificate": "B2 First (FCE)",
-      "totalMinutes": 110,
+      "totalMinutes": 195,
       "modules": [
-        { "id": "reading", "title": "Reading and Use of English", "minutes": 75, "parts": 7 },
-        { "id": "listening", "title": "Listening", "minutes": 40, "parts": 4 },
-        { "id": "writing", "title": "Writing", "minutes": 80, "parts": 2 },
-        { "id": "speaking", "title": "Speaking", "minutes": 14, "parts": 4 }
+        {
+          "id": "use_of_english",
+          "title": "Reading and Use of English",
+          "minutes": 75,
+          "parts": 4
+        },
+        {
+          "id": "reading",
+          "title": "Reading",
+          "minutes": 0,
+          "parts": 1
+        },
+        {
+          "id": "writing",
+          "title": "Writing",
+          "minutes": 80,
+          "parts": 2
+        },
+        {
+          "id": "listening",
+          "title": "Listening",
+          "minutes": 40,
+          "parts": 4
+        }
       ],
       "taskTypes": {
-        "reading": ["multiple_choice", "open_cloze", "word_formation", "key_word_transform"],
-        "listening": ["multiple_choice", "sentence_completion"],
-        "writing": ["essay", "article_review_letter"],
-        "speaking": ["interview", "long_turn", "collaborative", "discussion"]
+        "use_of_english": [
+          "multiple_choice_cloze",
+          "open_cloze",
+          "word_formation",
+          "key_word_transformation"
+        ],
+        "reading": [
+          "long_text"
+        ],
+        "writing": [
+          "essay",
+          "choice_writing"
+        ],
+        "listening": [
+          "dialogue_extracts",
+          "sentence_completion",
+          "dialogue_speakers",
+          "monologue"
+        ]
       },
-      "scoring": { "passPercent": 70, "scale": "Cambridge English Scale" }
+      "scoring": {
+        "passPercent": 70,
+        "scale": "Cambridge English Scale"
+      }
     },
     "C1": {
       "certificate": "C1 Advanced (CAE)",
-      "totalMinutes": 150,
+      "totalMinutes": 195,
       "modules": [
-        { "id": "reading", "title": "Reading and Use of English", "minutes": 90, "parts": 8 },
-        { "id": "listening", "title": "Listening", "minutes": 40, "parts": 4 },
-        { "id": "writing", "title": "Writing", "minutes": 90, "parts": 2 },
-        { "id": "speaking", "title": "Speaking", "minutes": 15, "parts": 4 }
+        {
+          "id": "use_of_english",
+          "title": "Reading and Use of English",
+          "minutes": 75,
+          "parts": 4
+        },
+        {
+          "id": "reading",
+          "title": "Reading",
+          "minutes": 0,
+          "parts": 1
+        },
+        {
+          "id": "writing",
+          "title": "Writing",
+          "minutes": 80,
+          "parts": 2
+        },
+        {
+          "id": "listening",
+          "title": "Listening",
+          "minutes": 40,
+          "parts": 4
+        }
       ],
       "taskTypes": {
-        "reading": ["multiple_choice", "gap_fill", "word_formation", "key_word_transform"],
-        "listening": ["multiple_choice", "note_completion"],
-        "writing": ["essay", "report_proposal_review"],
-        "speaking": ["interview", "long_turn", "collaborative", "discussion"]
+        "use_of_english": [
+          "multiple_choice_cloze",
+          "open_cloze",
+          "word_formation",
+          "key_word_transformation"
+        ],
+        "reading": [
+          "long_text"
+        ],
+        "writing": [
+          "essay",
+          "choice_writing"
+        ],
+        "listening": [
+          "dialogue_extracts",
+          "sentence_completion",
+          "dialogue_speakers",
+          "monologue"
+        ]
       },
-      "scoring": { "passPercent": 70, "scale": "Cambridge English Scale" }
+      "scoring": {
+        "passPercent": 70,
+        "scale": "Cambridge English Scale"
+      }
     },
     "C2": {
-      "certificate": "C2 Proficiency (CPE)",
-      "totalMinutes": 180,
+      "certificate": "Cambridge C2",
+      "totalMinutes": 195,
       "modules": [
-        { "id": "reading", "title": "Reading and Use of English", "minutes": 90, "parts": 7 },
-        { "id": "listening", "title": "Listening", "minutes": 40, "parts": 4 },
-        { "id": "writing", "title": "Writing", "minutes": 90, "parts": 2 },
-        { "id": "speaking", "title": "Speaking", "minutes": 16, "parts": 3 }
+        {
+          "id": "use_of_english",
+          "title": "Reading and Use of English",
+          "minutes": 75,
+          "parts": 4
+        },
+        {
+          "id": "reading",
+          "title": "Reading",
+          "minutes": 0,
+          "parts": 1
+        },
+        {
+          "id": "writing",
+          "title": "Writing",
+          "minutes": 80,
+          "parts": 2
+        },
+        {
+          "id": "listening",
+          "title": "Listening",
+          "minutes": 40,
+          "parts": 4
+        }
       ],
       "taskTypes": {
-        "reading": ["multiple_choice", "gapped_text", "word_formation"],
-        "listening": ["multiple_choice", "note_taking"],
-        "writing": ["essay", "article_review_letter"],
-        "speaking": ["interview", "collaborative", "long_turn"]
+        "use_of_english": [
+          "multiple_choice_cloze",
+          "open_cloze",
+          "word_formation",
+          "key_word_transformation"
+        ],
+        "reading": [
+          "long_text"
+        ],
+        "writing": [
+          "essay",
+          "choice_writing"
+        ],
+        "listening": [
+          "dialogue_extracts",
+          "sentence_completion",
+          "dialogue_speakers",
+          "monologue"
+        ]
       },
-      "scoring": { "passPercent": 70, "scale": "Cambridge English Scale" }
+      "scoring": {
+        "passPercent": 70,
+        "scale": "Cambridge English Scale"
+      }
     }
   }
 }

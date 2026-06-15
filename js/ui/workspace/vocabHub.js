@@ -187,9 +187,15 @@ function vocabHubRowHtml(f,goal){
   const on=_vocabHub.selectedIds.has(id);
   const tr=fcTranslation(f);
   const art=fcGenderArticle(f,goal.subject);
-  const artHtml=art?'<span class="vv-art '+art.cls+'">'+esc(art.article)+'</span>':'';
+  const artHtml=art
+    ?'<span class="vv-art '+art.cls+'">'+esc(art.article)+'</span>'
+    :'<span class="vv-art vv-art--empty" aria-hidden="true"></span>';
   const word=vocabHubDisplayWord(f,goal.subject);
-  return'<label class="vv-row"><input type="checkbox"'+(on?' checked':'')+' onchange="toggleVocabHubWord(\''+esc(id)+'\')">'+artHtml+'<span class="vv-row-word">'+esc(word)+'</span>'+(tr?'<span class="vv-row-trans">'+esc(tr)+'</span>':'')+'</label>';
+  const tip=tr?esc(tr).replace(/"/g,'&quot;'):'';
+  const wordHtml=tr
+    ?'<span class="vv-row-word" data-tip="'+tip+'" title="'+tip+'" tabindex="0">'+esc(word)+'</span>'
+    :'<span class="vv-row-word">'+esc(word)+'</span>';
+  return'<div class="vv-row"><label class="vv-row-main"><input type="checkbox"'+(on?' checked':'')+' onchange="toggleVocabHubWord(\''+esc(id)+'\')" aria-label="Select '+esc(word)+'">'+artHtml+wordHtml+'</label><button type="button" class="vv-del" onclick="delFCById(\''+esc(id)+'\')" aria-label="Remove '+esc(word)+'" title="Remove word">×</button></div>';
 }
 function vocabHubSectionHtml(type,items,goal){
   if(!items.length)return'';
@@ -204,13 +210,14 @@ function vocabHubSectionHtml(type,items,goal){
 function vocabHubAccordionHtml(goal){
   const groups=vocabHubGroupDeck(goal);
   const parts=VH_POS_ORDER.map(t=>vocabHubSectionHtml(t,groups[t],goal)).filter(Boolean);
-  if(!parts.length)return'<p style="font-size:13px;color:var(--text3);margin:0">No words match this filter.</p>';
+  if(!parts.length)return'<p style="font-size:13px;color:var(--text-muted);margin:0">No words match this filter.</p>';
   return'<div class="vv-cols">'+parts.join('')+'</div>';
 }
 function vocabHubLegendHtml(goal){
-  if(goal.subject==='de')return'<p class="vv-legend">der <b class="art-masc">blue</b> · die <b class="art-fem">red</b> · das <b class="art-neut">green</b></p>';
-  if(goal.subject==='es')return'<p class="vv-legend">el <b class="art-masc">blue</b> · la <b class="art-fem">red</b></p>';
-  return'';
+  const hint='<span class="vv-legend-hint">Hover a word to see its translation.</span>';
+  if(goal.subject==='de')return'<p class="vv-legend">der <b class="art-masc">blue</b> · die <b class="art-fem">red</b> · das <b class="art-neut">green</b> · '+hint+'</p>';
+  if(goal.subject==='es')return'<p class="vv-legend">el <b class="art-masc">blue</b> · la <b class="art-fem">red</b> · '+hint+'</p>';
+  return'<p class="vv-legend">'+hint+'</p>';
 }
 function vocabHubSelNoteHtml(selN,deckLen){
   if(!deckLen)return'';
@@ -230,14 +237,16 @@ function vocabHubActionsHtml(selN){
   const canCustom=selN>=VV_MIN_CUSTOM;
   const canFlash=selN>=VV_MIN_FLASH;
   const canDrill=selN>=VV_MIN_DRILL;
+  const proOnly=typeof canUsePersonalized==='function'&&!canUsePersonalized();
+  const proBadge=' <span class="vv-pro-badge">Pro</span>';
   return'<p class="ws-seclbl">Pick an action — applies to selected words</p>'+
     '<div class="ws-exam-grid ws-exam-grid--vocab">'+
-      '<button type="button" class="ws-exam-card ws-exam-card--personal"'+(canCustom?' onclick="launchVocabHubCustomExam()"':' disabled')+'><span class="ws-exam-card-ic">✦</span><span class="ws-exam-card-title">Custom exam</span><span class="ws-exam-card-desc">From your words</span></button>'+
+      '<button type="button" class="ws-exam-card ws-exam-card--personal"'+(canCustom?' onclick="launchVocabHubCustomExam()"':' disabled')+'><span class="ws-exam-card-ic">✦</span><span class="ws-exam-card-title">Custom exam'+(proOnly?proBadge:'')+'</span><span class="ws-exam-card-desc">From your words</span></button>'+
       '<button type="button" class="ws-exam-card ws-exam-card--practice"'+(canFlash?' onclick="launchVocabHubFlashcards()"':' disabled')+'><span class="ws-exam-card-ic">▭</span><span class="ws-exam-card-title">Flashcards</span><span class="ws-exam-card-desc">Spaced review</span></button>'+
       '<button type="button" class="ws-exam-card ws-exam-card--oral"'+(canDrill?' onclick="launchVocabHubQuickDrill()"':' disabled')+'><span class="ws-exam-card-ic">⚡</span><span class="ws-exam-card-title">Quick drill</span><span class="ws-exam-card-desc">Fast quiz</span></button>'+
     '</div>'+
     '<div class="ws-exam-grid ws-exam-grid--soon">'+
-      '<div class="ws-exam-card ws-act-card soon" aria-disabled="true"><span class="ws-exam-card-title">Games <span class="vv-soon-badge">Soon</span></span><span class="ws-exam-card-desc">Match &amp; more</span></div>'+
+      '<div class="ws-exam-card ws-act-card" role="button" tabindex="0" onclick="startHorenGameFromHub()"><span class="ws-exam-card-title">Listening game'+(proOnly?proBadge:'')+'</span><span class="ws-exam-card-desc">Hear &amp; spot your words</span></div>'+
       '<div class="ws-exam-card ws-act-card soon" aria-disabled="true"><span class="ws-exam-card-title">Phrases <span class="vv-soon-badge">Soon</span></span><span class="ws-exam-card-desc">Sentence practice</span></div>'+
     '</div>';
 }
@@ -268,6 +277,7 @@ function vocabHubSelectedIds(goal){
 function launchVocabHubCustomExam(){
   const goal=S.goals.find(g=>g.id===_vocabHub.goalId);
   if(!goal)return;
+  if(typeof requirePersonalized==='function'&&!requirePersonalized({message:'Custom vocabulary exams require Pro.'}))return;
   const ids=vocabHubSelectedIds(goal);
   if(ids.length<4){lcToast('Select at least 4 words.','warn');return;}
   openExamConfigurator(goal.id,ids);
@@ -324,7 +334,7 @@ function renderWsVocabularyHtml(goal){
   const header='<h1 class="exam-config-h1">Your vocabulary</h1><p class="exam-config-lede"><b>'+esc(goalLabel(goal))+'</b> · '+brk.total+' word'+(brk.total===1?'':'s')+' saved'+(brk.due>0?' · <b>'+brk.due+' due today</b>':'')+'.</p>';
   let bodyHtml='';
   if(!deck.length){
-    bodyHtml='<p style="font-size:13px;color:var(--text3);margin:0">No words saved yet — add one above or save words during practice exams.</p>';
+    bodyHtml='<p style="font-size:13px;color:var(--text-muted);margin:0">No words saved yet — add one above or save words during practice exams.</p>';
   }else{
     bodyHtml=vocabHubAccordionHtml(goal);
   }

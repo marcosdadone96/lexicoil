@@ -1,0 +1,233 @@
+{
+  "id": "goethe-a1",
+  "examType": "goethe",
+  "language": "de",
+  "level": "A1",
+  "certificate": "Goethe-Zertifikat A1",
+  "principle": "fixed_structure_dynamic_content",
+  "difficultyDistribution": {
+    "easy": {
+      "min": 1,
+      "max": 3,
+      "share": 0.2
+    },
+    "medium": {
+      "min": 4,
+      "max": 6,
+      "share": 0.4
+    },
+    "hard": {
+      "min": 7,
+      "max": 10,
+      "share": 0.4
+    }
+  },
+  "modules": [
+    {
+      "id": "lesen",
+      "title": "Leseverstehen",
+      "time": "25 Minuten",
+      "parts": [
+        {
+          "instruction": "Lesen Sie die Texte und wählen Sie die richtige Antwort.",
+          "teil": 1,
+          "slotType": "micro_texts",
+          "label": "Kurze Texte",
+          "questionTypes": [
+            "multiple_choice",
+            "multiple",
+            "richtig_falsch",
+            "true_false"
+          ],
+          "questionsTotal": {
+            "min": 6,
+            "max": 6
+          },
+          "layout": "items",
+          "itemsTotal": 6,
+          "taskFormat": "short_text_mcq"
+        },
+        {
+          "instruction": "Lesen Sie den Text und beantworten Sie die Fragen.",
+          "teil": 2,
+          "slotType": "article",
+          "label": "Längerer Text",
+          "questionTypes": [
+            "multiple_choice",
+            "multiple",
+            "richtig_falsch",
+            "true_false"
+          ],
+          "questionsTotal": {
+            "min": 8,
+            "max": 8
+          },
+          "layout": "passage_questions",
+          "itemsTotal": 8,
+          "taskFormat": "long_text_mcq"
+        }
+      ]
+    },
+    {
+      "id": "horen",
+      "title": "Hörverstehen",
+      "time": "40 Minuten",
+      "parts": [
+        {
+          "instruction": "Hören Sie die Dialoge und beantworten Sie die Fragen.",
+          "teil": 1,
+          "slotType": "short_dialogues",
+          "label": "Kurze Dialoge",
+          "questionTypes": [
+            "multiple_choice",
+            "multiple"
+          ],
+          "questionsTotal": {
+            "min": 6,
+            "max": 6
+          },
+          "layout": "segments",
+          "itemsTotal": 6,
+          "taskFormat": "short_dialogue_mcq"
+        },
+        {
+          "instruction": "Hören Sie die Aufnahme und beantworten Sie die Fragen.",
+          "teil": 2,
+          "slotType": "long_audio",
+          "label": "Längere Aufnahme",
+          "questionTypes": [
+            "multiple_choice",
+            "multiple",
+            "richtig_falsch",
+            "true_false"
+          ],
+          "questionsTotal": {
+            "min": 8,
+            "max": 8
+          },
+          "layout": "segments",
+          "itemsTotal": 8,
+          "taskFormat": "long_listening_mcq"
+        }
+      ]
+    },
+    {
+      "id": "grammatik",
+      "title": "Grammatik / Wortschatz",
+      "time": null,
+      "parts": [
+        {
+          "instruction": "Ergänzen Sie oder wählen Sie die richtige Antwort.",
+          "teil": 1,
+          "slotType": "grammar_block",
+          "label": "Grammatik",
+          "questionTypes": [
+            "multiple_choice",
+            "multiple",
+            "gap_fill"
+          ],
+          "questionsTotal": {
+            "min": 12,
+            "max": 12
+          },
+          "layout": "questions",
+          "itemsTotal": 12,
+          "taskFormat": "grammar_mcq"
+        }
+      ]
+    },
+    {
+      "id": "schreiben",
+      "title": "Schreiben",
+      "time": "60 Minuten",
+      "parts": [
+        {
+          "instruction": "Schreiben Sie einen Text zu der folgenden Aufgabe.",
+          "teil": 1,
+          "slotType": "writing_task",
+          "label": "Formular / Kurze Nachricht",
+          "taskCount": 1,
+          "wordsTarget": {
+            "min": 30,
+            "max": 60
+          },
+          "taskTypes": [
+            "form_fill",
+            "informal_message"
+          ],
+          "questionTypes": [
+            "short_answer"
+          ],
+          "questionsTotal": {
+            "min": 1,
+            "max": 1
+          },
+          "layout": "writing",
+          "itemsTotal": 1,
+          "taskFormat": "writing_prompt",
+          "wordsPerPassage": {
+            "min": 30,
+            "max": 60
+          }
+        }
+      ]
+    },
+    {
+      "id": "sprechen",
+      "title": "Sprechen",
+      "time": "15 Minuten",
+      "parts": [
+        {
+          "instruction": "Bereiten Sie sich auf die mündliche Aufgabe vor.",
+          "teil": 1,
+          "slotType": "speaking_task",
+          "label": "Sich vorstellen / Fragen beantworten",
+          "taskCount": 1,
+          "taskTypes": [
+            "introduce_self",
+            "qa"
+          ],
+          "questionTypes": [
+            "short_answer"
+          ],
+          "questionsTotal": {
+            "min": 1,
+            "max": 1
+          },
+          "layout": "speaking",
+          "itemsTotal": 1,
+          "taskFormat": "speaking_prompt"
+        },
+        {
+          "instruction": "Bereiten Sie sich auf die mündliche Aufgabe vor.",
+          "teil": 2,
+          "slotType": "speaking_task",
+          "label": "Gemeinsame Aufgabe / Diskussion",
+          "taskCount": 1,
+          "taskTypes": [
+            "pair_discussion",
+            "picture_description"
+          ],
+          "questionTypes": [
+            "short_answer"
+          ],
+          "questionsTotal": {
+            "min": 1,
+            "max": 1
+          },
+          "layout": "speaking",
+          "itemsTotal": 1,
+          "taskFormat": "speaking_prompt"
+        }
+      ]
+    }
+  ],
+  "structureVersion": 2,
+  "itemsTotalByModule": {
+    "lesen": 14,
+    "horen": 14,
+    "grammatik": 12,
+    "schreiben": 1,
+    "sprechen": 2
+  }
+}

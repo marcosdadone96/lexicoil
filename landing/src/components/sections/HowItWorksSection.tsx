@@ -13,7 +13,7 @@ const STEPS = [
   },
   {
     title: 'Practice what matters',
-    desc: 'Flashcards and a personalized exam built only from your weak areas — nothing you already know.',
+    desc: 'Flashcards on every plan. With Pro, personalized exams built only from your weak areas.',
     tag: 'Personalized exam',
   },
   {

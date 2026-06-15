@@ -104,6 +104,7 @@ function selectDashboardGoal(id){
 function renderDashboardCoachHtml(goal){
   const act=getRecommendedActionForGoal(goal);
   _coachAction=act.run;
+  if(typeof MasteryView!=='undefined')return MasteryView.renderRecommendedExamCardHtml(goal,{variant:'dashboard'});
   return'<div class="dash-coach">'+
     '<div class="dash-coach-ico" aria-hidden="true">🚀</div>'+
     '<div class="dash-coach-body">'+
@@ -115,7 +116,7 @@ function renderDashboardCoachHtml(goal){
         '<button type="button" class="btn-sm dash-coach-ws" onclick="openGoal(\''+esc(goal.id)+'\')">Open workspace →</button>'+
       '</div>'+
     '</div>'+
-    '<div class="dash-coach-art" aria-hidden="true"><svg width="120" height="90" viewBox="0 0 120 90" fill="none"><circle cx="78" cy="45" r="34" stroke="var(--accent)" stroke-width="2" opacity=".25"/><circle cx="78" cy="45" r="22" stroke="var(--accent)" stroke-width="2" opacity=".45"/><circle cx="78" cy="45" r="10" fill="var(--accent)"/><path d="M14 70 L74 47" stroke="var(--accent2,var(--accent))" stroke-width="3" stroke-linecap="round"/><path d="M70 41 l10 6 -4 -11z" fill="var(--accent2,var(--accent))"/></svg></div>'+
+    '<div class="dash-coach-art" aria-hidden="true"><svg width="120" height="90" viewBox="0 0 120 90" fill="none"><circle cx="78" cy="45" r="34" stroke="var(--brand)" stroke-width="2" opacity=".25"/><circle cx="78" cy="45" r="22" stroke="var(--brand)" stroke-width="2" opacity=".45"/><circle cx="78" cy="45" r="10" fill="var(--brand)"/><path d="M14 70 L74 47" stroke="var(--accent2,var(--brand))" stroke-width="3" stroke-linecap="round"/><path d="M70 41 l10 6 -4 -11z" fill="var(--accent2,var(--brand))"/></svg></div>'+
   '</div>';
 }
 function renderDashboardKpiTile(id,goal){
@@ -137,21 +138,25 @@ function renderDashboardKpisHtml(goal){
   const tiles=L.kpiOrder.map(id=>renderDashboardKpiTile(id,goal)).join('');
   return'<div class="dash-kpi-row">'+tiles+'</div>';
 }
+function masteryBadgeClass(level){
+  if(level==='solid')return'var(--green)';
+  if(level==='developing')return'var(--amber)';
+  if(level==='weak')return'var(--red)';
+  return'var(--text-muted)';
+}
 function renderDashboardWeakAreasHtml(goal){
-  const skills=getSkillPerformance(goal);
-  let body='';
-  if(skills.length){
-    body=skills.map(s=>'<div class="dash-skill"><div class="dash-skill-top"><span>'+s.icon+' '+esc(s.label)+'</span><span>'+s.pct+'%</span></div><div class="dash-bar"><i style="width:'+s.pct+'%;background:'+readinessRingColor(s.pct)+'"></i></div></div>').join('');
-  }else{
-    const areas=getWeakAreasForGoal(goal);
-    if(areas.length){
-      body=areas.map(a=>'<div class="dash-skill"><div class="dash-skill-top"><span>'+esc(a)+'</span></div><div class="dash-bar"><i style="width:45%;background:var(--orange)"></i></div></div>').join('');
-    }else{
-      body='<p style="font-size:12px;font-weight:600;color:var(--text3);margin:0">Complete a practice exam to identify weak areas.</p>';
-    }
-  }
+  const body=typeof MasteryView!=='undefined'
+    ?MasteryView.renderWeakAreasSnippetHtml(goal,{limit:4})
+    :(function(){
+      const summary=typeof getMasterySummaryForGoal==='function'?getMasterySummaryForGoal(goal):null;
+      if(summary?.weakGrammar?.length||summary?.weakTopics?.length){
+        const rows=[...(summary.weakGrammar||[]),...(summary.weakTopics||[])].slice(0,4);
+        return rows.map(r=>'<div class="dash-skill"><div class="dash-skill-top"><span>'+esc(r.tag)+'</span><span style="color:'+masteryBadgeClass(r.mastery)+'">'+r.accuracy+'% · '+esc(r.mastery)+'</span></div><div class="dash-bar"><i style="width:'+r.accuracy+'%;background:'+masteryBadgeClass(r.mastery)+'"></i></div></div>').join('');
+      }
+      return'<p style="font-size:12px;font-weight:600;color:var(--text-muted);margin:0">Complete a practice exam to identify weak areas.</p>';
+    })();
   return'<div class="dash-panel"><h3>Weak areas ('+esc(goalLabel(goal))+')</h3>'+body+
-    '<button type="button" class="dash-panel-link" onclick="openGoalWorkspace(\''+esc(goal.id)+'\',\'progress\')">View all skills →</button></div>';
+    '<button type="button" class="dash-panel-link" onclick="openMasteryForGoal(\''+esc(goal.id)+'\')">View mastery breakdown →</button></div>';
 }
 function renderDashboardActivityHtml(goal){
   let acts=typeof ActivityTrack!=='undefined'?ActivityTrack.activityForGoal(S.activityLog,goal).slice(0,3):[];
@@ -163,7 +168,7 @@ function renderDashboardActivityHtml(goal){
     const sub=a.score!=null?'Score: '+a.score+'%':a.sec?formatStudyDuration(a.sec):'';
     const when=a.ts?formatScoreAge(new Date(a.ts).toLocaleDateString()):'';
     return'<div class="dash-act"><div class="dash-act-ico">'+ic+'</div><div class="dash-act-body"><div class="dash-act-title">'+esc(a.label||'Study session')+'</div>'+(sub?'<div class="dash-act-sub">'+esc(sub)+'</div>':'')+'</div><div class="dash-act-time">'+esc(when)+'</div></div>';
-  }).join(''):'<p style="font-size:12px;font-weight:600;color:var(--text3);margin:0">No activity yet — your first practice will show up here.</p>';
+  }).join(''):'<p style="font-size:12px;font-weight:600;color:var(--text-muted);margin:0">No activity yet — your first practice will show up here.</p>';
   return'<div class="dash-panel"><h3>Recent activity ('+esc(goalLabel(goal))+')</h3>'+body+
     '<button type="button" class="dash-panel-link" onclick="openGoalWorkspace(\''+esc(goal.id)+'\',\'progress\')">View all activity →</button></div>';
 }
@@ -194,7 +199,7 @@ function dashQuickQuiz(goalId){
 function renderDashboardQuickActionsHtml(goal){
   const gid=esc(goal.id);
   return'<div class="dash-panel"><h3>Quick actions</h3>'+
-    '<div class="dash-qa" onclick="runDashboardReview(\''+gid+'\')"><div class="dash-qa-ico" style="background:var(--accent-dim);color:var(--accent)">📋</div><div class="dash-qa-body"><div class="dash-qa-title">Review & mistakes</div><div class="dash-qa-sub">See words from your mistakes</div></div><span class="dash-qa-go">→</span></div>'+
+    '<div class="dash-qa" onclick="runDashboardReview(\''+gid+'\')"><div class="dash-qa-ico" style="background:var(--brand-light);color:var(--brand)">📋</div><div class="dash-qa-body"><div class="dash-qa-title">Review & mistakes</div><div class="dash-qa-sub">See words from your mistakes</div></div><span class="dash-qa-go">→</span></div>'+
     '<div class="dash-qa" onclick="dashQuickPersonalized(\''+gid+'\')"><div class="dash-qa-ico" style="background:rgba(6,182,212,.12);color:var(--teal)">⚡</div><div class="dash-qa-body"><div class="dash-qa-title">Practice with words</div><div class="dash-qa-sub">Create exam using your words</div></div><span class="dash-qa-go">→</span></div>'+
     '<div class="dash-qa" onclick="dashQuickFlashcards(\''+gid+'\')"><div class="dash-qa-ico" style="background:rgba(245,158,11,.12);color:var(--amber)">🗂</div><div class="dash-qa-body"><div class="dash-qa-title">Flashcards</div><div class="dash-qa-sub">Study with spaced repetition</div></div><span class="dash-qa-go">→</span></div>'+
     '<div class="dash-qa" onclick="dashQuickQuiz(\''+gid+'\')"><div class="dash-qa-ico" style="background:rgba(16,185,129,.1);color:var(--green)">✓</div><div class="dash-qa-body"><div class="dash-qa-title">Quick quiz</div><div class="dash-qa-sub">Test yourself quickly</div></div><span class="dash-qa-go">→</span></div>'+
@@ -236,6 +241,15 @@ function selectWizSubject(subject){
   _goalWizard.subject=subject;
   renderHomeScreen();
 }
+function wizLevelsFor(subject){
+  if(typeof LibraryCatalog!=='undefined')return LibraryCatalog.selectableLevels(subject||'de');
+  return['A1','A2','B1','B2','C1','C2'];
+}
+function wizLevelRangeLabel(subject){
+  const lv=wizLevelsFor(subject);
+  if(!lv.length)return'Coming soon';
+  return lv.length===1?lv[0]+' · official format':lv[0]+'–'+lv[lv.length-1]+' · official format';
+}
 function selectWizLevel(level){
   _goalWizard.level=level;
   renderHomeScreen();
@@ -256,12 +270,12 @@ function renderGoalWizardHtml(isFirst){
   <div class="goal-wiz goal-card" style="cursor:default">
     <p class="goal-step">Step 1 · Which exam?</p>
     <div class="goal-tiles">
-      <div class="goal-tile${w.subject==='de'?' sel':''}" onclick="selectWizSubject('de')"><span class="goal-pill">German</span><h3>Goethe-Institut</h3><span>A1–C2 · official format</span></div>
-      <div class="goal-tile${w.subject==='en'?' sel':''}" onclick="selectWizSubject('en')"><span class="goal-pill">English</span><h3>Cambridge English</h3><span>A1–C2 · official format</span></div>
-      <div class="goal-tile${w.subject==='es'?' sel':''}" onclick="selectWizSubject('es')"><span class="goal-pill">Spanish</span><h3>DELE · Cervantes</h3><span>A1–C2 · official format</span></div>
+      <div class="goal-tile${w.subject==='de'?' sel':''}" onclick="selectWizSubject('de')"><span class="goal-pill">German</span><h3>Goethe-Institut</h3><span>${wizLevelRangeLabel('de')}</span></div>
+      <div class="goal-tile${w.subject==='en'?' sel':''}" onclick="selectWizSubject('en')"><span class="goal-pill">English</span><h3>Cambridge English</h3><span>${wizLevelRangeLabel('en')}</span></div>
+      <div class="goal-tile${w.subject==='es'?' sel':''}" onclick="selectWizSubject('es')"><span class="goal-pill">Spanish</span><h3>DELE · Cervantes</h3><span>${wizLevelRangeLabel('es')}</span></div>
     </div>
     <p class="goal-step">Step 2 · Which level?</p>
-    <div class="goal-levels">${['A1','A2','B1','B2','C1','C2'].map(l=>`<span class="goal-lvl${w.level===l?' sel':''}" onclick="selectWizLevel('${l}')">${l}</span>`).join('')}</div>
+    <div class="goal-levels">${wizLevelsFor(w.subject).map(l=>`<span class="goal-lvl${w.level===l?' sel':''}" onclick="selectWizLevel('${l}')">${l}</span>`).join('')}</div>
     <p class="goal-step">Step 3 · Exam date <span class="goal-opt-note">(optional — powers your countdown)</span></p>
     <input type="date" class="goal-date" id="wizExamDate" value="${esc(w.examDate||'')}" onchange="_goalWizard.examDate=this.value">
     <div class="goal-wiz-actions">

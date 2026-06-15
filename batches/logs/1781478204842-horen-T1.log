@@ -1,0 +1,22 @@
+
+Gemini batch generator — de/B1 × 1
+Prompt: batches/GEMINI_MASTER_PROMPT_de_B1.md
+
+── horen T1 · freizeit-kino-01 ──
+Tema: Freizeit, Kino, Veranstaltungen
+Archivo: batches/merged/horen-t1-freizeit-kino-01.json
+Llamando Gemini…
+Tokens: in=1676 out=4100
+Modelo: gemini-2.5-flash
+Guardado: batches/merged/horen-t1-freizeit-kino-01.json (10 preguntas, 5 passages)
+Validando…
+
+== Validación de horen-t1-freizeit-kino-01.json (de_B1) ==
+Preguntas: 10 | Pasajes: 5
+Esquema: OK
+Colocación (Teile que mejora): Pool válido (Teil ya cubierto en 1 examen — OK para exámenes disjuntos)
+Sin problemas detectados ✅
+Validación OK
+Siguiente: node scripts/merge-bank-batch.mjs --lang de --level B1 --file batches/merged/horen-t1-freizeit-kino-01.json
+
+Resumen: 1 OK, 0 fallidos

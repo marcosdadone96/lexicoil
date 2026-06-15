@@ -65,7 +65,7 @@ async function doRegister(){
     Auth.clearGuest();
     updUserBtn();
     setAMsg('Account created!',true);
-    setTimeout(()=>{closeAuth();if(typeof ExamProfile!=='undefined'&&ExamProfile.needsOnboarding())showProfileSetup();},600);
+    setTimeout(()=>{closeAuth();if(typeof ExamProfile!=='undefined'&&ExamProfile.needsOnboarding()&&!(typeof isFreeAccount==='function'&&isFreeAccount()))showProfileSetup();},600);
   }catch(e){setAMsg(e.message);}
   finally{setAuthLoading(false,'btnRegister','Creando cuenta…','Create Account →');}
 }
@@ -130,9 +130,12 @@ async function doGoogle(){
   const btn=document.getElementById('btnGoogle');
   if(btn){btn.disabled=true;btn.style.opacity='0.65';}
   try{
+    if(document.getElementById('registerForm')?.style.display!=='none'&&typeof savePendingCombo==='function'&&typeof readRegisterComboFromForm==='function'){
+      savePendingCombo(readRegisterComboFromForm());
+    }
     await Auth.signInWithGoogle();
   }catch(e){
-    console.error('[auth] Google OAuth failed:',e);
+    lcDebug.error('[auth] Google OAuth failed:',e);
     setAMsg(e.message||'Google sign-in failed.');
     if(btn){btn.disabled=false;btn.style.opacity='';}
   }
@@ -156,7 +159,7 @@ function restoreAppShellAfterAuth(){
   hideAuthOverlay();
   updUserBtn();
   updQuotaUI();
-  if(typeof ExamProfile!=='undefined'&&ExamProfile.needsOnboarding()){
+  if(typeof ExamProfile!=='undefined'&&ExamProfile.needsOnboarding()&&!(typeof isFreeAccount==='function'&&isFreeAccount())){
     showProfileSetup();
     return;
   }
@@ -183,6 +186,7 @@ function refreshUserDropdown(){
   const planEl=document.getElementById('udPlan');
   const metaEl=document.getElementById('udMeta');
   const upBtn=document.getElementById('udUpgrade');
+  const subBtn=document.getElementById('udManageSub');
   const inBtn=document.getElementById('udSignIn');
   const outBtn=document.getElementById('udLogout');
   const outSep=document.getElementById('udLogoutSep');
@@ -194,6 +198,7 @@ function refreshUserDropdown(){
     planEl.className='user-dropdown__plan user-dropdown__plan--guest';
     metaEl.textContent=`${qUsed}/${qMax} AI tries used. Create a free account to sync across devices.`;
     if(upBtn)upBtn.hidden=true;
+    if(subBtn)subBtn.hidden=true;
     if(inBtn)inBtn.hidden=false;
     if(outBtn)outBtn.hidden=true;
     if(outSep)outSep.hidden=true;
@@ -204,12 +209,16 @@ function refreshUserDropdown(){
   const planLbl=pro?'Pro':'Free';
   planEl.textContent=planLbl;
   planEl.className='user-dropdown__plan '+(pro?'user-dropdown__plan--pro':'user-dropdown__plan--free');
-  let meta=`${qUsed}/${qMax} AI exams used this month.`;
+  let meta=`${qUsed}/${qMax} official mocks used this month.`;
+  if(!pro&&typeof freeComboLabel==='function'&&typeof getFreeCombo==='function'&&getFreeCombo()){
+    meta+=` Plan: ${freeComboLabel(getFreeCombo())}.`;
+  }
   if(S.user?.memberSince){
     meta+=` Member since ${new Date(S.user.memberSince).toLocaleDateString()}.`;
   }
   metaEl.textContent=meta;
   if(upBtn)upBtn.hidden=pro;
+  if(subBtn)subBtn.hidden=!pro;
   if(inBtn)inBtn.hidden=true;
   if(outBtn)outBtn.hidden=false;
   if(outSep)outSep.hidden=false;
@@ -231,6 +240,10 @@ function closeUserMenu(){
   if(btn)btn.setAttribute('aria-expanded','false');
 }
 function userMenuUpgrade(){closeUserMenu();showUpgrade();}
+function userMenuManageSubscription(){
+  closeUserMenu();
+  if(typeof openStripePortal==='function')openStripePortal();
+}
 function userMenuSignIn(){
   closeUserMenu();
   hideAuthPending();

@@ -101,7 +101,10 @@ async function testSpanishExam() {
 
   assert(spec.provider === 'dele', 'dele provider');
   assert(spec.examStructure?.board?.includes('Cervantes'), 'DELE board');
-  assert(spec.constraints?.chunkPlan?.some((c) => c.expectKey === 'readingParts'), 'spanish uses readingParts');
+  assert(
+    spec.constraints?.chunkPlan?.some((c) => c.expectKey === 'readingParts' || c.expectKey === 'lesenParts'),
+    'spanish exam chunk plan',
+  );
   assert(spec.topic === 'Viajes', 'topic preserved');
   console.log('OK   Spanish DELE B1 Exam merge');
 }

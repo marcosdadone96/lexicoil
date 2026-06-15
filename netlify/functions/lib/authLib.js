@@ -1,5 +1,6 @@
 'use strict';
 
+const crypto = require('crypto');
 const { verifyJwt } = require('./jwt.js');
 
 function getJwtSecret() {
@@ -22,6 +23,16 @@ function syncKey(email) {
   return `sync:${normalizeEmail(email)}`;
 }
 
+/**
+ * Derive a stable UUID v5-like identifier from an email address.
+ * Used when the user was created via our custom JWT auth (not Supabase OAuth).
+ * The same email always produces the same UUID, enabling Supabase lookups.
+ */
+function emailToUserId(email) {
+  const hash = crypto.createHash('sha256').update('lc:user:' + normalizeEmail(email)).digest('hex');
+  return [hash.slice(0, 8), hash.slice(8, 12), '5' + hash.slice(13, 16), hash.slice(16, 20), hash.slice(20, 32)].join('-');
+}
+
 function verifyAuthToken(token) {
   const secret = getJwtSecret();
   if (!secret) return { ok: false, error: 'misconfigured' };
@@ -31,7 +42,9 @@ function verifyAuthToken(token) {
   }
   const email = normalizeEmail(payload.sub);
   if (!email) return { ok: false, error: 'unauthorized' };
-  return { ok: true, email, payload, tokenVersion: payload.tv || 1 };
+  // uid: Supabase UUID if present in token, otherwise derived from email
+  const userId = payload.uid || emailToUserId(email);
+  return { ok: true, email, userId, payload, tokenVersion: payload.tv || 1 };
 }
 
 function getTokenVersion(user) {
@@ -65,6 +78,7 @@ module.exports = {
   normalizeEmail,
   userKey,
   syncKey,
+  emailToUserId,
   verifyAuthToken,
   signAuthToken,
   getTokenVersion,

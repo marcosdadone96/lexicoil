@@ -12,7 +12,7 @@ const PRODUCT_FACTS = [
   },
   {
     title: 'Adaptive practice',
-    desc: 'Save words you miss and generate personalized mock exams from your deck.',
+    desc: 'Save words you miss; with Pro, generate personalized mock exams from your deck.',
   },
   {
     title: 'Sample demo',

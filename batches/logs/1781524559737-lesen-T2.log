@@ -1,0 +1,27 @@
+
+Batch generator (claude) — de/B1 × 1
+Prompt: batches/GEMINI_MASTER_PROMPT_de_B1.md
+Presupuesto Claude: $2.30 (gastado: $0.7724)
+
+── lesen T2 · technik-apps-01 ──
+Tema: Lern-Apps vs. traditionelle Lernmethoden in der Schule
+Proveedor: claude
+max_output_tokens=16384
+Archivo: batches/merged/lesen-t2-technik-apps-01.json
+Llamando claude…
+max_output_tokens=16384
+Gasto acumulado: $0.8283 / budget $2.30
+Tokens: in=1932 out=10793 (max_out=16384)
+Modelo: claude-haiku-4-5
+Guardado: batches/merged/lesen-t2-technik-apps-01.json (30 preguntas, 4 passages)
+Validando…
+
+== Validación de lesen-t2-technik-apps-01.json (de_B1) ==
+Preguntas: 30 | Pasajes: 4
+Esquema: OK
+Colocación (Teile que mejora): Pool válido (Teil ya cubierto en 1 examen — OK para exámenes disjuntos)
+Sin problemas detectados ✅
+Validación OK
+Siguiente: node scripts/merge-bank-batch.mjs --lang de --level B1 --file batches/merged/lesen-t2-technik-apps-01.json
+
+Resumen: 1 OK, 0 fallidos

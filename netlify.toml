@@ -4,6 +4,16 @@
 
 [functions."claude-chat"]
   timeout = 60
+  included_files = ["js/engine/**", "library/blueprints/**", "knowledge/**"]
+
+[functions."exam-pool"]
+  included_files = ["library/**", "js/engine/**", "knowledge/**"]
+
+[functions."admin-api"]
+  included_files = ["library/**", "js/engine/**", "knowledge/**"]
+
+[functions."tts"]
+  included_files = ["library/tts-cache/**"]
 
 [build]
   command = "npm run build:site"
@@ -20,6 +30,11 @@
 [[redirects]]
   from = "/demo"
   to = "/demo.html"
+  status = 200
+
+[[redirects]]
+  from = "/admin"
+  to = "/admin.html"
   status = 200
 
 [[redirects]]
@@ -59,6 +74,16 @@
 
 [[headers]]
   for = "/*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/assets/css/*"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/js/*"
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
 

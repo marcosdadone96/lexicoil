@@ -211,10 +211,10 @@ function renderCorrectionHtml(corr, d, isDE) {
   const renderWritePart = (wp, title) => {
     html += `<div class="corr-mod"><h3>${title} · ${wp.score}%</h3><div class="corr-row ${wp.score >= 70 ? 'ok' : 'bad'}"><div class="corr-ans">${esc(wp.note)}</div></div>`;
     if (wp.part.feedback?.length) {
-      html += `<ul style="font-size:12px;color:var(--text2);line-height:1.7;padding-left:18px;margin:8px 0">${wp.part.feedback.map((f) => `<li>${esc(f)}</li>`).join('')}</ul>`;
+      html += `<ul class="u-list-secondary">${wp.part.feedback.map((f) => `<li>${esc(f)}</li>`).join('')}</ul>`;
     }
     if (wp.part.modelAnswer) {
-      html += `<div style="font-size:11px;font-weight:700;color:var(--text3);margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em">${isDE ? 'Musterantwort' : 'Model answer'}</div><div class="corr-model">${esc(wp.part.modelAnswer)}</div>`;
+      html += `<div class="u-text-caption" style="margin-bottom:6px">${isDE ? 'Musterantwort' : 'Model answer'}</div><div class="corr-model">${esc(wp.part.modelAnswer)}</div>`;
     }
     html += '</div>';
   };
@@ -223,10 +223,10 @@ function renderCorrectionHtml(corr, d, isDE) {
   } else if (corr.writing && d.schreiben) {
     html += `<div class="corr-mod"><h3>${isDE ? 'Schreiben' : 'Writing'} · ${corr.writing.score}%</h3><div class="corr-row ${corr.writing.score >= 70 ? 'ok' : 'bad'}"><div class="corr-ans">${esc(corr.writing.note)}</div></div>`;
     if (d.schreiben.feedback?.length) {
-      html += `<div style="font-size:11px;color:var(--text3);margin:8px 0 6px;font-weight:700;text-transform:uppercase;letter-spacing:.06em">${isDE ? 'Checkliste' : 'Checklist'}</div><ul style="font-size:12px;color:var(--text2);line-height:1.7;padding-left:18px;margin-bottom:10px">${d.schreiben.feedback.map((f) => `<li>${esc(f)}</li>`).join('')}</ul>`;
+      html += `<div style="font-size:11px;color:var(--text-muted);margin:8px 0 6px;font-weight:700;text-transform:uppercase;letter-spacing:.06em">${isDE ? 'Checkliste' : 'Checklist'}</div><ul style="font-size:12px;color:var(--text-secondary);line-height:1.7;padding-left:18px;margin-bottom:10px">${d.schreiben.feedback.map((f) => `<li>${esc(f)}</li>`).join('')}</ul>`;
     }
     if (d.schreiben.modelAnswer) {
-      html += `<div style="font-size:11px;font-weight:700;color:var(--text3);margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em">${isDE ? 'Musterantwort' : 'Model answer'}</div><div class="corr-model">${esc(d.schreiben.modelAnswer)}</div>`;
+      html += `<div class="u-text-caption" style="margin-bottom:6px">${isDE ? 'Musterantwort' : 'Model answer'}</div><div class="corr-model">${esc(d.schreiben.modelAnswer)}</div>`;
     }
     html += '</div>';
   }
@@ -234,20 +234,20 @@ function renderCorrectionHtml(corr, d, isDE) {
     corr.speakingParts.forEach((sp) => {
       html += `<div class="corr-mod"><h3>${isDE ? 'Sprechen' : 'Speaking'} — Teil ${sp.part.teil} · ${sp.score}%</h3><div class="corr-row ${sp.score >= 70 ? 'ok' : 'bad'}"><div class="corr-ans">${esc(sp.note)}</div></div>`;
       if (sp.part.feedback?.length) {
-        html += `<ul style="font-size:12px;color:var(--text2);line-height:1.7;padding-left:18px;margin:10px 0">${sp.part.feedback.map((f) => `<li>${esc(f)}</li>`).join('')}</ul>`;
+        html += `<ul style="font-size:12px;color:var(--text-secondary);line-height:1.7;padding-left:18px;margin:10px 0">${sp.part.feedback.map((f) => `<li>${esc(f)}</li>`).join('')}</ul>`;
       }
       if (sp.part.modelAnswer) {
-        html += `<div style="font-size:11px;font-weight:700;color:var(--text3);margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em">${isDE ? 'Musterdialog' : 'Model dialogue'}</div><div class="corr-model">${esc(sp.part.modelAnswer)}</div>`;
+        html += `<div class="u-text-caption" style="margin-bottom:6px">${isDE ? 'Musterdialog' : 'Model dialogue'}</div><div class="corr-model">${esc(sp.part.modelAnswer)}</div>`;
       }
       html += '</div>';
     });
   } else if (corr.speaking && d.sprechen) {
     html += `<div class="corr-mod"><h3>${isDE ? 'Sprechen' : 'Speaking'} · ${corr.speaking.score}%</h3><div class="corr-row ${corr.speaking.score >= 70 ? 'ok' : 'bad'}"><div class="corr-ans">${esc(corr.speaking.note)}</div></div>`;
     if (d.sprechen.feedback?.length) {
-      html += `<ul style="font-size:12px;color:var(--text2);line-height:1.7;padding-left:18px;margin:10px 0">${d.sprechen.feedback.map((f) => `<li>${esc(f)}</li>`).join('')}</ul>`;
+      html += `<ul style="font-size:12px;color:var(--text-secondary);line-height:1.7;padding-left:18px;margin:10px 0">${d.sprechen.feedback.map((f) => `<li>${esc(f)}</li>`).join('')}</ul>`;
     }
     if (d.sprechen.modelAnswer) {
-      html += `<div style="font-size:11px;font-weight:700;color:var(--text3);margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em">${isDE ? 'Musterdialog' : 'Model dialogue'}</div><div class="corr-model">${esc(d.sprechen.modelAnswer)}</div>`;
+      html += `<div class="u-text-caption" style="margin-bottom:6px">${isDE ? 'Musterdialog' : 'Model dialogue'}</div><div class="corr-model">${esc(d.sprechen.modelAnswer)}</div>`;
     }
     html += '</div>';
   }
@@ -328,6 +328,20 @@ async function submitExam(){
     const goal=getActiveGoal()||S.goals.find(g=>g.id===d.goalId);
     entry.tagStats=AnalyticsStore.recordExamResult(goal,entry,d,S.answers);
   }
+  if(typeof TargetUsage!=='undefined'&&S.flashcards?.length){
+    const userWords=S.flashcards
+      .filter((fc)=>fc.sourceLang===(d.lang||S.subject))
+      .map((fc)=>fc.word)
+      .filter(Boolean);
+    if(userWords.length){
+      const usage=TargetUsage.deriveTargetUsage(d,userWords);
+      entry.vocabIntersection=usage;
+      entry.vocabInExam=usage.map((u)=>u.word);
+      entry.vocabNotInExam=userWords.filter(
+        (w)=>!usage.some((u)=>u.word.toLowerCase()===w.toLowerCase()),
+      );
+    }
+  }
   if(typeof ExamProfile!=='undefined')ExamProfile.tagItem(entry);
   S.history.unshift(entry);saveHist();
   const goal=getActiveGoal();
@@ -344,7 +358,7 @@ async function submitExam(){
   }
   S._officialInProgress=null;
   clearActiveSession();
-  renderResults(score,moduleScores,d,isDE,writeAns,speakAns,entry.id,correction,speakingEvals,savedWords,S.lastMarkedWords);
+  renderResults(score,moduleScores,d,isDE,writeAns,speakAns,entry.id,correction,speakingEvals,savedWords,S.lastMarkedWords,entry);
 }
 
 function getResultsWeakModules(mods,isDE){
@@ -360,7 +374,48 @@ function getResultsRecommendedAction(score,mods,deckN,practiceMode){
   if(score<70)return{title:'Retake in practice mode',desc:'Save difficult words as you go — they become your personalized study plan.',cta:'Practice exam →',run:()=>startMockExam('practice')};
   return{title:'Take another mock exam',desc:'Keep building exam readiness with another official-format test.',cta:'Next exam →',run:()=>startMockExam('official')};
 }
-function renderResults(score,mods,d,isDE,writeAns,speakAns,entryId,correction,speakingEvals,savedWordsOverride,markedWordsOverride){
+function renderVocabGameSection(entry,isDE){
+  const intersection=entry?.vocabInExam||[];
+  const notInExam=entry?.vocabNotInExam||[];
+  if(!intersection.length&&!notInExam.length)return '';
+  const lang=isDE?{
+    title:'Tu vocabulario en este examen',
+    found:'Palabras tuyas que aparecieron',
+    notFound:'Palabras tuyas que NO aparecieron',
+    gamePrompt:'¿Recuerdas haberlas visto?',
+    none:'Ninguna de tus palabras apareció en este examen',
+  }:{
+    title:'Your vocabulary in this exam',
+    found:'Your words that appeared',
+    notFound:'Your words that did NOT appear',
+    gamePrompt:'Do you remember seeing them?',
+    none:'None of your saved words appeared in this exam',
+  };
+  if(!intersection.length){
+    return `<div class="vocab-game-section">
+      <h3>${lang.title}</h3>
+      <p class="muted">${lang.none}</p>
+    </div>`;
+  }
+  const foundPills=intersection
+    .map((w)=>`<span class="vocab-pill vocab-found">${esc(w)}</span>`)
+    .join('');
+  const notFoundPills=notInExam.slice(0,10)
+    .map((w)=>`<span class="vocab-pill vocab-not-found">${esc(w)}</span>`)
+    .join('');
+  return `<div class="vocab-game-section">
+    <h3>${lang.title}</h3>
+    <div class="vocab-game-block">
+      <p class="vocab-game-label">${lang.found} (${intersection.length}) — ${lang.gamePrompt}</p>
+      <div class="vocab-pills">${foundPills}</div>
+    </div>
+    ${notInExam.length?`<div class="vocab-game-block">
+      <p class="vocab-game-label">${lang.notFound}</p>
+      <div class="vocab-pills">${notFoundPills}</div>
+    </div>`:''}
+  </div>`;
+}
+function renderResults(score,mods,d,isDE,writeAns,speakAns,entryId,correction,speakingEvals,savedWordsOverride,markedWordsOverride,histEntry){
   hideAll();
   S.lastResults={score,mods,d,isDE,correction,speakingEvals};
   show('resultsScreen');
@@ -387,15 +442,20 @@ function renderResults(score,mods,d,isDE,writeAns,speakAns,entryId,correction,sp
   const deckN=getProfileFlashcards().length;
   const savedWords=savedWordsOverride||S.examSavedWords||[];
   const weakMods=getResultsWeakModules(mods,isDE);
-  const weakHtml=weakMods.length?`<div class="results-detail"><h4>Weak areas</h4><ul class="results-weak-list">${weakMods.map(w=>`<li>${esc(w.label)} — ${w.score}%</li>`).join('')}</ul></div>`:'<div class="results-detail"><h4>Weak areas</h4><p style="font-size:12px;font-weight:600;color:var(--text2)">Strong performance across modules. Keep practicing to maintain readiness.</p></div>';
+  const weakHtml=weakMods.length?`<div class="results-detail"><h4>Weak areas</h4><ul class="results-weak-list">${weakMods.map(w=>`<li>${esc(w.label)} — ${w.score}%</li>`).join('')}</ul></div>`:'<div class="results-detail"><h4>Weak areas</h4><p class="u-text-xs u-text-secondary">Strong performance across modules. Keep practicing to maintain readiness.</p></div>';
   const markedList=markedWordsOverride||S.lastMarkedWords||[];
-  const markedHtml=markedList.length?`<div class="results-detail results-marked"><h4>Review the words you marked</h4><p style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:10px">In official mode, marked words are translated here — save any you want to your deck.</p>${markedList.map((m,i)=>`<div class="marked-word-row" id="markedRow_${i}"><span class="marked-word">${esc(m.word)}</span><div class="marked-trans" id="markedTrans_${i}"><button type="button" class="btn-sm" onclick="expandMarkedWord('${encodeURIComponent(m.word)}',${i})">Show translation</button></div></div>`).join('')}</div>`:'';
-  const vocabHtml=savedWords.length?`<div class="results-detail"><h4>Vocabulary detected</h4><ul class="results-vocab-list">${savedWords.slice(0,12).map(w=>`<li>${esc(w)}</li>`).join('')}${savedWords.length>12?`<li>+${savedWords.length-12} more</li>`:''}</ul></div>`:(isPracticeMode()?`<div class="results-detail"><h4>Vocabulary detected</h4><p style="font-size:12px;font-weight:600;color:var(--text2)">Words you saved during practice appear in your deck.</p></div>`:'');
+  const markedHtml=markedList.length?`<div class="results-detail results-marked"><h4>Review the words you marked</h4><p style="font-size:12px;font-weight:600;color:var(--text-secondary);margin-bottom:10px">In official mode, marked words are translated here — save any you want to your deck.</p>${markedList.map((m,i)=>`<div class="marked-word-row" id="markedRow_${i}"><span class="marked-word">${esc(m.word)}</span><div class="marked-trans" id="markedTrans_${i}"><button type="button" class="btn-sm" onclick="expandMarkedWord('${encodeURIComponent(m.word)}',${i})">Show translation</button></div></div>`).join('')}</div>`:'';
+  const vocabHtml=savedWords.length?`<div class="results-detail"><h4>Vocabulary detected</h4><ul class="results-vocab-list">${savedWords.slice(0,12).map(w=>`<li>${esc(w)}</li>`).join('')}${savedWords.length>12?`<li>+${savedWords.length-12} more</li>`:''}</ul></div>`:(isPracticeMode()?`<div class="results-detail"><h4>Vocabulary detected</h4><p class="u-text-xs u-text-secondary">Words you saved during practice appear in your deck.</p></div>`:'');
+  const vocabGameHtml=renderVocabGameSection(histEntry,isDE);
+  const goalForBatch=getActiveGoal();
+  const batchPlan=typeof VocabBatching!=='undefined'?goalForBatch?.vocabPlan:null;
+  const batchCov=batchPlan?VocabBatching.coverage(batchPlan):null;
+  const nextBatchHtml=batchPlan&&batchCov&&!batchCov.finished?`<div class="results-detail"><h4>Vocabulary batches</h4><p class="u-text-xs u-text-secondary">${esc(VocabBatching.summary(batchPlan,S.subject||goalForBatch?.subject))}</p><button type="button" class="btn-sm accent" onclick="generateNextVocabBatch('${goalForBatch.id}')">Next batch →</button></div>`:'';
   const act=getResultsRecommendedAction(score,mods,deckN,isPracticeMode());
   _coachAction=act.run;
   const isDemoSession=!!d.guidedDemo;
   const guest=(typeof Auth!=='undefined'&&Auth.isGuest&&Auth.isGuest())||isDemoSession;
-  const guestHtml=guest?`<div class="results-guest"><p><b>${isDemoSession?'Demo complete — save your preparation profile.':'Save your progress.'}</b> ${isDemoSession?'Create an account to keep vocabulary, personalized practice, exam history, and readiness tracking for '+esc(getPreparingFor())+'.':'Guest mode keeps results on this device only. Create a free account to sync exams, vocabulary, and scores across devices.'}</p><ul style="font-size:12px;font-weight:600;color:var(--text2);margin:10px 0 12px 18px;line-height:1.6">${isDemoSession?'<li>Save detected vocabulary</li><li>Keep personalized practice</li><li>Track exam readiness</li><li>Review past mistakes</li>':''}</ul><button class="btn-sm accent" onclick="userMenuSignIn()">Create account to continue</button>${isDemoSession?` <button class="btn-sm" onclick="goFlashcards()">See demo flashcards</button>`:''}</div>`:'';
+  const guestHtml=guest?`<div class="results-guest"><p><b>${isDemoSession?'Demo complete — save your preparation profile.':'Save your progress.'}</b> ${isDemoSession?'Create an account to keep vocabulary, personalized practice, exam history, and readiness tracking for '+esc(getPreparingFor())+'.':'Guest mode keeps results on this device only. Create a free account to sync exams, vocabulary, and scores across devices.'}</p><ul class="u-list-compact">${isDemoSession?'<li>Save detected vocabulary</li><li>Keep personalized practice</li><li>Track exam readiness</li><li>Review past mistakes</li>':''}</ul><button class="btn-sm accent" onclick="userMenuSignIn()">Create account to continue</button>${isDemoSession?` <button class="btn-sm" onclick="goFlashcards()">See demo flashcards</button>`:''}</div>`:'';
   const loopMsg=isPracticeMode()
     ?`Practice exam complete. Words you saved become evidence for your personalized study plan.`
     :markedList.length?`Official exam complete. Review the ${markedList.length} word${markedList.length===1?'':'s'} you marked below — save them to your deck for personalized practice.`
@@ -412,6 +472,8 @@ function renderResults(score,mods,d,isDE,writeAns,speakAns,entryId,correction,sp
     </div>
     <div class="module-scores-grid">${modCards}</div>
     ${weakHtml}
+    ${vocabGameHtml}
+    ${nextBatchHtml}
     ${markedHtml}
     ${vocabHtml}
     <div class="results-action">
@@ -426,10 +488,21 @@ function renderResults(score,mods,d,isDE,writeAns,speakAns,entryId,correction,sp
     ${corrHtml}
     <div style="display:flex;gap:9px;flex-wrap:wrap;margin-top:22px">
       <button class="btn-sm accent" onclick="saveCurrentExam()">Save exam</button>
+      <button class="btn-sm" onclick="shareExamUrl()">Copy exam link</button>
       ${isPracticeMode()&&savedWords.length?`<button class="btn-sm" onclick="goFlashcards()">Review ${savedWords.length} session words</button>`:''}
       <button class="btn-sm" onclick="downloadCorrectionPdf(S.lastResults.score,S.lastResults.mods,S.lastResults.d,S.lastResults.isDE,S.lastResults.correction,S.lastResults.speakingEvals)">Download PDF${typeof isPro==='function'&&!isPro()?' (Pro)':''}</button>
       <button class="btn-sm" onclick="goHistory()">View progress</button>
       <button class="btn-sm" onclick="goHome()">Dashboard</button>
     </div>`;
+  const rid=entryId||d._savedId||d._flightId;
+  if(typeof LcRouter!=='undefined'&&rid)LcRouter.replaceRoute('#/exam/'+rid+'/results','Results');
   window.scrollTo({top:0,behavior:'smooth'});
+}
+function shareExamUrl(){
+  saveCurrentExam();
+  const url=typeof getShareableExamUrl==='function'?getShareableExamUrl():null;
+  if(!url){lcToast('Save the exam first to get a share link.','warn');return;}
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(url).then(()=>lcToast('Exam link copied to clipboard.','success')).catch(()=>lcToast(url,'info',8000));
+  }else lcToast(url,'info',8000);
 }

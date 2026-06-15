@@ -1,109 +1,312 @@
 {
   "id": "dele",
-  "name": "Instituto Cervantes (DELE)",
+  "name": "Instituto Cervantes",
   "languageId": "spanish",
   "levels": {
     "A1": {
       "certificate": "DELE A1",
-      "totalMinutes": 90,
+      "totalMinutes": 210,
       "modules": [
-        { "id": "reading", "title": "Comprensión de lectura", "minutes": 45, "parts": 4 },
-        { "id": "listening", "title": "Comprensión auditiva", "minutes": 25, "parts": 4 },
-        { "id": "writing", "title": "Expresión e interacción escritas", "minutes": 25, "parts": 2 },
-        { "id": "speaking", "title": "Expresión e interacción orales", "minutes": 15, "parts": 2 }
+        {
+          "id": "lesen",
+          "title": "Comprensión de lectura",
+          "minutes": 70,
+          "parts": 2
+        },
+        {
+          "id": "horen",
+          "title": "Comprensión auditiva",
+          "minutes": 40,
+          "parts": 2
+        },
+        {
+          "id": "schreiben",
+          "title": "Expresión escrita",
+          "minutes": 80,
+          "parts": 1
+        },
+        {
+          "id": "sprechen",
+          "title": "Expresión oral",
+          "minutes": 20,
+          "parts": 2
+        }
       ],
       "taskTypes": {
-        "reading": ["multiple_choice", "true_false", "matching"],
-        "listening": ["multiple_choice", "true_false"],
-        "writing": ["form", "short_text"],
-        "speaking": ["monologue", "dialogue"]
+        "lesen": [
+          "short_text_mcq",
+          "long_text_mcq"
+        ],
+        "horen": [
+          "short_listening_mcq",
+          "long_listening_mcq"
+        ],
+        "schreiben": [
+          "writing_prompt"
+        ],
+        "sprechen": [
+          "speaking_prompt"
+        ]
       },
-      "scoring": { "passPercent": 60, "perModule": true }
+      "scoring": {
+        "passPercent": 60,
+        "perModule": true
+      }
     },
     "A2": {
       "certificate": "DELE A2",
-      "totalMinutes": 105,
+      "totalMinutes": 210,
       "modules": [
-        { "id": "reading", "title": "Comprensión de lectura", "minutes": 60, "parts": 5 },
-        { "id": "listening", "title": "Comprensión auditiva", "minutes": 35, "parts": 4 },
-        { "id": "writing", "title": "Expresión e interacción escritas", "minutes": 50, "parts": 2 },
-        { "id": "speaking", "title": "Expresión e interacción orales", "minutes": 15, "parts": 2 }
+        {
+          "id": "lesen",
+          "title": "Comprensión de lectura",
+          "minutes": 70,
+          "parts": 2
+        },
+        {
+          "id": "horen",
+          "title": "Comprensión auditiva",
+          "minutes": 40,
+          "parts": 2
+        },
+        {
+          "id": "schreiben",
+          "title": "Expresión escrita",
+          "minutes": 80,
+          "parts": 1
+        },
+        {
+          "id": "sprechen",
+          "title": "Expresión oral",
+          "minutes": 20,
+          "parts": 2
+        }
       ],
       "taskTypes": {
-        "reading": ["multiple_choice", "matching"],
-        "listening": ["multiple_choice", "note_taking"],
-        "writing": ["email", "short_composition"],
-        "speaking": ["monologue", "interaction"]
+        "lesen": [
+          "short_text_mcq",
+          "long_text_mcq"
+        ],
+        "horen": [
+          "short_listening_mcq",
+          "long_listening_mcq"
+        ],
+        "schreiben": [
+          "writing_prompt"
+        ],
+        "sprechen": [
+          "speaking_prompt"
+        ]
       },
-      "scoring": { "passPercent": 60, "perModule": true }
+      "scoring": {
+        "passPercent": 60,
+        "perModule": true
+      }
     },
     "B1": {
       "certificate": "DELE B1",
-      "totalMinutes": 150,
+      "totalMinutes": 210,
       "modules": [
-        { "id": "reading", "title": "Comprensión de lectura", "minutes": 70, "parts": 4 },
-        { "id": "listening", "title": "Comprensión auditiva", "minutes": 40, "parts": 4 },
-        { "id": "writing", "title": "Expresión e interacción escritas", "minutes": 60, "parts": 2 },
-        { "id": "speaking", "title": "Expresión e interacción orales", "minutes": 15, "parts": 2 }
+        {
+          "id": "lesen",
+          "title": "Comprensión de lectura",
+          "minutes": 70,
+          "parts": 2
+        },
+        {
+          "id": "horen",
+          "title": "Comprensión auditiva",
+          "minutes": 40,
+          "parts": 2
+        },
+        {
+          "id": "schreiben",
+          "title": "Expresión escrita",
+          "minutes": 80,
+          "parts": 3
+        },
+        {
+          "id": "sprechen",
+          "title": "Expresión oral",
+          "minutes": 20,
+          "parts": 3
+        }
       ],
       "taskTypes": {
-        "reading": ["multiple_choice", "true_false", "matching"],
-        "listening": ["multiple_choice", "note_taking"],
-        "writing": ["email", "opinion_text"],
-        "speaking": ["presentation", "discussion"]
+        "lesen": [
+          "short_text_mcq",
+          "long_text_mcq"
+        ],
+        "horen": [
+          "short_listening_mcq",
+          "long_listening_mcq"
+        ],
+        "schreiben": [
+          "writing_prompt"
+        ],
+        "sprechen": [
+          "speaking_prompt"
+        ]
       },
-      "scoring": { "passPercent": 60, "perModule": true }
+      "scoring": {
+        "passPercent": 60,
+        "perModule": true
+      }
     },
     "B2": {
       "certificate": "DELE B2",
-      "totalMinutes": 175,
+      "totalMinutes": 210,
       "modules": [
-        { "id": "reading", "title": "Comprensión de lectura", "minutes": 70, "parts": 4 },
-        { "id": "listening", "title": "Comprensión auditiva", "minutes": 40, "parts": 4 },
-        { "id": "writing", "title": "Expresión e interacción escritas", "minutes": 80, "parts": 2 },
-        { "id": "speaking", "title": "Expresión e interacción orales", "minutes": 20, "parts": 2 }
+        {
+          "id": "lesen",
+          "title": "Comprensión de lectura",
+          "minutes": 70,
+          "parts": 2
+        },
+        {
+          "id": "horen",
+          "title": "Comprensión auditiva",
+          "minutes": 40,
+          "parts": 2
+        },
+        {
+          "id": "schreiben",
+          "title": "Expresión escrita",
+          "minutes": 80,
+          "parts": 3
+        },
+        {
+          "id": "sprechen",
+          "title": "Expresión oral",
+          "minutes": 20,
+          "parts": 3
+        }
       ],
       "taskTypes": {
-        "reading": ["multiple_choice", "gap_fill", "matching"],
-        "listening": ["multiple_choice", "note_taking"],
-        "writing": ["article", "formal_letter"],
-        "speaking": ["monologue", "debate"]
+        "lesen": [
+          "short_text_mcq",
+          "long_text_mcq"
+        ],
+        "horen": [
+          "short_listening_mcq",
+          "long_listening_mcq"
+        ],
+        "schreiben": [
+          "writing_prompt"
+        ],
+        "sprechen": [
+          "speaking_prompt"
+        ]
       },
-      "scoring": { "passPercent": 60, "perModule": true }
+      "scoring": {
+        "passPercent": 60,
+        "perModule": true
+      }
     },
     "C1": {
       "certificate": "DELE C1",
       "totalMinutes": 210,
       "modules": [
-        { "id": "reading", "title": "Comprensión de lectura", "minutes": 75, "parts": 5 },
-        { "id": "listening", "title": "Comprensión auditiva", "minutes": 50, "parts": 4 },
-        { "id": "writing", "title": "Expresión e interacción escritas", "minutes": 80, "parts": 2 },
-        { "id": "speaking", "title": "Expresión e interacción orales", "minutes": 20, "parts": 3 }
+        {
+          "id": "lesen",
+          "title": "Comprensión de lectura",
+          "minutes": 70,
+          "parts": 4
+        },
+        {
+          "id": "horen",
+          "title": "Comprensión auditiva",
+          "minutes": 40,
+          "parts": 3
+        },
+        {
+          "id": "schreiben",
+          "title": "Expresión escrita",
+          "minutes": 80,
+          "parts": 2
+        },
+        {
+          "id": "sprechen",
+          "title": "Expresión oral",
+          "minutes": 20,
+          "parts": 3
+        }
       ],
       "taskTypes": {
-        "reading": ["complex_multiple_choice", "inference"],
-        "listening": ["note_taking", "multiple_choice"],
-        "writing": ["academic_essay", "analysis"],
-        "speaking": ["presentation", "discussion"]
+        "lesen": [
+          "short_text_mcq",
+          "long_text_mcq",
+          "matching",
+          "gap_article"
+        ],
+        "horen": [
+          "short_listening_mcq",
+          "long_listening_mcq"
+        ],
+        "schreiben": [
+          "argumentative_essay",
+          "formal_letter"
+        ],
+        "sprechen": [
+          "presentation",
+          "discussion",
+          "debate"
+        ]
       },
-      "scoring": { "passPercent": 60, "perModule": true }
+      "scoring": {
+        "passPercent": 60,
+        "perModule": true
+      }
     },
     "C2": {
       "certificate": "DELE C2",
-      "totalMinutes": 225,
+      "totalMinutes": 210,
       "modules": [
-        { "id": "reading", "title": "Comprensión de lectura", "minutes": 75, "parts": 5 },
-        { "id": "listening", "title": "Comprensión auditiva", "minutes": 50, "parts": 4 },
-        { "id": "writing", "title": "Expresión e interacción escritas", "minutes": 80, "parts": 2 },
-        { "id": "speaking", "title": "Expresión e interacción orales", "minutes": 20, "parts": 3 }
+        {
+          "id": "lesen",
+          "title": "Comprensión de lectura",
+          "minutes": 70,
+          "parts": 2
+        },
+        {
+          "id": "horen",
+          "title": "Comprensión auditiva",
+          "minutes": 40,
+          "parts": 2
+        },
+        {
+          "id": "schreiben",
+          "title": "Expresión escrita",
+          "minutes": 80,
+          "parts": 3
+        },
+        {
+          "id": "sprechen",
+          "title": "Expresión oral",
+          "minutes": 20,
+          "parts": 3
+        }
       ],
       "taskTypes": {
-        "reading": ["literary_analysis", "argumentation"],
-        "listening": ["lecture", "debate"],
-        "writing": ["specialised_text", "summary_argument"],
-        "speaking": ["formal_presentation", "debate"]
+        "lesen": [
+          "short_text_mcq",
+          "long_text_mcq"
+        ],
+        "horen": [
+          "short_listening_mcq",
+          "long_listening_mcq"
+        ],
+        "schreiben": [
+          "writing_prompt"
+        ],
+        "sprechen": [
+          "speaking_prompt"
+        ]
       },
-      "scoring": { "passPercent": 60, "perModule": true }
+      "scoring": {
+        "passPercent": 60,
+        "perModule": true
+      }
     }
   }
 }

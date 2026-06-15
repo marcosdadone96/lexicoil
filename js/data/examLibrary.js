@@ -78,9 +78,28 @@ const ExamLibrary = (() => {
     return JSON.parse(JSON.stringify(exams[idx]));
   }
 
+  function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  /** Pick a static exam not on cooldown; null if all are on cooldown. */
+  async function pickExamExcluding(subject, level, isBurnedFn) {
+    const exams = await loadExams(subject, level);
+    for (const exam of shuffle(exams)) {
+      if (typeof isBurnedFn === 'function' && isBurnedFn(exam)) continue;
+      return JSON.parse(JSON.stringify(exam));
+    }
+    return null;
+  }
+
   function availableLevels(subject) {
     return LEVELS[subject] ? [...LEVELS[subject]] : [];
   }
 
-  return { hasLibrary, pickExam, loadExams, availableLevels, discoverLevels, probeLevel };
+  return { hasLibrary, pickExam, pickExamExcluding, loadExams, availableLevels, discoverLevels, probeLevel };
 })();

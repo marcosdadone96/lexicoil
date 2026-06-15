@@ -1,0 +1,27 @@
+
+Batch generator (claude) — de/B1 × 1
+Prompt: batches/GEMINI_MASTER_PROMPT_de_B1.md
+Presupuesto Claude: $2.30 (gastado: $1.1006)
+
+── sprechen T1+2+3 · reise-vorbereitung-02 ──
+Tema: Tagesausflug mit Freunden planen / Präsentation: Reisen und Verkehr im Heimatland
+Proveedor: claude
+max_output_tokens=8000
+Archivo: batches/merged/sprechen-reise-vorbereitung-02.json
+Llamando claude…
+max_output_tokens=8000
+Gasto acumulado: $1.1106 / budget $2.30
+Tokens: in=2025 out=1595 (max_out=8000)
+Modelo: claude-haiku-4-5
+Guardado: batches/merged/sprechen-reise-vorbereitung-02.json (3 preguntas, 0 passages)
+Validando…
+
+== Validación de sprechen-reise-vorbereitung-02.json (de_B1) ==
+Preguntas: 3 | Pasajes: 0
+Esquema: OK
+Colocación (Teile que mejora): Pool válido (Teil ya cubierto en 1 examen — OK para exámenes disjuntos)
+Sin problemas detectados ✅
+Validación OK
+Siguiente: node scripts/merge-bank-batch.mjs --lang de --level B1 --file batches/merged/sprechen-reise-vorbereitung-02.json
+
+Resumen: 1 OK, 0 fallidos

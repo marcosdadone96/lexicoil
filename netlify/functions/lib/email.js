@@ -5,7 +5,7 @@ const { CONTACT_EMAIL } = require('./siteConfig.js');
 async function sendProWelcomeEmail(to, name) {
   const apiKey = String(process.env.RESEND_API_KEY || '').trim();
   if (!apiKey) {
-    console.log('[email] RESEND_API_KEY not set ù skipping Pro welcome email');
+    console.log('[email] RESEND_API_KEY not set ? skipping Pro welcome email');
     return { skipped: true };
   }
 
@@ -16,12 +16,14 @@ async function sendProWelcomeEmail(to, name) {
     <div style="font-family:system-ui,sans-serif;max-width:520px;margin:0 auto;color:#111">
       <h1 style="font-size:22px;margin-bottom:8px">Welcome to LexiCoil Pro</h1>
       <p>Hi ${displayName},</p>
-      <p>Your payment was successful. <strong>Pro</strong> is now active on your account.</p>
+      <p>Your subscription is active. <strong>Pro</strong> is now enabled on your account.</p>
       <ul>
-        <li><strong>20 exam generations</strong> per month</li>
+        <li><strong>12 exam generations</strong> per month</li>
+        <li>Personalized vocabulary exams &amp; listening practice</li>
         <li>Full Goethe / Cambridge practice exams</li>
         <li>Priority AI generation</li>
       </ul>
+      <p style="font-size:13px;color:#666">Billed monthly at EUR 9.99. Cancel anytime from <strong>Account &rarr; Manage subscription</strong> in the app.</p>
       <p><a href="https://lexicoil.com" style="display:inline-block;padding:10px 18px;background:#E8C547;color:#000;text-decoration:none;border-radius:8px;font-weight:700">Open LexiCoil</a></p>
       <p style="font-size:13px;color:#666;margin-top:24px">Questions? Reply to this email or write to ${CONTACT_EMAIL}.</p>
     </div>
@@ -36,7 +38,7 @@ async function sendProWelcomeEmail(to, name) {
     body: JSON.stringify({
       from,
       to: [to],
-      subject: 'LexiCoil Pro activated ù 20 exams/month',
+      subject: 'LexiCoil Pro activated ? 12 exams/month',
       html,
     }),
   });
@@ -51,7 +53,7 @@ async function sendProWelcomeEmail(to, name) {
 async function sendPasswordResetEmail(to, resetUrl) {
   const apiKey = String(process.env.RESEND_API_KEY || '').trim();
   if (!apiKey) {
-    console.log('[email] RESEND_API_KEY not set ó skipping password reset email');
+    console.log('[email] RESEND_API_KEY not set ? skipping password reset email');
     return { skipped: true };
   }
 

@@ -88,7 +88,9 @@ exports.handler = async function handler(event) {
           plan: quotaCheck.plan,
         });
       }
-      const quotaMeta = await incrementQuota(quotaCheck);
+      const quotaMeta = await incrementQuota(quotaCheck, {
+        requestId: body.requestId || null,
+      });
       return jsonResponse(200, cors, {
         ok: true,
         used: quotaMeta?.used,
@@ -171,7 +173,7 @@ exports.handler = async function handler(event) {
 
     if (body.examGeneration) {
       const placeholderCount = (
-        text.match(/\.\.\.|Option [A-D]"|"Text here"|"Question here"|Ein Text ueber|Ein Text ber|An article about/gi) || []
+        text.match(/\.\.\.|Option [A-D]"|"Text here"|"Question here"|Ein Text ueber|Ein Text ï¿½ber|An article about/gi) || []
       ).length;
       if (placeholderCount > 5) {
         console.warn('[claude-chat] exam has too many placeholders:', placeholderCount);
@@ -185,7 +187,9 @@ exports.handler = async function handler(event) {
     let quotaMeta = null;
     if (consumeQuota && quotaCheck?.ok) {
       try {
-        quotaMeta = await incrementQuota(quotaCheck);
+        quotaMeta = await incrementQuota(quotaCheck, {
+          requestId: body.requestId || null,
+        });
       } catch (err) {
         console.error('[claude-chat] quota increment failed:', err);
       }

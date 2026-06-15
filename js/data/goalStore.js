@@ -44,6 +44,7 @@ const GoalStore = (() => {
     localStorage.setItem(GOALS_KEY, JSON.stringify(S.goals));
     if (S.activeGoalId) localStorage.setItem(ACTIVE_KEY, S.activeGoalId);
     else localStorage.removeItem(ACTIVE_KEY);
+    if (typeof Auth !== 'undefined' && typeof Auth.pushSync === 'function') Auth.pushSync();
   }
 
   function getActive() {
@@ -168,8 +169,11 @@ const GoalStore = (() => {
 
   function weakAreas(goal) {
     if (typeof AnalyticsStore !== 'undefined') {
-      const grammar = AnalyticsStore.getWeakGrammarTags(goal, 3);
+      const summary = AnalyticsStore.getMasterySummary(goal);
+      const grammar = summary.weakGrammar.map((x) => x.tag);
       if (grammar.length) return grammar;
+      const topics = summary.weakTopics.map((x) => x.tag);
+      if (topics.length) return topics;
     }
     const topicScores = {};
     historyFor(goal).forEach((h) => {
@@ -194,11 +198,33 @@ const GoalStore = (() => {
     return [];
   }
 
-  function updateWorkspaceUrl(goal) {
+  const SEEN_EXAMS_K = 3;
+
+  function seenQuestionIds(goal) {
+    if (!goal) return new Set();
+    return new Set((goal.seenExams || []).flatMap((e) => e.questionIds || []));
+  }
+
+  function recordSeenQuestions(goal, questionIds) {
+    if (!hasState() || !goal) return;
+    const g = S.goals.find((x) => x.id === goal.id) || goal;
+    const ids = [...new Set((questionIds || []).filter(Boolean))];
+    if (!ids.length) return;
+    const exams = [{ at: Date.now(), questionIds: ids }, ...(g.seenExams || [])];
+    g.seenExams = exams.slice(0, SEEN_EXAMS_K);
+    save();
+  }
+
+  function updateWorkspaceUrl(goal, opts) {
     try {
-      if (goal) history.replaceState(null, '', '#/workspace/' + slug(goal));
+      if (goal) history.replaceState(null, '', '#/goal/' + slug(goal) + '/exams');
       else history.replaceState(null, '', '#/');
     } catch (_) {}
+  }
+
+  function masterySummary(goal) {
+    if (typeof AnalyticsStore === 'undefined' || !goal) return null;
+    return AnalyticsStore.getMasterySummary(goal);
   }
 
   return {
@@ -219,6 +245,9 @@ const GoalStore = (() => {
     historyFor,
     readinessPct,
     weakAreas,
+    masterySummary,
+    seenQuestionIds,
+    recordSeenQuestions,
     updateWorkspaceUrl,
   };
 })();
@@ -241,8 +270,21 @@ function ensureGoalSlugs() {
 function findGoalBySlug(slug) {
   return GoalStore.findBySlug(slug);
 }
-function updateWorkspaceUrl(goal) {
-  GoalStore.updateWorkspaceUrl(goal);
+function updateWorkspaceUrl(goal, opts) {
+  if (typeof window.LcRouter !== 'undefined' && typeof window.routerNavigate === 'function') {
+    const tab = typeof normalizeWsTab === 'function' ? normalizeWsTab(S?.wsTab || 'exams') : 'exams';
+    const seg = tab === 'vocabulary' ? 'vocab' : tab === 'progress' ? 'progress' : 'exams';
+    if (goal) {
+      window.routerNavigate(window.LcRouter.goalPath(goal, seg), {
+        label: seg === 'progress' ? 'Progress' : seg === 'vocab' ? 'Vocabulary' : 'Exams',
+        replace: opts?.replace !== false,
+      });
+    } else {
+      window.routerNavigate('#/', { replace: true, label: 'Dashboard' });
+    }
+    return;
+  }
+  GoalStore.updateWorkspaceUrl(goal, opts);
 }
 function goalLabel(goal) {
   return GoalStore.label(goal);
@@ -261,6 +303,9 @@ function getReadinessPctForGoal(goal) {
 }
 function getWeakAreasForGoal(goal) {
   return GoalStore.weakAreas(goal);
+}
+function getMasterySummaryForGoal(goal) {
+  return GoalStore.masterySummary(goal);
 }
 
 const _goalWizard = { subject: 'de', level: 'B2', examDate: '' };
@@ -383,19 +428,4 @@ function openGoal(id) {
   const goal = GoalStore.setActive(id);
   if (!goal) return;
   openGoalWorkspace(id, 'exams');
-}
-
-function parseAppRoute() {
-  const raw = (location.hash || '').replace(/^#\/?/, '');
-  if (raw.startsWith('workspace/')) {
-    if (!gateAppRoute()) return true;
-    const slug = decodeURIComponent(raw.slice('workspace/'.length).split('/')[0]);
-    const goal = findGoalBySlug(slug);
-    if (goal) {
-      openGoalWorkspace(goal.id, normalizeWsTab(S.wsTab || 'exams'), true);
-      return true;
-    }
-  }
-  if (raw === '' || raw === 'dashboard') return false;
-  return false;
 }

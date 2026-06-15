@@ -47,6 +47,7 @@ const VALID_STUB = {
   goetheFormat: true,
   lesenParts: [
     {
+      text: 'Ein kurzer Lesetext über Natur und Umwelt in der Stadt.',
       items: [
         {
           id: 'l1',
@@ -59,6 +60,7 @@ const VALID_STUB = {
   ],
   horenParts: [
     {
+      transcript: 'Moderator: Willkommen. Gast: Danke.',
       segments: [
         {
           id: 'h1',
@@ -155,11 +157,13 @@ async function testExamChunked() {
   const chunkPayload = {
     lesenParts: [
       {
+        text: 'Lesetext über Umwelt und Nachhaltigkeit in der Region.',
         items: [{ id: 'l1', question: 'Q?', options: ['a) 1', 'b) 2', 'c) 3'], correct: 'a' }],
       },
     ],
     horenParts: [
       {
+        transcript: 'Moderator: Guten Tag. Gast: Hallo.',
         segments: [{ id: 'h1', question: 'Q?', options: ['a) 1', 'b) 2'], correct: 'a' }],
       },
     ],

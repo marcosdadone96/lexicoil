@@ -2,60 +2,48 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import {
-  bindSupabaseAuthListener,
+  hasStoredSession,
   logoutSession,
+  readCachedUser,
   restoreSession,
   type SessionUser,
 } from '@/lib/landingAuth';
 
-const TOKEN_KEY = 'lc_token';
-const GUEST_KEY = 'lc_guest';
-const SUPABASE_STORAGE_KEY = 'lc-supabase-auth';
-
 export type AuthUser = SessionUser;
 
 export function useAuth() {
-  const [user, setUser] = useState<AuthUser | null>(null);
+  const [user, setUser] = useState<AuthUser | null>(() =>
+    typeof window !== 'undefined' && hasStoredSession() ? readCachedUser() : null,
+  );
   const [ready, setReady] = useState(false);
 
   const fetchMe = useCallback(async () => {
-    if (localStorage.getItem(GUEST_KEY) === '1') {
-      setUser(null);
-      setReady(true);
-      return null;
-    }
     try {
       const restored = await restoreSession();
       setUser(restored);
       setReady(true);
       return restored;
     } catch {
-      setUser(null);
+      const cached = readCachedUser();
+      setUser(cached);
       setReady(true);
-      return null;
+      return cached;
     }
   }, []);
 
   useEffect(() => {
     fetchMe();
-    bindSupabaseAuthListener(setUser);
 
-    const onStorage = (e: StorageEvent) => {
-      if (
-        e.key === TOKEN_KEY ||
-        e.key === 'lc_user' ||
-        e.key === GUEST_KEY ||
-        e.key === SUPABASE_STORAGE_KEY
-      ) {
-        fetchMe();
-      }
+    // Same-tab updates when returning from app (storage events only fire across tabs).
+    const onFocus = () => {
+      if (hasStoredSession()) fetchMe();
     };
-    window.addEventListener('storage', onStorage);
-    return () => window.removeEventListener('storage', onStorage);
+    window.addEventListener('focus', onFocus);
+    return () => window.removeEventListener('focus', onFocus);
   }, [fetchMe]);
 
   const saveToken = useCallback((token: string) => {
-    localStorage.setItem(TOKEN_KEY, token);
+    localStorage.setItem('lc_token', token);
   }, []);
 
   const logout = useCallback(async () => {

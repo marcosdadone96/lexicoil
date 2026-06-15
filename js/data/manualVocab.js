@@ -150,6 +150,24 @@ const ManualVocab = (() => {
     return fc;
   }
 
+  function enrichFlashcardFromBank(fc, bank) {
+    if (!fc || !bank?.questions?.length) return fc;
+    const wordLow = String(fc.word || '').toLowerCase().trim();
+    if (!wordLow) return fc;
+    const topicSet = new Set(fc.topicTags || []);
+    const grammarSet = new Set(fc.grammarTags || []);
+    bank.questions.forEach((q) => {
+      const tags = q.vocabularyTags || [];
+      if (tags.some((t) => String(t).toLowerCase() === wordLow)) {
+        (q.topicTags || []).forEach((t) => topicSet.add(t));
+        (q.grammarTags || []).forEach((t) => grammarSet.add(t));
+      }
+    });
+    if (topicSet.size) fc.topicTags = [...topicSet];
+    if (grammarSet.size) fc.grammarTags = [...grammarSet];
+    return fc;
+  }
+
   function wordKey(word, subject) {
     return normToken(parseLeadingArticle(word, subject).word);
   }
@@ -194,6 +212,11 @@ const ManualVocab = (() => {
     if (meta.article) fc.article = meta.article;
     enrichFlashcard(fc, subject);
     if (typeof ExamProfile !== 'undefined') ExamProfile.tagItem(fc);
+    if (typeof LibraryLoader !== 'undefined' && typeof S !== 'undefined') {
+      LibraryLoader.load(fc.sourceLang, S.level || 'B1')
+        .then((bank) => enrichFlashcardFromBank(fc, bank))
+        .catch(() => {});
+    }
     return fc;
   }
 
@@ -218,6 +241,11 @@ const ManualVocab = (() => {
     };
     enrichFlashcard(fc, subject);
     if (typeof ExamProfile !== 'undefined') ExamProfile.tagItem(fc);
+    if (typeof LibraryLoader !== 'undefined' && typeof S !== 'undefined') {
+      LibraryLoader.load(fc.sourceLang, S.level || 'B1')
+        .then((bank) => enrichFlashcardFromBank(fc, bank))
+        .catch(() => {});
+    }
     return fc;
   }
 
@@ -278,6 +306,7 @@ const ManualVocab = (() => {
     buildTranslations,
     inferPos,
     enrichFlashcard,
+    enrichFlashcardFromBank,
     parseLeadingArticle,
   };
 })();

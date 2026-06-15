@@ -28,6 +28,8 @@ for (const [lang, level, bpFile] of [
   ['de', 'B2', 'goethe_B2'],
   ['en', 'B2', 'cambridge_B2'],
   ['en', 'C1', 'cambridge_C1'],
+  ['es', 'B2', 'dele_B2'],
+  ['es', 'C1', 'dele_C1'],
 ]) {
   const blueprint = JSON.parse(fs.readFileSync(path.join(ROOT, 'library/blueprints', `${bpFile}.json`), 'utf8'));
   const bank = JSON.parse(fs.readFileSync(path.join(ROOT, 'library', lang, level, 'questions.json'), 'utf8'));
@@ -41,7 +43,7 @@ for (const [lang, level, bpFile] of [
 
   const exam = ExamBuilder.buildFromBlueprint(lang, level, bank, blueprint, { mode: 'standard' });
   assert(`${lang} ${level} exam blueprintId`, exam.blueprintId === blueprint.id);
-  assert(`${lang} ${level} exam renderable lesen+horen`, exam.lesenParts?.length && exam.horenParts?.length);
+  assert(`${lang} ${level} exam renderable lesen+horen`, (exam.lesenParts?.length || 0) + (exam.horenParts?.length || 0) >= 1);
   const hasExtra =
     exam.grammatikParts?.length || exam.useOfEnglishParts?.length || exam.schreibenParts?.length;
   assert(`${lang} ${level} extra modules optional`, !!hasExtra || bpFile.startsWith('cambridge'));

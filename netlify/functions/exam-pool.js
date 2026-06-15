@@ -1,41 +1,26 @@
 'use strict';
 
+const fs = require('fs');
 const path = require('path');
 const { randomUUID } = require('crypto');
 const { getStoreForEvent } = require('./lib/blobStore.js');
 const { verifyAuthToken } = require('./lib/authLib.js');
 const { corsHeaders, getBearer, parseJsonBody, jsonResponse } = require('./lib/http.js');
 const { validateGeneratedExam } = require('./lib/examQualityGate.js');
-
-const MAX_PER_LEVEL = 50;
-const POOL_SAMPLE = 20;
-const BURN_THRESHOLD = 100;
-
-function poolIndexKey(lang, level) {
-  return `pool_index:${lang}:${level}`;
-}
-
-function poolExamKey(lang, level, id) {
-  return `pool:${lang}:${level}:${id}`;
-}
+const {
+  publishPoolExam,
+  pickPoolExam,
+  listPoolIndexEntries,
+} = require('./lib/poolIndex.js');
 
 function isValidExam(exam) {
   if (!exam || typeof exam !== 'object') return false;
-  return validateGeneratedExam(exam).valid;
-}
-
-function pickRandom(arr, n) {
-  const copy = [...arr];
-  const out = [];
-  while (copy.length && out.length < n) {
-    const i = Math.floor(Math.random() * copy.length);
-    out.push(copy.splice(i, 1)[0]);
+  try {
+    return validateGeneratedExam(exam).valid;
+  } catch (err) {
+    console.warn('[exam-pool] validate error:', err.message);
+    return false;
   }
-  return out;
-}
-
-function poolKeyId(key) {
-  return String(key || '').split(':').pop();
 }
 
 function parseExcludeSet(params) {
@@ -48,6 +33,65 @@ function parseExcludeSet(params) {
       .filter(Boolean)
       .slice(0, 40),
   );
+}
+
+function seedPoolPath(lang, level) {
+  const name = `${lang}_${level}.json`;
+  const candidates = [
+    path.join(__dirname, 'library', 'pool-seed', name),
+    path.join(__dirname, '..', '..', 'library', 'pool-seed', name),
+  ];
+  for (const file of candidates) {
+    if (fs.existsSync(file)) return file;
+  }
+  return null;
+}
+
+function loadSeedPool(lang, level) {
+  const file = seedPoolPath(lang, level);
+  if (!file) return [];
+  try {
+    const data = JSON.parse(fs.readFileSync(file, 'utf8'));
+    return Array.isArray(data) ? data : [];
+  } catch (_) {
+    return [];
+  }
+}
+
+function isCuratedPoolEntry(entry) {
+  if (!entry || typeof entry !== 'object') return false;
+  if (entry.curated !== true) return false;
+  if (!entry.provenance?.validatedBy) return false;
+  if (entry.provenance?.cefrGate && entry.provenance.cefrGate.withinRange === false) return false;
+  return true;
+}
+
+function strategyBEnabled() {
+  return process.env.STRATEGY_B === '1';
+}
+
+function isValidPoolEntry(entry) {
+  if (!entry?.exam || !isValidExam(entry.exam)) return false;
+  if (strategyBEnabled() && !isCuratedPoolEntry(entry)) return false;
+  return true;
+}
+
+function pickSeedEntry(lang, level, exclude) {
+  const pool = loadSeedPool(lang, level).filter(
+    (entry) => entry?.id && !exclude.has(entry.id) && isValidPoolEntry(entry),
+  );
+  if (!pool.length) return null;
+  return pool[Math.floor(Math.random() * pool.length)];
+}
+
+function seedPoolResponse(entry, headers) {
+  return jsonResponse(200, headers, {
+    found: true,
+    id: entry.id,
+    exam: entry.exam,
+    topic: entry.topic,
+    source: 'pool',
+  });
 }
 
 exports.handler = async (event) => {
@@ -66,56 +110,18 @@ exports.handler = async (event) => {
       return jsonResponse(400, getHeaders, { error: 'lang and level required' });
     }
 
-    let index = [];
-    try {
-      index = (await store.get(poolIndexKey(lang, level), { type: 'json' })) || [];
-    } catch (_) {
-      index = [];
-    }
-    if (!index.length) {
+    const chosen = await pickPoolExam(store, lang, level, exclude, {
+      isValidEntry: isValidPoolEntry,
+    });
+    if (!chosen) {
+      const seeded = pickSeedEntry(lang, level, exclude);
+      if (seeded) return seedPoolResponse(seeded, getHeaders);
       return jsonResponse(200, getHeaders, { found: false });
     }
-
-    const recent = index.slice(-POOL_SAMPLE);
-    const candidates = pickRandom(recent, Math.min(recent.length, POOL_SAMPLE)).filter(
-      (key) => !exclude.has(poolKeyId(key)),
-    );
-    const fresh = [];
-
-    for (const key of candidates) {
-      try {
-        const entry = await store.get(key, { type: 'json' });
-        if (entry && isValidExam(entry.exam) && (entry.servedCount || 0) <= BURN_THRESHOLD) {
-          fresh.push({ key, entry });
-        }
-      } catch (_) {
-        /* skip */
-      }
-    }
-
-    let pool = fresh;
-    if (!pool.length) {
-      for (const key of candidates) {
-        try {
-          const entry = await store.get(key, { type: 'json' });
-          if (entry && isValidExam(entry.exam)) pool.push({ key, entry });
-        } catch (_) {
-          /* skip */
-        }
-      }
-    }
-    if (!pool.length) {
-      return jsonResponse(200, getHeaders, { found: false });
-    }
-
-    const chosen = pool[Math.floor(Math.random() * pool.length)];
-    chosen.entry.servedCount = (chosen.entry.servedCount || 0) + 1;
-    chosen.entry.lastServedAt = Date.now();
-    await store.setJSON(chosen.key, chosen.entry);
 
     return jsonResponse(200, getHeaders, {
       found: true,
-      id: poolKeyId(chosen.key),
+      id: chosen.id,
       exam: chosen.entry.exam,
       topic: chosen.entry.topic,
       source: 'pool',
@@ -140,7 +146,11 @@ exports.handler = async (event) => {
     const level = String(body.level || '').trim().toUpperCase();
     const topic = String(body.topic || '').trim().slice(0, 120);
     const exam = body.exam;
-    const gate = validateGeneratedExam(exam);
+    const gate = validateGeneratedExam(exam, {
+      strict: strategyBEnabled(),
+      cefrGate: strategyBEnabled(),
+      curation: strategyBEnabled(),
+    });
     if (!lang || !level || !gate.valid) {
       if (exam && !gate.valid) {
         console.warn('[exam-pool] rejected exam:', gate.errors);
@@ -156,9 +166,11 @@ exports.handler = async (event) => {
     if (exam.vocabPersonal || (Array.isArray(exam.vocabWords) && exam.vocabWords.length)) {
       return jsonResponse(400, cors, { error: 'personal_exam_not_allowed' });
     }
+    if (strategyBEnabled() && !body.curated && !body.provenance?.validatedBy) {
+      return jsonResponse(400, cors, { error: 'curated_provenance_required' });
+    }
 
     const id = randomUUID();
-    const key = poolExamKey(lang, level, id);
     const entry = {
       lang,
       level,
@@ -168,27 +180,9 @@ exports.handler = async (event) => {
       createdAt: Date.now(),
       contributedBy: contributor,
     };
-    await store.setJSON(key, entry);
+    const { examKey } = await publishPoolExam(store, { lang, level, id, entry });
 
-    const iKey = poolIndexKey(lang, level);
-    let index = [];
-    try {
-      index = (await store.get(iKey, { type: 'json' })) || [];
-    } catch (_) {
-      index = [];
-    }
-    index.push(key);
-    if (index.length > MAX_PER_LEVEL) {
-      const removed = index.shift();
-      try {
-        await store.delete(removed);
-      } catch (_) {
-        /* ignore */
-      }
-    }
-    await store.setJSON(iKey, index);
-
-    return jsonResponse(200, cors, { saved: true, key });
+    return jsonResponse(200, cors, { saved: true, key: examKey });
   }
 
   return jsonResponse(405, cors, { error: 'method_not_allowed' });

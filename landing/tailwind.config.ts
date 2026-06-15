@@ -1,40 +1,42 @@
 import type { Config } from 'tailwindcss';
 
+/** Tailwind theme reads canonical CSS vars from assets/css/lexicoil-design-system.css */
 const config: Config = {
   content: ['./src/**/*.{js,ts,jsx,tsx,mdx}'],
   theme: {
     extend: {
       colors: {
         brand: {
-          DEFAULT: '#2563eb',
-          light: '#dbeafe',
-          dark: '#1d4ed8',
-          50: '#eff6ff',
-          100: '#dbeafe',
-          500: '#3b82f6',
-          600: '#2563eb',
-          700: '#1d4ed8',
+          DEFAULT: 'var(--brand)',
+          light: 'var(--brand-light)',
+          dark: 'var(--brand-dark)',
         },
         teal: {
-          DEFAULT: '#06b6d4',
-          light: 'rgba(6,182,212,0.12)',
+          DEFAULT: 'var(--teal)',
+          light: 'var(--teal-light)',
         },
-        navy: '#0f172a',
+        navy: 'var(--lc-navy)',
         gray: {
-          brand: '#e2e8f0',
+          brand: 'var(--lc-gray)',
         },
+        success: 'var(--success)',
+        warning: 'var(--warning)',
+        error: 'var(--error)',
       },
       fontFamily: {
-        sans: ['var(--font-poppins)', 'Poppins', 'system-ui', 'sans-serif'],
-        display: ['var(--font-poppins)', 'Poppins', 'system-ui', 'sans-serif'],
+        sans: ['var(--font-poppins)', 'var(--lc-font)', 'Poppins', 'system-ui', 'sans-serif'],
+        display: ['var(--font-poppins)', 'var(--lc-font)', 'Poppins', 'system-ui', 'sans-serif'],
       },
       boxShadow: {
         card: 'var(--shadow-card)',
         hero: 'var(--shadow-hero)',
+        lg: 'var(--shadow-lg)',
       },
       borderRadius: {
-        card: '16px',
-        md: '12px',
+        card: 'var(--radius-lg)',
+        md: 'var(--radius-md)',
+        lg: 'var(--radius-lg)',
+        xl: 'var(--radius-xl)',
       },
     },
   },

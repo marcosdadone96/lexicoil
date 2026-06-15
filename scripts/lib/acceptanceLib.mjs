@@ -146,7 +146,11 @@ function mockChunkObject(expectKey, level, lang) {
     correct: 'b',
   };
   if (expectKey === 'lesenParts') {
-    return { lang, level, lesenParts: [{ teil: 1, instruction: 'Lesen', items: [item] }] };
+    return {
+      lang,
+      level,
+      lesenParts: [{ teil: 1, instruction: 'Lesen', text: 'Beispieltext.', items: [item] }],
+    };
   }
   if (expectKey === 'horenParts') {
     return {
@@ -156,6 +160,7 @@ function mockChunkObject(expectKey, level, lang) {
         {
           teil: 1,
           instruction: 'Hören',
+          transcript: 'Hallo und willkommen.',
           segments: [
             {
               id: 'h1',

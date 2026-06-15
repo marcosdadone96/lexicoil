@@ -1,8 +1,9 @@
 'use strict';
 
-const path = require('path');
-const ExamValidator = require(path.join(__dirname, '../../../js/engine/validation/ExamValidator.js'));
-const AnswerKeyVerifier = require(path.join(__dirname, '../../../js/engine/validation/AnswerKeyVerifier.js'));
+const ExamValidator = require('../../../js/engine/validation/ExamValidator.js');
+const AnswerKeyVerifier = require('../../../js/engine/validation/AnswerKeyVerifier.js');
+const { cefrGateEnabled } = require('../../../js/engine/validation/cefrGateFlags.js');
+const CefrGate = require('../../../js/engine/validation/CefrGate.js');
 
 const PLACEHOLDER_THRESHOLD = 5;
 const PLACEHOLDER_RE = /\.\.\.|Option [A-D]"|"Text here"|"Question here"|Ein Text ueber|Ein Text über|An article about/gi;
@@ -16,20 +17,44 @@ function countPlaceholders(exam) {
  * Structural + placeholder quality gate for generated exams.
  * Uses ExamValidator (answer-key structure) — does not change exam format.
  */
-function validateGeneratedExam(exam) {
+function validateGeneratedExam(exam, opts = {}) {
+  const strict = opts.strict ?? process.env.VALIDATOR_STRICT === '1';
   const validator = new ExamValidator();
-  const structural = validator.validate(exam);
+  const structural = validator.validate(exam, {
+    strict,
+    blueprint: opts.blueprint,
+    cefrGate: cefrGateEnabled(opts),
+    curation: opts.curation === true,
+  });
   const errors = [...(structural.errors || [])];
-
+  const warnings = [...(structural.warnings || [])];
   const placeholders = countPlaceholders(exam);
+
   if (placeholders > PLACEHOLDER_THRESHOLD) {
-    errors.push('exam_placeholder_content');
+    const code = `exam_placeholder_content:count=${placeholders}`;
+    if (!errors.includes(code) && !errors.some((e) => e.startsWith('exam_placeholder_content'))) {
+      errors.push(code);
+    }
+  }
+
+  let cefrMetrics;
+  if (cefrGateEnabled(opts)) {
+    const cefr = CefrGate.validateExam(exam);
+    cefrMetrics = cefr.metrics;
+    if (!cefr.withinRange) {
+      cefr.reasons.forEach((r) => {
+        const code = `cefr_gate:${r}`;
+        if (!errors.includes(code)) errors.push(code);
+      });
+    }
   }
 
   return {
     valid: errors.length === 0,
     errors,
+    warnings,
     placeholders,
+    cefrMetrics,
   };
 }
 

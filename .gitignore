@@ -1,9 +1,18 @@
 node_modules
 .env
-dist
+.env.local
+.env.*.local
+dist/
+*.zip
+**/*.dist.zip
+
 landing/node_modules
-landing/.next
-landing/out
+landing/.next/
+landing/out/
 
 # Local Netlify folder
 .netlify
+staging/
+staging/_test_backup/
+library/**/questions.backup-*.json
+library/tts-cache/

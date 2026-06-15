@@ -28,6 +28,7 @@ Reply ONLY valid JSON:
 
 async function startOralPractice(goal,words){
   if(!goal||!words?.length)return;
+  if(typeof requirePersonalized==='function'&&!requirePersonalized({message:'AI speaking practice from your vocabulary requires Pro.'}))return;
   _oralSession.goalId=goal.id;
   _oralSession.words=words;
   _oralSession.task=null;
@@ -76,6 +77,7 @@ function renderOralPracticeTask(goal){
     </div>`;
   hideAll();
   show('oralPracticeScreen');
+  if(typeof LcRouter!=='undefined')LcRouter.replaceRoute(LcRouter.goalPath(goal,'oral'),'Exams');
   initSpeakingMic('oralTranscript',goal.subject);
   const ta=document.getElementById('oralTranscript');
   const btn=document.getElementById('oralEvalBtn');
@@ -137,7 +139,7 @@ function renderOralPracticeResults(goal,result,transcript){
     }).join('')}</div>
     ${result.improvements?.length?`<div class="card note-card"><b>To improve</b><ul class="oral-fb-list">${result.improvements.map(i=>`<li>${esc(i)}</li>`).join('')}</ul></div>`:''}
     ${result.strongPoints?.length?`<div class="card note-card"><b>Strengths</b><ul class="oral-fb-list">${result.strongPoints.map(i=>`<li>${esc(i)}</li>`).join('')}</ul></div>`:''}
-    <div class="card note-card"><b>Your transcript</b><p style="font-size:13px;color:var(--text2);line-height:1.7;margin-top:8px">${esc(transcript)}</p></div>
+    <div class="card note-card"><b>Your transcript</b><p style="font-size:13px;color:var(--text-secondary);line-height:1.7;margin-top:8px">${esc(transcript)}</p></div>
     <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:18px">
       <button type="button" class="btn btn-primary" onclick="retryOralPractice()">Try again</button>
       <button type="button" class="btn-sm" onclick="navBack()">Back to exams</button>

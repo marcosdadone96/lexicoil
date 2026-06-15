@@ -6,7 +6,10 @@ const { getStoreForEvent } = require('./lib/blobStore.js');
 
 const { getJwtSecret, verifyAuthToken, userKey } = require('./lib/authLib.js');
 
-const { getQuotaState, resolvePlan, maxForPlan, getMonthKey } = require('./lib/quotaLib.js');
+const { resolvePlan, maxForPlan, getMonthKey } = require('./lib/quotaLib.js');
+const { ensureUserFreeCombo, freeComboForResponse } = require('./lib/freeComboLib.js');
+const { mergeSupabasePlanIntoBlob, loadBlobUser } = require('./lib/planSync.js');
+const sb = require('./lib/supabaseAdmin.js');
 
 const { corsHeaders, getBearer, jsonResponse } = require('./lib/http.js');
 
@@ -44,22 +47,24 @@ exports.handler = async (event) => {
 
   const store = getStoreForEvent(event);
 
-  let user;
+  let user = await loadBlobUser(store, auth.email);
 
-  try {
-
-    user = await store.get(userKey(auth.email), { type: 'json' });
-
-  } catch (_) {
-
-    user = null;
-
+  if (!user && sb.isConfigured()) {
+    const profile = await sb.getUserProfile(auth.userId) || await sb.getUserProfileByEmail(auth.email);
+    if (profile) {
+      user = await mergeSupabasePlanIntoBlob(store, auth.email, profile, auth.payload?.name);
+    }
   }
 
   if (!user) {
-
     return jsonResponse(401, cors, { error: 'unauthorized' });
+  }
 
+  if (sb.isConfigured()) {
+    const profile = await sb.getUserProfile(auth.userId) || await sb.getUserProfileByEmail(auth.email);
+    if (profile) {
+      user = (await mergeSupabasePlanIntoBlob(store, auth.email, profile, user.name)) || user;
+    }
   }
 
   if (user.tokenVersion != null && auth.payload.tv !== user.tokenVersion) {
@@ -78,32 +83,25 @@ exports.handler = async (event) => {
     /* fresh */
   }
 
-
+  const beforeCombo = user.freeCombo ? JSON.stringify(user.freeCombo) : '';
+  user = ensureUserFreeCombo(user);
+  if (plan !== 'pro' && JSON.stringify(user.freeCombo || {}) !== beforeCombo) {
+    await store.setJSON(userKey(auth.email), user);
+  }
 
   return jsonResponse(200, cors, {
-
     enabled: true,
-
     user: {
-
       name: user.name,
-
       email: auth.email,
-
       avatar: (user.name || auth.email || '?')[0].toUpperCase(),
-
       plan,
-
       pro: plan === 'pro',
-
       quota: { used, max, month },
-
       proActivatedAt: user.proActivatedAt || null,
-
       memberSince: user.createdAt || null,
-
+      freeCombo: freeComboForResponse(user),
     },
-
   });
 
 };

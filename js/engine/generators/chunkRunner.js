@@ -8,6 +8,7 @@ const ChunkRunner = (() => {
       onStep = () => {},
       parseExamJson,
       validateChunkObj,
+      promptSuffix = '',
     } = hooks;
 
     const ai = { examGeneration: true, timeoutMs: 40000 };
@@ -21,12 +22,14 @@ const ChunkRunner = (() => {
         if (attempt > 0) await new Promise((r) => setTimeout(r, 2000));
         try {
           onStep('Part ' + chunk.label + (attempt ? '… (retry)' : '…'));
-          const extra = attempt
-            ? '\n\nFIX: Return a JSON object with required root key ' +
-              chunk.expectKey +
-              '. No array at root.'
-            : '';
-          const raw = await callAI(chunk.prompt + extra, chunk.maxTokens, {
+          const fixHint =
+            attempt > 0
+              ? '\n\nFIX: Return a JSON object with required root key ' +
+                chunk.expectKey +
+                '. No array at root.'
+              : '';
+          const suffix = (attempt > 0 ? fixHint : '') + (promptSuffix || '');
+          const raw = await callAI(chunk.prompt + suffix, chunk.maxTokens, {
             ...ai,
             consumeQuota: false,
           });

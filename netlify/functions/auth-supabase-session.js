@@ -5,6 +5,14 @@ const { getStoreForEvent } = require('./lib/blobStore.js');
 const { userKey, signAuthToken, normalizeEmail, getJwtSecret, getTokenVersion } = require('./lib/authLib.js');
 const { corsHeaders, parseJsonBody, jsonResponse } = require('./lib/http.js');
 const { resolvePlan, maxForPlan, getMonthKey } = require('./lib/quotaLib.js');
+const {
+  parseFreeComboFromBody,
+  parseFreeComboFromMeta,
+  ensureUserFreeCombo,
+  freeComboForResponse,
+} = require('./lib/freeComboLib.js');
+const { mergeSupabasePlanIntoBlob } = require('./lib/planSync.js');
+const sb = require('./lib/supabaseAdmin.js');
 
 function trimEnv(v) {
   return String(v || '').trim();
@@ -65,20 +73,40 @@ exports.handler = async function handler(event) {
     user = null;
   }
 
+  const comboFromBody = parseFreeComboFromBody(body);
+  const comboFromMeta = parseFreeComboFromMeta(meta);
+
   if (!user) {
-    user = {
+    user = ensureUserFreeCombo({
       name,
       email,
       plan: 'free',
       pro: false,
       createdAt: Date.now(),
       supabaseId: sbUser.id,
-    };
+      freeCombo: comboFromBody || comboFromMeta,
+    });
   } else {
     user.name = user.name || name;
     user.supabaseId = sbUser.id;
     if (!user.createdAt) user.createdAt = Date.now();
+    if (!user.pro && !user.freeCombo && (comboFromBody || comboFromMeta)) {
+      user.freeCombo = comboFromBody || comboFromMeta;
+    }
+    user = ensureUserFreeCombo(user);
   }
+
+  if (sb.isConfigured()) {
+    let profile = await sb.getUserProfile(sbUser.id) || await sb.getUserProfileByEmail(email);
+    if (!profile) {
+      await sb.upsertUserProfile(sbUser.id, email, { plan: resolvePlan(user) });
+      profile = await sb.getUserProfile(sbUser.id);
+    }
+    if (profile) {
+      user = (await mergeSupabasePlanIntoBlob(store, email, profile, name)) || user;
+    }
+  }
+
   await store.setJSON(key, user);
 
   const session = signAuthToken(email, user.name, getTokenVersion(user));
@@ -103,6 +131,7 @@ exports.handler = async function handler(event) {
       pro: plan === 'pro',
       memberSince: user.createdAt || null,
       quota: { used, max, month },
+      freeCombo: freeComboForResponse(user),
     },
   });
 };

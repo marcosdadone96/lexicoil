@@ -5,6 +5,7 @@ const { verifyAuthToken, normalizeEmail } = require('./lib/authLib.js');
 const { corsHeaders, getBearer, parseJsonBody, jsonResponse } = require('./lib/http.js');
 const { resolvePlan, maxForPlan, getMonthKey } = require('./lib/quotaLib.js');
 const { activateProForEmail } = require('./lib/proUpgrade.js');
+const { checkoutSessionIsPaid, persistStripeCustomerId } = require('./lib/stripeLib.js');
 
 function sessionEmail(session) {
   return (
@@ -55,10 +56,11 @@ exports.handler = async (event) => {
     });
   }
 
-  if (session.payment_status !== 'paid') {
+  if (!checkoutSessionIsPaid(session)) {
     return jsonResponse(402, cors, {
       error: 'payment_not_completed',
       payment_status: session.payment_status || 'unknown',
+      status: session.status || 'unknown',
     });
   }
 
@@ -69,7 +71,13 @@ exports.handler = async (event) => {
   }
 
   const store = getStoreForEvent(event);
-  const upgraded = await activateProForEmail(store, userEmail, { sendEmail: true });
+  const customerId = session.customer || null;
+  if (customerId) await persistStripeCustomerId(store, userEmail, customerId);
+
+  const upgraded = await activateProForEmail(store, userEmail, {
+    sendEmail: true,
+    stripeCustomerId: customerId || undefined,
+  });
   if (!upgraded.ok) {
     return jsonResponse(404, cors, { error: upgraded.error || 'upgrade_failed' });
   }

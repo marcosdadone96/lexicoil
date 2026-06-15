@@ -1,0 +1,24 @@
+
+Gemini batch generator — de/B1 × 1
+Prompt: batches/GEMINI_MASTER_PROMPT_de_B1.md
+
+── horen T2 · digitale-bildung-01 ──
+Tema: Radiosendung über digitale Bildung
+Archivo: batches/merged/horen-t2-digitale-bildung-01.json
+Llamando Gemini…
+
+⏳ Rate limit — esperando 52s (1/3)…
+Tokens: in=1686 out=2158
+Modelo: gemini-2.5-flash
+Guardado: batches/merged/horen-t2-digitale-bildung-01.json (5 preguntas, 1 passages)
+Validando…
+
+== Validación de horen-t2-digitale-bildung-01.json (de_B1) ==
+Preguntas: 5 | Pasajes: 1
+Esquema: OK
+Colocación (Teile que mejora): Pool válido (Teil ya cubierto en 1 examen — OK para exámenes disjuntos)
+Sin problemas detectados ✅
+Validación OK
+Siguiente: node scripts/merge-bank-batch.mjs --lang de --level B1 --file batches/merged/horen-t2-digitale-bildung-01.json
+
+Resumen: 1 OK, 0 fallidos

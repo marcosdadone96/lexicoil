@@ -73,16 +73,37 @@ export function Header() {
               </svg>
             )}
           </button>
-          <button
-            type="button"
-            onClick={() => openAuth('login')}
-            className="px-3 py-2 text-sm font-semibold text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
-          >
-            Log in
-          </button>
-          <button type="button" onClick={tryExamAsGuest} className="btn-primary px-5 py-2.5">
-            Try demo
-          </button>
+          {ready && isLoggedIn ? (
+            <>
+              <span className="hidden text-sm font-semibold text-[var(--text-secondary)] lg:inline">
+                {userLabel}
+                {user?.plan === 'pro' ? ' · Pro' : ''}
+              </span>
+              <a href={APP_URL} className="btn-primary px-5 py-2.5">
+                Open app
+              </a>
+              <button
+                type="button"
+                onClick={() => logout()}
+                className="px-3 py-2 text-sm font-semibold text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+              >
+                Log out
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                type="button"
+                onClick={() => openAuth('login')}
+                className="px-3 py-2 text-sm font-semibold text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+              >
+                Log in
+              </button>
+              <button type="button" onClick={tryExamAsGuest} className="btn-primary px-5 py-2.5">
+                Try demo
+              </button>
+            </>
+          )}
         </div>
 
         <button

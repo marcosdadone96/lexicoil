@@ -26,6 +26,7 @@ function openExamConfigurator(goalId,preselectedIds){
   show('examConfigScreen');
   showExamConfigFootbar(true);
   renderExamConfigurator();
+  if(typeof LcRouter!=='undefined')LcRouter.replaceRoute(LcRouter.goalPath(goal,'config'),'Exams');
   window.scrollTo({top:0,behavior:'smooth'});
 }
 function examConfigFootAction(){submitExamConfig();}
@@ -61,8 +62,12 @@ function configSkillSummary(skills,subject){
   if(skills.has('sprechen'))parts.push(ui.speaking);
   return parts.join(' + ')||'—';
 }
-function estimateConfigQuestions(nWords,nSkills){
-  return Math.max(4,nWords*nSkills);
+function estimateConfigQuestions(nWords,skillsSet){
+  const skills=skillsSet instanceof Set?[...skillsSet]:(Array.isArray(skillsSet)?skillsSet:['lesen','horen']);
+  if(typeof VocabBatching!=='undefined'){
+    return Math.max(4,Math.min(nWords,VocabBatching.capacityFor(skills)));
+  }
+  return Math.max(4,nWords*skills.length);
 }
 function renderExamConfigurator(){
   const goal=S.goals.find(g=>g.id===_examConfig.goalId);
@@ -108,7 +113,7 @@ function renderExamConfigurator(){
     <div class="exam-config-panel">${chipsHtml}</div>`;
   const summary=document.getElementById('examConfigSummary');
   const genBtn=document.getElementById('examConfigGenerateBtn');
-  const qEst=estimateConfigQuestions(selN,_examConfig.skills.size);
+  const qEst=estimateConfigQuestions(selN,_examConfig.skills);
   const rem=typeof getQuotaRemaining==='function'?getQuotaRemaining():null;
   if(summary){
     let txt='<b>'+selN+' word'+(selN===1?'':'s')+'</b> · '+esc(skillLbl);
@@ -118,8 +123,11 @@ function renderExamConfigurator(){
     summary.innerHTML=txt;
   }
   if(genBtn){
-    genBtn.disabled=selN<4||_examConfig.skills.size<1||!canGenerate();
-    if(!canGenerate())genBtn.textContent='Quota used — upgrade';
+    const proOnly=typeof canUsePersonalized==='function'&&!canUsePersonalized();
+    genBtn.disabled=selN<2||_examConfig.skills.size<1||(!proOnly&&!canGenerate());
+    if(proOnly){
+      genBtn.textContent='Upgrade for personalized exams →';
+    }else if(!canGenerate())genBtn.textContent='Quota used — upgrade';
     else if(oralOnly)genBtn.textContent='Start speaking →';
     else genBtn.textContent='Generate exam →';
   }
@@ -129,8 +137,9 @@ function submitExamConfig(){
   if(!goal)return;
   const words=deckForGoal(goal).filter(f=>_examConfig.selectedIds.has(fcId(f))).map(f=>f.word);
   const skills=[..._examConfig.skills];
-  if(words.length<4){lcToast('Select at least 4 words.','warn');return;}
+  if(words.length<2){lcToast('Select at least 2 words.','warn');return;}
   if(skills.length<1){lcToast('Select at least one exam part.','warn');return;}
+  if(typeof requirePersonalized==='function'&&!requirePersonalized())return;
   if(!canGenerate()){showUpgrade();return;}
   showExamConfigFootbar(false);
   const gid=_examConfig.goalId;
@@ -155,6 +164,7 @@ function openDeckHub(goalId,options){
   hideAll();
   show('flashcardScreen');
   renderDeckHub();
+  if(typeof LcRouter!=='undefined')LcRouter.replaceRoute(LcRouter.goalPath(goal,'deck'),'Vocabulary');
   window.scrollTo({top:0,behavior:'smooth'});
 }
 function renderDeckHub(){
@@ -238,7 +248,35 @@ function renderProfileBar(){
   if(demo)demo.style.display='none';
 }
 function showProfileSetup(){
+  if(typeof isFreeAccount==='function'&&isFreeAccount()){
+    hideAll();show('profileSetupScreen');
+    const fc=typeof getFreeCombo==='function'?getFreeCombo():null;
+    const label=typeof freeComboLabel==='function'?freeComboLabel(fc):'your exam';
+    document.getElementById('profileCertGrid')?.style.setProperty('display','none');
+    document.getElementById('profileLevelGrid')?.style.setProperty('display','none');
+    document.querySelector('#profileSetupScreen .u-section-label')?.style.setProperty('display','none');
+    document.querySelectorAll('#profileSetupScreen .u-section-label')[1]?.style.setProperty('display','none');
+    const h2=document.querySelector('#profileSetupScreen .screen-h1');
+    const sub=document.querySelector('#profileSetupScreen .screen-sub');
+    if(h2)h2.textContent='Your Free plan exam';
+    if(sub)sub.innerHTML=`Free includes one certification: <b>${esc(label)}</b>. You get <b>5 official mock exams</b> per month on this level, plus flashcards and free retakes. Upgrade to Pro for all languages, levels, and personalized practice.`;
+    const btn=document.getElementById('btnProfileSave');
+    if(btn){btn.disabled=false;btn.textContent='Continue →';btn.onclick=function(){goHome();};}
+    const sw=document.getElementById('profileSwitcher');if(sw){sw.style.display='none';sw.innerHTML='';}
+    window.scrollTo({top:0,behavior:'smooth'});
+    return;
+  }
   hideAll();show('profileSetupScreen');S.profileCert=S.subject||null;S.profileLevel=S.level||null;
+  document.getElementById('profileCertGrid')?.style.removeProperty('display');
+  document.getElementById('profileLevelGrid')?.style.removeProperty('display');
+  document.querySelector('#profileSetupScreen .u-section-label')?.style.removeProperty('display');
+  document.querySelectorAll('#profileSetupScreen .u-section-label')[1]?.style.removeProperty('display');
+  const h2=document.querySelector('#profileSetupScreen .screen-h1');
+  const sub=document.querySelector('#profileSetupScreen .screen-sub');
+  if(h2)h2.textContent='What are you preparing for?';
+  if(sub)sub.textContent='All vocabulary, progress, and exams stay inside this certification profile.';
+  const btn=document.getElementById('btnProfileSave');
+  if(btn){btn.textContent='Start preparing →';btn.onclick=saveExamProfile;}
   document.querySelectorAll('#profileCertGrid .setup-card').forEach(c=>c.classList.toggle('selected',c.dataset.subject===S.profileCert));
   renderProfileSwitcher();renderProfileLevelGrid();window.scrollTo({top:0,behavior:'smooth'});
 }
@@ -249,18 +287,21 @@ function renderProfileSwitcher(){
   if(profiles.length<2){box.style.display='none';box.innerHTML='';return;}
   const active=ExamProfile.getActiveId();
   box.style.display='block';
-  box.innerHTML=`<div style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin-bottom:10px">Your exam profiles</div>
-    <div class="profile-switch-list">${profiles.map(p=>`<div class="profile-switch-item${p.id===active?' active':''}" onclick="switchExamProfile('${p.id}')"><div><div class="profile-switch-item__label">${esc(p.label)}</div><div class="profile-switch-item__meta">${p.id===active?'Active profile':'Switch to this profile'}</div></div><span style="font-size:11px;font-weight:700;color:var(--accent)">${p.id===active?'✓':''}</span></div>`).join('')}</div>
-    <div style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin:18px 0 10px">Or add another certification</div>`;
+  box.innerHTML=`<div style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:10px">Your exam profiles</div>
+    <div class="profile-switch-list">${profiles.map(p=>`<div class="profile-switch-item${p.id===active?' active':''}" onclick="switchExamProfile('${p.id}')"><div><div class="profile-switch-item__label">${esc(p.label)}</div><div class="profile-switch-item__meta">${p.id===active?'Active profile':'Switch to this profile'}</div></div><span style="font-size:11px;font-weight:700;color:var(--brand)">${p.id===active?'✓':''}</span></div>`).join('')}</div>
+    <div style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin:18px 0 10px">Or add another certification</div>`;
 }
 function switchExamProfile(id){
   if(typeof ExamProfile==='undefined')return;
+  const p=ExamProfile.getProfiles().find(x=>x.id===id);
+  if(p&&typeof requireProForCombo==='function'&&!requireProForCombo(p.subject,p.level))return;
   ExamProfile.setActiveProfile(id);
-  const p=ExamProfile.getActive();
-  if(p){S.subject=p.subject;S.level=p.level;}
+  const active=ExamProfile.getActive();
+  if(active){S.subject=active.subject;S.level=active.level;}
   updBadges();goHome();lcToast('Switched to '+ExamProfile.getActiveLabel(),'success');
 }
 function selectProfileCert(sub,el){
+  if(typeof isFreeAccount==='function'&&isFreeAccount()){if(typeof showUpgrade==='function')showUpgrade();return;}
   S.profileCert=sub;document.querySelectorAll('#profileCertGrid .setup-card').forEach(c=>c.classList.remove('selected'));
   if(el)el.classList.add('selected');renderProfileLevelGrid();
 }
@@ -268,16 +309,95 @@ function renderProfileLevelGrid(){
   const grid=document.getElementById('profileLevelGrid');
   const btn=document.getElementById('btnProfileSave');
   if(!grid||!S.profileCert)return;
-  grid.innerHTML=LEVELS[S.profileCert].map(l=>`<div class="level-card${S.profileLevel===l.code?' selected':''}" onclick="selectProfileLevel('${l.code}')"><div class="lc-code">${l.code}</div><div class="lc-name">${l.name}</div></div>`).join('');
+  const levels=(typeof LibraryCatalog!=='undefined'?LEVELS[S.profileCert].filter(l=>LibraryCatalog.isLevelAvailable(S.profileCert,l.code)):LEVELS[S.profileCert]);
+  grid.innerHTML=levels.map(l=>`<div class="level-card${S.profileLevel===l.code?' selected':''}" onclick="selectProfileLevel('${l.code}')"><div class="lc-code">${l.code}</div><div class="lc-name">${l.name}</div></div>`).join('');
   if(btn)btn.disabled=!S.profileLevel;
 }
 function selectProfileLevel(code){
+  if(typeof isFreeAccount==='function'&&isFreeAccount()){if(typeof showUpgrade==='function')showUpgrade();return;}
   S.profileLevel=code;renderProfileLevelGrid();
 }
 function saveExamProfile(){
   if(!S.profileCert||!S.profileLevel)return;
+  if(typeof requireProForCombo==='function'&&!requireProForCombo(S.profileCert,S.profileLevel))return;
   if(typeof ExamProfile!=='undefined')ExamProfile.createProfile(S.profileCert,S.profileLevel);
   S.subject=S.profileCert;S.level=S.profileLevel;
   goHome();lcToast('Preparing for '+ExamProfile.getActiveLabel(),'success');
 }
 function userMenuProfile(){closeUserMenu();showProfileSetup();}
+
+function openAudioSettings(){
+  closeUserMenu();
+  const modal=document.getElementById('audioSettingsModal');
+  if(!modal)return;
+  modal.style.display='flex';
+  _renderAudioSettingsContent();
+}
+function closeAudioSettings(){
+  const modal=document.getElementById('audioSettingsModal');
+  if(modal)modal.style.display='none';
+}
+function _renderAudioSettingsContent(){
+  const el=document.getElementById('audioSettingsContent');
+  if(!el)return;
+  const lang=typeof S!=='undefined'?S.subject||'de':'de';
+  const langCode=lang==='de'?'de-DE':lang==='es'?'es-ES':'en-GB';
+  const langLabel=lang==='de'?'Deutsch':lang==='es'?'Español':'English';
+
+  function render(voices){
+    const pref=typeof getTtsVoicePref==='function'?getTtsVoicePref(lang):null;
+    if(!voices||!voices.length){
+      el.innerHTML='<p style="font-size:13px;color:var(--text-muted)">No voices found for '+langLabel+'. Your browser will use its default voice.</p>';
+      return;
+    }
+    const opts=voices.map(v=>`<option value="${v.name}"${(pref===v.name||(!pref&&voices[0]===v))?' selected':''}>${v.name}${v.localService?' (offline)':''}</option>`).join('');
+    el.innerHTML=`
+      <div style="margin-bottom:12px">
+        <label style="font-size:12px;font-weight:600;color:var(--text-muted);display:block;margin-bottom:6px">${langLabel} voice</label>
+        <select id="audioVoicePicker" style="width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:13px">${opts}</select>
+      </div>
+      <button class="btn-sm blue" onclick="_testAudioVoice()" style="margin-right:8px">▶ Test voice</button>
+      <button class="btn-sm" onclick="_saveAudioVoice()">Save</button>
+      <p id="audioVoiceSaved" style="font-size:12px;color:var(--brand);display:none;margin-top:8px">✓ Voice saved</p>
+    `;
+  }
+
+  if(typeof listBrowserVoices==='function'){
+    let voices=listBrowserVoices(lang);
+    if(!voices.length&&window.speechSynthesis){
+      window.speechSynthesis.onvoiceschanged=function(){
+        voices=listBrowserVoices(lang);
+        render(voices);
+        window.speechSynthesis.onvoiceschanged=null;
+      };
+      window.speechSynthesis.getVoices();
+      setTimeout(()=>{if(!voices.length)render([]);},1500);
+    }else{render(voices);}
+  }else{
+    el.innerHTML='<p style="font-size:13px;color:var(--text-muted)">Audio uses your browser\'s built-in speech synthesizer.</p>';
+  }
+}
+function _testAudioVoice(){
+  const picker=document.getElementById('audioVoicePicker');
+  const lang=typeof S!=='undefined'?S.subject||'de':'de';
+  const voices=typeof listBrowserVoices==='function'?listBrowserVoices(lang):[];
+  const name=picker?picker.value:null;
+  const voice=name?voices.find(v=>v.name===name):null;
+  if(!window.speechSynthesis)return;
+  window.speechSynthesis.cancel();
+  const testText={'de':'Guten Tag! Das ist ein Hörbeispiel.','es':'¡Hola! Este es un ejemplo de audio.'}[lang]||'Hello! This is a test of your selected voice.';
+  const u=new SpeechSynthesisUtterance(testText);
+  u.lang=lang==='de'?'de-DE':lang==='es'?'es-ES':'en-GB';
+  u.rate=0.9;
+  if(voice)u.voice=voice;
+  window.speechSynthesis.speak(u);
+}
+function _saveAudioVoice(){
+  const picker=document.getElementById('audioVoicePicker');
+  const lang=typeof S!=='undefined'?S.subject||'de':'de';
+  if(picker&&typeof setTtsVoicePref==='function'){
+    setTtsVoicePref(lang,picker.value);
+    const saved=document.getElementById('audioVoiceSaved');
+    if(saved){saved.style.display='block';setTimeout(()=>{saved.style.display='none';},2500);}
+  }
+}

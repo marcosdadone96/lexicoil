@@ -1,0 +1,25 @@
+
+Batch generator (claude) — de/B1 × 1
+Prompt: batches/GEMINI_MASTER_PROMPT_de_B1.md
+Presupuesto Claude: $2.30 (gastado: $0.1813)
+
+── horen T2 · ehrenamt-chancen-01 ──
+Tema: Vortrag über Chancen des Ehrenamts
+Proveedor: claude
+Archivo: batches/merged/horen-t2-ehrenamt-chancen-01.json
+Llamando claude…
+Gasto acumulado: $0.1955 / budget $2.30
+Tokens: in=1928 out=2443
+Modelo: claude-haiku-4-5
+Guardado: batches/merged/horen-t2-ehrenamt-chancen-01.json (5 preguntas, 1 passages)
+Validando…
+
+== Validación de horen-t2-ehrenamt-chancen-01.json (de_B1) ==
+Preguntas: 5 | Pasajes: 1
+Esquema: OK
+Colocación (Teile que mejora): Pool válido (Teil ya cubierto en 1 examen — OK para exámenes disjuntos)
+Sin problemas detectados ✅
+Validación OK
+Siguiente: node scripts/merge-bank-batch.mjs --lang de --level B1 --file batches/merged/horen-t2-ehrenamt-chancen-01.json
+
+Resumen: 1 OK, 0 fallidos

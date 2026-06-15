@@ -2,766 +2,156 @@
   "meta": {
     "language": "de",
     "level": "B2",
-    "version": 2,
-    "generatedAt": "2026-06-09",
-    "examId": "goethe-b2-bank-v2",
-    "examType": "goethe",
-    "mode": "library",
-    "sourceBank": "de_B2.json"
+    "version": 1,
+    "generatedAt": "2026-06-09"
   },
   "passages": [
     {
-      "id": "de-b2-p-digital",
+      "id": "p-lesen-1",
       "module": "lesen",
-      "title": "Digitalisierung und Berufsbilder",
-      "text": "Eine aktuelle Studie des Instituts für Arbeitsmarkt zeigt, dass die Digitalisierung viele Berufsbilder verändert, ohne sie vollständig zu ersetzen. Besonders repetitive Tätigkeiten werden automatisiert, während neue Stellen in der Datenanalyse entstehen. Kritiker warnen, dass ältere Beschäftigte seltener Zugang zu Weiterbildung erhalten. Die Autoren fordern deshalb staatlich geförderte Umschulungsprogramme."
+      "title": "Digitalisierung am Arbeitsplatz",
+      "text": "Experten berichten, dass die Digitalisierung viele Berufe verändert, ohne sie vollständig zu ersetzen. Laut einer Studie werden vor allem repetitive Tätigkeiten automatisiert. Gleichzeitig entstehen neue Stellen in der IT-Branche. Kritiker warnen, dass ältere Arbeitnehmer oft weniger Zugang zu Weiterbildung haben. Politiker fordern daher staatlich geförderte Programme."
     },
     {
-      "id": "de-b2-p-climate",
-      "module": "lesen",
-      "title": "Klimaschutz und Energiepolitik",
-      "text": "Der Kommentator schreibt, der Ausbau erneuerbarer Energien sei unverzichtbar, wenn Deutschland seine Klimaziele erreichen wolle. Gleichzeitig betont er, dass Verbraucher ihren Energieverbrauch nicht vollständig externalisieren dürften. Nur die Kombination aus Politik, Technik und Verhaltensänderung könne wirksam sein."
-    },
-    {
-      "id": "de-b2-p-news",
+      "id": "p-horen-1",
       "module": "horen",
-      "title": "Nachrichten: Arbeitsmarktreform",
-      "text": "Journalistin: Der Wirtschaftsminister habe in der Pressekonferenz erklärt, die geplante Arbeitsmarktreform sei bis 2027 notwendig. Oppositionspolitiker widersprächen und behaupteten, die Maßnahmen belaste vor allem kleine Unternehmen."
-    },
-    {
-      "id": "de-b2-p-home",
-      "module": "horen",
-      "title": "Interview: Homeoffice",
-      "text": "Moderator: Viele Unternehmen bieten hybride Modelle an. Expertin: Das erhöht die Flexibilität, kann aber dazu führen, dass die Grenze zwischen Arbeit und Freizeit verschwimmt. Unternehmen sollten klare Erreichbarkeitsregeln definieren."
+      "title": "Podcast: Homeoffice",
+      "text": "Moderatorin: Ist Homeoffice die Zukunft? Expertin: Es erhöht die Flexibilität, kann aber die Grenze zwischen Arbeit und Freizeit verwischen. Unternehmen müssen klare Regeln definieren. Moderatorin: Und die Produktivität? Expertin: Sie steigt bei vielen, aber nicht bei allen."
     }
   ],
   "questions": [
     {
-      "id": "de-b2-l-p1-q1",
+      "id": "lb-de-b2-l1",
+      "module": "lesen",
+      "type": "richtig_falsch",
+      "question": "Laut Text werden alle Berufe vollständig ersetzt.",
+      "correct": "Falsch",
+      "correctAnswer": "Falsch",
+      "explanation": "Der Text sagt „ohne sie vollständig zu ersetzen“.",
+      "grammarTags": [
+        "g-de-b2-konj1"
+      ],
+      "topicTags": [
+        "digitalisierung"
+      ],
+      "difficulty": 3,
+      "passageId": "p-lesen-1",
+      "teil": 1,
+      "lang": "de"
+    },
+    {
+      "id": "lb-de-b2-l2",
       "module": "lesen",
       "type": "multiple",
-      "question": "Was betont die Studie als zentrale Folge der Digitalisierung am Arbeitsplatz?",
+      "question": "Was wird vor allem automatisiert?",
+      "options": [
+        "a) Kreative Aufgaben",
+        "b) Repetitive Tätigkeiten",
+        "c) Politische Debatten"
+      ],
       "correct": "b",
       "correctAnswer": "b",
-      "explanation": "Der Text sagt ausdrücklich: Veränderung ohne vollständigen Ersatz.",
+      "explanation": "Studie: repetitive Tätigkeiten.",
       "grammarTags": [
         "g-de-b2-nominal"
       ],
       "topicTags": [
-        "technology",
-        "work"
+        "arbeit"
       ],
-      "vocabularyTags": [
-        "Digitalisierung"
-      ],
-      "difficulty": 6,
-      "teil": 1,
-      "skills": [
-        "reading"
-      ],
-      "language": "de",
-      "level": "B2",
-      "examType": "goethe",
-      "questionType": "multiple_choice",
-      "passageId": "de-b2-p-digital",
-      "options": [
-        "a) Der vollständige Wegfall menschlicher Tätigkeiten",
-        "b) Die Veränderung von Aufgaben, nicht ihr vollständiger Ersatz",
-        "c) Eine Senkung aller Löhne um 30 Prozent",
-        "d) Das Ende von Homeoffice-Regelungen"
-      ]
+      "difficulty": 3,
+      "passageId": "p-lesen-1",
+      "teil": 1
     },
     {
-      "id": "de-b2-l-p1-q2",
+      "id": "lb-de-b2-l3",
       "module": "lesen",
       "type": "multiple",
-      "question": "Welche Tätigkeiten werden besonders automatisiert?",
-      "correct": "a",
-      "correctAnswer": "a",
-      "explanation": "Repetitive Tätigkeiten werden als automatisiert beschrieben.",
-      "grammarTags": [
-        "g-de-b2-nominal"
-      ],
-      "topicTags": [
-        "technology"
-      ],
-      "vocabularyTags": [
-        "Digitalisierung"
-      ],
-      "difficulty": 5,
-      "teil": 1,
-      "skills": [
-        "reading"
-      ],
-      "language": "de",
-      "level": "B2",
-      "examType": "goethe",
-      "questionType": "multiple_choice",
+      "question": "Was fordern Politiker?",
       "options": [
-        "a) Repetitive Tätigkeiten",
-        "b) Kreative Leitungsaufgaben",
-        "c) Politische Beratung",
-        "d) Künstlerische Projekte"
-      ]
-    },
-    {
-      "id": "de-b2-l-p1-q3",
-      "module": "lesen",
-      "type": "multiple",
-      "question": "Was fordern die Autoren der Studie?",
-      "correct": "a",
-      "correctAnswer": "a",
-      "explanation": "Umschulungsprogramme mit staatlicher Förderung werden gefordert.",
+        "a) Weniger Internet",
+        "b) Staatlich geförderte Weiterbildung",
+        "c) Abschaffung der IT"
+      ],
+      "correct": "b",
+      "correctAnswer": "b",
+      "explanation": "Staatlich geförderte Programme.",
       "grammarTags": [
         "g-de-b2-konj1"
       ],
       "topicTags": [
-        "work",
-        "education"
+        "bildung"
       ],
-      "vocabularyTags": [
-        "Weiterbildung"
-      ],
-      "difficulty": 6,
-      "teil": 1,
-      "skills": [
-        "reading"
-      ],
-      "language": "de",
-      "level": "B2",
-      "examType": "goethe",
-      "questionType": "multiple_choice",
-      "options": [
-        "a) Staatlich geförderte Umschulungsprogramme",
-        "b) Ein Verbot von Algorithmen",
-        "c) Die Abschaffung des Mindestlohns",
-        "d) Mehr Überstunden ohne Bezahlung"
-      ]
+      "difficulty": 4,
+      "passageId": "p-lesen-1",
+      "teil": 2
     },
     {
-      "id": "de-b2-l-p1-q4",
-      "module": "lesen",
-      "type": "multiple",
-      "question": "Wen warnen Kritiker laut Text besonders?",
-      "correct": "a",
-      "correctAnswer": "a",
-      "explanation": "Kritiker warnen vor benachteiligten älteren Beschäftigten.",
-      "grammarTags": [
-        "g-de-b2-konj1"
-      ],
-      "topicTags": [
-        "work"
-      ],
-      "vocabularyTags": [
-        "Digitalisierung"
-      ],
-      "difficulty": 7,
-      "teil": 1,
-      "skills": [
-        "reading"
-      ],
-      "language": "de",
-      "level": "B2",
-      "examType": "goethe",
-      "questionType": "multiple_choice",
-      "options": [
-        "a) Ältere Beschäftigte mit weniger Weiterbildungszugang",
-        "b) Schüler vor dem Abitur",
-        "c) Touristen in Großstädten",
-        "d) Landwirte auf Biobetrieben"
-      ]
-    },
-    {
-      "id": "de-b2-l-p2-q1",
-      "module": "lesen",
-      "type": "multiple",
-      "question": "Welche Maßnahme wird im Kommentar als unverzichtbar bezeichnet?",
-      "correct": "a",
-      "correctAnswer": "a",
-      "explanation": "Erneuerbare Energien werden als unverzichtbar genannt.",
-      "grammarTags": [
-        "g-de-b2-nominal"
-      ],
-      "topicTags": [
-        "environment"
-      ],
-      "vocabularyTags": [
-        "Klimaschutz"
-      ],
-      "difficulty": 6,
-      "teil": 2,
-      "skills": [
-        "reading"
-      ],
-      "language": "de",
-      "level": "B2",
-      "examType": "goethe",
-      "questionType": "multiple_choice",
-      "passageId": "de-b2-p-climate",
-      "options": [
-        "a) Der Ausbau erneuerbarer Energien",
-        "b) Der Bau neuer Autobahnen",
-        "c) Die Förderung von Einwegplastik",
-        "d) Die Abschaffung öffentlicher Verkehrsmittel"
-      ]
-    },
-    {
-      "id": "de-b2-l-p2-q2",
-      "module": "lesen",
-      "type": "multiple",
-      "question": "Was dürften Verbraucher laut Autor nicht tun?",
-      "correct": "a",
-      "correctAnswer": "a",
-      "explanation": "Externalisierung des eigenen Verbrauchs wird kritisiert.",
-      "grammarTags": [
-        "g-de-b2-konj1"
-      ],
-      "topicTags": [
-        "environment"
-      ],
-      "vocabularyTags": [
-        "Klimaschutz"
-      ],
-      "difficulty": 7,
-      "teil": 2,
-      "skills": [
-        "reading"
-      ],
-      "language": "de",
-      "level": "B2",
-      "examType": "goethe",
-      "questionType": "multiple_choice",
-      "options": [
-        "a) Ihren Energieverbrauch vollständig externalisieren",
-        "b) Öffentliche Verkehrsmittel nutzen",
-        "c) Über Klimapolitik diskutieren",
-        "d) An Wahlen teilnehmen"
-      ]
-    },
-    {
-      "id": "de-b2-l-p2-q3",
-      "module": "lesen",
-      "type": "multiple",
-      "question": "Welche Kombination hält der Autor für wirksam?",
-      "correct": "a",
-      "correctAnswer": "a",
-      "explanation": "Alle drei Elemente müssen zusammenwirken.",
-      "grammarTags": [
-        "g-de-b2-nominal"
-      ],
-      "topicTags": [
-        "environment",
-        "technology"
-      ],
-      "vocabularyTags": [
-        "Klimaschutz"
-      ],
-      "difficulty": 6,
-      "teil": 2,
-      "skills": [
-        "reading"
-      ],
-      "language": "de",
-      "level": "B2",
-      "examType": "goethe",
-      "questionType": "multiple_choice",
-      "options": [
-        "a) Politik, Technik und Verhaltensänderung",
-        "b) Nur technische Innovation",
-        "c) Nur Steuererhöhungen",
-        "d) Nur internationale Konferenzen"
-      ]
-    },
-    {
-      "id": "de-b2-l-p2-q4",
-      "module": "lesen",
-      "type": "multiple",
-      "question": "Was will Deutschland laut Text erreichen?",
-      "correct": "a",
-      "correctAnswer": "a",
-      "explanation": "Es geht um das Erreichen der Klimaziele.",
-      "grammarTags": [
-        "g-de-b2-konj1"
-      ],
-      "topicTags": [
-        "environment"
-      ],
-      "vocabularyTags": [
-        "Klimaschutz"
-      ],
-      "difficulty": 5,
-      "teil": 2,
-      "skills": [
-        "reading"
-      ],
-      "language": "de",
-      "level": "B2",
-      "examType": "goethe",
-      "questionType": "multiple_choice",
-      "options": [
-        "a) Seine Klimaziele",
-        "b) Einen Exportrekord bei Kohle",
-        "c) Die Abschaffung aller Steuern",
-        "d) Den Bau von Atomkraftwerken"
-      ]
-    },
-    {
-      "id": "de-b2-h-p1-q1",
+      "id": "lb-de-b2-h1",
       "module": "horen",
       "type": "multiple",
-      "question": "Was berichtet die Journalistin über den Minister?",
-      "correct": "a",
-      "correctAnswer": "a",
-      "explanation": "Indirekte Rede: er habe die Reform verteidigt.",
-      "grammarTags": [
-        "g-de-b2-konj1"
-      ],
-      "topicTags": [
-        "work"
-      ],
-      "vocabularyTags": [
-        "IndirekteRede"
-      ],
-      "difficulty": 7,
-      "teil": 1,
-      "skills": [
-        "listening"
-      ],
-      "language": "de",
-      "level": "B2",
-      "examType": "goethe",
-      "questionType": "multiple_choice",
-      "passageId": "de-b2-p-news",
+      "question": "Was kann Homeoffice verwischen?",
       "options": [
-        "a) Er habe die Reform bis 2027 verteidigt.",
-        "b) Er habe die Reform für unrealistisch erklärt.",
-        "c) Er habe keine Stellung bezogen.",
-        "d) Er habe die Reform abgeschafft."
+        "a) Die Grenze zwischen Arbeit und Freizeit",
+        "b) Den Fernseher",
+        "c) Die Gehaltshöhe"
       ],
-      "segmentLabel": "Aufnahme 1"
-    },
-    {
-      "id": "de-b2-h-p1-q2",
-      "module": "horen",
-      "type": "multiple",
-      "question": "Was behaupten Oppositionspolitiker?",
       "correct": "a",
       "correctAnswer": "a",
-      "explanation": "Konjunktiv I in indirekter Rede: belaste kleine Unternehmen.",
-      "grammarTags": [
-        "g-de-b2-konj1"
-      ],
-      "topicTags": [
-        "work"
-      ],
-      "vocabularyTags": [
-        "IndirekteRede"
-      ],
-      "difficulty": 8,
-      "teil": 1,
-      "skills": [
-        "listening"
-      ],
-      "language": "de",
-      "level": "B2",
-      "examType": "goethe",
-      "questionType": "multiple_choice",
-      "options": [
-        "a) Die Maßnahmen belasten vor allem kleine Unternehmen.",
-        "b) Die Reform senkt alle Steuern.",
-        "c) Die Reform gilt nur für Beamte.",
-        "d) Die Reform wurde bereits umgesetzt."
-      ],
-      "segmentLabel": "Aufnahme 1"
-    },
-    {
-      "id": "de-b2-h-p1-q3",
-      "module": "horen",
-      "type": "multiple",
-      "question": "Bis wann sei die Reform laut Minister notwendig?",
-      "correct": "a",
-      "correctAnswer": "a",
-      "explanation": "Zeitangabe bis 2027 in der indirekten Rede.",
-      "grammarTags": [
-        "g-de-b2-konj1"
-      ],
-      "topicTags": [
-        "work"
-      ],
-      "vocabularyTags": [
-        "IndirekteRede"
-      ],
-      "difficulty": 6,
-      "teil": 1,
-      "skills": [
-        "listening"
-      ],
-      "language": "de",
-      "level": "B2",
-      "examType": "goethe",
-      "questionType": "multiple_choice",
-      "options": [
-        "a) Bis 2027",
-        "b) Bis 2035",
-        "c) Nur für ein Jahr",
-        "d) Ohne Zeitlimit"
-      ],
-      "segmentLabel": "Aufnahme 1"
-    },
-    {
-      "id": "de-b2-h-p1-q4",
-      "module": "horen",
-      "type": "multiple",
-      "question": "Wo äußerte sich der Minister laut Bericht?",
-      "correct": "a",
-      "correctAnswer": "a",
-      "explanation": "Pressekonferenz wird genannt.",
+      "explanation": "Expertin nennt die Work-Life-Grenze.",
       "grammarTags": [
         "g-de-b2-nominal"
       ],
       "topicTags": [
-        "daily_life"
+        "arbeit"
       ],
-      "vocabularyTags": [
-        "Minister"
-      ],
-      "difficulty": 5,
-      "teil": 1,
-      "skills": [
-        "listening"
-      ],
-      "language": "de",
-      "level": "B2",
-      "examType": "goethe",
-      "questionType": "multiple_choice",
-      "options": [
-        "a) In einer Pressekonferenz",
-        "b) In einem Podcast für Jugendliche",
-        "c) In einem Kochvideo",
-        "d) In einem Sportstudio"
-      ],
-      "segmentLabel": "Aufnahme 1"
+      "difficulty": 3,
+      "passageId": "p-horen-1",
+      "segmentLabel": "Aufnahme 1",
+      "teil": 1
     },
     {
-      "id": "de-b2-h-p2-q1",
+      "id": "lb-de-b2-h2",
       "module": "horen",
-      "type": "multiple",
-      "question": "Was ist laut Expertin das Hauptproblem von Homeoffice?",
-      "correct": "a",
-      "correctAnswer": "a",
-      "explanation": "Grenze zwischen Arbeit und Freizeit verschwimmt.",
-      "grammarTags": [
-        "g-de-b2-nominal"
-      ],
-      "topicTags": [
-        "work",
-        "technology"
-      ],
-      "vocabularyTags": [
-        "Homeoffice"
-      ],
-      "difficulty": 6,
-      "teil": 2,
-      "skills": [
-        "listening"
-      ],
-      "language": "de",
-      "level": "B2",
-      "examType": "goethe",
-      "questionType": "multiple_choice",
-      "passageId": "de-b2-p-home",
-      "options": [
-        "a) Die Verschwimmung von Arbeit und Freizeit",
-        "b) Zu hohe Mietkosten",
-        "c) Fehlende Internetverbindung",
-        "d) Zu wenig Meetings"
-      ],
-      "segmentLabel": "Aufnahme 2"
-    },
-    {
-      "id": "de-b2-h-p2-q2",
-      "module": "horen",
-      "type": "multiple",
-      "question": "Was sollten Unternehmen definieren?",
-      "correct": "a",
-      "correctAnswer": "a",
-      "explanation": "Erreichbarkeitsregeln werden empfohlen.",
+      "type": "richtig_falsch",
+      "question": "Die Produktivität steigt bei allen Mitarbeitern.",
+      "correct": "Falsch",
+      "correctAnswer": "Falsch",
+      "explanation": "„bei vielen, aber nicht bei allen“.",
       "grammarTags": [
         "g-de-b2-konj1"
       ],
       "topicTags": [
-        "work"
+        "arbeit"
       ],
-      "vocabularyTags": [
-        "Homeoffice"
-      ],
-      "difficulty": 6,
-      "teil": 2,
-      "skills": [
-        "listening"
-      ],
-      "language": "de",
-      "level": "B2",
-      "examType": "goethe",
-      "questionType": "multiple_choice",
-      "options": [
-        "a) Klare Erreichbarkeitsregeln",
-        "b) Ein Verbot von E-Mails",
-        "c) Nur Präsenzpflicht",
-        "d) Wöchentliche Teamreisen"
-      ],
-      "segmentLabel": "Aufnahme 2"
+      "difficulty": 4,
+      "passageId": "p-horen-1",
+      "segmentLabel": "Aufnahme 1",
+      "teil": 1,
+      "lang": "de"
     },
     {
-      "id": "de-b2-h-p2-q3",
+      "id": "lb-de-b2-h3",
       "module": "horen",
       "type": "multiple",
-      "question": "Welchen Vorteil nennt die Expertin?",
+      "question": "Was müssen Unternehmen tun?",
+      "options": [
+        "a) Klare Regeln definieren",
+        "b) Homeoffice verbieten",
+        "c) Keine Meetings"
+      ],
       "correct": "a",
       "correctAnswer": "a",
-      "explanation": "Flexibilität wird als Vorteil genannt.",
+      "explanation": "Klare Regeln werden gefordert.",
       "grammarTags": [
         "g-de-b2-nominal"
       ],
       "topicTags": [
-        "work",
-        "daily_life"
+        "wirtschaft"
       ],
-      "vocabularyTags": [
-        "Homeoffice"
-      ],
-      "difficulty": 5,
-      "teil": 2,
-      "skills": [
-        "listening"
-      ],
-      "language": "de",
-      "level": "B2",
-      "examType": "goethe",
-      "questionType": "multiple_choice",
-      "options": [
-        "a) Mehr Flexibilität",
-        "b) Höhere Gehälter für alle",
-        "c) Weniger Dokumentation",
-        "d) Kürzere Arbeitswoche gesetzlich"
-      ],
-      "segmentLabel": "Aufnahme 2"
-    },
-    {
-      "id": "de-b2-h-p2-q4",
-      "module": "horen",
-      "type": "multiple",
-      "question": "Was bieten viele Unternehmen laut Moderator an?",
-      "correct": "a",
-      "correctAnswer": "a",
-      "explanation": "Hybride Modelle werden erwähnt.",
-      "grammarTags": [
-        "g-de-b2-konj1"
-      ],
-      "topicTags": [
-        "technology",
-        "work"
-      ],
-      "vocabularyTags": [
-        "Homeoffice"
-      ],
-      "difficulty": 5,
-      "teil": 2,
-      "skills": [
-        "listening"
-      ],
-      "language": "de",
-      "level": "B2",
-      "examType": "goethe",
-      "questionType": "multiple_choice",
-      "options": [
-        "a) Hybride Arbeitsmodelle",
-        "b) Nur Nachtschichten",
-        "c) Ausschließlich Werkverträge",
-        "d) Nur Teilzeit für Führungskräfte"
-      ],
-      "segmentLabel": "Aufnahme 2"
-    },
-    {
-      "id": "de-b2-g-q1",
-      "module": "grammatik",
-      "type": "multiple",
-      "question": "Wählen Sie die korrekte indirekte Rede: Er sagte, er _____ morgen an.",
-      "correct": "a",
-      "correctAnswer": "a",
-      "explanation": "Konjunktiv I: er komme.",
-      "grammarTags": [
-        "g-de-b2-konj1"
-      ],
-      "topicTags": [
-        "work"
-      ],
-      "vocabularyTags": [
-        "IndirekteRede"
-      ],
-      "difficulty": 7,
-      "teil": 1,
-      "skills": [
-        "grammar"
-      ],
-      "language": "de",
-      "level": "B2",
-      "examType": "goethe",
-      "questionType": "multiple_choice",
-      "options": [
-        "a) komme",
-        "b) kommt",
-        "c) käme",
-        "d) kommen"
-      ]
-    },
-    {
-      "id": "de-b2-g-q2",
-      "module": "grammatik",
-      "type": "multiple",
-      "question": "Welche Nominalisierung ist korrekt?",
-      "correct": "a",
-      "correctAnswer": "a",
-      "explanation": "Korrekte Nominalisierung mit Artikel und Genitiv.",
-      "grammarTags": [
-        "g-de-b2-nominal"
-      ],
-      "topicTags": [
-        "technology"
-      ],
-      "vocabularyTags": [
-        "Sicherheit"
-      ],
-      "difficulty": 8,
-      "teil": 1,
-      "skills": [
-        "grammar"
-      ],
-      "language": "de",
-      "level": "B2",
-      "examType": "goethe",
-      "questionType": "multiple_choice",
-      "options": [
-        "a) Die Verbesserung der Sicherheit",
-        "b) Das Verbessern der Sicherheit",
-        "c) Die sicher verbessern",
-        "d) Verbessert die Sicherheit"
-      ]
-    },
-    {
-      "id": "de-b2-g-q3",
-      "module": "grammatik",
-      "type": "multiple",
-      "question": "Ergänzen Sie: Die Maßnahmen, _____ gestern beschlossen wurden, treten im Juli in Kraft.",
-      "correct": "a",
-      "correctAnswer": "a",
-      "explanation": "Nominativ Plural Relativpronomen: die Maßnahmen → die.",
-      "grammarTags": [
-        "g-de-b2-nominal"
-      ],
-      "topicTags": [
-        "environment"
-      ],
-      "vocabularyTags": [
-        "Maßnahme"
-      ],
-      "difficulty": 6,
-      "teil": 1,
-      "skills": [
-        "grammar"
-      ],
-      "language": "de",
-      "level": "B2",
-      "examType": "goethe",
-      "questionType": "multiple_choice",
-      "options": [
-        "a) die",
-        "b) der",
-        "c) denen",
-        "d) das"
-      ]
-    },
-    {
-      "id": "de-b2-g-q4",
-      "module": "grammatik",
-      "type": "gap_fill",
-      "question": "Formulieren Sie Passiv: Die Ergebnisse _____ (veröffentlichen) nächste Woche.",
-      "correct": "werden veröffentlicht",
-      "correctAnswer": "werden veröffentlicht",
-      "explanation": "Passiv Präsens: werden + Partizip II.",
-      "grammarTags": [
-        "g-de-b2-nominal"
-      ],
-      "topicTags": [
-        "education"
-      ],
-      "vocabularyTags": [
-        "Ergebnis"
-      ],
-      "difficulty": 6,
-      "teil": 1,
-      "skills": [
-        "grammar"
-      ],
-      "language": "de",
-      "level": "B2",
-      "examType": "goethe",
-      "questionType": "gap_fill"
-    },
-    {
-      "id": "de-b2-w-q1",
-      "module": "schreiben",
-      "type": "multiple",
-      "question": "Verfassen Sie eine formelle Beschwerde-E-Mail (ca. 150 Wörter) an einen Online-Händler wegen einer defekten Lieferung. Fordern Sie Ersatz oder Rückerstattung.",
-      "correct": "rubric",
-      "correctAnswer": "rubric",
-      "explanation": "Bewertet nach Register, Struktur, Argumentation und Korrektheit (B2).",
-      "grammarTags": [
-        "g-de-b2-konj1"
-      ],
-      "topicTags": [
-        "daily_life",
-        "technology"
-      ],
-      "vocabularyTags": [
-        "Beschwerde"
-      ],
-      "difficulty": 7,
-      "teil": 1,
-      "skills": [
-        "writing"
-      ],
-      "language": "de",
-      "level": "B2",
-      "examType": "goethe",
-      "questionType": "short_answer"
-    },
-    {
-      "id": "de-b2-w-q2",
-      "module": "schreiben",
-      "type": "multiple",
-      "question": "Schreiben Sie einen argumentierenden Text (ca. 150 Wörter): Sollten soziale Medien stärker reguliert werden?",
-      "correct": "rubric",
-      "correctAnswer": "rubric",
-      "explanation": "Bewertet nach Argumentationsstruktur, Konnektoren und Nominalstil.",
-      "grammarTags": [
-        "g-de-b2-nominal"
-      ],
-      "topicTags": [
-        "technology"
-      ],
-      "vocabularyTags": [
-        "Regulierung"
-      ],
-      "difficulty": 8,
-      "teil": 2,
-      "skills": [
-        "writing"
-      ],
-      "language": "de",
-      "level": "B2",
-      "examType": "goethe",
-      "questionType": "short_answer"
+      "difficulty": 3,
+      "passageId": "p-horen-1",
+      "segmentLabel": "Aufnahme 1",
+      "teil": 2
     }
   ],
   "vocabulary": {
@@ -770,14 +160,14 @@
       "es": "digitalización",
       "type": "noun"
     },
-    "IndirekteRede": {
-      "en": "indirect speech",
-      "es": "estilo indirecto",
+    "Weiterbildung": {
+      "en": "continuing education",
+      "es": "formación continua",
       "type": "noun"
     },
-    "Klimaschutz": {
-      "en": "climate protection",
-      "es": "protección climática",
+    "Produktivität": {
+      "en": "productivity",
+      "es": "productividad",
       "type": "noun"
     }
   }

@@ -5,6 +5,33 @@ function startTimer(min){stopTimer();S.timerSec=min*60;updTimer();S.timerInt=set
 function stopTimer(){if(S.timerInt){clearInterval(S.timerInt);S.timerInt=null;}}
 function updTimer(){const el=document.getElementById('timerVal');if(!el)return;const m=Math.floor(S.timerSec/60),s=S.timerSec%60;el.textContent=m+':'+(s<10?'0':'')+s;el.className='timer-val'+(S.timerSec<300?' warn':'')+(S.timerSec<60?' crit':'');}
 
+function unbindExamScrollTop(){
+  if(S._examScrollCleanup){S._examScrollCleanup();S._examScrollCleanup=null;}
+  document.documentElement.classList.remove('exam-scroll-active');
+  const btn=document.getElementById('examScrollTopBtn');
+  if(btn)btn.remove();
+}
+function bindExamScrollTop(){
+  unbindExamScrollTop();
+  document.documentElement.classList.add('exam-scroll-active');
+  const btn=document.createElement('button');
+  btn.id='examScrollTopBtn';
+  btn.type='button';
+  btn.className='exam-scroll-top';
+  btn.setAttribute('aria-label','Scroll to top');
+  btn.textContent='↑';
+  btn.onclick=()=>window.scrollTo({top:0,behavior:'smooth'});
+  document.body.appendChild(btn);
+  const onScroll=()=>{
+    const root=document.documentElement;
+    const nearBottom=root.scrollHeight-root.scrollTop-root.clientHeight<120;
+    btn.classList.toggle('visible',nearBottom&&root.scrollTop>300);
+  };
+  window.addEventListener('scroll',onScroll,{passive:true});
+  onScroll();
+  S._examScrollCleanup=()=>{window.removeEventListener('scroll',onScroll);};
+}
+
 // ═══════════════════════════════════════════
 // RENDER EXAM
 // ═══════════════════════════════════════════
@@ -14,6 +41,60 @@ function esc(s) {
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;');
 }
+function stashPassageMeta(blockId, text, translations) {
+  if (!text) return;
+  S._passageMeta = S._passageMeta || {};
+  S._passageMeta[blockId] = { text, translations: translations || {} };
+}
+function passageToolbarHtml(blockId, isPrac, ui) {
+  if (!isPrac || isOfficialMode()) return '';
+  const label = ui?.translatePassage || 'Translate passage';
+  return `<div class="passage-translate-row" style="margin:10px 0 0"><button type="button" class="btn-sm" id="passBtn_${blockId}" onclick="translatePassage('${blockId}')">${esc(label)}</button></div><div class="passage-translation" id="passTrans_${blockId}" style="display:none;margin-top:10px;padding:12px;background:var(--surface2,rgba(127,127,127,.08));border-radius:8px;font-size:14px;line-height:1.65"></div>`;
+}
+async function translatePassage(blockId) {
+  const meta = S._passageMeta?.[blockId];
+  const panel = document.getElementById('passTrans_' + blockId);
+  const btn = document.getElementById('passBtn_' + blockId);
+  if (!meta || !panel) return;
+  const lang = S.vocabLang;
+  const from = S.subject;
+  const ui = typeof examUiStrings === 'function' ? examUiStrings(resolveExamLang(S.examData, S.subject)) : { translatingPassage: 'Translating…', translateFail: 'Could not translate this passage.' };
+  const showTranslation = (text) => {
+    panel.innerHTML = typeof formatReadableText === 'function' ? formatReadableText(text, blockId + '_tr', false) : esc(text).replace(/\n/g, '<br>');
+    panel.style.display = 'block';
+  };
+  if (meta.translations?.[lang]) {
+    showTranslation(meta.translations[lang]);
+    return;
+  }
+  panel.style.display = 'block';
+  panel.textContent = ui.translatingPassage;
+  if (btn) btn.disabled = true;
+  try {
+    let translation = null;
+    if (typeof fetchVocabCache === 'function') {
+      const hit = await fetchVocabCache(from, lang, meta.text);
+      if (hit?.translation) translation = hit.translation;
+    }
+    if (!translation && typeof callAI === 'function') {
+      const prompt = `Translate the following ${from} exam passage to ${lang}. Return ONLY the translation, preserving paragraph and speaker line breaks. No notes.\n\n${meta.text}`;
+      translation = await callAI(prompt, 2500, { consumeQuota: true, timeoutMs: 45000 });
+      if (translation && typeof putVocabCache === 'function') {
+        await putVocabCache(from, lang, meta.text, translation, 'ai');
+      }
+    }
+    if (!translation) {
+      panel.textContent = ui.translateFail;
+      return;
+    }
+    meta.translations[lang] = translation;
+    showTranslation(translation);
+  } catch (_) {
+    panel.textContent = ui.translateFail;
+  } finally {
+    if (btn) btn.disabled = false;
+  }
+}
 function renderOfficialHeader(d,isDE){
   if(!d.demo||!d.official)return '';
   const o=d.official;
@@ -21,7 +102,7 @@ function renderOfficialHeader(d,isDE){
 }
 function renderGoetheModIntro(mod,key,ui){
   if(!mod)return '';
-  return `<div class="off-mod-head"><h2>${ui.modWord} ${key}: ${mod.title}</h2><div class="off-mod-time">${mod.time}</div><p style="font-size:12px;color:var(--text2);margin-top:8px;line-height:1.6">${ui.modHint}</p></div>`;
+  return `<div class="off-mod-head"><h2>${ui.modWord} ${key}: ${mod.title}</h2><div class="off-mod-time">${mod.time}</div><p style="font-size:12px;color:var(--text-secondary);margin-top:8px;line-height:1.6">${ui.modHint}</p></div>`;
 }
 function segToQ(seg){
   if(seg.questions)return seg.questions;
@@ -34,8 +115,8 @@ function itemToQ(item,idx){
 function renderGoetheLesenPart(part,pi,isPrac,ui){
   const hasContent=part.items?.length||part.text||part.ads?.length||part.questions?.length||part.opinions?.length||part.textWithGaps?.length||part.persons?.length;
   if(!hasContent){
-    console.warn('[render] lesenPart',pi,'has no renderable content:',part);
-    return`<section class="module-wrap"><div class="off-teil">${ui.reading} — ${ui.teil} ${part.teil||pi+1}</div><div style="padding:16px;color:var(--text3);font-size:13px;font-style:italic">${ui.partial}</div></section><hr class="section-div">`;
+    lcDebug.warn('[render] lesenPart',pi,'has no renderable content:',part);
+    return`<section class="module-wrap"><div class="off-teil">${ui.reading} — ${ui.teil} ${part.teil||pi+1}</div><div style="padding:16px;color:var(--text-muted);font-size:13px;font-style:italic">${ui.partial}</div></section><hr class="section-div">`;
   }
   const modLabel=ui.reading;
   const teilLabel=ui.teil;
@@ -49,12 +130,14 @@ function renderGoetheLesenPart(part,pi,isPrac,ui){
     });
   }else if(part.items){
     part.items.forEach((item,idx)=>{
-      h+=`<div class="off-sign"><div class="off-sign-label">${isDE?'Text':'Text'} ${idx+1}</div>${wrapW(item.signText,'lesen_'+pi+'_sign_'+idx,isPrac)}</div>`;
+      h+=`<div class="off-sign"><div class="off-sign-label">Text ${idx+1}</div>${wrapW(item.signText,'lesen_'+pi+'_sign_'+idx,isPrac)}</div>`;
       h+=renderQ(itemToQ(item,idx),idx+1,mod,ui.trueL,ui.falseL,ui.trueK,true);
     });
   }
   if(part.text){
-    h+=`<div class="text-display"><h3>${part.textTitle||''}</h3><div class="readable-text">${wrapW(part.text,'lesen_'+pi,isPrac)}</div></div>`;
+    const blockId='lesen_'+pi;
+    stashPassageMeta(blockId,part.text,part.translations);
+    h+=`<div class="text-display"><h3>${part.textTitle||''}</h3><div class="readable-text">${wrapW(part.text,'lesen_'+pi,isPrac)}</div>${passageToolbarHtml(blockId,isPrac,ui)}</div>`;
   }
   if(part.textWithGaps?.length){
     h+=`<div class="text-display"><h3>${esc(part.textTitle||'')}</h3>${part.textWithGaps.map((para,gi)=>`<div class="readable-text" style="margin-bottom:12px">${wrapW(para,'lesen_'+pi+'_gap_'+gi,isPrac)}</div>`).join('')}</div>`;
@@ -78,8 +161,8 @@ function renderGoetheLesenPart(part,pi,isPrac,ui){
 function renderGoetheHorenPart(part,pi,isPrac,ui){
   const hasContent=part.segments?.length||part.noteFields?.length||part.transcript||part.questions?.length;
   if(!hasContent){
-    console.warn('[render] horenPart',pi,'has no renderable content:',part);
-    return`<section class="module-wrap"><div class="off-teil">${ui.listening} — ${ui.teil} ${part.teil||pi+1}</div><div style="padding:16px;color:var(--text3);font-size:13px;font-style:italic">${ui.partialListen}</div></section><hr class="section-div">`;
+    lcDebug.warn('[render] horenPart',pi,'has no renderable content:',part);
+    return`<section class="module-wrap"><div class="off-teil">${ui.listening} — ${ui.teil} ${part.teil||pi+1}</div><div style="padding:16px;color:var(--text-muted);font-size:13px;font-style:italic">${ui.partialListen}</div></section><hr class="section-div">`;
   }
   const modLabel=ui.listening;
   const teilLabel=ui.teil;
@@ -94,19 +177,23 @@ function renderGoetheHorenPart(part,pi,isPrac,ui){
     const playTxt=ui.hearIntro(plays);
     const btnTxt=`${ui.play} (${rem})`;
   const noPlays=rem<=0;
-    return `<div class="listen-box" id="listenBox_${id}"><div class="listen-info" id="listenInfo_${id}">${esc(label)}. ${playTxt}</div><div class="wave" id="listenWave_${id}">${'<div class="wb paused"></div>'.repeat(9)}</div><button class="btn-sm blue" id="listenBtn_${id}" onclick="playHorenPart('${id}')" style="margin:0 auto"${noPlays?' disabled':''}>${noPlays?ui.noPlays:btnTxt}</button>${!isPrac?`<div style="font-size:11px;color:var(--text3);margin-top:10px;font-style:italic">${ui.audioOnly}</div>`:''}</div>`;
+    return `<div class="listen-box" id="listenBox_${id}"><div class="listen-info" id="listenInfo_${id}">${esc(label)}. ${playTxt}</div><div class="wave" id="listenWave_${id}">${'<div class="wb paused"></div>'.repeat(9)}</div><button class="btn-sm blue" id="listenBtn_${id}" onclick="playHorenPart('${id}')" style="margin:0 auto"${noPlays?' disabled':''}>${noPlays?ui.noPlays:btnTxt}</button>${!isPrac?`<div style="font-size:11px;color:var(--text-muted);margin-top:10px;font-style:italic">${ui.audioOnly}</div>`:''}</div>`;
   };
-  const renderTranscript=(text,sec)=>text?`<div class="text-display" style="margin-top:12px"><div class="audio-chip">${ui.transcript}</div><div class="readable-text">${wrapW(text,sec,isPrac)}</div></div>`:'';
+  const renderTranscript=(text,sec,translations,blockId)=>{
+    if(!text)return'';
+    stashPassageMeta(blockId,text,translations);
+    return `<div class="text-display" style="margin-top:12px"><div class="audio-chip">${ui.transcript}</div><div class="readable-text">${wrapW(text,sec,isPrac)}</div>${passageToolbarHtml(blockId,isPrac,ui)}</div>`;
+  };
   if(part.segments){
     part.segments.forEach((seg,si)=>{
       h+=`<h3 style="font-size:13px;font-weight:700;margin:14px 0 8px">${esc(seg.label)}</h3>`;
       h+=renderListen(pi+'_'+si,seg.label);
-      if(isPrac)h+=renderTranscript(seg.transcript,'horen_'+pi+'_'+si);
+      if(isPrac)h+=renderTranscript(seg.transcript,'horen_'+pi+'_'+si,seg.translations,'horen_'+pi+'_'+si);
       segToQ(seg).forEach((q,i)=>{h+=renderQ(q,i+1,mod+'_'+si,ui.trueL,ui.falseL,ui.trueK,true);});
     });
   }else if(part.noteFields){
     h+=renderListen(String(pi),part.context||ui.recording);
-    if(isPrac)h+=renderTranscript(part.transcript,'horen_'+pi);
+    if(isPrac)h+=renderTranscript(part.transcript,'horen_'+pi,part.translations,'horen_'+pi);
     h+=`<div class="off-notes" style="margin:14px 0"><h3 style="font-size:14px;margin-bottom:10px">${esc(part.notesTitle||'Notes')}</h3>`;
     part.noteFields.forEach(f=>{
       h+=`<div class="form-row"><label for="note_${f.id}">${esc(f.label)}</label><input class="form-input" id="note_${f.id}" placeholder="..." oninput="updProg()"></div>`;
@@ -114,7 +201,7 @@ function renderGoetheHorenPart(part,pi,isPrac,ui){
     h+=`</div>`;
   }else{
     h+=renderListen(String(pi),part.context||ui.recording);
-    if(isPrac)h+=renderTranscript(part.transcript,'horen_'+pi);
+    if(isPrac)h+=renderTranscript(part.transcript,'horen_'+pi,part.translations,'horen_'+pi);
     if(part.questions)h+=part.questions.map((q,i)=>renderQ(q,i+1,mod,ui.trueL,ui.falseL,ui.trueK,true)).join('');
   }
   return h+'</section><hr class="section-div">';
@@ -141,7 +228,7 @@ function renderGoetheSprechenPart(part,ui){
     h+=`<div class="off-photos">${part.photoDescriptions.map(p=>`<div class="off-ad">${esc(p)}</div>`).join('')}</div>`;
   }
   if(pts.length)h+=`<div class="speak-points">${pts.map(p=>`<div class="speak-point">${esc(p)}</div>`).join('')}</div>`;
-  h+=`<div style="font-size:12px;color:var(--text3);margin-bottom:7px">${ui.speakFmt}</div>${typeof renderSpeakingMicHtml==='function'?renderSpeakingMicHtml(part.fieldId,S.subject):`<textarea class="write-field" id="${part.fieldId}" style="min-height:160px" placeholder="${ui.me}" oninput="updProg()"></textarea>`}</section><hr class="section-div">`;
+  h+=`<div style="font-size:12px;color:var(--text-muted);margin-bottom:7px">${ui.speakFmt}</div>${typeof renderSpeakingMicHtml==='function'?renderSpeakingMicHtml(part.fieldId,S.subject):`<textarea class="write-field" id="${part.fieldId}" style="min-height:160px" placeholder="${ui.me}" oninput="updProg()"></textarea>`}</section><hr class="section-div">`;
   return h;
 }
 function renderGoetheExam(d,isPrac,isQ){
@@ -170,34 +257,90 @@ function renderGoetheExam(d,isPrac,isQ){
   }
   return secs;
 }
-function playHorenPart(id){
+function resolveListeningContext(id){
+  const d=S.examData;
+  const key=String(id);
+  let text='',ttsVoice=null;
+  if(id==='legacy'&&d?.horen){
+    text=d.horen.transcript||'';
+    ttsVoice=d.horen.ttsVoice;
+  }else if(String(id).includes('_')){
+    const[pi,si]=String(id).split('_').map(Number);
+    const seg=d.horenParts?.[pi]?.segments?.[si];
+    text=seg?.transcript||'';
+    ttsVoice=seg?.ttsVoice;
+  }else{
+    const part=d.horenParts?.[id];
+    text=part?.transcript||'';
+    ttsVoice=part?.ttsVoice;
+  }
+  return{key,text,ttsVoice,examLang:d?.lang||S.subject||'en'};
+}
+async function playListeningPassage(id,ui,opts={}){
+  const d=S.examData;if(!d)return;
+  const{key,text,ttsVoice,examLang}=resolveListeningContext(id);
+  if(!text)return;
+  const playsKey=opts.playsKey||(id==='legacy'?'listenPlays':'listenPlays_'+key);
+  if(S[playsKey]===undefined)S[playsKey]=2;
+  if(S[playsKey]<=0)return;
+  S[playsKey]--;
+  const rem=S[playsKey];
+  const waveId=opts.waveId||(id==='legacy'?'listenWave':'listenWave_'+key);
+  const btnId=opts.btnId||(id==='legacy'?'listenBtn':'listenBtn_'+key);
+  const infoId=opts.infoId||(id==='legacy'?'listenInfo':'listenInfo_'+key);
+  const wave=document.getElementById(waveId);
+  const btn=document.getElementById(btnId);
+  const info=document.getElementById(infoId);
+  const speechLang=ui?.speechLang||(examLang==='de'?'de-DE':examLang==='es'?'es-ES':'en-GB');
+  const voice=ttsVoice||(typeof ttsVoiceForLang==='function'?ttsVoiceForLang(examLang):examLang);
+  const startWave=()=>{if(wave)wave.querySelectorAll('.wb').forEach(b=>b.classList.remove('paused'));};
+  const stopWave=()=>{if(wave)wave.querySelectorAll('.wb').forEach(b=>b.classList.add('paused'));};
+  const updateControls=(playing)=>{
+    if(!btn)return;
+    if(playing){btn.textContent='■ Playing…';return;}
+    if(rem<=0){btn.disabled=true;btn.textContent=ui?.noPlays||'No plays left';}
+    else btn.textContent=`${ui?.play||'Play'} (${rem})`;
+  };
+  const onDone=()=>{stopWave();updateControls(false);if(opts.onDone)opts.onDone(rem);};
+  startWave();updateControls(true);
+  let played=false;
+  const useMulti=typeof ListeningScript!=='undefined'&&ListeningScript.isMultiVoice(text);
+  try{
+    if(useMulti){
+      const segments=ListeningScript.prepare(text,examLang);
+      await playMultiVoiceSegments(segments,examLang,()=>onDone());
+      played=true;
+    }
+    if(!played&&typeof fetchTtsAudio==='function'){
+      const hit=await fetchTtsAudio(text,voice,examLang);
+      if(hit?.audioBase64&&typeof playMp3Base64==='function'){
+        playMp3Base64(hit.audioBase64,()=>onDone());
+        played=true;
+      }
+    }
+    if(!played&&typeof isPro==='function'&&isPro()&&typeof generateTtsAudio==='function'){
+      const gen=await generateTtsAudio(text,voice,examLang);
+      if(gen?.audioBase64&&typeof playMp3Base64==='function'){
+        playMp3Base64(gen.audioBase64,()=>onDone());
+        played=true;
+      }
+    }
+  }catch(_){/* browser fallback */}
+  if(!played){
+    speak(text,speechLang);
+    if(id==='legacy'){
+      const ck=setInterval(()=>{
+        if(!window.speechSynthesis?.speaking){clearInterval(ck);onDone();}
+      },500);
+    }else{
+      setTimeout(onDone,Math.min(120000,text.length*55));
+    }
+  }
+}
+async function playHorenPart(id){
   const d=S.examData;if(!d?.horenParts)return;
   const ui=typeof examUiStrings==='function'?examUiStrings(resolveExamLang(d,S.subject)):examUiStrings('en');
-  const lang=ui.speechLang;
-  const key=String(id);
-  if(S['listenPlays_'+key]===undefined)S['listenPlays_'+key]=2;
-  if(S['listenPlays_'+key]<=0)return;
-  S['listenPlays_'+key]--;
-  let text='';
-  if(String(id).includes('_')){
-    const [pi,si]=String(id).split('_').map(Number);
-    text=d.horenParts[pi]?.segments?.[si]?.transcript||'';
-  }else{
-    const part=d.horenParts[id];
-    text=part?.transcript||'';
-  }
-  if(!text)return;
-  const wave=document.getElementById('listenWave_'+key);
-  if(wave)wave.querySelectorAll('.wb').forEach(b=>b.classList.remove('paused'));
-  speak(text,lang);
-  const rem=S['listenPlays_'+key];
-  const btn=document.getElementById('listenBtn_'+key);
-  const info=document.getElementById('listenInfo_'+key);
-  if(btn){
-    if(rem<=0){btn.disabled=true;btn.textContent=ui.noPlays;}
-    else btn.textContent=`${ui.play} (${rem})`;
-  }
-  setTimeout(()=>{if(wave)wave.querySelectorAll('.wb').forEach(b=>b.classList.add('paused'));},Math.min(120000,text.length*55));
+  await playListeningPassage(id,ui);
 }
 function updWGoethe(){updProg();const d=S.examData;if(!d?.schreibenParts)return;d.schreibenParts.forEach(p=>{const el=document.getElementById('meter_'+p.fieldId);if(!el)return;if(p.formFields){const filled=p.formFields.filter((_,i)=>document.getElementById(p.fieldId+'_'+i)?.value.trim()).length;el.textContent=filled+' / '+p.formFields.length+' Felder';el.className='word-meter'+(filled>=p.formFields.length?' ok':'');return;}const ta=document.getElementById(p.fieldId);if(!ta)return;const w=ta.value.trim().split(/\s+/).filter(x=>x).length,min=p.minWords||0;el.textContent=w+' Woerter'+(min?' — min '+min:'');el.className='word-meter'+(min&&w>=min?' ok':'');});}
 function forEachGoetheQ(d,fn){
@@ -217,6 +360,7 @@ function forEachGoetheNotes(d,fn){
   });
 }
 function renderExam(){
+  if(typeof BurnedRegistry!=='undefined'&&S.examData&&!S.isDemo&&S.examSource&&S.examSource!=='demo'&&!S.examData._fromSaved){try{BurnedRegistry.burnExam(S.examData);}catch(_){}}
   hideAll();
   const goal=getActiveGoal();
   if(typeof ActivityTrack!=='undefined'){
@@ -225,20 +369,26 @@ function renderExam(){
     ActivityTrack.beginSession(qm?'quick':'exam',goal?.id||S.activeGoalId,lbl);
   }
   S.examSavedWords=[];
+  S._passageMeta={};
   if(!S.isDemo&&!S.quickMod){
     if(isPracticeMode())autosaveSession();
     else if(isOfficialMode())syncOfficialFlight();
     else if(!S.activeSession)initExamSession(S.mode);
   }
   const scr=document.getElementById('examScreen');scr.innerHTML='';scr.style.display='block';
-  const d=S.examData,isDE=d.lang==='de',isPrac=isPracticeMode(),isQ=!!S.quickMod,isOff=!!d.demo;
+  const d=S.examData;
+  if(d.vocabPersonal&&d.vocabWords?.length&&typeof TargetUsage!=='undefined'&&!d.targetUsageVerified?.length){
+    TargetUsage.applyVerified(d,d.vocabWords);
+    S.examData=d;
+  }
+  const isDE=d.lang==='de',isPrac=isPracticeMode(),isQ=!!S.quickMod,isOff=!!d.demo;
   const isOffMode=isOfficialMode();
   const rfT=isDE?'Richtig':'True',rfF=isDE?'Falsch':'False',trK=isDE?'R':'T';
   const timerH=(isOffMode&&!isQ)?`<div class="timer-wrap"><span class="timer-val" id="timerVal">--:--</span></div>`:'';
   const practH=isPrac?`<div style="background:var(--blue-bg);border:.5px solid rgba(93,184,232,.2);border-radius:8px;padding:9px 13px;font-size:12px;color:var(--blue);margin-bottom:14px"><b>Practice Mode:</b> Click any word to translate and save to your deck. Saved words are highlighted in <span style="color:var(--green);font-weight:700">green</span>.</div>`:'';
   const officialH=isOffMode?`<div class="mode-markmsg" style="margin-bottom:14px">Official mode: tap words you struggle with to mark them. Translations appear on the results screen — not during the exam.</div>`:'';
   const demoH=d.guidedDemo?`<div class="demo-banner"><b>5-minute product demo</b> — Experience every module at reduced volume. Click words you miss to see vocabulary detection.</div>`:'';
-  const langH=isPrac&&!isQ?`<div style="display:flex;align-items:center;gap:7px;margin-bottom:14px;flex-wrap:wrap"><span style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em">${isDE?'Übersetzen:':'Translate to:'}</span>${LANGS.map(l=>`<button class="vt-lb ex-lb${S.vocabLang===l.code?' active':''}" onclick="setVL('${l.code}',this)">${l.l}</button>`).join('')}<span style="font-size:11px;color:var(--text3);margin-left:6px">· Click any word to translate &amp; save to deck</span></div>`:'';
+  const langH=isPrac&&!isQ?`<div style="display:flex;align-items:center;gap:7px;margin-bottom:14px;flex-wrap:wrap"><span style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.08em">${isDE?'Übersetzen:':'Translate to:'}</span>${LANGS.map(l=>`<button class="vt-lb ex-lb${S.vocabLang===l.code?' active':''}" onclick="setVL('${l.code}',this)">${l.l}</button>`).join('')}<span style="font-size:11px;color:var(--text-muted);margin-left:6px">· Click any word to translate &amp; save to deck</span></div>`:'';
   let secs='';
   if(d.goetheFormat&&(!isQ)){
     secs=renderGoetheExam(d,isPrac,isQ);
@@ -250,14 +400,18 @@ function renderExam(){
   }else if(d.lesen&&(!isQ||S.quickMod==='reading')){
     const teil=d.lesen.teil||(isDE?'Leseverstehen':'Reading');
     const instr=d.lesen.instruction||(isDE?'Lies den Text sorgfältig und beantworte die Fragen.':'Read the text carefully and answer the questions.');
-    secs+=`<section class="module-wrap"><div class="module-tag tag-lesen">${teil}</div><h2 class="module-title">${isDE?'Leseverstehen':'Reading Comprehension'}</h2>${isOff?`<div class="off-instr">${esc(instr)}</div>`:`<p class="module-desc">${instr}</p>`}<div class="text-display"><h3>${d.lesen.textTitle}</h3><div class="readable-text">${wrapW(d.lesen.text,'lesen',isPrac)}</div></div>${(d.lesen.questions||[]).map((q,i)=>renderQ(q,i+1,'lesen',rfT,rfF,trK,isOff)).join('')}</section><hr class="section-div">`;
+    const legacyUi=typeof examUiStrings==='function'?examUiStrings(resolveExamLang(d,S.subject)):examUiStrings('en');
+    stashPassageMeta('lesen_legacy',d.lesen.text,d.lesen.translations);
+    secs+=`<section class="module-wrap"><div class="module-tag tag-lesen">${teil}</div><h2 class="module-title">${isDE?'Leseverstehen':'Reading Comprehension'}</h2>${isOff?`<div class="off-instr">${esc(instr)}</div>`:`<p class="module-desc">${instr}</p>`}<div class="text-display"><h3>${d.lesen.textTitle}</h3><div class="readable-text">${wrapW(d.lesen.text,'lesen',isPrac)}</div>${passageToolbarHtml('lesen_legacy',isPrac,legacyUi)}</div>${(d.lesen.questions||[]).map((q,i)=>renderQ(q,i+1,'lesen',rfT,rfF,trK,isOff)).join('')}</section><hr class="section-div">`;
   }
   if(d.horen&&(!isQ||S.quickMod==='listening')){
     S.listenPlays=2;
     const isRL=!isPrac;
     const teil=d.horen.teil||(isDE?'Hoerverstehen':'Listening');
     const instr=d.horen.instruction||d.horen.context;
-    const lisH=isRL?`<div class="listen-box" id="listenBox"><div class="listen-info" id="listenInfo">${isDE?'Sie hoeren den Text <b>zweimal</b> (wie in der echten Pruefung).':'You can play this audio <b>2 times</b> (as in the real exam).'}</div><div class="wave" id="listenWave">${'<div class="wb paused"></div>'.repeat(9)}</div><button class="btn-sm blue" id="listenBtn" onclick="playListening()" style="margin:0 auto">${isDE?'Audio abspielen':'Play Audio'}</button><div style="font-size:11px;color:var(--text3);margin-top:10px;font-style:italic">${isDE?'Transkript nach beiden Wiedergaben verfuegbar.':'Transcript shown after both plays.'}</div></div>`:`<div class="text-display"><div class="audio-chip">${isDE?'Transkript':'Transcript'}</div><div class="readable-text">${wrapW(d.horen.transcript,'horen',isPrac)}</div></div>`;
+    const legacyUi=typeof examUiStrings==='function'?examUiStrings(resolveExamLang(d,S.subject)):examUiStrings('en');
+    stashPassageMeta('horen_legacy',d.horen.transcript,d.horen.translations);
+    const lisH=isRL?`<div class="listen-box" id="listenBox"><div class="listen-info" id="listenInfo">${isDE?'Sie hoeren den Text <b>zweimal</b> (wie in der echten Pruefung).':'You can play this audio <b>2 times</b> (as in the real exam).'}</div><div class="wave" id="listenWave">${'<div class="wb paused"></div>'.repeat(9)}</div><button class="btn-sm blue" id="listenBtn" onclick="playListening()" style="margin:0 auto">${isDE?'Audio abspielen':'Play Audio'}</button><div style="font-size:11px;color:var(--text-muted);margin-top:10px;font-style:italic">${isDE?'Transkript nach beiden Wiedergaben verfuegbar.':'Transcript shown after both plays.'}</div></div>`:`<div class="text-display"><div class="audio-chip">${isDE?'Transkript':'Transcript'}</div><div class="readable-text">${wrapW(d.horen.transcript,'horen',isPrac)}</div>${passageToolbarHtml('horen_legacy',isPrac,legacyUi)}</div>`;
     secs+=`<section class="module-wrap"><div class="module-tag tag-horen">${teil}</div><h2 class="module-title">${isDE?'Hoerverstehen':'Listening'}</h2>${isOff?`<div class="off-instr">${esc(instr)}</div>`:`<p class="module-desc">${d.horen.context}</p>`}${lisH}${(d.horen.questions||[]).map((q,i)=>renderQ(q,i+1,'horen',rfT,rfF,trK,isOff)).join('')}</section><hr class="section-div">`;
   }
   if(d.gapfill&&(!isQ||S.quickMod==='gapfill')){
@@ -273,17 +427,20 @@ function renderExam(){
     const teil=d.sprechen.teil||(isDE?'Sprechen':'Speaking');
     const speakFmt=isDE?`Ihre Antwort (mind. ${d.sprechen.minExchanges} Wechsel, Format <b>Ich:</b>):`:`Your response (min ${d.sprechen.minExchanges} exchanges, format <b>Me:</b>):`;
     const micHtml=typeof renderSpeakingMicHtml==='function'?renderSpeakingMicHtml('speakAns',S.subject):`<textarea class="write-field" id="speakAns" style="min-height:180px" placeholder="${isDE?'Ich:':'Me:'}" oninput="updProg()"></textarea>`;
-    secs+=`<section class="module-wrap"><div class="module-tag tag-sprechen">${teil}</div><h2 class="module-title">${isDE?'Sprechen':'Speaking'}</h2><p class="module-desc">${d.sprechen.situation}</p><div class="speak-points">${(d.sprechen.points||[]).map(p=>`<div class="speak-point">${p}</div>`).join('')}</div><div class="starter-msg"><div class="starter-av">${isDE?'P':'E'}</div><div><div class="starter-who">${d.sprechen.roleB}</div><div class="starter-line">${d.sprechen.starterLine}</div></div></div><button class="btn-sm blue" onclick="speak(${JSON.stringify(d.sprechen.starterLine)},'${lang}')" style="margin-bottom:10px">${isDE?'Anfangssatz anhoeren':'Hear starter line'}</button><div style="font-size:12px;color:var(--text3);margin-bottom:7px">${speakFmt}</div>${micHtml}</section>`;
+    secs+=`<section class="module-wrap"><div class="module-tag tag-sprechen">${teil}</div><h2 class="module-title">${isDE?'Sprechen':'Speaking'}</h2><p class="module-desc">${d.sprechen.situation}</p><div class="speak-points">${(d.sprechen.points||[]).map(p=>`<div class="speak-point">${p}</div>`).join('')}</div><div class="starter-msg"><div class="starter-av">${isDE?'P':'E'}</div><div><div class="starter-who">${d.sprechen.roleB}</div><div class="starter-line">${d.sprechen.starterLine}</div></div></div><button class="btn-sm blue" onclick="speak(${JSON.stringify(d.sprechen.starterLine)},'${lang}')" style="margin-bottom:10px">${isDE?'Anfangssatz anhoeren':'Hear starter line'}</button><div style="font-size:12px;color:var(--text-muted);margin-bottom:7px">${speakFmt}</div>${micHtml}</section>`;
   }
   const isDemo=!!d.demo||!!S.isDemo;
   const isPool=!!(d.poolSource||S.examSource==='pool'||S.examSource==='library');
   const isPersonal=!!d.vocabPersonal;
   const bc=isDemo?'demo':isPool?'pool':isPersonal?'vocab':isQ?'quick':isPrac?'practice':'official',bl=isDemo?'Demo Exam':isPool?'From library':isPersonal?'Personal Mock':isQ?('Quick: '+S.quickMod):isPrac?'Practice':'Official Exam';
   const titleTxt=isOff?(d.official?.certificate||d.topic):(isPersonal?('Personal · '+d.topic):(isDE?'Deutsch':'English')+' — '+d.topic);
-  const personalBanner=isPersonal?`<div class="card note-card" style="margin-bottom:16px"><b>Personalized exam</b> — generated from ${d.vocabWords?.length||0} weak words in your deck: ${esc((d.vocabWords||[]).slice(0,8).join(', '))}${(d.vocabWords?.length||0)>8?'…':''}.</div>`:'';
-  const poolBanner=isPool?`<div style="background:var(--blue-bg);border:.5px solid rgba(93,184,232,.3);border-radius:var(--r-lg);padding:10px 16px;margin-bottom:16px;font-size:12px;color:var(--text2)">${S.examSource==='pool'?'📚 Exam from shared pool (counts toward monthly quota).':'📚 Curated library exam (counts toward monthly quota).'} Retake saved exams anytime without quota.</div>`:'';
-  const saveExitH=isPrac&&!isQ?`<button class="btn-sm accent" onclick="saveAndExitExam()">${isDE?'Speichern &amp; beenden':'Save &amp; exit'}</button>`:'';
-  scr.innerHTML=`${renderOfficialHeader(d,isDE)}${personalBanner}${poolBanner}<div class="exam-topbar"><div class="exam-meta"><span class="exam-badge ${bc}">${bl}</span><span class="exam-badge">${d.level}</span><span class="exam-title">${titleTxt}</span>${timerH}</div><div class="exam-actions"><button class="btn-sm" onclick="goHome()">${isDE?'Startseite':'Home'}</button>${isPrac?`<button class="btn-sm purple" onclick="goFlashcards()">Deck (<span id="dkCnt">${getProfileFlashcards().length}</span>)</button>`:''}${saveExitH}<button class="btn-sm" onclick="saveCurrentExam()">${isDE?'Speichern':'Save'}</button></div></div><div class="progress-wrap"><div class="progress-row"><span>${isDE?'Fortschritt':'Progress'}</span><span id="pctTxt">0%</span></div><div class="progress-track"><div class="progress-fill" id="progFill" style="width:0%"></div></div></div>${demoH}${officialH}${practH}${langH}${secs}<div class="submit-bar"><button class="btn-sm" onclick="goHome()">${isDE?'Startseite':'Home'}</button><div style="display:flex;gap:7px;flex-wrap:wrap">${saveExitH}<button class="btn-sm" onclick="saveCurrentExam()">${isDE?'Pruefung speichern':'Save Exam'}</button><button class="btn-sm accent" id="submitBtn" onclick="submitExam()">${isDE?'Abgeben und Ergebnis':'Submit and Get Results'} →</button></div></div>`;
+  const personalVerified=(d.targetUsageVerified||[]).length;
+  const personalTotal=d.vocabWords?.length||0;
+  const personalWordsPreview=esc((d.vocabWords||[]).slice(0,8).join(', '))+(personalTotal>8?'…':'');
+  const personalBanner=isPersonal?`<div class="card note-card personal-exam-banner" style="margin-bottom:16px"><b>Personalized exam</b> — <strong>${personalVerified} of ${personalTotal}</strong> of your words appear here${personalVerified>0?' — highlighted below':''}. Deck: ${personalWordsPreview}.${personalVerified<personalTotal&&personalTotal>0?`<span style="display:block;margin-top:6px;font-size:12px;color:var(--text-secondary)">Regenerate from the configurator for better coverage.</span>`:''}</div>`:'';
+  const poolBanner=isPool?`<div style="background:var(--blue-bg);border:.5px solid rgba(93,184,232,.3);border-radius:var(--radius-lg);padding:10px 16px;margin-bottom:16px;font-size:12px;color:var(--text-secondary)">📚 Curated exam (counts toward monthly quota). Retake saved exams anytime without quota.</div>`:'';
+  const saveExitH=isPrac&&!isQ?`<button class="btn-sm accent" onclick="saveAndExitExam()">Save &amp; exit</button>`:'';
+  scr.innerHTML=`${renderOfficialHeader(d,isDE)}${personalBanner}${poolBanner}<div class="exam-topbar"><div class="exam-meta"><span class="exam-badge ${bc}">${bl}</span><span class="exam-badge">${d.level}</span><span class="exam-title">${titleTxt}</span>${timerH}</div><div class="exam-actions"><button class="btn-sm" onclick="goHome()">Home</button>${isPrac?`<button class="btn-sm purple" onclick="goFlashcards()">Deck (<span id="dkCnt">${getProfileFlashcards().length}</span>)</button>`:''}${saveExitH}<button class="btn-sm" onclick="saveCurrentExam()">Save</button></div></div><div class="progress-wrap"><div class="progress-row"><span>Progress</span><span id="pctTxt">0%</span></div><div class="progress-track"><div class="progress-fill" id="progFill" style="width:0%"></div></div></div>${demoH}${officialH}${practH}${langH}${secs}<div class="submit-bar"><button class="btn-sm" onclick="goHome()">Home</button><div style="display:flex;gap:7px;flex-wrap:wrap">${saveExitH}<button class="btn-sm" onclick="saveCurrentExam()">Save Exam</button><button class="btn-sm accent" id="submitBtn" onclick="submitExam()">Submit and Get Results →</button></div></div>`;
   scr.querySelectorAll('input[type=radio]').forEach(r=>r.addEventListener('change',updProg));
   if(S._resumeFieldValues){restoreExamFieldValues(S._resumeFieldValues);S._resumeFieldValues=null;}
   restoreExamAnswers();
@@ -295,26 +452,34 @@ function renderExam(){
   S._resumeScrollY=null;
   if(sy!=null)requestAnimationFrame(()=>window.scrollTo(0,sy));
   else window.scrollTo({top:0,behavior:'smooth'});
+  bindExamScrollTop();
   if(isPrac)autosaveSession();
+  if(!S.examData._savedId&&!S.examData._flightId)S.examData._flightId=Date.now();
+  if(typeof syncExamRouteUrl==='function')syncExamRouteUrl();
+  if(typeof bindExamKeyboard==='function')bindExamKeyboard();
+  if(typeof LcA11y!=='undefined')LcA11y.onScreenShown('examScreen');
 }
-function playListening(){
+async function playListening(){
   if(!S.examData?.horen||S.listenPlays<=0)return;
-  S.listenPlays--;
-  const lang=S.examData.lang==='de'?'de-DE':'en-GB';
-  document.querySelectorAll('.wb').forEach(b=>b.classList.remove('paused'));
-  const btn=document.getElementById('listenBtn'),info=document.getElementById('listenInfo');
-  if(btn)btn.textContent='■ Playing…';
-  speak(S.examData.horen.transcript,lang);
-  const ck=setInterval(()=>{
-    if(!window.speechSynthesis.speaking){
-      clearInterval(ck);
-      document.querySelectorAll('.wb').forEach(b=>b.classList.add('paused'));
-      if(S.listenPlays>0){if(btn){btn.textContent='▶ Play Again (1 left)';btn.disabled=false;}if(info)info.innerHTML='<b>1 play remaining</b>';}
-      else{if(btn){btn.textContent='✓ Done';btn.disabled=true;}if(info)info.innerHTML='Audio finished. Answer the questions below.';
-        setTimeout(()=>{const lb=document.getElementById('listenBox');if(lb)lb.insertAdjacentHTML('afterend',`<details style="margin-bottom:14px"><summary style="font-size:12px;color:var(--text3);cursor:pointer;font-weight:600">Show transcript (review)</summary><div class="text-display" style="margin-top:8px"><div class="readable-text">${S.examData.horen.transcript.replace(/\n/g,'<br>')}</div></div></details>`);},600);
+  const isDE=S.examData.lang==='de';
+  const ui=typeof examUiStrings==='function'?examUiStrings(resolveExamLang(S.examData,S.subject)):examUiStrings('en');
+  await playListeningPassage('legacy',ui,{
+    onDone(rem){
+      const btn=document.getElementById('listenBtn'),info=document.getElementById('listenInfo');
+      if(rem>0){
+        if(btn){btn.textContent=isDE?'▶ Erneut abspielen (1 übrig)':'▶ Play Again (1 left)';btn.disabled=false;}
+        if(info)info.innerHTML=isDE?'<b>1 Wiedergabe übrig</b>':'<b>1 play remaining</b>';
+      }else{
+        if(btn){btn.textContent=isDE?'✓ Fertig':'✓ Done';btn.disabled=true;}
+        if(info)info.innerHTML=isDE?'Audio beendet. Beantworten Sie die Fragen unten.':'Audio finished. Answer the questions below.';
+        setTimeout(()=>{
+          const lb=document.getElementById('listenBox');
+          const tr=S.examData.horen.transcript||'';
+          if(lb&&tr)lb.insertAdjacentHTML('afterend',`<details style="margin-bottom:14px"><summary style="font-size:12px;color:var(--text-muted);cursor:pointer;font-weight:600">${isDE?'Transkript anzeigen (Review)':'Show transcript (review)'}</summary><div class="text-display" style="margin-top:8px"><div class="readable-text">${esc(tr).replace(/\n/g,'<br>')}</div></div></details>`);
+        },600);
       }
-    }
-  },500);
+    },
+  });
 }
 function renderGapSec(gf,isDE,isOff){
   const label=isOff?(gf.teil||(isDE?'Teil 3: Sprachbausteine':'Part 3: Language in Use')):(isDE?'Lueckentext':'Fill in the Blanks');
@@ -387,7 +552,7 @@ function renderQ(q,num,mod,rfT,rfF,trK,isOff){
     }).join('')}</div></div>`;
   }
   const opts=q.options||[];
-  if(!opts.length)return `<div class="question-block"><div class="q-number">${head}</div>${sub}<div style="color:var(--text3);font-size:12px">${isOff?'Keine Optionen':'No options'}</div></div>`;
+  if(!opts.length)return `<div class="question-block"><div class="q-number">${head}</div>${sub}<div style="color:var(--text-muted);font-size:12px">${isOff?'Keine Optionen':'No options'}</div></div>`;
   return `<div class="question-block"><div class="q-number">${head}</div>${sub}<div class="options">${opts.map(opt=>{const val=optKey(opt);const label=typeof opt==='string'?opt:opt;return `<label class="opt"><input type="radio" name="${ak}" value="${esc(val)}" onchange="S.answers['${ak}']=this.value;this.closest('.options').querySelectorAll('.opt').forEach(o=>o.classList.remove('selected'));this.closest('.opt').classList.add('selected');updProg()"><span>${esc(label)}</span></label>`;}).join('')}</div></div>`;
 }
 function setRF(k,v,btn,cls){S.answers[k]=v;btn.parentElement.querySelectorAll('.rf-btn').forEach(b=>b.classList.remove('sel-r','sel-f','sel-n'));btn.classList.add(cls);updProg();}

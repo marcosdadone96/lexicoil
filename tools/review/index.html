@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LexiCoil — Staging Review</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/assets/css/lexicoil-design-system.css" />
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--lc-font);
+      background: var(--bg-base);
+      color: var(--text-primary);
+      min-height: 100vh;
+    }
+    header {
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border);
+      padding: var(--space-4) var(--space-6);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-4);
+      flex-wrap: wrap;
+    }
+    header h1 { margin: 0; font-size: 1.25rem; font-weight: 700; }
+    .stats { display: flex; gap: var(--space-3); flex-wrap: wrap; }
+    .stat {
+      background: var(--bg-elevated);
+      border-radius: var(--radius-full);
+      padding: 4px 12px;
+      font-size: 0.85rem;
+    }
+    .stat.pending { background: var(--warning-bg); color: #b45309; }
+    .stat.approved { background: var(--success-bg); color: #047857; }
+    .stat.rejected { background: var(--error-bg); color: #b91c1c; }
+    .layout {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      min-height: calc(100vh - 72px);
+    }
+    @media (max-width: 900px) {
+      .layout { grid-template-columns: 1fr; }
+    }
+    .sidebar {
+      border-right: 1px solid var(--border);
+      background: var(--bg-surface);
+      overflow-y: auto;
+      max-height: calc(100vh - 72px);
+    }
+    .filters {
+      padding: var(--space-4);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+    .filters select, .filters input {
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+    }
+    .list { list-style: none; margin: 0; padding: 0; }
+    .list li button {
+      width: 100%;
+      text-align: left;
+      border: none;
+      background: transparent;
+      padding: var(--space-3) var(--space-4);
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .list li button:hover { background: var(--bg-elevated); }
+    .list li button.active { background: var(--brand-light); border-left: 3px solid var(--brand); }
+    .list .meta { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; }
+    .badge {
+      display: inline-block;
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      border-radius: var(--radius-full);
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    .badge.pending { background: var(--warning-bg); color: #b45309; }
+    .badge.approved { background: var(--success-bg); color: #047857; }
+    .badge.rejected { background: var(--error-bg); color: #b91c1c; }
+    .badge.promoted { background: var(--info-bg); color: #0e7490; }
+    .detail {
+      padding: var(--space-6);
+      overflow-y: auto;
+      max-height: calc(100vh - 72px);
+    }
+    .empty { color: var(--text-muted); padding: var(--space-8); text-align: center; }
+    .card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: var(--space-4);
+      margin-bottom: var(--space-4);
+      box-shadow: var(--shadow-sm);
+    }
+    .card h2 { margin: 0 0 var(--space-3); font-size: 1rem; }
+    .passage-text {
+      white-space: pre-wrap;
+      line-height: 1.6;
+      font-size: 0.95rem;
+      max-height: 280px;
+      overflow-y: auto;
+      background: var(--bg-elevated);
+      padding: var(--space-3);
+      border-radius: var(--radius-sm);
+    }
+    textarea.passage-edit {
+      width: 100%;
+      min-height: 200px;
+      font-family: inherit;
+      line-height: 1.5;
+      padding: var(--space-3);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-sm);
+    }
+    .question {
+      border-top: 1px solid var(--border);
+      padding-top: var(--space-3);
+      margin-top: var(--space-3);
+    }
+    .question:first-child { border-top: none; padding-top: 0; margin-top: 0; }
+    .validation.ok { color: var(--success); }
+    .validation.fail { color: var(--error); }
+    .validation ul { margin: 8px 0 0; padding-left: 20px; font-size: 0.85rem; }
+    .actions {
+      display: flex;
+      gap: var(--space-3);
+      flex-wrap: wrap;
+      margin-top: var(--space-4);
+    }
+    .btn {
+      padding: 10px 18px;
+      border-radius: var(--radius-sm);
+      border: none;
+      font-family: inherit;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .btn-approve { background: var(--success); color: #fff; }
+    .btn-reject { background: var(--error); color: #fff; }
+    .btn-secondary { background: var(--bg-elevated); color: var(--text-primary); border: 1px solid var(--border-strong); }
+    .notes { width: 100%; min-height: 60px; margin-top: var(--space-2); padding: 8px; font-family: inherit; border-radius: var(--radius-sm); border: 1px solid var(--border-strong); }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>LexiCoil Staging Review</h1>
+    <div class="stats" id="stats"></div>
+  </header>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="filters">
+        <select id="statusFilter">
+          <option value="">Todos los estados</option>
+          <option value="pending" selected>Pendientes</option>
+          <option value="approved">Aprobados</option>
+          <option value="rejected">Rechazados</option>
+          <option value="promoted">Promovidos</option>
+        </select>
+        <select id="moduleFilter">
+          <option value="">Todos los módulos</option>
+          <option value="lesen">Lesen</option>
+          <option value="horen">Hören</option>
+        </select>
+      </div>
+      <ul class="list" id="candidateList"></ul>
+    </aside>
+    <main class="detail" id="detail">
+      <div class="empty">Selecciona un candidato para revisar.</div>
+    </main>
+  </div>
+  <script>
+    const LANG = new URLSearchParams(location.search).get('lang') || 'de';
+    const LEVEL = new URLSearchParams(location.search).get('level') || 'B1';
+    let candidates = [];
+    let selectedId = null;
+
+    async function api(path, opts = {}) {
+      const url = path + (path.includes('?') ? '&' : '?') + `lang=${LANG}&level=${LEVEL}`;
+      const res = await fetch(url, {
+        headers: { 'Content-Type': 'application/json' },
+        ...opts,
+      });
+      if (!res.ok) throw new Error(await res.text());
+      return res.json();
+    }
+
+    async function loadStats() {
+      const { counts } = await api('/api/stats');
+      document.getElementById('stats').innerHTML = Object.entries(counts)
+        .map(([k, v]) => `<span class="stat ${k}">${k}: ${v}</span>`)
+        .join('');
+    }
+
+    async function loadList() {
+      const status = document.getElementById('statusFilter').value;
+      const module = document.getElementById('moduleFilter').value;
+      let path = '/api/candidates';
+      if (status) path += `?status=${status}`;
+      const { candidates: rows } = await api(path);
+      candidates = module ? rows.filter((r) => r.module === module) : rows;
+      renderList();
+    }
+
+    function renderList() {
+      const ul = document.getElementById('candidateList');
+      if (!candidates.length) {
+        ul.innerHTML = '<li class="empty" style="padding:16px">Sin candidatos.</li>';
+        return;
+      }
+      ul.innerHTML = candidates
+        .map(
+          (c) => `
+        <li>
+          <button type="button" class="${c.id === selectedId ? 'active' : ''}" data-id="${c.id}">
+            <strong>${c.label || c.module + ' t' + c.teil}</strong>
+            <span class="badge ${c.status}">${c.status}</span>
+            <div class="meta">${c.questionCount} preguntas · ${c.id.slice(-12)}</div>
+          </button>
+        </li>`,
+        )
+        .join('');
+      ul.querySelectorAll('button[data-id]').forEach((btn) => {
+        btn.addEventListener('click', () => selectCandidate(btn.dataset.id));
+      });
+    }
+
+    async function selectCandidate(id) {
+      selectedId = id;
+      renderList();
+      const { candidate } = await api(`/api/candidates/${id}`);
+      renderDetail(candidate);
+    }
+
+    function renderDetail(c) {
+      const v = c.validation || {};
+      const detail = document.getElementById('detail');
+      detail.innerHTML = `
+        <div class="card">
+          <h2>${c.label || c.module + ' Teil ' + c.teil}</h2>
+          <p><span class="badge ${c.status}">${c.status}</span> · ${c.module} · ${c.questions?.length || 0} ítems · ${c.provenance?.generatedBy || ''}</p>
+          <div class="validation ${v.valid ? 'ok' : 'fail'}">
+            ${v.valid ? '✓ Validación OK' : '✗ Errores de validación'}
+            ${v.errors?.length ? `<ul>${v.errors.map((e) => `<li>${e}</li>`).join('')}</ul>` : ''}
+            ${v.warnings?.length ? `<ul style="color:var(--warning)">${v.warnings.map((w) => `<li>${w}</li>`).join('')}</ul>` : ''}
+          </div>
+        </div>
+        ${
+          c.passage?.text
+            ? `<div class="card">
+          <h2>Pasaje / Transcript</h2>
+          <p><strong>${c.passage.title || ''}</strong></p>
+          <textarea class="passage-edit" id="passageText">${escapeHtml(c.passage.text)}</textarea>
+        </div>`
+            : ''
+        }
+        <div class="card">
+          <h2>Preguntas</h2>
+          ${(c.questions || [])
+            .map(
+              (q, i) => `
+            <div class="question">
+              <strong>${i + 1}.</strong> ${escapeHtml(q.question)}
+              ${q.options ? `<div style="font-size:0.85rem;color:var(--text-secondary);margin-top:4px">${Object.entries(q.options).map(([k, v]) => `${k}: ${v}`).join(' · ')}</div>` : ''}
+              <div style="font-size:0.85rem;margin-top:4px;color:var(--success)">→ ${escapeHtml(q.correct || q.correctAnswer || '')}</div>
+            </div>`,
+            )
+            .join('')}
+        </div>
+        <div class="card">
+          <h2>Notas de revisión</h2>
+          <textarea class="notes" id="reviewNotes" placeholder="Comentarios del revisor…">${escapeHtml(c.review?.notes || '')}</textarea>
+          <div class="actions">
+            <button class="btn btn-approve" id="btnApprove">Aprobar</button>
+            <button class="btn btn-reject" id="btnReject">Rechazar</button>
+            <button class="btn btn-secondary" id="btnSave">Guardar edición</button>
+            <button class="btn btn-secondary" id="btnRevalidate">Revalidar</button>
+          </div>
+        </div>`;
+
+      document.getElementById('btnApprove').onclick = () => patchCandidate(c.id, { status: 'approved' });
+      document.getElementById('btnReject').onclick = () => patchCandidate(c.id, { status: 'rejected' });
+      document.getElementById('btnSave').onclick = () => {
+        const body = { review: { notes: document.getElementById('reviewNotes').value } };
+        const pt = document.getElementById('passageText');
+        if (pt) body.passage = { text: pt.value };
+        patchCandidate(c.id, body);
+      };
+      document.getElementById('btnRevalidate').onclick = () => revalidate(c.id);
+    }
+
+    function escapeHtml(s) {
+      return String(s || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    async function patchCandidate(id, body) {
+      const notes = document.getElementById('reviewNotes');
+      if (notes) body.review = { ...body.review, notes: notes.value };
+      await api(`/api/candidates/${id}`, { method: 'PATCH', body: JSON.stringify(body) });
+      await loadStats();
+      await loadList();
+      await selectCandidate(id);
+    }
+
+    async function revalidate(id) {
+      await api(`/api/candidates/${id}/revalidate`, { method: 'POST', body: '{}' });
+      await selectCandidate(id);
+    }
+
+    document.getElementById('statusFilter').addEventListener('change', loadList);
+    document.getElementById('moduleFilter').addEventListener('change', loadList);
+
+    loadStats().then(loadList);
+  </script>
+</body>
+</html>

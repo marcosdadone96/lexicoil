@@ -37,7 +37,7 @@ async function testGoetheB1Chunks() {
   });
   const result = PromptBuilder.buildPrompt(spec);
   assert(result.mode === 'chunks', 'chunk mode');
-  assert(result.chunks.length === 12, 'B1 goethe expands to 12 chunks (5+4+1+2 parts)');
+  assert(result.chunks.length === 15, 'B1 goethe expands to 15 chunks (5+4+3+3 parts, no grammatik)');
   assert(result.chunks[0].expectKey === 'lesenParts', 'first chunk lesenParts');
   assert(result.chunks[0].prompt.includes('Umwelt'), 'topic in prompt');
   assert(result.chunks[0].prompt.includes('Nebensätze') || result.chunks[0].prompt.includes('Grammar'), 'grammar hint');
@@ -83,6 +83,7 @@ async function testVocabExam() {
   const result = PromptBuilder.buildPrompt(spec);
   assert(result.mode === 'single', 'vocab single');
   assert(result.prompt.includes('Nachhaltigkeit'), 'target word in prompt');
+  assert(result.prompt.includes('targetUsage'), 'targetUsage in vocab prompt');
   console.log('OK   vocabulary exam prompt');
 }
 

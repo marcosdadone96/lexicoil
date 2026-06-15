@@ -6,7 +6,8 @@
 <title>LexiCoil — Official Exam Prep & Personal Vocabulary Practice</title>
 <meta name="description" content="Practice official Goethe and Cambridge exams. Save words you miss, pick your flashcards, and generate a personal mock exam from your vocabulary.">
 <meta name="theme-color" content="#0E0E10">
-<link rel="icon" href="/assets/brand/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/assets/brand/favicon.png" type="image/png">
+<link rel="apple-touch-icon" href="/assets/brand/icon.png">
 <script>
 (function(){
   try{
@@ -19,7 +20,7 @@
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://lexicoil.com/">
 <meta property="og:site_name" content="LexiCoil">
-<meta property="og:title" content="LexiCoil — English & German Exam Simulator">
+<meta property="og:title" content="LexiCoil — Language Exam Practice">
 <meta property="og:description" content="Practice official exams and turn your mistakes into a personalized study plan. Goethe & Cambridge A1–C2.">
 <meta property="og:image" content="https://lexicoil.com/og-image.svg">
 <meta property="og:image:width" content="1200">
@@ -30,8 +31,9 @@
 <meta name="twitter:description" content="Practice official exams and turn your mistakes into a personalized study plan.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/css/lexicoil-design-system.css">
-<link rel="stylesheet" href="/assets/css/app.css">
+<link rel="stylesheet" href="/assets/css/lexicoil-design-system.css?v=3">
+<link rel="stylesheet" href="/assets/css/app.css?v=5">
+<link rel="stylesheet" href="/assets/css/app-utilities.css?v=2">
 </head>
 <body>
 <div class="vocab-tooltip" id="VT" onmouseenter="clearTimeout(ttTimer)" onmouseleave="hideVocab()"></div>
@@ -39,43 +41,55 @@
 <!-- UPGRADE MODAL -->
 <div id="upgradeModal">
   <div class="upgrade-box">
-    <div style="font-size:32px;margin-bottom:10px">⭐</div>
+    <div class="u-icon-hero">⭐</div>
     <h2>Upgrade to <em>Pro</em></h2>
-    <p>Free plan: <b>2</b> AI exam generations per month (saved exams reusable forever). Pro: <b>20</b> generations/month for <b>€9.99</b> one-time payment.</p>
-    <p style="font-size:12px;color:var(--orange);margin-bottom:12px">Exams you generate are yours to keep. Free users can reuse saved exams indefinitely without using quota.</p>
+    <p>Free account: <b>5</b> official mock exams per month on one certification (Goethe, Cambridge, or DELE). Pro: <b>12</b> generations/month, all languages & levels, plus personalized vocabulary practice for <b>€9.99/month</b>.</p>
+    <p class="u-warning-sm">Personalized exams (your vocabulary, listening game, AI speaking) require Pro. Saved exams can be retaken without using quota.</p>
     <div class="plan-cards">
       <div class="plan-card">
         <div class="plan-card-label">Free</div>
         <div class="plan-price">€0 <span>/ month</span></div>
         <div class="plan-features">
-          <b>2</b> AI exams / month<br>
-          Save &amp; redo exams<br>
-          Flashcard deck<br>
-          Quick modules
+          <b>5</b> official mocks / month<br>
+          One certification & level<br>
+          Flashcards & quick quizzes<br>
+          Save &amp; redo exams (free)
         </div>
       </div>
       <div class="plan-card pro-card">
         <div class="plan-card-label">Pro ✦</div>
-        <div class="plan-price">€9.99 <span>one-time</span></div>
+        <div class="plan-price">€9.99 <span>/ month</span></div>
         <div class="plan-features">
-          <b>20</b> AI exams / month<br>
-          Save &amp; redo exams<br>
-          Flashcard deck<br>
+          <b>12</b> exams / month<br>
+          Personalized vocab exams<br>
+          Listening game &amp; AI speaking<br>
           PDF reports<br>
           Priority AI speed
         </div>
       </div>
     </div>
-    <button class="btn-upgrade" onclick="activatePro()">Upgrade to Pro — €9.99</button>
-    <p style="font-size:11px;color:var(--text3);margin-bottom:10px">Secure payment via Stripe Checkout.</p>
+    <button class="btn-upgrade" onclick="activatePro()">Upgrade to Pro — €9.99/month</button>
+    <p class="u-text-caption u-mb-sm">Billed monthly via Stripe. Cancel anytime.</p>
     <button class="btn-upgrade-skip" onclick="closeUpgrade()">Maybe later</button>
+  </div>
+</div>
+
+<!-- AUDIO SETTINGS MODAL -->
+<div id="audioSettingsModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:2000;align-items:center;justify-content:center">
+  <div class="upgrade-box" style="max-width:400px;padding:28px 24px">
+    <h2 style="margin-top:0;margin-bottom:6px">🔊 Audio settings</h2>
+    <p style="color:var(--text-muted);font-size:13px;margin-top:0">Choose the voice used for listening sections and word pronunciation.</p>
+    <div id="audioSettingsContent">
+      <p style="font-size:13px;color:var(--text-muted)">Loading voices…</p>
+    </div>
+    <button class="btn-upgrade-skip" onclick="closeAudioSettings()" style="margin-top:16px">Close</button>
   </div>
 </div>
 
 <!-- QUOTA EXCEEDED MODAL -->
 <div id="quotaExceededModal">
   <div class="upgrade-box">
-    <div style="font-size:32px;margin-bottom:10px">⏳</div>
+    <div class="u-icon-hero">⏳</div>
     <h2>Generation limit reached</h2>
     <p id="quotaExceededMsg"></p>
     <button class="btn-upgrade" onclick="closeQuotaExceeded();showUpgrade();">View upgrade options</button>
@@ -85,7 +99,7 @@
 
 <div id="quotaConfirmModal">
   <div class="upgrade-box">
-    <div style="font-size:32px;margin-bottom:10px">📋</div>
+    <div class="u-icon-hero">📋</div>
     <h2>Use your last exam?</h2>
     <p id="quotaConfirmMsg"></p>
     <button class="btn-upgrade" onclick="acceptQuotaConfirm()">Use 1</button>
@@ -96,7 +110,7 @@
 <!-- AUTH OVERLAY (hidden until user opens sign-in) -->
 <div id="authOverlay" style="display:none" aria-hidden="true">
   <div class="auth-box">
-    <div class="auth-logo"><img src="/assets/brand/icon.svg" alt="" width="48" height="48"><div class="ln">Lexi<b>Coil</b></div></div>
+    <div class="auth-logo"><img src="/assets/brand/icon.png" alt="" width="48" height="48"><div class="ln">Lexi<b>Coil</b></div></div>
     <div class="auth-tabs">
       <button class="auth-tab active" onclick="switchTab('login')">Sign In</button>
       <button class="auth-tab" onclick="switchTab('register')">Register</button>
@@ -115,14 +129,28 @@
       <input class="auth-field" type="email" id="lEmail" placeholder="Email address" autocomplete="email">
       <input class="auth-field" type="password" id="lPass" placeholder="Password" autocomplete="current-password">
       <button class="btn-auth" id="btnLogin" type="button" onclick="doLogin()">Sign In →</button>
-      <p style="text-align:center;margin-top:10px"><a href="#" onclick="doForgotPassword();return false;" style="color:var(--accent);font-size:12px">Forgot password?</a></p>
+      <p style="text-align:center;margin-top:10px"><a href="#" onclick="doForgotPassword();return false;" class="u-auth-link">Forgot password?</a></p>
     </div>
     <div id="registerForm" style="display:none">
       <input class="auth-field" type="text" id="rName" placeholder="Your name" autocomplete="name">
       <input class="auth-field" type="email" id="rEmail" placeholder="Email address" autocomplete="email">
       <input class="auth-field" type="password" id="rPass" placeholder="Password (min 6 chars)" autocomplete="new-password">
+      <p class="u-section-label" style="font-size:11px;margin:12px 0 6px;text-align:left">Your exam (Free: 1 certification)</p>
+      <div style="display:flex;gap:8px;margin-bottom:8px">
+        <select class="auth-field" id="rCert" style="flex:1;margin-bottom:0">
+          <option value="de">🇩🇪 Goethe</option>
+          <option value="en">🇬🇧 Cambridge</option>
+          <option value="es">🇪🇸 DELE</option>
+        </select>
+        <select class="auth-field" id="rLevel" style="width:96px;margin-bottom:0;flex-shrink:0">
+          <option value="B1">B1</option>
+          <option value="B2">B2</option>
+          <option value="C1">C1</option>
+        </select>
+      </div>
+      <p class="auth-guest-note" style="margin:0 0 12px;text-align:left">5 official mock exams/month on this level. Pro unlocks all languages &amp; levels.</p>
       <button class="btn-auth" id="btnRegister" type="button" onclick="doRegister()">Create Account →</button>
-      <p style="font-size:11px;color:var(--text3);margin-top:10px;line-height:1.5;text-align:center">By registering you agree to our <a href="/terms" style="color:var(--accent)">Terms</a> and <a href="/privacy" style="color:var(--accent)">Privacy Policy</a>.</p>
+      <p class="u-auth-legal">By registering you agree to our <a href="/terms" class="u-auth-link">Terms</a> and <a href="/privacy" class="u-auth-link">Privacy Policy</a>.</p>
     </div>
     <div class="auth-or">or</div>
     <button class="btn-google" id="btnGoogle" type="button" onclick="doGoogle()">
@@ -135,7 +163,7 @@
     </div>
     </div>
     <div id="resetForm" style="display:none">
-      <p style="font-size:13px;color:var(--text2);margin-bottom:12px;line-height:1.5">Choose a new password for your account.</p>
+      <p class="u-auth-lede">Choose a new password for your account.</p>
       <input class="auth-field" type="password" id="resetPass" placeholder="New password (min 6 chars)" autocomplete="new-password">
       <input class="auth-field" type="password" id="resetPass2" placeholder="Confirm new password" autocomplete="new-password">
       <button class="btn-auth" id="btnResetPass" type="button" onclick="doResetPassword()">Update password →</button>
@@ -146,9 +174,9 @@
 <div class="app">
 <header class="topbar">
   <div class="topbar-brand logo" onclick="goToLanding()" title="Back to LexiCoil home">
-    <img class="logo-icon" src="/assets/brand/icon.svg" alt="" width="34" height="34"><div class="logo-sep"></div>
+    <img class="logo-icon" src="/assets/brand/icon.png" alt="" width="34" height="34"><div class="logo-sep"></div>
     <span class="logo-name">Lexi<b>Coil</b></span><div class="logo-sep"></div>
-    <span class="logo-sub">English & German Exams</span>
+    <span class="logo-sub">Language exam practice</span>
   </div>
   <div class="topbar-right header-right">
     <button class="theme-btn" id="themeBtn" onclick="toggleTheme()" title="Toggle theme">🌙</button>
@@ -167,7 +195,9 @@
         <div class="user-dropdown__meta" id="udMeta"></div>
         <div class="user-dropdown__sep"></div>
         <button type="button" class="user-dropdown__btn" id="udProfile" onclick="userMenuProfile()">Exam profile</button>
+        <button type="button" class="user-dropdown__btn" id="udAudioSettings" onclick="openAudioSettings()">🔊 Audio settings</button>
         <button type="button" class="user-dropdown__btn" id="udUpgrade" onclick="userMenuUpgrade()" hidden>✦ Upgrade to Pro</button>
+        <button type="button" class="user-dropdown__btn" id="udManageSub" onclick="userMenuManageSubscription()" hidden>Manage subscription</button>
         <button type="button" class="user-dropdown__btn" id="udSignIn" onclick="userMenuSignIn()" hidden>Sign in / Register</button>
         <a class="user-dropdown__btn" href="mailto:contact@lexicoil.com?subject=LexiCoil%20Inquiry">Contact support</a>
         <div class="user-dropdown__sep" id="udLogoutSep"></div>
@@ -182,7 +212,7 @@
     <div class="profile-bar__label" id="profileBarLabel">Exam goals</div>
     <div class="profile-bar__exam" id="profileBarExam">Choose an exam to prepare</div>
   </div>
-  <div style="display:flex;align-items:center;gap:10px">
+  <div class="u-profile-row">
     <span class="profile-bar__demo" id="profileBarDemo" style="display:none">Product demo</span>
     <button type="button" class="profile-bar__change" id="profileBarChangeBtn" onclick="showProfileSetup()">Settings</button>
   </div>
@@ -198,13 +228,13 @@
   <div class="screen-eyebrow">Exam profile</div>
   <h2 class="screen-h1">What are you preparing for?</h2>
   <p class="screen-sub">All vocabulary, progress, and exams stay inside this certification profile.</p>
-  <div style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin:18px 0 10px">Certification</div>
+  <div class="u-section-label">Certification</div>
   <div class="setup-grid" id="profileCertGrid">
     <div class="setup-card" data-subject="de" onclick="selectProfileCert('de',this)"><h3>🇩🇪 Goethe</h3><p>Goethe-Institut · A1–C2</p></div>
     <div class="setup-card" data-subject="en" onclick="selectProfileCert('en',this)"><h3>🇬🇧 Cambridge</h3><p>Cambridge English · A1–C2</p></div>
     <div class="setup-card" data-subject="es" onclick="selectProfileCert('es',this)"><h3>🇪🇸 DELE</h3><p>Instituto Cervantes · A1–C2</p></div>
   </div>
-  <div style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin:18px 0 10px">Level</div>
+  <div class="u-section-label">Level</div>
   <div id="profileSwitcher" style="display:none;margin-bottom:18px"></div>
   <div class="level-grid" id="profileLevelGrid"></div>
   <button class="btn-start" id="btnProfileSave" onclick="saveExamProfile()" disabled style="margin-top:20px">Start preparing →</button>
@@ -245,8 +275,13 @@
 <!-- LOADING -->
 <div id="loadingScreen">
   <div class="loader-orbit"></div>
-  <div class="loader-title" id="loaderTitle">Generating your exam…</div>
-  <div class="loader-sub" id="loaderSub">The AI examiner is preparing all modules</div>
+  <div class="loader-title" id="loaderTitle">Preparing your exam…</div>
+  <div class="loader-sub" id="loaderSub">Assembling all modules…</div>
+</div>
+
+<div id="horenGameScreen" style="display:none">
+  <button class="nav-back-btn" onclick="exitHorenGame()">← Back</button>
+  <div id="horenGameMount"></div>
 </div>
 
 <!-- EXAM / RESULTS / HISTORY / FLASHCARD / VOCAB EXAM -->
@@ -306,8 +341,8 @@
     <div class="fc-personal-sec" id="fcPersonalSec" style="display:none">
       <h3>✦ Personal mock exam <span class="badge-pill badge-purple" id="fcPersonalBadge">0 words</span></h3>
       <p>Select at least 4 flashcards above, then generate a full Goethe/Cambridge-style exam that uses <b>your</b> vocabulary in reading, listening, gap-fill, writing and speaking.</p>
-      <div style="display:flex;gap:9px;flex-wrap:wrap;align-items:center">
-        <label style="font-size:11px;color:var(--text3);font-weight:700;text-transform:uppercase;letter-spacing:.06em">Level</label>
+      <div class="u-flex-inline">
+        <label class="u-fc-level-label">Level</label>
         <select id="fcPersonalLevel" class="fc-add-input" style="flex:0 0 auto;min-width:90px;padding:8px 12px">
           <option value="A1">A1</option><option value="A2">A2</option><option value="B1" selected>B1</option><option value="B2">B2</option><option value="C1">C1</option><option value="C2">C2</option>
         </select>
@@ -317,7 +352,7 @@
     <div class="fc-exam-sec" id="fcExamSec" style="display:none">
       <h3>🎯 Quick vocab quiz <span class="badge-pill badge-purple" id="fcExamBadge">0 words</span></h3>
       <p>Multiple-choice quiz on your <b>selected</b> words. Results update SRS intervals automatically.</p>
-      <div style="display:flex;gap:9px;flex-wrap:wrap">
+      <div class="u-flex-inline">
         <button class="btn-start" onclick="startVE(false)" style="max-width:230px">Start quiz (text) →</button>
         <button class="btn-start" onclick="startVE(true)" style="max-width:230px;background:var(--blue)">🔊 Audio quiz →</button>
       </div>
@@ -341,10 +376,11 @@
 </div><!-- .app -->
 
 <!-- LexiCoil modules (Fase C) -->
+<script src="js/ui/components/debugLog.js?v=1"></script>
 <script src="js/services/supabaseClient.js?v=9"></script>
 <script src="js/data/activityTrack.js?v=1"></script>
-<script src="js/services/syncMerge.js?v=2"></script>
-<script src="js/services/authClient.js?v=10"></script>
+<script src="js/services/syncMerge.js?v=3"></script>
+<script src="js/services/authClient.js?v=11"></script>
 <script src="js/services/claudeClient.js?v=11"></script>
 <script src="js/engine/domain/lexicoilDomain.js?v=1"></script>
 <script src="js/engine/knowledge/KnowledgeLoader.js?v=1"></script>
@@ -356,6 +392,12 @@
 <script src="js/engine/knowledge/KnowledgeEngine.js?v=1"></script>
 <script src="js/engine/prompts/promptShell.js?v=1"></script>
 <script src="js/engine/prompts/moduleInstructions.js?v=1"></script>
+<script src="js/engine/prompts/blueprintPromptBinding.js?v=1"></script>
+<script src="js/engine/validation/blueprintResolver.js?v=1"></script>
+<script src="js/engine/validation/CefrVocabLoader.js?v=2"></script>
+<script src="js/engine/validation/lemmatizer.js?v=1"></script>
+<script src="js/engine/validation/CefrGate.js?v=2"></script>
+<script src="js/engine/validation/difficultyScorer.js?v=1"></script>
 <script src="js/engine/prompts/PromptBuilder.js?v=1"></script>
 <script src="js/engine/validation/ExamValidator.js?v=1"></script>
 <script src="js/engine/generators/chunkRunner.js?v=1"></script>
@@ -370,50 +412,76 @@
 <script src="js/i18n/examSpanishNormalize.js?v=1"></script>
 <script src="js/i18n/examUiLocale.js?v=1"></script>
 <script src="js/ui/components/uiToast.js?v=1"></script>
+<script src="js/ui/components/notify.js?v=1"></script>
 <script src="js/analytics/types.js?v=1"></script>
 <script src="js/core/metadataResolver.js?v=1"></script>
 <script src="js/core/schemaValidator.js?v=1"></script>
 <script src="js/data/examLibrary.js?v=4"></script>
-<script src="js/library/LibraryLoader.js?v=1"></script>
-<script src="js/library/ExamBlueprint.js?v=1"></script>
-<script src="js/library/ExamBuilder.js?v=1"></script>
-<script src="js/library/AnalyticsStore.js?v=1"></script>
-<script src="js/library/WeaknessEngine.js?v=1"></script>
+<script src="js/library/libraryCatalog.js?v=2"></script>
+<script src="js/library/TaggingGate.js?v=1"></script>
+<script src="js/bootstrap/listeningScript.js?v=1"></script>
+<script src="js/library/contentServable.js?v=1"></script>
+<script src="js/library/LibraryLoader.js?v=3"></script>
+<script src="js/library/PassageResolver.js?v=1"></script>
+<script src="js/library/HorenGame.js?v=1"></script>
+<script src="js/library/ContentKey.js?v=1"></script>
+<script src="js/library/BurnedRegistry.js?v=1"></script>
+<script src="js/library/VocabBatching.js?v=1"></script>
+<script src="js/library/ItemCalibration.js?v=1"></script>
+<script src="js/library/ExamBlueprint.js?v=3"></script>
+<script src="js/engine/targetUsage.js?v=1"></script>
+<script src="js/library/ExamBuilder.js?v=3"></script>
+<script src="js/library/AnalyticsStore.js?v=3"></script>
+<script src="js/library/WeaknessEngine.js?v=3"></script>
 <script src="js/library/PracticeDictionary.js?v=1"></script>
 <script src="js/data/manualVocab.js?v=2"></script>
-<script src="js/data/goalStore.js?v=4"></script>
+<script src="js/data/goalStore.js?v=5"></script>
+<script src="js/ui/mastery/masteryView.js?v=1"></script>
 <script src="js/ui/dashboard/dashboardLayout.js?v=2"></script>
-<script src="js/ui/dashboard/dashboardUi.js?v=3"></script>
-<script src="js/ui/workspace/workspaceUi.js?v=2"></script>
+<script src="js/ui/dashboard/dashboardUi.js?v=4"></script>
+<script src="js/ui/workspace/workspaceUi.js?v=3"></script>
 <script src="js/library/QuestionLibrary.js?v=1"></script>
 <script src="js/content/goetheDemoExams.js"></script>
 <script src="js/content/demoExams.js"></script>
 <script src="js/data/examProfile.js?v=1"></script>
+<script src="js/bootstrap/freePlan.js?v=1"></script>
 <script src="js/bootstrap/state.js?v=1"></script>
 <script src="js/bootstrap/quota.js?v=1"></script>
 <script src="js/bootstrap/auth.js?v=2"></script>
 <script src="js/bootstrap/theme.js?v=1"></script>
-<script src="js/ui/workspace/vocabHub.js?v=1"></script>
+<script src="js/ui/workspace/vocabHub.js?v=4"></script>
 <script src="js/ui/exam/examConfig.js?v=1"></script>
 <script src="js/ui/exam/mistakeReview.js?v=1"></script>
 <script src="js/ui/exam/speakingMic.js?v=1"></script>
 <script src="js/ui/exam/oralPractice.js?v=1"></script>
-<script src="js/ui/app/coach.js?v=1"></script>
-<script src="js/bootstrap/nav.js?v=1"></script>
-<script src="js/ui/exam/examGeneration.js?v=1"></script>
-<script src="js/ui/exam/examRunner.js?v=1"></script>
+<script src="js/ui/app/coach.js?v=2"></script>
+<script src="js/ui/components/a11y.js?v=1"></script>
+<script src="js/bootstrap/router.js?v=1"></script>
+<script src="js/bootstrap/nav.js?v=3"></script>
+<script src="js/ui/exam/examValidation.js?v=1"></script>
+<script src="js/engine/strategyBFlags.js?v=1"></script>
+<script src="js/ui/exam/examSources.js?v=2"></script>
+<script src="js/ui/exam/examGeneration.js?v=3"></script>
+<script src="js/ui/exam/examKeyboard.js?v=1"></script>
+<script src="js/ui/exam/examRunner.js?v=3"></script>
 <script src="js/ui/exam/results.js?v=1"></script>
 <script src="js/ui/exam/saveExams.js?v=1"></script>
 <script src="js/ui/vocabulary/tooltip.js?v=1"></script>
-<script src="js/bootstrap/audio.js?v=1"></script>
-<script src="js/ui/vocabulary/flashcards.js?v=2"></script>
-<script src="js/bootstrap/init.js?v=2"></script>
-<script src="js/bootstrap/appFeatures.js?v=24"></script>
+<script src="js/bootstrap/audio.js?v=2"></script>
+<script src="js/ui/vocabulary/fcKeyboard.js?v=1"></script>
+<script src="js/ui/vocabulary/flashcards.js?v=4"></script>
+<script src="js/bootstrap/init.js?v=3"></script>
+<script src="js/bootstrap/featureQuota.js?v=1"></script>
+<script src="js/bootstrap/featurePayments.js?v=1"></script>
+<script src="js/bootstrap/featurePdf.js?v=1"></script>
+<script src="js/bootstrap/featureSpeaking.js?v=1"></script>
+<script src="js/bootstrap/featureFlashcards.js?v=1"></script>
+<script src="js/bootstrap/appFeatures.js?v=26"></script>
 <div id="pdf-export-container"></div>
-<footer style="text-align:center;padding:20px 16px 28px;font-size:11px;color:var(--text3);line-height:1.8">
-  <a href="/privacy" style="color:var(--text2);text-decoration:none;margin:0 8px">Privacy</a>
-  <a href="/terms" style="color:var(--text2);text-decoration:none;margin:0 8px">Terms</a>
-  <a href="mailto:contact@lexicoil.com?subject=LexiCoil%20Inquiry" style="color:var(--accent);text-decoration:none;font-weight:600;margin:0 8px">contact@lexicoil.com</a>
+<footer class="u-site-footer">
+  <a href="/privacy">Privacy</a>
+  <a href="/terms">Terms</a>
+  <a href="mailto:contact@lexicoil.com?subject=LexiCoil%20Inquiry" class="link-brand">contact@lexicoil.com</a>
 </footer>
 </body>
 </html>

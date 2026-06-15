@@ -13,8 +13,18 @@ async function runInit(){
     if(typeof Auth!=='undefined'&&Auth.clearGuest)Auth.clearGuest();
   }catch(_){}
   hideAuthOverlay();
-  try{loadLS();}catch(e){console.warn('[loadLS]',e);}
-  try{migrateSavedExams();}catch(e){console.warn('[migrateSavedExams]',e);S.savedExams=[];}
+  try{loadLS();}catch(e){lcDebug.warn('[loadLS]',e);}
+  try{
+    if(typeof BurnedRegistry!=='undefined'&&typeof BurnedRegistry.setCooldownDays==='function'){
+      BurnedRegistry.setCooldownDays(window.LC_COOLDOWN_DAYS??15);
+    }
+  }catch(e){lcDebug.warn('[burned cooldown]',e);}
+  try{
+    if(typeof LibraryLoader!=='undefined'&&LibraryLoader.probeAll){
+      await LibraryLoader.probeAll();
+    }
+  }catch(e){lcDebug.warn('[library probe]',e);}
+  try{migrateSavedExams();}catch(e){lcDebug.warn('[migrateSavedExams]',e);S.savedExams=[];}
   loadTheme();
   paintDashboard();
   const oauthReturn=/[?&]code=/.test(location.search)||/access_token|refresh_token/i.test(location.hash||'');
@@ -38,7 +48,7 @@ async function runInit(){
   updUserBtn();
   if(typeof refreshUserDropdown==='function')refreshUserDropdown();
   if(oauthMsg){
-    console.warn('[auth] OAuth on load:',oauthMsg);
+    lcDebug.warn('[auth] OAuth on load:',oauthMsg);
   }
   updBadges();updQuotaUI();
   const lp=new URLSearchParams(location.search);
@@ -112,12 +122,7 @@ async function runInit(){
   renderHomeScreen();
 }
 function bootApp(){
-  window.addEventListener('hashchange',()=>{
-    const h=(location.hash||'').replace(/^#\/?/,'');
-    if(h.startsWith('workspace/'))parseAppRoute();
-    else if(!h||h==='dashboard')goHome();
-  });
-  window.init().catch((e)=>{console.error('[init]',e);paintDashboard();});
+  window.init().catch((e)=>{lcDebug.error('[init]',e);paintDashboard();});
 }
 window.bootApp=bootApp;
 

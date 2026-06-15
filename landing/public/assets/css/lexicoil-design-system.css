@@ -1,5 +1,5 @@
 /**
- * LexiCoil Design System v1.0
+ * LexiCoil Design System v1.1
  * Official brand: Primary Blue #2563EB, Teal #06B6D4, Dark Navy #0F172A, Light Gray #E2E8F0
  * Typography: Poppins SemiBold (600) + Bold (700)
  */
@@ -63,7 +63,7 @@
   --space-10: 40px;
   --space-12: 48px;
 
-  /* App legacy aliases */
+  /* App structural aliases (bg/surface/semantic — migrate in later pass) */
   --bg: var(--bg-base);
   --bg2: var(--bg-surface);
   --bg3: var(--bg-elevated);
@@ -71,11 +71,6 @@
   --surface2: var(--lc-gray);
   --border2: var(--border-strong);
   --text: var(--text-primary);
-  --text2: var(--text-secondary);
-  --text3: var(--text-muted);
-  --accent: var(--brand);
-  --accent2: var(--brand-dark);
-  --accent-dim: var(--brand-light);
   --red: var(--error);
   --red-bg: var(--error-bg);
   --green: var(--success);
@@ -86,8 +81,7 @@
   --purple-bg: rgba(99, 102, 241, 0.1);
   --orange: var(--warning);
   --orange-bg: var(--warning-bg);
-  --r: var(--radius-md);
-  --r-lg: var(--radius-lg);
+  --amber: var(--warning);
 }
 
 /* ?? DARK ?? */

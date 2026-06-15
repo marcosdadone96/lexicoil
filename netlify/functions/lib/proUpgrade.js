@@ -3,8 +3,9 @@
 const { userKey, normalizeEmail } = require('./authLib.js');
 const { getMonthKey, PRO_MAX } = require('./quotaLib.js');
 const { sendProWelcomeEmail } = require('./email.js');
+const { syncPlanToSupabase } = require('./planSync.js');
 
-async function activateProForEmail(store, rawEmail, { sendEmail = true } = {}) {
+async function activateProForEmail(store, rawEmail, { sendEmail = true, stripeCustomerId = null } = {}) {
   const email = normalizeEmail(rawEmail);
   if (!email) return { ok: false, error: 'invalid_email' };
 
@@ -26,10 +27,13 @@ async function activateProForEmail(store, rawEmail, { sendEmail = true } = {}) {
     pro: true,
     proActivatedAt: Date.now(),
   };
+  if (stripeCustomerId) updatedUser.stripeCustomerId = stripeCustomerId;
   await store.setJSON(key, updatedUser);
 
   const month = getMonthKey();
   await store.setJSON(`quota:${email}`, { used: 0, month, max: PRO_MAX });
+
+  await syncPlanToSupabase(email, 'pro', updatedUser);
 
   if (sendEmail) {
     try {

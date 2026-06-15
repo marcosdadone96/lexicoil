@@ -24,6 +24,8 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: Props) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
+  const [regCert, setRegCert] = useState('de');
+  const [regLevel, setRegLevel] = useState('B1');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
@@ -68,7 +70,10 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: Props) {
       }
 
       if (mode === 'register') {
-        const result = await registerWithEmail(name, email, password);
+        const result = await registerWithEmail(name, email, password, {
+          lang: regCert,
+          level: regLevel,
+        });
         if (result.pendingConfirmation) {
           setPendingEmail(result.email);
           setMessage(`We sent a confirmation link to ${result.email}. Check your inbox and spam folder.`);
@@ -119,7 +124,7 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: Props) {
       />
       <div className="animate-scale-in relative w-full max-w-md rounded-[20px] border border-[var(--border)] bg-[var(--bg-surface)] p-8 shadow-[var(--shadow-card)]">
         <div className="mb-6 flex flex-col items-center text-center">
-          <Image src="/assets/brand/icon.svg" alt="" width={48} height={48} className="mb-3" />
+          <Image src="/assets/brand/icon.png" alt="" width={48} height={48} className="mb-3" />
           <h2 className="font-display text-2xl font-bold text-[var(--text-primary)]">LexiCoil</h2>
           <p className="mt-1 text-xs font-semibold tracking-[0.14em] text-[var(--text-muted)]">
             EVERY MISTAKE BECOMES YOUR NEXT LESSON.
@@ -170,14 +175,44 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: Props) {
         ) : (
           <form onSubmit={onSubmit} className="space-y-3">
             {mode === 'register' && (
-              <input
-                className="auth-input"
-                type="text"
-                placeholder="Your name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                autoComplete="name"
-              />
+              <>
+                <input
+                  className="auth-input"
+                  type="text"
+                  placeholder="Your name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  autoComplete="name"
+                />
+                <p className="text-xs font-semibold text-[var(--text-muted)]">
+                  Your exam (Free: one certification)
+                </p>
+                <div className="flex gap-2">
+                  <select
+                    className="auth-input flex-1"
+                    value={regCert}
+                    onChange={(e) => setRegCert(e.target.value)}
+                    aria-label="Certification"
+                  >
+                    <option value="de">Goethe</option>
+                    <option value="en">Cambridge</option>
+                    <option value="es">DELE</option>
+                  </select>
+                  <select
+                    className="auth-input w-24 shrink-0"
+                    value={regLevel}
+                    onChange={(e) => setRegLevel(e.target.value)}
+                    aria-label="Level"
+                  >
+                    <option value="B1">B1</option>
+                    <option value="B2">B2</option>
+                    <option value="C1">C1</option>
+                  </select>
+                </div>
+                <p className="text-xs font-semibold text-[var(--text-muted)]">
+                  5 official mock exams/month on this level. Pro unlocks all languages &amp; levels.
+                </p>
+              </>
             )}
             <input
               className="auth-input"

@@ -14,6 +14,8 @@
         "generatedAt": { "type": "string" },
         "examId": { "type": "string" },
         "examType": { "type": "string" },
+        "contentStatus": { "type": "string", "enum": ["scaffold", "partial", "complete"] },
+        "blueprintId": { "type": "string" },
         "mode": { "type": "string" },
         "sourceBank": { "type": "string" }
       }
@@ -27,13 +29,16 @@
           "id": { "type": "string" },
           "module": { "type": "string", "enum": ["lesen", "horen", "reading", "listening"] },
           "title": { "type": "string" },
-          "text": { "type": "string" }
+          "text": { "type": "string" },
+          "translations": {
+            "type": "object",
+            "additionalProperties": { "type": "string" }
+          }
         }
       }
     },
     "questions": {
       "type": "array",
-      "minItems": 1,
       "items": {
         "type": "object",
         "required": ["id", "module", "question", "correctAnswer"],
@@ -41,7 +46,7 @@
           "id": { "type": "string" },
           "module": {
             "type": "string",
-            "enum": ["lesen", "horen", "schreiben", "sprechen", "grammatik", "reading", "listening", "writing"]
+            "enum": ["lesen", "horen", "schreiben", "sprechen", "grammatik", "use_of_english", "reading", "listening", "writing"]
           },
           "teil": { "type": "integer", "minimum": 1 },
           "part": { "type": "integer", "minimum": 1 },
@@ -62,7 +67,24 @@
           "skills": { "type": "array", "items": { "type": "string" } },
           "language": { "type": "string" },
           "level": { "type": "string" },
-          "examType": { "type": "string" }
+          "examType": { "type": "string" },
+          "estimatedExamPart": { "type": "string" },
+          "inferenceLevel": {
+            "type": "string",
+            "enum": ["explicit", "paraphrase", "inference", "global"]
+          },
+          "distractorProfile": {
+            "type": "string",
+            "enum": ["random", "plausible", "trap"]
+          },
+          "cefrMetrics": {
+            "type": "object",
+            "properties": {
+              "wordCount": { "type": "number" },
+              "avgSentenceLen": { "type": "number" },
+              "subordinatePct": { "type": "number" }
+            }
+          }
         }
       }
     },

@@ -12,7 +12,10 @@ function incQuota(){
   Auth.pushSync();
 }
 function isPro(){return typeof S!=='undefined'&&S.plan==='pro';}
-function getQuotaMax(){return isPro()?PRO_QUOTA:FREE_QUOTA;}
+function getQuotaMax(){
+  if (typeof quotaMaxForPlan === 'function' && typeof S !== 'undefined') return quotaMaxForPlan(S.plan);
+  return isPro() ? PRO_QUOTA : (typeof S !== 'undefined' && S.plan === 'guest' ? GUEST_QUOTA : FREE_QUOTA);
+}
 function canGenerate(){return getQuotaUsed()<getQuotaMax();}
 function getQuotaRemaining(){return getQuotaMax()-getQuotaUsed();}
 let _quotaConfirmCallback=null;

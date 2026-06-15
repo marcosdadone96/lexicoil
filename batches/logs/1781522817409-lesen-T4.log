@@ -1,0 +1,25 @@
+
+Batch generator (claude) — de/B1 × 1
+Prompt: batches/GEMINI_MASTER_PROMPT_de_B1.md
+Presupuesto Claude: $2.30 (gastado: $0.3112)
+
+── lesen T4 · pfand-erhoehung-03 ──
+Tema: Sollte das Pfand auf Flaschen erhöht werden?
+Proveedor: claude
+Archivo: batches/merged/lesen-t4-pfand-erhoehung-03.json
+Llamando claude…
+Gasto acumulado: $0.3270 / budget $2.30
+Tokens: in=1932 out=2761
+Modelo: claude-haiku-4-5
+Guardado: batches/merged/lesen-t4-pfand-erhoehung-03.json (7 preguntas, 1 passages)
+Validando…
+
+== Validación de lesen-t4-pfand-erhoehung-03.json (de_B1) ==
+Preguntas: 7 | Pasajes: 1
+Esquema: OK
+Colocación (Teile que mejora): Pool válido (Teil ya cubierto en 1 examen — OK para exámenes disjuntos)
+Sin problemas detectados ✅
+Validación OK
+Siguiente: node scripts/merge-bank-batch.mjs --lang de --level B1 --file batches/merged/lesen-t4-pfand-erhoehung-03.json
+
+Resumen: 1 OK, 0 fallidos

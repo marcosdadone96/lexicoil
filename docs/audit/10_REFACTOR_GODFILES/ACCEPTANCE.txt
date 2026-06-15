@@ -1,0 +1,9 @@
+ACCEPTANCE — 10_REFACTOR_GODFILES
+[x] appFeatures.js dividido en módulos por responsabilidad + shim que preserva window.*/orden
+[x] Cascada extraída a examSources.js; validación duplicada unificada
+[x] generateExam() reducido a orquestador (<~50 ln)
+[x] notify() único reemplaza duplicados toast/alert
+[x] console.* tras flag debug
+[x] Tests unitarios de cascada + helper de validación
+[x] Paridad verificada (smoke antes/después); salida de examen idéntica
+[x] MIGRATION_REPORT.md completado

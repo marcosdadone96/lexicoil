@@ -2,6 +2,13 @@
 function setWsTab(tab){
   if(normalizeWsTab(tab)!=='vocabulary')clearVocabHubFlashcardMode();
   S.wsTab=normalizeWsTab(tab);
+  const goal=getActiveGoal();
+  if(goal&&typeof LcRouter!=='undefined'){
+    const t=S.wsTab;
+    const seg=t==='vocabulary'?'vocab':t==='progress'?'progress':'exams';
+    LcRouter.navigate(LcRouter.goalPath(goal,seg),{label:seg==='progress'?'Progress':seg==='vocab'?'Vocabulary':'Exams',replace:true});
+    return;
+  }
   renderGoalWorkspace();
 }
 function backToWorkspace(tab){
@@ -16,6 +23,15 @@ function formatGoalExamDate(goal){
   return'Exam date: '+d.toLocaleDateString(undefined,{day:'numeric',month:'short',year:'numeric'});
 }
 function getSkillPerformance(goal){
+  if(typeof AnalyticsStore!=='undefined'){
+    const perf=AnalyticsStore.getModulePerformance(goal);
+    if(perf.length){
+      const isDE=goal.subject==='de';
+      const labels={lesen:isDE?'Leseverstehen':'Reading',horen:isDE?'Hörverstehen':'Listening',schreiben:isDE?'Schreiben':'Writing',sprechen:isDE?'Sprechen':'Speaking',reading:'Reading',listening:'Listening',writing:'Writing',speaking:'Speaking'};
+      const icons={lesen:'📖',horen:'🎧',schreiben:'✍',sprechen:'🎤',reading:'📖',listening:'🎧',writing:'✍',speaking:'🎤'};
+      return perf.map(m=>({key:m.module,label:labels[m.module]||m.module,icon:icons[m.module]||'📊',pct:m.accuracy,mastery:m.mastery}));
+    }
+  }
   const hist=historyForGoal(goal);
   const sums={listening:[],reading:[],writing:[],speaking:[]};
   const isDE=goal.subject==='de';
@@ -93,9 +109,9 @@ function renderWsRecentActivityHtml(goal){
 }
 function renderWsSkillBarsHtml(goal){
   const skills=getSkillPerformance(goal);
-  if(!skills.length)return'<p style="font-size:13px;font-weight:600;color:var(--text3);margin:0">Complete exams with module scores to see skill breakdown.</p>';
+  if(!skills.length)return'<p style="font-size:13px;font-weight:600;color:var(--text-muted);margin:0">Complete exams with module scores to see skill breakdown.</p>';
   return'<div class="ws-skill-list">'+skills.map(s=>{
-    const col=s.pct>=70?'var(--green)':s.pct>=50?'var(--accent)':'var(--red)';
+    const col=s.pct>=70?'var(--green)':s.pct>=50?'var(--brand)':'var(--red)';
     return'<div class="ws-skill-row"><span class="ws-skill-lbl">'+s.icon+' '+esc(s.label)+'</span><div class="ws-skill-bar"><div class="ws-skill-fill" style="width:'+s.pct+'%;background:'+col+'"></div></div><span class="ws-skill-pct">'+s.pct+'%</span></div>';
   }).join('')+'</div>';
 }
@@ -142,12 +158,15 @@ function renderWsExamsHtml(goal){
   const resume=getResumableSession(goal.id);
   const resumeHtml=resume?`<div class="ws-resume"><div class="ws-resume-ic">⏸️</div><h3>You have a ${esc(resume.examData?.level||level)} exam in progress</h3><p>Saved in practice mode. Resume where you left off, or discard it and start fresh.</p><div class="ws-resume-actions"><button type="button" class="btn-sm accent" onclick="resumeExamSession()">Resume exam</button><button type="button" class="btn-sm" onclick="discardActiveSession()">Discard</button></div></div>`:'';
   const persDesc=due>0?'Built around '+due+' due word'+(due===1?'':'s')+'.':deck>0?deck+' words in your deck.':'Save words during practice to unlock.';
+  const coachHtml=typeof MasteryView!=='undefined'
+    ?MasteryView.renderRecommendedExamCardHtml(goal,{variant:'workspace',compact:true,showArt:false})
+    :renderWsCoachBannerHtml(goal,act,true);
   return`${resumeHtml}
-    ${renderWsCoachBannerHtml(goal,act,true)}
+    ${coachHtml}
     <div class="ws-quota quota-bar">
       <span id="planBadgeHome"></span>
       <span class="quota-count" id="quotaCount">0/3 used</span>
-      <span style="font-size:12px;font-weight:600;color:var(--text2);flex:1" id="quotaHomeHint">Monthly exam quota for AI-generated exams.</span>
+      <span style="font-size:12px;font-weight:600;color:var(--text-secondary);flex:1" id="quotaHomeHint">Monthly exam quota for AI-generated exams.</span>
       <button type="button" class="btn-sm accent" id="upgradeBtnHome" onclick="showUpgrade()">Upgrade</button>
     </div>
     <p class="ws-seclbl">Start an exam</p>
@@ -166,7 +185,7 @@ function renderWsExamsHtml(goal){
     <p class="ws-seclbl">Recent activity</p>
     ${renderWsRecentActivityHtml(goal)}
     <p class="ws-seclbl">Saved exams</p>
-    <p style="font-size:12px;font-weight:600;color:var(--text2);margin:0 0 12px">Retakes are free — they do not use your monthly quota.</p>
+    <p style="font-size:12px;font-weight:600;color:var(--text-secondary);margin:0 0 12px">Retakes are free — they do not use your monthly quota.</p>
     <div class="saved-grid" id="wsSavedGrid"></div>`;
 }
 function renderGoalHistoryHtml(goal){
@@ -174,12 +193,21 @@ function renderGoalHistoryHtml(goal){
   const pct=getReadinessPctForGoal(goal);
   const weak=getWeakAreasForGoal(goal);
   const series=getScoreSeries(goal);
-  const weakHtml=weak.length?'<ul class="ws-weak">'+weak.map(a=>'<li>'+esc(a)+'</li>').join('')+'</ul>':'<p style="font-size:13px;font-weight:600;color:var(--text3);margin:0">Complete a practice exam to identify weak areas.</p>';
+  const mastery=typeof getMasterySummaryForGoal==='function'?getMasterySummaryForGoal(goal):null;
+  let weakHtml='';
+  if(mastery?.weakGrammar?.length||mastery?.weakTopics?.length){
+    const rows=[...(mastery.weakGrammar||[]),...(mastery.weakTopics||[])].slice(0,5);
+    weakHtml='<ul class="ws-weak">'+rows.map(r=>'<li><strong>'+esc(r.tag)+'</strong> — '+r.accuracy+'% <span style="color:var(--text-muted)">('+esc(r.mastery)+')</span></li>').join('')+'</ul>';
+  }else if(weak.length){
+    weakHtml='<ul class="ws-weak">'+weak.map(a=>'<li>'+esc(a)+'</li>').join('')+'</ul>';
+  }else{
+    weakHtml='<p style="font-size:13px;font-weight:600;color:var(--text-muted);margin:0">Complete a practice exam to identify weak areas.</p>';
+  }
   let chartHtml='';
   if(series.length>0){
-    chartHtml='<div class="chart-wrap" style="display:block;margin-bottom:16px"><h3>Score trend <span style="font-size:11px;color:var(--text3);font-weight:400">Last '+series.length+' exams</span></h3><div class="chart-bars">'+series.map(h=>'<div class="chart-bar" style="height:'+h.score+'%;background:'+(h.score>=70?'var(--green)':h.score>=50?'var(--accent)':'var(--red)')+';flex:1" title="'+h.score+'% — '+esc(h.topic)+'"></div>').join('')+'</div></div>';
+    chartHtml='<div class="chart-wrap" style="display:block;margin-bottom:16px"><h3>Score trend <span style="font-size:11px;color:var(--text-muted);font-weight:400">Last '+series.length+' exams</span></h3><div class="chart-bars">'+series.map(h=>'<div class="chart-bar" style="height:'+h.score+'%;background:'+(h.score>=70?'var(--green)':h.score>=50?'var(--brand)':'var(--red)')+';flex:1" title="'+h.score+'% — '+esc(h.topic)+'"></div>').join('')+'</div></div>';
   }
-  const listHtml=hist.length?hist.map(h=>'<div class="hist-card" onclick="openMistakeReview('+h.id+')"><div class="hist-score '+(h.score>=70?'pass':h.score>=50?'mid':'fail')+'">'+h.score+'%</div><div class="hist-info"><div class="hist-title">'+(h.lang==='de'?'🇩🇪':'🇬🇧')+' '+esc(h.topic)+' — '+h.level+'</div><div class="hist-meta">'+h.date+' · '+(h.guidedDemo?'Demo':normalizeMode(h.mode)==='practice'?'Practice':'Official')+'</div></div><span style="font-size:11px;color:var(--accent);font-weight:700">Review →</span></div>').join('')
+  const listHtml=hist.length?hist.map(h=>'<div class="hist-card" onclick="openMistakeReview('+h.id+')"><div class="hist-score '+(h.score>=70?'pass':h.score>=50?'mid':'fail')+'">'+h.score+'%</div><div class="hist-info"><div class="hist-title">'+(h.lang==='de'?'🇩🇪':'🇬🇧')+' '+esc(h.topic)+' — '+h.level+'</div><div class="hist-meta">'+h.date+' · '+(h.guidedDemo?'Demo':normalizeMode(h.mode)==='practice'?'Practice':'Official')+'</div></div><span style="font-size:11px;color:var(--brand);font-weight:700">Review →</span></div>').join('')
     :'<div class="hist-empty"><span>📊</span>No exams yet. Start in the Exams tab.</div>';
   const deck=deckForGoal(goal).length;
   const avg=hist.length?Math.round(hist.reduce((s,h)=>s+h.score,0)/hist.length):null;
@@ -193,7 +221,7 @@ function renderGoalHistoryHtml(goal){
         <div class="ws-prog-readiness-ring">${ring}<span class="ws-prog-readiness-pct">${hist.length?pct+'%':'—'}</span></div>
         <div style="flex:1;min-width:180px">
           <p style="font-size:13px;font-weight:700;color:var(--text);margin:0 0 4px">${readinessEstLabelHtml(pct,hist.length>0)}</p>
-          <p style="font-size:12px;font-weight:600;color:var(--text2);margin:0;line-height:1.55">${hist.length?'Based on recent exams and mastered vocabulary.':'Complete a practice exam to see readiness.'}</p>
+          <p style="font-size:12px;font-weight:600;color:var(--text-secondary);margin:0;line-height:1.55">${hist.length?'Based on recent exams and mastered vocabulary.':'Complete a practice exam to see readiness.'}</p>
         </div>
       </div>
       <div class="ws-panel">
@@ -208,8 +236,7 @@ function renderGoalHistoryHtml(goal){
       <div class="stat-tile"><div class="stat-tile__val">${esc(formatStudyDuration(studySecForGoal(goal)))}</div><div class="stat-tile__lbl">Study time</div></div>
     </div>
     ${chartHtml}
-    <p class="ws-seclbl">Weak areas</p>
-    <div class="ws-panel" style="margin-bottom:16px">${weakHtml}</div>
+    ${typeof MasteryView!=='undefined'?MasteryView.renderMasteryPanelHtml(goal):('<p class="ws-seclbl">Weak areas</p><div class="ws-panel" style="margin-bottom:16px">'+weakHtml+'</div>')}
     <p class="ws-seclbl">Exam history</p>
     <div class="hist-list">${listHtml}</div>`;
 }
@@ -261,6 +288,7 @@ async function launchGoalExam(mode,options){
   const opts=options||{};
   let goal=opts.goalId?S.goals.find(g=>g.id===opts.goalId):getActiveGoal();
   if(!goal){showAddGoalWizard();return;}
+  if(typeof requireProForCombo==='function'&&!requireProForCombo(goal.subject,goal.level))return;
   if(!canGenerate()){showUpgrade();return;}
   const m=normalizeMode(mode);
   const run=async()=>{
@@ -323,7 +351,7 @@ function openGoalWorkspace(id,tab,skipUrl){
   hideAll();
   show('goalWorkspaceScreen');
   setNavActive('dashboard');
-  if(!skipUrl)updateWorkspaceUrl(goal);
+  if(!skipUrl)updateWorkspaceUrl(goal,{replace:false});
   renderGoalWorkspace();
   renderProfileBar();
   window.scrollTo({top:0,behavior:'smooth'});

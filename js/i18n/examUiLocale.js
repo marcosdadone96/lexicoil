@@ -44,6 +44,9 @@ function examUiStrings(lang) {
       pass: 'Bestanden ✓',
       close: 'Knapp',
       fail: 'Nicht bestanden',
+      translatePassage: 'Passage übersetzen',
+      translatingPassage: 'Übersetze…',
+      translateFail: 'Passage konnte nicht übersetzt werden.',
     };
   }
   if (lang === 'es') {
@@ -81,6 +84,9 @@ function examUiStrings(lang) {
       pass: 'Apto ✓',
       close: 'Ajustado',
       fail: 'No apto',
+      translatePassage: 'Traducir pasaje',
+      translatingPassage: 'Traduciendo…',
+      translateFail: 'No se pudo traducir el pasaje.',
     };
   }
   return {
@@ -117,6 +123,9 @@ function examUiStrings(lang) {
     pass: 'Pass ✓',
     close: 'Close',
     fail: 'Fail',
+    translatePassage: 'Translate passage',
+    translatingPassage: 'Translating…',
+    translateFail: 'Could not translate this passage.',
   };
 }
 

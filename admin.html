@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LexiCoil Admin</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0f1117; --surface: #1a1d27; --border: #2a2d3a;
+      --text: #e8eaf0; --muted: #8890a8; --brand: #e8c547;
+      --green: #34d399; --red: #f87171; --blue: #60a5fa;
+      --font: 'Inter', -apple-system, sans-serif;
+    }
+    body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; }
+    header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 14px 28px; display: flex; align-items: center; gap: 16px; }
+    header h1 { font-size: 16px; font-weight: 700; color: var(--brand); }
+    header span { font-size: 12px; color: var(--muted); }
+    #adminEmail { font-size: 12px; color: var(--muted); margin-left: auto; }
+    .main { max-width: 1100px; margin: 0 auto; padding: 28px 20px; }
+    .tabs { display: flex; gap: 4px; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 0; }
+    .tab { padding: 8px 18px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; background: none; color: var(--muted); border-bottom: 2px solid transparent; margin-bottom: -1px; }
+    .tab.active { color: var(--brand); border-bottom-color: var(--brand); }
+    .panel { display: none; } .panel.active { display: block; }
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 24px; }
+    .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px 20px; }
+    .stat-card .n { font-size: 28px; font-weight: 800; color: var(--brand); }
+    .stat-card .l { font-size: 11px; color: var(--muted); margin-top: 4px; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th { text-align: left; padding: 8px 12px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); border-bottom: 1px solid var(--border); }
+    td { padding: 9px 12px; border-bottom: 1px solid rgba(255,255,255,.04); }
+    tr:hover td { background: rgba(255,255,255,.02); }
+    .badge { display: inline-block; padding: 2px 7px; border-radius: 4px; font-size: 10px; font-weight: 700; }
+    .badge-pro { background: rgba(232,197,71,.15); color: var(--brand); }
+    .badge-free { background: rgba(136,144,168,.1); color: var(--muted); }
+    .badge-valid { background: rgba(52,211,153,.12); color: var(--green); }
+    .badge-invalid { background: rgba(248,113,113,.12); color: var(--red); }
+    .badge-ai { background: rgba(96,165,250,.12); color: var(--blue); }
+    .badge-seed { background: rgba(232,197,71,.1); color: var(--brand); }
+    button.act { padding: 4px 10px; font-size: 11px; font-weight: 600; border-radius: 6px; border: 1px solid var(--border); background: none; color: var(--muted); cursor: pointer; }
+    button.act:hover { background: var(--surface); color: var(--text); }
+    button.act.danger { border-color: rgba(248,113,113,.3); color: var(--red); }
+    button.act.danger:hover { background: rgba(248,113,113,.1); }
+    .toolbar { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+    .toolbar select, .toolbar input { padding: 7px 10px; font-size: 13px; border-radius: 7px; border: 1px solid var(--border); background: var(--surface); color: var(--text); }
+    .toolbar button { padding: 7px 14px; font-size: 13px; font-weight: 600; border-radius: 7px; border: none; background: var(--brand); color: #000; cursor: pointer; }
+    .login-box { max-width: 360px; margin: 80px auto; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 36px; }
+    .login-box h2 { font-size: 18px; margin-bottom: 20px; }
+    .login-box input { width: 100%; padding: 10px 12px; font-size: 14px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg); color: var(--text); margin-bottom: 10px; }
+    .login-box button { width: 100%; padding: 11px; font-size: 14px; font-weight: 700; border-radius: 8px; border: none; background: var(--brand); color: #000; cursor: pointer; margin-top: 4px; }
+    .err { color: var(--red); font-size: 12px; margin-top: 8px; }
+    #toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 10px 20px; font-size: 13px; display: none; z-index: 999; }
+    .section-hd { font-size: 13px; font-weight: 700; color: var(--muted); margin-bottom: 10px; }
+    .empty { text-align: center; padding: 40px; color: var(--muted); font-size: 13px; }
+    .staging-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; margin-bottom: 12px; }
+    .staging-card .meta { font-size: 11px; color: var(--muted); margin-bottom: 8px; display: flex; gap: 10px; flex-wrap: wrap; }
+    .staging-card .preview { font-size: 13px; line-height: 1.5; margin-bottom: 12px; }
+    .staging-card .actions { display: flex; gap: 8px; }
+    .staging-card .actions button.approve { background: rgba(52,211,153,.15); color: var(--green); border-color: rgba(52,211,153,.3); }
+    .staging-card .actions button.reject { background: rgba(248,113,113,.1); color: var(--red); border-color: rgba(248,113,113,.3); }
+  </style>
+</head>
+<body>
+
+<!-- ── Login ──────────────────────────────────────────────────────────────── -->
+<div id="loginView">
+  <div class="login-box">
+    <h2>🛡 LexiCoil Admin</h2>
+    <input type="email" id="adminLoginEmail" placeholder="Admin email" autocomplete="email">
+    <input type="password" id="adminLoginPwd" placeholder="Password">
+    <button onclick="doAdminLogin()">Sign in</button>
+    <p class="err" id="loginErr"></p>
+  </div>
+</div>
+
+<!-- ── App ────────────────────────────────────────────────────────────────── -->
+<div id="appView" style="display:none">
+  <header>
+    <h1>LexiCoil Admin</h1>
+    <span>Dashboard</span>
+    <span id="adminEmail"></span>
+    <button class="act" onclick="doLogout()">Sign out</button>
+  </header>
+
+  <div class="main">
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('overview',this)">Overview</button>
+      <button class="tab" onclick="switchTab('users',this)">Users</button>
+      <button class="tab" onclick="switchTab('pool',this)">Pool exams</button>
+      <button class="tab" onclick="switchTab('staging',this)">Staging / Aprobación</button>
+      <button class="tab" onclick="switchTab('tools',this)">Tools</button>
+    </div>
+
+    <!-- Overview -->
+    <div class="panel active" id="tab-overview">
+      <div class="stats-grid" id="statsGrid">
+        <div class="stat-card"><div class="n">—</div><div class="l">Passages</div></div>
+        <div class="stat-card"><div class="n">—</div><div class="l">Questions</div></div>
+        <div class="stat-card"><div class="n">—</div><div class="l">Pool exams</div></div>
+        <div class="stat-card"><div class="n">—</div><div class="l">Users</div></div>
+      </div>
+      <p style="font-size:12px;color:var(--muted)">Data from Supabase lc_* tables.</p>
+    </div>
+
+    <!-- Users -->
+    <div class="panel" id="tab-users">
+      <div class="toolbar">
+        <input type="text" id="userSearch" placeholder="Filter by email…" oninput="filterUsers()">
+        <span style="font-size:12px;color:var(--muted)" id="userCount"></span>
+      </div>
+      <table>
+        <thead><tr><th>Email</th><th>Plan</th><th>Since</th><th>Actions</th></tr></thead>
+        <tbody id="usersBody"></tbody>
+      </table>
+    </div>
+
+    <!-- Pool exams -->
+    <div class="panel" id="tab-pool">
+      <div class="toolbar">
+        <select id="poolLang" onchange="loadPool()"><option value="">All languages</option><option value="de">German</option><option value="en">English</option><option value="es">Spanish</option></select>
+        <select id="poolLevel" onchange="loadPool()"><option value="">All levels</option><option>A1</option><option>A2</option><option>B1</option><option>B2</option><option>C1</option><option>C2</option></select>
+        <button onclick="loadPool()">Refresh</button>
+        <button onclick="purgeLegacyPool()" style="background:#b91c1c;color:#fff;border:none;padding:6px 12px;border-radius:6px;font-weight:700;cursor:pointer">Purge legacy (Blobs)</button>
+        <span style="font-size:12px;color:var(--muted)" id="poolCount"></span>
+      </div>
+      <table>
+        <thead><tr><th>ID</th><th>Lang/Level</th><th>Topic</th><th>Source</th><th>Coverage</th><th>Served</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody id="poolBody"></tbody>
+      </table>
+    </div>
+
+    <!-- Staging -->
+    <div class="panel" id="tab-staging">
+      <div class="toolbar">
+        <select id="stagingLang"><option value="de">German</option><option value="en">English</option><option value="es">Spanish</option></select>
+        <select id="stagingLevel"><option>A1</option><option>A2</option><option selected>B1</option><option>B2</option><option>C1</option><option>C2</option></select>
+        <button onclick="loadStagingPending()">Cargar pendientes</button>
+        <span style="font-size:12px;color:var(--muted)" id="stagingCount">0 pendientes</span>
+      </div>
+      <div id="stagingList"></div>
+    </div>
+
+    <!-- Tools -->
+    <div class="panel" id="tab-tools">
+      <div style="display:grid;gap:16px;max-width:500px">
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px">
+          <div class="section-hd">Set user plan</div>
+          <input type="email" id="toolEmail" placeholder="User email" style="width:100%;padding:8px;border-radius:6px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:13px;margin-bottom:8px">
+          <select id="toolPlan" style="width:100%;padding:8px;border-radius:6px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:13px;margin-bottom:10px">
+            <option value="free">free</option>
+            <option value="pro">pro</option>
+          </select>
+          <button class="act" style="background:var(--brand);color:#000;border:none;padding:8px 16px;border-radius:6px;font-weight:700;cursor:pointer" onclick="setUserPlan()">Apply plan</button>
+        </div>
+
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px">
+          <div class="section-hd">Add admin</div>
+          <input type="email" id="toolAdminEmail" placeholder="Email to grant admin" style="width:100%;padding:8px;border-radius:6px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:13px;margin-bottom:10px">
+          <button class="act" style="background:var(--brand);color:#000;border:none;padding:8px 16px;border-radius:6px;font-weight:700;cursor:pointer" onclick="addAdmin()">Grant admin</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+  const API = '/.netlify/functions/admin-api';
+  const AUTH_KEY = 'lc_admin_token';
+  let _token = localStorage.getItem(AUTH_KEY) || '';
+  let _allUsers = [];
+
+  // ── Auth ──────────────────────────────────────────────────────────────────
+  function mapAuthError(code) {
+    const m = {
+      method_not_allowed: 'Auth misconfigured — refresh and try again.',
+      bad_credentials: 'Wrong email or password.',
+      forbidden: 'Not an admin account.',
+      too_many_attempts: 'Too many attempts — wait 15 minutes.',
+      auth_not_configured: 'Auth not configured on server.',
+      supabase_not_configured: 'Supabase not configured.',
+    };
+    return m[code] || code || 'Login failed';
+  }
+
+  async function obtainSessionToken(email, password) {
+    const cfgRes = await fetch('/.netlify/functions/auth-config');
+    const cfg = await cfgRes.json().catch(() => ({}));
+    if (!cfgRes.ok || !cfg.enabled) throw new Error(mapAuthError('auth_not_configured'));
+
+    if (cfg.supabase && cfg.supabaseUrl && cfg.supabaseAnonKey) {
+      const { createClient } = await import('https://esm.sh/@supabase/supabase-js@2');
+      const sb = createClient(cfg.supabaseUrl, cfg.supabaseAnonKey, {
+        auth: { persistSession: false, autoRefreshToken: false },
+      });
+      const { data, error } = await sb.auth.signInWithPassword({ email, password });
+      if (error) throw new Error(error.message || 'Login failed');
+      if (!data.session?.access_token) throw new Error('Authentication failed.');
+      const sessRes = await fetch('/.netlify/functions/auth-supabase-session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ access_token: data.session.access_token }),
+      });
+      const sess = await sessRes.json();
+      if (!sessRes.ok || !sess.token) throw new Error(mapAuthError(sess.error));
+      return sess.token;
+    }
+
+    const res = await fetch('/.netlify/functions/auth-login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password }),
+    });
+    const data = await res.json();
+    if (!res.ok || !data.token) throw new Error(mapAuthError(data.error));
+    return data.token;
+  }
+
+  async function doAdminLogin() {
+    const email = document.getElementById('adminLoginEmail').value.trim().toLowerCase();
+    const pwd   = document.getElementById('adminLoginPwd').value;
+    if (!email || !pwd) return;
+    document.getElementById('loginErr').textContent = '';
+    try {
+      _token = await obtainSessionToken(email, pwd);
+      localStorage.setItem(AUTH_KEY, _token);
+      const check = await api('GET', { action: 'stats' });
+      if (check.error === 'forbidden') throw new Error(mapAuthError('forbidden'));
+      showApp(email);
+      loadStats(check.stats);
+    } catch (err) {
+      document.getElementById('loginErr').textContent = err.message;
+    }
+  }
+
+  function doLogout() { localStorage.removeItem(AUTH_KEY); _token = ''; location.reload(); }
+
+  async function api(method, params, body) {
+    const url = method === 'GET' ? API + '?' + new URLSearchParams(params).toString() : API;
+    const res = await fetch(url, {
+      method,
+      headers: { 'Authorization': 'Bearer ' + _token, 'Content-Type': 'application/json' },
+      body: body ? JSON.stringify(body) : undefined,
+    });
+    const text = await res.text();
+    try {
+      return JSON.parse(text);
+    } catch (_) {
+      throw new Error(text.slice(0, 120) || ('HTTP ' + res.status));
+    }
+  }
+
+  function showApp(email) {
+    document.getElementById('loginView').style.display = 'none';
+    document.getElementById('appView').style.display = 'block';
+    document.getElementById('adminEmail').textContent = email;
+  }
+
+  // ── Init ──────────────────────────────────────────────────────────────────
+  window.addEventListener('DOMContentLoaded', async () => {
+    if (_token) {
+      try {
+        const data = await api('GET', { action: 'stats' });
+        if (data.stats) { showApp('—'); loadStats(data.stats); }
+        else document.getElementById('loginView').style.display = '';
+      } catch (_) { /* show login */ }
+    }
+  });
+
+  // ── Tabs ──────────────────────────────────────────────────────────────────
+  function switchTab(id, btn) {
+    document.querySelectorAll('.tab').forEach((t) => t.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach((p) => p.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+    document.getElementById('tab-' + id).classList.add('active');
+    if (id === 'users') loadUsers();
+    if (id === 'pool') loadPool();
+    if (id === 'staging') loadStagingPending();
+  }
+
+  // ── Stats ─────────────────────────────────────────────────────────────────
+  function loadStats(stats) {
+    if (!stats) return;
+    const g = document.getElementById('statsGrid');
+    const vals = [
+      { n: stats.passages ?? '—',    l: 'Passages' },
+      { n: stats.questions ?? '—',   l: 'Questions' },
+      { n: stats.pool_exams ?? '—',  l: 'Pool exams' },
+      { n: stats.users ?? '—',       l: 'Users' },
+    ];
+    g.innerHTML = vals.map((v) => `<div class="stat-card"><div class="n">${v.n}</div><div class="l">${v.l}</div></div>`).join('');
+  }
+
+  // ── Users ─────────────────────────────────────────────────────────────────
+  async function loadUsers() {
+    const data = await api('GET', { action: 'users', limit: 100 });
+    _allUsers = data.users || [];
+    document.getElementById('userCount').textContent = _allUsers.length + ' users';
+    renderUsers(_allUsers);
+  }
+
+  function filterUsers() {
+    const q = document.getElementById('userSearch').value.toLowerCase();
+    renderUsers(_allUsers.filter((u) => u.email.toLowerCase().includes(q)));
+  }
+
+  function renderUsers(users) {
+    const tb = document.getElementById('usersBody');
+    if (!users.length) { tb.innerHTML = '<tr><td colspan="4" class="empty">No users found</td></tr>'; return; }
+    tb.innerHTML = users.map((u) => `
+      <tr>
+        <td>${esc(u.email)}</td>
+        <td><span class="badge badge-${u.plan}">${u.plan}</span></td>
+        <td style="color:var(--muted);font-size:11px">${fmtDate(u.created_at)}</td>
+        <td>
+          <button class="act" onclick="quickSetPlan('${esc(u.email)}','${u.plan==='pro'?'free':'pro'}')">→ ${u.plan==='pro'?'free':'pro'}</button>
+        </td>
+      </tr>`).join('');
+  }
+
+  async function quickSetPlan(email, plan) {
+    if (!confirm(`Set ${email} → ${plan}?`)) return;
+    const r = await api('POST', {}, { action: 'set_plan', email, plan });
+    toast(r.ok ? '✓ Plan updated' : '✗ ' + (r.error || 'Error'));
+    if (r.ok) loadUsers();
+  }
+
+  // ── Pool ──────────────────────────────────────────────────────────────────
+  async function loadPool() {
+    const lang  = document.getElementById('poolLang').value;
+    const level = document.getElementById('poolLevel').value;
+    const data  = await api('GET', { action: 'pool', lang, level, limit: 100 });
+    const exams = data.exams || [];
+    document.getElementById('poolCount').textContent = exams.length + ' exams';
+    const tb = document.getElementById('poolBody');
+    if (!exams.length) { tb.innerHTML = '<tr><td colspan="8" class="empty">No pool exams</td></tr>'; return; }
+    tb.innerHTML = exams.map((e) => `
+      <tr>
+        <td style="font-size:10px;color:var(--muted)">${esc(e.id.slice(0,20))}…</td>
+        <td>${esc(e.lang)}/${esc(e.level)}</td>
+        <td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(e.topic||'—')}</td>
+        <td><span class="badge badge-${e.source||'ai'}">${e.source||'ai'}</span></td>
+        <td>${e.coverage_ratio!=null?(e.coverage_ratio*100).toFixed(0)+'%':'—'}</td>
+        <td>${e.served_count||0}</td>
+        <td><span class="badge badge-${e.is_valid?'valid':'invalid'}">${e.is_valid?'valid':'invalid'}</span></td>
+        <td style="white-space:nowrap">
+          ${e.is_valid?`<button class="act" onclick="invalidateExam('${esc(e.id)}')">Invalidate</button> `:''}
+          <button class="act danger" onclick="deleteExam('${esc(e.id)}')">Delete</button>
+        </td>
+      </tr>`).join('');
+  }
+
+  async function invalidateExam(id) {
+    if (!confirm('Invalidate this pool exam? It will no longer be served.')) return;
+    const r = await api('POST', {}, { action: 'invalidate_pool', id });
+    toast(r.ok ? '✓ Invalidated' : '✗ Error');
+    if (r.ok) loadPool();
+  }
+
+  async function deleteExam(id) {
+    if (!confirm('Permanently delete this pool exam?')) return;
+    const r = await api('POST', {}, { action: 'delete_pool', id });
+    toast(r.ok ? '✓ Deleted' : '✗ Error');
+    if (r.ok) loadPool();
+  }
+
+  async function purgeLegacyPool() {
+    const lang = document.getElementById('poolLang').value;
+    const level = document.getElementById('poolLevel').value;
+    if (!lang || !level) { alert('Selecciona idioma y nivel concretos primero.'); return; }
+    const scan = await api('POST', {}, { action: 'scan_pool_blobs', lang, level });
+    const n = scan?.report?.candidates || 0;
+    if (!n) { alert('No hay entradas legacy en Blobs para ' + lang + '/' + level + '.'); return; }
+    const ids = (scan.report.items || []).map(i => i.id + ' [' + i.reasons.join(',') + ']').join('\n');
+    if (!confirm('Se borrarán ' + n + ' entradas de Blobs en ' + lang + '/' + level + ':\n\n' + ids + '\n\n¿Continuar?')) return;
+    const res = await api('POST', {}, { action: 'purge_pool_blobs', lang, level });
+    alert('Borradas ' + (res?.report?.deleted || 0) + ' entradas.');
+    loadPool();
+  }
+
+  // ── Staging ───────────────────────────────────────────────────────────────
+  let _stagingItems = [];
+
+  async function loadStagingPending() {
+    const lang = document.getElementById('stagingLang').value;
+    const level = document.getElementById('stagingLevel').value;
+    const data = await api('GET', { action: 'staging_pending', lang, level, limit: 100 });
+    _stagingItems = data.candidates || [];
+    document.getElementById('stagingCount').textContent = (data.count ?? _stagingItems.length) + ' pendientes';
+    renderStagingList();
+  }
+
+  function renderStagingList() {
+    const el = document.getElementById('stagingList');
+    if (!_stagingItems.length) {
+      el.innerHTML = '<p class="empty">No hay candidatos pendientes para este idioma/nivel.</p>';
+      return;
+    }
+    el.innerHTML = _stagingItems.map((c) => `
+      <div class="staging-card" data-id="${esc(c.id)}">
+        <div class="meta">
+          <span><strong>${esc(c.module)}</strong> Teil ${esc(c.teil)}</span>
+          <span>${esc(c.lang)}/${esc(c.level)}</span>
+          <span>${fmtDate(c.createdAt)}</span>
+          ${c.contributor ? `<span>${esc(c.contributor)}</span>` : ''}
+        </div>
+        <div class="preview">
+          ${c.questionPreview ? `<div><strong>P:</strong> ${esc(c.questionPreview)}</div>` : ''}
+          ${c.passagePreview ? `<div style="color:var(--muted);margin-top:6px;font-size:12px">${esc(c.passagePreview)}…</div>` : ''}
+        </div>
+        <div class="actions">
+          <button class="act approve" onclick="approveStaging('${esc(c.id)}')">Aprobar</button>
+          <button class="act reject" onclick="rejectStaging('${esc(c.id)}')">Rechazar</button>
+        </div>
+      </div>`).join('');
+  }
+
+  async function approveStaging(id) {
+    const lang = document.getElementById('stagingLang').value;
+    const level = document.getElementById('stagingLevel').value;
+    if (!confirm('¿Aprobar este candidato? Se evaluará promoción al pool.')) return;
+    const r = await api('POST', {}, { action: 'approve_candidate', id, lang, level });
+    if (r.error) { toast('✗ ' + r.error); return; }
+    if (r.promoted > 0) {
+      toast('✓ ' + r.promoted + ' examen(es) completo(s) publicado(s) al pool');
+    } else {
+      toast('✓ Aprobado');
+    }
+    loadStagingPending();
+  }
+
+  async function rejectStaging(id) {
+    const lang = document.getElementById('stagingLang').value;
+    const level = document.getElementById('stagingLevel').value;
+    if (!confirm('¿Rechazar este candidato? Quedará marcado como rejected.')) return;
+    const r = await api('POST', {}, { action: 'reject_candidate', id, lang, level });
+    toast(r.rejected ? '✓ Rechazado' : '✗ ' + (r.error || 'Error'));
+    if (r.rejected) loadStagingPending();
+  }
+
+  // ── Tools ─────────────────────────────────────────────────────────────────
+  async function setUserPlan() {
+    const email = document.getElementById('toolEmail').value.trim();
+    const plan  = document.getElementById('toolPlan').value;
+    if (!email) return;
+    const r = await api('POST', {}, { action: 'set_plan', email, plan });
+    toast(r.ok ? `✓ ${email} → ${plan}` : '✗ ' + (r.error || 'Error'));
+  }
+
+  async function addAdmin() {
+    const email = document.getElementById('toolAdminEmail').value.trim();
+    if (!email) return;
+    if (!confirm(`Grant admin to ${email}?`)) return;
+    const r = await api('POST', {}, { action: 'add_admin', email });
+    toast(r.ok ? '✓ Admin granted' : '✗ ' + (r.error || 'Error'));
+  }
+
+  // ── Helpers ───────────────────────────────────────────────────────────────
+  function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;'); }
+  function fmtDate(d) { if (!d) return '—'; try { return new Date(d).toLocaleDateString(); } catch(_) { return d; } }
+  let _toastTimer;
+  function toast(msg) {
+    const el = document.getElementById('toast');
+    el.textContent = msg; el.style.display = 'block';
+    clearTimeout(_toastTimer);
+    _toastTimer = setTimeout(() => { el.style.display = 'none'; }, 3000);
+  }
+</script>
+</body>
+</html>

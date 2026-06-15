@@ -1,4 +1,4 @@
-/** Exam Profile — certification-scoped preparation context (client-side). */
+/** Exam Profile â€” certification-scoped preparation context (client-side). */
 const ExamProfile = (() => {
   const PROFILES_KEY = 'lc_profiles';
   const ACTIVE_KEY = 'lc_active_profile';
@@ -121,6 +121,13 @@ const ExamProfile = (() => {
     return !getActiveId() && typeof Auth !== 'undefined' && Auth.isGuest && !Auth.isGuest();
   }
 
+  function getMasterySummaryForGoal(goal) {
+    if (!goal) return null;
+    if (typeof GoalStore !== 'undefined' && GoalStore.masterySummary) return GoalStore.masterySummary(goal);
+    if (typeof AnalyticsStore !== 'undefined') return AnalyticsStore.getMasterySummary(goal);
+    return null;
+  }
+
   return {
     certLabel,
     profileId,
@@ -135,5 +142,6 @@ const ExamProfile = (() => {
     matchesActive,
     needsOnboarding,
     migrateFromGoal,
+    getMasterySummaryForGoal,
   };
 })();

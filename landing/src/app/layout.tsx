@@ -26,13 +26,13 @@ export const metadata: Metadata = {
     title: 'LexiCoil - Adaptive Exam Preparation',
     description:
       'Turn exam mistakes into personalized Goethe and Cambridge practice. Adaptive vocabulary training for official language certifications.',
-    images: [{ url: '/assets/brand/favicon.svg', width: 512, height: 512 }],
+    images: [{ url: '/assets/brand/icon.png', width: 512, height: 512 }],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'LexiCoil - Adaptive Exam Preparation',
     description: 'Turn exam mistakes into personalized practice for Goethe and Cambridge exams.',
-    images: ['/assets/brand/favicon.svg'],
+    images: ['/assets/brand/icon.png'],
   },
   alternates: { canonical: 'https://lexicoil.com' },
 };
@@ -51,7 +51,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInit }} />
-        <link rel="icon" href="/assets/brand/favicon.svg" type="image/svg+xml" />
+        <link rel="icon" href="/assets/brand/favicon.png" type="image/png" />
+        <link rel="apple-touch-icon" href="/assets/brand/icon.png" />
       </head>
       <body className={`${poppins.variable} font-sans`}>
         <Suspense fallback={null}>

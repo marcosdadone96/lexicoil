@@ -4,12 +4,6 @@ type SupabaseAuthClient = {
       data: { session?: { access_token?: string } | null };
       error: { message?: string } | null;
     }>;
-    onAuthStateChange: (
-      cb: (
-        event: string,
-        session: { access_token?: string } | null,
-      ) => void | Promise<void>,
-    ) => { data: { subscription: { unsubscribe: () => void } } };
     signInWithPassword: (args: { email: string; password: string }) => Promise<{
       data: { session?: { access_token?: string } | null };
       error: { message?: string } | null;
@@ -22,7 +16,7 @@ type SupabaseAuthClient = {
       data: { session?: { access_token?: string } | null };
       error: { message?: string } | null;
     }>;
-    signOut: () => Promise<unknown>;
+    signOut: (opts?: { scope?: 'local' | 'global' | 'others' }) => Promise<unknown>;
     signInWithOAuth: (args: {
       provider: 'google';
       options?: { redirectTo?: string; queryParams?: Record<string, string> };
@@ -41,7 +35,9 @@ type CreateClientFn = (
 ) => SupabaseAuthClient;
 
 const TOKEN_KEY = 'lc_token';
+const USER_KEY = 'lc_user';
 const GUEST_KEY = 'lc_guest';
+const SUPABASE_STORAGE_KEY = 'lc-supabase-auth';
 const SUPABASE_ESM = 'https://esm.sh/@supabase/supabase-js@2.49.8';
 
 declare global {
@@ -119,6 +115,7 @@ async function getAuthConfig(): Promise<AuthConfig> {
   return configCache;
 }
 
+/** Only call when the user explicitly signs in/out — not on passive landing page load. */
 async function getSupabase(): Promise<SupabaseAuthClient | null> {
   const cfg = await getAuthConfig();
   if (!cfg.supabase || !cfg.supabaseUrl || !cfg.supabaseAnonKey) return null;
@@ -130,7 +127,7 @@ async function getSupabase(): Promise<SupabaseAuthClient | null> {
         autoRefreshToken: true,
         detectSessionInUrl: false,
         flowType: 'pkce',
-        storageKey: 'lc-supabase-auth',
+        storageKey: SUPABASE_STORAGE_KEY,
         storage: typeof window !== 'undefined' ? window.localStorage : undefined,
       },
     });
@@ -166,34 +163,84 @@ export type SessionUser = {
   pro?: boolean;
 };
 
+export function readCachedUser(): SessionUser | null {
+  try {
+    const raw = localStorage.getItem(USER_KEY);
+    if (!raw) return null;
+    const user = JSON.parse(raw) as SessionUser;
+    return user?.email ? user : null;
+  } catch {
+    return null;
+  }
+}
+
+/** Read Supabase access token from shared storage without initializing the SDK. */
+function readSupabaseAccessToken(): string | null {
+  try {
+    const raw = localStorage.getItem(SUPABASE_STORAGE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as Record<string, unknown>;
+    if (typeof parsed.access_token === 'string') return parsed.access_token;
+    const session = parsed.session as { access_token?: string } | undefined;
+    if (session?.access_token) return session.access_token;
+    const current = parsed.currentSession as { access_token?: string } | undefined;
+    if (current?.access_token) return current.access_token;
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+export function hasStoredSession(): boolean {
+  if (localStorage.getItem(GUEST_KEY) === '1') return false;
+  return Boolean(localStorage.getItem(TOKEN_KEY) || readCachedUser());
+}
+
 export function persistSession(token: string, user?: unknown) {
   localStorage.setItem(TOKEN_KEY, token);
   localStorage.removeItem(GUEST_KEY);
-  if (user) localStorage.setItem('lc_user', JSON.stringify(user));
+  if (user) localStorage.setItem(USER_KEY, JSON.stringify(user));
 }
 
 export function clearSessionStorage() {
   localStorage.removeItem(TOKEN_KEY);
-  localStorage.removeItem('lc_user');
+  localStorage.removeItem(USER_KEY);
   localStorage.removeItem(GUEST_KEY);
 }
 
-async function fetchMeWithToken(token: string): Promise<SessionUser | null> {
-  const res = await fetch('/.netlify/functions/auth-me', {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  if (!res.ok) return null;
-  const data = await res.json().catch(() => ({}));
-  const user = (data.user || data) as SessionUser;
-  if (user?.email) persistSession(token, user);
-  return user?.email ? user : null;
+async function fetchMeWithToken(
+  token: string,
+): Promise<{ user: SessionUser | null; unauthorized: boolean }> {
+  try {
+    const res = await fetch('/.netlify/functions/auth-me', {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (res.ok) {
+      const data = await res.json().catch(() => ({}));
+      const user = (data.user || data) as SessionUser;
+      if (user?.email) {
+        persistSession(token, user);
+        return { user, unauthorized: false };
+      }
+    }
+    return { user: null, unauthorized: res.status === 401 };
+  } catch {
+    return { user: null, unauthorized: false };
+  }
 }
 
-export async function exchangeSupabaseSession(accessToken: string) {
+export async function exchangeSupabaseSession(
+  accessToken: string,
+  combo?: RegisterCombo,
+) {
   const res = await fetch('/.netlify/functions/auth-supabase-session', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ access_token: accessToken }),
+    body: JSON.stringify({
+      access_token: accessToken,
+      lang: combo?.lang,
+      level: combo?.level,
+    }),
   });
   const data = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(mapAuthError(data.error));
@@ -202,32 +249,35 @@ export async function exchangeSupabaseSession(accessToken: string) {
   return data;
 }
 
-/** Restore API session from lc_token or shared Supabase storage (lc-supabase-auth). */
+/**
+ * Restore session for the marketing site without initializing Supabase listeners.
+ * Never clears shared storage — only explicit logout does that.
+ */
 export async function restoreSession(): Promise<SessionUser | null> {
   if (localStorage.getItem(GUEST_KEY) === '1') return null;
 
+  const cached = readCachedUser();
   const token = localStorage.getItem(TOKEN_KEY);
+
   if (token) {
-    const user = await fetchMeWithToken(token);
+    const { user, unauthorized } = await fetchMeWithToken(token);
     if (user) return user;
-    clearSessionStorage();
+    if (!unauthorized) return cached;
   }
 
-  const cfg = await getAuthConfig();
-  if (cfg.supabase) {
-    const sb = await getSupabase();
-    if (sb) {
-      const { data } = await sb.auth.getSession();
-      if (data?.session?.access_token) {
-        try {
-          const result = await exchangeSupabaseSession(data.session.access_token);
-          return (result.user as SessionUser) || null;
-        } catch {
-          /* fall through */
-        }
-      }
+  // Token missing or rejected — refresh lc_token from stored Supabase session (no SDK init).
+  const sbAccess = readSupabaseAccessToken();
+  if (sbAccess) {
+    try {
+      const result = await exchangeSupabaseSession(sbAccess);
+      return (result.user as SessionUser) || readCachedUser();
+    } catch {
+      /* keep cached credentials */
     }
   }
+
+  if (token && cached) return cached;
+  if (cached) return cached;
 
   return null;
 }
@@ -235,38 +285,11 @@ export async function restoreSession(): Promise<SessionUser | null> {
 export async function logoutSession() {
   try {
     const sb = await getSupabase();
-    if (sb) await sb.auth.signOut();
+    if (sb) await sb.auth.signOut({ scope: 'local' });
   } catch {
     /* ignore */
   }
   clearSessionStorage();
-}
-
-let authListenerBound = false;
-
-/** Keep lc_token in sync when Supabase refreshes the shared session. */
-export async function bindSupabaseAuthListener(onChange: (user: SessionUser | null) => void) {
-  if (authListenerBound || typeof window === 'undefined') return;
-  const cfg = await getAuthConfig();
-  if (!cfg.supabase) return;
-  const sb = await getSupabase();
-  if (!sb) return;
-  authListenerBound = true;
-  sb.auth.onAuthStateChange(async (event, session) => {
-    if (event === 'SIGNED_OUT') {
-      clearSessionStorage();
-      onChange(null);
-      return;
-    }
-    if ((event === 'TOKEN_REFRESHED' || event === 'SIGNED_IN') && session?.access_token) {
-      try {
-        const result = await exchangeSupabaseSession(session.access_token);
-        onChange((result.user as SessionUser) || null);
-      } catch {
-        onChange(null);
-      }
-    }
-  });
 }
 
 export async function loginWithEmail(email: string, password: string) {
@@ -298,12 +321,17 @@ export type RegisterResult =
   | { pendingConfirmation: true; email: string }
   | { pendingConfirmation?: false };
 
+export type RegisterCombo = { lang: string; level: string };
+
 export async function registerWithEmail(
   name: string,
   email: string,
   password: string,
+  combo?: RegisterCombo,
 ): Promise<RegisterResult> {
   const em = email.trim().toLowerCase();
+  const lang = combo?.lang || 'de';
+  const level = combo?.level || 'B1';
   const cfg = await getAuthConfig();
 
   if (cfg.supabase) {
@@ -313,7 +341,11 @@ export async function registerWithEmail(
       email: em,
       password,
       options: {
-        data: { full_name: name.trim() },
+        data: {
+          full_name: name.trim(),
+          free_combo_lang: lang,
+          free_combo_level: level,
+        },
         emailRedirectTo: emailRedirectUrl(),
       },
     });
@@ -323,7 +355,7 @@ export async function registerWithEmail(
       return {};
     }
     try {
-      await sb.auth.signOut();
+      await sb.auth.signOut({ scope: 'local' });
     } catch {
       /* ignore */
     }
@@ -333,7 +365,7 @@ export async function registerWithEmail(
   const res = await fetch('/.netlify/functions/auth-register', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ name: name.trim(), email: em, password }),
+    body: JSON.stringify({ name: name.trim(), email: em, password, lang, level }),
   });
   const data = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(mapAuthError(data.error));

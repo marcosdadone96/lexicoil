@@ -60,6 +60,35 @@ const PromptBuilder = (() => {
     return expanded;
   }
 
+  function getBlueprintBinding() {
+    if (typeof BlueprintPromptBinding !== 'undefined') return BlueprintPromptBinding;
+    try {
+      return require('./blueprintPromptBinding.js');
+    } catch {
+      return null;
+    }
+  }
+
+  function getBlueprintResolver() {
+    if (typeof BlueprintResolver !== 'undefined') return BlueprintResolver;
+    try {
+      return require('../validation/blueprintResolver.js');
+    } catch {
+      return null;
+    }
+  }
+
+  function aiPathBlueprintsEnabled() {
+    const R = getBlueprintResolver();
+    return R?.aiPathBlueprintsEnabled?.() || false;
+  }
+
+  function resolveSpecBlueprint(spec) {
+    if (spec?.metadata?.blueprint) return spec.metadata.blueprint;
+    const R = getBlueprintResolver();
+    return R?.resolveBlueprintForSpec?.(spec) || null;
+  }
+
   function buildExamChunkPrompt(spec, ctx) {
     const Shell = getShell();
     const Mod = getModInstr();
@@ -68,10 +97,41 @@ const PromptBuilder = (() => {
     const extra = [Mod.grammarFocus(spec), Mod.canDoFocus(spec), Mod.officialMeta(spec)]
       .filter(Boolean)
       .join('\n');
-    return `${header}\n${detail}\n${extra}`;
+    const BP = getBlueprintBinding();
+    const blueprintBlock =
+      ctx.blueprintPart && BP
+        ? [BP.partBindingDetail(spec, ctx), BP.structuredOutputRules(ctx)].join('\n\n')
+        : '';
+    return `${header}\n${blueprintBlock ? `${blueprintBlock}\n` : ''}${detail}\n${extra}`;
+  }
+
+  function buildExamChunksFromBlueprint(spec, blueprint) {
+    const BP = getBlueprintBinding();
+    if (!BP || !blueprint) {
+      throw new Error('buildExamChunksFromBlueprint requires blueprint and binding module');
+    }
+    const chunks = BP.chunkPlanFromBlueprint(blueprint, spec.language);
+    if (!chunks.length) throw new Error('Blueprint produced empty chunk plan');
+    return {
+      mode: 'chunks',
+      blueprint,
+      chunks: chunks.map((ctx) => ({
+        expectKey: ctx.expectKey,
+        label: ctx.label,
+        teil: ctx.teil,
+        blueprintPart: ctx.blueprintPart,
+        maxTokens: maxTokensFor(spec, chunkKind(ctx.expectKey)),
+        prompt: buildExamChunkPrompt(spec, ctx),
+      })),
+    };
   }
 
   function buildExamChunks(spec) {
+    const useBlueprint = aiPathBlueprintsEnabled();
+    const blueprint = useBlueprint ? resolveSpecBlueprint(spec) : null;
+    if (useBlueprint && blueprint) {
+      return buildExamChunksFromBlueprint(spec, blueprint);
+    }
     const chunks = expandChunkPlan(spec);
     if (!chunks.length) {
       throw new Error('Exam ContentSpecification has no chunkPlan');
@@ -121,7 +181,10 @@ const PromptBuilder = (() => {
     const body =
       `JSON with topic, level:"${spec.level}", lang:"${loc.langCode}". ` +
       `Include ONLY these module keys: ${keysLine}. Omit unselected modules entirely. ` +
-      `Embed each target word naturally in authentic ${loc.contentLang} texts. Verifiable questions only.`;
+      `Embed each target word naturally in authentic ${loc.contentLang} texts. Verifiable questions only. ` +
+      `After writing the texts, add a top-level array "targetUsage": for each learner word you actually used, ` +
+      `output {"word":"<original>","surfaces":["<exact form as written>",…]} including inflected forms. ` +
+      `List only words you genuinely used in the passages or questions. Do not invent usage.`;
 
     return {
       mode: 'single',
@@ -288,8 +351,11 @@ const PromptBuilder = (() => {
   return Object.freeze({
     buildPrompt,
     buildExamChunks,
+    buildExamChunksFromBlueprint,
     expandChunkPlan,
     chunksForSpec,
+    aiPathBlueprintsEnabled,
+    resolveSpecBlueprint,
   });
 })();
 

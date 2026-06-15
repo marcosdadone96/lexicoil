@@ -22,6 +22,7 @@ const validExam = {
   goetheFormat: true,
   lesenParts: [
     {
+      text: 'Beispieltext zum Lesen und Verstehen.',
       items: [
         {
           id: 'l1',
@@ -34,6 +35,7 @@ const validExam = {
   ],
   horenParts: [
     {
+      transcript: 'Moderator: Willkommen. Gast: Danke.',
       segments: [
         {
           id: 'h1',

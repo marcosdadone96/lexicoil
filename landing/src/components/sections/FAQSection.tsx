@@ -6,11 +6,11 @@ import { Container } from '@/components/ui/Container';
 const FAQS = [
   {
     q: 'Do I need an account to start?',
-    a: 'No. Start the 5-minute product demo to experience every capability without an account. Create a free account afterward to save vocabulary, personalized practice, exam history, and readiness tracking.',
+    a: 'No. Start the 5-minute product demo to experience the product without an account. Create a free account afterward to save vocabulary, exam history, and readiness tracking — plus 5 official mock exams per month on one certification.',
   },
   {
     q: 'What is the difference between a practice exam and a personalized exam?',
-    a: 'A practice exam is a general mock test on an official topic — your baseline assessment. A personalized exam is generated from vocabulary you saved during practice. It targets only your weak words.',
+    a: 'A practice exam is a general mock test on an official topic — your baseline assessment. A personalized exam is generated from vocabulary you saved during practice and targets only your weak words. Personalized exams require Pro.',
   },
   {
     q: 'Can I use LexiCoil for Goethe B2?',
@@ -18,11 +18,11 @@ const FAQS = [
   },
   {
     q: 'How does personalized practice work?',
-    a: "During practice mode, click any word you don't know to save it to your deck. Select words from your deck and LexiCoil generates a new mock exam weaving those items into realistic questions.",
+    a: "During practice mode, click any word you don't know to save it to your deck. With Pro, select words and LexiCoil generates a mock exam weaving those items into realistic questions — plus a listening game and AI speaking practice.",
   },
   {
     q: 'How many exams can I generate?',
-    a: 'Free accounts get 2 AI-generated exams per billing cycle. Pro is a one-time upgrade that unlocks 20 per cycle. Sample demos and retaking saved exams never count against your quota.',
+    a: 'Free accounts get 5 official mock exams per month on one certification and level (e.g. Goethe B1). Pro is €9.99/month for 12 exams per month, all languages and levels, plus personalized vocabulary practice. Sample demos and retaking saved exams never count against your quota.',
   },
   {
     q: 'Does LexiCoil replace Goethe or Cambridge materials?',

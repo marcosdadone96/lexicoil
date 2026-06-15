@@ -1,0 +1,23 @@
+
+Gemini batch generator — de/B1 × 1
+Prompt: batches/GEMINI_MASTER_PROMPT_de_B1.md
+
+── horen T1 · gesundheit-arzt-02 ──
+Tema: Arzttermin, Apotheke, Krankmeldung
+Archivo: batches/merged/horen-t1-gesundheit-arzt-02.json
+Llamando Gemini…
+
+⏳ Rate limit — esperando 52s (1/3)…
+
+⏳ Rate limit — esperando 59s (2/3)…
+Error: Gemini API 429: You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. 
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash
+Please retry in 57.694243569s.
+
+Sugerencias:
+  • El limitador global ya regula RPM; espera y reintenta
+  • npm run gemini:doctor — peticiones restantes hoy
+  • GEMINI_MODEL=gemini-2.5-flash-lite (más cupo diario)
+  • Revisa cuota en https://aistudio.google.com/
+
+Resumen: 0 OK, 1 fallidos

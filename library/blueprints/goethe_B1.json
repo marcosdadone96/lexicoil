@@ -5,6 +5,9 @@
   "level": "B1",
   "certificate": "Goethe-Zertifikat B1",
   "principle": "fixed_structure_dynamic_content",
+  "source": "Goethe-Institut Modellsatz/Übungssatz B1 (Aufgabentypen, Itemzahl, Zeitvorgaben)",
+  "structureVersion": 3,
+  "passPercentPerModule": 60,
   "difficultyDistribution": {
     "easy": { "min": 1, "max": 3, "share": 0.2 },
     "medium": { "min": 4, "max": 6, "share": 0.4 },
@@ -13,88 +16,149 @@
   "modules": [
     {
       "id": "lesen",
-      "title": "Leseverstehen",
+      "title": "Lesen",
       "time": "65 Minuten",
+      "maxPoints": 100,
       "parts": [
         {
           "teil": 1,
-          "slotType": "micro_texts",
-          "label": "Kurze Texte (Anzeigen / E-Mails)",
-          "instruction": "Lesen Sie die kurzen Texte und die Aufgaben 1–6. Welche Antwort (a, b oder c) passt?",
-          "textCount": { "min": 5, "max": 6 },
-          "questionsPerText": 1,
-          "wordsPerText": { "min": 80, "max": 120 },
-          "questionTypes": ["multiple_choice", "multiple"],
-          "questionsTotal": { "min": 5, "max": 6 },
-          "topicFocus": ["daily_life", "work", "travel", "health"],
-          "layout": "items"
+          "slotType": "blog_richtig_falsch",
+          "taskFormat": "richtig_falsch_single_text",
+          "label": "Teil 1 — Blog/E-Mail, Richtig/Falsch",
+          "instruction": "Lesen Sie den Text und die Aufgaben 1 bis 6. Wählen Sie: Sind die Aussagen Richtig oder Falsch?",
+          "layout": "passage_questions",
+          "itemsTotal": 6,
+          "questionsTotal": { "min": 6, "max": 6 },
+          "questionTypes": ["richtig_falsch"],
+          "wordsPerPassage": { "min": 150, "max": 220 },
+          "passagesPerPart": 1,
+          "inferenceMix": { "explicit": 4, "paraphrase": 2, "inference": 0 }
         },
         {
           "teil": 2,
-          "slotType": "article",
-          "label": "Artikel — Mittellanger Text",
-          "instruction": "Lesen Sie den Text und die Aufgaben. Sind die Aussagen richtig oder falsch? Beantworten Sie auch die Multiple-Choice-Fragen.",
-          "passageCount": 1,
-          "wordsPerPassage": { "min": 400, "max": 500 },
-          "questionTypes": ["richtig_falsch", "true_false", "multiple_choice", "multiple"],
-          "questionsTotal": { "min": 8, "max": 10 },
-          "topicFocus": ["environment", "education", "technology", "health"],
-          "requiresInference": true,
-          "layout": "passage_questions"
+          "slotType": "press_mcq",
+          "taskFormat": "multiple_choice_two_texts",
+          "label": "Teil 2 — Zwei Zeitungs-/Magazintexte, Multiple Choice",
+          "instruction": "Lesen Sie die beiden Texte und die Aufgaben 7 bis 12. Wählen Sie bei jeder Aufgabe die richtige Lösung a, b oder c.",
+          "layout": "passage_questions",
+          "itemsTotal": 6,
+          "questionsTotal": { "min": 6, "max": 6 },
+          "questionTypes": ["multiple_choice"],
+          "wordsPerPassage": { "min": 150, "max": 220 },
+          "passagesPerPart": 2,
+          "inferenceMix": { "explicit": 2, "paraphrase": 3, "inference": 1 }
+        },
+        {
+          "teil": 3,
+          "slotType": "ads_matching",
+          "taskFormat": "matching_ads",
+          "label": "Teil 3 — Anzeigen zuordnen",
+          "instruction": "Lesen Sie die Situationen 13 bis 19 und die Anzeigen a bis j. Welche Anzeige passt zu welcher Situation? Eine Anzeige passt nicht. Wenn es keine passende Anzeige gibt, schreiben Sie 0.",
+          "layout": "items",
+          "itemsTotal": 7,
+          "questionsTotal": { "min": 7, "max": 7 },
+          "questionTypes": ["matching"],
+          "wordsPerPassage": { "min": 20, "max": 60 },
+          "adsTotal": 10,
+          "passageLengthExempt": true,
+          "inferenceMix": { "explicit": 3, "paraphrase": 4, "inference": 0 }
+        },
+        {
+          "teil": 4,
+          "slotType": "forum_opinions",
+          "taskFormat": "opinion_yes_no",
+          "label": "Teil 4 — Meinungen im Forum (Ja/Nein)",
+          "instruction": "Lesen Sie die Meinungen 20 bis 26 zu einem Thema. Stimmt die Person dem Thema zu? Wählen Sie: Ja oder Nein.",
+          "layout": "items",
+          "itemsTotal": 7,
+          "questionsTotal": { "min": 7, "max": 7 },
+          "questionTypes": ["ja_nein"],
+          "wordsPerPassage": { "min": 60, "max": 90 },
+          "passagesPerPart": 7,
+          "passageLengthExempt": true,
+          "inferenceMix": { "explicit": 1, "paraphrase": 4, "inference": 2 }
+        },
+        {
+          "teil": 5,
+          "slotType": "rules_mcq",
+          "taskFormat": "multiple_choice_notice",
+          "label": "Teil 5 — Regeln/Anzeige, Multiple Choice",
+          "instruction": "Lesen Sie den Text (z. B. eine Hausordnung oder Anweisungen) und die Aufgaben 27 bis 30. Wählen Sie bei jeder Aufgabe die richtige Lösung a, b oder c.",
+          "layout": "passage_questions",
+          "itemsTotal": 4,
+          "questionsTotal": { "min": 4, "max": 4 },
+          "questionTypes": ["multiple_choice"],
+          "wordsPerPassage": { "min": 180, "max": 250 },
+          "passagesPerPart": 1,
+          "inferenceMix": { "explicit": 2, "paraphrase": 2, "inference": 0 }
         }
       ]
     },
     {
       "id": "horen",
-      "title": "Hörverstehen",
+      "title": "Hören",
       "time": "40 Minuten",
+      "maxPoints": 100,
       "parts": [
         {
           "teil": 1,
-          "slotType": "short_dialogues",
-          "label": "Kurze Dialoge",
-          "instruction": "Hören Sie die kurzen Dialoge und beantworten Sie die Fragen.",
-          "dialogueCount": { "min": 5, "max": 6 },
-          "questionsPerDialogue": 1,
-          "questionTypes": ["multiple_choice", "multiple"],
-          "questionsTotal": { "min": 5, "max": 6 },
-          "topicFocus": ["daily_life", "travel", "work"],
-          "layout": "segments"
+          "slotType": "short_texts_twice",
+          "taskFormat": "short_texts_rf_mcq",
+          "label": "Teil 1 — Fünf kurze Texte (zweimal)",
+          "instruction": "Sie hören fünf kurze Texte. Sie hören jeden Text zweimal. Zu jedem Text lösen Sie zwei Aufgaben: Richtig/Falsch und eine Auswahl a, b oder c.",
+          "layout": "segments",
+          "plays": 2,
+          "segmentsTotal": 5,
+          "itemsTotal": 10,
+          "questionsTotal": { "min": 10, "max": 10 },
+          "questionTypes": ["richtig_falsch", "multiple_choice"],
+          "wordsPerTranscript": { "min": 25, "max": 90 },
+          "inferenceMix": { "explicit": 7, "paraphrase": 3, "inference": 0 }
         },
         {
           "teil": 2,
-          "slotType": "long_audio",
-          "label": "Längere Aufnahme (Gespräch / Interview)",
-          "instruction": "Hören Sie die Aufnahme und beantworten Sie die Fragen zum Hauptthema und zu Details.",
-          "audioCount": 1,
-          "questionTypes": ["multiple_choice", "multiple", "richtig_falsch", "true_false"],
-          "questionsTotal": { "min": 6, "max": 8 },
-          "topicFocus": ["education", "technology", "environment"],
-          "requiresGistAndDetail": true,
-          "layout": "segments"
-        }
-      ]
-    },
-    {
-      "id": "grammatik",
-      "title": "Grammatik / Wortschatz",
-      "time": null,
-      "parts": [
+          "slotType": "monologue_once",
+          "taskFormat": "monologue_mcq",
+          "label": "Teil 2 — Vortrag/Einführung (einmal)",
+          "instruction": "Sie hören einen Vortrag. Sie hören den Text einmal. Wählen Sie bei jeder Aufgabe die richtige Lösung a, b oder c.",
+          "layout": "segments",
+          "plays": 1,
+          "segmentsTotal": 1,
+          "itemsTotal": 5,
+          "questionsTotal": { "min": 5, "max": 5 },
+          "questionTypes": ["multiple_choice"],
+          "wordsPerTranscript": { "min": 220, "max": 320 },
+          "inferenceMix": { "explicit": 3, "paraphrase": 2, "inference": 0 }
+        },
         {
-          "teil": 1,
-          "slotType": "grammar_block",
-          "label": "Grammatik und Wortschatz",
-          "instruction": "Ergänzen Sie die Sätze oder wählen Sie die richtige Antwort.",
-          "questionTypes": ["multiple_choice", "multiple", "gap_fill"],
-          "questionsTotal": { "min": 20, "max": 25 },
-          "grammarFocus": [
-            "g-de-b1-nebensatz",
-            "g-de-b1-passiv",
-            "g-de-b1-konjunktiv",
-            "g-de-b1-relativ",
-            "g-de-a2-perfekt"
-          ],
-          "layout": "questions"
+          "teil": 3,
+          "slotType": "conversation_once",
+          "taskFormat": "informal_conversation_rf",
+          "label": "Teil 3 — Informelles Gespräch (einmal)",
+          "instruction": "Sie hören ein Gespräch. Sie hören das Gespräch einmal. Lösen Sie sieben Aufgaben: Sind die Aussagen Richtig oder Falsch?",
+          "layout": "segments",
+          "plays": 1,
+          "segmentsTotal": 1,
+          "itemsTotal": 7,
+          "questionsTotal": { "min": 7, "max": 7 },
+          "questionTypes": ["richtig_falsch"],
+          "wordsPerTranscript": { "min": 250, "max": 350 },
+          "inferenceMix": { "explicit": 4, "paraphrase": 3, "inference": 0 }
+        },
+        {
+          "teil": 4,
+          "slotType": "discussion_twice",
+          "taskFormat": "discussion_speaker_matching",
+          "label": "Teil 4 — Diskussion (zweimal)",
+          "instruction": "Sie hören eine Diskussion mit einem Moderator und zwei Gästen. Sie hören die Diskussion zweimal. Ordnen Sie die acht Aussagen den Personen zu.",
+          "layout": "segments",
+          "plays": 2,
+          "segmentsTotal": 1,
+          "itemsTotal": 8,
+          "questionsTotal": { "min": 8, "max": 8 },
+          "questionTypes": ["multiple_choice", "matching"],
+          "wordsPerTranscript": { "min": 300, "max": 420 },
+          "inferenceMix": { "explicit": 3, "paraphrase": 4, "inference": 1 }
         }
       ]
     },
@@ -102,21 +166,118 @@
       "id": "schreiben",
       "title": "Schreiben",
       "time": "60 Minuten",
+      "maxPoints": 100,
       "parts": [
         {
           "teil": 1,
           "slotType": "writing_task",
-          "label": "Schriftlicher Ausdruck",
-          "instruction": "Schreiben Sie einen Text zu der folgenden Aufgabe.",
+          "taskFormat": "informal_email",
+          "label": "Aufgabe 1 — Informelle E-Mail (ca. 80 Wörter)",
+          "instruction": "Schreiben Sie eine E-Mail an eine Freundin/einen Freund. Schreiben Sie etwas zu allen drei Punkten. Achten Sie auf Anrede, Reihenfolge der Inhaltspunkte und Schluss. Schreiben Sie circa 80 Wörter.",
           "taskCount": 1,
-          "wordsTarget": { "min": 80, "max": 100 },
-          "taskTypes": ["formal_email", "informal_message"],
-          "bulletPointsRequired": 3,
+          "itemsTotal": 1,
+          "recommendedMinutes": 20,
+          "wordsTarget": { "min": 70, "max": 90 },
+          "wordsPerPassage": { "min": 70, "max": 90 },
+          "taskTypes": ["informal_email"],
+          "questionTypes": ["short_answer"],
+          "questionsTotal": { "min": 1, "max": 1 },
+          "layout": "writing"
+        },
+        {
+          "teil": 2,
+          "slotType": "writing_task",
+          "taskFormat": "forum_opinion",
+          "label": "Aufgabe 2 — Meinung im Diskussionsforum (ca. 80 Wörter)",
+          "instruction": "Sie haben im Internet einen Forumsbeitrag zu einem Thema gelesen. Schreiben Sie Ihre Meinung dazu (circa 80 Wörter). Begründen Sie Ihre Meinung mit Beispielen und nennen Sie Vor- und Nachteile.",
+          "taskCount": 1,
+          "itemsTotal": 1,
+          "recommendedMinutes": 25,
+          "wordsTarget": { "min": 70, "max": 90 },
+          "wordsPerPassage": { "min": 70, "max": 90 },
+          "taskTypes": ["forum_post", "opinion"],
+          "questionTypes": ["short_answer"],
+          "questionsTotal": { "min": 1, "max": 1 },
+          "layout": "writing"
+        },
+        {
+          "teil": 3,
+          "slotType": "writing_task",
+          "taskFormat": "semiformal_message",
+          "label": "Aufgabe 3 — Halbformelle/Formelle Mitteilung (ca. 40 Wörter)",
+          "instruction": "Schreiben Sie eine kurze E-Mail oder Mitteilung (circa 40 Wörter). Verwenden Sie höfliche Anrede- und Grußformeln. Vergessen Sie die Anrede und den Gruß am Schluss nicht.",
+          "taskCount": 1,
+          "itemsTotal": 1,
+          "recommendedMinutes": 15,
+          "wordsTarget": { "min": 30, "max": 50 },
+          "wordsPerPassage": { "min": 30, "max": 50 },
+          "taskTypes": ["semiformal_email", "formal_message"],
           "questionTypes": ["short_answer"],
           "questionsTotal": { "min": 1, "max": 1 },
           "layout": "writing"
         }
       ]
+    },
+    {
+      "id": "sprechen",
+      "title": "Sprechen",
+      "time": "15 Minuten (paarweise, 15 Minuten Vorbereitung)",
+      "maxPoints": 100,
+      "parts": [
+        {
+          "teil": 1,
+          "slotType": "speaking_task",
+          "taskFormat": "plan_together",
+          "label": "Teil 1 — Gemeinsam etwas planen",
+          "instruction": "Planen Sie gemeinsam mit Ihrer Partnerin/Ihrem Partner eine Aktivität (z. B. eine Reise oder ein Fest). Sprechen Sie über die Punkte unten, machen Sie Vorschläge und reagieren Sie auf die Vorschläge.",
+          "taskCount": 1,
+          "itemsTotal": 1,
+          "interaction": "paired",
+          "taskTypes": ["plan_together"],
+          "questionTypes": ["short_answer"],
+          "questionsTotal": { "min": 1, "max": 1 },
+          "layout": "speaking"
+        },
+        {
+          "teil": 2,
+          "slotType": "speaking_task",
+          "taskFormat": "presentation",
+          "label": "Teil 2 — Ein Thema präsentieren",
+          "instruction": "Halten Sie eine kurze Präsentation zu einem Thema. Beschreiben Sie das Thema, berichten Sie über Ihre Erfahrungen und Ihr Heimatland, nennen Sie Vor- und Nachteile und sagen Sie Ihre Meinung.",
+          "taskCount": 1,
+          "itemsTotal": 1,
+          "interaction": "monologue",
+          "taskTypes": ["presentation"],
+          "questionTypes": ["short_answer"],
+          "questionsTotal": { "min": 1, "max": 1 },
+          "layout": "speaking"
+        },
+        {
+          "teil": 3,
+          "slotType": "speaking_task",
+          "taskFormat": "feedback_questions",
+          "label": "Teil 3 — Über die Präsentation sprechen",
+          "instruction": "Geben Sie Ihrer Partnerin/Ihrem Partner Feedback zur Präsentation und stellen Sie eine Frage. Beantworten Sie anschließend die Fragen zu Ihrer eigenen Präsentation.",
+          "taskCount": 1,
+          "itemsTotal": 1,
+          "interaction": "paired",
+          "taskTypes": ["feedback", "qa"],
+          "questionTypes": ["short_answer"],
+          "questionsTotal": { "min": 1, "max": 1 },
+          "layout": "speaking"
+        }
+      ]
     }
-  ]
+  ],
+  "itemsTotalByModule": {
+    "lesen": 30,
+    "horen": 30,
+    "schreiben": 3,
+    "sprechen": 3
+  },
+  "notes": {
+    "noGrammarModule": "Das offizielle Goethe-Zertifikat B1 hat KEIN separates Modul Grammatik/Wortschatz. Grammatik wird über grammarTags der Lesen/Hören-Items abgedeckt (für Weakness-Tracking), nicht als eigenes geprüftes Modul.",
+    "listeningPlays": "Teil 1 und Teil 4 werden zweimal gehört; Teil 2 und Teil 3 einmal.",
+    "passageLengthExempt": "Teil 3 (Anzeigen) und Teil 4 (kurze Meinungen) sind von der Mindestlänge der Lesepassage (150 Wörter) ausgenommen; der CefrGate muss diese Teile per passageLengthExempt überspringen."
+  }
 }

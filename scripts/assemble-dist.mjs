@@ -16,7 +16,7 @@ const COPY_DIRS = ['js', 'data', 'assets', 'knowledge', 'library'];
 
 function copyDesignSystem() {
   const destDir = path.join(DIST, 'assets', 'css');
-  const sheets = ['lexicoil-design-system.css', 'app.css', 'app-screens.css', 'demo-loop.css'];
+  const sheets = ['lexicoil-design-system.css', 'app.css', 'app-utilities.css', 'app-screens.css', 'demo-loop.css'];
   ensureDir(destDir);
   for (const name of sheets) {
     const src = path.join(ROOT, 'assets', 'css', name);
@@ -24,10 +24,12 @@ function copyDesignSystem() {
   }
 }
 const COPY_FILES = [
+  'admin.html',
   'confirmacion.html',
   'privacy.html',
   'terms.html',
   'favicon.svg',
+  'favicon.png',
   'og-image.svg',
   'robots.txt',
   'server.mjs',

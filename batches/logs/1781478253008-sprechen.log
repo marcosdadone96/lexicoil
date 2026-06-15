@@ -1,0 +1,22 @@
+
+Gemini batch generator — de/B1 × 1
+Prompt: batches/GEMINI_MASTER_PROMPT_de_B1.md
+
+── sprechen T1+2+3 · sport-praesentation-01 ──
+Tema: Sportkurs für Anfänger planen / Präsentation: Beliebtester Sport im Heimatland
+Archivo: batches/merged/sprechen-sport-praesentation-01.json
+Llamando Gemini…
+Tokens: in=1729 out=1158
+Modelo: gemini-2.5-flash
+Guardado: batches/merged/sprechen-sport-praesentation-01.json (3 preguntas, 0 passages)
+Validando…
+
+== Validación de sprechen-sport-praesentation-01.json (de_B1) ==
+Preguntas: 3 | Pasajes: 0
+Esquema: OK
+Colocación (Teile que mejora): Pool válido (Teil ya cubierto en 1 examen — OK para exámenes disjuntos)
+Sin problemas detectados ✅
+Validación OK
+Siguiente: node scripts/merge-bank-batch.mjs --lang de --level B1 --file batches/merged/sprechen-sport-praesentation-01.json
+
+Resumen: 1 OK, 0 fallidos

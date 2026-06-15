@@ -7,6 +7,7 @@
 const { getStoreForEvent } = require('./lib/blobStore.js');
 const { normalizeEmail, userKey } = require('./lib/authLib.js');
 const { activateProForEmail } = require('./lib/proUpgrade.js');
+const { persistStripeCustomerId } = require('./lib/stripeLib.js');
 
 function parseStripeEvent(rawBody, sigHeader, secret) {
   if (!secret) return { ok: false, error: 'missing_webhook_secret' };
@@ -59,7 +60,12 @@ function getRawBody(event) {
 }
 
 function extractEmail(obj) {
-  return obj?.metadata?.email || obj?.customer_email || obj?.client_reference_id || null;
+  return (
+    obj?.metadata?.email ||
+    obj?.customer_email ||
+    obj?.client_reference_id ||
+    null
+  );
 }
 
 exports.handler = async (event) => {
@@ -109,7 +115,13 @@ exports.handler = async (event) => {
       }
 
       const email = normalizeEmail(rawEmail);
-      const result = await activateProForEmail(store, email, { sendEmail: true });
+      const customerId = session.customer || null;
+      if (customerId) await persistStripeCustomerId(store, email, customerId);
+
+      const result = await activateProForEmail(store, email, {
+        sendEmail: true,
+        stripeCustomerId: customerId || undefined,
+      });
       if (!result.ok) {
         console.error('[stripe-webhook] Upgrade failed:', result.error, email);
         return { statusCode: 200, body: 'ok' };

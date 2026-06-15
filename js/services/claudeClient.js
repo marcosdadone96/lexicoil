@@ -92,7 +92,7 @@ async function callAI(prompt, maxTokens = 6000, options = {}) {
   }
 
   if (examGeneration && data.model) {
-    console.log("[claude] exam generation model:", data.model);
+    lcDebug.log("[claude] exam generation model:", data.model);
   }
 
   if (typeof data.used === "number" && typeof window.applyServerQuota === "function") {
@@ -127,10 +127,14 @@ async function confirmStripePurchase(sessionId) {
 }
 
 async function commitExamQuota() {
+  if (!commitExamQuota._pendingId && typeof crypto !== 'undefined' && crypto.randomUUID) {
+    commitExamQuota._pendingId = crypto.randomUUID();
+  }
+  const requestId = commitExamQuota._pendingId || null;
   const res = await fetch(CLAUDE_ENDPOINT, {
     method: "POST",
     headers: aiAuthHeaders(),
-    body: JSON.stringify({ quotaOnly: true }),
+    body: JSON.stringify({ quotaOnly: true, requestId }),
   });
   const data = await res.json().catch(() => ({}));
   if (!res.ok) {
@@ -144,15 +148,18 @@ async function commitExamQuota() {
     }
     throw new Error(data.error || "Could not register exam usage");
   }
+  commitExamQuota._pendingId = null;
   if (typeof data.used === "number" && typeof window.applyServerQuota === "function") {
     window.applyServerQuota({ used: data.used, max: data.max, plan: data.plan });
   }
 }
 
+const VOCAB_CACHE_ENDPOINT = "/.netlify/functions/vocab-cache";
+
 async function fetchExamFromPool(lang, level, excludeIds) {
   const params = { lang, level };
   if (excludeIds && excludeIds.length) {
-    params.exclude = excludeIds.slice(0, 40).join(',');
+    params.exclude = excludeIds.slice(0, 40).join(",");
   }
   const q = new URLSearchParams(params);
   const res = await fetch(`/.netlify/functions/exam-pool?${q}`);
@@ -161,14 +168,103 @@ async function fetchExamFromPool(lang, level, excludeIds) {
   return data;
 }
 
+async function fetchVocabCache(from, to, text) {
+  const params = new URLSearchParams({ from, to, text: String(text || "") });
+  const res = await fetch(`${VOCAB_CACHE_ENDPOINT}?${params}`);
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok || !data.found) return null;
+  return data;
+}
+
+async function putVocabCache(from, to, text, translation, source = "manual") {
+  const res = await fetch(VOCAB_CACHE_ENDPOINT, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ from, to, text, translation, source }),
+  });
+  if (!res.ok) return false;
+  const data = await res.json().catch(() => ({}));
+  return !!data.saved;
+}
+
+const TTS_ENDPOINT = "/.netlify/functions/tts";
+
+function ttsVoiceForLang(lang) {
+  const l = String(lang || "en").slice(0, 2).toLowerCase();
+  if (l === "de") return "de-DE";
+  if (l === "es") return "es-ES";
+  return "en-GB";
+}
+
+async function fetchTtsAudio(text, voice, lang) {
+  const params = new URLSearchParams({
+    text: String(text || ""),
+    voice: voice || ttsVoiceForLang(lang),
+    lang: lang || "",
+  });
+  const res = await fetch(`${TTS_ENDPOINT}?${params}`);
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok || !data.found || !data.audioBase64) return null;
+  return data;
+}
+
+async function generateTtsAudio(text, voice, lang) {
+  const token = localStorage.getItem("lc_token");
+  const headers = { "Content-Type": "application/json" };
+  if (token && localStorage.getItem("lc_guest") !== "1") {
+    headers.Authorization = `Bearer ${token}`;
+  }
+  const res = await fetch(TTS_ENDPOINT, {
+    method: "POST",
+    headers,
+    body: JSON.stringify({
+      text: String(text || ""),
+      voice: voice || ttsVoiceForLang(lang),
+      lang: lang || "",
+    }),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) return { unavailable: true, error: data.error };
+  if (data.unavailable) return { unavailable: true };
+  if (data.found && data.audioBase64) return data;
+  return null;
+}
+
+async function saveExamPartsToStaging(lang, level, exam, opts = {}) {
+  if (exam?.vocabPersonal || exam?.vocabWords?.length) return null;
+  const token = localStorage.getItem("lc_token");
+  if (!token || localStorage.getItem("lc_guest") === "1") return null;
+  const res = await fetch("/.netlify/functions/content-staging", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({
+      lang,
+      level,
+      exam,
+      complete: !!opts.complete,
+      autoApprove: !!opts.autoApprove,
+    }),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    lcDebug.warn("[staging] ingest failed:", data.error || res.status);
+    return null;
+  }
+  return data;
+}
+
 async function saveExamToPool(lang, level, topic, exam) {
   const t = String(topic || "").trim();
   if (/personal\s*vocabulary|^personal:/i.test(t)) return;
   if (exam?.vocabPersonal || exam?.vocabWords?.length) return;
   if (typeof ExamValidator !== "undefined") {
-    const check = new ExamValidator().validate(exam);
+    const strict = typeof window !== "undefined" && window.LC_VALIDATOR_STRICT === "1";
+    const check = new ExamValidator().validate(exam, { strict });
     if (!check.valid) {
-      console.warn("[pool] rejected invalid exam:", check.errors);
+      lcDebug.warn("[pool] rejected invalid exam:", check.errors);
       return;
     }
   }
@@ -201,5 +297,25 @@ async function startStripeCheckout() {
   const data = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(data.error || "checkout_failed");
   if (!data.url) throw new Error("checkout_failed");
+  window.location.href = data.url;
+}
+
+async function startStripePortal() {
+  const token = localStorage.getItem("lc_token");
+  if (!token) throw new Error("login_required");
+  const res = await fetch("/.netlify/functions/stripe-portal", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    const e = new Error(data.error || "portal_failed");
+    e.code = data.error || "portal_failed";
+    throw e;
+  }
+  if (!data.url) throw new Error("portal_failed");
   window.location.href = data.url;
 }

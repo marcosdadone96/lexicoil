@@ -1,0 +1,22 @@
+
+Gemini batch generator — de/B1 × 1
+Prompt: batches/GEMINI_MASTER_PROMPT_de_B1.md
+
+── horen T4 · autoverbote-debatte-01 ──
+Tema: Sollte das Autofahren in Städten eingeschränkt werden?
+Archivo: batches/merged/horen-t4-autoverbote-debatte-01.json
+Llamando Gemini…
+Tokens: in=1666 out=2377
+Modelo: gemini-2.5-flash
+Guardado: batches/merged/horen-t4-autoverbote-debatte-01.json (8 preguntas, 0 passages)
+Validando…
+
+== Validación de horen-t4-autoverbote-debatte-01.json (de_B1) ==
+Preguntas: 8 | Pasajes: 0
+Esquema: OK
+Colocación (Teile que mejora): Pool válido (Teil ya cubierto en 1 examen — OK para exámenes disjuntos)
+Sin problemas detectados ✅
+Validación OK
+Siguiente: node scripts/merge-bank-batch.mjs --lang de --level B1 --file batches/merged/horen-t4-autoverbote-debatte-01.json
+
+Resumen: 1 OK, 0 fallidos

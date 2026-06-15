@@ -26,20 +26,21 @@ function workspaceAction(tab,fn){
   };
 }
 function getRecommendedActionForGoal(goal){
+  if(typeof MasteryView!=='undefined')return MasteryView.getRecommendedExam(goal);
   if(!goal)return{title:'Set your first exam goal',desc:'Choose the certification you are preparing for.',cta:'Add goal →',run:()=>showAddGoalWizard()};
   const fc=deckForGoal(goal);
   const hist=historyForGoal(goal);
   const due=dueForGoal(goal).length;
-  if(due>=3)return{title:'Review due flashcards',desc:due+' words need review before your next exam.',cta:'Review now →',run:()=>{prepGoalContext(goal);openGoalWorkspace(goal.id,'vocabulary');openDeckHub(goal.id);setFcTab('due');}};
-  if(fc.length>=5)return{title:'Take a personalized exam',desc:'Built from '+fc.length+' words in your deck.',cta:'Generate exam →',run:()=>{prepGoalContext(goal);openGoalWorkspace(goal.id,'exams');openExamConfigurator(goal.id);}};
-  if(!hist.length)return{title:'Take your first mock exam',desc:'Start with a realistic '+goalLabel(goal)+' practice test.',cta:'Start now →',run:()=>{prepGoalContext(goal);openGoalWorkspace(goal.id,'exams');launchGoalExam('official',{goalId:goal.id});}};
+  if(due>=3)return{title:'Review due flashcards',desc:due+' words need review before your next exam.',cta:'Review now →',run:()=>{prepGoalContext(goal);openDeckHub(goal.id);setFcTab('due');}};
+  if(fc.length>=5)return{title:'Take a personalized exam',desc:'Built from '+fc.length+' words in your deck.',cta:'Generate exam →',run:()=>{prepGoalContext(goal);openExamConfigurator(goal.id);}};
+  if(!hist.length)return{title:'Take your first mock exam',desc:'Start with a realistic '+goalLabel(goal)+' practice test.',cta:'Start now →',run:()=>{prepGoalContext(goal);launchGoalExam('official',{goalId:goal.id});}};
   const last=hist[0];
   if(typeof QuestionLibrary!=='undefined'&&QuestionLibrary.hasLibrary(goal.subject,goal.level)&&typeof AnalyticsStore!=='undefined'&&AnalyticsStore.getWeakGrammarTags(goal,1).length){
     const tag=AnalyticsStore.getWeakGrammarTags(goal,1)[0];
     return{title:'Target your weakest grammar',desc:'Focus on '+tag.replace(/^g-[^-]+-[^-]+-/,'')+'.',cta:'Weakness exam →',run:()=>{prepGoalContext(goal);generateWeaknessExam(goal.id);}};
   }
-  if(last.score<70)return{title:'Practice your weak areas',desc:'Last score: '+last.score+'% on '+last.topic+'.',cta:'Practice again →',run:()=>{prepGoalContext(goal);openGoalWorkspace(goal.id,'exams');launchGoalExam('practice',{goalId:goal.id});}};
-  return{title:'Take a mock exam',desc:'Keep your momentum — you are improving steadily.',cta:'Start exam →',run:()=>{prepGoalContext(goal);openGoalWorkspace(goal.id,'exams');launchGoalExam('official',{goalId:goal.id});}};
+  if(last.score<70)return{title:'Practice your weak areas',desc:'Last score: '+last.score+'% on '+last.topic+'.',cta:'Practice again →',run:()=>{prepGoalContext(goal);launchGoalExam('practice',{goalId:goal.id});}};
+  return{title:'Take a mock exam',desc:'Keep your momentum — you are improving steadily.',cta:'Start exam →',run:()=>{prepGoalContext(goal);launchGoalExam('official',{goalId:goal.id});}};
 }
 function getRecommendedAction(){
   return getRecommendedActionForGoal(getActiveGoal()||S.goals[0]);
