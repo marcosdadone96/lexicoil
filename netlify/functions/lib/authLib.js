@@ -75,16 +75,18 @@ function getTokenVersion(user) {
   return user?.tokenVersion || 1;
 }
 
-function signAuthToken(email, name, tokenVersion = 1) {
+function signAuthToken(email, name, tokenVersion = 1, uid = null) {
   const secret = getJwtSecret();
   if (!secret) return null;
   const now = Math.floor(Date.now() / 1000);
   const exp = now + 60 * 60 * 24 * 30;
   const { signJwt } = require('./jwt.js');
+  const normalized = normalizeEmail(email);
   return {
     token: signJwt(
       {
-        sub: normalizeEmail(email),
+        sub: normalized,
+        uid: uid || emailToUserId(normalized),
         name: String(name || '').slice(0, 80),
         typ: 'lc-auth',
         tv: tokenVersion || 1,

@@ -330,19 +330,57 @@ async function deleteSavedExams(userId, savedIds) {
 
 const { normalizeEmail } = require('./authLib.js');
 
+function serviceRestConfig() {
+  const url = String(process.env.SUPABASE_URL || '').trim();
+  const key = String(process.env.SUPABASE_SERVICE_ROLE_KEY || '').trim();
+  if (!url || !key) return null;
+  return { base: url.replace(/\/$/, ''), key };
+}
+
+/** PostgREST read — avoids @supabase/supabase-js bundling issues on Netlify. */
+async function restSelectRows(table, filters, select = 'role') {
+  const cfg = serviceRestConfig();
+  if (!cfg) return null;
+  const params = new URLSearchParams({ select, limit: '50' });
+  for (const [col, val] of Object.entries(filters)) {
+    params.set(col, val);
+  }
+  const res = await fetch(`${cfg.base}/rest/v1/${table}?${params}`, {
+    headers: {
+      apikey: cfg.key,
+      Authorization: `Bearer ${cfg.key}`,
+      Accept: 'application/json',
+    },
+  });
+  if (!res.ok) {
+    const body = await res.text().catch(() => '');
+    console.error(`[supabaseAdmin] REST ${table}:`, res.status, body.slice(0, 240));
+    return null;
+  }
+  const rows = await res.json();
+  return Array.isArray(rows) ? rows : null;
+}
+
 async function isAdmin(userId) {
+  if (!userId) return false;
+  const rows = await restSelectRows('lc_admin_roles', { user_id: `eq.${userId}` });
+  if (rows?.length) return true;
   const sb = getClient();
-  if (!sb || !userId) return false;
+  if (!sb) return false;
   const { data, error } = await sb.from('lc_admin_roles').select('role').eq('user_id', userId).maybeSingle();
   if (error) console.error('[supabaseAdmin] isAdmin:', error.message);
   return !!data;
 }
 
 async function isAdminByEmail(email) {
-  const sb = getClient();
-  if (!sb) return false;
   const normalized = normalizeEmail(email);
   if (!normalized) return false;
+  let rows = await restSelectRows('lc_admin_roles', { email: `eq.${normalized}` });
+  if (rows?.length) return true;
+  rows = await restSelectRows('lc_admin_roles', { email: `ilike.${normalized}` });
+  if (rows?.length) return true;
+  const sb = getClient();
+  if (!sb) return false;
   let { data, error } = await sb.from('lc_admin_roles').select('role').eq('email', normalized).maybeSingle();
   if (error) console.error('[supabaseAdmin] isAdminByEmail:', error.message);
   if (data) return true;

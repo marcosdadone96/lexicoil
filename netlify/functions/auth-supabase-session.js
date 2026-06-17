@@ -170,7 +170,7 @@ exports.handler = async function handler(event) {
     }
   }
 
-  const session = signAuthToken(email, user.name, getTokenVersion(user));
+  const session = signAuthToken(email, user.name, getTokenVersion(user), sbUser.id);
   if (!session?.token) {
     return jsonResponse(503, cors, { error: 'auth_not_configured' });
   }
