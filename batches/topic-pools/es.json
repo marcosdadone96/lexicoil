@@ -1,0 +1,62 @@
+{
+  "lang": "es",
+  "examType": "dele",
+  "levels": ["B1", "B2", "C1"],
+  "modules": {
+    "lesen": {
+      "teile": [1, 2],
+      "topics": {
+        "1": [
+          { "slugBase": "teletrabajo-empresa", "topic": "El teletrabajo en una empresa española", "topicTag": "work" },
+          { "slugBase": "movilidad-urbana", "topic": "Bicicletas públicas y movilidad en ciudades españolas", "topicTag": "daily_life" },
+          { "slugBase": "alimentacion-saludable", "topic": "Hábitos alimenticios saludables con poco tiempo", "topicTag": "health" },
+          { "slugBase": "turismo-rural", "topic": "Turismo rural en España", "topicTag": "travel" },
+          { "slugBase": "redes-sociales-jovenes", "topic": "Redes sociales y su influencia en los jóvenes", "topicTag": "media" },
+          { "slugBase": "energia-solar", "topic": "Energía solar en hogares españoles", "topicTag": "environment" }
+        ],
+        "2": [
+          { "slugBase": "compras-online-local", "topic": "Compras online vs. comercio local en el centro de la ciudad", "topicTag": "shopping" },
+          { "slugBase": "gimnasio-aire-libre", "topic": "Gimnasio vs. deporte al aire libre", "topicTag": "health" },
+          { "slugBase": "cine-streaming", "topic": "Ir al cine vs. ver series en streaming", "topicTag": "culture" },
+          { "slugBase": "alquiler-compra", "topic": "Alquilar vs. comprar vivienda en España", "topicTag": "housing" }
+        ]
+      }
+    },
+    "horen": {
+      "teile": [1, 2],
+      "topics": {
+        "1": [
+          { "slugBase": "anuncios-transporte", "topic": "Anuncios en estación, teléfono y radio", "topicTag": "travel", "segments": ["Anuncio", "Mensaje de voz", "Noticia breve", "Conversación", "Entrevista corta"] },
+          { "slugBase": "citas-servicios", "topic": "Citas médicas, horarios y servicios públicos", "topicTag": "daily_life", "segments": ["Llamada", "Ansuncio", "Mensaje", "Diálogo", "Spot publicitario"] }
+        ],
+        "2": [
+          { "slugBase": "entrevista-medio-ambiente", "topic": "Entrevista sobre medio ambiente y reciclaje", "topicTag": "environment" },
+          { "slugBase": "debate-educacion", "topic": "Debate sobre el sistema educativo", "topicTag": "education" },
+          { "slugBase": "conversacion-viaje", "topic": "Dos amigos planifican un viaje", "topicTag": "travel" }
+        ]
+      }
+    },
+    "schreiben": {
+      "teile": [1, 2, 3],
+      "topics": [
+        { "slugBase": "email-amigo-viaje", "topicT1": "Correo a un/a amigo/a sobre un viaje reciente", "topicT2": "Foro: ¿Es mejor viajar solo o en grupo?", "topicT3": "Mensaje breve: cancelar una cita", "topicTag": "travel" },
+        { "slugBase": "email-trabajo", "topicT1": "Correo a un compañero sobre un proyecto", "topicT2": "Foro: Teletrabajo vs. oficina", "topicT3": "Mensaje al profesor/a: no poder asistir a clase", "topicTag": "work" },
+        { "slugBase": "carta-alquiler", "topicT1": "Carta al casero/a sobre una avería", "topicT2": "Foro: Ventajas de vivir en piso compartido", "topicT3": "Mensaje a un vecino/a sobre ruido", "topicTag": "housing" }
+      ]
+    },
+    "sprechen": {
+      "teile": [1, 2, 3],
+      "topics": [
+        { "slugBase": "fiesta-barrio", "topicT1": "Organizar una fiesta de barrio", "topicT2": "Presentación: fiestas tradicionales en tu país vs. España", "topicTag": "culture" },
+        { "slugBase": "actividad-deportiva", "topicT1": "Planificar una actividad deportiva grupal", "topicT2": "Presentación: deportes populares en tu país", "topicTag": "sport" },
+        { "slugBase": "voluntariado", "topicT1": "Planificar un proyecto de voluntariado", "topicT2": "Presentación: voluntariado en tu cultura", "topicTag": "society" }
+      ]
+    }
+  },
+  "priority": {
+    "lesen": [2],
+    "horen": [2],
+    "schreiben": [1, 2, 3],
+    "sprechen": [1, 2, 3]
+  }
+}

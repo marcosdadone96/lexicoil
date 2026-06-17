@@ -1,0 +1,106 @@
+{
+  "lang": "de",
+  "level": "A1",
+  "status": "published",
+  "title": "Grammatik · Deutsch A1",
+  "metaLanguage": "de",
+  "scope": "Am Ende von A1 beherrschst du das Präsens regelmäßiger Verben sowie von sein und haben, die Artikel im Nominativ und Akkusativ, die Negation mit nicht und kein, grundlegende Modalverben, Possessivartikel, einfachen Imperativ und trennbare Verben. Alles steht im Präsens: Vergangenheit und Dativ werden noch nicht behandelt.",
+  "sections": [
+    {
+      "id": "personalpronomen",
+      "title": "Personalpronomen (Nominativ)",
+      "blocks": [
+        { "type": "paragraph", "text": "Personalpronomen ersetzen das Subjekt. Im Deutschen gibt es drei Anredeformen für die 2. Person: du (informell), ihr (informell Plural) und Sie (höflich, immer großgeschrieben)." },
+        { "type": "table", "headers": ["Singular", "Plural"], "rows": [["ich (1. Pers. Sg.)", "wir (1. Pers. Pl.)"], ["du (2. Pers. Sg., informell)", "ihr (2. Pers. Pl., informell)"], ["er / sie / es (3. Pers. Sg.)", "sie (3. Pers. Pl.) / Sie (Höflichkeitsform)"]] }
+      ]
+    },
+    {
+      "id": "praesens",
+      "title": "Präsens: regelmäßige Verben",
+      "blocks": [
+        { "type": "paragraph", "text": "Die Endung -en des Infinitivs wird abgetrennt (lernen → lern-) und durch die Personalendung ersetzt." },
+        { "type": "table", "headers": ["Person", "lernen", "Endung"], "rows": [["ich", "lerne", "-e"], ["du", "lernst", "-st"], ["er/sie/es", "lernt", "-t"], ["wir", "lernen", "-en"], ["ihr", "lernt", "-t"], ["sie/Sie", "lernen", "-en"]] },
+        { "type": "note", "text": "Endet der Stamm auf -t oder -d, wird ein -e- eingefügt: du arbeitest, er findet." },
+        { "type": "example", "text": "Ich lerne Deutsch. Du wohnst in Berlin. Wir spielen Fußball." }
+      ]
+    },
+    {
+      "id": "sein-haben",
+      "title": "sein und haben",
+      "blocks": [
+        { "type": "paragraph", "text": "Die beiden wichtigsten Verben sind unregelmäßig und sollten auswendig gelernt werden." },
+        { "type": "table", "headers": ["Person", "sein", "haben"], "rows": [["ich", "bin", "habe"], ["du", "bist", "hast"], ["er/sie/es", "ist", "hat"], ["wir", "sind", "haben"], ["ihr", "seid", "habt"], ["sie/Sie", "sind", "haben"]] },
+        { "type": "example", "text": "Ich bin müde. Sie hat einen Hund." }
+      ]
+    },
+    {
+      "id": "artikel",
+      "title": "Artikel: bestimmt und unbestimmt (Nominativ)",
+      "blocks": [
+        { "type": "paragraph", "text": "Jedes Substantiv hat ein Genus (maskulin, feminin oder neutrum). Der bestimmte Artikel (der/die/das) bezeichnet etwas Bestimmtes; der unbestimmte (ein/eine) etwas Unbestimmtes. Im Plural ist der bestimmte Artikel immer die." },
+        { "type": "table", "headers": ["", "maskulin", "feminin", "neutrum", "Plural"], "rows": [["bestimmt", "der", "die", "das", "die"], ["unbestimmt", "ein", "eine", "ein", "—"]] },
+        { "type": "example", "text": "der Tisch, die Lampe, das Buch · ein Tisch, eine Lampe, ein Buch" }
+      ]
+    },
+    {
+      "id": "akkusativ",
+      "title": "Nominativ und Akkusativ",
+      "blocks": [
+        { "type": "paragraph", "text": "Der Nominativ kennzeichnet das Subjekt; der Akkusativ das direkte Objekt. Nur beim Maskulinum ändert sich der Artikel im Akkusativ." },
+        { "type": "table", "headers": ["Kasus", "maskulin", "feminin", "neutrum", "Plural"], "rows": [["Nominativ", "der / ein", "die / eine", "das / ein", "die"], ["Akkusativ", "den / einen", "die / eine", "das / ein", "die"]] },
+        { "type": "example", "label": "Nur das Maskulinum ändert sich", "text": "Der Mann liest einen Roman. Ich sehe den Tisch." }
+      ]
+    },
+    {
+      "id": "negation",
+      "title": "Negation: nicht und kein",
+      "blocks": [
+        { "type": "paragraph", "text": "kein negiert Substantive mit unbestimmtem Artikel oder ohne Artikel; nicht negiert Verben, Adjektive und alles andere." },
+        { "type": "table", "headers": ["Negation", "Verwendung", "Beispiel"], "rows": [["kein-", "negiert ein Substantiv", "Ich habe kein Auto."], ["nicht", "negiert das Verb oder eine Ergänzung", "Ich komme nicht. Das ist nicht teuer."]] }
+      ]
+    },
+    {
+      "id": "fragen",
+      "title": "Fragen: W-Fragen und Ja/Nein-Fragen",
+      "blocks": [
+        { "type": "paragraph", "text": "Bei W-Fragen steht das Fragewort am Anfang und das Verb an Position 2. Bei Ja/Nein-Fragen steht das Verb an erster Stelle." },
+        { "type": "list", "items": ["W-Fragen: wer, was, wo, wann, warum, wie, woher, wohin", "Ja/Nein-Frage: das Verb eröffnet den Satz"] },
+        { "type": "example", "text": "Wo wohnst du? — Wann beginnt der Kurs? — Kommst du mit?" }
+      ]
+    },
+    {
+      "id": "modalverben",
+      "title": "Modalverben (Einführung)",
+      "blocks": [
+        { "type": "paragraph", "text": "Modalverben stehen an Position 2; das Vollverb steht im Infinitiv am Satzende." },
+        { "type": "table", "headers": ["", "können", "müssen", "möchten"], "rows": [["ich", "kann", "muss", "möchte"], ["du", "kannst", "musst", "möchtest"], ["er/sie/es", "kann", "muss", "möchte"], ["wir/sie/Sie", "können", "müssen", "möchten"]] },
+        { "type": "example", "label": "Vollverb am Ende", "text": "Ich kann gut schwimmen. Wir müssen jetzt gehen." }
+      ]
+    },
+    {
+      "id": "possessiv",
+      "title": "Possessivartikel (Nominativ)",
+      "blocks": [
+        { "type": "paragraph", "text": "Possessivartikel drücken Besitz aus und werden wie ein/kein dekliniert. Die Endung richtet sich nach dem besessenen Substantiv, nicht nach dem Besitzer." },
+        { "type": "table", "headers": ["Pronomen", "Possessivartikel"], "rows": [["ich", "mein"], ["du", "dein"], ["er/es", "sein"], ["sie", "ihr"], ["wir", "unser"], ["ihr", "euer"], ["sie/Sie", "ihr / Ihr"]] },
+        { "type": "example", "text": "Das ist mein Bruder. Wo ist deine Tasche?" }
+      ]
+    },
+    {
+      "id": "trennbare",
+      "title": "Trennbare Verben (Einführung)",
+      "blocks": [
+        { "type": "paragraph", "text": "Viele Verben haben ein trennbares Präfix (an-, auf-, ein-, mit-, aus- …). Im Präsens wird das Präfix abgetrennt und steht am Satzende." },
+        { "type": "example", "text": "aufstehen → Ich stehe um 7 Uhr auf. · einkaufen → Wir kaufen am Samstag ein." }
+      ]
+    },
+    {
+      "id": "wortstellung",
+      "title": "Wortstellung: das Verb an Position 2",
+      "blocks": [
+        { "type": "paragraph", "text": "Im Aussagesatz steht das finite Verb immer an Position 2, auch wenn der Satz mit einem anderen Element beginnt (Zeit, Ort …)." },
+        { "type": "example", "text": "Heute lerne ich Deutsch. (nicht: Heute ich lerne …)" }
+      ]
+    }
+  ]
+}

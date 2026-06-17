@@ -1,0 +1,25 @@
+
+Gemini batch generator — de/B1 × 1
+Prompt: batches/GEMINI_MASTER_PROMPT_de_B1.md
+
+── horen T3 · jobwechsel-kollegen-02 ──
+Tema: Kollegen besprechen einen Jobwechsel
+Archivo: batches/merged/horen-t3-jobwechsel-kollegen-02.json
+Llamando Gemini…
+
+⏳ Cuota/rate limit — esperando 52s (intento 1/4)…
+
+⏳ Cuota/rate limit — esperando 59s (intento 2/4)…
+
+⏳ Cuota/rate limit — esperando 60s (intento 3/4)…
+Error: Gemini API 429: You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. 
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash
+Please retry in 57.174814521s.
+
+Sugerencias:
+  • Espera 1–2 minutos y reintenta
+  • En .env prueba: GEMINI_MODEL=gemini-1.5-flash
+  • El prompt compacto ya reduce tokens; evita --count alto seguido
+  • Revisa cuota en https://aistudio.google.com/
+
+Resumen: 0 OK, 1 fallidos

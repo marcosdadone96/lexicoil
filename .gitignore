@@ -1,8 +1,18 @@
-node_modules/
-.netlify/
+node_modules
 .env
 .env.local
-*.log
-.DS_Store
-Thumbs.db
-!.env.example
+.env.*.local
+dist/
+*.zip
+**/*.dist.zip
+
+landing/node_modules
+landing/.next/
+landing/out/
+
+# Local Netlify folder
+.netlify
+staging/
+staging/_test_backup/
+library/**/questions.backup-*.json
+library/tts-cache/

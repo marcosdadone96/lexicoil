@@ -1,0 +1,157 @@
+{
+  "id": "es_A1_v2",
+  "lang": "es",
+  "level": "A1",
+  "variant": 2,
+  "topic": "Familia y rutina",
+  "board": "Instituto Cervantes",
+  "certificate": "DELE A1",
+  "passPercent": 60,
+  "hookWord": {
+    "word": "escuela",
+    "pos": "noun",
+    "translations": {
+      "en": "school",
+      "es": "escuela"
+    }
+  },
+  "loop": {
+    "passage": "Mi hermano Tom todavía va a la escuela.",
+    "question": "¿Qué significa «escuela»?",
+    "options": [
+      {
+        "key": "A",
+        "text": "tienda",
+        "correct": false
+      },
+      {
+        "key": "B",
+        "text": "escuela",
+        "correct": true
+      },
+      {
+        "key": "C",
+        "text": "parque",
+        "correct": false
+      }
+    ]
+  },
+  "miniPractice": {
+    "label": "Generado de tu error · 20 s",
+    "before": "Tom va a la ",
+    "gap": "___",
+    "after": " cada día.",
+    "answer": "escuela"
+  },
+  "modules": [
+    {
+      "id": "reading",
+      "title": "Comprensión de lectura",
+      "interactive": true,
+      "parts": [
+        {
+          "type": "multiple_choice",
+          "label": "Part 1",
+          "instructions": "Read the text and choose the best answer.",
+          "passage": "Mi hermano Tom todavía va a la escuela.",
+          "markableWords": [
+            {
+              "word": "escuela",
+              "pos": "noun",
+              "translations": {
+                "en": "school",
+                "es": "escuela"
+              }
+            }
+          ],
+          "items": [
+            {
+              "id": "loop1",
+              "question": "¿Qué significa «escuela»?",
+              "options": [
+                {
+                  "key": "A",
+                  "text": "tienda",
+                  "correct": false
+                },
+                {
+                  "key": "B",
+                  "text": "escuela",
+                  "correct": true
+                },
+                {
+                  "key": "C",
+                  "text": "parque",
+                  "correct": false
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "listening",
+      "title": "Comprensión auditiva",
+      "interactive": true,
+      "parts": [
+        {
+          "type": "multiple_choice",
+          "label": "Part 1",
+          "instructions": "Read the transcript and choose the best answer.",
+          "transcript": "— Buenas tardes, quiero dos entradas para la película de las seis.\n— Son dieciséis euros.\n— Aquí tiene. Gracias.",
+          "markableWords": [],
+          "items": [
+            {
+              "id": "h1",
+              "question": "¿Qué compra la persona?",
+              "options": [
+                {
+                  "key": "A",
+                  "text": "Un libro",
+                  "correct": false
+                },
+                {
+                  "key": "B",
+                  "text": "Dos entradas de cine",
+                  "correct": true
+                },
+                {
+                  "key": "C",
+                  "text": "Un billete de autobús",
+                  "correct": false
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "writing",
+      "title": "Expresión escrita",
+      "interactive": false,
+      "parts": [
+        {
+          "type": "writing_task",
+          "task": "Escribe un correo corto a un amigo. Di dónde vives, qué haces el fin de semana y cuándo queréis quedar.",
+          "note": "unas 30 palabras — Evaluado con IA en la app completa.",
+          "markableWords": []
+        }
+      ]
+    },
+    {
+      "id": "speaking",
+      "title": "Expresión oral",
+      "interactive": false,
+      "parts": [
+        {
+          "type": "speaking_task",
+          "task": "Preséntate: nombre, origen, lugar donde vives e idiomas que hablas.",
+          "note": "sin tiempo de preparación — Evaluado con IA en la app completa.",
+          "markableWords": []
+        }
+      ]
+    }
+  ]
+}

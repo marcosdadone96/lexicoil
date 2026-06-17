@@ -1,0 +1,25 @@
+
+Batch generator (claude) — de/B1 × 1
+Prompt: batches/GEMINI_MASTER_PROMPT_de_B1.md
+Presupuesto Claude: $2.30 (gastado: $0.2418)
+
+── lesen T5 · bibliothek-regeln-02 ──
+Tema: Benutzungsordnung einer Stadtbibliothek
+Proveedor: claude
+Archivo: batches/merged/lesen-t5-bibliothek-regeln-02.json
+Llamando claude…
+Gasto acumulado: $0.2524 / budget $2.30
+Tokens: in=1938 out=1735
+Modelo: claude-haiku-4-5
+Guardado: batches/merged/lesen-t5-bibliothek-regeln-02.json (4 preguntas, 1 passages)
+Validando…
+
+== Validación de lesen-t5-bibliothek-regeln-02.json (de_B1) ==
+Preguntas: 4 | Pasajes: 1
+Esquema: OK
+Colocación (Teile que mejora): Pool válido (Teil ya cubierto en 1 examen — OK para exámenes disjuntos)
+Sin problemas detectados ✅
+Validación OK
+Siguiente: node scripts/merge-bank-batch.mjs --lang de --level B1 --file batches/merged/lesen-t5-bibliothek-regeln-02.json
+
+Resumen: 1 OK, 0 fallidos

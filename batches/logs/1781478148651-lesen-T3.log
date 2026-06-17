@@ -1,0 +1,21 @@
+
+Gemini batch generator — de/B1 × 1
+Prompt: batches/GEMINI_MASTER_PROMPT_de_B1.md
+
+── lesen T3 · dienstleistungen-alltag-01 ──
+Tema: Dienstleistungen für den Alltag (Reparatur, Reinigung, Transport)
+Archivo: batches/merged/lesen-t3-dienstleistungen-alltag-01.json
+Llamando Gemini…
+Tokens: in=1671 out=4200
+Modelo: gemini-2.5-flash
+Guardado: batches/merged/lesen-t3-dienstleistungen-alltag-01.json (7 preguntas, 0 passages)
+Validando…
+
+== Validación de lesen-t3-dienstleistungen-alltag-01.json (de_B1) ==
+Preguntas: 7 | Pasajes: 0
+Esquema: ERR [{"instancePath":"/questions/0/options/0","schemaPath":"#/properties/questions/items/properties/options/items/type","keyword":"type","params":{"type":"string"},"message":"must be string"},{"instancePath":"/questions/0/options/1","schemaPath":"#/properties/questions/items/properties/options/items/type","keyword":"type","params":{"type":"string"},"message":"must be string"}]
+Colocación (Teile que mejora): Pool válido (Teil ya cubierto en 1 examen — OK para exámenes disjuntos)
+Sin problemas detectados ✅
+Error: Command failed: node scripts/validate-batch.mjs --lang de --level B1 --file "batches/merged/lesen-t3-dienstleistungen-alltag-01.json"
+
+Resumen: 0 OK, 1 fallidos

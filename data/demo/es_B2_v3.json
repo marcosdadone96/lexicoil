@@ -1,0 +1,157 @@
+{
+  "id": "es_B2_v3",
+  "lang": "es",
+  "level": "B2",
+  "variant": 3,
+  "topic": "Sostenibilidad y sociedad",
+  "board": "Instituto Cervantes",
+  "certificate": "DELE B2",
+  "passPercent": 60,
+  "hookWord": {
+    "word": "reciclaje",
+    "pos": "noun",
+    "translations": {
+      "en": "retraining",
+      "es": "reciclaje profesional"
+    }
+  },
+  "loop": {
+    "passage": "El reciclaje profesional en informática abre nuevas salidas.",
+    "question": "¿Qué significa «reciclaje»?",
+    "options": [
+      {
+        "key": "A",
+        "text": "fiesta",
+        "correct": false
+      },
+      {
+        "key": "B",
+        "text": "reciclaje profesional",
+        "correct": true
+      },
+      {
+        "key": "C",
+        "text": "bonus",
+        "correct": false
+      }
+    ]
+  },
+  "miniPractice": {
+    "label": "Generado de tu error · 20 s",
+    "before": "Tras el ",
+    "gap": "___",
+    "after": " encontró un nuevo puesto.",
+    "answer": "reciclaje"
+  },
+  "modules": [
+    {
+      "id": "reading",
+      "title": "Comprensión de lectura",
+      "interactive": true,
+      "parts": [
+        {
+          "type": "multiple_choice",
+          "label": "Part 1",
+          "instructions": "Read the text and choose the best answer.",
+          "passage": "El reciclaje profesional en informática abre nuevas salidas.",
+          "markableWords": [
+            {
+              "word": "reciclaje",
+              "pos": "noun",
+              "translations": {
+                "en": "retraining",
+                "es": "reciclaje profesional"
+              }
+            }
+          ],
+          "items": [
+            {
+              "id": "loop1",
+              "question": "¿Qué significa «reciclaje»?",
+              "options": [
+                {
+                  "key": "A",
+                  "text": "fiesta",
+                  "correct": false
+                },
+                {
+                  "key": "B",
+                  "text": "reciclaje profesional",
+                  "correct": true
+                },
+                {
+                  "key": "C",
+                  "text": "bonus",
+                  "correct": false
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "listening",
+      "title": "Comprensión auditiva",
+      "interactive": true,
+      "parts": [
+        {
+          "type": "multiple_choice",
+          "label": "Part 1",
+          "instructions": "Read the transcript and choose the best answer.",
+          "transcript": "— ¿Has imprimido los documentos para la conferencia en Viena?\n— Casi. El vuelo está confirmado, pero el hotel estaba completo. Reservé otro cerca de la estación.\n— Bien, nos vemos mañana por la mañana en el aeropuerto.",
+          "markableWords": [],
+          "items": [
+            {
+              "id": "h1",
+              "question": "¿Cuál es el tema principal de la conversación?",
+              "options": [
+                {
+                  "key": "A",
+                  "text": "Una mudanza a otra ciudad",
+                  "correct": false
+                },
+                {
+                  "key": "B",
+                  "text": "La organización de un viaje de trabajo",
+                  "correct": true
+                },
+                {
+                  "key": "C",
+                  "text": "Un problema con el piso",
+                  "correct": false
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "writing",
+      "title": "Expresión escrita",
+      "interactive": false,
+      "parts": [
+        {
+          "type": "writing_task",
+          "task": "Redacta un correo formal (unas 100 palabras) para quejarte de un retraso en un pedido y solicitar una solución concreta.",
+          "note": "unas 100 palabras — Evaluado con IA en la app completa.",
+          "markableWords": []
+        }
+      ]
+    },
+    {
+      "id": "speaking",
+      "title": "Expresión oral",
+      "interactive": false,
+      "parts": [
+        {
+          "type": "speaking_task",
+          "task": "Haz una breve presentación sobre un tema de tu elección. Estructura: introducción, puntos principales y conclusión. Después responderás preguntas.",
+          "note": "1 minuto de preparación — Evaluado con IA en la app completa.",
+          "markableWords": []
+        }
+      ]
+    }
+  ]
+}

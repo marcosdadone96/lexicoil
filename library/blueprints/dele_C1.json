@@ -1,0 +1,294 @@
+{
+  "id": "dele-c1",
+  "examType": "dele",
+  "language": "es",
+  "level": "C1",
+  "certificate": "DELE C1",
+  "principle": "fixed_structure_dynamic_content",
+  "difficultyDistribution": {
+    "easy": {
+      "min": 1,
+      "max": 3,
+      "share": 0.2
+    },
+    "medium": {
+      "min": 4,
+      "max": 6,
+      "share": 0.4
+    },
+    "hard": {
+      "min": 7,
+      "max": 10,
+      "share": 0.4
+    }
+  },
+  "modules": [
+    {
+      "id": "lesen",
+      "title": "Comprensión de lectura",
+      "time": "70 min",
+      "parts": [
+        {
+          "instruction": "Read the text and answer the questions.",
+          "questionTypes": [
+            "multiple_choice",
+            "true_false"
+          ],
+          "teil": 1,
+          "slotType": "short_texts",
+          "label": "Tarea 1 — Textos breves",
+          "itemsTotal": 4,
+          "layout": "items",
+          "wordsPerText": {
+            "min": 80,
+            "max": 150
+          },
+          "questionsTotal": {
+            "min": 4,
+            "max": 4
+          },
+          "taskFormat": "short_text_mcq",
+          "wordsPerPassage": {
+            "min": 80,
+            "max": 150
+          }
+        },
+        {
+          "instruction": "Read the text and answer the questions.",
+          "questionTypes": [
+            "multiple_choice",
+            "true_false"
+          ],
+          "teil": 2,
+          "slotType": "long_article",
+          "label": "Tarea 2 — Texto extenso",
+          "itemsTotal": 6,
+          "layout": "passage_questions",
+          "wordsPerPassage": {
+            "min": 400,
+            "max": 600
+          },
+          "requiresInference": true,
+          "questionsTotal": {
+            "min": 6,
+            "max": 6
+          },
+          "taskFormat": "long_text_mcq"
+        },
+        {
+          "instruction": "Read the text and answer the questions.",
+          "questionTypes": [
+            "matching",
+            "multiple_choice"
+          ],
+          "teil": 3,
+          "slotType": "matching",
+          "label": "Tarea 3 — Vinculación",
+          "itemsTotal": 6,
+          "layout": "items",
+          "questionsTotal": {
+            "min": 6,
+            "max": 6
+          },
+          "taskFormat": "matching"
+        },
+        {
+          "instruction": "Read the text and answer the questions.",
+          "questionTypes": [
+            "gap_fill",
+            "multiple_choice"
+          ],
+          "teil": 4,
+          "slotType": "gap_article",
+          "label": "Tarea 4 — Organización",
+          "itemsTotal": 6,
+          "layout": "passage_questions",
+          "wordsPerPassage": {
+            "min": 300,
+            "max": 500
+          },
+          "questionsTotal": {
+            "min": 6,
+            "max": 6
+          },
+          "taskFormat": "gap_article"
+        }
+      ]
+    },
+    {
+      "id": "horen",
+      "title": "Comprensión auditiva",
+      "time": "40 min",
+      "parts": [
+        {
+          "instruction": "Listen and answer the questions.",
+          "questionTypes": [
+            "multiple_choice",
+            "true_false"
+          ],
+          "teil": 1,
+          "slotType": "short_audio",
+          "label": "Tarea 1 — Avisos y diálogos",
+          "itemsTotal": 4,
+          "layout": "segments",
+          "questionsTotal": {
+            "min": 4,
+            "max": 4
+          },
+          "taskFormat": "short_listening_mcq"
+        },
+        {
+          "instruction": "Listen and answer the questions.",
+          "questionTypes": [
+            "multiple_choice",
+            "true_false"
+          ],
+          "teil": 2,
+          "slotType": "long_audio",
+          "label": "Tarea 2 — Entrevista",
+          "itemsTotal": 4,
+          "layout": "segments",
+          "requiresInference": true,
+          "questionsTotal": {
+            "min": 4,
+            "max": 4
+          },
+          "taskFormat": "long_listening_mcq"
+        },
+        {
+          "instruction": "Listen and answer the questions.",
+          "questionTypes": [
+            "multiple_choice"
+          ],
+          "teil": 3,
+          "slotType": "long_audio",
+          "label": "Tarea 3 — Conferencia",
+          "itemsTotal": 4,
+          "layout": "segments",
+          "questionsTotal": {
+            "min": 4,
+            "max": 4
+          },
+          "taskFormat": "long_listening_mcq"
+        }
+      ]
+    },
+    {
+      "id": "schreiben",
+      "title": "Expresión escrita",
+      "time": "80 min",
+      "parts": [
+        {
+          "instruction": "Write your response according to the task.",
+          "questionTypes": [
+            "short_answer"
+          ],
+          "teil": 1,
+          "slotType": "writing_task",
+          "label": "Tarea 1 — Texto argumentativo",
+          "itemsTotal": 1,
+          "layout": "writing",
+          "wordsTarget": {
+            "min": 180,
+            "max": 220
+          },
+          "taskFormat": "argumentative_essay",
+          "questionsTotal": {
+            "min": 1,
+            "max": 1
+          },
+          "wordsPerPassage": {
+            "min": 180,
+            "max": 220
+          }
+        },
+        {
+          "instruction": "Write your response according to the task.",
+          "questionTypes": [
+            "short_answer"
+          ],
+          "teil": 2,
+          "slotType": "writing_task",
+          "label": "Tarea 2 — Carta formal",
+          "itemsTotal": 1,
+          "layout": "writing",
+          "wordsTarget": {
+            "min": 180,
+            "max": 220
+          },
+          "taskFormat": "formal_letter",
+          "questionsTotal": {
+            "min": 1,
+            "max": 1
+          },
+          "wordsPerPassage": {
+            "min": 180,
+            "max": 220
+          }
+        }
+      ]
+    },
+    {
+      "id": "sprechen",
+      "title": "Expresión oral",
+      "time": "20 min",
+      "parts": [
+        {
+          "instruction": "Prepare for the speaking task.",
+          "questionTypes": [
+            "short_answer"
+          ],
+          "teil": 1,
+          "slotType": "speaking_task",
+          "label": "Tarea 1 — Presentación",
+          "itemsTotal": 1,
+          "layout": "speaking",
+          "taskFormat": "presentation",
+          "questionsTotal": {
+            "min": 1,
+            "max": 1
+          }
+        },
+        {
+          "instruction": "Prepare for the speaking task.",
+          "questionTypes": [
+            "short_answer"
+          ],
+          "teil": 2,
+          "slotType": "speaking_task",
+          "label": "Tarea 2 — Conversación",
+          "itemsTotal": 1,
+          "layout": "speaking",
+          "taskFormat": "discussion",
+          "questionsTotal": {
+            "min": 1,
+            "max": 1
+          }
+        },
+        {
+          "instruction": "Prepare for the speaking task.",
+          "questionTypes": [
+            "short_answer"
+          ],
+          "teil": 3,
+          "slotType": "speaking_task",
+          "label": "Tarea 3 — Debate",
+          "itemsTotal": 1,
+          "layout": "speaking",
+          "taskFormat": "debate",
+          "questionsTotal": {
+            "min": 1,
+            "max": 1
+          }
+        }
+      ]
+    }
+  ],
+  "structureVersion": 2,
+  "itemsTotalByModule": {
+    "lesen": 22,
+    "horen": 12,
+    "schreiben": 2,
+    "sprechen": 3
+  }
+}

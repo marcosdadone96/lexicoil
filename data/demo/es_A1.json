@@ -1,0 +1,118 @@
+{
+  "id": "es_A1",
+  "lang": "es",
+  "level": "A1",
+  "topic": "Familia y rutina",
+  "board": "Instituto Cervantes",
+  "certificate": "DELE A1",
+  "passPercent": 60,
+  "modules": [
+    {
+      "id": "reading",
+      "title": "Comprensión de lectura",
+      "interactive": true,
+      "parts": [
+        {
+          "type": "multiple_choice",
+          "label": "Part 1",
+          "instructions": "Read the text and choose the best answer.",
+          "passage": "Hola, me llamo Laura. Vivo en Madrid con mi familia. Mi hermano Pablo estudia en el instituto. Los domingos vamos al parque.",
+          "markableWords": [
+            {
+              "word": "familia",
+              "pos": "noun",
+              "translations": {
+                "en": "familia",
+                "es": "familia"
+              }
+            }
+          ],
+          "items": [
+            {
+              "id": "r1",
+              "question": "¿Dónde vive Laura?",
+              "options": [
+                {
+                  "key": "A",
+                  "text": "En Barcelona",
+                  "correct": false
+                },
+                {
+                  "key": "B",
+                  "text": "En Madrid",
+                  "correct": true
+                },
+                {
+                  "key": "C",
+                  "text": "En Valencia",
+                  "correct": false
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "listening",
+      "title": "Comprensión auditiva",
+      "interactive": true,
+      "parts": [
+        {
+          "type": "multiple_choice",
+          "label": "Part 1",
+          "instructions": "Read the transcript and choose the best answer.",
+          "transcript": "— Buenas tardes, quiero dos entradas para la película de las seis.\n— Son dieciséis euros.\n— Aquí tiene. Gracias.",
+          "markableWords": [],
+          "items": [
+            {
+              "id": "h1",
+              "question": "¿Qué compra la persona?",
+              "options": [
+                {
+                  "key": "A",
+                  "text": "Un libro",
+                  "correct": false
+                },
+                {
+                  "key": "B",
+                  "text": "Dos entradas de cine",
+                  "correct": true
+                },
+                {
+                  "key": "C",
+                  "text": "Un billete de autobús",
+                  "correct": false
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "writing",
+      "title": "Expresión escrita",
+      "interactive": false,
+      "parts": [
+        {
+          "type": "writing_task",
+          "task": "Escribe un correo corto a un amigo. Di dónde vives, qué haces el fin de semana y cuándo queréis quedar.",
+          "note": "unas 30 palabras"
+        }
+      ]
+    },
+    {
+      "id": "speaking",
+      "title": "Expresión oral",
+      "interactive": false,
+      "parts": [
+        {
+          "type": "speaking_task",
+          "task": "Preséntate: nombre, origen, lugar donde vives e idiomas que hablas.",
+          "note": "sin tiempo de preparación — Evaluado con IA en la app completa."
+        }
+      ]
+    }
+  ]
+}

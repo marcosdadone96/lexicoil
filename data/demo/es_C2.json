@@ -1,0 +1,118 @@
+{
+  "id": "es_C2",
+  "lang": "es",
+  "level": "C2",
+  "topic": "Lengua y cultura",
+  "board": "Instituto Cervantes",
+  "certificate": "DELE C2",
+  "passPercent": 60,
+  "modules": [
+    {
+      "id": "reading",
+      "title": "Comprensión de lectura",
+      "interactive": true,
+      "parts": [
+        {
+          "type": "multiple_choice",
+          "label": "Part 1",
+          "instructions": "Read the text and choose the best answer.",
+          "passage": "Los lingüistas señalan que los llamados anglicismos no suponen por sí mismos una amenaza para el español; más bien reflejan contactos históricos entre ámbitos culturales y económicos. Lo decisivo es si un préstamo nombra un concepto preciso o solo ofrece un sustituto de moda de un término ya consolidado.",
+          "markableWords": [
+            {
+              "word": "préstamo",
+              "pos": "noun",
+              "translations": {
+                "en": "préstamo",
+                "es": "préstamo"
+              }
+            }
+          ],
+          "items": [
+            {
+              "id": "r1",
+              "question": "¿Qué valoración coincide con el texto?",
+              "options": [
+                {
+                  "key": "A",
+                  "text": "Todo anglicismo daña necesariamente la lengua.",
+                  "correct": false
+                },
+                {
+                  "key": "B",
+                  "text": "El valor de los préstamos depende de su función.",
+                  "correct": true
+                },
+                {
+                  "key": "C",
+                  "text": "Los préstamos surgen solo por presión económica.",
+                  "correct": false
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "listening",
+      "title": "Comprensión auditiva",
+      "interactive": true,
+      "parts": [
+        {
+          "type": "multiple_choice",
+          "label": "Part 1",
+          "instructions": "Read the transcript and choose the best answer.",
+          "transcript": "Presentador: Profesora Vega, usted aboga por reformar el español académico. ¿Cuál es su principal crítica?\nProf. Vega: Muchos textos se enredan en un estilo nominal y en construcciones pasivas. Eso dificulta el acceso al público general y complica la traducción porque el significado queda oculto tras la abstracción.",
+          "markableWords": [],
+          "items": [
+            {
+              "id": "h1",
+              "question": "¿Qué critica principalmente la profesora Vega?",
+              "options": [
+                {
+                  "key": "A",
+                  "text": "Demasiadas palabras extranjeras en la academia",
+                  "correct": false
+                },
+                {
+                  "key": "B",
+                  "text": "Un estilo nominal de difícil acceso",
+                  "correct": true
+                },
+                {
+                  "key": "C",
+                  "text": "La falta de traducciones de textos académicos",
+                  "correct": false
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "writing",
+      "title": "Expresión escrita",
+      "interactive": false,
+      "parts": [
+        {
+          "type": "writing_task",
+          "task": "Redacta un texto cohesionado (unas 200 palabras) sobre en qué medida el multilingüismo en equipos internacionales aporta ventajas o riesgos a la productividad.",
+          "note": "unas 200 palabras"
+        }
+      ]
+    },
+    {
+      "id": "speaking",
+      "title": "Expresión oral",
+      "interactive": false,
+      "parts": [
+        {
+          "type": "speaking_task",
+          "task": "Debate la afirmación: «En un mundo globalizado, la cultura nacional pierde importancia.» Analiza los aciertos y límites de esta tesis.",
+          "note": "2 minutos de preparación — Evaluado con IA en la app completa."
+        }
+      ]
+    }
+  ]
+}

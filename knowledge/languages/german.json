@@ -1,0 +1,50 @@
+{
+  "id": "german",
+  "code": "de",
+  "name": "German",
+  "nativeName": "Deutsch",
+  "locale": "de-DE",
+  "grammar": {
+    "A1": [
+      { "id": "g-de-a1-present", "topic": "Präsens", "description": "Regular and irregular present tense" },
+      { "id": "g-de-a1-word-order", "topic": "Wortstellung", "description": "Basic V2 in main clauses" },
+      { "id": "g-de-a1-articles", "topic": "Artikel", "description": "der, die, das; ein, eine" }
+    ],
+    "A2": [
+      { "id": "g-de-a2-perfekt", "topic": "Perfekt", "description": "haben/sein + Partizip II" },
+      { "id": "g-de-a2-dat-acc", "topic": "Akkusativ und Dativ", "description": "Cases with prepositions" }
+    ],
+    "B1": [
+      { "id": "g-de-b1-nebensatz", "topic": "Nebensätze", "description": "weil, dass, wenn; verb-final" },
+      { "id": "g-de-b1-konjunktiv", "topic": "Konjunktiv II", "description": "Polite requests and hypotheticals" },
+      { "id": "g-de-b1-passiv", "topic": "Passiv", "description": "Process passive Präsens/Perfekt" },
+      { "id": "g-de-b1-relativ", "topic": "Relativsätze", "description": "der/die/das as relative pronouns" }
+    ],
+    "B2": [
+      { "id": "g-de-b2-konj1", "topic": "Konjunktiv I", "description": "Indirect speech in journalism" },
+      { "id": "g-de-b2-nominal", "topic": "Nominalisierung", "description": "Noun phrases from verbs/adjectives" }
+    ],
+    "C1": [
+      { "id": "g-de-c1-register", "topic": "Register", "description": "Formal vs informal academic German" }
+    ],
+    "C2": [
+      { "id": "g-de-c2-stil", "topic": "Stilistik", "description": "Rhetorical and literary devices" }
+    ]
+  },
+  "vocabularyDomains": {
+    "A1": ["Familie", "Essen", "Wohnen", "Einkaufen"],
+    "A2": ["Reisen", "Gesundheit", "Stadt", "Medien"],
+    "B1": ["Umwelt", "Arbeit", "Gesundheit", "Bildung", "Technologie", "Reisen"],
+    "B2": ["Digitalisierung", "Klima", "Wissenschaft", "Kultur", "Migration", "Wirtschaft"],
+    "C1": ["Philosophie", "Politik", "Literatur", "Ethik"],
+    "C2": ["Sprachphilosophie", "Ästhetik", "Gesellschaftstheorie"]
+  },
+  "topics": {
+    "A1": ["Familie und Freunde", "Essen und Trinken", "Wohnen", "Einkaufen", "Freizeit", "Schule und Arbeit"],
+    "A2": ["Reisen und Urlaub", "Gesundheit und Sport", "Stadtleben", "Medien und Kommunikation", "Natur und Wetter"],
+    "B1": ["Umwelt und Nachhaltigkeit", "Gesundheit und Ernaehrung", "Arbeit und Beruf", "Bildung und Lernen", "Technologie im Alltag", "Reisen und interkulturelle Begegnungen"],
+    "B2": ["Digitalisierung und Gesellschaft", "Klimawandel und Politik", "Wissenschaft und Innovation", "Kunst und Kultur", "Migration und Integration", "Wirtschaft und Globalisierung"],
+    "C1": ["Philosophie und Ethik der KI", "Soziale Ungleichheit und Demokratie", "Literatur und Gesellschaftskritik", "Wissenschaftsethik", "Europaeische Identitaet"],
+    "C2": ["Sprachphilosophie", "Politische Theorie", "Literaturtheorie", "Technikethik"]
+  }
+}

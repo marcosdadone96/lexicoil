@@ -1,4 +1,4 @@
-# LexiLoop deploy helper (Windows PowerShell)
+# LexiCoil deploy helper (Windows PowerShell)
 # Run once: netlify login
 # Then run: .\deploy.ps1
 
@@ -6,7 +6,7 @@ $ErrorActionPreference = "Stop"
 Set-Location $PSScriptRoot
 
 Write-Host ""
-Write-Host " LexiLoop deploy" -ForegroundColor Cyan
+Write-Host " LexiCoil deploy" -ForegroundColor Cyan
 Write-Host " ==============" -ForegroundColor Cyan
 Write-Host ""
 
@@ -17,7 +17,7 @@ if ($status -match "Not logged in") {
 }
 
 if (-not (Test-Path ".netlify\state.json")) {
-  Write-Host "Linking new Netlify site (lexiloop)..." -ForegroundColor Yellow
+  Write-Host "Linking new Netlify site (lexicoil)..." -ForegroundColor Yellow
   netlify init --manual
 } else {
   Write-Host "Using existing Netlify site link." -ForegroundColor Green

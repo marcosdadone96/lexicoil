@@ -1,0 +1,159 @@
+{
+  "id": "de_A2_v1",
+  "lang": "de",
+  "level": "A2",
+  "variant": 1,
+  "topic": "Einkaufen und Reisen",
+  "board": "Goethe-Institut",
+  "certificate": "Start Deutsch 2",
+  "passPercent": 60,
+  "hookWord": {
+    "word": "Termin",
+    "gender": "m",
+    "pos": "noun",
+    "translations": {
+      "en": "appointment",
+      "es": "cita"
+    }
+  },
+  "loop": {
+    "passage": "Ich habe morgen einen Termin beim Arzt. Können wir uns am Nachmittag treffen?",
+    "question": "Was bedeutet «Termin»?",
+    "options": [
+      {
+        "key": "A",
+        "text": "ticket",
+        "correct": false
+      },
+      {
+        "key": "B",
+        "text": "appointment",
+        "correct": true
+      },
+      {
+        "key": "C",
+        "text": "recipe",
+        "correct": false
+      }
+    ]
+  },
+  "miniPractice": {
+    "label": "Built from your mistake · 20 sec",
+    "before": "Ich habe einen wichtigen ",
+    "gap": "___",
+    "after": " beim Zahnarzt.",
+    "answer": "Termin"
+  },
+  "modules": [
+    {
+      "id": "lesen",
+      "title": "Lesen",
+      "interactive": true,
+      "parts": [
+        {
+          "type": "multiple_choice",
+          "label": "Part 1",
+          "instructions": "Lesen Sie den Text und wählen Sie die richtige Antwort.",
+          "passage": "Ich habe morgen einen Termin beim Arzt. Können wir uns am Nachmittag treffen?",
+          "markableWords": [
+            {
+              "word": "Termin",
+              "gender": "m",
+              "pos": "noun",
+              "translations": {
+                "en": "appointment",
+                "es": "cita"
+              }
+            }
+          ],
+          "items": [
+            {
+              "id": "loop1",
+              "question": "Was bedeutet «Termin»?",
+              "options": [
+                {
+                  "key": "A",
+                  "text": "ticket",
+                  "correct": false
+                },
+                {
+                  "key": "B",
+                  "text": "appointment",
+                  "correct": true
+                },
+                {
+                  "key": "C",
+                  "text": "recipe",
+                  "correct": false
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "horen",
+      "title": "Hören",
+      "interactive": true,
+      "parts": [
+        {
+          "type": "multiple_choice",
+          "label": "Part 1",
+          "instructions": "Lesen Sie das Transkript und wählen Sie die richtige Antwort.",
+          "transcript": "— Entschuldigung, fährt dieser Zug nach Köln?\n— Ja, aber nur bis Bonn. In Köln müssen Sie umsteigen.\n— Danke, dann steige ich in Bonn um.",
+          "markableWords": [],
+          "items": [
+            {
+              "id": "h1",
+              "question": "Was muss die Person in Bonn machen?",
+              "options": [
+                {
+                  "key": "A",
+                  "text": "Aussteigen und zu Fuß gehen",
+                  "correct": false
+                },
+                {
+                  "key": "B",
+                  "text": "In einen anderen Zug umsteigen",
+                  "correct": true
+                },
+                {
+                  "key": "C",
+                  "text": "Eine Fahrkarte kaufen",
+                  "correct": false
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "schreiben",
+      "title": "Schreiben",
+      "interactive": false,
+      "parts": [
+        {
+          "type": "writing_task",
+          "task": "Sie haben eine Einladung zu einer Geburtstagsfeier erhalten, können aber nicht kommen. Schreiben Sie eine kurze Nachricht: warum Sie nicht kommen können und wann Sie sich wieder treffen möchten.",
+          "note": "ca. 40 Wörter — Wird in der Vollversion mit KI bewertet.",
+          "markableWords": []
+        }
+      ]
+    },
+    {
+      "id": "sprechen",
+      "title": "Sprechen",
+      "interactive": false,
+      "parts": [
+        {
+          "type": "speaking_task",
+          "task": "Beschreiben Sie Ihr Zimmer oder Ihre Wohnung: Größe, Möbel, was Ihnen gefällt.",
+          "note": "Vorbereitungszeit: 1 Minute — Evaluated with AI in the full app.",
+          "markableWords": []
+        }
+      ]
+    }
+  ]
+}

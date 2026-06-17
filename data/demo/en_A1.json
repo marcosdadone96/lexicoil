@@ -1,0 +1,118 @@
+{
+  "id": "en_A1",
+  "lang": "en",
+  "level": "A1",
+  "topic": "Daily Life",
+  "board": "Cambridge English",
+  "certificate": "A1 Key (KET)",
+  "passPercent": 70,
+  "modules": [
+    {
+      "id": "reading",
+      "title": "Reading",
+      "interactive": true,
+      "parts": [
+        {
+          "type": "multiple_choice",
+          "label": "Part 1",
+          "instructions": "Read the text and choose the best answer.",
+          "passage": "Hi! My name is Sam. I live in London with my sister. We go to the park every Sunday. My favourite food is pizza.",
+          "markableWords": [
+            {
+              "word": "sister",
+              "pos": "noun",
+              "translations": {
+                "en": "sister",
+                "es": "sister"
+              }
+            }
+          ],
+          "items": [
+            {
+              "id": "r1",
+              "question": "Who does Sam live with?",
+              "options": [
+                {
+                  "key": "A",
+                  "text": "His parents",
+                  "correct": false
+                },
+                {
+                  "key": "B",
+                  "text": "His sister",
+                  "correct": true
+                },
+                {
+                  "key": "C",
+                  "text": "His grandparents",
+                  "correct": false
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "listening",
+      "title": "Listening",
+      "interactive": true,
+      "parts": [
+        {
+          "type": "multiple_choice",
+          "label": "Part 1",
+          "instructions": "Read the transcript and choose the best answer.",
+          "transcript": "— Excuse me, how much is this T-shirt?\n— It's twelve pounds.\n— OK, I'll take it, please.",
+          "markableWords": [],
+          "items": [
+            {
+              "id": "h1",
+              "question": "What does the customer buy?",
+              "options": [
+                {
+                  "key": "A",
+                  "text": "A hat",
+                  "correct": false
+                },
+                {
+                  "key": "B",
+                  "text": "A T-shirt",
+                  "correct": true
+                },
+                {
+                  "key": "C",
+                  "text": "A bag",
+                  "correct": false
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "writing",
+      "title": "Writing",
+      "interactive": false,
+      "parts": [
+        {
+          "type": "writing_task",
+          "task": "Write a short email to a friend. Say where you live, what you do at the weekend, and invite your friend to meet.",
+          "note": "about 30 words"
+        }
+      ]
+    },
+    {
+      "id": "speaking",
+      "title": "Speaking",
+      "interactive": false,
+      "parts": [
+        {
+          "type": "speaking_task",
+          "task": "Introduce yourself: your name, where you are from, where you live, and languages you speak.",
+          "note": "no preparation time — Evaluated with AI in the full app."
+        }
+      ]
+    }
+  ]
+}

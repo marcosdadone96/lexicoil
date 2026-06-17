@@ -2,38 +2,95 @@
   directory = "netlify/functions"
   node_bundler = "esbuild"
 
+[functions."stripe-reconcile"]
+  schedule = "0 2 * * *"
+
 [functions."claude-chat"]
   timeout = 60
+  included_files = ["js/engine/**", "library/blueprints/**", "knowledge/**"]
+
+[functions."exam-pool"]
+  included_files = ["library/blueprints/**", "library/banks/**", "library/curated/**", "library/schemas/**", "library/catalogThresholds.json", "js/engine/**", "knowledge/**"]
+
+[functions."admin-api"]
+  included_files = ["library/blueprints/**", "library/banks/**", "library/curated/**", "library/schemas/**", "js/engine/**", "knowledge/**"]
+
+[functions."tts"]
+  included_files = ["library/tts-cache/**"]
 
 [build]
-  publish = "."
+  command = "npm run build:site"
+  publish = "dist"
   environment = { NODE_VERSION = "20" }
 
-# Apex to www (configure lexicoil.com + www.lexicoil.com in Netlify Domain management)
-[[redirects]]
-  from = "https://lexicoil.com/*"
-  to = "https://www.lexicoil.com/:splat"
-  status = 301
-  force = true
+[dev]
+  publish = "."
+  framework = "#static"
+
+# Primary domain in Netlify UI is lexicoil.com (apex). Do NOT add JS redirects to www.
 
 [[redirects]]
-  from = "http://lexicoil.com/*"
-  to = "https://www.lexicoil.com/:splat"
-  status = 301
-  force = true
-
-[[redirects]]
-  from = "/oral"
-  to = "/oral.html"
+  from = "/app"
+  to = "/app.html"
   status = 200
+
+[[redirects]]
+  from = "/demo"
+  to = "/demo.html"
+  status = 200
+
+[[redirects]]
+  from = "/admin"
+  to = "/admin.html"
+  status = 200
+
+[[redirects]]
+  from = "/dashboard"
+  to = "/app.html?auth=login"
+  status = 302
+
+[[redirects]]
+  from = "/workspace"
+  to = "/app.html?auth=login"
+  status = 302
+
+[[redirects]]
+  from = "/workspace/*"
+  to = "/app.html?auth=login"
+  status = 302
+
+[[redirects]]
+  from = "/learning"
+  to = "/app.html?auth=login"
+  status = 302
 
 [[redirects]]
   from = "/confirmacion"
   to = "/confirmacion.html"
   status = 200
 
+[[redirects]]
+  from = "/privacy"
+  to = "/privacy.html"
+  status = 200
+
+[[redirects]]
+  from = "/terms"
+  to = "/terms.html"
+  status = 200
+
 [[headers]]
   for = "/*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/assets/css/*"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/js/*"
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
 

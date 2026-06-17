@@ -1,7 +1,7 @@
 @echo off
 cd /d "%~dp0"
 echo.
-echo  LexiLoop - local server
+echo  LexiCoil - local server
 echo  =======================
 echo.
 echo Opening http://localhost:5173 ...

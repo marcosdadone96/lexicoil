@@ -1,0 +1,191 @@
+/**
+ * Token-based utility classes (phase 12) — replaces common inline styles.
+ */
+
+/* Screen reader only */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Typography */
+.u-text-secondary { color: var(--text-secondary); }
+.u-text-muted { color: var(--text-muted); }
+.u-text-brand { color: var(--brand); }
+.u-text-sm { font-size: 13px; font-weight: 600; }
+.u-text-xs { font-size: 12px; font-weight: 600; }
+.u-text-caption {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.u-text-body { font-size: 13px; font-weight: 400; color: var(--text-secondary); line-height: 1.6; }
+.u-text-lede { font-size: 12px; font-weight: 600; color: var(--text-secondary); line-height: 1.55; }
+
+/* Spacing */
+.u-m-0 { margin: 0; }
+.u-mb-sm { margin-bottom: 12px; }
+.u-mb-md { margin-bottom: 16px; }
+.u-mt-sm { margin-top: 8px; }
+.u-mt-md { margin-top: 10px; }
+
+/* Layout */
+.u-flex-actions {
+  display: flex;
+  gap: 9px;
+  flex-wrap: wrap;
+  margin-top: 22px;
+}
+.u-flex-actions-sm {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 18px;
+}
+.u-icon-hero { font-size: 32px; margin-bottom: 10px; }
+
+/* Lists */
+.u-list-secondary {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  padding-left: 18px;
+  margin: 8px 0;
+}
+.u-list-compact {
+  font-size: 12px;
+  color: var(--text-secondary);
+  padding-left: 18px;
+  margin: 4px 0 10px;
+}
+
+/* Exam responsive — long content scroll */
+html.exam-scroll-active {
+  overflow-y: scroll;
+  scrollbar-gutter: stable;
+}
+html.exam-scroll-active::-webkit-scrollbar {
+  width: 10px;
+}
+html.exam-scroll-active::-webkit-scrollbar-track {
+  background: var(--bg2);
+}
+html.exam-scroll-active::-webkit-scrollbar-thumb {
+  background: var(--border2);
+  border-radius: 5px;
+}
+html.exam-scroll-active::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+.exam-scroll-top {
+  position: fixed;
+  right: 20px;
+  bottom: 88px;
+  z-index: 100;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--border2);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(8px);
+  transition: opacity 0.2s, transform 0.2s;
+}
+.exam-scroll-top.visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+.exam-scroll-top:hover {
+  background: var(--surface2);
+}
+#examScreen {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+#examScreen .module-wrap,
+#examScreen .question-block {
+  max-width: 100%;
+}
+@media (max-width: 639px) {
+  #examScreen .exam-topbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-2);
+  }
+  #examScreen .exam-actions {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+  #examScreen .opt,
+  #examScreen .rf-btn {
+    min-height: 44px;
+  }
+  #flashcardScreen .fc-card {
+    min-height: 140px;
+  }
+}
+
+.u-auth-lede { font-size: 13px; color: var(--text-secondary); margin-bottom: 12px; line-height: 1.5; }
+.u-auth-legal {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 10px;
+  line-height: 1.5;
+  text-align: center;
+}
+.u-auth-link { color: var(--brand); font-size: 12px; }
+.u-warning-sm { font-size: 12px; color: var(--orange); margin-bottom: 12px; }
+.u-section-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin: 18px 0 10px;
+}
+.u-site-footer {
+  text-align: center;
+  padding: 20px 16px 28px;
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.8;
+}
+.u-site-footer a { color: var(--text-secondary); text-decoration: none; margin: 0 8px; }
+.u-site-footer a.link-brand { color: var(--brand); font-weight: 600; }
+.u-profile-row { display: flex; align-items: center; gap: 10px; }
+.u-flex-inline { display: flex; gap: 9px; flex-wrap: wrap; align-items: center; }
+.u-fc-level-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+.btn-sm:focus-visible,
+.opt:focus-within,
+.fc-card:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}

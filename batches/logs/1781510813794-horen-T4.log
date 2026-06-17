@@ -1,0 +1,24 @@
+
+Gemini batch generator — de/B1 × 1
+Prompt: batches/GEMINI_MASTER_PROMPT_de_B1.md
+
+── horen T4 · bildungssystem-reform-01 ──
+Tema: Debatte über Reformen im Bildungssystem
+Archivo: batches/merged/horen-t4-bildungssystem-reform-01.json
+Llamando Gemini…
+
+⏳ Error 503 — reintento en 15s…
+Tokens: in=1690 out=3382
+Modelo: gemini-2.5-flash
+Guardado: batches/merged/horen-t4-bildungssystem-reform-01.json (8 preguntas, 1 passages)
+Validando…
+
+== Validación de horen-t4-bildungssystem-reform-01.json (de_B1) ==
+Preguntas: 8 | Pasajes: 1
+Esquema: OK
+Colocación (Teile que mejora): Pool válido (Teil ya cubierto en 1 examen — OK para exámenes disjuntos)
+Sin problemas detectados ✅
+Validación OK
+Siguiente: node scripts/merge-bank-batch.mjs --lang de --level B1 --file batches/merged/horen-t4-bildungssystem-reform-01.json
+
+Resumen: 1 OK, 0 fallidos

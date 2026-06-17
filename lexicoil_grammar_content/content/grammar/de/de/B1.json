@@ -1,0 +1,109 @@
+{
+  "lang": "de",
+  "level": "B1",
+  "status": "published",
+  "title": "Grammatik · Deutsch B1",
+  "metaLanguage": "de",
+  "scope": "B1 ist der Schritt zu ‚erwachsenen‘ Strukturen: Konjunktiv II (Hypothesen und Höflichkeit), Passiv (Vorgangspassiv), Relativsätze, vollständige Adjektivdeklination, Wechselpräpositionen und ein breites Repertoire an Konnektoren. Dazu kommen Genitiv und Infinitiv mit zu. Grenze: Du kannst bereits Hypothesen und Passiv ausdrücken, aber indirekte Rede (Konjunktiv I) und fortgeschrittenes Passiv stehen noch aus.",
+  "sections": [
+    {
+      "id": "konjunktiv2",
+      "title": "Konjunktiv II",
+      "blocks": [
+        { "type": "paragraph", "text": "Der Konjunktiv II dient für Hypothesen, Wünsche, Ratschläge und höfliche Bitten. Üblich ist würde + Infinitiv; einige häufige Verben haben eigene Formen." },
+        { "type": "table", "headers": ["Infinitiv", "Konjunktiv II", "Beispiel"], "rows": [["sein", "wäre", "Wenn ich reich wäre …"], ["haben", "hätte", "Ich hätte gern einen Kaffee."], ["können", "könnte", "Könntest du mir helfen?"], ["werden", "würde", "Ich würde dir helfen."]] },
+        { "type": "example", "label": "Hypothese", "text": "Wenn ich Zeit hätte, würde ich mehr reisen." },
+        { "type": "example", "label": "Höfliche Bitte", "text": "Könnten Sie das bitte wiederholen?" },
+        { "type": "example", "label": "Ratschlag", "text": "An deiner Stelle würde ich einen Arzt fragen." }
+      ]
+    },
+    {
+      "id": "passiv",
+      "title": "Passiv (Vorgangspassiv)",
+      "blocks": [
+        { "type": "paragraph", "text": "Das Passiv wird verwendet, wenn die Handlung im Vordergrund steht und nicht der Handelnde. Es wird gebildet mit werden + Partizip II." },
+        { "type": "table", "headers": ["Tempus", "Struktur", "Beispiel"], "rows": [["Präsens", "wird + Part. II", "Das Haus wird gebaut."], ["Präteritum", "wurde + Part. II", "Das Haus wurde gebaut."], ["Perfekt", "ist + Part. II + worden", "Das Haus ist gebaut worden."], ["mit Modalverb", "muss + Part. II + werden", "Das Haus muss gebaut werden."]] },
+        { "type": "note", "text": "Der Agens wird, falls genannt, mit von + Dativ ausgedrückt: Der Brief wird von Anna geschrieben." }
+      ]
+    },
+    {
+      "id": "relativsaetze",
+      "title": "Relativsätze",
+      "blocks": [
+        { "type": "paragraph", "text": "Relativsätze ergänzen ein Substantiv mit weiteren Informationen. Das Relativpronomen stimmt in Genus und Numerus mit dem Bezugswort überein und erhält den Kasus nach seiner Funktion im Nebensatz. Das Verb steht am Ende." },
+        { "type": "table", "headers": ["Kasus", "maskulin", "feminin", "neutrum", "Plural"], "rows": [["Nominativ", "der", "die", "das", "die"], ["Akkusativ", "den", "die", "das", "die"], ["Dativ", "dem", "der", "dem", "denen"], ["Genitiv", "dessen", "deren", "dessen", "deren"]] },
+        { "type": "example", "text": "Das ist der Mann, der nebenan wohnt." },
+        { "type": "example", "text": "Die Frau, der ich geholfen habe, ist Ärztin." }
+      ]
+    },
+    {
+      "id": "adjektivdeklination",
+      "title": "Adjektivdeklination",
+      "blocks": [
+        { "type": "paragraph", "text": "Das attributive Adjektiv vor dem Substantiv erhält Endungen je nach Artikel und Kasus. Nach bestimmtem Artikel (schwache Deklination):" },
+        { "type": "table", "headers": ["Kasus", "maskulin", "feminin", "neutrum", "Plural"], "rows": [["Nominativ", "der gute", "die gute", "das gute", "die guten"], ["Akkusativ", "den guten", "die gute", "das gute", "die guten"], ["Dativ", "dem guten", "der guten", "dem guten", "den guten"]] },
+        { "type": "note", "text": "Nach unbestimmtem Artikel und ohne Artikel ändern sich die Endungen; das Adjektiv übernimmt dann die Genus-/Kasusmerkmale." }
+      ]
+    },
+    {
+      "id": "wechselpraepositionen",
+      "title": "Wechselpräpositionen",
+      "blocks": [
+        { "type": "paragraph", "text": "Neun Präpositionen regieren entweder Akkusativ oder Dativ: an, auf, hinter, in, neben, über, unter, vor, zwischen." },
+        { "type": "table", "headers": ["Frage", "Kasus", "Beispiel"], "rows": [["Wohin? (Bewegung)", "Akkusativ", "Ich stelle die Lampe auf den Tisch."], ["Wo? (Ort)", "Dativ", "Die Lampe steht auf dem Tisch."]] },
+        { "type": "note", "text": "Merksatz: Bewegung zu einem Ort → Akkusativ; statische Lage → Dativ." }
+      ]
+    },
+    {
+      "id": "konnektoren",
+      "title": "Konnektoren und Nebensätze",
+      "blocks": [
+        { "type": "paragraph", "text": "Häufige Konnektoren zum Verknüpfen von Gedanken. Achte auf die Verbstellung je nach Konnektortyp." },
+        { "type": "table", "headers": ["Konnektor", "Bedeutung", "Verb"], "rows": [["weil / da", "Grund", "am Ende"], ["obwohl", "Gegensatz / Konzession", "am Ende"], ["damit", "Zweck", "am Ende"], ["deshalb / deswegen", "Folge", "an Position 2"], ["trotzdem", "dennoch", "an Position 2"]] },
+        { "type": "example", "text": "Ich lerne viel, damit ich die Prüfung bestehe. Es regnet, trotzdem gehe ich spazieren." }
+      ]
+    },
+    {
+      "id": "temporale",
+      "title": "Temporale Nebensätze",
+      "blocks": [
+        { "type": "paragraph", "text": "Temporale Nebensätze ordnen Handlungen zeitlich ein. Unterscheide als (einmaliger Vorgang in der Vergangenheit) von wenn (Wiederholung oder Gegenwart/Zukunft)." },
+        { "type": "table", "headers": ["Konjunktion", "Verwendung", "Beispiel"], "rows": [["als", "einmalig in der Vergangenheit", "Als ich klein war, …"], ["wenn", "wiederholt / Gegenwart / Zukunft", "Wenn ich Zeit habe, lese ich."], ["bevor / nachdem", "vorher / nachher", "Nachdem ich gegessen hatte, ging ich."], ["während", "gleichzeitig", "Während er arbeitet, höre ich Musik."]] }
+      ]
+    },
+    {
+      "id": "verben-praeposition",
+      "title": "Verben mit Präpositionen",
+      "blocks": [
+        { "type": "paragraph", "text": "Viele Verben verlangen eine feste Präposition mit festem Kasus. Verb und Präposition müssen gemeinsam gelernt werden." },
+        { "type": "table", "headers": ["Verb + Präposition", "Beispiel"], "rows": [["warten auf (+ Akk)", "Ich warte auf den Bus."], ["denken an (+ Akk)", "Ich denke an dich."], ["sich freuen über (+ Akk)", "Ich freue mich über das Geschenk."], ["teilnehmen an (+ Dat)", "Sie nimmt am Kurs teil."]] },
+        { "type": "note", "text": "Für Dinge als Bezugsobjekt werden Pronominaladverbien verwendet: Worauf wartest du? — Darauf." }
+      ]
+    },
+    {
+      "id": "infinitiv-zu",
+      "title": "Infinitiv mit zu",
+      "blocks": [
+        { "type": "paragraph", "text": "Nach bestimmten Verben, Adjektiven und Wendungen steht ein Infinitiv mit zu am Satzende. Bei trennbaren Verben steht zu in der Mitte: einzukaufen." },
+        { "type": "example", "text": "Ich habe vergessen, die Tür zu schließen. Es ist wichtig, jeden Tag zu üben." }
+      ]
+    },
+    {
+      "id": "genitiv",
+      "title": "Genitiv (Einführung)",
+      "blocks": [
+        { "type": "paragraph", "text": "Der Genitiv drückt Besitz oder Zugehörigkeit aus. Maskulinum und Neutrum erhalten am Substantiv oft -s." },
+        { "type": "table", "headers": ["Kasus", "maskulin", "feminin", "neutrum", "Plural"], "rows": [["Genitiv", "des Mannes", "der Frau", "des Kindes", "der Leute"]] },
+        { "type": "example", "text": "Das ist das Auto des Lehrers. Die Farbe der Wand gefällt mir." }
+      ]
+    },
+    {
+      "id": "futur1",
+      "title": "Futur I",
+      "blocks": [
+        { "type": "paragraph", "text": "Das Futur I wird mit werden + Infinitiv gebildet. Es drückt Zukunft, Absicht oder Vermutung aus. Im Alltag kann auch Präsens + Temporaladverb die Zukunft ausdrücken." },
+        { "type": "example", "text": "Ich werde nächstes Jahr studieren. Er wird wohl zu Hause sein." }
+      ]
+    }
+  ]
+}

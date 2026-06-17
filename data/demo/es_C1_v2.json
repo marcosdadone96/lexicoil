@@ -1,0 +1,157 @@
+{
+  "id": "es_C1_v2",
+  "lang": "es",
+  "level": "C1",
+  "variant": 2,
+  "topic": "Medios y debate público",
+  "board": "Instituto Cervantes",
+  "certificate": "DELE C1",
+  "passPercent": 60,
+  "hookWord": {
+    "word": "recursos",
+    "pos": "noun",
+    "translations": {
+      "en": "resources",
+      "es": "recursos"
+    }
+  },
+  "loop": {
+    "passage": "El uso cuidadoso de los recursos naturales exige nuevas estrategias.",
+    "question": "¿Qué significa «recursos»?",
+    "options": [
+      {
+        "key": "A",
+        "text": "deudas",
+        "correct": false
+      },
+      {
+        "key": "B",
+        "text": "recursos",
+        "correct": true
+      },
+      {
+        "key": "C",
+        "text": "rumores",
+        "correct": false
+      }
+    ]
+  },
+  "miniPractice": {
+    "label": "Generado de tu error · 20 s",
+    "before": "Debemos proteger nuestros ",
+    "gap": "___",
+    "after": ".",
+    "answer": "recursos"
+  },
+  "modules": [
+    {
+      "id": "reading",
+      "title": "Comprensión de lectura",
+      "interactive": true,
+      "parts": [
+        {
+          "type": "multiple_choice",
+          "label": "Part 1",
+          "instructions": "Read the text and choose the best answer.",
+          "passage": "El uso cuidadoso de los recursos naturales exige nuevas estrategias.",
+          "markableWords": [
+            {
+              "word": "recursos",
+              "pos": "noun",
+              "translations": {
+                "en": "resources",
+                "es": "recursos"
+              }
+            }
+          ],
+          "items": [
+            {
+              "id": "loop1",
+              "question": "¿Qué significa «recursos»?",
+              "options": [
+                {
+                  "key": "A",
+                  "text": "deudas",
+                  "correct": false
+                },
+                {
+                  "key": "B",
+                  "text": "recursos",
+                  "correct": true
+                },
+                {
+                  "key": "C",
+                  "text": "rumores",
+                  "correct": false
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "listening",
+      "title": "Comprensión auditiva",
+      "interactive": true,
+      "parts": [
+        {
+          "type": "multiple_choice",
+          "label": "Part 1",
+          "instructions": "Read the transcript and choose the best answer.",
+          "transcript": "Periodista: Señora Torres, ¿basta la nueva ley de transparencia?\nSra. Torres: Es un avance, pero sin control independiente no sabemos si las empresas cumplen realmente sus obligaciones de información. Las infracciones deben tener sanciones efectivas.",
+          "markableWords": [],
+          "items": [
+            {
+              "id": "h1",
+              "question": "¿Qué exige la señora Torres además de la ley?",
+              "options": [
+                {
+                  "key": "A",
+                  "text": "Eliminar todas las obligaciones de información",
+                  "correct": false
+                },
+                {
+                  "key": "B",
+                  "text": "Control independiente y sanciones efectivas",
+                  "correct": true
+                },
+                {
+                  "key": "C",
+                  "text": "Más publicidad para las empresas",
+                  "correct": false
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "writing",
+      "title": "Expresión escrita",
+      "interactive": false,
+      "parts": [
+        {
+          "type": "writing_task",
+          "task": "Redacta un texto argumentativo (unas 150 palabras) sobre si las redes sociales fortalecen o debilitan el debate democrático.",
+          "note": "unas 150 palabras — Evaluado con IA en la app completa.",
+          "markableWords": []
+        }
+      ]
+    },
+    {
+      "id": "speaking",
+      "title": "Expresión oral",
+      "interactive": false,
+      "parts": [
+        {
+          "type": "speaking_task",
+          "task": "Responde a esta afirmación: «La inteligencia artificial debería enseñarse de forma obligatoria en las escuelas.» Justifica tu postura y responde a objeciones.",
+          "note": "2 minutos de preparación — Evaluado con IA en la app completa.",
+          "markableWords": []
+        }
+      ]
+    }
+  ]
+}

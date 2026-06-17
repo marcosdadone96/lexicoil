@@ -1,0 +1,145 @@
+@import url('../../../assets/css/lexicoil-design-system.css');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.15s ease;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: var(--lc-font);
+    background: var(--bg-base);
+    color: var(--text-primary);
+    @apply antialiased;
+  }
+
+  ::-webkit-scrollbar {
+    width: 4px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--bg-base);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--bg-elevated);
+    border-radius: 2px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--text-muted);
+  }
+}
+
+@layer components {
+  .auth-input {
+    @apply w-full rounded-xl border px-4 py-3 text-sm font-semibold outline-none;
+    background: var(--bg-elevated);
+    border-color: var(--border);
+    color: var(--text-primary);
+  }
+  .auth-input:focus {
+    border-color: var(--brand);
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center rounded-xl px-6 py-3.5 text-sm font-bold text-white disabled:opacity-60;
+    background: var(--brand);
+  }
+  .btn-primary:hover:not(:disabled) {
+    background: var(--brand-dark);
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center rounded-xl border px-6 py-3.5 text-sm font-bold;
+    background: var(--bg-surface);
+    border-color: var(--border-strong);
+    color: var(--text-primary);
+  }
+  .btn-secondary:hover {
+    background: var(--bg-elevated);
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center rounded-xl px-6 py-3.5 text-sm font-semibold;
+    background: transparent;
+    color: var(--text-secondary);
+  }
+  .btn-ghost:hover {
+    background: var(--bg-elevated);
+    color: var(--text-primary);
+  }
+
+  .surface-card {
+    @apply rounded-card border;
+    background: var(--bg-surface);
+    border-color: var(--border);
+    box-shadow: var(--shadow-card);
+  }
+
+  .lc-badge {
+    @apply inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold uppercase tracking-wide;
+    background: var(--brand-light);
+    color: var(--brand);
+  }
+}
+
+@layer utilities {
+  .section-pad {
+    @apply py-20 md:py-28;
+  }
+  .font-display {
+    font-family: var(--lc-font);
+    font-weight: 700;
+  }
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes pulse-dot {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+
+.animate-fade-up {
+  animation: fadeUp 0.4s ease forwards;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.3s ease forwards;
+}
+
+.animate-pulse-dot {
+  animation: pulse-dot 2s ease-in-out infinite;
+}

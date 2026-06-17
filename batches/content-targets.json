@@ -1,0 +1,56 @@
+{
+  "goal": "5 disjoint complete exams per language × level (B1, B2, C1)",
+  "targetExamsPerCombo": 5,
+  "totalCombos": 9,
+  "totalExamsGoal": 45,
+  "lastUpdated": "2026-06-13",
+  "languages": {
+    "de": { "examType": "goethe", "certificate": "Goethe-Zertifikat", "masterPrompt": "batches/GEMINI_MASTER_PROMPT_de_B1.md" },
+    "en": { "examType": "cambridge", "certificate": "Cambridge English", "masterPrompt": "batches/MASTER_PROMPT_en.md", "note": "Scaffold ready — generate with MASTER_PROMPT_en.md" },
+    "es": { "examType": "dele", "certificate": "DELE", "masterPrompt": "batches/MASTER_PROMPT_es.md", "note": "Scaffold ready; blueprint module keys are German (lesen/horen) by design" }
+  },
+  "levels": ["B1", "B2", "C1"],
+  "batchesToTarget": {
+    "comment": "1 batch ≈ 1 Teil instance. Audit estimates for 5 disjoint exams per combo.",
+    "to1ExamPerCombo": 92,
+    "to5DisjointPerCombo": 493,
+    "to10DisjointPerCombo": 1023,
+    "note": "Target is now 5; ~493 batches total across 9 combos (~55 avg/combo from scratch)"
+  },
+  "costEstimateEUR": {
+    "comment": "Rough API-only; TTS extra. At 5 exams not 10.",
+    "llmSonnetTotal45Exams": "35-75",
+    "llmDeB1Only": "4-8",
+    "ttsAllCombosOptional": "80-200"
+  },
+  "combos": {
+    "de_B1": {
+      "status": "in_progress",
+      "disjointCertified": 2,
+      "poolSeedEntries": 17,
+      "bindingTeil": "horenT1",
+      "batchesTo5": 50,
+      "batchesRemainingEstimate": 35,
+      "priorityModules": ["horen", "schreiben", "sprechen", "lesenT2-T5"]
+    },
+    "de_B2": { "status": "empty", "disjointCertified": 0, "batchesTo5": 80, "priorityModules": ["lesen", "horen", "grammatik", "schreiben", "sprechen"] },
+    "de_C1": { "status": "empty", "disjointCertified": 0, "batchesTo5": 55, "priorityModules": ["lesen", "horen", "schreiben", "sprechen"] },
+    "en_B1": { "status": "scaffold", "disjointCertified": 0, "batchesTo5": 55, "priorityModules": ["use_of_english", "reading", "listening", "writing"] },
+    "en_B2": { "status": "scaffold", "disjointCertified": 0, "batchesTo5": 55 },
+    "en_C1": { "status": "scaffold", "disjointCertified": 0, "batchesTo5": 55 },
+    "es_B1": { "status": "scaffold", "disjointCertified": 0, "batchesTo5": 50, "priorityModules": ["lesen", "horen", "schreiben", "sprechen"] },
+    "es_B2": { "status": "scaffold", "disjointCertified": 0, "batchesTo5": 50 },
+    "es_C1": { "status": "scaffold", "disjointCertified": 0, "batchesTo5": 60 }
+  },
+  "pipelineCommands": {
+    "coverageReport": "npm run coverage:report",
+    "coverageDetail": "node scripts/bank-coverage-report.mjs --detail --target 5",
+    "promoteCurated": "npm run pipeline:curated -- --lang {lang} --level {level} --min-coverage 1.0 --max 5",
+    "pruneOrphans": "node scripts/prune-orphan-bank-modules.mjs --all --apply",
+    "randomBatch": "npm run random:batch -- --lang {lang} --level {level}",
+    "validateBatch": "node scripts/validate-batch.mjs --lang {lang} --level {level} --file batches/merged/{file}",
+    "ingestStaging": "node scripts/ingest-to-staging.mjs --lang {lang} --level {level} --file batches/merged/{file} --auto-approve",
+    "promoteBank": "node scripts/promote-approved.mjs --lang {lang} --level {level}",
+    "processAllBatches": "npm run pipeline:process-batches"
+  }
+}

@@ -1,0 +1,24 @@
+
+Gemini batch generator — de/B1 × 1
+Prompt: batches/GEMINI_MASTER_PROMPT_de_B1.md
+
+── schreiben T1+2+3 · kurs-anmeldung-01 ──
+Tema: (T1) E-Mail: Sprachkurs empfehlen — (T2) Forum: Online-Kurse vs. Präsenzkurse — (T3) Nachricht: Anmeldung für Kurs bestätigen
+Archivo: batches/merged/schreiben-kurs-anmeldung-01.json
+Llamando Gemini…
+
+⏳ Cuota/rate limit — esperando 49s (intento 1/4)…
+Tokens: in=1768 out=993
+Modelo: gemini-2.5-flash
+Guardado: batches/merged/schreiben-kurs-anmeldung-01.json (3 preguntas, 0 passages)
+Validando…
+
+== Validación de schreiben-kurs-anmeldung-01.json (de_B1) ==
+Preguntas: 3 | Pasajes: 0
+Esquema: OK
+Colocación (Teile que mejora): Pool válido (Teil ya cubierto en 1 examen — OK para exámenes disjuntos)
+Sin problemas detectados ✅
+Validación OK
+Siguiente: node scripts/merge-bank-batch.mjs --lang de --level B1 --file batches/merged/schreiben-kurs-anmeldung-01.json
+
+Resumen: 1 OK, 0 fallidos

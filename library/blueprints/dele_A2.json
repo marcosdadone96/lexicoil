@@ -1,0 +1,251 @@
+{
+  "id": "dele-a2",
+  "examType": "dele",
+  "language": "es",
+  "level": "A2",
+  "certificate": "DELE A2",
+  "principle": "fixed_structure_dynamic_content",
+  "difficultyDistribution": {
+    "easy": {
+      "min": 1,
+      "max": 3,
+      "share": 0.2
+    },
+    "medium": {
+      "min": 4,
+      "max": 6,
+      "share": 0.4
+    },
+    "hard": {
+      "min": 7,
+      "max": 10,
+      "share": 0.4
+    }
+  },
+  "modules": [
+    {
+      "id": "lesen",
+      "title": "Comprensión de lectura",
+      "time": "70 min",
+      "parts": [
+        {
+          "instruction": "Lea los textos breves y responda a las preguntas.",
+          "teil": 1,
+          "slotType": "short_texts",
+          "label": "Tarea 1 — Textos breves",
+          "textCount": {
+            "min": 3,
+            "max": 4
+          },
+          "wordsPerText": {
+            "min": 80,
+            "max": 150
+          },
+          "questionTypes": [
+            "multiple_choice",
+            "multiple",
+            "true_false"
+          ],
+          "questionsTotal": {
+            "min": 4,
+            "max": 4
+          },
+          "topicFocus": [
+            "daily_life",
+            "work",
+            "culture",
+            "technology"
+          ],
+          "layout": "items",
+          "itemsTotal": 4,
+          "taskFormat": "short_text_mcq",
+          "wordsPerPassage": {
+            "min": 80,
+            "max": 150
+          }
+        },
+        {
+          "instruction": "Lea el texto y responda a las preguntas sobre detalles, inferencias y actitud del autor.",
+          "teil": 2,
+          "slotType": "long_article",
+          "label": "Tarea 2 — Texto extenso",
+          "passageCount": 1,
+          "wordsPerPassage": {
+            "min": 400,
+            "max": 600
+          },
+          "questionTypes": [
+            "multiple_choice",
+            "multiple",
+            "true_false"
+          ],
+          "questionsTotal": {
+            "min": 6,
+            "max": 6
+          },
+          "topicFocus": [
+            "environment",
+            "education",
+            "society",
+            "economy"
+          ],
+          "requiresInference": true,
+          "layout": "passage_questions",
+          "itemsTotal": 6,
+          "taskFormat": "long_text_mcq"
+        }
+      ]
+    },
+    {
+      "id": "horen",
+      "title": "Comprensión auditiva",
+      "time": "40 min",
+      "parts": [
+        {
+          "instruction": "Escuche las grabaciones y responda a las preguntas.",
+          "teil": 1,
+          "slotType": "short_audio",
+          "label": "Tarea 1 — Avisos y diálogos breves",
+          "audioCount": {
+            "min": 2,
+            "max": 3
+          },
+          "questionTypes": [
+            "multiple_choice",
+            "multiple",
+            "true_false"
+          ],
+          "questionsTotal": {
+            "min": 4,
+            "max": 4
+          },
+          "topicFocus": [
+            "daily_life",
+            "travel",
+            "services"
+          ],
+          "layout": "segments",
+          "itemsTotal": 4,
+          "taskFormat": "short_listening_mcq"
+        },
+        {
+          "instruction": "Escuche la entrevista o el debate y responda a las preguntas.",
+          "teil": 2,
+          "slotType": "long_audio",
+          "label": "Tarea 2 — Entrevista / debate",
+          "audioCount": 1,
+          "questionTypes": [
+            "multiple_choice",
+            "multiple",
+            "true_false"
+          ],
+          "questionsTotal": {
+            "min": 4,
+            "max": 4
+          },
+          "topicFocus": [
+            "science",
+            "culture",
+            "economy"
+          ],
+          "requiresInference": true,
+          "layout": "segments",
+          "itemsTotal": 4,
+          "taskFormat": "long_listening_mcq"
+        }
+      ]
+    },
+    {
+      "id": "schreiben",
+      "title": "Expresión escrita",
+      "time": "80 min",
+      "parts": [
+        {
+          "instruction": "Escriba un texto según la consigna.",
+          "teil": 1,
+          "slotType": "writing_task",
+          "label": "Formular / Kurze Nachricht",
+          "taskCount": 1,
+          "wordsTarget": {
+            "min": 40,
+            "max": 80
+          },
+          "taskTypes": [
+            "form_fill",
+            "informal_message"
+          ],
+          "questionTypes": [
+            "short_answer"
+          ],
+          "questionsTotal": {
+            "min": 1,
+            "max": 1
+          },
+          "layout": "writing",
+          "itemsTotal": 1,
+          "taskFormat": "writing_prompt",
+          "wordsPerPassage": {
+            "min": 40,
+            "max": 80
+          }
+        }
+      ]
+    },
+    {
+      "id": "sprechen",
+      "title": "Expresión oral",
+      "time": "20 min",
+      "parts": [
+        {
+          "instruction": "Prepare la tarea oral.",
+          "teil": 1,
+          "slotType": "speaking_task",
+          "label": "Sich vorstellen / Fragen beantworten",
+          "taskCount": 1,
+          "taskTypes": [
+            "introduce_self",
+            "qa"
+          ],
+          "questionTypes": [
+            "short_answer"
+          ],
+          "questionsTotal": {
+            "min": 1,
+            "max": 1
+          },
+          "layout": "speaking",
+          "itemsTotal": 1,
+          "taskFormat": "speaking_prompt"
+        },
+        {
+          "instruction": "Prepare la tarea oral.",
+          "teil": 2,
+          "slotType": "speaking_task",
+          "label": "Gemeinsame Aufgabe / Diskussion",
+          "taskCount": 1,
+          "taskTypes": [
+            "pair_discussion",
+            "picture_description"
+          ],
+          "questionTypes": [
+            "short_answer"
+          ],
+          "questionsTotal": {
+            "min": 1,
+            "max": 1
+          },
+          "layout": "speaking",
+          "itemsTotal": 1,
+          "taskFormat": "speaking_prompt"
+        }
+      ]
+    }
+  ],
+  "structureVersion": 2,
+  "itemsTotalByModule": {
+    "lesen": 10,
+    "horen": 8,
+    "schreiben": 1,
+    "sprechen": 2
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "LexiCoil Writing & Speaking Prompts",
+  "type": "object",
+  "required": ["meta", "writing", "speaking"],
+  "properties": {
+    "meta": {
+      "type": "object",
+      "required": ["language", "level", "version"],
+      "properties": {
+        "language": { "type": "string", "enum": ["de", "en", "es"] },
+        "level": { "type": "string", "pattern": "^[ABC][12]$" },
+        "version": { "type": "integer", "minimum": 1 },
+        "generatedAt": { "type": "string" }
+      }
+    },
+    "writing": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "module", "prompt"],
+        "properties": {
+          "id": { "type": "string" },
+          "module": { "type": "string", "enum": ["schreiben", "writing"] },
+          "prompt": { "type": "string" },
+          "minWords": { "type": "integer", "minimum": 0 },
+          "maxWords": { "type": "integer", "minimum": 0 },
+          "taskFormat": { "type": "string" },
+          "topicTags": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "speaking": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "module", "prompt"],
+        "properties": {
+          "id": { "type": "string" },
+          "module": { "type": "string", "enum": ["sprechen", "speaking"] },
+          "prompt": { "type": "string" },
+          "taskFormat": { "type": "string" },
+          "topicTags": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    }
+  }
+}

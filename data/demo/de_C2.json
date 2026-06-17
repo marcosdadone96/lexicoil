@@ -1,0 +1,119 @@
+{
+  "id": "de_C2",
+  "lang": "de",
+  "level": "C2",
+  "topic": "Sprache und Gesellschaft",
+  "board": "Goethe-Institut",
+  "certificate": "Goethe-Zertifikat C2",
+  "passPercent": 60,
+  "modules": [
+    {
+      "id": "lesen",
+      "title": "Lesen",
+      "interactive": true,
+      "parts": [
+        {
+          "type": "multiple_choice",
+          "label": "Part 1",
+          "instructions": "Lesen Sie den Text und wählen Sie die richtige Antwort.",
+          "passage": "Sprachwissenschaftler weisen darauf hin, dass sogenannte Anglizismen nicht per se eine Bedrohung für die deutsche Sprache darstellen; vielmehr spiegeln sie historisch gewachsene Kontakte zwischen Kultur- und Wirtschaftsräumen wider. Entscheidend sei, ob neue Lehnwörter präzise Konzepte benennen oder bloß modische Alternativen zu etablierten Ausdrücken sind.",
+          "markableWords": [
+            {
+              "word": "Lehnwörter",
+              "pos": "noun",
+              "gender": "f",
+              "translations": {
+                "en": "Lehnwörter",
+                "es": "Lehnwörter"
+              }
+            }
+          ],
+          "items": [
+            {
+              "id": "r1",
+              "question": "Welche Einschätzung entspricht dem Text?",
+              "options": [
+                {
+                  "key": "A",
+                  "text": "Jeder Anglizismus schadet der deutschen Sprache grundsätzlich.",
+                  "correct": false
+                },
+                {
+                  "key": "B",
+                  "text": "Der Nutzen von Lehnwörtern hängt von ihrer Funktion ab.",
+                  "correct": true
+                },
+                {
+                  "key": "C",
+                  "text": "Lehnwörter entstehen nur durch wirtschaftlichen Druck.",
+                  "correct": false
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "horen",
+      "title": "Hören",
+      "interactive": true,
+      "parts": [
+        {
+          "type": "multiple_choice",
+          "label": "Part 1",
+          "instructions": "Lesen Sie das Transkript und wählen Sie die richtige Antwort.",
+          "transcript": "Moderator: Frau Professor Lang, Sie plädieren für eine Reform des Wissenschaftsdeutsch. Worin besteht Ihr Hauptkritikpunkt?\nProf. Lang: Viele Texte verheddern sich in Nominalstil und Passivkonstruktionen. Das erschwert nicht nur den Zugang für Laien, sondern auch die internationale Rezeption, weil Übersetzungen unnötig kompliziert werden.",
+          "markableWords": [],
+          "items": [
+            {
+              "id": "h1",
+              "question": "Was kritisiert Professor Lang vor allem?",
+              "options": [
+                {
+                  "key": "A",
+                  "text": "Zu viele Fremdwörter in der Wissenschaft",
+                  "correct": false
+                },
+                {
+                  "key": "B",
+                  "text": "Einen schwer zugänglichen, nominalen Schreibstil",
+                  "correct": true
+                },
+                {
+                  "key": "C",
+                  "text": "Fehlende Übersetzungen wissenschaftlicher Texte",
+                  "correct": false
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "schreiben",
+      "title": "Schreiben",
+      "interactive": false,
+      "parts": [
+        {
+          "type": "writing_task",
+          "task": "Verfassen Sie einen zusammenhängenden Text (ca. 200 Wörter) zur Frage, inwieweit Mehrsprachigkeit in multinationalen Teams Vorteile oder Risiken für die Produktivität birgt.",
+          "note": "ca. 200 Wörter"
+        }
+      ]
+    },
+    {
+      "id": "sprechen",
+      "title": "Sprechen",
+      "interactive": false,
+      "parts": [
+        {
+          "type": "speaking_task",
+          "task": "Führen Sie eine Diskussion über folgende Aussage: „In einer globalisierten Welt verliert nationale Kultur an Bedeutung.“ Erörtern Sie Chancen und Grenzen dieser These.",
+          "note": "Vorbereitungszeit: 2 Minuten — Evaluated with AI in the full app."
+        }
+      ]
+    }
+  ]
+}

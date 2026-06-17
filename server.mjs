@@ -44,10 +44,25 @@ async function loadDotEnv() {
 await loadDotEnv();
 
 createServer(async (req, res) => {
-  let path = (req.url || "/").split("?")[0];
+  const url = new URL(req.url || "/", "http://127.0.0.1");
+  let path = url.pathname;
 
   if (path === "/.netlify/functions/claude-chat") {
     await handleClaudeHttpRequest(req, res);
+    return;
+  }
+
+  if (path === "/demo" || path === "/demo/") path = "/demo.html";
+  if (path === "/app" || path === "/app/") path = "/index.html";
+  if (path === "/app.html") path = "/index.html";
+  if (
+    path === "/dashboard" ||
+    path === "/workspace" ||
+    path === "/learning" ||
+    path.startsWith("/workspace/")
+  ) {
+    res.writeHead(302, { Location: "/index.html?auth=login" });
+    res.end();
     return;
   }
 
@@ -62,12 +77,12 @@ createServer(async (req, res) => {
     res.end(data);
   } catch {
     res.writeHead(404, { "Content-Type": "text/plain; charset=utf-8" });
-    res.end("404 — not found");
+    res.end("404 ï¿½ not found");
   }
 }).listen(PORT, "127.0.0.1", () => {
   const aiReady = Boolean(process.env.ANTHROPIC_API_KEY);
   console.log("");
-  console.log("  LexiLoop ready");
+  console.log("  LexiCoil ready");
   console.log("  Open: http://localhost:" + PORT);
   console.log(
     aiReady

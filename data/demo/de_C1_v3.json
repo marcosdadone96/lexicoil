@@ -1,0 +1,159 @@
+{
+  "id": "de_C1_v3",
+  "lang": "de",
+  "level": "C1",
+  "variant": 3,
+  "topic": "Medien und öffentliche Debatte",
+  "board": "Goethe-Institut",
+  "certificate": "Goethe-Zertifikat C1",
+  "passPercent": 60,
+  "hookWord": {
+    "word": "Innovation",
+    "gender": "f",
+    "pos": "noun",
+    "translations": {
+      "en": "innovation",
+      "es": "innovación"
+    }
+  },
+  "loop": {
+    "passage": "Innovation entsteht dort, wo Teams verschiedene Perspektiven verbinden.",
+    "question": "Was bedeutet «Innovation»?",
+    "options": [
+      {
+        "key": "A",
+        "text": "tradition only",
+        "correct": false
+      },
+      {
+        "key": "B",
+        "text": "innovation",
+        "correct": true
+      },
+      {
+        "key": "C",
+        "text": "delay",
+        "correct": false
+      }
+    ]
+  },
+  "miniPractice": {
+    "label": "Built from your mistake · 20 sec",
+    "before": "Diese ",
+    "gap": "___",
+    "after": " hat den Markt verändert.",
+    "answer": "Innovation"
+  },
+  "modules": [
+    {
+      "id": "lesen",
+      "title": "Lesen",
+      "interactive": true,
+      "parts": [
+        {
+          "type": "multiple_choice",
+          "label": "Part 1",
+          "instructions": "Lesen Sie den Text und wählen Sie die richtige Antwort.",
+          "passage": "Innovation entsteht dort, wo Teams verschiedene Perspektiven verbinden.",
+          "markableWords": [
+            {
+              "word": "Innovation",
+              "gender": "f",
+              "pos": "noun",
+              "translations": {
+                "en": "innovation",
+                "es": "innovación"
+              }
+            }
+          ],
+          "items": [
+            {
+              "id": "loop1",
+              "question": "Was bedeutet «Innovation»?",
+              "options": [
+                {
+                  "key": "A",
+                  "text": "tradition only",
+                  "correct": false
+                },
+                {
+                  "key": "B",
+                  "text": "innovation",
+                  "correct": true
+                },
+                {
+                  "key": "C",
+                  "text": "delay",
+                  "correct": false
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "horen",
+      "title": "Hören",
+      "interactive": true,
+      "parts": [
+        {
+          "type": "multiple_choice",
+          "label": "Part 1",
+          "instructions": "Lesen Sie das Transkript und wählen Sie die richtige Antwort.",
+          "transcript": "Journalistin: Herr Dr. Klein, reicht das neue Transparenzgesetz aus?\nDr. Klein: Es ist ein Schritt, aber ohne unabhängige Kontrolle bleibt unklar, ob Unternehmen ihre Meldepflichten tatsächlich erfüllen. Entscheidend ist, dass Verstöße spürbar sanktioniert werden.",
+          "markableWords": [],
+          "items": [
+            {
+              "id": "h1",
+              "question": "Was fordert Dr. Klein zusätzlich zum Gesetz?",
+              "options": [
+                {
+                  "key": "A",
+                  "text": "Abschaffung aller Meldepflichten",
+                  "correct": false
+                },
+                {
+                  "key": "B",
+                  "text": "Unabhängige Kontrolle und wirksame Sanktionen",
+                  "correct": true
+                },
+                {
+                  "key": "C",
+                  "text": "Mehr Werbung für Unternehmen",
+                  "correct": false
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "schreiben",
+      "title": "Schreiben",
+      "interactive": false,
+      "parts": [
+        {
+          "type": "writing_task",
+          "task": "Verfassen Sie einen argumentativen Text (ca. 150 Wörter) zur Frage, ob soziale Medien die demokratische Diskussion eher stärken oder schwächen.",
+          "note": "ca. 150 Wörter — Wird in der Vollversion mit KI bewertet.",
+          "markableWords": []
+        }
+      ]
+    },
+    {
+      "id": "sprechen",
+      "title": "Sprechen",
+      "interactive": false,
+      "parts": [
+        {
+          "type": "speaking_task",
+          "task": "Nehmen Sie Stellung zu folgender These: „Künstliche Intelligenz sollte in Schulen verpflichtend unterrichtet werden.“ Begründen Sie Ihre Position und reagieren Sie auf Einwände.",
+          "note": "Vorbereitungszeit: 2 Minuten — Evaluated with AI in the full app.",
+          "markableWords": []
+        }
+      ]
+    }
+  ]
+}

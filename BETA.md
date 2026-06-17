@@ -1,51 +1,25 @@
-# LexiLoop  Private Beta
+# LexiCoil — Private Beta
 
-Share this link with testers:
+## Live URLs
 
-**https://lexiloop.netlify.app**
+**https://www.lexicoil.com**
 
-Oral mode: **https://lexiloop.netlify.app/oral.html**
+## Message for testers
 
-## For testers (copy & send)
-
-> Hi! I'm testing **LexiLoop**  an AI exam trainer for official **English** (Cambridge / IELTS) and **German** (Goethe) exams.
+> Hi! I'm testing **LexiCoil** — an AI exam trainer for official **English** (Cambridge / IELTS) and **German** (Goethe) exams.
 >
-> **Try it:** https://lexiloop.netlify.app  
-> Click **"Continue without account"** to start instantly (no sign-up needed).
-> On the level screen, use **"Try demo exam (no AI)"**  fixed exam with full correction, no Claude credits.
+> **Try it:** https://www.lexicoil.com
 >
-> **What to try:**
-> 1. Pick German or English ? choose a level ? generate a full exam  
-> 2. Quick modules (Reading / Listening / Writing)  work without AI quota limits on structure  
-> 3. Flashcard deck  save words in Practice mode  
-> 4. Oral mode  record and get AI feedback  
+> What works:
+> - Demo exams (no AI) for all levels
+> - Account registration and login
+> - Flashcard deck + personal mock exams
+> - Oral speaking practice with AI feedback
+> - Grammar reference (A1–C2, explained in Spanish, English or German)
 >
-> **Feedback:** reply to this message or email marcosdadra@gmail.com with subject `LexiLoop Beta Feedback`
+> What may still be rough:
+> - Stripe Pro upgrade (needs live keys configured)
+> - Password reset email (token returned in API for now)
+> - Listening audio not available yet (Horen exercises show transcripts)
 >
-> *Private beta  features may change.*
-
-## What works without sign-up
-
-- Full UI navigation
-- Guest mode (progress saved in browser only)
-- **Demo exams**  one fixed exam per level (DE + EN), with full correction, no AI
-- Flashcards (local)
-
-## What needs an account
-
-- Sync across devices
-- Cloud backup of history & saved exams
-
-## What needs Anthropic credits (server)
-
-- Full **AI-generated** exams (new content each time)
-- Quick modules (Reading / Listening / Writing / Gap-Fill)
-- Oral evaluation
-- Vocabulary AI lookup
-
-## Owner checklist before sharing
-
-- [ ] `ANTHROPIC_API_KEY` set in Netlify (secret)
-- [ ] `AUTH_JWT_SECRET` set in Netlify (secret)  optional for guest-only testing
-- [ ] Trigger deploy after env changes
-- [ ] Test guest flow once yourself
+> **Contact:** contact@lexicoil.com (subject: `LexiCoil Inquiry`)

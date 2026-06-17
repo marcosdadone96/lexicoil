@@ -1,0 +1,43 @@
+
+Batch generator (claude) — de/B1 × 1
+Prompt: batches/GEMINI_MASTER_PROMPT_de_B1.md
+Presupuesto Claude: $2.30 (gastado: $1.7440)
+
+── horen T4 · bildungssystem-reform-04 ──
+Tema: Debatte über Reformen im Bildungssystem
+Proveedor: claude
+max_output_tokens=16384
+Archivo: batches/merged/horen-t4-bildungssystem-reform-04.json
+Llamando claude…
+max_output_tokens=16384
+Gasto acumulado: $1.7618 / budget $2.30
+Tokens: in=1927 out=3173 (max_out=16384)
+Modelo: claude-haiku-4-5
+de-b1-h-t4-bildungssystem-reform-04-q1: matching_missing_options
+de-b1-h-t4-bildungssystem-reform-04-q2: matching_missing_options
+de-b1-h-t4-bildungssystem-reform-04-q3: matching_missing_options
+de-b1-h-t4-bildungssystem-reform-04-q4: matching_missing_options
+de-b1-h-t4-bildungssystem-reform-04-q5: matching_missing_options
+de-b1-h-t4-bildungssystem-reform-04-q6: matching_missing_options
+de-b1-h-t4-bildungssystem-reform-04-q7: matching_missing_options
+de-b1-h-t4-bildungssystem-reform-04-q8: matching_missing_options
+
+Reintento conformidad 1/2…
+Llamando claude…
+max_output_tokens=16384
+Gasto acumulado: $1.7788 / budget $2.30
+Tokens: in=2183 out=2978 (max_out=16384)
+Modelo: claude-haiku-4-5
+Guardado: batches/merged/horen-t4-bildungssystem-reform-04.json (8 preguntas, 1 passages)
+Validando…
+
+== Validación de horen-t4-bildungssystem-reform-04.json (de_B1) ==
+Preguntas: 8 | Pasajes: 1
+Esquema: OK
+Conformidad blueprint: OK
+Colocación (Teile que mejora): Pool válido (Teil ya cubierto en 1 examen — OK para exámenes disjuntos)
+Sin problemas detectados ✅
+Validación OK
+Siguiente: node scripts/merge-bank-batch.mjs --lang de --level B1 --file batches/merged/horen-t4-bildungssystem-reform-04.json
+
+Resumen: 1 OK, 0 fallidos

@@ -1,0 +1,157 @@
+{
+  "id": "es_C1_v1",
+  "lang": "es",
+  "level": "C1",
+  "variant": 1,
+  "topic": "Medios y debate público",
+  "board": "Instituto Cervantes",
+  "certificate": "DELE C1",
+  "passPercent": 60,
+  "hookWord": {
+    "word": "sostenibilidad",
+    "pos": "noun",
+    "translations": {
+      "en": "sustainability",
+      "es": "sostenibilidad"
+    }
+  },
+  "loop": {
+    "passage": "La sostenibilidad sigue siendo central en el debate económico.",
+    "question": "¿Qué significa «sostenibilidad»?",
+    "options": [
+      {
+        "key": "A",
+        "text": "beneficio",
+        "correct": false
+      },
+      {
+        "key": "B",
+        "text": "sostenibilidad",
+        "correct": true
+      },
+      {
+        "key": "C",
+        "text": "velocidad",
+        "correct": false
+      }
+    ]
+  },
+  "miniPractice": {
+    "label": "Generado de tu error · 20 s",
+    "before": "La ",
+    "gap": "___",
+    "after": " es un objetivo clave.",
+    "answer": "sostenibilidad"
+  },
+  "modules": [
+    {
+      "id": "reading",
+      "title": "Comprensión de lectura",
+      "interactive": true,
+      "parts": [
+        {
+          "type": "multiple_choice",
+          "label": "Part 1",
+          "instructions": "Read the text and choose the best answer.",
+          "passage": "La sostenibilidad sigue siendo central en el debate económico.",
+          "markableWords": [
+            {
+              "word": "sostenibilidad",
+              "pos": "noun",
+              "translations": {
+                "en": "sustainability",
+                "es": "sostenibilidad"
+              }
+            }
+          ],
+          "items": [
+            {
+              "id": "loop1",
+              "question": "¿Qué significa «sostenibilidad»?",
+              "options": [
+                {
+                  "key": "A",
+                  "text": "beneficio",
+                  "correct": false
+                },
+                {
+                  "key": "B",
+                  "text": "sostenibilidad",
+                  "correct": true
+                },
+                {
+                  "key": "C",
+                  "text": "velocidad",
+                  "correct": false
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "listening",
+      "title": "Comprensión auditiva",
+      "interactive": true,
+      "parts": [
+        {
+          "type": "multiple_choice",
+          "label": "Part 1",
+          "instructions": "Read the transcript and choose the best answer.",
+          "transcript": "Periodista: Señora Torres, ¿basta la nueva ley de transparencia?\nSra. Torres: Es un avance, pero sin control independiente no sabemos si las empresas cumplen realmente sus obligaciones de información. Las infracciones deben tener sanciones efectivas.",
+          "markableWords": [],
+          "items": [
+            {
+              "id": "h1",
+              "question": "¿Qué exige la señora Torres además de la ley?",
+              "options": [
+                {
+                  "key": "A",
+                  "text": "Eliminar todas las obligaciones de información",
+                  "correct": false
+                },
+                {
+                  "key": "B",
+                  "text": "Control independiente y sanciones efectivas",
+                  "correct": true
+                },
+                {
+                  "key": "C",
+                  "text": "Más publicidad para las empresas",
+                  "correct": false
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "writing",
+      "title": "Expresión escrita",
+      "interactive": false,
+      "parts": [
+        {
+          "type": "writing_task",
+          "task": "Redacta un texto argumentativo (unas 150 palabras) sobre si las redes sociales fortalecen o debilitan el debate democrático.",
+          "note": "unas 150 palabras — Evaluado con IA en la app completa.",
+          "markableWords": []
+        }
+      ]
+    },
+    {
+      "id": "speaking",
+      "title": "Expresión oral",
+      "interactive": false,
+      "parts": [
+        {
+          "type": "speaking_task",
+          "task": "Responde a esta afirmación: «La inteligencia artificial debería enseñarse de forma obligatoria en las escuelas.» Justifica tu postura y responde a objeciones.",
+          "note": "2 minutos de preparación — Evaluado con IA en la app completa.",
+          "markableWords": []
+        }
+      ]
+    }
+  ]
+}

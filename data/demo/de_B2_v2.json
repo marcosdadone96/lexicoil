@@ -1,0 +1,169 @@
+{
+  "id": "de_B2_v2",
+  "lang": "de",
+  "level": "B2",
+  "variant": 2,
+  "topic": "Digitalisierung und Gesellschaft",
+  "board": "Goethe-Institut",
+  "certificate": "Goethe-Zertifikat B2",
+  "passPercent": 60,
+  "hookWord": {
+    "word": "Weiterbildung",
+    "gender": "f",
+    "pos": "noun",
+    "translations": {
+      "en": "further training",
+      "es": "formación continua"
+    }
+  },
+  "loop": {
+    "passage": "Kritiker fordern staatlich geförderte Programme zur Weiterbildung älterer Beschäftigter.",
+    "question": "Was bedeutet «Weiterbildung»?",
+    "options": [
+      {
+        "key": "A",
+        "text": "vacation",
+        "correct": false
+      },
+      {
+        "key": "B",
+        "text": "further training",
+        "correct": true
+      },
+      {
+        "key": "C",
+        "text": "tax cut",
+        "correct": false
+      }
+    ]
+  },
+  "miniPractice": {
+    "label": "Built from your mistake · 20 sec",
+    "before": "Gute ",
+    "gap": "___",
+    "after": " hilft bei der Jobsuche.",
+    "answer": "Weiterbildung"
+  },
+  "modules": [
+    {
+      "id": "lesen",
+      "title": "Lesen",
+      "interactive": true,
+      "parts": [
+        {
+          "type": "multiple_choice",
+          "label": "Teil 1",
+          "instructions": "Lesen Sie den Artikel und wählen Sie die beste Antwort.",
+          "passage": "Kritiker fordern staatlich geförderte Programme zur Weiterbildung älterer Beschäftigter.",
+          "markableWords": [
+            {
+              "word": "Weiterbildung",
+              "gender": "f",
+              "pos": "noun",
+              "translations": {
+                "en": "further training",
+                "es": "formación continua"
+              }
+            }
+          ],
+          "items": [
+            {
+              "id": "loop1",
+              "question": "Was bedeutet «Weiterbildung»?",
+              "options": [
+                {
+                  "key": "A",
+                  "text": "vacation",
+                  "correct": false
+                },
+                {
+                  "key": "B",
+                  "text": "further training",
+                  "correct": true
+                },
+                {
+                  "key": "C",
+                  "text": "tax cut",
+                  "correct": false
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "horen",
+      "title": "Hören",
+      "interactive": true,
+      "parts": [
+        {
+          "type": "multiple_choice",
+          "label": "Teil 1",
+          "instructions": "Lesen Sie das Transkript und wählen Sie die richtige Antwort.",
+          "transcript": "Moderatorin: Heute sprechen wir über Carsharing in der Stadt. Unser Gast, Herr Weber, nutzt kein eigenes Auto mehr.\nHerr Weber: Ich spare nicht nur Geld, sondern auch Parkplatzsuche. Allerdings brauche ich morgens manchmal länger, bis ein Fahrzeug frei ist.",
+          "markableWords": [
+            {
+              "word": "Fahrzeug",
+              "gender": "n",
+              "pos": "noun",
+              "translations": {
+                "en": "vehicle",
+                "es": "vehículo"
+              }
+            }
+          ],
+          "items": [
+            {
+              "id": "h1q1",
+              "question": "Welchen Nachteil nennt Herr Weber?",
+              "options": [
+                {
+                  "key": "A",
+                  "text": "Carsharing ist zu teuer.",
+                  "correct": false
+                },
+                {
+                  "key": "B",
+                  "text": "Morgens wartet er manchmal auf ein freies Auto.",
+                  "correct": true
+                },
+                {
+                  "key": "C",
+                  "text": "Er findet keine Parkplätze.",
+                  "correct": false
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "schreiben",
+      "title": "Schreiben",
+      "interactive": false,
+      "parts": [
+        {
+          "type": "opinion_email",
+          "task": "Sie haben in einer Zeitschrift einen Artikel über Plastikmüll im Meer gelesen. Schreiben Sie einen Leserbrief an die Redaktion: Was Sie beunruhigt und welche Maßnahmen Sie vorschlagen.",
+          "note": "ca. 80 Wörter — Graded with feedback in the full app.",
+          "markableWords": []
+        }
+      ]
+    },
+    {
+      "id": "sprechen",
+      "title": "Sprechen",
+      "interactive": false,
+      "parts": [
+        {
+          "type": "presentation",
+          "task": "Erzählen Sie von einer Reise, die Sie gemacht haben: Ziel, Transport, Erlebnis und ob Sie die Reise empfehlen würden.",
+          "note": "Vorbereitungszeit: 1 Minute — Evaluated with AI in the full app.",
+          "markableWords": []
+        }
+      ]
+    }
+  ]
+}

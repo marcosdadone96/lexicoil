@@ -1,0 +1,29 @@
+
+Batch generator (claude) — de/B1 × 1
+Prompt: batches/GEMINI_MASTER_PROMPT_de_B1.md
+Presupuesto Claude: $2.30 (gastado: $1.1485)
+
+── horen T2 · gesund-leben-03 ──
+Tema: Vortrag über gesunde Lebensweise
+Proveedor: claude
+max_output_tokens=16384
+Archivo: batches/merged/horen-t2-gesund-leben-03.json
+Llamando claude…
+max_output_tokens=16384
+Gasto acumulado: $1.1726 / budget $2.30
+Tokens: in=1923 out=4443 (max_out=16384)
+Modelo: claude-haiku-4-5
+Guardado: batches/merged/horen-t2-gesund-leben-03.json (10 preguntas, 5 passages)
+Validando…
+
+== Validación de horen-t2-gesund-leben-03.json (de_B1) ==
+Preguntas: 10 | Pasajes: 5
+Esquema: OK
+Colocación (Teile que mejora): Pool válido (Teil ya cubierto en 1 examen — OK para exámenes disjuntos)
+Problemas:
+  - de-b1-h-t1-gesund-leben-03-s2-q1: passageId inexistente (de-b1-p-horen-t1-gesund-leven-03-s2)
+  - de-b1-h-t1-gesund-leben-03-s2-q2: passageId inexistente (de-b1-p-horen-t1-gesund-leven-03-s2)
+Error: Command failed: node scripts/validate-batch.mjs --lang de --level B1 --file "batches/merged/horen-t2-gesund-leben-03.json"
+Descartado → batches/rejected/horen-t2-gesund-leben-03.json
+
+Resumen: 0 OK, 1 fallidos

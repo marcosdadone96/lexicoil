@@ -1,0 +1,119 @@
+{
+  "id": "de_A2",
+  "lang": "de",
+  "level": "A2",
+  "topic": "Einkaufen und Reisen",
+  "board": "Goethe-Institut",
+  "certificate": "Start Deutsch 2",
+  "passPercent": 60,
+  "modules": [
+    {
+      "id": "lesen",
+      "title": "Lesen",
+      "interactive": true,
+      "parts": [
+        {
+          "type": "multiple_choice",
+          "label": "Part 1",
+          "instructions": "Lesen Sie den Text und wählen Sie die richtige Antwort.",
+          "passage": "Liebe Kundinnen und Kunden, ab Montag ist unser Geschäft wegen Renovierung geschlossen. Wir öffnen wieder am 15. März. Bestellungen über unsere Website sind weiterhin möglich.",
+          "markableWords": [
+            {
+              "word": "Renovierung",
+              "pos": "noun",
+              "gender": "f",
+              "translations": {
+                "en": "Renovierung",
+                "es": "Renovierung"
+              }
+            }
+          ],
+          "items": [
+            {
+              "id": "r1",
+              "question": "Warum ist das Geschäft geschlossen?",
+              "options": [
+                {
+                  "key": "A",
+                  "text": "Weil es ein Feiertag ist",
+                  "correct": false
+                },
+                {
+                  "key": "B",
+                  "text": "Wegen Renovierung",
+                  "correct": true
+                },
+                {
+                  "key": "C",
+                  "text": "Weil es kein Personal gibt",
+                  "correct": false
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "horen",
+      "title": "Hören",
+      "interactive": true,
+      "parts": [
+        {
+          "type": "multiple_choice",
+          "label": "Part 1",
+          "instructions": "Lesen Sie das Transkript und wählen Sie die richtige Antwort.",
+          "transcript": "— Entschuldigung, fährt dieser Zug nach Köln?\n— Ja, aber nur bis Bonn. In Köln müssen Sie umsteigen.\n— Danke, dann steige ich in Bonn um.",
+          "markableWords": [],
+          "items": [
+            {
+              "id": "h1",
+              "question": "Was muss die Person in Bonn machen?",
+              "options": [
+                {
+                  "key": "A",
+                  "text": "Aussteigen und zu Fuß gehen",
+                  "correct": false
+                },
+                {
+                  "key": "B",
+                  "text": "In einen anderen Zug umsteigen",
+                  "correct": true
+                },
+                {
+                  "key": "C",
+                  "text": "Eine Fahrkarte kaufen",
+                  "correct": false
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "schreiben",
+      "title": "Schreiben",
+      "interactive": false,
+      "parts": [
+        {
+          "type": "writing_task",
+          "task": "Sie haben eine Einladung zu einer Geburtstagsfeier erhalten, können aber nicht kommen. Schreiben Sie eine kurze Nachricht: warum Sie nicht kommen können und wann Sie sich wieder treffen möchten.",
+          "note": "ca. 40 Wörter"
+        }
+      ]
+    },
+    {
+      "id": "sprechen",
+      "title": "Sprechen",
+      "interactive": false,
+      "parts": [
+        {
+          "type": "speaking_task",
+          "task": "Beschreiben Sie Ihr Zimmer oder Ihre Wohnung: Größe, Möbel, was Ihnen gefällt.",
+          "note": "Vorbereitungszeit: 1 Minute — Evaluated with AI in the full app."
+        }
+      ]
+    }
+  ]
+}

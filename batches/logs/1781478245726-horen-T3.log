@@ -1,0 +1,22 @@
+
+Gemini batch generator — de/B1 × 1
+Prompt: batches/GEMINI_MASTER_PROMPT_de_B1.md
+
+── horen T3 · umzug-familie-01 ──
+Tema: Familie plant einen Umzug
+Archivo: batches/merged/horen-t3-umzug-familie-01.json
+Llamando Gemini…
+Tokens: in=1657 out=2593
+Modelo: gemini-2.5-flash
+Guardado: batches/merged/horen-t3-umzug-familie-01.json (7 preguntas, 1 passages)
+Validando…
+
+== Validación de horen-t3-umzug-familie-01.json (de_B1) ==
+Preguntas: 7 | Pasajes: 1
+Esquema: OK
+Colocación (Teile que mejora): Pool válido (Teil ya cubierto en 1 examen — OK para exámenes disjuntos)
+Sin problemas detectados ✅
+Validación OK
+Siguiente: node scripts/merge-bank-batch.mjs --lang de --level B1 --file batches/merged/horen-t3-umzug-familie-01.json
+
+Resumen: 1 OK, 0 fallidos
