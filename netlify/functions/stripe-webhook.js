@@ -1,13 +1,21 @@
 'use strict';
 
-// LexiCoil  stripe-webhook.js
+// LexiCoil ï¿½ stripe-webhook.js
 // Receives Stripe webhook events and upgrades users to Pro on payment.
 // Env vars required: STRIPE_WEBHOOK_SECRET
 
 const { getStoreForEvent } = require('./lib/blobStore.js');
-const { normalizeEmail, userKey } = require('./lib/authLib.js');
-const { activateProForEmail } = require('./lib/proUpgrade.js');
+const { normalizeEmail } = require('./lib/authLib.js');
+const { activateProForEmail, revokeProForEmail, markPaymentPastDue, clearPaymentPastDue } = require('./lib/proUpgrade.js');
 const { persistStripeCustomerId } = require('./lib/stripeLib.js');
+const { addCreditTopups } = require('./lib/aiCredits.js');
+const { sendPaymentFailedEmail } = require('./lib/email.js');
+const {
+  shouldRevokePro,
+  shouldMarkPaymentWarning,
+  isProActiveStatus,
+  extractStripeEmail,
+} = require('./lib/stripeSubscription.js');
 
 function parseStripeEvent(rawBody, sigHeader, secret) {
   if (!secret) return { ok: false, error: 'missing_webhook_secret' };
@@ -59,13 +67,25 @@ function getRawBody(event) {
   return event.body || '';
 }
 
+function extractCreditPackMeta(obj) {
+  if (!obj?.metadata) return null;
+  if (obj.metadata.kind !== 'credit_pack') return null;
+  const email = obj.metadata.email;
+  const credits = Number(obj.metadata.credits);
+  if (!email || !credits) return null;
+  return { email: normalizeEmail(email), credits };
+}
+
+async function handleCreditPack(store, email, credits, idempotencyKey) {
+  const result = await addCreditTopups(store, email, credits, idempotencyKey);
+  if (result.ok) {
+    console.log('[stripe-webhook] credit pack added:', email, credits, result.duplicate ? '(duplicate)' : '');
+  }
+  return result;
+}
+
 function extractEmail(obj) {
-  return (
-    obj?.metadata?.email ||
-    obj?.customer_email ||
-    obj?.client_reference_id ||
-    null
-  );
+  return extractStripeEmail(obj);
 }
 
 exports.handler = async (event) => {
@@ -95,11 +115,10 @@ exports.handler = async (event) => {
   const store = getStoreForEvent(event);
   const processedKey = `processed:${eventId}`;
 
-  try {
-    await store.get(processedKey, { type: 'json' });
+  // A-1 fix: store.get() returns null on miss (never throws) ï¿½ check the value, not the resolution
+  const alreadySeen = await store.get(processedKey, { type: 'json' }).catch(() => null);
+  if (alreadySeen) {
     return { statusCode: 200, body: 'already processed' };
-  } catch (_) {
-    /* not yet processed */
   }
 
   let handled = false;
@@ -107,28 +126,50 @@ exports.handler = async (event) => {
   try {
     if (stripeEvent.type === 'checkout.session.completed') {
       const session = stripeEvent.data?.object;
-      const rawEmail = extractEmail(session);
 
-      if (!rawEmail) {
-        console.error('[stripe-webhook] No email in session metadata');
-        return { statusCode: 200, body: 'ok' };
+      if (session?.metadata?.kind === 'credit_pack') {
+        const meta = extractCreditPackMeta(session);
+        if (meta) {
+          const customerId = session.customer || null;
+          if (customerId) await persistStripeCustomerId(store, meta.email, customerId);
+          await handleCreditPack(store, meta.email, meta.credits, eventId);
+          handled = true;
+        }
+      } else {
+        const rawEmail = extractEmail(session);
+
+        if (!rawEmail) {
+          console.error('[stripe-webhook] No email in session metadata');
+          return { statusCode: 200, body: 'ok' };
+        }
+
+        const email = normalizeEmail(rawEmail);
+        const customerId = session.customer || null;
+        if (customerId) await persistStripeCustomerId(store, email, customerId);
+
+        const result = await activateProForEmail(store, email, {
+          sendEmail: true,
+          stripeCustomerId: customerId || undefined,
+        });
+        if (!result.ok) {
+          console.error('[stripe-webhook] Upgrade failed:', result.error, email);
+          return { statusCode: 200, body: 'ok' };
+        }
+
+        console.log('[stripe-webhook] Upgraded to Pro:', email);
+        handled = true;
       }
-
-      const email = normalizeEmail(rawEmail);
-      const customerId = session.customer || null;
-      if (customerId) await persistStripeCustomerId(store, email, customerId);
-
-      const result = await activateProForEmail(store, email, {
-        sendEmail: true,
-        stripeCustomerId: customerId || undefined,
-      });
-      if (!result.ok) {
-        console.error('[stripe-webhook] Upgrade failed:', result.error, email);
-        return { statusCode: 200, body: 'ok' };
+    } else if (
+      stripeEvent.type === 'payment_intent.succeeded' ||
+      stripeEvent.type === 'charge.succeeded'
+    ) {
+      const obj = stripeEvent.data?.object;
+      const meta = extractCreditPackMeta(obj);
+      if (meta) {
+        const idem = obj.id || eventId;
+        await handleCreditPack(store, meta.email, meta.credits, idem);
+        handled = true;
       }
-
-      console.log('[stripe-webhook] Upgraded to Pro:', email);
-      handled = true;
     } else if (stripeEvent.type === 'customer.subscription.deleted') {
       const subscription = stripeEvent.data?.object;
       const rawEmail = extractEmail(subscription);
@@ -138,34 +179,63 @@ exports.handler = async (event) => {
         return { statusCode: 200, body: 'ok' };
       }
 
-      const email = normalizeEmail(rawEmail);
-      const key = userKey(email);
-      let user = null;
-
-      try {
-        user = await store.get(key, { type: 'json' });
-      } catch (_) {}
-
-      if (!user) {
-        console.error('[stripe-webhook] User not found for subscription deletion:', email);
+      const result = await revokeProForEmail(store, rawEmail, { reason: 'subscription_deleted' });
+      if (!result.ok) {
+        console.error('[stripe-webhook] User not found for subscription deletion:', rawEmail);
         return { statusCode: 200, body: 'ok' };
       }
 
-      const updatedUser = {
-        ...user,
-        plan: 'free',
-        pro: false,
-        proRevokedAt: Date.now(),
-      };
-      await store.setJSON(key, updatedUser);
+      console.log('[stripe-webhook] Revoked Pro:', rawEmail);
+      handled = true;
+    } else if (stripeEvent.type === 'customer.subscription.updated') {
+      const subscription = stripeEvent.data?.object;
+      const status = subscription?.status;
+      const rawEmail = extractEmail(subscription);
 
-      console.log('[stripe-webhook] Revoked Pro:', email);
+      if (rawEmail && status) {
+        const email = normalizeEmail(rawEmail);
+
+        if (shouldRevokePro(status)) {
+          await revokeProForEmail(store, email, { reason: `subscription_${status}` });
+          console.log('[stripe-webhook] Revoked Pro (subscription.updated):', email, status);
+        } else if (shouldMarkPaymentWarning(status)) {
+          await markPaymentPastDue(store, email, { status });
+          console.log('[stripe-webhook] Payment grace (subscription.updated):', email, status);
+        } else if (isProActiveStatus(status)) {
+          await clearPaymentPastDue(store, email);
+        }
+      }
+      handled = true;
+    } else if (stripeEvent.type === 'invoice.payment_failed') {
+      const invoice = stripeEvent.data?.object;
+      const rawEmail = extractEmail(invoice);
+
+      if (rawEmail) {
+        const email = normalizeEmail(rawEmail);
+        const marked = await markPaymentPastDue(store, email, {
+          invoiceId: invoice?.id || null,
+          status: 'payment_failed',
+        });
+
+        if (marked.ok) {
+          const sendEmail = !marked.alreadyWarned || marked.priorInvoiceId !== invoice?.id;
+          if (sendEmail) {
+            try {
+              await sendPaymentFailedEmail(email, marked.user?.name || email.split('@')[0]);
+            } catch (err) {
+              console.error('[stripe-webhook] payment failed email error:', err.message);
+            }
+          }
+          console.log('[stripe-webhook] Payment failed ï¿½ Pro kept, warning set:', email);
+        }
+      } else {
+        console.warn('[stripe-webhook] invoice.payment_failed without email');
+      }
       handled = true;
     }
 
-    if (handled) {
-      await store.setJSON(processedKey, { ts: Date.now() });
-    }
+    // Mark as processed regardless ï¿½ even ignored event types should not be replayed
+    await store.setJSON(processedKey, { ts: Date.now(), type: stripeEvent.type }).catch(() => {});
   } catch (err) {
     console.error('[stripe-webhook] Error processing event:', err);
     return { statusCode: 500, body: 'Internal error' };

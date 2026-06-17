@@ -1,0 +1,106 @@
+{
+  "lang": "de",
+  "level": "A1",
+  "status": "published",
+  "title": "Gramática · Deutsch A1",
+  "metaLanguage": "es",
+  "scope": "Al terminar A1 manejas el presente (Präsens) de verbos regulares y de sein/haben, los artículos en Nominativ y Akkusativ, la negación con nicht y kein, los verbos modales básicos, los posesivos, el imperativo sencillo y los verbos separables. Todo ocurre en presente: aún no se trabaja el pasado ni el caso Dativ.",
+  "sections": [
+    {
+      "id": "personalpronomen",
+      "title": "Personalpronomen (Nominativ)",
+      "blocks": [
+        { "type": "paragraph", "text": "Los pronombres personales sustituyen al sujeto. En alemán hay tres formas para 'tú/usted': du (informal), ihr (informal plural) y Sie (formal, siempre con mayúscula)." },
+        { "type": "table", "headers": ["Singular", "Plural"], "rows": [["ich (yo)", "wir (nosotros)"], ["du (tú)", "ihr (vosotros)"], ["er / sie / es (él / ella / ello)", "sie (ellos) / Sie (usted/es)"]] }
+      ]
+    },
+    {
+      "id": "praesens",
+      "title": "Präsens: verbos regulares",
+      "blocks": [
+        { "type": "paragraph", "text": "Se quita la terminación -en del infinitivo (lernen → lern-) y se añade la terminación de cada persona." },
+        { "type": "table", "headers": ["Person", "lernen", "Endung"], "rows": [["ich", "lerne", "-e"], ["du", "lernst", "-st"], ["er/sie/es", "lernt", "-t"], ["wir", "lernen", "-en"], ["ihr", "lernt", "-t"], ["sie/Sie", "lernen", "-en"]] },
+        { "type": "note", "text": "Si la raíz termina en -t o -d, se añade una -e- de apoyo: du arbeitest, er findet." },
+        { "type": "example", "text": "Ich lerne Deutsch. Du wohnst in Berlin. Wir spielen Fußball." }
+      ]
+    },
+    {
+      "id": "sein-haben",
+      "title": "sein und haben",
+      "blocks": [
+        { "type": "paragraph", "text": "Los dos verbos más importantes son irregulares y conviene memorizarlos." },
+        { "type": "table", "headers": ["Person", "sein", "haben"], "rows": [["ich", "bin", "habe"], ["du", "bist", "hast"], ["er/sie/es", "ist", "hat"], ["wir", "sind", "haben"], ["ihr", "seid", "habt"], ["sie/Sie", "sind", "haben"]] },
+        { "type": "example", "text": "Ich bin müde. Sie hat einen Hund." }
+      ]
+    },
+    {
+      "id": "artikel",
+      "title": "Artikel: bestimmt und unbestimmt (Nominativ)",
+      "blocks": [
+        { "type": "paragraph", "text": "Cada sustantivo tiene un género (masculino, femenino o neutro). El artículo determinado equivale a 'el/la' y el indeterminado a 'un/una'. En plural el artículo determinado es siempre die." },
+        { "type": "table", "headers": ["", "maskulin", "feminin", "neutrum", "Plural"], "rows": [["bestimmt", "der", "die", "das", "die"], ["unbestimmt", "ein", "eine", "ein", "—"]] },
+        { "type": "example", "text": "der Tisch, die Lampe, das Buch · ein Tisch, eine Lampe, ein Buch" }
+      ]
+    },
+    {
+      "id": "akkusativ",
+      "title": "Nominativ und Akkusativ",
+      "blocks": [
+        { "type": "paragraph", "text": "El Nominativ es el sujeto; el Akkusativ es el objeto directo. Solo el masculino cambia el artículo en Akkusativ." },
+        { "type": "table", "headers": ["Kasus", "maskulin", "feminin", "neutrum", "Plural"], "rows": [["Nominativ", "der / ein", "die / eine", "das / ein", "die"], ["Akkusativ", "den / einen", "die / eine", "das / ein", "die"]] },
+        { "type": "example", "label": "Solo cambia el masculino", "text": "Der Mann liest einen Roman. Ich sehe den Tisch." }
+      ]
+    },
+    {
+      "id": "negation",
+      "title": "Negation: nicht und kein",
+      "blocks": [
+        { "type": "paragraph", "text": "kein niega sustantivos con artículo indeterminado o sin artículo; nicht niega verbos, adjetivos y el resto." },
+        { "type": "table", "headers": ["Negación", "Uso", "Beispiel"], "rows": [["kein-", "niega un sustantivo", "Ich habe kein Auto."], ["nicht", "niega el verbo o un complemento", "Ich komme nicht. Das ist nicht teuer."]] }
+      ]
+    },
+    {
+      "id": "fragen",
+      "title": "Fragen: W-Fragen und Ja/Nein-Fragen",
+      "blocks": [
+        { "type": "paragraph", "text": "Las preguntas con palabra interrogativa la llevan al inicio y el verbo en segunda posición. En las preguntas de sí/no el verbo va primero." },
+        { "type": "list", "items": ["W-Fragen: wer, was, wo, wann, warum, wie, woher, wohin", "Ja/Nein-Frage: el verbo abre la frase"] },
+        { "type": "example", "text": "Wo wohnst du? — Wann beginnt der Kurs? — Kommst du mit?" }
+      ]
+    },
+    {
+      "id": "modalverben",
+      "title": "Modalverben (Einführung)",
+      "blocks": [
+        { "type": "paragraph", "text": "Los verbos modales se conjugan en posición 2 y el verbo principal va en infinitivo al final de la frase." },
+        { "type": "table", "headers": ["", "können", "müssen", "möchten"], "rows": [["ich", "kann", "muss", "möchte"], ["du", "kannst", "musst", "möchtest"], ["er/sie/es", "kann", "muss", "möchte"], ["wir/sie/Sie", "können", "müssen", "möchten"]] },
+        { "type": "example", "label": "Verbo al final", "text": "Ich kann gut schwimmen. Wir müssen jetzt gehen." }
+      ]
+    },
+    {
+      "id": "possessiv",
+      "title": "Possessivartikel (Nominativ)",
+      "blocks": [
+        { "type": "paragraph", "text": "Indican posesión y se declinan como ein/kein. La terminación concuerda con el sustantivo poseído, no con el poseedor." },
+        { "type": "table", "headers": ["Pronombre", "Possessivartikel"], "rows": [["ich", "mein"], ["du", "dein"], ["er/es", "sein"], ["sie", "ihr"], ["wir", "unser"], ["ihr", "euer"], ["sie/Sie", "ihr / Ihr"]] },
+        { "type": "example", "text": "Das ist mein Bruder. Wo ist deine Tasche?" }
+      ]
+    },
+    {
+      "id": "trennbare",
+      "title": "Trennbare Verben (Einführung)",
+      "blocks": [
+        { "type": "paragraph", "text": "Muchos verbos llevan un prefijo separable (an-, auf-, ein-, mit-, aus-…). En presente, el prefijo se separa y va al final de la frase." },
+        { "type": "example", "text": "aufstehen → Ich stehe um 7 Uhr auf. · einkaufen → Wir kaufen am Samstag ein." }
+      ]
+    },
+    {
+      "id": "wortstellung",
+      "title": "Wortstellung: el verbo en posición 2",
+      "blocks": [
+        { "type": "paragraph", "text": "En una frase afirmativa, el verbo conjugado ocupa siempre la segunda posición, aunque la frase empiece por otro elemento (tiempo, lugar…)." },
+        { "type": "example", "text": "Heute lerne ich Deutsch. (no: Heute ich lerne …)" }
+      ]
+    }
+  ]
+}

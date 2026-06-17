@@ -12,8 +12,8 @@
  */
 
 const { getStoreForEvent }    = require('./lib/blobStore.js');
-const { getJwtSecret, verifyAuthToken, syncKey } = require('./lib/authLib.js');
-const { corsHeaders, getBearer, parseJsonBody, jsonResponse } = require('./lib/http.js');
+const { getJwtSecret, requireAuth, syncKey } = require('./lib/authLib.js');
+const { corsHeaders, parseJsonBody, jsonResponse } = require('./lib/http.js');
 const sb = require('./lib/supabaseAdmin.js');
 
 const MAX_BODY = 900_000;
@@ -119,9 +119,24 @@ function sanitizeSync(raw) {
       }))
     : [];
 
+  const notebook =
+    src.notebook && typeof src.notebook === 'object' && Array.isArray(src.notebook.tabs)
+      ? {
+          tabs: src.notebook.tabs.slice(0, 100).map((t) => ({
+            id: String(t.id || '').slice(0, 80),
+            title: String(t.title || 'Notes').slice(0, 80),
+            lang: String(t.lang || 'de').slice(0, 5),
+            level: String(t.level || 'B1').slice(0, 4),
+            examId: t.examId ? String(t.examId).slice(0, 120) : null,
+            html: String(t.html || '').slice(0, 100000),
+            updatedAt: Math.max(0, Math.min(Number(t.updatedAt) || 0, 9999999999999)),
+          })),
+        }
+      : { tabs: [] };
+
   return {
     flashcards, history, savedExams, activityLog, studyTime, mastery, burned, quota, preferences,
-    goals, activeGoalId, deletedSavedExams, deletedFlashcards, updatedAt: Date.now(),
+    goals, activeGoalId, deletedSavedExams, deletedFlashcards, notebook, updatedAt: Date.now(),
   };
 }
 
@@ -321,10 +336,10 @@ exports.handler = async (event) => {
   if (event.httpMethod === 'OPTIONS') return { statusCode: 204, headers: cors };
   if (!getJwtSecret())  return jsonResponse(503, cors, { error: 'auth_not_configured' });
 
-  const auth = verifyAuthToken(getBearer(event));
-  if (!auth.ok) return jsonResponse(401, cors, { error: auth.error || 'unauthorized' });
-
   const store = getStoreForEvent(event);
+  const auth = await requireAuth(event, store);
+  if (!auth.ok) return jsonResponse(auth.status || 401, cors, { error: auth.error || 'unauthorized' });
+
   const key   = syncKey(auth.email);
   const useSupabase = sb.isConfigured();
 

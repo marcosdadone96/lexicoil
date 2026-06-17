@@ -1,23 +1,79 @@
 const CLAUDE_ENDPOINT = "/.netlify/functions/claude-chat";
 
 function aiAuthHeaders() {
+  if (typeof lcAuthHeaders === "function") return lcAuthHeaders();
   const h = { "Content-Type": "application/json" };
   const token = localStorage.getItem("lc_token");
   if (token) h.Authorization = `Bearer ${token}`;
   return h;
 }
 
+function lcFetch(url, options = {}) {
+  const fn = typeof lcApiFetch === "function" ? lcApiFetch : fetch;
+  if (fn === lcApiFetch) {
+    return lcApiFetch(url, options);
+  }
+  return fetch(url, {
+    credentials: "include",
+    ...options,
+    headers: { ...aiAuthHeaders(), ...(options.headers || {}) },
+  });
+}
+
+function handleAiAuthError(res, data) {
+  if (res.status === 401 && data.error === "token_revoked") {
+    if (typeof Auth !== "undefined" && typeof Auth.handleTokenRevoked === "function") {
+      Auth.handleTokenRevoked();
+    }
+    const e = new Error("token_revoked");
+    e.code = "token_revoked";
+    throw e;
+  }
+}
+
+/**
+ * Request a server-signed generation ticket that authorises up to maxChunks
+ * Anthropic calls for one exam session.  Call ONCE per exam, then pass the
+ * returned ticket to every callAI() call via options.genTicket.
+ *
+ * @param {string} scope     - 'exam_generation' | 'personal_exam' | 'quick_exam'
+ * @param {number} maxChunks - number of AI calls the ticket should cover
+ * @returns {Promise<string>} signed ticket string
+ */
+async function startExamGeneration(scope = 'exam_generation', maxChunks = 4) {
+  const res = await lcFetch(CLAUDE_ENDPOINT, {
+    method: 'POST',
+    headers: aiAuthHeaders(),
+    body: JSON.stringify({ startGeneration: true, scope, maxChunks }),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    handleAiAuthError(res, data);
+    if (res.status === 429 && data.error === 'quota_exceeded') {
+      const e = new Error('quota_exceeded');
+      e.code = 'quota_exceeded';
+      e.used = data.used; e.max = data.max; e.plan = data.plan;
+      throw e;
+    }
+    throw new Error(data.error || 'ticket_failed');
+  }
+  if (typeof window !== 'undefined' && typeof window.applyServerQuota === 'function') {
+    window.applyServerQuota(data);
+  }
+  return data.ticket;
+}
+
 async function callAI(prompt, maxTokens = 6000, options = {}) {
-  const { consumeQuota = true, timeoutMs = 35000, examGeneration = false } = options;
+  const { timeoutMs = 35000, examGeneration = false, aiAction = null, genTicket = null } = options;
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
 
   let res;
   try {
-    res = await fetch(CLAUDE_ENDPOINT, {
+    res = await lcFetch(CLAUDE_ENDPOINT, {
       method: "POST",
       headers: aiAuthHeaders(),
-      body: JSON.stringify({ prompt, maxTokens, consumeQuota, examGeneration }),
+      body: JSON.stringify({ prompt, maxTokens, examGeneration, aiAction, genTicket }),
       signal: controller.signal,
     });
   } catch (err) {
@@ -51,6 +107,7 @@ async function callAI(prompt, maxTokens = 6000, options = {}) {
   }
 
   if (!res.ok) {
+    handleAiAuthError(res, data);
     if (res.status === 504 || (looksLikeHtml && res.status >= 500)) {
       const e = new Error("Exam generation timed out on the server. Please try again.");
       e.code = "gateway_timeout";
@@ -62,6 +119,20 @@ async function callAI(prompt, maxTokens = 6000, options = {}) {
       e.used = data.used;
       e.max = data.max;
       e.plan = data.plan;
+      throw e;
+    }
+    if (res.status === 402 && data.error === "ai_credits_exhausted") {
+      if (typeof showAiCreditsExhausted === "function") {
+        showAiCreditsExhausted({
+          autoRechargeFailed: data.autoRechargeFailed,
+          reason: data.reason,
+        });
+      }
+      const e = new Error("ai_credits_exhausted");
+      e.code = "ai_credits_exhausted";
+      e.remaining = data.remaining;
+      e.aiUsed = data.aiUsed;
+      e.aiMax = data.aiMax;
       throw e;
     }
     if (res.status === 422 && data.error === 'exam_low_quality') {
@@ -95,15 +166,120 @@ async function callAI(prompt, maxTokens = 6000, options = {}) {
     lcDebug.log("[claude] exam generation model:", data.model);
   }
 
-  if (typeof data.used === "number" && typeof window.applyServerQuota === "function") {
+  if (typeof window.applyServerQuota === "function") {
     window.applyServerQuota(data);
   }
 
   return data.text;
 }
 
+function applyAiCreditsFromResponse(data) {
+  if (!data || typeof window.applyServerQuota !== "function") return;
+  if (
+    typeof data.aiUsed === "number" ||
+    typeof data.aiRemaining === "number" ||
+    typeof data.used === "number"
+  ) {
+    window.applyServerQuota(data);
+  }
+}
+
+async function postClaudeFeature(body, timeoutMs = 35000) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  let res;
+  try {
+    res = await lcFetch(CLAUDE_ENDPOINT, {
+      method: "POST",
+      headers: aiAuthHeaders(),
+      body: JSON.stringify({ ...body, consumeQuota: false }),
+      signal: controller.signal,
+    });
+  } catch (err) {
+    clearTimeout(timer);
+    if (err.name === "AbortError") {
+      const e = new Error("AI request timed out");
+      e.code = "timeout";
+      throw e;
+    }
+    throw err;
+  }
+  clearTimeout(timer);
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    if (res.status === 402 && data.error === "ai_credits_exhausted") {
+      if (typeof showAiCreditsExhausted === "function") {
+        showAiCreditsExhausted({
+          autoRechargeFailed: data.autoRechargeFailed,
+          reason: data.reason,
+        });
+      }
+      const e = new Error("ai_credits_exhausted");
+      e.code = "ai_credits_exhausted";
+      e.remaining = data.remaining;
+      throw e;
+    }
+    if (res.status === 403 && data.error === "pro_only") {
+      const e = new Error("pro_only");
+      e.code = "pro_only";
+      throw e;
+    }
+    throw new Error(data.error || `AI service error (${res.status})`);
+  }
+  return data;
+}
+
+async function correctWritingWithAI(lang, level, task, userText, opts = {}) {
+  if (!String(userText || "").trim()) return null;
+  try {
+    const data = await postClaudeFeature({
+      correctWriting: true,
+      aiAction: 'writing_correction',
+      lang,
+      level,
+      task: String(task || ''),
+      userText: String(userText),
+      minWords: opts.minWords,
+      maxWords: opts.maxWords,
+    });
+    applyAiCreditsFromResponse(data);
+    return data.ok ? data.correction : null;
+  } catch (err) {
+    if (err.code === 'ai_credits_exhausted') {
+      if (typeof showAiCreditsExhausted === 'function') showAiCreditsExhausted();
+      return null;
+    }
+    lcDebug.warn("[writing-ai] correction failed:", err.message);
+    return null;
+  }
+}
+
+async function genGrammarCoaching(lang, level, weakTags, sampleMistakes) {
+  if (!weakTags?.length && !sampleMistakes?.length) return null;
+  try {
+    const data = await postClaudeFeature({
+      grammarCoaching: true,
+      aiAction: 'grammar_coaching',
+      lang,
+      level,
+      weakTags: weakTags || [],
+      sampleMistakes: (sampleMistakes || []).slice(0, 8),
+    });
+    applyAiCreditsFromResponse(data);
+    return data.ok ? data.coaching : null;
+  } catch (err) {
+    if (err.code === 'ai_credits_exhausted') {
+      if (typeof showAiCreditsExhausted === 'function') showAiCreditsExhausted();
+      return null;
+    }
+    if (err.code === "pro_only") return null;
+    lcDebug.warn("[pdf] grammar coaching failed:", err.message);
+    return null;
+  }
+}
+
 async function confirmStripePurchase(sessionId) {
-  const res = await fetch("/.netlify/functions/stripe-confirm", {
+  const res = await lcFetch("/.netlify/functions/stripe-confirm", {
     method: "POST",
     headers: aiAuthHeaders(),
     body: JSON.stringify({ session_id: sessionId }),
@@ -131,7 +307,7 @@ async function commitExamQuota() {
     commitExamQuota._pendingId = crypto.randomUUID();
   }
   const requestId = commitExamQuota._pendingId || null;
-  const res = await fetch(CLAUDE_ENDPOINT, {
+  const res = await lcFetch(CLAUDE_ENDPOINT, {
     method: "POST",
     headers: aiAuthHeaders(),
     body: JSON.stringify({ quotaOnly: true, requestId }),
@@ -149,8 +325,8 @@ async function commitExamQuota() {
     throw new Error(data.error || "Could not register exam usage");
   }
   commitExamQuota._pendingId = null;
-  if (typeof data.used === "number" && typeof window.applyServerQuota === "function") {
-    window.applyServerQuota({ used: data.used, max: data.max, plan: data.plan });
+  if (typeof window.applyServerQuota === "function") {
+    window.applyServerQuota(data);
   }
 }
 
@@ -162,7 +338,7 @@ async function fetchExamFromPool(lang, level, excludeIds) {
     params.exclude = excludeIds.slice(0, 40).join(",");
   }
   const q = new URLSearchParams(params);
-  const res = await fetch(`/.netlify/functions/exam-pool?${q}`);
+  const res = await lcFetch(`/.netlify/functions/exam-pool?${q}`);
   const data = await res.json().catch(() => ({}));
   if (!res.ok || !data.found) return null;
   return data;
@@ -170,14 +346,14 @@ async function fetchExamFromPool(lang, level, excludeIds) {
 
 async function fetchVocabCache(from, to, text) {
   const params = new URLSearchParams({ from, to, text: String(text || "") });
-  const res = await fetch(`${VOCAB_CACHE_ENDPOINT}?${params}`);
+  const res = await lcFetch(`${VOCAB_CACHE_ENDPOINT}?${params}`);
   const data = await res.json().catch(() => ({}));
   if (!res.ok || !data.found) return null;
   return data;
 }
 
 async function putVocabCache(from, to, text, translation, source = "manual") {
-  const res = await fetch(VOCAB_CACHE_ENDPOINT, {
+  const res = await lcFetch(VOCAB_CACHE_ENDPOINT, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ from, to, text, translation, source }),
@@ -202,21 +378,16 @@ async function fetchTtsAudio(text, voice, lang) {
     voice: voice || ttsVoiceForLang(lang),
     lang: lang || "",
   });
-  const res = await fetch(`${TTS_ENDPOINT}?${params}`);
+  const res = await lcFetch(`${TTS_ENDPOINT}?${params}`);
   const data = await res.json().catch(() => ({}));
   if (!res.ok || !data.found || !data.audioBase64) return null;
   return data;
 }
 
 async function generateTtsAudio(text, voice, lang) {
-  const token = localStorage.getItem("lc_token");
-  const headers = { "Content-Type": "application/json" };
-  if (token && localStorage.getItem("lc_guest") !== "1") {
-    headers.Authorization = `Bearer ${token}`;
-  }
-  const res = await fetch(TTS_ENDPOINT, {
+  if (localStorage.getItem("lc_guest") === "1") return { unavailable: true, error: "guest" };
+  const res = await lcFetch(TTS_ENDPOINT, {
     method: "POST",
-    headers,
     body: JSON.stringify({
       text: String(text || ""),
       voice: voice || ttsVoiceForLang(lang),
@@ -224,22 +395,32 @@ async function generateTtsAudio(text, voice, lang) {
     }),
   });
   const data = await res.json().catch(() => ({}));
-  if (!res.ok) return { unavailable: true, error: data.error };
-  if (data.unavailable) return { unavailable: true };
+  if (!res.ok) {
+    if (res.status === 401 && data.error === "token_revoked") {
+      if (typeof Auth !== "undefined" && typeof Auth.handleTokenRevoked === "function") {
+        Auth.handleTokenRevoked();
+      }
+      return { unavailable: true, error: "token_revoked" };
+    }
+    // B-6: surface AI credit exhaustion distinctly so UI can show a helpful message
+    if (res.status === 402 && data.error === "ai_credits_exhausted") {
+      if (typeof showAiCreditsExhausted === "function") {
+        showAiCreditsExhausted({
+          autoRechargeFailed: data.autoRechargeFailed,
+          reason: data.reason,
+        });
+      }
+      return { unavailable: true, error: data.error };
+    }
   if (data.found && data.audioBase64) return data;
   return null;
 }
 
 async function saveExamPartsToStaging(lang, level, exam, opts = {}) {
   if (exam?.vocabPersonal || exam?.vocabWords?.length) return null;
-  const token = localStorage.getItem("lc_token");
-  if (!token || localStorage.getItem("lc_guest") === "1") return null;
-  const res = await fetch("/.netlify/functions/content-staging", {
+  if (localStorage.getItem("lc_guest") === "1") return null;
+  const res = await lcFetch("/.netlify/functions/content-staging", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
     body: JSON.stringify({
       lang,
       level,
@@ -268,14 +449,8 @@ async function saveExamToPool(lang, level, topic, exam) {
       return;
     }
   }
-  const token = localStorage.getItem("lc_token");
-  const headers = { "Content-Type": "application/json" };
-  if (token && localStorage.getItem("lc_guest") !== "1") {
-    headers.Authorization = `Bearer ${token}`;
-  }
-  const res = await fetch("/.netlify/functions/exam-pool", {
+  const res = await lcFetch("/.netlify/functions/exam-pool", {
     method: "POST",
-    headers,
     body: JSON.stringify({ lang, level, topic: t, exam }),
   });
   if (!res.ok) {
@@ -285,14 +460,9 @@ async function saveExamToPool(lang, level, topic, exam) {
 }
 
 async function startStripeCheckout() {
-  const token = localStorage.getItem("lc_token");
-  if (!token) throw new Error("login_required");
-  const res = await fetch("/.netlify/functions/stripe-checkout", {
+  if (typeof Auth !== "undefined" && Auth.isGuest && Auth.isGuest()) throw new Error("login_required");
+  const res = await lcFetch("/.netlify/functions/stripe-checkout", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
   });
   const data = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(data.error || "checkout_failed");
@@ -301,14 +471,9 @@ async function startStripeCheckout() {
 }
 
 async function startStripePortal() {
-  const token = localStorage.getItem("lc_token");
-  if (!token) throw new Error("login_required");
-  const res = await fetch("/.netlify/functions/stripe-portal", {
+  if (typeof Auth !== "undefined" && Auth.isGuest && Auth.isGuest()) throw new Error("login_required");
+  const res = await lcFetch("/.netlify/functions/stripe-portal", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
   });
   const data = await res.json().catch(() => ({}));
   if (!res.ok) {

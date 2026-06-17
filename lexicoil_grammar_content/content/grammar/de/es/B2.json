@@ -1,0 +1,94 @@
+{
+  "lang": "de",
+  "level": "B2",
+  "status": "published",
+  "title": "Gramática · Deutsch B2",
+  "metaLanguage": "es",
+  "scope": "B2 entra en el registro formal y los matices: Konjunktiv I (estilo indirecto), pasiva de estado (Zustandspassiv) y sustitutos de la pasiva, participios usados como adjetivos, conectores complejos en dos partes, declinación-n, Genitiv con preposiciones y Konjunktiv II de pasado. Frontera: dominas el matiz y la formalidad, pero todavía no el estilo nominal culto ni las construcciones de participio extendido de C1.",
+  "sections": [
+    {
+      "id": "konjunktiv1",
+      "title": "Konjunktiv I (indirekte Rede)",
+      "blocks": [
+        { "type": "paragraph", "text": "Es la forma del estilo indirecto, típica de prensa e informes. Se usa sobre todo en 3ª persona; si coincide con el indicativo, se sustituye por Konjunktiv II." },
+        { "type": "table", "headers": ["Infinitiv", "Konjunktiv I (er)", "Beispiel"], "rows": [["sein", "sei", "Er sagt, er sei krank."], ["haben", "habe", "Sie sagt, sie habe keine Zeit."], ["gehen", "gehe", "Er behauptet, er gehe jeden Tag."], ["(coincide → K II)", "hätten → hätten", "Sie sagen, sie hätten kein Geld."]] }
+      ]
+    },
+    {
+      "id": "zustandspassiv",
+      "title": "Zustandspassiv (sein-Passiv)",
+      "blocks": [
+        { "type": "paragraph", "text": "Mientras el Vorgangspassiv (werden) describe la acción, el Zustandspassiv (sein + Partizip II) describe el resultado o estado." },
+        { "type": "table", "headers": ["Tipo", "Struktur", "Beispiel"], "rows": [["Vorgang (acción)", "wird + Part. II", "Die Tür wird geschlossen."], ["Zustand (estado)", "ist + Part. II", "Die Tür ist geschlossen."]] }
+      ]
+    },
+    {
+      "id": "passiversatz",
+      "title": "Passiversatzformen",
+      "blocks": [
+        { "type": "paragraph", "text": "Formas que expresan un sentido pasivo o de posibilidad/obligación sin usar werden." },
+        { "type": "table", "headers": ["Forma", "Bedeutung", "Beispiel"], "rows": [["sich lassen + Inf.", "kann ... werden", "Das Problem lässt sich lösen."], ["sein + zu + Inf.", "muss/kann ... werden", "Die Aufgabe ist zu erledigen."], ["Adjektiv auf -bar", "kann ... werden", "Das Wort ist nicht lesbar."]] }
+      ]
+    },
+    {
+      "id": "partizipien",
+      "title": "Partizip I und II als Adjektive",
+      "blocks": [
+        { "type": "paragraph", "text": "Los participios pueden funcionar como adjetivos y se declinan. El Partizip I (Infinitiv + d) tiene sentido activo; el Partizip II, sentido pasivo o resultativo." },
+        { "type": "table", "headers": ["Partizip", "Bildung", "Beispiel"], "rows": [["Partizip I (activo)", "Inf. + -d", "das weinende Kind (que llora)"], ["Partizip II (pasivo)", "ge-...-t/-en", "das gekochte Ei (cocido)"]] }
+      ]
+    },
+    {
+      "id": "konnektoren-komplex",
+      "title": "Zweiteilige Konnektoren",
+      "blocks": [
+        { "type": "paragraph", "text": "Conectores en dos partes que enlazan ideas con precisión." },
+        { "type": "table", "headers": ["Konnektor", "Bedeutung", "Beispiel"], "rows": [["sowohl … als auch", "tanto ... como", "Sie spricht sowohl Deutsch als auch Französisch."], ["weder … noch", "ni ... ni", "Er hat weder Zeit noch Lust."], ["nicht nur … sondern auch", "no solo ... sino también", "Das ist nicht nur billig, sondern auch gut."], ["je … desto", "cuanto ... tanto", "Je mehr ich lerne, desto besser verstehe ich."], ["zwar … aber", "si bien ... pero", "Es ist zwar teuer, aber sehr gut."]] }
+      ]
+    },
+    {
+      "id": "satzverbindungen",
+      "title": "Kausal, konzessiv, konsekutiv, final",
+      "blocks": [
+        { "type": "paragraph", "text": "Distinciones finas de relación lógica, con sus conectores típicos." },
+        { "type": "table", "headers": ["Relación", "Konnektoren", "Beispiel"], "rows": [["causal", "weil, da, aufgrund (+Gen)", "Aufgrund des Regens blieben wir zu Hause."], ["concesiva", "obwohl, trotz (+Gen)", "Trotz des Regens gingen wir spazieren."], ["consecutiva", "sodass, so … dass", "Es regnete so stark, dass wir blieben."], ["final", "damit / um … zu", "Ich spare, um ein Auto zu kaufen."]] },
+        { "type": "note", "text": "um … zu solo si el sujeto es el mismo en ambas partes; si cambia, se usa damit." }
+      ]
+    },
+    {
+      "id": "n-deklination",
+      "title": "n-Deklination",
+      "blocks": [
+        { "type": "paragraph", "text": "Un grupo de sustantivos masculinos añade -(e)n en todos los casos menos en Nominativ singular." },
+        { "type": "table", "headers": ["Kasus", "Singular"], "rows": [["Nominativ", "der Student"], ["Akkusativ", "den Studenten"], ["Dativ", "dem Studenten"], ["Genitiv", "des Studenten"]] },
+        { "type": "note", "text": "Pertenecen a este grupo: Junge, Kollege, Mensch, Nachbar, Herr, Name, Kunde…" }
+      ]
+    },
+    {
+      "id": "genitiv-praepositionen",
+      "title": "Präpositionen mit Genitiv",
+      "blocks": [
+        { "type": "paragraph", "text": "Preposiciones de registro más formal que rigen Genitiv." },
+        { "type": "table", "headers": ["Präposition", "Bedeutung", "Beispiel"], "rows": [["während", "durante", "während des Kurses"], ["wegen", "a causa de", "wegen des Wetters"], ["trotz", "a pesar de", "trotz der Probleme"], ["(an)statt", "en lugar de", "statt eines Autos"], ["aufgrund", "debido a", "aufgrund der Lage"]] }
+      ]
+    },
+    {
+      "id": "konjunktiv2-vergangenheit",
+      "title": "Konjunktiv II der Vergangenheit",
+      "blocks": [
+        { "type": "paragraph", "text": "Para hipótesis irreales sobre el pasado: hätte/wäre + Partizip II." },
+        { "type": "example", "text": "Wenn ich mehr gelernt hätte, hätte ich die Prüfung bestanden." },
+        { "type": "example", "text": "Wenn ich früher losgefahren wäre, wäre ich pünktlich gewesen." }
+      ]
+    },
+    {
+      "id": "relativ-erweitert",
+      "title": "Relativsätze: was, wo und mit Präposition",
+      "blocks": [
+        { "type": "paragraph", "text": "Ampliación de las relativas: con was (tras alles, etwas, nichts, das…), con wo (lugar) y con preposición + pronombre relativo." },
+        { "type": "example", "text": "Das ist alles, was ich weiß." },
+        { "type": "example", "text": "Die Stadt, in der ich wohne, ist klein." }
+      ]
+    }
+  ]
+}

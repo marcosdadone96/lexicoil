@@ -2,6 +2,13 @@
 const MasteryView = (() => {
   const WEAK_RATIO_LABEL = '70% weakness · 30% mixed';
 
+  function safeCount(n) {
+    const v = Number(n);
+    if (!Number.isFinite(v) || v < 0 || v > 100000) return '';
+    const formatted = v >= 1000 ? v.toLocaleString('en-US') : String(v);
+    return ' · ' + formatted + ' q';
+  }
+
   function formatTagLabel(tag) {
     if (!tag) return '';
     const tail = String(tag)
@@ -355,7 +362,7 @@ const MasteryView = (() => {
               moduleIcon(m.module) + ' ' + moduleLabel(m.module, goal.subject),
               m.accuracy,
               m.mastery,
-              ' · ' + m.total + ' q',
+              safeCount(m.total),
             ),
           )
           .join('');
@@ -366,7 +373,7 @@ const MasteryView = (() => {
       grammarHtml =
         '<p class="mastery-seclbl">Grammar tags</p>' +
         summary.grammarOverview
-          .map((r) => renderBarRow(formatTagLabel(r.tag), r.accuracy, r.mastery, ' · ' + r.total + ' q'))
+          .map((r) => renderBarRow(formatTagLabel(r.tag), r.accuracy, r.mastery, safeCount(r.total)))
           .join('');
     }
 

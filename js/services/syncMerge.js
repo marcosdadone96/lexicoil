@@ -132,6 +132,18 @@
     return { profiles: { ...(s.profiles || {}), ...(l.profiles || {}) } };
   }
 
+  function mergeNotebook(local, server) {
+    const map = new Map();
+    for (const t of [...(server?.tabs || []), ...(local?.tabs || [])]) {
+      if (!t?.id) continue;
+      const prev = map.get(t.id);
+      const ts = Number(t.updatedAt) || 0;
+      const prevTs = Number(prev?.updatedAt) || 0;
+      if (!prev || ts >= prevTs) map.set(t.id, t);
+    }
+    return { tabs: [...map.values()].slice(0, 100) };
+  }
+
   window.mergeSyncPayload = function mergeSyncPayload(local, server) {
     const l = local && typeof local === 'object' ? local : {};
     const s = server && typeof server === 'object' ? server : {};
@@ -150,6 +162,7 @@
       burned: (typeof BurnedRegistry !== 'undefined') ? BurnedRegistry.mergeBurned(l.burned, s.burned) : (l.burned || s.burned || { v: 1, keys: [], ids: [] }),
       goals: mergeGoals(l.goals, s.goals),
       activeGoalId: l.activeGoalId || s.activeGoalId || null,
+      notebook: mergeNotebook(l.notebook, s.notebook),
     };
   };
 })();

@@ -12,6 +12,7 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
 const ExamBlueprint = require(path.join(ROOT, 'js/library/ExamBlueprint.js'));
 globalThis.ExamBlueprint = ExamBlueprint;
+require(path.join(ROOT, 'js/library/adsMatching.js'));
 require(path.join(ROOT, 'js/library/LibraryLoader.js'));
 const ExamBuilder = require(path.join(ROOT, 'js/library/ExamBuilder.js'));
 

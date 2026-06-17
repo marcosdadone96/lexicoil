@@ -188,13 +188,44 @@ const ExamBuilder = (() => {
     return q.passageId ? LibraryLoader.getPassage(bank, q.passageId) : null;
   }
 
+  function adsMatchingEngine() {
+    if (typeof AdsMatching !== 'undefined') return AdsMatching;
+    if (typeof ExamBlueprint !== 'undefined' && ExamBlueprint.buildAdsMatchingLesenPart) return ExamBlueprint;
+    if (typeof globalThis !== 'undefined' && globalThis.AdsMatching) return globalThis.AdsMatching;
+    return null;
+  }
+
   function buildLesenParts(bank, selected) {
     const enriched =
       typeof PassageResolver !== 'undefined'
         ? PassageResolver.enrichQuestionPassageIds(selected)
         : selected;
+    const AM = adsMatchingEngine();
+    const matchingT3 = enriched.filter((q) => {
+      const teil = typeof q.teil === 'string' ? Number(q.teil) : q.teil;
+      const type = String(q.type || q.questionType || '').toLowerCase();
+      return q.module === 'lesen' && teil === 3 && (type === 'matching' || type === 'match');
+    });
+    const rest = matchingT3.length ? enriched.filter((q) => !matchingT3.includes(q)) : enriched;
+    const parts = [];
+    if (matchingT3.length && AM?.buildAdsMatchingLesenPart) {
+      parts.push(
+        AM.buildAdsMatchingLesenPart(
+          {
+            teil: 3,
+            slotType: 'ads_matching',
+            instruction:
+              bank.meta?.language === 'de'
+                ? 'Lesen Sie die Situationen und die Anzeigen a bis j. Welche Anzeige passt zu welcher Situation?'
+                : 'Read the situations and ads a–j. Which ad matches each situation?',
+          },
+          matchingT3,
+          toExamQuestion,
+        ),
+      );
+    }
     const byPassage = {};
-    enriched.forEach((q) => {
+    rest.forEach((q) => {
       const pid =
         (typeof PassageResolver !== 'undefined'
           ? PassageResolver.passageIdFromQuestion(q)
@@ -202,8 +233,7 @@ const ExamBuilder = (() => {
       if (!byPassage[pid]) byPassage[pid] = [];
       byPassage[pid].push(q);
     });
-    const parts = [];
-    let teil = 1;
+    let teil = parts.length ? 2 : 1;
     Object.entries(byPassage).forEach(([pid, qs]) => {
       const shared =
         typeof PassageResolver !== 'undefined'

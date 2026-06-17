@@ -15,6 +15,11 @@ async function runInit(){
   hideAuthOverlay();
   try{loadLS();}catch(e){lcDebug.warn('[loadLS]',e);}
   try{
+    if(typeof ManualVocab!=='undefined'&&typeof ManualVocab.reclassifyStoredFlashcards==='function'){
+      if(ManualVocab.reclassifyStoredFlashcards()&&typeof saveFC==='function')saveFC();
+    }
+  }catch(e){lcDebug.warn('[vocab reclass]',e);}
+  try{
     if(typeof BurnedRegistry!=='undefined'&&typeof BurnedRegistry.setCooldownDays==='function'){
       BurnedRegistry.setCooldownDays(window.LC_COOLDOWN_DAYS??15);
     }
@@ -24,6 +29,9 @@ async function runInit(){
       await LibraryLoader.probeAll();
     }
   }catch(e){lcDebug.warn('[library probe]',e);}
+  try{
+    if(typeof renderProfileLevelGrid==='function')renderProfileLevelGrid();
+  }catch(e){lcDebug.warn('[level probe refresh]',e);}
   try{migrateSavedExams();}catch(e){lcDebug.warn('[migrateSavedExams]',e);S.savedExams=[];}
   loadTheme();
   paintDashboard();
@@ -36,7 +44,7 @@ async function runInit(){
       await Auth.completeOAuthCallback();
       ok=await bootstrapAuth(8000);
     }catch(e){
-      oauthMsg=e.message||'Error al iniciar sesi\u00f3n.';
+      oauthMsg=e.message||'Could not sign in.';
     }
   }
   if(typeof Auth!=='undefined'&&Auth.isGuest&&Auth.isGuest()){
@@ -47,6 +55,14 @@ async function runInit(){
 
   updUserBtn();
   if(typeof refreshUserDropdown==='function')refreshUserDropdown();
+  try{
+    if(typeof AnalyticsStore!=='undefined'&&typeof AnalyticsStore.runMasteryIntegrityFix==='function'){
+      AnalyticsStore.runMasteryIntegrityFix();
+    }
+    if(typeof ManualVocab!=='undefined'&&typeof ManualVocab.reclassifyStoredFlashcards==='function'){
+      if(ManualVocab.reclassifyStoredFlashcards()&&typeof saveFC==='function')saveFC();
+    }
+  }catch(e){lcDebug.warn('[post-sync fix]',e);}
   if(oauthMsg){
     lcDebug.warn('[auth] OAuth on load:',oauthMsg);
   }
@@ -125,6 +141,22 @@ function bootApp(){
   window.init().catch((e)=>{lcDebug.error('[init]',e);paintDashboard();});
 }
 window.bootApp=bootApp;
+window.lcFixLocalData=function lcFixLocalData(){
+  try{
+    if(typeof AnalyticsStore!=='undefined')AnalyticsStore.runMasteryIntegrityFix();
+    if(typeof ManualVocab!=='undefined'&&ManualVocab.reclassifyStoredFlashcards()){
+      if(typeof saveFC==='function')saveFC();
+    }
+    if(typeof updQuotaUI==='function')updQuotaUI();
+    if(typeof renderHomeScreen==='function')renderHomeScreen();
+    if(typeof refreshVocabHubPanel==='function')refreshVocabHubPanel();
+    console.log('[LexiCoil] Local data repaired. Reload if UI still looks stale.');
+    return true;
+  }catch(e){
+    console.warn('[LexiCoil] lcFixLocalData failed',e);
+    return false;
+  }
+};
 
 (function(){
   const _origSetFcType=window.setFcTypeFilter;

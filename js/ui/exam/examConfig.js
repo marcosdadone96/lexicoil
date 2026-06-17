@@ -119,16 +119,19 @@ function renderExamConfigurator(){
     let txt='<b>'+selN+' word'+(selN===1?'':'s')+'</b> · '+esc(skillLbl);
     if(oralOnly)txt+=' · oral practice';
     else txt+=' · ~'+qEst+' questions';
-    if(rem===1)txt+=' · <span class="exam-config-quota-warn">Last exam this month</span>';
+    if (rem===1)txt+=' · <span class="exam-config-quota-warn">Last exam this month</span>';
+    if(typeof getAiCreditsRemaining==='function'&&typeof aiCreditsMeterLabel==='function'&&isPro()){
+      txt+=' · '+esc(aiCreditsMeterLabel());
+    }
     summary.innerHTML=txt;
   }
   if(genBtn){
-    const proOnly=typeof canUsePersonalized==='function'&&!canUsePersonalized();
-    genBtn.disabled=selN<2||_examConfig.skills.size<1||(!proOnly&&!canGenerate());
-    if(proOnly){
-      genBtn.textContent='Upgrade for personalized exams →';
-    }else if(!canGenerate())genBtn.textContent='Quota used — upgrade';
+    const tier=typeof canUsePersonalizedTier==='function'?canUsePersonalizedTier():'free';
+    genBtn.disabled=selN<2||_examConfig.skills.size<1||!canGenerate()||(typeof canUseAiGeneration==='function'&&!canUseAiGeneration());
+    if(!canGenerate())genBtn.textContent='Quota used — upgrade';
+    else if(typeof canUseAiGeneration==='function'&&!canUseAiGeneration())genBtn.textContent='No AI credits — buy pack';
     else if(oralOnly)genBtn.textContent='Start speaking →';
+    else if(tier==='pro')genBtn.textContent='Generate exam (IA) →';
     else genBtn.textContent='Generate exam →';
   }
 }
@@ -139,8 +142,12 @@ function submitExamConfig(){
   const skills=[..._examConfig.skills];
   if(words.length<2){lcToast('Select at least 2 words.','warn');return;}
   if(skills.length<1){lcToast('Select at least one exam part.','warn');return;}
-  if(typeof requirePersonalized==='function'&&!requirePersonalized())return;
   if(!canGenerate()){showUpgrade();return;}
+  if(typeof canUseAiGeneration==='function'&&!canUseAiGeneration()){
+    if(typeof openCreditPackModal==='function')openCreditPackModal();
+    else if(typeof showAiCreditsExhausted==='function')showAiCreditsExhausted();
+    return;
+  }
   showExamConfigFootbar(false);
   const gid=_examConfig.goalId;
   const oralOnly=skills.length===1&&skills[0]==='sprechen';
@@ -309,12 +316,31 @@ function renderProfileLevelGrid(){
   const grid=document.getElementById('profileLevelGrid');
   const btn=document.getElementById('btnProfileSave');
   if(!grid||!S.profileCert)return;
-  const levels=(typeof LibraryCatalog!=='undefined'?LEVELS[S.profileCert].filter(l=>LibraryCatalog.isLevelAvailable(S.profileCert,l.code)):LEVELS[S.profileCert]);
-  grid.innerHTML=levels.map(l=>`<div class="level-card${S.profileLevel===l.code?' selected':''}" onclick="selectProfileLevel('${l.code}')"><div class="lc-code">${l.code}</div><div class="lc-name">${l.name}</div></div>`).join('');
-  if(btn)btn.disabled=!S.profileLevel;
+  const advertised=typeof LibraryCatalog!=='undefined'?LibraryCatalog.advertisedLevels(S.profileCert):LEVELS[S.profileCert].map(l=>l.code);
+  const metaByCode=Object.fromEntries((LEVELS[S.profileCert]||[]).map(l=>[l.code,l]));
+  function levelStatus(code){
+    if(typeof LibraryCatalog!=='undefined'&&LibraryCatalog.getLevelUiStatus)return LibraryCatalog.getLevelUiStatus(S.profileCert,code);
+    if(typeof LevelAvailability!=='undefined')return LevelAvailability.getLevelUiStatus(S.profileCert,code);
+    return'ready';
+  }
+  if(S.profileLevel&&levelStatus(S.profileLevel)==='soon')S.profileLevel=null;
+  grid.innerHTML=advertised.map(code=>{
+    const meta=metaByCode[code]||{code,name:code};
+    const status=levelStatus(code);
+    const soon=status==='soon';
+    const sel=!soon&&S.profileLevel===code;
+    const click=soon?` onclick="openLevelSoonNotify('${S.profileCert}','${code}')"`: ` onclick="selectProfileLevel('${code}')"`;
+    const badge=typeof LevelAvailability!=='undefined'?LevelAvailability.levelBadgeHtml(status):'';
+    return`<div class="level-card${sel?' selected':''}${soon?' level-card--soon':''}"${click}><div class="lc-code">${meta.code}${badge?'<span class="level-card__badge">'+badge+'</span>':''}</div><div class="lc-name">${esc(meta.name)}</div>${soon?'<div class="level-card__hint">Tap to get notified</div>':''}</div>`;
+  }).join('');
+  if(btn)btn.disabled=!S.profileLevel||levelStatus(S.profileLevel)==='soon';
 }
 function selectProfileLevel(code){
   if(typeof isFreeAccount==='function'&&isFreeAccount()){if(typeof showUpgrade==='function')showUpgrade();return;}
+  if(typeof LibraryCatalog!=='undefined'&&LibraryCatalog.getLevelUiStatus&&LibraryCatalog.getLevelUiStatus(S.profileCert,code)==='soon'){
+    if(typeof openLevelSoonNotify==='function')openLevelSoonNotify(S.profileCert,code);
+    return;
+  }
   S.profileLevel=code;renderProfileLevelGrid();
 }
 function saveExamProfile(){

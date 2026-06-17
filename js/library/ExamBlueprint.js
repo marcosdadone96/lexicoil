@@ -252,6 +252,13 @@ const ExamBlueprint = (() => {
     return out;
   }
 
+  function adsMatching() {
+    if (typeof AdsMatching !== 'undefined') return AdsMatching;
+    if (typeof globalThis !== 'undefined' && globalThis.AdsMatching) return globalThis.AdsMatching;
+    if (typeof window !== 'undefined' && window.AdsMatching) return window.AdsMatching;
+    return null;
+  }
+
   function buildLesenPart(partSpec, questions, bank) {
     const layout = partSpec.layout || 'passage_questions';
     const { groups, enriched } = groupByPassage(questions, bank);
@@ -265,6 +272,11 @@ const ExamBlueprint = (() => {
       instruction: partSpec.instruction || partSpec.label,
       blueprintSlot: partSpec.slotType,
     };
+
+    const AM = adsMatching();
+    if (AM?.isAdsMatchingSpec(partSpec) && enriched.length) {
+      return AM.buildAdsMatchingLesenPart(partSpec, enriched, toExamQuestion);
+    }
 
     if (layout === 'items' && enriched.length) {
       part.items = enriched.map((q, i) => {
@@ -594,6 +606,7 @@ const ExamBlueprint = (() => {
     modulePool,
     pickFromPool,
     typeAllowed,
+    ...(adsMatching() || {}),
   };
 })();
 

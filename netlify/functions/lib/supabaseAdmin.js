@@ -381,6 +381,77 @@ async function invalidatePoolExam(id) {
   return !error;
 }
 
+// ── AI generation audit log ───────────────────────────────────────────────────
+
+async function insertGeneration(rec) {
+  const sb = getClient();
+  if (!sb) return null;
+  const row = {
+    user_id: rec.user_id ?? rec.userId ?? null,
+    email: rec.email ?? null,
+    lang: rec.lang ?? null,
+    level: rec.level ?? null,
+    source: rec.source ?? 'ai',
+    topic: rec.topic ?? null,
+    vocab_words: rec.vocab_words ?? rec.vocabWords ?? [],
+    coverage: rec.coverage != null ? Number(rec.coverage) : null,
+    valid: rec.valid != null ? !!rec.valid : null,
+    model: rec.model ?? null,
+    input_tokens: rec.input_tokens ?? rec.inputTokens ?? null,
+    output_tokens: rec.output_tokens ?? rec.outputTokens ?? null,
+    exam_data: rec.exam_data ?? rec.examData ?? null,
+  };
+  const { data, error } = await sb.from('lc_ai_generations').insert(row).select('id').single();
+  if (error) console.error('[supabaseAdmin] insertGeneration:', error.message);
+  return data?.id || null;
+}
+
+async function listGenerations({ email, lang, level, from, to, limit = 50, offset = 0 } = {}) {
+  const sb = getClient();
+  if (!sb) return { rows: [], total: 0 };
+  const lim = Math.min(Math.max(Number(limit) || 50, 1), 200);
+  const off = Math.max(Number(offset) || 0, 0);
+  let q = sb
+    .from('lc_ai_generations')
+    .select(
+      'id, user_id, email, lang, level, source, topic, vocab_words, coverage, valid, model, input_tokens, output_tokens, created_at',
+      { count: 'exact' },
+    )
+    .order('created_at', { ascending: false });
+  if (email) q = q.eq('email', String(email).trim().toLowerCase());
+  if (lang) q = q.eq('lang', String(lang).trim().toLowerCase());
+  if (level) q = q.eq('level', String(level).trim().toUpperCase());
+  if (from) q = q.gte('created_at', from);
+  if (to) q = q.lte('created_at', to);
+  const { data, error, count } = await q.range(off, off + lim - 1);
+  if (error) console.error('[supabaseAdmin] listGenerations:', error.message);
+  return { rows: data || [], total: count ?? (data?.length || 0) };
+}
+
+async function getGeneration(id) {
+  const sb = getClient();
+  if (!sb || !id) return null;
+  const { data, error } = await sb.from('lc_ai_generations').select('*').eq('id', id).single();
+  if (error) console.error('[supabaseAdmin] getGeneration:', error.message);
+  return data || null;
+}
+
+async function purgeOldGenerations(days = 90) {
+  const sb = getClient();
+  if (!sb) return 0;
+  const cutoff = new Date(Date.now() - days * 86400000).toISOString();
+  const { data, error } = await sb
+    .from('lc_ai_generations')
+    .delete()
+    .lt('created_at', cutoff)
+    .select('id');
+  if (error) {
+    console.error('[supabaseAdmin] purgeOldGenerations:', error.message);
+    return 0;
+  }
+  return (data || []).length;
+}
+
 // ── Content stats (admin) ─────────────────────────────────────────────────────
 
 async function getContentStats() {
@@ -433,6 +504,10 @@ module.exports = {
   upsertSavedExams,
   getSavedExams,
   deleteSavedExams,
+  insertGeneration,
+  listGenerations,
+  getGeneration,
+  purgeOldGenerations,
   isAdmin,
   isAdminByEmail,
   listUsers,

@@ -58,6 +58,19 @@
     .staging-card .actions { display: flex; gap: 8px; }
     .staging-card .actions button.approve { background: rgba(52,211,153,.15); color: var(--green); border-color: rgba(52,211,153,.3); }
     .staging-card .actions button.reject { background: rgba(248,113,113,.1); color: var(--red); border-color: rgba(248,113,113,.3); }
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.65); z-index: 900; display: flex; align-items: flex-start; justify-content: center; padding: 40px 16px; overflow-y: auto; }
+    .modal-box { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 22px 24px; width: 100%; max-width: 920px; max-height: calc(100vh - 80px); overflow-y: auto; }
+    .modal-hd { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+    .modal-hd h3 { font-size: 15px; font-weight: 700; }
+    .modal-close { padding: 6px 12px; font-size: 12px; font-weight: 600; border-radius: 6px; border: 1px solid var(--border); background: none; color: var(--muted); cursor: pointer; }
+    .modal-close:hover { color: var(--text); background: rgba(255,255,255,.04); }
+    .modal-section { margin-top: 20px; }
+    .json-pre { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 14px; font-size: 11px; line-height: 1.45; overflow: auto; max-height: 60vh; white-space: pre-wrap; word-break: break-word; color: var(--text); font-family: ui-monospace, monospace; }
+    tr.gen-row { cursor: pointer; }
+    tr.gen-row.selected td { background: rgba(232,197,71,.08); }
+    .gen-detail { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; margin-top: 16px; display: none; }
+    .gen-detail.open { display: block; }
+    .gen-detail .meta { font-size: 11px; color: var(--muted); margin-bottom: 10px; display: flex; gap: 12px; flex-wrap: wrap; }
   </style>
 </head>
 <body>
@@ -88,6 +101,7 @@
       <button class="tab" onclick="switchTab('users',this)">Users</button>
       <button class="tab" onclick="switchTab('pool',this)">Pool exams</button>
       <button class="tab" onclick="switchTab('staging',this)">Staging / Aprobación</button>
+      <button class="tab" onclick="switchTab('generations',this)">Generaciones IA</button>
       <button class="tab" onclick="switchTab('tools',this)">Tools</button>
     </div>
 
@@ -114,17 +128,17 @@
       </table>
     </div>
 
-    <!-- Pool exams -->
+    <!-- Pool exams (served from Netlify Blobs) -->
     <div class="panel" id="tab-pool">
       <div class="toolbar">
-        <select id="poolLang" onchange="loadPool()"><option value="">All languages</option><option value="de">German</option><option value="en">English</option><option value="es">Spanish</option></select>
-        <select id="poolLevel" onchange="loadPool()"><option value="">All levels</option><option>A1</option><option>A2</option><option>B1</option><option>B2</option><option>C1</option><option>C2</option></select>
+        <select id="poolLang" onchange="loadPool()"><option value="de" selected>German</option><option value="en">English</option><option value="es">Spanish</option></select>
+        <select id="poolLevel" onchange="loadPool()"><option>A1</option><option>A2</option><option selected>B1</option><option>B2</option><option>C1</option><option>C2</option></select>
         <button onclick="loadPool()">Refresh</button>
         <button onclick="purgeLegacyPool()" style="background:#b91c1c;color:#fff;border:none;padding:6px 12px;border-radius:6px;font-weight:700;cursor:pointer">Purge legacy (Blobs)</button>
         <span style="font-size:12px;color:var(--muted)" id="poolCount"></span>
       </div>
       <table>
-        <thead><tr><th>ID</th><th>Lang/Level</th><th>Topic</th><th>Source</th><th>Coverage</th><th>Served</th><th>Status</th><th>Actions</th></tr></thead>
+        <thead><tr><th>Topic</th><th>Lang/Level</th><th>Source</th><th>Author</th><th>Created</th><th>Served</th><th>Status</th><th>Actions</th></tr></thead>
         <tbody id="poolBody"></tbody>
       </table>
     </div>
@@ -138,6 +152,28 @@
         <span style="font-size:12px;color:var(--muted)" id="stagingCount">0 pendientes</span>
       </div>
       <div id="stagingList"></div>
+    </div>
+
+    <!-- AI Generations -->
+    <div class="panel" id="tab-generations">
+      <div class="toolbar" style="flex-wrap:wrap">
+        <input type="email" id="genFilterEmail" placeholder="Email…" style="min-width:180px">
+        <select id="genFilterLang"><option value="">All langs</option><option value="de">de</option><option value="en">en</option><option value="es">es</option></select>
+        <select id="genFilterLevel"><option value="">All levels</option><option>A1</option><option>A2</option><option>B1</option><option>B2</option><option>C1</option><option>C2</option></select>
+        <input type="date" id="genFilterFrom" title="From">
+        <input type="date" id="genFilterTo" title="To">
+        <button onclick="loadGenerations()">Buscar</button>
+        <span style="font-size:12px;color:var(--muted)" id="genCount"></span>
+      </div>
+      <table>
+        <thead><tr><th>Fecha</th><th>Email</th><th>Lang/Level</th><th>Source</th><th>Topic</th><th>Valid</th><th>Tokens</th></tr></thead>
+        <tbody id="generationsBody"></tbody>
+      </table>
+      <div id="genDetailPanel" class="gen-detail">
+        <div class="section-hd">Detalle — <span id="genDetailId" style="color:var(--brand)"></span></div>
+        <div class="meta" id="genDetailMeta"></div>
+        <pre id="genDetailJson" class="json-pre">—</pre>
+      </div>
     </div>
 
     <!-- Tools -->
@@ -163,6 +199,48 @@
   </div>
 </div>
 
+<div id="poolExamModal" class="modal-overlay" style="display:none" onclick="if(event.target===this)closePoolExamModal()">
+  <div class="modal-box" style="max-width:960px">
+    <div class="modal-hd">
+      <h3>Pool exam — <span id="poolExamTopic" style="color:var(--brand)"></span></h3>
+      <button class="modal-close" onclick="closePoolExamModal()">Cerrar</button>
+    </div>
+    <div class="meta" id="poolExamMeta"></div>
+    <pre id="poolExamPreview" class="json-pre" style="max-height:65vh"></pre>
+  </div>
+</div>
+
+<div id="userExamsModal" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeUserExamsModal()">
+  <div class="modal-box">
+    <div class="modal-hd">
+      <h3>Exámenes — <span id="userExamsEmail" style="color:var(--brand)"></span></h3>
+      <button class="modal-close" onclick="closeUserExamsModal()">Cerrar</button>
+    </div>
+    <div class="section-hd">Guardados (<span id="userExamsSavedCount">0</span>)</div>
+    <table>
+      <thead><tr><th>Topic</th><th>Lang</th><th>Level</th><th>Source</th><th>Fecha</th><th></th></tr></thead>
+      <tbody id="userExamsSavedBody"></tbody>
+    </table>
+    <div class="modal-section">
+      <div class="section-hd">Historial (<span id="userExamsHistoryCount">0</span>)</div>
+      <table>
+        <thead><tr><th>Lang</th><th>Level</th><th>Score</th><th>Source</th><th>Fecha</th></tr></thead>
+        <tbody id="userExamsHistoryBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div id="examJsonModal" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeExamJsonModal()">
+  <div class="modal-box">
+    <div class="modal-hd">
+      <h3>exam_data</h3>
+      <button class="modal-close" onclick="closeExamJsonModal()">Cerrar</button>
+    </div>
+    <pre id="examJsonPre" class="json-pre"></pre>
+  </div>
+</div>
+
 <div id="toast"></div>
 
 <script>
@@ -170,6 +248,10 @@
   const AUTH_KEY = 'lc_admin_token';
   let _token = localStorage.getItem(AUTH_KEY) || '';
   let _allUsers = [];
+  let _userExamsSaved = [];
+  let _generations = [];
+  let _selectedGenId = null;
+  let _poolExams = [];
 
   // ── Auth ──────────────────────────────────────────────────────────────────
   function mapAuthError(code) {
@@ -277,6 +359,7 @@
     if (id === 'users') loadUsers();
     if (id === 'pool') loadPool();
     if (id === 'staging') loadStagingPending();
+    if (id === 'generations') loadGenerations();
   }
 
   // ── Stats ─────────────────────────────────────────────────────────────────
@@ -313,7 +396,8 @@
         <td>${esc(u.email)}</td>
         <td><span class="badge badge-${u.plan}">${u.plan}</span></td>
         <td style="color:var(--muted);font-size:11px">${fmtDate(u.created_at)}</td>
-        <td>
+        <td style="white-space:nowrap">
+          <button class="act" data-email="${esc(u.email)}" onclick="viewUserExams(this.dataset.email)">Ver exámenes</button>
           <button class="act" onclick="quickSetPlan('${esc(u.email)}','${u.plan==='pro'?'free':'pro'}')">→ ${u.plan==='pro'?'free':'pro'}</button>
           <button class="act" onclick="resetUserQuota('${esc(u.email)}')">Reset quota</button>
         </td>
@@ -333,42 +417,315 @@
     toast(r.ok ? '✓ Quota reset to 0' : '✗ ' + (r.error || 'Error'));
   }
 
-  // ── Pool ──────────────────────────────────────────────────────────────────
-  async function loadPool() {
-    const lang  = document.getElementById('poolLang').value;
-    const level = document.getElementById('poolLevel').value;
-    const data  = await api('GET', { action: 'pool', lang, level, limit: 100 });
-    const exams = data.exams || [];
-    document.getElementById('poolCount').textContent = exams.length + ' exams';
-    const tb = document.getElementById('poolBody');
-    if (!exams.length) { tb.innerHTML = '<tr><td colspan="8" class="empty">No pool exams</td></tr>'; return; }
-    tb.innerHTML = exams.map((e) => `
+  async function viewUserExams(email) {
+    if (!email) return;
+    document.getElementById('userExamsEmail').textContent = email;
+    document.getElementById('userExamsSavedBody').innerHTML = '<tr><td colspan="6" class="empty">Cargando…</td></tr>';
+    document.getElementById('userExamsHistoryBody').innerHTML = '<tr><td colspan="5" class="empty">Cargando…</td></tr>';
+    document.getElementById('userExamsModal').style.display = 'flex';
+    try {
+      const data = await api('GET', { action: 'user_exams', email, limit: 50 });
+      if (data.error) {
+        toast('✗ ' + data.error);
+        closeUserExamsModal();
+        return;
+      }
+      _userExamsSaved = data.saved || [];
+      renderUserExamsSaved(_userExamsSaved);
+      renderUserExamsHistory(data.history || []);
+    } catch (err) {
+      toast('✗ ' + (err.message || 'Error'));
+      closeUserExamsModal();
+    }
+  }
+
+  function renderUserExamsSaved(saved) {
+    document.getElementById('userExamsSavedCount').textContent = saved.length;
+    const tb = document.getElementById('userExamsSavedBody');
+    if (!saved.length) {
+      tb.innerHTML = '<tr><td colspan="6" class="empty">Sin exámenes guardados</td></tr>';
+      return;
+    }
+    tb.innerHTML = saved.map((e, i) => `
       <tr>
-        <td style="font-size:10px;color:var(--muted)">${esc(e.id.slice(0,20))}…</td>
-        <td>${esc(e.lang)}/${esc(e.level)}</td>
-        <td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(e.topic||'—')}</td>
-        <td><span class="badge badge-${e.source||'ai'}">${e.source||'ai'}</span></td>
-        <td>${e.coverage_ratio!=null?(e.coverage_ratio*100).toFixed(0)+'%':'—'}</td>
-        <td>${e.served_count||0}</td>
-        <td><span class="badge badge-${e.is_valid?'valid':'invalid'}">${e.is_valid?'valid':'invalid'}</span></td>
-        <td style="white-space:nowrap">
-          ${e.is_valid?`<button class="act" onclick="invalidateExam('${esc(e.id)}')">Invalidate</button> `:''}
-          <button class="act danger" onclick="deleteExam('${esc(e.id)}')">Delete</button>
-        </td>
+        <td style="max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(e.topic || '—')}</td>
+        <td>${esc(e.lang || '—')}</td>
+        <td>${esc(e.level || '—')}</td>
+        <td><span class="badge badge-${esc(e.source || 'ai')}">${esc(e.source || '—')}</span></td>
+        <td style="color:var(--muted);font-size:11px">${esc(fmtSavedDate(e))}</td>
+        <td><button class="act" onclick="showSavedExamJson(${i})">Ver JSON</button></td>
       </tr>`).join('');
   }
 
-  async function invalidateExam(id) {
-    if (!confirm('Invalidate this pool exam? It will no longer be served.')) return;
-    const r = await api('POST', {}, { action: 'invalidate_pool', id });
-    toast(r.ok ? '✓ Invalidated' : '✗ Error');
+  function renderUserExamsHistory(history) {
+    document.getElementById('userExamsHistoryCount').textContent = history.length;
+    const tb = document.getElementById('userExamsHistoryBody');
+    if (!history.length) {
+      tb.innerHTML = '<tr><td colspan="5" class="empty">Sin historial</td></tr>';
+      return;
+    }
+    tb.innerHTML = history.map((h) => `
+      <tr>
+        <td>${esc(h.lang || '—')}</td>
+        <td>${esc(h.level || '—')}</td>
+        <td>${fmtScore(h.score)}</td>
+        <td><span class="badge badge-${esc(h.exam_source || 'ai')}">${esc(h.exam_source || '—')}</span></td>
+        <td style="color:var(--muted);font-size:11px">${fmtDate(h.completed_at)}</td>
+      </tr>`).join('');
+  }
+
+  function showSavedExamJson(index) {
+    const exam = _userExamsSaved[index];
+    if (!exam) return;
+    document.getElementById('examJsonPre').textContent = JSON.stringify(exam, null, 2);
+    document.getElementById('examJsonModal').style.display = 'flex';
+  }
+
+  function closeUserExamsModal() {
+    document.getElementById('userExamsModal').style.display = 'none';
+  }
+
+  function closeExamJsonModal() {
+    document.getElementById('examJsonModal').style.display = 'none';
+  }
+
+  function fmtSavedDate(e) {
+    if (e.savedAt) return e.savedAt;
+    const id = Number(e.id);
+    if (id) return fmtDate(id);
+    return '—';
+  }
+
+  function fmtScore(score) {
+    if (score == null || score === '') return '—';
+    const n = Number(score);
+    if (Number.isNaN(n)) return esc(String(score));
+    return n <= 1 ? (n * 100).toFixed(0) + '%' : n.toFixed(0) + '%';
+  }
+
+  // ── AI Generations ────────────────────────────────────────────────────────
+  async function loadGenerations() {
+    const params = { action: 'generations', limit: 100 };
+    const email = document.getElementById('genFilterEmail').value.trim();
+    const lang = document.getElementById('genFilterLang').value;
+    const level = document.getElementById('genFilterLevel').value;
+    const from = document.getElementById('genFilterFrom').value;
+    const to = document.getElementById('genFilterTo').value;
+    if (email) params.email = email;
+    if (lang) params.lang = lang;
+    if (level) params.level = level;
+    if (from) params.from = from;
+    if (to) params.to = to;
+    const tb = document.getElementById('generationsBody');
+    tb.innerHTML = '<tr><td colspan="7" class="empty">Cargando…</td></tr>';
+    closeGenDetail();
+    try {
+      const data = await api('GET', params);
+      _generations = data.generations || [];
+      document.getElementById('genCount').textContent = (_generations.length) + ' / ' + (data.total ?? _generations.length);
+      renderGenerations(_generations);
+    } catch (err) {
+      tb.innerHTML = '<tr><td colspan="7" class="empty">Error: ' + esc(err.message) + '</td></tr>';
+    }
+  }
+
+  function renderGenerations(rows) {
+    const tb = document.getElementById('generationsBody');
+    if (!rows.length) {
+      tb.innerHTML = '<tr><td colspan="7" class="empty">Sin generaciones</td></tr>';
+      return;
+    }
+    tb.innerHTML = rows.map((g) => `
+      <tr class="gen-row${_selectedGenId === g.id ? ' selected' : ''}" data-id="${esc(g.id)}" onclick="selectGeneration('${esc(g.id)}')">
+        <td style="color:var(--muted);font-size:11px;white-space:nowrap">${fmtDateTime(g.created_at)}</td>
+        <td style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(g.email || '—')}</td>
+        <td>${esc(g.lang || '—')}/${esc(g.level || '—')}</td>
+        <td><span class="badge badge-${esc(g.source || 'ai')}">${esc(g.source || 'ai')}</span></td>
+        <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(g.topic || '—')}</td>
+        <td><span class="badge badge-${g.valid === false ? 'invalid' : 'valid'}">${g.valid === false ? 'no' : g.valid === true ? 'yes' : '—'}</span></td>
+        <td style="font-size:11px;color:var(--muted)">${fmtTokens(g)}</td>
+      </tr>`).join('');
+  }
+
+  function fmtTokens(g) {
+    const inp = g.input_tokens;
+    const out = g.output_tokens;
+    if (inp == null && out == null) return '—';
+    return (inp ?? '—') + ' / ' + (out ?? '—');
+  }
+
+  function fmtDateTime(d) {
+    if (!d) return '—';
+    try { return new Date(d).toLocaleString(); } catch (_) { return d; }
+  }
+
+  function closeGenDetail() {
+    _selectedGenId = null;
+    document.getElementById('genDetailPanel').classList.remove('open');
+    document.querySelectorAll('tr.gen-row.selected').forEach((r) => r.classList.remove('selected'));
+  }
+
+  async function selectGeneration(id) {
+    if (!id) return;
+    _selectedGenId = id;
+    document.querySelectorAll('tr.gen-row').forEach((r) => {
+      r.classList.toggle('selected', r.dataset.id === id);
+    });
+    const panel = document.getElementById('genDetailPanel');
+    document.getElementById('genDetailId').textContent = id.slice(0, 8) + '…';
+    document.getElementById('genDetailMeta').textContent = 'Cargando…';
+    document.getElementById('genDetailJson').textContent = '…';
+    panel.classList.add('open');
+    try {
+      const data = await api('GET', { action: 'generation', id });
+      const g = data.generation;
+      if (!g) { toast('✗ not found'); return; }
+      document.getElementById('genDetailId').textContent = g.id;
+      document.getElementById('genDetailMeta').innerHTML = [
+        g.email ? `<span>${esc(g.email)}</span>` : '',
+        g.lang && g.level ? `<span>${esc(g.lang)}/${esc(g.level)}</span>` : '',
+        g.model ? `<span>${esc(g.model)}</span>` : '',
+        g.coverage != null ? `<span>coverage ${Math.round(g.coverage * 100)}%</span>` : '',
+        g.vocab_words?.length ? `<span>${g.vocab_words.length} vocab words</span>` : '',
+        `<span>${fmtDateTime(g.created_at)}</span>`,
+      ].filter(Boolean).join('');
+      document.getElementById('genDetailJson').textContent = g.exam_data
+        ? JSON.stringify(g.exam_data, null, 2)
+        : '(sin exam_data — registro de chunk servidor)';
+    } catch (err) {
+      document.getElementById('genDetailMeta').textContent = 'Error';
+      document.getElementById('genDetailJson').textContent = err.message || 'Error';
+    }
+  }
+
+  // ── Pool (Netlify Blobs — served pool) ────────────────────────────────────
+  async function loadPool() {
+    const lang  = document.getElementById('poolLang').value;
+    const level = document.getElementById('poolLevel').value;
+    if (!lang || !level) { toast('Selecciona idioma y nivel'); return; }
+    const tb = document.getElementById('poolBody');
+    tb.innerHTML = '<tr><td colspan="8" class="empty">Cargando…</td></tr>';
+    try {
+      const data = await api('GET', { action: 'pool', lang, level });
+      _poolExams = data.exams || [];
+      document.getElementById('poolCount').textContent = (_poolExams.length) + ' exams (Blobs)';
+      renderPoolTable(_poolExams);
+    } catch (err) {
+      tb.innerHTML = '<tr><td colspan="8" class="empty">Error: ' + esc(err.message) + '</td></tr>';
+    }
+  }
+
+  function renderPoolTable(exams) {
+    const tb = document.getElementById('poolBody');
+    if (!exams.length) { tb.innerHTML = '<tr><td colspan="8" class="empty">No pool exams for this lang/level</td></tr>'; return; }
+    tb.innerHTML = exams.map((e, i) => {
+      const st = e.disabled ? 'Deshabilitado' : 'Activo';
+      const stCls = e.disabled ? 'invalid' : 'valid';
+      return `<tr>
+        <td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(e.topic||'—')}</td>
+        <td>${esc(e.lang)}/${esc(e.level)}</td>
+        <td><span class="badge badge-${esc(e.source||'ai')}">${esc(e.source||'ai')}</span></td>
+        <td style="max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px">${esc(e.contributedBy||'—')}</td>
+        <td style="color:var(--muted);font-size:11px">${fmtDateTime(e.createdAt)}</td>
+        <td>${e.servedCount||0}</td>
+        <td><span class="badge badge-${stCls}">${st}</span></td>
+        <td style="white-space:nowrap">
+          <button class="act" onclick="viewPoolExam(${i})">Ver examen</button>
+          ${e.disabled
+            ? `<button class="act" onclick="enablePoolExam(${i})">Reactivar</button>`
+            : `<button class="act danger" onclick="disablePoolExam(${i})">Quitar</button>`}
+          <button class="act danger" onclick="deletePoolExam(${i})">Borrar</button>
+        </td>
+      </tr>`;
+    }).join('');
+  }
+
+  function formatPoolExamPreview(exam) {
+    if (!exam) return '(sin examen)';
+    const lines = [];
+    const partKeys = [
+      ['lesenParts', 'Lesen'], ['horenParts', 'Hören'],
+      ['schreibenParts', 'Schreiben'], ['sprechenParts', 'Sprechen'],
+      ['readingParts', 'Reading'], ['listeningParts', 'Listening'],
+    ];
+    for (const [key, label] of partKeys) {
+      for (const part of exam[key] || []) {
+        lines.push(`\n=== ${label} Teil ${part.teil || part.part || '?'} ===`);
+        if (part.text) lines.push(String(part.text).slice(0, 400) + (part.text.length > 400 ? '…' : ''));
+        if (part.transcript) lines.push(String(part.transcript).slice(0, 400) + '…');
+        const qs = [...(part.questions||[]), ...(part.items||[]), ...(part.segments||[])];
+        qs.forEach((q, qi) => {
+          const qtxt = q.question || q.prompt || q.signText || q.id || `Q${qi+1}`;
+          lines.push(`  • ${qtxt}`);
+          if (q.options?.length) lines.push(`    Options: ${q.options.join(' | ')}`);
+          if (q.correct != null && q.correct !== '') lines.push(`    ✓ Correct: ${q.correct}`);
+        });
+      }
+    }
+    if (!lines.length) return JSON.stringify(exam, null, 2);
+    return lines.join('\n');
+  }
+
+  async function viewPoolExam(index) {
+    const row = _poolExams[index];
+    if (!row) return;
+    document.getElementById('poolExamTopic').textContent = row.topic || row.id?.slice(0, 8);
+    document.getElementById('poolExamMeta').innerHTML = 'Cargando…';
+    document.getElementById('poolExamPreview').textContent = '…';
+    document.getElementById('poolExamModal').style.display = 'flex';
+    try {
+      const data = await api('GET', { action: 'pool_exam', lang: row.lang, level: row.level, id: row.id });
+      const entry = data.entry;
+      const genLink = entry?.contributedBy && entry.contributedBy.includes('@')
+        ? `<a href="#" style="color:var(--brand)" data-gen-email="${esc(entry.contributedBy)}" onclick="openGenerationsFor(this.dataset.genEmail);return false">Ver generaciones IA</a>`
+        : '';
+      document.getElementById('poolExamMeta').innerHTML = [
+        entry?.contributedBy ? `<span>${esc(entry.contributedBy)}</span>` : '',
+        `<span>${esc(row.lang)}/${esc(row.level)}</span>`,
+        `<span>${entry?.disabled ? 'Deshabilitado' : 'Activo'}</span>`,
+        `<span>served ${entry?.servedCount||0}</span>`,
+        genLink,
+      ].filter(Boolean).join(' · ');
+      document.getElementById('poolExamPreview').textContent = formatPoolExamPreview(entry?.exam);
+    } catch (err) {
+      document.getElementById('poolExamMeta').textContent = 'Error';
+      document.getElementById('poolExamPreview').textContent = err.message || 'Error';
+    }
+  }
+
+  function closePoolExamModal() {
+    document.getElementById('poolExamModal').style.display = 'none';
+  }
+
+  function openGenerationsFor(email) {
+    closePoolExamModal();
+    document.getElementById('genFilterEmail').value = email;
+    const tabBtn = document.querySelector('.tab[onclick*="generations"]');
+    switchTab('generations', tabBtn);
+    loadGenerations();
+  }
+
+  async function disablePoolExam(index) {
+    const e = _poolExams[index];
+    if (!e || !confirm('¿Quitar del pool servido? (reversible)')) return;
+    const r = await api('POST', {}, { action: 'disable_pool', lang: e.lang, level: e.level, id: e.id });
+    toast(r.ok ? '✓ Deshabilitado' : '✗ ' + (r.error || 'Error'));
     if (r.ok) loadPool();
   }
 
-  async function deleteExam(id) {
-    if (!confirm('Permanently delete this pool exam?')) return;
-    const r = await api('POST', {}, { action: 'delete_pool', id });
-    toast(r.ok ? '✓ Deleted' : '✗ Error');
+  async function enablePoolExam(index) {
+    const e = _poolExams[index];
+    if (!e) return;
+    const r = await api('POST', {}, { action: 'enable_pool', lang: e.lang, level: e.level, id: e.id });
+    toast(r.ok ? '✓ Reactivado' : '✗ ' + (r.error || 'Error'));
+    if (r.ok) loadPool();
+  }
+
+  async function deletePoolExam(index) {
+    const e = _poolExams[index];
+    if (!e || !confirm('¿Borrar permanentemente este examen del pool?')) return;
+    const r = await api('POST', {}, { action: 'delete_pool', lang: e.lang, level: e.level, id: e.id });
+    toast(r.ok ? '✓ Borrado' : '✗ ' + (r.error || 'Error'));
     if (r.ok) loadPool();
   }
 

@@ -7,6 +7,7 @@ const { getStoreForEvent } = require('./lib/blobStore.js');
 const { getJwtSecret, verifyAuthToken, userKey } = require('./lib/authLib.js');
 
 const { resolvePlan, maxForPlan, getMonthKey } = require('./lib/quotaLib.js');
+const { getAiCredits } = require('./lib/aiCredits.js');
 const { ensureUserFreeCombo, freeComboForResponse } = require('./lib/freeComboLib.js');
 const { mergeSupabasePlanIntoBlob, loadBlobUser } = require('./lib/planSync.js');
 const sb = require('./lib/supabaseAdmin.js');
@@ -78,10 +79,14 @@ exports.handler = async (event) => {
 
   try {
     const q = await store.get(`quota:${auth.email}`, { type: 'json' });
-    if (q && q.month === month) used = Math.min(Number(q.used) || 0, max);
+    if (q && q.month === month) {
+      used = Math.min(Number(q.used) || 0, max);
+    }
   } catch (_) {
     /* fresh */
   }
+
+  const aiSnap = await getAiCredits(event);
 
   const beforeCombo = user.freeCombo ? JSON.stringify(user.freeCombo) : '';
   user = ensureUserFreeCombo(user);
@@ -98,6 +103,17 @@ exports.handler = async (event) => {
       plan,
       pro: plan === 'pro',
       quota: { used, max, month },
+      aiCredits: {
+        used: aiSnap.used,
+        max: aiSnap.max,
+        remaining: aiSnap.remaining,
+        totalPool: aiSnap.totalPool,
+        rollover: aiSnap.rollover,
+        creditTopups: aiSnap.creditTopups,
+        overdraft: aiSnap.overdraft,
+        month: aiSnap.month,
+        autoRecharge: aiSnap.autoRecharge,
+      },
       proActivatedAt: user.proActivatedAt || null,
       memberSince: user.createdAt || null,
       freeCombo: freeComboForResponse(user),

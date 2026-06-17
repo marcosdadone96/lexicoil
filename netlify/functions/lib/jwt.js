@@ -33,6 +33,13 @@ function verifyJwt(token, secret) {
   const parts = String(token || '').split('.');
   if (parts.length !== 3) return null;
   const [h, p, s] = parts;
+  // C-5 fix: validate algorithm header — reject anything that isn't HS256
+  try {
+    const header = JSON.parse(b64urlDecode(h));
+    if (header.alg !== 'HS256') return null;
+  } catch (_) {
+    return null;
+  }
   const expected = crypto
     .createHmac('sha256', secret)
     .update(`${h}.${p}`)

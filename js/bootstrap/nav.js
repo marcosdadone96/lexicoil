@@ -1,7 +1,7 @@
 // ═══════════════════════════════════════════
 // NAVIGATION
 // ═══════════════════════════════════════════
-const SCREENS=['homeScreen','goalWorkspaceScreen','examConfigScreen','oralPracticeScreen','profileSetupScreen','loadingScreen','examScreen','resultsScreen','mistakeReviewScreen','flashcardScreen','vocabExamScreen','horenGameScreen'];
+const SCREENS=['homeScreen','goalWorkspaceScreen','examConfigScreen','oralPracticeScreen','profileSetupScreen','loadingScreen','examScreen','resultsScreen','mistakeReviewScreen','flashcardScreen','vocabExamScreen','horenGameScreen','grammarScreen'];
 function getActiveScreenId(){
   for(const id of SCREENS){
     const el=document.getElementById(id);
@@ -76,9 +76,10 @@ function show(id){
   document.getElementById(id).style.display='block';
   syncNavBackLabels();
   if(typeof LcA11y!=='undefined')LcA11y.onScreenShown(id);
+  if(typeof refreshNotebookFab==='function')refreshNotebookFab();
 }
-function hide(id){document.getElementById(id).style.display='none';}
-function hideAll(){if(typeof unbindExamScrollTop==='function')unbindExamScrollTop();flushOpenStudySession();SCREENS.forEach(hide);stopTimer();showExamConfigFootbar(false);}
+function hide(id){document.getElementById(id).style.display='none';if(typeof refreshNotebookFab==='function')refreshNotebookFab();}
+function hideAll(){if(typeof unbindExamScrollTop==='function')unbindExamScrollTop();document.body.classList.remove('grammar-active');flushOpenStudySession();SCREENS.forEach(hide);stopTimer();showExamConfigFootbar(false);if(typeof refreshNotebookFab==='function')refreshNotebookFab();}
 function goHome(){
   if(!requireAppAuth())return;
   if(typeof routerNavigate==='function'){

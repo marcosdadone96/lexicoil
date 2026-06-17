@@ -1,5 +1,6 @@
 'use strict';
 
+const crypto = require('crypto');
 const { getStoreForEvent } = require('./lib/blobStore.js');
 const { normalizeEmail } = require('./lib/authLib.js');
 const { corsHeaders, parseJsonBody, jsonResponse } = require('./lib/http.js');
@@ -21,7 +22,12 @@ exports.handler = async (event) => {
   const authHeader =
     (event.headers && (event.headers.authorization || event.headers.Authorization)) || '';
   const token = authHeader.replace(/^Bearer\s+/i, '').trim();
-  if (!token || token !== adminSecret) {
+  // C-4 fix: use timingSafeEqual to prevent timing-based secret extraction
+  const tokenOk =
+    token.length > 0 &&
+    token.length === adminSecret.length &&
+    crypto.timingSafeEqual(Buffer.from(token), Buffer.from(adminSecret));
+  if (!tokenOk) {
     return jsonResponse(401, cors, { error: 'unauthorized' });
   }
 

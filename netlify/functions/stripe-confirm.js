@@ -1,8 +1,8 @@
 'use strict';
 
 const { getStoreForEvent } = require('./lib/blobStore.js');
-const { verifyAuthToken, normalizeEmail } = require('./lib/authLib.js');
-const { corsHeaders, getBearer, parseJsonBody, jsonResponse } = require('./lib/http.js');
+const { requireAuth, normalizeEmail, signAuthToken, getTokenVersion } = require('./lib/authLib.js');
+const { corsHeaders, parseJsonBody, authSessionResponse, jsonResponse } = require('./lib/http.js');
 const { resolvePlan, maxForPlan, getMonthKey } = require('./lib/quotaLib.js');
 const { activateProForEmail } = require('./lib/proUpgrade.js');
 const { checkoutSessionIsPaid, persistStripeCustomerId } = require('./lib/stripeLib.js');
@@ -28,9 +28,10 @@ exports.handler = async (event) => {
     return jsonResponse(503, cors, { error: 'stripe_not_configured' });
   }
 
-  const auth = verifyAuthToken(getBearer(event));
+  const store = getStoreForEvent(event);
+  const auth = await requireAuth(event, store);
   if (!auth.ok) {
-    return jsonResponse(401, cors, { error: 'login_required' });
+    return jsonResponse(auth.status || 401, cors, { error: auth.error || 'login_required' });
   }
 
   let body;
@@ -70,7 +71,6 @@ exports.handler = async (event) => {
     return jsonResponse(403, cors, { error: 'session_email_mismatch' });
   }
 
-  const store = getStoreForEvent(event);
   const customerId = session.customer || null;
   if (customerId) await persistStripeCustomerId(store, userEmail, customerId);
 
@@ -85,9 +85,11 @@ exports.handler = async (event) => {
   const plan = resolvePlan(upgraded.user);
   const max = maxForPlan(plan);
   const month = getMonthKey();
+  const session = signAuthToken(userEmail, upgraded.user.name, getTokenVersion(upgraded.user));
 
-  return jsonResponse(200, cors, {
+  return authSessionResponse(200, cors, {
     ok: true,
+    expiresAt: session.expiresAt,
     user: {
       name: upgraded.user.name,
       email: userEmail,
@@ -97,5 +99,5 @@ exports.handler = async (event) => {
       proActivatedAt: upgraded.user.proActivatedAt,
       memberSince: upgraded.user.createdAt || null,
     },
-  });
+  }, session.token, event);
 };

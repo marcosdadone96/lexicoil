@@ -11,7 +11,12 @@ const FlashcardGenerator = (() => {
   async function generate(spec, hooks) {
     const PB = getPromptBuilder();
     const built = PB.buildPrompt(spec);
-    const raw = await hooks.callAI(built.prompt, built.maxTokens, { consumeQuota: false });
+    const startTicket = hooks.startExamTicket;
+    if (typeof startTicket !== 'function') {
+      throw new Error('hooks.startExamTicket is required for flashcard generation');
+    }
+    const genTicket = await startTicket('exam_generation', 2);
+    const raw = await hooks.callAI(built.prompt, built.maxTokens, { examGeneration: true, aiAction: 'exam_generation', genTicket });
     const text = String(raw).replace(/```json|```/g, '').trim();
     try {
       const data = JSON.parse(text);

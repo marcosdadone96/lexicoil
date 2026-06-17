@@ -166,9 +166,14 @@ const PromptBuilder = (() => {
       `Personalized ${spec.level} ${loc.contentLang} vocabulary exam.`,
       `Build ${skillLbl} using these learner words: ${words.map((w) => `"${w}"`).join(', ')}.`,
       `Topic: "${spec.topic || 'learner vocabulary'}".`,
-      loc.global,
-      Shell.JSON_RULES,
-    ].join('\n');
+    ];
+    if (spec.vocabPolicy?.maximizeCoverage) {
+      header.push(
+        `Use as many of these words as possible spread across the exam. At least ONE part must integrate the largest natural cluster of them for level ${spec.level}; do not force words artificially.`,
+      );
+    }
+    header.push(loc.global, Shell.JSON_RULES);
+    const headerBlock = header.join('\n');
 
     const skillKeys = [];
     const sk = spec.skills || ['lesen', 'horen'];
@@ -188,7 +193,7 @@ const PromptBuilder = (() => {
 
     return {
       mode: 'single',
-      prompt: `${header}\n${body}`,
+      prompt: `${headerBlock}\n${body}`,
       maxTokens: 7000,
     };
   }

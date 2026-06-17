@@ -109,20 +109,31 @@ const ManualVocab = (() => {
 
   function inferPos(fc, subject) {
     const sub = subject || fc?.sourceLang || '';
-    let t = typeof normWordType === 'function' ? normWordType(fc?.type || fc?.pos) : '';
-    if (t && t !== 'other') return t;
-    if (fc?.gender || fc?.article) return 'noun';
     const parsed = parseLeadingArticle(fc?.word, sub);
-    if (parsed.pos) return parsed.pos;
-    const low = normToken(parsed.word);
-    if (!low) return t || 'other';
-    if (sub === 'de') {
+    const raw = String(fc?.word || parsed.word || '').trim();
+    const low = normToken(parsed.word || raw);
+    const stored = typeof normWordType === 'function' ? normWordType(fc?.type || fc?.pos) : '';
+
+    if (sub === 'de' && low) {
+      if (/^[A-ZÄÖÜ]/.test(raw)) {
+        if (/(liche|licher|liches|lichem|lichen|lich|ig|isch|bar|sam|haft|los|voll|frei|mäßig|artig)$/i.test(low)) {
+          return 'adjective';
+        }
+        return 'noun';
+      }
       if (/weise$/.test(low)) return 'adverb';
-      if (/(lich|ig|isch|bar|sam|los|voll|iert|ene|ener|enes)$/.test(low)) return 'adjective';
-      if (/en$/.test(low) && low.length > 5 && !/(ung|heit|keit|schaft|tion|ismus|ment|chen|lein|ieren)$/.test(low)) {
+      if (/(liche|licher|liches|lichem|lichen|lich|ig|isch|bar|sam|haft|los|voll|frei|mäßig|artig)$/i.test(low)) {
+        return 'adjective';
+      }
+      if (/(ung|heit|keit|schaft|tion|tät|ität|ismus|ment|chen|lein|tum|nis|sal|mal|ion)$/i.test(low)) {
+        return 'noun';
+      }
+      if (/en$/.test(low) && low.length > 5 && !/(ung|heit|keit|schaft|tion|ismus|ment|ieren|lich|ig|isch)$/i.test(low)) {
         return 'verb';
       }
     }
+    if (fc?.gender || fc?.article) return 'noun';
+    if (parsed.pos) return parsed.pos;
     if (sub === 'en') {
       if (/ly$/.test(low)) return 'adverb';
       if (/(ous|ful|less|ive|able|ible|ish|ic|al|ed)$/.test(low)) return 'adjective';
@@ -132,7 +143,8 @@ const ManualVocab = (() => {
       if (/(oso|osa|ivo|iva|ble|al|ado|ada)$/.test(low)) return 'adjective';
       if (/(ar|er|ir)$/.test(low) && low.length > 4) return 'verb';
     }
-    return t || 'other';
+    if (stored && stored !== 'other') return stored;
+    return stored || 'other';
   }
 
   function enrichFlashcard(fc, subject) {
@@ -297,6 +309,17 @@ const ManualVocab = (() => {
     );
   }
 
+  function reclassifyStoredFlashcards() {
+    if (typeof S === 'undefined' || !Array.isArray(S.flashcards) || !S.flashcards.length) return false;
+    let dirty = false;
+    S.flashcards.forEach((fc) => {
+      const before = fc.type || fc.pos;
+      enrichFlashcard(fc, fc.sourceLang);
+      if ((fc.type || fc.pos) !== before) dirty = true;
+    });
+    return dirty;
+  }
+
   return {
     validate,
     loadWordIndex,
@@ -308,7 +331,9 @@ const ManualVocab = (() => {
     enrichFlashcard,
     enrichFlashcardFromBank,
     parseLeadingArticle,
+    reclassifyStoredFlashcards,
   };
 })();
 
 if (typeof window !== 'undefined') window.ManualVocab = ManualVocab;
+if (typeof module !== 'undefined') module.exports = ManualVocab;

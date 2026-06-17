@@ -5,6 +5,100 @@ const { getMonthKey, PRO_MAX } = require('./quotaLib.js');
 const { sendProWelcomeEmail } = require('./email.js');
 const { syncPlanToSupabase } = require('./planSync.js');
 
+async function revokeProForEmail(store, rawEmail, { reason = null } = {}) {
+  const email = normalizeEmail(rawEmail);
+  if (!email) return { ok: false, error: 'invalid_email' };
+
+  const key = userKey(email);
+  let user = null;
+  try {
+    user = await store.get(key, { type: 'json' });
+  } catch (_) {
+    user = null;
+  }
+
+  if (!user) {
+    return { ok: false, error: 'user_not_found', email };
+  }
+
+  const updatedUser = {
+    ...user,
+    plan: 'free',
+    pro: false,
+    proRevokedAt: Date.now(),
+    paymentPastDue: false,
+    paymentWarningAt: null,
+    paymentWarningInvoiceId: null,
+    paymentWarningStatus: null,
+  };
+  if (reason) updatedUser.proRevokeReason = reason;
+
+  await store.setJSON(key, updatedUser);
+  await syncPlanToSupabase(email, 'free', updatedUser);
+
+  return { ok: true, email, user: updatedUser };
+}
+
+async function markPaymentPastDue(store, rawEmail, opts = {}) {
+  const email = normalizeEmail(rawEmail);
+  if (!email) return { ok: false, error: 'invalid_email' };
+
+  const key = userKey(email);
+  let user = null;
+  try {
+    user = await store.get(key, { type: 'json' });
+  } catch (_) {
+    user = null;
+  }
+
+  if (!user) {
+    return { ok: false, error: 'user_not_found', email };
+  }
+
+  const priorInvoiceId = user.paymentWarningInvoiceId || null;
+  const updatedUser = {
+    ...user,
+    paymentPastDue: true,
+    paymentWarningAt: Date.now(),
+    paymentWarningInvoiceId: opts.invoiceId || priorInvoiceId,
+    paymentWarningStatus: opts.status || 'payment_failed',
+  };
+
+  await store.setJSON(key, updatedUser);
+  return {
+    ok: true,
+    email,
+    user: updatedUser,
+    alreadyWarned: !!user.paymentPastDue,
+    priorInvoiceId,
+  };
+}
+
+async function clearPaymentPastDue(store, rawEmail) {
+  const email = normalizeEmail(rawEmail);
+  if (!email) return { ok: false, error: 'invalid_email' };
+
+  const key = userKey(email);
+  let user = null;
+  try {
+    user = await store.get(key, { type: 'json' });
+  } catch (_) {
+    return { ok: false, error: 'user_not_found', email };
+  }
+
+  if (!user?.paymentPastDue) return { ok: true, email, skipped: true };
+
+  const updatedUser = {
+    ...user,
+    paymentPastDue: false,
+    paymentWarningAt: null,
+    paymentWarningInvoiceId: null,
+    paymentWarningStatus: null,
+  };
+  await store.setJSON(key, updatedUser);
+  return { ok: true, email, user: updatedUser };
+}
+
 async function activateProForEmail(store, rawEmail, { sendEmail = true, stripeCustomerId = null } = {}) {
   const email = normalizeEmail(rawEmail);
   if (!email) return { ok: false, error: 'invalid_email' };
@@ -26,6 +120,10 @@ async function activateProForEmail(store, rawEmail, { sendEmail = true, stripeCu
     plan: 'pro',
     pro: true,
     proActivatedAt: Date.now(),
+    paymentPastDue: false,
+    paymentWarningAt: null,
+    paymentWarningInvoiceId: null,
+    paymentWarningStatus: null,
   };
   if (stripeCustomerId) updatedUser.stripeCustomerId = stripeCustomerId;
   await store.setJSON(key, updatedUser);
@@ -51,4 +149,9 @@ async function activateProForEmail(store, rawEmail, { sendEmail = true, stripeCu
   };
 }
 
-module.exports = { activateProForEmail };
+module.exports = {
+  activateProForEmail,
+  revokeProForEmail,
+  markPaymentPastDue,
+  clearPaymentPastDue,
+};

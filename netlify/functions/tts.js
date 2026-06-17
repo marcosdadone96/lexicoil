@@ -6,6 +6,7 @@ const crypto = require('crypto');
 const { getStoreForEvent } = require('./lib/blobStore.js');
 const { verifyAuthToken } = require('./lib/authLib.js');
 const { getQuotaState } = require('./lib/quotaLib.js');
+const { checkAiCredits, confirmAiCreditConsumption } = require('./lib/aiCredits.js');
 const { corsHeaders, getBearer, parseJsonBody, jsonResponse } = require('./lib/http.js');
 const { synthesize } = require('./lib/ttsProvider.js');
 const { resolveVoiceId } = require('./lib/ttsVoices.js');
@@ -115,7 +116,13 @@ exports.handler = async (event) => {
     if (!auth.ok) return jsonResponse(401, cors, { error: 'login_required' });
 
     const qState = await getQuotaState(event);
-    if (!qState.ok || qState.plan !== 'pro') {
+    if (!qState.ok) {
+      if (qState.error === 'token_revoked') {
+        return jsonResponse(401, cors, { error: 'token_revoked' });
+      }
+      return jsonResponse(403, cors, { error: 'pro_required' });
+    }
+    if (qState.plan !== 'pro') {
       return jsonResponse(403, cors, { error: 'pro_required' });
     }
 
@@ -138,12 +145,32 @@ exports.handler = async (event) => {
     }
 
     const existing = await loadCachedAudio(store, voice, text, lang);
+    // Cached audio is free — no AI credits charged for a cache hit
     if (existing) return audioResponse(cors, existing);
+
+    // B-6 fix: TTS synthesis consumes 1 AI credit per uncached request
+    const creditCheck = await checkAiCredits(event, 'tts');
+    if (!creditCheck.ok) {
+      const status = creditCheck.error === 'ai_credits_exhausted' ? 402 : 403;
+      return jsonResponse(status, cors, {
+        error: creditCheck.error,
+        remaining: creditCheck.remaining,
+        aiUsed: creditCheck.used,
+        aiMax: creditCheck.max,
+        autoRechargeFailed: creditCheck.autoRechargeFailed || false,
+        reason: creditCheck.reason || undefined,
+      });
+    }
 
     const audio = await synthesize(text.trim(), voice, lang);
     if (!audio || !audio.length || audio.length > AUDIO_MAX_BYTES) {
       return jsonResponse(200, cors, { unavailable: true });
     }
+
+    // Credit confirmed only after a successful synthesis
+    await confirmAiCreditConsumption(event, 'tts').catch((err) => {
+      console.warn('[tts] ai credit confirm failed:', err.message);
+    });
 
     const key = cacheKey(voice, text);
     await store.setJSON(key, {

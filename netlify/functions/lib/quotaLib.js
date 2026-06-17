@@ -8,6 +8,7 @@ const { getStoreForEvent } = require('./blobStore.js');
 const { casWriteJson, readIdempotentResult, writeIdempotentResult } = require('./casBlob.js');
 const { verifyAuthToken, userKey } = require('./authLib.js');
 const { getBearer }  = require('./http.js');
+const { applyMonthlyAiReset, buildQuotaPayload } = require('./aiQuotaState.js');
 
 const GUEST_MAX     = 2;
 const FREE_MAX      = 5;
@@ -16,11 +17,14 @@ const GUEST_TTL_SEC = 30 * 24 * 60 * 60; // 30 days
 
 function getMonthKey() {
   const d = new Date();
-  return `${d.getFullYear()}-${d.getMonth()}`;
+  // B-5 fix: zero-pad month so keys match YYYY-MM format (getMonth() is 0-indexed)
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  return `${d.getFullYear()}-${m}`;
 }
 
 function hashIp(ip) {
-  const salt = process.env.AUTH_JWT_SECRET || process.env.LEXICOIL_JWT_SECRET || 'lexicoil-guest';
+  // A-3 fix: use a dedicated salt so rotating AUTH_JWT_SECRET doesn't reset guest quotas
+  const salt = process.env.GUEST_IP_SALT || process.env.AUTH_JWT_SECRET || process.env.LEXICOIL_JWT_SECRET || 'lexicoil-guest';
   return crypto.createHash('sha256').update(`${ip}:${salt}`).digest('hex').slice(0, 32);
 }
 
@@ -60,7 +64,10 @@ async function getQuotaState(event) {
 
   if (auth.ok) {
     const user = await loadUser(store, auth.email);
-    if (!user) return { ok: false, error: 'unauthorized' };
+    if (!user) return { ok: false, error: 'unauthorized', status: 401 };
+    if (user.tokenVersion != null && auth.payload.tv !== user.tokenVersion) {
+      return { ok: false, error: 'token_revoked', status: 401 };
+    }
 
     const plan  = resolvePlan(user);
     const month = getMonthKey();
@@ -114,7 +121,13 @@ async function getQuotaState(event) {
 // Returns { ok, used, max, plan, state } or { ok:false, status, error, ... }
 async function checkQuota(event) {
   const state = await getQuotaState(event);
-  if (!state.ok) return state;
+  if (!state.ok) {
+    return {
+      ok: false,
+      status: state.status || (state.error === 'token_revoked' || state.error === 'unauthorized' ? 401 : 403),
+      error: state.error || 'unauthorized',
+    };
+  }
 
   const cappedUsed = Math.min(Number(state.used) || 0, state.max);
 
@@ -142,6 +155,10 @@ function quotaIdemKey(scopeKey, requestId) {
   return `${scopeKey}:idem:${requestId}`;
 }
 
+function quotaRefundIdemKey(scopeKey, requestId) {
+  return `${scopeKey}:idem:refund:${requestId}`;
+}
+
 // Call after a successful AI generation to persist the new count (CAS + optional idempotency).
 async function incrementQuota(quotaCheck, opts = {}) {
   if (!quotaCheck) return null;
@@ -166,7 +183,9 @@ async function incrementQuota(quotaCheck, opts = {}) {
       let expiresAt = s.expiresAt;
 
       if (s.authenticated) {
-        if (current && current.month === month) used = Number(current.used) || 0;
+        if (current && current.month === month) {
+          used = Number(current.used) || 0;
+        }
       } else if (current) {
         expiresAt = current.expiresAt || s.expiresAt;
         used =
@@ -188,14 +207,30 @@ async function incrementQuota(quotaCheck, opts = {}) {
 
       const newUsed = cappedUsed + 1;
       const version = (current?.version || 0) + 1;
-      const payload = s.authenticated
-        ? { used: newUsed, month, version }
-        : {
+      const aiMax =
+        s.authenticated && s.plan === 'pro'
+          ? Number(process.env.AI_CREDITS_PRO || 100)
+          : 0;
+
+      if (s.authenticated) {
+        const normalized = applyMonthlyAiReset(current, aiMax, month);
+        const payload = buildQuotaPayload({ ...normalized, used: newUsed }, true);
+        return {
+          payload,
+          result: {
             used: newUsed,
-            createdAt: current?.createdAt || Date.now(),
-            expiresAt: expiresAt || Date.now() + GUEST_TTL_SEC * 1000,
-            version,
-          };
+            max: s.max,
+            plan: s.plan,
+          },
+        };
+      }
+
+      const payload = {
+        used: newUsed,
+        createdAt: current?.createdAt || Date.now(),
+        expiresAt: expiresAt || Date.now() + GUEST_TTL_SEC * 1000,
+        version,
+      };
 
       return {
         payload,
@@ -216,6 +251,99 @@ async function incrementQuota(quotaCheck, opts = {}) {
   return result;
 }
 
+// Refund one exam quota unit after a failed AI call (CAS + optional idempotency).
+async function decrementQuota(quotaCheck, opts = {}) {
+  if (!quotaCheck) return null;
+  const s = quotaCheck.state || quotaCheck;
+  if (!s || !s.ok || !s.store) return null;
+
+  const scopeKey = s.authenticated ? s.qKey : s.gKey;
+  const requestId = opts.requestId || null;
+  const month = getMonthKey();
+
+  if (requestId) {
+    const refundIdemKey = quotaRefundIdemKey(scopeKey, requestId);
+    const priorRefund = await readIdempotentResult(s.store, refundIdemKey);
+    if (priorRefund) return priorRefund;
+
+    const incIdemKey = quotaIdemKey(scopeKey, requestId);
+    const incPrior = await readIdempotentResult(s.store, incIdemKey);
+    if (!incPrior) {
+      return { skipped: true, reason: 'no_increment', used: s.used, max: s.max, plan: s.plan };
+    }
+  }
+
+  const result = await casWriteJson(
+    s.store,
+    scopeKey,
+    (current) => {
+      let used = 0;
+      let expiresAt = s.expiresAt;
+
+      if (s.authenticated) {
+        if (current && current.month === month) {
+          used = Number(current.used) || 0;
+        }
+      } else if (current) {
+        expiresAt = current.expiresAt || s.expiresAt;
+        used =
+          expiresAt && Date.now() > expiresAt ? 0 : Number(current.used) || 0;
+      }
+
+      const newUsed = Math.max(0, Math.min(used, s.max) - 1);
+      const version = (current?.version || 0) + 1;
+      const aiMax =
+        s.authenticated && s.plan === 'pro'
+          ? Number(process.env.AI_CREDITS_PRO || 100)
+          : 0;
+
+      if (s.authenticated) {
+        const normalized = applyMonthlyAiReset(current, aiMax, month);
+        const payload = buildQuotaPayload({ ...normalized, used: newUsed }, true);
+        return {
+          payload,
+          result: {
+            used: newUsed,
+            max: s.max,
+            plan: s.plan,
+            refunded: true,
+          },
+        };
+      }
+
+      const payload = {
+        used: newUsed,
+        createdAt: current?.createdAt || Date.now(),
+        expiresAt: expiresAt || Date.now() + GUEST_TTL_SEC * 1000,
+        version,
+      };
+
+      return {
+        payload,
+        result: {
+          used: newUsed,
+          max: s.max,
+          plan: 'guest',
+          refunded: true,
+        },
+      };
+    },
+    { logTag: '[quota-refund-cas]' },
+  );
+
+  if (requestId) {
+    const refundIdemKey = quotaRefundIdemKey(scopeKey, requestId);
+    const written = await writeIdempotentResult(s.store, refundIdemKey, result);
+    try {
+      await s.store.delete(quotaIdemKey(scopeKey, requestId));
+    } catch (_) {
+      /* non-fatal — retry may skip re-charge until idem expires */
+    }
+    return written;
+  }
+  return result;
+}
+
 module.exports = {
   GUEST_MAX,
   FREE_MAX,
@@ -224,7 +352,9 @@ module.exports = {
   getQuotaState,
   checkQuota,
   incrementQuota,
+  decrementQuota,
   quotaIdemKey,
+  quotaRefundIdemKey,
   maxForPlan,
   resolvePlan,
 };

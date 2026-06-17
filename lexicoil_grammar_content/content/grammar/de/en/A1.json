@@ -1,0 +1,106 @@
+{
+  "lang": "de",
+  "level": "A1",
+  "status": "published",
+  "title": "Grammar · German A1",
+  "metaLanguage": "en",
+  "scope": "By the end of A1 you can use the present tense (Präsens) of regular verbs and of sein/haben, articles in the nominative and accusative, negation with nicht and kein, basic modal verbs, possessives, simple imperatives and separable verbs. Everything happens in the present: the past tense and the dative case are not covered yet.",
+  "sections": [
+    {
+      "id": "personalpronomen",
+      "title": "Personalpronomen (Nominativ)",
+      "blocks": [
+        { "type": "paragraph", "text": "Personal pronouns replace the subject. German has three words for 'you': du (informal), ihr (informal plural) and Sie (formal, always capitalised)." },
+        { "type": "table", "headers": ["Singular", "Plural"], "rows": [["ich (I)", "wir (we)"], ["du (you)", "ihr (you, pl.)"], ["er / sie / es (he / she / it)", "sie (they) / Sie (you, formal)"]] }
+      ]
+    },
+    {
+      "id": "praesens",
+      "title": "Präsens: regular verbs",
+      "blocks": [
+        { "type": "paragraph", "text": "Remove the infinitive ending -en (lernen → lern-) and add the ending for each person." },
+        { "type": "table", "headers": ["Person", "lernen", "Endung"], "rows": [["ich", "lerne", "-e"], ["du", "lernst", "-st"], ["er/sie/es", "lernt", "-t"], ["wir", "lernen", "-en"], ["ihr", "lernt", "-t"], ["sie/Sie", "lernen", "-en"]] },
+        { "type": "note", "text": "If the stem ends in -t or -d, an extra -e- is added: du arbeitest, er findet." },
+        { "type": "example", "text": "Ich lerne Deutsch. Du wohnst in Berlin. Wir spielen Fußball." }
+      ]
+    },
+    {
+      "id": "sein-haben",
+      "title": "sein und haben",
+      "blocks": [
+        { "type": "paragraph", "text": "The two most important verbs are irregular and worth memorising." },
+        { "type": "table", "headers": ["Person", "sein", "haben"], "rows": [["ich", "bin", "habe"], ["du", "bist", "hast"], ["er/sie/es", "ist", "hat"], ["wir", "sind", "haben"], ["ihr", "seid", "habt"], ["sie/Sie", "sind", "haben"]] },
+        { "type": "example", "text": "Ich bin müde. Sie hat einen Hund." }
+      ]
+    },
+    {
+      "id": "artikel",
+      "title": "Articles: definite and indefinite (Nominativ)",
+      "blocks": [
+        { "type": "paragraph", "text": "Every noun has a gender (masculine, feminine or neuter). The definite article means 'the' and the indefinite 'a/an'. In the plural the definite article is always die." },
+        { "type": "table", "headers": ["", "maskulin", "feminin", "neutrum", "Plural"], "rows": [["definite", "der", "die", "das", "die"], ["indefinite", "ein", "eine", "ein", "—"]] },
+        { "type": "example", "text": "der Tisch, die Lampe, das Buch · ein Tisch, eine Lampe, ein Buch" }
+      ]
+    },
+    {
+      "id": "akkusativ",
+      "title": "Nominativ und Akkusativ",
+      "blocks": [
+        { "type": "paragraph", "text": "The nominative is the subject; the accusative is the direct object. Only the masculine article changes in the accusative." },
+        { "type": "table", "headers": ["Kasus", "maskulin", "feminin", "neutrum", "Plural"], "rows": [["Nominativ", "der / ein", "die / eine", "das / ein", "die"], ["Akkusativ", "den / einen", "die / eine", "das / ein", "die"]] },
+        { "type": "example", "label": "Only the masculine changes", "text": "Der Mann liest einen Roman. Ich sehe den Tisch." }
+      ]
+    },
+    {
+      "id": "negation",
+      "title": "Negation: nicht und kein",
+      "blocks": [
+        { "type": "paragraph", "text": "kein negates nouns that have an indefinite article or no article; nicht negates verbs, adjectives and everything else." },
+        { "type": "table", "headers": ["Negation", "Use", "Beispiel"], "rows": [["kein-", "negates a noun", "Ich habe kein Auto."], ["nicht", "negates the verb or a complement", "Ich komme nicht. Das ist nicht teuer."]] }
+      ]
+    },
+    {
+      "id": "fragen",
+      "title": "Questions: W-Fragen and yes/no questions",
+      "blocks": [
+        { "type": "paragraph", "text": "Questions with a question word put it first and the verb in second position. In yes/no questions the verb comes first." },
+        { "type": "list", "items": ["W-Fragen: wer, was, wo, wann, warum, wie, woher, wohin", "Yes/no question: the verb opens the sentence"] },
+        { "type": "example", "text": "Wo wohnst du? — Wann beginnt der Kurs? — Kommst du mit?" }
+      ]
+    },
+    {
+      "id": "modalverben",
+      "title": "Modalverben (introduction)",
+      "blocks": [
+        { "type": "paragraph", "text": "Modal verbs are conjugated in second position and the main verb goes to the end of the sentence as an infinitive." },
+        { "type": "table", "headers": ["", "können", "müssen", "möchten"], "rows": [["ich", "kann", "muss", "möchte"], ["du", "kannst", "musst", "möchtest"], ["er/sie/es", "kann", "muss", "möchte"], ["wir/sie/Sie", "können", "müssen", "möchten"]] },
+        { "type": "example", "label": "Verb at the end", "text": "Ich kann gut schwimmen. Wir müssen jetzt gehen." }
+      ]
+    },
+    {
+      "id": "possessiv",
+      "title": "Possessivartikel (Nominativ)",
+      "blocks": [
+        { "type": "paragraph", "text": "They show possession and are declined like ein/kein. The ending agrees with the thing possessed, not with the owner." },
+        { "type": "table", "headers": ["Pronoun", "Possessivartikel"], "rows": [["ich", "mein"], ["du", "dein"], ["er/es", "sein"], ["sie", "ihr"], ["wir", "unser"], ["ihr", "euer"], ["sie/Sie", "ihr / Ihr"]] },
+        { "type": "example", "text": "Das ist mein Bruder. Wo ist deine Tasche?" }
+      ]
+    },
+    {
+      "id": "trennbare",
+      "title": "Separable verbs (introduction)",
+      "blocks": [
+        { "type": "paragraph", "text": "Many verbs have a separable prefix (an-, auf-, ein-, mit-, aus-…). In the present tense the prefix splits off and goes to the end of the sentence." },
+        { "type": "example", "text": "aufstehen → Ich stehe um 7 Uhr auf. · einkaufen → Wir kaufen am Samstag ein." }
+      ]
+    },
+    {
+      "id": "wortstellung",
+      "title": "Word order: the verb in second position",
+      "blocks": [
+        { "type": "paragraph", "text": "In a statement the conjugated verb is always in second position, even if the sentence starts with another element (time, place…)." },
+        { "type": "example", "text": "Heute lerne ich Deutsch. (not: Heute ich lerne …)" }
+      ]
+    }
+  ]
+}

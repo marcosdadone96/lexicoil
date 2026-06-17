@@ -47,6 +47,7 @@ const LexiCoilEngine = (() => {
       targetWords: words,
       topic: 'Personal vocabulary review',
       skills: skills || ['lesen', 'horen'],
+      vocabPolicy: { targetWords: words, maximizeCoverage: true, ensureDensePart: true },
     });
     return window.ExamGenerator.generatePersonal(spec, hooks);
   }

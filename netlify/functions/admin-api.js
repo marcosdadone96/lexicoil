@@ -6,9 +6,14 @@
  * Routes (all require Authorization: Bearer <jwt>):
  *   GET  /admin-api?action=stats               — content + user counts
  *   GET  /admin-api?action=users[&limit][&offset] — list users
- *   GET  /admin-api?action=pool[&lang][&level][&limit] — list pool exams
- *   POST /admin-api  { action: 'invalidate_pool', id }  — mark pool exam invalid
- *   POST /admin-api  { action: 'delete_pool', id }      — delete pool exam
+ *   GET  /admin-api?action=user_exams&email=<email>[&limit] — saved exams + history
+ *   GET  /admin-api?action=generations[&email][&lang][&level][&from][&to][&limit][&offset]
+ *   GET  /admin-api?action=generation&id=<uuid> — single generation with exam_data
+ *   GET  /admin-api?action=pool[&lang][&level] — list served pool (Netlify Blobs)
+ *   GET  /admin-api?action=pool_exam&lang&level&id — full pool entry for preview
+ *   POST /admin-api  { action: 'disable_pool', lang, level, id }
+ *   POST /admin-api  { action: 'enable_pool', lang, level, id }
+ *   POST /admin-api  { action: 'delete_pool', lang, level, id } — permanent delete (Blobs)
  *   POST /admin-api  { action: 'scan_pool_blobs', lang, level }  — dry-run legacy scan (Blobs)
  *   POST /admin-api  { action: 'purge_pool_blobs', lang, level }  — purge legacy entries (Blobs)
  *   POST /admin-api  { action: 'set_plan', email, plan } — change user plan
@@ -19,7 +24,7 @@
  *   POST /admin-api  { action: 'reset_quota', email }   — reset monthly exam count
  */
 
-const { getJwtSecret, verifyAuthToken } = require('./lib/authLib.js');
+const { getJwtSecret, verifyAuthToken, normalizeEmail, emailToUserId } = require('./lib/authLib.js');
 const { corsHeaders, getBearer, parseJsonBody, jsonResponse } = require('./lib/http.js');
 const { getStoreForEvent } = require('./lib/blobStore.js');
 const { scanPool, purgePool } = require('./lib/poolPurge.js');
@@ -32,8 +37,30 @@ const {
   updateCandidateStatus,
 } = require('./lib/stagingStore.js');
 const { maybePromote } = require('./lib/promoteFromApproved.js');
-const { normalizeEmail } = require('./lib/authLib.js');
+const {
+  listPoolExamsAdmin,
+  getPoolExamAdmin,
+  setPoolExamDisabled,
+  removePoolExam,
+} = require('./lib/poolIndex.js');
 const sb = require('./lib/supabaseAdmin.js');
+
+const POOL_LANGS = ['de', 'en', 'es'];
+const POOL_LEVELS = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
+
+async function listPoolExamsAllCombos(store, lang, level) {
+  const langs = lang ? [lang] : POOL_LANGS;
+  const levels = level ? [level] : POOL_LEVELS;
+  const all = [];
+  for (const l of langs) {
+    for (const lv of levels) {
+      const rows = await listPoolExamsAdmin(store, l, lv);
+      all.push(...rows);
+    }
+  }
+  all.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+  return all;
+}
 
 exports.handler = async (event) => {
   const cors = corsHeaders(event, 'GET, POST, OPTIONS');
@@ -68,9 +95,53 @@ exports.handler = async (event) => {
     }
 
     if (action === 'pool') {
+      const lang = params.lang ? String(params.lang).trim().toLowerCase() : '';
+      const level = params.level ? String(params.level).trim().toUpperCase() : '';
+      const store = getStoreForEvent(event);
+      const exams = await listPoolExamsAllCombos(store, lang || null, level || null);
+      return jsonResponse(200, cors, { exams, count: exams.length });
+    }
+
+    if (action === 'pool_exam') {
+      const lang = String(params.lang || '').trim().toLowerCase();
+      const level = String(params.level || '').trim().toUpperCase();
+      const id = String(params.id || '').trim();
+      if (!lang || !level || !id) return jsonResponse(400, cors, { error: 'missing_lang_level_id' });
+      const store = getStoreForEvent(event);
+      const entry = await getPoolExamAdmin(store, lang, level, id);
+      if (!entry) return jsonResponse(404, cors, { error: 'not_found' });
+      return jsonResponse(200, cors, { entry, id, lang, level });
+    }
+
+    if (action === 'user_exams') {
+      const email = normalizeEmail(params.email || '');
+      if (!email) return jsonResponse(400, cors, { error: 'missing_email' });
       const limit = Math.min(Number(params.limit) || 50, 200);
-      const exams = await sb.listPoolExams(params.lang || null, params.level || null, limit);
-      return jsonResponse(200, cors, { exams });
+      const profile = await sb.getUserProfileByEmail(email);
+      const userId = profile?.id || emailToUserId(email);
+      const saved = await sb.getSavedExams(userId, limit);
+      const history = await sb.getHistory(userId, limit);
+      return jsonResponse(200, cors, { email, userId, saved, history });
+    }
+
+    if (action === 'generations') {
+      const email = params.email ? normalizeEmail(params.email) : null;
+      const lang = params.lang ? String(params.lang).trim().toLowerCase() : null;
+      const level = params.level ? String(params.level).trim().toUpperCase() : null;
+      const from = params.from ? `${String(params.from).trim()}T00:00:00.000Z` : null;
+      const to = params.to ? `${String(params.to).trim()}T23:59:59.999Z` : null;
+      const limit = Math.min(Number(params.limit) || 50, 200);
+      const offset = Number(params.offset) || 0;
+      const result = await sb.listGenerations({ email, lang, level, from, to, limit, offset });
+      return jsonResponse(200, cors, { generations: result.rows, total: result.total });
+    }
+
+    if (action === 'generation') {
+      const id = String(params.id || '').trim();
+      if (!id) return jsonResponse(400, cors, { error: 'missing_id' });
+      const row = await sb.getGeneration(id);
+      if (!row) return jsonResponse(404, cors, { error: 'not_found' });
+      return jsonResponse(200, cors, { generation: row });
     }
 
     if (action === 'staging_pending') {
@@ -104,16 +175,31 @@ exports.handler = async (event) => {
 
     const { action } = body;
 
-    if (action === 'invalidate_pool') {
-      if (!body.id) return jsonResponse(400, cors, { error: 'missing_id' });
-      const ok = await sb.invalidatePoolExam(body.id);
-      return jsonResponse(ok ? 200 : 500, cors, { ok });
+    if (action === 'disable_pool') {
+      const lang = String(body.lang || '').trim().toLowerCase();
+      const level = String(body.level || '').trim().toUpperCase();
+      if (!body.id || !lang || !level) return jsonResponse(400, cors, { error: 'missing_fields' });
+      const store = getStoreForEvent(event);
+      const ok = await setPoolExamDisabled(store, lang, level, body.id, true);
+      return jsonResponse(ok ? 200 : 404, cors, { ok });
+    }
+
+    if (action === 'enable_pool') {
+      const lang = String(body.lang || '').trim().toLowerCase();
+      const level = String(body.level || '').trim().toUpperCase();
+      if (!body.id || !lang || !level) return jsonResponse(400, cors, { error: 'missing_fields' });
+      const store = getStoreForEvent(event);
+      const ok = await setPoolExamDisabled(store, lang, level, body.id, false);
+      return jsonResponse(ok ? 200 : 404, cors, { ok });
     }
 
     if (action === 'delete_pool') {
-      if (!body.id) return jsonResponse(400, cors, { error: 'missing_id' });
-      const ok = await sb.deletePoolExam(body.id);
-      return jsonResponse(ok ? 200 : 500, cors, { ok });
+      const lang = String(body.lang || '').trim().toLowerCase();
+      const level = String(body.level || '').trim().toUpperCase();
+      if (!body.id || !lang || !level) return jsonResponse(400, cors, { error: 'missing_fields' });
+      const store = getStoreForEvent(event);
+      const ok = await removePoolExam(store, lang, level, body.id);
+      return jsonResponse(ok ? 200 : 404, cors, { ok });
     }
 
     if (action === 'scan_pool_blobs') {

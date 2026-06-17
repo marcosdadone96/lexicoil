@@ -2,42 +2,36 @@
  * Strategy B feature flag — library-first per servable level (Phase 2).
  * When a level passes catalogThresholds, live AI is blocked for standard exams.
  */
+function levelAvailabilityRef() {
+  if (typeof LevelAvailability !== 'undefined') return LevelAvailability;
+  if (typeof module !== 'undefined') {
+    try {
+      return require('../library/levelAvailability.js');
+    } catch (_) {
+      return null;
+    }
+  }
+  return null;
+}
+
 function isLevelServable(subject, level) {
   if (!subject || !level) return false;
+  const la = levelAvailabilityRef();
+  if (la) return la.isLevelServable(subject, level);
   if (typeof LibraryLoader !== 'undefined' && typeof LibraryLoader.hasLibrary === 'function') {
     return LibraryLoader.hasLibrary(subject, level);
   }
-  if (typeof module === 'undefined') return false;
-  try {
-    const fs = require('fs');
-    const path = require('path');
-    const ContentServable = require('../library/contentServable.js');
-    const LibraryCatalog = require('../library/libraryCatalog.js');
-    const root = process.cwd();
-    const base = path.join(root, 'library', subject, level);
-    const qPath = path.join(base, 'questions.json');
-    if (!fs.existsSync(qPath)) return false;
-    const questionsBank = JSON.parse(fs.readFileSync(qPath, 'utf8'));
-    const passagesPath = path.join(base, 'passages.json');
-    const wsPath = path.join(base, 'writing-speaking.json');
-    const passagesFile = fs.existsSync(passagesPath) ? JSON.parse(fs.readFileSync(passagesPath, 'utf8')) : null;
-    const wsFile = fs.existsSync(wsPath) ? JSON.parse(fs.readFileSync(wsPath, 'utf8')) : null;
-    const bpId = LibraryCatalog.blueprintId(subject, level);
-    const bpPath = bpId ? path.join(root, 'library/blueprints', `${bpId}.json`) : null;
-    const blueprint = bpPath && fs.existsSync(bpPath) ? JSON.parse(fs.readFileSync(bpPath, 'utf8')) : null;
-    ContentServable.loadThresholdsSync(fs.readFileSync, root);
-    const passages = ContentServable.mergePassages(questionsBank.passages, passagesFile?.passages);
-    return ContentServable.assessLevel({
-      lang: subject,
-      level,
-      questions: questionsBank.questions,
-      passages,
-      writingSpeaking: wsFile || { writing: [], speaking: [] },
-      blueprint,
-    }).servable;
-  } catch (_) {
-    return false;
-  }
+  return false;
+}
+
+/**
+ * Strategy-A direct pool: when LC_DIRECT_POOL=1, AI exams may enter the served pool
+ * without human review (quality gate only). Moderation is a posteriori via admin.
+ */
+function directPoolContribEnabled() {
+  if (typeof process !== 'undefined' && process.env && process.env.LC_DIRECT_POOL === '1') return true;
+  if (typeof window !== 'undefined' && window.LC_DIRECT_POOL === '1') return true;
+  return false;
 }
 
 function strategyBEnabled(options = {}) {
@@ -60,30 +54,19 @@ function isPersonalVocabExamRequest(opts = {}) {
 }
 
 function liveAiDisabled(subject, level) {
-  if (typeof window !== 'undefined') {
-    if (window.LC_DISABLE_LIVE_AI === false) return false;
-    if (window.LC_DISABLE_LIVE_AI === true) return true;
-  }
-  if (typeof process !== 'undefined' && process.env) {
-    if (process.env.LC_DISABLE_LIVE_AI === '0') return false;
-    if (process.env.LC_DISABLE_LIVE_AI === '1') return true;
-  }
-  if (!subject || !level) return true;
-  const hasBank = isLevelServable(subject, level);
-  let hasStatic = false;
-  if (typeof ExamLibrary !== 'undefined' && typeof ExamLibrary.hasLibrary === 'function') {
-    hasStatic = ExamLibrary.hasLibrary(subject, level);
-  }
-  return !(hasBank || hasStatic);
+  const la = levelAvailabilityRef();
+  if (la) return la.liveAiDisabled(subject, level);
+  return true;
 }
 
 if (typeof module !== 'undefined') {
-  module.exports = { strategyBEnabled, isPersonalVocabExamRequest, isLevelServable, liveAiDisabled };
+  module.exports = { strategyBEnabled, isPersonalVocabExamRequest, isLevelServable, liveAiDisabled, directPoolContribEnabled };
 }
 
 if (typeof window !== 'undefined') {
   window.strategyBEnabled = strategyBEnabled;
   window.isLevelServable = isLevelServable;
   window.liveAiDisabled = liveAiDisabled;
+  window.directPoolContribEnabled = directPoolContribEnabled;
   window.LC_COOLDOWN_DAYS = window.LC_COOLDOWN_DAYS ?? 15;
 }

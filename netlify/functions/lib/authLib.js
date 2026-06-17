@@ -42,9 +42,33 @@ function verifyAuthToken(token) {
   }
   const email = normalizeEmail(payload.sub);
   if (!email) return { ok: false, error: 'unauthorized' };
-  // uid: Supabase UUID if present in token, otherwise derived from email
   const userId = payload.uid || emailToUserId(email);
   return { ok: true, email, userId, payload, tokenVersion: payload.tv || 1 };
+}
+
+/**
+ * B-2 fix: requireAuth(event, store) — verifies the JWT AND checks tokenVersion against the
+ * stored user record. Call this on every endpoint that touches billing, AI, or user data.
+ * Returns { ok, email, userId, user, payload } on success or { ok:false, status, error } on failure.
+ */
+async function requireAuth(event, store) {
+  const { getBearer } = require('./http.js');
+  const token = getBearer(event);
+  if (!token) return { ok: false, status: 401, error: 'unauthorized' };
+
+  const auth = verifyAuthToken(token);
+  if (!auth.ok) return { ok: false, status: 401, error: auth.error || 'unauthorized' };
+
+  let user = null;
+  try { user = await store.get(userKey(auth.email), { type: 'json' }); } catch (_) {}
+  if (!user) return { ok: false, status: 401, error: 'unauthorized' };
+
+  // Enforce token revocation: if the user reset their password, old tokens are rejected
+  if (user.tokenVersion != null && auth.payload.tv !== user.tokenVersion) {
+    return { ok: false, status: 401, error: 'token_revoked' };
+  }
+
+  return { ok: true, email: auth.email, userId: auth.userId, user, payload: auth.payload };
 }
 
 function getTokenVersion(user) {
@@ -80,6 +104,7 @@ module.exports = {
   syncKey,
   emailToUserId,
   verifyAuthToken,
+  requireAuth,
   signAuthToken,
   getTokenVersion,
 };

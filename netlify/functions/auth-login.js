@@ -10,7 +10,7 @@ const {
   signAuthToken,
   getTokenVersion,
 } = require('./lib/authLib.js');
-const { corsHeaders, parseJsonBody, jsonResponse } = require('./lib/http.js');
+const { corsHeaders, parseJsonBody, authSessionResponse, jsonResponse } = require('./lib/http.js');
 
 exports.handler = async (event) => {
   const cors = corsHeaders(event);
@@ -38,9 +38,14 @@ exports.handler = async (event) => {
   const store = getStoreForEvent(event);
 
   const ip = (event.headers['x-forwarded-for'] || '').split(',')[0].trim() || 'unknown';
+  const ipSalt =
+    process.env.GUEST_IP_SALT ||
+    process.env.AUTH_JWT_SECRET ||
+    process.env.LEXICOIL_JWT_SECRET ||
+    'lexicoil-guest';
   const ipHash = crypto
     .createHash('sha256')
-    .update(ip + (process.env.AUTH_JWT_SECRET || ''))
+    .update(`${ip}:${ipSalt}`)
     .digest('hex')
     .slice(0, 24);
   const rateLimitKey = `ratelimit_login:${ipHash}`;
@@ -82,8 +87,7 @@ exports.handler = async (event) => {
   } catch (_) {}
 
   const session = signAuthToken(email, user.name, getTokenVersion(user));
-  return jsonResponse(200, cors, {
-    token: session.token,
+  return authSessionResponse(200, cors, {
     expiresAt: session.expiresAt,
     user: {
       name: user.name,
@@ -91,5 +95,5 @@ exports.handler = async (event) => {
       plan: user.pro ? 'pro' : user.plan || 'free',
       pro: Boolean(user.pro),
     },
-  });
+  }, session.token, event);
 };

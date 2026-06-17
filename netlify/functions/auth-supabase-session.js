@@ -3,7 +3,7 @@
 const { createClient } = require('@supabase/supabase-js');
 const { getStoreForEvent } = require('./lib/blobStore.js');
 const { userKey, signAuthToken, normalizeEmail, getJwtSecret, getTokenVersion } = require('./lib/authLib.js');
-const { corsHeaders, parseJsonBody, jsonResponse } = require('./lib/http.js');
+const { corsHeaders, parseJsonBody, authSessionResponse, jsonResponse } = require('./lib/http.js');
 const { resolvePlan, maxForPlan, getMonthKey } = require('./lib/quotaLib.js');
 const {
   parseFreeComboFromBody,
@@ -121,8 +121,7 @@ exports.handler = async function handler(event) {
     /* fresh */
   }
 
-  return jsonResponse(200, cors, {
-    token: session.token,
+  return authSessionResponse(200, cors, {
     expiresAt: session.expiresAt,
     user: {
       name: user.name,
@@ -133,5 +132,5 @@ exports.handler = async function handler(event) {
       quota: { used, max, month },
       freeCombo: freeComboForResponse(user),
     },
-  });
+  }, session.token, event);
 };

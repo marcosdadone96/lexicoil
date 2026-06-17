@@ -37,12 +37,43 @@ const QuestionLibrary = (() => {
     if (!calibration && typeof ItemCalibration !== 'undefined') {
       calibration = await ItemCalibration.loadAsync(subject, level);
     }
-    return buildWithBlueprint(subject, level, bank, blueprint, {
+    const burned = burnedExcludes(options);
+    const usedBurnedFilter = burned.applyBurned !== false && typeof BurnedRegistry !== 'undefined';
+
+    const baseOpts = {
       mode: 'standard',
       calibration,
       ...options,
-      ...burnedExcludes(options),
+    };
+
+    let exam = await buildWithBlueprint(subject, level, bank, blueprint, {
+      ...baseOpts,
+      ...burned,
     });
+
+    const allowReuse =
+      (typeof window !== 'undefined'
+        ? window.LC_ALLOW_REUSE_WHEN_EXHAUSTED !== false
+        : options.allowReuseWhenExhausted !== false) &&
+      options.skipReuseFallback !== true;
+
+    if (allowReuse && usedBurnedFilter && exam.blueprintComplete === false) {
+      const retry = await buildWithBlueprint(subject, level, bank, blueprint, {
+        ...baseOpts,
+        excludeIds: undefined,
+        applyBurned: false,
+      });
+      if (retry.blueprintComplete) {
+        retry.reusedItems = true;
+        return retry;
+      }
+      if ((retry.blueprintCoverage || []).filter((c) => c.complete).length >
+          (exam.blueprintCoverage || []).filter((c) => c.complete).length) {
+        exam = retry;
+      }
+    }
+
+    return exam;
   }
 
   async function buildPersonalExam(subject, level, words, skills) {

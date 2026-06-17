@@ -1,0 +1,109 @@
+{
+  "lang": "de",
+  "level": "B1",
+  "status": "published",
+  "title": "Gramática · Deutsch B1",
+  "metaLanguage": "es",
+  "scope": "B1 es el salto a las estructuras 'adultas': Konjunktiv II (hipótesis y cortesía), voz pasiva (Vorgangspassiv), oraciones de relativo, declinación completa del adjetivo, las Wechselpräpositionen y un repertorio amplio de conectores. Aparece el Genitiv y el Infinitiv mit zu. Frontera: ya expresas hipótesis y pasiva, pero todavía no el estilo indirecto (Konjunktiv I) ni la pasiva avanzada.",
+  "sections": [
+    {
+      "id": "konjunktiv2",
+      "title": "Konjunktiv II",
+      "blocks": [
+        { "type": "paragraph", "text": "Sirve para hipótesis, deseos, consejos y peticiones corteses. Lo habitual es würde + infinitivo, pero algunos verbos frecuentes tienen forma propia." },
+        { "type": "table", "headers": ["Infinitiv", "Konjunktiv II", "Beispiel"], "rows": [["sein", "wäre", "Wenn ich reich wäre …"], ["haben", "hätte", "Ich hätte gern einen Kaffee."], ["können", "könnte", "Könntest du mir helfen?"], ["werden", "würde", "Ich würde dir helfen."]] },
+        { "type": "example", "label": "Hipótesis", "text": "Wenn ich Zeit hätte, würde ich mehr reisen." },
+        { "type": "example", "label": "Petición cortés", "text": "Könnten Sie das bitte wiederholen?" },
+        { "type": "example", "label": "Consejo", "text": "An deiner Stelle würde ich einen Arzt fragen." }
+      ]
+    },
+    {
+      "id": "passiv",
+      "title": "Passiv (Vorgangspassiv)",
+      "blocks": [
+        { "type": "paragraph", "text": "Se usa cuando importa la acción y no quién la realiza. Se forma con werden + Partizip II." },
+        { "type": "table", "headers": ["Tempus", "Struktur", "Beispiel"], "rows": [["Präsens", "wird + Part. II", "Das Haus wird gebaut."], ["Präteritum", "wurde + Part. II", "Das Haus wurde gebaut."], ["Perfekt", "ist + Part. II + worden", "Das Haus ist gebaut worden."], ["mit Modalverb", "muss + Part. II + werden", "Das Haus muss gebaut werden."]] },
+        { "type": "note", "text": "El agente, si se menciona, va con von + Dativ: Der Brief wird von Anna geschrieben." }
+      ]
+    },
+    {
+      "id": "relativsaetze",
+      "title": "Relativsätze",
+      "blocks": [
+        { "type": "paragraph", "text": "Añaden información sobre un sustantivo. El pronombre relativo concuerda en género y número con su antecedente y toma el caso según su función dentro de la subordinada. El verbo va al final." },
+        { "type": "table", "headers": ["Kasus", "maskulin", "feminin", "neutrum", "Plural"], "rows": [["Nominativ", "der", "die", "das", "die"], ["Akkusativ", "den", "die", "das", "die"], ["Dativ", "dem", "der", "dem", "denen"], ["Genitiv", "dessen", "deren", "dessen", "deren"]] },
+        { "type": "example", "text": "Das ist der Mann, der nebenan wohnt." },
+        { "type": "example", "text": "Die Frau, der ich geholfen habe, ist Ärztin." }
+      ]
+    },
+    {
+      "id": "adjektivdeklination",
+      "title": "Adjektivdeklination",
+      "blocks": [
+        { "type": "paragraph", "text": "El adjetivo delante del sustantivo cambia de terminación según el artículo y el caso. Tras artículo determinado (declinación débil):" },
+        { "type": "table", "headers": ["Kasus", "maskulin", "feminin", "neutrum", "Plural"], "rows": [["Nominativ", "der gute", "die gute", "das gute", "die guten"], ["Akkusativ", "den guten", "die gute", "das gute", "die guten"], ["Dativ", "dem guten", "der guten", "dem guten", "den guten"]] },
+        { "type": "note", "text": "Tras artículo indeterminado y sin artículo las terminaciones cambian; el adjetivo asume entonces la marca de género/caso." }
+      ]
+    },
+    {
+      "id": "wechselpraepositionen",
+      "title": "Wechselpräpositionen",
+      "blocks": [
+        { "type": "paragraph", "text": "Nueve preposiciones que rigen acusativo o dativo: an, auf, hinter, in, neben, über, unter, vor, zwischen." },
+        { "type": "table", "headers": ["Frage", "Kasus", "Beispiel"], "rows": [["Wohin? (movimiento)", "Akkusativ", "Ich stelle die Lampe auf den Tisch."], ["Wo? (ubicación)", "Dativ", "Die Lampe steht auf dem Tisch."]] },
+        { "type": "note", "text": "Truco: si hay desplazamiento hacia un sitio → acusativo; si describes dónde está algo → dativo." }
+      ]
+    },
+    {
+      "id": "konnektoren",
+      "title": "Konnektoren und Nebensätze",
+      "blocks": [
+        { "type": "paragraph", "text": "Conectores frecuentes para enlazar ideas. Ojo a la posición del verbo según el tipo." },
+        { "type": "table", "headers": ["Konnektor", "Bedeutung", "Verbo"], "rows": [["weil / da", "porque", "al final"], ["obwohl", "aunque", "al final"], ["damit", "para que", "al final"], ["deshalb / deswegen", "por eso", "en posición 2"], ["trotzdem", "a pesar de ello", "en posición 2"]] },
+        { "type": "example", "text": "Ich lerne viel, damit ich die Prüfung bestehe. Es regnet, trotzdem gehe ich spazieren." }
+      ]
+    },
+    {
+      "id": "temporale",
+      "title": "Temporale Nebensätze",
+      "blocks": [
+        { "type": "paragraph", "text": "Para situar acciones en el tiempo. Distingue als (un hecho puntual en pasado) de wenn (repetición o presente/futuro)." },
+        { "type": "table", "headers": ["Konjunktion", "Uso", "Beispiel"], "rows": [["als", "una vez en el pasado", "Als ich klein war, …"], ["wenn", "repetido / presente / futuro", "Wenn ich Zeit habe, lese ich."], ["bevor / nachdem", "antes de / después de", "Nachdem ich gegessen hatte, ging ich."], ["während", "mientras", "Während er arbeitet, höre ich Musik."]] }
+      ]
+    },
+    {
+      "id": "verben-praeposition",
+      "title": "Verben mit Präpositionen",
+      "blocks": [
+        { "type": "paragraph", "text": "Muchos verbos rigen una preposición fija con un caso fijo. Hay que aprenderlos juntos." },
+        { "type": "table", "headers": ["Verb + Präposition", "Beispiel"], "rows": [["warten auf (+ Akk)", "Ich warte auf den Bus."], ["denken an (+ Akk)", "Ich denke an dich."], ["sich freuen über (+ Akk)", "Ich freue mich über das Geschenk."], ["teilnehmen an (+ Dat)", "Sie nimmt am Kurs teil."]] },
+        { "type": "note", "text": "Para preguntar/referirse a cosas se usan adverbios: Worauf wartest du? — Darauf." }
+      ]
+    },
+    {
+      "id": "infinitiv-zu",
+      "title": "Infinitiv mit zu",
+      "blocks": [
+        { "type": "paragraph", "text": "Tras ciertos verbos, adjetivos y expresiones se usa un infinitivo con zu al final. En verbos separables, zu va en medio: einzukaufen." },
+        { "type": "example", "text": "Ich habe vergessen, die Tür zu schließen. Es ist wichtig, jeden Tag zu üben." }
+      ]
+    },
+    {
+      "id": "genitiv",
+      "title": "Genitiv (Einführung)",
+      "blocks": [
+        { "type": "paragraph", "text": "Expresa posesión o pertenencia. El masculino y el neutro añaden -s al sustantivo." },
+        { "type": "table", "headers": ["Kasus", "maskulin", "feminin", "neutrum", "Plural"], "rows": [["Genitiv", "des Mannes", "der Frau", "des Kindes", "der Leute"]] },
+        { "type": "example", "text": "Das ist das Auto des Lehrers. Die Farbe der Wand gefällt mir." }
+      ]
+    },
+    {
+      "id": "futur1",
+      "title": "Futur I",
+      "blocks": [
+        { "type": "paragraph", "text": "Se forma con werden + infinitivo. Expresa futuro, intención o suposición. En el día a día, el presente + adverbio de tiempo también vale para el futuro." },
+        { "type": "example", "text": "Ich werde nächstes Jahr studieren. Er wird wohl zu Hause sein." }
+      ]
+    }
+  ]
+}

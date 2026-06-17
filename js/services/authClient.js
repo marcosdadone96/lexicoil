@@ -19,7 +19,7 @@ const Auth = (() => {
   function continueAsGuest() {
     clearGuest();
     localStorage.setItem(GUEST_KEY, '1');
-    setToken('');
+    clearLegacyToken();
     applyUser({
       name: 'Guest',
       email: 'guest@lexicoil.com',
@@ -30,31 +30,65 @@ const Auth = (() => {
     });
   }
 
+  function clearLegacyToken() {
+    try {
+      localStorage.removeItem(TOKEN_KEY);
+    } catch (_) {
+      /* ignore */
+    }
+  }
+
   function getToken() {
     return localStorage.getItem(TOKEN_KEY) || '';
   }
 
+  /** @deprecated HttpOnly cookie holds the session; legacy localStorage token only for migration fallback in authHeaders. */
   function setToken(token) {
     if (token) localStorage.setItem(TOKEN_KEY, token);
-    else localStorage.removeItem(TOKEN_KEY);
+    else clearLegacyToken();
   }
 
-  function authHeaders() {
-    const h = { 'Content-Type': 'application/json' };
-    const token = getToken();
-    if (token) h.Authorization = `Bearer ${token}`;
+  function authHeaders(extra = {}) {
+    const h = { 'Content-Type': 'application/json', ...extra };
+    const legacy = getToken();
+    if (legacy) h.Authorization = `Bearer ${legacy}`;
     return h;
   }
 
+  function apiFetch(url, options = {}) {
+    return fetch(url, {
+      credentials: 'include',
+      ...options,
+      headers: { ...authHeaders(), ...(options.headers || {}) },
+    });
+  }
+
   async function api(path, options = {}) {
-    const res = await fetch(`/.netlify/functions/${path}`, options);
+    const res = await apiFetch(`/.netlify/functions/${path}`, options);
     let data = {};
     try {
       data = await res.json();
     } catch {
       /* empty */
     }
+    if (res.status === 401 && data.error === 'token_revoked') {
+      handleTokenRevoked();
+    }
     return { res, data };
+  }
+
+  function handleTokenRevoked() {
+    clearLegacyToken();
+    clearGuest();
+    S.user = null;
+    S.plan = 'guest';
+    localStorage.removeItem('lc_user');
+    api('auth-logout', { method: 'POST' }).catch(() => {});
+    if (typeof switchTab === 'function') switchTab('login');
+    if (typeof showAuthOverlay === 'function') showAuthOverlay();
+    if (typeof lcToast === 'function') {
+      lcToast('Session expired. Please sign in again.', 'warn');
+    }
   }
 
   async function loadAuthConfig() {
@@ -114,10 +148,10 @@ const Auth = (() => {
     });
     if (!res.ok) throw new Error(mapAuthError(data.error));
     clearGuest();
-    setToken(data.token);
+    clearLegacyToken();
     applyUser(data.user);
     await pullSync();
-    const { res: meRes, data: meData } = await api('auth-me', { headers: authHeaders() });
+    const { res: meRes, data: meData } = await api('auth-me');
     if (meRes.ok) applyUser(meData.user);
     return data.user;
   }
@@ -152,13 +186,14 @@ const Auth = (() => {
           : read('lc_burned', { v: 1, keys: [], ids: [] }),
       goals: Array.isArray(S.goals) ? S.goals : read('lc_goals', []),
       activeGoalId: S.activeGoalId || localStorage.getItem('lc_active_goal') || null,
+      notebook: S.notebook && typeof S.notebook === 'object' ? S.notebook : read('lc_notes', { tabs: [] }),
     };
   }
 
   async function pullSync() {
-    if (localMode || !getToken()) return;
+    if (localMode || isGuest()) return;
     const localBefore = localSyncSnapshot();
-    const { res, data } = await api('user-sync', { headers: authHeaders() });
+    const { res, data } = await api('user-sync');
     if (!res.ok) return;
     const server = data.data || {};
     const merged =
@@ -203,6 +238,10 @@ const Auth = (() => {
       S.activeGoalId = merged.activeGoalId;
       localStorage.setItem('lc_active_goal', merged.activeGoalId);
     }
+    if (merged.notebook) {
+      S.notebook = merged.notebook;
+      localStorage.setItem('lc_notes', JSON.stringify(merged.notebook));
+    }
     if (typeof AnalyticsStore !== 'undefined') {
       localStorage.setItem(AnalyticsStore.KEY, JSON.stringify(AnalyticsStore.exportSnapshot()));
     }
@@ -226,7 +265,7 @@ const Auth = (() => {
   }
 
   async function pushSync() {
-    if (localMode || !getToken() || isGuest()) return;
+    if (localMode || isGuest()) return;
     await api('user-sync', {
       method: 'PUT',
       headers: authHeaders(),
@@ -242,13 +281,14 @@ const Auth = (() => {
           mastery:
             typeof AnalyticsStore !== 'undefined'
               ? AnalyticsStore.exportSnapshot()
-              : JSON.parse(localStorage.getItem('lc_mastery') || '{"profiles":{}}'),
+              : (() => { try { return JSON.parse(localStorage.getItem('lc_mastery') || '{"profiles":{}}'); } catch(_) { return {"profiles":{}}; } })(),
           burned:
             typeof BurnedRegistry !== 'undefined'
               ? BurnedRegistry.toPayload()
-              : JSON.parse(localStorage.getItem('lc_burned') || '{"v":1,"keys":[],"ids":[]}'),
+              : (() => { try { return JSON.parse(localStorage.getItem('lc_burned') || '{"v":1,"keys":[],"ids":[]}'); } catch(_) { return {"v":1,"keys":[],"ids":[]}; } })(),
           goals: Array.isArray(S.goals) ? S.goals : [],
           activeGoalId: S.activeGoalId || null,
+          notebook: S.notebook && typeof S.notebook === 'object' ? S.notebook : { tabs: [] },
           preferences: {
             translationLangs: [S.fcLang || 'en'],
             ttsVoices: (typeof getTtsVoicePref === 'function' && S.subject)
@@ -429,10 +469,10 @@ const Auth = (() => {
     });
     if (!res.ok) throw new Error(mapAuthError(data.error));
     clearGuest();
-    setToken(data.token);
+    clearLegacyToken();
     applyUser(data.user);
     await pullSync();
-    const { res: meRes, data: meData } = await api('auth-me', { headers: authHeaders() });
+    const { res: meRes, data: meData } = await api('auth-me');
     if (meRes.ok) applyUser(meData.user);
     return data.user;
   }
@@ -461,10 +501,10 @@ const Auth = (() => {
     });
     if (!res.ok) throw new Error(mapAuthError(data.error));
     clearGuest();
-    setToken(data.token);
+    clearLegacyToken();
     applyUser(data.user);
     await pullSync();
-    const { res: meRes, data: meData } = await api('auth-me', { headers: authHeaders() });
+    const { res: meRes, data: meData } = await api('auth-me');
     if (meRes.ok) applyUser(meData.user);
     return data.user;
   }
@@ -545,15 +585,19 @@ const Auth = (() => {
   async function bootstrap() {
     await loadAuthConfig();
 
-    const token = getToken();
-    if (token) {
-      clearGuest();
-      const { res, data } = await api('auth-me', { headers: authHeaders() });
+    if (!localMode) {
+      const { res, data } = await api('auth-me');
       if (res.ok) {
+        clearLegacyToken();
+        clearGuest();
         applyUser(data.user);
         await pullSync();
         if (supabaseEnabled && (await ensureSupabaseReady())) setupSupabaseAuthListener();
         return true;
+      }
+      if (res.status === 401 && data.error === 'token_revoked') {
+        handleTokenRevoked();
+        return false;
       }
       if (res.status !== 401 && restoreCachedUser()) {
         if (supabaseEnabled && (await ensureSupabaseReady())) setupSupabaseAuthListener();
@@ -561,6 +605,7 @@ const Auth = (() => {
       }
     }
 
+    const legacyToken = getToken();
     if (supabaseEnabled && (await ensureSupabaseReady())) {
       setupSupabaseAuthListener();
       const { data } = await SupabaseAuth.getClient().auth.getSession();
@@ -569,18 +614,18 @@ const Auth = (() => {
           await exchangeSupabaseSession(data.session.access_token);
           return true;
         } catch {
-          if (getToken() && restoreCachedUser()) return true;
+          if (S.user && restoreCachedUser()) return true;
         }
       }
     }
 
-    if (token && restoreCachedUser()) {
+    if (legacyToken && restoreCachedUser()) {
       if (supabaseEnabled && (await ensureSupabaseReady())) setupSupabaseAuthListener();
       return true;
     }
 
-    if (token) {
-      setToken('');
+    if (legacyToken) {
+      clearLegacyToken();
       localStorage.removeItem('lc_user');
     }
 
@@ -611,11 +656,21 @@ const Auth = (() => {
         /* ignore */
       }
     }
-    setToken('');
+    try {
+      await api('auth-logout', { method: 'POST' });
+    } catch {
+      /* ignore */
+    }
+    clearLegacyToken();
     clearGuest();
     S.user = null;
     S.plan = 'guest';
     localStorage.removeItem('lc_user');
+  }
+
+  function hasSession() {
+    if (isGuest()) return false;
+    return Boolean(S.user && S.user.email && S.user.email !== 'guest@lexicoil.com');
   }
 
   function mapAuthError(code) {
@@ -626,6 +681,7 @@ const Auth = (() => {
       auth_not_configured: 'Accounts are not configured on the server yet.',
       supabase_not_configured: 'Supabase is not configured on the server yet.',
       invalid_supabase_session: 'Session expired. Please sign in again.',
+      token_revoked: 'Session expired. Please sign in again.',
     };
     return map[code] || 'Authentication failed.';
   }
@@ -673,12 +729,21 @@ const Auth = (() => {
     forgotPassword,
     bootstrap,
     logout,
+    handleTokenRevoked,
     pushSync,
     continueAsGuest,
     clearGuest,
     isGuest,
-    hasToken: () => Boolean(getToken()),
+    hasSession,
+    hasToken: () => hasSession() || Boolean(getToken()),
+    authHeaders,
+    apiFetch,
     isLocalMode: () => localMode,
     usesSupabase: () => supabaseEnabled,
   };
 })();
+
+if (typeof window !== 'undefined') {
+  window.lcApiFetch = Auth.apiFetch;
+  window.lcAuthHeaders = Auth.authHeaders;
+}

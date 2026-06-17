@@ -228,7 +228,7 @@ function showAddGoalWizard(){
   _showGoalWizard=true;
   _editingGoalId=null;
   _goalWizard.subject='de';
-  _goalWizard.level='B2';
+  _goalWizard.level=typeof LevelAvailability!=='undefined'?LevelAvailability.firstSelectableLevel('de'):'B1';
   _goalWizard.examDate='';
   renderHomeScreen();
 }
@@ -239,22 +239,44 @@ function cancelGoalWizard(){
 }
 function selectWizSubject(subject){
   _goalWizard.subject=subject;
+  const curStatus=typeof LevelAvailability!=='undefined'?LevelAvailability.getLevelUiStatus(subject,_goalWizard.level):'ready';
+  if(curStatus==='soon'){
+    _goalWizard.level=typeof LevelAvailability!=='undefined'?LevelAvailability.firstSelectableLevel(subject):'B1';
+  }
   renderHomeScreen();
 }
 function wizLevelsFor(subject){
-  if(typeof LibraryCatalog!=='undefined')return LibraryCatalog.selectableLevels(subject||'de');
+  if(typeof LibraryCatalog!=='undefined')return LibraryCatalog.advertisedLevels(subject||'de');
   return['A1','A2','B1','B2','C1','C2'];
 }
+function wizSelectableLevels(subject){
+  if(typeof LevelAvailability!=='undefined')return LevelAvailability.selectableLevels(subject||'de');
+  if(typeof LibraryCatalog!=='undefined')return LibraryCatalog.selectableLevels(subject||'de');
+  return wizLevelsFor(subject);
+}
+function wizLevelStatus(subject,level){
+  if(typeof LibraryCatalog!=='undefined'&&LibraryCatalog.getLevelUiStatus)return LibraryCatalog.getLevelUiStatus(subject,level);
+  if(typeof LevelAvailability!=='undefined')return LevelAvailability.getLevelUiStatus(subject,level);
+  return'ready';
+}
 function wizLevelRangeLabel(subject){
-  const lv=wizLevelsFor(subject);
-  if(!lv.length)return'Coming soon';
+  const lv=wizSelectableLevels(subject);
+  if(!lv.length)return'Próximamente';
   return lv.length===1?lv[0]+' · official format':lv[0]+'–'+lv[lv.length-1]+' · official format';
 }
 function selectWizLevel(level){
+  if(wizLevelStatus(_goalWizard.subject,level)==='soon'){
+    if(typeof openLevelSoonNotify==='function')openLevelSoonNotify(_goalWizard.subject,level);
+    return;
+  }
   _goalWizard.level=level;
   renderHomeScreen();
 }
 function submitGoalWizard(){
+  if(wizLevelStatus(_goalWizard.subject,_goalWizard.level)==='soon'){
+    if(typeof openLevelSoonNotify==='function')openLevelSoonNotify(_goalWizard.subject,_goalWizard.level);
+    return;
+  }
   const date=_goalWizard.examDate?String(_goalWizard.examDate).trim():null;
   if(_editingGoalId){
     updateGoal(_editingGoalId,{subject:_goalWizard.subject,level:_goalWizard.level,examDate:date||null});
@@ -275,7 +297,7 @@ function renderGoalWizardHtml(isFirst){
       <div class="goal-tile${w.subject==='es'?' sel':''}" onclick="selectWizSubject('es')"><span class="goal-pill">Spanish</span><h3>DELE · Cervantes</h3><span>${wizLevelRangeLabel('es')}</span></div>
     </div>
     <p class="goal-step">Step 2 · Which level?</p>
-    <div class="goal-levels">${wizLevelsFor(w.subject).map(l=>`<span class="goal-lvl${w.level===l?' sel':''}" onclick="selectWizLevel('${l}')">${l}</span>`).join('')}</div>
+    <div class="goal-levels">${wizLevelsFor(w.subject).map(l=>{const st=wizLevelStatus(w.subject,l);const soon=st==='soon';return`<span class="goal-lvl${w.level===l&&!soon?' sel':''}${soon?' goal-lvl--soon':''}" onclick="${soon?`openLevelSoonNotify('${w.subject}','${l}')`:`selectWizLevel('${l}')`}">${l}${soon?'<small class="goal-lvl-soon">Próximamente</small>':''}</span>`;}).join('')}</div>
     <p class="goal-step">Step 3 · Exam date <span class="goal-opt-note">(optional — powers your countdown)</span></p>
     <input type="date" class="goal-date" id="wizExamDate" value="${esc(w.examDate||'')}" onchange="_goalWizard.examDate=this.value">
     <div class="goal-wiz-actions">
@@ -284,38 +306,70 @@ function renderGoalWizardHtml(isFirst){
     </div>
   </div>`;
 }
+function goalCardCertName(goal){
+  const meta=typeof SubjectMeta!=='undefined'?SubjectMeta.get(goal.subject):null;
+  return meta?meta.cert:goalLabel(goal);
+}
+function readinessRingSvgDash(pct,hasData,examCount){
+  const r=14;
+  const circ=2*Math.PI*r;
+  const early=typeof readinessIsEarlyDays==='function'?readinessIsEarlyDays(pct,examCount):false;
+  const showPct=hasData&&!early;
+  const off=showPct?circ*(1-Math.min(100,Math.max(0,pct))/100):circ;
+  const col=typeof readinessRingColor==='function'?readinessRingColor(pct,hasData,examCount):'var(--border)';
+  return'<svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="'+r+'" fill="none" stroke="var(--border)" stroke-width="3"/><circle cx="16" cy="16" r="'+r+'" fill="none" stroke="'+col+'" stroke-width="3" stroke-linecap="round" stroke-dasharray="'+circ.toFixed(2)+'" stroke-dashoffset="'+off.toFixed(2)+'" transform="rotate(-90 16 16)"/></svg>';
+}
+function goalCardIconHtml(){
+  return'<span class="goal-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span>';
+}
+function goalDateBannerHtml(goal,gid){
+  const calSvg='<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>';
+  if(goal.examDate){
+    return'<div class="goal-date-banner goal-date-banner--set"><span class="goal-date-banner-ico">'+calSvg+'</span><div class="goal-date-banner-text"><strong>'+esc(formatGoalExamDate(goal))+'</strong><span>Tap edit to change date</span></div></div>';
+  }
+  return'<button type="button" class="goal-date-banner" onclick="event.stopPropagation();editGoal(\''+gid+'\')"><span class="goal-date-banner-ico">'+calSvg+'</span><div class="goal-date-banner-text"><strong>No exam date set</strong><span>Add an exam date to keep track</span></div></button>';
+}
 function renderGoalCardHtml(goal){
+  const gid=esc(goal.id);
   const pct=getReadinessPctForGoal(goal);
   const histLen=historyForGoal(goal).length;
   const hasData=histLen>0;
   const days=goal.examDate?daysUntilExam(goal.examDate):null;
-  const daysN=days!==null?Math.max(0,days):'—';
+  const cap=readinessRingCaption(pct,hasData,histLen);
+  const readinessVal=cap==='—'?'Getting started':cap;
+  const daysBlock=goal.examDate
+    ?`<div class="goal-days"><div class="goal-days-n">${Math.max(0,days)}</div><div class="goal-days-l">days left</div></div>`
+    :`<button type="button" class="goal-date-btn" onclick="event.stopPropagation();editGoal('${gid}')" title="Set your exam date" aria-label="Set your exam date"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><span>Pick a date</span></button>`;
   const active=S.activeGoalId===goal.id;
-  const gid=esc(goal.id);
   const drag=S.goals.length>1?`<span class="goal-drag-handle" draggable="true" ondragstart="onGoalDragStart(event,'${gid}')" ondragend="onGoalDragEnd(event)" title="Drag to reorder" aria-label="Drag to reorder" onclick="event.stopPropagation()">⋮⋮</span>`:'';
-  return`<div class="goal-card has-drag${active?' active':''}" onclick="selectDashboardGoal('${gid}')" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectDashboardGoal('${gid}');}" ondragover="onGoalDragOver(event)" ondragleave="onGoalDragLeave(event)" ondrop="onGoalDrop(event,'${gid}')">
+  const dragCls=S.goals.length>1?' has-drag':'';
+  return`<div class="goal-card${dragCls}${active?' active':''}" onclick="selectDashboardGoal('${gid}')" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectDashboardGoal('${gid}');}" ondragover="onGoalDragOver(event)" ondragleave="onGoalDragLeave(event)" ondrop="onGoalDrop(event,'${gid}')">
     ${drag}
-    <div class="goal-card-tools">
-      <button type="button" class="goal-card-tool" title="Edit goal" aria-label="Edit goal" onclick="event.stopPropagation();editGoal('${gid}')"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button>
-      <button type="button" class="goal-card-tool goal-card-tool--danger" title="Remove goal" aria-label="Remove goal" onclick="event.stopPropagation();confirmDeleteGoal('${gid}')"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+    <div class="goal-card-inner">
+      ${goalCardIconHtml()}<div class="goal-head"><span class="goal-name">${esc(goalCardCertName(goal))}</span><div class="goal-badges"><span class="goal-pill goal-pill--level">${esc(goal.level||'')}</span><span class="goal-pill">${goalPill(goal.subject)}</span></div></div>
+      <div class="goal-card-tools">
+        <button type="button" class="goal-card-tool" title="Edit goal" aria-label="Edit goal" onclick="event.stopPropagation();editGoal('${gid}')"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button>
+        <button type="button" class="goal-card-tool goal-card-tool--danger" title="Remove goal" aria-label="Remove goal" onclick="event.stopPropagation();confirmDeleteGoal('${gid}')"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+      </div>
+      ${goalDateBannerHtml(goal,gid)}
+      <div class="goal-ring goal-ring--dash">${readinessRingSvgDash(pct,hasData,histLen)}</div>
+      <div class="goal-readiness-text"><span class="goal-readiness-val">${esc(readinessVal)}</span><span class="goal-readiness-lbl">Readiness</span></div>
+      ${daysBlock}
+      <div class="goal-card-foot"><button type="button" class="goal-open" onclick="event.stopPropagation();openGoal('${gid}')">Open workspace<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg></button></div>
     </div>
-    <div class="goal-top"><span class="goal-name">${esc(goalLabel(goal))}</span><span class="goal-pill">${goalPill(goal.subject)}</span></div>
-    <p class="goal-date${goal.examDate?'':' muted'}">${esc(formatGoalExamDate(goal))}</p>
-    <div class="goal-ring-row">
-      <div class="goal-ring">${readinessRingSvg(pct,hasData)}<div class="goal-ring-lbl"><span class="goal-ring-pct">${hasData?pct+'%':'—'}</span><span class="goal-ring-cap">Readiness</span></div></div>
-      <div class="goal-days"><div class="goal-days-n">${daysN}</div><div class="goal-days-l">days left</div></div>
-    </div>
-    <button type="button" class="goal-open" onclick="event.stopPropagation();openGoal('${gid}')">Open workspace →</button>
   </div>`;
 }
 function renderGoalCardsRow(){
   const cards=orderedGoals().map(g=>renderGoalCardHtml(g)).join('');
-  const addCard=`<div class="goal-card dashed" onclick="showAddGoalWizard()"><span class="goal-plus">+</span><b style="font-size:13px;margin-top:6px">Add exam goal</b></div>`;
+  const addCard=`<div class="goal-card dashed" onclick="showAddGoalWizard()"><span class="goal-add-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span><b>Add exam goal</b><p>Set a new goal to start your preparation</p></div>`;
   return'<div class="goal-row">'+cards+addCard+'</div>';
 }
 function renderHomeScreen(){
   const area=document.getElementById('homeGoalArea');
   if(!area)return;
+  if(typeof LevelAvailability!=='undefined'&&LevelAvailability.getLevelUiStatus(_goalWizard.subject,_goalWizard.level)==='soon'){
+    _goalWizard.level=LevelAvailability.firstSelectableLevel(_goalWizard.subject);
+  }
   if(S.goals.length===0){
     _editingGoalId=null;
     area.innerHTML=renderGoalWizardHtml(true);
@@ -333,7 +387,7 @@ function renderHomeScreen(){
       renderGoalCardsRow();
     return;
   }
-  const head='<div class="dash-sec-head"><div><h1>My exam goals</h1><p>Your preparation at a glance</p></div>'+
+  const head='<div class="dash-sec-head"><div><h1>Your preparation at a glance ✨</h1></div>'+
     '<div class="dash-head-actions"><button type="button" class="btn-dash-ghost'+(_showDashCustomize?' on':'')+'" onclick="openDashboardCustomize()" title="Customize widgets and layout">⚙ Customize dashboard</button>'+
     '<button type="button" class="btn-sm accent" onclick="showAddGoalWizard()">+ Add exam goal</button></div></div>';
   const goalsRow=renderGoalCardsRow();

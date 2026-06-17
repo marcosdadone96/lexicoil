@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
-const { incrementQuota, getMonthKey } = require('../netlify/functions/lib/quotaLib.js');
+const { incrementQuota, decrementQuota, getMonthKey } = require('../netlify/functions/lib/quotaLib.js');
 const {
   publishPoolExam,
   listPoolIndexEntries,
@@ -41,6 +41,10 @@ class MemoryBlobStore {
     const etag = `e${this.etagSeq}`;
     this.blobs.set(key, { data: structuredClone(data), etag });
     return { modified: true, etag };
+  }
+
+  async delete(key) {
+    this.blobs.delete(key);
   }
 
   async delete(key) {
@@ -122,6 +126,42 @@ async function testQuotaIdempotency() {
   console.log('OK   quota idempotency');
 }
 
+async function testQuotaRefund() {
+  const store = new MemoryBlobStore();
+  const base = makeAuthQuotaState(store, { max: 10 });
+  const requestId = 'refund-test-id';
+
+  await incrementQuota(base, { requestId });
+  let blob = await store.get(base.state.qKey, { type: 'json' });
+  assert.equal(blob.used, 1);
+
+  const r1 = await decrementQuota(base, { requestId });
+  assert.equal(r1.used, 0);
+  blob = await store.get(base.state.qKey, { type: 'json' });
+  assert.equal(blob.used, 0, 'refund restores one unit');
+
+  const r2 = await decrementQuota(base, { requestId });
+  assert.equal(r2.used, 0, 'refund idempotent on retry');
+  blob = await store.get(base.state.qKey, { type: 'json' });
+  assert.equal(blob.used, 0, 'double refund must not go negative');
+
+  await incrementQuota(base, { requestId });
+  blob = await store.get(base.state.qKey, { type: 'json' });
+  assert.equal(blob.used, 1, 'same requestId can charge again after refund');
+  console.log('OK   quota refund + idempotency');
+}
+
+async function testQuotaRefundFloor() {
+  const store = new MemoryBlobStore();
+  const base = makeAuthQuotaState(store, { used: 0, max: 10 });
+  const requestId = 'refund-no-prior-charge';
+  const skipped = await decrementQuota(base, { requestId });
+  assert.equal(skipped.skipped, true);
+  const blob = await store.get(base.state.qKey, { type: 'json' });
+  assert.equal(blob?.used || 0, 0);
+  console.log('OK   quota refund skipped without prior charge');
+}
+
 async function testConcurrentPoolPublish() {
   const store = new MemoryBlobStore();
   const lang = 'de';
@@ -184,6 +224,8 @@ async function testPoolRotationByTimestamp() {
 
 await testConcurrentQuotaIncrements();
 await testQuotaIdempotency();
+await testQuotaRefund();
+await testQuotaRefundFloor();
 await testConcurrentPoolPublish();
 await testPoolRotationByTimestamp();
 

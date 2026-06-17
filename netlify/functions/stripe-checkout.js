@@ -1,8 +1,8 @@
 'use strict';
 
 const { getStoreForEvent } = require('./lib/blobStore.js');
-const { verifyAuthToken, userKey } = require('./lib/authLib.js');
-const { corsHeaders, getBearer, jsonResponse } = require('./lib/http.js');
+const { requireAuth } = require('./lib/authLib.js');
+const { corsHeaders, jsonResponse } = require('./lib/http.js');
 const { getSiteUrl } = require('./lib/siteConfig.js');
 
 exports.handler = async (event) => {
@@ -17,47 +17,57 @@ exports.handler = async (event) => {
     return jsonResponse(503, cors, { error: 'stripe_not_configured' });
   }
 
-  const auth = verifyAuthToken(getBearer(event));
-  if (!auth.ok) {
-    return jsonResponse(401, cors, { error: 'login_required' });
-  }
-
   const store = getStoreForEvent(event);
-  let user;
-  try {
-    user = await store.get(userKey(auth.email), { type: 'json' });
-  } catch (_) {
-    user = null;
+  // B-2 fix: requireAuth also checks tokenVersion so a revoked token can't start a checkout
+  const auth = await requireAuth(event, store);
+  if (!auth.ok) {
+    return jsonResponse(auth.status || 401, cors, { error: auth.error || 'login_required' });
   }
-  if (!user) {
-    return jsonResponse(401, cors, { error: 'unauthorized' });
-  }
+  const { email: authEmail, user } = auth;
 
   const origin =
     (event.headers && (event.headers.origin || event.headers.Origin)) ||
     getSiteUrl();
   const base = origin.replace(/\/$/, '');
 
+  // E-4 fix: prefer a pre-created Stripe Price ID (set STRIPE_PRICE_ID in env).
+  // This avoids re-creating a product on every checkout and allows price changes
+  // without a code deploy. Falls back to inline price_data for backward compatibility.
+  const stripePriceId = String(process.env.STRIPE_PRICE_ID || '').trim();
+
   const params = new URLSearchParams();
   params.set('mode', 'subscription');
   params.set('success_url', `${base}/?upgraded=1&session_id={CHECKOUT_SESSION_ID}`);
   params.set('cancel_url', `${base}/?cancelled=1`);
-  params.set('client_reference_id', auth.email);
-  params.set('customer_email', auth.email);
-  params.set('metadata[email]', auth.email);
-  params.set('subscription_data[metadata][email]', auth.email);
+  params.set('client_reference_id', authEmail);
+  params.set('customer_email', authEmail);
+  params.set('metadata[email]', authEmail);
+  params.set('subscription_data[metadata][email]', authEmail);
   params.append('line_items[0][quantity]', '1');
-  params.append('line_items[0][price_data][currency]', 'eur');
-  params.append('line_items[0][price_data][unit_amount]', '999');
-  params.append('line_items[0][price_data][recurring][interval]', 'month');
-  params.append(
-    'line_items[0][price_data][product_data][name]',
-    'LexiCoil Pro - 12 exams/month',
-  );
-  params.append(
-    'line_items[0][price_data][product_data][description]',
-    'Monthly Pro subscription: 12 exam generations/month plus personalized vocabulary practice.',
-  );
+
+  if (stripePriceId) {
+    // Use the pre-created Price — clean, version-controlled via env
+    params.append('line_items[0][price]', stripePriceId);
+  } else {
+    // Fallback: inline price_data (no STRIPE_PRICE_ID set)
+    params.append('line_items[0][price_data][currency]', 'eur');
+    params.append('line_items[0][price_data][unit_amount]', '999');
+    params.append('line_items[0][price_data][recurring][interval]', 'month');
+    params.append('line_items[0][price_data][product_data][name]', 'LexiCoil Pro - 12 exams/month');
+    params.append(
+      'line_items[0][price_data][product_data][description]',
+      'Monthly Pro subscription: 12 exam generations/month plus personalized vocabulary practice.',
+    );
+  }
+
+  // E-4 fix: Stripe Tax — enable automatic EU VAT collection.
+  // Requires Stripe Tax to be activated in your Stripe Dashboard first.
+  // Set STRIPE_TAX_ENABLED=true in Netlify env when ready to activate.
+  if (process.env.STRIPE_TAX_ENABLED === 'true') {
+    params.set('automatic_tax[enabled]', 'true');
+    // Collect billing address so Stripe Tax can determine the customer's country
+    params.set('billing_address_collection', 'required');
+  }
 
   const res = await fetch('https://api.stripe.com/v1/checkout/sessions', {
     method: 'POST',

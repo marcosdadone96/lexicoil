@@ -57,6 +57,10 @@ function copyAppAssets() {
     const src = path.join(ROOT, dir);
     if (fs.existsSync(src)) cp(src, path.join(DIST, dir));
   }
+  const grammarContent = path.join(ROOT, 'lexicoil_grammar_content', 'content');
+  if (fs.existsSync(grammarContent)) {
+    cp(grammarContent, path.join(DIST, 'content'));
+  }
   for (const file of COPY_FILES) {
     const src = path.join(ROOT, file);
     if (fs.existsSync(src)) fs.copyFileSync(src, path.join(DIST, file));

@@ -19,7 +19,8 @@ async function generateOralTask(goal,words){
   const prompt=`You are a ${board.board} examiner. Create one ${goal.level} ${lang} oral speaking task that naturally uses several of these learner vocabulary words: ${list}.
 Reply ONLY valid JSON:
 {"text":"The speaking task prompt (2-4 sentences, in ${lang})","hints":["hint 1","hint 2","hint 3"]}`;
-  const raw=await callAI(prompt,900,{consumeQuota:false});
+  const genTicket=await startExamGeneration('exam_generation',2);
+  const raw=await callAI(prompt,900,{examGeneration:true,aiAction:'exam_generation',genTicket});
   const clean=raw.replace(/```json|```/g,'').trim();
   const data=JSON.parse(clean);
   if(!data.text)throw new Error('AI returned an invalid speaking task.');
@@ -109,9 +110,9 @@ ${transcript}
 Evaluate and return JSON:
 {"criteria":[{"name":"Task Achievement","score":0-5,"comment":"..."},{"name":"Vocabulary Range","score":0-5,"comment":"..."},{"name":"Grammar Accuracy","score":0-5,"comment":"..."},{"name":"Coherence & Fluency","score":0-5,"comment":"..."}],"totalScore":0-100,"passed":true,"overallFeedback":"2-3 sentences","strongPoints":["..."],"improvements":["..."],"correctedVersion":"improved version"}`;
   try{
-    const raw=await callAI(systemPrompt+'\n\n'+userPrompt,1200,{consumeQuota:true,examGeneration:true});
+    const evalTicket=await startExamGeneration('exam_generation',2);
+    const raw=await callAI(systemPrompt+'\n\n'+userPrompt,1200,{examGeneration:true,aiAction:'exam_generation',genTicket:evalTicket});
     const result=JSON.parse(raw.replace(/```json|```/g,'').trim());
-    if(typeof commitExamQuota==='function')await commitExamQuota();
     _oralSession.result=result;
     renderOralPracticeResults(goal,result,transcript);
   }catch(e){

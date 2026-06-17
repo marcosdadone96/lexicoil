@@ -154,6 +154,16 @@ const BurnedRegistry = (() => {
     };
   }
 
+  function resetAll() {
+    if (typeof S !== 'undefined') S.burned = null;
+    try {
+      localStorage.removeItem(LS_KEY);
+    } catch (_) {
+      /* ignore */
+    }
+    if (typeof Auth !== 'undefined' && Auth.pushSync) Auth.pushSync();
+  }
+
   return {
     setCooldownDays,
     getCooldownDays,
@@ -166,8 +176,19 @@ const BurnedRegistry = (() => {
     recordExam,
     mergeBurned,
     toPayload,
+    resetAll,
   };
 })();
 
-if (typeof window !== 'undefined') window.BurnedRegistry = BurnedRegistry;
+if (typeof window !== 'undefined') {
+  window.BurnedRegistry = BurnedRegistry;
+  window.lcResetSeenContent = function lcResetSeenContent() {
+    const msg =
+      'Reset recently seen exam content? You will be able to receive all pool items again.';
+    if (!window.confirm(msg)) return false;
+    BurnedRegistry.resetAll();
+    if (typeof lcToast === 'function') lcToast('Seen content reset.', 'success', 4000);
+    return true;
+  };
+}
 if (typeof module !== 'undefined') module.exports = BurnedRegistry;

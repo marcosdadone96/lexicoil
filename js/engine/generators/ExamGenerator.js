@@ -142,24 +142,35 @@ const ExamGenerator = (() => {
       lcDebug.warn('[exam] AI_PATH_BLUEPRINTS enabled but no blueprint found — legacy chunk plan');
     }
 
+    // Request a ticket once for the whole exam (covers both the normal run and
+    // a possible blueprint-validation retry).  Each attempt may re-use the same
+    // ticket because the maxChunks budget includes both runs.
+    const startTicket = hooks.startExamTicket;
+    if (typeof startTicket !== 'function') {
+      throw new Error('hooks.startExamTicket is required for exam generation');
+    }
+    const chunks = resolveChunks(spec, blueprint || resolveBlueprint(spec, {}));
+    // maxChunks: chunk count × 2 attempts × 2 per-chunk retries + 2 buffer
+    const maxChunks = Math.min(chunks.length * 4 + 2, 20);
+    const genTicket = await startTicket('exam_generation', maxChunks);
+    const runHooksBase = { ...hooks, genTicket };
+
     try {
-      const exam = await runGeneration(spec, hooks, {
+      const exam = await runGeneration(spec, runHooksBase, {
         ...opts,
         blueprint,
         useBlueprint: !!blueprint,
       });
-      if (hooks.commitExamQuota) await hooks.commitExamQuota();
       return exam;
     } catch (e) {
       if (useBlueprint && blueprint && opts.allowLegacyFallback !== false) {
         lcDebug.warn('[exam] Blueprint AI path failed, falling back to provider chunk plan:', e.message);
-        const exam = await runGeneration(spec, hooks, {
+        const exam = await runGeneration(spec, runHooksBase, {
           ...opts,
           blueprint: null,
           useBlueprint: false,
           allowLegacyFallback: false,
         });
-        if (hooks.commitExamQuota) await hooks.commitExamQuota();
         return exam;
       }
       throw e;
@@ -173,9 +184,15 @@ const ExamGenerator = (() => {
     if (built.mode !== 'single') {
       throw new Error('Personal exam requires single prompt mode');
     }
+    const startTicket = hooks.startExamTicket;
+    if (typeof startTicket !== 'function') {
+      throw new Error('hooks.startExamTicket is required for personal exam generation');
+    }
+    const genTicket = await startTicket('personal_exam', 2);
     const raw = await hooks.callAI(built.prompt, built.maxTokens, {
-      consumeQuota: true,
       examGeneration: true,
+      aiAction: 'personal_exam',
+      genTicket,
     });
     const parsed = hooks.parseExamJson(raw.replace(/```json|```/g, '').trim());
     return assertExamValid(parsed, hooks);

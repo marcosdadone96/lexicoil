@@ -4,8 +4,8 @@ const fs = require('fs');
 const path = require('path');
 const { randomUUID } = require('crypto');
 const { getStoreForEvent } = require('./lib/blobStore.js');
-const { verifyAuthToken } = require('./lib/authLib.js');
-const { corsHeaders, getBearer, parseJsonBody, jsonResponse } = require('./lib/http.js');
+const { requireAuth } = require('./lib/authLib.js');
+const { corsHeaders, parseJsonBody, jsonResponse } = require('./lib/http.js');
 const { validateGeneratedExam } = require('./lib/examQualityGate.js');
 const {
   publishPoolExam,
@@ -67,10 +67,13 @@ function isCuratedPoolEntry(entry) {
 }
 
 function strategyBEnabled() {
+  // Strategy-B curation: when STRATEGY_B=1, pool only accepts curated entries (POST + GET).
+  // Leave unset or '0' for Strategy-A direct AI contribution after structural validation.
   return process.env.STRATEGY_B === '1';
 }
 
 function isValidPoolEntry(entry) {
+  if (entry?.disabled === true) return false;
   if (!entry?.exam || !isValidExam(entry.exam)) return false;
   if (strategyBEnabled() && !isCuratedPoolEntry(entry)) return false;
   return true;
@@ -129,9 +132,9 @@ exports.handler = async (event) => {
   }
 
   if (event.httpMethod === 'POST') {
-    const auth = verifyAuthToken(getBearer(event));
+    const auth = await requireAuth(event, store);
     if (!auth.ok) {
-      return jsonResponse(401, cors, { error: 'login_required' });
+      return jsonResponse(auth.status || 401, cors, { error: auth.error || 'login_required' });
     }
     const contributor = auth.email;
 
@@ -176,6 +179,7 @@ exports.handler = async (event) => {
       level,
       topic,
       exam,
+      source: body.source || 'ai',
       servedCount: 0,
       createdAt: Date.now(),
       contributedBy: contributor,
@@ -187,3 +191,5 @@ exports.handler = async (event) => {
 
   return jsonResponse(405, cors, { error: 'method_not_allowed' });
 };
+
+exports.isValidPoolEntry = isValidPoolEntry;

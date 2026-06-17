@@ -9,9 +9,11 @@ const ChunkRunner = (() => {
       parseExamJson,
       validateChunkObj,
       promptSuffix = '',
+      genTicket = null,  // server-signed ticket issued via startGeneration
     } = hooks;
 
-    const ai = { examGeneration: true, timeoutMs: 40000 };
+    // genTicket is REQUIRED for server calls; absence means misconfiguration
+    const ai = { examGeneration: true, genTicket, timeoutMs: 40000 };
     const parts = [];
     const failed = [];
     let lastErr = null;
@@ -29,10 +31,7 @@ const ChunkRunner = (() => {
                 '. No array at root.'
               : '';
           const suffix = (attempt > 0 ? fixHint : '') + (promptSuffix || '');
-          const raw = await callAI(chunk.prompt + suffix, chunk.maxTokens, {
-            ...ai,
-            consumeQuota: false,
-          });
+          const raw = await callAI(chunk.prompt + suffix, chunk.maxTokens, ai);
           parts.push(validateChunkObj(chunk, parseExamJson(raw)));
           done = true;
         } catch (e) {

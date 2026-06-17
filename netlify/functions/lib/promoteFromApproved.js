@@ -195,15 +195,24 @@ async function maybePromote(store, lang, level, opts = {}) {
 
     const id = randomUUID();
     const topic = genericPoolTopic(normalizedLang, normalizedLevel);
+    const consumedList = [...consumedApproved];
+    const contributorEmails = consumedList.map((c) => c.contributor).filter(Boolean);
+    const stagingIds = consumedList.map((c) => c.id).filter(Boolean);
     const entry = {
       lang: normalizedLang,
       level: normalizedLevel,
       topic,
       exam,
+      source: 'collab-bank',
       servedCount: 0,
       createdAt: Date.now(),
-      contributedBy: 'collab-bank',
-      source: 'pool',
+      contributedBy: contributorEmails.length ? contributorEmails.join(', ') : 'collab-bank',
+      promotedFrom: {
+        stagingIds,
+        contributors: contributorEmails,
+        questionIds: selected.map((q) => q.id),
+        promotedAt: Date.now(),
+      },
       coverageRatio: Number(cov.ratio.toFixed(2)),
       itemCount: selected.length,
     };

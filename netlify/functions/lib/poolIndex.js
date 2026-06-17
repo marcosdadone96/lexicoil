@@ -131,6 +131,85 @@ async function publishPoolExam(store, { lang, level, id, entry }) {
   return { examKey, idxKey };
 }
 
+function countExamItems(exam) {
+  if (!exam || typeof exam !== 'object') return 0;
+  let n = 0;
+  const partsKeys = [
+    'lesenParts', 'horenParts', 'schreibenParts', 'sprechenParts',
+    'readingParts', 'listeningParts', 'writingParts', 'speakingParts',
+  ];
+  for (const pk of partsKeys) {
+    for (const part of exam[pk] || []) {
+      n += (part.questions || []).length;
+      n += (part.items || []).length;
+      n += (part.segments || []).length;
+    }
+  }
+  return n;
+}
+
+async function listPoolExamsAdmin(store, lang, level) {
+  await migrateLegacyPoolIndex(store, lang, level);
+  const rows = await listPoolIndexEntries(store, lang, level);
+  const out = [];
+  for (const row of rows) {
+    try {
+      const entry = await store.get(row.examKey, { type: 'json' });
+      if (!entry) continue;
+      out.push({
+        id: row.id,
+        lang: entry.lang || lang,
+        level: entry.level || level,
+        topic: entry.topic || '',
+        source: entry.source || 'ai',
+        contributedBy: entry.contributedBy || null,
+        createdAt: entry.createdAt || row.createdAt || 0,
+        servedCount: entry.servedCount || 0,
+        disabled: entry.disabled === true,
+        itemCount: entry.itemCount ?? countExamItems(entry.exam),
+      });
+    } catch (_) {
+      /* skip corrupt blob */
+    }
+  }
+  return out.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+}
+
+async function getPoolExamAdmin(store, lang, level, id) {
+  const examKey = poolExamKey(lang, level, id);
+  try {
+    return await store.get(examKey, { type: 'json' });
+  } catch (_) {
+    return null;
+  }
+}
+
+async function setPoolExamDisabled(store, lang, level, id, disabled) {
+  const examKey = poolExamKey(lang, level, id);
+  let entry;
+  try {
+    entry = await store.get(examKey, { type: 'json' });
+  } catch (_) {
+    return false;
+  }
+  if (!entry) return false;
+  entry.disabled = !!disabled;
+  await store.setJSON(examKey, entry);
+  return true;
+}
+
+async function removePoolExam(store, lang, level, id) {
+  const examKey = poolExamKey(lang, level, id);
+  const idxKey = poolIndexEntryKey(lang, level, id);
+  try {
+    await store.delete(examKey);
+    await store.delete(idxKey);
+    return true;
+  } catch (_) {
+    return false;
+  }
+}
+
 async function pickPoolExam(store, lang, level, exclude, { isValidEntry }) {
   let entries = await listPoolIndexEntries(store, lang, level);
   if (!entries.length) {
@@ -214,4 +293,9 @@ module.exports = {
   rotatePoolByTimestamp,
   publishPoolExam,
   pickPoolExam,
+  countExamItems,
+  listPoolExamsAdmin,
+  getPoolExamAdmin,
+  setPoolExamDisabled,
+  removePoolExam,
 };

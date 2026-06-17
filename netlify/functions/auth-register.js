@@ -9,7 +9,7 @@ const {
   signAuthToken,
   getTokenVersion,
 } = require('./lib/authLib.js');
-const { corsHeaders, parseJsonBody, jsonResponse } = require('./lib/http.js');
+const { corsHeaders, parseJsonBody, authSessionResponse, jsonResponse } = require('./lib/http.js');
 const { parseFreeComboFromBody, ensureUserFreeCombo, freeComboForResponse } = require('./lib/freeComboLib.js');
 
 exports.handler = async (event) => {
@@ -38,12 +38,6 @@ exports.handler = async (event) => {
 
   const store = getStoreForEvent(event);
   const key = userKey(email);
-  try {
-    const existing = await store.get(key, { type: 'json' });
-    if (existing) return jsonResponse(409, cors, { error: 'email_taken' });
-  } catch (_) {
-    /* not found */
-  }
 
   const user = ensureUserFreeCombo({
     name,
@@ -54,11 +48,15 @@ exports.handler = async (event) => {
     createdAt: Date.now(),
     freeCombo: parseFreeComboFromBody(body),
   });
-  await store.setJSON(key, user);
+
+  // B-3 fix: atomic write with onlyIfNew — prevents race-condition account overwrite
+  const writeResult = await store.setJSON(key, user, { onlyIfNew: true });
+  if (writeResult && writeResult.modified === false) {
+    return jsonResponse(409, cors, { error: 'email_taken' });
+  }
 
   const session = signAuthToken(email, name, getTokenVersion(user));
-  return jsonResponse(200, cors, {
-    token: session.token,
+  return authSessionResponse(200, cors, {
     expiresAt: session.expiresAt,
     user: {
       name,
@@ -67,5 +65,5 @@ exports.handler = async (event) => {
       pro: false,
       freeCombo: freeComboForResponse(user),
     },
-  });
+  }, session.token, event);
 };

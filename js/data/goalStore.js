@@ -308,7 +308,7 @@ function getMasterySummaryForGoal(goal) {
   return GoalStore.masterySummary(goal);
 }
 
-const _goalWizard = { subject: 'de', level: 'B2', examDate: '' };
+const _goalWizard = { subject: 'de', level: 'B1', examDate: '' };
 let _showGoalWizard = false;
 let _editingGoalId = null;
 

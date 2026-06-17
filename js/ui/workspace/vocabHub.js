@@ -19,29 +19,41 @@ function getDeckViewCards(){
   if(S.deckGoalFilter)return(S.flashcards||[]).filter(f=>f.sourceLang===S.deckGoalFilter);
   return typeof ExamProfile!=='undefined'?ExamProfile.filterList(S.flashcards):S.flashcards;
 }
-function readinessQualLabel(pct){
+function readinessQualLabel(pct,examCount){
+  if(examCount<2||pct<25)return 'Getting started';
   if(pct<25)return 'early days';
   if(pct<50)return 'building momentum';
   if(pct<70)return 'on track';
   if(pct<85)return 'getting close';
   return 'well prepared';
 }
-function readinessEstLabelHtml(pct,hasData){
+function readinessEstLabelHtml(pct,hasData,examCount){
   if(!hasData)return 'est. <b>—</b>';
-  const qual=readinessQualLabel(pct);
+  const qual=readinessQualLabel(pct,examCount||0);
+  if(examCount<2||pct<25)return qual;
   return 'est. <b>'+pct+'% ready</b> · '+qual;
 }
-function readinessRingColor(pct){
-  if(pct>=70)return'var(--green)';
-  if(pct>=60)return'var(--amber,#f59e0b)';
-  if(pct>=50)return'var(--orange)';
-  return'var(--red)';
+function readinessIsEarlyDays(pct,examCount){
+  return !examCount||examCount<2||pct<25;
 }
-function readinessRingSvg(pct,hasData){
+function readinessRingColor(pct,hasData,examCount){
+  if(!hasData||readinessIsEarlyDays(pct,examCount))return'var(--brand)';
+  if(pct>=50)return'var(--green)';
+  if(pct>=40)return'var(--amber,#f59e0b)';
+  return'var(--amber,#f59e0b)';
+}
+function readinessRingSvg(pct,hasData,examCount){
   const circ=226;
-  const off=hasData?Math.round(circ*(1-Math.min(100,Math.max(0,pct))/100)):circ;
-  const col=hasData?readinessRingColor(pct):'var(--border)';
+  const early=readinessIsEarlyDays(pct,examCount);
+  const showPct=hasData&&!early;
+  const off=showPct?Math.round(circ*(1-Math.min(100,Math.max(0,pct))/100)):circ;
+  const col=readinessRingColor(pct,hasData,examCount);
   return'<svg width="84" height="84" aria-hidden="true"><circle cx="42" cy="42" r="36" fill="none" stroke="var(--border)" stroke-width="8"/><circle cx="42" cy="42" r="36" fill="none" stroke="'+col+'" stroke-width="8" stroke-linecap="round" stroke-dasharray="'+circ+'" stroke-dashoffset="'+off+'"/></svg>';
+}
+function readinessRingCaption(pct,hasData,examCount){
+  if(!hasData)return'—';
+  if(readinessIsEarlyDays(pct,examCount))return'Getting started';
+  return pct+'%';
 }
 function formatScoreAge(dateStr){
   if(!dateStr)return'recent';
@@ -237,16 +249,16 @@ function vocabHubActionsHtml(selN){
   const canCustom=selN>=VV_MIN_CUSTOM;
   const canFlash=selN>=VV_MIN_FLASH;
   const canDrill=selN>=VV_MIN_DRILL;
-  const proOnly=typeof canUsePersonalized==='function'&&!canUsePersonalized();
-  const proBadge=' <span class="vv-pro-badge">Pro</span>';
+  const tier=typeof canUsePersonalizedTier==='function'?canUsePersonalizedTier():'free';
+  const proBadge=tier!=='pro'?' <span class="vv-pro-badge">Pro IA</span>':'';
   return'<p class="ws-seclbl">Pick an action — applies to selected words</p>'+
     '<div class="ws-exam-grid ws-exam-grid--vocab">'+
-      '<button type="button" class="ws-exam-card ws-exam-card--personal"'+(canCustom?' onclick="launchVocabHubCustomExam()"':' disabled')+'><span class="ws-exam-card-ic">✦</span><span class="ws-exam-card-title">Custom exam'+(proOnly?proBadge:'')+'</span><span class="ws-exam-card-desc">From your words</span></button>'+
+      '<button type="button" class="ws-exam-card ws-exam-card--personal"'+(canCustom?' onclick="launchVocabHubCustomExam()"':' disabled')+'><span class="ws-exam-card-ic">✦</span><span class="ws-exam-card-title">Custom exam'+proBadge+'</span><span class="ws-exam-card-desc">From your words</span></button>'+
       '<button type="button" class="ws-exam-card ws-exam-card--practice"'+(canFlash?' onclick="launchVocabHubFlashcards()"':' disabled')+'><span class="ws-exam-card-ic">▭</span><span class="ws-exam-card-title">Flashcards</span><span class="ws-exam-card-desc">Spaced review</span></button>'+
       '<button type="button" class="ws-exam-card ws-exam-card--oral"'+(canDrill?' onclick="launchVocabHubQuickDrill()"':' disabled')+'><span class="ws-exam-card-ic">⚡</span><span class="ws-exam-card-title">Quick drill</span><span class="ws-exam-card-desc">Fast quiz</span></button>'+
     '</div>'+
     '<div class="ws-exam-grid ws-exam-grid--soon">'+
-      '<div class="ws-exam-card ws-act-card" role="button" tabindex="0" onclick="startHorenGameFromHub()"><span class="ws-exam-card-title">Listening game'+(proOnly?proBadge:'')+'</span><span class="ws-exam-card-desc">Hear &amp; spot your words</span></div>'+
+      '<div class="ws-exam-card ws-act-card" role="button" tabindex="0" onclick="startHorenGameFromHub()"><span class="ws-exam-card-title">Listening game'+(typeof canUsePersonalized==='function'&&!canUsePersonalized()?proBadge:'')+'</span><span class="ws-exam-card-desc">Hear &amp; spot your words</span></div>'+
       '<div class="ws-exam-card ws-act-card soon" aria-disabled="true"><span class="ws-exam-card-title">Phrases <span class="vv-soon-badge">Soon</span></span><span class="ws-exam-card-desc">Sentence practice</span></div>'+
     '</div>';
 }
@@ -277,7 +289,6 @@ function vocabHubSelectedIds(goal){
 function launchVocabHubCustomExam(){
   const goal=S.goals.find(g=>g.id===_vocabHub.goalId);
   if(!goal)return;
-  if(typeof requirePersonalized==='function'&&!requirePersonalized({message:'Custom vocabulary exams require Pro.'}))return;
   const ids=vocabHubSelectedIds(goal);
   if(ids.length<4){lcToast('Select at least 4 words.','warn');return;}
   openExamConfigurator(goal.id,ids);

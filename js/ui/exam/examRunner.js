@@ -36,10 +36,13 @@ function bindExamScrollTop(){
 // RENDER EXAM
 // ═══════════════════════════════════════════
 function esc(s) {
+  // C-1 fix: also escape quotes so attribute injection is impossible
   return String(s || '')
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }
 function stashPassageMeta(blockId, text, translations) {
   if (!text) return;
@@ -78,7 +81,7 @@ async function translatePassage(blockId) {
     }
     if (!translation && typeof callAI === 'function') {
       const prompt = `Translate the following ${from} exam passage to ${lang}. Return ONLY the translation, preserving paragraph and speaker line breaks. No notes.\n\n${meta.text}`;
-      translation = await callAI(prompt, 2500, { consumeQuota: true, timeoutMs: 45000 });
+      translation = await callAI(prompt, 2500, { consumeQuota: true, aiAction: 'translation', timeoutMs: 45000 });
       if (translation && typeof putVocabCache === 'function') {
         await putVocabCache(from, lang, meta.text, translation, 'ai');
       }
@@ -141,7 +144,7 @@ function renderGoetheLesenPart(part,pi,isPrac,ui){
   if(part.text){
     const blockId='lesen_'+pi;
     stashPassageMeta(blockId,part.text,part.translations);
-    h+=`<div class="text-display"><h3>${part.textTitle||''}</h3><div class="readable-text">${wrapW(part.text,'lesen_'+pi,isPrac)}</div>${passageToolbarHtml(blockId,isPrac,ui)}</div>`;
+    h+=`<div class="text-display"><h3>${esc(part.textTitle||'')}</h3><div class="readable-text">${wrapW(part.text,'lesen_'+pi,isPrac)}</div>${passageToolbarHtml(blockId,isPrac,ui)}</div>`;
   }
   if(part.textWithGaps?.length){
     h+=`<div class="text-display"><h3>${esc(part.textTitle||'')}</h3>${part.textWithGaps.map((para,gi)=>`<div class="readable-text" style="margin-bottom:12px">${wrapW(para,'lesen_'+pi+'_gap_'+gi,isPrac)}</div>`).join('')}</div>`;
@@ -440,7 +443,7 @@ function renderExam(){
   const isPool=!!(d.poolSource||S.examSource==='pool'||S.examSource==='library');
   const isPersonal=!!d.vocabPersonal;
   const bc=isDemo?'demo':isPool?'pool':isPersonal?'vocab':isQ?'quick':isPrac?'practice':'official',bl=isDemo?'Demo Exam':isPool?'From library':isPersonal?'Personal Mock':isQ?('Quick: '+S.quickMod):isPrac?'Practice':'Official Exam';
-  const titleTxt=isOff?(d.official?.certificate||d.topic):(isPersonal?('Personal · '+d.topic):(isDE?'Deutsch':'English')+' — '+d.topic);
+  const titleTxt=esc(isOff?(d.official?.certificate||d.topic):(isPersonal?('Personal · '+d.topic):(isDE?'Deutsch':'English')+' — '+d.topic));
   const personalVerified=(d.targetUsageVerified||[]).length;
   const personalTotal=d.vocabWords?.length||0;
   const personalWordsPreview=esc((d.vocabWords||[]).slice(0,8).join(', '))+(personalTotal>8?'…':'');
@@ -465,6 +468,7 @@ function renderExam(){
   if(typeof syncExamRouteUrl==='function')syncExamRouteUrl();
   if(typeof bindExamKeyboard==='function')bindExamKeyboard();
   if(typeof LcA11y!=='undefined')LcA11y.onScreenShown('examScreen');
+  if(typeof refreshNotebookFab==='function')refreshNotebookFab();
 }
 async function playListening(){
   if(!S.examData?.horen||S.listenPlays<=0)return;
@@ -505,10 +509,20 @@ function optKey(opt){
   if(m&&(opt.includes(')')||opt.includes('=')||/^[A-Da-d]\)/.test(opt)))return m[1].toLowerCase();
   return opt;
 }
+function normalizeGradingToken(val) {
+  if (val == null || val === '') return '';
+  const s = String(val).trim();
+  const u = s.toLowerCase();
+  if (u === 'ja' || u === 'j' || u === 'yes') return 'J';
+  if (u === 'nein' || u === 'n' || u === 'no') return 'N';
+  if (u === 'richtig' || u === 'r' || u === 'true' || u === 't') return 'R';
+  if (u === 'falsch' || u === 'f' || u === 'false') return 'F';
+  return s.toLowerCase();
+}
 function goetheAnswersMatch(user,correct){
   if(correct==null)return false;
   if(Array.isArray(correct)){
-    if(correct.length===1)return String(user||'').toLowerCase()===String(correct[0]||'').toLowerCase();
+    if(correct.length===1)return normalizeGradingToken(user)===normalizeGradingToken(correct[0]);
     let u=[];
     try{u=typeof user==='string'&&user.startsWith('[')?JSON.parse(user):[];}catch(_){u=[];}
     if(!Array.isArray(u)||!u.length)u=String(user||'').split('|').map(s=>s.trim()).filter(Boolean);
@@ -516,7 +530,7 @@ function goetheAnswersMatch(user,correct){
     const us=[...u].map(String).sort();
     return cs.length===us.length&&cs.every((v,i)=>v===us[i]);
   }
-  return String(user||'').toLowerCase()===String(correct||'').toLowerCase();
+  return normalizeGradingToken(user)===normalizeGradingToken(correct);
 }
 function togglePersonMatch(key,val,el){
   let sel=[];
@@ -533,12 +547,12 @@ function renderGapFillQ(q,num,mod,part,isDE){
 }
 function renderQ(q,num,mod,rfT,rfF,trK,isOff){
   const ak=`${mod}_${q.id}`;
-  const head=isOff?q.question:`${num}. ${q.question}`;
+  const head=isOff?esc(q.question):`${num}. ${esc(q.question)}`;
   const sub=isOff?'':`<div class="q-text">${esc(q.question)}</div>`;
-  if(q.type==='yn'){
+  if(q.type==='yn'||q.type==='ja_nein'){
     return `<div class="question-block"><div class="q-number">${head}</div>${sub}<div class="rf-row"><button class="rf-btn" onclick="setRF('${ak}','J',this,'sel-r')">Ja</button><button class="rf-btn" onclick="setRF('${ak}','N',this,'sel-f')">Nein</button></div></div>`;
   }
-  if(q.type==='rfn'){
+  if(q.type==='rfn'||q.type==='r_f_n'){
     return `<div class="question-block"><div class="q-number">${head}</div>${sub}<div class="rf-row" style="flex-wrap:wrap"><button class="rf-btn" onclick="setRFN('${ak}','R',this)">R</button><button class="rf-btn" onclick="setRFN('${ak}','F',this)">F</button><button class="rf-btn" onclick="setRFN('${ak}','N',this)">N</button></div></div>`;
   }
   if(q.type==='rf'||q.type==='tf'||q.type==='richtig_falsch'||q.type==='true_false'){
@@ -557,6 +571,14 @@ function renderQ(q,num,mod,rfT,rfF,trK,isOff){
       }
       return `<label class="opt"><input type="radio" name="${ak}" value="${esc(val)}" onchange="S.answers['${ak}']=this.value;this.closest('.options').querySelectorAll('.opt').forEach(o=>o.classList.remove('selected'));this.closest('.opt').classList.add('selected');updProg()"><span>${esc(opt)}</span></label>`;
     }).join('')}</div></div>`;
+  }
+  if(q.type==='matching'){
+    const opts=q.options||[];
+    const keys=opts.map(o=>typeof o==='string'?o.trim():String(o));
+    const shortKeys=keys.length&&keys.every(k=>/^[A-J0]$/.test(k));
+    if(shortKeys){
+      return `<div class="question-block"><div class="q-number">${head}</div>${sub}<div class="options options-matching-keys">${keys.map(val=>`<label class="opt opt-key"><input type="radio" name="${ak}" value="${esc(val)}" onchange="S.answers['${ak}']=this.value;this.closest('.options').querySelectorAll('.opt').forEach(o=>o.classList.remove('selected'));this.closest('.opt').classList.add('selected');updProg()"><span>${esc(val)}</span></label>`).join('')}</div></div>`;
+    }
   }
   const opts=q.options||[];
   if(!opts.length)return `<div class="question-block"><div class="q-number">${head}</div>${sub}<div style="color:var(--text-muted);font-size:12px">${isOff?'Keine Optionen':'No options'}</div></div>`;

@@ -1,8 +1,8 @@
 'use strict';
 
 const { getStoreForEvent } = require('./lib/blobStore.js');
-const { verifyAuthToken, normalizeEmail } = require('./lib/authLib.js');
-const { corsHeaders, getBearer, jsonResponse } = require('./lib/http.js');
+const { requireAuth, normalizeEmail } = require('./lib/authLib.js');
+const { corsHeaders, jsonResponse } = require('./lib/http.js');
 const { getSiteUrl } = require('./lib/siteConfig.js');
 const {
   resolveStripeCustomerId,
@@ -21,13 +21,13 @@ exports.handler = async (event) => {
     return jsonResponse(503, cors, { error: 'stripe_not_configured' });
   }
 
-  const auth = verifyAuthToken(getBearer(event));
+  const store = getStoreForEvent(event);
+  const auth = await requireAuth(event, store);
   if (!auth.ok) {
-    return jsonResponse(401, cors, { error: 'login_required' });
+    return jsonResponse(auth.status || 401, cors, { error: auth.error || 'login_required' });
   }
 
   const email = normalizeEmail(auth.email);
-  const store = getStoreForEvent(event);
 
   try {
     const customerId = await resolveStripeCustomerId(store, email, secret);

@@ -3,7 +3,7 @@
 // ═══════════════════════════════════════════
 function ansLabel(q, val, isDE) {
   if (!val) return '—';
-  if (q.type === 'yn') return val === 'J' ? 'Ja' : val === 'N' ? 'Nein' : val;
+  if (q.type === 'yn' || q.type === 'ja_nein') return val === 'J' || val === 'Ja' ? 'Ja' : val === 'N' || val === 'Nein' ? 'Nein' : val;
   if (q.type === 'rfn') return val === 'R' ? (isDE ? 'Richtig' : 'True') : val === 'F' ? (isDE ? 'Falsch' : 'False') : val === 'N' ? (isDE ? 'Nicht im Text' : 'Not in text') : val;
   if (q.type === 'person_multi') {
     try { const a = JSON.parse(val); if (Array.isArray(a)) return a.join(', '); } catch (_) {}
@@ -93,11 +93,11 @@ function buildCorrection(d, isDE, writeAns, speakAns) {
         if(!item.question)return;
         const q = itemToQ(item, idx);
         const user = S.answers['lesen_' + pi + '_' + q.id];
-        items.push({ ok: goetheAnswersMatch(user, q.correct), q: q.question, yours: ansLabel(q, user, isDE), correct: correctLabel(q, isDE), explanation: q.explanation || '' });
+        items.push({ ok: goetheAnswersMatch(user, q.correct), q: q.question, yours: ansLabel(q, user, isDE), correct: correctLabel(q, isDE), explanation: q.explanation || '', grammarTags: q.grammarTags || [] });
       });
       (p.questions || []).forEach((q) => {
         const user = S.answers['lesen_' + pi + '_' + q.id];
-        items.push({ ok: goetheAnswersMatch(user, q.correct), q: q.gap?`Lücke ${q.gap}`:q.question, yours: ansLabel(q, user, isDE), correct: correctLabel(q, isDE), explanation: q.explanation || '' });
+        items.push({ ok: goetheAnswersMatch(user, q.correct), q: q.gap?`Lücke ${q.gap}`:q.question, yours: ansLabel(q, user, isDE), correct: correctLabel(q, isDE), explanation: q.explanation || '', grammarTags: q.grammarTags || [] });
       });
       pushQ('lesen', `${isDE ? 'Lesen' : 'Reading'} — ${isDE ? 'Teil' : 'Part'} ${p.teil}`, items);
     });
@@ -108,7 +108,7 @@ function buildCorrection(d, isDE, writeAns, speakAns) {
           `${isDE ? 'Hörverstehen' : 'Listening'} — ${isDE ? 'Teil' : 'Part'} ${p.teil}`,
           p.questions.map((q) => {
             const user = S.answers['horen_' + pi + '_' + q.id];
-            return { ok: goetheAnswersMatch(user, q.correct), q: q.question, yours: ansLabel(q, user, isDE), correct: correctLabel(q, isDE), explanation: q.explanation || '' };
+            return { ok: goetheAnswersMatch(user, q.correct), q: q.question, yours: ansLabel(q, user, isDE), correct: correctLabel(q, isDE), explanation: q.explanation || '', grammarTags: q.grammarTags || [] };
           })
         );
       }
@@ -119,7 +119,7 @@ function buildCorrection(d, isDE, writeAns, speakAns) {
           segToQ(s).map((q) => {
             const mod = 'horen_' + pi + '_' + si;
             const user = S.answers[mod + '_' + q.id];
-            return { ok: goetheAnswersMatch(user, q.correct), q: q.question, yours: ansLabel(q, user, isDE), correct: correctLabel(q, isDE), explanation: q.explanation || '' };
+            return { ok: goetheAnswersMatch(user, q.correct), q: q.question, yours: ansLabel(q, user, isDE), correct: correctLabel(q, isDE), explanation: q.explanation || '', grammarTags: q.grammarTags || [] };
           })
         );
       });
@@ -197,6 +197,72 @@ function buildCorrection(d, isDE, writeAns, speakAns) {
   const speaking = d.sprechen ? gradeSpeaking(d.sprechen, speakAns, isDE) : null;
   return { parts, writing, speaking };
 }
+function renderWritingAiBlock(wa, isDE) {
+  const c = wa.correction;
+  if (!c) return '';
+  let h = `<div class="writing-ai-block"><h4 style="font-size:13px;font-weight:700;margin:0 0 10px">Your corrected text</h4>`;
+  if (c.correctedText) {
+    const diffFn = typeof highlightCorrectedDiff === 'function' ? highlightCorrectedDiff : null;
+    h += `<div class="corr-diff readable-text" style="font-size:13px;line-height:1.7;margin-bottom:12px">${diffFn && wa.userText ? diffFn(wa.userText, c.correctedText) : esc(c.correctedText)}</div>`;
+  }
+  if (c.summary) h += `<p style="font-size:12px;color:var(--text-secondary);margin-bottom:10px">${esc(c.summary)}</p>`;
+  if (c.errors?.length) {
+    h += `<ul style="font-size:12px;color:var(--text-secondary);line-height:1.65;padding-left:18px;margin:0 0 10px">`;
+    c.errors.slice(0, 8).forEach((e) => {
+      h += `<li><b>${esc(e.original || '')}</b> → ${esc(e.correction || '')}${e.explanation ? ` <span style="color:var(--text-muted)">(${esc(e.explanation)})</span>` : ''}</li>`;
+    });
+    h += `</ul>`;
+  }
+  if (c.grammarPoints?.length) {
+    h += `<div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">${isDE ? 'Grammatik' : 'Grammar'}</div>`;
+    c.grammarPoints.slice(0, 3).forEach((g) => {
+      h += `<p style="font-size:12px;color:var(--text-secondary);margin:0 0 6px"><b>${esc(g.tag || '')}</b>: ${esc(g.explanation || '')}${g.example ? ` <em>${esc(g.example)}</em>` : ''}</p>`;
+    });
+  }
+  h += '</div>';
+  return h;
+}
+async function loadWritingAiCorrections(correction, d, isDE, entryId) {
+  const host = document.getElementById('writingAiHost');
+  if (correction.writingAi?.length) {
+    if (host) host.innerHTML = correction.writingAi.map((wa) => renderWritingAiBlock(wa, isDE)).join('');
+    return;
+  }
+  if (typeof isPro !== 'function' || !isPro() || typeof correctWritingWithAI !== 'function') return;
+  const lang = d.lang || S.subject || 'de';
+  const level = d.level || S.level || 'B1';
+  const jobs = [];
+  if (d.schreibenParts?.length) {
+    d.schreibenParts.forEach((p) => {
+      const userText = getSchreibenAns(p);
+      if (!userText.trim()) return;
+      jobs.push({ aufgabe: p.aufgabe, task: p.task || p.instruction || '', userText, minWords: p.minWords });
+    });
+  } else if (d.schreiben) {
+    const userText = document.getElementById('writeAns')?.value.trim() || '';
+    if (userText.trim()) jobs.push({ aufgabe: 1, task: d.schreiben.task || '', userText, minWords: d.schreiben.minWords });
+  }
+  if (!jobs.length) return;
+  if (host) host.innerHTML = `<div class="writing-ai-loading" style="font-size:12px;color:var(--text-muted);padding:10px 0">${isDE ? 'Corrigiendo con IA…' : 'AI correction in progress…'}</div>`;
+  correction.writingAi = [];
+  for (const job of jobs) {
+    const result = await correctWritingWithAI(lang, level, job.task, job.userText, { minWords: job.minWords });
+    if (result) correction.writingAi.push({ ...job, correction: result });
+  }
+  if (host) {
+    host.innerHTML = correction.writingAi.length
+      ? correction.writingAi.map((wa) => renderWritingAiBlock(wa, isDE)).join('')
+      : '';
+  }
+  if (entryId) {
+    const h = S.history.find((e) => e.id === entryId);
+    if (h?.correction) {
+      h.correction.writingAi = correction.writingAi;
+      saveHist();
+    }
+  }
+  if (S.lastResults?.correction) S.lastResults.correction.writingAi = correction.writingAi;
+}
 function renderCorrectionHtml(corr, d, isDE) {
   const hasGoethe = corr.writingParts?.length || corr.speakingParts?.length;
   if (!corr.parts.length && !corr.writing && !corr.speaking && !hasGoethe) return '';
@@ -218,8 +284,11 @@ function renderCorrectionHtml(corr, d, isDE) {
     }
     html += '</div>';
   };
+  const writingProHint = `<p class="writing-pro-hint" style="font-size:11px;color:var(--text-muted);margin-top:10px;font-style:italic">${isDE ? 'Corrección con IA: función Pro' : 'AI writing correction: Pro feature'}</p>`;
+  const writingAiHost = `<div id="writingAiHost" class="writing-ai-host"></div>`;
   if (corr.writingParts?.length) {
     corr.writingParts.forEach((wp) => renderWritePart(wp, `${isDE ? 'Schreiben' : 'Writing'} — Aufgabe ${wp.part.aufgabe}`));
+    html += typeof isPro === 'function' && isPro() ? writingAiHost : writingProHint;
   } else if (corr.writing && d.schreiben) {
     html += `<div class="corr-mod"><h3>${isDE ? 'Schreiben' : 'Writing'} · ${corr.writing.score}%</h3><div class="corr-row ${corr.writing.score >= 70 ? 'ok' : 'bad'}"><div class="corr-ans">${esc(corr.writing.note)}</div></div>`;
     if (d.schreiben.feedback?.length) {
@@ -228,6 +297,7 @@ function renderCorrectionHtml(corr, d, isDE) {
     if (d.schreiben.modelAnswer) {
       html += `<div class="u-text-caption" style="margin-bottom:6px">${isDE ? 'Musterantwort' : 'Model answer'}</div><div class="corr-model">${esc(d.schreiben.modelAnswer)}</div>`;
     }
+    html += typeof isPro === 'function' && isPro() ? writingAiHost : writingProHint;
     html += '</div>';
   }
   if (corr.speakingParts?.length) {
@@ -497,6 +567,7 @@ function renderResults(score,mods,d,isDE,writeAns,speakAns,entryId,correction,sp
   const rid=entryId||d._savedId||d._flightId;
   if(typeof LcRouter!=='undefined'&&rid)LcRouter.replaceRoute('#/exam/'+rid+'/results','Results');
   window.scrollTo({top:0,behavior:'smooth'});
+  if(correction&&(d.schreibenParts?.length||d.schreiben))loadWritingAiCorrections(correction,d,isDE,entryId);
 }
 function shareExamUrl(){
   saveCurrentExam();

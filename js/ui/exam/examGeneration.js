@@ -325,6 +325,7 @@ async function startQuick(mod){
       S.examData=stripExamToSkills(S.examData,skills);
       S.examData.quickMod=mod;
       S.examSource='question-library';
+      if(typeof normalizeExam==='function')S.examData=normalizeExam(S.examData);
       renderExam();
       return;
     }
@@ -335,6 +336,7 @@ async function startQuick(mod){
     }
     S.examData=await LexiCoilEngine.generateQuickExercise(S.subject,S.level,mod,topic,getGeneratorHooks());
     S.examSource='ai';
+    if(typeof normalizeExam==='function')S.examData=normalizeExam(S.examData);
     renderExam();
     if(S.examSource==='ai'&&!S.examData.vocabPersonal&&!S.examData.reusedItems){
       void contributeExamToStaging(S.subject,S.level,S.examData.topic||genericPoolTopic(S.subject,S.level),S.examData,{minCoverage:0});
@@ -454,7 +456,7 @@ function getGeneratorHooks(onStep){
     parseExamJson,
     validateChunkObj,
     mergeExamParts,
-    commitExamQuota,
+    startExamTicket:startExamGeneration,
     normalizeExam:typeof normalizeExam==='function'?normalizeExam:(x)=>x
   };
 }
@@ -572,10 +574,13 @@ async function contributeExamToStaging(lang,level,topic,exam,opts){
   }catch(err){lcDebug.warn('[staging] remote ingest failed:',err);}
 }
 async function contributeExamToPool(lang,level,topic,exam,opts){
-  if(typeof S!=='undefined'&&S.examSource==='ai'){
+  const directPool=typeof directPoolContribEnabled==='function'&&directPoolContribEnabled();
+  // Strategy-A direct mode: content enters the served pool without human review.
+  // Structural validation still applies; moderation is a posteriori via admin (disable/delete).
+  if(typeof S!=='undefined'&&S.examSource==='ai'&&!directPool){
     void contributeExamToStaging(lang,level,topic,exam,opts);
   }
-  if(typeof lcStrategyBEnabled==='function'&&lcStrategyBEnabled())return;
+  if(typeof lcStrategyBEnabled==='function'&&lcStrategyBEnabled()&&!directPool)return;
   if(typeof saveExamToPool!=='function'||!exam)return;
   const words=opts?.words;
   const minCov=opts?.minCoverage??(words?.length?POOL_CONTRIBUTE_COVERAGE:0);
@@ -586,6 +591,16 @@ async function contributeExamToPool(lang,level,topic,exam,opts){
 window.contributeExamToPool=contributeExamToPool;
 window.contributeExamToStaging=contributeExamToStaging;
 window.lcVocabCoverage=lcVocabCoverage;
+function logAiGeneration(payload){
+  const fn=typeof lcApiFetch==='function'?lcApiFetch:fetch;
+  void fn('/.netlify/functions/generation-log',{
+    method:'POST',
+    credentials:'include',
+    headers:typeof aiAuthHeaders==='function'?aiAuthHeaders():{'Content-Type':'application/json'},
+    body:JSON.stringify(payload)
+  }).catch(()=>{});
+}
+window.logAiGeneration=logAiGeneration;
 function stripExamToSkills(exam,skills){
   if(!exam||!skills?.length)return exam;
   const s=new Set(skills);
@@ -636,7 +651,7 @@ async function runWeaknessExam(goal){
     S.examData.personalizedExam=!!S.examData.personalizedSplit;
     S.examData.goalId=goal.id;
     S.examSource='question-library';
-    if(typeof commitExamQuota==='function')await commitExamQuota();
+    if(typeof normalizeExam==='function')S.examData=normalizeExam(S.examData);
     renderExam();
   }catch(e){
     hideAll();
@@ -675,6 +690,90 @@ function startHorenGameFromHub(){
 }
 window.exitHorenGame=exitHorenGame;
 window.startHorenGameFromHub=startHorenGameFromHub;
+async function tryPersonalPoolOrLibrary(configWords,configSkills,configGoalId,goalRef){
+  if(typeof fetchExamFromPool==='function'){
+    document.getElementById('loaderSub').textContent='Looking for a matching exam…';
+    try{
+      const pooled=await fetchExamFromPool(S.subject,S.level,seenPoolIds(S.subject,S.level));
+      if(pooled?.found&&pooled.exam&&!(typeof BurnedRegistry!=='undefined'&&BurnedRegistry.examTouchesBurned(pooled.exam))){
+        const check=validateExamCandidate(pooled.exam);
+        let candidate=check.ok?check.normalized:null;
+        if(candidate){
+          candidate=stripExamToSkills(JSON.parse(JSON.stringify(candidate)),configSkills);
+          const cov=lcVocabCoverage(candidate,configWords);
+          if(cov.ratio>=POOL_COVERAGE_THRESHOLD&&isExamRenderable(candidate)&&lcExamPassesValidator(candidate)&&!lcExamHasPlaceholders(candidate)){
+            candidate.vocabPersonal=true;
+            candidate.vocabWords=configWords;
+            candidate.vocabSkills=configSkills;
+            candidate.poolSource=true;
+            candidate.poolId=pooled.id||null;
+            if(configGoalId||S.activeGoalId)candidate.goalId=configGoalId||S.activeGoalId;
+            candidate.topic='Personal: '+configWords.slice(0,3).join(', ')+(configWords.length>3?'…':'');
+            return {exam:candidate,source:'pool',poolId:pooled.id||null};
+          }
+        }
+      }
+    }catch(poolErr){lcDebug.warn('[personal] pool fetch failed:',poolErr);}
+  }
+  if(typeof QuestionLibrary!=='undefined'&&QuestionLibrary.hasLibrary(S.subject,S.level)){
+    document.getElementById('loaderSub').textContent=`Assembling from library — ${configWords.length} words…`;
+    const exam=await QuestionLibrary.buildPersonalExam(S.subject,S.level,configWords,configSkills);
+    return {exam,source:'question-library'};
+  }
+  return null;
+}
+async function finalizePersonalExam(configWords,configSkills,configGoalId,goalRef,exam,source){
+  S.examData=exam;
+  S.examSource=source;
+  stripExamToSkills(S.examData,configSkills);
+  S.examData.vocabPersonal=true;
+  S.examData.vocabWords=configWords;
+  S.examData.vocabSkills=configSkills;
+  if(configGoalId||S.activeGoalId)S.examData.goalId=configGoalId||S.activeGoalId;
+  if(!S.examData.topic||S.examData.topic==='Personal vocabulary review')S.examData.topic='Personal: '+configWords.slice(0,3).join(', ')+(configWords.length>3?'…':'');
+  applyPersonalTargetUsage(S.examData,configWords);
+  const coverage=lcVocabCoverage(S.examData,configWords);
+  if(coverage.ratio<POOL_CONTRIBUTE_COVERAGE){
+    lcToast(`Only ${Math.round(coverage.ratio*100)}% of your words appear in this exam (target ${Math.round(POOL_CONTRIBUTE_COVERAGE*100)}%+). You can regenerate from the configurator for better coverage.`,'warn',7000);
+  }
+  if(S.examSource==='question-library'&&(!isExamRenderable(S.examData)||!lcExamPassesValidator(S.examData,{strict:false}))){
+    throw new Error('Library assembly produced an invalid exam.');
+  }
+  if(typeof lcValidateExamOnServer==='function'){
+    const srv=await lcValidateExamOnServer(S.examData);
+    if(!srv.valid)throw Object.assign(new Error('Personal exam failed answer-key validation.'),{code:'exam_invalid'});
+  }
+  if(typeof normalizeExam==='function')S.examData=normalizeExam(S.examData);
+  if(examHasUnanswerableQuestions(S.examData)){
+    throw Object.assign(new Error('Generated exam has questions without answer options.'),{code:'exam_invalid'});
+  }
+  if(lcExamPassesQualityGate(S.examData,configWords,POOL_CONTRIBUTE_COVERAGE)){
+    if(S.examSource==='ai'){
+      const depersonalized=buildPoolExamCopy(S.examData,genericPoolTopic(S.subject,S.level));
+      void contributeExamToPool(S.subject,S.level,depersonalized.topic,depersonalized,{minCoverage:0});
+    }else{
+      void contributeExamToPool(S.subject,S.level,genericPoolTopic(S.subject,S.level),S.examData,{words:configWords,minCoverage:POOL_CONTRIBUTE_COVERAGE});
+    }
+  }
+  if(typeof VocabBatching!=='undefined'&&goalRef?.vocabPlan){
+    VocabBatching.advance(goalRef.vocabPlan,configWords);
+    saveGoals();
+    const cov=VocabBatching.coverage(goalRef.vocabPlan);
+    if(!cov.finished){
+      lcToast(VocabBatching.summary(goalRef.vocabPlan,S.subject)+'. Use “Next batch” on results when ready.','info',8000);
+    }
+  }
+  if(source==='ai'){
+    void logAiGeneration({
+      lang:S.subject,level:S.level,source,topic:S.examData.topic,
+      vocabWords:configWords,coverage:coverage.ratio,valid:true,examData:S.examData
+    });
+  }
+  renderExam();
+  if(S.examData?.vocabPersonal){
+    try{if(typeof autoSaveExam==='function')autoSaveExam();}catch(_){}
+  }
+}
 async function generatePersonalExam(words,skills,goalId,opts){
   let configWords=words;
   let configSkills=skills;
@@ -701,7 +800,7 @@ async function generatePersonalExam(words,skills,goalId,opts){
     if(goal){S.subject=goal.subject;S.level=goal.level;S.activeGoalId=goal.id;syncGoalToProfile(goal);}
   }
   configSkills=configSkills||['lesen','horen'];
-  if(typeof requirePersonalized==='function'&&!requirePersonalized({message:'Personalized vocabulary exams require Pro.'}))return;
+  const tier=typeof canUsePersonalizedTier==='function'?canUsePersonalizedTier():'free';
   if(!canGenerate()){showUpgrade();return;}
   let libraryMatchCount;
   if(typeof VocabBatching!=='undefined'&&!skipBatching){
@@ -730,91 +829,47 @@ async function generatePersonalExam(words,skills,goalId,opts){
   document.getElementById('loaderTitle').textContent='Building your personal mock exam…';
   document.getElementById('loaderSub').textContent=`Weaving ${configWords.length} words into ${configSkillSummary(new Set(configSkills),S.subject)}…`;
   try{
-    if(typeof fetchExamFromPool==='function'){
-      document.getElementById('loaderSub').textContent='Looking for a matching exam…';
+    let built=null;
+    if(tier==='pro'){
+      document.getElementById('loaderSub').textContent=`Generating with AI — ${configWords.length} words, ${configSkillSummary(new Set(configSkills),S.subject)}…`;
       try{
-        const pooled=await fetchExamFromPool(S.subject,S.level,seenPoolIds(S.subject,S.level));
-        if(pooled?.found&&pooled.exam&&!(typeof BurnedRegistry!=='undefined'&&BurnedRegistry.examTouchesBurned(pooled.exam))){
-          const check=validateExamCandidate(pooled.exam);
-          let candidate=check.ok?check.normalized:null;
-          if(candidate){
-          candidate=stripExamToSkills(JSON.parse(JSON.stringify(candidate)),configSkills);
-          const cov=lcVocabCoverage(candidate,configWords);
-          if(cov.ratio>=POOL_COVERAGE_THRESHOLD&&isExamRenderable(candidate)&&lcExamPassesValidator(candidate)&&!lcExamHasPlaceholders(candidate)){
-            if(typeof commitExamQuota==='function')await commitExamQuota();
-            S.examData=candidate;
-            S.examData.vocabPersonal=true;
-            S.examData.vocabWords=configWords;
-            S.examData.vocabSkills=configSkills;
-            S.examData.poolSource=true;
-            S.examData.poolId=pooled.id||null;
-            S.examSource='pool';
-            if(configGoalId||S.activeGoalId)S.examData.goalId=configGoalId||S.activeGoalId;
-            S.examData.topic='Personal: '+configWords.slice(0,3).join(', ')+(configWords.length>3?'…':'');
-            if(typeof VocabBatching!=='undefined'&&goalRef?.vocabPlan){
-              VocabBatching.advance(goalRef.vocabPlan,configWords);
-              saveGoals();
-            }
-            renderExam();
+        if(typeof lcStrategyBEnabled==='function'&&lcStrategyBEnabled()){
+          throw new Error('This level uses the question library only (live AI is disabled).');
+        }
+        if(!engineReady())throw new Error('Content engine not loaded');
+        const exam=await LexiCoilEngine.generatePersonalExam(S.subject,S.level,configWords,configSkills,getGeneratorHooks());
+        built={exam,source:'ai'};
+      }catch(aiErr){
+        if(aiErr.code==='ai_credits_exhausted'){
+          if(typeof showAiCreditsExhausted==='function')showAiCreditsExhausted(aiErr.autoRechargeFailed?{autoRechargeFailed:true,reason:aiErr.reason}:undefined);
+          built=await tryPersonalPoolOrLibrary(configWords,configSkills,configGoalId,goalRef);
+          if(!built){
+            hideAll();
+            if(_examConfig.goalId){show('examConfigScreen');showExamConfigFootbar(true);renderExamConfigurator();}
+            else show('flashcardScreen');
             return;
           }
-          }
-        }
-      }catch(poolErr){lcDebug.warn('[personal] pool fetch failed:',poolErr);}
-    }
-    if(typeof QuestionLibrary!=='undefined'&&QuestionLibrary.hasLibrary(S.subject,S.level)){
-      document.getElementById('loaderSub').textContent=`Assembling from library — ${configWords.length} words…`;
-      S.examData=await QuestionLibrary.buildPersonalExam(S.subject,S.level,configWords,configSkills);
-      S.examSource='question-library';
-    }else if(typeof lcStrategyBEnabled==='function'&&lcStrategyBEnabled()){
-      throw new Error('This level uses the question library only (live AI is disabled). Try fewer skills or regenerate from flashcards.');
+        }else throw aiErr;
+      }
     }else{
-      document.getElementById('loaderSub').textContent=`Generating with AI — ${configWords.length} words, ${configSkillSummary(new Set(configSkills),S.subject)}…`;
-      if(!engineReady())throw new Error('Content engine not loaded');
-      S.examData=await LexiCoilEngine.generatePersonalExam(S.subject,S.level,configWords,configSkills,getGeneratorHooks());
-      S.examSource='ai';
-    }
-    stripExamToSkills(S.examData,configSkills);
-    S.examData.vocabPersonal=true;
-    S.examData.vocabWords=configWords;
-    S.examData.vocabSkills=configSkills;
-    if(configGoalId||S.activeGoalId)S.examData.goalId=configGoalId||S.activeGoalId;
-    if(!S.examData.topic||S.examData.topic==='Personal vocabulary review')S.examData.topic='Personal: '+configWords.slice(0,3).join(', ')+(configWords.length>3?'…':'');
-    applyPersonalTargetUsage(S.examData,configWords);
-    const coverage=lcVocabCoverage(S.examData,configWords);
-    if(coverage.ratio<POOL_CONTRIBUTE_COVERAGE){
-      lcToast(`Only ${Math.round(coverage.ratio*100)}% of your words appear in this exam (target ${Math.round(POOL_CONTRIBUTE_COVERAGE*100)}%+). You can regenerate from the configurator for better coverage.`,'warn',7000);
-    }
-    if(S.examSource==='question-library'&&(!isExamRenderable(S.examData)||!lcExamPassesValidator(S.examData,{strict:false}))){
-      throw new Error('Library assembly produced an invalid exam.');
-    }
-    if(typeof lcValidateExamOnServer==='function'){
-      const srv=await lcValidateExamOnServer(S.examData);
-      if(!srv.valid)throw Object.assign(new Error('Personal exam failed answer-key validation.'),{code:'exam_invalid'});
-    }
-    if(typeof commitExamQuota==='function')await commitExamQuota();
-    if(typeof normalizeExam==='function')S.examData=normalizeExam(S.examData);
-    if(examHasUnanswerableQuestions(S.examData)){
-      throw Object.assign(new Error('Generated exam has questions without answer options.'),{code:'exam_invalid'});
-    }
-    if(lcExamPassesQualityGate(S.examData,configWords,POOL_CONTRIBUTE_COVERAGE)){
-      if(S.examSource==='ai'){
-        const depersonalized=buildPoolExamCopy(S.examData,genericPoolTopic(S.subject,S.level));
-        void contributeExamToPool(S.subject,S.level,depersonalized.topic,depersonalized,{minCoverage:0});
-      }else{
-        void contributeExamToPool(S.subject,S.level,genericPoolTopic(S.subject,S.level),S.examData,{words:configWords,minCoverage:POOL_CONTRIBUTE_COVERAGE});
+      built=await tryPersonalPoolOrLibrary(configWords,configSkills,configGoalId,goalRef);
+      if(!built){
+        hideAll();
+        if(typeof showUpgrade==='function')showUpgrade();
+        lcToast('No exam in the pool/library matches your words. Upgrade to Pro to generate one with AI.','warn',7000);
+        if(_examConfig.goalId){show('examConfigScreen');showExamConfigFootbar(true);renderExamConfigurator();}
+        else show('flashcardScreen');
+        return;
       }
     }
-    if(typeof VocabBatching!=='undefined'&&goalRef?.vocabPlan){
-      VocabBatching.advance(goalRef.vocabPlan,configWords);
-      saveGoals();
-      const cov=VocabBatching.coverage(goalRef.vocabPlan);
-      if(!cov.finished){
-        lcToast(VocabBatching.summary(goalRef.vocabPlan,S.subject)+'. Use “Next batch” on results when ready.','info',8000);
-      }
-    }
-    renderExam();
+    await finalizePersonalExam(configWords,configSkills,configGoalId,goalRef,built.exam,built.source);
   }catch(e){
+    if(tier==='pro'){
+      void logAiGeneration({
+        lang:S.subject,level:S.level,source:'ai',topic:null,
+        vocabWords:configWords||[],coverage:null,valid:false,examData:null
+      });
+    }
     hideAll();
     if(_examConfig.goalId){
       show('examConfigScreen');

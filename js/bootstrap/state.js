@@ -10,7 +10,7 @@ const S={
   savedExams:[],deletedSavedExams:[],listenPlays:2,isDemo:false,examSavedWords:[],
   profileCert:null,profileLevel:null,
   goals:[],activeGoalId:null,deckGoalFilter:null,fcTypeFilter:'all',wsTab:'exams',
-  activityLog:[],studyTime:null,dashboardLayout:null
+  activityLog:[],studyTime:null,dashboardLayout:null,notebook:{tabs:[]}
 };
 const LEVELS={
   de:[{code:'A1',name:'Start Deutsch 1',desc:'Goethe A1',time:65},{code:'A2',name:'Start Deutsch 2',desc:'Goethe A2',time:65},{code:'B1',name:'Zertifikat B1',desc:'Goethe B1',time:90},{code:'B2',name:'Goethe B2',desc:'Goethe B2',time:105},{code:'C1',name:'Goethe C1',desc:'Goethe C1',time:150},{code:'C2',name:'Goethe C2',desc:'Goethe C2',time:180}],
@@ -55,6 +55,7 @@ function loadLS(){
   try{const sd=localStorage.getItem('lc_saved_del');if(sd)S.deletedSavedExams=JSON.parse(sd);}catch(e){}
   if(!Array.isArray(S.deletedSavedExams))S.deletedSavedExams=[];
   try{const gr=localStorage.getItem('lc_goals');if(gr)S.goals=JSON.parse(gr);}catch(e){}
+  if(typeof loadNotebookData==='function')loadNotebookData();else try{const n=localStorage.getItem('lc_notes');if(n)S.notebook=JSON.parse(n);}catch(e){}
   if(!Array.isArray(S.goals))S.goals=[];
   try{const ag=localStorage.getItem('lc_active_goal');if(ag)S.activeGoalId=ag;}catch(e){}
   try{const al=localStorage.getItem('lc_activity');if(al)S.activityLog=JSON.parse(al);}catch(e){}
@@ -120,6 +121,7 @@ function isAppAuthenticated(){
     if(localStorage.getItem('lc_guest')==='1')return false;
     if(localStorage.getItem('lc_demo')==='1')return false;
   }catch(_){}
+  if(typeof Auth.hasSession==='function'&&Auth.hasSession())return true;
   return !!localStorage.getItem('lc_token');
 }
 function requireAppAuth(){
@@ -299,6 +301,7 @@ function saveUser(u){S.user=u;localStorage.setItem('lc_user',JSON.stringify(u));
 function saveFC(){ensureFcIds();localStorage.setItem('lc_fc',JSON.stringify(S.flashcards));updBadges();Auth.pushSync();}
 function lcToast(msg,type='info',ms=3800){if(typeof showToast==='function')showToast(msg,type,ms);else alert(msg);}
 function saveHist(){localStorage.setItem('lc_hist',JSON.stringify(S.history));Auth.pushSync();}
+function saveNotes(){if(typeof saveNotebookData==='function')saveNotebookData();}
 function saveSaved(){localStorage.setItem('lc_saved',JSON.stringify(S.savedExams));Auth.pushSync();}
 function saveActivity(){
   if(typeof ActivityTrack!=='undefined'&&S.activityLog?.length)S.studyTime=ActivityTrack.computeStudyTime(S.activityLog);
