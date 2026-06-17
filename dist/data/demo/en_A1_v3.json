@@ -1,0 +1,157 @@
+{
+  "id": "en_A1_v3",
+  "lang": "en",
+  "level": "A1",
+  "variant": 3,
+  "topic": "Daily Life",
+  "board": "Cambridge English",
+  "certificate": "A1 Key (KET)",
+  "passPercent": 70,
+  "hookWord": {
+    "word": "Saturday",
+    "pos": "noun",
+    "translations": {
+      "en": "Saturday",
+      "es": "sábado"
+    }
+  },
+  "loop": {
+    "passage": "On Saturday we often go shopping together.",
+    "question": "What does «Saturday» mean?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Monday",
+        "correct": false
+      },
+      {
+        "key": "B",
+        "text": "Saturday",
+        "correct": true
+      },
+      {
+        "key": "C",
+        "text": "morning",
+        "correct": false
+      }
+    ]
+  },
+  "miniPractice": {
+    "label": "Built from your mistake · 20 sec",
+    "before": "On ",
+    "gap": "___",
+    "after": " we visit the market.",
+    "answer": "Saturday"
+  },
+  "modules": [
+    {
+      "id": "reading",
+      "title": "Reading",
+      "interactive": true,
+      "parts": [
+        {
+          "type": "multiple_choice",
+          "label": "Part 1",
+          "instructions": "Read the text and choose the best answer.",
+          "passage": "On Saturday we often go shopping together.",
+          "markableWords": [
+            {
+              "word": "Saturday",
+              "pos": "noun",
+              "translations": {
+                "en": "Saturday",
+                "es": "sábado"
+              }
+            }
+          ],
+          "items": [
+            {
+              "id": "loop1",
+              "question": "What does «Saturday» mean?",
+              "options": [
+                {
+                  "key": "A",
+                  "text": "Monday",
+                  "correct": false
+                },
+                {
+                  "key": "B",
+                  "text": "Saturday",
+                  "correct": true
+                },
+                {
+                  "key": "C",
+                  "text": "morning",
+                  "correct": false
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "listening",
+      "title": "Listening",
+      "interactive": true,
+      "parts": [
+        {
+          "type": "multiple_choice",
+          "label": "Part 1",
+          "instructions": "Read the transcript and choose the best answer.",
+          "transcript": "— Excuse me, how much is this T-shirt?\n— It's twelve pounds.\n— OK, I'll take it, please.",
+          "markableWords": [],
+          "items": [
+            {
+              "id": "h1",
+              "question": "What does the customer buy?",
+              "options": [
+                {
+                  "key": "A",
+                  "text": "A hat",
+                  "correct": false
+                },
+                {
+                  "key": "B",
+                  "text": "A T-shirt",
+                  "correct": true
+                },
+                {
+                  "key": "C",
+                  "text": "A bag",
+                  "correct": false
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "writing",
+      "title": "Writing",
+      "interactive": false,
+      "parts": [
+        {
+          "type": "writing_task",
+          "task": "Write a short email to a friend. Say where you live, what you do at the weekend, and invite your friend to meet.",
+          "note": "about 30 words — Evaluated with AI in the full app.",
+          "markableWords": []
+        }
+      ]
+    },
+    {
+      "id": "speaking",
+      "title": "Speaking",
+      "interactive": false,
+      "parts": [
+        {
+          "type": "speaking_task",
+          "task": "Introduce yourself: your name, where you are from, where you live, and languages you speak.",
+          "note": "no preparation time — Evaluated with AI in the full app.",
+          "markableWords": []
+        }
+      ]
+    }
+  ]
+}

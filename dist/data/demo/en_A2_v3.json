@@ -1,0 +1,157 @@
+{
+  "id": "en_A2_v3",
+  "lang": "en",
+  "level": "A2",
+  "variant": 3,
+  "topic": "Hobbies and Plans",
+  "board": "Cambridge English",
+  "certificate": "A2 Key",
+  "passPercent": 70,
+  "hookWord": {
+    "word": "neighbour",
+    "pos": "noun",
+    "translations": {
+      "en": "neighbour",
+      "es": "vecino"
+    }
+  },
+  "loop": {
+    "passage": "My neighbour often helps me with shopping.",
+    "question": "What does «neighbour» mean?",
+    "options": [
+      {
+        "key": "A",
+        "text": "cousin",
+        "correct": false
+      },
+      {
+        "key": "B",
+        "text": "neighbour",
+        "correct": true
+      },
+      {
+        "key": "C",
+        "text": "boss",
+        "correct": false
+      }
+    ]
+  },
+  "miniPractice": {
+    "label": "Built from your mistake · 20 sec",
+    "before": "Our ",
+    "gap": "___",
+    "after": " is very friendly.",
+    "answer": "neighbour"
+  },
+  "modules": [
+    {
+      "id": "reading",
+      "title": "Reading",
+      "interactive": true,
+      "parts": [
+        {
+          "type": "multiple_choice",
+          "label": "Part 1",
+          "instructions": "Read the text and choose the best answer.",
+          "passage": "My neighbour often helps me with shopping.",
+          "markableWords": [
+            {
+              "word": "neighbour",
+              "pos": "noun",
+              "translations": {
+                "en": "neighbour",
+                "es": "vecino"
+              }
+            }
+          ],
+          "items": [
+            {
+              "id": "loop1",
+              "question": "What does «neighbour» mean?",
+              "options": [
+                {
+                  "key": "A",
+                  "text": "cousin",
+                  "correct": false
+                },
+                {
+                  "key": "B",
+                  "text": "neighbour",
+                  "correct": true
+                },
+                {
+                  "key": "C",
+                  "text": "boss",
+                  "correct": false
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "listening",
+      "title": "Listening",
+      "interactive": true,
+      "parts": [
+        {
+          "type": "multiple_choice",
+          "label": "Part 1",
+          "instructions": "Read the transcript and choose the best answer.",
+          "transcript": "— Are we still meeting at the café at half past three?\n— Sorry, the bus is late. Can we make it a quarter past four?\n— No problem, I'll wait inside.",
+          "markableWords": [],
+          "items": [
+            {
+              "id": "h1",
+              "question": "Why does the speaker change the time?",
+              "options": [
+                {
+                  "key": "A",
+                  "text": "The café is closed",
+                  "correct": false
+                },
+                {
+                  "key": "B",
+                  "text": "The bus is late",
+                  "correct": true
+                },
+                {
+                  "key": "C",
+                  "text": "It is raining",
+                  "correct": false
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "writing",
+      "title": "Writing",
+      "interactive": false,
+      "parts": [
+        {
+          "type": "writing_task",
+          "task": "You cannot go to a friend's birthday party. Write a short message explaining why and suggesting another time to meet.",
+          "note": "about 40 words — Evaluated with AI in the full app.",
+          "markableWords": []
+        }
+      ]
+    },
+    {
+      "id": "speaking",
+      "title": "Speaking",
+      "interactive": false,
+      "parts": [
+        {
+          "type": "speaking_task",
+          "task": "Describe a place you like to visit in your free time and explain what you do there.",
+          "note": "1 minute preparation — Evaluated with AI in the full app.",
+          "markableWords": []
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,119 @@
+{
+  "id": "de_A1",
+  "lang": "de",
+  "level": "A1",
+  "topic": "Familie und Alltag",
+  "board": "Goethe-Institut",
+  "certificate": "Start Deutsch 1",
+  "passPercent": 60,
+  "modules": [
+    {
+      "id": "lesen",
+      "title": "Lesen",
+      "interactive": true,
+      "parts": [
+        {
+          "type": "multiple_choice",
+          "label": "Part 1",
+          "instructions": "Lesen Sie den Text und wählen Sie die richtige Antwort.",
+          "passage": "Hallo! Ich heiße Anna. Ich wohne in München mit meiner Familie. Mein Bruder Tom geht noch in die Schule. Am Samstag kaufen wir oft im Supermarkt ein.",
+          "markableWords": [
+            {
+              "word": "Familie",
+              "pos": "noun",
+              "gender": "f",
+              "translations": {
+                "en": "Familie",
+                "es": "Familie"
+              }
+            }
+          ],
+          "items": [
+            {
+              "id": "r1",
+              "question": "Wo wohnt Anna?",
+              "options": [
+                {
+                  "key": "A",
+                  "text": "In Berlin",
+                  "correct": false
+                },
+                {
+                  "key": "B",
+                  "text": "In München",
+                  "correct": true
+                },
+                {
+                  "key": "C",
+                  "text": "In Hamburg",
+                  "correct": false
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "horen",
+      "title": "Hören",
+      "interactive": true,
+      "parts": [
+        {
+          "type": "multiple_choice",
+          "label": "Part 1",
+          "instructions": "Lesen Sie das Transkript und wählen Sie die richtige Antwort.",
+          "transcript": "— Guten Tag, ich möchte zwei Karten für den Film um 18 Uhr.\n— Das kostet 16 Euro.\n— Hier bitte. Danke!",
+          "markableWords": [],
+          "items": [
+            {
+              "id": "h1",
+              "question": "Was kauft die Person?",
+              "options": [
+                {
+                  "key": "A",
+                  "text": "Ein Buch",
+                  "correct": false
+                },
+                {
+                  "key": "B",
+                  "text": "Zwei Kinokarten",
+                  "correct": true
+                },
+                {
+                  "key": "C",
+                  "text": "Ein Busticket",
+                  "correct": false
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "schreiben",
+      "title": "Schreiben",
+      "interactive": false,
+      "parts": [
+        {
+          "type": "writing_task",
+          "task": "Schreiben Sie eine kurze E-Mail an eine Freundin. Schreiben Sie: wo Sie wohnen, was Sie am Wochenende machen, und wann Sie sich treffen möchten.",
+          "note": "ca. 30 Wörter"
+        }
+      ]
+    },
+    {
+      "id": "sprechen",
+      "title": "Sprechen",
+      "interactive": false,
+      "parts": [
+        {
+          "type": "speaking_task",
+          "task": "Stellen Sie sich vor: Name, Herkunft, Wohnort, Sprachen.",
+          "note": "Vorbereitungszeit: keine — Evaluated with AI in the full app."
+        }
+      ]
+    }
+  ]
+}

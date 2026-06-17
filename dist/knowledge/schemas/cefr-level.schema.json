@@ -1,0 +1,34 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://lexicoil.com/schemas/cefr-level.schema.json",
+  "title": "CEFR Level",
+  "type": "object",
+  "required": ["level", "descriptor", "canDo", "grammarExpectations", "vocabularySize", "textLength"],
+  "additionalProperties": true,
+  "properties": {
+    "level": { "type": "string", "enum": ["A1", "A2", "B1", "B2", "C1", "C2"] },
+    "descriptor": { "type": "string", "minLength": 1 },
+    "globalScale": { "type": "string" },
+    "canDo": {
+      "type": "object",
+      "required": ["reading", "listening", "writing", "speaking"],
+      "properties": {
+        "reading": { "type": "array", "items": { "type": "string" } },
+        "listening": { "type": "array", "items": { "type": "string" } },
+        "writing": { "type": "array", "items": { "type": "string" } },
+        "speaking": { "type": "array", "items": { "type": "string" } },
+        "interaction": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "grammarExpectations": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "vocabularySize": {
+      "type": "object",
+      "required": ["min", "target"],
+      "properties": {
+        "min": { "type": "number" },
+        "target": { "type": "number" }
+      }
+    },
+    "textLength": { "type": "object" }
+  }
+}

@@ -1,0 +1,157 @@
+{
+  "id": "es_A1_v1",
+  "lang": "es",
+  "level": "A1",
+  "variant": 1,
+  "topic": "Familia y rutina",
+  "board": "Instituto Cervantes",
+  "certificate": "DELE A1",
+  "passPercent": 60,
+  "hookWord": {
+    "word": "familia",
+    "pos": "noun",
+    "translations": {
+      "en": "family",
+      "es": "familia"
+    }
+  },
+  "loop": {
+    "passage": "Hola, me llamo Ana. Vivo en Madrid con mi familia.",
+    "question": "¿Qué significa «familia»?",
+    "options": [
+      {
+        "key": "A",
+        "text": "trabajo",
+        "correct": false
+      },
+      {
+        "key": "B",
+        "text": "familia",
+        "correct": true
+      },
+      {
+        "key": "C",
+        "text": "coche",
+        "correct": false
+      }
+    ]
+  },
+  "miniPractice": {
+    "label": "Generado de tu error · 20 s",
+    "before": "Vivo con mi ",
+    "gap": "___",
+    "after": ".",
+    "answer": "familia"
+  },
+  "modules": [
+    {
+      "id": "reading",
+      "title": "Comprensión de lectura",
+      "interactive": true,
+      "parts": [
+        {
+          "type": "multiple_choice",
+          "label": "Part 1",
+          "instructions": "Read the text and choose the best answer.",
+          "passage": "Hola, me llamo Ana. Vivo en Madrid con mi familia.",
+          "markableWords": [
+            {
+              "word": "familia",
+              "pos": "noun",
+              "translations": {
+                "en": "family",
+                "es": "familia"
+              }
+            }
+          ],
+          "items": [
+            {
+              "id": "loop1",
+              "question": "¿Qué significa «familia»?",
+              "options": [
+                {
+                  "key": "A",
+                  "text": "trabajo",
+                  "correct": false
+                },
+                {
+                  "key": "B",
+                  "text": "familia",
+                  "correct": true
+                },
+                {
+                  "key": "C",
+                  "text": "coche",
+                  "correct": false
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "listening",
+      "title": "Comprensión auditiva",
+      "interactive": true,
+      "parts": [
+        {
+          "type": "multiple_choice",
+          "label": "Part 1",
+          "instructions": "Read the transcript and choose the best answer.",
+          "transcript": "— Buenas tardes, quiero dos entradas para la película de las seis.\n— Son dieciséis euros.\n— Aquí tiene. Gracias.",
+          "markableWords": [],
+          "items": [
+            {
+              "id": "h1",
+              "question": "¿Qué compra la persona?",
+              "options": [
+                {
+                  "key": "A",
+                  "text": "Un libro",
+                  "correct": false
+                },
+                {
+                  "key": "B",
+                  "text": "Dos entradas de cine",
+                  "correct": true
+                },
+                {
+                  "key": "C",
+                  "text": "Un billete de autobús",
+                  "correct": false
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "writing",
+      "title": "Expresión escrita",
+      "interactive": false,
+      "parts": [
+        {
+          "type": "writing_task",
+          "task": "Escribe un correo corto a un amigo. Di dónde vives, qué haces el fin de semana y cuándo queréis quedar.",
+          "note": "unas 30 palabras — Evaluado con IA en la app completa.",
+          "markableWords": []
+        }
+      ]
+    },
+    {
+      "id": "speaking",
+      "title": "Expresión oral",
+      "interactive": false,
+      "parts": [
+        {
+          "type": "speaking_task",
+          "task": "Preséntate: nombre, origen, lugar donde vives e idiomas que hablas.",
+          "note": "sin tiempo de preparación — Evaluado con IA en la app completa.",
+          "markableWords": []
+        }
+      ]
+    }
+  ]
+}

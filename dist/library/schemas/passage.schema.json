@@ -1,0 +1,48 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "LexiCoil Passage Library",
+  "type": "object",
+  "required": ["meta", "passages"],
+  "properties": {
+    "meta": {
+      "type": "object",
+      "required": ["language", "level", "version"],
+      "properties": {
+        "language": { "type": "string", "enum": ["de", "en", "es"] },
+        "level": { "type": "string", "pattern": "^[ABC][12]$" },
+        "version": { "type": "integer", "minimum": 1 },
+        "generatedAt": { "type": "string" }
+      }
+    },
+    "passages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "lang", "level", "module", "text"],
+        "properties": {
+          "id": { "type": "string" },
+          "lang": { "type": "string", "enum": ["de", "en", "es"] },
+          "level": { "type": "string", "pattern": "^[ABC][12]$" },
+          "module": { "type": "string", "enum": ["lesen", "horen", "reading", "listening"] },
+          "title": { "type": "string" },
+          "text": { "type": "string" },
+          "wordCount": { "type": "integer", "minimum": 0 },
+          "translations": {
+            "type": "object",
+            "additionalProperties": { "type": "string" }
+          },
+          "cefrMetrics": {
+            "type": "object",
+            "properties": {
+              "avgSentenceLen": { "type": "number" },
+              "subordinatePct": { "type": "number" },
+              "coverageVsLevel": { "type": "number" }
+            }
+          },
+          "source": { "type": "string", "enum": ["curated", "imported", "ai-generated"] },
+          "validatedBy": { "type": "string" }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Confirmaci&oacute;n &mdash; LexiCoil</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <style>
+    :root{--bg:#0a0a0b;--text:#f4f4f5;--text2:#a1a1aa;--accent:#c8f542;--border:#27272a}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--bg);color:var(--text);font-family:system-ui,sans-serif;padding:24px}
+    .card{background:#111113;border:1px solid var(--border);border-radius:16px;padding:32px;max-width:420px;width:100%;text-align:center}
+    h1{font-size:22px;margin-bottom:12px}
+    p{color:var(--text2);line-height:1.6;font-size:14px;margin-bottom:20px}
+    .ok{color:var(--accent)}
+    .err{color:#f87171}
+    a{color:var(--accent);text-decoration:none;font-weight:600}
+    .spin{display:inline-block;width:18px;height:18px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;vertical-align:middle;margin-right:8px}
+    @keyframes spin{to{transform:rotate(360deg)}}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1 id="title">Iniciando sesi&oacute;n&hellip;</h1>
+    <p id="msg"><span class="spin" aria-hidden="true"></span>Verificando tu cuenta.</p>
+    <div id="recoveryBox" hidden style="text-align:left;margin-top:16px">
+      <input id="recoveryPass" type="password" placeholder="Nueva contraseùa (mùn. 6)" style="width:100%;padding:12px;border-radius:10px;border:1px solid var(--border);background:#0a0a0b;color:var(--text);margin-bottom:10px">
+      <input id="recoveryPass2" type="password" placeholder="Repetir contraseùa" style="width:100%;padding:12px;border-radius:10px;border:1px solid var(--border);background:#0a0a0b;color:var(--text);margin-bottom:12px">
+      <button id="recoveryBtn" type="button" style="width:100%;padding:12px;border:none;border-radius:10px;background:var(--accent);color:#000;font-weight:700;cursor:pointer">Guardar contraseùa</button>
+    </div>
+    <p id="actions" hidden><a id="homeLink" href="https://lexicoil.com/">Ir a LexiCoil</a></p>
+  </div>
+
+  <script>
+    (function () {
+      var HOME = 'https://lexicoil.com';
+
+      var T = {
+        errTitle: 'No se pudo completar',
+        okTitle: '\u00a1Listo!',
+        noSession: 'Enlace inv\u00e1lido o caducado. Solicita uno nuevo o usa Google.',
+        saveFail: 'No se pudo guardar la sesi\u00f3n. Intenta de nuevo.',
+        noCfg: 'Autenticaci\u00f3n no configurada.',
+        redirect: 'Redirigiendo a LexiCoil\u2026',
+        recovery: 'Enlace v\u00e1lido. Redirigiendo\u2026',
+        unexpected: 'Error inesperado.'
+      };
+
+      var title = document.getElementById('title');
+      var msg = document.getElementById('msg');
+      var actions = document.getElementById('actions');
+      var homeUrl = HOME + '/';
+
+      function showError(text) {
+        title.textContent = T.errTitle;
+        msg.innerHTML = '<span class="err">' + text + '</span>';
+        actions.hidden = false;
+      }
+
+      function showSuccess(text) {
+        title.textContent = T.okTitle;
+        msg.innerHTML = '<span class="ok">' + text + '</span>';
+        actions.hidden = false;
+      }
+
+      async function exchangeAndRedirect(accessToken) {
+        var exRes = await fetch('/.netlify/functions/auth-supabase-session', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ access_token: accessToken }),
+        });
+        var exData = await exRes.json().catch(function () { return {}; });
+        if (!exRes.ok || !exData.token) {
+          showError(T.saveFail + (exData.error ? ' (' + exData.error + ')' : ''));
+          return;
+        }
+        localStorage.removeItem('lc_guest');
+        localStorage.setItem('lc_token', exData.token);
+        if (exData.user) {
+          var avatar = (exData.user.name || exData.user.email || '?').charAt(0).toUpperCase();
+          localStorage.setItem('lc_user', JSON.stringify({
+            name: exData.user.name,
+            email: exData.user.email,
+            avatar: avatar,
+            plan: exData.user.pro ? 'pro' : (exData.user.plan || 'free'),
+            memberSince: exData.user.memberSince || null,
+          }));
+        }
+        try { history.replaceState({}, document.title, location.pathname); } catch (_) {}
+        showSuccess(T.redirect);
+        setTimeout(function () { location.replace(homeUrl); }, 700);
+      }
+
+      async function waitForSession(sb, maxMs) {
+        var deadline = Date.now() + (maxMs || 12000);
+        while (Date.now() < deadline) {
+          var res = await sb.auth.getSession();
+          if (res.data && res.data.session && res.data.session.access_token) {
+            return res.data.session;
+          }
+          await new Promise(function (r) { setTimeout(r, 300); });
+        }
+        return null;
+      }
+
+      async function run() {
+        try {
+          var params = new URLSearchParams(location.search);
+          var oauthErr = params.get('error_description') || params.get('error');
+          if (oauthErr) {
+            showError(decodeURIComponent(String(oauthErr).replace(/\+/g, ' ')));
+            return;
+          }
+
+          var cfgRes = await fetch('/.netlify/functions/auth-config');
+          var cfg = await cfgRes.json().catch(function () { return {}; });
+          if (!cfg.supabase) {
+            showError(T.noCfg);
+            return;
+          }
+
+          var mod = await import('https://esm.sh/@supabase/supabase-js@2.49.8');
+          var supabase = mod.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey, {
+            auth: {
+              persistSession: true,
+              autoRefreshToken: true,
+              detectSessionInUrl: true,
+              flowType: 'pkce',
+              storageKey: 'lc-supabase-auth',
+              storage: window.localStorage,
+            },
+          });
+
+          var isRecovery = params.get('type') === 'recovery';
+          var session = await waitForSession(supabase, 12000);
+
+          if (!session && params.get('code')) {
+            var ex = await supabase.auth.exchangeCodeForSession(params.get('code'));
+            if (!ex.error && ex.data && ex.data.session) session = ex.data.session;
+          }
+
+          if (!session || !session.access_token) {
+            showError(T.noSession);
+            return;
+          }
+
+          if (isRecovery) {
+            title.textContent = 'Nueva contraseÒa';
+            msg.innerHTML = 'Elige una contraseÒa nueva para tu cuenta.';
+            document.getElementById('recoveryBox').hidden = false;
+            var recoveryBtn = document.getElementById('recoveryBtn');
+            recoveryBtn.onclick = async function () {
+              var p1 = document.getElementById('recoveryPass').value;
+              var p2 = document.getElementById('recoveryPass2').value;
+              if (p1.length < 6) { showError('La contraseÒa debe tener al menos 6 caracteres.'); return; }
+              if (p1 !== p2) { showError('Las contraseÒas no coinciden.'); return; }
+              recoveryBtn.disabled = true;
+              var upd = await supabase.auth.updateUser({ password: p1 });
+              if (upd.error) { showError(upd.error.message); recoveryBtn.disabled = false; return; }
+              await exchangeAndRedirect(session.access_token);
+            };
+            return;
+          }
+
+          await exchangeAndRedirect(session.access_token);
+        } catch (e) {
+          showError(String((e && e.message) || e) || T.unexpected);
+        }
+      }
+
+      run();
+    })();
+  </script>
+</body>
+</html>

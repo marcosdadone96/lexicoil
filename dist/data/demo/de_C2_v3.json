@@ -1,0 +1,159 @@
+{
+  "id": "de_C2_v3",
+  "lang": "de",
+  "level": "C2",
+  "variant": 3,
+  "topic": "Sprache und Gesellschaft",
+  "board": "Goethe-Institut",
+  "certificate": "Goethe-Zertifikat C2",
+  "passPercent": 60,
+  "hookWord": {
+    "word": "Resilienz",
+    "gender": "f",
+    "pos": "noun",
+    "translations": {
+      "en": "resilience",
+      "es": "resiliencia"
+    }
+  },
+  "loop": {
+    "passage": "Resilienz von Systemen wird nach der Krise neu bewertet.",
+    "question": "Was bedeutet «Resilienz»?",
+    "options": [
+      {
+        "key": "A",
+        "text": "fragility",
+        "correct": false
+      },
+      {
+        "key": "B",
+        "text": "resilience",
+        "correct": true
+      },
+      {
+        "key": "C",
+        "text": "anger",
+        "correct": false
+      }
+    ]
+  },
+  "miniPractice": {
+    "label": "Built from your mistake · 20 sec",
+    "before": "",
+    "gap": "___",
+    "after": " hilft Organisationen in Krisen.",
+    "answer": "Resilienz"
+  },
+  "modules": [
+    {
+      "id": "lesen",
+      "title": "Lesen",
+      "interactive": true,
+      "parts": [
+        {
+          "type": "multiple_choice",
+          "label": "Part 1",
+          "instructions": "Lesen Sie den Text und wählen Sie die richtige Antwort.",
+          "passage": "Resilienz von Systemen wird nach der Krise neu bewertet.",
+          "markableWords": [
+            {
+              "word": "Resilienz",
+              "gender": "f",
+              "pos": "noun",
+              "translations": {
+                "en": "resilience",
+                "es": "resiliencia"
+              }
+            }
+          ],
+          "items": [
+            {
+              "id": "loop1",
+              "question": "Was bedeutet «Resilienz»?",
+              "options": [
+                {
+                  "key": "A",
+                  "text": "fragility",
+                  "correct": false
+                },
+                {
+                  "key": "B",
+                  "text": "resilience",
+                  "correct": true
+                },
+                {
+                  "key": "C",
+                  "text": "anger",
+                  "correct": false
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "horen",
+      "title": "Hören",
+      "interactive": true,
+      "parts": [
+        {
+          "type": "multiple_choice",
+          "label": "Part 1",
+          "instructions": "Lesen Sie das Transkript und wählen Sie die richtige Antwort.",
+          "transcript": "Moderator: Frau Professor Lang, Sie plädieren für eine Reform des Wissenschaftsdeutsch. Worin besteht Ihr Hauptkritikpunkt?\nProf. Lang: Viele Texte verheddern sich in Nominalstil und Passivkonstruktionen. Das erschwert nicht nur den Zugang für Laien, sondern auch die internationale Rezeption, weil Übersetzungen unnötig kompliziert werden.",
+          "markableWords": [],
+          "items": [
+            {
+              "id": "h1",
+              "question": "Was kritisiert Professor Lang vor allem?",
+              "options": [
+                {
+                  "key": "A",
+                  "text": "Zu viele Fremdwörter in der Wissenschaft",
+                  "correct": false
+                },
+                {
+                  "key": "B",
+                  "text": "Einen schwer zugänglichen, nominalen Schreibstil",
+                  "correct": true
+                },
+                {
+                  "key": "C",
+                  "text": "Fehlende Übersetzungen wissenschaftlicher Texte",
+                  "correct": false
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "schreiben",
+      "title": "Schreiben",
+      "interactive": false,
+      "parts": [
+        {
+          "type": "writing_task",
+          "task": "Verfassen Sie einen zusammenhängenden Text (ca. 200 Wörter) zur Frage, inwieweit Mehrsprachigkeit in multinationalen Teams Vorteile oder Risiken für die Produktivität birgt.",
+          "note": "ca. 200 Wörter — Wird in der Vollversion mit KI bewertet.",
+          "markableWords": []
+        }
+      ]
+    },
+    {
+      "id": "sprechen",
+      "title": "Sprechen",
+      "interactive": false,
+      "parts": [
+        {
+          "type": "speaking_task",
+          "task": "Führen Sie eine Diskussion über folgende Aussage: „In einer globalisierten Welt verliert nationale Kultur an Bedeutung.“ Erörtern Sie Chancen und Grenzen dieser These.",
+          "note": "Vorbereitungszeit: 2 Minuten — Evaluated with AI in the full app.",
+          "markableWords": []
+        }
+      ]
+    }
+  ]
+}

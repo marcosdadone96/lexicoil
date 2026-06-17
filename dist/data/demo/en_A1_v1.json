@@ -1,0 +1,157 @@
+{
+  "id": "en_A1_v1",
+  "lang": "en",
+  "level": "A1",
+  "variant": 1,
+  "topic": "Daily Life",
+  "board": "Cambridge English",
+  "certificate": "A1 Key (KET)",
+  "passPercent": 70,
+  "hookWord": {
+    "word": "family",
+    "pos": "noun",
+    "translations": {
+      "en": "family",
+      "es": "familia"
+    }
+  },
+  "loop": {
+    "passage": "Hello! My name is Anna. I live in London with my family.",
+    "question": "What does «family» mean?",
+    "options": [
+      {
+        "key": "A",
+        "text": "work",
+        "correct": false
+      },
+      {
+        "key": "B",
+        "text": "family",
+        "correct": true
+      },
+      {
+        "key": "C",
+        "text": "car",
+        "correct": false
+      }
+    ]
+  },
+  "miniPractice": {
+    "label": "Built from your mistake · 20 sec",
+    "before": "I live with my ",
+    "gap": "___",
+    "after": ".",
+    "answer": "family"
+  },
+  "modules": [
+    {
+      "id": "reading",
+      "title": "Reading",
+      "interactive": true,
+      "parts": [
+        {
+          "type": "multiple_choice",
+          "label": "Part 1",
+          "instructions": "Read the text and choose the best answer.",
+          "passage": "Hello! My name is Anna. I live in London with my family.",
+          "markableWords": [
+            {
+              "word": "family",
+              "pos": "noun",
+              "translations": {
+                "en": "family",
+                "es": "familia"
+              }
+            }
+          ],
+          "items": [
+            {
+              "id": "loop1",
+              "question": "What does «family» mean?",
+              "options": [
+                {
+                  "key": "A",
+                  "text": "work",
+                  "correct": false
+                },
+                {
+                  "key": "B",
+                  "text": "family",
+                  "correct": true
+                },
+                {
+                  "key": "C",
+                  "text": "car",
+                  "correct": false
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "listening",
+      "title": "Listening",
+      "interactive": true,
+      "parts": [
+        {
+          "type": "multiple_choice",
+          "label": "Part 1",
+          "instructions": "Read the transcript and choose the best answer.",
+          "transcript": "— Excuse me, how much is this T-shirt?\n— It's twelve pounds.\n— OK, I'll take it, please.",
+          "markableWords": [],
+          "items": [
+            {
+              "id": "h1",
+              "question": "What does the customer buy?",
+              "options": [
+                {
+                  "key": "A",
+                  "text": "A hat",
+                  "correct": false
+                },
+                {
+                  "key": "B",
+                  "text": "A T-shirt",
+                  "correct": true
+                },
+                {
+                  "key": "C",
+                  "text": "A bag",
+                  "correct": false
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "writing",
+      "title": "Writing",
+      "interactive": false,
+      "parts": [
+        {
+          "type": "writing_task",
+          "task": "Write a short email to a friend. Say where you live, what you do at the weekend, and invite your friend to meet.",
+          "note": "about 30 words — Evaluated with AI in the full app.",
+          "markableWords": []
+        }
+      ]
+    },
+    {
+      "id": "speaking",
+      "title": "Speaking",
+      "interactive": false,
+      "parts": [
+        {
+          "type": "speaking_task",
+          "task": "Introduce yourself: your name, where you are from, where you live, and languages you speak.",
+          "note": "no preparation time — Evaluated with AI in the full app.",
+          "markableWords": []
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://lexicoil.com/schemas/language.schema.json",
+  "title": "Language Knowledge",
+  "type": "object",
+  "required": ["id", "code", "name", "nativeName", "locale", "grammar", "vocabularyDomains", "topics"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string", "enum": ["german", "english", "spanish"] },
+    "code": { "type": "string", "enum": ["de", "en", "es"] },
+    "name": { "type": "string" },
+    "nativeName": { "type": "string" },
+    "locale": { "type": "string" },
+    "grammar": {
+      "type": "object",
+      "patternProperties": {
+        "^(A1|A2|B1|B2|C1|C2)$": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "topic"],
+            "properties": {
+              "id": { "type": "string" },
+              "topic": { "type": "string" },
+              "description": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "vocabularyDomains": {
+      "type": "object",
+      "patternProperties": {
+        "^(A1|A2|B1|B2|C1|C2)$": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "topics": {
+      "type": "object",
+      "patternProperties": {
+        "^(A1|A2|B1|B2|C1|C2)$": { "type": "array", "items": { "type": "string" }, "minItems": 1 }
+      }
+    }
+  }
+}

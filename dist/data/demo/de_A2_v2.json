@@ -1,0 +1,159 @@
+{
+  "id": "de_A2_v2",
+  "lang": "de",
+  "level": "A2",
+  "variant": 2,
+  "topic": "Einkaufen und Reisen",
+  "board": "Goethe-Institut",
+  "certificate": "Start Deutsch 2",
+  "passPercent": 60,
+  "hookWord": {
+    "word": "Reise",
+    "gender": "f",
+    "pos": "noun",
+    "translations": {
+      "en": "trip",
+      "es": "viaje"
+    }
+  },
+  "loop": {
+    "passage": "Nächste Woche fahre ich mit dem Zug nach Wien. Die Reise dauert vier Stunden.",
+    "question": "Was bedeutet «Reise»?",
+    "options": [
+      {
+        "key": "A",
+        "text": "meal",
+        "correct": false
+      },
+      {
+        "key": "B",
+        "text": "trip",
+        "correct": true
+      },
+      {
+        "key": "C",
+        "text": "letter",
+        "correct": false
+      }
+    ]
+  },
+  "miniPractice": {
+    "label": "Built from your mistake · 20 sec",
+    "before": "Die ",
+    "gap": "___",
+    "after": " nach Berlin war sehr entspannt.",
+    "answer": "Reise"
+  },
+  "modules": [
+    {
+      "id": "lesen",
+      "title": "Lesen",
+      "interactive": true,
+      "parts": [
+        {
+          "type": "multiple_choice",
+          "label": "Part 1",
+          "instructions": "Lesen Sie den Text und wählen Sie die richtige Antwort.",
+          "passage": "Nächste Woche fahre ich mit dem Zug nach Wien. Die Reise dauert vier Stunden.",
+          "markableWords": [
+            {
+              "word": "Reise",
+              "gender": "f",
+              "pos": "noun",
+              "translations": {
+                "en": "trip",
+                "es": "viaje"
+              }
+            }
+          ],
+          "items": [
+            {
+              "id": "loop1",
+              "question": "Was bedeutet «Reise»?",
+              "options": [
+                {
+                  "key": "A",
+                  "text": "meal",
+                  "correct": false
+                },
+                {
+                  "key": "B",
+                  "text": "trip",
+                  "correct": true
+                },
+                {
+                  "key": "C",
+                  "text": "letter",
+                  "correct": false
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "horen",
+      "title": "Hören",
+      "interactive": true,
+      "parts": [
+        {
+          "type": "multiple_choice",
+          "label": "Part 1",
+          "instructions": "Lesen Sie das Transkript und wählen Sie die richtige Antwort.",
+          "transcript": "— Entschuldigung, fährt dieser Zug nach Köln?\n— Ja, aber nur bis Bonn. In Köln müssen Sie umsteigen.\n— Danke, dann steige ich in Bonn um.",
+          "markableWords": [],
+          "items": [
+            {
+              "id": "h1",
+              "question": "Was muss die Person in Bonn machen?",
+              "options": [
+                {
+                  "key": "A",
+                  "text": "Aussteigen und zu Fuß gehen",
+                  "correct": false
+                },
+                {
+                  "key": "B",
+                  "text": "In einen anderen Zug umsteigen",
+                  "correct": true
+                },
+                {
+                  "key": "C",
+                  "text": "Eine Fahrkarte kaufen",
+                  "correct": false
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "schreiben",
+      "title": "Schreiben",
+      "interactive": false,
+      "parts": [
+        {
+          "type": "writing_task",
+          "task": "Sie haben eine Einladung zu einer Geburtstagsfeier erhalten, können aber nicht kommen. Schreiben Sie eine kurze Nachricht: warum Sie nicht kommen können und wann Sie sich wieder treffen möchten.",
+          "note": "ca. 40 Wörter — Wird in der Vollversion mit KI bewertet.",
+          "markableWords": []
+        }
+      ]
+    },
+    {
+      "id": "sprechen",
+      "title": "Sprechen",
+      "interactive": false,
+      "parts": [
+        {
+          "type": "speaking_task",
+          "task": "Beschreiben Sie Ihr Zimmer oder Ihre Wohnung: Größe, Möbel, was Ihnen gefällt.",
+          "note": "Vorbereitungszeit: 1 Minute — Evaluated with AI in the full app.",
+          "markableWords": []
+        }
+      ]
+    }
+  ]
+}

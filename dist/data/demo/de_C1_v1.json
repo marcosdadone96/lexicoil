@@ -1,0 +1,159 @@
+{
+  "id": "de_C1_v1",
+  "lang": "de",
+  "level": "C1",
+  "variant": 1,
+  "topic": "Medien und öffentliche Debatte",
+  "board": "Goethe-Institut",
+  "certificate": "Goethe-Zertifikat C1",
+  "passPercent": 60,
+  "hookWord": {
+    "word": "Nachhaltigkeit",
+    "gender": "f",
+    "pos": "noun",
+    "translations": {
+      "en": "sustainability",
+      "es": "sostenibilidad"
+    }
+  },
+  "loop": {
+    "passage": "Nachhaltigkeit bleibt ein zentrales Thema in der Wirtschaftspolitik.",
+    "question": "Was bedeutet «Nachhaltigkeit»?",
+    "options": [
+      {
+        "key": "A",
+        "text": "profit",
+        "correct": false
+      },
+      {
+        "key": "B",
+        "text": "sustainability",
+        "correct": true
+      },
+      {
+        "key": "C",
+        "text": "speed",
+        "correct": false
+      }
+    ]
+  },
+  "miniPractice": {
+    "label": "Built from your mistake · 20 sec",
+    "before": "",
+    "gap": "___",
+    "after": " ist für viele Unternehmen ein Kernziel.",
+    "answer": "Nachhaltigkeit"
+  },
+  "modules": [
+    {
+      "id": "lesen",
+      "title": "Lesen",
+      "interactive": true,
+      "parts": [
+        {
+          "type": "multiple_choice",
+          "label": "Part 1",
+          "instructions": "Lesen Sie den Text und wählen Sie die richtige Antwort.",
+          "passage": "Nachhaltigkeit bleibt ein zentrales Thema in der Wirtschaftspolitik.",
+          "markableWords": [
+            {
+              "word": "Nachhaltigkeit",
+              "gender": "f",
+              "pos": "noun",
+              "translations": {
+                "en": "sustainability",
+                "es": "sostenibilidad"
+              }
+            }
+          ],
+          "items": [
+            {
+              "id": "loop1",
+              "question": "Was bedeutet «Nachhaltigkeit»?",
+              "options": [
+                {
+                  "key": "A",
+                  "text": "profit",
+                  "correct": false
+                },
+                {
+                  "key": "B",
+                  "text": "sustainability",
+                  "correct": true
+                },
+                {
+                  "key": "C",
+                  "text": "speed",
+                  "correct": false
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "horen",
+      "title": "Hören",
+      "interactive": true,
+      "parts": [
+        {
+          "type": "multiple_choice",
+          "label": "Part 1",
+          "instructions": "Lesen Sie das Transkript und wählen Sie die richtige Antwort.",
+          "transcript": "Journalistin: Herr Dr. Klein, reicht das neue Transparenzgesetz aus?\nDr. Klein: Es ist ein Schritt, aber ohne unabhängige Kontrolle bleibt unklar, ob Unternehmen ihre Meldepflichten tatsächlich erfüllen. Entscheidend ist, dass Verstöße spürbar sanktioniert werden.",
+          "markableWords": [],
+          "items": [
+            {
+              "id": "h1",
+              "question": "Was fordert Dr. Klein zusätzlich zum Gesetz?",
+              "options": [
+                {
+                  "key": "A",
+                  "text": "Abschaffung aller Meldepflichten",
+                  "correct": false
+                },
+                {
+                  "key": "B",
+                  "text": "Unabhängige Kontrolle und wirksame Sanktionen",
+                  "correct": true
+                },
+                {
+                  "key": "C",
+                  "text": "Mehr Werbung für Unternehmen",
+                  "correct": false
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "schreiben",
+      "title": "Schreiben",
+      "interactive": false,
+      "parts": [
+        {
+          "type": "writing_task",
+          "task": "Verfassen Sie einen argumentativen Text (ca. 150 Wörter) zur Frage, ob soziale Medien die demokratische Diskussion eher stärken oder schwächen.",
+          "note": "ca. 150 Wörter — Wird in der Vollversion mit KI bewertet.",
+          "markableWords": []
+        }
+      ]
+    },
+    {
+      "id": "sprechen",
+      "title": "Sprechen",
+      "interactive": false,
+      "parts": [
+        {
+          "type": "speaking_task",
+          "task": "Nehmen Sie Stellung zu folgender These: „Künstliche Intelligenz sollte in Schulen verpflichtend unterrichtet werden.“ Begründen Sie Ihre Position und reagieren Sie auf Einwände.",
+          "note": "Vorbereitungszeit: 2 Minuten — Evaluated with AI in the full app.",
+          "markableWords": []
+        }
+      ]
+    }
+  ]
+}

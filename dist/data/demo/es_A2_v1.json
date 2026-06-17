@@ -1,0 +1,157 @@
+{
+  "id": "es_A2_v1",
+  "lang": "es",
+  "level": "A2",
+  "variant": 1,
+  "topic": "Ciudad y compras",
+  "board": "Instituto Cervantes",
+  "certificate": "DELE A2",
+  "passPercent": 60,
+  "hookWord": {
+    "word": "cita",
+    "pos": "noun",
+    "translations": {
+      "en": "appointment",
+      "es": "cita"
+    }
+  },
+  "loop": {
+    "passage": "Mañana tengo una cita con el médico por la tarde.",
+    "question": "¿Qué significa «cita»?",
+    "options": [
+      {
+        "key": "A",
+        "text": "billete",
+        "correct": false
+      },
+      {
+        "key": "B",
+        "text": "cita",
+        "correct": true
+      },
+      {
+        "key": "C",
+        "text": "receta",
+        "correct": false
+      }
+    ]
+  },
+  "miniPractice": {
+    "label": "Generado de tu error · 20 s",
+    "before": "No olvides tu ",
+    "gap": "___",
+    "after": ".",
+    "answer": "cita"
+  },
+  "modules": [
+    {
+      "id": "reading",
+      "title": "Comprensión de lectura",
+      "interactive": true,
+      "parts": [
+        {
+          "type": "multiple_choice",
+          "label": "Part 1",
+          "instructions": "Read the text and choose the best answer.",
+          "passage": "Mañana tengo una cita con el médico por la tarde.",
+          "markableWords": [
+            {
+              "word": "cita",
+              "pos": "noun",
+              "translations": {
+                "en": "appointment",
+                "es": "cita"
+              }
+            }
+          ],
+          "items": [
+            {
+              "id": "loop1",
+              "question": "¿Qué significa «cita»?",
+              "options": [
+                {
+                  "key": "A",
+                  "text": "billete",
+                  "correct": false
+                },
+                {
+                  "key": "B",
+                  "text": "cita",
+                  "correct": true
+                },
+                {
+                  "key": "C",
+                  "text": "receta",
+                  "correct": false
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "listening",
+      "title": "Comprensión auditiva",
+      "interactive": true,
+      "parts": [
+        {
+          "type": "multiple_choice",
+          "label": "Part 1",
+          "instructions": "Read the transcript and choose the best answer.",
+          "transcript": "— Perdone, ¿este tren va a Sevilla?\n— Sí, pero solo hasta Córdoba. En Córdoba tiene que cambiar de tren.\n— Perfecto, cambio en Córdoba.",
+          "markableWords": [],
+          "items": [
+            {
+              "id": "h1",
+              "question": "¿Qué tiene que hacer la persona en Córdoba?",
+              "options": [
+                {
+                  "key": "A",
+                  "text": "Bajarse y caminar",
+                  "correct": false
+                },
+                {
+                  "key": "B",
+                  "text": "Cambiar de tren",
+                  "correct": true
+                },
+                {
+                  "key": "C",
+                  "text": "Comprar un billete",
+                  "correct": false
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "writing",
+      "title": "Expresión escrita",
+      "interactive": false,
+      "parts": [
+        {
+          "type": "writing_task",
+          "task": "Has recibido una invitación a una fiesta de cumpleaños, pero no puedes ir. Escribe un mensaje corto explicando por qué y proponiendo otra fecha.",
+          "note": "unas 40 palabras — Evaluado con IA en la app completa.",
+          "markableWords": []
+        }
+      ]
+    },
+    {
+      "id": "speaking",
+      "title": "Expresión oral",
+      "interactive": false,
+      "parts": [
+        {
+          "type": "speaking_task",
+          "task": "Describe tu habitación o tu piso: tamaño, muebles y qué te gusta de él.",
+          "note": "1 minuto de preparación — Evaluado con IA en la app completa.",
+          "markableWords": []
+        }
+      ]
+    }
+  ]
+}
