@@ -262,6 +262,9 @@
       too_many_attempts: 'Too many attempts — wait 15 minutes.',
       auth_not_configured: 'Auth not configured on server.',
       supabase_not_configured: 'Supabase not configured.',
+      internal_error: 'Server error during login — try again in a minute.',
+      invalid_supabase_session: 'Session expired — sign in again.',
+      supabase_unreachable: 'Cannot reach Supabase — try again shortly.',
     };
     return m[code] || code || 'Login failed';
   }

@@ -1,6 +1,5 @@
 'use strict';
 
-const { createClient } = require('@supabase/supabase-js');
 const { getStoreForEvent } = require('./lib/blobStore.js');
 const { userKey, signAuthToken, normalizeEmail, getJwtSecret, getTokenVersion } = require('./lib/authLib.js');
 const { corsHeaders, parseJsonBody, authSessionResponse, jsonResponse } = require('./lib/http.js');
@@ -16,6 +15,51 @@ const sb = require('./lib/supabaseAdmin.js');
 
 function trimEnv(v) {
   return String(v || '').trim();
+}
+
+/** Validate access token via Supabase Auth REST (avoids bundling issues with @supabase/supabase-js). */
+async function fetchSupabaseUser(supabaseUrl, anonKey, accessToken) {
+  const base = supabaseUrl.replace(/\/$/, '');
+  let res;
+  try {
+    res = await fetch(`${base}/auth/v1/user`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        apikey: anonKey,
+      },
+    });
+  } catch (err) {
+    console.error('auth-supabase-session: supabase fetch failed:', err);
+    return { user: null, error: 'supabase_unreachable' };
+  }
+  if (!res.ok) {
+    return { user: null, error: 'invalid_supabase_session' };
+  }
+  let user;
+  try {
+    user = await res.json();
+  } catch (_) {
+    return { user: null, error: 'invalid_supabase_session' };
+  }
+  if (!user?.email) {
+    return { user: null, error: 'invalid_supabase_session' };
+  }
+  return { user, error: null };
+}
+
+function applySupabaseProfileToUser(user, profile, fallbackName) {
+  if (!profile?.plan) return user;
+  const sbPlan = profile.plan === 'pro' ? 'pro' : 'free';
+  return {
+    ...user,
+    name: user.name || fallbackName,
+    plan: sbPlan,
+    pro: sbPlan === 'pro',
+    supabaseId: profile.id || user.supabaseId,
+    proActivatedAt:
+      user.proActivatedAt ||
+      (profile.plan_activated_at ? new Date(profile.plan_activated_at).getTime() : Date.now()),
+  };
 }
 
 exports.handler = async function handler(event) {
@@ -48,16 +92,13 @@ exports.handler = async function handler(event) {
     return jsonResponse(400, cors, { error: 'missing_token' });
   }
 
-  const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-    auth: { persistSession: false, autoRefreshToken: false },
-  });
-
-  const { data: userData, error: userError } = await supabase.auth.getUser(accessToken);
-  if (userError || !userData?.user?.email) {
-    return jsonResponse(401, cors, { error: 'invalid_supabase_session' });
+  const { user: sbUser, error: userError } = await fetchSupabaseUser(supabaseUrl, supabaseAnonKey, accessToken);
+  if (userError || !sbUser?.email) {
+    return jsonResponse(userError === 'supabase_unreachable' ? 503 : 401, cors, {
+      error: userError || 'invalid_supabase_session',
+    });
   }
 
-  const sbUser = userData.user;
   const email = normalizeEmail(sbUser.email);
   if (!email) {
     return jsonResponse(401, cors, { error: 'invalid_supabase_session' });
@@ -66,13 +107,21 @@ exports.handler = async function handler(event) {
   const meta = sbUser.user_metadata || {};
   const name = String(meta.full_name || meta.name || email.split('@')[0]).trim().slice(0, 80);
 
-  const store = getStoreForEvent(event);
+  let store = null;
+  try {
+    store = getStoreForEvent(event);
+  } catch (err) {
+    console.warn('auth-supabase-session: blobs unavailable:', err.message);
+  }
+
   const key = userKey(email);
   let user = null;
-  try {
-    user = await store.get(key, { type: 'json' });
-  } catch (_) {
-    user = null;
+  if (store) {
+    try {
+      user = await store.get(key, { type: 'json' });
+    } catch (_) {
+      user = null;
+    }
   }
 
   const comboFromBody = parseFreeComboFromBody(body);
@@ -105,22 +154,38 @@ exports.handler = async function handler(event) {
       profile = await sb.getUserProfile(sbUser.id);
     }
     if (profile) {
-      user = (await mergeSupabasePlanIntoBlob(store, email, profile, name)) || user;
+      if (store) {
+        user = (await mergeSupabasePlanIntoBlob(store, email, profile, name)) || user;
+      } else {
+        user = applySupabaseProfileToUser(user, profile, name);
+      }
     }
   }
 
-  await store.setJSON(key, user);
+  if (store) {
+    try {
+      await store.setJSON(key, user);
+    } catch (err) {
+      console.warn('auth-supabase-session: blob write failed:', err.message);
+    }
+  }
 
   const session = signAuthToken(email, user.name, getTokenVersion(user));
+  if (!session?.token) {
+    return jsonResponse(503, cors, { error: 'auth_not_configured' });
+  }
+
   const plan = resolvePlan(user);
   const max = maxForPlan(plan);
   const month = getMonthKey();
   let used = 0;
-  try {
-    const q = await store.get(`quota:${email}`, { type: 'json' });
-    if (q && q.month === month) used = Number(q.used) || 0;
-  } catch (_) {
-    /* fresh */
+  if (store) {
+    try {
+      const q = await store.get(`quota:${email}`, { type: 'json' });
+      if (q && q.month === month) used = Number(q.used) || 0;
+    } catch (_) {
+      /* fresh */
+    }
   }
 
   return authSessionResponse(200, cors, {
