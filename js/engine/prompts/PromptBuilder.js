@@ -187,6 +187,7 @@ const PromptBuilder = (() => {
       `JSON with topic, level:"${spec.level}", lang:"${loc.langCode}". ` +
       `Include ONLY these module keys: ${keysLine}. Omit unselected modules entirely. ` +
       `Embed each target word naturally in authentic ${loc.contentLang} texts. Verifiable questions only. ` +
+      `Multiple-choice: options as [{"key":"A","text":"…"},…], correct as the letter key only ("A","B",…). ` +
       `After writing the texts, add a top-level array "targetUsage": for each learner word you actually used, ` +
       `output {"word":"<original>","surfaces":["<exact form as written>",…]} including inflected forms. ` +
       `List only words you genuinely used in the passages or questions. Do not invent usage.`;

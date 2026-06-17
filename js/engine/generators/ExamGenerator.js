@@ -188,14 +188,33 @@ const ExamGenerator = (() => {
     if (typeof startTicket !== 'function') {
       throw new Error('hooks.startExamTicket is required for personal exam generation');
     }
-    const genTicket = await startTicket('personal_exam', 2);
-    const raw = await hooks.callAI(built.prompt, built.maxTokens, {
-      examGeneration: true,
-      aiAction: 'personal_exam',
-      genTicket,
-    });
-    const parsed = hooks.parseExamJson(raw.replace(/```json|```/g, '').trim());
-    return assertExamValid(parsed, hooks);
+    const genTicket = await startTicket('personal_exam', 4);
+    let validationFeedback = null;
+
+    for (let attempt = 0; attempt < 2; attempt++) {
+      const promptSuffix = validationFeedback
+        ? `\n\nRETRY: Previous JSON failed validation (${validationFeedback.slice(0, 6).join(', ')}). ` +
+          'For every multiple-choice question use options [{"key":"A","text":"..."},…] and set correct to the letter key only (e.g. "A").'
+        : '';
+      const raw = await hooks.callAI(built.prompt + promptSuffix, built.maxTokens, {
+        examGeneration: true,
+        aiAction: 'personal_exam',
+        genTicket,
+      });
+      const parsed = hooks.parseExamJson(raw.replace(/```json|```/g, '').trim());
+      parsed.vocabPersonal = true;
+      parsed.personalizedExam = true;
+      try {
+        return assertExamValid(parsed, hooks);
+      } catch (e) {
+        if (attempt === 0 && e.code === 'exam_invalid' && e.validationErrors?.length) {
+          validationFeedback = e.validationErrors;
+          continue;
+        }
+        throw e;
+      }
+    }
+    throw new Error('Personal exam generation failed after validation retry');
   }
 
   return Object.freeze({

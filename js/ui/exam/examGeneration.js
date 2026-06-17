@@ -75,7 +75,64 @@ function normalizeCambridgeExam(d){
   }));
   return d;
 }
+function coerceMcqOptions(q) {
+  if (!q || !Array.isArray(q.options) || !q.options.length) return;
+  const type = String(q.type || 'multiple').toLowerCase();
+  if (['rf', 'tf', 'richtig_falsch', 'true_false', 'yn', 'ja_nein', 'rfn', 'r_f_n', 'gap_fill', 'gap'].includes(type)) return;
+
+  const ADS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const normalized = q.options.map((o, i) => {
+    const fallbackKey = ADS[i] || String(i + 1);
+    if (typeof o === 'string') {
+      const m = o.match(/^([A-Za-z0-9]+)\)\s*(.*)$/s);
+      if (m) return { key: m[1].toUpperCase(), text: (m[2] || '').trim() };
+      return { key: fallbackKey, text: o.trim() };
+    }
+    if (o && typeof o === 'object') {
+      const rawKey = o.key != null ? o.key : o.id;
+      const key = rawKey != null
+        ? String(rawKey).trim().replace(/^\s*([a-zA-Z0-9]+)\)\s*/, '$1').toUpperCase()
+        : fallbackKey;
+      const text = String(o.text ?? o.label ?? o.option ?? '').trim();
+      return { ...o, key, text: text || key };
+    }
+    return { key: fallbackKey, text: String(o ?? '').trim() };
+  });
+  q.options = normalized;
+
+  if (q.correct == null || q.correct === '') return;
+  let corr = Array.isArray(q.correct) ? q.correct[0] : q.correct;
+  const corrStr = String(corr ?? '').trim();
+  if (!corrStr) return;
+  const corrKey = corrStr.replace(/^\s*([a-zA-Z0-9]+)\)\s*/, '$1').toUpperCase();
+  const keys = normalized.map((o) => o.key);
+  if (keys.includes(corrKey)) {
+    q.correct = corrKey;
+    return;
+  }
+  if (/^\d+$/.test(corrStr)) {
+    const n = Number(corrStr);
+    const pick = n >= 1 && n <= normalized.length ? normalized[n - 1] : normalized[n];
+    if (pick?.key) {
+      q.correct = pick.key;
+      return;
+    }
+  }
+  const lc = corrStr.toLowerCase();
+  const byText = normalized.find((o) => {
+    const t = String(o.text || '').toLowerCase();
+    return t === lc || (t && (t.includes(lc) || lc.includes(t)));
+  });
+  if (byText?.key) {
+    q.correct = byText.key;
+    return;
+  }
+  if (corrStr.length === 1 && keys.includes(corrStr.toUpperCase())) {
+    q.correct = corrStr.toUpperCase();
+  }
+}
 function normalizeGoetheQuestion(q,part){
+  coerceMcqOptions(q);
   if(q.type==='richtig_falsch'||q.type==='true_false'){q.type='rf';if(q.correct==='Richtig'||q.correct==='True')q.correct='R';else if(q.correct==='Falsch'||q.correct==='False')q.correct='F';}
   if(q.type==='ja_nein'){q.type='yn';if(q.correct==='Ja')q.correct='J';else if(q.correct==='Nein')q.correct='N';}
   if(q.type==='r_f_n')q.type='rfn';
