@@ -266,9 +266,23 @@
     return m[code] || code || 'Login failed';
   }
 
+  async function fetchJson(url, opts) {
+    const res = await fetch(url, { credentials: 'include', ...opts });
+    const text = await res.text();
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch (_) {
+      const msg = text.trimStart().startsWith('<')
+        ? 'Auth server error (HTML instead of JSON). Check Netlify env vars and function logs.'
+        : (text.slice(0, 120) || ('HTTP ' + res.status));
+      throw new Error(msg);
+    }
+    return { res, data };
+  }
+
   async function obtainSessionToken(email, password) {
-    const cfgRes = await fetch('/.netlify/functions/auth-config');
-    const cfg = await cfgRes.json().catch(() => ({}));
+    const { res: cfgRes, data: cfg } = await fetchJson('/.netlify/functions/auth-config');
     if (!cfgRes.ok || !cfg.enabled) throw new Error(mapAuthError('auth_not_configured'));
 
     if (cfg.supabase && cfg.supabaseUrl && cfg.supabaseAnonKey) {
@@ -279,22 +293,20 @@
       const { data, error } = await sb.auth.signInWithPassword({ email, password });
       if (error) throw new Error(error.message || 'Login failed');
       if (!data.session?.access_token) throw new Error('Authentication failed.');
-      const sessRes = await fetch('/.netlify/functions/auth-supabase-session', {
+      const { res: sessRes, data: sess } = await fetchJson('/.netlify/functions/auth-supabase-session', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ access_token: data.session.access_token }),
       });
-      const sess = await sessRes.json();
       if (!sessRes.ok || !sess.token) throw new Error(mapAuthError(sess.error));
       return sess.token;
     }
 
-    const res = await fetch('/.netlify/functions/auth-login', {
+    const { res, data } = await fetchJson('/.netlify/functions/auth-login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password }),
     });
-    const data = await res.json();
     if (!res.ok || !data.token) throw new Error(mapAuthError(data.error));
     return data.token;
   }
@@ -322,6 +334,7 @@
     const url = method === 'GET' ? API + '?' + new URLSearchParams(params).toString() : API;
     const res = await fetch(url, {
       method,
+      credentials: 'include',
       headers: { 'Authorization': 'Bearer ' + _token, 'Content-Type': 'application/json' },
       body: body ? JSON.stringify(body) : undefined,
     });

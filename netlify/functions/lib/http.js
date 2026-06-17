@@ -118,7 +118,7 @@ function jsonResponse(statusCode, headers, body, extraHeaders = {}) {
 }
 
 function authSessionResponse(statusCode, cors, body, token, event) {
-  return jsonResponse(statusCode, cors, body, {
+  return jsonResponse(statusCode, cors, { ...body, token }, {
     'Set-Cookie': serializeAuthCookie(token, event),
   });
 }

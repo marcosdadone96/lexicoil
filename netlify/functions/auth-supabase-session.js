@@ -21,6 +21,8 @@ function trimEnv(v) {
 exports.handler = async function handler(event) {
   const cors = corsHeaders(event);
   if (event.httpMethod === 'OPTIONS') return { statusCode: 204, headers: cors };
+
+  try {
   if (event.httpMethod !== 'POST') {
     return jsonResponse(405, cors, { error: 'method_not_allowed' });
   }
@@ -133,4 +135,8 @@ exports.handler = async function handler(event) {
       freeCombo: freeComboForResponse(user),
     },
   }, session.token, event);
+  } catch (err) {
+    console.error('auth-supabase-session:', err);
+    return jsonResponse(500, cors, { error: 'internal_error' });
+  }
 };

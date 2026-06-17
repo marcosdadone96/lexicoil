@@ -57,5 +57,15 @@ console.log('\n[c] CORS credentials only for allowed origins');
   check('unknown origin omits credentials', !denied['Access-Control-Allow-Credentials']);
 }
 
+console.log('\n[d] authSessionResponse includes token in JSON body');
+{
+  const event = { headers: { host: 'localhost:8888' } };
+  const cors = http.corsHeaders(event);
+  const resp = http.authSessionResponse(200, cors, { user: { email: 'a@b.c' } }, 'jwt.here', event);
+  const body = JSON.parse(resp.body);
+  check('token in body', body.token === 'jwt.here');
+  check('Set-Cookie present', resp.headers['Set-Cookie']?.includes('lc_token=jwt.here'));
+}
+
 console.log(`\nResults: ${passed} passed, ${failed} failed\n`);
 process.exit(failed ? 1 : 0);
