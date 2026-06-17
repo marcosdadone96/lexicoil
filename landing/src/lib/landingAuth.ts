@@ -40,6 +40,33 @@ const GUEST_KEY = 'lc_guest';
 const SUPABASE_STORAGE_KEY = 'lc-supabase-auth';
 const SUPABASE_ESM = 'https://esm.sh/@supabase/supabase-js@2.49.8';
 
+function clearLegacyToken() {
+  localStorage.removeItem(TOKEN_KEY);
+}
+
+function legacyToken() {
+  return localStorage.getItem(TOKEN_KEY) || '';
+}
+
+/** Transitional: Bearer only when legacy localStorage token exists; cookie is primary. */
+function authHeaders(extra: Record<string, string> = {}) {
+  const h: Record<string, string> = { 'Content-Type': 'application/json', ...extra };
+  const legacy = legacyToken();
+  if (legacy) h.Authorization = `Bearer ${legacy}`;
+  return h;
+}
+
+function apiFetch(url: string, options: RequestInit = {}) {
+  return fetch(url, {
+    credentials: 'include',
+    ...options,
+    headers: {
+      ...authHeaders(),
+      ...(options.headers as Record<string, string> | undefined),
+    },
+  });
+}
+
 declare global {
   interface Window {
     __lcCreateClient?: CreateClientFn;
@@ -193,19 +220,37 @@ function readSupabaseAccessToken(): string | null {
 
 export function hasStoredSession(): boolean {
   if (localStorage.getItem(GUEST_KEY) === '1') return false;
-  return Boolean(localStorage.getItem(TOKEN_KEY) || readCachedUser());
+  return Boolean(readCachedUser() || legacyToken());
 }
 
-export function persistSession(token: string, user?: unknown) {
-  localStorage.setItem(TOKEN_KEY, token);
+/** Persist user profile cache only — session JWT lives in HttpOnly cookie. */
+export function persistSession(_token: string | null, user?: unknown) {
+  clearLegacyToken();
   localStorage.removeItem(GUEST_KEY);
   if (user) localStorage.setItem(USER_KEY, JSON.stringify(user));
 }
 
 export function clearSessionStorage() {
-  localStorage.removeItem(TOKEN_KEY);
+  clearLegacyToken();
   localStorage.removeItem(USER_KEY);
   localStorage.removeItem(GUEST_KEY);
+}
+
+async function fetchMeFromServer(): Promise<{ user: SessionUser | null; unauthorized: boolean }> {
+  try {
+    const res = await apiFetch('/.netlify/functions/auth-me');
+    if (res.ok) {
+      const data = await res.json().catch(() => ({}));
+      const user = (data.user || data) as SessionUser;
+      if (user?.email) {
+        persistSession(null, user);
+        return { user, unauthorized: false };
+      }
+    }
+    return { user: null, unauthorized: res.status === 401 };
+  } catch {
+    return { user: null, unauthorized: false };
+  }
 }
 
 async function fetchMeWithToken(
@@ -213,13 +258,14 @@ async function fetchMeWithToken(
 ): Promise<{ user: SessionUser | null; unauthorized: boolean }> {
   try {
     const res = await fetch('/.netlify/functions/auth-me', {
+      credentials: 'include',
       headers: { Authorization: `Bearer ${token}` },
     });
     if (res.ok) {
       const data = await res.json().catch(() => ({}));
       const user = (data.user || data) as SessionUser;
       if (user?.email) {
-        persistSession(token, user);
+        persistSession(null, user);
         return { user, unauthorized: false };
       }
     }
@@ -233,9 +279,8 @@ export async function exchangeSupabaseSession(
   accessToken: string,
   combo?: RegisterCombo,
 ) {
-  const res = await fetch('/.netlify/functions/auth-supabase-session', {
+  const res = await apiFetch('/.netlify/functions/auth-supabase-session', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       access_token: accessToken,
       lang: combo?.lang,
@@ -244,8 +289,8 @@ export async function exchangeSupabaseSession(
   });
   const data = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(mapAuthError(data.error));
-  if (!data.token) throw new Error('No token received');
-  persistSession(data.token, data.user);
+  if (!data.user) throw new Error('No user received');
+  persistSession(null, data.user);
   return data;
 }
 
@@ -257,15 +302,25 @@ export async function restoreSession(): Promise<SessionUser | null> {
   if (localStorage.getItem(GUEST_KEY) === '1') return null;
 
   const cached = readCachedUser();
-  const token = localStorage.getItem(TOKEN_KEY);
 
+  const cookieMe = await fetchMeFromServer();
+  if (cookieMe.user) return cookieMe.user;
+  if (cookieMe.unauthorized) {
+    clearSessionStorage();
+    return null;
+  }
+
+  const token = legacyToken();
   if (token) {
     const { user, unauthorized } = await fetchMeWithToken(token);
     if (user) return user;
-    if (!unauthorized) return cached;
+    if (unauthorized) {
+      clearSessionStorage();
+      return null;
+    }
+    if (cached) return cached;
   }
 
-  // Token missing or rejected — refresh lc_token from stored Supabase session (no SDK init).
   const sbAccess = readSupabaseAccessToken();
   if (sbAccess) {
     try {
@@ -276,7 +331,6 @@ export async function restoreSession(): Promise<SessionUser | null> {
     }
   }
 
-  if (token && cached) return cached;
   if (cached) return cached;
 
   return null;
@@ -286,6 +340,11 @@ export async function logoutSession() {
   try {
     const sb = await getSupabase();
     if (sb) await sb.auth.signOut({ scope: 'local' });
+  } catch {
+    /* ignore */
+  }
+  try {
+    await apiFetch('/.netlify/functions/auth-logout', { method: 'POST' });
   } catch {
     /* ignore */
   }
@@ -305,15 +364,14 @@ export async function loginWithEmail(email: string, password: string) {
     return exchangeSupabaseSession(data.session.access_token);
   }
 
-  const res = await fetch('/.netlify/functions/auth-login', {
+  const res = await apiFetch('/.netlify/functions/auth-login', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email: em, password }),
   });
   const data = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(mapAuthError(data.error));
-  if (!data.token) throw new Error('No token received');
-  persistSession(data.token, data.user);
+  if (!data.user) throw new Error('Authentication failed.');
+  persistSession(null, data.user);
   return data;
 }
 
@@ -362,15 +420,14 @@ export async function registerWithEmail(
     return { pendingConfirmation: true, email: em };
   }
 
-  const res = await fetch('/.netlify/functions/auth-register', {
+  const res = await apiFetch('/.netlify/functions/auth-register', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ name: name.trim(), email: em, password, lang, level }),
   });
   const data = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(mapAuthError(data.error));
-  if (!data.token) throw new Error('No token received');
-  persistSession(data.token, data.user);
+  if (!data.user) throw new Error('Registration failed.');
+  persistSession(null, data.user);
   return {};
 }
 

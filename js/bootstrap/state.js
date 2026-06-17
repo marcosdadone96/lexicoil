@@ -122,6 +122,7 @@ function isAppAuthenticated(){
     if(localStorage.getItem('lc_demo')==='1')return false;
   }catch(_){}
   if(typeof Auth.hasSession==='function'&&Auth.hasSession())return true;
+  /** @deprecated transitional — legacy localStorage JWT during cookie migration */
   return !!localStorage.getItem('lc_token');
 }
 function requireAppAuth(){

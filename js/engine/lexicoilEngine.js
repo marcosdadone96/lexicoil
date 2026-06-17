@@ -35,7 +35,7 @@ const LexiCoilEngine = (() => {
     return window.ExerciseGenerator.generate(spec, hooks, { quickMod: mod });
   }
 
-  async function generatePersonalExam(subject, level, words, skills, hooks) {
+  async function generatePersonalExam(subject, level, words, skills, hooks, options = {}) {
     const Domain = window.LexiCoilDomain;
     const KE = window.KnowledgeEngine;
     const provider = { de: 'goethe', en: 'cambridge', es: 'dele' }[subject];
@@ -46,10 +46,25 @@ const LexiCoilEngine = (() => {
       contentType: 'VocabularyExercise',
       targetWords: words,
       topic: 'Personal vocabulary review',
-      skills: skills || ['lesen', 'horen'],
+      skills: skills || ['lesen'],
       vocabPolicy: { targetWords: words, maximizeCoverage: true, ensureDensePart: true },
     });
-    return window.ExamGenerator.generatePersonal(spec, hooks);
+    let blueprint = options.blueprint;
+    if (
+      !blueprint &&
+      typeof ExamBlueprint !== 'undefined' &&
+      ExamBlueprint.hasBlueprint?.(subject, level)
+    ) {
+      try {
+        blueprint = await ExamBlueprint.load(subject, level);
+      } catch (e) {
+        if (typeof lcDebug !== 'undefined') lcDebug.warn('[personal] blueprint load failed:', e);
+      }
+    }
+    if (blueprint) {
+      spec.metadata = { ...(spec.metadata || {}), blueprint };
+    }
+    return window.ExamGenerator.generatePersonal(spec, hooks, { ...options, blueprint });
   }
 
   async function generateFromSpec(spec, hooks, options) {

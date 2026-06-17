@@ -5,9 +5,92 @@
  * Mirrors scripts/pipeline/lib/candidateBuilder.mjs for runtime ingest.
  */
 
+const { extractPassageVocab } = require('./passageVocab');
+
+const BANK_QUESTION_KEYS = [
+  'id', 'module', 'teil', 'type', 'questionType', 'question', 'options',
+  'correct', 'correctAnswer', 'explanation', 'grammarTags', 'topicTags',
+  'vocabularyTags', 'difficulty', 'skills', 'language', 'level', 'examType', 'passageId',
+];
+
+const BANK_PASSAGE_KEYS = ['id', 'module', 'teil', 'title', 'text', 'passageVocab'];
+
+function examTypeForLang(lang) {
+  if (lang === 'de') return 'goethe';
+  if (lang === 'en') return 'cambridge';
+  if (lang === 'es') return 'dele';
+  return 'goethe';
+}
+
 function slugId(prefix, text) {
   const crypto = require('crypto');
   return `${prefix}-${crypto.createHash('sha256').update(String(text || '').slice(0, 200)).digest('hex').slice(0, 10)}`;
+}
+
+function pickBankKeys(obj, keys) {
+  const out = {};
+  for (const k of keys) out[k] = obj[k];
+  return out;
+}
+
+function normalizeQuestion(q, ctx) {
+  const { lang, level, module, teil, examType } = ctx;
+  const correct = q.correct ?? q.correctAnswer ?? '';
+  const filled = {
+    id: q.id || slugId(`lb-${lang}-${level}-${module}-t${teil}`, q.question),
+    module: q.module ?? module,
+    teil: q.teil ?? teil,
+    type: q.type || 'multiple',
+    questionType: q.questionType || q.type || 'multiple',
+    question: q.question || '',
+    options: q.options ?? [],
+    correct,
+    correctAnswer: q.correctAnswer ?? correct,
+    explanation: q.explanation || '',
+    grammarTags: q.grammarTags || [],
+    topicTags: q.topicTags || [],
+    vocabularyTags: q.vocabularyTags || [],
+    difficulty: q.difficulty ?? 4,
+    skills: q.skills || [module],
+    language: q.language || lang,
+    level: q.level || level,
+    examType: q.examType || examType,
+    passageId: q.passageId,
+  };
+  return pickBankKeys(filled, BANK_QUESTION_KEYS);
+}
+
+function normalizePassage(p, ctx) {
+  const { lang, level, module, teil } = ctx;
+  const filled = {
+    id: p.id,
+    module: p.module ?? module,
+    teil: p.teil ?? teil,
+    title: p.title || '',
+    text: p.text || '',
+    passageVocab: p.passageVocab?.length
+      ? p.passageVocab
+      : extractPassageVocab(p.text, lang, level),
+  };
+  return pickBankKeys(filled, BANK_PASSAGE_KEYS);
+}
+
+function schemaMatchesBank(part) {
+  const ctx = {
+    lang: part.lang,
+    level: part.level,
+    module: part.module,
+    teil: part.teil ?? 1,
+    examType: examTypeForLang(part.lang),
+  };
+
+  part.questions = (part.questions || []).map((q) => normalizeQuestion(q, ctx));
+
+  if (part.passage) {
+    part.passage = normalizePassage(part.passage, ctx);
+  }
+
+  return part;
 }
 
 function mapQuestion(q, lang, level, module, teil, passageId) {
@@ -17,6 +100,7 @@ function mapQuestion(q, lang, level, module, teil, passageId) {
     module,
     teil,
     type: q.type || 'multiple',
+    questionType: q.questionType || q.type || 'multiple',
     question: q.question || '',
     options: q.options,
     correct,
@@ -26,9 +110,12 @@ function mapQuestion(q, lang, level, module, teil, passageId) {
     topicTags: q.topicTags || [],
     vocabularyTags: q.vocabularyTags || [],
     difficulty: q.difficulty ?? 4,
+    skills: q.skills || [module],
+    language: lang,
+    level,
+    examType: examTypeForLang(lang),
     passageId: passageId || q.passageId || undefined,
     lang,
-    level,
   };
 }
 
@@ -37,7 +124,14 @@ function partRecord(module, part, { lang, level, source, batchId }) {
   const text = part.text || part.transcript || (part.segments || []).map((s) => s.transcript).filter(Boolean).join('\n');
   const passageId = text ? slugId(`p-${module}-t${teil}`, text.slice(0, 80)) : null;
   const passage = text
-    ? { id: passageId, module, title: part.textTitle || part.context || `${module} Teil ${teil}`, text }
+    ? {
+        id: passageId,
+        module,
+        teil,
+        title: part.textTitle || part.context || `${module} Teil ${teil}`,
+        text,
+        passageVocab: part.passageVocab || extractPassageVocab(text, lang, level),
+      }
     : null;
 
   const questions = [];
@@ -61,7 +155,7 @@ function partRecord(module, part, { lang, level, source, batchId }) {
   const crypto = require('crypto');
   const hash = crypto.createHash('sha256').update(`${batchId}-${module}-${teil}-${Date.now()}`).digest('hex').slice(0, 8);
 
-  return {
+  const record = {
     id: `stg-${lang}-${level}-${module}-t${teil}-${hash}`,
     status: 'pending',
     lang,
@@ -73,6 +167,8 @@ function partRecord(module, part, { lang, level, source, batchId }) {
     provenance: { generatedBy: source, batchId, createdAt: new Date().toISOString() },
     validation: { valid: questions.length >= 1, errors: questions.length ? [] : ['no_questions'] },
   };
+
+  return schemaMatchesBank(record);
 }
 
 function examPartsToStagingRecords(exam, opts) {
@@ -93,4 +189,12 @@ function examPartsToStagingRecords(exam, opts) {
   return out;
 }
 
-module.exports = { examPartsToStagingRecords };
+module.exports = {
+  examPartsToStagingRecords,
+  mapQuestion,
+  partRecord,
+  schemaMatchesBank,
+  BANK_QUESTION_KEYS,
+  BANK_PASSAGE_KEYS,
+  examTypeForLang,
+};

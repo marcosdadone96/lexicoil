@@ -209,7 +209,8 @@
   };
 
   window.canUseAiGeneration = function () {
-    return isPro() && getAiCreditsRemaining() > 0;
+    const minCost = Number(window.AI_COST_PERSONAL_EXAM || 3);
+    return isPro() && getAiCreditsRemaining() >= minCost;
   };
 
   window.isPro = function () {
@@ -263,7 +264,7 @@
     if (upgradeBtn) upgradeBtn.style.display = isPro() ? 'none' : 'inline-flex';
 
     if (homeHint) {
-      const quotaNote = 'Each delivered exam counts — generated or reused from the pool.';
+      const quotaNote = 'Official library exams use your monthly exam allowance. Personalized AI practice uses AI credits (3 per module). Failed generations are refunded automatically.';
       const aiLine = isPro() && getAiCreditsTotalPool() > 0 ? ` ${aiCreditsMeterLabel()}.` : '';
       if (isPro()) {
         homeHint.textContent = `${rem} / ${max} exams remaining this month (Pro).${aiLine} ${quotaNote}`;

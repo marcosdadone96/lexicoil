@@ -17,7 +17,7 @@ if (!API_KEY) {
   process.exit(1);
 }
 
-const MODEL = process.env.CLAUDE_EXAM_MODEL || 'claude-sonnet-4-20250514';
+const MODEL = process.env.CLAUDE_EXAM_MODEL || 'claude-sonnet-4-6';
 const TOPIC = 'Umwelt und Gesundheit';
 const NETLIFY_LIMIT_MS = 26000;
 

@@ -47,7 +47,7 @@ const maxChunksArg = ARGS.find((a) => a.startsWith('--max-chunks='));
 const MAX_CHUNKS = maxChunksArg ? parseInt(maxChunksArg.split('=')[1], 10) : 0;
 
 const API_KEY = process.env.ANTHROPIC_API_KEY;
-const MODEL = process.env.CLAUDE_EXAM_MODEL || 'claude-sonnet-4-20250514';
+const MODEL = process.env.CLAUDE_EXAM_MODEL || 'claude-sonnet-4-6';
 const CHUNK_LIMIT_MS = parseInt(process.env.EXAM_CHUNK_LIMIT_MS || '26000', 10);
 
 const PROVIDER_CASES = [

@@ -1,11 +1,8 @@
 const CLAUDE_ENDPOINT = "/.netlify/functions/claude-chat";
 
 function aiAuthHeaders() {
-  if (typeof lcAuthHeaders === "function") return lcAuthHeaders();
-  const h = { "Content-Type": "application/json" };
-  const token = localStorage.getItem("lc_token");
-  if (token) h.Authorization = `Bearer ${token}`;
-  return h;
+  if (typeof lcAuthHeaders === 'function') return lcAuthHeaders();
+  return { 'Content-Type': 'application/json' };
 }
 
 function lcFetch(url, options = {}) {
@@ -55,16 +52,95 @@ async function startExamGeneration(scope = 'exam_generation', maxChunks = 4) {
       e.used = data.used; e.max = data.max; e.plan = data.plan;
       throw e;
     }
+    if (res.status === 402 && data.error === 'ai_credits_exhausted') {
+      const e = new Error('ai_credits_exhausted');
+      e.code = 'ai_credits_exhausted';
+      e.remaining = data.remaining;
+      e.aiUsed = data.aiUsed;
+      e.aiMax = data.aiMax;
+      throw e;
+    }
     throw new Error(data.error || 'ticket_failed');
   }
   if (typeof window !== 'undefined' && typeof window.applyServerQuota === 'function') {
-    window.applyServerQuota(data);
+    window.applyServerQuota({
+      ...data,
+      aiUsed: data.aiUsed,
+      aiRemaining: data.aiRemaining ?? data.remaining,
+    });
+  }
+  return data.ticket;
+}
+
+/**
+ * Release a generation ticket's upfront quota charge when generation produced nothing usable.
+ * @param {string} genTicket
+ * @param {{ unusable?: boolean }} [opts]
+ * @returns {Promise<{ released: boolean, used?: number, max?: number, plan?: string }>}
+ */
+async function releaseExamGeneration(genTicket, opts = {}) {
+  const res = await lcFetch(CLAUDE_ENDPOINT, {
+    method: 'POST',
+    headers: aiAuthHeaders(),
+    body: JSON.stringify({
+      releaseGeneration: true,
+      genTicket,
+      unusable: opts.unusable === true,
+    }),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    handleAiAuthError(res, data);
+    return { released: false, error: data.error || 'release_failed' };
+  }
+  if (typeof window !== 'undefined' && typeof window.applyServerQuota === 'function' && data.released) {
+    window.applyServerQuota({
+      ...data,
+      aiUsed: data.aiUsed,
+      aiRemaining: data.aiRemaining ?? data.remaining,
+    });
+  }
+  return data;
+}
+
+async function deliverExamGeneration(genTicket) {
+  const res = await lcFetch(CLAUDE_ENDPOINT, {
+    method: 'POST',
+    headers: aiAuthHeaders(),
+    body: JSON.stringify({ deliverGeneration: true, genTicket }),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    handleAiAuthError(res, data);
+    return { delivered: false, error: data.error || 'deliver_failed' };
+  }
+  if (typeof window !== 'undefined' && typeof window.applyServerQuota === 'function' && data.delivered) {
+    window.applyServerQuota({
+      ...data,
+      aiUsed: data.aiUsed,
+      aiRemaining: data.aiRemaining ?? data.remaining,
+    });
+  }
+  return data;
+}
+
+async function renewExamGeneration(genTicket) {
+  const res = await lcFetch(CLAUDE_ENDPOINT, {
+    method: 'POST',
+    headers: aiAuthHeaders(),
+    body: JSON.stringify({ renewGeneration: true, genTicket }),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    handleAiAuthError(res, data);
+    throw new Error(data.error || 'renew_failed');
   }
   return data.ticket;
 }
 
 async function callAI(prompt, maxTokens = 6000, options = {}) {
-  const { timeoutMs = 35000, examGeneration = false, aiAction = null, genTicket = null } = options;
+  const defaultTimeout = options.examGeneration ? 55000 : 35000;
+  const { timeoutMs = defaultTimeout, examGeneration = false, aiAction = null, genTicket = null } = options;
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
 
@@ -485,4 +561,9 @@ async function startStripePortal() {
   }
   if (!data.url) throw new Error("portal_failed");
   window.location.href = data.url;
+}
+
+if (typeof window !== "undefined") {
+  window.aiAuthHeaders = aiAuthHeaders;
+  window.lcFetch = lcFetch;
 }

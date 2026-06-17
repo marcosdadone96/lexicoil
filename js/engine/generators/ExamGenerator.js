@@ -84,13 +84,58 @@ const ExamGenerator = (() => {
     throw new Error('Exam spec did not produce chunks');
   }
 
+  function computeMaxChunks(chunkCount) {
+    return Math.min(chunkCount * 4 + 2, 20);
+  }
+
+  async function maybeReleaseTicketQuota(genTicket, hooks) {
+    if (!genTicket) return { released: false };
+    try {
+      const release =
+        typeof hooks?.releaseExamGeneration === 'function'
+          ? hooks.releaseExamGeneration
+          : typeof releaseExamGeneration === 'function'
+            ? releaseExamGeneration
+            : null;
+      if (!release) return { released: false };
+      return await release(genTicket);
+    } catch (err) {
+      if (typeof lcDebug !== 'undefined') {
+        lcDebug.warn('[exam] quota release failed:', err.message);
+      }
+      return { released: false };
+    }
+  }
+
+  function attachChunkMeta(err, meta) {
+    if (err && meta && !err.chunkMeta) err.chunkMeta = meta;
+    return err;
+  }
+
+  async function throwAfterRelease(genTicket, hooks, err) {
+    const release = await maybeReleaseTicketQuota(genTicket, hooks);
+    if (release?.released) err.quotaReleased = true;
+    throw err;
+  }
+
+  function isPersonalSpec(spec, options) {
+    return (
+      options.personalExam === true ||
+      spec?.contentType === 'VocabularyExercise' ||
+      spec?.vocabPersonal === true
+    );
+  }
+
   async function runGeneration(spec, hooks, options) {
     const blueprint = options.blueprint || null;
-    const strictValidate = !!blueprint && options.useBlueprint !== false;
+    const personal = isPersonalSpec(spec, options);
+    const strictValidate = !!blueprint && options.useBlueprint !== false && !personal;
     const chunks = options.legacyChunks || resolveChunks(spec, blueprint);
     let validationFeedback = null;
+    let lastChunkMeta = null;
+    const maxAttempts = personal ? 1 : 2;
 
-    for (let attempt = 0; attempt < 2; attempt++) {
+    for (let attempt = 0; attempt < maxAttempts; attempt++) {
       const runHooks = validationFeedback
         ? {
             ...hooks,
@@ -99,38 +144,72 @@ const ExamGenerator = (() => {
           }
         : hooks;
 
-      const parts = await getChunkRunner().run(chunks, runHooks);
+      const runResult = await getChunkRunner().run(chunks, runHooks);
+      const parts = Array.isArray(runResult) ? runResult : runResult.parts;
+      lastChunkMeta = Array.isArray(runResult) ? null : runResult.meta;
       const topic = spec.topic || 'Exam';
       const merged = hooks.mergeExamParts(...parts, topic);
       const normalized =
         typeof hooks.normalizeExam === 'function' ? hooks.normalizeExam(merged) : merged;
 
+      if (lastChunkMeta) {
+        normalized._chunkMeta = lastChunkMeta;
+      }
+      const partialChunks = (lastChunkMeta?.failed?.length ?? 0) > 0;
+
       if (strictValidate) {
         const Validator = getExamValidator();
         if (Validator) {
-          const check = new Validator().validate(normalized, { blueprint, strict: true });
+          const check = new Validator().validate(normalized, {
+            blueprint,
+            strict: !partialChunks,
+          });
           if (!check.valid) {
-            if (attempt === 0) {
+            if (partialChunks) {
+              if (typeof lcDebug !== 'undefined') {
+                lcDebug.warn('[exam] partial chunk run — blueprint validation relaxed:', check.errors);
+              }
+            } else if (attempt === 0) {
               validationFeedback = check.errors;
               continue;
+            } else {
+              const err = attachChunkMeta(
+                new Error(
+                  'Generated exam failed blueprint validation: ' + check.errors.join(', '),
+                ),
+                lastChunkMeta,
+              );
+              err.code = 'blueprint_validation_failed';
+              err.validationErrors = check.errors;
+              throw err;
             }
-            const err = new Error(
-              'Generated exam failed blueprint validation: ' + check.errors.join(', '),
-            );
-            err.code = 'blueprint_validation_failed';
-            err.validationErrors = check.errors;
-            throw err;
+          }
+        }
+      } else if (personal && blueprint) {
+        const Validator = getExamValidator();
+        if (Validator) {
+          const check = new Validator().validate(normalized, { blueprint, strict: false });
+          if (!check.valid && typeof lcDebug !== 'undefined') {
+            lcDebug.warn('[personal] blueprint warnings (non-blocking):', check.errors, check.warnings);
           }
         }
       }
 
-      return assertExamValid(normalized, hooks, {
-        strict: strictValidate,
-        blueprint: strictValidate ? blueprint : false,
-      });
+      if (personal) {
+        normalized.vocabPersonal = true;
+      }
+
+      try {
+        return assertExamValid(normalized, hooks, {
+          strict: personal ? false : strictValidate && !partialChunks,
+          blueprint: personal ? false : strictValidate && !partialChunks ? blueprint : false,
+        });
+      } catch (validErr) {
+        throw attachChunkMeta(validErr, lastChunkMeta);
+      }
     }
 
-    throw new Error('Exam generation failed after validation retry');
+    throw attachChunkMeta(new Error('Exam generation failed after validation retry'), lastChunkMeta);
   }
 
   async function generate(spec, hooks, options) {
@@ -150,8 +229,7 @@ const ExamGenerator = (() => {
       throw new Error('hooks.startExamTicket is required for exam generation');
     }
     const chunks = resolveChunks(spec, blueprint || resolveBlueprint(spec, {}));
-    // maxChunks: chunk count × 2 attempts × 2 per-chunk retries + 2 buffer
-    const maxChunks = Math.min(chunks.length * 4 + 2, 20);
+    const maxChunks = computeMaxChunks(chunks.length);
     const genTicket = await startTicket('exam_generation', maxChunks);
     const runHooksBase = { ...hooks, genTicket };
 
@@ -165,56 +243,83 @@ const ExamGenerator = (() => {
     } catch (e) {
       if (useBlueprint && blueprint && opts.allowLegacyFallback !== false) {
         lcDebug.warn('[exam] Blueprint AI path failed, falling back to provider chunk plan:', e.message);
-        const exam = await runGeneration(spec, runHooksBase, {
-          ...opts,
-          blueprint: null,
-          useBlueprint: false,
-          allowLegacyFallback: false,
-        });
-        return exam;
+        try {
+          const exam = await runGeneration(spec, runHooksBase, {
+            ...opts,
+            blueprint: null,
+            useBlueprint: false,
+            allowLegacyFallback: false,
+          });
+          return exam;
+        } catch (fallbackErr) {
+          await throwAfterRelease(genTicket, hooks, fallbackErr);
+        }
       }
-      throw e;
+      await throwAfterRelease(genTicket, hooks, e);
     }
   }
 
-  /** Single-shot personalized / vocabulary exam */
-  async function generatePersonal(spec, hooks) {
+  /** Chunked personalized / vocabulary exam — official blueprint Teile when available. */
+  async function generatePersonal(spec, hooks, options = {}) {
     const PB = getPromptBuilder();
-    const built = PB.buildPrompt(spec);
-    if (built.mode !== 'single') {
-      throw new Error('Personal exam requires single prompt mode');
+    const useBlueprint = options.useBlueprint !== false;
+    let blueprint =
+      options.blueprint !== undefined ? options.blueprint : resolveBlueprint(spec, options);
+    if (!useBlueprint) blueprint = null;
+
+    let built;
+    if (blueprint && PB.buildPersonalExamChunksFromBlueprint) {
+      built = PB.buildPersonalExamChunksFromBlueprint(spec, blueprint);
+    } else if (options.useBlueprint === false) {
+      built = PB.buildVocabExamChunks ? PB.buildVocabExamChunks(spec) : PB.buildPrompt(spec);
+    } else if (PB.buildPersonalExamChunks) {
+      built = PB.buildPersonalExamChunks(spec, blueprint);
+    } else if (PB.buildVocabExamChunks) {
+      built = PB.buildVocabExamChunks(spec);
+    } else {
+      built = PB.buildPrompt(spec);
+    }
+    if (built.mode !== 'chunks' || !built.chunks?.length) {
+      throw new Error('Personal exam requires chunked prompt mode');
     }
     const startTicket = hooks.startExamTicket;
     if (typeof startTicket !== 'function') {
       throw new Error('hooks.startExamTicket is required for personal exam generation');
     }
-    const genTicket = await startTicket('personal_exam', 4);
-    let validationFeedback = null;
-
-    for (let attempt = 0; attempt < 2; attempt++) {
-      const promptSuffix = validationFeedback
-        ? `\n\nRETRY: Previous JSON failed validation (${validationFeedback.slice(0, 6).join(', ')}). ` +
-          'For every multiple-choice question use options [{"key":"A","text":"..."},…] and set correct to the letter key only (e.g. "A").'
-        : '';
-      const raw = await hooks.callAI(built.prompt + promptSuffix, built.maxTokens, {
-        examGeneration: true,
-        aiAction: 'personal_exam',
-        genTicket,
-      });
-      const parsed = hooks.parseExamJson(raw.replace(/```json|```/g, '').trim());
-      parsed.vocabPersonal = true;
-      parsed.personalizedExam = true;
-      try {
-        return assertExamValid(parsed, hooks);
-      } catch (e) {
-        if (attempt === 0 && e.code === 'exam_invalid' && e.validationErrors?.length) {
-          validationFeedback = e.validationErrors;
-          continue;
-        }
-        throw e;
-      }
+    const chunks = built.chunks;
+    const bpForValidation = built.blueprint || blueprint || null;
+    const maxChunks = computeMaxChunks(chunks.length);
+    let genTicket = options.genTicket || null;
+    if (!genTicket) {
+      genTicket = await startTicket('personal_exam', maxChunks);
     }
-    throw new Error('Personal exam generation failed after validation retry');
+    const refreshExamTicket =
+      typeof hooks.refreshExamTicket === 'function'
+        ? () => hooks.refreshExamTicket('personal_exam', maxChunks)
+        : null;
+    const runHooksBase = { ...hooks, genTicket, refreshExamTicket };
+
+    try {
+      const exam = await runGeneration(spec, runHooksBase, {
+        ...options,
+        blueprint: bpForValidation,
+        useBlueprint: !!bpForValidation,
+        legacyChunks: chunks,
+        personalExam: true,
+        allowLegacyFallback: false,
+      });
+      exam.vocabPersonal = true;
+      exam.personalizedExam = true;
+      exam._genTicket = genTicket;
+      if (exam._chunkMeta?.failed?.length) {
+        exam._partialGen = true;
+        exam._failedTeile = exam._chunkMeta.failed.slice();
+        exam._succeededTeile = exam._chunkMeta.succeeded.slice();
+      }
+      return exam;
+    } catch (e) {
+      await throwAfterRelease(genTicket, hooks, e);
+    }
   }
 
   return Object.freeze({
@@ -222,6 +327,7 @@ const ExamGenerator = (() => {
     generate,
     generatePersonal,
     aiPathBlueprintsEnabled,
+    computeMaxChunks,
   });
 })();
 

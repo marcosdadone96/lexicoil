@@ -1,4 +1,4 @@
-const _examConfig={goalId:null,selectedIds:new Set(),skills:new Set(['lesen','horen']),seedCount:0};
+const _examConfig={goalId:null,selectedIds:new Set(),skills:new Set(['lesen']),seedCount:0};
 function showExamConfigFootbar(visible){
   const fb=document.getElementById('examConfigFootbar');
   if(fb)fb.style.display=visible?'flex':'none';
@@ -10,7 +10,7 @@ function openExamConfigurator(goalId,preselectedIds){
   syncGoalToProfile(goal);
   saveGoals();
   _examConfig.goalId=goalId;
-  _examConfig.skills=new Set(['lesen','horen']);
+  _examConfig.skills=new Set(['lesen']);
   _examConfig.selectedIds=new Set();
   _examConfig.seedCount=0;
   const deck=deckForGoal(goal);
@@ -43,10 +43,7 @@ function selectAllDueConfig(){
 }
 function toggleConfigSkill(skill){
   if(skill==='schreiben')return;
-  if(_examConfig.skills.has(skill)){
-    if(_examConfig.skills.size<=1)return;
-    _examConfig.skills.delete(skill);
-  }else _examConfig.skills.add(skill);
+  _examConfig.skills=new Set([skill]);
   renderExamConfigurator();
 }
 function configPartBadge(status){
@@ -63,7 +60,7 @@ function configSkillSummary(skills,subject){
   return parts.join(' + ')||'—';
 }
 function estimateConfigQuestions(nWords,skillsSet){
-  const skills=skillsSet instanceof Set?[...skillsSet]:(Array.isArray(skillsSet)?skillsSet:['lesen','horen']);
+  const skills=skillsSet instanceof Set?[...skillsSet]:(Array.isArray(skillsSet)?skillsSet:['lesen']);
   if(typeof VocabBatching!=='undefined'){
     return Math.max(4,Math.min(nWords,VocabBatching.capacityFor(skills)));
   }
@@ -109,27 +106,28 @@ function renderExamConfigurator(){
     ${partCard('horen',ui.listening,'Listening tasks with your vocabulary','ready')}
     ${partCard('sprechen',ui.speaking,'Speaking task with microphone + AI evaluation','ready')}
     ${partCard('schreiben',ui.writing,'Writing prompts from your vocabulary','soon')}
+    <p class="exam-config-hint">Choose one module per generation (~1–2 min, 3 AI credits). Switch module anytime for another practice session.</p>
     <p class="exam-config-seclbl"><span>Words to include · ${selN} selected</span>${dueN>0?'<button type="button" class="exam-config-cta" onclick="selectAllDueConfig()">Select all due ('+dueN+') →</button>':''}</p>
     <div class="exam-config-panel">${chipsHtml}</div>`;
   const summary=document.getElementById('examConfigSummary');
   const genBtn=document.getElementById('examConfigGenerateBtn');
   const qEst=estimateConfigQuestions(selN,_examConfig.skills);
-  const rem=typeof getQuotaRemaining==='function'?getQuotaRemaining():null;
+  const remAi=typeof getAiCreditsRemaining==='function'?getAiCreditsRemaining():null;
   if(summary){
     let txt='<b>'+selN+' word'+(selN===1?'':'s')+'</b> · '+esc(skillLbl);
     if(oralOnly)txt+=' · oral practice';
-    else txt+=' · ~'+qEst+' questions';
-    if (rem===1)txt+=' · <span class="exam-config-quota-warn">Last exam this month</span>';
-    if(typeof getAiCreditsRemaining==='function'&&typeof aiCreditsMeterLabel==='function'&&isPro()){
+    else txt+=' · ~'+qEst+' questions · 3 AI credits';
+    if(typeof getAiCreditsRemaining==='function'&&remAi===3)txt+=' · <span class="exam-config-quota-warn">Last 3 credits for one exam</span>';
+    else if(typeof getAiCreditsRemaining==='function'&&typeof aiCreditsMeterLabel==='function'&&isPro()){
       txt+=' · '+esc(aiCreditsMeterLabel());
     }
     summary.innerHTML=txt;
   }
   if(genBtn){
     const tier=typeof canUsePersonalizedTier==='function'?canUsePersonalizedTier():'free';
-    genBtn.disabled=selN<2||_examConfig.skills.size<1||!canGenerate()||(typeof canUseAiGeneration==='function'&&!canUseAiGeneration());
-    if(!canGenerate())genBtn.textContent='Quota used — upgrade';
-    else if(typeof canUseAiGeneration==='function'&&!canUseAiGeneration())genBtn.textContent='No AI credits — buy pack';
+    const aiOk=typeof canUseAiGeneration!=='function'||canUseAiGeneration();
+    genBtn.disabled=selN<2||_examConfig.skills.size<1||!aiOk;
+    if(!aiOk)genBtn.textContent='No AI credits — buy pack';
     else if(oralOnly)genBtn.textContent='Start speaking →';
     else if(tier==='pro')genBtn.textContent='Generate exam (IA) →';
     else genBtn.textContent='Generate exam →';
@@ -139,10 +137,10 @@ function submitExamConfig(){
   const goal=S.goals.find(g=>g.id===_examConfig.goalId);
   if(!goal)return;
   const words=deckForGoal(goal).filter(f=>_examConfig.selectedIds.has(fcId(f))).map(f=>f.word);
-  const skills=[..._examConfig.skills];
+  const skills=[..._examConfig.skills].slice(0,1);
   if(words.length<2){lcToast('Select at least 2 words.','warn');return;}
-  if(skills.length<1){lcToast('Select at least one exam part.','warn');return;}
-  if(!canGenerate()){showUpgrade();return;}
+  if(skills.length<1){lcToast('Select one exam part.','warn');return;}
+  if(typeof requirePersonalized==='function'&&!requirePersonalized())return;
   if(typeof canUseAiGeneration==='function'&&!canUseAiGeneration()){
     if(typeof openCreditPackModal==='function')openCreditPackModal();
     else if(typeof showAiCreditsExhausted==='function')showAiCreditsExhausted();
@@ -152,7 +150,7 @@ function submitExamConfig(){
   const gid=_examConfig.goalId;
   const oralOnly=skills.length===1&&skills[0]==='sprechen';
   if(oralOnly)confirmQuotaUse(()=>startOralPractice(goal,words));
-  else confirmQuotaUse(()=>generatePersonalExam(words,skills,gid));
+  else generatePersonalExam(words,skills,gid);
 }
 function openDeckHub(goalId,options){
   const goal=S.goals.find(g=>g.id===goalId);

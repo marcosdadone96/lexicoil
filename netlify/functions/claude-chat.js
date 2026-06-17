@@ -12,6 +12,7 @@ const {
 const { getAiCredits, checkAiCredits, confirmAiCreditConsumption, releaseAiCreditConsumption } = require('./lib/aiCredits.js');
 const { getStoreForEvent } = require('./lib/blobStore.js');
 const { casWriteJson } = require('./lib/casBlob.js');
+const { linkTicketQuotaCharge, releaseGenerationQuota, deliverGenerationQuota, renewGenerationTicket } = require('./lib/releaseGeneration.js');
 const { getJwtSecret, emailToUserId } = require('./lib/authLib.js');
 const {
   createGenTicket,
@@ -20,6 +21,11 @@ const {
   MAX_CHUNKS_ALLOWED,
 } = require('./lib/genTicket.js');
 const sb = require('./lib/supabaseAdmin.js');
+const {
+  readAnthropicKey,
+  anthropicKeyFingerprint,
+  rejectBadAnthropicKey,
+} = require('./lib/anthropicKey.js');
 
 async function logExamGenChunk(event, genTicketPayload, body, { ok, model, usage }) {
   if (!sb.isConfigured()) return;
@@ -54,7 +60,7 @@ async function logExamGenChunk(event, genTicketPayload, body, { ok, model, usage
 
 const DEFAULT_MODEL = 'claude-haiku-4-5';
 // Exam generation defaults to Sonnet; override with CLAUDE_EXAM_MODEL.
-const EXAM_MODEL = 'claude-sonnet-4-20250514';
+const EXAM_MODEL = 'claude-sonnet-4-6';
 const MAX_PROMPT_LEN = 16000;
 const MAX_TOKENS = 8192;
 
@@ -119,7 +125,9 @@ exports.handler = async function handler(event) {
         plan: quotaGate?.plan,
       });
     }
-    const apiKey = String(process.env.ANTHROPIC_API_KEY || '').trim();
+    const apiKey = readAnthropicKey();
+    const badKey = rejectBadAnthropicKey(apiKey, jsonResponse, cors);
+    if (badKey) return badKey;
     const gate = validateGeneratedExam(body.exam);
     if (!gate.valid) {
       console.warn('[claude-chat] exam validation rejected:', gate.errors);
@@ -149,8 +157,9 @@ exports.handler = async function handler(event) {
   }
 
   // ── startGeneration branch ───────────────────────────────────────────────
-  // Issues a signed ticket after charging quota once. The ticket authorises
-  // up to maxChunks Anthropic calls without additional quota charges.
+  // Issues a signed ticket after charging once:
+  //   personal_exam → 3 AI credits (Pro)
+  //   exam_generation / quick_exam → monthly exam quota
   if (body.startGeneration === true) {
     const scope = typeof body.scope === 'string' ? body.scope.trim() : '';
     if (!TICKETED_SCOPES.has(scope)) {
@@ -158,8 +167,9 @@ exports.handler = async function handler(event) {
     }
     const maxChunks = Math.max(1, Math.min(Number(body.maxChunks) || 1, MAX_CHUNKS_ALLOWED));
 
-    const apiKey = String(process.env.ANTHROPIC_API_KEY || '').trim();
-    if (!apiKey) return jsonResponse(503, cors, { error: 'AI service is not configured on the server' });
+    const apiKey = readAnthropicKey();
+    const badKey = rejectBadAnthropicKey(apiKey, jsonResponse, cors);
+    if (badKey) return badKey;
 
     const secret = getJwtSecret();
     if (!secret) return jsonResponse(503, cors, { error: 'misconfigured' });
@@ -171,6 +181,63 @@ exports.handler = async function handler(event) {
       console.error('[claude-chat] startGeneration quota check failed:', err);
       return jsonResponse(503, cors, { error: 'quota_service_unavailable' });
     }
+
+    const qState = quotaCheck.state;
+    const sub = qState.authenticated ? qState.email : `guest:${qState.ipHash || 'unknown'}`;
+
+    if (scope === 'personal_exam') {
+      const pro = await requireProPlan(event);
+      if (!pro.ok) {
+        return jsonResponse(pro.status || 403, cors, { error: pro.error, plan: pro.plan });
+      }
+
+      const creditCheck = await checkAiCredits(event, 'personal_exam');
+      if (!creditCheck.ok) {
+        return jsonResponse(creditCheck.error === 'ai_credits_exhausted' ? 402 : 403, cors, {
+          error: creditCheck.error,
+          remaining: creditCheck.remaining,
+          aiUsed: creditCheck.used,
+          aiMax: creditCheck.max,
+          plan: pro.plan,
+          autoRechargeFailed: creditCheck.autoRechargeFailed || false,
+          reason: creditCheck.reason || undefined,
+        });
+      }
+
+      const { token: ticket, payload: ticketPayload } = createGenTicket(sub, scope, maxChunks, secret);
+      let aiMeta;
+      try {
+        aiMeta = await confirmAiCreditConsumption(event, 'personal_exam', {
+          requestId: ticketPayload.nonce,
+        });
+      } catch (err) {
+        console.error('[claude-chat] startGeneration AI credit reserve failed:', err);
+        return jsonResponse(503, cors, { error: 'quota_service_unavailable' });
+      }
+      if (aiMeta?.error) {
+        return jsonResponse(402, cors, {
+          error: aiMeta.error,
+          aiUsed: aiMeta.aiUsed,
+          aiMax: aiMeta.aiMax,
+          remaining: aiMeta.remaining,
+          plan: pro.plan,
+        });
+      }
+
+      console.log('[claude-chat] startGeneration personal_exam (AI credits)', {
+        maxChunks,
+        sub: sub.slice(0, 30),
+      });
+      return jsonResponse(200, cors, {
+        ticket,
+        plan: pro.plan,
+        aiUsed: aiMeta?.aiUsed,
+        aiRemaining: aiMeta?.aiRemaining ?? aiMeta?.remaining,
+        aiMax: aiMeta?.aiMax,
+        remaining: aiMeta?.aiRemaining ?? aiMeta?.remaining,
+      });
+    }
+
     if (!quotaCheck.ok) {
       return jsonResponse(quotaCheck.status || 429, cors, {
         error: quotaCheck.error || 'quota_exceeded',
@@ -196,9 +263,8 @@ exports.handler = async function handler(event) {
       });
     }
 
-    const qState = quotaCheck.state;
-    const sub = qState.authenticated ? qState.email : `guest:${qState.ipHash || 'unknown'}`;
-    const { token: ticket } = createGenTicket(sub, scope, maxChunks, secret);
+    const { token: ticket, payload: ticketPayload } = createGenTicket(sub, scope, maxChunks, secret);
+    await linkTicketQuotaCharge(event, qState, ticketPayload.nonce, quotaMeta);
 
     console.log('[claude-chat] startGeneration', { scope, maxChunks, sub: sub.slice(0, 30) });
     return jsonResponse(200, cors, {
@@ -209,11 +275,33 @@ exports.handler = async function handler(event) {
     });
   }
 
-  // ── Common API key check ─────────────────────────────────────────────────
-  const apiKey = String(process.env.ANTHROPIC_API_KEY || '').trim();
-  if (!apiKey) {
-    return jsonResponse(503, cors, { error: 'AI service is not configured on the server' });
+  // ── releaseGeneration branch ─────────────────────────────────────────────
+  if (body.releaseGeneration === true && body.genTicket) {
+    const release = await releaseGenerationQuota(event, {
+      genTicket: body.genTicket,
+    });
+    return jsonResponse(200, cors, release);
   }
+
+  // ── deliverGeneration branch (exam shown to user — quota stays charged) ──
+  if (body.deliverGeneration === true && body.genTicket) {
+    const delivered = await deliverGenerationQuota(event, { genTicket: body.genTicket });
+    return jsonResponse(200, cors, delivered);
+  }
+
+  // ── renewGeneration branch (extend ticket TTL, no extra quota charge) ────
+  if (body.renewGeneration === true && body.genTicket) {
+    const renewed = await renewGenerationTicket(event, { genTicket: body.genTicket });
+    if (!renewed.renewed) {
+      return jsonResponse(403, cors, { error: renewed.reason || 'renew_failed' });
+    }
+    return jsonResponse(200, cors, renewed);
+  }
+
+  // ── Common API key check ─────────────────────────────────────────────────
+  const apiKey = readAnthropicKey();
+  const badKey = rejectBadAnthropicKey(apiKey, jsonResponse, cors);
+  if (badKey) return badKey;
 
   // ── Pro AI modes (correctWriting, grammarCoaching) ───────────────────────
   if (body.correctWriting === true || body.grammarCoaching === true) {
@@ -584,7 +672,9 @@ Max 4 topics, concise. Language: ${lang === 'de' ? 'German' : lang === 'es' ? 'S
         data?.error?.message ||
         (typeof data?.error === 'string' ? data.error : '') ||
         `Anthropic API error (${res.status})`;
-      console.error('[claude-chat] Anthropic error:', res.status, msg);
+      console.error('[claude-chat] Anthropic error:', res.status, msg, {
+        key: anthropicKeyFingerprint(apiKey),
+      });
       await refundExamQuota(reservedQuotaCheck, requestId);
       if (body.examGeneration) {
         await logExamGenChunk(event, genTicketPayload, body, { ok: false, model, usage: anthropicUsage });

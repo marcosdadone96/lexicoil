@@ -7,7 +7,7 @@
   schedule = "0 2 * * *"
 
 [functions."claude-chat"]
-  timeout = 60
+  timeout = 60  # client ChunkRunner uses 55s; see docs/personal-exam-generation.md
   included_files = ["js/engine/**", "library/blueprints/**", "knowledge/**"]
 
 [functions."exam-pool"]
@@ -27,6 +27,8 @@
 [dev]
   publish = "."
   framework = "#static"
+  # netlify dev defaults to 30s unless the linked site has functions_timeout ≥60.
+  # AI personal exams take ~50s — use `netlify dev` without --offline for local testing.
 
 # Primary domain in Netlify UI is lexicoil.com (apex). Do NOT add JS redirects to www.
 

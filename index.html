@@ -317,6 +317,7 @@
   <div class="loader-orbit"></div>
   <div class="loader-title" id="loaderTitle">Preparing your exam…</div>
   <div class="loader-sub" id="loaderSub">Assembling all modules…</div>
+  <div id="personalGenProgress" class="personal-gen-progress" style="display:none"></div>
 </div>
 
 <div id="horenGameScreen" style="display:none">
@@ -451,6 +452,8 @@
 <script src="js/i18n/subjectMeta.js?v=1"></script>
 <script src="js/i18n/examSpanishNormalize.js?v=1"></script>
 <script src="js/i18n/examUiLocale.js?v=1"></script>
+<script src="js/i18n/consentLocale.js?v=1"></script>
+<script src="js/ui/consent/cookieConsent.js?v=1"></script>
 <script src="js/ui/components/uiToast.js?v=1"></script>
 <script src="js/ui/components/notify.js?v=1"></script>
 <script src="js/ui/components/levelNotify.js?v=1"></script>
@@ -530,6 +533,7 @@
 <footer class="u-site-footer">
   <a href="/privacy">Privacy</a>
   <a href="/terms">Terms</a>
+  <button type="button" class="u-site-footer-btn" id="lcCookieSettingsBtn" onclick="window.lcConsent&&lcConsent.openPreferences()">Cookies</button>
   <a href="mailto:contact@lexicoil.com?subject=LexiCoil%20Inquiry" class="link-brand">contact@lexicoil.com</a>
 </footer>
 </body>

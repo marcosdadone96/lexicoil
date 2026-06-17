@@ -39,7 +39,7 @@ const ContentGenerator = (() => {
 
     if (ct === 'VocabularyExercise' && spec.targetWords?.length >= 3) {
       const ExamGen = map.Exam;
-      return ExamGen.generatePersonal(spec, hooks);
+      return ExamGen.generatePersonal(spec, hooks, options);
     }
 
     return gen.generate(spec, hooks, options);

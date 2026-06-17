@@ -1,3 +1,7 @@
+/**
+ * Session auth helpers — HttpOnly `lc_token` cookie (primary) + Bearer header (transitional).
+ * CORS: Access-Control-Allow-Credentials only for allowed origins (see allowedOrigins).
+ */
 'use strict';
 
 const DEFAULT_ORIGINS = [
@@ -101,6 +105,7 @@ function getBearer(event) {
   return cookies[AUTH_COOKIE_NAME] || '';
 }
 
+/** Login/register responses: Set-Cookie + token in JSON body (body token is transitional). */
 function parseJsonBody(event) {
   let raw = event.body;
   if (event.isBase64Encoded && typeof raw === 'string') {

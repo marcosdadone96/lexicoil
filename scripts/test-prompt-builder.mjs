@@ -17,6 +17,8 @@ require(path.join(ROOT, 'js', 'engine', 'providers', 'providerRegistry.js'));
 require(path.join(ROOT, 'js', 'engine', 'knowledge', 'KnowledgeEngine.js'));
 require(path.join(ROOT, 'js', 'engine', 'prompts', 'promptShell.js'));
 require(path.join(ROOT, 'js', 'engine', 'prompts', 'moduleInstructions.js'));
+require(path.join(ROOT, 'js', 'engine', 'prompts', 'blueprintPromptBinding.js'));
+require(path.join(ROOT, 'js', 'engine', 'validation', 'blueprintResolver.js'));
 const PromptBuilder = require(path.join(ROOT, 'js', 'engine', 'prompts', 'PromptBuilder.js'));
 const KnowledgeEngine = require(path.join(ROOT, 'js', 'engine', 'knowledge', 'KnowledgeEngine.js'));
 
@@ -76,15 +78,36 @@ async function testVocabExam() {
   const spec = await KnowledgeEngine.buildSpec({
     language: 'german',
     level: 'B1',
+    provider: 'goethe',
     contentType: 'VocabularyExercise',
     targetWords: ['Nachhaltigkeit', 'Umwelt', 'Recycling'],
+    skills: ['lesen', 'horen'],
     topic: 'Umwelt',
   });
   const result = PromptBuilder.buildPrompt(spec);
-  assert(result.mode === 'single', 'vocab single');
-  assert(result.prompt.includes('Nachhaltigkeit'), 'target word in prompt');
-  assert(result.prompt.includes('targetUsage'), 'targetUsage in vocab prompt');
-  console.log('OK   vocabulary exam prompt');
+  assert(result.mode === 'chunks', 'vocab chunked');
+  assert(result.chunks.length === 9, 'B1 goethe lesen+horen uses 9 official Teile (5+4)');
+  assert(result.chunks[0].expectKey === 'lesenParts', 'first chunk lesenParts teil 1');
+  assert(result.chunks.some((c) => c.prompt.includes('Nachhaltigkeit')), 'target word in prompt');
+  assert(result.chunks.some((c) => c.prompt.includes('OFFICIAL BLUEPRINT PART')), 'blueprint binding');
+  assert(result.chunks.some((c) => c.prompt.includes('targetUsage')), 'targetUsage in final chunk');
+  console.log('OK   vocabulary exam chunked prompts (official blueprint)');
+}
+
+async function testVocabExamLesenOnly() {
+  const spec = await KnowledgeEngine.buildSpec({
+    language: 'german',
+    level: 'B1',
+    provider: 'goethe',
+    contentType: 'VocabularyExercise',
+    targetWords: ['Haus', 'Garten'],
+    skills: ['lesen'],
+    topic: 'Natur',
+  });
+  const result = PromptBuilder.buildPrompt(spec);
+  assert(result.chunks.length === 5, 'lesen-only B1 goethe uses 5 official Lesen Teile');
+  assert(!result.chunks.some((c) => c.expectKey === 'horenParts'), 'horen omitted');
+  console.log('OK   vocabulary exam lesen-only blueprint');
 }
 
 async function run() {
@@ -92,6 +115,7 @@ async function run() {
   await testCambridgeB1Chunks();
   await testQuickReading();
   await testVocabExam();
+  await testVocabExamLesenOnly();
   console.log('\nAll PromptBuilder tests passed.');
 }
 

@@ -1,0 +1,58 @@
+name: Smoke B1 DE
+
+on:
+  workflow_dispatch:
+    inputs:
+      skip_anthropic:
+        description: Skip live Anthropic chunk (recommended in CI)
+        type: boolean
+        default: true
+      skip_webhook:
+        description: Skip Stripe webhook steps
+        type: boolean
+        default: false
+      skip_pool:
+        description: Skip mutating pool admin steps
+        type: boolean
+        default: false
+  schedule:
+    # Weekly Monday 06:00 UTC — staging health check
+    - cron: '0 6 * * 1'
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run smoke-b1-de
+        env:
+          SMOKE_BASE_URL: ${{ secrets.SMOKE_BASE_URL }}
+          SMOKE_USER_EMAIL: ${{ secrets.SMOKE_USER_EMAIL }}
+          SMOKE_USER_PASSWORD: ${{ secrets.SMOKE_USER_PASSWORD }}
+          SMOKE_ADMIN_EMAIL: ${{ secrets.SMOKE_ADMIN_EMAIL }}
+          SMOKE_ADMIN_PASSWORD: ${{ secrets.SMOKE_ADMIN_PASSWORD }}
+          STRIPE_WEBHOOK_SECRET: ${{ secrets.STRIPE_WEBHOOK_SECRET }}
+          SMOKE_WEBHOOK_EMAIL: ${{ secrets.SMOKE_WEBHOOK_EMAIL }}
+          SMOKE_WEBHOOK_PASSWORD: ${{ secrets.SMOKE_WEBHOOK_PASSWORD }}
+          SKIP_ANTHROPIC: ${{ github.event_name == 'schedule' || github.event.inputs.skip_anthropic != 'false' }}
+          SKIP_WEBHOOK: ${{ github.event.inputs.skip_webhook == 'true' }}
+          SKIP_POOL: ${{ github.event.inputs.skip_pool == 'true' }}
+        run: |
+          set -euo pipefail
+          if [ -z "${SMOKE_BASE_URL:-}" ]; then
+            echo "SMOKE_BASE_URL secret is not set — skipping smoke (configure in repo secrets)."
+            exit 0
+          fi
+          ARGS=()
+          if [ "${SKIP_ANTHROPIC}" = "true" ]; then ARGS+=(--skip-anthropic); fi
+          if [ "${SKIP_WEBHOOK}" = "true" ]; then ARGS+=(--skip-webhook); fi
+          if [ "${SKIP_POOL}" = "true" ]; then ARGS+=(--skip-pool-mutate); fi
+          node scripts/smoke-b1-de.mjs "${ARGS[@]}"

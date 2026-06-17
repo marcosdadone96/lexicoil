@@ -55,7 +55,7 @@ const res = await fetch('https://api.anthropic.com/v1/messages', {
     'anthropic-version': '2023-06-01',
   },
   body: JSON.stringify({
-    model: process.env.CLAUDE_EXAM_MODEL || 'claude-sonnet-4-20250514',
+    model: process.env.CLAUDE_EXAM_MODEL || 'claude-sonnet-4-6',
     max_tokens: chunk.maxTokens,
     messages: [{ role: 'user', content: chunk.prompt }],
   }),

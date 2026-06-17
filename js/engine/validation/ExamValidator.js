@@ -368,7 +368,9 @@ class ExamValidator {
     if (q.options && q.correct != null) return fn(q, path, 'mcq');
     if (q.options && type === 'person_multi') return fn(q, path, 'match');
     const c = String(q.correct ?? '').trim();
-    if (!type && c && /^(R|F|T|W|N|Richtig|Falsch|True|False)$/i.test(c)) return fn(q, path, 'mcq');
+    if (!type && c && /^(R|F|T|W|N|Richtig|Falsch|True|False|J|Ja|Nein|Y|Yes|No)$/i.test(c)) {
+      return fn(q, path, 'mcq');
+    }
   }
 
   _validateMcq(q, path) {

@@ -42,10 +42,9 @@ const Auth = (() => {
     return localStorage.getItem(TOKEN_KEY) || '';
   }
 
-  /** @deprecated HttpOnly cookie holds the session; legacy localStorage token only for migration fallback in authHeaders. */
+  /** @deprecated Do not store JWT in localStorage — HttpOnly cookie is authoritative. Clears legacy token only. */
   function setToken(token) {
-    if (token) localStorage.setItem(TOKEN_KEY, token);
-    else clearLegacyToken();
+    if (!token) clearLegacyToken();
   }
 
   function authHeaders(extra = {}) {

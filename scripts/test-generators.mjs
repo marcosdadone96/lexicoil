@@ -18,6 +18,8 @@ function loadEngine() {
   require(path.join(ROOT, 'js', 'engine', 'knowledge', 'KnowledgeEngine.js'));
   require(path.join(ROOT, 'js', 'engine', 'prompts', 'promptShell.js'));
   require(path.join(ROOT, 'js', 'engine', 'prompts', 'moduleInstructions.js'));
+  require(path.join(ROOT, 'js', 'engine', 'prompts', 'blueprintPromptBinding.js'));
+  require(path.join(ROOT, 'js', 'engine', 'validation', 'blueprintResolver.js'));
   require(path.join(ROOT, 'js', 'engine', 'prompts', 'PromptBuilder.js'));
   require(path.join(ROOT, 'js', 'engine', 'validation', 'ExamValidator.js'));
   require(path.join(ROOT, 'js', 'engine', 'generators', 'chunkRunner.js'));
@@ -81,12 +83,21 @@ function mockHooks(responses) {
       return typeof r === 'string' ? r : JSON.stringify(r);
     },
     onStep: () => {},
+    startExamTicket: async () => 'mock-gen-ticket',
     parseExamJson: (raw) => JSON.parse(raw),
     validateChunkObj: (chunk, obj) => obj,
     mergeExamParts: (...args) => {
       const topic = args[args.length - 1];
       const parts = args.slice(0, -1);
-      return Object.assign({ topic }, ...parts);
+      const merged = { topic };
+      for (const part of parts) {
+        for (const [k, v] of Object.entries(part)) {
+          if (Array.isArray(v) && Array.isArray(merged[k])) merged[k] = [...merged[k], ...v];
+          else if (Array.isArray(v)) merged[k] = [...v];
+          else if (!(k in merged)) merged[k] = v;
+        }
+      }
+      return merged;
     },
     commitExamQuota: async () => {},
     normalizeExam: (x) => x,
@@ -106,20 +117,32 @@ async function testPersonalExamSkills() {
   });
   assert(spec.skills?.includes('schreiben'), 'skills merged into spec');
   const built = PromptBuilder.buildPrompt(spec);
-  assert(built.prompt.includes('schreibenParts'), 'schreiben module in vocab prompt');
-  assert(!built.prompt.includes('horenParts'), 'horen omitted when not selected');
+  assert(built.mode === 'chunks', 'vocab chunked mode');
+  assert(built.chunks.length === 8, 'lesen+schreiben B1 goethe uses 8 official Teile (5+3)');
+  assert(built.chunks.some((c) => c.expectKey === 'schreibenParts'), 'schreiben module in vocab chunk');
+  assert(!built.chunks.some((c) => c.expectKey === 'horenParts'), 'horen omitted when not selected');
 
+  const lesenChunk = {
+    topic: 'Natur',
+    level: 'B1',
+    lang: 'de',
+    lesenParts: VALID_STUB.lesenParts,
+  };
   const hooks = mockHooks([
+    lesenChunk,
+    lesenChunk,
     {
       topic: 'Natur',
       level: 'B1',
       lang: 'de',
-      ...VALID_STUB,
       schreibenParts: [{ task: 'Write about nature.' }],
     },
   ]);
-  const result = await ExamGenerator.generatePersonal(spec, hooks);
-  assert(result.lesenParts?.length === 1, 'personal exam parsed');
+  const result = await ExamGenerator.generatePersonal(spec, hooks, {
+    blueprint: null,
+    useBlueprint: false,
+  });
+  assert(result.lesenParts?.length >= 1, 'personal exam parsed');
   console.log('OK   personalized exam with skills');
 }
 
@@ -189,7 +212,10 @@ async function testContentGeneratorRouting() {
     topic: 'Test',
   });
   const hooks = mockHooks([{ topic: 'Test', level: 'A2', lang: 'de', ...VALID_STUB }]);
-  const result = await ContentGenerator.generate(spec, hooks);
+  const result = await ContentGenerator.generate(spec, hooks, {
+    blueprint: null,
+    useBlueprint: false,
+  });
   assert(result.lesenParts, 'vocab 4+ words routed to personal exam');
   console.log('OK   ContentGenerator vocabulary routing');
 }

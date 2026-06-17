@@ -42,8 +42,9 @@ export function useAuth() {
     return () => window.removeEventListener('focus', onFocus);
   }, [fetchMe]);
 
-  const saveToken = useCallback((token: string) => {
-    localStorage.setItem('lc_token', token);
+  const saveToken = useCallback((_token: string) => {
+    /** @deprecated HttpOnly cookie holds the session; clears legacy localStorage token. */
+    localStorage.removeItem('lc_token');
   }, []);
 
   const logout = useCallback(async () => {

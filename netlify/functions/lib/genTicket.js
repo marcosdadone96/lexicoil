@@ -6,7 +6,7 @@
  *
  * Format: base64url(JSON_payload) . HMAC-SHA256(base64url(JSON_payload), secret)
  *
- * The ticket is issued ONCE by startGeneration (after charging quota) and then
+ * The ticket is issued ONCE by startGeneration (after charging quota or AI credits)
  * passed by the client for every chunk call.  The server tracks usage via a
  * Blob counter keyed on the ticket nonce so concurrent requests can't exceed
  * maxChunks even under race conditions.
@@ -14,7 +14,7 @@
 
 const crypto = require('crypto');
 
-const TICKET_TTL_SEC = 90;      // ticket valid for 90 seconds
+const TICKET_TTL_SEC = 300;     // 5 min — personal Lesen runs ~5 parallel chunks
 const MAX_CHUNKS_ALLOWED = 20;  // hard upper bound the server will ever grant
 
 // Scopes that are issued via startGeneration and require a ticket on chunk calls
@@ -79,9 +79,42 @@ function createGenTicket(sub, scope, maxChunks, secret) {
   return { token: signGenTicket(payload, secret), payload };
 }
 
+function verifyGenTicketSignature(token, secret) {
+  if (!token || typeof token !== 'string') return null;
+  const dot = token.lastIndexOf('.');
+  if (dot < 1) return null;
+  const data = token.slice(0, dot);
+  const sig = token.slice(dot + 1);
+  const expected = crypto.createHmac('sha256', secret).update(data).digest('base64url');
+  try {
+    const a = Buffer.from(expected);
+    const b = Buffer.from(sig);
+    if (a.length !== b.length || !crypto.timingSafeEqual(a, b)) return null;
+  } catch (_) {
+    return null;
+  }
+  try {
+    return JSON.parse(Buffer.from(data, 'base64url').toString('utf8'));
+  } catch (_) {
+    return null;
+  }
+}
+
+function renewGenTicketPayload(payload, secret) {
+  const now = Math.floor(Date.now() / 1000);
+  const renewed = {
+    ...payload,
+    iat: now,
+    exp: now + TICKET_TTL_SEC,
+  };
+  return { token: signGenTicket(renewed, secret), payload: renewed };
+}
+
 module.exports = {
   signGenTicket,
   verifyGenTicket,
+  verifyGenTicketSignature,
+  renewGenTicketPayload,
   createGenTicket,
   TICKET_TTL_SEC,
   MAX_CHUNKS_ALLOWED,
