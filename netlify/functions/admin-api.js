@@ -73,8 +73,10 @@ exports.handler = async (event) => {
   const auth = verifyAuthToken(getBearer(event));
   if (!auth.ok) return jsonResponse(401, cors, { error: 'unauthorized' });
 
-  // Verify admin
-  const adminOk = await sb.isAdminByEmail(auth.email);
+  // Verify admin (email + derived user id)
+  const adminOk =
+    (await sb.isAdminByEmail(auth.email)) ||
+    (await sb.isAdmin(auth.userId));
   if (!adminOk) return jsonResponse(403, cors, { error: 'forbidden' });
 
   // ── GET ───────────────────────────────────────────────────────────────────

@@ -328,17 +328,26 @@ async function deleteSavedExams(userId, savedIds) {
 
 // ── Admin ─────────────────────────────────────────────────────────────────────
 
+const { normalizeEmail } = require('./authLib.js');
+
 async function isAdmin(userId) {
   const sb = getClient();
-  if (!sb) return false;
-  const { data } = await sb.from('lc_admin_roles').select('role').eq('user_id', userId).single();
+  if (!sb || !userId) return false;
+  const { data, error } = await sb.from('lc_admin_roles').select('role').eq('user_id', userId).maybeSingle();
+  if (error) console.error('[supabaseAdmin] isAdmin:', error.message);
   return !!data;
 }
 
 async function isAdminByEmail(email) {
   const sb = getClient();
   if (!sb) return false;
-  const { data } = await sb.from('lc_admin_roles').select('role').eq('email', email).single();
+  const normalized = normalizeEmail(email);
+  if (!normalized) return false;
+  let { data, error } = await sb.from('lc_admin_roles').select('role').eq('email', normalized).maybeSingle();
+  if (error) console.error('[supabaseAdmin] isAdminByEmail:', error.message);
+  if (data) return true;
+  ({ data, error } = await sb.from('lc_admin_roles').select('role').ilike('email', normalized).maybeSingle());
+  if (error) console.error('[supabaseAdmin] isAdminByEmail ilike:', error.message);
   return !!data;
 }
 

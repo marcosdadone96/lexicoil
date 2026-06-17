@@ -412,6 +412,8 @@ async function generateTtsAudio(text, voice, lang) {
       }
       return { unavailable: true, error: data.error };
     }
+    return { unavailable: true, error: data.error || "tts_failed" };
+  }
   if (data.found && data.audioBase64) return data;
   return null;
 }
