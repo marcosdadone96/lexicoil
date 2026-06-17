@@ -833,9 +833,6 @@ async function generatePersonalExam(words,skills,goalId,opts){
     if(tier==='pro'){
       document.getElementById('loaderSub').textContent=`Generating with AI — ${configWords.length} words, ${configSkillSummary(new Set(configSkills),S.subject)}…`;
       try{
-        if(typeof lcStrategyBEnabled==='function'&&lcStrategyBEnabled()){
-          throw new Error('This level uses the question library only (live AI is disabled).');
-        }
         if(!engineReady())throw new Error('Content engine not loaded');
         const exam=await LexiCoilEngine.generatePersonalExam(S.subject,S.level,configWords,configSkills,getGeneratorHooks());
         built={exam,source:'ai'};

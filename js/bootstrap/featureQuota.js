@@ -100,6 +100,9 @@
     else if (typeof data.creditTopups === 'number') S.aiCreditsTopups = data.creditTopups;
     if (typeof data.aiTotalPool === 'number') S.aiCreditsTotalPool = data.aiTotalPool;
     else S.aiCreditsTotalPool = getAiCreditsTotalPool();
+    if (typeof S.aiCreditsRemaining === 'number' && S.aiCreditsTotalPool < S.aiCreditsRemaining) {
+      S.aiCreditsTotalPool = S.aiCreditsRemaining;
+    }
     if (data.autoRecharge && typeof data.autoRecharge === 'object') {
       S.autoRecharge = { ...S.autoRecharge, ...data.autoRecharge };
     }
@@ -154,7 +157,7 @@
   window.aiCreditsMeterLabel = function () {
     if (!isPro()) return '';
     const rem = getAiCreditsRemaining();
-    const total = getAiCreditsTotalPool();
+    const total = Math.max(getAiCreditsTotalPool(), rem);
     return `AI credits: ${rem}/${total} · renews ${aiCreditsRenewalLabel()}`;
   };
 
