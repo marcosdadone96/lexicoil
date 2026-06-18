@@ -126,6 +126,102 @@ const PromptBuilder = (() => {
     };
   }
 
+  const SKILL_MODULE_ALIASES = Object.freeze({
+    lesen: ['lesen', 'reading'],
+    reading: ['lesen', 'reading'],
+    horen: ['horen', 'listening'],
+    listening: ['horen', 'listening'],
+    schreiben: ['schreiben', 'writing'],
+    writing: ['schreiben', 'writing'],
+    sprechen: ['sprechen', 'speaking'],
+    speaking: ['sprechen', 'speaking'],
+  });
+
+  function normalizePersonalSkills(skills) {
+    const raw = (skills?.length ? skills : ['lesen']).map((s) =>
+      String(s || '').toLowerCase(),
+    );
+    const filtered = raw.filter((s) => s !== 'vocabulary' && s !== 'vocab');
+    return filtered.length ? filtered : ['lesen'];
+  }
+
+  function filterBlueprintBySkills(blueprint, skills) {
+    const selected = normalizePersonalSkills(skills);
+    const modules = (blueprint.modules || []).filter((mod) => {
+      const mid = String(mod.id || '').toLowerCase();
+      return selected.some((skill) => (SKILL_MODULE_ALIASES[skill] || [skill]).includes(mid));
+    });
+    return { ...blueprint, modules };
+  }
+
+  function buildPersonalExamChunkPrompt(spec, ctx) {
+    const base = buildExamChunkPrompt(spec, ctx);
+    const words = spec.targetWords || [];
+    const isDE = spec.language === 'german';
+    const rules = vocabExamRules(spec, isDE);
+    const lines = [
+      'PERSONAL VOCABULARY REVIEW (official part structure — items must be pool-compatible):',
+    ];
+    if (words.length) {
+      lines.push(
+        `Weave these learner words naturally where authentic: ${words.map((w) => `"${w}"`).join(', ')}.`,
+      );
+    }
+    if (spec.vocabPolicy?.maximizeCoverage) {
+      lines.push(
+        `Use as many learner words as possible naturally for level ${spec.level}; do not force words artificially.`,
+      );
+    }
+    lines.push(rules);
+    lines.push(
+      ctx.isLast
+        ? 'This is the FINAL chunk. Add top-level "targetUsage": [{"word":"<original>","surfaces":["<exact form>",…]}] for each learner word you used in ANY chunk of this exam.'
+        : 'Do NOT include targetUsage in this chunk.',
+    );
+    return `${base}\n\n${lines.join('\n')}`;
+  }
+
+  /** Personal AI exam — same official Teile as library/standard exams, plus vocab weaving. */
+  function buildPersonalExamChunksFromBlueprint(spec, blueprint) {
+    const BP = getBlueprintBinding();
+    if (!BP || !blueprint) {
+      throw new Error('buildPersonalExamChunksFromBlueprint requires blueprint and binding module');
+    }
+    const filtered = filterBlueprintBySkills(blueprint, spec.skills);
+    const plan = BP.chunkPlanFromBlueprint(filtered, spec.language);
+    if (!plan.length) {
+      throw new Error('Blueprint produced empty chunk plan for selected skills');
+    }
+    return {
+      mode: 'chunks',
+      blueprint: filtered,
+      chunks: plan.map((ctx, i) => ({
+        expectKey: ctx.expectKey,
+        label: `${ctx.label} (personal vocab)`,
+        teil: ctx.teil,
+        moduleId: ctx.moduleId,
+        blueprintPart: ctx.blueprintPart,
+        maxTokens: maxTokensFor(spec, chunkKind(ctx.expectKey)),
+        prompt: buildPersonalExamChunkPrompt(spec, {
+          ...ctx,
+          chunkIndex: i,
+          chunkTotal: plan.length,
+          isLast: i === plan.length - 1,
+        }),
+      })),
+    };
+  }
+
+  function buildPersonalExamChunks(spec, blueprintOverride) {
+    if (blueprintOverride === null) return buildVocabExamChunks(spec);
+    const blueprint =
+      blueprintOverride || spec?.metadata?.blueprint || resolveSpecBlueprint(spec);
+    if (blueprint) {
+      return buildPersonalExamChunksFromBlueprint(spec, blueprint);
+    }
+    return buildVocabExamChunks(spec);
+  }
+
   function buildExamChunks(spec) {
     const useBlueprint = aiPathBlueprintsEnabled();
     const blueprint = useBlueprint ? resolveSpecBlueprint(spec) : null;
@@ -147,7 +243,19 @@ const PromptBuilder = (() => {
     };
   }
 
-  function buildVocabExamPrompt(spec) {
+  function vocabExamRules(spec, isDE) {
+    const rfType = isDE ? 'rf' : 'tf';
+    const rfCorrect = isDE ? '"R" or "F"' : '"T" or "F"';
+    const ynCorrect = isDE ? '"J" or "N"' : '"Y" or "N"';
+    return (
+      `EVERY scorable question MUST include a top-level "correct" field (never omit it). ` +
+      `Types: ${rfType} → correct ${rfCorrect}; ja_nein → correct ${ynCorrect}; ` +
+      `multiple-choice → options [{"key":"A","text":"…"},…] and correct as letter key only ("A","B",…). ` +
+      `Do NOT put answers in "answer"/"solution" only — always duplicate into "correct".`
+    );
+  }
+
+  function vocabExamHeader(spec) {
     const words = spec.targetWords || [];
     const Shell = getShell();
     const loc = Shell.getLocale(spec.language);
@@ -160,36 +268,93 @@ const PromptBuilder = (() => {
         return s;
       })
       .join(' + ');
-
     const header = [
       loc.anti,
       `Personalized ${spec.level} ${loc.contentLang} vocabulary exam.`,
-      `Build ${skillLbl} using these learner words: ${words.map((w) => `"${w}"`).join(', ')}.`,
+      `Use these learner words: ${words.map((w) => `"${w}"`).join(', ')}.`,
       `Topic: "${spec.topic || 'learner vocabulary'}".`,
+      `Overall skills: ${skillLbl}.`,
     ];
     if (spec.vocabPolicy?.maximizeCoverage) {
       header.push(
-        `Use as many of these words as possible spread across the exam. At least ONE part must integrate the largest natural cluster of them for level ${spec.level}; do not force words artificially.`,
+        `Use as many learner words as possible naturally for level ${spec.level}; do not force words artificially.`,
       );
     }
     header.push(loc.global, Shell.JSON_RULES);
-    const headerBlock = header.join('\n');
+    return { headerBlock: header.join('\n'), loc, isDE };
+  }
 
+  function buildVocabExamChunkPlan(spec) {
+    const skills = spec.skills?.length ? spec.skills : ['lesen', 'horen'];
+    const isDE = spec.language === 'german';
+    const plan = [];
+    const has = (s) => skills.includes(s);
+    if (has('lesen') || has('reading')) {
+      plan.push({ expectKey: isDE ? 'lesenParts' : 'readingParts', title: isDE ? 'Lesen' : 'Reading', teilFrom: 1, teilTo: 2, partsCount: 2 });
+      plan.push({ expectKey: isDE ? 'lesenParts' : 'readingParts', title: isDE ? 'Lesen' : 'Reading', teilFrom: 3, teilTo: 4, partsCount: 2 });
+    }
+    if (has('horen') || has('listening')) {
+      plan.push({ expectKey: isDE ? 'horenParts' : 'listeningParts', title: isDE ? 'Hörverstehen' : 'Listening', teilFrom: 1, teilTo: 1, partsCount: 1 });
+      plan.push({ expectKey: isDE ? 'horenParts' : 'listeningParts', title: isDE ? 'Hörverstehen' : 'Listening', teilFrom: 2, teilTo: 2, partsCount: 1 });
+    }
+    if (has('schreiben') || has('writing')) {
+      plan.push({ expectKey: isDE ? 'schreibenParts' : 'writingParts', title: isDE ? 'Schreiben' : 'Writing', teilFrom: 1, teilTo: 1, partsCount: 1 });
+    }
+    if (has('sprechen') || has('speaking')) {
+      plan.push({ expectKey: isDE ? 'sprechenParts' : 'speakingParts', title: isDE ? 'Sprechen' : 'Speaking', teilFrom: 1, teilTo: 1, partsCount: 1 });
+    }
+    if (!plan.length) {
+      plan.push({ expectKey: isDE ? 'lesenParts' : 'readingParts', title: isDE ? 'Lesen' : 'Reading', teilFrom: 1, teilTo: 2, partsCount: 2 });
+      plan.push({ expectKey: isDE ? 'lesenParts' : 'readingParts', title: isDE ? 'Lesen' : 'Reading', teilFrom: 3, teilTo: 4, partsCount: 2 });
+    }
+    return plan.map((p, i) => ({ ...p, chunkIndex: i, chunkTotal: plan.length, isLast: i === plan.length - 1 }));
+  }
+
+  function buildVocabExamChunkPrompt(spec, ctx) {
+    const { headerBlock, loc, isDE } = vocabExamHeader(spec);
+    const rules = vocabExamRules(spec, isDE);
+    const partLabel = ctx.teilFrom === ctx.teilTo ? `teil ${ctx.teilFrom}` : `teile ${ctx.teilFrom}-${ctx.teilTo}`;
+    const body = [
+      `CHUNK ${ctx.chunkIndex + 1}/${ctx.chunkTotal}. Return ONLY valid JSON with root key "${ctx.expectKey}" (array of exactly ${ctx.partsCount} part(s), ${partLabel}).`,
+      `Include topic, level:"${spec.level}", lang:"${loc.langCode}". Omit all other module keys.`,
+      `Each part: authentic ${loc.contentLang} text/transcript and 2 verifiable questions with "correct".`,
+      rules,
+      ctx.isLast
+        ? `Add top-level "targetUsage": [{"word":"<original>","surfaces":["<exact form>",…]}] for each learner word you used in ANY chunk of this exam (this is the final chunk).`
+        : `Do NOT include targetUsage in this chunk.`,
+    ].join(' ');
+    return `${headerBlock}\n${body}`;
+  }
+
+  function buildVocabExamChunks(spec) {
+    const plan = buildVocabExamChunkPlan(spec);
+    return {
+      mode: 'chunks',
+      chunks: plan.map((ctx) => ({
+        expectKey: ctx.expectKey,
+        label: `Personal ${ctx.title} ${ctx.teilFrom}${ctx.teilTo !== ctx.teilFrom ? `–${ctx.teilTo}` : ''}`,
+        maxTokens: /schreiben|writing|sprechen|speaking/i.test(ctx.expectKey) ? 3200 : 4200,
+        prompt: buildVocabExamChunkPrompt(spec, ctx),
+      })),
+    };
+  }
+
+  function buildVocabExamPrompt(spec) {
+    const { headerBlock, loc, isDE } = vocabExamHeader(spec);
+    const skills = spec.skills?.length ? spec.skills : ['lesen', 'horen'];
     const skillKeys = [];
-    const sk = spec.skills || ['lesen', 'horen'];
-    if (sk.includes('lesen') || sk.includes('reading')) skillKeys.push(isDE ? 'lesenParts' : 'readingParts');
-    if (sk.includes('horen') || sk.includes('listening')) skillKeys.push(isDE ? 'horenParts' : 'listeningParts');
-    if (sk.includes('schreiben') || sk.includes('writing')) skillKeys.push(isDE ? 'schreibenParts' : 'writingParts');
-    if (sk.includes('sprechen') || sk.includes('speaking')) skillKeys.push(isDE ? 'sprechenParts' : 'speakingParts');
+    if (skills.includes('lesen') || skills.includes('reading')) skillKeys.push(isDE ? 'lesenParts' : 'readingParts');
+    if (skills.includes('horen') || skills.includes('listening')) skillKeys.push(isDE ? 'horenParts' : 'listeningParts');
+    if (skills.includes('schreiben') || skills.includes('writing')) skillKeys.push(isDE ? 'schreibenParts' : 'writingParts');
+    if (skills.includes('sprechen') || skills.includes('speaking')) skillKeys.push(isDE ? 'sprechenParts' : 'speakingParts');
     const keysLine = skillKeys.length ? skillKeys.join(', ') : isDE ? 'lesenParts, horenParts' : 'readingParts, listeningParts';
-
+    const rules = vocabExamRules(spec, isDE);
     const body =
       `JSON with topic, level:"${spec.level}", lang:"${loc.langCode}". ` +
       `Include ONLY these module keys: ${keysLine}. Omit unselected modules entirely. ` +
       `Embed each target word naturally in authentic ${loc.contentLang} texts. Verifiable questions only. ` +
-      `After writing the texts, add a top-level array "targetUsage": for each learner word you actually used, ` +
-      `output {"word":"<original>","surfaces":["<exact form as written>",…]} including inflected forms. ` +
-      `List only words you genuinely used in the passages or questions. Do not invent usage.`;
+      `${rules} ` +
+      `Add "targetUsage" for each learner word you actually used.`;
 
     return {
       mode: 'single',
@@ -279,7 +444,7 @@ const PromptBuilder = (() => {
     }
 
     if (ct === 'VocabularyExercise' && spec.targetWords?.length) {
-      return buildVocabExamPrompt(spec);
+      return buildPersonalExamChunks(spec);
     }
 
     if (ct === 'Flashcards' && spec.targetWords?.length) {
@@ -336,7 +501,7 @@ const PromptBuilder = (() => {
     }
 
     if (spec.targetWords?.length >= 4) {
-      return buildVocabExamPrompt(spec);
+      return buildVocabExamChunks(spec);
     }
 
     const err = new Error(`buildPrompt: unsupported contentType ${ct}`);
@@ -357,6 +522,10 @@ const PromptBuilder = (() => {
     buildPrompt,
     buildExamChunks,
     buildExamChunksFromBlueprint,
+    buildVocabExamChunks,
+    buildPersonalExamChunks,
+    buildPersonalExamChunksFromBlueprint,
+    filterBlueprintBySkills,
     expandChunkPlan,
     chunksForSpec,
     aiPathBlueprintsEnabled,

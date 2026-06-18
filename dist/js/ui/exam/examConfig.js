@@ -1,4 +1,4 @@
-const _examConfig={goalId:null,selectedIds:new Set(),skills:new Set(['lesen','horen']),seedCount:0};
+const _examConfig={goalId:null,selectedIds:new Set(),skills:new Set(['lesen']),seedCount:0};
 function showExamConfigFootbar(visible){
   const fb=document.getElementById('examConfigFootbar');
   if(fb)fb.style.display=visible?'flex':'none';
@@ -10,7 +10,7 @@ function openExamConfigurator(goalId,preselectedIds){
   syncGoalToProfile(goal);
   saveGoals();
   _examConfig.goalId=goalId;
-  _examConfig.skills=new Set(['lesen','horen']);
+  _examConfig.skills=new Set(['lesen']);
   _examConfig.selectedIds=new Set();
   _examConfig.seedCount=0;
   const deck=deckForGoal(goal);
@@ -43,10 +43,7 @@ function selectAllDueConfig(){
 }
 function toggleConfigSkill(skill){
   if(skill==='schreiben')return;
-  if(_examConfig.skills.has(skill)){
-    if(_examConfig.skills.size<=1)return;
-    _examConfig.skills.delete(skill);
-  }else _examConfig.skills.add(skill);
+  _examConfig.skills=new Set([skill]);
   renderExamConfigurator();
 }
 function configPartBadge(status){
@@ -62,8 +59,17 @@ function configSkillSummary(skills,subject){
   if(skills.has('sprechen'))parts.push(ui.speaking);
   return parts.join(' + ')||'—';
 }
+/** Single selected module label for use in button/summary. */
+function configActiveSkillLabel(skills,subject){
+  const ui=typeof examUiStrings==='function'?examUiStrings(subject==='de'?'de':subject==='es'?'es':'en'):{reading:'Reading',listening:'Listening',writing:'Writing',speaking:'Speaking'};
+  if(skills.has('lesen'))return ui.reading;
+  if(skills.has('horen'))return ui.listening;
+  if(skills.has('schreiben'))return ui.writing;
+  if(skills.has('sprechen'))return ui.speaking;
+  return'—';
+}
 function estimateConfigQuestions(nWords,skillsSet){
-  const skills=skillsSet instanceof Set?[...skillsSet]:(Array.isArray(skillsSet)?skillsSet:['lesen','horen']);
+  const skills=skillsSet instanceof Set?[...skillsSet]:(Array.isArray(skillsSet)?skillsSet:['lesen']);
   if(typeof VocabBatching!=='undefined'){
     return Math.max(4,Math.min(nWords,VocabBatching.capacityFor(skills)));
   }
@@ -86,7 +92,9 @@ function renderExamConfigurator(){
     const isSoon=status==='soon';
     const on=!isSoon&&_examConfig.skills.has(key);
     const click=isSoon?'':' onclick="toggleConfigSkill(\''+key+'\')"';
-    return`<div class="exam-config-part-card${on?' on':''}${isSoon?' soon':''}"${click}><span class="n">${esc(title)}<small>${esc(sub)}</small></span><span class="exam-config-part-meta">${configPartBadge(status)}<span class="tk"></span></span></div>`;
+    // Radio-button indicator: filled circle when selected, empty otherwise
+    const radio=isSoon?'':'<span class="exam-config-radio-dot" aria-hidden="true">'+(on?'●':'○')+'</span>';
+    return`<div class="exam-config-part-card${on?' on':''}${isSoon?' soon':''}"${click} role="radio" aria-checked="${on}">${radio}<span class="n">${esc(title)}<small>${esc(sub)}</small></span><span class="exam-config-part-meta">${configPartBadge(status)}</span></div>`;
   };
   const chips=deck.map(f=>{
     const id=fcId(f);
@@ -98,52 +106,60 @@ function renderExamConfigurator(){
     return'<span class="exam-config-chip'+(on?' on':'')+'" onclick="toggleConfigWord(\''+esc(id)+'\')"><span class="tk">'+(on?'✓':'')+'</span>'+(due?'<span class="due-dot"></span>':'')+artHtml+esc(word)+'</span>';
   }).join('');
   const chipsHtml=deck.length?'<div class="exam-config-chips">'+chips+'</div><p class="exam-config-hint">● amber dot = due for review today</p>':'<p class="exam-config-hint">No words in this deck yet. Save words during a practice exam first.</p>';
-  const skillLbl=configSkillSummary(_examConfig.skills,goal.subject);
+  const skillLbl=configActiveSkillLabel(_examConfig.skills,goal.subject);
   const oralOnly=_examConfig.skills.size===1&&_examConfig.skills.has('sprechen');
   el.innerHTML=`
-    <h1 class="exam-config-h1">Personalized exam</h1>
-    <p class="exam-config-lede">Build a custom <b>${esc(goalLabel(goal))}</b> exam from your vocabulary.</p>
+    <h1 class="exam-config-h1">Section practice</h1>
+    <p class="exam-config-lede">Practice one <b>${esc(goalLabel(goal))}</b> section using your vocabulary. Genera y practica una sección cada vez.</p>
     ${seedHtml}
-    <p class="exam-config-seclbl">Exam parts</p>
+    <p class="exam-config-seclbl">Choose a section</p>
     ${partCard('lesen',ui.reading,'Reading comprehension with your vocabulary','ready')}
     ${partCard('horen',ui.listening,'Listening tasks with your vocabulary','ready')}
     ${partCard('sprechen',ui.speaking,'Speaking task with microphone + AI evaluation','ready')}
     ${partCard('schreiben',ui.writing,'Writing prompts from your vocabulary','soon')}
+    <p class="exam-config-hint">~1–2 min · 3 AI credits · each section is saved for reuse.</p>
     <p class="exam-config-seclbl"><span>Words to include · ${selN} selected</span>${dueN>0?'<button type="button" class="exam-config-cta" onclick="selectAllDueConfig()">Select all due ('+dueN+') →</button>':''}</p>
     <div class="exam-config-panel">${chipsHtml}</div>`;
   const summary=document.getElementById('examConfigSummary');
   const genBtn=document.getElementById('examConfigGenerateBtn');
   const qEst=estimateConfigQuestions(selN,_examConfig.skills);
-  const rem=typeof getQuotaRemaining==='function'?getQuotaRemaining():null;
+  const remAi=typeof getAiCreditsRemaining==='function'?getAiCreditsRemaining():null;
   if(summary){
-    let txt='<b>'+selN+' word'+(selN===1?'':'s')+'</b> · '+esc(skillLbl);
+    let txt='<b>'+selN+' word'+(selN===1?'':'s')+'</b> · '+esc(skillLbl)+' section';
     if(oralOnly)txt+=' · oral practice';
-    else txt+=' · ~'+qEst+' questions';
-    if(rem===1)txt+=' · <span class="exam-config-quota-warn">Last exam this month</span>';
+    else txt+=' · ~'+qEst+' questions · 3 AI credits';
+    if(typeof getAiCreditsRemaining==='function'&&remAi===3)txt+=' · <span class="exam-config-quota-warn">Last 3 credits</span>';
+    else if(typeof getAiCreditsRemaining==='function'&&typeof aiCreditsMeterLabel==='function'&&isPro()){
+      txt+=' · '+esc(aiCreditsMeterLabel());
+    }
     summary.innerHTML=txt;
   }
   if(genBtn){
-    const tier=typeof canUsePersonalizedTier==='function'?canUsePersonalizedTier():'free';
-    genBtn.disabled=selN<2||_examConfig.skills.size<1||!canGenerate();
-    if(!canGenerate())genBtn.textContent='Quota used — upgrade';
-    else if(oralOnly)genBtn.textContent='Start speaking →';
-    else if(tier==='pro')genBtn.textContent='Generate exam (IA) →';
-    else genBtn.textContent='Generate exam →';
+    const aiOk=typeof canUseAiGeneration!=='function'||canUseAiGeneration();
+    genBtn.disabled=selN<2||_examConfig.skills.size<1||!aiOk;
+    if(!aiOk)genBtn.textContent='No AI credits — buy pack';
+    else if(oralOnly)genBtn.textContent='Practice speaking →';
+    else genBtn.textContent='Practice '+esc(skillLbl)+' →';
   }
 }
 function submitExamConfig(){
   const goal=S.goals.find(g=>g.id===_examConfig.goalId);
   if(!goal)return;
   const words=deckForGoal(goal).filter(f=>_examConfig.selectedIds.has(fcId(f))).map(f=>f.word);
-  const skills=[..._examConfig.skills];
+  const skills=[..._examConfig.skills].slice(0,1);
   if(words.length<2){lcToast('Select at least 2 words.','warn');return;}
-  if(skills.length<1){lcToast('Select at least one exam part.','warn');return;}
-  if(!canGenerate()){showUpgrade();return;}
+  if(skills.length<1){lcToast('Select one exam part.','warn');return;}
+  if(typeof requirePersonalized==='function'&&!requirePersonalized())return;
+  if(typeof canUseAiGeneration==='function'&&!canUseAiGeneration()){
+    if(typeof openCreditPackModal==='function')openCreditPackModal();
+    else if(typeof showAiCreditsExhausted==='function')showAiCreditsExhausted();
+    return;
+  }
   showExamConfigFootbar(false);
   const gid=_examConfig.goalId;
   const oralOnly=skills.length===1&&skills[0]==='sprechen';
   if(oralOnly)confirmQuotaUse(()=>startOralPractice(goal,words));
-  else confirmQuotaUse(()=>generatePersonalExam(words,skills,gid));
+  else generatePersonalExam(words,skills,gid);
 }
 function openDeckHub(goalId,options){
   const goal=S.goals.find(g=>g.id===goalId);
@@ -307,12 +323,31 @@ function renderProfileLevelGrid(){
   const grid=document.getElementById('profileLevelGrid');
   const btn=document.getElementById('btnProfileSave');
   if(!grid||!S.profileCert)return;
-  const levels=(typeof LibraryCatalog!=='undefined'?LEVELS[S.profileCert].filter(l=>LibraryCatalog.isLevelAvailable(S.profileCert,l.code)):LEVELS[S.profileCert]);
-  grid.innerHTML=levels.map(l=>`<div class="level-card${S.profileLevel===l.code?' selected':''}" onclick="selectProfileLevel('${l.code}')"><div class="lc-code">${l.code}</div><div class="lc-name">${l.name}</div></div>`).join('');
-  if(btn)btn.disabled=!S.profileLevel;
+  const advertised=typeof LibraryCatalog!=='undefined'?LibraryCatalog.advertisedLevels(S.profileCert):LEVELS[S.profileCert].map(l=>l.code);
+  const metaByCode=Object.fromEntries((LEVELS[S.profileCert]||[]).map(l=>[l.code,l]));
+  function levelStatus(code){
+    if(typeof LibraryCatalog!=='undefined'&&LibraryCatalog.getLevelUiStatus)return LibraryCatalog.getLevelUiStatus(S.profileCert,code);
+    if(typeof LevelAvailability!=='undefined')return LevelAvailability.getLevelUiStatus(S.profileCert,code);
+    return'ready';
+  }
+  if(S.profileLevel&&levelStatus(S.profileLevel)==='soon')S.profileLevel=null;
+  grid.innerHTML=advertised.map(code=>{
+    const meta=metaByCode[code]||{code,name:code};
+    const status=levelStatus(code);
+    const soon=status==='soon';
+    const sel=!soon&&S.profileLevel===code;
+    const click=soon?` onclick="openLevelSoonNotify('${S.profileCert}','${code}')"`: ` onclick="selectProfileLevel('${code}')"`;
+    const badge=typeof LevelAvailability!=='undefined'?LevelAvailability.levelBadgeHtml(status):'';
+    return`<div class="level-card${sel?' selected':''}${soon?' level-card--soon':''}"${click}><div class="lc-code">${meta.code}${badge?'<span class="level-card__badge">'+badge+'</span>':''}</div><div class="lc-name">${esc(meta.name)}</div>${soon?'<div class="level-card__hint">Tap to get notified</div>':''}</div>`;
+  }).join('');
+  if(btn)btn.disabled=!S.profileLevel||levelStatus(S.profileLevel)==='soon';
 }
 function selectProfileLevel(code){
   if(typeof isFreeAccount==='function'&&isFreeAccount()){if(typeof showUpgrade==='function')showUpgrade();return;}
+  if(typeof LibraryCatalog!=='undefined'&&LibraryCatalog.getLevelUiStatus&&LibraryCatalog.getLevelUiStatus(S.profileCert,code)==='soon'){
+    if(typeof openLevelSoonNotify==='function')openLevelSoonNotify(S.profileCert,code);
+    return;
+  }
   S.profileLevel=code;renderProfileLevelGrid();
 }
 function saveExamProfile(){

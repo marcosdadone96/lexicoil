@@ -137,12 +137,54 @@ const BlueprintPromptBinding = (() => {
         `- Include reading text/passage (${readingWordTarget(spec, part)} words). ` +
           `For layout "items", each item needs signText/text; for "passage_questions", one shared "text" field.`,
       );
+      const qTypes = (part.questionTypes || []).map((t) => String(t).toLowerCase());
+      if (qTypes.includes('richtig_falsch')) {
+        lines.push(
+          '- Use questions[] (NOT items[]) with type "richtig_falsch", question text, correct "R" or "F". No options array.',
+        );
+      } else if (qTypes.includes('multiple_choice')) {
+        lines.push(
+          '- Use questions[] with type "multiple_choice", question, options as [{key:"a",text:"..."},...], correct as option key.',
+        );
+      } else if (qTypes.includes('ja_nein')) {
+        lines.push(
+          '- Use questions[] with type "ja_nein", question, correct "J" or "N". No options array.',
+        );
+      }
     }
     if (needsTranscript(part, ctx.expectKey)) {
       lines.push(
         `- Include transcript/audioScript (${listeningWordTarget(spec, part)} words). ` +
           `Use segments[] with transcript per segment when layout is "segments".`,
       );
+      lines.push(
+        '- Each segment: { label, transcript, questions[] }. Put scorable items in segment.questions, not at part root.',
+      );
+      const qTypes = (part.questionTypes || []).map((t) => String(t).toLowerCase());
+      if (qTypes.includes('richtig_falsch')) {
+        lines.push('- Listening R/F: type "richtig_falsch", correct "R" or "F", no options array.');
+      }
+      if (qTypes.includes('multiple_choice')) {
+        lines.push('- Listening MCQ: options [{key:"a",text:"..."},...], correct as letter key.');
+        lines.push('- Do NOT emit placeholder options (bare "A"/"B" keys without text). One question object per item — no duplicate skeleton questions.');
+      }
+      if (qTypes.includes('matching')) {
+        lines.push('- Speaker matching (Diskussion): options MUST be letter keys (M=Moderator, A/B=guests) OR [{key:"A",text:"Frau Krämer"},...]. Include part.speakers[] or name speakers clearly in transcript ("Name:").');
+      }
+    }
+    const layout = String(part.layout || '').toLowerCase();
+    if (layout === 'items') {
+      lines.push(
+        '- layout "items": use items[] with signText (situation text), type "matching", correct as ad key (A–J or 0).',
+      );
+      if (part.slotType === 'matching' && Number(part.teil) === 3) {
+        lines.push(
+          '- REQUIRED part.ads[]: [{key:"a",title:"...",text:"..."}, ...] — all Anzeigen (a–j). Do NOT omit ads. Do NOT put full ad texts only in item.options.',
+        );
+        lines.push(
+          '- items[]: one situation per item (signText). Never duplicate skeleton items. Situation numbers should match instruction (e.g. 13–19 for B1 Teil 3).',
+        );
+      }
     }
     if (part.difficultyDistribution || spec.metadata?.blueprint?.difficultyDistribution) {
       const dd = spec.metadata?.blueprint?.difficultyDistribution || part.difficultyDistribution;

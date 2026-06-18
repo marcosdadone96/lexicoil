@@ -37,15 +37,28 @@ const LibraryCatalog = (() => {
     return [...LEVELS];
   }
 
-  /** Levels shown in UI — only those that pass catalogThresholds + blueprint requirements. */
+  /** Levels selectable in UI — servable library or live-AI allow-list. */
   function selectableLevels(lang) {
+    if (typeof LevelAvailability !== 'undefined') {
+      return LevelAvailability.selectableLevels(lang);
+    }
     if (typeof LibraryLoader !== 'undefined') {
       return LibraryLoader.supportedLevels(lang);
     }
     return [];
   }
 
+  function getLevelUiStatus(lang, level) {
+    if (typeof LevelAvailability !== 'undefined') {
+      return LevelAvailability.getLevelUiStatus(lang, level);
+    }
+    return hasLibrary(lang, level) ? 'ready' : 'soon';
+  }
+
   function isLevelAvailable(lang, level) {
+    if (typeof LevelAvailability !== 'undefined') {
+      return LevelAvailability.isLevelSelectable(lang, level);
+    }
     return hasLibrary(lang, level);
   }
 
@@ -69,6 +82,7 @@ const LibraryCatalog = (() => {
     libraryLevels,
     advertisedLevels,
     selectableLevels,
+    getLevelUiStatus,
     isLevelAvailable,
     buildBlueprintIndex,
   };

@@ -60,8 +60,17 @@
     <h2>4. Your rights</h2>
     <p>You may request access, correction, or deletion of your account data by emailing <a href="mailto:contact@lexicoil.com">contact@lexicoil.com</a>.</p>
 
-    <h2>5. Cookies and local storage</h2>
-    <p>We store authentication tokens and preferences (theme, language) in your browser. No advertising trackers.</p>
+    <h2 id="cookies">5. Cookies and local storage</h2>
+    <p>LexiCoil does not use advertising or third-party marketing cookies today. We store the following in your browser for <strong>essential (functional)</strong> operation only. Optional analytics or marketing tools are not loaded unless you accept them in the cookie banner.</p>
+    <ul>
+      <li><strong>Session / authentication</strong> — HTTP-only cookies and JWT tokens keep you signed in securely (Supabase auth). Duration: until you sign out or the session expires.</li>
+      <li><strong>Exam and flashcard state</strong> — <code>localStorage</code> saves your in-progress exams, saved exams, flashcards, goals, and mastery data so you can continue where you left off. Duration: until you clear site data or delete your account.</li>
+      <li><strong>Preferences</strong> — theme (<code>theme</code> / <code>lc_theme</code>) and similar UI settings. Duration: persistent until cleared.</li>
+      <li><strong>Cookie consent</strong> — <code>lc_cookie_consent</code> remembers your choice (Accept / Reject / Preferences). Duration: until you clear site data or change preferences.</li>
+      <li><strong>Guest quota</strong> — a functional identifier may be stored to enforce fair usage limits for unsigned visitors.</li>
+    </ul>
+    <p><strong>Legal basis (EU/CH):</strong> essential storage is necessary to provide the service you request (GDPR Art. 6(1)(b)). Any future analytics or marketing scripts would rely on your consent (Art. 6(1)(a)) and load only after you choose <em>Accept</em> or enable them in <em>Preferences</em>.</p>
+    <p>You can reopen cookie settings anytime via the footer link in the app (when signed in) or by clearing <code>lc_cookie_consent</code> in your browser to see the banner again.</p>
 
     <h2>6. Changes</h2>
     <p>We may update this policy. Continued use after changes constitutes acceptance.</p>

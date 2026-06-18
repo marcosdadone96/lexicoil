@@ -3,7 +3,7 @@
 // ═══════════════════════════════════════════
 function ansLabel(q, val, isDE) {
   if (!val) return '—';
-  if (q.type === 'yn') return val === 'J' ? 'Ja' : val === 'N' ? 'Nein' : val;
+  if (q.type === 'yn' || q.type === 'ja_nein') return val === 'J' || val === 'Ja' ? 'Ja' : val === 'N' || val === 'Nein' ? 'Nein' : val;
   if (q.type === 'rfn') return val === 'R' ? (isDE ? 'Richtig' : 'True') : val === 'F' ? (isDE ? 'Falsch' : 'False') : val === 'N' ? (isDE ? 'Nicht im Text' : 'Not in text') : val;
   if (q.type === 'person_multi') {
     try { const a = JSON.parse(val); if (Array.isArray(a)) return a.join(', '); } catch (_) {}
@@ -200,7 +200,7 @@ function buildCorrection(d, isDE, writeAns, speakAns) {
 function renderWritingAiBlock(wa, isDE) {
   const c = wa.correction;
   if (!c) return '';
-  let h = `<div class="writing-ai-block"><h4 style="font-size:13px;font-weight:700;margin:0 0 10px">${isDE ? 'Tu texto corregido' : 'Your corrected text'}</h4>`;
+  let h = `<div class="writing-ai-block"><h4 style="font-size:13px;font-weight:700;margin:0 0 10px">Your corrected text</h4>`;
   if (c.correctedText) {
     const diffFn = typeof highlightCorrectedDiff === 'function' ? highlightCorrectedDiff : null;
     h += `<div class="corr-diff readable-text" style="font-size:13px;line-height:1.7;margin-bottom:12px">${diffFn && wa.userText ? diffFn(wa.userText, c.correctedText) : esc(c.correctedText)}</div>`;

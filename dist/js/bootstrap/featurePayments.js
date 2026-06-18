@@ -1,5 +1,24 @@
 /* Stripe checkout / Pro activation UI */
 (function () {
+  function isSignedIn() {
+    if (typeof Auth !== 'undefined' && Auth.isGuest && Auth.isGuest()) return false;
+    if (typeof isAppAuthenticated === 'function') return isAppAuthenticated();
+    return typeof Auth !== 'undefined' && Auth.hasSession && Auth.hasSession();
+  }
+
+  function payFetch(url, options = {}) {
+    if (typeof lcApiFetch === 'function') return lcApiFetch(url, options);
+    return fetch(url, {
+      credentials: 'include',
+      ...options,
+      headers: {
+        'Content-Type': 'application/json',
+        ...(typeof lcAuthHeaders === 'function' ? lcAuthHeaders() : {}),
+        ...(options.headers || {}),
+      },
+    });
+  }
+
   window.activatePro = async function () {
     if (typeof Auth !== 'undefined' && Auth.isGuest()) {
       closeUpgrade();
@@ -8,7 +27,7 @@
       setAMsg('Sign in or register to upgrade to Pro.');
       return;
     }
-    if (!localStorage.getItem('lc_token')) {
+    if (!isSignedIn()) {
       closeUpgrade();
       if (typeof showAuthOverlay === 'function') showAuthOverlay();
       return;
@@ -30,7 +49,7 @@
       setAMsg('Sign in to manage your subscription.');
       return;
     }
-    if (!localStorage.getItem('lc_token')) {
+    if (!isSignedIn()) {
       if (typeof showAuthOverlay === 'function') showAuthOverlay();
       return;
     }
@@ -61,6 +80,13 @@
 
   window.handleUrlParams = async function () {
     const p = new URLSearchParams(location.search);
+    if (p.get('credits') === '1') {
+      history.replaceState({}, '', location.pathname);
+      if (typeof Auth !== 'undefined') await Auth.bootstrap();
+      updQuotaUI();
+      notify('Credit pack purchased — credits added to your account.', 'success', 5000);
+      return;
+    }
     if (p.get('upgraded') === '1') {
       const sessionId = p.get('session_id') || '';
       history.replaceState({}, '', location.pathname);
@@ -78,7 +104,7 @@
       updQuotaUI();
       if (typeof refreshUserDropdown === 'function') refreshUserDropdown();
       if (activated) {
-        notify("You're now Pro — 12 exam generations/month plus personalized practice (€9.99/month).", 'success', 5000);
+        notify("You're now Pro — 12 exam generations/month, 100 AI credits/month (roll over up to 50), packs from €3.99 (€9.99/month).", 'success', 6000);
       } else {
         notify(
           'Payment received. Pro activation is still processing — refresh in a few seconds if needed.',
@@ -97,5 +123,73 @@
       history.replaceState({}, '', location.pathname);
       if (typeof showResetPasswordForm === 'function') showResetPasswordForm(resetToken);
     }
+  };
+
+  window.startCreditCheckout = async function (pack) {
+    if (typeof Auth !== 'undefined' && Auth.isGuest()) {
+      switchTab('login');
+      if (typeof showAuthOverlay === 'function') showAuthOverlay();
+      return;
+    }
+    if (!isSignedIn()) {
+      if (typeof showAuthOverlay === 'function') showAuthOverlay();
+      return;
+    }
+    try {
+      const res = await payFetch('/.netlify/functions/stripe-credit-checkout', {
+        method: 'POST',
+        body: JSON.stringify({ pack: Number(pack) }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'checkout_failed');
+      if (!data.url) throw new Error('checkout_failed');
+      window.location.href = data.url;
+    } catch (e) {
+      notify('Could not start checkout. Try again later.', 'error');
+    }
+  };
+
+  window.toggleAutoRecharge = async function (enabled) {
+    if (!isSignedIn()) return;
+    try {
+      const res = await payFetch('/.netlify/functions/auth-prefs', {
+        method: 'POST',
+        body: JSON.stringify({ autoRechargeEnabled: !!enabled }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'prefs_failed');
+      if (typeof S !== 'undefined' && data.autoRecharge) {
+        S.autoRecharge = data.autoRecharge;
+      }
+      notify(enabled ? 'Auto-recharge enabled.' : 'Auto-recharge disabled.', 'success', 4000);
+    } catch (_) {
+      notify('Could not save preference.', 'error');
+      const el = document.getElementById('autoRechargeToggle');
+      if (el) el.checked = !enabled;
+    }
+  };
+
+  window.loadAutoRechargePref = async function () {
+    if (!isSignedIn()) return;
+    try {
+      const res = await payFetch('/.netlify/functions/auth-prefs');
+      const data = await res.json().catch(() => ({}));
+      if (res.ok && data.autoRecharge) {
+        S.autoRecharge = data.autoRecharge;
+        const el = document.getElementById('autoRechargeToggle');
+        if (el) el.checked = !!data.autoRecharge.enabled;
+      }
+    } catch (_) {
+      /* ignore */
+    }
+  };
+
+  window.openCreditPackModal = function () {
+    const renew = document.getElementById('creditPackRenewDate');
+    if (renew && typeof aiCreditsRenewalLabel === 'function') {
+      renew.textContent = aiCreditsRenewalLabel();
+    }
+    if (typeof loadAutoRechargePref === 'function') loadAutoRechargePref();
+    if (typeof showCreditPackModal === 'function') showCreditPackModal();
   };
 })();

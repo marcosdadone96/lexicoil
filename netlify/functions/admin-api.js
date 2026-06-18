@@ -19,9 +19,15 @@
  *   POST /admin-api  { action: 'set_plan', email, plan } — change user plan
  *   POST /admin-api  { action: 'add_admin', email }      — add admin role
  *   GET  /admin-api?action=staging_pending[&lang][&level][&limit] — pending staging candidates
- *   POST /admin-api  { action: 'approve_candidate', id }  — approve + maybe promote to pool
+ *   GET  /admin-api?action=candidate_detail&lang&level&id — full candidate (passage+questions+keys)
+ *   POST /admin-api  { action: 'approve_candidate', id }  — approve staging → pool + reusable-parts
  *   POST /admin-api  { action: 'reject_candidate', id }   — reject staging candidate
  *   POST /admin-api  { action: 'reset_quota', email }   — reset monthly exam count
+ *   GET  /admin-api?action=list_reusable_parts[&lang][&level][&module] — list reusable parts
+ *   GET  /admin-api?action=reusable_part_detail&lang&level&module&id   — full reusable part
+ *   POST /admin-api  { action: 'disable_reusable_part', lang, level, module, id }
+ *   POST /admin-api  { action: 'enable_reusable_part',  lang, level, module, id }
+ *   POST /admin-api  { action: 'delete_reusable_part',  lang, level, module, id }
  */
 
 const { getJwtSecret, verifyAuthToken, normalizeEmail, emailToUserId } = require('./lib/authLib.js');
@@ -43,6 +49,13 @@ const {
   setPoolExamDisabled,
   removePoolExam,
 } = require('./lib/poolIndex.js');
+const {
+  listReusablePartsAdmin,
+  setReusablePartDisabled,
+  removeReusablePart,
+  getReusablePart,
+} = require('./lib/reusablePartsStore.js');
+const { approvePartToReusable } = require('./lib/autoApprovePartToReusable.js');
 const sb = require('./lib/supabaseAdmin.js');
 
 const POOL_LANGS = ['de', 'en', 'es'];
@@ -167,6 +180,41 @@ exports.handler = async (event) => {
       return jsonResponse(200, cors, { candidates, count: candidates.length });
     }
 
+    // Full candidate detail (passage + all questions + correct answers)
+    if (action === 'candidate_detail') {
+      const lang = String(params.lang || '').trim().toLowerCase();
+      const level = String(params.level || '').trim().toUpperCase();
+      const id = String(params.id || '').trim();
+      if (!lang || !level || !id) return jsonResponse(400, cors, { error: 'missing_lang_level_id' });
+      const store = getStoreForEvent(event);
+      const candidate = await loadStagingCandidate(store, lang, level, id);
+      if (!candidate) return jsonResponse(404, cors, { error: 'not_found' });
+      return jsonResponse(200, cors, { candidate, id, lang, level });
+    }
+
+    // Reusable parts list with optional lang/level/module filter
+    if (action === 'list_reusable_parts') {
+      const lang = String(params.lang || '').trim().toLowerCase();
+      const level = String(params.level || '').trim().toUpperCase();
+      const module = String(params.module || '').trim().toLowerCase();
+      const store = getStoreForEvent(event);
+      const parts = await listReusablePartsAdmin(store, lang || null, level || null, module || null);
+      return jsonResponse(200, cors, { parts, count: parts.length });
+    }
+
+    // Full reusable part detail
+    if (action === 'reusable_part_detail') {
+      const lang = String(params.lang || '').trim().toLowerCase();
+      const level = String(params.level || '').trim().toUpperCase();
+      const module = String(params.module || '').trim().toLowerCase();
+      const id = String(params.id || '').trim();
+      if (!lang || !level || !module || !id) return jsonResponse(400, cors, { error: 'missing_params' });
+      const store = getStoreForEvent(event);
+      const part = await getReusablePart(store, lang, level, module, id);
+      if (!part) return jsonResponse(404, cors, { error: 'not_found' });
+      return jsonResponse(200, cors, { part, id, lang, level, module });
+    }
+
     return jsonResponse(400, cors, { error: 'unknown_action' });
   }
 
@@ -273,9 +321,51 @@ exports.handler = async (event) => {
       if (candidate.status !== 'pending') {
         return jsonResponse(400, cors, { error: 'not_pending', status: candidate.status });
       }
+      // Via A: mark approved in staging → maybePromote for full exam assembly
       await updateCandidateStatus(store, lang, level, body.id, 'approved');
       const promoted = await maybePromote(store, lang, level);
-      return jsonResponse(200, cors, { approved: true, promoted });
+      // Via B: copy to reusable-parts store for instant section practice
+      // Human approval counts as verified regardless of automated checks.
+      const partResult = await approvePartToReusable(store, candidate, { verified: true });
+      return jsonResponse(200, cors, {
+        approved: true,
+        promoted,
+        savedToReusable: !!partResult,
+        reusableId: partResult?.id || null,
+      });
+    }
+
+    if (action === 'disable_reusable_part') {
+      const lang = String(body.lang || '').trim().toLowerCase();
+      const level = String(body.level || '').trim().toUpperCase();
+      const module = String(body.module || '').trim().toLowerCase();
+      const id = String(body.id || '').trim();
+      if (!lang || !level || !module || !id) return jsonResponse(400, cors, { error: 'missing_params' });
+      const store = getStoreForEvent(event);
+      await setReusablePartDisabled(store, lang, level, module, id, true);
+      return jsonResponse(200, cors, { ok: true, disabled: true });
+    }
+
+    if (action === 'enable_reusable_part') {
+      const lang = String(body.lang || '').trim().toLowerCase();
+      const level = String(body.level || '').trim().toUpperCase();
+      const module = String(body.module || '').trim().toLowerCase();
+      const id = String(body.id || '').trim();
+      if (!lang || !level || !module || !id) return jsonResponse(400, cors, { error: 'missing_params' });
+      const store = getStoreForEvent(event);
+      await setReusablePartDisabled(store, lang, level, module, id, false);
+      return jsonResponse(200, cors, { ok: true, disabled: false });
+    }
+
+    if (action === 'delete_reusable_part') {
+      const lang = String(body.lang || '').trim().toLowerCase();
+      const level = String(body.level || '').trim().toUpperCase();
+      const module = String(body.module || '').trim().toLowerCase();
+      const id = String(body.id || '').trim();
+      if (!lang || !level || !module || !id) return jsonResponse(400, cors, { error: 'missing_params' });
+      const store = getStoreForEvent(event);
+      await removeReusablePart(store, lang, level, module, id);
+      return jsonResponse(200, cors, { ok: true, deleted: true });
     }
 
     if (action === 'reject_candidate') {

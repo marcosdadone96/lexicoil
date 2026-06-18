@@ -169,6 +169,12 @@ html.exam-scroll-active::-webkit-scrollbar-thumb:hover {
 }
 .u-site-footer a { color: var(--text-secondary); text-decoration: none; margin: 0 8px; }
 .u-site-footer a.link-brand { color: var(--brand); font-weight: 600; }
+.u-site-footer-btn {
+  background: none; border: none; cursor: pointer; font-family: inherit;
+  font-size: inherit; font-weight: inherit; color: var(--text-secondary);
+  margin: 0 8px; padding: 0; text-decoration: underline;
+}
+.u-site-footer-btn:hover { color: var(--brand); }
 .u-profile-row { display: flex; align-items: center; gap: 10px; }
 .u-flex-inline { display: flex; gap: 9px; flex-wrap: wrap; align-items: center; }
 .u-fc-level-label {

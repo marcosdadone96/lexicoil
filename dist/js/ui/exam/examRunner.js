@@ -36,10 +36,13 @@ function bindExamScrollTop(){
 // RENDER EXAM
 // ═══════════════════════════════════════════
 function esc(s) {
+  // C-1 fix: also escape quotes so attribute injection is impossible
   return String(s || '')
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }
 function stashPassageMeta(blockId, text, translations) {
   if (!text) return;
@@ -78,7 +81,7 @@ async function translatePassage(blockId) {
     }
     if (!translation && typeof callAI === 'function') {
       const prompt = `Translate the following ${from} exam passage to ${lang}. Return ONLY the translation, preserving paragraph and speaker line breaks. No notes.\n\n${meta.text}`;
-      translation = await callAI(prompt, 2500, { consumeQuota: true, timeoutMs: 45000 });
+      translation = await callAI(prompt, 2500, { consumeQuota: true, aiAction: 'translation', timeoutMs: 45000 });
       if (translation && typeof putVocabCache === 'function') {
         await putVocabCache(from, lang, meta.text, translation, 'ai');
       }
@@ -105,12 +108,27 @@ function renderGoetheModIntro(mod,key,ui){
   return `<div class="off-mod-head"><h2>${ui.modWord} ${key}: ${mod.title}</h2><div class="off-mod-time">${mod.time}</div><p style="font-size:12px;color:var(--text-secondary);margin-top:8px;line-height:1.6">${ui.modHint}</p></div>`;
 }
 function segToQ(seg){
-  if(seg.questions)return seg.questions;
-  if(seg.question&&seg.options)return[{id:seg.id,type:'multiple',question:seg.question,options:seg.options,correct:seg.correct}];
+  const filterFn=typeof horenQuestionHasSubstance==='function'?horenQuestionHasSubstance:(typeof window!=='undefined'&&window.horenQuestionHasSubstance)||null;
+  const keep=(q)=>filterFn?filterFn(q):true;
+  const qs=seg.questions||[];
+  if(qs.length)return qs.filter(keep);
+  if(seg.question&&seg.options)return[{id:seg.id,type:'multiple',question:seg.question,options:seg.options,correct:seg.correct}].filter(keep);
   return[];
 }
 function itemToQ(item,idx){
-  return{id:item.id,type:'multiple',question:(idx+1)+'  '+item.question,options:item.options,correct:item.correct};
+  return{id:item.id,type:item.type||'multiple',question:(idx+1)+'  '+item.question,options:item.options,correct:item.correct};
+}
+function isLesenAdsMatchingRender(part){
+  return!!(part?.ads?.length>=2&&(part.items||[]).some(it=>(it.signText||it.text)&&(it.correct!=null||String(it.type||'').toLowerCase()==='matching')));
+}
+function renderLesenAdsBlock(part,pi,isPrac,ui){
+  const adLbl=ui.option||'Option';
+  return `<div class="off-ads">${part.ads.map((a,i)=>{
+    const k=String(a.key||String.fromCharCode(65+i)).toUpperCase();
+    const title=a.title?`: ${esc(a.title)}`:'';
+    const body=[a.title,a.text].filter(Boolean).join(' — ')||a.text||a.title||'';
+    return `<div class="off-ad"><b>${adLbl} ${k}${title}</b>${wrapW(body,'lesen_'+pi+'_ad_'+k,isPrac)}</div>`;
+  }).join('')}</div>`;
 }
 function renderGoetheLesenPart(part,pi,isPrac,ui){
   const hasContent=part.items?.length||part.text||part.ads?.length||part.questions?.length||part.opinions?.length||part.textWithGaps?.length||part.persons?.length;
@@ -122,6 +140,20 @@ function renderGoetheLesenPart(part,pi,isPrac,ui){
   const teilLabel=ui.teil;
   let h=`<section class="module-wrap"><div class="off-teil">${modLabel} — ${teilLabel} ${part.teil}${part.arbeitszeit?' · '+part.arbeitszeit:''}</div><div class="off-instr">${esc(part.instruction)}</div>`;
   const mod='lesen_'+pi;
+  const adsMatching=isLesenAdsMatchingRender(part);
+  if(adsMatching){
+    h+=renderLesenAdsBlock(part,pi,isPrac,ui);
+    const matchQ=ui.lang==='de'?'Welche Anzeige passt?':'Which ad fits?';
+    part.items.forEach((item)=>{
+      const num=String(item.id||'');
+      if(item.signText||item.text){
+        h+=`<div class="off-sign"><div class="off-sign-label">${esc(num)}</div>${wrapW(item.signText||item.text,'lesen_'+pi+'_sit_'+num,isPrac)}</div>`;
+      }
+      const stem=item.question&&!/welche anzeige|which ad|qué anuncio|passende anzeige|text \d/i.test(String(item.question)) ? item.question : matchQ;
+      h+=renderQ({id:item.id,type:item.type||'matching',question:stem,options:item.options,correct:item.correct},num,mod,ui.trueL,ui.falseL,ui.trueK,true);
+    });
+    return h+'</section><hr class="section-div">';
+  }
   const signBlock=part.items?.length&&part.items.every(it=>it.signText&&!it.question);
   if(signBlock){
     part.items.forEach((item,idx)=>{
@@ -141,7 +173,7 @@ function renderGoetheLesenPart(part,pi,isPrac,ui){
   if(part.text){
     const blockId='lesen_'+pi;
     stashPassageMeta(blockId,part.text,part.translations);
-    h+=`<div class="text-display"><h3>${part.textTitle||''}</h3><div class="readable-text">${wrapW(part.text,'lesen_'+pi,isPrac)}</div>${passageToolbarHtml(blockId,isPrac,ui)}</div>`;
+    h+=`<div class="text-display"><h3>${esc(part.textTitle||'')}</h3><div class="readable-text">${wrapW(part.text,'lesen_'+pi,isPrac)}</div>${passageToolbarHtml(blockId,isPrac,ui)}</div>`;
   }
   if(part.textWithGaps?.length){
     h+=`<div class="text-display"><h3>${esc(part.textTitle||'')}</h3>${part.textWithGaps.map((para,gi)=>`<div class="readable-text" style="margin-bottom:12px">${wrapW(para,'lesen_'+pi+'_gap_'+gi,isPrac)}</div>`).join('')}</div>`;
@@ -192,6 +224,10 @@ function renderGoetheHorenPart(part,pi,isPrac,ui){
     part.segments.forEach((seg,si)=>{
       h+=`<h3 style="font-size:13px;font-weight:700;margin:14px 0 8px">${esc(seg.label)}</h3>`;
       h+=renderListen(pi+'_'+si,seg.label);
+      if(seg.speakerLegend?.length){
+        const spLbl=ui.lang==='de'?'Sprecher':'Speakers';
+        h+=`<p class="module-desc" style="font-size:12px;margin:8px 0 12px"><b>${spLbl}:</b> ${esc(seg.speakerLegend.join(' · '))}</p>`;
+      }
       if(isPrac)h+=renderTranscript(seg.transcript,'horen_'+pi+'_'+si,seg.translations,'horen_'+pi+'_'+si);
       segToQ(seg).forEach((q,i)=>{h+=renderQ(q,i+1,mod+'_'+si,ui.trueL,ui.falseL,ui.trueK,true);});
     });
@@ -393,6 +429,7 @@ function renderExam(){
   const rfT=isDE?'Richtig':'True',rfF=isDE?'Falsch':'False',trK=isDE?'R':'T';
   const timerH=(isOffMode&&!isQ)?`<div class="timer-wrap"><span class="timer-val" id="timerVal">--:--</span></div>`:'';
   const practH=isPrac?`<div style="background:var(--blue-bg);border:.5px solid rgba(93,184,232,.2);border-radius:8px;padding:9px 13px;font-size:12px;color:var(--blue);margin-bottom:14px"><b>Practice Mode:</b> Click any word to translate and save to your deck. Saved words are highlighted in <span style="color:var(--green);font-weight:700">green</span>.</div>`:'';
+  const partialGenH=d._partialGen?`<div class="personal-gen-banner"><b>Partial generation</b> — some Teile were skipped.${d._failedTeile?.length?` Missing: ${esc(d._failedTeile.slice(0,4).join(', '))}${d._failedTeile.length>4?'…':''}.`:''} <button type="button" class="btn-sm accent" onclick="retryFailedPersonalParts()">Retry failed parts</button></div>`:'';
   const officialH=isOffMode?`<div class="mode-markmsg" style="margin-bottom:14px">Official mode: tap words you struggle with to mark them. Translations appear on the results screen — not during the exam.</div>`:'';
   const demoH=d.guidedDemo?`<div class="demo-banner"><b>5-minute product demo</b> — Experience every module at reduced volume. Click words you miss to see vocabulary detection.</div>`:'';
   const langH=isPrac&&!isQ?`<div style="display:flex;align-items:center;gap:7px;margin-bottom:14px;flex-wrap:wrap"><span style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.08em">${isDE?'Übersetzen:':'Translate to:'}</span>${LANGS.map(l=>`<button class="vt-lb ex-lb${S.vocabLang===l.code?' active':''}" onclick="setVL('${l.code}',this)">${l.l}</button>`).join('')}<span style="font-size:11px;color:var(--text-muted);margin-left:6px">· Click any word to translate &amp; save to deck</span></div>`:'';
@@ -440,14 +477,14 @@ function renderExam(){
   const isPool=!!(d.poolSource||S.examSource==='pool'||S.examSource==='library');
   const isPersonal=!!d.vocabPersonal;
   const bc=isDemo?'demo':isPool?'pool':isPersonal?'vocab':isQ?'quick':isPrac?'practice':'official',bl=isDemo?'Demo Exam':isPool?'From library':isPersonal?'Personal Mock':isQ?('Quick: '+S.quickMod):isPrac?'Practice':'Official Exam';
-  const titleTxt=isOff?(d.official?.certificate||d.topic):(isPersonal?('Personal · '+d.topic):(isDE?'Deutsch':'English')+' — '+d.topic);
+  const titleTxt=esc(isOff?(d.official?.certificate||d.topic):(isPersonal?('Personal · '+d.topic):(isDE?'Deutsch':'English')+' — '+d.topic));
   const personalVerified=(d.targetUsageVerified||[]).length;
   const personalTotal=d.vocabWords?.length||0;
   const personalWordsPreview=esc((d.vocabWords||[]).slice(0,8).join(', '))+(personalTotal>8?'…':'');
   const personalBanner=isPersonal?`<div class="card note-card personal-exam-banner" style="margin-bottom:16px"><b>Personalized exam</b> — <strong>${personalVerified} of ${personalTotal}</strong> of your words appear here${personalVerified>0?' — highlighted below':''}. Deck: ${personalWordsPreview}.${personalVerified<personalTotal&&personalTotal>0?`<span style="display:block;margin-top:6px;font-size:12px;color:var(--text-secondary)">Regenerate from the configurator for better coverage.</span>`:''}</div>`:'';
   const poolBanner=isPool?`<div style="background:var(--blue-bg);border:.5px solid rgba(93,184,232,.3);border-radius:var(--radius-lg);padding:10px 16px;margin-bottom:16px;font-size:12px;color:var(--text-secondary)">📚 Curated exam (counts toward monthly quota). Retake saved exams anytime without quota.</div>`:'';
   const saveExitH=isPrac&&!isQ?`<button class="btn-sm accent" onclick="saveAndExitExam()">Save &amp; exit</button>`:'';
-  scr.innerHTML=`${renderOfficialHeader(d,isDE)}${personalBanner}${poolBanner}<div class="exam-topbar"><div class="exam-meta"><span class="exam-badge ${bc}">${bl}</span><span class="exam-badge">${d.level}</span><span class="exam-title">${titleTxt}</span>${timerH}</div><div class="exam-actions"><button class="btn-sm" onclick="goHome()">Home</button>${isPrac?`<button class="btn-sm purple" onclick="goFlashcards()">Deck (<span id="dkCnt">${getProfileFlashcards().length}</span>)</button>`:''}${saveExitH}<button class="btn-sm" onclick="saveCurrentExam()">Save</button></div></div><div class="progress-wrap"><div class="progress-row"><span>Progress</span><span id="pctTxt">0%</span></div><div class="progress-track"><div class="progress-fill" id="progFill" style="width:0%"></div></div></div>${demoH}${officialH}${practH}${langH}${secs}<div class="submit-bar"><button class="btn-sm" onclick="goHome()">Home</button><div style="display:flex;gap:7px;flex-wrap:wrap">${saveExitH}<button class="btn-sm" onclick="saveCurrentExam()">Save Exam</button><button class="btn-sm accent" id="submitBtn" onclick="submitExam()">Submit and Get Results →</button></div></div>`;
+  scr.innerHTML=`${renderOfficialHeader(d,isDE)}${personalBanner}${partialGenH}${poolBanner}<div class="exam-topbar"><div class="exam-meta"><span class="exam-badge ${bc}">${bl}</span><span class="exam-badge">${d.level}</span><span class="exam-title">${titleTxt}</span>${timerH}</div><div class="exam-actions"><button class="btn-sm" onclick="goHome()">Home</button>${isPrac?`<button class="btn-sm purple" onclick="goFlashcards()">Deck (<span id="dkCnt">${getProfileFlashcards().length}</span>)</button>`:''}${saveExitH}<button class="btn-sm" onclick="saveCurrentExam()">Save</button></div></div><div class="progress-wrap"><div class="progress-row"><span>Progress</span><span id="pctTxt">0%</span></div><div class="progress-track"><div class="progress-fill" id="progFill" style="width:0%"></div></div></div>${demoH}${officialH}${practH}${langH}${secs}<div class="submit-bar"><button class="btn-sm" onclick="goHome()">Home</button><div style="display:flex;gap:7px;flex-wrap:wrap">${saveExitH}<button class="btn-sm" onclick="saveCurrentExam()">Save Exam</button><button class="btn-sm accent" id="submitBtn" onclick="submitExam()">Submit and Get Results →</button></div></div>`;
   scr.querySelectorAll('input[type=radio]').forEach(r=>r.addEventListener('change',updProg));
   if(S._resumeFieldValues){restoreExamFieldValues(S._resumeFieldValues);S._resumeFieldValues=null;}
   restoreExamAnswers();
@@ -500,16 +537,44 @@ function renderGapSec(gf,isDE,isOff){
   return `<section class="module-wrap"><div class="module-tag tag-gap">${label}</div><h2 class="module-title">${isDE?'Sprachbausteine':'Language in Use'}</h2>${body}${s}</section>`;
 }
 function optKey(opt){
-  if(typeof opt!=='string')return String(opt);
-  if(opt.length===1)return opt.toLowerCase();
+  if(opt&&typeof opt==='object'){
+    const raw=opt.key!=null?opt.key:opt.id;
+    if(raw!=null){
+      const k=String(raw).trim().replace(/^\s*([a-zA-Z0-9]+)\)\s*/,'$1');
+      return k.length===1?k.toUpperCase():k.toLowerCase();
+    }
+    return String(opt.text??opt.label??'').slice(0,1).toUpperCase();
+  }
+  if(typeof opt!=='string')return String(opt??'');
+  if(opt.length===1)return opt.toUpperCase();
   const m=opt.match(/^([A-Za-z0-9])\)?\s*/);
-  if(m&&(opt.includes(')')||opt.includes('=')||/^[A-Da-d]\)/.test(opt)))return m[1].toLowerCase();
+  if(m&&(opt.includes(')')||opt.includes('=')||/^[A-Da-d]\)/.test(opt)))return m[1].toUpperCase();
   return opt;
+}
+function optLabel(opt){
+  if(typeof opt==='string')return opt;
+  if(opt&&typeof opt==='object'){
+    const k=opt.key!=null?String(opt.key).trim().replace(/^\s*([a-zA-Z0-9]+)\)\s*/,'$1'):'';
+    const t=String(opt.text??opt.label??opt.option??'').trim();
+    if(k&&t)return `${k}) ${t}`;
+    return t||k||'';
+  }
+  return String(opt??'');
+}
+function normalizeGradingToken(val) {
+  if (val == null || val === '') return '';
+  const s = String(val).trim();
+  const u = s.toLowerCase();
+  if (u === 'ja' || u === 'j' || u === 'yes') return 'J';
+  if (u === 'nein' || u === 'n' || u === 'no') return 'N';
+  if (u === 'richtig' || u === 'r' || u === 'true' || u === 't') return 'R';
+  if (u === 'falsch' || u === 'f' || u === 'false') return 'F';
+  return s.toLowerCase();
 }
 function goetheAnswersMatch(user,correct){
   if(correct==null)return false;
   if(Array.isArray(correct)){
-    if(correct.length===1)return String(user||'').toLowerCase()===String(correct[0]||'').toLowerCase();
+    if(correct.length===1)return normalizeGradingToken(user)===normalizeGradingToken(correct[0]);
     let u=[];
     try{u=typeof user==='string'&&user.startsWith('[')?JSON.parse(user):[];}catch(_){u=[];}
     if(!Array.isArray(u)||!u.length)u=String(user||'').split('|').map(s=>s.trim()).filter(Boolean);
@@ -517,7 +582,7 @@ function goetheAnswersMatch(user,correct){
     const us=[...u].map(String).sort();
     return cs.length===us.length&&cs.every((v,i)=>v===us[i]);
   }
-  return String(user||'').toLowerCase()===String(correct||'').toLowerCase();
+  return normalizeGradingToken(user)===normalizeGradingToken(correct);
 }
 function togglePersonMatch(key,val,el){
   let sel=[];
@@ -534,12 +599,12 @@ function renderGapFillQ(q,num,mod,part,isDE){
 }
 function renderQ(q,num,mod,rfT,rfF,trK,isOff){
   const ak=`${mod}_${q.id}`;
-  const head=isOff?q.question:`${num}. ${q.question}`;
+  const head=isOff?esc(q.question):`${num}. ${esc(q.question)}`;
   const sub=isOff?'':`<div class="q-text">${esc(q.question)}</div>`;
-  if(q.type==='yn'){
+  if(q.type==='yn'||q.type==='ja_nein'){
     return `<div class="question-block"><div class="q-number">${head}</div>${sub}<div class="rf-row"><button class="rf-btn" onclick="setRF('${ak}','J',this,'sel-r')">Ja</button><button class="rf-btn" onclick="setRF('${ak}','N',this,'sel-f')">Nein</button></div></div>`;
   }
-  if(q.type==='rfn'){
+  if(q.type==='rfn'||q.type==='r_f_n'){
     return `<div class="question-block"><div class="q-number">${head}</div>${sub}<div class="rf-row" style="flex-wrap:wrap"><button class="rf-btn" onclick="setRFN('${ak}','R',this)">R</button><button class="rf-btn" onclick="setRFN('${ak}','F',this)">F</button><button class="rf-btn" onclick="setRFN('${ak}','N',this)">N</button></div></div>`;
   }
   if(q.type==='rf'||q.type==='tf'||q.type==='richtig_falsch'||q.type==='true_false'){
@@ -561,15 +626,16 @@ function renderQ(q,num,mod,rfT,rfF,trK,isOff){
   }
   if(q.type==='matching'){
     const opts=q.options||[];
-    const keys=opts.map(o=>typeof o==='string'?o.trim():String(o));
-    const shortKeys=keys.length&&keys.every(k=>/^[A-J0]$/.test(k));
-    if(shortKeys){
-      return `<div class="question-block"><div class="q-number">${head}</div>${sub}<div class="options options-matching-keys">${keys.map(val=>`<label class="opt opt-key"><input type="radio" name="${ak}" value="${esc(val)}" onchange="S.answers['${ak}']=this.value;this.closest('.options').querySelectorAll('.opt').forEach(o=>o.classList.remove('selected'));this.closest('.opt').classList.add('selected');updProg()"><span>${esc(val)}</span></label>`).join('')}</div></div>`;
+    if(q._keyOnlyMatch){
+      const keys=opts.map(o=>typeof o==='string'?o.trim():optKey(o));
+      if(keys.length){
+        return `<div class="question-block"><div class="q-number">${head}</div>${sub}<div class="options options-matching-keys">${keys.map(val=>`<label class="opt opt-key"><input type="radio" name="${ak}" value="${esc(val)}" onchange="S.answers['${ak}']=this.value;this.closest('.options').querySelectorAll('.opt').forEach(o=>o.classList.remove('selected'));this.closest('.opt').classList.add('selected');updProg()"><span>${esc(val)}</span></label>`).join('')}</div></div>`;
+      }
     }
   }
   const opts=q.options||[];
   if(!opts.length)return `<div class="question-block"><div class="q-number">${head}</div>${sub}<div style="color:var(--text-muted);font-size:12px">${isOff?'Keine Optionen':'No options'}</div></div>`;
-  return `<div class="question-block"><div class="q-number">${head}</div>${sub}<div class="options">${opts.map(opt=>{const val=optKey(opt);const label=typeof opt==='string'?opt:opt;return `<label class="opt"><input type="radio" name="${ak}" value="${esc(val)}" onchange="S.answers['${ak}']=this.value;this.closest('.options').querySelectorAll('.opt').forEach(o=>o.classList.remove('selected'));this.closest('.opt').classList.add('selected');updProg()"><span>${esc(label)}</span></label>`;}).join('')}</div></div>`;
+  return `<div class="question-block"><div class="q-number">${head}</div>${sub}<div class="options">${opts.map(opt=>{const val=optKey(opt);const label=optLabel(opt);return `<label class="opt"><input type="radio" name="${ak}" value="${esc(val)}" onchange="S.answers['${ak}']=this.value;this.closest('.options').querySelectorAll('.opt').forEach(o=>o.classList.remove('selected'));this.closest('.opt').classList.add('selected');updProg()"><span>${esc(label)}</span></label>`;}).join('')}</div></div>`;
 }
 function setRF(k,v,btn,cls){S.answers[k]=v;btn.parentElement.querySelectorAll('.rf-btn').forEach(b=>b.classList.remove('sel-r','sel-f','sel-n'));btn.classList.add(cls);updProg();}
 function setRFN(k,v,btn){S.answers[k]=v;btn.parentElement.querySelectorAll('.rf-btn').forEach(b=>b.classList.remove('sel-r','sel-f','sel-n'));if(v==='R')btn.classList.add('sel-r');else if(v==='F')btn.classList.add('sel-f');else btn.classList.add('sel-n');updProg();}

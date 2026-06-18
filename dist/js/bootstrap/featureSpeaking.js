@@ -28,7 +28,8 @@ Return JSON:
         continue;
       }
       try {
-        const raw = await callAI(buildSpeakingEvalPrompt(p, txt, isDE), 1200, { consumeQuota: false });
+        const speakTicket = await startExamGeneration('exam_generation', 2);
+        const raw = await callAI(buildSpeakingEvalPrompt(p, txt, isDE), 1200, { examGeneration: true, aiAction: 'exam_generation', genTicket: speakTicket });
         const data = JSON.parse(raw.replace(/```json|```/g, '').trim());
         out.push({
           part: p,

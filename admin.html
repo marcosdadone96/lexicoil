@@ -101,6 +101,7 @@
       <button class="tab" onclick="switchTab('users',this)">Users</button>
       <button class="tab" onclick="switchTab('pool',this)">Pool exams</button>
       <button class="tab" onclick="switchTab('staging',this)">Staging / Aprobación</button>
+      <button class="tab" onclick="switchTab('parts',this)">Partes reutilizables</button>
       <button class="tab" onclick="switchTab('generations',this)">Generaciones IA</button>
       <button class="tab" onclick="switchTab('tools',this)">Tools</button>
     </div>
@@ -152,6 +153,21 @@
         <span style="font-size:12px;color:var(--muted)" id="stagingCount">0 pendientes</span>
       </div>
       <div id="stagingList"></div>
+    </div>
+
+    <!-- Partes reutilizables -->
+    <div class="panel" id="tab-parts">
+      <div class="toolbar">
+        <select id="partsLang" onchange="loadReusableParts()"><option value="">All langs</option><option value="de">German</option><option value="en">English</option><option value="es">Spanish</option></select>
+        <select id="partsLevel" onchange="loadReusableParts()"><option value="">All levels</option><option>A1</option><option>A2</option><option>B1</option><option>B2</option><option>C1</option><option>C2</option></select>
+        <select id="partsModule" onchange="loadReusableParts()"><option value="">All modules</option><option value="lesen">Lesen</option><option value="horen">Hören</option><option value="schreiben">Schreiben</option><option value="sprechen">Sprechen</option></select>
+        <button onclick="loadReusableParts()">Cargar</button>
+        <span style="font-size:12px;color:var(--muted)" id="partsCount"></span>
+      </div>
+      <table>
+        <thead><tr><th>Lang/Level</th><th>Módulo</th><th>Teil</th><th>Ítems</th><th>Completa</th><th>Verificada</th><th>Autor</th><th>Servida</th><th>Estado</th><th>Acciones</th></tr></thead>
+        <tbody id="partsBody"></tbody>
+      </table>
     </div>
 
     <!-- AI Generations -->
@@ -238,6 +254,40 @@
       <button class="modal-close" onclick="closeExamJsonModal()">Cerrar</button>
     </div>
     <pre id="examJsonPre" class="json-pre"></pre>
+  </div>
+</div>
+
+<!-- Candidate detail modal -->
+<div id="candidateDetailModal" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeCandidateDetailModal()">
+  <div class="modal-box" style="max-width:960px">
+    <div class="modal-hd">
+      <h3>Detalle del candidato — <span id="candidateDetailTitle" style="color:var(--brand)"></span></h3>
+      <button class="modal-close" onclick="closeCandidateDetailModal()">Cerrar</button>
+    </div>
+    <div id="candidateDetailMeta" class="meta" style="margin-bottom:12px;font-size:11px;color:var(--muted);display:flex;gap:10px;flex-wrap:wrap"></div>
+    <div id="candidateDetailPassage" style="display:none;margin-bottom:16px">
+      <div class="section-hd">Pasaje</div>
+      <pre id="candidateDetailPassagePre" class="json-pre" style="max-height:220px"></pre>
+    </div>
+    <div class="section-hd">Preguntas (<span id="candidateDetailQCount">0</span>)</div>
+    <div id="candidateDetailQuestions"></div>
+  </div>
+</div>
+
+<!-- Reusable part detail modal -->
+<div id="reusablePartModal" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeReusablePartModal()">
+  <div class="modal-box" style="max-width:960px">
+    <div class="modal-hd">
+      <h3>Parte reutilizable — <span id="reusablePartTitle" style="color:var(--brand)"></span></h3>
+      <button class="modal-close" onclick="closeReusablePartModal()">Cerrar</button>
+    </div>
+    <div id="reusablePartMeta" class="meta" style="margin-bottom:12px;font-size:11px;color:var(--muted);display:flex;gap:10px;flex-wrap:wrap"></div>
+    <div id="reusablePartPassage" style="display:none;margin-bottom:16px">
+      <div class="section-hd">Pasaje</div>
+      <pre id="reusablePartPassagePre" class="json-pre" style="max-height:220px"></pre>
+    </div>
+    <div class="section-hd">Preguntas (<span id="reusablePartQCount">0</span>)</div>
+    <div id="reusablePartQuestions"></div>
   </div>
 </div>
 
@@ -790,7 +840,8 @@
           ${c.passagePreview ? `<div style="color:var(--muted);margin-top:6px;font-size:12px">${esc(c.passagePreview)}…</div>` : ''}
         </div>
         <div class="actions">
-          <button class="act approve" onclick="approveStaging('${esc(c.id)}')">Aprobar</button>
+          <button class="act" onclick="viewCandidateDetail('${esc(c.id)}','${esc(c.lang)}','${esc(c.level)}')">Ver parte</button>
+          <button class="act approve" onclick="approveStaging('${esc(c.id)}')">Guardar/Aprobar parte</button>
           <button class="act reject" onclick="rejectStaging('${esc(c.id)}')">Rechazar</button>
         </div>
       </div>`).join('');
@@ -799,14 +850,12 @@
   async function approveStaging(id) {
     const lang = document.getElementById('stagingLang').value;
     const level = document.getElementById('stagingLevel').value;
-    if (!confirm('¿Aprobar este candidato? Se evaluará promoción al pool.')) return;
+    if (!confirm('¿Guardar/Aprobar esta parte? Quedará disponible para práctica de sección de inmediato.')) return;
     const r = await api('POST', {}, { action: 'approve_candidate', id, lang, level });
     if (r.error) { toast('✗ ' + r.error); return; }
-    if (r.promoted > 0) {
-      toast('✓ ' + r.promoted + ' examen(es) completo(s) publicado(s) al pool');
-    } else {
-      toast('✓ Aprobado');
-    }
+    let msg = '✓ Parte guardada y disponible para práctica';
+    if (r.promoted > 0) msg += ' — ' + r.promoted + ' examen(es) completo(s) al pool';
+    toast(msg);
     loadStagingPending();
   }
 
@@ -817,6 +866,167 @@
     const r = await api('POST', {}, { action: 'reject_candidate', id, lang, level });
     toast(r.rejected ? '✓ Rechazado' : '✗ ' + (r.error || 'Error'));
     if (r.rejected) loadStagingPending();
+  }
+
+  // ── Candidate detail modal ─────────────────────────────────────────────────
+  async function viewCandidateDetail(id, lang, level) {
+    document.getElementById('candidateDetailTitle').textContent = id;
+    document.getElementById('candidateDetailMeta').innerHTML = 'Cargando…';
+    document.getElementById('candidateDetailPassage').style.display = 'none';
+    document.getElementById('candidateDetailQuestions').innerHTML = '';
+    document.getElementById('candidateDetailModal').style.display = 'flex';
+    try {
+      const data = await api('GET', { action: 'candidate_detail', lang, level, id });
+      const c = data.candidate;
+      if (!c) { document.getElementById('candidateDetailMeta').textContent = 'No encontrado'; return; }
+      document.getElementById('candidateDetailTitle').textContent = `${c.module} T${c.teil} — ${lang}/${level}`;
+      document.getElementById('candidateDetailMeta').innerHTML =
+        `<span><strong>Módulo:</strong> ${esc(c.module)}</span>
+         <span><strong>Teil:</strong> ${esc(String(c.teil))}</span>
+         <span><strong>Estado:</strong> ${esc(c.status)}</span>
+         <span><strong>Autor:</strong> ${esc(c.contributor || '—')}</span>
+         <span><strong>Válido:</strong> ${c.validation?.valid ? '✓' : '✗'}</span>`;
+      if (c.passage) {
+        document.getElementById('candidateDetailPassage').style.display = 'block';
+        document.getElementById('candidateDetailPassagePre').textContent =
+          JSON.stringify({ title: c.passage.title, text: c.passage.text?.slice(0, 600) + (c.passage.text?.length > 600 ? '…' : '') }, null, 2);
+      }
+      const qs = c.questions || [];
+      document.getElementById('candidateDetailQCount').textContent = qs.length;
+      document.getElementById('candidateDetailQuestions').innerHTML = qs.map((q, i) =>
+        `<div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin-bottom:8px;font-size:12px">
+          <div style="font-weight:700;margin-bottom:6px">${i + 1}. ${esc(q.question || q.prompt || '')}</div>
+          ${renderQOptions(q)}
+         </div>`
+      ).join('');
+    } catch (e) {
+      document.getElementById('candidateDetailMeta').textContent = 'Error: ' + e.message;
+    }
+  }
+
+  function renderQOptions(q) {
+    if (!q) return '';
+    const key = q.correctKey ?? q.correct_key ?? q.answer;
+    if (Array.isArray(q.options)) {
+      return q.options.map((o, i) => {
+        const letter = String.fromCharCode(65 + i);
+        const correct = key === i || key === letter || key === String(i);
+        return `<div style="${correct ? 'color:var(--green);font-weight:700' : 'color:var(--muted)'}">${letter}. ${esc(String(o))}</div>`;
+      }).join('');
+    }
+    if (q.type === 'true_false') {
+      return `<div style="color:var(--muted)">Clave: <strong style="color:var(--green)">${esc(String(key))}</strong></div>`;
+    }
+    return '';
+  }
+
+  function closeCandidateDetailModal() {
+    document.getElementById('candidateDetailModal').style.display = 'none';
+  }
+
+  // ── Reusable parts tab ─────────────────────────────────────────────────────
+  let _reusableParts = [];
+
+  async function loadReusableParts() {
+    const lang = document.getElementById('partsLang').value;
+    const level = document.getElementById('partsLevel').value;
+    const module = document.getElementById('partsModule').value;
+    const data = await api('GET', { action: 'list_reusable_parts', lang, level, module });
+    _reusableParts = data.parts || [];
+    document.getElementById('partsCount').textContent = _reusableParts.length + ' partes';
+    renderReusableParts();
+  }
+
+  function renderReusableParts() {
+    const tbody = document.getElementById('partsBody');
+    if (!_reusableParts.length) {
+      tbody.innerHTML = '<tr><td colspan="10" class="empty">No hay partes reutilizables para estos filtros.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = _reusableParts.map((p, i) => `
+      <tr>
+        <td>${esc(p.lang)}/${esc(p.level)}</td>
+        <td>${esc(p.module)}</td>
+        <td>${esc(String(p.teil ?? '—'))}</td>
+        <td>${esc(String(p.itemCount ?? '—'))}</td>
+        <td>${p.complete ? '<span class="badge badge-valid">Completa</span>' : '<span class="badge badge-invalid">Parcial</span>'}</td>
+        <td>${p.verified ? '<span class="badge badge-valid">✓</span>' : '<span class="badge badge-invalid">✗</span>'}</td>
+        <td style="font-size:11px;color:var(--muted)">${esc(p.contributor || '—')}</td>
+        <td>${esc(String(p.servedCount ?? 0))}</td>
+        <td>${p.disabled ? '<span class="badge badge-invalid">Deshabilitada</span>' : '<span class="badge badge-valid">Activa</span>'}</td>
+        <td>
+          <button class="act" onclick="viewReusablePart(${i})">Ver</button>
+          ${p.disabled
+            ? `<button class="act" onclick="enableReusablePart(${i})">Reactivar</button>`
+            : `<button class="act danger" onclick="disableReusablePart(${i})">Quitar</button>`}
+          <button class="act danger" onclick="deleteReusablePart(${i})">Borrar</button>
+        </td>
+      </tr>`).join('');
+  }
+
+  async function viewReusablePart(index) {
+    const p = _reusableParts[index];
+    if (!p) return;
+    document.getElementById('reusablePartTitle').textContent = `${p.module} T${p.teil} — ${p.lang}/${p.level}`;
+    document.getElementById('reusablePartMeta').innerHTML = 'Cargando…';
+    document.getElementById('reusablePartPassage').style.display = 'none';
+    document.getElementById('reusablePartQuestions').innerHTML = '';
+    document.getElementById('reusablePartModal').style.display = 'flex';
+    try {
+      const data = await api('GET', { action: 'reusable_part_detail', lang: p.lang, level: p.level, module: p.module, id: p.id });
+      const part = data.part;
+      if (!part) { document.getElementById('reusablePartMeta').textContent = 'No encontrado'; return; }
+      document.getElementById('reusablePartMeta').innerHTML =
+        `<span><strong>ID:</strong> ${esc(part.id)}</span>
+         <span><strong>Ítems:</strong> ${esc(String(part.itemCount))}/${esc(String(part.targetCount))}</span>
+         <span><strong>Completa:</strong> ${part.complete ? '✓' : '✗'}</span>
+         <span><strong>Verificada:</strong> ${part.verified ? '✓' : '✗'}</span>
+         <span><strong>Servida:</strong> ${esc(String(part.servedCount ?? 0))} veces</span>
+         <span><strong>Autor:</strong> ${esc(part.contributor || '—')}</span>`;
+      if (part.passage) {
+        document.getElementById('reusablePartPassage').style.display = 'block';
+        document.getElementById('reusablePartPassagePre').textContent =
+          JSON.stringify({ title: part.passage.title, text: part.passage.text?.slice(0, 600) + (part.passage.text?.length > 600 ? '…' : '') }, null, 2);
+      }
+      const qs = part.questions || [];
+      document.getElementById('reusablePartQCount').textContent = qs.length;
+      document.getElementById('reusablePartQuestions').innerHTML = qs.map((q, i) =>
+        `<div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin-bottom:8px;font-size:12px">
+          <div style="font-weight:700;margin-bottom:6px">${i + 1}. ${esc(q.question || q.prompt || '')}</div>
+          ${renderQOptions(q)}
+         </div>`
+      ).join('');
+    } catch (e) {
+      document.getElementById('reusablePartMeta').textContent = 'Error: ' + e.message;
+    }
+  }
+
+  function closeReusablePartModal() {
+    document.getElementById('reusablePartModal').style.display = 'none';
+  }
+
+  async function disableReusablePart(index) {
+    const p = _reusableParts[index];
+    if (!p || !confirm('¿Quitar esta parte del pool de práctica? No se eliminará.')) return;
+    const r = await api('POST', {}, { action: 'disable_reusable_part', lang: p.lang, level: p.level, module: p.module, id: p.id });
+    toast(r.ok ? '✓ Parte deshabilitada' : '✗ ' + (r.error || 'Error'));
+    if (r.ok) loadReusableParts();
+  }
+
+  async function enableReusablePart(index) {
+    const p = _reusableParts[index];
+    if (!p) return;
+    const r = await api('POST', {}, { action: 'enable_reusable_part', lang: p.lang, level: p.level, module: p.module, id: p.id });
+    toast(r.ok ? '✓ Parte reactivada' : '✗ ' + (r.error || 'Error'));
+    if (r.ok) loadReusableParts();
+  }
+
+  async function deleteReusablePart(index) {
+    const p = _reusableParts[index];
+    if (!p || !confirm('¿Borrar permanentemente esta parte reutilizable?')) return;
+    const r = await api('POST', {}, { action: 'delete_reusable_part', lang: p.lang, level: p.level, module: p.module, id: p.id });
+    toast(r.ok ? '✓ Parte borrada' : '✗ ' + (r.error || 'Error'));
+    if (r.ok) loadReusableParts();
   }
 
   // ── Tools ─────────────────────────────────────────────────────────────────

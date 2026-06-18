@@ -52,7 +52,3 @@ function updQuotaUI(){
 }
 function showUpgrade(){document.getElementById('upgradeModal').classList.add('show');}
 function closeUpgrade(){document.getElementById('upgradeModal').classList.remove('show');}
-function activatePro(){
-  alert('Stripe checkout is coming soon.\n\nCreate a free account now — your flashcards and progress sync to the cloud.');
-  closeUpgrade();
-}

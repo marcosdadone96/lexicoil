@@ -309,7 +309,7 @@
     bindFabDrag(fab);
     fab.querySelector('.nb-fab-main')?.addEventListener('click', (e) => {
       if (typeof isOfficialMode === 'function' && isOfficialMode()) {
-        if (typeof lcToast === 'function') lcToast('No disponible en examen oficial', 'warn', 3000);
+        if (typeof lcToast === 'function') lcToast('Not available in official exam mode', 'warn', 3000);
         return;
       }
       NotebookUI.toggle();

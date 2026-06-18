@@ -420,6 +420,27 @@ async function fetchExamFromPool(lang, level, excludeIds) {
   return data;
 }
 
+/**
+ * Fetch a reusable exam section (part) from the parts store.
+ * Returns the part payload or null if nothing is available.
+ * Never throws — callers treat null as "no cached part, fall back to AI".
+ */
+async function fetchExamPart(lang, level, module, excludeIds) {
+  const params = { lang, level, module };
+  if (excludeIds && excludeIds.length) {
+    params.exclude = excludeIds.slice(0, 40).join(",");
+  }
+  const q = new URLSearchParams(params);
+  try {
+    const res = await lcFetch(`/.netlify/functions/exam-part?${q}`);
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) return null;
+    return data.part || null;
+  } catch (_) {
+    return null;
+  }
+}
+
 async function fetchVocabCache(from, to, text) {
   const params = new URLSearchParams({ from, to, text: String(text || "") });
   const res = await lcFetch(`${VOCAB_CACHE_ENDPOINT}?${params}`);
@@ -505,6 +526,9 @@ async function saveExamPartsToStaging(lang, level, exam, opts = {}) {
       exam,
       complete: !!opts.complete,
       autoApprove: !!opts.autoApprove,
+      // Signal that the client ran AI answer-key verification (EXAM_ANSWER_KEY_VERIFY=1)
+      // → server will auto-approve valid parts to the reusable-parts store immediately.
+      verified: !!opts.verified,
     }),
   });
   const data = await res.json().catch(() => ({}));

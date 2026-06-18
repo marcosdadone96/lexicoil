@@ -41,9 +41,17 @@ const ExerciseGenerator = (() => {
     const PB = getPromptBuilder();
     const quickMod = quickModFromSpec(spec, options);
     const built = PB.buildPrompt(spec, { quickMod });
+    const startTicket = hooks.startExamTicket;
+    if (typeof startTicket !== 'function') {
+      throw new Error('hooks.startExamTicket is required for exercise generation');
+    }
+    const genTicket = await startTicket('exam_generation', 2);
+    const aiOptions = options?.aiOptions || {};
     const raw = await hooks.callAI(built.prompt, built.maxTokens, {
-      consumeQuota: false,
-      ...(options?.aiOptions || {}),
+      examGeneration: true,
+      aiAction: 'exam_generation',
+      genTicket,
+      ...aiOptions,
     });
     const text = String(raw).replace(/```json|```/g, '').trim();
     const parsed = hooks.parseExamJson(text);

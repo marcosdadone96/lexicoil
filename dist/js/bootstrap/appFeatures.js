@@ -82,6 +82,7 @@
       return;
     }
     setLoaderStep('Generating with AI\u2026', 'Starting exam generation\u2026');
+    try {
     let raw;
     try {
       raw = await generateExamChunks(topic, (s) => setLoaderStep('Generating with AI\u2026', s));
@@ -122,7 +123,34 @@
     if (typeof contributeExamToPool === 'function') {
       contributeExamToPool(S.subject, S.level, topic, S.examData).catch(function () {});
     }
+    if (typeof logAiGeneration === 'function') {
+      logAiGeneration({
+        lang: S.subject,
+        level: S.level,
+        source: 'ai',
+        topic,
+        vocabWords: [],
+        coverage: null,
+        valid: true,
+        examData: S.examData,
+      });
+    }
     renderExam();
+    } catch (e) {
+      if (typeof logAiGeneration === 'function') {
+        logAiGeneration({
+          lang: S.subject,
+          level: S.level,
+          source: 'ai',
+          topic,
+          vocabWords: [],
+          coverage: null,
+          valid: false,
+          examData: null,
+        });
+      }
+      throw e;
+    }
   }
 
   function handleGenerateExamError(e) {

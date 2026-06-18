@@ -4,11 +4,104 @@ const AnalyticsStore = (() => {
   const MASTERY = Object.freeze({ weak: 70, solid: 85 });
   const DECAY_HALF_LIFE_DAYS = 30;
   const DEFAULT_MIN_ATTEMPTS = 2;
+  const MAX_PLAUSIBLE = 100000;
+
+  function isCorruptStat(stat) {
+    if (!stat || typeof stat !== 'object') return true;
+    const total = Number(stat.total);
+    const correct = Number(stat.correct);
+    return (
+      !Number.isFinite(total) ||
+      total < 0 ||
+      total > MAX_PLAUSIBLE ||
+      !Number.isFinite(correct) ||
+      correct < 0 ||
+      correct > total
+    );
+  }
+
+  function sanitizeStat(stat) {
+    if (isCorruptStat(stat)) return { correct: 0, total: 0, streak: 0 };
+    return {
+      correct: Math.max(0, Math.min(Number(stat.correct) || 0, Number(stat.total) || 0)),
+      total: Math.max(0, Math.min(Number(stat.total) || 0, MAX_PLAUSIBLE)),
+      streak: Number.isFinite(stat.streak) ? Math.max(0, stat.streak) : 0,
+    };
+  }
+
+  function sanitizeStatMap(map) {
+    if (!map || typeof map !== 'object') return {};
+    let dirty = false;
+    Object.keys(map).forEach((tag) => {
+      if (isCorruptStat(map[tag])) {
+        dirty = true;
+        map[tag] = sanitizeStat(map[tag]);
+        if (!map[tag].total) delete map[tag];
+      }
+    });
+    return dirty;
+  }
+
+  function sanitizeProfile(profile) {
+    if (!profile || typeof profile !== 'object') return emptyProfile();
+    let dirty = false;
+    ['grammarTags', 'topicTags', 'modules'].forEach((field) => {
+      if (!profile[field]) profile[field] = {};
+      if (sanitizeStatMap(profile[field])) dirty = true;
+    });
+    if (profile.itemStats && typeof profile.itemStats === 'object') {
+      Object.keys(profile.itemStats).forEach((id) => {
+        const stat = profile.itemStats[id];
+        if (isCorruptStat(stat)) {
+          dirty = true;
+          profile.itemStats[id] = sanitizeStat(stat);
+          if (!profile.itemStats[id].total) delete profile.itemStats[id];
+        }
+      });
+    }
+    if (!Number.isFinite(profile.examsTaken) || profile.examsTaken < 0 || profile.examsTaken > MAX_PLAUSIBLE) {
+      profile.examsTaken = Math.max(0, Math.min(Number(profile.examsTaken) || 0, MAX_PLAUSIBLE));
+      dirty = true;
+    }
+    return dirty ? profile : profile;
+  }
+
+  function sanitizeAllProfiles(data) {
+    if (!data?.profiles) return false;
+    let dirty = false;
+    Object.keys(data.profiles).forEach((key) => {
+      const before = JSON.stringify(data.profiles[key]);
+      sanitizeProfile(data.profiles[key]);
+      if (JSON.stringify(data.profiles[key]) !== before) dirty = true;
+    });
+    return dirty;
+  }
+
+  function runMasteryIntegrityFix() {
+    try {
+      localStorage.removeItem('lc_mastery_integrity_v1');
+      const data = load();
+      const dirty = sanitizeAllProfiles(data);
+      if (dirty) save(data);
+      try {
+        localStorage.setItem('lc_mastery_integrity_v2', '1');
+      } catch (_) {
+        /* ignore */
+      }
+      return { fixed: dirty };
+    } catch (_) {
+      return { fixed: false };
+    }
+  }
 
   function load() {
     try {
       const raw = localStorage.getItem(KEY);
-      if (raw) return JSON.parse(raw);
+      if (raw) {
+        const data = JSON.parse(raw);
+        if (sanitizeAllProfiles(data)) save(data);
+        return data;
+      }
     } catch (_) {
       /* ignore */
     }
@@ -40,7 +133,9 @@ const AnalyticsStore = (() => {
   function getProfile(goal) {
     const data = load();
     const key = profileKey(goal);
-    return data.profiles[key] || emptyProfile();
+    if (!data.profiles[key]) data.profiles[key] = emptyProfile();
+    sanitizeProfile(data.profiles[key]);
+    return data.profiles[key];
   }
 
   function decayStat(stat, factor) {
@@ -344,6 +439,7 @@ const AnalyticsStore = (() => {
   function replaceSnapshot(snapshot) {
     const data = snapshot && typeof snapshot === 'object' ? snapshot : { profiles: {} };
     if (!data.profiles || typeof data.profiles !== 'object') data.profiles = {};
+    sanitizeAllProfiles(data);
     save(data);
     return data;
   }
@@ -435,6 +531,9 @@ const AnalyticsStore = (() => {
     replaceSnapshot,
     mergeProfiles,
     applyTemporalDecay,
+    runMasteryIntegrityFix,
+    sanitizeStat,
+    MAX_PLAUSIBLE,
     tagAccuracy,
     masteryLevel,
     confidenceFor,

@@ -1264,8 +1264,11 @@ async function contributeExamToStaging(lang,level,topic,exam,opts){
   const minCov=opts?.minCoverage??(words?.length?POOL_CONTRIBUTE_COVERAGE:0);
   const complete=typeof isExamBlueprintComplete==='function'&&isExamBlueprintComplete(exam);
   const passesQuality=lcExamPassesQualityGate(exam,words,minCov);
+  // Pass verified:true when the exam source is AI and has been server-key-verified
+  // (lcValidateExamOnServer ran in finalizePersonalExam just before this call).
+  const verified=!!(opts?.verified||(S.examSource==='ai'&&!exam._partialGen));
   try{
-    await saveExamPartsToStaging(lang,level,exam,{complete:complete&&passesQuality,autoApprove:false});
+    await saveExamPartsToStaging(lang,level,exam,{complete:complete&&passesQuality,autoApprove:false,verified});
   }catch(err){lcDebug.warn('[staging] remote ingest failed:',err);}
 }
 async function contributeExamToPool(lang,level,topic,exam,opts){
@@ -1718,3 +1721,165 @@ function updFCSelectUI(){
   const sel=document.getElementById('fcPersonalLevel');
   if(sel&&lv)sel.value=lv;
 }
+
+// ═══════════════════════════════════════════
+// SECTION PRACTICE — reusable parts + AI fallback
+// ═══════════════════════════════════════════
+
+/** IDs of parts already seen by the user for a given (lang, level, module). */
+function seenPartIds(lang,level,module){
+  return(S.history||[])
+    .filter(h=>h.lang===lang&&h.level===level&&h.partModule===module&&h.partId)
+    .map(h=>h.partId);
+}
+
+const _MODULE_PART_KEY={
+  lesen:'lesenParts',horen:'horenParts',
+  schreiben:'schreibenParts',sprechen:'sprechenParts',
+  reading:'lesenParts',listening:'horenParts',
+  writing:'schreibenParts',speaking:'sprechenParts'
+};
+const _MODULE_LABEL={
+  lesen:'Lesen',horen:'Hören',schreiben:'Schreiben',sprechen:'Sprechen',
+  reading:'Reading',listening:'Listening',writing:'Writing',speaking:'Speaking'
+};
+
+/**
+ * Convert a reusable part payload into a minimal single-module exam object
+ * that can be passed to renderExam() / examRunner.
+ */
+function partToSectionExam(part,lang,level){
+  const module=part.module||'lesen';
+  const teil=part.teil??1;
+  const passageText =part.passage?.text ||'';
+  const passageTitle=part.passage?.title||'';
+  const questions   =Array.isArray(part.questions)?part.questions:[];
+  const instruction =part.instruction||'';
+
+  const examPart={teil,questions,instruction};
+
+  if(module==='lesen'||module==='reading'){
+    examPart.textTitle=passageTitle;
+    examPart.text=passageText;
+  }else if(module==='horen'||module==='listening'){
+    examPart.transcript=passageText;
+    examPart.context   =passageTitle;
+    examPart.plays     =2;
+  }else if(module==='schreiben'||module==='writing'){
+    examPart.prompt=passageText;
+  }else if(module==='sprechen'||module==='speaking'){
+    examPart.prompt=passageText;
+  }
+
+  const partsKey=_MODULE_PART_KEY[module]||'lesenParts';
+  const label=_MODULE_LABEL[module]||module;
+  return{
+    lang:lang||part.lang||S.subject,
+    level:level||part.level||S.level,
+    topic:`${label} – Teil ${teil}`,
+    goetheFormat:true,
+    _sectionPart:true,
+    _partId:part.id,
+    _partModule:module,
+    [partsKey]:[examPart]
+  };
+}
+
+/**
+ * Practice a single exam section (module):
+ *   1. Try the reusable-parts store (free, instant).
+ *   2. If nothing available, fall back to AI generation (uses AI credits).
+ *   3. If AI is also unavailable, show a graceful empty-state message.
+ *
+ * @param {string} module   - e.g. 'lesen', 'horen', 'schreiben', 'sprechen'
+ * @param {string} [goalId] - optional goal to associate the session with
+ */
+async function generateSectionExam(module,goalId){
+  const lang =S.subject||'de';
+  const level=S.level  ||'B1';
+  const label=_MODULE_LABEL[module]||module;
+
+  S.mode     ='practice';
+  S.isDemo   =false;
+  S.answers  ={};
+  S.gapAnswers={};
+  S.quickMod =null;
+  if(goalId||S.activeGoalId){
+    const ref=(goalId?S.goals.find(g=>g.id===goalId):null)||getActiveGoal();
+    if(ref){S.subject=ref.subject;S.level=ref.level;S.activeGoalId=ref.id;syncGoalToProfile(ref);}
+  }
+  initExamSession('practice');
+
+  hideAll();show('loadingScreen');
+  document.getElementById('loaderTitle').textContent=`${label} practice…`;
+  document.getElementById('loaderSub').textContent  ='Looking for a cached section…';
+
+  // ── 1. Try reusable part ────────────────────────────────────────────────
+  let part=null;
+  if(typeof fetchExamPart==='function'){
+    try{
+      const exclude=seenPartIds(lang,level,module);
+      part=await fetchExamPart(lang,level,module,exclude);
+    }catch(e){
+      lcDebug.warn('[section] fetchExamPart error:',e);
+    }
+  }
+
+  if(part){
+    const exam=partToSectionExam(part,lang,level);
+    if(typeof normalizeExam==='function')exam&&Object.assign(exam,normalizeExam(exam)||{});
+    S.examData  =exam;
+    S.examSource='part';
+    if(goalId||S.activeGoalId)S.examData.goalId=goalId||S.activeGoalId;
+    // Track in history so this part is excluded next time
+    const histEntry={
+      lang,level,
+      partId:part.id,
+      partModule:module,
+      date:Date.now(),
+      source:'part'
+    };
+    if(!Array.isArray(S.history))S.history=[];
+    S.history.push(histEntry);
+    try{if(typeof saveProfile==='function')saveProfile();}catch(_){}
+    renderExam();
+    return;
+  }
+
+  // ── 2. AI fallback (costs AI credits) ─────────────────────────────────
+  const canAi=typeof canUseAiGeneration==='function'?canUseAiGeneration():
+              (typeof canGenerate==='function'?canGenerate():false);
+
+  if(canAi){
+    document.getElementById('loaderSub').textContent=`No cached section found — generating with AI (3 AI credits)…`;
+    try{
+      const personalGenOpts={};
+      if(typeof ExamBlueprint!=='undefined'){
+        try{const bp=await ExamBlueprint.load(lang,level);if(bp)personalGenOpts.blueprint=bp;}catch(_){}
+      }
+      const built=await generatePersonalExamAiSerial([],[module],goalId,personalGenOpts,'free');
+      if(built&&built.exam){
+        built.exam._sectionPart=true;
+        built.exam._partModule=module;
+        await finalizePersonalExam([],[module],goalId,
+          goalId?S.goals.find(g=>g.id===goalId):getActiveGoal(),
+          built.exam,built.source);
+        return;
+      }
+    }catch(aiErr){
+      lcDebug.warn('[section] AI fallback failed:',aiErr);
+      // fall through to empty-state
+    }
+  }
+
+  // ── 3. Empty state — graceful, no error ───────────────────────────────
+  hideAll();goHome();
+  lcToast(
+    `No ${label} practice section is available right now. Check back later or generate a personalized exam.`,
+    'info',7000
+  );
+}
+
+window.generateSectionExam=generateSectionExam;
+window.partToSectionExam  =partToSectionExam;
+window.seenPartIds        =seenPartIds;

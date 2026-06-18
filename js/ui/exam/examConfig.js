@@ -59,6 +59,15 @@ function configSkillSummary(skills,subject){
   if(skills.has('sprechen'))parts.push(ui.speaking);
   return parts.join(' + ')||'—';
 }
+/** Single selected module label for use in button/summary. */
+function configActiveSkillLabel(skills,subject){
+  const ui=typeof examUiStrings==='function'?examUiStrings(subject==='de'?'de':subject==='es'?'es':'en'):{reading:'Reading',listening:'Listening',writing:'Writing',speaking:'Speaking'};
+  if(skills.has('lesen'))return ui.reading;
+  if(skills.has('horen'))return ui.listening;
+  if(skills.has('schreiben'))return ui.writing;
+  if(skills.has('sprechen'))return ui.speaking;
+  return'—';
+}
 function estimateConfigQuestions(nWords,skillsSet){
   const skills=skillsSet instanceof Set?[...skillsSet]:(Array.isArray(skillsSet)?skillsSet:['lesen']);
   if(typeof VocabBatching!=='undefined'){
@@ -83,7 +92,9 @@ function renderExamConfigurator(){
     const isSoon=status==='soon';
     const on=!isSoon&&_examConfig.skills.has(key);
     const click=isSoon?'':' onclick="toggleConfigSkill(\''+key+'\')"';
-    return`<div class="exam-config-part-card${on?' on':''}${isSoon?' soon':''}"${click}><span class="n">${esc(title)}<small>${esc(sub)}</small></span><span class="exam-config-part-meta">${configPartBadge(status)}<span class="tk"></span></span></div>`;
+    // Radio-button indicator: filled circle when selected, empty otherwise
+    const radio=isSoon?'':'<span class="exam-config-radio-dot" aria-hidden="true">'+(on?'●':'○')+'</span>';
+    return`<div class="exam-config-part-card${on?' on':''}${isSoon?' soon':''}"${click} role="radio" aria-checked="${on}">${radio}<span class="n">${esc(title)}<small>${esc(sub)}</small></span><span class="exam-config-part-meta">${configPartBadge(status)}</span></div>`;
   };
   const chips=deck.map(f=>{
     const id=fcId(f);
@@ -95,18 +106,18 @@ function renderExamConfigurator(){
     return'<span class="exam-config-chip'+(on?' on':'')+'" onclick="toggleConfigWord(\''+esc(id)+'\')"><span class="tk">'+(on?'✓':'')+'</span>'+(due?'<span class="due-dot"></span>':'')+artHtml+esc(word)+'</span>';
   }).join('');
   const chipsHtml=deck.length?'<div class="exam-config-chips">'+chips+'</div><p class="exam-config-hint">● amber dot = due for review today</p>':'<p class="exam-config-hint">No words in this deck yet. Save words during a practice exam first.</p>';
-  const skillLbl=configSkillSummary(_examConfig.skills,goal.subject);
+  const skillLbl=configActiveSkillLabel(_examConfig.skills,goal.subject);
   const oralOnly=_examConfig.skills.size===1&&_examConfig.skills.has('sprechen');
   el.innerHTML=`
-    <h1 class="exam-config-h1">Personalized exam</h1>
-    <p class="exam-config-lede">Build a custom <b>${esc(goalLabel(goal))}</b> exam from your vocabulary.</p>
+    <h1 class="exam-config-h1">Section practice</h1>
+    <p class="exam-config-lede">Practice one <b>${esc(goalLabel(goal))}</b> section using your vocabulary. Genera y practica una sección cada vez.</p>
     ${seedHtml}
-    <p class="exam-config-seclbl">Exam parts</p>
+    <p class="exam-config-seclbl">Choose a section</p>
     ${partCard('lesen',ui.reading,'Reading comprehension with your vocabulary','ready')}
     ${partCard('horen',ui.listening,'Listening tasks with your vocabulary','ready')}
     ${partCard('sprechen',ui.speaking,'Speaking task with microphone + AI evaluation','ready')}
     ${partCard('schreiben',ui.writing,'Writing prompts from your vocabulary','soon')}
-    <p class="exam-config-hint">Choose one module per generation (~1–2 min, 3 AI credits). Switch module anytime for another practice session.</p>
+    <p class="exam-config-hint">~1–2 min · 3 AI credits · each section is saved for reuse.</p>
     <p class="exam-config-seclbl"><span>Words to include · ${selN} selected</span>${dueN>0?'<button type="button" class="exam-config-cta" onclick="selectAllDueConfig()">Select all due ('+dueN+') →</button>':''}</p>
     <div class="exam-config-panel">${chipsHtml}</div>`;
   const summary=document.getElementById('examConfigSummary');
@@ -114,23 +125,21 @@ function renderExamConfigurator(){
   const qEst=estimateConfigQuestions(selN,_examConfig.skills);
   const remAi=typeof getAiCreditsRemaining==='function'?getAiCreditsRemaining():null;
   if(summary){
-    let txt='<b>'+selN+' word'+(selN===1?'':'s')+'</b> · '+esc(skillLbl);
+    let txt='<b>'+selN+' word'+(selN===1?'':'s')+'</b> · '+esc(skillLbl)+' section';
     if(oralOnly)txt+=' · oral practice';
     else txt+=' · ~'+qEst+' questions · 3 AI credits';
-    if(typeof getAiCreditsRemaining==='function'&&remAi===3)txt+=' · <span class="exam-config-quota-warn">Last 3 credits for one exam</span>';
+    if(typeof getAiCreditsRemaining==='function'&&remAi===3)txt+=' · <span class="exam-config-quota-warn">Last 3 credits</span>';
     else if(typeof getAiCreditsRemaining==='function'&&typeof aiCreditsMeterLabel==='function'&&isPro()){
       txt+=' · '+esc(aiCreditsMeterLabel());
     }
     summary.innerHTML=txt;
   }
   if(genBtn){
-    const tier=typeof canUsePersonalizedTier==='function'?canUsePersonalizedTier():'free';
     const aiOk=typeof canUseAiGeneration!=='function'||canUseAiGeneration();
     genBtn.disabled=selN<2||_examConfig.skills.size<1||!aiOk;
     if(!aiOk)genBtn.textContent='No AI credits — buy pack';
-    else if(oralOnly)genBtn.textContent='Start speaking →';
-    else if(tier==='pro')genBtn.textContent='Generate exam (IA) →';
-    else genBtn.textContent='Generate exam →';
+    else if(oralOnly)genBtn.textContent='Practice speaking →';
+    else genBtn.textContent='Practice '+esc(skillLbl)+' →';
   }
 }
 function submitExamConfig(){

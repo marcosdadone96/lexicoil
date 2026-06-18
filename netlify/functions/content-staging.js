@@ -4,7 +4,11 @@
  * Runtime ingest of AI-generated exam parts into Netlify Blobs staging queue.
  * Offline mirror: run scripts/export-remote-staging.mjs to pull into staging/.
  *
- * POST { lang, level, exam, autoApprove?: boolean }
+ * POST { lang, level, exam, autoApprove?: boolean, verified?: boolean }
+ *
+ * When `verified: true` is set AND a part passes basic validation,
+ * the part is auto-approved to BOTH the reusable-parts store (section practice)
+ * and the staging pipeline (exam assembly via maybePromote).
  */
 const { randomUUID } = require('crypto');
 const { getStoreForEvent } = require('./lib/blobStore.js');
@@ -17,7 +21,10 @@ const {
   stagingIndexKey,
   loadStagingIndex,
   saveStagingIndex,
+  updateCandidateStatus,
 } = require('./lib/stagingStore.js');
+const { approvePartToReusable, isAutoApprovable } = require('./lib/autoApprovePartToReusable.js');
+const { maybePromote } = require('./lib/promoteFromApproved.js');
 
 exports.handler = async (event) => {
   const cors = corsHeaders(event);
@@ -71,14 +78,27 @@ exports.handler = async (event) => {
 
   let index = await loadStagingIndex(store, lang, level);
 
+  // `verified` flag: caller asserts AI answer-key verification passed.
+  // When true + valid + ≥ MIN_ITEMS → auto-approve to both stores.
+  const callerVerified = body.verified === true;
+
   const saved = [];
+  const autoApprovedIds = [];
+
   for (const rec of records) {
     if (body.onlyCompleteParts !== false && !rec.validation?.valid && !body.allowInvalid) continue;
     const id = rec.id || randomUUID();
     rec.id = id;
-    rec.status = body.autoApprove && rec.validation?.valid ? 'approved' : 'pending';
     rec.contributor = auth.email;
     rec.remote = true;
+
+    // Auto-approve when verified+valid or when explicit autoApprove flag
+    const shouldAutoApprove =
+      (callerVerified && isAutoApprovable(rec)) ||
+      (body.autoApprove && rec.validation?.valid);
+
+    rec.status = shouldAutoApprove ? 'approved' : 'pending';
+
     await store.setJSON(stagingCandidateKey(lang, level, id), rec);
     index.push({
       id,
@@ -88,10 +108,27 @@ exports.handler = async (event) => {
       valid: !!rec.validation?.valid,
       createdAt: Date.now(),
     });
-    saved.push({ id, module: rec.module, teil: rec.teil, valid: !!rec.validation?.valid });
+    saved.push({ id, module: rec.module, teil: rec.teil, valid: !!rec.validation?.valid, autoApproved: shouldAutoApprove });
+
+    if (shouldAutoApprove) autoApprovedIds.push(id);
   }
 
   await saveStagingIndex(store, lang, level, index);
+
+  // ── Dual-track auto-approval ──────────────────────────────────────────────
+  // For each auto-approved part: write to reusable-parts store (B) in parallel,
+  // then fire maybePromote once for the whole batch (A) — both non-blocking.
+  if (autoApprovedIds.length) {
+    const approvedRecs = records.filter((r) => autoApprovedIds.includes(r.id));
+    void Promise.allSettled(
+      approvedRecs.map((rec) => approvePartToReusable(store, rec, { verified: true })),
+    ).then(() => {
+      // maybePromote once for the batch — fire-and-forget
+      maybePromote(store, lang, level).catch((e) =>
+        console.warn('[content-staging] maybePromote error:', e.message),
+      );
+    });
+  }
 
   if (isComplete && saved.length) {
     const poolKey = `staging_complete_exam:${lang}:${level}:${randomUUID()}`;
@@ -108,6 +145,7 @@ exports.handler = async (event) => {
   return jsonResponse(200, cors, {
     saved: saved.length,
     parts: saved,
+    autoApproved: autoApprovedIds.length,
     completeExamQueued: isComplete,
   });
 };

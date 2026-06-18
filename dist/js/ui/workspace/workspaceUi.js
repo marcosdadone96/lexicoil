@@ -188,6 +188,24 @@ function renderWsExamsHtml(goal){
     <p style="font-size:12px;font-weight:600;color:var(--text-secondary);margin:0 0 12px">Retakes are free — they do not use your monthly quota.</p>
     <div class="saved-grid" id="wsSavedGrid"></div>`;
 }
+function scoreTrendBarColor(score){
+  if(score>=70)return'var(--green)';
+  if(score>=50)return'var(--brand)';
+  if(score>=40)return'var(--amber,#f59e0b)';
+  return'var(--amber,#f59e0b)';
+}
+function renderScoreTrendHtml(series){
+  if(!series||series.length<2){
+    return'<div class="chart-wrap chart-wrap--empty" style="display:block;margin-bottom:16px"><h3>Score trend</h3><p style="font-size:13px;font-weight:600;color:var(--text-muted);margin:0">Take a couple of exams to see your score trend.</p></div>';
+  }
+  const bars=series.map(h=>{
+    const height=Math.max(12,Math.min(100,h.score));
+    const label=(h.topic||'Exam').slice(0,18);
+    const date=h.date||'';
+    return'<div class="chart-bar-col" style="flex:1;display:flex;flex-direction:column;align-items:center;min-width:0"><div class="chart-bar-val" style="font-size:10px;font-weight:700;margin-bottom:4px;color:var(--text-secondary)">'+h.score+'%</div><div class="chart-bar" style="height:'+height+'%;min-height:12px;width:100%;max-width:36px;background:'+scoreTrendBarColor(h.score)+';border-radius:4px 4px 0 0" title="'+esc(h.score+'% — '+label)+'"></div><div class="chart-bar-meta" style="font-size:9px;color:var(--text-muted);margin-top:4px;text-align:center;line-height:1.2;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(date)+'</div></div>';
+  }).join('');
+  return'<div class="chart-wrap" style="display:block;margin-bottom:16px"><h3>Score trend <span style="font-size:11px;color:var(--text-muted);font-weight:400">Last '+series.length+' exams</span></h3><div class="chart-bars" style="display:flex;align-items:flex-end;gap:6px;height:120px;border-bottom:1px solid var(--border);padding-bottom:4px">'+bars+'</div></div>';
+}
 function renderGoalHistoryHtml(goal){
   const hist=historyForGoal(goal);
   const pct=getReadinessPctForGoal(goal);
@@ -203,24 +221,21 @@ function renderGoalHistoryHtml(goal){
   }else{
     weakHtml='<p style="font-size:13px;font-weight:600;color:var(--text-muted);margin:0">Complete a practice exam to identify weak areas.</p>';
   }
-  let chartHtml='';
-  if(series.length>0){
-    chartHtml='<div class="chart-wrap" style="display:block;margin-bottom:16px"><h3>Score trend <span style="font-size:11px;color:var(--text-muted);font-weight:400">Last '+series.length+' exams</span></h3><div class="chart-bars">'+series.map(h=>'<div class="chart-bar" style="height:'+h.score+'%;background:'+(h.score>=70?'var(--green)':h.score>=50?'var(--brand)':'var(--red)')+';flex:1" title="'+h.score+'% — '+esc(h.topic)+'"></div>').join('')+'</div></div>';
-  }
+  let chartHtml=renderScoreTrendHtml(series);
   const listHtml=hist.length?hist.map(h=>'<div class="hist-card" onclick="openMistakeReview('+h.id+')"><div class="hist-score '+(h.score>=70?'pass':h.score>=50?'mid':'fail')+'">'+h.score+'%</div><div class="hist-info"><div class="hist-title">'+(h.lang==='de'?'🇩🇪':'🇬🇧')+' '+esc(h.topic)+' — '+h.level+'</div><div class="hist-meta">'+h.date+' · '+(h.guidedDemo?'Demo':normalizeMode(h.mode)==='practice'?'Practice':'Official')+'</div></div><span style="font-size:11px;color:var(--brand);font-weight:700">Review →</span></div>').join('')
     :'<div class="hist-empty"><span>📊</span>No exams yet. Start in the Exams tab.</div>';
   const deck=deckForGoal(goal).length;
   const avg=hist.length?Math.round(hist.reduce((s,h)=>s+h.score,0)/hist.length):null;
   const wordsDelta=getKpiDelta('words',goal);
   const practiceDelta=getKpiDelta('practice',goal);
-  const ring=readinessRingSvg(pct,hist.length>0);
+  const ring=readinessRingSvg(pct,hist.length>0,hist.length);
   return`
     <div class="ws-prog-top">
       <div class="ws-panel ws-prog-readiness">
         <p class="ws-seclbl" style="margin:0 0 10px;width:100%">Exam readiness</p>
-        <div class="ws-prog-readiness-ring">${ring}<span class="ws-prog-readiness-pct">${hist.length?pct+'%':'—'}</span></div>
+        <div class="ws-prog-readiness-ring">${ring}<span class="ws-prog-readiness-pct">${readinessRingCaption(pct,hist.length>0,hist.length)}</span></div>
         <div style="flex:1;min-width:180px">
-          <p style="font-size:13px;font-weight:700;color:var(--text);margin:0 0 4px">${readinessEstLabelHtml(pct,hist.length>0)}</p>
+          <p style="font-size:13px;font-weight:700;color:var(--text);margin:0 0 4px">${readinessEstLabelHtml(pct,hist.length>0,hist.length)}</p>
           <p style="font-size:12px;font-weight:600;color:var(--text-secondary);margin:0;line-height:1.55">${hist.length?'Based on recent exams and mastered vocabulary.':'Complete a practice exam to see readiness.'}</p>
         </div>
       </div>
@@ -245,16 +260,29 @@ function renderWsSavedExams(goal){
   if(!grid)return;
   const list=S.savedExams.filter(e=>e.lang===goal.subject&&e.level===goal.level);
   if(!list.length){grid.innerHTML='<div class="hist-empty" style="grid-column:1/-1"><span>📁</span>No saved exams for this goal yet.</div>';return;}
-  grid.innerHTML=list.map((e)=>{
+  const auto=list.filter(e=>e.status==='auto');
+  const pinned=list.filter(e=>e.status!=='auto');
+  const cardHtml=(e)=>{
     const i=S.savedExams.indexOf(e);
     const src=e.source||(e.data?.demo?'demo':e.data?.poolSource?'pool':'ai');
     const srcLbl=src==='demo'?'Demo':(src==='pool'||src==='library')?'From library':'AI Generated';
     const st=e.status||'in_progress';
-    const stLbl=st==='completed'?'Completed':st==='aborted'?'Aborted':'In progress';
+    const stLbl=st==='completed'?'Completed':st==='aborted'?'Aborted':st==='auto'?'Auto':'In progress';
     const modeLbl=normalizeMode(e.mode)==='practice'?'Practice':'Official';
     const scoreH=e.score!=null?`<div class="saved-card-score ${e.score>=70?'pass':e.score>=50?'mid':'fail'}">${e.score}%</div>`:'';
-    return `<div class="saved-card"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px"><div class="saved-card-title">${examFlag(e.lang)} ${esc(e.topic)}</div><span class="saved-src-badge">${srcLbl}</span></div><div class="saved-card-meta">${e.level} · ${modeLbl} · Saved ${e.savedAt}</div><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap"><span class="saved-status ${st}">${stLbl}</span>${scoreH}</div><div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn-sm" onclick="reviewSavedExam(${i})">Review</button><button class="btn-sm blue" onclick="retakeExam(${i})">↺ Retake</button><button class="btn-sm red" onclick="deleteSaved(${i})">✕</button></div></div>`;
-  }).join('');
+    const pinBtn=st==='auto'?`<button class="btn-sm accent" onclick="pinSavedExam(${i})">Save</button>`:'';
+    return `<div class="saved-card${st==='auto'?' saved-card--auto':''}"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px"><div class="saved-card-title">${examFlag(e.lang)} ${esc(e.topic)}</div><span class="saved-src-badge">${srcLbl}</span></div><div class="saved-card-meta">${e.level} · ${modeLbl} · ${st==='auto'?'Generated':'Saved'} ${e.savedAt}</div><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap"><span class="saved-status ${st}">${stLbl}</span>${scoreH}</div><div style="display:flex;gap:6px;flex-wrap:wrap">${pinBtn}<button class="btn-sm" onclick="reviewSavedExam(${i})">Review</button><button class="btn-sm blue" onclick="retakeExam(${i})">↺ Retake</button><button class="btn-sm red" onclick="deleteSaved(${i})">✕</button></div></div>`;
+  };
+  let html='';
+  if(auto.length){
+    html+=`<p class="ws-seclbl" style="grid-column:1/-1;margin:0 0 8px">Recientes (auto)</p>`;
+    html+=auto.map(cardHtml).join('');
+  }
+  if(pinned.length){
+    if(auto.length)html+=`<p class="ws-seclbl" style="grid-column:1/-1;margin:16px 0 8px">Saved exams</p>`;
+    html+=pinned.map(cardHtml).join('');
+  }
+  grid.innerHTML=html;
 }
 function renderWsCoachBannerHtml(goal,act,compact){
   const weak=getWeakAreasForGoal(goal);
@@ -327,6 +355,7 @@ function renderGoalWorkspace(){
   }
   el.innerHTML=`
     <div class="ws-gh"><h1 class="ws-h1">${esc(goalLabel(goal))}</h1><span class="goal-pill">${goalPill(goal.subject)}</span>
+      ${typeof grammarNavLinkHtml==='function'?grammarNavLinkHtml(goal):''}
       <button type="button" class="profile-bar__change" style="margin-left:auto" onclick="editGoal('${gid}')">Edit goal</button>
     </div>
     <p class="ws-ghsub">${wsGoalSubline(goal)}</p>

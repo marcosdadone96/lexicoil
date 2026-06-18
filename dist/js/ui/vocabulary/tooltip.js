@@ -1,6 +1,8 @@
 // ═══════════════════════════════════════════
 // VOCAB TOOLTIP
 // ═══════════════════════════════════════════
+// C-1 fix: tooltip receives AI/pool-sourced data — escape before innerHTML
+function _ttEsc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
 const TT=document.getElementById('VT');let ttTimer=null;
 function isWordSaved(word){return S.flashcards.some(f=>f.word===word&&f.sourceLang===S.subject);}
 function markVocabSaved(word){document.querySelectorAll(`[data-vocab="${encodeURIComponent(word)}"]`).forEach(el=>el.classList.add('vocab-saved'));}
@@ -92,7 +94,8 @@ function renderTT(data,word,showSave=true){
   const saved=isWordSaved(w);
   const enc=encodeURIComponent(JSON.stringify(data)),lang=S.subject==='de'?'de-DE':'en-GB';
   const saveBtn=showSave?(isPracticeMode()?`<div class="vt-save saved" id="vtSave">${saved?'\u2713 In your deck':'\u2713 Saving\u2026'}</div>`:`<button class="vt-save${saved?' saved':''}" id="vtSave" onmousedown="event.preventDefault();event.stopPropagation()" onclick="event.stopPropagation();saveToFC('${enc}')">${saved?'\u2713 Saved':'\uff0b Save to Deck'}</button>`):'';
-  TT.innerHTML=`<div class="vt-header"><div class="vt-word">${data.word||word}</div><button class="vt-ab" onclick="speakBtn('${encodeURIComponent(data.word||word)}','${lang}',this)">\uD83D\uDD0A</button></div>${data.phonetic?`<div class="vt-phonetic">${data.phonetic}</div>`:''} ${data.pos?`<span class="vt-pos">${data.pos}</span>`:''}<div class="vt-translation">${esc(trans)}</div>${enAlt}${ex?`<div class="vt-example">${esc(ex)}${ext?`<br><em style="color:var(--text-muted);margin-top:3px;display:block">${esc(ext)}</em>`:''}</div>`:''}<div class="vt-lang-row">${LANGS.map(l=>`<button class="vt-lb vt-lb-tt${S.vocabLang===l.code?' active':''}" data-lang="${l.code}" onclick="chTTLang('${encodeURIComponent(data.word||word)}','${l.code}',this)">${l.l}</button>`).join('')}</div>${saveBtn}`;
+  const safeW=_ttEsc(data.word||word),safePhon=_ttEsc(data.phonetic||''),safePos=_ttEsc(data.pos||'');
+  TT.innerHTML=`<div class="vt-header"><div class="vt-word">${safeW}</div><button class="vt-ab" onclick="speakBtn('${encodeURIComponent(data.word||word)}','${lang}',this)">\uD83D\uDD0A</button></div>${safePhon?`<div class="vt-phonetic">${safePhon}</div>`:''} ${safePos?`<span class="vt-pos">${safePos}</span>`:''}<div class="vt-translation">${esc(trans)}</div>${enAlt}${ex?`<div class="vt-example">${esc(ex)}${ext?`<br><em style="color:var(--text-muted);margin-top:3px;display:block">${esc(ext)}</em>`:''}</div>`:''}<div class="vt-lang-row">${LANGS.map(l=>`<button class="vt-lb vt-lb-tt${S.vocabLang===l.code?' active':''}" data-lang="${l.code}" onclick="chTTLang('${encodeURIComponent(data.word||word)}','${l.code}',this)">${l.l}</button>`).join('')}</div>${saveBtn}`;
 }
 async function chTTLang(ew,lang,btn){S.vocabLang=lang;document.querySelectorAll('.ex-lb').forEach(b=>b.classList.toggle('active',b.textContent.toLowerCase()===lang));const word=decodeURIComponent(ew),ck=`${word}_${S.subject}_${lang}`,ss=S._vocabShowSave!==false;if(S.vocabCache[ck]){renderTT(S.vocabCache[ck],word,ss);return;}TT.innerHTML=`<div class="vt-word">${word}</div><div class="vt-loading"><span class="vt-dot"></span><span class="vt-dot"></span><span class="vt-dot"></span></div>`;await fetchVocab(word,ck,ss);}
 function setVL(lang,btn){S.vocabLang=lang;document.querySelectorAll('.ex-lb').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');document.querySelectorAll('.vt-lb-tt').forEach(b=>b.classList.toggle('active',b.dataset.lang===lang));}

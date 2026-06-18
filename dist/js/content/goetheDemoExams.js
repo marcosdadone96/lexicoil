@@ -91,7 +91,7 @@ const GoetheDemoExams = (() => {
           teil: 1,
           arbeitszeit: '5 Minuten',
           instruction:
-            'Teil 1 � Lesen\nLesen Sie die Texte 1�5.\nZu jedem Text gibt es eine Aufgabe.\nWaehlen Sie bei jeder Aufgabe die richtige Loesung a, b oder c.',
+            'Teil 1 — Lesen\nLesen Sie die Texte –.\nZu jedem Text gibt es eine Aufgabe.\nWaehlen Sie bei jeder Aufgabe die richtige Loesung a, b oder c.',
           items: [
             {
               id: 'l1',
@@ -116,7 +116,7 @@ const GoetheDemoExams = (() => {
             },
             {
               id: 'l4',
-              signText: 'Familienfest am Sonntag � alle willkommen!',
+              signText: 'Familienfest am Sonntag — alle willkommen!',
               question: 'Was bedeutet das?',
               options: ['a) Nur fuer Kinder', 'b) Fest fuer die Familie', 'c) Das Geschaeft ist zu'],
               correct: 'b',
@@ -134,10 +134,10 @@ const GoetheDemoExams = (() => {
           teil: 2,
           arbeitszeit: '8 Minuten',
           instruction:
-            'Teil 2 � Lesen\nLesen Sie den Text und die Aufgaben 6�10.\nEntscheiden Sie: Ist jede Aussage richtig oder falsch?',
+            'Teil 2 — Lesen\nLesen Sie den Text und die Aufgaben –0.\nEntscheiden Sie: Ist jede Aussage richtig oder falsch?',
           textTitle: 'E-Mail von Mehmet',
           text:
-            'Hallo liebe Freunde,\n\nich heisse Mehmet und wohne in Koeln. Ich lebe mit meiner Frau Ayse und unseren zwei Kindern in einer kleinen Wohnung. Meine Tochter Elif ist sechs Jahre alt. Mein Sohn Can ist neun. Jeden Morgen bringe ich die Kinder um acht Uhr in die Schule. Ayse arbeitet in einem Supermarkt.\n\nAm Dienstag geht meine Mutter zum Arzt � ich fahre sie dorthin. Am Samstag kochen wir zusammen und besuchen oft meinen Bruder in Duesseldorf.\n\nViele Gruesse\nMehmet',
+            'Hallo liebe Freunde,\n\nich heisse Mehmet und wohne in Koeln. Ich lebe mit meiner Frau Ayse und unseren zwei Kindern in einer kleinen Wohnung. Meine Tochter Elif ist sechs Jahre alt. Mein Sohn Can ist neun. Jeden Morgen bringe ich die Kinder um acht Uhr in die Schule. Ayse arbeitet in einem Supermarkt.\n\nAm Dienstag geht meine Mutter zum Arzt — ich fahre sie dorthin. Am Samstag kochen wir zusammen und besuchen oft meinen Bruder in Duesseldorf.\n\nViele Gruesse\nMehmet',
           questions: [
             rf('l6', '6  Mehmet wohnt in Koeln.', 'R'),
             rf('l7', '7  Mehmet hat drei Kinder.', 'F'),
@@ -156,7 +156,7 @@ const GoetheDemoExams = (() => {
           segments: [
             {
               id: 'h1',
-              label: 'Text 1 � Anrufbeantworter',
+              label: 'Text 1 — Anrufbeantworter',
               transcript:
                 'Hallo, hier spricht Frau Weber vom Kindergarten Sonnenschein. Morgen findet unser Familientag statt. Bitte bringen Sie ein kleines Essen mit. Der Tag beginnt um zehn Uhr. Bei Fragen rufen Sie uns an. Auf Wiederhoeren.',
               question: '1  Worum geht es?',
@@ -165,7 +165,7 @@ const GoetheDemoExams = (() => {
             },
             {
               id: 'h2',
-              label: 'Text 2 � Durchsage',
+              label: 'Text 2 — Durchsage',
               transcript:
                 'Achtung, liebe Kunden: Heute haben wir frisches Brot und Kuchen fuer die ganze Familie. Alles zum Sonderpreis bis sechzehn Uhr. Wir freuen uns auf Ihren Besuch in der Baeckerei Schmidt am Marktplatz.',
               question: '2  Was kann man dort kaufen?',
@@ -174,7 +174,7 @@ const GoetheDemoExams = (() => {
             },
             {
               id: 'h3',
-              label: 'Text 3 � Nachricht',
+              label: 'Text 3 — Nachricht',
               transcript:
                 'Papa, ich bin in der Bibliothek. Ich lerne fuer die Pruefung. Ich komme erst um sieben Uhr nach Hause. Kannst du heute das Abendessen machen? Danke, deine Tochter Sarah.',
               question: '3  Was bittet Sarah?',
@@ -183,7 +183,7 @@ const GoetheDemoExams = (() => {
             },
             {
               id: 'h4',
-              label: 'Text 4 � Anrufbeantworter',
+              label: 'Text 4 — Anrufbeantworter',
               transcript:
                 'Willkommen bei Hausarzt Dr. Klein. Unsere Sprechzeiten sind montags bis freitags von acht bis zwoelf Uhr. Termine nur telefonisch. Bitte rufen Sie uns an. Vielen Dank.',
               question: '4  Wie bekommt man einen Termin?',
@@ -192,7 +192,7 @@ const GoetheDemoExams = (() => {
             },
             {
               id: 'h5',
-              label: 'Text 5 � Ankuendigung',
+              label: 'Text 5 — Ankuendigung',
               transcript:
                 'Guten Morgen! Heute ist in unserer Strasse Fest. Es gibt Musik und Essen fuer Gross und Klein. Das Fest ist von vierzehn bis zwanzig Uhr im Park. Kommen Sie mit Ihrer Familie!',
               question: '5  Wo ist das Fest?',
@@ -224,7 +224,7 @@ const GoetheDemoExams = (() => {
           arbeitszeit: '10 Minuten',
           fieldId: 'write1',
           task:
-            'Aufgabe 1 � Schreiben\nFuellen Sie das Formular aus.\n\nSie moechten eine Familienkarte im Sportverein beantragen.\nLesen Sie zuerst den Text. Dann schreiben Sie die Informationen in das Formular.\n\n---\nMein Name ist Elena Popescu. Ich bin am 3. November 1988 geboren. Ich komme aus Rumaenien. Meine E-Mail-Adresse ist elena.popescu@web.de. Meine Telefonnummer ist 0176 4455667.\n---',
+            'Aufgabe 1 — Schreiben\nFuellen Sie das Formular aus.\n\nSie moechten eine Familienkarte im Sportverein beantragen.\nLesen Sie zuerst den Text. Dann schreiben Sie die Informationen in das Formular.\n\n---\nMein Name ist Elena Popescu. Ich bin am 3. November 1988 geboren. Ich komme aus Rumaenien. Meine E-Mail-Adresse ist elena.popescu@web.de. Meine Telefonnummer ist 0176 4455667.\n---',
           formFields: ['Vorname', 'Nachname', 'Geburtsdatum', 'Nationalitaet', 'E-Mail', 'Telefon'],
           minWords: 0,
           criteria: ['Vollstaendigkeit', 'Inhaltliche Korrektheit', 'Lesbarkeit'],
@@ -237,7 +237,7 @@ const GoetheDemoExams = (() => {
           arbeitszeit: '10 Minuten',
           fieldId: 'write2',
           task:
-            'Aufgabe 2 � Schreiben\nSchreiben Sie eine kurze Nachricht (circa 30 Woerter).\n\nIhre Schwester laedt Sie zum Familienessen ein.\nSchreiben Sie an Ihre Schwester:\n- Bedanken Sie sich fuer die Einladung\n- Schreiben Sie, was Sie mitbringen moechten\n- Schreiben Sie, wann Sie kommen',
+            'Aufgabe 2 — Schreiben\nSchreiben Sie eine kurze Nachricht (circa 30 Woerter).\n\nIhre Schwester laedt Sie zum Familienessen ein.\nSchreiben Sie an Ihre Schwester:\n- Bedanken Sie sich fuer die Einladung\n- Schreiben Sie, was Sie mitbringen moechten\n- Schreiben Sie, wann Sie kommen',
           minWords: 30,
           criteria: ['Inhalt (alle 3 Punkte)', 'Verstaendlichkeit', 'Einfache Korrektheit'],
           modelAnswer:
@@ -252,7 +252,7 @@ const GoetheDemoExams = (() => {
           dauer: 'ca. 3 Minuten',
           fieldId: 'speak1',
           situation:
-            'Teil 1 � Sprechen\nDer Pruefer / die Prueferin stellt Ihnen Fragen.\nAntworten Sie in ganzen Saetzen.',
+            'Teil 1 — Sprechen\nDer Pruefer / die Prueferin stellt Ihnen Fragen.\nAntworten Sie in ganzen Saetzen.',
           prompts: [
             'Wie heissen Sie?',
             'Woher kommen Sie?',
@@ -270,8 +270,8 @@ const GoetheDemoExams = (() => {
           dauer: 'ca. 3 Minuten',
           fieldId: 'speak2',
           situation:
-            'Teil 2 � Sprechen\nSie und Ihr Partner / Ihre Partnerin haben Karten mit Dingen und Preisen.\nFragen Sie nach den Dingen auf der Karte Ihres Partners / Ihrer Partnerin.\nAntworten Sie auf Fragen zu Ihrer Karte.\n\nIhre Karte:\n- Buch: 8 Euro\n- Apfel: 1 Euro\n- T-Shirt: 15 Euro\n\nKarte Ihres Partners / Ihrer Partners:\n- Milch: 2 Euro\n- Kuchen: 4 Euro\n- Stift: 50 Cent',
-          cardText: 'Buch (8 Euro), Apfel (1 Euro), T-Shirt (15 Euro) � Partner: Milch (2 Euro), Kuchen (4 Euro), Stift (50 Cent)',
+            'Teil 2 — Sprechen\nSie und Ihr Partner / Ihre Partnerin haben Karten mit Dingen und Preisen.\nFragen Sie nach den Dingen auf der Karte Ihres Partners / Ihrer Partnerin.\nAntworten Sie auf Fragen zu Ihrer Karte.\n\nIhre Karte:\n- Buch: 8 Euro\n- Apfel: 1 Euro\n- T-Shirt: 15 Euro\n\nKarte Ihres Partners / Ihrer Partners:\n- Milch: 2 Euro\n- Kuchen: 4 Euro\n- Stift: 50 Cent',
+          cardText: 'Buch (8 Euro), Apfel (1 Euro), T-Shirt (15 Euro) — Partner: Milch (2 Euro), Kuchen (4 Euro), Stift (50 Cent)',
           points: ['Nach Preis fragen', 'Antwort geben', 'Nach einem anderen Ding fragen', 'Hoeflich antworten'],
           minExchanges: 3,
           modelAnswer:
@@ -305,7 +305,7 @@ const GoetheDemoExams = (() => {
           teil: 1,
           arbeitszeit: '10 Minuten',
           instruction:
-            'Teil 1 � Lesen\nLesen Sie den Text und die Aufgaben 1 bis 5.\nWaehlen Sie: Richtig oder Falsch.',
+            'Teil 1 — Lesen\nLesen Sie den Text und die Aufgaben 1 bis 5.\nWaehlen Sie: Richtig oder Falsch.',
           textTitle: 'Lokale Nachrichten: Stadtbummel und Reisen in Hannover',
           text:
             'Seit dem 1. Mai gibt es in der Innenstadt von Hannover mehr Freizeitangebote. Die Stadtverwaltung berichtet, dass letztes Jahr viele Besucher gekommen sind, weil die Geschaefte auch sonntags geoeffnet waren. Ab jetzt koennen Touristen an Wochenenden an einer kostenlosen Stadtfuehrung teilnehmen. Die Fuehrung beginnt um 11 Uhr am Hauptbahnhof.\n\nAusserdem gibt es einen neuen Reisebuero-Stand im Einkaufszentrum. Dort bekommt man guenstige Angebote fuer Staedtereisen nach Berlin und Hamburg. Man muss nicht lange warten, weil man online vorbestellen kann. Viele Familien nutzen das Angebot schon, obwohl es erst seit kurzem existiert.',
@@ -321,7 +321,7 @@ const GoetheDemoExams = (() => {
           teil: 2,
           arbeitszeit: '10 Minuten',
           instruction:
-            'Teil 2 � Lesen\nLesen Sie den Text und die Aufgaben 6 bis 10.\nWaehlen Sie: Richtig oder Falsch.',
+            'Teil 2 — Lesen\nLesen Sie den Text und die Aufgaben 6 bis 10.\nWaehlen Sie: Richtig oder Falsch.',
           textTitle: 'E-Mail von Sabine',
           text:
             'Lieber Thomas,\n\ndanke fuer deine E-Mail! Ich habe letztes Wochenende mit meiner Schwester in Muenchen eingekauft. Wir waren im Olympia-Einkaufszentrum, weil dort viele Geschaefte sind. Ich habe mir eine neue Jacke gekauft. Sie hat 89 Euro gekostet, aber sie war im Sale.\n\nAm Samstagabend sind wir noch ins Kino gegangen. Der Film hat uns sehr gefallen. Am Sonntag bin ich mit dem Zug zurueck nach Nuernberg gefahren. Du musst unbedingt mitkommen, wenn ich das naechste Mal fahre!\n\nViele Gruesse\nSabine',
@@ -337,7 +337,7 @@ const GoetheDemoExams = (() => {
           teil: 3,
           arbeitszeit: '10 Minuten',
           instruction:
-            'Teil 3 � Lesen\nLesen Sie die Situationen 11 bis 14 und die Anzeigen a bis d.\nWelche Anzeige passt zu welcher Situation?\nSie koennen jede Anzeige nur einmal verwenden.',
+            'Teil 3 — Lesen\nLesen Sie die Situationen 11 bis 14 und die Anzeigen a bis d.\nWelche Anzeige passt zu welcher Situation?\nSie koennen jede Anzeige nur einmal verwenden.',
           ads: [
             {
               key: 'A',
@@ -352,7 +352,7 @@ const GoetheDemoExams = (() => {
             {
               key: 'C',
               title: 'Outlet Center Nord',
-              text: 'Mode, Schuhe und Sportartikel bis 70 Prozent guenstiger. Samstag 10�20 Uhr. Bus ab Bahnhof alle 20 Minuten.',
+              text: 'Mode, Schuhe und Sportartikel bis 70 Prozent guenstiger. Samstag 1–0 Uhr. Bus ab Bahnhof alle 20 Minuten.',
             },
             {
               key: 'D',
@@ -377,7 +377,7 @@ const GoetheDemoExams = (() => {
           segments: [
             {
               id: 'h1',
-              label: 'Gespraech 1 � Reisebuero',
+              label: 'Gespraech 1 — Reisebuero',
               transcript:
                 'Mitarbeiterin: Guten Tag, kann ich Ihnen helfen?\nKunde: Ja, ich suche eine Reise nach Prag fuer zwei Personen.\nMitarbeiterin: Wir haben ein Angebot fuer 199 Euro pro Person. Mit Fruehstueck und Zugfahrt.\nKunde: Das klingt gut. Wann kann ich buchen?\nMitarbeiterin: Sie koennen heute noch online buchen oder morgen vorbeikommen.',
               question: '1  Was moechte der Kunde?',
@@ -386,7 +386,7 @@ const GoetheDemoExams = (() => {
             },
             {
               id: 'h2',
-              label: 'Gespraech 2 � Einkaufszentrum',
+              label: 'Gespraech 2 — Einkaufszentrum',
               transcript:
                 'Freundin A: Gefaellt dir die Tasche?\nFreundin B: Sie ist schoen, aber zu teuer. Sie kostet 120 Euro.\nFreundin A: Schau mal, dort gibt es die gleiche Tasche im Angebot fuer 79 Euro.\nFreundin B: Oh super! Dann kaufe ich sie jetzt, weil sie heute guenstiger ist.',
               question: '2  Warum kauft Freundin B die Tasche?',
@@ -395,7 +395,7 @@ const GoetheDemoExams = (() => {
             },
             {
               id: 'h3',
-              label: 'Gespraech 3 � Freizeit',
+              label: 'Gespraech 3 — Freizeit',
               transcript:
                 'Jonas: Was machst du am Samstag?\nLaura: Ich gehe wandern. Willst du mitkommen?\nJonas: Gern! Wo treffen wir uns?\nLaura: Am Busbahnhof um neun Uhr. Wir fahren dann in den Wald.\nJonas: Gut, ich bringe etwas zu trinken mit.',
               question: '3  Was machen Jonas und Laura am Samstag?',
@@ -404,7 +404,7 @@ const GoetheDemoExams = (() => {
             },
             {
               id: 'h4',
-              label: 'Gespraech 4 � Supermarkt',
+              label: 'Gespraech 4 — Supermarkt',
               transcript:
                 'Verkaeufer: Entschuldigung, dieser Apfel ist leider nicht mehr frisch.\nKundin: Kein Problem. Haben Sie noch Bananen?\nVerkaeufer: Ja, die Bananen sind heute im Angebot. Ein Kilo kostet nur 1,49 Euro.\nKundin: Dann nehme ich zwei Kilo, bitte.',
               question: '4  Was kauft die Kundin?',
@@ -441,7 +441,7 @@ const GoetheDemoExams = (() => {
           criteria: ['Inhalt (alle 4 Punkte)', 'Kommunikative Gestaltung', 'Formale Richtigkeit'],
           modelAnswer:
             'Hallo Lars,\n\nich moechte im Sommer an die Ostsee fahren, weil ich das Meer sehr mag. Ich fahre am 15. Juli mit dem Zug. Dort moechte ich schwimmen, spazieren gehen und viel Eis essen.\n\nKommst du mit? Das waere bestimmt schoen!\n\nViele Gruesse\nJulia',
-          feedback: ['Alle vier Punkte behandelt', 'Anrede und Schlussformel', 'Circa 60�80 Woerter'],
+          feedback: ['Alle vier Punkte behandelt', 'Anrede und Schlussformel', 'Circa 6–0 Woerter'],
         },
       ],
       sprechenParts: [
@@ -451,12 +451,12 @@ const GoetheDemoExams = (() => {
           dauer: 'ca. 4 Minuten',
           fieldId: 'speak1',
           situation:
-            'Teil 1 � Sprechen\nDer Pruefer / die Prueferin stellt Ihnen Fragen zum Alltag.\nAntworten Sie in ganzen Saetzen.',
+            'Teil 1 — Sprechen\nDer Pruefer / die Prueferin stellt Ihnen Fragen zum Alltag.\nAntworten Sie in ganzen Saetzen.',
           prompts: [
             'Was kaufen Sie gern ein und warum?',
             'Wohin sind Sie schon einmal gereist?',
             'Was machen Sie gern in der Freizeit?',
-            'Wie reisen Sie am liebsten � mit dem Zug, dem Auto oder dem Flugzeug?',
+            'Wie reisen Sie am liebsten — mit dem Zug, dem Auto oder dem Flugzeug?',
           ],
           modelAnswer:
             'Ich kaufe gern Buecher ein, weil ich in der Freizeit viel lese. Letztes Jahr bin ich nach Oesterreich gefahren. Am Wochenende treffe ich oft Freunde oder gehe ins Cafe. Am liebsten reise ich mit dem Zug, weil das entspannter ist als mit dem Auto.',
@@ -468,7 +468,7 @@ const GoetheDemoExams = (() => {
           dauer: 'ca. 4 Minuten',
           fieldId: 'speak2',
           situation:
-            'Teil 2 � Sprechen\nSie und der Pruefer / die Prueferin planen gemeinsam einen Ausflug.\nUeberlegen Sie: Wohin? Wann? Wie kommen Sie hin? Was nehmen Sie mit?',
+            'Teil 2 — Sprechen\nSie und der Pruefer / die Prueferin planen gemeinsam einen Ausflug.\nUeberlegen Sie: Wohin? Wann? Wie kommen Sie hin? Was nehmen Sie mit?',
           points: ['Ziel vorschlagen', 'Zeit und Transport festlegen', 'Auf Vorschlaege reagieren', 'Gemeinsam entscheiden'],
           minExchanges: 4,
           modelAnswer:
@@ -517,10 +517,10 @@ const GoetheDemoExams = (() => {
           teil: 1,
           arbeitszeit: '10 Minuten',
           instruction:
-            'Teil 1 � Lesen\nLesen Sie den Text und die Aufgaben 1 bis 6 dazu.\nSchreiben Sie: Richtig oder Falsch.',
-          textTitle: 'ZeroWasteLeben.de � Mein erster Monat ohne Plastikmuell',
+            'Teil 1 — Lesen\nLesen Sie den Text und die Aufgaben 1 bis 6 dazu.\nSchreiben Sie: Richtig oder Falsch.',
+          textTitle: 'ZeroWasteLeben.de — Mein erster Monat ohne Plastikmuell',
           text:
-            'Montag, 12. Maerz\n\nSeit vier Wochen versuche ich, so wenig Plastikmuell wie moeglich zu produzieren. Anfangs war es schwierig, weil fast alles im Supermarkt verpackt ist. Deshalb kaufe ich jetzt oft auf dem Wochenmarkt ein, obwohl das etwas teurer ist.\n\nMein groesster Erfolg diese Woche: Ich habe endlich einen guten Unverpackt-Laden in meiner Naehe gefunden. Ausserdem bringe ich meine eigenen Beutel und Glaeser mit. Mein Mitbewohner findet das manchmal laestig, trotzdem unterstuetzt er mich, wenn ich koche.\n\nAm Samstag habe ich an einer Stadtteilaktion teilgenommen, bei der alte Fahrraeder repariert wurden. Das fand ich toll, weil man Geraete nutzen kann, statt immer Neues zu kaufen. Naechsten Monat moechte ich lernen, Kompost richtig anzulegen � meine Balkonpflanzen wuerden sich bestimmt freuen.',
+            'Montag, 12. Maerz\n\nSeit vier Wochen versuche ich, so wenig Plastikmuell wie moeglich zu produzieren. Anfangs war es schwierig, weil fast alles im Supermarkt verpackt ist. Deshalb kaufe ich jetzt oft auf dem Wochenmarkt ein, obwohl das etwas teurer ist.\n\nMein groesster Erfolg diese Woche: Ich habe endlich einen guten Unverpackt-Laden in meiner Naehe gefunden. Ausserdem bringe ich meine eigenen Beutel und Glaeser mit. Mein Mitbewohner findet das manchmal laestig, trotzdem unterstuetzt er mich, wenn ich koche.\n\nAm Samstag habe ich an einer Stadtteilaktion teilgenommen, bei der alte Fahrraeder repariert wurden. Das fand ich toll, weil man Geraete nutzen kann, statt immer Neues zu kaufen. Naechsten Monat moechte ich lernen, Kompost richtig anzulegen — meine Balkonpflanzen wuerden sich bestimmt freuen.',
           questions: [
             rf('l1', '1  Die Autorin kauft seit kurzem haeufiger auf dem Wochenmarkt ein.', 'R'),
             rf('l2', '2  Im Supermarkt gibt es laut Text fast keine verpackten Produkte.', 'F'),
@@ -534,7 +534,7 @@ const GoetheDemoExams = (() => {
           teil: 2,
           arbeitszeit: '20 Minuten',
           instruction:
-            'Teil 2 � Lesen\nLesen Sie den Text aus der Presse und die Aufgaben 7 bis 9 dazu.\nWaehlen Sie bei jeder Aufgabe die richtige Loesung a, b oder c.',
+            'Teil 2 — Lesen\nLesen Sie den Text aus der Presse und die Aufgaben 7 bis 9 dazu.\nWaehlen Sie bei jeder Aufgabe die richtige Loesung a, b oder c.',
           textTitle: 'Stuttgarter Nachrichten: Weniger Muell in den Schulen',
           text:
             'Ab dem neuen Schuljahr sollen alle staedtischen Schulen in Stuttgart weniger Einwegplastik nutzen. Die Stadtverwaltung hat dafuer 800.000 Euro bereitgestellt, damit Kantinen Mehrweggeschirr anschaffen koennen. Allerdings muessen die Schulen die Spuelmaschinen selbst warten, obwohl die Anschaffung gefoerdert wird.\n\nLaut Bildungsdezernent Martin Keller haben bereits zwoelf Schulen erfolgreich umgestellt. Die Schuelerinnen und Schueler sortieren Muell jetzt getrennt, und der Energieverbrauch in den Kuechen ist gesunken. Kritiker bemengeln jedoch, dass private Schulen von der Foerderung ausgeschlossen sind.\n\nExperten betonen, dass solche Massnahmen nur wirken, wenn Eltern und Lehrkraefte mitziehen. Deshalb plant die Stadt Workshops fuer Familien. Wenn alles gut laeuft, koennte das Modell auch in anderen Staedten uebernommen werden.',
@@ -569,7 +569,7 @@ const GoetheDemoExams = (() => {
           teil: 3,
           arbeitszeit: '10 Minuten',
           instruction:
-            'Teil 3 � Lesen\nLesen Sie die Situationen 10 bis 14 und die Anzeigen a bis f.\nWelche Anzeige passt?\nSie koennen jede Anzeige nur einmal verwenden.\nEine Anzeige passt nicht.',
+            'Teil 3 — Lesen\nLesen Sie die Situationen 10 bis 14 und die Anzeigen a bis f.\nWelche Anzeige passt?\nSie koennen jede Anzeige nur einmal verwenden.\nEine Anzeige passt nicht.',
           ads: [
             {
               key: 'A',
@@ -579,7 +579,7 @@ const GoetheDemoExams = (() => {
             {
               key: 'B',
               title: 'Unverpackt & Fair',
-              text: 'Lebensmittel ohne Plastikverpackung. Bringen Sie Dosen und Beutel mit. Di�Sa 9�19 Uhr, Innenstadt.',
+              text: 'Lebensmittel ohne Plastikverpackung. Bringen Sie Dosen und Beutel mit. Di—Sa –9 Uhr, Innenstadt.',
             },
             {
               key: 'C',
@@ -589,7 +589,7 @@ const GoetheDemoExams = (() => {
             {
               key: 'D',
               title: 'Gartenkurs Urban Farming',
-              text: 'Gemuese auf Balkon und Dachterrasse anbauen. Wochenendkurs, Maerz�Mai. Material inklusive, max. 12 Teilnehmer.',
+              text: 'Gemuese auf Balkon und Dachterrasse anbauen. Wochenendkurs, Maerz—Mai. Material inklusive, max. 12 Teilnehmer.',
             },
             {
               key: 'E',
@@ -598,7 +598,7 @@ const GoetheDemoExams = (() => {
             },
             {
               key: 'F',
-              title: 'Mode-Schn�ppchen Woche',
+              title: 'Mode-Schn—ppchen Woche',
               text: 'Sommerkollektion bis 70 Prozent reduziert. Nur diese Woche im Einkaufszentrum West. Tausende Artikel.',
             },
           ],
@@ -614,10 +614,10 @@ const GoetheDemoExams = (() => {
           teil: 4,
           arbeitszeit: '10 Minuten',
           instruction:
-            'Teil 4 � Lesen\nLesen Sie die Meinungen 15 bis 18.\nWelche Ueberschrift passt zu welcher Meinung?\nOrdnen Sie zu.',
+            'Teil 4 — Lesen\nLesen Sie die Meinungen 15 bis 18.\nWelche Ueberschrift passt zu welcher Meinung?\nOrdnen Sie zu.',
           textTitle: 'Forum: Sollten Einwegplastikbecher sofort verboten werden?',
           text:
-            'Meinung 15 � Anna, 34:\nEin sofortiges Verbot waere ueberfaellig. Unternehmen hatten genug Zeit, um umzustellen. Wenn wir weiter warten, landet noch mehr Muell in der Natur.\n\nMeinung 16 � Ben, 52:\nViele Cafes leben von Take-away-Getraenken. Ein hartes Verbot wuerde kleine Betriebe treffen, obwohl grosse Ketten Alternativen leicht finanzieren koennen.\n\nMeinung 17 � Clara, 28:\nIch bin fuer weniger Plastik, aber erst wenn Mehrwegbecher ueberall verfuegbar sind. Sonst zahlen vor allem Kundinnen und Kunden drauf.\n\nMeinung 18 � David, 41:\nDer Staat sollte nicht jedes Verhalten vorschreiben. Informieren ja, verbieten nein � jede Person muss selbst verantwortlich entscheiden.',
+            'Meinung 15 — Anna, 34:\nEin sofortiges Verbot waere ueberfaellig. Unternehmen hatten genug Zeit, um umzustellen. Wenn wir weiter warten, landet noch mehr Muell in der Natur.\n\nMeinung 16 — Ben, 52:\nViele Cafes leben von Take-away-Getraenken. Ein hartes Verbot wuerde kleine Betriebe treffen, obwohl grosse Ketten Alternativen leicht finanzieren koennen.\n\nMeinung 17 — Clara, 28:\nIch bin fuer weniger Plastik, aber erst wenn Mehrwegbecher ueberall verfuegbar sind. Sonst zahlen vor allem Kundinnen und Kunden drauf.\n\nMeinung 18 — David, 41:\nDer Staat sollte nicht jedes Verhalten vorschreiben. Informieren ja, verbieten nein — jede Person muss selbst verantwortlich entscheiden.',
           ads: [
             { key: 'a', title: 'Der Staat regiert zu viel', text: '' },
             { key: 'b', title: 'Ohne Plastik geht es auch', text: '' },
@@ -635,8 +635,8 @@ const GoetheDemoExams = (() => {
           teil: 5,
           arbeitszeit: '10 Minuten',
           instruction:
-            'Teil 5 � Lesen\nLesen Sie den Text und die Aufgaben 19 bis 21.\nWaehlen Sie bei jeder Aufgabe die richtige Loesung a, b oder c.',
-          textTitle: 'Muelltrennung � Wohnanlage Gruene Gasse',
+            'Teil 5 — Lesen\nLesen Sie den Text und die Aufgaben 19 bis 21.\nWaehlen Sie bei jeder Aufgabe die richtige Loesung a, b oder c.',
+          textTitle: 'Muelltrennung — Wohnanlage Gruene Gasse',
           text:
             'In der Wohnanlage Gruene Gasse gilt ab 1. April eine erweiterte Muelltrennung. Bioabfaelle duerfen nur in den dafuer vorgesehenen braunen Behaeltern entsorgt werden. Verpackungen aus Plastik und Metall gehoeren in die Gelbe Tonne, sofern sie leer und grob sauber sind.\n\nSperrmuell darf nicht im Hausmuell landen. Anmeldungen sind schriftlich bis spaetestens zwei Werktage vor Abholung an die Hausverwaltung zu richten. Bei wiederholten Verstoessen koennen Nebenkosten nachberechnet werden, obwohl zunaechst eine muendliche Ermahnung erfolgt.\n\nAltbatterien und Elektrogeraete werden im Gemeinschaftskeller gesammelt. Die Abgabe ist fuer Bewohner kostenlos.',
           questions: [
@@ -677,7 +677,7 @@ const GoetheDemoExams = (() => {
             {
               label: 'Text 1: Anrufbeantworter',
               transcript:
-                'Guten Tag, hier spricht die Stadtverwaltung. Ihre Anmeldung zum Workshop �Nachhaltig einkaufen" am Donnerstag, den 18. April, ist bei uns eingegangen. Bitte bringen Sie am Donnerstag um 17 Uhr Ihre Stoffbeutel mit. Der Workshop findet im Buergerzentrum Ost statt, nicht wie urspruenglich geplant in der Bibliothek. Bei Fragen rufen Sie uns bitte zurueck.',
+                'Guten Tag, hier spricht die Stadtverwaltung. Ihre Anmeldung zum Workshop —Nachhaltig einkaufen" am Donnerstag, den 18. April, ist bei uns eingegangen. Bitte bringen Sie am Donnerstag um 17 Uhr Ihre Stoffbeutel mit. Der Workshop findet im Buergerzentrum Ost statt, nicht wie urspruenglich geplant in der Bibliothek. Bei Fragen rufen Sie uns bitte zurueck.',
               questions: [
                 rf('h1', '1  Der Workshop findet in der Bibliothek statt.', 'F'),
                 mc('h2', '2  Die Teilnehmer sollen ...', 'Stoffbeutel mitbringen', '10 Euro bezahlen', 'eine Anmeldung per Post schicken', 'a'),
@@ -715,7 +715,7 @@ const GoetheDemoExams = (() => {
             'Hoeren Teil 3\nSie hoeren ein Gespraech.\nSie hoeren das Gespraech einmal.\nSind die Aussagen Richtig oder Falsch?',
           context: 'Zwei Nachbarn sprechen ueber eine Muelltrennaktion im Haus.',
           transcript:
-            'Sabine: Hast du den Zettel gesehen? Ab naechster Woche trennen wir Plastik extra.\nMarkus: Ja, aber ehrlich gesagt finde ich das kompliziert. Ich wuerde lieber alles in einen Sack werfen.\nSabine: Das geht nicht mehr. Die Hausverwaltung hat neue Toenen bestellt, obwohl viele Bewohner dagegen waren.\nMarkus: Mein Cousin wohnt in einer anderen Strasse � dort trennen sie schon seit zwei Jahren, und es klappt.\nSabine: Genau deshalb machen wir mit. Am Samstag gibt es eine kurze Info im Hof, falls jemand Fragen hat.',
+            'Sabine: Hast du den Zettel gesehen? Ab naechster Woche trennen wir Plastik extra.\nMarkus: Ja, aber ehrlich gesagt finde ich das kompliziert. Ich wuerde lieber alles in einen Sack werfen.\nSabine: Das geht nicht mehr. Die Hausverwaltung hat neue Toenen bestellt, obwohl viele Bewohner dagegen waren.\nMarkus: Mein Cousin wohnt in einer anderen Strasse — dort trennen sie schon seit zwei Jahren, und es klappt.\nSabine: Genau deshalb machen wir mit. Am Samstag gibt es eine kurze Info im Hof, falls jemand Fragen hat.',
           questions: [
             rf('h8', '8  Ab naechster Woche soll Plastik getrennt werden.', 'R'),
             rf('h9', '9  Markus findet die neue Regelung von Anfang an praktisch.', 'F'),
@@ -731,7 +731,7 @@ const GoetheDemoExams = (() => {
           context: 'Radiosendung: Soll Fleischkonsum staerker besteuert werden?',
           speakers: ['Moderator/in', 'Frau Lorenz', 'Herr Klein'],
           transcript:
-            'Moderator: Heute debattieren wir ueber eine Hoeherbesteuerung von Fleisch. Frau Lorenz, Sie sind dafuer?\nFrau Lorenz: Ja. Fleisch ist guenstiger als viele pflanzliche Alternativen, obwohl die Umweltbelastung hoeher ist. Das wuerde ich aendern.\nHerr Klein: Ich bin skeptisch. Viele laendliche Betriebe leben vom Verkauf von Fleisch. Ohne Uebergang wuerden Jobs verloren gehen.\nFrau Lorenz: Deshalb brauchen wir klare Foerderung fuer umweltfreundliche Landwirtschaft.\nModerator: Herr Klein, sehen Sie gar keine Loesung?\nHerr Klein: Doch, aber ueber freiwillige Siegel und Aufklaerung, nicht ueber Strafsteuern.\nFrau Lorenz: Freiwilligkeit reicht nicht � die Klimaziele verlangen mehr Tempo.',
+            'Moderator: Heute debattieren wir ueber eine Hoeherbesteuerung von Fleisch. Frau Lorenz, Sie sind dafuer?\nFrau Lorenz: Ja. Fleisch ist guenstiger als viele pflanzliche Alternativen, obwohl die Umweltbelastung hoeher ist. Das wuerde ich aendern.\nHerr Klein: Ich bin skeptisch. Viele laendliche Betriebe leben vom Verkauf von Fleisch. Ohne Uebergang wuerden Jobs verloren gehen.\nFrau Lorenz: Deshalb brauchen wir klare Foerderung fuer umweltfreundliche Landwirtschaft.\nModerator: Herr Klein, sehen Sie gar keine Loesung?\nHerr Klein: Doch, aber ueber freiwillige Siegel und Aufklaerung, nicht ueber Strafsteuern.\nFrau Lorenz: Freiwilligkeit reicht nicht — die Klimaziele verlangen mehr Tempo.',
           questions: [
             matchSpeaker('h12', '12  Fleisch ist oft guenstiger als pflanzliche Alternativen.', ['M', 'F', 'H'], 'F'),
             matchSpeaker('h13', '13  Laendliche Betriebe koennten ohne Uebergang Jobs verlieren.', ['M', 'F', 'H'], 'H'),
@@ -746,7 +746,7 @@ const GoetheDemoExams = (() => {
           arbeitszeit: '20 Minuten',
           fieldId: 'write1',
           task:
-            'Aufgabe 1 � Schreiben\nSchreiben Sie eine E-Mail (circa 80 Woerter).\nSchreiben Sie etwas zu allen drei Punkten.\n\nSie waren letztes Wochenende auf einem Umweltfestival. Ihr Freund / Ihre Freundin Lukas war krank und konnte nicht mitkommen.\n\n- Beschreiben Sie: Was haben Sie auf dem Festival erlebt?\n- Begruenden Sie: Was hat Ihnen am besten gefallen und warum?\n- Machen Sie einen Vorschlag fuer ein gemeinsames Treffen.',
+            'Aufgabe 1 — Schreiben\nSchreiben Sie eine E-Mail (circa 80 Woerter).\nSchreiben Sie etwas zu allen drei Punkten.\n\nSie waren letztes Wochenende auf einem Umweltfestival. Ihr Freund / Ihre Freundin Lukas war krank und konnte nicht mitkommen.\n\n- Beschreiben Sie: Was haben Sie auf dem Festival erlebt?\n- Begruenden Sie: Was hat Ihnen am besten gefallen und warum?\n- Machen Sie einen Vorschlag fuer ein gemeinsames Treffen.',
           minWords: 80,
           criteria: ['Inhalt (Aufgabenerfuellung)', 'Kommunikative Gestaltung', 'Formale Richtigkeit'],
           modelAnswer:
@@ -758,11 +758,11 @@ const GoetheDemoExams = (() => {
           arbeitszeit: '25 Minuten',
           fieldId: 'write2',
           task:
-            'Aufgabe 2 � Schreiben\nSchreiben Sie Ihre Meinung zum Thema (circa 80 Woerter).\n\nIm Online-Forum steht:\n�Jede Person sollte maximal einmal pro Woche Fleisch essen, wenn wir die Umwelt schuetzen wollen."\n\nSchreiben Sie, ob Sie dieser Meinung zustimmen oder nicht. Begruenden Sie Ihre Meinung mit mindestens zwei Argumenten und machen Sie einen Vorschlag.',
+            'Aufgabe 2 — Schreiben\nSchreiben Sie Ihre Meinung zum Thema (circa 80 Woerter).\n\nIm Online-Forum steht:\n—Jede Person sollte maximal einmal pro Woche Fleisch essen, wenn wir die Umwelt schuetzen wollen."\n\nSchreiben Sie, ob Sie dieser Meinung zustimmen oder nicht. Begruenden Sie Ihre Meinung mit mindestens zwei Argumenten und machen Sie einen Vorschlag.',
           minWords: 80,
           criteria: ['Klare Meinung', 'Mindestens zwei Argumente', 'Bezug zum Zitat und Vorschlag'],
           modelAnswer:
-            'Ich stimme teilweise zu, weil Fleisch viel Wasser und Energie verbraucht. Allerdings koennten viele Menschen das finanziell nicht mittragen, wenn Fleisch teurer wird. Deshalb sollte man guenstige pflanzliche Alternativen foerdern. In Kantinen koennte es einen �Klima-Teller" geben.',
+            'Ich stimme teilweise zu, weil Fleisch viel Wasser und Energie verbraucht. Allerdings koennten viele Menschen das finanziell nicht mittragen, wenn Fleisch teurer wird. Deshalb sollte man guenstige pflanzliche Alternativen foerdern. In Kantinen koennte es einen —Klima-Teller" geben.',
           feedback: ['Positionierung klar', 'Zwei Argumente', 'Circa 80 Woerter mit Vorschlag'],
         },
         {
@@ -770,7 +770,7 @@ const GoetheDemoExams = (() => {
           arbeitszeit: '15 Minuten',
           fieldId: 'write3',
           task:
-            'Aufgabe 3 � Schreiben\nSchreiben Sie eine E-Mail (circa 40 Woerter).\n\nSie haben einen Termin bei der Umweltberatung der Stadt. Sie koennen nicht kommen, weil Sie krank sind.\n\nEntschuldigen Sie sich hoeflich, nennen Sie den Grund und bitten Sie um einen neuen Termin.',
+            'Aufgabe 3 — Schreiben\nSchreiben Sie eine E-Mail (circa 40 Woerter).\n\nSie haben einen Termin bei der Umweltberatung der Stadt. Sie koennen nicht kommen, weil Sie krank sind.\n\nEntschuldigen Sie sich hoeflich, nennen Sie den Grund und bitten Sie um einen neuen Termin.',
           minWords: 40,
           criteria: ['Hoefliche Entschuldigung', 'Grund und Bitte um neuen Termin', 'Formelle Anrede'],
           modelAnswer:
@@ -782,10 +782,10 @@ const GoetheDemoExams = (() => {
         {
           teil: 1,
           title: 'Gemeinsam etwas planen',
-          dauer: 'ca. 3�4 Minuten',
+          dauer: 'ca. – Minuten',
           fieldId: 'speak1',
           situation:
-            'Teil 1 � Sprechen\nIn Ihrem Deutschkurs moechten Sie mit Ihrem Partner / Ihrer Partnerin einen Aktionstag zum Thema Nachhaltigkeit organisieren.\nPlanen Sie gemeinsam: Was? Wann? Wo? Wer bringt was mit?',
+            'Teil 1 — Sprechen\nIn Ihrem Deutschkurs moechten Sie mit Ihrem Partner / Ihrer Partnerin einen Aktionstag zum Thema Nachhaltigkeit organisieren.\nPlanen Sie gemeinsam: Was? Wann? Wo? Wer bringt was mit?',
           points: ['Art der Aktion vorschlagen', 'Zeit und Ort festlegen', 'Auf Vorschlaege reagieren', 'Material und Aufgaben verteilen'],
           minExchanges: 5,
           modelAnswer:
@@ -798,12 +798,12 @@ const GoetheDemoExams = (() => {
           dauer: 'ca. 3 Minuten',
           fieldId: 'speak2',
           situation:
-            'Teil 2 � Sprechen\nPraesentieren Sie das Thema �Umwelt und Nachhaltigkeit in meinem Heimatland".\n\n1. Einleitung\n2. Eigene Erfahrung\n3. Situation in Ihrem Heimatland\n4. Vor- und Nachteile + Ihre Meinung\n5. Schluss',
+            'Teil 2 — Sprechen\nPraesentieren Sie das Thema —Umwelt und Nachhaltigkeit in meinem Heimatland".\n\n1. Einleitung\n2. Eigene Erfahrung\n3. Situation in Ihrem Heimatland\n4. Vor- und Nachteile + Ihre Meinung\n5. Schluss',
           points: ['Einleitung', 'Eigene Erfahrung', 'Situation im Heimatland', 'Vor- und Nachteile mit Meinung', 'Schluss'],
           minWords: 80,
           modelAnswer:
             'Heute moechte ich ueber Umwelt und Nachhaltigkeit in meinem Heimatland sprechen. In meiner Familie trennen wir seit zwei Jahren Muell, obwohl das am Anfang ungewohnt war. In meinem Land gibt es viele Windparks, aber gleichzeitig fahren noch zu viele alte Autos. Das ist gut fuer die Energie, jedoch schlecht fuer die Luft in Staedten. Meiner Meinung nach sollte der Staat oeffentliche Verkehrsmittel guenstiger machen. Vielen Dank fuer Ihre Aufmerksamkeit.',
-          feedback: ['Fuenf Teile der Praesentation', 'Eigene Meinung', 'Circa 80�100 Woerter'],
+          feedback: ['Fuenf Teile der Praesentation', 'Eigene Meinung', 'Circa 8–00 Woerter'],
         },
         {
           teil: 3,
@@ -811,7 +811,7 @@ const GoetheDemoExams = (() => {
           dauer: 'ca. 2 Minuten',
           fieldId: 'speak3',
           situation:
-            'Teil 3 � Sprechen\nGeben Sie Ihrem Partner / Ihrer Partnerin Rueckmeldung zur Praesentation.\nStellen Sie eine Frage und beantworten Sie auch eine Frage Ihres Partners / Ihrer Partnerin.',
+            'Teil 3 — Sprechen\nGeben Sie Ihrem Partner / Ihrer Partnerin Rueckmeldung zur Praesentation.\nStellen Sie eine Frage und beantworten Sie auch eine Frage Ihres Partners / Ihrer Partnerin.',
           points: ['Positives Feedback geben', 'Eine Frage stellen', 'Frage des Partners beantworten'],
           minExchanges: 3,
           modelAnswer:
@@ -845,8 +845,8 @@ const GoetheDemoExams = (() => {
           teil: 1,
           arbeitszeit: '10 Minuten',
           instruction:
-            'Teil 1 � Lesen\nLesen Sie den Text und die Aufgaben 1 bis 6 dazu.\nSchreiben Sie: Richtig oder Falsch.',
-          textTitle: 'Netzpolitik.org � Kommentar: Vom digitalen Zeugnis zur digitalen Selbstentwertung',
+            'Teil 1 — Lesen\nLesen Sie den Text und die Aufgaben 1 bis 6 dazu.\nSchreiben Sie: Richtig oder Falsch.',
+          textTitle: 'Netzpolitik.org — Kommentar: Vom digitalen Zeugnis zur digitalen Selbstentwertung',
           text:
             'Wer heute online agiert, hinterlaesst Spuren, die laenger sichtbar bleiben als manche persoenliche Erinnerungen. Ich habe neulich versucht, alte Forenbeitraege loeschen zu lassen, wurde jedoch an AGB verwiesen, die mir damals niemand erklaert hat. Dass Plattformen Inhalte archivieren, um Werbeeinnahmen zu sichern, wird oft als Preis der kostenlosen Dienste dargestellt.\n\nAllerdings trifft diese Logik nicht nur auf junge Nutzer zu. Auch Berufstaetige geraten unter Druck, staendig erreichbar zu sein, obwohl viele Unternehmen flexible Modelle propagieren. Mein Eindruck ist, dass Digitalisierung nicht automatisch Entlastung bedeutet, sondern nur dann, wenn klare Grenzen vereinbart werden.\n\nKritisch sehe ich zudem, dass Algorithmen Verhalten vorhersagen, ohne dass Betroffene nachvollziehen koennen, welche Daten dafuer verwendet werden. Transparenz duerfte laut Experten das Mindeste sein, um Vertrauen wiederherzustellen. Ich plaediere deshalb fuer staerkere Kontrollrechte, ohne Innovation pauschal abzuwuerdigen.',
           questions: [
@@ -862,7 +862,7 @@ const GoetheDemoExams = (() => {
           teil: 2,
           arbeitszeit: '20 Minuten',
           instruction:
-            'Teil 2 � Lesen\nLesen Sie den Text aus der Presse und die Aufgaben 7 bis 9 dazu.\nWaehlen Sie bei jeder Aufgabe die richtige Loesung a, b oder c.',
+            'Teil 2 — Lesen\nLesen Sie den Text aus der Presse und die Aufgaben 7 bis 9 dazu.\nWaehlen Sie bei jeder Aufgabe die richtige Loesung a, b oder c.',
           textTitle: 'Zeit Online: EU plant strengere Regeln fuer KI in Behoerden',
           text:
             'Die Europaeische Kommission will KI-Systeme in Behoerden staerker regulieren, nachdem mehrere Behoerden fehlerhafte automatisierte Entscheidungen gemeldet haben. Laut Entwurf sollen Algorithmen, die ueber Foerdermittel oder Wohnsitzstatus entscheiden, vor dem Einsatz unabhaengig geprueft werden.\n\nProfessorin Dr. Elena Roth von der TU Muenchen erklaerte, man duerfe Technologie nicht verteufeln, sie muesse jedoch nachvollziehbar bleiben. Kritiker aus der Wirtschaft befuerchten laengere Verfahren und hoehere Kosten, obwohl die Branche zugleich von oeffentlichen Digitalisierungsprogrammen profitiere.\n\nBundesdigitalminister Adrian Keller betonte, Deutschland werde die Vorgaben uebernehmen, um Buergervertrauen zu staerken. Allerdings raeumte er ein, dass viele Kommunen noch nicht ueber ausreichend qualifiziertes Personal verfuegten, um komplexe Systeme zu implementieren. Beobachter gehen davon aus, dass die Umsetzung mindestens drei Jahre dauern koennte, sofern nicht zusaetzlich investiert werde.',
@@ -897,7 +897,7 @@ const GoetheDemoExams = (() => {
           teil: 3,
           arbeitszeit: '10 Minuten',
           instruction:
-            'Teil 3 � Lesen\nLesen Sie die Situationen 10 bis 14 und die Anzeigen a bis f.\nWelche Anzeige passt?\nSie koennen jede Anzeige nur einmal verwenden.\nEine Anzeige passt nicht.',
+            'Teil 3 — Lesen\nLesen Sie die Situationen 10 bis 14 und die Anzeigen a bis f.\nWelche Anzeige passt?\nSie koennen jede Anzeige nur einmal verwenden.\nEine Anzeige passt nicht.',
           ads: [
             {
               key: 'A',
@@ -907,7 +907,7 @@ const GoetheDemoExams = (() => {
             {
               key: 'B',
               title: 'UX Research Summit 2026',
-              text: 'Internationale Konferenz zu nutzerzentriertem Design digitaler Dienste. Keynotes, Workshops, Networking. Hamburg, 14.�16. Oktober. Fruehbucher bis 30. Juni.',
+              text: 'Internationale Konferenz zu nutzerzentriertem Design digitaler Dienste. Keynotes, Workshops, Networking. Hamburg, 14.—16. Oktober. Fruehbucher bis 30. Juni.',
             },
             {
               key: 'C',
@@ -942,10 +942,10 @@ const GoetheDemoExams = (() => {
           teil: 4,
           arbeitszeit: '10 Minuten',
           instruction:
-            'Teil 4 � Lesen\nLesen Sie die Meinungen 15 bis 18.\nWelche Ueberschrift passt zu welcher Meinung?\nOrdnen Sie zu.',
+            'Teil 4 — Lesen\nLesen Sie die Meinungen 15 bis 18.\nWelche Ueberschrift passt zu welcher Meinung?\nOrdnen Sie zu.',
           textTitle: 'Debatte: Sollten soziale Netzwerke algorithmische Feeds abschaffen?',
           text:
-            'Meinung 15 � Dr. Ines Hartmann, 44, Medienforscherin:\nChronologische Feeds wuerden die Verbreitung extremistischer Inhalte nicht automatisch stoppen, koennten aber die Aufmerksamkeitssteuerung transparenter machen. Entscheidend waere, dass Nutzer nachvollziehen koennen, warum ihnen etwas angezeigt wird.\n\nMeinung 16 � Malik, 29, Gruender eines Start-ups:\nEin Verbot wuerde Innovationsdruck von Plattformen nehmen und kleinere Anbieter benachteiligen, weil nur Konzerne teure Alternativen finanzieren koennten. Wettbewerb, nicht Regulierung, haette bisher Fortschritte gebracht.\n\nMeinung 17 � Ruth, 58, Lehrerin:\nSchueler verlieren ohne Filter zu viel Zeit und geraten leichter in Echokammern. Deshalb sollten Feeds standardmaessig deaktiviert sein, bis Nutzer aktiv zustimmen, obwohl das die Bedienung etwas komplizierter macht.\n\nMeinung 18 � Jonas, 36, Datenschutzbeauftragter:\nAlgorithmische Sortierung ist nicht per se problematisch, solange sie auditierbar ist und personenbezogene Profile geloescht werden koennen. Pauschale Abschaffung wuerde Symptome bekaempfen, nicht Ursachen.',
+            'Meinung 15 — Dr. Ines Hartmann, 44, Medienforscherin:\nChronologische Feeds wuerden die Verbreitung extremistischer Inhalte nicht automatisch stoppen, koennten aber die Aufmerksamkeitssteuerung transparenter machen. Entscheidend waere, dass Nutzer nachvollziehen koennen, warum ihnen etwas angezeigt wird.\n\nMeinung 16 — Malik, 29, Gruender eines Start-ups:\nEin Verbot wuerde Innovationsdruck von Plattformen nehmen und kleinere Anbieter benachteiligen, weil nur Konzerne teure Alternativen finanzieren koennten. Wettbewerb, nicht Regulierung, haette bisher Fortschritte gebracht.\n\nMeinung 17 — Ruth, 58, Lehrerin:\nSchueler verlieren ohne Filter zu viel Zeit und geraten leichter in Echokammern. Deshalb sollten Feeds standardmaessig deaktiviert sein, bis Nutzer aktiv zustimmen, obwohl das die Bedienung etwas komplizierter macht.\n\nMeinung 18 — Jonas, 36, Datenschutzbeauftragter:\nAlgorithmische Sortierung ist nicht per se problematisch, solange sie auditierbar ist und personenbezogene Profile geloescht werden koennen. Pauschale Abschaffung wuerde Symptome bekaempfen, nicht Ursachen.',
           ads: [
             { key: 'a', title: 'Regulierung bremst den Markt', text: '' },
             { key: 'b', title: 'Schutz durch bewusste Standard-Einstellungen', text: '' },
@@ -963,8 +963,8 @@ const GoetheDemoExams = (() => {
           teil: 5,
           arbeitszeit: '10 Minuten',
           instruction:
-            'Teil 5 � Lesen\nLesen Sie den Text und die Aufgaben 19 bis 21.\nWaehlen Sie bei jeder Aufgabe die richtige Loesung a, b oder c.',
-          textTitle: 'Richtlinie zur Nutzung cloudbasierter Dienste � Universitaet Konstanz',
+            'Teil 5 — Lesen\nLesen Sie den Text und die Aufgaben 19 bis 21.\nWaehlen Sie bei jeder Aufgabe die richtige Loesung a, b oder c.',
+          textTitle: 'Richtlinie zur Nutzung cloudbasierter Dienste — Universitaet Konstanz',
           text:
             'Fuer die Verarbeitung personenbezogener Forschungsdaten duerfen ausschliesslich vom Rektorat freigegebene Cloud-Dienste genutzt werden. Eine Uebermittlung in Drittstaaten ist unzulaessig, sofern kein angemessenes Datenschutzniveau nachgewiesen wird.\n\nProjektleitungen sind verpflichtet, Zugriffsrechte regelmaessig zu pruefen und zu dokumentieren. Bei Verstossen kann die IT-Abteilung den Zugang voruebergehend sperren, bevor ein formelles Verfahren eingeleitet wird.\n\nAusnahmen sind nur mit schriftlicher Genehmigung der Datenschutzbeauftragten zulaessig. Beschwerden sind innerhalb von 14 Tagen nach Bekanntwerden des Vorfalls einzureichen; verspaetete Meldungen koennen nur beruecksichtigt werden, wenn der Antragsteller nachweist, dass die Verzoegerung unverschuldet war.',
           questions: [
@@ -1043,7 +1043,7 @@ const GoetheDemoExams = (() => {
             'Hoeren Teil 3\nSie hoeren ein Gespraech.\nSie hoeren das Gespraech einmal.\nSind die Aussagen Richtig oder Falsch?',
           context: 'Zwei Kolleginnen besprechen digitale Erreichbarkeit und Work-Life-Balance.',
           transcript:
-            'Laura: Ich habe gestern Abend wieder Mails beantwortet, obwohl ich eigentlich frei hatte.\nSimone: Das mache ich auch manchmal, aber ich versuche, ab 20 Uhr offline zu gehen.\nLaura: Unser Teamleiter behauptet, wir seien flexibel, trotzdem erwarte er sofortige Antworten in Chatgruppen.\nSimone: Genau deshalb habe ich Benachrichtigungen deaktiviert. Mein Eindruck ist, dass st�ndige Erreichbarkeit die Qualitaet der Arbeit senkt.\nLaura: Stimmt, und ich wuerde gern vereinbaren, dass dringende Faelle telefonisch gemeldet werden.\nSimone: Das waere sinnvoll, allerdings muessen wir das im naechsten Teammeeting offen ansprechen, statt es hintenrum zu loesen.',
+            'Laura: Ich habe gestern Abend wieder Mails beantwortet, obwohl ich eigentlich frei hatte.\nSimone: Das mache ich auch manchmal, aber ich versuche, ab 20 Uhr offline zu gehen.\nLaura: Unser Teamleiter behauptet, wir seien flexibel, trotzdem erwarte er sofortige Antworten in Chatgruppen.\nSimone: Genau deshalb habe ich Benachrichtigungen deaktiviert. Mein Eindruck ist, dass st—ndige Erreichbarkeit die Qualitaet der Arbeit senkt.\nLaura: Stimmt, und ich wuerde gern vereinbaren, dass dringende Faelle telefonisch gemeldet werden.\nSimone: Das waere sinnvoll, allerdings muessen wir das im naechsten Teammeeting offen ansprechen, statt es hintenrum zu loesen.',
           questions: [
             rf('h8', '8  Simone ist der Meinung, dass staendige Erreichbarkeit die Arbeitsqualitaet senken kann.', 'R'),
             rf('h9', '9  Laura findet das Verhalten des Teamleiters voellig angemessen.', 'F'),
@@ -1074,7 +1074,7 @@ const GoetheDemoExams = (() => {
           arbeitszeit: '25 Minuten',
           fieldId: 'write1',
           task:
-            'Aufgabe 1 � Schreiben\nSchreiben Sie eine E-Mail (circa 150 Woerter).\nSchreiben Sie etwas zu allen drei Punkten.\n\nSie haben an einem Online-Symposium zum Thema �Digitalisierung und Bildung" teilgenommen. Ihre Kollegin Petra konnte nicht dabei sein.\n\n- Berichten Sie, welche Vortraege fuer Sie besonders relevant waren\n- Erklaeren Sie, welche Herausforderung im Bildungsbereich Sie am dringendsten finden\n- Machen Sie einen Vorschlag, wie Sie das Gelernte im Team umsetzen koennten',
+            'Aufgabe 1 — Schreiben\nSchreiben Sie eine E-Mail (circa 150 Woerter).\nSchreiben Sie etwas zu allen drei Punkten.\n\nSie haben an einem Online-Symposium zum Thema —Digitalisierung und Bildung" teilgenommen. Ihre Kollegin Petra konnte nicht dabei sein.\n\n- Berichten Sie, welche Vortraege fuer Sie besonders relevant waren\n- Erklaeren Sie, welche Herausforderung im Bildungsbereich Sie am dringendsten finden\n- Machen Sie einen Vorschlag, wie Sie das Gelernte im Team umsetzen koennten',
           minWords: 150,
           criteria: ['Inhalt (Aufgabenerfuellung)', 'Kommunikative Gestaltung', 'Formale Richtigkeit'],
           modelAnswer:
@@ -1086,7 +1086,7 @@ const GoetheDemoExams = (() => {
           arbeitszeit: '35 Minuten',
           fieldId: 'write2',
           task:
-            'Aufgabe 2 � Schreiben\nSchreiben Sie einen kommentierenden Text (circa 150 Woerter).\n\nIm Online-Forum steht:\n�Soziale Netzwerke sollten komplett anonymisiert werden, damit Hassrede verschwindet."\n\nNehmen Sie Stellung. Begruenden Sie Ihre Meinung mit mindestens zwei Argumenten, ziehen Sie ein moegliches Gegenargument heran und formulieren Sie eine Schlussfolgerung mit Vorschlag.',
+            'Aufgabe 2 — Schreiben\nSchreiben Sie einen kommentierenden Text (circa 150 Woerter).\n\nIm Online-Forum steht:\n—Soziale Netzwerke sollten komplett anonymisiert werden, damit Hassrede verschwindet."\n\nNehmen Sie Stellung. Begruenden Sie Ihre Meinung mit mindestens zwei Argumenten, ziehen Sie ein moegliches Gegenargument heran und formulieren Sie eine Schlussfolgerung mit Vorschlag.',
           minWords: 150,
           criteria: ['These und Struktur', 'Argument und Gegenargument', 'Schlussfolgerung mit Vorschlag'],
           modelAnswer:
@@ -1098,7 +1098,7 @@ const GoetheDemoExams = (() => {
           arbeitszeit: '20 Minuten',
           fieldId: 'write3',
           task:
-            'Aufgabe 3 � Schreiben\nSchreiben Sie eine E-Mail (circa 60 Woerter).\n\nSie haben einen Termin bei der Datenschutzbeauftragten Ihrer Hochschule. Sie koennen nicht teilnehmen, weil Sie an einer Pflichtveranstaltung teilnehmen muessen.\n\nEntschuldigen Sie sich hoeflich, nennen Sie den Grund und bitten Sie um einen Ersatztermin.',
+            'Aufgabe 3 — Schreiben\nSchreiben Sie eine E-Mail (circa 60 Woerter).\n\nSie haben einen Termin bei der Datenschutzbeauftragten Ihrer Hochschule. Sie koennen nicht teilnehmen, weil Sie an einer Pflichtveranstaltung teilnehmen muessen.\n\nEntschuldigen Sie sich hoeflich, nennen Sie den Grund und bitten Sie um einen Ersatztermin.',
           minWords: 60,
           criteria: ['Formeller Ton', 'Entschuldigung mit Grund', 'Bitte um Ersatztermin'],
           modelAnswer:
@@ -1110,10 +1110,10 @@ const GoetheDemoExams = (() => {
         {
           teil: 1,
           title: 'Gemeinsam etwas planen',
-          dauer: 'ca. 3�4 Minuten',
+          dauer: 'ca. – Minuten',
           fieldId: 'speak1',
           situation:
-            'Teil 1 � Sprechen\nIhr Deutschkurs moechte eine Veranstaltung zum Thema �Digitale Muendigkeit" organisieren.\nPlanen Sie mit Ihrem Partner / Ihrer Partnerin Zielgruppe, Format, Datum und Aufgabenverteilung.',
+            'Teil 1 — Sprechen\nIhr Deutschkurs moechte eine Veranstaltung zum Thema —Digitale Muendigkeit" organisieren.\nPlanen Sie mit Ihrem Partner / Ihrer Partnerin Zielgruppe, Format, Datum und Aufgabenverteilung.',
           points: ['Zielgruppe und Format festlegen', 'Termin und Ort vorschlagen', 'Auf Einwaende reagieren', 'Rollen verteilen und entscheiden'],
           minExchanges: 5,
           modelAnswer:
@@ -1123,10 +1123,10 @@ const GoetheDemoExams = (() => {
         {
           teil: 2,
           title: 'Ein Thema praesentieren',
-          dauer: 'ca. 3�4 Minuten',
+          dauer: 'ca. – Minuten',
           fieldId: 'speak2',
           situation:
-            'Teil 2 � Sprechen\nPraesentieren Sie das Thema �Auswirkungen der Digitalisierung auf den Arbeitsmarkt in meinem Heimatland".\n\n1. Einleitung\n2. Eigene Erfahrung\n3. Situation im Heimatland\n4. Vor- und Nachteile + Meinung\n5. Schluss',
+            'Teil 2 — Sprechen\nPraesentieren Sie das Thema —Auswirkungen der Digitalisierung auf den Arbeitsmarkt in meinem Heimatland".\n\n1. Einleitung\n2. Eigene Erfahrung\n3. Situation im Heimatland\n4. Vor- und Nachteile + Meinung\n5. Schluss',
           points: ['Einleitung mit These', 'Eigene Erfahrung', 'Landeskontext', 'Abwaegung mit Meinung', 'Schluss'],
           minWords: 100,
           modelAnswer:
@@ -1139,7 +1139,7 @@ const GoetheDemoExams = (() => {
           dauer: 'ca. 3 Minuten',
           fieldId: 'speak3',
           situation:
-            'Teil 3 � Sprechen\nGeben Sie Ihrem Partner / Ihrer Partnerin konstruktives Feedback zur Praesentation.\nStellen Sie eine kritische Frage und beantworten Sie eine Gegenfrage.',
+            'Teil 3 — Sprechen\nGeben Sie Ihrem Partner / Ihrer Partnerin konstruktives Feedback zur Praesentation.\nStellen Sie eine kritische Frage und beantworten Sie eine Gegenfrage.',
           points: ['Konstruktives Feedback', 'Kritische Frage stellen', 'Gegenfrage beantworten', 'Hoeflich aber bestimmt argumentieren'],
           minExchanges: 4,
           modelAnswer:
@@ -1173,8 +1173,8 @@ const GoetheDemoExams = (() => {
           teil: 1,
           arbeitszeit: '10 Minuten',
           instruction:
-            'Teil 1 � Lesen\nLesen Sie den Text und die Aufgaben 1 bis 6 dazu.\nSchreiben Sie: Richtig oder Falsch.',
-          textTitle: 'Geo Kompakt � Kommentar: Vom Versprechen der Heilung und dem Preis der Eile',
+            'Teil 1 — Lesen\nLesen Sie den Text und die Aufgaben 1 bis 6 dazu.\nSchreiben Sie: Richtig oder Falsch.',
+          textTitle: 'Geo Kompakt — Kommentar: Vom Versprechen der Heilung und dem Preis der Eile',
           text:
             'Die in den Medien zelebrierte Gen-Schere, so meine These, wird nicht primaer an Krankenbetten gemessen, sondern an Boersenwerten. Wer die Debatte nur ueber individuelle Heilungschancen fuehrt, uebersieht die oekonomische Logik hinter klinischen Studien mit rekordverdaechtiger Finanzierung.\n\nNicht dass ich Fortschritt grundsaetzlich ablehne. Im Gegenteil: Die praezise Editierung pathogener Sequenzen koennte Leid verringern, sofern die Evidenzbasis stimmt und die Langzeitfolgen nicht dem Shareholder Value geopfert werden. Was mich irritiert, ist die rhetorische Gleichsetzung von wissenschaftlicher Neugier mit moralischer Unbedenklichkeit.\n\nIn Laendern mit schwach ausgepraegter Forschungsethik droht zudem, dass vulnerable Gruppen zu Testfeldern werden, waehrend der Nutzen global asymmetrisch verteilt bleibt. Die Autorin des juengsten Bestsellers mag das als Pessimismus abtun; ich wuerde es als Realismus bezeichnen, der sich nicht mit Applaus abfinden muss.\n\nAm Ende, so vermute ich, wird die Gesellschaft nicht die Technologie waehlen, sondern die Rahmenbedingungen, unter denen sie angewandt wird. Und genau dort fehlt mir der Mut zur Langsamkeit.',
           questions: [
@@ -1190,7 +1190,7 @@ const GoetheDemoExams = (() => {
           teil: 2,
           arbeitszeit: '20 Minuten',
           instruction:
-            'Teil 2 � Lesen\nLesen Sie den Text aus der Presse und die Aufgaben 7 bis 9 dazu.\nWaehlen Sie bei jeder Aufgabe die richtige Loesung a, b oder c.',
+            'Teil 2 — Lesen\nLesen Sie den Text aus der Presse und die Aufgaben 7 bis 9 dazu.\nWaehlen Sie bei jeder Aufgabe die richtige Loesung a, b oder c.',
           textTitle: 'Spektrum der Wissenschaft: Placebo-kontrollierte Studien unter Druck',
           text:
             'In der klinischen Forschung gilt die randomisierte, doppelblinde Studie als Goldstandard zur Abschaetzung therapeutischer Wirksamkeit. Neuere Analysen der Universitaet Heidelberg zeigen jedoch, dass in bestimmten Therapiebereichen die Placebo-Response-Raten steigen, wodurch signifikante Effekte schwerer nachweisbar werden.\n\nForschende vermuten, dass komplexere Patientenerwartungen, verstaerkte Prae-Test-Kommunikation und die mediale Praesenz neuer Wirkstoffe die Ergebnisvarianz erhoehen. Kritisch zu hinterfragen ist zugleich, ob kommerziell finanzierte Studien hinreichend transparent ueber Protokollaenderungen berichten.\n\nEthikkommissionen bestehen deshalb verstaerkt auf prae-registrierte Endpunkte und unabhaengige Datenevaluierung. Dennoch warnen Wissenschaftlerinnen und Wissenschaftler davor, methodische Strenge mit buerokratischer Erstarrung gleichzusetzen, zumal verzoegerte Zulassungen bei seltenen Erkrankungen humanitaere Kosten haben koennten.',
@@ -1225,31 +1225,31 @@ const GoetheDemoExams = (() => {
           teil: 3,
           arbeitszeit: '10 Minuten',
           instruction:
-            'Teil 3 � Lesen\nLesen Sie die Situationen 10 bis 14 und die Anzeigen a bis f.\nWelche Anzeige passt?\nSie koennen jede Anzeige nur einmal verwenden.\nEine Anzeige passt nicht.',
+            'Teil 3 — Lesen\nLesen Sie die Situationen 10 bis 14 und die Anzeigen a bis f.\nWelche Anzeige passt?\nSie koennen jede Anzeige nur einmal verwenden.\nEine Anzeige passt nicht.',
           ads: [
             {
               key: 'A',
-              title: 'Abstract � Journal of Reproducibility Studies',
+              title: 'Abstract — Journal of Reproducibility Studies',
               text: 'Metaanalyse zu nicht replizierbaren Ergebnissen in den Neurowissenschaften. Methodische Empfehlungen fuer Open-Data-Praktiken. Peer-reviewed, Open Access.',
             },
             {
               key: 'B',
-              title: 'Rezension � Ethik der Forschung am Menschen',
+              title: 'Rezension — Ethik der Forschung am Menschen',
               text: 'Sachbuch von Prof. Dr. Albrecht: historische Entwicklung, informierte Einwilligung, Grenzen der Belastbarkeit. Ausfuehrliche Fallstudien.',
             },
             {
               key: 'C',
-              title: 'Forschungsintegritaet � Universitaet Bonn',
+              title: 'Forschungsintegritaet — Universitaet Bonn',
               text: 'Webseite der Ombudsstelle: Meldewege bei Plagiat, Datenmanipulation oder Interessenkonflikten. Vertrauliche Erstberatung.',
             },
             {
               key: 'D',
-              title: 'Call for Papers � Bioethics & Policy',
+              title: 'Call for Papers — Bioethics & Policy',
               text: 'Internationale Tagung zu Governance von Biotechnologie. Einreichung von Abstracts bis 30. September. Reisezuschuesse fuer Early-Career Researchers.',
             },
             {
               key: 'E',
-              title: 'Patentregister EU � Sequenzanalyse',
+              title: 'Patentregister EU — Sequenzanalyse',
               text: 'Technische Dokumentation zu Anmeldeverfahren genetischer Verfahren. Fokus auf Schutzrechte und Lizenzmodelle, nicht auf klinische Anwendung.',
             },
             {
@@ -1270,10 +1270,10 @@ const GoetheDemoExams = (() => {
           teil: 4,
           arbeitszeit: '10 Minuten',
           instruction:
-            'Teil 4 � Lesen\nLesen Sie die Meinungen 15 bis 18.\nWelche Ueberschrift passt zu welcher Meinung?\nOrdnen Sie zu.',
+            'Teil 4 — Lesen\nLesen Sie die Meinungen 15 bis 18.\nWelche Ueberschrift passt zu welcher Meinung?\nOrdnen Sie zu.',
           textTitle: 'Forum: Soll kuenstliche Intelligenz wissenschaftliche Publikationen mitverfassen duerfen?',
           text:
-            'Meinung 15 � Prof. Dr. Sandra Voigt, 49, Wissenschaftstheorie:\nDie Autorschaft impliziert Verantwortung fuer Inhalt und Methodik. Ein Modell, das Texte generiert, ohne die zugrunde liegende Evidenz eigenstaendig pruefen zu koennen, erfuellt dieses Kriterium nicht. Transparenzpflichten duerften hoerstens als Werkzeugdeklaration gelten.\n\nMeinung 16 � Amir, 34, Computational Biologist:\nWer heute grosse Datensaetze auswertet, nutzt ohnehin algorithmische Pipeline. Die Scheinheiligkeit, am Ende nur menschliche Namen auf dem Titelblatt zu sehen, verdeckt die tatsaechliche Arbeitsteilung.\n\nMeinung 17 � Dr. Helena Roth, 41, Herausgeberin:\nIch wuerde Co-Autorenschaft fuer Systeme nur akzeptieren, wenn nachvollziehbar dokumentiert wird, welche Hypothesen menschlich gesetzt wurden. Andernfalls droht die Erosion des Peer-Review-Vertrauens.\n\nMeinung 18 � Jonas, 38, Wissenschaftspolitiker:\nDer Kern ist nicht die Technologie, sondern Anreizsysteme, die Quantitaet ueber Qualitaet stellen. Solange Publikationsdruck dominiert, wird jedes neue Werkzeug eher missbraucht als gezielt reguliert.',
+            'Meinung 15 — Prof. Dr. Sandra Voigt, 49, Wissenschaftstheorie:\nDie Autorschaft impliziert Verantwortung fuer Inhalt und Methodik. Ein Modell, das Texte generiert, ohne die zugrunde liegende Evidenz eigenstaendig pruefen zu koennen, erfuellt dieses Kriterium nicht. Transparenzpflichten duerften hoerstens als Werkzeugdeklaration gelten.\n\nMeinung 16 — Amir, 34, Computational Biologist:\nWer heute grosse Datensaetze auswertet, nutzt ohnehin algorithmische Pipeline. Die Scheinheiligkeit, am Ende nur menschliche Namen auf dem Titelblatt zu sehen, verdeckt die tatsaechliche Arbeitsteilung.\n\nMeinung 17 — Dr. Helena Roth, 41, Herausgeberin:\nIch wuerde Co-Autorenschaft fuer Systeme nur akzeptieren, wenn nachvollziehbar dokumentiert wird, welche Hypothesen menschlich gesetzt wurden. Andernfalls droht die Erosion des Peer-Review-Vertrauens.\n\nMeinung 18 — Jonas, 38, Wissenschaftspolitiker:\nDer Kern ist nicht die Technologie, sondern Anreizsysteme, die Quantitaet ueber Qualitaet stellen. Solange Publikationsdruck dominiert, wird jedes neue Werkzeug eher missbraucht als gezielt reguliert.',
           ads: [
             { key: 'a', title: 'Autorschaft ohne Verantwortung ist untragbar', text: '' },
             { key: 'b', title: 'Anreizsysteme sind das eigentliche Problem', text: '' },
@@ -1291,8 +1291,8 @@ const GoetheDemoExams = (() => {
           teil: 5,
           arbeitszeit: '10 Minuten',
           instruction:
-            'Teil 5 � Lesen\nLesen Sie den Text und die Aufgaben 19 bis 21.\nWaehlen Sie bei jeder Aufgabe die richtige Loesung a, b oder c.',
-          textTitle: 'Satzung der Ethikkommission � Medizinische Fakultaet Heidelberg',
+            'Teil 5 — Lesen\nLesen Sie den Text und die Aufgaben 19 bis 21.\nWaehlen Sie bei jeder Aufgabe die richtige Loesung a, b oder c.',
+          textTitle: 'Satzung der Ethikkommission — Medizinische Fakultaet Heidelberg',
           text:
             'Forschungsvorhaben mit erhoehtem Belastungspotenzial fuer Probandinnen und Probanden beduerfen einer vorherigen schriftlichen Genehmigung durch die Ethikkommission. Als erhoeht gilt insbesondere jede Intervention, deren Risiken nicht durch den erwarteten Nutzen plausibel gedeckt werden koennen, es sei denn, es liegen zwingende wissenschaftliche Gruende vor, die in der Antragstellung ausfuehrlich begruendet werden.\n\nAntraege sind mindestens sechs Wochen vor Studienbeginn einzureichen; bei multizentrischen Projekten verlaengert sich die Frist auf acht Wochen, sofern keine parallele Pruefung anderer Standorte vorliegt. Nachtraegliche Protokollaenderungen mit ethischer Relevanz sind unverzueglich anzuzeigen; andernfalls kann die Genehmigung widerrufen werden.\n\nAusnahmen von der Vollstaendigkeitspruefung werden nur fuer retrospektive Auswertungen anonymisierter Routinedaten gewaehrt, sofern kein Rueckfuehrbarkeitsrisiko besteht und die Datenschutzkonformitaet nachweislich gesichert ist.',
           questions: [
@@ -1371,7 +1371,7 @@ const GoetheDemoExams = (() => {
             'Hoeren Teil 3\nSie hoeren ein Gespraech.\nSie hoeren das Gespraech einmal.\nSind die Aussagen Richtig oder Falsch?',
           context: 'Zwei Forschende ueber Datenteilung und Publikationsdruck.',
           transcript:
-            'A: Ich habe meine Rohdaten veroeffentlicht, obwohl das Team dagegen war.\nB: Mutig � aber hast du bedacht, dass andere deine Pipeline zuerst publizieren koennten?\nA: Gerade deshalb finde ich Embargos problematisch; Wissenschaft lebt von Nachpruefbarkeit.\nB: Theoretisch ja, praktisch foerdert der Leistungsdruck eher Geheimhaltung bis zur Journal-Anmeldung.\nA: Dann waere es Aufgabe der Institute, Publikationsmetriken neu zu gewichten.\nB: Idealistisch formuliert, allerdings wuerde ich mir mehr Unterstuetzung von Foerderern wuenschen, statt nur Appelle an Integritaet.',
+            'A: Ich habe meine Rohdaten veroeffentlicht, obwohl das Team dagegen war.\nB: Mutig — aber hast du bedacht, dass andere deine Pipeline zuerst publizieren koennten?\nA: Gerade deshalb finde ich Embargos problematisch; Wissenschaft lebt von Nachpruefbarkeit.\nB: Theoretisch ja, praktisch foerdert der Leistungsdruck eher Geheimhaltung bis zur Journal-Anmeldung.\nA: Dann waere es Aufgabe der Institute, Publikationsmetriken neu zu gewichten.\nB: Idealistisch formuliert, allerdings wuerde ich mir mehr Unterstuetzung von Foerderern wuenschen, statt nur Appelle an Integritaet.',
           questions: [
             rf('h8', '8  Person A hat Rohdaten veroeffentlicht, obwohl das Team dagegen war.', 'R'),
             rf('h9', '9  Person B lehnt Datenteilung grundsaetzlich ab.', 'F'),
@@ -1402,7 +1402,7 @@ const GoetheDemoExams = (() => {
           arbeitszeit: '25 Minuten',
           fieldId: 'write1',
           task:
-            'Aufgabe 1 � Schreiben\nSchreiben Sie eine formelle E-Mail oder einen Brief (circa 170 Woerter).\n\nSie haben Zugang zu einem oeffentlich finanzierten Forschungsdatensatz beantragt. Die zustaendige Stelle lehnt ab, ohne die Ablehnung zu begruenden.\n\n- Fuehren Sie hoeflich Ihr Anliegen aus\n- Legen Sie dar, warum der Datensatz fuer Ihre Arbeit relevant ist\n- Fordern Sie eine schriftliche Begruendung und bitten Sie um erneute Pruefung',
+            'Aufgabe 1 — Schreiben\nSchreiben Sie eine formelle E-Mail oder einen Brief (circa 170 Woerter).\n\nSie haben Zugang zu einem oeffentlich finanzierten Forschungsdatensatz beantragt. Die zustaendige Stelle lehnt ab, ohne die Ablehnung zu begruenden.\n\n- Fuehren Sie hoeflich Ihr Anliegen aus\n- Legen Sie dar, warum der Datensatz fuer Ihre Arbeit relevant ist\n- Fordern Sie eine schriftliche Begruendung und bitten Sie um erneute Pruefung',
           minWords: 170,
           criteria: ['Inhalt (Aufgabenerfuellung)', 'Kommunikative Gestaltung', 'Formale Richtigkeit'],
           modelAnswer:
@@ -1414,7 +1414,7 @@ const GoetheDemoExams = (() => {
           arbeitszeit: '35 Minuten',
           fieldId: 'write2',
           task:
-            'Aufgabe 2 � Schreiben\nSchreiben Sie einen argumentierenden Text (circa 170 Woerter).\n\nIm Forum steht:\n�Reine Wissenschaft muss wertfrei sein und darf sich nicht von gesellschaftlichen Erwartungen leiten lassen."\n\nNehmen Sie Stellung. Begruenden Sie Ihre Position, ziehen Sie ein Gegenargument heran und ziehen Sie eine praecise Schlussfolgerung.',
+            'Aufgabe 2 — Schreiben\nSchreiben Sie einen argumentierenden Text (circa 170 Woerter).\n\nIm Forum steht:\n—Reine Wissenschaft muss wertfrei sein und darf sich nicht von gesellschaftlichen Erwartungen leiten lassen."\n\nNehmen Sie Stellung. Begruenden Sie Ihre Position, ziehen Sie ein Gegenargument heran und ziehen Sie eine praecise Schlussfolgerung.',
           minWords: 170,
           criteria: ['These und Struktur', 'Argument und Gegenargument', 'Praecise Schlussfolgerung'],
           modelAnswer:
@@ -1426,7 +1426,7 @@ const GoetheDemoExams = (() => {
           arbeitszeit: '20 Minuten',
           fieldId: 'write3',
           task:
-            'Aufgabe 3 � Schreiben\nSchreiben Sie eine E-Mail (circa 55 Woerter).\n\nSie muessen die Einreichung Ihres Ethikantrags verschieben, weil noch eine Genehmigung der Partnerklinik aussteht.\n\nInformieren Sie die Ethikkommission knapp, nennen Sie den Grund und bitten Sie um Fristverlaengerung um zwei Wochen.',
+            'Aufgabe 3 — Schreiben\nSchreiben Sie eine E-Mail (circa 55 Woerter).\n\nSie muessen die Einreichung Ihres Ethikantrags verschieben, weil noch eine Genehmigung der Partnerklinik aussteht.\n\nInformieren Sie die Ethikkommission knapp, nennen Sie den Grund und bitten Sie um Fristverlaengerung um zwei Wochen.',
           minWords: 55,
           criteria: ['Formeller Ton', 'Grund und Fristverlaengerung', 'Praecision und Knappheit'],
           modelAnswer:
@@ -1438,10 +1438,10 @@ const GoetheDemoExams = (() => {
         {
           teil: 1,
           title: 'Gemeinsam etwas planen',
-          dauer: 'ca. 3�4 Minuten',
+          dauer: 'ca. – Minuten',
           fieldId: 'speak1',
           situation:
-            'Teil 1 � Sprechen\nSie planen mit Ihrem Partner / Ihrer Partnerin eine oeffentliche Podiumsdiskussion zum Thema �Gentechnik in der Medizin � Chancen und Grenzen".\nKlaeren Sie Zielgruppe, Format, Einladung von Expertinnen und ethische Leitlinien.',
+            'Teil 1 — Sprechen\nSie planen mit Ihrem Partner / Ihrer Partnerin eine oeffentliche Podiumsdiskussion zum Thema —Gentechnik in der Medizin — Chancen und Grenzen".\nKlaeren Sie Zielgruppe, Format, Einladung von Expertinnen und ethische Leitlinien.',
           points: ['Zielgruppe und Format festlegen', 'Expertinnen/Einladungen vorschlagen', 'Auf Bedenken reagieren', 'Leitlinien und Ablauf entscheiden'],
           minExchanges: 5,
           modelAnswer:
@@ -1451,10 +1451,10 @@ const GoetheDemoExams = (() => {
         {
           teil: 2,
           title: 'Ein Thema praesentieren',
-          dauer: 'ca. 3�4 Minuten',
+          dauer: 'ca. – Minuten',
           fieldId: 'speak2',
           situation:
-            'Teil 2 � Sprechen\nPraesentieren Sie akademisch strukturiert das Thema �Forschungsintegritaet in Zeiten des Publikationsdrucks".\n\n1. Problemstellung\n2. Theoretischer Rahmen\n3. Fallbeispiel\n4. Konsequenzen fuer Institutionen\n5. Schlussfolgerung',
+            'Teil 2 — Sprechen\nPraesentieren Sie akademisch strukturiert das Thema —Forschungsintegritaet in Zeiten des Publikationsdrucks".\n\n1. Problemstellung\n2. Theoretischer Rahmen\n3. Fallbeispiel\n4. Konsequenzen fuer Institutionen\n5. Schlussfolgerung',
           points: ['Problemstellung', 'Theoretischer Rahmen', 'Fallbeispiel', 'Institutionelle Konsequenzen', 'Schluss'],
           minWords: 120,
           modelAnswer:
@@ -1467,7 +1467,7 @@ const GoetheDemoExams = (() => {
           dauer: 'ca. 3 Minuten',
           fieldId: 'speak3',
           situation:
-            'Teil 3 � Sprechen\nDiskutieren Sie mit Ihrem Partner / Ihrer Partnerin ein ethisches Dilemma aus der Praesentation.\nGeben Sie Feedback, stellen Sie eine praezise Gegenposition und verteidigen Sie Ihre Haltung.',
+            'Teil 3 — Sprechen\nDiskutieren Sie mit Ihrem Partner / Ihrer Partnerin ein ethisches Dilemma aus der Praesentation.\nGeben Sie Feedback, stellen Sie eine praezise Gegenposition und verteidigen Sie Ihre Haltung.',
           points: ['Differenziertes Feedback', 'Praezise Gegenposition', 'Verteidigung der eigenen Haltung', 'Respektvoller Ton'],
           minExchanges: 4,
           modelAnswer:
