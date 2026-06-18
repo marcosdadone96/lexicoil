@@ -19,6 +19,8 @@
  *   POST /admin-api  { action: 'set_plan', email, plan } — change user plan
  *   POST /admin-api  { action: 'add_admin', email }      — add admin role
  *   GET  /admin-api?action=staging_pending[&lang][&level][&limit] — pending staging candidates
+ *   GET  /admin-api?action=staging_list[&lang][&level][&status=pending|approved|rejected|all][&limit]
+ *   GET  /admin-api?action=staging_stats[&lang][&level] — counts by status
  *   GET  /admin-api?action=candidate_detail&lang&level&id — full candidate (passage+questions+keys)
  *   POST /admin-api  { action: 'approve_candidate', id }  — approve staging → pool + reusable-parts
  *   POST /admin-api  { action: 'reject_candidate', id }   — reject staging candidate
@@ -178,6 +180,49 @@ exports.handler = async (event) => {
       }
       candidates.sort((a, b) => String(b.createdAt || '').localeCompare(String(a.createdAt || '')));
       return jsonResponse(200, cors, { candidates, count: candidates.length });
+    }
+
+    if (action === 'staging_stats') {
+      const lang = String(params.lang || '').trim().toLowerCase();
+      const level = String(params.level || '').trim().toUpperCase();
+      if (!lang || !level) {
+        return jsonResponse(400, cors, { error: 'missing_lang_level' });
+      }
+      const store = getStoreForEvent(event);
+      const index = await loadStagingIndex(store, lang, level);
+      const counts = { pending: 0, approved: 0, rejected: 0, all: index.length };
+      for (const row of index) {
+        if (counts[row.status] != null) counts[row.status]++;
+      }
+      const parts = await listReusablePartsAdmin(store, lang, level, null);
+      return jsonResponse(200, cors, { counts, reusableParts: parts.length });
+    }
+
+    if (action === 'staging_list') {
+      const lang = String(params.lang || '').trim().toLowerCase();
+      const level = String(params.level || '').trim().toUpperCase();
+      const status = String(params.status || 'pending').trim().toLowerCase();
+      const limit = Math.min(Number(params.limit) || 100, 200);
+      if (!lang || !level) {
+        return jsonResponse(400, cors, { error: 'missing_lang_level' });
+      }
+      const store = getStoreForEvent(event);
+      const index = await loadStagingIndex(store, lang, level);
+      const counts = { pending: 0, approved: 0, rejected: 0, all: index.length };
+      for (const row of index) {
+        if (counts[row.status] != null) counts[row.status]++;
+      }
+      const rows =
+        status === 'all' ? index.slice(-limit) : index.filter((row) => row.status === status).slice(-limit);
+      const candidates = [];
+      for (const row of rows) {
+        const candidate = await loadStagingCandidate(store, lang, level, row.id);
+        if (!candidate) continue;
+        if (status !== 'all' && candidate.status !== status) continue;
+        candidates.push(candidateSummary(candidate));
+      }
+      candidates.sort((a, b) => String(b.createdAt || '').localeCompare(String(a.createdAt || '')));
+      return jsonResponse(200, cors, { candidates, count: candidates.length, counts, status });
     }
 
     // Full candidate detail (passage + all questions + correct answers)

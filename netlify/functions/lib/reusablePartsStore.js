@@ -188,9 +188,7 @@ async function listReusablePartsAdmin(store, lang, level, module) {
   const normLevel  = String(level  || '').toUpperCase();
   const normModule = module ? String(module).toLowerCase() : null;
 
-  // If no module, we collect by listing by a broader prefix and grouping
-  if (!normModule) {
-    const prefix = `reusable_part_idx:${normLang}:${normLevel}:`;
+  async function loadFromPrefix(prefix) {
     let listed;
     try { listed = await store.list({ prefix }); } catch (_) { return []; }
     const blobs = listed?.blobs || [];
@@ -201,10 +199,25 @@ async function listReusablePartsAdmin(store, lang, level, module) {
         if (!row?.partKey) continue;
         const part = await store.get(row.partKey, { type: 'json' });
         if (!part) continue;
-        out.push(_summaryRow(row, part, normLang, normLevel));
+        out.push(_summaryRow(row, part, part.lang || normLang, part.level || normLevel));
       } catch (_) { /* skip */ }
     }
-    return out.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+    return out;
+  }
+
+  if (!normLang && !normLevel) {
+    return (await loadFromPrefix('reusable_part_idx:'))
+      .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+  }
+
+  if (!normModule) {
+    const prefix = normLang && normLevel
+      ? `reusable_part_idx:${normLang}:${normLevel}:`
+      : normLang
+        ? `reusable_part_idx:${normLang}:`
+        : `reusable_part_idx:`;
+    return (await loadFromPrefix(prefix))
+      .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
   }
 
   const entries = await listPartsIndex(store, normLang, normLevel, normModule);

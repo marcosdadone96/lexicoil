@@ -64,6 +64,9 @@ const LexiCoilEngine = (() => {
     if (blueprint) {
       spec.metadata = { ...(spec.metadata || {}), blueprint };
     }
+    if (options.teilFilter != null) {
+      spec.personalTeilFilter = options.teilFilter;
+    }
     return window.ExamGenerator.generatePersonal(spec, hooks, { ...options, blueprint });
   }
 

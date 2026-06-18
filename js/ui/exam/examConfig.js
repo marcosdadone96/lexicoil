@@ -1,7 +1,21 @@
-const _examConfig={goalId:null,selectedIds:new Set(),skills:new Set(['lesen']),seedCount:0};
+const _examConfig={goalId:null,selectedIds:new Set(),skills:new Set(['lesen']),seedCount:0,teilChoice:'all',blueprintParts:null};
 function showExamConfigFootbar(visible){
   const fb=document.getElementById('examConfigFootbar');
   if(fb)fb.style.display=visible?'flex':'none';
+}
+async function loadExamConfigBlueprintParts(goal){
+  if(typeof ExamBlueprint==='undefined')return null;
+  try{
+    const bp=await ExamBlueprint.load(goal.subject,goal.level);
+    if(!bp)return null;
+    const parts={};
+    for(const mod of bp.modules||[]){
+      parts[mod.id]=(mod.parts||[])
+        .map(p=>({teil:p.teil,label:p.label||(`Teil ${p.teil}`)}))
+        .sort((a,b)=>(a.teil??0)-(b.teil??0));
+    }
+    return parts;
+  }catch(_){return null;}
 }
 function openExamConfigurator(goalId,preselectedIds){
   const goal=S.goals.find(g=>g.id===goalId);
@@ -13,6 +27,8 @@ function openExamConfigurator(goalId,preselectedIds){
   _examConfig.skills=new Set(['lesen']);
   _examConfig.selectedIds=new Set();
   _examConfig.seedCount=0;
+  _examConfig.teilChoice='all';
+  _examConfig.blueprintParts=null;
   const deck=deckForGoal(goal);
   if(preselectedIds&&preselectedIds.length){
     preselectedIds.forEach(id=>{if(deck.some(f=>fcId(f)===id))_examConfig.selectedIds.add(id);});
@@ -26,6 +42,12 @@ function openExamConfigurator(goalId,preselectedIds){
   show('examConfigScreen');
   showExamConfigFootbar(true);
   renderExamConfigurator();
+  void loadExamConfigBlueprintParts(goal).then(parts=>{
+    if(_examConfig.goalId===goalId&&parts){
+      _examConfig.blueprintParts=parts;
+      renderExamConfigurator();
+    }
+  });
   if(typeof LcRouter!=='undefined')LcRouter.replaceRoute(LcRouter.goalPath(goal,'config'),'Exams');
   window.scrollTo({top:0,behavior:'smooth'});
 }
@@ -44,8 +66,14 @@ function selectAllDueConfig(){
 function toggleConfigSkill(skill){
   if(skill==='schreiben')return;
   _examConfig.skills=new Set([skill]);
+  _examConfig.teilChoice='all';
   renderExamConfigurator();
 }
+function setConfigTeilChoice(value){
+  _examConfig.teilChoice=value==null||value===''?'all':String(value);
+  renderExamConfigurator();
+}
+window.setConfigTeilChoice=setConfigTeilChoice;
 function configPartBadge(status){
   if(status==='soon')return'<span class="exam-config-badge exam-config-badge--soon">Soon</span>';
   return'<span class="exam-config-badge exam-config-badge--ready">Ready</span>';
@@ -68,6 +96,41 @@ function configActiveSkillLabel(skills,subject){
   if(skills.has('sprechen'))return ui.speaking;
   return'—';
 }
+function configActiveSkillKey(skills){
+  if(skills.has('lesen'))return'lesen';
+  if(skills.has('horen'))return'horen';
+  if(skills.has('schreiben'))return'schreiben';
+  if(skills.has('sprechen'))return'sprechen';
+  return'lesen';
+}
+function configTeilSelectHtml(skill,subject){
+  const parts=_examConfig.blueprintParts?.[skill];
+  if(!parts?.length)return'';
+  const skillLbl=configActiveSkillLabel(_examConfig.skills,subject);
+  const opts=parts.map(p=>{
+    const val=String(p.teil);
+    const sel=_examConfig.teilChoice===val?' selected':'';
+    const short=p.label?p.label.replace(/^Teil\s*\d+\s*[—–-]\s*/i,''):`Teil ${p.teil}`;
+    return`<option value="${esc(val)}"${sel}>Teil ${p.teil} — ${esc(short)}</option>`;
+  }).join('');
+  const allSel=_examConfig.teilChoice==='all'?' selected':'';
+  return`<p class="exam-config-seclbl">Official parts</p>
+    <select class="exam-config-teil-select" aria-label="Official Teil to generate" onchange="setConfigTeilChoice(this.value)">
+      <option value="all"${allSel}>All Teile — full ${esc(skillLbl)} (${parts.length} parts)</option>
+      ${opts}
+    </select>`;
+}
+function configGenerationHint(skill){
+  const parts=_examConfig.blueprintParts?.[skill];
+  const n=parts?.length||0;
+  if(_examConfig.teilChoice==='all'&&n>1){
+    return `~${n}–${n*2} min · 3 AI credits · generates all ${n} official Teile (failed parts are skipped; successful parts are saved for reuse).`;
+  }
+  if(_examConfig.teilChoice!=='all'){
+    return '~1–2 min · 3 AI credits · one official Teil (saved for full exams and section practice).';
+  }
+  return '~1–2 min · 3 AI credits · generates official Teile for this section.';
+}
 function estimateConfigQuestions(nWords,skillsSet){
   const skills=skillsSet instanceof Set?[...skillsSet]:(Array.isArray(skillsSet)?skillsSet:['lesen']);
   if(typeof VocabBatching!=='undefined'){
@@ -85,6 +148,7 @@ function renderExamConfigurator(){
   const deck=deckForGoal(goal);
   const dueN=dueForGoal(goal).length;
   const selN=_examConfig.selectedIds.size;
+  const activeSkill=configActiveSkillKey(_examConfig.skills);
   const seedHtml=_examConfig.seedCount>=4
     ?`<div class="card note-card exam-config-seed"><b>Built from your ${_examConfig.seedCount} selected words</b> — tap to add or remove.</div>`
     :`<div class="card note-card exam-config-seed"><b>Uses words from your deck</b> — we pre-selected due words where possible.</div>`;
@@ -92,7 +156,6 @@ function renderExamConfigurator(){
     const isSoon=status==='soon';
     const on=!isSoon&&_examConfig.skills.has(key);
     const click=isSoon?'':' onclick="toggleConfigSkill(\''+key+'\')"';
-    // Radio-button indicator: filled circle when selected, empty otherwise
     const radio=isSoon?'':'<span class="exam-config-radio-dot" aria-hidden="true">'+(on?'●':'○')+'</span>';
     return`<div class="exam-config-part-card${on?' on':''}${isSoon?' soon':''}"${click} role="radio" aria-checked="${on}">${radio}<span class="n">${esc(title)}<small>${esc(sub)}</small></span><span class="exam-config-part-meta">${configPartBadge(status)}</span></div>`;
   };
@@ -108,24 +171,28 @@ function renderExamConfigurator(){
   const chipsHtml=deck.length?'<div class="exam-config-chips">'+chips+'</div><p class="exam-config-hint">● amber dot = due for review today</p>':'<p class="exam-config-hint">No words in this deck yet. Save words during a practice exam first.</p>';
   const skillLbl=configActiveSkillLabel(_examConfig.skills,goal.subject);
   const oralOnly=_examConfig.skills.size===1&&_examConfig.skills.has('sprechen');
+  const teilHtml=oralOnly?'':configTeilSelectHtml(activeSkill,goal.subject);
+  const genHint=configGenerationHint(activeSkill);
   el.innerHTML=`
     <h1 class="exam-config-h1">Section practice</h1>
-    <p class="exam-config-lede">Practice one <b>${esc(goalLabel(goal))}</b> section using your vocabulary. Genera y practica una sección cada vez.</p>
+    <p class="exam-config-lede">Practice one <b>${esc(goalLabel(goal))}</b> section using your vocabulary. Generate all official Teile or pick one.</p>
     ${seedHtml}
     <p class="exam-config-seclbl">Choose a section</p>
     ${partCard('lesen',ui.reading,'Reading comprehension with your vocabulary','ready')}
     ${partCard('horen',ui.listening,'Listening tasks with your vocabulary','ready')}
     ${partCard('sprechen',ui.speaking,'Speaking task with microphone + AI evaluation','ready')}
     ${partCard('schreiben',ui.writing,'Writing prompts from your vocabulary','soon')}
-    <p class="exam-config-hint">~1–2 min · 3 AI credits · each section is saved for reuse.</p>
+    ${teilHtml}
+    <p class="exam-config-hint">${esc(genHint)}</p>
     <p class="exam-config-seclbl"><span>Words to include · ${selN} selected</span>${dueN>0?'<button type="button" class="exam-config-cta" onclick="selectAllDueConfig()">Select all due ('+dueN+') →</button>':''}</p>
     <div class="exam-config-panel">${chipsHtml}</div>`;
   const summary=document.getElementById('examConfigSummary');
   const genBtn=document.getElementById('examConfigGenerateBtn');
   const qEst=estimateConfigQuestions(selN,_examConfig.skills);
   const remAi=typeof getAiCreditsRemaining==='function'?getAiCreditsRemaining():null;
+  const teilLbl=_examConfig.teilChoice==='all'?'all Teile':`Teil ${_examConfig.teilChoice}`;
   if(summary){
-    let txt='<b>'+selN+' word'+(selN===1?'':'s')+'</b> · '+esc(skillLbl)+' section';
+    let txt='<b>'+selN+' word'+(selN===1?'':'s')+'</b> · '+esc(skillLbl)+' · '+esc(teilLbl);
     if(oralOnly)txt+=' · oral practice';
     else txt+=' · ~'+qEst+' questions · 3 AI credits';
     if(typeof getAiCreditsRemaining==='function'&&remAi===3)txt+=' · <span class="exam-config-quota-warn">Last 3 credits</span>';
@@ -139,7 +206,8 @@ function renderExamConfigurator(){
     genBtn.disabled=selN<2||_examConfig.skills.size<1||!aiOk;
     if(!aiOk)genBtn.textContent='No AI credits — buy pack';
     else if(oralOnly)genBtn.textContent='Practice speaking →';
-    else genBtn.textContent='Practice '+esc(skillLbl)+' →';
+    else if(_examConfig.teilChoice==='all')genBtn.textContent='Practice '+esc(skillLbl)+' (all Teile) →';
+    else genBtn.textContent='Practice '+esc(skillLbl)+' Teil '+esc(_examConfig.teilChoice)+' →';
   }
 }
 function submitExamConfig(){
@@ -159,7 +227,7 @@ function submitExamConfig(){
   const gid=_examConfig.goalId;
   const oralOnly=skills.length===1&&skills[0]==='sprechen';
   if(oralOnly)confirmQuotaUse(()=>startOralPractice(goal,words));
-  else generatePersonalExam(words,skills,gid);
+  else generatePersonalExam(words,skills,gid,{teilFilter:_examConfig.teilChoice});
 }
 function openDeckHub(goalId,options){
   const goal=S.goals.find(g=>g.id===goalId);

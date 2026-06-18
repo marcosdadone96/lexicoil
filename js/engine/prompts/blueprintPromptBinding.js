@@ -109,6 +109,23 @@ const BlueprintPromptBinding = (() => {
     return expanded;
   }
 
+  /** All Teile or one selected Teil for personal section generation. */
+  function chunkPlanForPersonalModule(blueprint, languageId, teilFilter) {
+    const full = chunkPlanFromBlueprint(blueprint, languageId);
+    const sorted = [...full].sort((a, b) => (a.teil ?? 0) - (b.teil ?? 0));
+    if (teilFilter == null || teilFilter === '' || teilFilter === 'all') return sorted;
+    if (Array.isArray(teilFilter)) {
+      const set = new Set(teilFilter.map((t) => Number(t)).filter(Number.isFinite));
+      if (!set.size) return sorted;
+      const picked = sorted.filter((ctx) => set.has(Number(ctx.teil)));
+      return picked.length ? picked : sorted;
+    }
+    const t = Number(teilFilter);
+    if (!Number.isFinite(t)) return sorted;
+    const picked = sorted.filter((ctx) => Number(ctx.teil) === t);
+    return picked.length ? picked : sorted;
+  }
+
   function structuredOutputRules(ctx) {
     return [
       'STRUCTURED OUTPUT (mandatory):',
@@ -210,6 +227,7 @@ const BlueprintPromptBinding = (() => {
 
   return Object.freeze({
     chunkPlanFromBlueprint,
+    chunkPlanForPersonalModule,
     partBindingDetail,
     structuredOutputRules,
     validationRetryHint,

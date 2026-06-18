@@ -842,16 +842,16 @@ button.ws-exam-card:disabled:hover{border-color:var(--border);transform:none}
 .vv-add-hint{font-size:12px;font-weight:600;color:var(--text-secondary);margin:10px 0 0;line-height:1.55}
 .vv-add-hint b{color:var(--text)}
 .vv-add-fix{display:inline;border:none;background:none;padding:0;font:inherit;font-weight:700;color:var(--brand);cursor:pointer;text-decoration:underline;font-family:var(--lc-font)}
-.exam-config-part-card{min-height:56px;border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px 16px;cursor:pointer;background:var(--surface,var(--bg2));box-shadow:var(--shadow-card,0 1px 3px rgba(15,23,42,.06));display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.exam-config-part-card{min-height:56px;border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px 16px;cursor:pointer;background:var(--surface,var(--bg2));box-shadow:var(--shadow-card,0 1px 3px rgba(15,23,42,.06));display:flex;align-items:center;gap:10px;margin-bottom:10px}
 .exam-config-part-card.on{border-color:var(--brand);background:var(--brand-light)}
-.exam-config-part-card .n{font-size:15px;font-weight:700;color:var(--text)}
+.exam-config-part-card .n{flex:1;min-width:0;font-size:15px;font-weight:700;color:var(--text)}
 .exam-config-part-card .n small{display:block;font-size:11px;font-weight:500;color:var(--text-muted);margin-top:2px}
 .exam-config-part-card .tk{width:18px;height:18px;border-radius:5px;border:1.5px solid var(--text-muted);flex:none}
 .exam-config-part-card.on .tk{background:var(--brand);border-color:var(--brand)}
 .exam-config-part-card.soon{opacity:.55;cursor:default;pointer-events:none}
-.exam-config-radio-dot{font-size:18px;line-height:1;flex:none;color:var(--text-muted);margin-right:4px;transition:color .15s}
+.exam-config-radio-dot{font-size:18px;line-height:1;flex:none;width:18px;text-align:center;color:var(--text-muted);transition:color .15s}
 .exam-config-part-card.on .exam-config-radio-dot{color:var(--brand)}
-.exam-config-part-meta{display:flex;align-items:center;gap:8px;flex:none}
+.exam-config-part-meta{display:flex;align-items:center;gap:8px;flex:none;margin-left:auto}
 .exam-config-badge{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:2px 7px;border-radius:6px;flex:none}
 .exam-config-badge--ready{color:var(--green);background:rgba(34,197,94,.12)}
 .exam-config-badge--soon{color:var(--orange);background:rgba(245,158,11,.12)}
@@ -916,6 +916,8 @@ button.ws-exam-card:disabled:hover{border-color:var(--border);transform:none}
 .fc-single-nav .btn-sm{min-height:44px;padding:0 18px}
 .ws-act-card.soon{opacity:.55;cursor:default;pointer-events:none}
 .exam-config-hint{font-size:11px;font-weight:500;color:var(--text-muted);margin-top:8px;line-height:1.5}
+.exam-config-teil-select{display:block;width:100%;max-width:100%;margin:0 0 10px;padding:11px 14px;border:1px solid var(--border);border-radius:var(--radius-lg);background:var(--surface,var(--bg2));color:var(--text);font-size:14px;font-weight:600;font-family:var(--lc-font);cursor:pointer;box-shadow:var(--shadow-card,0 1px 3px rgba(15,23,42,.06))}
+.exam-config-teil-select:focus{outline:2px solid var(--brand-light);border-color:var(--brand)}
 .exam-config-cta{display:inline-flex;align-items:center;gap:6px;min-height:36px;font-size:13px;font-weight:700;color:var(--brand);background:none;border:none;cursor:pointer;font-family:var(--lc-font);padding:0}
 .exam-config-footbar{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--bg2);border-top:1px solid var(--border);padding:12px 16px calc(12px + env(safe-area-inset-bottom));display:none;align-items:center;gap:12px}
 .exam-config-footbar .summary{flex:1;font-size:12px;font-weight:600;color:var(--text-secondary)}

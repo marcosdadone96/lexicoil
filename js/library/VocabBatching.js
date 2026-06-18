@@ -21,14 +21,15 @@ const VocabBatching = (() => {
     return Math.max(3, Math.min(...arr));
   }
 
-  /** Should we offer the listening game instead of generating an exam? */
+  /** Should we offer the listening game instead of generating an exam? Hören-only — never hijacks Lesen/other modules. */
   function shouldUseGame(words, skills, libraryMatchCount) {
+    const skillList = skills && skills.length ? skills : ['lesen'];
+    const horenOnly = skillList.length === 1 && skillList[0] === 'horen';
+    if (!horenOnly) return false;
     const n = (words || []).length;
     if (n < GAME_THRESHOLD) return true;
-    // Asked for more words than the library can place, and only listening selected.
     if (typeof libraryMatchCount === 'number' && libraryMatchCount < Math.min(n, 3)) {
-      const onlyListening = (skills || []).length === 1 && skills[0] === 'horen';
-      if (onlyListening) return true;
+      return true;
     }
     return false;
   }

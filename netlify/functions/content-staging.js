@@ -120,14 +120,18 @@ exports.handler = async (event) => {
   // then fire maybePromote once for the whole batch (A) — both non-blocking.
   if (autoApprovedIds.length) {
     const approvedRecs = records.filter((r) => autoApprovedIds.includes(r.id));
-    void Promise.allSettled(
+    const reuseResults = await Promise.allSettled(
       approvedRecs.map((rec) => approvePartToReusable(store, rec, { verified: true })),
-    ).then(() => {
-      // maybePromote once for the batch — fire-and-forget
-      maybePromote(store, lang, level).catch((e) =>
-        console.warn('[content-staging] maybePromote error:', e.message),
+    );
+    const reuseOk = reuseResults.filter((r) => r.status === 'fulfilled' && r.value).length;
+    if (reuseOk < approvedRecs.length) {
+      console.warn(
+        `[content-staging] reusable store: ${reuseOk}/${approvedRecs.length} parts stored`,
       );
-    });
+    }
+    void maybePromote(store, lang, level).catch((e) =>
+      console.warn('[content-staging] maybePromote error:', e.message),
+    );
   }
 
   if (isComplete && saved.length) {
@@ -147,5 +151,6 @@ exports.handler = async (event) => {
     parts: saved,
     autoApproved: autoApprovedIds.length,
     completeExamQueued: isComplete,
+    rejected: records.length - saved.length,
   });
 };

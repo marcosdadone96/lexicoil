@@ -146,20 +146,33 @@
 
     <!-- Staging -->
     <div class="panel" id="tab-staging">
+      <p style="font-size:12px;color:var(--muted);margin:0 0 12px;line-height:1.55">
+        Las partes verificadas por IA se <b>auto-aprueban</b> y no aparecen como pendientes — míralas en
+        <b>Auto-aprobados</b> o en <b>Partes reutilizables</b>. Solo quedan pendientes las partes con &lt;3 ítems o sin verificación.
+      </p>
       <div class="toolbar">
         <select id="stagingLang"><option value="de">German</option><option value="en">English</option><option value="es">Spanish</option></select>
         <select id="stagingLevel"><option>A1</option><option>A2</option><option selected>B1</option><option>B2</option><option>C1</option><option>C2</option></select>
-        <button onclick="loadStagingPending()">Cargar pendientes</button>
-        <span style="font-size:12px;color:var(--muted)" id="stagingCount">0 pendientes</span>
+        <select id="stagingStatus">
+          <option value="pending">Pendientes</option>
+          <option value="approved">Auto-aprobados</option>
+          <option value="rejected">Rechazados</option>
+          <option value="all">Todos</option>
+        </select>
+        <button onclick="loadStagingList()">Cargar</button>
+        <span style="font-size:12px;color:var(--muted)" id="stagingCount">—</span>
       </div>
       <div id="stagingList"></div>
     </div>
 
     <!-- Partes reutilizables -->
     <div class="panel" id="tab-parts">
+      <p style="font-size:12px;color:var(--muted);margin:0 0 12px;line-height:1.55" id="partsStagingHint">
+        Partes verificadas por IA entran aquí automáticamente. Si está vacío tras generar, revisa <b>Staging → Auto-aprobados</b>.
+      </p>
       <div class="toolbar">
-        <select id="partsLang" onchange="loadReusableParts()"><option value="">All langs</option><option value="de">German</option><option value="en">English</option><option value="es">Spanish</option></select>
-        <select id="partsLevel" onchange="loadReusableParts()"><option value="">All levels</option><option>A1</option><option>A2</option><option>B1</option><option>B2</option><option>C1</option><option>C2</option></select>
+        <select id="partsLang" onchange="loadReusableParts()"><option value="">All langs</option><option value="de" selected>German</option><option value="en">English</option><option value="es">Spanish</option></select>
+        <select id="partsLevel" onchange="loadReusableParts()"><option value="">All levels</option><option>A1</option><option>A2</option><option selected>B1</option><option>B2</option><option>C1</option><option>C2</option></select>
         <select id="partsModule" onchange="loadReusableParts()"><option value="">All modules</option><option value="lesen">Lesen</option><option value="horen">Hören</option><option value="schreiben">Schreiben</option><option value="sprechen">Sprechen</option></select>
         <button onclick="loadReusableParts()">Cargar</button>
         <span style="font-size:12px;color:var(--muted)" id="partsCount"></span>
@@ -424,7 +437,8 @@
     document.getElementById('tab-' + id).classList.add('active');
     if (id === 'users') loadUsers();
     if (id === 'pool') loadPool();
-    if (id === 'staging') loadStagingPending();
+    if (id === 'staging') loadStagingList();
+    if (id === 'parts') loadReusableParts();
     if (id === 'generations') loadGenerations();
   }
 
@@ -811,20 +825,35 @@
 
   // ── Staging ───────────────────────────────────────────────────────────────
   let _stagingItems = [];
+  let _stagingCounts = null;
 
-  async function loadStagingPending() {
+  async function loadStagingList() {
     const lang = document.getElementById('stagingLang').value;
     const level = document.getElementById('stagingLevel').value;
-    const data = await api('GET', { action: 'staging_pending', lang, level, limit: 100 });
+    const status = document.getElementById('stagingStatus').value;
+    const data = await api('GET', { action: 'staging_list', lang, level, status, limit: 100 });
     _stagingItems = data.candidates || [];
-    document.getElementById('stagingCount').textContent = (data.count ?? _stagingItems.length) + ' pendientes';
-    renderStagingList();
+    _stagingCounts = data.counts || null;
+    const c = _stagingCounts || {};
+    const statusLbl = { pending: 'pendientes', approved: 'auto-aprobados', rejected: 'rechazados', all: 'total' }[status] || status;
+    document.getElementById('stagingCount').textContent =
+      `${data.count ?? _stagingItems.length} ${statusLbl}` +
+      (c.pending != null ? ` · ${c.pending} pend. · ${c.approved || 0} aprob. · ${c.rejected || 0} rech.` : '');
+    renderStagingList(status);
   }
 
-  function renderStagingList() {
+  async function loadStagingPending() { return loadStagingList(); }
+
+  function renderStagingList(status) {
     const el = document.getElementById('stagingList');
+    const st = status || document.getElementById('stagingStatus')?.value || 'pending';
     if (!_stagingItems.length) {
-      el.innerHTML = '<p class="empty">No hay candidatos pendientes para este idioma/nivel.</p>';
+      const emptyMsg = st === 'pending'
+        ? 'No hay candidatos pendientes. Si generaste con IA verificada, revisa <b>Auto-aprobados</b> o la pestaña <b>Partes reutilizables</b>.'
+        : st === 'approved'
+          ? 'No hay partes auto-aprobadas en staging para este idioma/nivel.'
+          : 'No hay candidatos para este filtro.';
+      el.innerHTML = `<p class="empty">${emptyMsg}</p>`;
       return;
     }
     el.innerHTML = _stagingItems.map((c) => `
@@ -833,6 +862,7 @@
           <span><strong>${esc(c.module)}</strong> Teil ${esc(c.teil)}</span>
           <span>${esc(c.lang)}/${esc(c.level)}</span>
           <span>${fmtDate(c.createdAt)}</span>
+          <span class="badge" style="background:${c.status==='approved'?'rgba(52,211,153,.15)':c.status==='rejected'?'rgba(248,113,113,.1)':'rgba(245,158,11,.12)'};color:${c.status==='approved'?'var(--green)':c.status==='rejected'?'var(--red)':'var(--orange)'}">${esc(c.status || 'pending')}</span>
           ${c.contributor ? `<span>${esc(c.contributor)}</span>` : ''}
         </div>
         <div class="preview">
@@ -841,8 +871,9 @@
         </div>
         <div class="actions">
           <button class="act" onclick="viewCandidateDetail('${esc(c.id)}','${esc(c.lang)}','${esc(c.level)}')">Ver parte</button>
-          <button class="act approve" onclick="approveStaging('${esc(c.id)}')">Guardar/Aprobar parte</button>
-          <button class="act reject" onclick="rejectStaging('${esc(c.id)}')">Rechazar</button>
+          ${c.status === 'pending' ? `<button class="act approve" onclick="approveStaging('${esc(c.id)}')">Guardar/Aprobar parte</button>
+          <button class="act reject" onclick="rejectStaging('${esc(c.id)}')">Rechazar</button>` : ''}
+          ${c.status === 'approved' ? `<span style="font-size:11px;color:var(--green);align-self:center">✓ En partes reutilizables</span>` : ''}
         </div>
       </div>`).join('');
   }
@@ -856,7 +887,7 @@
     let msg = '✓ Parte guardada y disponible para práctica';
     if (r.promoted > 0) msg += ' — ' + r.promoted + ' examen(es) completo(s) al pool';
     toast(msg);
-    loadStagingPending();
+    loadStagingList();
   }
 
   async function rejectStaging(id) {
@@ -865,7 +896,7 @@
     if (!confirm('¿Rechazar este candidato? Quedará marcado como rejected.')) return;
     const r = await api('POST', {}, { action: 'reject_candidate', id, lang, level });
     toast(r.rejected ? '✓ Rechazado' : '✗ ' + (r.error || 'Error'));
-    if (r.rejected) loadStagingPending();
+    if (r.rejected) loadStagingList();
   }
 
   // ── Candidate detail modal ─────────────────────────────────────────────────
@@ -934,6 +965,18 @@
     const data = await api('GET', { action: 'list_reusable_parts', lang, level, module });
     _reusableParts = data.parts || [];
     document.getElementById('partsCount').textContent = _reusableParts.length + ' partes';
+    if (lang && level) {
+      try {
+        const st = await api('GET', { action: 'staging_stats', lang, level });
+        const c = st.counts || {};
+        const hint = document.getElementById('partsStagingHint');
+        if (hint) {
+          hint.innerHTML =
+            `Staging <b>${lang}/${level}</b>: ${c.approved || 0} auto-aprobados · ${c.pending || 0} pendientes · ` +
+            `<b>${st.reusableParts ?? _reusableParts.length}</b> en partes reutilizables.`;
+        }
+      } catch (_) { /* optional */ }
+    }
     renderReusableParts();
   }
 

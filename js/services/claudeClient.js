@@ -516,25 +516,24 @@ async function generateTtsAudio(text, voice, lang) {
 }
 
 async function saveExamPartsToStaging(lang, level, exam, opts = {}) {
-  if (exam?.vocabPersonal || exam?.vocabWords?.length) return null;
-  if (localStorage.getItem("lc_guest") === "1") return null;
+  if (exam?.vocabPersonal || exam?.vocabWords?.length) return { error: "personal_exam" };
+  if (localStorage.getItem("lc_guest") === "1") return { error: "guest" };
   const res = await lcFetch("/.netlify/functions/content-staging", {
     method: "POST",
+    headers: aiAuthHeaders(),
     body: JSON.stringify({
       lang,
       level,
       exam,
       complete: !!opts.complete,
       autoApprove: !!opts.autoApprove,
-      // Signal that the client ran AI answer-key verification (EXAM_ANSWER_KEY_VERIFY=1)
-      // → server will auto-approve valid parts to the reusable-parts store immediately.
       verified: !!opts.verified,
     }),
   });
   const data = await res.json().catch(() => ({}));
   if (!res.ok) {
-    lcDebug.warn("[staging] ingest failed:", data.error || res.status);
-    return null;
+    lcDebug.warn("[staging] ingest failed:", data.error || res.status, data);
+    return { error: data.error || `http_${res.status}`, details: data };
   }
   return data;
 }

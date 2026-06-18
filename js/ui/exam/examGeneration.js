@@ -222,6 +222,7 @@ function normalizeGoetheQuestion(q,part){
     if(/^(R|F|Richtig|Falsch|True|False|W|T)$/i.test(c))q.type='rf';
     else if(/^(J|N|Ja|Nein|Yes|No|Y)$/i.test(c))q.type='yn';
     else if(/^[A-J0]$/i.test(c)&&part?.ads?.length)q.type='matching';
+    else if(part?.text||part?.textTitle)q.type='rf';
   }
   if(q.type==='matching'||q.type==='match'){
     ensureMatchingOptions(q,part);
@@ -257,6 +258,78 @@ function examHasUnanswerableQuestions(exam){
   });
   return bad;
 }
+/** Drop or fix AI items that cannot be rendered; prefer a usable partial exam over hard failure. */
+function repairPersonalExamAnswerability(exam){
+  if(!exam||typeof exam!=='object')return exam;
+  if(typeof normalizeExam==='function')exam=normalizeExam(exam)||exam;
+  const keepQ=(q,part)=>{
+    if(!q)return false;
+    normalizeGoetheQuestion(q,part);
+    return questionTypeAnswerable(q);
+  };
+  (exam.lesenParts||[]).forEach(part=>{
+    coalesceLesenAdsMatching(part);
+    coalesceLesenPartQuestions(part);
+    part.questions=(part.questions||[]).filter(q=>keepQ(q,part));
+    part.items=(part.items||[]).filter(it=>{
+      if(!it.question&&!it.statement&&it.correct==null&&!it.signText)return false;
+      return keepQ(it,part);
+    });
+    if(typeof lesenPartMissingAds==='function'&&lesenPartMissingAds(part)){
+      part.items=(part.items||[]).filter(it=>{
+        const t=String(it.type||'').toLowerCase();
+        return t!=='matching'&&t!=='match';
+      });
+    }
+  });
+  (exam.horenParts||[]).forEach(part=>{
+    coalesceHorenPartSegments(part);
+    (part.segments||[]).forEach(seg=>{
+      seg.questions=(seg.questions||[]).filter(q=>{
+        normalizeHorenQuestionFields(q);
+        normalizeGoetheQuestion(q,part);
+        return typeof horenQuestionHasSubstance==='function'?horenQuestionHasSubstance(q):questionTypeAnswerable(q);
+      });
+    });
+    part.questions=(part.questions||[]).filter(q=>keepQ(q,part));
+  });
+  return exam;
+}
+/** Drop whole Teile that remain unusable after repair (partial generation tolerance). */
+function personalPartIsUsable(part,mod){
+  if(!part||!goethePartHasContent(part,mod))return false;
+  const shell={
+    lang:'de',level:'B1',goetheFormat:true,
+    lesenParts:[],horenParts:[],schreibenParts:[],sprechenParts:[]
+  };
+  const key=mod+'Parts';
+  shell[key]=[JSON.parse(JSON.stringify(part))];
+  repairPersonalExamAnswerability(shell);
+  if(examHasUnanswerableQuestions(shell))return false;
+  return goethePartHasContent(shell[key][0],mod);
+}
+function pruneBrokenExamParts(exam,skills){
+  if(!exam||typeof exam!=='object')return exam;
+  const mods=orderedPersonalSkills(skills||exam.vocabSkills||['lesen']);
+  const removed=[];
+  for(const mod of mods){
+    const key=mod+'Parts';
+    if(!Array.isArray(exam[key]))continue;
+    exam[key]=exam[key].filter(p=>{
+      const ok=personalPartIsUsable(p,mod);
+      if(!ok){
+        if(p?.teil!=null)removed.push(`Teil ${p.teil}`);
+        else removed.push(mod);
+      }
+      return ok;
+    });
+    if(exam[key]?.length===0)delete exam[key];
+  }
+  if(removed.length)exam._prunedTeile=[...new Set(removed)];
+  return exam;
+}
+window.pruneBrokenExamParts=pruneBrokenExamParts;
+window.repairPersonalExamAnswerability=repairPersonalExamAnswerability;
 window.examHasUnanswerableQuestions=examHasUnanswerableQuestions;
 window.horenQuestionHasSubstance=horenQuestionHasSubstance;
 function sanitizeExamText(text){
@@ -1073,10 +1146,6 @@ async function generatePersonalExamAiSerial(configWords,configSkills,configGoalI
         report.failedTeile.push(...(exam._chunkMeta.failed||[]));
       }
       report.modules.push({skill,ok:true});
-      if(tier==='pro'){
-        const dep=buildPoolExamCopy(exam,genericPoolTopic(S.subject,S.level));
-        void contributeExamToStaging(S.subject,S.level,dep.topic,dep,{minCoverage:0,words:configWords});
-      }
       const topic=accumulated?.topic||exam.topic||'Personal vocabulary review';
       accumulated=accumulated?mergeExamParts(accumulated,exam,topic):exam;
       if(exam._genTicket&&typeof S!=='undefined')S._activeGenTicket=exam._genTicket;
@@ -1106,19 +1175,36 @@ async function generatePersonalExamAiSerial(configWords,configSkills,configGoalI
   }
   return{exam:accumulated,source:'ai',genReport:report};
 }
+function parseTeilNumbersFromGenLabels(labels){
+  const out=[];
+  for(const lbl of labels||[]){
+    const s=String(lbl);
+    const m=s.match(/Teil\s*(\d+)/i);
+    if(m)out.push(Number(m[1]));
+  }
+  return[...new Set(out.filter(Number.isFinite))];
+}
 async function retryFailedPersonalParts(){
   const st=S.personalGenRetry;
   if(!st){lcToast('Nothing to retry.','warn');return;}
   if(!canGenerate()){showUpgrade();return;}
-  const skills=st.failedModules.length
-    ?st.failedModules
-    :orderedPersonalSkills(st.skills).filter(s=>!(st.partialExam&&personalModuleHasContent(st.partialExam,s)));
+  const failedTeilNums=parseTeilNumbersFromGenLabels(st.failedTeile);
+  let skills;
+  if(failedTeilNums.length){
+    skills=orderedPersonalSkills(st.skills).slice(0,1);
+  }else if(st.failedModules.length){
+    skills=st.failedModules;
+  }else{
+    skills=orderedPersonalSkills(st.skills).filter(s=>!(st.partialExam&&personalModuleHasContent(st.partialExam,s)));
+  }
   if(!skills.length){lcToast('All parts already generated.','info');return;}
   hideAll();show('loadingScreen');
   document.getElementById('loaderTitle').textContent='Retrying failed parts…';
   document.getElementById('loaderSub').textContent='This may take ~1–2 min per module.';
   try{
-    const personalGenOpts={};
+    const personalGenOpts={
+      teilFilter:failedTeilNums.length?failedTeilNums:(S.lastPersonalConfig?.teilFilter??_examConfig.teilChoice??'all'),
+    };
     if(typeof ExamBlueprint!=='undefined'){
       try{const bp=await ExamBlueprint.load(S.subject,S.level);if(bp)personalGenOpts.blueprint=bp;}catch(_){}
     }
@@ -1205,11 +1291,26 @@ function lcExamHasPlaceholders(exam){
 function buildPoolExamCopy(exam,topic){
   const copy=JSON.parse(JSON.stringify(exam));
   delete copy.vocabPersonal;delete copy.vocabWords;delete copy.vocabSkills;
-  delete copy.targetUsage;delete copy.targetUsageVerified;
+  delete copy.personalizedExam;delete copy.targetUsage;delete copy.targetUsageVerified;
   delete copy.goalId;delete copy._savedId;delete copy._flightId;
   delete copy.poolSource;delete copy.poolId;delete copy.guidedDemo;
+  delete copy._partialGen;delete copy._chunkMeta;delete copy._genReport;
+  delete copy._failedTeile;delete copy._succeededTeile;delete copy._prunedTeile;delete copy._genTicket;
   copy.topic=topic;
   return copy;
+}
+function examHasStorableParts(exam){
+  if(!exam||typeof exam!=='object')return false;
+  return['lesen','horen','schreiben','sprechen'].some(m=>{
+    const arr=exam[m+'Parts'];
+    return Array.isArray(arr)&&arr.some(p=>goethePartHasContent(p,m));
+  });
+}
+/** Staging/reuse gate — section exams (Lesen-only, etc.) are valid; do not require full mock exam shape. */
+function lcExamPassesStructuralGate(exam){
+  if(!examHasStorableParts(exam))return false;
+  if(lcExamHasPlaceholders(exam))return false;
+  return true;
 }
 function lcValidatorStrict(){
   if(typeof window!=='undefined'&&window.LC_VALIDATOR_STRICT==='1')return true;
@@ -1258,33 +1359,34 @@ function genericPoolTopic(lang,level){
   return `${certLbl(lang,level)} practice exam`;
 }
 async function contributeExamToStaging(lang,level,topic,exam,opts){
-  if(!exam||exam.vocabPersonal||exam.vocabWords?.length||exam.reusedItems)return;
-  if(typeof saveExamPartsToStaging!=='function')return;
+  if(!exam||exam.vocabPersonal||exam.vocabWords?.length||exam.reusedItems)return null;
+  if(typeof saveExamPartsToStaging!=='function')return null;
+  if(!lcExamPassesStructuralGate(exam))return null;
   const words=opts?.words;
-  const minCov=opts?.minCoverage??(words?.length?POOL_CONTRIBUTE_COVERAGE:0);
+  const minCov=opts?.minCoverage??0;
   const complete=typeof isExamBlueprintComplete==='function'&&isExamBlueprintComplete(exam);
   const passesQuality=lcExamPassesQualityGate(exam,words,minCov);
-  // Pass verified:true when the exam source is AI and has been server-key-verified
-  // (lcValidateExamOnServer ran in finalizePersonalExam just before this call).
-  const verified=!!(opts?.verified||(S.examSource==='ai'&&!exam._partialGen));
+  const verified=!!(opts?.verified||(S.examSource==='ai'));
   try{
-    await saveExamPartsToStaging(lang,level,exam,{complete:complete&&passesQuality,autoApprove:false,verified});
-  }catch(err){lcDebug.warn('[staging] remote ingest failed:',err);}
+    const data=await saveExamPartsToStaging(lang,level,exam,{complete:complete&&passesQuality,autoApprove:false,verified});
+    if(data?.error)lcDebug.warn('[staging] ingest rejected:',data.error,data.details);
+    return data?.error ? data : data;
+  }catch(err){lcDebug.warn('[staging] remote ingest failed:',err);return {error:err.message||'network'};}
 }
 async function contributeExamToPool(lang,level,topic,exam,opts){
   const directPool=typeof directPoolContribEnabled==='function'&&directPoolContribEnabled();
-  // Strategy-A direct mode: content enters the served pool without human review.
-  // Structural validation still applies; moderation is a posteriori via admin (disable/delete).
+  let stagingResult=null;
   if(typeof S!=='undefined'&&S.examSource==='ai'&&!directPool){
-    void contributeExamToStaging(lang,level,topic,exam,opts);
+    stagingResult=await contributeExamToStaging(lang,level,topic,exam,opts);
   }
-  if(typeof lcStrategyBEnabled==='function'&&lcStrategyBEnabled()&&!directPool)return;
+  if(typeof lcStrategyBEnabled==='function'&&lcStrategyBEnabled()&&!directPool)return stagingResult;
   if(typeof saveExamToPool!=='function'||!exam)return;
   const words=opts?.words;
   const minCov=opts?.minCoverage??(words?.length?POOL_CONTRIBUTE_COVERAGE:0);
   if(!lcExamPassesQualityGate(exam,words,minCov))return;
   const clean=buildPoolExamCopy(exam,topic||genericPoolTopic(lang,level));
   try{await saveExamToPool(lang,level,clean.topic,clean);}catch(_){}
+  return stagingResult;
 }
 window.contributeExamToPool=contributeExamToPool;
 window.contributeExamToStaging=contributeExamToStaging;
@@ -1437,8 +1539,21 @@ async function finalizePersonalExam(configWords,configSkills,configGoalId,goalRe
   if(S.examSource==='question-library'&&(!isExamRenderable(S.examData)||!lcExamPassesValidator(S.examData,{strict:false}))){
     throw new Error('Library assembly produced an invalid exam.');
   }
-  if(typeof lcValidateExamOnServer==='function'&&!S.examData._partialGen){
-    const srv=await lcValidateExamOnServer(S.examData,{verifyAnswerKeys:S.examSource==='ai'});
+  if(typeof normalizeExam==='function')S.examData=normalizeExam(S.examData);
+  S.examData=repairPersonalExamAnswerability(S.examData);
+  pruneBrokenExamParts(S.examData,configSkills);
+  if(S.examData._prunedTeile?.length){
+    S.examData._partialGen=true;
+    S.examData._failedTeile=[...new Set([...(S.examData._failedTeile||[]),...S.examData._prunedTeile])];
+  }
+  if(!isExamRenderable(S.examData)){
+    throw Object.assign(new Error('No valid exam parts could be generated.'),{code:'exam_invalid'});
+  }
+  if(examHasUnanswerableQuestions(S.examData)){
+    throw Object.assign(new Error('Generated exam has questions without answer options.'),{code:'exam_invalid'});
+  }
+  if(typeof lcValidateExamOnServer==='function'&&S.examSource==='ai'){
+    const srv=await lcValidateExamOnServer(S.examData,{verifyAnswerKeys:true});
     if(!srv.valid){
       S.examData=null;
       throw Object.assign(
@@ -1447,17 +1562,26 @@ async function finalizePersonalExam(configWords,configSkills,configGoalId,goalRe
       );
     }
   }
-  if(typeof normalizeExam==='function')S.examData=normalizeExam(S.examData);
-  if(examHasUnanswerableQuestions(S.examData)){
-    throw Object.assign(new Error('Generated exam has questions without answer options.'),{code:'exam_invalid'});
-  }
-  if(lcExamPassesQualityGate(S.examData,configWords,POOL_CONTRIBUTE_COVERAGE)){
-    if(S.examSource==='ai'){
-      const depersonalized=buildPoolExamCopy(S.examData,genericPoolTopic(S.subject,S.level));
-      void contributeExamToPool(S.subject,S.level,depersonalized.topic,depersonalized,{minCoverage:0});
-    }else{
-      void contributeExamToPool(S.subject,S.level,genericPoolTopic(S.subject,S.level),S.examData,{words:configWords,minCoverage:POOL_CONTRIBUTE_COVERAGE});
+  if(S.examSource==='ai'){
+    const depersonalized=buildPoolExamCopy(S.examData,genericPoolTopic(S.subject,S.level));
+    if(lcExamPassesStructuralGate(depersonalized)){
+      try{
+        const ing=await contributeExamToPool(S.subject,S.level,depersonalized.topic,depersonalized,{minCoverage:0,verified:true});
+        if(ing?.saved>0){
+          const msg=ing.autoApproved>0
+            ?`${ing.saved} Teil${ing.saved===1?'':'e'} saved for reuse (${ing.autoApproved} live for other learners).`
+            :`${ing.saved} Teil${ing.saved===1?'':'e'} queued for review in admin.`;
+          lcToast(msg,'info',6000);
+        }else if(ing?.error){
+          lcToast(`Exam ready, but reuse pool save failed (${ing.error}). Are you logged in?`,'warn',8000);
+        }else{
+          lcDebug.warn('[staging] no parts ingested',ing);
+          lcToast('Exam ready, but no parts were saved to the reuse pool.','warn',8000);
+        }
+      }catch(stgErr){lcDebug.warn('[staging] contribute failed:',stgErr);}
     }
+  }else if(lcExamPassesQualityGate(S.examData,configWords,POOL_CONTRIBUTE_COVERAGE)){
+    void contributeExamToPool(S.subject,S.level,genericPoolTopic(S.subject,S.level),S.examData,{words:configWords,minCoverage:POOL_CONTRIBUTE_COVERAGE});
   }
   if(typeof VocabBatching!=='undefined'&&goalRef?.vocabPlan){
     VocabBatching.advance(goalRef.vocabPlan,configWords);
@@ -1475,7 +1599,11 @@ async function finalizePersonalExam(configWords,configSkills,configGoalId,goalRe
   }
   if(S.examData._partialGen){
     storePersonalGenRetry(configWords,configSkills,configGoalId,S.examData,S.examData._genReport);
-    lcToast('Some parts could not be generated. You can retry failed parts from the banner.','warn',8000);
+    const failed=S.examData._failedTeile||[];
+    const msg=failed.length
+      ?`Some parts could not be generated (${failed.slice(0,5).join(', ')}${failed.length>5?'…':''}). Retry from the banner. Successful parts are saved for reuse.`
+      :'Some parts could not be generated. You can retry failed parts from the banner.';
+    lcToast(msg,'warn',8000);
   }else{
     S.personalGenRetry=null;
   }
@@ -1538,7 +1666,7 @@ async function generatePersonalExam(words,skills,goalId,opts){
   }
   S.mode='practice';S.isDemo=false;S.answers={};S.gapAnswers={};S.quickMod=null;
   initExamSession('practice');
-  S.lastPersonalConfig={words:configWords,skills:configSkills,goalId:configGoalId||S.activeGoalId};
+  S.lastPersonalConfig={words:configWords,skills:configSkills,goalId:configGoalId||S.activeGoalId,teilFilter:opts?.teilFilter??_examConfig.teilChoice??'all'};
   if(typeof VocabBatching!=='undefined'&&typeof HorenGame!=='undefined'&&VocabBatching.shouldUseGame(configWords,configSkills,libraryMatchCount)){
     launchHorenGame(configWords,S.subject,S.level);return;
   }
@@ -1554,7 +1682,9 @@ async function generatePersonalExam(words,skills,goalId,opts){
     if(tier==='pro'){
       try{
         if(!engineReady())throw new Error('Content engine not loaded');
-        const personalGenOpts={};
+        const personalGenOpts={
+          teilFilter:opts?.teilFilter??_examConfig.teilChoice??'all',
+        };
         if(typeof ExamBlueprint!=='undefined'){
           try{
             const bp=await ExamBlueprint.load(S.subject,S.level);
@@ -1634,12 +1764,28 @@ async function generatePersonalExam(words,skills,goalId,opts){
         : 'Answer-key verification failed. The AI exam was rejected and was not saved to the pool. Try generating again.','error',8000);
       return;
     }
+    if(e.code==='exam_invalid'&&tier==='pro'){
+      try{
+        const fallback=await tryPersonalPoolOrLibrary(configWords,configSkills,configGoalId,goalRef);
+        if(fallback){
+          await finalizePersonalExam(configWords,configSkills,configGoalId,goalRef,fallback.exam,fallback.source);
+          lcToast('AI section had invalid questions; assembled from the question library instead.','warn',7000);
+          return;
+        }
+      }catch(fbErr){lcDebug.warn('[personal] library fallback after exam_invalid failed:',fbErr);}
+    }
     if(_examConfig.goalId){
       show('examConfigScreen');
       showExamConfigFootbar(true);
       renderExamConfigurator();
     }else show('flashcardScreen');
-    lcToast('Personal exam failed: '+e.message,'error',5000);
+    lcToast(
+      e.code==='exam_invalid'
+        ? (e.quotaReleased
+          ? 'Section could not be validated. Your AI credits were refunded.'
+          : 'Personal exam failed: '+e.message)
+        : 'Personal exam failed: '+e.message,
+      'error',8000);
   }
 }
 
@@ -1853,7 +1999,9 @@ async function generateSectionExam(module,goalId){
   if(canAi){
     document.getElementById('loaderSub').textContent=`No cached section found — generating with AI (3 AI credits)…`;
     try{
-      const personalGenOpts={};
+      const personalGenOpts={
+        teilFilter:S.lastPersonalConfig?.teilFilter??_examConfig.teilChoice??'all',
+      };
       if(typeof ExamBlueprint!=='undefined'){
         try{const bp=await ExamBlueprint.load(lang,level);if(bp)personalGenOpts.blueprint=bp;}catch(_){}
       }

@@ -143,6 +143,27 @@ function partRecord(module, part, { lang, level, source, batchId }) {
       (seg.questions || []).forEach((q) => questions.push(mapQuestion(q, lang, level, module, teil, passageId)));
     });
   }
+  if (Array.isArray(part.items)) {
+    part.items.forEach((item, i) => {
+      const stem = item.question || item.statement || item.signText;
+      if (!stem) return;
+      questions.push(
+        mapQuestion(
+          {
+            ...item,
+            id: item.id || `${module}-t${teil}-i${i + 1}`,
+            question: item.question || item.statement || stem,
+            type: item.type || (item.signText ? 'matching' : 'multiple'),
+          },
+          lang,
+          level,
+          module,
+          teil,
+          passageId,
+        ),
+      );
+    });
+  }
   if (module === 'schreiben' && !questions.length && (part.task || part.prompt)) {
     questions.push(mapQuestion({ question: part.task || part.prompt, type: 'short_answer', correct: 'rubric' }, lang, level, module, teil, null));
   }

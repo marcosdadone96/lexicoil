@@ -188,7 +188,12 @@ const PromptBuilder = (() => {
       throw new Error('buildPersonalExamChunksFromBlueprint requires blueprint and binding module');
     }
     const filtered = filterBlueprintBySkills(blueprint, spec.skills);
-    const plan = BP.chunkPlanFromBlueprint(filtered, spec.language);
+    const skills = normalizePersonalSkills(spec.skills);
+    const teilFilter = spec.personalTeilFilter ?? 'all';
+    const plan =
+      skills.length === 1 && filtered.modules?.length === 1
+        ? BP.chunkPlanForPersonalModule(filtered, spec.language, teilFilter)
+        : BP.chunkPlanFromBlueprint(filtered, spec.language);
     if (!plan.length) {
       throw new Error('Blueprint produced empty chunk plan for selected skills');
     }

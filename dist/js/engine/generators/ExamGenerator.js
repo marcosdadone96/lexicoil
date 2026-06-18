@@ -197,6 +197,7 @@ const ExamGenerator = (() => {
 
       if (personal) {
         normalized.vocabPersonal = true;
+        return normalized;
       }
 
       try {

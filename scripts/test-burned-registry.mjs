@@ -42,7 +42,8 @@ ok('first batch sized', b0.length <= VocabBatching.capacityFor(['lesen', 'horen'
 VocabBatching.advance(plan, b0);
 ok('advance increments cursor', plan.cursor === 1);
 
-ok('shouldUseGame below threshold', VocabBatching.shouldUseGame(['a', 'b'], ['lesen'], undefined));
+ok('shouldUseGame lesen not hijacked', !VocabBatching.shouldUseGame(['a', 'b'], ['lesen'], undefined));
+ok('shouldUseGame horen below threshold', VocabBatching.shouldUseGame(['a', 'b'], ['horen'], undefined));
 
 const html = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
 ok('index loads ContentKey before ExamBlueprint', html.indexOf('ContentKey.js') < html.indexOf('ExamBlueprint.js'));
