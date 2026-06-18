@@ -55,25 +55,30 @@
     </ul>
 
     <h2>3. Third parties</h2>
-    <p>We use Supabase (auth/database), Stripe (payments), Netlify (hosting), and Anthropic (AI). Each has its own privacy policy.</p>
+    <p>We use Supabase (auth/database), Stripe (payments), Netlify (hosting), Anthropic (AI), and Google Analytics (usage statistics, only if you accept analytics cookies). Each has its own privacy policy.</p>
 
     <h2>4. Your rights</h2>
     <p>You may request access, correction, or deletion of your account data by emailing <a href="mailto:contact@lexicoil.com">contact@lexicoil.com</a>.</p>
 
     <h2 id="cookies">5. Cookies and local storage</h2>
-    <p>LexiCoil does not use advertising or third-party marketing cookies today. We store the following in your browser for <strong>essential (functional)</strong> operation only. Optional analytics or marketing tools are not loaded unless you accept them in the cookie banner.</p>
+    <p>LexiCoil does not use advertising or third-party marketing cookies today. We store the following in your browser for <strong>essential (functional)</strong> operation. Optional analytics (Google Analytics 4) loads only if you accept it in the cookie banner.</p>
     <ul>
       <li><strong>Session / authentication</strong> — HTTP-only cookies and JWT tokens keep you signed in securely (Supabase auth). Duration: until you sign out or the session expires.</li>
       <li><strong>Exam and flashcard state</strong> — <code>localStorage</code> saves your in-progress exams, saved exams, flashcards, goals, and mastery data so you can continue where you left off. Duration: until you clear site data or delete your account.</li>
       <li><strong>Preferences</strong> — theme (<code>theme</code> / <code>lc_theme</code>) and similar UI settings. Duration: persistent until cleared.</li>
       <li><strong>Cookie consent</strong> — <code>lc_cookie_consent</code> remembers your choice (Accept / Reject / Preferences). Duration: until you clear site data or change preferences.</li>
       <li><strong>Guest quota</strong> — a functional identifier may be stored to enforce fair usage limits for unsigned visitors.</li>
+      <li><strong>Analytics (optional)</strong> — if enabled, Google Analytics (measurement ID <code>G-HMZCS7TE33</code>) collects anonymised page views and usage events via cookies set by Google. Duration: per Google’s policy; you can disable this anytime in cookie preferences.</li>
     </ul>
-    <p><strong>Legal basis (EU/CH):</strong> essential storage is necessary to provide the service you request (GDPR Art. 6(1)(b)). Any future analytics or marketing scripts would rely on your consent (Art. 6(1)(a)) and load only after you choose <em>Accept</em> or enable them in <em>Preferences</em>.</p>
-    <p>You can reopen cookie settings anytime via the footer link in the app (when signed in) or by clearing <code>lc_cookie_consent</code> in your browser to see the banner again.</p>
+    <p><strong>Legal basis (EU/CH):</strong> essential storage is necessary to provide the service you request (GDPR Art. 6(1)(b)). Analytics scripts rely on your consent (Art. 6(1)(a)) and load only after you choose <em>Accept</em> or enable Analytics in <em>Preferences</em>.</p>
+    <p>You can reopen cookie settings anytime via the footer link in the app (when signed in), from this page using the banner below, or by clearing <code>lc_cookie_consent</code> in your browser.</p>
 
     <h2>6. Changes</h2>
     <p>We may update this policy. Continued use after changes constitutes acceptance.</p>
   </div>
+  <link rel="stylesheet" href="/assets/css/app.css">
+  <script src="/js/i18n/consentLocale.js"></script>
+  <script src="/js/ui/consent/cookieConsent.js"></script>
+  <script src="/js/ui/consent/googleAnalytics.js"></script>
 </body>
 </html>

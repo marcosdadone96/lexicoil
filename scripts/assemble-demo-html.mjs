@@ -32,6 +32,10 @@ const html = `<!DOCTYPE html>
 <script>
 ${fs.readFileSync(path.join(ROOT, 'scripts/demo-offline-app.js'), 'utf8')}
 </script>
+<link rel="stylesheet" href="/assets/css/app.css">
+<script src="/js/i18n/consentLocale.js"></script>
+<script src="/js/ui/consent/cookieConsent.js"></script>
+<script src="/js/ui/consent/googleAnalytics.js"></script>
 </body>
 </html>
 `;

@@ -34,8 +34,8 @@ export function HeroSection() {
             </h1>
 
             <p className="mt-6 max-w-xl text-lg font-semibold leading-relaxed text-[var(--text-secondary)] md:text-xl">
-              LexiCoil turns the questions you get wrong into a personalized path to your Goethe or
-              Cambridge certification.
+              LexiCoil turns the questions you get wrong into a personalized path to your language
+              certification — reading, listening, writing, and speaking at A1–C2.
             </p>
 
             <div className="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-[15px] font-bold text-[var(--text-primary)]">
@@ -66,7 +66,7 @@ export function HeroSection() {
 
           <div className="relative animate-fade-up">
             <ProductFrame
-              url="app.lexicoil.com · Goethe B1"
+              url="app.lexicoil.com · Language exams"
               caption="Dashboard coach — readiness, KPIs, and your next step in one view"
             >
               <AppScreenshotDashboard />

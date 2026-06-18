@@ -6,7 +6,7 @@ export function JsonLd() {
     applicationCategory: 'EducationalApplication',
     operatingSystem: 'Web',
     description:
-      'Adaptive Goethe and Cambridge exam preparation. Turn mistakes into personalized practice tests.',
+      'Adaptive language exam preparation for German, English, Spanish and other CEFR certifications. Turn mistakes into personalized practice tests.',
     offers: {
       '@type': 'Offer',
       price: '0',

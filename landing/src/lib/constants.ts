@@ -3,6 +3,7 @@ export const APP_URL = '/app.html';
 export const EXAM_FORMATS = [
   'Goethe-Institut',
   'Cambridge English',
+  'DELE · Instituto Cervantes',
   'Official CEFR levels A1–C2',
   'Reading · Listening · Writing · Speaking',
 ] as const;

@@ -4,7 +4,7 @@ import { Container } from '@/components/ui/Container';
 const PRODUCT_FACTS = [
   {
     title: 'CEFR A1–C2',
-    desc: 'Goethe and Cambridge certifications at every level — from Start Deutsch to C2.',
+    desc: 'Goethe, Cambridge, DELE and other official certifications at every level — A1 to C2.',
   },
   {
     title: 'Four skills',
@@ -28,7 +28,7 @@ export function SocialProofSection() {
           Private beta
         </p>
         <p className="mx-auto mb-10 max-w-xl text-center text-sm font-semibold text-[var(--text-secondary)]">
-          Built for students preparing for official Goethe and Cambridge certifications.
+          Built for students preparing for official language certifications worldwide.
         </p>
 
         <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3">

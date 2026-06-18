@@ -22,7 +22,7 @@ export function Footer() {
               </span>
             </div>
             <p className="max-w-sm text-sm leading-relaxed opacity-70">
-              Adaptive exam preparation for Goethe and Cambridge. Every mistake becomes your next lesson.
+              Adaptive language exam preparation. Every mistake becomes your next lesson.
             </p>
           </div>
 
