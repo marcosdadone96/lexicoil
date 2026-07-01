@@ -14,18 +14,12 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { createRequire } from 'node:module';
-import { auditExam } from './audit-pass-2.mjs';
+import { auditExam, partToExamWrapper } from './audit-pass-2.mjs';
 import { loadEnvFile, ROOT } from './lib/loadEnv.mjs';
 
 const require = createRequire(import.meta.url);
 loadEnvFile();
 
-const MODULE_PARTS_KEY = {
-  lesen: 'lesenParts',
-  horen: 'horenParts',
-  schreiben: 'schreibenParts',
-  sprechen: 'sprechenParts',
-};
 
 function parseArgs(argv) {
   const o = { lang: 'de', level: 'B1', target: 3, source: 'seed', json: false };
@@ -40,24 +34,6 @@ function parseArgs(argv) {
   return o;
 }
 
-function normType(type) {
-  const t = String(type || '');
-  if (t === 'multiple' || t === 'mcq') return 'multiple_choice';
-  if (t === 'true_false') return 'richtig_falsch';
-  return t;
-}
-
-function normQuestion(q, module, teil) {
-  return {
-    ...q,
-    module,
-    teil,
-    type: normType(q.type || q.questionType),
-    correctAnswer: q.correctAnswer ?? q.correct,
-    question: q.question || q.signText || q.statement || '',
-  };
-}
-
 /** Extrae theme de contributor (curated:technology → technology). */
 function partTheme(record) {
   const c = String(record.contributor || record.theme || '');
@@ -67,67 +43,11 @@ function partTheme(record) {
   return '_untagged';
 }
 
-function recordToExamPart(record) {
-  const module = String(record.module || '').toLowerCase();
-  const teil = Number(record.teil);
-  const part = {
-    teil,
-    instruction: record.instruction || '',
-  };
-
-  if (module === 'lesen') {
-    const passage = record.passage || {};
-    if (Array.isArray(passage.passages) && passage.passages.length >= 2) {
-      part.passages = passage.passages;
-      part.textTitle = passage.title || '';
-    } else if (teil === 3) {
-      part.text = passage.text || '';
-      part.textTitle = passage.title || '';
-      part.ads = passage.ads || record.ads || [];
-    } else if (teil === 4) {
-      if (Array.isArray(record.passages)) part.passages = record.passages;
-      if (Array.isArray(record.ads)) part.ads = record.ads;
-    } else {
-      part.text = passage.text || '';
-      part.textTitle = passage.title || '';
-      part.passageId = record.questions?.[0]?.passageId || passage.passageId;
-    }
-    part.questions = (record.questions || []).map((q) => normQuestion(q, module, teil));
-    if (record.example) part.example = record.example;
-  } else if (module === 'horen') {
-    if (Array.isArray(record.segments) && record.segments.length) {
-      part.segments = record.segments.map((seg) => ({
-        ...seg,
-        questions: (seg.questions || []).map((q) => normQuestion(q, module, teil)),
-      }));
-    }
-    const passage = record.passage || {};
-    part.transcript = passage.transcript || passage.text || '';
-    part.questions = (record.questions || []).map((q) => normQuestion(q, module, teil));
-  } else if (module === 'schreiben' || module === 'sprechen') {
-    part.task = record.task || record.instruction || '';
-    part.minWords = record.minWords;
-    part.maxWords = record.maxWords;
-    part.fieldId = record.fieldId;
-    part.taskFormat = record.taskFormat;
-    const task = part.task;
-    part.questions = (record.questions || []).length
-      ? record.questions.map((q) => normQuestion(q, module, teil))
-      : [{ id: '1', type: 'short_answer', question: task, correct: 'rubric', correctAnswer: 'rubric', module, teil }];
-  } else {
-    return null;
-  }
-
-  return part;
-}
-
+// recordToExamWrapper is now the canonical partToExamWrapper from audit-pass-2.mjs.
+// This ensures pool-health-report uses the exact same conversion logic as isPartPoolReady,
+// including all CHK-8 fixes (p.passageId fallback, H4 transcript passageId propagation).
 function recordToExamWrapper(record) {
-  const module = String(record.module || '').toLowerCase();
-  const partsKey = MODULE_PARTS_KEY[module];
-  if (!partsKey) return null;
-  const part = recordToExamPart(record);
-  if (!part) return null;
-  return { exam: { [partsKey]: [part] } };
+  return partToExamWrapper(record);
 }
 
 /** auditExam en parte suelta dispara CHK-3 "Teil ausente" — excluir esos falsos positivos. */
@@ -146,15 +66,17 @@ function auditPartRecord(record) {
   }
   const audit = auditExam(wrapper, record.id || 'part');
   const findings = filterPartFindings(audit.findings);
-  const importantFindings = findings.filter((f) => f.severity === 'IMPORTANT');
+  const criticalFindings   = findings.filter((f) => f.severity === 'CRITICAL');
+  const importantFindings  = findings.filter((f) => f.severity === 'IMPORTANT');
+  // clean = 0 CRITICAL AND 0 IMPORTANT — same gate as POOL-2 / isPartPoolReady
   const byChk = {};
-  for (const f of importantFindings) {
+  for (const f of [...criticalFindings, ...importantFindings]) {
     byChk[f.id] = (byChk[f.id] || 0) + 1;
   }
   return {
-    clean: importantFindings.length === 0,
+    clean: criticalFindings.length === 0 && importantFindings.length === 0,
     important: importantFindings.length,
-    critical: findings.filter((f) => f.severity === 'CRITICAL').length,
+    critical: criticalFindings.length,
     minor: findings.filter((f) => f.severity === 'MINOR').length,
     byChk,
   };

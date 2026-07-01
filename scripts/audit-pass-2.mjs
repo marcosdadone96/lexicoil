@@ -116,10 +116,14 @@ function chk1(batch, file) {
 // ─── CHK-2: correct === correctAnswer + valid values per type ──────────────
 
 const VALID_CORRECT = {
-  richtig_falsch:  v => ['Richtig','Falsch'].includes(v),
-  ja_nein:         v => ['Ja','Nein'].includes(v),
+  richtig_falsch:  v => ['Richtig','Falsch','R','F'].includes(v) || /^(richtig|falsch|true|false|r|f)$/i.test(v),
+  ja_nein:         v => ['Ja','Nein','J','N'].includes(v)        || /^(ja|nein|j|n|yes|no)$/i.test(v),
   matching:        v => /^[a-jA-J0]$/.test(v),
-  multiple_choice: v => /^[a-c]$/.test(v),
+  // Renderer stores the user's click as optKey() → a single letter (any case).
+  // Grading uses normalizeGradingToken() which calls .toLowerCase().
+  // Both "A" and "a" grade correctly.  Accept a–d (case-insensitive) to cover
+  // parts with up to 4 options (some Lesen T2 / Hören T2 records).
+  multiple_choice: v => /^[a-dA-D]$/.test(v),
   short_answer:    v => v === 'rubric',
 };
 
@@ -1291,13 +1295,22 @@ function flattenExam(examObj) {
       }
 
       // Pasajes embebidos en array (ej. Lesen T2 con 2 pasajes: part.passages[])
+      // Some seed records store passage identity in `p.passageId` (not `p.id`) — accept both.
       if (Array.isArray(part.passages) && part.passages.length > 0) {
         for (const p of part.passages) {
-          passages.push({ id: p.id || `${module}-${teil}`, title: p.title || '', text: p.text || '' });
+          passages.push({
+            id    : p.id || p.passageId || `${module}-${teil}`,
+            title : p.title || p.textTitle || '',
+            text  : p.text || '',
+          });
         }
-      } else if (part.passageId || part.text) {
-        // Pasaje único inline
-        passages.push({ id: part.passageId || `${module}-${teil}`, title: part.textTitle || '', text: part.text || '' });
+      } else if (part.passageId || part.text || part.transcript) {
+        // Pasaje único inline (incluyendo transcripts de Hören sin segments)
+        passages.push({
+          id    : part.passageId || `${module}-${teil}`,
+          title : part.textTitle || '',
+          text  : part.text || part.transcript || '',
+        });
       }
 
       // Preguntas directas de la parte (part.questions)
@@ -1533,6 +1546,12 @@ function partRecordToExamPart(record) {
     const passage = record.passage || {};
     part.transcript = passage.transcript || passage.text || '';
     part.questions = (record.questions || []).map((q) => normPartQuestion(q, module, teil));
+    // When no segments, propagate the passageId from questions so flattenExam can
+    // build the flat passages[] with the correct id and CHK-8 can resolve it.
+    if (!part.segments?.length) {
+      const firstPid = (record.questions || []).find((q) => q.passageId)?.passageId;
+      if (firstPid) part.passageId = firstPid;
+    }
   } else if (module === 'schreiben' || module === 'sprechen') {
     part.task = record.task || record.instruction || '';
     part.minWords = record.minWords;
@@ -1764,7 +1783,7 @@ export function isExamPublishable(exam, { allowFailures = false } = {}) {
 }
 
 // Exportar símbolos necesarios para publicador y verify
-export { flattenExam, BLUEPRINT };
+export { flattenExam, BLUEPRINT, partRecordToExamPart, partToExamWrapper };
 
 /**
  * loadBatchFile: devuelve siempre un array de batches.
