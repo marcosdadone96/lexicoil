@@ -1,0 +1,654 @@
+﻿
+> lexicoil@1.0.0 test:engine
+> node scripts/test-domain.mjs && node scripts/test-knowledge-engine.mjs && node scripts/test-prompt-builder.mjs && node scripts/test-blueprint-ai-path.mjs && node scripts/test-target-usage.mjs && node scripts/test-vocab-personalization.mjs && node scripts/test-burned-registry.mjs && node scripts/test-horen-game.mjs && node scripts/test-generators.mjs && node scripts/test-provider-adapters.mjs && node scripts/test-exam-validator.mjs && node scripts/test-cefr-gate.mjs && node scripts/test-mastery-tracking.mjs && node scripts/test-personalized-7030.mjs && node scripts/test-ux-loop.mjs && node scripts/test-design-system.mjs && node scripts/test-strategy-b-pipeline.mjs && node scripts/test-staging-pipeline.mjs && node scripts/test-tts.mjs && node scripts/test-pretts-bank.mjs && node scripts/test-library-first.mjs && node scripts/test-calibration.mjs && node scripts/test-concurrency-quota-pool.mjs && node scripts/test-exam-sources.mjs && node scripts/test-nav-routes.mjs && node scripts/test-visual-tokens.mjs && node scripts/test-coverage-listening-learning.mjs && node scripts/test-exam-quality-gate.mjs && node scripts/test-teil3-uniqueness.mjs && node scripts/test-topic-coherence-gate.mjs && node scripts/test-topic-coherence.mjs && node scripts/test-dele-c2-pass-rule.mjs && node scripts/test-exam-autosave.mjs && node scripts/test-answer-key-renderable.mjs && node scripts/test-passage-dedupe.mjs && node scripts/test-module-grading.mjs && node scripts/test-spanish-exam.mjs && node scripts/lib/assert-no-mojibake.mjs && node scripts/test-goethe-a1-modellsatz.mjs && node scripts/test-goethe-a2-modellsatz.mjs && node scripts/test-goethe-b1-modellsatz.mjs && node scripts/test-goethe-b2-modellsatz.mjs && node scripts/test-goethe-c1-modellsatz.mjs && node scripts/test-goethe-c2-modellsatz.mjs && node scripts/test-cambridge-a1-modellsatz.mjs && node scripts/test-cambridge-a2-modellsatz.mjs && node scripts/test-cambridge-b1-modellsatz.mjs && node scripts/test-cambridge-b2-modellsatz.mjs && node scripts/test-cambridge-c1-modellsatz.mjs && node scripts/test-cambridge-c2-modellsatz.mjs && node scripts/test-dele-a1-modellsatz.mjs && node scripts/test-dele-a2-modellsatz.mjs && node scripts/test-dele-b1-modellsatz.mjs && node scripts/test-dele-b2-modellsatz.mjs && node scripts/test-dele-c1-modellsatz.mjs && node scripts/test-dele-c2-modellsatz.mjs && node scripts/test-exam-engine-e2e.mjs --dry && node scripts/test-exam-runner-render.mjs && node scripts/test-exam-xss.mjs
+
+OK   LexiCoilDomain smoke test passed
+OK   Goethe B1 Exam merge
+OK   Cambridge B1 Exam merge
+OK   DELE B1 Exam merge
+OK   Spanish DELE B1 Exam merge
+OK   targetWords + generic exercise
+OK   listTopics from knowledge/languages
+OK   pickRandomTopic
+OK   auto provider inference
+
+All KnowledgeEngine tests passed.
+OK   Goethe B1 chunked prompts
+OK   Cambridge B1 chunked prompts
+OK   quick reading single prompt
+OK   vocabulary exam chunked prompts (official blueprint)
+OK   vocabulary exam lesen-only blueprint
+
+All PromptBuilder tests passed.
+OK   resolveBlueprintByType loads goethe_B1
+OK   missing blueprint throws blueprint_not_found
+OK   resolveBlueprintForSpec from KnowledgeEngine spec
+OK   chunk plan has 15 parts (5 lesen + 4 horen + 3 schreiben + 3 sprechen)
+OK   plan includes Teil 1 R/F
+OK   plan includes ads matching teil with 7 items
+OK   buildExamChunks uses blueprint when flag on
+OK   chunk count matches blueprint plan
+OK   prompt includes slotType from blueprint
+OK   prompt includes item count
+OK   prompt includes structured output rules
+OK   legacy provider plan uses official 15 parts (5+4+3+3)
+OK   blueprint path one chunk per official Teil
+OK   mock blueprint-conform exam passes strict validation ()
+OK   longest reading passage 160 words >= B1 min 150
+
+Before (legacy provider B1): chunks= 15 , generic taskTypes only
+After  (blueprint B1):       chunks= 15 , longest passage target >= 150 words
+
+All blueprint AI path tests passed.
+OK   word-boundary verification
+OK   verify discards over-declared surfaces
+OK   derive targetUsage from exam text
+OK   applyVerified on personal exam
+OK   forced template usage filtered from targetUsageVerified
+OK   vocab prompt includes targetUsage contract
+
+All targetUsage tests passed.
+OK   all questions have vocabularyTags
+OK   all passages have passageVocab
+OK   passages.json synced
+OK   served de_B1 Lesen vocabularyTags (207/207)
+OK   semantic tag Stadtgarten exists
+OK   questionContainsWords matches vocabularyTags
+OK   personal exam exposes vocabMatchFound
+OK   personal exam exposes vocabMatchCount
+OK   deriveTargetUsage returns array
+OK   manualVocab has enrichFlashcardFromBank
+OK   results.js has renderVocabGameSection
+OK   normalizeAiExamToBank extracts passages
+OK   normalizeAiExamToBank extracts questions
+
+Vocabulary personalization tests passed.
+OK   cross-module key stable
+OK   trivial text null
+OK   mergeBurned unions keys
+OK   mergeBurned unions ids
+OK   plan batches for 20 words
+OK   first batch sized
+OK   advance increments cursor
+OK   shouldUseGame lesen not hijacked
+OK   shouldUseGame horen below threshold
+OK   index loads ContentKey before ExamBlueprint
+OK   index loads BurnedRegistry
+
+Burned registry / batching tests passed.
+played+absent==total: true | 1+ ausente: true
+perfecto: true | faltan: Haus, Baum
+OK   personalized exam with skills
+OK   ExerciseGenerator quick module
+OK   ExamGenerator chunked merge
+OK   ContentGenerator vocabulary routing
+
+All generator tests passed.
+OK   provider JSON files contain no prompts
+OK   B1 Exam: three providers, one pipeline
+OK   registry language guard
+
+All provider adapter tests passed.
+OK: valid exam passes (default non-strict)
+OK: mcq wrong key rejected
+OK: mcq multiple correct rejected
+OK: mcq duplicate options rejected
+OK: mcq empty option rejected
+OK: gap missing answer rejected
+OK: match invalid reference rejected
+OK: passage_missing rejected (non-strict)
+OK: transcript_missing rejected (non-strict)
+OK: passage_too_short is warning when non-strict
+OK: passage_too_short warning present
+OK: passage_too_short rejected in strict
+OK: passage_too_short error in strict
+OK: blueprint loads for de B1
+OK: item_count_mismatch warning when non-strict
+OK: item_count_mismatch warning present
+OK: item_count_mismatch rejected in strict
+OK: known-good exam passes strict (length + passage; no blueprint item rules)
+OK: validate returns warnings array
+
+ExamValidator tests passed.
+OK   lemmatizer: St├ñdten ÔåÆ stadt
+OK   lemmatizer: studies ÔåÆ study
+OK   lemmatizer: ciudades ÔåÆ ciudad
+OK   de B1 vocab 1200 >= 400
+OK   cumulative B1 vocab triggers hard coverage
+OK   B1 text passes B1 (reasons: none)
+OK   B1 wordCount 165 >= 150
+OK   B1 coverage 97%
+OK   hard coverage enforced
+OK   B1 text fails A1
+OK   A1 fails on length
+OK   B1 text fails C1
+OK   C1 fails on length or complexity
+OK   metrics are deterministic
+OK   extractAllExamTexts collects all parts
+OK   validateExam fails when any text is out of range
+OK   validateExam reports textsMeasured
+OK   A1 fails when inference ratio too high
+OK   inference_above_max reason
+OK   CEFR gate OFF by default
+OK   CEFR gate ON flags A1 exam with B1-length passage
+OK   validateExam accepts B1 passage at B1 level
+OK   passageLengthExempt skips length_below_min
+OK   normal part still fails length_below_min when too short
+OK   validateExam applies blueprint passageLengthExempt per lesen Teil
+
+Sample metrics:
+  B1-de-passage: withinRange=true words=165 coverage=97% avgSent=11
+  A1-de-short: withinRange=false words=17 coverage=82.4% avgSent=5.7
+  B1-en-passage: withinRange=false words=100 coverage=81% avgSent=14.3
+
+CefrGate tests passed.
+OK   3 passiv failures mark tag as weak
+OK   passiv accuracy is 0%
+OK   Cambridge lesen tags counted
+OK   Cambridge horen segment tags counted
+OK   Cambridge horen module tracked
+OK   DELE correct passiv answer
+OK   DELE correct subj answer
+OK   decay reduces effective weight of old passiv attempts
+OK   getMasterySummary returns weakGrammar array
+OK   hasData true after exams
+OK   sync merge sums tag stats
+OK   sync merge keeps topic tags
+OK   sync merge sums vocab gaps
+OK   sync merge keeps max examsTaken
+
+Mastery tracking tests passed.
+OK   seeded profile exposes weak grammar tags
+OK   callAI not invoked
+OK   exam flagged personalized
+OK   personalizedSplit report present
+OK   weak ratio 70% (target 70%, actual 7/10)
+OK   items marked origin weakness
+OK   items marked origin mixed
+OK   no repeat from last exam (0 overlaps)
+OK   profile still has weak tags after assembly
+OK   weak tags for buildWeaknessExam (g-de-b1-passiv, g-de-b1-nebensatz)
+OK   blueprint loaded from cache
+OK   buildWeaknessExam sets personalizedExam
+OK   buildWeaknessExam split total > 0
+
+Personalized 70/30 tests passed.
+OK   formatTagLabel strips grammar prefix
+OK   formatTagLabel strips topic prefix
+OK   canRunWeaknessExam when library + weak tags
+OK   recommended exam is weakness 7030
+OK   weakness exam is one click
+OK   desc mentions 70/30 split
+OK   weak tags humanized
+OK   run calls prepGoalContext
+OK   run starts weakness exam directly
+OK   card renders recommended label
+OK   card wires start CTA
+OK   card wires mastery CTA
+OK   mastery panel id present
+OK   panel shows formatted weak grammar
+OK   no history ÔåÆ first mock exam
+OK   first exam one click from dashboard
+
+UX loop tests passed.
+OK: landing/public design-system matches assets source
+OK: landing globals.css imports canonical tokens
+OK: tailwind.config.ts uses CSS variable theme
+OK: colors.json manifest matches design-system CSS
+OK: demo-loop.css uses canonical tokens
+OK: landing capture HTML uses linked design system
+OK: design-system includes --amber semantic alias
+
+Design system parity checks passed.
+node.exe : (node:23732) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of 
+file:///C:/Users/marco/Desktop/MDR/lexiloop/scripts/pipeline/lib/provenance.js is not specified and it doesn't parse 
+as CommonJS.
+At line:1 char:1
++ & "D:\NODE/node.exe" "D:\NODE/node_modules/npm/bin/npm-cli.js" run te ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ((node:23732) [M...se as CommonJS.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\marco\Desktop\MDR\lexiloop\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+OK   STRATEGY_B global default OFF without subject/level
+OK   per-level Strategy B tracks servability
+OK   STRATEGY_B env ON globally
+OK   composite B1 assembles from servable bank
+OK   composite tracks sourceBankIds
+OK   curated de_B1 index has 10 entry/entries
+OK   curated entry has provenance
+OK   curated entry passed CefrGate
+
+Strategy B pipeline tests passed.
+OK   blueprint goethe-b1 loaded
+OK   candidate id format
+OK   index has 1 row
+OK   list pending
+OK   lesen t1 has 6 questions
+OK   approved candidate
+OK   library questions grew or stayed
+OK   candidate promoted
+
+Staging pipeline tests passed.
+OK   voice registry resolves de-DE
+OK   TTS provider + hash helpers
+OK   voice alias de-DE ÔåÆ ElevenLabs id
+OK   legacy Azure names map to distinct voices
+OK   ListeningScript uses ElevenLabs voice ids
+OK   assignSpeakerVoices distinct per speaker
+OK   stub provider returns audio buffer
+OK   de/B1 bank: 202 h├Âren passages
+OK   pretts manifest: 202 passages
+OK   pretts wrote segment cache files
+
+Sprint 3 TTS / pretts-bank tests passed.
+OK   de/B1 servable (ok)
+OK   item counts lesen=645 horen=639
+OK   isLevelServable(de,B1)
+OK   strategyBEnabled per-level without STRATEGY_B env
+OK   Strategy B auto ON for servable de/B1
+OK   Strategy B OFF for non-servable en/A1
+OK   assembled exam has lesen parts
+OK   assembled exam has horen parts
+OK   assembled exam valid ()
+OK   cascade blocks AI when servable and no library hit
+OK   cascade uses question library
+
+Sprint 4 library-first tests passed.
+OK   p-value computation
+OK   confidence high at 20
+OK   priors for all bank items
+OK   merged empirical p-value for l13
+OK   l13 has sample attempts
+OK   l13 empirically harder than prior
+OK   calibrated assembly same count
+OK   calibrated exam builds
+OK   AnalyticsStore records itemStats
+
+Sprint 5 calibration tests passed.
+[quota-cas] conflict key=quota:test@example.com attempt=1/5
+[quota-cas] conflict key=quota:test@example.com attempt=1/5
+[quota-cas] conflict key=quota:test@example.com attempt=1/5
+[quota-cas] conflict key=quota:test@example.com attempt=1/5
+[quota-cas] conflict key=quota:test@example.com attempt=1/5
+[quota-cas] conflict key=quota:test@example.com attempt=1/5
+[quota-cas] conflict key=quota:test@example.com attempt=1/5
+[quota-cas] conflict key=quota:test@example.com attempt=1/5
+[quota-cas] conflict key=quota:test@example.com attempt=1/5
+[quota-cas] conflict key=quota:test@example.com attempt=1/5
+[quota-cas] conflict key=quota:test@example.com attempt=1/5
+[quota-cas] conflict key=quota:test@example.com attempt=1/5
+[quota-cas] conflict key=quota:test@example.com attempt=1/5
+[quota-cas] conflict key=quota:test@example.com attempt=1/5
+[quota-cas] conflict key=quota:test@example.com attempt=1/5
+[quota-cas] conflict key=quota:test@example.com attempt=1/5
+[quota-cas] conflict key=quota:test@example.com attempt=1/5
+[quota-cas] conflict key=quota:test@example.com attempt=1/5
+[quota-cas] conflict key=quota:test@example.com attempt=1/5
+[quota-cas] conflict key=quota:test@example.com attempt=1/5
+[quota-cas] conflict key=quota:test@example.com attempt=1/5
+[quota-cas] conflict key=quota:test@example.com attempt=1/5
+[quota-cas] conflict key=quota:test@example.com attempt=1/5
+[quota-cas] conflict key=quota:test@example.com attempt=1/5
+[quota-cas] resolved key=quota:test@example.com after 2 attempts
+[quota-cas] resolved key=quota:test@example.com after 2 attempts
+[quota-cas] resolved key=quota:test@example.com after 2 attempts
+[quota-cas] resolved key=quota:test@example.com after 2 attempts
+[quota-cas] resolved key=quota:test@example.com after 2 attempts
+[quota-cas] resolved key=quota:test@example.com after 2 attempts
+[quota-cas] resolved key=quota:test@example.com after 2 attempts
+[quota-cas] resolved key=quota:test@example.com after 2 attempts
+[quota-cas] resolved key=quota:test@example.com after 2 attempts
+[quota-cas] resolved key=quota:test@example.com after 2 attempts
+[quota-cas] resolved key=quota:test@example.com after 2 attempts
+[quota-cas] resolved key=quota:test@example.com after 2 attempts
+[quota-cas] resolved key=quota:test@example.com after 2 attempts
+[quota-cas] resolved key=quota:test@example.com after 2 attempts
+[quota-cas] resolved key=quota:test@example.com after 2 attempts
+[quota-cas] resolved key=quota:test@example.com after 2 attempts
+[quota-cas] resolved key=quota:test@example.com after 2 attempts
+[quota-cas] resolved key=quota:test@example.com after 2 attempts
+[quota-cas] resolved key=quota:test@example.com after 2 attempts
+[quota-cas] resolved key=quota:test@example.com after 2 attempts
+[quota-cas] resolved key=quota:test@example.com after 2 attempts
+[quota-cas] resolved key=quota:test@example.com after 2 attempts
+[quota-cas] resolved key=quota:test@example.com after 2 attempts
+[quota-cas] resolved key=quota:test@example.com after 2 attempts
+OK   concurrent quota increments
+OK   quota idempotency
+OK   quota refund + idempotency
+OK   quota refund skipped without prior charge
+OK   concurrent pool publish (no lost entries)
+[pool-index] rotated 1 oldest entries for de/A2
+[pool-index] rotated 1 oldest entries for de/A2
+[pool-index] rotated 1 oldest entries for de/A2
+[pool-index] rotated 1 oldest entries for de/A2
+[pool-index] rotated 1 oldest entries for de/A2
+OK   pool rotation by timestamp
+All concurrency quota/pool checks passed.
+OK   exam source cascade ordering
+OK   validateExamCandidate helper
+All examSources tests passed.
+OK   hash route parsing
+OK   route table (15 entries)
+OK   level matrix de/en ├ù A1ÔÇôC2 (0 ready/live, 12 pr├│ximamente)
+All nav route tests passed.
+OK: exists assets/css/app-utilities.css
+OK: exists js/ui/components/a11y.js
+OK: exists js/ui/exam/examKeyboard.js
+OK: exists js/ui/vocabulary/fcKeyboard.js
+OK: index.html loads app-utilities.css
+OK: index.html loads a11y.js
+OK: design-system legacy accent/text/r aliases removed
+OK: main JS uses canonical CSS tokens
+OK: brand on white (large text / UI): 5.17:1
+OK: text-primary on bg-base: 17.06:1
+OK: text-secondary on bg-base: 7.24:1
+OK: nav.js announces screen changes
+
+All visual token / a11y checks passed
+OK: 13a: all 18 question banks exist
+OK: 13a: all 18 blueprints exist
+OK: 13a: de/A1 has passage (19 words)
+OK: 13a: de/C2 has passage (34 words)
+OK: 13a: en/A2 has passage (19 words)
+OK: 13a: es/C1 has passage (32 words)
+OK: 13b: goethe_B1 fidelity (3 schreiben, 3 sprechen)
+OK: 13b: goethe_B2 fidelity (2 schreiben, 2 sprechen)
+OK: 13b: cambridge_B2 fidelity (2 schreiben, 4 sprechen)
+OK: 13b: dele_B2 fidelity (2 schreiben, 3 sprechen)
+OK: 13c: AnalyticsStore extended API
+OK: 13d: TaggingGate passed (7 trusted questions)
+OK: 13d: WeaknessEngine uses TaggingGate
+OK: 13e: ListeningScript parsed 3 segments
+OK: 13e: multi-voice voices assigned
+OK: 13e: listening pipeline wired
+
+All phase 13 checks passed
+OK: quality gate accepts valid exam
+OK: 0 correct rejected
+OK: quality gate rejects missing correct
+OK: multiple correct array rejected on mcq
+OK: duplicate options rejected
+OK: empty option text rejected
+OK: correct not in options rejected
+OK: option correct flags with matching key accepted
+OK: two option correct flags rejected
+OK: placeholder-heavy exam rejected by gate
+OK: ads_matching items[] with part.ads accepted
+OK: quality gate accepts ads_matching + forum items
+OK: missing key on matching item rejected
+OK: missing key error names teil and id
+OK: goethe B1 blueprint loads
+OK: blueprint fidelity rejects partial exam (missing teile)
+OK: lesen T1 blueprint target is 6
+OK: blueprint part gate requires exact count
+OK: blueprint part gate accepts exact count
+OK: no-blueprint gate still uses fractional minimum
+OK: shared isAnswerKeyRenderable: matching 0 with ads
+OK: shared isAnswerKeyRenderable: matching 0 without inject path fails
+
+Exam quality gate tests passed.
+OK: duplicate D/C keys => answer_key_not_unique errors
+OK: duplicate Teil 3 fails blueprint fidelity
+OK: repeated 0 is allowed
+OK: 7 distinct keys valid
+OK: validateUniqueAssignmentKeys empty for distinct
+OK: transport exam found in de_B1.json
+OK: transport passes fidelity (unique Lesen T3 keys)
+OK: transport has no answer_key_not_unique
+OK: validateGeneratedExam marks transport valid
+
+Teil 3 uniqueness tests passed.
+test-topic-coherence-gate: OK
+[partQualityGate] topic coherence rejected part {
+  module: 'lesen',
+  teil: 1,
+  issues: [ 'content_about_cooking_not_transport' ]
+}
+test-topic-coherence: OK
+test-dele-c2-pass-rule: OK
+OK: debounced saveCurrentExam called with in_progress
+OK: saved answers include lesen_1
+OK: guest sessionStorage backup written
+OK: guest backup has lesen_1
+OK: resume restores lesen_1 after simulated refresh
+OK: pagehide flush persists lesen_2
+
+Exam autosave tests passed.
+OK: matching "B) ..." options + correct B => renderable
+OK: getRenderableAnswerKeys extracts bare keys from prefixed strings
+OK: matching correct 0 + "0) Keine Zuordnung" => renderable
+OK: matching correct Z not in options => not renderable
+OK: _keyOnlyMatch with ads-injected { key: "0" } still renderable
+OK: _keyOnlyMatch ads inject includes 0
+OK: optKey bare "A"
+OK: optKey prefixed "B) Pilates"
+OK: optKey negative "0) Keine Zuordnung"
+OK: optKey object { key: "0" }
+
+All answer-key renderable tests passed.
+
+OK: identical text = 1.0
+OK: different text low similarity
+OK: unique exams pass
+OK: duplicate passageId fails
+OK: similar text >85% fails
+
+Passage dedupe tests passed.
+OK: 59% does not pass at 60% threshold
+OK: 60% passes at 60% threshold
+OK: 61% passes at 60% threshold
+OK: 6/10 = 60% passes
+OK: invalid item excluded from denominator (5/9=56% fails)
+OK: blueprint passPercent read
+OK: B1 goethe is modular
+OK: A2 goethe is not modular
+OK: A2 blueprint scope whole-exam
+OK: A2 isWholeExamGrading
+OK: lesen 20/20 scales to 25 points
+OK: horen 10/20 scales to 13 points (rounded)
+OK: 2/4 modules passed when writing/speaking unevaluated
+OK: global not passed until all 4 evaluated
+OK: informative avg of evaluated modules
+OK: B1 summary scope modular
+OK: global passed when all 4 modules pass
+OK: B2 is modular
+OK: A2 44/75 written fails (15+15+14)
+OK: A2 speaking can pass alone but whole exam fails
+OK: A2 global fail when written under 45
+OK: A2 45/75 written passes (15+15+15)
+OK: A2 15/25 speaking passes
+OK: A2 global pass at 45/75 + 15/25
+OK: legacy migration builds moduleResults
+OK: legacy migration keeps flat moduleScores
+OK: A1 scope whole-exam-total
+OK: A1 isWholeExamGrading
+OK: A1 59/100 total fails
+OK: A1 60/100 total passes
+OK: C1 scope modular
+OK: C1 is modular goethe
+OK: C1 fail when one module under 60%
+OK: C2 scope modular
+OK: Cambridge A2 scope modular
+OK: Cambridge modular fail when lesen under 60%
+OK: DELE scope dele-groups
+OK: DELE isDeleGroupGrading
+OK: DELE grupo1 fail at 29/50
+OK: DELE global fail when grupo1 fails
+OK: DELE grupo1 pass at 30/50
+OK: DELE global pass when both groups pass
+
+Module grading tests passed.
+OK: A1 lang es
+OK: A1 deleFormat
+OK: A1 goetheFormat for renderer
+OK: A1 board
+OK: A1 certificate
+OK: A1 reading module title
+OK: A1 lesenParts mapped
+OK: A1 listening segments
+OK: A1 writing parts
+OK: A1 speaking parts
+OK: A1 renderable structure
+OK: A1 ExamValidator: 
+OK: A1 Spanish UI reading label
+OK: A1 TTS locale
+OK: B1 lang es
+OK: B1 deleFormat
+OK: B1 goetheFormat for renderer
+OK: B1 board
+OK: B1 certificate
+OK: B1 reading module title
+OK: B1 lesenParts mapped
+OK: B1 listening segments
+OK: B1 writing parts
+OK: B1 speaking parts
+OK: B1 renderable structure
+OK: B1 ExamValidator: 
+OK: B1 Spanish UI reading label
+OK: B1 TTS locale
+OK: C1 lang es
+OK: C1 deleFormat
+OK: C1 goetheFormat for renderer
+OK: C1 board
+OK: C1 certificate
+OK: C1 reading module title
+OK: C1 lesenParts mapped
+OK: C1 listening segments
+OK: C1 writing parts
+OK: C1 speaking parts
+OK: C1 renderable structure
+OK: C1 ExamValidator: 
+OK: C1 Spanish UI reading label
+OK: C1 TTS locale
+OK: demo es_B1 metadata
+OK: demo es_B1 v3 loop
+OK: demo es_B1 modules
+OK: demo es_B1 answer key
+
+DELE Spanish acceptance tests passed (A1, B1, C1 + demo).
+OK   no mojibake in 407 scanned file(s)
+OK  goethe_A1 v3 (Goethe-Zertifikat A1 (Start Deutsch 1))
+
+goethe_A1 Modellsatz tests passed.
+OK   structureVersion 3
+OK   4 official modules (no grammatik)
+OK   no grammatik module
+OK   non-modular grading
+OK   no passPercentPerModule (whole-exam rule)
+OK   passRule scope whole-exam
+OK   passRule writtenMin 45/75
+OK   passRule speakingMin 15/25
+OK   Modellsatz counts: ok
+OK   Lesen 5/5/5/5
+OK   H├Âren 5/5/5/5
+OK   Schreiben 2 Teile
+OK   Sprechen 3 Teile
+OK   itemsTotalByModule lesen 20
+OK   itemsTotalByModule horen 20
+OK   itemsTotalByModule schreiben 2
+OK   itemsTotalByModule sprechen 3
+OK   Lesen Teil 4 passageLengthExempt
+OK   H├Âren Teil 1/4 zweimal
+OK   H├Âren Teil 2/3 einmal
+OK   exempt skips min length
+
+Goethe A2 Modellsatz tests passed.
+OK  goethe_B1 v3 (Goethe-Zertifikat B1)
+
+goethe_B1 Modellsatz tests passed.
+OK   structureVersion 3
+OK   4 official modules (no grammatik)
+OK   no grammatik module
+OK   passPercentPerModule 60
+OK   modular grading
+OK   Modellsatz counts: ok
+OK   Lesen 9/6/6/6/3
+OK   H├Âren 10/6/6/8
+OK   Schreiben 2 Teile
+OK   Sprechen 2 Teile
+OK   itemsTotalByModule lesen 30
+OK   itemsTotalByModule horen 30
+OK   itemsTotalByModule schreiben 2
+OK   itemsTotalByModule sprechen 2
+OK   Lesen Teil 1 passageLengthExempt
+OK   Lesen Teil 4 passageLengthExempt
+OK   H├Âren Teil 1 einmal
+OK   H├Âren Teil 2/4 zweimal
+OK   H├Âren Teil 3 einmal
+OK   exempt skips min length
+
+Goethe B2 Modellsatz tests passed.
+OK  goethe_C1 v3 (Goethe-Zertifikat C1)
+
+goethe_C1 Modellsatz tests passed.
+OK  goethe_C2 v3 (Goethe-Zertifikat C2)
+
+goethe_C2 Modellsatz tests passed.
+WARN cambridge_A1: verifyPending ÔÇö No Cambridge main-suite A1 exam ÔÇö counts from YLE Movers handbook 2018 only.
+OK  cambridge_A1 v3 (A1 Movers (Cambridge English Qualifications))
+
+cambridge_A1 Modellsatz tests passed.
+OK  cambridge_A2 v3 (A2 Key)
+
+cambridge_A2 Modellsatz tests passed.
+OK  cambridge_B1 v3 (B1 Preliminary)
+
+cambridge_B1 Modellsatz tests passed.
+OK  cambridge_B2 v3 (B2 First)
+
+cambridge_B2 Modellsatz tests passed.
+OK  cambridge_C1 v3 (C1 Advanced)
+
+cambridge_C1 Modellsatz tests passed.
+OK  cambridge_C2 v3 (C2 Proficiency)
+
+cambridge_C2 Modellsatz tests passed.
+OK  dele_A1 v3 (DELE A1)
+
+dele_A1 Modellsatz tests passed.
+OK  dele_A2 v3 (DELE A2)
+
+dele_A2 Modellsatz tests passed.
+OK  dele_B1 v3 (DELE B1)
+
+dele_B1 Modellsatz tests passed.
+OK  dele_B2 v3 (DELE B2)
+
+dele_B2 Modellsatz tests passed.
+OK  dele_C1 v3 (DELE C1)
+
+dele_C1 Modellsatz tests passed.
+OK  dele_C2 v3 (DELE C2)
+
+dele_C2 Modellsatz tests passed.
+Engine v2 E2E ÔÇö dry (structure only, no API)
+
+OK   dry  goethe B1 ÔÇö 15 chunks, key lesenParts
+OK   dry  cambridge B1 ÔÇö 11 chunks, key use_of_englishParts
+OK   dry  dele B1 ÔÇö 10 chunks, key lesenParts
+
+All dry engine E2E checks passed.
+OK: forum T4: 7├ù Ja/Nein buttons
+OK: forum T4: answer key lesen_3_20
+OK: forum T4: opinion 20 visible
+OK: ads T3: matching key radios
+OK: ads T3: answer key lesen_2_13
+OK: ads T3: option 0 present
+OK: forEachGoetheQ counts forum + ads items
+OK: matching correct 0 renderable when ads inject option 0
+OK: matching correct 0 NOT renderable with own options A-J only
+OK: yn Ja renderable
+
+All exam runner render checks passed.
+OK: renderQ: no raw <img tag
+OK: renderQ: no active onerror attribute
+OK: renderQ: escaped lt in question
+OK: forum signText: no raw XSS
+OK: gap fill: no raw XSS in sentence/options
+OK: DOM probe: alert not fired from injected markup
+
+All exam XSS checks passed.

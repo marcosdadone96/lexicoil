@@ -1,0 +1,28 @@
+
+Batch generator (claude) — de/A2 × 1
+Prompt: batches/GEMINI_MASTER_PROMPT_de_B1.md
+Presupuesto Claude: $999999999.00 (gastado: $2.0851)
+
+── horen T4 · englischklasse-01 ──
+Tema: Debatte: Englisch schon in der Grundschule?
+Proveedor: claude
+max_output_tokens=16384
+Archivo: batches/merged/horen-t4-englischklasse-01.json
+Llamando claude…
+max_output_tokens=16384
+Gasto acumulado: $2.0971 / budget $999999999.00
+Tokens: in=1952 out=2025 (max_out=16384)
+Modelo: claude-haiku-4-5
+Guardado: batches/merged/horen-t4-englischklasse-01.json (5 preguntas, 1 passages)
+Validando…
+
+== Validación de horen-t4-englischklasse-01.json (de_A2) ==
+Preguntas: 5 | Pasajes: 1
+Esquema: OK
+Conformidad blueprint: OK
+Colocación (Teile que mejora): horenT4 0->5
+Sin problemas detectados ✅
+Validación OK
+Siguiente: node scripts/merge-bank-batch.mjs --lang de --level A2 --file batches/merged/horen-t4-englischklasse-01.json
+
+Resumen: 1 OK, 0 fallidos

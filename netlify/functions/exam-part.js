@@ -3,7 +3,7 @@
 /**
  * exam-part — serve and ingest reusable exam sections.
  *
- * GET  ?lang=&level=&module=[&exclude=id,id,...]
+ * GET  ?lang=&level=&module=[&teil=][&exclude=id,id,...]
  *   → { part } or { part: null }
  *   Public (parts are not user-specific content).
  *
@@ -24,8 +24,10 @@ const { getStoreForEvent }           = require('./lib/blobStore.js');
 const { requireAuth }                = require('./lib/authLib.js');
 const { corsHeaders, parseJsonBody, jsonResponse } = require('./lib/http.js');
 const { readAnthropicKey }           = require('./lib/anthropicKey.js');
-const { addReusablePart, pickReusablePart } = require('./lib/reusablePartsStore.js');
-const { runPartQualityGate, partMinTargetFromBlueprint } = require('./lib/partQualityGate.js');
+const { addReusablePart, pickReusablePart, pickReusablePartByVocab } = require('./lib/reusablePartsStore.js');
+const { pickFromLocalSeed } = require('./lib/reusablePartsLocalSeed.js');
+const { runPartQualityGate, partMinTargetFromBlueprint, applyPartPostprocess } = require('./lib/partQualityGate.js');
+const { verifyTopicCoherence } = require('./lib/topicCoherenceGate.js');
 const { releaseGenerationQuota }     = require('./lib/releaseGeneration.js');
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -121,11 +123,65 @@ exports.handler = async (event) => {
     }
 
     const excludeIds = parseExcludeList(params);
+    const teilRaw = params.teil;
+    const teil =
+      teilRaw != null && String(teilRaw).trim() !== '' && Number.isFinite(Number(teilRaw))
+        ? Number(teilRaw)
+        : null;
 
     try {
-      const result = await pickReusablePart(store, lang, level, module, { excludeIds });
+      // Selección por vocabulario (A.2). Sin words → comportamiento clásico.
+      const wordsRaw = String(params.words || '')
+        .split(',').map((s) => s.trim()).filter(Boolean).slice(0, 40);
+      const excludeTopics = String(params.excludeTopics || '')
+        .split(',').map((s) => s.trim()).filter(Boolean).slice(0, 20);
+
+      let wantLemmas = [];
+      if (wordsRaw.length) {
+        try {
+          const { lemmatizeWords } = require('./lib/passageVocab.js');
+          wantLemmas = lemmatizeWords(wordsRaw, lang);
+        } catch (lemErr) {
+          console.warn('[exam-part] lemmatizeWords failed:', lemErr.message);
+          wantLemmas = wordsRaw.map((w) => String(w).toLowerCase());
+        }
+      }
+
+      let result = null;
+      if (wantLemmas.length) {
+        result = await pickReusablePartByVocab(store, lang, level, module, {
+          excludeIds, teil, words: wantLemmas, excludeTopics,
+        });
+        if (!result) {
+          result = pickFromLocalSeed(lang, level, module, {
+            excludeIds, teil, words: wantLemmas, excludeTopics,
+          });
+          if (result) {
+            console.info(`[exam-part] local seed vocab ${module} T${teil ?? '?'} → ${result.id}`);
+          }
+        }
+      }
+      if (!result) {
+        result = await pickReusablePart(store, lang, level, module, { excludeIds, teil });
+      }
+      if (!result) {
+        result = pickFromLocalSeed(lang, level, module, { excludeIds, teil });
+        if (result) {
+          console.info(`[exam-part] local seed ${module} T${teil ?? '?'} → ${result.id}`);
+        }
+      }
       if (!result) return jsonResponse(200, noCache, { part: null });
-      return jsonResponse(200, noCache, { part: result.part, id: result.id });
+      if (Array.isArray(result.part?.questions)) {
+        applyPartPostprocess(result.part.questions);
+      }
+      return jsonResponse(200, noCache, {
+        part: result.part,
+        id: result.id,
+        coveredWords: result.coveredWords || [],
+        coverage: result.coverage || null,
+        topic: result.topic || result.part?.topic || null,
+        requestedLemmas: wantLemmas,
+      });
     } catch (err) {
       console.error('[exam-part] GET error:', err.message);
       return jsonResponse(200, noCache, { part: null });
@@ -177,6 +233,10 @@ exports.handler = async (event) => {
       blueprint,
       apiKey,
       repair: true,
+      topic: body.topic || null,
+      lang,
+      level,
+      skipTopicCoherence: true,
     });
 
     console.info(
@@ -210,6 +270,53 @@ exports.handler = async (event) => {
           errors: e.errors,
         })),
       });
+    }
+
+    // ── Topic coherence (reusable pool route — final gate) ─────────────────
+    if (apiKey && process.env.TOPIC_COHERENCE_GATE !== '0') {
+      process.env.TOPIC_COHERENCE_GATE = process.env.TOPIC_COHERENCE_GATE || '1';
+      const coherencePart = {
+        module,
+        teil,
+        passage: partInput.passage,
+        questions: gateResult.validItems,
+        text: partInput.passage?.text,
+        transcript: partInput.passage?.transcript,
+      };
+      const coherence = await verifyTopicCoherence(coherencePart, {
+        topic: body.topic || null,
+        lang,
+        level,
+        apiKey,
+        module,
+        teil,
+      });
+      if (!coherence.skipped && (!coherence.onTopic || !coherence.cefrOk)) {
+        console.info('[exam-part] topic coherence rejected', {
+          module,
+          teil,
+          onTopic: coherence.onTopic,
+          cefrOk: coherence.cefrOk,
+          issues: coherence.issues,
+        });
+        if (body.genTicket) {
+          try {
+            const rel = await releaseGenerationQuota(event, { genTicket: body.genTicket });
+            console.info('[exam-part] quota released:', rel.released, rel.reason || '');
+          } catch (relErr) {
+            console.warn('[exam-part] quota release failed:', relErr.message);
+          }
+        }
+        return jsonResponse(422, cors, {
+          error: 'part_discarded',
+          reason: 'topic_coherence_failed',
+          onTopic: coherence.onTopic,
+          cefrOk: coherence.cefrOk,
+          issues: coherence.issues || [],
+          itemCount: gateResult.itemCount,
+          targetCount: gateResult.targetCount,
+        });
+      }
     }
 
     // ── Store validated part ────────────────────────────────────────────────

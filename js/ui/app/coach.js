@@ -32,7 +32,7 @@ function getRecommendedActionForGoal(goal){
   const hist=historyForGoal(goal);
   const due=dueForGoal(goal).length;
   if(due>=3)return{title:'Review due flashcards',desc:due+' words need review before your next exam.',cta:'Review now →',run:()=>{prepGoalContext(goal);openDeckHub(goal.id);setFcTab('due');}};
-  if(fc.length>=5)return{title:'Take a personalized exam',desc:'Built from '+fc.length+' words in your deck.',cta:'Generate exam →',run:()=>{prepGoalContext(goal);openExamConfigurator(goal.id);}};
+  if(fc.length>=5&&(typeof isPersonalizedAllowed!=='function'||isPersonalizedAllowed(goal.subject,goal.level)))return{title:'Take a personalized exam',desc:'Built from '+fc.length+' words in your deck.',cta:'Generate exam →',run:()=>{prepGoalContext(goal);openExamConfigurator(goal.id);}};
   if(!hist.length)return{title:'Take your first mock exam',desc:'Start with a realistic '+goalLabel(goal)+' practice test.',cta:'Start now →',run:()=>{prepGoalContext(goal);launchGoalExam('official',{goalId:goal.id});}};
   const last=hist[0];
   if(typeof QuestionLibrary!=='undefined'&&QuestionLibrary.hasLibrary(goal.subject,goal.level)&&typeof AnalyticsStore!=='undefined'&&AnalyticsStore.getWeakGrammarTags(goal,1).length){

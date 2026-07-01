@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 /**
- * Acceptance: AI credits (server costs, monthly reset, exhaustion, client mirror).
+ * Acceptance: AI credits model — monthly pools, action access matrix, feedback levels.
+ *
+ * Includes LEGACY_SNAPSHOT documenting pre-2026-06 behavior (trial-based free access).
  */
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
@@ -10,91 +12,186 @@ import { fileURLToPath } from 'node:url';
 const require = createRequire(import.meta.url);
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
-const { AI_COSTS, aiMaxForPlan } = require(
-  path.join(ROOT, 'netlify/functions/lib/aiCredits.js'),
+const { AI_COSTS, checkActionAccess } = require(path.join(ROOT, 'netlify/functions/lib/aiCredits.js'));
+const { ACTION_ACCESS, checkActionAccess: matrixCheck, feedbackLevelForPlan } = require(
+  path.join(ROOT, 'netlify/functions/lib/actionAccessLib.js'),
 );
 const { getMonthKey } = require(path.join(ROOT, 'netlify/functions/lib/quotaLib.js'));
+const {
+  aiMaxForPlan,
+  isFreeAiTrialActive,
+  aiCreditsFreeMax,
+} = require(path.join(ROOT, 'netlify/functions/lib/freeTrialLib.js'));
+const {
+  normalizeSchreibenItem,
+  normalizeProductionEvalResponse,
+} = require(path.join(ROOT, 'netlify/functions/lib/productionEval.js'));
 
-function assertPass(label, cond) {
+function pass(label, cond) {
   console.log(`${cond ? 'PASS' : 'FAIL'}: ${label}`);
   if (!cond) process.exitCode = 1;
 }
 
-// ── Cost table ──
-assertPass('personal_exam costs 3', AI_COSTS.personal_exam === 3);
-assertPass('writing_correction costs 1', AI_COSTS.writing_correction === 1);
-assertPass('grammar_coaching costs 1', AI_COSTS.grammar_coaching === 1);
-assertPass('Pro max defaults to 100', aiMaxForPlan('pro') === 100);
-assertPass('Free max is 0', aiMaxForPlan('free') === 0);
-assertPass('Guest max is 0', aiMaxForPlan('guest') === 0);
+// ── Legacy snapshot (documented — do not regress silently) ─────────────────
+const LEGACY_SNAPSHOT = Object.freeze({
+  proMax: 100,
+  freeTrialMax: 30,
+  freePostTrialMax: 0,
+  speakingCost: 1,
+  freeAccess: 'first_month_trial_only',
+});
+pass('legacy snapshot: pro was 100 credits', LEGACY_SNAPSHOT.proMax === 100);
+pass('legacy snapshot: free trial was 30', LEGACY_SNAPSHOT.freeTrialMax === 30);
 
-// ── Month rollover resets aiUsed ──
-{
-  const month = getMonthKey();
-  const prevMonth = '1999-1';
-  let aiUsed = 0;
-  const blob = { month: prevMonth, used: 5, aiUsed: 97 };
-  if (blob.month === month) aiUsed = Number(blob.aiUsed) || 0;
-  assertPass('New month resets aiUsed to 0', aiUsed === 0);
+// ── Cost table ─────────────────────────────────────────────────────────────
+pass('personal_exam costs 3', AI_COSTS.personal_exam === 3);
+pass('writing_correction costs 1', AI_COSTS.writing_correction === 1);
+pass('vocab_quiz costs 2', AI_COSTS.vocab_quiz === 2);
+pass('grammar_coaching costs 1', AI_COSTS.grammar_coaching === 1);
+pass('speaking costs 2', AI_COSTS.speaking === 2);
+pass('listening_game costs 1', AI_COSTS.listening_game === 1);
+pass('tts costs 1', AI_COSTS.tts === 1);
+
+// ── Monthly pools ──────────────────────────────────────────────────────────
+pass('guest max is 0', aiMaxForPlan('guest') === 0);
+pass('free max defaults to 6', aiMaxForPlan('free') === 6);
+pass('pro max defaults to 40', aiMaxForPlan('pro') === 40);
+pass('pro_max defaults to 150', aiMaxForPlan('pro_max') === 150);
+
+const expiredUser = { createdAt: '2020-01-01T00:00:00.000Z' };
+const trialUser = { createdAt: new Date().toISOString() };
+pass('free user always gets 6 (not 0 post-trial)', aiMaxForPlan('free', expiredUser) === 6);
+pass('isFreeAiTrialActive still works for welcome bonus flag', isFreeAiTrialActive(trialUser) === true);
+pass('aiCreditsFreeMax is 6', aiCreditsFreeMax() === 6);
+
+// ── ACTION_ACCESS matrix ───────────────────────────────────────────────────
+function expectAccess(plan, action, expectOk, expectError = null) {
+  const r = matrixCheck(plan, action);
+  pass(`${plan} + ${action} -> ${expectOk ? 'ok' : expectError}`, r.ok === expectOk && (!expectError || r.error === expectError));
 }
 
-// ── Simulated consumption (mirror server CAS) ──
-function simulateConsume(current, action, plan = 'pro') {
+expectAccess('free', 'speaking', true);
+expectAccess('free', 'writing_correction', true);
+expectAccess('free', 'vocab_quiz', true);
+expectAccess('free', 'listening_game', true);
+expectAccess('free', 'personal_exam', false, 'pro_only');
+expectAccess('free', 'grammar_coaching', false, 'pro_only');
+expectAccess('free', 'tts', false, 'pro_only');
+expectAccess('guest', 'speaking', false, 'login_required');
+expectAccess('pro', 'personal_exam', true);
+expectAccess('pro_max', 'grammar_coaching', true);
+expectAccess('pro_max', 'tts', true);
+
+// ── Simulated consumption with action matrix ───────────────────────────────
+function simulateConsume(current, action, plan = 'pro', user = null) {
   const cost = AI_COSTS[action];
   const month = getMonthKey();
-  const max = aiMaxForPlan(plan);
-  let used = 0;
+  const max = aiMaxForPlan(plan, user);
   let aiUsed = 0;
   if (current && current.month === month) {
-    used = Number(current.used) || 0;
     aiUsed = Number(current.aiUsed) || 0;
   }
-  if (plan !== 'pro' || aiUsed + cost > max) {
+  const access = matrixCheck(plan, action);
+  if (!access.ok) {
+    return { ok: false, error: access.error, aiUsed, remaining: Math.max(0, max - aiUsed) };
+  }
+  if (aiUsed + cost > max) {
     return { ok: false, error: 'ai_credits_exhausted', aiUsed, remaining: Math.max(0, max - aiUsed) };
   }
   return {
     ok: true,
-    payload: { used, aiUsed: aiUsed + cost, aiMax: max, month },
+    payload: { aiUsed: aiUsed + cost, aiMax: max, month },
     remaining: max - aiUsed - cost,
   };
 }
 
 {
   let blob = null;
-  const r1 = simulateConsume(blob, 'personal_exam');
-  assertPass('Pro personal_exam consumes 3 from empty', r1.ok && r1.payload.aiUsed === 3);
-  blob = r1.payload;
-  const r2 = simulateConsume(blob, 'writing_correction');
-  assertPass('writing_correction adds 1', r2.ok && r2.payload.aiUsed === 4);
-  blob = { month: getMonthKey(), used: 0, aiUsed: 98, aiMax: 100 };
-  const r3 = simulateConsume(blob, 'personal_exam');
-  assertPass('402 when 98+3 > 100', !r3.ok && r3.error === 'ai_credits_exhausted');
-}
-
-// ── Exam quota independent of AI credits ──
-{
-  const month = getMonthKey();
-  const blob = { month, used: 7, aiUsed: 42, aiMax: 100 };
-  const newUsed = (Number(blob.used) || 0) + 1;
-  const aiUsed = Number(blob.aiUsed) || 0;
-  assertPass('increment exam quota preserves aiUsed', newUsed === 8 && aiUsed === 42);
-}
-
-// ── Client applyServerQuota mirror ──
-function applyServerQuotaClient(data, S = {}) {
-  if (data.plan) S.plan = data.plan;
-  if (typeof data.aiMax === 'number') S.aiCreditsMax = data.aiMax;
-  else if (S.plan === 'pro') S.aiCreditsMax = 100;
-  else S.aiCreditsMax = 0;
-  if (typeof data.aiUsed === 'number') S.aiCreditsUsed = data.aiUsed;
-  return S;
+  const actions = ['speaking', 'writing_correction', 'vocab_quiz', 'listening_game'];
+  for (const a of actions) {
+    const r = simulateConsume(blob, a, 'free', expiredUser);
+    pass(`free can ${a}`, r.ok);
+    blob = r.payload;
+  }
+  pass('free used 6 credits total', blob.aiUsed === 6);
+  const blocked = simulateConsume(blob, 'speaking', 'free', expiredUser);
+  pass('free blocked after 6 credits', !blocked.ok && blocked.error === 'ai_credits_exhausted');
+  const proOnly = simulateConsume(blob, 'personal_exam', 'free', expiredUser);
+  pass('free personal_exam pro_only', !proOnly.ok && proOnly.error === 'pro_only');
 }
 
 {
-  const S = applyServerQuotaClient({ plan: 'pro', aiUsed: 12, aiMax: 100 });
-  assertPass('Client stores aiUsed/aiMax', S.aiCreditsUsed === 12 && S.aiCreditsMax === 100);
-  const rem = Math.max(0, S.aiCreditsMax - S.aiCreditsUsed);
-  assertPass('Remaining = 88', rem === 88);
+  let blob = null;
+  const r1 = simulateConsume(blob, 'personal_exam', 'pro');
+  pass('pro personal_exam consumes 3', r1.ok && r1.payload.aiUsed === 3);
+  blob = { month: getMonthKey(), aiUsed: 38, aiMax: 40 };
+  const r2 = simulateConsume(blob, 'speaking', 'pro');
+  pass('pro speaking costs 2 (38+2=40)', r2.ok && r2.payload.aiUsed === 40);
 }
+
+{
+  const blob = { month: getMonthKey(), aiUsed: 0, aiMax: 150 };
+  const r = simulateConsume(blob, 'personal_exam', 'pro_max');
+  pass('pro_max personal_exam ok', r.ok && r.remaining === 147);
+}
+
+// ── Feedback levels ────────────────────────────────────────────────────────
+pass('free feedback basic', feedbackLevelForPlan('free') === 'basic');
+pass('pro feedback full', feedbackLevelForPlan('pro') === 'full');
+pass('pro_max feedback full', feedbackLevelForPlan('pro_max') === 'full');
+
+const basicParsed = {
+  schreiben: [
+    {
+      id: 'w1',
+      totalScore: 62,
+      passed: true,
+      rubric: { erfuellung: 15, kohaerenz: 16, wortschatz: 15, strukturen: 16 },
+      summary: 'Orientative note',
+      errorCounts: { grammar: 2, vocab: 1, spelling: 0, register: 0, cohesion: 1 },
+    },
+  ],
+};
+const basicNorm = normalizeProductionEvalResponse(basicParsed, {
+  schreiben: [{ id: 'w1' }],
+  passPercent: 60,
+  feedbackLevel: 'basic',
+});
+pass('basic eval strips correctedText', basicNorm.ok && !basicNorm.schreiben[0].correctedText);
+pass('basic eval keeps errorCounts', basicNorm.schreiben[0].errorCounts?.grammar === 2);
+
+const fullItem = normalizeSchreibenItem(
+  {
+    id: 'w1',
+    totalScore: 80,
+    rubric: { erfuellung: 20, kohaerenz: 20, wortschatz: 20, strukturen: 20 },
+    correctedText: 'Hallo Welt',
+    errors: [{ original: 'a', correction: 'b' }],
+    grammarPoints: [{ tag: 'case' }],
+  },
+  60,
+  'full',
+);
+pass('full eval keeps correctedText', fullItem.correctedText === 'Hallo Welt');
+pass('full eval keeps grammarPoints', fullItem.grammarPoints.length === 1);
+
+const basicItem = normalizeSchreibenItem(
+  {
+    id: 'w1',
+    totalScore: 55,
+    rubric: { erfuellung: 14, kohaerenz: 14, wortschatz: 14, strukturen: 13 },
+    summary: 'OK',
+    errorCounts: { grammar: 3 },
+    correctedText: 'should strip',
+  },
+  60,
+  'basic',
+);
+pass('basic schreiben item strips correctedText', !basicItem.correctedText);
+pass('basic schreiben item has feedbackLevel', basicItem.feedbackLevel === 'basic');
+
+// ── ACTION_ACCESS exported from aiCredits re-export ─────────────────────────
+pass('checkActionAccess re-export works', checkActionAccess('free', 'tts').error === 'pro_only');
+pass('ACTION_ACCESS has 7 actions', Object.keys(ACTION_ACCESS).length === 7);
 
 console.log('\nAI credits acceptance tests done.\n');

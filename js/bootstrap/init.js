@@ -25,6 +25,11 @@ async function runInit(){
     }
   }catch(e){lcDebug.warn('[burned cooldown]',e);}
   try{
+    if(typeof ExamLibrary!=='undefined'&&ExamLibrary.ensureManifest){
+      await ExamLibrary.ensureManifest();
+    }
+  }catch(e){lcDebug.warn('[exam availability]',e);}
+  try{
     if(typeof LibraryLoader!=='undefined'&&LibraryLoader.probeAll){
       await LibraryLoader.probeAll();
     }
@@ -112,7 +117,16 @@ async function runInit(){
     history.replaceState({},'',location.pathname);
     hideAuthOverlay();
     if(deepLevel&&['A1','A2','B1','B2','C1','C2'].includes(deepLevel.toUpperCase())){
-      const goal=findOrCreateGoal(deepLang,deepLevel.toUpperCase());
+      const lvl=deepLevel.toUpperCase();
+      if(typeof LevelAvailability!=='undefined'&&!LevelAvailability.isLevelSelectable(deepLang,lvl)){
+        if(typeof openLevelSoonNotify==='function')openLevelSoonNotify(deepLang,lvl);
+        else if(typeof lcToast==='function')lcToast('This level is not available yet.','warn');
+        const fallback=typeof LevelAvailability!=='undefined'?LevelAvailability.firstSelectableLevel(deepLang):'B1';
+        const goal=findOrCreateGoal(deepLang,fallback);
+        if(goal)openGoalWorkspace(goal.id,'exams',true);
+        return;
+      }
+      const goal=findOrCreateGoal(deepLang,lvl);
       if(goal)openGoalWorkspace(goal.id,'exams',true);
       return;
     }

@@ -1,0 +1,1820 @@
+# Lesen B1 · Teil 4 — pega JSON de Gemini debajo
+# Plantilla prompt: plantillas-lesen-b1/lesen-teil4.md
+# Validar + guardar + banco:  npm run lesen:upload:t4
+# Con pool Netlify:           npm run lesen:upload:pool:t4
+# Publicar ya en generated/:   npm run lesen:publish:t4
+
+=== TEIL 4 ===
+
+{
+  "passages": [
+    {
+      "id": "gen-l4-f7a1-01",
+      "module": "lesen",
+      "teil": 4,
+      "title": "Forum: Dolmetscherin im Krankenhaus für alle Sprachen — ja oder nein?",
+      "text": "Ein Krankenhaus in der Stadt plant, eine feste Dolmetscherin für Gespräche mit Patienten aus anderen Ländern einzustellen. Familien und Besucher könnten dann besser mit Ärzten sprechen und ihre Wünsche klar äußern. Manche Nachbarn finden den Plan wichtig, andere sehen ein Problem mit den Kosten für die Organisation. Auch über die Wartezeit gibt es unterschiedliche Meinungen. Lesen Sie die Texte — ist die Person für den Vorschlag insgesamt?"
+    }
+  ],
+  "questions": [
+    {
+      "id": "gen-q-4-f7a1-01-1",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Mira hält die feste Stelle für sinnvoll, auch wenn ihr eine Person für alle Sprachen zu wenig erscheint.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Sie unterstützt das Projekt, wünscht sich aber mehr Personal.",
+      "signText": "Beim letzten Besuch im Krankenhaus konnte mein Vater seine Schmerzen kaum richtig erklären, weil niemand seine Sprache verstand. Eine feste Person dafür wäre also sehr nützlich für viele Familien hier. Nur eine Person für alle Sprachen reicht aber wahrscheinlich nicht aus. Insgesamt finde ich den Plan trotzdem gut.",
+      "passageId": "gen-l4-f7a1-01",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-01-2",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Bernd lehnt den Vorschlag ab, weil die Klinik dafür seiner Meinung nach kein Geld übrig habe.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Er sieht ein finanzielles Problem bei der Umsetzung.",
+      "signText": "Im letzten Jahr musste das Krankenhaus schon bei Geräten und Personal sparen, weil das Geld einfach fehlt. Eine neue feste Stelle kostet im Monat viel, und das passt nicht zur aktuellen Lage. Deshalb bin ich klar gegen diesen Plan der Organisation.",
+      "passageId": "gen-l4-f7a1-01",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-01-3",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Petra kritisiert nur die Arbeitszeiten der neuen Stelle, unterstützt das Vorhaben aber im Kern.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Sie findet die Idee gut, vermisst aber Verfügbarkeit am Wochenende.",
+      "signText": "Besser mit Ärzten sprechen zu können, ist für viele Patienten ein großer Vorteil bei schwierigen Themen. Bisher wäre die Person aber nur an Werktagen am Vormittag da, und am Wochenende passieren auch Notfälle. Am Vorschlag selbst finde ich sonst nichts Schlechtes.",
+      "passageId": "gen-l4-f7a1-01",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-01-4",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Achim ist gegen die neue Stelle, weil aus seiner Sicht die heutige Technik diese Arbeit längst übernehmen könne.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Er hält moderne Übersetzungs-Apps für ausreichend.",
+      "signText": "Mit dem Telefon gibt es heute gute Programme, die fast jede Sprache schnell übersetzen können, auch im Gespräch. Eine teure feste Stelle erscheint mir deshalb nicht mehr nötig in dieser Zeit. Aus diesem Grund lehne ich diesen Vorschlag ab.",
+      "passageId": "gen-l4-f7a1-01",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-01-5",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Hannelore lehnt den Plan insgesamt ab, obwohl sie den Nutzen für ältere Patienten anerkennt.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Nein",
+      "correctAnswer": "Nein",
+      "explanation": "Sie sieht den Nutzen, fordert aber zuerst eine genaue Übung für das Personal.",
+      "signText": "Dass ältere Patienten ohne gute Deutschkenntnisse stark von so einer Hilfe profitieren würden, ist für mich völlig klar. Vor dem Start sollte aber zuerst eine richtige Übung für alle Beteiligten organisiert werden. Grundsätzlich gegen die Idee bin ich nicht.",
+      "passageId": "gen-l4-f7a1-01",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-01-6",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Selin unterstützt den Plan, weil ihre eigene Familie schon einmal genau diese Hilfe gebraucht habe.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Sie berichtet von einer eigenen schwierigen Erfahrung im Krankenhaus.",
+      "signText": "Als meine Mutter letztes Jahr im Krankenhaus war, hat niemand richtig verstanden, was sie über ihre Schmerzen sagen wollte. Eine Person, die zwischen den Sprachen vermittelt, hätte uns damals sehr geholfen. Deshalb bin ich klar für diesen neuen Vorschlag.",
+      "passageId": "gen-l4-f7a1-01",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-01-7",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Oskar ist gegen das Vorhaben, weil ihrer Meinung nach die genaue Bezahlung der Stelle unklar bleibe.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Nein",
+      "correctAnswer": "Nein",
+      "explanation": "Er ist unsicher wegen der Finanzierung, lehnt das Projekt aber nicht völlig ab.",
+      "signText": "Wer die neue Stelle am Ende wirklich bezahlt, die Stadt oder das Krankenhaus selbst, ist mir noch nicht klar erklärt worden. Bei diesem Punkt bin ich ehrlich gesagt etwas unsicher. Ganz dagegen bin ich trotzdem nicht, wenn das geklärt wird.",
+      "passageId": "gen-l4-f7a1-01",
+      "lang": "de",
+      "level": "B1"
+    }
+  ]
+}
+
+---
+
+{
+  "passages": [
+    {
+      "id": "gen-l4-f7a1-02",
+      "module": "lesen",
+      "teil": 4,
+      "title": "Forum: Pauschale Eintrittspreise für das Stadtmuseum — ja oder nein?",
+      "text": "Die Organisation des Stadtmuseums plant eine pauschale Karte, mit der Familien alle Ausstellungen für einen festen Preis besuchen können. Besucher aus verschiedenen Städten könnten dann leichter planen und mehr Erfahrungen sammeln. Manche Nachbarn finden den Plan wichtig für die Kultur, andere sehen ein Problem bei den Kosten für seltene Besucher. Lesen Sie die Meinungen — ist die Person für den Vorschlag insgesamt?"
+    }
+  ],
+  "questions": [
+    {
+      "id": "gen-q-4-f7a1-02-1",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Birgit findet die feste Karte praktisch, auch wenn der Preis ihr noch zu hoch erscheint.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Sie begrüßt die Idee, kritisiert aber die Höhe des Preises.",
+      "signText": "Eine einzige Karte für alle Ausstellungen zu kaufen, finde ich für meine Familie viel einfacher als jedes Mal neu zu bezahlen. Vierzig Euro pro Person erscheinen mir aber noch ziemlich teuer für einen Tag. Trotzdem unterstütze ich diesen Plan des Museums.",
+      "passageId": "gen-l4-f7a1-02",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-02-2",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Holger lehnt das Konzept ab, weil er selten ins Museum gehe und nur einzelne Räume sehen wolle.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Er braucht keinen vollen Zugang und sieht keinen Vorteil für sich.",
+      "signText": "Ich besuche das Museum nur einmal im Jahr und interessiere mich dabei immer nur für eine bestimmte Ausstellung. Für mich ist ein fester Preis für alles deshalb keine gute Lösung, weil ich für vieles zahle, das ich gar nicht nutze. Aus diesem Grund bin ich gegen diesen Vorschlag.",
+      "passageId": "gen-l4-f7a1-02",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-02-3",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Carla kritisiert nur die fehlende Werbung für die neue Karte, befürwortet die Idee aber generell.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Sie findet das Konzept gut, vermisst aber Information für Besucher.",
+      "signText": "Mit einer einzigen Karte alle Räume sehen zu können, ist für Besucher aus anderen Städten ein klarer Vorteil bei der Planung. Bisher fehlt aber gutes Marketing dafür, kaum jemand weiß von dem neuen Angebot. Am eigentlichen Plan finde ich sonst nichts Schlechtes.",
+      "passageId": "gen-l4-f7a1-02",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-02-4",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Manfred ist gegen den Plan, weil ihm die Kontrolle an den vielen Eingängen unpraktisch erscheint.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Er sieht organisatorische Probleme bei der Umsetzung der Karte.",
+      "signText": "An jedem einzelnen Eingang müsste das Personal die neue Karte prüfen, das dauert bei vielen Besuchern am Wochenende sehr lange. Solche langen Schlangen vor jedem Raum finde ich keine gute Lösung. Deshalb lehne ich diesen ganzen Vorschlag ab.",
+      "passageId": "gen-l4-f7a1-02",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-02-5",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Greta lehnt den Plan insgesamt ab, obwohl sie den Nutzen für Familien mit Kindern anerkennt.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Nein",
+      "correctAnswer": "Nein",
+      "explanation": "Sie sieht den Nutzen, fordert aber zuerst einen günstigeren Preis für Kinder.",
+      "signText": "Dass Familien mit einer einzigen Karte leichter planen können, finde ich klar und wichtig für den Alltag. Der Preis für Kinder sollte aber deutlich niedriger sein als für Erwachsene. Grundsätzlich gegen die Idee bin ich keinesfalls.",
+      "passageId": "gen-l4-f7a1-02",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-02-6",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Simon unterstützt den Plan, weil ein ähnliches Angebot in einer anderen Stadt sehr produktiv gewesen sei.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Er berichtet von positiven Ergebnissen mit einer vergleichbaren Karte.",
+      "signText": "In einer Stadt, die ich letztes Jahr besucht habe, gab es schon eine ähnliche Karte, und viele Besucher haben sie genutzt. Die Idee war für das Museum dort wirklich produktiv und brachte mehr Besucher. Deshalb finde ich diesen neuen Plan sehr überzeugend.",
+      "passageId": "gen-l4-f7a1-02",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-02-7",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Lara ist gegen das Vorhaben, weil ihrer Meinung nach niemand die Karte vor Ort online kaufen könne.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Nein",
+      "correctAnswer": "Nein",
+      "explanation": "Sie ist skeptisch wegen des Kaufprozesses, lehnt das Projekt aber nicht völlig ab.",
+      "signText": "Wie genau Besucher die neue Karte am Eingang kaufen können sollen, ist mir bisher nicht richtig klar geworden. Bei diesem Punkt bin ich ehrlich gesagt etwas skeptisch. Komplett gegen den Plan bin ich aber nicht, wenn das einfacher wird.",
+      "passageId": "gen-l4-f7a1-02",
+      "lang": "de",
+      "level": "B1"
+    }
+  ]
+}
+
+---
+
+{
+  "passages": [
+    {
+      "id": "gen-l4-f7a1-03",
+      "module": "lesen",
+      "teil": 4,
+      "title": "Forum: Tägliche Übung mit dem Schulchor vor dem Unterricht — ja oder nein?",
+      "text": "Eine Schule plant, jeden Morgen eine kurze Übung mit dem Schulchor vor dem normalen Unterricht einzuführen. Kinder und Familien könnten dabei neue Erfahrungen mit Musik sammeln und sich besser konzentrieren. Manche Eltern finden den Plan wichtig, andere sehen ein Problem mit der frühen Zeit am Morgen. Lesen Sie die Texte — ist die Person für den Vorschlag insgesamt?"
+    }
+  ],
+  "questions": [
+    {
+      "id": "gen-q-4-f7a1-03-1",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Nora hält die Idee für sinnvoll, auch wenn ihr Kind morgens nur zögerlich aus dem Bett komme.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Sie unterstützt das Projekt, beschreibt aber Schwierigkeiten am Morgen.",
+      "signText": "Musik am Morgen könnte den Kindern helfen, besser wach zu werden und sich auf den Unterricht zu freuen. Meine Tochter steht allerdings jeden Tag sehr zögerlich auf und braucht lange zum Anziehen. Insgesamt finde ich den Plan trotzdem eine gute Sache.",
+      "passageId": "gen-l4-f7a1-03",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-03-2",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Erik lehnt das Vorhaben ab, weil dadurch seiner Meinung nach der Schulweg zu früh beginnen müsse.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Er sieht ein Problem mit der frühen Startzeit für die Familie.",
+      "signText": "Mein Sohn müsste dann schon um halb sieben aus dem Haus, weil der Bus genauso früh fährt wie immer. Für unsere Familie ist das eine viel zu frühe Zeit, besonders im Winter. Deshalb bin ich gegen diesen Plan der Schule.",
+      "passageId": "gen-l4-f7a1-03",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-03-3",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Sofia kritisiert nur die fehlende Wahlmöglichkeit für Kinder ohne Interesse, befürwortet das Konzept aber im Kern.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Sie findet die Idee gut, wünscht sich aber Freiwilligkeit.",
+      "signText": "Gemeinsames Singen am Morgen kann Kindern wirklich helfen, ruhiger in den Tag zu starten, das finde ich eine schöne Sache. Nicht jedes Kind singt aber gerne, deshalb sollte es keine Pflicht für alle sein. Am Konzept selbst finde ich sonst nichts Schlechtes.",
+      "passageId": "gen-l4-f7a1-03",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-03-4",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Bernd ist gegen den Plan, weil dafür seiner Meinung nach kein geeigneter Raum vorhanden sei.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Er hält die Räumlichkeiten für ungeeignet.",
+      "signText": "Unsere Aula ist viel zu klein für alle Klassen gleichzeitig, und ein anderer großer Raum existiert in der Schule nicht. Ohne genug Platz funktioniert so ein Projekt in der Praxis kaum. Deshalb lehne ich diesen Vorschlag klar ab.",
+      "passageId": "gen-l4-f7a1-03",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-03-5",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Wiebke lehnt den Plan insgesamt ab, obwohl sie den Nutzen für die Konzentration anerkennt.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Nein",
+      "correctAnswer": "Nein",
+      "explanation": "Sie sieht den Nutzen, fordert aber zuerst eine kürzere Testphase.",
+      "signText": "Dass Musik Kindern beim Konzentrieren helfen kann, ist für mich klar und durch viele Berichte bekannt. Bevor das aber für die ganze Schule gilt, sollte zuerst eine Klasse einen Monat lang testen. Grundsätzlich gegen die Idee bin ich nicht.",
+      "passageId": "gen-l4-f7a1-03",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-03-6",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Tarek unterstützt den Plan, weil eine ähnliche Übung an seiner früheren Schule sehr gut funktioniert habe.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Er berichtet von positiven Erfahrungen mit einem vergleichbaren Programm.",
+      "signText": "An meiner alten Schule gab es schon ein ähnliches Programm, und die Kinder waren danach im Unterricht ruhiger und aufmerksamer. Das war für die ganze Klasse eine wirklich gute Erfahrung gewesen. Deshalb finde ich diesen neuen Vorschlag eine gute Idee.",
+      "passageId": "gen-l4-f7a1-03",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-03-7",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Inge ist gegen das Vorhaben, weil ihrer Meinung nach niemand für die Leitung des Chores zuständig sei.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Nein",
+      "correctAnswer": "Nein",
+      "explanation": "Sie ist unsicher wegen der Leitung, lehnt das Projekt aber nicht völlig ab.",
+      "signText": "Wer den Chor jeden Morgen wirklich leiten soll, ist mir bisher von der Schule nicht klar erklärt worden. Bei diesem Punkt bin ich ehrlich gesagt etwas unsicher. Ganz dagegen bin ich trotzdem nicht, wenn eine feste Person gefunden wird.",
+      "passageId": "gen-l4-f7a1-03",
+      "lang": "de",
+      "level": "B1"
+    }
+  ]
+}
+
+---
+
+{
+  "passages": [
+    {
+      "id": "gen-l4-f7a1-04",
+      "module": "lesen",
+      "teil": 4,
+      "title": "Forum: Neues Marketing für lokale Geschäfte in der Innenstadt — ja oder nein?",
+      "text": "Die Organisation der Stadt plant ein gemeinsames Marketing für kleine Geschäfte in der Innenstadt, um mehr Besucher anzuziehen. Familien und Nachbarn könnten dadurch von besseren Angeboten und neuen Erfahrungen profitieren. Manche Bewohner finden den Plan wichtig für die lokale Wirtschaft, andere sehen ein Problem bei den Kosten für kleine Läden. Lesen Sie die Meinungen — ist die Person für den Vorschlag insgesamt?"
+    }
+  ],
+  "questions": [
+    {
+      "id": "gen-q-4-f7a1-04-1",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Verena hält das gemeinsame Marketing für sinnvoll, auch wenn ihr die Beteiligung freiwillig zu locker erscheint.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Sie unterstützt die Idee, wünscht sich aber mehr verpflichtende Beteiligung.",
+      "signText": "Gemeinsame Werbung für die kleinen Läden in der Innenstadt fände ich gut, weil einzelne Geschäfte sich das oft nicht leisten können. Dass die Teilnahme freiwillig bleibt, halte ich aber für zu locker geplant. Insgesamt unterstütze ich diesen Plan trotzdem sehr.",
+      "passageId": "gen-l4-f7a1-04",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-04-2",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Holger lehnt den Vorschlag ab, weil seine kleine Bäckerei die zusätzlichen Kosten nicht tragen könne.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Er sieht eine zu hohe finanzielle Belastung für sein Geschäft.",
+      "signText": "Als kleiner Geschäftsbesitzer habe ich schon jetzt viele laufende Kosten für Miete und Material in der Stadt. Ein zusätzlicher Beitrag für gemeinsames Marketing würde meine Bäckerei finanziell zu sehr belasten. Aus diesem Grund bin ich gegen diesen Vorschlag.",
+      "passageId": "gen-l4-f7a1-04",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-04-3",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Yasmin kritisiert nur die geplante Verteilung der Kosten, befürwortet die Idee aber generell.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Sie findet die Idee gut, hält die Verteilung aber für unfair.",
+      "signText": "Mehr Besucher für die Innenstadt zu finden, finde ich eine wichtige Sache für alle Geschäfte in der Stadt. Bisher sollen aber alle Läden den gleichen Betrag zahlen, egal wie groß sie sind. Am eigentlichen Vorschlag finde ich sonst nichts Schlechtes.",
+      "passageId": "gen-l4-f7a1-04",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-04-4",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Dietmar ist gegen den Plan, weil aus seiner Sicht solche Werbung die Kunden ohnehin nicht erreiche.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Er zweifelt an der Wirksamkeit der geplanten Werbung.",
+      "signText": "Viele Menschen schauen heute kaum noch auf Plakate oder Anzeigen in der Zeitung, die meiste Aufmerksamkeit liegt online. So eine alte Art von Werbung erreicht nach meiner Meinung kaum jemanden mehr. Deshalb lehne ich diesen Vorschlag der Organisation ab.",
+      "passageId": "gen-l4-f7a1-04",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-04-5",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Christina lehnt das Projekt insgesamt ab, obwohl sie den Nutzen für kleine Läden anerkennt.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Nein",
+      "correctAnswer": "Nein",
+      "explanation": "Sie sieht den Nutzen, fordert aber zuerst eine Umfrage unter den Geschäften.",
+      "signText": "Dass gemeinsame Werbung kleinen Läden in der Innenstadt helfen kann, sehe ich klar als Vorteil für die lokale Wirtschaft. Vorher sollte aber jeder Besitzer zu seiner Meinung über das beste Vorgehen gefragt werden. Grundsätzlich gegen die Idee bin ich nicht.",
+      "passageId": "gen-l4-f7a1-04",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-04-6",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Robert unterstützt den Plan, weil eine ähnliche Aktion in einer anderen Stadt sehr produktiv gewesen sei.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Er berichtet von guten Ergebnissen mit einer vergleichbaren Aktion.",
+      "signText": "In einer Nachbarstadt haben die Geschäfte vor zwei Jahren etwas Ähnliches gemacht, und die Besucherzahl ist danach deutlich gestiegen. Diese Aktion war für die lokale Wirtschaft dort wirklich produktiv. Deshalb finde ich diesen neuen Plan eine gute Idee.",
+      "passageId": "gen-l4-f7a1-04",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-04-7",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Yvonne ist gegen das Vorhaben, weil ihrer Meinung nach niemand am Ende die Ergebnisse richtig prüfe.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Nein",
+      "correctAnswer": "Nein",
+      "explanation": "Sie ist unsicher wegen der Erfolgskontrolle, lehnt das Projekt aber nicht völlig ab.",
+      "signText": "Ob am Ende wirklich jemand nachschaut, ob die Werbung tatsächlich mehr Besucher in die Stadt bringt, ist mir nicht klar. Bei diesem Punkt bin ich ehrlich gesagt etwas skeptisch. Ganz dagegen bin ich aber nicht, wenn es eine klare Kontrolle gibt.",
+      "passageId": "gen-l4-f7a1-04",
+      "lang": "de",
+      "level": "B1"
+    }
+  ]
+}
+
+---
+
+{
+  "passages": [
+    {
+      "id": "gen-l4-f7a1-05",
+      "module": "lesen",
+      "teil": 4,
+      "title": "Forum: Letzte Bushaltestelle vor der Stadtgrenze schließen — ja oder nein?",
+      "text": "Die Organisation des Verkehrs plant, die letzte Bushaltestelle vor der Stadtgrenze zu schließen, weil dort wenige Fahrgäste einsteigen. Familien und Nachbarn aus diesem Gebiet wären direkt von der Änderung betroffen. Manche Bewohner finden den Plan wichtig für die Kosten, andere sehen ein Problem für ältere Menschen ohne Auto. Lesen Sie die Texte — ist die Person für den Vorschlag insgesamt?"
+    }
+  ],
+  "questions": [
+    {
+      "id": "gen-q-4-f7a1-05-1",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Katharina hält die Schließung für vertretbar, auch wenn ihr der Ersatz für ältere Nachbarn fehlt.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Sie unterstützt die Maßnahme, vermisst aber eine Alternative.",
+      "signText": "Wenn an dieser Haltestelle nur wenige Menschen einsteigen, finde ich die Sparmaßnahme im Prinzip nachvollziehbar für die Stadt. Für ältere Nachbarn ohne Auto fehlt aber bisher eine richtige Alternative zum Bus. Insgesamt unterstütze ich den Plan der Organisation trotzdem.",
+      "passageId": "gen-l4-f7a1-05",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-05-2",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Jürgen lehnt die Schließung ab, weil seine Mutter ohne diese Haltestelle nicht mehr zum Arzt komme.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Er sieht eine direkte negative Folge für seine Familie.",
+      "signText": "Meine Mutter wohnt direkt an dieser letzten Haltestelle und fährt jede Woche mit dem Bus zum Arzt in die Stadt. Ohne diese Verbindung weiß ich nicht, wie sie ohne Auto dort hinkommen soll. Aus diesem Grund bin ich klar gegen diesen Plan.",
+      "passageId": "gen-l4-f7a1-05",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-05-3",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Stefanie kritisiert nur die fehlende Information vor der Entscheidung, befürwortet die Maßnahme aber im Kern.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Sie findet die Sparmaßnahme sinnvoll, kritisiert aber die Kommunikation.",
+      "signText": "Weniger Geld für kaum genutzte Haltestellen auszugeben, finde ich grundsätzlich richtig für die Organisation des Verkehrs. Die betroffenen Nachbarn haben aber bis heute keinen Brief über die genauen Pläne erhalten. Am eigentlichen Vorschlag finde ich sonst nichts Schlechtes.",
+      "passageId": "gen-l4-f7a1-05",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-05-4",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Bernhard ist gegen die Schließung, weil ihm der Schulweg seiner Kinder dadurch zu unsicher würde.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Er sieht eine Gefahr für die Sicherheit seiner Kinder.",
+      "signText": "Meine Kinder nutzen diese Haltestelle jeden Morgen für den Weg zur Schule, weil die nächste viel zu weit entfernt liegt. Ohne sie müssten sie eine gefährliche Straße entlang laufen. Deshalb lehne ich diesen Vorschlag der Organisation klar ab.",
+      "passageId": "gen-l4-f7a1-05",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-05-5",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Elke lehnt die Schließung insgesamt ab, obwohl sie die Kostenfrage der Organisation versteht.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Nein",
+      "correctAnswer": "Nein",
+      "explanation": "Sie erkennt die Kostenfrage an, fordert aber zuerst eine kleinere Lösung.",
+      "signText": "Dass die Organisation an einer fast leeren Haltestelle sparen möchte, kann ich gut verstehen, das Geld fehlt schließlich überall. Statt sie ganz zu schließen, könnte aber zuerst nur die Anzahl der Busse reduziert werden. Grundsätzlich gegen die Idee bin ich nicht.",
+      "passageId": "gen-l4-f7a1-05",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-05-6",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Matthias unterstützt den Plan, weil die Haltestelle nach seiner eigenen Erfahrung kaum genutzt werde.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Er berichtet von eigenen Beobachtungen über die geringe Nutzung.",
+      "signText": "Wenn ich morgens dort vorbeifahre, sehe ich fast nie jemanden an dieser Haltestelle warten, höchstens eine Person pro Woche. Für so wenige Fahrgäste lohnt sich der Bus nach meiner Meinung wirklich nicht. Deshalb bin ich klar für diesen neuen Vorschlag.",
+      "passageId": "gen-l4-f7a1-05",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-05-7",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Petra ist gegen die Schließung, weil ihrer Meinung nach niemand den Bedarf richtig untersucht habe.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Nein",
+      "correctAnswer": "Nein",
+      "explanation": "Sie zweifelt an der Untersuchung, lehnt den Plan aber nicht völlig ab.",
+      "signText": "Ob die Organisation den wirklichen Bedarf an dieser Haltestelle überhaupt genau untersucht hat, weiß ich ehrlich gesagt nicht. Bei diesem Punkt bin ich schon etwas skeptisch. Komplett gegen den Plan bin ich aber nicht, wenn die Zahlen wirklich stimmen.",
+      "passageId": "gen-l4-f7a1-05",
+      "lang": "de",
+      "level": "B1"
+    }
+  ]
+}
+
+---
+
+{
+  "passages": [
+    {
+      "id": "gen-l4-f7a1-06",
+      "module": "lesen",
+      "teil": 4,
+      "title": "Forum: Produktiver Arbeitsraum für Nachbarn ohne Büro — ja oder nein?",
+      "text": "Eine Organisation im Stadtteil plant einen gemeinsamen Arbeitsraum, in dem Nachbarn ohne eigenes Büro produktiv arbeiten können. Familien und Besucher könnten dort Computer nutzen und neue Erfahrungen mit anderen teilen. Manche Bewohner finden den Plan wichtig für die Gemeinschaft, andere sehen ein Problem bei der Ruhe im Raum. Lesen Sie die Meinungen — ist die Person für den Vorschlag insgesamt?"
+    }
+  ],
+  "questions": [
+    {
+      "id": "gen-q-4-f7a1-06-1",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Mehmet hält den neuen Raum für sinnvoll, auch wenn ihm die Anzahl der Tische zu klein erscheint.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Er begrüßt die Idee, findet die Kapazität aber zu gering.",
+      "signText": "Zu Hause kann ich wegen meiner Kinder kaum konzentriert arbeiten, deshalb wäre ein ruhiger Raum für mich sehr nützlich. Mit nur acht Tischen für das ganze Viertel reicht der Platz aber bestimmt nicht aus. Insgesamt finde ich den Plan trotzdem eine gute Sache.",
+      "passageId": "gen-l4-f7a1-06",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-06-2",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Ulrike lehnt das Projekt ab, weil ihrer Meinung nach die Internetverbindung im Gebäude zu schlecht sei.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Sie zweifelt an der technischen Ausstattung des Raumes.",
+      "signText": "In diesem alten Gebäude gibt es schon jetzt oft Probleme mit dem Internet, das habe ich bei früheren Besuchen selbst erlebt. Ohne eine schnelle Verbindung kann niemand dort wirklich gut arbeiten. Deshalb halte ich diesen Vorschlag für nicht durchdacht.",
+      "passageId": "gen-l4-f7a1-06",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-06-3",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Carmen kritisiert nur die fehlende Kaffeeküche, befürwortet den Raum aber im Allgemeinen.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Sie findet die Idee gut, vermisst aber eine kleine Küche.",
+      "signText": "Ein gemeinsamer Ort, an dem Nachbarn ohne eigenes Büro arbeiten können, finde ich eine wirklich nützliche Sache für unser Viertel. Bisher fehlt im Plan aber eine kleine Küche für Kaffee zwischendurch. Das Konzept selbst unterstütze ich vollständig.",
+      "passageId": "gen-l4-f7a1-06",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-06-4",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Rolf ist gegen den Plan, weil aus seiner Sicht zu viel Lärm im offenen Raum entstehe.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Er erwartet zu viel Ablenkung durch Gespräche anderer Nutzer.",
+      "signText": "In einem großen offenen Raum mit vielen Leuten am Telefon kann ich mich nach meiner Erfahrung kaum auf eigene Aufgaben konzentrieren. Solche Geräusche stören die meiste Arbeit eher, als dass sie helfen. Deshalb lehne ich diesen neuen Plan ab.",
+      "passageId": "gen-l4-f7a1-06",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-06-5",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Beatrix lehnt das Angebot insgesamt ab, obwohl sie den Nutzen für Nachbarn ohne Büro anerkennt.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Nein",
+      "correctAnswer": "Nein",
+      "explanation": "Sie erkennt den Vorteil an, fordert aber zuerst getrennte Bereiche für Ruhe und Gespräche.",
+      "signText": "Dass ein eigener Arbeitsraum vielen Nachbarn ohne festes Büro im Alltag helfen könnte, ist für mich völlig klar. Bevor der Raum öffnet, sollte es aber getrennte Bereiche für Ruhe und für Gespräche geben. Grundsätzlich gegen die Idee bin ich nicht.",
+      "passageId": "gen-l4-f7a1-06",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-06-6",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Aylin unterstützt den Plan, weil ein ähnlicher Raum in ihrer früheren Stadt sehr produktiv gewesen sei.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Sie berichtet von guten Ergebnissen mit einem vergleichbaren Raum.",
+      "signText": "In der Stadt, wo ich früher gelebt habe, gab es einen sehr ähnlichen Raum, und viele Nachbarn dort haben damit erfolgreich gearbeitet. Die Erfahrung war für die ganze Nachbarschaft wirklich produktiv. Deshalb finde ich diesen neuen Vorschlag sehr überzeugend.",
+      "passageId": "gen-l4-f7a1-06",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-06-7",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Frank ist gegen das Vorhaben, weil ihrer Meinung nach geeignete Räume in der Nähe bereits fehlen.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Nein",
+      "correctAnswer": "Nein",
+      "explanation": "Er ist unsicher wegen der Verfügbarkeit, lehnt das Projekt aber nicht völlig ab.",
+      "signText": "Welches Gebäude im Viertel für so einen Raum überhaupt genug Platz bieten könnte, ist mir noch nicht klar erklärt worden. Bei diesem Punkt bin ich ehrlich gesagt etwas unsicher. Ganz dagegen bin ich trotzdem nicht, wenn ein passender Ort gefunden wird.",
+      "passageId": "gen-l4-f7a1-06",
+      "lang": "de",
+      "level": "B1"
+    }
+  ]
+}
+
+---
+
+{
+  "passages": [
+    {
+      "id": "gen-l4-f7a1-07",
+      "module": "lesen",
+      "teil": 4,
+      "title": "Forum: Partnerschaft mit Städten im Ausland für Schüleraustausch — ja oder nein?",
+      "text": "Die Organisation der Schule plant eine neue Partnerschaft mit Städten im Ausland für einen regelmäßigen Schüleraustausch. Familien und Kinder könnten dabei neue Erfahrungen mit anderen Kulturen sammeln und Freunde finden. Manche Eltern finden den Plan wichtig für die Bildung, andere sehen ein Problem mit den Kosten für die Reisen. Lesen Sie die Texte — ist die Person für den Vorschlag insgesamt?"
+    }
+  ],
+  "questions": [
+    {
+      "id": "gen-q-4-f7a1-07-1",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Britta hält den Austausch für eine gute Idee, auch wenn ihr die Auswahl der Partnerstädte zu klein ist.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Sie unterstützt das Projekt, wünscht sich aber mehr Auswahl.",
+      "signText": "Mein Sohn würde sehr gerne andere Länder besuchen und dort eine Zeit lang bei einer Familie wohnen. Bisher gibt es aber nur zwei feste Partnerstädte, das ist mir noch wenig. Trotzdem finde ich den ganzen Plan sehr gut.",
+      "passageId": "gen-l4-f7a1-07",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-07-2",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Helmut lehnt den Vorschlag ab, weil seine Familie die Kosten für die Reisen nicht tragen könne.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Er befürchtet eine zu hohe finanzielle Belastung.",
+      "signText": "Flugtickets und Programme im Ausland kosten meiner Erfahrung nach sehr viel Geld, das nicht jede Familie einfach übrig hat. Für meine drei Kinder wäre so eine Reise jedes Mal eine echte finanzielle Sache. Aus diesem Grund bin ich klar gegen diesen Plan.",
+      "passageId": "gen-l4-f7a1-07",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-07-3",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Nadine kritisiert nur die Dauer des Aufenthalts, stimmt dem Ziel aber zu.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Sie findet das Ziel sinnvoll, hält die Wochen aber für zu lang.",
+      "signText": "Andere Kulturen und Sprachen direkt im Land selbst kennenzulernen, finde ich grundsätzlich eine wertvolle Erfahrung für junge Menschen. Drei Wochen am Stück erscheinen mir aber zu lang für jüngere Schüler. Das Ziel des Vorschlags unterstütze ich trotzdem voll.",
+      "passageId": "gen-l4-f7a1-07",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-07-4",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Gustav ist gegen den Plan, weil die Sicherheit der Kinder im Ausland für ihn nicht garantiert sei.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Er sorgt sich um die Sicherheit der Kinder fern von zu Hause.",
+      "signText": "Bei einem so langen Aufenthalt weit weg von zu Hause mache ich mir große Sorgen um die Sicherheit der Kinder bei fremden Familien. Niemand kann mir nach meiner Meinung wirklich garantieren, dass alles sicher abläuft. Deshalb lehne ich diesen Vorschlag klar ab.",
+      "passageId": "gen-l4-f7a1-07",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-07-5",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Christine lehnt den Plan insgesamt ab, obwohl sie den Bildungswert des Austauschs anerkennt.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Nein",
+      "correctAnswer": "Nein",
+      "explanation": "Sie erkennt den Wert an, möchte aber zuerst eine Hilfe für ärmere Familien.",
+      "signText": "Dass so ein Austausch Kindern beim Lernen von Sprachen wirklich hilft, finde ich klar und wichtig für ihre Zukunft. Vorher sollte es aber eine finanzielle Hilfe für Familien geben, die sich die Reise nicht leisten können. Grundsätzlich gegen die Idee bin ich nicht.",
+      "passageId": "gen-l4-f7a1-07",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-07-6",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Tobi unterstützt den Plan, weil er selbst als Schüler an einem ähnlichen Austausch teilgenommen habe.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Er berichtet von einer eigenen positiven Erfahrung als Jugendlicher.",
+      "signText": "Als Jugendlicher war ich selbst einen Monat lang bei einer Familie in einem anderen Land, und diese Zeit hat mich wirklich geprägt. Neue Freunde und eine fremde Sprache zu erleben war für mich sehr wertvoll. Deshalb finde ich diesen neuen Plan sehr wichtig.",
+      "passageId": "gen-l4-f7a1-07",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-07-7",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Susi ist gegen den Austausch, weil ihrer Meinung nach niemand die fremde Sprache vorher richtig lerne.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Nein",
+      "correctAnswer": "Nein",
+      "explanation": "Sie zweifelt an der sprachlichen Vorbereitung, lehnt den Plan aber nicht völlig ab.",
+      "signText": "Ob die Schüler vor der Reise wirklich genug von der fremden Sprache lernen, um sich gut zurechtzufinden, weiß ich ehrlich gesagt nicht. Bei diesem Punkt bin ich etwas skeptisch. Komplett gegen den Plan bin ich aber nicht, wenn es einen guten Vorkurs gibt.",
+      "passageId": "gen-l4-f7a1-07",
+      "lang": "de",
+      "level": "B1"
+    }
+  ]
+}
+
+---
+
+{
+  "passages": [
+    {
+      "id": "gen-l4-f7a1-08",
+      "module": "lesen",
+      "teil": 4,
+      "title": "Forum: Wenig Hegemonie eines Anbieters bei Carsharing in der Stadt — ja oder nein?",
+      "text": "Die Organisation der Stadt plant eine Regel, damit kein einzelner Carsharing-Anbieter eine zu starke Hegemonie auf dem Markt bekommt. Familien und Nachbarn könnten dann zwischen mehreren Firmen wählen und eigene Erfahrungen sammeln. Manche Bewohner finden den Plan wichtig für faire Preise, andere sehen ein Problem bei der Umsetzung der Regel. Lesen Sie die Meinungen — ist die Person für den Vorschlag insgesamt?"
+    }
+  ],
+  "questions": [
+    {
+      "id": "gen-q-4-f7a1-08-1",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Sandra hält die neue Regel für sinnvoll, auch wenn ihr die genaue Grenze für Marktanteile unklar bleibt.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Sie unterstützt das Vorhaben, findet die Details aber noch unklar.",
+      "signText": "Mehr Auswahl zwischen verschiedenen Firmen würde meiner Familie sicher bei den Preisen helfen, das finde ich wichtig für die Stadt. Wie genau die Grenze für eine zu starke Stellung berechnet wird, verstehe ich aber noch nicht richtig. Insgesamt finde ich den Plan trotzdem gut.",
+      "passageId": "gen-l4-f7a1-08",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-08-2",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Manfred lehnt den Vorschlag ab, weil dadurch seiner Meinung nach gute Angebote für Kunden verschwinden würden.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Er fürchtet schlechtere Preise durch weniger starke Anbieter.",
+      "signText": "Der größte Anbieter bei uns hat die niedrigsten Preise, weil er so viele Autos in der Stadt hat. Wenn die Stadt diese Firma jetzt einschränkt, werden die Preise für alle Kunden am Ende eher steigen. Deshalb bin ich klar gegen diesen Plan.",
+      "passageId": "gen-l4-f7a1-08",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-08-3",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Julia kritisiert nur den langen Zeitplan der Umsetzung, befürwortet das Vorhaben aber im Kern.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Sie findet die Idee gut, hält den Zeitplan aber für zu langsam.",
+      "signText": "Faire Bedingungen für mehrere Firmen finde ich eine wichtige Sache für alle Familien, die Carsharing nutzen. Erst in drei Jahren soll die neue Regel aber wirklich gelten, das dauert mir viel zu lange. Am eigentlichen Vorschlag finde ich sonst nichts Schlechtes.",
+      "passageId": "gen-l4-f7a1-08",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-08-4",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Dietmar ist gegen den Plan, weil die Kontrolle der Marktanteile für ihn praktisch unmöglich erscheint.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Er zweifelt an der praktischen Durchführbarkeit der Regel.",
+      "signText": "Niemand in der Stadtverwaltung kann nach meiner Meinung jeden Monat genau berechnen, welche Firma wie viele Autos auf den Straßen hat. So eine Regel ohne klare Zahlen bleibt am Ende nur auf dem Papier. Deshalb lehne ich diesen Vorschlag der Organisation ab.",
+      "passageId": "gen-l4-f7a1-08",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-08-5",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Christina lehnt den Plan insgesamt ab, obwohl sie das Ziel fairer Preise anerkennt.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Nein",
+      "correctAnswer": "Nein",
+      "explanation": "Sie erkennt das Ziel an, fordert aber zuerst eine kleinere Testregel.",
+      "signText": "Dass mehrere Firmen für bessere Preise sorgen können, finde ich klar und richtig für die ganze Stadt. Statt einer großen Regel sofort könnte aber zuerst eine kleine Testregel in einem Stadtteil ausprobiert werden. Grundsätzlich gegen die Idee bin ich nicht.",
+      "passageId": "gen-l4-f7a1-08",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-08-6",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Niklas befürwortet das Vorhaben, weil er in einer anderen Stadt schon von ähnlichen Regeln profitiert habe.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Er berichtet von eigenen positiven Erfahrungen mit fairer Konkurrenz.",
+      "signText": "In meiner früheren Stadt gab es schon eine ähnliche Regel, und ich konnte deshalb zwischen vielen günstigen Anbietern wählen. Diese Erfahrung war für mich als Kunde wirklich positiv gewesen. Deshalb finde ich diesen neuen Plan eine gute Idee.",
+      "passageId": "gen-l4-f7a1-08",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-08-7",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Doris ist gegen die Regel, weil ihrer Meinung nach niemand die kleinen Anbieter wirklich unterstütze.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Nein",
+      "correctAnswer": "Nein",
+      "explanation": "Sie ist skeptisch wegen fehlender Förderung, lehnt das Konzept aber nicht ganz ab.",
+      "signText": "Ob kleine neue Anbieter neben den großen Firmen wirklich eine faire Chance bekommen, weiß ich ehrlich gesagt noch nicht genau. Bei diesem Punkt bin ich schon etwas skeptisch. Komplett gegen den Plan bin ich aber nicht, wenn es bessere Unterstützung gibt.",
+      "passageId": "gen-l4-f7a1-08",
+      "lang": "de",
+      "level": "B1"
+    }
+  ]
+}
+
+---
+
+{
+  "passages": [
+    {
+      "id": "gen-l4-f7a1-09",
+      "module": "lesen",
+      "teil": 4,
+      "title": "Forum: Pauschale für Schulmaterial statt einzelner Listen — ja oder nein?",
+      "text": "Eine Schule plant eine pauschale Zahlung für Schulmaterial, statt dass Eltern jedes Heft und jeden Stift einzeln kaufen müssen. Familien könnten dadurch Zeit sparen und neue Erfahrungen mit der Organisation der Schule machen. Manche Eltern finden den Plan wichtig, andere sehen ein Problem bei der genauen Höhe des Betrags. Lesen Sie die Texte — ist die Person für den Vorschlag insgesamt?"
+    }
+  ],
+  "questions": [
+    {
+      "id": "gen-q-4-f7a1-09-1",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Margot hält die pauschale Zahlung für praktisch, auch wenn ihr die Höhe des Betrags unklar erscheint.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Sie unterstützt das Konzept, vermisst aber genaue Zahlen.",
+      "signText": "Jedes Jahr im August renne ich mit langen Listen durch verschiedene Geschäfte, das kostet viel Zeit für meine Familie. Eine einzige Zahlung wäre da viel einfacher. Wie hoch dieser Betrag genau sein soll, weiß ich aber noch nicht. Insgesamt unterstütze ich den Plan trotzdem.",
+      "passageId": "gen-l4-f7a1-09",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-09-2",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Werner lehnt das Vorhaben ab, weil er einzelnes Material seiner Meinung nach günstiger selbst kaufen könne.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Er sieht einen finanziellen Nachteil gegenüber dem eigenen Einkauf.",
+      "signText": "Ich finde oft gute Angebote für Hefte und Stifte im Sonderverkauf und spare so jedes Jahr einiges an Geld. Eine feste Zahlung an die Schule wäre für mich am Ende teurer als der eigene Einkauf. Deshalb halte ich diesen Plan für keine gute Idee.",
+      "passageId": "gen-l4-f7a1-09",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-09-3",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Renate kritisiert nur den Zeitpunkt der Zahlung, befürwortet das System aber generell.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Sie findet die Idee gut, hält den frühen Termin aber für ungünstig.",
+      "signText": "Eine Zahlung statt vieler einzelner Käufe finde ich einen großen Vorteil im Alltag, besonders für Familien mit mehreren Kindern. Schon im Juni dafür zu bezahlen, ist mir aber zu früh vor den Ferien. Am System selbst finde ich sonst nichts Schlechtes.",
+      "passageId": "gen-l4-f7a1-09",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-09-4",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Klaus-Peter ist gegen den Plan, weil ihm die Qualität des bestellten Materials zweifelhaft erscheint.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Er zweifelt an der Qualität des zentral gekauften Materials.",
+      "signText": "Wenn die Schule für alle das günstigste Material bestellt, befürchte ich, dass die Qualität nicht so gut ist wie meine eigene Auswahl. Für mein Kind möchte ich aber gute Stifte und Hefte. Deshalb lehne ich diesen Vorschlag der Schule ab.",
+      "passageId": "gen-l4-f7a1-09",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-09-5",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Helga lehnt das Projekt insgesamt ab, obwohl sie den Zeitvorteil für Familien anerkennt.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Nein",
+      "correctAnswer": "Nein",
+      "explanation": "Sie sieht den Vorteil, möchte aber zuerst eine klare Auflistung der Kosten.",
+      "signText": "Dass Familien mit einer Zahlung Zeit sparen, finde ich einen klaren Vorteil im stressigen Schulalltag. Vorher sollte die Schule aber genau aufschreiben, was in diesem Betrag wirklich enthalten ist. Grundsätzlich gegen die Idee bin ich keinesfalls.",
+      "passageId": "gen-l4-f7a1-09",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-09-6",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Anton unterstützt den Plan, weil eine ähnliche Lösung an der Schule seines Bruders schon gut funktioniert habe.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Er berichtet von positiven Erfahrungen aus einer anderen Schule.",
+      "signText": "An der Schule meines Bruders gibt es schon seit zwei Jahren eine ähnliche feste Zahlung, und die Eltern dort sind sehr zufrieden damit. Diese Lösung war für die ganze Schulgemeinschaft wirklich gut gewesen. Deshalb bin ich sehr für diesen neuen Vorschlag.",
+      "passageId": "gen-l4-f7a1-09",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-09-7",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Brigitte ist gegen das Vorhaben, weil ihrer Meinung nach niemand die Reste des Geldes am Ende kontrolliere.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Nein",
+      "correctAnswer": "Nein",
+      "explanation": "Sie zweifelt an der Kontrolle der Ausgaben, lehnt das Projekt aber nicht völlig ab.",
+      "signText": "Wer am Ende des Schuljahres genau prüft, was mit dem übrig gebliebenen Geld passiert, ist mir nicht klar erklärt worden. Bei diesem Punkt bin ich etwas skeptisch. Komplett gegen den Plan bin ich aber nicht, wenn es eine offene Abrechnung gibt.",
+      "passageId": "gen-l4-f7a1-09",
+      "lang": "de",
+      "level": "B1"
+    }
+  ]
+}
+
+---
+
+{
+  "passages": [
+    {
+      "id": "gen-l4-f7a1-10",
+      "module": "lesen",
+      "teil": 4,
+      "title": "Forum: Wöchentliche Übung für Senioren im Sportverein — ja oder nein?",
+      "text": "Ein Sportverein plant eine wöchentliche Übung speziell für ältere Nachbarn, um Bewegung und Gesundheit zu fördern. Familien und Besucher könnten dabei neue Erfahrungen mit sanftem Training sammeln. Manche Bewohner finden den Plan wichtig für die Gesundheit, andere sehen ein Problem mit der Organisation der Termine. Lesen Sie die Meinungen — ist die Person für den Vorschlag insgesamt?"
+    }
+  ],
+  "questions": [
+    {
+      "id": "gen-q-4-f7a1-10-1",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Heidrun findet die neue Übung gut, auch wenn ihr der Verein zunächst zögerlich bei der Werbung erschien.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Sie unterstützt das Angebot, kritisiert aber die langsame Bekanntmachung.",
+      "signText": "Sanfte Bewegung einmal in der Woche würde vielen älteren Nachbarn sicher gut tun und neue Kontakte bringen. Der Verein war bei der Information darüber aber lange zögerlich und hat spät erst Plakate aufgehängt. Insgesamt finde ich den Plan trotzdem gut.",
+      "passageId": "gen-l4-f7a1-10",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-10-2",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Gerold lehnt das Angebot ab, weil der geplante Raum für ihn nicht gut erreichbar sei.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Er sieht ein Problem mit der Erreichbarkeit des Trainingsortes.",
+      "signText": "Die Treppen zum geplanten Raum im zweiten Stock sind für mich mit meinem schlechten Knie wirklich schwierig zu schaffen. Einen Aufzug gibt es in diesem alten Gebäude nicht. Deshalb bin ich klar gegen diesen Vorschlag des Vereins.",
+      "passageId": "gen-l4-f7a1-10",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-10-3",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Mareike kritisiert nur die Uhrzeit der Übung, unterstützt den Plan aber im Allgemeinen.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Sie findet die Idee wichtig, hält den frühen Termin aber für unpraktisch.",
+      "signText": "Regelmäßige sanfte Bewegung finde ich einen klaren Vorteil für die Gesundheit älterer Nachbarn im Viertel. Schon um acht Uhr morgens zu starten, ist für viele aber zu früh geplant. Am eigentlichen Konzept finde ich sonst nichts Schlechtes.",
+      "passageId": "gen-l4-f7a1-10",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-10-4",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Norbert ist gegen den Plan, weil ihm geeignete Trainer für ältere Teilnehmer fehlen.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Er zweifelt an der Verfügbarkeit von geschultem Personal.",
+      "signText": "Im Verein gibt es bisher niemanden, der speziell für sanftes Training mit älteren Menschen ausgebildet ist. Ohne diese besondere Erfahrung kann das Programm für manche Teilnehmer sogar gefährlich werden. Deshalb halte ich diesen Plan für wenig durchdacht.",
+      "passageId": "gen-l4-f7a1-10",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-10-5",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Christel lehnt den Plan insgesamt ab, obwohl sie den gesundheitlichen Nutzen anerkennt.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Nein",
+      "correctAnswer": "Nein",
+      "explanation": "Sie sieht den Nutzen, fordert aber zuerst eine ärztliche Beratung vor Beginn.",
+      "signText": "Dass Bewegung älteren Nachbarn gesundheitlich sehr hilft, finde ich völlig richtig und durch viele Berichte bekannt. Vor dem Start sollte aber jeder Teilnehmer kurz mit einem Arzt sprechen, ob alles sicher ist. Grundsätzlich gegen die Idee bin ich nicht.",
+      "passageId": "gen-l4-f7a1-10",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-10-6",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Frieder unterstützt den Plan, weil eine ähnliche Übung in einem anderen Verein sehr beliebt gewesen sei.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Er berichtet von positiven Erfahrungen aus einem vergleichbaren Programm.",
+      "signText": "In einem Nachbarverein gibt es schon seit einem Jahr ein ähnliches Programm, und dort kommen jede Woche viele ältere Mitglieder gerne zusammen. Diese Erfahrung war für die Gemeinschaft dort wirklich gut gewesen. Deshalb bin ich klar für diesen neuen Vorschlag.",
+      "passageId": "gen-l4-f7a1-10",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-10-7",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Susanne ist gegen den Plan, weil ihrer Meinung nach niemand die Teilnahme regelmäßig kontrolliere.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Nein",
+      "correctAnswer": "Nein",
+      "explanation": "Sie ist skeptisch wegen der Kontrolle, lehnt den Plan aber nicht vollständig ab.",
+      "signText": "Ob am Ende wirklich jemand schaut, wer regelmäßig kommt und wer schon nach kurzer Zeit wegbleibt, weiß ich nicht genau. Bei diesem Punkt bin ich ehrlich gesagt etwas skeptisch. Ganz dagegen bin ich aber nicht, wenn es eine einfache Liste gibt.",
+      "passageId": "gen-l4-f7a1-10",
+      "lang": "de",
+      "level": "B1"
+    }
+  ]
+}
+
+---
+
+{
+  "passages": [
+    {
+      "id": "gen-l4-f7a1-11",
+      "module": "lesen",
+      "teil": 4,
+      "title": "Forum: Letzte Entscheidung über neue Straßenbeleuchtung — ja oder nein?",
+      "text": "Die Organisation der Stadt plant die letzte Entscheidung über neue Straßenbeleuchtung in mehreren Vierteln. Familien und Nachbarn wünschen sich mehr Sicherheit am Abend auf dem Weg nach Hause. Manche Bewohner finden den Plan wichtig, andere sehen ein Problem mit den Kosten für die neue Technik. Lesen Sie die Texte — ist die Person für den Vorschlag insgesamt?"
+    }
+  ],
+  "questions": [
+    {
+      "id": "gen-q-4-f7a1-11-1",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Theresa findet die neue Beleuchtung gut, auch wenn ihr die Helligkeit der Lampen zu stark erscheint.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Sie unterstützt das Projekt, findet das Licht aber zu hell.",
+      "signText": "Mehr Licht auf den Straßen würde mir am Abend deutlich mehr Sicherheit beim Heimweg geben. Die neuen Lampen vor meinem Haus erscheinen mir aber inzwischen ziemlich stark für die Nacht. Insgesamt unterstütze ich den Plan trotzdem.",
+      "passageId": "gen-l4-f7a1-11",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-11-2",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Joachim lehnt den Vorschlag ab, weil er die Kosten für die neue Technik zu hoch findet.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Er hält die Investition für unangemessen hoch.",
+      "signText": "Für so viele neue Lampen will die Stadt sehr viel Geld ausgeben, das nach meiner Meinung an anderen Stellen fehlt. Schulen und Krankenhäuser brauchen dieses Geld dringender als zusätzliches Licht auf den Straßen. Aus diesem Grund bin ich klar gegen diesen Plan.",
+      "passageId": "gen-l4-f7a1-11",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-11-3",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Sabine kritisiert nur die langsame Umsetzung, befürwortet das Projekt aber generell.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Sie findet die Idee gut, vermisst aber Tempo bei der Installation.",
+      "signText": "Mehr Sicherheit am Abend durch bessere Beleuchtung finde ich einen großen Vorteil für jeden Nachbarn in der Stadt. Bisher gibt es die neuen Lampen aber nur in einer einzigen Straße, das geht mir zu langsam. Am eigentlichen Plan finde ich sonst nichts Schlechtes.",
+      "passageId": "gen-l4-f7a1-11",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-11-4",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Roland ist gegen den Plan, weil er befürchtet, dass das neue Licht Tiere im Park stören würde.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Er sorgt sich um die Auswirkungen auf die Natur im Park.",
+      "signText": "Viele Vögel und kleine Tiere im Park brauchen nach meiner Erfahrung wirklich Dunkelheit in der Nacht, um sich auszuruhen. Helles Licht überall würde diesen Tieren ihren natürlichen Lebensraum stören. Deshalb lehne ich diesen ganzen Vorschlag ab.",
+      "passageId": "gen-l4-f7a1-11",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-11-5",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Annette lehnt das Projekt insgesamt ab, obwohl sie den Wert für die Sicherheit anerkennt.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Nein",
+      "correctAnswer": "Nein",
+      "explanation": "Sie sieht den Wert, fordert aber zuerst einen kleinen Testabschnitt.",
+      "signText": "Dass mehr Licht am Abend die Sicherheit für die ganze Stadt verbessern kann, ist für mich völlig klar. Vor dem großen Start sollte aber zuerst nur ein Abschnitt der Altstadt getestet werden. Grundsätzlich gegen die Idee bin ich nicht.",
+      "passageId": "gen-l4-f7a1-11",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-11-6",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Lukas befürwortet das Vorhaben, da ähnliche Lampen in einer fremden Stadt bereits gut funktioniert hätten.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Er berichtet von positiven Erfahrungen mit vergleichbarer Beleuchtung.",
+      "signText": "In einer anderen Stadt, die ich letztes Jahr besucht habe, gab es schon ähnliche moderne Lampen, und die Straßen wirkten dadurch viel sicherer. Diese Erfahrung dort war wirklich gut gewesen. Deshalb finde ich diesen neuen Plan eine gute Idee.",
+      "passageId": "gen-l4-f7a1-11",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-11-7",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Marlene ist gegen das Vorhaben, weil ihrer Meinung nach niemand die Wartung der neuen Lampen übernehme.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Nein",
+      "correctAnswer": "Nein",
+      "explanation": "Sie ist unsicher wegen der Wartung, lehnt das Projekt aber nicht völlig ab.",
+      "signText": "Wer die neuen Lampen später reparieren soll, wenn eine kaputt geht, ist mir noch nicht klar erklärt worden. Bei diesem Punkt bin ich ehrlich gesagt etwas unsicher. Ganz dagegen bin ich trotzdem nicht, wenn es eine feste Regel dafür gibt.",
+      "passageId": "gen-l4-f7a1-11",
+      "lang": "de",
+      "level": "B1"
+    }
+  ]
+}
+
+---
+
+{
+  "passages": [
+    {
+      "id": "gen-l4-f7a1-12",
+      "module": "lesen",
+      "teil": 4,
+      "title": "Forum: Eigenes Marketing-Team für die Stadtbücherei — ja oder nein?",
+      "text": "Die Organisation der Stadtbücherei plant ein eigenes kleines Marketing-Team, um mehr Besucher und Familien anzuziehen. Nachbarn könnten dadurch leichter von neuen Programmen und Veranstaltungen erfahren. Manche Bewohner finden den Plan wichtig für die Kultur, andere sehen ein Problem bei den Kosten für neues Personal. Lesen Sie die Meinungen — ist die Person für den Vorschlag insgesamt?"
+    }
+  ],
+  "questions": [
+    {
+      "id": "gen-q-4-f7a1-12-1",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Petra findet das neue Team sinnvoll, auch wenn ihr die Größe von nur einer Person zu wenig erscheint.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Sie unterstützt das Projekt, wünscht sich aber mehr Personal.",
+      "signText": "Von vielen schönen Programmen der Bücherei erfahre ich oft erst, wenn es schon zu spät ist, weil es kaum Werbung dafür gibt. Eine einzige Person für das ganze Marketing erscheint mir aber sehr wenig. Insgesamt finde ich den Plan trotzdem gut.",
+      "passageId": "gen-l4-f7a1-12",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-12-2",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Daniel lehnt das Angebot ab, weil eine Bücherei seiner Meinung nach kein Geld für solche Stellen ausgeben sollte.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Er sieht das Geld lieber direkt für Bücher verwendet.",
+      "signText": "Das Geld der Bücherei sollte nach meiner Meinung vor allem für neue Bücher und Computer ausgegeben werden, nicht für Werbung. Eine neue Stelle nur für Marketing erscheint mir an dieser Stelle unnötig. Für unsere Stadt ist der Plan deshalb keine gute Option.",
+      "passageId": "gen-l4-f7a1-12",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-12-3",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Yasmin kritisiert nur den fehlenden Plan für junge Besucher, befürwortet das Vorhaben aber im Kern.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Sie findet die Idee gut, vermisst aber gezielte Ansprache für Jugendliche.",
+      "signText": "Mehr Familien über schöne Veranstaltungen zu informieren, finde ich eine schöne Sache für die Bücherei und für die ganze Stadt. Bisher fehlt aber ein klarer Plan, wie auch junge Leute besser erreicht werden. Das Ziel des Vorhabens unterstütze ich trotzdem voll.",
+      "passageId": "gen-l4-f7a1-12",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-12-4",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Markus ist gegen den Plan, weil er die laufenden Kosten für das neue Personal als Problem sieht.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Er nennt die monatlichen Gehälter als Hauptgrund seiner Ablehnung.",
+      "signText": "Eine feste Stelle kostet die Stadt jeden Monat ein festes Gehalt, und dieses Geld fehlt dann bei anderen wichtigen Projekten. Für eine kleine Bücherei erscheint mir das eine zu teure Lösung. Deshalb bin ich klar gegen diesen Vorschlag.",
+      "passageId": "gen-l4-f7a1-12",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-12-5",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Lina lehnt das Programm insgesamt ab, obwohl sie den Nutzen für die Bekanntheit der Bücherei anerkennt.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Nein",
+      "correctAnswer": "Nein",
+      "explanation": "Sie sieht Vorteile, möchte aber zuerst ein kleineres Probeprojekt sehen.",
+      "signText": "Dass bessere Werbung mehr Familien in die Bücherei bringen kann, sehe ich klar als Vorteil für die ganze Stadt. Trotzdem würde ich zuerst nur eine Halbtagsstelle für ein Jahr testen, statt sofort eine volle Stelle einzurichten. Grundsätzlich dagegen bin ich also nicht.",
+      "passageId": "gen-l4-f7a1-12",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-12-6",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Carla unterstützt den Vorschlag, weil eine ähnliche Stelle in einer anderen Stadt sehr produktiv gewesen sei.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Sie berichtet von guten Ergebnissen bei einem ähnlichen Modell.",
+      "signText": "In einer anderen Stadt gibt es schon seit Jahren eine ähnliche Stelle, und die Besucherzahlen sind danach deutlich gestiegen. Diese Idee war für die dortige Bücherei wirklich produktiv. Deshalb finde ich diesen neuen Plan sehr gut.",
+      "passageId": "gen-l4-f7a1-12",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-12-7",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Tobias ist gegen das Angebot, weil aus seiner Sicht die Erfolge der neuen Stelle niemand wirklich messe.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Nein",
+      "correctAnswer": "Nein",
+      "explanation": "Er ist skeptisch wegen der Erfolgskontrolle, lehnt das Projekt aber nicht völlig ab.",
+      "signText": "Ob am Ende jemand wirklich nachprüft, ob die neue Werbung tatsächlich mehr Besucher in die Bücherei bringt, weiß ich nicht. Bei diesem Punkt bin ich skeptisch. Komplett ablehnen würde ich den Plan aber nicht, wenn es eine klare Kontrolle gibt.",
+      "passageId": "gen-l4-f7a1-12",
+      "lang": "de",
+      "level": "B1"
+    }
+  ]
+}
+
+---
+
+{
+  "passages": [
+    {
+      "id": "gen-l4-f7a1-13",
+      "module": "lesen",
+      "teil": 4,
+      "title": "Forum: Zögerliche Einführung von E-Bikes für den Lieferdienst — ja oder nein?",
+      "text": "Eine Organisation in der Stadt plant, Lieferungen schrittweise und zunächst zögerlich auf E-Bikes umzustellen, statt sofort alle Fahrzeuge zu ersetzen. Familien und Nachbarn wünschen sich dadurch weniger Lärm und Abgase auf den Straßen. Manche Bewohner finden den Plan wichtig, andere sehen ein Problem mit der Geschwindigkeit der Umstellung. Lesen Sie die Texte — ist die Person für den Vorschlag insgesamt?"
+    }
+  ],
+  "questions": [
+    {
+      "id": "gen-q-4-f7a1-13-1",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Veronika hält die schrittweise Umstellung für gut, auch wenn ihr das Tempo zu langsam erscheint.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Sie unterstützt das Vorhaben, wünscht sich aber schnellere Schritte.",
+      "signText": "Weniger Lärm und Abgase durch leise Fahrräder statt großer Autos würde unserer Straße sicher gut tun. Nur ein neues Fahrzeug pro Monat umzustellen, erscheint mir aber recht langsam geplant. Insgesamt finde ich den Plan trotzdem gut.",
+      "passageId": "gen-l4-f7a1-13",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-13-2",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Detlef lehnt die Umstellung ab, weil er Lieferungen mit E-Bikes bei schlechtem Wetter für unzuverlässig hält.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Er sieht ein zu hohes Risiko bei Regen und Schnee.",
+      "signText": "Bei starkem Regen oder im Winter kann man mit einem kleinen Fahrrad nach meiner Erfahrung kaum schwere Pakete sicher transportieren. Ohne zuverlässige Lösung für schlechtes Wetter funktioniert dieser Lieferdienst dann einfach nicht mehr gut. Aus diesem Grund bin ich klar gegen diesen Plan.",
+      "passageId": "gen-l4-f7a1-13",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-13-3",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Simone kritisiert nur die fehlende Information für Kunden, befürwortet das Angebot aber im Kern.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Sie findet die Idee gut, vermisst aber klare Erklärungen für Kunden.",
+      "signText": "Leisere und sauberere Lieferungen in der Stadt finde ich einen großen Vorteil für alle Familien im Viertel. Bisher weiß aber kaum ein Kunde, wann genau die neuen Fahrräder bei ihm ankommen. Am eigentlichen Plan finde ich sonst nichts Schlechtes.",
+      "passageId": "gen-l4-f7a1-13",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-13-4",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Gerhard ist gegen den Plan, weil ihm die Kosten für die neuen Fahrräder zu hoch erscheinen.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Er nennt die Investitionskosten als Hauptgrund seiner Ablehnung.",
+      "signText": "Gute elektrische Lieferräder kosten nach meiner Erfahrung sehr viel Geld, das eine kleine Firma kaum auf einmal aufbringen kann. Für so eine teure Sache fehlt nach meiner Meinung gerade jetzt das Budget. Deshalb lehne ich diesen Vorschlag klar ab.",
+      "passageId": "gen-l4-f7a1-13",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-13-5",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Ramona lehnt das Vorhaben insgesamt ab, obwohl sie den Nutzen für die Umwelt anerkennt.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Nein",
+      "correctAnswer": "Nein",
+      "explanation": "Sie sieht den Nutzen, fordert aber zuerst eine bessere Schulung der Fahrer.",
+      "signText": "Dass leise Fahrräder der Luft in der Stadt und den Nachbarn helfen würden, sehe ich klar als Vorteil. Vorher sollten aber die Fahrer noch besser im sicheren Straßenverkehr geschult werden. Grundsätzlich gegen die Idee bin ich nicht.",
+      "passageId": "gen-l4-f7a1-13",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-13-6",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Patrick unterstützt den Plan, weil eine ähnliche Umstellung in einer anderen Stadt schon produktiv gewesen sei.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Er berichtet von positiven Ergebnissen mit einem vergleichbaren Modell.",
+      "signText": "In einer anderen Stadt hat eine ähnliche Firma vor zwei Jahren mit dieser Umstellung begonnen, und die Lieferungen liefen danach gut. Diese Veränderung war für das Unternehmen dort wirklich produktiv. Deshalb finde ich diesen neuen Plan eine gute Idee.",
+      "passageId": "gen-l4-f7a1-13",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-13-7",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Iris ist gegen das Vorhaben, weil ihrer Meinung nach niemand die Sicherheit der Fahrräder in der Stadt prüfe.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Nein",
+      "correctAnswer": "Nein",
+      "explanation": "Sie ist unsicher wegen der Kontrolle, lehnt das Projekt aber nicht völlig ab.",
+      "signText": "Wer am Ende regelmäßig prüft, ob die neuen Fahrräder noch in einem sicheren Zustand sind, ist mir nicht klar erklärt worden. Bei diesem Punkt bin ich wirklich unsicher. Ganz dagegen bin ich trotzdem nicht, wenn es feste Kontrollen gibt.",
+      "passageId": "gen-l4-f7a1-13",
+      "lang": "de",
+      "level": "B1"
+    }
+  ]
+}
+
+---
+
+{
+  "passages": [
+    {
+      "id": "gen-l4-f7a1-14",
+      "module": "lesen",
+      "teil": 4,
+      "title": "Forum: Wünsche der Nachbarn bei der Planung des neuen Rathauses — ja oder nein?",
+      "text": "Die Organisation der Stadt plant, vor dem Bau eines neuen Rathauses die Wünsche der Nachbarn genau zu sammeln. Familien und Besucher könnten dabei eigene Erfahrungen und Ideen für das Gebäude einbringen. Manche Bewohner finden den Plan wichtig für die Demokratie, andere sehen ein Problem mit der langen Zeit für die Planung. Lesen Sie die Meinungen — ist die Person für den Vorschlag insgesamt?"
+    }
+  ],
+  "questions": [
+    {
+      "id": "gen-q-4-f7a1-14-1",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Sven findet die Idee grundsätzlich gut, auch wenn ihm die Form der Umfrage zu kompliziert erscheint.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Er begrüßt das Projekt, findet den Fragebogen aber schwer zu verstehen.",
+      "signText": "Dass die Stadt vor so einem großen Bau die Meinung der Nachbarn hören möchte, finde ich grundsätzlich eine gute Idee für die Demokratie. Der lange Fragebogen dafür war für mich aber schwer zu verstehen. Trotzdem bin ich für diesen Vorschlag der Organisation.",
+      "passageId": "gen-l4-f7a1-14",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-14-2",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Renate lehnt den Plan ab, weil die lange Planungszeit ihrer Meinung nach den Bau unnötig verzögere.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Sie sieht die Verzögerung als unnötig an.",
+      "signText": "Das alte Rathaus ist seit Jahren in schlechtem Zustand, und jetzt soll die Planung noch ein ganzes Jahr länger dauern wegen der Befragung. So eine lange Verzögerung erscheint mir nicht nötig für das Ergebnis. Aus diesem Grund bin ich gegen den Plan.",
+      "passageId": "gen-l4-f7a1-14",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-14-3",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Bettina kritisiert nur die geringe Teilnehmerzahl bisher, befürwortet das Vorhaben aber im Allgemeinen.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Sie wünscht sich mehr Teilnehmer, mag die Idee aber sehr.",
+      "signText": "Gemeinsam über das neue Rathaus mitzubestimmen und eigene Ideen einzubringen, finde ich eine wunderbare Sache für unsere Stadt. Nur sind bisher kaum hundert Nachbarn bei der Befragung mitgemacht, das ist mir zu wenig. Am Konzept selbst finde ich nichts Schlechtes.",
+      "passageId": "gen-l4-f7a1-14",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-14-4",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Klaus ist gegen das Projekt, weil er fürchtet, dass am Ende doch niemand auf die Wünsche höre.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Er zweifelt am Einfluss der Befragung auf die endgültige Entscheidung.",
+      "signText": "Bei früheren Projekten in unserer Stadt wurden Nachbarn schon einmal gefragt, aber am Ende hat die Verwaltung trotzdem alles anders entschieden. Eine solche Befragung ohne echten Einfluss bringt nach meiner Meinung wenig. Deshalb halte ich den ganzen Plan für keine gute Idee.",
+      "passageId": "gen-l4-f7a1-14",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-14-5",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Anja lehnt das Projekt insgesamt ab, obwohl sie den Wert der Beteiligung für die Stadt sieht.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Nein",
+      "correctAnswer": "Nein",
+      "explanation": "Sie findet die Idee wertvoll, möchte aber zuerst klare Regeln zum Ablauf.",
+      "signText": "Dass Nachbarn bei einem so wichtigen Bau mitreden können, finde ich einen klaren Vorteil für die ganze Stadt. Bevor es richtig losgeht, sollten aber klare Regeln zum genauen Ablauf der Befragung stehen. Grundsätzlich gegen die Idee bin ich gar nicht.",
+      "passageId": "gen-l4-f7a1-14",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-14-6",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Felix unterstützt den Plan, weil er selbst schon einmal an einer ähnlichen Befragung teilgenommen hat.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Er berichtet von seiner früheren positiven Erfahrung in einer anderen Stadt.",
+      "signText": "In meiner früheren Stadt war ich einmal an einer ähnlichen Befragung beteiligt und konnte dort echte Ideen für einen neuen Platz einbringen. Die Erfahrung war für mich und die anderen Nachbarn sehr positiv gewesen. Deshalb freue ich mich über diesen neuen Vorschlag.",
+      "passageId": "gen-l4-f7a1-14",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-14-7",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Hanna ist gegen das Vorhaben, weil ihrer Meinung nach niemand die Ergebnisse später verständlich erkläre.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Nein",
+      "correctAnswer": "Nein",
+      "explanation": "Sie ist unsicher wegen der späteren Erklärung, lehnt das Projekt aber nicht vollständig ab.",
+      "signText": "Wie die Stadt die Ergebnisse der Befragung am Ende für alle Nachbarn verständlich erklären will, ist mir noch nicht ganz klar. Bei diesem Punkt bin ich wirklich unsicher. Komplett dagegen bin ich trotzdem nicht, wenn es eine klare Information gibt.",
+      "passageId": "gen-l4-f7a1-14",
+      "lang": "de",
+      "level": "B1"
+    }
+  ]
+}
+
+---
+
+{
+  "passages": [
+    {
+      "id": "gen-l4-f7a1-15",
+      "module": "lesen",
+      "teil": 4,
+      "title": "Forum: Zusätzliche Übung für Erwachsene beim Schwimmkurs — ja oder nein?",
+      "text": "Ein Schwimmbad in der Stadt plant eine zusätzliche Übung für erwachsene Anfänger, die bisher noch nicht schwimmen können. Familien und Nachbarn könnten dabei in kleinen Gruppen neue Erfahrungen im Wasser sammeln. Manche Bewohner finden den Plan wichtig für die Sicherheit, andere sehen ein Problem bei der genauen Zeit der Kurse. Lesen Sie die Texte — ist die Person für den Vorschlag insgesamt?"
+    }
+  ],
+  "questions": [
+    {
+      "id": "gen-q-4-f7a1-15-1",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Birgit findet die neue Übung sinnvoll, auch wenn sie selbst zunächst zögerlich ins Wasser gegangen sei.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Sie unterstützt das Angebot, beschreibt aber eigene Unsicherheit am Anfang.",
+      "signText": "Schwimmen zu lernen, brauche ich für die Sicherheit meiner Kinder am Wasser im Sommer. Am Anfang bin ich selbst noch sehr zögerlich ins kalte Wasser gegangen und hatte etwas Angst. Trotzdem finde ich den neuen Plan eine gute Idee.",
+      "passageId": "gen-l4-f7a1-15",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-15-2",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Heiko lehnt das Vorhaben ab, weil die geplanten Zeiten am Vormittag für ihn als Arbeiter unpassend seien.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Er sieht andere Termine als nötig für seine Arbeitszeit an.",
+      "signText": "Für meine Arbeit auf dem Bau beginnt mein Tag schon früh am Morgen, und die Kurse am Vormittag passen deshalb gar nicht zu meiner Zeit. Andere Termine am Abend wären für mich viel nützlicher. Deshalb halte ich diesen Plan für nicht passend.",
+      "passageId": "gen-l4-f7a1-15",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-15-3",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Claudia kritisiert nur die Gruppengröße der Übung, befürwortet das Angebot aber im Kern.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Sie findet die Idee gut, wünscht sich aber kleinere Gruppen.",
+      "signText": "Schwimmen zu lernen finde ich für erwachsene Anfänger eine sehr nützliche Sache, besonders für die eigene Sicherheit im Wasser. Mit zehn Personen in einer Gruppe lernt aber niemand richtig gut. Am Angebot selbst finde ich sonst nichts Schlechtes.",
+      "passageId": "gen-l4-f7a1-15",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-15-4",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Erwin ist gegen den Plan, weil aus seiner Sicht das Schwimmbad ohnehin schon zu viele Kurse anbiete.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Er hält den zusätzlichen Kurs für eine Überlastung des Bades.",
+      "signText": "Schon jetzt gibt es im Schwimmbad viele Kurse für Kinder und für Senioren, das Becken ist deshalb oft sehr voll. Ein zusätzlicher Kurs würde die Lage für alle nur noch schwieriger machen. Deshalb lehne ich diesen Vorschlag des Bades ab.",
+      "passageId": "gen-l4-f7a1-15",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-15-5",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Wioletta lehnt den Plan insgesamt ab, obwohl sie den Nutzen für die Sicherheit anerkennt.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Nein",
+      "correctAnswer": "Nein",
+      "explanation": "Sie sieht den Nutzen, fordert aber zuerst zusätzliches Personal am Becken.",
+      "signText": "Dass Schwimmen für erwachsene Anfänger wichtig für die eigene Sicherheit ist, finde ich völlig klar und wichtig. Statt im normalen Betrieb sollte das Bad aber zuerst mehr Personal für die Aufsicht einstellen. Grundsätzlich gegen die Idee bin ich nicht.",
+      "passageId": "gen-l4-f7a1-15",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-15-6",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Dorota unterstützt den Plan, weil sie selbst von einem ähnlichen Kurs sehr profitiert habe.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Sie berichtet von einer eigenen erfolgreichen Erfahrung als Anfängerin.",
+      "signText": "Vor zwei Jahren habe ich selbst einen ähnlichen Kurs für erwachsene Anfänger besucht und kann jetzt sicher schwimmen. Diese Erfahrung war für mich wirklich wertvoll und produktiv. Deshalb bin ich klar für diesen neuen Vorschlag.",
+      "passageId": "gen-l4-f7a1-15",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-f7a1-15-7",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Stanislaw ist gegen den neuen Kurs, weil ihrer Meinung nach kaum jemand bis zum Ende dabei bleibe.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Nein",
+      "correctAnswer": "Nein",
+      "explanation": "Er ist skeptisch wegen der Teilnahme, lehnt den Plan aber nicht vollständig ab.",
+      "signText": "Ob die meisten erwachsenen Teilnehmer nach einem langen Arbeitstag wirklich bis zum Ende des Kurses dabei bleiben, weiß ich nicht. Bei diesem Punkt bin ich schon etwas skeptisch. Komplett gegen den Plan bin ich aber nicht, wenn es kurze Einheiten gibt.",
+      "passageId": "gen-l4-f7a1-15",
+      "lang": "de",
+      "level": "B1"
+    }
+  ]
+}

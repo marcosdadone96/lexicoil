@@ -21,6 +21,7 @@ import {
   buildMasterPrompt,
   LANG_META,
   loadPools,
+  resolvePromptRel,
 } from './lib/batchParams.mjs';
 import { DailyQuotaError } from './lib/geminiClient.mjs';
 import {
@@ -60,6 +61,7 @@ function parseArgs(argv) {
     retries: 1,
     conformanceRetries: 2,
     provider: null,
+    targetWords: null,
   };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
@@ -74,6 +76,8 @@ function parseArgs(argv) {
     else if (a === '--retries') out.retries = Math.max(1, Number(argv[++i]) || 1);
     else if (a === '--conformance-retries') out.conformanceRetries = Math.max(0, Number(argv[++i]) || 2);
     else if (a === '--provider') out.provider = argv[++i]?.toLowerCase();
+    else if (a === '--target-words') out.targetWords =
+      String(argv[++i] || '').split(',').map((s) => s.trim()).filter(Boolean);
   }
   if (!out.provider) out.provider = providerLabel();
   return out;
@@ -94,6 +98,15 @@ function mergeBatch(lang, level, file) {
 
 function budgetUSD() {
   return Number(process.env.CLAUDE_BUDGET_USD || 2.3);
+}
+
+function buildTargetWordsNote(words) {
+  if (!words || !words.length) return '';
+  return `\n\nIMPORTANTE — VOCABULARIO OBJETIVO:\n` +
+    `El texto y/o las preguntas deben incluir de forma NATURAL y correcta las siguientes ` +
+    `palabras alemanas (usa su forma flexionada adecuada; no fuerces, intégralas con sentido):\n` +
+    words.join(', ') + `\n` +
+    `No menciones esta instrucción en la salida.`;
 }
 
 function loadBlueprint(lang, level) {
@@ -163,7 +176,7 @@ async function generateOne(args, pools, client) {
     module: args.module,
     teil: args.teil,
   });
-  const basePrompt = buildMasterPrompt(args.lang, params);
+  const basePrompt = buildMasterPrompt(args.lang, params) + buildTargetWordsNote(args.targetWords);
   const blueprint = loadBlueprint(args.lang, params.level);
   const outFile = path.join(MERGED_DIR, params.outputFile);
   const relFile = path.relative(ROOT, outFile).replace(/\\/g, '/');
@@ -177,7 +190,12 @@ async function generateOne(args, pools, client) {
 
   if (args.dryRun) {
     console.log('\n[dry-run] Prompt (primeras 800 chars):\n');
-    console.log(basePrompt.slice(0, 800) + '…\n');
+    console.log(basePrompt.slice(0, 800) + (basePrompt.length > 800 ? '…' : '') + '\n');
+    const targetNote = buildTargetWordsNote(args.targetWords);
+    if (targetNote) {
+      console.log('[dry-run] Cola del prompt (vocabulario objetivo):\n');
+      console.log(targetNote);
+    }
     return { ok: true, dryRun: true, params, outFile: relFile };
   }
 
@@ -301,8 +319,16 @@ async function main() {
 
   const client = await getProvider(args.provider);
   const pools = loadPools(args.lang);
+  const sampleParams = buildBatchParams(pools, args.lang, {
+    level: args.level,
+    module: args.module,
+    teil: args.teil,
+  });
+  const promptRel = (process.env.GEMINI_FULL_PROMPT === '1')
+    ? resolvePromptRel(args.lang, sampleParams.level, 'GEMINI_MASTER_PROMPT')
+    : resolvePromptRel(args.lang, sampleParams.level, 'GEMINI_API_COMPACT');
   console.log(`\nBatch generator (${args.provider}) — ${args.lang}/${args.level} × ${args.count}`);
-  console.log(`Prompt: ${meta.masterPrompt}`);
+  console.log(`Prompt: ${promptRel}`);
   if (args.provider === 'claude') {
     console.log(`Presupuesto Claude: $${budgetUSD().toFixed(2)} (gastado: $${spentUSD().toFixed(4)})`);
   }

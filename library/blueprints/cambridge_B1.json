@@ -3,8 +3,10 @@
   "examType": "cambridge",
   "language": "en",
   "level": "B1",
-  "certificate": "Cambridge B1",
+  "certificate": "B1 Preliminary",
   "principle": "fixed_structure_dynamic_content",
+  "source": "Cambridge B1 Preliminary handbook 2020 (Reading 5/5/5/5/6/6=32; Listening 7/6/6/6=25; Speaking 4 parts)",
+  "structureVersion": 3,
   "difficultyDistribution": {
     "easy": {
       "min": 1,
@@ -24,294 +26,383 @@
   },
   "modules": [
     {
-      "id": "use_of_english",
-      "title": "Reading and Use of English",
-      "time": "75 minutes",
+      "id": "lesen",
+      "title": "Reading",
+      "time": "45 minutes",
+      "maxPoints": 100,
       "parts": [
         {
-          "instruction": "For questions 1–8, read the text and choose the best answer (A, B, C or D).",
           "teil": 1,
-          "slotType": "mcq_gap_fill",
-          "label": "Part 1 — Multiple-choice cloze",
-          "questionTypes": [
-            "multiple_choice",
-            "multiple"
-          ],
-          "questionsTotal": {
-            "min": 8,
-            "max": 8
+          "label": "Part 1 — Reading",
+          "instruction": "Read the text(s) and answer the questions in Part 1.",
+          "wordsPerPassage": {
+            "min": 150,
+            "max": 800
           },
-          "focus": [
-            "vocabulary_in_context"
-          ],
+          "slotType": "mcq_gap_fill",
+          "taskFormat": "multiple_choice_cloze",
           "layout": "questions",
-          "itemsTotal": 8,
-          "taskFormat": "multiple_choice_cloze"
+          "questionTypes": [
+            "multiple_choice"
+          ],
+          "itemsTotal": 5,
+          "questionsTotal": {
+            "min": 5,
+            "max": 5
+          }
         },
         {
-          "instruction": "For questions 9–16, read the text and fill each gap with one word.",
           "teil": 2,
+          "label": "Part 2 — Reading",
+          "instruction": "Read the text(s) and answer the questions in Part 2.",
+          "wordsPerPassage": {
+            "min": 150,
+            "max": 800
+          },
           "slotType": "open_cloze",
-          "label": "Part 2 — Open cloze",
+          "taskFormat": "open_cloze",
+          "layout": "questions",
           "questionTypes": [
             "gap_fill",
             "open_cloze"
           ],
+          "itemsTotal": 5,
           "questionsTotal": {
-            "min": 8,
-            "max": 8
-          },
-          "focus": [
-            "grammar_accuracy"
-          ],
-          "layout": "questions",
-          "itemsTotal": 8,
-          "taskFormat": "open_cloze"
+            "min": 5,
+            "max": 5
+          }
         },
         {
-          "instruction": "For questions 17–24, form the correct word from the stem to fill each gap.",
           "teil": 3,
+          "label": "Part 3 — Reading",
+          "instruction": "Read the text(s) and answer the questions in Part 3.",
+          "wordsPerPassage": {
+            "min": 150,
+            "max": 800
+          },
           "slotType": "word_formation",
-          "label": "Part 3 — Word formation",
+          "taskFormat": "word_formation",
+          "layout": "questions",
           "questionTypes": [
             "gap_fill",
             "word_formation"
           ],
+          "itemsTotal": 5,
           "questionsTotal": {
-            "min": 8,
-            "max": 8
-          },
-          "focus": [
-            "word_formation"
-          ],
-          "layout": "questions",
-          "itemsTotal": 8,
-          "taskFormat": "word_formation"
+            "min": 5,
+            "max": 5
+          }
         },
         {
-          "instruction": "For questions 25–30, complete the second sentence so it has a similar meaning using the word given.",
           "teil": 4,
+          "label": "Part 4 — Reading",
+          "instruction": "Read the text(s) and answer the questions in Part 4.",
+          "wordsPerPassage": {
+            "min": 150,
+            "max": 800
+          },
           "slotType": "sentence_transformation",
-          "label": "Part 4 — Key word transformation",
+          "taskFormat": "key_word_transformation",
+          "layout": "questions",
           "questionTypes": [
             "gap_fill",
-            "sentence_transformation",
-            "short_answer"
+            "sentence_transformation"
           ],
+          "itemsTotal": 5,
+          "questionsTotal": {
+            "min": 5,
+            "max": 5
+          }
+        },
+        {
+          "teil": 5,
+          "label": "Part 5 — Reading",
+          "instruction": "Read the text(s) and answer the questions in Part 5.",
+          "wordsPerPassage": {
+            "min": 150,
+            "max": 800
+          },
+          "slotType": "long_text",
+          "taskFormat": "long_text_mcq",
+          "layout": "passage_questions",
+          "questionTypes": [
+            "multiple_choice"
+          ],
+          "itemsTotal": 6,
           "questionsTotal": {
             "min": 6,
             "max": 6
-          },
-          "focus": [
-            "grammar_transformation"
-          ],
-          "layout": "questions",
-          "itemsTotal": 6,
-          "taskFormat": "key_word_transformation"
-        }
-      ]
-    },
-    {
-      "id": "reading",
-      "title": "Reading",
-      "time": "included in RUE",
-      "parts": [
+          }
+        },
         {
-          "instruction": "Read the text and answer questions testing detail, inference and tone.",
-          "teil": 1,
-          "slotType": "long_text",
-          "label": "Reading — Long text comprehension",
-          "passageCount": 1,
+          "teil": 6,
+          "label": "Part 6 — Reading",
+          "instruction": "Read the text(s) and answer the questions in Part 6.",
           "wordsPerPassage": {
-            "min": 650,
-            "max": 750
+            "min": 150,
+            "max": 800
           },
-          "questionTypes": [
-            "multiple_choice",
-            "multiple",
-            "true_false"
-          ],
-          "questionsTotal": {
-            "min": 10,
-            "max": 10
-          },
-          "topicFocus": [
-            "technology",
-            "environment",
-            "culture",
-            "work"
-          ],
-          "requiresInference": true,
-          "requiresTone": true,
+          "slotType": "gapped_text",
+          "taskFormat": "gapped_text",
           "layout": "passage_questions",
-          "itemsTotal": 10,
-          "taskFormat": "long_text"
+          "questionTypes": [
+            "matching"
+          ],
+          "itemsTotal": 6,
+          "questionsTotal": {
+            "min": 6,
+            "max": 6
+          }
         }
       ]
     },
     {
-      "id": "writing",
-      "title": "Writing",
-      "time": "80 minutes",
+      "id": "horen",
+      "title": "Listening",
+      "time": "30 minutes",
+      "maxPoints": 100,
       "parts": [
         {
-          "instruction": "Write an essay discussing two points and giving your opinion.",
+          "teil": 1,
+          "label": "Part 1 — Listening",
+          "instruction": "Listen and answer the questions in Part 1.",
+          "plays": 2,
+          "slotType": "dialogue_extracts",
+          "taskFormat": "dialogue_extracts",
+          "layout": "segments",
+          "questionTypes": [
+            "multiple_choice"
+          ],
+          "itemsTotal": 7,
+          "questionsTotal": {
+            "min": 7,
+            "max": 7
+          }
+        },
+        {
+          "teil": 2,
+          "label": "Part 2 — Listening",
+          "instruction": "Listen and answer the questions in Part 2.",
+          "plays": 2,
+          "slotType": "sentence_completion",
+          "taskFormat": "sentence_completion",
+          "layout": "segments",
+          "questionTypes": [
+            "gap_fill"
+          ],
+          "itemsTotal": 6,
+          "questionsTotal": {
+            "min": 6,
+            "max": 6
+          }
+        },
+        {
+          "teil": 3,
+          "label": "Part 3 — Listening",
+          "instruction": "Listen and answer the questions in Part 3.",
+          "plays": 2,
+          "slotType": "monologue",
+          "taskFormat": "monologue_mcq",
+          "layout": "segments",
+          "questionTypes": [
+            "multiple_choice"
+          ],
+          "itemsTotal": 6,
+          "questionsTotal": {
+            "min": 6,
+            "max": 6
+          }
+        },
+        {
+          "teil": 4,
+          "label": "Part 4 — Listening",
+          "instruction": "Listen and answer the questions in Part 4.",
+          "plays": 2,
+          "slotType": "dialogue_speakers",
+          "taskFormat": "dialogue_speakers",
+          "layout": "segments",
+          "questionTypes": [
+            "matching",
+            "multiple_choice"
+          ],
+          "itemsTotal": 6,
+          "questionsTotal": {
+            "min": 6,
+            "max": 6
+          }
+        }
+      ]
+    },
+    {
+      "id": "schreiben",
+      "title": "Writing",
+      "time": "45 minutes",
+      "maxPoints": 100,
+      "parts": [
+        {
           "teil": 1,
           "slotType": "essay",
-          "label": "Part 1 — Essay (mandatory)",
+          "taskFormat": "essay",
+          "label": "Part 1 — Writing",
+          "instruction": "Write the compulsory task.",
+          "layout": "writing",
           "taskCount": 1,
-          "mandatory": true,
-          "wordsTarget": {
-            "min": 140,
-            "max": 190
-          },
-          "taskTypes": [
-            "essay"
-          ],
-          "questionTypes": [
-            "short_answer"
-          ],
+          "itemsTotal": 1,
           "questionsTotal": {
             "min": 1,
             "max": 1
           },
-          "layout": "writing",
-          "itemsTotal": 1,
-          "taskFormat": "essay",
+          "questionTypes": [
+            "short_answer"
+          ],
+          "wordsTarget": {
+            "min": 100,
+            "max": 120
+          },
           "wordsPerPassage": {
-            "min": 140,
-            "max": 190
-          }
+            "min": 100,
+            "max": 120
+          },
+          "taskTypes": [
+            "essay"
+          ],
+          "mandatory": true
         },
         {
-          "instruction": "Write one of the following tasks in response to the situation given.",
           "teil": 2,
           "slotType": "choice_writing",
-          "label": "Part 2 — Email / review / article",
+          "taskFormat": "choice_writing",
+          "label": "Part 2 — Writing",
+          "instruction": "Write one of the tasks given.",
+          "layout": "writing",
           "taskCount": 1,
+          "itemsTotal": 1,
+          "questionsTotal": {
+            "min": 1,
+            "max": 1
+          },
+          "questionTypes": [
+            "short_answer"
+          ],
           "wordsTarget": {
-            "min": 140,
-            "max": 190
+            "min": 100,
+            "max": 120
+          },
+          "wordsPerPassage": {
+            "min": 100,
+            "max": 120
           },
           "taskTypes": [
             "email",
             "review",
             "article"
           ],
-          "questionTypes": [
-            "short_answer"
-          ],
-          "questionsTotal": {
-            "min": 1,
-            "max": 1
-          },
-          "layout": "writing",
-          "itemsTotal": 1,
-          "taskFormat": "choice_writing",
-          "wordsPerPassage": {
-            "min": 140,
-            "max": 190
-          }
+          "mandatory": false
         }
       ]
     },
     {
-      "id": "listening",
-      "title": "Listening",
-      "time": "40 minutes",
+      "id": "sprechen",
+      "title": "Speaking",
+      "time": "12–17 minutes",
+      "maxPoints": 100,
       "parts": [
         {
-          "instruction": "You will hear eight short extracts. For each question, choose the best answer.",
           "teil": 1,
-          "slotType": "dialogue_extracts",
-          "label": "Part 1 — Short extracts",
-          "audioCount": {
-            "min": 4,
-            "max": 5
+          "slotType": "speaking_task",
+          "taskFormat": "speaking_prompt",
+          "label": "Part 1 — Speaking",
+          "instruction": "Take part in the speaking test as instructed by the examiner.",
+          "layout": "speaking",
+          "taskCount": 1,
+          "itemsTotal": 1,
+          "questionsTotal": {
+            "min": 1,
+            "max": 1
           },
           "questionTypes": [
-            "multiple_choice",
-            "multiple"
+            "short_answer"
           ],
-          "questionsTotal": {
-            "min": 8,
-            "max": 8
-          },
-          "topicFocus": [
-            "daily_life",
-            "travel",
-            "work"
-          ],
-          "layout": "segments",
-          "itemsTotal": 8,
-          "taskFormat": "dialogue_extracts"
+          "taskTypes": [
+            "interaction",
+            "discussion"
+          ]
         },
         {
-          "instruction": "You will hear a monologue. Complete the sentences.",
           "teil": 2,
-          "slotType": "sentence_completion",
-          "label": "Part 2 — Sentence completion",
-          "questionTypes": [
-            "gap_fill",
-            "multiple_choice",
-            "multiple"
-          ],
+          "slotType": "speaking_task",
+          "taskFormat": "speaking_prompt",
+          "label": "Part 2 — Speaking",
+          "instruction": "Take part in the speaking test as instructed by the examiner.",
+          "layout": "speaking",
+          "taskCount": 1,
+          "itemsTotal": 1,
           "questionsTotal": {
-            "min": 8,
-            "max": 8
+            "min": 1,
+            "max": 1
           },
-          "layout": "segments",
-          "itemsTotal": 8,
-          "taskFormat": "sentence_completion"
+          "questionTypes": [
+            "short_answer"
+          ],
+          "taskTypes": [
+            "interaction",
+            "discussion"
+          ]
         },
         {
-          "instruction": "You will hear a conversation. Match speakers to statements.",
           "teil": 3,
-          "slotType": "dialogue_speakers",
-          "label": "Part 3 — Speaker matching",
-          "questionTypes": [
-            "multiple_choice",
-            "multiple",
-            "matching"
-          ],
+          "slotType": "speaking_task",
+          "taskFormat": "speaking_prompt",
+          "label": "Part 3 — Speaking",
+          "instruction": "Take part in the speaking test as instructed by the examiner.",
+          "layout": "speaking",
+          "taskCount": 1,
+          "itemsTotal": 1,
           "questionsTotal": {
-            "min": 7,
-            "max": 7
+            "min": 1,
+            "max": 1
           },
-          "layout": "segments",
-          "itemsTotal": 7,
-          "taskFormat": "dialogue_speakers"
+          "questionTypes": [
+            "short_answer"
+          ],
+          "taskTypes": [
+            "interaction",
+            "discussion"
+          ]
         },
         {
-          "instruction": "You will hear a talk or interview. Answer the questions.",
           "teil": 4,
-          "slotType": "monologue",
-          "label": "Part 4 — Monologue / interview",
-          "questionTypes": [
-            "multiple_choice",
-            "multiple"
-          ],
+          "slotType": "speaking_task",
+          "taskFormat": "speaking_prompt",
+          "label": "Part 4 — Speaking",
+          "instruction": "Take part in the speaking test as instructed by the examiner.",
+          "layout": "speaking",
+          "taskCount": 1,
+          "itemsTotal": 1,
           "questionsTotal": {
-            "min": 8,
-            "max": 8
+            "min": 1,
+            "max": 1
           },
-          "topicFocus": [
-            "education",
-            "technology",
-            "environment"
+          "questionTypes": [
+            "short_answer"
           ],
-          "layout": "segments",
-          "itemsTotal": 8,
-          "taskFormat": "monologue"
+          "taskTypes": [
+            "interaction",
+            "discussion"
+          ]
         }
       ]
     }
   ],
-  "structureVersion": 2,
   "itemsTotalByModule": {
-    "use_of_english": 30,
-    "reading": 10,
-    "writing": 2,
-    "listening": 31
-  }
+    "lesen": 32,
+    "horen": 25,
+    "schreiben": 2,
+    "sprechen": 4
+  },
+  "notes": {
+    "noUseOfEnglishModule": "Four modules only; reading counts from standalone Reading paper (32 items)."
+  },
+  "modularGrading": true,
+  "passPercentPerModule": 60
 }

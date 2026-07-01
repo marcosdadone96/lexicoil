@@ -6,6 +6,30 @@ function isDue(fc) {
   return fc.nextReview && Date.now() >= fc.nextReview;
 }
 
+function normalizeGoalLevel(level) {
+  return level ? String(level).toUpperCase() : '';
+}
+
+/** Resolved study level for a flashcard (sourceLevel → sourceExam.level → profileId). */
+function fcSourceLevel(fc) {
+  if (!fc || typeof fc !== 'object') return '';
+  if (fc.sourceLevel) return normalizeGoalLevel(fc.sourceLevel);
+  if (fc.sourceExam?.level) return normalizeGoalLevel(fc.sourceExam.level);
+  if (fc.profileId) {
+    const i = String(fc.profileId).indexOf('_');
+    if (i > 0) return normalizeGoalLevel(fc.profileId.slice(i + 1));
+  }
+  return '';
+}
+
+function fcMatchesGoal(fc, goal) {
+  if (!fc || !goal) return false;
+  if (fc.sourceLang !== goal.subject) return false;
+  const lvl = fcSourceLevel(fc);
+  if (!lvl) return false;
+  return lvl === normalizeGoalLevel(goal.level);
+}
+
 const GoalStore = (() => {
   const GOALS_KEY = 'lc_goals';
   const ACTIVE_KEY = 'lc_active_goal';
@@ -146,7 +170,7 @@ const GoalStore = (() => {
   }
 
   function deckFor(goal) {
-    return (S.flashcards || []).filter((f) => f.sourceLang === goal.subject);
+    return (S.flashcards || []).filter((f) => fcMatchesGoal(f, goal));
   }
 
   function dueFor(goal) {
@@ -261,6 +285,50 @@ function saveGoals() {
 function getActiveGoal() {
   return GoalStore.getActive();
 }
+
+/**
+ * Repara flashcards sin sourceLevel. Idempotente y SIN flag que pueda "mentir":
+ * recorre siempre; si no hay nada que reparar, no hace nada.
+ * Llamar (a) al arrancar tras cargar S.flashcards y (b) después de cada pullSync.
+ */
+function fixFlashcardLevels() {
+  try { localStorage.removeItem('lc_fc_levelfix_v1'); } catch (_) {}
+
+  if (typeof S === 'undefined' || !Array.isArray(S.flashcards) || !S.flashcards.length) return false;
+
+  const norm = (l) => (l ? String(l).toUpperCase() : '');
+  const DEFAULT_LEVEL = 'B1';
+
+  let changed = 0;
+  for (const f of S.flashcards) {
+    if (f.sourceLevel) continue;
+
+    const lang = f.sourceLang || f.lang;
+    const goals = (Array.isArray(S.goals) ? S.goals : [])
+      .filter((g) => g.subject === lang);
+    const active = typeof getActiveGoal === 'function' ? getActiveGoal() : null;
+
+    let lvl =
+      norm(f.sourceExam && f.sourceExam.level) ||
+      (goals.length === 1 ? norm(goals[0].level) : '') ||
+      (active && active.subject === lang ? norm(active.level) : '') ||
+      DEFAULT_LEVEL;
+
+    f.sourceLevel = lvl;
+    if (!f.sourceLang && f.lang) f.sourceLang = f.lang;
+    changed++;
+  }
+
+  if (changed > 0) {
+    if (typeof saveFC === 'function') saveFC();
+    const log = typeof lcDebug !== 'undefined' ? lcDebug : (typeof debugLog !== 'undefined' ? debugLog : null);
+    if (log && typeof log.warn === 'function') {
+      log.warn(`[fc] level-fix: reparadas ${changed} flashcards`);
+    }
+  }
+  return changed > 0;
+}
+
 function prepGoalContext(goal) {
   GoalStore.prepContext(goal);
 }
@@ -323,6 +391,11 @@ function daysUntilExam(examDate) {
 function findOrCreateGoal(subject, level) {
   ensureGoalSlugs();
   const lvl = String(level || '').toUpperCase();
+  if (typeof LevelAvailability !== 'undefined' && !LevelAvailability.isLevelSelectable(subject, lvl)) {
+    const fallback = LevelAvailability.firstSelectableLevel(subject);
+    if (!fallback || fallback === lvl) return null;
+    return findOrCreateGoal(subject, fallback);
+  }
   let goal = S.goals.find((g) => g.subject === subject && g.level === lvl);
   if (goal) {
     GoalStore.setActive(goal.id);
@@ -344,6 +417,11 @@ function findOrCreateGoal(subject, level) {
 }
 
 function createGoal({ subject, level, examDate }) {
+  if (typeof LevelAvailability !== 'undefined' && !LevelAvailability.isLevelSelectable(subject, level)) {
+    if (typeof openLevelSoonNotify === 'function') openLevelSoonNotify(subject, level);
+    else if (typeof lcToast === 'function') lcToast('This level is not available yet.', 'warn');
+    return null;
+  }
   if (S.goals.some((g) => g.subject === subject && g.level === level)) {
     lcToast('You already have a goal for ' + goalLabel({ subject, level }) + '.', 'warn');
     return null;
@@ -370,6 +448,11 @@ function createGoal({ subject, level, examDate }) {
 function updateGoal(id, { subject, level, examDate }) {
   const goal = S.goals.find((g) => g.id === id);
   if (!goal) return null;
+  if (typeof LevelAvailability !== 'undefined' && !LevelAvailability.isLevelSelectable(subject, level)) {
+    if (typeof openLevelSoonNotify === 'function') openLevelSoonNotify(subject, level);
+    else if (typeof lcToast === 'function') lcToast('This level is not available yet.', 'warn');
+    return null;
+  }
   if (S.goals.some((g) => g.id !== id && g.subject === subject && g.level === level)) {
     lcToast('You already have a goal for ' + goalLabel({ subject, level }) + '.', 'warn');
     return null;
@@ -391,7 +474,7 @@ function updateGoal(id, { subject, level, examDate }) {
 function deleteGoal(id) {
   const i = S.goals.findIndex((g) => g.id === id);
   if (i < 0) return;
-  if (S.activeSession?.goalId === id) clearActiveSession();
+  if ((typeof getSessionForGoal === 'function' && getSessionForGoal(id)) || S.activeSession?.goalId === id) clearActiveSession(id);
   if (S._officialInProgress?.goalId === id) S._officialInProgress = null;
   S.goals.splice(i, 1);
   if (typeof syncDashboardGoalOrder === 'function') syncDashboardGoalOrder();

@@ -1,0 +1,375 @@
+﻿{
+  "summary": {
+    "critical": 0,
+    "important": 39,
+    "minor": 1,
+    "filesScanned": 1,
+    "questionsScanned": 180
+  },
+  "findings": [
+    {
+      "id": "CHK-7",
+      "severity": "IMPORTANT",
+      "file": "de_B1.json",
+      "scope": "ql_gen-q-4-298a9eab-7",
+      "message": "Lesen T4: signText sugiere JA (\"bef├╝rworte\") pero correct=\"Nein\". Revisar manualmente."
+    },
+    {
+      "id": "CHK-9",
+      "severity": "INFO",
+      "file": "de_B1.json",
+      "scope": "lesen-1",
+      "message": "lesen-1: el examen oficial incluye un ├¡tem \"Beispiel (0)\" resuelto. El modelo de datos no lo representa."
+    },
+    {
+      "id": "CHK-9",
+      "severity": "INFO",
+      "file": "de_B1.json",
+      "scope": "lesen-4",
+      "message": "lesen-4: el examen oficial incluye un ├¡tem \"Beispiel (0)\" resuelto. El modelo de datos no lo representa."
+    },
+    {
+      "id": "CHK-9",
+      "severity": "INFO",
+      "file": "de_B1.json",
+      "scope": "horen-3",
+      "message": "horen-3: el examen oficial incluye un ├¡tem \"Beispiel (0)\" resuelto. El modelo de datos no lo representa."
+    },
+    {
+      "id": "CHK-9",
+      "severity": "INFO",
+      "file": "de_B1.json",
+      "scope": "horen-4",
+      "message": "horen-4: el examen oficial incluye un ├¡tem \"Beispiel (0)\" resuelto. El modelo de datos no lo representa."
+    },
+    {
+      "id": "CHK-10",
+      "severity": "MINOR",
+      "file": "de_B1.json",
+      "scope": "ql_gen-q-1-4076d50c-2",
+      "message": "lesen T1: 1 enunciado con palabra de alcance (┬½immer┬╗) ÔÇö ok si no predice la respuesta."
+    },
+    {
+      "id": "CHK-13",
+      "severity": "IMPORTANT",
+      "file": "de_B1.json",
+      "scope": "horen-1",
+      "message": "horen-1: MC no usa la(s) letra(s) c en ning├║n ├¡tem."
+    },
+    {
+      "id": "CHK-17",
+      "severity": "IMPORTANT",
+      "file": "de_B1.json",
+      "scope": "lesen-3",
+      "message": "L3 usa opciones distintas por ├¡tem (MCQ per-├¡tem real). El formato oficial Goethe requiere la misma lista A-J en todos los ├¡tems. Revisar generaci├│n."
+    },
+    {
+      "id": "CHK-18",
+      "severity": "IMPORTANT",
+      "file": "de_B1.json",
+      "scope": "ql_gen-q-1-4076d50c-6",
+      "message": "Explanation demasiado corta (8 palabras): \"Es ist eine tolle Unterst├╝tzung f├╝r ihr Wohlbefinden.\". M├¡nimo: 10 para tipo richtig_falsch."
+    },
+    {
+      "id": "CHK-18",
+      "severity": "IMPORTANT",
+      "file": "de_B1.json",
+      "scope": "ql_gen-q-1-4076d50c-3",
+      "message": "Explanation demasiado corta (5 palabras): \"Sie hat interessante Leute kennengelernt.\". M├¡nimo: 10 para tipo richtig_falsch."
+    },
+    {
+      "id": "CHK-18",
+      "severity": "IMPORTANT",
+      "file": "de_B1.json",
+      "scope": "ql_gen-q-1-4076d50c-1",
+      "message": "Explanation demasiado corta (7 palabras): \"Sie wollte mehr f├╝r die Gemeinschaft tun.\". M├¡nimo: 10 para tipo richtig_falsch."
+    },
+    {
+      "id": "CHK-18",
+      "severity": "IMPORTANT",
+      "file": "de_B1.json",
+      "scope": "ql_gen-q-h1-2290-s4-q2",
+      "message": "Explanation demasiado corta (5 palabras): \"Die Anmeldefrist endet am Freitag.\". M├¡nimo: 10 para tipo multiple_choice."
+    },
+    {
+      "id": "CHK-18",
+      "severity": "IMPORTANT",
+      "file": "de_B1.json",
+      "scope": "ql_gen-q-h1-2290-s4-q1",
+      "message": "Explanation demasiado corta (6 palabras): \"Alle Einnahmen unterst├╝tzen ein lokales Umweltprojekt.\". M├¡nimo: 10 para tipo richtig_falsch."
+    },
+    {
+      "id": "CHK-18",
+      "severity": "IMPORTANT",
+      "file": "de_B1.json",
+      "scope": "ql_gen-q-h1-5522-s4-q2",
+      "message": "Explanation demasiado corta (7 palabras): \"Die Treffen finden im nahegelegenen Park statt.\". M├¡nimo: 10 para tipo multiple_choice."
+    },
+    {
+      "id": "CHK-18",
+      "severity": "IMPORTANT",
+      "file": "de_B1.json",
+      "scope": "ql_gen-q-h1-5522-s4-q1",
+      "message": "Explanation demasiado corta (7 palabras): \"Es sind Anf├ñnger ebenso willkommen wie Profis.\". M├¡nimo: 10 para tipo richtig_falsch."
+    },
+    {
+      "id": "CHK-18",
+      "severity": "IMPORTANT",
+      "file": "de_B1.json",
+      "scope": "ql_gen-q-h3-h4d2-4",
+      "message": "Explanation demasiado corta (6 palabras): \"Max sagt: 'Ich helfe dir gerne!'\". M├¡nimo: 10 para tipo richtig_falsch."
+    },
+    {
+      "id": "CHK-7",
+      "severity": "IMPORTANT",
+      "file": "de_B1.json",
+      "scope": "ql_gen-q-4-92df3345-2",
+      "message": "Lesen T4: signText sugiere JA (\"bef├╝rworte\") pero correct=\"Nein\". Revisar manualmente."
+    },
+    {
+      "id": "CHK-7",
+      "severity": "IMPORTANT",
+      "file": "de_B1.json",
+      "scope": "T4-balance",
+      "message": "Lesen T4: balance Ja/Nein = 2/5. Se esperan 3ÔÇô4 Ja y 3ÔÇô4 Nein."
+    },
+    {
+      "id": "CHK-9",
+      "severity": "INFO",
+      "file": "de_B1.json",
+      "scope": "lesen-1",
+      "message": "lesen-1: el examen oficial incluye un ├¡tem \"Beispiel (0)\" resuelto. El modelo de datos no lo representa."
+    },
+    {
+      "id": "CHK-9",
+      "severity": "INFO",
+      "file": "de_B1.json",
+      "scope": "lesen-4",
+      "message": "lesen-4: el examen oficial incluye un ├¡tem \"Beispiel (0)\" resuelto. El modelo de datos no lo representa."
+    },
+    {
+      "id": "CHK-9",
+      "severity": "INFO",
+      "file": "de_B1.json",
+      "scope": "horen-3",
+      "message": "horen-3: el examen oficial incluye un ├¡tem \"Beispiel (0)\" resuelto. El modelo de datos no lo representa."
+    },
+    {
+      "id": "CHK-9",
+      "severity": "INFO",
+      "file": "de_B1.json",
+      "scope": "horen-4",
+      "message": "horen-4: el examen oficial incluye un ├¡tem \"Beispiel (0)\" resuelto. El modelo de datos no lo representa."
+    },
+    {
+      "id": "CHK-10",
+      "severity": "IMPORTANT",
+      "file": "de_B1.json",
+      "scope": "ql_gen-q-1-5521-4",
+      "message": "lesen T1: 3/6 enunciados con palabra de alcance (sobre-uso, adivinable)."
+    },
+    {
+      "id": "CHK-13",
+      "severity": "IMPORTANT",
+      "file": "de_B1.json",
+      "scope": "horen-1",
+      "message": "horen-1: una letra MC supera el 55% (60%)."
+    },
+    {
+      "id": "CHK-17",
+      "severity": "IMPORTANT",
+      "file": "de_B1.json",
+      "scope": "lesen-3",
+      "message": "L3 usa opciones distintas por ├¡tem (MCQ per-├¡tem real). El formato oficial Goethe requiere la misma lista A-J en todos los ├¡tems. Revisar generaci├│n."
+    },
+    {
+      "id": "CHK-18",
+      "severity": "IMPORTANT",
+      "file": "de_B1.json",
+      "scope": "ql_gen-q-1-5521-4",
+      "message": "Explanation demasiado corta (8 palabras): \"Bei starkem Regen nutzt die Person die Bahn.\". M├¡nimo: 10 para tipo richtig_falsch."
+    },
+    {
+      "id": "CHK-18",
+      "severity": "IMPORTANT",
+      "file": "de_B1.json",
+      "scope": "ql_gen-q-1-5521-3",
+      "message": "Explanation demasiado corta (7 palabras): \"Sie spart Geld f├╝r Benzin und Parkpl├ñtze.\". M├¡nimo: 10 para tipo richtig_falsch."
+    },
+    {
+      "id": "CHK-18",
+      "severity": "IMPORTANT",
+      "file": "de_B1.json",
+      "scope": "ql_gen-q-1-5521-2",
+      "message": "Explanation demasiado corta (7 palabras): \"Die Kollegin h├ñlt die Entscheidung f├╝r verr├╝ckt.\". M├¡nimo: 10 para tipo richtig_falsch."
+    },
+    {
+      "id": "CHK-18",
+      "severity": "IMPORTANT",
+      "file": "de_B1.json",
+      "scope": "ql_gen-q-1-5521-5",
+      "message": "Explanation demasiado corta (8 palabras): \"Sch├Âne Geb├ñude inspirieren die Person bei der Wohnungsgestal\". M├¡nimo: 10 para tipo richtig_falsch."
+    },
+    {
+      "id": "CHK-18",
+      "severity": "IMPORTANT",
+      "file": "de_B1.json",
+      "scope": "ql_gen-q-2-4afce3fe-4",
+      "message": "Explanation demasiado corta (9 palabras): \"Bibliotheken bieten Computer, R├ñume f├╝r Kurse und sind Treff\". M├¡nimo: 10 para tipo multiple_choice."
+    },
+    {
+      "id": "CHK-18",
+      "severity": "IMPORTANT",
+      "file": "de_B1.json",
+      "scope": "ql_gen-q-2-4afce3fe-2",
+      "message": "Explanation demasiado corta (9 palabras): \"Familien mit Kindern und ├ñltere Menschen nutzen die G├ñrten.\". M├¡nimo: 10 para tipo multiple_choice."
+    },
+    {
+      "id": "CHK-18",
+      "severity": "IMPORTANT",
+      "file": "de_B1.json",
+      "scope": "ql_gen-q-2-4afce3fe-5",
+      "message": "Explanation demasiado corta (7 palabras): \"Ein Bericht zeigt, dass die Besucherzahlen steigen.\". M├¡nimo: 10 para tipo multiple_choice."
+    },
+    {
+      "id": "CHK-18",
+      "severity": "IMPORTANT",
+      "file": "de_B1.json",
+      "scope": "ql_gen-q-2-4afce3fe-6",
+      "message": "Explanation demasiado corta (8 palabras): \"Ein Projekt bietet Hilfe bei der Jobsuche an.\". M├¡nimo: 10 para tipo multiple_choice."
+    },
+    {
+      "id": "CHK-18",
+      "severity": "IMPORTANT",
+      "file": "de_B1.json",
+      "scope": "ql_gen-q-h1-5522-s1-q2",
+      "message": "Explanation demasiado corta (8 palabras): \"Die Medien sollen in den Briefkasten eingeworfen werden.\". M├¡nimo: 10 para tipo multiple_choice."
+    },
+    {
+      "id": "CHK-18",
+      "severity": "IMPORTANT",
+      "file": "de_B1.json",
+      "scope": "ql_gen-q-h1-2290-s3-q1",
+      "message": "Explanation demasiado corta (8 palabras): \"Der Terminkalender ist diese Woche schon vollst├ñndig belegt.\". M├¡nimo: 10 para tipo richtig_falsch."
+    },
+    {
+      "id": "CHK-9",
+      "severity": "INFO",
+      "file": "de_B1.json",
+      "scope": "lesen-1",
+      "message": "lesen-1: el examen oficial incluye un ├¡tem \"Beispiel (0)\" resuelto. El modelo de datos no lo representa."
+    },
+    {
+      "id": "CHK-9",
+      "severity": "INFO",
+      "file": "de_B1.json",
+      "scope": "lesen-4",
+      "message": "lesen-4: el examen oficial incluye un ├¡tem \"Beispiel (0)\" resuelto. El modelo de datos no lo representa."
+    },
+    {
+      "id": "CHK-9",
+      "severity": "INFO",
+      "file": "de_B1.json",
+      "scope": "horen-3",
+      "message": "horen-3: el examen oficial incluye un ├¡tem \"Beispiel (0)\" resuelto. El modelo de datos no lo representa."
+    },
+    {
+      "id": "CHK-9",
+      "severity": "INFO",
+      "file": "de_B1.json",
+      "scope": "horen-4",
+      "message": "horen-4: el examen oficial incluye un ├¡tem \"Beispiel (0)\" resuelto. El modelo de datos no lo representa."
+    },
+    {
+      "id": "CHK-13",
+      "severity": "IMPORTANT",
+      "file": "de_B1.json",
+      "scope": "horen-1",
+      "message": "horen-1: una letra MC supera el 55% (60%)."
+    },
+    {
+      "id": "CHK-17",
+      "severity": "IMPORTANT",
+      "file": "de_B1.json",
+      "scope": "lesen-3",
+      "message": "L3 usa opciones distintas por ├¡tem (MCQ per-├¡tem real). El formato oficial Goethe requiere la misma lista A-J en todos los ├¡tems. Revisar generaci├│n."
+    },
+    {
+      "id": "CHK-18",
+      "severity": "IMPORTANT",
+      "file": "de_B1.json",
+      "scope": "ql_gen-q-1-9b370fcf-2",
+      "message": "Explanation demasiado corta (8 palabras): \"Sie beantwortet Fragen zu ├ämtern, Kursen oder Freizeitaktivi\". M├¡nimo: 10 para tipo richtig_falsch."
+    },
+    {
+      "id": "CHK-18",
+      "severity": "IMPORTANT",
+      "file": "de_B1.json",
+      "scope": "ql_gen-q-2-cf4c-5",
+      "message": "Explanation demasiado corta (9 palabras): \"Die Organisation erlaubt es, die Termine selbst zu w├ñhlen.\". M├¡nimo: 10 para tipo multiple_choice."
+    },
+    {
+      "id": "CHK-18",
+      "severity": "IMPORTANT",
+      "file": "de_B1.json",
+      "scope": "ql_gen-q-2-cf4c-6",
+      "message": "Explanation demasiado corta (9 palabras): \"Viele finden heute schneller einen Job dank digitaler Kenntn\". M├¡nimo: 10 para tipo multiple_choice."
+    },
+    {
+      "id": "CHK-18",
+      "severity": "IMPORTANT",
+      "file": "de_B1.json",
+      "scope": "ql_gen-q-2-cf4c-2",
+      "message": "Explanation demasiado corta (8 palabras): \"Es gibt bisher zu wenig Wege f├╝r Fahrr├ñder.\". M├¡nimo: 10 para tipo multiple_choice."
+    },
+    {
+      "id": "CHK-18",
+      "severity": "IMPORTANT",
+      "file": "de_B1.json",
+      "scope": "ql_gen-q-2-cf4c-3",
+      "message": "Explanation demasiado corta (7 palabras): \"Es erh├Âht die Lebensqualit├ñt der Anwohner deutlich.\". M├¡nimo: 10 para tipo multiple_choice."
+    },
+    {
+      "id": "CHK-18",
+      "severity": "IMPORTANT",
+      "file": "de_B1.json",
+      "scope": "ql_gen-q-2-cf4c-4",
+      "message": "Explanation demasiado corta (9 palabras): \"Sie besuchen Kurse, um ihren beruflichen Status zu sichern.\". M├¡nimo: 10 para tipo multiple_choice."
+    },
+    {
+      "id": "CHK-18",
+      "severity": "IMPORTANT",
+      "file": "de_B1.json",
+      "scope": "ql_gen-q-3-f1pb5l-6",
+      "message": "Explanation posiblemente no est├í en alem├ín: \"Tastenfee gibt Klavierunterricht....\""
+    },
+    {
+      "id": "CHK-18",
+      "severity": "IMPORTANT",
+      "file": "de_B1.json",
+      "scope": "ql_gen-q-5-64b1360b-2",
+      "message": "Explanation demasiado corta (9 palabras): \"Ohne Abmeldung kostet die Nichtteilnahme 15 Euro pro Stunde.\". M├¡nimo: 10 para tipo multiple_choice."
+    },
+    {
+      "id": "CHK-18",
+      "severity": "IMPORTANT",
+      "file": "de_B1.json",
+      "scope": "ql_gen-q-h1-2290-s5-q2",
+      "message": "Explanation demasiado corta (8 palabras): \"Die Dozentin l├ñdt am Mittwoch zur Sprechstunde ein.\". M├¡nimo: 10 para tipo multiple_choice."
+    },
+    {
+      "id": "CHK-18",
+      "severity": "IMPORTANT",
+      "file": "de_B1.json",
+      "scope": "ql_gen-q-h1-2290-s5-q1",
+      "message": "Explanation demasiado corta (8 palabras): \"Die Ergebnisse sind aktuell auf dem Portal verf├╝gbar.\". M├¡nimo: 10 para tipo richtig_falsch."
+    },
+    {
+      "id": "CHK-18",
+      "severity": "IMPORTANT",
+      "file": "de_B1.json",
+      "scope": "ql_gen-q-h2-430e5562-q1",
+      "message": "Explanation demasiado corta (9 palabras): \"Der Sprecher stellt Gemeinschaftsg├ñrten und ihre positiven A\". M├¡nimo: 10 para tipo multiple_choice."
+    }
+  ]
+}

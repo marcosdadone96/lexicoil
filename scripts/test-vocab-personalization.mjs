@@ -34,6 +34,32 @@ ok('all questions have vocabularyTags', qs.every((q) => (q.vocabularyTags || [])
 ok('all passages have passageVocab', ps.every((p) => (p.passageVocab || []).length >= 10));
 ok('passages.json synced', (passagesFile.passages || []).length === ps.length);
 
+const servedPath = path.join(ROOT, 'data/exams/de_B1.json');
+if (fs.existsSync(servedPath)) {
+  const served = JSON.parse(fs.readFileSync(servedPath, 'utf8'));
+  let lesenTotal = 0;
+  let lesenMissing = 0;
+  const needsTags = (q) => {
+    const t = String(q?.type || '').toLowerCase();
+    if (t === 'matching' || t === 'match') return false;
+    if (!q?.question && !q?.statement && (q?.signText || q?.text)) return false;
+    return true;
+  };
+  for (const exam of served) {
+    for (const part of exam.lesenParts || []) {
+      const walk = (q) => {
+        if (!needsTags(q)) return;
+        lesenTotal += 1;
+        if ((q.vocabularyTags || []).length < 3) lesenMissing += 1;
+      };
+      for (const q of part.questions || []) walk(q);
+      for (const pp of part.passages || []) for (const q of pp.questions || []) walk(q);
+      for (const item of part.items || []) walk(item);
+    }
+  }
+  ok(`served de_B1 Lesen vocabularyTags (${lesenTotal - lesenMissing}/${lesenTotal})`, lesenMissing === 0);
+}
+
 const tagged = qs.filter((q) =>
   (q.vocabularyTags || []).some((t) => String(t).toLowerCase() === 'stadtgarten'),
 );

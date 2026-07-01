@@ -1,0 +1,201 @@
+{
+  "generated": "2026-07-01T17:06:32.661Z",
+  "pool": "C:\\Users\\marco\\Desktop\\MDR\\lexiloop\\library\\reusable-seed\\de_B1.json",
+  "lang": "de",
+  "level": "B1",
+  "filter": {
+    "module": null,
+    "teil": null
+  },
+  "description": "Parts the structural matrix marks clean but SEM-1 flags for content bugs (conf ≥ 0.85). Must be regenerated in POOL-3.",
+  "confidenceThreshold": 0.85,
+  "stats": {
+    "totalInPool": 152,
+    "filtered": 152,
+    "structurallyClean": 35,
+    "structurallyDirty": 93,
+    "skippedNoMcq": 24,
+    "semOk": 25,
+    "semFlagged": 10,
+    "semLlmError": 0
+  },
+  "findings": [
+    {
+      "partId": "bank-de-B1-lesen-t3-c319b7027904ecc9",
+      "module": "lesen",
+      "teil": 3,
+      "theme": "bank:c319b7027904ecc9",
+      "issues": [
+        {
+          "kind": "correctness",
+          "itemId": "ql_de-b1-l-t3-dienstleistungen-alltag-01-q7",
+          "confidence": 0.92,
+          "detail": "La clave indica '0' (ninguna opción válida). Sin embargo, el texto no contiene un servicio de 'Fahrzeugpflege' (cuidado de vehículos/pulido). La opción I es 'Autovermietung' (alquiler de autos), no reparación. La pregunta carece de respuesta válida en las opciones A-J."
+        }
+      ]
+    },
+    {
+      "partId": "bank-de-B1-lesen-t3-9a9df868acb5d272",
+      "module": "lesen",
+      "teil": 3,
+      "theme": "bank:9a9df868acb5d272",
+      "issues": [
+        {
+          "kind": "correctness",
+          "itemId": "ql_de-b1-l-t3-dienstleistungen-alltag-04-q4",
+          "confidence": 0.95,
+          "detail": "La clave indica 'D', pero el texto lista 'Textilreinigung und Anzug-Service für empfindliche Stoffe' como opción E (quinta línea), no D."
+        },
+        {
+          "kind": "correctness",
+          "itemId": "ql_de-b1-l-t3-dienstleistungen-alltag-04-q5",
+          "confidence": 0.95,
+          "detail": "La clave indica 'H', pero 'Haushaltsreinigung' (con 'Staubsaugen, Wischen und Bad') aparece como opción I (novena línea), no H."
+        }
+      ]
+    },
+    {
+      "partId": "bank-de-B1-horen-t1-d33873e28c72e745",
+      "module": "horen",
+      "teil": 1,
+      "theme": "bank:d33873e28c72e745",
+      "issues": [
+        {
+          "kind": "correctness",
+          "itemId": "passage",
+          "confidence": 0.92,
+          "detail": "Error gramatical en el texto: 'verbessern' debe ser 'verbessern' (correcto) pero el fragmento dice 'meine beruflichen Fähigkeiten zu verbessern' — falta 'n' final: 'verbessern'. Evidencia: 'Das hat mir viel geholfen, meine beruflichen Fähigkeiten zu verbessern.'"
+        },
+        {
+          "kind": "correctness",
+          "itemId": "passage",
+          "confidence": 0.95,
+          "detail": "Error de concordancia en el texto: 'Ich bin Eltern' es gramaticalmente incorrecto. Debe ser 'Ich bin ein Elternteil' o 'Ich bin Vater/Mutter'. Evidencia textual: 'Ich bin Eltern und habe zwei Kinder im Schulalter.'"
+        }
+      ]
+    },
+    {
+      "partId": "bank-de-B1-horen-t2-a2afd0b7f53aea2c",
+      "module": "horen",
+      "teil": 2,
+      "theme": "bank:a2afd0b7f53aea2c",
+      "issues": [
+        {
+          "kind": "correctness",
+          "itemId": "ql_de-b1-h-t2-gesund-leben-01-q3",
+          "confidence": 0.95,
+          "detail": "La pregunta aparece dos veces con orden de opciones diferente. En la primera versión, la clave correcta es C; en la segunda, es B. Esto genera inconsistencia y confusión evaluativa."
+        }
+      ]
+    },
+    {
+      "partId": "bank-de-B1-horen-t2-76be525ab8d802b5",
+      "module": "horen",
+      "teil": 2,
+      "theme": "bank:76be525ab8d802b5",
+      "issues": [
+        {
+          "kind": "ambiguity",
+          "itemId": "ql_de-b1-h-t2-ehrenamt-chancen-03-q3",
+          "confidence": 0.9,
+          "detail": "El orden de las opciones en la pregunta reformulada difiere del original. En la primera versión la clave es 'c)', en la segunda es 'a)'. Las opciones están reordenadas sin explicación."
+        }
+      ]
+    },
+    {
+      "partId": "bank-de-B1-horen-t2-112e58cebb25a3a6",
+      "module": "horen",
+      "teil": 2,
+      "theme": "bank:112e58cebb25a3a6",
+      "issues": [
+        {
+          "kind": "correctness",
+          "itemId": "ql_de-b1-h-t2-digitale-bildung-04-q1",
+          "confidence": 0.95,
+          "detail": "Inconsistencia en el orden de opciones entre dos versiones de la misma pregunta. Primera versión: clave A, segunda versión: clave b. Las opciones están reordenadas."
+        },
+        {
+          "kind": "correctness",
+          "itemId": "ql_de-b1-h-t2-digitale-bildung-04-q2",
+          "confidence": 0.95,
+          "detail": "Inconsistencia en el orden de opciones entre dos versiones de la misma pregunta. Primera versión: clave B, segunda versión: clave b. Las opciones están reordenadas."
+        },
+        {
+          "kind": "correctness",
+          "itemId": "ql_de-b1-h-t2-digitale-bildung-04-q3",
+          "confidence": 0.95,
+          "detail": "Inconsistencia en el orden de opciones entre dos versiones de la misma pregunta. Primera versión: clave C, segunda versión: clave b. Las opciones están reordenadas."
+        }
+      ]
+    },
+    {
+      "partId": "bank-de-B1-horen-t2-0a6e93c777be8be5",
+      "module": "horen",
+      "teil": 2,
+      "theme": "bank:0a6e93c777be8be5",
+      "issues": [
+        {
+          "kind": "correctness",
+          "itemId": "ql_de-b1-h-t2-ehrenamt-chancen-05-q1 (segunda versión)",
+          "confidence": 0.95,
+          "detail": "La clave indica 'b)' pero la primera versión de la misma pregunta tiene clave 'A'. Inconsistencia en el documento: ambas preguntas son idénticas pero con claves diferentes."
+        },
+        {
+          "kind": "correctness",
+          "itemId": "ql_de-b1-h-t2-ehrenamt-chancen-05-q2 (segunda versión)",
+          "confidence": 0.95,
+          "detail": "La clave indica 'c)' pero la primera versión tiene clave 'B'. Ambas preguntas son idénticas pero con claves y orden de opciones diferentes."
+        },
+        {
+          "kind": "correctness",
+          "itemId": "ql_de-b1-h-t2-ehrenamt-chancen-05-q3 (segunda versión)",
+          "confidence": 0.95,
+          "detail": "La clave indica 'b)' pero la primera versión tiene clave 'C'. Las preguntas son idénticas pero con opciones reordenadas y claves inconsistentes."
+        }
+      ]
+    },
+    {
+      "partId": "bank-de-B1-horen-t3-6f71c2900a70dd0e",
+      "module": "horen",
+      "teil": 3,
+      "theme": "bank:6f71c2900a70dd0e",
+      "issues": [
+        {
+          "kind": "correctness",
+          "itemId": "ql_de-b1-h-t3-jobwechsel-kollegen-01-q1",
+          "confidence": 0.95,
+          "detail": "Pregunta duplicada al final del conjunto. Aparece dos veces con idéntica estructura y clave."
+        }
+      ]
+    },
+    {
+      "partId": "bank-de-B1-horen-t3-11a3b33ee90a5f0c",
+      "module": "horen",
+      "teil": 3,
+      "theme": "bank:11a3b33ee90a5f0c",
+      "issues": [
+        {
+          "kind": "correctness",
+          "itemId": "ql_de-b1-h-t3-umzug-familie-01-q4",
+          "confidence": 0.92,
+          "detail": "La clave afirma que Ben ha 'aussortiert' (separado) muebles viejos. El texto dice que Ben ha 'angefangen, die Kartons im Keller zu sortieren' (cajas, no muebles). Es Anna quien sugiere vender/donar los muebles después."
+        }
+      ]
+    },
+    {
+      "partId": "bank-de-B1-horen-t3-037b2738d42f3795",
+      "module": "horen",
+      "teil": 3,
+      "theme": "bank:037b2738d42f3795",
+      "issues": [
+        {
+          "kind": "template",
+          "itemId": "passage",
+          "confidence": 1,
+          "detail": "Pasaje con molde temático similar a \"bank-de-B1-horen-t3-e9ab2b5575d9fb02\" (tags: büroumzug, arbeitsplatz, logistik, it-support, infrastruktur)"
+        }
+      ]
+    }
+  ],
+  "llmErrors": []
+}

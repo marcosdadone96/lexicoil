@@ -44,7 +44,7 @@ const {
   candidateSummary,
   updateCandidateStatus,
 } = require('./lib/stagingStore.js');
-const { maybePromote } = require('./lib/promoteFromApproved.js');
+const { maybePromote, loadBlueprint } = require('./lib/promoteFromApproved.js');
 const {
   listPoolExamsAdmin,
   getPoolExamAdmin,
@@ -363,20 +363,49 @@ exports.handler = async (event) => {
       const store = getStoreForEvent(event);
       const candidate = await loadStagingCandidate(store, lang, level, body.id);
       if (!candidate) return jsonResponse(404, cors, { error: 'not_found' });
-      if (candidate.status !== 'pending') {
+      const retryReusable = body.retryReusable === true;
+      if (candidate.status !== 'pending' && !(retryReusable && candidate.status === 'approved')) {
         return jsonResponse(400, cors, { error: 'not_pending', status: candidate.status });
       }
-      // Via A: mark approved in staging → maybePromote for full exam assembly
-      await updateCandidateStatus(store, lang, level, body.id, 'approved');
-      const promoted = await maybePromote(store, lang, level);
-      // Via B: copy to reusable-parts store for instant section practice
-      // Human approval counts as verified regardless of automated checks.
-      const partResult = await approvePartToReusable(store, candidate, { verified: true });
+
+      // Save to reusable store first — promotion must not block this.
+      let partResult = null;
+      let blueprint = null;
+      try {
+        blueprint = loadBlueprint(lang, level);
+      } catch (bpErr) {
+        console.warn('[admin-api] blueprint unavailable:', bpErr.message);
+      }
+      try {
+        partResult = await approvePartToReusable(store, candidate, { blueprint, verified: true });
+      } catch (reuseErr) {
+        console.error('[admin-api] approvePartToReusable failed:', reuseErr);
+        return jsonResponse(500, cors, {
+          error: 'reusable_save_failed',
+          message: reuseErr?.message || 'Could not save to reusable store',
+        });
+      }
+      if (!partResult) {
+        return jsonResponse(500, cors, { error: 'reusable_save_failed' });
+      }
+
+      if (candidate.status === 'pending') {
+        await updateCandidateStatus(store, lang, level, body.id, 'approved');
+      }
+
+      let promoted = 0;
+      try {
+        const promoteResult = await maybePromote(store, lang, level);
+        promoted = Number(promoteResult?.promoted ?? promoteResult?.count ?? promoteResult) || 0;
+      } catch (promoteErr) {
+        console.warn('[admin-api] maybePromote failed (part still saved):', promoteErr?.message || promoteErr);
+      }
+
       return jsonResponse(200, cors, {
         approved: true,
         promoted,
-        savedToReusable: !!partResult,
-        reusableId: partResult?.id || null,
+        savedToReusable: true,
+        reusableId: partResult?.id || partResult?.partKey || null,
       });
     }
 

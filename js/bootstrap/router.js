@@ -8,7 +8,7 @@
   const EXAM = /^exam\/([^/]+)$/;
   const EXAM_RESULTS = /^exam\/([^/]+)\/results$/;
   const REVIEW = /^review\/(\d+)$/;
-  const GRAMMAR = /^grammar\/([^/#]+)\/(A1|A2|B1|B2|C1|C2)(?:#(.+))?$/i;
+  const GRAMMAR = /^(grammar|vocabulary|phrases)\/([^/#]+)\/(A1|A2|B1|B2|C1|C2)(?:#(.+))?$/i;
   const SIMPLE = {
     '': 'home',
     dashboard: 'home',
@@ -54,13 +54,16 @@
     if (m) return { path: normalizeHash(hash), screen: 'review', historyId: Number(m[1]), label: 'Progress' };
     m = path.match(GRAMMAR);
     if (m) {
+      const refType = m[1].toLowerCase();
+      const refLabels = { grammar: 'Grammar', vocabulary: 'Vocabulary', phrases: 'Phrases' };
       return {
         path: normalizeHash(hash),
         screen: 'grammar',
-        taughtLang: m[1].toLowerCase(),
-        level: m[2].toUpperCase(),
-        sectionId: m[3] ? decodeURIComponent(m[3]) : null,
-        label: 'Grammar',
+        contentType: refType,
+        taughtLang: m[2].toLowerCase(),
+        level: m[3].toUpperCase(),
+        sectionId: m[4] ? decodeURIComponent(m[4]) : null,
+        label: refLabels[refType] || 'Grammar',
       };
     }
     return { path: normalizeHash(hash), screen: 'unknown', label: 'Dashboard' };
@@ -278,7 +281,14 @@
         return;
       }
       if (entry.screen === 'grammar') {
-        openGrammar?.(entry.taughtLang, entry.level, null, entry.sectionId, true);
+        openStudyReference?.(
+          entry.contentType || 'grammar',
+          entry.taughtLang,
+          entry.level,
+          null,
+          entry.sectionId,
+          true,
+        );
         return;
       }
     } finally {
@@ -373,7 +383,7 @@
   function parseAppRoute() {
     const path = hashPath(location.hash);
     if (!path || path === 'dashboard') return false;
-    if (/^grammar\//i.test(path)) {
+    if (/^(grammar|vocabulary|phrases)\//i.test(path)) {
       handleHashChange();
       return getActiveScreenId?.() === 'grammarScreen';
     }
@@ -411,6 +421,8 @@
       { route: '#/vocab-exam', screen: 'vocabExamScreen' },
       { route: '#/profile-setup', screen: 'profileSetupScreen' },
       { route: '#/grammar/:lang/:level#:section', screen: 'grammarScreen' },
+      { route: '#/vocabulary/:lang/:level#:section', screen: 'grammarScreen' },
+      { route: '#/phrases/:lang/:level#:section', screen: 'grammarScreen' },
       { route: '(transient)', screen: 'loadingScreen' },
     ];
   }

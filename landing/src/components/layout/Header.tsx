@@ -77,7 +77,11 @@ export function Header() {
             <>
               <span className="hidden text-sm font-semibold text-[var(--text-secondary)] lg:inline">
                 {userLabel}
-                {user?.plan === 'pro' ? ' · Pro' : ''}
+                {user?.plan === 'pro_max'
+                  ? ' · Pro Max'
+                  : user?.plan === 'pro'
+                    ? ' · Pro'
+                    : ''}
               </span>
               <a href={APP_URL} className="btn-primary px-5 py-2.5">
                 Open app

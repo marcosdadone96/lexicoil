@@ -2,7 +2,7 @@
 
 const { getStoreForEvent } = require('./lib/blobStore.js');
 const { requireAuth } = require('./lib/authLib.js');
-const { corsHeaders, jsonResponse } = require('./lib/http.js');
+const { corsHeaders, jsonResponse, parseJsonBody } = require('./lib/http.js');
 const { getSiteUrl } = require('./lib/siteConfig.js');
 
 exports.handler = async (event) => {
@@ -25,15 +25,23 @@ exports.handler = async (event) => {
   }
   const { email: authEmail, user } = auth;
 
+  let body = {};
+  try {
+    body = parseJsonBody(event);
+  } catch (_) {
+    body = {};
+  }
+  const targetPlan = body.plan === 'pro_max' ? 'pro_max' : 'pro';
+
   const origin =
     (event.headers && (event.headers.origin || event.headers.Origin)) ||
     getSiteUrl();
   const base = origin.replace(/\/$/, '');
 
-  // E-4 fix: prefer a pre-created Stripe Price ID (set STRIPE_PRICE_ID in env).
-  // This avoids re-creating a product on every checkout and allows price changes
-  // without a code deploy. Falls back to inline price_data for backward compatibility.
-  const stripePriceId = String(process.env.STRIPE_PRICE_ID || '').trim();
+  // Prefer pre-created Stripe Price IDs (STRIPE_PRICE_PRO / STRIPE_PRICE_PRO_MAX).
+  const stripePricePro = String(process.env.STRIPE_PRICE_PRO || process.env.STRIPE_PRICE_ID || '').trim();
+  const stripePriceProMax = String(process.env.STRIPE_PRICE_PRO_MAX || '').trim();
+  const stripePriceId = targetPlan === 'pro_max' ? stripePriceProMax : stripePricePro;
 
   const params = new URLSearchParams();
   params.set('mode', 'subscription');
@@ -42,21 +50,27 @@ exports.handler = async (event) => {
   params.set('client_reference_id', authEmail);
   params.set('customer_email', authEmail);
   params.set('metadata[email]', authEmail);
+  params.set('metadata[plan]', targetPlan);
   params.set('subscription_data[metadata][email]', authEmail);
+  params.set('subscription_data[metadata][plan]', targetPlan);
   params.append('line_items[0][quantity]', '1');
 
   if (stripePriceId) {
     // Use the pre-created Price — clean, version-controlled via env
     params.append('line_items[0][price]', stripePriceId);
   } else {
-    // Fallback: inline price_data (no STRIPE_PRICE_ID set)
+    const amount = targetPlan === 'pro_max' ? '2400' : '1300';
+    const name =
+      targetPlan === 'pro_max'
+        ? 'LexiCoil Pro Max — 12 exams/month + 150 AI credits'
+        : 'LexiCoil Pro — 12 exams/month + 40 AI credits';
     params.append('line_items[0][price_data][currency]', 'eur');
-    params.append('line_items[0][price_data][unit_amount]', '999');
+    params.append('line_items[0][price_data][unit_amount]', amount);
     params.append('line_items[0][price_data][recurring][interval]', 'month');
-    params.append('line_items[0][price_data][product_data][name]', 'LexiCoil Pro - 12 exams/month');
+    params.append('line_items[0][price_data][product_data][name]', name);
     params.append(
       'line_items[0][price_data][product_data][description]',
-      'Monthly Pro subscription: 12 exam generations/month plus personalized vocabulary practice.',
+      'Monthly subscription with exam generations and AI practice credits.',
     );
   }
 

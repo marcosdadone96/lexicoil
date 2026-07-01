@@ -381,6 +381,43 @@ export function batchToCandidates(batch, { lang, level, blueprint, batchId, sour
 }
 
 export function miniExamFromCandidate(candidate) {
+  if (candidate.module === 'lesen' || candidate.module === 'reading') {
+    const key = candidate.module === 'reading' ? 'readingParts' : 'lesenParts';
+    const passages =
+      candidate.passages?.length > 0
+        ? candidate.passages
+        : candidate.passage
+          ? [candidate.passage]
+          : [];
+    const questions = candidate.questions || [];
+
+    const adsFromMatching = (() => {
+      const first = questions.find((q) => q.type === 'matching' && q.options?.length);
+      if (!first) return null;
+      return first.options.map((opt) => {
+        const m = String(opt).match(/^([A-Ja-j])\)\s*(.*)$/);
+        return { key: m ? m[1].toLowerCase() : 'a', text: m ? m[2] : String(opt) };
+      });
+    })();
+
+    const itemsFromForum = questions
+      .filter((q) => q.type === 'ja_nein' && q.signText)
+      .map((q) => ({ signText: q.signText }));
+
+    const part = {
+      teil: candidate.teil,
+      instruction: candidate.label || '',
+      text: passages.length <= 1 ? passages[0]?.text : undefined,
+      textTitle: passages[0]?.title,
+      passages: passages.length > 1 ? passages : undefined,
+      questions,
+      ads: candidate.ads || adsFromMatching || undefined,
+      items: itemsFromForum.length ? itemsFromForum : undefined,
+      opinions: candidate.opinions || undefined,
+    };
+    return { lang: candidate.lang, level: candidate.level, [key]: [part] };
+  }
+
   const part = {
     teil: candidate.teil,
     instruction: candidate.label || '',
@@ -390,10 +427,6 @@ export function miniExamFromCandidate(candidate) {
     ads: candidate.ads,
     opinions: candidate.opinions,
   };
-  if (candidate.module === 'lesen' || candidate.module === 'reading') {
-    const key = candidate.module === 'reading' ? 'readingParts' : 'lesenParts';
-    return { lang: candidate.lang, level: candidate.level, [key]: [part] };
-  }
   if (candidate.module === 'horen' || candidate.module === 'listening') {
     const key = candidate.module === 'listening' ? 'listeningParts' : 'horenParts';
     const passages =

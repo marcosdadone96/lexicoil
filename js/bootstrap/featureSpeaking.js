@@ -1,5 +1,10 @@
 /* Speaking evaluation with AI */
 (function () {
+  function countSpeakExchanges(text, isDE) {
+    const re = isDE ? /^\s*Ich\s*:/gim : /^\s*Me\s*:/gim;
+    return (String(text || '').match(re) || []).length;
+  }
+
   window.buildSpeakingEvalPrompt = function (part, transcript, isDE) {
     const board = isDE ? 'Goethe-Institut' : 'Cambridge Assessment English';
     const cert = S.examData?.official?.certificate || S.level;
@@ -19,21 +24,58 @@ Return JSON:
 {"criteria":[{"name":"Task Achievement","score":0-5,"comment":"..."},{"name":"Vocabulary Range","score":0-5,"comment":"..."},{"name":"Grammar Accuracy","score":0-5,"comment":"..."},{"name":"Coherence & Fluency","score":0-5,"comment":"..."}],"totalScore":0-100,"passed":true,"overallFeedback":"...","strongPoints":["..."],"improvements":["..."],"correctedVersion":"..."}`;
   };
 
+  window.buildOrientativeSpeakingHint = function (part, speakAns, isDE) {
+    if (part.minWords) {
+      const words = speakAns.split(/\s+/).filter((x) => x).length;
+      const min = part.minWords;
+      const ok = words >= min;
+      return {
+        note: isDE
+          ? `Nicht evaluiert (orientativ) — ${words}/${min} Wörter${ok ? ' (Länge OK)' : ' (zu kurz)'}`
+          : `Not evaluated (orientative) — ${words}/${min} words${ok ? ' (length OK)' : ' (too short)'}`,
+        words,
+        min,
+        lengthOk: ok,
+      };
+    }
+    const exchanges = countSpeakExchanges(speakAns, isDE);
+    const min = part.minExchanges || 3;
+    return {
+      note: isDE
+        ? `Nicht evaluiert (orientativ) — ${exchanges}/${min} „Ich:“-Antworten`
+        : `Not evaluated (orientative) — ${exchanges}/${min} “Me:” replies`,
+      exchanges,
+      min,
+    };
+  };
+
+  window.gradeSpeakingOrientativeHint = window.buildOrientativeSpeakingHint;
+
   window.evalSpeakingWithAI = async function (parts, isDE) {
     const out = [];
     for (const p of parts) {
       const txt = document.getElementById(p.fieldId)?.value.trim() || '';
       if (!txt) {
-        out.push({ ...gradeSpeaking(p, '', isDE), part: p, ai: false });
+        out.push({
+          ...buildOrientativeSpeakingHint(p, '', isDE),
+          part: p,
+          ai: false,
+          evaluated: false,
+          orientative: true,
+          score: null,
+        });
         continue;
       }
       try {
-        const speakTicket = await startExamGeneration('exam_generation', 2);
-        const raw = await callAI(buildSpeakingEvalPrompt(p, txt, isDE), 1200, { examGeneration: true, aiAction: 'exam_generation', genTicket: speakTicket });
+        const raw = await callAI(buildSpeakingEvalPrompt(p, txt, isDE), 1200, {
+          aiAction: 'speaking',
+          requestId: `speak-${p.fieldId || p.teil || Date.now()}`,
+        });
         const data = JSON.parse(raw.replace(/```json|```/g, '').trim());
         out.push({
           part: p,
           ai: true,
+          evaluated: true,
           score: data.totalScore || 0,
           passed: data.passed,
           criteria: data.criteria || [],
@@ -44,7 +86,15 @@ Return JSON:
           transcript: txt,
         });
       } catch (_) {
-        out.push({ ...gradeSpeaking(p, txt, isDE), part: p, ai: false });
+        const hint = buildOrientativeSpeakingHint(p, txt, isDE);
+        out.push({
+          ...hint,
+          part: p,
+          ai: false,
+          evaluated: false,
+          orientative: true,
+          score: null,
+        });
       }
     }
     return out;
@@ -60,7 +110,7 @@ Return JSON:
             : isDE
               ? 'Sprechen'
               : 'Speaking';
-        let h = `<div class="speaking-eval-block"><h3 style="font-size:14px;margin-bottom:12px">${title}${sp.ai ? ' <span style="font-size:10px;color:var(--purple)">AI evaluated</span>' : ''}</h3>`;
+        let h = `<div class="speaking-eval-block"><h3 style="font-size:14px;margin-bottom:12px">${title}${sp.ai ? ' <span style="font-size:10px;color:var(--purple)">AI evaluated</span>' : sp.orientative ? ` <span style="font-size:10px;color:var(--text-muted)">${isDE ? 'Nicht evaluiert (orientativ)' : 'Not evaluated (orientative)'}</span>` : ''}</h3>`;
         if (sp.criteria?.length) {
           sp.criteria.forEach((c) => {
             const pct = Math.round(((c.score || 0) / 5) * 100);

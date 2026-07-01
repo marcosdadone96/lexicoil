@@ -5,9 +5,9 @@
  * Override defaults via ELEVENLABS_VOICES_DE (comma-separated voice IDs).
  */
 const DEFAULT_VOICES = {
-  de: ['pNInz6obpgDQGcFmaJgB', '21m00Tcm4TlvDq8ikWAM', 'EXAVitQu4vr4xnSDxMaL'],
-  en: ['GBv7mTt0atIp3Br8iCZE', '21m00Tcm4TlvDq8ikWAM', 'pNInz6obpgDQGcFmaJgB'],
-  es: ['ErXwobaYiN019PkySvjV', 'EXAVitQu4vr4xnSDxMaL', 'pNInz6obpgDQGcFmaJgB'],
+  de: ['pNInz6obpgDQGcFmaJgB', 'JBFqnCBsd6RMkjVDRZzb', 'onwK4e9ZLuTAKqWW03F9'],
+  en: ['GBv7mTt0atIp3Br8iCZE', 'JBFqnCBsd6RMkjVDRZzb', 'pNInz6obpgDQGcFmaJgB'],
+  es: ['ErXwobaYiN019PkySvjV', 'JBFqnCBsd6RMkjVDRZzb', 'pNInz6obpgDQGcFmaJgB'],
 };
 
 const LOCALE_DEFAULT = {

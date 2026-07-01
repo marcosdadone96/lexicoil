@@ -1,0 +1,36 @@
+
+Batch generator (claude) — de/B1 × 1
+Prompt: batches/GEMINI_MASTER_PROMPT_de_B1.md
+Presupuesto Claude: $999999999.00 (gastado: $3.2406)
+
+── sprechen T1+2+3 · sport-praesentation-04 ──
+Tema: Sportkurs für Anfänger planen / Präsentation: Beliebtester Sport im Heimatland / Präsentation: Beliebtester Sport im Heimatland
+Proveedor: claude
+max_output_tokens=8000
+Archivo: batches/merged/sprechen-sport-praesentation-04.json
+Llamando claude…
+max_output_tokens=8000
+Gasto acumulado: $3.2502 / budget $999999999.00
+Tokens: in=2060 out=1499 (max_out=8000)
+Modelo: claude-haiku-4-5
+de-b1-sp-t2-sport-praesentation-04-q1: type_not_allowed:praesenation:allowed=short_answer
+
+Reintento conformidad 1/2…
+Llamando claude…
+max_output_tokens=8000
+Gasto acumulado: $3.2588 / budget $999999999.00
+Tokens: in=2130 out=1296 (max_out=8000)
+Modelo: claude-haiku-4-5
+Guardado: batches/merged/sprechen-sport-praesentation-04.json (3 preguntas, 0 passages)
+Validando…
+
+== Validación de sprechen-sport-praesentation-04.json (de_B1) ==
+Preguntas: 3 | Pasajes: 0
+Esquema: OK
+Conformidad blueprint: OK
+Colocación (Teile que mejora): Pool válido (Teil ya cubierto en 1 examen — OK para exámenes disjuntos)
+Sin problemas detectados ✅
+Validación OK
+Siguiente: node scripts/merge-bank-batch.mjs --lang de --level B1 --file batches/merged/sprechen-sport-praesentation-04.json
+
+Resumen: 1 OK, 0 fallidos

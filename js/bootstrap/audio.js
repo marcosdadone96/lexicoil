@@ -41,19 +41,69 @@ function listBrowserVoices(lang){
 
 function stopAllAudio(){if(window.speechSynthesis)window.speechSynthesis.cancel();curUtt=null;if(curAudio){try{curAudio.pause();curAudio.src='';}catch(_){}curAudio=null;}}
 
-function playMp3Base64(b64,onEnd){stopAllAudio();try{const bin=atob(b64);const bytes=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);const blob=new Blob([bytes],{type:'audio/mpeg'});const url=URL.createObjectURL(blob);const a=new Audio(url);curAudio=a;a.onended=()=>{URL.revokeObjectURL(url);curAudio=null;if(onEnd)onEnd();};a.onerror=()=>{URL.revokeObjectURL(url);curAudio=null;if(onEnd)onEnd(true);};void a.play().catch(()=>{URL.revokeObjectURL(url);curAudio=null;if(onEnd)onEnd(true);});return a;}catch(_){if(onEnd)onEnd(true);return null;}}
+function playMp3Base64(b64,onEnd){stopAllAudio();try{const bin=atob(b64);const bytes=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);const blob=new Blob([bytes],{type:'audio/mpeg'});const url=URL.createObjectURL(blob);const a=new Audio(url);curAudio=a;a.onended=()=>{URL.revokeObjectURL(url);curAudio=null;if(onEnd)onEnd();};a.onerror=()=>{URL.revokeObjectURL(url);curAudio=null;if(onEnd)onEnd(true);};void a.play().catch((e)=>{console.warn('[TTS] MP3 play failed:',e);URL.revokeObjectURL(url);curAudio=null;if(onEnd)onEnd(true);});return a;}catch(e){console.warn('[TTS] MP3 decode failed:',e);if(onEnd)onEnd(true);return null;}}
+
+function playMp3Url(url,onEnd){
+  return new Promise((resolve)=>{
+    stopAllAudio();
+    const a=new Audio(url);
+    curAudio=a;
+    a.onended=()=>{curAudio=null;if(onEnd)onEnd();resolve(true);};
+    a.onerror=(e)=>{console.warn('[TTS] MP3 load error:',e);curAudio=null;if(onEnd)onEnd(true);resolve(false);};
+    void a.play().then(()=>{}).catch((e)=>{
+      console.warn('[TTS] Audio.play() rejected:',e);
+      curAudio=null;
+      if(onEnd)onEnd(true);
+      resolve(false);
+    });
+  });
+}
+
+function playMp3Base64Async(b64,onEnd){
+  return new Promise((resolve)=>{
+    playMp3Base64(b64,(failed)=>{
+      if(onEnd)onEnd(failed);
+      resolve(!failed);
+    });
+  });
+}
+
+async function playTtsHit(hit,onEnd){
+  if(!hit)return false;
+  if(hit.url)return playMp3Url(hit.url,onEnd);
+  if(hit.audioBase64)return playMp3Base64Async(hit.audioBase64,onEnd);
+  return false;
+}
+if(typeof window!=='undefined'){
+  window.playMp3Url=playMp3Url;
+  window.playTtsHit=playTtsHit;
+}
 
 function _speakWithBrowser(text,lang,onEnd){
-  if(!window.speechSynthesis){if(onEnd)onEnd();return;}
+  if(!window.speechSynthesis){
+    console.warn('[TTS] speechSynthesis not available');
+    if(onEnd)onEnd(false);
+    return false;
+  }
   const u=new SpeechSynthesisUtterance(text);
   u.lang=_ttsLangCode(lang);
   u.rate=0.9;
   const v=bestBrowserVoice(lang);
-  if(v)u.voice=v;
-  u.onend=()=>{if(onEnd)onEnd();};
-  u.onerror=()=>{if(onEnd)onEnd();};
+  if(v){
+    u.voice=v;
+  }else{
+    console.warn('[TTS] No matching browser voice for',lang);
+    if(typeof notify==='function'&&!window._lcTtsVoiceWarned){
+      window._lcTtsVoiceWarned=1;
+      notify('No '+(_ttsLangCode(lang).slice(0,2)==='de'?'German':'matching')+' voice found in your browser. Speech may sound wrong or stay silent.','warn',7000);
+    }
+  }
+  u.onend=()=>{if(onEnd)onEnd(true);};
+  u.onerror=(e)=>{console.warn('[TTS] speechSynthesis error:',e?.error||e);if(onEnd)onEnd(false);};
   window.speechSynthesis.speak(u);
+  return true;
 }
+if(typeof window!=='undefined')window._speakWithBrowser=_speakWithBrowser;
 
 async function playMultiVoiceSegments(segments,lang,onEnd){
   stopAllAudio();
@@ -68,17 +118,24 @@ async function playMultiVoiceSegments(segments,lang,onEnd){
       try{
         const voice=seg.voice||(typeof ttsVoiceForLang==='function'?ttsVoiceForLang(lang):lang);
         const hit=await fetchTtsAudio(seg.text,voice,lang);
-        if(hit?.audioBase64){
+        if(hit&&typeof playTtsHit==='function'){
+          played=await playTtsHit(hit,()=>{});
+        }else if(hit?.audioBase64){
           await new Promise((res)=>playMp3Base64(hit.audioBase64,()=>res()));
           played=true;
         }
-      }catch(_){}
+      }catch(err){
+        console.warn('[TTS] segment cache fetch failed:',err);
+      }
     }
     if(!played&&window.speechSynthesis){
-      await new Promise((res)=>_speakWithBrowser(seg.text,lang,res));
-      played=true;
+      const ok=await new Promise((res)=>_speakWithBrowser(seg.text,lang,(spoken)=>res(spoken!==false)));
+      played=ok;
     }
-    if(!played){await new Promise((r)=>setTimeout(r,Math.min(8000,seg.text.length*50)));}
+    if(!played){
+      console.warn('[TTS] no audio for segment, skipping delay');
+      await new Promise((r)=>setTimeout(r,Math.min(8000,seg.text.length*50)));
+    }
     next();
   }
   await next();

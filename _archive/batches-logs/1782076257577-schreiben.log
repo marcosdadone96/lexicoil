@@ -1,0 +1,36 @@
+
+Batch generator (claude) — de/B1 × 1
+Prompt: batches/GEMINI_MASTER_PROMPT_de_B1.md
+Presupuesto Claude: $999999999.00 (gastado: $3.1614)
+
+── schreiben T1+2+3 · nachbarschaft-03 ──
+Tema: (T1) E-Mail an Freund/in über neue Nachbarn — (T2) Meinung im Forum: Lärm in der Nachbarschaft — (T3) Kurze Nachricht: Termin mit Nachbar/in verschieben
+Proveedor: claude
+max_output_tokens=8000
+Archivo: batches/merged/schreiben-nachbarschaft-03.json
+Llamando claude…
+max_output_tokens=8000
+Gasto acumulado: $3.1712 / budget $999999999.00
+Tokens: in=2088 out=1528 (max_out=8000)
+Modelo: claude-haiku-4-5
+Error: Expected ',' or '}' after property value in JSON at position 1605 (line 28 column 105)
+
+Reintento API 2/2…
+Llamando claude…
+max_output_tokens=8000
+Gasto acumulado: $3.1797 / budget $999999999.00
+Tokens: in=2088 out=1284 (max_out=8000)
+Modelo: claude-haiku-4-5
+Guardado: batches/merged/schreiben-nachbarschaft-03.json (3 preguntas, 0 passages)
+Validando…
+
+== Validación de schreiben-nachbarschaft-03.json (de_B1) ==
+Preguntas: 3 | Pasajes: 0
+Esquema: OK
+Conformidad blueprint: OK
+Colocación (Teile que mejora): Pool válido (Teil ya cubierto en 1 examen — OK para exámenes disjuntos)
+Sin problemas detectados ✅
+Validación OK
+Siguiente: node scripts/merge-bank-batch.mjs --lang de --level B1 --file batches/merged/schreiben-nachbarschaft-03.json
+
+Resumen: 1 OK, 0 fallidos

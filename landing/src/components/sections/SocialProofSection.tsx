@@ -3,8 +3,8 @@ import { Container } from '@/components/ui/Container';
 
 const PRODUCT_FACTS = [
   {
-    title: 'CEFR A1–C2',
-    desc: 'Goethe, Cambridge, DELE and other official certifications at every level — A1 to C2.',
+    title: 'Goethe B1 live',
+    desc: 'Full mock exams, vocabulary deck, and AI credits on Goethe B1 today. More CEFR levels coming soon.',
   },
   {
     title: 'Four skills',
@@ -12,7 +12,7 @@ const PRODUCT_FACTS = [
   },
   {
     title: 'Adaptive practice',
-    desc: 'Save words you miss; with Pro, generate personalized mock exams from your deck.',
+    desc: 'Save words you miss; practice with AI credits on Free, or generate personalized mock exams on Pro.',
   },
   {
     title: 'Sample demo',
@@ -25,10 +25,11 @@ export function SocialProofSection() {
     <section className="border-y border-[var(--border)] bg-[var(--bg-elevated)]/40">
       <Container className="py-12 md:py-14">
         <p className="mb-3 text-center text-xs font-semibold uppercase tracking-widest text-[var(--brand)]">
-          Private beta
+          Launch · Goethe B1
         </p>
         <p className="mx-auto mb-10 max-w-xl text-center text-sm font-semibold text-[var(--text-secondary)]">
-          Built for students preparing for official language certifications worldwide.
+          Built for official language certifications — Cambridge and DELE pages are for early interest;
+          sign-up starts on Goethe B1.
         </p>
 
         <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3">

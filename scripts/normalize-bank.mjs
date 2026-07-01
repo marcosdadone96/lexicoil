@@ -33,18 +33,41 @@ function loadValidPassageIds(bank, lang, level) {
   return ids;
 }
 
-function shouldDropPassageId(q) {
-  if (q.module === 'lesen' && Number(q.teil) === 3) return true;
-  return false;
+function loadBlueprint(lang, level) {
+  const ExamBlueprint = require(path.join(ROOT, 'js/library/ExamBlueprint.js'));
+  const id = ExamBlueprint.INDEX[`${lang}_${level}`];
+  if (!id) return null;
+  const file = path.join(ROOT, 'library/blueprints', `${id}.json`);
+  if (!fs.existsSync(file)) return null;
+  return JSON.parse(fs.readFileSync(file, 'utf8'));
 }
 
-function repairPassageIds(questions, validPids) {
+function shouldDropPassageId(q, blueprint) {
+  if (q.module !== 'lesen' || Number(q.teil) !== 3) return false;
+  const lesen = blueprint?.modules?.find((m) => m.id === 'lesen');
+  const part = lesen?.parts?.find((p) => p.teil === 3);
+  // B1 Lesen T3 = matching sin passage; A2 T3 = E-Mail con passage
+  return part?.layout === 'items' || (part?.questionTypes || []).includes('matching');
+}
+
+function inferPassageIdFromQuestionId(q, validPids) {
+  const id = String(q.id || '');
+  const m = id.match(/^(de-a2-l-t3-(.+?))-q\d+$/i);
+  if (!m) return null;
+  const candidates = [
+    `de-a2-p-lesen-t3-${m[2]}`,
+    `de-a2-p-lesen-t3-${m[2].replace(/-0(\d)$/, '-$1')}`,
+  ];
+  return candidates.find((pid) => validPids.has(pid)) || null;
+}
+
+function repairPassageIds(questions, validPids, blueprint) {
   let cleared = 0;
   let stripped = 0;
 
   let qs = questions.map((q) => {
     const out = { ...q };
-    if (shouldDropPassageId(out)) {
+    if (shouldDropPassageId(out, blueprint)) {
       if (out.passageId) {
         delete out.passageId;
         stripped++;
@@ -61,7 +84,15 @@ function repairPassageIds(questions, validPids) {
   qs = PassageResolver.enrichQuestionPassageIds(qs);
 
   qs = qs.map((q) => {
-    if (shouldDropPassageId(q) && q.passageId) {
+    if (!shouldDropPassageId(q, blueprint) && !q.passageId && q.module === 'lesen' && Number(q.teil) === 3) {
+      const inferred = inferPassageIdFromQuestionId(q, validPids);
+      if (inferred) return { ...q, passageId: inferred };
+    }
+    return q;
+  });
+
+  qs = qs.map((q) => {
+    if (shouldDropPassageId(q, blueprint) && q.passageId) {
       const out = { ...q };
       delete out.passageId;
       stripped++;
@@ -82,6 +113,7 @@ function repairPassageIds(questions, validPids) {
 const args = parseArgs(process.argv.slice(2));
 const bankPath = path.join(ROOT, 'library', args.lang, args.level, 'questions.json');
 const bank = JSON.parse(fs.readFileSync(bankPath, 'utf8'));
+const blueprint = loadBlueprint(args.lang, args.level);
 const validPids = loadValidPassageIds(bank, args.lang, args.level);
 
 const beforeOpts = (bank.questions || []).filter(
@@ -95,7 +127,7 @@ const beforePassage = (bank.questions || []).filter(
 ).length;
 
 const normalized = normalizeBatch({ passages: bank.passages || [], questions: bank.questions || [] });
-const repaired = repairPassageIds(normalized.questions, validPids);
+const repaired = repairPassageIds(normalized.questions, validPids, blueprint);
 bank.passages = normalized.passages;
 bank.questions = repaired.questions;
 

@@ -14,10 +14,16 @@ function setVocabHubFcLang(code,btn){
   if(btn)btn.classList.add('active');
   renderFcSingleView();
 }
-/** Deck view: when S.deckGoalFilter is set (goal hub), only that language; else ExamProfile filter. Used by renderFC, getSelectedFC, startVE, select*FC. */
+/** Deck view: active goal deck (lang + level); else ExamProfile-scoped cards. */
 function getDeckViewCards(){
-  if(S.deckGoalFilter)return(S.flashcards||[]).filter(f=>f.sourceLang===S.deckGoalFilter);
-  return typeof ExamProfile!=='undefined'?ExamProfile.filterList(S.flashcards):S.flashcards;
+  const goal=(typeof getActiveGoal==='function')?getActiveGoal():null;
+  if(goal)return deckForGoal(goal);
+  const ap=typeof ExamProfile!=='undefined'?ExamProfile.getActive():null;
+  if(ap){
+    const pseudo={subject:ap.subject,level:ap.level};
+    return(S.flashcards||[]).filter(f=>fcMatchesGoal(f,pseudo));
+  }
+  return S.flashcards||[];
 }
 function readinessQualLabel(pct,examCount){
   if(examCount<2||pct<25)return 'Getting started';
@@ -80,6 +86,7 @@ const VV_MIN_CUSTOM=4;
 const VV_MIN_DRILL=4;
 const VV_MIN_FLASH=1;
 function fcTranslation(fc){
+  if(typeof fcCardTranslation==='function')return fcCardTranslation(fc);
   if(!fc)return'';
   if(fc.translation)return fc.translation;
   if(fc.meaning)return fc.meaning;
@@ -109,9 +116,40 @@ function normalizeVocabDeckPos(goal){
     ManualVocab.enrichFlashcard(f,goal.subject);
     const after=f.word+'|'+f.type+'|'+f.gender+'|'+f.article;
     if(before!==after)dirty=true;
+    if(ManualVocab.spellingSuggestionForAsync){
+      void ManualVocab.spellingSuggestionForAsync(f.word,goal.subject,f).then(sug=>{
+        if(f.spellingDismissed)return;
+        if(sug&&sug.toLowerCase()!==String(f.word||'').toLowerCase()){
+          f._spellingSuggestion=sug;
+          if(typeof refreshVocabHubPanel==='function')refreshVocabHubPanel();
+        }
+      });
+    }
   });
   if(dirty)saveFC();
 }
+function dismissVocabHubSpelling(id){
+  const fc=(S.flashcards||[]).find(f=>fcId(f)===id);
+  if(!fc)return;
+  fc.spellingDismissed=true;
+  delete fc._spellingSuggestion;
+  saveFC();
+  refreshVocabHubPanel();
+}
+window.dismissVocabHubSpelling=dismissVocabHubSpelling;
+function fixVocabHubSpelling(id){
+  const fc=(S.flashcards||[]).find(f=>fcId(f)===id);
+  const goal=S.goals.find(g=>g.id===_vocabHub.goalId);
+  if(!fc||!fc._spellingSuggestion)return;
+  if(typeof ManualVocab!=='undefined'&&ManualVocab.applySpellingFixToFlashcard){
+    ManualVocab.applySpellingFixToFlashcard(fc,goal?.subject||fc.sourceLang,fc._spellingSuggestion);
+    delete fc._spellingSuggestion;
+    saveFC();
+    refreshVocabHubPanel();
+    lcToast('Corrected: '+fc.word,'success');
+  }
+}
+window.fixVocabHubSpelling=fixVocabHubSpelling;
 function ensureVocabHubState(goal){
   ensureFcIds();
   if(_vocabHub.goalId!==goal.id){
@@ -148,6 +186,7 @@ function fcGenderArticle(fc,subject){
   const sub=subject||fc.sourceLang||'';
   const t=vocabHubResolveType(fc,sub);
   if(t!=='noun')return null;
+  if(fc.plural)return{article:'die',cls:'vv-art--fem'};
   let raw=String(fc.gender||fc.article||'').toLowerCase().trim();
   if(!raw&&typeof ManualVocab!=='undefined'&&ManualVocab.parseLeadingArticle){
     const p=ManualVocab.parseLeadingArticle(fc.word,sub);
@@ -194,20 +233,49 @@ function vocabHubDisplayWord(fc,subject){
   }
   return fc.word;
 }
+function fcWordDisplayHtml(fc,subject){
+  const sub=subject||fc?.sourceLang||'';
+  if(typeof ManualVocab!=='undefined'&&ManualVocab.enrichFlashcard)ManualVocab.enrichFlashcard(fc,sub);
+  const art=fcGenderArticle(fc,sub);
+  const word=vocabHubDisplayWord(fc,sub);
+  const wordEsc=typeof esc==='function'?esc(word):String(word||'');
+  if(!art)return wordEsc;
+  const artEsc=typeof esc==='function'?esc(art.article):art.article;
+  return'<span class="fc-word-line"><span class="vv-art '+art.cls+'">'+artEsc+'</span><span class="fc-word-lemma">'+wordEsc+'</span></span>';
+}
+function fcSpeakPhrase(fc,subject){
+  const sub=subject||fc?.sourceLang||'';
+  if(typeof ManualVocab!=='undefined'&&ManualVocab.enrichFlashcard)ManualVocab.enrichFlashcard(fc,sub);
+  const art=fcGenderArticle(fc,sub);
+  const word=vocabHubDisplayWord(fc,sub);
+  return art?(art.article+' '+word):String(fc?.word||word||'');
+}
 function vocabHubRowHtml(f,goal){
   const id=fcId(f);
   const on=_vocabHub.selectedIds.has(id);
   const tr=fcTranslation(f);
+  if(typeof ManualVocab!=='undefined'&&ManualVocab.enrichFlashcard)ManualVocab.enrichFlashcard(f,goal.subject);
   const art=fcGenderArticle(f,goal.subject);
   const artHtml=art
     ?'<span class="vv-art '+art.cls+'">'+esc(art.article)+'</span>'
-    :'<span class="vv-art vv-art--empty" aria-hidden="true"></span>';
+    :'';
   const word=vocabHubDisplayWord(f,goal.subject);
   const tip=tr?esc(tr).replace(/"/g,'&quot;'):'';
-  const wordHtml=tr
+  const wordSpan=tr
     ?'<span class="vv-row-word" data-tip="'+tip+'" title="'+tip+'" tabindex="0">'+esc(word)+'</span>'
     :'<span class="vv-row-word">'+esc(word)+'</span>';
-  return'<div class="vv-row"><label class="vv-row-main"><input type="checkbox"'+(on?' checked':'')+' onchange="toggleVocabHubWord(\''+esc(id)+'\')" aria-label="Select '+esc(word)+'">'+artHtml+wordHtml+'</label><button type="button" class="vv-del" onclick="delFCById(\''+esc(id)+'\')" aria-label="Remove '+esc(word)+'" title="Remove word">×</button></div>';
+  const labelInner=art
+    ?'<span class="vv-word-cell">'+artHtml+wordSpan+'</span>'
+    :wordSpan;
+  const spellFix=f._spellingSuggestion&&!f.spellingDismissed
+    ?'<span class="vv-spell-wrap"><button type="button" class="vv-spell-fix" onclick="event.preventDefault();event.stopPropagation();fixVocabHubSpelling(\''+esc(id)+'\')" title="Apply spelling suggestion">'+esc(f._spellingSuggestion)+'?</button><button type="button" class="vv-spell-dismiss" onclick="event.preventDefault();event.stopPropagation();dismissVocabHubSpelling(\''+esc(id)+'\')" title="Keep my spelling" aria-label="Dismiss suggestion">×</button></span>'
+    :'';
+  const posType=vocabHubResolveType(f,goal.subject);
+  const conjHtml=(posType==='verb'&&typeof VerbConjugation!=='undefined'&&VerbConjugation.conjugationSelectHtml)
+    ?VerbConjugation.conjugationSelectHtml(f,goal,id)
+    :'';
+  const verbRow=conjHtml?`<div class="vv-conj-row">${conjHtml}</div>`:'';
+  return'<div class="vv-row'+(posType==='verb'?' vv-row--verb':'')+'"><label class="vv-row-main"><input type="checkbox"'+(on?' checked':'')+' onchange="toggleVocabHubWord(\''+esc(id)+'\')" aria-label="Select '+esc(word)+'">'+labelInner+spellFix+'</label><button type="button" class="vv-del" onclick="delFCById(\''+esc(id)+'\')" aria-label="Remove '+esc(word)+'" title="Remove word">×</button>'+verbRow+'</div>';
 }
 function vocabHubSectionHtml(type,items,goal){
   if(!items.length)return'';
@@ -246,21 +314,37 @@ function vocabHubManualAddHtml(){
     '<p class="note" style="margin:10px 0 0;font-size:11px">Words are sorted into Nouns, Verbs, Adjectives, etc. Spelling is checked against the word list when available.</p>';
 }
 function vocabHubActionsHtml(selN){
+  const goal=getActiveGoal();
   const canCustom=selN>=VV_MIN_CUSTOM;
   const canFlash=selN>=VV_MIN_FLASH;
   const canDrill=selN>=VV_MIN_DRILL;
-  const tier=typeof canUsePersonalizedTier==='function'?canUsePersonalizedTier():'free';
-  const proBadge=tier!=='pro'?' <span class="vv-pro-badge">Pro IA</span>':'';
+  const proBadge=' <span class="vv-pro-badge">Pro</span>';
+  const creditBadge=(n)=>' <span class="vv-pro-badge">'+n+' cr</span>';
+  const persAllowed=goal&&(typeof isPersonalizedAllowed!=='function'||isPersonalizedAllowed(goal.subject,goal.level));
+  const aiAllowed=goal&&(typeof isAiFeatureAllowed!=='function'||isAiFeatureAllowed(goal.subject,goal.level));
+  const personalBadge=typeof canUsePersonalized==='function'&&!canUsePersonalized()?proBadge:'';
+  const quizBadge=typeof canUseVocabQuizAi==='function'&&!canUseVocabQuizAi()?(S.plan==='guest'?proBadge:creditBadge('2')):'';
+  const listenBadge=typeof canUseListeningGame==='function'&&!canUseListeningGame()?(S.plan==='guest'?proBadge:creditBadge('1')):'';
+  const customCard=persAllowed
+    ?'<button type="button" class="ws-exam-card ws-exam-card--personal"'+(canCustom?' onclick="launchVocabHubCustomExam()"':' disabled')+'><span class="ws-exam-card-ic">✦</span><span class="ws-exam-card-title">Custom exam'+personalBadge+'</span><span class="ws-exam-card-desc">From your words</span></button>'
+    :'';
+  const quizCard=aiAllowed
+    ?'<button type="button" class="ws-exam-card ws-exam-card--oral"'+(canDrill?' onclick="launchVocabHubQuickDrill()"':' disabled')+'><span class="ws-exam-card-ic">⚡</span><span class="ws-exam-card-title">AI quiz'+quizBadge+'</span><span class="ws-exam-card-desc">Hint → pick the word</span></button>'
+    :'';
+  const listenCard=aiAllowed
+    ?'<div class="ws-exam-card ws-act-card" role="button" tabindex="0" onclick="startHorenGameFromHub()"><span class="ws-exam-card-title">Listening game'+listenBadge+'</span><span class="ws-exam-card-desc">Hear &amp; spot your words</span></div>'
+    :'';
+  const soonRow=aiAllowed
+    ?'<div class="ws-exam-grid ws-exam-grid--soon">'+listenCard+
+      '<div class="ws-exam-card ws-act-card soon" aria-disabled="true"><span class="ws-exam-card-title">Phrases <span class="vv-soon-badge">Soon</span></span><span class="ws-exam-card-desc">Sentence practice</span></div></div>'
+    :'';
   return'<p class="ws-seclbl">Pick an action — applies to selected words</p>'+
     '<div class="ws-exam-grid ws-exam-grid--vocab">'+
-      '<button type="button" class="ws-exam-card ws-exam-card--personal"'+(canCustom?' onclick="launchVocabHubCustomExam()"':' disabled')+'><span class="ws-exam-card-ic">✦</span><span class="ws-exam-card-title">Custom exam'+proBadge+'</span><span class="ws-exam-card-desc">From your words</span></button>'+
+      customCard+
       '<button type="button" class="ws-exam-card ws-exam-card--practice"'+(canFlash?' onclick="launchVocabHubFlashcards()"':' disabled')+'><span class="ws-exam-card-ic">▭</span><span class="ws-exam-card-title">Flashcards</span><span class="ws-exam-card-desc">Spaced review</span></button>'+
-      '<button type="button" class="ws-exam-card ws-exam-card--oral"'+(canDrill?' onclick="launchVocabHubQuickDrill()"':' disabled')+'><span class="ws-exam-card-ic">⚡</span><span class="ws-exam-card-title">Quick drill</span><span class="ws-exam-card-desc">Fast quiz</span></button>'+
+      quizCard+
     '</div>'+
-    '<div class="ws-exam-grid ws-exam-grid--soon">'+
-      '<div class="ws-exam-card ws-act-card" role="button" tabindex="0" onclick="startHorenGameFromHub()"><span class="ws-exam-card-title">Listening game'+(typeof canUsePersonalized==='function'&&!canUsePersonalized()?proBadge:'')+'</span><span class="ws-exam-card-desc">Hear &amp; spot your words</span></div>'+
-      '<div class="ws-exam-card ws-act-card soon" aria-disabled="true"><span class="ws-exam-card-title">Phrases <span class="vv-soon-badge">Soon</span></span><span class="ws-exam-card-desc">Sentence practice</span></div>'+
-    '</div>';
+    soonRow;
 }
 function refreshVocabHubPanel(){
   const goal=getActiveGoal();
@@ -299,6 +383,8 @@ function launchVocabHubFlashcards(){
   const ids=vocabHubSelectedIds(goal);
   if(ids.length<VV_MIN_FLASH){lcToast('Select at least '+VV_MIN_FLASH+' word.','warn');return;}
   ensureFcIds();
+  S.activeGoalId=goal.id;
+  syncGoalToProfile(goal);
   _vocabHub.flashcardMode=true;
   _vocabHub.activity='flashcards';
   S.fcSelected=new Set(ids);
@@ -321,7 +407,7 @@ function launchVocabHubQuickDrill(){
   S.fcSelected=new Set(ids);
   _vocabHub.veFromVocab=true;
   if(S.mode==='practice')S.vocabLang=vocabLangFor(goal.subject);
-  startVE(false);
+  startVE();
 }
 function renderVocabHubFlashcardsHtml(goal){
   const n=vocabHubSelectedIds(goal).length;
@@ -354,5 +440,6 @@ function renderWsVocabularyHtml(goal){
     '<div class="ws-panel vv-add-panel">'+vocabHubManualAddHtml()+'</div>'+
     (deck.length?'<div class="ws-panel vv-actions-panel">'+actionsBlock+'</div>':'')+
     '<div class="ws-panel vv-list-panel">'+(deck.length?vocabHubLegendHtml(goal):'')+bodyHtml+'</div>'+
+    (typeof SavedVocabQuizzes!=='undefined'&&SavedVocabQuizzes.renderSavedQuizzesHtml?SavedVocabQuizzes.renderSavedQuizzesHtml(goal):'')+
     '</div>';
 }

@@ -29,7 +29,7 @@ Reply ONLY valid JSON:
 
 async function startOralPractice(goal,words){
   if(!goal||!words?.length)return;
-  if(typeof requirePersonalized==='function'&&!requirePersonalized({message:'AI speaking practice from your vocabulary requires Pro.'}))return;
+  if(typeof requireAiCredits==='function'&&!requireAiCredits('speaking',{message:'AI speaking practice uses 2 credits from your monthly allowance.'}))return;
   _oralSession.goalId=goal.id;
   _oralSession.words=words;
   _oralSession.task=null;

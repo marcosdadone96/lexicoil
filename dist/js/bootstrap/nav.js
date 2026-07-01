@@ -79,9 +79,10 @@ function show(id){
   if(typeof refreshNotebookFab==='function')refreshNotebookFab();
 }
 function hide(id){document.getElementById(id).style.display='none';if(typeof refreshNotebookFab==='function')refreshNotebookFab();}
-function hideAll(){if(typeof unbindExamScrollTop==='function')unbindExamScrollTop();document.body.classList.remove('grammar-active');flushOpenStudySession();SCREENS.forEach(hide);stopTimer();showExamConfigFootbar(false);if(typeof refreshNotebookFab==='function')refreshNotebookFab();}
+function hideAll(){if(typeof exitExamAndSave==='function'&&S.examData&&typeof getActiveScreenId==='function'&&getActiveScreenId()==='examScreen')exitExamAndSave();else if(typeof flushExamAutosave==='function'&&S.examData&&typeof getActiveScreenId==='function'&&getActiveScreenId()==='examScreen')flushExamAutosave();if(typeof unbindExamScrollTop==='function')unbindExamScrollTop();document.body.classList.remove('grammar-active');flushOpenStudySession();SCREENS.forEach(hide);stopTimer();showExamConfigFootbar(false);if(typeof refreshNotebookFab==='function')refreshNotebookFab();}
 function goHome(){
   if(!requireAppAuth())return;
+  if(typeof exitExamAndSave==='function')exitExamAndSave();
   if(typeof routerNavigate==='function'){
     routerNavigate('#/',{label:'Dashboard',replace:false});
     return;

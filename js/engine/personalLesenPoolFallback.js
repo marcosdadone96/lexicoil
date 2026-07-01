@@ -1,0 +1,939 @@
+/**
+
+ * Personal exam generation — pool fallback helpers (runtime only).
+
+ * Lesen + Hören.
+
+ */
+
+
+
+function blueprintModuleTeils(blueprint, moduleId, fallback) {
+
+  const mod = (blueprint?.modules || []).find((m) => String(m.id).toLowerCase() === moduleId);
+
+  if (mod?.parts?.length) {
+
+    return [...mod.parts.map((p) => Number(p.teil ?? p.aufgabe)).filter(Number.isFinite)].sort(
+
+      (a, b) => a - b,
+
+    );
+
+  }
+
+  return fallback;
+
+}
+
+
+
+function lesenBlueprintTeils(blueprint) {
+
+  return blueprintModuleTeils(blueprint, 'lesen', [1, 2, 3, 4, 5]);
+
+}
+
+
+
+function horenBlueprintTeils(blueprint) {
+
+  return blueprintModuleTeils(blueprint, 'horen', [1, 2, 3, 4]);
+
+}
+
+
+
+function horenExpectedItemCount(teil, blueprint) {
+
+  const mod = (blueprint?.modules || []).find((m) => String(m.id).toLowerCase() === 'horen');
+
+  const bp = (mod?.parts || []).find((p) => Number(p.teil) === Number(teil));
+
+  if (bp?.itemsTotal != null) return Number(bp.itemsTotal);
+
+  const qt = bp?.questionsTotal;
+
+  if (qt?.min != null && qt?.max != null && qt.min === qt.max) return Number(qt.min);
+
+  return ({ 1: 10, 2: 5, 3: 7, 4: 8 })[Number(teil)] ?? null;
+
+}
+
+
+
+const LESEN_DEFAULT_COUNTS = Object.freeze({ 1: 6, 2: 6, 3: 7, 4: 7, 5: 4 });
+
+const HOREN_DEFAULT_COUNTS = Object.freeze({ 1: 10, 2: 5, 3: 7, 4: 8 });
+
+/** Hören T1/T4 — always served from pool (cost + reliability). */
+const HOREN_POOL_FIRST_TEILS = Object.freeze([1, 4]);
+
+/** Lesen T2 — dual-passage split is flaky; serve from pool when available. */
+const LESEN_POOL_FIRST_TEILS = Object.freeze([2]);
+
+
+
+function lesenExpectedItemCount(teil, blueprint) {
+
+  const mod = (blueprint?.modules || []).find((m) => String(m.id).toLowerCase() === 'lesen');
+
+  const bp = (mod?.parts || []).find((p) => Number(p.teil) === Number(teil));
+
+  if (bp?.itemsTotal != null) return Number(bp.itemsTotal);
+
+  const qt = bp?.questionsTotal;
+
+  if (qt?.min != null && qt?.max != null && qt.min === qt.max) return Number(qt.min);
+
+  return LESEN_DEFAULT_COUNTS[Number(teil)] ?? null;
+
+}
+
+
+
+function countLesenPartItems(part) {
+
+  if (!part) return 0;
+
+  let n = (part.questions || []).length;
+
+  n += (part.items || []).filter(
+
+    (it) => it.signText || it.text || it.question || it.correct != null,
+
+  ).length;
+
+  return n;
+
+}
+
+
+
+function optionListKeys(options) {
+
+  return (options || [])
+
+    .map((o) => {
+
+      if (typeof o === 'string') {
+
+        const m = o.match(/^([A-Za-z0-9]+)\)/);
+
+        return (m ? m[1] : o).trim().toUpperCase();
+
+      }
+
+      return String(o?.key ?? '').trim().toUpperCase();
+
+    })
+
+    .filter(Boolean);
+
+}
+
+
+
+function speakerKeysFromOptions(options) {
+
+  const keys = new Set();
+
+  for (const o of options || []) {
+
+    if (typeof o === 'string') {
+
+      const m = o.match(/^\s*[a-d]\)\s*([A-Z0])\s*$/i);
+
+      if (m) {
+
+        keys.add(m[1].toUpperCase());
+
+        continue;
+
+      }
+
+      const m2 = o.match(/^([MAB0])\s*$/i);
+
+      if (m2) keys.add(m2[1].toUpperCase());
+
+      continue;
+
+    }
+
+    const key = String(o?.key ?? '').trim().toUpperCase();
+
+    const text = String(o?.text ?? o?.label ?? '').trim().toUpperCase();
+
+    if (/^[MAB0]$/.test(key)) keys.add(key);
+
+    else if (/^[MAB0]$/.test(text)) keys.add(text);
+
+  }
+
+  return [...keys];
+
+}
+
+
+
+function horenTeil4SpeakerCoherent(part) {
+
+  if (!part || Number(part.teil) !== 4) return true;
+
+  const seg = part.segments?.[0];
+
+  const questions = seg?.questions || part.questions || [];
+
+  if (questions.length !== 8) return false;
+
+  const allKeys = new Set();
+
+  for (const q of questions) {
+
+    const keys = speakerKeysFromOptions(q.options);
+
+    if (!keys.length) return false;
+
+    if (!keys.every((k) => /^[MAB0]$/.test(k))) return false;
+
+    keys.forEach((k) => allKeys.add(k));
+
+  }
+
+  const guests = [...allKeys].filter((k) => k !== 'M' && k !== '0');
+
+  if (guests.some((k) => k !== 'A' && k !== 'B')) return false;
+
+  if (guests.length > 2) return false;
+
+  const sp = seg?.speakers || part.speakers;
+
+  if (Array.isArray(sp) && sp.length > 3) return false;
+
+  if (seg?.speakerLegend?.length) {
+
+    for (const line of seg.speakerLegend) {
+
+      const m = String(line).match(/^([MAB0])\s*=/i);
+
+      if (m && !allKeys.has(m[1].toUpperCase()) && m[1].toUpperCase() !== '0') return false;
+
+    }
+
+  }
+
+  return true;
+
+}
+
+
+
+function horenTeil1StructureValid(part) {
+
+  if (!part || Number(part.teil) !== 1) return true;
+
+  const segs = part.segments || [];
+
+  if (segs.length !== 5) return false;
+
+  return segs.every((s) => (s.questions || []).length === 2 && String(s.transcript || '').trim());
+
+}
+
+
+
+function partMeetsItemCount(part, module, teil, blueprint) {
+
+  if (!part) return false;
+
+  const mod = String(module).toLowerCase();
+
+  const t = Number(teil);
+
+  if (mod === 'lesen') {
+
+    const expected = lesenExpectedItemCount(t, blueprint);
+
+    if (expected == null) return true;
+
+    return countLesenPartItems(part) === expected;
+
+  }
+
+  if (mod === 'horen') {
+
+    const expected = horenExpectedItemCount(t, blueprint);
+
+    if (expected == null) return true;
+
+    if (countHorenPartItems(part) !== expected) return false;
+
+    if (t === 1 && !horenTeil1StructureValid(part)) return false;
+
+    if (t === 4 && !horenTeil4SpeakerCoherent(part)) return false;
+
+    return true;
+
+  }
+
+  return true;
+
+}
+
+
+
+function isHorenPoolFirstTeil(teil) {
+
+  return HOREN_POOL_FIRST_TEILS.includes(Number(teil));
+
+}
+
+
+
+function isLesenPoolFirstTeil(teil) {
+
+  return LESEN_POOL_FIRST_TEILS.includes(Number(teil));
+
+}
+
+
+
+/** Remove Hören T1/T4 and Lesen T2 from AI chunk plan — those Teile come from pool. */
+
+function filterPersonalAiChunks(chunks, spec) {
+
+  const skills = (spec?.skills || ['lesen']).map((s) => String(s).toLowerCase());
+
+  const horenSelected = skills.some((s) => s === 'horen' || s === 'listening');
+
+  const lesenSelected = skills.some((s) => s === 'lesen' || s === 'reading');
+
+  if (!horenSelected && !lesenSelected) return chunks;
+
+  const filter = spec?.personalTeilFilter;
+
+  const filterNums = filter == null || filter === 'all'
+
+    ? null
+
+    : (Array.isArray(filter) ? filter : [filter]).map(Number).filter(Number.isFinite);
+
+  return (chunks || []).filter((ctx) => {
+
+    const expectKey = String(ctx.expectKey || '');
+
+    const teil = Number(ctx.teil ?? ctx.blueprintPart?.teil);
+
+    const isHoren = /horen|listening/i.test(expectKey);
+
+    if (horenSelected && isHoren && isHorenPoolFirstTeil(teil)) {
+
+      if (filterNums?.length === 1 && filterNums[0] === teil) return true;
+
+      return false;
+
+    }
+
+    const isLesen = /lesen|reading/i.test(expectKey);
+
+    if (lesenSelected && isLesen && isLesenPoolFirstTeil(teil)) {
+
+      if (filterNums?.length === 1 && filterNums[0] === teil) return true;
+
+      return false;
+
+    }
+
+    return true;
+
+  });
+
+}
+
+
+
+function countHorenPartItems(part) {
+
+  if (!part) return 0;
+
+  let n = 0;
+
+  if (Array.isArray(part.segments)) {
+
+    for (const seg of part.segments) n += (seg.questions || []).length;
+
+  }
+
+  n += (part.questions || []).length;
+
+  return n;
+
+}
+
+
+
+function groupQuestionsForHorenT1(questions) {
+
+  const byKey = new Map();
+
+  for (const q of questions) {
+
+    const key = q.passageId || q.segmentLabel || q.segmentId || 'default';
+
+    if (!byKey.has(key)) byKey.set(key, []);
+
+    byKey.get(key).push(q);
+
+  }
+
+  if (byKey.size >= 5) {
+
+    return [...byKey.values()].slice(0, 5);
+
+  }
+
+  const chunks = [];
+
+  for (let i = 0; i < questions.length; i += 2) {
+
+    chunks.push(questions.slice(i, i + 2));
+
+  }
+
+  return chunks;
+
+}
+
+
+
+function splitTranscriptChunks(text, count) {
+
+  const parts = String(text || '')
+
+    .split(/\n\n+/)
+
+    .map((s) => s.trim())
+
+    .filter(Boolean);
+
+  if (parts.length >= count) return parts.slice(0, count);
+
+  const out = [...parts];
+
+  while (out.length < count) {
+
+    out.push(out[out.length - 1] || 'Kurzer Hörtext.');
+
+  }
+
+  return out;
+
+}
+
+
+
+function reusablePartToLesenPart(poolPart) {
+
+  if (!poolPart) return null;
+
+  const teil = Number(poolPart.teil ?? 1);
+
+  const passage = poolPart.passage || {};
+
+  const questions = Array.isArray(poolPart.questions) ? poolPart.questions : [];
+
+  const part = {
+
+    teil,
+
+    instruction: poolPart.instruction || '',
+
+    _fromPool: true,
+
+    _poolPartId: poolPart.id || null,
+
+  };
+
+
+
+  const ads = poolPart.ads || passage.ads;
+
+  if (Array.isArray(ads) && ads.length) part.ads = ads.map((a) => ({ ...a }));
+
+
+
+  const matchingLike =
+
+    teil === 3 ||
+
+    (ads?.length >= 3) ||
+
+    questions.some((q) => {
+
+      const t = String(q.type || q.questionType || '').toLowerCase();
+
+      return t === 'matching' || t === 'match' || !!(q.signText && q.correct != null);
+
+    });
+
+
+
+  if (matchingLike) {
+
+    part.blueprintSlot = part.blueprintSlot || 'ads_matching';
+
+    part.slotType = 'ads_matching';
+
+    part.items = questions
+
+      .map((q) => ({
+
+        id: q.id,
+
+        signText: q.signText || q.statement || q.question || q.text,
+
+        type: q.type || 'matching',
+
+        correct: q.correct ?? q.correctAnswer,
+
+        options: q.options,
+
+      }))
+
+      .filter((it) => (it.signText && String(it.signText).trim()) || it.correct != null);
+
+    if (poolPart.example) part.example = poolPart.example;
+
+  } else if (
+
+    teil === 4 ||
+
+    questions.some((q) => /^(J|N|Ja|Nein)$/i.test(String(q.correct ?? '').trim()))
+
+  ) {
+
+    part.blueprintSlot = 'forum_opinions';
+
+    part.items = questions.map((q) => ({
+
+      id: q.id,
+
+      signText: q.signText || q.text || q.question,
+
+      type: 'ja_nein',
+
+      correct: q.correct ?? q.correctAnswer,
+
+    }));
+
+    part.textTitle = passage.title || passage.textTitle || '';
+
+  } else {
+
+    part.questions = questions.map((q) => ({ ...q }));
+
+    part.text = passage.text || '';
+
+    part.textTitle = passage.title || passage.textTitle || '';
+
+    if (teil === 2) {
+
+      if (Array.isArray(passage.passages) && passage.passages.length >= 2) {
+
+        part.passages = passage.passages.map((p) => ({
+
+          passageId: p.passageId || p.id,
+
+          textTitle: p.textTitle || p.title,
+
+          text: p.text || '',
+
+        }));
+
+      } else if (passage.textB || passage.text2) {
+
+        part.passages = [
+
+          { passageId: 'A', textTitle: part.textTitle || 'Text A', text: part.text },
+
+          {
+
+            passageId: 'B',
+
+            textTitle: passage.textTitleB || 'Text B',
+
+            text: String(passage.textB || passage.text2).trim(),
+
+          },
+
+        ];
+
+      }
+
+    }
+
+  }
+
+  return part;
+
+}
+
+
+
+function reusablePartToHorenPart(poolPart, blueprint) {
+
+  if (!poolPart) return null;
+
+  const teil = Number(poolPart.teil ?? 1);
+
+  const passage = poolPart.passage || {};
+
+  const questions = Array.isArray(poolPart.questions) ? poolPart.questions.map((q) => ({ ...q })) : [];
+
+  const storedSegments = poolPart.segments || passage.segments;
+
+
+
+  const part = {
+
+    teil,
+
+    instruction: poolPart.instruction || '',
+
+    plays: teil === 1 || teil === 4 ? 2 : 1,
+
+    _fromPool: true,
+
+    _poolPartId: poolPart.id || null,
+
+  };
+
+
+
+  if (teil === 1) part.blueprintSlot = 'short_texts_twice';
+
+  if (teil === 4) part.blueprintSlot = 'discussion_twice';
+
+
+
+  if (Array.isArray(storedSegments) && storedSegments.length) {
+
+    part.segments = storedSegments.map((seg, i) => ({
+
+      id: seg.id || `seg_pool_${i}`,
+
+      label: seg.label || `Aufnahme ${i + 1}`,
+
+      transcript: seg.transcript || seg.text || '',
+
+      passageId: seg.passageId || seg.id,
+
+      questions: (seg.questions || []).map((q) => ({ ...q })),
+
+    }));
+
+    return part;
+
+  }
+
+
+
+  const transcriptText = passage.text || passage.transcript || poolPart.transcript || '';
+
+
+
+  if (teil === 1) {
+
+    const groups = groupQuestionsForHorenT1(questions);
+
+    const transcripts = splitTranscriptChunks(transcriptText, Math.max(5, groups.length));
+
+    part.segments = groups.slice(0, 5).map((qs, i) => ({
+
+      id: `seg_pool_${i}`,
+
+      label: `Aufnahme ${i + 1}`,
+
+      transcript: transcripts[i] || transcripts[0] || 'Kurzer Hörtext.',
+
+      questions: qs,
+
+    }));
+
+    while (part.segments.length < 5) {
+
+      part.segments.push({
+
+        id: `seg_pool_${part.segments.length}`,
+
+        label: `Aufnahme ${part.segments.length + 1}`,
+
+        transcript: 'Kurzer Hörtext.',
+
+        questions: [],
+
+      });
+
+    }
+
+  } else {
+
+    part.segments = [
+
+      {
+
+        id: 'seg_pool_0',
+
+        label: 'Aufnahme 1',
+
+        transcript: transcriptText,
+
+        questions,
+
+      },
+
+    ];
+
+  }
+
+
+
+  return part;
+
+}
+
+
+
+function stripPoolPartsForIngest(exam) {
+
+  if (!exam || typeof exam !== 'object') return exam;
+
+  const copy = JSON.parse(JSON.stringify(exam));
+
+  for (const key of ['lesenParts', 'horenParts', 'listeningParts', 'schreibenParts', 'writingParts']) {
+
+    if (!Array.isArray(copy[key])) continue;
+
+    copy[key] = copy[key].filter((p) => !p._fromPool);
+
+    if (!copy[key].length) delete copy[key];
+
+  }
+
+  delete copy._teilFromPool;
+
+  delete copy._poolPartIds;
+
+  return copy;
+
+}
+
+
+
+function insertModuleTeil(exam, part, module, teil) {
+
+  if (!exam || !part) return exam;
+
+  const mod = String(module).toLowerCase();
+
+  const key = mod === 'listening' ? 'listeningParts' : `${mod}Parts`;
+
+  const t = Number(teil);
+
+  exam[key] = (exam[key] || []).filter((p) => Number(p.teil) !== t);
+
+  exam[key].push({ ...part, teil: t });
+
+  exam[key].sort((a, b) => Number(a.teil) - Number(b.teil));
+
+  return exam;
+
+}
+
+
+
+function insertLesenTeil(exam, lesenPart, teil) {
+
+  return insertModuleTeil(exam, lesenPart, 'lesen', teil);
+
+}
+
+
+
+function insertHorenTeil(exam, horenPart, teil) {
+
+  return insertModuleTeil(exam, horenPart, 'horen', teil);
+
+}
+
+
+
+function schreibenBlueprintTeils(blueprint) {
+
+  return blueprintModuleTeils(blueprint, 'schreiben', [1, 2, 3]);
+
+}
+
+
+
+function schreibenExpectedMinWords(teil, blueprint) {
+
+  const mod = (blueprint?.modules || []).find((m) => String(m.id).toLowerCase() === 'schreiben');
+
+  const bp = (mod?.parts || []).find((p) => Number(p.teil) === Number(teil));
+
+  if (bp?.wordsTarget?.min != null) return Number(bp.wordsTarget.min);
+
+  return Number(teil) === 3 ? 40 : 80;
+
+}
+
+
+
+function schreibenTeilIsValid(part, teil, blueprint) {
+
+  if (!part) return false;
+
+  const task = String(part.task || part.instruction || part.prompt || '').trim();
+
+  if (task.length < 40) return false;
+
+  const expected = schreibenExpectedMinWords(teil, blueprint);
+
+  const minW = Number(part.minWords) || expected;
+
+  return minW === expected;
+
+}
+
+
+
+function reusablePartToSchreibenPart(poolPart, blueprint) {
+
+  if (!poolPart) return null;
+
+  const teil = Number(poolPart.teil ?? 1);
+
+  const task = String(
+
+    poolPart.task || poolPart.passage?.text || poolPart.questions?.[0]?.question || '',
+
+  ).trim();
+
+  const minWords = Number(poolPart.minWords) || schreibenExpectedMinWords(teil, blueprint);
+
+  return {
+
+    teil,
+
+    aufgabe: teil,
+
+    fieldId: poolPart.fieldId || `write_bp_${teil}`,
+
+    task,
+
+    minWords,
+
+    maxWords: Number(poolPart.maxWords) || minWords,
+
+    criteria: Array.isArray(poolPart.criteria) ? [...poolPart.criteria] : [],
+
+    taskFormat: poolPart.taskFormat || null,
+
+    _fromPool: true,
+
+    _poolPartId: poolPart.id || null,
+
+  };
+
+}
+
+
+
+function insertSchreibenTeil(exam, schreibenPart, teil) {
+
+  if (!exam || !schreibenPart) return exam;
+
+  const t = Number(teil);
+
+  exam.schreibenParts = (exam.schreibenParts || []).filter(
+
+    (p) => Number(p.teil ?? p.aufgabe) !== t,
+
+  );
+
+  exam.schreibenParts.push({ ...schreibenPart, teil: t, aufgabe: t });
+
+  exam.schreibenParts.sort(
+
+    (a, b) => Number(a.teil ?? a.aufgabe) - Number(b.teil ?? b.aufgabe),
+
+  );
+
+  return exam;
+
+}
+
+
+
+const PersonalLesenPoolFallback = Object.freeze({
+
+  lesenBlueprintTeils,
+
+  horenBlueprintTeils,
+
+  lesenExpectedItemCount,
+
+  horenExpectedItemCount,
+
+  countLesenPartItems,
+
+  countHorenPartItems,
+
+  partMeetsItemCount,
+
+  horenTeil4SpeakerCoherent,
+
+  horenTeil1StructureValid,
+
+  HOREN_POOL_FIRST_TEILS,
+
+  LESEN_POOL_FIRST_TEILS,
+
+  isHorenPoolFirstTeil,
+
+  isLesenPoolFirstTeil,
+
+  filterPersonalAiChunks,
+
+  reusablePartToLesenPart,
+
+  reusablePartToHorenPart,
+
+  stripPoolPartsForIngest,
+
+  insertLesenTeil,
+
+  insertHorenTeil,
+
+  insertModuleTeil,
+
+  schreibenBlueprintTeils,
+
+  schreibenExpectedMinWords,
+
+  schreibenTeilIsValid,
+
+  reusablePartToSchreibenPart,
+
+  insertSchreibenTeil,
+
+});
+
+
+
+if (typeof window !== 'undefined') window.PersonalLesenPoolFallback = PersonalLesenPoolFallback;
+
+if (typeof module !== 'undefined') module.exports = PersonalLesenPoolFallback;
+
+

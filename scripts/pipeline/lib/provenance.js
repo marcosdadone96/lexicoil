@@ -8,6 +8,7 @@ export function buildProvenance({
   cefrGate,
   sourceBankIds = [],
   validationErrors = [],
+  auditBypassed = undefined,
 }) {
   return Object.freeze({
     generatedBy: generatedBy || 'pipeline/unknown',
@@ -22,6 +23,7 @@ export function buildProvenance({
       : null,
     sourceBankIds: [...new Set(sourceBankIds || [])],
     validationErrors: validationErrors || [],
+    ...(auditBypassed ? { auditBypassed: true, bypassedChecks: auditBypassed } : {}),
     createdAt: new Date().toISOString(),
     strategy: 'B',
   });

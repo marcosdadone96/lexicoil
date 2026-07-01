@@ -1,0 +1,25 @@
+{
+  "note": "Coste Claude (EXAM_MODEL / claude-haiku-4-5) — pipeline A2/B2 DE",
+  "baselineUSD": 1.778832,
+  "baselineAt": "2026-06-15T15:34:56.715Z",
+  "levels": {
+    "de_A2": {
+      "startedAt": "2026-06-21T08:50:00.000Z",
+      "spentUSD": 0.997,
+      "bankQuestions": 313,
+      "curatedExams": 2,
+      "targetExams": 9,
+      "certified": false,
+      "notes": "Bloqueadores resueltos: TLS (--use-system-ca), prompts A2, normalize mcq/T3 passage, Lesen T4 slug-pick. Falta: ~6 sets Lesen T4, certificación fidelity 0 errores, fill/residual, B2."
+    },
+    "de_B2": {
+      "startedAt": null,
+      "spentUSD": 0,
+      "targetExams": 9,
+      "certified": false,
+      "notes": "Prompt B2 creado; pipeline no iniciado."
+    }
+  },
+  "costFile": "batches/.claude-cost.json",
+  "updatedAt": "2026-06-21T10:15:00.000Z"
+}

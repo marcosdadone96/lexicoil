@@ -4,8 +4,10 @@ const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 const { randomUUID } = require('crypto');
-const { publishPoolExam } = require('./poolIndex.js');
+const { publishPoolExam, listPoolIndexEntries } = require('./poolIndex.js');
 const { validateGeneratedExam } = require('./examQualityGate.js');
+const { partExactTargetFromBlueprint } = require('./partQualityGate.js');
+const { validateCrossExamPassageUniqueness } = require('./passageDedupe.js');
 const {
   loadStagingIndex,
   saveStagingIndex,
@@ -71,16 +73,29 @@ function filteredBank(bank, usedIds) {
   };
 }
 
-function partMinTarget(blueprint, module, teil) {
-  for (const mod of blueprint.modules || []) {
-    if (mod.id !== module) continue;
-    for (const part of mod.parts || []) {
-      if (part.teil === teil) {
-        return part.questionsTotal?.min || part.itemsTotal || 1;
+function partExactTarget(blueprint, module, teil) {
+  return partExactTargetFromBlueprint(blueprint, module, teil);
+}
+
+function isCompleteApprovedCandidate(candidate, blueprint) {
+  if (candidate?.complete === false) return false;
+  const count = (candidate.questions || []).length;
+  if (!blueprint) return count > 0;
+  return count === partExactTarget(blueprint, candidate.module, candidate.teil);
+}
+
+async function loadPoolExamsForDedupe(store, lang, level) {
+  const entries = await listPoolIndexEntries(store, lang, level);
+  const exams = [];
+  for (const row of entries) {
+    try {
+      const payload = await store.get(row.examKey, { type: 'json' });
+      if (payload?.exam) {
+        exams.push({ id: row.id, exam: payload.exam, label: row.id });
       }
-    }
+    } catch (_) { /* skip */ }
   }
-  return 1;
+  return exams;
 }
 
 function buildCombinedBank(staticBank, approvedCandidates, blueprint) {
@@ -95,7 +110,7 @@ function buildCombinedBank(staticBank, approvedCandidates, blueprint) {
     const slot = `${q.module}:${teil}`;
     const approved = approvedBySlot.get(slot);
     if (!approved) return true;
-    const minTarget = blueprint ? partMinTarget(blueprint, q.module, teil) : 1;
+    const minTarget = blueprint ? partExactTarget(blueprint, q.module, teil) : 1;
     const approvedCount = (approved.questions || []).length;
     return approvedCount < minTarget;
   });
@@ -163,7 +178,8 @@ async function maybePromote(store, lang, level, opts = {}) {
   const usedExamSigs = new Set(opts.usedExamSigs || []);
 
   for (let attempt = 0; attempt < MAX_PROMOTIONS_PER_CALL; attempt++) {
-    const approved = await listStagingByStatus(store, normalizedLang, normalizedLevel, 'approved');
+    const approvedAll = await listStagingByStatus(store, normalizedLang, normalizedLevel, 'approved');
+    const approved = approvedAll.filter((c) => isCompleteApprovedCandidate(c, blueprint));
     if (!hasRequiredModuleCoverage(approved, blueprint)) break;
 
     const bank = buildCombinedBank(filteredBank(staticBank, usedQuestionIds), approved, blueprint);
@@ -186,12 +202,27 @@ async function maybePromote(store, lang, level, opts = {}) {
     exam.blueprintCoverage = assembled.coverage;
     exam.libraryBuilt = true;
 
-    const check = new ExamValidator().validate(exam, { strict: false, blueprint });
-    const gate = validateGeneratedExam(exam, { strict: false, blueprint });
+    const check = new ExamValidator().validate(exam, { strict: true, blueprint, cefrGate: true, curation: true });
+    const gate = validateGeneratedExam(exam, {
+      strict: true,
+      cefrGate: true,
+      curation: true,
+      blueprint,
+    });
     if (!check.valid || !gate.valid) break;
 
     const sig = examSignature(selected);
     if (usedExamSigs.has(sig)) break;
+
+    const existingExams = await loadPoolExamsForDedupe(store, normalizedLang, normalizedLevel);
+    const dedupe = validateCrossExamPassageUniqueness([
+      ...existingExams,
+      { id: `candidate-${sig}`, exam, label: 'candidate' },
+    ]);
+    if (!dedupe.ok) {
+      console.warn('[maybePromote] passage dedupe blocked promotion:', dedupe.violations[0]?.message);
+      break;
+    }
 
     const id = randomUUID();
     const topic = genericPoolTopic(normalizedLang, normalizedLevel);

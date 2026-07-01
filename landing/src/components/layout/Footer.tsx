@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { EXAM_SEO_PAGES } from '@/lib/constants';
+import { EXAM_SEO_PAGES, isExamLiveAtLaunch } from '@/lib/constants';
+import { CookiePreferencesLink } from '@/components/ui/CookiePreferencesLink';
 import { Container } from '@/components/ui/Container';
 
 export function Footer() {
@@ -33,6 +34,7 @@ export function Footer() {
                 <li key={p.slug}>
                   <Link href={`/exams/${p.slug}`} className="hover:text-[var(--bg-base)]">
                     {p.title}
+                    {!isExamLiveAtLaunch(p.lang, p.level) ? ' (soon)' : ''}
                   </Link>
                 </li>
               ))}
@@ -72,6 +74,9 @@ export function Footer() {
                 <a href="/terms.html" className="hover:text-[var(--bg-base)]">
                   Terms
                 </a>
+              </li>
+              <li>
+                <CookiePreferencesLink className="hover:text-[var(--bg-base)] text-left" />
               </li>
             </ul>
           </div>

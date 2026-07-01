@@ -5,7 +5,7 @@ const AUTO_SAVE_CAP = 10;
 const GLOBAL_SAVE_CAP = 50;
 
 function savedExamTs(e) {
-  return Date.parse(e?.savedAt) || Number(e?.id) || 0;
+  return Number(e?.updatedAt) || Date.parse(e?.savedAtIso) || Date.parse(e?.savedAt) || Number(e?.id) || 0;
 }
 
 function isProtectedSavedStatus(st) {
@@ -59,6 +59,7 @@ function saveCurrentExam(statusOverride, opts) {
   }
   const id = S.examData._savedId || S.examData._flightId || Date.now();
   S.examData._savedId = id;
+  if (S.activeGoalId) S.examData.goalId = S.activeGoalId;
   const existing = S.savedExams.findIndex((e) => e.id === id);
   if (statusOverride === 'auto' && existing >= 0) {
     const prev = S.savedExams[existing].status;
@@ -82,13 +83,15 @@ function saveCurrentExam(statusOverride, opts) {
   const entry = {
     id,
     savedAt: new Date().toLocaleDateString(),
+    savedAtIso: new Date().toISOString(),
+    updatedAt: Date.now(),
     topic: S.examData.topic || 'Unknown topic',
     level: S.examData.level,
     lang: S.examData.lang,
     mode: normalizeMode(S.mode),
     status,
     source,
-    goalId: S.activeGoalId || S.examData.goalId || null,
+    goalId: S.activeGoalId || S.examData?.goalId || null,
     data: S.examData,
     answers: { ...S.answers },
     gapAnswers: { ...S.gapAnswers },
@@ -142,9 +145,21 @@ function reviewSavedExam(i) {
   if (e.status === 'completed' && e.score != null && e.correction) {
     const isDE = e.lang === 'de';
     const marked = (e.markedWords || []).map((w) => (typeof w === 'string' ? { word: w } : { word: w.word || w }));
+    const passPercent = typeof ModuleGrading !== 'undefined'
+      ? ModuleGrading.getPassPercent(null, e)
+      : e.passPercentPerModule || 60;
+    const moduleResults = typeof ModuleGrading !== 'undefined'
+      ? ModuleGrading.normalizeModuleResults(e, passPercent)
+      : e.moduleResults || {};
+    const summary = typeof ModuleGrading !== 'undefined'
+      ? ModuleGrading.summarizeExam(moduleResults, {
+        modular: !!e.modularGrading,
+        passPercent,
+      })
+      : null;
     renderResults(
       e.score,
-      e.moduleScores || {},
+      moduleResults,
       e.data,
       isDE,
       e.writeAns || '',
@@ -154,6 +169,8 @@ function reviewSavedExam(i) {
       e.speakingEvals || [],
       e.savedWords || [],
       marked,
+      e,
+      summary,
     );
     return;
   }
@@ -202,10 +219,11 @@ function retakeExam(i, resume) {
     S._resumeFieldValues = e.fieldValues;
     initExamSession(S.mode);
     if (S.activeSession) {
-      S.activeSession.examData = e.data;
+      S.activeSession.examSavedId = e.id;
       S.activeSession.answers = S.answers;
       S.activeSession.gapAnswers = S.gapAnswers;
       S.activeSession.fieldValues = e.fieldValues;
+      saveActiveSession();
     }
   } else {
     S.answers = {};

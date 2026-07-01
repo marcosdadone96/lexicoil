@@ -1,11 +1,15 @@
 /**
  * Write curated exams to library/curated/ + pool-seed mirror for offline serving.
+ * Gate de publicación: isExamPublishable() corre ANTES de cualquier escritura.
+ * Si el gate falla → nada se escribe (atomicidad implícita).
+ * Cada escritura usa temp+rename para evitar JSON corrupto ante crash.
  */
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { buildProvenance } from './provenance.js';
+import { isExamPublishable } from '../../audit-pass-2.mjs';
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '../../..');
 
@@ -41,6 +45,13 @@ export function loadCuratedIndex(lang, level) {
   }
 }
 
+/** Escribe JSON a un archivo temp y luego lo renombra (atomicidad por escritura). */
+function atomicWriteJson(filePath, data) {
+  const tmp = `${filePath}.${process.pid}.${Date.now()}.tmp`;
+  fs.writeFileSync(tmp, `${JSON.stringify(data, null, 2)}\n`, 'utf8');
+  fs.renameSync(tmp, filePath);
+}
+
 export function publishCuratedExam({
   lang,
   level,
@@ -51,9 +62,39 @@ export function publishCuratedExam({
   cefrGate,
   sourceBankIds = [],
   validationResult,
+  validatedBy = 'ExamValidator(strict)+CefrGate',
+  id: explicitId = null,
+  allowAuditFailures = false,
 }) {
+  // ── GATE: corre ANTES de tocar el disco ──────────────────────────────────
+  const gate = isExamPublishable(exam, { allowFailures: allowAuditFailures });
+  if (!gate.ok) {
+    const ids = [...new Set(gate.blocking.map((f) => f.id))].join(',');
+    const msgs = gate.blocking.map((f) => `  [${f.severity}][${f.id}] ${f.message}`).join('\n');
+    process.stderr.write(
+      `[publishCuratedExam] BLOQUEADO (${gate.blocking.length} finding(s): ${ids})\n${msgs}\n` +
+      `  → No se ha escrito nada. Usa --allow-audit-failures para forzar (solo desarrollo).\n`,
+    );
+    return { blocked: true, blocking: gate.blocking };
+  }
+
+  // Registrar en provenance si --allow-audit-failures saltó findings bloqueantes
+  const bypassedChecks = (allowAuditFailures && gate.blocking.length > 0)
+    ? [...new Set(gate.blocking.map((f) => f.id))]
+    : undefined;
+  if (bypassedChecks) {
+    process.stderr.write(
+      `\x1b[31m⚠  [publishCuratedExam] AUDIT BYPASSED: ${gate.blocking.length} finding(s) ignorado(s) [${bypassedChecks.join(',')}]. Se registra en provenance.\x1b[0m\n`,
+    );
+  }
+
+  if (gate.advisory.length > 0) {
+    const ids = [...new Set(gate.advisory.map((f) => f.id))].join(',');
+    console.log(`[publishCuratedExam] advisory (no bloqueante): ${gate.advisory.length} finding(s) [${ids}]`);
+  }
+
   const signature = examSignature(exam);
-  const id = stableCuratedId(lang, level, signature);
+  const id = explicitId || stableCuratedId(lang, level, signature);
   const entry = {
     id,
     lang,
@@ -63,23 +104,24 @@ export function publishCuratedExam({
     exam: { ...exam, curated: true },
     provenance: buildProvenance({
       generatedBy,
-      validatedBy: 'ExamValidator(strict)+CefrGate',
+      validatedBy,
       blueprintId,
       cefrGate,
       sourceBankIds,
       validationErrors: validationResult?.errors || [],
+      auditBypassed: bypassedChecks,
     }),
   };
 
   const dir = curatedDir(lang, level);
   fs.mkdirSync(dir, { recursive: true });
-  fs.writeFileSync(path.join(dir, `${id}.json`), JSON.stringify(entry, null, 2) + '\n', 'utf8');
+  atomicWriteJson(path.join(dir, `${id}.json`), entry);
 
   const poolFile = curatedPoolFile(lang, level);
   const index = loadCuratedIndex(lang, level);
   const seen = new Set(index.map((e) => e.id));
   if (!seen.has(id)) index.push({ id, topic: entry.topic, file: `${id}.json` });
-  fs.writeFileSync(poolFile, JSON.stringify(index, null, 2) + '\n', 'utf8');
+  atomicWriteJson(poolFile, index);
 
   const poolSeedDir = path.join(ROOT, 'library', 'pool-seed');
   fs.mkdirSync(poolSeedDir, { recursive: true });
@@ -102,7 +144,7 @@ export function publishCuratedExam({
     curated: true,
     provenance: entry.provenance,
   });
-  fs.writeFileSync(seedFile, JSON.stringify(seeds, null, 2) + '\n', 'utf8');
+  atomicWriteJson(seedFile, seeds);
 
   return { id, path: path.join(dir, `${id}.json`), poolFile: seedFile };
 }

@@ -1,0 +1,385 @@
+{
+  "passages": [
+    {
+      "id": "de-b1-p-horen-t1-gesundheit-arzt-02-s1",
+      "module": "horen",
+      "title": "Praxisansage",
+      "text": "Guten Tag, Sie haben die Zahnarztpraxis Dr. Müller erreicht. Unsere Sprechzeiten sind Montag bis Freitag von 8 bis 12 Uhr und von 14 bis 18 Uhr. Samstags haben wir von 9 bis 13 Uhr geöffnet. Bitte drücken Sie die 1 für einen Termin, die 2 für die Rezeption oder die 3 für unseren Notfalldienst.",
+      "segmentLabel": "Automatische Ansage",
+      "passageVocab": [
+        "zahnarztpraxis",
+        "sprechzeiten",
+        "montag",
+        "freitag",
+        "samstags",
+        "notfalldienst"
+      ]
+    },
+    {
+      "id": "de-b1-p-horen-t1-gesundheit-arzt-02-s2",
+      "module": "horen",
+      "title": "Telefonat",
+      "text": "Guten Morgen, ich möchte einen Termin vereinbaren. Mein Name ist Andreas Weber. Ich habe Zahnschmerzen und es ist wirklich sehr schmerzhaft. Können Sie mir einen Termin heute noch geben? Ja, natürlich. Haben Sie schon einen Termin bei uns gehabt? Nein, ich bin neu in der Praxis. Dann brauchen wir ein paar Informationen. Können Sie mich bitte unter der Nummer 030-123456 anrufen, wenn Sie einen freien Platz haben?",
+      "segmentLabel": "Telefongespraech",
+      "passageVocab": [
+        "zahnschmerzen",
+        "termin",
+        "vereinbaren",
+        "praxis",
+        "schmerzhaft",
+        "informationen"
+      ]
+    },
+    {
+      "id": "de-b1-p-horen-t1-gesundheit-arzt-02-s3",
+      "module": "horen",
+      "title": "Radiotipp",
+      "text": "In unserem Gesundheitstipp des Tages informieren wir Sie über die richtige Zahnpflege. Die Deutsche Zahnärztliche Vereinigung empfiehlt, die Zähne mindestens zweimal täglich zu putzen und Zahnseide zu verwenden. Auch regelmäßige Kontrolluntersuchungen beim Zahnarzt sind wichtig. Diese sollten mindestens einmal pro Jahr stattfinden. Nur so können Zahnprobleme früh erkannt werden.",
+      "segmentLabel": "Radiotipp",
+      "passageVocab": [
+        "zahnpflege",
+        "zahnseide",
+        "kontrolluntersuchung",
+        "zahnarzt",
+        "zahnprobleme",
+        "vereinigung"
+      ]
+    },
+    {
+      "id": "de-b1-p-horen-t1-gesundheit-arzt-02-s4",
+      "module": "horen",
+      "title": "Nachricht",
+      "text": "Hallo Petra, hier ist Dr. Schmitt von der Zahnarztpraxis. Ich rufe an wegen Ihres Termins am Freitag um 14 Uhr. Leider muss ich diesen verschieben, da ich zu einer Konferenz muss. Könnten Sie stattdessen am nächsten Montag um 10 Uhr kommen? Bitte rufen Sie uns zurück unter 030-987654. Vielen Dank.",
+      "segmentLabel": "Nachricht",
+      "passageVocab": [
+        "termin",
+        "verschieben",
+        "konferenz",
+        "montag",
+        "zahnarztpraxis",
+        "rufen"
+      ]
+    },
+    {
+      "id": "de-b1-p-horen-t1-gesundheit-arzt-02-s5",
+      "module": "horen",
+      "title": "Gespraech",
+      "text": "Guten Tag, ich bin neu hier und möchte mich anmelden. Sehr gerne! Haben Sie Versicherungen? Ja, ich bin bei der AOK versichert. Ausgezeichnet! Dann füllen Sie bitte dieses Formular aus. Es dauert nur fünf Minuten. Danach machen wir eine kurze Untersuchung. Dr. Müller wird Sie dann beraten, was Sie noch tun müssen. Wie lange wird die Untersuchung dauern? Normalerweise etwa 20 bis 30 Minuten.",
+      "segmentLabel": "Anmeldungsgespraech",
+      "passageVocab": [
+        "anmelden",
+        "versicherung",
+        "aok",
+        "formular",
+        "untersuchung",
+        "beraten"
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "id": "de-b1-h-t1-gesundheit-arzt-02-s1-q1",
+      "module": "horen",
+      "teil": 1,
+      "type": "richtig_falsch",
+      "question": "Die Zahnarztpraxis hat täglich geöffnet.",
+      "correct": "Falsch",
+      "correctAnswer": "Falsch",
+      "explanation": "Die Praxis ist samstags nur von 9 bis 13 Uhr geöffnet und sonntags geschlossen.",
+      "options": [],
+      "passageId": "de-b1-p-horen-t1-gesundheit-arzt-02-s1",
+      "grammarTags": [],
+      "topicTags": [
+        "health"
+      ],
+      "vocabularyTags": [
+        "zahnarztpraxis",
+        "sprechzeiten"
+      ],
+      "difficulty": 3,
+      "skills": [
+        "listening"
+      ],
+      "language": "de",
+      "level": "B1",
+      "examType": "goethe"
+    },
+    {
+      "id": "de-b1-h-t1-gesundheit-arzt-02-s1-q2",
+      "module": "horen",
+      "teil": 1,
+      "type": "multiple_choice",
+      "question": "Was muss man drücken, um den Notfalldienst zu erreichen?",
+      "correct": "c",
+      "correctAnswer": "c",
+      "explanation": "In der Ansage wird gesagt: 'drücken Sie die 3 für unseren Notfalldienst'.",
+      "options": [
+        "a) Die 1",
+        "b) Die 2",
+        "c) Die 3"
+      ],
+      "passageId": "de-b1-p-horen-t1-gesundheit-arzt-02-s1",
+      "grammarTags": [
+        "g-de-b1-modalverben"
+      ],
+      "topicTags": [
+        "health"
+      ],
+      "vocabularyTags": [
+        "notfalldienst",
+        "drucken"
+      ],
+      "difficulty": 3,
+      "skills": [
+        "listening"
+      ],
+      "language": "de",
+      "level": "B1",
+      "examType": "goethe"
+    },
+    {
+      "id": "de-b1-h-t1-gesundheit-arzt-02-s2-q1",
+      "module": "horen",
+      "teil": 1,
+      "type": "richtig_falsch",
+      "question": "Andreas Weber war schon vorher Patient in dieser Praxis.",
+      "correct": "Falsch",
+      "correctAnswer": "Falsch",
+      "explanation": "Im Gespräch sagt er: 'Nein, ich bin neu in der Praxis.'",
+      "options": [],
+      "passageId": "de-b1-p-horen-t1-gesundheit-arzt-02-s2",
+      "grammarTags": [],
+      "topicTags": [
+        "health"
+      ],
+      "vocabularyTags": [
+        "patient",
+        "praxis"
+      ],
+      "difficulty": 3,
+      "skills": [
+        "listening"
+      ],
+      "language": "de",
+      "level": "B1",
+      "examType": "goethe"
+    },
+    {
+      "id": "de-b1-h-t1-gesundheit-arzt-02-s2-q2",
+      "module": "horen",
+      "teil": 1,
+      "type": "multiple_choice",
+      "question": "Warum möchte Andreas Weber einen Termin?",
+      "correct": "a",
+      "correctAnswer": "a",
+      "explanation": "Er sagt: 'Ich habe Zahnschmerzen und es ist wirklich sehr schmerzhaft.'",
+      "options": [
+        "a) Er hat Zahnschmerzen",
+        "b) Er braucht eine Zahnreinigung",
+        "c) Er möchte sich anmelden"
+      ],
+      "passageId": "de-b1-p-horen-t1-gesundheit-arzt-02-s2",
+      "grammarTags": [
+        "g-de-b1-perfekt"
+      ],
+      "topicTags": [
+        "health"
+      ],
+      "vocabularyTags": [
+        "zahnschmerzen",
+        "schmerzhaft"
+      ],
+      "difficulty": 3,
+      "skills": [
+        "listening"
+      ],
+      "language": "de",
+      "level": "B1",
+      "examType": "goethe"
+    },
+    {
+      "id": "de-b1-h-t1-gesundheit-arzt-02-s3-q1",
+      "module": "horen",
+      "teil": 1,
+      "type": "richtig_falsch",
+      "question": "Man sollte die Zähne nur einmal pro Tag putzen.",
+      "correct": "Falsch",
+      "correctAnswer": "Falsch",
+      "explanation": "Der Radiotipp sagt: 'mindestens zweimal täglich zu putzen'.",
+      "options": [],
+      "passageId": "de-b1-p-horen-t1-gesundheit-arzt-02-s3",
+      "grammarTags": [
+        "g-de-b1-modalverben"
+      ],
+      "topicTags": [
+        "health"
+      ],
+      "vocabularyTags": [
+        "zahnpflege",
+        "taeglich"
+      ],
+      "difficulty": 3,
+      "skills": [
+        "listening"
+      ],
+      "language": "de",
+      "level": "B1",
+      "examType": "goethe"
+    },
+    {
+      "id": "de-b1-h-t1-gesundheit-arzt-02-s3-q2",
+      "module": "horen",
+      "teil": 1,
+      "type": "multiple_choice",
+      "question": "Wie oft sollte man zum Zahnarzt zur Kontrolle gehen?",
+      "correct": "b",
+      "correctAnswer": "b",
+      "explanation": "Der Text sagt: 'Diese sollten mindestens einmal pro Jahr stattfinden.'",
+      "options": [
+        "a) Alle drei Monate",
+        "b) Mindestens einmal pro Jahr",
+        "c) Nur wenn Probleme auftreten"
+      ],
+      "passageId": "de-b1-p-horen-t1-gesundheit-arzt-02-s3",
+      "grammarTags": [
+        "g-de-b1-modalverben"
+      ],
+      "topicTags": [
+        "health"
+      ],
+      "vocabularyTags": [
+        "kontrolluntersuchung",
+        "zahnarzt"
+      ],
+      "difficulty": 3,
+      "skills": [
+        "listening"
+      ],
+      "language": "de",
+      "level": "B1",
+      "examType": "goethe"
+    },
+    {
+      "id": "de-b1-h-t1-gesundheit-arzt-02-s4-q1",
+      "module": "horen",
+      "teil": 1,
+      "type": "richtig_falsch",
+      "question": "Der Termin am Freitag bleibt bestehen.",
+      "correct": "Falsch",
+      "correctAnswer": "Falsch",
+      "explanation": "Dr. Schmitt sagt: 'Leider muss ich diesen verschieben.'",
+      "options": [],
+      "passageId": "de-b1-p-horen-t1-gesundheit-arzt-02-s4",
+      "grammarTags": [
+        "g-de-b1-modalverben"
+      ],
+      "topicTags": [
+        "health"
+      ],
+      "vocabularyTags": [
+        "termin",
+        "verschieben"
+      ],
+      "difficulty": 3,
+      "skills": [
+        "listening"
+      ],
+      "language": "de",
+      "level": "B1",
+      "examType": "goethe"
+    },
+    {
+      "id": "de-b1-h-t1-gesundheit-arzt-02-s4-q2",
+      "module": "horen",
+      "teil": 1,
+      "type": "multiple_choice",
+      "question": "Wann soll Petra stattdessen kommen?",
+      "correct": "a",
+      "correctAnswer": "a",
+      "explanation": "Dr. Schmitt schlägt vor: 'Könnten Sie stattdessen am nächsten Montag um 10 Uhr kommen?'",
+      "options": [
+        "a) Montag um 10 Uhr",
+        "b) Dienstag um 14 Uhr",
+        "c) Mittwoch um 15 Uhr"
+      ],
+      "passageId": "de-b1-p-horen-t1-gesundheit-arzt-02-s4",
+      "grammarTags": [
+        "g-de-b1-modalverben"
+      ],
+      "topicTags": [
+        "health"
+      ],
+      "vocabularyTags": [
+        "montag",
+        "termin"
+      ],
+      "difficulty": 3,
+      "skills": [
+        "listening"
+      ],
+      "language": "de",
+      "level": "B1",
+      "examType": "goethe"
+    },
+    {
+      "id": "de-b1-h-t1-gesundheit-arzt-02-s5-q1",
+      "module": "horen",
+      "teil": 1,
+      "type": "richtig_falsch",
+      "question": "Der Patient ist bei der DAK versichert.",
+      "correct": "Falsch",
+      "correctAnswer": "Falsch",
+      "explanation": "Der Patient sagt: 'Ja, ich bin bei der AOK versichert.'",
+      "options": [],
+      "passageId": "de-b1-p-horen-t1-gesundheit-arzt-02-s5",
+      "grammarTags": [
+        "g-de-b1-perfekt"
+      ],
+      "topicTags": [
+        "health"
+      ],
+      "vocabularyTags": [
+        "versicherung",
+        "aok"
+      ],
+      "difficulty": 3,
+      "skills": [
+        "listening"
+      ],
+      "language": "de",
+      "level": "B1",
+      "examType": "goethe"
+    },
+    {
+      "id": "de-b1-h-t1-gesundheit-arzt-02-s5-q2",
+      "module": "horen",
+      "teil": 1,
+      "type": "multiple_choice",
+      "question": "Wie lange dauert die Untersuchung normalerweise?",
+      "correct": "c",
+      "correctAnswer": "c",
+      "explanation": "Der Zahnarzt antwortet: 'Normalerweise etwa 20 bis 30 Minuten.'",
+      "options": [
+        "a) 10 bis 15 Minuten",
+        "b) 15 bis 20 Minuten",
+        "c) 20 bis 30 Minuten"
+      ],
+      "passageId": "de-b1-p-horen-t1-gesundheit-arzt-02-s5",
+      "grammarTags": [],
+      "topicTags": [
+        "health"
+      ],
+      "vocabularyTags": [
+        "untersuchung",
+        "dauer"
+      ],
+      "difficulty": 3,
+      "skills": [
+        "listening"
+      ],
+      "language": "de",
+      "level": "B1",
+      "examType": "goethe"
+    }
+  ]
+}

@@ -78,13 +78,42 @@
     return isPro() && getQuotaMax() >= PRO_QUOTA;
   }
 
+  window.activateProMax = async function () {
+    if (typeof Auth !== 'undefined' && Auth.isGuest()) {
+      closeUpgrade();
+      switchTab('login');
+      if (typeof showAuthOverlay === 'function') showAuthOverlay();
+      setAMsg('Sign in or register to upgrade to Pro Max.');
+      return;
+    }
+    if (!isSignedIn()) {
+      closeUpgrade();
+      if (typeof showAuthOverlay === 'function') showAuthOverlay();
+      return;
+    }
+    try {
+      await startStripeCheckout({ plan: 'pro_max' });
+    } catch (e) {
+      notify(
+        e.message === 'login_required' ? 'Please sign in first.' : 'Checkout failed. Try again later.',
+        'error',
+      );
+    }
+  };
+
   window.handleUrlParams = async function () {
     const p = new URLSearchParams(location.search);
     if (p.get('credits') === '1') {
+      const packCredits = Math.max(0, parseInt(p.get('pack_credits') || '0', 10) || 0);
       history.replaceState({}, '', location.pathname);
       if (typeof Auth !== 'undefined') await Auth.bootstrap();
       updQuotaUI();
-      notify('Credit pack purchased — credits added to your account.', 'success', 5000);
+      if (typeof refreshUserDropdown === 'function') refreshUserDropdown();
+      const msg =
+        packCredits > 0
+          ? `You added ${packCredits} credits (they never expire).`
+          : 'Credit pack purchased — credits added to your account.';
+      notify(msg, 'success', 6000);
       return;
     }
     if (p.get('upgraded') === '1') {
@@ -104,7 +133,11 @@
       updQuotaUI();
       if (typeof refreshUserDropdown === 'function') refreshUserDropdown();
       if (activated) {
-        notify("You're now Pro — 12 exam generations/month, 100 AI credits/month (roll over up to 50), packs from €3.99 (€9.99/month).", 'success', 6000);
+        notify(
+          typeof PlanPricing !== 'undefined' ? PlanPricing.proActivatedToast() : "You're now Pro.",
+          'success',
+          6000,
+        );
       } else {
         notify(
           'Payment received. Pro activation is still processing — refresh in a few seconds if needed.',
@@ -136,6 +169,7 @@
       return;
     }
     try {
+      if (typeof LcAnalytics !== 'undefined') LcAnalytics.trackUpgradeClicked('credits');
       const res = await payFetch('/.netlify/functions/stripe-credit-checkout', {
         method: 'POST',
         body: JSON.stringify({ pack: Number(pack) }),
@@ -185,11 +219,6 @@
   };
 
   window.openCreditPackModal = function () {
-    const renew = document.getElementById('creditPackRenewDate');
-    if (renew && typeof aiCreditsRenewalLabel === 'function') {
-      renew.textContent = aiCreditsRenewalLabel();
-    }
-    if (typeof loadAutoRechargePref === 'function') loadAutoRechargePref();
-    if (typeof showCreditPackModal === 'function') showCreditPackModal();
+    if (typeof showCreditPackModal === 'function') showCreditPackModal({ mode: 'browse' });
   };
 })();

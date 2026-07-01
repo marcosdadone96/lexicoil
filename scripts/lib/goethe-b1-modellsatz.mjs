@@ -1,13 +1,14 @@
 /**
- * Goethe-Zertifikat B1 Modellsatz — official item counts (Sprint 1).
+ * Goethe-Zertifikat B1 Modellsatz — official item counts.
+ * Source: goethe.de B1 Modellsatz / Durchführungsbestimmungen (30 Items Lesen + 30 Items Hören).
  * Lesen: 6 + 6 + 7 + 7 + 4 = 30
- * Hören: 6 + 6 + 7 + 8 = 27 (scorable listening items; Schreiben/Sprechen separate)
+ * Hören: 10 + 5 + 7 + 8 = 30 (Teil 1: 5 Kurztexte × 2 Aufgaben)
  */
 export const GOETHE_B1_MODELSATZ = Object.freeze({
   lesen: [6, 6, 7, 7, 4],
-  horen: [6, 6, 7, 8],
+  horen: [10, 5, 7, 8],
   lesenTotal: 30,
-  horenTotal: 27,
+  horenTotal: 30,
 });
 
 export const GOETHE_B1_INSTRUCTIONS = Object.freeze({

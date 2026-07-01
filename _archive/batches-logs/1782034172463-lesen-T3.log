@@ -1,0 +1,28 @@
+
+Batch generator (claude) — de/A2 × 1
+Prompt: batches/GEMINI_MASTER_PROMPT_de_B1.md
+Presupuesto Claude: $999999999.00 (gastado: $2.2671)
+
+── lesen T3 · sport-vereine-01 ──
+Tema: Sportvereine und Fitnessstudios
+Proveedor: claude
+max_output_tokens=16384
+Archivo: batches/merged/lesen-t3-sport-vereine-01.json
+Llamando claude…
+max_output_tokens=16384
+Gasto acumulado: $2.2799 / budget $999999999.00
+Tokens: in=1966 out=2155 (max_out=16384)
+Modelo: claude-haiku-4-5
+Guardado: batches/merged/lesen-t3-sport-vereine-01.json (5 preguntas, 1 passages)
+Validando…
+
+== Validación de lesen-t3-sport-vereine-01.json (de_A2) ==
+Preguntas: 5 | Pasajes: 1
+Esquema: OK
+Conformidad blueprint: OK
+Colocación (Teile que mejora): Pool válido (Teil ya cubierto en 1 examen — OK para exámenes disjuntos)
+Sin problemas detectados ✅
+Validación OK
+Siguiente: node scripts/merge-bank-batch.mjs --lang de --level A2 --file batches/merged/lesen-t3-sport-vereine-01.json
+
+Resumen: 1 OK, 0 fallidos

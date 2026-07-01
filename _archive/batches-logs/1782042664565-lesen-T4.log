@@ -1,0 +1,35 @@
+
+Batch generator (gemini) — de/B2 × 1
+Prompt: batches/GEMINI_MASTER_PROMPT_de_B1.md
+
+── lesen T4 · vier-tage-woche-03 ──
+Tema: Sollte die Vier-Tage-Woche eingeführt werden?
+Proveedor: gemini
+max_output_tokens=16384
+Archivo: batches/merged/lesen-t4-vier-tage-woche-03.json
+Llamando gemini…
+max_output_tokens=16384
+
+⏳ Rate limit — esperando 52s (1/3)…
+
+⏳ Rate limit — esperando 59s (2/3)…
+Error: fetch failed
+
+Reintento API 2/2…
+Llamando gemini…
+max_output_tokens=16384
+Tokens: in=1245 out=4175 (max_out=16384)
+Modelo: gemini-2.5-flash
+Guardado: batches/merged/lesen-t4-vier-tage-woche-03.json (6 preguntas, 6 passages)
+Validando…
+
+== Validación de lesen-t4-vier-tage-woche-03.json (de_B2) ==
+Preguntas: 6 | Pasajes: 6
+Esquema: OK
+Conformidad blueprint: OK
+Colocación (Teile que mejora): lesenT1 0->6
+Sin problemas detectados ✅
+Validación OK
+Siguiente: node scripts/merge-bank-batch.mjs --lang de --level B2 --file batches/merged/lesen-t4-vier-tage-woche-03.json
+
+Resumen: 1 OK, 0 fallidos

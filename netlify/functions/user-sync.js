@@ -24,6 +24,7 @@ function sanitizeSync(raw) {
   const flashcards  = Array.isArray(src.flashcards)  ? src.flashcards.slice(0, 500)  : [];
   const history     = Array.isArray(src.history)     ? src.history.slice(0, 200)     : [];
   const savedExams  = Array.isArray(src.savedExams)  ? src.savedExams.slice(0, 50)   : [];
+  const savedQuizzes = Array.isArray(src.savedQuizzes) ? src.savedQuizzes.slice(0, 30) : [];
   const activityLog = Array.isArray(src.activityLog) ? src.activityLog.slice(0, 100) : [];
 
   const studyTime = src.studyTime && typeof src.studyTime === 'object'
@@ -112,6 +113,13 @@ function sanitizeSync(raw) {
       }))
     : [];
 
+  const deletedSavedQuizzes = Array.isArray(src.deletedSavedQuizzes)
+    ? src.deletedSavedQuizzes.slice(0, 500).filter((t) => t && t.id).map((t) => ({
+        id: String(t.id).slice(0, 120),
+        deletedAt: Math.max(0, Math.min(Number(t.deletedAt) || 0, 9999999999999)),
+      }))
+    : [];
+
   const deletedFlashcards = Array.isArray(src.deletedFlashcards)
     ? src.deletedFlashcards.slice(0, 1000).filter((t) => t && t.key).map((t) => ({
         key: String(t.key).slice(0, 120),
@@ -134,10 +142,105 @@ function sanitizeSync(raw) {
         }
       : { tabs: [] };
 
+  const activeSessions = sanitizeActiveSessionsMap(src.activeSessions);
+
   return {
-    flashcards, history, savedExams, activityLog, studyTime, mastery, burned, quota, preferences,
-    goals, activeGoalId, deletedSavedExams, deletedFlashcards, notebook, updatedAt: Date.now(),
+    flashcards, history, savedExams, savedQuizzes, activityLog, studyTime, mastery, burned, quota, preferences,
+    goals, activeGoalId, deletedSavedExams, deletedSavedQuizzes, deletedFlashcards, notebook, activeSessions, updatedAt: Date.now(),
   };
+}
+
+function sanitizeActiveSessionsMap(raw) {
+  if (!raw || typeof raw !== 'object') return {};
+  const out = {};
+  let count = 0;
+  for (const [goalId, s] of Object.entries(raw)) {
+    if (count >= 20) break;
+    if (!goalId || !s) continue;
+    const examSavedId = s.examSavedId || s.examData?._savedId || s.examData?._flightId || null;
+    if (!s.examData && !examSavedId) continue;
+    const mode = s.mode === 'official' || s.mode === 'real' ? 'official' : 'practice';
+    const entry = {
+      goalId: String(goalId).slice(0, 80),
+      mode,
+      subject: String(s.subject || s.examData?.lang || '').slice(0, 5),
+      level: String(s.level || s.examData?.level || '').slice(0, 4),
+      examSavedId: examSavedId ? String(examSavedId).slice(0, 120) : null,
+      answers: s.answers && typeof s.answers === 'object' ? s.answers : {},
+      gapAnswers: s.gapAnswers && typeof s.gapAnswers === 'object' ? s.gapAnswers : {},
+      fieldValues: s.fieldValues && typeof s.fieldValues === 'object' ? s.fieldValues : {},
+      scrollY: Math.max(0, Math.min(Number(s.scrollY) || 0, 999999)),
+      markedWords: Array.isArray(s.markedWords) ? s.markedWords.slice(0, 500) : [],
+      startedAt: Math.max(0, Math.min(Number(s.startedAt) || 0, 9999999999999)),
+      timerEndsAt: s.timerEndsAt ? Math.max(0, Math.min(Number(s.timerEndsAt), 9999999999999)) : null,
+      updatedAt: Math.max(0, Math.min(Number(s.updatedAt) || 0, 9999999999999)),
+      vocabLang: String(s.vocabLang || 'en').slice(0, 5),
+    };
+    if (s.examData && !examSavedId) entry.examData = s.examData;
+    out[String(goalId).slice(0, 80)] = entry;
+    count++;
+  }
+  return out;
+}
+
+function mergeSavedExamsPut(existing, incoming) {
+  const byId = new Map();
+  for (const e of existing || []) {
+    if (e?.id) byId.set(String(e.id), e);
+  }
+  for (const e of incoming || []) {
+    if (!e?.id) continue;
+    const sid = String(e.id);
+    const prev = byId.get(sid);
+    if (e.dataOmitted && prev?.data) {
+      const { dataOmitted, ...rest } = e;
+      byId.set(sid, { ...prev, ...rest, data: prev.data });
+    } else {
+      byId.set(sid, { ...prev, ...e });
+    }
+  }
+  return [...byId.values()].slice(0, 50);
+}
+
+function mergeSavedQuizzesPut(existing, incoming) {
+  const byId = new Map();
+  for (const q of existing || []) {
+    if (q?.id) byId.set(String(q.id), q);
+  }
+  for (const q of incoming || []) {
+    if (!q?.id) continue;
+    const sid = String(q.id);
+    const prev = byId.get(sid);
+    byId.set(sid, { ...prev, ...q });
+  }
+  return [...byId.values()].slice(0, 30);
+}
+
+function mergeActiveSessionsPut(existing, incoming) {
+  const out = { ...(existing && typeof existing === 'object' ? existing : {}) };
+  for (const [goalId, s] of Object.entries(incoming || {})) {
+    if (!goalId || !s) continue;
+    const prev = out[goalId];
+    if (!s.examData && prev?.examData) {
+      out[goalId] = { ...prev, ...s, examData: prev.examData };
+    } else {
+      out[goalId] = { ...prev, ...s };
+    }
+  }
+  return sanitizeActiveSessionsMap(out);
+}
+
+function mergeSyncPut(existing, incoming) {
+  const base = existing && typeof existing === 'object' ? existing : {};
+  const inc = incoming && typeof incoming === 'object' ? incoming : {};
+  return sanitizeSync({
+    ...base,
+    ...inc,
+    savedExams: mergeSavedExamsPut(base.savedExams, inc.savedExams),
+    savedQuizzes: mergeSavedQuizzesPut(base.savedQuizzes, inc.savedQuizzes),
+    activeSessions: mergeActiveSessionsPut(base.activeSessions, inc.activeSessions),
+    updatedAt: Date.now(),
+  });
 }
 
 const TOMBSTONE_MAX_AGE_MS = 180 * 24 * 60 * 60 * 1000;
@@ -241,12 +344,25 @@ async function readFromSupabase(userId) {
     ]);
     return {
       burned: { v: 1, ids: burnedData.ids, keys: [] },
-      flashcards: flashcards.map((f) => ({
-        word: f.word, translation: f.translation, context: f.context,
-        wordType: f.word_type, lang: f.lang, sourceLang: f.lang, level: f.level,
-        grammarTags: f.grammar_tags || [], sourceExamId: f.source_exam_id,
-        createdAt: f.created_at,
-      })),
+      flashcards: flashcards.map((f) => {
+        const lang = f.lang || '';
+        const translation = f.translation || null;
+        const fc = {
+          word: f.word,
+          translation,
+          context: f.context,
+          wordType: f.word_type,
+          lang,
+          sourceLang: lang,
+          level: f.level,
+          grammarTags: f.grammar_tags || [],
+          sourceExamId: f.source_exam_id,
+          createdAt: f.created_at,
+          savedAt: f.created_at ? Date.parse(f.created_at) : Date.now(),
+        };
+        if (translation) fc.translations = { en: translation };
+        return fc;
+      }),
       savedExams,
       history: history.map((h) => ({
         lang: h.lang, level: h.level, score: h.score,
@@ -289,7 +405,7 @@ async function writeToSupabase(userId, email, data) {
         lang:          f.lang || f.sourceLang || '',
         level:         f.level || '',
         word:          f.word  || '',
-        translation:   f.translation  || null,
+        translation:   f.translation || (f.translations && (f.translations.en || f.translations.es || Object.values(f.translations).find(Boolean))) || null,
         context:       f.context      || null,
         word_type:     f.wordType     || null,
         grammar_tags:  f.grammarTags  || [],
@@ -401,14 +517,22 @@ exports.handler = async (event) => {
 
     const data = sanitizeSync(body.data || body);
 
+    let existing = null;
+    try {
+      existing = await store.get(key, { type: 'json' });
+    } catch (_) {
+      existing = null;
+    }
+    const merged = mergeSyncPut(existing, data);
+
     // Dual-write: Supabase primary + Blobs backup
-    const writes = [store.setJSON(key, data)];
+    const writes = [store.setJSON(key, merged)];
     if (useSupabase && auth.userId) {
-      writes.push(writeToSupabase(auth.userId, auth.email, data));
+      writes.push(writeToSupabase(auth.userId, auth.email, merged));
     }
     await Promise.allSettled(writes);
 
-    return jsonResponse(200, cors, { ok: true, updatedAt: data.updatedAt });
+    return jsonResponse(200, cors, { ok: true, updatedAt: merged.updatedAt });
   }
 
   return jsonResponse(405, cors, { error: 'method_not_allowed' });

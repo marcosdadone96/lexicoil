@@ -21,9 +21,20 @@ function loadTheme(){
   }
 }
 function getProfileFlashcards(){
+  const goal=(typeof getActiveGoal==='function')?getActiveGoal():null;
+  if(goal)return deckForGoal(goal);
   if(S.deckGoalFilter)return getDeckViewCards();
-  return typeof ExamProfile!=='undefined'?ExamProfile.filterList(S.flashcards):S.flashcards;
+  const ap=typeof ExamProfile!=='undefined'?ExamProfile.getActive():null;
+  if(ap){
+    const pseudo={subject:ap.subject,level:ap.level};
+    return(S.flashcards||[]).filter(f=>fcMatchesGoal(f,pseudo));
+  }
+  return S.flashcards||[];
 }
 function getProfileHistory(){
-  return typeof ExamProfile!=='undefined'?ExamProfile.filterList(S.history):S.history;
+  const goal=(typeof getActiveGoal==='function')?getActiveGoal():null;
+  if(goal)return historyForGoal(goal);
+  const ap=typeof ExamProfile!=='undefined'?ExamProfile.getActive():null;
+  if(ap)return(S.history||[]).filter(h=>h.lang===ap.subject&&h.level===ap.level);
+  return S.history||[];
 }

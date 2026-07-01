@@ -99,7 +99,8 @@ async function clearPaymentPastDue(store, rawEmail) {
   return { ok: true, email, user: updatedUser };
 }
 
-async function activateProForEmail(store, rawEmail, { sendEmail = true, stripeCustomerId = null } = {}) {
+async function activatePlanForEmail(store, rawEmail, plan, { sendEmail = true, stripeCustomerId = null } = {}) {
+  const targetPlan = plan === 'pro_max' ? 'pro_max' : 'pro';
   const email = normalizeEmail(rawEmail);
   if (!email) return { ok: false, error: 'invalid_email' };
 
@@ -117,7 +118,7 @@ async function activateProForEmail(store, rawEmail, { sendEmail = true, stripeCu
 
   const updatedUser = {
     ...user,
-    plan: 'pro',
+    plan: targetPlan,
     pro: true,
     proActivatedAt: Date.now(),
     paymentPastDue: false,
@@ -131,9 +132,9 @@ async function activateProForEmail(store, rawEmail, { sendEmail = true, stripeCu
   const month = getMonthKey();
   await store.setJSON(`quota:${email}`, { used: 0, month, max: PRO_MAX });
 
-  await syncPlanToSupabase(email, 'pro', updatedUser);
+  await syncPlanToSupabase(email, targetPlan, updatedUser);
 
-  if (sendEmail) {
+  if (sendEmail && targetPlan === 'pro') {
     try {
       await sendProWelcomeEmail(email, updatedUser.name || email.split('@')[0]);
     } catch (err) {
@@ -145,12 +146,23 @@ async function activateProForEmail(store, rawEmail, { sendEmail = true, stripeCu
     ok: true,
     email,
     user: updatedUser,
+    plan: targetPlan,
     quota: { used: 0, max: PRO_MAX, month },
   };
 }
 
+async function activateProForEmail(store, rawEmail, opts = {}) {
+  return activatePlanForEmail(store, rawEmail, 'pro', opts);
+}
+
+async function activateProMaxForEmail(store, rawEmail, opts = {}) {
+  return activatePlanForEmail(store, rawEmail, 'pro_max', opts);
+}
+
 module.exports = {
   activateProForEmail,
+  activateProMaxForEmail,
+  activatePlanForEmail,
   revokeProForEmail,
   markPaymentPastDue,
   clearPaymentPastDue,

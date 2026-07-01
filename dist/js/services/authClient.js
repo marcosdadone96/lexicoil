@@ -112,6 +112,10 @@ const Auth = (() => {
 
   function applyUser(user) {
     if (!user) return;
+    if (typeof applyUserFromServer === 'function') {
+      applyUserFromServer(user);
+      return;
+    }
     const plan = user.guest ? 'guest' : (user.pro || user.plan === 'pro') ? 'pro' : user.plan || 'free';
     const avatar = (user.name || user.email || '?')[0].toUpperCase();
     saveUser({
@@ -123,11 +127,18 @@ const Auth = (() => {
     });
     if (typeof S !== 'undefined') S.plan = plan;
     if (typeof applyServerQuota === 'function') {
-      if (user.quota) {
-        applyServerQuota({ used: user.quota.used, max: user.quota.max, plan });
-      } else if (user.guest) {
-        applyServerQuota({ used: getQuotaUsed?.() || 0, max: 2, plan: 'guest' });
-      }
+      applyServerQuota({
+        used: user.quota?.used,
+        max: user.quota?.max,
+        plan,
+        aiUsed: user.aiCredits?.used,
+        aiMax: user.aiCredits?.max,
+        aiRemaining: user.aiCredits?.remaining,
+        aiTotalPool: user.aiCredits?.totalPool,
+        aiRollover: user.aiCredits?.rollover,
+        aiTopups: user.aiCredits?.creditTopups,
+        aiTrialActive: user.aiCredits?.trialActive,
+      });
     }
     if (typeof applyFreeCombo === 'function') applyFreeCombo(user);
   }
@@ -170,6 +181,8 @@ const Auth = (() => {
       history: Array.isArray(S.history) ? S.history : read('lc_hist', []),
       savedExams: Array.isArray(S.savedExams) ? S.savedExams : read('lc_saved', []),
       deletedSavedExams: Array.isArray(S.deletedSavedExams) ? S.deletedSavedExams : read('lc_saved_del', []),
+      savedQuizzes: Array.isArray(S.savedQuizzes) ? S.savedQuizzes : read('lc_saved_quizzes', []),
+      deletedSavedQuizzes: Array.isArray(S.deletedSavedQuizzes) ? S.deletedSavedQuizzes : read('lc_saved_quizzes_del', []),
       activityLog: Array.isArray(S.activityLog) ? S.activityLog : read('lc_activity', []),
       studyTime:
         S.studyTime && typeof S.studyTime === 'object'
@@ -186,6 +199,10 @@ const Auth = (() => {
       goals: Array.isArray(S.goals) ? S.goals : read('lc_goals', []),
       activeGoalId: S.activeGoalId || localStorage.getItem('lc_active_goal') || null,
       notebook: S.notebook && typeof S.notebook === 'object' ? S.notebook : read('lc_notes', { tabs: [] }),
+      activeSessions:
+        typeof exportActiveSessionsForSync === 'function'
+          ? exportActiveSessionsForSync()
+          : read('lc_active_sessions', {}),
     };
   }
 
@@ -204,6 +221,8 @@ const Auth = (() => {
             history: Array.isArray(server.history) ? server.history : localBefore.history,
             savedExams: Array.isArray(server.savedExams) ? server.savedExams : localBefore.savedExams,
             deletedSavedExams: Array.isArray(server.deletedSavedExams) ? server.deletedSavedExams : localBefore.deletedSavedExams,
+            savedQuizzes: Array.isArray(server.savedQuizzes) ? server.savedQuizzes : localBefore.savedQuizzes,
+            deletedSavedQuizzes: Array.isArray(server.deletedSavedQuizzes) ? server.deletedSavedQuizzes : localBefore.deletedSavedQuizzes,
             activityLog: Array.isArray(server.activityLog) ? server.activityLog : localBefore.activityLog,
             studyTime: server.studyTime && typeof server.studyTime === 'object' ? server.studyTime : localBefore.studyTime,
             mastery: server.mastery && typeof server.mastery === 'object' ? server.mastery : localBefore.mastery,
@@ -214,6 +233,8 @@ const Auth = (() => {
     S.history = merged.history;
     S.savedExams = merged.savedExams;
     S.deletedSavedExams = merged.deletedSavedExams || [];
+    S.savedQuizzes = merged.savedQuizzes || [];
+    S.deletedSavedQuizzes = merged.deletedSavedQuizzes || [];
     S.activityLog = merged.activityLog || [];
     S.studyTime = merged.studyTime || (typeof ActivityTrack !== 'undefined' ? ActivityTrack.defaultStudyTime() : {});
     if (typeof AnalyticsStore !== 'undefined' && merged.mastery) {
@@ -226,6 +247,8 @@ const Auth = (() => {
     localStorage.setItem('lc_hist', JSON.stringify(S.history));
     localStorage.setItem('lc_saved', JSON.stringify(S.savedExams));
     localStorage.setItem('lc_saved_del', JSON.stringify(S.deletedSavedExams));
+    localStorage.setItem('lc_saved_quizzes', JSON.stringify(S.savedQuizzes));
+    localStorage.setItem('lc_saved_quizzes_del', JSON.stringify(S.deletedSavedQuizzes));
     localStorage.setItem('lc_activity', JSON.stringify(S.activityLog));
     localStorage.setItem('lc_time', JSON.stringify(S.studyTime));
     if (merged.burned) { localStorage.setItem('lc_burned', JSON.stringify(merged.burned)); if (typeof S !== 'undefined') S.burned = null; }
@@ -240,6 +263,9 @@ const Auth = (() => {
     if (merged.notebook) {
       S.notebook = merged.notebook;
       localStorage.setItem('lc_notes', JSON.stringify(merged.notebook));
+    }
+    if (merged.activeSessions && typeof applyActiveSessionsFromSync === 'function') {
+      applyActiveSessionsFromSync(merged.activeSessions);
     }
     if (typeof AnalyticsStore !== 'undefined') {
       localStorage.setItem(AnalyticsStore.KEY, JSON.stringify(AnalyticsStore.exportSnapshot()));
@@ -260,43 +286,106 @@ const Auth = (() => {
     }
     if (typeof updBadges === 'function') updBadges();
     if (typeof updQuotaUI === 'function') updQuotaUI();
-    await pushSync();
+    await pushSyncNow();
   }
 
-  async function pushSync() {
-    if (localMode || isGuest()) return;
-    await api('user-sync', {
-      method: 'PUT',
-      headers: authHeaders(),
-      body: JSON.stringify({
-        data: {
-          flashcards: S.flashcards,
-          deletedFlashcards: S.deletedFlashcards || [],
-          history: S.history,
-          savedExams: S.savedExams,
-          deletedSavedExams: S.deletedSavedExams || [],
-          activityLog: S.activityLog || [],
-          studyTime: S.studyTime || {},
-          mastery:
-            typeof AnalyticsStore !== 'undefined'
-              ? AnalyticsStore.exportSnapshot()
-              : (() => { try { return JSON.parse(localStorage.getItem('lc_mastery') || '{"profiles":{}}'); } catch(_) { return {"profiles":{}}; } })(),
-          burned:
-            typeof BurnedRegistry !== 'undefined'
-              ? BurnedRegistry.toPayload()
-              : (() => { try { return JSON.parse(localStorage.getItem('lc_burned') || '{"v":1,"keys":[],"ids":[]}'); } catch(_) { return {"v":1,"keys":[],"ids":[]}; } })(),
-          goals: Array.isArray(S.goals) ? S.goals : [],
-          activeGoalId: S.activeGoalId || null,
-          notebook: S.notebook && typeof S.notebook === 'object' ? S.notebook : { tabs: [] },
-          preferences: {
-            translationLangs: [S.fcLang || 'en'],
-            ttsVoices: (typeof getTtsVoicePref === 'function' && S.subject)
-              ? { [S.subject]: getTtsVoicePref(S.subject) }
-              : {},
-          },
-        },
-      }),
+  const SAVED_EXAM_DATA_SYNC_MAX = 48_000;
+
+  function slimSavedExamsForSync(exams) {
+    return (exams || []).map((e) => {
+      if (!e || typeof e !== 'object' || !e.data) return e;
+      let dataBytes = 0;
+      try {
+        dataBytes = JSON.stringify(e.data).length;
+      } catch (_) {
+        dataBytes = SAVED_EXAM_DATA_SYNC_MAX + 1;
+      }
+      if (dataBytes <= SAVED_EXAM_DATA_SYNC_MAX) return e;
+      const { data, ...rest } = e;
+      return { ...rest, dataOmitted: true };
     });
+  }
+
+  function slimSyncPayloadForPut(data) {
+    const src = data && typeof data === 'object' ? data : {};
+    return {
+      ...src,
+      savedExams: slimSavedExamsForSync(src.savedExams),
+      activeSessions:
+        typeof exportActiveSessionsForSync === 'function'
+          ? exportActiveSessionsForSync()
+          : src.activeSessions,
+    };
+  }
+
+  let _pushSyncTimer = null;
+
+  async function pushSyncNow() {
+    if (localMode || isGuest()) return;
+    const payload = slimSyncPayloadForPut({
+      flashcards: S.flashcards,
+      deletedFlashcards: S.deletedFlashcards || [],
+      history: S.history,
+      savedExams: S.savedExams,
+      deletedSavedExams: S.deletedSavedExams || [],
+      savedQuizzes: S.savedQuizzes || [],
+      deletedSavedQuizzes: S.deletedSavedQuizzes || [],
+      activityLog: S.activityLog || [],
+      studyTime: S.studyTime || {},
+      mastery:
+        typeof AnalyticsStore !== 'undefined'
+          ? AnalyticsStore.exportSnapshot()
+          : (() => { try { return JSON.parse(localStorage.getItem('lc_mastery') || '{"profiles":{}}'); } catch (_) { return { profiles: {} }; } })(),
+      burned:
+        typeof BurnedRegistry !== 'undefined'
+          ? BurnedRegistry.toPayload()
+          : (() => { try { return JSON.parse(localStorage.getItem('lc_burned') || '{"v":1,"keys":[],"ids":[]}'); } catch (_) { return { v: 1, keys: [], ids: [] }; } })(),
+      goals: Array.isArray(S.goals) ? S.goals : [],
+      activeGoalId: S.activeGoalId || null,
+      notebook: S.notebook && typeof S.notebook === 'object' ? S.notebook : { tabs: [] },
+      preferences: {
+        translationLangs: [S.fcLang || 'en'],
+        ttsVoices: (typeof getTtsVoicePref === 'function' && S.subject)
+          ? { [S.subject]: getTtsVoicePref(S.subject) }
+          : {},
+      },
+    });
+    try {
+      let body = JSON.stringify({ data: payload });
+      if (body.length > 850_000) {
+        payload.savedExams = (payload.savedExams || []).map((e) => {
+          if (!e?.data) return e;
+          const { data, ...rest } = e;
+          return { ...rest, dataOmitted: true };
+        });
+        body = JSON.stringify({ data: payload });
+      }
+      await api('user-sync', {
+        method: 'PUT',
+        headers: authHeaders(),
+        body,
+      });
+    } catch (err) {
+      if (typeof lcDebug !== 'undefined') lcDebug.warn('[sync] push failed:', err?.message || err);
+    }
+  }
+
+  function pushSync() {
+    if (localMode || isGuest()) return Promise.resolve();
+    if (_pushSyncTimer) clearTimeout(_pushSyncTimer);
+    _pushSyncTimer = setTimeout(() => {
+      _pushSyncTimer = null;
+      void pushSyncNow();
+    }, 2000);
+    return Promise.resolve();
+  }
+
+  async function pushSyncImmediate() {
+    if (_pushSyncTimer) {
+      clearTimeout(_pushSyncTimer);
+      _pushSyncTimer = null;
+    }
+    await pushSyncNow();
   }
 
   function isOAuthCallbackUrl() {
@@ -443,7 +532,9 @@ const Auth = (() => {
       });
       if (error) throw new Error(mapSupabaseError(error));
       if (data.session?.access_token) {
-        return exchangeSupabaseSession(data.session.access_token);
+        await exchangeSupabaseSession(data.session.access_token);
+        if (typeof LcAnalytics !== 'undefined') LcAnalytics.trackSignUp();
+        return {};
       }
       try {
         await sb.auth.signOut();
@@ -473,6 +564,7 @@ const Auth = (() => {
     await pullSync();
     const { res: meRes, data: meData } = await api('auth-me');
     if (meRes.ok) applyUser(meData.user);
+    if (typeof LcAnalytics !== 'undefined') LcAnalytics.trackSignUp();
     return data.user;
   }
 
@@ -704,6 +796,7 @@ const Auth = (() => {
     u[em] = { nm: name, pw: password, plan: 'free' };
     localStorage.setItem('lc_users', JSON.stringify(u));
     applyUser({ name, email: em, plan: 'free', pro: false, freeCombo: readRegisterComboFromForm?.() });
+    if (typeof LcAnalytics !== 'undefined') LcAnalytics.trackSignUp();
   }
 
   function localLogin(email, password) {

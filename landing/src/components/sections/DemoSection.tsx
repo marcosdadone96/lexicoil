@@ -1,3 +1,4 @@
+import { DEMO_URL } from '@/lib/constants';
 import { Container } from '@/components/ui/Container';
 import { ProductFrame } from '@/components/ui/ProductFrame';
 import { AppScreenshotWorkspace } from '@/components/ui/AppScreenshotWorkspace';
@@ -5,7 +6,7 @@ import { AppScreenshotWorkspace } from '@/components/ui/AppScreenshotWorkspace';
 const LOOP = [
   { step: '1', label: 'Take a practice exam', detail: 'Official or adaptive mode from your goal workspace.' },
   { step: '2', label: 'Save words you miss', detail: 'Click difficult words in practice mode — they enter your deck.' },
-  { step: '3', label: 'Generate a personalized exam', detail: 'Pro: select saved words and get a new test built from your gaps.' },
+  { step: '3', label: 'Practice with AI', detail: 'Free: quiz, speaking & listening game with monthly credits. Pro: personalized exams from your gaps.' },
   { step: '4', label: 'Track readiness', detail: 'Skills, score trend, and coach recommendations on your dashboard.' },
 ];
 
@@ -47,7 +48,7 @@ export function DemoSection() {
                 </div>
               </div>
             ))}
-            <a href="/demo" className="btn-primary mt-2 inline-flex w-full justify-center py-4 text-base sm:w-auto">
+            <a href={DEMO_URL} className="btn-primary mt-2 inline-flex w-full justify-center py-4 text-base sm:w-auto">
               Try the sample exam first →
             </a>
           </div>

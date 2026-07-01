@@ -1,0 +1,128 @@
+# Prompt generado — Hören B1 · Teil 1
+Copia TODO (desde la línea ---) y pégalo en Gemini/ChatGPT. Devuelve SOLO JSON.
+Regenerar otro sorteo: npm run npm run horen:prompt:t1
+
+---
+
+# Plantilla de generación — Hören B1 · Teil 1
+
+Pega TODO este texto en Gemini/ChatGPT. Devuelve **SOLO JSON**.
+Formato oficial Goethe: **5 audios cortos × 2 preguntas = 10 items**.
+
+---
+
+Eres examinador del Goethe-Zertifikat B1. Genera **UNA** parte de **Hören Teil 1**
+(anuncios, Durchsagen, Telefonate, Kurzgespräche), alemán **hablado**, nivel B1.
+
+## Reglas estrictas
+- **5 segmentos** de audio (`passages` s1…s5), cada uno **50–85 palabras** (mín. 40, máx. 90).
+- **10 preguntas** exactas — por segmento:
+  1. `type: "richtig_falsch"` · `options: []` · `correct`: `"Richtig"` o `"Falsch"`
+  2. `type: "multiple"` · 3 opciones `a) …`, `b) …`, `c) …` · `correct`: `"a"`/`"b"`/`"c"`
+- Escucha oficial: **2×** (implícito; no escribas meta-texto sobre ello).
+- `segmentLabel`: `"Aufnahme 1"` … `"Aufnahme 5"` en cada pregunta.
+- Cada pregunta con `passageId` del segmento correcto.
+
+## ESTILO (obligatorio — suena hablado, no redacción)
+- Anuncios: «Guten Tag, …», «Achtung, …», precios, horarios, lugares concretos.
+- Telefonat: turnos cortos, preguntas directas.
+- **PROHIBIDO:** tono de ensayo, «Im folgenden Text…», listas numeradas formales.
+
+## REGLAS DE CALIDAD (rechazo si fallas)
+1. Segmentos **temáticamente distintos** (no 5 veces el mismo tipo de anuncio).
+2. RF: mezcla ~5 Richtig / ~5 Falsch; al menos **2 Falsch** con trampa (nur/alle/immer/nie).
+3. MCQ: respuesta inferible del audio; **varía** correct entre a, b, c (no siempre b).
+4. Anti word-matching: la pregunta RF/MCQ **no copia** 4+ palabras seguidas del transcript.
+5. Pregunta MCQ ≠ misma formulación que la afirmación RF del mismo segmento.
+
+## PALABRAS OBJETIVO
+<<< ironie, beistand, unterstützt, gemacht, gerade, mangel, beförderung, reserven, umwelt, dächern >>>
+
+## AUTORREVISIÓN
+- ¿5 passages + 10 questions con segmentLabel?
+- ¿Orden sN-q1=RF, sN-q2=MCQ en los 5 segmentos?
+- ¿Cada transcript 50–85 palabras contadas?
+- ¿module:"horen", teil:1, lang:"de", level:"B1"?
+- ¿Solo JSON?
+
+## Formato de salida
+Devuelve SOLO `{ "passages": [...], "questions": [...] }`.
+- Passage IDs: `gen-p-h1-XXXX-s1` … `s5`
+- Question IDs: `gen-q-h1-XXXX-s1-q1`, `s1-q2`, … `s5-q2`
+- Campos: `passageVocab` (3–5 lemas), `explanation` en alemán, `skills:["listening"]`
+
+## EJEMPLO ESTRUCTURAL (1 segmento — imita formato, contenido nuevo)
+
+```json
+{
+  "passages": [
+    {
+      "id": "gen-p-h1-8842-s1",
+      "module": "horen",
+      "teil": 1,
+      "title": "Ansage Bahnhof",
+      "text": "Achtung, liebe Fahrgäste! Der Regionalzug nach München fährt heute von Gleis 4 ab, nicht von Gleis 7. Abfahrt ist um 14:32 Uhr. Bitte achten Sie auf Ihre Fahrkarte. Der nächste Zug nach Nürnberg verlässt den Bahnhof in zwanzig Minuten von Gleis 2.",
+      "passageVocab": ["fahrgast", "gleis", "abfahrt", "fahrkarte"]
+    }
+  ],
+  "questions": [
+    {
+      "id": "gen-q-h1-8842-s1-q1",
+      "module": "horen",
+      "teil": 1,
+      "type": "richtig_falsch",
+      "question": "Der Zug nach München fährt von Gleis 7 ab.",
+      "options": [],
+      "correct": "Falsch",
+      "correctAnswer": "Falsch",
+      "explanation": "Die Ansage nennt Gleis 4, nicht Gleis 7.",
+      "segmentLabel": "Aufnahme 1",
+      "passageId": "gen-p-h1-8842-s1",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-h1-8842-s1-q2",
+      "module": "horen",
+      "teil": 1,
+      "type": "multiple",
+      "question": "Wann fährt der Zug nach München ab?",
+      "options": ["a) Um 14:15 Uhr", "b) Um 14:32 Uhr", "c) Um 15:00 Uhr"],
+      "correct": "b",
+      "correctAnswer": "b",
+      "explanation": "In der Ansage: Abfahrt um 14:32 Uhr.",
+      "segmentLabel": "Aufnahme 1",
+      "passageId": "gen-p-h1-8842-s1",
+      "lang": "de",
+      "level": "B1"
+    }
+  ]
+}
+```
+
+Genera **5 segmentos completos** (s1–s5) y **10 preguntas**, integrando PALABRAS OBJETIVO. Devuelve solo el JSON.
+
+IMPORTANTE — IDs de esta generación:
+- Passages T1: gen-p-h1-a161-sN (N=1…5 solo T1)
+- Preguntas: gen-q-h1-a161-…
+No reutilices IDs del ejemplo ni del banco existente.
+
+## LONGITUD CEFR (OBLIGATORIO — ingest RECHAZA si fallas)
+- Ámbito: **cada passages[i].text (5 segmentos s1–s5)** (10 preguntas: por segmento 1× richtig_falsch + 1× multiple (a/b/c). Lenguaje hablado.)
+- Objetivo: **50–85 por segmento palabras**.
+- Mínimo absoluto: **40** · máximo: **90**.
+- **CUENTA las palabras antes de responder.** Transcript = lenguaje **hablado**, no ensayo escrito.
+- Prefiere léxico B1 frecuente. Evita anglicismos raros y meta-texto («Dieser Text hat 280 Wörter…»).
+- Integra PALABRAS OBJETIVO en los transcripts (Hören), no en las preguntas literalmente.
+
+CHECKLIST FINAL (Goethe B1 — debe pasar validate-batch.mjs):
+- Responde SOLO JSON: { "passages": [...], "questions": [...] } — sin markdown, sin ```.
+- correct === correctAnswer en todas las preguntas.
+- module correcto en cada question; lang:"de", level:"B1".
+- IDs únicos con el prefijo indicado arriba (no reutilizar el ejemplo).
+- explanation en alemán en cada pregunta (nunca vacía).
+- PALABRAS OBJETIVO: 8–12 lemas B1 integrados en el contenido.
+- 5 passages (s1–s5) + 10 questions (sN-q1 RF, sN-q2 MCQ).
+- segmentLabel en cada pregunta (Aufnahme 1 … 5).
+- MCQ: options a)/b)/c); correct solo letra; varía a/b/c.
+

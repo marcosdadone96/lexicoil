@@ -2,6 +2,11 @@
 const ManualVocab = (() => {
   const indexCache = {};
 
+  /** High-confidence typos seen in learner decks → canonical form */
+  const KNOWN_SPELLING_OVERRIDES = {
+    unterschid: 'Unterschied',
+  };
+
   function levenshtein(a, b) {
     const m = a.length;
     const n = b.length;
@@ -35,30 +40,55 @@ const ManualVocab = (() => {
     return 3;
   }
 
-  async function loadWordIndex(subject) {
-    if (indexCache[subject]) return indexCache[subject];
+  function displayLemma(lemma, subject) {
+    const s = String(lemma || '').trim();
+    if (!s) return s;
+    if (subject === 'de') return s.charAt(0).toUpperCase() + s.slice(1);
+    return s;
+  }
+
+  async function loadWordIndex(subject, level) {
+    const cacheKey = `${subject}:${level || 'all'}`;
+    if (indexCache[cacheKey]) return indexCache[cacheKey];
     const words = new Map();
+    Object.entries(KNOWN_SPELLING_OVERRIDES).forEach(([typo, canonical]) => {
+      const low = normToken(typo);
+      if (low) words.set(low, { word: canonical, meta: { override: true }, level: null });
+    });
     if (typeof LibraryLoader !== 'undefined') {
-      const levels = LibraryLoader.supportedLevels(subject) || [];
-      for (const level of levels) {
+      const levels = LibraryLoader.advertisedLevels?.(subject) || LibraryLoader.supportedLevels(subject) || [];
+      for (const lv of levels) {
         try {
-          const ok = LibraryLoader.hasLibrary(subject, level)
-            ? await LibraryLoader.probeLevel(subject, level)
-            : false;
+          const ok = LibraryLoader.hasLibrary(subject, lv)
+            ? true
+            : await LibraryLoader.probeLevel(subject, lv);
           if (!ok) continue;
-          const bank = await LibraryLoader.load(subject, level);
+          const bank = await LibraryLoader.load(subject, lv);
           if (!bank?.vocabulary) continue;
           Object.entries(bank.vocabulary).forEach(([w, meta]) => {
             const low = normToken(w);
             if (!low || words.has(low)) return;
-            words.set(low, { word: w, meta, level });
+            words.set(low, { word: w, meta, level: lv });
           });
         } catch (_) {
           /* skip level */
         }
       }
     }
-    indexCache[subject] = words;
+    if (typeof CefrVocabLoader !== 'undefined') {
+      try {
+        const upTo = level || 'C2';
+        const cefrSet = await CefrVocabLoader.loadCumulativeVocab(subject, upTo);
+        cefrSet.forEach((lemma) => {
+          const low = normToken(lemma);
+          if (!low || words.has(low)) return;
+          words.set(low, { word: displayLemma(lemma, subject), meta: { cefr: true }, level: null });
+        });
+      } catch (_) {
+        /* CEFR list optional */
+      }
+    }
+    indexCache[cacheKey] = words;
     return words;
   }
 
@@ -67,14 +97,14 @@ const ManualVocab = (() => {
     return low && index.has(low) ? index.get(low) : null;
   }
 
-  function findSpellingSuggestion(word, index) {
+  function findSpellingSuggestion(word, index, maxDist) {
     const q = normToken(word);
     if (!q || q.length < 2) return null;
     const hit = index.get(q);
     if (hit) return null;
     let best = null;
     let bestD = Infinity;
-    const threshold = maxEditDistance(q.length);
+    const threshold = maxDist != null ? maxDist : maxEditDistance(q.length);
     for (const [low, data] of index) {
       if (Math.abs(low.length - q.length) > threshold) continue;
       const d = levenshtein(q, low);
@@ -119,6 +149,11 @@ const ManualVocab = (() => {
         if (/(liche|licher|liches|lichem|lichen|lich|ig|isch|bar|sam|haft|los|voll|frei|mäßig|artig)$/i.test(low)) {
           return 'adjective';
         }
+        if (/ieren$/i.test(low)) return 'verb';
+        if (/(ionen|ungen|heiten|keiten|schaften|tionen|eln)$/i.test(low)) return 'noun';
+        if (/en$/i.test(low) && low.length > 3 && !/(ung|heit|keit|schaft|tion|ismus|ment|chen|lein|tum|nis|sal|mal|ion)$/i.test(low)) {
+          return 'verb';
+        }
         return 'noun';
       }
       if (/weise$/.test(low)) return 'adverb';
@@ -147,6 +182,50 @@ const ManualVocab = (() => {
     return stored || 'other';
   }
 
+  function inferNounGender(word, subject) {
+    const sub = subject || 'de';
+    const raw = String(word || '').trim();
+    const low = normToken(raw);
+    if (!low || low.length < 2) return null;
+
+    if (sub === 'de') {
+      const neut = new Set(['feuer', 'wasser', 'messer', 'kreuz', 'herz', 'interieur', 'genie']);
+      if (neut.has(low)) return { gender: 'n', article: 'das' };
+      const lexNeut =
+        typeof ArticleLexicon !== 'undefined' && ArticleLexicon.lookupLemma
+          ? ArticleLexicon.lookupLemma(low, 'de')
+          : null;
+      if (/(chen|lein|tum|ment|nis|ett|on|um)$/i.test(low) && !/(ung|heit|keit)$/i.test(low)) {
+        if (lexNeut === 'n') return { gender: 'n', article: 'das' };
+        if (low.endsWith('chen') || low.endsWith('lein')) {
+          const stem = low.slice(0, -2);
+          const stemHit =
+            typeof ArticleLexicon !== 'undefined' && ArticleLexicon.lookupLemma
+              ? ArticleLexicon.lookupLemma(stem, 'de')
+              : null;
+          if (stemHit && stemHit !== 'n') return null;
+          if (!stemHit && low.length <= 8) return { gender: 'n', article: 'das' };
+          return null;
+        }
+        return { gender: 'n', article: 'das' };
+      }
+      if (/(ung|heit|keit|schaft|tion|sion|tät|ität|ik|ur|ie|ei|anz|enz)$/i.test(low)) {
+        return { gender: 'f', article: 'die' };
+      }
+      if (low.endsWith('in') && low.length > 3) return { gender: 'f', article: 'die' };
+      if (/(ling|ismus|or|ant|ent|ich)$/i.test(low)) return { gender: 'm', article: 'der' };
+      if (low.endsWith('er') && low.length >= 4) return { gender: 'm', article: 'der' };
+      if (low.endsWith('ig') && /^[A-ZÄÖÜ]/.test(raw)) return { gender: 'm', article: 'der' };
+      return null;
+    }
+
+    if (sub === 'es') {
+      if (/(ción|sión|dad|tad|ed|umbre|ez|ie)$/i.test(low)) return { gender: 'f', article: 'la' };
+      if (/(aje|or|an)$/i.test(low)) return { gender: 'm', article: 'el' };
+    }
+    return null;
+  }
+
   function enrichFlashcard(fc, subject) {
     if (!fc) return fc;
     const sub = subject || fc.sourceLang || '';
@@ -159,12 +238,37 @@ const ManualVocab = (() => {
     const pos = inferPos(fc, sub);
     fc.type = pos;
     fc.pos = pos;
+    if (pos === 'noun') {
+      if (typeof ArticleLexicon !== 'undefined' && ArticleLexicon.applyToFlashcard) {
+        ArticleLexicon.applyToFlashcard(fc, sub);
+      }
+      if (!fc.gender && !fc.article) {
+        const guessed = inferNounGender(fc.word, sub);
+        if (guessed) {
+          fc.gender = guessed.gender;
+          fc.article = guessed.article;
+        }
+      }
+    }
+    if (pos === 'verb' && typeof VerbConjugation !== 'undefined' && VerbConjugation.enrichFlashcard) {
+      VerbConjugation.enrichFlashcard(fc, sub);
+    }
     return fc;
   }
 
   function enrichFlashcardFromBank(fc, bank) {
-    if (!fc || !bank?.questions?.length) return fc;
+    if (!fc || !bank) return fc;
     const wordLow = String(fc.word || '').toLowerCase().trim();
+    if (wordLow && bank.vocabulary) {
+      const key = Object.keys(bank.vocabulary).find((k) => k.toLowerCase() === wordLow);
+      if (key) {
+        const meta = bank.vocabulary[key] || {};
+        if (!fc.gender && meta.gender) fc.gender = meta.gender;
+        if (!fc.article && meta.article) fc.article = meta.article;
+        if (!fc.type && (meta.type || meta.pos)) fc.type = meta.type || meta.pos;
+      }
+    }
+    if (!bank?.questions?.length) return fc;
     if (!wordLow) return fc;
     const topicSet = new Set(fc.topicTags || []);
     const grammarSet = new Set(fc.grammarTags || []);
@@ -196,7 +300,7 @@ const ManualVocab = (() => {
     return tr;
   }
 
-  function entryToFlashcard(entry, subject, targetLang, manualTrans) {
+  function entryToFlashcard(entry, subject, targetLang, manualTrans, level) {
     const canonical = entry.word;
     const meta = entry.meta || {};
     const tr = buildTranslations(entry, subject, targetLang);
@@ -213,6 +317,7 @@ const ManualVocab = (() => {
       translations: tr,
       examples: {},
       sourceLang: subject,
+      sourceLevel: String(level || (typeof S !== 'undefined' ? S.level : '') || '').toUpperCase() || undefined,
       savedAt: Date.now(),
       interval: 1,
       ef: 2.5,
@@ -232,7 +337,7 @@ const ManualVocab = (() => {
     return fc;
   }
 
-  function freeformFlashcard(word, subject, targetLang, manualTrans) {
+  function freeformFlashcard(word, subject, targetLang, manualTrans, level) {
     const tr = {};
     if (manualTrans) tr[targetLang] = manualTrans;
     const fc = {
@@ -244,6 +349,7 @@ const ManualVocab = (() => {
       translations: tr,
       examples: {},
       sourceLang: subject,
+      sourceLevel: String(level || (typeof S !== 'undefined' ? S.level : '') || '').toUpperCase() || undefined,
       savedAt: Date.now(),
       interval: 1,
       ef: 2.5,
@@ -290,32 +396,177 @@ const ManualVocab = (() => {
       if (exact) return { ok: true, entry: exact, canonical: exact.word, parsed };
     }
 
-    const suggestion = findSpellingSuggestion(core, index) || findSpellingSuggestion(trimmed, index);
+    const suggestion =
+      findSpellingSuggestion(core, index) || findSpellingSuggestion(trimmed, index);
     if (suggestion && index.size > 0) {
       return { ok: false, reason: 'spelling', suggestion: suggestion.word, entry: suggestion, parsed };
     }
 
     if (index.size > 0) {
-      return { ok: false, reason: 'not_in_library', suggestion: null, parsed };
+      const aiHint = await aiSpellingHint(trimmed, subject);
+      if (aiHint?.suggestion && !aiHint.correct) {
+        return {
+          ok: false,
+          reason: 'spelling',
+          suggestion: aiHint.suggestion,
+          aiSuggested: true,
+          parsed,
+        };
+      }
+      return { ok: false, reason: 'not_in_library', suggestion: aiHint?.suggestion || null, parsed };
+    }
+
+    const aiHint = await aiSpellingHint(trimmed, subject);
+    if (aiHint?.suggestion && !aiHint.correct) {
+      return {
+        ok: false,
+        reason: 'spelling',
+        suggestion: aiHint.suggestion,
+        aiSuggested: true,
+        freeform: true,
+        canonical: core || trimmed,
+        parsed,
+      };
     }
 
     return { ok: true, freeform: true, canonical: core || trimmed, parsed };
   }
 
-  function isDuplicate(word, subject) {
+  /** Optional Haiku spell hint when library fuzzy match misses (does not block save). */
+  async function aiSpellingHint(word, subject) {
+    const w = String(word || '').trim();
+    if (w.length < 3) return null;
+    const fetchFn = typeof lcApiFetch === 'function' ? lcApiFetch : fetch;
+    try {
+      const res = await fetchFn('/.netlify/functions/claude-chat', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ spellCheckWord: true, word: w, lang: subject }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data) return null;
+      return {
+        correct: data.correct === true,
+        suggestion: data.suggestion ? String(data.suggestion).trim() : null,
+      };
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /**
+   * Map learner words to canonical spellings before AI generation (safety net).
+   * @returns {Promise<{words:string[], corrections:{from:string,to:string}[]}>}
+   */
+  async function canonicalizeForGeneration(words, subject, level) {
+    const index = await loadWordIndex(subject, level);
+    const out = [];
+    const corrections = [];
+    const excluded = [];
+    const seen = new Set();
+    for (const raw of words || []) {
+      const trimmed = String(raw || '').trim();
+      if (!trimmed) continue;
+      const parsed = parseLeadingArticle(trimmed, subject);
+      const core = parsed.word || trimmed;
+      let canonical = trimmed;
+      const override = KNOWN_SPELLING_OVERRIDES[normToken(core)] || KNOWN_SPELLING_OVERRIDES[normToken(trimmed)];
+      if (override) {
+        canonical = override;
+      }
+      const exact =
+        !override &&
+        (lookupExact(core, index) ||
+          lookupExact(trimmed, index) ||
+          lookupExact(parsed.word, index));
+      if (override) {
+        /* already set */
+      } else if (exact) {
+        canonical = exact.word;
+      } else {
+        const sug = findSpellingSuggestion(core, index) || findSpellingSuggestion(trimmed, index);
+        if (sug) {
+          canonical = sug.word;
+        } else {
+          // Keep correctly spelled words even when not in the level library index.
+          canonical = parsed.word || trimmed;
+        }
+      }
+      const key = normToken(canonical);
+      if (seen.has(key)) continue;
+      seen.add(key);
+      out.push(canonical);
+      if (normToken(canonical) !== normToken(trimmed)) {
+        corrections.push({ from: trimmed, to: canonical });
+      }
+    }
+    if (corrections.length && typeof lcDebug !== 'undefined') {
+      lcDebug.log('[vocab] canonicalized for generation:', corrections);
+    }
+    if (excluded.length && typeof lcDebug !== 'undefined') {
+      lcDebug.log('[vocab] omitted misspelled/unknown words:', excluded);
+    }
+    return { words: out, corrections, excluded };
+  }
+
+  /** Async spelling hint for deck rows (library + edit distance). */
+  async function spellingSuggestionForAsync(word, subject, fc) {
+    if (fc?.spellingDismissed) return null;
+    const trimmed = String(word || '').trim();
+    if (trimmed.length < 2) return null;
+    const parsed = parseLeadingArticle(trimmed, subject);
+    const core = parsed.word || trimmed;
+    const index = await loadWordIndex(subject, null);
+    const override = KNOWN_SPELLING_OVERRIDES[normToken(core)] || KNOWN_SPELLING_OVERRIDES[normToken(trimmed)];
+    if (override) return override;
+    for (const form of [core, trimmed, parsed.word]) {
+      if (lookupExact(form, index)) return null;
+    }
+    if (typeof Lemmatizer !== 'undefined' && Lemmatizer.normalizeLemma) {
+      const lemma = Lemmatizer.normalizeLemma(core, subject);
+      if (lemma && lemma !== normToken(core) && lookupExact(lemma, index)) return null;
+    }
+    const sug =
+      findSpellingSuggestion(core, index, 1) || findSpellingSuggestion(trimmed, index, 1);
+    return sug?.word || null;
+  }
+
+  function applySpellingFixToFlashcard(fc, subject, suggestion) {
+    if (!fc || !suggestion) return false;
+    const parsed = parseLeadingArticle(suggestion, subject || fc.sourceLang);
+    const before = fc.word;
+    fc.word = parsed.word || suggestion;
+    if (parsed.article) {
+      fc.article = parsed.article;
+      fc.gender = parsed.gender;
+    }
+    enrichFlashcard(fc, subject || fc.sourceLang);
+    return before !== fc.word;
+  }
+
+  function isDuplicate(word, subject, level) {
     const key = wordKey(word, subject);
-    return (S.flashcards || []).some(
-      (f) => f.sourceLang === subject && wordKey(f.word, subject) === key,
-    );
+    const goalLevel = String(level || (typeof S !== 'undefined' ? S.level : '') || '').toUpperCase();
+    return (S.flashcards || []).some((f) => {
+      if (f.sourceLang !== subject || wordKey(f.word, subject) !== key) return false;
+      if (!goalLevel) return true;
+      const fl =
+        typeof fcSourceLevel === 'function'
+          ? fcSourceLevel(f)
+          : String(f.sourceLevel || f.sourceExam?.level || '').toUpperCase();
+      return fl === goalLevel;
+    });
   }
 
   function reclassifyStoredFlashcards() {
     if (typeof S === 'undefined' || !Array.isArray(S.flashcards) || !S.flashcards.length) return false;
     let dirty = false;
     S.flashcards.forEach((fc) => {
-      const before = fc.type || fc.pos;
+      const before = `${fc.type || fc.pos}|${fc.gender || ''}|${fc.article || ''}|${fc.plural ? 1 : 0}`;
       enrichFlashcard(fc, fc.sourceLang);
-      if ((fc.type || fc.pos) !== before) dirty = true;
+      const after = `${fc.type || fc.pos}|${fc.gender || ''}|${fc.article || ''}|${fc.plural ? 1 : 0}`;
+      if (before !== after) dirty = true;
     });
     return dirty;
   }
@@ -328,10 +579,15 @@ const ManualVocab = (() => {
     isDuplicate,
     buildTranslations,
     inferPos,
+    inferNounGender,
     enrichFlashcard,
     enrichFlashcardFromBank,
     parseLeadingArticle,
     reclassifyStoredFlashcards,
+    canonicalizeForGeneration,
+    aiSpellingHint,
+    spellingSuggestionForAsync,
+    applySpellingFixToFlashcard,
   };
 })();
 

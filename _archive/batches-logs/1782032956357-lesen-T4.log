@@ -1,0 +1,33 @@
+
+Batch generator (claude) — de/A2 × 1
+Prompt: batches/GEMINI_MASTER_PROMPT_de_B1.md
+Presupuesto Claude: $999999999.00 (gastado: $1.9702)
+
+── lesen T4 · vegetarismus-schule-03 ──
+Tema: Sollten Schulen vegetarische Menüs anbieten?
+Proveedor: claude
+max_output_tokens=16384
+Archivo: batches/merged/lesen-t4-vegetarismus-schule-03.json
+Llamando claude…
+max_output_tokens=16384
+Gasto acumulado: $1.9901 / budget $999999999.00
+Tokens: in=1955 out=3587 (max_out=16384)
+Modelo: claude-haiku-4-5
+Guardado: batches/merged/lesen-t4-vegetarismus-schule-03.json (5 preguntas, 6 passages)
+Validando…
+
+== Validación de lesen-t4-vegetarismus-schule-03.json (de_A2) ==
+Preguntas: 5 | Pasajes: 6
+Esquema: ERR [{"instancePath":"/questions/0/passageId","schemaPath":"#/properties/questions/items/properties/passageId/type","keyword":"type","params":{"type":"string"},"message":"must be string"},{"instancePath":"/questions/1/passageId","schemaPath":"#/properties/questions/items/properties/passageId/type","keyword":"type","params":{"type":"string"},"message":"must be string"}]
+Conformidad blueprint: OK
+Colocación (Teile que mejora): lesenT4 0->5
+Problemas:
+  - de-a2-l-t4-vegetarismus-schule-03-q1: passageId inexistente (de-a2-p-lesen-t4-vegetarismus-schule-03-a,de-a2-p-lesen-t4-vegetarismus-schule-03-b,de-a2-p-lesen-t4-vegetarismus-schule-03-c,de-a2-p-lesen-t4-vegetarismus-schule-03-d,de-a2-p-lesen-t4-vegetarismus-schule-03-e,de-a2-p-lesen-t4-vegetarismus-schule-03-f)
+  - de-a2-l-t4-vegetarismus-schule-03-q2: passageId inexistente (de-a2-p-lesen-t4-vegetarismus-schule-03-a,de-a2-p-lesen-t4-vegetarismus-schule-03-b,de-a2-p-lesen-t4-vegetarismus-schule-03-c,de-a2-p-lesen-t4-vegetarismus-schule-03-d,de-a2-p-lesen-t4-vegetarismus-schule-03-e,de-a2-p-lesen-t4-vegetarismus-schule-03-f)
+  - de-a2-l-t4-vegetarismus-schule-03-q3: passageId inexistente (de-a2-p-lesen-t4-vegetarismus-schule-03-a,de-a2-p-lesen-t4-vegetarismus-schule-03-b,de-a2-p-lesen-t4-vegetarismus-schule-03-c,de-a2-p-lesen-t4-vegetarismus-schule-03-d,de-a2-p-lesen-t4-vegetarismus-schule-03-e,de-a2-p-lesen-t4-vegetarismus-schule-03-f)
+  - de-a2-l-t4-vegetarismus-schule-03-q4: passageId inexistente (de-a2-p-lesen-t4-vegetarismus-schule-03-a,de-a2-p-lesen-t4-vegetarismus-schule-03-b,de-a2-p-lesen-t4-vegetarismus-schule-03-c,de-a2-p-lesen-t4-vegetarismus-schule-03-d,de-a2-p-lesen-t4-vegetarismus-schule-03-e,de-a2-p-lesen-t4-vegetarismus-schule-03-f)
+  - de-a2-l-t4-vegetarismus-schule-03-q5: passageId inexistente (de-a2-p-lesen-t4-vegetarismus-schule-03-a,de-a2-p-lesen-t4-vegetarismus-schule-03-b,de-a2-p-lesen-t4-vegetarismus-schule-03-c,de-a2-p-lesen-t4-vegetarismus-schule-03-d,de-a2-p-lesen-t4-vegetarismus-schule-03-e,de-a2-p-lesen-t4-vegetarismus-schule-03-f)
+Error: Command failed: node scripts/validate-batch.mjs --lang de --level A2 --file "batches/merged/lesen-t4-vegetarismus-schule-03.json"
+Descartado → batches/rejected/lesen-t4-vegetarismus-schule-03.json
+
+Resumen: 0 OK, 1 fallidos

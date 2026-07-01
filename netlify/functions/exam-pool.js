@@ -7,16 +7,42 @@ const { getStoreForEvent } = require('./lib/blobStore.js');
 const { requireAuth } = require('./lib/authLib.js');
 const { corsHeaders, parseJsonBody, jsonResponse } = require('./lib/http.js');
 const { validateGeneratedExam } = require('./lib/examQualityGate.js');
+const { loadBlueprint } = require('./lib/promoteFromApproved.js');
 const {
   publishPoolExam,
   pickPoolExam,
   listPoolIndexEntries,
 } = require('./lib/poolIndex.js');
 
-function isValidExam(exam) {
-  if (!exam || typeof exam !== 'object') return false;
+/** Same bar as servible exams — always strict + blueprint fidelity + CefrGate. */
+const POOL_GATE_OPTS = Object.freeze({
+  strict: true,
+  cefrGate: true,
+  curation: true,
+});
+
+function safeLoadBlueprint(lang, level) {
   try {
-    return validateGeneratedExam(exam).valid;
+    return loadBlueprint(lang, level);
+  } catch (err) {
+    console.warn('[exam-pool] blueprint load failed:', lang, level, err.message);
+    return null;
+  }
+}
+
+function poolValidateExam(exam, lang, level) {
+  const blueprint = safeLoadBlueprint(lang, level);
+  if (!blueprint) {
+    return { valid: false, errors: ['blueprint_unavailable'], warnings: [] };
+  }
+  return validateGeneratedExam(exam, { ...POOL_GATE_OPTS, blueprint });
+}
+
+function isValidExam(exam, lang, level) {
+  if (!exam || typeof exam !== 'object') return false;
+  if (!lang || !level) return false;
+  try {
+    return poolValidateExam(exam, lang, level).valid;
   } catch (err) {
     console.warn('[exam-pool] validate error:', err.message);
     return false;
@@ -68,20 +94,21 @@ function isCuratedPoolEntry(entry) {
 
 function strategyBEnabled() {
   // Strategy-B curation: when STRATEGY_B=1, pool only accepts curated entries (POST + GET).
-  // Leave unset or '0' for Strategy-A direct AI contribution after structural validation.
+  // Structural validation is always strict regardless of STRATEGY_B.
   return process.env.STRATEGY_B === '1';
 }
 
 function isValidPoolEntry(entry) {
   if (entry?.disabled === true) return false;
-  if (!entry?.exam || !isValidExam(entry.exam)) return false;
+  if (!entry?.exam) return false;
+  if (!isValidExam(entry.exam, entry.lang, entry.level)) return false;
   if (strategyBEnabled() && !isCuratedPoolEntry(entry)) return false;
   return true;
 }
 
 function pickSeedEntry(lang, level, exclude) {
   const pool = loadSeedPool(lang, level).filter(
-    (entry) => entry?.id && !exclude.has(entry.id) && isValidPoolEntry(entry),
+    (entry) => entry?.id && !exclude.has(entry.id) && isValidPoolEntry({ ...entry, lang, level }),
   );
   if (!pool.length) return null;
   return pool[Math.floor(Math.random() * pool.length)];
@@ -114,7 +141,7 @@ exports.handler = async (event) => {
     }
 
     const chosen = await pickPoolExam(store, lang, level, exclude, {
-      isValidEntry: isValidPoolEntry,
+      isValidEntry: (entry) => isValidPoolEntry({ ...entry, lang, level }),
     });
     if (!chosen) {
       const seeded = pickSeedEntry(lang, level, exclude);
@@ -149,11 +176,7 @@ exports.handler = async (event) => {
     const level = String(body.level || '').trim().toUpperCase();
     const topic = String(body.topic || '').trim().slice(0, 120);
     const exam = body.exam;
-    const gate = validateGeneratedExam(exam, {
-      strict: strategyBEnabled(),
-      cefrGate: strategyBEnabled(),
-      curation: strategyBEnabled(),
-    });
+    const gate = poolValidateExam(exam, lang, level);
     if (!lang || !level || !gate.valid) {
       if (exam && !gate.valid) {
         console.warn('[exam-pool] rejected exam:', gate.errors);
@@ -193,3 +216,5 @@ exports.handler = async (event) => {
 };
 
 exports.isValidPoolEntry = isValidPoolEntry;
+exports.poolValidateExam = poolValidateExam;
+exports.POOL_GATE_OPTS = POOL_GATE_OPTS;

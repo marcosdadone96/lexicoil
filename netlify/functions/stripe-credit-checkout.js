@@ -4,13 +4,12 @@ const { getStoreForEvent } = require('./lib/blobStore.js');
 const { requireAuth } = require('./lib/authLib.js');
 const { corsHeaders, jsonResponse, parseJsonBody } = require('./lib/http.js');
 const { getSiteUrl } = require('./lib/siteConfig.js');
-const { CREDIT_PACKS } = require('./lib/aiCredits.js');
-
-const PACK_PRICES = {
-  50: 'STRIPE_PRICE_CREDITS_50',
-  150: 'STRIPE_PRICE_CREDITS_150',
-  400: 'STRIPE_PRICE_CREDITS_400',
-};
+const {
+  CREDIT_PACKS,
+  creditsForPack,
+  normalizeCreditPack,
+  stripePriceIdForPack,
+} = require('./lib/creditPacksLib.js');
 
 exports.handler = async (event) => {
   const cors = corsHeaders(event);
@@ -37,16 +36,15 @@ exports.handler = async (event) => {
     return jsonResponse(400, cors, { error: 'invalid_json' });
   }
 
-  const pack = Number(body.pack);
-  const credits = CREDIT_PACKS[pack];
-  if (!credits) {
+  const normalized = normalizeCreditPack(body.pack);
+  const credits = creditsForPack(body.pack);
+  if (!normalized || !credits) {
     return jsonResponse(400, cors, { error: 'invalid_pack' });
   }
 
-  const priceEnv = PACK_PRICES[pack];
-  const stripePriceId = String(process.env[priceEnv] || '').trim();
+  const stripePriceId = stripePriceIdForPack(normalized);
   if (!stripePriceId) {
-    return jsonResponse(503, cors, { error: 'credit_pack_not_configured', pack });
+    return jsonResponse(503, cors, { error: 'credit_pack_not_configured', pack: normalized });
   }
 
   const origin =
@@ -56,13 +54,17 @@ exports.handler = async (event) => {
 
   const params = new URLSearchParams();
   params.set('mode', 'payment');
-  params.set('success_url', `${base}/?credits=1&session_id={CHECKOUT_SESSION_ID}`);
+  params.set(
+    'success_url',
+    `${base}/?credits=1&pack_credits=${credits}&session_id={CHECKOUT_SESSION_ID}`,
+  );
   params.set('cancel_url', `${base}/?cancelled=1`);
   params.set('client_reference_id', auth.email);
   params.set('customer_email', auth.email);
   params.set('metadata[kind]', 'credit_pack');
   params.set('metadata[email]', auth.email);
   params.set('metadata[credits]', String(credits));
+  params.set('metadata[pack]', String(normalized));
   params.append('line_items[0][quantity]', '1');
   params.append('line_items[0][price]', stripePriceId);
 
@@ -88,5 +90,5 @@ exports.handler = async (event) => {
     });
   }
 
-  return jsonResponse(200, cors, { url: data.url, pack, credits });
+  return jsonResponse(200, cors, { url: data.url, pack: normalized, credits });
 };

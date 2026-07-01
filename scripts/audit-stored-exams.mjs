@@ -55,9 +55,57 @@ function loadExamsFromFile(rel, kind) {
       exam: entry.exam || entry,
     }));
   }
+  if (Array.isArray(raw)) {
+    return raw.map((exam, i) => ({
+      id: exam.topic || exam.id || `${rel}#${i + 1}`,
+      exam,
+    }));
+  }
   if (raw.exam) return [{ id: rel, exam: raw.exam }];
   if (raw.lesenParts || raw.readingParts || raw.modules) return [{ id: rel, exam: raw }];
   return [];
+}
+
+function parseArgs(argv) {
+  const opts = { strict: false };
+  for (let i = 2; i < argv.length; i++) {
+    if (argv[i] === '--strict') opts.strict = true;
+  }
+  return opts;
+}
+
+function isStrictFailureIssue(issue) {
+  return (
+    issue.startsWith('item_count_mismatch:') ||
+    issue.startsWith('items_total_mismatch:') ||
+    issue.startsWith('part_missing:') ||
+    issue.startsWith('passages_per_part_mismatch:') ||
+    issue.includes(':match_invalid_reference') ||
+    issue.includes(':match_zero_not_in_options') ||
+    issue.includes(':mcq_correct_not_in_options') ||
+    issue.startsWith('exam_no_answer_key:')
+  );
+}
+
+function examPartForTeil(exam, modId, teil) {
+  const t = Number(teil);
+  if (modId === 'lesen' || modId === 'reading') {
+    return (exam.lesenParts || exam.readingParts || []).find((p) => Number(p.teil) === t);
+  }
+  if (modId === 'horen' || modId === 'listening') {
+    return (exam.horenParts || exam.listeningParts || []).find((p) => Number(p.teil) === t);
+  }
+  if (modId === 'schreiben' || modId === 'writing') {
+    return (exam.schreibenParts || exam.writingParts || []).find(
+      (p) => Number(p.teil ?? p.aufgabe) === t,
+    );
+  }
+  if (modId === 'sprechen' || modId === 'speaking') {
+    return (exam.sprechenParts || exam.speakingParts || []).find(
+      (p) => Number(p.teil ?? p.aufgabe) === t,
+    );
+  }
+  return null;
 }
 
 function countPartItems(part) {
@@ -66,6 +114,14 @@ function countPartItems(part) {
     (part.questions?.length || 0) +
     (part.segments || []).reduce((n, s) => n + (s.questions?.length || 0), 0)
   );
+}
+
+function countSchreibenItems(part) {
+  return part?.task || part?.taskText || part?.fieldId ? 1 : countPartItems(part);
+}
+
+function countSprechenItems(part) {
+  return part?.fieldId || part?.prompts?.length || part?.points?.length ? 1 : countPartItems(part);
 }
 
 function auditExam(id, exam) {
@@ -92,19 +148,17 @@ function auditExam(id, exam) {
   }
 
   if (blueprint) {
-    let li = 0;
-    let hi = 0;
     for (const mod of blueprint.modules || []) {
       for (const partSpec of mod.parts || []) {
         const modId = String(mod.id).toLowerCase();
-        let part = null;
-        if (modId === 'lesen' || modId === 'reading') part = (exam.lesenParts || exam.readingParts || [])[li++];
-        if (modId === 'horen' || modId === 'listening') part = (exam.horenParts || exam.listeningParts || [])[hi++];
+        const part = examPartForTeil(exam, modId, partSpec.teil);
         if (!part) {
           issues.push(`part_missing:${modId}:teil=${partSpec.teil}`);
           continue;
         }
-        const count = countPartItems(part);
+        let count = countPartItems(part);
+        if (modId === 'schreiben' || modId === 'writing') count = countSchreibenItems(part);
+        if (modId === 'sprechen' || modId === 'speaking') count = countSprechenItems(part);
         const min = partSpec.questionsTotal?.min ?? 0;
         const max = partSpec.questionsTotal?.max ?? min;
         if (count < min || count > max) {
@@ -127,9 +181,11 @@ function auditExam(id, exam) {
   };
 }
 
+const opts = parseArgs(process.argv);
 const files = walkExamFiles();
 const entries = [];
 let needsCuration = 0;
+let strictFailures = 0;
 
 for (const { rel, kind } of files) {
   let exams;
@@ -143,6 +199,7 @@ for (const { rel, kind } of files) {
     const row = auditExam(`${rel} :: ${id}`, exam);
     entries.push({ file: rel, kind, ...row });
     if (row.needsCuration) needsCuration++;
+    if (opts.strict && row.issues.some(isStrictFailureIssue)) strictFailures++;
   }
 }
 
@@ -172,4 +229,9 @@ if (worst.length) {
     console.log(`  - ${e.file}`);
     e.issues.slice(0, 3).forEach((i) => console.log(`      ${i}`));
   });
+}
+
+if (opts.strict && strictFailures > 0) {
+  console.error(`\nStrict mode: ${strictFailures} exam(s) with blocking issues`);
+  process.exit(1);
 }

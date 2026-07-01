@@ -3,6 +3,19 @@
 const { getQuotaState, getMonthKey } = require('./quotaLib.js');
 const { casWriteJson, readIdempotentResult, writeIdempotentResult } = require('./casBlob.js');
 const { userKey } = require('./authLib.js');
+const { checkActionAccess, isPaidPlan } = require('./actionAccessLib.js');
+const {
+  CREDIT_PACKS,
+  normalizeCreditPack,
+  stripePriceIdForPack,
+  creditsForPack,
+} = require('./creditPacksLib.js');
+const { resolvePlan } = require('./quotaLib.js');
+const {
+  aiMaxForPlan,
+  isFreeAiTrialActive,
+  aiCreditsFreeTrialMax,
+} = require('./freeTrialLib.js');
 const {
   applyMonthlyAiReset,
   computeAiRemaining,
@@ -16,13 +29,13 @@ const {
 
 const AI_COSTS = {
   personal_exam: 3,
+  vocab_quiz: 2,
   writing_correction: 1,
   grammar_coaching: 1,
-  speaking: 1,
+  speaking: 2,
+  listening_game: 1,
   tts: 1,
 };
-
-const CREDIT_PACKS = { 50: 50, 150: 150, 400: 400 };
 
 function aiCreditChargeIdemKey(email, action, requestId) {
   return `ai_charge:${email}:${action}:${requestId}`;
@@ -32,14 +45,13 @@ function aiCreditRefundIdemKey(email, action, requestId) {
   return `ai_refund:${email}:${action}:${requestId}`;
 }
 
-function aiMaxForPlan(plan) {
-  if (plan === 'pro') return Number(process.env.AI_CREDITS_PRO || 100);
-  return 0;
+function resolveAiMax(state) {
+  return state.aiMax ?? aiMaxForPlan(state.plan, state.user);
 }
 
 async function readNormalizedQuota(state) {
   const month = getMonthKey();
-  const aiMax = aiMaxForPlan(state.plan);
+  const aiMax = resolveAiMax(state);
   let current = null;
   try {
     current = await state.store.get(state.qKey, { type: 'json' });
@@ -83,7 +95,13 @@ async function getAiCredits(event) {
     };
   }
   const rec = await readNormalizedQuota(state);
-  return { ...creditsResponse(rec), plan: state.plan, email: state.email };
+  return {
+    ...creditsResponse(rec),
+    plan: state.plan,
+    email: state.email,
+    trialActive: state.plan === 'free' && isFreeAiTrialActive(state.user),
+    trialMax: aiCreditsFreeTrialMax(),
+  };
 }
 
 /** Pre-flight: enough balance (or courtesy buffer). Does NOT deduct. */
@@ -100,14 +118,23 @@ async function checkAiCredits(event, action) {
   if (!state.authenticated) {
     return { ok: false, error: 'login_required', remaining: 0 };
   }
-  if (state.plan !== 'pro') {
-    return { ok: false, error: 'pro_only', remaining: 0, plan: state.plan };
+  const access = checkActionAccess(state.plan, action);
+  if (!access.ok) {
+    return {
+      ok: false,
+      error: access.error,
+      remaining: 0,
+      plan: state.plan,
+      status: access.error === 'login_required' ? 401 : 403,
+    };
   }
 
   const rec = await readNormalizedQuota(state);
   const afford = canAffordAiCost(rec, cost);
   if (!afford.ok) {
-    const auto = await attemptAutoRecharge(event, state, rec);
+    const auto = isPaidPlan(state.plan)
+      ? await attemptAutoRecharge(event, state, rec)
+      : { ok: false };
     if (auto.ok && auto.retried) {
       const rec2 = await readNormalizedQuota(state);
       const afford2 = canAffordAiCost(rec2, cost);
@@ -162,9 +189,10 @@ async function confirmAiCreditConsumption(event, action, opts = {}) {
   const cost = AI_COSTS[action];
   if (!cost) return null;
   const state = await getQuotaState(event);
-  if (!state.ok || !state.authenticated || state.plan !== 'pro') return null;
+  if (!state.ok || !state.authenticated) return null;
+  if (!checkActionAccess(state.plan, action).ok) return null;
   const month = getMonthKey();
-  const aiMax = aiMaxForPlan(state.plan);
+  const aiMax = resolveAiMax(state);
   const requestId = opts.requestId || null;
 
   if (requestId) {
@@ -251,9 +279,10 @@ async function releaseAiCreditConsumption(event, action, opts = {}) {
   if (!requestId) return { skipped: true, reason: 'no_request_id' };
 
   const state = await getQuotaState(event);
-  if (!state.ok || !state.authenticated || state.plan !== 'pro') return null;
+  if (!state.ok || !state.authenticated) return null;
+  if (!checkActionAccess(state.plan, action).ok) return null;
   const month = getMonthKey();
-  const aiMax = aiMaxForPlan(state.plan);
+  const aiMax = resolveAiMax(state);
 
   const refundIdemKey = aiCreditRefundIdemKey(state.email, action, requestId);
   const priorRefund = await readIdempotentResult(state.store, refundIdemKey);
@@ -317,7 +346,14 @@ async function addCreditTopups(store, email, credits, idempotencyKey) {
 
   const qKey = `quota:${email}`;
   const month = getMonthKey();
-  const aiMax = aiMaxForPlan('pro');
+  let user = null;
+  try {
+    user = await store.get(userKey(email), { type: 'json' });
+  } catch (_) {
+    user = null;
+  }
+  const plan = resolvePlan(user);
+  const aiMax = aiMaxForPlan(plan, user, month);
 
   const result = await casWriteJson(
     store,
@@ -353,10 +389,11 @@ async function setAutoRechargeEnabled(store, email, enabled) {
     qKey,
     (current) => {
       const rec = applyMonthlyAiReset(current, aiMax, month);
+      const prevAuto = { ...defaultAutoRecharge(), ...(rec.autoRecharge || {}) };
       const autoRecharge = {
-        ...defaultAutoRecharge(),
-        ...(rec.autoRecharge || {}),
+        ...prevAuto,
         enabled: !!enabled,
+        pack: normalizeCreditPack(prevAuto.pack) || 40,
       };
       const updated = { ...rec, autoRecharge };
       return {
@@ -409,15 +446,11 @@ async function attemptAutoRecharge(event, state, rec) {
   const paymentMethod = await getStripeCustomerDefaultPaymentMethod(customerId, secret);
   if (!paymentMethod) return { ok: false };
 
-  const pack = Number(ar.pack) || 50;
-  const priceEnv = {
-    50: process.env.STRIPE_PRICE_CREDITS_50,
-    150: process.env.STRIPE_PRICE_CREDITS_150,
-    400: process.env.STRIPE_PRICE_CREDITS_400,
-  }[pack];
-  if (!priceEnv) return { ok: false };
+  const pack = normalizeCreditPack(Number(ar.pack) || 40) || 40;
+  const priceId = stripePriceIdForPack(pack);
+  if (!priceId) return { ok: false };
 
-  const priceRes = await fetch(`https://api.stripe.com/v1/prices/${encodeURIComponent(priceEnv)}`, {
+  const priceRes = await fetch(`https://api.stripe.com/v1/prices/${encodeURIComponent(priceId)}`, {
     headers: { Authorization: `Bearer ${secret}` },
   });
   const price = await priceRes.json().catch(() => ({}));
@@ -433,7 +466,7 @@ async function attemptAutoRecharge(event, state, rec) {
   piParams.set('confirm', 'true');
   piParams.set('metadata[kind]', 'credit_pack');
   piParams.set('metadata[email]', state.email);
-  piParams.set('metadata[credits]', String(pack));
+  piParams.set('metadata[credits]', String(CREDIT_PACKS[pack] || pack));
 
   const piRes = await fetch('https://api.stripe.com/v1/payment_intents', {
     method: 'POST',
@@ -488,6 +521,7 @@ async function attemptAutoRecharge(event, state, rec) {
 module.exports = {
   AI_COSTS,
   CREDIT_PACKS,
+  checkActionAccess,
   aiMaxForPlan,
   aiCreditChargeIdemKey,
   aiCreditRefundIdemKey,

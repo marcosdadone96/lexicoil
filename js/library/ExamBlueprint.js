@@ -59,9 +59,9 @@ const ExamBlueprint = (() => {
 
   function normType(q) {
     const t = String(q.questionType || q.type || '').toLowerCase();
-    if (t === 'multiple') return 'multiple_choice';
+    if (t === 'multiple' || t === 'mcq' || t === 'mc') return 'multiple_choice';
     if (t === 'match') return 'matching';
-    if (t === 'richtig_falsch') return 'true_false';
+    if (t === 'richtig_falsch' || t === 'true_false') return 'richtig_falsch';
     return t;
   }
 
@@ -69,7 +69,7 @@ const ExamBlueprint = (() => {
     const t = String(x || '').toLowerCase();
     if (t === 'multiple') return 'multiple_choice';
     if (t === 'match') return 'matching';
-    if (t === 'richtig_falsch' || t === 'true_false') return 'true_false';
+    if (t === 'richtig_falsch' || t === 'true_false') return 'richtig_falsch';
     return t;
   }
 
@@ -145,6 +145,58 @@ const ExamBlueprint = (() => {
     return shuffle(qs).slice(0, target);
   }
 
+  /** Pick questions grouped by passage for layout=segments (e.g. Hören T1: 5 segments × 2 items). */
+  function pickSegmentsAligned(candidates, partSpec, target) {
+    const layout = partSpec.layout || '';
+    const segmentsTotal = partSpec.segmentsTotal;
+    if (layout !== 'segments' || !segmentsTotal || !candidates.length) return null;
+
+    const perSegment = Math.max(1, Math.round(target / segmentsTotal));
+    const byPassage = groupCandidatesByPassage(candidates);
+
+    // For mixed-type Teile (e.g. Hören T1: 1 RF + 1 MC per segment), enforce that each
+    // passage group has at least one question of each required type. A group of 2 MCQ with
+    // no RF is not viable — picking it would produce a 0RF+2MC segment that CHK-20 rejects.
+    const questionTypes = partSpec.questionTypes || [];
+    const needsTypeBalance = questionTypes.length >= 2;
+
+    function pickBalanced(qs) {
+      if (!needsTypeBalance) return shuffle(qs).slice(0, perSegment);
+      // Collect one of each required type, then fill remaining slots from the rest.
+      const result = [];
+      const remaining = [...qs];
+      for (const t of questionTypes) {
+        const idx = remaining.findIndex(
+          (q) => q.type === t || (t === 'richtig_falsch' && q.type === 'true_false'),
+        );
+        if (idx === -1) return null; // group lacks this type — not viable
+        result.push(remaining.splice(idx, 1)[0]);
+        if (result.length === perSegment) break;
+      }
+      while (result.length < perSegment && remaining.length) {
+        result.push(remaining.shift());
+      }
+      return result.length === perSegment ? result : null;
+    }
+
+    const viable = [];
+    for (const entry of byPassage.entries()) {
+      const [pid, qs] = entry;
+      if (qs.length < perSegment) continue;
+      const sample = pickBalanced(shuffle([...qs]));
+      if (sample) viable.push([pid, qs]);
+    }
+    if (viable.length < segmentsTotal) return null;
+
+    const picked = [];
+    for (const [, qs] of shuffle(viable).slice(0, segmentsTotal)) {
+      const sample = pickBalanced(shuffle([...qs]));
+      if (!sample) continue; // defensive — viable check above should prevent this
+      picked.push(...sample);
+    }
+    return picked.length >= target ? picked.slice(0, target) : picked.length ? picked : null;
+  }
+
   function pickFromPool(pool, partSpec, used, bank, filterFn, opts = {}) {
     const teil = partSpec.teil;
     const target = partSpec.itemsTotal || partSpec.questionsTotal?.max || partSpec.questionsTotal?.min || 4;
@@ -179,9 +231,107 @@ const ExamBlueprint = (() => {
     const modId = opts.moduleId || partSpec.moduleId || null;
     const calibration = opts.calibration;
     const IC = typeof ItemCalibration !== 'undefined' ? ItemCalibration : null;
-    let picked = pickPassageAligned(candidates, partSpec, target);
+    let picked = pickSegmentsAligned(candidates, partSpec, target);
+    if (!picked?.length) picked = pickPassageAligned(candidates, partSpec, target);
+
+    // ── Coherent T3 set (Lesen Teil 3 — ads matching) ─────────────────────────
+    // INVARIANT: all 7 items must share the same A-J options list (one set).
+    // Strategy: (1) find a complete coherent set in the bank; (2) if none, call
+    // LesenPartGenerators.buildValidatedT3Part() which generates from blueprints;
+    // (3) if no generator available (browser), leave picked empty → coverage fails
+    // loudly → no Frankenstein ever reaches the served exam.
+    if (!picked?.length && modId === 'lesen' && teil === 3) {
+      // Group candidates by canonical options fingerprint (same A-J list = same set)
+      const byFp = new Map();
+      for (const q of candidates) {
+        const opts7 = (q.options || []).filter(o => typeof o === 'string' && o.length > 2);
+        if (opts7.length < 7) continue; // skip bare-key items
+        const fp = opts7.map(o => String(o).trim()).join('|');
+        if (!byFp.has(fp)) byFp.set(fp, []);
+        byFp.get(fp).push(q);
+      }
+      const completeGroups = [...byFp.values()].filter(qs => qs.length >= 7);
+      if (completeGroups.length) {
+        picked = shuffle(completeGroups)[0].slice(0, 7);
+      } else if (typeof LesenPartGenerators !== 'undefined' &&
+                 typeof LesenPartGenerators.buildValidatedT3Part === 'function') {
+        try {
+          const batch = LesenPartGenerators.buildValidatedT3Part(
+            opts._lesenExclude ? { exclude: opts._lesenExclude.t3 } : {}
+          );
+          picked = batch.questions;
+          if (opts._lesenExclude && batch._blueprintSlug) {
+            opts._lesenExclude.t3.add(batch._blueprintSlug);
+          }
+        } catch (err) {
+          if (typeof lcDebug !== 'undefined') lcDebug.warn('[ExamBlueprint] T3 generator failed:', err);
+        }
+      }
+      // If still empty: leave as [] → coverage.complete = false → exam rejected
+    }
+
+    // ── Coherent T4 set (Lesen Teil 4 — forum opinions) ───────────────────────
+    // INVARIANT: all 7 items must come from a single blueprint/source with unique authors.
+    // Regex recognises both bank IDs (-l-t4-SLUG-qN) and generator IDs (gen-q-4-PREFIX-N).
+    if (!picked?.length && modId === 'lesen' && teil === 4) {
+      function t4GroupKey(q) {
+        const bankM = String(q.id || '').match(/-l-t4-(.+?)-q\d+$/i);
+        if (bankM) return 'bank:' + bankM[1];
+        const genM = String(q.id || '').match(/^gen-q-4-([a-z0-9]+)-\d+$/i);
+        if (genM) return 'gen:' + genM[1];
+        return null;
+      }
+      function t4GroupIsCoherent(items) {
+        if (items.length < 7) return false;
+        const texts = items.map(q => String(q.signText || '').trim());
+        if (new Set(texts).size !== texts.length) return false;
+        if (texts.some(t => t.split(/\s+/).filter(Boolean).length < 15)) return false;
+        const authors = items.map(q => {
+          const t = String(q.signText || '');
+          const m = t.match(/^(?:Meinung von|Sagt)\s+([A-ZÄÖÜ][a-zäöüß]+)/);
+          return m ? m[1] : (t.match(/^([A-ZÄÖÜ][a-zäöüß]+)/)?.[1] || '');
+        });
+        return new Set(authors.filter(Boolean)).size === authors.filter(Boolean).length;
+      }
+      const bySlug = new Map();
+      for (const q of candidates) {
+        const key = t4GroupKey(q);
+        if (!key) continue;
+        if (!bySlug.has(key)) bySlug.set(key, []);
+        bySlug.get(key).push(q);
+      }
+      const viable = [...bySlug.values()].filter(qs => qs.length >= target && t4GroupIsCoherent(qs));
+      if (viable.length) {
+        picked = shuffle(viable)[0].slice(0, target);
+      } else if (typeof LesenPartGenerators !== 'undefined' &&
+                 typeof LesenPartGenerators.buildValidatedT4Part === 'function') {
+        try {
+          const batch = LesenPartGenerators.buildValidatedT4Part(
+            opts._lesenExclude ? { exclude: opts._lesenExclude.t4 } : {}
+          );
+          picked = batch.questions;
+          if (opts._lesenExclude && batch._blueprintSlug) {
+            opts._lesenExclude.t4.add(batch._blueprintSlug);
+          }
+        } catch (err) {
+          if (typeof lcDebug !== 'undefined') lcDebug.warn('[ExamBlueprint] T4 generator failed:', err);
+        }
+      }
+      // If still empty: leave as [] → coverage.complete = false → exam rejected
+    }
+
     if (!picked?.length) {
-      if (calibration && IC && candidates.length > target) {
+      if (modId === 'lesen' && (teil === 3 || teil === 4)) {
+        // Never fall through to individual-item shuffle for T3/T4 — coherence cannot be
+        // guaranteed. Leave picked empty so coverage.complete = false signals the gap.
+        picked = [];
+      } else if (modId === 'horen' && teil === 1) {
+        // H1 requires segment-aligned picking (5 passages × 1RF+1MC each).
+        // If pickSegmentsAligned failed (insufficient viable groups or wrong type balance),
+        // do not fall through to random shuffle — coherence cannot be guaranteed.
+        // Leave empty → coverage.complete = false → exam rejected upstream (same as L3/T4).
+        picked = [];
+      } else if (calibration && IC && candidates.length > target) {
         picked = IC.pickCalibrated(candidates, target, {
           module: modId || inferModuleFromPool(pool),
           teil,
@@ -275,7 +425,7 @@ const ExamBlueprint = (() => {
 
     const AM = adsMatching();
     if (AM?.isAdsMatchingSpec(partSpec) && enriched.length) {
-      return AM.buildAdsMatchingLesenPart(partSpec, enriched, toExamQuestion);
+      return AM.buildAdsMatchingLesenPart(partSpec, enriched, toExamQuestion, bank);
     }
 
     if (layout === 'items' && enriched.length) {
@@ -398,7 +548,18 @@ const ExamBlueprint = (() => {
 
   function buildSchreibenPart(partSpec, questions) {
     const q = questions[0];
-    const words = partSpec.wordsTarget || { min: 80, max: 100 };
+    const teil = Number(partSpec.teil ?? partSpec.aufgabe ?? 1);
+    let words = partSpec.wordsTarget || { min: 80, max: 80 };
+    if (typeof require !== 'undefined') {
+      try {
+        const { GOETHE_B1_SCHREIBEN_WORDS } = require('./goetheB1Constants.js');
+        if (partSpec.taskFormat === 'informal_email' || teil === 1) words = GOETHE_B1_SCHREIBEN_WORDS[1];
+        else if (partSpec.taskFormat === 'forum_opinion' || teil === 2) words = GOETHE_B1_SCHREIBEN_WORDS[2];
+        else if (partSpec.taskFormat === 'semiformal_message' || teil === 3) words = GOETHE_B1_SCHREIBEN_WORDS[3];
+      } catch (_) {
+        /* optional constants */
+      }
+    }
     const taskText =
       q?.question ||
       (partSpec.label ? `${partSpec.label}: ${partSpec.instruction || 'Write your response.'}` : partSpec.instruction);
@@ -409,6 +570,7 @@ const ExamBlueprint = (() => {
       task: taskText,
       minWords: words.min,
       maxWords: words.max,
+      targetWords: words.target ?? words.min,
       mandatory: !!partSpec.mandatory,
       taskType: partSpec.taskTypes?.[0] || partSpec.slotType,
       blueprintSlot: partSpec.slotType,
@@ -420,7 +582,7 @@ const ExamBlueprint = (() => {
   function buildSprechenPart(partSpec, questions, lang) {
     const q = questions[0];
     const isDe = lang === 'de';
-    return {
+    const part = {
       teil: partSpec.teil,
       title: partSpec.label || `Teil ${partSpec.teil}`,
       fieldId: `speak_bp_${partSpec.teil}`,
@@ -430,6 +592,18 @@ const ExamBlueprint = (() => {
       grammarTags: q?.grammarTags || [],
       topicTags: q?.topicTags || [],
     };
+    if (Number(partSpec.teil) === 2 && (partSpec.slides?.length || partSpec.presentationSlides)) {
+      let slides = partSpec.slides;
+      if (!slides?.length && typeof require !== 'undefined') {
+        try {
+          slides = require('./goetheB1Constants.js').GOETHE_B1_PRESENTATION_SLIDES;
+        } catch (_) {
+          slides = [];
+        }
+      }
+      if (slides?.length) part.slides = slides.map((s) => ({ ...s }));
+    }
+    return part;
   }
 
   function buildUseOfEnglishPart(partSpec, questions, bank) {

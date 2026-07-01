@@ -1,0 +1,68 @@
+﻿
+> lexicoil@1.0.0 test:engine
+> node scripts/test-domain.mjs && node scripts/test-knowledge-engine.mjs && node scripts/test-prompt-builder.mjs && node scripts/test-blueprint-ai-path.mjs && node scripts/test-target-usage.mjs && node scripts/test-vocab-personalization.mjs && node scripts/test-burned-registry.mjs && node scripts/test-horen-game.mjs && node scripts/test-generators.mjs && node scripts/test-provider-adapters.mjs && node scripts/test-exam-validator.mjs && node scripts/test-cefr-gate.mjs && node scripts/test-mastery-tracking.mjs && node scripts/test-personalized-7030.mjs && node scripts/test-ux-loop.mjs && node scripts/test-design-system.mjs && node scripts/test-strategy-b-pipeline.mjs && node scripts/test-staging-pipeline.mjs && node scripts/test-tts.mjs && node scripts/test-pretts-bank.mjs && node scripts/test-library-first.mjs && node scripts/test-calibration.mjs && node scripts/test-concurrency-quota-pool.mjs && node scripts/test-exam-sources.mjs && node scripts/test-nav-routes.mjs && node scripts/test-visual-tokens.mjs && node scripts/test-coverage-listening-learning.mjs && node scripts/test-exam-quality-gate.mjs && node scripts/test-teil3-uniqueness.mjs && node scripts/test-topic-coherence-gate.mjs && node scripts/test-topic-coherence.mjs && node scripts/test-dele-c2-pass-rule.mjs && node scripts/test-exam-autosave.mjs && node scripts/test-answer-key-renderable.mjs && node scripts/test-passage-dedupe.mjs && node scripts/test-module-grading.mjs && node scripts/test-spanish-exam.mjs && node scripts/lib/assert-no-mojibake.mjs && node scripts/test-goethe-a1-modellsatz.mjs && node scripts/test-goethe-a2-modellsatz.mjs && node scripts/test-goethe-b1-modellsatz.mjs && node scripts/test-goethe-b2-modellsatz.mjs && node scripts/test-goethe-c1-modellsatz.mjs && node scripts/test-goethe-c2-modellsatz.mjs && node scripts/test-cambridge-a1-modellsatz.mjs && node scripts/test-cambridge-a2-modellsatz.mjs && node scripts/test-cambridge-b1-modellsatz.mjs && node scripts/test-cambridge-b2-modellsatz.mjs && node scripts/test-cambridge-c1-modellsatz.mjs && node scripts/test-cambridge-c2-modellsatz.mjs && node scripts/test-dele-a1-modellsatz.mjs && node scripts/test-dele-a2-modellsatz.mjs && node scripts/test-dele-b1-modellsatz.mjs && node scripts/test-dele-b2-modellsatz.mjs && node scripts/test-dele-c1-modellsatz.mjs && node scripts/test-dele-c2-modellsatz.mjs && node scripts/test-exam-engine-e2e.mjs --dry
+
+OK   LexiCoilDomain smoke test passed
+OK   Goethe B1 Exam merge
+OK   Cambridge B1 Exam merge
+OK   DELE B1 Exam merge
+OK   Spanish DELE B1 Exam merge
+OK   targetWords + generic exercise
+OK   listTopics from knowledge/languages
+OK   pickRandomTopic
+OK   auto provider inference
+
+All KnowledgeEngine tests passed.
+OK   Goethe B1 chunked prompts
+OK   Cambridge B1 chunked prompts
+OK   quick reading single prompt
+OK   vocabulary exam chunked prompts (official blueprint)
+OK   vocabulary exam lesen-only blueprint
+
+All PromptBuilder tests passed.
+OK   resolveBlueprintByType loads goethe_B1
+OK   missing blueprint throws blueprint_not_found
+OK   resolveBlueprintForSpec from KnowledgeEngine spec
+OK   chunk plan has 15 parts (5 lesen + 4 horen + 3 schreiben + 3 sprechen)
+OK   plan includes Teil 1 R/F
+OK   plan includes ads matching teil with 7 items
+OK   buildExamChunks uses blueprint when flag on
+OK   chunk count matches blueprint plan
+OK   prompt includes slotType from blueprint
+OK   prompt includes item count
+OK   prompt includes structured output rules
+OK   legacy provider plan uses official 15 parts (5+4+3+3)
+OK   blueprint path one chunk per official Teil
+OK   mock blueprint-conform exam passes strict validation ()
+OK   longest reading passage 160 words >= B1 min 150
+
+Before (legacy provider B1): chunks= 15 , generic taskTypes only
+After  (blueprint B1):       chunks= 15 , longest passage target >= 150 words
+
+All blueprint AI path tests passed.
+OK   word-boundary verification
+OK   verify discards over-declared surfaces
+OK   derive targetUsage from exam text
+OK   applyVerified on personal exam
+OK   forced template usage filtered from targetUsageVerified
+OK   vocab prompt includes targetUsage contract
+
+All targetUsage tests passed.
+node.exe : file:///C:/Users/marco/Desktop/MDR/lexiloop/scripts/test-vocab-personalization.mjs:27
+At line:1 char:1
++ & "D:\NODE/node.exe" "D:\NODE/node_modules/npm/bin/npm-cli.js" run te ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (file:///C:/User...lization.mjs:27:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+  if (!cond) throw new Error(`FAIL ${label}`);
+                   ^
+
+Error: FAIL all questions have vocabularyTags
+    at ok (file:///C:/Users/marco/Desktop/MDR/lexiloop/scripts/test-vocab-personalization.mjs:27:20)
+    at file:///C:/Users/marco/Desktop/MDR/lexiloop/scripts/test-vocab-personalization.mjs:33:1
+    at ModuleJob.run (node:internal/modules/esm/module_job:437:25)
+    at async node:internal/modules/esm/loader:639:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+
+Node.js v24.15.0

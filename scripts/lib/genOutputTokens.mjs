@@ -5,9 +5,13 @@ const MODULE_MIN = {
   'lesen:1': 12288,
   'lesen:2': 16384,
   'lesen:3': 16384,
+  'lesen:4': 16384,
+  'horen:1': 16384,
   'horen:2': 16384,
   'horen:3': 16384,
   'horen:4': 16384,
+  'schreiben:1': 8192,
+  'sprechen:1': 8192,
 };
 
 const ABS_MAX = 16384;
@@ -33,6 +37,6 @@ export function isLikelyTruncated(provider, usage, maxTokens, stopReason) {
   const out =
     provider === 'gemini'
       ? Number(usage?.candidatesTokenCount || 0)
-      : Number(usage?.output_tokens || 0);
+      : Number(usage?.output_tokens || usage?.eval_count || 0);
   return out >= maxTokens - 16;
 }

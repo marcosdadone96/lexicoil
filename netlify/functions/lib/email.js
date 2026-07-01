@@ -2,6 +2,9 @@
 
 const { CONTACT_EMAIL } = require('./siteConfig.js');
 
+const PRO_SUBSCRIPTION_EUR = Number(process.env.PRO_SUBSCRIPTION_EUR || 13);
+const AI_CREDITS_PRO = Number(process.env.AI_CREDITS_PRO || 40);
+
 async function sendProWelcomeEmail(to, name) {
   const apiKey = String(process.env.RESEND_API_KEY || '').trim();
   if (!apiKey) {
@@ -19,11 +22,12 @@ async function sendProWelcomeEmail(to, name) {
       <p>Your subscription is active. <strong>Pro</strong> is now enabled on your account.</p>
       <ul>
         <li><strong>12 exam generations</strong> per month</li>
+        <li><strong>${AI_CREDITS_PRO} AI credits</strong> per month</li>
         <li>Personalized vocabulary exams &amp; listening practice</li>
         <li>Full Goethe / Cambridge practice exams</li>
         <li>Priority AI generation</li>
       </ul>
-      <p style="font-size:13px;color:#666">Billed monthly at EUR 9.99. Cancel anytime from <strong>Account &rarr; Manage subscription</strong> in the app.</p>
+      <p style="font-size:13px;color:#666">Billed monthly at EUR ${PRO_SUBSCRIPTION_EUR}. Cancel anytime from <strong>Account &rarr; Manage subscription</strong> in the app.</p>
       <p><a href="https://lexicoil.com" style="display:inline-block;padding:10px 18px;background:#E8C547;color:#000;text-decoration:none;border-radius:8px;font-weight:700">Open LexiCoil</a></p>
       <p style="font-size:13px;color:#666;margin-top:24px">Questions? Reply to this email or write to ${CONTACT_EMAIL}.</p>
     </div>

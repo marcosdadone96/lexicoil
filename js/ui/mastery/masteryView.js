@@ -146,7 +146,7 @@ const MasteryView = (() => {
       };
     }
 
-    if (fc.length >= 5) {
+    if (fc.length >= 5 && (typeof isPersonalizedAllowed !== 'function' || isPersonalizedAllowed(goal.subject, goal.level))) {
       return {
         kind: 'personal',
         title: 'Personalized vocab exam',

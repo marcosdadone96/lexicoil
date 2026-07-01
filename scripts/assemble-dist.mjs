@@ -16,7 +16,7 @@ const COPY_DIRS = ['js', 'data', 'assets', 'knowledge', 'library'];
 
 function copyDesignSystem() {
   const destDir = path.join(DIST, 'assets', 'css');
-  const sheets = ['lexicoil-design-system.css', 'app.css', 'app-utilities.css', 'app-screens.css', 'demo-loop.css'];
+  const sheets = ['lexicoil-design-system.css', 'app.css', 'app-utilities.css', 'app-screens.css', 'demo-loop.css', 'feedback-modal.css'];
   ensureDir(destDir);
   for (const name of sheets) {
     const src = path.join(ROOT, 'assets', 'css', name);
@@ -52,15 +52,29 @@ function copyLanding() {
   cp(LANDING_OUT, DIST);
 }
 
+function copyReferenceContent() {
+  const destContent = path.join(DIST, 'content');
+  ensureDir(destContent);
+
+  const grammarFromSubmodule = path.join(ROOT, 'lexicoil_grammar_content', 'content', 'grammar');
+  if (fs.existsSync(grammarFromSubmodule)) {
+    cp(grammarFromSubmodule, path.join(destContent, 'grammar'));
+  }
+
+  for (const type of ['vocabulary', 'phrases']) {
+    const src = path.join(ROOT, 'content', type);
+    if (fs.existsSync(src)) cp(src, path.join(destContent, type));
+    const alt = path.join(ROOT, 'lexicoil_reference_content', 'content', type);
+    if (fs.existsSync(alt)) cp(alt, path.join(destContent, type));
+  }
+}
+
 function copyAppAssets() {
   for (const dir of COPY_DIRS) {
     const src = path.join(ROOT, dir);
     if (fs.existsSync(src)) cp(src, path.join(DIST, dir));
   }
-  const grammarContent = path.join(ROOT, 'lexicoil_grammar_content', 'content');
-  if (fs.existsSync(grammarContent)) {
-    cp(grammarContent, path.join(DIST, 'content'));
-  }
+  copyReferenceContent();
   for (const file of COPY_FILES) {
     const src = path.join(ROOT, file);
     if (fs.existsSync(src)) fs.copyFileSync(src, path.join(DIST, file));

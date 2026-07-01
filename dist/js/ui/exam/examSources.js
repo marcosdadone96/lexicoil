@@ -38,6 +38,9 @@
 
   async function fromPool(ctx, deps) {
     deps = deps || defaultDeps();
+    if (typeof canUsePoolExam === 'function' && !canUsePoolExam()) {
+      return null;
+    }
     if (!deps.fetchExamFromPool) return null;
     deps.setLoaderStep('Loading curated exam\u2026', 'Finding a matching exam\u2026');
     var seen = ctx.seenIds || [];
@@ -96,24 +99,50 @@
     return null;
   }
 
+  function toastExamLibraryUnavailable(err, deps) {
+    var msg = err && err.message ? err.message : 'Exam library unavailable.';
+    if (typeof lcToast === 'function') lcToast(msg, 'warn', 6000);
+    else if (typeof notify === 'function') notify(msg, 'warn', 6000);
+    deps.lcDebug.warn('[exam] library unavailable:', err);
+  }
+
   async function fromExamLibrary(ctx, deps) {
     deps = deps || defaultDeps();
-    if (!deps.ExamLibrary || !deps.ExamLibrary.hasLibrary(ctx.subject, ctx.level)) {
+    if (!deps.ExamLibrary) return null;
+    if (typeof deps.ExamLibrary.ensureManifest === 'function') {
+      await deps.ExamLibrary.ensureManifest();
+    }
+    if (!deps.ExamLibrary.hasLibrary(ctx.subject, ctx.level)) {
       return null;
     }
     deps.setLoaderStep('Loading exam\u2026', 'Selecting a prepared exam\u2026');
     var raw;
-    if (
-      typeof BurnedRegistry !== 'undefined' &&
-      typeof deps.ExamLibrary.pickExamExcluding === 'function'
-    ) {
-      raw = await deps.ExamLibrary.pickExamExcluding(ctx.subject, ctx.level, function (e) {
-        return BurnedRegistry.examTouchesBurned(e);
-      });
-      if (!raw) return null;
-    } else {
-      raw = await deps.ExamLibrary.pickExam(ctx.subject, ctx.level);
+    var recycled = false;
+    try {
+      if (
+        typeof BurnedRegistry !== 'undefined' &&
+        typeof deps.ExamLibrary.pickExamExcluding === 'function'
+      ) {
+        raw = await deps.ExamLibrary.pickExamExcluding(ctx.subject, ctx.level, function (e) {
+          return BurnedRegistry.examTouchesBurned(e);
+        });
+        if (!raw) {
+          // Todos vistos/quemados: reciclamos uno ya visto en vez de dejar al usuario sin examen.
+          // La IA NUNCA genera examenes completos; el completo sale siempre del pool/biblioteca.
+          raw = await deps.ExamLibrary.pickExam(ctx.subject, ctx.level);
+          recycled = true;
+        }
+      } else {
+        raw = await deps.ExamLibrary.pickExam(ctx.subject, ctx.level);
+      }
+    } catch (err) {
+      if (err && err.code === 'exam_library_unavailable') {
+        toastExamLibraryUnavailable(err, deps);
+        return null;
+      }
+      throw err;
     }
+    if (!raw) return null;
     var normalized = deps.normalizeExam ? deps.normalizeExam(raw) : raw;
     if (!normalized || (deps.isExamRenderable && !deps.isExamRenderable(normalized))) {
       throw new Error('The exam library entry is incomplete.');
@@ -122,6 +151,7 @@
       source: 'library',
       examData: normalized,
       topic: normalized.topic || null,
+      recycled: recycled,
     };
   }
 
@@ -129,18 +159,31 @@
    * Run non-AI sources in fixed order. Returns { status: 'hit', ... } or { status: 'continue' }
    * or { status: 'blocked', message } for Strategy B with genuinely no library.
    */
+  function isCuratedOnly(ctx) {
+    return (
+      typeof LevelAvailability !== 'undefined' &&
+      typeof LevelAvailability.isCuratedOnlyLevel === 'function' &&
+      LevelAvailability.isCuratedOnlyLevel(ctx.subject, ctx.level)
+    );
+  }
+
   async function runExamSourceCascade(ctx, deps) {
     deps = deps || defaultDeps();
-    var poolHit = await fromPool(ctx, deps);
-    if (poolHit) return { status: 'hit', result: poolHit };
+    if (!isCuratedOnly(ctx)) {
+      var poolHit = await fromPool(ctx, deps);
+      if (poolHit) return { status: 'hit', result: poolHit };
+    }
 
     var hadLibrary =
+      !isCuratedOnly(ctx) &&
       deps.QuestionLibrary &&
       typeof deps.QuestionLibrary.hasLibrary === 'function' &&
       deps.QuestionLibrary.hasLibrary(ctx.subject, ctx.level);
 
-    var qlHit = await fromQuestionLibrary(ctx, deps);
-    if (qlHit) return { status: 'hit', result: qlHit };
+    if (!isCuratedOnly(ctx)) {
+      var qlHit = await fromQuestionLibrary(ctx, deps);
+      if (qlHit) return { status: 'hit', result: qlHit };
+    }
 
     var libHit = await fromExamLibrary(ctx, deps);
     if (libHit) return { status: 'hit', result: libHit };

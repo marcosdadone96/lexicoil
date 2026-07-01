@@ -72,6 +72,15 @@ exports.handler = async (event) => {
     return jsonResponse(401, cors, { error: 'token_revoked' });
   }
 
+  if (!user.createdAt) {
+    user.createdAt = Date.now();
+    try {
+      await store.setJSON(userKey(auth.email), user);
+    } catch (_) {
+      /* non-fatal */
+    }
+  }
+
   const plan = resolvePlan(user);
   const max = maxForPlan(plan);
   let used = 0;
@@ -113,6 +122,8 @@ exports.handler = async (event) => {
         overdraft: aiSnap.overdraft,
         month: aiSnap.month,
         autoRecharge: aiSnap.autoRecharge,
+        trialActive: !!aiSnap.trialActive,
+        trialMax: aiSnap.trialMax || 0,
       },
       proActivatedAt: user.proActivatedAt || null,
       memberSince: user.createdAt || null,

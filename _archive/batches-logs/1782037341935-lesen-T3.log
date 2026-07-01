@@ -1,0 +1,19 @@
+
+Batch generator (claude) — de/A2 × 1
+Prompt: batches/GEMINI_MASTER_PROMPT_de_B1.md
+Presupuesto Claude: $999999999.00 (gastado: $2.8356)
+
+── lesen T3 · gesundheitsangebote-01 ──
+Tema: Gesundheits- und Wellnessangebote
+Proveedor: claude
+max_output_tokens=16384
+Archivo: batches/merged/lesen-t3-gesundheitsangebote-01.json
+Llamando claude…
+max_output_tokens=16384
+Gasto acumulado: $2.8491 / budget $999999999.00
+Tokens: in=2001 out=2302 (max_out=16384)
+Modelo: claude-haiku-4-5
+Error: Expected ',' or '}' after property value in JSON at position 295 (line 8 column 127)
+
+Resumen: 0 OK, 1 fallidos
+Assertion failed: !(handle->flags & UV_HANDLE_CLOSING), file src\win\async.c, line 76

@@ -198,11 +198,19 @@ function dashQuickQuiz(goalId){
 }
 function renderDashboardQuickActionsHtml(goal){
   const gid=esc(goal.id);
+  const persAllowed=typeof isPersonalizedAllowed!=='function'||isPersonalizedAllowed(goal.subject,goal.level);
+  const quickAllowed=typeof isQuickModuleAllowed!=='function'||isQuickModuleAllowed(goal.subject,goal.level);
+  const personalRow=persAllowed
+    ?'<div class="dash-qa" onclick="dashQuickPersonalized(\''+gid+'\')"><div class="dash-qa-ico" style="background:rgba(6,182,212,.12);color:var(--teal)">⚡</div><div class="dash-qa-body"><div class="dash-qa-title">Practice with words</div><div class="dash-qa-sub">Create exam using your words</div></div><span class="dash-qa-go">→</span></div>'
+    :'';
+  const quizRow=quickAllowed
+    ?'<div class="dash-qa" onclick="dashQuickQuiz(\''+gid+'\')"><div class="dash-qa-ico" style="background:rgba(16,185,129,.1);color:var(--green)">✓</div><div class="dash-qa-body"><div class="dash-qa-title">Quick quiz</div><div class="dash-qa-sub">Test yourself quickly</div></div><span class="dash-qa-go">→</span></div>'
+    :'';
   return'<div class="dash-panel"><h3>Quick actions</h3>'+
     '<div class="dash-qa" onclick="runDashboardReview(\''+gid+'\')"><div class="dash-qa-ico" style="background:var(--brand-light);color:var(--brand)">📋</div><div class="dash-qa-body"><div class="dash-qa-title">Review & mistakes</div><div class="dash-qa-sub">See words from your mistakes</div></div><span class="dash-qa-go">→</span></div>'+
-    '<div class="dash-qa" onclick="dashQuickPersonalized(\''+gid+'\')"><div class="dash-qa-ico" style="background:rgba(6,182,212,.12);color:var(--teal)">⚡</div><div class="dash-qa-body"><div class="dash-qa-title">Practice with words</div><div class="dash-qa-sub">Create exam using your words</div></div><span class="dash-qa-go">→</span></div>'+
+    personalRow+
     '<div class="dash-qa" onclick="dashQuickFlashcards(\''+gid+'\')"><div class="dash-qa-ico" style="background:rgba(245,158,11,.12);color:var(--amber)">🗂</div><div class="dash-qa-body"><div class="dash-qa-title">Flashcards</div><div class="dash-qa-sub">Study with spaced repetition</div></div><span class="dash-qa-go">→</span></div>'+
-    '<div class="dash-qa" onclick="dashQuickQuiz(\''+gid+'\')"><div class="dash-qa-ico" style="background:rgba(16,185,129,.1);color:var(--green)">✓</div><div class="dash-qa-body"><div class="dash-qa-title">Quick quiz</div><div class="dash-qa-sub">Test yourself quickly</div></div><span class="dash-qa-go">→</span></div>'+
+    quizRow+
   '</div>';
 }
 function renderDashboardFootHtml(){
@@ -261,7 +269,7 @@ function wizLevelStatus(subject,level){
 }
 function wizLevelRangeLabel(subject){
   const lv=wizSelectableLevels(subject);
-  if(!lv.length)return'Próximamente';
+  if(!lv.length)return'Coming soon';
   return lv.length===1?lv[0]+' · official format':lv[0]+'–'+lv[lv.length-1]+' · official format';
 }
 function selectWizLevel(level){
@@ -297,7 +305,7 @@ function renderGoalWizardHtml(isFirst){
       <div class="goal-tile${w.subject==='es'?' sel':''}" onclick="selectWizSubject('es')"><span class="goal-pill">Spanish</span><h3>DELE · Cervantes</h3><span>${wizLevelRangeLabel('es')}</span></div>
     </div>
     <p class="goal-step">Step 2 · Which level?</p>
-    <div class="goal-levels">${wizLevelsFor(w.subject).map(l=>{const st=wizLevelStatus(w.subject,l);const soon=st==='soon';return`<span class="goal-lvl${w.level===l&&!soon?' sel':''}${soon?' goal-lvl--soon':''}" onclick="${soon?`openLevelSoonNotify('${w.subject}','${l}')`:`selectWizLevel('${l}')`}">${l}${soon?'<small class="goal-lvl-soon">Próximamente</small>':''}</span>`;}).join('')}</div>
+    <div class="goal-levels">${wizLevelsFor(w.subject).map(l=>{const st=wizLevelStatus(w.subject,l);const soon=st==='soon';return`<span class="goal-lvl${w.level===l&&!soon?' sel':''}${soon?' goal-lvl--soon':''}" onclick="${soon?`openLevelSoonNotify('${w.subject}','${l}')`:`selectWizLevel('${l}')`}">${l}${soon?'<small class="goal-lvl-soon">Coming soon</small>':''}</span>`;}).join('')}</div>
     <p class="goal-step">Step 3 · Exam date <span class="goal-opt-note">(optional — powers your countdown)</span></p>
     <input type="date" class="goal-date" id="wizExamDate" value="${esc(w.examDate||'')}" onchange="_goalWizard.examDate=this.value">
     <div class="goal-wiz-actions">

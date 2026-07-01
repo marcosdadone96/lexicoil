@@ -11,6 +11,7 @@ const require = createRequire(import.meta.url);
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const GRAMMAR_ROOT = path.join(ROOT, 'lexicoil_grammar_content', 'content', 'grammar');
 
+require(path.join(ROOT, 'js/library/contentLoader.js'));
 const GrammarLoader = require(path.join(ROOT, 'js/library/grammarLoader.js'));
 
 let fail = false;

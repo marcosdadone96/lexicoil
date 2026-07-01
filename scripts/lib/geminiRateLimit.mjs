@@ -15,6 +15,8 @@ export class DailyQuotaError extends Error {
 const USAGE_FILE = path.join(ROOT, 'batches', '.gemini-usage.json');
 
 function rpmLimit() {
+  // Default 8 RPM ≈ tier gratuito (2.5-flash ~10 RPM; margen de seguridad).
+  // Con facturación activa en Google AI Studio, sube GEMINI_RPM=60+ en .env.
   return Math.max(1, Number(process.env.GEMINI_RPM) || 8);
 }
 

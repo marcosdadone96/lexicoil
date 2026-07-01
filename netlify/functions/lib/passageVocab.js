@@ -6,7 +6,7 @@
 
 const path = require('path');
 const fs = require('fs');
-const Lemmatizer = require(path.join(__dirname, '../../../js/engine/validation/lemmatizer.js'));
+const { resolveFromRoot } = require('./projectRoot.js');
 
 const STOP = new Set([
   'sein', 'haben', 'werden', 'der', 'die', 'das', 'den', 'dem', 'des', 'ein', 'eine', 'einer', 'eines', 'einem',
@@ -17,10 +17,42 @@ const STOP = new Set([
   'müsste', 'dieser', 'diese', 'dieses', 'jeder', 'jede', 'alle', 'viel', 'wenig', 'gut', 'neu', 'alt',
 ]);
 
+let _Lemmatizer = null;
+
+function getLemmatizer() {
+  if (_Lemmatizer) return _Lemmatizer;
+  const candidates = [
+    resolveFromRoot('js', 'engine', 'validation', 'lemmatizer.js'),
+    path.join(__dirname, '../../../js/engine/validation/lemmatizer.js'),
+    path.join(__dirname, '../../js/engine/validation/lemmatizer.js'),
+  ];
+  for (const file of candidates) {
+    try {
+      if (fs.existsSync(file)) {
+        _Lemmatizer = require(file);
+        return _Lemmatizer;
+      }
+    } catch (_) {
+      /* try next */
+    }
+  }
+  return null;
+}
+
 function loadLemmaSet(lang, level) {
   try {
-    const file = path.join(__dirname, '../../../library/vocab', lang, `${level}.json`);
-    if (!fs.existsSync(file)) return new Set();
+    const candidates = [
+      resolveFromRoot('library', 'vocab', lang, `${level}.json`),
+      path.join(__dirname, '../../../library/vocab', lang, `${level}.json`),
+    ];
+    let file = null;
+    for (const candidate of candidates) {
+      if (fs.existsSync(candidate)) {
+        file = candidate;
+        break;
+      }
+    }
+    if (!file) return new Set();
     const data = JSON.parse(fs.readFileSync(file, 'utf8'));
     return new Set((data.lemmas || []).map((w) => String(w).toLowerCase()));
   } catch (_) {
@@ -39,7 +71,10 @@ function tokenize(text) {
 function lemmaOf(token, lang) {
   const low = token.toLowerCase();
   if (STOP.has(low)) return null;
-  const lem = Lemmatizer.normalizeLemma(low, lang);
+  const Lemmatizer = getLemmatizer();
+  const lem = Lemmatizer
+    ? Lemmatizer.normalizeLemma(low, lang)
+    : low.replace(/[^a-zäöüß\-]/gi, '');
   if (!lem || STOP.has(lem)) return null;
   return lem;
 }
@@ -74,4 +109,20 @@ function extractPassageVocab(text, lang, level, max = 20) {
   return extractFromText(text, lang, levelSet, max);
 }
 
-module.exports = { extractPassageVocab, extractFromText, loadLemmaSet };
+/**
+ * Lematiza palabras sueltas del usuario con el mismo pipeline que los pasajes.
+ * No aplica el filtro de score (no descarta por longitud): queremos el lema base
+ * de CADA palabra pedida para emparejarla contra part.vocab[].
+ */
+function lemmatizeWords(words, lang) {
+  const out = new Set();
+  for (const w of words || []) {
+    for (const tok of tokenize(String(w))) {
+      const lem = lemmaOf(tok, lang);
+      if (lem) out.add(lem);
+    }
+  }
+  return [...out];
+}
+
+module.exports = { extractPassageVocab, extractFromText, loadLemmaSet, lemmatizeWords };

@@ -1,0 +1,1818 @@
+{
+  "id": "curated_de_A2_138d74d1015e",
+  "lang": "de",
+  "level": "A2",
+  "topic": "health",
+  "curated": true,
+  "exam": {
+    "topic": "health",
+    "level": "A2",
+    "lang": "de",
+    "goetheFormat": true,
+    "libraryBuilt": true,
+    "blueprintId": "goethe-a2",
+    "blueprintCoverage": [
+      {
+        "module": "lesen",
+        "teil": 1,
+        "slotType": "press_mcq",
+        "taskFormat": "short_text_mcq",
+        "target": 5,
+        "filled": 5,
+        "complete": true,
+        "wordsPerPassage": {
+          "min": 120,
+          "max": 200
+        }
+      },
+      {
+        "module": "lesen",
+        "teil": 2,
+        "slotType": "info_board_mcq",
+        "taskFormat": "floor_plan_mcq",
+        "target": 5,
+        "filled": 5,
+        "complete": true,
+        "wordsPerPassage": {
+          "min": 80,
+          "max": 150
+        }
+      },
+      {
+        "module": "lesen",
+        "teil": 3,
+        "slotType": "email_mcq",
+        "taskFormat": "correspondence_mcq",
+        "target": 5,
+        "filled": 5,
+        "complete": true,
+        "wordsPerPassage": {
+          "min": 100,
+          "max": 180
+        }
+      },
+      {
+        "module": "lesen",
+        "teil": 4,
+        "slotType": "ads_matching",
+        "taskFormat": "matching_ads",
+        "target": 5,
+        "filled": 5,
+        "complete": true,
+        "wordsPerPassage": {
+          "min": 20,
+          "max": 60
+        }
+      },
+      {
+        "module": "horen",
+        "teil": 1,
+        "slotType": "short_texts_twice",
+        "taskFormat": "short_dialogue_mcq",
+        "target": 5,
+        "filled": 5,
+        "complete": true,
+        "wordsPerPassage": null
+      },
+      {
+        "module": "horen",
+        "teil": 2,
+        "slotType": "picture_matching",
+        "taskFormat": "picture_schedule_matching",
+        "target": 5,
+        "filled": 5,
+        "complete": true,
+        "wordsPerPassage": null
+      },
+      {
+        "module": "horen",
+        "teil": 3,
+        "slotType": "short_dialogues_once",
+        "taskFormat": "short_dialogue_mcq",
+        "target": 5,
+        "filled": 5,
+        "complete": true,
+        "wordsPerPassage": null
+      },
+      {
+        "module": "horen",
+        "teil": 4,
+        "slotType": "interview_twice",
+        "taskFormat": "interview_ja_nein",
+        "target": 5,
+        "filled": 5,
+        "complete": true,
+        "wordsPerPassage": null
+      },
+      {
+        "module": "schreiben",
+        "teil": 1,
+        "slotType": "writing_task",
+        "taskFormat": "sms_message",
+        "target": 1,
+        "filled": 1,
+        "complete": true,
+        "wordsPerPassage": {
+          "min": 20,
+          "max": 30
+        }
+      },
+      {
+        "module": "schreiben",
+        "teil": 2,
+        "slotType": "writing_task",
+        "taskFormat": "semiformal_email",
+        "target": 1,
+        "filled": 1,
+        "complete": true,
+        "wordsPerPassage": {
+          "min": 30,
+          "max": 40
+        }
+      },
+      {
+        "module": "sprechen",
+        "teil": 1,
+        "slotType": "speaking_task",
+        "taskFormat": "personal_questions",
+        "target": 1,
+        "filled": 1,
+        "complete": true,
+        "wordsPerPassage": null
+      },
+      {
+        "module": "sprechen",
+        "teil": 2,
+        "slotType": "speaking_task",
+        "taskFormat": "about_self",
+        "target": 1,
+        "filled": 1,
+        "complete": true,
+        "wordsPerPassage": null
+      },
+      {
+        "module": "sprechen",
+        "teil": 3,
+        "slotType": "speaking_task",
+        "taskFormat": "plan_together",
+        "target": 1,
+        "filled": 1,
+        "complete": true,
+        "wordsPerPassage": null
+      }
+    ],
+    "blueprintComplete": true,
+    "libraryVersion": 87,
+    "topicTags": [
+      "health",
+      "travel",
+      "daily_life",
+      "housing",
+      "food",
+      "society",
+      "culture",
+      "work",
+      "education",
+      "sport"
+    ],
+    "difficulty": 5,
+    "official": {
+      "board": "Goethe-Institut",
+      "certificate": "Goethe-Zertifikat A2",
+      "note": "Assembled from question library using official exam blueprint (no runtime AI)."
+    },
+    "modules": {
+      "lesen": {
+        "title": "Lesen",
+        "time": "65 Minuten"
+      },
+      "horen": {
+        "title": "Hören",
+        "time": "40 Minuten"
+      },
+      "schreiben": {
+        "title": "Schreiben",
+        "time": "60 Minuten"
+      },
+      "sprechen": {
+        "title": "Sprechen",
+        "time": "15 Minuten"
+      }
+    },
+    "lesenParts": [
+      {
+        "teil": 1,
+        "instruction": "Lesen Sie in einer Zeitung diesen Text.\nWählen Sie für die Aufgaben 1 bis 6 die richtige Lösung a, b oder c.",
+        "blueprintSlot": "press_mcq",
+        "textTitle": "Gesunde Ernährung im Alltag trotz wenig Zeit",
+        "text": "Viele Menschen haben wenig Zeit für gesunde Ernährung. Sie arbeiten viel und kochen nicht gerne. Aber es ist nicht schwer, sich gesund zu ernähren – auch wenn man wenig Zeit hat.\n\nZum Frühstück können Sie schnell Müsli mit Joghurt und Obst essen. Das ist lecker und gesund. Für die Mittagspause nehmen Sie ein Butterbrot mit Käse und Gemüse mit. Ein Apfel passt auch in die Tasche.\n\nZum Abendessen kochen Sie nicht lange. Eine Suppe mit Gemüse ist schnell fertig. Sie brauchen nur 20 Minuten. Oder Sie machen einen Salat mit Huhn und Kartoffeln. Das ist auch sehr schnell.\n\nWichtig ist: Trinken Sie viel Wasser! Wasser ist besser als Limo und Saft. Und essen Sie nicht zu viel Schokolade und Süßigkeiten.\n\nMit kleinen Änderungen können Sie gesünder leben. Das ist nicht kompliziert.",
+        "passageId": "de-a2-p-lesen-t1-gesundheit-ernaehrung-01",
+        "questions": [
+          {
+            "id": "1",
+            "type": "multiple",
+            "question": "Was ist besser: Wasser oder Limo?",
+            "correct": "b",
+            "correctAnswer": "b",
+            "explanation": "Der Text sagt: 'Wichtig ist: Trinken Sie viel Wasser! Wasser ist besser als Limo und Saft.'",
+            "grammarTags": [
+              "g-de-a2-komparativ"
+            ],
+            "topicTags": [
+              "health"
+            ],
+            "vocabularyTags": [
+              "Wasser",
+              "Limo",
+              "trinken",
+              "besser"
+            ],
+            "difficulty": 2,
+            "options": [
+              "a) Limo ist besser",
+              "b) Wasser ist besser",
+              "c) Beides ist gleich"
+            ],
+            "passageId": "de-a2-p-lesen-t1-gesundheit-ernaehrung-01",
+            "number": 1,
+            "nr": 1,
+            "nummer": 1
+          },
+          {
+            "id": "2",
+            "type": "multiple",
+            "question": "Wie lange braucht man für eine Suppe zum Abendessen?",
+            "correct": "b",
+            "correctAnswer": "b",
+            "explanation": "Der Text sagt: 'Eine Suppe mit Gemüse ist schnell fertig. Sie brauchen nur 20 Minuten.'",
+            "grammarTags": [
+              "g-de-a2-praesens"
+            ],
+            "topicTags": [
+              "health"
+            ],
+            "vocabularyTags": [
+              "Suppe",
+              "Minuten",
+              "schnell"
+            ],
+            "difficulty": 2,
+            "options": [
+              "a) 5 Minuten",
+              "b) 20 Minuten",
+              "c) 1 Stunde"
+            ],
+            "passageId": "de-a2-p-lesen-t1-gesundheit-ernaehrung-01",
+            "number": 2,
+            "nr": 2,
+            "nummer": 2
+          },
+          {
+            "id": "3",
+            "type": "multiple",
+            "question": "Warum ist es schwer, sich gesund zu ernähren?",
+            "correct": "a",
+            "correctAnswer": "a",
+            "explanation": "Der Text sagt: 'Viele Menschen haben wenig Zeit für gesunde Ernährung. Sie arbeiten viel und kochen nicht gerne.'",
+            "grammarTags": [
+              "g-de-a2-praesens"
+            ],
+            "topicTags": [
+              "health"
+            ],
+            "vocabularyTags": [
+              "Zeit",
+              "arbeiten",
+              "kochen"
+            ],
+            "difficulty": 2,
+            "options": [
+              "a) Weil Menschen viel arbeiten und wenig Zeit haben",
+              "b) Weil Gemüse zu teuer ist",
+              "c) Weil Frühstück nicht wichtig ist"
+            ],
+            "passageId": "de-a2-p-lesen-t1-gesundheit-ernaehrung-01",
+            "number": 3,
+            "nr": 3,
+            "nummer": 3
+          },
+          {
+            "id": "4",
+            "type": "multiple",
+            "question": "Ist es kompliziert, gesünder zu leben?",
+            "correct": "c",
+            "correctAnswer": "c",
+            "explanation": "Der Text sagt am Ende: 'Mit kleinen Änderungen können Sie gesünder leben. Das ist nicht kompliziert.'",
+            "grammarTags": [
+              "g-de-a2-modal"
+            ],
+            "topicTags": [
+              "health"
+            ],
+            "vocabularyTags": [
+              "gesund",
+              "kompliziert",
+              "Änderung"
+            ],
+            "difficulty": 2,
+            "options": [
+              "a) Ja, es ist sehr kompliziert",
+              "b) Ja, nur mit viel Zeit",
+              "c) Nein, mit kleinen Änderungen nicht"
+            ],
+            "passageId": "de-a2-p-lesen-t1-gesundheit-ernaehrung-01",
+            "number": 4,
+            "nr": 4,
+            "nummer": 4
+          },
+          {
+            "id": "5",
+            "type": "multiple",
+            "question": "Was ist ein gutes Frühstück nach dem Text?",
+            "correct": "b",
+            "correctAnswer": "b",
+            "explanation": "Der Text sagt: 'Zum Frühstück können Sie schnell Müsli mit Joghurt und Obst essen. Das ist lecker und gesund.'",
+            "grammarTags": [
+              "g-de-a2-modal"
+            ],
+            "topicTags": [
+              "health"
+            ],
+            "vocabularyTags": [
+              "Frühstück",
+              "Müsli",
+              "Joghurt",
+              "Obst"
+            ],
+            "difficulty": 2,
+            "options": [
+              "a) Nur Kaffee und Toast",
+              "b) Müsli mit Joghurt und Obst",
+              "c) Schokolade und Saft"
+            ],
+            "passageId": "de-a2-p-lesen-t1-gesundheit-ernaehrung-01",
+            "number": 5,
+            "nr": 5,
+            "nummer": 5
+          },
+          {
+            "id": "6",
+            "type": "multiple",
+            "question": "Warum ist es schwer, sich gesund zu ernähren?",
+            "correct": "a",
+            "correctAnswer": "a",
+            "explanation": "Der Text sagt: 'Viele Menschen haben wenig Zeit für gesunde Ernährung. Sie arbeiten viel und kochen nicht gerne.'",
+            "options": [
+              "a) Weil Menschen viel arbeiten und wenig Zeit haben",
+              "b) Weil Gemüse zu teuer ist",
+              "c) Weil Frühstück nicht wichtig ist"
+            ],
+            "grammarTags": [
+              "g-de-a2-praesens"
+            ],
+            "topicTags": [
+              "health"
+            ],
+            "vocabularyTags": [
+              "Zeit",
+              "arbeiten",
+              "kochen"
+            ],
+            "difficulty": 2,
+            "passageId": "de-a2-p-lesen-t1-gesundheit-ernaehrung-01",
+            "number": 6,
+            "nr": 6,
+            "nummer": 6
+          }
+        ],
+        "_itemCount": 6,
+        "_numberRange": {
+          "start": 1,
+          "end": 6,
+          "officialEnd": 5
+        }
+      },
+      {
+        "teil": 2,
+        "instruction": "Lesen Sie die Informationstafel und die Aufgaben 6 bis 10.\nIn welchem Stock gehen Sie? Wählen Sie die richtige Lösung a, b oder c.",
+        "blueprintSlot": "info_board_mcq",
+        "textTitle": "Verkehrsmittel in der Stadt",
+        "text": "PARKHAUS ZENTRUM – Übersicht\n\nEtage 1 (Erdgeschoss):\n• Eingang / Ausgang\n• Fahrkartenautomat\n• Informationen\n• WC\n\nEtage 2:\n• 40 Parkplätze für Autos\n• 20 Parkplätze für Motorräder\n• Ladestationen für E-Autos\n\nEtage 3:\n• 50 Parkplätze für Autos\n• Fahrradständer (80 Plätze)\n• Reparaturwerkstatt für Fahrräder\n\nEtage 4:\n• 45 Parkplätze für Autos\n• Café\n• Toiletten\n\nEtage 5:\n• 35 Parkplätze für Autos\n• Büros\n\nPreise (pro Stunde):\n• Auto: 2,50 €\n• Motorrad: 1,00 €\n• Fahrrad: 0,50 € (Tagesticket: 2,00 €)\n\nÖffnungszeiten: Mo–So 6:00–22:00 Uhr\nTelefon: 089-555-1234",
+        "passageId": "de-a2-p-lesen-t2-mobilitaet-auto-rad-01",
+        "questions": [
+          {
+            "id": "6-138d74d1",
+            "type": "multiple",
+            "question": "Bis wann ist das Parkhaus geöffnet?",
+            "correct": "b",
+            "correctAnswer": "b",
+            "explanation": "Die Öffnungszeiten sind: ‚Mo–So 6:00–22:00 Uhr'. Das Parkhaus ist bis 22:00 Uhr (22 Uhr) geöffnet.",
+            "grammarTags": [
+              "g-de-a2-praesens"
+            ],
+            "topicTags": [
+              "travel"
+            ],
+            "vocabularyTags": [
+              "Öffnungszeiten",
+              "Uhr"
+            ],
+            "difficulty": 2,
+            "options": [
+              "a) Bis 20:00 Uhr",
+              "b) Bis 22:00 Uhr",
+              "c) Bis 23:00 Uhr"
+            ],
+            "passageId": "de-a2-p-lesen-t2-mobilitaet-auto-rad-01",
+            "number": 6,
+            "nr": 6,
+            "nummer": 6
+          },
+          {
+            "id": "7",
+            "type": "multiple",
+            "question": "Wie viel kostet das Tagesticket für ein Fahrrad?",
+            "correct": "b",
+            "correctAnswer": "b",
+            "explanation": "In der Preistabelle steht: ‚Fahrrad: 0,50 € (Tagesticket: 2,00 €)'. Das Tagesticket kostet 2,00 €.",
+            "grammarTags": [
+              "g-de-a2-praesens"
+            ],
+            "topicTags": [
+              "travel"
+            ],
+            "vocabularyTags": [
+              "Preis",
+              "Tagesticket",
+              "Euro"
+            ],
+            "difficulty": 2,
+            "options": [
+              "a) 0,50 €",
+              "b) 2,00 €",
+              "c) 2,50 €"
+            ],
+            "passageId": "de-a2-p-lesen-t2-mobilitaet-auto-rad-01",
+            "number": 7,
+            "nr": 7,
+            "nummer": 7
+          },
+          {
+            "id": "8",
+            "type": "multiple",
+            "question": "Wo gibt es Ladestationen für E-Autos?",
+            "correct": "a",
+            "correctAnswer": "a",
+            "explanation": "Nach dem Text sind die Ladestationen auf Etage 2: ‚Etage 2: 40 Parkplätze für Autos, 20 Parkplätze für Motorräder, Ladestationen für E-Autos'.",
+            "grammarTags": [
+              "g-de-a2-praesens"
+            ],
+            "topicTags": [
+              "travel"
+            ],
+            "vocabularyTags": [
+              "Ladestation",
+              "E-Auto",
+              "Etage"
+            ],
+            "difficulty": 2,
+            "options": [
+              "a) Auf Etage 2",
+              "b) Auf Etage 3",
+              "c) Auf Etage 4"
+            ],
+            "passageId": "de-a2-p-lesen-t2-mobilitaet-auto-rad-01",
+            "number": 8,
+            "nr": 8,
+            "nummer": 8
+          },
+          {
+            "id": "9",
+            "type": "multiple",
+            "question": "Wo kann man sein Fahrrad reparieren?",
+            "correct": "a",
+            "correctAnswer": "a",
+            "explanation": "Im Text steht: ‚Etage 3: Fahrradständer (80 Plätze) + Reparaturwerkstatt für Fahrräder'. Die Reparaturwerkstatt ist auf Etage 3.",
+            "grammarTags": [
+              "g-de-a2-praesens"
+            ],
+            "topicTags": [
+              "travel"
+            ],
+            "vocabularyTags": [
+              "Fahrrad",
+              "Reparaturwerkstatt",
+              "Etage"
+            ],
+            "difficulty": 2,
+            "options": [
+              "a) Auf Etage 3",
+              "b) Auf Etage 2",
+              "c) Auf Etage 1"
+            ],
+            "passageId": "de-a2-p-lesen-t2-mobilitaet-auto-rad-01",
+            "number": 9,
+            "nr": 9,
+            "nummer": 9
+          },
+          {
+            "id": "10",
+            "type": "multiple",
+            "question": "Was ist auf Etage 4 zu finden?",
+            "correct": "c",
+            "correctAnswer": "c",
+            "explanation": "Der Text sagt: ‚Etage 4: 45 Parkplätze für Autos, Café, Toiletten'. Ein Café und Toiletten sind auf Etage 4.",
+            "grammarTags": [
+              "g-de-a2-praesens"
+            ],
+            "topicTags": [
+              "daily_life"
+            ],
+            "vocabularyTags": [
+              "Café",
+              "Toiletten",
+              "Etage"
+            ],
+            "difficulty": 2,
+            "options": [
+              "a) Reparaturwerkstatt und Fahrradständer",
+              "b) Ladestationen und Büros",
+              "c) Café und Toiletten"
+            ],
+            "passageId": "de-a2-p-lesen-t2-mobilitaet-auto-rad-01",
+            "number": 10,
+            "nr": 10,
+            "nummer": 10
+          }
+        ],
+        "_itemCount": 5,
+        "_numberRange": {
+          "start": 6,
+          "end": 10,
+          "officialEnd": 10
+        }
+      },
+      {
+        "teil": 3,
+        "instruction": "Lesen Sie die E-Mail und die Aufgaben 11 bis 15.\nWählen Sie für jede Aufgabe die richtige Lösung a, b oder c.",
+        "blueprintSlot": "email_mcq",
+        "textTitle": "E-Mail: Reparaturservice",
+        "text": "Liebe Frau Schmidt,\n\nich schreibe Ihnen, weil mein Kühlschrank kaputt ist. Die Tür schließt nicht mehr richtig und das Licht funktioniert nicht. Ich brauche schnell Hilfe, denn das Essen wird warm.\n\nKönnen Sie morgen vorbeikommen? Ich bin ab 9 Uhr zu Hause. Meine Adresse ist Bahnhofstraße 42, Wohnung 5.\n\nWas kostet die Reparatur? Müssen Sie Ersatzteile kaufen?\n\nDanke für Ihre schnelle Antwort.\n\nViele Grüße\nMartin Köhler",
+        "passageId": "de-a2-p-lesen-t3-dienstleistungen-alltag-02",
+        "questions": [
+          {
+            "id": "11",
+            "type": "multiple",
+            "question": "Was möchte Martin von Frau Schmidt wissen?",
+            "correct": "b",
+            "correctAnswer": "b",
+            "explanation": "Martin fragt: 'Was kostet die Reparatur? Müssen Sie Ersatzteile kaufen?'",
+            "grammarTags": [
+              "g-de-a2-modal"
+            ],
+            "topicTags": [
+              "daily_life"
+            ],
+            "vocabularyTags": [
+              "Kosten",
+              "Reparatur",
+              "Ersatzteil"
+            ],
+            "difficulty": 3,
+            "options": [
+              "a) Nur, wann sie kommt",
+              "b) Was die Reparatur kostet und ob Ersatzteile nötig sind",
+              "c) Nur, wie lange die Reparatur dauert"
+            ],
+            "passageId": "de-a2-p-lesen-t3-dienstleistungen-alltag-02",
+            "number": 11,
+            "nr": 11,
+            "nummer": 11
+          },
+          {
+            "id": "12",
+            "type": "multiple",
+            "question": "Warum braucht Martin schnell Hilfe?",
+            "correct": "b",
+            "correctAnswer": "b",
+            "explanation": "Martin schreibt: 'Ich brauche schnell Hilfe, denn das Essen wird warm.'",
+            "grammarTags": [
+              "g-de-a2-praesens"
+            ],
+            "topicTags": [
+              "daily_life"
+            ],
+            "vocabularyTags": [
+              "Essen",
+              "warm",
+              "Hilfe"
+            ],
+            "difficulty": 2,
+            "options": [
+              "a) Die Reparatur ist sehr teuer",
+              "b) Das Essen wird warm",
+              "c) Er hat morgen Besuch"
+            ],
+            "passageId": "de-a2-p-lesen-t3-dienstleistungen-alltag-02",
+            "number": 12,
+            "nr": 12,
+            "nummer": 12
+          },
+          {
+            "id": "13",
+            "type": "multiple",
+            "question": "Wann kann Martin Frau Schmidt zu Hause empfangen?",
+            "correct": "b",
+            "correctAnswer": "b",
+            "explanation": "Martin schreibt: 'Können Sie morgen vorbeikommen? Ich bin ab 9 Uhr zu Hause.'",
+            "grammarTags": [
+              "g-de-a2-modal"
+            ],
+            "topicTags": [
+              "daily_life"
+            ],
+            "vocabularyTags": [
+              "morgen",
+              "vorbeikommen",
+              "Zeit"
+            ],
+            "difficulty": 2,
+            "options": [
+              "a) Heute ab 9 Uhr",
+              "b) Morgen ab 9 Uhr",
+              "c) Übermorgen ab 9 Uhr"
+            ],
+            "passageId": "de-a2-p-lesen-t3-dienstleistungen-alltag-02",
+            "number": 13,
+            "nr": 13,
+            "nummer": 13
+          },
+          {
+            "id": "14",
+            "type": "multiple",
+            "question": "Was ist das Problem mit dem Kühlschrank?",
+            "correct": "b",
+            "correctAnswer": "b",
+            "explanation": "Martin schreibt: 'Die Tür schließt nicht mehr richtig und das Licht funktioniert nicht.'",
+            "grammarTags": [
+              "g-de-a2-perfekt"
+            ],
+            "topicTags": [
+              "daily_life"
+            ],
+            "vocabularyTags": [
+              "kaputt",
+              "Kühlschrank",
+              "Licht"
+            ],
+            "difficulty": 2,
+            "options": [
+              "a) Das Eis schmilzt zu schnell",
+              "b) Die Tür schließt nicht und das Licht funktioniert nicht",
+              "c) Der Motor ist zu laut"
+            ],
+            "passageId": "de-a2-p-lesen-t3-dienstleistungen-alltag-02",
+            "number": 14,
+            "nr": 14,
+            "nummer": 14
+          },
+          {
+            "id": "15",
+            "type": "multiple",
+            "question": "Wo wohnt Martin?",
+            "correct": "b",
+            "correctAnswer": "b",
+            "explanation": "In der E-Mail steht: 'Meine Adresse ist Bahnhofstraße 42, Wohnung 5.'",
+            "grammarTags": [
+              "g-de-a2-dat-akk"
+            ],
+            "topicTags": [
+              "housing"
+            ],
+            "vocabularyTags": [
+              "Adresse",
+              "Wohnung",
+              "Straße"
+            ],
+            "difficulty": 2,
+            "options": [
+              "a) Bahnhofstraße 5, Wohnung 42",
+              "b) Bahnhofstraße 42, Wohnung 5",
+              "c) Bahnhofstraße 25, Wohnung 4"
+            ],
+            "passageId": "de-a2-p-lesen-t3-dienstleistungen-alltag-02",
+            "number": 15,
+            "nr": 15,
+            "nummer": 15
+          }
+        ],
+        "_itemCount": 5,
+        "_numberRange": {
+          "start": 11,
+          "end": 15,
+          "officialEnd": 15
+        }
+      },
+      {
+        "teil": 4,
+        "instruction": "Lesen Sie die Aufgaben 16 bis 20 und die Anzeigen a bis f.\nWelche Anzeige passt zu welcher Person? Für eine Aufgabe gibt es keine Lösung. Markieren Sie X.",
+        "blueprintSlot": "ads_matching",
+        "items": [
+          {
+            "id": "16",
+            "type": "matching",
+            "signText": "Die Grundschule 'Sonnenschein' sucht erfahrene Sekretäre. Arbeitszeit: 38 Stunden pro Woche, Montag bis Freitag. Wir haben keine Vier-Tage-Woche. Aber: sehr sichere Arbeit, gute Vorteile und nette Kollegen.",
+            "passageId": "de-a2-p-lesen-t4-vier-tage-woche-02-d",
+            "question": "Ein Schüler sucht ein Programm mit Linsen und Bohnen statt Fleisch. Welche Anzeige passt?",
+            "options": [
+              "a) a",
+              "b) b",
+              "c) c",
+              "d) d",
+              "e) e",
+              "f) f",
+              "g) X"
+            ],
+            "correct": "d",
+            "grammarTags": [
+              "g-de-a2-praesens"
+            ],
+            "topicTags": [
+              "food"
+            ],
+            "vocabularyTags": [
+              "Linsen",
+              "Bohnen",
+              "Programm"
+            ],
+            "difficulty": 2,
+            "explanation": "Die Anzeige 'Gesundes Essen in der Schule' (d) beschreibt ein Programm, das Linsen und Bohnen als Fleischersatz bietet.",
+            "correctAnswer": "d",
+            "number": 16,
+            "nr": 16,
+            "nummer": 16
+          },
+          {
+            "id": "17",
+            "type": "matching",
+            "signText": "Die Grundschule 'Sonnenschein' sucht erfahrene Sekretäre. Arbeitszeit: 38 Stunden pro Woche, Montag bis Freitag. Wir haben keine Vier-Tage-Woche. Aber: sehr sichere Arbeit, gute Vorteile und nette Kollegen.",
+            "passageId": "de-a2-p-lesen-t4-vier-tage-woche-02-d",
+            "question": "Ein Schüler möchte am Montag ein vegetarisches Menü mit Anmeldung essen. Welche Anzeige passt?",
+            "options": [
+              "a) a",
+              "b) b",
+              "c) c",
+              "d) d",
+              "e) e",
+              "f) f",
+              "g) X"
+            ],
+            "correct": "a",
+            "grammarTags": [
+              "g-de-a2-praesens",
+              "g-de-a2-modal"
+            ],
+            "topicTags": [
+              "food"
+            ],
+            "vocabularyTags": [
+              "vegetarisch",
+              "Anmeldung",
+              "Menü"
+            ],
+            "difficulty": 2,
+            "explanation": "Die Anzeige 'Bio-Menü für Schüler' (a) bietet ein vegetarisches Menü und verlangt Anmeldung bis Freitag.",
+            "correctAnswer": "a",
+            "number": 17,
+            "nr": 17,
+            "nummer": 17
+          },
+          {
+            "id": "18",
+            "type": "matching",
+            "signText": "Die Grundschule 'Sonnenschein' sucht erfahrene Sekretäre. Arbeitszeit: 38 Stunden pro Woche, Montag bis Freitag. Wir haben keine Vier-Tage-Woche. Aber: sehr sichere Arbeit, gute Vorteile und nette Kollegen.",
+            "passageId": "de-a2-p-lesen-t4-vier-tage-woche-02-d",
+            "question": "Ein Schüler kann zwischen Fisch und Gemüse wählen und will nicht viel Geld ausgeben. Welche Anzeige passt?",
+            "options": [
+              "a) a",
+              "b) b",
+              "c) c",
+              "d) d",
+              "e) e",
+              "f) f",
+              "g) X"
+            ],
+            "correct": "c",
+            "grammarTags": [
+              "g-de-a2-modal",
+              "g-de-a2-komparativ"
+            ],
+            "topicTags": [
+              "food"
+            ],
+            "vocabularyTags": [
+              "wählen",
+              "Gemüse",
+              "Preis"
+            ],
+            "difficulty": 3,
+            "explanation": "Die Anzeige 'Schulcafé mit Wahlmenu' (c) hat zwei Optionen (Fisch und Gemüse) und das Gemüse-Menü kostet weniger (5 Euro statt 6 Euro).",
+            "correctAnswer": "c",
+            "number": 18,
+            "nr": 18,
+            "nummer": 18
+          },
+          {
+            "id": "19",
+            "type": "matching",
+            "signText": "Die Grundschule 'Sonnenschein' sucht erfahrene Sekretäre. Arbeitszeit: 38 Stunden pro Woche, Montag bis Freitag. Wir haben keine Vier-Tage-Woche. Aber: sehr sichere Arbeit, gute Vorteile und nette Kollegen.",
+            "passageId": "de-a2-p-lesen-t4-vier-tage-woche-02-d",
+            "question": "Eine Schule macht eine ganze Woche lang kein Fleisch. Welche Anzeige passt?",
+            "options": [
+              "a) a",
+              "b) b",
+              "c) c",
+              "d) d",
+              "e) e",
+              "f) f",
+              "g) X"
+            ],
+            "correct": "b",
+            "grammarTags": [
+              "g-de-a2-praesens"
+            ],
+            "topicTags": [
+              "food"
+            ],
+            "vocabularyTags": [
+              "Woche",
+              "Fleisch",
+              "Schule"
+            ],
+            "difficulty": 2,
+            "explanation": "Die Anzeige 'Fleischfreie Woche' (b) beschreibt genau eine Schulwoche ohne Fleisch.",
+            "correctAnswer": "b",
+            "number": 19,
+            "nr": 19,
+            "nummer": 19
+          },
+          {
+            "id": "20",
+            "type": "matching",
+            "signText": "Die Grundschule 'Sonnenschein' sucht erfahrene Sekretäre. Arbeitszeit: 38 Stunden pro Woche, Montag bis Freitag. Wir haben keine Vier-Tage-Woche. Aber: sehr sichere Arbeit, gute Vorteile und nette Kollegen.",
+            "passageId": "de-a2-p-lesen-t4-vier-tage-woche-02-d",
+            "question": "Ein Schüler möchte sein Menü selbst zusammenstellen und hat viele Möglichkeiten. Welche Anzeige passt?",
+            "options": [
+              "a) a",
+              "b) b",
+              "c) c",
+              "d) d",
+              "e) e",
+              "f) f",
+              "g) X"
+            ],
+            "correct": "e",
+            "grammarTags": [
+              "g-de-a2-modal",
+              "g-de-a2-praesens"
+            ],
+            "topicTags": [
+              "food"
+            ],
+            "vocabularyTags": [
+              "Menü",
+              "zusammenstellen",
+              "Wunsch"
+            ],
+            "difficulty": 3,
+            "explanation": "Die Anzeige 'Menü nach Wunsch' (e) beschreibt ein System, wo Schüler ihr Menü aus verschiedenen Komponenten selbst zusammenstellen können.",
+            "correctAnswer": "e",
+            "number": 20,
+            "nr": 20,
+            "nummer": 20
+          }
+        ],
+        "textTitle": "Anzeige D: Schulverwaltung braucht Sekretäre",
+        "text": "Die Grundschule 'Sonnenschein' sucht erfahrene Sekretäre. Arbeitszeit: 38 Stunden pro Woche, Montag bis Freitag. Wir haben keine Vier-Tage-Woche. Aber: sehr sichere Arbeit, gute Vorteile und nette Kollegen.",
+        "passageId": "de-a2-p-lesen-t4-vier-tage-woche-02-d",
+        "questions": [],
+        "_itemCount": 5,
+        "_numberRange": {
+          "start": 16,
+          "end": 20,
+          "officialEnd": 20
+        }
+      }
+    ],
+    "horenParts": [
+      {
+        "teil": 1,
+        "instruction": "Sie hören fünf kurze Texte. Sie hören jeden Text zweimal.\nWählen Sie für die Aufgaben 1 bis 5 die richtige Lösung a, b oder c.",
+        "blueprintSlot": "short_texts_twice",
+        "transcript": "Guten Morgen! Das Rathaus ist ab Montag geschlossen. Die Öffnungszeiten ändern sich. Besucher können Montag bis Freitag von 9 bis 16 Uhr vorbeikommen.\n\nAchtung! Der Zug nach Berlin fährt in fünf Minuten von Gleis 7 ab. Alle Fahrgäste bitte einsteigen. Die Fahrt dauert zwei Stunden und fünfzehn Minuten. Nächster Halt ist Leipzig.\n\nHallo Martin, hier ist Anna. Ich bin heute krank und kann nicht zur Arbeit kommen. Ich habe Fieber und Husten. Ich gehe zum Arzt und bringe eine Krankmeldung. Bis bald! Auf Wiedersehen!\n\nHallo, ich bin krank. Ich habe Kopfschmerzen und Fieber. Kann ich heute zum Arzt kommen? Ja, natürlich. Kommen Sie um 14 Uhr in die Praxis.\n\nHallo, ich möchte einen Termin machen. Ich habe starke Kopfschmerzen seit drei Tagen. Können Sie mir morgen einen Termin geben? Tut mir leid, morgen ist Freitag komplett ausgebucht. Wie ist es mit Montag um 10 Uhr? Das passt mir gut.",
+        "segments": [
+          {
+            "id": "seg_1_0",
+            "label": "Text 2",
+            "transcript": "Guten Morgen! Das Rathaus ist ab Montag geschlossen. Die Öffnungszeiten ändern sich. Besucher können Montag bis Freitag von 9 bis 16 Uhr vorbeikommen.",
+            "passageId": "de-a2-p-horen-t1-alltag-behoerden-01-s2",
+            "questions": [
+              {
+                "id": "1-138d74d1",
+                "type": "multiple",
+                "question": "Wann kann man das Rathaus besuchen?",
+                "correct": "b",
+                "correctAnswer": "b",
+                "explanation": "Die Radionachricht gibt die neuen Öffnungszeiten an: 'Montag bis Freitag von 9 bis 16 Uhr'.",
+                "grammarTags": [
+                  "g-de-a2-praesens",
+                  "g-de-a2-dat-akk"
+                ],
+                "topicTags": [
+                  "daily_life"
+                ],
+                "vocabularyTags": [
+                  "Rathaus",
+                  "Öffnungszeiten",
+                  "Besucher"
+                ],
+                "difficulty": 2,
+                "options": [
+                  "a) Montag bis Freitag 8 bis 15 Uhr",
+                  "b) Montag bis Freitag 9 bis 16 Uhr",
+                  "c) Samstag bis Sonntag 9 bis 16 Uhr"
+                ],
+                "passageId": "de-a2-p-horen-t1-alltag-behoerden-01-s2",
+                "number": 1,
+                "nr": 1,
+                "nummer": 1
+              }
+            ]
+          },
+          {
+            "id": "seg_1_1",
+            "label": "Text 2",
+            "transcript": "Achtung! Der Zug nach Berlin fährt in fünf Minuten von Gleis 7 ab. Alle Fahrgäste bitte einsteigen. Die Fahrt dauert zwei Stunden und fünfzehn Minuten. Nächster Halt ist Leipzig.",
+            "passageId": "de-a2-p-horen-t1-freizeit-kino-01-s2",
+            "questions": [
+              {
+                "id": "2-138d74d1",
+                "type": "multiple",
+                "question": "Wie lange dauert die Zugfahrt nach Berlin?",
+                "correct": "c",
+                "correctAnswer": "c",
+                "explanation": "Die Ansage sagt: 'Die Fahrt dauert zwei Stunden und fünfzehn Minuten.'",
+                "grammarTags": [
+                  "g-de-a2-praesens"
+                ],
+                "topicTags": [
+                  "travel"
+                ],
+                "vocabularyTags": [
+                  "Fahrt",
+                  "dauern",
+                  "Minute"
+                ],
+                "difficulty": 2,
+                "options": [
+                  "a) Eine Stunde",
+                  "b) Anderthalb Stunden",
+                  "c) Zwei Stunden und fünfzehn Minuten"
+                ],
+                "passageId": "de-a2-p-horen-t1-freizeit-kino-01-s2",
+                "number": 2,
+                "nr": 2,
+                "nummer": 2
+              }
+            ]
+          },
+          {
+            "id": "seg_1_2",
+            "label": "Text 4",
+            "transcript": "Hallo Martin, hier ist Anna. Ich bin heute krank und kann nicht zur Arbeit kommen. Ich habe Fieber und Husten. Ich gehe zum Arzt und bringe eine Krankmeldung. Bis bald! Auf Wiedersehen!",
+            "passageId": "de-a2-p-horen-t1-gesundheit-arzt-03-s4",
+            "questions": [
+              {
+                "id": "3-138d74d1",
+                "type": "multiple",
+                "question": "Warum kann Anna nicht zur Arbeit kommen?",
+                "correct": "b",
+                "correctAnswer": "b",
+                "explanation": "Anna sagt: 'Ich bin heute krank und kann nicht zur Arbeit kommen. Ich habe Fieber und Husten.'",
+                "grammarTags": [
+                  "g-de-a2-praesens",
+                  "g-de-a2-perfekt"
+                ],
+                "topicTags": [
+                  "health"
+                ],
+                "vocabularyTags": [
+                  "Fieber",
+                  "Husten",
+                  "Krankmeldung",
+                  "krank"
+                ],
+                "difficulty": 2,
+                "options": [
+                  "a) Sie hat einen Zahnarzttermin",
+                  "b) Sie ist krank und hat Fieber und Husten",
+                  "c) Sie muss zum Arzt eine Krankmeldung holen"
+                ],
+                "passageId": "de-a2-p-horen-t1-gesundheit-arzt-03-s4",
+                "number": 3,
+                "nr": 3,
+                "nummer": 3
+              }
+            ]
+          },
+          {
+            "id": "seg_1_3",
+            "label": "Text 2",
+            "transcript": "Hallo, ich bin krank. Ich habe Kopfschmerzen und Fieber. Kann ich heute zum Arzt kommen? Ja, natürlich. Kommen Sie um 14 Uhr in die Praxis.",
+            "passageId": "de-a2-p-horen-t1-gesundheit-arzt-01-s2",
+            "questions": [
+              {
+                "id": "4-138d74d1",
+                "type": "multiple",
+                "question": "Wann kann die Person zum Arzt kommen?",
+                "correct": "b",
+                "correctAnswer": "b",
+                "explanation": "Der Arzt sagt: 'Kommen Sie um 14 Uhr in die Praxis.'",
+                "grammarTags": [
+                  "g-de-a2-praesens"
+                ],
+                "topicTags": [
+                  "health"
+                ],
+                "vocabularyTags": [
+                  "Arzt",
+                  "kommen",
+                  "Termin"
+                ],
+                "difficulty": 2,
+                "options": [
+                  "a) um 13 Uhr",
+                  "b) um 14 Uhr",
+                  "c) um 15 Uhr"
+                ],
+                "passageId": "de-a2-p-horen-t1-gesundheit-arzt-01-s2",
+                "number": 4,
+                "nr": 4,
+                "nummer": 4
+              }
+            ]
+          },
+          {
+            "id": "seg_1_4",
+            "label": "Text 2",
+            "transcript": "Hallo, ich möchte einen Termin machen. Ich habe starke Kopfschmerzen seit drei Tagen. Können Sie mir morgen einen Termin geben? Tut mir leid, morgen ist Freitag komplett ausgebucht. Wie ist es mit Montag um 10 Uhr? Das passt mir gut.",
+            "passageId": "de-a2-p-horen-t1-gesundheit-arzt-04-s2",
+            "questions": [
+              {
+                "id": "5-138d74d1",
+                "type": "multiple",
+                "question": "Warum kann die Person keinen Termin am Freitag bekommen?",
+                "correct": "a",
+                "correctAnswer": "a",
+                "explanation": "Der Zahnarzt sagt: ‚Morgen ist Freitag komplett ausgebucht.'",
+                "grammarTags": [
+                  "g-de-a2-praesens"
+                ],
+                "topicTags": [
+                  "health"
+                ],
+                "vocabularyTags": [
+                  "Termin",
+                  "ausgebucht",
+                  "Kopfschmerzen"
+                ],
+                "difficulty": 2,
+                "options": [
+                  "a) Die Praxis ist komplett ausgebucht",
+                  "b) Der Arzt ist krank",
+                  "c) Der Arzt hat Urlaub"
+                ],
+                "passageId": "de-a2-p-horen-t1-gesundheit-arzt-04-s2",
+                "number": 5,
+                "nr": 5,
+                "nummer": 5
+              }
+            ]
+          }
+        ],
+        "_itemCount": 5,
+        "_numberRange": {
+          "start": 1,
+          "end": 5,
+          "officialEnd": 5
+        }
+      },
+      {
+        "teil": 2,
+        "instruction": "Sie hören ein Gespräch. Sie hören den Text einmal.\nWählen Sie für die Aufgaben 6 bis 10 ein passendes Bild aus a bis i.",
+        "blueprintSlot": "picture_matching",
+        "transcript": "Moderatorin: Guten Tag! Heute sprechen wir über das Ehrenamt. Mit uns ist Herr Müller, er arbeitet seit fünf Jahren freiwillig in einem Altenheim. Herr Müller, warum machen Sie Ehrenamt? Herr Müller: Das ist eine gute Frage. Ich bin Rentner und habe viel Zeit. Ich möchte älteren Menschen helfen und mit ihnen Zeit verbringen. Das macht mir große Freude. Moderatorin: Was sind die Vorteile für Sie persönlich? Herr Müller: Ich lerne viele interessante Menschen kennen. Die Arbeit gibt mir ein gutes Gefühl, denn ich weiß, dass ich etwas Wichtiges tue. Außerdem bleibe ich aktiv und gesund. Moderatorin: Und für die älteren Menschen? Herr Müller: Sie bekommen Aufmerksamkeit und Freundschaft. Viele sind isoliert und freuen sich über Besuche. Wir spielen Karten, hören Musik oder spazieren zusammen. Moderatorin: Können Sie anderen Menschen empfehlen, Ehrenamt zu machen? Herr Müller: Ja, sehr gerne! Es ist bereichernd für alle. Man braucht nur Zeit und ein offenes Herz.",
+        "segments": [
+          {
+            "id": "seg_fill_0",
+            "label": "Aufnahme 1",
+            "transcript": "Moderatorin: Guten Tag! Heute sprechen wir über das Ehrenamt. Mit uns ist Herr Müller, er arbeitet seit fünf Jahren freiwillig in einem Altenheim. Herr Müller, warum machen Sie Ehrenamt? Herr Müller: Das ist eine gute Frage. Ich bin Rentner und habe viel Zeit. Ich möchte älteren Menschen helfen und mit ihnen Zeit verbringen. Das macht mir große Freude. Moderatorin: Was sind die Vorteile für Sie persönlich? Herr Müller: Ich lerne viele interessante Menschen kennen. Die Arbeit gibt mir ein gutes Gefühl, denn ich weiß, dass ich etwas Wichtiges tue. Außerdem bleibe ich aktiv und gesund. Moderatorin: Und für die älteren Menschen? Herr Müller: Sie bekommen Aufmerksamkeit und Freundschaft. Viele sind isoliert und freuen sich über Besuche. Wir spielen Karten, hören Musik oder spazieren zusammen. Moderatorin: Können Sie anderen Menschen empfehlen, Ehrenamt zu machen? Herr Müller: Ja, sehr gerne! Es ist bereichernd für alle. Man braucht nur Zeit und ein offenes Herz.",
+            "passageId": "de-a2-p-horen-t2-ehrenamt-chancen-01",
+            "questions": [
+              {
+                "id": "6-138d74d1",
+                "type": "matching",
+                "question": "Welche Aussage passt zum Gespräch?",
+                "correct": "a",
+                "correctAnswer": "a",
+                "explanation": "Der Text sagt deutlich, dass Herr Müller seit fünf Jahren freiwillig im Altenheim arbeitet und Zeit mit älteren Menschen verbringt - spielen Karten, hören Musik und spazieren zusammen.",
+                "options": [
+                  "a) Herr Müller arbeitet fünf Jahre ehrenamtlich im Altenheim und besucht die älteren Menschen regelmäßig.",
+                  "b) Herr Müller ist noch berufstätig und verdient Geld mit seiner Arbeit im Altenheim.",
+                  "c) Herr Müller möchte nur mit jungen Menschen Zeit verbringen.",
+                  "d) Die älteren Menschen im Altenheim haben viele Familienmitglieder, die sie regelmäßig besuchen.",
+                  "e) Ehrenamt ist schwierig und erfordert spezielle Ausbildung.",
+                  "f) Herr Müller arbeitet nur am Wochenende im Altenheim.",
+                  "g) Die älteren Menschen spielen nie Karten oder hören Musik.",
+                  "h) Herr Müller empfiehlt, nicht freiwillig zu arbeiten.",
+                  "i) Man braucht viel Geld und professionelle Erfahrung für Ehrenamt."
+                ],
+                "grammarTags": [
+                  "g-de-a2-praesens",
+                  "g-de-a2-perfekt"
+                ],
+                "topicTags": [
+                  "society"
+                ],
+                "vocabularyTags": [
+                  "Ehrenamt",
+                  "Altenheim",
+                  "freiwillig",
+                  "helfen"
+                ],
+                "difficulty": 2,
+                "passageId": "de-a2-p-horen-t2-ehrenamt-chancen-01",
+                "number": 6,
+                "nr": 6,
+                "nummer": 6
+              },
+              {
+                "id": "7-138d74d1",
+                "type": "matching",
+                "question": "Welche Aussage passt zum Gespräch?",
+                "correct": "c",
+                "correctAnswer": "c",
+                "explanation": "Herr Müller sagt: 'Die Arbeit gibt mir ein gutes Gefühl, denn ich weiß, dass ich etwas Wichtiges tue.' Das ist genau die Aussage in Option c.",
+                "options": [
+                  "a) Herr Müller arbeitet im Altenheim, um viel Geld zu verdienen.",
+                  "b) Die älteren Menschen im Altenheim sind sehr unglücklich.",
+                  "c) Ehrenamt gibt Herr Müller ein gutes Gefühl, weil er weiß, dass er etwas Wichtiges tut.",
+                  "d) Herr Müller hat wenig Zeit für Ehrenamt.",
+                  "e) Die älteren Menschen können nicht selbst spielen oder spazieren.",
+                  "f) Ehrenamt ist nur für junge Menschen geeignet.",
+                  "g) Herr Müller ist Student und studiert Sozialarbeit.",
+                  "h) Die Moderatorin arbeitet auch freiwillig im Altenheim.",
+                  "i) Ehrenamt macht Menschen krank und müde."
+                ],
+                "grammarTags": [
+                  "g-de-a2-nebensatz",
+                  "g-de-a2-praesens"
+                ],
+                "topicTags": [
+                  "society"
+                ],
+                "vocabularyTags": [
+                  "Gefühl",
+                  "wichtig",
+                  "bereichernd",
+                  "Freude"
+                ],
+                "difficulty": 2,
+                "passageId": "de-a2-p-horen-t2-ehrenamt-chancen-01",
+                "number": 7,
+                "nr": 7,
+                "nummer": 7
+              },
+              {
+                "id": "8-138d74d1",
+                "type": "matching",
+                "question": "Welche Aussage passt zum Gespräch?",
+                "correct": "e",
+                "correctAnswer": "e",
+                "explanation": "Herr Müller sagt: 'Ich lerne viele interessante Menschen kennen... Außerdem bleibe ich aktiv und gesund.' Das entspricht genau Option e.",
+                "options": [
+                  "a) Herr Müller ist seit 20 Jahren Rentner.",
+                  "b) Ehrenamt ist nur für Menschen mit Hochschulabschluss.",
+                  "c) Die älteren Menschen im Altenheim haben keine Zeit für Besuche.",
+                  "d) Herr Müller möchte nicht mit älteren Menschen arbeiten.",
+                  "e) Herr Müller lernt viele interessante Menschen kennen und bleibt durch die Arbeit aktiv und gesund.",
+                  "f) Ehrenamt ist schlecht für die Gesundheit.",
+                  "g) Rentner können nicht arbeiten.",
+                  "h) Die älteren Menschen mögen keine Musik.",
+                  "i) Ehrenamt erfordert ein spezielles Zertifikat."
+                ],
+                "grammarTags": [
+                  "g-de-a2-praesens",
+                  "g-de-a2-modal"
+                ],
+                "topicTags": [
+                  "society"
+                ],
+                "vocabularyTags": [
+                  "aktiv",
+                  "gesund",
+                  "Menschen",
+                  "kennenlernen"
+                ],
+                "difficulty": 2,
+                "passageId": "de-a2-p-horen-t2-ehrenamt-chancen-01",
+                "number": 8,
+                "nr": 8,
+                "nummer": 8
+              },
+              {
+                "id": "9-138d74d1",
+                "type": "matching",
+                "question": "Welche Aussage passt zum Gespräch?",
+                "correct": "d",
+                "correctAnswer": "d",
+                "explanation": "Herr Müller erklärt, dass die älteren Menschen isoliert sind und sich über Besuche, Aufmerksamkeit und Freundschaft freuen. Das ist genau der Inhalt von Option d.",
+                "options": [
+                  "a) Nur junge Menschen sollten ehrenamtlich arbeiten.",
+                  "b) Ehrenamt ist zu anstrengend für Rentner.",
+                  "c) Die älteren Menschen im Altenheim haben viele Freunde.",
+                  "d) Viele ältere Menschen sind isoliert und freuen sich über Besuche und Aufmerksamkeit.",
+                  "e) Herr Müller arbeitet nur drei Tage pro Woche im Altenheim.",
+                  "f) Ehrenamt ist nicht wichtig für die Gesellschaft.",
+                  "g) Die älteren Menschen können selbst Karten spielen.",
+                  "h) Herr Müller hat keine Zeit für Hobbys.",
+                  "i) Ehrenamt erfordert professionelle Ausbildung."
+                ],
+                "grammarTags": [
+                  "g-de-a2-praesens"
+                ],
+                "topicTags": [
+                  "society"
+                ],
+                "vocabularyTags": [
+                  "isoliert",
+                  "Aufmerksamkeit",
+                  "Freundschaft",
+                  "Besuch"
+                ],
+                "difficulty": 2,
+                "passageId": "de-a2-p-horen-t2-ehrenamt-chancen-01",
+                "number": 9,
+                "nr": 9,
+                "nummer": 9
+              },
+              {
+                "id": "10-138d74d1",
+                "type": "matching",
+                "question": "Welche Aussage passt zum Gespräch?",
+                "correct": "b",
+                "correctAnswer": "b",
+                "explanation": "Herr Müller sagt am Ende: 'Man braucht nur Zeit und ein offenes Herz.' Das ist die genaue Antwort in Option b.",
+                "options": [
+                  "a) Man braucht spezielle Qualifikationen und Jahre von Ausbildung für Ehrenamt.",
+                  "b) Man braucht nur Zeit und ein offenes Herz, um ehrenamtlich tätig zu sein.",
+                  "c) Ehrenamt ist unbezahlt und manchmal schwierig.",
+                  "d) Herr Müller empfiehlt nicht, Ehrenamt zu machen.",
+                  "e) Nur Rentner können ehrenamtlich arbeiten.",
+                  "f) Ehrenamt ist nur für Menschen mit Hochschulabschluss.",
+                  "g) Die älteren Menschen sind nicht dankbar.",
+                  "h) Herr Müller arbeitet hauptberuflich im Altenheim.",
+                  "i) Ehrenamt macht Menschen traurig."
+                ],
+                "grammarTags": [
+                  "g-de-a2-modal",
+                  "g-de-a2-praesens"
+                ],
+                "topicTags": [
+                  "society"
+                ],
+                "vocabularyTags": [
+                  "brauchen",
+                  "Zeit",
+                  "offenes Herz",
+                  "bereichernd"
+                ],
+                "difficulty": 2,
+                "passageId": "de-a2-p-horen-t2-ehrenamt-chancen-01",
+                "number": 10,
+                "nr": 10,
+                "nummer": 10
+              }
+            ]
+          }
+        ],
+        "_itemCount": 5,
+        "_numberRange": {
+          "start": 6,
+          "end": 10,
+          "officialEnd": 10
+        }
+      },
+      {
+        "teil": 3,
+        "instruction": "Sie hören fünf kurze Gespräche. Sie hören jeden Text einmal.\nWählen Sie für die Aufgaben 11 bis 15 die richtige Lösung a, b oder c.",
+        "blueprintSlot": "short_dialogues_once",
+        "transcript": "Das klingt cool! Aber ich hätte gerne etwas Kreatives. Ich male jetzt Bilder. Das ist sehr entspannend und ich kann meine Gefühle ausdrücken. Willst du meine Bilder sehen?\n\n● A: Und wie ist das Gehalt? ● B: Etwas höher als vorher. Außerdem habe ich mehr Urlaubstage. ● A: Das klingt wirklich super! ● B: Ja, endlich lohnt sich der Jobwechsel. Ich freue mich schon!\n\n● A: Hallo Marco, wie geht es dir? ● B: Hallo! Mir geht es gut. Ich habe gerade eine neue Stelle bekommen. ● A: Das ist ja toll! Wann fängst du an? ● B: In zwei Wochen. Ich bin sehr aufgeregt. ● A: Glückwunsch! Welche Aufgaben warten auf dich?\n\nKollege: Wie viele Parkplätze gibt es am neuen Standort? Ich fahre immer mit dem Auto.\nKollegin: Es gibt viele Parkplätze, das ist kein Problem. Auch die Bushaltestelle ist ganz nah.\n\nMann: Sarah, wie wollen wir denn in der Stadt fahren? Sarah: Ich denke, mit der U-Bahn ist am einfachsten. Mann: Stimmt! Und es ist auch sehr günstig. Sarah: Wir können auch zu Fuß gehen. Die Stadt ist nicht so groß. Mann: Perfekt! Dann sparen wir auch noch Geld. Sarah: Ja, und wir sehen dabei auch mehr von der Stadt!",
+        "segments": [
+          {
+            "id": "seg_3_0",
+            "label": "Text 3",
+            "transcript": "Das klingt cool! Aber ich hätte gerne etwas Kreatives. Ich male jetzt Bilder. Das ist sehr entspannend und ich kann meine Gefühle ausdrücken. Willst du meine Bilder sehen?",
+            "passageId": "de-a2-p-horen-t3-hobby-neues-01-s3",
+            "questions": [
+              {
+                "id": "11-138d74d1",
+                "type": "multiple",
+                "question": "Warum hat die dritte Person ein kreatives Hobby gewählt?",
+                "correct": "b",
+                "correctAnswer": "b",
+                "explanation": "Die Person sagt: 'Das ist sehr entspannend und ich kann meine Gefühle ausdrücken.' Sie erklärt deutlich ihre Motivation.",
+                "grammarTags": [
+                  "g-de-a2-praesens"
+                ],
+                "topicTags": [
+                  "culture"
+                ],
+                "vocabularyTags": [
+                  "malen",
+                  "kreativ",
+                  "Gefühle"
+                ],
+                "difficulty": 2,
+                "options": [
+                  "a) Es ist einfach und lustig",
+                  "b) Es ist entspannend und sie kann ihre Gefühle ausdrücken",
+                  "c) Sie verdient Geld damit"
+                ],
+                "passageId": "de-a2-p-horen-t3-hobby-neues-01-s3",
+                "number": 11,
+                "nr": 11,
+                "nummer": 11
+              }
+            ]
+          },
+          {
+            "id": "seg_3_1",
+            "label": "Text 3",
+            "transcript": "● A: Und wie ist das Gehalt? ● B: Etwas höher als vorher. Außerdem habe ich mehr Urlaubstage. ● A: Das klingt wirklich super! ● B: Ja, endlich lohnt sich der Jobwechsel. Ich freue mich schon!",
+            "passageId": "de-a2-p-horen-t3-jobwechsel-kollegen-02-s3",
+            "questions": [
+              {
+                "id": "12-138d74d1",
+                "type": "multiple",
+                "question": "Was hat Marco bei der neuen Stelle bekommen?",
+                "correct": "b",
+                "correctAnswer": "b",
+                "explanation": "Marco sagt: 'Etwas höher als vorher. Außerdem habe ich mehr Urlaubstage.'",
+                "grammarTags": [
+                  "g-de-a2-komparativ"
+                ],
+                "topicTags": [
+                  "work"
+                ],
+                "vocabularyTags": [
+                  "Gehalt",
+                  "Urlaubstage"
+                ],
+                "difficulty": 2,
+                "options": [
+                  "a) Ein niedriges Gehalt, aber mehr Urlaubstage.",
+                  "b) Ein höheres Gehalt und mehr Urlaubstage.",
+                  "c) Das gleiche Gehalt und weniger Urlaubstage."
+                ],
+                "passageId": "de-a2-p-horen-t3-jobwechsel-kollegen-02-s3",
+                "number": 12,
+                "nr": 12,
+                "nummer": 12
+              }
+            ]
+          },
+          {
+            "id": "seg_3_2",
+            "label": "Text 1",
+            "transcript": "● A: Hallo Marco, wie geht es dir? ● B: Hallo! Mir geht es gut. Ich habe gerade eine neue Stelle bekommen. ● A: Das ist ja toll! Wann fängst du an? ● B: In zwei Wochen. Ich bin sehr aufgeregt. ● A: Glückwunsch! Welche Aufgaben warten auf dich?",
+            "passageId": "de-a2-p-horen-t3-jobwechsel-kollegen-02-s1",
+            "questions": [
+              {
+                "id": "13-138d74d1",
+                "type": "multiple",
+                "question": "Wann fängt Marco die neue Stelle an?",
+                "correct": "b",
+                "correctAnswer": "b",
+                "explanation": "Marco sagt deutlich: 'In zwei Wochen. Ich bin sehr aufgeregt.'",
+                "grammarTags": [
+                  "g-de-a2-praesens"
+                ],
+                "topicTags": [
+                  "work"
+                ],
+                "vocabularyTags": [
+                  "Stelle",
+                  "anfangen"
+                ],
+                "difficulty": 2,
+                "options": [
+                  "a) nächste Woche",
+                  "b) in zwei Wochen",
+                  "c) in einem Monat"
+                ],
+                "passageId": "de-a2-p-horen-t3-jobwechsel-kollegen-02-s1",
+                "number": 13,
+                "nr": 13,
+                "nummer": 13
+              }
+            ]
+          },
+          {
+            "id": "seg_3_3",
+            "label": "Text 5",
+            "transcript": "Kollege: Wie viele Parkplätze gibt es am neuen Standort? Ich fahre immer mit dem Auto.\nKollegin: Es gibt viele Parkplätze, das ist kein Problem. Auch die Bushaltestelle ist ganz nah.",
+            "passageId": "de-a2-p-horen-t3-bueroumzug-02-s5",
+            "questions": [
+              {
+                "id": "14-138d74d1",
+                "type": "multiple",
+                "question": "Was ist positiv am neuen Standort für Autofahrer?",
+                "correct": "c",
+                "correctAnswer": "c",
+                "explanation": "Die Kollegin sagt: 'Es gibt viele Parkplätze, das ist kein Problem.'",
+                "grammarTags": [
+                  "g-de-a2-praesens"
+                ],
+                "topicTags": [
+                  "work"
+                ],
+                "vocabularyTags": [
+                  "Parkplatz",
+                  "Standort"
+                ],
+                "difficulty": 2,
+                "options": [
+                  "a) Nur eine Bushaltestelle",
+                  "b) Keine Parkplätze",
+                  "c) Es gibt viele Parkplätze"
+                ],
+                "passageId": "de-a2-p-horen-t3-bueroumzug-02-s5",
+                "number": 14,
+                "nr": 14,
+                "nummer": 14
+              }
+            ]
+          },
+          {
+            "id": "seg_3_4",
+            "label": "Text 5",
+            "transcript": "Mann: Sarah, wie wollen wir denn in der Stadt fahren? Sarah: Ich denke, mit der U-Bahn ist am einfachsten. Mann: Stimmt! Und es ist auch sehr günstig. Sarah: Wir können auch zu Fuß gehen. Die Stadt ist nicht so groß. Mann: Perfekt! Dann sparen wir auch noch Geld. Sarah: Ja, und wir sehen dabei auch mehr von der Stadt!",
+            "passageId": "de-a2-p-horen-t3-urlaubsplanung-freunde-03-s5",
+            "questions": [
+              {
+                "id": "15-138d74d1",
+                "type": "multiple",
+                "question": "Wie wollen sie sich in der Stadt fortbewegen?",
+                "correct": "b",
+                "correctAnswer": "b",
+                "explanation": "Tom und Sarah planen, mit der U-Bahn zu fahren und auch zu Fuß zu gehen, um mehr von der Stadt zu sehen.",
+                "grammarTags": [
+                  "g-de-a2-modal",
+                  "g-de-a2-praesens"
+                ],
+                "topicTags": [
+                  "travel"
+                ],
+                "vocabularyTags": [
+                  "U-Bahn",
+                  "fahren",
+                  "gehen"
+                ],
+                "difficulty": 2,
+                "options": [
+                  "a) Mit dem Auto und dem Bus",
+                  "b) Mit der U-Bahn und zu Fuß",
+                  "c) Mit dem Taxi und dem Fahrrad"
+                ],
+                "passageId": "de-a2-p-horen-t3-urlaubsplanung-freunde-03-s5",
+                "number": 15,
+                "nr": 15,
+                "nummer": 15
+              }
+            ]
+          }
+        ],
+        "_itemCount": 5,
+        "_numberRange": {
+          "start": 11,
+          "end": 15,
+          "officialEnd": 15
+        }
+      },
+      {
+        "teil": 4,
+        "instruction": "Sie hören ein Interview. Sie hören den Text zweimal.\nWählen Sie für die Aufgaben 16 bis 20 Ja oder Nein.",
+        "blueprintSlot": "interview_twice",
+        "transcript": "Moderator: Guten Tag. Heute sprechen wir über ein wichtiges Thema: Sollte das Autofahren in Städten eingeschränkt werden? Mit uns im Studio ist Frau Dr. Hansen, Verkehrsexpertin. Frau Dr. Hansen, viele Städte haben Probleme mit Verkehr und Umweltverschmutzung. Was denken Sie?\n\nFrau Dr. Hansen: Das ist wirklich ein großes Problem. In vielen Großstädten ist die Luft sehr schlecht. Der Verkehr verursacht viel Abgas und Lärm. Das ist nicht nur schlecht für die Umwelt, sondern auch für die Gesundheit der Menschen.\n\nModerator: Also sind Sie für Autoverbote?\n\nFrau Dr. Hansen: Nicht ganz. Ich denke, wir brauchen nicht totale Verbote, aber intelligente Regelungen. Zum Beispiel: mehr Busse und Bahnen, Fahrradwege, und Autos mit weniger Abgas. Auch Parkplätze sollten teurer sein.\n\nModerator: Und was ist mit den Menschen, die arbeiten müssen?\n\nFrau Dr. Hansen: Das ist wichtig. Man muss den öffentlichen Nahverkehr besser und billiger machen. Dann fahren mehr Menschen mit Bus und Bahn. Das ist besser für alle.\n\nModerator: Vielen Dank, Frau Dr. Hansen.",
+        "segments": [
+          {
+            "id": "seg_fill_0",
+            "label": "Aufnahme 1",
+            "transcript": "Moderator: Guten Tag. Heute sprechen wir über ein wichtiges Thema: Sollte das Autofahren in Städten eingeschränkt werden? Mit uns im Studio ist Frau Dr. Hansen, Verkehrsexpertin. Frau Dr. Hansen, viele Städte haben Probleme mit Verkehr und Umweltverschmutzung. Was denken Sie?\n\nFrau Dr. Hansen: Das ist wirklich ein großes Problem. In vielen Großstädten ist die Luft sehr schlecht. Der Verkehr verursacht viel Abgas und Lärm. Das ist nicht nur schlecht für die Umwelt, sondern auch für die Gesundheit der Menschen.\n\nModerator: Also sind Sie für Autoverbote?\n\nFrau Dr. Hansen: Nicht ganz. Ich denke, wir brauchen nicht totale Verbote, aber intelligente Regelungen. Zum Beispiel: mehr Busse und Bahnen, Fahrradwege, und Autos mit weniger Abgas. Auch Parkplätze sollten teurer sein.\n\nModerator: Und was ist mit den Menschen, die arbeiten müssen?\n\nFrau Dr. Hansen: Das ist wichtig. Man muss den öffentlichen Nahverkehr besser und billiger machen. Dann fahren mehr Menschen mit Bus und Bahn. Das ist besser für alle.\n\nModerator: Vielen Dank, Frau Dr. Hansen.",
+            "passageId": "de-a2-p-horen-t4-autoverbote-debatte-01",
+            "questions": [
+              {
+                "id": "16-138d74d1",
+                "type": "ja_nein",
+                "question": "Frau Dr. Hansen denkt, dass Autos in Städten ganz verboten werden sollten.",
+                "correct": "Nein",
+                "correctAnswer": "Nein",
+                "explanation": "Frau Dr. Hansen sagt: 'Nicht ganz. Ich denke, wir brauchen nicht totale Verbote, aber intelligente Regelungen.' Sie möchte keine totalen Verbote, sondern bessere Regelungen.",
+                "options": [],
+                "grammarTags": [
+                  "g-de-a2-modal",
+                  "g-de-a2-nebensatz"
+                ],
+                "topicTags": [
+                  "society"
+                ],
+                "vocabularyTags": [
+                  "Verkehr",
+                  "Regelung",
+                  "Verbot"
+                ],
+                "difficulty": 2,
+                "passageId": "de-a2-p-horen-t4-autoverbote-debatte-01",
+                "number": 16,
+                "nr": 16,
+                "nummer": 16
+              },
+              {
+                "id": "17-138d74d1",
+                "type": "ja_nein",
+                "question": "Der Verkehr in Städten verursacht Probleme für die Umwelt und die Gesundheit.",
+                "correct": "Ja",
+                "correctAnswer": "Ja",
+                "explanation": "Frau Dr. Hansen sagt: 'Der Verkehr verursacht viel Abgas und Lärm. Das ist nicht nur schlecht für die Umwelt, sondern auch für die Gesundheit der Menschen.'",
+                "options": [],
+                "grammarTags": [
+                  "g-de-a2-praesens"
+                ],
+                "topicTags": [
+                  "society"
+                ],
+                "vocabularyTags": [
+                  "Abgas",
+                  "Lärm",
+                  "Gesundheit"
+                ],
+                "difficulty": 2,
+                "passageId": "de-a2-p-horen-t4-autoverbote-debatte-01",
+                "number": 17,
+                "nr": 17,
+                "nummer": 17
+              },
+              {
+                "id": "18-138d74d1",
+                "type": "ja_nein",
+                "question": "Frau Dr. Hansen schlägt vor, dass Parkplätze billiger werden sollten.",
+                "correct": "Nein",
+                "correctAnswer": "Nein",
+                "explanation": "Frau Dr. Hansen sagt: 'Auch Parkplätze sollten teurer sein.' Sie will, dass Parkplätze teurer werden, nicht billiger.",
+                "options": [],
+                "grammarTags": [
+                  "g-de-a2-modal"
+                ],
+                "topicTags": [
+                  "society"
+                ],
+                "vocabularyTags": [
+                  "Parkplatz",
+                  "teuer"
+                ],
+                "difficulty": 2,
+                "passageId": "de-a2-p-horen-t4-autoverbote-debatte-01",
+                "number": 18,
+                "nr": 18,
+                "nummer": 18
+              },
+              {
+                "id": "19-138d74d1",
+                "type": "ja_nein",
+                "question": "Mehr Busse und Bahnen sind ein Teil der Lösung für das Verkehrsproblem.",
+                "correct": "Ja",
+                "correctAnswer": "Ja",
+                "explanation": "Frau Dr. Hansen sagt: 'Zum Beispiel: mehr Busse und Bahnen, Fahrradwege, und Autos mit weniger Abgas.' Das sind ihre Vorschläge für bessere Regelungen.",
+                "options": [],
+                "grammarTags": [
+                  "g-de-a2-komparativ"
+                ],
+                "topicTags": [
+                  "society"
+                ],
+                "vocabularyTags": [
+                  "Bus",
+                  "Bahn",
+                  "Lösung"
+                ],
+                "difficulty": 2,
+                "passageId": "de-a2-p-horen-t4-autoverbote-debatte-01",
+                "number": 19,
+                "nr": 19,
+                "nummer": 19
+              },
+              {
+                "id": "20-138d74d1",
+                "type": "ja_nein",
+                "question": "Der öffentliche Nahverkehr sollte besser und billiger für die Menschen werden.",
+                "correct": "Ja",
+                "correctAnswer": "Ja",
+                "explanation": "Frau Dr. Hansen sagt: 'Man muss den öffentlichen Nahverkehr besser und billiger machen. Dann fahren mehr Menschen mit Bus und Bahn.'",
+                "options": [],
+                "grammarTags": [
+                  "g-de-a2-modal"
+                ],
+                "topicTags": [
+                  "society"
+                ],
+                "vocabularyTags": [
+                  "öffentlich",
+                  "Nahverkehr",
+                  "besser"
+                ],
+                "difficulty": 2,
+                "passageId": "de-a2-p-horen-t4-autoverbote-debatte-01",
+                "number": 20,
+                "nr": 20,
+                "nummer": 20
+              }
+            ]
+          }
+        ],
+        "_itemCount": 5,
+        "_numberRange": {
+          "start": 16,
+          "end": 20,
+          "officialEnd": 20
+        }
+      }
+    ],
+    "schreibenParts": [
+      {
+        "aufgabe": 1,
+        "fieldId": "write_bp_1",
+        "task": "Du hast neue Nachbarn. Schreib eine SMS (20–30 Wörter) an deinen Freund / deine Freundin über die neuen Nachbarn. Schreib zu folgenden Punkten:\n• Wer sind die neuen Nachbarn?\n• Wie sind sie?\n• Was machst du mit ihnen?",
+        "minWords": 20,
+        "maxWords": 30,
+        "mandatory": false,
+        "taskType": "sms",
+        "blueprintSlot": "writing_task",
+        "grammarTags": [
+          "g-de-a2-praesens",
+          "g-de-a2-nebensatz"
+        ],
+        "topicTags": [
+          "housing"
+        ]
+      },
+      {
+        "aufgabe": 2,
+        "fieldId": "write_bp_2",
+        "task": "Du möchtest deine Meinung zu einem Forumthema schreiben. Das Thema ist: 'Lärm in der Nachbarschaft'.\n\nSchreib einen Beitrag (30–40 Wörter) mit deiner Meinung. Schreib zu folgenden Punkten:\n• Wie oft hast du Lärm in der Nachbarschaft?\n• Was ist das Problem?\n• Was ist deine Lösung?",
+        "minWords": 30,
+        "maxWords": 40,
+        "mandatory": false,
+        "taskType": "semiformal_email",
+        "blueprintSlot": "writing_task",
+        "grammarTags": [
+          "g-de-a2-praesens",
+          "g-de-a2-nebensatz",
+          "g-de-a2-modal"
+        ],
+        "topicTags": [
+          "society"
+        ]
+      }
+    ],
+    "sprechenParts": [
+      {
+        "teil": 1,
+        "title": "Teil 1 — Fragen zur Person",
+        "fieldId": "speak_bp_1",
+        "situation": "Sie möchten mit Freunden einen Tagesausflug planen. Besprechen Sie folgende Punkte:\n\n• Ziel und Dauer des Ausflugs\n• Anreise und Verkehrsmittel\n• Aktivitäten vor Ort\n• Verpflegung und Budget\n• Zeitpunkt und Rückkehr\n\nSprechen Sie etwa 1,5–2 Minuten.",
+        "points": [
+          "personal_questions"
+        ],
+        "blueprintSlot": "speaking_task",
+        "grammarTags": [
+          "g-de-b1-futur",
+          "g-de-b1-modalverben",
+          "g-de-b1-nebensatz"
+        ],
+        "topicTags": [
+          "travel"
+        ]
+      },
+      {
+        "teil": 2,
+        "title": "Teil 2 — Von sich erzählen",
+        "fieldId": "speak_bp_2",
+        "situation": "Präsentieren Sie Reisen und Verkehr in Ihrem Heimatland (2–2,5 Minuten).\n\nStruktur:\n1. Einleitung: Nennen Sie Ihr Heimatland und das Thema\n2. Beliebte Reiseziele und deren Besonderheiten\n3. Hauptverkehrsmittel für Reisen (Zug, Auto, Flugzeug, Bus)\n4. Vor- und Nachteile der Verkehrsmittel\n5. Ihre persönliche Meinung und Empfehlung",
+        "points": [
+          "about_self"
+        ],
+        "blueprintSlot": "speaking_task",
+        "grammarTags": [
+          "g-de-b1-komparativ",
+          "g-de-b1-relativ",
+          "g-de-b1-passiv"
+        ],
+        "topicTags": [
+          "travel"
+        ]
+      },
+      {
+        "teil": 3,
+        "title": "Teil 3 — Gemeinsam planen",
+        "fieldId": "speak_bp_3",
+        "situation": "Ihre Partnerin/Ihr Partner hat gerade eine Präsentation gehalten. Geben Sie Feedback zur Präsentation und stellen Sie 2-3 Fragen dazu, z.B.:\n\n*   Wie hat Ihnen die Präsentation gefallen?\n*   Was war interessant oder neu für Sie?\n*   Haben Sie noch Fragen zum Thema? (Beispielfragen: Welche anderen Sportarten sind in Ihrem Land noch populär? Kann jeder diesen Sport machen oder braucht man bestimmte Voraussetzungen?)",
+        "points": [
+          "plan_together"
+        ],
+        "blueprintSlot": "speaking_task",
+        "grammarTags": [
+          "g-de-b1-konjunktiv",
+          "g-de-b1-relativ",
+          "g-de-b1-modalverben"
+        ],
+        "topicTags": [
+          "sport"
+        ]
+      }
+    ],
+    "curated": true,
+    "_itemDeficits": []
+  },
+  "provenance": {
+    "generatedBy": "promote-bank-to-curated",
+    "validatedBy": "ExamValidator(strict)+CefrGate",
+    "blueprintId": "goethe-a2",
+    "cefrGate": {
+      "withinRange": true,
+      "metrics": {},
+      "reasons": []
+    },
+    "sourceBankIds": [
+      "de-a2-l-t1-gesundheit-ernaehrung-01-q4",
+      "de-a2-l-t1-gesundheit-ernaehrung-01-q3",
+      "de-a2-l-t1-gesundheit-ernaehrung-01-q1",
+      "de-a2-l-t1-gesundheit-ernaehrung-01-q5",
+      "de-a2-l-t1-gesundheit-ernaehrung-01-q2",
+      "de-a2-l-t2-mobilitaet-auto-rad-01-q5",
+      "de-a2-l-t2-mobilitaet-auto-rad-01-q2",
+      "de-a2-l-t2-mobilitaet-auto-rad-01-q3",
+      "de-a2-l-t2-mobilitaet-auto-rad-01-q1",
+      "de-a2-l-t2-mobilitaet-auto-rad-01-q4",
+      "de-a2-l-t3-dienstleistungen-alltag-02-q5",
+      "de-a2-l-t3-dienstleistungen-alltag-02-q4",
+      "de-a2-l-t3-dienstleistungen-alltag-02-q2",
+      "de-a2-l-t3-dienstleistungen-alltag-02-q1",
+      "de-a2-l-t3-dienstleistungen-alltag-02-q3",
+      "de-a2-l-t4-vegetarismus-schule-01-q4",
+      "de-a2-l-t4-vegetarismus-schule-01-q1",
+      "de-a2-l-t4-vegetarismus-schule-01-q3",
+      "de-a2-l-t4-vegetarismus-schule-01-q2",
+      "de-a2-l-t4-vegetarismus-schule-01-q5",
+      "de-a2-h-t1-alltag-behoerden-01-q2",
+      "de-a2-h-t1-freizeit-kino-01-q2",
+      "de-a2-horen-t1-gesundheit-arzt-03-q4",
+      "de-a2-horen-t1-gesundheit-arzt-01-q2",
+      "de-a2-horen-t1-gesundheit-arzt-04-q2",
+      "de-a2-h-t2-umweltschutz-vortrag-02-q4",
+      "de-a2-h-t2-stadtplanung-03-q4",
+      "de-a2-h-t2-gesund-leben-01-q2",
+      "de-a2-h-t2-umweltschutz-vortrag-01-q1",
+      "de-a2-h-t2-umweltschutz-vortrag-01-q4",
+      "de-a2-horen-t3-hobby-neues-01-q3",
+      "de-a2-h-t3-jobwechsel-kollegen-02-q3",
+      "de-a2-h-t3-jobwechsel-kollegen-02-q1",
+      "de-a2-h-t3-bueroumzug-02-q5",
+      "de-a2-h-t3-urlaubsplanung-freunde-03-q5",
+      "de-a2-h-t4-homeoffice-diskussion-01-q5",
+      "de-a2-h-t4-bildungssystem-reform-03-q5",
+      "de-a2-h-t4-englischklasse-01-q3",
+      "de-a2-h-t4-bildungssystem-reform-03-q4",
+      "de-a2-h-t4-bildungssystem-reform-02-q5",
+      "de-a2-s-t1-nachbarschaft-02-q1",
+      "de-a2-s-t2-nachbarschaft-02-q1",
+      "de-b1-sp-t1-reise-vorbereitung-01-q1",
+      "de-b1-sp-t2-reise-vorbereitung-01-q1",
+      "de-b1-sp-t3-sport-praesentation-01-q1"
+    ],
+    "validationErrors": [],
+    "createdAt": "2026-06-21T10:31:43.375Z",
+    "strategy": "B"
+  },
+  "_file": "curated_de_A2_138d74d1015e.json"
+}

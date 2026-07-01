@@ -2,11 +2,15 @@
 
 const { checkQuota, incrementQuota, decrementQuota, getQuotaState } = require('./lib/quotaLib.js');
 const { corsHeaders, jsonResponse } = require('./lib/http.js');
-const { validateGeneratedExam, verifyAnswerKeysWithAI } = require('./lib/examQualityGate.js');
+const { validateGeneratedExam, verifyAnswerKeysWithAI, verifyAndSanitizePersonalExam } = require('./lib/examQualityGate.js');
+const { verifyTopicCoherenceExam } = require('./lib/topicCoherenceGate.js');
+const { resolveBlueprint } = require('../../js/engine/validation/blueprintResolver.js');
 const {
   extractJsonObject,
   certName,
   requireProPlan,
+  requireActionAccess,
+  feedbackLevelForPlan,
   callAnthropicJson,
 } = require('./lib/proAiModes.js');
 const { getAiCredits, checkAiCredits, confirmAiCreditConsumption, releaseAiCreditConsumption } = require('./lib/aiCredits.js');
@@ -26,6 +30,46 @@ const {
   anthropicKeyFingerprint,
   rejectBadAnthropicKey,
 } = require('./lib/anthropicKey.js');
+const {
+  runProductionEval,
+  writingCorrectionPrompt,
+  writingScoreExtensionPrompt,
+  normalizeSchreibenItem,
+} = require('./lib/productionEval.js');
+
+async function consumeGenTicketChunk(event, genTicket) {
+  const secret = getJwtSecret();
+  if (!secret) return { error: 'misconfigured', status: 503 };
+  const ticketPayload = verifyGenTicket(genTicket, secret);
+  if (!ticketPayload) return { error: 'ticket_invalid', status: 403 };
+  if (!TICKETED_SCOPES.has(ticketPayload.scope)) {
+    return { error: 'ticket_scope_invalid', status: 403 };
+  }
+  const store = getStoreForEvent(event);
+  const ticketKey = `gentk:${ticketPayload.nonce}`;
+  const counterResult = await casWriteJson(
+    store,
+    ticketKey,
+    (current) => {
+      const used = (current?.chunksUsed || 0) + 1;
+      if (used > ticketPayload.maxChunks) {
+        return { skip: true, result: { error: 'chunks_exceeded', used, max: ticketPayload.maxChunks } };
+      }
+      return {
+        payload: { chunksUsed: used, maxChunks: ticketPayload.maxChunks },
+        result: { ok: true, chunksUsed: used, payload: ticketPayload },
+      };
+    },
+    { logTag: '[gentk-prod-eval]' },
+  ).catch((err) => {
+    console.error('[claude-chat] prod eval chunk counter error:', err.message);
+    return { error: 'counter_error', status: 503 };
+  });
+  if (counterResult?.error) {
+    return { error: counterResult.error, status: 403, used: counterResult.used, max: counterResult.max };
+  }
+  return { ok: true, payload: counterResult.result?.payload || ticketPayload };
+}
 
 async function logExamGenChunk(event, genTicketPayload, body, { ok, model, usage }) {
   if (!sb.isConfigured()) return;
@@ -62,7 +106,7 @@ const DEFAULT_MODEL = 'claude-haiku-4-5';
 // Exam generation defaults to Sonnet; override with CLAUDE_EXAM_MODEL.
 const EXAM_MODEL = 'claude-sonnet-4-6';
 const MAX_PROMPT_LEN = 16000;
-const MAX_TOKENS = 8192;
+const MAX_TOKENS = 16384;
 
 async function refundExamQuota(quotaCheck, requestId) {
   if (!quotaCheck) return;
@@ -114,46 +158,288 @@ exports.handler = async function handler(event) {
     return jsonResponse(400, cors, { error: 'invalid_json' });
   }
 
-  // ── validateExam branch (C-2: quota-gated) ──────────────────────────────
-  if (body.validateExam === true && body.exam) {
-    const quotaGate = await checkQuota(event).catch(() => null);
-    if (!quotaGate || !quotaGate.ok) {
-      return jsonResponse(quotaGate?.status || 429, cors, {
-        error: quotaGate?.error || 'quota_exceeded',
-        used: quotaGate?.used,
-        max: quotaGate?.max,
-        plan: quotaGate?.plan,
-      });
+  // ── spellCheckWord (lightweight Haiku hint — no credits) ─────────────────
+  if (body.spellCheckWord === true) {
+    const word = String(body.word || '').trim();
+    const lang = String(body.lang || 'de').slice(0, 2);
+    if (!word || word.length < 2) {
+      return jsonResponse(400, cors, { error: 'word_required' });
     }
     const apiKey = readAnthropicKey();
     const badKey = rejectBadAnthropicKey(apiKey, jsonResponse, cors);
     if (badKey) return badKey;
-    const gate = validateGeneratedExam(body.exam);
-    if (!gate.valid) {
-      console.warn('[claude-chat] exam validation rejected:', gate.errors);
-      return jsonResponse(422, cors, {
-        error: 'exam_invalid',
-        message: 'Generated exam failed answer-key validation',
-        validationErrors: gate.errors,
+    const langName = lang === 'de' ? 'German' : lang === 'es' ? 'Spanish' : 'English';
+    const spellModel = cleanModel(process.env.CLAUDE_SPELL_MODEL || 'claude-haiku-4-5');
+    try {
+      const { text } = await callAnthropicJson(apiKey, {
+        model: spellModel,
+        maxTokens: 120,
+        system: `You check ${langName} spelling for vocabulary learners. Reply ONLY JSON: {"correct":true} or {"correct":false,"suggestion":"..."}. suggestion must be the standard spelling in ${langName}, or null if correct.`,
+        userContent: `Word: "${word}"`,
       });
+      const parsed = extractJsonObject(text);
+      return jsonResponse(200, cors, {
+        correct: parsed?.correct === true,
+        suggestion: parsed?.suggestion ? String(parsed.suggestion).trim() : null,
+      });
+    } catch (err) {
+      console.warn('[claude-chat] spellCheckWord failed:', err.message);
+      return jsonResponse(200, cors, { correct: true, suggestion: null, skipped: true });
     }
-    if (body.verifyAnswerKeys === true) {
+  }
+
+  // ── validateExam branch (C-2: quota-gated) ──────────────────────────────
+  if (body.validateExam === true && body.exam) {
+    try {
+      const quotaGate = await checkQuota(event).catch(() => null);
+      if (!quotaGate || !quotaGate.ok) {
+        return jsonResponse(quotaGate?.status || 429, cors, {
+          error: quotaGate?.error || 'quota_exceeded',
+          used: quotaGate?.used,
+          max: quotaGate?.max,
+          plan: quotaGate?.plan,
+        });
+      }
+      const apiKey = readAnthropicKey();
+      const badKey = rejectBadAnthropicKey(apiKey, jsonResponse, cors);
+      if (badKey) return badKey;
+      const blueprint = body.blueprint === false ? null : resolveBlueprint(body.exam, body.blueprint);
+      const gateOpts = { blueprint };
+      if (body.partialExam === true || body.partialExam === false) {
+        gateOpts.partialExam = body.partialExam;
+      }
+      const gate = validateGeneratedExam(body.exam, gateOpts);
+      if (!gate.valid) {
+        console.warn('[claude-chat] exam validation rejected:', gate.errors);
+        return jsonResponse(422, cors, {
+          error: 'exam_invalid',
+          message: 'Generated exam failed answer-key validation',
+          validationErrors: gate.errors,
+        });
+      }
+      if (body.verifyAnswerKeys === true && body.discardFailedItems === true) {
+        try {
+          const sanitizeOpts = { blueprint };
+          if (body.partialExam === true || body.partialExam === false) {
+            sanitizeOpts.partialExam = body.partialExam;
+          }
+          const sanitized = await verifyAndSanitizePersonalExam(body.exam, apiKey, sanitizeOpts);
+          if (!sanitized.valid || !sanitized.renderable) {
+            console.warn('[claude-chat] personal exam empty after verify discard:', sanitized.errors);
+            return jsonResponse(422, cors, {
+              error: sanitized.emptyAfterVerify ? 'exam_empty_after_verify' : 'exam_invalid',
+              message: sanitized.emptyAfterVerify
+                ? 'No verifiable exam content remained after answer-key checks'
+                : 'Generated exam failed validation after sanitization',
+              validationErrors: sanitized.errors?.length
+                ? sanitized.errors
+                : ['exam_empty_after_verify'],
+              discarded: sanitized.discarded,
+            });
+          }
+          return jsonResponse(200, cors, {
+            valid: true,
+            exam: sanitized.exam,
+            discarded: sanitized.discarded,
+            placeholders: gate.placeholders,
+          });
+        } catch (err) {
+          console.warn('[claude-chat] verify sanitize error:', err.message);
+          return jsonResponse(200, cors, {
+            valid: true,
+            exam: body.exam,
+            verifySkipped: true,
+            placeholders: gate.placeholders,
+          });
+        }
+      }
+      if (body.verifyAnswerKeys === true) {
+        try {
+          const verify = await verifyAnswerKeysWithAI(body.exam, apiKey);
+          if (!verify.ok && !verify.skipped) {
+            console.warn('[claude-chat] answer-key verify mismatch:', verify.discrepancies);
+            if (body.genTicket) {
+              try {
+                await releaseGenerationQuota(event, { genTicket: body.genTicket });
+              } catch (relErr) {
+                console.warn('[claude-chat] quota release failed:', relErr.message);
+              }
+            }
+            return jsonResponse(422, cors, {
+              error: 'exam_invalid',
+              message: 'Answer-key verification mismatch',
+              validationErrors: ['answer_key_verify_mismatch'],
+              discrepancies: verify.discrepancies,
+            });
+          }
+        } catch (err) {
+          console.warn('[claude-chat] answer-key verify error:', err.message);
+        }
+      }
       try {
-        const verify = await verifyAnswerKeysWithAI(body.exam, apiKey);
-        if (!verify.ok && !verify.skipped) {
-          console.warn('[claude-chat] answer-key verify mismatch:', verify.discrepancies);
+        const topicGate = await verifyTopicCoherenceExam(body.exam, {
+          topic: body.topic || body.exam?.topic,
+          lang: body.lang || body.exam?.lang,
+          level: body.level || body.exam?.level,
+          apiKey,
+        });
+        if (!topicGate.ok) {
+          console.warn('[claude-chat] topic coherence rejected:', topicGate.issues);
+          if (body.genTicket) {
+            try {
+              await releaseGenerationQuota(event, { genTicket: body.genTicket });
+            } catch (relErr) {
+              console.warn('[claude-chat] quota release failed:', relErr.message);
+            }
+          }
           return jsonResponse(422, cors, {
-            error: 'exam_invalid',
-            message: 'Answer-key verification mismatch',
-            validationErrors: ['answer_key_verify_mismatch'],
-            discrepancies: verify.discrepancies,
+            error: 'topic_coherence_failed',
+            message: 'Exam content failed topic/CEFR coherence check',
+            onTopic: topicGate.onTopic,
+            cefrOk: topicGate.cefrOk,
+            issues: topicGate.issues,
+            validationErrors: ['topic_coherence_failed'],
           });
         }
       } catch (err) {
-        console.warn('[claude-chat] answer-key verify error:', err.message);
+        console.warn('[claude-chat] topic coherence gate error:', err.message);
+      }
+      return jsonResponse(200, cors, { valid: true, placeholders: gate.placeholders });
+    } catch (err) {
+      console.error('[claude-chat] validateExam error:', err.message, err.stack);
+      try {
+        const gate = validateGeneratedExam(body.exam, { blueprint: resolveBlueprint(body.exam, body.blueprint) });
+        if (gate.valid) {
+          return jsonResponse(200, cors, {
+            valid: true,
+            exam: body.exam,
+            verifySkipped: true,
+            placeholders: gate.placeholders,
+          });
+        }
+        return jsonResponse(422, cors, {
+          error: 'exam_invalid',
+          validationErrors: gate.errors,
+        });
+      } catch (inner) {
+        return jsonResponse(500, cors, { error: 'validate_failed', message: inner.message || err.message });
       }
     }
-    return jsonResponse(200, cors, { valid: true, placeholders: gate.placeholders });
+  }
+
+  // ── scoreProductionModules (Schreiben rubric + Sprechen, AI credits) ─────
+  if (body.scoreProductionModules === true) {
+    try {
+      const apiKey = readAnthropicKey();
+      const badKey = rejectBadAnthropicKey(apiKey, jsonResponse, cors);
+      if (badKey) return badKey;
+      const lang = String(body.lang || 'de').slice(0, 2);
+      const level = String(body.level || 'B1').toUpperCase();
+      const passPercent = Math.max(
+        1,
+        Math.min(100, Number(body.passPercent) || Number(body.passPercentPerModule) || 60),
+      );
+      const schreiben = Array.isArray(body.schreiben) ? body.schreiben.slice(0, 6) : [];
+      const sprechen = Array.isArray(body.sprechen) ? body.sprechen.slice(0, 6) : [];
+      if (!schreiben.length && !sprechen.length) {
+        return jsonResponse(400, cors, { error: 'no_tasks' });
+      }
+      const qState = await getQuotaState(event);
+      const feedbackLevel = feedbackLevelForPlan(qState.plan);
+      const requestId = body.requestId || null;
+      if (schreiben.length) {
+        const wCheck = await checkAiCredits(event, 'writing_correction');
+        if (!wCheck.ok) {
+          return jsonResponse(wCheck.error === 'ai_credits_exhausted' ? 402 : wCheck.status || 403, cors, {
+            error: wCheck.error,
+            remaining: wCheck.remaining,
+            aiUsed: wCheck.used,
+            aiMax: wCheck.max,
+            plan: qState.plan,
+            autoRechargeFailed: wCheck.autoRechargeFailed || false,
+            reason: wCheck.reason || undefined,
+          });
+        }
+      }
+      if (sprechen.length) {
+        const sCheck = await checkAiCredits(event, 'speaking');
+        if (!sCheck.ok) {
+          return jsonResponse(sCheck.error === 'ai_credits_exhausted' ? 402 : sCheck.status || 403, cors, {
+            error: sCheck.error,
+            remaining: sCheck.remaining,
+            aiUsed: sCheck.used,
+            aiMax: sCheck.max,
+            plan: qState.plan,
+            autoRechargeFailed: sCheck.autoRechargeFailed || false,
+            reason: sCheck.reason || undefined,
+          });
+        }
+      }
+      let wMeta = null;
+      let sMeta = null;
+      if (schreiben.length) {
+        wMeta = await confirmAiCreditConsumption(event, 'writing_correction', {
+          requestId: requestId ? `${requestId}:writing` : null,
+        });
+        if (wMeta?.error) {
+          return jsonResponse(402, cors, { error: wMeta.error, plan: qState.plan, ...wMeta });
+        }
+      }
+      if (sprechen.length) {
+        sMeta = await confirmAiCreditConsumption(event, 'speaking', {
+          requestId: requestId ? `${requestId}:speaking` : null,
+        });
+        if (sMeta?.error) {
+          if (schreiben.length && requestId) {
+            await refundAiCredits(event, 'writing_correction', `${requestId}:writing`);
+          }
+          return jsonResponse(402, cors, { error: sMeta.error, plan: qState.plan, ...sMeta });
+        }
+      }
+      const t0 = Date.now();
+      let result;
+      try {
+        result = await runProductionEval(apiKey, {
+          lang,
+          level,
+          passPercent,
+          schreiben,
+          sprechen,
+          feedbackLevel,
+        });
+      } catch (err) {
+        if (schreiben.length && requestId) await refundAiCredits(event, 'writing_correction', `${requestId}:writing`);
+        if (sprechen.length && requestId) await refundAiCredits(event, 'speaking', `${requestId}:speaking`);
+        throw err;
+      }
+      console.log('[claude-chat] scoreProductionModules', {
+        ok: result.ok,
+        schreiben: result.schreiben?.length || 0,
+        sprechen: result.sprechen?.length || 0,
+        feedbackLevel,
+        ms: Date.now() - t0,
+      });
+      if (!result.ok) {
+        if (schreiben.length && requestId) await refundAiCredits(event, 'writing_correction', `${requestId}:writing`);
+        if (sprechen.length && requestId) await refundAiCredits(event, 'speaking', `${requestId}:speaking`);
+        return jsonResponse(200, cors, { ok: false, error: result.error || 'eval_failed' });
+      }
+      const aiMeta = sMeta || wMeta;
+      return jsonResponse(200, cors, {
+        ok: true,
+        passPercent,
+        feedbackLevel,
+        schreiben: result.schreiben,
+        sprechen: result.sprechen,
+        aiUsed: aiMeta?.aiUsed,
+        aiMax: aiMeta?.aiMax,
+        aiRemaining: aiMeta?.aiRemaining ?? aiMeta?.remaining,
+        plan: qState.plan,
+      });
+    } catch (err) {
+      console.error('[claude-chat] scoreProductionModules error:', err.message);
+      return jsonResponse(503, cors, { ok: false, error: 'eval_unavailable', message: err.message });
+    }
   }
 
   // ── startGeneration branch ───────────────────────────────────────────────
@@ -186,9 +472,9 @@ exports.handler = async function handler(event) {
     const sub = qState.authenticated ? qState.email : `guest:${qState.ipHash || 'unknown'}`;
 
     if (scope === 'personal_exam') {
-      const pro = await requireProPlan(event);
-      if (!pro.ok) {
-        return jsonResponse(pro.status || 403, cors, { error: pro.error, plan: pro.plan });
+      const access = await requireActionAccess(event, 'personal_exam');
+      if (!access.ok) {
+        return jsonResponse(access.status || 403, cors, { error: access.error, plan: access.plan });
       }
 
       const creditCheck = await checkAiCredits(event, 'personal_exam');
@@ -198,7 +484,7 @@ exports.handler = async function handler(event) {
           remaining: creditCheck.remaining,
           aiUsed: creditCheck.used,
           aiMax: creditCheck.max,
-          plan: pro.plan,
+          plan: access.plan,
           autoRechargeFailed: creditCheck.autoRechargeFailed || false,
           reason: creditCheck.reason || undefined,
         });
@@ -220,7 +506,7 @@ exports.handler = async function handler(event) {
           aiUsed: aiMeta.aiUsed,
           aiMax: aiMeta.aiMax,
           remaining: aiMeta.remaining,
-          plan: pro.plan,
+          plan: access.plan,
         });
       }
 
@@ -230,7 +516,7 @@ exports.handler = async function handler(event) {
       });
       return jsonResponse(200, cors, {
         ticket,
-        plan: pro.plan,
+        plan: access.plan,
         aiUsed: aiMeta?.aiUsed,
         aiRemaining: aiMeta?.aiRemaining ?? aiMeta?.remaining,
         aiMax: aiMeta?.aiMax,
@@ -306,20 +592,20 @@ exports.handler = async function handler(event) {
   // ── Pro AI modes (correctWriting, grammarCoaching) ───────────────────────
   if (body.correctWriting === true || body.grammarCoaching === true) {
     try {
-      const pro = await requireProPlan(event);
-      if (!pro.ok) {
-        return jsonResponse(pro.status || 403, cors, { error: pro.error, plan: pro.plan });
+      const aiAction = body.correctWriting === true ? 'writing_correction' : 'grammar_coaching';
+      const access = await requireActionAccess(event, aiAction);
+      if (!access.ok) {
+        return jsonResponse(access.status || 403, cors, { error: access.error, plan: access.plan });
       }
 
-      const aiAction = body.correctWriting === true ? 'writing_correction' : 'grammar_coaching';
       const creditCheck = await checkAiCredits(event, aiAction);
       if (!creditCheck.ok) {
-        return jsonResponse(creditCheck.error === 'ai_credits_exhausted' ? 402 : 403, cors, {
+        return jsonResponse(creditCheck.error === 'ai_credits_exhausted' ? 402 : creditCheck.status || 403, cors, {
           error: creditCheck.error,
           remaining: creditCheck.remaining,
           aiUsed: creditCheck.used,
           aiMax: creditCheck.max,
-          plan: pro.plan,
+          plan: access.plan,
           autoRechargeFailed: creditCheck.autoRechargeFailed || false,
           reason: creditCheck.reason || undefined,
         });
@@ -328,6 +614,7 @@ exports.handler = async function handler(event) {
       const correctionModel = cleanModel(
         process.env.CLAUDE_CORRECTION_MODEL || 'claude-haiku-4-5',
       );
+      const feedbackLevel = access.feedbackLevel || 'full';
 
       if (body.correctWriting === true) {
         const lang = String(body.lang || 'de').slice(0, 2);
@@ -345,16 +632,17 @@ exports.handler = async function handler(event) {
             aiUsed: aiMeta.aiUsed,
             aiMax: aiMeta.aiMax,
             remaining: aiMeta.remaining,
-            plan: pro.plan,
+            plan: access.plan,
           });
         }
 
         const minWords = Number(body.minWords) || 0;
         const maxWords = Number(body.maxWords) || 0;
-        const cert = certName(lang);
-        const system = `You are an official ${cert} examiner at level ${level}. Correct the candidate's writing task response. Return ONLY valid JSON (no markdown, no prose) with this exact shape:
-{"correctedText":"...","errors":[{"original":"...","correction":"...","type":"grammar|vocab|spelling|register|cohesion","explanation":"..."}],"summary":"...","grammarPoints":[{"tag":"...","explanation":"...","example":"..."}]}
-Be concise: max 8 prioritized errors and max 3 grammarPoints. Write explanations in ${lang === 'de' ? 'German' : lang === 'es' ? 'Spanish' : 'English'}.`;
+        const passPercent = Math.max(
+          1,
+          Math.min(100, Number(body.passPercent) || Number(body.passPercentPerModule) || 60),
+        );
+        const system = writingCorrectionPrompt(lang, level, passPercent, feedbackLevel);
         const userContent = `Task:\n${task || '(writing task)'}\n\nMinimum words: ${minWords || 'n/a'}${maxWords ? `, maximum: ${maxWords}` : ''}\n\nCandidate text:\n${userText}`;
 
         const t0 = Date.now();
@@ -362,7 +650,7 @@ Be concise: max 8 prioritized errors and max 3 grammarPoints. Write explanations
         try {
           ({ text } = await callAnthropicJson(apiKey, {
             model: correctionModel,
-            maxTokens: Math.min(Number(body.maxTokens) || 1500, 1500),
+            maxTokens: Math.min(Number(body.maxTokens) || 1500, feedbackLevel === 'basic' ? 800 : 1500),
             system,
             userContent,
           }));
@@ -371,15 +659,32 @@ Be concise: max 8 prioritized errors and max 3 grammarPoints. Write explanations
           throw err;
         }
         const parsed = extractJsonObject(text);
-        console.log('[claude-chat] correctWriting', { ok: !!parsed, ms: Date.now() - t0 });
+        console.log('[claude-chat] correctWriting', { ok: !!parsed, feedbackLevel, ms: Date.now() - t0 });
         if (!parsed || typeof parsed !== 'object') {
           await refundAiCredits(event, 'writing_correction', requestId);
           return jsonResponse(200, cors, { ok: false, error: 'parse_failed' });
         }
+        const scored = normalizeSchreibenItem({ ...parsed, id: 'writing' }, passPercent, feedbackLevel);
+        const correction =
+          feedbackLevel === 'basic'
+            ? {
+                summary: scored?.summary || parsed.summary,
+                totalScore: scored?.totalScore ?? parsed.totalScore,
+                passed: scored?.passed ?? parsed.passed,
+                rubric: scored?.rubric ?? parsed.rubric,
+                errorCounts: scored?.errorCounts || parsed.errorCounts,
+                feedbackLevel: 'basic',
+              }
+            : parsed;
         return jsonResponse(200, cors, {
           ok: true,
-          correction: parsed,
-          plan: pro.plan,
+          correction,
+          feedbackLevel,
+          score: scored?.score ?? parsed.totalScore ?? null,
+          passed: scored?.passed ?? parsed.passed ?? null,
+          rubric: scored?.rubric ?? parsed.rubric ?? null,
+          errorCounts: scored?.errorCounts || parsed.errorCounts || null,
+          plan: access.plan,
           aiUsed: aiMeta?.aiUsed,
           aiMax: aiMeta?.aiMax,
           aiRemaining: aiMeta?.aiRemaining ?? aiMeta?.remaining,
@@ -400,7 +705,7 @@ Be concise: max 8 prioritized errors and max 3 grammarPoints. Write explanations
           aiUsed: aiMeta.aiUsed,
           aiMax: aiMeta.aiMax,
           remaining: aiMeta.remaining,
-          plan: pro.plan,
+          plan: access.plan,
         });
       }
       const cert = certName(lang);
@@ -436,7 +741,7 @@ Max 4 topics, concise. Language: ${lang === 'de' ? 'German' : lang === 'es' ? 'S
       return jsonResponse(200, cors, {
         ok: true,
         coaching: parsed,
-        plan: pro.plan,
+        plan: access.plan,
         aiUsed: aiMeta?.aiUsed,
         aiMax: aiMeta?.aiMax,
         aiRemaining: aiMeta?.aiRemaining ?? aiMeta?.remaining,
@@ -444,6 +749,191 @@ Max 4 topics, concise. Language: ${lang === 'de' ? 'German' : lang === 'es' ? 'S
     } catch (err) {
       console.error('[claude-chat] pro AI mode failed:', err.message);
       return jsonResponse(502, cors, { error: 'ai_unavailable' });
+    }
+  }
+
+  // ── generateVocabQuiz (2 AI credits / batch of up to 10) ─────────────────
+  if (body.generateVocabQuiz === true) {
+    try {
+      const access = await requireActionAccess(event, 'vocab_quiz');
+      if (!access.ok) {
+        return jsonResponse(access.status || 403, cors, { error: access.error, plan: access.plan });
+      }
+
+      const creditCheck = await checkAiCredits(event, 'vocab_quiz');
+      if (!creditCheck.ok) {
+        return jsonResponse(creditCheck.error === 'ai_credits_exhausted' ? 402 : 403, cors, {
+          error: creditCheck.error,
+          remaining: creditCheck.remaining,
+          aiUsed: creditCheck.used,
+          aiMax: creditCheck.max,
+          plan: access.plan,
+          autoRechargeFailed: creditCheck.autoRechargeFailed || false,
+          reason: creditCheck.reason || undefined,
+        });
+      }
+
+      const lang = String(body.lang || 'de').slice(0, 2);
+      const level = String(body.level || 'B1').toUpperCase();
+      const hintLang = String(body.hintLang || 'en').slice(0, 2);
+      const rawWords = Array.isArray(body.words) ? body.words : [];
+      const words = [...new Set(rawWords.map((w) => String(w || '').trim()).filter(Boolean))].slice(0, 40);
+      if (words.length < 4) {
+        return jsonResponse(400, cors, { error: 'need_at_least_4_words' });
+      }
+      const count = Math.min(Math.max(Number(body.count) || 10, 1), 10, words.length);
+      const requestId = body.requestId || null;
+      const aiMeta = await confirmAiCreditConsumption(event, 'vocab_quiz', { requestId });
+      if (aiMeta?.error) {
+        return jsonResponse(402, cors, {
+          error: aiMeta.error,
+          aiUsed: aiMeta.aiUsed,
+          aiMax: aiMeta.aiMax,
+          remaining: aiMeta.remaining,
+          plan: access.plan,
+        });
+      }
+
+      const sourceLangName = lang === 'de' ? 'German' : lang === 'es' ? 'Spanish' : 'English';
+      const hintLangName =
+        hintLang === 'de' ? 'German' : hintLang === 'es' ? 'Spanish' : 'English';
+      const hintMode = body.hintLanguageMode === 'immersion' ? 'immersion' : 'interface';
+      const allHintsLangName = hintMode === 'immersion' ? sourceLangName : hintLangName;
+      const quizModel = cleanModel(process.env.CLAUDE_CORRECTION_MODEL || 'claude-haiku-4-5');
+      const system = `You create vocabulary recall quizzes for ${level} ${sourceLangName} learners.
+Return ONLY valid JSON (no markdown):
+{"questions":[{"word":"TARGET","hintType":"synonym|antonym|explanation","hintLanguage":"${hintMode === 'immersion' ? lang : hintLang}","hint":"...","options":["w1","w2","w3","w4"]}]}
+
+Rules:
+- Generate exactly ${count} questions, each with a different "word" from the list when possible.
+- "word" must match one vocabulary item exactly (same spelling).
+- "options" must be exactly 4 distinct words copied verbatim from the vocabulary list, including the correct "word".
+- Rotate hintType evenly across synonym, antonym, and explanation.
+- ALL hints (synonym, antonym, explanation): write in ${allHintsLangName} only — same language for every hint in this quiz.
+- Keep hints short (max 15 words). Do NOT include the target word.
+- Set hintLanguage to "${hintMode === 'immersion' ? lang : hintLang}" on every question.
+- Shuffle option order randomly.`;
+      const userContent = `Vocabulary list (${sourceLangName}):\n${words.map((w, i) => `${i + 1}. ${w}`).join('\n')}`;
+
+      const t0 = Date.now();
+      let text;
+      try {
+        ({ text } = await callAnthropicJson(apiKey, {
+          model: quizModel,
+          maxTokens: Math.min(Number(body.maxTokens) || 2500, 2500),
+          system,
+          userContent,
+        }));
+      } catch (err) {
+        await refundAiCredits(event, 'vocab_quiz', requestId);
+        throw err;
+      }
+
+      const parsed = extractJsonObject(text);
+      const rawQs = Array.isArray(parsed?.questions) ? parsed.questions : [];
+      const wordSet = new Set(words.map((w) => w.toLowerCase()));
+      const questions = [];
+      const usedTargets = new Set();
+      for (const q of rawQs) {
+        const word = String(q?.word || '').trim();
+        const hint = String(q?.hint || '').trim();
+        let hintType = String(q?.hintType || '').trim().toLowerCase();
+        if (!['synonym', 'antonym', 'explanation'].includes(hintType)) hintType = 'explanation';
+        const opts = Array.isArray(q?.options)
+          ? q.options.map((o) => String(o || '').trim()).filter(Boolean)
+          : [];
+        const uniqOpts = [...new Set(opts)];
+        if (!word || !hint || uniqOpts.length < 4) continue;
+        if (!wordSet.has(word.toLowerCase())) continue;
+        if (usedTargets.has(word.toLowerCase())) continue;
+        const validOpts = uniqOpts.filter((o) => wordSet.has(o.toLowerCase())).slice(0, 4);
+        if (validOpts.length < 4 || !validOpts.some((o) => o.toLowerCase() === word.toLowerCase())) {
+          const fillers = words.filter((w) => w.toLowerCase() !== word.toLowerCase());
+          while (validOpts.length < 4 && fillers.length) {
+            const pick = fillers.splice(Math.floor(Math.random() * fillers.length), 1)[0];
+            if (!validOpts.some((o) => o.toLowerCase() === pick.toLowerCase())) validOpts.push(pick);
+          }
+          if (!validOpts.some((o) => o.toLowerCase() === word.toLowerCase())) validOpts[0] = word;
+        }
+        const finalOpts = [...new Set(validOpts)].slice(0, 4);
+        while (finalOpts.length < 4) {
+          const extra = words.find((w) => !finalOpts.some((o) => o.toLowerCase() === w.toLowerCase()));
+          if (!extra) break;
+          finalOpts.push(extra);
+        }
+        if (finalOpts.length < 4) continue;
+        for (let i = finalOpts.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [finalOpts[i], finalOpts[j]] = [finalOpts[j], finalOpts[i]];
+        }
+        usedTargets.add(word.toLowerCase());
+        questions.push({
+          word,
+          hintType,
+          hint,
+          hintLanguage: String(q?.hintLanguage || (hintMode === 'immersion' ? lang : hintLang)).slice(0, 8),
+          options: finalOpts.slice(0, 4),
+        });
+        if (questions.length >= count) break;
+      }
+
+      console.log('[claude-chat] generateVocabQuiz', {
+        ok: questions.length > 0,
+        requested: count,
+        got: questions.length,
+        ms: Date.now() - t0,
+      });
+
+      if (!questions.length) {
+        await refundAiCredits(event, 'vocab_quiz', requestId);
+        return jsonResponse(200, cors, { ok: false, error: 'parse_failed' });
+      }
+
+      return jsonResponse(200, cors, {
+        ok: true,
+        questions,
+        plan: access.plan,
+        aiUsed: aiMeta?.aiUsed,
+        aiMax: aiMeta?.aiMax,
+        aiRemaining: aiMeta?.aiRemaining ?? aiMeta?.remaining,
+      });
+    } catch (err) {
+      console.error('[claude-chat] generateVocabQuiz failed:', err.message);
+      return jsonResponse(502, cors, { error: 'ai_unavailable' });
+    }
+  }
+
+  // ── consumeAiAction (listening game, etc.) ───────────────────────────────
+  if (body.consumeAiAction === true && body.action) {
+    try {
+      const action = String(body.action).trim();
+      const creditCheck = await checkAiCredits(event, action);
+      if (!creditCheck.ok) {
+        return jsonResponse(creditCheck.error === 'ai_credits_exhausted' ? 402 : creditCheck.status || 403, cors, {
+          error: creditCheck.error,
+          remaining: creditCheck.remaining,
+          aiUsed: creditCheck.used,
+          aiMax: creditCheck.max,
+          plan: creditCheck.plan,
+          autoRechargeFailed: creditCheck.autoRechargeFailed || false,
+          reason: creditCheck.reason || undefined,
+        });
+      }
+      const requestId = body.requestId || null;
+      const aiMeta = await confirmAiCreditConsumption(event, action, { requestId });
+      if (aiMeta?.error) {
+        return jsonResponse(402, cors, { error: aiMeta.error, ...aiMeta });
+      }
+      return jsonResponse(200, cors, {
+        ok: true,
+        action,
+        aiUsed: aiMeta?.aiUsed,
+        aiMax: aiMeta?.aiMax,
+        aiRemaining: aiMeta?.aiRemaining ?? aiMeta?.remaining,
+      });
+    } catch (err) {
+      console.error('[claude-chat] consumeAiAction failed:', err.message);
+      return jsonResponse(503, cors, { error: 'quota_service_unavailable' });
     }
   }
 
@@ -516,30 +1006,41 @@ Max 4 topics, concise. Language: ${lang === 'de' ? 'German' : lang === 'es' ? 'S
     'exam_generation_de', 'exam_generation_en', 'exam_generation_es',
     'vocab_explanation', 'translation',
   ]);
-  const PRO_AI_ACTIONS = new Set(['writing_correction', 'grammar_coaching']);
+  const CREDIT_AI_ACTIONS = new Set([
+    'writing_correction',
+    'grammar_coaching',
+    'speaking',
+    'listening_game',
+    'vocab_quiz',
+    'tts',
+  ]);
   const aiAction = typeof body.aiAction === 'string' ? body.aiAction.trim() : null;
 
   if (!aiAction && !body.examGeneration) {
     console.warn('[claude-chat] B-1: blocked prompt call with no aiAction');
     return jsonResponse(403, cors, { error: 'action_required' });
   }
-  if (aiAction && !QUOTA_AI_ACTIONS.has(aiAction) && !PRO_AI_ACTIONS.has(aiAction)) {
+  if (aiAction && !QUOTA_AI_ACTIONS.has(aiAction) && !CREDIT_AI_ACTIONS.has(aiAction)) {
     console.warn('[claude-chat] B-1: blocked unknown aiAction:', aiAction);
     return jsonResponse(403, cors, { error: 'unknown_action' });
   }
-  if (aiAction && PRO_AI_ACTIONS.has(aiAction)) {
-    const pro = await requireProPlan(event);
-    if (!pro.ok) {
-      return jsonResponse(pro.status || 403, cors, { error: pro.error, plan: pro.plan });
+  let creditAccess = null;
+  if (aiAction && CREDIT_AI_ACTIONS.has(aiAction)) {
+    creditAccess = await requireActionAccess(event, aiAction);
+    if (!creditAccess.ok) {
+      return jsonResponse(creditAccess.status || 403, cors, {
+        error: creditAccess.error,
+        plan: creditAccess.plan,
+      });
     }
     const creditCheck = await checkAiCredits(event, aiAction);
     if (!creditCheck.ok) {
-      return jsonResponse(creditCheck.error === 'ai_credits_exhausted' ? 402 : 403, cors, {
+      return jsonResponse(creditCheck.error === 'ai_credits_exhausted' ? 402 : creditCheck.status || 403, cors, {
         error: creditCheck.error,
         remaining: creditCheck.remaining,
         aiUsed: creditCheck.used,
         aiMax: creditCheck.max,
-        plan: pro.plan,
+        plan: creditAccess.plan,
         autoRechargeFailed: creditCheck.autoRechargeFailed || false,
         reason: creditCheck.reason || undefined,
       });
@@ -637,13 +1138,29 @@ Max 4 topics, concise. Language: ${lang === 'de' ? 'German' : lang === 'es' ? 'S
   }
 
   // ── Anthropic call ───────────────────────────────────────────────────────
-  const maxTokens = Math.min(Math.max(Number(body.maxTokens) || 6000, 1), MAX_TOKENS);
+  const chunkSlot = String(body.chunkSlotType || body.slotType || '').toLowerCase();
+  const chunkTeil = Number(body.chunkTeil ?? body.teil);
+  let maxTokens = Math.min(Math.max(Number(body.maxTokens) || 6000, 1), MAX_TOKENS);
+  if (body.examGeneration && chunkSlot.includes('ads_matching')) {
+    maxTokens = Math.min(Math.max(maxTokens, 8000), 10000);
+  }
+  const examModelDefault = process.env.CLAUDE_EXAM_MODEL || EXAM_MODEL;
+  const examModelPick =
+    body.examGeneration && chunkSlot.includes('ads_matching')
+      ? examModelDefault
+      : body.examModel || examModelDefault;
   const model = body.examGeneration
-    ? cleanModel(process.env.CLAUDE_EXAM_MODEL || EXAM_MODEL)
+    ? cleanModel(examModelPick)
     : cleanModel(body.model || process.env.CLAUDE_MODEL);
 
   if (body.examGeneration) {
-    console.log('[claude-chat] exam chunk', { model });
+    console.log('[claude-chat] exam chunk', {
+      model,
+      maxTokens,
+      examModel: body.examModel || null,
+      chunkTeil: Number.isFinite(chunkTeil) ? chunkTeil : null,
+      chunkSlot: chunkSlot || null,
+    });
   }
 
   const t0 = Date.now();
@@ -683,12 +1200,34 @@ Max 4 topics, concise. Language: ${lang === 'de' ? 'German' : lang === 'es' ? 'S
     }
 
     const text = (data.content || []).map((part) => part.text || '').join('');
+    const stopReason = data.stop_reason || data.stopReason || null;
     if (!text) {
       await refundExamQuota(reservedQuotaCheck, requestId);
       if (body.examGeneration) {
         await logExamGenChunk(event, genTicketPayload, body, { ok: false, model, usage: anthropicUsage });
       }
       return jsonResponse(502, cors, { error: 'Empty response from AI' });
+    }
+
+    if (body.examGeneration) {
+      const parsed = extractJsonObject(text);
+      if (!parsed) {
+        console.warn('[claude-chat] exam chunk JSON unparseable', {
+          teil: Number.isFinite(chunkTeil) ? chunkTeil : null,
+          slot: chunkSlot || null,
+          stop_reason: stopReason,
+          outChars: text.length,
+        });
+        await refundExamQuota(reservedQuotaCheck, requestId);
+        await logExamGenChunk(event, genTicketPayload, body, { ok: false, model, usage: anthropicUsage });
+        return jsonResponse(422, cors, {
+          error: 'exam_chunk_unparseable',
+          teil: Number.isFinite(chunkTeil) ? chunkTeil : null,
+          slotType: chunkSlot || null,
+          stop_reason: stopReason,
+          message: stopReason === 'max_tokens' ? 'AI response truncated (max_tokens)' : 'Could not parse exam chunk JSON',
+        });
+      }
     }
 
     if (body.examGeneration) {
@@ -705,7 +1244,7 @@ Max 4 topics, concise. Language: ${lang === 'de' ? 'German' : lang === 'es' ? 'S
     }
 
     let aiMeta = null;
-    if (aiAction && PRO_AI_ACTIONS.has(aiAction)) {
+    if (aiAction && CREDIT_AI_ACTIONS.has(aiAction)) {
       try {
         aiMeta = await confirmAiCreditConsumption(event, aiAction, { requestId });
       } catch (err) {

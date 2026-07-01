@@ -11,7 +11,7 @@ function incQuota(){
   updQuotaUI();
   Auth.pushSync();
 }
-function isPro(){return typeof S!=='undefined'&&S.plan==='pro';}
+function isPro(){return typeof S!=='undefined'&&(S.plan==='pro'||S.plan==='pro_max');}
 function getQuotaMax(){
   if (typeof quotaMaxForPlan === 'function' && typeof S !== 'undefined') return quotaMaxForPlan(S.plan);
   return isPro() ? PRO_QUOTA : (typeof S !== 'undefined' && S.plan === 'guest' ? GUEST_QUOTA : FREE_QUOTA);
@@ -50,5 +50,9 @@ function updQuotaUI(){
   if(badge) badge.innerHTML=isPro()?'<span class="plan-badge plan-pro">✦ Pro</span>':'<span class="plan-badge plan-free">Free</span>';
   if(upgradeBtn) upgradeBtn.style.display=isPro()?'none':'inline-flex';
 }
-function showUpgrade(){document.getElementById('upgradeModal').classList.add('show');}
+function showUpgrade(){
+  if(typeof syncAppPlan==='function')syncAppPlan();
+  if(typeof PlanPricing!=='undefined'&&PlanPricing.renderUpgradeModal)PlanPricing.renderUpgradeModal();
+  document.getElementById('upgradeModal').classList.add('show');
+}
 function closeUpgrade(){document.getElementById('upgradeModal').classList.remove('show');}

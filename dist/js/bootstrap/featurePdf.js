@@ -79,9 +79,9 @@
     html += `</tbody></table></section>`;
 
     if (grammarFails.length) {
-      html += `<section class="pdf-section"><h2>${isDE ? 'Resumen de fallos por gramática' : 'Mistakes by grammar topic'}</h2>`;
+      html += `<section class="pdf-section"><h2>Mistakes by grammar topic</h2>`;
       grammarFails.forEach((g) => {
-        html += `<div class="pdf-grammar-group"><h3>${esc(grammarTagLabel(g.tag))} <span class="pdf-badge">${g.count} ${isDE ? 'fallos' : 'mistakes'}</span></h3>`;
+        html += `<div class="pdf-grammar-group"><h3>${esc(grammarTagLabel(g.tag))} <span class="pdf-badge">${g.count} mistakes</span></h3>`;
         g.examples.forEach((ex) => {
           html += `<p class="pdf-explain">${esc(ex.explanation)}</p>`;
         });
@@ -91,7 +91,7 @@
     }
 
     if (grammarCoaching?.topics?.length) {
-      html += `<section class="pdf-section"><h2>${isDE ? 'Explicación gramatical (IA)' : 'Grammar coaching (AI)'}</h2>`;
+      html += `<section class="pdf-section"><h2>Grammar coaching (AI)</h2>`;
       grammarCoaching.topics.slice(0, 4).forEach((t) => {
         html += `<div class="pdf-coach-topic"><h3>${esc(t.title || grammarTagLabel(t.tag))}</h3>`;
         if (t.explanation) html += `<p>${esc(t.explanation)}</p>`;
@@ -105,7 +105,7 @@
     }
 
     if (correction?.writingAi?.length) {
-      html += `<section class="pdf-section"><h2>${isDE ? 'Schreiben — tu texto corregido' : 'Writing — your corrected text'}</h2>`;
+      html += `<section class="pdf-section"><h2>${isDE ? 'Schreiben — korrigierter Text' : 'Writing — your corrected text'}</h2>`;
       correction.writingAi.forEach((wa) => {
         const c = wa.correction;
         if (!c) return;
@@ -122,13 +122,13 @@
     }
 
     if (correction?.parts?.length) {
-      html += `<section class="pdf-section"><h2>${isDE ? 'Detalle por módulo' : 'Module detail'}</h2>`;
+      html += `<section class="pdf-section"><h2>Module detail</h2>`;
       correction.parts.forEach((block) => {
         const fails = (block.items || []).filter((it) => !it.ok);
         if (!fails.length) return;
         html += `<div class="pdf-detail-block"><h3>${esc(block.title)}</h3>`;
         fails.slice(0, 12).forEach((it) => {
-          html += `<p class="pdf-fail-row"><span class="pdf-x">✗</span> ${esc(it.q)}<br><span class="pdf-muted">${isDE ? 'Tuyo' : 'Yours'}: ${esc(it.yours)} · ${isDE ? 'Correcto' : 'Correct'}: ${esc(it.correct)}</span></p>`;
+          html += `<p class="pdf-fail-row"><span class="pdf-x">✗</span> ${esc(it.q)}<br><span class="pdf-muted">Yours: ${esc(it.yours)} · Correct: ${esc(it.correct)}</span></p>`;
         });
         html += `</div>`;
       });
@@ -138,13 +138,13 @@
     if (speakingParts?.length) {
       html += `<section class="pdf-section"><h2>${isDE ? 'Sprechen' : 'Speaking'}</h2>`;
       speakingParts.forEach((sp) => {
-        if (sp.transcript) html += `<p><strong>${isDE ? 'Tu respuesta' : 'Your answer'}:</strong> ${esc(sp.transcript)}</p>`;
+        if (sp.transcript) html += `<p><strong>Your answer:</strong> ${esc(sp.transcript)}</p>`;
         if (sp.criteria) {
           sp.criteria.forEach((c) => {
             html += `<p>${esc(c.name)}: ${c.score}/5 — ${esc(c.comment)}</p>`;
           });
         }
-        if (sp.correctedVersion) html += `<p><strong>${isDE ? 'Corregido' : 'Corrected'}:</strong> ${esc(sp.correctedVersion)}</p>`;
+        if (sp.correctedVersion) html += `<p><strong>Corrected:</strong> ${esc(sp.correctedVersion)}</p>`;
         if (sp.overallFeedback || sp.note) html += `<p class="pdf-muted">${esc(sp.overallFeedback || sp.note || '')}</p>`;
       });
       html += `</section>`;

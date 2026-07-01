@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { FormEvent, useEffect, useState } from 'react';
-import { APP_URL } from '@/lib/constants';
+import { APP_URL, LAUNCH_LIVE_EXAM, PLAN_PRICING } from '@/lib/constants';
 import {
   forgotPassword,
   loginWithEmail,
@@ -24,8 +24,6 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: Props) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
-  const [regCert, setRegCert] = useState('de');
-  const [regLevel, setRegLevel] = useState('B1');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
@@ -71,8 +69,8 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: Props) {
 
       if (mode === 'register') {
         const result = await registerWithEmail(name, email, password, {
-          lang: regCert,
-          level: regLevel,
+          lang: LAUNCH_LIVE_EXAM.lang,
+          level: LAUNCH_LIVE_EXAM.level,
         });
         if (result.pendingConfirmation) {
           setPendingEmail(result.email);
@@ -187,30 +185,20 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: Props) {
                 <p className="text-xs font-semibold text-[var(--text-muted)]">
                   Your exam (Free: one certification)
                 </p>
-                <div className="flex gap-2">
-                  <select
-                    className="auth-input flex-1"
-                    value={regCert}
-                    onChange={(e) => setRegCert(e.target.value)}
-                    aria-label="Certification"
-                  >
-                    <option value="de">Goethe</option>
-                    <option value="en">Cambridge</option>
-                    <option value="es">DELE</option>
-                  </select>
-                  <select
-                    className="auth-input w-24 shrink-0"
-                    value={regLevel}
-                    onChange={(e) => setRegLevel(e.target.value)}
-                    aria-label="Level"
-                  >
-                    <option value="B1">B1</option>
-                    <option value="B2">B2</option>
-                    <option value="C1">C1</option>
-                  </select>
+                <div
+                  className="rounded-xl border border-[var(--border)] bg-[var(--bg-surface)] px-3 py-2.5 text-sm font-semibold text-[var(--text-primary)]"
+                  aria-label="Certification and level"
+                >
+                  Goethe B1 — available at launch
                 </div>
                 <p className="text-xs font-semibold text-[var(--text-muted)]">
-                  5 official mock exams/month on this level. Pro unlocks all languages &amp; levels.
+                  More Goethe levels, Cambridge, and DELE are coming soon. Pro will unlock them as they
+                  launch.
+                </p>
+                <p className="text-xs font-semibold text-[var(--text-muted)]">
+                  {PLAN_PRICING.free.examsPerMonth} official mock exams/month ·{' '}
+                  {PLAN_PRICING.free.aiCreditsPerMonth} AI credits/month on Goethe B1. Pro unlocks all
+                  languages, levels &amp; personalized exams.
                 </p>
               </>
             )}

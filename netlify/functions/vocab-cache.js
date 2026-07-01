@@ -9,6 +9,8 @@ const PASSAGE_MAX = 4000;
 const PUT_LIMIT = 40;
 const PUT_WINDOW_MS = 60 * 60 * 1000;
 
+const memCache = global.__lexicoilVocabMemCache || (global.__lexicoilVocabMemCache = new Map());
+
 function normalizeText(text) {
   return String(text || '').trim().toLowerCase();
 }
@@ -34,7 +36,30 @@ function ipHash(ip) {
   return crypto.createHash('sha256').update(String(ip)).digest('hex').slice(0, 16);
 }
 
+async function cacheGet(store, key) {
+  if (memCache.has(key)) return memCache.get(key);
+  if (!store) return null;
+  try {
+    const entry = await store.get(key, { type: 'json' });
+    if (entry) memCache.set(key, entry);
+    return entry;
+  } catch (_) {
+    return null;
+  }
+}
+
+async function cacheSet(store, key, payload) {
+  memCache.set(key, payload);
+  if (!store) return;
+  try {
+    await store.setJSON(key, payload);
+  } catch (_) {
+    /* in-memory fallback for this process */
+  }
+}
+
 async function checkPutRateLimit(store, event) {
+  if (!store) return true;
   const key = `ratelimit_vocab_put:${ipHash(clientIp(event))}`;
   let entry = null;
   try {
@@ -44,12 +69,20 @@ async function checkPutRateLimit(store, event) {
   }
   const now = Date.now();
   if (!entry || now - entry.since > PUT_WINDOW_MS) {
-    await store.setJSON(key, { count: 1, since: now });
+    try {
+      await store.setJSON(key, { count: 1, since: now });
+    } catch (_) {
+      return true;
+    }
     return true;
   }
   if (entry.count >= PUT_LIMIT) return false;
   entry.count += 1;
-  await store.setJSON(key, entry);
+  try {
+    await store.setJSON(key, entry);
+  } catch (_) {
+    return true;
+  }
   return true;
 }
 
@@ -70,28 +103,29 @@ exports.handler = async (event) => {
   const cors = corsHeaders(event, 'GET, PUT, OPTIONS');
   if (event.httpMethod === 'OPTIONS') return { statusCode: 204, headers: cors };
 
-  const store = getStoreForEvent(event);
+  try {
+    const store = getStoreForEvent(event);
 
-  if (event.httpMethod === 'GET') {
+    if (event.httpMethod === 'GET') {
     const params = event.queryStringParameters || {};
     const from = String(params.from || '').trim().toLowerCase();
     const to = String(params.to || '').trim().toLowerCase();
     const text = String(params.text || '');
+    const context = String(params.context || '').trim().slice(0, PASSAGE_MAX);
 
     if (!validLang(from) || !validLang(to) || !text.trim()) {
       return jsonResponse(400, cors, { error: 'invalid_params' });
+    }
+    const { geminiApiKey } = require('./lib/freeTranslate.js');
+    if (!geminiApiKey()) {
+      return jsonResponse(200, cors, { found: false, reason: 'no_api_key' });
     }
     if (text.trim().length > PASSAGE_MAX) {
       return jsonResponse(400, cors, { error: 'too_long' });
     }
 
-    const key = cacheKey(from, to, text);
-    let entry = null;
-    try {
-      entry = await store.get(key, { type: 'json' });
-    } catch (_) {
-      entry = null;
-    }
+      const key = cacheKey(from, to, text);
+      const entry = await cacheGet(store, key);
 
     if (entry?.translation) {
       return jsonResponse(
@@ -101,29 +135,26 @@ exports.handler = async (event) => {
       );
     }
 
-    const translated = await freeTranslate(text.trim(), from, to);
+    const result = await freeTranslate(text.trim(), from, to, context || undefined);
+    const translated = result?.translation;
     if (translated) {
       const payload = {
         translation: translated,
-        source: 'dict',
+        source: result.source || 'gemini',
         from,
         to,
         textHash: textHash(text),
         createdAt: Date.now(),
       };
-      try {
-        await store.setJSON(key, payload);
-      } catch (_) {
-        /* cache write failure — still return translation */
-      }
+        await cacheSet(store, key, payload);
       return jsonResponse(
         200,
         { ...cors, 'Cache-Control': 'public, max-age=86400' },
-        { found: true, translation: translated, source: 'dict' },
+        { found: true, translation: translated, source: 'gemini' },
       );
     }
 
-    return jsonResponse(200, cors, { found: false });
+    return jsonResponse(200, cors, { found: false, reason: result?.reason || 'translate_failed' });
   }
 
   if (event.httpMethod === 'PUT') {
@@ -146,8 +177,8 @@ exports.handler = async (event) => {
     const err = validateEntry(from, to, text, translation);
     if (err) return jsonResponse(400, cors, { error: err });
 
-    const key = cacheKey(from, to, text);
-    await store.setJSON(key, {
+      const key = cacheKey(from, to, text);
+      await cacheSet(store, key, {
       translation: translation.trim(),
       source,
       from,
@@ -158,5 +189,9 @@ exports.handler = async (event) => {
     return jsonResponse(200, cors, { saved: true });
   }
 
-  return jsonResponse(405, cors, { error: 'method_not_allowed' });
+    return jsonResponse(405, cors, { error: 'method_not_allowed' });
+  } catch (err) {
+    console.error('[vocab-cache]', err?.message || err);
+    return jsonResponse(200, cors, { found: false, error: 'lookup_failed' });
+  }
 };

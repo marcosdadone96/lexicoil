@@ -88,8 +88,20 @@ function enrichPassages(bank, lang, b1Set) {
   for (const p of bank.passages || []) {
     if ((p.passageVocab || []).length >= 10) continue;
     const words = extractFromText(p.text, lang, b1Set, 20);
-    if (words.length < 3) continue;
-    p.passageVocab = words;
+    if (words.length < 3) {
+      const fallback = tokenize(p.text)
+        .map((t) => lemmaOf(t, lang))
+        .filter(Boolean)
+        .filter((w, i, a) => a.indexOf(w) === i);
+      if (fallback.length >= 3) p.passageVocab = fallback.slice(0, 10);
+      continue;
+    }
+    p.passageVocab = words.length >= 10 ? words : words.concat(
+      tokenize(p.text)
+        .map((t) => lemmaOf(t, lang))
+        .filter(Boolean)
+        .filter((w) => !words.includes(w)),
+    ).slice(0, 10);
     updated++;
   }
   return updated;

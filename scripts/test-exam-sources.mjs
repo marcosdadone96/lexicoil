@@ -2,8 +2,12 @@
  * Unit tests: exam source cascade ordering + validateExamCandidate helper.
  */
 import assert from 'node:assert/strict';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { createRequire } from 'node:module';
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const ROOT = path.join(__dirname, '..');
 const require = createRequire(import.meta.url);
 const {
   CASCADE_ORDER,
@@ -127,13 +131,36 @@ assert.deepEqual(CASCADE_ORDER, ['pool', 'questionLibrary', 'examLibrary'], 'cas
   assert.equal(cascade.status, 'blocked');
 }
 
-// full cascade returns continue when all miss
+// A2 curated-only: skip pool and question library
 {
+  process.chdir(ROOT);
+  const LevelAvailability = require(path.join(ROOT, 'js/library/levelAvailability.js'));
+  global.LevelAvailability = LevelAvailability;
+  assert.equal(LevelAvailability.isCuratedOnlyLevel('de', 'A2'), true);
+  let poolCalled = false;
+  let qlCalled = false;
   const { deps } = mockDeps({
-    ExamLibrary: { hasLibrary: () => false },
+    fetchExamFromPool: async () => {
+      poolCalled = true;
+      return { found: true, exam: SAMPLE_EXAM, topic: 'Pool', id: 'p1' };
+    },
+    QuestionLibrary: {
+      hasLibrary: () => true,
+      buildExam: async () => {
+        qlCalled = true;
+        return { ...SAMPLE_EXAM, topic: 'QL' };
+      },
+    },
+    ExamLibrary: {
+      hasLibrary: () => true,
+      pickExam: async () => ({ ...SAMPLE_EXAM, topic: 'Static A2' }),
+    },
   });
-  const cascade = await runExamSourceCascade({ subject: 'de', level: 'B1', seenIds: [] }, deps);
-  assert.equal(cascade.status, 'continue');
+  const cascade = await runExamSourceCascade({ subject: 'de', level: 'A2', seenIds: [] }, deps);
+  assert.equal(poolCalled, false, 'A2 skips pool');
+  assert.equal(qlCalled, false, 'A2 skips question library');
+  assert.equal(cascade.status, 'hit');
+  assert.equal(cascade.result.source, 'library');
 }
 
 console.log('OK   exam source cascade ordering');

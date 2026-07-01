@@ -1152,6 +1152,38 @@ function chk21(batch, file) {
   return findings;
 }
 
+// ─── CHK-22: Lesen T4 — cross-batch Frankenstein (multiple passageIds) ───────
+//
+// All 7 T4 questions must belong to the SAME forum topic (same passageId).
+// If questions carry multiple distinct passageIds they were spliced from different
+// generation batches — the examinee would read opinions about topic A while the
+// question header asks about topic B.
+//
+// This is the structural counterpart of SEM-1's topic-relevance check:
+//   CHK-22 catches cross-batch contamination (different passageIds in one file).
+//   SEM-1  catches within-batch mismatch (same passageId but incoherent content).
+//
+// CRITICAL — blocks isPartPoolReady regardless of GATE_BLOCK_CHECKS.
+
+function chk22(batch, file) {
+  const findings = [];
+  const t4qs = (batch.questions || []).filter(q =>
+    String(q.module || '').toLowerCase() === 'lesen' && Number(q.teil) === 4,
+  );
+  if (t4qs.length < 2) return findings;
+
+  const pids = t4qs.map(q => q.passageId).filter(Boolean);
+  const uniquePids = new Set(pids);
+  if (uniquePids.size > 1) {
+    findings.push(finding('CHK-22', 'CRITICAL', file, 'lesen-4',
+      `Lesen T4: ${uniquePids.size} passageIds distintos [${[...uniquePids].join(', ')}]. ` +
+      `Todos los ítems deben pertenecer al mismo texto/foro fuente. ` +
+      `Contaminación cross-batch detectada (Frankenstein T4).`,
+    ));
+  }
+  return findings;
+}
+
 // ─── CHK-9: Beispiel ausente ──────────────────────────────────────────────
 
 const BEISPIEL_TEILE = new Set(['lesen-1','lesen-4','horen-3','horen-4']);
@@ -1346,6 +1378,7 @@ export function auditExam(examWrapper, label = 'exam') {
     ...chk19(flat, label),
     ...chk20(flat, label),
     ...chk21(flat, label),
+    ...chk22(flat, label),
   ];
   const by = s => findings.filter(f => f.severity === s).length;
   return {
@@ -1439,17 +1472,16 @@ function flatBatchToPartRecord(batch) {
       };
       if (batch.ads) record.ads = batch.ads;
     } else if (teil === 4) {
-      // L4 questions carry their own signText — passageId references become unresolvable
-      // after wrapping, causing false CHK-8 failures.  Strip passageId from questions that
-      // already have signText, and expose passages as record.passages so partRecordToExamPart
-      // can find them via the Array.isArray(record.passages) branch.
-      record.questions = record.questions.map((q) =>
-        q.signText && q.passageId ? (({ passageId: _pid, ...rest }) => rest)(q) : q,
-      );
+      // L4 passages are exposed as record.passages[] so partRecordToExamPart can build the
+      // exam wrapper correctly.  We intentionally preserve passageId on questions so that
+      // CHK-8 can still detect cross-batch contamination (different passageIds in same file).
+      // Questions with signText are self-contained for answering, but the passageId signals
+      // which forum topic they belong to — CHK-22 uses this to detect Frankenstein mixes.
       record.passages = passages.map((p) => ({
-        passageId: p.id || p.passageId,
-        textTitle: p.title || p.textTitle || '',
-        text: p.text || '',
+        id        : p.id || p.passageId,
+        passageId : p.id || p.passageId,
+        textTitle : p.title || p.textTitle || '',
+        text      : p.text || '',
       }));
       record.passage = { title: passages[0]?.title || '', text: passages[0]?.text || '' };
     } else {
@@ -1686,6 +1718,7 @@ export async function isPartPoolReady(part, { allowFailures = false, semantic = 
 export const GATE_BLOCK_CHECKS = new Set([
   'CHK-17', // L3: misma lista A-J compartida en los 7 ítems (Frankenstein L3)
   'CHK-21', // T4: signText ≥15 palabras y autores únicos (Frankenstein T4)
+  'CHK-22', // T4: múltiples passageIds = cross-batch Frankenstein (CRITICAL — siempre bloquea)
 ]);
 
 /**
@@ -1928,6 +1961,7 @@ async function main() {
     allFindings.push(...chk19(batch, file));
     allFindings.push(...chk20(batch, file));
     allFindings.push(...chk21(batch, file));
+    allFindings.push(...chk22(batch, file));
   }
 
   // Global checks

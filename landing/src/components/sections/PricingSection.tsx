@@ -2,18 +2,20 @@
 
 import { useAuthUi } from '@/context/AuthUiContext';
 import { tryExamAsGuest } from '@/lib/tryExam';
+import { PLAN_PRICING } from '@/lib/constants';
 import { Container } from '@/components/ui/Container';
 
 const PLANS = [
   {
     name: 'Free',
-    price: 'EUR 0',
+    price: PLAN_PRICING.free.priceLabel,
     period: 'month',
-    desc: 'Try adaptive exam prep on one certification. No credit card required.',
+    desc: 'One certification to start. No credit card required.',
     features: [
-      '5 official mock exams per month',
+      `${PLAN_PRICING.free.examsPerMonth} official mock exams per month`,
+      `${PLAN_PRICING.free.aiCreditsPerMonth} AI credits/month (quiz, speaking, writing, listening game)`,
+      `${PLAN_PRICING.free.poolPreview} curated pool exams as a preview`,
       'One language & level (e.g. Goethe B1)',
-      'Practice and official exam modes',
       'Vocabulary deck & flashcards',
       'Retake saved exams (free)',
     ],
@@ -23,19 +25,34 @@ const PLANS = [
   },
   {
     name: 'Pro',
-    price: 'EUR 9.99',
+    price: PLAN_PRICING.pro.priceLabel,
     period: 'month',
     desc: 'Billed monthly. Cancel anytime.',
     features: [
-      '12 exam generations per month',
-      'Personalized mock exams from your deck',
-      'Listening game & AI speaking practice',
-      'PDF correction reports',
-      'Cloud sync across devices',
-      'Everything in Free',
+      `${PLAN_PRICING.pro.examsPerMonth} exam generations per month`,
+      `${PLAN_PRICING.pro.aiCreditsPerMonth} AI credits/month (roll over unused)`,
+      'Personalized exams from your vocabulary',
+      'Full exam pool · grammar coaching · TTS',
+      'Full AI writing & speaking feedback',
+      'Roadmap: all languages & levels · cloud sync',
     ],
     cta: 'Create account',
     popular: true,
+    guest: false,
+  },
+  {
+    name: 'Pro Max',
+    price: PLAN_PRICING.proMax.priceLabel,
+    period: 'month',
+    desc: 'For intensive prep — same Pro access, larger AI pool.',
+    features: [
+      `${PLAN_PRICING.proMax.examsPerMonth} exam generations per month`,
+      `${PLAN_PRICING.proMax.aiCreditsPerMonth} AI credits/month`,
+      'Everything in Pro',
+      'Best for daily AI speaking & writing practice',
+    ],
+    cta: 'Create account',
+    popular: false,
     guest: false,
   },
 ];
@@ -51,21 +68,22 @@ export function PricingSection() {
             Simple, transparent pricing
           </h2>
           <p className="mt-4 text-lg font-semibold text-[var(--text-secondary)]">
-            Try the 5-minute product demo free. Create an account when you are ready to save progress.
+            Free includes {PLAN_PRICING.free.aiCreditsPerMonth} AI credits every month. Upgrade for personalized
+            exams and unlimited pool access.
           </p>
         </div>
 
-        <div className="mx-auto mt-14 grid max-w-3xl gap-8 md:grid-cols-2">
+        <div className="mx-auto mt-14 grid max-w-5xl gap-8 md:grid-cols-2 lg:grid-cols-3">
           {PLANS.map((plan) => (
             <div
               key={plan.name}
               className={`surface-card relative p-8 ${
-                plan.popular ? 'border-[var(--brand)] ring-2 ring-[var(--brand)]/20' : ''
+                plan.popular ? 'border-[var(--brand)] ring-2 ring-[var(--brand)]/20 md:col-span-2 lg:col-span-1' : ''
               }`}
             >
               {plan.popular && (
                 <span className="lc-badge absolute -top-3 left-1/2 -translate-x-1/2 !bg-[var(--brand)] !text-white">
-                  Pro
+                  Most popular
                 </span>
               )}
               <h3 className="text-lg font-bold text-[var(--text-primary)]">{plan.name}</h3>
@@ -92,6 +110,11 @@ export function PricingSection() {
             </div>
           ))}
         </div>
+
+        <p className="mx-auto mt-8 max-w-2xl text-center text-xs font-semibold text-[var(--text-muted)]">
+          AI credits renew monthly. Speaking costs 2 credits · vocab quiz 2 · writing & listening game 1 ·
+          personalized exams 3 (Pro only). Sample demos never use your quota.
+        </p>
       </Container>
     </section>
   );

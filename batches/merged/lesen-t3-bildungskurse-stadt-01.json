@@ -1,291 +1,189 @@
 {
-  "passages": [],
+  "passages": [
+    {
+      "id": "de-a2-p-lesen-t3-bildungskurse-stadt-01",
+      "module": "lesen",
+      "teil": 3,
+      "title": "E-Mail: Anfrage zu einem Sprachkurs",
+      "text": "Liebe Frau Müller,\n\nich interessiere mich für Ihren Deutschkurs für Anfänger. Ich bin Spanier und lebe seit zwei Monaten in Berlin. Mein Name ist Carlos und ich bin 28 Jahre alt.\n\nIch arbeite als Ingenieur bei einer deutschen Firma und möchte schnell Deutsch lernen. Der Kurs soll am Montag beginnen. Ist das möglich?\n\nIch habe noch Fragen: Wie viele Stunden dauert der Kurs pro Woche? Was kostet der Kurs? Und wann endet der Kurs?\n\nIch bin sehr motiviert und ich habe viel Zeit zum Lernen. Bitte schreiben Sie mir bald eine Antwort.\n\nVielen Dank und viele Grüße,\nCarlos Rodríguez",
+      "passageVocab": [
+        "der Kurs",
+        "der Anfänger",
+        "die Stunde",
+        "kosten",
+        "motiviert"
+      ]
+    }
+  ],
   "questions": [
     {
-      "id": "de-b1-l-t3-bildungskurse-stadt-01-q1",
+      "id": "de-a2-l-t3-bildungskurse-stadt-01-q1",
       "module": "lesen",
       "teil": 3,
-      "type": "matching",
-      "question": "Anna ist 32 Jahre alt und arbeitet in einem internationalen Unternehmen. Sie muss oft E-Mails auf Englisch schreiben und an Besprechungen teilnehmen. Ihr Englisch ist schon gut, aber sie möchte es für ihre berufliche Kommunikation noch weiter verbessern.",
-      "correct": "B",
-      "correctAnswer": "B",
-      "explanation": "Anna benötigt einen Kurs, der ihr hilft, ihr bereits gutes Englisch speziell für den Beruf zu verbessern.",
+      "type": "mcq",
+      "passageId": "de-a2-p-lesen-t3-bildungskurse-stadt-01",
+      "question": "Woher kommt Carlos?",
       "options": [
-        "A) Intensivkurs Deutsch für Anfänger (A1/A2)",
-        "B) Business-Englisch für Fortgeschrittene (B2/C1)",
-        "C) Kochkurs: Vegetarische Küche aus aller Welt",
-        "D) Computerkurs: Grundlagen für Senioren",
-        "E) Yoga und Meditation für Entspannung",
-        "F) Kreatives Schreiben: Geschichten entwickeln",
-        "G) Online-Marketing und Social Media Strategien",
-        "H) Spanisch-Konversationskurs (B1/B2)",
-        "I) Fotografie-Workshop: Digitale Bildbearbeitung",
-        "J) Erste-Hilfe-Kurs für den Führerschein",
-        "0) Kein passender Kurs dabei oder keine weiteren Informationen benötigt."
+        "a) Aus Deutschland",
+        "b) Aus Spanien",
+        "c) Aus Berlin"
       ],
+      "correct": "b",
+      "correctAnswer": "b",
+      "explanation": "Im Text steht: 'Ich bin Spanier und lebe seit zwei Monaten in Berlin.' Carlos ist Spanier, kommt also aus Spanien.",
       "grammarTags": [
-        "g-de-b1-nebensatz"
+        "g-de-a2-praesens"
       ],
       "topicTags": [
         "education"
       ],
       "vocabularyTags": [
-        "unternehmen",
-        "kommunikation",
-        "verbessern"
+        "v-de-a2-herkunft",
+        "v-de-a2-nationalitaet"
       ],
-      "difficulty": 4,
+      "difficulty": 2,
       "skills": [
+        "reading",
         "reading"
       ],
       "language": "de",
-      "level": "B1",
+      "level": "A2",
       "examType": "goethe"
     },
     {
-      "id": "de-b1-l-t3-bildungskurse-stadt-01-q2",
+      "id": "de-a2-l-t3-bildungskurse-stadt-01-q2",
       "module": "lesen",
       "teil": 3,
-      "type": "matching",
-      "question": "Herr Müller ist 70 Jahre alt und hat nie einen Computer besessen. Jetzt möchte er lernen, wie man E-Mails verschickt und im Internet surft, um mit seinen Enkelkindern in Kontakt zu bleiben und Nachrichten zu lesen.",
-      "correct": "D",
-      "correctAnswer": "D",
-      "explanation": "Herr Müller sucht einen Kurs, der ihm die grundlegenden Funktionen eines Computers für den Alltag beibringt.",
+      "type": "mcq",
+      "passageId": "de-a2-p-lesen-t3-bildungskurse-stadt-01",
+      "question": "Was ist Carlos von Beruf?",
       "options": [
-        "A) Intensivkurs Deutsch für Anfänger (A1/A2)",
-        "B) Business-Englisch für Fortgeschrittene (B2/C1)",
-        "C) Kochkurs: Vegetarische Küche aus aller Welt",
-        "D) Computerkurs: Grundlagen für Senioren",
-        "E) Yoga und Meditation für Entspannung",
-        "F) Kreatives Schreiben: Geschichten entwickeln",
-        "G) Online-Marketing und Social Media Strategien",
-        "H) Spanisch-Konversationskurs (B1/B2)",
-        "I) Fotografie-Workshop: Digitale Bildbearbeitung",
-        "J) Erste-Hilfe-Kurs für den Führerschein",
-        "0) Kein passender Kurs dabei oder keine weiteren Informationen benötigt."
+        "a) Lehrer",
+        "b) Ingenieur",
+        "c) Student"
       ],
+      "correct": "b",
+      "correctAnswer": "b",
+      "explanation": "Der Text sagt: 'Ich arbeite als Ingenieur bei einer deutschen Firma.' Carlos ist Ingenieur.",
       "grammarTags": [
-        "g-de-b1-nebensatz"
+        "g-de-a2-praesens"
+      ],
+      "topicTags": [
+        "work"
+      ],
+      "vocabularyTags": [
+        "v-de-a2-berufe",
+        "v-de-a2-arbeit"
+      ],
+      "difficulty": 2,
+      "skills": [
+        "reading",
+        "reading"
+      ],
+      "language": "de",
+      "level": "A2",
+      "examType": "goethe"
+    },
+    {
+      "id": "de-a2-l-t3-bildungskurse-stadt-01-q3",
+      "module": "lesen",
+      "teil": 3,
+      "type": "mcq",
+      "passageId": "de-a2-p-lesen-t3-bildungskurse-stadt-01",
+      "question": "Wie lange lebt Carlos schon in Berlin?",
+      "options": [
+        "a) Einen Monat",
+        "b) Zwei Monate",
+        "c) Drei Monate"
+      ],
+      "correct": "b",
+      "correctAnswer": "b",
+      "explanation": "Im Text heißt es: 'ich lebe seit zwei Monaten in Berlin.' Carlos lebt zwei Monate in Berlin.",
+      "grammarTags": [
+        "g-de-a2-praesens"
+      ],
+      "topicTags": [
+        "daily_life"
+      ],
+      "vocabularyTags": [
+        "v-de-a2-zeit",
+        "v-de-a2-zeitangaben"
+      ],
+      "difficulty": 2,
+      "skills": [
+        "reading",
+        "reading"
+      ],
+      "language": "de",
+      "level": "A2",
+      "examType": "goethe"
+    },
+    {
+      "id": "de-a2-l-t3-bildungskurse-stadt-01-q4",
+      "module": "lesen",
+      "teil": 3,
+      "type": "mcq",
+      "passageId": "de-a2-p-lesen-t3-bildungskurse-stadt-01",
+      "question": "Wann soll der Kurs laut Carlos beginnen?",
+      "options": [
+        "a) Am Dienstag",
+        "b) Am Mittwoch",
+        "c) Am Montag"
+      ],
+      "correct": "c",
+      "correctAnswer": "c",
+      "explanation": "Der Text sagt: 'Der Kurs soll am Montag beginnen.' Das ist Carlosʹ Wunsch.",
+      "grammarTags": [
+        "g-de-a2-modal"
       ],
       "topicTags": [
         "education"
       ],
       "vocabularyTags": [
-        "computer",
-        "internet",
-        "enkelkinder"
+        "v-de-a2-wochentage",
+        "v-de-a2-zeit"
+      ],
+      "difficulty": 2,
+      "skills": [
+        "reading",
+        "reading"
+      ],
+      "language": "de",
+      "level": "A2",
+      "examType": "goethe"
+    },
+    {
+      "id": "de-a2-l-t3-bildungskurse-stadt-01-q5",
+      "module": "lesen",
+      "teil": 3,
+      "type": "mcq",
+      "passageId": "de-a2-p-lesen-t3-bildungskurse-stadt-01",
+      "question": "Wie viele Fragen hat Carlos?",
+      "options": [
+        "a) Zwei Fragen",
+        "b) Drei Fragen",
+        "c) Vier Fragen"
+      ],
+      "correct": "b",
+      "correctAnswer": "b",
+      "explanation": "Carlos stellt drei Fragen: 'Wie viele Stunden dauert der Kurs pro Woche? Was kostet der Kurs? Und wann endet der Kurs?'",
+      "grammarTags": [
+        "g-de-a2-nebensatz"
+      ],
+      "topicTags": [
+        "education"
+      ],
+      "vocabularyTags": [
+        "v-de-a2-fragen",
+        "v-de-a2-kurse"
       ],
       "difficulty": 3,
       "skills": [
+        "reading",
         "reading"
       ],
       "language": "de",
-      "level": "B1",
-      "examType": "goethe"
-    },
-    {
-      "id": "de-b1-l-t3-bildungskurse-stadt-01-q3",
-      "module": "lesen",
-      "teil": 3,
-      "type": "matching",
-      "question": "Lisa kocht gerne, aber sie möchte neue Rezepte ausprobieren und gesünder essen. Sie ist Vegetarierin und interessiert sich besonders für internationale Gerichte ohne Fleisch. Sie sucht Inspiration für ihre Küche.",
-      "correct": "C",
-      "correctAnswer": "C",
-      "explanation": "Lisa sucht einen Kochkurs, der sich auf vegetarische, internationale Küche konzentriert.",
-      "options": [
-        "A) Intensivkurs Deutsch für Anfänger (A1/A2)",
-        "B) Business-Englisch für Fortgeschrittene (B2/C1)",
-        "C) Kochkurs: Vegetarische Küche aus aller Welt",
-        "D) Computerkurs: Grundlagen für Senioren",
-        "E) Yoga und Meditation für Entspannung",
-        "F) Kreatives Schreiben: Geschichten entwickeln",
-        "G) Online-Marketing und Social Media Strategien",
-        "H) Spanisch-Konversationskurs (B1/B2)",
-        "I) Fotografie-Workshop: Digitale Bildbearbeitung",
-        "J) Erste-Hilfe-Kurs für den Führerschein",
-        "0) Kein passender Kurs dabei oder keine weiteren Informationen benötigt."
-      ],
-      "grammarTags": [
-        "g-de-b1-relativ"
-      ],
-      "topicTags": [
-        "education"
-      ],
-      "vocabularyTags": [
-        "rezepte",
-        "vegetarisch",
-        "gerichte"
-      ],
-      "difficulty": 4,
-      "skills": [
-        "reading"
-      ],
-      "language": "de",
-      "level": "B1",
-      "examType": "goethe"
-    },
-    {
-      "id": "de-b1-l-t3-bildungskurse-stadt-01-q4",
-      "module": "lesen",
-      "teil": 3,
-      "type": "matching",
-      "question": "Ali ist vor kurzem aus Syrien nach Deutschland gekommen. Er versteht schon ein bisschen Deutsch, möchte aber schnell und intensiv die Sprache lernen, um im Alltag besser zurechtzukommen und eine Arbeitsstelle zu finden.",
-      "correct": "A",
-      "correctAnswer": "A",
-      "explanation": "Ali benötigt einen intensiven Deutschkurs für Anfänger, um sich schnell in Deutschland integrieren zu können.",
-      "options": [
-        "A) Intensivkurs Deutsch für Anfänger (A1/A2)",
-        "B) Business-Englisch für Fortgeschrittene (B2/C1)",
-        "C) Kochkurs: Vegetarische Küche aus aller Welt",
-        "D) Computerkurs: Grundlagen für Senioren",
-        "E) Yoga und Meditation für Entspannung",
-        "F) Kreatives Schreiben: Geschichten entwickeln",
-        "G) Online-Marketing und Social Media Strategien",
-        "H) Spanisch-Konversationskurs (B1/B2)",
-        "I) Fotografie-Workshop: Digitale Bildbearbeitung",
-        "J) Erste-Hilfe-Kurs für den Führerschein",
-        "0) Kein passender Kurs dabei oder keine weiteren Informationen benötigt."
-      ],
-      "grammarTags": [
-        "g-de-b1-nebensatz"
-      ],
-      "topicTags": [
-        "education"
-      ],
-      "vocabularyTags": [
-        "sprache",
-        "alltag",
-        "arbeitsstelle"
-      ],
-      "difficulty": 3,
-      "skills": [
-        "reading"
-      ],
-      "language": "de",
-      "level": "B1",
-      "examType": "goethe"
-    },
-    {
-      "id": "de-b1-l-t3-bildungskurse-stadt-01-q5",
-      "module": "lesen",
-      "teil": 3,
-      "type": "matching",
-      "question": "Sabine schreibt in ihrer Freizeit gerne kleine Geschichten und Gedichte. Sie möchte ihre Fähigkeiten verbessern und lernen, wie man spannende Charaktere entwickelt und fesselnde Handlungen strukturiert. Ein Kurs mit praktischen Übungen wäre ideal.",
-      "correct": "F",
-      "correctAnswer": "F",
-      "explanation": "Sabine sucht einen Kurs, der ihr hilft, ihre Schreibfähigkeiten zu entwickeln und kreative Geschichten zu gestalten.",
-      "options": [
-        "A) Intensivkurs Deutsch für Anfänger (A1/A2)",
-        "B) Business-Englisch für Fortgeschrittene (B2/C1)",
-        "C) Kochkurs: Vegetarische Küche aus aller Welt",
-        "D) Computerkurs: Grundlagen für Senioren",
-        "E) Yoga und Meditation für Entspannung",
-        "F) Kreatives Schreiben: Geschichten entwickeln",
-        "G) Online-Marketing und Social Media Strategien",
-        "H) Spanisch-Konversationskurs (B1/B2)",
-        "I) Fotografie-Workshop: Digitale Bildbearbeitung",
-        "J) Erste-Hilfe-Kurs für den Führerschein",
-        "0) Kein passender Kurs dabei oder keine weiteren Informationen benötigt."
-      ],
-      "grammarTags": [
-        "g-de-b1-nebensatz"
-      ],
-      "topicTags": [
-        "education"
-      ],
-      "vocabularyTags": [
-        "geschichten",
-        "schreiben",
-        "fähigkeiten"
-      ],
-      "difficulty": 5,
-      "skills": [
-        "reading"
-      ],
-      "language": "de",
-      "level": "B1",
-      "examType": "goethe"
-    },
-    {
-      "id": "de-b1-l-t3-bildungskurse-stadt-01-q6",
-      "module": "lesen",
-      "teil": 3,
-      "type": "matching",
-      "question": "Markus hat vor zwei Monaten seinen Führerschein gemacht und dafür bereits einen Erste-Hilfe-Kurs besucht. Jetzt möchte er sich ehrenamtlich engagieren und überlegt, bei einer Hilfsorganisation mitzuarbeiten, die sich um ältere Menschen kümmert. Er braucht aber keine weiteren Kurse mehr in diesem Bereich.",
-      "correct": "0",
-      "correctAnswer": "0",
-      "explanation": "Markus hat bereits einen Erste-Hilfe-Kurs absolviert und benötigt keinen weiteren. Die anderen Kurse passen nicht zu seinem Wunsch, sich ehrenamtlich um ältere Menschen zu kümmern, da es keine entsprechenden Angebote gibt.",
-      "options": [
-        "A) Intensivkurs Deutsch für Anfänger (A1/A2)",
-        "B) Business-Englisch für Fortgeschrittene (B2/C1)",
-        "C) Kochkurs: Vegetarische Küche aus aller Welt",
-        "D) Computerkurs: Grundlagen für Senioren",
-        "E) Yoga und Meditation für Entspannung",
-        "F) Kreatives Schreiben: Geschichten entwickeln",
-        "G) Online-Marketing und Social Media Strategien",
-        "H) Spanisch-Konversationskurs (B1/B2)",
-        "I) Fotografie-Workshop: Digitale Bildbearbeitung",
-        "J) Erste-Hilfe-Kurs für den Führerschein",
-        "0) Kein passender Kurs dabei oder keine weiteren Informationen benötigt."
-      ],
-      "grammarTags": [
-        "g-de-b1-perfekt"
-      ],
-      "topicTags": [
-        "education"
-      ],
-      "vocabularyTags": [
-        "führerschein",
-        "ehrenamtlich",
-        "hilfsorganisation"
-      ],
-      "difficulty": 5,
-      "skills": [
-        "reading"
-      ],
-      "language": "de",
-      "level": "B1",
-      "examType": "goethe"
-    },
-    {
-      "id": "de-b1-l-t3-bildungskurse-stadt-01-q7",
-      "module": "lesen",
-      "teil": 3,
-      "type": "matching",
-      "question": "Lena studiert und plant ein Auslandssemester in Spanien. Sie hat in der Schule schon Spanisch gelernt, aber ihre Sprachkenntnisse sind etwas eingerostet. Sie möchte vor allem ihre Sprechfertigkeit trainieren und sich sicher im Alltag verständigen können.",
-      "correct": "H",
-      "correctAnswer": "H",
-      "explanation": "Lena möchte ihre Spanischkenntnisse auffrischen und besonders die Konversation üben, um sich auf ihr Auslandssemester vorzubereiten.",
-      "options": [
-        "A) Intensivkurs Deutsch für Anfänger (A1/A2)",
-        "B) Business-Englisch für Fortgeschrittene (B2/C1)",
-        "C) Kochkurs: Vegetarische Küche aus aller Welt",
-        "D) Computerkurs: Grundlagen für Senioren",
-        "E) Yoga und Meditation für Entspannung",
-        "F) Kreatives Schreiben: Geschichten entwickeln",
-        "G) Online-Marketing und Social Media Strategien",
-        "H) Spanisch-Konversationskurs (B1/B2)",
-        "I) Fotografie-Workshop: Digitale Bildbearbeitung",
-        "J) Erste-Hilfe-Kurs für den Führerschein",
-        "0) Kein passender Kurs dabei oder keine weiteren Informationen benötigt."
-      ],
-      "grammarTags": [
-        "g-de-b1-nebensatz"
-      ],
-      "topicTags": [
-        "education"
-      ],
-      "vocabularyTags": [
-        "studieren",
-        "spanisch",
-        "sprachkenntnisse"
-      ],
-      "difficulty": 4,
-      "skills": [
-        "reading"
-      ],
-      "language": "de",
-      "level": "B1",
+      "level": "A2",
       "examType": "goethe"
     }
   ]

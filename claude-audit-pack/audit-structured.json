@@ -1,0 +1,818 @@
+{
+  "summary": {
+    "critical": 0,
+    "important": 39,
+    "minor": 1,
+    "filesScanned": 1,
+    "questionsScanned": 180
+  },
+  "byChk": {
+    "CHK-7": [
+      {
+        "id": "CHK-7",
+        "severity": "IMPORTANT",
+        "file": "de_B1.json",
+        "scope": "ql_gen-q-4-298a9eab-7",
+        "message": "Lesen T4: signText sugiere JA (\"befürworte\") pero correct=\"Nein\". Revisar manualmente."
+      },
+      {
+        "id": "CHK-7",
+        "severity": "IMPORTANT",
+        "file": "de_B1.json",
+        "scope": "ql_gen-q-4-92df3345-2",
+        "message": "Lesen T4: signText sugiere JA (\"befürworte\") pero correct=\"Nein\". Revisar manualmente."
+      },
+      {
+        "id": "CHK-7",
+        "severity": "IMPORTANT",
+        "file": "de_B1.json",
+        "scope": "T4-balance",
+        "message": "Lesen T4: balance Ja/Nein = 2/5. Se esperan 3–4 Ja y 3–4 Nein."
+      }
+    ],
+    "CHK-9": [
+      {
+        "id": "CHK-9",
+        "severity": "INFO",
+        "file": "de_B1.json",
+        "scope": "lesen-1",
+        "message": "lesen-1: el examen oficial incluye un ítem \"Beispiel (0)\" resuelto. El modelo de datos no lo representa."
+      },
+      {
+        "id": "CHK-9",
+        "severity": "INFO",
+        "file": "de_B1.json",
+        "scope": "lesen-4",
+        "message": "lesen-4: el examen oficial incluye un ítem \"Beispiel (0)\" resuelto. El modelo de datos no lo representa."
+      },
+      {
+        "id": "CHK-9",
+        "severity": "INFO",
+        "file": "de_B1.json",
+        "scope": "horen-3",
+        "message": "horen-3: el examen oficial incluye un ítem \"Beispiel (0)\" resuelto. El modelo de datos no lo representa."
+      },
+      {
+        "id": "CHK-9",
+        "severity": "INFO",
+        "file": "de_B1.json",
+        "scope": "horen-4",
+        "message": "horen-4: el examen oficial incluye un ítem \"Beispiel (0)\" resuelto. El modelo de datos no lo representa."
+      },
+      {
+        "id": "CHK-9",
+        "severity": "INFO",
+        "file": "de_B1.json",
+        "scope": "lesen-1",
+        "message": "lesen-1: el examen oficial incluye un ítem \"Beispiel (0)\" resuelto. El modelo de datos no lo representa."
+      },
+      {
+        "id": "CHK-9",
+        "severity": "INFO",
+        "file": "de_B1.json",
+        "scope": "lesen-4",
+        "message": "lesen-4: el examen oficial incluye un ítem \"Beispiel (0)\" resuelto. El modelo de datos no lo representa."
+      },
+      {
+        "id": "CHK-9",
+        "severity": "INFO",
+        "file": "de_B1.json",
+        "scope": "horen-3",
+        "message": "horen-3: el examen oficial incluye un ítem \"Beispiel (0)\" resuelto. El modelo de datos no lo representa."
+      },
+      {
+        "id": "CHK-9",
+        "severity": "INFO",
+        "file": "de_B1.json",
+        "scope": "horen-4",
+        "message": "horen-4: el examen oficial incluye un ítem \"Beispiel (0)\" resuelto. El modelo de datos no lo representa."
+      },
+      {
+        "id": "CHK-9",
+        "severity": "INFO",
+        "file": "de_B1.json",
+        "scope": "lesen-1",
+        "message": "lesen-1: el examen oficial incluye un ítem \"Beispiel (0)\" resuelto. El modelo de datos no lo representa."
+      },
+      {
+        "id": "CHK-9",
+        "severity": "INFO",
+        "file": "de_B1.json",
+        "scope": "lesen-4",
+        "message": "lesen-4: el examen oficial incluye un ítem \"Beispiel (0)\" resuelto. El modelo de datos no lo representa."
+      },
+      {
+        "id": "CHK-9",
+        "severity": "INFO",
+        "file": "de_B1.json",
+        "scope": "horen-3",
+        "message": "horen-3: el examen oficial incluye un ítem \"Beispiel (0)\" resuelto. El modelo de datos no lo representa."
+      },
+      {
+        "id": "CHK-9",
+        "severity": "INFO",
+        "file": "de_B1.json",
+        "scope": "horen-4",
+        "message": "horen-4: el examen oficial incluye un ítem \"Beispiel (0)\" resuelto. El modelo de datos no lo representa."
+      }
+    ],
+    "CHK-10": [
+      {
+        "id": "CHK-10",
+        "severity": "MINOR",
+        "file": "de_B1.json",
+        "scope": "ql_gen-q-1-4076d50c-2",
+        "message": "lesen T1: 1 enunciado con palabra de alcance («immer») — ok si no predice la respuesta."
+      },
+      {
+        "id": "CHK-10",
+        "severity": "IMPORTANT",
+        "file": "de_B1.json",
+        "scope": "ql_gen-q-1-5521-4",
+        "message": "lesen T1: 3/6 enunciados con palabra de alcance (sobre-uso, adivinable)."
+      }
+    ],
+    "CHK-13": [
+      {
+        "id": "CHK-13",
+        "severity": "IMPORTANT",
+        "file": "de_B1.json",
+        "scope": "horen-1",
+        "message": "horen-1: MC no usa la(s) letra(s) c en ningún ítem."
+      },
+      {
+        "id": "CHK-13",
+        "severity": "IMPORTANT",
+        "file": "de_B1.json",
+        "scope": "horen-1",
+        "message": "horen-1: una letra MC supera el 55% (60%)."
+      },
+      {
+        "id": "CHK-13",
+        "severity": "IMPORTANT",
+        "file": "de_B1.json",
+        "scope": "horen-1",
+        "message": "horen-1: una letra MC supera el 55% (60%)."
+      }
+    ],
+    "CHK-17": [
+      {
+        "id": "CHK-17",
+        "severity": "IMPORTANT",
+        "file": "de_B1.json",
+        "scope": "lesen-3",
+        "message": "L3 usa opciones por ítem (MCQ-style). El formato oficial Goethe usa una lista compartida A-J de anuncios. Revisar si el renderizador expone un anunciatario o múltiples preguntas independientes."
+      },
+      {
+        "id": "CHK-17",
+        "severity": "IMPORTANT",
+        "file": "de_B1.json",
+        "scope": "lesen-3",
+        "message": "L3 usa opciones por ítem (MCQ-style). El formato oficial Goethe usa una lista compartida A-J de anuncios. Revisar si el renderizador expone un anunciatario o múltiples preguntas independientes."
+      },
+      {
+        "id": "CHK-17",
+        "severity": "IMPORTANT",
+        "file": "de_B1.json",
+        "scope": "lesen-3",
+        "message": "L3 usa opciones por ítem (MCQ-style). El formato oficial Goethe usa una lista compartida A-J de anuncios. Revisar si el renderizador expone un anunciatario o múltiples preguntas independientes."
+      }
+    ],
+    "CHK-18": [
+      {
+        "id": "CHK-18",
+        "severity": "IMPORTANT",
+        "file": "de_B1.json",
+        "scope": "ql_gen-q-1-4076d50c-6",
+        "message": "Explanation demasiado corta (8 palabras): \"Es ist eine tolle Unterstützung für ihr Wohlbefinden.\". Mínimo: 10 para tipo richtig_falsch."
+      },
+      {
+        "id": "CHK-18",
+        "severity": "IMPORTANT",
+        "file": "de_B1.json",
+        "scope": "ql_gen-q-1-4076d50c-3",
+        "message": "Explanation demasiado corta (5 palabras): \"Sie hat interessante Leute kennengelernt.\". Mínimo: 10 para tipo richtig_falsch."
+      },
+      {
+        "id": "CHK-18",
+        "severity": "IMPORTANT",
+        "file": "de_B1.json",
+        "scope": "ql_gen-q-1-4076d50c-1",
+        "message": "Explanation demasiado corta (7 palabras): \"Sie wollte mehr für die Gemeinschaft tun.\". Mínimo: 10 para tipo richtig_falsch."
+      },
+      {
+        "id": "CHK-18",
+        "severity": "IMPORTANT",
+        "file": "de_B1.json",
+        "scope": "ql_gen-q-h1-2290-s4-q2",
+        "message": "Explanation demasiado corta (5 palabras): \"Die Anmeldefrist endet am Freitag.\". Mínimo: 10 para tipo multiple_choice."
+      },
+      {
+        "id": "CHK-18",
+        "severity": "IMPORTANT",
+        "file": "de_B1.json",
+        "scope": "ql_gen-q-h1-2290-s4-q1",
+        "message": "Explanation demasiado corta (6 palabras): \"Alle Einnahmen unterstützen ein lokales Umweltprojekt.\". Mínimo: 10 para tipo richtig_falsch."
+      },
+      {
+        "id": "CHK-18",
+        "severity": "IMPORTANT",
+        "file": "de_B1.json",
+        "scope": "ql_gen-q-h1-5522-s4-q2",
+        "message": "Explanation demasiado corta (7 palabras): \"Die Treffen finden im nahegelegenen Park statt.\". Mínimo: 10 para tipo multiple_choice."
+      },
+      {
+        "id": "CHK-18",
+        "severity": "IMPORTANT",
+        "file": "de_B1.json",
+        "scope": "ql_gen-q-h1-5522-s4-q1",
+        "message": "Explanation demasiado corta (7 palabras): \"Es sind Anfänger ebenso willkommen wie Profis.\". Mínimo: 10 para tipo richtig_falsch."
+      },
+      {
+        "id": "CHK-18",
+        "severity": "IMPORTANT",
+        "file": "de_B1.json",
+        "scope": "ql_gen-q-h3-h4d2-4",
+        "message": "Explanation demasiado corta (6 palabras): \"Max sagt: 'Ich helfe dir gerne!'\". Mínimo: 10 para tipo richtig_falsch."
+      },
+      {
+        "id": "CHK-18",
+        "severity": "IMPORTANT",
+        "file": "de_B1.json",
+        "scope": "ql_gen-q-1-5521-4",
+        "message": "Explanation demasiado corta (8 palabras): \"Bei starkem Regen nutzt die Person die Bahn.\". Mínimo: 10 para tipo richtig_falsch."
+      },
+      {
+        "id": "CHK-18",
+        "severity": "IMPORTANT",
+        "file": "de_B1.json",
+        "scope": "ql_gen-q-1-5521-3",
+        "message": "Explanation demasiado corta (7 palabras): \"Sie spart Geld für Benzin und Parkplätze.\". Mínimo: 10 para tipo richtig_falsch."
+      },
+      {
+        "id": "CHK-18",
+        "severity": "IMPORTANT",
+        "file": "de_B1.json",
+        "scope": "ql_gen-q-1-5521-2",
+        "message": "Explanation demasiado corta (7 palabras): \"Die Kollegin hält die Entscheidung für verrückt.\". Mínimo: 10 para tipo richtig_falsch."
+      },
+      {
+        "id": "CHK-18",
+        "severity": "IMPORTANT",
+        "file": "de_B1.json",
+        "scope": "ql_gen-q-1-5521-5",
+        "message": "Explanation demasiado corta (8 palabras): \"Schöne Gebäude inspirieren die Person bei der Wohnungsgestal\". Mínimo: 10 para tipo richtig_falsch."
+      },
+      {
+        "id": "CHK-18",
+        "severity": "IMPORTANT",
+        "file": "de_B1.json",
+        "scope": "ql_gen-q-2-4afce3fe-4",
+        "message": "Explanation demasiado corta (9 palabras): \"Bibliotheken bieten Computer, Räume für Kurse und sind Treff\". Mínimo: 10 para tipo multiple_choice."
+      },
+      {
+        "id": "CHK-18",
+        "severity": "IMPORTANT",
+        "file": "de_B1.json",
+        "scope": "ql_gen-q-2-4afce3fe-2",
+        "message": "Explanation demasiado corta (9 palabras): \"Familien mit Kindern und ältere Menschen nutzen die Gärten.\". Mínimo: 10 para tipo multiple_choice."
+      },
+      {
+        "id": "CHK-18",
+        "severity": "IMPORTANT",
+        "file": "de_B1.json",
+        "scope": "ql_gen-q-2-4afce3fe-5",
+        "message": "Explanation demasiado corta (7 palabras): \"Ein Bericht zeigt, dass die Besucherzahlen steigen.\". Mínimo: 10 para tipo multiple_choice."
+      },
+      {
+        "id": "CHK-18",
+        "severity": "IMPORTANT",
+        "file": "de_B1.json",
+        "scope": "ql_gen-q-2-4afce3fe-6",
+        "message": "Explanation demasiado corta (8 palabras): \"Ein Projekt bietet Hilfe bei der Jobsuche an.\". Mínimo: 10 para tipo multiple_choice."
+      },
+      {
+        "id": "CHK-18",
+        "severity": "IMPORTANT",
+        "file": "de_B1.json",
+        "scope": "ql_gen-q-h1-5522-s1-q2",
+        "message": "Explanation demasiado corta (8 palabras): \"Die Medien sollen in den Briefkasten eingeworfen werden.\". Mínimo: 10 para tipo multiple_choice."
+      },
+      {
+        "id": "CHK-18",
+        "severity": "IMPORTANT",
+        "file": "de_B1.json",
+        "scope": "ql_gen-q-h1-2290-s3-q1",
+        "message": "Explanation demasiado corta (8 palabras): \"Der Terminkalender ist diese Woche schon vollständig belegt.\". Mínimo: 10 para tipo richtig_falsch."
+      },
+      {
+        "id": "CHK-18",
+        "severity": "IMPORTANT",
+        "file": "de_B1.json",
+        "scope": "ql_gen-q-1-9b370fcf-2",
+        "message": "Explanation demasiado corta (8 palabras): \"Sie beantwortet Fragen zu Ämtern, Kursen oder Freizeitaktivi\". Mínimo: 10 para tipo richtig_falsch."
+      },
+      {
+        "id": "CHK-18",
+        "severity": "IMPORTANT",
+        "file": "de_B1.json",
+        "scope": "ql_gen-q-2-cf4c-5",
+        "message": "Explanation demasiado corta (9 palabras): \"Die Organisation erlaubt es, die Termine selbst zu wählen.\". Mínimo: 10 para tipo multiple_choice."
+      },
+      {
+        "id": "CHK-18",
+        "severity": "IMPORTANT",
+        "file": "de_B1.json",
+        "scope": "ql_gen-q-2-cf4c-6",
+        "message": "Explanation demasiado corta (9 palabras): \"Viele finden heute schneller einen Job dank digitaler Kenntn\". Mínimo: 10 para tipo multiple_choice."
+      },
+      {
+        "id": "CHK-18",
+        "severity": "IMPORTANT",
+        "file": "de_B1.json",
+        "scope": "ql_gen-q-2-cf4c-2",
+        "message": "Explanation demasiado corta (8 palabras): \"Es gibt bisher zu wenig Wege für Fahrräder.\". Mínimo: 10 para tipo multiple_choice."
+      },
+      {
+        "id": "CHK-18",
+        "severity": "IMPORTANT",
+        "file": "de_B1.json",
+        "scope": "ql_gen-q-2-cf4c-3",
+        "message": "Explanation demasiado corta (7 palabras): \"Es erhöht die Lebensqualität der Anwohner deutlich.\". Mínimo: 10 para tipo multiple_choice."
+      },
+      {
+        "id": "CHK-18",
+        "severity": "IMPORTANT",
+        "file": "de_B1.json",
+        "scope": "ql_gen-q-2-cf4c-4",
+        "message": "Explanation demasiado corta (9 palabras): \"Sie besuchen Kurse, um ihren beruflichen Status zu sichern.\". Mínimo: 10 para tipo multiple_choice."
+      },
+      {
+        "id": "CHK-18",
+        "severity": "IMPORTANT",
+        "file": "de_B1.json",
+        "scope": "ql_gen-q-3-f1pb5l-6",
+        "message": "Explanation posiblemente no está en alemán: \"Tastenfee gibt Klavierunterricht....\""
+      },
+      {
+        "id": "CHK-18",
+        "severity": "IMPORTANT",
+        "file": "de_B1.json",
+        "scope": "ql_gen-q-5-64b1360b-2",
+        "message": "Explanation demasiado corta (9 palabras): \"Ohne Abmeldung kostet die Nichtteilnahme 15 Euro pro Stunde.\". Mínimo: 10 para tipo multiple_choice."
+      },
+      {
+        "id": "CHK-18",
+        "severity": "IMPORTANT",
+        "file": "de_B1.json",
+        "scope": "ql_gen-q-h1-2290-s5-q2",
+        "message": "Explanation demasiado corta (8 palabras): \"Die Dozentin lädt am Mittwoch zur Sprechstunde ein.\". Mínimo: 10 para tipo multiple_choice."
+      },
+      {
+        "id": "CHK-18",
+        "severity": "IMPORTANT",
+        "file": "de_B1.json",
+        "scope": "ql_gen-q-h1-2290-s5-q1",
+        "message": "Explanation demasiado corta (8 palabras): \"Die Ergebnisse sind aktuell auf dem Portal verfügbar.\". Mínimo: 10 para tipo richtig_falsch."
+      },
+      {
+        "id": "CHK-18",
+        "severity": "IMPORTANT",
+        "file": "de_B1.json",
+        "scope": "ql_gen-q-h2-430e5562-q1",
+        "message": "Explanation demasiado corta (9 palabras): \"Der Sprecher stellt Gemeinschaftsgärten und ihre positiven A\". Mínimo: 10 para tipo multiple_choice."
+      }
+    ]
+  },
+  "itemsWithIssues": [
+    {
+      "examIdx": 1,
+      "module": "?",
+      "teil": 1,
+      "id": "ql_gen-q-1-4076d50c-2",
+      "type": "richtig_falsch",
+      "question": "Die Gestaltung des Areals war immer ganz unkompliziert.",
+      "correct": "Falsch",
+      "explanation": "Die Planung war am Anfang sehr aufwendig und musste präzise organisiert werden.",
+      "options": []
+    },
+    {
+      "examIdx": 1,
+      "module": "?",
+      "teil": 1,
+      "id": "ql_gen-q-1-4076d50c-6",
+      "type": "richtig_falsch",
+      "question": "Die Mitarbeit an dem Vorhaben fördert ihr persönliches Wohlergehen.",
+      "correct": "Richtig",
+      "explanation": "Es ist eine tolle Unterstützung für ihr Wohlbefinden.",
+      "options": []
+    },
+    {
+      "examIdx": 1,
+      "module": "?",
+      "teil": 1,
+      "id": "ql_gen-q-1-4076d50c-3",
+      "type": "richtig_falsch",
+      "question": "Sie hat durch die ehrenamtliche Tätigkeit neue Bekanntschaften gemacht.",
+      "correct": "Richtig",
+      "explanation": "Sie hat interessante Leute kennengelernt.",
+      "options": []
+    },
+    {
+      "examIdx": 1,
+      "module": "?",
+      "teil": 1,
+      "id": "ql_gen-q-1-4076d50c-1",
+      "type": "richtig_falsch",
+      "question": "Die Verfasserin wünschte sich, sich stärker im Umfeld zu engagieren.",
+      "correct": "Richtig",
+      "explanation": "Sie wollte mehr für die Gemeinschaft tun.",
+      "options": []
+    },
+    {
+      "examIdx": 1,
+      "module": "?",
+      "teil": 4,
+      "id": "ql_gen-q-4-298a9eab-7",
+      "type": "ja_nein",
+      "question": "Ist David für den Vorschlag?",
+      "correct": "Nein",
+      "explanation": "David ist nicht wirklich dafür wegen der Parkplatzprobleme und des zusätzlichen Verkehrs, obwohl er den Vorteil für die Jugend versteht.",
+      "options": [
+        "a) Ja",
+        "b) Nein"
+      ]
+    },
+    {
+      "examIdx": 1,
+      "module": "?",
+      "teil": 1,
+      "id": "ql_gen-q-h1-2290-s4-q2",
+      "type": "multiple_choice",
+      "question": "Bis wann können sich Verkäufer anmelden?",
+      "correct": "a",
+      "explanation": "Die Anmeldefrist endet am Freitag.",
+      "options": [
+        "a) Bis zum nächsten Freitag",
+        "b) Bis zum Tag des Marktes",
+        "c) Bis morgen Mittag"
+      ]
+    },
+    {
+      "examIdx": 1,
+      "module": "?",
+      "teil": 1,
+      "id": "ql_gen-q-h1-2290-s4-q1",
+      "type": "richtig_falsch",
+      "question": "Das gesammelte Geld wird für ökologische Projekte verwendet.",
+      "correct": "Richtig",
+      "explanation": "Alle Einnahmen unterstützen ein lokales Umweltprojekt.",
+      "options": []
+    },
+    {
+      "examIdx": 1,
+      "module": "?",
+      "teil": 1,
+      "id": "ql_gen-q-h1-5522-s4-q2",
+      "type": "multiple_choice",
+      "question": "Wo finden die Treffen der Fitnessgruppe statt?",
+      "correct": "a",
+      "explanation": "Die Treffen finden im nahegelegenen Park statt.",
+      "options": [
+        "a) Im Park in der Nähe",
+        "b) Vor dem Vereinsheim",
+        "c) In der Turnhalle"
+      ]
+    },
+    {
+      "examIdx": 1,
+      "module": "?",
+      "teil": 1,
+      "id": "ql_gen-q-h1-5522-s4-q1",
+      "type": "richtig_falsch",
+      "question": "Nur erfahrene Sportler dürfen am Training teilnehmen.",
+      "correct": "Falsch",
+      "explanation": "Es sind Anfänger ebenso willkommen wie Profis.",
+      "options": []
+    },
+    {
+      "examIdx": 1,
+      "module": "?",
+      "teil": 3,
+      "id": "ql_gen-q-h3-h4d2-4",
+      "type": "richtig_falsch",
+      "question": "Max bietet Lena seine Unterstützung an, falls sie Hilfe benötigt.",
+      "correct": "Richtig",
+      "explanation": "Max sagt: 'Ich helfe dir gerne!'",
+      "options": []
+    },
+    {
+      "examIdx": 2,
+      "module": "?",
+      "teil": 1,
+      "id": "ql_gen-q-1-5521-4",
+      "type": "richtig_falsch",
+      "question": "Der Verfasser ist bei der Wahl seines Verkehrsmittels immer komplett unflexibel.",
+      "correct": "Falsch",
+      "explanation": "Bei starkem Regen nutzt die Person die Bahn.",
+      "options": []
+    },
+    {
+      "examIdx": 2,
+      "module": "?",
+      "teil": 1,
+      "id": "ql_gen-q-1-5521-3",
+      "type": "richtig_falsch",
+      "question": "Die neue Transportmethode hilft ihr dabei, finanzielle Kosten zu reduzieren.",
+      "correct": "Richtig",
+      "explanation": "Sie spart Geld für Benzin und Parkplätze.",
+      "options": []
+    },
+    {
+      "examIdx": 2,
+      "module": "?",
+      "teil": 1,
+      "id": "ql_gen-q-1-5521-2",
+      "type": "richtig_falsch",
+      "question": "Alle Leute in ihrem Umfeld unterstützen ihre Entscheidung, mit dem Fahrrad zu pendeln.",
+      "correct": "Falsch",
+      "explanation": "Die Kollegin hält die Entscheidung für verrückt.",
+      "options": []
+    },
+    {
+      "examIdx": 2,
+      "module": "?",
+      "teil": 1,
+      "id": "ql_gen-q-1-5521-5",
+      "type": "richtig_falsch",
+      "question": "Die Person achtet in ihrem täglichen Umfeld auf optische Gestaltungselemente.",
+      "correct": "Richtig",
+      "explanation": "Schöne Gebäude inspirieren die Person bei der Wohnungsgestaltung.",
+      "options": []
+    },
+    {
+      "examIdx": 2,
+      "module": "?",
+      "teil": 2,
+      "id": "ql_gen-q-2-4afce3fe-4",
+      "type": "multiple_choice",
+      "question": "Welchen Zweck erfüllen Bibliotheken in vielen Gebieten heute noch?",
+      "correct": "b",
+      "explanation": "Bibliotheken bieten Computer, Räume für Kurse und sind Treffpunkte.",
+      "options": [
+        "a) Sie dienen ausschließlich dem Ausleihen von Büchern.",
+        "b) Sie bieten Kurse, Internetzugang und Treffpunkte an.",
+        "c) Sie sind nur für junge Leute interessant."
+      ]
+    },
+    {
+      "examIdx": 2,
+      "module": "?",
+      "teil": 2,
+      "id": "ql_gen-q-2-4afce3fe-2",
+      "type": "multiple_choice",
+      "question": "Wer profitiert laut Text besonders von den Gärten?",
+      "correct": "c",
+      "explanation": "Familien mit Kindern und ältere Menschen nutzen die Gärten.",
+      "options": [
+        "a) Nur Erwachsene ohne Familie.",
+        "b) Firmen, die dort Gemüse verkaufen.",
+        "c) Familien mit Kindern und ältere Personen."
+      ]
+    },
+    {
+      "examIdx": 2,
+      "module": "?",
+      "teil": 2,
+      "id": "ql_gen-q-2-4afce3fe-5",
+      "type": "multiple_choice",
+      "question": "Was hat sich laut Bericht in den modernen Bibliotheken verändert?",
+      "correct": "b",
+      "explanation": "Ein Bericht zeigt, dass die Besucherzahlen steigen.",
+      "options": [
+        "a) Es gibt weniger Bücher als früher.",
+        "b) Die Zahl der Menschen, die sie besuchen, hat zugenommen.",
+        "c) Nur noch Kinder dürfen die Angebote nutzen."
+      ]
+    },
+    {
+      "examIdx": 2,
+      "module": "?",
+      "teil": 2,
+      "id": "ql_gen-q-2-4afce3fe-6",
+      "type": "multiple_choice",
+      "question": "Wofür engagieren sich Bibliotheken neben Büchern und Kursen?",
+      "correct": "a",
+      "explanation": "Ein Projekt bietet Hilfe bei der Jobsuche an.",
+      "options": [
+        "a) Sie helfen Menschen beim Finden neuer Arbeitsstellen.",
+        "b) Sie verkaufen teure Kunstwerke.",
+        "c) Sie bieten nur Bücher in Fremdsprachen an."
+      ]
+    },
+    {
+      "examIdx": 2,
+      "module": "?",
+      "teil": 4,
+      "id": "ql_gen-q-4-92df3345-2",
+      "type": "ja_nein",
+      "question": "Ist Max für den Vorschlag?",
+      "correct": "Nein",
+      "explanation": "Er ist gegen den Plan und schlägt andere Investitionen vor.",
+      "options": [
+        "a) Ja",
+        "b) Nein"
+      ]
+    },
+    {
+      "examIdx": 2,
+      "module": "?",
+      "teil": 1,
+      "id": "ql_gen-q-h1-5522-s1-q2",
+      "type": "multiple_choice",
+      "question": "Was sollen Leser mit ausgeliehenen Büchern tun?",
+      "correct": "b",
+      "explanation": "Die Medien sollen in den Briefkasten eingeworfen werden.",
+      "options": [
+        "a) Den Kasten am Eingang nutzen",
+        "b) Sie an der Zentrale abgeben",
+        "c) Sie zu Hause behalten"
+      ]
+    },
+    {
+      "examIdx": 2,
+      "module": "?",
+      "teil": 1,
+      "id": "ql_gen-q-h1-2290-s3-q1",
+      "type": "richtig_falsch",
+      "question": "Die Handwerker haben in dieser Woche noch Zeit für einen Termin.",
+      "correct": "Falsch",
+      "explanation": "Der Terminkalender ist diese Woche schon vollständig belegt.",
+      "options": []
+    },
+    {
+      "examIdx": 3,
+      "module": "?",
+      "teil": 1,
+      "id": "ql_gen-q-1-9b370fcf-2",
+      "type": "richtig_falsch",
+      "question": "Sie beantwortet telefonisch nur Anfragen zu Freizeitangeboten.",
+      "correct": "Falsch",
+      "explanation": "Sie beantwortet Fragen zu Ämtern, Kursen oder Freizeitaktivitäten.",
+      "options": []
+    },
+    {
+      "examIdx": 3,
+      "module": "?",
+      "teil": 2,
+      "id": "ql_gen-q-2-cf4c-5",
+      "type": "multiple_choice",
+      "question": "Wie wird der Unterricht im Kurs gestaltet?",
+      "correct": "c",
+      "explanation": "Die Organisation erlaubt es, die Termine selbst zu wählen.",
+      "options": [
+        "a) Alle Teilnehmer müssen immer genau gleich schnell lernen.",
+        "b) Der Lehrer bestimmt die Zeit ohne Absprache.",
+        "c) Man kann die Kurstermine flexibel festlegen."
+      ]
+    },
+    {
+      "examIdx": 3,
+      "module": "?",
+      "teil": 2,
+      "id": "ql_gen-q-2-cf4c-6",
+      "type": "multiple_choice",
+      "question": "Was berichten frühere Kursteilnehmer?",
+      "correct": "b",
+      "explanation": "Viele finden heute schneller einen Job dank digitaler Kenntnisse.",
+      "options": [
+        "a) Die Lerninhalte waren für den Alltag nicht nützlich.",
+        "b) Sie haben dank der neuen Fähigkeiten schnell Arbeit gefunden.",
+        "c) Der Weg zum Kurs war leider immer zu kompliziert."
+      ]
+    },
+    {
+      "examIdx": 3,
+      "module": "?",
+      "teil": 2,
+      "id": "ql_gen-q-2-cf4c-2",
+      "type": "multiple_choice",
+      "question": "Was kritisiert der Text bezüglich der Verkehrsnetz und Versorgungseinrichtungen?",
+      "correct": "b",
+      "explanation": "Es gibt bisher zu wenig Wege für Fahrräder.",
+      "options": [
+        "a) Es gibt zu viele Wege für Fußgänger.",
+        "b) Die Straßen für Radfahrer sind nicht ausreichend vorhanden.",
+        "c) Die Verwaltung verbietet das Radfahren im Zentrum."
+      ]
+    },
+    {
+      "examIdx": 3,
+      "module": "?",
+      "teil": 2,
+      "id": "ql_gen-q-2-cf4c-3",
+      "type": "multiple_choice",
+      "question": "Warum ist das Projekt bei den Bewohnern beliebt?",
+      "correct": "a",
+      "explanation": "Es erhöht die Lebensqualität der Anwohner deutlich.",
+      "options": [
+        "a) Weil es die Umgebung schöner macht und die Qualität verbessert.",
+        "b) Weil jeder Teilnehmer ein kostenloses Fahrrad bekommt.",
+        "c) Weil es das Parken von Autos in der Stadt vereinfacht."
+      ]
+    },
+    {
+      "examIdx": 3,
+      "module": "?",
+      "teil": 2,
+      "id": "ql_gen-q-2-cf4c-4",
+      "type": "multiple_choice",
+      "question": "Was ist das Ziel der Teilnehmer in den digitalen Kursen?",
+      "correct": "a",
+      "explanation": "Sie besuchen Kurse, um ihren beruflichen Status zu sichern.",
+      "options": [
+        "a) Sie wollen ihren beruflichen Status verbessern.",
+        "b) Sie möchten nur ihre Freizeit im Zentrum verbringen.",
+        "c) Sie wollen lernen, wie man moderne Computer baut."
+      ]
+    },
+    {
+      "examIdx": 3,
+      "module": "?",
+      "teil": 3,
+      "id": "ql_gen-q-3-f1pb5l-6",
+      "type": "matching",
+      "question": "Die kleine Emma soll ein Tasteninstrument erlernen.",
+      "correct": "A",
+      "explanation": "Tastenfee gibt Klavierunterricht.",
+      "options": [
+        "A) Tastenfee — Unterricht am Klavier für Kinder und Erwachsene, Termine am Nachmittag und Abend.",
+        "B) Tierfreund — Betreuung und Pflege Ihres Hundes im Urlaub, großer Auslauf, 18 Euro pro Tag.",
+        "C) WohnVermitt — Wir vermitteln kleine Wohnungen in Uninähe, faire Provision, kurzfristig.",
+        "D) AutoMedic — Wir reparieren Pannen und tauschen Bremsen am Wagen, Termin per Telefon.",
+        "E) Frischeglanz — Pflege und Reinigung von Fenstern und Treppenhaus, Sa nach Absprache.",
+        "F) Lernbar — Nachhilfe in Italienisch für alle Stufen, Mi ab 16 Uhr, kleine Gruppen.",
+        "G) TragHilfe — Wir packen bei Ihrem Umzug an, auch sonntags, ab 40 Euro pro Stunde.",
+        "H) RollerHilfe — Wir reparieren E-Scooter und Roller aller Marken, Abgabe Di–Sa bis 17 Uhr.",
+        "I) MotoFix — Wir reparieren Motorräder und wechseln Bremsen, Werkstatt zentral, Mo–Fr 9–18 Uhr.",
+        "J) Sprachbrücke — Nachhilfe in Spanisch für alle Stufen, online, Di und Do 17–19 Uhr."
+      ]
+    },
+    {
+      "examIdx": 3,
+      "module": "?",
+      "teil": 5,
+      "id": "ql_gen-q-5-64b1360b-2",
+      "type": "multiple_choice",
+      "question": "Was gilt, wenn man die Pflichtstunden nicht macht und sich nicht rechtzeitig abmeldet?",
+      "correct": "b",
+      "explanation": "Ohne Abmeldung kostet die Nichtteilnahme 15 Euro pro Stunde.",
+      "options": [
+        "a) Man muss die Stunden später nachholen.",
+        "b) Für jede nicht geleistete Arbeitsstunde ist ein Betrag zu zahlen.",
+        "c) Man darf in diesem Jahr keine Veranstaltungen besuchen."
+      ]
+    },
+    {
+      "examIdx": 3,
+      "module": "?",
+      "teil": 1,
+      "id": "ql_gen-q-h1-2290-s5-q2",
+      "type": "multiple_choice",
+      "question": "Was können Prüflinge bei Fragen zu den Ergebnissen tun?",
+      "correct": "b",
+      "explanation": "Die Dozentin lädt am Mittwoch zur Sprechstunde ein.",
+      "options": [
+        "a) Eine E-Mail schreiben",
+        "b) Zur Sprechstunde kommen",
+        "c) Das Sekretariat anrufen"
+      ]
+    },
+    {
+      "examIdx": 3,
+      "module": "?",
+      "teil": 1,
+      "id": "ql_gen-q-h1-2290-s5-q1",
+      "type": "richtig_falsch",
+      "question": "Die Noten können bereits online eingesehen werden.",
+      "correct": "Richtig",
+      "explanation": "Die Ergebnisse sind aktuell auf dem Portal verfügbar.",
+      "options": []
+    },
+    {
+      "examIdx": 3,
+      "module": "?",
+      "teil": 2,
+      "id": "ql_gen-q-h2-430e5562-q1",
+      "type": "multiple_choice",
+      "question": "Was ist das Hauptthema des Vortrags?",
+      "correct": "b",
+      "explanation": "Der Sprecher stellt Gemeinschaftsgärten und ihre positiven Aspekte vor.",
+      "options": [
+        "a) Tipps für den Anbau von Bio-Gemüse zu Hause.",
+        "b) Die Vorteile und die Idee von Gemeinschaftsgärten.",
+        "c) Probleme bei der Versorgung mit Lebensmitteln in der Stadt."
+      ]
+    }
+  ]
+}

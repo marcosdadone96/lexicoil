@@ -20,7 +20,8 @@ function formatGoalExamDate(goal){
   if(!goal?.examDate)return'No exam date set';
   const d=new Date(goal.examDate+'T00:00:00');
   if(isNaN(d.getTime()))return'No exam date set';
-  return'Exam date: '+d.toLocaleDateString(undefined,{day:'numeric',month:'short',year:'numeric'});
+  const fmt=typeof formatAppDate==='function'?formatAppDate(d):d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+  return'Exam date: '+fmt;
 }
 function getSkillPerformance(goal){
   if(typeof AnalyticsStore!=='undefined'){
@@ -36,11 +37,17 @@ function getSkillPerformance(goal){
   const sums={listening:[],reading:[],writing:[],speaking:[]};
   const isDE=goal.subject==='de';
   hist.forEach(h=>{
-    const m=h.moduleScores||{};
-    if(m.horen!=null)sums.listening.push(m.horen);
-    if(m.lesen!=null)sums.reading.push(m.lesen);
-    if(m.schreiben!=null)sums.writing.push(m.schreiben);
-    if(m.sprechen!=null)sums.speaking.push(m.sprechen);
+    const passPct=h.passPercentPerModule??60;
+    const mods=typeof ModuleGrading!=='undefined'?ModuleGrading.normalizeModuleResults(h,passPct):null;
+    const m=mods||h.moduleScores||{};
+    if(mods?.horen?.scorePct!=null)sums.listening.push(mods.horen.scorePct);
+    else if(m.horen!=null)sums.listening.push(m.horen);
+    if(mods?.lesen?.scorePct!=null)sums.reading.push(mods.lesen.scorePct);
+    else if(m.lesen!=null)sums.reading.push(m.lesen);
+    if(mods?.schreiben?.scorePct!=null)sums.writing.push(mods.schreiben.scorePct);
+    else if(m.schreiben!=null)sums.writing.push(m.schreiben);
+    if(mods?.sprechen?.scorePct!=null)sums.speaking.push(mods.sprechen.scorePct);
+    else if(m.sprechen!=null)sums.speaking.push(m.sprechen);
   });
   const avg=a=>a.length?Math.round(a.reduce((s,v)=>s+v,0)/a.length):null;
   const labels={listening:isDE?'Listening':'Listening',reading:isDE?'Reading':'Reading',writing:isDE?'Writing':'Writing',speaking:isDE?'Speaking':'Speaking'};
@@ -156,11 +163,28 @@ function renderWsExamsHtml(goal){
   const act=getRecommendedActionForGoal(goal);
   _coachAction=act.run;
   const resume=getResumableSession(goal.id);
-  const resumeHtml=resume?`<div class="ws-resume"><div class="ws-resume-ic">⏸️</div><h3>You have a ${esc(resume.examData?.level||level)} exam in progress</h3><p>Saved in practice mode. Resume where you left off, or discard it and start fresh.</p><div class="ws-resume-actions"><button type="button" class="btn-sm accent" onclick="resumeExamSession()">Resume exam</button><button type="button" class="btn-sm" onclick="discardActiveSession()">Discard</button></div></div>`:'';
+  const resumeMode=resume?normalizeMode(resume.mode):'';
+  const resumeModeLbl=resumeMode==='official'?'official (timed)':'practice';
+  const resumeTimerNote=resumeMode==='official'?' The timer continues from where you left off.':'';
+  const resumeHtml=resume?`<div class="ws-resume"><div class="ws-resume-ic">⏸️</div><h3>Resume exam · ${esc(resume.examData?.level||level)}</h3><p>You have a ${esc(resumeModeLbl)} exam in progress.${resumeTimerNote} Pick up where you left off, or discard it and start a new one.</p><div class="ws-resume-actions"><button type="button" class="btn-sm accent" onclick="resumeExamSession()">Resume exam</button><button type="button" class="btn-sm" onclick="discardActiveSession()">Start new</button></div></div>`:'';
   const persDesc=due>0?'Built around '+due+' due word'+(due===1?'':'s')+'.':deck>0?deck+' words in your deck.':'Save words during practice to unlock.';
+  const persAllowed=typeof isPersonalizedAllowed!=='function'||isPersonalizedAllowed(goal.subject,level);
+  const persCard=persAllowed
+    ?`<button type="button" class="ws-exam-card ws-exam-card--personal" onclick="openExamConfigurator('${gid}')"><span class="ws-exam-card-ic">✦</span><span class="ws-exam-card-title">Personalized</span><span class="ws-exam-card-desc">${esc(persDesc)}</span></button>`
+    :`<div class="ws-exam-card ws-exam-card--personal ws-exam-card--disabled" title="Personalized practice coming soon for this level"><span class="ws-exam-card-ic">✦</span><span class="ws-exam-card-title">Personalized</span><span class="ws-exam-card-desc">Coming soon — use official or practice exams.</span></div>`;
   const coachHtml=typeof MasteryView!=='undefined'
     ?MasteryView.renderRecommendedExamCardHtml(goal,{variant:'workspace',compact:true,showArt:false})
     :renderWsCoachBannerHtml(goal,act,true);
+  const quickAllowed=typeof isQuickModuleAllowed!=='function'||isQuickModuleAllowed(goal.subject,level);
+  const quickHtml=quickAllowed
+    ?`<p class="ws-seclbl">Quick modules</p>
+    <div class="quick-btns" style="margin-bottom:18px">
+      <button class="quick-btn" onclick="startQuickForGoal('${gid}','reading')">Reading</button>
+      <button class="quick-btn" onclick="startQuickForGoal('${gid}','listening')">Listening</button>
+      <button class="quick-btn" onclick="startQuickForGoal('${gid}','writing')">Writing</button>
+      <button class="quick-btn" onclick="startQuickForGoal('${gid}','gapfill')">Speaking prep</button>
+    </div>`
+    :'';
   return`${resumeHtml}
     ${coachHtml}
     <div class="ws-quota quota-bar">
@@ -173,15 +197,9 @@ function renderWsExamsHtml(goal){
     <div class="ws-exam-grid">
       <button type="button" class="ws-exam-card ws-exam-card--official" onclick="startOverviewExam('official')"><span class="ws-exam-card-ic">🏛</span><span class="ws-exam-card-title">Official</span><span class="ws-exam-card-desc">Timed · no translations</span></button>
       <button type="button" class="ws-exam-card ws-exam-card--practice" onclick="startOverviewExam('practice')"><span class="ws-exam-card-ic">📚</span><span class="ws-exam-card-title">Practice</span><span class="ws-exam-card-desc">Translations + save words</span></button>
-      <button type="button" class="ws-exam-card ws-exam-card--personal" onclick="openExamConfigurator('${gid}')"><span class="ws-exam-card-ic">✦</span><span class="ws-exam-card-title">Personalized</span><span class="ws-exam-card-desc">${esc(persDesc)}</span></button>
+      ${persCard}
     </div>
-    <p class="ws-seclbl">Quick modules</p>
-    <div class="quick-btns" style="margin-bottom:18px">
-      <button class="quick-btn" onclick="startQuickForGoal('${gid}','reading')">Reading</button>
-      <button class="quick-btn" onclick="startQuickForGoal('${gid}','listening')">Listening</button>
-      <button class="quick-btn" onclick="startQuickForGoal('${gid}','writing')">Writing</button>
-      <button class="quick-btn" onclick="startQuickForGoal('${gid}','gapfill')">Speaking prep</button>
-    </div>
+    ${quickHtml}
     <p class="ws-seclbl">Recent activity</p>
     ${renderWsRecentActivityHtml(goal)}
     <p class="ws-seclbl">Saved exams</p>
@@ -258,7 +276,11 @@ function renderGoalHistoryHtml(goal){
 function renderWsSavedExams(goal){
   const grid=document.getElementById('wsSavedGrid');
   if(!grid)return;
-  const list=S.savedExams.filter(e=>e.lang===goal.subject&&e.level===goal.level);
+  const list=S.savedExams.filter(e=>{
+    if(e.lang!==goal.subject||e.level!==goal.level)return false;
+    if(e.goalId&&e.goalId!==goal.id)return false;
+    return true;
+  });
   if(!list.length){grid.innerHTML='<div class="hist-empty" style="grid-column:1/-1"><span>📁</span>No saved exams for this goal yet.</div>';return;}
   const auto=list.filter(e=>e.status==='auto');
   const pinned=list.filter(e=>e.status!=='auto');
@@ -271,7 +293,9 @@ function renderWsSavedExams(goal){
     const modeLbl=normalizeMode(e.mode)==='practice'?'Practice':'Official';
     const scoreH=e.score!=null?`<div class="saved-card-score ${e.score>=70?'pass':e.score>=50?'mid':'fail'}">${e.score}%</div>`:'';
     const pinBtn=st==='auto'?`<button class="btn-sm accent" onclick="pinSavedExam(${i})">Save</button>`:'';
-    return `<div class="saved-card${st==='auto'?' saved-card--auto':''}"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px"><div class="saved-card-title">${examFlag(e.lang)} ${esc(e.topic)}</div><span class="saved-src-badge">${srcLbl}</span></div><div class="saved-card-meta">${e.level} · ${modeLbl} · ${st==='auto'?'Generated':'Saved'} ${e.savedAt}</div><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap"><span class="saved-status ${st}">${stLbl}</span>${scoreH}</div><div style="display:flex;gap:6px;flex-wrap:wrap">${pinBtn}<button class="btn-sm" onclick="reviewSavedExam(${i})">Review</button><button class="btn-sm blue" onclick="retakeExam(${i})">↺ Retake</button><button class="btn-sm red" onclick="deleteSaved(${i})">✕</button></div></div>`;
+    const resumeBtn=st==='in_progress'?`<button class="btn-sm accent" onclick="retakeExam(${i},true)">Resume</button>`:'';
+    const retakeLbl=st==='in_progress'?'Start over':'↺ Retake';
+    return `<div class="saved-card${st==='auto'?' saved-card--auto':''}"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px"><div class="saved-card-title">${examFlag(e.lang)} ${esc(e.topic)}</div><span class="saved-src-badge">${srcLbl}</span></div><div class="saved-card-meta">${e.level} · ${modeLbl} · ${st==='auto'?'Generated':'Saved'} ${e.savedAt}</div><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap"><span class="saved-status ${st}">${stLbl}</span>${scoreH}</div><div style="display:flex;gap:6px;flex-wrap:wrap">${pinBtn}${resumeBtn}<button class="btn-sm" onclick="reviewSavedExam(${i})">Review</button><button class="btn-sm blue" onclick="retakeExam(${i})">${retakeLbl}</button><button class="btn-sm red" onclick="deleteSaved(${i})">✕</button></div></div>`;
   };
   let html='';
   if(auto.length){
@@ -316,10 +340,29 @@ async function launchGoalExam(mode,options){
   const opts=options||{};
   let goal=opts.goalId?S.goals.find(g=>g.id===opts.goalId):getActiveGoal();
   if(!goal){showAddGoalWizard();return;}
+  if(typeof LevelAvailability!=='undefined'&&!LevelAvailability.isLevelSelectable(goal.subject,goal.level)){
+    if(typeof openLevelSoonNotify==='function')openLevelSoonNotify(goal.subject,goal.level);
+    else if(typeof lcToast==='function')lcToast('This exam level is not available yet.','warn');
+    return;
+  }
   if(typeof requireProForCombo==='function'&&!requireProForCombo(goal.subject,goal.level))return;
-  if(!canGenerate()){showUpgrade();return;}
+  const canStart=typeof canStartStandardExam==='function'?canStartStandardExam(goal.subject,goal.level):canGenerate();
+  if(!canStart){showUpgrade();return;}
   const m=normalizeMode(mode);
   const run=async()=>{
+    const existing=typeof getResumableSession==='function'?getResumableSession(goal.id):null;
+    if(!opts.forceNew&&existing&&normalizeMode(existing.mode)===m){
+      const hasProgress=Object.keys(existing.answers||{}).length>0
+        ||Object.keys(existing.gapAnswers||{}).some(k=>existing.gapAnswers[k]?.trim())
+        ||(existing.fieldValues&&Object.values(existing.fieldValues).some(v=>String(v||'').trim()));
+      if(hasProgress){
+        if(confirm('You have an exam in progress for this goal.\n\nOK — Resume where you left off\nCancel — Start a new exam (current progress will be discarded)')){
+          resumeExamSession();
+          return;
+        }
+        if(typeof clearResumableExamForGoal==='function')clearResumableExamForGoal(goal.id);
+      }
+    }
     if(m==='official')abortOfficialInProgress();
     S.mode=m;
     S.subject=goal.subject;
@@ -388,6 +431,10 @@ function openGoalWorkspace(id,tab,skipUrl){
 function startQuickForGoal(goalId,mod){
   const goal=S.goals.find(g=>g.id===goalId);
   if(!goal)return;
+  if(typeof isQuickModuleAllowed==='function'&&!isQuickModuleAllowed(goal.subject,goal.level)){
+    lcToast(typeof LevelAvailability!=='undefined'?LevelAvailability.quickModulesUnavailableMessage(goal.subject,goal.level):'Quick modules are not available for this level yet.','warn',7000);
+    return;
+  }
   S.activeGoalId=goal.id;
   syncGoalToProfile(goal);
   S.subject=goal.subject;

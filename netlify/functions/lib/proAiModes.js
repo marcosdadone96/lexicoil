@@ -1,6 +1,7 @@
 'use strict';
 
 const { getQuotaState } = require('./quotaLib.js');
+const { checkActionAccess, feedbackLevelForPlan, isPaidPlan } = require('./actionAccessLib.js');
 
 /** Extract first JSON object from AI text (no logging of content). */
 function extractJsonObject(raw) {
@@ -45,6 +46,35 @@ function certName(lang) {
   return 'Cambridge English';
 }
 
+async function requireActionAccess(event, action) {
+  const state = await getQuotaState(event);
+  if (!state.ok) {
+    if (state.error === 'token_revoked') {
+      return { ok: false, status: 401, error: 'token_revoked' };
+    }
+    return { ok: false, status: 401, error: 'login_required' };
+  }
+  if (!state.authenticated) {
+    return { ok: false, status: 401, error: 'login_required' };
+  }
+  const access = checkActionAccess(state.plan, action);
+  if (!access.ok) {
+    return {
+      ok: false,
+      status: access.error === 'login_required' ? 401 : 403,
+      error: access.error,
+      plan: state.plan,
+    };
+  }
+  return {
+    ok: true,
+    plan: state.plan,
+    feedbackLevel: feedbackLevelForPlan(state.plan),
+    paid: isPaidPlan(state.plan),
+  };
+}
+
+/** @deprecated use requireActionAccess(event, action) */
 async function requireProPlan(event) {
   const state = await getQuotaState(event);
   if (!state.ok) {
@@ -56,10 +86,10 @@ async function requireProPlan(event) {
   if (!state.authenticated) {
     return { ok: false, status: 401, error: 'login_required' };
   }
-  if (state.plan !== 'pro') {
+  if (!isPaidPlan(state.plan)) {
     return { ok: false, status: 403, error: 'pro_only', plan: state.plan };
   }
-  return { ok: true, plan: state.plan };
+  return { ok: true, plan: state.plan, feedbackLevel: 'full', paid: true };
 }
 
 async function callAnthropicJson(apiKey, { model, maxTokens, system, userContent }) {
@@ -93,5 +123,7 @@ module.exports = {
   extractJsonObject,
   certName,
   requireProPlan,
+  requireActionAccess,
+  feedbackLevelForPlan,
   callAnthropicJson,
 };

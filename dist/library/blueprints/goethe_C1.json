@@ -5,6 +5,8 @@
   "level": "C1",
   "certificate": "Goethe-Zertifikat C1",
   "principle": "fixed_structure_dynamic_content",
+  "source": "Goethe-Institut Modellsatz C1 (Lesen 8/7/8/7, Hören 6/9/8/7, Schreiben 2, Sprechen 2)",
+  "structureVersion": 3,
   "difficultyDistribution": {
     "easy": {
       "min": 1,
@@ -25,288 +27,320 @@
   "modules": [
     {
       "id": "lesen",
-      "title": "Leseverstehen",
-      "time": "65 Minuten",
+      "title": "Lesen",
+      "time": "70 Minuten",
+      "maxPoints": 100,
       "parts": [
         {
-          "instruction": "Lesen Sie die Texte und wählen Sie die richtige Antwort.",
           "teil": 1,
-          "slotType": "micro_texts",
-          "label": "Kurze Texte",
-          "questionTypes": [
-            "multiple_choice",
-            "multiple",
-            "richtig_falsch",
-            "true_false"
-          ],
-          "questionsTotal": {
-            "min": 6,
-            "max": 6
+          "label": "Teil 1",
+          "instruction": "Lesen Sie die Texte und bearbeiten Sie die Aufgaben 1.",
+          "wordsPerPassage": {
+            "min": 200,
+            "max": 450
           },
-          "layout": "items",
-          "itemsTotal": 6,
-          "taskFormat": "short_text_mcq"
-        },
-        {
-          "instruction": "Lesen Sie den Text und beantworten Sie die Fragen.",
-          "teil": 2,
-          "slotType": "article",
-          "label": "Längerer Text",
+          "slotType": "article_mcq",
+          "taskFormat": "long_text_mcq",
+          "layout": "passage_questions",
           "questionTypes": [
-            "multiple_choice",
-            "multiple",
-            "richtig_falsch",
-            "true_false"
+            "multiple_choice"
           ],
+          "itemsTotal": 8,
           "questionsTotal": {
             "min": 8,
             "max": 8
+          }
+        },
+        {
+          "teil": 2,
+          "label": "Teil 2",
+          "instruction": "Lesen Sie die Texte und bearbeiten Sie die Aufgaben 2.",
+          "wordsPerPassage": {
+            "min": 200,
+            "max": 450
           },
+          "slotType": "sentence_gap_fill",
+          "taskFormat": "sentence_insertion",
           "layout": "passage_questions",
+          "questionTypes": [
+            "matching"
+          ],
+          "itemsTotal": 7,
+          "questionsTotal": {
+            "min": 7,
+            "max": 7
+          }
+        },
+        {
+          "teil": 3,
+          "label": "Teil 3",
+          "instruction": "Lesen Sie die Texte und bearbeiten Sie die Aufgaben 3.",
+          "wordsPerPassage": {
+            "min": 200,
+            "max": 450
+          },
+          "slotType": "matching",
+          "taskFormat": "matching_headlines",
+          "layout": "items",
+          "questionTypes": [
+            "matching"
+          ],
           "itemsTotal": 8,
-          "taskFormat": "long_text_mcq"
+          "questionsTotal": {
+            "min": 8,
+            "max": 8
+          }
+        },
+        {
+          "teil": 4,
+          "label": "Teil 4",
+          "instruction": "Lesen Sie die Texte und bearbeiten Sie die Aufgaben 4.",
+          "wordsPerPassage": {
+            "min": 200,
+            "max": 450
+          },
+          "slotType": "gap_article",
+          "taskFormat": "gap_fill_reading",
+          "layout": "passage_questions",
+          "questionTypes": [
+            "gap_fill",
+            "multiple_choice"
+          ],
+          "itemsTotal": 7,
+          "questionsTotal": {
+            "min": 7,
+            "max": 7
+          }
         }
       ]
     },
     {
       "id": "horen",
-      "title": "Hörverstehen",
+      "title": "Hören",
       "time": "40 Minuten",
+      "maxPoints": 100,
       "parts": [
         {
-          "instruction": "Hören Sie die Dialoge und beantworten Sie die Fragen.",
           "teil": 1,
-          "slotType": "short_dialogues",
-          "label": "Kurze Dialoge",
+          "label": "Teil 1",
+          "instruction": "Sie hören verschiedene Texte. Bearbeiten Sie die Aufgaben in Teil 1.",
+          "wordsPerTranscript": {
+            "min": 80,
+            "max": 420
+          },
+          "slotType": "short_texts_twice",
+          "taskFormat": "short_texts_rf_mcq",
+          "plays": 2,
+          "layout": "segments",
           "questionTypes": [
-            "multiple_choice",
-            "multiple"
+            "richtig_falsch",
+            "multiple_choice"
           ],
+          "itemsTotal": 6,
           "questionsTotal": {
             "min": 6,
             "max": 6
-          },
-          "layout": "segments",
-          "itemsTotal": 6,
-          "taskFormat": "short_dialogue_mcq"
+          }
         },
         {
-          "instruction": "Hören Sie die Aufnahme und beantworten Sie die Fragen.",
           "teil": 2,
-          "slotType": "long_audio",
-          "label": "Längere Aufnahme",
+          "label": "Teil 2",
+          "instruction": "Sie hören verschiedene Texte. Bearbeiten Sie die Aufgaben in Teil 2.",
+          "wordsPerTranscript": {
+            "min": 80,
+            "max": 420
+          },
+          "slotType": "monologue_once",
+          "taskFormat": "monologue_mcq",
+          "plays": 1,
+          "segmentsTotal": 1,
+          "layout": "segments",
           "questionTypes": [
-            "multiple_choice",
-            "multiple",
-            "richtig_falsch",
-            "true_false"
+            "multiple_choice"
           ],
+          "itemsTotal": 9,
+          "questionsTotal": {
+            "min": 9,
+            "max": 9
+          }
+        },
+        {
+          "teil": 3,
+          "label": "Teil 3",
+          "instruction": "Sie hören verschiedene Texte. Bearbeiten Sie die Aufgaben in Teil 3.",
+          "wordsPerTranscript": {
+            "min": 80,
+            "max": 420
+          },
+          "slotType": "conversation_once",
+          "taskFormat": "informal_conversation_rf",
+          "plays": 1,
+          "segmentsTotal": 1,
+          "layout": "segments",
+          "questionTypes": [
+            "richtig_falsch"
+          ],
+          "itemsTotal": 8,
           "questionsTotal": {
             "min": 8,
             "max": 8
-          },
-          "layout": "segments",
-          "itemsTotal": 8,
-          "taskFormat": "long_listening_mcq"
-        }
-      ]
-    },
-    {
-      "id": "grammatik",
-      "title": "Grammatik / Wortschatz",
-      "time": null,
-      "parts": [
+          }
+        },
         {
-          "instruction": "Ergänzen Sie oder wählen Sie die richtige Antwort.",
-          "teil": 1,
-          "slotType": "grammar_block",
-          "label": "Grammatik",
-          "questionTypes": [
-            "multiple_choice",
-            "multiple",
-            "gap_fill"
-          ],
-          "questionsTotal": {
-            "min": 12,
-            "max": 12
+          "teil": 4,
+          "label": "Teil 4",
+          "instruction": "Sie hören verschiedene Texte. Bearbeiten Sie die Aufgaben in Teil 4.",
+          "wordsPerTranscript": {
+            "min": 80,
+            "max": 420
           },
-          "layout": "questions",
-          "itemsTotal": 12,
-          "taskFormat": "grammar_mcq"
+          "slotType": "discussion_twice",
+          "taskFormat": "discussion_speaker_matching",
+          "plays": 2,
+          "segmentsTotal": 1,
+          "layout": "segments",
+          "questionTypes": [
+            "matching",
+            "multiple_choice"
+          ],
+          "itemsTotal": 7,
+          "questionsTotal": {
+            "min": 7,
+            "max": 7
+          }
         }
       ]
     },
     {
       "id": "schreiben",
       "title": "Schreiben",
-      "time": "60 Minuten",
+      "time": "80 Minuten",
+      "maxPoints": 100,
       "parts": [
         {
-          "instruction": "Schreiben Sie einen Text zu der folgenden Aufgabe.",
           "teil": 1,
           "slotType": "writing_task",
-          "label": "Formular / Kurze Nachricht",
+          "taskFormat": "formal_essay",
+          "label": "Aufgabe 1",
+          "instruction": "Schreiben Sie einen Text zu Aufgabe 1.",
+          "layout": "writing",
           "taskCount": 1,
-          "wordsTarget": {
-            "min": 160,
-            "max": 200
-          },
-          "taskTypes": [
-            "form_fill",
-            "informal_message"
-          ],
-          "questionTypes": [
-            "short_answer"
-          ],
+          "itemsTotal": 1,
           "questionsTotal": {
             "min": 1,
             "max": 1
           },
-          "layout": "writing",
-          "itemsTotal": 1,
-          "taskFormat": "writing_prompt",
+          "questionTypes": [
+            "short_answer"
+          ],
+          "wordsTarget": {
+            "min": 200,
+            "max": 280
+          },
           "wordsPerPassage": {
-            "min": 160,
-            "max": 200
-          }
+            "min": 200,
+            "max": 280
+          },
+          "taskTypes": [
+            "essay",
+            "formal_letter"
+          ],
+          "recommendedMinutes": 40
         },
         {
-          "instruction": "Schreiben Sie einen Text zu der folgenden Aufgabe.",
           "teil": 2,
           "slotType": "writing_task",
-          "label": "E-Mail / Forumbeitrag",
+          "taskFormat": "argumentative_text",
+          "label": "Aufgabe 2",
+          "instruction": "Schreiben Sie einen Text zu Aufgabe 2.",
+          "layout": "writing",
           "taskCount": 1,
-          "wordsTarget": {
-            "min": 160,
-            "max": 200
-          },
-          "taskTypes": [
-            "email",
-            "forum_post"
-          ],
-          "questionTypes": [
-            "short_answer"
-          ],
+          "itemsTotal": 1,
           "questionsTotal": {
             "min": 1,
             "max": 1
           },
-          "layout": "writing",
-          "itemsTotal": 1,
-          "taskFormat": "writing_prompt",
-          "wordsPerPassage": {
-            "min": 160,
-            "max": 200
-          }
-        },
-        {
-          "instruction": "Schreiben Sie einen Text zu der folgenden Aufgabe.",
-          "teil": 3,
-          "slotType": "writing_task",
-          "label": "Argumentativer Text",
-          "taskCount": 1,
-          "wordsTarget": {
-            "min": 160,
-            "max": 200
-          },
-          "taskTypes": [
-            "opinion_email",
-            "argumentative_essay"
-          ],
           "questionTypes": [
             "short_answer"
           ],
-          "questionsTotal": {
-            "min": 1,
-            "max": 1
+          "wordsTarget": {
+            "min": 200,
+            "max": 280
           },
-          "layout": "writing",
-          "itemsTotal": 1,
-          "taskFormat": "writing_prompt",
           "wordsPerPassage": {
-            "min": 160,
-            "max": 200
-          }
+            "min": 200,
+            "max": 280
+          },
+          "taskTypes": [
+            "opinion",
+            "report"
+          ],
+          "recommendedMinutes": 40
         }
       ]
     },
     {
       "id": "sprechen",
       "title": "Sprechen",
-      "time": "15 Minuten",
+      "time": "15 Minuten (15 Minuten Vorbereitung)",
+      "maxPoints": 100,
       "parts": [
         {
-          "instruction": "Bereiten Sie sich auf die mündliche Aufgabe vor.",
           "teil": 1,
           "slotType": "speaking_task",
-          "label": "Sich vorstellen / Fragen beantworten",
+          "taskFormat": "presentation",
+          "label": "Teil 1 — Präsentation",
+          "instruction": "Bereiten Sie Teil 1 der mündlichen Prüfung vor.",
+          "layout": "speaking",
           "taskCount": 1,
-          "taskTypes": [
-            "introduce_self",
-            "qa"
-          ],
-          "questionTypes": [
-            "short_answer"
-          ],
+          "itemsTotal": 1,
           "questionsTotal": {
             "min": 1,
             "max": 1
           },
-          "layout": "speaking",
-          "itemsTotal": 1,
-          "taskFormat": "speaking_prompt"
+          "questionTypes": [
+            "short_answer"
+          ],
+          "interaction": "monologue",
+          "taskTypes": [
+            "presentation"
+          ]
         },
         {
-          "instruction": "Bereiten Sie sich auf die mündliche Aufgabe vor.",
           "teil": 2,
           "slotType": "speaking_task",
-          "label": "Gemeinsame Aufgabe / Diskussion",
+          "taskFormat": "discussion",
+          "label": "Teil 2 — Diskussion",
+          "instruction": "Bereiten Sie Teil 2 der mündlichen Prüfung vor.",
+          "layout": "speaking",
           "taskCount": 1,
-          "taskTypes": [
-            "pair_discussion",
-            "picture_description"
-          ],
-          "questionTypes": [
-            "short_answer"
-          ],
+          "itemsTotal": 1,
           "questionsTotal": {
             "min": 1,
             "max": 1
           },
-          "layout": "speaking",
-          "itemsTotal": 1,
-          "taskFormat": "speaking_prompt"
-        },
-        {
-          "instruction": "Bereiten Sie sich auf die mündliche Aufgabe vor.",
-          "teil": 3,
-          "slotType": "speaking_task",
-          "label": "Präsentation / Meinung",
-          "taskCount": 1,
+          "questionTypes": [
+            "short_answer"
+          ],
+          "interaction": "paired",
           "taskTypes": [
-            "presentation",
+            "discussion",
             "debate"
-          ],
-          "questionTypes": [
-            "short_answer"
-          ],
-          "questionsTotal": {
-            "min": 1,
-            "max": 1
-          },
-          "layout": "speaking",
-          "itemsTotal": 1,
-          "taskFormat": "speaking_prompt"
+          ]
         }
       ]
     }
   ],
-  "structureVersion": 2,
   "itemsTotalByModule": {
-    "lesen": 14,
-    "horen": 14,
-    "grammatik": 12,
-    "schreiben": 3,
-    "sprechen": 3
-  }
+    "lesen": 30,
+    "horen": 30,
+    "schreiben": 2,
+    "sprechen": 2
+  },
+  "notes": {
+    "noGrammarModule": "Goethe C1 hat KEIN separates Grammatikmodul.",
+    "modularGrading": "passPercentPerModule 60, modularGrading true, maxPoints 100 pro Modul."
+  },
+  "modularGrading": true,
+  "passPercentPerModule": 60
 }

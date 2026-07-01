@@ -1,0 +1,253 @@
+{
+  "id": "goethe-a2",
+  "examType": "goethe",
+  "language": "de",
+  "level": "A2",
+  "certificate": "Goethe-Zertifikat A2",
+  "principle": "fixed_structure_dynamic_content",
+  "source": "Goethe-Institut Modellsatz A2 Erwachsene (Aufgabentypen, Itemzahl, Zeitvorgaben)",
+  "structureVersion": 3,
+  "modularGrading": false,
+  "passRule": {
+    "scope": "whole-exam",
+    "writtenMin": { "points": 45, "of": 75 },
+    "speakingMin": { "points": 15, "of": 25 },
+    "description": "Lesen+Hören+Schreiben ≥ 45/75 UND Sprechen ≥ 15/25; sonst gesamte Prüfung nicht bestanden."
+  },
+  "difficultyDistribution": {
+    "easy": { "min": 1, "max": 3, "share": 0.2 },
+    "medium": { "min": 4, "max": 6, "share": 0.4 },
+    "hard": { "min": 7, "max": 10, "share": 0.4 }
+  },
+  "modules": [
+    {
+      "id": "lesen",
+      "title": "Lesen",
+      "time": "30 Minuten",
+      "maxPoints": 25,
+      "parts": [
+        {
+          "teil": 1,
+          "slotType": "press_mcq",
+          "taskFormat": "short_text_mcq",
+          "label": "Teil 1 — Medientext, Multiple Choice",
+          "instruction": "Lesen Sie in einer Zeitung diesen Text.\nWählen Sie für die Aufgaben 1 bis 5 die richtige Lösung a, b oder c.",
+          "layout": "passage_questions",
+          "itemsTotal": 5,
+          "questionsTotal": { "min": 5, "max": 5 },
+          "questionTypes": ["multiple_choice"],
+          "wordsPerPassage": { "min": 120, "max": 200 },
+          "passagesPerPart": 1
+        },
+        {
+          "teil": 2,
+          "slotType": "info_board_mcq",
+          "taskFormat": "floor_plan_mcq",
+          "label": "Teil 2 — Informationstafel, Multiple Choice",
+          "instruction": "Lesen Sie die Informationstafel und die Aufgaben 6 bis 10.\nIn welchem Stock gehen Sie? Wählen Sie die richtige Lösung a, b oder c.",
+          "layout": "passage_questions",
+          "itemsTotal": 5,
+          "questionsTotal": { "min": 5, "max": 5 },
+          "questionTypes": ["multiple_choice"],
+          "wordsPerPassage": { "min": 80, "max": 150 },
+          "passagesPerPart": 1
+        },
+        {
+          "teil": 3,
+          "slotType": "email_mcq",
+          "taskFormat": "correspondence_mcq",
+          "label": "Teil 3 — Korrespondenz, Multiple Choice",
+          "instruction": "Lesen Sie die E-Mail und die Aufgaben 11 bis 15.\nWählen Sie für jede Aufgabe die richtige Lösung a, b oder c.",
+          "layout": "passage_questions",
+          "itemsTotal": 5,
+          "questionsTotal": { "min": 5, "max": 5 },
+          "questionTypes": ["multiple_choice"],
+          "wordsPerPassage": { "min": 100, "max": 180 },
+          "passagesPerPart": 1
+        },
+        {
+          "teil": 4,
+          "slotType": "ads_matching",
+          "taskFormat": "matching_ads",
+          "label": "Teil 4 — Anzeigen zuordnen",
+          "instruction": "Lesen Sie die Aufgaben 16 bis 20 und die Anzeigen a bis f.\nWelche Anzeige passt zu welcher Person? Für eine Aufgabe gibt es keine Lösung. Markieren Sie X.",
+          "layout": "items",
+          "itemsTotal": 5,
+          "questionsTotal": { "min": 5, "max": 5 },
+          "questionTypes": ["matching"],
+          "wordsPerPassage": { "min": 20, "max": 60 },
+          "adsTotal": 6,
+          "passagesPerPart": 6,
+          "passageLengthExempt": true
+        }
+      ]
+    },
+    {
+      "id": "horen",
+      "title": "Hören",
+      "time": "30 Minuten",
+      "maxPoints": 25,
+      "parts": [
+        {
+          "teil": 1,
+          "slotType": "short_texts_twice",
+          "taskFormat": "short_dialogue_mcq",
+          "label": "Teil 1 — Fünf kurze Texte (zweimal)",
+          "instruction": "Sie hören fünf kurze Texte. Sie hören jeden Text zweimal.\nWählen Sie für die Aufgaben 1 bis 5 die richtige Lösung a, b oder c.",
+          "layout": "segments",
+          "plays": 2,
+          "segmentsTotal": 5,
+          "itemsTotal": 5,
+          "questionsTotal": { "min": 5, "max": 5 },
+          "questionTypes": ["multiple_choice"],
+          "wordsPerTranscript": { "min": 20, "max": 70 }
+        },
+        {
+          "teil": 2,
+          "slotType": "picture_matching",
+          "taskFormat": "picture_schedule_matching",
+          "label": "Teil 2 — Bild/Text zuordnen",
+          "instruction": "Sie hören ein Gespräch. Sie hören den Text einmal.\nWählen Sie für die Aufgaben 6 bis 10 ein passendes Bild aus a bis i.",
+          "layout": "segments",
+          "plays": 1,
+          "segmentsTotal": 1,
+          "itemsTotal": 5,
+          "questionsTotal": { "min": 5, "max": 5 },
+          "questionTypes": ["matching"],
+          "pictureOptions": 9,
+          "wordsPerTranscript": { "min": 80, "max": 150 }
+        },
+        {
+          "teil": 3,
+          "slotType": "short_dialogues_once",
+          "taskFormat": "short_dialogue_mcq",
+          "label": "Teil 3 — Fünf kurze Gespräche (einmal)",
+          "instruction": "Sie hören fünf kurze Gespräche. Sie hören jeden Text einmal.\nWählen Sie für die Aufgaben 11 bis 15 die richtige Lösung a, b oder c.",
+          "layout": "segments",
+          "plays": 1,
+          "segmentsTotal": 5,
+          "itemsTotal": 5,
+          "questionsTotal": { "min": 5, "max": 5 },
+          "questionTypes": ["multiple_choice"],
+          "wordsPerTranscript": { "min": 15, "max": 50 }
+        },
+        {
+          "teil": 4,
+          "slotType": "interview_twice",
+          "taskFormat": "interview_ja_nein",
+          "label": "Teil 4 — Radiointerview (zweimal)",
+          "instruction": "Sie hören ein Interview. Sie hören den Text zweimal.\nWählen Sie für die Aufgaben 16 bis 20 Ja oder Nein.",
+          "layout": "segments",
+          "plays": 2,
+          "segmentsTotal": 1,
+          "itemsTotal": 5,
+          "questionsTotal": { "min": 5, "max": 5 },
+          "questionTypes": ["ja_nein"],
+          "wordsPerTranscript": { "min": 150, "max": 250 }
+        }
+      ]
+    },
+    {
+      "id": "schreiben",
+      "title": "Schreiben",
+      "time": "30 Minuten",
+      "maxPoints": 25,
+      "parts": [
+        {
+          "teil": 1,
+          "slotType": "writing_task",
+          "taskFormat": "sms_message",
+          "label": "Teil 1 — SMS",
+          "instruction": "Sie sind unterwegs in der Stadt und schreiben eine SMS.\nEntschuldigen Sie sich, erklären Sie warum, und nennen Sie einen neuen Ort und eine neue Uhrzeit.\nSchreiben Sie 20–30 Wörter zu allen drei Punkten.",
+          "taskCount": 1,
+          "itemsTotal": 1,
+          "recommendedMinutes": 10,
+          "wordsTarget": { "min": 20, "max": 30 },
+          "wordsPerPassage": { "min": 20, "max": 30 },
+          "taskTypes": ["sms"],
+          "questionTypes": ["short_answer"],
+          "questionsTotal": { "min": 1, "max": 1 },
+          "layout": "writing"
+        },
+        {
+          "teil": 2,
+          "slotType": "writing_task",
+          "taskFormat": "semiformal_email",
+          "label": "Teil 2 — E-Mail",
+          "instruction": "Schreiben Sie eine E-Mail an Ihren Chef.\nBedanken Sie sich, sagen Sie dass Sie kommen, informieren Sie dass Sie jemanden mitbringen, und fragen Sie nach dem Weg.\nSchreiben Sie 30–40 Wörter zu allen drei Punkten.",
+          "taskCount": 1,
+          "itemsTotal": 1,
+          "recommendedMinutes": 20,
+          "wordsTarget": { "min": 30, "max": 40 },
+          "wordsPerPassage": { "min": 30, "max": 40 },
+          "taskTypes": ["semiformal_email"],
+          "questionTypes": ["short_answer"],
+          "questionsTotal": { "min": 1, "max": 1 },
+          "layout": "writing"
+        }
+      ]
+    },
+    {
+      "id": "sprechen",
+      "title": "Sprechen",
+      "time": "circa 15 Minuten für zwei Teilnehmende",
+      "maxPoints": 25,
+      "parts": [
+        {
+          "teil": 1,
+          "slotType": "speaking_task",
+          "taskFormat": "personal_questions",
+          "label": "Teil 1 — Fragen zur Person",
+          "instruction": "Sie bekommen vier Karten und stellen mit diesen Karten vier Fragen. Ihr Partner/Ihre Partnerin antwortet. Dann stellt Ihr Partner/Ihre Partnerin vier Fragen und Sie antworten.",
+          "taskCount": 1,
+          "itemsTotal": 1,
+          "interaction": "paired",
+          "taskTypes": ["personal_questions"],
+          "questionTypes": ["short_answer"],
+          "questionsTotal": { "min": 1, "max": 1 },
+          "layout": "speaking"
+        },
+        {
+          "teil": 2,
+          "slotType": "speaking_task",
+          "taskFormat": "about_self",
+          "label": "Teil 2 — Von sich erzählen",
+          "instruction": "Sie bekommen eine Karte und erzählen etwas über Ihr Leben.",
+          "taskCount": 1,
+          "itemsTotal": 1,
+          "interaction": "monologue",
+          "taskTypes": ["about_self"],
+          "questionTypes": ["short_answer"],
+          "questionsTotal": { "min": 1, "max": 1 },
+          "layout": "speaking"
+        },
+        {
+          "teil": 3,
+          "slotType": "speaking_task",
+          "taskFormat": "plan_together",
+          "label": "Teil 3 — Gemeinsam planen",
+          "instruction": "Planen Sie etwas zusammen mit Ihrem Partner/Ihrer Partnerin (z. B. ein Geschenk kaufen und einen Termin finden).",
+          "taskCount": 1,
+          "itemsTotal": 1,
+          "interaction": "paired",
+          "taskTypes": ["plan_together"],
+          "questionTypes": ["short_answer"],
+          "questionsTotal": { "min": 1, "max": 1 },
+          "layout": "speaking"
+        }
+      ]
+    }
+  ],
+  "itemsTotalByModule": {
+    "lesen": 20,
+    "horen": 20,
+    "schreiben": 2,
+    "sprechen": 3
+  },
+  "notes": {
+    "noGrammarModule": "Das offizielle Goethe-Zertifikat A2 hat KEIN separates Modul Grammatik/Wortschatz.",
+    "nonModularGrading": "Keine passPercentPerModule: Bestehen über kombinierte Schriftprüfung (45/75) plus Sprechen (15/25).",
+    "listeningPlays": "Hören Teil 1 und Teil 4 zweimal; Teil 2 und Teil 3 einmal.",
+    "passageLengthExempt": "Lesen Teil 4 (Anzeigen) ist von der Mindestlänge der Lesepassage ausgenommen."
+  }
+}

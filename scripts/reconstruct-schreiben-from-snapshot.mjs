@@ -115,7 +115,7 @@ const dirty = [];
 
 for (const { rec, topic, examIdx } of candidates) {
   const label = `exam${examIdx}(${topic}) T${rec.teil}`;
-  const result = isPartPoolReady(rec);
+  const result = await isPartPoolReady(rec);
   if (result.ok) {
     clean.push(rec);
     if (VERBOSE) console.log(`  ✓  ${label} → OK`);

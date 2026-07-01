@@ -1,10 +1,10 @@
 /**
- * Level UI status — servable library vs live-AI allow-list vs coming soon.
- * Positive allow-list replaces negative liveAiDisabled / ExamLibrary optimism.
+ * Level UI status — exam availability manifest (primary) + question bank / live-AI fallback.
  */
 const LevelAvailability = (() => {
   const LEVELS = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
   const LANGS = ['de', 'en', 'es'];
+  const EXAM_AVAIL_PATH = 'data/exams/availability.json';
 
   /** Combos where full AI exam generation is enabled without a servable question bank. */
   const LIVE_AI_ALLOWLIST = Object.freeze({
@@ -12,6 +12,105 @@ const LevelAvailability = (() => {
     en: [],
     es: [],
   });
+
+  let examAvailCache = null;
+
+  function showBetaExamLevels() {
+    if (typeof ExamLibrary !== 'undefined' && ExamLibrary.showBetaLevels) {
+      return ExamLibrary.showBetaLevels();
+    }
+    if (typeof window !== 'undefined' && window.LEXICOIL_SHOW_BETA_LEVELS === true) return true;
+    if (typeof process !== 'undefined' && process.env && process.env.LEXICOIL_SHOW_BETA_LEVELS === '1') {
+      return true;
+    }
+    return false;
+  }
+
+  function loadExamAvailabilitySync() {
+    if (examAvailCache) return examAvailCache;
+    if (typeof ExamLibrary !== 'undefined' && ExamLibrary.getManifestSync) {
+      examAvailCache = ExamLibrary.getManifestSync();
+      if (examAvailCache) return examAvailCache;
+    }
+    if (typeof module !== 'undefined') {
+      try {
+        const fs = require('fs');
+        const path = require('path');
+        const p = path.join(process.cwd(), EXAM_AVAIL_PATH);
+        if (fs.existsSync(p)) {
+          examAvailCache = JSON.parse(fs.readFileSync(p, 'utf8'));
+          return examAvailCache;
+        }
+      } catch (_) {}
+    }
+    return null;
+  }
+
+  function getExamAvailabilityEntry(lang, level) {
+    const manifest = loadExamAvailabilitySync();
+    if (!manifest) return null;
+    return manifest[lang]?.[level] || null;
+  }
+
+  /**
+   * Whether AI personalized generation (flashcards / section practice) is enabled for a level.
+   * Reads data/exams/availability.json — defaults to true when flag omitted (B1-safe).
+   * To enable A2 personalized later: set de.A2.personalized to true in availability.json.
+   */
+  function isPersonalizedAllowed(lang, level) {
+    const entry = getExamAvailabilityEntry(lang, level);
+    if (!entry) return true;
+    if (entry.personalized === false) return false;
+    return true;
+  }
+
+  function personalizedUnavailableMessage(lang, level) {
+    const lv = String(level || '').toUpperCase();
+    return `Personalized practice for ${lv} is coming soon — use official and practice exams for now.`;
+  }
+
+  function levelFeatureFlag(lang, level, key, defaultValue) {
+    const entry = getExamAvailabilityEntry(lang, level);
+    if (!entry || entry[key] === undefined) return defaultValue;
+    return entry[key];
+  }
+
+  function isQuickModuleAllowed(lang, level) {
+    return levelFeatureFlag(lang, level, 'quickModules', true) !== false;
+  }
+
+  function isAiFeatureAllowed(lang, level) {
+    return levelFeatureFlag(lang, level, 'aiFeatures', true) !== false;
+  }
+
+  function isCuratedOnlyLevel(lang, level) {
+    return levelFeatureFlag(lang, level, 'curatedOnly', false) === true;
+  }
+
+  function poolPreviewLimitFor(lang, level) {
+    const entry = getExamAvailabilityEntry(lang, level);
+    if (entry?.poolPreview == null) return null;
+    const n = Number(entry.poolPreview);
+    return Number.isFinite(n) && n > 0 ? n : null;
+  }
+
+  function quickModulesUnavailableMessage(lang, level) {
+    const lv = String(level || '').toUpperCase();
+    return `Quick modules for ${lv} are coming soon — use official or practice exams for now.`;
+  }
+
+  function getExamAvailabilityStatus(lang, level) {
+    const manifest = loadExamAvailabilitySync();
+    if (!manifest) return null;
+    return manifest[lang]?.[level]?.status || 'hidden';
+  }
+
+  function isExamLevelOffered(lang, level) {
+    const st = getExamAvailabilityStatus(lang, level);
+    if (st === 'live') return true;
+    if (st === 'beta' && showBetaExamLevels()) return true;
+    return false;
+  }
 
   function globalLiveAiKillSwitch() {
     if (typeof window !== 'undefined') {
@@ -99,6 +198,13 @@ const LevelAvailability = (() => {
    * @returns {'ready'|'live'|'soon'}
    */
   function getLevelUiStatus(lang, level) {
+    const manifest = loadExamAvailabilitySync();
+    if (manifest) {
+      const examSt = manifest[lang]?.[level]?.status || 'hidden';
+      if (examSt === 'live') return 'ready';
+      if (examSt === 'beta' && showBetaExamLevels()) return 'ready';
+      return 'soon';
+    }
     if (isLevelServable(lang, level)) return 'ready';
     if (isLiveAiEnabled(lang, level)) return 'live';
     return 'soon';
@@ -128,10 +234,9 @@ const LevelAvailability = (() => {
     return !isLiveAiEnabled(lang, level);
   }
 
-  function levelBadgeHtml(status, locale) {
-    const es = locale === 'es';
+  function levelBadgeHtml(status) {
     if (status === 'soon') {
-      const label = es ? 'Próximamente' : 'Coming soon';
+      const label = 'Coming soon';
       return `<span class="exam-config-badge exam-config-badge--soon">${label}</span>`;
     }
     if (status === 'live') {
@@ -145,6 +250,18 @@ const LevelAvailability = (() => {
     LEVELS,
     LANGS,
     LIVE_AI_ALLOWLIST,
+    EXAM_AVAIL_PATH,
+    showBetaExamLevels,
+    getExamAvailabilityStatus,
+    getExamAvailabilityEntry,
+    isPersonalizedAllowed,
+    personalizedUnavailableMessage,
+    isQuickModuleAllowed,
+    isAiFeatureAllowed,
+    isCuratedOnlyLevel,
+    poolPreviewLimitFor,
+    quickModulesUnavailableMessage,
+    isExamLevelOffered,
     isLiveAiAllowed,
     isLiveAiEnabled,
     isLevelServable,
@@ -159,4 +276,15 @@ const LevelAvailability = (() => {
 })();
 
 if (typeof window !== 'undefined') window.LevelAvailability = LevelAvailability;
+if (typeof window !== 'undefined') {
+  window.isPersonalizedAllowed = function (lang, level) {
+    return LevelAvailability.isPersonalizedAllowed(lang, level);
+  };
+  window.isQuickModuleAllowed = function (lang, level) {
+    return LevelAvailability.isQuickModuleAllowed(lang, level);
+  };
+  window.isAiFeatureAllowed = function (lang, level) {
+    return LevelAvailability.isAiFeatureAllowed(lang, level);
+  };
+}
 if (typeof module !== 'undefined') module.exports = LevelAvailability;

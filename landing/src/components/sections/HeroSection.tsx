@@ -1,5 +1,6 @@
 'use client';
 
+import { DEMO_URL } from '@/lib/constants';
 import { useAuthUi } from '@/context/AuthUiContext';
 import { Container } from '@/components/ui/Container';
 import { ProductFrame } from '@/components/ui/ProductFrame';
@@ -26,7 +27,7 @@ export function HeroSection() {
       <Container className="relative max-w-[1120px]">
         <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
           <div className="animate-fade-up">
-            <p className="lc-badge mb-5 w-fit">Adaptive exam preparation</p>
+            <p className="lc-badge mb-5 w-fit">Goethe B1 · available now</p>
 
             <h1 className="font-display text-[2.75rem] leading-[1.08] tracking-tight text-[var(--text-primary)] md:text-[3.5rem] lg:text-[4rem]">
               Every mistake becomes your{' '}
@@ -35,7 +36,8 @@ export function HeroSection() {
 
             <p className="mt-6 max-w-xl text-lg font-semibold leading-relaxed text-[var(--text-secondary)] md:text-xl">
               LexiCoil turns the questions you get wrong into a personalized path to your language
-              certification — reading, listening, writing, and speaking at A1–C2.
+              certification — reading, listening, writing, and speaking. Launching with Goethe B1; more
+              levels and languages follow.
             </p>
 
             <div className="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-[15px] font-bold text-[var(--text-primary)]">
@@ -47,7 +49,7 @@ export function HeroSection() {
             </div>
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
-              <a href="/demo" className="btn-primary px-8 py-4 text-base text-center">
+              <a href={DEMO_URL} className="btn-primary px-8 py-4 text-base text-center">
                 Try a sample exam
               </a>
               <button

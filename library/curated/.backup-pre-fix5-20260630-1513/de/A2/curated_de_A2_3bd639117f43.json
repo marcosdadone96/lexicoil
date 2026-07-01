@@ -1,0 +1,1811 @@
+{
+  "id": "curated_de_A2_3bd639117f43",
+  "lang": "de",
+  "level": "A2",
+  "topic": "work",
+  "curated": true,
+  "exam": {
+    "topic": "work",
+    "level": "A2",
+    "lang": "de",
+    "goetheFormat": true,
+    "libraryBuilt": true,
+    "blueprintId": "goethe-a2",
+    "blueprintCoverage": [
+      {
+        "module": "lesen",
+        "teil": 1,
+        "slotType": "press_mcq",
+        "taskFormat": "short_text_mcq",
+        "target": 5,
+        "filled": 5,
+        "complete": true,
+        "wordsPerPassage": {
+          "min": 120,
+          "max": 200
+        }
+      },
+      {
+        "module": "lesen",
+        "teil": 2,
+        "slotType": "info_board_mcq",
+        "taskFormat": "floor_plan_mcq",
+        "target": 5,
+        "filled": 5,
+        "complete": true,
+        "wordsPerPassage": {
+          "min": 80,
+          "max": 150
+        }
+      },
+      {
+        "module": "lesen",
+        "teil": 3,
+        "slotType": "email_mcq",
+        "taskFormat": "correspondence_mcq",
+        "target": 5,
+        "filled": 5,
+        "complete": true,
+        "wordsPerPassage": {
+          "min": 100,
+          "max": 180
+        }
+      },
+      {
+        "module": "lesen",
+        "teil": 4,
+        "slotType": "ads_matching",
+        "taskFormat": "matching_ads",
+        "target": 5,
+        "filled": 5,
+        "complete": true,
+        "wordsPerPassage": {
+          "min": 20,
+          "max": 60
+        }
+      },
+      {
+        "module": "horen",
+        "teil": 1,
+        "slotType": "short_texts_twice",
+        "taskFormat": "short_dialogue_mcq",
+        "target": 5,
+        "filled": 5,
+        "complete": true,
+        "wordsPerPassage": null
+      },
+      {
+        "module": "horen",
+        "teil": 2,
+        "slotType": "picture_matching",
+        "taskFormat": "picture_schedule_matching",
+        "target": 5,
+        "filled": 5,
+        "complete": true,
+        "wordsPerPassage": null
+      },
+      {
+        "module": "horen",
+        "teil": 3,
+        "slotType": "short_dialogues_once",
+        "taskFormat": "short_dialogue_mcq",
+        "target": 5,
+        "filled": 5,
+        "complete": true,
+        "wordsPerPassage": null
+      },
+      {
+        "module": "horen",
+        "teil": 4,
+        "slotType": "interview_twice",
+        "taskFormat": "interview_ja_nein",
+        "target": 5,
+        "filled": 5,
+        "complete": true,
+        "wordsPerPassage": null
+      },
+      {
+        "module": "schreiben",
+        "teil": 1,
+        "slotType": "writing_task",
+        "taskFormat": "sms_message",
+        "target": 1,
+        "filled": 1,
+        "complete": true,
+        "wordsPerPassage": {
+          "min": 20,
+          "max": 30
+        }
+      },
+      {
+        "module": "schreiben",
+        "teil": 2,
+        "slotType": "writing_task",
+        "taskFormat": "semiformal_email",
+        "target": 1,
+        "filled": 1,
+        "complete": true,
+        "wordsPerPassage": {
+          "min": 30,
+          "max": 40
+        }
+      },
+      {
+        "module": "sprechen",
+        "teil": 1,
+        "slotType": "speaking_task",
+        "taskFormat": "personal_questions",
+        "target": 1,
+        "filled": 1,
+        "complete": true,
+        "wordsPerPassage": null
+      },
+      {
+        "module": "sprechen",
+        "teil": 2,
+        "slotType": "speaking_task",
+        "taskFormat": "about_self",
+        "target": 1,
+        "filled": 1,
+        "complete": true,
+        "wordsPerPassage": null
+      },
+      {
+        "module": "sprechen",
+        "teil": 3,
+        "slotType": "speaking_task",
+        "taskFormat": "plan_together",
+        "target": 1,
+        "filled": 1,
+        "complete": true,
+        "wordsPerPassage": null
+      }
+    ],
+    "blueprintComplete": true,
+    "libraryVersion": 73,
+    "topicTags": [
+      "work",
+      "family",
+      "media",
+      "daily_life",
+      "food",
+      "health",
+      "society",
+      "culture",
+      "education",
+      "travel",
+      "shopping"
+    ],
+    "difficulty": 5,
+    "official": {
+      "board": "Goethe-Institut",
+      "certificate": "Goethe-Zertifikat A2",
+      "note": "Assembled from question library using official exam blueprint (no runtime AI)."
+    },
+    "modules": {
+      "lesen": {
+        "title": "Lesen",
+        "time": "65 Minuten"
+      },
+      "horen": {
+        "title": "Hören",
+        "time": "40 Minuten"
+      },
+      "schreiben": {
+        "title": "Schreiben",
+        "time": "60 Minuten"
+      },
+      "sprechen": {
+        "title": "Sprechen",
+        "time": "15 Minuten"
+      }
+    },
+    "lesenParts": [
+      {
+        "teil": 1,
+        "instruction": "Lesen Sie in einer Zeitung diesen Text.\nWählen Sie für die Aufgaben 1 bis 6 die richtige Lösung a, b oder c.",
+        "blueprintSlot": "press_mcq",
+        "textTitle": "Pflege und Familie: Neue Lösungen",
+        "text": "Immer mehr Menschen in Deutschland müssen sich um ihre älteren Eltern kümmern. Das ist oft schwierig, denn viele arbeiten auch noch. Die Vereinbarkeit von Familie und Beruf ist ein großes Problem.\n\nSarah ist 35 Jahre alt und arbeitet als Krankenschwester. Seit zwei Jahren pflegt sie ihre Mutter. Das ist anstrengend. \"Morgens helfe ich meiner Mutter beim Waschen und Anziehen. Dann fahre ich zur Arbeit. Nach der Arbeit koche ich für meine Mutter und kümmere mich um ihre Medikamente. Am Wochenende mache ich die Einkäufe und die Hausarbeit,\" sagt Sarah.\n\nDas Gesundheitsministerium hat ein neues Programm gestartet. Es hilft Pflegenden Personen mit Beratung und finanzieller Unterstützung. \"Wir möchten, dass Angehörige ihre Arbeit nicht kündigen müssen,\" erklärt ein Sprecher des Ministeriums.\n\nAuch Unternehmen ändern ihre Politik. Sie bieten flexible Arbeitszeiten und Home-Office an. Das macht es einfacher für Mitarbeiter, die ihre Familie pflegen.",
+        "passageId": "de-a2-p-lesen-t1-familie-pflege-01",
+        "questions": [
+          {
+            "id": "1-3bd63911",
+            "type": "multiple",
+            "question": "Was bieten die Unternehmen an?",
+            "correct": "b",
+            "correctAnswer": "b",
+            "explanation": "Der letzte Absatz sagt: 'Sie bieten flexible Arbeitszeiten und Home-Office an.'",
+            "grammarTags": [
+              "g-de-a2-praesens"
+            ],
+            "topicTags": [
+              "work"
+            ],
+            "vocabularyTags": [
+              "Arbeitszeit",
+              "flexibel",
+              "Home-Office"
+            ],
+            "difficulty": 2,
+            "options": [
+              "a) Kostenlose Kinderbetreuung",
+              "b) Flexible Arbeitszeiten und Home-Office",
+              "c) Mehr Urlaubstage"
+            ],
+            "passageId": "de-a2-p-lesen-t1-familie-pflege-01",
+            "number": 1,
+            "nr": 1,
+            "nummer": 1
+          },
+          {
+            "id": "2-3bd63911",
+            "type": "multiple",
+            "question": "Was ist das Hauptproblem für Menschen wie Sarah?",
+            "correct": "b",
+            "correctAnswer": "b",
+            "explanation": "Der Text sagt: 'Die Vereinbarkeit von Familie und Beruf ist ein großes Problem.' Sarah arbeitet und pflegt gleichzeitig ihre Mutter.",
+            "grammarTags": [
+              "g-de-a2-praesens",
+              "g-de-a2-nebensatz"
+            ],
+            "topicTags": [
+              "family"
+            ],
+            "vocabularyTags": [
+              "Vereinbarkeit",
+              "Familie",
+              "Beruf"
+            ],
+            "difficulty": 2,
+            "options": [
+              "a) Sie hat keine Zeit für ihre Hobbys",
+              "b) Sie muss Familie und Beruf kombinieren",
+              "c) Ihre Mutter lebt zu weit weg"
+            ],
+            "passageId": "de-a2-p-lesen-t1-familie-pflege-01",
+            "number": 2,
+            "nr": 2,
+            "nummer": 2
+          },
+          {
+            "id": "3-3bd63911",
+            "type": "multiple",
+            "question": "Was sagt der Sprecher des Ministeriums?",
+            "correct": "b",
+            "correctAnswer": "b",
+            "explanation": "Der Sprecher erklärt: 'Wir möchten, dass Angehörige ihre Arbeit nicht kündigen müssen.'",
+            "grammarTags": [
+              "g-de-a2-modal",
+              "g-de-a2-nebensatz"
+            ],
+            "topicTags": [
+              "family"
+            ],
+            "vocabularyTags": [
+              "kündigen",
+              "Arbeit",
+              "müssen"
+            ],
+            "difficulty": 3,
+            "options": [
+              "a) Angehörige sollen nicht mehr arbeiten",
+              "b) Angehörige sollten ihre Arbeit nicht kündigen müssen",
+              "c) Pflege ist nicht wichtig für die Gesellschaft"
+            ],
+            "passageId": "de-a2-p-lesen-t1-familie-pflege-01",
+            "number": 3,
+            "nr": 3,
+            "nummer": 3
+          },
+          {
+            "id": "4-3bd63911",
+            "type": "multiple",
+            "question": "Wie lange pflegt Sarah schon ihre Mutter?",
+            "correct": "b",
+            "correctAnswer": "b",
+            "explanation": "Im Text steht: 'Seit zwei Jahren pflegt sie ihre Mutter.'",
+            "grammarTags": [
+              "g-de-a2-praesens"
+            ],
+            "topicTags": [
+              "family"
+            ],
+            "vocabularyTags": [
+              "Pflege",
+              "seit",
+              "Jahre"
+            ],
+            "difficulty": 2,
+            "options": [
+              "a) Ein Jahr",
+              "b) Zwei Jahre",
+              "c) Drei Jahre"
+            ],
+            "passageId": "de-a2-p-lesen-t1-familie-pflege-01",
+            "number": 4,
+            "nr": 4,
+            "nummer": 4
+          },
+          {
+            "id": "5-3bd63911",
+            "type": "multiple",
+            "question": "Was macht das Gesundheitsministerium?",
+            "correct": "b",
+            "correctAnswer": "b",
+            "explanation": "Der Text erklärt: 'Das Gesundheitsministerium hat ein neues Programm gestartet. Es hilft Pflegenden Personen mit Beratung und finanzieller Unterstützung.'",
+            "grammarTags": [
+              "g-de-a2-praesens"
+            ],
+            "topicTags": [
+              "family"
+            ],
+            "vocabularyTags": [
+              "Gesundheitsministerium",
+              "Unterstützung",
+              "Beratung"
+            ],
+            "difficulty": 2,
+            "options": [
+              "a) Es gibt Geld für Pflegepersonal in Krankenhäusern",
+              "b) Es hilft Angehörigen mit Beratung und finanzieller Unterstützung",
+              "c) Es verbietet flexible Arbeitszeiten"
+            ],
+            "passageId": "de-a2-p-lesen-t1-familie-pflege-01",
+            "number": 5,
+            "nr": 5,
+            "nummer": 5
+          },
+          {
+            "id": "6-3bd63911",
+            "type": "multiple",
+            "question": "Was ist das Hauptproblem für Menschen wie Sarah?",
+            "correct": "b",
+            "correctAnswer": "b",
+            "explanation": "Der Text sagt: 'Die Vereinbarkeit von Familie und Beruf ist ein großes Problem.' Sarah arbeitet und pflegt gleichzeitig ihre Mutter.",
+            "options": [
+              "a) Sie hat keine Zeit für ihre Hobbys",
+              "b) Sie muss Familie und Beruf kombinieren",
+              "c) Ihre Mutter lebt zu weit weg"
+            ],
+            "grammarTags": [
+              "g-de-a2-praesens",
+              "g-de-a2-nebensatz"
+            ],
+            "topicTags": [
+              "family"
+            ],
+            "vocabularyTags": [
+              "Vereinbarkeit",
+              "Familie",
+              "Beruf"
+            ],
+            "difficulty": 2,
+            "passageId": "de-a2-p-lesen-t1-familie-pflege-01",
+            "number": 6,
+            "nr": 6,
+            "nummer": 6
+          }
+        ],
+        "_itemCount": 6,
+        "_numberRange": {
+          "start": 1,
+          "end": 6,
+          "officialEnd": 5
+        }
+      },
+      {
+        "teil": 2,
+        "instruction": "Lesen Sie die Informationstafel und die Aufgaben 6 bis 10.\nIn welchem Stock gehen Sie? Wählen Sie die richtige Lösung a, b oder c.",
+        "blueprintSlot": "info_board_mcq",
+        "textTitle": "Cinemaxx Multiplex – Informationstafel",
+        "text": "CINEMAXX MULTIPLEX – 5. ETAGE\n\nWillkommen im Cinemaxx! Hier finden Sie alle wichtigen Informationen zu unserem Kino.\n\nKASSE & TICKETS\nÖffnungszeiten: Mo–So 10:00–22:00 Uhr\nOnline-Tickets: www.cinemaxx.de\nPreise: Erwachsene €11,50 | Kinder (bis 12 J.) €8,00 | Studenten €9,50\n\nSAAL 1–3: Aktuelle Blockbuster\nSAAL 4–5: Klassische Filme & Dokumentationen\nSAAL 6: VIP-Bereich mit Liegesesseln\n\nCAFÉ & SNACKS\nLage: 5. Etage, neben Saal 2\nAngebot: Popcorn, Nachos, Getränke, Süßigkeiten\nÖffnungszeit: 10:00–22:30 Uhr\nPreise: Popcorn klein €5,00 | groß €7,50 | Getränk €3,50\n\nTOILETTEN\nHerren & Damen: Bei Saal 3 und Saal 5\nBehindertentoilette: Neben der Kasse\n\nPARKEN\nParkplätze: B1–B3 im Untergeschoss\nPreis: €2,00 pro Stunde | Max. €10,00 pro Tag\nBehindertenparkplätze: Kostenfrei\n\nREGELN\nMobiltelefone: Bitte ausschalten\nEssen & Trinken: Nur im Café oder Kinosaal erlaubt\nLatecoming: Nach 15 Min. Filmstart kein Einlass mehr\n\nInformationen: info@cinemaxx.de | Tel. 030–555–8899",
+        "passageId": "de-a2-p-lesen-t2-freizeit-kino-streaming-01",
+        "questions": [
+          {
+            "id": "6-3bd63911",
+            "type": "multiple",
+            "question": "Was darf man im Kino NICHT tun?",
+            "correct": "b",
+            "correctAnswer": "b",
+            "explanation": "Nach den Regeln müssen Mobiltelefone ausgeschaltet werden. Das Handy eingeschaltet zu lassen, ist nicht erlaubt.",
+            "grammarTags": [
+              "g-de-a2-modal"
+            ],
+            "topicTags": [
+              "media"
+            ],
+            "vocabularyTags": [
+              "v-regel",
+              "v-handy",
+              "v-verbot"
+            ],
+            "difficulty": 2,
+            "options": [
+              "a) Das Handy ausschalten",
+              "b) Das Handy eingeschaltet lassen",
+              "c) Essen im Saal essen"
+            ],
+            "passageId": "de-a2-p-lesen-t2-freizeit-kino-streaming-01",
+            "number": 6,
+            "nr": 6,
+            "nummer": 6
+          },
+          {
+            "id": "7-3bd63911",
+            "type": "multiple",
+            "question": "Wie viel kostet Parken maximal pro Tag?",
+            "correct": "b",
+            "correctAnswer": "b",
+            "explanation": "Laut Informationstafel kostet das Parken maximal €10,00 pro Tag. Der Stundentarif beträgt €2,00.",
+            "grammarTags": [
+              "g-de-a2-praesens"
+            ],
+            "topicTags": [
+              "media"
+            ],
+            "vocabularyTags": [
+              "v-preis",
+              "v-parken",
+              "v-tag"
+            ],
+            "difficulty": 2,
+            "options": [
+              "a) €2,00",
+              "b) €10,00",
+              "c) Es kostet nichts"
+            ],
+            "passageId": "de-a2-p-lesen-t2-freizeit-kino-streaming-01",
+            "number": 7,
+            "nr": 7,
+            "nummer": 7
+          },
+          {
+            "id": "8-3bd63911",
+            "type": "multiple",
+            "question": "Was kostet ein großes Popcorn im Café?",
+            "correct": "c",
+            "correctAnswer": "c",
+            "explanation": "Nach der Preisliste kostet Popcorn groß €7,50. Klein kostet €5,00.",
+            "grammarTags": [
+              "g-de-a2-praesens"
+            ],
+            "topicTags": [
+              "media"
+            ],
+            "vocabularyTags": [
+              "v-preis",
+              "v-popcorn",
+              "v-gros"
+            ],
+            "difficulty": 2,
+            "options": [
+              "a) €5,00",
+              "b) €3,50",
+              "c) €7,50"
+            ],
+            "passageId": "de-a2-p-lesen-t2-freizeit-kino-streaming-01",
+            "number": 8,
+            "nr": 8,
+            "nummer": 8
+          },
+          {
+            "id": "9-3bd63911",
+            "type": "multiple",
+            "question": "Wo ist das Café im Kino?",
+            "correct": "a",
+            "correctAnswer": "a",
+            "explanation": "Das Café liegt auf der 5. Etage neben Saal 2, wie in der Informationstafel angegeben.",
+            "grammarTags": [
+              "g-de-a2-praesens"
+            ],
+            "topicTags": [
+              "media"
+            ],
+            "vocabularyTags": [
+              "v-ort",
+              "v-cafe",
+              "v-saal"
+            ],
+            "difficulty": 2,
+            "options": [
+              "a) Neben Saal 2 auf der 5. Etage",
+              "b) Im Untergeschoss",
+              "c) Bei Saal 3"
+            ],
+            "passageId": "de-a2-p-lesen-t2-freizeit-kino-streaming-01",
+            "number": 9,
+            "nr": 9,
+            "nummer": 9
+          },
+          {
+            "id": "10-3bd63911",
+            "type": "multiple",
+            "question": "Wie viel kostet ein Ticket für einen Erwachsenen?",
+            "correct": "b",
+            "correctAnswer": "b",
+            "explanation": "Nach der Informationstafel kosten Tickets für Erwachsene €11,50. Kinder zahlen €8,00 und Studenten €9,50.",
+            "grammarTags": [
+              "g-de-a2-praesens"
+            ],
+            "topicTags": [
+              "media"
+            ],
+            "vocabularyTags": [
+              "v-preis",
+              "v-karte",
+              "v-erwachsene"
+            ],
+            "difficulty": 2,
+            "options": [
+              "a) €8,00",
+              "b) €11,50",
+              "c) €9,50"
+            ],
+            "passageId": "de-a2-p-lesen-t2-freizeit-kino-streaming-01",
+            "number": 10,
+            "nr": 10,
+            "nummer": 10
+          }
+        ],
+        "_itemCount": 5,
+        "_numberRange": {
+          "start": 6,
+          "end": 10,
+          "officialEnd": 10
+        }
+      },
+      {
+        "teil": 3,
+        "instruction": "Lesen Sie die E-Mail und die Aufgaben 11 bis 15.\nWählen Sie für jede Aufgabe die richtige Lösung a, b oder c.",
+        "blueprintSlot": "email_mcq",
+        "textTitle": "E-Mail: Reparaturservice",
+        "text": "Liebe Frau Müller,\n\nvielen Dank für Ihre Anfrage. Wir können Ihren Kühlschrank gerne reparieren. Unser Techniker kommt am Dienstag oder Mittwoch zu Ihnen nach Hause. Die Reparatur dauert etwa zwei Stunden.\n\nDie Kosten sind 85 Euro für die Inspektion und 40 Euro pro Stunde für die Arbeit. Wenn Sie Ersatzteile brauchen, kosten diese extra.\n\nBitte geben Sie uns Bescheid, welcher Tag besser passt. Unser Techniker kommt zwischen 9 und 17 Uhr.\n\nViele Grüße,\nThomas Bauer\nSchnell-Reparatur GmbH",
+        "passageId": "de-a2-p-lesen-t3-dienstleistungen-alltag-03",
+        "questions": [
+          {
+            "id": "11-3bd63911",
+            "type": "multiple",
+            "question": "Wer schreibt diese E-Mail?",
+            "correct": "b",
+            "correctAnswer": "b",
+            "explanation": "Am Ende der E-Mail steht: 'Viele Grüße, Thomas Bauer, Schnell-Reparatur GmbH'",
+            "grammarTags": [
+              "g-de-a2-praesens"
+            ],
+            "topicTags": [
+              "daily_life"
+            ],
+            "vocabularyTags": [
+              "Absender",
+              "Unterschrift"
+            ],
+            "difficulty": 2,
+            "options": [
+              "a) Frau Müller",
+              "b) Thomas Bauer von der Schnell-Reparatur GmbH",
+              "c) Ein Kunde"
+            ],
+            "passageId": "de-a2-p-lesen-t3-dienstleistungen-alltag-03",
+            "number": 11,
+            "nr": 11,
+            "nummer": 11
+          },
+          {
+            "id": "12-3bd63911",
+            "type": "multiple",
+            "question": "Was muss Frau Müller noch machen?",
+            "correct": "c",
+            "correctAnswer": "c",
+            "explanation": "Die E-Mail sagt: 'Bitte geben Sie uns Bescheid, welcher Tag besser passt.'",
+            "grammarTags": [
+              "g-de-a2-modal"
+            ],
+            "topicTags": [
+              "daily_life"
+            ],
+            "vocabularyTags": [
+              "Termin",
+              "Absprache",
+              "Tag"
+            ],
+            "difficulty": 3,
+            "options": [
+              "a) Das Geld vor der Reparatur bezahlen",
+              "b) Einen Termin für einen anderen Tag buchen",
+              "c) Dem Techniker sagen, welcher Tag passt"
+            ],
+            "passageId": "de-a2-p-lesen-t3-dienstleistungen-alltag-03",
+            "number": 12,
+            "nr": 12,
+            "nummer": 12
+          },
+          {
+            "id": "13-3bd63911",
+            "type": "multiple",
+            "question": "Was kostet die Inspektion?",
+            "correct": "c",
+            "correctAnswer": "c",
+            "explanation": "In der E-Mail heißt es: 'Die Kosten sind 85 Euro für die Inspektion und 40 Euro pro Stunde für die Arbeit.'",
+            "grammarTags": [
+              "g-de-a2-praesens"
+            ],
+            "topicTags": [
+              "daily_life"
+            ],
+            "vocabularyTags": [
+              "Kosten",
+              "Inspektion",
+              "Preis"
+            ],
+            "difficulty": 2,
+            "options": [
+              "a) 40 Euro",
+              "b) 75 Euro",
+              "c) 85 Euro"
+            ],
+            "passageId": "de-a2-p-lesen-t3-dienstleistungen-alltag-03",
+            "number": 13,
+            "nr": 13,
+            "nummer": 13
+          },
+          {
+            "id": "14-3bd63911",
+            "type": "multiple",
+            "question": "Wann kann der Techniker kommen?",
+            "correct": "b",
+            "correctAnswer": "b",
+            "explanation": "In der E-Mail steht: 'Unser Techniker kommt am Dienstag oder Mittwoch zu Ihnen nach Hause.'",
+            "grammarTags": [
+              "g-de-a2-modal"
+            ],
+            "topicTags": [
+              "daily_life"
+            ],
+            "vocabularyTags": [
+              "Techniker",
+              "Termin"
+            ],
+            "difficulty": 2,
+            "options": [
+              "a) Am Montag oder Dienstag",
+              "b) Am Dienstag oder Mittwoch",
+              "c) Am Mittwoch oder Donnerstag"
+            ],
+            "passageId": "de-a2-p-lesen-t3-dienstleistungen-alltag-03",
+            "number": 14,
+            "nr": 14,
+            "nummer": 14
+          },
+          {
+            "id": "15-3bd63911",
+            "type": "multiple",
+            "question": "Wie lange dauert die Reparatur?",
+            "correct": "b",
+            "correctAnswer": "b",
+            "explanation": "Der Text sagt: 'Die Reparatur dauert etwa zwei Stunden.'",
+            "grammarTags": [
+              "g-de-a2-praesens"
+            ],
+            "topicTags": [
+              "daily_life"
+            ],
+            "vocabularyTags": [
+              "Dauer",
+              "Reparatur"
+            ],
+            "difficulty": 2,
+            "options": [
+              "a) Eine Stunde",
+              "b) Etwa zwei Stunden",
+              "c) Drei Stunden"
+            ],
+            "passageId": "de-a2-p-lesen-t3-dienstleistungen-alltag-03",
+            "number": 15,
+            "nr": 15,
+            "nummer": 15
+          }
+        ],
+        "_itemCount": 5,
+        "_numberRange": {
+          "start": 11,
+          "end": 15,
+          "officialEnd": 15
+        }
+      },
+      {
+        "teil": 4,
+        "instruction": "Lesen Sie die Aufgaben 16 bis 20 und die Anzeigen a bis f.\nWelche Anzeige passt zu welcher Person? Für eine Aufgabe gibt es keine Lösung. Markieren Sie X.",
+        "blueprintSlot": "ads_matching",
+        "items": [
+          {
+            "id": "16-3bd63911",
+            "type": "matching",
+            "signText": "Die Grundschule 'Sonnenschein' sucht erfahrene Sekretäre. Arbeitszeit: 38 Stunden pro Woche, Montag bis Freitag. Wir haben keine Vier-Tage-Woche. Aber: sehr sichere Arbeit, gute Vorteile und nette Kollegen.",
+            "passageId": "de-a2-p-lesen-t4-vier-tage-woche-02-d",
+            "question": "Ein Schüler kann zwischen Fisch und Gemüse wählen und will nicht viel Geld ausgeben. Welche Anzeige passt?",
+            "options": [
+              "a) a",
+              "b) b",
+              "c) c",
+              "d) d",
+              "e) e",
+              "f) f",
+              "g) X"
+            ],
+            "correct": "c",
+            "grammarTags": [
+              "g-de-a2-modal",
+              "g-de-a2-komparativ"
+            ],
+            "topicTags": [
+              "food"
+            ],
+            "vocabularyTags": [
+              "wählen",
+              "Gemüse",
+              "Preis"
+            ],
+            "difficulty": 3,
+            "explanation": "Die Anzeige 'Schulcafé mit Wahlmenu' (c) hat zwei Optionen (Fisch und Gemüse) und das Gemüse-Menü kostet weniger (5 Euro statt 6 Euro).",
+            "correctAnswer": "c",
+            "number": 16,
+            "nr": 16,
+            "nummer": 16
+          },
+          {
+            "id": "17-3bd63911",
+            "type": "matching",
+            "signText": "Die Grundschule 'Sonnenschein' sucht erfahrene Sekretäre. Arbeitszeit: 38 Stunden pro Woche, Montag bis Freitag. Wir haben keine Vier-Tage-Woche. Aber: sehr sichere Arbeit, gute Vorteile und nette Kollegen.",
+            "passageId": "de-a2-p-lesen-t4-vier-tage-woche-02-d",
+            "question": "Eine Schule macht eine ganze Woche lang kein Fleisch. Welche Anzeige passt?",
+            "options": [
+              "a) a",
+              "b) b",
+              "c) c",
+              "d) d",
+              "e) e",
+              "f) f",
+              "g) X"
+            ],
+            "correct": "b",
+            "grammarTags": [
+              "g-de-a2-praesens"
+            ],
+            "topicTags": [
+              "food"
+            ],
+            "vocabularyTags": [
+              "Woche",
+              "Fleisch",
+              "Schule"
+            ],
+            "difficulty": 2,
+            "explanation": "Die Anzeige 'Fleischfreie Woche' (b) beschreibt genau eine Schulwoche ohne Fleisch.",
+            "correctAnswer": "b",
+            "number": 17,
+            "nr": 17,
+            "nummer": 17
+          },
+          {
+            "id": "18-3bd63911",
+            "type": "matching",
+            "signText": "Die Grundschule 'Sonnenschein' sucht erfahrene Sekretäre. Arbeitszeit: 38 Stunden pro Woche, Montag bis Freitag. Wir haben keine Vier-Tage-Woche. Aber: sehr sichere Arbeit, gute Vorteile und nette Kollegen.",
+            "passageId": "de-a2-p-lesen-t4-vier-tage-woche-02-d",
+            "question": "Ein Schüler möchte am Montag ein vegetarisches Menü mit Anmeldung essen. Welche Anzeige passt?",
+            "options": [
+              "a) a",
+              "b) b",
+              "c) c",
+              "d) d",
+              "e) e",
+              "f) f",
+              "g) X"
+            ],
+            "correct": "a",
+            "grammarTags": [
+              "g-de-a2-praesens",
+              "g-de-a2-modal"
+            ],
+            "topicTags": [
+              "food"
+            ],
+            "vocabularyTags": [
+              "vegetarisch",
+              "Anmeldung",
+              "Menü"
+            ],
+            "difficulty": 2,
+            "explanation": "Die Anzeige 'Bio-Menü für Schüler' (a) bietet ein vegetarisches Menü und verlangt Anmeldung bis Freitag.",
+            "correctAnswer": "a",
+            "number": 18,
+            "nr": 18,
+            "nummer": 18
+          },
+          {
+            "id": "19-3bd63911",
+            "type": "matching",
+            "signText": "Die Grundschule 'Sonnenschein' sucht erfahrene Sekretäre. Arbeitszeit: 38 Stunden pro Woche, Montag bis Freitag. Wir haben keine Vier-Tage-Woche. Aber: sehr sichere Arbeit, gute Vorteile und nette Kollegen.",
+            "passageId": "de-a2-p-lesen-t4-vier-tage-woche-02-d",
+            "question": "Ein Schüler sucht ein Programm mit Linsen und Bohnen statt Fleisch. Welche Anzeige passt?",
+            "options": [
+              "a) a",
+              "b) b",
+              "c) c",
+              "d) d",
+              "e) e",
+              "f) f",
+              "g) X"
+            ],
+            "correct": "d",
+            "grammarTags": [
+              "g-de-a2-praesens"
+            ],
+            "topicTags": [
+              "food"
+            ],
+            "vocabularyTags": [
+              "Linsen",
+              "Bohnen",
+              "Programm"
+            ],
+            "difficulty": 2,
+            "explanation": "Die Anzeige 'Gesundes Essen in der Schule' (d) beschreibt ein Programm, das Linsen und Bohnen als Fleischersatz bietet.",
+            "correctAnswer": "d",
+            "number": 19,
+            "nr": 19,
+            "nummer": 19
+          },
+          {
+            "id": "20-3bd63911",
+            "type": "matching",
+            "signText": "Die Grundschule 'Sonnenschein' sucht erfahrene Sekretäre. Arbeitszeit: 38 Stunden pro Woche, Montag bis Freitag. Wir haben keine Vier-Tage-Woche. Aber: sehr sichere Arbeit, gute Vorteile und nette Kollegen.",
+            "passageId": "de-a2-p-lesen-t4-vier-tage-woche-02-d",
+            "question": "Ein Schüler möchte sein Menü selbst zusammenstellen und hat viele Möglichkeiten. Welche Anzeige passt?",
+            "options": [
+              "a) a",
+              "b) b",
+              "c) c",
+              "d) d",
+              "e) e",
+              "f) f",
+              "g) X"
+            ],
+            "correct": "e",
+            "grammarTags": [
+              "g-de-a2-modal",
+              "g-de-a2-praesens"
+            ],
+            "topicTags": [
+              "food"
+            ],
+            "vocabularyTags": [
+              "Menü",
+              "zusammenstellen",
+              "Wunsch"
+            ],
+            "difficulty": 3,
+            "explanation": "Die Anzeige 'Menü nach Wunsch' (e) beschreibt ein System, wo Schüler ihr Menü aus verschiedenen Komponenten selbst zusammenstellen können.",
+            "correctAnswer": "e",
+            "number": 20,
+            "nr": 20,
+            "nummer": 20
+          }
+        ],
+        "textTitle": "Anzeige D: Schulverwaltung braucht Sekretäre",
+        "text": "Die Grundschule 'Sonnenschein' sucht erfahrene Sekretäre. Arbeitszeit: 38 Stunden pro Woche, Montag bis Freitag. Wir haben keine Vier-Tage-Woche. Aber: sehr sichere Arbeit, gute Vorteile und nette Kollegen.",
+        "passageId": "de-a2-p-lesen-t4-vier-tage-woche-02-d",
+        "questions": [],
+        "_itemCount": 5,
+        "_numberRange": {
+          "start": 16,
+          "end": 20,
+          "officialEnd": 20
+        }
+      }
+    ],
+    "horenParts": [
+      {
+        "teil": 1,
+        "instruction": "Sie hören fünf kurze Texte. Sie hören jeden Text zweimal.\nWählen Sie für die Aufgaben 1 bis 5 die richtige Lösung a, b oder c.",
+        "blueprintSlot": "short_texts_twice",
+        "transcript": "Guten Tag. Sie haben die Zahnarztpraxis Dr. Müller angerufen. Unsere Sprechzeiten sind Montag bis Freitag von 8 bis 12 Uhr und von 14 bis 18 Uhr. Samstags sind wir von 9 bis 13 Uhr geöffnet. Für einen Termin drücken Sie bitte die Taste 1. Für Notfälle drücken Sie die Taste 2.\n\nGuten Tag. Ich brauche etwas gegen Erkältung. Haben Sie Halsschmerzen? Ja, und ich huste auch. Dann empfehle ich diesen Hustensaft. Nehmen Sie dreimal täglich einen Löffel. Wie viel kostet das? Das kostet 12 Euro.\n\nGuten Morgen Herr Meyer. Ich bin krank und kann heute nicht zur Arbeit kommen. Tut mir leid. Ich war gestern beim Arzt. Der Arzt sagt, ich brauche zwei Tage Ruhe. Okay, vielen Dank, dass Sie Bescheid geben. Gute Besserung!\n\nGuten Morgen, ich hätte gerne Aspirin gegen Kopfschmerzen. Welche Stärke nehmen Sie normalerweise? 500 Milligramm. Hier haben wir 10 Tabletten für 4 Euro 50. Perfekt. Wie nehme ich die Tabletten? Zwei Tabletten alle vier Stunden mit Wasser.\n\nIch brauche eine Krankmeldung. Ich bin seit drei Tagen krank. Der Arzt schreibt eine Krankmeldung für dich. Du brauchst sie für deinen Chef.",
+        "segments": [
+          {
+            "id": "seg_1_0",
+            "label": "Text 1",
+            "transcript": "Guten Tag. Sie haben die Zahnarztpraxis Dr. Müller angerufen. Unsere Sprechzeiten sind Montag bis Freitag von 8 bis 12 Uhr und von 14 bis 18 Uhr. Samstags sind wir von 9 bis 13 Uhr geöffnet. Für einen Termin drücken Sie bitte die Taste 1. Für Notfälle drücken Sie die Taste 2.",
+            "passageId": "de-a2-p-horen-t1-gesundheit-arzt-04-s1",
+            "questions": [
+              {
+                "id": "1-3bd63911",
+                "type": "multiple",
+                "question": "Wann ist die Zahnarztpraxis Dr. Müller offen?",
+                "correct": "b",
+                "correctAnswer": "b",
+                "explanation": "Die Praxis ist Montag–Freitag 8–12 und 14–18 Uhr, Samstag 9–13 Uhr geöffnet.",
+                "grammarTags": [
+                  "g-de-a2-praesens"
+                ],
+                "topicTags": [
+                  "health"
+                ],
+                "vocabularyTags": [
+                  "Sprechzeiten",
+                  "Zahnarzt",
+                  "geöffnet"
+                ],
+                "difficulty": 2,
+                "options": [
+                  "a) Montag bis Freitag 9–12 Uhr und 15–18 Uhr",
+                  "b) Montag bis Freitag 8–12 Uhr und 14–18 Uhr, Samstag 9–13 Uhr",
+                  "c) Nur Montag bis Freitag 8–18 Uhr"
+                ],
+                "passageId": "de-a2-p-horen-t1-gesundheit-arzt-04-s1",
+                "number": 1,
+                "nr": 1,
+                "nummer": 1
+              }
+            ]
+          },
+          {
+            "id": "seg_1_1",
+            "label": "Text 5",
+            "transcript": "Guten Tag. Ich brauche etwas gegen Erkältung. Haben Sie Halsschmerzen? Ja, und ich huste auch. Dann empfehle ich diesen Hustensaft. Nehmen Sie dreimal täglich einen Löffel. Wie viel kostet das? Das kostet 12 Euro.",
+            "passageId": "de-a2-p-horen-t1-gesundheit-arzt-02-s5",
+            "questions": [
+              {
+                "id": "2-3bd63911",
+                "type": "multiple",
+                "question": "Wie oft soll die Person den Hustensaft nehmen?",
+                "correct": "c",
+                "correctAnswer": "c",
+                "explanation": "Der Apotheker sagt: 'Nehmen Sie dreimal täglich einen Löffel.'",
+                "grammarTags": [
+                  "g-de-a2-modal"
+                ],
+                "topicTags": [
+                  "health"
+                ],
+                "vocabularyTags": [
+                  "Hustensaft",
+                  "täglich",
+                  "Löffel"
+                ],
+                "difficulty": 2,
+                "options": [
+                  "a) Einmal täglich",
+                  "b) Zweimal täglich",
+                  "c) Dreimal täglich"
+                ],
+                "passageId": "de-a2-p-horen-t1-gesundheit-arzt-02-s5",
+                "number": 2,
+                "nr": 2,
+                "nummer": 2
+              }
+            ]
+          },
+          {
+            "id": "seg_1_2",
+            "label": "Text 3",
+            "transcript": "Guten Morgen Herr Meyer. Ich bin krank und kann heute nicht zur Arbeit kommen. Tut mir leid. Ich war gestern beim Arzt. Der Arzt sagt, ich brauche zwei Tage Ruhe. Okay, vielen Dank, dass Sie Bescheid geben. Gute Besserung!",
+            "passageId": "de-a2-p-horen-t1-gesundheit-arzt-02-s3",
+            "questions": [
+              {
+                "id": "3-3bd63911",
+                "type": "multiple",
+                "question": "Wie lange muss Herr die Arbeit nicht machen?",
+                "correct": "b",
+                "correctAnswer": "b",
+                "explanation": "Der Arzt sagt: 'Ich brauche zwei Tage Ruhe.'",
+                "grammarTags": [
+                  "g-de-a2-perfekt"
+                ],
+                "topicTags": [
+                  "health"
+                ],
+                "vocabularyTags": [
+                  "krank",
+                  "Arzt",
+                  "Ruhe"
+                ],
+                "difficulty": 2,
+                "options": [
+                  "a) Einen Tag",
+                  "b) Zwei Tage",
+                  "c) Eine Woche"
+                ],
+                "passageId": "de-a2-p-horen-t1-gesundheit-arzt-02-s3",
+                "number": 3,
+                "nr": 3,
+                "nummer": 3
+              }
+            ]
+          },
+          {
+            "id": "seg_1_3",
+            "label": "Text 5",
+            "transcript": "Guten Morgen, ich hätte gerne Aspirin gegen Kopfschmerzen. Welche Stärke nehmen Sie normalerweise? 500 Milligramm. Hier haben wir 10 Tabletten für 4 Euro 50. Perfekt. Wie nehme ich die Tabletten? Zwei Tabletten alle vier Stunden mit Wasser.",
+            "passageId": "de-a2-p-horen-t1-gesundheit-arzt-04-s5",
+            "questions": [
+              {
+                "id": "4-3bd63911",
+                "type": "multiple",
+                "question": "Wie oft sollte die Person die Tabletten nehmen?",
+                "correct": "a",
+                "correctAnswer": "a",
+                "explanation": "Der Apotheker sagt: ‚Zwei Tabletten alle vier Stunden mit Wasser.'",
+                "grammarTags": [
+                  "g-de-a2-modal"
+                ],
+                "topicTags": [
+                  "health"
+                ],
+                "vocabularyTags": [
+                  "Aspirin",
+                  "Tabletten",
+                  "Dosierung"
+                ],
+                "difficulty": 2,
+                "options": [
+                  "a) Alle vier Stunden",
+                  "b) Dreimal am Tag",
+                  "c) Zweimal am Tag"
+                ],
+                "passageId": "de-a2-p-horen-t1-gesundheit-arzt-04-s5",
+                "number": 4,
+                "nr": 4,
+                "nummer": 4
+              }
+            ]
+          },
+          {
+            "id": "seg_1_4",
+            "label": "Text 5",
+            "transcript": "Ich brauche eine Krankmeldung. Ich bin seit drei Tagen krank. Der Arzt schreibt eine Krankmeldung für dich. Du brauchst sie für deinen Chef.",
+            "passageId": "de-a2-p-horen-t1-gesundheit-arzt-01-s5",
+            "questions": [
+              {
+                "id": "5-3bd63911",
+                "type": "multiple",
+                "question": "Warum braucht die Person die Krankmeldung?",
+                "correct": "c",
+                "correctAnswer": "c",
+                "explanation": "Im Gespräch heißt es: 'Du brauchst sie für deinen Chef.'",
+                "grammarTags": [
+                  "g-de-a2-praesens"
+                ],
+                "topicTags": [
+                  "health"
+                ],
+                "vocabularyTags": [
+                  "Krankmeldung",
+                  "Chef"
+                ],
+                "difficulty": 2,
+                "options": [
+                  "a) für den Arzt",
+                  "b) für die Apotheke",
+                  "c) für den Chef"
+                ],
+                "passageId": "de-a2-p-horen-t1-gesundheit-arzt-01-s5",
+                "number": 5,
+                "nr": 5,
+                "nummer": 5
+              }
+            ]
+          }
+        ],
+        "_itemCount": 5,
+        "_numberRange": {
+          "start": 1,
+          "end": 5,
+          "officialEnd": 5
+        }
+      },
+      {
+        "teil": 2,
+        "instruction": "Sie hören ein Gespräch. Sie hören den Text einmal.\nWählen Sie für die Aufgaben 6 bis 10 ein passendes Bild aus a bis i.",
+        "blueprintSlot": "picture_matching",
+        "transcript": "Moderator: Guten Tag! Heute sprechen wir über das Ehrenamt. Unser Gast ist Frau Müller, sie arbeitet seit fünf Jahren freiwillig in einem Seniorenheim. Frau Müller, warum haben Sie angefangen, ehrenamtlich zu arbeiten? Frau Müller: Ich wollte etwas für andere Menschen tun und gleichzeitig neue Leute kennenlernen. Das Ehrenamt gibt mir viel Spaß und ich lerne jeden Tag neue Dinge. Moderator: Was sind die größten Chancen des Ehrenamts? Frau Müller: Man bekommt wertvolle Erfahrung, knüpft soziale Kontakte und hilft der Gemeinschaft. Außerdem ist es gut für die eigene Gesundheit, aktiv zu sein. Moderator: Würden Sie das Ehrenamt anderen Menschen empfehlen? Frau Müller: Ja, sehr gerne! Jeder Mensch kann etwas Wichtiges beitragen.",
+        "segments": [
+          {
+            "id": "seg_fill_0",
+            "label": "Aufnahme 1",
+            "transcript": "Moderator: Guten Tag! Heute sprechen wir über das Ehrenamt. Unser Gast ist Frau Müller, sie arbeitet seit fünf Jahren freiwillig in einem Seniorenheim. Frau Müller, warum haben Sie angefangen, ehrenamtlich zu arbeiten? Frau Müller: Ich wollte etwas für andere Menschen tun und gleichzeitig neue Leute kennenlernen. Das Ehrenamt gibt mir viel Spaß und ich lerne jeden Tag neue Dinge. Moderator: Was sind die größten Chancen des Ehrenamts? Frau Müller: Man bekommt wertvolle Erfahrung, knüpft soziale Kontakte und hilft der Gemeinschaft. Außerdem ist es gut für die eigene Gesundheit, aktiv zu sein. Moderator: Würden Sie das Ehrenamt anderen Menschen empfehlen? Frau Müller: Ja, sehr gerne! Jeder Mensch kann etwas Wichtiges beitragen.",
+            "passageId": "de-a2-p-horen-t2-ehrenamt-chancen-04",
+            "questions": [
+              {
+                "id": "6-3bd63911",
+                "type": "matching",
+                "question": "Frau Müller arbeitet in einem Seniorenheim. Was ist eine Chance des Ehrenamts für sie?",
+                "correct": "a",
+                "correctAnswer": "a",
+                "explanation": "Im Text sagt Frau Müller, dass das Ehrenamt ihr viel Spaß gibt und sie neue Leute kennenlernt. Das ist eine Chance des Ehrenamts.",
+                "options": [
+                  "a) Man lernt neue Menschen kennen und hat Spaß an der Arbeit",
+                  "b) Man verdient viel Geld und wird berühmt",
+                  "c) Man muss nicht mehr arbeiten und hat viel Freizeit",
+                  "d) Man braucht keine Ausbildung und keinen Schulabschluss",
+                  "e) Man kann nur am Wochenende arbeiten",
+                  "f) Man trifft nur alte Menschen und langweilt sich",
+                  "g) Man hat keine Verantwortung für andere",
+                  "h) Man arbeitet allein und ohne Kontakt zu anderen",
+                  "i) Man reist um die ganze Welt"
+                ],
+                "grammarTags": [
+                  "g-de-a2-praesens",
+                  "g-de-a2-nebensatz"
+                ],
+                "topicTags": [
+                  "society"
+                ],
+                "vocabularyTags": [
+                  "ehrenamt",
+                  "chance",
+                  "erfahrung",
+                  "gemeinschaft"
+                ],
+                "difficulty": 2,
+                "passageId": "de-a2-p-horen-t2-ehrenamt-chancen-04",
+                "number": 6,
+                "nr": 6,
+                "nummer": 6
+              },
+              {
+                "id": "7-3bd63911",
+                "type": "matching",
+                "question": "Warum hat Frau Müller mit dem Ehrenamt angefangen?",
+                "correct": "b",
+                "correctAnswer": "b",
+                "explanation": "Frau Müller sagt: 'Ich wollte etwas für andere Menschen tun und gleichzeitig neue Leute kennenlernen.' Das sind ihre Gründe für das Ehrenamt.",
+                "options": [
+                  "a) Sie war arbeitslos und brauchte Geld",
+                  "b) Sie wollte anderen helfen und neue Menschen treffen",
+                  "c) Sie musste von ihrer Familie dazu gezwungen werden",
+                  "d) Sie wollte in einem Seniorenheim wohnen",
+                  "e) Sie suchte nach Unterhaltung in ihrer Freizeit",
+                  "f) Sie brauchte ein Zertifikat für ihre Karriere",
+                  "g) Sie war krank und wollte gesünder werden",
+                  "h) Sie kannte niemanden und war sehr einsam",
+                  "i) Sie wollte Fernsehen und Filme sehen"
+                ],
+                "grammarTags": [
+                  "g-de-a2-modal",
+                  "g-de-a2-perfekt"
+                ],
+                "topicTags": [
+                  "society"
+                ],
+                "vocabularyTags": [
+                  "ehrenamt",
+                  "helfen",
+                  "kennenlernen",
+                  "grund"
+                ],
+                "difficulty": 2,
+                "passageId": "de-a2-p-horen-t2-ehrenamt-chancen-04",
+                "number": 7,
+                "nr": 7,
+                "nummer": 7
+              },
+              {
+                "id": "8-3bd63911",
+                "type": "matching",
+                "question": "Welche Chancen nennt Frau Müller für das Ehrenamt?",
+                "correct": "d",
+                "correctAnswer": "d",
+                "explanation": "Frau Müller beschreibt drei Chancen: wertvolle Erfahrung, soziale Kontakte und Hilfe für die Gemeinschaft. Sie sagt auch, dass es gut für die Gesundheit ist.",
+                "options": [
+                  "a) Geld verdienen und schnell reich werden",
+                  "b) Eine neue Wohnung und ein Auto bekommen",
+                  "c) Die Familie ignorieren und allein leben",
+                  "d) Erfahrung sammeln, soziale Kontakte knüpfen und der Gemeinschaft helfen",
+                  "e) Nur am Wochenende arbeiten ohne Stress",
+                  "f) Keine Verantwortung haben und entspannen",
+                  "g) Mit Prominenten bekannt werden",
+                  "h) Andere Menschen kontrollieren und befehlen",
+                  "i) Den Beruf wechseln ohne Risiko"
+                ],
+                "grammarTags": [
+                  "g-de-a2-praesens",
+                  "g-de-a2-trennbar"
+                ],
+                "topicTags": [
+                  "society"
+                ],
+                "vocabularyTags": [
+                  "chance",
+                  "erfahrung",
+                  "kontakt",
+                  "gemeinschaft",
+                  "gesundheit"
+                ],
+                "difficulty": 2,
+                "passageId": "de-a2-p-horen-t2-ehrenamt-chancen-04",
+                "number": 8,
+                "nr": 8,
+                "nummer": 8
+              },
+              {
+                "id": "9-3bd63911",
+                "type": "matching",
+                "question": "Wie lange arbeitet Frau Müller schon ehrenamtlich?",
+                "correct": "e",
+                "correctAnswer": "e",
+                "explanation": "Der Moderator sagt am Anfang des Gesprächs: 'Frau Müller, sie arbeitet seit fünf Jahren freiwillig in einem Seniorenheim.'",
+                "options": [
+                  "a) Nur wenige Monate",
+                  "b) Ein Jahr",
+                  "c) Zwei Jahre",
+                  "d) Drei Jahre",
+                  "e) Fünf Jahre",
+                  "f) Zehn Jahre",
+                  "g) Sie fängt gerade an",
+                  "h) Seit ihrer Pensionierung",
+                  "i) Seit ihrer Kindheit"
+                ],
+                "grammarTags": [
+                  "g-de-a2-praesens"
+                ],
+                "topicTags": [
+                  "society"
+                ],
+                "vocabularyTags": [
+                  "ehrenamt",
+                  "freiwillig",
+                  "zeit",
+                  "dauer"
+                ],
+                "difficulty": 2,
+                "passageId": "de-a2-p-horen-t2-ehrenamt-chancen-04",
+                "number": 9,
+                "nr": 9,
+                "nummer": 9
+              },
+              {
+                "id": "10-3bd63911",
+                "type": "matching",
+                "question": "Was würde Frau Müller anderen Menschen raten?",
+                "correct": "f",
+                "correctAnswer": "f",
+                "explanation": "Am Ende des Gesprächs sagt Frau Müller: 'Ja, sehr gerne! Jeder Mensch kann etwas Wichtiges beitragen.' Sie empfiehlt das Ehrenamt anderen Menschen.",
+                "options": [
+                  "a) Lieber einen normalen Job suchen",
+                  "b) Nur für Familie und sich selbst arbeiten",
+                  "c) Das Ehrenamt ist zu anstrengend",
+                  "d) Man sollte immer Geld für Arbeit bekommen",
+                  "e) Andere Menschen sind nicht wichtig",
+                  "f) Das Ehrenamt probieren, weil jeder etwas Wichtiges beitragen kann",
+                  "g) Alte Menschen sind zu langweilig",
+                  "h) Freiwillige Arbeit ist Zeitverschwendung",
+                  "i) Man sollte nur allein arbeiten"
+                ],
+                "grammarTags": [
+                  "g-de-a2-modal",
+                  "g-de-a2-nebensatz"
+                ],
+                "topicTags": [
+                  "society"
+                ],
+                "vocabularyTags": [
+                  "empfehlung",
+                  "rat",
+                  "beitragen",
+                  "wichtig"
+                ],
+                "difficulty": 2,
+                "passageId": "de-a2-p-horen-t2-ehrenamt-chancen-04",
+                "number": 10,
+                "nr": 10,
+                "nummer": 10
+              }
+            ]
+          }
+        ],
+        "_itemCount": 5,
+        "_numberRange": {
+          "start": 6,
+          "end": 10,
+          "officialEnd": 10
+        }
+      },
+      {
+        "teil": 3,
+        "instruction": "Sie hören fünf kurze Gespräche. Sie hören jeden Text einmal.\nWählen Sie für die Aufgaben 11 bis 15 die richtige Lösung a, b oder c.",
+        "blueprintSlot": "short_dialogues_once",
+        "transcript": "Sarah: Tom, wo wollen wir denn essen gehen? Mann: Ich habe einen italienischen Restaurant gefunden. Die Pizzas sind dort sehr lecker. Sarah: Klingt gut! Aber ich mag auch gerne asiatisches Essen. Mann: Okay, dann gehen wir in zwei verschiedene Restaurants! Sarah: Abgemacht! Lass uns Reservierungen machen. Mann: Gute Idee. Ich rufe gleich an.\n\n● A: Hallo Marco, wie geht es dir? ● B: Hallo! Mir geht es gut. Ich habe gerade eine neue Stelle bekommen. ● A: Das ist ja toll! Wann fängst du an? ● B: In zwei Wochen. Ich bin sehr aufgeregt. ● A: Glückwunsch! Welche Aufgaben warten auf dich?\n\n■ Sohn: Mama, darf ich mein altes Bett mitnehmen? ■ Mutter: Nein, das Bett ist zu alt. Wir kaufen dir ein neues Bett. ■ Sohn: Und mein Schreibtisch? ■ Mutter: Der Schreibtisch passt in dein neues Zimmer. Es ist größer als das jetzige Zimmer.\n\nNatürlich! Ich bin neugierig. Übrigens, ich habe auch etwas Neues angefangen. Ich lerne Gitarre spielen. Es ist schwierig, aber ich liebe Musik. Wir könnten zusammen musizieren!\n\n● A: Vermisst du deine alte Arbeit? ● B: Ein bisschen die Kollegen. Aber nicht den Job selbst. ● A: Wann ist dein letzter Tag hier? ● B: Nächste Woche Freitag. Dann komme ich in zwei Wochen zur neuen Stelle.",
+        "segments": [
+          {
+            "id": "seg_3_0",
+            "label": "Text 4",
+            "transcript": "Sarah: Tom, wo wollen wir denn essen gehen? Mann: Ich habe einen italienischen Restaurant gefunden. Die Pizzas sind dort sehr lecker. Sarah: Klingt gut! Aber ich mag auch gerne asiatisches Essen. Mann: Okay, dann gehen wir in zwei verschiedene Restaurants! Sarah: Abgemacht! Lass uns Reservierungen machen. Mann: Gute Idee. Ich rufe gleich an.",
+            "passageId": "de-a2-p-horen-t3-urlaubsplanung-freunde-03-s4",
+            "questions": [
+              {
+                "id": "11-3bd63911",
+                "type": "multiple",
+                "question": "Warum wollen sie in zwei verschiedene Restaurants gehen?",
+                "correct": "c",
+                "correctAnswer": "c",
+                "explanation": "Sarah mag auch gerne asiatisches Essen, darum gehen sie in zwei verschiedene Restaurants: eines italienisches und eines asiatisches.",
+                "grammarTags": [
+                  "g-de-a2-nebensatz"
+                ],
+                "topicTags": [
+                  "food"
+                ],
+                "vocabularyTags": [
+                  "Restaurant",
+                  "Essen",
+                  "italienisch"
+                ],
+                "difficulty": 3,
+                "options": [
+                  "a) Weil das erste Restaurant zu teuer ist",
+                  "b) Weil Tom kein italienisches Essen mag",
+                  "c) Weil Sarah auch asiatisches Essen mag"
+                ],
+                "passageId": "de-a2-p-horen-t3-urlaubsplanung-freunde-03-s4",
+                "number": 11,
+                "nr": 11,
+                "nummer": 11
+              }
+            ]
+          },
+          {
+            "id": "seg_3_1",
+            "label": "Text 1",
+            "transcript": "● A: Hallo Marco, wie geht es dir? ● B: Hallo! Mir geht es gut. Ich habe gerade eine neue Stelle bekommen. ● A: Das ist ja toll! Wann fängst du an? ● B: In zwei Wochen. Ich bin sehr aufgeregt. ● A: Glückwunsch! Welche Aufgaben warten auf dich?",
+            "passageId": "de-a2-p-horen-t3-jobwechsel-kollegen-02-s1",
+            "questions": [
+              {
+                "id": "12-3bd63911",
+                "type": "multiple",
+                "question": "Wann fängt Marco die neue Stelle an?",
+                "correct": "b",
+                "correctAnswer": "b",
+                "explanation": "Marco sagt deutlich: 'In zwei Wochen. Ich bin sehr aufgeregt.'",
+                "grammarTags": [
+                  "g-de-a2-praesens"
+                ],
+                "topicTags": [
+                  "work"
+                ],
+                "vocabularyTags": [
+                  "Stelle",
+                  "anfangen"
+                ],
+                "difficulty": 2,
+                "options": [
+                  "a) nächste Woche",
+                  "b) in zwei Wochen",
+                  "c) in einem Monat"
+                ],
+                "passageId": "de-a2-p-horen-t3-jobwechsel-kollegen-02-s1",
+                "number": 12,
+                "nr": 12,
+                "nummer": 12
+              }
+            ]
+          },
+          {
+            "id": "seg_3_2",
+            "label": "Text 2",
+            "transcript": "■ Sohn: Mama, darf ich mein altes Bett mitnehmen? ■ Mutter: Nein, das Bett ist zu alt. Wir kaufen dir ein neues Bett. ■ Sohn: Und mein Schreibtisch? ■ Mutter: Der Schreibtisch passt in dein neues Zimmer. Es ist größer als das jetzige Zimmer.",
+            "passageId": "de-a2-p-horen-t3-umzug-familie-03-s2",
+            "questions": [
+              {
+                "id": "13-3bd63911",
+                "type": "multiple",
+                "question": "Warum kann der Sohn sein altes Bett nicht mitnehmen?",
+                "correct": "a",
+                "correctAnswer": "a",
+                "explanation": "Die Mutter sagt: 'Nein, das Bett ist zu alt. Wir kaufen dir ein neues Bett.'",
+                "grammarTags": [
+                  "g-de-a2-praesens"
+                ],
+                "topicTags": [
+                  "family"
+                ],
+                "vocabularyTags": [
+                  "Bett",
+                  "alt",
+                  "neu"
+                ],
+                "difficulty": 2,
+                "options": [
+                  "a) Das Bett ist zu alt",
+                  "b) Das Bett ist zu groß",
+                  "c) Das Bett passt nicht"
+                ],
+                "passageId": "de-a2-p-horen-t3-umzug-familie-03-s2",
+                "number": 13,
+                "nr": 13,
+                "nummer": 13
+              }
+            ]
+          },
+          {
+            "id": "seg_3_3",
+            "label": "Text 4",
+            "transcript": "Natürlich! Ich bin neugierig. Übrigens, ich habe auch etwas Neues angefangen. Ich lerne Gitarre spielen. Es ist schwierig, aber ich liebe Musik. Wir könnten zusammen musizieren!",
+            "passageId": "de-a2-p-horen-t3-hobby-neues-01-s4",
+            "questions": [
+              {
+                "id": "14-3bd63911",
+                "type": "multiple",
+                "question": "Welches neue Hobby hat die vierte Person?",
+                "correct": "a",
+                "correctAnswer": "a",
+                "explanation": "Die Person sagt deutlich: 'Ich lerne Gitarre spielen.' Dies ist ihr neues Hobby.",
+                "grammarTags": [
+                  "g-de-a2-praesens"
+                ],
+                "topicTags": [
+                  "culture"
+                ],
+                "vocabularyTags": [
+                  "Gitarre",
+                  "Musik",
+                  "neugierig"
+                ],
+                "difficulty": 2,
+                "options": [
+                  "a) Gitarre spielen",
+                  "b) Singen",
+                  "c) Tanzen"
+                ],
+                "passageId": "de-a2-p-horen-t3-hobby-neues-01-s4",
+                "number": 14,
+                "nr": 14,
+                "nummer": 14
+              }
+            ]
+          },
+          {
+            "id": "seg_3_4",
+            "label": "Text 5",
+            "transcript": "● A: Vermisst du deine alte Arbeit? ● B: Ein bisschen die Kollegen. Aber nicht den Job selbst. ● A: Wann ist dein letzter Tag hier? ● B: Nächste Woche Freitag. Dann komme ich in zwei Wochen zur neuen Stelle.",
+            "passageId": "de-a2-p-horen-t3-jobwechsel-kollegen-02-s5",
+            "questions": [
+              {
+                "id": "15-3bd63911",
+                "type": "multiple",
+                "question": "Was vermisst Marco von seiner alten Arbeit?",
+                "correct": "b",
+                "correctAnswer": "b",
+                "explanation": "Marco antwortet: 'Ein bisschen die Kollegen. Aber nicht den Job selbst.'",
+                "grammarTags": [
+                  "g-de-a2-praesens"
+                ],
+                "topicTags": [
+                  "work"
+                ],
+                "vocabularyTags": [
+                  "vermissen",
+                  "Kollege"
+                ],
+                "difficulty": 2,
+                "options": [
+                  "a) Den Job und die Arbeit.",
+                  "b) Nur die Kollegen.",
+                  "c) Nichts von der alten Arbeit."
+                ],
+                "passageId": "de-a2-p-horen-t3-jobwechsel-kollegen-02-s5",
+                "number": 15,
+                "nr": 15,
+                "nummer": 15
+              }
+            ]
+          }
+        ],
+        "_itemCount": 5,
+        "_numberRange": {
+          "start": 11,
+          "end": 15,
+          "officialEnd": 15
+        }
+      },
+      {
+        "teil": 4,
+        "instruction": "Sie hören ein Interview. Sie hören den Text zweimal.\nWählen Sie für die Aufgaben 16 bis 20 Ja oder Nein.",
+        "blueprintSlot": "interview_twice",
+        "transcript": "Moderatorin: Guten Morgen! Heute sprechen wir über ein wichtiges Thema: Sollte das Autofahren in Städten eingeschränkt werden? Bei uns ist Verkehrsplaner Markus Weber. Willkommen!\n\nMarkus Weber: Danke der Einladung!\n\nModerator: Herr Weber, viele Städte haben Probleme mit Verkehr und Luftverschmutzung. Was ist Ihre Meinung?\n\nMarkus Weber: Das ist richtig. In vielen Großstädten gibt es jeden Tag Staus. Das Auto verursacht Lärm und Abgase. Ich denke, wir sollten weniger Autos in der Innenstadt haben. Vielleicht sollten wir Busse und Fahrräder fördern.\n\nModerator: Aber was ist mit den Menschen, die zum Arbeiten ins Zentrum fahren müssen?\n\nMarkus Weber: Gute Frage. Deshalb brauchen wir bessere öffentliche Verkehrsmittel. Wenn die U-Bahn und der Bus zuverlässig sind, fahren mehr Menschen damit. Das ist billiger und schneller als Auto.\n\nModerator: Kostet das nicht sehr viel Geld?\n\nMarkus Weber: Ja, der Ausbau kostet Geld. Aber die Verschmutzung und die Staus kosten die Stadt auch viel. Mit weniger Autos sparen wir Zeit und Geld. Die Menschen sind weniger krank. Die Luft ist sauberer.\n\nModerator: Also Sie sind für Autoverbote?\n\nMarkus Weber: Nicht für totale Verbote. Aber für weniger Autos. Zum Beispiel: nur noch Elektroautos in der Innenstadt. Oder: Autos zahlen Gebühren. Diese Gebühren finanzieren dann Bus und Fahrrad.\n\nModerator: Interessant. Vielen Dank, Herr Weber!\n\nMarkus Weber: Gerne! Danke für das Gespräch.",
+        "segments": [
+          {
+            "id": "seg_fill_0",
+            "label": "Interview",
+            "transcript": "Moderatorin: Guten Morgen! Heute sprechen wir über ein wichtiges Thema: Sollte das Autofahren in Städten eingeschränkt werden? Bei uns ist Verkehrsplaner Markus Weber. Willkommen!\n\nMarkus Weber: Danke der Einladung!\n\nModerator: Herr Weber, viele Städte haben Probleme mit Verkehr und Luftverschmutzung. Was ist Ihre Meinung?\n\nMarkus Weber: Das ist richtig. In vielen Großstädten gibt es jeden Tag Staus. Das Auto verursacht Lärm und Abgase. Ich denke, wir sollten weniger Autos in der Innenstadt haben. Vielleicht sollten wir Busse und Fahrräder fördern.\n\nModerator: Aber was ist mit den Menschen, die zum Arbeiten ins Zentrum fahren müssen?\n\nMarkus Weber: Gute Frage. Deshalb brauchen wir bessere öffentliche Verkehrsmittel. Wenn die U-Bahn und der Bus zuverlässig sind, fahren mehr Menschen damit. Das ist billiger und schneller als Auto.\n\nModerator: Kostet das nicht sehr viel Geld?\n\nMarkus Weber: Ja, der Ausbau kostet Geld. Aber die Verschmutzung und die Staus kosten die Stadt auch viel. Mit weniger Autos sparen wir Zeit und Geld. Die Menschen sind weniger krank. Die Luft ist sauberer.\n\nModerator: Also Sie sind für Autoverbote?\n\nMarkus Weber: Nicht für totale Verbote. Aber für weniger Autos. Zum Beispiel: nur noch Elektroautos in der Innenstadt. Oder: Autos zahlen Gebühren. Diese Gebühren finanzieren dann Bus und Fahrrad.\n\nModerator: Interessant. Vielen Dank, Herr Weber!\n\nMarkus Weber: Gerne! Danke für das Gespräch.",
+            "passageId": "de-a2-p-horen-t4-autoverbote-debatte-02",
+            "questions": [
+              {
+                "id": "16-3bd63911",
+                "type": "ja_nein",
+                "question": "Möchte Markus Weber alle Autos aus der Stadt verbieten?",
+                "correct": "Nein",
+                "correctAnswer": "Nein",
+                "explanation": "Markus Weber sagt: 'Nicht für totale Verbote. Aber für weniger Autos.' Er möchte weniger Autos, nicht alle Autos verbieten.",
+                "options": [],
+                "grammarTags": [
+                  "g-de-a2-nebensatz"
+                ],
+                "topicTags": [
+                  "society"
+                ],
+                "vocabularyTags": [
+                  "Verbot",
+                  "Ausnahme"
+                ],
+                "difficulty": 2,
+                "passageId": "de-a2-p-horen-t4-autoverbote-debatte-02",
+                "number": 16,
+                "nr": 16,
+                "nummer": 16
+              },
+              {
+                "id": "17-3bd63911",
+                "type": "ja_nein",
+                "question": "Sind öffentliche Verkehrsmittel schneller und billiger als Auto?",
+                "correct": "Ja",
+                "correctAnswer": "Ja",
+                "explanation": "Markus Weber sagt: 'Das ist billiger und schneller als Auto.' wenn die U-Bahn und der Bus zuverlässig sind.",
+                "options": [],
+                "grammarTags": [
+                  "g-de-a2-komparativ"
+                ],
+                "topicTags": [
+                  "travel"
+                ],
+                "vocabularyTags": [
+                  "Verkehrsmittel",
+                  "schnell",
+                  "billig"
+                ],
+                "difficulty": 2,
+                "passageId": "de-a2-p-horen-t4-autoverbote-debatte-02",
+                "number": 17,
+                "nr": 17,
+                "nummer": 17
+              },
+              {
+                "id": "18-3bd63911",
+                "type": "ja_nein",
+                "question": "Hat Verkehr in Städten Probleme mit Lärm und Luftverschmutzung?",
+                "correct": "Ja",
+                "correctAnswer": "Ja",
+                "explanation": "Markus Weber erklärt, dass Autos Lärm und Abgase verursachen. Das ist ein großes Problem in Großstädten.",
+                "options": [],
+                "grammarTags": [
+                  "g-de-a2-praesens"
+                ],
+                "topicTags": [
+                  "society"
+                ],
+                "vocabularyTags": [
+                  "Lärm",
+                  "Abgas",
+                  "Luftverschmutzung"
+                ],
+                "difficulty": 2,
+                "passageId": "de-a2-p-horen-t4-autoverbote-debatte-02",
+                "number": 18,
+                "nr": 18,
+                "nummer": 18
+              },
+              {
+                "id": "19-3bd63911",
+                "type": "ja_nein",
+                "question": "Schlägt Markus Weber vor, dass nur Elektroautos in die Innenstadt fahren dürfen?",
+                "correct": "Ja",
+                "correctAnswer": "Ja",
+                "explanation": "Markus Weber sagt als mögliche Lösung: 'Zum Beispiel: nur noch Elektroautos in der Innenstadt.'",
+                "options": [],
+                "grammarTags": [
+                  "g-de-a2-modal"
+                ],
+                "topicTags": [
+                  "society"
+                ],
+                "vocabularyTags": [
+                  "Elektroauto",
+                  "Innenstadt",
+                  "Vorschlag"
+                ],
+                "difficulty": 2,
+                "passageId": "de-a2-p-horen-t4-autoverbote-debatte-02",
+                "number": 19,
+                "nr": 19,
+                "nummer": 19
+              },
+              {
+                "id": "20-3bd63911",
+                "type": "ja_nein",
+                "question": "Finanzieren Gebühren für Autos die öffentlichen Verkehrsmittel?",
+                "correct": "Ja",
+                "correctAnswer": "Ja",
+                "explanation": "Markus Weber erklärt: 'Diese Gebühren finanzieren dann Bus und Fahrrad.' Das ist eine Möglichkeit, die neuen Verkehrsmittel zu bezahlen.",
+                "options": [],
+                "grammarTags": [
+                  "g-de-a2-praesens"
+                ],
+                "topicTags": [
+                  "society"
+                ],
+                "vocabularyTags": [
+                  "Gebühr",
+                  "Finanzierung",
+                  "Verkehrsmittel"
+                ],
+                "difficulty": 3,
+                "passageId": "de-a2-p-horen-t4-autoverbote-debatte-02",
+                "number": 20,
+                "nr": 20,
+                "nummer": 20
+              }
+            ]
+          }
+        ],
+        "_itemCount": 5,
+        "_numberRange": {
+          "start": 16,
+          "end": 20,
+          "officialEnd": 20
+        }
+      }
+    ],
+    "schreibenParts": [
+      {
+        "aufgabe": 1,
+        "fieldId": "write_bp_1",
+        "task": "Sie möchten einem Freund einen Sprachkurs empfehlen. Schreiben Sie eine SMS (20–30 Wörter). Nennen Sie:\n• Welcher Kurs (z.B. Englisch, Deutsch)\n• Warum ist der Kurs gut?\n• Wann können Sie zusammen anfangen?",
+        "minWords": 20,
+        "maxWords": 30,
+        "mandatory": false,
+        "taskType": "sms",
+        "blueprintSlot": "writing_task",
+        "grammarTags": [
+          "g-de-a2-praesens",
+          "g-de-a2-modal"
+        ],
+        "topicTags": [
+          "education"
+        ]
+      },
+      {
+        "aufgabe": 2,
+        "fieldId": "write_bp_2",
+        "task": "Sie arbeiten viel und machen oft Überstunden. Schreiben Sie eine E-Mail an einen Kollegen (30–40 Wörter). Schreiben Sie zu drei Punkten:\n• Wie viele Stunden arbeiten Sie pro Woche?\n• Ist das ein Problem für Sie?\n• Was möchten Sie tun?",
+        "minWords": 30,
+        "maxWords": 40,
+        "mandatory": false,
+        "taskType": "semiformal_email",
+        "blueprintSlot": "writing_task",
+        "grammarTags": [
+          "g-de-a2-praesens",
+          "g-de-a2-modal"
+        ],
+        "topicTags": [
+          "work"
+        ]
+      }
+    ],
+    "sprechenParts": [
+      {
+        "teil": 1,
+        "title": "Teil 1 — Fragen zur Person",
+        "fieldId": "speak_bp_1",
+        "situation": "Sie möchten mit Freunden einen Tagesausflug planen. Besprechen Sie folgende Punkte:\n\n• Ziel und Dauer des Ausflugs\n• Anreise und Verkehrsmittel\n• Aktivitäten vor Ort\n• Verpflegung und Budget\n• Zeitpunkt und Rückkehr\n\nSprechen Sie etwa 1,5–2 Minuten.",
+        "points": [
+          "personal_questions"
+        ],
+        "blueprintSlot": "speaking_task",
+        "grammarTags": [
+          "g-de-b1-futur",
+          "g-de-b1-modalverben",
+          "g-de-b1-nebensatz"
+        ],
+        "topicTags": [
+          "travel"
+        ]
+      },
+      {
+        "teil": 2,
+        "title": "Teil 2 — Von sich erzählen",
+        "fieldId": "speak_bp_2",
+        "situation": "Präsentation: Halten Sie einen kurzen Vortrag zum Thema »Einkaufen im Internet«. Gliedern Sie Ihren Vortrag so: – Einleitung zum Thema – Die Situation in Ihrem Heimatland – Vor- und Nachteile des Online-Einkaufs – Ihre persönliche Meinung.",
+        "points": [
+          "about_self"
+        ],
+        "blueprintSlot": "speaking_task",
+        "grammarTags": [
+          "g-de-b1-komparativ"
+        ],
+        "topicTags": [
+          "shopping"
+        ]
+      },
+      {
+        "teil": 3,
+        "title": "Teil 3 — Gemeinsam planen",
+        "fieldId": "speak_bp_3",
+        "situation": "Ihr Gesprächspartner/Ihre Gesprächspartnerin hat gerade seine/ihre Präsentation zum Thema „Ehrenamt in der eigenen Kultur“ gehalten. Geben Sie ihm/ihr Feedback zu seiner/ihrer Präsentation. Sagen Sie, was Ihnen gut gefallen hat oder was Sie interessant fanden. Stellen Sie anschließend 2-3 Fragen zum Thema oder zur Präsentation.",
+        "points": [
+          "plan_together"
+        ],
+        "blueprintSlot": "speaking_task",
+        "grammarTags": [
+          "g-de-b1-fragen",
+          "g-de-b1-komparativ",
+          "g-de-b1-dativ"
+        ],
+        "topicTags": [
+          "culture"
+        ]
+      }
+    ],
+    "curated": true,
+    "_itemDeficits": []
+  },
+  "provenance": {
+    "generatedBy": "promote-bank-to-curated",
+    "validatedBy": "ExamValidator(strict)+CefrGate",
+    "blueprintId": "goethe-a2",
+    "cefrGate": {
+      "withinRange": true,
+      "metrics": {},
+      "reasons": []
+    },
+    "sourceBankIds": [
+      "de-a2-l-t1-familie-pflege-01-q4",
+      "de-a2-l-t1-familie-pflege-01-q1",
+      "de-a2-l-t1-familie-pflege-01-q5",
+      "de-a2-l-t1-familie-pflege-01-q2",
+      "de-a2-l-t1-familie-pflege-01-q3",
+      "de-a2-l-t2-freizeit-kino-streaming-01-q4",
+      "de-a2-l-t2-freizeit-kino-streaming-01-q5",
+      "de-a2-l-t2-freizeit-kino-streaming-01-q3",
+      "de-a2-l-t2-freizeit-kino-streaming-01-q2",
+      "de-a2-l-t2-freizeit-kino-streaming-01-q1",
+      "de-a2-l-t3-dienstleistungen-alltag-03-q4",
+      "de-a2-l-t3-dienstleistungen-alltag-03-q5",
+      "de-a2-l-t3-dienstleistungen-alltag-03-q3",
+      "de-a2-l-t3-dienstleistungen-alltag-03-q1",
+      "de-a2-l-t3-dienstleistungen-alltag-03-q2",
+      "de-a2-l-t4-vegetarismus-schule-01-q3",
+      "de-a2-l-t4-vegetarismus-schule-01-q2",
+      "de-a2-l-t4-vegetarismus-schule-01-q1",
+      "de-a2-l-t4-vegetarismus-schule-01-q4",
+      "de-a2-l-t4-vegetarismus-schule-01-q5",
+      "de-a2-horen-t1-gesundheit-arzt-04-q1",
+      "de-a2-horen-t1-gesundheit-arzt-02-q5",
+      "de-a2-horen-t1-gesundheit-arzt-02-q3",
+      "de-a2-horen-t1-gesundheit-arzt-04-q5",
+      "de-a2-horen-t1-gesundheit-arzt-01-q5",
+      "de-a2-h-t2-ehrenamt-chancen-04-q1",
+      "de-a2-h-t2-stadtplanung-01-q1",
+      "de-a2-h-t2-umweltschutz-vortrag-01-q4",
+      "de-a2-h-t2-umweltschutz-vortrag-02-q1",
+      "de-a2-h-t2-umweltschutz-vortrag-02-q3",
+      "de-a2-h-t3-urlaubsplanung-freunde-03-q4",
+      "de-a2-h-t3-jobwechsel-kollegen-02-q1",
+      "de-a2-h-t3-umzug-familie-03-q2",
+      "de-a2-horen-t3-hobby-neues-01-q4",
+      "de-a2-h-t3-jobwechsel-kollegen-02-q5",
+      "de-a2-h-t4-autoverbote-debatte-01-q4",
+      "de-a2-h-t4-englischklasse-01-q2",
+      "de-a2-h-t4-autoverbote-debatte-01-q3",
+      "de-a2-h-t4-englischklasse-02-q1",
+      "de-a2-h-t4-homeoffice-diskussion-01-q5",
+      "de-a2-s-t1-kurs-anmeldung-01-q1",
+      "de-a2-s-t2-arbeit-alltag-01-q1",
+      "de-b1-sp-t1-reise-vorbereitung-01-q1",
+      "de-b1-sp-t2-onlineshopping-q1",
+      "de-b1-sp-t3-ehrenamt-thema-02-q1"
+    ],
+    "validationErrors": [],
+    "createdAt": "2026-06-21T10:15:07.802Z",
+    "strategy": "B"
+  },
+  "_file": "curated_de_A2_3bd639117f43.json"
+}

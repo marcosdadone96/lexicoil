@@ -2,12 +2,184 @@
   "meta": {
     "language": "en",
     "level": "B2",
-    "version": 1,
-    "generatedAt": "2026-06-14",
-    "contentStatus": "scaffold",
-    "examType": "cambridge",
-    "blueprintId": "cambridge-b2"
+    "version": 2,
+    "generatedAt": "2026-06-22",
+    "source": "seed-coverage-levels"
   },
-  "passages": [],
-  "questions": []
+  "passages": [
+    {
+      "id": "p-en-B2-lesen",
+      "module": "lesen",
+      "title": "B2 reading",
+      "text": "Many cities are investing in cycling infrastructure as commuters seek healthier alternatives to driving. Supporters argue that safe bike lanes reduce congestion and emissions. Critics warn that funding must also improve public transport links."
+    },
+    {
+      "id": "p-en-B2-horen",
+      "module": "horen",
+      "title": "B2 listening",
+      "text": "Host: Good morning! Guest: I am looking for a flat in the city.\nHost: Have you seen any adverts? Guest: Yes, a small flat near the park."
+    }
+  ],
+  "questions": [
+    {
+      "id": "lb-en-b2-l1",
+      "module": "lesen",
+      "type": "true_false",
+      "question": "The text describes a person or situation.",
+      "correct": "True",
+      "correctAnswer": "True",
+      "explanation": "See passage or transcript.",
+      "grammarTags": [
+        "g-en-b2-clauses"
+      ],
+      "topicTags": [
+        "daily_life"
+      ],
+      "difficulty": 4,
+      "passageId": "p-en-B2-lesen",
+      "teil": 1
+    },
+    {
+      "id": "lb-en-b2-l2",
+      "module": "lesen",
+      "type": "true_false",
+      "question": "There is no information about work or study.",
+      "correct": "False",
+      "correctAnswer": "False",
+      "explanation": "See passage or transcript.",
+      "grammarTags": [
+        "g-en-b2-reported"
+      ],
+      "topicTags": [
+        "travel"
+      ],
+      "difficulty": 4,
+      "passageId": "p-en-B2-lesen",
+      "teil": 1
+    },
+    {
+      "id": "lb-en-b2-l3",
+      "module": "lesen",
+      "type": "multiple",
+      "question": "What is the text mainly about?",
+      "options": [
+        "a) Sport",
+        "b) Daily life, work or city life",
+        "c) Ancient history"
+      ],
+      "correct": "b",
+      "correctAnswer": "b",
+      "explanation": "See passage or transcript.",
+      "grammarTags": [
+        "g-en-b2-clauses"
+      ],
+      "topicTags": [
+        "work"
+      ],
+      "difficulty": 4,
+      "passageId": "p-en-B2-lesen",
+      "teil": 2
+    },
+    {
+      "id": "lb-en-b2-h1",
+      "module": "horen",
+      "type": "multiple",
+      "question": "What is the conversation about?",
+      "options": [
+        "a) Weather only",
+        "b) Daily life or a current topic",
+        "c) Mathematics"
+      ],
+      "correct": "b",
+      "correctAnswer": "b",
+      "explanation": "See passage or transcript.",
+      "grammarTags": [
+        "g-en-b2-clauses"
+      ],
+      "topicTags": [
+        "daily_life"
+      ],
+      "difficulty": 4,
+      "passageId": "p-en-B2-horen",
+      "segmentLabel": "Recording 1",
+      "teil": 1
+    },
+    {
+      "id": "lb-en-b2-h2",
+      "module": "horen",
+      "type": "true_false",
+      "question": "There are at least two speakers in the dialogue.",
+      "correct": "True",
+      "correctAnswer": "True",
+      "explanation": "See passage or transcript.",
+      "grammarTags": [
+        "g-en-b2-reported"
+      ],
+      "topicTags": [
+        "travel"
+      ],
+      "difficulty": 4,
+      "passageId": "p-en-B2-horen",
+      "segmentLabel": "Recording 1",
+      "teil": 1
+    },
+    {
+      "id": "lb-en-b2-g1",
+      "module": "grammatik",
+      "type": "gap_fill",
+      "question": "Complete: It is important ___ protect the environment.",
+      "correct": "to",
+      "correctAnswer": "to",
+      "explanation": "Grammar gap.",
+      "grammarTags": [
+        "g-en-b2-clauses"
+      ],
+      "topicTags": [
+        "daily_life"
+      ],
+      "difficulty": 4,
+      "teil": 2
+    },
+    {
+      "id": "lb-en-b2-g2",
+      "module": "grammatik",
+      "type": "gap_fill",
+      "question": "Complete: She has lived here ___ 2019.",
+      "correct": "since",
+      "correctAnswer": "since",
+      "explanation": "Grammar gap.",
+      "grammarTags": [
+        "g-en-b2-reported"
+      ],
+      "topicTags": [
+        "travel"
+      ],
+      "difficulty": 4,
+      "teil": 3
+    },
+    {
+      "id": "lb-en-b2-m1",
+      "module": "lesen",
+      "type": "matching",
+      "question": "Who mentions cost reduction?",
+      "options": [
+        "A) Presenter",
+        "B) Expert",
+        "C) Neither"
+      ],
+      "correct": "B",
+      "correctAnswer": "B",
+      "explanation": "Match the speaker.",
+      "grammarTags": [
+        "g-en-b2-clauses"
+      ],
+      "topicTags": [
+        "work"
+      ],
+      "difficulty": 4,
+      "passageId": "p-en-B2-horen",
+      "teil": 1
+    }
+  ],
+  "vocabulary": {}
 }

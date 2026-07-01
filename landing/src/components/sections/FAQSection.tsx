@@ -1,28 +1,29 @@
 'use client';
 
 import { useState } from 'react';
+import { PLAN_PRICING } from '@/lib/constants';
 import { Container } from '@/components/ui/Container';
 
 const FAQS = [
   {
     q: 'Do I need an account to start?',
-    a: 'No. Start the 5-minute product demo to experience the product without an account. Create a free account afterward to save vocabulary, exam history, and readiness tracking — plus 5 official mock exams per month on one certification.',
+    a: `No. Start the 5-minute product demo to experience the product without an account. Create a free account afterward to save vocabulary, exam history, and readiness tracking — plus ${PLAN_PRICING.free.examsPerMonth} official mock exams and ${PLAN_PRICING.free.aiCreditsPerMonth} AI credits per month on one certification.`,
   },
   {
     q: 'What is the difference between a practice exam and a personalized exam?',
-    a: 'A practice exam is a general mock test on an official topic — your baseline assessment. A personalized exam is generated from vocabulary you saved during practice and targets only your weak words. Personalized exams require Pro.',
+    a: 'A practice exam is a general mock test on an official topic — your baseline assessment. A personalized exam is generated from vocabulary you saved during practice and targets only your weak words. Personalized exams require Pro (3 AI credits each).',
+  },
+  {
+    q: 'What can I do with free AI credits?',
+    a: `Free accounts get ${PLAN_PRICING.free.aiCreditsPerMonth} AI credits every month — not just the first month. Use them for AI vocab quizzes (2 credits), speaking practice (2), basic writing feedback (1), and the listening game (1). Personalized exams and grammar coaching stay Pro-only.`,
   },
   {
     q: 'Can I use LexiCoil for Goethe B2?',
-    a: 'Yes. LexiCoil supports Goethe A1 through C2 with official-format modules: Leseverstehen, Hörverstehen, Schreiben, and Sprechen.',
-  },
-  {
-    q: 'How does personalized practice work?',
-    a: "During practice mode, click any word you don't know to save it to your deck. With Pro, select words and LexiCoil generates a mock exam weaving those items into realistic questions — plus a listening game and AI speaking practice.",
+    a: 'Goethe B1 is fully available at launch. Other Goethe levels (A1–C2), Cambridge, and DELE are on the roadmap — create a free Goethe B1 account now and we will add your goal as it goes live.',
   },
   {
     q: 'How many exams can I generate?',
-    a: 'Free accounts get 5 official mock exams per month on one certification and level (e.g. Goethe B1). Pro is €9.99/month for 12 exams per month, all languages and levels, plus personalized vocabulary practice. Sample demos and retaking saved exams never count against your quota.',
+    a: `Free: ${PLAN_PRICING.free.examsPerMonth} official mocks/month on one certification, plus ${PLAN_PRICING.free.poolPreview} pool exams as a preview. Pro is ${PLAN_PRICING.pro.priceLabel}/month (${PLAN_PRICING.pro.examsPerMonth} exams, ${PLAN_PRICING.pro.aiCreditsPerMonth} AI credits). Pro Max is ${PLAN_PRICING.proMax.priceLabel}/month with ${PLAN_PRICING.proMax.aiCreditsPerMonth} AI credits. Retakes and sample demos never count against quota.`,
   },
   {
     q: 'Does LexiCoil replace Goethe or Cambridge materials?',

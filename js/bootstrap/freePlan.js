@@ -14,7 +14,7 @@
   function normalizeCombo(raw) {
     const lang = String(raw?.lang || raw?.subject || '').trim().toLowerCase();
     const level = String(raw?.level || '').trim().toUpperCase();
-    if (['de', 'en', 'es'].includes(lang) && ['B1', 'B2', 'C1'].includes(level)) {
+    if (['de', 'en', 'es'].includes(lang) && ['A2', 'B1', 'B2', 'C1'].includes(level)) {
       return { lang, level };
     }
     return { ...DEFAULT };
@@ -97,6 +97,13 @@
 
   function canAccessCombo(lang, level) {
     if (!isFreeAccount()) return true;
+    if (
+      typeof LevelAvailability !== 'undefined' &&
+      typeof LevelAvailability.isCuratedOnlyLevel === 'function' &&
+      LevelAvailability.isCuratedOnlyLevel(lang, level)
+    ) {
+      return true;
+    }
     const fc = getFreeCombo() || DEFAULT;
     return fc.lang === lang && fc.level === level;
   }

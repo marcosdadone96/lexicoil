@@ -5,9 +5,9 @@ const ListeningScript = (() => {
   const SPEAKER_RE = /^([A-Za-zÀ-ÿ][A-Za-zÀ-ÿ0-9 .'-]{0,40}):\s*(.+)$/;
 
   const VOICES = {
-    de: ['pNInz6obpgDQGcFmaJgB', '21m00Tcm4TlvDq8ikWAM', 'EXAVitQu4vr4xnSDxMaL'],
-    en: ['GBv7mTt0atIp3Br8iCZE', '21m00Tcm4TlvDq8ikWAM', 'pNInz6obpgDQGcFmaJgB'],
-    es: ['ErXwobaYiN019PkySvjV', 'EXAVitQu4vr4xnSDxMaL', 'pNInz6obpgDQGcFmaJgB'],
+    de: ['pNInz6obpgDQGcFmaJgB', 'JBFqnCBsd6RMkjVDRZzb', 'onwK4e9ZLuTAKqWW03F9'],
+    en: ['GBv7mTt0atIp3Br8iCZE', 'JBFqnCBsd6RMkjVDRZzb', 'pNInz6obpgDQGcFmaJgB'],
+    es: ['ErXwobaYiN019PkySvjV', 'JBFqnCBsd6RMkjVDRZzb', 'pNInz6obpgDQGcFmaJgB'],
   };
 
   function defaultVoices(lang) {
@@ -85,13 +85,31 @@ const ListeningScript = (() => {
     });
   }
 
-  function prepare(text, lang) {
-    const segments = parseSegments(text);
-    return assignVoices(segments, lang);
+  function segmentsLookBroken(segments) {
+    return segments.some(
+      (s) =>
+        !String(s.text || '').trim() ||
+        String(s.speaker || '').length > 30 ||
+        /^(n|im|moment)$/i.test(String(s.speaker || '').trim()),
+    );
   }
 
-  function isMultiVoice(text) {
-    return parseSegments(text).length > 1;
+  function prepare(text, lang) {
+    const segments = parseSegments(text);
+    if (segments.length <= 1 && text) {
+      const voices = defaultVoices(lang);
+      return [{ speaker: 'Narrator', text: String(text).trim(), voice: voices[0] }];
+    }
+    const assigned = assignVoices(segments, lang);
+    if (segmentsLookBroken(assigned) || assigned.length > 24) {
+      const voices = defaultVoices(lang);
+      return [{ speaker: 'Narrator', text: String(text).trim(), voice: voices[0] }];
+    }
+    return assigned;
+  }
+
+  function isMultiVoice(text, lang = 'de') {
+    return prepare(text, lang).length > 1;
   }
 
   return { parseSegments, assignVoices, prepare, isMultiVoice, defaultVoices };

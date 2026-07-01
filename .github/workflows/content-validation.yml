@@ -1,0 +1,64 @@
+# Content validation CI (lexiloop v9)
+#
+# FAIL build when:
+#   - validate-exam-fidelity reports errors on availability.status=live levels
+#   - cross-exam passage duplicates on live levels
+#   - any test:engine script fails
+#
+# beta / hidden levels: reported as [beta — report only], exit 0
+
+name: Content validation
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch:
+
+jobs:
+  content-validation:
+    name: ci:content + test:engine
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: ci:content (live fidelity + dedupe gate)
+        run: npm run ci:content
+
+      - name: test:engine
+        run: npm run test:engine
+
+  pre-build-guard-smoke:
+    name: pre-build-guard (dry-run smoke)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: content-validation
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: pre-build-guard dry-run de/B1
+        run: node scripts/pre-build-guard.mjs --lang de --level B1 --dry-run

@@ -1,0 +1,105 @@
+# Lesen B1 · Teil 1 — pega JSON de Gemini debajo (uno o varios bloques)
+# Plantilla prompt: plantillas-lesen-b1/lesen-teil1.md
+# Validar + guardar + banco:  npm run lesen:upload:t1
+# Con pool Netlify:           npm run lesen:upload:pool:t1
+# Publicar ya en generated/:   npm run lesen:publish:t1
+
+=== TEIL 1 ===
+
+{
+  "passages": [
+    {
+      "id": "gen-l1-6729",
+      "module": "lesen",
+      "teil": 1,
+      "title": "Mein Leben in der Stadtgemeinschaft",
+      "text": "Ich wohne seit drei Jahren in dieser großen Stadt und bin sehr froh über meine Entscheidung. Als neuer Bewohner habe ich zuerst niemanden gekannt, aber dann habe ich eine Organisation gefunden, die ein interessantes Programm für neue Leute anbietet. In meiner Freizeit gehe ich regelmäßig zu einem Kurs, wo wir zusammen kochen und über das Leben in der Stadt sprechen. Dort habe ich viele nette Nachbarn getroffen. Meine Familie kommt oft zu Besuch und wir unternehmen etwas zusammen am Wochenende. Die Erfahrung mit der Gemeinschaft hat mir geholfen, mich wohlzufühlen. Wir organisieren Ausflüge und helfen uns gegenseitig bei kleinen Problemen. Zum Beispiel repariert ein Nachbar mein Fahrrad und ich passe auf seine Kinder auf. In dem Programm lernen wir auch praktische Dinge für den Alltag. Ich fühle mich jetzt viel besser integriert und habe neue Hobbys entdeckt. Früher war ich oft allein zu Hause, aber jetzt genieße ich die Zeit mit anderen. Die Bewohner hier sind offen und teilen gerne ihre Tipps. Diese Zeit hat meinen Blick auf das Leben verändert und mir gezeigt, wie wichtig gute Kontakte sind. Ich plane schon den nächsten Kurs im Herbst."
+    }
+  ],
+  "questions": [
+    {
+      "id": "gen-q-1-6729-1",
+      "module": "lesen",
+      "teil": 1,
+      "type": "richtig_falsch",
+      "question": "Die Autorin hat sofort viele Kontakte in der neuen Umgebung geknüpft.",
+      "options": [],
+      "correct": "Falsch",
+      "correctAnswer": "Falsch",
+      "explanation": "Sie kannte zuerst niemanden.",
+      "passageId": "gen-l1-6729",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-1-6729-2",
+      "module": "lesen",
+      "teil": 1,
+      "type": "richtig_falsch",
+      "question": "Sie nimmt an einem Kurs teil, um ihre Freizeit sinnvoll zu nutzen.",
+      "options": [],
+      "correct": "Richtig",
+      "correctAnswer": "Richtig",
+      "explanation": "Sie geht regelmäßig zu einem Kurs in ihrer Freizeit.",
+      "passageId": "gen-l1-6729",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-1-6729-3",
+      "module": "lesen",
+      "teil": 1,
+      "type": "richtig_falsch",
+      "question": "Die Nachbarn unterstützen sich nur bei großen Problemen.",
+      "options": [],
+      "correct": "Falsch",
+      "correctAnswer": "Falsch",
+      "explanation": "Sie helfen sich bei kleinen Problemen, z. B. beim Fahrrad.",
+      "passageId": "gen-l1-6729",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-1-6729-4",
+      "module": "lesen",
+      "teil": 1,
+      "type": "richtig_falsch",
+      "question": "Die Organisation bietet ein Programm, das neue Bewohner integriert.",
+      "options": [],
+      "correct": "Richtig",
+      "correctAnswer": "Richtig",
+      "explanation": "Das Programm ist für neue Leute und hilft bei der Integration.",
+      "passageId": "gen-l1-6729",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-1-6729-5",
+      "module": "lesen",
+      "teil": 1,
+      "type": "richtig_falsch",
+      "question": "Ihre Familie besucht sie nie in der Stadt.",
+      "options": [],
+      "correct": "Falsch",
+      "correctAnswer": "Falsch",
+      "explanation": "Die Familie kommt oft zu Besuch.",
+      "passageId": "gen-l1-6729",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-1-6729-6",
+      "module": "lesen",
+      "teil": 1,
+      "type": "richtig_falsch",
+      "question": "Die Autorin plant, jeden Kurs in der Organisation zu besuchen.",
+      "options": [],
+      "correct": "Richtig",
+      "correctAnswer": "Richtig",
+      "explanation": "Sie plant schon den nächsten Kurs.",
+      "passageId": "gen-l1-6729",
+      "lang": "de",
+      "level": "B1"
+    }
+  ]
+}

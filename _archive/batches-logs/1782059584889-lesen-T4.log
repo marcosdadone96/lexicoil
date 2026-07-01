@@ -1,0 +1,45 @@
+
+Batch generator (gemini) — de/B2 × 1
+Prompt: batches/GEMINI_MASTER_PROMPT_de_B1.md
+
+── lesen T4 · soziale-medien-01 ──
+Tema: Sind soziale Medien eher nützlich oder schädlich?
+Proveedor: gemini
+max_output_tokens=16384
+Archivo: batches/merged/lesen-t4-soziale-medien-01.json
+Llamando gemini…
+max_output_tokens=16384
+
+⏳ Rate limit — esperando 56s (1/3)…
+Tokens: in=1241 out=3245 (max_out=16384)
+Modelo: gemini-2.5-flash
+Guardado: batches/merged/lesen-t4-soziale-medien-01.json (6 preguntas, 6 passages)
+Validando…
+
+== Validación de lesen-t4-soziale-medien-01.json (de_B2) ==
+Preguntas: 6 | Pasajes: 6
+Esquema: ERR [{"instancePath":"/passages/0","schemaPath":"#/properties/passages/items/required","keyword":"required","params":{"missingProperty":"module"},"message":"must have required property 'module'"},{"instancePath":"/passages/1","schemaPath":"#/properties/passages/items/required","keyword":"required","params":{"missingProperty":"module"},"message":"must have required property 'module'"}]
+Conformidad blueprint: OK
+Colocación (Teile que mejora): lesenT1 0->6
+Sin problemas detectados ✅
+Error: Command failed: node scripts/validate-batch.mjs --lang de --level B2 --file "batches/merged/lesen-t4-soziale-medien-01.json"
+Descartado → batches/rejected/lesen-t4-soziale-medien-01.json
+
+Reintento API 2/2…
+Llamando gemini…
+max_output_tokens=16384
+
+⏳ Rate limit — esperando 19s (1/3)…
+
+⏳ Rate limit — esperando 60s (2/3)…
+Error: Gemini API 429: You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. 
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash
+Please retry in 57.024946529s.
+
+Sugerencias:
+  • El limitador global ya regula RPM; espera y reintenta
+  • npm run gemini:doctor — peticiones restantes hoy
+  • GEMINI_MODEL=gemini-2.5-flash-lite (más cupo diario)
+  • Revisa cuota en https://aistudio.google.com/
+
+Resumen: 0 OK, 1 fallidos

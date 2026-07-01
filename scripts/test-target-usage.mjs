@@ -90,6 +90,21 @@ function testApplyVerified() {
   console.log('OK   applyVerified on personal exam');
 }
 
+function testForcedUsageFiltered() {
+  const forcedExam = {
+    lesenParts: [{ text: 'Das ist ein Mann. Die Nachhaltigkeit ist wichtig für alle.' }],
+  };
+  const declared = [
+    { word: 'Mann', surfaces: ['Mann'] },
+    { word: 'Nachhaltigkeit', surfaces: ['Nachhaltigkeit'] },
+  ];
+  const verified = TargetUsage.verifyTargetUsage(forcedExam, declared);
+  assert(!verified.some((e) => e.word === 'Mann'), 'drops forced template Mann');
+  assert(verified.some((e) => e.word === 'Nachhaltigkeit'), 'keeps natural Nachhaltigkeit');
+  assert(TargetUsage.isForcedSurfaceContext('Das ist ein Mann.', 'Mann'), 'detects forced sentence');
+  console.log('OK   forced template usage filtered from targetUsageVerified');
+}
+
 async function testPromptIncludesTargetUsage() {
   const spec = await KnowledgeEngine.buildSpec({
     language: 'german',
@@ -99,8 +114,13 @@ async function testPromptIncludesTargetUsage() {
     topic: 'Umwelt',
   });
   const result = PromptBuilder.buildPrompt(spec);
-  assert(result.prompt.includes('targetUsage'), 'prompt mentions targetUsage');
-  assert(result.prompt.includes('Do not invent usage'), 'prompt forbids invented usage');
+  const promptText =
+    result.mode === 'chunks'
+      ? result.chunks.map((c) => c.prompt).join('\n')
+      : result.prompt || '';
+  assert(promptText.includes('targetUsage'), 'prompt mentions targetUsage');
+  assert(promptText.includes('Do not invent usage'), 'prompt forbids invented usage');
+  assert(promptText.includes('Das ist ein Mann'), 'prompt warns against German filler templates');
   console.log('OK   vocab prompt includes targetUsage contract');
 }
 
@@ -109,6 +129,7 @@ async function run() {
   testVerifyDiscardsInvented();
   testDeriveFromExam();
   testApplyVerified();
+  testForcedUsageFiltered();
   await testPromptIncludesTargetUsage();
   console.log('\nAll targetUsage tests passed.');
 }

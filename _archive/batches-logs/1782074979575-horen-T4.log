@@ -1,0 +1,43 @@
+
+Batch generator (claude) — de/B1 × 1
+Prompt: batches/GEMINI_MASTER_PROMPT_de_B1.md
+Presupuesto Claude: $999999999.00 (gastado: $3.0069)
+
+── horen T4 · homeoffice-diskussion-02 ──
+Tema: Diskussion: Homeoffice für alle Unternehmen?
+Proveedor: claude
+max_output_tokens=16384
+Archivo: batches/merged/horen-t4-homeoffice-diskussion-02.json
+Llamando claude…
+max_output_tokens=16384
+Gasto acumulado: $3.0261 / budget $999999999.00
+Tokens: in=1930 out=3454 (max_out=16384)
+Modelo: claude-haiku-4-5
+de-b1-h-t4-homeoffice-diskussion-02-q1: matching_missing_options
+de-b1-h-t4-homeoffice-diskussion-02-q2: matching_missing_options
+de-b1-h-t4-homeoffice-diskussion-02-q3: matching_missing_options
+de-b1-h-t4-homeoffice-diskussion-02-q4: matching_missing_options
+de-b1-h-t4-homeoffice-diskussion-02-q5: matching_missing_options
+de-b1-h-t4-homeoffice-diskussion-02-q6: matching_missing_options
+de-b1-h-t4-homeoffice-diskussion-02-q7: matching_missing_options
+de-b1-h-t4-homeoffice-diskussion-02-q8: matching_missing_options
+
+Reintento conformidad 1/2…
+Llamando claude…
+max_output_tokens=16384
+Gasto acumulado: $3.0429 / budget $999999999.00
+Tokens: in=2186 out=2915 (max_out=16384)
+Modelo: claude-haiku-4-5
+Guardado: batches/merged/horen-t4-homeoffice-diskussion-02.json (8 preguntas, 1 passages)
+Validando…
+
+== Validación de horen-t4-homeoffice-diskussion-02.json (de_B1) ==
+Preguntas: 8 | Pasajes: 1
+Esquema: OK
+Conformidad blueprint: OK
+Colocación (Teile que mejora): Pool válido (Teil ya cubierto en 1 examen — OK para exámenes disjuntos)
+Sin problemas detectados ✅
+Validación OK
+Siguiente: node scripts/merge-bank-batch.mjs --lang de --level B1 --file batches/merged/horen-t4-homeoffice-diskussion-02.json
+
+Resumen: 1 OK, 0 fallidos

@@ -1,0 +1,40 @@
+
+Batch generator (claude) — de/A2 × 1
+Prompt: batches/GEMINI_MASTER_PROMPT_de_B1.md
+Presupuesto Claude: $999999999.00 (gastado: $2.7907)
+
+── lesen T4 · vier-tage-woche-01 ──
+Tema: Sollte die Vier-Tage-Woche eingeführt werden?
+Proveedor: claude
+max_output_tokens=16384
+Archivo: batches/merged/lesen-t4-vier-tage-woche-01.json
+Llamando claude…
+max_output_tokens=16384
+Gasto acumulado: $2.8061 / budget $999999999.00
+Tokens: in=1998 out=2693 (max_out=16384)
+Modelo: claude-haiku-4-5
+de-a2-l-t4-vier-tage-woche-01-q1: type_not_allowed:multiple_choice:allowed=matching
+de-a2-l-t4-vier-tage-woche-01-q2: type_not_allowed:multiple_choice:allowed=matching
+de-a2-l-t4-vier-tage-woche-01-q3: type_not_allowed:multiple_choice:allowed=matching
+de-a2-l-t4-vier-tage-woche-01-q4: type_not_allowed:multiple_choice:allowed=matching
+de-a2-l-t4-vier-tage-woche-01-q5: type_not_allowed:multiple_choice:allowed=matching
+
+Reintento conformidad 1/2…
+Llamando claude…
+max_output_tokens=16384
+Gasto acumulado: $2.8220 / budget $999999999.00
+Tokens: in=2215 out=2723 (max_out=16384)
+Modelo: claude-haiku-4-5
+Guardado: batches/merged/lesen-t4-vier-tage-woche-01.json (5 preguntas, 6 passages)
+Validando…
+
+== Validación de lesen-t4-vier-tage-woche-01.json (de_A2) ==
+Preguntas: 5 | Pasajes: 6
+Esquema: OK
+Conformidad blueprint: OK
+Colocación (Teile que mejora): Pool válido (Teil ya cubierto en 1 examen — OK para exámenes disjuntos)
+Sin problemas detectados ✅
+Validación OK
+Siguiente: node scripts/merge-bank-batch.mjs --lang de --level A2 --file batches/merged/lesen-t4-vier-tage-woche-01.json
+
+Resumen: 1 OK, 0 fallidos

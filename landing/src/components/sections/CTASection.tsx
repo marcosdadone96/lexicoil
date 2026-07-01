@@ -1,6 +1,7 @@
 'use client';
 
 import { useAuthUi } from '@/context/AuthUiContext';
+import { DEMO_URL } from '@/lib/constants';
 import { Container } from '@/components/ui/Container';
 
 export function CTASection() {
@@ -25,7 +26,7 @@ export function CTASection() {
           </p>
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <a
-              href="/demo"
+              href={DEMO_URL}
               className="inline-flex items-center justify-center rounded-xl bg-white px-8 py-4 text-base font-bold text-[var(--brand)]"
             >
               Try a sample exam →

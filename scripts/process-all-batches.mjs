@@ -25,7 +25,8 @@ function parseArgs(argv) {
 }
 
 function run(cmd, opts = {}) {
-  return execSync(cmd, { cwd: ROOT, stdio: opts.quiet ? 'pipe' : 'inherit', encoding: 'utf8' });
+  const stdio = opts.capture ? ['pipe', opts.quiet ? 'pipe' : 'inherit', 'pipe'] : opts.quiet ? 'pipe' : 'inherit';
+  return execSync(cmd, { cwd: ROOT, stdio, encoding: 'utf8' });
 }
 
 function dryRunHasNew(full, lang, level) {
@@ -43,7 +44,23 @@ function dryRunHasNew(full, lang, level) {
 }
 
 function validateBatch(rel, lang, level) {
-  run(`node scripts/validate-batch.mjs --lang ${lang} --level ${level} --file "${rel}"`, { quiet: true });
+  try {
+    const out = run(`node scripts/validate-batch.mjs --lang ${lang} --level ${level} --file "${rel}"`, {
+      quiet: true,
+      capture: true,
+    });
+    return { ok: true, output: out };
+  } catch (err) {
+    const out = `${err.stdout || ''}${err.stderr || ''}${err.message || ''}`;
+    const problems = out
+      .split('\n')
+      .map((line) => line.trim())
+      .filter((line) => line.startsWith('- '));
+    const dupOnly =
+      problems.length > 0 && problems.every((p) => p.includes('id ya existe en el banco'));
+    if (dupOnly) return { ok: false, dupOnly: true, output: out };
+    throw err;
+  }
 }
 
 const args = parseArgs(process.argv.slice(2));
@@ -76,7 +93,12 @@ for (const file of files) {
   }
 
   try {
-    validateBatch(rel, args.lang, args.level);
+    const validation = validateBatch(rel, args.lang, args.level);
+    if (validation.dupOnly) {
+      console.log('SKIP  already in bank (duplicate ids — nothing new to merge)');
+      results.skippedDup.push(file);
+      continue;
+    }
     console.log('OK    validation passed');
   } catch (_) {
     console.log('FAIL  validation — moviendo a batches/rejected/');

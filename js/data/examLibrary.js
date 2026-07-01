@@ -1,14 +1,22 @@
-/* Static exam library  curated JSON exams per subject/level */
+/* Static exam library ï¿½ curated JSON exams per subject/level */
 const ExamLibrary = (() => {
   const CACHE = {};
-  const AVAIL = {};
+  const AVAIL_PATH = 'data/exams/availability.json';
   const CANDIDATE_LEVELS = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
+  const LANGS = ['de', 'en', 'es'];
 
-  const LEVELS = {
-    de: [...CANDIDATE_LEVELS],
-    en: [],
-    es: [],
-  };
+  let MANIFEST = null;
+  let manifestPromise = null;
+  /** Secondary HEAD probe cache (runtime file check). */
+  const PROBE = {};
+
+  function showBetaLevels() {
+    if (typeof window !== 'undefined' && window.LEXICOIL_SHOW_BETA_LEVELS === true) return true;
+    if (typeof process !== 'undefined' && process.env && process.env.LEXICOIL_SHOW_BETA_LEVELS === '1') {
+      return true;
+    }
+    return false;
+  }
 
   function filePath(subject, level) {
     return `data/exams/${subject}_${level}.json`;
@@ -18,57 +26,135 @@ const ExamLibrary = (() => {
     return `${subject}_${level}`;
   }
 
-  function hasLibrary(subject, level) {
-    const key = cacheKey(subject, level);
-    if (AVAIL[key] === true) return true;
-    if ((subject === 'de' || subject === 'es') && CANDIDATE_LEVELS.includes(level)) {
-      return AVAIL[key] !== false;
+  function buildEmptyManifest() {
+    const m = {};
+    for (const lang of LANGS) {
+      m[lang] = {};
+      for (const level of CANDIDATE_LEVELS) {
+        m[lang][level] = { status: 'hidden', exams: 0 };
+      }
     }
-    return AVAIL[key] === true;
+    return m;
+  }
+
+  function getManifestSync() {
+    if (MANIFEST) return MANIFEST;
+    if (typeof require !== 'undefined') {
+      try {
+        const fs = require('fs');
+        const pathMod = require('path');
+        const p = pathMod.join(process.cwd(), AVAIL_PATH);
+        if (fs.existsSync(p)) {
+          MANIFEST = JSON.parse(fs.readFileSync(p, 'utf8'));
+          return MANIFEST;
+        }
+      } catch (_) {}
+    }
+    return null;
+  }
+
+  async function ensureManifest() {
+    if (MANIFEST) return MANIFEST;
+    if (manifestPromise) return manifestPromise;
+    manifestPromise = (async () => {
+      const sync = getManifestSync();
+      if (sync) {
+        MANIFEST = sync;
+        return MANIFEST;
+      }
+      try {
+        const res = await fetch(AVAIL_PATH, { cache: 'no-store' });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        MANIFEST = await res.json();
+        return MANIFEST;
+      } catch (e) {
+        if (typeof lcDebug !== 'undefined') lcDebug.warn('[ExamLibrary] availability manifest load failed:', e);
+        MANIFEST = buildEmptyManifest();
+        return MANIFEST;
+      } finally {
+        manifestPromise = null;
+      }
+    })();
+    return manifestPromise;
+  }
+
+  function getStatus(subject, level) {
+    const m = MANIFEST || getManifestSync();
+    if (!m) return 'hidden';
+    return m[subject]?.[level]?.status || 'hidden';
+  }
+
+  function getExamCount(subject, level) {
+    const m = MANIFEST || getManifestSync();
+    return m?.[subject]?.[level]?.exams ?? 0;
+  }
+
+  function isSelectable(subject, level) {
+    const st = getStatus(subject, level);
+    if (st === 'live') return true;
+    if (st === 'beta' && showBetaLevels()) return true;
+    return false;
+  }
+
+  function hasLibrary(subject, level) {
+    return isSelectable(subject, level);
   }
 
   async function probeLevel(subject, level) {
     const key = cacheKey(subject, level);
-    if (AVAIL[key] !== undefined) return AVAIL[key];
+    if (PROBE[key] !== undefined) return PROBE[key];
     try {
       const res = await fetch(filePath(subject, level), { method: 'HEAD', cache: 'no-store' });
-      if (!res.ok) {
-        AVAIL[key] = false;
-        return false;
-      }
-      AVAIL[key] = true;
-      if (!LEVELS[subject]?.includes(level)) {
-        LEVELS[subject] = [...(LEVELS[subject] || []), level].sort(
-          (a, b) => CANDIDATE_LEVELS.indexOf(a) - CANDIDATE_LEVELS.indexOf(b),
-        );
-      }
-      return true;
+      PROBE[key] = res.ok;
+      return PROBE[key];
     } catch (_) {
-      AVAIL[key] = false;
+      PROBE[key] = false;
       return false;
     }
   }
 
   async function discoverLevels(subject) {
-    const found = [];
+    await ensureManifest();
+    const levels = CANDIDATE_LEVELS.filter((level) => isSelectable(subject, level));
     await Promise.all(
-      CANDIDATE_LEVELS.map(async (level) => {
-        if (await probeLevel(subject, level)) found.push(level);
+      levels.map(async (level) => {
+        const ok = await probeLevel(subject, level);
+        if (!ok && typeof lcDebug !== 'undefined') {
+          lcDebug.warn(`[ExamLibrary] manifest selectable but HEAD failed: ${subject}_${level}`);
+        }
       }),
     );
-    LEVELS[subject] = found;
-    return found;
+    return levels;
+  }
+
+  function unavailableError(subject, level) {
+    const st = getStatus(subject, level);
+    const err = new Error(
+      st === 'beta'
+        ? `Exams for ${subject.toUpperCase()} ${level} are in review and not available yet.`
+        : `No curated exams for ${subject.toUpperCase()} ${level} yet.`,
+    );
+    err.code = 'exam_library_unavailable';
+    err.status = st;
+    return err;
   }
 
   async function loadExams(subject, level) {
+    await ensureManifest();
+    if (!isSelectable(subject, level)) {
+      throw unavailableError(subject, level);
+    }
     const key = cacheKey(subject, level);
     if (CACHE[key]) return CACHE[key];
     const res = await fetch(filePath(subject, level));
-    if (!res.ok) throw new Error(`Exam library not found for ${subject} ${level}`);
+    if (!res.ok) throw unavailableError(subject, level);
     const exams = await res.json();
-    if (!Array.isArray(exams) || !exams.length) throw new Error('Exam library is empty');
+    if (!Array.isArray(exams) || !exams.length) {
+      const err = new Error(`Exam library is empty for ${subject} ${level}`);
+      err.code = 'exam_library_unavailable';
+      throw err;
+    }
     CACHE[key] = exams;
-    AVAIL[key] = true;
     return exams;
   }
 
@@ -98,8 +184,41 @@ const ExamLibrary = (() => {
   }
 
   function availableLevels(subject) {
-    return LEVELS[subject] ? [...LEVELS[subject]] : [];
+    if (!MANIFEST && !getManifestSync()) return [];
+    return CANDIDATE_LEVELS.filter((level) => isSelectable(subject, level));
   }
 
-  return { hasLibrary, pickExam, pickExamExcluding, loadExams, availableLevels, discoverLevels, probeLevel };
+  function advertisedLevels(subject) {
+    return [...CANDIDATE_LEVELS];
+  }
+
+  function getLevelUiStatus(subject, level) {
+    const st = getStatus(subject, level);
+    if (st === 'live') return 'ready';
+    if (st === 'beta' && showBetaLevels()) return 'ready';
+    return 'soon';
+  }
+
+  return {
+    AVAIL_PATH,
+    CANDIDATE_LEVELS,
+    ensureManifest,
+    getManifestSync,
+    getStatus,
+    getExamCount,
+    showBetaLevels,
+    isSelectable,
+    hasLibrary,
+    pickExam,
+    pickExamExcluding,
+    loadExams,
+    availableLevels,
+    advertisedLevels,
+    discoverLevels,
+    probeLevel,
+    getLevelUiStatus,
+  };
 })();
+
+if (typeof window !== 'undefined') window.ExamLibrary = ExamLibrary;
+if (typeof module !== 'undefined') module.exports = ExamLibrary;

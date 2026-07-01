@@ -140,7 +140,7 @@ async function renewExamGeneration(genTicket) {
 
 async function callAI(prompt, maxTokens = 6000, options = {}) {
   const defaultTimeout = options.examGeneration ? 55000 : 35000;
-  const { timeoutMs = defaultTimeout, examGeneration = false, aiAction = null, genTicket = null } = options;
+  const { timeoutMs = defaultTimeout, examGeneration = false, aiAction = null, genTicket = null, examModel = null, requestId = null, chunkTeil = null, chunkSlotType = null } = options;
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
 
@@ -149,7 +149,17 @@ async function callAI(prompt, maxTokens = 6000, options = {}) {
     res = await lcFetch(CLAUDE_ENDPOINT, {
       method: "POST",
       headers: aiAuthHeaders(),
-      body: JSON.stringify({ prompt, maxTokens, examGeneration, aiAction, genTicket }),
+      body: JSON.stringify({
+        prompt,
+        maxTokens,
+        examGeneration,
+        aiAction,
+        genTicket,
+        examModel: examModel || undefined,
+        requestId: requestId || undefined,
+        chunkTeil: chunkTeil ?? undefined,
+        chunkSlotType: chunkSlotType || undefined,
+      }),
       signal: controller.signal,
     });
   } catch (err) {
@@ -211,6 +221,13 @@ async function callAI(prompt, maxTokens = 6000, options = {}) {
       e.aiMax = data.aiMax;
       throw e;
     }
+    if (res.status === 422 && data.error === 'exam_chunk_unparseable') {
+      const e = new Error('exam_chunk_unparseable');
+      e.code = 'exam_chunk_unparseable';
+      e.teil = data.teil;
+      e.stopReason = data.stop_reason;
+      throw e;
+    }
     if (res.status === 422 && data.error === 'exam_low_quality') {
       const e = new Error('exam_low_quality');
       e.code = 'exam_low_quality';
@@ -245,6 +262,7 @@ async function callAI(prompt, maxTokens = 6000, options = {}) {
   if (typeof window.applyServerQuota === "function") {
     window.applyServerQuota(data);
   }
+  applyAiCreditsFromResponse(data);
 
   return data.text;
 }
@@ -354,6 +372,61 @@ async function genGrammarCoaching(lang, level, weakTags, sampleMistakes) {
   }
 }
 
+async function consumeAiAction(action, requestId) {
+  const rid =
+    requestId || `ai_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 9)}`;
+  try {
+    const data = await postClaudeFeature({
+      consumeAiAction: true,
+      action,
+      requestId: rid,
+    });
+    applyAiCreditsFromResponse(data);
+    return data.ok === true;
+  } catch (err) {
+    if (err.code === 'ai_credits_exhausted' && typeof showAiCreditsExhausted === 'function') {
+      showAiCreditsExhausted();
+    }
+    if (err.code === 'pro_only' && typeof showUpgrade === 'function') showUpgrade();
+    lcDebug.warn('[ai-credits] consume failed:', err.message);
+    return false;
+  }
+}
+
+async function generateVocabQuizWithAI(words, opts = {}) {
+  const list = [...new Set((words || []).map((w) => String(w || '').trim()).filter(Boolean))];
+  if (list.length < 4) {
+    const e = new Error('need_at_least_4_words');
+    e.code = 'need_at_least_4_words';
+    throw e;
+  }
+  const count = Math.min(Math.max(Number(opts.count) || 10, 1), 10, list.length);
+  const requestId =
+    opts.requestId ||
+    `vq_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 9)}`;
+  const data = await postClaudeFeature(
+    {
+      generateVocabQuiz: true,
+      aiAction: 'vocab_quiz',
+      lang: opts.lang || 'de',
+      level: opts.level || 'B1',
+      hintLang: opts.hintLang || 'en',
+      hintLanguageMode: opts.hintLanguageMode || 'interface',
+      words: list,
+      count,
+      requestId,
+    },
+    opts.timeoutMs || 45000,
+  );
+  applyAiCreditsFromResponse(data);
+  if (!data.ok || !Array.isArray(data.questions) || !data.questions.length) {
+    const e = new Error(data.error || 'vocab_quiz_failed');
+    e.code = data.error || 'vocab_quiz_failed';
+    throw e;
+  }
+  return data.questions;
+}
+
 async function confirmStripePurchase(sessionId) {
   const res = await lcFetch("/.netlify/functions/stripe-confirm", {
     method: "POST",
@@ -425,10 +498,13 @@ async function fetchExamFromPool(lang, level, excludeIds) {
  * Returns the part payload or null if nothing is available.
  * Never throws — callers treat null as "no cached part, fall back to AI".
  */
-async function fetchExamPart(lang, level, module, excludeIds) {
+async function fetchExamPart(lang, level, module, excludeIds, teil) {
   const params = { lang, level, module };
   if (excludeIds && excludeIds.length) {
     params.exclude = excludeIds.slice(0, 40).join(",");
+  }
+  if (teil != null && Number.isFinite(Number(teil))) {
+    params.teil = String(Number(teil));
   }
   const q = new URLSearchParams(params);
   try {
@@ -441,12 +517,25 @@ async function fetchExamPart(lang, level, module, excludeIds) {
   }
 }
 
-async function fetchVocabCache(from, to, text) {
+async function fetchVocabCache(from, to, text, context, signal) {
   const params = new URLSearchParams({ from, to, text: String(text || "") });
-  const res = await lcFetch(`${VOCAB_CACHE_ENDPOINT}?${params}`);
-  const data = await res.json().catch(() => ({}));
-  if (!res.ok || !data.found) return null;
-  return data;
+  const ctx = String(context || "").trim();
+  if (ctx) params.set("context", ctx.slice(0, 4000));
+  const ctrl = signal ? null : typeof AbortController !== "undefined" ? new AbortController() : null;
+  const useSignal = signal || ctrl?.signal;
+  const timer = ctrl ? setTimeout(() => ctrl.abort(), 11000) : null;
+  try {
+    const res = await lcFetch(`${VOCAB_CACHE_ENDPOINT}?${params}`, useSignal ? { signal: useSignal } : {});
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) return { found: false, reason: data.reason || data.error || `http_${res.status}` };
+    if (!data.found) return { found: false, reason: data.reason || "miss" };
+    return data;
+  } catch (err) {
+    if (err?.name === "AbortError") return { found: false, reason: "aborted" };
+    return { found: false, reason: "network" };
+  } finally {
+    if (timer) clearTimeout(timer);
+  }
 }
 
 async function putVocabCache(from, to, text, translation, source = "manual") {
@@ -469,24 +558,85 @@ function ttsVoiceForLang(lang) {
   return "en-GB";
 }
 
+/** Must match netlify/functions/lib/ttsCacheLib.js normalizeTtsInput (hash lowercases internally). */
+function normalizeTtsQueryText(text) {
+  return String(text || "")
+    .replace(/[■●▲►◆]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+async function ttsTextHashClient(text) {
+  const normalized = normalizeTtsQueryText(text).toLowerCase();
+  if (!globalThis.crypto?.subtle) return null;
+  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(normalized));
+  return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("").slice(0, 16);
+}
+
+function ttsCacheVoiceCandidates(voice, lang) {
+  const out = [];
+  const add = (v) => {
+    const s = String(v || "").trim().slice(0, 32);
+    if (s && !out.includes(s)) out.push(s);
+  };
+  add(voice || ttsVoiceForLang(lang));
+  const l = String(lang || "en").slice(0, 2).toLowerCase();
+  if (l === "de") add("de-DE");
+  else if (l === "es") add("es-ES");
+  else add("en-GB");
+  return out;
+}
+
+async function fetchStaticTtsUrl(text, voice, lang) {
+  const hash = await ttsTextHashClient(text);
+  if (!hash) return null;
+  for (const v of ttsCacheVoiceCandidates(voice, lang)) {
+    const url = `/library/tts-cache/${v}_${hash}.mp3`;
+    try {
+      const res = await fetch(url, { method: "GET", cache: "force-cache" });
+      if (res.ok && res.headers.get("content-type")?.includes("audio")) return url;
+      if (res.ok && (Number(res.headers.get("content-length")) || 0) > 128) return url;
+    } catch (_) {
+      /* try next voice */
+    }
+  }
+  return null;
+}
+
 async function fetchTtsAudio(text, voice, lang) {
-  const params = new URLSearchParams({
-    text: String(text || ""),
-    voice: voice || ttsVoiceForLang(lang),
-    lang: lang || "",
+  const normalized = normalizeTtsQueryText(text);
+  const staticUrl = await fetchStaticTtsUrl(normalized, voice, lang);
+  if (staticUrl) return { found: true, url: staticUrl, source: "static" };
+
+  const res = await lcFetch(TTS_ENDPOINT, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      text: normalized,
+      voice: voice || ttsVoiceForLang(lang),
+      lang: lang || "",
+    }),
   });
-  const res = await lcFetch(`${TTS_ENDPOINT}?${params}`);
   const data = await res.json().catch(() => ({}));
-  if (!res.ok || !data.found || !data.audioBase64) return null;
-  return data;
+  if (!res.ok) {
+    console.warn("[TTS] API lookup failed:", res.status, data.error || data);
+    return null;
+  }
+  if (!data.found || !data.audioBase64) {
+    console.warn("[TTS] cache miss for", normalized.length, "chars");
+    return null;
+  }
+  return { ...data, source: "api" };
 }
 
 async function generateTtsAudio(text, voice, lang) {
   if (localStorage.getItem("lc_guest") === "1") return { unavailable: true, error: "guest" };
+  const normalized = normalizeTtsQueryText(text);
   const res = await lcFetch(TTS_ENDPOINT, {
     method: "POST",
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      text: String(text || ""),
+      text: normalized,
       voice: voice || ttsVoiceForLang(lang),
       lang: lang || "",
     }),
@@ -560,10 +710,15 @@ async function saveExamToPool(lang, level, topic, exam) {
   }
 }
 
-async function startStripeCheckout() {
+async function startStripeCheckout(opts = {}) {
   if (typeof Auth !== "undefined" && Auth.isGuest && Auth.isGuest()) throw new Error("login_required");
+  if (typeof LcAnalytics !== "undefined") {
+    LcAnalytics.trackUpgradeClicked(opts && opts.plan ? opts.plan : "pro");
+  }
+  const body = opts && opts.plan ? { plan: opts.plan } : {};
   const res = await lcFetch("/.netlify/functions/stripe-checkout", {
     method: "POST",
+    body: JSON.stringify(body),
   });
   const data = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(data.error || "checkout_failed");
@@ -589,4 +744,9 @@ async function startStripePortal() {
 if (typeof window !== "undefined") {
   window.aiAuthHeaders = aiAuthHeaders;
   window.lcFetch = lcFetch;
+  window.normalizeTtsQueryText = normalizeTtsQueryText;
+  window.fetchTtsAudio = fetchTtsAudio;
+  window.generateTtsAudio = generateTtsAudio;
+  window.ttsVoiceForLang = ttsVoiceForLang;
+  window.startStripeCheckout = startStripeCheckout;
 }

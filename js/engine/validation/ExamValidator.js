@@ -56,17 +56,29 @@ class ExamValidator {
     }
 
     let scorable = 0;
-    this._walk(exam, (item, path, kind) => {
+    const keyless = [];
+    this._walk(exam, (item, path, kind, part) => {
+      if (!this._itemHasCorrect(item) && kind !== 'gap') {
+        keyless.push(this._missingKeyError(item, path, part));
+      }
       let err = null;
-      if (kind === 'mcq') err = this._validateMcq(item, path);
-      else if (kind === 'match') err = this._validateMatch(item, path);
+      if (kind === 'mcq') err = this._validateMcq(item, path, part);
+      else if (kind === 'match') err = this._validateMatch(item, path, part);
       else if (kind === 'gap') err = this._validateGap(item, path);
       if (err) errors.push(err);
       else scorable++;
     });
 
     if (!this._hasRenderableContent(exam)) errors.push('exam_missing_modules');
-    if (scorable === 0 && !this._allowsNoScorableKeys(exam)) errors.push('exam_no_answer_keys');
+    if (scorable === 0 && !this._allowsNoScorableKeys(exam)) {
+      if (keyless.length) {
+        for (const e of keyless) {
+          if (!errors.includes(e)) errors.push(e);
+        }
+      } else {
+        errors.push('exam_no_answer_keys');
+      }
+    }
 
     this._checkPassageAndTranscript(exam, errors);
     this._checkReadingLength(exam, strict, errors, warnings);
@@ -207,7 +219,7 @@ class ExamValidator {
 
       const bpParts = mod.parts || [];
       bpParts.forEach((bpPart, idx) => {
-        if (idx >= examParts.length) {
+        if (idx >= examParts.length && !examParts.some((p) => Number(p.teil) === Number(bpPart.teil ?? idx + 1))) {
           this._pushIssue(
             `part_missing:${modId}:teil=${bpPart.teil ?? idx + 1}`,
             strict,
@@ -216,7 +228,18 @@ class ExamValidator {
           );
           return;
         }
-        const count = this._countPartItems(examParts[idx]);
+        const examPart =
+          examParts.find((p) => Number(p.teil) === Number(bpPart.teil ?? idx + 1)) ?? examParts[idx];
+        if (!examPart) {
+          this._pushIssue(
+            `part_missing:${modId}:teil=${bpPart.teil ?? idx + 1}`,
+            strict,
+            errors,
+            warnings
+          );
+          return;
+        }
+        const count = this._countPartItems(examPart);
         const qt = bpPart.questionsTotal;
         if (!qt) return;
         const min = qt.min ?? 0;
@@ -316,43 +339,95 @@ class ExamValidator {
       (exam[key] || []).forEach((part, pi) => {
         const base = `${key}[${pi}]`;
         (part.items || []).forEach((it, ii) => {
-          if (it.signText && !it.question && !it.options?.length) return;
+          // Skip display-only stubs (signText with no type, question, options, or answer key).
+          if (
+            it.signText &&
+            !this._itemHasCorrect(it) &&
+            !it.question &&
+            !it.options?.length &&
+            !it.type
+          ) {
+            return;
+          }
           this._dispatchQuestion(it, `${base}.items[${ii}]`, part, fn);
         });
-        (part.questions || []).forEach((q, qi) => this._dispatchQuestion(q, `${base}.questions[${qi}]`, part, fn));
+        (part.questions || []).forEach((q, qi) =>
+          this._dispatchQuestion(q, `${base}.questions[${qi}]`, part, fn),
+        );
         (part.segments || []).forEach((seg, si) => {
           const segPath = `${base}.segments[${si}]`;
-          if (seg.options || seg.correct != null) fn(seg, segPath, 'mcq');
+          if (seg.options || this._itemHasCorrect(seg)) fn(seg, segPath, 'mcq', part);
           (seg.questions || []).forEach((q, qi) =>
             this._dispatchQuestion(q, `${segPath}.questions[${qi}]`, part, fn),
           );
         });
-        (part.noteFields || []).forEach((f, fi) => fn(f, `${base}.noteFields[${fi}]`, 'gap'));
+        (part.noteFields || []).forEach((f, fi) => fn(f, `${base}.noteFields[${fi}]`, 'gap', part));
       });
     }
 
     if (exam.lesen?.questions) {
-      exam.lesen.questions.forEach((q, i) => this._dispatchQuestion(q, `lesen.questions[${i}]`, exam.lesen, fn));
+      exam.lesen.questions.forEach((q, i) =>
+        this._dispatchQuestion(q, `lesen.questions[${i}]`, exam.lesen, fn),
+      );
     }
     if (exam.horen?.questions) {
-      exam.horen.questions.forEach((q, i) => this._dispatchQuestion(q, `horen.questions[${i}]`, exam.horen, fn));
+      exam.horen.questions.forEach((q, i) =>
+        this._dispatchQuestion(q, `horen.questions[${i}]`, exam.horen, fn),
+      );
     }
     if (exam.reading?.questions) {
-      exam.reading.questions.forEach((q, i) => this._dispatchQuestion(q, `reading.questions[${i}]`, exam.reading, fn));
+      exam.reading.questions.forEach((q, i) =>
+        this._dispatchQuestion(q, `reading.questions[${i}]`, exam.reading, fn),
+      );
     }
     if (exam.listening?.questions) {
-      exam.listening.questions.forEach((q, i) => this._dispatchQuestion(q, `listening.questions[${i}]`, exam.listening, fn));
+      exam.listening.questions.forEach((q, i) =>
+        this._dispatchQuestion(q, `listening.questions[${i}]`, exam.listening, fn),
+      );
     }
-    (exam.gapfill?.sentences || []).forEach((s, i) => fn(s, `gapfill.sentences[${i}]`, 'gap'));
+    (exam.gapfill?.sentences || []).forEach((s, i) => fn(s, `gapfill.sentences[${i}]`, 'gap', null));
+  }
+
+  _itemCorrect(item) {
+    if (!item || typeof item !== 'object') return null;
+    if (item.correct != null && item.correct !== '') return item.correct;
+    if (item.correctAnswer != null && item.correctAnswer !== '') return item.correctAnswer;
+    if (item.answer != null && item.answer !== '') return item.answer;
+    return null;
+  }
+
+  _itemHasCorrect(item) {
+    const c = this._itemCorrect(item);
+    if (c == null || c === '') return false;
+    if (Array.isArray(c)) return c.length > 0 && c[0] != null && c[0] !== '';
+    return true;
+  }
+
+  _missingKeyError(item, path, part) {
+    const teil = part?.teil != null ? Number(part.teil) : '?';
+    const id = item?.id != null ? String(item.id) : path;
+    const mod =
+      part && (part.segments || part.transcript) ? 'horen' : part?.ads ? 'lesen' : 'lesen';
+    return `exam_no_answer_key:module=${mod}:teil=${teil}:id=${id}`;
+  }
+
+  _adKeys(part) {
+    if (!part?.ads?.length) return [];
+    return part.ads
+      .map((a) => this._normKey(a.key ?? a.id ?? a.label ?? a.letter))
+      .filter(Boolean);
   }
 
   _dispatchQuestion(q, path, part, fn) {
     if (!q || typeof q !== 'object') return;
-    const type = String(q.type || 'multiple').toLowerCase();
-    if (type === 'gap_fill' || type === 'gap') return fn(q, path, 'gap');
-    if (type === 'match' || type === 'matching' || type === 'person_match') return fn(q, path, 'match');
+    const type = String(q.type || q.questionType || 'multiple').toLowerCase();
+    if (type === 'gap_fill' || type === 'gap') return fn(q, path, 'gap', part);
+    if (type === 'match' || type === 'matching' || type === 'person_match') {
+      return fn(q, path, 'match', part);
+    }
     if (
       type === 'multiple' ||
+      type === 'multiple_choice' ||
       type === 'abcd' ||
       type === 'tf' ||
       type === 'rf' ||
@@ -363,18 +438,34 @@ class ExamValidator {
       type === 'ja_nein' ||
       type === 'r_f_n'
     ) {
-      return fn(q, path, 'mcq');
+      return fn(q, path, 'mcq', part);
     }
-    if (q.options && q.correct != null) return fn(q, path, 'mcq');
-    if (q.options && type === 'person_multi') return fn(q, path, 'match');
-    const c = String(q.correct ?? '').trim();
-    if (!type && c && /^(R|F|T|W|N|Richtig|Falsch|True|False|J|Ja|Nein|Y|Yes|No)$/i.test(c)) {
-      return fn(q, path, 'mcq');
+    if (q.options && this._itemHasCorrect(q)) return fn(q, path, 'mcq', part);
+    if (q.options && type === 'person_multi') return fn(q, path, 'match', part);
+    const c = String(this._itemCorrect(q) ?? '').trim();
+    if (
+      !type &&
+      c &&
+      /^(R|F|T|W|N|Richtig|Falsch|True|False|J|Ja|Nein|Y|Yes|No)$/i.test(c)
+    ) {
+      return fn(q, path, 'mcq', part);
+    }
+    if (part?.ads?.length && this._itemHasCorrect(q)) {
+      const mk = this._normKey(this._itemCorrect(q));
+      if (mk === '0' || /^[A-J]$/.test(mk)) return fn(q, path, 'match', part);
+    }
+    if (this._itemHasCorrect(q) && (q.signText || q.text || q.statement || q.question)) {
+      const ck = String(this._itemCorrect(q) ?? '').trim();
+      const ynOnly =
+        /^(J|N|Ja|Nein|Yes|No)$/i.test(ck) &&
+        (q.signText || q.text) &&
+        !q.options?.length;
+      return fn(q, path, ynOnly || type === 'ja_nein' ? 'mcq' : type === 'matching' || type === 'match' ? 'match' : 'mcq', part);
     }
   }
 
-  _validateMcq(q, path) {
-    const type = String(q.type || '').toLowerCase();
+  _validateMcq(q, path, part) {
+    const type = String(q.type || q.questionType || '').toLowerCase();
     const isTf =
       type === 'tf' ||
       type === 'true_false' ||
@@ -389,8 +480,16 @@ class ExamValidator {
       if (optErr) return optErr;
     }
 
-    if (q.correct == null || q.correct === '') return `${path}: mcq_missing_correct`;
-    const correct = q.correct;
+    const correct = this._itemCorrect(q);
+    if (correct == null || correct === '') {
+      return this._missingKeyError(q, path, part);
+    }
+    const ynCorrect = /^(J|N|Ja|Nein|Yes|No)$/i.test(String(correct).trim());
+    if (isYn || ynCorrect) {
+      const c = String(correct).toUpperCase();
+      if (!['J', 'N', 'Y', 'JA', 'NEIN', 'YES', 'NO'].includes(c)) return `${path}: mcq_invalid_yn_correct`;
+      return null;
+    }
     if (Array.isArray(correct)) {
       if (correct.length !== 1) return `${path}: mcq_multiple_correct`;
       return this._correctInOptions(correct[0], q, path);
@@ -402,10 +501,9 @@ class ExamValidator {
       }
       return null;
     }
-    if (isYn) {
-      const c = String(correct).toUpperCase();
-      if (!['J', 'N', 'Y', 'JA', 'NEIN', 'YES', 'NO'].includes(c)) return `${path}: mcq_invalid_yn_correct`;
-      return null;
+    if (!isTf && !isYn && !ynCorrect && (!Array.isArray(q.options) || !q.options.length)) {
+      const k = this._normKey(correct);
+      if (/^[A-J]$/.test(k) || k === '0') return null;
     }
     return this._correctInOptions(correct, q, path);
   }
@@ -443,11 +541,23 @@ class ExamValidator {
     return { key: null, text: '', flaggedCorrect: false };
   }
 
-  _validateMatch(q, path) {
-    if (q.correct == null || q.correct === '') return `${path}: match_missing_correct`;
-    const keys = this._optionKeys(q.options || q.matchLabels);
-    if (!keys.length) return `${path}: match_missing_options`;
-    const vals = Array.isArray(q.correct) ? q.correct : [q.correct];
+  _validateMatch(q, path, part) {
+    const correct = this._itemCorrect(q);
+    if (correct == null || correct === '') {
+      return this._missingKeyError(q, path, part);
+    }
+    let keys = this._optionKeys(q.options || q.matchLabels);
+    if (!keys.length && part) keys = this._adKeys(part);
+    if (!keys.length) {
+      const vals = Array.isArray(correct) ? correct : [correct];
+      const allValid = vals.every((v) => {
+        const k = this._normKey(v);
+        return k === '0' || /^[A-J]$/.test(k);
+      });
+      if (allValid) return null;
+      return `${path}: match_missing_options`;
+    }
+    const vals = Array.isArray(correct) ? correct : [correct];
     for (const v of vals) {
       const k = this._normKey(v);
       if (k === '0') continue;
@@ -457,7 +567,7 @@ class ExamValidator {
   }
 
   _validateGap(item, path) {
-    const ans = item.answer != null ? item.answer : item.correct;
+    const ans = item.answer != null ? item.answer : this._itemCorrect(item);
     if (ans == null || String(ans).trim() === '') return `${path}: gap_missing_answer`;
     return null;
   }
@@ -488,7 +598,13 @@ class ExamValidator {
   }
 
   _isPartialExam(exam) {
-    return !!(exam?.vocabPersonal || exam?.personalizedExam || exam?.quickMod);
+    return !!(
+      exam?.vocabPersonal ||
+      exam?.personalizedExam ||
+      exam?.quickMod ||
+      exam?._sectionPart ||
+      exam?._partialGen
+    );
   }
 
   _hasSchreibenContent(exam) {

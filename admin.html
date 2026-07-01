@@ -832,6 +832,13 @@
     const level = document.getElementById('stagingLevel').value;
     const status = document.getElementById('stagingStatus').value;
     const data = await api('GET', { action: 'staging_list', lang, level, status, limit: 100 });
+    if (data.error) {
+      _stagingItems = [];
+      document.getElementById('stagingCount').textContent = 'Error';
+      document.getElementById('stagingList').innerHTML =
+        `<p class="empty" style="color:var(--red)">✗ ${esc(data.error)}${data.error === 'forbidden' ? ' — comprueba que tu email está en lc_admin_roles' : ''}</p>`;
+      return;
+    }
     _stagingItems = data.candidates || [];
     _stagingCounts = data.counts || null;
     const c = _stagingCounts || {};
@@ -873,7 +880,8 @@
           <button class="act" onclick="viewCandidateDetail('${esc(c.id)}','${esc(c.lang)}','${esc(c.level)}')">Ver parte</button>
           ${c.status === 'pending' ? `<button class="act approve" onclick="approveStaging('${esc(c.id)}')">Guardar/Aprobar parte</button>
           <button class="act reject" onclick="rejectStaging('${esc(c.id)}')">Rechazar</button>` : ''}
-          ${c.status === 'approved' ? `<span style="font-size:11px;color:var(--green);align-self:center">✓ En partes reutilizables</span>` : ''}
+          ${c.status === 'approved' ? `<button class="act" onclick="retryReusableSave('${esc(c.id)}')">Reintentar guardar en reutilizables</button>
+          <span style="font-size:11px;color:var(--green);align-self:center">✓ Aprobado</span>` : ''}
         </div>
       </div>`).join('');
   }
@@ -883,10 +891,27 @@
     const level = document.getElementById('stagingLevel').value;
     if (!confirm('¿Guardar/Aprobar esta parte? Quedará disponible para práctica de sección de inmediato.')) return;
     const r = await api('POST', {}, { action: 'approve_candidate', id, lang, level });
-    if (r.error) { toast('✗ ' + r.error); return; }
+    if (r.error) {
+      toast('✗ ' + (r.message || r.error));
+      if (r.error === 'not_pending') toast('Estado: ' + (r.status || '?') + ' — prueba Reintentar si ya está aprobado');
+      return;
+    }
+    if (!r.savedToReusable) {
+      toast('✗ No se pudo guardar en partes reutilizables');
+      return;
+    }
     let msg = '✓ Parte guardada y disponible para práctica';
     if (r.promoted > 0) msg += ' — ' + r.promoted + ' examen(es) completo(s) al pool';
     toast(msg);
+    loadStagingList();
+  }
+
+  async function retryReusableSave(id) {
+    const lang = document.getElementById('stagingLang').value;
+    const level = document.getElementById('stagingLevel').value;
+    const r = await api('POST', {}, { action: 'approve_candidate', id, lang, level, retryReusable: true });
+    if (r.error) { toast('✗ ' + (r.message || r.error)); return; }
+    toast(r.savedToReusable ? '✓ Guardada en partes reutilizables' : '✗ Falló el guardado');
     loadStagingList();
   }
 

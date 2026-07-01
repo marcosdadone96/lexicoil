@@ -22,7 +22,7 @@
     ) {
       return { ok: false, normalized: normalized };
     }
-    if (typeof lcExamPassesValidator === 'function' && !lcExamPassesValidator(normalized)) {
+    if (typeof lcExamPassesValidator === 'function' && opts.source !== 'pool' && !lcExamPassesValidator(normalized)) {
       return { ok: false, normalized: normalized };
     }
     if (

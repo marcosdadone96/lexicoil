@@ -2,7 +2,7 @@
 
 const DEFAULT_FREE_COMBO = { lang: 'de', level: 'B1' };
 const FREE_LANGS = ['de', 'en', 'es'];
-const FREE_LEVELS = ['B1', 'B2', 'C1'];
+const FREE_LEVELS = ['A2', 'B1', 'B2', 'C1'];
 
 function normalizeFreeCombo(raw) {
   const lang = String(raw?.lang || raw?.subject || '').trim().toLowerCase();

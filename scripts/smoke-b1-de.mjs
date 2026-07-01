@@ -34,10 +34,18 @@ if (existsSync(path.join(ROOT, '.env'))) {
   }
 }
 
-const ARGS = new Set(process.argv.slice(2));
-const SKIP_ANTHROPIC = ARGS.has('--skip-anthropic');
-const SKIP_WEBHOOK = ARGS.has('--skip-webhook');
-const SKIP_POOL = ARGS.has('--skip-pool-mutate');
+const ARGS = process.argv.slice(2);
+const ARGS_SET = new Set(ARGS);
+const SKIP_ANTHROPIC = ARGS_SET.has('--skip-anthropic');
+const SKIP_WEBHOOK = ARGS_SET.has('--skip-webhook');
+const SKIP_POOL = ARGS_SET.has('--skip-pool-mutate');
+if (ARGS_SET.has('--help') || ARGS_SET.has('-h')) {
+  console.log(`Usage:
+  node scripts/smoke-b1-de.mjs [--base-url=URL] [--skip-anthropic] [--skip-webhook] [--skip-pool-mutate]
+
+Env: SMOKE_BASE_URL, SMOKE_USER_EMAIL, SMOKE_USER_PASSWORD, …`);
+  process.exit(0);
+}
 const BASE_URL = (
   ARGS.find((a) => a.startsWith('--base-url='))?.split('=').slice(1).join('=') ||
   process.env.SMOKE_BASE_URL ||

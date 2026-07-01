@@ -59,7 +59,7 @@ const ExamBlueprint = (() => {
 
   function normType(q) {
     const t = String(q.questionType || q.type || '').toLowerCase();
-    if (t === 'multiple') return 'multiple_choice';
+    if (t === 'multiple' || t === 'mcq' || t === 'mc') return 'multiple_choice';
     if (t === 'match') return 'matching';
     if (t === 'richtig_falsch') return 'true_false';
     return t;
@@ -145,6 +145,24 @@ const ExamBlueprint = (() => {
     return shuffle(qs).slice(0, target);
   }
 
+  /** Pick questions grouped by passage for layout=segments (e.g. Hören T1: 5 segments × 2 items). */
+  function pickSegmentsAligned(candidates, partSpec, target) {
+    const layout = partSpec.layout || '';
+    const segmentsTotal = partSpec.segmentsTotal;
+    if (layout !== 'segments' || !segmentsTotal || !candidates.length) return null;
+
+    const perSegment = Math.max(1, Math.round(target / segmentsTotal));
+    const byPassage = groupCandidatesByPassage(candidates);
+    const viable = [...byPassage.entries()].filter(([, qs]) => qs.length >= perSegment);
+    if (viable.length < segmentsTotal) return null;
+
+    const picked = [];
+    for (const [, qs] of shuffle(viable).slice(0, segmentsTotal)) {
+      picked.push(...shuffle(qs).slice(0, perSegment));
+    }
+    return picked.length >= target ? picked.slice(0, target) : picked.length ? picked : null;
+  }
+
   function pickFromPool(pool, partSpec, used, bank, filterFn, opts = {}) {
     const teil = partSpec.teil;
     const target = partSpec.itemsTotal || partSpec.questionsTotal?.max || partSpec.questionsTotal?.min || 4;
@@ -179,7 +197,20 @@ const ExamBlueprint = (() => {
     const modId = opts.moduleId || partSpec.moduleId || null;
     const calibration = opts.calibration;
     const IC = typeof ItemCalibration !== 'undefined' ? ItemCalibration : null;
-    let picked = pickPassageAligned(candidates, partSpec, target);
+    let picked = pickSegmentsAligned(candidates, partSpec, target);
+    if (!picked?.length) picked = pickPassageAligned(candidates, partSpec, target);
+    if (!picked?.length && modId === 'lesen' && teil === 4) {
+      const bySlug = new Map();
+      for (const q of candidates) {
+        const m = String(q.id || '').match(/-l-t4-(.+?)-q\d+$/i);
+        if (!m) continue;
+        const slug = m[1];
+        if (!bySlug.has(slug)) bySlug.set(slug, []);
+        bySlug.get(slug).push(q);
+      }
+      const viable = [...bySlug.values()].filter((qs) => qs.length >= target);
+      if (viable.length) picked = shuffle(viable[0]).slice(0, target);
+    }
     if (!picked?.length) {
       if (calibration && IC && candidates.length > target) {
         picked = IC.pickCalibrated(candidates, target, {
@@ -275,7 +306,7 @@ const ExamBlueprint = (() => {
 
     const AM = adsMatching();
     if (AM?.isAdsMatchingSpec(partSpec) && enriched.length) {
-      return AM.buildAdsMatchingLesenPart(partSpec, enriched, toExamQuestion);
+      return AM.buildAdsMatchingLesenPart(partSpec, enriched, toExamQuestion, bank);
     }
 
     if (layout === 'items' && enriched.length) {
@@ -398,7 +429,18 @@ const ExamBlueprint = (() => {
 
   function buildSchreibenPart(partSpec, questions) {
     const q = questions[0];
-    const words = partSpec.wordsTarget || { min: 80, max: 100 };
+    const teil = Number(partSpec.teil ?? partSpec.aufgabe ?? 1);
+    let words = partSpec.wordsTarget || { min: 80, max: 80 };
+    if (typeof require !== 'undefined') {
+      try {
+        const { GOETHE_B1_SCHREIBEN_WORDS } = require('./goetheB1Constants.js');
+        if (partSpec.taskFormat === 'informal_email' || teil === 1) words = GOETHE_B1_SCHREIBEN_WORDS[1];
+        else if (partSpec.taskFormat === 'forum_opinion' || teil === 2) words = GOETHE_B1_SCHREIBEN_WORDS[2];
+        else if (partSpec.taskFormat === 'semiformal_message' || teil === 3) words = GOETHE_B1_SCHREIBEN_WORDS[3];
+      } catch (_) {
+        /* optional constants */
+      }
+    }
     const taskText =
       q?.question ||
       (partSpec.label ? `${partSpec.label}: ${partSpec.instruction || 'Write your response.'}` : partSpec.instruction);
@@ -409,6 +451,7 @@ const ExamBlueprint = (() => {
       task: taskText,
       minWords: words.min,
       maxWords: words.max,
+      targetWords: words.target ?? words.min,
       mandatory: !!partSpec.mandatory,
       taskType: partSpec.taskTypes?.[0] || partSpec.slotType,
       blueprintSlot: partSpec.slotType,
@@ -420,7 +463,7 @@ const ExamBlueprint = (() => {
   function buildSprechenPart(partSpec, questions, lang) {
     const q = questions[0];
     const isDe = lang === 'de';
-    return {
+    const part = {
       teil: partSpec.teil,
       title: partSpec.label || `Teil ${partSpec.teil}`,
       fieldId: `speak_bp_${partSpec.teil}`,
@@ -430,6 +473,18 @@ const ExamBlueprint = (() => {
       grammarTags: q?.grammarTags || [],
       topicTags: q?.topicTags || [],
     };
+    if (Number(partSpec.teil) === 2 && (partSpec.slides?.length || partSpec.presentationSlides)) {
+      let slides = partSpec.slides;
+      if (!slides?.length && typeof require !== 'undefined') {
+        try {
+          slides = require('./goetheB1Constants.js').GOETHE_B1_PRESENTATION_SLIDES;
+        } catch (_) {
+          slides = [];
+        }
+      }
+      if (slides?.length) part.slides = slides.map((s) => ({ ...s }));
+    }
+    return part;
   }
 
   function buildUseOfEnglishPart(partSpec, questions, bank) {

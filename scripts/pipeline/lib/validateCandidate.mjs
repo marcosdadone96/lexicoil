@@ -52,7 +52,20 @@ export function validateCandidate(candidate, blueprint) {
   }
 
   if (!cefr.withinRange) {
-    cefr.reasons.forEach((r) => errors.push(`cefr_gate:${r}`));
+    // Lesen T5 = Anzeigen (classified ads / notices): sentences are inherently short and
+    // rarely use subordinate clauses — complexity thresholds designed for prose don't apply.
+    // Lesen T4 = Leserbriefe/Forum opinions (signText ~25-35 words each): individual opinion
+    // snippets are naturally short — avgSentenceLen < 10 is expected and not a quality issue.
+    const lesenTeil = candidate.module === 'lesen' ? Number(candidate.teil) : null;
+    const isLesenT5 = lesenTeil === 5;
+    const isLesenT4 = lesenTeil === 4;
+    cefr.reasons.forEach((r) => {
+      if ((isLesenT5 || isLesenT4) && (r.startsWith('complexity_too_simple') || r.startsWith('subordinate_too_few'))) {
+        warnings.push(`cefr_gate:${r} [exento ${isLesenT4 ? 'T4-Leserbriefe' : 'T5-Anzeigen'}]`);
+      } else {
+        errors.push(`cefr_gate:${r}`);
+      }
+    });
   }
 
   const passageExempt = bpPart?.passageLengthExempt === true;

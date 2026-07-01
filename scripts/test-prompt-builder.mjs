@@ -19,8 +19,12 @@ require(path.join(ROOT, 'js', 'engine', 'prompts', 'promptShell.js'));
 require(path.join(ROOT, 'js', 'engine', 'prompts', 'moduleInstructions.js'));
 require(path.join(ROOT, 'js', 'engine', 'prompts', 'blueprintPromptBinding.js'));
 require(path.join(ROOT, 'js', 'engine', 'validation', 'blueprintResolver.js'));
+require(path.join(ROOT, 'js', 'engine', 'personalLesenPoolFallback.js'));
 const PromptBuilder = require(path.join(ROOT, 'js', 'engine', 'prompts', 'PromptBuilder.js'));
 const KnowledgeEngine = require(path.join(ROOT, 'js', 'engine', 'knowledge', 'KnowledgeEngine.js'));
+const BlueprintPromptBinding = require(path.join(ROOT, 'js', 'engine', 'prompts', 'blueprintPromptBinding.js'));
+const PersonalLesenPoolFallback = require(path.join(ROOT, 'js', 'engine', 'personalLesenPoolFallback.js'));
+const { loadBlueprintFileSync } = require(path.join(ROOT, 'js', 'engine', 'validation', 'blueprintResolver.js'));
 
 function assert(cond, msg) {
   if (!cond) {
@@ -86,7 +90,33 @@ async function testVocabExam() {
   });
   const result = PromptBuilder.buildPrompt(spec);
   assert(result.mode === 'chunks', 'vocab chunked');
-  assert(result.chunks.length === 9, 'B1 goethe lesen+horen uses 9 official Teile (5+4)');
+  assert(result.chunks.length === 6, 'B1 goethe lesen+horen AI plan: 6 non-pool Teile (L1,3,4,5 + H2,3)');
+
+  const blueprint = loadBlueprintFileSync('goethe_B1');
+  const fullPlan = BlueprintPromptBinding.chunkPlanFromBlueprint(blueprint, 'german').filter((c) =>
+    /lesen|horen/i.test(String(c.expectKey || '')),
+  );
+  assert(fullPlan.length === 9, 'blueprint defines 9 official Lesen+Hören Teile (5+4)');
+
+  const aiTeils = new Set(
+    result.chunks.map((c) => `${c.expectKey}:T${c.teil}`),
+  );
+  const poolTeils = [
+    ...PersonalLesenPoolFallback.LESEN_POOL_FIRST_TEILS.map((t) => `lesenParts:T${t}`),
+    ...PersonalLesenPoolFallback.HOREN_POOL_FIRST_TEILS.map((t) => `horenParts:T${t}`),
+  ];
+  for (const key of poolTeils) {
+    assert(!aiTeils.has(key), `pool Teil excluded from AI chunks: ${key}`);
+  }
+
+  const filteredPlan = PersonalLesenPoolFallback.filterPersonalAiChunks(fullPlan, spec);
+  assert(filteredPlan.length === 6, 'filterPersonalAiChunks yields 6 Teile');
+  const covered = new Set([
+    ...filteredPlan.map((c) => `${c.expectKey}:T${c.teil}`),
+    ...poolTeils,
+  ]);
+  assert(covered.size === 9, 'AI + pool covers all 9 Lesen/Hören Teile at runtime');
+
   assert(result.chunks[0].expectKey === 'lesenParts', 'first chunk lesenParts teil 1');
   assert(result.chunks.some((c) => c.prompt.includes('Nachhaltigkeit')), 'target word in prompt');
   assert(result.chunks.some((c) => c.prompt.includes('OFFICIAL BLUEPRINT PART')), 'blueprint binding');
@@ -105,8 +135,20 @@ async function testVocabExamLesenOnly() {
     topic: 'Natur',
   });
   const result = PromptBuilder.buildPrompt(spec);
-  assert(result.chunks.length === 5, 'lesen-only B1 goethe uses 5 official Lesen Teile');
+  assert(result.chunks.length === 4, 'lesen-only B1 goethe AI plan: 4 non-pool Teile (L1,3,4,5; T2 from pool)');
   assert(!result.chunks.some((c) => c.expectKey === 'horenParts'), 'horen omitted');
+  assert(!result.chunks.some((c) => c.teil === 2 && c.expectKey === 'lesenParts'), 'lesen T2 excluded (pool)');
+
+  const blueprint = loadBlueprintFileSync('goethe_B1');
+  const fullLesen = BlueprintPromptBinding.chunkPlanFromBlueprint(blueprint, 'german').filter((c) =>
+    /lesen/i.test(String(c.expectKey || '')),
+  );
+  assert(fullLesen.length === 5, 'blueprint defines 5 Lesen Teile');
+  const covered = new Set([
+    ...result.chunks.map((c) => `lesenParts:T${c.teil}`),
+    ...PersonalLesenPoolFallback.LESEN_POOL_FIRST_TEILS.map((t) => `lesenParts:T${t}`),
+  ]);
+  assert(covered.size === 5, 'AI + pool covers all 5 Lesen Teile at runtime');
   console.log('OK   vocabulary exam lesen-only blueprint');
 }
 

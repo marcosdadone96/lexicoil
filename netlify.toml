@@ -11,7 +11,7 @@
   included_files = ["js/engine/**", "library/blueprints/**", "knowledge/**"]
 
 [functions."exam-pool"]
-  included_files = ["library/blueprints/**", "library/banks/**", "library/curated/**", "library/schemas/**", "library/catalogThresholds.json", "js/engine/**", "knowledge/**"]
+  included_files = ["library/blueprints/**", "library/banks/**", "library/curated/**", "library/pool-seed/**", "library/schemas/**", "library/catalogThresholds.json", "js/engine/**", "knowledge/**"]
 
 [functions."admin-api"]
   included_files = ["library/blueprints/**", "library/banks/**", "library/curated/**", "library/schemas/**", "js/engine/**", "knowledge/**"]
@@ -24,11 +24,21 @@
   publish = "dist"
   environment = { NODE_VERSION = "20" }
 
+[functions."exam-part"]
+  included_files = ["library/reusable-seed/**", "library/vocab/**", "js/engine/**"]
+
+[functions."vocab-cache"]
+  timeout = 26
+
 [dev]
   publish = "."
   framework = "#static"
-  # netlify dev defaults to 30s unless the linked site has functions_timeout ≥60.
-  # AI personal exams take ~50s — use `netlify dev` without --offline for local testing.
+  functions = "netlify/functions"
+  # netlify dev defaults to 30s function timeout unless the linked site has functions_timeout ≥60.
+  # Link the production site (`netlify link`) so local claude-chat matches production (60s).
+  # Do NOT use [dev.functions."name"] here — it makes dev.functions an object and crashes netlify dev.
+  # Or set in Netlify UI: Site → Build & deploy → Functions → Function timeout = 60.
+  # Personal Lesen T2/T4 use split sub-calls (~26s each) so generation stays under 30s in dev.
 
 # Primary domain in Netlify UI is lexicoil.com (apex). Do NOT add JS redirects to www.
 
@@ -105,4 +115,4 @@
     Referrer-Policy = "strict-origin-when-cross-origin"
     Strict-Transport-Security = "max-age=31536000; includeSubDomains"
     Permissions-Policy = "microphone=(self), camera=()"
-    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://esm.sh https://js.stripe.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://api.anthropic.com https://api.stripe.com https://*.supabase.co https://esm.sh; frame-src https://checkout.stripe.com https://js.stripe.com"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://esm.sh https://js.stripe.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://www.google-analytics.com https://www.googletagmanager.com; connect-src 'self' https://api.anthropic.com https://api.stripe.com https://*.supabase.co https://esm.sh https://www.google-analytics.com https://analytics.google.com https://*.google-analytics.com https://www.googletagmanager.com; frame-src https://checkout.stripe.com https://js.stripe.com"

@@ -72,7 +72,7 @@ Generas **un batch JSON** para Goethe-Zertifikat B1. Material original, formato 
 
 ### LESEN T2 — 2 textos (165–210 palabras c/u) + 6 MCQ (3 c/u)
 
-### LESEN T3 — 7 matching, passages `[]`, mismas 10 opciones A–J en cada Q, 1 respuesta `"0"`
+### LESEN T3 — 7 matching, passages `[]`, mismas 10 opciones A–J en cada Q, 1 respuesta `"0"`, part.example con situación 0 resuelta (correct `"0"`)
 
 ### LESEN T4 — 7 ja_nein, `signText` 65–85 palabras por persona, tema común
 
@@ -87,13 +87,14 @@ Generas **un batch JSON** para Goethe-Zertifikat B1. Material original, formato 
 ### HÖREN T4 — 1 debate 320–400 palabras + 8 matching (M/A/B)
 
 ### SCHREIBEN — 3 consignas en un JSON, passages `[]`:
-- T1: E-Mail informal ~80 Wörter, 3 bullet points (TOPIC_T1)
-- T2: Meinung Forum ~80 Wörter + cita del post (TOPIC_T2)
-- T3: Nota semiformal ~40 Wörter (TOPIC_T3)
+- T1: E-Mail informal **80 Wörter** (minWords/targetWords: 80), 3 bullet points (TOPIC_T1)
+- T2: Meinung Forum **80 Wörter** (minWords/targetWords: 80) + cita del post (TOPIC_T2)
+- T3: Nota semiformal **40 Wörter** (minWords/targetWords: 40) (TOPIC_T3)
+- En explanation/rubric: referencia explícita a 80/80/40 Wörter según Teil
 
 ### SPRECHEN — 3 consignas, passages `[]`:
 - T1: Planungsaufgabe, 5 bullet points (TOPIC_T1)
-- T2: Präsentation con Einleitung/Heimatland/Vor-Nachteile/Meinung (TOPIC_T2)
+- T2: Präsentation — incluir en la consigna las 5 Folien fijas: (1) Thema vorstellen + Struktur, (2) Persönliche Erfahrung, (3) Situation im Heimatland, (4) Vor-/Nachteile + Meinung, (5) Abschluss + Dank (TOPIC_T2)
 - T3: Feedback sobre T2 + 2–3 preguntas ejemplo
 
 ---

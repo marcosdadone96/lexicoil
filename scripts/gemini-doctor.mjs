@@ -14,8 +14,23 @@ import { generateContent } from './lib/geminiClient.mjs';
 
 loadEnvFile();
 
-const TARGET = Math.max(1, Number(process.argv.includes('--target') ? process.argv[process.argv.indexOf('--target') + 1] : 10) || 10);
-const PING = process.argv.includes('--ping');
+function parseDoctorArgs(argv) {
+  const out = { lang: 'de', level: 'B1', target: 10, ping: false };
+  for (let i = 0; i < argv.length; i++) {
+    const a = argv[i];
+    if (a === '--lang') out.lang = String(argv[++i] || 'de').toLowerCase();
+    else if (a === '--level') out.level = String(argv[++i] || 'B1').toUpperCase();
+    else if (a === '--target') out.target = Math.max(1, Number(argv[++i]) || 10);
+    else if (a === '--ping') out.ping = true;
+  }
+  return out;
+}
+
+const doctor = parseDoctorArgs(process.argv.slice(2));
+const TARGET = doctor.target;
+const PING = doctor.ping;
+const DOC_LANG = doctor.lang;
+const DOC_LEVEL = doctor.level;
 
 function rpdLimit() {
   const n = Number(process.env.GEMINI_RPD);
@@ -26,7 +41,7 @@ function rpmLimit() {
   return Math.max(1, Number(process.env.GEMINI_RPM) || 8);
 }
 
-console.log('\n=== Gemini doctor — de/B1 ===\n');
+console.log(`\n=== Gemini doctor — ${DOC_LANG}/${DOC_LEVEL} ===\n`);
 
 const hasKey = !!(process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY);
 console.log(`API key:     ${hasKey ? '✓ configurada' : '✗ falta GEMINI_API_KEY en .env'}`);
@@ -45,7 +60,7 @@ if (fs.existsSync(USAGE_FILE)) {
   console.log('Usage file:  (aún no creado — se genera en la 1ª llamada)');
 }
 
-const jobs = getGenerationJobs('de', 'B1', { mode: 'gaps', targetExams: TARGET });
+const jobs = getGenerationJobs(DOC_LANG, DOC_LEVEL, { mode: 'gaps', targetExams: TARGET });
 console.log(`\nJobs gaps→${TARGET}: ${jobs.length}`);
 if (jobs.length) {
   const byTeil = {};

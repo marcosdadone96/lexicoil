@@ -453,6 +453,24 @@ async function insertGeneration(rec) {
   return data?.id || null;
 }
 
+async function insertFeedback(rec) {
+  const sb = getClient();
+  if (!sb) return null;
+  const row = {
+    user_id: rec.user_id ?? rec.userId ?? null,
+    email: rec.email ?? null,
+    message: rec.message,
+    page: rec.page ?? null,
+    user_agent: rec.user_agent ?? rec.userAgent ?? null,
+  };
+  const { data, error } = await sb.from('feedback').insert(row).select('id').single();
+  if (error) {
+    console.error('[supabaseAdmin] insertFeedback:', error.message);
+    return null;
+  }
+  return data?.id || null;
+}
+
 async function listGenerations({ email, lang, level, from, to, limit = 50, offset = 0 } = {}) {
   const sb = getClient();
   if (!sb) return { rows: [], total: 0 };
@@ -552,6 +570,7 @@ module.exports = {
   getSavedExams,
   deleteSavedExams,
   insertGeneration,
+  insertFeedback,
   listGenerations,
   getGeneration,
   purgeOldGenerations,

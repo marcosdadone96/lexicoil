@@ -3,8 +3,16 @@
  * Additive tracking — does not modify flashcards/history/savedExams merge.
  */
 (function () {
+  function localDayKey(d) {
+    const dt = new Date(d);
+    const y = dt.getFullYear();
+    const m = String(dt.getMonth() + 1).padStart(2, '0');
+    const day = String(dt.getDate()).padStart(2, '0');
+    return `${y}-${m}-${day}`;
+  }
+
   function dayKey(d) {
-    return new Date(d).toISOString().slice(0, 10);
+    return localDayKey(d);
   }
 
   function monthKey(d) {
@@ -36,16 +44,31 @@
     };
   }
 
-  function recalcStreak(byDay, today) {
+  function recalcStreak(byDay, activeDays, today) {
     let streak = 0;
-    const d = new Date((today || dayKey(Date.now())) + 'T12:00:00');
+    const d = new Date((today || localDayKey(Date.now())) + 'T12:00:00');
     for (let i = 0; i < 400; i++) {
-      const k = dayKey(d);
-      if ((byDay[k] || 0) >= 60) streak++;
+      const k = localDayKey(d);
+      const hasActivity =
+        (activeDays && activeDays.has(k)) || (byDay[k] || 0) >= 30;
+      if (hasActivity) streak++;
       else break;
       d.setDate(d.getDate() - 1);
     }
     return streak;
+  }
+
+  function activeDaysFromLog(activityLog) {
+    const days = new Set();
+    (activityLog || []).forEach((a) => {
+      if (!a) return;
+      const day = a.day || localDayKey(Number(a.ts) || Date.now());
+      const sec = Number(a.sec) || 0;
+      if (sec >= 30 || a.type === 'exam' || a.type === 'quick' || a.type === 'vocab_quiz') {
+        days.add(day);
+      }
+    });
+    return days;
   }
 
   function computeStudyTime(activityLog) {
@@ -55,7 +78,7 @@
       if (sec < 30 || !a.day) return;
       byDay[a.day] = (byDay[a.day] || 0) + sec;
     });
-    const today = dayKey(Date.now());
+    const today = localDayKey(Date.now());
     const mk = monthKey(Date.now());
     let monthSec = 0;
     let totalSec = 0;
@@ -63,8 +86,9 @@
       totalSec += sec;
       if (day.startsWith(mk)) monthSec += sec;
     });
+    const activeDays = activeDaysFromLog(activityLog);
     return {
-      streak: recalcStreak(byDay, today),
+      streak: recalcStreak(byDay, activeDays, today),
       lastActiveDay: today,
       monthKey: mk,
       monthSec,
@@ -76,7 +100,7 @@
   function normalizeActivityEntry(entry) {
     if (!entry || typeof entry !== 'object') return null;
     const ts = Number(entry.ts) || Date.now();
-    const day = entry.day || dayKey(ts);
+    const day = entry.day || localDayKey(ts);
     return {
       id: String(entry.id || 'act_' + ts),
       ts,
@@ -153,7 +177,11 @@
   }
 
   function getStreak(state) {
-    return normalizeStudyTime(state?.studyTime).streak;
+    if (Array.isArray(state?.activityLog) && state.activityLog.length) {
+      return computeStudyTime(state.activityLog).streak;
+    }
+    const t = normalizeStudyTime(state?.studyTime);
+    return recalcStreak(t.byDay, null, localDayKey(Date.now()));
   }
 
   function getMonthSec(state) {
@@ -203,7 +231,7 @@
     Object.entries(l.byDay || {}).forEach(([day, sec]) => {
       byDay[day] = Math.max(byDay[day] || 0, sec);
     });
-    const today = dayKey(Date.now());
+    const today = localDayKey(Date.now());
     const mk = monthKey(Date.now());
     let monthSec = 0;
     let totalSec = 0;
@@ -211,8 +239,9 @@
       totalSec += sec;
       if (day.startsWith(mk)) monthSec += sec;
     });
+    const activeDays = activeDaysFromLog(mergedActivity);
     return {
-      streak: recalcStreak(byDay, today),
+      streak: recalcStreak(byDay, activeDays, today),
       lastActiveDay: [l.lastActiveDay, s.lastActiveDay].sort().pop() || today,
       monthKey: mk,
       monthSec,
@@ -222,6 +251,7 @@
   }
 
   window.ActivityTrack = {
+    localDayKey,
     defaultStudyTime,
     normalizeStudyTime,
     computeStudyTime,

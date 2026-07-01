@@ -1,0 +1,103 @@
+{
+  "lang": "de",
+  "level": "B1",
+  "target": 12,
+  "startedAt": "2026-06-21T20:49:37.630Z",
+  "updatedAt": "2026-06-22T14:21:19.452Z",
+  "notes": "9/12 curated+served certified. Gemini quota 240/240 PT. Claude bulk+one-exam runs ~$0.52. Promote blocked: disjoint passage assembly (rare full coverage with 9-exam corpus).",
+  "phases": {
+    "preflight": {
+      "done": true,
+      "at": "2026-06-21T20:49:37.636Z"
+    },
+    "residual_claude": {
+      "done": true,
+      "at": "2026-06-22T14:19:56.736Z"
+    },
+    "fidelity": {
+      "done": true,
+      "at": "2026-06-22T06:54:13.796Z",
+      "passed": 9,
+      "failed": 0,
+      "total": 9,
+      "passageDedupe": true
+    },
+    "pre_build_guard": {
+      "done": true,
+      "at": "2026-06-22T08:54:53.146Z",
+      "ok": false,
+      "reverted": false
+    },
+    "availability": {
+      "done": true,
+      "at": "2026-06-22T14:21:19.451Z",
+      "capped": "beta"
+    }
+  },
+  "stats": {
+    "gemini": {
+      "batchesOK": 0,
+      "batchesFail": 0,
+      "ingestAccepted": 538,
+      "ingestRejected": 0,
+      "estimatedUSD": 0
+    },
+    "pool": {
+      "fillActions": 0,
+      "examsTouched": 0,
+      "residualGaps": 0
+    },
+    "claude": {
+      "partsAccepted": 0,
+      "partsFailed": 0,
+      "estimatedUSD": 0.52
+    },
+    "curated": {
+      "count": 9,
+      "fidelityPassed": 9,
+      "fidelityFailed": 0,
+      "passageDedupeOk": true,
+      "passageDedupeViolations": 0
+    }
+  },
+  "rounds": [
+    {
+      "at": "2026-06-22T06:26:28.754Z",
+      "curatedBefore": 9,
+      "round0": {
+        "curated": 9
+      },
+      "round1": {
+        "curated": 9
+      },
+      "round2": {
+        "curated": 9
+      },
+      "curatedAfter": 9
+    },
+    {
+      "at": "2026-06-22T08:50:18.373Z",
+      "curatedBefore": 9,
+      "round0": {
+        "curated": 9
+      },
+      "curatedAfter": 9
+    },
+    {
+      "at": "2026-06-22T08:57:32.227Z",
+      "curatedBefore": 9,
+      "round0": {
+        "curated": 9
+      },
+      "curatedAfter": 9
+    },
+    {
+      "at": "2026-06-22T14:18:50.418Z",
+      "curatedBefore": 12,
+      "round0": {
+        "curated": 12
+      },
+      "curatedAfter": 12
+    }
+  ]
+}

@@ -4,7 +4,11 @@
 (function () {
   'use strict';
 
-  var MEASUREMENT_ID = 'G-HMZCS7TE33';
+  var MEASUREMENT_ID =
+    (typeof window !== 'undefined' &&
+      window.LC_ANALYTICS &&
+      window.LC_ANALYTICS.GA_MEASUREMENT_ID) ||
+    'G-RTQJVSZBKC';
   var loaded = false;
 
   function ensureDataLayer() {
@@ -18,7 +22,7 @@
 
   function setDefaultConsentDenied() {
     ensureDataLayer();
-    gtag('consent', 'default', {
+    window.gtag('consent', 'default', {
       ad_storage: 'denied',
       ad_user_data: 'denied',
       ad_personalization: 'denied',
@@ -29,7 +33,7 @@
 
   function grantAnalyticsConsent() {
     ensureDataLayer();
-    gtag('consent', 'update', {
+    window.gtag('consent', 'update', {
       analytics_storage: 'granted',
     });
   }
@@ -43,8 +47,8 @@
     script.async = true;
     script.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(MEASUREMENT_ID);
     script.onload = function () {
-      gtag('js', new Date());
-      gtag('config', MEASUREMENT_ID, { anonymize_ip: true });
+      window.gtag('js', new Date());
+      window.gtag('config', MEASUREMENT_ID, { anonymize_ip: true });
     };
     document.head.appendChild(script);
   }
@@ -53,8 +57,8 @@
 
   function init() {
     if (typeof window.lcConsent === 'undefined') return;
-    lcConsent.whenGranted('analytics', loadGtag);
-    lcConsent.onReady(function (state) {
+    window.lcConsent.whenGranted('analytics', loadGtag);
+    window.lcConsent.onReady(function (state) {
       if (state && state.analytics) loadGtag();
     });
   }

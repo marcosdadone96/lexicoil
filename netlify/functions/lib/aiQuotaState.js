@@ -13,7 +13,7 @@ function overdraftMax() {
 }
 
 function defaultAutoRecharge() {
-  return { enabled: false, pack: 50, maxPerMonth: 2, usedThisMonth: 0 };
+  return { enabled: false, pack: 40, maxPerMonth: 2, usedThisMonth: 0 };
 }
 
 /** Normalize quota blob AI fields; apply month rollover when stored month != current. */
@@ -32,7 +32,8 @@ function applyMonthlyAiReset(current, aiMax, month) {
     const prevMax = Number(q.aiMax) || aiMax;
     const prevAiUsed = Number(q.aiUsed) || 0;
     const leftover = Math.max(0, prevMax - prevAiUsed);
-    rollover = Math.min(rolloverCap(), leftover);
+    // Pack topups never expire — only monthly pool and rollover reset.
+    rollover = aiMax > 0 ? Math.min(rolloverCap(), leftover) : 0;
     aiUsed = overdraft;
     overdraft = 0;
     autoRecharge.usedThisMonth = 0;

@@ -92,8 +92,8 @@ exports.handler = async (event) => {
     user: {
       name: user.name,
       email,
-      plan: user.pro ? 'pro' : user.plan || 'free',
-      pro: Boolean(user.pro),
+      plan: user.plan === 'pro_max' ? 'pro_max' : user.pro ? 'pro' : user.plan || 'free',
+      pro: Boolean(user.pro || user.plan === 'pro' || user.plan === 'pro_max'),
     },
   }, session.token, event);
 };

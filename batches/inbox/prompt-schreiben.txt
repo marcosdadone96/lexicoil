@@ -1,0 +1,110 @@
+# Prompt generado — Schreiben B1 · Teile 1–3
+Copia TODO (desde la línea ---) y pégalo en Gemini/ChatGPT. Devuelve SOLO JSON.
+Regenerar otro sorteo: npm run schreiben:prompt
+
+---
+
+# Plantilla de generación — Schreiben B1 · Teile 1–3
+
+Pega TODO este texto en Gemini/ChatGPT. Devuelve **SOLO JSON**.
+**Un batch = las 3 Aufgaben** del examen oficial (60 min total).
+
+---
+
+Eres examinador del Goethe-Zertifikat B1. Genera **UN conjunto completo Schreiben**
+(3 consignas de escritura), alemán estándar, nivel B1.
+
+## Reglas estrictas
+- `"passages": []` **siempre vacío**.
+- **Exactamente 3 preguntas** (`teil`: 1, 2, 3).
+- `type: "short_answer"` · `correct: "rubric"` · `correctAnswer: "rubric"` · `options: []`.
+- **Sin** `passageId`. **Sin** respuesta modelo completa del alumno en `correct`.
+- `question`: consigna completa en alemán (multilínea con `\n` y bullets `•`).
+
+## TEIL 1 — E-Mail informal (~80 Wörter, 20 min)
+- Destinatario: **Freund/in** (du/Sie según tono informal du).
+- **3 bullet points** de contenido concretos y distintos.
+- Instrucción explícita: Anrede + Gruß + ca. 80 Wörter.
+- Tono: personal, cercano.
+
+## TEIL 2 — Meinung im Forum (~80 Wörter, 25 min)
+- Tema de debate actual (Medien, Schule, Umwelt, Arbeit, Wohnen…).
+- Incluir **cita breve** del Forumpost original entre comillas «…».
+- Pedir: Meinung + Begründung + **Vor- und Nachteile**.
+- Tono: semiformal (man/ich), no SMS.
+
+## TEIL 3 — Mitteilung semiformal (~40 Wörter, 15 min)
+- Situación práctica: Krankmeldung, Termin absagen, Einladung, Entschuldigung, Anfrage…
+- Anrede + Gruß **obligatorios** (Sie-Form).
+- **3 bullet points** concretos.
+- Longitud: ca. 40 Wörter (35–45).
+
+## REGLAS DE CALIDAD
+1. Los **3 temas** deben ser **independientes** (no repetir el mismo asunto).
+2. Cada consigna debe poder evaluarse con rúbrica clara en `explanation`.
+3. Bullets accionables (el alumno sabe qué escribir en cada punto).
+4. **PROHIBIDO:** MCQ, passages, emails ya escritas como respuesta.
+
+## PALABRAS OBJETIVO
+<<< schwäche, epistemologie, zusammenfassung, kampagne, these, buchung, gleichberechtigung, beförderung, redewendung, gewinnen >>>
+
+## AUTORREVISIÓN
+- ¿passages: [] y 3 questions (teil 1,2,3)?
+- ¿correct:"rubric" en las 3?
+- ¿T1 ~80W, T2 ~80W con Forumpost citado, T3 ~40W semiformal?
+- ¿module:"schreiben", lang:"de", level:"B1"?
+- ¿Solo JSON?
+
+## Formato de salida
+- IDs: `gen-q-s-t1-XXXX-q1`, `gen-q-s-t2-XXXX-q1`, `gen-q-s-t3-XXXX-q1`
+- `explanation`: criterios Bewertung (Inhalt, Grammatik, Wortschatz, Länge, Anrede/Gruß)
+- `skills: ["writing"]`
+
+## EJEMPLO ESTRUCTURAL (Teil 1 — imita formato)
+
+```json
+{
+  "passages": [],
+  "questions": [
+    {
+      "id": "gen-q-s-t1-8842-q1",
+      "module": "schreiben",
+      "teil": 1,
+      "type": "short_answer",
+      "question": "Schreiben Sie eine E-Mail an eine Freundin/einen Freund. Schreiben Sie etwas zu allen drei Punkten. Achten Sie auf Anrede und Schluss. Schreiben Sie circa 80 Wörter.\n\n• Sie haben einen Sprachkurs begonnen.\n• Erzählen Sie, was Ihnen gefällt und was schwierig ist.\n• Laden Sie Ihre Freundin/Ihren Freund zu einem Treffen ein.",
+      "options": [],
+      "correct": "rubric",
+      "correctAnswer": "rubric",
+      "explanation": "Bewertung: alle 3 Punkte (0–5), Anrede/Gruß (0–3), Grammatik/Wortschatz B1 (0–5), Länge ca. 80 Wörter (0–3).",
+      "lang": "de",
+      "level": "B1",
+      "skills": ["writing"]
+    }
+  ]
+}
+```
+
+Genera **las 3 consignas completas** (Teile 1–3), integrando PALABRAS OBJETIVO. Devuelve solo JSON.
+
+IMPORTANTE — IDs de esta generación:
+- Preguntas: gen-q-s-t{1,2,3}-673e-q1
+No reutilices IDs del ejemplo ni del banco existente.
+
+## LONGITUD / FORMATO OFICIAL (OBLIGATORIO)
+- 1 batch = 3 preguntas (teil 1+2+3), passages: []. correct: "rubric".
+- Ámbito: **question de cada teil (consigna, no respuesta modelo)**
+- Objetivo: **T1 ~80, T2 ~80, T3 ~40 palabras (consigna)**
+- Prefiere léxico B1 frecuente. Evita anglicismos raros y meta-texto («Dieser Text hat 280 Wörter…»).
+- Integra PALABRAS OBJETIVO en las consignas y vocabulario sugerido, no en respuestas modelo.
+
+CHECKLIST FINAL (Goethe B1 — debe pasar validate-batch.mjs):
+- Responde SOLO JSON: { "passages": [...], "questions": [...] } — sin markdown, sin ```.
+- correct === correctAnswer en todas las preguntas.
+- module correcto en cada question; lang:"de", level:"B1".
+- IDs únicos con el prefijo indicado arriba (no reutilizar el ejemplo).
+- explanation en alemán en cada pregunta (nunca vacía).
+- PALABRAS OBJETIVO: 8–12 lemas B1 integrados en el contenido.
+- passages: [] · exactamente 3 questions (teil 1,2,3).
+- type:"short_answer", correct:"rubric", options:[].
+- T1 E-Mail Freund/in ~80W · T2 Forumpost ~80W con cita · T3 nota semiformal ~40W.
+

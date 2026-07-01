@@ -13,7 +13,7 @@ const STEPS = [
   },
   {
     title: 'Practice what matters',
-    desc: 'Flashcards on every plan. With Pro, personalized exams built only from your weak areas.',
+    desc: 'Flashcards on every plan. Free uses AI credits for quiz & speaking; Pro adds personalized exams from your weak areas.',
     tag: 'Personalized exam',
   },
   {

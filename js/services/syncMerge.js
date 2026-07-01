@@ -76,7 +76,7 @@
   }
 
   function savedExamTs(e) {
-    return Date.parse(e?.savedAt) || Number(e?.id) || 0;
+    return Number(e?.updatedAt) || Date.parse(e?.savedAtIso) || Date.parse(e?.savedAt) || Number(e?.id) || 0;
   }
 
   function isSavedExamTombstoned(e, tombstones) {
@@ -102,6 +102,22 @@
       if (!prev || ts >= prevTs) map.set(sid, e);
     }
     return [...map.values()].filter((e) => !isSavedExamTombstoned(e, tombstones)).slice(0, 50);
+  }
+
+  function mergeSavedQuizzes(local, server, tombstones) {
+    if (typeof SavedVocabQuizzes !== 'undefined' && SavedVocabQuizzes.mergeSavedQuizzes) {
+      return SavedVocabQuizzes.mergeSavedQuizzes(local, server, tombstones);
+    }
+    const map = new Map();
+    for (const q of [...(server || []), ...(local || [])]) {
+      if (!q?.id) continue;
+      const sid = String(q.id);
+      const prev = map.get(sid);
+      const ts = Number(q?.updatedAt) || Number(q?.createdAt) || 0;
+      const prevTs = prev ? (Number(prev?.updatedAt) || Number(prev?.createdAt) || 0) : 0;
+      if (!prev || ts >= prevTs) map.set(sid, q);
+    }
+    return [...map.values()].slice(0, 30);
   }
 
   function goalTs(g) {
@@ -144,17 +160,39 @@
     return { tabs: [...map.values()].slice(0, 100) };
   }
 
+  function sessionHasPayload(s) {
+    return s && (s.examData || s.examSavedId || s.examDataRef);
+  }
+
+  function mergeActiveSessions(local, server) {
+    const map = {};
+    for (const [goalId, s] of Object.entries(local || {})) {
+      if (sessionHasPayload(s) && goalId) map[goalId] = s;
+    }
+    for (const [goalId, s] of Object.entries(server || {})) {
+      if (!sessionHasPayload(s) || !goalId) continue;
+      const prev = map[goalId];
+      const ts = Number(s.updatedAt) || 0;
+      const prevTs = Number(prev?.updatedAt) || 0;
+      if (!prev || ts >= prevTs) map[goalId] = s;
+    }
+    return map;
+  }
+
   window.mergeSyncPayload = function mergeSyncPayload(local, server) {
     const l = local && typeof local === 'object' ? local : {};
     const s = server && typeof server === 'object' ? server : {};
     const deletedSavedExams = mergeTombstones(l.deletedSavedExams, s.deletedSavedExams);
     const deletedFlashcards = mergeTombstones(l.deletedFlashcards, s.deletedFlashcards);
+    const deletedSavedQuizzes = mergeTombstones(l.deletedSavedQuizzes, s.deletedSavedQuizzes);
     const activityLog = ActivityTrack.mergeActivity(l.activityLog, s.activityLog);
     return {
       flashcards: mergeFlashcards(l.flashcards, s.flashcards, deletedFlashcards),
       history: mergeHistory(l.history, s.history),
       savedExams: mergeSavedExams(l.savedExams, s.savedExams, deletedSavedExams),
       deletedSavedExams,
+      savedQuizzes: mergeSavedQuizzes(l.savedQuizzes, s.savedQuizzes, deletedSavedQuizzes),
+      deletedSavedQuizzes,
       deletedFlashcards,
       activityLog,
       studyTime: ActivityTrack.mergeStudyTime(l.studyTime, s.studyTime, activityLog),
@@ -163,6 +201,7 @@
       goals: mergeGoals(l.goals, s.goals),
       activeGoalId: l.activeGoalId || s.activeGoalId || null,
       notebook: mergeNotebook(l.notebook, s.notebook),
+      activeSessions: mergeActiveSessions(l.activeSessions, s.activeSessions),
     };
   };
 })();

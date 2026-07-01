@@ -101,11 +101,11 @@
     host.innerHTML = `
       <div class="level-soon-panel__card" role="dialog" aria-labelledby="levelSoonTitle">
         <button type="button" class="level-soon-panel__close" onclick="closeLevelSoonPanel()" aria-label="Close">×</button>
-        <h3 id="levelSoonTitle">${esc(langLbl)} ${esc(level)} — Próximamente</h3>
+        <h3 id="levelSoonTitle">${esc(langLbl)} ${esc(level)} — Coming soon</h3>
         <p class="level-soon-panel__lede">We're preparing official mock exams for this level. Leave your email and we'll notify you when it's ready.</p>
         <form class="level-soon-form" onsubmit="return submitLevelSoonForm(event,'${esc(lang)}','${esc(level)}')">
           <input type="email" name="email" class="level-soon-input" placeholder="you@example.com" value="${prefill}" required autocomplete="email">
-          <button type="submit" class="btn-sm blue">Avísame cuando esté listo</button>
+          <button type="submit" class="btn-sm blue">Notify me when ready</button>
         </form>
         <p id="levelSoonDone" class="level-soon-done" style="display:none">✓ We'll email you when ${esc(langLbl)} ${esc(level)} is available.</p>
       </div>`;

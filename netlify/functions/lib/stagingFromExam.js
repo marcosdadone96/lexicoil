@@ -186,7 +186,7 @@ function partRecord(module, part, { lang, level, source, batchId }) {
     passage,
     questions,
     provenance: { generatedBy: source, batchId, createdAt: new Date().toISOString() },
-    validation: { valid: questions.length >= 1, errors: questions.length ? [] : ['no_questions'] },
+    validation: { valid: false, errors: ['pending_gate'], itemCount: questions.length },
   };
 
   return schemaMatchesBank(record);

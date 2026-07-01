@@ -6,7 +6,7 @@
 
 const { getStoreForEvent } = require('./lib/blobStore.js');
 const { normalizeEmail } = require('./lib/authLib.js');
-const { activateProForEmail, revokeProForEmail, markPaymentPastDue, clearPaymentPastDue } = require('./lib/proUpgrade.js');
+const { activateProForEmail, activateProMaxForEmail, revokeProForEmail, markPaymentPastDue, clearPaymentPastDue } = require('./lib/proUpgrade.js');
 const { persistStripeCustomerId } = require('./lib/stripeLib.js');
 const { addCreditTopups } = require('./lib/aiCredits.js');
 const { sendPaymentFailedEmail } = require('./lib/email.js');
@@ -147,8 +147,11 @@ exports.handler = async (event) => {
         const customerId = session.customer || null;
         if (customerId) await persistStripeCustomerId(store, email, customerId);
 
-        const result = await activateProForEmail(store, email, {
-          sendEmail: true,
+        const plan = session.metadata?.plan === 'pro_max' ? 'pro_max' : 'pro';
+        const activate =
+          plan === 'pro_max' ? activateProMaxForEmail : activateProForEmail;
+        const result = await activate(store, email, {
+          sendEmail: plan === 'pro',
           stripeCustomerId: customerId || undefined,
         });
         if (!result.ok) {
@@ -156,7 +159,7 @@ exports.handler = async (event) => {
           return { statusCode: 200, body: 'ok' };
         }
 
-        console.log('[stripe-webhook] Upgraded to Pro:', email);
+        console.log('[stripe-webhook] Upgraded to', plan + ':', email);
         handled = true;
       }
     } else if (

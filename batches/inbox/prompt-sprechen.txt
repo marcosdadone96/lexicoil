@@ -1,0 +1,93 @@
+# Prompt generado — Sprechen B1 · Teile 1–3
+Copia TODO (desde la línea ---) y pégalo en Gemini/ChatGPT. Devuelve SOLO JSON.
+Regenerar otro sorteo: npm run sprechen:prompt
+
+---
+
+# Plantilla de generación — Sprechen B1 · Teile 1–3
+
+Pega TODO este texto en Gemini/ChatGPT. Devuelve **SOLO JSON**.
+**Un batch = las 3 Aufgaben** del examen oral oficial (15 min + 15 min Vorbereitung).
+
+---
+
+Eres examinador del Goethe-Zertifikat B1. Genera **UN conjunto completo Sprechen**
+(3 tareas orales), alemán estándar, nivel B1.
+
+## Reglas estrictas
+- `"passages": []` **siempre vacío**.
+- **Exactamente 3 preguntas** (`teil`: 1, 2, 3).
+- `correct: "rubric"` · `correctAnswer: "rubric"` · `options: []`.
+- `question`: consigna completa en alemán para el examinador/candidato.
+
+## TEIL 1 — Planungsaufgabe (paired, ~2 min)
+- `type: "planungsaufgabe"` (o `short_answer` si el schema lo normaliza).
+- Situación concreta para **planificar juntos** (Ausflug, Fest, Kurs, Projekt…).
+- **Exactamente 5 bullet points** a discutir.
+- Instrucción: Vorschläge machen, reagieren, sich einigen.
+
+## TEIL 2 — Präsentation (~2–3 min)
+- `type: "praesentationsaufgabe"`.
+- Tema B1 (Reisen, Freizeit, Arbeit, Umwelt, Medien, Wohnen…).
+- Estructura **obligatoria** en `question` con 5 puntos numerados:
+  1. Einleitung: Thema nennen
+  2. Situation/Erfahrung im Heimatland
+  3. Details / Beispiele
+  4. Vor- und Nachteile
+  5. Persönliche Meinung + Schluss
+
+## TEIL 3 — Feedback + Rückfragen (~1–1,5 min)
+- `type: "feedback_und_fragen"`.
+- Referencia explícita a la **Präsentation in Teil 2** (mismo tema).
+- Pedir: konstruktives Feedback + **2–3 Beispielfragen** (como examinador).
+- Las Fragen deben invitar a Begründung (Warum…?, Wie unterscheidet sich…?).
+
+## REGLAS DE CALIDAD
+1. **Tema coherente** entre Teil 2 y Teil 3 (mismo campo semántico).
+2. Teil 1 = interacción; Teil 2 = monólogo estructurado; Teil 3 = interacción.
+3. Bullets concretos, no vagos («Sprechen Sie über das Thema»).
+4. **PROHIBIDO:** passages, MCQ, transcripciones de diálogo modelo.
+
+## PALABRAS OBJETIVO
+<<< lebensgeschichten, reiseplan, hermeneutik, gekommen, solidarität, entwurf, erleben, hobby, disziplin, insgesamt >>>
+
+## AUTORREVISIÓN
+- ¿passages: [] y 3 questions?
+- ¿T1: 5 bullets planificación · T2: 5 slides · T3: feedback + 2–3 Fragen?
+- ¿T3 menciona Teil 2 / Präsentation?
+- ¿correct:"rubric" · module:"sprechen"?
+- ¿Solo JSON?
+
+## Formato de salida
+- IDs: `gen-q-sp-t1-XXXX-q1`, `gen-q-sp-t2-XXXX-q1`, `gen-q-sp-t3-XXXX-q1`
+- `explanation`: Kriterien (Flüssigkeit, Struktur, Grammatik, Wortschatz, Aufgabenbewältigung)
+- `skills: ["speaking"]`
+
+## EJEMPLO ESTRUCTURAL (referencia sprechen-reise-vorbereitung-01)
+
+Teil 1 = 5 Punkte Planung · Teil 2 = Präsentation mit 5 Abschnitten · Teil 3 = Rückmeldung + Beispielfragen zum Teil-2-Thema.
+
+Genera **3 tareas nuevas** con tema distinto al ejemplo, integrando PALABRAS OBJETIVO. Devuelve solo JSON.
+
+IMPORTANTE — IDs de esta generación:
+- Preguntas: gen-q-sp-t{1,2,3}-aac7-q1
+No reutilices IDs del ejemplo ni del banco existente.
+
+## LONGITUD / FORMATO OFICIAL (OBLIGATORIO)
+- 1 batch = 3 tareas (planung + präsentation + feedback). passages: []. correct: "rubric".
+- Ámbito: **question de cada teil**
+- Objetivo: **consignas claras con tiempos oficiales**
+- Prefiere léxico B1 frecuente. Evita anglicismos raros y meta-texto («Dieser Text hat 280 Wörter…»).
+- Integra PALABRAS OBJETIVO en las consignas y vocabulario sugerido, no en respuestas modelo.
+
+CHECKLIST FINAL (Goethe B1 — debe pasar validate-batch.mjs):
+- Responde SOLO JSON: { "passages": [...], "questions": [...] } — sin markdown, sin ```.
+- correct === correctAnswer en todas las preguntas.
+- module correcto en cada question; lang:"de", level:"B1".
+- IDs únicos con el prefijo indicado arriba (no reutilizar el ejemplo).
+- explanation en alemán en cada pregunta (nunca vacía).
+- PALABRAS OBJETIVO: 8–12 lemas B1 integrados en el contenido.
+- passages: [] · exactamente 3 questions (teil 1,2,3).
+- T1 planungsaufgabe: 5 bullet points · T2 präsentation: 5 slides en question · T3 feedback + 2–3 Fragen Beispiel.
+- correct:"rubric" · T3 referencia el tema de T2.
+

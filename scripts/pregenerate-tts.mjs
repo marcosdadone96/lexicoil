@@ -1,0 +1,298 @@
+#!/usr/bin/env node
+/**
+ * Pre-generate TTS MP3s for served exam Hören (data/exams/*.json).
+ *
+ * Uses the same textHash/cache file naming as netlify/functions/tts.js (ttsCacheLib.js).
+ * Re-run after any Hören transcript edit — hash changes => cache miss => silence in prod.
+ *
+ * Usage:
+ *   node scripts/pregenerate-tts.mjs --lang de --level B1
+ *   node scripts/pregenerate-tts.mjs --lang de --level A2
+ *   node scripts/pregenerate-tts.mjs --all-served
+ *   node scripts/pregenerate-tts.mjs --lang de --level B1 --dry-run
+ *   node scripts/pregenerate-tts.mjs --lang de --level B1 --verify
+ *
+ * Env: TTS_PROVIDER=elevenlabs, ELEVENLABS_API_KEY=...
+ */
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { createRequire } from 'node:module';
+import { loadEnvFile, ROOT } from './lib/loadEnv.mjs';
+import {
+  cacheDir,
+  manifestPath,
+  examManifestPath,
+  readCache,
+  writeCache,
+  loadServedExams,
+  normalizeTtsText,
+  ttsTextHash,
+} from './lib/ttsCache.mjs';
+
+loadEnvFile();
+
+const require = createRequire(import.meta.url);
+const { synthesize, isProviderConfigured } = require(path.join(ROOT, 'netlify/functions/lib/ttsProvider.js'));
+const { resolveVoiceId, defaultVoiceForLang } = require(path.join(ROOT, 'netlify/functions/lib/ttsVoices.js'));
+const ListeningScript = require(path.join(ROOT, 'js/bootstrap/listeningScript.js'));
+
+const SERVED_TARGETS = [
+  ['de', 'B1'],
+  ['de', 'A2'],
+];
+
+function ttsVoiceForLang(lang) {
+  const l = String(lang || 'en').slice(0, 2).toLowerCase();
+  if (l === 'de') return 'de-DE';
+  if (l === 'es') return 'es-ES';
+  return 'en-GB';
+}
+
+function parseArgs(argv) {
+  const out = {
+    lang: 'de',
+    level: 'B1',
+    allServed: false,
+    dryRun: false,
+    force: false,
+    verify: false,
+  };
+  for (let i = 0; i < argv.length; i++) {
+    const a = argv[i];
+    if (a === '--lang') out.lang = String(argv[++i] || 'de').toLowerCase();
+    else if (a === '--level') out.level = String(argv[++i] || 'B1').toUpperCase();
+    else if (a === '--all-served') out.allServed = true;
+    else if (a === '--dry-run') out.dryRun = true;
+    else if (a === '--force') out.force = true;
+    else if (a === '--verify') out.verify = true;
+    else if (a === '--help' || a === '-h') out.help = true;
+  }
+  return out;
+}
+
+function usage() {
+  console.log(`Usage:
+  node scripts/pregenerate-tts.mjs --lang de --level B1 [--dry-run|--verify|--force]
+  node scripts/pregenerate-tts.mjs --all-served
+
+Re-run after editing Hören transcripts in data/exams/*.json.`);
+}
+
+function sanitizeTtsText(text) {
+  return normalizeTtsText(text);
+}
+
+/** Collect playable Hören texts exactly as examRunner + fetchTtsAudio resolve them. */
+function collectExamTtsJobs(exam, lang) {
+  const jobs = [];
+  const seen = new Set();
+
+  function addJob(text, voiceHint, meta) {
+    const src = sanitizeTtsText(text);
+    if (!src) return;
+    const baseVoice = voiceHint || ttsVoiceForLang(lang);
+    const prepared = ListeningScript.prepare(src, lang);
+    if (prepared.length > 1) {
+      for (const seg of prepared) {
+        const voice = seg.voice || baseVoice;
+        pushSingle(sanitizeTtsText(seg.text), voice, { ...meta, speaker: seg.speaker, multiVoice: true });
+      }
+      return;
+    }
+    pushSingle(src, baseVoice, meta);
+  }
+
+  function pushSingle(text, voice, meta) {
+    const key = `${voice}:${ttsTextHash(text)}`;
+    if (seen.has(key)) return;
+    seen.add(key);
+    jobs.push({ text, voice, lang, meta });
+  }
+
+  for (const part of exam.horenParts || []) {
+    if (Array.isArray(part.segments) && part.segments.length) {
+      part.segments.forEach((seg, si) => {
+        addJob(seg.transcript, seg.ttsVoice || part.ttsVoice, {
+          exam: exam.topic || exam.id,
+          teil: part.teil,
+          kind: 'segment',
+          index: si,
+        });
+      });
+    } else {
+      addJob(part.transcript, part.ttsVoice, {
+        exam: exam.topic || exam.id,
+        teil: part.teil,
+        kind: 'part',
+      });
+    }
+  }
+
+  if (exam.horen?.transcript) {
+    addJob(exam.horen.transcript, exam.horen.ttsVoice, {
+      exam: exam.topic || exam.id,
+      kind: 'legacy',
+    });
+  }
+
+  return jobs;
+}
+
+async function synthJob(job, stats) {
+  const { text, voice, lang } = job;
+  const clean = sanitizeTtsText(text);
+  if (!stats.force) {
+    const hit = readCache(voice, clean, lang);
+    if (hit) {
+      stats.skipped++;
+      return { ...job, text: clean, hash: hit.hash, cached: true, bytes: hit.bytes };
+    }
+  }
+
+  if (stats.dryRun) {
+    stats.missing++;
+    return { ...job, text: clean, hash: ttsTextHash(clean), cached: false, dryRun: true };
+  }
+
+  let audio = null;
+  for (let attempt = 0; attempt < 4 && !audio?.length; attempt++) {
+    if (attempt) await new Promise((r) => setTimeout(r, 1500 * attempt));
+    audio = await synthesize(clean, voice, lang);
+  }
+  if (!audio?.length) {
+    stats.failed++;
+    console.error(`  FAIL synth ${job.meta?.exam} T${job.meta?.teil ?? '?'} ${String(clean).slice(0, 60)}…`);
+    return null;
+  }
+
+  const written = writeCache(voice, clean, audio);
+  stats.generated++;
+  stats.bytes += written.bytes;
+  return { ...job, text: clean, hash: written.hash, cached: false, bytes: written.bytes };
+}
+
+async function pregenerateLevel(lang, level, opts) {
+  const exams = loadServedExams(lang, level);
+  const stats = {
+    generated: 0,
+    skipped: 0,
+    failed: 0,
+    missing: 0,
+    bytes: 0,
+    dryRun: opts.dryRun,
+    force: opts.force,
+    jobs: 0,
+  };
+  const manifest = {
+    lang,
+    level,
+    source: 'data/exams',
+    provider: process.env.TTS_PROVIDER || 'none',
+    generatedAt: new Date().toISOString(),
+    exams: [],
+  };
+
+  for (const exam of exams) {
+    const jobs = collectExamTtsJobs(exam, lang);
+    stats.jobs += jobs.length;
+    const entry = {
+      topic: exam.topic || exam.id || 'exam',
+      jobCount: jobs.length,
+      clips: [],
+    };
+
+    for (const job of jobs) {
+      if (!opts.verify) {
+        const result = await synthJob(job, stats);
+        if (result) {
+          entry.clips.push({
+            voice: result.voice,
+            hash: result.hash,
+            bytes: result.bytes,
+            cached: result.cached,
+            meta: result.meta,
+            preview: result.text.slice(0, 80),
+          });
+        }
+      }
+      await new Promise((r) => setTimeout(r, opts.verify ? 0 : 120));
+    }
+
+    if (entry.clips.length) manifest.exams.push(entry);
+  }
+
+  if (opts.verify) {
+    const missing = [];
+    for (const exam of exams) {
+      for (const job of collectExamTtsJobs(exam, lang)) {
+        if (!readCache(job.voice, job.text, lang)) {
+          missing.push(job);
+        }
+      }
+    }
+    stats.verifyMissing = missing.length;
+    if (missing.length) {
+      console.error(`${lang}/${level} VERIFY FAIL: ${missing.length} clip(s) still missing cache`);
+      missing.slice(0, 5).forEach((j) => {
+        console.error(`  - ${j.meta?.exam} T${j.meta?.teil ?? '?'} ${j.voice}:${ttsTextHash(j.text)}`);
+      });
+    } else {
+      console.log(`${lang}/${level} VERIFY OK: all ${stats.jobs} Hören clip(s) cached`);
+    }
+  }
+
+  if (!opts.dryRun && manifest.exams.length) {
+    fs.mkdirSync(path.dirname(examManifestPath(lang, level)), { recursive: true });
+    fs.writeFileSync(examManifestPath(lang, level), JSON.stringify(manifest, null, 2) + '\n', 'utf8');
+  }
+
+  console.log(
+    `${lang}/${level}: ${exams.length} exam(s), ${stats.jobs} clip(s) — +${stats.generated} new, ${stats.skipped} cached, ${stats.failed} failed` +
+      (opts.dryRun ? `, ${stats.missing} would generate` : '') +
+      (stats.bytes ? `, ${Math.round(stats.bytes / 1024)} KB written` : ''),
+  );
+
+  return stats;
+}
+
+const args = parseArgs(process.argv.slice(2));
+if (args.help) {
+  usage();
+  process.exit(0);
+}
+
+if (!args.dryRun && !args.verify && !isProviderConfigured()) {
+  console.error('TTS provider not configured. Set TTS_PROVIDER=elevenlabs and ELEVENLABS_API_KEY');
+  process.exit(1);
+}
+
+fs.mkdirSync(cacheDir(), { recursive: true });
+
+const targets = args.allServed ? SERVED_TARGETS : [[args.lang, args.level]];
+let exitCode = 0;
+const totals = { generated: 0, skipped: 0, failed: 0, missing: 0, jobs: 0 };
+
+for (const [lang, level] of targets) {
+  try {
+    const stats = await pregenerateLevel(lang, level, args);
+    totals.generated += stats.generated;
+    totals.skipped += stats.skipped;
+    totals.failed += stats.failed;
+    totals.missing += stats.missing || 0;
+    totals.jobs += stats.jobs;
+    if (stats.verifyMissing > 0) exitCode = 1;
+    if (stats.failed > 0 && stats.generated === 0 && stats.skipped === 0) exitCode = 1;
+  } catch (err) {
+    console.error(`FAIL ${lang}/${level}:`, err.message);
+    exitCode = 1;
+  }
+}
+
+console.log(`\nCache dir: library/tts-cache/ (${fs.readdirSync(cacheDir()).filter((f) => f.endsWith('.mp3')).length} mp3 total)`);
+console.log(
+  `Totals: ${totals.jobs} clips — +${totals.generated} new, ${totals.skipped} cached, ${totals.failed} failed` +
+    (args.dryRun ? `, ${totals.missing} would generate` : ''),
+);
+
+process.exit(exitCode);

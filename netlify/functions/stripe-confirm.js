@@ -85,19 +85,19 @@ exports.handler = async (event) => {
   const plan = resolvePlan(upgraded.user);
   const max = maxForPlan(plan);
   const month = getMonthKey();
-  const session = signAuthToken(userEmail, upgraded.user.name, getTokenVersion(upgraded.user));
+  const authSession = signAuthToken(userEmail, upgraded.user.name, getTokenVersion(upgraded.user));
 
   return authSessionResponse(200, cors, {
     ok: true,
-    expiresAt: session.expiresAt,
+    expiresAt: authSession.expiresAt,
     user: {
       name: upgraded.user.name,
       email: userEmail,
       plan,
-      pro: plan === 'pro',
+      pro: plan === 'pro' || plan === 'pro_max',
       quota: { used: 0, max, month },
       proActivatedAt: upgraded.user.proActivatedAt,
       memberSince: upgraded.user.createdAt || null,
     },
-  }, session.token, event);
+  }, authSession.token, event);
 };

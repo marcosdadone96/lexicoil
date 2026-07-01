@@ -39,15 +39,31 @@ const LexiCoilEngine = (() => {
     const Domain = window.LexiCoilDomain;
     const KE = window.KnowledgeEngine;
     const provider = { de: 'goethe', en: 'cambridge', es: 'dele' }[subject];
+    let targetWords = [...(words || [])];
+    if (typeof ManualVocab !== 'undefined' && ManualVocab.canonicalizeForGeneration) {
+      const canon = await ManualVocab.canonicalizeForGeneration(targetWords, subject, level);
+      targetWords = canon.words;
+      if (canon.corrections?.length && typeof notify === 'function') {
+        const sample = canon.corrections.slice(0, 2).map((c) => `"${c.from}"→"${c.to}"`).join(', ');
+        notify(`Spelling corrected for generation: ${sample}${canon.corrections.length > 2 ? '…' : ''}`, 'info', 5000);
+      }
+      if (canon.excluded?.length && typeof notify === 'function') {
+        notify(
+          `Words skipped (not in the library): ${canon.excluded.slice(0, 3).join(', ')}${canon.excluded.length > 3 ? '…' : ''}`,
+          'warn',
+          6000,
+        );
+      }
+    }
     const spec = await KE.buildSpec({
       language: Domain.languageFromSubjectCode(subject),
       level,
       provider,
       contentType: 'VocabularyExercise',
-      targetWords: words,
+      targetWords,
       topic: 'Personal vocabulary review',
       skills: skills || ['lesen'],
-      vocabPolicy: { targetWords: words, maximizeCoverage: true, ensureDensePart: true },
+      vocabPolicy: { targetWords, maximizeCoverage: true, ensureDensePart: true },
     });
     let blueprint = options.blueprint;
     if (

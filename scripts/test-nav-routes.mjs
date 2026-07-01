@@ -58,8 +58,51 @@ console.log('OK   route table (' + table.length + ' entries)');
 // ── Level availability matrix (de/en × A1–C2) ──
 process.chdir(ROOT);
 const LevelAvailability = require(path.join(ROOT, 'js/library/levelAvailability.js'));
+const availPath = path.join(ROOT, 'data/exams/availability.json');
+assert.ok(fs.existsSync(availPath), 'data/exams/availability.json missing — run npm run build:availability');
+const availability = JSON.parse(fs.readFileSync(availPath, 'utf8'));
 const LEVELS = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
 const MATRIX_LANGS = ['de', 'en'];
+
+// Production default: beta flag OFF — only manifest "live" combos are offered.
+assert.equal(LevelAvailability.showBetaExamLevels(), false, 'LEXICOIL_SHOW_BETA_LEVELS off by default');
+assert.equal(availability.de?.B1?.status, 'live', 'manifest: de B1 is live');
+assert.equal(availability.de?.A2?.status, 'live', 'manifest: de A2 is live');
+assert.equal(availability.de?.A2?.personalized, false, 'manifest: de A2 personalized off');
+assert.equal(availability.de?.B1?.personalized, true, 'manifest: de B1 personalized on');
+assert.equal(LevelAvailability.getLevelUiStatus('de', 'B1'), 'ready', 'getLevelUiStatus(de,B1) ready');
+assert.equal(LevelAvailability.getLevelUiStatus('de', 'A2'), 'ready', 'getLevelUiStatus(de,A2) ready');
+assert.equal(LevelAvailability.isPersonalizedAllowed('de', 'B1'), true, 'de B1 personalized allowed');
+assert.equal(LevelAvailability.isPersonalizedAllowed('de', 'A2'), false, 'de A2 personalized blocked');
+assert.equal(LevelAvailability.isQuickModuleAllowed('de', 'A2'), false, 'de A2 quick modules blocked');
+assert.equal(LevelAvailability.isAiFeatureAllowed('de', 'A2'), false, 'de A2 AI features blocked');
+assert.equal(LevelAvailability.isCuratedOnlyLevel('de', 'A2'), true, 'de A2 curated library only');
+assert.equal(LevelAvailability.poolPreviewLimitFor('de', 'A2'), 4, 'de A2 pool preview = 4 exams');
+assert.equal(LevelAvailability.isQuickModuleAllowed('de', 'B1'), true, 'de B1 quick modules allowed');
+for (const betaLevel of ['A1', 'B2', 'C1', 'C2']) {
+  assert.equal(availability.de?.[betaLevel]?.status, 'beta', `manifest: de ${betaLevel} stays beta`);
+  assert.equal(LevelAvailability.getLevelUiStatus('de', betaLevel), 'soon', `de ${betaLevel} soon when beta off`);
+  assert.equal(LevelAvailability.isExamLevelOffered('de', betaLevel), false, `de ${betaLevel} not offered`);
+}
+assert.equal(LevelAvailability.isExamLevelOffered('de', 'B1'), true, 'de B1 offered');
+assert.equal(LevelAvailability.isExamLevelOffered('de', 'A2'), true, 'de A2 offered');
+assert.equal(LevelAvailability.selectableLevels('de').sort().join(','), 'A2,B1', 'A2 and B1 selectable for de');
+
+function manifestUiStatus(lang, level) {
+  const st = availability[lang]?.[level]?.status || 'hidden';
+  if (st === 'live') return 'ready';
+  return 'soon';
+}
+
+function listLiveCombos(manifest) {
+  const live = [];
+  for (const lang of ['de', 'en', 'es']) {
+    for (const level of LEVELS) {
+      if (manifest[lang]?.[level]?.status === 'live') live.push(`${lang}/${level}`);
+    }
+  }
+  return live;
+}
 
 function renderProfileLevelCardHtml(lang, code, status, selected) {
   const soon = status === 'soon';
@@ -102,10 +145,14 @@ for (const lang of MATRIX_LANGS) {
   }
 }
 
-assert.equal(LevelAvailability.getLevelUiStatus('de', 'B1'), 'ready', 'de B1 is library-ready');
-assert.equal(LevelAvailability.getLevelUiStatus('de', 'B2'), 'soon', 'de B2 scaffold shows Próximamente');
-assert.equal(LevelAvailability.getLevelUiStatus('en', 'B1'), 'soon', 'en B1 scaffold shows Próximamente');
-assert.ok(readyCount >= 1, 'at least one servable combo (de B1)');
+assert.equal(LevelAvailability.getLevelUiStatus('de', 'B1'), manifestUiStatus('de', 'B1'), 'de B1 matches availability manifest');
+assert.equal(LevelAvailability.getLevelUiStatus('de', 'B2'), manifestUiStatus('de', 'B2'), 'de B2 matches availability manifest');
+assert.equal(LevelAvailability.getLevelUiStatus('en', 'B1'), manifestUiStatus('en', 'B1'), 'en B1 matches availability manifest');
+const liveCombos = listLiveCombos(availability);
+assert.ok(liveCombos.length >= 2, `live combos include de/B1 and de/A2 (got: ${liveCombos.join(', ')})`);
+assert.ok(liveCombos.includes('de/B1'), 'de/B1 live');
+assert.ok(liveCombos.includes('de/A2'), 'de/A2 live');
+assert.ok(readyCount >= liveCombos.length, 'ready count matches live combos');
 assert.ok(soonCount >= 1, 'non-servable combos marked soon');
 
 console.log('OK   level matrix de/en × A1–C2 (' + readyCount + ' ready/live, ' + soonCount + ' próximamente)');

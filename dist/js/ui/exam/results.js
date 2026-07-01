@@ -1,6 +1,79 @@
 // ═══════════════════════════════════════════
 // SUBMIT EXAM + CORRECTION
 // ═══════════════════════════════════════════
+const OPTION_LETTER_TYPES = new Set(['multiple', 'match', 'matching', 'abcd', 'gap_fill']);
+const RF_TYPES = new Set(['rf', 'tf', 'richtig_falsch', 'true_false']);
+
+function optionLetter(opt) {
+  if (typeof IsAnswerKeyRenderable !== 'undefined' && IsAnswerKeyRenderable.optKey) {
+    return IsAnswerKeyRenderable.optKey(opt);
+  }
+  if (opt && typeof opt === 'object') {
+    const raw = opt.key != null ? opt.key : opt.id;
+    if (raw != null) return String(raw).trim();
+    return String(opt.text || '').slice(0, 1);
+  }
+  if (typeof opt === 'string') {
+    if (opt.length === 1) return opt;
+    const m = opt.match(/^([A-Za-z0-9])\)\s*/);
+    if (m) return m[1];
+    return opt;
+  }
+  return String(opt ?? '');
+}
+
+function lettersMatch(a, b) {
+  return String(a ?? '').trim().toUpperCase() === String(b ?? '').trim().toUpperCase();
+}
+
+function findOptionByVal(q, val) {
+  const opts = q?.options;
+  if (!opts?.length || val == null || val === '') return null;
+  return opts.find((o) => lettersMatch(optionLetter(o), val)) ?? null;
+}
+
+function formatLetterOptionLabel(opt, rawVal, isDE) {
+  if (opt && typeof opt === 'object') {
+    const key = String(opt.key ?? optionLetter(opt)).toUpperCase();
+    const title = String(opt.title || opt.text || opt.label || '').trim();
+    if (key === '0') return isDE ? '0 (keine Zuordnung)' : '0 (no match)';
+    if (title && title.toLowerCase() !== key.toLowerCase()) return `${key} — ${title}`;
+    return key;
+  }
+  if (typeof opt === 'string') {
+    if (opt.length === 1) return opt.toUpperCase();
+    const m = opt.match(/^([A-Za-z0-9])\)\s*(.*)$/);
+    if (m) {
+      const k = m[1].toUpperCase();
+      const rest = (m[2] || '').trim();
+      if (rest.toUpperCase() === 'X') return `${k} — X`;
+      if (rest && rest.toLowerCase() !== k.toLowerCase()) return `${k} — ${rest}`;
+      return k;
+    }
+    return opt;
+  }
+  return String(rawVal ?? '');
+}
+
+function enrichMatchingQFromPart(q, part) {
+  if (!q || String(q.type) !== 'matching' || !part?.ads?.length) return q;
+  const hasRichOpts = (q.options || []).some((o) => o && typeof o === 'object' && (o.title || o.text));
+  if (hasRichOpts) return q;
+  const opts = part.ads.map((a, i) => {
+    const raw = a.key != null ? String(a.key) : String.fromCharCode(97 + i);
+    const key = raw.length === 1 ? raw.toUpperCase() : raw;
+    const title = String(a.title || '').trim();
+    const text = String(a.text || a.title || '').trim();
+    return { key, title, text: title || text };
+  });
+  const keys = new Set(opts.map((o) => String(o.key).toUpperCase()));
+  if (!keys.has('0') && !keys.has('G')) {
+    opts.push({ key: '0', title: 'X', text: 'X' });
+  }
+  q.options = opts;
+  return q;
+}
+
 function ansLabel(q, val, isDE) {
   if (!val) return '—';
   if (q.type === 'yn' || q.type === 'ja_nein') return val === 'J' || val === 'Ja' ? 'Ja' : val === 'N' || val === 'Nein' ? 'Nein' : val;
@@ -9,16 +82,20 @@ function ansLabel(q, val, isDE) {
     try { const a = JSON.parse(val); if (Array.isArray(a)) return a.join(', '); } catch (_) {}
     return val;
   }
-  if (q.type === 'multiple' || q.type === 'match' || q.type === 'abcd' || q.type === 'gap_fill') {
-    const opt = q.options?.find((o) => {
-      const v = typeof o === 'string' && o.length === 1 ? o : o[0];
-      return v === val || (typeof o === 'string' && o.startsWith(val + ')'));
-    });
-    if (opt) return typeof opt === 'string' ? (opt.length === 1 ? opt : opt.slice(3).trim()) : opt.slice(3).trim();
+  if (OPTION_LETTER_TYPES.has(q.type)) {
+    const opt = findOptionByVal(q, val);
+    if (opt != null) return formatLetterOptionLabel(opt, val, isDE);
+    if (val === '0' || String(val) === '0') return isDE ? '0 (keine Zuordnung)' : '0 (no match)';
+    return String(val).toUpperCase();
+  }
+  if (RF_TYPES.has(q.type)) {
+    if (val === 'R' || val === 'T') return isDE ? 'Richtig' : 'True';
+    if (val === 'F') return isDE ? 'Falsch' : 'False';
     return val;
   }
   if (val === 'R' || val === 'T') return isDE ? 'Richtig' : 'True';
-  return isDE ? 'Falsch' : 'False';
+  if (val === 'F') return isDE ? 'Falsch' : 'False';
+  return val;
 }
 function correctLabel(q, isDE) {
   if (Array.isArray(q.correct)) return q.correct.join(', ');
@@ -32,28 +109,43 @@ function getSchreibenAns(p){
   if(p.formFields)return p.formFields.map((_,i)=>document.getElementById(p.fieldId+'_'+i)?.value.trim()||'').join('\n');
   return document.getElementById(p.fieldId)?.value.trim()||'';
 }
-function gradeWriting(schreiben, writeAns) {
+function writingLengthHint(schreiben, writeAns, isDE) {
+  const de = isDE ?? (S.examData?.lang === 'de');
   if (schreiben.formFields) {
     const filled = schreiben.formFields.filter((_, i) => {
       const el = document.getElementById(schreiben.fieldId + '_' + i);
       return el?.value.trim();
     }).length;
     const total = schreiben.formFields.length;
-    const score = filled >= total ? 85 : filled >= total * 0.7 ? 65 : Math.round((filled / total) * 50);
-    return { score, note: `Formular: ${filled}/${total} Felder ausgefuellt.`, words: filled, min: total };
+    const lengthOk = filled >= total;
+    const note = de
+      ? `Orientativ: ${filled}/${total} Felder ausgefüllt${lengthOk ? ' (OK)' : ' (unvollständig)'}`
+      : `Orientative: ${filled}/${total} fields filled${lengthOk ? ' (OK)' : ' (incomplete)'}`;
+    return { words: filled, min: total, lengthOk, hint: note, note, orientative: true };
   }
   const words = writeAns.split(/\s+/).filter((x) => x).length;
   const min = schreiben.minWords || 40;
-  let score = 35;
-  let note = `You wrote ${words} words (minimum ${min}).`;
-  if (words >= min) {
-    score = words >= min * 1.15 ? 85 : 72;
-    note = `Word count OK (${words}/${min}). Compare your text with the model answer below.`;
+  const lengthOk = words >= min;
+  let note;
+  if (lengthOk) {
+    note = de
+      ? `Orientativ: ${words} Wörter (Minimum ${min} — Länge OK)`
+      : `Orientative: ${words} words (minimum ${min} — length OK)`;
   } else if (words >= min * 0.6) {
-    score = 55;
-    note = `Almost enough words (${words}/${min}). Add more detail.`;
+    note = de
+      ? `Orientativ: ${words}/${min} Wörter — etwas zu kurz`
+      : `Orientative: ${words}/${min} words — slightly short`;
+  } else {
+    note = de
+      ? `Orientativ: ${words}/${min} Wörter — zu kurz`
+      : `Orientative: ${words}/${min} words — too short`;
   }
-  return { score, note, words, min };
+  return { words, min, lengthOk, hint: note, note, orientative: true };
+}
+
+/** @deprecated use writingLengthHint — no numeric grade */
+function gradeWriting(schreiben, writeAns) {
+  return writingLengthHint(schreiben, writeAns);
 }
 function gradeSpeaking(sprechen, speakAns, isDE) {
   if (sprechen.minWords) {
@@ -61,7 +153,7 @@ function gradeSpeaking(sprechen, speakAns, isDE) {
     const min = sprechen.minWords;
     let score = words >= min ? 80 : words >= min * 0.6 ? 58 : 35;
     const note = isDE
-      ? `Praesentation: ${words} Woerter (mindestens ${min}).`
+      ? `Präsentation: ${words} Wörter (mindestens ${min}).`
       : `Presentation: ${words} words (minimum ${min}).`;
     return { score, note, words, min };
   }
@@ -79,7 +171,7 @@ function gradeSpeaking(sprechen, speakAns, isDE) {
   }
   return { score, note, exchanges, min };
 }
-function buildCorrection(d, isDE, writeAns, speakAns) {
+function buildCorrection(d, isDE, writeAns, speakAns, passPercent = 60) {
   const parts = [];
   const pushQ = (mod, title, items) => {
     if (!items.length) return;
@@ -88,27 +180,49 @@ function buildCorrection(d, isDE, writeAns, speakAns) {
   if (d.goetheFormat) {
     d.lesenParts?.forEach((p, pi) => {
       const items = [];
-      const signBlock=p.items?.length&&p.items.every(it=>it.signText&&!it.question);
-      if(!signBlock)p.items?.forEach((item, idx) => {
-        if(!item.question)return;
-        const q = itemToQ(item, idx);
+      const meta = { module: 'lesen', teil: p.teil, part: p };
+      const pushLesenItem = (item, idx) => {
+        if (!lesenItemIsAnswerable(item, p) && !item.question) return;
+        const q = lesenItemIsAnswerable(item, p) ? lesenItemToAnswerQ(item, p, null, idx) : itemToQ(item, idx);
+        enrichMatchingQFromPart(q, p);
+        if (!isAnswerKeyRenderable(q, p)) {
+          registerInvalidGradingItem(d, meta, q);
+          return;
+        }
         const user = S.answers['lesen_' + pi + '_' + q.id];
-        items.push({ ok: goetheAnswersMatch(user, q.correct), q: q.question, yours: ansLabel(q, user, isDE), correct: correctLabel(q, isDE), explanation: q.explanation || '', grammarTags: q.grammarTags || [] });
-      });
+        const label = q.question || (item.signText ? String(item.id || idx + 1) : q.question);
+        items.push({ ok: goetheAnswersMatch(user, q.correct), q: label, yours: ansLabel(q, user, isDE), correct: correctLabel(q, isDE), explanation: q.explanation || '', grammarTags: q.grammarTags || [] });
+      };
+      if (isLesenAdsMatchingRender(p) || isLesenForumOpinionsPart(p)) {
+        p.items?.forEach((item, idx) => pushLesenItem(item, idx));
+      } else {
+        const signBlock = p.items?.length && p.items.every(it => it.signText && !it.question && !lesenItemIsAnswerable(it, p));
+        if (!signBlock) p.items?.forEach((item, idx) => pushLesenItem(item, idx));
+      }
       (p.questions || []).forEach((q) => {
+        if (!isAnswerKeyRenderable(q, p)) {
+          registerInvalidGradingItem(d, meta, q);
+          return;
+        }
+        enrichMatchingQFromPart(q, p);
         const user = S.answers['lesen_' + pi + '_' + q.id];
         items.push({ ok: goetheAnswersMatch(user, q.correct), q: q.gap?`Lücke ${q.gap}`:q.question, yours: ansLabel(q, user, isDE), correct: correctLabel(q, isDE), explanation: q.explanation || '', grammarTags: q.grammarTags || [] });
       });
       pushQ('lesen', `${isDE ? 'Lesen' : 'Reading'} — ${isDE ? 'Teil' : 'Part'} ${p.teil}`, items);
     });
     d.horenParts?.forEach((p, pi) => {
+      const meta = { module: 'horen', teil: p.teil, part: p };
       if (p.questions) {
         pushQ(
           'horen',
           `${isDE ? 'Hörverstehen' : 'Listening'} — ${isDE ? 'Teil' : 'Part'} ${p.teil}`,
-          p.questions.map((q) => {
+          p.questions.flatMap((q) => {
+            if (!isAnswerKeyRenderable(q, p)) {
+              registerInvalidGradingItem(d, meta, q);
+              return [];
+            }
             const user = S.answers['horen_' + pi + '_' + q.id];
-            return { ok: goetheAnswersMatch(user, q.correct), q: q.question, yours: ansLabel(q, user, isDE), correct: correctLabel(q, isDE), explanation: q.explanation || '', grammarTags: q.grammarTags || [] };
+            return [{ ok: goetheAnswersMatch(user, q.correct), q: q.question, yours: ansLabel(q, user, isDE), correct: correctLabel(q, isDE), explanation: q.explanation || '', grammarTags: q.grammarTags || [] }];
           })
         );
       }
@@ -116,10 +230,14 @@ function buildCorrection(d, isDE, writeAns, speakAns) {
         pushQ(
           'horen',
           `${isDE ? 'Hörverstehen' : 'Listening'} — ${isDE ? 'Teil' : 'Part'} ${p.teil} (${s.label})`,
-          segToQ(s).map((q) => {
+          segToQ(s).flatMap((q) => {
+            if (!isAnswerKeyRenderable(q, p)) {
+              registerInvalidGradingItem(d, meta, q);
+              return [];
+            }
             const mod = 'horen_' + pi + '_' + si;
             const user = S.answers[mod + '_' + q.id];
-            return { ok: goetheAnswersMatch(user, q.correct), q: q.question, yours: ansLabel(q, user, isDE), correct: correctLabel(q, isDE), explanation: q.explanation || '', grammarTags: q.grammarTags || [] };
+            return [{ ok: goetheAnswersMatch(user, q.correct), q: q.question, yours: ansLabel(q, user, isDE), correct: correctLabel(q, isDE), explanation: q.explanation || '', grammarTags: q.grammarTags || [] }];
           })
         );
       });
@@ -136,11 +254,13 @@ function buildCorrection(d, isDE, writeAns, speakAns) {
       }
     });
     const writingParts = (d.schreibenParts || []).map((p) => ({
-      ...gradeWriting(p, getSchreibenAns(p)),
+      ...writingLengthHint(p, getSchreibenAns(p), isDE),
       part: p,
     }));
     const speakingParts = (d.sprechenParts || []).map((p) => ({
-      ...gradeSpeaking(p, document.getElementById(p.fieldId)?.value.trim() || '', isDE),
+      ...(typeof buildOrientativeSpeakingHint === 'function'
+        ? buildOrientativeSpeakingHint(p, document.getElementById(p.fieldId)?.value.trim() || '', isDE)
+        : writingLengthHint({ minWords: p.minWords || 40 }, document.getElementById(p.fieldId)?.value.trim() || '', isDE)),
       part: p,
     }));
     return { parts, writingParts, speakingParts };
@@ -193,27 +313,68 @@ function buildCorrection(d, isDE, writeAns, speakAns) {
       })
     );
   }
-  const writing = d.schreiben ? gradeWriting(d.schreiben, writeAns) : null;
-  const speaking = d.sprechen ? gradeSpeaking(d.sprechen, speakAns, isDE) : null;
+  const writing = d.schreiben ? writingLengthHint(d.schreiben, writeAns, isDE) : null;
+  const speaking = d.sprechen
+    ? (typeof buildOrientativeSpeakingHint === 'function'
+      ? buildOrientativeSpeakingHint(d.sprechen, speakAns, isDE)
+      : writingLengthHint({ minWords: d.sprechen.minWords || 40 }, speakAns, isDE))
+    : null;
   return { parts, writing, speaking };
+}
+function renderInvalidExamDataScreen(isDE, invalidItems) {
+  show('resultsScreen');
+  const scr = document.getElementById('resultsScreen');
+  const title = isDE ? 'Prüfung nicht verfügbar (ungültige Daten)' : 'Exam unavailable (invalid data)';
+  const body = isDE
+    ? 'Diese Prüfung enthält Antwortschlüssel, die nicht mit den angezeigten Optionen übereinstimmen. Bitte kontaktieren Sie den Support.'
+    : 'This exam contains answer keys that do not match the options shown. Please contact support.';
+  const detail = (invalidItems || [])
+    .map((it) => `${it.module} Teil ${it.teil} · id=${it.id} · correct=${it.correct}`)
+    .join('<br>');
+  scr.innerHTML = `${renderNavBackBtn('Exams')}<div class="card results-hero fail"><div class="res-label">${esc(title)}</div><p style="margin-top:12px;font-size:14px;line-height:1.6;color:var(--text-secondary)">${esc(body)}</p>${detail ? `<div style="margin-top:14px;font-size:12px;color:var(--text-muted);line-height:1.55">${detail}</div>` : ''}<button class="btn-sm accent" style="margin-top:16px" onclick="goHome()">Home</button></div>`;
 }
 function renderWritingAiBlock(wa, isDE) {
   const c = wa.correction;
   if (!c) return '';
-  let h = `<div class="writing-ai-block"><h4 style="font-size:13px;font-weight:700;margin:0 0 10px">Your corrected text</h4>`;
-  if (c.correctedText) {
+  const basic = c.feedbackLevel === 'basic' || (!c.correctedText && c.errorCounts);
+  const title = basic ? 'Orientative AI feedback' : 'Your corrected text';
+  let h = `<div class="writing-ai-block"><h4 style="font-size:13px;font-weight:700;margin:0 0 10px">${title}</h4>`;
+  if (c.totalScore != null) {
+    h += `<p style="font-size:12px;color:var(--text-secondary);margin:0 0 8px">Orientative score: <b>${c.totalScore}%</b></p>`;
+  }
+  if (!basic && c.rubric && typeof c.rubric === 'object') {
+    const rubricLabels = isDE
+      ? { erfuellung: 'Erfüllung', kohaerenz: 'Kohärenz', wortschatz: 'Wortschatz', strukturen: 'Strukturen' }
+      : { erfuellung: 'Task fulfilment', kohaerenz: 'Coherence', wortschatz: 'Vocabulary', strukturen: 'Structures' };
+    h += `<div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">Goethe rubric</div><ul style="font-size:12px;color:var(--text-secondary);line-height:1.65;padding-left:18px;margin:0 0 10px">`;
+    for (const [k, label] of Object.entries(rubricLabels)) {
+      if (c.rubric[k] != null) h += `<li>${esc(label)}: ${c.rubric[k]}/25</li>`;
+    }
+    h += '</ul>';
+  }
+  if (c.summary) h += `<p style="font-size:12px;color:var(--text-secondary);margin-bottom:10px">${esc(c.summary)}</p>`;
+  if (basic && c.errorCounts && typeof c.errorCounts === 'object') {
+    h += `<div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">Errors by type</div><ul style="font-size:12px;color:var(--text-secondary);line-height:1.65;padding-left:18px;margin:0 0 10px">`;
+    Object.entries(c.errorCounts).forEach(([k, v]) => {
+      if (Number(v) > 0) h += `<li>${esc(k)}: ${v}</li>`;
+    });
+    h += `</ul>`;
+    if (typeof isPaidPlan === 'function' && !isPaidPlan()) {
+      h += `<p style="font-size:11px;color:var(--text-muted);font-style:italic">Upgrade to Pro for line-by-line corrections and grammar points.</p>`;
+    }
+  }
+  if (!basic && c.correctedText) {
     const diffFn = typeof highlightCorrectedDiff === 'function' ? highlightCorrectedDiff : null;
     h += `<div class="corr-diff readable-text" style="font-size:13px;line-height:1.7;margin-bottom:12px">${diffFn && wa.userText ? diffFn(wa.userText, c.correctedText) : esc(c.correctedText)}</div>`;
   }
-  if (c.summary) h += `<p style="font-size:12px;color:var(--text-secondary);margin-bottom:10px">${esc(c.summary)}</p>`;
-  if (c.errors?.length) {
+  if (!basic && c.errors?.length) {
     h += `<ul style="font-size:12px;color:var(--text-secondary);line-height:1.65;padding-left:18px;margin:0 0 10px">`;
     c.errors.slice(0, 8).forEach((e) => {
       h += `<li><b>${esc(e.original || '')}</b> → ${esc(e.correction || '')}${e.explanation ? ` <span style="color:var(--text-muted)">(${esc(e.explanation)})</span>` : ''}</li>`;
     });
     h += `</ul>`;
   }
-  if (c.grammarPoints?.length) {
+  if (!basic && c.grammarPoints?.length) {
     h += `<div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">${isDE ? 'Grammatik' : 'Grammar'}</div>`;
     c.grammarPoints.slice(0, 3).forEach((g) => {
       h += `<p style="font-size:12px;color:var(--text-secondary);margin:0 0 6px"><b>${esc(g.tag || '')}</b>: ${esc(g.explanation || '')}${g.example ? ` <em>${esc(g.example)}</em>` : ''}</p>`;
@@ -228,7 +389,26 @@ async function loadWritingAiCorrections(correction, d, isDE, entryId) {
     if (host) host.innerHTML = correction.writingAi.map((wa) => renderWritingAiBlock(wa, isDE)).join('');
     return;
   }
-  if (typeof isPro !== 'function' || !isPro() || typeof correctWritingWithAI !== 'function') return;
+  if (d._writingEvals?.length && d.schreibenParts?.length) {
+    correction.writingAi = d.schreibenParts.map((p, i) => {
+      const id = String(p.aufgabe ?? p.teil ?? i + 1);
+      const ev =
+        d._writingEvals.find((e) => String(e.id) === id) ||
+        d._writingEvals[i] ||
+        null;
+      return {
+        aufgabe: p.aufgabe ?? p.teil,
+        task: p.task || p.instruction || '',
+        userText: typeof getSchreibenAns === 'function' ? getSchreibenAns(p) : '',
+        correction: ev,
+      };
+    }).filter((wa) => wa.correction);
+    if (host && correction.writingAi.length) {
+      host.innerHTML = correction.writingAi.map((wa) => renderWritingAiBlock(wa, isDE)).join('');
+    }
+    return;
+  }
+  if (typeof canUseWritingCorrection !== 'function' || !canUseWritingCorrection() || typeof correctWritingWithAI !== 'function') return;
   const lang = d.lang || S.subject || 'de';
   const level = d.level || S.level || 'B1';
   const jobs = [];
@@ -263,7 +443,8 @@ async function loadWritingAiCorrections(correction, d, isDE, entryId) {
   }
   if (S.lastResults?.correction) S.lastResults.correction.writingAi = correction.writingAi;
 }
-function renderCorrectionHtml(corr, d, isDE) {
+function renderCorrectionHtml(corr, d, isDE, passPercent = 60) {
+  const passOk = (v) => v >= passPercent;
   const hasGoethe = corr.writingParts?.length || corr.speakingParts?.length;
   if (!corr.parts.length && !corr.writing && !corr.speaking && !hasGoethe) return '';
   let html = `<div class="corr-wrap"><h2 style="font-size:16px;font-weight:700;margin-bottom:4px">${isDE ? 'Detaillierte Korrektur' : 'Detailed correction'}</h2>`;
@@ -275,7 +456,9 @@ function renderCorrectionHtml(corr, d, isDE) {
     html += '</div>';
   });
   const renderWritePart = (wp, title) => {
-    html += `<div class="corr-mod"><h3>${title} · ${wp.score}%</h3><div class="corr-row ${wp.score >= 70 ? 'ok' : 'bad'}"><div class="corr-ans">${esc(wp.note)}</div></div>`;
+    const scoreLine = wp.score != null && !wp.orientative ? ` · ${wp.score}%` : '';
+    const rowCls = wp.score != null && !wp.orientative ? (passOk(wp.score) ? 'ok' : 'bad') : 'mid';
+    html += `<div class="corr-mod"><h3>${title}${scoreLine}</h3><div class="corr-row ${rowCls}"><div class="corr-ans">${esc(wp.note || wp.hint || '')}</div></div>`;
     if (wp.part.feedback?.length) {
       html += `<ul class="u-list-secondary">${wp.part.feedback.map((f) => `<li>${esc(f)}</li>`).join('')}</ul>`;
     }
@@ -284,25 +467,26 @@ function renderCorrectionHtml(corr, d, isDE) {
     }
     html += '</div>';
   };
-  const writingProHint = `<p class="writing-pro-hint" style="font-size:11px;color:var(--text-muted);margin-top:10px;font-style:italic">${isDE ? 'Corrección con IA: función Pro' : 'AI writing correction: Pro feature'}</p>`;
+  const writingProHint = `<p class="writing-pro-hint" style="font-size:11px;color:var(--text-muted);margin-top:10px;font-style:italic">AI writing correction (1 credit) — sign in free</p>`;
   const writingAiHost = `<div id="writingAiHost" class="writing-ai-host"></div>`;
+  const showWritingAi = typeof canUseWritingCorrection === 'function' && canUseWritingCorrection();
   if (corr.writingParts?.length) {
     corr.writingParts.forEach((wp) => renderWritePart(wp, `${isDE ? 'Schreiben' : 'Writing'} — Aufgabe ${wp.part.aufgabe}`));
-    html += typeof isPro === 'function' && isPro() ? writingAiHost : writingProHint;
+    html += showWritingAi ? writingAiHost : writingProHint;
   } else if (corr.writing && d.schreiben) {
-    html += `<div class="corr-mod"><h3>${isDE ? 'Schreiben' : 'Writing'} · ${corr.writing.score}%</h3><div class="corr-row ${corr.writing.score >= 70 ? 'ok' : 'bad'}"><div class="corr-ans">${esc(corr.writing.note)}</div></div>`;
+    html += `<div class="corr-mod"><h3>${isDE ? 'Schreiben' : 'Writing'} · ${corr.writing.score}%</h3><div class="corr-row ${passOk(corr.writing.score) ? 'ok' : 'bad'}"><div class="corr-ans">${esc(corr.writing.note)}</div></div>`;
     if (d.schreiben.feedback?.length) {
       html += `<div style="font-size:11px;color:var(--text-muted);margin:8px 0 6px;font-weight:700;text-transform:uppercase;letter-spacing:.06em">${isDE ? 'Checkliste' : 'Checklist'}</div><ul style="font-size:12px;color:var(--text-secondary);line-height:1.7;padding-left:18px;margin-bottom:10px">${d.schreiben.feedback.map((f) => `<li>${esc(f)}</li>`).join('')}</ul>`;
     }
     if (d.schreiben.modelAnswer) {
       html += `<div class="u-text-caption" style="margin-bottom:6px">${isDE ? 'Musterantwort' : 'Model answer'}</div><div class="corr-model">${esc(d.schreiben.modelAnswer)}</div>`;
     }
-    html += typeof isPro === 'function' && isPro() ? writingAiHost : writingProHint;
+    html += showWritingAi ? writingAiHost : writingProHint;
     html += '</div>';
   }
   if (corr.speakingParts?.length) {
     corr.speakingParts.forEach((sp) => {
-      html += `<div class="corr-mod"><h3>${isDE ? 'Sprechen' : 'Speaking'} — Teil ${sp.part.teil} · ${sp.score}%</h3><div class="corr-row ${sp.score >= 70 ? 'ok' : 'bad'}"><div class="corr-ans">${esc(sp.note)}</div></div>`;
+      html += `<div class="corr-mod"><h3>${isDE ? 'Sprechen' : 'Speaking'} — Teil ${sp.part.teil} · ${sp.score}%</h3><div class="corr-row ${passOk(sp.score) ? 'ok' : 'bad'}"><div class="corr-ans">${esc(sp.note)}</div></div>`;
       if (sp.part.feedback?.length) {
         html += `<ul style="font-size:12px;color:var(--text-secondary);line-height:1.7;padding-left:18px;margin:10px 0">${sp.part.feedback.map((f) => `<li>${esc(f)}</li>`).join('')}</ul>`;
       }
@@ -312,7 +496,7 @@ function renderCorrectionHtml(corr, d, isDE) {
       html += '</div>';
     });
   } else if (corr.speaking && d.sprechen) {
-    html += `<div class="corr-mod"><h3>${isDE ? 'Sprechen' : 'Speaking'} · ${corr.speaking.score}%</h3><div class="corr-row ${corr.speaking.score >= 70 ? 'ok' : 'bad'}"><div class="corr-ans">${esc(corr.speaking.note)}</div></div>`;
+    html += `<div class="corr-mod"><h3>${isDE ? 'Sprechen' : 'Speaking'} · ${corr.speaking.score}%</h3><div class="corr-row ${passOk(corr.speaking.score) ? 'ok' : 'bad'}"><div class="corr-ans">${esc(corr.speaking.note)}</div></div>`;
     if (d.sprechen.feedback?.length) {
       html += `<ul style="font-size:12px;color:var(--text-secondary);line-height:1.7;padding-left:18px;margin:10px 0">${d.sprechen.feedback.map((f) => `<li>${esc(f)}</li>`).join('')}</ul>`;
     }
@@ -331,69 +515,146 @@ async function submitExam(){
   const isDemo=!!d.demo||!!S.isDemo;
   const writeAns=document.getElementById('writeAns')?.value.trim()||'';
   const speakAns=document.getElementById('speakAns')?.value.trim()||'';
-  let correct=0,total=0,moduleScores={lesen:null,horen:null,gapfill:null,schreiben:null,sprechen:null};
+  const MG=typeof ModuleGrading!=='undefined'?ModuleGrading:null;
+  let blueprint=d.blueprint||null;
+  if(!blueprint&&typeof ExamBlueprint!=='undefined'){
+    try{blueprint=await ExamBlueprint.load(d.lang||S.subject,d.level);}catch(_){}
+  }
+  const passPercent=MG?MG.getPassPercent(blueprint,d):60;
+  const gradingScope=MG?MG.getGradingScope(blueprint,d):'legacy';
+  const modular=gradingScope==='modular';
+  const wholeExam=gradingScope==='whole-exam';
+  const usePoints=wholeExam&&!!blueprint;
+  const mkScorable=(c,t,modId)=>usePoints&&MG?MG.scorableModuleResultWithPoints(c,t,passPercent,blueprint,modId):MG?MG.scorableModuleResult(c,t,passPercent):null;
+  let moduleResults={};
+  let legacyCorrect=0,legacyTotal=0;
   let speakingEvals=null;
   if(d.goetheFormat){
-    let lc=0,lt=0,hc=0,ht=0;
-    forEachGoetheQ(d,(mod,q)=>{
+    d._invalidItems=[];
+    let lc=0,la=0,lp=0,hc=0,ha=0,hp=0;
+    forEachGoetheQ(d,(mod,q,meta)=>{
+      if(!isAnswerKeyRenderable(q,meta?.part)){
+        registerInvalidGradingItem(d,meta,q);
+        return;
+      }
       const user=S.answers[mod+'_'+q.id];
-      if(mod.startsWith('lesen_')){lt++;if(goetheAnswersMatch(user,q.correct))lc++;}
-      else if(mod.startsWith('horen_')){ht++;if(goetheAnswersMatch(user,q.correct))hc++;}
+      const answered=MG&&MG.isAnswerProvided?MG.isAnswerProvided(user):(user!=null&&String(user).trim()!=='');
+      if(mod.startsWith('lesen_')){lp++;}
+      else if(mod.startsWith('horen_')){hp++;}
+      if(!answered)return;
+      const ok=goetheAnswersMatch(user,q.correct);
+      if(mod.startsWith('lesen_')){la++;if(ok)lc++;}
+      else if(mod.startsWith('horen_')){ha++;if(ok)hc++;}
     });
+    if(isStrictGradingEnabled()&&d._invalidItems.length){
+      console.error('[grading] invalid answer keys — strict mode',d._invalidItems);
+      hideAll();
+      renderInvalidExamDataScreen(isDE,d._invalidItems);
+      return;
+    }
+    if(d._invalidItems.length)console.error('[grading] excluded ungradable items',d._invalidItems);
     d.horenParts?.forEach(p=>{
       p.noteFields?.forEach(f=>{
-        ht++;
+        hp++;
         const ans=(document.getElementById('note_'+f.id)?.value||'').trim().toLowerCase();
+        if(!ans)return;
+        ha++;
         if(ans===String(f.answer).trim().toLowerCase())hc++;
       });
     });
-    if(lt){moduleScores.lesen=Math.round(lc/lt*100);correct+=lc;total+=lt;}
-    if(ht){moduleScores.horen=Math.round(hc/ht*100);correct+=hc;total+=ht;}
-    if(d.schreibenParts?.length){
-      const ws=d.schreibenParts.map(p=>gradeWriting(p,getSchreibenAns(p)));
-      moduleScores.schreiben=Math.round(ws.reduce((s,w)=>s+w.score,0)/ws.length);
-      correct+=moduleScores.schreiben/100*d.schreibenParts.length;total+=d.schreibenParts.length;
-    }
-    if(d.sprechenParts?.length){
-      if(isDemo){
-        const ss=d.sprechenParts.map(p=>gradeSpeaking(p,document.getElementById(p.fieldId)?.value.trim()||'',isDE));
-        moduleScores.sprechen=Math.round(ss.reduce((s,x)=>s+x.score,0)/ss.length);
-        correct+=moduleScores.sprechen/100*d.sprechenParts.length;total+=d.sprechenParts.length;
-      }else{
+    if(la&&MG)moduleResults.lesen=MG.buildObjectiveModuleResult(lc,la,lp,passPercent);
+    if(ha&&MG)moduleResults.horen=MG.buildObjectiveModuleResult(hc,ha,hp,passPercent);
+    if(la){legacyCorrect+=lc;legacyTotal+=la;}
+    if(ha){legacyCorrect+=hc;legacyTotal+=ha;}
+    if(d.schreibenParts?.length||d.sprechenParts?.length){
+      let writingEvals=null;
+      const hasProdEval=(modular||wholeExam)&&!isDemo&&typeof evalProductionModulesWithAI==='function';
+      if(hasProdEval){
         hideAll();show('loadingScreen');
-        if(typeof setLoaderStep==='function')setLoaderStep('Evaluating speaking…','AI examiner is reviewing your responses');
-        speakingEvals=await evalSpeakingWithAI(d.sprechenParts,isDE);
-        moduleScores.sprechen=Math.round(speakingEvals.reduce((s,x)=>s+(x.score||0),0)/speakingEvals.length);
-        correct+=moduleScores.sprechen/100*d.sprechenParts.length;total+=d.sprechenParts.length;
+        if(typeof setLoaderStep==='function')setLoaderStep(isDE?'Schreiben und Sprechen werden bewertet…':'Evaluating writing and speaking…',isDE?'KI-Prüfer bewertet Ihre Antworten':'AI examiner is reviewing your responses');
+        const PEC=typeof ProductionEvalCore!=='undefined'?ProductionEvalCore:null;
+        const prodEval=await evalProductionModulesWithAI({
+          lang:d.lang||S.subject,
+          level:d.level,
+          passPercent,
+          schreibenParts:d.schreibenParts||[],
+          sprechenParts:d.sprechenParts||[],
+          isDE,
+        });
+        writingEvals=prodEval.schreibenEvals||[];
+        speakingEvals=prodEval.sprechenEvals||[];
+        if(prodEval.ok&&MG){
+          moduleResults=PEC?PEC.applyProductionEvalToModules(moduleResults,prodEval,passPercent,MG):moduleResults;
+          if(usePoints&&MG){
+            if(moduleResults.schreiben)moduleResults.schreiben=MG.enrichModulePoints(moduleResults.schreiben,blueprint,'schreiben');
+            if(moduleResults.sprechen)moduleResults.sprechen=MG.enrichModulePoints(moduleResults.sprechen,blueprint,'sprechen');
+          }
+        }else{
+          const schHints=(d.schreibenParts||[]).map(p=>writingLengthHint(p,getSchreibenAns(p),isDE));
+          const spHints=(d.sprechenParts||[]).map(p=>(typeof buildOrientativeSpeakingHint==='function'?buildOrientativeSpeakingHint(p,document.getElementById(p.fieldId)?.value.trim()||'',isDE):writingLengthHint({minWords:p.minWords||40},document.getElementById(p.fieldId)?.value.trim()||'',isDE)));
+          moduleResults=PEC?PEC.applyOrientativeFallback(moduleResults,{schreibenHints:schHints,sprechenHints:spHints,isDE},MG):moduleResults;
+          if(!moduleResults.schreiben&&d.schreibenParts?.length&&MG)moduleResults.schreiben=MG.unevaluatedOrientativeResult(schHints.map(h=>h.hint).join(' · '),isDE);
+          if(!moduleResults.sprechen&&d.sprechenParts?.length&&MG)moduleResults.sprechen=MG.unevaluatedOrientativeResult(spHints.map(h=>h.hint).join(' · '),isDE);
+        }
+        d._writingEvals=writingEvals;
+        d._productionEvalFromCache=!!prodEval.fromCache;
+      }else if(d.schreibenParts?.length){
+        if(modular&&MG)moduleResults.schreiben=MG.unevaluatedOrientativeResult(writingLengthHint(d.schreibenParts[0],getSchreibenAns(d.schreibenParts[0]),isDE).hint,isDE);
+        else{
+          const ws=d.schreibenParts.map(p=>writingLengthHint(p,getSchreibenAns(p),isDE));
+          moduleResults.schreiben=MG?MG.unevaluatedOrientativeResult(ws.map(w=>w.hint).join(' · '),isDE):undefined;
+        }
+      }
+      if(!hasProdEval&&d.sprechenParts?.length){
+        if(modular&&MG&&!isDemo){
+          hideAll();show('loadingScreen');
+          if(typeof setLoaderStep==='function')setLoaderStep('Evaluating speaking…','AI examiner is reviewing your responses');
+          speakingEvals=await evalSpeakingWithAI(d.sprechenParts,isDE);
+          const aiScores=(speakingEvals||[]).filter(s=>s.ai&&s.score!=null).map(s=>s.score);
+          if(aiScores.length&&MG){
+            const avg=Math.round(aiScores.reduce((a,b)=>a+b,0)/aiScores.length);
+            moduleResults.sprechen=usePoints&&MG.aiEvaluatedModuleResultWithPoints?MG.aiEvaluatedModuleResultWithPoints(avg,passPercent,blueprint,'sprechen',{parts:speakingEvals}):MG.aiEvaluatedModuleResult(avg,passPercent,{parts:speakingEvals});
+          }else if(MG){
+            moduleResults.sprechen=MG.unevaluatedOrientativeResult((speakingEvals||[]).map(s=>s.note||s.hint).filter(Boolean).join(' · '),isDE);
+          }
+        }else if(isDemo&&MG){
+          moduleResults.sprechen=MG.unevaluatedOrientativeResult(null,isDE);
+        }
       }
     }
   }else{
-  if(d.lesen){let c=0;d.lesen.questions.forEach(q=>{const key='lesen_'+q.id,ans=S.answers[key];if(ans===q.correct)c++;total++;});correct+=c;moduleScores.lesen=Math.round(c/d.lesen.questions.length*100);}
-  if(d.horen){let c=0;d.horen.questions.forEach(q=>{const key='horen_'+q.id,ans=S.answers[key];if(ans===q.correct)c++;total++;});correct+=c;moduleScores.horen=Math.round(c/d.horen.questions.length*100);}
-  if(d.gapfill){let c=0;d.gapfill.sentences.forEach(s=>{const ans=(S.gapAnswers[s.id]||'').trim().toLowerCase();if(ans===s.answer.toLowerCase())c++;total++;});correct+=c;moduleScores.gapfill=Math.round(c/d.gapfill.sentences.length*100);}
+  if(d.lesen){let c=0,a=0;d.lesen.questions.forEach(q=>{const ans=S.answers['lesen_'+q.id];if(MG&&MG.isAnswerProvided&&!MG.isAnswerProvided(ans))return;a++;if(ans===q.correct)c++;});legacyCorrect+=c;legacyTotal+=a;if(a&&MG)moduleResults.lesen=MG.buildObjectiveModuleResult(c,a,d.lesen.questions.length,passPercent);}
+  if(d.horen){let c=0,a=0;d.horen.questions.forEach(q=>{const ans=S.answers['horen_'+q.id];if(MG&&MG.isAnswerProvided&&!MG.isAnswerProvided(ans))return;a++;if(ans===q.correct)c++;});legacyCorrect+=c;legacyTotal+=a;if(a&&MG)moduleResults.horen=MG.buildObjectiveModuleResult(c,a,d.horen.questions.length,passPercent);}
+  if(d.gapfill){let c=0,a=0;d.gapfill.sentences.forEach(s=>{const ans=(S.gapAnswers[s.id]||'').trim();if(MG&&MG.isAnswerProvided&&!MG.isAnswerProvided(ans))return;a++;if(ans.toLowerCase()===s.answer.toLowerCase())c++;});legacyCorrect+=c;legacyTotal+=a;if(a&&MG)moduleResults.gapfill=MG.buildObjectiveModuleResult(c,a,d.gapfill.sentences.length,passPercent);}
   if(d.schreiben){
-    const w=gradeWriting(d.schreiben,writeAns);
-    moduleScores.schreiben=w.score;correct+=w.score/100;total+=1;
+    const w=writingLengthHint(d.schreiben,writeAns,isDE);
+    if(MG)moduleResults.schreiben=MG.unevaluatedOrientativeResult(w.hint,isDE);
   }
   if(d.sprechen){
     if(isDemo){
-      const sp=gradeSpeaking(d.sprechen,speakAns,isDE);
-      moduleScores.sprechen=sp.score;correct+=sp.score/100;total+=1;
+      const spHint=typeof buildOrientativeSpeakingHint==='function'?buildOrientativeSpeakingHint(d.sprechen,speakAns,isDE):writingLengthHint({minWords:d.sprechen.minWords||40},speakAns,isDE);
+      if(MG)moduleResults.sprechen=MG.unevaluatedOrientativeResult(spHint.note,isDE);
     }else{
       hideAll();show('loadingScreen');
       if(typeof setLoaderStep==='function')setLoaderStep('Evaluating speaking…','AI examiner is reviewing your response');
       const parts=[{...d.sprechen,fieldId:'speakAns'}];
       speakingEvals=await evalSpeakingWithAI(parts,isDE);
-      moduleScores.sprechen=speakingEvals[0]?.score||0;
-      correct+=moduleScores.sprechen/100;total+=1;
+      const sp0=speakingEvals[0];
+      if(sp0?.ai&&sp0.score!=null&&MG)moduleResults.sprechen=MG.aiEvaluatedModuleResult(sp0.score,passPercent);
+      else if(MG)moduleResults.sprechen=MG.unevaluatedOrientativeResult(sp0?.note||sp0?.hint,isDE);
     }
   }
   }
-  const score=total?Math.round(correct/total*100):0;
-  const correction=buildCorrection(d,isDE,writeAns,speakAns);
+  const summary=MG?MG.summarizeExam(moduleResults,{modular,passPercent,legacyCorrect,legacyTotal,blueprint,gradingScope,exam:d}):{legacyScore:legacyTotal?Math.round(legacyCorrect/legacyTotal*100):0,modulesPassed:0,modulesEvaluated:0,totalModules:0,globalPassed:false,informativeScorePct:null,passPercent,gradingScope:'legacy'};
+  const score=MG?MG.computeDisplayScore(summary,moduleResults):(wholeExam?(summary.legacyScore??0):modular?(summary.informativeScorePct??summary.legacyScore):summary.legacyScore);
+  if(typeof LcAnalytics!=='undefined'&&!isDemo&&!S.quickMod){
+    LcAnalytics.trackExamCompleted(d.lang||S.subject,d.level||S.level,score);
+  }
+  const moduleScores=MG?MG.legacyFlatScores(moduleResults):{};
+  const correction=buildCorrection(d,isDE,writeAns,speakAns,passPercent);
   let savedWords=[...(S.examSavedWords||[])];
   S.lastMarkedWords=S.activeSession?.markedWords?[...S.activeSession.markedWords]:[];
-  const entry={id:Date.now(),date:new Date().toLocaleDateString(),topic:d.topic,level:d.level,lang:d.lang,score,moduleScores,mode:normalizeMode(S.mode),demo:!!d.demo,guidedDemo:!!d.guidedDemo,correction,savedWords,markedWords:S.lastMarkedWords.map(m=>m.word),examSource:S.examSource||null,poolId:S.examData?.poolId||null};
+  const entry={id:Date.now(),date:new Date().toLocaleDateString(),topic:d.topic,level:d.level,lang:d.lang,score,moduleScores,moduleResults,passPercentPerModule:passPercent,modulesPassed:summary.modulesPassed,modulesEvaluated:summary.modulesEvaluated,totalModules:summary.totalModules,globalPassed:summary.globalPassed,modularGrading:modular,gradingScope:summary.gradingScope||gradingScope,wholeExamGrading:wholeExam?{writtenPoints:summary.writtenPoints,writtenMax:summary.writtenMax,writtenMin:summary.writtenMin,speakingPoints:summary.speakingPoints,speakingMax:summary.speakingMax,speakingMin:summary.speakingMin}:null,mode:normalizeMode(S.mode),demo:!!d.demo,guidedDemo:!!d.guidedDemo,correction,savedWords,markedWords:S.lastMarkedWords.map(m=>m.word),examSource:S.examSource||null,poolId:S.examData?.poolId||null,invalidItems:d._invalidItems||[],writingEvals:d._writingEvals||null,speakingEvals:speakingEvals||null,productionEvalFromCache:!!d._productionEvalFromCache};
   if(typeof AnalyticsStore!=='undefined'){
     const goal=getActiveGoal()||S.goals.find(g=>g.id===d.goalId);
     entry.tagStats=AnalyticsStore.recordExamResult(goal,entry,d,S.answers);
@@ -422,39 +683,36 @@ async function submitExam(){
   if(savedId){
     const si=S.savedExams.findIndex(e=>e.id===savedId);
     if(si>=0){
-      S.savedExams[si]={...S.savedExams[si],status:'completed',score,moduleScores,correction,savedWords,markedWords:S.lastMarkedWords.map(m=>m.word),writeAns,speakAns,speakingEvals,completedAt:Date.now()};
+      S.savedExams[si]={...S.savedExams[si],status:'completed',score,moduleScores,moduleResults,passPercentPerModule:passPercent,globalPassed:summary.globalPassed,correction,savedWords,markedWords:S.lastMarkedWords.map(m=>m.word),writeAns,speakAns,speakingEvals,completedAt:Date.now()};
       saveSaved();
     }
   }
   S._officialInProgress=null;
   clearActiveSession();
-  renderResults(score,moduleScores,d,isDE,writeAns,speakAns,entry.id,correction,speakingEvals,savedWords,S.lastMarkedWords,entry);
+  renderResults(score,moduleResults,d,isDE,writeAns,speakAns,entry.id,correction,speakingEvals,savedWords,S.lastMarkedWords,entry,summary);
 }
 
-function getResultsWeakModules(mods,isDE){
+function getResultsWeakModules(moduleResults,passPercent,isDE){
+  if(typeof ModuleGrading!=='undefined')return ModuleGrading.weakModules(moduleResults,passPercent,isDE);
   const labels={lesen:isDE?'Leseverstehen':'Reading',horen:isDE?'Hörverstehen':'Listening',gapfill:'Gap-Fill',schreiben:isDE?'Schreiben':'Writing',sprechen:isDE?'Sprechen':'Speaking'};
-  return Object.entries(mods||{}).filter(([,v])=>v!=null&&v<70).map(([k,v])=>({label:labels[k]||k,score:v})).sort((a,b)=>a.score-b.score);
+  return Object.entries(moduleResults||{}).filter(([,v])=>v?.evaluated&&v.scorePct!=null&&v.scorePct<passPercent).map(([k,v])=>({label:labels[k]||k,score:v.scorePct})).sort((a,b)=>a.score-b.score);
 }
-function getResultsRecommendedAction(score,mods,deckN,practiceMode){
+function getResultsRecommendedAction(score,summary,mods,deckN,practiceMode,passPercent){
   const goal=getActiveGoal()||S.goals[0];
-  const weak=getResultsWeakModules(mods,false);
+  const weak=getResultsWeakModules(mods,passPercent,false);
   if(practiceMode&&deckN>=4)return{title:'Generate a personalized exam',desc:`You saved ${deckN} words from this session. Build a mock test from your weak vocabulary.`,cta:'Personalized exam →',run:workspaceAction('exams',()=>goal&&openExamConfigurator(goal.id))};
   if(practiceMode&&deckN>0)return{title:'Review saved vocabulary',desc:`${deckN} word${deckN!==1?'s':''} detected from mistakes. Strengthen them before your next exam.`,cta:'Review flashcards →',run:workspaceAction('vocabulary',()=>goal&&openDeckHub(goal.id))};
   if(weak.length)return{title:'Practice your weak modules',desc:`Focus on ${weak.map(w=>w.label).join(', ')} in practice mode and save words you miss.`,cta:'Practice again →',run:()=>startMockExam('practice')};
-  if(score<70)return{title:'Retake in practice mode',desc:'Save difficult words as you go — they become your personalized study plan.',cta:'Practice exam →',run:()=>startMockExam('practice')};
+  if(summary?.gradingScope==='whole-exam'&&!summary.globalPassed)return{title:'Retake in practice mode',desc:'Practice written and speaking — both thresholds must be met.',cta:'Practice exam →',run:()=>startMockExam('practice')};
+  if(summary&&!summary.globalPassed&&summary.modulesPassed<summary.totalModules)return{title:'Retake in practice mode',desc:'Focus on the modules you did not pass yet — save difficult words as you go.',cta:'Practice exam →',run:()=>startMockExam('practice')};
+  if(score<passPercent)return{title:'Retake in practice mode',desc:'Save difficult words as you go — they become your personalized study plan.',cta:'Practice exam →',run:()=>startMockExam('practice')};
   return{title:'Take another mock exam',desc:'Keep building exam readiness with another official-format test.',cta:'Next exam →',run:()=>startMockExam('official')};
 }
 function renderVocabGameSection(entry,isDE){
   const intersection=entry?.vocabInExam||[];
   const notInExam=entry?.vocabNotInExam||[];
   if(!intersection.length&&!notInExam.length)return '';
-  const lang=isDE?{
-    title:'Tu vocabulario en este examen',
-    found:'Palabras tuyas que aparecieron',
-    notFound:'Palabras tuyas que NO aparecieron',
-    gamePrompt:'¿Recuerdas haberlas visto?',
-    none:'Ninguna de tus palabras apareció en este examen',
-  }:{
+  const lang={
     title:'Your vocabulary in this exam',
     found:'Your words that appeared',
     notFound:'Your words that did NOT appear',
@@ -485,22 +743,50 @@ function renderVocabGameSection(entry,isDE){
     </div>`:''}
   </div>`;
 }
-function renderResults(score,mods,d,isDE,writeAns,speakAns,entryId,correction,speakingEvals,savedWordsOverride,markedWordsOverride,histEntry){
+function renderResults(score,moduleResults,d,isDE,writeAns,speakAns,entryId,correction,speakingEvals,savedWordsOverride,markedWordsOverride,histEntry,summaryOverride){
   hideAll();
-  S.lastResults={score,mods,d,isDE,correction,speakingEvals};
+  const MG=typeof ModuleGrading!=='undefined'?ModuleGrading:null;
+  const passPercent=histEntry?.passPercentPerModule??(MG?MG.getPassPercent(null,d):60);
+  let mods=histEntry?.moduleResults||null;
+  if(!mods&&moduleResults&&typeof moduleResults==='object'&&Object.values(moduleResults)[0]?.evaluated!=null)mods=moduleResults;
+  if(!mods&&MG)mods=MG.migrateLegacyModuleScores(histEntry?.moduleScores||moduleResults||{},passPercent);
+  if(!mods)mods={};
+  const modular=histEntry?.modularGrading??(MG?MG.isModularGoetheExam(d,histEntry?.blueprint||null):false);
+  const gradingScope=histEntry?.gradingScope??summaryOverride?.gradingScope??(MG?MG.getGradingScope(histEntry?.blueprint||null,d):modular?'modular':'legacy');
+  const wholeExam=gradingScope==='whole-exam';
+  const blueprint=histEntry?.blueprint||d.blueprint||null;
+  const summary=summaryOverride||(MG?MG.summarizeExam(mods,{modular:gradingScope==='modular',passPercent,blueprint,gradingScope,exam:d}):{globalPassed:score>=passPercent,modulesPassed:0,modulesEvaluated:0,totalModules:0,informativeScorePct:score,passPercent,gradingScope:'legacy'});
+  const displayInfo=MG?MG.getDisplayScoreInfo(mods,summary,passPercent,isDE):null;
+  const displayScore=displayInfo?.score??score;
+  S.lastResults={score:displayScore,mods,d,isDE,correction,speakingEvals,summary,passPercent,gradingScope,displayInfo};
   show('resultsScreen');
   const scr=document.getElementById('resultsScreen');
-  const cls=score>=70?'pass':score>=50?'mid':'fail';
-  const label=score>=70?(isDE?'Bestanden ✓':'Pass ✓'):score>=50?(isDE?'Knapp':'Close'):isDE?'Nicht bestanden':'Fail';
-  const corrHtml=correction?renderCorrectionHtml(correction,d,isDE):'';
+  const cls=MG?MG.globalResultClass(summary):(displayScore>=passPercent?'pass':displayScore>=passPercent-20?'mid':'fail');
+  const label=MG?MG.globalResultLabel(summary,isDE):(displayScore>=passPercent?(isDE?'Bestanden ✓':'Pass ✓'):displayScore>=passPercent-20?(isDE?'Knapp':'Close'):isDE?'Nicht bestanden':'Fail');
+  const heroScore=displayInfo?.heroScore??(wholeExam?`${summary.writtenPoints??'—'}/${summary.writtenMax} · ${summary.speakingPoints??'—'}/${summary.speakingMax}`:modular&&summary.totalModules?`${summary.modulesPassed}/${summary.totalModules}`:`${displayScore}%`);
+  const heroSub=displayInfo?.heroSub??(wholeExam&&MG?MG.wholeExamHeroSub(summary,isDE):modular&&summary.informativeScorePct!=null?(isDE?`Ø bewertete Module: ${summary.informativeScorePct}% · Schwelle ${passPercent}% pro Modul`:`Avg scored modules: ${summary.informativeScorePct}% · ${passPercent}% pass per module`):modular?(isDE?`Schwelle ${passPercent}% pro Modul`:`${passPercent}% pass per module`):'');
+  const corrHtml=correction?renderCorrectionHtml(correction,d,isDE,passPercent):'';
   const speakHtml=typeof renderSpeakingResultsHtml==='function'?renderSpeakingResultsHtml(speakingEvals,isDE):'';
+  const labels=MG?.MODULE_LABELS?.[isDE?'de':'en']||{lesen:isDE?'Leseverstehen':'Reading',horen:isDE?'Hörverstehen':'Listening',schreiben:isDE?'Schreiben':'Writing',sprechen:isDE?'Sprechen':'Speaking',gapfill:'Gap-Fill'};
   let modCards='';
-  const msColor=v=>v>=70?'var(--green)':v>=60?'var(--warning,var(--orange))':v>=50?'var(--orange)':'var(--red)';
-  if(mods.lesen!=null)modCards+=`<div class="card mod-score"><div class="mod-score__val" style="color:${msColor(mods.lesen)}">${mods.lesen}%</div><div class="mod-score__lbl">${isDE?'Leseverstehen':'Reading'}</div></div>`;
-  if(mods.horen!=null)modCards+=`<div class="card mod-score"><div class="mod-score__val" style="color:${msColor(mods.horen)}">${mods.horen}%</div><div class="mod-score__lbl">${isDE?'Hörverstehen':'Listening'}</div></div>`;
-  if(mods.gapfill!=null)modCards+=`<div class="card mod-score"><div class="mod-score__val" style="color:${msColor(mods.gapfill)}">${mods.gapfill}%</div><div class="mod-score__lbl">Gap-Fill</div></div>`;
-  if(mods.schreiben!=null)modCards+=`<div class="card mod-score"><div class="mod-score__val" style="color:${msColor(mods.schreiben)}">${mods.schreiben}%</div><div class="mod-score__lbl">${isDE?'Schreiben':'Writing'}</div></div>`;
-  if(mods.sprechen!=null)modCards+=`<div class="card mod-score"><div class="mod-score__val" style="color:${msColor(mods.sprechen)}">${mods.sprechen}%</div><div class="mod-score__lbl">${isDE?'Sprechen':'Speaking'}</div></div>`;
+  const msColor=(v)=>MG?MG.scoreColor(v,passPercent):(v>=passPercent?'var(--green)':v>=passPercent-10?'var(--warning,var(--orange))':v>=passPercent-20?'var(--orange)':'var(--red)');
+  for(const key of['lesen','horen','gapfill','schreiben','sprechen']){
+    const m=mods[key];
+    if(!m)continue;
+    const val=MG?MG.moduleDisplayValue(m,summary,passPercent):(m.evaluated&&m.scorePct!=null?`${m.scorePct}%`:'—');
+    const status=MG?MG.moduleStatusLabel(m,isDE,summary):(m.passed?(isDE?'Bestanden':'Pass'):isDE?'Nicht bestanden':'Fail');
+    const cardCls=MG?MG.moduleCardClass(m,summary):(m.evaluated?(m.passed?'mod-pass':'mod-fail'):'mod-pending');
+    const colorVal=wholeExam&&m.points!=null?null:m.scorePct;
+    modCards+=`<div class="card mod-score ${cardCls}"><div class="mod-score__val" style="color:${colorVal!=null?msColor(colorVal):'var(--text-primary)'}">${val}</div><div class="mod-score__status">${status}</div>${m.hint?`<div class="mod-score__hint" style="font-size:11px;color:var(--text-muted);margin-top:4px;line-height:1.4">${esc(m.hint)}</div>`:''}<div class="mod-score__lbl">${labels[key]||key}</div></div>`;
+  }
+  let wholeExamSummaryHtml='';
+  if(wholeExam){
+    const wLbl=isDE?'Schriftprüfung (Lesen+Hören+Schreiben)':'Written (Reading+Listening+Writing)';
+    const sLbl=isDE?'Sprechen':'Speaking';
+    const wOk=summary.writtenPassed;
+    const sOk=summary.speakingPassed;
+    wholeExamSummaryHtml=`<div class="results-detail whole-exam-summary"><h4>${isDE?'Gesamtergebnis':'Overall result'} (${esc(d.level||'')})</h4><ul class="results-weak-list"><li>${wLbl}: ${summary.writtenPoints??'—'}/${summary.writtenMax} ${isDE?'(mind.':'(min'} ${summary.writtenMin}) — ${wOk?(isDE?'✓ erreicht':'✓ met'):(isDE?'✗ nicht erreicht':'✗ not met')}</li><li>${sLbl}: ${summary.speakingPoints??'—'}/${summary.speakingMax} ${isDE?'(mind.':'(min'} ${summary.speakingMin}) — ${sOk?(isDE?'✓ erreicht':'✓ met'):(isDE?'✗ nicht erreicht':'✗ not met')}</li></ul></div>`;
+  }
   let answerHtml='';
   if(d.goetheFormat){
     answerHtml=(d.schreibenParts||[]).map(p=>{const v=document.getElementById(p.fieldId)?.value.trim();return v?`<div class="text-display"><h3>${isDE?'Schreiben':'Writing'} — Aufgabe ${p.aufgabe}</h3><div class="readable-text" style="white-space:pre-wrap">${esc(v)}</div></div>`:'';}).join('');
@@ -511,8 +797,8 @@ function renderResults(score,mods,d,isDE,writeAns,speakAns,entryId,correction,sp
   }
   const deckN=getProfileFlashcards().length;
   const savedWords=savedWordsOverride||S.examSavedWords||[];
-  const weakMods=getResultsWeakModules(mods,isDE);
-  const weakHtml=weakMods.length?`<div class="results-detail"><h4>Weak areas</h4><ul class="results-weak-list">${weakMods.map(w=>`<li>${esc(w.label)} — ${w.score}%</li>`).join('')}</ul></div>`:'<div class="results-detail"><h4>Weak areas</h4><p class="u-text-xs u-text-secondary">Strong performance across modules. Keep practicing to maintain readiness.</p></div>';
+  const weakMods=wholeExam?[]:getResultsWeakModules(mods,passPercent,isDE);
+  const weakHtml=wholeExam?wholeExamSummaryHtml:weakMods.length?`<div class="results-detail"><h4>${isDE?'Schwache Bereiche':'Weak areas'}</h4><ul class="results-weak-list">${weakMods.map(w=>`<li>${esc(w.label)} — ${w.score}%</li>`).join('')}</ul></div>`:`<div class="results-detail"><h4>${isDE?'Schwache Bereiche':'Weak areas'}</h4><p class="u-text-xs u-text-secondary">${isDE?'Gute Leistung in den bewerteten Modulen.':'Strong performance across scored modules.'}</p></div>`;
   const markedList=markedWordsOverride||S.lastMarkedWords||[];
   const markedHtml=markedList.length?`<div class="results-detail results-marked"><h4>Review the words you marked</h4><p style="font-size:12px;font-weight:600;color:var(--text-secondary);margin-bottom:10px">In official mode, marked words are translated here — save any you want to your deck.</p>${markedList.map((m,i)=>`<div class="marked-word-row" id="markedRow_${i}"><span class="marked-word">${esc(m.word)}</span><div class="marked-trans" id="markedTrans_${i}"><button type="button" class="btn-sm" onclick="expandMarkedWord('${encodeURIComponent(m.word)}',${i})">Show translation</button></div></div>`).join('')}</div>`:'';
   const vocabHtml=savedWords.length?`<div class="results-detail"><h4>Vocabulary detected</h4><ul class="results-vocab-list">${savedWords.slice(0,12).map(w=>`<li>${esc(w)}</li>`).join('')}${savedWords.length>12?`<li>+${savedWords.length-12} more</li>`:''}</ul></div>`:(isPracticeMode()?`<div class="results-detail"><h4>Vocabulary detected</h4><p class="u-text-xs u-text-secondary">Words you saved during practice appear in your deck.</p></div>`:'');
@@ -521,7 +807,7 @@ function renderResults(score,mods,d,isDE,writeAns,speakAns,entryId,correction,sp
   const batchPlan=typeof VocabBatching!=='undefined'?goalForBatch?.vocabPlan:null;
   const batchCov=batchPlan?VocabBatching.coverage(batchPlan):null;
   const nextBatchHtml=batchPlan&&batchCov&&!batchCov.finished?`<div class="results-detail"><h4>Vocabulary batches</h4><p class="u-text-xs u-text-secondary">${esc(VocabBatching.summary(batchPlan,S.subject||goalForBatch?.subject))}</p><button type="button" class="btn-sm accent" onclick="generateNextVocabBatch('${goalForBatch.id}')">Next batch →</button></div>`:'';
-  const act=getResultsRecommendedAction(score,mods,deckN,isPracticeMode());
+  const act=getResultsRecommendedAction(displayScore,summary,mods,deckN,isPracticeMode(),passPercent);
   _coachAction=act.run;
   const isDemoSession=!!d.guidedDemo;
   const guest=(typeof Auth!=='undefined'&&Auth.isGuest&&Auth.isGuest())||isDemoSession;
@@ -530,11 +816,15 @@ function renderResults(score,mods,d,isDE,writeAns,speakAns,entryId,correction,sp
     ?`Practice exam complete. Words you saved become evidence for your personalized study plan.`
     :markedList.length?`Official exam complete. Review the ${markedList.length} word${markedList.length===1?'':'s'} you marked below — save them to your deck for personalized practice.`
     :`Official exam complete. Next time, tap words you struggle with during the exam to review them here.`;
+  const invalidItems=histEntry?.invalidItems||d._invalidItems||[];
+  const invalidBanner=invalidItems.length?`<div class="card" style="margin-bottom:14px;border:.5px solid rgba(255,120,80,.35);background:rgba(255,120,80,.08);padding:12px 16px"><b>${isDE?`${invalidItems.length} Frage(n) wegen Datenfehler ausgeschlossen`:`${invalidItems.length} question(s) excluded due to data error`}</b><p style="font-size:12px;color:var(--text-secondary);margin:8px 0 0;line-height:1.55">${isDE?'Diese Aufgaben wurden nicht gewertet, weil der Antwortschlüssel nicht zu den angezeigten Optionen passt.':'These items were not scored because the answer key does not match the options shown.'}</p></div>`:'';
   scr.innerHTML=`
     ${renderNavBackBtn('Exams')}
+    ${invalidBanner}
     <div class="card results-hero">
-      <div class="res-score ${cls}">${score}%</div>
+      <div class="res-score ${cls}">${heroScore}</div>
       <div class="res-label">${label} — ${d.level} ${d.lang==='de'?'🇩🇪':'🇬🇧'} ${esc(d.topic)}</div>
+      ${heroSub?`<div class="res-sub" style="font-size:12px;color:var(--text-secondary);margin-top:6px">${heroSub}</div>`:''}
     </div>
     <div class="results-loop">
       <h4>Every mistake becomes your next lesson</h4>

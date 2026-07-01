@@ -53,7 +53,12 @@
   }
 
   async function applyCascadeHit(hit) {
-    if (typeof commitExamQuota === 'function') await commitExamQuota();
+    const curatedLibrary =
+      hit.source === 'library' &&
+      typeof LevelAvailability !== 'undefined' &&
+      typeof LevelAvailability.isCuratedOnlyLevel === 'function' &&
+      LevelAvailability.isCuratedOnlyLevel(S.subject, S.level);
+    if (!curatedLibrary && typeof commitExamQuota === 'function') await commitExamQuota();
     S.examData = hit.examData;
     if (hit.topic) S.examData.topic = hit.topic;
     if (hit.poolSource) {
@@ -82,8 +87,8 @@
       return;
     }
     setLoaderStep('Generating with AI\u2026', 'Starting exam generation\u2026');
-    try {
     let raw;
+    try {
     try {
       raw = await generateExamChunks(topic, (s) => setLoaderStep('Generating with AI\u2026', s));
     } catch (e) {
@@ -94,20 +99,59 @@
         throw e;
       }
     }
-    const normalized = typeof normalizeExam === 'function' ? normalizeExam(raw) : raw;
+    let normalized = typeof normalizeExam === 'function' ? normalizeExam(raw) : raw;
     if (!normalized || (typeof isExamRenderable === 'function' && !isExamRenderable(normalized))) {
+      if (typeof releaseExamGeneration === 'function' && (S._activeGenTicket || normalized?._genTicket)) {
+        await releaseExamGeneration(S._activeGenTicket || normalized._genTicket, { unusable: true });
+        S._activeGenTicket = null;
+      }
       throw new Error('AI returned an incomplete exam. Please try again.');
     }
     if (typeof lcExamPassesValidator === 'function' && !lcExamPassesValidator(normalized)) {
+      if (typeof releaseExamGeneration === 'function' && (S._activeGenTicket || normalized._genTicket)) {
+        await releaseExamGeneration(S._activeGenTicket || normalized._genTicket, { unusable: true });
+        S._activeGenTicket = null;
+      }
       const e = new Error('AI returned an exam with invalid answer keys. Please try again.');
       e.code = 'exam_invalid';
       throw e;
     }
     if (typeof lcValidateExamOnServer === 'function') {
-      const srv = await lcValidateExamOnServer(normalized);
-      if (!srv.valid) {
+      const srv = await lcValidateExamOnServer(normalized, {
+        verifyAnswerKeys: true,
+        discardFailedItems: true,
+      });
+      if (srv.exam) {
+        for (const k of ['lesenParts', 'horenParts', 'schreibenParts', 'sprechenParts', 'readingParts', 'listeningParts']) {
+          if (Array.isArray(srv.exam[k])) normalized[k] = srv.exam[k];
+        }
+        if (typeof normalizeExam === 'function') {
+          normalized = normalizeExam(normalized, { skipPostprocess: true }) || normalized;
+        }
+        if (typeof repairPersonalExamAnswerability === 'function') {
+          normalized = repairPersonalExamAnswerability(normalized);
+        }
+        if (typeof pruneEmptyGoetheParts === 'function') {
+          normalized = pruneEmptyGoetheParts(normalized);
+        }
+      }
+      if (!srv.valid && !srv.skipped) {
+        if (typeof releaseExamGeneration === 'function' && (S._activeGenTicket || normalized._genTicket)) {
+          await releaseExamGeneration(S._activeGenTicket || normalized._genTicket, { unusable: true });
+          S._activeGenTicket = null;
+        }
         const e = new Error('Generated exam failed answer-key validation.');
         e.code = 'exam_invalid';
+        throw e;
+      }
+      if (!isExamRenderable(normalized)) {
+        if (typeof releaseExamGeneration === 'function' && (S._activeGenTicket || normalized._genTicket)) {
+          await releaseExamGeneration(S._activeGenTicket || normalized._genTicket, { unusable: true });
+          S._activeGenTicket = null;
+        }
+        const e = new Error('No valid exam content remained after verification.');
+        e.code = 'exam_invalid';
+        e.quotaRefund = true;
         throw e;
       }
     }
@@ -116,6 +160,10 @@
     S.examData.topic = topic;
     S.examSource = 'ai';
     if (typeof examHasUnanswerableQuestions === 'function' && examHasUnanswerableQuestions(S.examData)) {
+      if (typeof releaseExamGeneration === 'function' && (S._activeGenTicket || S.examData._genTicket)) {
+        await releaseExamGeneration(S._activeGenTicket || S.examData._genTicket, { unusable: true });
+        S._activeGenTicket = null;
+      }
       const e = new Error('AI returned questions without answer options.');
       e.code = 'exam_invalid';
       throw e;
@@ -135,8 +183,22 @@
         examData: S.examData,
       });
     }
+    const genTicket = S.examData._genTicket || S._activeGenTicket;
+    if (genTicket && typeof deliverExamGeneration === 'function') {
+      try {
+        await deliverExamGeneration(genTicket);
+      } catch (_) { /* non-fatal */ }
+      delete S.examData._genTicket;
+      S._activeGenTicket = null;
+    }
     renderExam();
     } catch (e) {
+      if (typeof releaseExamGeneration === 'function' && S._activeGenTicket) {
+        try {
+          await releaseExamGeneration(S._activeGenTicket, { unusable: true });
+        } catch (_) { /* ignore */ }
+        S._activeGenTicket = null;
+      }
       if (typeof logAiGeneration === 'function') {
         logAiGeneration({
           lang: S.subject,
@@ -189,7 +251,11 @@
     show('loadingScreen');
 
     try {
-      if (!canGenerate()) {
+      const canStart =
+        typeof canStartStandardExam === 'function'
+          ? canStartStandardExam(S.subject, S.level)
+          : canGenerate();
+      if (!canStart) {
         hideAll();
         backToWorkspace('exams');
         showQuotaExceededModal({ used: getQuotaUsed(), max: getQuotaMax(), plan: S.plan });
@@ -209,6 +275,9 @@
       if (cascade.status === 'hit') {
         await applyCascadeHit(cascade.result);
         renderExam();
+        if (cascade.result && cascade.result.recycled) {
+          notify('You have seen all available exams; here is one to review again.', 'info', 5000);
+        }
         return;
       }
       if (cascade.status === 'blocked') {

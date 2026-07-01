@@ -1,40 +1,64 @@
 /**
- * Shared TTS cache helpers (Sprint 3 — pretts-bank + warm-pool).
+ * Shared TTS cache helpers — hash/file naming matches netlify/functions/tts.js via ttsCacheLib.js.
  */
 import fs from 'node:fs';
 import path from 'node:path';
-import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
+import { createRequire } from 'node:module';
 
+const require = createRequire(import.meta.url);
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '../..');
+const ttsCacheLib = require(path.join(ROOT, 'netlify/functions/lib/ttsCacheLib.js'));
+const { resolveVoiceId } = require(path.join(ROOT, 'netlify/functions/lib/ttsVoices.js'));
+
+export function normalizeTtsText(text) {
+  return ttsCacheLib.normalizeTtsInput(text);
+}
 
 export function ttsTextHash(text) {
-  return crypto.createHash('sha256').update(String(text || '').trim().toLowerCase()).digest('hex').slice(0, 16);
+  return ttsCacheLib.textHash(text);
+}
+
+export function cacheKey(voice, text) {
+  return ttsCacheLib.cacheKey(voice, text);
 }
 
 export function cacheDir(root = ROOT) {
   return path.join(root, 'library', 'tts-cache');
 }
 
-export function cacheFilePath(voice, hash, root = ROOT) {
-  const safeVoice = String(voice || 'default').trim().slice(0, 32);
-  return path.join(cacheDir(root), `${safeVoice}_${hash}.mp3`);
+export function cacheFilePath(voice, hashOrText, root = ROOT) {
+  if (typeof hashOrText === 'string' && hashOrText.length === 16 && !/\s/.test(hashOrText)) {
+    return path.join(cacheDir(root), ttsCacheLib.cacheFileName(voice, hashOrText));
+  }
+  return ttsCacheLib.cacheFilePath(voice, hashOrText, path.join(ROOT, 'netlify/functions/lib'));
 }
 
 export function manifestPath(lang, level, root = ROOT) {
   return path.join(cacheDir(root), 'manifest', `${lang}_${level}.json`);
 }
 
-export function readCache(voice, text, root = ROOT) {
-  const hash = ttsTextHash(text);
-  const file = cacheFilePath(voice, hash, root);
-  if (!fs.existsSync(file)) return null;
-  return { hash, file, voice, bytes: fs.statSync(file).size };
+export function examManifestPath(lang, level, root = ROOT) {
+  return path.join(cacheDir(root), 'manifest', `exams_${lang}_${level}.json`);
+}
+
+export function readCache(voice, text, lang = 'de', root = ROOT) {
+  const buf = ttsCacheLib.readBundledAudioBuffer(
+    voice,
+    text,
+    lang,
+    resolveVoiceId,
+    path.join(ROOT, 'netlify/functions/lib'),
+  );
+  if (!buf) return null;
+  const hash = ttsCacheLib.textHash(text);
+  const file = path.join(cacheDir(root), ttsCacheLib.cacheFileName(voice, hash));
+  return { hash, file, voice, bytes: buf.length };
 }
 
 export function writeCache(voice, text, audio, root = ROOT) {
-  const hash = ttsTextHash(text);
-  const file = cacheFilePath(voice, hash, root);
+  const hash = ttsCacheLib.textHash(text);
+  const file = path.join(cacheDir(root), ttsCacheLib.cacheFileName(voice, hash));
   fs.mkdirSync(path.dirname(file), { recursive: true });
   fs.writeFileSync(file, audio);
   return { hash, file, voice, bytes: audio.length };
@@ -48,4 +72,11 @@ export function loadBank(lang, level, root = ROOT) {
   const file = path.join(root, 'library', lang, level, 'questions.json');
   if (!fs.existsSync(file)) throw new Error(`Missing bank: ${file}`);
   return JSON.parse(fs.readFileSync(file, 'utf8'));
+}
+
+export function loadServedExams(lang, level, root = ROOT) {
+  const file = path.join(root, 'data', 'exams', `${lang}_${level}.json`);
+  if (!fs.existsSync(file)) throw new Error(`Missing served exams: ${file}`);
+  const raw = JSON.parse(fs.readFileSync(file, 'utf8'));
+  return Array.isArray(raw) ? raw : raw.exams || [raw];
 }

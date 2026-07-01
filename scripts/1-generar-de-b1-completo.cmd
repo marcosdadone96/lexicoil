@@ -1,3 +1,3 @@
 @echo off
-REM Atajo: 1 examen completo — NO ejecutar junto con 1-generar-de-b1.cmd
-call "%~dp01-generar-de-b1.cmd" completo
+REM Generar 1 examen completo de/B1. Doble clic.
+call "%~dp0_generar.cmd" de B1 completo

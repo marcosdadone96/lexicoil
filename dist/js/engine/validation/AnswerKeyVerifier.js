@@ -2,6 +2,8 @@
  * AnswerKeyVerifier — optional second pass: solve MCQs and compare with marked keys.
  * Behind EXAM_ANSWER_KEY_VERIFY=1 on the server; does not change exam format.
  */
+const { isAnswerKeyRenderable } = require('./isAnswerKeyRenderable.js');
+
 class AnswerKeyVerifier {
   collectMcqItems(exam) {
     const items = [];
@@ -101,6 +103,34 @@ class AnswerKeyVerifier {
       .trim()
       .replace(/^\s*([a-zA-Z0-9]+)\)\s*/, '$1')
       .toUpperCase();
+  }
+
+  /** Structural answer-key checks (no AI) — correct present and keys match renderable options. */
+  collectStructuralKeyErrors(exam) {
+    const errors = [];
+    let validator = null;
+    if (typeof ExamValidator !== 'undefined') validator = new ExamValidator();
+    else if (typeof require !== 'undefined') validator = new (require('./ExamValidator.js'))();
+    if (!validator) return errors;
+
+    validator._walk(exam, (item, path, kind, part) => {
+      if (!validator._itemHasCorrect(item) && kind !== 'gap') {
+        errors.push(validator._missingKeyError(item, path, part));
+        return;
+      }
+      let err = null;
+      if (kind === 'mcq') err = validator._validateMcq(item, path, part);
+      else if (kind === 'match') err = validator._validateMatch(item, path, part);
+      else if (kind === 'gap') err = validator._validateGap(item, path);
+      if (err) {
+        errors.push(err);
+        return;
+      }
+      if (kind !== 'gap' && !isAnswerKeyRenderable(item, part)) {
+        errors.push(`${path}: answer_key_not_renderable`);
+      }
+    });
+    return [...new Set(errors)];
   }
 }
 

@@ -1,0 +1,30 @@
+LexiCoil - Scripts de generacion y montaje por nivel/idioma
+===========================================================
+
+QUE ES CADA COSA
+- _generar.cmd  : MOTOR de generacion (parametrizado). No lo toques.
+- _montar.cmd   : MOTOR de montaje + validacion (parametrizado). No lo toques.
+- scripts/accept-level.mjs : validador de aceptacion GENERICO (copialo a tu carpeta scripts/).
+- 1-generar-<idioma>-<nivel>.cmd          : doble clic, rellena gaps hacia 10 examenes.
+- 1-generar-<idioma>-<nivel>-completo.cmd : doble clic, genera 1 examen completo.
+- 2-montar-<idioma>-<nivel>.cmd           : doble clic, monta el banco y valida.
+
+INSTALACION
+1) Copia scripts/accept-level.mjs a la carpeta scripts/ de tu proyecto.
+2) Coloca todos los .cmd en la MISMA carpeta donde tenias 1-generar-de-b1.cmd
+   (los .cmd hacen "cd /d %~dp0.." para subir a la raiz del proyecto).
+
+USO (flujo en 2 fases, igual que antes)
+  Fase A (usa tu cuota de Claude/Anthropic):  doble clic en 1-generar-en-b1.cmd
+     -> puede pausar por cuota diaria; reanuda otro dia volviendo a darle.
+  Fase B (sin Gemini):               doble clic en 2-montar-en-b1.cmd
+     -> monta y al final ejecuta la validacion de aceptacion.
+
+REQUISITOS
+- ANTHROPIC_API_KEY en .env (Fase A). Modelo: claude-haiku-4-5 (CLAUDE_GEN_MODEL para Sonnet). SIN TOPE de gasto (el script desactiva CLAUDE_BUDGET_USD).
+- node y npm instalados.
+
+NOTA DE CALIDAD
+- Funciona para cualquier idioma/nivel con blueprint (todos A1-C2).
+- La FIABILIDAD del contenido generado depende del modelo; revisa siempre
+  las claves de respuesta antes de publicar, sobre todo en B2/C1/C2.

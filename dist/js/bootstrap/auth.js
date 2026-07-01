@@ -41,13 +41,13 @@ function showAuthLoginFromPending(){
   switchTab('login');
 }
 async function doResendConfirmation(){
-  if(!pendingConfirmEmail){setAMsg('No hay email guardado.');return;}
-  setAuthLoading(true,'btnResendConfirm','Reenviando\u2026','Reenviar correo');
+  if(!pendingConfirmEmail){setAMsg('No saved email on file.');return;}
+  setAuthLoading(true,'btnResendConfirm','Resending\u2026','Resend email');
   try{
     await Auth.resendConfirmationEmail(pendingConfirmEmail);
-    setAMsg('Correo reenviado. Revisa tambi\u00e9n spam.',true);
+    setAMsg('Confirmation email resent. Check your spam folder too.',true);
   }catch(e){setAMsg(e.message);}
-  finally{setAuthLoading(false,'btnResendConfirm','Reenviando\u2026','Reenviar correo');}
+  finally{setAuthLoading(false,'btnResendConfirm','Resending\u2026','Resend email');}
 }
 function getUsers(){try{return JSON.parse(localStorage.getItem('lc_users')||'{}');}catch(e){return{};}}
 async function doRegister(){
@@ -55,7 +55,7 @@ async function doRegister(){
   const nm=document.getElementById('rName').value.trim(),em=document.getElementById('rEmail').value.trim(),pw=document.getElementById('rPass').value;
   if(!nm||!em||!pw){setAMsg('Fill all fields.');return;}
   if(pw.length<6){setAMsg('Min 6 chars.');return;}
-  setAuthLoading(true,'btnRegister','Creando cuenta…','Create Account →');
+  setAuthLoading(true,'btnRegister','Creating account…','Create Account →');
   try{
     const result=await Auth.register(nm,em,pw);
     if(result&&result.pendingConfirmation){
@@ -67,13 +67,13 @@ async function doRegister(){
     setAMsg('Account created!',true);
     setTimeout(()=>{closeAuth();if(typeof ExamProfile!=='undefined'&&ExamProfile.needsOnboarding()&&!(typeof isFreeAccount==='function'&&isFreeAccount()))showProfileSetup();},600);
   }catch(e){setAMsg(e.message);}
-  finally{setAuthLoading(false,'btnRegister','Creando cuenta…','Create Account →');}
+  finally{setAuthLoading(false,'btnRegister','Creating account…','Create Account →');}
 }
 async function doLogin(){
   if(authBusy)return;
   const em=document.getElementById('lEmail').value.trim(),pw=document.getElementById('lPass').value;
   if(!em||!pw){setAMsg('Fill all fields.');return;}
-  setAuthLoading(true,'btnLogin','Iniciando sesión…','Sign In →');
+  setAuthLoading(true,'btnLogin','Signing in…','Sign In →');
   try{
     await Auth.login(em,pw);
     Auth.clearGuest();
@@ -81,7 +81,7 @@ async function doLogin(){
     setAMsg('Welcome back!',true);
     setTimeout(()=>{closeAuth();},600);
   }catch(e){setAMsg(e.message);}
-  finally{setAuthLoading(false,'btnLogin','Iniciando sesión…','Sign In →');}
+  finally{setAuthLoading(false,'btnLogin','Signing in…','Sign In →');}
 }
 async function doForgotPassword(){
   const em=prompt('Enter your account email:');
@@ -177,8 +177,10 @@ function updUserBtn(){
   refreshUserDropdown();
 }
 function refreshUserDropdown(){
-  const guest=typeof Auth!=='undefined'&&Auth.isGuest&&Auth.isGuest();
-  const pro=typeof isPro==='function'&&isPro();
+  if(typeof syncAppPlan==='function')syncAppPlan();
+  const guest=(typeof Auth!=='undefined'&&Auth.isGuest&&Auth.isGuest())||!S.user||S.user.email==='guest@lexicoil.com'||(typeof isAppAuthenticated==='function'&&!isAppAuthenticated());
+  const plan=typeof resolveAppPlan==='function'?resolveAppPlan():(S.plan||'free');
+  const pro=plan==='pro'||plan==='pro_max';
   const qUsed=typeof getQuotaUsed==='function'?getQuotaUsed():0;
   const qMax=typeof getQuotaMax==='function'?getQuotaMax():2;
   const nameEl=document.getElementById('udName');
@@ -191,36 +193,52 @@ function refreshUserDropdown(){
   const outBtn=document.getElementById('udLogout');
   const outSep=document.getElementById('udLogoutSep');
   if(!nameEl)return;
+  function setMenuBtn(el,visible){
+    if(!el)return;
+    el.hidden=!visible;
+    el.style.display=visible?'':'none';
+  }
   if(guest){
     nameEl.textContent='Guest mode';
     emailEl.textContent='Progress saved on this device only';
     planEl.textContent='Guest';
     planEl.className='user-dropdown__plan user-dropdown__plan--guest';
     metaEl.textContent=`${qUsed}/${qMax} AI tries used. Create a free account to sync across devices.`;
-    if(upBtn)upBtn.hidden=true;
-    if(subBtn)subBtn.hidden=true;
-    if(inBtn)inBtn.hidden=false;
-    if(outBtn)outBtn.hidden=true;
+    setMenuBtn(upBtn,false);
+    setMenuBtn(subBtn,false);
+    setMenuBtn(inBtn,true);
+    setMenuBtn(outBtn,false);
     if(outSep)outSep.hidden=true;
     return;
   }
   nameEl.textContent=S.user?.name||'Account';
   emailEl.textContent=S.user?.email||'';
-  const planLbl=pro?'Pro':'Free';
+  const planLbl=pro?(plan==='pro_max'?'Pro Max':'Pro'):(guest?'Guest':'Free');
   planEl.textContent=planLbl;
-  planEl.className='user-dropdown__plan '+(pro?'user-dropdown__plan--pro':'user-dropdown__plan--free');
-  let meta=`${qUsed}/${qMax} official mocks used this month.`;
+  planEl.className='user-dropdown__plan '+(pro?'user-dropdown__plan--pro':guest?'user-dropdown__plan--guest':'user-dropdown__plan--free');
+  const qRem=Math.max(0,qMax-qUsed);
+  let meta=`${qRem}/${qMax} exams left this month`;
+  const aiSummary=typeof aiCreditsSummaryLabel==='function'?aiCreditsSummaryLabel():'';
+  if(aiSummary)meta+=` · ${aiSummary}`;
+  else if(!pro&&plan==='free'){
+    meta+=` · ${Number(window.AI_CREDITS_FREE||6)} AI credits/month (resets monthly)`;
+  }else if(pro){
+    const breakdown=typeof aiCreditsBreakdownLabel==='function'?aiCreditsBreakdownLabel():'';
+    if(breakdown)meta+=` · ${breakdown}`;
+    else meta+=` · renews ${typeof aiCreditsRenewalLabel==='function'?aiCreditsRenewalLabel():'next month'}`;
+  }
   if(!pro&&typeof freeComboLabel==='function'&&typeof getFreeCombo==='function'&&getFreeCombo()){
-    meta+=` Plan: ${freeComboLabel(getFreeCombo())}.`;
+    meta+=` · ${freeComboLabel(getFreeCombo())}`;
   }
   if(S.user?.memberSince){
-    meta+=` Member since ${new Date(S.user.memberSince).toLocaleDateString()}.`;
+    const since=typeof formatAppDate==='function'?formatAppDate(S.user.memberSince):new Date(S.user.memberSince).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+    meta+=` · Member since ${since}`;
   }
   metaEl.textContent=meta;
-  if(upBtn)upBtn.hidden=pro;
-  if(subBtn)subBtn.hidden=!pro;
-  if(inBtn)inBtn.hidden=true;
-  if(outBtn)outBtn.hidden=false;
+  setMenuBtn(upBtn,!pro);
+  setMenuBtn(subBtn,pro);
+  setMenuBtn(inBtn,false);
+  setMenuBtn(outBtn,true);
   if(outSep)outSep.hidden=false;
 }
 function toggleUserMenu(ev){
@@ -231,7 +249,10 @@ function toggleUserMenu(ev){
   const open=dd.classList.toggle('open');
   dd.hidden=!open;
   btn.setAttribute('aria-expanded',open?'true':'false');
-  if(open)refreshUserDropdown();
+  if(open){
+    if(typeof syncAppPlan==='function')syncAppPlan();
+    refreshUserDropdown();
+  }
 }
 function closeUserMenu(){
   const dd=document.getElementById('userDropdown');

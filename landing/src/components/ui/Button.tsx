@@ -26,7 +26,7 @@ export function Button({
 
   if (href) {
     const external = href.startsWith('http');
-    const staticHtml = href.endsWith('.html');
+    const staticHtml = href.endsWith('.html') || href === '/demo';
     if (external || staticHtml || href.startsWith('#')) {
       return (
         <a href={href} className={`${base} ${styles[variant]} ${className}`}>

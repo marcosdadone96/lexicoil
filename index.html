@@ -3,6 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>
+window.dataLayer=window.dataLayer||[];
+function gtag(){dataLayer.push(arguments);}
+gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied',wait_for_update:500});
+</script>
 <title>LexiCoil</title>
 <meta name="description" content="Practice official Goethe and Cambridge exams. Save words you miss, pick your flashcards, and generate a personal mock exam from your vocabulary.">
 <meta name="theme-color" content="#0E0E10">
@@ -32,76 +37,94 @@
 <meta name="twitter:description" content="Practice official exams and turn your mistakes into a personalized study plan.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/css/lexicoil-design-system.css?v=3">
-<link rel="stylesheet" href="/assets/css/app.css?v=13">
-<link rel="stylesheet" href="/assets/css/app-utilities.css?v=2">
+<link rel="stylesheet" href="/assets/css/lexicoil-design-system.css?v=4">
+<link rel="stylesheet" href="/assets/css/app.css?v=23">
+<link rel="stylesheet" href="/assets/css/app-utilities.css?v=3">
+<link rel="stylesheet" href="/assets/css/feedback-modal.css?v=1">
 </head>
 <body>
 <div class="vocab-tooltip" id="VT" onmouseenter="clearTimeout(ttTimer)" onmouseleave="hideVocab()"></div>
 
 <!-- UPGRADE MODAL -->
-<div id="upgradeModal">
-  <div class="upgrade-box">
+<div id="upgradeModal" onclick="if(event.target===this)closeUpgrade()">
+  <div class="upgrade-box" onclick="event.stopPropagation()">
+    <button type="button" class="upgrade-close" onclick="closeUpgrade()" aria-label="Close">×</button>
     <div class="u-icon-hero">⭐</div>
-    <h2>Upgrade to <em>Pro</em></h2>
-    <p>Free account: <b>5</b> official mock exams per month on one certification (Goethe, Cambridge, or DELE). Pro: <b>12</b> generations/month, all languages & levels, plus <b>100 AI credits/month</b> (roll over up to 50 unused) and packs from <b>€3.99</b>.</p>
-    <p class="u-warning-sm">Personalized exams (your vocabulary, listening game, AI speaking) require Pro. Saved exams can be retaken without using quota.</p>
-    <div class="plan-cards">
-      <div class="plan-card">
+    <h2 id="upgradeModalTitle">Upgrade to <em>Pro</em></h2>
+    <p id="upgradeModalIntro"></p>
+    <p class="u-warning-sm" id="upgradeModalNote">Personalized exams (your vocabulary, listening game, AI speaking) require Pro. Saved exams can be retaken without using quota.</p>
+    <div class="plan-cards plan-cards--tiers">
+      <div class="plan-card" id="upgradeFreeCard">
         <div class="plan-card-label">Free</div>
         <div class="plan-price">€0 <span>/ month</span></div>
         <div class="plan-features">
-          <b>5</b> official mocks / month<br>
+          <b id="upgradeFreeExams">5</b> official mocks / month<br>
           One certification & level<br>
           Flashcards & quick quizzes<br>
           Save &amp; redo exams (free)
         </div>
       </div>
-      <div class="plan-card pro-card">
+      <div class="plan-card pro-card" id="upgradeProCard">
         <div class="plan-card-label">Pro ✦</div>
-        <div class="plan-price">€9.99 <span>/ month</span></div>
-        <div class="plan-features">
-          <b>12</b> exams / month<br>
-          <b>100</b> AI credits / month<br>
-          Roll over up to 50 unused<br>
-          Credit packs from €3.99<br>
-          Personalized vocab exams<br>
-          Listening game &amp; AI speaking<br>
-          PDF reports<br>
-          Priority AI speed
-        </div>
+        <div class="plan-price" id="upgradeProPrice"></div>
+        <div class="plan-features" id="upgradeProFeatures"></div>
+      </div>
+      <div class="plan-card pro-max-card" id="upgradeProMaxCard">
+        <div class="plan-card-label">Pro Max ✦✦</div>
+        <div class="plan-price" id="upgradeProMaxPrice"></div>
+        <div class="plan-features" id="upgradeProMaxFeatures"></div>
       </div>
     </div>
-    <button class="btn-upgrade" onclick="activatePro()">Upgrade to Pro — €9.99/month</button>
+    <div class="upgrade-actions">
+      <button class="btn-upgrade" id="upgradeProBtn" onclick="activatePro()"></button>
+      <button class="btn-upgrade" id="upgradeProMaxBtn" onclick="activateProMax()" style="background:var(--purple,#7c3aed)"></button>
+    </div>
+    <div id="upgradeCreditPacksSection" hidden>
+      <p class="credit-pack-divider" id="upgradeCreditPacksHeading">Or buy one-off credit packs</p>
+      <div id="upgradeCreditPackOffers" class="credit-pack-offers credit-pack-offers--row"></div>
+      <p class="u-text-caption u-mb-sm" id="upgradeCreditPacksNote">One-off purchase via Stripe · pack credits never expire</p>
+    </div>
     <p class="u-text-caption u-mb-sm">Billed monthly via Stripe. Cancel anytime.</p>
-    <button class="btn-upgrade-skip" onclick="closeUpgrade()">Maybe later</button>
+    <button type="button" class="btn-upgrade-skip" onclick="closeUpgrade()">Close</button>
+  </div>
+</div>
+
+<!-- FEEDBACK MODAL -->
+<div id="feedbackModal" aria-hidden="true" role="dialog" aria-labelledby="feedbackModalTitle" onclick="if(event.target===this)closeFeedbackModal()">
+  <div class="feedback-box" onclick="event.stopPropagation()">
+    <h2 id="feedbackModalTitle">Send feedback</h2>
+    <p class="feedback-lede">What would you improve? What do you like? Short notes help us prioritize.</p>
+    <div class="feedback-field">
+      <label for="feedbackMessage">Your message</label>
+      <textarea id="feedbackMessage" maxlength="2000" placeholder="What would make LexiCoil better for your exam prep?" rows="5"></textarea>
+    </div>
+    <div class="feedback-field">
+      <label for="feedbackEmail">Email (optional)</label>
+      <input type="email" id="feedbackEmail" autocomplete="email" placeholder="you@example.com (optional)">
+    </div>
+    <p id="feedbackError" class="auth-msg" role="alert"></p>
+    <div class="feedback-actions">
+      <button type="button" class="btn-start" id="feedbackSubmitBtn" onclick="submitFeedbackForm()">Send feedback</button>
+      <button type="button" class="btn-secondary" onclick="closeFeedbackModal()">Cancel</button>
+    </div>
   </div>
 </div>
 
 <!-- AI CREDIT PACKS MODAL -->
 <div id="creditPackModal">
-  <div class="upgrade-box" style="max-width:440px">
+  <div class="upgrade-box credit-pack-box">
     <div class="u-icon-hero">⚡</div>
-    <h2>AI credit packs</h2>
-    <p style="color:var(--text-muted);font-size:13px;margin-top:0">Top up when you need more AI generation. Monthly credits renew on <span id="creditPackRenewDate"></span>.</p>
-    <div class="plan-cards" style="grid-template-columns:1fr;gap:10px;margin:16px 0">
-      <button type="button" class="plan-card" style="text-align:left;cursor:pointer" onclick="startCreditCheckout(50)">
-        <div class="plan-card-label">50 credits</div>
-        <div class="plan-price">€3.99</div>
-      </button>
-      <button type="button" class="plan-card pro-card" style="text-align:left;cursor:pointer" onclick="startCreditCheckout(150)">
-        <div class="plan-card-label">150 credits ⭐ Best value</div>
-        <div class="plan-price">€8.99</div>
-      </button>
-      <button type="button" class="plan-card" style="text-align:left;cursor:pointer" onclick="startCreditCheckout(400)">
-        <div class="plan-card-label">400 credits</div>
-        <div class="plan-price">€19.99</div>
-      </button>
+    <h2 id="creditPackModalTitle">AI credit packs</h2>
+    <p id="creditPackModalSubtitle" class="credit-pack-subtitle">Top up when you need more AI generation.</p>
+    <div id="creditPackPrimaryCta"></div>
+    <p id="creditPackDivider" class="credit-pack-divider" hidden>Or buy a one-off pack</p>
+    <div id="creditPackOffers" class="credit-pack-offers"></div>
+    <div id="creditPackAutoRecharge" class="credit-pack-auto" hidden>
+      <label class="credit-pack-auto__label">
+        <input type="checkbox" id="autoRechargeToggle" onchange="toggleAutoRecharge(this.checked)">
+        <span id="autoRechargeLabel"></span>
+      </label>
     </div>
-    <label style="display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--text-secondary);margin:12px 0;text-align:left">
-      <input type="checkbox" id="autoRechargeToggle" onchange="toggleAutoRecharge(this.checked)" style="margin-top:3px">
-      <span>Auto-recharge 50 credits (€3.99) when I run out — max 2/month (off by default)</span>
-    </label>
     <button class="btn-upgrade-skip" onclick="closeCreditPackModal()">Close</button>
   </div>
 </div>
@@ -149,24 +172,24 @@
     </div>
     <div id="authMsg" class="auth-msg"></div>
     <div id="authPending">
-      <p>Hemos enviado un enlace de confirmaci&oacute;n a tu correo.<br>
+      <p>We sent a confirmation link to your email.<br>
         <span id="authPendingEmail"></span><br>
-        <span class="auth-pending-hint">Revisa tambi&eacute;n la carpeta de spam.</span>
+        <span class="auth-pending-hint">Check your spam folder too.</span>
       </p>
-      <button class="btn-auth" id="btnResendConfirm" type="button" onclick="doResendConfirmation()" style="margin-bottom:10px">Reenviar correo</button>
-      <button class="btn-guest" type="button" onclick="showAuthLoginFromPending()">Volver al inicio de sesi&oacute;n</button>
+      <button class="btn-auth" id="btnResendConfirm" type="button" onclick="doResendConfirmation()" style="margin-bottom:10px">Resend email</button>
+      <button class="btn-guest" type="button" onclick="showAuthLoginFromPending()">Back to sign in</button>
     </div>
     <div id="authFormsWrap">
-    <div id="loginForm">
-      <input class="auth-field" type="email" id="lEmail" placeholder="Email address" autocomplete="email">
-      <input class="auth-field" type="password" id="lPass" placeholder="Password" autocomplete="current-password">
-      <button class="btn-auth" id="btnLogin" type="button" onclick="doLogin()">Sign In →</button>
+    <form id="loginForm" novalidate onsubmit="event.preventDefault();doLogin();">
+      <input class="auth-field" type="email" id="lEmail" placeholder="Email address" autocomplete="email" required>
+      <input class="auth-field" type="password" id="lPass" placeholder="Password" autocomplete="current-password" required>
+      <button class="btn-auth" id="btnLogin" type="submit">Sign In →</button>
       <p style="text-align:center;margin-top:10px"><a href="#" onclick="doForgotPassword();return false;" class="u-auth-link">Forgot password?</a></p>
-    </div>
-    <div id="registerForm" style="display:none">
-      <input class="auth-field" type="text" id="rName" placeholder="Your name" autocomplete="name">
-      <input class="auth-field" type="email" id="rEmail" placeholder="Email address" autocomplete="email">
-      <input class="auth-field" type="password" id="rPass" placeholder="Password (min 6 chars)" autocomplete="new-password">
+    </form>
+    <form id="registerForm" style="display:none" novalidate onsubmit="event.preventDefault();doRegister();">
+      <input class="auth-field" type="text" id="rName" placeholder="Your name" autocomplete="name" required>
+      <input class="auth-field" type="email" id="rEmail" placeholder="Email address" autocomplete="email" required>
+      <input class="auth-field" type="password" id="rPass" placeholder="Password (min 6 chars)" autocomplete="new-password" minlength="6" required>
       <p class="u-section-label" style="font-size:11px;margin:12px 0 6px;text-align:left">Your exam (Free: 1 certification)</p>
       <div style="display:flex;gap:8px;margin-bottom:8px">
         <select class="auth-field" id="rCert" style="flex:1;margin-bottom:0">
@@ -181,9 +204,9 @@
         </select>
       </div>
       <p class="auth-guest-note" style="margin:0 0 12px;text-align:left">5 official mock exams/month on this level. Pro unlocks all languages &amp; levels.</p>
-      <button class="btn-auth" id="btnRegister" type="button" onclick="doRegister()">Create Account →</button>
+      <button class="btn-auth" id="btnRegister" type="submit">Create Account →</button>
       <p class="u-auth-legal">By registering you agree to our <a href="/terms" class="u-auth-link">Terms</a> and <a href="/privacy" class="u-auth-link">Privacy Policy</a>.</p>
-    </div>
+    </form>
     <div class="auth-or">or</div>
     <button class="btn-google" id="btnGoogle" type="button" onclick="doGoogle()">
       <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z"/><path fill="#FBBC05" d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.958L3.964 6.29C4.672 4.163 6.656 3.58 9 3.58z"/></svg>
@@ -194,12 +217,12 @@
       <p class="auth-guest-note">Static sample at <b>/demo</b> — no account required. Sign in here to save vocabulary, personalized practice, and exam history.</p>
     </div>
     </div>
-    <div id="resetForm" style="display:none">
+    <form id="resetForm" style="display:none" novalidate onsubmit="event.preventDefault();doResetPassword();">
       <p class="u-auth-lede">Choose a new password for your account.</p>
-      <input class="auth-field" type="password" id="resetPass" placeholder="New password (min 6 chars)" autocomplete="new-password">
-      <input class="auth-field" type="password" id="resetPass2" placeholder="Confirm new password" autocomplete="new-password">
-      <button class="btn-auth" id="btnResetPass" type="button" onclick="doResetPassword()">Update password →</button>
-    </div>
+      <input class="auth-field" type="password" id="resetPass" placeholder="New password (min 6 chars)" autocomplete="new-password" minlength="6" required>
+      <input class="auth-field" type="password" id="resetPass2" placeholder="Confirm new password" autocomplete="new-password" minlength="6" required>
+      <button class="btn-auth" id="btnResetPass" type="submit">Update password →</button>
+    </form>
   </div>
 </div>
 
@@ -232,6 +255,7 @@
         <button type="button" class="user-dropdown__btn" id="udUpgrade" onclick="userMenuUpgrade()" hidden>✦ Upgrade to Pro</button>
         <button type="button" class="user-dropdown__btn" id="udManageSub" onclick="userMenuManageSubscription()" hidden>Manage subscription</button>
         <button type="button" class="user-dropdown__btn" id="udSignIn" onclick="userMenuSignIn()" hidden>Sign in / Register</button>
+        <button type="button" class="user-dropdown__btn" id="udFeedback" onclick="openFeedbackModal()">Send feedback</button>
         <a class="user-dropdown__btn" href="mailto:contact@lexicoil.com?subject=LexiCoil%20Inquiry">Contact support</a>
         <div class="user-dropdown__sep" id="udLogoutSep"></div>
         <button type="button" class="user-dropdown__btn user-dropdown__btn--danger" id="udLogout" onclick="doLogout()">Sign out</button>
@@ -391,13 +415,17 @@
       </div>
     </div>
     <div class="fc-exam-sec" id="fcExamSec" style="display:none">
-      <h3>🎯 Quick vocab quiz <span class="badge-pill badge-purple" id="fcExamBadge">0 words</span></h3>
-      <p>Multiple-choice quiz on your <b>selected</b> words. Results update SRS intervals automatically.</p>
+      <h3>🎯 AI vocab quiz <span class="badge-pill badge-purple" id="fcExamBadge">0 words</span> <span class="badge-pill badge-purple">Pro · 2 credits</span></h3>
+      <p>AI gives a <b>synonym</b>, <b>antonym</b> or <b>hint</b> — pick the matching word from your selection. Updates SRS automatically.</p>
+      <p style="font-size:12px;color:var(--text-secondary);margin:0 0 10px">Hint language:
+        <button type="button" class="btn-sm" id="veHintModeInterface" onclick="setVeHintLangMode('interface');document.getElementById('veHintModeInterface').classList.add('accent');document.getElementById('veHintModeImmersion').classList.remove('accent');">My language</button>
+        <button type="button" class="btn-sm" id="veHintModeImmersion" onclick="setVeHintLangMode('immersion');document.getElementById('veHintModeImmersion').classList.add('accent');document.getElementById('veHintModeInterface').classList.remove('accent');">German (immersion)</button>
+      </p>
       <div class="u-flex-inline">
-        <button class="btn-start" onclick="startVE(false)" style="max-width:230px">Start quiz (text) →</button>
-        <button class="btn-start" onclick="startVE(true)" style="max-width:230px;background:var(--blue)">🔊 Audio quiz →</button>
+        <button class="btn-start" onclick="startVE()" style="max-width:260px">Generate quiz (10 questions) →</button>
       </div>
     </div>
+    <div id="fcSavedQuizzes" class="fc-saved-quizzes"></div>
   </div>
   <div id="fcStudy" style="display:none"></div>
 </div>
@@ -419,10 +447,10 @@
 <!-- LexiCoil modules (Fase C) -->
 <script src="js/ui/components/debugLog.js?v=1"></script>
 <script src="js/services/supabaseClient.js?v=9"></script>
-<script src="js/data/activityTrack.js?v=1"></script>
-<script src="js/services/syncMerge.js?v=3"></script>
-<script src="js/services/authClient.js?v=13"></script>
-<script src="js/services/claudeClient.js?v=15"></script>
+<script src="js/data/activityTrack.js?v=2"></script>
+<script src="js/services/syncMerge.js?v=6"></script>
+<script src="js/services/authClient.js?v=18"></script>
+<script src="js/services/claudeClient.js?v=25"></script>
 <script src="js/engine/domain/lexicoilDomain.js?v=1"></script>
 <script src="js/engine/knowledge/KnowledgeLoader.js?v=1"></script>
 <script src="js/engine/providers/baseProviderAdapter.js?v=1"></script>
@@ -432,42 +460,50 @@
 <script src="js/engine/providers/providerRegistry.js?v=1"></script>
 <script src="js/engine/knowledge/KnowledgeEngine.js?v=1"></script>
 <script src="js/engine/prompts/promptShell.js?v=1"></script>
-<script src="js/engine/prompts/moduleInstructions.js?v=1"></script>
-<script src="js/engine/prompts/blueprintPromptBinding.js?v=1"></script>
+<script src="js/engine/prompts/moduleInstructions.js?v=5"></script>
+<script src="js/engine/prompts/blueprintPromptBinding.js?v=7"></script>
 <script src="js/engine/validation/blueprintResolver.js?v=1"></script>
 <script src="js/engine/validation/CefrVocabLoader.js?v=2"></script>
 <script src="js/engine/validation/lemmatizer.js?v=1"></script>
 <script src="js/engine/validation/CefrGate.js?v=2"></script>
 <script src="js/engine/validation/difficultyScorer.js?v=1"></script>
-<script src="js/engine/prompts/PromptBuilder.js?v=1"></script>
-<script src="js/engine/validation/ExamValidator.js?v=1"></script>
-<script src="js/engine/generators/chunkRunner.js?v=3"></script>
-<script src="js/engine/generators/ExamGenerator.js?v=2"></script>
+<script src="js/engine/prompts/PromptBuilder.js?v=12"></script>
+<script src="js/engine/validation/isAnswerKeyRenderable.js?v=2"></script>
+<script src="js/engine/validation/ExamValidator.js?v=5"></script>
+<script src="js/engine/examRenumber.js?v=3"></script>
+<script src="js/engine/examRefill.js?v=1"></script>
+<script src="js/engine/generators/lesenTeil2Split.js?v=1"></script>
+<script src="js/engine/generators/lesenTeil4Split.js?v=2"></script>
+<script src="js/engine/generators/chunkRunner.js?v=11"></script>
+<script src="js/engine/generators/ExamGenerator.js?v=3"></script>
 <script src="js/engine/generators/ExerciseGenerator.js?v=3"></script>
 <script src="js/engine/generators/FlashcardGenerator.js?v=3"></script>
 <script src="js/engine/generators/StoryGenerator.js?v=3"></script>
 <script src="js/engine/generators/DialogueGenerator.js?v=3"></script>
 <script src="js/engine/generators/ContentGenerator.js?v=1"></script>
-<script src="js/engine/lexicoilEngine.js?v=1"></script>
+<script src="js/engine/lexicoilEngine.js?v=3"></script>
 <script src="js/i18n/subjectMeta.js?v=1"></script>
 <script src="js/i18n/examSpanishNormalize.js?v=1"></script>
 <script src="js/i18n/examUiLocale.js?v=1"></script>
 <script src="js/i18n/consentLocale.js?v=1"></script>
+<script src="js/ui/consent/analyticsConfig.js?v=2"></script>
 <script src="js/ui/consent/cookieConsent.js?v=1"></script>
-<script src="js/ui/consent/googleAnalytics.js?v=1"></script>
+<script src="js/ui/consent/googleAnalytics.js?v=2"></script>
+<script src="js/analytics/lcAnalytics.js?v=1"></script>
 <script src="js/ui/components/uiToast.js?v=1"></script>
+<script src="js/ui/components/feedbackModal.js?v=1"></script>
 <script src="js/ui/components/notify.js?v=1"></script>
 <script src="js/ui/components/levelNotify.js?v=1"></script>
 <script src="js/analytics/types.js?v=1"></script>
 <script src="js/core/metadataResolver.js?v=1"></script>
 <script src="js/core/schemaValidator.js?v=1"></script>
-<script src="js/data/examLibrary.js?v=4"></script>
+<script src="js/data/examLibrary.js?v=5"></script>
 <script src="js/library/libraryCatalog.js?v=3"></script>
 <script src="js/library/TaggingGate.js?v=1"></script>
 <script src="js/bootstrap/listeningScript.js?v=1"></script>
 <script src="js/library/contentServable.js?v=1"></script>
 <script src="js/library/LibraryLoader.js?v=3"></script>
-<script src="js/library/levelAvailability.js?v=1"></script>
+<script src="js/library/levelAvailability.js?v=2"></script>
 <script src="js/library/PassageResolver.js?v=1"></script>
 <script src="js/library/HorenGame.js?v=1"></script>
 <script src="js/library/ContentKey.js?v=1"></script>
@@ -476,58 +512,72 @@
 <script src="js/library/ItemCalibration.js?v=1"></script>
 <script src="js/library/adsMatching.js?v=1"></script>
 <script src="js/library/ExamBlueprint.js?v=3"></script>
-<script src="js/engine/targetUsage.js?v=1"></script>
+<script src="js/engine/targetUsage.js?v=2"></script>
 <script src="js/library/ExamBuilder.js?v=3"></script>
 <script src="js/library/AnalyticsStore.js?v=4"></script>
 <script src="js/library/WeaknessEngine.js?v=3"></script>
-<script src="js/library/PracticeDictionary.js?v=1"></script>
-<script src="js/library/grammarLoader.js?v=1"></script>
-<script src="js/data/manualVocab.js?v=3"></script>
-<script src="js/data/goalStore.js?v=5"></script>
+<script src="js/library/PracticeDictionary.js?v=2"></script>
+<script src="js/library/contentLoader.js?v=1"></script>
+<script src="js/library/grammarLoader.js?v=2"></script>
+<script src="js/library/vocabularyLoader.js?v=1"></script>
+<script src="js/library/phrasesLoader.js?v=1"></script>
+<script src="js/data/articleLexicon.js?v=4"></script>
+<script src="js/data/manualVocab.js?v=10"></script>
+<script src="js/data/verbConjugation.js?v=2"></script>
+<script src="js/data/goalStore.js?v=8"></script>
+<script src="js/data/savedVocabQuizzes.js?v=1"></script>
 <script src="js/ui/mastery/masteryView.js?v=2"></script>
 <script src="js/ui/dashboard/dashboardLayout.js?v=2"></script>
 <script src="js/ui/dashboard/dashboardUi.js?v=12"></script>
-<script src="js/ui/workspace/workspaceUi.js?v=4"></script>
-<script src="js/ui/grammar/grammarView.js?v=1"></script>
+<script src="js/ui/workspace/workspaceUi.js?v=7"></script>
+<script src="js/ui/grammar/grammarView.js?v=2"></script>
 <script src="js/library/QuestionLibrary.js?v=1"></script>
 <script src="js/content/goetheDemoExams.js"></script>
 <script src="js/content/demoExams.js"></script>
 <script src="js/data/examProfile.js?v=1"></script>
 <script src="js/bootstrap/freePlan.js?v=1"></script>
-<script src="js/bootstrap/state.js?v=2"></script>
-<script src="js/bootstrap/quota.js?v=1"></script>
-<script src="js/bootstrap/auth.js?v=2"></script>
-<script src="js/bootstrap/theme.js?v=1"></script>
-<script src="js/ui/workspace/vocabHub.js?v=5"></script>
-<script src="js/ui/exam/examConfig.js?v=3"></script>
+<script src="js/ui/exam/productionEvalCore.js?v=2"></script>
+<script src="js/ui/exam/moduleGrading.js?v=3"></script>
+<script src="js/bootstrap/state.js?v=15"></script>
+<script src="js/lib/planPricing.js?v=3"></script>
+<script src="js/bootstrap/quota.js?v=3"></script>
+<script src="js/bootstrap/auth.js?v=5"></script>
+<script src="js/bootstrap/theme.js?v=2"></script>
+<script src="js/ui/workspace/vocabHub.js?v=14"></script>
+<script src="js/ui/exam/examConfig.js?v=8"></script>
 <script src="js/ui/exam/mistakeReview.js?v=1"></script>
 <script src="js/ui/exam/speakingMic.js?v=1"></script>
 <script src="js/ui/exam/oralPractice.js?v=3"></script>
 <script src="js/ui/app/coach.js?v=2"></script>
 <script src="js/ui/components/a11y.js?v=1"></script>
-<script src="js/bootstrap/router.js?v=2"></script>
-<script src="js/bootstrap/nav.js?v=4"></script>
-<script src="js/ui/exam/examValidation.js?v=1"></script>
-<script>window.LC_DIRECT_POOL='1';</script>
+<script src="js/bootstrap/router.js?v=3"></script>
+<script src="js/bootstrap/nav.js?v=6"></script>
+<script src="js/ui/exam/examValidation.js?v=2"></script>
+<script>window.LC_DIRECT_POOL='1';window.DEBUG_LEXICOIL='1';/* staging: window.LEXICOIL_SHOW_BETA_LEVELS=true */</script>
 <script src="js/engine/strategyBFlags.js?v=3"></script>
-<script src="js/ui/exam/examSources.js?v=2"></script>
-<script src="js/ui/exam/examGeneration.js?v=7"></script>
+<script src="js/ui/exam/examSources.js?v=3"></script>
+<script src="js/engine/prompts/partPostprocess.js?v=1"></script>
+<script src="js/engine/personalLesenPoolFallback.js?v=5"></script>
+<script src="js/engine/personalExamCoverage.js?v=2"></script>
+<script src="js/engine/validation/lesenPassageIntegrity.js?v=1"></script>
+<script src="js/ui/exam/examGeneration.js?v=33"></script>
+<script src="js/ui/exam/results.js?v=14"></script>
 <script src="js/ui/exam/examKeyboard.js?v=1"></script>
-<script src="js/ui/exam/examRunner.js?v=5"></script>
-<script src="js/ui/exam/results.js?v=1"></script>
-<script src="js/ui/exam/saveExams.js?v=2"></script>
-<script src="js/ui/vocabulary/tooltip.js?v=2"></script>
-<script src="js/bootstrap/audio.js?v=2"></script>
+<script src="js/ui/exam/examRunner.js?v=17"></script>
+<script src="js/ui/exam/saveExams.js?v=3"></script>
+<script src="js/ui/vocabulary/tooltip.js?v=13"></script>
+<script src="js/bootstrap/audio.js?v=4"></script>
 <script src="js/ui/vocabulary/fcKeyboard.js?v=1"></script>
-<script src="js/ui/vocabulary/flashcards.js?v=6"></script>
-<script src="js/bootstrap/featureQuota.js?v=4"></script>
-<script src="js/bootstrap/init.js?v=4"></script>
+<script src="js/ui/vocabulary/flashcards.js?v=22"></script>
+<script src="js/bootstrap/featureQuota.js?v=11"></script>
+<script src="js/bootstrap/init.js?v=5"></script>
 <script src="js/bootstrap/featureNotebook.js?v=1"></script>
-<script src="js/bootstrap/featurePayments.js?v=3"></script>
+<script src="js/bootstrap/featurePayments.js?v=4"></script>
 <script src="js/bootstrap/featurePdf.js?v=1"></script>
-<script src="js/bootstrap/featureSpeaking.js?v=3"></script>
+<script src="js/bootstrap/featureProductionEval.js?v=1"></script>
+<script src="js/bootstrap/featureSpeaking.js?v=4"></script>
 <script src="js/bootstrap/featureFlashcards.js?v=1"></script>
-<script src="js/bootstrap/appFeatures.js?v=27"></script>
+<script src="js/bootstrap/appFeatures.js?v=28"></script>
 <div id="pdf-export-container"></div>
 <div id="nbFab" class="nb-fab" style="display:none" aria-label="Libreta"><button type="button" class="nb-fab-main" title="Notas">📝</button></div>
 <div id="nbPanel" class="nb-panel" aria-label="Libreta inteligente"></div>

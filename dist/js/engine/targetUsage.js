@@ -96,6 +96,44 @@ const TargetUsage = (() => {
     }
   }
 
+  function splitSentences(text) {
+    return String(text || '')
+      .split(/(?<=[.!?…])\s+/)
+      .map((s) => s.trim())
+      .filter(Boolean);
+  }
+
+  /** Template fillers that only exist to showcase a target word (Prompt 3). */
+  function isForcedSurfaceContext(sentence, surface) {
+    const s = String(sentence || '').trim();
+    if (!s || !surfaceInText(s, surface)) return false;
+    const w = escapeRegExp(String(surface).trim());
+    const patterns = [
+      new RegExp(`^Das ist (?:ein|eine|der|die) ${w}[.!?,…]?$`, 'iu'),
+      new RegExp(`^Es ist (?:ein|eine) ${w}[.!?,…]?$`, 'iu'),
+      new RegExp(`^Das ist (?:ein|eine) ${w},\\s*(?:der|die|das)[.!?…]?$`, 'iu'),
+      new RegExp(`^Das ist (?:ein|eine) ${w},\\s*(?:der|die|das)\\s+${w}[.!?…]?$`, 'iu'),
+      new RegExp(`^This is (?:a|an) ${w}[.!?,…]?$`, 'iu'),
+      new RegExp(`^It is (?:a|an) ${w}[.!?,…]?$`, 'iu'),
+      new RegExp(`^(?:Es (?:un|una)|El|La) ${w}[.!?,…]?$`, 'iu'),
+    ];
+    return patterns.some((re) => {
+      try {
+        return re.test(s);
+      } catch (_) {
+        return false;
+      }
+    });
+  }
+
+  function filterNaturalSurfaces(text, surfaces) {
+    return (surfaces || []).filter((surface) => {
+      const sentences = splitSentences(text).filter((sent) => surfaceInText(sent, surface));
+      if (!sentences.length) return false;
+      return sentences.some((sent) => !isForcedSurfaceContext(sent, surface));
+    });
+  }
+
   function deriveTargetUsage(exam, words) {
     if (!exam || !words?.length) return [];
     const text = collectExamTexts(exam);
@@ -107,7 +145,8 @@ const TargetUsage = (() => {
       tokens.forEach((token) => {
         if (tokenMatchesWord(token, word)) surfaces.add(token);
       });
-      if (surfaces.size) usage.push({ word: String(word), surfaces: [...surfaces] });
+      const natural = filterNaturalSurfaces(text, [...surfaces]);
+      if (natural.length) usage.push({ word: String(word), surfaces: natural });
     });
 
     return usage;
@@ -125,7 +164,8 @@ const TargetUsage = (() => {
         .map((s) => String(s).trim())
         .filter((s) => s && surfaceInText(text, s));
       const unique = [...new Set(surfaces)];
-      if (unique.length) verified.push({ word: String(word), surfaces: unique });
+      const natural = filterNaturalSurfaces(text, unique);
+      if (natural.length) verified.push({ word: String(word), surfaces: natural });
     });
 
     return verified;
@@ -162,6 +202,8 @@ const TargetUsage = (() => {
     isVerifiedSurface,
     surfaceInText,
     tokenMatchesWord,
+    isForcedSurfaceContext,
+    filterNaturalSurfaces,
   };
 })();
 

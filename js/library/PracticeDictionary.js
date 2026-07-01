@@ -28,6 +28,8 @@ const PracticeDictionary = (() => {
     return {
       word: fc.word,
       type: fc.type || fc.pos || '',
+      gender: fc.gender,
+      article: fc.article,
       translation: trans,
       source: 'deck',
     };
@@ -51,6 +53,8 @@ const PracticeDictionary = (() => {
     else data[`translation_${targetLang}`] = trans;
     if (entry.en && targetLang !== 'en') data.translation_en = entry.en;
     if (entry.es && targetLang !== 'es') data.translation_es = entry.es;
+    if (entry.gender) data.gender = entry.gender;
+    if (entry.article) data.article = entry.article;
     return data;
   }
 
@@ -58,6 +62,8 @@ const PracticeDictionary = (() => {
     const deckHit = fromDeck(word, subject, targetLang);
     if (deckHit) {
       const data = { word: deckHit.word, type: deckHit.type, pos: deckHit.type, source: 'deck' };
+      if (deckHit.gender) data.gender = deckHit.gender;
+      if (deckHit.article) data.article = deckHit.article;
       if (subject === 'en' && targetLang === 'en') data.definition_en = deckHit.translation;
       else data[`translation_${targetLang}`] = deckHit.translation;
       return data;

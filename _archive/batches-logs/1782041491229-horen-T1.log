@@ -1,0 +1,26 @@
+
+Batch generator (gemini) — de/B2 × 1
+Prompt: batches/GEMINI_MASTER_PROMPT_de_B1.md
+
+── horen T1 · gesundheit-arzt-05 ──
+Tema: Arzttermin, Apotheke, Krankmeldung
+Proveedor: gemini
+max_output_tokens=8192
+Archivo: batches/merged/horen-t1-gesundheit-arzt-05.json
+Llamando gemini…
+max_output_tokens=8192
+Tokens: in=1256 out=4023 (max_out=8192)
+Modelo: gemini-2.5-flash
+Guardado: batches/merged/horen-t1-gesundheit-arzt-05.json (10 preguntas, 5 passages)
+Validando…
+
+== Validación de horen-t1-gesundheit-arzt-05.json (de_B2) ==
+Preguntas: 10 | Pasajes: 5
+Esquema: OK
+Conformidad blueprint: OK
+Colocación (Teile que mejora): horenT1 2->10
+Sin problemas detectados ✅
+Validación OK
+Siguiente: node scripts/merge-bank-batch.mjs --lang de --level B2 --file batches/merged/horen-t1-gesundheit-arzt-05.json
+
+Resumen: 1 OK, 0 fallidos

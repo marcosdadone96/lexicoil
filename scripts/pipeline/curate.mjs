@@ -16,9 +16,15 @@ import { validateForPublish } from './lib/validateForPublish.js';
 import { publishCuratedExam, loadCuratedIndex } from './lib/publishCurated.js';
 import { normalizeStoredExam } from './lib/normalizeExamForPublish.js';
 import { buildCompositeB1Exam } from './lib/sampleB1.js';
+import { buildValidatedT3Part } from '../make-t3.mjs';
+import { buildValidatedT4Part } from '../make-t4.mjs';
 
 const require = createRequire(import.meta.url);
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '../..');
+
+// Register coherent-part generators so ExamBlueprint.assemble() can call them as fallback
+// when no complete coherent T3/T4 set exists in the question bank.
+globalThis.LesenPartGenerators = { buildValidatedT3Part, buildValidatedT4Part };
 
 require(path.join(ROOT, 'js/library/PassageResolver.js'));
 globalThis.PassageResolver = require(path.join(ROOT, 'js/library/PassageResolver.js'));

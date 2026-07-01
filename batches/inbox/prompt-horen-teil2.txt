@@ -1,0 +1,71 @@
+# Prompt generado — Hören B1 · Teil 2
+Copia TODO (desde la línea ---) y pégalo en Gemini/ChatGPT. Devuelve SOLO JSON.
+Regenerar otro sorteo: npm run npm run horen:prompt:t2
+
+---
+
+# Plantilla de generación — Hören B1 · Teil 2
+
+Pega TODO este texto en Gemini/ChatGPT. Devuelve **SOLO JSON**.
+Formato oficial: **1 monólogo + 5 MCQ**, escucha **1×**.
+
+---
+
+Eres examinador del Goethe-Zertifikat B1. Genera **UNA** parte de **Hören Teil 2**
+(Vortrag, Einführung, Referat), alemán **hablado**, nivel B1.
+
+## Reglas estrictas
+- **1 passage** (monólogo de una persona), **240–300 palabras** (mín. 220, máx. 320).
+- **5 preguntas** `type: "multiple"` con exactamente **3 opciones** a)/b)/c).
+- `correct` / `correctAnswer`: solo `"a"`, `"b"` o `"c"`.
+- Todas las preguntas con el mismo `passageId`.
+
+## ESTILO
+- Una persona habla de forma sostenida (Universität, Verein, Beruf, Umwelt, Gesundheit…).
+- Marcadores orales naturales: «Heute möchte ich …», «Zum Schluss …», «Das bedeutet …»
+- **PROHIBIDO:** diálogo con Person A/B (eso es Teil 3).
+
+## REGLAS DE CALIDAD
+1. **Varía** la letra correcta (no 5× `"b"`).
+2. Distractores plausibles pero incorrectos si se escuchó con atención.
+3. Mezcla: ~3 preguntas explícitas + ~2 inferencia/paráfrasis.
+4. Anti word-matching: la pregunta no repite 4+ palabras seguidas del monólogo.
+
+## PALABRAS OBJETIVO
+<<< hamburg, einheimisch, anbieten, lust, unsicher, inspiriert, ausdrücke, genauigkeit, punkte, zufrieden >>>
+
+## AUTORREVISIÓN
+- ¿1 passage 240–300 palabras contadas?
+- ¿5 MCQ con a/b/c y correct solo letra?
+- ¿module:"horen", teil:2?
+- ¿Solo JSON?
+
+## Formato de salida
+- Passage: `gen-p-h2-XXXX`
+- Questions: `gen-q-h2-XXXX-q1` … `q5`
+- `explanation` en alemán · `skills:["listening"]`
+
+Genera **UN monólogo nuevo** + **5 preguntas**, integrando PALABRAS OBJETIVO. Devuelve solo JSON.
+
+IMPORTANTE — IDs de esta generación:
+- Passages T2: gen-p-h2-2abc-sN (N=1…5 solo T1)
+- Preguntas: gen-q-h2-2abc-…
+No reutilices IDs del ejemplo ni del banco existente.
+
+## LONGITUD CEFR (OBLIGATORIO — ingest RECHAZA si fallas)
+- Ámbito: **passages[0].text (monólogo/Vortrag)** (5 preguntas multiple_choice, escucha 1×.)
+- Objetivo: **240–300 palabras**.
+- Mínimo absoluto: **220** · máximo: **320**.
+- **CUENTA las palabras antes de responder.** Transcript = lenguaje **hablado**, no ensayo escrito.
+- Prefiere léxico B1 frecuente. Evita anglicismos raros y meta-texto («Dieser Text hat 280 Wörter…»).
+- Integra PALABRAS OBJETIVO en los transcripts (Hören), no en las preguntas literalmente.
+
+CHECKLIST FINAL (Goethe B1 — debe pasar validate-batch.mjs):
+- Responde SOLO JSON: { "passages": [...], "questions": [...] } — sin markdown, sin ```.
+- correct === correctAnswer en todas las preguntas.
+- module correcto en cada question; lang:"de", level:"B1".
+- IDs únicos con el prefijo indicado arriba (no reutilizar el ejemplo).
+- explanation en alemán en cada pregunta (nunca vacía).
+- PALABRAS OBJETIVO: 8–12 lemas B1 integrados en el contenido.
+- 1 passage + 5 MCQ; distractores plausibles.
+

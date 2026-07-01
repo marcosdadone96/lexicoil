@@ -84,8 +84,26 @@ const ExamGenerator = (() => {
     throw new Error('Exam spec did not produce chunks');
   }
 
-  function computeMaxChunks(chunkCount) {
-    return Math.min(chunkCount * 4 + 2, 20);
+  function computeMaxChunks(chunks) {
+    const list = Array.isArray(chunks) ? chunks : [];
+    let Split = null;
+    try {
+      Split =
+        typeof LesenTeil4Split !== 'undefined'
+          ? LesenTeil4Split
+          : require('./lesenTeil4Split.js');
+    } catch {
+      /* optional in some bundles */
+    }
+    const effective = list.length
+      ? list.reduce((n, c) => {
+          if (Split?.isLesenForumT4Chunk?.(c)) {
+            return n + (c.lesenT4PhaseCount || Split.phaseCount(c.blueprintPart));
+          }
+          return n + 1;
+        }, 0)
+      : Number(chunks) || 1;
+    return Math.min(effective * 2 + 2, 24);
   }
 
   async function maybeReleaseTicketQuota(genTicket, hooks) {
@@ -230,7 +248,7 @@ const ExamGenerator = (() => {
       throw new Error('hooks.startExamTicket is required for exam generation');
     }
     const chunks = resolveChunks(spec, blueprint || resolveBlueprint(spec, {}));
-    const maxChunks = computeMaxChunks(chunks.length);
+    const maxChunks = computeMaxChunks(chunks);
     const genTicket = await startTicket('exam_generation', maxChunks);
     const runHooksBase = { ...hooks, genTicket };
 
@@ -289,7 +307,7 @@ const ExamGenerator = (() => {
     }
     const chunks = built.chunks;
     const bpForValidation = built.blueprint || blueprint || null;
-    const maxChunks = computeMaxChunks(chunks.length);
+    const maxChunks = computeMaxChunks(chunks);
     let genTicket = options.genTicket || null;
     if (!genTicket) {
       genTicket = await startTicket('personal_exam', maxChunks);
@@ -314,8 +332,14 @@ const ExamGenerator = (() => {
       exam._genTicket = genTicket;
       if (exam._chunkMeta?.failed?.length) {
         exam._partialGen = true;
-        exam._failedTeile = exam._chunkMeta.failed.slice();
-        exam._succeededTeile = exam._chunkMeta.succeeded.slice();
+        exam._failedTeile = (exam._failedTeile || exam._chunkMeta.failed).map((l) => {
+          const m = String(l).match(/Teil\s*(\d+)/i);
+          return m ? `Teil ${m[1]}` : l;
+        });
+        exam._succeededTeile = (exam._succeededTeile || exam._chunkMeta.succeeded || []).map((l) => {
+          const m = String(l).match(/Teil\s*(\d+)/i);
+          return m ? `Teil ${m[1]}` : l;
+        });
       }
       return exam;
     } catch (e) {

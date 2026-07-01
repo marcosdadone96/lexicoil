@@ -1,0 +1,215 @@
+# Prompt generado — Lesen B1 · Teil 4
+Copia TODO (desde la línea ---) y pégalo en Gemini/ChatGPT. Devuelve SOLO JSON.
+Regenerar otro sorteo: npm run lesen:prompt:t4
+
+---
+
+Eres examinador del Goethe-Zertifikat B1. Genera **UNA** parte de **Lesen Teil 4**
+(foro con opiniones, Ja/Nein), alemán estándar, nivel B1.
+
+## Reglas estrictas
+- Formato: **forum_opinions** — 1 intro breve + **7 opiniones** en `signText`.
+- **7 preguntas** exactas, tipo **ja_nein** con opciones **a) Ja** / **b) Nein**.
+- Cada pregunta: «¿Está la persona **a favor del plan/propuesta** en general?» (Ja/Nein).
+
+## LONGITUD CEFR (OBLIGATORIO)
+- `passages[0].text`: intro al debate, **50–70 palabras**.
+- Cada pregunta lleva **`signText`** con la opinión (~**25–35 palabras**).
+- **Suma total** (intro + 7 × signText): **150–380 palabras**, máximo **400**.
+- No repitas el mismo texto en `text` y `signText`.
+
+## VOCABULARIO B1 (cobertura ≥75% — OBLIGATORIO)
+Usa léxico **simple y frecuente**:
+
+> Stadt, Transport, Auto, Nachhaltigkeit, Kinder, Besucher, Organisation, Nachbar, Familie, Erfahrung, Meinung, Problem, Vorteil, Plan, Regel
+
+**PROHIBIDO:** empfand, faszinierend, jurídico-raro, tono moralizante («Abschließend…», «man sollte wissen»).
+
+**Usa:** finden, denken, meinen, wichtig, weil, dass — frases claras B1.
+
+## REGLAS DE CALIDAD (rechazo automático si fallas)
+1. La **pregunta parafrasea** la postura — **NO copies 4+ palabras seguidas** del `signText`.
+2. Opciones siempre exactamente **a) Ja** y **b) Nein**.
+3. **Mezcla equilibrada** de Ja y Nein (no 7 iguales).
+4. **≥2 preguntas** con matices: crítica parcial pero **Ja** (a favor en general) o escepticismo pero **Nein** (no rechazo total). El alumno debe leer el matiz.
+5. **Anti word-matching:** pregunta ↔ `signText` — **máximo 2 palabras de contenido (≥4 letras) iguales**.
+
+## ANTI WORD-MATCHING — MALO vs BUENO (léelo antes de escribir)
+
+Opinión: *«Ich finde **Fahrrad**fahren gut…»*
+
+❌ **MALO:** «Findet die Person **Fahrrad**fahren gut?»
+✅ **BUENO:** «Hält die Person Radfahren für eine gute Alternative zum Auto?» (≤2 palabras del signText).
+
+**Proceso obligatorio:** escribe cada `signText`; luego redacta la pregunta **sin** repetir sustantivos/verbos clave.
+
+## PALABRAS OBJETIVO — límites
+- **8–12 palabras** (no 15). Intégralas en intro y opiniones, no en las preguntas.
+- Pool **solo Lesen**; Hören es otro módulo.
+
+## PALABRAS OBJETIVO
+<<< produktiv, städten, dolmetscherin, übung, letzte, hegemonie, wünscht, pauschale, marketing, zögerlich >>>
+
+## AUTORREVISIÓN (obligatoria)
+- ¿Intro 50–70 palabras + 7 signText (~25–35 c/u), suma 150–380?
+- ¿Cada pregunta tiene `signText` y `passageId`?
+- ¿Pregunta parafraseada (≤2 palabras compartidas con signText)?
+- ¿Opciones exactamente a) Ja / b) Nein?
+- ¿Mezcla Ja/Nein + ≥2 preguntas con matiz (parcial vs total)?
+- ¿Sin tono moralizante?
+- ¿Solo JSON, sin markdown?
+
+## Formato de salida
+Devuelve SOLO `{ "passages": [...], "questions": [...] }` — sin ```, sin texto extra.
+- IDs únicos: `gen-l4-XXXX` / `gen-q-4-XXXX-N` (XXXX aleatorio, no reutilizar ejemplo).
+- `module`:"lesen", `teil`:4 (número), `lang`:"de", `level`:"B1".
+- `correct` = `correctAnswer` (**Ja** o **Nein**). Cada pregunta con **`signText`** + `passageId`.
+
+## EJEMPLO VERIFICADO (100% checker — imita estructura, matices y parafraseo)
+
+```json
+{
+  "passages": [
+    {
+      "id": "gen-l4-8842",
+      "module": "lesen",
+      "teil": 4,
+      "title": "Forum: Autofreie Innenstadt — ja oder nein?",
+      "text": "Die Organisation in der Stadt plant neue Regeln für Autos im Zentrum an normalen Tagen. Viele Besucher wünschen weniger Verkehr und bessere Luft, weil Transport und Nachhaltigkeit wichtige Themen bleiben. Viele Nachbarn beschreiben Erfahrungen in lokalen Programmen und in Zeitungen. Lesen Sie die Meinungen — stimmt die Person dem Vorschlag insgesamt zu?"
+    }
+  ],
+  "questions": [
+    {
+      "id": "gen-q-4-8842-1",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Sabine hält autofreie Zonen grundsätzlich für sinnvoll, auch wenn Anpassungen nötig sind.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Sie unterstützt die Idee, fordert aber bessere Lieferzeiten.",
+      "signText": "Weniger Autos in der Mitte finde ich gut, weil Besucher dort in Ruhe gehen können und Kinder mehr Platz auf den Straßen haben. Läden brauchen Zeiten für Lieferungen, aber die Organisation kann das planen. Ich unterstütze den Vorschlag insgesamt.",
+      "passageId": "gen-l4-8842",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-8842-2",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Thomas lehnt den Vorschlag ab, weil er ohne Auto gar nicht mehr in die Stadt komme.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Er wohnt außerhalb und sieht keinen brauchbaren Bus-Ersatz.",
+      "signText": "Ich wohne am Stadtrand und die Busse fahren selten zu meinen Zeiten, obwohl ich den Plan verstehe. Ohne Auto komme ich nicht zum Arzt oder zum Einkauf in der Stadt. Für mich ist der Vorschlag deshalb nicht gut.",
+      "passageId": "gen-l4-8842",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-8842-3",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Mira kritisiert nur die Umsetzung, stimmt dem Ziel aber zu.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Sie will weniger Autos, findet aber den Zeitplan zu schnell.",
+      "signText": "Weniger Autos sind richtig für Kinder und Besucher in der Stadt, weil die Straßen dann sicherer werden. Alles schon nächsten Monat zu ändern ist aus meiner Sicht zu schnell. Das Ziel finde ich trotzdem gut.",
+      "passageId": "gen-l4-8842",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-8842-4",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Oskar ist gegen autofreie Zonen, weil sein Geschäft auf Kunden mit Auto angewiesen sei.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Er fürchtet Umsatzverlust ohne Parkplätze vor der Tür.",
+      "signText": "Als Ladenbesitzer in der Stadt sage ich Nein, weil viele Kundinnen mit dem Auto kommen und schwere Sachen kaufen. Ohne Parkplätze vor der Tür gehen sie woanders hin, und das sehe ich schon jetzt in meinem Geschäft.",
+      "passageId": "gen-l4-8842",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-8842-5",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Jana lehnt das Konzept insgesamt ab, obwohl sie die bessere Luft anerkennt.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Nein",
+      "correctAnswer": "Nein",
+      "explanation": "Sie nennt die saubere Luft einen Vorteil und plädiert für einen Test.",
+      "signText": "Die Luft wäre sicher besser, da gebe ich zu, weil weniger Autos oft helfen. Trotzdem will ich erst ein halbes Jahr testen, statt gleich alles zu verbieten. Ich bin nicht grundsätzlich dagegen, nur gegen den starren Plan.",
+      "passageId": "gen-l4-8842",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-8842-6",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Felix unterstützt den Vorschlag, weil Busse und Bahnen aus seiner Sicht ausreichen.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Er pendelt mit ÖPNV und sieht keinen Bedarf für private Autos im Zentrum.",
+      "signText": "Ich fahre mit der Straßenbahn ins Büro, weil das für mich schneller ist als im Stau mit dem Auto. Autos in der Mitte brauchen wir nicht, solange Bus und Bahn im Takt laufen. Deshalb bin ich dafür.",
+      "passageId": "gen-l4-8842",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-8842-7",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Helena ist gegen autofreie Zonen, weil Lieferungen ihrer Meinung nach unmöglich würden.",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Nein",
+      "correctAnswer": "Nein",
+      "explanation": "Sie warnt vor teureren Lieferungen, lehnt das Konzept aber nicht pauschal ab.",
+      "signText": "Lieferwagen brauchen Zufahrt in die Stadt, sonst werden Produkte teurer und Nachbarn zahlen mehr. Ich bin skeptisch, ob das alles klappt, aber grundsätzlich verboten finde ich es nicht, wenn es Ausnahmen gibt.",
+      "passageId": "gen-l4-8842",
+      "lang": "de",
+      "level": "B1"
+    }
+  ]
+}
+```
+
+Genera UNA parte **NUEVA** (tema distinto al ejemplo), mismas reglas, integrando PALABRAS OBJETIVO. Devuelve solo el JSON.
+
+IMPORTANTE — IDs de esta generación:
+- Prefijo de passages: gen-l4-8925
+- Prefijo de preguntas: gen-q-4-8925-
+No reutilices IDs del ejemplo ni del banco existente.
+
+## LONGITUD CEFR (OBLIGATORIO — ingest RECHAZA si fallas)
+- Ámbito: **passages[0].text + todos los signText (suma total ≤400, ≥150)** (Cada pregunta ja_nein lleva signText con la opinión (sin repetir el nombre al inicio).)
+- Objetivo: **intro 50-70 + 7 opiniones ~25-35 palabras**.
+- Mínimo absoluto del gate: **150** · máximo blueprint: **400**.
+- **CUENTA las palabras antes de responder.** Si estás por debajo, añade 2-4 frases nuevas con contenido (no relleno con adjetivos).
+- El ejemplo JSON puede ser más corto por legibilidad; **tu salida NO puede ser más corta que el mínimo**.
+- Prefiere léxico B1 frecuente: Bewohner, Nachbarn, Stadt, Programm, Organisation, Erfahrungen, Familie, Kinder, Schule, Arbeit, Transport, Kurs, Projekt, Freizeit, Bericht, Termin. Evita rarezas (Begabung, künstlerisch, Denkmuster…) salvo en PALABRAS OBJETIVO.
+- Cobertura léxica B1 objetivo: **≥75%** (palabras fuera de lista B1 frecuente penalizan).
+
+CHECKLIST FINAL (Goethe Hard Mode + CEFR):
+- Cumple la sección «Goethe Hard Mode» de esta plantilla.
+- Anti–word-matching: parafraseo, no emparejar palabras sueltas.
+- Longitud: cumple el mínimo CEFR de arriba (cuenta palabras).
+- El batch debe pasar check-lesen-batch-quality.mjs y check-lesen-batch-ingest.mjs sin errores.
+- PALABRAS OBJETIVO: 8-12 lemas frecuentes B1 (no 15); pool Lesen only.
+- Anti word-matching: máx. 2 palabras de contenido iguales al pasaje por afirmación/pregunta.
+- CEFR: evita Eigenregie, empfand, faszinierend, gebucht, Smartphone — usa léxico simple.
+- Responde SOLO con el objeto JSON (sin markdown, sin ```, sin texto antes ni después).

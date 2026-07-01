@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pool Test — LexiLoop B1</title>
+<style>
+  :root { --accent: #2563eb; --ok: #16a34a; --err: #dc2626; --warn: #d97706; --bg: #f8fafc; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, sans-serif; background: var(--bg); color: #1e293b; }
+  header { background: var(--accent); color: #fff; padding: 16px 24px; display: flex; align-items: center; gap: 16px; }
+  header h1 { font-size: 1.1rem; font-weight: 600; }
+  header .badge { background: rgba(255,255,255,.2); padding: 3px 10px; border-radius: 12px; font-size: .8rem; }
+  .nav { display: flex; gap: 8px; padding: 12px 24px; background: #fff; border-bottom: 1px solid #e2e8f0; flex-wrap: wrap; }
+  .nav button { padding: 6px 14px; border: 1px solid #cbd5e1; border-radius: 6px; background: #fff; cursor: pointer; font-size: .85rem; }
+  .nav button.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .container { max-width: 860px; margin: 0 auto; padding: 24px 16px; }
+  .card { background: #fff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 20px; margin-bottom: 16px; }
+  .card h2 { font-size: 1rem; font-weight: 600; margin-bottom: 12px; color: var(--accent); }
+  .tag { display: inline-block; font-size: .75rem; padding: 2px 8px; border-radius: 10px; margin-right: 4px; margin-bottom: 4px; font-weight: 500; }
+  .tag-lesen { background: #dbeafe; color: #1e40af; }
+  .tag-horen { background: #dcfce7; color: #166534; }
+  .tag-schreiben { background: #fef3c7; color: #92400e; }
+  .tag-sprechen { background: #fce7f3; color: #9d174d; }
+  .passage { background: #f1f5f9; border-left: 3px solid var(--accent); padding: 14px 16px; border-radius: 0 6px 6px 0; margin-bottom: 14px; font-size: .92rem; line-height: 1.7; white-space: pre-wrap; }
+  .question { margin-bottom: 14px; }
+  .question p { font-weight: 500; margin-bottom: 8px; font-size: .92rem; }
+  .options label { display: block; padding: 7px 10px; margin-bottom: 5px; border: 1px solid #e2e8f0; border-radius: 6px; cursor: pointer; font-size: .88rem; }
+  .options label:hover { border-color: var(--accent); background: #eff6ff; }
+  .options input { margin-right: 8px; }
+  .options label.correct { border-color: var(--ok); background: #f0fdf4; }
+  .options label.wrong { border-color: var(--err); background: #fef2f2; }
+  .check-btn { background: var(--accent); color: #fff; border: none; padding: 10px 22px; border-radius: 6px; cursor: pointer; font-size: .9rem; margin-top: 12px; }
+  .check-btn:hover { background: #1d4ed8; }
+  .score { font-weight: 600; padding: 10px 16px; border-radius: 6px; margin-top: 12px; }
+  .score.ok { background: #f0fdf4; color: var(--ok); }
+  .score.fail { background: #fef2f2; color: var(--err); }
+  .teil-header { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+  .topic-badge { font-size: .72rem; padding: 2px 8px; border-radius: 10px; background: #f1f5f9; color: #475569; }
+  .empty { text-align: center; padding: 48px; color: #94a3b8; }
+  .stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; margin-bottom: 20px; }
+  .stat { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px; text-align: center; }
+  .stat .num { font-size: 1.6rem; font-weight: 700; color: var(--accent); }
+  .stat .label { font-size: .75rem; color: #64748b; margin-top: 2px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>🧪 Pool Test — LexiLoop B1</h1>
+  <span class="badge" id="pool-count">cargando…</span>
+  <span class="badge" id="pool-date"></span>
+</header>
+<div class="nav" id="exam-nav"></div>
+<div class="container" id="app"><p class="empty">Cargando pool…</p></div>
+
+<script>
+(async () => {
+  let pool = [];
+  let currentIdx = 0;
+
+  try {
+    const res = await fetch('/library/pool-seed/de_B1.json');
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    pool = await res.json();
+  } catch (e) {
+    document.getElementById('app').innerHTML = `<div class="card"><p style="color:red">Error al cargar el pool: ${e.message}<br><br>Asegúrate de que el servidor está corriendo: <code>node server.mjs</code></p></div>`;
+    return;
+  }
+
+  document.getElementById('pool-count').textContent = pool.length + ' examen' + (pool.length !== 1 ? 'es' : '');
+  if (pool[0]?.createdAt) {
+    document.getElementById('pool-date').textContent = new Date(pool[0].createdAt).toLocaleDateString('es-ES');
+  }
+
+  const nav = document.getElementById('exam-nav');
+  pool.forEach((seed, i) => {
+    const btn = document.createElement('button');
+    btn.textContent = `Examen ${i + 1}`;
+    if (i === 0) btn.classList.add('active');
+    btn.addEventListener('click', () => {
+      nav.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentIdx = i;
+      renderExam(seed);
+    });
+    nav.appendChild(btn);
+  });
+
+  if (pool.length === 0) {
+    document.getElementById('app').innerHTML = '<div class="card"><p class="empty">El pool está vacío. Ejecuta: <code>node scripts/build-disjoint-pool.mjs --max 20</code></p></div>';
+    return;
+  }
+
+  renderExam(pool[0]);
+
+  function renderExam(seed) {
+    const app = document.getElementById('app');
+    const exam = seed.exam || seed;
+    let html = '';
+
+    // Stats
+    const allParts = [
+      ...(exam.lesenParts || []),
+      ...(exam.horenParts || []),
+      ...(exam.schreibenParts || []),
+      ...(exam.sprechenParts || []),
+    ];
+    const totalQ = allParts.reduce((s, p) => {
+      const qs = p.questions?.length ? p.questions
+        : p.items?.length ? p.items
+        : (p.segments || []).flatMap(seg => seg.questions || []);
+      return s + (qs.length || (p.task ? 1 : 0) || (p.situation ? 1 : 0));
+    }, 0);
+
+    html += `<div class="stats-grid">
+      <div class="stat"><div class="num">${(exam.lesenParts || []).length}</div><div class="label">Lesen Teile</div></div>
+      <div class="stat"><div class="num">${(exam.horenParts || []).length}</div><div class="label">Hören Teile</div></div>
+      <div class="stat"><div class="num">${(exam.schreibenParts || []).length}</div><div class="label">Schreiben</div></div>
+      <div class="stat"><div class="num">${(exam.sprechenParts || []).length}</div><div class="label">Sprechen</div></div>
+      <div class="stat"><div class="num">${totalQ}</div><div class="label">Preguntas</div></div>
+      <div class="stat"><div class="num">${seed.coverageRatio ? Math.round(seed.coverageRatio * 100) + '%' : '—'}</div><div class="label">Cobertura</div></div>
+    </div>`;
+
+    // Lesen
+    for (const part of (exam.lesenParts || [])) {
+      html += renderPart(part, 'lesen');
+    }
+    // Hören
+    for (const part of (exam.horenParts || [])) {
+      html += renderPart(part, 'horen');
+    }
+    // Schreiben
+    for (const part of (exam.schreibenParts || [])) {
+      html += renderPart(part, 'schreiben');
+    }
+    // Sprechen
+    for (const part of (exam.sprechenParts || [])) {
+      html += renderPart(part, 'sprechen');
+    }
+
+    app.innerHTML = html;
+    attachCheckers();
+  }
+
+  function renderPart(part, mod) {
+    // Schreiben: estructura especial (aufgabe + task)
+    if (mod === 'schreiben') return renderSchreiben(part);
+    // Sprechen: estructura especial (situation + points)
+    if (mod === 'sprechen') return renderSprechen(part);
+    // Hören: estructura con segments + transcript
+    if (mod === 'horen') return renderHoren(part);
+
+    // Lesen T3/T4 usan `items` en lugar de `questions`
+    const questions = part.questions?.length ? part.questions
+      : part.items?.length ? part.items
+      : (part.segments || []).flatMap(seg => seg.questions || []);
+
+    const teil = part.teil ?? (part.passages?.[0]?.teil) ?? (questions[0]?.teil) ?? '?';
+    const topic = part.passages?.[0]?.topicTag || '';
+    const tagClass = `tag-lesen`;
+
+    let html = `<div class="card">
+      <div class="teil-header">
+        <h2><span class="tag ${tagClass}">Lesen T${teil}</span></h2>
+        ${topic ? `<span class="topic-badge">${topic}</span>` : ''}
+      </div>`;
+
+    // Enunciado / instrucción
+    if (part.instruction) {
+      html += `<p style="font-size:.82rem;color:#475569;font-style:italic;margin-bottom:10px;padding:8px 12px;background:#f8fafc;border-radius:6px;border-left:3px solid #cbd5e1">${escHtml(part.instruction)}</p>`;
+    }
+
+    // Texto del pasaje — puede estar en part.text, part.passages[], o items[].signText (T3)
+    if (part.text) {
+      html += `<div class="passage">${escHtml(part.text)}</div>`;
+    }
+    for (const p of (part.passages || [])) {
+      if (p.text) html += `<div class="passage">${escHtml(p.text)}</div>`;
+    }
+
+    if (questions.length) {
+      const firstItem = questions[0];
+      const isAnzeigenT3 = firstItem?.type === 'matching' && (firstItem?.options?.length || 0) > 3;
+
+      const anzeigenLetters = isAnzeigenT3
+        ? (firstItem.options || []).map(opt => {
+            if (typeof opt === 'object') return opt.key || '';
+            const m = String(opt).match(/^([A-Za-z])\)/);
+            return m ? m[1] : String(opt).charAt(0);
+          })
+        : [];
+
+      // T3: mostrar tabla de anuncios antes de las preguntas
+      if (isAnzeigenT3) {
+        html += `<div style="margin-bottom:14px"><strong style="font-size:.8rem;color:#64748b;text-transform:uppercase;letter-spacing:.05em">Anzeigen</strong>`;
+        (firstItem.options || []).forEach(opt => {
+          const txt = typeof opt === 'object' ? opt.text : opt;
+          html += `<div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:10px 12px;margin-top:8px;font-size:.85rem">${escHtml(txt)}</div>`;
+        });
+        html += `</div>`;
+      }
+
+      html += `<form class="questions-form" data-module="${mod}">`;
+      questions.forEach((q, qi) => {
+        const qid = `q-${mod}-${teil}-${qi}`;
+        html += `<div class="question" data-correct="${escAttr(q.correct || q.correctAnswer || '')}">`;
+        html += `<p>${qi + 1}. ${escHtml(q.question || q.text || '')}</p>`;
+
+        const type = q.type || '';
+        if (type === 'richtig_falsch') {
+          html += `<div class="options">`;
+          ['Richtig', 'Falsch'].forEach(opt => {
+            html += `<label><input type="radio" name="${qid}" value="${opt}"> ${opt}</label>`;
+          });
+          html += `</div>`;
+        } else if (type === 'ja_nein') {
+          html += `<div class="options">`;
+          ['Ja', 'Nein'].forEach(opt => {
+            html += `<label><input type="radio" name="${qid}" value="${opt}"> ${opt}</label>`;
+          });
+          html += `</div>`;
+        } else if (isAnzeigenT3) {
+          html += `<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:6px">`;
+          anzeigenLetters.forEach(letter => {
+            html += `<label style="display:flex;align-items:center;gap:4px;padding:5px 12px;border:1px solid #cbd5e1;border-radius:6px;cursor:pointer;font-weight:600;min-width:44px;justify-content:center">
+              <input type="radio" name="${qid}" value="${letter}" style="display:none">
+              <span class="letter-opt" data-val="${letter}">${letter}</span>
+            </label>`;
+          });
+          html += `</div>`;
+        } else if (type === 'multiple_choice' || type === 'matching') {
+          html += `<div class="options">`;
+          (q.options || []).forEach(opt => {
+            let val, txt;
+            if (typeof opt === 'object') { val = opt.key; txt = opt.text; }
+            else {
+              const m = String(opt).match(/^([A-Za-c])\)/i);
+              val = m ? m[1] : opt;
+              txt = opt;
+            }
+            html += `<label><input type="radio" name="${qid}" value="${val}"> ${escHtml(txt)}</label>`;
+          });
+          html += `</div>`;
+        } else {
+          html += `<div class="options"><input type="text" name="${qid}" placeholder="Respuesta…" style="padding:6px;border:1px solid #cbd5e1;border-radius:5px;width:100%;max-width:300px"></div>`;
+        }
+        html += `</div>`;
+      });
+      html += `<button type="button" class="check-btn">Comprobar respuestas</button>
+        <div class="score" style="display:none"></div>
+      </form>`;
+    } else {
+      html += `<p style="color:#94a3b8;font-size:.85rem;font-style:italic">Sin preguntas en esta parte.</p>`;
+    }
+
+    html += `</div>`;
+    return html;
+  }
+
+  function renderHoren(part) {
+    const teil = part.teil ?? '?';
+    const segments = part.segments || [];
+    // Flatten all questions across segments for the checker
+    const allQuestions = segments.flatMap(s => s.questions || []);
+
+    let html = `<div class="card">
+      <div class="teil-header">
+        <h2><span class="tag tag-horen">Hören T${teil}</span></h2>
+      </div>`;
+
+    // Enunciado
+    if (part.instruction) {
+      html += `<p style="font-size:.82rem;color:#475569;font-style:italic;margin-bottom:10px;padding:8px 12px;background:#f8fafc;border-radius:6px;border-left:3px solid #86efac">${escHtml(part.instruction)}</p>`;
+    }
+
+    // Transcript global (si no hay segmentos individuales con su propio transcript)
+    const hasSegmentTranscripts = segments.some(s => s.transcript);
+    if (part.transcript && !hasSegmentTranscripts) {
+      html += `<details class="pt-transcript" style="border:1px solid #bbf7d0;border-radius:8px;margin-bottom:14px;overflow:hidden">
+        <summary style="display:flex;align-items:center;gap:8px;padding:10px 14px;background:#f0fdf4;cursor:pointer;font-size:.85rem;font-weight:600;color:#166534;list-style:none">
+          🔊 Audio-Text <span style="margin-left:auto;font-size:.7rem;opacity:.7">▼</span>
+        </summary>
+        <div style="padding:14px 16px;font-size:.87rem;line-height:1.7;white-space:pre-wrap;color:#1e293b">${escHtml(part.transcript)}</div>
+      </details>`;
+    }
+
+    if (segments.length === 0 && allQuestions.length === 0) {
+      html += `<p style="color:#94a3b8;font-size:.85rem;font-style:italic">Sin preguntas en esta parte.</p>`;
+      html += `</div>`;
+      return html;
+    }
+
+    html += `<form class="questions-form" data-module="horen">`;
+    let qGlobal = 0;
+
+    if (segments.length > 0) {
+      segments.forEach((seg, si) => {
+        const segLabel = seg.label || seg.segmentLabel || `Text ${si + 1}`;
+        html += `<div style="margin-bottom:18px">`;
+        html += `<div style="font-size:.78rem;font-weight:600;color:#166534;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">🔊 ${escHtml(segLabel)}</div>`;
+
+        // Transcript del segmento (collapsible)
+        const segText = seg.transcript || seg.text || '';
+        if (segText) {
+          html += `<details style="border:1px solid #bbf7d0;border-radius:6px;margin-bottom:10px;overflow:hidden">
+            <summary style="display:flex;align-items:center;gap:6px;padding:8px 12px;background:#f0fdf4;cursor:pointer;font-size:.8rem;font-weight:600;color:#166534;list-style:none">
+              🔊 Transkript anzeigen <span style="margin-left:auto;font-size:.65rem;opacity:.7">▼</span>
+            </summary>
+            <div style="padding:10px 14px;font-size:.85rem;line-height:1.65;white-space:pre-wrap;color:#1e293b">${escHtml(segText)}</div>
+          </details>`;
+        }
+
+        // Preguntas del segmento
+        (seg.questions || []).forEach(q => {
+          const qi = qGlobal++;
+          const qid = `q-horen-${teil}-${qi}`;
+          const type = q.type || '';
+          html += `<div class="question" data-correct="${escAttr(q.correct || q.correctAnswer || '')}">`;
+          html += `<p>${qi + 1}. ${escHtml(q.question || '')}</p>`;
+
+          if (type === 'richtig_falsch') {
+            html += `<div class="options">`;
+            ['Richtig', 'Falsch'].forEach(opt => {
+              html += `<label><input type="radio" name="${qid}" value="${opt}"> ${opt}</label>`;
+            });
+            html += `</div>`;
+          } else if (type === 'ja_nein') {
+            html += `<div class="options">`;
+            ['Ja', 'Nein'].forEach(opt => {
+              html += `<label><input type="radio" name="${qid}" value="${opt}"> ${opt}</label>`;
+            });
+            html += `</div>`;
+          } else if (type === 'multiple_choice') {
+            html += `<div class="options">`;
+            (q.options || []).forEach(opt => {
+              let val, txt;
+              if (typeof opt === 'object') { val = opt.key; txt = opt.text; }
+              else {
+                const m = String(opt).match(/^([A-Za-z])\)/i);
+                val = m ? m[1] : opt;
+                txt = opt;
+              }
+              html += `<label><input type="radio" name="${qid}" value="${val}"> ${escHtml(txt)}</label>`;
+            });
+            html += `</div>`;
+          } else {
+            html += `<div class="options"><input type="text" name="${qid}" placeholder="Respuesta…" style="padding:6px;border:1px solid #cbd5e1;border-radius:5px;width:100%;max-width:300px"></div>`;
+          }
+          html += `</div>`;
+        });
+        html += `</div>`;
+      });
+    }
+
+    html += `<button type="button" class="check-btn">Comprobar respuestas</button>
+      <div class="score" style="display:none"></div>
+    </form>`;
+    html += `</div>`;
+    return html;
+  }
+
+  function renderSchreiben(part) {
+    const aufgabe = part.aufgabe || '?';
+    const task = part.task || part.situation || '';
+    const minW = part.minWords || '';
+    const maxW = part.maxWords || '';
+    return `<div class="card">
+      <div class="teil-header">
+        <h2><span class="tag tag-schreiben">Schreiben T${aufgabe}</span></h2>
+        ${minW ? `<span class="topic-badge">${minW}–${maxW} Wörter</span>` : ''}
+      </div>
+      <div class="passage">${escHtml(task)}</div>
+      <div style="margin-top:12px">
+        <textarea rows="6" placeholder="Deine Antwort hier…" style="width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:6px;resize:vertical;font-family:inherit;font-size:.9rem"></textarea>
+        <p style="font-size:.75rem;color:#94a3b8;margin-top:4px">Schreiben: manuelle Bewertung erforderlich.</p>
+      </div>
+    </div>`;
+  }
+
+  function renderSprechen(part) {
+    const teil = part.teil || '?';
+    const title = part.title || '';
+    const situation = part.situation || '';
+    const points = part.points || [];
+    let html = `<div class="card">
+      <div class="teil-header">
+        <h2><span class="tag tag-sprechen">Sprechen T${teil}</span></h2>
+      </div>
+      ${title ? `<p style="font-weight:600;margin-bottom:10px">${escHtml(title)}</p>` : ''}
+      <div class="passage">${escHtml(situation)}</div>`;
+    if (points.length) {
+      html += `<ul style="margin-top:12px;padding-left:20px;font-size:.88rem;line-height:1.8">`;
+      points.forEach(p => { html += `<li>${escHtml(typeof p === 'string' ? p : p.text || '')}</li>`; });
+      html += `</ul>`;
+    }
+    html += `<p style="font-size:.75rem;color:#94a3b8;margin-top:10px">Sprechen: presentación oral (sin corrección automática).</p>
+    </div>`;
+    return html;
+  }
+
+  function attachCheckers() {
+    // Letra-buttons para T3 (click visual sin radio nativo)
+    document.querySelectorAll('.letter-opt').forEach(span => {
+      span.closest('label').addEventListener('click', function() {
+        const inp = this.querySelector('input[type=radio]');
+        if (!inp) return;
+        const name = inp.name;
+        // Desmarcar todos del mismo grupo visualmente
+        document.querySelectorAll(`input[name="${name}"]`).forEach(r => {
+          r.closest('label').style.background = '';
+          r.closest('label').style.borderColor = '#cbd5e1';
+          r.closest('label').style.color = '';
+        });
+        // Marcar el seleccionado
+        inp.checked = true;
+        this.closest('label').style.background = '#dbeafe';
+        this.closest('label').style.borderColor = '#2563eb';
+        this.closest('label').style.color = '#1e40af';
+      });
+    });
+
+    document.querySelectorAll('.check-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const form = btn.closest('form');
+        const questions = form.querySelectorAll('.question');
+        let correct = 0, total = 0;
+
+        questions.forEach(qDiv => {
+          const expected = (qDiv.dataset.correct || '').trim().toUpperCase();
+          if (!expected) return;
+          total++;
+          const checked = qDiv.querySelector('input[type=radio]:checked, input[type=text], textarea');
+          const val = (checked ? (checked.value || '').trim() : '').toUpperCase();
+          const isCorrect = val === expected;
+          if (isCorrect) correct++;
+
+          // Feedback para radio normales
+          qDiv.querySelectorAll('label').forEach(lbl => {
+            lbl.classList.remove('correct', 'wrong');
+            const inp = lbl.querySelector('input[type=radio]');
+            if (!inp || inp.style.display === 'none') return;
+            if (inp.value.toUpperCase() === expected) lbl.classList.add('correct');
+            else if (inp.checked) lbl.classList.add('wrong');
+          });
+
+          // Feedback para letra-buttons (T3)
+          qDiv.querySelectorAll('.letter-opt').forEach(span => {
+            const lbl = span.closest('label');
+            const inp = lbl.querySelector('input[type=radio]');
+            if (!inp) return;
+            const letterVal = inp.value.toUpperCase();
+            if (letterVal === expected) {
+              lbl.style.background = '#dcfce7';
+              lbl.style.borderColor = '#16a34a';
+              lbl.style.color = '#166534';
+            } else if (inp.checked && letterVal !== expected) {
+              lbl.style.background = '#fef2f2';
+              lbl.style.borderColor = '#dc2626';
+              lbl.style.color = '#dc2626';
+            }
+          });
+        });
+
+        const scoreDiv = btn.nextElementSibling;
+        const pct = total ? Math.round((correct / total) * 100) : 0;
+        scoreDiv.style.display = 'block';
+        scoreDiv.className = `score ${pct >= 60 ? 'ok' : 'fail'}`;
+        scoreDiv.textContent = `${correct}/${total} correctas (${pct}%) ${pct >= 60 ? '✅ Superado' : '❌ Revisa'}`;
+      });
+    });
+  }
+
+  function escHtml(s) {
+    return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+  }
+  function escAttr(s) {
+    return String(s || '').replace(/"/g,'&quot;');
+  }
+})();
+</script>
+</body>
+</html>

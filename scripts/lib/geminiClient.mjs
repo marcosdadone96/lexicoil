@@ -18,7 +18,7 @@ export function geminiModel() {
   return (process.env.GEMINI_MODEL || DEFAULT_MODEL).trim();
 }
 
-export async function generateContent({ prompt, apiKey, model, jsonMode = true, maxRetries = 3, maxTokens }) {
+export async function generateContent({ prompt, apiKey, model, jsonMode = true, maxRetries = 3, maxTokens, temperature }) {
   const key = apiKey || process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
   if (!key) {
     throw new Error('Falta GEMINI_API_KEY (o GOOGLE_API_KEY) en .env');
@@ -27,10 +27,15 @@ export async function generateContent({ prompt, apiKey, model, jsonMode = true, 
   const modelId = model || geminiModel();
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(modelId)}:generateContent?key=${encodeURIComponent(key)}`;
 
+  // Priority: explicit param > GEMINI_TEMPERATURE env var > default 0.4
+  const resolvedTemp =
+    temperature ??
+    (process.env.GEMINI_TEMPERATURE ? Number(process.env.GEMINI_TEMPERATURE) : 0.4);
+
   const body = {
     contents: [{ role: 'user', parts: [{ text: prompt }] }],
     generationConfig: {
-      temperature: 0.75,
+      temperature: resolvedTemp,
       maxOutputTokens: maxTokens ?? Number(process.env.GEMINI_MAX_OUTPUT_TOKENS || 8192),
       ...(jsonMode ? { responseMimeType: 'application/json' } : {}),
     },
@@ -73,7 +78,8 @@ export async function generateContent({ prompt, apiKey, model, jsonMode = true, 
 
     if (res.status >= 500 && attempt < maxRetries) {
       const waitSec = Math.min(15 * attempt, 60);
-      console.warn(`\n⏳ Error ${res.status} — reintento en ${waitSec}s…`);
+      const label = res.status === 503 ? 'Alta demanda (503)' : `Error ${res.status}`;
+      console.warn(`\n⏳ Gemini ${label} — reintento en ${waitSec}s (${attempt}/${maxRetries})…`);
       await sleep(waitSec * 1000);
       continue;
     }

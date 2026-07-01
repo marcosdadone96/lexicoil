@@ -196,15 +196,15 @@
     const tab = getOrCreateActiveTab();
     panel.innerHTML = `
       <div class="nb-head">
-        <div class="nb-head-title">Libreta · ${esc(langLabel(tab.lang))} ${esc(tab.level)}</div>
+        <div class="nb-head-title">Notebook · ${esc(langLabel(tab.lang))} ${esc(tab.level)}</div>
         <div class="nb-head-actions">
-          <button type="button" class="btn-sm" onclick="NotebookUI.newTab()" title="Nueva pestaña">+</button>
-          <button type="button" class="btn-sm" onclick="NotebookUI.closeTab()" title="Cerrar pestaña">×</button>
+          <button type="button" class="btn-sm" onclick="NotebookUI.newTab()" title="New tab">+</button>
+          <button type="button" class="btn-sm" onclick="NotebookUI.closeTab()" title="Close tab">×</button>
           <button type="button" class="btn-sm" onclick="NotebookUI.toggle()">—</button>
         </div>
       </div>
       <div class="nb-toolbar">
-        ${HIGHLIGHTS.map((h) => `<button type="button" class="nb-hl" style="background:${h.css}" onclick="NotebookUI.highlight('${h.css}')" aria-label="Resaltar"></button>`).join('')}
+        ${HIGHLIGHTS.map((h) => `<button type="button" class="nb-hl" style="background:${h.css}" onclick="NotebookUI.highlight('${h.css}')" aria-label="Highlight"></button>`).join('')}
         <button type="button" class="btn-sm" onclick="NotebookUI.format('bold')"><b>B</b></button>
         <button type="button" class="btn-sm" onclick="NotebookUI.format('underline')"><u>U</u></button>
         <button type="button" class="btn-sm" onclick="NotebookUI.format('removeFormat')">⌫ fmt</button>

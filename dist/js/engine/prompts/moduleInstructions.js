@@ -107,11 +107,88 @@ const ModuleInstructions = (() => {
     return ` official:{board:"${board}",certificate:"${spec.examStructure.certificate}"}.`;
   }
 
+  /** Shared generation quality rules (Prompt C + natural vocab / grammar). */
+  function contentQualityRules(spec) {
+    const lang = spec?.language || 'english';
+    const lines = [
+      'Each question MUST be answerable exclusively from THIS part\'s text/audio — do not invent facts outside the passage.',
+      'Spread the correct MCQ option across A, B, and C across questions; never put every correct answer on the same letter.',
+      'Every MCQ option/distractor (including wrong answers) must be grammatically correct — never use broken conjugation in a distractor (e.g. "Er fährt…", NOT "Er laufen…").',
+    ];
+    if (lang === 'german') {
+      lines.unshift(
+        'German must be grammatically impeccable: correct subject–verb agreement ("Mein Name ist", NEVER "Meine Namen ist"), adjective declension ("vielfältige Ansätze", not "vielfältig Ansätze"), cases, and complete conjugated verbs.',
+        'Every sentence must be syntactically complete — no broken participles or dangling fragments (e.g. NOT "bin vorher täglich pendeln musste").',
+        'Do NOT produce agrammatical or invented sentences just to insert a vocabulary word (e.g. NOT "Für mein Auto schreibe ich Notizen…" unless contextually natural).',
+        'Standard spelling (Duden); use complete verb forms (e.g. "schlägt vor", not "vorsägt vor").',
+      );
+    } else if (lang === 'spanish') {
+      lines.unshift(
+        'Spanish must be grammatically correct: agreement, full verb forms, standard spelling and register appropriate to the level.',
+      );
+    } else {
+      lines.unshift(
+        'English must be grammatically correct with standard spelling, complete verb phrases, and natural collocations for the level.',
+      );
+    }
+    return lines.join(' ');
+  }
+
+  /** Retry hint when a chunk failed validation or grammar check. */
+  function grammarRetryHint(lang) {
+    if (lang === 'german' || lang === 'de') {
+      return (
+        '\n\nFIX GRAMMAR: Previous output had German grammar errors. Use "Mein Name ist" (not "Meine Namen ist"), ' +
+        'correct adjective endings ("vielfältige Ansätze"), complete verb forms, and natural sentences. ' +
+        'Do NOT force vocabulary with broken or nonsensical German — omit words that do not fit.'
+      );
+    }
+    if (lang === 'spanish' || lang === 'es') {
+      return '\n\nFIX GRAMMAR: Previous output had Spanish grammar errors. Use correct agreement and complete verb forms.';
+    }
+    return '\n\nFIX GRAMMAR: Previous output had grammar errors. Use correct agreement and natural collocations.';
+  }
+
+  /** Personal-exam vocabulary weaving (Prompt 3). */
+  function vocabWeavingRules(spec) {
+    const lang = spec?.language || 'english';
+    const lines = [
+      'Integrate learner target words NATURALLY and grammatically — never insert awkward filler just to include a word.',
+      'If a target word does not fit naturally in the passage, OMIT it; prefer omission over broken or nonsensical ' +
+        (lang === 'german' ? 'German' : lang === 'spanish' ? 'Spanish' : 'English') + '.',
+      'In targetUsage, list ONLY words used naturally and correctly — omit forced or grammatically wrong appearances.',
+      'Do not invent usage: every surface in targetUsage must appear verbatim in the generated text.',
+    ];
+    if (lang === 'german') {
+      lines.splice(
+        1,
+        0,
+        'Avoid template fillers like "Das ist ein Mann, der…" solely to place a noun — weave vocabulary into coherent, meaningful sentences.',
+      );
+    } else if (lang === 'spanish') {
+      lines.splice(
+        1,
+        0,
+        'Avoid template fillers like "Es un hombre que…" used only to showcase a word — use natural sentences instead.',
+      );
+    } else {
+      lines.splice(
+        1,
+        0,
+        'Avoid template fillers like "This is a man who…" used only to showcase a word — use natural sentences instead.',
+      );
+    }
+    return lines.join(' ');
+  }
+
   return Object.freeze({
     forChunk,
     grammarFocus,
     canDoFocus,
     officialMeta,
+    contentQualityRules,
+    vocabWeavingRules,
+    grammarRetryHint,
   });
 })();
 

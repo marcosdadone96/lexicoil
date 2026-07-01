@@ -118,7 +118,7 @@ async function testPersonalExamSkills() {
   assert(spec.skills?.includes('schreiben'), 'skills merged into spec');
   const built = PromptBuilder.buildPrompt(spec);
   assert(built.mode === 'chunks', 'vocab chunked mode');
-  assert(built.chunks.length === 8, 'lesen+schreiben B1 goethe uses 8 official Teile (5+3)');
+  assert(built.chunks.length === 7, 'lesen+schreiben B1 goethe AI plan: 7 non-pool Teile (L1,3,4,5 + S1–3; L2 from pool)');
   assert(built.chunks.some((c) => c.expectKey === 'schreibenParts'), 'schreiben module in vocab chunk');
   assert(!built.chunks.some((c) => c.expectKey === 'horenParts'), 'horen omitted when not selected');
 

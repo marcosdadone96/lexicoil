@@ -1,0 +1,26 @@
+
+Batch generator (gemini) — de/B1 × 1
+Prompt: batches/GEMINI_MASTER_PROMPT_de_B1.md
+
+── sprechen T1+2+3 · reise-vorbereitung-03 ──
+Tema: Tagesausflug mit Freunden planen / Präsentation: Reisen und Verkehr im Heimatland / Präsentation: Reisen und Verkehr im Heimatland
+Proveedor: gemini
+max_output_tokens=8192
+Archivo: batches/merged/sprechen-reise-vorbereitung-03.json
+Llamando gemini…
+max_output_tokens=8192
+Tokens: in=1915 out=1197 (max_out=8192)
+Modelo: gemini-2.5-flash
+Guardado: batches/merged/sprechen-reise-vorbereitung-03.json (3 preguntas, 0 passages)
+Validando…
+
+== Validación de sprechen-reise-vorbereitung-03.json (de_B1) ==
+Preguntas: 3 | Pasajes: 0
+Esquema: OK
+Conformidad blueprint: OK
+Colocación (Teile que mejora): Pool válido (Teil ya cubierto en 1 examen — OK para exámenes disjuntos)
+Sin problemas detectados ✅
+Validación OK
+Siguiente: node scripts/merge-bank-batch.mjs --lang de --level B1 --file batches/merged/sprechen-reise-vorbereitung-03.json
+
+Resumen: 1 OK, 0 fallidos

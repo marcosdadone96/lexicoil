@@ -20,6 +20,10 @@ async function loadExamConfigBlueprintParts(goal){
 function openExamConfigurator(goalId,preselectedIds){
   const goal=S.goals.find(g=>g.id===goalId);
   if(!goal)return;
+  if(typeof isPersonalizedAllowed==='function'&&!isPersonalizedAllowed(goal.subject,goal.level)){
+    lcToast(typeof LevelAvailability!=='undefined'?LevelAvailability.personalizedUnavailableMessage(goal.subject,goal.level):'Personalized practice is not available for this level yet.','warn',7000);
+    return;
+  }
   S.activeGoalId=goalId;
   syncGoalToProfile(goal);
   saveGoals();
@@ -64,7 +68,6 @@ function selectAllDueConfig(){
   renderExamConfigurator();
 }
 function toggleConfigSkill(skill){
-  if(skill==='schreiben')return;
   _examConfig.skills=new Set([skill]);
   _examConfig.teilChoice='all';
   renderExamConfigurator();
@@ -152,6 +155,13 @@ function renderExamConfigurator(){
   const seedHtml=_examConfig.seedCount>=4
     ?`<div class="card note-card exam-config-seed"><b>Built from your ${_examConfig.seedCount} selected words</b> — tap to add or remove.</div>`
     :`<div class="card note-card exam-config-seed"><b>Uses words from your deck</b> — we pre-selected due words where possible.</div>`;
+  const quotaBar=(()=>{
+    const parts=[];
+    if(typeof examsRemainingLabel==='function')parts.push(examsRemainingLabel());
+    if(typeof aiCreditsSummaryLabel==='function'&&aiCreditsSummaryLabel())parts.push(aiCreditsSummaryLabel());
+    else if(S.plan==='free')parts.push(`${Number(window.AI_CREDITS_FREE||6)} AI credits this month`);
+    return parts.length?`<p class="exam-config-hint exam-config-quota-bar">${esc(parts.join(' · '))}</p>`:'';
+  })();
   const partCard=(key,title,sub,status)=>{
     const isSoon=status==='soon';
     const on=!isSoon&&_examConfig.skills.has(key);
@@ -176,12 +186,13 @@ function renderExamConfigurator(){
   el.innerHTML=`
     <h1 class="exam-config-h1">Section practice</h1>
     <p class="exam-config-lede">Practice one <b>${esc(goalLabel(goal))}</b> section using your vocabulary. Generate all official Teile or pick one.</p>
+    ${quotaBar}
     ${seedHtml}
     <p class="exam-config-seclbl">Choose a section</p>
     ${partCard('lesen',ui.reading,'Reading comprehension with your vocabulary','ready')}
     ${partCard('horen',ui.listening,'Listening tasks with your vocabulary','ready')}
     ${partCard('sprechen',ui.speaking,'Speaking task with microphone + AI evaluation','ready')}
-    ${partCard('schreiben',ui.writing,'Writing prompts from your vocabulary','soon')}
+    ${partCard('schreiben',ui.writing,'Writing prompts from your vocabulary','ready')}
     ${teilHtml}
     <p class="exam-config-hint">${esc(genHint)}</p>
     <p class="exam-config-seclbl"><span>Words to include · ${selN} selected</span>${dueN>0?'<button type="button" class="exam-config-cta" onclick="selectAllDueConfig()">Select all due ('+dueN+') →</button>':''}</p>
@@ -196,31 +207,51 @@ function renderExamConfigurator(){
     if(oralOnly)txt+=' · oral practice';
     else txt+=' · ~'+qEst+' questions · 3 AI credits';
     if(typeof getAiCreditsRemaining==='function'&&remAi===3)txt+=' · <span class="exam-config-quota-warn">Last 3 credits</span>';
-    else if(typeof getAiCreditsRemaining==='function'&&typeof aiCreditsMeterLabel==='function'&&isPro()){
+    else if(typeof aiCreditsMeterLabel==='function'&&(typeof isPro==='function'&&isPro()||typeof isFreeAiTrial==='function'&&isFreeAiTrial())){
       txt+=' · '+esc(aiCreditsMeterLabel());
     }
     summary.innerHTML=txt;
   }
+  const aiCreditsEl=document.getElementById('examConfigAiCredits');
+  if(aiCreditsEl){
+    if(S.plan!=='guest'&&typeof aiCreditsMeterLabel==='function'&&aiCreditsMeterLabel()){
+      aiCreditsEl.textContent=aiCreditsMeterLabel();
+      aiCreditsEl.style.display='';
+    }else{
+      aiCreditsEl.textContent='';
+      aiCreditsEl.style.display='none';
+    }
+  }
   if(genBtn){
     const aiOk=typeof canUseAiGeneration!=='function'||canUseAiGeneration();
     genBtn.disabled=selN<2||_examConfig.skills.size<1||!aiOk;
-    if(!aiOk)genBtn.textContent='No AI credits — buy pack';
-    else if(oralOnly)genBtn.textContent='Practice speaking →';
+    if(!aiOk){
+      if(typeof getAiCreditsRemaining==='function'&&getAiCreditsRemaining()===0)genBtn.textContent='No credits left — upgrade to Pro';
+      else if(typeof isPaidPlan==='function'&&!isPaidPlan())genBtn.textContent='Personalized exams require Pro';
+      else genBtn.textContent='No AI credits — buy pack';
+    }else if(oralOnly)genBtn.textContent='Practice speaking →';
     else if(_examConfig.teilChoice==='all')genBtn.textContent='Practice '+esc(skillLbl)+' (all Teile) →';
     else genBtn.textContent='Practice '+esc(skillLbl)+' Teil '+esc(_examConfig.teilChoice)+' →';
   }
+  if(typeof updQuotaUI==='function')updQuotaUI();
 }
 function submitExamConfig(){
   const goal=S.goals.find(g=>g.id===_examConfig.goalId);
   if(!goal)return;
+  if(typeof isPersonalizedAllowed==='function'&&!isPersonalizedAllowed(goal.subject,goal.level)){
+    lcToast(typeof LevelAvailability!=='undefined'?LevelAvailability.personalizedUnavailableMessage(goal.subject,goal.level):'Personalized practice is not available for this level yet.','warn',7000);
+    return;
+  }
   const words=deckForGoal(goal).filter(f=>_examConfig.selectedIds.has(fcId(f))).map(f=>f.word);
   const skills=[..._examConfig.skills].slice(0,1);
   if(words.length<2){lcToast('Select at least 2 words.','warn');return;}
   if(skills.length<1){lcToast('Select one exam part.','warn');return;}
   if(typeof requirePersonalized==='function'&&!requirePersonalized())return;
   if(typeof canUseAiGeneration==='function'&&!canUseAiGeneration()){
-    if(typeof openCreditPackModal==='function')openCreditPackModal();
-    else if(typeof showAiCreditsExhausted==='function')showAiCreditsExhausted();
+    if(typeof isPro==='function'&&isPro()){
+      if(typeof openCreditPackModal==='function')openCreditPackModal();
+      else if(typeof showAiCreditsExhausted==='function')showAiCreditsExhausted();
+    }else if(typeof showUpgrade==='function')showUpgrade();
     return;
   }
   showExamConfigFootbar(false);
@@ -236,6 +267,7 @@ function openDeckHub(goalId,options){
   if(!fromVocabHub){
     clearVocabHubFlashcardMode();
     S.fcSelected.clear();
+    S.fcTab='all';
   }
   S.activeGoalId=goalId;
   S.deckGoalFilter=goal.subject;
@@ -258,16 +290,19 @@ function renderDeckHub(){
   const wordsLbl=document.getElementById('fcHubWordsLbl');
   const foot=document.getElementById('fcHubFootnote');
   const legacy=document.getElementById('fcLegacyTop');
+  const showLanding=inHub&&S.fcTab==='all';
   if(nav)nav.style.display=inHub?'block':'none';
   if(head)head.style.display=inHub?'block':'none';
-  if(ways)ways.style.display='none';
-  if(wordsLbl)wordsLbl.style.display=inHub?'block':'none';
-  if(foot)foot.style.display=inHub?'block':'none';
+  if(wordsLbl)wordsLbl.style.display=showLanding?'block':'none';
+  if(foot)foot.style.display=showLanding?'block':'none';
   if(legacy)legacy.style.display=inHub?'none':'block';
   const es=document.getElementById('fcExamSec');
   const ps=document.getElementById('fcPersonalSec');
+  const persLevel=document.getElementById('fcPersonalLevel')?.value||goal?.level||S.level||'B1';
+  const persLang=goal?.subject||S.subject||'de';
+  const persOk=typeof isPersonalizedAllowed!=='function'||isPersonalizedAllowed(persLang,persLevel);
   if(es)es.style.display=inHub?'none':(getDeckViewCards().length>0?'block':'none');
-  if(ps)ps.style.display=inHub?'none':(getDeckViewCards().length>0?'block':'none');
+  if(ps)ps.style.display=inHub?'none':(getDeckViewCards().length>0&&persOk?'block':'none');
   if(!inHub||!goal){renderFC(false);return;}
   const title=document.getElementById('fcHubTitle');
   if(title)title.textContent='Flashcards';
@@ -284,11 +319,10 @@ function renderDeckHub(){
         <span class="deck-way-cta">Review due →</span>
       </div>
       <div class="deck-way">
-        <h3>Quiz</h3>
-        <p>Multiple-choice on your words. Text or audio. Updates your review schedule.</p>
+        <h3>Quiz <span class="badge-pill badge-purple">Pro · 2 credits</span></h3>
+        <p>AI writes a synonym, antonym or hint — you pick the matching word from your deck.</p>
         <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
-          <button type="button" class="btn-sm accent" onclick="deckHubStartQuiz(false)">Text quiz →</button>
-          <button type="button" class="btn-sm" onclick="deckHubStartQuiz(true)">🔊 Audio quiz</button>
+          <button type="button" class="btn-sm accent" onclick="deckHubStartQuiz()">Start AI quiz →</button>
         </div>
       </div>
       <div class="deck-way soon">
@@ -299,6 +333,7 @@ function renderDeckHub(){
         <h3>Match game <span class="badge-soon">Soon</span></h3>
         <p>Pair words with meanings against the clock.</p>
       </div>`;
+    ways.style.display=showLanding?'':'none';
   }
   if(foot){
     const other=goal.subject==='de'?'Cambridge':'Goethe';
@@ -310,13 +345,14 @@ function renderDeckHub(){
   if(td)td.textContent='Due · '+due;
   renderFC(false);
 }
-function deckHubStartQuiz(audio){
+function deckHubStartQuiz(){
   const deck=getDeckViewCards();
   if(deck.length<4){lcToast('You need at least 4 words in this deck for a quiz.','warn');return;}
   ensureFcIds();
   S.fcSelected.clear();
   deck.forEach(f=>S.fcSelected.add(fcId(f)));
-  startVE(audio);
+  if(typeof _vocabHub!=='undefined')_vocabHub.veFromVocab=false;
+  startVE();
 }
 function renderProfileBar(){
   const el=document.getElementById('profileBarExam');

@@ -21,11 +21,48 @@ const PromptBuilder = (() => {
     return require('../domain/lexicoilDomain.js');
   }
 
-  function maxTokensFor(spec, chunkKind) {
+  function maxTokensFor(spec, chunkKind, ctx) {
     const base = TOKEN_BY_LEVEL[spec.level] || 2800;
-    if (chunkKind === 'writing' || chunkKind === 'speaking') return Math.round(base * 0.85);
-    if (chunkKind === 'listening') return Math.round(base * 0.95);
-    return base;
+    let tokens = base;
+    if (chunkKind === 'writing' || chunkKind === 'speaking') tokens = Math.round(base * 0.85);
+    else if (chunkKind === 'listening') tokens = Math.round(base * 0.95);
+
+    const part = ctx?.blueprintPart;
+    const teil = Number(part?.teil ?? ctx?.teil);
+    if (part) {
+      const layout = String(part.layout || '').toLowerCase();
+      const slot = String(part.slotType || part.taskFormat || '').toLowerCase();
+      if (layout === 'items' || slot.includes('ads') || slot.includes('forum')) {
+        tokens = Math.max(tokens, Math.round(base * 1.35));
+      }
+      if (slot.includes('ads_matching') && teil === 3) {
+        tokens = Math.min(Math.max(tokens, 9000), 10000);
+      } else if (
+        chunkKind === 'listening' &&
+        ((slot.includes('short_texts') && teil === 1) || (slot.includes('discussion') && teil === 4))
+      ) {
+        tokens = Math.min(Math.max(tokens, 9000), 10000);
+      } else if (teil === 3 || teil === 4) {
+        tokens = Math.max(tokens, Math.round(base * 1.15));
+      }
+      // Lesen Teil 4 forum: split into sub-calls in ChunkRunner (~5.5k tokens each)
+      if (slot.includes('forum') || (teil === 4 && layout === 'items' && chunkKind === 'reading')) {
+        tokens = Math.min(Math.max(tokens, 5500), 6000);
+      }
+      // Hören Teil 4 discussion: long transcript + 8 statements
+      if (
+        (slot.includes('discussion') || part.taskFormat?.includes('discussion')) &&
+        teil === 4 &&
+        chunkKind === 'listening'
+      ) {
+        tokens = Math.min(Math.max(tokens, 9000), 10000);
+      }
+      // Hören Teil 1 short_texts_twice: 5 segments × 2 questions
+      if (slot.includes('short_texts') && teil === 1 && chunkKind === 'listening') {
+        tokens = Math.min(Math.max(tokens, 9000), 10000);
+      }
+    }
+    return tokens;
   }
 
   function chunkKind(expectKey) {
@@ -94,7 +131,7 @@ const PromptBuilder = (() => {
     const Mod = getModInstr();
     const detail = Mod.forChunk(spec, ctx);
     const header = Shell.examWriterHeader(spec, ctx.expectKey, ctx.title);
-    const extra = [Mod.grammarFocus(spec), Mod.canDoFocus(spec), Mod.officialMeta(spec)]
+    const extra = [Mod.grammarFocus(spec), Mod.canDoFocus(spec), Mod.officialMeta(spec), Mod.contentQualityRules(spec)]
       .filter(Boolean)
       .join('\n');
     const BP = getBlueprintBinding();
@@ -102,7 +139,101 @@ const PromptBuilder = (() => {
       ctx.blueprintPart && BP
         ? [BP.partBindingDetail(spec, ctx), BP.structuredOutputRules(ctx)].join('\n\n')
         : '';
-    return `${header}\n${blueprintBlock ? `${blueprintBlock}\n` : ''}${detail}\n${extra}`;
+    let proactiveHint = '';
+    if (ctx.blueprintPart && BP?.lesenForumTeil4ProactiveHint) {
+      const slot = String(ctx.blueprintPart.slotType || '').toLowerCase();
+      const teil = Number(ctx.blueprintPart.teil ?? ctx.teil);
+      const isLesenT4 =
+        (slot.includes('forum') || slot.includes('opinion')) &&
+        teil === 4 &&
+        /lesen|reading/i.test(ctx.expectKey);
+      // Lesen T4 is generated via LesenTeil4Split sub-calls — avoid "all 7 in one JSON" hint.
+      if (!isLesenT4) {
+        proactiveHint = BP.lesenForumTeil4ProactiveHint();
+      }
+    }
+    return `${header}\n${blueprintBlock ? `${blueprintBlock}\n` : ''}${detail}\n${extra}${proactiveHint}`;
+  }
+
+  function annotatePersonalExamChunks(chunks) {
+    const EXAM_MODEL = 'claude-sonnet-4-6';
+    return chunks.map((c) => {
+      const slot = String(c.blueprintPart?.slotType || '').toLowerCase();
+      const teil = Number(c.teil ?? c.blueprintPart?.teil);
+      const expectKey = String(c.expectKey || '').toLowerCase();
+      if (slot.includes('ads_matching') && teil === 3 && /lesen|reading/.test(expectKey)) {
+        return {
+          ...c,
+          forceExamModel: EXAM_MODEL,
+          chunkSlotType: 'ads_matching',
+          chunkTeil: 3,
+          maxTokens: Math.max(c.maxTokens || 0, 9000),
+        };
+      }
+      if (teil === 2 && /lesen|reading/.test(expectKey) && (slot.includes('press') || Number(c.blueprintPart?.passagesPerPart) >= 2)) {
+        return { ...c, chunkTeil: 2, chunkSlotType: 'press_mcq', lesenT2Split: true };
+      }
+      if (/horen|listening/.test(expectKey)) {
+        if ((slot.includes('short_texts') && teil === 1) || (slot.includes('discussion') && teil === 4)) {
+          return {
+            ...c,
+            forceExamModel: EXAM_MODEL,
+            chunkTeil: teil,
+            chunkSlotType: slot.includes('discussion') ? 'discussion_twice' : 'short_texts_twice',
+            maxTokens: Math.max(c.maxTokens || 0, 9000),
+          };
+        }
+      }
+      return c;
+    });
+  }
+
+  /** @deprecated alias */
+  function annotatePersonalLesenChunks(chunks) {
+    return annotatePersonalExamChunks(chunks);
+  }
+
+  function annotateLesenT2Split(chunks) {
+    let Split = null;
+    try {
+      Split =
+        typeof LesenTeil2Split !== 'undefined'
+          ? LesenTeil2Split
+          : require('../generators/lesenTeil2Split.js');
+    } catch {
+      return chunks;
+    }
+    return chunks.map((c) => {
+      if (!Split.isLesenT2SplitChunk(c)) return c;
+      return {
+        ...c,
+        lesenT2Split: true,
+        lesenT2MaxTokens: Split.MAX_TOKENS,
+        maxTokens: Math.min(c.maxTokens || Split.MAX_TOKENS, Split.MAX_TOKENS),
+      };
+    });
+  }
+
+  function annotateLesenT4Split(chunks) {
+    let Split = null;
+    try {
+      Split =
+        typeof LesenTeil4Split !== 'undefined'
+          ? LesenTeil4Split
+          : require('../generators/lesenTeil4Split.js');
+    } catch {
+      return chunks;
+    }
+    return chunks.map((c) => {
+      if (!Split.isLesenForumT4Chunk(c)) return c;
+      return {
+        ...c,
+        lesenT4Split: true,
+        lesenT4PhaseCount: Split.phaseCount(c.blueprintPart),
+        lesenT4MaxTokens: Split.MAX_TOKENS,
+        maxTokens: Math.min(c.maxTokens || Split.MAX_TOKENS, Split.MAX_TOKENS),
+      };
+    });
   }
 
   function buildExamChunksFromBlueprint(spec, blueprint) {
@@ -115,14 +246,20 @@ const PromptBuilder = (() => {
     return {
       mode: 'chunks',
       blueprint,
-      chunks: chunks.map((ctx) => ({
-        expectKey: ctx.expectKey,
-        label: ctx.label,
-        teil: ctx.teil,
-        blueprintPart: ctx.blueprintPart,
-        maxTokens: maxTokensFor(spec, chunkKind(ctx.expectKey)),
-        prompt: buildExamChunkPrompt(spec, ctx),
-      })),
+      chunks: annotatePersonalLesenChunks(
+        annotateLesenT2Split(
+        annotateLesenT4Split(
+        chunks.map((ctx) => ({
+          expectKey: ctx.expectKey,
+          label: ctx.label,
+          teil: ctx.teil,
+          blueprintPart: ctx.blueprintPart,
+          maxTokens: maxTokensFor(spec, chunkKind(ctx.expectKey), ctx),
+          prompt: buildExamChunkPrompt(spec, ctx),
+        })),
+      ),
+      ),
+      ),
     };
   }
 
@@ -154,11 +291,22 @@ const PromptBuilder = (() => {
     return { ...blueprint, modules };
   }
 
+  function targetUsageContract(isLast) {
+    if (!isLast) return 'Do NOT include targetUsage in this chunk.';
+    return (
+      'This is the FINAL chunk. Add top-level "targetUsage": [{"word":"<original>","surfaces":["<exact form>",…]}] ' +
+      'ONLY for learner words you wove in naturally and grammatically correctly in ANY chunk of this exam. ' +
+      'Do not invent usage — each surface must appear verbatim in the text. Omit forced or agrammatical appearances.'
+    );
+  }
+
   function buildPersonalExamChunkPrompt(spec, ctx) {
     const base = buildExamChunkPrompt(spec, ctx);
     const words = spec.targetWords || [];
     const isDE = spec.language === 'german';
+    const Mod = getModInstr();
     const rules = vocabExamRules(spec, isDE);
+    const weave = Mod.vocabWeavingRules(spec);
     const lines = [
       'PERSONAL VOCABULARY REVIEW (official part structure — items must be pool-compatible):',
     ];
@@ -166,19 +314,52 @@ const PromptBuilder = (() => {
       lines.push(
         `Weave these learner words naturally where authentic: ${words.map((w) => `"${w}"`).join(', ')}.`,
       );
+      lines.push(
+        'Use standard dictionary spellings for vocabulary words in all generated German/English/Spanish text — never propagate obvious typos from the word list.',
+      );
     }
     if (spec.vocabPolicy?.maximizeCoverage) {
       lines.push(
         `Use as many learner words as possible naturally for level ${spec.level}; do not force words artificially.`,
       );
     }
-    lines.push(rules);
-    lines.push(
-      ctx.isLast
-        ? 'This is the FINAL chunk. Add top-level "targetUsage": [{"word":"<original>","surfaces":["<exact form>",…]}] for each learner word you used in ANY chunk of this exam.'
-        : 'Do NOT include targetUsage in this chunk.',
-    );
+    lines.push(weave, rules, targetUsageContract(ctx.isLast));
     return `${base}\n\n${lines.join('\n')}`;
+  }
+
+  /** Generate ONLY missing scorable items for an existing Teil (preserve passage/transcript). */
+  function buildRefillChunk(spec, { deficit, existingPart, need, startNum, blueprint }) {
+    const BP = getBlueprintBinding();
+    if (!BP || !blueprint) return null;
+    const filtered = filterBlueprintBySkills(blueprint, [deficit.module]);
+    const plan = BP.chunkPlanForPersonalModule(filtered, spec.language, deficit.teil);
+    const ctx = plan[0];
+    if (!ctx) return null;
+
+    const base = buildPersonalExamChunkPrompt(spec, { ...ctx, chunkIndex: 0, chunkTotal: 1, isLast: false });
+    const snap = JSON.stringify(existingPart, null, 0).slice(0, 12000);
+    const Mod = getModInstr();
+    const lines = [
+      'REFILL MODE — generate ONLY the missing scorable items for this Teil.',
+      `You MUST NOT change or regenerate the existing passage, transcript, ads, or textTitle.`,
+      `Generate EXACTLY ${need} NEW scorable item(s) to append (total target after merge: full Teil).`,
+      `Assign ids/numbers ${startNum} through ${startNum + need - 1} (official exam numbering).`,
+      `Existing part (preserve text/transcript/ads — only add questions/items):`,
+      snap,
+      'Return ONE JSON object with the same root key and teil. Include ONLY the new items in questions[] or items[] ' +
+        '(or segment questions[]). Repeat unchanged text/transcript fields exactly as above.',
+      Mod.grammarRetryHint(spec.language),
+    ];
+    return {
+      expectKey: ctx.expectKey,
+      label: `${ctx.label} refill +${need}`,
+      teil: ctx.teil,
+      moduleId: ctx.moduleId,
+      blueprintPart: ctx.blueprintPart,
+      maxTokens: Math.max(maxTokensFor(spec, chunkKind(ctx.expectKey), ctx), 4000),
+      prompt: `${base}\n\n${lines.join('\n')}`,
+      isRefill: true,
+    };
   }
 
   /** Personal AI exam — same official Teile as library/standard exams, plus vocab weaving. */
@@ -190,30 +371,48 @@ const PromptBuilder = (() => {
     const filtered = filterBlueprintBySkills(blueprint, spec.skills);
     const skills = normalizePersonalSkills(spec.skills);
     const teilFilter = spec.personalTeilFilter ?? 'all';
-    const plan =
+    let plan =
       skills.length === 1 && filtered.modules?.length === 1
         ? BP.chunkPlanForPersonalModule(filtered, spec.language, teilFilter)
         : BP.chunkPlanFromBlueprint(filtered, spec.language);
+    let Filter = null;
+    try {
+      Filter =
+        typeof PersonalLesenPoolFallback !== 'undefined'
+          ? PersonalLesenPoolFallback
+          : require('../personalLesenPoolFallback.js');
+    } catch {
+      Filter = null;
+    }
+    if (Filter?.filterPersonalAiChunks) {
+      plan = Filter.filterPersonalAiChunks(plan, spec);
+    }
     if (!plan.length) {
       throw new Error('Blueprint produced empty chunk plan for selected skills');
     }
     return {
       mode: 'chunks',
       blueprint: filtered,
-      chunks: plan.map((ctx, i) => ({
-        expectKey: ctx.expectKey,
-        label: `${ctx.label} (personal vocab)`,
-        teil: ctx.teil,
-        moduleId: ctx.moduleId,
-        blueprintPart: ctx.blueprintPart,
-        maxTokens: maxTokensFor(spec, chunkKind(ctx.expectKey)),
-        prompt: buildPersonalExamChunkPrompt(spec, {
-          ...ctx,
-          chunkIndex: i,
-          chunkTotal: plan.length,
-          isLast: i === plan.length - 1,
-        }),
-      })),
+      chunks: annotatePersonalLesenChunks(
+        annotateLesenT2Split(
+        annotateLesenT4Split(
+        plan.map((ctx, i) => ({
+          expectKey: ctx.expectKey,
+          label: `${ctx.label} (personal vocab)`,
+          teil: ctx.teil,
+          moduleId: ctx.moduleId,
+          blueprintPart: ctx.blueprintPart,
+          maxTokens: maxTokensFor(spec, chunkKind(ctx.expectKey), ctx),
+          prompt: buildPersonalExamChunkPrompt(spec, {
+            ...ctx,
+            chunkIndex: i,
+            chunkTotal: plan.length,
+            isLast: i === plan.length - 1,
+          }),
+        })),
+      ),
+      ),
+      ),
     };
   }
 
@@ -242,7 +441,7 @@ const PromptBuilder = (() => {
       chunks: chunks.map((ctx) => ({
         expectKey: ctx.expectKey,
         label: ctx.label,
-        maxTokens: maxTokensFor(spec, chunkKind(ctx.expectKey)),
+        maxTokens: maxTokensFor(spec, chunkKind(ctx.expectKey), ctx),
         prompt: buildExamChunkPrompt(spec, ctx),
       })),
     };
@@ -252,11 +451,16 @@ const PromptBuilder = (() => {
     const rfType = isDE ? 'rf' : 'tf';
     const rfCorrect = isDE ? '"R" or "F"' : '"T" or "F"';
     const ynCorrect = isDE ? '"J" or "N"' : '"Y" or "N"';
+    const Mod = getModInstr();
+    const quality = Mod.contentQualityRules(spec);
+    const weave = Mod.vocabWeavingRules(spec);
     return (
       `EVERY scorable question MUST include a top-level "correct" field (never omit it). ` +
       `Types: ${rfType} → correct ${rfCorrect}; ja_nein → correct ${ynCorrect}; ` +
       `multiple-choice → options [{"key":"A","text":"…"},…] and correct as letter key only ("A","B",…). ` +
-      `Do NOT put answers in "answer"/"solution" only — always duplicate into "correct".`
+      `Every distractor option must be grammatically correct (e.g. "Er fährt…", not "Er laufen…"). ` +
+      `Do NOT put answers in "answer"/"solution" only — always duplicate into "correct". ` +
+      `${weave} ${quality}`
     );
   }
 
@@ -324,9 +528,7 @@ const PromptBuilder = (() => {
       `Include topic, level:"${spec.level}", lang:"${loc.langCode}". Omit all other module keys.`,
       `Each part: authentic ${loc.contentLang} text/transcript and 2 verifiable questions with "correct".`,
       rules,
-      ctx.isLast
-        ? `Add top-level "targetUsage": [{"word":"<original>","surfaces":["<exact form>",…]}] for each learner word you used in ANY chunk of this exam (this is the final chunk).`
-        : `Do NOT include targetUsage in this chunk.`,
+      targetUsageContract(ctx.isLast),
     ].join(' ');
     return `${headerBlock}\n${body}`;
   }
@@ -338,7 +540,16 @@ const PromptBuilder = (() => {
       chunks: plan.map((ctx) => ({
         expectKey: ctx.expectKey,
         label: `Personal ${ctx.title} ${ctx.teilFrom}${ctx.teilTo !== ctx.teilFrom ? `–${ctx.teilTo}` : ''}`,
-        maxTokens: /schreiben|writing|sprechen|speaking/i.test(ctx.expectKey) ? 3200 : 4200,
+        teilFrom: ctx.teilFrom,
+        teilTo: ctx.teilTo,
+        maxTokens: maxTokensFor(spec, chunkKind(ctx.expectKey), {
+          teil: ctx.teilFrom,
+          blueprintPart: {
+            teil: ctx.teilFrom,
+            layout: ctx.teilFrom >= 3 ? 'items' : 'passage_questions',
+            slotType: ctx.teilFrom === 3 ? 'ads_matching' : ctx.teilFrom === 4 ? 'forum_opinions' : '',
+          },
+        }),
         prompt: buildVocabExamChunkPrompt(spec, ctx),
       })),
     };
@@ -359,7 +570,7 @@ const PromptBuilder = (() => {
       `Include ONLY these module keys: ${keysLine}. Omit unselected modules entirely. ` +
       `Embed each target word naturally in authentic ${loc.contentLang} texts. Verifiable questions only. ` +
       `${rules} ` +
-      `Add "targetUsage" for each learner word you actually used.`;
+      targetUsageContract(true);
 
     return {
       mode: 'single',
@@ -530,6 +741,7 @@ const PromptBuilder = (() => {
     buildVocabExamChunks,
     buildPersonalExamChunks,
     buildPersonalExamChunksFromBlueprint,
+    buildRefillChunk,
     filterBlueprintBySkills,
     expandChunkPlan,
     chunksForSpec,

@@ -9,17 +9,16 @@ const { casWriteJson, readIdempotentResult, writeIdempotentResult } = require('.
 const { verifyAuthToken, userKey } = require('./authLib.js');
 const { getBearer }  = require('./http.js');
 const { applyMonthlyAiReset, buildQuotaPayload } = require('./aiQuotaState.js');
+const { aiMaxForPlan } = require('./freeTrialLib.js');
 
 const GUEST_MAX     = 2;
 const FREE_MAX      = 5;
 const PRO_MAX       = 12;
 const GUEST_TTL_SEC = 30 * 24 * 60 * 60; // 30 days
 
-function getMonthKey() {
-  const d = new Date();
-  // B-5 fix: zero-pad month so keys match YYYY-MM format (getMonth() is 0-indexed)
-  const m = String(d.getMonth() + 1).padStart(2, '0');
-  return `${d.getFullYear()}-${m}`;
+function getMonthKey(date) {
+  const { getMonthKey: monthKey } = require('./freeTrialLib.js');
+  return monthKey(date);
 }
 
 function hashIp(ip) {
@@ -46,12 +45,14 @@ async function loadUser(store, email) {
 
 function resolvePlan(user) {
   if (!user) return 'free';
-  if (user.pro || user.plan === 'pro') return 'pro';
+  const plan = String(user.plan || '').toLowerCase();
+  if (plan === 'pro_max') return 'pro_max';
+  if (user.pro || plan === 'pro') return 'pro';
   return 'free';
 }
 
 function maxForPlan(plan) {
-  if (plan === 'pro')   return PRO_MAX;
+  if (plan === 'pro' || plan === 'pro_max') return PRO_MAX;
   if (plan === 'guest') return GUEST_MAX;
   return FREE_MAX;
 }
@@ -74,6 +75,7 @@ async function getQuotaState(event) {
     const qKey  = `quota:${auth.email}`;
     let used = 0;
     const max = maxForPlan(plan);
+    const aiMax = aiMaxForPlan(plan, user, month);
     try {
       const q = await store.get(qKey, { type: 'json' });
       if (q && q.month === month) used = Number(q.used) || 0;
@@ -89,6 +91,8 @@ async function getQuotaState(event) {
       month,
       store,
       qKey,
+      user,
+      aiMax,
     };
   }
 
@@ -207,10 +211,7 @@ async function incrementQuota(quotaCheck, opts = {}) {
 
       const newUsed = cappedUsed + 1;
       const version = (current?.version || 0) + 1;
-      const aiMax =
-        s.authenticated && s.plan === 'pro'
-          ? Number(process.env.AI_CREDITS_PRO || 100)
-          : 0;
+      const aiMax = s.aiMax ?? aiMaxForPlan(s.plan, s.user, month);
 
       if (s.authenticated) {
         const normalized = applyMonthlyAiReset(current, aiMax, month);
@@ -292,10 +293,7 @@ async function decrementQuota(quotaCheck, opts = {}) {
 
       const newUsed = Math.max(0, Math.min(used, s.max) - 1);
       const version = (current?.version || 0) + 1;
-      const aiMax =
-        s.authenticated && s.plan === 'pro'
-          ? Number(process.env.AI_CREDITS_PRO || 100)
-          : 0;
+      const aiMax = s.aiMax ?? aiMaxForPlan(s.plan, s.user, month);
 
       if (s.authenticated) {
         const normalized = applyMonthlyAiReset(current, aiMax, month);

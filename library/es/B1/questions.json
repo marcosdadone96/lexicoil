@@ -2,12 +2,184 @@
   "meta": {
     "language": "es",
     "level": "B1",
-    "version": 1,
-    "generatedAt": "2026-06-14",
-    "contentStatus": "scaffold",
-    "examType": "dele",
-    "blueprintId": "dele-b1"
+    "version": 2,
+    "generatedAt": "2026-06-22",
+    "source": "seed-coverage-levels"
   },
-  "passages": [],
-  "questions": []
+  "passages": [
+    {
+      "id": "p-es-B1-lesen",
+      "module": "lesen",
+      "title": "B1 reading",
+      "text": "Muchas ciudades invierten en carriles bici porque los ciudadanos buscan alternativas saludables al coche. Los defensores afirman que reduce la congestión. Los críticos piden también mejor transporte público."
+    },
+    {
+      "id": "p-es-B1-horen",
+      "module": "horen",
+      "title": "B1 listening",
+      "text": "Presentadora: ¡Buenos días! Invitado: Busco un piso en la ciudad.\nPresentadora: ¿Has visto algún anuncio? Invitado: Sí, un piso pequeño cerca del parque."
+    }
+  ],
+  "questions": [
+    {
+      "id": "lb-es-b1-l1",
+      "module": "lesen",
+      "type": "true_false",
+      "question": "El texto describe una persona o situación.",
+      "correct": "True",
+      "correctAnswer": "True",
+      "explanation": "See passage or transcript.",
+      "grammarTags": [
+        "g-es-b1-subj"
+      ],
+      "topicTags": [
+        "vida"
+      ],
+      "difficulty": 3,
+      "passageId": "p-es-B1-lesen",
+      "teil": 1
+    },
+    {
+      "id": "lb-es-b1-l2",
+      "module": "lesen",
+      "type": "true_false",
+      "question": "No hay información sobre trabajo o estudios.",
+      "correct": "False",
+      "correctAnswer": "False",
+      "explanation": "See passage or transcript.",
+      "grammarTags": [
+        "g-es-b1-por-para"
+      ],
+      "topicTags": [
+        "viajes"
+      ],
+      "difficulty": 3,
+      "passageId": "p-es-B1-lesen",
+      "teil": 1
+    },
+    {
+      "id": "lb-es-b1-l3",
+      "module": "lesen",
+      "type": "multiple",
+      "question": "¿De qué trata principalmente el texto?",
+      "options": [
+        "a) Deporte",
+        "b) Vida diaria, trabajo o ciudad",
+        "c) Historia"
+      ],
+      "correct": "b",
+      "correctAnswer": "b",
+      "explanation": "See passage or transcript.",
+      "grammarTags": [
+        "g-es-b1-subj"
+      ],
+      "topicTags": [
+        "trabajo"
+      ],
+      "difficulty": 3,
+      "passageId": "p-es-B1-lesen",
+      "teil": 2
+    },
+    {
+      "id": "lb-es-b1-h1",
+      "module": "horen",
+      "type": "multiple",
+      "question": "¿De qué trata la conversación?",
+      "options": [
+        "a) Tiempo",
+        "b) Vida diaria o tema actual",
+        "c) Matemáticas"
+      ],
+      "correct": "b",
+      "correctAnswer": "b",
+      "explanation": "See passage or transcript.",
+      "grammarTags": [
+        "g-es-b1-subj"
+      ],
+      "topicTags": [
+        "vida"
+      ],
+      "difficulty": 3,
+      "passageId": "p-es-B1-horen",
+      "segmentLabel": "Grabación 1",
+      "teil": 1
+    },
+    {
+      "id": "lb-es-b1-h2",
+      "module": "horen",
+      "type": "true_false",
+      "question": "Hay al menos dos hablantes en el diálogo.",
+      "correct": "True",
+      "correctAnswer": "True",
+      "explanation": "See passage or transcript.",
+      "grammarTags": [
+        "g-es-b1-por-para"
+      ],
+      "topicTags": [
+        "viajes"
+      ],
+      "difficulty": 3,
+      "passageId": "p-es-B1-horen",
+      "segmentLabel": "Grabación 1",
+      "teil": 1
+    },
+    {
+      "id": "lb-es-b1-g1",
+      "module": "grammatik",
+      "type": "gap_fill",
+      "question": "Complete: It is important ___ protect the environment.",
+      "correct": "to",
+      "correctAnswer": "to",
+      "explanation": "Grammar gap.",
+      "grammarTags": [
+        "g-es-b1-subj"
+      ],
+      "topicTags": [
+        "vida"
+      ],
+      "difficulty": 3,
+      "teil": 2
+    },
+    {
+      "id": "lb-es-b1-g2",
+      "module": "grammatik",
+      "type": "gap_fill",
+      "question": "Complete: She has lived here ___ 2019.",
+      "correct": "since",
+      "correctAnswer": "since",
+      "explanation": "Grammar gap.",
+      "grammarTags": [
+        "g-es-b1-por-para"
+      ],
+      "topicTags": [
+        "viajes"
+      ],
+      "difficulty": 3,
+      "teil": 3
+    },
+    {
+      "id": "lb-es-b1-m1",
+      "module": "lesen",
+      "type": "matching",
+      "question": "Who mentions cost reduction?",
+      "options": [
+        "A) Presenter",
+        "B) Expert",
+        "C) Neither"
+      ],
+      "correct": "B",
+      "correctAnswer": "B",
+      "explanation": "Match the speaker.",
+      "grammarTags": [
+        "g-es-b1-subj"
+      ],
+      "topicTags": [
+        "trabajo"
+      ],
+      "difficulty": 3,
+      "passageId": "p-es-B1-horen",
+      "teil": 1
+    }
+  ],
+  "vocabulary": {}
 }
