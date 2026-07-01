@@ -14,7 +14,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { createRequire } from 'node:module';
-import { auditExam, partToExamWrapper } from './audit-pass-2.mjs';
+import { auditExam, partToExamWrapper, chk23 } from './audit-pass-2.mjs';
 import { loadEnvFile, ROOT } from './lib/loadEnv.mjs';
 
 const require = createRequire(import.meta.url);
@@ -60,12 +60,16 @@ function filterPartFindings(findings) {
 }
 
 function auditPartRecord(record) {
+  // CHK-23 must run on the raw record before normalization (flattenExam collapses
+  // segments[].questions and rec.questions via ID-dedup, hiding the key conflict).
+  const rawFindings = chk23(record, record.id || 'part');
+
   const wrapper = recordToExamWrapper(record);
   if (!wrapper) {
     return { clean: false, important: 1, critical: 0, minor: 0, byChk: { 'CHK-?': 1 } };
   }
   const audit = auditExam(wrapper, record.id || 'part');
-  const findings = filterPartFindings(audit.findings);
+  const findings = [...rawFindings, ...filterPartFindings(audit.findings)];
   const criticalFindings   = findings.filter((f) => f.severity === 'CRITICAL');
   const importantFindings  = findings.filter((f) => f.severity === 'IMPORTANT');
   // clean = 0 CRITICAL AND 0 IMPORTANT — same gate as POOL-2 / isPartPoolReady

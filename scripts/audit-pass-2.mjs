@@ -251,13 +251,15 @@ function chk4(batch, file) {
           }
         }
       }
-      // No single letter > 65% (allows 3/5=60% which is acceptable with few items)
+      // No single letter > 65% (allows 3/5=60% which is acceptable with few items).
+      // ≥75% with n≥5 is CRITICAL (adivinable: marcar siempre esa letra = ≥75% score).
       for (const [v, cnt] of Object.entries(dist)) {
         const pct = cnt / n;
         const limit = key.startsWith('horen-4') && v === 'a' ? 0.50 : 0.65;
         if (pct > limit) {
-          findings.push(finding('CHK-4', 'IMPORTANT', file, key,
-            `Balance MC: "${v}"=${Math.round(pct*100)}% supera el máximo 65%. Dist: ${JSON.stringify(dist)}`));
+          const sev = (n >= 5 && pct >= 0.75) ? 'CRITICAL' : 'IMPORTANT';
+          findings.push(finding('CHK-4', sev, file, key,
+            `Balance MC: "${v}"=${Math.round(pct*100)}% supera el máximo ${Math.round(limit*100)}%${sev === 'CRITICAL' ? ' (≥75% con n≥5 = adivinable)' : ''}. Dist: ${JSON.stringify(dist)}`));
         }
       }
     } else if (type === 'richtig_falsch' || type === 'ja_nein') {
@@ -1156,6 +1158,47 @@ function chk21(batch, file) {
   return findings;
 }
 
+// ─── CHK-23: Integridad de claves — conflicto segments vs questions ──────────
+//
+// Some records have the same question IDs duplicated in two places:
+//   rec.segments[i].questions[]  (nested, per-segment — generated in context)
+//   rec.questions[]              (flat top-level copy — reconstructed from snapshot)
+//
+// When both exist with the SAME question ID but DIFFERENT `correct` values,
+// flattenExam silently discards the segment copy (dedup by ID, part.questions wins).
+// The renderer then uses the wrong answer key for those questions.
+//
+// CRITICAL — always blocks; wrong answer keys = wrong scoring.
+
+export function chk23(batch, file) {
+  const findings = [];
+  // batch here is the RAW record (pre-normalization), not the flattened exam.
+  // We need to access rec.segments and rec.questions directly.
+  // NOTE: this check is called on the raw seed record in isPartPoolReady.
+  const segQs = (batch.segments || []).flatMap(s => s.questions || []);
+  const dirQs = batch.questions || [];
+  if (!segQs.length || !dirQs.length) return findings;
+
+  const dirMap = new Map(dirQs.map(q => [q.id, q]));
+  const conflicts = [];
+  for (const sq of segQs) {
+    const dq = dirMap.get(sq.id);
+    if (!dq) continue;
+    const segVal = String(sq.correct || '').toLowerCase();
+    const dirVal = String(dq.correct || '').toLowerCase();
+    if (segVal !== dirVal) {
+      conflicts.push(`${sq.id.slice(-10)}: segments.correct=${sq.correct} ≠ questions.correct=${dq.correct}`);
+    }
+  }
+  if (conflicts.length > 0) {
+    findings.push(finding('CHK-23', 'CRITICAL', file, bpKey(segQs[0]),
+      `Conflicto de claves: ${conflicts.length} pregunta(s) tienen correct diferente en segments[] vs questions[]. ` +
+      `flattenExam usa questions[] (incorrecto). Ejemplos: ${conflicts.slice(0, 3).join(' | ')}`,
+    ));
+  }
+  return findings;
+}
+
 // ─── CHK-22: Lesen T4 — cross-batch Frankenstein (multiple passageIds) ───────
 //
 // All 7 T4 questions must belong to the SAME forum topic (same passageId).
@@ -1627,12 +1670,16 @@ function splitInputIntoPartRecords(input) {
 }
 
 function auditSinglePartRecord(record, label) {
+  // CHK-23 runs on the raw record BEFORE normalization, because flattenExam
+  // collapses the segments/questions duality via ID-dedup (part.questions wins).
+  const rawFindings = chk23(record, label);
+
   const wrapper = partToExamWrapper(record);
   if (!wrapper) {
-    return [finding('AUDIT-ERROR', 'CRITICAL', label, 'part', 'Parte no convertible a examen')];
+    return [...rawFindings, finding('AUDIT-ERROR', 'CRITICAL', label, 'part', 'Parte no convertible a examen')];
   }
   const audit = auditExam(wrapper, label);
-  return filterPartPoolFindings(audit.findings).filter(
+  return [...rawFindings, ...filterPartPoolFindings(audit.findings)].filter(
     (f) => f.severity === 'CRITICAL' || f.severity === 'IMPORTANT',
   );
 }
