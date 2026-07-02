@@ -1777,19 +1777,38 @@ export async function isPartPoolReady(part, { allowFailures = false, semantic = 
 
 // ─── GATE de publicación — fuente única de verdad ────────────────────────────
 //
-// GATE_BLOCK_CHECKS: CHK-IDs IMPORTANT que se tratan como CRITICAL para publicación.
-// Todos los CRITICAL siempre bloquean, independientemente de este Set.
+// POLÍTICA V-10 (decidida 2026-07-02):
+// Meta final = "publicación ≡ ingestión" (0-CRITICAL, 0-IMPORTANT en ambas).
+// La convergencia se hace en dos etapas:
 //
-// ACTUALMENTE bloqueantes: solo garantías estructurales ROOT-1 — el pool ya está
-// limpio en estas invariantes, así que NO congela el pipeline.
+//   GATE_BLOCK_CHECKS  — IMPORTANT tratados como CRITICAL AHORA.
+//                        Solo invariantes estructurales cuyo fallo produce exámenes
+//                        rotos independientemente del contenido.
 //
-// ADVISORIES (loguean pero NO bloquean hoy): CHK-18, CHK-6, CHK-7, CHK-10.
-// Son defectos de contenido pre-existentes en el banco; bloquerían TODO el ensamblado.
-// Para activar bloqueo total 0-IMPORTANT: añadir los IDs al Set — UNA edición.
+//   GATE_BLOCK_PENDING — IMPORTANT que DEBEN bloquear cuando el pool esté limpio.
+//                        Actualmente advisory para no congelar el pipeline.
+//                        POOL-5 los moverá a GATE_BLOCK_CHECKS celda a celda,
+//                        una vez la matriz pool-health no tenga registros afectados.
+//
+// Para activar un CHK pendiente: mover su entrada de PENDING → CHECKS (una edición).
+//
+// Todos los CRITICAL bloquean siempre, independientemente de estos Sets.
+
+// Invariantes estructurales activos:
 export const GATE_BLOCK_CHECKS = new Set([
   'CHK-17', // L3: misma lista A-J compartida en los 7 ítems (Frankenstein L3)
+  'CHK-20', // H1: cada segmento debe tener exactamente 1RF+1MC (invariante estructural H1)
   'CHK-21', // T4: signText ≥15 palabras y autores únicos (Frankenstein T4)
   'CHK-22', // T4: múltiples passageIds = cross-batch Frankenstein (CRITICAL — siempre bloquea)
+]);
+
+// Pendientes de activación (advisory hoy, bloqueantes cuando pool-health los soporte):
+// Para mover a activo: cut from here, paste into GATE_BLOCK_CHECKS above.
+export const GATE_BLOCK_PENDING = new Set([
+  // CHK-18: explanation quality (corta <10w, trivial, no alemán, circular).
+  // Impacto actual: 53/160 registros (33%). Mover a GATE_BLOCK_CHECKS en POOL-5,
+  // cuando pool-health-report muestre 0 registros con CHK-18 en celdas activas.
+  'CHK-18',
 ]);
 
 /**
@@ -1835,8 +1854,12 @@ export function isExamPublishable(exam, { allowFailures = false } = {}) {
   const blocking = allFindings.filter(
     (f) => f.severity === 'CRITICAL' || GATE_BLOCK_CHECKS.has(f.id),
   );
+  // pending: advisory findings that are in GATE_BLOCK_PENDING (will block in POOL-5)
+  const pending = allFindings.filter(
+    (f) => f.severity !== 'CRITICAL' && !GATE_BLOCK_CHECKS.has(f.id) && GATE_BLOCK_PENDING.has(f.id),
+  );
   const advisory = allFindings.filter(
-    (f) => f.severity !== 'CRITICAL' && !GATE_BLOCK_CHECKS.has(f.id),
+    (f) => f.severity !== 'CRITICAL' && !GATE_BLOCK_CHECKS.has(f.id) && !GATE_BLOCK_PENDING.has(f.id),
   );
   if (allowFailures && blocking.length > 0) {
     const ids = [...new Set(blocking.map((f) => f.id))].join(',');
@@ -1844,7 +1867,13 @@ export function isExamPublishable(exam, { allowFailures = false } = {}) {
       `\n\x1b[31m⚠  --allow-audit-failures: ${blocking.length} finding(s) ignorado(s) [${ids}]\x1b[0m\n`,
     );
   }
-  return { ok: allowFailures || blocking.length === 0, blocking, advisory };
+  if (pending.length > 0) {
+    const ids = [...new Set(pending.map((f) => f.id))].join(',');
+    process.stderr.write(
+      `\n\x1b[33m⚠  GATE_BLOCK_PENDING: ${pending.length} finding(s) no bloquean hoy pero lo harán en POOL-5 [${ids}]\x1b[0m\n`,
+    );
+  }
+  return { ok: allowFailures || blocking.length === 0, blocking, pending, advisory };
 }
 
 // Exportar símbolos necesarios para publicador y verify
