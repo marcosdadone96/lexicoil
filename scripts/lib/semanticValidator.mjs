@@ -119,6 +119,7 @@ function collectPassageText(part) {
   const seen = new Set();
   const add = (t) => { const s = String(t || '').trim(); if (s && !seen.has(s)) { seen.add(s); chunks.push(s); } };
 
+  // Single passage (Lesen T1/T3/T5, Hören T4 batch)
   const p = part.passage;
   if (p) {
     add(p.text);
@@ -126,6 +127,11 @@ function collectPassageText(part) {
     if (Array.isArray(p.passages)) p.passages.forEach((pp) => { if (pp?.text) add(pp.text); });
     // p.transcript: skip if same content as p.text (H4 records store it in both)
     if (p.transcript && p.transcript !== p.text) add(p.transcript);
+  }
+  // Multi-passage parts (Lesen T2 batch/record: part.passages[] instead of part.passage)
+  for (const pp of (part.passages || [])) {
+    if (pp?.text) add(pp.text);
+    if (pp?.title && pp.title !== pp.text) add(pp.title);
   }
   for (const seg of part.segments || []) {
     if (seg.transcript) add(seg.transcript);

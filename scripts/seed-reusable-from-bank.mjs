@@ -172,21 +172,53 @@ function lesenBatchFromRecord(rec) {
 
 function moduleBatchFromRecord(rec) {
   if (rec.module === 'lesen') return lesenBatchFromRecord(rec);
-  const passages = (rec.passage?.passages || []).map((p) => ({
-    id: p.passageId || p.id,
-    text: p.text,
-    title: p.textTitle || p.title,
-  }));
-  if (!passages.length && rec.passage?.text) {
-    passages.push({
-      id: rec.passage.passageId || 'main',
-      text: rec.passage.text,
-      title: rec.passage.title,
-    });
+
+  // Eje-2: for Hören records, questions[] may be empty (flat index) while the real
+  // questions live in segments[].questions. Derive flat questions from segments so
+  // the quality checker (checkHorenBatchQuality) can run correctly.
+  let questions = rec.questions || [];
+  if (!questions.length && Array.isArray(rec.segments) && rec.segments.length > 0) {
+    questions = rec.segments.flatMap((s) => s.questions || []);
   }
+
+  // Build passages array.
+  // For Hören records with segments (H1/H2/H3), build passages from segments to
+  // preserve the correct passageId — rec.passage carries no passageId field, so
+  // falling back to 'main' would make passageById() fail for every question.
+  const passages = [];
+  if (Array.isArray(rec.segments) && rec.segments.length > 0) {
+    for (const seg of rec.segments) {
+      const text = seg.transcript || seg.text || '';
+      if (text) {
+        passages.push({
+          id: seg.passageId || seg.id || 'seg_passage',
+          text,
+          title: seg.label || '',
+        });
+      }
+    }
+  }
+  // Fallback for non-segment Hören (H4) or if segments had no transcripts
+  if (!passages.length) {
+    const nested = (rec.passage?.passages || []).map((p) => ({
+      id: p.passageId || p.id,
+      text: p.text,
+      title: p.textTitle || p.title,
+    }));
+    passages.push(...nested);
+    if (!passages.length && rec.passage?.text) {
+      passages.push({
+        id: rec.passage.passageId || 'main',
+        text: rec.passage.text,
+        title: rec.passage.title,
+      });
+    }
+  }
+
   return {
-    questions: rec.questions || [],
+    questions,
     passages,
+    segments: rec.segments,
     ads: rec.ads || rec.passage?.ads,
   };
 }
