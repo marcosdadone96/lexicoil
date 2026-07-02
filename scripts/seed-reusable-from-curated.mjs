@@ -151,6 +151,9 @@ function lesenPassagePayload(part) {
 }
 
 function flattenHorenQuestions(part) {
+  // Eje-2 Fase A: only read from segments[].questions — never from part.questions[].
+  // part.questions is a derived index; appending it would duplicate questions if
+  // both are populated, which is exactly the CHK-23 bug this refactor eliminates.
   const out = [];
   for (const seg of part.segments || []) {
     for (const q of seg.questions || []) {
@@ -164,7 +167,6 @@ function flattenHorenQuestions(part) {
       });
     }
   }
-  (part.questions || []).forEach((q) => out.push(q));
   return out;
 }
 

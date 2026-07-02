@@ -518,8 +518,23 @@ export async function extractBankReusableParts({
             }
             continue;
           }
-          record.questions = gate.questions;
-          record.itemCount = gate.itemCount;
+          // Eje-2 Fase A: keep segments[].questions as the single source of truth.
+          // Gate may mutate correct/passageId via applyPartPostprocess / autoAssignPassageId.
+          // For Hören records, propagate those mutations back into segments, then
+          // re-derive the flat index so questions[] never diverges from segments[].
+          if (record.module === 'horen' && Array.isArray(record.segments) && record.segments.length > 0) {
+            const gateMap = new Map((gate.questions || []).map(q => [q.id, q]));
+            for (const seg of record.segments) {
+              seg.questions = (seg.questions || []).map(q =>
+                gateMap.has(q.id) ? { ...q, ...gateMap.get(q.id) } : q,
+              );
+            }
+            record.questions = flattenHorenQuestions(record);
+            record.itemCount = record.questions.length;
+          } else {
+            record.questions = gate.questions;
+            record.itemCount = gate.itemCount;
+          }
         }
 
         record.complete = true;
