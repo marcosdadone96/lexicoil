@@ -240,9 +240,9 @@ function chk4(batch, file) {
     }
 
     if (type === 'multiple_choice' || (type === 'matching' && key.startsWith('horen-4'))) {
-      // All 3 letters must appear at least once (only enforced for batches with ≥6 MC items;
-      // with 5 items it's statistically possible that one letter is absent without bias)
-      if (n >= 6) {
+      // All 3 letters must appear at least once (enforced for ≥5 MC items — V-18 fix:
+      // was n≥6, but n=5 with one missing letter still indicates answer-key bias).
+      if (n >= 5) {
         const letters = ['a','b','c'];
         for (const letter of letters) {
           if (!dist[letter]) {
@@ -970,8 +970,14 @@ function chk18(batch, file) {
 
     const expl = String(q.explanation || '').trim();
 
-    // Missing explanation
-    if (!expl) continue; // CHK-8 already covers required fields
+    // Missing explanation — V-03: emit IMPORTANT (CHK-8 doesn't require explanation;
+    // this gap means questions with no explanation at all were silently skipped by CHK-18).
+    // Not CRITICAL because absent explanation doesn't break scoring — it breaks correction UX.
+    if (!expl) {
+      findings.push(finding('CHK-18', 'IMPORTANT', file, q.id,
+        'Explanation ausente. Toda pregunta debe incluir una explanation para la pantalla de corrección.'));
+      continue;
+    }
 
     // Minimum length: L3 matching items naturally have shorter explanations
     // (format "AdName bietet X." — 3 words — is valid for matching items)
@@ -1630,7 +1636,7 @@ function partToExamWrapper(record) {
 }
 
 /** Excluye CHK-3 "Teil ausente" al auditar una sola parte (no examen completo). */
-function filterPartPoolFindings(findings) {
+export function filterPartPoolFindings(findings) {
   return findings.filter((f) => {
     if (f.severity === 'INFO') return false;
     if (f.id === 'CHK-3' && String(f.message).includes('Teil ausente')) return false;

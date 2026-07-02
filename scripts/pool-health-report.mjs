@@ -14,7 +14,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { createRequire } from 'node:module';
-import { auditExam, partToExamWrapper, chk23 } from './audit-pass-2.mjs';
+import { auditExam, partToExamWrapper, chk23, filterPartPoolFindings } from './audit-pass-2.mjs';
 import { loadEnvFile, ROOT } from './lib/loadEnv.mjs';
 
 const require = createRequire(import.meta.url);
@@ -22,7 +22,7 @@ loadEnvFile();
 
 
 function parseArgs(argv) {
-  const o = { lang: 'de', level: 'B1', target: 3, source: 'seed', json: false };
+  const o = { lang: 'de', level: 'B1', target: 3, source: 'seed', json: false, semantic: false };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     if (a === '--lang') o.lang = String(argv[++i]).toLowerCase();
@@ -30,6 +30,8 @@ function parseArgs(argv) {
     else if (a === '--target') o.target = Math.max(0, Number(argv[++i]) || 3);
     else if (a === '--source') o.source = String(argv[++i]);
     else if (a === '--json') o.json = true;
+    // V-11: opt-in semantic layer — LLM call per record, expensive, disabled by default.
+    else if (a === '--semantic') o.semantic = true;
   }
   return o;
 }
@@ -50,16 +52,9 @@ function recordToExamWrapper(record) {
   return partToExamWrapper(record);
 }
 
-/** auditExam en parte suelta dispara CHK-3 "Teil ausente" — excluir esos falsos positivos. */
-function filterPartFindings(findings) {
-  return findings.filter((f) => {
-    if (f.severity === 'INFO') return false;
-    if (f.id === 'CHK-3' && String(f.message).includes('Teil ausente')) return false;
-    return true;
-  });
-}
+// filterPartPoolFindings imported from audit-pass-2.mjs — single source of truth (V-19).
 
-function auditPartRecord(record) {
+async function auditPartRecord(record, { semantic = false } = {}) {
   // CHK-23 must run on the raw record before normalization (flattenExam collapses
   // segments[].questions and rec.questions via ID-dedup, hiding the key conflict).
   const rawFindings = chk23(record, record.id || 'part');
@@ -69,7 +64,22 @@ function auditPartRecord(record) {
     return { clean: false, important: 1, critical: 0, minor: 0, byChk: { 'CHK-?': 1 } };
   }
   const audit = auditExam(wrapper, record.id || 'part');
-  const findings = [...rawFindings, ...filterPartFindings(audit.findings)];
+  const findings = [...rawFindings, ...filterPartPoolFindings(audit.findings)];
+
+  // V-11: optional SEM-1 layer (--semantic, opt-in due to LLM cost).
+  if (semantic) {
+    try {
+      const { validatePartSemantics } = await import('./lib/semanticValidator.mjs');
+      const semResult = await validatePartSemantics(record);
+      for (const iss of semResult.issues || []) {
+        const sev = ['correctness', 'ambiguity'].includes(iss.kind) ? 'CRITICAL' : 'IMPORTANT';
+        findings.push({ id: `SEM-${iss.kind.toUpperCase()}`, severity: sev, message: iss.detail });
+      }
+    } catch (err) {
+      process.stderr.write(`[pool-health] SEM-1 error for ${record.id}: ${err?.message || err}\n`);
+    }
+  }
+
   const criticalFindings   = findings.filter((f) => f.severity === 'CRITICAL');
   const importantFindings  = findings.filter((f) => f.severity === 'IMPORTANT');
   // clean = 0 CRITICAL AND 0 IMPORTANT — same gate as POOL-2 / isPartPoolReady
@@ -133,7 +143,7 @@ function emptyCell(module, teil, theme) {
   };
 }
 
-function buildReport(parts, target) {
+async function buildReport(parts, target, { semantic = false } = {}) {
   const cellsMap = new Map();
 
   for (const part of parts) {
@@ -148,7 +158,7 @@ function buildReport(parts, target) {
     const cell = cellsMap.get(key);
     cell.total += 1;
 
-    const verdict = auditPartRecord(part);
+    const verdict = await auditPartRecord(part, { semantic });
     if (verdict.clean) {
       cell.clean += 1;
     } else {
@@ -228,7 +238,10 @@ function printMatrix(cells, target, lang, level, source) {
     process.exit(1);
   }
 
-  const { cells, deficitCells } = buildReport(parts, opts.target);
+  if (opts.semantic) {
+    process.stderr.write('[pool-health] --semantic activo: llamadas LLM por registro (lento y costoso)\n');
+  }
+  const { cells, deficitCells } = await buildReport(parts, opts.target, { semantic: opts.semantic });
 
   if (!opts.json) {
     printMatrix(cells, opts.target, opts.lang, opts.level, opts.source);
