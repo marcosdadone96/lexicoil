@@ -1800,6 +1800,18 @@ export const GATE_BLOCK_CHECKS = new Set([
  * @returns {{ ok: boolean, blocking: object[], advisory: object[] }}
  */
 export function isExamPublishable(exam, { allowFailures = false } = {}) {
+  // ── CHK-23 pre-check on RAW parts, before auditExam calls flattenExam ────────
+  // flattenExam silently resolves questions[]/segments[].questions[] conflicts by
+  // preferring questions[] (wrong for Hören). Run CHK-23 before that resolution
+  // so divergent exams are blocked here, not silently fixed.
+  const preFindings = [];
+  const examObj = exam?.exam || {};
+  for (const slot of ['lesenParts', 'horenParts', 'schreibenParts', 'sprechenParts']) {
+    for (const part of examObj[slot] || []) {
+      preFindings.push(...chk23(part, part.id || slot));
+    }
+  }
+
   // ── Fail-closed: si auditExam lanza (examen nulo, forma inesperada, excepción interna)
   // → tratar como CRITICAL AUDIT-ERROR. NO publicar. El catch→warn de la CLI (modo reporte)
   // es distinto: está en loadBatchFile y solo aplica al escaneo de directorios.
@@ -1817,10 +1829,11 @@ export function isExamPublishable(exam, { allowFailures = false } = {}) {
     return { ok: false, blocking: [auditError], advisory: [] };
   }
 
-  const blocking = audit.findings.filter(
+  const allFindings = [...preFindings, ...audit.findings];
+  const blocking = allFindings.filter(
     (f) => f.severity === 'CRITICAL' || GATE_BLOCK_CHECKS.has(f.id),
   );
-  const advisory = audit.findings.filter(
+  const advisory = allFindings.filter(
     (f) => f.severity !== 'CRITICAL' && !GATE_BLOCK_CHECKS.has(f.id),
   );
   if (allowFailures && blocking.length > 0) {
