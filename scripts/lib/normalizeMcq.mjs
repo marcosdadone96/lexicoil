@@ -37,7 +37,9 @@ export function normalizeQuestionFields(q) {
   if (q.type === 'multiple' && Array.isArray(q.options) && q.options.length) {
     q.options = normalizeMcqOptions(q.options);
   }
-  if (q.correct != null && q.correctAnswer == null) q.correctAnswer = q.correct;
+  // `correct` is canonical; backfill from correctAnswer only when correct is absent.
+  if (q.correct == null && q.correctAnswer != null) q.correct = q.correctAnswer;
+  if (q.correct != null) q.correctAnswer = q.correct;
   return q;
 }
 

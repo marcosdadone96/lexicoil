@@ -1463,12 +1463,15 @@ function normPartType(type) {
 }
 
 function normPartQuestion(q, module, teil) {
+  // `correct` is canonical. Resolve from correctAnswer only when correct is absent.
+  const correct = q.correct ?? q.correctAnswer;
   return {
     ...q,
     module,
     teil,
     type: normPartType(q.type || q.questionType),
-    correctAnswer: q.correctAnswer ?? q.correct,
+    correct,
+    correctAnswer: correct, // mirror, always equal to correct
     question: q.question || q.signText || q.statement || '',
   };
 }
@@ -1606,7 +1609,7 @@ function partRecordToExamPart(record) {
       ? record.questions.map((q) => normPartQuestion(q, module, teil))
       : [{
         id: '1', type: 'short_answer', question: task,
-        correct: 'rubric', correctAnswer: 'rubric', module, teil,
+        correct: 'rubric', module, teil,
       }];
   } else {
     return null;

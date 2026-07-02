@@ -128,11 +128,8 @@ function normalizeQuestion(q) {
   }
   if (out.type) out.type = normalizeQuestionType(out.type);
   if (out.questionType) out.questionType = normalizeQuestionType(out.questionType);
-  // Sync correct ↔ correctAnswer in both directions, including null/undefined gaps
-  if (out.correct != null && (out.correctAnswer == null)) {
-    out.correctAnswer = out.correct;
-  }
-  if (out.correctAnswer != null && (out.correct == null)) {
+  // `correct` is canonical. Backfill from correctAnswer only when correct is absent.
+  if (out.correct == null && out.correctAnswer != null) {
     out.correct = out.correctAnswer;
   }
   if (out.module === 'schreiben' || out.module === 'sprechen') {
@@ -161,16 +158,9 @@ function normalizeQuestion(q) {
   }
   if (out.passageId === null) delete out.passageId;
   if (Array.isArray(out.passageId)) delete out.passageId;
-  if (out.correct != null && out.correctAnswer != null && out.correct !== out.correctAnswer) {
-    const c = String(out.correct).trim();
-    const ca = String(out.correctAnswer).trim();
-    if (/^[a-j0]$/i.test(c)) {
-      out.correctAnswer = c.toLowerCase() === '0' ? '0' : c.toLowerCase();
-    } else if (/^[A-J]$/.test(c)) {
-      out.correctAnswer = c;
-    } else if (/^[A-Z]$/.test(ca) && (out.type === 'matching' || String(out.type).includes('match'))) {
-      out.correct = ca;
-    }
+  // `correct` always wins. Mirror to correctAnswer so both are always identical.
+  if (out.correct != null) {
+    out.correctAnswer = out.correct;
   }
   return out;
 }
@@ -200,8 +190,9 @@ export function enrichBatchMetadata(batch, ctx = {}) {
     if (!out.language) out.language = lang;
     if (!out.level) out.level = level;
     if (!out.examType) out.examType = 'goethe';
-    if (out.correct != null && out.correctAnswer == null) out.correctAnswer = out.correct;
-    if (out.correctAnswer != null && out.correct == null) out.correct = out.correctAnswer;
+    // `correct` is canonical; backfill only when correct is absent.
+    if (out.correct == null && out.correctAnswer != null) out.correct = out.correctAnswer;
+    if (out.correct != null) out.correctAnswer = out.correct;
     if ((mod === 'horen' || mod === 'lesen') && !out.passageId && solePassageId) {
       out.passageId = solePassageId;
     }

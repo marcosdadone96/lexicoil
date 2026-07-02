@@ -27,7 +27,12 @@ let problems=[];
 (batch.questions||[]).forEach(q=>{
   if('passageId' in q && q.passageId===null) problems.push(`${q.id}: passageId es null (omítelo)`);
   if(typeof q.teil==='string') problems.push(`${q.id}: teil es texto "${q.teil}" (debe ser número)`);
-  if(!q.id||!q.module||!q.question||q.correctAnswer===undefined) problems.push(`${q.id||'??'}: faltan campos obligatorios`);
+  // Transition rule: `correct` is canonical. Accept old batches that only have `correctAnswer`
+  // (backwards compat), but reject if neither is present. If both present, they must match.
+  const hasCorrect = q.correct != null && q.correct !== '';
+  const hasCA = q.correctAnswer != null && q.correctAnswer !== '';
+  if(!q.id||!q.module||!q.question||(!hasCorrect && !hasCA)) problems.push(`${q.id||'??'}: faltan campos obligatorios (se requiere 'correct')`);
+  if(hasCorrect && hasCA && String(q.correct).trim().toLowerCase() !== String(q.correctAnswer).trim().toLowerCase()) problems.push(`${q.id||'??'}: correct="${q.correct}" y correctAnswer="${q.correctAnswer}" divergen — deben ser idénticos`);
 });
 const bankIds=new Set(full.questions.map(q=>q.id));
 if (!allowDup) {
