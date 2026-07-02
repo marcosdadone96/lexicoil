@@ -1356,19 +1356,38 @@ function flattenExam(examObj) {
         });
       }
 
-      // Preguntas directas de la parte (part.questions)
-      for (const q of part.questions || []) {
-        pushQ({ ...q, module, teil, passageId: q.passageId || part.passageId });
+      // Eje-2 Fase B: segments[] es autoridad cuando existe; questions[] es fallback.
+      // Si la parte tiene segments → solo se leen segments (questions[] es índice derivado).
+      // Si no hay segments → questions[] es la fuente (Lesen, Schreiben, H4 plano).
+      if (Array.isArray(part.segments) && part.segments.length > 0) {
+        // Path segments-autoridad (Hören T1/T2/T3 reparados y cualquier parte con segments)
+        for (const seg of part.segments) {
+          if (seg.text || seg.transcript) {
+            passages.push({ id: seg.passageId || `${module}-${teil}-seg`, title: seg.label || '', text: seg.text || seg.transcript || '' });
+          }
+          for (const q of seg.questions || []) {
+            pushQ({ ...q, module, teil, passageId: q.passageId || seg.passageId });
+          }
+          for (const item of seg.items || []) {
+            if (item.id && (item.correct != null || item.type)) {
+              pushQ({ ...item, module, teil, passageId: item.passageId || seg.passageId });
+            }
+          }
+        }
+      } else {
+        // Path questions[]-fuente (Lesen, Schreiben, H4 plano, cualquier parte sin segments)
+        for (const q of part.questions || []) {
+          pushQ({ ...q, module, teil, passageId: q.passageId || part.passageId });
+        }
       }
-      // Lesen T3/T4: preguntas en part.items[] (formato pool y librería)
-      // Se normalizan correctAnswer y question para que pasen CHK-2 y CHK-8
+
+      // Lesen T3/T4: part.items[] (ads matching / forum). Solo existe en Lesen, no en Hören.
+      // Se normalizan correctAnswer y question para que pasen CHK-2 y CHK-8.
       const passageIdsSeen = new Set(passages.map(p => p.id));
       for (const item of part.items || []) {
         if (!item.id) continue;
-        // Solo añadir si tiene respuesta (es pregunta, no solo texto de anuncio)
         if (item.correct != null || item.correctAnswer != null || item.type) {
           const effectivePassageId = item.passageId || part.passageId;
-          // Si el item tiene signText y su passageId no está en passages, añadir pasaje sintético
           if (item.signText && effectivePassageId && !passageIdsSeen.has(effectivePassageId)) {
             passages.push({ id: effectivePassageId, title: '', text: item.signText });
             passageIdsSeen.add(effectivePassageId);
@@ -1378,27 +1397,10 @@ function flattenExam(examObj) {
             module,
             teil,
             passageId: effectivePassageId,
-            // Normalizar correctAnswer desde correct si falta
             correctAnswer: item.correctAnswer ?? item.correct,
-            // Normalizar question desde signText si falta
             question: item.question || item.signText || '',
           };
           pushQ(normItem);
-        }
-      }
-      // Hören: preguntas anidadas en segments[]
-      for (const seg of part.segments || []) {
-        if (seg.text || seg.transcript) {
-          passages.push({ id: seg.passageId || `${module}-${teil}-seg`, title: seg.label || '', text: seg.text || seg.transcript || '' });
-        }
-        for (const q of seg.questions || []) {
-          pushQ({ ...q, module, teil, passageId: q.passageId || seg.passageId });
-        }
-        // Segmentos con items[] (poco común pero defensivo)
-        for (const item of seg.items || []) {
-          if (item.id && (item.correct != null || item.type)) {
-            pushQ({ ...item, module, teil, passageId: item.passageId || seg.passageId });
-          }
         }
       }
     }

@@ -134,14 +134,23 @@ function partRecord(module, part, { lang, level, source, batchId }) {
       }
     : null;
 
+  // Eje-2 Fase B: segments es autoridad cuando existe; questions[] es fallback.
+  // Dedup por ID previene duplicados si ambos están presentes (CHK-23 transitorio).
   const questions = [];
-  if (Array.isArray(part.questions)) {
-    part.questions.forEach((q) => questions.push(mapQuestion(q, lang, level, module, teil, passageId)));
+  const seenQIds = new Set();
+  function pushMapped(q) {
+    if (q.id && seenQIds.has(q.id)) return;
+    if (q.id) seenQIds.add(q.id);
+    questions.push(mapQuestion(q, lang, level, module, teil, passageId));
   }
-  if (Array.isArray(part.segments)) {
+  if (Array.isArray(part.segments) && part.segments.length > 0) {
+    // Con segments: leer solo de segments (questions[] es índice derivado)
     part.segments.forEach((seg) => {
-      (seg.questions || []).forEach((q) => questions.push(mapQuestion(q, lang, level, module, teil, passageId)));
+      (seg.questions || []).forEach(pushMapped);
     });
+  } else if (Array.isArray(part.questions)) {
+    // Sin segments: questions[] es la fuente
+    part.questions.forEach(pushMapped);
   }
   if (Array.isArray(part.items)) {
     part.items.forEach((item, i) => {

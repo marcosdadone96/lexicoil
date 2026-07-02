@@ -212,11 +212,33 @@ function buildCorrection(d, isDE, writeAns, speakAns, passPercent = 60) {
     });
     d.horenParts?.forEach((p, pi) => {
       const meta = { module: 'horen', teil: p.teil, part: p };
-      if (p.questions) {
+      // Eje-2 Fase B: segments es autoridad cuando existe; questions[] es fallback.
+      // Elimina la doble sección de corrección (V-21) para partes con segments.
+      if (p.segments?.length) {
+        p.segments.forEach((s, si) => {
+          const label = p.segments.length > 1
+            ? `${isDE ? 'Hörverstehen' : 'Listening'} — ${isDE ? 'Teil' : 'Part'} ${p.teil} (${s.label})`
+            : `${isDE ? 'Hörverstehen' : 'Listening'} — ${isDE ? 'Teil' : 'Part'} ${p.teil}`;
+          pushQ(
+            'horen',
+            label,
+            segToQ(s).flatMap((q) => {
+              if (!isAnswerKeyRenderable(q, p)) {
+                registerInvalidGradingItem(d, meta, q);
+                return [];
+              }
+              const mod = 'horen_' + pi + '_' + si;
+              const user = S.answers[mod + '_' + q.id];
+              return [{ ok: goetheAnswersMatch(user, q.correct), q: q.question, yours: ansLabel(q, user, isDE), correct: correctLabel(q, isDE), explanation: q.explanation || '', grammarTags: q.grammarTags || [] }];
+            })
+          );
+        });
+      } else {
+        // Sin segments: questions[] es la fuente (H4 plano)
         pushQ(
           'horen',
           `${isDE ? 'Hörverstehen' : 'Listening'} — ${isDE ? 'Teil' : 'Part'} ${p.teil}`,
-          p.questions.flatMap((q) => {
+          (p.questions || []).flatMap((q) => {
             if (!isAnswerKeyRenderable(q, p)) {
               registerInvalidGradingItem(d, meta, q);
               return [];
@@ -226,21 +248,6 @@ function buildCorrection(d, isDE, writeAns, speakAns, passPercent = 60) {
           })
         );
       }
-      p.segments?.forEach((s, si) => {
-        pushQ(
-          'horen',
-          `${isDE ? 'Hörverstehen' : 'Listening'} — ${isDE ? 'Teil' : 'Part'} ${p.teil} (${s.label})`,
-          segToQ(s).flatMap((q) => {
-            if (!isAnswerKeyRenderable(q, p)) {
-              registerInvalidGradingItem(d, meta, q);
-              return [];
-            }
-            const mod = 'horen_' + pi + '_' + si;
-            const user = S.answers[mod + '_' + q.id];
-            return [{ ok: goetheAnswersMatch(user, q.correct), q: q.question, yours: ansLabel(q, user, isDE), correct: correctLabel(q, isDE), explanation: q.explanation || '', grammarTags: q.grammarTags || [] }];
-          })
-        );
-      });
       if (p.noteFields) {
         pushQ(
           'horen',

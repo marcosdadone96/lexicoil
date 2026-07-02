@@ -633,11 +633,16 @@ function forEachGoetheQ(d,fn){
   });
   d.horenParts?.forEach((p,pi)=>{
     const meta={module:'horen',teil:p.teil,part:p};
-    if(p.questions)p.questions.forEach(q=>fn('horen_'+pi,q,meta));
-    p.segments?.forEach((s,si)=>{
-      const segMeta={...meta,segment:si};
-      segToQ(s).forEach(q=>fn('horen_'+pi+'_'+si,q,segMeta));
-    });
+    if(p.segments?.length){
+      // Eje-2 Fase B: segments es autoridad — iterar solo segments (elimina doble visita V-21)
+      p.segments.forEach((s,si)=>{
+        const segMeta={...meta,segment:si};
+        segToQ(s).forEach(q=>fn('horen_'+pi+'_'+si,q,segMeta));
+      });
+    }else{
+      // Sin segments: questions[] es la fuente (H4 plano, fallback)
+      (p.questions||[]).forEach(q=>fn('horen_'+pi,q,meta));
+    }
   });
 }
 function forEachGoetheNotes(d,fn){
