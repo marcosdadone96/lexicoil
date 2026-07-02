@@ -1,7 +1,7 @@
 /**
  * Fix common Gemini output mistakes before validate/merge.
  */
-import { capitalizeBatchNouns } from './capitalizeNouns.mjs';
+import { capitalizeBatchNouns, decapitalizeBatchMidSentence } from './capitalizeNouns.mjs';
 import { balanceMcqGroup, antiRuns } from './balanceMcq.mjs';
 import { normalizeT3 } from './normalizeT3.mjs';
 const SKILL_MAP = {
@@ -344,8 +344,14 @@ export function normalizeBatch(batch, ctx) {
     normalized = normalizeT3(normalized);
   }
 
+  // Step N-1: lower-case adjectives/adverbs that Gemini over-capitalises mid-sentence
+  const { batch: decapped, totalFixed: nDecap } = decapitalizeBatchMidSentence(normalized);
+  if (nDecap > 0) {
+    console.log(`  [normalizeNouns] ${nDecap} adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)`);
+  }
+
   // Last step: deterministic noun capitalization via lexicon
-  const { batch: capitalized, totalFixed } = capitalizeBatchNouns(normalized);
+  const { batch: capitalized, totalFixed } = capitalizeBatchNouns(decapped);
   if (totalFixed > 0) {
     console.log(`  [normalizeNouns] ${totalFixed} sustantivo(s) capitalizados automáticamente`);
   }

@@ -100,7 +100,8 @@ function loadPartsFromSeed(lang, level) {
   const file = path.join(ROOT, 'library', 'reusable-seed', `${lang}_${level}.json`);
   if (!fs.existsSync(file)) return [];
   const d = JSON.parse(fs.readFileSync(file, 'utf8'));
-  return (d.records || []).map((r) => ({ ...r, lang: r.lang || lang, level: r.level || level }));
+  const arr = Array.isArray(d) ? d : (d.records || []);
+  return arr.map((r) => ({ ...r, lang: r.lang || lang, level: r.level || level }));
 }
 
 async function loadPartsFromBlobs(lang, level) {

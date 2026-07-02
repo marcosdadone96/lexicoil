@@ -697,6 +697,65 @@ function chk14(batch, file) {
   return findings;
 }
 
+// ─── CHK-14b: Adjetivos/adverbios alemanes capitalizados erróneamente ────────
+// Complementa CHK-14 en la dirección inversa: detecta palabras de la lista
+// NEVER_NOUN_WORDS que aparecen capitalizadas a mitad de frase (no al inicio).
+// La lista es conservadora: solo se incluyen palabras sin forma nominal posible.
+// Palabras ambiguas (Wissen, Essen, Junge, Lesen, …) se excluyen para evitar FP.
+
+import { NEVER_NOUN_WORDS as _NEVER_NOUN } from './lib/capitalizeNouns.mjs';
+
+const SENTENCE_END_RE_14B = /[.!?:]\s*$/;
+
+function chk14b(batch, file) {
+  const findings = [];
+  function collectTexts(obj, acc = []) {
+    if (!obj || typeof obj !== 'object') return acc;
+    for (const v of Object.values(obj)) {
+      if (typeof v === 'string' && v.length > 4) acc.push(v);
+      else if (v && typeof v === 'object') collectTexts(v, acc);
+    }
+    return acc;
+  }
+
+  const texts = collectTexts(batch);
+  const seen = new Set();
+
+  for (const text of texts) {
+    // Tokenize: words vs non-words
+    const tokenRe = /([A-Za-zÄÖÜäöüß]+)|([^A-Za-zÄÖÜäöüß]+)/g;
+    const tokens = [];
+    let m;
+    while ((m = tokenRe.exec(text)) !== null) {
+      tokens.push({ val: m[0], isWord: !!m[1], pos: m.index });
+    }
+
+    let prevContent = '';
+    for (const tok of tokens) {
+      if (!tok.isWord) { prevContent += tok.val; continue; }
+
+      const fc = tok.val[0];
+      const isCapitalized = (fc >= 'A' && fc <= 'Z') || fc === 'Ä' || fc === 'Ö' || fc === 'Ü';
+
+      if (isCapitalized) {
+        const lc = tok.val.toLowerCase();
+        const isMidSentence = prevContent.length > 0 && !SENTENCE_END_RE_14B.test(prevContent);
+        if (isMidSentence && _NEVER_NOUN.has(lc) && !seen.has(lc)) {
+          seen.add(lc);
+          const start = Math.max(0, tok.pos - 35);
+          const end   = Math.min(text.length, tok.pos + tok.val.length + 35);
+          const ctx   = text.slice(start, end).replace(/\n/g, ' ');
+          findings.push(finding('CHK-14', 'IMPORTANT', file, tok.val,
+            `Adjetivo/adverbio "${tok.val}" en mayúscula errónea a mitad de frase (debería ser "${lc}"). Contexto: "...${ctx}..."`));
+        }
+      }
+
+      prevContent += tok.val;
+    }
+  }
+  return findings;
+}
+
 // ─── CHK-15: Word count de pasajes/transcripts vs blueprint ──────────────
 // Cada Teil tiene un rango de palabras establecido en el Modellsatz oficial.
 // Se cuenta el texto principal de cada pasaje o transcript.
@@ -1435,6 +1494,7 @@ export function auditExam(examWrapper, label = 'exam') {
     ...chk12(flat, label),
     ...chk13(flat, label),
     ...chk14(flat, label),
+    ...chk14b(flat, label),
     ...chk15(flat, label),
     ...chk16(flat, label),
     ...chk17(flat, label),
@@ -1581,7 +1641,20 @@ function partRecordToExamPart(record) {
       part.textTitle = passage.title || '';
       part.ads = passage.ads || record.ads || [];
     } else if (teil === 4) {
-      if (Array.isArray(record.passages)) part.passages = record.passages;
+      if (Array.isArray(record.passages) && record.passages.length > 0) {
+        part.passages = record.passages;
+      } else if (passage.text) {
+        // Bank-extracted L4 records store the forum intro in record.passage (singular).
+        // Reconstruct passages[] so flattenExam can register the passage and CHK-8 can
+        // resolve questions' passageId references against it.
+        const pid = (record.questions || []).find((q) => q.passageId)?.passageId;
+        if (pid) {
+          part.passages = [{ id: pid, text: passage.text, title: passage.title || '' }];
+        } else {
+          part.text = passage.text;
+          part.textTitle = passage.title || '';
+        }
+      }
       if (Array.isArray(record.ads)) part.ads = record.ads;
     } else {
       part.text = passage.text || '';
@@ -2073,6 +2146,7 @@ async function main() {
     allFindings.push(...chk12(batch, file));
     allFindings.push(...chk13(batch, file));
     allFindings.push(...chk14(batch, file));
+    allFindings.push(...chk14b(batch, file));
     allFindings.push(...chk15(batch, file));
     allFindings.push(...chk16(batch, file));
     allFindings.push(...chk17(batch, file));

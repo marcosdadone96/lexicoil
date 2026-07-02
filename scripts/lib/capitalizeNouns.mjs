@@ -1,16 +1,19 @@
 /**
  * capitalizeNouns.mjs
- * Deterministic German noun capitalizer using data/lexicon/de-gender.json.
+ * Bidirectional German capitalisation corrector using data/lexicon/de-gender.json.
  *
- * Algorithm:
- *  1. Load the gender lexicon (word → gender).  Its keys are known German words.
- *  2. Filter out entries that are NOT nouns (articles, pronouns, prepositions,
- *     conjunctions, adverbs, adjectives, verbs) using a deterministic blocklist.
- *  3. capitalizeNounsInText(text): for every token in the text, if it is all-
- *     lowercase and its lowercase form is in the SAFE_NOUNS set, capitalize its
- *     first letter.  Never touches words that already start with a capital.
- *  4. capitalizeBatchNouns(batch): applies capitalizeNounsInText to every free-
- *     text field in a passage/question batch.
+ * Two complementary functions:
+ *
+ * UP  (capitalizeNounsInText / capitalizeBatchNouns)
+ *   Lowercase word in the SAFE_NOUNS lexicon → capitalize.
+ *   Never touches already-capitalised words.
+ *
+ * DOWN (decapitalizeMidSentence / decapitalizeBatchMidSentence)
+ *   Capitalised word from NEVER_NOUN_WORDS found mid-sentence (not at sentence
+ *   start) → lowercase.  Conservative list: only unambiguous non-nouns included
+ *   (pure adjectives, adverbs, quantifiers that have no nominal form in German).
+ *   Ambiguous homographs such as "Wissen", "Essen", "Junge" are intentionally
+ *   excluded to avoid false positives.
  */
 
 import fs from 'node:fs';
@@ -135,6 +138,141 @@ export function capitalizeNounsInText(text) {
     return token;
   });
   return { result: parts.join(''), count };
+}
+
+// ── NEVER_NOUN_WORDS: words that are unambiguously NOT German nouns ────────────
+// These are pure adjectives, adverbs, quantifiers, or conjunctions.
+// Intentionally EXCLUDED (would cause FP): Wissen, Essen, Junge, Schreiben,
+// Lesen, Kochen, Laufen (all valid verbal nouns / Substantivierungen).
+// Each entry covers the most common inflected forms to avoid partial-word matches.
+export const NEVER_NOUN_WORDS = new Set([
+  // Quantifiers / indefinite pronouns used adjectivally (never nouns)
+  'viele','viel',
+  'wenige','wenig',
+  'einige','einig',
+  'alle','alles',
+  // Adjectives — core colour/size/quality words with no nominal form
+  'lange','lang',
+  'kurze','kurz',
+  'schwierig','schwierige','schwierigen','schwieriges','schwierigem',
+  'einfache','einfachen','einfaches','einfachem','einfacher',
+  'möglich','mögliche','möglichen','mögliches','möglichem',
+  'unmöglich','unmögliche','unmöglichen',
+  'wichtige','wichtigen','wichtiges','wichtigem','wichtiger',
+  'unwichtige','unwichtigen',
+  'richtige','richtigen','richtiges','richtigem','richtiger',
+  'falsche','falschen','falsches','falschem','falscher',
+  'schöne','schönen','schönes','schönem','schöner',
+  'hässliche','hässlichen',
+  'neue','neuen','neues','neuem','neuer',
+  'alte','alten','altes','altem','alter',
+  'kleine','kleinen','kleines','kleinem','kleiner',
+  'große','großen','großes','großem','großer',
+  'gute','guten','gutes','gutem','guter',
+  'schlechte','schlechten','schlechtes','schlechtem',
+  'erste','ersten','erstes','erstem',
+  'letzte','letzten','letztes','letztem',
+  'beste','besten','bestes','bestem',
+  'nächste','nächsten','nächstes',
+  'eigene','eigenen','eigenes','eigenem','eigener',
+  'andere','anderen','anderes','anderem','anderer',
+  'interessante','interessanten','interessantes',
+  'langweilig','langweilige','langweiligen',
+  'spannende','spannenden','spannendes',
+  // Adverbs that Gemini sometimes over-capitalises
+  'eher',
+  'gerne','gern',
+  'leider',
+  'natürlich',
+  'eigentlich',
+  'vielleicht',
+  'wirklich',
+  'bereits',
+  'sogar',
+  'trotzdem',
+  'allerdings',
+  'außerdem',
+  'jedoch',
+  'dennoch',
+  'deshalb',
+  'deswegen',
+]);
+
+// Sentence-ending punctuation — a capital that follows one of these is legitimate.
+const SENTENCE_END_RE = /[.!?:]\s*$/;
+
+/**
+ * Lower-case words from NEVER_NOUN_WORDS that appear capitalised mid-sentence.
+ * "Mid-sentence" means the token is NOT at the start of the text and is NOT
+ * immediately after a sentence-ending punctuation mark (.!?:).
+ *
+ * Returns { result: string, count: number }.
+ */
+export function decapitalizeMidSentence(text) {
+  if (typeof text !== 'string' || !text) return { result: text, count: 0 };
+  const chunks = tokenize(text);
+  let count = 0;
+
+  // Walk through tokens tracking what came before each word token.
+  let prevContent = ''; // accumulates text preceding the current word
+  const parts = chunks.map(({ token, isWord }) => {
+    if (!isWord) {
+      prevContent += token;
+      return token;
+    }
+
+    // Capitalised mid-sentence?
+    const firstCh = token[0];
+    if (firstCh >= 'A' && firstCh <= 'Z' || firstCh >= 'À' && firstCh <= 'Ö' || firstCh >= 'Ø') {
+      const lc = token.toLowerCase();
+      const midSentence = prevContent.length > 0 && !SENTENCE_END_RE.test(prevContent);
+      if (midSentence && NEVER_NOUN_WORDS.has(lc)) {
+        count++;
+        prevContent += lc;
+        return lc;
+      }
+    }
+
+    prevContent += token;
+    return token;
+  });
+
+  return { result: parts.join(''), count };
+}
+
+/**
+ * Apply decapitalizeMidSentence to all free-text fields in a batch object.
+ * Returns { batch: <corrected batch>, totalFixed: number }.
+ */
+export function decapitalizeBatchMidSentence(batch) {
+  if (!batch || typeof batch !== 'object') return { batch, totalFixed: 0 };
+  let totalFixed = 0;
+
+  const fixText = (s) => {
+    if (typeof s !== 'string') return s;
+    const { result, count } = decapitalizeMidSentence(s);
+    totalFixed += count;
+    return result;
+  };
+
+  const passages = (batch.passages || []).map((p) => ({
+    ...p,
+    ...(p.text  != null ? { text:  fixText(p.text)  } : {}),
+    ...(p.title != null ? { title: fixText(p.title) } : {}),
+  }));
+
+  const questions = (batch.questions || []).map((q) => {
+    const out = { ...q };
+    if (out.question    != null) out.question    = fixText(out.question);
+    if (out.signText    != null) out.signText    = fixText(out.signText);
+    if (out.explanation != null) out.explanation = fixText(out.explanation);
+    if (Array.isArray(out.options)) {
+      out.options = out.options.map((o) => (typeof o === 'string' ? fixText(o) : o));
+    }
+    return out;
+  });
+
+  return { batch: { ...batch, passages, questions }, totalFixed };
 }
 
 /**

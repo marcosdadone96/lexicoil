@@ -439,7 +439,11 @@ const ExamBlueprint = (() => {
         return {
           id: eq.id,
           type: eq.type,
-          signText: passage?.text || q.signText || q.text || '',
+          // For forum opinions (T4), each question carries its own individual opinion in
+          // q.signText.  The shared passage.text is the forum intro, NOT the per-item text.
+          // Prefer q.signText so individual opinions are preserved; only fall back to the
+          // passage text when the question has no signText of its own (e.g. future layouts).
+          signText: q.signText || q.text || passage?.text || '',
           passageId: pid || passage?.id || undefined,
           question: q.question,
           options: eq.options,
@@ -459,10 +463,22 @@ const ExamBlueprint = (() => {
         part.passageId = sharedPassage.id;
         if (sharedPassage.translations) part.translations = { ...sharedPassage.translations };
       }
-      const sharedOpts = enriched.find((q) => q.options?.length)?.options;
-      if (!part.text && Array.isArray(sharedOpts) && sharedOpts.length) {
-        part.text = sharedOpts.join('\n');
+      // When PassageResolver is unavailable (Node.js scripts context), sharedPassage is null.
+      // For forum opinions (T4), the shared forum intro passage is in bank.passages[] keyed by
+      // the questions' common passageId — resolve it directly so part.text = forum intro text
+      // instead of falling through to the options-join fallback below.
+      if (!part.text) {
+        const repPid = enriched[0]?.passageId;
+        const repP = repPid ? (bank.passages || []).find((p) => p.id === repPid) : null;
+        if (repP?.text) {
+          part.text = repP.text;
+          part.textTitle = repP.title || '';
+          part.passageId = repP.id;
+        }
       }
+      // NOTE: the sharedOpts.join('\n') fallback was removed here because for forum opinions
+      // the options are ["a) Ja","b) Nein"] which should NOT become the passage text.
+      // Any layout that genuinely needs the options as text can re-add it here with a guard.
       return part;
     }
 
