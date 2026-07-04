@@ -207,14 +207,48 @@ function itemToQ(item,idx){
 function isLesenForumOpinionsPart(part){
   const slot=String(part?.blueprintSlot||part?.slotType||'').toLowerCase();
   if(slot.includes('forum')||slot.includes('opinion'))return true;
+  if(Number(part?.teil)!==4)return false;
+  const instr=String(part.instruction||'').toLowerCase();
+  if(/meinungen.*(?:20|21)|ja oder nein|yes or no|stimmt die person/i.test(instr))return true;
   const items=part?.items||[];
-  if(Number(part?.teil)===4&&items.length>=5){
+  if(items.length>=5){
     return items.some(it=>{
       const t=String(it.type||'').toLowerCase();
       return(t==='yn'||t==='ja_nein')&&(it.signText||it.text);
     });
   }
-  return false;
+  return(part.questions||[]).some(q=>{
+    const c=String(q.correct??q.correctAnswer??'').trim();
+    return(q.signText||q.text)&&/^(J|N|Ja|Nein|Yes|No)$/i.test(c);
+  });
+}
+function lesenForumDisplayNum(item,idx,part){
+  return scorableDisplayNum(item,idx,part);
+}
+/** Official display number for any scorable item (uses ExamRenumber metadata when present). */
+function scorableDisplayNum(item,idx,part){
+  const fromMeta=Number(item?.number??item?.nr??item?.nummer);
+  if(Number.isFinite(fromMeta)&&fromMeta>=1)return String(fromMeta);
+  const bareId=Number(item?.id);
+  if(Number.isFinite(bareId)&&bareId>=1&&bareId<=99)return String(bareId);
+  const start=part?._numberRange?.start;
+  if(Number.isFinite(start))return String(start+idx);
+  const teil=Number(part?.teil);
+  if(teil===2)return String(7+idx);
+  if(teil===3)return String(13+idx);
+  if(teil===4)return String(20+idx);
+  if(teil===5)return String(27+idx);
+  return String(idx+1);
+}
+function inferLesenT3HasNoMatch(part){
+  if(part._t3HasNoMatch)return true;
+  const pool=[...(part.items||[]),...(part.questions||[])];
+  return pool.some(it=>String(it?.correct??it?.correctAnswer??'').trim()==='0');
+}
+function lesenForumYnShouldHideQuestion(question){
+  const q=String(question||'').trim();
+  if(!q)return true;
+  return /stimmt die person|ja oder nein|dem thema zu|agree with the topic|does the person agree/i.test(q);
 }
 function lesenItemIsAnswerable(item,part){
   if(!item)return false;
@@ -272,8 +306,13 @@ function isLesenAdsMatchingRender(part){
   if(!(part?.ads?.length>=2))return false;
   // Items format (pool): items array with matching situations
   if((part.items||[]).some(it=>(it.signText||it.text||it.question)&&(it.correct!=null||String(it.type||'').toLowerCase()==='matching')))return true;
-  // Questions format (library): separate questions array with matching type
-  if((part.questions||[]).some(q=>String(q.type||'').toLowerCase()==='matching'&&(q.question||q.text)))return true;
+  // Questions format (library/published): separate questions array with matching type or letter answers
+  if((part.questions||[]).some(q=>{
+    const t=String(q.type||'').toLowerCase();
+    if(['matching','match','abcd'].includes(t)&&(q.question||q.text))return true;
+    const c=String(q.correct??q.correctAnswer??'').trim();
+    return(q.question||q.text||q.signText)&&/^[A-J0]$/i.test(c);
+  }))return true;
   return false;
 }
 function renderLesenAdsBlock(part,pi,isPrac,ui){
@@ -296,23 +335,23 @@ function renderGoetheLesenPart(part,pi,isPrac,ui){
   const mod='lesen_'+pi;
   const adsMatching=isLesenAdsMatchingRender(part);
   if(adsMatching){
-    h+=renderLesenAdsBlock(part,pi,isPrac,ui);
+    const sitHdr=ui.lang==='de'?'Situationen':'Situations';
+    h+=`<div class="pt-t3-layout"><div class="pt-t3-main">`;
     const ex=part.example||part.solvedExample;
     if(ex&&(ex.situation||ex.question||ex.text)){
       const exLbl=ex.label||(ui.lang==='de'?'Beispiel':'Example');
       h+=`<div class="off-sign off-sign-example"><div class="off-sign-label">${esc(exLbl)} ${ex.number!=null?esc(String(ex.number)):''}</div>${wrapW(ex.situation||ex.question||ex.text,'lesen_'+pi+'_ex',isPrac)}<div class="off-example-ans" style="margin-top:8px;font-size:13px;color:var(--text-muted)">${ui.lang==='de'?'Lösung:':'Answer:'} <b>0</b></div></div>`;
     }
+    h+=`<div class="pt-situations-header">${esc(sitHdr)}</div>`;
     const adLetters=part.ads.map((a,i)=>String(a.key||String.fromCharCode(65+i)).toUpperCase());
-    if(part._t3HasNoMatch&&!adLetters.includes('0'))adLetters.push('0');
-    // Merge items and matching questions into unified situations list
+    if(inferLesenT3HasNoMatch(part)&&!adLetters.includes('0'))adLetters.push('0');
     const situations=part.items?.length
       ?part.items
-      :(part.questions||[]).filter(q=>String(q.type||'').toLowerCase()==='matching');
+      :(part.questions||[]).filter(q=>String(q.type||'').toLowerCase()==='matching'||(q.question||q.text));
     situations.forEach((item,idx)=>{
-      const rawId=String(item.id||'');
-      const num=rawId.replace(/^.*-q(\d+)$/,'$1')===rawId?String(idx+1):rawId.replace(/^.*-q(\d+)$/,'$1');
+      const num=scorableDisplayNum(item,idx,part);
       const situation=item.signText||item.text||item.question||'';
-      const ak=`${mod}_${rawId||String(idx+1)}`;
+      const ak=`${mod}_${item.id||num}`;
       const saved=S.answers?.[ak]||'';
       h+=`<div class="pt-match-question" data-ak="${esc(ak)}">`;
       if(situation){h+=`<div class="pt-match-situation"><span class="pt-match-num">${esc(num)}.</span> ${wrapW(situation,'lesen_'+pi+'_sit_'+num,isPrac)}</div>`;}
@@ -323,19 +362,31 @@ function renderGoetheLesenPart(part,pi,isPrac,ui){
       });
       h+=`</div></div>`;
     });
+    h+=`</div><aside class="pt-t3-ads" aria-label="${esc(ui.lang==='de'?'Anzeigen':'Advertisements')}">`;
+    h+=renderLesenAdsBlock(part,pi,isPrac,ui);
+    h+=`</aside></div>`;
     return h+'</section><hr class="section-div">';
   }
   if(isLesenForumOpinionsPart(part)){
     if(part.textTitle)h+=`<div class="text-display"><h3>${esc(part.textTitle)}</h3></div>`;
-    part.items.forEach((item,idx)=>{
-      const num=String(item.id||'');
+    const forumItems=part.items?.length
+      ?part.items
+      :(part.questions||[]).filter(q=>q&&(q.signText||q.text)).map((q,i)=>({
+        id:String(20+i),
+        signText:q.signText||q.text||'',
+        question:q.question||'',
+        type:'ja_nein',
+        correct:q.correct??q.correctAnswer,
+      }));
+    forumItems.forEach((item,idx)=>{
+      const num=lesenForumDisplayNum(item,idx,part);
       if(item.signText||item.text){
         h+=`<div class="off-sign"><div class="off-sign-label">${esc(num)}</div>${wrapW(item.signText||item.text,'lesen_'+pi+'_sit_'+num,isPrac)}</div>`;
       }
       if(lesenItemIsAnswerable(item,part)){
         const q=lesenItemToAnswerQ(item,part,ui,idx);
-        if(q.type==='yn'&&(item.signText||item.text))q.question='';
-        h+=renderQ(q,num||idx+1,mod,ui.trueL,ui.falseL,ui.trueK,true);
+        if(q.type==='yn'&&(item.signText||item.text)&&lesenForumYnShouldHideQuestion(q.question))q.question='';
+        h+=renderQ(q,num,mod,ui.trueL,ui.falseL,ui.trueK,true);
       }
     });
     return h+'</section><hr class="section-div">';
@@ -355,9 +406,9 @@ function renderGoetheLesenPart(part,pi,isPrac,ui){
       if(lesenItemIsAnswerable(item,part)){
         const q=lesenItemToAnswerQ(item,part,ui,idx);
         if(q.type==='yn'&&item.signText&&!item.question)q.question='';
-        h+=renderQ(q,item.id??idx+1,mod,ui.trueL,ui.falseL,ui.trueK,true);
+        h+=renderQ(q,scorableDisplayNum(item,idx,part),mod,ui.trueL,ui.falseL,ui.trueK,true);
       }else if(item.question&&(item.options?.length||item.correct)){
-        h+=renderQ(itemToQ(item,idx),idx+1,mod,ui.trueL,ui.falseL,ui.trueK,true);
+        h+=renderQ(itemToQ(item,idx),scorableDisplayNum(item,idx,part),mod,ui.trueL,ui.falseL,ui.trueK,true);
       }
     });
   }
@@ -391,7 +442,7 @@ function renderGoetheLesenPart(part,pi,isPrac,ui){
   if(part.opinions){
     h+=`<div class="off-opinions">${part.opinions.map((o,i)=>`<div class="off-ad"><b>${esc(o.name)}:</b> ${wrapW(o.text,'lesen_'+pi+'_op_'+i,isPrac)}</div>`).join('')}</div>`;
   }
-  if(part.questions)h+=part.questions.map((q,i)=>q.type==='gap_fill'?renderGapFillQ(q,i+1,mod,part,ui.lang==='de'):renderQ(q,i+1,mod,ui.trueL,ui.falseL,ui.trueK,true)).join('');
+  if(part.questions)h+=part.questions.map((q,i)=>q.type==='gap_fill'?renderGapFillQ(q,scorableDisplayNum(q,i,part),mod,part,ui.lang==='de'):renderQ(q,scorableDisplayNum(q,i,part),mod,ui.trueL,ui.falseL,ui.trueK,true)).join('');
   return h+'</section><hr class="section-div">';
 }
 function renderGoetheHorenPart(part,pi,isPrac,ui){
@@ -430,7 +481,7 @@ function renderGoetheHorenPart(part,pi,isPrac,ui){
         h+=`<p class="module-desc" style="font-size:12px;margin:8px 0 12px"><b>${spLbl}:</b> ${esc(seg.speakerLegend.join(' · '))}</p>`;
       }
       h+=renderTranscript(seg.transcript,'horen_'+pi+'_'+si,seg.translations,'horen_'+pi+'_'+si);
-      segToQ(seg).forEach((q,i)=>{h+=renderQ(q,i+1,mod+'_'+si,ui.trueL,ui.falseL,ui.trueK,true);});
+      segToQ(seg).forEach((q,i)=>{h+=renderQ(q,scorableDisplayNum(q,i,part),mod+'_'+si,ui.trueL,ui.falseL,ui.trueK,true);});
     });
   }else if(part.noteFields){
     h+=renderListen(String(pi),part.context||ui.recording);
@@ -443,7 +494,7 @@ function renderGoetheHorenPart(part,pi,isPrac,ui){
   }else{
     h+=renderListen(String(pi),part.context||ui.recording);
     h+=renderTranscript(part.transcript,'horen_'+pi,part.translations,'horen_'+pi);
-    if(part.questions)h+=part.questions.map((q,i)=>renderQ(q,i+1,mod,ui.trueL,ui.falseL,ui.trueK,true)).join('');
+    if(part.questions)h+=part.questions.map((q,i)=>renderQ(q,scorableDisplayNum(q,i,part),mod,ui.trueL,ui.falseL,ui.trueK,true)).join('');
   }
   return h+'</section><hr class="section-div">';
 }
@@ -677,18 +728,21 @@ function renderExam(){
     if(!S.activeSession)initExamSession(S.mode);
     autosaveSession();
   }
-  const scr=document.getElementById('examScreen');scr.innerHTML='';scr.style.display='block';
+  const isDE=d.lang==='de',isPrac=isPracticeMode(),isQ=!!S.quickMod,isOff=!!d.demo;
+  const isOffMode=isOfficialMode();
+  const scr=document.getElementById('examScreen');
+  scr.innerHTML='';
+  scr.style.display='block';
+  scr.className=isOffMode?'mode-official':isPrac?'mode-practice':'';
   if(d.vocabPersonal&&d.vocabWords?.length&&typeof TargetUsage!=='undefined'&&!d.targetUsageVerified?.length){
     TargetUsage.applyVerified(d,d.vocabWords);
     S.examData=d;
   }
-  const isDE=d.lang==='de',isPrac=isPracticeMode(),isQ=!!S.quickMod,isOff=!!d.demo;
-  const isOffMode=isOfficialMode();
   const rfT=isDE?'Richtig':'True',rfF=isDE?'Falsch':'False',trK=isDE?'R':'T';
   const timerH=(isOffMode&&!isQ)?`<div class="timer-wrap"><span class="timer-val" id="timerVal">--:--</span></div>`:'';
-  const practH=isPrac?`<div class="exam-prac-banner"><b>Practice Mode:</b> Click any word to translate and save to your deck. Saved words are highlighted in <span style="color:var(--green);font-weight:700">green</span>.</div>`:'';
+  const practH=isPrac?`<div class="exam-prac-banner exam-mode-banner"><b>${isDE?'Übungsmodus':'Practice mode'}:</b> ${isDE?'Tippe auf Wörter für Übersetzung und Speichern. Gespeicherte Wörter sind farbcodiert —':'Tap words to translate and save. Saved words are color-coded —'} <span class="vocab-legend vocab-pos-noun">${isDE?'Nomen':'noun'}</span> <span class="vocab-legend vocab-pos-verb">${isDE?'Verb':'verb'}</span> <span class="vocab-legend vocab-pos-adjective">${isDE?'Adj':'adj'}</span> <span class="vocab-legend vocab-pos-adverb">${isDE?'Adv':'adv'}</span>.</div>`:'';
   const partialGenH=d._partialGen?`<div class="personal-gen-banner"><b>Partial generation</b> — some Teile were skipped.${d._failedTeile?.length?` Missing: ${esc(d._failedTeile.slice(0,4).join(', '))}${d._failedTeile.length>4?'…':''}.`:''} <button type="button" class="btn-sm accent" onclick="retryFailedPersonalParts()">Retry failed parts</button></div>`:'';
-  const officialH=isOffMode?`<div class="mode-markmsg" style="margin-bottom:14px">Official mode: tap words you struggle with to mark them. Translations appear on the results screen — not during the exam.</div>`:'';
+  const officialH=isOffMode?`<div class="exam-official-banner exam-mode-banner"><b>${isDE?'Official-Modus':'Official mode'}:</b> ${isDE?'Tippe auf ein Wort, um es zu markieren (nochmal tippen = entfernen). Keine Übersetzungen während des Exams — markierte Wörter siehst du danach in den Ergebnissen.':'Tap a word to mark it (tap again to unmark). No translations during the exam — review marked words on the results screen.'}</div>`:'';
   const demoH=d.guidedDemo?`<div class="demo-banner"><b>5-minute product demo</b> — Experience every module at reduced volume. Click words you miss to see vocabulary detection.</div>`:'';
   const langH=isPrac&&!isQ?`<div class="exam-lang-toolbar"><span class="exam-lang-label">${isDE?'Übersetzen:':'Translate to:'}</span>${LANGS.map(l=>`<button class="vt-lb ex-lb${S.vocabLang===l.code?' active':''}" onclick="setVL('${l.code}',this)">${l.l}</button>`).join('')}</div>`:'';
   let secs='';

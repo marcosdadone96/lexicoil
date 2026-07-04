@@ -1,0 +1,324 @@
+/**
+ * Load published_exam docs and adapt snapshot payloads → Goethe exam shape (lesenParts, …).
+ * Mirrors scripts/audit-pass-2.mjs partRecordToExamPart for browser use.
+ */
+(function (global) {
+  var SUPPORTED = { de: { B1: true } };
+
+  function catalogPath(lang, level) {
+    return (
+      'library/published-exams/' +
+      String(lang).toLowerCase() +
+      '/' +
+      String(level).toUpperCase() +
+      '/_catalog.json'
+    );
+  }
+
+  function examPath(lang, level, examId) {
+    return (
+      'library/published-exams/' +
+      String(lang).toLowerCase() +
+      '/' +
+      String(level).toUpperCase() +
+      '/' +
+      examId +
+      '.json'
+    );
+  }
+
+  function supports(subject, level) {
+    return !!(SUPPORTED[subject] && SUPPORTED[subject][level]);
+  }
+
+  function normPartType(t) {
+    var s = String(t || '').toLowerCase();
+    if (s === 'multiple' || s === 'mcq') return 'multiple_choice';
+    if (s === 'matching' || s === 'ads_matching') return 'matching';
+    if (s === 'ja_nein' || s === 'yes_no') return 'ja_nein';
+    if (s === 'richtig_falsch' || s === 'true_false') return 'richtig_falsch';
+    return t || 'multiple_choice';
+  }
+
+  function normPartQuestion(q, module, teil) {
+    var correct = q.correct != null ? q.correct : q.correctAnswer;
+    return Object.assign({}, q, {
+      module: module,
+      teil: teil,
+      type: normPartType(q.type || q.questionType),
+      correct: correct,
+      correctAnswer: correct,
+      question: q.question || q.signText || q.statement || '',
+    });
+  }
+
+  function isForumOpinionsRecord(record) {
+    var instr = String(record.instruction || '').toLowerCase();
+    if (/meinungen.*(?:20|21)|ja oder nein|stimmt die person/i.test(instr)) return true;
+    return (record.questions || []).some(function (q) {
+      var c = String(q.correct != null ? q.correct : q.correctAnswer || '').trim();
+      return (q.signText || q.text) && /^(j|n|ja|nein|yes|no)$/i.test(c);
+    });
+  }
+
+  function mapForumOpinionItem(q, i, module, teil) {
+    var correct = q.correct != null ? q.correct : q.correctAnswer;
+    var signText = q.signText || q.text || '';
+    var question = q.question || q.statement || '';
+    if (signText && question === signText) question = '';
+    return {
+      id: String(20 + i),
+      type: 'ja_nein',
+      signText: signText,
+      question: question,
+      correct: correct,
+      correctAnswer: correct,
+      explanation: q.explanation,
+      module: module,
+      teil: teil,
+    };
+  }
+
+  /** @param {object} record — published part snapshot (seed-shaped payload) */
+  function snapshotToExamPart(record) {
+    if (!record || typeof record !== 'object') return null;
+    var module = String(record.module || '').toLowerCase();
+    var teil = Number(record.teil);
+    if (!module || !Number.isFinite(teil)) return null;
+
+    var part = { teil: teil, instruction: record.instruction || '' };
+
+    if (module === 'lesen') {
+      var passage = record.passage || {};
+      if (Array.isArray(passage.passages) && passage.passages.length >= 2) {
+        part.passages = passage.passages;
+        part.textTitle = passage.title || '';
+      } else if (teil === 3) {
+        part.text = passage.text || '';
+        part.textTitle = passage.title || '';
+        part.ads = passage.ads || record.ads || [];
+        part.blueprintSlot = 'ads_matching';
+        part.slotType = 'ads_matching';
+      } else if (teil === 4) {
+        if (Array.isArray(record.passages) && record.passages.length > 0) {
+          part.passages = record.passages;
+        } else if (passage.text) {
+          var pid = (record.questions || []).find(function (q) {
+            return q.passageId;
+          });
+          pid = pid ? pid.passageId : null;
+          if (pid) {
+            part.passages = [{ id: pid, text: passage.text, title: passage.title || '' }];
+          } else {
+            part.text = passage.text;
+            part.textTitle = passage.title || '';
+          }
+        }
+        if (Array.isArray(record.ads)) part.ads = record.ads;
+      } else {
+        part.text = passage.text || '';
+        part.textTitle = passage.title || '';
+        part.passageId =
+          (record.questions && record.questions[0] && record.questions[0].passageId) ||
+          passage.passageId;
+      }
+      var rawQs = record.questions || [];
+      if (teil === 4 && isForumOpinionsRecord(record) && rawQs.length) {
+        part.blueprintSlot = 'forum_opinions';
+        part.slotType = 'forum_opinions';
+        part.items = rawQs
+          .filter(function (q) {
+            return q && (q.signText || q.text || q.question);
+          })
+          .map(function (q, i) {
+            return mapForumOpinionItem(q, i, module, teil);
+          });
+        part.questions = rawQs
+          .filter(function (q) {
+            return q && !q.signText && !q.text;
+          })
+          .map(function (q) {
+            return normPartQuestion(q, module, teil);
+          });
+      } else {
+        part.questions = rawQs.map(function (q) {
+          return normPartQuestion(q, module, teil);
+        });
+      }
+      if (record.example) part.example = record.example;
+    } else if (module === 'horen') {
+      if (Array.isArray(record.segments) && record.segments.length) {
+        part.segments = record.segments.map(function (seg) {
+          return Object.assign({}, seg, {
+            questions: (seg.questions || []).map(function (q) {
+              return normPartQuestion(q, module, teil);
+            }),
+          });
+        });
+      }
+      var hp = record.passage || {};
+      part.transcript = hp.transcript || hp.text || record.transcript || '';
+      part.questions = (record.questions || []).map(function (q) {
+        return normPartQuestion(q, module, teil);
+      });
+      if (!part.segments || !part.segments.length) {
+        var firstPid = (record.questions || []).find(function (q) {
+          return q.passageId;
+        });
+        if (firstPid) part.passageId = firstPid.passageId;
+      }
+    } else if (module === 'schreiben' || module === 'sprechen') {
+      var passageSch = record.passage || {};
+      var q0 = (record.questions || [])[0];
+      part.task =
+        record.task ||
+        record.instruction ||
+        passageSch.text ||
+        (q0 && q0.question) ||
+        '';
+      part.minWords = record.minWords != null ? record.minWords : teil === 3 ? 40 : 80;
+      part.maxWords = record.maxWords != null ? record.maxWords : part.minWords;
+      part.fieldId = record.fieldId || 'write_bp_' + teil;
+      part.aufgabe = record.aufgabe != null ? record.aufgabe : teil;
+      part.taskFormat = record.taskFormat || passageSch.title || record.taskFormat;
+      var task = part.task;
+      part.questions =
+        (record.questions || []).length > 0
+          ? record.questions.map(function (q) {
+              return normPartQuestion(q, module, teil);
+            })
+          : [
+              {
+                id: '1',
+                type: 'short_answer',
+                question: task,
+                correct: 'rubric',
+                module: module,
+                teil: teil,
+              },
+            ];
+    } else {
+      return null;
+    }
+
+    return part;
+  }
+
+  function sortParts(parts) {
+    return (parts || []).slice().sort(function (a, b) {
+      return Number(a.teil) - Number(b.teil);
+    });
+  }
+
+  function publishedDocToServedExam(doc) {
+    var lesenParts = [];
+    var horenParts = [];
+    var schreibenParts = [];
+    var sprechenParts = [];
+
+    (doc.parts || []).forEach(function (p) {
+      var part = snapshotToExamPart(p.snapshot);
+      if (!part) return;
+      if (p.module === 'lesen') lesenParts.push(part);
+      else if (p.module === 'horen') horenParts.push(part);
+      else if (p.module === 'schreiben') schreibenParts.push(part);
+      else if (p.module === 'sprechen') sprechenParts.push(part);
+    });
+
+    return {
+      id: doc.examId,
+      examId: doc.examId,
+      topic: doc.title || 'Official ' + doc.level + ' Exam ' + doc.slot,
+      level: doc.level,
+      lang: doc.lang,
+      slot: doc.slot,
+      goetheFormat: true,
+      libraryBuilt: true,
+      publishedExam: true,
+      publishedManifestVersion: doc.manifestVersion,
+      publishedAt: doc.publishedAt,
+      blueprintId: 'goethe-b1',
+      blueprintComplete: true,
+      official: {
+        board: 'Goethe-Institut',
+        certificate: 'Goethe-Zertifikat B1',
+        note:
+          'Official curated exam (published snapshot v' +
+          doc.manifestVersion +
+          ', slot ' +
+          doc.slot +
+          ').',
+      },
+      lesenParts: sortParts(lesenParts),
+      horenParts: sortParts(horenParts),
+      schreibenParts: sortParts(schreibenParts),
+      sprechenParts: sortParts(sprechenParts),
+    };
+  }
+
+  async function loadCatalog(subject, level) {
+    var res = await fetch(catalogPath(subject, level), { cache: 'no-store' });
+    if (!res.ok) throw new Error('Published catalog not found (HTTP ' + res.status + ')');
+    return res.json();
+  }
+
+  async function loadPublishedExamDoc(subject, level, examId) {
+    var res = await fetch(examPath(subject, level, examId), { cache: 'no-store' });
+    if (!res.ok) throw new Error('Published exam not found: ' + examId);
+    return res.json();
+  }
+
+  async function loadExams(subject, level) {
+    var catalog = await loadCatalog(subject, level);
+    var entries = (catalog.exams || []).filter(function (e) {
+      return e.status === 'live';
+    });
+    if (!entries.length) {
+      throw new Error('No live published exams for ' + subject + ' ' + level);
+    }
+    entries.sort(function (a, b) {
+      return Number(a.slot || 0) - Number(b.slot || 0);
+    });
+    var exams = [];
+    for (var i = 0; i < entries.length; i++) {
+      var doc = await loadPublishedExamDoc(subject, level, entries[i].examId);
+      exams.push(publishedDocToServedExam(doc));
+    }
+    return exams;
+  }
+
+  async function probeLevel(subject, level) {
+    try {
+      var res = await fetch(catalogPath(subject, level), { method: 'HEAD', cache: 'no-store' });
+      return res.ok;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  async function getExamCount(subject, level) {
+    try {
+      var catalog = await loadCatalog(subject, level);
+      return (catalog.exams || []).filter(function (e) {
+        return e.status === 'live';
+      }).length;
+    } catch (_) {
+      return 0;
+    }
+  }
+
+  global.PublishedExamAdapter = {
+    supports: supports,
+    catalogPath: catalogPath,
+    examPath: examPath,
+    snapshotToExamPart: snapshotToExamPart,
+    publishedDocToServedExam: publishedDocToServedExam,
+    loadExams: loadExams,
+    probeLevel: probeLevel,
+    getExamCount: getExamCount,
+  };
+
+  if (typeof module !== 'undefined' && module.exports) {
+    module.exports = global.PublishedExamAdapter;
+  }
+})(typeof window !== 'undefined' ? window : globalThis);

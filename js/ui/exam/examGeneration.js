@@ -1049,7 +1049,8 @@ function coalesceLesenForumOpinions(part){
       .filter(q=>q&&(q.signText||q.text||q.question))
       .map((q,i)=>({
         id:q.id||String(20+i),
-        signText:q.signText||q.text||q.question,
+        signText:q.signText||q.text||'',
+        question:(q.signText||q.text)?(q.question||q.statement||''):(q.question||q.statement||q.signText||q.text||''),
         type:'ja_nein',
         correct:q.correct??q.correctAnswer,
       }));
@@ -1060,7 +1061,7 @@ function coalesceLesenForumOpinions(part){
     if(!item.signText&&item.text)item.signText=item.text;
     if(!item.signText&&item.body)item.signText=item.body;
     if(!item.signText&&item.content)item.signText=item.content;
-    if(!item.id||/^l\d/i.test(String(item.id)))item.id=String(startNum+i);
+    if(Number(part.teil)===4||!item.id||/^l\d/i.test(String(item.id)))item.id=String(startNum+i);
     if(!item.type||item.type==='multiple'||item.type==='multiple_choice')item.type='ja_nein';
     if(item.signText&&item.question&&/stimmt|ja oder nein|agree|dem thema zu/i.test(String(item.question))){
       delete item.question;
@@ -1146,6 +1147,83 @@ function normalizeLesenAdRecord(a,i,ADS){
     text:String(a.text||a.body||a.content||a.description||'').trim(),
   };
 }
+function synthesizeLesenInstruction(part,lang){
+  const teil=Number(part?.teil)||1;
+  const ER=typeof ExamRenumber!=='undefined'?ExamRenumber:null;
+  const range=ER?.teilRange?.(null,'lesen',teil,part)||ER?.DEFAULT_RANGES?.lesen?.[teil];
+  const start=range?.start??(teil===1?1:teil===2?7:teil===3?13:teil===4?20:27);
+  const end=range?.end??start+(range?.expected??6)-1;
+  const de=lang!=='en'&&lang!=='es';
+  if(teil===1){
+    return de
+      ?`Lesen Sie den Text und die Aufgaben ${start} bis ${end}. Wählen Sie: Sind die Aussagen Richtig oder Falsch?`
+      :`Read the text and tasks ${start} to ${end}. Choose: True or False?`;
+  }
+  if(teil===2){
+    return de
+      ?`Lesen Sie die beiden Texte und die Aufgaben ${start} bis ${end}. Wählen Sie bei jeder Aufgabe die richtige Lösung a, b oder c.`
+      :`Read both texts and tasks ${start} to ${end}. Choose the correct answer a, b or c for each task.`;
+  }
+  if(teil===3){
+    const adLo=String(part.ads?.[0]?.key||'a').toLowerCase();
+    const adHi=String(part.ads?.[part.ads.length-1]?.key||'j').toLowerCase();
+    return de
+      ?`Lesen Sie die Situationen ${start} bis ${end} und die Anzeigen ${adLo} bis ${adHi}. Welche Anzeige passt zu welcher Situation? Eine Anzeige passt nicht. Wenn es keine passende Anzeige gibt, schreiben Sie 0.`
+      :`Read situations ${start} to ${end} and ads ${adLo} to ${adHi}. Which ad matches each situation? One ad does not match. If no ad fits, write 0.`;
+  }
+  if(teil===4){
+    return de
+      ?`Lesen Sie die Meinungen ${start} bis ${end} zu einem Thema. Stimmt die Person dem Thema zu? Wählen Sie: Ja oder Nein.`
+      :`Read opinions ${start} to ${end} on a topic. Does the person agree? Choose Yes or No.`;
+  }
+  if(teil===5){
+    return de
+      ?`Lesen Sie den Text (z. B. eine Hausordnung oder Anweisungen) und die Aufgaben ${start} bis ${end}. Wählen Sie bei jeder Aufgabe die richtige Lösung a, b oder c.`
+      :`Read the text and tasks ${start} to ${end}. Choose the correct answer a, b or c for each task.`;
+  }
+  return '';
+}
+function ensureLesenPartInstruction(part,lang){
+  if(String(part?.instruction||'').trim())return;
+  const synth=synthesizeLesenInstruction(part,lang);
+  if(synth)part.instruction=synth;
+}
+function rebuildLesenAdsMatchingInstruction(part){
+  if(!part?.items?.length||!part.ads?.length)return;
+  const start=part.items[0].id;
+  const end=part.items[part.items.length-1].id;
+  const adLo=String(part.ads[0].key).toLowerCase();
+  const adHi=String(part.ads[part.ads.length-1].key).toLowerCase();
+  part.instruction=
+    `Lesen Sie die Situationen ${start} bis ${end} und die Anzeigen ${adLo} bis ${adHi}. `+
+    'Welche Anzeige passt zu welcher Situation? Eine Anzeige passt nicht. '+
+    'Wenn es keine passende Anzeige gibt, schreiben Sie 0.';
+}
+function promoteLesenAdsMatchingQuestions(part){
+  if(part.items?.length||!part.ads?.length||!part.questions?.length)return false;
+  const startNum=Number(part.teil)===3?13:1;
+  const isMatchQ=(q)=>{
+    if(!q)return false;
+    const t=String(q.type||'').toLowerCase();
+    if(['matching','match','abcd'].includes(t))return true;
+    const c=String(q.correct??q.correctAnswer??'').trim();
+    return(q.question||q.text||q.signText)&&/^[A-J0]$/i.test(c);
+  };
+  const matching=part.questions.filter(isMatchQ);
+  if(matching.length<3)return false;
+  part.items=matching.map((q,i)=>({
+    id:q.id||String(startNum+i),
+    signText:q.signText||q.text||q.question||'',
+    type:'matching',
+    correct:q.correct??q.correctAnswer,
+  }));
+  part.questions=part.questions.filter(q=>!matching.includes(q));
+  return true;
+}
+function inferLesenT3HasNoMatchPart(part){
+  const pool=[...(part.items||[]),...(part.questions||[])];
+  if(pool.some(it=>String(it?.correct??it?.correctAnswer??'').trim()==='0'))part._t3HasNoMatch=true;
+}
 function coalesceLesenAdsMatching(part){
   if(!isLesenAdsMatchingPart(part))return;
   const ADS='ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -1174,6 +1252,7 @@ function coalesceLesenAdsMatching(part){
       .filter(a=>a.text||a.title)
       .map((a,i)=>({...a,key:ADS[i]||String(i+1)}));
   }
+  promoteLesenAdsMatchingQuestions(part);
   const startNum=Number(part.teil)===3?13:1;
   (part.items||[]).forEach((item,i)=>{
     if(!item.signText&&!item.text&&item.question){
@@ -1184,7 +1263,7 @@ function coalesceLesenAdsMatching(part){
       }
     }
     if(!item.signText&&item.text)item.signText=item.text;
-    if(!item.id||/^l\d/i.test(String(item.id)))item.id=String(startNum+i);
+    if(!item.id||/^l\d/i.test(String(item.id))||Number(part.teil)===3)item.id=String(startNum+i);
     if(!item.type||item.type==='multiple'||item.type==='multiple_choice')item.type='matching';
     if(part.ads?.length)delete item.options;
   });
@@ -1195,15 +1274,9 @@ function coalesceLesenAdsMatching(part){
     });
   }
   if(part.items?.length&&part.ads?.length){
-    const start=part.items[0].id;
-    const end=part.items[part.items.length-1].id;
-    const adLo=String(part.ads[0].key).toLowerCase();
-    const adHi=String(part.ads[part.ads.length-1].key).toLowerCase();
-    part.instruction=
-      `Lesen Sie die Situationen ${start} bis ${end} und die Anzeigen ${adLo} bis ${adHi}. `+
-      'Welche Anzeige passt zu welcher Situation? Eine Anzeige passt nicht. '+
-      'Wenn es keine passende Anzeige gibt, schreiben Sie 0.';
+    rebuildLesenAdsMatchingInstruction(part);
   }
+  inferLesenT3HasNoMatchPart(part);
   (part.items||[]).forEach(item=>normalizeGoetheQuestion(item,part));
 }
 function lesenPartMissingAds(part){
@@ -1486,6 +1559,7 @@ function sanitizeGoetheParts(d){
     part.teil=part.teil??pi+1;
     coalesceLesenForumOpinions(part);
     coalesceLesenAdsMatching(part);
+    ensureLesenPartInstruction(part,d.lang||'de');
     if(part.ads)part.ads.forEach((a,i)=>{a.key=ADS[i]||String(i+1);if(!a.title)a.title='';if(!a.text)a.text='';a.title=fixT(a.title);a.text=fixT(a.text);});
     coalesceLesenPartQuestions(part);
     (part.options||[]).forEach(o=>{if(o.text)o.text=fixT(o.text);});

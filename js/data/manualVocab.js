@@ -137,6 +137,23 @@ const ManualVocab = (() => {
     return { word: raw, article: null, gender: null, pos: null };
   }
 
+  const DE_COMMON_ADVERBS = new Set([
+    'danach', 'davor', 'dazu', 'darin', 'dabei', 'darauf', 'darunter', 'darüber', 'darum',
+    'deshalb', 'deswegen', 'daher', 'dorthin', 'hierhin', 'bereits', 'trotzdem', 'inzwischen',
+    'plötzlich', 'sofort', 'manchmal', 'vielleicht', 'eigentlich', 'besonders', 'natürlich',
+    'ziemlich', 'gemeinsam', 'zusammen', 'wieder', 'schon', 'noch', 'auch', 'nur', 'sehr',
+    'gern', 'bald', 'fast', 'immer', 'nie', 'oft', 'dann', 'heute', 'gestern', 'morgen',
+    'hier', 'dort', 'oben', 'unten', 'innen', 'außen', 'hin', 'her', 'weg', 'zurück',
+    'vorher', 'nachher', 'beinahe', 'kaum', 'wohl', 'doch', 'mehr', 'weniger', 'meist',
+    'oftmals', 'manchmal', 'überall', 'nirgends', 'irgendwo', 'irgendwann', 'deswegen',
+  ]);
+
+  function inferPosFromConjugation(word, subject) {
+    if (typeof VerbConjugation === 'undefined' || !VerbConjugation.getPresent) return null;
+    const conj = VerbConjugation.getPresent(word, subject);
+    return conj?.lemma ? 'verb' : null;
+  }
+
   function inferPos(fc, subject) {
     const sub = subject || fc?.sourceLang || '';
     const parsed = parseLeadingArticle(fc?.word, sub);
@@ -156,10 +173,14 @@ const ManualVocab = (() => {
         }
         return 'noun';
       }
+      if (DE_COMMON_ADVERBS.has(low)) return 'adverb';
       if (/weise$/.test(low)) return 'adverb';
       if (/(liche|licher|liches|lichem|lichen|lich|ig|isch|bar|sam|haft|los|voll|frei|mäßig|artig)$/i.test(low)) {
         return 'adjective';
       }
+      if (/^ge[a-zäöüß]{3,}(t|en)$/i.test(low)) return 'verb';
+      const conjPos = inferPosFromConjugation(raw, sub);
+      if (conjPos) return conjPos;
       if (/(ung|heit|keit|schaft|tion|tät|ität|ismus|ment|chen|lein|tum|nis|sal|mal|ion)$/i.test(low)) {
         return 'noun';
       }
@@ -169,14 +190,18 @@ const ManualVocab = (() => {
     }
     if (fc?.gender || fc?.article) return 'noun';
     if (parsed.pos) return parsed.pos;
-    if (sub === 'en') {
-      if (/ly$/.test(low)) return 'adverb';
-      if (/(ous|ful|less|ive|able|ible|ish|ic|al|ed)$/.test(low)) return 'adjective';
-    }
     if (sub === 'es') {
       if (/mente$/.test(low)) return 'adverb';
       if (/(oso|osa|ivo|iva|ble|al|ado|ada)$/.test(low)) return 'adjective';
       if (/(ar|er|ir)$/.test(low) && low.length > 4) return 'verb';
+      const conjPosEs = inferPosFromConjugation(raw, sub);
+      if (conjPosEs) return conjPosEs;
+    }
+    if (sub === 'en') {
+      if (/ly$/.test(low)) return 'adverb';
+      if (/(ous|ful|less|ive|able|ible|ish|ic|al|ed)$/.test(low)) return 'adjective';
+      const conjPosEn = inferPosFromConjugation(raw, sub);
+      if (conjPosEn) return conjPosEn;
     }
     if (stored && stored !== 'other') return stored;
     return stored || 'other';

@@ -195,7 +195,7 @@ function saveToFCData(data){
     if(existing){existing.missCount=(existing.missCount||1)+1;clearFcTombstone();saveFC();}
     if(!S.examSavedWords)S.examSavedWords=[];
     if(!S.examSavedWords.includes(word))S.examSavedWords.push(word);
-    markVocabSaved(word);
+    markVocabSaved(word,existing?.type||existing?.pos||data.type||data.pos);
     const b=document.getElementById('vtSave');
     if(b){b.textContent='\u2713 In your deck';b.classList.add('saved');}
     return false;
@@ -219,7 +219,7 @@ function saveToFCData(data){
   if(typeof sortFlashcardsByType==='function')S.flashcards=sortFlashcardsByType(S.flashcards);
   clearFcTombstone();
   saveFC();
-  markVocabSaved(word);
+  markVocabSaved(word,fc.type||fc.pos||wtype);
   const b=document.getElementById('vtSave');
   if(b){b.textContent='\u2713 In your deck';b.classList.add('saved');}
   const dc=document.getElementById('dkCnt');

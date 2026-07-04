@@ -17,6 +17,7 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { BLACKLIST } from './blacklist.mjs';
+import { answerKeySequence } from './lib/balanceMcq.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -127,6 +128,11 @@ const VALID_CORRECT = {
   short_answer:    v => v === 'rubric',
 };
 
+function isMcqQuestionType(type) {
+  const t = String(type || '').toLowerCase();
+  return t === 'multiple_choice' || t === 'multiple' || t === 'mcq';
+}
+
 function chk2(batch, file) {
   const findings = [];
   for (const q of batch.questions || []) {
@@ -139,7 +145,8 @@ function chk2(batch, file) {
       findings.push(finding('CHK-2', 'CRITICAL', file, q.id,
         `correct="${c}" ≠ correctAnswer="${ca}"`));
     }
-    const validator = VALID_CORRECT[q.type];
+    const validator = VALID_CORRECT[q.type]
+      || (isMcqQuestionType(q.type) ? VALID_CORRECT.multiple_choice : null);
     if (validator && !validator(String(c))) {
       findings.push(finding('CHK-2', 'CRITICAL', file, q.id,
         `correct="${c}" no válido para type="${q.type}"`));
@@ -164,12 +171,17 @@ function chk2(batch, file) {
         });
       }
     }
-    // multiple_choice → 3 options
-    if (q.type === 'multiple_choice') {
+    // MCQ → exactly 3 options; Lesen T2 malformed if ≠3 (type multiple or multiple_choice)
+    if (isMcqQuestionType(q.type)) {
       const opts = q.options || [];
+      const mod = String(q.module || batch.module || '').toLowerCase();
+      const teil = Number(q.teil ?? batch.teil);
+      const isLesenT2 = mod === 'lesen' && teil === 2;
       if (opts.length !== 3) {
-        findings.push(finding('CHK-2', 'IMPORTANT', file, q.id,
-          `multiple_choice debe tener 3 options, tiene ${opts.length}`));
+        const sev = isLesenT2 ? 'CRITICAL' : 'IMPORTANT';
+        const scope = isLesenT2 ? 'lesen-2' : `${mod}-t${teil}`;
+        findings.push(finding('CHK-2', sev, file, q.id,
+          `${scope}: MCQ requiere exactamente 3 options (a/b/c), tiene ${opts.length} (type="${q.type}")`));
       }
     }
   }
@@ -703,9 +715,39 @@ function chk14(batch, file) {
 // La lista es conservadora: solo se incluyen palabras sin forma nominal posible.
 // Palabras ambiguas (Wissen, Essen, Junge, Lesen, …) se excluyen para evitar FP.
 
-import { NEVER_NOUN_WORDS as _NEVER_NOUN } from './lib/capitalizeNouns.mjs';
+import {
+  NEVER_NOUN_WORDS as _NEVER_NOUN,
+  // These two sets are needed for the article guard (same logic as decapitalizer)
+} from './lib/capitalizeNouns.mjs';
 
-const SENTENCE_END_RE_14B = /[.!?:]\s*$/;
+// Mirror the article guard constants here (can't import the unexported ones)
+const _SUBSTANTIVISING_ARTICLES = new Set([
+  'das','dem','des','die','der','den',
+  'ein','eine','einem','einer','eines','einen',
+  'kein','keine','keinem','keiner','keines','keinen',
+  'dieses','diese','diesem','diesen',
+  'jenes','jene','jenem','jenen',
+  'welches','welche','welchem','welchen',
+  'manches','manche','manchem','manchen',
+  'solches','solche','solchem','solchen',
+  'etwas','nichts','alles','vieles','weniges',
+  'als',
+  // Preposition+article contractions — "im Kleinen", "am Besten", "zum Guten"…
+  'im','am','beim','vom','zum','zur','ins','ans','aufs','ums','fürs',
+]);
+
+// Pure adverbs (no article guard needed — no Substantivierungsform exists)
+const _PURE_ADVERBS_14B = new Set([
+  'eher','gerne','gern','leider','vielleicht','bereits','sogar','wirklich',
+  'natürlich','eigentlich','trotzdem','allerdings','außerdem','jedoch',
+  'dennoch','deshalb','deswegen',
+]);
+
+// Same three-alternative regex as capitalizeNouns.mjs SENTENCE_END_RE.
+// Opening quotes/dashes after : are clause starters — the word that follows
+// is legitimately capitalised (first word of quoted speech, dialogue, title).
+const SENTENCE_END_RE_14B =
+  /[.!?:]\s*['"„«‚\u2018\u201c\u00ab]?\s*$|[\u2013\u2014–—]\s*$|[„«‚\u2018\u201c\u00ab)]\s*$|(?<!\w)['"]\s*$/;
 
 function chk14b(batch, file) {
   const findings = [];
@@ -722,7 +764,6 @@ function chk14b(batch, file) {
   const seen = new Set();
 
   for (const text of texts) {
-    // Tokenize: words vs non-words
     const tokenRe = /([A-Za-zÄÖÜäöüß]+)|([^A-Za-zÄÖÜäöüß]+)/g;
     const tokens = [];
     let m;
@@ -731,6 +772,8 @@ function chk14b(batch, file) {
     }
 
     let prevContent = '';
+    let lastWord = '';
+
     for (const tok of tokens) {
       if (!tok.isWord) { prevContent += tok.val; continue; }
 
@@ -740,17 +783,25 @@ function chk14b(batch, file) {
       if (isCapitalized) {
         const lc = tok.val.toLowerCase();
         const isMidSentence = prevContent.length > 0 && !SENTENCE_END_RE_14B.test(prevContent);
+
         if (isMidSentence && _NEVER_NOUN.has(lc) && !seen.has(lc)) {
-          seen.add(lc);
-          const start = Math.max(0, tok.pos - 35);
-          const end   = Math.min(text.length, tok.pos + tok.val.length + 35);
-          const ctx   = text.slice(start, end).replace(/\n/g, ' ');
-          findings.push(finding('CHK-14', 'IMPORTANT', file, tok.val,
-            `Adjetivo/adverbio "${tok.val}" en mayúscula errónea a mitad de frase (debería ser "${lc}"). Contexto: "...${ctx}..."`));
+          // Apply article guard for adjectives (but not pure adverbs)
+          const isArticlePreceding = _SUBSTANTIVISING_ARTICLES.has(lastWord.toLowerCase());
+          if (!_PURE_ADVERBS_14B.has(lc) && isArticlePreceding) {
+            // "das Schwierige" / "das Mögliche" — legitimate noun, skip
+          } else {
+            seen.add(lc);
+            const start = Math.max(0, tok.pos - 35);
+            const end   = Math.min(text.length, tok.pos + tok.val.length + 35);
+            const ctx   = text.slice(start, end).replace(/\n/g, ' ');
+            findings.push(finding('CHK-14', 'IMPORTANT', file, tok.val,
+              `Adjetivo/adverbio "${tok.val}" en mayúscula errónea (debería ser "${lc}"). Contexto: "...${ctx}..."`));
+          }
         }
       }
 
       prevContent += tok.val;
+      lastWord = tok.val;
     }
   }
   return findings;
@@ -900,7 +951,12 @@ function chk16(batch, file) {
 //   • options[] de 10 entradas A-J IDÉNTICAS en todos los ítems (lista duplicada físicamente).
 //   • correct / correctAnswer: letra A-J (mayúscula) o "0" (sin anuncio).
 //   • type: "matching".
-//   El runtime construye part.ads desde question.options[]; por eso la lista DEBE vivir ahí.
+//   El runtime lee passage.ads[] (seed/bank) o construye ads desde question.options[] (batch).
+//
+// Material de lectura obligatorio (POOL-2 / GATE-1):
+//   passage.ads[] con ≥2 anuncios con texto real (no bare keys), O
+//   questions[].options[] con formato A–J de texto largo (batch make-t3).
+//   Si no hay NI lo uno NI lo otro → CRITICAL (L3 sin anuncios legibles).
 //
 // Tres casos posibles:
 //
@@ -919,6 +975,70 @@ function chk16(batch, file) {
 /** Canonicaliza una línea de option para comparación (trim + colapsar espacios internos). */
 function _canonOpt(s) { return String(s).trim().replace(/\s+/g, ' '); }
 
+const L3_AD_MIN_TEXT_LEN = 12;
+
+function _l3OptionText(opt) {
+  if (opt == null) return '';
+  if (typeof opt === 'string') return opt.trim();
+  if (typeof opt === 'object') return String(opt.text ?? opt.label ?? opt.value ?? '').trim();
+  return String(opt).trim();
+}
+
+function _l3IsBareKeyText(key, text) {
+  const k = String(key || '').toUpperCase();
+  const t = String(text || '').trim();
+  if (!t) return true;
+  if (t.toUpperCase() === k) return true;
+  return /^[a-j0k]$/i.test(t);
+}
+
+/** Cuenta anuncios con cuerpo de texto real (no solo la letra A–J). */
+function _l3CountRealAds(ads) {
+  if (!Array.isArray(ads)) return 0;
+  let n = 0;
+  for (const ad of ads) {
+    if (typeof ad === 'string') {
+      const m = ad.match(/^[a-jA-J0]\)\s*(.+)$/s);
+      if (m && m[1].trim().length >= L3_AD_MIN_TEXT_LEN) n++;
+      continue;
+    }
+    if (ad && typeof ad === 'object') {
+      const key = ad.key || ad.id || '';
+      const body = String(ad.text || ad.body || '').trim();
+      if (body && !_l3IsBareKeyText(key, body) && body.length >= L3_AD_MIN_TEXT_LEN) n++;
+    }
+  }
+  return n;
+}
+
+function _l3HasPopulatedPassageAds(batch) {
+  const ads = batch.ads || batch.passage?.ads || [];
+  return _l3CountRealAds(ads) >= 2;
+}
+
+/** options[] con líneas A–J de texto largo (formato batch make-t3 o bank legacy). */
+function _l3HasLongTextMatchingOptions(t3qs) {
+  const itemsWithOptions = t3qs.filter((q) => Array.isArray(q.options) && q.options.length >= 5);
+  if (!itemsWithOptions.length) return false;
+  const ref = itemsWithOptions.reduce(
+    (best, q) => (q.options.length > best.options.length ? q : best),
+    itemsWithOptions[0],
+  );
+  let adLike = 0;
+  for (const opt of ref.options) {
+    const raw = _l3OptionText(opt);
+    if (/^[a-jA-J0]\)\s+.{15,}/.test(raw)) {
+      adLike++;
+      continue;
+    }
+    if (typeof opt === 'object' && opt.key) {
+      const body = _l3OptionText(opt);
+      if (!_l3IsBareKeyText(opt.key, body) && body.length >= L3_AD_MIN_TEXT_LEN) adLike++;
+    }
+  }
+  return adLike >= 2;
+}
+
 function chk17(batch, file) {
   const findings = [];
   const t3qs = (batch.questions || []).filter(q =>
@@ -936,6 +1056,14 @@ function chk17(batch, file) {
     findings.push(finding('CHK-17', 'IMPORTANT', file, 'lesen-3',
       `L3 parece MCQ A2 (opciones a/b/c por ítem, no lista A-J). No es matching B1. ` +
       `Regenerar con la plantilla correcta de Lesen Teil 3.`));
+    return findings;
+  }
+
+  // ── Material de lectura: ads poblados O options A–J con texto largo ──
+  if (!_l3HasPopulatedPassageAds(batch) && !_l3HasLongTextMatchingOptions(t3qs)) {
+    findings.push(finding('CHK-17', 'CRITICAL', file, 'lesen-3',
+      `L3 matching sin material de lectura: passage.ads[] vacío o bare keys, y questions[].options[] ` +
+      `sin texto de anuncio A–J. Se requiere ≥2 anuncios con texto real en ads[] o options[] largas.`));
     return findings;
   }
 
@@ -1296,6 +1424,112 @@ function chk22(batch, file) {
   return findings;
 }
 
+// ─── CHK-24: Canonical case for multiple_choice correct value ─────────────
+// MINOR advisory — non-blocking for POOL-2. Grading is case-insensitive but the
+// canonical schema requires lowercase letters (a/b/c/d). normalizeBatch now prevents
+// this on newly generated parts; CHK-24 surfaces it in pool/batch audits of older data.
+
+function chk24(batch, file) {
+  const findings = [];
+  for (const q of batch.questions || []) {
+    const type = String(q.type || '').toLowerCase();
+    if (type !== 'multiple_choice' && type !== 'multiple' && type !== 'mcq') continue;
+    const c = String(q.correct ?? q.correctAnswer ?? '');
+    if (/^[A-Z]$/.test(c)) {
+      findings.push(finding('CHK-24', 'MINOR', file, q.id,
+        `correct="${c}" no canónico para multiple_choice — debe ser "${c.toLowerCase()}". ` +
+        `El grader puntúa correctamente (case-insensitive), pero el esquema espera minúsculas.`));
+    }
+  }
+  return findings;
+}
+
+// ─── CHK-25: Secuencia de claves idéntica entre partes de la misma celda ───
+// CHK-4 solo mira balance dentro de UNA parte; esto detecta patrones posicionales
+// repetidos entre partes distintas (p. ej. L2 siempre a,b,c,a,b,c).
+//
+// Umbrales (espacio finito de secuencias → colisiones 2–3 son estadísticamente normales):
+//   2–3 partes  → INFO      (advisory, no bloquea)
+//   4–6 partes  → IMPORTANT (patrón sospechoso)
+//   ≥7 partes   → CRITICAL  (patrón sistemático explotable)
+
+const CHK25_INFO_MAX = 3;
+const CHK25_IMPORTANT_MAX = 6;
+
+export function chk25Severity(groupSize) {
+  if (groupSize <= CHK25_INFO_MAX) return 'INFO';
+  if (groupSize <= CHK25_IMPORTANT_MAX) return 'IMPORTANT';
+  return 'CRITICAL';
+}
+
+function partKeySequenceGroups(batch) {
+  const qs = batch.questions || [];
+  if (!qs.length) return [];
+  const mod = String(batch.module || qs[0]?.module || '').toLowerCase();
+  const teil = Number(batch.teil ?? qs[0]?.teil);
+  if (!mod || !Number.isFinite(teil)) return [];
+
+  const types = [...new Set(qs.map((q) => String(q.type || '').toLowerCase()).filter(Boolean))];
+  return types
+    .map((type) => ({
+      cell: `${mod}-${teil}`,
+      type,
+      seq: answerKeySequence(qs, type),
+    }))
+    .filter((g) => g.seq.includes(','));
+}
+
+function chk25(allBatches) {
+  const findings = [];
+  const registry = new Map();
+
+  for (const { batch, file } of allBatches) {
+    for (const group of partKeySequenceGroups(batch)) {
+      const key = `${group.cell}:${group.type}:${group.seq}`;
+      if (!registry.has(key)) {
+        registry.set(key, { ...group, files: [] });
+      }
+      registry.get(key).files.push(file);
+    }
+  }
+
+  for (const { cell, type, seq, files } of registry.values()) {
+    if (files.length < 2) continue;
+    const n = files.length;
+    const sev = chk25Severity(n);
+    const sample = files.slice(0, 4).map((f) => path.basename(f)).join(', ');
+    const note = n <= CHK25_INFO_MAX
+      ? ' (colisión estadística esperable en espacio finito de secuencias)'
+      : '';
+    findings.push(finding(
+      'CHK-25',
+      sev,
+      files[0],
+      cell,
+      `${n} partes en ${cell} (${type}) comparten la misma secuencia posicional de claves: [${seq}]. ` +
+      `Ejemplos: ${sample}${n > 4 ? '…' : ''}${note}`,
+    ));
+  }
+  return findings;
+}
+
+/** POOL/corpus: auditar secuencias duplicadas entre registros del banco. */
+export function chk25PoolRecords(records, label = 'pool', { skipDeprecated = true } = {}) {
+  const active = (records || []).filter((rec) => {
+    if (!skipDeprecated) return true;
+    return !rec._deprecated;
+  });
+  const allBatches = active.map((rec, i) => ({
+    batch: {
+      module: rec.module,
+      teil: rec.teil,
+      questions: rec.questions || rec.part?.questions || [],
+    },
+    file: rec.id || `${label}-${i}`,
+  }));
+  return chk25(allBatches);
+}
+
 // ─── CHK-9: Beispiel ausente ──────────────────────────────────────────────
 
 const BEISPIEL_TEILE = new Set(['lesen-1','lesen-4','horen-3','horen-4']);
@@ -1381,13 +1615,18 @@ function chk11(batch, file) {
 // ─── Load batches ──────────────────────────────────────────────────────────
 
 function flattenExam(examObj) {
-  // Aplanar un examen ensamblado {lesenParts, horenParts, ...} a {passages, questions}
+  // Aplanar un examen ensamblado {lesenParts, horenParts, ...} a {passages, questions, ads}
   const passages = [];
   const questions = [];
+  const ads = [];
   const MODMAP = { lesenParts: 'lesen', horenParts: 'horen', schreibenParts: 'schreiben', sprechenParts: 'sprechen' };
   for (const [arrKey, module] of Object.entries(MODMAP)) {
     for (const part of examObj[arrKey] || []) {
       const teil = Number(part.teil);
+
+      if (module === 'lesen' && teil === 3 && Array.isArray(part.ads) && part.ads.length) {
+        ads.push(...part.ads);
+      }
 
       // Dedup guard: algunos formatos de banco almacenan preguntas en AMBOS part.questions[]
       // y part.segments[].questions[] (duplicado exacto por id). Sin dedup, flattenExam
@@ -1470,7 +1709,7 @@ function flattenExam(examObj) {
       }
     }
   }
-  return { passages, questions };
+  return { passages, questions, ads };
 }
 
 // ─── auditExam: audita un examen ensamblado en memoria ────────────────────
@@ -1503,6 +1742,7 @@ export function auditExam(examWrapper, label = 'exam') {
     ...chk20(flat, label),
     ...chk21(flat, label),
     ...chk22(flat, label),
+    ...chk24(flat, label),
   ];
   const by = s => findings.filter(f => f.severity === s).length;
   return {
@@ -2155,10 +2395,12 @@ async function main() {
     allFindings.push(...chk20(batch, file));
     allFindings.push(...chk21(batch, file));
     allFindings.push(...chk22(batch, file));
+    allFindings.push(...chk24(batch, file));
   }
 
   // Global checks
   allFindings.push(...chk5(allBatches));
+  allFindings.push(...chk25(allBatches));
 
   // Output
   const counts = { critical: 0, important: 0, minor: 0 };

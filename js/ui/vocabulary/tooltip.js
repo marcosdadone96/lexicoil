@@ -63,25 +63,75 @@ function isWordSaved(word){
   const lvl=String(S.level||'').toUpperCase();
   return S.flashcards.some(f=>f.word===word&&f.sourceLang===S.subject&&fcSourceLevel(f)===lvl);
 }
-function markVocabSaved(word){document.querySelectorAll(`[data-vocab="${encodeURIComponent(word)}"]`).forEach(el=>el.classList.add('vocab-saved'));}
-function unmarkVocabSaved(word){document.querySelectorAll(`[data-vocab="${encodeURIComponent(word)}"]`).forEach(el=>el.classList.remove('vocab-saved'));}
+function flashcardForWord(word){
+  const lvl=String(S.level||'').toUpperCase();
+  return(S.flashcards||[]).find(f=>f.word===word&&f.sourceLang===S.subject&&fcSourceLevel(f)===lvl);
+}
+const VOCAB_POS_CLASSES=['vocab-pos-noun','vocab-pos-verb','vocab-pos-adjective','vocab-pos-adverb','vocab-pos-phrase','vocab-pos-other'];
+function resolveVocabPos(word,stored){
+  let t=typeof normWordType==='function'?normWordType(stored):'other';
+  if((!stored||t==='other')&&typeof ManualVocab!=='undefined'&&ManualVocab.inferPos){
+    t=normWordType(ManualVocab.inferPos({word,type:stored,pos:stored},S.subject));
+  }
+  return t||'other';
+}
+window.resolveVocabPos=resolveVocabPos;
+window.markedWordPosClass=function(word,stored){
+  const t=resolveVocabPos(word,stored);
+  return t&&t!=='other'?` marked-word--${t}`:'';
+};
+function vocabPosClassName(pos,word){
+  const t=word?resolveVocabPos(word,pos):(typeof normWordType==='function'?normWordType(pos):'other');
+  return t?` vocab-pos-${t}`:'';
+}
+function clearVocabPosClasses(el){
+  if(!el)return;
+  VOCAB_POS_CLASSES.forEach(c=>el.classList.remove(c));
+}
+function markVocabSaved(word,pos){
+  const stored=pos||(flashcardForWord(word)?.type||flashcardForWord(word)?.pos||S.vocabCache?.[`${word}_${S.subject}_${S.vocabLang}`]?.pos||S.vocabCache?.[`${word}_${S.subject}_${S.vocabLang}`]?.type);
+  const posCls=vocabPosClassName(stored,word);
+  document.querySelectorAll(`[data-vocab="${encodeURIComponent(word)}"]`).forEach(el=>{
+    el.classList.remove('vocab-marked','vocab-marked-official');
+    el.classList.add('vocab-saved');
+    clearVocabPosClasses(el);
+    posCls.trim().split(/\s+/).filter(Boolean).forEach(c=>el.classList.add(c));
+  });
+}
+function unmarkVocabSaved(word){
+  document.querySelectorAll(`[data-vocab="${encodeURIComponent(word)}"]`).forEach(el=>{
+    el.classList.remove('vocab-saved');
+    clearVocabPosClasses(el);
+  });
+}
 function isWordMarked(word){
   return(S.activeSession?.markedWords||[]).some(m=>m.word===word);
 }
 function markVocabMarked(word){
+  const cls=isOfficialMode()?'vocab-marked-official':'vocab-marked';
   document.querySelectorAll(`[data-vocab="${encodeURIComponent(word)}"]`).forEach(el=>{
-    el.classList.add('vocab-marked');
-    el.classList.remove('vocab-saved');
+    el.classList.remove('vocab-marked','vocab-marked-official','vocab-saved');
+    clearVocabPosClasses(el);
+    el.classList.add(cls);
+  });
+}
+function unmarkVocabMarked(word){
+  document.querySelectorAll(`[data-vocab="${encodeURIComponent(word)}"]`).forEach(el=>{
+    el.classList.remove('vocab-marked','vocab-marked-official');
   });
 }
 function markWordOfficial(word,sec){
   if(!S.activeSession)initExamSession('official');
-  if(!S.activeSession.markedWords.some(m=>m.word===word)){
+  const idx=S.activeSession.markedWords.findIndex(m=>m.word===word);
+  if(idx>=0){
+    S.activeSession.markedWords.splice(idx,1);
+    unmarkVocabMarked(word);
+  }else{
     S.activeSession.markedWords.push({word,sec,markedAt:Date.now()});
-    S.activeSession.updatedAt=Date.now();
-    syncOfficialFlight();
+    markVocabMarked(word);
   }
-  markVocabMarked(word);
+  S.activeSession.updatedAt=Date.now();
+  syncOfficialFlight();
 }
 function vocabClick(e,ew,sec,showSave){
   const span=e?.currentTarget?.classList?.contains('vocab-word')?e.currentTarget:null;
@@ -124,12 +174,12 @@ async function saveWordQuick(word,context){
     return;
   }
   const ck=`${word}_${S.subject}_${S.vocabLang}`;
-  if(S.vocabCache[ck]){saveToFCData(S.vocabCache[ck]);markVocabSaved(word);autosaveSession();return;}
+  if(S.vocabCache[ck]){saveToFCData(S.vocabCache[ck]);markVocabSaved(word,S.vocabCache[ck].type||S.vocabCache[ck].pos);autosaveSession();return;}
   try{await fetchVocab(word,ck,true,true,context);autosaveSession();}catch(_){
     if(!isWordSaved(word)){
       const meta=applyGenderToVocabData({word},word,S.subject);
       saveToFCData(meta);
-      markVocabSaved(word);
+      markVocabSaved(word,meta.type||meta.pos);
     }
   }
 }
@@ -182,7 +232,7 @@ async function fetchVocab(word,ck,showSave=true,autoSave=false,context=''){
     if(S.vocabCache[ck]){
       if(reqCk!==_vocabActiveCk)return;
       renderTT(S.vocabCache[ck],word,showSave);
-      if(autoSave)saveToFCData(S.vocabCache[ck]);
+      if(autoSave){saveToFCData(S.vocabCache[ck]);markVocabSaved(word,S.vocabCache[ck].type||S.vocabCache[ck].pos);}
       return;
     }
     let data=null;
@@ -197,7 +247,7 @@ async function fetchVocab(word,ck,showSave=true,autoSave=false,context=''){
       S.vocabCache[ck]=data;
       if(reqCk!==_vocabActiveCk)return;
       renderTT(data,word,showSave);
-      if(autoSave)saveToFCData(data);
+      if(autoSave){saveToFCData(data);markVocabSaved(word,data.type||data.pos);}
       return;
     }
     let missReason='miss';
@@ -210,7 +260,7 @@ async function fetchVocab(word,ck,showSave=true,autoSave=false,context=''){
       S.vocabCache[ck]=data;
       if(reqCk!==_vocabActiveCk)return;
       renderTT(data,word,showSave);
-      if(autoSave)saveToFCData(data);
+      if(autoSave){saveToFCData(data);markVocabSaved(word,data.type||data.pos);}
       return;
     }
     missReason=cacheHit?.reason||missReason;
@@ -218,7 +268,7 @@ async function fetchVocab(word,ck,showSave=true,autoSave=false,context=''){
     if(autoSave&&!isWordSaved(word)){
       const meta=applyGenderToVocabData({word,type:'',pos:''},word,S.subject);
       saveToFCData(meta);
-      markVocabSaved(word);
+      markVocabSaved(word,meta.type||meta.pos);
       renderTT(meta,word,showSave);
       return;
     }
@@ -257,11 +307,15 @@ function wrapLineW(line,sec,showSave=true){
   if(!line)return'';
   return String(line).replace(WORD_RE,(m)=>{
     const enc=encodeURIComponent(m);
-    const marked=isWordMarked(m)?' vocab-marked':'';
+    const fc=showSave&&isWordSaved(m)?flashcardForWord(m):null;
+    const cachePos=S.vocabCache?.[`${m}_${S.subject}_${S.vocabLang}`];
+    const storedPos=fc?.type||fc?.pos||cachePos?.type||cachePos?.pos;
+    const posCls=fc||cachePos||isWordSaved(m)?vocabPosClassName(storedPos,m):('');
     const saved=showSave&&isWordSaved(m)?' vocab-saved':'';
+    const marked=isWordMarked(m)?(isOfficialMode()?' vocab-marked-official':' vocab-marked'):'';
     const target=(typeof TargetUsage!=='undefined'&&S.examData?.vocabPersonal&&TargetUsage.isVerifiedSurface(S.examData,m))?' vocab-target':'';
     const secAttr=String(sec||'').replace(/"/g,'&quot;');
-    return`<span class="vocab-word${saved}${marked}${target}" data-vocab="${enc}" data-vocab-sec="${secAttr}" data-vocab-save="${showSave?'1':'0'}">${m}</span>`;
+    return`<span class="vocab-word${saved}${posCls}${marked}${target}" data-vocab="${enc}" data-vocab-sec="${secAttr}" data-vocab-save="${showSave?'1':'0'}">${m}</span>`;
   });
 }
 function bindVocabWordEvents(){
@@ -328,7 +382,9 @@ async function expandMarkedWord(enc,idx){
     const trans=data[tk]||data.translation_en||data.translation_es||'—';
     const saved=isWordSaved(word);
     const dataEnc=encodeURIComponent(JSON.stringify(data));
-    panel.innerHTML=`<div>${esc(trans)}</div>${saved?'<div style="margin-top:6px;font-size:11px;font-weight:700;color:var(--green)">✓ In your deck</div>':`<button type="button" class="btn-sm accent" style="margin-top:8px" onclick="saveToFC('${dataEnc}');expandMarkedWord('${enc}',${idx})">+ Save to deck</button>`}`;
+    const posType=resolveVocabPos(word,data.type||data.pos);
+    const posBadge=typeof typeBadge==='function'?typeBadge(posType):'';
+    panel.innerHTML=`${posBadge?`<div style="margin-bottom:6px">${posBadge}</div>`:''}<div>${esc(trans)}</div>${saved?'<div style="margin-top:6px;font-size:11px;font-weight:700;color:var(--green)">✓ In your deck</div>':`<button type="button" class="btn-sm accent" style="margin-top:8px" onclick="saveToFC('${dataEnc}');expandMarkedWord('${enc}',${idx})">+ Save to deck</button>`}`;
   }catch(e){panel.textContent='Could not load translation.';}
 }
 function wrapW(text,sec,showSave=true){
