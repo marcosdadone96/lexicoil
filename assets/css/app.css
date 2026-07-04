@@ -1059,6 +1059,21 @@ button.ws-exam-card:disabled:hover{border-color:var(--border);transform:none}
 .marked-word--adverb{color:var(--purple);background:var(--purple-bg)}
 .marked-word--phrase,.marked-word--other{color:var(--text-secondary);background:rgba(127,127,127,.12)}
 .marked-trans{flex:1;min-width:180px;font-size:13px;color:var(--text-secondary)}
+.speak-mode-banner{border-radius:10px;padding:10px 14px;margin:12px 0;font-size:12px;font-weight:600;line-height:1.55;color:var(--text-secondary)}
+.speak-mode-banner--free{background:rgba(37,99,235,.07);border:1px solid rgba(37,99,235,.2)}
+.speak-mode-banner--pro{background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.22)}
+.speak-mode-upgrade{display:block;margin-top:6px;font-size:11px;color:var(--text-muted);font-weight:600}
+.speak-persona-picker{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.speak-persona-pill{padding:7px 14px;border-radius:999px;border:1.5px solid var(--border);background:var(--bg2);font-size:12px;font-weight:700;cursor:pointer;transition:all .15s}
+.speak-persona-pill:hover{border-color:var(--purple);color:var(--purple)}
+.speak-persona-pill.active{border-color:var(--purple);background:var(--purple-bg,rgba(124,58,237,.12));color:var(--purple)}
+.speak-persona-desc{font-size:12px;color:var(--text-muted);margin:0 0 12px;line-height:1.5}
+.speak-conv-panel{padding:14px 16px;border:1px dashed var(--border);border-radius:10px;background:var(--bg2);margin-bottom:12px}
+.speak-conv-status{font-size:13px;font-weight:600;color:var(--text);margin-bottom:10px}
+.speak-conv-transcript-live{min-height:48px;font-size:13px;line-height:1.6;color:var(--text-secondary);margin-bottom:10px;white-space:pre-wrap}
+.speak-conv-actions{display:flex;flex-wrap:wrap;gap:8px}
+.speak-conv-fallback[hidden]{display:none!important}
+.speak-conv-meta{display:none!important}
 .coach-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;transition:border-color .2s}
 .coach-card--action{grid-column:1/-1;border-color:var(--brand);background:var(--brand-light);cursor:pointer}
 .coach-card--action:hover{border-color:var(--brand);transform:translateY(-1px)}

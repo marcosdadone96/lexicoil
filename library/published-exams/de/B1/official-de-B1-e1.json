@@ -5,17 +5,17 @@
   "level": "B1",
   "title": "Official B1 Exam 1",
   "slot": 1,
-  "manifestVersion": 1,
-  "previousManifestVersion": null,
+  "manifestVersion": 2,
+  "previousManifestVersion": 1,
   "status": "live",
-  "publishedAt": "2026-07-04T07:35:23.524Z",
+  "publishedAt": "2026-07-04T11:32:13.353Z",
   "publishedBy": null,
   "gate1": {
     "ok": true,
     "blocking": 0,
     "advisory": 1
   },
-  "sourceAssembled": "assembled-exam-b1-e1.json",
+  "sourceAssembled": "assembled-exam-b1-e1.json + sprechen-stadtfest-planung-01",
   "parts": [
     {
       "cell": "lesen_1",
@@ -2612,6 +2612,93 @@
             "teil": 3,
             "type": "short_answer",
             "question": "Sie haben sich für einen Deutschkurs angemeldet. Die Sprachschule möchte Ihre Anmeldung bestätigen. Schreiben Sie eine Nachricht (ca. 40 Wörter), in der Sie:\n• die Anmeldung bestätigen\n• um Informationen zum Kursbeginn bitten",
+            "correct": "rubric",
+            "correctAnswer": "rubric"
+          }
+        ],
+        "complete": true,
+        "verified": true
+      }
+    },
+    {
+      "cell": "sprechen_1",
+      "module": "sprechen",
+      "teil": 1,
+      "partId": "snap-de-B1-e1-sprechen-t1-stadtfest",
+      "contentHash": "cbc4ef6881c1de2befe9c26559c353f211a6d82a3f43f4d6e5d4f0b393df3516",
+      "snapshot": {
+        "id": "snap-de-B1-e1-sprechen-t1-stadtfest",
+        "lang": "de",
+        "level": "B1",
+        "module": "sprechen",
+        "teil": 1,
+        "instruction": "Sprechen Teil 1 — Gemeinsam planen und sich einigen.",
+        "taskFormat": "plan_together",
+        "questions": [
+          {
+            "id": "de-b1-sp-t1-stadtfest-planung-01-q1",
+            "module": "sprechen",
+            "teil": 1,
+            "type": "short_answer",
+            "question": "Sie möchten gemeinsam mit einem Partner ein Stadtfest organisieren. Diskutieren Sie folgende Punkte und einigen Sie sich:\n\n• Datum und Uhrzeit des Festes\n• Ort und Größe des Events\n• Hauptattraktionen und Aktivitäten\n• Budget und Finanzierung\n• Bewerbung und Einladungen",
+            "correct": "rubric",
+            "correctAnswer": "rubric"
+          }
+        ],
+        "complete": true,
+        "verified": true
+      }
+    },
+    {
+      "cell": "sprechen_2",
+      "module": "sprechen",
+      "teil": 2,
+      "partId": "snap-de-B1-e1-sprechen-t2-stadtfest",
+      "contentHash": "f175a9b5a15eebf41f78fa59064d9fd8e531401c8bf730d13e335e4fb0bd2bac",
+      "snapshot": {
+        "id": "snap-de-B1-e1-sprechen-t2-stadtfest",
+        "lang": "de",
+        "level": "B1",
+        "module": "sprechen",
+        "teil": 2,
+        "instruction": "Sprechen Teil 2 — Kurze Präsentation halten.",
+        "taskFormat": "presentation",
+        "questions": [
+          {
+            "id": "de-b1-sp-t2-stadtfest-planung-01-q1",
+            "module": "sprechen",
+            "teil": 2,
+            "type": "short_answer",
+            "question": "Halten Sie eine kurze Präsentation zum Thema \"Feste und Feiern im Heimatland vs. Deutschland\".\n\nFolgende Struktur wird erwartet:\n• Einleitung: Welches Fest möchten Sie vorstellen?\n• Heimatland: Wie feiert man dort? (Datum, Bräuche, Traditionen, Essen)\n• Deutschland: Wie werden ähnliche Feste hier gefeiert?\n• Vor- und Nachteile: Welche Unterschiede finden Sie interessant?\n• Persönliche Meinung: Welches Fest gefällt Ihnen besser und warum?",
+            "correct": "rubric",
+            "correctAnswer": "rubric"
+          }
+        ],
+        "complete": true,
+        "verified": true
+      }
+    },
+    {
+      "cell": "sprechen_3",
+      "module": "sprechen",
+      "teil": 3,
+      "partId": "snap-de-B1-e1-sprechen-t3-stadtfest",
+      "contentHash": "25870a9ccdd0469fd9571077a16c487a011bf26f3816984b6a9f46d8d7804da3",
+      "snapshot": {
+        "id": "snap-de-B1-e1-sprechen-t3-stadtfest",
+        "lang": "de",
+        "level": "B1",
+        "module": "sprechen",
+        "teil": 3,
+        "instruction": "Sprechen Teil 3 — Feedback geben und Fragen stellen.",
+        "taskFormat": "feedback_questions",
+        "questions": [
+          {
+            "id": "de-b1-sp-t3-stadtfest-planung-01-q1",
+            "module": "sprechen",
+            "teil": 3,
+            "type": "short_answer",
+            "question": "Ihr Partner hat gerade seine Präsentation zu Festen und Feiern beendet. Geben Sie konstruktives Feedback und stellen Sie 2–3 Anschlussfragen:\n\n• Was hat Ihnen an der Präsentation gut gefallen?\n• Was war interessant oder überraschend?\n• Stellen Sie mindestens 2 konkrete Fragen zur Präsentation (z.B. zu Bräuchen, Unterschieden oder Erlebnissen)",
             "correct": "rubric",
             "correctAnswer": "rubric"
           }

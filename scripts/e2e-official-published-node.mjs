@@ -163,7 +163,11 @@ async function main() {
     const doc = await fetchJson(
       `${BASE}/library/published-exams/de/B1/${entry.examId}.json`,
     );
-    ok(`${entry.examId} has 12 parts with snapshot+hash`, doc.parts?.length === 12 && doc.parts.every((p) => p.snapshot && p.contentHash));
+    const expectedParts = entry.examId === 'official-de-B1-e1' ? 15 : 12;
+    ok(
+      `${entry.examId} has ${expectedParts} parts with snapshot+hash`,
+      doc.parts?.length === expectedParts && doc.parts.every((p) => p.snapshot && p.contentHash),
+    );
     if (entry.examId === 'official-de-B1-e4') e4Doc = doc;
   }
   ok('loaded official-de-B1-e4', !!e4Doc);

@@ -6,6 +6,7 @@ const ACTION_ACCESS = {
   grammar_coaching: ['pro', 'pro_max'],
   writing_correction: ['free', 'pro', 'pro_max'],
   speaking: ['free', 'pro', 'pro_max'],
+  speaking_realtime: ['pro', 'pro_max'],
   vocab_quiz: ['free', 'pro', 'pro_max'],
   listening_game: ['free', 'pro', 'pro_max'],
   tts: ['pro', 'pro_max'],

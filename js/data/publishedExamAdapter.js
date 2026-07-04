@@ -79,6 +79,46 @@
     };
   }
 
+  function parseSprechenPoints(record, q0) {
+    if (Array.isArray(record.points) && record.points.length) return record.points;
+    if (Array.isArray(record.prompts) && record.prompts.length) return record.prompts;
+    var text = String((q0 && q0.question) || record.task || record.instruction || '');
+    return text
+      .split('\n')
+      .map(function (line) {
+        return line.replace(/^\s*[•*\-–]\s*/, '').replace(/^\s*\d+[.)]\s*/, '').trim();
+      })
+      .filter(function (line) {
+        return line.length > 2 && !/^folgende struktur|^folgende punkte|^diskutieren sie/i.test(line);
+      });
+  }
+
+  function applySprechenSnapshot(part, record, teil) {
+    var q0 = (record.questions || [])[0];
+    var situation =
+      record.situation ||
+      (q0 && q0.question) ||
+      record.task ||
+      record.instruction ||
+      '';
+    part.situation = situation;
+    part.title = record.title || record.taskFormat || 'Teil ' + teil;
+    part.fieldId = record.fieldId || 'speak_bp_' + teil;
+    part.points = parseSprechenPoints(record, q0);
+    part.prompts = part.points;
+    part.minExchanges = record.minExchanges != null ? record.minExchanges : teil === 3 ? 3 : 4;
+    part.dauer = record.dauer || record.time || record.arbeitszeit || '';
+    part.cardText = record.cardText || '';
+    part.photoDescriptions = record.photoDescriptions || [];
+    if (Number(teil) === 2 && Array.isArray(record.slides) && record.slides.length) {
+      part.slides = record.slides;
+    }
+    part.questions = (record.questions || []).map(function (q) {
+      return normPartQuestion(q, 'sprechen', teil);
+    });
+    return part;
+  }
+
   /** @param {object} record — published part snapshot (seed-shaped payload) */
   function snapshotToExamPart(record) {
     if (!record || typeof record !== 'object') return null;
@@ -167,14 +207,14 @@
         });
         if (firstPid) part.passageId = firstPid.passageId;
       }
-    } else if (module === 'schreiben' || module === 'sprechen') {
+    } else if (module === 'schreiben') {
       var passageSch = record.passage || {};
-      var q0 = (record.questions || [])[0];
+      var q0w = (record.questions || [])[0];
       part.task =
         record.task ||
         record.instruction ||
         passageSch.text ||
-        (q0 && q0.question) ||
+        (q0w && q0w.question) ||
         '';
       part.minWords = record.minWords != null ? record.minWords : teil === 3 ? 40 : 80;
       part.maxWords = record.maxWords != null ? record.maxWords : part.minWords;
@@ -197,6 +237,8 @@
                 teil: teil,
               },
             ];
+    } else if (module === 'sprechen') {
+      applySprechenSnapshot(part, record, teil);
     } else {
       return null;
     }

@@ -49,7 +49,7 @@ function getPart(doc, cell) {
   return doc.parts.find((p) => p.cell === cell);
 }
 
-console.log('=== 1. Files + status + 12 parts ===\n');
+console.log('=== 1. Files + status + parts ===\n');
 const exams = [];
 for (let n = 1; n <= 5; n++) {
   const fp = path.join(DIR, `official-de-B1-e${n}.json`);
@@ -59,8 +59,13 @@ for (let n = 1; n <= 5; n++) {
     continue;
   }
   const doc = JSON.parse(fs.readFileSync(fp, 'utf8'));
-  const partsOk = doc.parts?.length === 12 && doc.parts.every((p) => p.partId && p.contentHash && p.snapshot);
-  console.log(`E${n}: status=${doc.status} parts=${doc.parts?.length} snapshot+hash=${partsOk ? 'OK' : 'FAIL'}`);
+  const expectedParts = n === 1 ? 15 : 12;
+  const partsOk =
+    doc.parts?.length === expectedParts &&
+    doc.parts.every((p) => p.partId && p.contentHash && p.snapshot);
+  console.log(
+    `E${n}: status=${doc.status} parts=${doc.parts?.length}/${expectedParts} snapshot+hash=${partsOk ? 'OK' : 'FAIL'}`,
+  );
   exams.push({ n, doc });
 }
 

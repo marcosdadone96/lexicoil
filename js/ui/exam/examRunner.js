@@ -511,6 +511,7 @@ function renderGoetheSchreibenPart(part,ui){
   return `<section class="module-wrap"><div class="module-tag tag-schreiben">${modLabel} — ${aufLabel} ${part.aufgabe}${part.arbeitszeit?' · '+part.arbeitszeit:''}</div>${body}</section><hr class="section-div">`;
 }
 function renderGoetheSprechenPart(part,ui){
+  if(typeof SpeakingFlow!=='undefined')return SpeakingFlow.renderGoetheSprechenPart(part,ui);
   const pts=part.points||part.prompts||[];
   const slides=part.slides||[];
   const modLabel=ui.speaking;
@@ -806,7 +807,8 @@ function renderExam(){
   if(S._resumeFieldValues){restoreExamFieldValues(S._resumeFieldValues);S._resumeFieldValues=null;}
   restoreExamAnswers();
   updProg();
-  if(typeof initSpeakingMicsForExam==='function')initSpeakingMicsForExam(d,S.subject);
+  if(typeof SpeakingFlow!=='undefined')SpeakingFlow.initForExam(d,S.subject);
+  else if(typeof initSpeakingMicsForExam==='function')initSpeakingMicsForExam(d,S.subject);
   if(d.goetheFormat)updWGoethe();
   if(isOffMode&&!isQ){
     const resumeEnds=S._resumeTimerEndsAt;

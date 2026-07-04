@@ -158,14 +158,26 @@ for (let n = 1; n <= 5; n++) {
   console.log(`\n--- E${n} ---`);
   const doc = JSON.parse(fs.readFileSync(path.join(DIR, `${examId}.json`), 'utf8'));
   ok(doc.status === 'live', `E${n} status live`);
-  ok(doc.parts?.length === 12, `E${n} 12 parts`);
+  const expectedParts = n === 1 ? 15 : 12;
+  ok(doc.parts?.length === expectedParts, `E${n} ${expectedParts} parts`);
   ok(doc.parts.every((p) => p.snapshot && p.contentHash), `E${n} snapshot+hash`);
 
   const exam = g.normalizeExam(g.PublishedExamAdapter.publishedDocToServedExam(doc));
   ok(exam.lesenParts?.length === 5, `E${n} lesen×5`);
   ok(exam.horenParts?.length === 4, `E${n} horen×4`);
   ok(exam.schreibenParts?.length === 3, `E${n} schreiben×3`);
-  ok(doc.parts.filter((p) => p.module === 'sprechen').length === 0, `E${n} sprechen not in published bundle (expected)`);
+  if (n === 1) {
+    ok(exam.sprechenParts?.length === 3, `E${n} sprechen×3 (pilot)`);
+    ok(
+      exam.sprechenParts.every(
+        (p) => p.fieldId?.startsWith('speak_bp_') && String(p.situation || '').length > 20,
+      ),
+      `E${n} sprechen fieldId + situation`,
+    );
+  } else {
+    ok(doc.parts.filter((p) => p.module === 'sprechen').length === 0, `E${n} sprechen not in bundle`);
+    ok(!exam.sprechenParts?.length, `E${n} no sprechenParts`);
+  }
 
   const l2 = exam.lesenParts.find((p) => p.teil === 2);
   const l2Qs = l2?.questions || [];

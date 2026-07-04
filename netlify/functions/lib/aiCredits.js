@@ -33,6 +33,7 @@ const AI_COSTS = {
   writing_correction: 1,
   grammar_coaching: 1,
   speaking: 2,
+  speaking_realtime: 4,
   listening_game: 1,
   tts: 1,
 };
