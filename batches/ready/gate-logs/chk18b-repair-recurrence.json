@@ -1,0 +1,150 @@
+{
+  "generatedAt": "2026-07-20T11:06:14.951Z",
+  "lesenCalls": 853,
+  "lesenFails": 743,
+  "failKinds": {
+    "other": 510,
+    "chk18b": 73,
+    "length_bias": 131,
+    "word_match": 5,
+    "spanish_explanation": 24
+  },
+  "chk18bShareOfFails": 0.09825033647375504,
+  "lengthBiasShare": 0.17631224764468373,
+  "spanishExplanationShare": 0.03230148048452221,
+  "chk18bByTopic": {
+    "Bildung": 16,
+    "Reisen": 8,
+    "Wohnen": 2,
+    "Familie": 7,
+    "Ernährung": 10,
+    "Sport": 3,
+    "Stadtleben": 4,
+    "Konsum": 16,
+    "Umwelt": 5,
+    "Freizeit": 2
+  },
+  "rapidRepeatSequences": 53,
+  "sampleSequences": [
+    {
+      "topic": "Bildung",
+      "teil": 2,
+      "gapMs": 17696,
+      "reason": "gen-q-2-f76d3112-6: clave «c» pero la explicación encaja mejor con otra opción (overlap correct=2, w"
+    },
+    {
+      "topic": "Bildung",
+      "teil": 2,
+      "gapMs": 5859,
+      "reason": "gen-q-2-f76d3112-6: clave «c» pero la explicación encaja mejor con otra opción (overlap correct=2, w"
+    },
+    {
+      "topic": "Reisen",
+      "teil": 5,
+      "gapMs": 28832,
+      "reason": "gen-q-5-b7f628e2-2: clave «c» pero la explicación encaja mejor con otra opción (overlap correct=0, w"
+    },
+    {
+      "topic": "Reisen",
+      "teil": 5,
+      "gapMs": 5073,
+      "reason": "gen-q-5-b7f628e2-2: clave «c» pero la explicación encaja mejor con otra opción (overlap correct=0, w"
+    },
+    {
+      "topic": "Wohnen",
+      "teil": 2,
+      "gapMs": 21171,
+      "reason": "gen-q-2-78bda511-5: clave «b» pero la explicación encaja mejor con otra opción (overlap correct=1, w"
+    },
+    {
+      "topic": "Familie",
+      "teil": 2,
+      "gapMs": 19030,
+      "reason": "gen-q-2-980e7bb1-2: clave «b» pero la explicación encaja mejor con otra opción (overlap correct=1, w"
+    },
+    {
+      "topic": "Familie",
+      "teil": 2,
+      "gapMs": 6704,
+      "reason": "gen-q-2-980e7bb1-2: clave «b» pero la explicación encaja mejor con otra opción (overlap correct=1, w"
+    },
+    {
+      "topic": "Reisen",
+      "teil": 2,
+      "gapMs": 20877,
+      "reason": "gen-q-2-adc60c4b-4: clave «a» pero la explicación encaja mejor con otra opción (overlap correct=0, w"
+    },
+    {
+      "topic": "Reisen",
+      "teil": 2,
+      "gapMs": 5409,
+      "reason": "gen-q-2-adc60c4b-4: clave «a» pero la explicación encaja mejor con otra opción (overlap correct=0, w"
+    },
+    {
+      "topic": "Reisen",
+      "teil": 2,
+      "gapMs": 11672,
+      "reason": "gen-q-2-d38ab99f-2: clave «b» pero la explicación encaja mejor con otra opción (overlap correct=1, w"
+    },
+    {
+      "topic": "Ernährung",
+      "teil": 5,
+      "gapMs": 25641,
+      "reason": "gen-q-5-154f875f-2: clave «a» pero la explicación encaja mejor con otra opción (overlap correct=0, w"
+    },
+    {
+      "topic": "Ernährung",
+      "teil": 5,
+      "gapMs": 29401,
+      "reason": "gen-q-5-154f875f-2: clave «a» pero la explicación encaja mejor con otra opción (overlap correct=0, w"
+    },
+    {
+      "topic": "Ernährung",
+      "teil": 5,
+      "gapMs": 6117,
+      "reason": "gen-q-5-154f875f-2: clave «a» pero la explicación encaja mejor con otra opción (overlap correct=0, w"
+    },
+    {
+      "topic": "Ernährung",
+      "teil": 5,
+      "gapMs": 38194,
+      "reason": "gen-q-5-154f875f-2: clave «a» pero la explicación encaja mejor con otra opción (overlap correct=1, w"
+    },
+    {
+      "topic": "Ernährung",
+      "teil": 5,
+      "gapMs": 20101,
+      "reason": "gen-q-5-154f875f-2: clave «a» pero la explicación encaja mejor con otra opción (overlap correct=1, w"
+    },
+    {
+      "topic": "Ernährung",
+      "teil": 5,
+      "gapMs": 5741,
+      "reason": "gen-q-5-154f875f-2: clave «a» pero la explicación encaja mejor con otra opción (overlap correct=1, w"
+    },
+    {
+      "topic": "Ernährung",
+      "teil": 5,
+      "gapMs": 18704,
+      "reason": "gen-q-5-154f875f-2: clave «a» pero la explicación encaja mejor con otra opción (overlap correct=1, w"
+    },
+    {
+      "topic": "Ernährung",
+      "teil": 5,
+      "gapMs": 20992,
+      "reason": "gen-q-5-154f875f-2: clave «a» pero la explicación encaja mejor con otra opción (overlap correct=1, w"
+    },
+    {
+      "topic": "Ernährung",
+      "teil": 5,
+      "gapMs": 6014,
+      "reason": "gen-q-5-154f875f-2: clave «a» pero la explicación encaja mejor con otra opción (overlap correct=1, w"
+    },
+    {
+      "topic": "Sport",
+      "teil": 2,
+      "gapMs": 20068,
+      "reason": "gen-q-2-7c00438e-3: clave «c» pero la explicación encaja mejor con otra opción (overlap correct=1, w"
+    }
+  ]
+}

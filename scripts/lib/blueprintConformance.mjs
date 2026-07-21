@@ -47,8 +47,12 @@ export function normalizeQuestionType(raw) {
       'feedback_diskussion',
       'feedback_und_fragen',
       'diskussion',
+      'personal_questions',
+      'about_self',
+      'plan_together',
     ].includes(t)
   ) {
+    if (t === 'personal_questions' || t === 'about_self' || t === 'plan_together') return t;
     return 'short_answer';
   }
   return t;
@@ -93,7 +97,7 @@ function typeAllowedForSlot(q, allowed) {
  * @param {object} blueprint
  * @returns {{ ok: boolean, reasons: string[] }}
  */
-export function checkQuestionConformance(q, blueprint) {
+export function checkQuestionConformance(q, blueprint, batch = null) {
   const reasons = [];
   const slot = findBlueprintPart(q, blueprint);
   if (!slot) {
@@ -110,7 +114,21 @@ export function checkQuestionConformance(q, blueprint) {
   }
 
   if (type === 'matching' && typeAllowedForSlot(q, allowed)) {
-    if (!hasNonEmptyOptions(q)) reasons.push('matching_missing_options');
+    const slotType = String(part.slotType || part.taskFormat || '').toLowerCase();
+    const isPictureMatching = slotType.includes('picture_matching') || slotType.includes('picture_schedule');
+    const passageHasPictures =
+      batch &&
+      (batch.passages || []).some((p) => {
+        if (q.passageId && p.id !== q.passageId) return false;
+        return Array.isArray(p.pictures) && p.pictures.length >= 9;
+      });
+    if (!hasNonEmptyOptions(q) && !isPictureMatching && !passageHasPictures) {
+      reasons.push('matching_missing_options');
+    }
+    if (isPictureMatching || passageHasPictures) {
+      const key = String(q.correct ?? q.correctAnswer ?? '').trim().toLowerCase();
+      if (!/^[a-i]$/.test(key)) reasons.push('picture_matching_bad_correct');
+    }
   }
 
   if (type === 'multiple_choice' && typeAllowedForSlot(q, allowed)) {
@@ -122,7 +140,13 @@ export function checkQuestionConformance(q, blueprint) {
     if (!hasCorrect(q)) reasons.push('correct_missing');
   }
 
-  if (type === 'short_answer' && typeAllowedForSlot(q, allowed)) {
+  if (
+    (type === 'short_answer' ||
+      type === 'personal_questions' ||
+      type === 'about_self' ||
+      type === 'plan_together') &&
+    typeAllowedForSlot(q, allowed)
+  ) {
     if (!q.question && !q.prompt && !q.task) reasons.push('prompt_missing');
   }
 
@@ -136,7 +160,7 @@ export function checkQuestionConformance(q, blueprint) {
  */
 export function checkBatchConformance(batch, blueprint) {
   const items = (batch.questions || []).map((q) => {
-    const result = checkQuestionConformance(q, blueprint);
+    const result = checkQuestionConformance(q, blueprint, batch);
     return { id: q.id || '(no-id)', ok: result.ok, reasons: result.reasons };
   });
   return { ok: items.every((i) => i.ok), items };

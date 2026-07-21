@@ -44,7 +44,7 @@ exports.handler = async (event) => {
   }
 
   const store = getStoreForEvent(event);
-  const result = await activateProForEmail(store, email, { sendEmail: true });
+  const result = await activateProForEmail(store, email, { sendEmail: true, manualActivation: true });
   if (!result.ok) {
     return jsonResponse(404, cors, { error: result.error || 'upgrade_failed' });
   }

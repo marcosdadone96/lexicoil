@@ -1,0 +1,159 @@
+{
+  "generatedAt": "2026-07-20T12:31:49.324Z",
+  "dryRun": false,
+  "cells": [
+    "horen_2"
+  ],
+  "results": [
+    {
+      "file": "horen-t2-gemini-003.json",
+      "cell": "horen_2",
+      "phase": "stamp-only",
+      "outcome": "reclassified_to_llm",
+      "stillBad": [
+        {
+          "id": "gen-q-h2-5e785889-q1",
+          "detail": "gen-q-h2-5e785889-q1: sesgo de longitud MCQ (B1) — opción correcta «b» es la más larga (47 vs 43/41; Δ +5 chars, +12% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable."
+        }
+      ]
+    },
+    {
+      "file": "horen-t2-gemini-006.json",
+      "cell": "horen_2",
+      "phase": "stamp-only",
+      "outcome": "reclassified_to_llm",
+      "stillBad": [
+        {
+          "id": "gen-q-h2-34538a4d-q2",
+          "detail": "gen-q-h2-34538a4d-q2: sesgo de longitud MCQ (B1) — opción correcta «c» es la más larga (72 vs 62/66; Δ +8 chars, +13% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable."
+        },
+        {
+          "id": "gen-q-h2-34538a4d-q4",
+          "detail": "gen-q-h2-34538a4d-q4: sesgo de longitud MCQ (B1) — opción correcta «a» es la más larga (56 vs 51/48; Δ +7 chars, +13% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable."
+        },
+        {
+          "id": "gen-q-h2-34538a4d-q5",
+          "detail": "gen-q-h2-34538a4d-q5: sesgo de longitud MCQ (B1) — opción correcta «b» es la más larga (71 vs 57/56; Δ +15 chars, +26% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable."
+        }
+      ]
+    },
+    {
+      "file": "horen-t2-gemini-007.json",
+      "cell": "horen_2",
+      "phase": "llm",
+      "outcome": "partial-still-quarantined",
+      "costUsd": 0.001902,
+      "officialReady": false,
+      "partGate": {
+        "ok": false,
+        "issue": "Vocabulario B2+ en pregunta \"Herausforderungen\" → usa \"Problem / Schwierigkeit\" (B1)"
+      }
+    },
+    {
+      "file": "horen-t2-gemini-008.json",
+      "cell": "horen_2",
+      "phase": "llm",
+      "outcome": "partial-still-quarantined",
+      "costUsd": 0.0016053,
+      "officialReady": false,
+      "partGate": {
+        "ok": false,
+        "issue": "Vocabulario B2+ en pregunta \"Aspekte\" → usa \"Teil / Punkt\" (B1)"
+      }
+    },
+    {
+      "file": "horen-t2-gemini-010.json",
+      "cell": "horen_2",
+      "phase": "llm",
+      "outcome": "partial-still-quarantined",
+      "costUsd": 0.0018939,
+      "officialReady": false,
+      "partGate": {
+        "ok": false,
+        "issue": "Vocabulario B2+ en pregunta \"Herausforderungen\" → usa \"Problem / Schwierigkeit\" (B1)"
+      }
+    },
+    {
+      "file": "horen-t2-gemini-011.json",
+      "cell": "horen_2",
+      "phase": "llm",
+      "outcome": "partial-still-quarantined",
+      "costUsd": 0.0021429,
+      "officialReady": false,
+      "partGate": {
+        "ok": true
+      }
+    },
+    {
+      "file": "horen-t2-gemini-012.json",
+      "cell": "horen_2",
+      "phase": "llm",
+      "outcome": "partial-still-quarantined",
+      "costUsd": 0.0024925,
+      "officialReady": false,
+      "partGate": {
+        "ok": true
+      }
+    },
+    {
+      "file": "horen-t2-gemini-013.json",
+      "cell": "horen_2",
+      "phase": "llm",
+      "outcome": "partial-still-quarantined",
+      "costUsd": 0.0019868,
+      "officialReady": false,
+      "partGate": {
+        "ok": true
+      }
+    },
+    {
+      "file": "horen-t2-gemini-017.json",
+      "cell": "horen_2",
+      "phase": "llm",
+      "outcome": "partial-still-quarantined",
+      "costUsd": 0.0010052,
+      "officialReady": false,
+      "partGate": {
+        "ok": true
+      }
+    },
+    {
+      "file": "horen-t2-gemini-019.json",
+      "cell": "horen_2",
+      "phase": "llm",
+      "outcome": "partial-still-quarantined",
+      "costUsd": 0.0010594,
+      "officialReady": false,
+      "partGate": {
+        "ok": false,
+        "issue": "Vocabulario B2+ en pregunta \"Herausforderungen\" → usa \"Problem / Schwierigkeit\" (B1)"
+      }
+    },
+    {
+      "file": "horen-t2-gemini-020.json",
+      "cell": "horen_2",
+      "phase": "llm",
+      "outcome": "partial-still-quarantined",
+      "costUsd": 0.0023013,
+      "officialReady": false,
+      "partGate": {
+        "ok": false,
+        "issue": "Vocabulario B2+ en pregunta \"zugänglich\" → usa \"einfach / offen\" (B1)"
+      }
+    },
+    {
+      "file": "horen-t2-gemini-023.json",
+      "cell": "horen_2",
+      "phase": "llm",
+      "outcome": "partial-still-quarantined",
+      "costUsd": 0.0027431,
+      "officialReady": false,
+      "partGate": {
+        "ok": false,
+        "issue": "Vocabulario B2+ en pregunta \"zugänglicher\" → usa \"einfach / offen\" (B1)"
+      }
+    }
+  ],
+  "totalCostUsd": 0.0191324,
+  "officialReadyCount": 0
+}

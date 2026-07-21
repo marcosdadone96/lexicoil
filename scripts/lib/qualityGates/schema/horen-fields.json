@@ -1,0 +1,87 @@
+{
+  "version": 1,
+  "module": "horen",
+  "profiles": {
+    "generated": {
+      "description": "Mínimo post-Gemini Hören en batches/generated — no exige metadata pedagógica completa.",
+      "batch": {
+        "required": ["questions"],
+        "recommended": ["_requestedTopic", "topicTag"]
+      },
+      "passages": {
+        "requiredByTeil": {
+          "1": true,
+          "2": true,
+          "3": true,
+          "4": true
+        },
+        "fieldsWhenPresent": ["id", "text", "module", "teil", "lang", "level"],
+        "warnWhenPresent": ["topicTag"]
+      },
+      "question": {
+        "required": ["id", "module", "teil", "type", "question", "lang", "level"],
+        "requiredAny": [["correct"], ["correctAnswer"]],
+        "requiredByTeil": {
+          "1": {
+            "required": ["id", "module", "teil", "type", "question", "lang", "level", "segmentLabel"],
+            "warnFields": []
+          },
+          "2": {
+            "required": ["id", "module", "teil", "type", "question", "lang", "level"],
+            "warnFields": []
+          },
+          "3": {
+            "required": ["id", "module", "teil", "type", "question", "lang", "level"],
+            "warnFields": []
+          },
+          "4": {
+            "required": ["id", "module", "teil", "type", "question", "lang", "level"],
+            "warnFields": []
+          }
+        }
+      },
+      "contentTopicCheck": true
+    },
+    "servible": {
+      "description": "Pool ready/publicable Hören. Campos pedagógicos en warn hasta publish.",
+      "batch": {
+        "required": ["questions"],
+        "recommended": ["_requestedTopic", "topicTag"]
+      },
+      "passages": {
+        "requiredByTeil": {
+          "1": true,
+          "2": true,
+          "3": true,
+          "4": true
+        },
+        "fieldsWhenPresent": ["id", "text", "module", "teil", "lang", "level"],
+        "warnWhenPresent": ["topicTag"]
+      },
+      "question": {
+        "required": ["id", "module", "teil", "type", "question", "lang", "level"],
+        "requiredAny": [["correct"], ["correctAnswer"]],
+        "warnFields": ["difficulty", "skills", "examType", "topicTags"],
+        "requiredByTeil": {
+          "1": {
+            "required": ["id", "module", "teil", "type", "question", "lang", "level", "segmentLabel"],
+            "warnFields": ["difficulty", "skills", "examType", "topicTags"]
+          },
+          "2": {
+            "required": ["id", "module", "teil", "type", "question", "lang", "level"],
+            "warnFields": ["difficulty", "skills", "examType", "topicTags"]
+          },
+          "3": {
+            "required": ["id", "module", "teil", "type", "question", "lang", "level"],
+            "warnFields": ["difficulty", "skills", "examType", "topicTags"]
+          },
+          "4": {
+            "required": ["id", "module", "teil", "type", "question", "lang", "level"],
+            "warnFields": ["difficulty", "skills", "examType", "topicTags"]
+          }
+        }
+      },
+      "contentTopicCheck": true
+    }
+  }
+}

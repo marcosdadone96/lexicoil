@@ -48,6 +48,31 @@ npm start          # static + AI proxy (quota not enforced ù use netlify dev for
 npm run dev        # full Netlify Functions (auth, quota, pool, Stripe)
 ```
 
+### TLS / antivirus (`UNABLE_TO_VERIFY_LEAF_SIGNATURE`)
+
+On Windows, antivirus or a corporate proxy often intercepts HTTPS and replaces
+Google/Anthropic certificates. Node?s default CA store then rejects the leaf
+(`fetch failed` ? `UNABLE_TO_VERIFY_LEAF_SIGNATURE`).
+
+**Fix (preferred):** npm generator/judge scripts already pass `--use-system-ca`
+(e.g. `npm run generate:sprechen:gemini`). Prefer those over raw `node scripts/?`.
+
+**If you call Node directly:**
+
+```powershell
+node --use-system-ca scripts/generate-part-gemini.mjs --module sprechen --count 1
+# or:
+$env:NODE_OPTIONS="--use-system-ca"
+```
+
+**Alternative:** export the AV/proxy root as PEM and point Node at it:
+
+```powershell
+$env:NODE_EXTRA_CA_CERTS="C:\path\to\av-or-proxy-root.pem"
+```
+
+Gemini/Claude clients rethrow this case with an actionable hint instead of a bare `fetch failed`.
+
 ## Deployment (Netlify + www.lexicoil.com)
 
 1. Connect the repo to a Netlify site and enable **Netlify Blobs** (Starter plan or higher).

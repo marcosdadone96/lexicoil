@@ -92,7 +92,7 @@ Comprueba: ¿7 filas? ¿≥1 respuesta **0**? ¿Cada fila A–J tiene ≥2 compe
 - ¿≥6 letras distintas como correctas (A–J)?
 - ¿Situación ↔ anuncio correcto comparten **≤1** palabra (≥4 letras)? ¿Titular neutro?
 - ¿≥4 anuncios con horario/condición (`Uhr`, `nur`, `Termin`, `Mo–`)?
-- ¿Sin `passageId`? ¿Solo JSON, sin markdown ni tabla?
+- ¿Sin `passageId`? PROHIBIDO usar **negrita** (asteriscos dobles) en opciones o situaciones. Ejemplo INCORRECTO: '**Öffnungszeiten:** Das Zentrum öffnet...'. Ejemplo CORRECTO: 'Öffnungszeiten: Das Zentrum öffnet...' (dos puntos, sin asteriscos). ¿Solo JSON, sin tabla?
 
 ## Formato de salida
 Devuelve SOLO `{ "passages": [], "questions": [...] }` — sin ```, sin texto extra.

@@ -1,0 +1,38 @@
+{
+  "gateVersion": "v6.1-B-G2 (frozen)",
+  "file": "lesen-t4-gemini-038-2026-07-08T08-25-21-026Z.json",
+  "teil": 4,
+  "pipeline": {
+    "status": "audit_rejected",
+    "gate": "audit2",
+    "reason": "Lesen T4: debate «Autofreie Innenstadt» no encaja con tema pedido «Gesundheit» (válido: Verkehr, Umwelt, Stadtleben). El foro debe tratar de «Gesundheit»."
+  },
+  "textFields": 36,
+  "findings": {
+    "blocking": 0,
+    "observations": 0,
+    "byReason": {},
+    "byRegime": {},
+    "list": []
+  },
+  "observations": [],
+  "expected": {
+    "dominantRegime": "TITLE + PROSE",
+    "telegraphicFpExpected": 0,
+    "notes": "signText TITLE, explanation PROSE."
+  },
+  "comparison": {
+    "calibrationPoolFindingsThisTeil": 14,
+    "calibrationAvgPerFile": 1.4,
+    "pilotFindings": 0,
+    "deltaVsCalAvg": -1.4,
+    "telegraphicFindings": 0,
+    "telegraphicFpExpected": 0,
+    "telegraphicOk": true
+  },
+  "qualityGate": {
+    "errors": [],
+    "warnings": []
+  },
+  "generatorCapsWarnings": []
+}

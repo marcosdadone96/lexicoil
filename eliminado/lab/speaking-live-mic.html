@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LAB — Sprechen Live mic (interno)</title>
+<style>
+  :root {
+    --bg: #f4f1ea;
+    --ink: #1c1917;
+    --muted: #78716c;
+    --line: #d6d3d1;
+    --lab: #9a3412;
+    --lab-bg: #ffedd5;
+    --ok: #166534;
+    --ok-bg: #dcfce7;
+    --speak: #1d4ed8;
+    --speak-bg: #dbeafe;
+    --wait: #a16207;
+    --wait-bg: #fef3c7;
+    --danger: #991b1b;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Segoe UI", system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.45;
+  }
+  main { max-width: 720px; margin: 0 auto; padding: 20px 16px 48px; }
+  h1 { font-size: 1.35rem; margin: 0 0 6px; }
+  .lab-banner {
+    background: var(--lab-bg);
+    border: 2px solid var(--lab);
+    color: var(--lab);
+    padding: 12px 14px;
+    border-radius: 8px;
+    font-weight: 600;
+    margin: 12px 0 18px;
+  }
+  .lab-banner small { display: block; font-weight: 500; margin-top: 4px; color: #7c2d12; }
+  label { display: block; font-size: 0.85rem; color: var(--muted); margin: 10px 0 4px; }
+  select, textarea, input[type="text"] {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    font: inherit;
+    background: #fff;
+  }
+  textarea { min-height: 72px; resize: vertical; }
+  .row { display: flex; gap: 12px; flex-wrap: wrap; }
+  .row > * { flex: 1; min-width: 140px; }
+  .controls { margin-top: 14px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  button {
+    font: inherit;
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+    background: #fff;
+    cursor: pointer;
+  }
+  button:disabled { opacity: 0.45; cursor: not-allowed; }
+  button.primary { background: var(--ink); color: #fff; border-color: var(--ink); }
+  #ptt {
+    min-width: 220px;
+    min-height: 64px;
+    font-size: 1.05rem;
+    font-weight: 650;
+    touch-action: none;
+    user-select: none;
+  }
+  #ptt.armed { background: var(--speak-bg); border-color: var(--speak); color: var(--speak); }
+  #ptt.recording {
+    background: var(--speak);
+    color: #fff;
+    border-color: var(--speak);
+    transform: scale(1.02);
+  }
+  .status {
+    margin-top: 14px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+    background: #fff;
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .pill {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 650;
+  }
+  .pill.idle { background: #e7e5e4; color: #44403c; }
+  .pill.your-turn { background: var(--speak-bg); color: var(--speak); }
+  .pill.partner { background: var(--wait-bg); color: var(--wait); }
+  .pill.done { background: #fee2e2; color: var(--danger); }
+  .pill.ok { background: var(--ok-bg); color: var(--ok); }
+  .timer {
+    font-variant-numeric: tabular-nums;
+    font-size: 1.6rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+  }
+  .timer.warn { color: var(--danger); }
+  #log {
+    margin-top: 16px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 12px;
+    min-height: 160px;
+    max-height: 320px;
+    overflow: auto;
+    font-size: 0.92rem;
+    white-space: pre-wrap;
+  }
+  .meta { font-size: 0.8rem; color: var(--muted); margin-top: 8px; }
+  code { font-family: Consolas, ui-monospace, monospace; font-size: 0.9em; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Sprechen Live — mic lab</h1>
+  <div class="lab-banner">
+    LABORATORIO INTERNO — no es producción
+    <small>Solo localhost. No forma parte del flujo de usuarios reales. Gemini Live + PTT + NO_INTERRUPTION.</small>
+  </div>
+
+  <div class="row">
+    <div>
+      <label for="persona">Personalidad</label>
+      <select id="persona">
+        <option value="quiet">Kim — quiet</option>
+        <option value="balanced" selected>Alex — balanced</option>
+        <option value="talkative">Leo — talkative</option>
+      </select>
+    </div>
+    <div>
+      <label for="mode">Modo / tiempo</label>
+      <select id="mode">
+        <option value="exam">Examen — 3:00</option>
+        <option value="practice" selected>Práctica — 8:00 (tope)</option>
+      </select>
+    </div>
+  </div>
+
+  <label for="situation">Situación (T2)</label>
+  <textarea id="situation">Ihr plant zusammen ein Wochenende in der Stadt. Sprecht über Aktivitäten, Essen und Transport. Einigt euch auf einen Plan.</textarea>
+
+  <div class="controls">
+    <button type="button" class="primary" id="btnStart">Iniciar sesión lab</button>
+    <button type="button" id="btnEnd" disabled>Cerrar (soft)</button>
+  </div>
+
+  <div class="status" id="statusBox">
+    <div>
+      <span class="pill idle" id="phasePill">idle</span>
+      <span id="phaseText" style="margin-left:8px">Sin sesión</span>
+    </div>
+    <div class="timer" id="timer">—:—</div>
+  </div>
+
+  <div class="controls">
+    <button type="button" id="ptt" disabled>Mantener para hablar</button>
+  </div>
+  <p class="meta">Push-to-talk: mantén pulsado el botón (o espacio) mientras hablas; al soltar se cierra tu turno. El partner no te corta (<code>NO_INTERRUPTION</code>).</p>
+
+  <div id="log" aria-live="polite"></div>
+  <p class="meta" id="connMeta"></p>
+</main>
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const logEl = $('log');
+  const phasePill = $('phasePill');
+  const phaseText = $('phaseText');
+  const timerEl = $('timer');
+  const ptt = $('ptt');
+  const btnStart = $('btnStart');
+  const btnEnd = $('btnEnd');
+
+  /** @type {WebSocket|null} */
+  let ws = null;
+  let session = null;
+  let ephemeral = null;
+  let endsAt = 0;
+  let timerId = null;
+  let phase = 'idle';
+  let recording = false;
+  let mediaStream = null;
+  let audioCtx = null;
+  let processor = null;
+  let source = null;
+  let playCtx = null;
+  let nextPlayTime = 0;
+  const turns = [];
+  let sessionStartedAt = null;
+  let lastUsageMetadata = null;
+  let pcmBytesIn = 0;
+  let pcmBytesOut = 0;
+
+  function log(line) {
+    const t = new Date().toLocaleTimeString();
+    logEl.textContent += `[${t}] ${line}\n`;
+    logEl.scrollTop = logEl.scrollHeight;
+  }
+
+  function setPhase(next, text) {
+    phase = next;
+    phasePill.className = 'pill ' + (
+      next === 'your-turn' ? 'your-turn' :
+      next === 'partner' ? 'partner' :
+      next === 'done' ? 'done' :
+      next === 'connected' ? 'ok' : 'idle'
+    );
+    phasePill.textContent = next;
+    phaseText.textContent = text || next;
+    const canTalk = next === 'your-turn' || next === 'connected';
+    ptt.disabled = !canTalk;
+    ptt.classList.toggle('armed', canTalk && !recording);
+  }
+
+  function fmt(ms) {
+    const s = Math.max(0, Math.ceil(ms / 1000));
+    const m = Math.floor(s / 60);
+    const r = s % 60;
+    return `${m}:${String(r).padStart(2, '0')}`;
+  }
+
+  function tickTimer() {
+    if (!endsAt) return;
+    const left = endsAt - Date.now();
+    timerEl.textContent = fmt(left);
+    timerEl.classList.toggle('warn', left < 30000);
+    if (left <= 0) {
+      clearInterval(timerId);
+      timerId = null;
+      softClose('time_limit');
+    }
+  }
+
+  async function parseMsg(data) {
+    if (typeof data === 'string') return JSON.parse(data);
+    if (data instanceof Blob) return JSON.parse(await data.text());
+    if (data instanceof ArrayBuffer) return JSON.parse(new TextDecoder().decode(data));
+    return JSON.parse(await new Response(data).text());
+  }
+
+  function b64ToInt16(b64) {
+    const bin = atob(b64);
+    const bytes = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    return new Int16Array(bytes.buffer);
+  }
+
+  function playPcm16(int16, sampleRate = 24000) {
+    if (!playCtx) playCtx = new AudioContext({ sampleRate });
+    const f32 = new Float32Array(int16.length);
+    for (let i = 0; i < int16.length; i++) f32[i] = int16[i] / 32768;
+    const buf = playCtx.createBuffer(1, f32.length, sampleRate);
+    buf.copyToChannel(f32, 0);
+    const src = playCtx.createBufferSource();
+    src.buffer = buf;
+    src.connect(playCtx.destination);
+    const startAt = Math.max(playCtx.currentTime, nextPlayTime);
+    src.start(startAt);
+    nextPlayTime = startAt + buf.duration;
+  }
+
+  function downsampleTo16k(float32, inRate) {
+    if (inRate === 16000) return float32;
+    const ratio = inRate / 16000;
+    const outLen = Math.floor(float32.length / ratio);
+    const out = new Float32Array(outLen);
+    for (let i = 0; i < outLen; i++) out[i] = float32[Math.floor(i * ratio)] || 0;
+    return out;
+  }
+
+  function floatTo16BitPCM(float32) {
+    const out = new Int16Array(float32.length);
+    for (let i = 0; i < float32.length; i++) {
+      const s = Math.max(-1, Math.min(1, float32[i]));
+      out[i] = s < 0 ? s * 0x8000 : s * 0x7fff;
+    }
+    return out;
+  }
+
+  function int16ToBase64(int16) {
+    const bytes = new Uint8Array(int16.buffer, int16.byteOffset, int16.byteLength);
+    let s = '';
+    for (let i = 0; i < bytes.length; i++) s += String.fromCharCode(bytes[i]);
+    return btoa(s);
+  }
+
+  function sendJson(obj) {
+    if (ws && ws.readyState === WebSocket.OPEN) ws.send(JSON.stringify(obj));
+  }
+
+  async function ensureMic() {
+    if (mediaStream) return;
+    mediaStream = await navigator.mediaDevices.getUserMedia({
+      audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true },
+    });
+    audioCtx = new AudioContext();
+    source = audioCtx.createMediaStreamSource(mediaStream);
+    processor = audioCtx.createScriptProcessor(4096, 1, 1);
+    processor.onaudioprocess = (ev) => {
+      if (!recording) return;
+      const input = ev.inputBuffer.getChannelData(0);
+      const down = downsampleTo16k(input, audioCtx.sampleRate);
+      const pcm = floatTo16BitPCM(down);
+      pcmBytesIn += pcm.byteLength;
+      sendJson({
+        realtimeInput: {
+          audio: { data: int16ToBase64(pcm), mimeType: 'audio/pcm;rate=16000' },
+        },
+      });
+    };
+    source.connect(processor);
+    processor.connect(audioCtx.destination);
+  }
+
+  async function startPtt() {
+    if (recording || (phase !== 'your-turn' && phase !== 'connected')) return;
+    try {
+      await ensureMic();
+      if (audioCtx.state === 'suspended') await audioCtx.resume();
+      if (playCtx && playCtx.state === 'suspended') await playCtx.resume();
+      recording = true;
+      ptt.classList.add('recording');
+      ptt.classList.remove('armed');
+      ptt.textContent = 'Soltar para enviar…';
+      sendJson({ realtimeInput: { activityStart: {} } });
+      setPhase('your-turn', 'Grabando — habla ahora');
+    } catch (e) {
+      log('Mic error: ' + e.message);
+      alert('No se pudo abrir el micrófono: ' + e.message);
+    }
+  }
+
+  function endPtt() {
+    if (!recording) return;
+    recording = false;
+    ptt.classList.remove('recording');
+    ptt.textContent = 'Mantener para hablar';
+    sendJson({ realtimeInput: { activityEnd: {} } });
+    setPhase('partner', 'Esperando respuesta del partner…');
+    nextPlayTime = 0;
+  }
+
+  function appendTurn(role, text) {
+    const chunk = String(text || '').trim();
+    if (!chunk) return;
+    const last = turns[turns.length - 1];
+    if (last && last.role === role) last.text = `${last.text} ${chunk}`.replace(/\s+/g, ' ').trim();
+    else turns.push({ role, text: chunk, at: Date.now() });
+  }
+
+  async function softClose(reason) {
+    if (phase === 'done') return;
+    setPhase('done', 'Tiempo / cierre — soft close');
+    ptt.disabled = true;
+    endPtt();
+    sendJson({
+      realtimeInput: {
+        text: session?.softClosePrompt ||
+          'Die Prüfungszeit ist jetzt um. Beende deinen aktuellen Satz höflich und verabschiede dich.',
+      },
+    });
+    // Also signal activity end after a short cue via clientContent fallback
+    sendJson({
+      clientContent: {
+        turns: [{
+          role: 'user',
+          parts: [{
+            text: session?.softClosePrompt ||
+              'Die Prüfungszeit ist jetzt um. Beende deinen aktuellen Satz höflich und verabschiede dich.',
+          }],
+        }],
+        turnComplete: true,
+      },
+    });
+    log('Soft close (' + reason + ') — esperando despedida…');
+    setTimeout(() => {
+      try { ws?.close(); } catch (_) {}
+      btnEnd.disabled = true;
+      btnStart.disabled = false;
+      const durationMs = sessionStartedAt ? Date.now() - sessionStartedAt : null;
+      fetch('/lab/api/finalize', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          sessionId: session?.sessionId,
+          turns,
+          closeReason: reason,
+          model: ephemeral?.model || session?.model || null,
+          durationMs,
+          pcmBytesIn,
+          pcmBytesOut,
+          usageMetadata: lastUsageMetadata,
+        }),
+      })
+        .then((r) => r.json())
+        .then((data) => {
+          if (data?.cost) {
+            log(
+              data.cost.usageCaptured
+                ? `Costo: ${data.cost.totalTokens} tokens · paidEq $${data.cost.paidEquivalentUsd} (charged $${data.cost.chargedThisCallUsd})`
+                : 'Costo: usageMetadata no recibido — tokens desconocidos (PCM bytes sí guardados)',
+            );
+          }
+          if (data?.saved) log('Session log: ' + data.saved);
+        })
+        .catch(() => {});
+    }, 8000);
+  }
+
+  async function startSession() {
+    btnStart.disabled = true;
+    logEl.textContent = '';
+    turns.length = 0;
+    sessionStartedAt = null;
+    lastUsageMetadata = null;
+    pcmBytesIn = 0;
+    pcmBytesOut = 0;
+    setPhase('idle', 'Minteando token efímero…');
+    log('POST /lab/api/start …');
+    const body = {
+      personaId: $('persona').value,
+      mode: $('mode').value,
+      situation: $('situation').value,
+    };
+    let data;
+    try {
+      const res = await fetch('/lab/api/start', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      data = await res.json();
+      if (!res.ok || !data.ok) throw new Error(data.message || data.error || 'start failed');
+    } catch (e) {
+      log('Start error: ' + e.message);
+      setPhase('idle', 'Error al iniciar');
+      btnStart.disabled = false;
+      return;
+    }
+
+    session = data.session;
+    ephemeral = data.ephemeral;
+    endsAt = session.endsAt || (Date.now() + session.durationMs);
+    $('connMeta').textContent =
+      `lab_internal · ${session.displayName} · whoStarts=${session.whoStarts} · token ${String(ephemeral.token).slice(0, 22)}… · ${ephemeral.websocketUrl.split('.').pop()}`;
+
+    log(`Mint OK — ${session.displayName}, ${session.mode}, ${Math.round(session.durationMs / 1000)}s`);
+    setPhase('idle', 'Conectando WebSocket Constrained…');
+
+    const url = `${ephemeral.websocketUrl}?access_token=${encodeURIComponent(ephemeral.token)}`;
+    ws = new WebSocket(url);
+
+    ws.onopen = () => {
+      log('WS open — setup {}');
+      sessionStartedAt = Date.now();
+      sendJson({ setup: {} });
+    };
+
+    ws.onmessage = async (ev) => {
+      let msg;
+      try { msg = await parseMsg(ev.data); } catch { return; }
+      if (msg.usageMetadata) {
+        lastUsageMetadata = msg.usageMetadata;
+        const u = msg.usageMetadata;
+        log(
+          `usageMetadata: prompt=${u.promptTokenCount ?? '?'} response=${u.responseTokenCount ?? u.candidatesTokenCount ?? '?'} total=${u.totalTokenCount ?? '?'}`,
+        );
+      }
+      if (msg.error) {
+        log('Server error: ' + JSON.stringify(msg.error));
+        return;
+      }
+      if (msg.setupComplete) {
+        log('setupComplete — sesión lista');
+        btnEnd.disabled = false;
+        clearInterval(timerId);
+        tickTimer();
+        timerId = setInterval(tickTimer, 250);
+        if (session.whoStarts === 'partner') {
+          setPhase('partner', 'Partner empieza — espera la saludo');
+          sendJson({
+            clientContent: {
+              turns: [{
+                role: 'user',
+                parts: [{ text: '(Der Kandidat ist bereit. Bitte begrüße kurz und starte das Gespräch zur Aufgabe.)' }],
+              }],
+              turnComplete: true,
+            },
+          });
+        } else {
+          setPhase('your-turn', 'Tu turno — mantén pulsado para hablar');
+        }
+        return;
+      }
+
+      const sc = msg.serverContent;
+      if (!sc) return;
+      if (sc.outputTranscription?.text) {
+        appendTurn('partner', sc.outputTranscription.text);
+        log('Partner: ' + sc.outputTranscription.text);
+        setPhase('partner', 'Partner hablando…');
+      }
+      if (sc.inputTranscription?.text) {
+        appendTurn('user', sc.inputTranscription.text);
+        log('Tú: ' + sc.inputTranscription.text);
+      }
+      if (sc.modelTurn?.parts) {
+        for (const p of sc.modelTurn.parts) {
+          if (p.inlineData?.data) {
+            try {
+              const int16 = b64ToInt16(p.inlineData.data);
+              pcmBytesOut += int16.byteLength;
+              playPcm16(int16, 24000);
+            } catch (e) {
+              log('Play error: ' + e.message);
+            }
+          }
+        }
+      }
+      if (sc.turnComplete) {
+        if (phase !== 'done') setPhase('your-turn', 'Tu turno — mantén pulsado para hablar');
+      }
+      if (sc.interrupted) log('(interrupted flag — inesperado con NO_INTERRUPTION)');
+    };
+
+    ws.onclose = (e) => {
+      log(`WS close ${e.code} ${e.reason || ''}`);
+      if (phase !== 'done') setPhase('idle', 'Desconectado');
+      btnStart.disabled = false;
+      btnEnd.disabled = true;
+      ptt.disabled = true;
+    };
+
+    ws.onerror = () => log('WS error');
+  }
+
+  btnStart.addEventListener('click', startSession);
+  btnEnd.addEventListener('click', () => softClose('manual'));
+
+  ptt.addEventListener('pointerdown', (e) => {
+    e.preventDefault();
+    ptt.setPointerCapture(e.pointerId);
+    startPtt();
+  });
+  ptt.addEventListener('pointerup', (e) => {
+    e.preventDefault();
+    endPtt();
+  });
+  ptt.addEventListener('pointercancel', endPtt);
+  ptt.addEventListener('lostpointercapture', endPtt);
+
+  window.addEventListener('keydown', (e) => {
+    if (e.code === 'Space' && !e.repeat && document.activeElement?.tagName !== 'TEXTAREA') {
+      e.preventDefault();
+      startPtt();
+    }
+  });
+  window.addEventListener('keyup', (e) => {
+    if (e.code === 'Space') {
+      e.preventDefault();
+      endPtt();
+    }
+  });
+
+  // Smoke-friendly: expose status for automated checks
+  window.__SPEAKING_LIVE_LAB__ = {
+    getPhase: () => phase,
+    getSession: () => session,
+  };
+})();
+</script>
+</body>
+</html>

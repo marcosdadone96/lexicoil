@@ -1,0 +1,105 @@
+{
+  "generatedAt": "2026-07-12T15:05:00.000Z",
+  "title": "Sprechen voice Phase 0 — Gemini Live vs OpenAI Realtime",
+  "part1_access": {
+    "existingGeminiKeyWorks": true,
+    "keyType": "AI Studio Authorization key (AQ.… prefix) — same Generative Language API used today for Lesen/Hören",
+    "restSmoke": "gemini-2.5-flash generateContent OK",
+    "liveModelsListedOnSameKey": [
+      "models/gemini-3.1-flash-live-preview",
+      "models/gemini-2.5-flash-native-audio-preview-12-2025",
+      "models/gemini-2.5-flash-native-audio-latest"
+    ],
+    "vertexRequired": false,
+    "tierAvailableToday": "Google AI Studio / Gemini API Free Tier for Live models (official pricing: Free of charge for gemini-3.1-flash-live-preview). Vertex AI is a separate production path — NOT required for the access we already have.",
+    "evidence": "batches/ready/gate-logs/gemini-live-phase0-probe-2026-07-12.json"
+  },
+  "part2_turnTaking_officialDocs": {
+    "source": "https://ai.google.dev/gemini-api/docs/live-api/capabilities + https://ai.google.dev/api/live",
+    "externalClaimThatBargeInNotConfigurable": "FALSE / outdated",
+    "automaticVAD": "Default ON — server segments speech turns",
+    "configurableVADParams": [
+      "startOfSpeechSensitivity",
+      "endOfSpeechSensitivity",
+      "prefixPaddingMs",
+      "silenceDurationMs"
+    ],
+    "pushToTalkEquivalent": {
+      "exists": true,
+      "how": "realtimeInputConfig.automaticActivityDetection.disabled=true, then client sends activityStart / activityEnd (official docs: Disable automatic VAD)"
+    },
+    "bargeInControl": {
+      "exists": true,
+      "field": "realtimeInputConfig.activityHandling",
+      "values": {
+        "START_OF_ACTIVITY_INTERRUPTS": "default — barge-in cuts model response",
+        "NO_INTERRUPTION": "model response will not be interrupted"
+      }
+    },
+    "vsOpenAI": "Parity for operator priority #1: Gemini has documented PTT (manual activity) + explicit NO_INTERRUPTION; OpenAI has turn_detection:null + interrupt_response knobs. Neither is 'uncontrollable'."
+  },
+  "part3_liveProbe": {
+    "ok": true,
+    "model": "gemini-3.1-flash-live-preview",
+    "persona": "Alex (systemInstruction from speakingModes.js)",
+    "mode": "PTT: automaticActivityDetection.disabled + activityStart/End + activityHandling NO_INTERRUPTION",
+    "latencyActivityEndToFirstAudioMs": 1245,
+    "latencyActivityEndToTurnCompleteMs": 12867,
+    "tokens": {
+      "prompt": 521,
+      "response": 297,
+      "total": 818,
+      "promptBreakdown": { "TEXT": 214, "AUDIO": 280 },
+      "responseBreakdown": { "AUDIO": 297 }
+    },
+    "costThisCallUsd": 0,
+    "paidEquivalentUsd": 0.004564,
+    "outputTranscriptDe": "Hallo! Am Wochenende mag ich es, mich zu entspannen und etwas mit Freunden zu unternehmen. Manchmal lesen wir zusammen oder gehen spazieren. Und was machst du am liebsten? Hast du ein Hobby?",
+    "perceivedQualityNote": "No speaker playback in this environment; transcript is natural B1 German, Alex-length (2–4 sentences), on-topic Freizeit with Rückfrage — personality applied. Synthetic tone was mis-heard by ASR (noise), text cue drove the reply.",
+    "script": "scripts/probe-gemini-live-sdk-phase0-2026-07-12.mjs"
+  },
+  "part4_comparison": {
+    "rows": [
+      {
+        "dimension": "Access today",
+        "openai": "Blocked — no OPENAI_API_KEY; Free tier Realtime Not supported; need Tier 1 ($5 paid)",
+        "gemini": "AVAILABLE — same GEMINI_API_KEY; Live models listed; Free Tier for Flash Live"
+      },
+      {
+        "dimension": "Interruption / PTT (official)",
+        "openai": "turn_detection:null (PTT) + interrupt_response / create_response knobs — documented",
+        "gemini": "automaticActivityDetection.disabled + activityStart/End (PTT) + activityHandling NO_INTERRUPTION — documented (external blog was wrong)"
+      },
+      {
+        "dimension": "Audio cost (paid list price)",
+        "openai": "gpt-realtime-mini audio ~$10/1M in, $20/1M out (Azure/OpenAI listings); text $0.60/$2.40",
+        "gemini": "gemini-3.1-flash-live-preview audio $3/1M in, $12/1M out; text $0.75/$4.50; Free Tier $0"
+      },
+      {
+        "dimension": "This probe call (818 tokens)",
+        "openai": "not run; paid equivalent if same mix ≈ $0.011",
+        "gemini": "measured $0 (free); paid equivalent ≈ $0.0046"
+      },
+      {
+        "dimension": "Latency (measured)",
+        "openai": "n/a (no key)",
+        "gemini": "~1.25s activityEnd → first audio PCM; ~12.9s to turnComplete (full spoken reply)"
+      },
+      {
+        "dimension": "Session estimate vs prior $0.04–0.13",
+        "openai": "prior estimate still unvalidated; mini audio rates suggest short sessions can land in that band",
+        "gemini": "this short turn ≈ $0.005 paid; ~8 similar turns ≈ $0.04 — lower bound of prior band, often cheaper"
+      }
+    ],
+    "recommendation": {
+      "forSprechenV1": "Gemini Live (gemini-3.1-flash-live-preview) with PTT (VAD disabled) + NO_INTERRUPTION",
+      "why": "Operator priority #1 (no unwanted cutoffs) is met by official Gemini controls — the scare about missing barge-in config was false. Access and free Phase 0 already work on the existing key. Paid audio is cheaper than OpenAI mini. Do not wait on OpenAI account creation for v1.",
+      "caveats": [
+        "Live API is Preview",
+        "Free tier: Google may use data to improve products — use paid for production privacy",
+        "Client-to-server should mint ephemeral tokens (docs), not ship long-lived API keys to browsers",
+        "Validate real mic + German ASR with a human ear next (this probe used synth tone + text cue)"
+      ]
+    }
+  }
+}

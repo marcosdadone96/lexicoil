@@ -3,6 +3,39 @@
 // ═══════════════════════════════════════════
 let curUtt=null;
 let curAudio=null;
+let _webAudioUnlocked=false;
+let _sharedAudioCtx=null;
+
+/** Safari/iOS: unlock AudioContext and HTML5 audio on first user gesture. */
+function unlockWebAudio() {
+  if (_webAudioUnlocked) return true;
+  try {
+    if (!window.AudioContext && !window.webkitAudioContext) {
+      _webAudioUnlocked = true;
+      return true;
+    }
+    const Ctx = window.AudioContext || window.webkitAudioContext;
+    if (!_sharedAudioCtx) _sharedAudioCtx = new Ctx();
+    if (_sharedAudioCtx.state === 'suspended') void _sharedAudioCtx.resume();
+    const silent = new Audio('data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4Ljc2LjEwMAAAAAAAAAAAAAAA//tQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAABhgC7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//tQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAABhgC7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
+    silent.setAttribute('playsinline', '');
+    silent.setAttribute('webkit-playsinline', '');
+    silent.volume = 0.001;
+    void silent.play().catch(() => {});
+    _webAudioUnlocked = true;
+    return true;
+  } catch (_) {
+    return false;
+  }
+}
+
+function configureAudioElement(a) {
+  if (!a) return a;
+  a.setAttribute('playsinline', '');
+  a.setAttribute('webkit-playsinline', '');
+  a.preload = 'auto';
+  return a;
+}
 
 /* ── Voice preference (per language, persisted) ─────────────────────────── */
 const TTS_VOICE_KEY='lc_tts_voice';
@@ -41,12 +74,12 @@ function listBrowserVoices(lang){
 
 function stopAllAudio(){if(window.speechSynthesis)window.speechSynthesis.cancel();curUtt=null;if(curAudio){try{curAudio.pause();curAudio.src='';}catch(_){}curAudio=null;}}
 
-function playMp3Base64(b64,onEnd){stopAllAudio();try{const bin=atob(b64);const bytes=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);const blob=new Blob([bytes],{type:'audio/mpeg'});const url=URL.createObjectURL(blob);const a=new Audio(url);curAudio=a;a.onended=()=>{URL.revokeObjectURL(url);curAudio=null;if(onEnd)onEnd();};a.onerror=()=>{URL.revokeObjectURL(url);curAudio=null;if(onEnd)onEnd(true);};void a.play().catch((e)=>{console.warn('[TTS] MP3 play failed:',e);URL.revokeObjectURL(url);curAudio=null;if(onEnd)onEnd(true);});return a;}catch(e){console.warn('[TTS] MP3 decode failed:',e);if(onEnd)onEnd(true);return null;}}
+function playMp3Base64(b64,onEnd){stopAllAudio();try{const bin=atob(b64);const bytes=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);const blob=new Blob([bytes],{type:'audio/mpeg'});const url=URL.createObjectURL(blob);const a=configureAudioElement(new Audio(url));curAudio=a;a.onended=()=>{URL.revokeObjectURL(url);curAudio=null;if(onEnd)onEnd();};a.onerror=()=>{URL.revokeObjectURL(url);curAudio=null;if(onEnd)onEnd(true);};void a.play().catch((e)=>{console.warn('[TTS] MP3 play failed:',e);URL.revokeObjectURL(url);curAudio=null;if(onEnd)onEnd(true);});return a;}catch(e){console.warn('[TTS] MP3 decode failed:',e);if(onEnd)onEnd(true);return null;}}
 
 function playMp3Url(url,onEnd){
   return new Promise((resolve)=>{
     stopAllAudio();
-    const a=new Audio(url);
+    const a=configureAudioElement(new Audio(url));
     curAudio=a;
     a.onended=()=>{curAudio=null;if(onEnd)onEnd();resolve(true);};
     a.onerror=(e)=>{console.warn('[TTS] MP3 load error:',e);curAudio=null;if(onEnd)onEnd(true);resolve(false);};
@@ -77,6 +110,8 @@ async function playTtsHit(hit,onEnd){
 if(typeof window!=='undefined'){
   window.playMp3Url=playMp3Url;
   window.playTtsHit=playTtsHit;
+  window.unlockWebAudio=unlockWebAudio;
+  window.configureAudioElement=configureAudioElement;
 }
 
 function _speakWithBrowser(text,lang,onEnd){
@@ -155,6 +190,7 @@ function speak(text,lang){
 }
 
 function speakBtn(ew,lang,btn){
+  if(typeof unlockWebAudio==='function')unlockWebAudio();
   const word=decodeURIComponent(ew);
   if(window.speechSynthesis?.speaking){window.speechSynthesis.cancel();if(btn){btn.classList.remove('playing');btn.textContent='🔊';}return;}
   speak(word,lang);

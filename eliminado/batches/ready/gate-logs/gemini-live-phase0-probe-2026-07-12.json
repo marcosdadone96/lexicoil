@@ -1,0 +1,260 @@
+{
+  "generatedAt": "2026-07-12T14:59:18.693Z",
+  "phase": 0,
+  "provider": "gemini_live",
+  "sdk": "@google/genai",
+  "model": "gemini-3.1-flash-live-preview",
+  "persona": "Alex",
+  "mode": "PTT_manual_VAD_disabled",
+  "access": {
+    "keyPrefix": "AQ.Ab8R",
+    "restOk": true,
+    "restStatus": 200,
+    "connected": true,
+    "openedAt": 1783868364456
+  },
+  "measurements": {
+    "outputTranscript": "Hallo! Am Wochenende mag ich es, mich zu entspannen und etwas mit Freunden zu unternehmen. Manchmal lesen wir zusammen oder gehen spazieren. Und was machst du am liebsten? Hast du ein Hobby?",
+    "activityEndAt": 1783868365420,
+    "latencyActivityEndToFirstAudioMs": 1245,
+    "latencyActivityEndToFirstTextMs": null,
+    "latencyActivityEndToTurnCompleteMs": 12867,
+    "gotAudio": true,
+    "gotText": false,
+    "turnComplete": true,
+    "usageMetadata": {
+      "promptTokenCount": 521,
+      "responseTokenCount": 297,
+      "totalTokenCount": 818,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 214
+        },
+        {
+          "modality": "AUDIO",
+          "tokenCount": 280
+        }
+      ],
+      "responseTokensDetails": [
+        {
+          "modality": "AUDIO",
+          "tokenCount": 297
+        }
+      ]
+    },
+    "tokens": {
+      "prompt": 521,
+      "response": 297,
+      "total": 818,
+      "raw": {
+        "promptTokenCount": 521,
+        "responseTokenCount": 297,
+        "totalTokenCount": 818,
+        "promptTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 214
+          },
+          {
+            "modality": "AUDIO",
+            "tokenCount": 280
+          }
+        ],
+        "responseTokensDetails": [
+          {
+            "modality": "AUDIO",
+            "tokenCount": 297
+          }
+        ]
+      }
+    },
+    "costUsd": {
+      "freeTierListed": true,
+      "chargedThisCallUsd": 0,
+      "note": "gemini-3.1-flash-live-preview Free Tier = Free of charge per ai.google.dev/gemini-api/docs/pricing",
+      "paidEquivalentEstimateUsd": 0.0051270000000000005
+    }
+  },
+  "errors": [],
+  "sampleMessages": [
+    {
+      "t": 1783868364604,
+      "message": {
+        "setupComplete": {}
+      }
+    },
+    {
+      "t": 1783868365450,
+      "message": {
+        "serverContent": {}
+      }
+    },
+    {
+      "t": 1783868366067,
+      "message": {
+        "serverContent": {
+          "inputTranscription": {
+            "text": "¿Qué es el amor?"
+          }
+        }
+      }
+    },
+    {
+      "t": 1783868366067,
+      "message": {
+        "serverContent": {}
+      }
+    },
+    {
+      "t": 1783868366409,
+      "message": {
+        "serverContent": {}
+      }
+    },
+    {
+      "t": 1783868366665,
+      "message": {
+        "serverContent": {
+          "modelTurn": {
+            "parts": [
+              {
+                "inlineData": {
+                  "mimeType": "audio/pcm;rate=24000",
+                  "data": "AAA="
+                }
+              }
+            ]
+          },
+          "outputTranscription": {
+            "text": "Hallo! Am"
+          }
+        }
+      }
+    },
+    {
+      "t": 1783868366690,
+      "message": {
+        "serverContent": {
+          "modelTurn": {
+            "parts": [
+              {
+                "inlineData": {
+                  "mimeType": "audio/pcm;rate=24000",
+                  "data": "xf98ALAA5f8u/7v+aP5m/m7+rv9DAHIASgHmAGn/…(10240)"
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "t": 1783868366744,
+      "message": {
+        "serverContent": {
+          "modelTurn": {
+            "parts": [
+              {
+                "inlineData": {
+                  "mimeType": "audio/pcm;rate=24000",
+                  "data": "1RY1Gb4aZhtGHO8d5h1JHJwagxe7FOsRBw/+C+oI…(12800)"
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "t": 1783868366787,
+      "message": {
+        "serverContent": {
+          "modelTurn": {
+            "parts": [
+              {
+                "inlineData": {
+                  "mimeType": "audio/pcm;rate=24000",
+                  "data": "uSyKLeos8ipHJvkf9xisEoINcQjcA6T9xfbB76/p…(10240)"
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "t": 1783868366842,
+      "message": {
+        "serverContent": {
+          "modelTurn": {
+            "parts": [
+              {
+                "inlineData": {
+                  "mimeType": "audio/pcm;rate=24000",
+                  "data": "kP/T/+r/BABa/zT/bwCPAP4AVQKGAsMCeAIAAX3/…(12800)"
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "t": 1783868366883,
+      "message": {
+        "serverContent": {
+          "modelTurn": {
+            "parts": [
+              {
+                "inlineData": {
+                  "mimeType": "audio/pcm;rate=24000",
+                  "data": "Z/9B/+//yf8RAJUAEgB9/53+Df6p/kMA+QCuATYC…(10240)"
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "t": 1783868366941,
+      "message": {
+        "serverContent": {
+          "modelTurn": {
+            "parts": [
+              {
+                "inlineData": {
+                  "mimeType": "audio/pcm;rate=24000",
+                  "data": "/P/8//z//f/9////AAD//wAAAAACAAEAAAABAP//…(12800)"
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "rawUsage": {
+    "promptTokenCount": 521,
+    "responseTokenCount": 297,
+    "totalTokenCount": 818,
+    "promptTokensDetails": [
+      {
+        "modality": "TEXT",
+        "tokenCount": 214
+      },
+      {
+        "modality": "AUDIO",
+        "tokenCount": 280
+      }
+    ],
+    "responseTokensDetails": [
+      {
+        "modality": "AUDIO",
+        "tokenCount": 297
+      }
+    ]
+  },
+  "ok": true
+}

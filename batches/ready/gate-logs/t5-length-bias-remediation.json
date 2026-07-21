@@ -1,0 +1,643 @@
+{
+  "generatedAt": "2026-07-20T11:54:13.383Z",
+  "dryRun": false,
+  "classification": {
+    "stampOnly": [
+      "lesen-t5-gemini-024.json",
+      "lesen-t5-gemini-053.json",
+      "lesen-t5-gemini-065.json",
+      "lesen-t5-gemini-073.json"
+    ],
+    "llmActive": [
+      "lesen-t5-gemini-009.json",
+      "lesen-t5-gemini-014.json",
+      "lesen-t5-gemini-015.json",
+      "lesen-t5-gemini-027.json",
+      "lesen-t5-gemini-028.json",
+      "lesen-t5-gemini-029.json",
+      "lesen-t5-gemini-030.json",
+      "lesen-t5-gemini-033.json",
+      "lesen-t5-gemini-034.json",
+      "lesen-t5-gemini-036.json",
+      "lesen-t5-gemini-063.json",
+      "lesen-t5-gemini-076.json",
+      "lesen-t5-gemini-024.json",
+      "lesen-t5-gemini-053.json",
+      "lesen-t5-gemini-073.json"
+    ],
+    "mixed": [
+      "lesen-t5-gemini-023.json",
+      "lesen-t5-gemini-037.json",
+      "lesen-t5-gemini-057.json",
+      "lesen-t5-gemini-064.json",
+      "lesen-t5-gemini-077.json"
+    ]
+  },
+  "stampOnlyResults": [
+    {
+      "file": "lesen-t5-gemini-024.json",
+      "phase": "stamp-only",
+      "outcome": "reclassified_to_llm",
+      "stillBad": [
+        {
+          "id": "gen-q-5-7c35a128-1",
+          "detail": "gen-q-5-7c35a128-1: sesgo de longitud MCQ (B1) — opción correcta «b» es la más larga (123 vs 113/112; Δ +11 chars, +9% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable."
+        },
+        {
+          "id": "gen-q-5-7c35a128-2",
+          "detail": "gen-q-5-7c35a128-2: sesgo de longitud MCQ (B1) — opción correcta «c» es la más larga (70 vs 59/60; Δ +11 chars, +18% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable."
+        }
+      ],
+      "before": {
+        "quarantine": true,
+        "lbIssues": 0,
+        "langOk": true
+      }
+    },
+    {
+      "file": "lesen-t5-gemini-053.json",
+      "phase": "stamp-only",
+      "outcome": "reclassified_to_llm",
+      "stillBad": [
+        {
+          "id": "gen-q-5-49b206d4-4",
+          "detail": "gen-q-5-49b206d4-4: sesgo de longitud MCQ (B1) — opción correcta «c» es la más larga (94 vs 73/93; Δ +11 chars, +13% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable."
+        }
+      ],
+      "before": {
+        "quarantine": true,
+        "lbIssues": 0,
+        "langOk": true
+      }
+    },
+    {
+      "file": "lesen-t5-gemini-065.json",
+      "phase": "stamp-only",
+      "outcome": "official-ready",
+      "clearedIds": [
+        "gen-q-5-4a873a4f-1",
+        "gen-q-5-4a873a4f-2",
+        "gen-q-5-4a873a4f-4"
+      ],
+      "partGate": {
+        "ok": true
+      },
+      "before": {
+        "quarantine": true,
+        "lbIssues": 0,
+        "langOk": true
+      },
+      "after": {
+        "quarantine": false,
+        "lbIssues": 0,
+        "langOk": true
+      },
+      "officialReady": true
+    },
+    {
+      "file": "lesen-t5-gemini-073.json",
+      "phase": "stamp-only",
+      "outcome": "reclassified_to_llm",
+      "stillBad": [
+        {
+          "id": "gen-q-5-5a4d06b3-2",
+          "detail": "gen-q-5-5a4d06b3-2: sesgo de longitud MCQ (B1) — opción correcta «c» es la más larga (50 vs 44/37; Δ +10 chars, +23% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable."
+        }
+      ],
+      "before": {
+        "quarantine": true,
+        "lbIssues": 0,
+        "langOk": true
+      }
+    }
+  ],
+  "llmResults": [
+    {
+      "file": "lesen-t5-gemini-009.json",
+      "phase": "llm",
+      "outcome": "partial-still-quarantined",
+      "costUsd": 0.0023011,
+      "repaired": true,
+      "stillBad": [],
+      "partGate": {
+        "ok": false,
+        "issue": "Sustantivo en minúscula: \"indirekte\" (tras artículo/conjunción). En alemán los sustantivos van en mayúscula. Contexto: \"...ch: Wasser ist wertvoll. Eine indirekte Bewässerung mit Sprinklern is...\""
+      },
+      "before": {
+        "quarantine": true,
+        "lbIssues": 4,
+        "langOk": true
+      },
+      "after": {
+        "quarantine": false,
+        "lbIssues": 0,
+        "langOk": true
+      },
+      "officialReady": false
+    },
+    {
+      "file": "lesen-t5-gemini-014.json",
+      "phase": "llm",
+      "outcome": "partial-still-quarantined",
+      "costUsd": 0.0006347,
+      "repaired": true,
+      "stillBad": [
+        {
+          "id": "gen-q-5-a994fb06-1",
+          "detail": "gen-q-5-a994fb06-1: sesgo de longitud MCQ (B1) — opción correcta «a» es la más larga (57 vs 36/56; Δ +11 chars, +24% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable."
+        }
+      ],
+      "partGate": {
+        "ok": false,
+        "issue": "Explanation demasiado corta (9 palabras): \"Die maximale Parkdauer vor dem Zentrum beträgt drei Stunden.\". Mínimo: 10 para tipo multiple_choice."
+      },
+      "before": {
+        "quarantine": true,
+        "lbIssues": 1,
+        "langOk": true
+      },
+      "after": {
+        "quarantine": true,
+        "lbIssues": 0,
+        "langOk": true
+      },
+      "officialReady": false
+    },
+    {
+      "file": "lesen-t5-gemini-015.json",
+      "phase": "llm",
+      "outcome": "partial-still-quarantined",
+      "costUsd": 0.0044434,
+      "repaired": true,
+      "stillBad": [
+        {
+          "id": "gen-q-5-cc5b0d7b-1",
+          "detail": "gen-q-5-cc5b0d7b-1: sesgo de longitud MCQ (B1) — opción correcta «c» es la más larga (32 vs 30/25; Δ +5 chars, +16% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable."
+        },
+        {
+          "id": "gen-q-5-cc5b0d7b-3",
+          "detail": "gen-q-5-cc5b0d7b-3: sesgo de longitud MCQ (B1) — opción correcta «a» es la más larga (98 vs 74/70; Δ +26 chars, +36% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable."
+        },
+        {
+          "id": "gen-q-5-cc5b0d7b-4",
+          "detail": "gen-q-5-cc5b0d7b-4: sesgo de longitud MCQ (B1) — opción correcta «c» es la más larga (63 vs 61/61; Δ +2 chars, +3% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable."
+        }
+      ],
+      "partGate": {
+        "ok": false,
+        "issue": "Sustantivo en minúscula: \"langen\" (tras artículo/conjunción). En alemán los sustantivos van en mayúscula. Contexto: \"...Bei langen Besuchen ist eine Meldung nöt...\""
+      },
+      "before": {
+        "quarantine": true,
+        "lbIssues": 1,
+        "langOk": true
+      },
+      "after": {
+        "quarantine": true,
+        "lbIssues": 1,
+        "langOk": true
+      },
+      "officialReady": false
+    },
+    {
+      "file": "lesen-t5-gemini-024.json",
+      "phase": "llm",
+      "outcome": "partial-still-quarantined",
+      "costUsd": 0.0012471,
+      "repaired": true,
+      "stillBad": [],
+      "partGate": {
+        "ok": false,
+        "issue": "Sustantivo en minúscula: \"richtig\" (tras artículo/conjunción). En alemán los sustantivos van en mayúscula. Contexto: \"...nicht zu hoch einstellen und richtig lüften....\""
+      },
+      "before": {
+        "quarantine": true,
+        "lbIssues": 0,
+        "langOk": true
+      },
+      "after": {
+        "quarantine": false,
+        "lbIssues": 0,
+        "langOk": true
+      },
+      "officialReady": false
+    },
+    {
+      "file": "lesen-t5-gemini-027.json",
+      "phase": "llm",
+      "outcome": "official-ready",
+      "costUsd": 0.001293,
+      "repaired": true,
+      "stillBad": [],
+      "partGate": {
+        "ok": true
+      },
+      "before": {
+        "quarantine": true,
+        "lbIssues": 1,
+        "langOk": true
+      },
+      "after": {
+        "quarantine": false,
+        "lbIssues": 0,
+        "langOk": true
+      },
+      "officialReady": true
+    },
+    {
+      "file": "lesen-t5-gemini-028.json",
+      "phase": "llm",
+      "outcome": "partial-still-quarantined",
+      "costUsd": 0.0012451,
+      "repaired": true,
+      "stillBad": [
+        {
+          "id": "gen-q-5-6046b479-1",
+          "detail": "gen-q-5-6046b479-1: sesgo de longitud MCQ (B1) — opción correcta «b» es la más larga (91 vs 79/74; Δ +15 chars, +19% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable."
+        }
+      ],
+      "partGate": {
+        "ok": true
+      },
+      "before": {
+        "quarantine": true,
+        "lbIssues": 2,
+        "langOk": true
+      },
+      "after": {
+        "quarantine": true,
+        "lbIssues": 0,
+        "langOk": true
+      },
+      "officialReady": false
+    },
+    {
+      "file": "lesen-t5-gemini-029.json",
+      "phase": "llm",
+      "outcome": "partial-still-quarantined",
+      "costUsd": 0.0021508,
+      "repaired": true,
+      "stillBad": [
+        {
+          "id": "gen-q-5-0d9a36a9-1",
+          "detail": "gen-q-5-0d9a36a9-1: sesgo de longitud MCQ (B1) — opción correcta «b» es la más larga (59 vs 51/48; Δ +10 chars, +19% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable."
+        },
+        {
+          "id": "gen-q-5-0d9a36a9-3",
+          "detail": "gen-q-5-0d9a36a9-3: sesgo de longitud MCQ (B1) — opción correcta «a» es la más larga (45 vs 42/44; Δ +2 chars, +5% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable."
+        }
+      ],
+      "partGate": {
+        "ok": false,
+        "issue": "Vocabulario B2+ en pregunta \"Ressourcen\" → usa \"Mittel / Möglichkeiten\" (B1)"
+      },
+      "before": {
+        "quarantine": true,
+        "lbIssues": 3,
+        "langOk": true
+      },
+      "after": {
+        "quarantine": true,
+        "lbIssues": 0,
+        "langOk": true
+      },
+      "officialReady": false
+    },
+    {
+      "file": "lesen-t5-gemini-030.json",
+      "phase": "llm",
+      "outcome": "partial-still-quarantined",
+      "costUsd": 0.0017843,
+      "repaired": true,
+      "stillBad": [
+        {
+          "id": "gen-q-5-b2260853-2",
+          "detail": "gen-q-5-b2260853-2: sesgo de longitud MCQ (B1) — opción correcta «b» es la más larga (58 vs 49/37; Δ +15 chars, +35% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable."
+        },
+        {
+          "id": "gen-q-5-b2260853-3",
+          "detail": "gen-q-5-b2260853-3: sesgo de longitud MCQ (B1) — opción correcta «c» es la más larga (65 vs 44/52; Δ +17 chars, +35% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable."
+        }
+      ],
+      "partGate": {
+        "ok": false,
+        "issue": "Vocabulario B2+ en pregunta \"zugänglich\" → usa \"einfach / offen\" (B1)"
+      },
+      "before": {
+        "quarantine": true,
+        "lbIssues": 2,
+        "langOk": true
+      },
+      "after": {
+        "quarantine": true,
+        "lbIssues": 2,
+        "langOk": true
+      },
+      "officialReady": false
+    },
+    {
+      "file": "lesen-t5-gemini-033.json",
+      "phase": "llm",
+      "outcome": "partial-still-quarantined",
+      "costUsd": 0.002326,
+      "repaired": true,
+      "stillBad": [
+        {
+          "id": "gen-q-5-21c7dc2c-1",
+          "detail": "gen-q-5-21c7dc2c-1: sesgo de longitud MCQ (B1) — opción correcta «a» es la más larga (58 vs 37/52; Δ +14 chars, +30% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable."
+        },
+        {
+          "id": "gen-q-5-21c7dc2c-2",
+          "detail": "gen-q-5-21c7dc2c-2: sesgo de longitud MCQ (B1) — opción correcta «b» es la más larga (88 vs 68/72; Δ +18 chars, +26% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable."
+        },
+        {
+          "id": "gen-q-5-21c7dc2c-4",
+          "detail": "gen-q-5-21c7dc2c-4: sesgo de longitud MCQ (B1) — opción correcta «b» es la más larga (64 vs 39/22; Δ +34 chars, +110% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable."
+        }
+      ],
+      "partGate": {
+        "ok": true
+      },
+      "before": {
+        "quarantine": true,
+        "lbIssues": 3,
+        "langOk": true
+      },
+      "after": {
+        "quarantine": true,
+        "lbIssues": 3,
+        "langOk": true
+      },
+      "officialReady": false
+    },
+    {
+      "file": "lesen-t5-gemini-034.json",
+      "phase": "llm",
+      "outcome": "partial-still-quarantined",
+      "costUsd": 0.0011816,
+      "repaired": true,
+      "stillBad": [],
+      "partGate": {
+        "ok": false,
+        "issue": "Vocabulario B2+ en pregunta \"zugänglich\" → usa \"einfach / offen\" (B1)"
+      },
+      "before": {
+        "quarantine": true,
+        "lbIssues": 2,
+        "langOk": true
+      },
+      "after": {
+        "quarantine": false,
+        "lbIssues": 0,
+        "langOk": true
+      },
+      "officialReady": false
+    },
+    {
+      "file": "lesen-t5-gemini-036.json",
+      "phase": "llm",
+      "outcome": "partial-still-quarantined",
+      "costUsd": 0.0006667,
+      "repaired": true,
+      "stillBad": [],
+      "partGate": {
+        "ok": false,
+        "issue": "Vocabulario B2+ en pregunta \"zugänglich\" → usa \"einfach / offen\" (B1)"
+      },
+      "before": {
+        "quarantine": true,
+        "lbIssues": 1,
+        "langOk": true
+      },
+      "after": {
+        "quarantine": false,
+        "lbIssues": 0,
+        "langOk": true
+      },
+      "officialReady": false
+    },
+    {
+      "file": "lesen-t5-gemini-053.json",
+      "phase": "llm",
+      "outcome": "official-ready",
+      "costUsd": 0.0007195,
+      "repaired": true,
+      "stillBad": [],
+      "partGate": {
+        "ok": true
+      },
+      "before": {
+        "quarantine": true,
+        "lbIssues": 0,
+        "langOk": true
+      },
+      "after": {
+        "quarantine": false,
+        "lbIssues": 0,
+        "langOk": true
+      },
+      "officialReady": true
+    },
+    {
+      "file": "lesen-t5-gemini-063.json",
+      "phase": "llm",
+      "outcome": "partial-still-quarantined",
+      "costUsd": 0.0017456,
+      "repaired": true,
+      "stillBad": [
+        {
+          "id": "gen-q-5-11d79a5d-2",
+          "detail": "gen-q-5-11d79a5d-2: sesgo de longitud MCQ (B1) — opción correcta «b» es la más larga (72 vs 64/50; Δ +15 chars, +26% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable."
+        }
+      ],
+      "partGate": {
+        "ok": true
+      },
+      "before": {
+        "quarantine": true,
+        "lbIssues": 2,
+        "langOk": true
+      },
+      "after": {
+        "quarantine": true,
+        "lbIssues": 0,
+        "langOk": true
+      },
+      "officialReady": false
+    },
+    {
+      "file": "lesen-t5-gemini-073.json",
+      "phase": "llm",
+      "outcome": "official-ready",
+      "costUsd": 0.0006037,
+      "repaired": true,
+      "stillBad": [],
+      "partGate": {
+        "ok": true
+      },
+      "before": {
+        "quarantine": true,
+        "lbIssues": 0,
+        "langOk": true
+      },
+      "after": {
+        "quarantine": false,
+        "lbIssues": 0,
+        "langOk": true
+      },
+      "officialReady": true
+    },
+    {
+      "file": "lesen-t5-gemini-076.json",
+      "phase": "llm",
+      "outcome": "partial-still-quarantined",
+      "costUsd": 0.0011945,
+      "repaired": true,
+      "stillBad": [
+        {
+          "id": "gen-q-5-a764778f-2",
+          "detail": "gen-q-5-a764778f-2: sesgo de longitud MCQ (B1) — opción correcta «c» es la más larga (67 vs 52/51; Δ +16 chars, +30% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable."
+        },
+        {
+          "id": "gen-q-5-a764778f-4",
+          "detail": "gen-q-5-a764778f-4: sesgo de longitud MCQ (B1) — opción correcta «a» es la más larga (96 vs 75/93; Δ +12 chars, +14% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable."
+        }
+      ],
+      "partGate": {
+        "ok": true
+      },
+      "before": {
+        "quarantine": true,
+        "lbIssues": 2,
+        "langOk": true
+      },
+      "after": {
+        "quarantine": true,
+        "lbIssues": 2,
+        "langOk": true
+      },
+      "officialReady": false
+    }
+  ],
+  "mixedDiagnostic": [
+    {
+      "file": "lesen-t5-gemini-023.json",
+      "phase": "mixed-diagnostic",
+      "dryRun": true,
+      "beforeLb": 4,
+      "afterLb": 2,
+      "lbImproved": true,
+      "beforeLex": 2,
+      "afterLex": 2,
+      "stillOfficialQuarantine": true,
+      "costUsd": 0.0023456,
+      "note": "no pool write — lexical-cueing still blocks official"
+    },
+    {
+      "file": "lesen-t5-gemini-037.json",
+      "phase": "mixed-diagnostic",
+      "dryRun": true,
+      "beforeLb": 2,
+      "afterLb": 0,
+      "lbImproved": true,
+      "beforeLex": 1,
+      "afterLex": 1,
+      "stillOfficialQuarantine": true,
+      "costUsd": 0.0011288,
+      "note": "no pool write — lexical-cueing still blocks official"
+    },
+    {
+      "file": "lesen-t5-gemini-057.json",
+      "phase": "mixed-diagnostic",
+      "dryRun": true,
+      "beforeLb": 0,
+      "afterLb": 0,
+      "lbImproved": false,
+      "beforeLex": 1,
+      "afterLex": 1,
+      "stillOfficialQuarantine": true,
+      "costUsd": 0.0012467,
+      "note": "no pool write — lexical-cueing still blocks official"
+    },
+    {
+      "file": "lesen-t5-gemini-064.json",
+      "phase": "mixed-diagnostic",
+      "dryRun": true,
+      "beforeLb": 0,
+      "afterLb": 0,
+      "lbImproved": false,
+      "beforeLex": 1,
+      "afterLex": 1,
+      "stillOfficialQuarantine": true,
+      "costUsd": 0.0024951,
+      "note": "no pool write — lexical-cueing still blocks official"
+    },
+    {
+      "file": "lesen-t5-gemini-077.json",
+      "phase": "mixed-diagnostic",
+      "dryRun": true,
+      "beforeLb": 1,
+      "afterLb": 0,
+      "lbImproved": true,
+      "beforeLex": 1,
+      "afterLex": 1,
+      "stillOfficialQuarantine": true,
+      "costUsd": 0.0010826,
+      "note": "no pool write — lexical-cueing still blocks official"
+    }
+  ],
+  "totalCostUsd": 0.03183590000000001,
+  "stockAfter": {
+    "ready": 11,
+    "readyFiles": [
+      "lesen-t5-gemini-027.json",
+      "lesen-t5-gemini-053.json",
+      "lesen-t5-gemini-065.json",
+      "lesen-t5-gemini-073.json",
+      "lesen-t5-gemini-079.json",
+      "lesen-t5-gemini-081.json",
+      "lesen-t5-gemini-082.json",
+      "lesen-t5-gemini-083.json",
+      "lesen-t5-gemini-095.json",
+      "lesen-t5-gemini-099.json",
+      "lesen-t5-konsum-einkaufszentrum.json"
+    ],
+    "total": 30
+  },
+  "capacity": {
+    "lesen5": 11,
+    "totalExams": 9,
+    "bottleneck": [
+      "lesen_2",
+      9
+    ]
+  },
+  "autoPublishDryRun": {
+    "capacity": 9,
+    "liveSlots": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "assembledSlots": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "slotsToPublish": [
+      6,
+      7,
+      8,
+      9
+    ],
+    "wouldPublish": 4
+  }
+}

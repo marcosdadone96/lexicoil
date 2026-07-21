@@ -1,0 +1,137 @@
+{
+  "at": "2026-07-13T16:50:48.526Z",
+  "dryRun": false,
+  "horenT2RegenStatus": {
+    "checkpointSaved": 3,
+    "publishedReplacements": [
+      "horen-t2-gemini-028.json",
+      "horen-t2-gemini-029.json",
+      "horen-t2-gemini-030.json"
+    ],
+    "note": "3/4 T2 regenerados (028–030) antes de parar; freizeit 024–027 ya fuera del pool"
+  },
+  "groups": [
+    {
+      "group": "train_delay_announcement",
+      "kept": "horen-t1-gemini-018.json",
+      "retired": [
+        "horen-t1-gemini-019.json",
+        "horen-t1-gemini-020.json",
+        "horen-t1-gemini-021.json",
+        "horen-t1-gemini-023.json"
+      ],
+      "note": "T1 — más antiguo del cluster; resto premisa Zug/Verspätung idéntica"
+    },
+    {
+      "group": "answering_machine",
+      "kept": "horen-t1-gemini-022.json",
+      "retired": [],
+      "note": "T1 — 022 dedicado Anrufbeantworter; 021 también en train_delay (ya archivado)"
+    },
+    {
+      "group": "freizeit_vortrag_monologue",
+      "kept": "horen-t2-gemini-026.json",
+      "retired": [
+        "horen-t2-gemini-024.json",
+        "horen-t2-gemini-025.json",
+        "horen-t2-gemini-027.json"
+      ],
+      "note": "T2 — reemplazos nuevos en pool 028/029/030; 026 mejor gate length (0 issues)"
+    }
+  ],
+  "moves": [
+    {
+      "file": "horen-t1-gemini-019.json",
+      "from": "batches\\needs-regeneration\\horen-t1-gemini-019.json",
+      "to": "batches\\needs-regeneration\\_premise-dedupe-archive\\horen-t1-gemini-019.json",
+      "group": "train_delay_announcement"
+    },
+    {
+      "file": "horen-t1-gemini-020.json",
+      "from": "batches\\needs-regeneration\\horen-t1-gemini-020.json",
+      "to": "batches\\needs-regeneration\\_premise-dedupe-archive\\horen-t1-gemini-020.json",
+      "group": "train_delay_announcement"
+    },
+    {
+      "file": "horen-t1-gemini-021.json",
+      "from": "batches\\needs-regeneration\\horen-t1-gemini-021.json",
+      "to": "batches\\needs-regeneration\\_premise-dedupe-archive\\horen-t1-gemini-021.json",
+      "group": "train_delay_announcement"
+    },
+    {
+      "file": "horen-t1-gemini-023.json",
+      "from": "batches\\needs-regeneration\\horen-t1-gemini-023.json",
+      "to": "batches\\needs-regeneration\\_premise-dedupe-archive\\horen-t1-gemini-023.json",
+      "group": "train_delay_announcement"
+    },
+    {
+      "file": "horen-t2-gemini-024.json",
+      "from": "batches\\needs-regeneration\\horen-t2-gemini-024.json",
+      "to": "batches\\needs-regeneration\\_premise-dedupe-archive\\horen-t2-gemini-024.json",
+      "group": "freizeit_vortrag_monologue"
+    },
+    {
+      "file": "horen-t2-gemini-025.json",
+      "from": "batches\\needs-regeneration\\horen-t2-gemini-025.json",
+      "to": "batches\\needs-regeneration\\_premise-dedupe-archive\\horen-t2-gemini-025.json",
+      "group": "freizeit_vortrag_monologue"
+    },
+    {
+      "file": "horen-t2-gemini-027.json",
+      "from": "batches\\needs-regeneration\\horen-t2-gemini-027.json",
+      "to": "batches\\needs-regeneration\\_premise-dedupe-archive\\horen-t2-gemini-027.json",
+      "group": "freizeit_vortrag_monologue"
+    }
+  ],
+  "poolVerifiedAfter": {
+    "horenT1": [
+      "horen-t1-gemini-001.json",
+      "horen-t1-gemini-002.json",
+      "horen-t1-gemini-003.json",
+      "horen-t1-gemini-004.json",
+      "horen-t1-gemini-005.json",
+      "horen-t1-gemini-016.json",
+      "horen-t1-gemini-024.json"
+    ],
+    "horenT2": [
+      "horen-t2-gemini-001.json",
+      "horen-t2-gemini-003.json",
+      "horen-t2-gemini-005.json",
+      "horen-t2-gemini-006.json",
+      "horen-t2-gemini-007.json",
+      "horen-t2-gemini-008.json",
+      "horen-t2-gemini-009.json",
+      "horen-t2-gemini-010.json",
+      "horen-t2-gemini-011.json",
+      "horen-t2-gemini-012.json",
+      "horen-t2-gemini-013.json",
+      "horen-t2-gemini-015.json",
+      "horen-t2-gemini-016.json",
+      "horen-t2-gemini-017.json",
+      "horen-t2-gemini-018.json",
+      "horen-t2-gemini-019.json",
+      "horen-t2-gemini-020.json",
+      "horen-t2-gemini-021.json",
+      "horen-t2-gemini-023.json",
+      "horen-t2-gemini-028.json",
+      "horen-t2-gemini-029.json",
+      "horen-t2-gemini-030.json"
+    ],
+    "t1ScenarioDupes": [],
+    "t2ScenarioDupes": []
+  },
+  "stockAssessment": {
+    "horenT1": {
+      "count": 7,
+      "targetOperational": 3,
+      "sufficient": true,
+      "note": "Holgado para ensamblado (≥3/celda)"
+    },
+    "horenT2": {
+      "count": 22,
+      "targetOperational": 3,
+      "sufficient": true,
+      "note": "22 partes incl. 3 reemplazos recientes sin premisa freizeit duplicada"
+    }
+  }
+}

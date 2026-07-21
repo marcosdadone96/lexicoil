@@ -20,12 +20,15 @@ import {
   defaultExamId,
   getBlobStore,
   loadSeedRecords,
+  mergeSeedOverlay,
   parseAssembledExamFile,
   summarizePublishedExam,
   upsertPublishedCatalog,
   writePublishedExam,
   OFFICIAL_CELLS,
+  officialCellsForLevel,
 } from './lib/publishedExamLib.mjs';
+import { isExamPublishable } from './audit-pass-2.mjs';
 
 loadEnvFile();
 
@@ -41,6 +44,7 @@ function parseArgs(argv) {
     apply: false,
     yes: false,
     localOnly: false,
+    seedOverlay: null,
   };
   for (let i = 2; i < argv.length; i++) {
     const a = argv[i];
@@ -50,6 +54,7 @@ function parseArgs(argv) {
     else if (a === '--title') out.title = argv[++i];
     else if (a === '--lang') out.lang = String(argv[++i]).toLowerCase();
     else if (a === '--level') out.level = String(argv[++i]).toUpperCase();
+    else if (a === '--seed-overlay') out.seedOverlay = path.resolve(ROOT, argv[++i]);
     else if (a === '--dry-run') { out.dryRun = true; out.apply = false; }
     else if (a === '--apply') { out.apply = true; out.dryRun = false; }
     else if (a === '--yes') out.yes = true;
@@ -117,6 +122,7 @@ Options:
   --dry-run         Preview only (default)
   --apply           Write published_exam (+ catalog); requires --yes or prompt
   --local-only      Write library/published-exams/ only (no Netlify blob)
+  --seed-overlay    Merge local seed records (overlay wins) before capture
   --yes             Skip confirmation on --apply`);
     process.exit(args.help ? 0 : 2);
   }
@@ -133,13 +139,34 @@ Options:
   const examId = args.examId || defaultExamId(lang, level, slot);
   const title = args.title || `Official ${level} Exam ${slot}`;
 
+  const rawAssembled = JSON.parse(fs.readFileSync(args.from, 'utf8'));
+  const gate1 = isExamPublishable(
+    { exam: rawAssembled.exam, level },
+    { expectedLevel: level },
+  );
+  if (!gate1.ok) {
+    console.error(`\n✗ GATE-1 BLOCK — publish aborted (${path.relative(ROOT, args.from)})`);
+    console.error(`  gate1.ok=false — ${(gate1.blocking || []).length} blocking finding(s):`);
+    for (const b of (gate1.blocking || []).slice(0, 12)) {
+      console.error(`    [${b.id}] ${String(b.message || '').slice(0, 140)}`);
+    }
+    process.exit(1);
+  }
+
   const { byId: seedById, source: seedFile } = loadSeedRecords(lang, level);
+  let overlayInfo = { merged: 0, source: null };
+  if (args.seedOverlay) {
+    overlayInfo = mergeSeedOverlay(seedById, args.seedOverlay);
+  }
   const store = args.localOnly ? null : await getBlobStore();
 
   console.log(`\n=== publish-exam ${args.dryRun ? 'DRY-RUN' : 'APPLY'} ===`);
   console.log(`  from:    ${path.relative(ROOT, args.from)}`);
   console.log(`  examId:  ${examId}  slot=${slot}`);
   console.log(`  seed:    ${seedFile ? path.relative(ROOT, seedFile) : '(none)'}`);
+  if (overlayInfo.source) {
+    console.log(`  overlay: ${path.relative(ROOT, overlayInfo.source)} (${overlayInfo.merged} records)`);
+  }
   console.log(`  store:   ${store ? 'netlify-blobs' : 'local-seed-only'}`);
 
   const { parts, missing, sources } = await capturePublishedParts(store, {
@@ -155,8 +182,9 @@ Options:
     process.exit(1);
   }
 
-  if (parts.length !== OFFICIAL_CELLS.length) {
-    console.error(`\n✗ Expected ${OFFICIAL_CELLS.length} parts, got ${parts.length}`);
+  const expectedCells = officialCellsForLevel(level);
+  if (parts.length !== expectedCells.length) {
+    console.error(`\n✗ Expected ${expectedCells.length} parts, got ${parts.length}`);
     process.exit(1);
   }
 
@@ -169,7 +197,7 @@ Options:
     parts,
     status: 'live',
     manifestVersion: 1,
-    gate1: assembled.gate1,
+    gate1: { ok: gate1.ok, blocking: (gate1.blocking || []).slice(0, 8) },
     sourceAssembled: path.relative(ROOT, args.from),
   });
 

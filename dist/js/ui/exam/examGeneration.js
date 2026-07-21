@@ -637,6 +637,113 @@ function getPoolFallbackHelpers(){
   if(typeof PersonalLesenPoolFallback!=='undefined')return PersonalLesenPoolFallback;
   try{return require('../engine/personalLesenPoolFallback.js');}catch(_){return null;}
 }
+
+// Mapa de helpers por módulo (los que ya exporta personalLesenPoolFallback).
+function _modulePoolHelpers(PF, module) {
+  const m = String(module).toLowerCase();
+  if (m === 'lesen' || m === 'reading') return {
+    key: 'lesenParts',
+    teils: PF.lesenBlueprintTeils, toPart: PF.reusablePartToLesenPart,
+    insert: PF.insertLesenTeil, valid: (e, t, b) => lesenTeilPresentAndValid(e, t, b),
+  };
+  if (m === 'horen' || m === 'listening') return {
+    key: 'horenParts',
+    teils: PF.horenBlueprintTeils, toPart: PF.reusablePartToHorenPart,
+    insert: PF.insertHorenTeil, valid: (e, t, b) => horenTeilPresentAndValid(e, t, b),
+  };
+  if (m === 'schreiben' || m === 'writing') return {
+    key: 'schreibenParts',
+    teils: PF.schreibenBlueprintTeils, toPart: PF.reusablePartToSchreibenPart,
+    insert: PF.insertSchreibenTeil, valid: (e, t, b) => schreibenTeilPresentAndValid(e, t, b),
+  };
+  return null; // sprechen: añadir cuando tenga sus helpers
+}
+
+function _recordSeenPart(lang, level, module, partId) {
+  if (!partId) return;
+  if (!Array.isArray(S.history)) S.history = [];
+  S.history.push({ lang, level, partId, partModule: module, date: Date.now(), source: 'part' });
+  try { if (typeof saveProfile === 'function') saveProfile(); } catch (_) {}
+}
+
+/**
+ * Ensambla un módulo completo desde el pool, escogiendo por vocabulario (greedy),
+ * sin repetir partes ya vistas por el usuario y variando tema.
+ * Devuelve { exam, coverage:{covered,requested}, missingTeile:[...] } o null.
+ */
+async function assembleModuleFromPool(module, words, lang, level) {
+  const PF = getPoolFallbackHelpers();
+  if (!PF || typeof fetchExamPartVocab !== 'function') return null;
+  const H = _modulePoolHelpers(PF, module);
+  if (!H) return null;
+
+  let blueprint = null;
+  try { blueprint = await ExamBlueprint.load(lang, level); } catch (_) {}
+  const teils = (H.teils ? H.teils(blueprint) : null) || [];
+  if (!teils.length) return null;
+
+  const exam = { lang, level, goetheFormat: true, vocabPersonal: true, [H.key]: [] };
+
+  const requested = (words || []).map((w) => String(w).toLowerCase()).filter(Boolean);
+  let remaining = null;
+  const coveredLemmas = new Set();
+  const usedTopics = new Set();
+  const missingTeile = [];
+
+  for (const teil of teils) {
+    const exclude = seenPartIds(lang, level, module);
+    const data = await fetchExamPartVocab(lang, level, module, {
+      excludeIds: exclude,
+      teil,
+      words: remaining != null ? [...remaining] : requested,
+      excludeTopics: [...usedTopics],
+    });
+    if (!data || !data.part) { missingTeile.push(teil); continue; }
+
+    if (remaining == null) remaining = new Set(data.requestedLemmas || requested);
+
+    let part = H.toPart(data.part, blueprint);
+    if (!part) { missingTeile.push(teil); continue; }
+    const shell = { lang, level, goetheFormat: true, vocabPersonal: true, [H.key]: [part] };
+    if (typeof repairPersonalExamAnswerability === 'function') repairPersonalExamAnswerability(shell);
+    part = shell[H.key][0];
+    if (!H.valid({ [H.key]: [part] }, teil, blueprint)) { missingTeile.push(teil); continue; }
+
+    H.insert(exam, part, teil);
+    _recordSeenPart(lang, level, module, data.id);
+
+    for (const w of data.coveredWords || []) {
+      const lw = String(w).toLowerCase();
+      coveredLemmas.add(lw);
+      if (remaining) remaining.delete(lw);
+    }
+    if (data.topic) usedTopics.add(String(data.topic).toLowerCase());
+
+    if (typeof ExamRenumber !== 'undefined' && ExamRenumber.renumberExam) {
+      ExamRenumber.renumberExam(exam, blueprint || null);
+    }
+  }
+
+  if (!(exam[H.key] || []).length) return null;
+
+  const requestedCount = (remaining != null)
+    ? coveredLemmas.size + remaining.size
+    : requested.length;
+  return {
+    exam,
+    coverage: { covered: coveredLemmas.size, requested: requestedCount },
+    coveredWords: [...coveredLemmas],
+    missingTeile,
+  };
+}
+
+const _MODULE_PART_KEY={
+  lesen:'lesenParts',horen:'horenParts',
+  schreiben:'schreibenParts',sprechen:'sprechenParts',
+  reading:'lesenParts',listening:'horenParts',
+  writing:'schreibenParts',speaking:'sprechenParts'
+};
+
 async function fillMissingLesenTeileFromPool(exam,lang,level,blueprint,configSkills){
   if(!orderedPersonalSkills(configSkills||exam?.vocabSkills||[]).includes('lesen'))return exam;
   const PF=getPoolFallbackHelpers();
@@ -942,7 +1049,8 @@ function coalesceLesenForumOpinions(part){
       .filter(q=>q&&(q.signText||q.text||q.question))
       .map((q,i)=>({
         id:q.id||String(20+i),
-        signText:q.signText||q.text||q.question,
+        signText:q.signText||q.text||'',
+        question:(q.signText||q.text)?(q.question||q.statement||''):(q.question||q.statement||q.signText||q.text||''),
         type:'ja_nein',
         correct:q.correct??q.correctAnswer,
       }));
@@ -953,7 +1061,7 @@ function coalesceLesenForumOpinions(part){
     if(!item.signText&&item.text)item.signText=item.text;
     if(!item.signText&&item.body)item.signText=item.body;
     if(!item.signText&&item.content)item.signText=item.content;
-    if(!item.id||/^l\d/i.test(String(item.id)))item.id=String(startNum+i);
+    if(Number(part.teil)===4||!item.id||/^l\d/i.test(String(item.id)))item.id=String(startNum+i);
     if(!item.type||item.type==='multiple'||item.type==='multiple_choice')item.type='ja_nein';
     if(item.signText&&item.question&&/stimmt|ja oder nein|agree|dem thema zu/i.test(String(item.question))){
       delete item.question;
@@ -1039,6 +1147,83 @@ function normalizeLesenAdRecord(a,i,ADS){
     text:String(a.text||a.body||a.content||a.description||'').trim(),
   };
 }
+function synthesizeLesenInstruction(part,lang){
+  const teil=Number(part?.teil)||1;
+  const ER=typeof ExamRenumber!=='undefined'?ExamRenumber:null;
+  const range=ER?.teilRange?.(null,'lesen',teil,part)||ER?.DEFAULT_RANGES?.lesen?.[teil];
+  const start=range?.start??(teil===1?1:teil===2?7:teil===3?13:teil===4?20:27);
+  const end=range?.end??start+(range?.expected??6)-1;
+  const de=lang!=='en'&&lang!=='es';
+  if(teil===1){
+    return de
+      ?`Lesen Sie den Text und die Aufgaben ${start} bis ${end}. Wählen Sie: Sind die Aussagen Richtig oder Falsch?`
+      :`Read the text and tasks ${start} to ${end}. Choose: True or False?`;
+  }
+  if(teil===2){
+    return de
+      ?`Lesen Sie die beiden Texte und die Aufgaben ${start} bis ${end}. Wählen Sie bei jeder Aufgabe die richtige Lösung a, b oder c.`
+      :`Read both texts and tasks ${start} to ${end}. Choose the correct answer a, b or c for each task.`;
+  }
+  if(teil===3){
+    const adLo=String(part.ads?.[0]?.key||'a').toLowerCase();
+    const adHi=String(part.ads?.[part.ads.length-1]?.key||'j').toLowerCase();
+    return de
+      ?`Lesen Sie die Situationen ${start} bis ${end} und die Anzeigen ${adLo} bis ${adHi}. Welche Anzeige passt zu welcher Situation? Eine Anzeige passt nicht. Wenn es keine passende Anzeige gibt, schreiben Sie 0.`
+      :`Read situations ${start} to ${end} and ads ${adLo} to ${adHi}. Which ad matches each situation? One ad does not match. If no ad fits, write 0.`;
+  }
+  if(teil===4){
+    return de
+      ?`Lesen Sie die Meinungen ${start} bis ${end} zu einem Thema. Stimmt die Person dem Thema zu? Wählen Sie: Ja oder Nein.`
+      :`Read opinions ${start} to ${end} on a topic. Does the person agree? Choose Yes or No.`;
+  }
+  if(teil===5){
+    return de
+      ?`Lesen Sie den Text (z. B. eine Hausordnung oder Anweisungen) und die Aufgaben ${start} bis ${end}. Wählen Sie bei jeder Aufgabe die richtige Lösung a, b oder c.`
+      :`Read the text and tasks ${start} to ${end}. Choose the correct answer a, b or c for each task.`;
+  }
+  return '';
+}
+function ensureLesenPartInstruction(part,lang){
+  if(String(part?.instruction||'').trim())return;
+  const synth=synthesizeLesenInstruction(part,lang);
+  if(synth)part.instruction=synth;
+}
+function rebuildLesenAdsMatchingInstruction(part){
+  if(!part?.items?.length||!part.ads?.length)return;
+  const start=part.items[0].id;
+  const end=part.items[part.items.length-1].id;
+  const adLo=String(part.ads[0].key).toLowerCase();
+  const adHi=String(part.ads[part.ads.length-1].key).toLowerCase();
+  part.instruction=
+    `Lesen Sie die Situationen ${start} bis ${end} und die Anzeigen ${adLo} bis ${adHi}. `+
+    'Welche Anzeige passt zu welcher Situation? Eine Anzeige passt nicht. '+
+    'Wenn es keine passende Anzeige gibt, schreiben Sie 0.';
+}
+function promoteLesenAdsMatchingQuestions(part){
+  if(part.items?.length||!part.ads?.length||!part.questions?.length)return false;
+  const startNum=Number(part.teil)===3?13:1;
+  const isMatchQ=(q)=>{
+    if(!q)return false;
+    const t=String(q.type||'').toLowerCase();
+    if(['matching','match','abcd'].includes(t))return true;
+    const c=String(q.correct??q.correctAnswer??'').trim();
+    return(q.question||q.text||q.signText)&&/^[A-J0]$/i.test(c);
+  };
+  const matching=part.questions.filter(isMatchQ);
+  if(matching.length<3)return false;
+  part.items=matching.map((q,i)=>({
+    id:q.id||String(startNum+i),
+    signText:q.signText||q.text||q.question||'',
+    type:'matching',
+    correct:q.correct??q.correctAnswer,
+  }));
+  part.questions=part.questions.filter(q=>!matching.includes(q));
+  return true;
+}
+function inferLesenT3HasNoMatchPart(part){
+  const pool=[...(part.items||[]),...(part.questions||[])];
+  if(pool.some(it=>String(it?.correct??it?.correctAnswer??'').trim()==='0'))part._t3HasNoMatch=true;
+}
 function coalesceLesenAdsMatching(part){
   if(!isLesenAdsMatchingPart(part))return;
   const ADS='ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -1067,6 +1252,7 @@ function coalesceLesenAdsMatching(part){
       .filter(a=>a.text||a.title)
       .map((a,i)=>({...a,key:ADS[i]||String(i+1)}));
   }
+  promoteLesenAdsMatchingQuestions(part);
   const startNum=Number(part.teil)===3?13:1;
   (part.items||[]).forEach((item,i)=>{
     if(!item.signText&&!item.text&&item.question){
@@ -1077,7 +1263,7 @@ function coalesceLesenAdsMatching(part){
       }
     }
     if(!item.signText&&item.text)item.signText=item.text;
-    if(!item.id||/^l\d/i.test(String(item.id)))item.id=String(startNum+i);
+    if(!item.id||/^l\d/i.test(String(item.id))||Number(part.teil)===3)item.id=String(startNum+i);
     if(!item.type||item.type==='multiple'||item.type==='multiple_choice')item.type='matching';
     if(part.ads?.length)delete item.options;
   });
@@ -1088,15 +1274,9 @@ function coalesceLesenAdsMatching(part){
     });
   }
   if(part.items?.length&&part.ads?.length){
-    const start=part.items[0].id;
-    const end=part.items[part.items.length-1].id;
-    const adLo=String(part.ads[0].key).toLowerCase();
-    const adHi=String(part.ads[part.ads.length-1].key).toLowerCase();
-    part.instruction=
-      `Lesen Sie die Situationen ${start} bis ${end} und die Anzeigen ${adLo} bis ${adHi}. `+
-      'Welche Anzeige passt zu welcher Situation? Eine Anzeige passt nicht. '+
-      'Wenn es keine passende Anzeige gibt, schreiben Sie 0.';
+    rebuildLesenAdsMatchingInstruction(part);
   }
+  inferLesenT3HasNoMatchPart(part);
   (part.items||[]).forEach(item=>normalizeGoetheQuestion(item,part));
 }
 function lesenPartMissingAds(part){
@@ -1379,6 +1559,7 @@ function sanitizeGoetheParts(d){
     part.teil=part.teil??pi+1;
     coalesceLesenForumOpinions(part);
     coalesceLesenAdsMatching(part);
+    ensureLesenPartInstruction(part,d.lang||'de');
     if(part.ads)part.ads.forEach((a,i)=>{a.key=ADS[i]||String(i+1);if(!a.title)a.title='';if(!a.text)a.text='';a.title=fixT(a.title);a.text=fixT(a.text);});
     coalesceLesenPartQuestions(part);
     (part.options||[]).forEach(o=>{if(o.text)o.text=fixT(o.text);});
@@ -1997,6 +2178,9 @@ function storePersonalGenRetry(words,skills,goalId,exam,report){
   };
 }
 async function generatePersonalExamAiSerial(configWords,configSkills,configGoalId,personalGenOpts,tier){
+  if(!isAllowLiveGenEnabled()){
+    throw Object.assign(new Error(liveAiGenerationBlockedMessage()),{code:'live_gen_disabled'});
+  }
   let skills=orderedPersonalSkills(configSkills);
   if(skills.length>1){
     lcDebug.warn('[personal] multiple modules requested — using first only:',skills);
@@ -2096,15 +2280,21 @@ async function retryFailedPersonalParts(){
   if(!skills.length){lcToast('All parts already generated.','info');return;}
   hideAll();show('loadingScreen');
   document.getElementById('loaderTitle').textContent='Retrying failed parts…';
-  document.getElementById('loaderSub').textContent='This may take ~1–2 min per module.';
+  const useHybrid=isPersonalLesenHybridEnabled(skills,S.subject,S.level);
+  document.getElementById('loaderSub').textContent=useHybrid
+    ?'Hybrid retry: pool + Gemini factory…'
+    :'This may take ~1–2 min per module.';
   try{
     const personalGenOpts={
       teilFilter:failedTeilNums.length?failedTeilNums:(S.lastPersonalConfig?.teilFilter??_examConfig.teilChoice??'all'),
+      topic:st.partialExam?.topicTag||st.partialExam?.topic,
     };
     if(typeof ExamBlueprint!=='undefined'){
       try{const bp=await ExamBlueprint.load(S.subject,S.level);if(bp)personalGenOpts.blueprint=bp;}catch(_){}
     }
-    const built=await generatePersonalExamAiSerial(st.words,skills,st.goalId,personalGenOpts,'pro');
+    const built=useHybrid
+      ?await generatePersonalLesenHybrid(st.words,personalGenOpts,'pro')
+      :await generatePersonalExamAiSerial(st.words,skills,st.goalId,personalGenOpts,'pro');
     let exam=built.exam;
     if(st.partialExam){
       exam=mergeExamParts(st.partialExam,built.exam,st.partialExam.topic||built.exam.topic);
@@ -2232,6 +2422,13 @@ function pruneEmptyGoetheParts(exam,skills){
 }
 async function lcValidateExamOnServer(exam,opts){
   const isPartialFidelityCountIssue=(msg)=>/^(passages_per_part_mismatch:|items_total_mismatch:)/.test(String(msg||''));
+  const failUnavailable=(reason,extra={})=>({
+    valid:false,
+    skipped:true,
+    errors:[reason||'validation_unavailable'],
+    exam:undefined,
+    ...extra,
+  });
   try{
     const partialExam=!!(
       opts?.partialExam ||
@@ -2254,7 +2451,15 @@ async function lcValidateExamOnServer(exam,opts){
       })
     });
     const data=await res.json().catch(()=>({}));
+    if(res.status===503&&(data.error==='live_gen_disabled'||data.error==='verify_unavailable')){
+      lcDebug.warn('[exam] server validation unavailable:',data.error,data.reason||data.message);
+      return failUnavailable(data.error==='verify_unavailable'?'verify_unavailable':'live_gen_disabled');
+    }
     if(res.ok&&data.valid){
+      if(data.verifySkipped){
+        lcDebug.warn('[exam] server validation skipped verification');
+        return failUnavailable('verify_skipped');
+      }
       return{
         valid:true,
         exam:data.exam||exam,
@@ -2272,10 +2477,15 @@ async function lcValidateExamOnServer(exam,opts){
         discarded:Number(data.discarded)||0,
         emptyAfterVerify:data.error==='exam_empty_after_verify',
         exam:softOnly?exam:undefined,
+        skipped:false,
       };
     }
-  }catch(e){lcDebug.warn('[exam] server validation unavailable:',e.message);}
-  return {valid:true,skipped:true,exam};
+    lcDebug.warn('[exam] server validation unexpected response:',res.status,data.error||data.message);
+    return failUnavailable(data.error||`http_${res.status}`);
+  }catch(e){
+    lcDebug.warn('[exam] server validation unavailable:',e.message);
+    return failUnavailable(e.message||'validation_unavailable');
+  }
 }
 function lcExamPassesQualityGate(exam,words,minCoverage){
   if(!exam||(typeof isExamRenderable==='function'&&!isExamRenderable(exam)))return false;
@@ -2499,7 +2709,8 @@ async function finalizePersonalExam(configWords,configSkills,configGoalId,goalRe
   if(skipAnswerBalance)S.examData._skipAnswerBalance=true;
   if(typeof normalizeExam==='function')S.examData=normalizeExam(S.examData,{skipPostprocess:skipAnswerBalance});
   S.examData=repairPersonalExamAnswerability(S.examData);
-  if(S.examSource==='ai'){
+  const hybridFactory=S.examData?._hybridSource==='factory';
+  if(S.examSource==='ai'&&!hybridFactory){
     S.examData=await retryMissingPartsBeforePrune(S.examData,configWords,configSkills,{
       source:'ai',blueprint:personalBlueprint,
     });
@@ -2527,7 +2738,7 @@ async function finalizePersonalExam(configWords,configSkills,configGoalId,goalRe
   }
   if(typeof lcValidateExamOnServer==='function'&&S.examSource==='ai'){
     const srv=await lcValidateExamOnServer(S.examData,{
-      verifyAnswerKeys:true,
+      verifyAnswerKeys:!hybridFactory,
       discardFailedItems:true,
       partialExam:!!(
         S.examData?._sectionPart||
@@ -2594,7 +2805,23 @@ async function finalizePersonalExam(configWords,configSkills,configGoalId,goalRe
         7000
       );
     }
-    if(!srv.valid&&!srv.skipped){
+    if(srv.skipped){
+      S.examData=null;
+      throw Object.assign(
+        new Error('Could not verify the generated exam. Please try again.'),
+        {code:'validation_unavailable',quotaRefund:true}
+      );
+    }
+    if(!srv.valid&&!srv.exam){
+      S.examData=null;
+      throw Object.assign(
+        new Error(srv.emptyAfterVerify
+          ? 'No verifiable exam content remained after answer-key checks.'
+          : 'Generated exam failed verification.'),
+        {code:'exam_invalid',answerKeyVerify:!!srv.emptyAfterVerify,quotaRefund:true}
+      );
+    }
+    if(!srv.valid){
       const partialDeliver=!!(
         S.examData?._sectionPart||
         S.examData?._partialGen||
@@ -2620,9 +2847,15 @@ async function finalizePersonalExam(configWords,configSkills,configGoalId,goalRe
     delete S.examData._skipAnswerBalance;
     S.examData=applyPersonalExamPostprocess(S.examData);
   }
+  const preservePoolCov=(source==='pool'&&exam._coverageOverall)?{...exam._coverageOverall}:null;
   if(configWords?.length){
     attachPersonalCoverage(S.examData,configWords);
+    if(preservePoolCov)S.examData._coverageOverall=preservePoolCov;
     showPersonalCoverageToast(S.examData,configWords);
+  }
+  if(Array.isArray(S.examData?._hybridFallbacks)&&S.examData._hybridFallbacks.length){
+    const fbTeils=S.examData._hybridFallbacks.map((t)=>`T${t}`).join(', ');
+    lcToast(`Some live parts used pool fallback (${fbTeils}). Exam is still valid.`,'warn',7000);
   }
   const coverage=S.examData._coverageOverall||lcVocabCoverage(S.examData,configWords);
   if(S.examSource==='ai'&&personalModuleTeilsComplete(S.examData,configSkills,personalBlueprint)){
@@ -2689,6 +2922,177 @@ async function finalizePersonalExam(configWords,configSkills,configGoalId,goalRe
     if(typeof S!=='undefined')S._activeGenTicket=null;
   }
 }
+// Exámenes 100% desde pool (sin IA en runtime). La IA se conserva para juegos.
+function isAllowLiveGenEnabled(){
+  if(typeof window==='undefined')return false;
+  const v=window.ALLOW_LIVE_GEN;
+  return v==='1'||v===1||v===true;
+}
+function liveAiGenerationBlockedMessage(){
+  return 'Live AI exam generation is temporarily unavailable. Practice exams use curated pool content only.';
+}
+function isExamPoolOnly(){
+  if(typeof window!=='undefined'){
+    if(window.EXAM_POOL_ONLY===undefined)window.EXAM_POOL_ONLY=true;
+    const requested=!!(window.EXAM_POOL_ONLY??true);
+    if(!requested&&!isAllowLiveGenEnabled())return true;
+    return requested;
+  }
+  return true;
+}
+/** Lesen B1 DE hybrid (pool + Gemini factory) when live gen is on. Set window.EXAM_HYBRID=false to disable. */
+function isPersonalLesenHybridEnabled(skills,lang,level){
+  if(isExamPoolOnly()||!isAllowLiveGenEnabled())return false;
+  if(typeof window!=='undefined'&&window.EXAM_HYBRID===false)return false;
+  if(String(lang||'').toLowerCase()!=='de')return false;
+  if(String(level||'').toUpperCase()!=='B1')return false;
+  if(typeof fetchHybridExamPlan!=='function'||typeof executeHybridLesenExam!=='function')return false;
+  const ordered=orderedPersonalSkills(skills||['lesen']);
+  if(ordered.length!==1)return false;
+  const s=ordered[0];
+  return s==='lesen'||s==='reading';
+}
+function resolvePersonalLesenTeils(teilFilter){
+  const defaultTeils=[1,2,3,4,5];
+  if(teilFilter==null||teilFilter===''||teilFilter==='all')return defaultTeils;
+  if(Array.isArray(teilFilter)){
+    const picked=[...new Set(teilFilter.map((t)=>Number(t)).filter(Number.isFinite))].sort((a,b)=>a-b);
+    return picked.length?picked:defaultTeils;
+  }
+  const t=Number(teilFilter);
+  return Number.isFinite(t)?[t]:defaultTeils;
+}
+async function pickPersonalHybridTopic(personalGenOpts){
+  if(personalGenOpts?.topic&&typeof B1Topics!=='undefined'&&B1Topics.isValidB1Topic?.(personalGenOpts.topic)){
+    return personalGenOpts.topic;
+  }
+  if(typeof LexiCoilEngine!=='undefined'&&typeof LexiCoilEngine.pickTopic==='function'){
+    try{
+      const picked=await LexiCoilEngine.pickTopic(S.subject,S.level);
+      if(picked&&typeof B1Topics!=='undefined'&&B1Topics.isValidB1Topic?.(picked))return picked;
+      if(picked)return picked;
+    }catch(_){/* fallback below */}
+  }
+  if(typeof B1Topics!=='undefined'&&B1Topics.B1_TOPICS?.length){
+    return B1Topics.B1_TOPICS[Math.floor(Math.random()*B1Topics.B1_TOPICS.length)];
+  }
+  return 'Umwelt';
+}
+async function generatePersonalLesenHybrid(configWords,personalGenOpts,tier){
+  if(!isAllowLiveGenEnabled()){
+    throw Object.assign(new Error(liveAiGenerationBlockedMessage()),{code:'live_gen_disabled'});
+  }
+  if(typeof fetchHybridExamPlan!=='function'||typeof executeHybridLesenExam!=='function'){
+    throw new Error('Hybrid exam client not loaded');
+  }
+  if(typeof startExamGeneration!=='function')throw new Error('startExamGeneration unavailable');
+  const lang=S.subject;
+  const level=S.level;
+  const report=initPersonalGenReport(['lesen']);
+  updatePersonalLoader(1,1,personalModuleLabel('lesen',lang),report);
+  const subEl=document.getElementById('loaderSub');
+  const topic=await pickPersonalHybridTopic(personalGenOpts);
+  const teils=resolvePersonalLesenTeils(personalGenOpts?.teilFilter);
+  if(subEl)subEl.textContent='Planning pool + live parts…';
+  let plan;
+  let meta;
+  try{
+    ({plan,meta}=await fetchHybridExamPlan({
+      module:'lesen',
+      teils,
+      topic,
+      vocab:configWords,
+      lang,
+      level,
+    }));
+  }catch(planErr){
+    throw Object.assign(planErr instanceof Error?planErr:new Error(String(planErr)),{code:planErr.code||'exam_plan_failed'});
+  }
+  if(subEl)subEl.textContent='Generating live parts (Gemini factory)…';
+  let genTicket;
+  try{
+    genTicket=await startExamGeneration('personal_exam',1);
+    if(typeof S!=='undefined')S._activeGenTicket=genTicket;
+  }catch(ticketErr){
+    if(ticketErr.code==='ai_credits_exhausted')throw ticketErr;
+    throw ticketErr;
+  }
+  let execResult;
+  try{
+    execResult=await executeHybridLesenExam({
+      genTicket,
+      topic,
+      vocab:configWords,
+      lang,
+      level,
+      module:'lesen',
+      plan,
+      planMeta:meta,
+    });
+  }catch(execErr){
+    const rel=await refundActiveGenTicket();
+    if(rel?.released)execErr.quotaReleased=true;
+    throw execErr;
+  }
+  const exam=execResult.exam;
+  const trace=execResult.trace||{};
+  exam._genTicket=execResult.genTicket||genTicket;
+  exam._hybridPlan=execResult.plan||plan;
+  exam._hybridTrace=trace;
+  exam._hybridSource='factory';
+  exam._hybridValidated=!!execResult.validation?.valid;
+  exam.topic=exam.topic||topic;
+  exam.topicTag=exam.topicTag||topic;
+  for(const cell of plan.fromPool||[]){
+    const poolHit=(trace.pool||[]).find((p)=>Number(p.teil)===Number(cell.teil));
+    recordPersonalChunkResult(report,'lesen',{
+      label:`Lesen Teil ${cell.teil}${poolHit?.ok?' (pool)':''}`,
+      status:poolHit?.ok?'ok':'fail',
+    });
+  }
+  for(const cell of plan.toGenerate||[]){
+    const live=(trace.live||[]).find((l)=>Number(l.teil)===Number(cell.teil));
+    const fb=live?.fallback?' (pool fallback)':'';
+    recordPersonalChunkResult(report,'lesen',{
+      label:`Lesen Teil ${cell.teil}${fb}`,
+      status:live?.ok?'ok':'fail',
+    });
+    if(!live?.ok)report.failedTeile.push(`Lesen Teil ${cell.teil}`);
+  }
+  const hybridOk=!!execResult.validation?.valid;
+  report.modules.push({skill:'lesen',ok:hybridOk,hybrid:true});
+  renderPersonalGenProgress(report);
+  if(!hybridOk){
+    const rel=await refundActiveGenTicket();
+    throw Object.assign(new Error('Hybrid exam failed validation.'),{
+      code:'exam_invalid',
+      validation:execResult.validation,
+      quotaReleased:!!rel?.released,
+      genReport:report,
+    });
+  }
+  if(typeof isExamRenderable==='function'&&!isExamRenderable(exam)){
+    const rel=await refundActiveGenTicket();
+    throw Object.assign(new Error('No usable exam parts were generated.'),{
+      code:'all_modules_failed',
+      quotaReleased:!!rel?.released,
+      genReport:report,
+    });
+  }
+  const fallbacks=(trace.live||[]).filter((l)=>l.fallback);
+  if(fallbacks.length){
+    exam._hybridFallbacks=fallbacks.map((f)=>f.teil);
+    lcDebug.warn('[personal] hybrid live fallbacks:',exam._hybridFallbacks);
+  }
+  exam.vocabSkills=['lesen'];
+  return{exam,source:'ai',genReport:report,hybrid:true};
+}
+if(typeof window!=='undefined'){
+  window.isAllowLiveGenEnabled=isAllowLiveGenEnabled;
+  window.isExamPoolOnly=isExamPoolOnly;
+  window.isPersonalLesenHybridEnabled=isPersonalLesenHybridEnabled;
+  if(window.EXAM_POOL_ONLY===undefined)window.EXAM_POOL_ONLY=true;
+}
 async function generatePersonalExam(words,skills,goalId,opts){
   let configWords=words;
   let configSkills=skills;
@@ -2722,7 +3126,8 @@ async function generatePersonalExam(words,skills,goalId,opts){
   }
   configSkills=orderedPersonalSkills(configSkills||['lesen']);
   const tier=typeof canUsePersonalizedTier==='function'?canUsePersonalizedTier():'free';
-  if(!canGenerate()){showUpgrade();return;}
+  const poolOnly=isExamPoolOnly();
+  if(!poolOnly && !canGenerate()){showUpgrade();return;}
   let libraryMatchCount;
   if(typeof VocabBatching!=='undefined'&&!skipBatching){
     if(typeof QuestionLibrary!=='undefined'&&QuestionLibrary.hasLibrary(S.subject,S.level)){
@@ -2751,10 +3156,60 @@ async function generatePersonalExam(words,skills,goalId,opts){
   document.getElementById('loaderTitle').textContent=moduleCount>1
     ?`Generating ${personalModuleLabel(configSkills[0],S.subject)}… (1/${moduleCount})`
     :'Building your personal mock exam…';
-  document.getElementById('loaderSub').textContent='This may take ~1–2 min per module.';
+  document.getElementById('loaderSub').textContent=poolOnly
+    ?'Ensamblando desde el pool…'
+    :isPersonalLesenHybridEnabled(configSkills,S.subject,S.level)
+      ?'Hybrid: pool + Gemini factory (~1–3 min)…'
+      :'This may take ~1–2 min per module.';
   renderPersonalGenProgress(initPersonalGenReport(configSkills));
   try{
     let built=null;
+
+    // ── Pool-only: ensamblar exámenes desde el pool, sin IA ni créditos ──
+    if (poolOnly) {
+      console.log('[personal] EXAM_POOL_ONLY branch', { words: configWords, skills: configSkills, lang: S.subject, level: S.level });
+      document.getElementById('loaderSub').textContent = 'Ensamblando desde el pool…';
+      const combined = { lang: S.subject, level: S.level, goetheFormat: true, vocabPersonal: true, poolSource: true };
+      const coveredAll = new Set();
+      let requestedTotal = configWords.length;
+      const missingAll = [];
+
+      for (const module of configSkills) {
+        console.log('[personal] assembleModuleFromPool', { module, words: configWords });
+        const res = await assembleModuleFromPool(module, configWords, S.subject, S.level);
+        const key = _MODULE_PART_KEY[module] || `${module}Parts`;
+        if (!res || !res.exam || !Array.isArray(res.exam[key]) || !res.exam[key].length) {
+          hideAll();
+          lcToast('Todavía no hay contenido en el pool para esas palabras.', 'warn', 7000);
+          goHome();
+          return;
+        }
+        combined[key] = res.exam[key];
+        (res.coveredWords || []).forEach((w) => coveredAll.add(String(w).toLowerCase()));
+        if (res.coverage) requestedTotal = Math.max(requestedTotal, res.coverage.requested || configWords.length);
+        (res.missingTeile || []).forEach((t) => missingAll.push(`${module} T${t}`));
+      }
+
+      combined._coverageOverall={
+        found: coveredAll.size,
+        total: configWords.length,
+        words: [...coveredAll],
+        missing: configWords.filter((w) => !coveredAll.has(String(w).toLowerCase())),
+        ratio: configWords.length ? coveredAll.size / configWords.length : 0,
+      };
+
+      await finalizePersonalExam(configWords, configSkills, configGoalId, goalRef, combined, 'pool');
+
+      if (typeof lcToast === 'function' && configWords.length > 0) {
+        lcToast(`Generado con ${coveredAll.size} de ${configWords.length} palabras`, 'success', 6000);
+      }
+      if (missingAll.length && typeof lcToast === 'function') {
+        lcToast(`Aviso: faltó contenido en ${missingAll.length} parte(s)`, 'warn', 6000);
+      }
+      return;
+    }
+    // ── fin pool-only ──
+
     const tierAi=tier==='pro'||tier==='trial';
     if(tierAi){
       try{
@@ -2768,7 +3223,11 @@ async function generatePersonalExam(words,skills,goalId,opts){
             if(bp)personalGenOpts.blueprint=bp;
           }catch(bpErr){lcDebug.warn('[personal] blueprint preload failed:',bpErr);}
         }
-        built=await generatePersonalExamAiSerial(configWords,configSkills,configGoalId,personalGenOpts,tier);
+        if(isPersonalLesenHybridEnabled(configSkills,S.subject,S.level)){
+          built=await generatePersonalLesenHybrid(configWords,personalGenOpts,tier);
+        }else{
+          built=await generatePersonalExamAiSerial(configWords,configSkills,configGoalId,personalGenOpts,tier);
+        }
       }catch(aiErr){
         const canFallbackLibrary=
           aiErr.code==='ai_credits_exhausted'||
@@ -2843,7 +3302,25 @@ async function generatePersonalExam(words,skills,goalId,opts){
         : 'Answer-key verification removed all questions. Try generating again.','error',8000);
       return;
     }
-    if(e.code==='exam_invalid'&&(tier==='pro'||tier==='trial')){
+    if(e.code==='validation_unavailable'||e.code==='live_gen_disabled'){
+      S.examData=null;
+      hideAll();
+      goHome();
+      lcToast(e.quotaReleased
+        ? 'Could not verify the generated exam. Your credit has been refunded — please try again.'
+        : (e.message||'Could not verify the generated exam. Please try again.'),'error',8000);
+      return;
+    }
+    if(e.code==='timeout'){
+      S.examData=null;
+      hideAll();
+      goHome();
+      lcToast(e.quotaReleased
+        ? 'Hybrid generation timed out (~5 min). Your credit has been refunded — try again with fewer words or later.'
+        : 'Hybrid generation timed out (~5 min). Try again with fewer words or later.','error',8000);
+      return;
+    }
+    if(!isExamPoolOnly()&&e.code==='exam_invalid'&&(tier==='pro'||tier==='trial')){
       try{
         const fallback=await tryPersonalPoolOrLibrary(configWords,configSkills,configGoalId,goalRef);
         if(fallback){
@@ -2958,12 +3435,6 @@ function seenPartIds(lang,level,module){
     .map(h=>h.partId);
 }
 
-const _MODULE_PART_KEY={
-  lesen:'lesenParts',horen:'horenParts',
-  schreiben:'schreibenParts',sprechen:'sprechenParts',
-  reading:'lesenParts',listening:'horenParts',
-  writing:'schreibenParts',speaking:'sprechenParts'
-};
 const _MODULE_LABEL={
   lesen:'Lesen',horen:'Hören',schreiben:'Schreiben',sprechen:'Sprechen',
   reading:'Reading',listening:'Listening',writing:'Writing',speaking:'Speaking'
@@ -3075,7 +3546,7 @@ async function generateSectionExam(module,goalId){
   const canAi=typeof canUseAiGeneration==='function'?canUseAiGeneration():
               (typeof canGenerate==='function'?canGenerate():false);
 
-  if(canAi){
+  if(canAi&&isAllowLiveGenEnabled()){
     document.getElementById('loaderSub').textContent=`No cached section found — generating with AI (3 AI credits)…`;
     try{
       const personalGenOpts={
@@ -3114,3 +3585,4 @@ window.fillMissingLesenTeileFromPool=fillMissingLesenTeileFromPool;
 window.fillMissingHorenTeileFromPool=fillMissingHorenTeileFromPool;
 window.fillMissingSchreibenTeileFromPool=fillMissingSchreibenTeileFromPool;
 window.seenPartIds        =seenPartIds;
+window.assembleModuleFromPool=assembleModuleFromPool;

@@ -177,12 +177,25 @@ function removeSavedWordFromDeck(word){
 function saveToFCData(data){
   const word=data.word||'';
   if(!word)return false;
+  const goal=typeof getActiveGoal==='function'?getActiveGoal():null;
+  const sourceExam=S.examData?{id:S.examData._savedId||S.examData.id||Date.now(),topic:S.examData.topic,level:S.examData.level,lang:S.examData.lang}:null;
+  const sourceLang=goal?.subject||S.subject;
+  const sourceLevel=String(goal?.level||S.level||sourceExam?.level||'').toUpperCase();
+  const clearFcTombstone=()=>{
+    const key=`${String(word).toLowerCase().trim()}|${sourceLang}`;
+    if(!Array.isArray(S.deletedFlashcards))S.deletedFlashcards=[];
+    const next=S.deletedFlashcards.filter((t)=>t?.key!==key);
+    if(next.length!==S.deletedFlashcards.length){
+      S.deletedFlashcards=next;
+      try{localStorage.setItem('lc_fc_del',JSON.stringify(S.deletedFlashcards));}catch(_){}
+    }
+  };
   if(isWordSaved(word)){
-    const existing=S.flashcards.find(f=>f.word===word&&f.sourceLang===S.subject&&fcSourceLevel(f)===String(S.level||'').toUpperCase());
-    if(existing){existing.missCount=(existing.missCount||1)+1;saveFC();}
+    const existing=S.flashcards.find(f=>f.word===word&&f.sourceLang===sourceLang&&fcSourceLevel(f)===sourceLevel);
+    if(existing){existing.missCount=(existing.missCount||1)+1;clearFcTombstone();saveFC();}
     if(!S.examSavedWords)S.examSavedWords=[];
     if(!S.examSavedWords.includes(word))S.examSavedWords.push(word);
-    markVocabSaved(word);
+    markVocabSaved(word,existing?.type||existing?.pos||data.type||data.pos);
     const b=document.getElementById('vtSave');
     if(b){b.textContent='\u2713 In your deck';b.classList.add('saved');}
     return false;
@@ -195,9 +208,7 @@ function saveToFCData(data){
   if(data.definition_en&&!tr.en)tr.en=data.definition_en;
   ex[S.vocabLang]=data[`example_${S.vocabLang}`]||'';
   const wtype=typeof normWordType==='function'?normWordType(data.type||data.pos):'';
-  const sourceExam=S.examData?{id:S.examData._savedId||S.examData.id||Date.now(),topic:S.examData.topic,level:S.examData.level,lang:S.examData.lang}:null;
-  const sourceLevel=String(S.level||sourceExam?.level||'').toUpperCase()||null;
-  const fc={id:'fc_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,9),word,phonetic:data.phonetic||'',pos:data.pos||data.type||'',type:wtype,translations:tr,examples:ex,sourceLang:S.subject,sourceLevel,sourceExam,savedAt:Date.now(),interval:1,ef:2.5,nextReview:null,missCount:1};
+  const fc={id:'fc_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,9),word,phonetic:data.phonetic||'',pos:data.pos||data.type||'',type:wtype,translations:tr,examples:ex,sourceLang,sourceLevel,sourceExam,savedAt:Date.now(),interval:1,ef:2.5,nextReview:null,missCount:1};
   if(data.gender)fc.gender=data.gender;
   if(data.article)fc.article=data.article;
   if(typeof ManualVocab!=='undefined'&&ManualVocab.enrichFlashcard)ManualVocab.enrichFlashcard(fc,S.subject);
@@ -206,8 +217,9 @@ function saveToFCData(data){
   if(!S.examSavedWords)S.examSavedWords=[];
   if(!S.examSavedWords.includes(word))S.examSavedWords.push(word);
   if(typeof sortFlashcardsByType==='function')S.flashcards=sortFlashcardsByType(S.flashcards);
+  clearFcTombstone();
   saveFC();
-  markVocabSaved(word);
+  markVocabSaved(word,fc.type||fc.pos||wtype);
   const b=document.getElementById('vtSave');
   if(b){b.textContent='\u2713 In your deck';b.classList.add('saved');}
   const dc=document.getElementById('dkCnt');

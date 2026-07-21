@@ -1,0 +1,866 @@
+{
+  "generatedAt": "2026-07-20T13:24:10.544Z",
+  "options": {
+    "dryRun": true,
+    "noMove": true,
+    "q2Llm": false,
+    "skipMetadata": false,
+    "skipQ1": false,
+    "skipQ2": false,
+    "limit": null,
+    "dir": "batches/ready/pool-verified/A2"
+  },
+  "summary": {
+    "total": 41,
+    "READY": 0,
+    "REPAIRABLE_FIXED": 9,
+    "REJECT": 32
+  },
+  "contentSummary": {
+    "READY": 39,
+    "REPAIRABLE": 0,
+    "REJECT": 2
+  },
+  "byCell": {
+    "horen-t1": {
+      "READY": 0,
+      "REPAIRABLE_FIXED": 2,
+      "REJECT": 2,
+      "total": 4
+    },
+    "horen-t2": {
+      "READY": 0,
+      "REPAIRABLE_FIXED": 0,
+      "REJECT": 5,
+      "total": 5
+    },
+    "horen-t3": {
+      "READY": 0,
+      "REPAIRABLE_FIXED": 4,
+      "REJECT": 0,
+      "total": 4
+    },
+    "horen-t4": {
+      "READY": 0,
+      "REPAIRABLE_FIXED": 3,
+      "REJECT": 1,
+      "total": 4
+    },
+    "lesen-t1": {
+      "READY": 0,
+      "REPAIRABLE_FIXED": 0,
+      "REJECT": 4,
+      "total": 4
+    },
+    "lesen-t2": {
+      "READY": 0,
+      "REPAIRABLE_FIXED": 0,
+      "REJECT": 4,
+      "total": 4
+    },
+    "lesen-t3": {
+      "READY": 0,
+      "REPAIRABLE_FIXED": 0,
+      "REJECT": 4,
+      "total": 4
+    },
+    "lesen-t4": {
+      "READY": 0,
+      "REPAIRABLE_FIXED": 0,
+      "REJECT": 4,
+      "total": 4
+    },
+    "schreiben": {
+      "READY": 0,
+      "REPAIRABLE_FIXED": 0,
+      "REJECT": 4,
+      "total": 4
+    },
+    "sprechen": {
+      "READY": 0,
+      "REPAIRABLE_FIXED": 0,
+      "REJECT": 4,
+      "total": 4
+    }
+  },
+  "byModule": {
+    "horen": {
+      "READY": 0,
+      "REPAIRABLE_FIXED": 9,
+      "REJECT": 8,
+      "total": 17
+    },
+    "lesen": {
+      "READY": 0,
+      "REPAIRABLE_FIXED": 0,
+      "REJECT": 16,
+      "total": 16
+    },
+    "schreiben": {
+      "READY": 0,
+      "REPAIRABLE_FIXED": 0,
+      "REJECT": 4,
+      "total": 4
+    },
+    "sprechen": {
+      "READY": 0,
+      "REPAIRABLE_FIXED": 0,
+      "REJECT": 4,
+      "total": 4
+    }
+  },
+  "rejectReasonCounts": {
+    "legacy_or_daily_life_topic": 2,
+    "missing_grammarTags": 29,
+    "missing_vocabularyTags": 28,
+    "topic_mismatch": 1,
+    "content_topic_mismatch": 1,
+    "non_canonical_topicTag": 4,
+    "missing_topicTag": 16,
+    "exact_duplicate": 1,
+    "near_duplicate": 1
+  },
+  "notes": [
+    "Q2: cache dry-run + CHK-18b en no evaluados (sin LLM). Usa --q2-llm para forzar LLM.",
+    "Sin metadata retrieval (gates 1–7): READY 39 · REPAIRABLE 0 · REJECT 2."
+  ],
+  "results": [
+    {
+      "file": "horen-t1-cur-education.json",
+      "verdict": "REJECT",
+      "contentVerdict": "READY",
+      "reasons": [
+        "legacy_or_daily_life_topic"
+      ],
+      "rejectReasons": [
+        "legacy_or_daily_life_topic"
+      ],
+      "applied": [
+        "caps:version=v3.17-mcq-dedupe-universal-2026-07-14"
+      ],
+      "module": "horen",
+      "teil": 1
+    },
+    {
+      "file": "horen-t1-cur-health.json",
+      "verdict": "REJECT",
+      "contentVerdict": "READY",
+      "reasons": [
+        "legacy_or_daily_life_topic"
+      ],
+      "rejectReasons": [
+        "legacy_or_daily_life_topic"
+      ],
+      "applied": [
+        "caps:md=0,decap=0,cap=0,fields=3",
+        "caps:version=v3.17-mcq-dedupe-universal-2026-07-14"
+      ],
+      "module": "horen",
+      "teil": 1
+    },
+    {
+      "file": "horen-t1-cur-society.json",
+      "verdict": "REPAIRABLE_FIXED",
+      "contentVerdict": "READY",
+      "reasons": [],
+      "rejectReasons": [],
+      "applied": [
+        "caps:md=0,decap=0,cap=0,fields=3",
+        "caps:version=v3.17-mcq-dedupe-universal-2026-07-14"
+      ],
+      "module": "horen",
+      "teil": 1
+    },
+    {
+      "file": "horen-t1-cur-work.json",
+      "verdict": "REPAIRABLE_FIXED",
+      "contentVerdict": "READY",
+      "reasons": [],
+      "rejectReasons": [],
+      "applied": [
+        "caps:md=0,decap=0,cap=0,fields=3",
+        "caps:version=v3.17-mcq-dedupe-universal-2026-07-14"
+      ],
+      "module": "horen",
+      "teil": 1
+    },
+    {
+      "file": "horen-t2-cur-education.json",
+      "verdict": "REJECT",
+      "contentVerdict": "READY",
+      "reasons": [
+        "missing_grammarTags",
+        "missing_vocabularyTags"
+      ],
+      "rejectReasons": [
+        "missing_grammarTags",
+        "missing_vocabularyTags"
+      ],
+      "applied": [
+        "caps:version=v3.17-mcq-dedupe-universal-2026-07-14"
+      ],
+      "module": "horen",
+      "teil": 2
+    },
+    {
+      "file": "horen-t2-cur-health.json",
+      "verdict": "REJECT",
+      "contentVerdict": "REJECT",
+      "reasons": [
+        "topic_mismatch",
+        "content_topic_mismatch",
+        "missing_grammarTags",
+        "missing_vocabularyTags"
+      ],
+      "rejectReasons": [
+        "topic_mismatch",
+        "content_topic_mismatch",
+        "missing_grammarTags",
+        "missing_vocabularyTags"
+      ],
+      "applied": [
+        "caps:version=v3.17-mcq-dedupe-universal-2026-07-14"
+      ],
+      "module": "horen",
+      "teil": 2
+    },
+    {
+      "file": "horen-t2-cur-society.json",
+      "verdict": "REJECT",
+      "contentVerdict": "READY",
+      "reasons": [
+        "non_canonical_topicTag",
+        "missing_grammarTags",
+        "missing_vocabularyTags"
+      ],
+      "rejectReasons": [
+        "non_canonical_topicTag",
+        "missing_grammarTags",
+        "missing_vocabularyTags"
+      ],
+      "applied": [
+        "caps:version=v3.17-mcq-dedupe-universal-2026-07-14"
+      ],
+      "module": "horen",
+      "teil": 2
+    },
+    {
+      "file": "horen-t2-cur-work.json",
+      "verdict": "REJECT",
+      "contentVerdict": "READY",
+      "reasons": [
+        "missing_grammarTags",
+        "missing_vocabularyTags"
+      ],
+      "rejectReasons": [
+        "missing_grammarTags",
+        "missing_vocabularyTags"
+      ],
+      "applied": [
+        "caps:md=0,decap=1,cap=0,fields=1",
+        "caps:version=v3.17-mcq-dedupe-universal-2026-07-14"
+      ],
+      "module": "horen",
+      "teil": 2
+    },
+    {
+      "file": "horen-t2-gemini-040.json",
+      "verdict": "REJECT",
+      "contentVerdict": "READY",
+      "reasons": [
+        "missing_grammarTags"
+      ],
+      "rejectReasons": [
+        "missing_grammarTags"
+      ],
+      "applied": [],
+      "module": "horen",
+      "teil": 2
+    },
+    {
+      "file": "horen-t3-cur-education.json",
+      "verdict": "REPAIRABLE_FIXED",
+      "contentVerdict": "READY",
+      "reasons": [],
+      "rejectReasons": [],
+      "applied": [
+        "caps:md=0,decap=1,cap=0,fields=1",
+        "caps:version=v3.17-mcq-dedupe-universal-2026-07-14"
+      ],
+      "module": "horen",
+      "teil": 3
+    },
+    {
+      "file": "horen-t3-cur-health.json",
+      "verdict": "REPAIRABLE_FIXED",
+      "contentVerdict": "READY",
+      "reasons": [],
+      "rejectReasons": [],
+      "applied": [
+        "caps:md=0,decap=0,cap=0,fields=3",
+        "caps:version=v3.17-mcq-dedupe-universal-2026-07-14"
+      ],
+      "module": "horen",
+      "teil": 3
+    },
+    {
+      "file": "horen-t3-cur-society.json",
+      "verdict": "REPAIRABLE_FIXED",
+      "contentVerdict": "READY",
+      "reasons": [],
+      "rejectReasons": [],
+      "applied": [
+        "caps:version=v3.17-mcq-dedupe-universal-2026-07-14"
+      ],
+      "module": "horen",
+      "teil": 3
+    },
+    {
+      "file": "horen-t3-cur-work.json",
+      "verdict": "REPAIRABLE_FIXED",
+      "contentVerdict": "READY",
+      "reasons": [],
+      "rejectReasons": [],
+      "applied": [
+        "caps:md=0,decap=3,cap=2,fields=5",
+        "caps:version=v3.17-mcq-dedupe-universal-2026-07-14"
+      ],
+      "module": "horen",
+      "teil": 3
+    },
+    {
+      "file": "horen-t4-cur-education.json",
+      "verdict": "REPAIRABLE_FIXED",
+      "contentVerdict": "READY",
+      "reasons": [],
+      "rejectReasons": [],
+      "applied": [
+        "caps:version=v3.17-mcq-dedupe-universal-2026-07-14"
+      ],
+      "module": "horen",
+      "teil": 4
+    },
+    {
+      "file": "horen-t4-cur-health.json",
+      "verdict": "REJECT",
+      "contentVerdict": "READY",
+      "reasons": [
+        "non_canonical_topicTag"
+      ],
+      "rejectReasons": [
+        "non_canonical_topicTag"
+      ],
+      "applied": [
+        "caps:version=v3.17-mcq-dedupe-universal-2026-07-14"
+      ],
+      "module": "horen",
+      "teil": 4
+    },
+    {
+      "file": "horen-t4-cur-society.json",
+      "verdict": "REPAIRABLE_FIXED",
+      "contentVerdict": "READY",
+      "reasons": [],
+      "rejectReasons": [],
+      "applied": [
+        "caps:md=0,decap=0,cap=1,fields=1",
+        "caps:version=v3.17-mcq-dedupe-universal-2026-07-14"
+      ],
+      "module": "horen",
+      "teil": 4
+    },
+    {
+      "file": "horen-t4-cur-work.json",
+      "verdict": "REPAIRABLE_FIXED",
+      "contentVerdict": "READY",
+      "reasons": [],
+      "rejectReasons": [],
+      "applied": [
+        "caps:version=v3.17-mcq-dedupe-universal-2026-07-14"
+      ],
+      "module": "horen",
+      "teil": 4
+    },
+    {
+      "file": "lesen-t1-cur-education.json",
+      "verdict": "REJECT",
+      "contentVerdict": "READY",
+      "reasons": [
+        "missing_topicTag",
+        "missing_grammarTags",
+        "missing_vocabularyTags"
+      ],
+      "rejectReasons": [
+        "missing_topicTag",
+        "missing_grammarTags",
+        "missing_vocabularyTags"
+      ],
+      "applied": [
+        "caps:md=0,decap=1,cap=0,fields=1",
+        "caps:version=v3.17-mcq-dedupe-universal-2026-07-14"
+      ],
+      "module": "lesen",
+      "teil": 1
+    },
+    {
+      "file": "lesen-t1-cur-health.json",
+      "verdict": "REJECT",
+      "contentVerdict": "READY",
+      "reasons": [
+        "missing_topicTag",
+        "missing_grammarTags",
+        "missing_vocabularyTags"
+      ],
+      "rejectReasons": [
+        "missing_topicTag",
+        "missing_grammarTags",
+        "missing_vocabularyTags"
+      ],
+      "applied": [
+        "caps:version=v3.17-mcq-dedupe-universal-2026-07-14"
+      ],
+      "module": "lesen",
+      "teil": 1
+    },
+    {
+      "file": "lesen-t1-cur-society.json",
+      "verdict": "REJECT",
+      "contentVerdict": "READY",
+      "reasons": [
+        "missing_topicTag",
+        "missing_grammarTags",
+        "missing_vocabularyTags"
+      ],
+      "rejectReasons": [
+        "missing_topicTag",
+        "missing_grammarTags",
+        "missing_vocabularyTags"
+      ],
+      "applied": [
+        "caps:version=v3.17-mcq-dedupe-universal-2026-07-14"
+      ],
+      "module": "lesen",
+      "teil": 1
+    },
+    {
+      "file": "lesen-t1-cur-work.json",
+      "verdict": "REJECT",
+      "contentVerdict": "READY",
+      "reasons": [
+        "missing_topicTag",
+        "missing_grammarTags",
+        "missing_vocabularyTags"
+      ],
+      "rejectReasons": [
+        "missing_topicTag",
+        "missing_grammarTags",
+        "missing_vocabularyTags"
+      ],
+      "applied": [
+        "caps:version=v3.17-mcq-dedupe-universal-2026-07-14"
+      ],
+      "module": "lesen",
+      "teil": 1
+    },
+    {
+      "file": "lesen-t2-cur-education.json",
+      "verdict": "REJECT",
+      "contentVerdict": "READY",
+      "reasons": [
+        "missing_topicTag",
+        "missing_grammarTags",
+        "missing_vocabularyTags"
+      ],
+      "rejectReasons": [
+        "missing_topicTag",
+        "missing_grammarTags",
+        "missing_vocabularyTags"
+      ],
+      "applied": [
+        "markdown:6",
+        "caps:version=v3.17-mcq-dedupe-universal-2026-07-14"
+      ],
+      "module": "lesen",
+      "teil": 2
+    },
+    {
+      "file": "lesen-t2-cur-health.json",
+      "verdict": "REJECT",
+      "contentVerdict": "READY",
+      "reasons": [
+        "missing_topicTag",
+        "missing_grammarTags",
+        "missing_vocabularyTags"
+      ],
+      "rejectReasons": [
+        "missing_topicTag",
+        "missing_grammarTags",
+        "missing_vocabularyTags"
+      ],
+      "applied": [
+        "caps:version=v3.17-mcq-dedupe-universal-2026-07-14"
+      ],
+      "module": "lesen",
+      "teil": 2
+    },
+    {
+      "file": "lesen-t2-cur-society.json",
+      "verdict": "REJECT",
+      "contentVerdict": "READY",
+      "reasons": [
+        "missing_topicTag",
+        "missing_grammarTags",
+        "missing_vocabularyTags"
+      ],
+      "rejectReasons": [
+        "missing_topicTag",
+        "missing_grammarTags",
+        "missing_vocabularyTags"
+      ],
+      "applied": [
+        "caps:md=0,decap=0,cap=1,fields=1",
+        "caps:version=v3.17-mcq-dedupe-universal-2026-07-14"
+      ],
+      "module": "lesen",
+      "teil": 2
+    },
+    {
+      "file": "lesen-t2-cur-work.json",
+      "verdict": "REJECT",
+      "contentVerdict": "READY",
+      "reasons": [
+        "missing_topicTag",
+        "missing_grammarTags",
+        "missing_vocabularyTags"
+      ],
+      "rejectReasons": [
+        "missing_topicTag",
+        "missing_grammarTags",
+        "missing_vocabularyTags"
+      ],
+      "applied": [
+        "caps:version=v3.17-mcq-dedupe-universal-2026-07-14"
+      ],
+      "module": "lesen",
+      "teil": 2
+    },
+    {
+      "file": "lesen-t3-cur-education.json",
+      "verdict": "REJECT",
+      "contentVerdict": "READY",
+      "reasons": [
+        "missing_topicTag",
+        "missing_grammarTags",
+        "missing_vocabularyTags"
+      ],
+      "rejectReasons": [
+        "missing_topicTag",
+        "missing_grammarTags",
+        "missing_vocabularyTags"
+      ],
+      "applied": [
+        "caps:md=0,decap=0,cap=1,fields=1",
+        "caps:version=v3.17-mcq-dedupe-universal-2026-07-14"
+      ],
+      "module": "lesen",
+      "teil": 3
+    },
+    {
+      "file": "lesen-t3-cur-health.json",
+      "verdict": "REJECT",
+      "contentVerdict": "READY",
+      "reasons": [
+        "missing_topicTag",
+        "missing_grammarTags",
+        "missing_vocabularyTags"
+      ],
+      "rejectReasons": [
+        "missing_topicTag",
+        "missing_grammarTags",
+        "missing_vocabularyTags"
+      ],
+      "applied": [
+        "caps:version=v3.17-mcq-dedupe-universal-2026-07-14"
+      ],
+      "module": "lesen",
+      "teil": 3
+    },
+    {
+      "file": "lesen-t3-cur-society.json",
+      "verdict": "REJECT",
+      "contentVerdict": "READY",
+      "reasons": [
+        "missing_topicTag",
+        "missing_grammarTags",
+        "missing_vocabularyTags"
+      ],
+      "rejectReasons": [
+        "missing_topicTag",
+        "missing_grammarTags",
+        "missing_vocabularyTags"
+      ],
+      "applied": [
+        "caps:version=v3.17-mcq-dedupe-universal-2026-07-14"
+      ],
+      "module": "lesen",
+      "teil": 3
+    },
+    {
+      "file": "lesen-t3-cur-work.json",
+      "verdict": "REJECT",
+      "contentVerdict": "READY",
+      "reasons": [
+        "missing_topicTag",
+        "missing_grammarTags",
+        "missing_vocabularyTags"
+      ],
+      "rejectReasons": [
+        "missing_topicTag",
+        "missing_grammarTags",
+        "missing_vocabularyTags"
+      ],
+      "applied": [
+        "caps:md=0,decap=1,cap=0,fields=1",
+        "caps:version=v3.17-mcq-dedupe-universal-2026-07-14"
+      ],
+      "module": "lesen",
+      "teil": 3
+    },
+    {
+      "file": "lesen-t4-cur-education.json",
+      "verdict": "REJECT",
+      "contentVerdict": "READY",
+      "reasons": [
+        "missing_topicTag",
+        "missing_grammarTags",
+        "missing_vocabularyTags"
+      ],
+      "rejectReasons": [
+        "missing_topicTag",
+        "missing_grammarTags",
+        "missing_vocabularyTags"
+      ],
+      "applied": [
+        "caps:md=0,decap=1,cap=0,fields=1",
+        "caps:version=v3.17-mcq-dedupe-universal-2026-07-14"
+      ],
+      "module": "lesen",
+      "teil": 4
+    },
+    {
+      "file": "lesen-t4-cur-health.json",
+      "verdict": "REJECT",
+      "contentVerdict": "READY",
+      "reasons": [
+        "missing_topicTag",
+        "missing_grammarTags",
+        "missing_vocabularyTags"
+      ],
+      "rejectReasons": [
+        "missing_topicTag",
+        "missing_grammarTags",
+        "missing_vocabularyTags"
+      ],
+      "applied": [
+        "caps:version=v3.17-mcq-dedupe-universal-2026-07-14"
+      ],
+      "module": "lesen",
+      "teil": 4
+    },
+    {
+      "file": "lesen-t4-cur-society.json",
+      "verdict": "REJECT",
+      "contentVerdict": "READY",
+      "reasons": [
+        "missing_topicTag",
+        "missing_grammarTags",
+        "missing_vocabularyTags"
+      ],
+      "rejectReasons": [
+        "missing_topicTag",
+        "missing_grammarTags",
+        "missing_vocabularyTags"
+      ],
+      "applied": [
+        "caps:version=v3.17-mcq-dedupe-universal-2026-07-14"
+      ],
+      "module": "lesen",
+      "teil": 4
+    },
+    {
+      "file": "lesen-t4-cur-work.json",
+      "verdict": "REJECT",
+      "contentVerdict": "REJECT",
+      "reasons": [
+        "exact_duplicate",
+        "near_duplicate",
+        "missing_topicTag",
+        "missing_grammarTags",
+        "missing_vocabularyTags"
+      ],
+      "rejectReasons": [
+        "exact_duplicate",
+        "near_duplicate",
+        "missing_topicTag",
+        "missing_grammarTags",
+        "missing_vocabularyTags"
+      ],
+      "applied": [
+        "caps:md=0,decap=1,cap=0,fields=1",
+        "caps:version=v3.17-mcq-dedupe-universal-2026-07-14"
+      ],
+      "module": "lesen",
+      "teil": 4
+    },
+    {
+      "file": "schreiben-cur-education.json",
+      "verdict": "REJECT",
+      "contentVerdict": "READY",
+      "reasons": [
+        "missing_grammarTags",
+        "missing_vocabularyTags"
+      ],
+      "rejectReasons": [
+        "missing_grammarTags",
+        "missing_vocabularyTags"
+      ],
+      "applied": [
+        "caps:version=v3.17-mcq-dedupe-universal-2026-07-14"
+      ],
+      "module": "schreiben",
+      "teil": null
+    },
+    {
+      "file": "schreiben-cur-health.json",
+      "verdict": "REJECT",
+      "contentVerdict": "READY",
+      "reasons": [
+        "missing_grammarTags",
+        "missing_vocabularyTags"
+      ],
+      "rejectReasons": [
+        "missing_grammarTags",
+        "missing_vocabularyTags"
+      ],
+      "applied": [
+        "caps:version=v3.17-mcq-dedupe-universal-2026-07-14"
+      ],
+      "module": "schreiben",
+      "teil": null
+    },
+    {
+      "file": "schreiben-cur-society.json",
+      "verdict": "REJECT",
+      "contentVerdict": "READY",
+      "reasons": [
+        "non_canonical_topicTag",
+        "missing_grammarTags",
+        "missing_vocabularyTags"
+      ],
+      "rejectReasons": [
+        "non_canonical_topicTag",
+        "missing_grammarTags",
+        "missing_vocabularyTags"
+      ],
+      "applied": [
+        "caps:version=v3.17-mcq-dedupe-universal-2026-07-14"
+      ],
+      "module": "schreiben",
+      "teil": null
+    },
+    {
+      "file": "schreiben-cur-work.json",
+      "verdict": "REJECT",
+      "contentVerdict": "READY",
+      "reasons": [
+        "missing_grammarTags",
+        "missing_vocabularyTags"
+      ],
+      "rejectReasons": [
+        "missing_grammarTags",
+        "missing_vocabularyTags"
+      ],
+      "applied": [
+        "caps:version=v3.17-mcq-dedupe-universal-2026-07-14"
+      ],
+      "module": "schreiben",
+      "teil": null
+    },
+    {
+      "file": "sprechen-cur-education.json",
+      "verdict": "REJECT",
+      "contentVerdict": "READY",
+      "reasons": [
+        "missing_grammarTags",
+        "missing_vocabularyTags"
+      ],
+      "rejectReasons": [
+        "missing_grammarTags",
+        "missing_vocabularyTags"
+      ],
+      "applied": [
+        "markdown:13",
+        "caps:version=v3.17-mcq-dedupe-universal-2026-07-14"
+      ],
+      "module": "sprechen",
+      "teil": null
+    },
+    {
+      "file": "sprechen-cur-health.json",
+      "verdict": "REJECT",
+      "contentVerdict": "READY",
+      "reasons": [
+        "missing_grammarTags",
+        "missing_vocabularyTags"
+      ],
+      "rejectReasons": [
+        "missing_grammarTags",
+        "missing_vocabularyTags"
+      ],
+      "applied": [
+        "caps:version=v3.17-mcq-dedupe-universal-2026-07-14"
+      ],
+      "module": "sprechen",
+      "teil": null
+    },
+    {
+      "file": "sprechen-cur-society.json",
+      "verdict": "REJECT",
+      "contentVerdict": "READY",
+      "reasons": [
+        "non_canonical_topicTag",
+        "missing_grammarTags",
+        "missing_vocabularyTags"
+      ],
+      "rejectReasons": [
+        "non_canonical_topicTag",
+        "missing_grammarTags",
+        "missing_vocabularyTags"
+      ],
+      "applied": [
+        "markdown:9",
+        "caps:version=v3.17-mcq-dedupe-universal-2026-07-14"
+      ],
+      "module": "sprechen",
+      "teil": null
+    },
+    {
+      "file": "sprechen-cur-work.json",
+      "verdict": "REJECT",
+      "contentVerdict": "READY",
+      "reasons": [
+        "missing_grammarTags",
+        "missing_vocabularyTags"
+      ],
+      "rejectReasons": [
+        "missing_grammarTags",
+        "missing_vocabularyTags"
+      ],
+      "applied": [
+        "caps:version=v3.17-mcq-dedupe-universal-2026-07-14"
+      ],
+      "module": "sprechen",
+      "teil": null
+    }
+  ]
+}

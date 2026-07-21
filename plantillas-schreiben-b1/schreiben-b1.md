@@ -20,6 +20,7 @@ Eres examinador del Goethe-Zertifikat B1. Genera **UN conjunto completo Schreibe
 - **3 bullet points** de contenido concretos y distintos.
 - Instrucción explícita: Anrede + Gruß + ca. 80 Wörter.
 - Tono: personal, cercano.
+- **PROHIBIDO:** placeholders entre corchetes (`[Name]`, `[Name des Freundes/der Freundin]`, `[Dein Name]`). No escribas la Anrede del alumno con corchetes — describe el destinatario en la consigna (`Ihre Freundin`, `ein Freund/eine Freundin`).
 
 ## TEIL 2 — Meinung im Forum (~80 Wörter, 25 min)
 - Tema de debate actual (Medien, Schule, Umwelt, Arbeit, Wohnen…).
@@ -64,7 +65,7 @@ Eres examinador del Goethe-Zertifikat B1. Genera **UN conjunto completo Schreibe
 
 ## Formato de salida
 - IDs: `gen-q-s-t1-XXXX-q1`, `gen-q-s-t2-XXXX-q1`, `gen-q-s-t3-XXXX-q1`
-- `explanation`: criterios Bewertung (Inhalt, Grammatik, Wortschatz, Länge, Anrede/Gruß)
+- `explanation`: **texto fijo canónico Goethe** por Teil (copia exacta del ejemplo verificado abajo para T1/T3; T2 con variante Forumsbeitrag) — no redactes otra estructura de criterios
 - `skills: ["writing"]`
 
 ## EJEMPLOS VERIFICADOS — imita estructura, registro y longitud

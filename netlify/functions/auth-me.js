@@ -103,6 +103,16 @@ exports.handler = async (event) => {
     await store.setJSON(userKey(auth.email), user);
   }
 
+  // UI-only signal — create/mutate admin APIs still re-check lc_admin_roles server-side.
+  let isAdmin = false;
+  if (sb.isConfigured()) {
+    try {
+      isAdmin = !!(await sb.isAdminByEmail(auth.email)) || !!(await sb.isAdmin(auth.userId));
+    } catch (_) {
+      isAdmin = false;
+    }
+  }
+
   return jsonResponse(200, cors, {
     enabled: true,
     user: {
@@ -110,7 +120,8 @@ exports.handler = async (event) => {
       email: auth.email,
       avatar: (user.name || auth.email || '?')[0].toUpperCase(),
       plan,
-      pro: plan === 'pro',
+      pro: plan === 'pro' || plan === 'pro_max',
+      isAdmin,
       quota: { used, max, month },
       aiCredits: {
         used: aiSnap.used,
@@ -124,9 +135,15 @@ exports.handler = async (event) => {
         autoRecharge: aiSnap.autoRecharge,
         trialActive: !!aiSnap.trialActive,
         trialMax: aiSnap.trialMax || 0,
+        personalLesenUsed: aiSnap.personalLesenUsed ?? 0,
+        personalHorenUsed: aiSnap.personalHorenUsed ?? 0,
+        personalLesenMax: aiSnap.personalLesenMax ?? 0,
+        personalHorenMax: aiSnap.personalHorenMax ?? 0,
       },
       proActivatedAt: user.proActivatedAt || null,
       memberSince: user.createdAt || null,
+      hasBillingAccount: !!user.stripeCustomerId,
+      billingSource: user.billingSource || (user.stripeCustomerId ? 'stripe' : null),
       freeCombo: freeComboForResponse(user),
     },
   });

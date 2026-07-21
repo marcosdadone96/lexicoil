@@ -1,0 +1,1275 @@
+{
+  "generatedAt": "2026-07-09T12:34:02.502Z",
+  "gate": "v6.1-B-G2 (frozen)",
+  "sourceDir": "batches/generated",
+  "files": 30,
+  "fileList": [
+    "lesen-t1-gemini-178.json",
+    "lesen-t1-gemini-179.json",
+    "lesen-t1-gemini-180.json",
+    "lesen-t1-gemini-181.json",
+    "lesen-t1-gemini-182.json",
+    "lesen-t2-gemini-094.json",
+    "lesen-t2-gemini-095.json",
+    "lesen-t2-gemini-096.json",
+    "lesen-t2-gemini-097.json",
+    "lesen-t2-gemini-098.json",
+    "lesen-t3-auto-1u2l8c.json",
+    "lesen-t3-auto-5hhflb.json",
+    "lesen-t3-auto-dfn273.json",
+    "lesen-t3-auto-jhnc6c.json",
+    "lesen-t3-auto-jja73u.json",
+    "lesen-t3-auto-n0lt9z.json",
+    "lesen-t3-auto-sds0gv.json",
+    "lesen-t3-auto-u7x6w8.json",
+    "lesen-t4-gemini-038.json",
+    "lesen-t4-gemini-039.json",
+    "lesen-t4-gemini-040.json",
+    "lesen-t4-gemini-041.json",
+    "lesen-t4-gemini-042.json",
+    "lesen-t5-gemini-068.json",
+    "lesen-t5-gemini-069.json",
+    "lesen-t5-gemini-070.json",
+    "lesen-t5-gemini-071.json",
+    "lesen-t5-gemini-072.json",
+    "lesen-t5-gemini-073.json",
+    "lesen-t5-gemini-074.json"
+  ],
+  "totalFindings": 37,
+  "avgPerFile": 1.233,
+  "holdoutRef": {
+    "files": 193,
+    "findings": 88,
+    "avg": 0.456
+  },
+  "comparison": {
+    "loteVsHoldoutAvg": 0.777,
+    "loteCleaner": false
+  },
+  "byReason": {
+    "lexicon_override_tag": 6,
+    "verb_census_no_finite": 27,
+    "lexicon_nn": 2,
+    "adj_before_noun": 2
+  },
+  "byType": {
+    "noun_lowercase": 8,
+    "wrong_capitalized": 29
+  },
+  "perFile": [
+    {
+      "file": "lesen-t1-gemini-178.json",
+      "teil": 1,
+      "count": 0,
+      "findings": []
+    },
+    {
+      "file": "lesen-t1-gemini-179.json",
+      "teil": 1,
+      "count": 0,
+      "findings": []
+    },
+    {
+      "file": "lesen-t1-gemini-180.json",
+      "teil": 1,
+      "count": 1,
+      "findings": [
+        {
+          "type": "noun_lowercase",
+          "word": "besuchen",
+          "reason": "lexicon_override_tag",
+          "tag": "VVFIN",
+          "pos": "VERB",
+          "field": "passages.text",
+          "context": "unsere Gemeinschaft. Manchmal besuchen wir auch meine Eltern"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t1-gemini-181.json",
+      "teil": 1,
+      "count": 0,
+      "findings": []
+    },
+    {
+      "file": "lesen-t1-gemini-182.json",
+      "teil": 1,
+      "count": 0,
+      "findings": []
+    },
+    {
+      "file": "lesen-t2-gemini-094.json",
+      "teil": 2,
+      "count": 4,
+      "findings": [
+        {
+          "type": "wrong_capitalized",
+          "word": "Familien",
+          "reason": "verb_census_no_finite",
+          "tag": "NN",
+          "pos": "NOUN",
+          "field": "questions.question",
+          "context": "Was empfehlen Experten Familien bezüglich der Nutzung sozialer"
+        },
+        {
+          "type": "noun_lowercase",
+          "word": "löschen",
+          "reason": "lexicon_override_tag",
+          "tag": "VVINF",
+          "pos": "VERB",
+          "field": "questions.options",
+          "context": "Fotos von Kindern sofort löschen."
+        },
+        {
+          "type": "noun_lowercase",
+          "word": "machen",
+          "reason": "lexicon_override_tag",
+          "tag": "VVINF",
+          "pos": "VERB",
+          "field": "questions.explanation",
+          "context": "keine persönlichen Informationen öffentlich machen sollte."
+        },
+        {
+          "type": "noun_lowercase",
+          "word": "machen",
+          "reason": "lexicon_override_tag",
+          "tag": "VVINF",
+          "pos": "VERB",
+          "field": "questions.options",
+          "context": "keine persönlichen Informationen öffentlich machen."
+        }
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-095.json",
+      "teil": 2,
+      "count": 2,
+      "findings": [
+        {
+          "type": "noun_lowercase",
+          "word": "teil",
+          "reason": "lexicon_override_tag",
+          "tag": "PTKVZ",
+          "pos": "ADV",
+          "field": "passages.text",
+          "context": "80 Personen nehmen regelmäßig teil. Die Stadt plant"
+        },
+        {
+          "type": "noun_lowercase",
+          "word": "verantwortlichen",
+          "reason": "lexicon_nn",
+          "tag": "NN",
+          "pos": "NOUN",
+          "field": "questions.question",
+          "context": "Was planen die verantwortlichen für die Zukunft des"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-096.json",
+      "teil": 2,
+      "count": 0,
+      "findings": []
+    },
+    {
+      "file": "lesen-t2-gemini-097.json",
+      "teil": 2,
+      "count": 1,
+      "findings": [
+        {
+          "type": "wrong_capitalized",
+          "word": "Radfahren",
+          "reason": "verb_census_no_finite",
+          "tag": "NN",
+          "pos": "NOUN",
+          "field": "questions.options",
+          "context": ", wie zum Beispiel Radfahren oder Parkbesuche."
+        }
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-098.json",
+      "teil": 2,
+      "count": 0,
+      "findings": []
+    },
+    {
+      "file": "lesen-t3-auto-1u2l8c.json",
+      "teil": 3,
+      "count": 0,
+      "findings": []
+    },
+    {
+      "file": "lesen-t3-auto-5hhflb.json",
+      "teil": 3,
+      "count": 0,
+      "findings": []
+    },
+    {
+      "file": "lesen-t3-auto-dfn273.json",
+      "teil": 3,
+      "count": 0,
+      "findings": []
+    },
+    {
+      "file": "lesen-t3-auto-jhnc6c.json",
+      "teil": 3,
+      "count": 17,
+      "findings": [
+        {
+          "type": "wrong_capitalized",
+          "word": "Bahnhofsviertel",
+          "reason": "verb_census_no_finite",
+          "tag": "NE",
+          "pos": "PROPN",
+          "field": "questions.options",
+          "context": "2 Jahre. Abholung Bahnhofsviertel."
+        },
+        {
+          "type": "wrong_capitalized",
+          "word": "Reisen",
+          "reason": "verb_census_no_finite",
+          "tag": "NN",
+          "pos": "NOUN",
+          "field": "questions.options",
+          "context": "E) Horizont Reisen — Pauschalreisen, Beratung"
+        },
+        {
+          "type": "wrong_capitalized",
+          "word": "Bahnhofsviertel",
+          "reason": "verb_census_no_finite",
+          "tag": "NE",
+          "pos": "PROPN",
+          "field": "questions.options",
+          "context": "2 Jahre. Abholung Bahnhofsviertel."
+        },
+        {
+          "type": "wrong_capitalized",
+          "word": "Reisen",
+          "reason": "verb_census_no_finite",
+          "tag": "NN",
+          "pos": "NOUN",
+          "field": "questions.options",
+          "context": "E) Horizont Reisen — Pauschalreisen, Beratung"
+        },
+        {
+          "type": "wrong_capitalized",
+          "word": "Ton",
+          "reason": "verb_census_no_finite",
+          "tag": "NN",
+          "pos": "NOUN",
+          "field": "questions.explanation",
+          "context": "Professioneller Ton in Korrespondenz — Schreibcoaching"
+        },
+        {
+          "type": "wrong_capitalized",
+          "word": "Nachhilfe",
+          "reason": "verb_census_no_finite",
+          "tag": "NN",
+          "pos": "NOUN",
+          "field": "questions.explanation",
+          "context": "PC-Hilfe oder kostenlose Probestunde Nachhilfe."
+        },
+        {
+          "type": "wrong_capitalized",
+          "word": "Bahnhofsviertel",
+          "reason": "verb_census_no_finite",
+          "tag": "NE",
+          "pos": "PROPN",
+          "field": "questions.options",
+          "context": "2 Jahre. Abholung Bahnhofsviertel."
+        },
+        {
+          "type": "wrong_capitalized",
+          "word": "Reisen",
+          "reason": "verb_census_no_finite",
+          "tag": "NN",
+          "pos": "NOUN",
+          "field": "questions.options",
+          "context": "E) Horizont Reisen — Pauschalreisen, Beratung"
+        },
+        {
+          "type": "wrong_capitalized",
+          "word": "Bahnhofsviertel",
+          "reason": "verb_census_no_finite",
+          "tag": "NE",
+          "pos": "PROPN",
+          "field": "questions.options",
+          "context": "2 Jahre. Abholung Bahnhofsviertel."
+        },
+        {
+          "type": "wrong_capitalized",
+          "word": "Reisen",
+          "reason": "verb_census_no_finite",
+          "tag": "NN",
+          "pos": "NOUN",
+          "field": "questions.options",
+          "context": "E) Horizont Reisen — Pauschalreisen, Beratung"
+        },
+        {
+          "type": "wrong_capitalized",
+          "word": "Bahnhofsviertel",
+          "reason": "verb_census_no_finite",
+          "tag": "NE",
+          "pos": "PROPN",
+          "field": "questions.options",
+          "context": "2 Jahre. Abholung Bahnhofsviertel."
+        },
+        {
+          "type": "wrong_capitalized",
+          "word": "Reisen",
+          "reason": "verb_census_no_finite",
+          "tag": "NN",
+          "pos": "NOUN",
+          "field": "questions.options",
+          "context": "E) Horizont Reisen — Pauschalreisen, Beratung"
+        },
+        {
+          "type": "wrong_capitalized",
+          "word": "Bahnhofsviertel",
+          "reason": "verb_census_no_finite",
+          "tag": "NE",
+          "pos": "PROPN",
+          "field": "questions.options",
+          "context": "2 Jahre. Abholung Bahnhofsviertel."
+        },
+        {
+          "type": "wrong_capitalized",
+          "word": "Reisen",
+          "reason": "verb_census_no_finite",
+          "tag": "NN",
+          "pos": "NOUN",
+          "field": "questions.options",
+          "context": "E) Horizont Reisen — Pauschalreisen, Beratung"
+        },
+        {
+          "type": "wrong_capitalized",
+          "word": "Tagesmiete",
+          "reason": "verb_census_no_finite",
+          "tag": "NE",
+          "pos": "PROPN",
+          "field": "questions.explanation",
+          "context": "ohne Kauf — FlexDrive Tagesmiete, nicht Gebrauchtwagen West"
+        },
+        {
+          "type": "wrong_capitalized",
+          "word": "Bahnhofsviertel",
+          "reason": "verb_census_no_finite",
+          "tag": "NE",
+          "pos": "PROPN",
+          "field": "questions.options",
+          "context": "2 Jahre. Abholung Bahnhofsviertel."
+        },
+        {
+          "type": "wrong_capitalized",
+          "word": "Reisen",
+          "reason": "verb_census_no_finite",
+          "tag": "NN",
+          "pos": "NOUN",
+          "field": "questions.options",
+          "context": "E) Horizont Reisen — Pauschalreisen, Beratung"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t3-auto-jja73u.json",
+      "teil": 3,
+      "count": 0,
+      "findings": []
+    },
+    {
+      "file": "lesen-t3-auto-n0lt9z.json",
+      "teil": 3,
+      "count": 0,
+      "findings": []
+    },
+    {
+      "file": "lesen-t3-auto-sds0gv.json",
+      "teil": 3,
+      "count": 0,
+      "findings": []
+    },
+    {
+      "file": "lesen-t3-auto-u7x6w8.json",
+      "teil": 3,
+      "count": 7,
+      "findings": [
+        {
+          "type": "wrong_capitalized",
+          "word": "Schrift",
+          "reason": "verb_census_no_finite",
+          "tag": "NN",
+          "pos": "NOUN",
+          "field": "questions.options",
+          "context": "in Arabisch, auch Schrift, Mo 18–19 Uhr"
+        },
+        {
+          "type": "wrong_capitalized",
+          "word": "Schrift",
+          "reason": "verb_census_no_finite",
+          "tag": "NN",
+          "pos": "NOUN",
+          "field": "questions.options",
+          "context": "in Arabisch, auch Schrift, Mo 18–19 Uhr"
+        },
+        {
+          "type": "wrong_capitalized",
+          "word": "Schrift",
+          "reason": "verb_census_no_finite",
+          "tag": "NN",
+          "pos": "NOUN",
+          "field": "questions.options",
+          "context": "in Arabisch, auch Schrift, Mo 18–19 Uhr"
+        },
+        {
+          "type": "wrong_capitalized",
+          "word": "Schrift",
+          "reason": "verb_census_no_finite",
+          "tag": "NN",
+          "pos": "NOUN",
+          "field": "questions.options",
+          "context": "in Arabisch, auch Schrift, Mo 18–19 Uhr"
+        },
+        {
+          "type": "wrong_capitalized",
+          "word": "Schrift",
+          "reason": "verb_census_no_finite",
+          "tag": "NN",
+          "pos": "NOUN",
+          "field": "questions.options",
+          "context": "in Arabisch, auch Schrift, Mo 18–19 Uhr"
+        },
+        {
+          "type": "wrong_capitalized",
+          "word": "Schrift",
+          "reason": "verb_census_no_finite",
+          "tag": "NN",
+          "pos": "NOUN",
+          "field": "questions.options",
+          "context": "in Arabisch, auch Schrift, Mo 18–19 Uhr"
+        },
+        {
+          "type": "wrong_capitalized",
+          "word": "Schrift",
+          "reason": "verb_census_no_finite",
+          "tag": "NN",
+          "pos": "NOUN",
+          "field": "questions.options",
+          "context": "in Arabisch, auch Schrift, Mo 18–19 Uhr"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t4-gemini-038.json",
+      "teil": 4,
+      "count": 0,
+      "findings": []
+    },
+    {
+      "file": "lesen-t4-gemini-039.json",
+      "teil": 4,
+      "count": 1,
+      "findings": [
+        {
+          "type": "wrong_capitalized",
+          "word": "Zusätzlichen",
+          "reason": "adj_before_noun",
+          "tag": "NN",
+          "pos": "ADJ",
+          "field": "questions.explanation",
+          "context": ", und hält einen Zusätzlichen Gratis-Sonntag für unnötig."
+        }
+      ]
+    },
+    {
+      "file": "lesen-t4-gemini-040.json",
+      "teil": 4,
+      "count": 1,
+      "findings": [
+        {
+          "type": "wrong_capitalized",
+          "word": "Automatische",
+          "reason": "adj_before_noun",
+          "tag": "ADJA",
+          "pos": "ADJ",
+          "field": "questions.signText",
+          "context": "wichtige Nachrichten. Eine Automatische Sperre ist zu streng"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t4-gemini-041.json",
+      "teil": 4,
+      "count": 0,
+      "findings": []
+    },
+    {
+      "file": "lesen-t4-gemini-042.json",
+      "teil": 4,
+      "count": 1,
+      "findings": [
+        {
+          "type": "noun_lowercase",
+          "word": "mitmachen",
+          "reason": "lexicon_override_tag",
+          "tag": "VVFIN",
+          "pos": "VERB",
+          "field": "questions.explanation",
+          "context": "verbessert, wenn alle mitmachen."
+        }
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-068.json",
+      "teil": 5,
+      "count": 1,
+      "findings": [
+        {
+          "type": "wrong_capitalized",
+          "word": "Euro",
+          "reason": "verb_census_no_finite",
+          "tag": "NN",
+          "pos": "NOUN",
+          "field": "questions.options",
+          "context": "c) Fünfundvierzig Euro."
+        }
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-069.json",
+      "teil": 5,
+      "count": 1,
+      "findings": [
+        {
+          "type": "noun_lowercase",
+          "word": "online",
+          "reason": "lexicon_nn",
+          "tag": "NN",
+          "pos": "NOUN",
+          "field": "passages.text",
+          "context": "oder Aqua-Fitness, können online gebucht werden. Eine"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-070.json",
+      "teil": 5,
+      "count": 0,
+      "findings": []
+    },
+    {
+      "file": "lesen-t5-gemini-071.json",
+      "teil": 5,
+      "count": 0,
+      "findings": []
+    },
+    {
+      "file": "lesen-t5-gemini-072.json",
+      "teil": 5,
+      "count": 0,
+      "findings": []
+    },
+    {
+      "file": "lesen-t5-gemini-073.json",
+      "teil": 5,
+      "count": 0,
+      "findings": []
+    },
+    {
+      "file": "lesen-t5-gemini-074.json",
+      "teil": 5,
+      "count": 0,
+      "findings": []
+    }
+  ],
+  "knownPending": [
+    {
+      "word": "studierenden",
+      "file": "lesen-t5-gemini-070.json",
+      "note": "noun lowercase after comparison",
+      "g2Flags": false,
+      "finding": null
+    },
+    {
+      "word": "Zahlenden",
+      "file": "lesen-t5-gemini-070.json",
+      "note": "adj/participle over-capitalized",
+      "g2Flags": false,
+      "finding": null
+    },
+    {
+      "word": "Automatische",
+      "file": "lesen-t4-gemini-040.json",
+      "note": "adj after ein",
+      "g2Flags": true,
+      "finding": {
+        "type": "wrong_capitalized",
+        "word": "Automatische",
+        "pos": "ADJ",
+        "tag": "ADJA",
+        "confidence": "high",
+        "reason": "adj_before_noun",
+        "context": "wichtige Nachrichten. Eine Automatische Sperre ist zu streng",
+        "prevWord": "Eine",
+        "prevPos": "DET",
+        "prevTag": "ART",
+        "textIndex": 0,
+        "regime": "TITLE_HEADING",
+        "field": "questions.signText",
+        "id": "12",
+        "text": "Die Idee ist gut gemeint, aber nicht alle Apps sind schlecht. Ich nutze mein Handy auch für die Arbeit und für wichtige Nachrichten. Eine Automatische Sperre ist zu streng. Ich lehne den Vorschlag ab.",
+        "file": "lesen-t4-gemini-040.json"
+      }
+    }
+  ],
+  "novelFindings": [
+    {
+      "type": "noun_lowercase",
+      "word": "besuchen",
+      "pos": "VERB",
+      "tag": "VVFIN",
+      "confidence": "high",
+      "reason": "lexicon_override_tag",
+      "context": "unsere Gemeinschaft. Manchmal besuchen wir auch meine Eltern",
+      "prevWord": "Manchmal",
+      "prevPos": "ADV",
+      "prevTag": "ADV",
+      "textIndex": 0,
+      "regime": "PROSE",
+      "field": "passages.text",
+      "id": "0",
+      "text": "Ich möchte heute über meine Familie schreiben. Meine Familie ist mir sehr wichtig. Ich habe zwei Kinder, einen jungen und ein Mädchen, die noch zur Schule gehen. Mein Mann und ich arbeiten beide Vollzeit, da ist der Alltag manchmal eine echte Herausforderung. Am Morgen ist es oft hektisch, wenn alle gleichzeitig aus dem Haus müssen. Trotzdem versuchen wir, jeden Abend zusammen zu essen. Das ist unsere gemeinsame Zeit, in der wir über den Tag sprechen. Meine Kinder erzählen dann von der Schule und ihren Freunden. Ich finde es wichtig, dass wir diese Routine haben. Am Wochenende planen wir oft Ausflüge. Letztes Wochenende waren wir im Park und haben ein Picknick gemacht. Solche Erlebnisse stärken unsere Gemeinschaft. Manchmal besuchen wir auch meine Eltern. Sie wohnen in einer anderen Stadt, aber wir sehen uns regelmäßig. Meine Schwester hat auch zwei Kinder, und wenn wir uns treffen, ist das Haus voller Leben. Die Kinder spielen zusammen und wir Erwachsenen können uns über unsere Erfahrungen austauschen. Ich bin froh, so eine große und unterstützende Familie zu haben. Es gibt immer jemanden, der hilft, wenn man Unterstützung braucht. Diese Verbindungen geben mir viel Kraft für die Arbeit und den Alltag. Ich kann mir ein Leben ohne meine Familie nicht vorstellen.",
+      "file": "lesen-t1-gemini-180.json"
+    },
+    {
+      "type": "wrong_capitalized",
+      "word": "Familien",
+      "pos": "NOUN",
+      "tag": "NN",
+      "confidence": "high",
+      "reason": "verb_census_no_finite",
+      "context": "Was empfehlen Experten Familien bezüglich der Nutzung sozialer",
+      "prevWord": "Experten",
+      "prevPos": "NOUN",
+      "prevTag": "NN",
+      "textIndex": 0,
+      "regime": "PROSE",
+      "field": "questions.question",
+      "id": "22",
+      "text": "Was empfehlen Experten Familien bezüglich der Nutzung sozialer Medien?",
+      "file": "lesen-t2-gemini-094.json"
+    },
+    {
+      "type": "noun_lowercase",
+      "word": "löschen",
+      "pos": "VERB",
+      "tag": "VVINF",
+      "confidence": "high",
+      "reason": "lexicon_override_tag",
+      "context": "Fotos von Kindern sofort löschen.",
+      "prevWord": "sofort",
+      "prevPos": "ADV",
+      "prevTag": "ADV",
+      "textIndex": 0,
+      "regime": "PROSE",
+      "field": "questions.options",
+      "id": "26",
+      "text": "c) Sie sollten alle Fotos von Kindern sofort löschen.",
+      "file": "lesen-t2-gemini-094.json"
+    },
+    {
+      "type": "noun_lowercase",
+      "word": "machen",
+      "pos": "VERB",
+      "tag": "VVINF",
+      "confidence": "high",
+      "reason": "lexicon_override_tag",
+      "context": "keine persönlichen Informationen öffentlich machen sollte.",
+      "prevWord": "öffentlich",
+      "prevPos": "ADV",
+      "prevTag": "ADJD",
+      "textIndex": 0,
+      "regime": "PROSE",
+      "field": "questions.explanation",
+      "id": "28",
+      "text": "Experten betonen, dass man zum Schutz der Privatsphäre online keine persönlichen Informationen öffentlich machen sollte.",
+      "file": "lesen-t2-gemini-094.json"
+    },
+    {
+      "type": "noun_lowercase",
+      "word": "machen",
+      "pos": "VERB",
+      "tag": "VVINF",
+      "confidence": "high",
+      "reason": "lexicon_override_tag",
+      "context": "keine persönlichen Informationen öffentlich machen.",
+      "prevWord": "öffentlich",
+      "prevPos": "ADV",
+      "prevTag": "ADJD",
+      "textIndex": 0,
+      "regime": "PROSE",
+      "field": "questions.options",
+      "id": "31",
+      "text": "c) Man sollte keine persönlichen Informationen öffentlich machen.",
+      "file": "lesen-t2-gemini-094.json"
+    },
+    {
+      "type": "noun_lowercase",
+      "word": "teil",
+      "pos": "ADV",
+      "tag": "PTKVZ",
+      "confidence": "high",
+      "reason": "lexicon_override_tag",
+      "context": "80 Personen nehmen regelmäßig teil. Die Stadt plant",
+      "prevWord": "regelmäßig",
+      "prevPos": "ADV",
+      "prevTag": "ADJD",
+      "textIndex": 0,
+      "regime": "PROSE",
+      "field": "passages.text",
+      "id": "0",
+      "text": "Die Stadtverwaltung hat ein neues Programm für ältere Bewohner gestartet. Es geht um regelmäßige Spaziergänge in lokalen Parks. Ziel ist es, die Gesundheit zu fördern und soziale Kontakte zu stärken. Viele Senioren bleiben oft zu Hause, besonders im Winter. Dieses Projekt soll ihnen helfen, aktiv zu bleiben und neue Leute kennenzulernen. Eine Organisation namens „Aktiv im Alter“ plant die Treffen.\n\nJede Woche gibt es zwei feste Termine. Eine Gruppe trifft sich am Dienstagvormittag im Stadtpark, eine andere am Donnerstagnachmittag im Botanischen Garten. Die Teilnahme ist kostenlos. Ein erfahrener Leiter begleitet die Gruppen und achtet darauf, dass das Tempo für alle passt. Erste Erfahrungen zeigen, dass die Teilnehmer viel Freude haben. Sie berichten von besserer Laune und mehr Energie im Alltag.\n\nEinige Familien haben ihre älteren Mitglieder ermutigt, mitzumachen. Der Bericht einer lokalen Zeitung zeigt, dass die Gruppen schnell wachsen. Schon über 80 Personen nehmen regelmäßig teil. Die Stadt plant, das Programm auf weitere Stadtteile auszuweiten und vielleicht auch Gymnastik im Freien anzubieten. Die Initiative ist ein gutes Beispiel dafür, wie einfache Maßnahmen die Lebensqualität verbessern können.",
+      "file": "lesen-t2-gemini-095.json"
+    },
+    {
+      "type": "noun_lowercase",
+      "word": "verantwortlichen",
+      "pos": "NOUN",
+      "tag": "NN",
+      "confidence": "high",
+      "reason": "lexicon_nn",
+      "context": "Was planen die verantwortlichen für die Zukunft des",
+      "prevWord": "die",
+      "prevPos": "DET",
+      "prevTag": "ART",
+      "textIndex": 0,
+      "regime": "PROSE",
+      "field": "questions.question",
+      "id": "12",
+      "text": "Was planen die verantwortlichen für die Zukunft des Programms?",
+      "file": "lesen-t2-gemini-095.json"
+    },
+    {
+      "type": "wrong_capitalized",
+      "word": "Radfahren",
+      "pos": "NOUN",
+      "tag": "NN",
+      "confidence": "high",
+      "reason": "verb_census_no_finite",
+      "context": ", wie zum Beispiel Radfahren oder Parkbesuche.",
+      "prevWord": "Beispiel",
+      "prevPos": "NOUN",
+      "prevTag": "NN",
+      "textIndex": 0,
+      "regime": "PROSE",
+      "field": "questions.options",
+      "id": "21",
+      "text": "c) Unternehmungen draußen, wie zum Beispiel Radfahren oder Parkbesuche.",
+      "file": "lesen-t2-gemini-097.json"
+    },
+    {
+      "type": "wrong_capitalized",
+      "word": "Bahnhofsviertel",
+      "pos": "PROPN",
+      "tag": "NE",
+      "confidence": "high",
+      "reason": "verb_census_no_finite",
+      "context": "2 Jahre. Abholung Bahnhofsviertel.",
+      "prevWord": "Abholung",
+      "prevPos": "NOUN",
+      "prevTag": "NN",
+      "textIndex": 0,
+      "regime": "PROSE",
+      "field": "questions.options",
+      "id": "2",
+      "text": "A) FlexDrive — PKW leihen für Tage & Wochenenden, FS min. 2 Jahre. Abholung Bahnhofsviertel.",
+      "file": "lesen-t3-auto-jhnc6c.json"
+    },
+    {
+      "type": "wrong_capitalized",
+      "word": "Reisen",
+      "pos": "NOUN",
+      "tag": "NN",
+      "confidence": "high",
+      "reason": "verb_census_no_finite",
+      "context": "E) Horizont Reisen — Pauschalreisen, Beratung",
+      "prevWord": "Horizont",
+      "prevPos": "NOUN",
+      "prevTag": "NN",
+      "textIndex": 0,
+      "regime": "PROSE",
+      "field": "questions.options",
+      "id": "6",
+      "text": "E) Horizont Reisen — Pauschalreisen, Beratung Mi–Fr 10–18 Uhr im Büro.",
+      "file": "lesen-t3-auto-jhnc6c.json"
+    },
+    {
+      "type": "wrong_capitalized",
+      "word": "Bahnhofsviertel",
+      "pos": "PROPN",
+      "tag": "NE",
+      "confidence": "high",
+      "reason": "verb_census_no_finite",
+      "context": "2 Jahre. Abholung Bahnhofsviertel.",
+      "prevWord": "Abholung",
+      "prevPos": "NOUN",
+      "prevTag": "NN",
+      "textIndex": 0,
+      "regime": "PROSE",
+      "field": "questions.options",
+      "id": "14",
+      "text": "A) FlexDrive — PKW leihen für Tage & Wochenenden, FS min. 2 Jahre. Abholung Bahnhofsviertel.",
+      "file": "lesen-t3-auto-jhnc6c.json"
+    },
+    {
+      "type": "wrong_capitalized",
+      "word": "Reisen",
+      "pos": "NOUN",
+      "tag": "NN",
+      "confidence": "high",
+      "reason": "verb_census_no_finite",
+      "context": "E) Horizont Reisen — Pauschalreisen, Beratung",
+      "prevWord": "Horizont",
+      "prevPos": "NOUN",
+      "prevTag": "NN",
+      "textIndex": 0,
+      "regime": "PROSE",
+      "field": "questions.options",
+      "id": "18",
+      "text": "E) Horizont Reisen — Pauschalreisen, Beratung Mi–Fr 10–18 Uhr im Büro.",
+      "file": "lesen-t3-auto-jhnc6c.json"
+    },
+    {
+      "type": "wrong_capitalized",
+      "word": "Ton",
+      "pos": "NOUN",
+      "tag": "NN",
+      "confidence": "high",
+      "reason": "verb_census_no_finite",
+      "context": "Professioneller Ton in Korrespondenz — Schreibcoaching",
+      "prevWord": "Professioneller",
+      "prevPos": "NOUN",
+      "prevTag": "NN",
+      "textIndex": 0,
+      "regime": "PROSE",
+      "field": "questions.explanation",
+      "id": "25",
+      "text": "Professioneller Ton in Korrespondenz — Schreibcoaching, nicht PC-Hilfe oder kostenlose Probestunde Nachhilfe.",
+      "file": "lesen-t3-auto-jhnc6c.json"
+    },
+    {
+      "type": "wrong_capitalized",
+      "word": "Nachhilfe",
+      "pos": "NOUN",
+      "tag": "NN",
+      "confidence": "high",
+      "reason": "verb_census_no_finite",
+      "context": "PC-Hilfe oder kostenlose Probestunde Nachhilfe.",
+      "prevWord": "Probestunde",
+      "prevPos": "NOUN",
+      "prevTag": "NN",
+      "textIndex": 0,
+      "regime": "PROSE",
+      "field": "questions.explanation",
+      "id": "25",
+      "text": "Professioneller Ton in Korrespondenz — Schreibcoaching, nicht PC-Hilfe oder kostenlose Probestunde Nachhilfe.",
+      "file": "lesen-t3-auto-jhnc6c.json"
+    },
+    {
+      "type": "wrong_capitalized",
+      "word": "Bahnhofsviertel",
+      "pos": "PROPN",
+      "tag": "NE",
+      "confidence": "high",
+      "reason": "verb_census_no_finite",
+      "context": "2 Jahre. Abholung Bahnhofsviertel.",
+      "prevWord": "Abholung",
+      "prevPos": "NOUN",
+      "prevTag": "NN",
+      "textIndex": 0,
+      "regime": "PROSE",
+      "field": "questions.options",
+      "id": "26",
+      "text": "A) FlexDrive — PKW leihen für Tage & Wochenenden, FS min. 2 Jahre. Abholung Bahnhofsviertel.",
+      "file": "lesen-t3-auto-jhnc6c.json"
+    },
+    {
+      "type": "wrong_capitalized",
+      "word": "Reisen",
+      "pos": "NOUN",
+      "tag": "NN",
+      "confidence": "high",
+      "reason": "verb_census_no_finite",
+      "context": "E) Horizont Reisen — Pauschalreisen, Beratung",
+      "prevWord": "Horizont",
+      "prevPos": "NOUN",
+      "prevTag": "NN",
+      "textIndex": 0,
+      "regime": "PROSE",
+      "field": "questions.options",
+      "id": "30",
+      "text": "E) Horizont Reisen — Pauschalreisen, Beratung Mi–Fr 10–18 Uhr im Büro.",
+      "file": "lesen-t3-auto-jhnc6c.json"
+    },
+    {
+      "type": "wrong_capitalized",
+      "word": "Bahnhofsviertel",
+      "pos": "PROPN",
+      "tag": "NE",
+      "confidence": "high",
+      "reason": "verb_census_no_finite",
+      "context": "2 Jahre. Abholung Bahnhofsviertel.",
+      "prevWord": "Abholung",
+      "prevPos": "NOUN",
+      "prevTag": "NN",
+      "textIndex": 0,
+      "regime": "PROSE",
+      "field": "questions.options",
+      "id": "38",
+      "text": "A) FlexDrive — PKW leihen für Tage & Wochenenden, FS min. 2 Jahre. Abholung Bahnhofsviertel.",
+      "file": "lesen-t3-auto-jhnc6c.json"
+    },
+    {
+      "type": "wrong_capitalized",
+      "word": "Reisen",
+      "pos": "NOUN",
+      "tag": "NN",
+      "confidence": "high",
+      "reason": "verb_census_no_finite",
+      "context": "E) Horizont Reisen — Pauschalreisen, Beratung",
+      "prevWord": "Horizont",
+      "prevPos": "NOUN",
+      "prevTag": "NN",
+      "textIndex": 0,
+      "regime": "PROSE",
+      "field": "questions.options",
+      "id": "42",
+      "text": "E) Horizont Reisen — Pauschalreisen, Beratung Mi–Fr 10–18 Uhr im Büro.",
+      "file": "lesen-t3-auto-jhnc6c.json"
+    },
+    {
+      "type": "wrong_capitalized",
+      "word": "Bahnhofsviertel",
+      "pos": "PROPN",
+      "tag": "NE",
+      "confidence": "high",
+      "reason": "verb_census_no_finite",
+      "context": "2 Jahre. Abholung Bahnhofsviertel.",
+      "prevWord": "Abholung",
+      "prevPos": "NOUN",
+      "prevTag": "NN",
+      "textIndex": 0,
+      "regime": "PROSE",
+      "field": "questions.options",
+      "id": "50",
+      "text": "A) FlexDrive — PKW leihen für Tage & Wochenenden, FS min. 2 Jahre. Abholung Bahnhofsviertel.",
+      "file": "lesen-t3-auto-jhnc6c.json"
+    },
+    {
+      "type": "wrong_capitalized",
+      "word": "Reisen",
+      "pos": "NOUN",
+      "tag": "NN",
+      "confidence": "high",
+      "reason": "verb_census_no_finite",
+      "context": "E) Horizont Reisen — Pauschalreisen, Beratung",
+      "prevWord": "Horizont",
+      "prevPos": "NOUN",
+      "prevTag": "NN",
+      "textIndex": 0,
+      "regime": "PROSE",
+      "field": "questions.options",
+      "id": "54",
+      "text": "E) Horizont Reisen — Pauschalreisen, Beratung Mi–Fr 10–18 Uhr im Büro.",
+      "file": "lesen-t3-auto-jhnc6c.json"
+    },
+    {
+      "type": "wrong_capitalized",
+      "word": "Bahnhofsviertel",
+      "pos": "PROPN",
+      "tag": "NE",
+      "confidence": "high",
+      "reason": "verb_census_no_finite",
+      "context": "2 Jahre. Abholung Bahnhofsviertel.",
+      "prevWord": "Abholung",
+      "prevPos": "NOUN",
+      "prevTag": "NN",
+      "textIndex": 0,
+      "regime": "PROSE",
+      "field": "questions.options",
+      "id": "62",
+      "text": "A) FlexDrive — PKW leihen für Tage & Wochenenden, FS min. 2 Jahre. Abholung Bahnhofsviertel.",
+      "file": "lesen-t3-auto-jhnc6c.json"
+    },
+    {
+      "type": "wrong_capitalized",
+      "word": "Reisen",
+      "pos": "NOUN",
+      "tag": "NN",
+      "confidence": "high",
+      "reason": "verb_census_no_finite",
+      "context": "E) Horizont Reisen — Pauschalreisen, Beratung",
+      "prevWord": "Horizont",
+      "prevPos": "NOUN",
+      "prevTag": "NN",
+      "textIndex": 0,
+      "regime": "PROSE",
+      "field": "questions.options",
+      "id": "66",
+      "text": "E) Horizont Reisen — Pauschalreisen, Beratung Mi–Fr 10–18 Uhr im Büro.",
+      "file": "lesen-t3-auto-jhnc6c.json"
+    },
+    {
+      "type": "wrong_capitalized",
+      "word": "Tagesmiete",
+      "pos": "PROPN",
+      "tag": "NE",
+      "confidence": "high",
+      "reason": "verb_census_no_finite",
+      "context": "ohne Kauf — FlexDrive Tagesmiete, nicht Gebrauchtwagen West",
+      "prevWord": "FlexDrive",
+      "prevPos": "PROPN",
+      "prevTag": "NE",
+      "textIndex": 0,
+      "regime": "PROSE",
+      "field": "questions.explanation",
+      "id": "73",
+      "text": "Kurzfristig fahren ohne Kauf — FlexDrive Tagesmiete, nicht Gebrauchtwagen West.",
+      "file": "lesen-t3-auto-jhnc6c.json"
+    },
+    {
+      "type": "wrong_capitalized",
+      "word": "Bahnhofsviertel",
+      "pos": "PROPN",
+      "tag": "NE",
+      "confidence": "high",
+      "reason": "verb_census_no_finite",
+      "context": "2 Jahre. Abholung Bahnhofsviertel.",
+      "prevWord": "Abholung",
+      "prevPos": "NOUN",
+      "prevTag": "NN",
+      "textIndex": 0,
+      "regime": "PROSE",
+      "field": "questions.options",
+      "id": "74",
+      "text": "A) FlexDrive — PKW leihen für Tage & Wochenenden, FS min. 2 Jahre. Abholung Bahnhofsviertel.",
+      "file": "lesen-t3-auto-jhnc6c.json"
+    },
+    {
+      "type": "wrong_capitalized",
+      "word": "Reisen",
+      "pos": "NOUN",
+      "tag": "NN",
+      "confidence": "high",
+      "reason": "verb_census_no_finite",
+      "context": "E) Horizont Reisen — Pauschalreisen, Beratung",
+      "prevWord": "Horizont",
+      "prevPos": "NOUN",
+      "prevTag": "NN",
+      "textIndex": 0,
+      "regime": "PROSE",
+      "field": "questions.options",
+      "id": "78",
+      "text": "E) Horizont Reisen — Pauschalreisen, Beratung Mi–Fr 10–18 Uhr im Büro.",
+      "file": "lesen-t3-auto-jhnc6c.json"
+    },
+    {
+      "type": "wrong_capitalized",
+      "word": "Schrift",
+      "pos": "NOUN",
+      "tag": "NN",
+      "confidence": "high",
+      "reason": "verb_census_no_finite",
+      "context": "in Arabisch, auch Schrift, Mo 18–19 Uhr",
+      "prevWord": "auch",
+      "prevPos": "ADV",
+      "prevTag": "ADV",
+      "textIndex": 0,
+      "regime": "PROSE",
+      "field": "questions.options",
+      "id": "11",
+      "text": "J) SprachTor — Nachhilfe in Arabisch, auch Schrift, Mo 18–19 Uhr, geduldige Betreuung.",
+      "file": "lesen-t3-auto-u7x6w8.json"
+    },
+    {
+      "type": "wrong_capitalized",
+      "word": "Schrift",
+      "pos": "NOUN",
+      "tag": "NN",
+      "confidence": "high",
+      "reason": "verb_census_no_finite",
+      "context": "in Arabisch, auch Schrift, Mo 18–19 Uhr",
+      "prevWord": "auch",
+      "prevPos": "ADV",
+      "prevTag": "ADV",
+      "textIndex": 0,
+      "regime": "PROSE",
+      "field": "questions.options",
+      "id": "23",
+      "text": "J) SprachTor — Nachhilfe in Arabisch, auch Schrift, Mo 18–19 Uhr, geduldige Betreuung.",
+      "file": "lesen-t3-auto-u7x6w8.json"
+    },
+    {
+      "type": "wrong_capitalized",
+      "word": "Schrift",
+      "pos": "NOUN",
+      "tag": "NN",
+      "confidence": "high",
+      "reason": "verb_census_no_finite",
+      "context": "in Arabisch, auch Schrift, Mo 18–19 Uhr",
+      "prevWord": "auch",
+      "prevPos": "ADV",
+      "prevTag": "ADV",
+      "textIndex": 0,
+      "regime": "PROSE",
+      "field": "questions.options",
+      "id": "35",
+      "text": "J) SprachTor — Nachhilfe in Arabisch, auch Schrift, Mo 18–19 Uhr, geduldige Betreuung.",
+      "file": "lesen-t3-auto-u7x6w8.json"
+    },
+    {
+      "type": "wrong_capitalized",
+      "word": "Schrift",
+      "pos": "NOUN",
+      "tag": "NN",
+      "confidence": "high",
+      "reason": "verb_census_no_finite",
+      "context": "in Arabisch, auch Schrift, Mo 18–19 Uhr",
+      "prevWord": "auch",
+      "prevPos": "ADV",
+      "prevTag": "ADV",
+      "textIndex": 0,
+      "regime": "PROSE",
+      "field": "questions.options",
+      "id": "47",
+      "text": "J) SprachTor — Nachhilfe in Arabisch, auch Schrift, Mo 18–19 Uhr, geduldige Betreuung.",
+      "file": "lesen-t3-auto-u7x6w8.json"
+    },
+    {
+      "type": "wrong_capitalized",
+      "word": "Schrift",
+      "pos": "NOUN",
+      "tag": "NN",
+      "confidence": "high",
+      "reason": "verb_census_no_finite",
+      "context": "in Arabisch, auch Schrift, Mo 18–19 Uhr",
+      "prevWord": "auch",
+      "prevPos": "ADV",
+      "prevTag": "ADV",
+      "textIndex": 0,
+      "regime": "PROSE",
+      "field": "questions.options",
+      "id": "59",
+      "text": "J) SprachTor — Nachhilfe in Arabisch, auch Schrift, Mo 18–19 Uhr, geduldige Betreuung.",
+      "file": "lesen-t3-auto-u7x6w8.json"
+    },
+    {
+      "type": "wrong_capitalized",
+      "word": "Schrift",
+      "pos": "NOUN",
+      "tag": "NN",
+      "confidence": "high",
+      "reason": "verb_census_no_finite",
+      "context": "in Arabisch, auch Schrift, Mo 18–19 Uhr",
+      "prevWord": "auch",
+      "prevPos": "ADV",
+      "prevTag": "ADV",
+      "textIndex": 0,
+      "regime": "PROSE",
+      "field": "questions.options",
+      "id": "71",
+      "text": "J) SprachTor — Nachhilfe in Arabisch, auch Schrift, Mo 18–19 Uhr, geduldige Betreuung.",
+      "file": "lesen-t3-auto-u7x6w8.json"
+    },
+    {
+      "type": "wrong_capitalized",
+      "word": "Schrift",
+      "pos": "NOUN",
+      "tag": "NN",
+      "confidence": "high",
+      "reason": "verb_census_no_finite",
+      "context": "in Arabisch, auch Schrift, Mo 18–19 Uhr",
+      "prevWord": "auch",
+      "prevPos": "ADV",
+      "prevTag": "ADV",
+      "textIndex": 0,
+      "regime": "PROSE",
+      "field": "questions.options",
+      "id": "83",
+      "text": "J) SprachTor — Nachhilfe in Arabisch, auch Schrift, Mo 18–19 Uhr, geduldige Betreuung.",
+      "file": "lesen-t3-auto-u7x6w8.json"
+    },
+    {
+      "type": "wrong_capitalized",
+      "word": "Zusätzlichen",
+      "pos": "ADJ",
+      "tag": "NN",
+      "confidence": "high",
+      "reason": "adj_before_noun",
+      "context": ", und hält einen Zusätzlichen Gratis-Sonntag für unnötig.",
+      "prevWord": "einen",
+      "prevPos": "DET",
+      "prevTag": "ART",
+      "textIndex": 0,
+      "regime": "PROSE",
+      "field": "questions.explanation",
+      "id": "3",
+      "text": "Greta meint, dass das Museum bereits genügend Programme und Angebote hat, um verschiedene Gruppen zu erreichen, und hält einen Zusätzlichen Gratis-Sonntag für unnötig.",
+      "file": "lesen-t4-gemini-039.json"
+    },
+    {
+      "type": "noun_lowercase",
+      "word": "mitmachen",
+      "pos": "VERB",
+      "tag": "VVFIN",
+      "confidence": "high",
+      "reason": "lexicon_override_tag",
+      "context": "verbessert, wenn alle mitmachen.",
+      "prevWord": "alle",
+      "prevPos": "PRON",
+      "prevTag": "PIAT",
+      "textIndex": 0,
+      "regime": "PROSE",
+      "field": "questions.explanation",
+      "id": "13",
+      "text": "Elena und ihre Familie trennen den Müll bereits genau und sie unterstützt den Vorschlag, weil er die Stadt verbessert, wenn alle mitmachen.",
+      "file": "lesen-t4-gemini-042.json"
+    },
+    {
+      "type": "wrong_capitalized",
+      "word": "Euro",
+      "pos": "NOUN",
+      "tag": "NN",
+      "confidence": "high",
+      "reason": "verb_census_no_finite",
+      "context": "c) Fünfundvierzig Euro.",
+      "prevWord": "Fünfundvierzig",
+      "prevPos": "ADV",
+      "prevTag": "ADJD",
+      "textIndex": 0,
+      "regime": "PROSE",
+      "field": "questions.options",
+      "id": "10",
+      "text": "c) Fünfundvierzig Euro.",
+      "file": "lesen-t5-gemini-068.json"
+    },
+    {
+      "type": "noun_lowercase",
+      "word": "online",
+      "pos": "NOUN",
+      "tag": "NN",
+      "confidence": "high",
+      "reason": "lexicon_nn",
+      "context": "oder Aqua-Fitness, können online gebucht werden. Eine",
+      "prevWord": "können",
+      "prevPos": "AUX",
+      "prevTag": "VMFIN",
+      "textIndex": 0,
+      "regime": "PROSE",
+      "field": "passages.text",
+      "id": "0",
+      "text": "Herzlich willkommen im 'Reise-Oase' Freizeitzentrum! Wir möchten, dass Ihr Aufenthalt bei uns entspannt und angenehm ist, besonders wenn Sie vor oder nach einer Reise zu uns kommen. Bitte beachten Sie unsere Hausordnung:\n\n1.  Öffnungszeiten: Das Zentrum ist täglich von 9:00 bis 22:00 Uhr geöffnet. Der Schwimmbereich schließt jedoch bereits um 21:30 Uhr. Am Wochenende, also Samstag und Sonntag, öffnen wir eine Stunde früher, um 8:00 Uhr.\n2.  Eintritt und Mitgliedschaft: Tageskarten kosten 15 Euro. Für Besucher, die länger als drei Tage in der Stadt bleiben, gibt es eine Wochenkarte für 40 Euro. Eine Jahresmitgliedschaft kostet 300 Euro. Kinder unter 6 Jahren haben freien Eintritt, müssen aber von einem Erwachsenen begleitet werden.\n3.  Schließfächer: Für persönliche Gegenstände stehen Schließfächer zur Verfügung. Die Nutzung ist kostenlos, aber bitte bringen Sie ein eigenes Schloss mit. Vergessene Schlösser werden nach 24 Stunden entfernt.\n4.  Ruhebereiche: Im Wellness- und Saunabereich ist absolute Ruhe wichtig. Gespräche sind dort nur flüsternd erlaubt. Handys müssen ausgeschaltet sein.\n5.  Parkplätze: Unser Parkplatz bietet Platz für Autos und Fahrräder. Für Autos ist die Nutzung während des Aufenthalts kostenlos. Bitte parken Sie nur auf den markierten Flächen. Das Abstellen von Wohnmobilen ist nicht erlaubt.\n6.  Kurse und Termine: Viele Kurse, wie Yoga oder Aqua-Fitness, können online gebucht werden. Eine Anmeldung ist bis 24 Stunden vor Kursbeginn möglich. Bei Nichterscheinen ohne Absage wird eine Gebühr von 5 Euro fällig.",
+      "file": "lesen-t5-gemini-069.json"
+    }
+  ]
+}

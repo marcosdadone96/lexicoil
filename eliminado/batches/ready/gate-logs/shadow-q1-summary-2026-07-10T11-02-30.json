@@ -1,0 +1,106 @@
+{
+  "generatedAt": "2026-07-10T11:02:30.549Z",
+  "period": {
+    "since": "2026-07-09",
+    "until": "now"
+  },
+  "observationStart": "2026-07-09",
+  "logFiles": [
+    "shadow-q1-2026-07-09T09-29-02.jsonl",
+    "shadow-q1-2026-07-09T09-30-12.jsonl",
+    "shadow-q1-2026-07-09T09-31-07.jsonl",
+    "shadow-q1-2026-07-09T09-44-47.jsonl",
+    "shadow-q1-2026-07-09T10-06-25.jsonl",
+    "shadow-q1-2026-07-09T10-07-31.jsonl",
+    "shadow-q1-2026-07-09T10-13-34.jsonl",
+    "shadow-q1-2026-07-09T10-13-41.jsonl",
+    "shadow-q1-2026-07-09T10-20-53.jsonl",
+    "shadow-q1-2026-07-09T10-20-59.jsonl",
+    "shadow-q1-2026-07-09T10-23-51.jsonl",
+    "shadow-q1-2026-07-09T10-23-52.jsonl",
+    "shadow-q1-2026-07-09T10-31-34.jsonl",
+    "shadow-q1-2026-07-09T10-31-42.jsonl",
+    "shadow-q1-2026-07-09T10-35-35.jsonl",
+    "shadow-q1-2026-07-09T10-37-12.jsonl",
+    "shadow-q1-2026-07-09T10-38-26.jsonl",
+    "shadow-q1-2026-07-09T10-41-01.jsonl",
+    "shadow-q1-2026-07-09T11-16-45.jsonl",
+    "shadow-q1-2026-07-09T11-19-08.jsonl",
+    "shadow-q1-2026-07-10T08-27-17.jsonl"
+  ],
+  "rawEntries": 154,
+  "uniqueGeneratedFiles": 29,
+  "wouldRejectGlobal": 10,
+  "globalRejectPct": 34.5,
+  "wouldRejectT3": 5,
+  "t3RejectPct": 100,
+  "mirrorFindings": 0,
+  "mirrorPct": 0,
+  "ruleCounts": {
+    "exact_duplicate": 0,
+    "near_duplicate": 10,
+    "possible_duplicate": 0,
+    "bank_match": 0,
+    "mirror_pair": 0,
+    "cross_id_match": 10,
+    "unknown": 0
+  },
+  "verdictCounts": {
+    "pass": 19,
+    "warn": 0,
+    "block": 10
+  },
+  "teilRows": [
+    {
+      "teil": 1,
+      "files": 6,
+      "pass": 6,
+      "warn": 0,
+      "block": 0,
+      "wouldReject": 0,
+      "wouldRejectPct": 0
+    },
+    {
+      "teil": 2,
+      "files": 5,
+      "pass": 5,
+      "warn": 0,
+      "block": 0,
+      "wouldReject": 0,
+      "wouldRejectPct": 0
+    },
+    {
+      "teil": 3,
+      "files": 5,
+      "pass": 0,
+      "warn": 0,
+      "block": 5,
+      "wouldReject": 5,
+      "wouldRejectPct": 100
+    },
+    {
+      "teil": 4,
+      "files": 5,
+      "pass": 0,
+      "warn": 0,
+      "block": 5,
+      "wouldReject": 5,
+      "wouldRejectPct": 100
+    },
+    {
+      "teil": 5,
+      "files": 8,
+      "pass": 8,
+      "warn": 0,
+      "block": 0,
+      "wouldReject": 0,
+      "wouldRejectPct": 0
+    }
+  ],
+  "lights": {
+    "wouldRejectGlobal": "red",
+    "wouldRejectT3": "red",
+    "mirrorPair": "green"
+  },
+  "semaphore": "red"
+}

@@ -31,6 +31,7 @@ const EXPECTED_SLOTS = {
 
 const CANONICAL_TYPES = new Set([
   'multiple_choice', 'richtig_falsch', 'ja_nein', 'matching', 'short_answer',
+  'planungsaufgabe', 'praesentation', 'feedback_diskussion',
 ]);
 
 const ABSOLUTE_WORDS_RE = /\b(immer|nie|niemals|alle[rsn]?|ausschließlich|komplett|völlig|keinerlei|jede[rsn]?|stets|grundsätzlich|absolut|durchgehend|generell)\b/i;

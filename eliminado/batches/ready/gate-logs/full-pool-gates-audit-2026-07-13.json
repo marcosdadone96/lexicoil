@@ -1,0 +1,1207 @@
+{
+  "generatedAt": "2026-07-13T14:21:40.011Z",
+  "poolDir": "batches/ready/pool-verified",
+  "poolFileCount": 170,
+  "categories": {
+    "1_mcqLengthBias": {
+      "scope": "Lesen T2/T5 + Hören T2",
+      "mechanism": "mcqLengthBias.mjs ≡ audit-answer-length-bias.mjs ≡ stamp-length-bias-quarantine",
+      "metric": "correct option char-length === max among a/b/c when lengths differ (ties for longest count as bias)",
+      "sameAsPriorQuarantine": true,
+      "priorQuarantineDate": "2026-07-12 (_lengthBiasQuarantine stamps)",
+      "affectedFiles": 56,
+      "affectedQuestions": 196,
+      "stampedQuestions": 196,
+      "reconciliation": {
+        "gateHitsNotStamped": 0,
+        "stampsWithoutGate": 0,
+        "note": "Gate metric matches prior quarantine stamps (no drift)"
+      },
+      "files": [
+        {
+          "file": "horen-t2-gemini-001.json",
+          "questions": 3,
+          "issues": [
+            "gen-q-h2-d5028372-q1: sesgo de longitud MCQ — opción correcta «c» es la más larga (47 vs 34/39; Δ +11 chars, +29% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-h2-d5028372-q3: sesgo de longitud MCQ — opción correcta «b» es la más larga (60 vs 57/59; Δ +2 chars, +3% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-h2-d5028372-q4: sesgo de longitud MCQ — opción correcta «a» es la más larga (50 vs 47/49; Δ +2 chars, +4% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable."
+          ]
+        },
+        {
+          "file": "horen-t2-gemini-003.json",
+          "questions": 1,
+          "issues": [
+            "gen-q-h2-5e785889-q1: sesgo de longitud MCQ — opción correcta «b» es la más larga (47 vs 43/41; Δ +5 chars, +12% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable."
+          ]
+        },
+        {
+          "file": "horen-t2-gemini-005.json",
+          "questions": 5,
+          "issues": [
+            "gen-q-h2-e0b897d8-q1: sesgo de longitud MCQ — opción correcta «b» es la más larga (50 vs 41/29; Δ +15 chars, +43% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-h2-e0b897d8-q2: sesgo de longitud MCQ — opción correcta «c» es la más larga (52 vs 47/35; Δ +11 chars, +27% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-h2-e0b897d8-q3: sesgo de longitud MCQ — opción correcta «a» es la más larga (78 vs 75/69; Δ +6 chars, +8% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-h2-e0b897d8-q4: sesgo de longitud MCQ — opción correcta «c» es la más larga (68 vs 45/41; Δ +25 chars, +58% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-h2-e0b897d8-q5: sesgo de longitud MCQ — opción correcta «b» es la más larga (80 vs 68/68; Δ +12 chars, +18% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable."
+          ]
+        },
+        {
+          "file": "horen-t2-gemini-006.json",
+          "questions": 3,
+          "issues": [
+            "gen-q-h2-34538a4d-q2: sesgo de longitud MCQ — opción correcta «c» es la más larga (72 vs 62/66; Δ +8 chars, +13% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-h2-34538a4d-q4: sesgo de longitud MCQ — opción correcta «a» es la más larga (56 vs 51/48; Δ +7 chars, +13% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-h2-34538a4d-q5: sesgo de longitud MCQ — opción correcta «b» es la más larga (71 vs 57/56; Δ +15 chars, +26% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable."
+          ]
+        },
+        {
+          "file": "horen-t2-gemini-007.json",
+          "questions": 4,
+          "issues": [
+            "gen-q-h2-41c1f630-q1: sesgo de longitud MCQ — opción correcta «b» es la más larga (43 vs 29/27; Δ +15 chars, +54% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-h2-41c1f630-q2: sesgo de longitud MCQ — opción correcta «b» es la más larga (31 vs 24/22; Δ +8 chars, +35% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-h2-41c1f630-q3: sesgo de longitud MCQ — opción correcta «a» es la más larga (45 vs 29/36; Δ +13 chars, +38% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-h2-41c1f630-q5: sesgo de longitud MCQ — opción correcta «c» es la más larga (58 vs 25/34; Δ +29 chars, +97% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable."
+          ]
+        },
+        {
+          "file": "horen-t2-gemini-008.json",
+          "questions": 3,
+          "issues": [
+            "gen-q-h2-45959318-q2: sesgo de longitud MCQ — opción correcta «c» es la más larga (56 vs 42/52; Δ +9 chars, +19% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-h2-45959318-q4: sesgo de longitud MCQ — opción correcta «b» es la más larga (74 vs 45/62; Δ +21 chars, +38% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-h2-45959318-q5: sesgo de longitud MCQ — opción correcta «a» es la más larga (65 vs 61/60; Δ +5 chars, +7% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable."
+          ]
+        },
+        {
+          "file": "horen-t2-gemini-009.json",
+          "questions": 3,
+          "issues": [
+            "gen-q-h2-cb37a553-q1: sesgo de longitud MCQ — opción correcta «a» es la más larga (49 vs 44/40; Δ +7 chars, +17% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-h2-cb37a553-q2: sesgo de longitud MCQ — opción correcta «c» es la más larga (102 vs 68/64; Δ +36 chars, +55% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-h2-cb37a553-q4: sesgo de longitud MCQ — opción correcta «b» es la más larga (87 vs 63/63; Δ +24 chars, +38% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable."
+          ]
+        },
+        {
+          "file": "horen-t2-gemini-010.json",
+          "questions": 4,
+          "issues": [
+            "gen-q-h2-857be1ea-q1: sesgo de longitud MCQ — opción correcta «a» es la más larga (51 vs 36/32; Δ +17 chars, +50% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-h2-857be1ea-q3: sesgo de longitud MCQ — opción correcta «b» es la más larga (49 vs 38/30; Δ +15 chars, +44% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-h2-857be1ea-q4: sesgo de longitud MCQ — opción correcta «c» es la más larga (56 vs 27/37; Δ +24 chars, +75% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-h2-857be1ea-q5: sesgo de longitud MCQ — opción correcta «b» es la más larga (55 vs 36/54; Δ +10 chars, +22% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable."
+          ]
+        },
+        {
+          "file": "horen-t2-gemini-011.json",
+          "questions": 4,
+          "issues": [
+            "gen-q-h2-5b8f9f1e-fzt-q1: sesgo de longitud MCQ — opción correcta «b» es la más larga (43 vs 29/33; Δ +12 chars, +39% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-h2-5b8f9f1e-fzt-q2: sesgo de longitud MCQ — opción correcta «c» es la más larga (58 vs 34/43; Δ +20 chars, +51% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-h2-5b8f9f1e-fzt-q3: sesgo de longitud MCQ — opción correcta «a» es la más larga (51 vs 40/30; Δ +16 chars, +46% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-h2-5b8f9f1e-fzt-q5: sesgo de longitud MCQ — opción correcta «b» es la más larga (80 vs 74/59; Δ +14 chars, +20% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable."
+          ]
+        },
+        {
+          "file": "horen-t2-gemini-012.json",
+          "questions": 5,
+          "issues": [
+            "gen-q-h2-d7e1a2b3-q1: sesgo de longitud MCQ — opción correcta «a» es la más larga (65 vs 49/33; Δ +24 chars, +59% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-h2-d7e1a2b3-q2: sesgo de longitud MCQ — opción correcta «a» es la más larga (60 vs 49/42; Δ +15 chars, +32% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-h2-d7e1a2b3-q3: sesgo de longitud MCQ — opción correcta «b» es la más larga (59 vs 32/34; Δ +26 chars, +79% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-h2-d7e1a2b3-q4: sesgo de longitud MCQ — opción correcta «c» es la más larga (67 vs 32/53; Δ +25 chars, +58% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-h2-d7e1a2b3-q5: sesgo de longitud MCQ — opción correcta «c» es la más larga (83 vs 58/38; Δ +35 chars, +73% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable."
+          ]
+        },
+        {
+          "file": "horen-t2-gemini-013.json",
+          "questions": 4,
+          "issues": [
+            "gen-q-h2-62f5bf71-q1: sesgo de longitud MCQ — opción correcta «c» es la más larga (53 vs 45/44; Δ +9 chars, +19% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-h2-62f5bf71-q2: sesgo de longitud MCQ — opción correcta «c» es la más larga (40 vs 35/37; Δ +4 chars, +11% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-h2-62f5bf71-q3: sesgo de longitud MCQ — opción correcta «b» es la más larga (47 vs 39/38; Δ +9 chars, +22% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-h2-62f5bf71-q5: sesgo de longitud MCQ — opción correcta «b» es la más larga (59 vs 43/48; Δ +14 chars, +30% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable."
+          ]
+        },
+        {
+          "file": "horen-t2-gemini-015.json",
+          "questions": 4,
+          "issues": [
+            "gen-q-h2-3afcaed7-q1: sesgo de longitud MCQ — opción correcta «c» es la más larga (51 vs 36/39; Δ +14 chars, +36% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-h2-3afcaed7-q3: sesgo de longitud MCQ — opción correcta «a» es la más larga (52 vs 39/52; Δ +7 chars, +14% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-h2-3afcaed7-q4: sesgo de longitud MCQ — opción correcta «b» es la más larga (80 vs 57/48; Δ +28 chars, +52% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-h2-3afcaed7-q5: sesgo de longitud MCQ — opción correcta «c» es la más larga (69 vs 58/34; Δ +23 chars, +50% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable."
+          ]
+        },
+        {
+          "file": "horen-t2-gemini-016.json",
+          "questions": 4,
+          "issues": [
+            "gen-q-h2-1ed9a47a-q1: sesgo de longitud MCQ — opción correcta «b» es la más larga (43 vs 26/36; Δ +12 chars, +39% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-h2-1ed9a47a-q2: sesgo de longitud MCQ — opción correcta «c» es la más larga (60 vs 56/45; Δ +10 chars, +19% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-h2-1ed9a47a-q3: sesgo de longitud MCQ — opción correcta «c» es la más larga (79 vs 58/52; Δ +24 chars, +44% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-h2-1ed9a47a-q5: sesgo de longitud MCQ — opción correcta «b» es la más larga (72 vs 46/58; Δ +20 chars, +38% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable."
+          ]
+        },
+        {
+          "file": "horen-t2-gemini-017.json",
+          "questions": 2,
+          "issues": [
+            "gen-q-h2-a5acd2d8-q1: sesgo de longitud MCQ — opción correcta «b» es la más larga (36 vs 35/34; Δ +2 chars, +4% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-h2-a5acd2d8-q4: sesgo de longitud MCQ — opción correcta «a» es la más larga (62 vs 34/33; Δ +29 chars, +85% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable."
+          ]
+        },
+        {
+          "file": "horen-t2-gemini-018.json",
+          "questions": 3,
+          "issues": [
+            "gen-q-h2-4a57e42c-q1: sesgo de longitud MCQ — opción correcta «a» es la más larga (65 vs 58/38; Δ +17 chars, +35% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-h2-4a57e42c-q2: sesgo de longitud MCQ — opción correcta «c» es la más larga (75 vs 57/56; Δ +19 chars, +33% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-h2-4a57e42c-q5: sesgo de longitud MCQ — opción correcta «a» es la más larga (47 vs 42/40; Δ +6 chars, +15% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable."
+          ]
+        },
+        {
+          "file": "horen-t2-gemini-019.json",
+          "questions": 2,
+          "issues": [
+            "gen-q-h2-af4f9d1d-q1: sesgo de longitud MCQ — opción correcta «a» es la más larga (57 vs 52/49; Δ +7 chars, +13% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-h2-af4f9d1d-q2: sesgo de longitud MCQ — opción correcta «b» es la más larga (84 vs 56/49; Δ +32 chars, +60% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable."
+          ]
+        },
+        {
+          "file": "horen-t2-gemini-020.json",
+          "questions": 3,
+          "issues": [
+            "gen-q-h2-a3a4f080-q2: sesgo de longitud MCQ — opción correcta «c» es la más larga (66 vs 54/53; Δ +13 chars, +23% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-h2-a3a4f080-q3: sesgo de longitud MCQ — opción correcta «a» es la más larga (53 vs 52/45; Δ +5 chars, +9% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-h2-a3a4f080-q4: sesgo de longitud MCQ — opción correcta «b» es la más larga (69 vs 46/60; Δ +16 chars, +30% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable."
+          ]
+        },
+        {
+          "file": "horen-t2-gemini-021.json",
+          "questions": 3,
+          "issues": [
+            "gen-q-h2-88828b35-q1: sesgo de longitud MCQ — opción correcta «c» es la más larga (80 vs 61/56; Δ +22 chars, +37% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-h2-88828b35-q3: sesgo de longitud MCQ — opción correcta «a» es la más larga (100 vs 94/62; Δ +22 chars, +28% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-h2-88828b35-q5: sesgo de longitud MCQ — opción correcta «b» es la más larga (76 vs 64/60; Δ +14 chars, +23% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable."
+          ]
+        },
+        {
+          "file": "horen-t2-gemini-023.json",
+          "questions": 4,
+          "issues": [
+            "gen-q-h2-84bf51f4-q1: sesgo de longitud MCQ — opción correcta «b» es la más larga (64 vs 51/49; Δ +14 chars, +28% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-h2-84bf51f4-q2: sesgo de longitud MCQ — opción correcta «a» es la más larga (68 vs 51/56; Δ +15 chars, +27% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-h2-84bf51f4-q4: sesgo de longitud MCQ — opción correcta «c» es la más larga (59 vs 51/40; Δ +14 chars, +30% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-h2-84bf51f4-q5: sesgo de longitud MCQ — opción correcta «a» es la más larga (63 vs 47/47; Δ +16 chars, +34% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable."
+          ]
+        },
+        {
+          "file": "lesen-t2-gemini-055.json",
+          "questions": 5,
+          "issues": [
+            "gen-q-2-759e7c8f-1: sesgo de longitud MCQ — opción correcta «b» es la más larga (52 vs 43/38; Δ +12 chars, +28% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-2-759e7c8f-2: sesgo de longitud MCQ — opción correcta «b» es la más larga (47 vs 40/42; Δ +6 chars, +15% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-2-759e7c8f-3: sesgo de longitud MCQ — opción correcta «a» es la más larga (59 vs 57/53; Δ +4 chars, +7% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-2-759e7c8f-5: sesgo de longitud MCQ — opción correcta «c» es la más larga (57 vs 51/28; Δ +18 chars, +44% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-2-759e7c8f-6: sesgo de longitud MCQ — opción correcta «a» es la más larga (83 vs 44/52; Δ +35 chars, +73% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable."
+          ]
+        },
+        {
+          "file": "lesen-t2-gemini-057.json",
+          "questions": 6,
+          "issues": [
+            "gen-q-2-0a946252-1: sesgo de longitud MCQ — opción correcta «a» es la más larga (48 vs 37/39; Δ +10 chars, +26% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-2-0a946252-2: sesgo de longitud MCQ — opción correcta «a» es la más larga (51 vs 44/45; Δ +7 chars, +15% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-2-0a946252-3: sesgo de longitud MCQ — opción correcta «b» es la más larga (69 vs 36/38; Δ +32 chars, +86% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-2-0a946252-4: sesgo de longitud MCQ — opción correcta «b» es la más larga (64 vs 58/47; Δ +12 chars, +22% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-2-0a946252-5: sesgo de longitud MCQ — opción correcta «c» es la más larga (57 vs 52/57; Δ +3 chars, +5% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-2-0a946252-6: sesgo de longitud MCQ — opción correcta «c» es la más larga (47 vs 35/37; Δ +11 chars, +31% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable."
+          ]
+        },
+        {
+          "file": "lesen-t2-gemini-093.json",
+          "questions": 4,
+          "issues": [
+            "gen-q-2-10c0f9b9-3: sesgo de longitud MCQ — opción correcta «a» es la más larga (57 vs 39/48; Δ +14 chars, +31% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-2-10c0f9b9-4: sesgo de longitud MCQ — opción correcta «a» es la más larga (63 vs 39/37; Δ +25 chars, +66% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-2-10c0f9b9-5: sesgo de longitud MCQ — opción correcta «c» es la más larga (57 vs 32/35; Δ +24 chars, +70% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-2-10c0f9b9-6: sesgo de longitud MCQ — opción correcta «c» es la más larga (63 vs 48/33; Δ +23 chars, +56% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable."
+          ]
+        },
+        {
+          "file": "lesen-t2-gemini-094.json",
+          "questions": 5,
+          "issues": [
+            "gen-q-2-698a2191-1: sesgo de longitud MCQ — opción correcta «b» es la más larga (42 vs 32/40; Δ +6 chars, +17% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-2-698a2191-2: sesgo de longitud MCQ — opción correcta «a» es la más larga (81 vs 48/67; Δ +24 chars, +41% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-2-698a2191-3: sesgo de longitud MCQ — opción correcta «a» es la más larga (72 vs 68/56; Δ +10 chars, +16% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-2-698a2191-4: sesgo de longitud MCQ — opción correcta «c» es la más larga (89 vs 35/47; Δ +48 chars, +117% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-2-698a2191-5: sesgo de longitud MCQ — opción correcta «c» es la más larga (56 vs 53/50; Δ +5 chars, +9% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable."
+          ]
+        },
+        {
+          "file": "lesen-t2-gemini-096.json",
+          "questions": 4,
+          "issues": [
+            "gen-q-2-632a83e2-1: sesgo de longitud MCQ — opción correcta «a» es la más larga (70 vs 39/33; Δ +34 chars, +94% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-2-632a83e2-3: sesgo de longitud MCQ — opción correcta «b» es la más larga (58 vs 26/27; Δ +32 chars, +119% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-2-632a83e2-4: sesgo de longitud MCQ — opción correcta «a» es la más larga (49 vs 26/27; Δ +23 chars, +85% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-2-632a83e2-6: sesgo de longitud MCQ — opción correcta «b» es la más larga (53 vs 41/35; Δ +15 chars, +39% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable."
+          ]
+        },
+        {
+          "file": "lesen-t2-gemini-097.json",
+          "questions": 6,
+          "issues": [
+            "gen-q-2-ab60fe4b-1: sesgo de longitud MCQ — opción correcta «b» es la más larga (101 vs 36/38; Δ +64 chars, +173% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-2-ab60fe4b-2: sesgo de longitud MCQ — opción correcta «a» es la más larga (70 vs 59/51; Δ +15 chars, +27% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-2-ab60fe4b-3: sesgo de longitud MCQ — opción correcta «c» es la más larga (50 vs 47/48; Δ +3 chars, +5% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-2-ab60fe4b-4: sesgo de longitud MCQ — opción correcta «b» es la más larga (68 vs 35/34; Δ +34 chars, +97% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-2-ab60fe4b-5: sesgo de longitud MCQ — opción correcta «a» es la más larga (58 vs 36/46; Δ +17 chars, +41% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-2-ab60fe4b-6: sesgo de longitud MCQ — opción correcta «c» es la más larga (75 vs 33/45; Δ +36 chars, +92% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable."
+          ]
+        },
+        {
+          "file": "lesen-t2-gemini-103.json",
+          "questions": 6,
+          "issues": [
+            "gen-q-2-05fc623e-1: sesgo de longitud MCQ — opción correcta «a» es la más larga (82 vs 59/52; Δ +27 chars, +48% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-2-05fc623e-2: sesgo de longitud MCQ — opción correcta «b» es la más larga (82 vs 39/52; Δ +37 chars, +80% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-2-05fc623e-3: sesgo de longitud MCQ — opción correcta «a» es la más larga (80 vs 40/41; Δ +40 chars, +98% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-2-05fc623e-4: sesgo de longitud MCQ — opción correcta «c» es la más larga (68 vs 53/50; Δ +17 chars, +32% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-2-05fc623e-5: sesgo de longitud MCQ — opción correcta «c» es la más larga (68 vs 41/56; Δ +20 chars, +40% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-2-05fc623e-6: sesgo de longitud MCQ — opción correcta «b» es la más larga (90 vs 61/56; Δ +32 chars, +54% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable."
+          ]
+        },
+        {
+          "file": "lesen-t2-gemini-104.json",
+          "questions": 5,
+          "issues": [
+            "gen-q-2-f76d3112-1: sesgo de longitud MCQ — opción correcta «a» es la más larga (58 vs 46/36; Δ +17 chars, +41% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-2-f76d3112-2: sesgo de longitud MCQ — opción correcta «b» es la más larga (59 vs 31/47; Δ +20 chars, +51% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-2-f76d3112-3: sesgo de longitud MCQ — opción correcta «c» es la más larga (43 vs 31/37; Δ +9 chars, +26% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-2-f76d3112-4: sesgo de longitud MCQ — opción correcta «b» es la más larga (28 vs 18/25; Δ +7 chars, +30% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-2-f76d3112-5: sesgo de longitud MCQ — opción correcta «a» es la más larga (65 vs 36/48; Δ +23 chars, +55% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable."
+          ]
+        },
+        {
+          "file": "lesen-t2-gemini-105.json",
+          "questions": 4,
+          "issues": [
+            "gen-q-2-84432190-1: sesgo de longitud MCQ — opción correcta «a» es la más larga (71 vs 47/54; Δ +21 chars, +41% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-2-84432190-3: sesgo de longitud MCQ — opción correcta «a» es la más larga (61 vs 42/41; Δ +20 chars, +47% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-2-84432190-5: sesgo de longitud MCQ — opción correcta «c» es la más larga (54 vs 49/47; Δ +6 chars, +13% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-2-84432190-6: sesgo de longitud MCQ — opción correcta «c» es la más larga (62 vs 50/45; Δ +15 chars, +31% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable."
+          ]
+        },
+        {
+          "file": "lesen-t2-gemini-106.json",
+          "questions": 5,
+          "issues": [
+            "gen-q-2-e7ae4d43-1: sesgo de longitud MCQ — opción correcta «a» es la más larga (70 vs 47/54; Δ +20 chars, +39% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-2-e7ae4d43-2: sesgo de longitud MCQ — opción correcta «b» es la más larga (73 vs 62/73; Δ +6 chars, +8% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-2-e7ae4d43-3: sesgo de longitud MCQ — opción correcta «c» es la más larga (86 vs 59/62; Δ +26 chars, +42% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-2-e7ae4d43-5: sesgo de longitud MCQ — opción correcta «c» es la más larga (83 vs 72/71; Δ +12 chars, +16% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-2-e7ae4d43-6: sesgo de longitud MCQ — opción correcta «a» es la más larga (73 vs 54/69; Δ +12 chars, +19% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable."
+          ]
+        },
+        {
+          "file": "lesen-t5-gemini-009.json",
+          "questions": 4,
+          "issues": [
+            "gen-q-5-64b1360b-1: sesgo de longitud MCQ — opción correcta «c» es la más larga (74 vs 49/35; Δ +32 chars, +76% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-5-64b1360b-2: sesgo de longitud MCQ — opción correcta «b» es la más larga (65 vs 38/55; Δ +19 chars, +40% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-5-64b1360b-3: sesgo de longitud MCQ — opción correcta «b» es la más larga (101 vs 63/73; Δ +33 chars, +49% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-5-64b1360b-4: sesgo de longitud MCQ — opción correcta «a» es la más larga (111 vs 75/77; Δ +35 chars, +46% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable."
+          ]
+        },
+        {
+          "file": "lesen-t5-gemini-014.json",
+          "questions": 1,
+          "issues": [
+            "gen-q-5-a994fb06-1: sesgo de longitud MCQ — opción correcta «a» es la más larga (60 vs 36/56; Δ +14 chars, +30% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable."
+          ]
+        },
+        {
+          "file": "lesen-t5-gemini-015.json",
+          "questions": 4,
+          "issues": [
+            "gen-q-5-cc5b0d7b-1: sesgo de longitud MCQ — opción correcta «c» es la más larga (43 vs 30/25; Δ +16 chars, +56% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-5-cc5b0d7b-2: sesgo de longitud MCQ — opción correcta «b» es la más larga (70 vs 56/51; Δ +17 chars, +31% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-5-cc5b0d7b-3: sesgo de longitud MCQ — opción correcta «a» es la más larga (107 vs 74/70; Δ +35 chars, +49% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-5-cc5b0d7b-4: sesgo de longitud MCQ — opción correcta «c» es la más larga (63 vs 61/61; Δ +2 chars, +3% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable."
+          ]
+        },
+        {
+          "file": "lesen-t5-gemini-022.json",
+          "questions": 3,
+          "issues": [
+            "gen-q-5-efc96246-1: sesgo de longitud MCQ — opción correcta «b» es la más larga (55 vs 43/49; Δ +9 chars, +20% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-5-efc96246-3: sesgo de longitud MCQ — opción correcta «c» es la más larga (64 vs 53/49; Δ +13 chars, +25% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-5-efc96246-4: sesgo de longitud MCQ — opción correcta «a» es la más larga (45 vs 34/30; Δ +13 chars, +41% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable."
+          ]
+        },
+        {
+          "file": "lesen-t5-gemini-023.json",
+          "questions": 4,
+          "issues": [
+            "gen-q-5-7cd9cc8e-1: sesgo de longitud MCQ — opción correcta «a» es la más larga (80 vs 69/56; Δ +18 chars, +28% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-5-7cd9cc8e-2: sesgo de longitud MCQ — opción correcta «b» es la más larga (83 vs 57/70; Δ +20 chars, +31% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-5-7cd9cc8e-3: sesgo de longitud MCQ — opción correcta «a» es la más larga (88 vs 39/47; Δ +45 chars, +105% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-5-7cd9cc8e-4: sesgo de longitud MCQ — opción correcta «c» es la más larga (55 vs 53/39; Δ +9 chars, +20% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable."
+          ]
+        },
+        {
+          "file": "lesen-t5-gemini-024.json",
+          "questions": 3,
+          "issues": [
+            "gen-q-5-7c35a128-1: sesgo de longitud MCQ — opción correcta «b» es la más larga (118 vs 77/56; Δ +52 chars, +77% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-5-7c35a128-2: sesgo de longitud MCQ — opción correcta «c» es la más larga (70 vs 59/60; Δ +11 chars, +18% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-5-7c35a128-4: sesgo de longitud MCQ — opción correcta «b» es la más larga (84 vs 84/76; Δ +4 chars, +5% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable."
+          ]
+        },
+        {
+          "file": "lesen-t5-gemini-026.json",
+          "questions": 4,
+          "issues": [
+            "gen-q-5-aa09b216-1: sesgo de longitud MCQ — opción correcta «c» es la más larga (116 vs 73/88; Δ +36 chars, +44% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-5-aa09b216-2: sesgo de longitud MCQ — opción correcta «a» es la más larga (91 vs 40/57; Δ +43 chars, +88% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-5-aa09b216-3: sesgo de longitud MCQ — opción correcta «c» es la más larga (112 vs 66/84; Δ +37 chars, +49% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-5-aa09b216-4: sesgo de longitud MCQ — opción correcta «b» es la más larga (134 vs 73/73; Δ +61 chars, +84% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable."
+          ]
+        },
+        {
+          "file": "lesen-t5-gemini-027.json",
+          "questions": 3,
+          "issues": [
+            "gen-q-5-bea130ae-1: sesgo de longitud MCQ — opción correcta «c» es la más larga (68 vs 62/45; Δ +15 chars, +27% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-5-bea130ae-2: sesgo de longitud MCQ — opción correcta «a» es la más larga (102 vs 66/55; Δ +42 chars, +69% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-5-bea130ae-4: sesgo de longitud MCQ — opción correcta «a» es la más larga (58 vs 47/51; Δ +9 chars, +18% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable."
+          ]
+        },
+        {
+          "file": "lesen-t5-gemini-028.json",
+          "questions": 3,
+          "issues": [
+            "gen-q-5-6046b479-1: sesgo de longitud MCQ — opción correcta «b» es la más larga (112 vs 79/74; Δ +36 chars, +46% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-5-6046b479-2: sesgo de longitud MCQ — opción correcta «b» es la más larga (92 vs 72/68; Δ +22 chars, +31% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-5-6046b479-3: sesgo de longitud MCQ — opción correcta «c» es la más larga (66 vs 54/47; Δ +16 chars, +31% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable."
+          ]
+        },
+        {
+          "file": "lesen-t5-gemini-029.json",
+          "questions": 4,
+          "issues": [
+            "gen-q-5-0d9a36a9-1: sesgo de longitud MCQ — opción correcta «b» es la más larga (97 vs 51/48; Δ +48 chars, +96% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-5-0d9a36a9-2: sesgo de longitud MCQ — opción correcta «a» es la más larga (81 vs 54/49; Δ +30 chars, +57% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-5-0d9a36a9-3: sesgo de longitud MCQ — opción correcta «a» es la más larga (50 vs 42/44; Δ +7 chars, +16% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-5-0d9a36a9-4: sesgo de longitud MCQ — opción correcta «c» es la más larga (84 vs 52/49; Δ +34 chars, +66% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable."
+          ]
+        },
+        {
+          "file": "lesen-t5-gemini-030.json",
+          "questions": 4,
+          "issues": [
+            "gen-q-5-b2260853-1: sesgo de longitud MCQ — opción correcta «a» es la más larga (54 vs 43/29; Δ +18 chars, +50% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-5-b2260853-2: sesgo de longitud MCQ — opción correcta «b» es la más larga (60 vs 49/37; Δ +17 chars, +40% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-5-b2260853-3: sesgo de longitud MCQ — opción correcta «c» es la más larga (60 vs 44/52; Δ +12 chars, +25% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-5-b2260853-4: sesgo de longitud MCQ — opción correcta «b» es la más larga (86 vs 57/67; Δ +24 chars, +39% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable."
+          ]
+        },
+        {
+          "file": "lesen-t5-gemini-033.json",
+          "questions": 3,
+          "issues": [
+            "gen-q-5-21c7dc2c-1: sesgo de longitud MCQ — opción correcta «a» es la más larga (76 vs 27/52; Δ +37 chars, +92% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-5-21c7dc2c-2: sesgo de longitud MCQ — opción correcta «b» es la más larga (90 vs 68/72; Δ +20 chars, +29% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-5-21c7dc2c-4: sesgo de longitud MCQ — opción correcta «b» es la más larga (76 vs 39/22; Δ +46 chars, +149% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable."
+          ]
+        },
+        {
+          "file": "lesen-t5-gemini-034.json",
+          "questions": 3,
+          "issues": [
+            "gen-q-5-2df0ca3f-1: sesgo de longitud MCQ — opción correcta «a» es la más larga (81 vs 64/72; Δ +13 chars, +19% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-5-2df0ca3f-2: sesgo de longitud MCQ — opción correcta «b» es la más larga (71 vs 51/51; Δ +20 chars, +39% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-5-2df0ca3f-3: sesgo de longitud MCQ — opción correcta «c» es la más larga (57 vs 40/31; Δ +22 chars, +61% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable."
+          ]
+        },
+        {
+          "file": "lesen-t5-gemini-035.json",
+          "questions": 4,
+          "issues": [
+            "gen-q-5-5d8ee76e-1: sesgo de longitud MCQ — opción correcta «b» es la más larga (51 vs 33/44; Δ +13 chars, +32% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-5-5d8ee76e-2: sesgo de longitud MCQ — opción correcta «c» es la más larga (90 vs 61/61; Δ +29 chars, +48% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-5-5d8ee76e-3: sesgo de longitud MCQ — opción correcta «a» es la más larga (65 vs 46/54; Δ +15 chars, +30% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-5-5d8ee76e-4: sesgo de longitud MCQ — opción correcta «a» es la más larga (84 vs 50/64; Δ +27 chars, +47% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable."
+          ]
+        },
+        {
+          "file": "lesen-t5-gemini-036.json",
+          "questions": 2,
+          "issues": [
+            "gen-q-5-d299f084-1: sesgo de longitud MCQ — opción correcta «c» es la más larga (53 vs 38/30; Δ +19 chars, +56% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-5-d299f084-4: sesgo de longitud MCQ — opción correcta «a» es la más larga (29 vs 28/29; Δ +1 chars, +2% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable."
+          ]
+        },
+        {
+          "file": "lesen-t5-gemini-037.json",
+          "questions": 3,
+          "issues": [
+            "gen-q-5-c30f2ab4-1: sesgo de longitud MCQ — opción correcta «c» es la más larga (89 vs 47/57; Δ +37 chars, +71% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-5-c30f2ab4-2: sesgo de longitud MCQ — opción correcta «b» es la más larga (58 vs 54/42; Δ +10 chars, +21% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-5-c30f2ab4-3: sesgo de longitud MCQ — opción correcta «b» es la más larga (83 vs 48/45; Δ +37 chars, +78% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable."
+          ]
+        },
+        {
+          "file": "lesen-t5-gemini-053.json",
+          "questions": 1,
+          "issues": [
+            "gen-q-5-49b206d4-4: sesgo de longitud MCQ — opción correcta «c» es la más larga (94 vs 73/93; Δ +11 chars, +13% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable."
+          ]
+        },
+        {
+          "file": "lesen-t5-gemini-057.json",
+          "questions": 2,
+          "issues": [
+            "gen-q-5-e415661a-2: sesgo de longitud MCQ — opción correcta «a» es la más larga (66 vs 62/60; Δ +5 chars, +8% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-5-e415661a-3: sesgo de longitud MCQ — opción correcta «c» es la más larga (92 vs 70/73; Δ +21 chars, +29% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable."
+          ]
+        },
+        {
+          "file": "lesen-t5-gemini-063.json",
+          "questions": 4,
+          "issues": [
+            "gen-q-5-11d79a5d-1: sesgo de longitud MCQ — opción correcta «a» es la más larga (83 vs 69/78; Δ +10 chars, +13% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-5-11d79a5d-2: sesgo de longitud MCQ — opción correcta «b» es la más larga (79 vs 64/50; Δ +22 chars, +39% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-5-11d79a5d-3: sesgo de longitud MCQ — opción correcta «c» es la más larga (88 vs 58/79; Δ +20 chars, +28% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-5-11d79a5d-4: sesgo de longitud MCQ — opción correcta «a» es la más larga (62 vs 62/28; Δ +17 chars, +38% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable."
+          ]
+        },
+        {
+          "file": "lesen-t5-gemini-064.json",
+          "questions": 3,
+          "issues": [
+            "gen-q-5-ee0e5f1b-2: sesgo de longitud MCQ — opción correcta «a» es la más larga (60 vs 58/57; Δ +3 chars, +4% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-5-ee0e5f1b-3: sesgo de longitud MCQ — opción correcta «b» es la más larga (65 vs 45/59; Δ +13 chars, +25% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-5-ee0e5f1b-4: sesgo de longitud MCQ — opción correcta «c» es la más larga (61 vs 54/52; Δ +8 chars, +15% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable."
+          ]
+        },
+        {
+          "file": "lesen-t5-gemini-065.json",
+          "questions": 3,
+          "issues": [
+            "gen-q-5-4a873a4f-1: sesgo de longitud MCQ — opción correcta «c» es la más larga (66 vs 45/56; Δ +16 chars, +31% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-5-4a873a4f-2: sesgo de longitud MCQ — opción correcta «b» es la más larga (58 vs 39/54; Δ +12 chars, +25% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-5-4a873a4f-4: sesgo de longitud MCQ — opción correcta «b» es la más larga (72 vs 45/34; Δ +33 chars, +82% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable."
+          ]
+        },
+        {
+          "file": "lesen-t5-gemini-070.json",
+          "questions": 3,
+          "issues": [
+            "gen-q-5-e8c95797-2: sesgo de longitud MCQ — opción correcta «a» es la más larga (65 vs 49/63; Δ +9 chars, +16% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-5-e8c95797-3: sesgo de longitud MCQ — opción correcta «a» es la más larga (111 vs 54/60; Δ +54 chars, +95% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-5-e8c95797-4: sesgo de longitud MCQ — opción correcta «b» es la más larga (60 vs 50/55; Δ +8 chars, +14% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable."
+          ]
+        },
+        {
+          "file": "lesen-t5-gemini-071.json",
+          "questions": 4,
+          "issues": [
+            "gen-q-5-66cdeb73-1: sesgo de longitud MCQ — opción correcta «c» es la más larga (92 vs 51/40; Δ +47 chars, +102% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-5-66cdeb73-2: sesgo de longitud MCQ — opción correcta «c» es la más larga (64 vs 44/33; Δ +26 chars, +66% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-5-66cdeb73-3: sesgo de longitud MCQ — opción correcta «b» es la más larga (52 vs 30/38; Δ +18 chars, +53% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-5-66cdeb73-4: sesgo de longitud MCQ — opción correcta «a» es la más larga (55 vs 26/34; Δ +25 chars, +83% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable."
+          ]
+        },
+        {
+          "file": "lesen-t5-gemini-073.json",
+          "questions": 2,
+          "issues": [
+            "gen-q-5-5a4d06b3-1: sesgo de longitud MCQ — opción correcta «c» es la más larga (48 vs 35/44; Δ +9 chars, +22% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-5-5a4d06b3-2: sesgo de longitud MCQ — opción correcta «c» es la más larga (57 vs 44/37; Δ +17 chars, +41% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable."
+          ]
+        },
+        {
+          "file": "lesen-t5-gemini-076.json",
+          "questions": 2,
+          "issues": [
+            "gen-q-5-a764778f-2: sesgo de longitud MCQ — opción correcta «c» es la más larga (78 vs 52/51; Δ +27 chars, +51% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-5-a764778f-4: sesgo de longitud MCQ — opción correcta «a» es la más larga (97 vs 46/67; Δ +41 chars, +72% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable."
+          ]
+        },
+        {
+          "file": "lesen-t5-gemini-077.json",
+          "questions": 2,
+          "issues": [
+            "gen-q-5-3f265ed6-1: sesgo de longitud MCQ — opción correcta «b» es la más larga (40 vs 28/28; Δ +12 chars, +43% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-5-3f265ed6-2: sesgo de longitud MCQ — opción correcta «b» es la más larga (79 vs 40/65; Δ +27 chars, +50% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable."
+          ]
+        },
+        {
+          "file": "lesen-t5-gemini-078.json",
+          "questions": 4,
+          "issues": [
+            "gen-q-5-716912b4-1: sesgo de longitud MCQ — opción correcta «b» es la más larga (72 vs 43/37; Δ +32 chars, +80% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-5-716912b4-2: sesgo de longitud MCQ — opción correcta «c» es la más larga (79 vs 52/61; Δ +23 chars, +40% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-5-716912b4-3: sesgo de longitud MCQ — opción correcta «a» es la más larga (78 vs 64/48; Δ +22 chars, +39% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+            "gen-q-5-716912b4-4: sesgo de longitud MCQ — opción correcta «c» es la más larga (84 vs 82/64; Δ +11 chars, +15% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable."
+          ]
+        }
+      ]
+    },
+    "2_lexicalCueingQuarantine": {
+      "scope": "Lesen T2/T5 + Hören T2",
+      "quarantineDate": "2026-07-12",
+      "stillVigente": true,
+      "affectedFiles": 16,
+      "affectedQuestions": 19,
+      "expectedFromStampLog": {
+        "files": 19,
+        "questions": 19
+      },
+      "reconciliation": "Stamp count drift: now 16 files / 19 q (was 19/19)",
+      "files": [
+        {
+          "file": "horen-t2-gemini-001.json",
+          "count": 1,
+          "ids": [
+            "gen-q-h2-d5028372-q3"
+          ],
+          "classes": [
+            "problematico"
+          ],
+          "stampedAt": "2026-07-12T14:34:41.508Z"
+        },
+        {
+          "file": "horen-t2-gemini-005.json",
+          "count": 1,
+          "ids": [
+            "gen-q-h2-e0b897d8-q3"
+          ],
+          "classes": [
+            "problematico"
+          ],
+          "stampedAt": "2026-07-12T14:34:41.508Z"
+        },
+        {
+          "file": "horen-t2-gemini-009.json",
+          "count": 1,
+          "ids": [
+            "gen-q-h2-cb37a553-q2"
+          ],
+          "classes": [
+            "problematico"
+          ],
+          "stampedAt": "2026-07-12T14:34:41.508Z"
+        },
+        {
+          "file": "horen-t2-gemini-015.json",
+          "count": 1,
+          "ids": [
+            "gen-q-h2-3afcaed7-q5"
+          ],
+          "classes": [
+            "problematico"
+          ],
+          "stampedAt": "2026-07-12T14:34:41.508Z"
+        },
+        {
+          "file": "horen-t2-gemini-016.json",
+          "count": 1,
+          "ids": [
+            "gen-q-h2-1ed9a47a-q5"
+          ],
+          "classes": [
+            "problematico"
+          ],
+          "stampedAt": "2026-07-12T14:34:41.508Z"
+        },
+        {
+          "file": "horen-t2-gemini-018.json",
+          "count": 1,
+          "ids": [
+            "gen-q-h2-4a57e42c-q1"
+          ],
+          "classes": [
+            "problematico"
+          ],
+          "stampedAt": "2026-07-12T14:34:41.508Z"
+        },
+        {
+          "file": "horen-t2-gemini-021.json",
+          "count": 2,
+          "ids": [
+            "gen-q-h2-88828b35-q3",
+            "gen-q-h2-88828b35-q4"
+          ],
+          "classes": [
+            "problematico"
+          ],
+          "stampedAt": "2026-07-12T14:34:41.508Z"
+        },
+        {
+          "file": "lesen-t2-gemini-094.json",
+          "count": 1,
+          "ids": [
+            "gen-q-2-698a2191-3"
+          ],
+          "classes": [
+            "problematico"
+          ],
+          "stampedAt": "2026-07-12T14:34:41.508Z"
+        },
+        {
+          "file": "lesen-t2-gemini-103.json",
+          "count": 1,
+          "ids": [
+            "gen-q-2-05fc623e-4"
+          ],
+          "classes": [
+            "problematico"
+          ],
+          "stampedAt": "2026-07-12T14:34:41.508Z"
+        },
+        {
+          "file": "lesen-t2-gemini-104.json",
+          "count": 1,
+          "ids": [
+            "gen-q-2-f76d3112-5"
+          ],
+          "classes": [
+            "problematico"
+          ],
+          "stampedAt": "2026-07-12T14:34:41.508Z"
+        },
+        {
+          "file": "lesen-t2-gemini-106.json",
+          "count": 2,
+          "ids": [
+            "gen-q-2-e7ae4d43-3",
+            "gen-q-2-e7ae4d43-6"
+          ],
+          "classes": [
+            "problematico"
+          ],
+          "stampedAt": "2026-07-12T14:34:41.508Z"
+        },
+        {
+          "file": "lesen-t5-gemini-023.json",
+          "count": 2,
+          "ids": [
+            "gen-q-5-7cd9cc8e-1",
+            "gen-q-5-7cd9cc8e-4"
+          ],
+          "classes": [
+            "problematico"
+          ],
+          "stampedAt": "2026-07-12T14:34:41.508Z"
+        },
+        {
+          "file": "lesen-t5-gemini-037.json",
+          "count": 1,
+          "ids": [
+            "gen-q-5-c30f2ab4-2"
+          ],
+          "classes": [
+            "problematico"
+          ],
+          "stampedAt": "2026-07-12T14:34:41.508Z"
+        },
+        {
+          "file": "lesen-t5-gemini-057.json",
+          "count": 1,
+          "ids": [
+            "gen-q-5-e415661a-2"
+          ],
+          "classes": [
+            "problematico"
+          ],
+          "stampedAt": "2026-07-12T14:34:41.508Z"
+        },
+        {
+          "file": "lesen-t5-gemini-064.json",
+          "count": 1,
+          "ids": [
+            "gen-q-5-ee0e5f1b-3"
+          ],
+          "classes": [
+            "problematico"
+          ],
+          "stampedAt": "2026-07-12T14:34:41.508Z"
+        },
+        {
+          "file": "lesen-t5-gemini-077.json",
+          "count": 1,
+          "ids": [
+            "gen-q-5-3f265ed6-4"
+          ],
+          "classes": [
+            "problematico"
+          ],
+          "stampedAt": "2026-07-12T14:34:41.508Z"
+        }
+      ]
+    },
+    "3_schreibenPlaceholders": {
+      "scope": "All Schreiben pool-verified",
+      "poolTotal": 12,
+      "affectedFiles": 0,
+      "files": []
+    },
+    "4_premiseDuplication": {
+      "schreibenT3": {
+        "scope": "Schreiben T3 scenario families (schreibenT3PremiseDedup.mjs)",
+        "affectedFiles": 3,
+        "duplicateGroups": 3,
+        "groups": [
+          {
+            "scenario": "appointment_cancel_reschedule",
+            "files": [
+              "schreiben-gemini-003.json",
+              "schreiben-gemini-004.json",
+              "schreiben-gemini-009.json"
+            ]
+          },
+          {
+            "scenario": "thank_you_note",
+            "files": [
+              "schreiben-gemini-008.json",
+              "schreiben-gemini-010.json"
+            ]
+          },
+          {
+            "scenario": "borrowed_item_return_delay",
+            "files": [
+              "schreiben-gemini-012.json",
+              "schreiben-gemini-013.json",
+              "schreiben-gemini-014.json"
+            ]
+          }
+        ],
+        "files": [
+          "schreiben-gemini-004.json",
+          "schreiben-gemini-010.json",
+          "schreiben-gemini-012.json"
+        ]
+      },
+      "horenT1T2": {
+        "scope": "Hören T1/T2 scenario families (horenPremiseDedup.mjs)",
+        "affectedFiles": 11,
+        "duplicateGroups": 4,
+        "groups": [
+          {
+            "teil": 1,
+            "scenario": "radio_tip",
+            "files": [
+              "horen-t1-gemini-005.json",
+              "horen-t1-gemini-021.json"
+            ],
+            "passages": 3
+          },
+          {
+            "teil": 1,
+            "scenario": "train_delay_announcement",
+            "files": [
+              "horen-t1-gemini-018.json",
+              "horen-t1-gemini-019.json",
+              "horen-t1-gemini-020.json",
+              "horen-t1-gemini-021.json",
+              "horen-t1-gemini-023.json"
+            ],
+            "passages": 5
+          },
+          {
+            "teil": 1,
+            "scenario": "answering_machine",
+            "files": [
+              "horen-t1-gemini-018.json",
+              "horen-t1-gemini-021.json",
+              "horen-t1-gemini-022.json"
+            ],
+            "passages": 3
+          },
+          {
+            "teil": 2,
+            "scenario": "freizeit_vortrag_monologue",
+            "files": [
+              "horen-t2-gemini-024.json",
+              "horen-t2-gemini-025.json",
+              "horen-t2-gemini-026.json",
+              "horen-t2-gemini-027.json"
+            ],
+            "passages": 4
+          }
+        ],
+        "files": [
+          "horen-t1-gemini-005.json",
+          "horen-t1-gemini-018.json",
+          "horen-t1-gemini-019.json",
+          "horen-t1-gemini-020.json",
+          "horen-t1-gemini-021.json",
+          "horen-t1-gemini-022.json",
+          "horen-t1-gemini-023.json",
+          "horen-t2-gemini-024.json",
+          "horen-t2-gemini-025.json",
+          "horen-t2-gemini-026.json",
+          "horen-t2-gemini-027.json"
+        ]
+      },
+      "combinedAffectedFiles": 14
+    },
+    "5_schreibenDisplayRubric": {
+      "scope": "All Schreiben — explanation must match canonicalSchreibenExplanation",
+      "poolTotal": 12,
+      "affectedFiles": 6,
+      "files": [
+        {
+          "file": "schreiben-gemini-004.json",
+          "issues": [
+            {
+              "teil": 3,
+              "id": "gen-q-s-t3-d3546338-q1",
+              "got": "Bewertung (Goethe-offiziell): Erfüllung (0–4) – Mitteilung vollständig (Absage, "
+            }
+          ]
+        },
+        {
+          "file": "schreiben-gemini-005.json",
+          "issues": [
+            {
+              "teil": 3,
+              "id": "gen-q-s-t3-d252d1e4-q1",
+              "got": "Bewertung (Goethe-offiziell): Erfüllung (0–4) – Mitteilung vollständig (Entschul"
+            }
+          ]
+        },
+        {
+          "file": "schreiben-gemini-006.json",
+          "issues": [
+            {
+              "teil": 3,
+              "id": "gen-q-s-t3-4e264c3c-q1",
+              "got": "Bewertung (Goethe-offiziell): Erfüllung (0–4) – Mitteilung vollständig (Anliegen"
+            }
+          ]
+        },
+        {
+          "file": "schreiben-gemini-007.json",
+          "issues": [
+            {
+              "teil": 3,
+              "id": "gen-q-s-t3-0810413b-q1",
+              "got": "Bewertung (Goethe-offiziell): Erfüllung (0–4) – Mitteilung vollständig (Ruhebeda"
+            }
+          ]
+        },
+        {
+          "file": "schreiben-gemini-009.json",
+          "issues": [
+            {
+              "teil": 3,
+              "id": "gen-q-s-t3-8ec53220-q1",
+              "got": "Bewertung (Goethe-offiziell): Erfüllung (0–4) – Mitteilung vollständig (Entschul"
+            }
+          ]
+        },
+        {
+          "file": "schreiben-gemini-010.json",
+          "issues": [
+            {
+              "teil": 3,
+              "id": "gen-q-s-t3-9231-q1",
+              "got": "Bewertung (Goethe-offiziell): Erfüllung (0–4) – Mitteilung vollständig (Dank, An"
+            }
+          ]
+        }
+      ]
+    },
+    "6_nameRotation": {
+      "scope": "Hören T3/T4 (Dana/Florian), Lesen T4 (recycled first names), Schreiben T3 (Klein/Schmidt + recycled)",
+      "poolTotals": {
+        "horenT3": 10,
+        "horenT4": 11,
+        "lesenT4": 9,
+        "schreiben": 12
+      },
+      "affectedFiles": 11,
+      "byPart": {
+        "horenT3": 0,
+        "horenT4": 0,
+        "lesenT4": 8,
+        "schreibenT3": 3
+      },
+      "hits": {
+        "horenT3": [],
+        "horenT4": [],
+        "lesenT4": [
+          {
+            "file": "lesen-t4-gemini-002.json",
+            "names": [
+              "Anna",
+              "Ben",
+              "Clara",
+              "David",
+              "Greta"
+            ]
+          },
+          {
+            "file": "lesen-t4-gemini-006.json",
+            "names": [
+              "Anna",
+              "Clara"
+            ]
+          },
+          {
+            "file": "lesen-t4-gemini-016.json",
+            "names": [
+              "Ben",
+              "Clara",
+              "David"
+            ]
+          },
+          {
+            "file": "lesen-t4-gemini-017.json",
+            "names": [
+              "Anna",
+              "Ben",
+              "Clara",
+              "David",
+              "Greta"
+            ]
+          },
+          {
+            "file": "lesen-t4-gemini-019.json",
+            "names": [
+              "Clara"
+            ]
+          },
+          {
+            "file": "lesen-t4-gemini-043.json",
+            "names": [
+              "Anna",
+              "Ben",
+              "Clara",
+              "David",
+              "Finn",
+              "Greta"
+            ]
+          },
+          {
+            "file": "lesen-t4-gemini-044.json",
+            "names": [
+              "Anna",
+              "Ben",
+              "Clara",
+              "David"
+            ]
+          },
+          {
+            "file": "lesen-t4-gemini-045.json",
+            "names": [
+              "Clara",
+              "David"
+            ]
+          }
+        ],
+        "schreibenT3": [
+          {
+            "file": "schreiben-gemini-004.json",
+            "names": [
+              "Herr/Frau Schmidt"
+            ]
+          },
+          {
+            "file": "schreiben-gemini-005.json",
+            "names": [
+              "Herr/Frau Schmidt"
+            ]
+          },
+          {
+            "file": "schreiben-gemini-010.json",
+            "names": [
+              "Herr/Frau Klein"
+            ]
+          }
+        ]
+      }
+    },
+    "7_horenT3Chrono": {
+      "scope": "All Hören T3 — verifyRfChronoByCharPos (char offset monotonicity)",
+      "poolTotal": 10,
+      "affectedFiles": 1,
+      "allPass": false,
+      "files": [
+        {
+          "file": "horen-t3-gemini-012.json",
+          "positions": [
+            140,
+            140,
+            262,
+            827,
+            888,
+            140,
+            1284
+          ],
+          "details": [
+            {
+              "id": "gen-q-h3-b68e1086-1",
+              "pos": 140,
+              "via": "tag",
+              "needle": "wohnung",
+              "q": "Tim hat jetzt eine größere Wohnung mit vier Zimmern."
+            },
+            {
+              "id": "gen-q-h3-b68e1086-2",
+              "pos": 140,
+              "via": "tag",
+              "needle": "wohnung",
+              "q": "Die Miete für Tims neue Wohnung ist höher als in seiner alten."
+            },
+            {
+              "id": "gen-q-h3-b68e1086-3",
+              "pos": 262,
+              "via": "tag",
+              "needle": "schlafzimmer",
+              "q": "Tim ist mit seinem Vermieter nicht zufrieden."
+            },
+            {
+              "id": "gen-q-h3-b68e1086-4",
+              "pos": 827,
+              "via": "substr",
+              "needle": ", aber im arbeitszimmer ",
+              "q": "Tim hat bereits alle Umzugskartons ausgepackt."
+            },
+            {
+              "id": "gen-q-h3-b68e1086-5",
+              "pos": 888,
+              "via": "substr",
+              "needle": " bücherregale aufbauen",
+              "q": "Tim hat vor, Möbel für seine Bücher in der Wohnung zu montieren."
+            },
+            {
+              "id": "gen-q-h3-b68e1086-6",
+              "pos": 140,
+              "via": "tag",
+              "needle": "wohnung",
+              "q": "Für Tim ist ein Balkon in einer Wohnung unwichtig."
+            },
+            {
+              "id": "gen-q-h3-b68e1086-7",
+              "pos": 1284,
+              "via": "substr",
+              "needle": " nächstes wochenende",
+              "q": "Tim plant, bald eine Feier in seiner neuen Wohnung zu veranstalten."
+            }
+          ]
+        }
+      ]
+    },
+    "8_lesenT3TopicDrift": {
+      "scope": "Lesen T3 — isLesenT3TopicCompatible (CHK-26 + topicFamilies)",
+      "poolTotal": 16,
+      "affectedFiles": 9,
+      "riskPairs": [
+        "Arbeit/Bildung",
+        "Umwelt/Reisen",
+        "Konsum/Wohnen/Stadtleben"
+      ],
+      "files": [
+        {
+          "file": "lesen-t3-auto-5bw5c5.json",
+          "expected": "Wohnen",
+          "detected": "Technik",
+          "requestedTopic": "Wohnen"
+        },
+        {
+          "file": "lesen-t3-auto-ma7vt8.json",
+          "expected": "Wohnen",
+          "detected": "Reisen",
+          "requestedTopic": "Wohnen"
+        },
+        {
+          "file": "lesen-t3-auto-t725x5.json",
+          "expected": "Technik",
+          "detected": "Reisen",
+          "requestedTopic": "Technik"
+        },
+        {
+          "file": "lesen-t3-auto-vqxy1z.json",
+          "expected": "Wohnen",
+          "detected": "Sport",
+          "requestedTopic": "Wohnen"
+        },
+        {
+          "file": "lesen-t3-auto-w8hk4n.json",
+          "expected": "Verkehr",
+          "detected": "Wohnen",
+          "requestedTopic": "Verkehr"
+        },
+        {
+          "file": "lesen-t3-auto-xcph87.json",
+          "expected": "Wohnen",
+          "detected": "Technik",
+          "requestedTopic": "Wohnen"
+        },
+        {
+          "file": "lesen-t3-auto-yu9vyl.json",
+          "expected": "Wohnen",
+          "detected": "Reisen",
+          "requestedTopic": "Wohnen"
+        },
+        {
+          "file": "lesen-t3-auto-zfand7.json",
+          "expected": "Wohnen",
+          "detected": "Technik",
+          "requestedTopic": "Wohnen"
+        },
+        {
+          "file": "lesen-t3-auto-zspq8n.json",
+          "expected": "Wohnen",
+          "detected": "Bildung",
+          "requestedTopic": "Wohnen"
+        }
+      ]
+    },
+    "9_lesenT2WordCopy": {
+      "scope": "Lesen T2 — correct option copies ≥4 consecutive words from passage",
+      "mechanism": "hasLongLiteralOverlap (lesenBatchQuality.mjs / wordMatchRepair)",
+      "poolTotal": 11,
+      "affectedFiles": 0,
+      "affectedQuestions": 0,
+      "files": []
+    },
+    "10_liveCalculation": {
+      "scope": "Runtime paths for separable verbs / articles / conjugation",
+      "poolScanNeeded": false,
+      "conclusion": "All checks computed live from text at runtime — no pool scan required; no stale metadata keys in pool-verified",
+      "affectedFiles": 0,
+      "affectedQuestions": 0,
+      "poolFilesWithStaleMeta": 0,
+      "runtimeEvidence": [
+        {
+          "file": "js/engine/separableResolve.js",
+          "usesLiveCalculation": true
+        },
+        {
+          "file": "js/data/verbConjugation.js",
+          "usesLiveCalculation": true
+        },
+        {
+          "file": "js/data/listeningGameUtils.js",
+          "usesLiveCalculation": true
+        },
+        {
+          "file": "js/ui/vocabulary/tooltip.js",
+          "usesLiveCalculation": true
+        },
+        {
+          "file": "js/ui/vocabulary/flashcards.js",
+          "usesLiveCalculation": true
+        }
+      ]
+    }
+  }
+}

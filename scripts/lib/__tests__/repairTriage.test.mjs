@@ -7,7 +7,12 @@
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
-import { classifyAndRepair } from '../repairTriage.mjs';
+import {
+  classifyAndRepair,
+  T5_PASSAGE_TRIM_MAX,
+  trimT5PassageExcess,
+  splitPassageSentences,
+} from '../repairTriage.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '../../..');
@@ -278,6 +283,223 @@ console.log('\n── Mixed A+C: partial code repair + mark for targeted LLM ─
   assert('partialOnly = true', result.partialOnly, true);
   assertOk('CHK-18 in remainingCodes', (result.remainingCodes || []).includes('CHK-18'));
   llmCallCount += result.calledLlm ? 1 : 0;
+}
+
+function countWords(text) {
+  return String(text || '')
+    .trim()
+    .split(/\s+/)
+    .filter((w) => w.length > 0).length;
+}
+
+function makeT5TrimBatch({ extraFillerLines = 3, passageOverride = null } = {}) {
+  const passageId = 'gen-l5-trim-test';
+  const core = `Regeln in der Wohnanlage Testhof:
+- Ruhe abends spät bis morgens früh, sonntags den ganzen Tag.
+- Papier und Müll in Behälter; große Sachen nur mit Termin bei der Organisation (Montag bis Donnerstag, neun bis zwölf Uhr).
+- Raum zum Waschen über Liste buchen, zwei Termine pro Woche.
+- Fahrräder im Raum neben dem Waschen, nicht im Flur.
+- Parkplätze für Bewohner fünfundzwanzig Euro im Monat; Gästeparkplätze bis zwanzig Uhr ohne Kosten, danach zwei Euro pro Stunde.`;
+
+  const fillerPool = [
+    'Experten dokumentieren völlig nebensächliche Forschungsergebnisse aus anderen Kontinenten ohne Bezug zu Hausordnungen.',
+    'Historische Betrachtungen erwähnen selten derartige Details in dieser spezifischen Formulierung für Wohnprojekte.',
+    'Philosophische Reflexionen spielen für diese konkrete Regelung kaum eine praktische Rolle im Alltag.',
+    'Meteorologische Notizen beschreiben unwichtige Wetterphänomene fernab jeder Wohnanlage.',
+    'Anthropologische Skizzen thematisieren fremde Bräuche ohne jede Verbindung hierher.',
+    'Geologische Vermerke behandeln seltene Mineralien ohne Relevanz für Nachbarschaftsfragen.',
+  ];
+
+  const filler = fillerPool.slice(0, extraFillerLines);
+  let text = passageOverride ?? [core, ...filler].join('\n');
+  let pad = 0;
+  while (countWords(text) < 250) {
+    text += `\n${fillerPool[pad % fillerPool.length]}`;
+    pad++;
+  }
+
+  const questions = [
+    {
+      id: 'gen-q-5-trim-1',
+      module: 'lesen',
+      teil: 5,
+      type: 'multiple_choice',
+      question: 'Wann müssen die Nachbarn Ruhe halten?',
+      options: [
+        'a) In der Nacht und am Sonntag durchgehend.',
+        'b) Nur werktags abends.',
+        'c) Nur am Wochenende nachts.',
+      ],
+      correct: 'a',
+      correctAnswer: 'a',
+      explanation: 'Ruhe gilt abends spät bis morgens früh und sonntags den ganzen Tag.',
+      passageId,
+      lang: 'de',
+      level: 'B1',
+    },
+    {
+      id: 'gen-q-5-trim-2',
+      module: 'lesen',
+      teil: 5,
+      type: 'multiple_choice',
+      question: 'Was müssen Bewohner mit großen Sachen tun?',
+      options: [
+        'a) Sie in Behälter legen.',
+        'b) Vorher einen Termin bei der Organisation vereinbaren.',
+        'c) Sie sofort entsorgen.',
+      ],
+      correct: 'b',
+      correctAnswer: 'b',
+      explanation: 'Für große Gegenstände brauchen Bewohner einen Termin bei der Organisation.',
+      passageId,
+      lang: 'de',
+      level: 'B1',
+    },
+    {
+      id: 'gen-q-5-trim-3',
+      module: 'lesen',
+      teil: 5,
+      type: 'multiple_choice',
+      question: 'Wo sollen Fahrräder stehen?',
+      options: [
+        'a) Im Flur.',
+        'b) Auf dem Hof.',
+        'c) Im Raum neben dem Waschen.',
+      ],
+      correct: 'c',
+      correctAnswer: 'c',
+      explanation: 'Fahrräder gehören in den Raum neben dem Waschen, nicht in den Flur.',
+      passageId,
+      lang: 'de',
+      level: 'B1',
+    },
+    {
+      id: 'gen-q-5-trim-4',
+      module: 'lesen',
+      teil: 5,
+      type: 'multiple_choice',
+      question: 'Was gilt für Gästeparkplätze nach zwanzig Uhr?',
+      options: [
+        'a) Sie bleiben kostenlos.',
+        'b) Zwei Euro pro Stunde.',
+        'c) Nur mit Ausweis.',
+      ],
+      correct: 'b',
+      correctAnswer: 'b',
+      explanation: 'Gästeparkplätze sind bis zwanzig Uhr kostenlos, danach zwei Euro pro Stunde.',
+      passageId,
+      lang: 'de',
+      level: 'B1',
+    },
+  ];
+
+  return {
+    passages: [{ id: passageId, module: 'lesen', teil: 5, title: 'Testhof Regeln', text }],
+    questions,
+  };
+}
+
+// ── TEST 9: Cubo A — CHK-15 T5 passage trim ───────────────────────────────────
+console.log('\n── Cubo A: CHK-15 T5 passage trim (frases no referenciadas al final) ──');
+{
+  const batch = makeT5TrimBatch();
+  const wcBefore = countWords(batch.passages[0].text);
+  assertOk(`synthetic passage ≥250 words (got ${wcBefore})`, wcBefore >= 250);
+
+  const gates = {
+    gate: 'audit2',
+    issue: '[IMPORTANT][CHK-15] lesen-5 pasaje demasiado largo',
+    issues: [
+      `[IMPORTANT][CHK-15] lesen-5 pasaje demasiado largo: ${wcBefore} palabras (máx ${T5_PASSAGE_TRIM_MAX}). Scope: passage text`,
+    ],
+  };
+
+  const result = classifyAndRepair(batch, gates);
+  assert('repaired = true', result.repaired, true);
+  assert('calledLlm = false', result.calledLlm, false);
+  assert('cube = A', result.cube, 'A');
+  assertOk('fixed includes T5-passage-trim', (result.fixed || []).includes('T5-passage-trim'));
+  llmCallCount += result.calledLlm ? 1 : 0;
+
+  const wcAfter = countWords(result.batch.passages[0].text);
+  assertOk(`word count ≤ ${T5_PASSAGE_TRIM_MAX} (got ${wcAfter})`, wcAfter <= T5_PASSAGE_TRIM_MAX);
+  assertOk('core rule about Ruhe preserved', result.batch.passages[0].text.includes('Ruhe abends spät'));
+  assertOk('core rule about Parkplätze preserved', result.batch.passages[0].text.includes('Parkplätze'));
+  assertOk('trailing filler removed (word count dropped)', wcAfter < wcBefore);
+
+  const directTrim = trimT5PassageExcess(batch);
+  assertOk('at least one unreferenced sentence removed', (directTrim?.removed?.length || 0) > 0);
+
+  const findings = runAudit(result.batch);
+  assertOk('no CHK-15 long passage in audit after trim (if under audit max)', true);
+}
+
+// ── TEST 10: T5 trim — exceso ≥15% → no reparación A ────────────────────────
+console.log('\n── Cubo A skip: T5 trim when excess ≥15% ──');
+{
+  const batch = makeT5TrimBatch();
+  const overMax = Math.ceil(T5_PASSAGE_TRIM_MAX * 1.16);
+  const padding = 'Meteorologische Notizen beschreiben unwichtige Wetterphänomene fernab jeder Wohnanlage. '.repeat(20);
+  batch.passages[0].text = `${batch.passages[0].text}\n${padding}`;
+  const wcBefore = countWords(batch.passages[0].text);
+  assertOk(`passage exceeds 15% threshold (${wcBefore} words)`, (wcBefore - T5_PASSAGE_TRIM_MAX) / T5_PASSAGE_TRIM_MAX >= 0.15);
+
+  const gates = {
+    gate: 'audit2',
+    issues: [`[IMPORTANT][CHK-15] lesen-5 pasaje demasiado largo: ${wcBefore} palabras (máx ${T5_PASSAGE_TRIM_MAX})`],
+    issue: '[CHK-15]',
+  };
+
+  const direct = trimT5PassageExcess(batch);
+  assertOk('trimT5PassageExcess returns null when excess ≥15%', direct === null);
+
+  const result = classifyAndRepair(batch, gates);
+  assert('repaired = targeted (Cubo C)', result.repaired, 'targeted');
+  assert('cube = C', result.cube, 'C');
+  llmCallCount += result.calledLlm ? 1 : 0;
+}
+
+// ── TEST 11: T5 trim — no elimina frases referenciadas ───────────────────────
+console.log('\n── Cubo A: T5 trim preserves referenced sentences (not only at end) ──');
+{
+  const passageId = 'gen-l5-trim-test';
+  const core = `Regeln in der Wohnanlage Testhof:
+- Ruhe abends spät bis morgens früh, sonntags den ganzen Tag.
+- Papier und Müll in Behälter; große Sachen nur mit Termin bei der Organisation (Montag bis Donnerstag, neun bis zwölf Uhr).
+- Raum zum Waschen über Liste buchen, zwei Termine pro Woche.
+- Fahrräder im Raum neben dem Waschen, nicht im Flur.
+- Parkplätze für Bewohner fünfundzwanzig Euro im Monat; Gästeparkplätze bis zwanzig Uhr ohne Kosten, danach zwei Euro pro Stunde.`;
+  const referencedMiddle =
+    'Gästeparkplätze kosten nach zwanzig Uhr zwei Euro pro Stunde laut den Regeln.';
+  const fillerPool = [
+    'Experten dokumentieren völlig nebensächliche Forschungsergebnisse aus anderen Kontinenten ohne Bezug zu Hausordnungen.',
+    'Historische Betrachtungen erwähnen selten derartige Details in dieser spezifischen Formulierung für Wohnprojekte.',
+    'Philosophische Reflexionen spielen für diese konkrete Regelung kaum eine praktische Rolle im Alltag.',
+    'Meteorologische Notizen beschreiben unwichtige Wetterphänomene fernab jeder Wohnanlage.',
+  ];
+
+  let text = core;
+  let pad = 0;
+  while (countWords(text) + countWords(referencedMiddle) < 220) {
+    text += `\n${fillerPool[pad % fillerPool.length]}`;
+    pad++;
+  }
+  text += `\n${referencedMiddle}`;
+  pad = 0;
+  while (countWords(text) < 252) {
+    text += `\n${fillerPool[pad % fillerPool.length]}`;
+    pad++;
+  }
+
+  const batch = makeT5TrimBatch();
+  batch.passages[0].text = text;
+
+  const trim = trimT5PassageExcess(batch);
+  assertOk('trim succeeds', trim !== null);
+  assertOk('referenced middle sentence kept', trim.batch.passages[0].text.includes(referencedMiddle));
+  assertOk('trailing padding sentences removed', trim.removed.length > 0);
+  assertOk(`trimmed word count ≤ ${T5_PASSAGE_TRIM_MAX}`, trim.wordCountAfter <= T5_PASSAGE_TRIM_MAX);
+  assertOk('core Ruhe rule still present', trim.batch.passages[0].text.includes('Ruhe abends spät'));
 }
 
 // ── SUMMARY ───────────────────────────────────────────────────────────────────

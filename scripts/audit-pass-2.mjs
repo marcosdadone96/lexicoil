@@ -16,15 +16,38 @@ import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
-import { BLACKLIST } from './blacklist.mjs';
+import { BLACKLIST, B2_QUESTION_BLACKLIST, B1_QUESTION_BLACKLIST } from './blacklist.mjs';
+import { normalizeB1Topic } from './lib/b1Topics.mjs';
+import { assessT4TopicAlignment, formatT4TopicAlignmentFailure } from './lib/t4TopicAlign.mjs';
+import { checkMcqDistinctBatch } from './lib/mcqDistinctCheck.mjs';
 import { answerKeySequence } from './lib/balanceMcq.mjs';
+import {
+  scanP2CapitalizationViolations,
+  scanMcqOptionCapitalizationViolations,
+  ADJ_NEEDS_ARTICLE_GUARD,
+  looksLikeAttributiveAdjective,
+} from './lib/capitalizeNouns.mjs';
+import { isKnownGermanNoun } from './lib/germanNounLexicon.mjs';
+import { findKeyExplanationMismatches } from './lib/keyExplanationGate.mjs';
+import {
+  detectTopicFromT3Situations,
+  isLesenT3TopicCompatible,
+} from './lib/lesenT3TopicFilter.mjs';
+import { verifyHorenT4MatchingChrono } from './lib/horenT4ChronoEvidence.mjs';
+import { createRequire } from 'node:module';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const require = createRequire(import.meta.url);
+const { detectTopic } = require(path.join(ROOT, 'js/engine/partTopicDetect.js'));
 
 // ─── Editable constants ────────────────────────────────────────────────────
 
 const CANONICAL_TYPES = new Set([
   'multiple_choice', 'richtig_falsch', 'ja_nein', 'matching', 'short_answer',
+  // Goethe B1 Sprechen (SP-2 taxonomy)
+  'planungsaufgabe', 'praesentation', 'feedback_diskussion',
+  // Goethe A2 Sprechen (official Modellsatz)
+  'personal_questions', 'about_self', 'plan_together',
 ]);
 
 /** Blueprint: expected item count per (module, teil). null = variable. */
@@ -39,8 +62,34 @@ const BLUEPRINT = {
   'horen-3':   { count: 7,  types: ['richtig_falsch'] },
   'horen-4':   { count: 8,  types: ['matching'] },
   'schreiben': { count: null, types: ['short_answer'] },
-  'sprechen':  { count: null, types: ['short_answer'] },
+  'sprechen':  { count: null, types: ['planungsaufgabe', 'praesentation', 'feedback_diskussion', 'personal_questions', 'about_self', 'plan_together', 'short_answer'] },
 };
+
+/** Goethe A2 Modellsatz — 5 ítems por Teil (Lesen/Hören T1–T4). */
+const BLUEPRINT_A2 = {
+  'lesen-1':   { count: 5, types: ['multiple_choice'] },
+  'lesen-2':   { count: 5, types: ['multiple_choice'] },
+  'lesen-3':   { count: 5, types: ['multiple_choice'] },
+  'lesen-4':   { count: 5, types: ['matching'] },
+  'horen-1':   { count: 5, types: ['multiple_choice'] },
+  'horen-2':   { count: 5, types: ['matching'] },
+  'horen-3':   { count: 5, types: ['multiple_choice'] },
+  'horen-4':   { count: 5, types: ['ja_nein'] },
+  'schreiben': { count: null, types: ['short_answer'] },
+  'sprechen':  { count: null, types: ['personal_questions', 'about_self', 'plan_together', 'short_answer'] },
+};
+
+function blueprintForLevel(level) {
+  return String(level || 'B1').toUpperCase() === 'A2' ? BLUEPRINT_A2 : BLUEPRINT;
+}
+
+function inferAuditLevel(batch) {
+  if (batch?.level) return String(batch.level).toUpperCase();
+  for (const q of batch?.questions || []) {
+    if (q?.level) return String(q.level).toUpperCase();
+  }
+  return 'B1';
+}
 
 /** C1/C2 vocabulary blacklist (case-insensitive). Add here to extend. */
 // BLACKLIST imported from ./lib/blacklist.mjs — single source of truth
@@ -192,6 +241,7 @@ function chk2(batch, file) {
 
 function chk3(batch, file) {
   const findings = [];
+  const blueprint = blueprintForLevel(inferAuditLevel(batch));
   // Group by module+teil
   const groups = {};
   for (const q of batch.questions || []) {
@@ -199,7 +249,7 @@ function chk3(batch, file) {
     groups[key] = (groups[key] || 0) + 1;
   }
   for (const [key, count] of Object.entries(groups)) {
-    const spec = BLUEPRINT[key];
+    const spec = blueprint[key];
     if (!spec || spec.count === null) continue;
     if (count !== spec.count) {
       findings.push(finding('CHK-3', 'CRITICAL', file, key,
@@ -215,12 +265,13 @@ function chk3(batch, file) {
 // Solo se llama desde auditExam — nunca en auditorías de batch/parte suelta.
 function chk3Absent(flat, file) {
   const findings = [];
+  const blueprint = blueprintForLevel(inferAuditLevel(flat));
   const presentKeys = new Set();
   for (const q of flat.questions || []) {
     const key = bpKey(q);
-    if (BLUEPRINT[key]) presentKeys.add(key);
+    if (blueprint[key]) presentKeys.add(key);
   }
-  for (const [key, spec] of Object.entries(BLUEPRINT)) {
+  for (const [key, spec] of Object.entries(blueprint)) {
     if (spec.count === null) continue; // short_answer / sprechen = conteo variable
     if (!presentKeys.has(key)) {
       findings.push(finding('CHK-3', 'CRITICAL', file, key,
@@ -368,31 +419,70 @@ function chk5(allBatches) {
   return findings;
 }
 
-// ─── CHK-6: C1/C2 blacklist ───────────────────────────────────────────────
+// ─── CHK-6: C1/C2 blacklist (+ B2+ for B1 questions) ───────────────────────
+
+function inferBatchLevel(batch) {
+  const lv = batch?.level || batch?.questions?.[0]?.level || batch?.passages?.[0]?.level;
+  return String(lv || 'B1').trim().toUpperCase();
+}
 
 function chk6(batch, file) {
   const findings = [];
-  const check = (text, scope) => {
+  const level = inferBatchLevel(batch);
+  const check = (text, scope, entries, label, chkId = 'CHK-6', targetLevel = 'B1') => {
     if (!text) return;
-    for (const entry of BLACKLIST) {
+    for (const entry of entries) {
       if (!entry.term.test(text)) continue;
       const match = text.match(entry.term)?.[0] || '';
       const msg = entry.grammar
         ? `Error gramatical "${match}" → ${entry.suggestion}`
-        : `Vocabulario C1/C2 "${match}" → usa "${entry.suggestion}" (B1)`;
-      findings.push(finding('CHK-6', 'IMPORTANT', file, scope, msg));
+        : `${label} "${match}" → usa "${entry.suggestion}" (${targetLevel})`;
+      findings.push(finding(chkId, 'IMPORTANT', file, scope, msg));
     }
   };
 
   for (const p of batch.passages || []) {
-    check(p.text, `passage:${p.id}`);
-    check(p.title, `passage:${p.id}:title`);
+    check(p.text, `passage:${p.id}`, BLACKLIST, 'Vocabulario C1/C2');
+    check(p.title, `passage:${p.id}:title`, BLACKLIST, 'Vocabulario C1/C2');
   }
   for (const q of batch.questions || []) {
-    check(q.question, `q:${q.id}:question`);
-    check(q.signText, `q:${q.id}:signText`);
-    check(q.explanation, `q:${q.id}:explanation`);
-    for (const o of q.options || []) check(String(o), `q:${q.id}:option`);
+    check(q.question, `q:${q.id}:question`, BLACKLIST, 'Vocabulario C1/C2');
+    check(q.signText, `q:${q.id}:signText`, BLACKLIST, 'Vocabulario C1/C2');
+    check(q.explanation, `q:${q.id}:explanation`, BLACKLIST, 'Vocabulario C1/C2');
+    for (const o of q.options || []) check(String(o), `q:${q.id}:option`, BLACKLIST, 'Vocabulario C1/C2');
+    if (level !== 'A2') {
+      check(q.question, `q:${q.id}:question`, B2_QUESTION_BLACKLIST, 'Vocabulario B2+ en pregunta');
+      check(q.signText, `q:${q.id}:signText`, B2_QUESTION_BLACKLIST, 'Vocabulario B2+ en pregunta');
+      check(q.explanation, `q:${q.id}:explanation`, B2_QUESTION_BLACKLIST, 'Vocabulario B2+ en pregunta');
+      for (const o of q.options || []) {
+        check(String(o), `q:${q.id}:option`, B2_QUESTION_BLACKLIST, 'Vocabulario B2+ en pregunta');
+      }
+    }
+  }
+  return findings;
+}
+
+// ─── CHK-6c: B1+ blacklist in A2 questions ─────────────────────────────────
+
+function chk6c(batch, file) {
+  const findings = [];
+  if (inferBatchLevel(batch) !== 'A2') return findings;
+  const check = (text, scope, entries, label) => {
+    if (!text) return;
+    for (const entry of entries) {
+      if (!entry.term.test(text)) continue;
+      const match = text.match(entry.term)?.[0] || '';
+      const msg = `${label} "${match}" → usa "${entry.suggestion}" (A2)`;
+      findings.push(finding('CHK-6c', 'IMPORTANT', file, scope, msg));
+    }
+  };
+  for (const q of batch.questions || []) {
+    check(q.question, `q:${q.id}:question`, B1_QUESTION_BLACKLIST, 'Vocabulario B1+ en pregunta');
+    check(q.signText, `q:${q.id}:signText`, B1_QUESTION_BLACKLIST, 'Vocabulario B1+ en pregunta');
+    check(q.explanation, `q:${q.id}:explanation`, B1_QUESTION_BLACKLIST, 'Vocabulario B1+ en pregunta');
+    for (const o of q.options || []) {
+      check(String(o), `q:${q.id}:option`, B1_QUESTION_BLACKLIST, 'Vocabulario B1+ en pregunta');
+    }
   }
   return findings;
 }
@@ -405,9 +495,16 @@ const T4_NEGATION_RE  = /\b(nicht|kein|kein\w*|lehnt|gegen|ablehn\w*|widersprich
 
 function chk7(batch, file) {
   const findings = [];
-  const t4qs = (batch.questions || []).filter(q =>
-    q.type === 'ja_nein' || (q.module === 'lesen' && Number(q.teil) === 4)
-  );
+  const level = inferAuditLevel(batch);
+  const t4qs = (batch.questions || []).filter((q) => {
+    const mod = String(q.module || '').toLowerCase();
+    const teil = Number(q.teil);
+    // A2 Hören T4 = Ja/Nein sobre entrevista (no patrón Lesen T4 foro).
+    if (mod === 'horen' && teil === 4 && level === 'A2') return false;
+    // A2 Lesen T4 = matching Anzeigen a–f (no foro B1).
+    if (mod === 'lesen' && teil === 4 && level === 'A2') return false;
+    return q.type === 'ja_nein' || (mod === 'lesen' && teil === 4);
+  });
   if (!t4qs.length) return findings;
 
   // Negation in question text (CRITICAL)
@@ -675,7 +772,131 @@ const KNOWN_NOT_NOUNS_14 = new Set([
   'nächste','gleiche','selbe','bestimmte','meiste',
   'arbeiten','spielen','lernen','wohnen','leben','fahren','gehen',
   'lesen','schreiben','kochen','kaufen','machen','helfen',
+  'sprechen','wünschen','suchen','fragen','antworten','bezahlen','lernen',
+  'pflanzen','ernten','tragen','spielen','arbeiten',
+  // Sprechen prompts: imperative / finite verbs after und|oder (CHK-14 FP)
+  'stellen','planen','geben','nehmen','wählen','einigen','reagieren',
+  'verständliche','verständlich','vielen','viele','ledige','ledig',
+  // Adjectives in lexicon — not nouns after und/oder/mit
+  'teuer','teure','teures','teuren','teurer','teurem',
+  'positive','positiven','positives','positiver','positivem',
+  'politische','politischen','politisches','politischem','politischer',
+  'sogenannte','sogenannten','sogenannter','sogenanntes',
+  'übrig','übrige','übrigen','rein','reine','reinen','online',
+  'ganz','ganze','ganzen',
+  // Canary 2026-07-11: finite / plural verb forms (lexicon marks some as nouns)
+  // NOTE: «glaube» is NOT listed — der Glaube is a real noun; see isChk14FiniteVerbFp.
+  'brauchen','braucht','brauchst','brauchte','brauchten','bräuchte','bräuchten',
 ]);
+
+/** Personal pronouns that typically follow a finite verb (ich glaube, brauchen wir…). */
+const CHK14_VERB_PRONOUNS = new Set([
+  'ich', 'du', 'er', 'sie', 'es', 'wir', 'ihr',
+  'mich', 'dich', 'ihm', 'ihn', 'uns', 'euch', 'mir', 'dir',
+]);
+
+/**
+ * 1st-person / common finite forms that are often also noun lemmas in the lexicon
+ * (Glaube, Denken…). Only skip when the next token is a personal pronoun.
+ */
+const CHK14_FINITE_VERB_BEFORE_PRONOUN = new Set([
+  'glaube', 'glaubst', 'glaubt',
+  'denke', 'denkst', 'denkt',
+  'finde', 'findest', 'findet',
+  'weiß', 'weiss', 'weißt', 'weisst',
+  'hoffe', 'hoffst', 'hofft',
+  'meine', 'meinst', 'meint', // «das meine ich» (not possessive meine+noun — next is pronoun)
+]);
+
+/**
+ * Comparative adjective surface: teurere, kleineren, bessere, größeren.
+ * Requires the comparative -er- plus a strong/weak ending — bare -er agent nouns
+ * (Lehrer, Arbeiter) do NOT match.
+ */
+function looksLikeComparativeAdjective(word) {
+  const lc = String(word || '').toLowerCase();
+  if (lc.length < 6) return false;
+  if (NOUN_SUFFIX_RE_14.test(lc)) return false;
+  return /er(?:e|en|er|es|em)$/i.test(lc);
+}
+
+/**
+ * Positive-degree neuter/weak adjective ending in -es (leises Spielen, gutes Essen).
+ * High precision: German noun lemmas rarely end in -es.
+ */
+function looksLikeNeuterAdjectiveEs(word) {
+  const lc = String(word || '').toLowerCase();
+  if (lc.length < 5) return false;
+  if (NOUN_SUFFIX_RE_14.test(lc)) return false;
+  return /es$/i.test(lc);
+}
+
+/** Locution «ein paar» (= some); not the noun «das Paar». */
+function isEinPaarIdiom(articleLemma, word) {
+  return String(articleLemma || '').toLowerCase() === 'ein'
+    && String(word || '').toLowerCase() === 'paar';
+}
+
+function chk14NextToken(text, matchEnd) {
+  const m = String(text || '')
+    .slice(matchEnd)
+    .match(/^\s+(\S+)/);
+  if (!m) return null;
+  return m[1].replace(/[''´].*$/, '').replace(/[.,!?;:»«"()\[\]{}].*$/, '');
+}
+
+function chk14ArticleLemma(fullMatch, capturedWord) {
+  const raw = String(fullMatch || '');
+  const word = String(capturedWord || '');
+  // Prefer leading trigger token (die|und|mit|…) — robust when m[0] still has
+  // trailing punctuation on the captured word («und glauben,» vs stripped «glauben»).
+  const lead = raw.match(
+    /^(die|der|das|den|dem|des|ein|eine|einen|einem|einer|eines|kein|keine|keinen|keinem|keiner|keines|und|oder|mit|für|ohne|durch|um|bei|nach|seit|von|vor|über|unter|neben|zwischen|je)\b/i,
+  );
+  if (lead) return lead[1].toLowerCase();
+  const withoutWord = word && raw.toLowerCase().endsWith(word.toLowerCase())
+    ? raw.slice(0, raw.length - word.length)
+    : raw;
+  return withoutWord.trim().toLowerCase();
+}
+
+/** Bare infinitive morphology (glauben, versuchen) — not -ung/-heit nouns. */
+function isChk14InfinitiveShape(word) {
+  const w = String(word || '').toLowerCase();
+  if (w.length < 5) return false;
+  if (NOUN_SUFFIX_RE_14.test(w)) return false;
+  return /(?:en|eln|ern)$/i.test(w);
+}
+
+/**
+ * Context-sensitive verb FPs (canary: «das glaube ich», «und brauchen einen»).
+ * Keeps «der glaube» (noun) detectable when no pronoun follows.
+ *
+ * 2026-07-12: also cover bare INFINITIVES after und/oder («und glauben, dass»).
+ * The canary finite set (glaube/glaubst/glaubt + pronoun) never matched the
+ * infinitive «glauben»; isKnownGermanNoun(glauben) was true only via stem
+ * «glaube» (der Glaube) from singularCandidates -en strip.
+ */
+function isChk14FiniteVerbFp(word, articleLemma, nextTok) {
+  const w = String(word || '').toLowerCase();
+  const art = String(articleLemma || '').toLowerCase();
+  const next = String(nextTok || '').toLowerCase();
+  if (!w) return false;
+  // «das/es glaube ich» — 1sg after demonstrative/neuter article
+  if (CHK14_FINITE_VERB_BEFORE_PRONOUN.has(w) && next && CHK14_VERB_PRONOUNS.has(next)) {
+    return true;
+  }
+  // «und/oder brauchen …» — listed non-nouns after coordinating conj
+  if ((art === 'und' || art === 'oder') && KNOWN_NOT_NOUNS_14.has(w)) {
+    return true;
+  }
+  // «und/oder glauben, dass» / «und wissen an …» — bare infinitive after coordinator
+  // (not «die Wohnungen»: noun suffix; not «der Glaube»: article is der/die/das)
+  if ((art === 'und' || art === 'oder') && isChk14InfinitiveShape(w)) {
+    return true;
+  }
+  return false;
+}
 
 function chk14(batch, file) {
   const findings = [];
@@ -687,19 +908,48 @@ function chk14(batch, file) {
     }
     return acc;
   }
+  /** Next token after article+word match; used to skip attributive adj + CapNoun. */
+  function nextCapitalizedToken(text, matchEnd) {
+    const m = String(text || '')
+      .slice(matchEnd)
+      .match(/^\s+([A-ZÄÖÜ][A-Za-zÄÖÜäöüß-]{2,})/);
+    if (!m) return null;
+    return m[1].replace(/[.,!?;:»«"()\[\]{}].*$/, '');
+  }
   const texts = extractTexts(batch);
   const seen = new Set();
   for (const text of texts) {
     ARTICLE_RE_14.lastIndex = 0;
     let m;
     while ((m = ARTICLE_RE_14.exec(text)) !== null) {
-      const word = m[1].replace(/[.,!?;:»«"()\[\]{}].*$/, ''); // strip trailing punctuation
+      const word = m[1].replace(/[''´].*$/, '').replace(/[.,!?;:»«"()\[\]{}].*$/, ''); // strip punct/apostrophe
       if (!word || seen.has(word.toLowerCase())) continue;
       if (!/^[a-zäöü]/.test(word)) continue; // must start lowercase
+      const articleLemma = chk14ArticleLemma(m[0], word);
+      const nextTok = chk14NextToken(text, m.index + m[0].length);
+      // «ein paar Ideen» — fixed quantifier, not noun «Paar»
+      if (isEinPaarIdiom(articleLemma, word)) continue;
       if (KNOWN_NOT_NOUNS_14.has(word.toLowerCase())) continue; // common adj/verb false positives
-      const isKnownNoun = KNOWN_LOWER_NOUNS_14.has(word.toLowerCase());
+      if (isChk14FiniteVerbFp(word, articleLemma, nextTok)) continue;
+      if (ADJ_NEEDS_ARTICLE_GUARD.has(word.toLowerCase())) continue; // substantivised adj forms in lexicon
       const hasNounSuffix = NOUN_SUFFIX_RE_14.test(word);
-      if (!isKnownNoun && !hasNounSuffix) continue;
+      const isKnownNoun =
+        KNOWN_LOWER_NOUNS_14.has(word.toLowerCase()) ||
+        hasNounSuffix ||
+        isKnownGermanNoun(word);
+      if (!isKnownNoun) continue;
+      const nextCap = nextCapitalizedToken(text, m.index + m[0].length);
+      // v3.7: «die gelbe Tonne» — color/attr adj before CapNoun
+      // canary: «leises Spielen», «kleineren Wohnungs…», «eine teurere Wohnung»
+      if (nextCap && /^[A-ZÄÖÜ]/.test(nextCap)) {
+        if (
+          looksLikeAttributiveAdjective(word)
+          || looksLikeComparativeAdjective(word)
+          || looksLikeNeuterAdjectiveEs(word)
+        ) {
+          continue;
+        }
+      }
       seen.add(word.toLowerCase());
       const ctx = text.slice(Math.max(0, m.index - 25), m.index + m[0].length + 30).replace(/\n/g, ' ');
       findings.push(finding('CHK-14', 'IMPORTANT', file, word,
@@ -714,40 +964,6 @@ function chk14(batch, file) {
 // NEVER_NOUN_WORDS que aparecen capitalizadas a mitad de frase (no al inicio).
 // La lista es conservadora: solo se incluyen palabras sin forma nominal posible.
 // Palabras ambiguas (Wissen, Essen, Junge, Lesen, …) se excluyen para evitar FP.
-
-import {
-  NEVER_NOUN_WORDS as _NEVER_NOUN,
-  // These two sets are needed for the article guard (same logic as decapitalizer)
-} from './lib/capitalizeNouns.mjs';
-
-// Mirror the article guard constants here (can't import the unexported ones)
-const _SUBSTANTIVISING_ARTICLES = new Set([
-  'das','dem','des','die','der','den',
-  'ein','eine','einem','einer','eines','einen',
-  'kein','keine','keinem','keiner','keines','keinen',
-  'dieses','diese','diesem','diesen',
-  'jenes','jene','jenem','jenen',
-  'welches','welche','welchem','welchen',
-  'manches','manche','manchem','manchen',
-  'solches','solche','solchem','solchen',
-  'etwas','nichts','alles','vieles','weniges',
-  'als',
-  // Preposition+article contractions — "im Kleinen", "am Besten", "zum Guten"…
-  'im','am','beim','vom','zum','zur','ins','ans','aufs','ums','fürs',
-]);
-
-// Pure adverbs (no article guard needed — no Substantivierungsform exists)
-const _PURE_ADVERBS_14B = new Set([
-  'eher','gerne','gern','leider','vielleicht','bereits','sogar','wirklich',
-  'natürlich','eigentlich','trotzdem','allerdings','außerdem','jedoch',
-  'dennoch','deshalb','deswegen',
-]);
-
-// Same three-alternative regex as capitalizeNouns.mjs SENTENCE_END_RE.
-// Opening quotes/dashes after : are clause starters — the word that follows
-// is legitimately capitalised (first word of quoted speech, dialogue, title).
-const SENTENCE_END_RE_14B =
-  /[.!?:]\s*['"„«‚\u2018\u201c\u00ab]?\s*$|[\u2013\u2014–—]\s*$|[„«‚\u2018\u201c\u00ab)]\s*$|(?<!\w)['"]\s*$/;
 
 function chk14b(batch, file) {
   const findings = [];
@@ -764,44 +980,57 @@ function chk14b(batch, file) {
   const seen = new Set();
 
   for (const text of texts) {
-    const tokenRe = /([A-Za-zÄÖÜäöüß]+)|([^A-Za-zÄÖÜäöüß]+)/g;
-    const tokens = [];
-    let m;
-    while ((m = tokenRe.exec(text)) !== null) {
-      tokens.push({ val: m[0], isWord: !!m[1], pos: m.index });
-    }
+    for (const v of scanP2CapitalizationViolations(text)) {
+      const key = `${v.severity}:${v.type}:${v.word.toLowerCase()}:${v.fix || ''}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      const idx = text.toLowerCase().indexOf(v.word.toLowerCase());
+      const start = Math.max(0, idx - 35);
+      const end = Math.min(text.length, idx + v.word.length + 35);
+      const ctx = text.slice(start, end).replace(/\n/g, ' ');
 
-    let prevContent = '';
-    let lastWord = '';
-
-    for (const tok of tokens) {
-      if (!tok.isWord) { prevContent += tok.val; continue; }
-
-      const fc = tok.val[0];
-      const isCapitalized = (fc >= 'A' && fc <= 'Z') || fc === 'Ä' || fc === 'Ö' || fc === 'Ü';
-
-      if (isCapitalized) {
-        const lc = tok.val.toLowerCase();
-        const isMidSentence = prevContent.length > 0 && !SENTENCE_END_RE_14B.test(prevContent);
-
-        if (isMidSentence && _NEVER_NOUN.has(lc) && !seen.has(lc)) {
-          // Apply article guard for adjectives (but not pure adverbs)
-          const isArticlePreceding = _SUBSTANTIVISING_ARTICLES.has(lastWord.toLowerCase());
-          if (!_PURE_ADVERBS_14B.has(lc) && isArticlePreceding) {
-            // "das Schwierige" / "das Mögliche" — legitimate noun, skip
-          } else {
-            seen.add(lc);
-            const start = Math.max(0, tok.pos - 35);
-            const end   = Math.min(text.length, tok.pos + tok.val.length + 35);
-            const ctx   = text.slice(start, end).replace(/\n/g, ' ');
-            findings.push(finding('CHK-14', 'IMPORTANT', file, tok.val,
-              `Adjetivo/adverbio "${tok.val}" en mayúscula errónea (debería ser "${lc}"). Contexto: "...${ctx}..."`));
-          }
-        }
+      if (v.severity === 'advisory') {
+        findings.push(finding('CHK-14', 'INFO', file, v.word,
+          `Mayúscula a mitad de frase sin patrón claro de error — «${v.word}» no está en el léxico de sustantivos (aviso ortográfico, no bloquea). Contexto: "...${ctx}..."`));
+        continue;
       }
 
-      prevContent += tok.val;
-      lastWord = tok.val;
+      const label = v.type === 'zu_infinitive'
+        ? `Infinitivo tras «zu» en mayúscula errónea: «${v.word}» → «zu ${v.fix}»`
+        : v.type === 'modal_infinitive'
+          ? `Infinitivo sin «zu» en mayúscula errónea: «${v.word}» → «${v.fix}»`
+          : `Adjetivo/adverbio/cardinal «${v.word}» en mayúscula errónea (debería ser «${v.fix}»)`;
+      findings.push(finding('CHK-14', 'IMPORTANT', file, v.word,
+        `${label}. Contexto: "...${ctx}..."`));
+    }
+  }
+  return findings;
+}
+
+// ─── CHK-14c: Mayúsculas en opciones MCQ (T2/T5) — reglas P2 estrictas ─────
+function chk14c(batch, file) {
+  const findings = [];
+  const mod = String(batch.module || batch.questions?.[0]?.module || '').toLowerCase();
+  const teil = Number(batch.teil ?? batch.questions?.[0]?.teil);
+  if (mod !== 'lesen' || ![2, 5].includes(teil)) return findings;
+
+  const seen = new Set();
+  for (const q of batch.questions || []) {
+    for (const opt of q.options || []) {
+      const text = String(opt);
+      if (text.length < 8) continue;
+      for (const v of scanMcqOptionCapitalizationViolations(text)) {
+        const key = `${q.id}:${v.type}:${v.word.toLowerCase()}`;
+        if (seen.has(key)) continue;
+        seen.add(key);
+        const label =
+          v.type === 'bare_infinitive'
+            ? `Infinitivo en mayúscula errónea en opción: «${v.word}» → «${v.fix}»`
+            : v.type === 'modal_infinitive'
+              ? `Infinitivo sin «zu» en mayúscula errónea: «${v.word}» → «${v.fix}»`
+              : `Adjetivo/adverbio «${v.word}» en mayúscula errónea (debería ser «${v.fix}»)`;
+        findings.push(finding('CHK-14c', 'IMPORTANT', file, q.id, `${label}. Opción: «${text.slice(0, 90)}…`));
+      }
     }
   }
   return findings;
@@ -824,16 +1053,43 @@ const WORD_COUNT_SPEC = {
   'lesen-5':  { min: 130, max: 280, scope: 'passage text (reglamento/aviso)' },
   'horen-1':  { min: 30,  max: 110, scope: 'cada segmento/transcript' },
   'horen-2':  { min: 180, max: 380, scope: 'transcript monólogo' },
+  'horen-2-a2': { min: 70, max: 160, scope: 'transcript diálogo 2 personas (A2 Bild-Zuordnung)' },
   'horen-3':  { min: 200, max: 400, scope: 'transcript conversación' },
   'horen-4':  { min: 250, max: 480, scope: 'transcript debate (3 hablantes)' },
 };
+
+const WORD_COUNT_SPEC_A2 = {
+  'lesen-1':  { min: 95,  max: 220, scope: 'passage text (A2 press MCQ)' },
+  'lesen-2':  { min: 65,  max: 180, scope: 'info board (A2)' },
+  'lesen-3':  { min: 60,  max: 200, scope: 'email (A2)' },
+  'lesen-4':  { min: 15,  max: 80,  scope: 'each ad (A2 matching a–f)' },
+  'horen-1':  { min: 15,  max: 80,  scope: 'A2 short text segment' },
+  'horen-3':  { min: 12,  max: 70,  scope: 'A2 short dialogue segment' },
+  'horen-4':  { min: 120, max: 280, scope: 'A2 interview transcript' },
+};
+
+function resolveWordCountSpec(key, level) {
+  if (String(level || '').toUpperCase() === 'A2' && WORD_COUNT_SPEC_A2[key]) {
+    return WORD_COUNT_SPEC_A2[key];
+  }
+  return WORD_COUNT_SPEC[key];
+}
 
 function countWords(text) {
   return String(text || '').trim().split(/\s+/).filter(w => w.length > 0).length;
 }
 
+function wordCountSpecKey(refQ) {
+  const mod = String(refQ.module || '').toLowerCase();
+  const teil = refQ.teil;
+  const level = String(refQ.level || '').toUpperCase();
+  if (mod === 'horen' && Number(teil) === 2 && level === 'A2') return 'horen-2-a2';
+  return `${mod}-${teil}`;
+}
+
 function chk15(batch, file) {
   const findings = [];
+  const level = inferAuditLevel(batch);
 
   // Check passages (lesen)
   for (const p of batch.passages || []) {
@@ -843,8 +1099,8 @@ function chk15(batch, file) {
     // Determine which Teil this passage belongs to via questions referencing it
     const refQ = (batch.questions || []).find(q => q.passageId === p.id);
     if (!refQ) continue;
-    const key = `${(refQ.module||'').toLowerCase()}-${refQ.teil}`;
-    const spec = WORD_COUNT_SPEC[key];
+    const key = wordCountSpecKey(refQ);
+    const spec = resolveWordCountSpec(key, level);
     if (!spec) continue;
 
     const wc = countWords(text);
@@ -860,7 +1116,7 @@ function chk15(batch, file) {
   // Check L4 signTexts (they are in questions, not passages)
   const l4qs = (batch.questions || []).filter(q =>
     String(q.module||'').toLowerCase() === 'lesen' && Number(q.teil) === 4 && q.signText);
-  const l4spec = WORD_COUNT_SPEC['lesen-4'];
+  const l4spec = resolveWordCountSpec('lesen-4', level);
   for (const q of l4qs) {
     const wc = countWords(q.signText);
     if (wc < l4spec.min) {
@@ -1052,7 +1308,9 @@ function chk17(batch, file) {
     itemsWithOptions.every(q => q.options.length <= 3);
 
   if (allShortOptions) {
-    // Caso C: MCQ A2 — not matching B1. Emit routing finding, not invalid-key CRITICAL.
+    // A2 Modellsatz: email + 5× MCQ a/b/c is the official format.
+    if (inferAuditLevel(batch) === 'A2') return findings;
+    // Caso C: MCQ A2 en pool B1 — routing finding.
     findings.push(finding('CHK-17', 'IMPORTANT', file, 'lesen-3',
       `L3 parece MCQ A2 (opciones a/b/c por ítem, no lista A-J). No es matching B1. ` +
       `Regenerar con la plantilla correcta de Lesen Teil 3.`));
@@ -1150,6 +1408,7 @@ const TRIVIAL_EXPL_RE = /^(richtig|falsch|ja|nein|korrekt|genau|das stimmt|das i
 function chk18(batch, file) {
   const findings = [];
   const seen = new Set();
+  const level = inferAuditLevel(batch);
 
   for (const q of batch.questions || []) {
     // Skip schreiben/sprechen (rubric answers)
@@ -1169,7 +1428,7 @@ function chk18(batch, file) {
     // Minimum length: L3 matching items naturally have shorter explanations
     // (format "AdName bietet X." — 3 words — is valid for matching items)
     const isMatchingItem = q.type === 'matching';
-    const minWords = isMatchingItem ? 3 : 10;
+    const minWords = isMatchingItem ? 3 : (level === 'A2' ? 6 : 10);
     const wc = expl.split(/\s+/).filter(w => w.length > 0).length;
     if (wc < minWords) {
       findings.push(finding('CHK-18', 'IMPORTANT', file, q.id,
@@ -1207,6 +1466,15 @@ function chk18(batch, file) {
       }
       seen.add(q.id);
     }
+  }
+  return findings;
+}
+
+// ─── CHK-18b: Clave MCQ vs explicación (T2/T5, determinista) ───────────────
+function chk18b(batch, file) {
+  const findings = [];
+  for (const hit of findKeyExplanationMismatches(batch)) {
+    findings.push(finding('CHK-18b', 'IMPORTANT', file, hit.itemId, hit.message));
   }
   return findings;
 }
@@ -1253,11 +1521,34 @@ function chk19(batch, file) {
 
 function chk20(batch, file) {
   const findings = [];
+  const level = inferAuditLevel(batch);
   // Only relevant if there are H1 questions
   const h1qs = (batch.questions || []).filter(q =>
     String(q.module||'').toLowerCase() === 'horen' && Number(q.teil) === 1
   );
   if (!h1qs.length) return findings;
+
+  // A2 Modellsatz: 5 segmentos × 1 MCQ (no R/F mix).
+  if (level === 'A2') {
+    const bySegment = {};
+    for (const q of h1qs) {
+      const seg = q.segmentLabel || q.passageId || 'seg-unknown';
+      if (!bySegment[seg]) bySegment[seg] = { mc: 0 };
+      if (q.type === 'multiple_choice' || q.type === 'multiple') bySegment[seg].mc++;
+    }
+    const segKeys = Object.keys(bySegment);
+    if (segKeys.length !== 5) {
+      findings.push(finding('CHK-20', 'IMPORTANT', file, 'horen-1',
+        `Hören T1 A2: se esperan 5 segmentos distintos, hay ${segKeys.length}.`));
+    }
+    for (const [seg, counts] of Object.entries(bySegment)) {
+      if (counts.mc !== 1) {
+        findings.push(finding('CHK-20', 'IMPORTANT', file, `horen-1:${seg}`,
+          `H1 A2 segmento "${seg}": ${counts.mc} MCQ (se espera 1).`));
+      }
+    }
+    return findings;
+  }
 
   // Group by segmentLabel (Aufnahme 1…5 or segment passageId)
   const bySegment = {};
@@ -1294,9 +1585,31 @@ function chk20(batch, file) {
 // UNA sola fuente/blueprint, con:
 //   • signText individual ≥ 15 palabras (no el intro compartido del foro).
 //   • Todos los signTexts distintos entre sí (no intro copiado 7 veces).
-//   • Autores únicos (extraídos del prefijo "Meinung von NAME:" o "Sagt NAME:").
+//   • Autores únicos — preferentemente desde `question` («Ist Clara für…?»),
+//     no desde la primera palabra del signText (FP histórico con Die/Der/Als…).
 //
 // Un T4 que falla estas reglas es Frankenstein igual que un L3 con lista A-J mezclada.
+
+/** Prefer question («Ist NAME für…?»); fall back to signText legacy patterns. */
+function extractT4Author(q) {
+  const question = String(q?.question || '').trim();
+  // Dominant generated format (301/301 in pool+canary survey 2026-07-11).
+  const fromIstFuer = question.match(/^Ist\s+([A-ZÄÖÜ][a-zäöüß]+)\s+für\b/u);
+  if (fromIstFuer) return fromIstFuer[1];
+  // Variants seen in fixtures / older wording.
+  const fromQLead = question.match(/^(?:Sagt|Stimmt|Hat)\s+([A-ZÄÖÜ][a-zäöüß]+)\b/u);
+  if (fromQLead) return fromQLead[1];
+  const fromMeinungQ = question.match(/(?:Meinung von|Sagt)\s+([A-ZÄÖÜ][a-zäöüß]+)/u);
+  if (fromMeinungQ) return fromMeinungQ[1];
+
+  // Fallback: legacy signText («Meinung von NAME:» / first capitalized token).
+  const GERMAN_PRONOUNS = new Set(['Ich', 'Er', 'Sie', 'Es', 'Wir', 'Ihr', 'Du', 'Man']);
+  const signText = String(q?.signText || '');
+  const m = signText.match(/^(?:Meinung von|Sagt)\s+([A-ZÄÖÜ][a-zäöüß]+)/u);
+  if (m) return m[1];
+  const first = signText.match(/^([A-ZÄÖÜ][a-zäöüß]+)/u)?.[1] || '';
+  return GERMAN_PRONOUNS.has(first) ? '' : first;
+}
 
 function chk21(batch, file) {
   const findings = [];
@@ -1328,24 +1641,15 @@ function chk21(batch, file) {
     void dups;
   }
 
-  // ── Autores no únicos ──
-  // Pronouns are capitalized in German but are NOT author names.
-  const GERMAN_PRONOUNS = new Set(['Ich', 'Er', 'Sie', 'Es', 'Wir', 'Ihr', 'Du', 'Man']);
-  function extractAuthor(signText) {
-    const t = String(signText || '');
-    const m = t.match(/^(?:Meinung von|Sagt)\s+([A-ZÄÖÜ][a-zäöüß]+)/);
-    if (m) return m[1];
-    const first = t.match(/^([A-ZÄÖÜ][a-zäöüß]+)/)?.[1] || '';
-    return GERMAN_PRONOUNS.has(first) ? '' : first;
-  }
-  const authors = t4qs.map(q => extractAuthor(q.signText));
+  // ── Autores no únicos (desde question; fallback signText) ──
+  const authors = t4qs.map((q) => extractT4Author(q));
   const namedAuthors = authors.filter(Boolean);
   if (namedAuthors.length >= 2 && new Set(namedAuthors).size < namedAuthors.length) {
     const counts = {};
     for (const a of namedAuthors) counts[a] = (counts[a] || 0) + 1;
     const dups = Object.entries(counts).filter(([,n]) => n > 1).map(([a,n]) => `${a}×${n}`);
     findings.push(finding('CHK-21', 'IMPORTANT', file, 'lesen-4',
-      `L4: autores repetidos en signText: ${dups.join(', ')}. Cada ítem debe ser de un autor distinto.`));
+      `L4: autores repetidos: ${dups.join(', ')}. Cada ítem debe ser de un autor distinto.`));
   }
 
   return findings;
@@ -1440,6 +1744,164 @@ function chk24(batch, file) {
         `correct="${c}" no canónico para multiple_choice — debe ser "${c.toLowerCase()}". ` +
         `El grader puntúa correctamente (case-insensitive), pero el esquema espera minúsculas.`));
     }
+  }
+  return findings;
+}
+
+// ─── CHK-26: topicTag coherente con tema pedido (P1) ───────────────────────
+// Bloquea passage.topicTag ≠ batch.topicTag/_requestedTopic y T2 con dos temas distintos.
+
+function expandPoolRecordPassages(rec) {
+  if (Array.isArray(rec.passages) && rec.passages.length) return rec.passages;
+  const teil = Number(rec.teil);
+  if (teil === 2 && Array.isArray(rec.passage?.passages) && rec.passage.passages.length >= 2) {
+    return rec.passage.passages.map((p, i) => ({
+      id: p.passageId || p.id || `p-${i}`,
+      title: p.textTitle || p.title || '',
+      text: p.text || '',
+      topicTag: p.topicTag,
+    }));
+  }
+  if (rec.passage && (rec.passage.text || rec.passage.transcript)) {
+    return [{
+      id: rec.passage.id || rec.passage.passageId || rec.id || 'passage',
+      title: rec.passage.title || rec.passage.textTitle || '',
+      text: rec.passage.text || rec.passage.transcript || '',
+      topicTag: rec.passage.topicTag,
+    }];
+  }
+  return [];
+}
+
+function resolvePassageTopicTag(p) {
+  const explicit = normalizeB1Topic(p.topicTag);
+  if (explicit) return { tag: explicit, source: 'explicit' };
+  const detected = normalizeB1Topic(detectTopic(String(p.text || p.title || '')));
+  if (detected) return { tag: detected, source: 'detected' };
+  return { tag: null, source: 'none' };
+}
+
+export function enrichRecordForAudit(rec) {
+  if (!rec || typeof rec !== 'object') return rec;
+  let passages = expandPoolRecordPassages(rec);
+  if (!passages.length) return rec;
+  const expected = normalizeB1Topic(rec.topicTag || rec._requestedTopic);
+  if (expected) {
+    passages = passages.map((p) =>
+      (p.topicTag ? p : { ...p, topicTag: expected }),
+    );
+  }
+  return { ...rec, passages };
+}
+
+function chk26(batch, file) {
+  const findings = [];
+  const expected = normalizeB1Topic(batch.topicTag || batch._requestedTopic);
+  if (!expected) return findings;
+
+  const passages = batch.passages?.length ? batch.passages : expandPoolRecordPassages(batch);
+  const teil = Number(batch.teil ?? batch.questions?.[0]?.teil);
+  const mod = String(batch.module || batch.questions?.[0]?.module || '').toLowerCase();
+
+  // T3 matching: sin passages — tema solo en enunciados de situación (no anuncios A–J).
+  if (mod === 'lesen' && teil === 3 && !passages.length) {
+    const detected = detectTopicFromT3Situations(batch.questions);
+    if (detected && !isLesenT3TopicCompatible(expected, detected)) {
+      findings.push(finding(
+        'CHK-26',
+        'IMPORTANT',
+        file,
+        'lesen-3',
+        `Contenido T3 (situaciones) detectado como «${detected}» ≠ tema pedido «${expected}».`,
+      ));
+    }
+    return findings;
+  }
+
+  if (!passages.length) return findings;
+
+  const resolved = passages.map((p) => ({ p, ...resolvePassageTopicTag(p) }));
+
+  for (const { p, tag, source } of resolved) {
+    const pid = p.id || 'passage';
+    if (source === 'explicit' && tag !== expected) {
+      findings.push(finding(
+        'CHK-26',
+        'IMPORTANT',
+        file,
+        pid,
+        `topicTag del pasaje «${tag}» ≠ tema pedido «${expected}». ` +
+        `Todos los passages deben llevar topicTag «${expected}».`,
+      ));
+    } else if (source === 'detected' && tag !== expected) {
+      findings.push(finding(
+        'CHK-26',
+        'IMPORTANT',
+        file,
+        pid,
+        `Contenido del pasaje detectado como «${tag}» ≠ tema pedido «${expected}».`,
+      ));
+    } else if (source === 'none' && passages.length > 1) {
+      findings.push(finding(
+        'CHK-26',
+        'IMPORTANT',
+        file,
+        pid,
+        `No se puede verificar tema del pasaje — debe ser «${expected}».`,
+      ));
+    }
+  }
+
+  const uniqueTags = [...new Set(resolved.map((r) => r.tag).filter(Boolean))];
+  if (uniqueTags.length > 1) {
+    findings.push(finding(
+      'CHK-26',
+      'IMPORTANT',
+      file,
+      'lesen-passages',
+      `Los pasajes tienen temas distintos (${uniqueTags.join(' vs ')}). ` +
+      `Todos deben ser «${expected}» (especialmente Lesen T2 con 2 textos).`,
+    ));
+  }
+
+  return findings;
+}
+
+// ─── CHK-27: Lesen T4 — debate alineado al tema pedido (P3) ─────────────────
+// Complementa CHK-26 (topicTag en passages): aquí el foro debe tratar del tema B1,
+// no un debate genérico (Homeoffice, 4-Tage-Woche) etiquetado con otro topicTag.
+
+function chk27(batch, file) {
+  const findings = [];
+  const assessment = assessT4TopicAlignment(batch);
+  if (assessment.skip || assessment.ok) return findings;
+  const msg = formatT4TopicAlignmentFailure(assessment);
+  if (msg) {
+    findings.push(finding('CHK-27', 'IMPORTANT', file, 'lesen-4', msg));
+  }
+  return findings;
+}
+
+// ─── CHK-28: Lesen T2 — opciones MCQ no excluyentes (determinista) ───────────
+function chk28(batch, file) {
+  const findings = [];
+  const mod = String(batch.module || batch.questions?.[0]?.module || '').toLowerCase();
+  const teil = Number(batch.teil ?? batch.questions?.[0]?.teil);
+  if (mod !== 'lesen' || teil !== 2) return findings;
+
+  const { ok, findings: hits } = checkMcqDistinctBatch(batch, 2);
+  if (ok) return findings;
+
+  for (const h of hits) {
+    findings.push(
+      finding(
+        'CHK-28',
+        'IMPORTANT',
+        file,
+        h.itemId,
+        `${h.pair}: opciones no excluyentes (${h.reason})`,
+      ),
+    );
   }
   return findings;
 }
@@ -1566,6 +2028,11 @@ function chk11(batch, file) {
   );
   if (!t4qs.length) return findings;
 
+  // A2 H4 = Ja/Nein interview (no speaker-key matching B1).
+  if (inferAuditLevel(batch) === 'A2' && t4qs.every((q) => q.type === 'ja_nein')) {
+    return findings;
+  }
+
   // Build passage text map for anti-copy check
   const passageMap = {};
   for (const p of batch.passages || []) {
@@ -1608,6 +2075,25 @@ function chk11(batch, file) {
       findings.push(finding('CHK-11', 'IMPORTANT', file, q.id,
         `Hören T4: enunciado con verbo de crítica (bemängelt/kritisiert…) pero los turnos del hablante no contienen marcadores negativos — posible inversión de postura: revisar manualmente.`));
     }
+  }
+  return findings;
+}
+
+// ─── CHK-29: Hören T4 — cronología matching (char evidence) ───────────────
+
+function chk29(batch, file) {
+  const findings = [];
+  const t4qs = (batch.questions || []).filter(
+    (q) => q.module === 'horen' && Number(q.teil) === 4 && q.type === 'matching',
+  );
+  if (t4qs.length !== 8) return findings;
+
+  const chrono = verifyHorenT4MatchingChrono(batch);
+  for (const msg of chrono.blockingIssues || []) {
+    findings.push(finding('CHK-29', 'IMPORTANT', file, 'T4-chrono', msg));
+  }
+  for (const msg of chrono.warnings || []) {
+    findings.push(finding('CHK-29', 'MINOR', file, 'T4-chrono', msg));
   }
   return findings;
 }
@@ -1709,7 +2195,11 @@ function flattenExam(examObj) {
       }
     }
   }
-  return { passages, questions, ads };
+  const level = examObj.level
+    || (questions[0]?.level)
+    || (passages[0]?.level)
+    || undefined;
+  return { passages, questions, ads, ...(level ? { level } : {}) };
 }
 
 // ─── auditExam: audita un examen ensamblado en memoria ────────────────────
@@ -1726,23 +2216,28 @@ export function auditExam(examWrapper, label = 'exam') {
     ...chk4(flat, label),
     ...chk5([{ batch: flat, file: label }]),
     ...chk6(flat, label),
+    ...chk6c(flat, label),
     ...chk7(flat, label),
     ...chk8(flat, label, globalIds),
     ...chk10(flat, label),
     ...chk11(flat, label),
+    ...chk29(flat, label),
     ...chk12(flat, label),
     ...chk13(flat, label),
     ...chk14(flat, label),
     ...chk14b(flat, label),
+    ...chk14c(flat, label),
     ...chk15(flat, label),
     ...chk16(flat, label),
     ...chk17(flat, label),
     ...chk18(flat, label),
+    ...chk18b(flat, label),
     ...chk19(flat, label),
     ...chk20(flat, label),
     ...chk21(flat, label),
     ...chk22(flat, label),
     ...chk24(flat, label),
+    ...chk28(flat, label),
   ];
   const by = s => findings.filter(f => f.severity === s).length;
   return {
@@ -1770,13 +2265,15 @@ function normPartType(type) {
   return t;
 }
 
-function normPartQuestion(q, module, teil) {
+function normPartQuestion(q, module, teil, defaultLevel) {
   // `correct` is canonical. Resolve from correctAnswer only when correct is absent.
   const correct = q.correct ?? q.correctAnswer;
+  const level = q.level || defaultLevel;
   return {
     ...q,
     module,
     teil,
+    ...(level ? { level: String(level).toUpperCase() } : {}),
     type: normPartType(q.type || q.questionType),
     correct,
     correctAnswer: correct, // mirror, always equal to correct
@@ -1818,9 +2315,20 @@ function flatBatchToPartRecord(batch) {
     instruction: batch.instruction || '',
     questions: qs.map((q) => normPartQuestion(q, module, teil)),
   };
+  if (batch.topicTag) record.topicTag = batch.topicTag;
+  if (batch._requestedTopic) record._requestedTopic = batch._requestedTopic;
+  if (batch._debateSeed || batch.debateSeed) {
+    record._debateSeed = batch._debateSeed || batch.debateSeed;
+    record.debateSeed = batch.debateSeed || batch._debateSeed;
+  }
+  if (batch._debateTopic || batch.debateTopic) {
+    record._debateTopic = batch._debateTopic || batch.debateTopic;
+    record.debateTopic = batch.debateTopic || batch._debateTopic;
+  }
 
   if (module === 'lesen') {
     const passages = batch.passages || [];
+    if (passages.length) record.passages = passages;
     if (teil === 2 && passages.length >= 2) {
       record.passage = {
         title: passages[0]?.title || '',
@@ -1869,7 +2377,11 @@ function flatBatchToPartRecord(batch) {
 function partRecordToExamPart(record) {
   const module = String(record.module || '').toLowerCase();
   const teil = Number(record.teil);
+  const defaultLevel = record.level ? String(record.level).toUpperCase() : undefined;
   const part = { teil, instruction: record.instruction || '' };
+  // Preserve topic for post-assemble diversity / review (pickBest already uses
+  // candidate.topic at assemble time; without this the exam part JSON loses it).
+  if (record.topicTag) part.topicTag = record.topicTag;
 
   if (module === 'lesen') {
     const passage = record.passage || {};
@@ -1880,9 +2392,18 @@ function partRecordToExamPart(record) {
       part.text = passage.text || '';
       part.textTitle = passage.title || '';
       part.ads = passage.ads || record.ads || [];
+      const pid = passage.id || passage.passageId || record.questions?.[0]?.passageId;
+      if (pid) {
+        part.passageId = pid;
+        part.passages = [{ id: pid, text: part.text, title: part.textTitle || '' }];
+      }
     } else if (teil === 4) {
       if (Array.isArray(record.passages) && record.passages.length > 0) {
         part.passages = record.passages;
+        if (record.passages.length === 1) {
+          part.text = record.passages[0].text || '';
+          part.textTitle = record.passages[0].title || '';
+        }
       } else if (passage.text) {
         // Bank-extracted L4 records store the forum intro in record.passage (singular).
         // Reconstruct passages[] so flattenExam can register the passage and CHK-8 can
@@ -1901,18 +2422,39 @@ function partRecordToExamPart(record) {
       part.textTitle = passage.title || '';
       part.passageId = record.questions?.[0]?.passageId || passage.passageId;
     }
-    part.questions = (record.questions || []).map((q) => normPartQuestion(q, module, teil));
+    part.questions = (record.questions || []).map((q) => normPartQuestion(q, module, teil, defaultLevel));
     if (record.example) part.example = record.example;
+    if (Number(teil) === 3 && !part.example) {
+      const zeroQ = (part.questions || []).find(
+        (q) => String(q.correct ?? q.correctAnswer ?? '').trim().toUpperCase() === '0',
+      );
+      if (zeroQ) {
+        part.example = {
+          number: 0,
+          label: 'Beispiel',
+          situation: zeroQ.question,
+          question: zeroQ.question,
+          correct: '0',
+          correctAnswer: '0',
+        };
+        part._t3HasNoMatch = true;
+      }
+    }
   } else if (module === 'horen') {
     if (Array.isArray(record.segments) && record.segments.length) {
       part.segments = record.segments.map((seg) => ({
         ...seg,
-        questions: (seg.questions || []).map((q) => normPartQuestion(q, module, teil)),
+        pictures: seg.pictures || record.passage?.pictures || undefined,
+        questions: (seg.questions || []).map((q) => normPartQuestion(q, module, teil, defaultLevel)),
       }));
+      if (Number(teil) === 2 && String(record.level || '').toUpperCase() === 'A2') {
+        part.blueprintSlot = 'picture_matching';
+        part.plays = 1;
+      }
     }
     const passage = record.passage || {};
     part.transcript = passage.transcript || passage.text || '';
-    part.questions = (record.questions || []).map((q) => normPartQuestion(q, module, teil));
+    part.questions = (record.questions || []).map((q) => normPartQuestion(q, module, teil, defaultLevel));
     // When no segments, propagate the passageId from questions so flattenExam can
     // build the flat passages[] with the correct id and CHK-8 can resolve it.
     if (!part.segments?.length) {
@@ -1920,17 +2462,25 @@ function partRecordToExamPart(record) {
       if (firstPid) part.passageId = firstPid;
     }
   } else if (module === 'schreiben' || module === 'sprechen') {
-    part.task = record.task || record.instruction || '';
-    part.minWords = record.minWords;
-    part.maxWords = record.maxWords;
+    const q0 = (record.questions || [])[0];
+    const passage = record.passage || {};
+    part.task =
+      record.task ||
+      record.instruction ||
+      passage.text ||
+      (q0 && q0.question) ||
+      '';
+    part.minWords = record.minWords ?? (module === 'schreiben' && Number(teil) === 3 ? 40 : module === 'schreiben' ? 80 : undefined);
+    part.maxWords = record.maxWords ?? part.minWords;
     part.fieldId = record.fieldId;
-    part.taskFormat = record.taskFormat;
+    part.taskFormat = record.taskFormat || passage.title || record.taskFormat;
     const task = part.task;
     part.questions = (record.questions || []).length
-      ? record.questions.map((q) => normPartQuestion(q, module, teil))
+      ? record.questions.map((q) => normPartQuestion(q, module, teil, defaultLevel))
       : [{
         id: '1', type: 'short_answer', question: task,
         correct: 'rubric', module, teil,
+        ...(defaultLevel ? { level: defaultLevel } : {}),
       }];
   } else {
     return null;
@@ -1945,7 +2495,7 @@ function partToExamWrapper(record) {
   if (!partsKey) return null;
   const part = partRecordToExamPart(record);
   if (!part) return null;
-  return { exam: { [partsKey]: [part] } };
+  return { exam: { level: record.level, [partsKey]: [part] } };
 }
 
 /** Excluye CHK-3 "Teil ausente" al auditar una sola parte (no examen completo). */
@@ -1975,7 +2525,7 @@ function splitInputIntoPartRecords(input) {
     return splitInputIntoPartRecords({ exam: input });
   }
   if (input.module && (input.questions || input.segments || input.task)) {
-    return [input];
+    return [enrichRecordForAudit(input)];
   }
   if (Array.isArray(input.questions) && input.questions.length) {
     const groups = new Map();
@@ -1984,7 +2534,21 @@ function splitInputIntoPartRecords(input) {
       const teil = Number(q.teil);
       const key = `${mod}:${teil}`;
       if (!groups.has(key)) {
-        groups.set(key, { module: mod, teil, questions: [], passages: input.passages || [], ads: input.ads });
+        groups.set(key, {
+          module: mod,
+          teil,
+          questions: [],
+          passages: input.passages || [],
+          ads: input.ads,
+          topicTag: input.topicTag,
+          _requestedTopic: input._requestedTopic,
+          // CHK-27 (T4): sin esto, detectT4DebateTopic cae en FPs (autofrei fallback /
+          // «verein»⊂«vereinbaren») y el seed correcto del generador se ignora.
+          _debateSeed: input._debateSeed || input.debateSeed,
+          debateSeed: input.debateSeed || input._debateSeed,
+          _debateTopic: input._debateTopic || input.debateTopic,
+          debateTopic: input.debateTopic || input._debateTopic,
+        });
       }
       groups.get(key).questions.push(q);
     }
@@ -1993,12 +2557,16 @@ function splitInputIntoPartRecords(input) {
   return [];
 }
 
-function auditSinglePartRecord(record, label) {
-  // CHK-23 runs on the raw record BEFORE normalization, because flattenExam
-  // collapses the segments/questions duality via ID-dedup (part.questions wins).
-  const rawFindings = chk23(record, label);
+export function auditSinglePartRecord(record, label) {
+  const enriched = enrichRecordForAudit(record);
+  // CHK-23/26 run on the raw record BEFORE normalization — flattenExam drops topicTag.
+  const rawFindings = [
+    ...chk23(enriched, label),
+    ...chk26(enriched, label),
+    ...chk27(enriched, label),
+  ];
 
-  const wrapper = partToExamWrapper(record);
+  const wrapper = partToExamWrapper(enriched);
   if (!wrapper) {
     return [...rawFindings, finding('AUDIT-ERROR', 'CRITICAL', label, 'part', 'Parte no convertible a examen')];
   }
@@ -2024,8 +2592,11 @@ function auditSinglePartRecord(record, label) {
  * Cuando opts.semantic=true la función es ASYNC y añade la capa semántica (SEM-1):
  * una llamada LLM acotada por parte que valida correctness/ambiguity/distractor/
  * explanation/template. Resultado cacheado por hash de contenido (sin recoste LLM).
+ *
+ * opts.skipSem2=true omite SEM-2 (juez advise-only) — usar en el loop de generación
+ * para no pagar 2 LLM por T2; publish/ingest deja skipSem2=false (default).
  */
-export async function isPartPoolReady(part, { allowFailures = false, semantic = false } = {}) {
+export async function isPartPoolReady(part, { allowFailures = false, semantic = false, skipSem2 = false } = {}) {
   // ── 1. Structural gate (siempre, síncrono) ─────────────────────────────────
   let structOk;
   let blocking;
@@ -2071,11 +2642,29 @@ export async function isPartPoolReady(part, { allowFailures = false, semantic = 
     const { validatePartSemantics } = await import('./lib/semanticValidator.mjs');
     semResult = await validatePartSemantics(part);
   } catch (err) {
-    // Fail-open for the semantic layer: log but don't block if the validator itself errors
-    process.stderr.write(
-      `[isPartPoolReady] WARN — semantic validator error (fail-open): ${err?.message || err}\n`,
+    blocking.push(
+      finding(
+        'SEM-LLM-ERROR',
+        'CRITICAL',
+        'semantic',
+        'part',
+        `SEM-1 validator crash (fail-closed): ${err?.message || err}`,
+      ),
     );
-    return { ok: structOk, blocking };
+    return { ok: false, blocking };
+  }
+
+  if (semResult._llmError) {
+    blocking.push(
+      finding(
+        'SEM-LLM-ERROR',
+        'CRITICAL',
+        'semantic',
+        'part',
+        semResult._llmError,
+      ),
+    );
+    return { ok: false, blocking };
   }
 
   // Convert semantic issues → findings (IMPORTANT severity, id = 'SEM-{kind}')
@@ -2091,7 +2680,50 @@ export async function isPartPoolReady(part, { allowFailures = false, semantic = 
   );
 
   blocking.push(...semFindings);
+
+  // ── 3. SEM-2: advise-only (mcq_distinct → checker determinista CHK-28 / calidad) ──
+  if (!skipSem2 && shouldRunSem2Part(part)) {
+    let sem2;
+    try {
+      const { runSem2Judge } = await import('./lib/holisticJudge.mjs');
+      sem2 = await runSem2Judge(part, {
+        topicTag: part._requestedTopic || part.topicTag || part.passages?.[0]?.topicTag,
+      });
+    } catch (err) {
+      blocking.push(
+        finding(
+          'SEM2-LLM-ERROR',
+          'CRITICAL',
+          'semantic',
+          'part',
+          `SEM-2 judge crash (fail-closed): ${err?.message || err}`,
+        ),
+      );
+      return { ok: false, blocking };
+    }
+
+    if (sem2._llmError) {
+      blocking.push(
+        finding(
+          'SEM2-LLM-ERROR',
+          'CRITICAL',
+          'semantic',
+          'part',
+          sem2.error || 'SEM-2 LLM error',
+        ),
+      );
+      return { ok: false, blocking };
+    }
+    // mcq_distinct y resto de ejes SEM-2 → solo sem2-advise-log.jsonl (no blocking)
+  }
+
   return { ok: (allowFailures || blocking.length === 0), blocking };
+}
+
+function shouldRunSem2Part(part) {
+  const mod = String(part?.module || part?.questions?.[0]?.module || '').toLowerCase();
+  const teil = Number(part?.teil ?? part?.questions?.[0]?.teil);
+  return mod === 'lesen' && teil === 2;
 }
 
 // ─── GATE de publicación — fuente única de verdad ────────────────────────────
@@ -2115,10 +2747,17 @@ export async function isPartPoolReady(part, { allowFailures = false, semantic = 
 
 // Invariantes estructurales activos:
 export const GATE_BLOCK_CHECKS = new Set([
+  'CHK-LEVEL',
+  'CHK-14c', // P2: mayúsculas erróneas en opciones MCQ T2/T5
   'CHK-17', // L3: misma lista A-J compartida en los 7 ítems (Frankenstein L3)
+  'CHK-18b', // T2/T5: clave MCQ no coincide con explicación
   'CHK-20', // H1: cada segmento debe tener exactamente 1RF+1MC (invariante estructural H1)
   'CHK-21', // T4: signText ≥15 palabras y autores únicos (Frankenstein T4)
   'CHK-22', // T4: múltiples passageIds = cross-batch Frankenstein (CRITICAL — siempre bloquea)
+  'CHK-26', // P1: topicTag coherente con tema pedido (incl. T3 sin passages)
+  'CHK-27', // P3: debate T4 alineado al tema pedido (no Homeoffice en Technik, etc.)
+  'CHK-28', // L2: opciones MCQ no excluyentes (determinista, sin LLM)
+  'CHK-29', // T4/T5: molde estructural duplicado en celda topicTag×Teil
 ]);
 
 // Pendientes de activación (advisory hoy, bloqueantes cuando pool-health los soporte):
@@ -2139,7 +2778,58 @@ export const GATE_BLOCK_PENDING = new Set([
  * @param {boolean} [opts.allowFailures=false] - Si true, emite aviso rojo pero no bloquea
  * @returns {{ ok: boolean, blocking: object[], advisory: object[] }}
  */
-export function isExamPublishable(exam, { allowFailures = false } = {}) {
+export function checkExamLevelIntegrity(examWrapper, { expectedLevel } = {}) {
+  const expected = String(
+    expectedLevel || examWrapper?.level || examWrapper?.exam?.level || '',
+  )
+    .trim()
+    .toUpperCase();
+  if (!expected) return { ok: true, blocking: [], findings: [] };
+
+  const findings = [];
+  const exam = examWrapper?.exam || examWrapper;
+  const slots = ['lesenParts', 'horenParts', 'schreibenParts', 'sprechenParts'];
+
+  const auditQuestion = (q, scope, partLabel) => {
+    if (!q || typeof q !== 'object') return;
+    const ql = q.level ? String(q.level).trim().toUpperCase() : null;
+    if (!ql) {
+      findings.push(
+        finding(
+          'CHK-LEVEL',
+          'CRITICAL',
+          scope,
+          `q:${q.id || '?'}`,
+          `${partLabel}: pregunta ${q.id || '?'} sin level (esperado ${expected})`,
+        ),
+      );
+    } else if (ql !== expected) {
+      findings.push(
+        finding(
+          'CHK-LEVEL',
+          'CRITICAL',
+          scope,
+          `q:${q.id || '?'}`,
+          `${partLabel}: level «${ql}» ≠ esperado «${expected}»`,
+        ),
+      );
+    }
+  };
+
+  for (const slot of slots) {
+    for (const part of exam?.[slot] || []) {
+      const partLabel = `${slot} T${part?.teil ?? '?'}`;
+      for (const q of part.questions || []) auditQuestion(q, 'exam', partLabel);
+      for (const seg of part.segments || []) {
+        for (const q of seg.questions || []) auditQuestion(q, 'exam', `${partLabel}/${seg.label || seg.passageId || 'seg'}`);
+      }
+    }
+  }
+
+  return { ok: findings.length === 0, blocking: findings, findings };
+}
+
+export function isExamPublishable(exam, { allowFailures = false, expectedLevel } = {}) {
   // ── CHK-23 pre-check on RAW parts, before auditExam calls flattenExam ────────
   // flattenExam silently resolves questions[]/segments[].questions[] conflicts by
   // preferring questions[] (wrong for Hören). Run CHK-23 before that resolution
@@ -2152,7 +2842,12 @@ export function isExamPublishable(exam, { allowFailures = false } = {}) {
     }
   }
 
-  // ── Fail-closed: si auditExam lanza (examen nulo, forma inesperada, excepción interna)
+  const levelExpected =
+    expectedLevel || exam?.level || examObj?.level || null;
+  const levelIntegrity = checkExamLevelIntegrity(exam, { expectedLevel: levelExpected });
+  preFindings.push(...levelIntegrity.findings);
+
+  // ── Fail-closed: si auditExam lanza
   // → tratar como CRITICAL AUDIT-ERROR. NO publicar. El catch→warn de la CLI (modo reporte)
   // es distinto: está en loadBatchFile y solo aplica al escaneo de directorios.
   let audit;
@@ -2196,7 +2891,7 @@ export function isExamPublishable(exam, { allowFailures = false } = {}) {
 }
 
 // Exportar símbolos necesarios para publicador y verify
-export { flattenExam, BLUEPRINT, partRecordToExamPart, partToExamWrapper };
+export { flattenExam, BLUEPRINT, partRecordToExamPart, partToExamWrapper, chk14 };
 
 /**
  * loadBatchFile: devuelve siempre un array de batches.
@@ -2378,19 +3073,25 @@ async function main() {
     if (batch._isFullExam) allFindings.push(...chk3Absent(batch, file));
     allFindings.push(...chk4(batch, file));
     allFindings.push(...chk6(batch, file));
+    allFindings.push(...chk6c(batch, file));
+    allFindings.push(...chk26(batch, file));
+    allFindings.push(...chk27(batch, file));
     allFindings.push(...chk7(batch, file));
     allFindings.push(...chk8(batch, file, globalIds));
     allFindings.push(...chk9(batch, file));
     allFindings.push(...chk10(batch, file));
     allFindings.push(...chk11(batch, file));
+    allFindings.push(...chk29(batch, file));
     allFindings.push(...chk12(batch, file));
     allFindings.push(...chk13(batch, file));
     allFindings.push(...chk14(batch, file));
     allFindings.push(...chk14b(batch, file));
+    allFindings.push(...chk14c(batch, file));
     allFindings.push(...chk15(batch, file));
     allFindings.push(...chk16(batch, file));
     allFindings.push(...chk17(batch, file));
     allFindings.push(...chk18(batch, file));
+    allFindings.push(...chk18b(batch, file));
     allFindings.push(...chk19(batch, file));
     allFindings.push(...chk20(batch, file));
     allFindings.push(...chk21(batch, file));

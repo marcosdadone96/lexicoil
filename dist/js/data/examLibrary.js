@@ -1,4 +1,4 @@
-/* Static exam library — curated JSON exams per subject/level */
+/* Static exam library â€” curated JSON exams per subject/level */
 const ExamLibrary = (() => {
   const CACHE = {};
   const AVAIL_PATH = 'data/exams/availability.json';
@@ -9,6 +9,19 @@ const ExamLibrary = (() => {
   let manifestPromise = null;
   /** Secondary HEAD probe cache (runtime file check). */
   const PROBE = {};
+
+  /** @returns {'published'|'legacy'} */
+  function examSourceMode() {
+    return typeof getLexicoilExamSource === 'function' ? getLexicoilExamSource() : 'legacy';
+  }
+
+  function usesPublishedExams(subject, level) {
+    return (
+      examSourceMode() === 'published' &&
+      typeof PublishedExamAdapter !== 'undefined' &&
+      PublishedExamAdapter.supports(subject, level)
+    );
+  }
 
   function showBetaLevels() {
     if (typeof window !== 'undefined' && window.LEXICOIL_SHOW_BETA_LEVELS === true) return true;
@@ -84,7 +97,10 @@ const ExamLibrary = (() => {
     return m[subject]?.[level]?.status || 'hidden';
   }
 
-  function getExamCount(subject, level) {
+  async function getExamCount(subject, level) {
+    if (usesPublishedExams(subject, level)) {
+      return PublishedExamAdapter.getExamCount(subject, level);
+    }
     const m = MANIFEST || getManifestSync();
     return m?.[subject]?.[level]?.exams ?? 0;
   }
@@ -104,8 +120,10 @@ const ExamLibrary = (() => {
     const key = cacheKey(subject, level);
     if (PROBE[key] !== undefined) return PROBE[key];
     try {
-      const res = await fetch(filePath(subject, level), { method: 'HEAD', cache: 'no-store' });
-      PROBE[key] = res.ok;
+      const ok = usesPublishedExams(subject, level)
+        ? await PublishedExamAdapter.probeLevel(subject, level)
+        : (await fetch(filePath(subject, level), { method: 'HEAD', cache: 'no-store' })).ok;
+      PROBE[key] = ok;
       return PROBE[key];
     } catch (_) {
       PROBE[key] = false;
@@ -146,9 +164,19 @@ const ExamLibrary = (() => {
     }
     const key = cacheKey(subject, level);
     if (CACHE[key]) return CACHE[key];
-    const res = await fetch(filePath(subject, level));
-    if (!res.ok) throw unavailableError(subject, level);
-    const exams = await res.json();
+
+    let exams;
+    if (usesPublishedExams(subject, level)) {
+      if (typeof lcDebug !== 'undefined') {
+        lcDebug.log('[ExamLibrary] loading published exams for', subject, level);
+      }
+      exams = await PublishedExamAdapter.loadExams(subject, level);
+    } else {
+      const res = await fetch(filePath(subject, level));
+      if (!res.ok) throw unavailableError(subject, level);
+      exams = await res.json();
+    }
+
     if (!Array.isArray(exams) || !exams.length) {
       const err = new Error(`Exam library is empty for ${subject} ${level}`);
       err.code = 'exam_library_unavailable';
@@ -206,6 +234,8 @@ const ExamLibrary = (() => {
     getManifestSync,
     getStatus,
     getExamCount,
+    examSourceMode,
+    usesPublishedExams,
     showBetaLevels,
     isSelectable,
     hasLibrary,

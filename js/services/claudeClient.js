@@ -1,4 +1,6 @@
 const CLAUDE_ENDPOINT = "/.netlify/functions/claude-chat";
+const EXAM_PLAN_ENDPOINT = "/.netlify/functions/exam-plan";
+const HYBRID_EXECUTE_ENDPOINT = "/.netlify/functions/exam-hybrid-execute";
 
 function aiAuthHeaders() {
   if (typeof lcAuthHeaders === 'function') return lcAuthHeaders();
@@ -136,6 +138,128 @@ async function renewExamGeneration(genTicket) {
     throw new Error(data.error || 'renew_failed');
   }
   return data.ticket;
+}
+
+/**
+ * Hybrid exam plan — pool vs live decision (no generation).
+ * @returns {Promise<{ plan: object, meta: object }>}
+ */
+async function fetchHybridExamPlan(params) {
+  const res = await lcFetch(EXAM_PLAN_ENDPOINT, {
+    method: 'POST',
+    headers: aiAuthHeaders(),
+    body: JSON.stringify(params),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    handleAiAuthError(res, data);
+    throw new Error(data.error || 'exam_plan_failed');
+  }
+  return { plan: data.plan, meta: data.meta };
+}
+
+/**
+ * Execute hybrid Lesen exam (pool + Gemini factory). Requires genTicket from startExamGeneration.
+ * Client should call deliverExamGeneration(genTicket) when the exam is shown, or
+ * releaseExamGeneration(genTicket) on total failure.
+ */
+async function executeHybridLesenExam({
+  genTicket,
+  topic,
+  vocab,
+  lang = 'de',
+  level = 'B1',
+  module = 'lesen',
+  plan = null,
+  planMeta = null,
+  teils = null,
+  poolThreshold = null,
+  skipLive = false,
+  onlyLiveTeil = null,
+  includePool = true,
+  partialExam = null,
+  partialTrace = null,
+  validateExam = true,
+  timeoutMs = 55000,
+} = {}) {
+  if (!genTicket) throw new Error('genTicket_required');
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  let res;
+  try {
+    res = await lcFetch(HYBRID_EXECUTE_ENDPOINT, {
+      method: 'POST',
+      headers: aiAuthHeaders(),
+      signal: controller.signal,
+      body: JSON.stringify({
+        genTicket,
+        topic,
+        vocab,
+        lang,
+        level,
+        module,
+        plan,
+        planMeta,
+        teils,
+        poolThreshold,
+        skipLive,
+        onlyLiveTeil,
+        includePool,
+        partialExam,
+        partialTrace,
+        validateExam,
+      }),
+    });
+  } catch (err) {
+    clearTimeout(timer);
+    if (err.name === 'AbortError') {
+      const e = new Error('Hybrid exam generation timed out');
+      e.code = 'timeout';
+      throw e;
+    }
+    throw err;
+  }
+  clearTimeout(timer);
+  const raw = await res.text();
+  let data = {};
+  try {
+    data = raw ? JSON.parse(raw) : {};
+  } catch {
+    data = { error: raw ? raw.slice(0, 200) : `hybrid_execute_${res.status}` };
+  }
+  if (!res.ok) {
+    console.error('[hybrid-execute] HTTP', res.status, data);
+    if (data.errorLog) {
+      console.error('[hybrid-execute] server error log:', data.errorLog, data.phase || '', data.errorAt || '');
+    }
+    handleAiAuthError(res, data);
+    if (res.status === 402 && data.error === 'ai_credits_exhausted') {
+      const e = new Error('ai_credits_exhausted');
+      e.code = 'ai_credits_exhausted';
+      throw e;
+    }
+    if (res.status === 503 && data.error === 'live_gen_disabled') {
+      const e = new Error('live_gen_disabled');
+      e.code = 'live_gen_disabled';
+      throw e;
+    }
+    if (res.status === 504 || data.error === 'hybrid_execute_timeout') {
+      const e = new Error(
+        data.details?.hint ||
+          'Hybrid generation timed out (~55s per Teil). Retry or use fewer words.',
+      );
+      e.code = 'gateway_timeout';
+      e.phase = data.phase;
+      throw e;
+    }
+    const e = new Error(data.error || data.message || `hybrid_execute_${res.status}`);
+    e.code = data.error;
+    e.details = data.details;
+    e.phase = data.phase;
+    e.status = res.status;
+    throw e;
+  }
+  return data;
 }
 
 async function callAI(prompt, maxTokens = 6000, options = {}) {
@@ -413,6 +537,8 @@ async function generateVocabQuizWithAI(words, opts = {}) {
       hintLang: opts.hintLang || 'en',
       hintLanguageMode: opts.hintLanguageMode || 'interface',
       words: list,
+      wordMeta: opts.wordMeta || [],
+      preferTargets: opts.preferTargets || [],
       count,
       requestId,
     },
@@ -425,6 +551,68 @@ async function generateVocabQuizWithAI(words, opts = {}) {
     throw e;
   }
   return data.questions;
+}
+
+async function generateListeningGameWithAI(words, opts = {}) {
+  const list = [...new Set((words || []).map((w) => String(w || '').trim()).filter(Boolean))];
+  if (list.length < 3) {
+    const e = new Error('need_at_least_3_words');
+    e.code = 'need_at_least_3_words';
+    throw e;
+  }
+  const requestId =
+    opts.requestId ||
+    `lg_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 9)}`;
+  const data = await postClaudeFeature(
+    {
+      generateListeningGame: true,
+      aiAction: 'listening_game',
+      lang: opts.lang || 'de',
+      level: opts.level || 'B1',
+      topic: opts.topic || '',
+      words: list,
+      requestId,
+    },
+    opts.timeoutMs || 60000,
+  );
+  applyAiCreditsFromResponse(data);
+  if (!data.ok || !data.passage) {
+    const e = new Error(data.error || 'listening_game_failed');
+    e.code = data.error || 'listening_game_failed';
+    throw e;
+  }
+  return data;
+}
+
+async function generateVocabPhrasesWithAI(words, opts = {}) {
+  const list = [...new Set((words || []).map((w) => String(w || '').trim()).filter(Boolean))];
+  if (list.length < 2) {
+    const e = new Error('need_at_least_2_words');
+    e.code = 'need_at_least_2_words';
+    throw e;
+  }
+  const requestId =
+    opts.requestId ||
+    `vp_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 9)}`;
+  const data = await postClaudeFeature(
+    {
+      generateVocabPhrases: true,
+      aiAction: 'vocab_phrases',
+      lang: opts.lang || 'de',
+      level: opts.level || 'B1',
+      words: list,
+      count: Math.min(5, Math.max(3, Number(opts.count) || 4)),
+      requestId,
+    },
+    opts.timeoutMs || 50000,
+  );
+  applyAiCreditsFromResponse(data);
+  if (!data.ok || !Array.isArray(data.phrases) || !data.phrases.length) {
+    const e = new Error(data.error || 'vocab_phrases_failed');
+    e.code = data.error || 'vocab_phrases_failed';
+    throw e;
+  }
+  return data.phrases;
 }
 
 async function confirmStripePurchase(sessionId) {
@@ -451,6 +639,37 @@ async function confirmStripePurchase(sessionId) {
   return data;
 }
 
+async function startOfficialExamTimer(opts = {}) {
+  const res = await lcFetch("/.netlify/functions/exam-official-timer", {
+    method: "POST",
+    headers: aiAuthHeaders(),
+    body: JSON.stringify({
+      action: "start",
+      examSavedId: opts.examSavedId,
+      limitMinutes: opts.limitMinutes,
+      goalId: opts.goalId || null,
+    }),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) return null;
+  return data;
+}
+
+async function finishOfficialExamTimer(opts = {}) {
+  const res = await lcFetch("/.netlify/functions/exam-official-timer", {
+    method: "POST",
+    headers: aiAuthHeaders(),
+    body: JSON.stringify({
+      action: "finish",
+      examSavedId: opts.examSavedId,
+      timerSessionId: opts.timerSessionId,
+    }),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) return null;
+  return data;
+}
+
 async function commitExamQuota() {
   if (!commitExamQuota._pendingId && typeof crypto !== 'undefined' && crypto.randomUUID) {
     commitExamQuota._pendingId = crypto.randomUUID();
@@ -474,9 +693,50 @@ async function commitExamQuota() {
     throw new Error(data.error || "Could not register exam usage");
   }
   commitExamQuota._pendingId = null;
-  if (typeof window.applyServerQuota === "function") {
+  if (typeof window.applyServerQuota === 'function') {
     window.applyServerQuota(data);
   }
+  if (typeof data.used !== 'number' && typeof window.applyServerQuota === 'function') {
+    window.applyServerQuota({
+      used: (typeof window.getQuotaUsed === 'function' ? window.getQuotaUsed() : 0) + 1,
+      plan: data.plan || (typeof S !== 'undefined' ? S.plan : undefined),
+    });
+  }
+  if (typeof window.updQuotaUI === 'function') window.updQuotaUI();
+  if (typeof window.refreshUserDropdown === 'function') window.refreshUserDropdown();
+}
+
+async function commitPersonalPoolQuota(module) {
+  const mod = String(module || '').toLowerCase();
+  if (mod !== 'lesen' && mod !== 'horen') throw new Error('invalid_personal_pool_module');
+  if (!commitPersonalPoolQuota._pendingIds) commitPersonalPoolQuota._pendingIds = {};
+  if (!commitPersonalPoolQuota._pendingIds[mod] && typeof crypto !== 'undefined' && crypto.randomUUID) {
+    commitPersonalPoolQuota._pendingIds[mod] = crypto.randomUUID();
+  }
+  const requestId = commitPersonalPoolQuota._pendingIds[mod] || null;
+  const res = await lcFetch(CLAUDE_ENDPOINT, {
+    method: "POST",
+    headers: aiAuthHeaders(),
+    body: JSON.stringify({ personalPoolCommit: mod, requestId }),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    if (res.status === 429 && data.error === 'personal_pool_quota_exceeded') {
+      const e = new Error('personal_pool_quota_exceeded');
+      e.code = 'personal_pool_quota_exceeded';
+      e.used = data.used;
+      e.max = data.max;
+      e.plan = data.plan;
+      e.module = data.module || mod;
+      throw e;
+    }
+    throw new Error(data.error || 'Could not register personal pool usage');
+  }
+  commitPersonalPoolQuota._pendingIds[mod] = null;
+  if (typeof window.applyServerQuota === 'function') {
+    window.applyServerQuota(data);
+  }
+  return data;
 }
 
 const VOCAB_CACHE_ENDPOINT = "/.netlify/functions/vocab-cache";
@@ -493,13 +753,23 @@ async function fetchExamFromPool(lang, level, excludeIds) {
   return data;
 }
 
+function resolveAssembleModeForPool() {
+  if (typeof isOfficialMode === 'function' && isOfficialMode()) return 'official';
+  if (typeof isPracticeMode === 'function' && isPracticeMode()) return 'practice';
+  if (typeof S !== 'undefined') {
+    const m = String(S.mode || 'practice').toLowerCase();
+    return m === 'official' || m === 'real' ? 'official' : 'practice';
+  }
+  return 'practice';
+}
+
 /**
  * Fetch a reusable exam section (part) from the parts store.
  * Returns the part payload or null if nothing is available.
  * Never throws — callers treat null as "no cached part, fall back to AI".
  */
 async function fetchExamPart(lang, level, module, excludeIds, teil) {
-  const params = { lang, level, module };
+  const params = { lang, level, module, assembleMode: resolveAssembleModeForPool() };
   if (excludeIds && excludeIds.length) {
     params.exclude = excludeIds.slice(0, 40).join(",");
   }
@@ -522,26 +792,70 @@ async function fetchExamPart(lang, level, module, excludeIds, teil) {
  * completo: { part, id, coveredWords, coverage, topic, requestedLemmas } o null.
  */
 async function fetchExamPartVocab(lang, level, module, opts = {}) {
-  const { excludeIds = [], teil = null, words = [], excludeTopics = [] } = opts;
-  const params = { lang, level, module };
+  const {
+    excludeIds = [],
+    teil = null,
+    words = [],
+    excludeTopics = [],
+    topicTag = null,
+    poolRequestId = null,
+  } = opts;
+  const params = {
+    lang, level, module,
+    assembleMode: opts.assembleMode || resolveAssembleModeForPool(),
+  };
   if (excludeIds.length) params.exclude = excludeIds.slice(0, 40).join(",");
   if (teil != null && Number.isFinite(Number(teil))) params.teil = String(Number(teil));
   if (words.length) params.words = words.slice(0, 40).join(",");
   if (excludeTopics.length) params.excludeTopics = excludeTopics.slice(0, 20).join(",");
+  if (topicTag) params.topicTag = String(topicTag);
+  if (poolRequestId) params.poolRequestId = String(poolRequestId);
   const q = new URLSearchParams(params);
   try {
     const res = await lcFetch(`/.netlify/functions/exam-part?${q}`);
     const data = await res.json().catch(() => ({}));
-    if (!res.ok || !data.part) return null;
+    if (!res.ok) {
+      if (res.status === 401) {
+        const e = new Error(data.error || 'login_required');
+        e.code = 'login_required';
+        throw e;
+      }
+      if (res.status === 429 && data.error === 'personal_pool_quota_exceeded') {
+        const e = new Error('personal_pool_quota_exceeded');
+        e.code = 'personal_pool_quota_exceeded';
+        e.used = data.used;
+        e.max = data.max;
+        e.plan = data.plan;
+        e.module = data.module || module;
+        throw e;
+      }
+      if (res.status === 429 && data.error === 'rate_limited') {
+        const e = new Error('rate_limited');
+        e.code = 'rate_limited';
+        throw e;
+      }
+      return null;
+    }
+    if (!data.part) return null;
+    if (typeof window !== 'undefined' && typeof window.applyServerQuota === 'function') {
+      if (data.personalLesenUsed != null || data.personalHorenUsed != null) {
+        window.applyServerQuota(data);
+      }
+    }
     return {
       part: data.part,
       id: data.id || data.part.id || null,
       coveredWords: data.coveredWords || [],
       coverage: data.coverage || null,
       topic: data.topic || data.part.topic || null,
+      topicTag: data.topicTag || data.part.topicTag || null,
+      topicRelaxed: !!data.topicRelaxed,
       requestedLemmas: data.requestedLemmas || [],
     };
-  } catch (_) {
+  } catch (err) {
+    if (err?.code === 'login_required' || err?.code === 'personal_pool_quota_exceeded' || err?.code === 'rate_limited') {
+      throw err;
+    }
     return null;
   }
 }
@@ -559,6 +873,87 @@ async function fetchVocabCache(from, to, text, context, signal) {
     if (!res.ok) return { found: false, reason: data.reason || data.error || `http_${res.status}` };
     if (!data.found) return { found: false, reason: data.reason || "miss" };
     return data;
+  } catch (err) {
+    if (err?.name === "AbortError") return { found: false, reason: "aborted" };
+    return { found: false, reason: "network" };
+  } finally {
+    if (timer) clearTimeout(timer);
+  }
+}
+
+/**
+ * AI lemma fallback for German separables when allowlist reunify failed.
+ * Cached server-side (vocab-cache action=lemma).
+ */
+async function fetchVocabLemma(surface, context, signal) {
+  if (typeof window !== "undefined") {
+    window.__lexicoilLemmaAiCalls = (window.__lexicoilLemmaAiCalls || 0) + 1;
+  }
+  const params = new URLSearchParams({
+    action: "lemma",
+    from: "de",
+    text: String(surface || ""),
+    context: String(context || "").slice(0, 4000),
+  });
+  const ctrl = signal ? null : typeof AbortController !== "undefined" ? new AbortController() : null;
+  const useSignal = signal || ctrl?.signal;
+  const timer = ctrl ? setTimeout(() => ctrl.abort(), 11000) : null;
+  try {
+    const res = await lcFetch(`${VOCAB_CACHE_ENDPOINT}?${params}`, useSignal ? { signal: useSignal } : {});
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) return { found: false, reason: data.reason || data.error || `http_${res.status}` };
+    if (!data.found || !data.lemma) return { found: false, reason: data.reason || "miss" };
+    // Client-side junk guard (same family as MyMemory spam filter)
+    const lemma = String(data.lemma || "").trim();
+    if (/^https?:\/\//i.test(lemma) || /\bhttps?:\/\//i.test(lemma)) {
+      return { found: false, reason: "junk_translation" };
+    }
+    return { found: true, lemma, source: data.source || "gemini" };
+  } catch (err) {
+    if (err?.name === "AbortError") return { found: false, reason: "aborted" };
+    return { found: false, reason: "network" };
+  } finally {
+    if (timer) clearTimeout(timer);
+  }
+}
+
+/**
+ * AI der/die/das fallback when ArticleLexicon misses (cached server-side).
+ * @param {string} word
+ * @param {{ likelyPlural?: boolean, signal?: AbortSignal }} [opts]
+ */
+async function fetchVocabGender(word, opts) {
+  const o = opts && typeof opts === 'object' ? opts : {};
+  const signal = o.signal;
+  if (typeof window !== "undefined") {
+    window.__lexicoilGenderAiCalls = (window.__lexicoilGenderAiCalls || 0) + 1;
+  }
+  const params = new URLSearchParams({
+    action: "gender",
+    from: "de",
+    text: String(word || ""),
+  });
+  if (o.likelyPlural) params.set("likelyPlural", "1");
+  const ctrl = signal ? null : typeof AbortController !== "undefined" ? new AbortController() : null;
+  const useSignal = signal || ctrl?.signal;
+  const timer = ctrl ? setTimeout(() => ctrl.abort(), 11000) : null;
+  try {
+    const res = await lcFetch(`${VOCAB_CACHE_ENDPOINT}?${params}`, useSignal ? { signal: useSignal } : {});
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) return { found: false, reason: data.reason || data.error || `http_${res.status}` };
+    if (!data.found || !data.article) return { found: false, reason: data.reason || "miss" };
+    const article = String(data.article || "").trim().toLowerCase();
+    if (!/^(der|die|das)$/.test(article)) return { found: false, reason: "junk_response" };
+    const gender =
+      data.gender ||
+      (article === "der" ? "m" : article === "die" ? "f" : article === "das" ? "n" : null);
+    return {
+      found: true,
+      article,
+      gender,
+      plural: !!data.plural,
+      source: data.source || "gemini",
+    };
   } catch (err) {
     if (err?.name === "AbortError") return { found: false, reason: "aborted" };
     return { found: false, reason: "network" };
@@ -773,11 +1168,17 @@ async function startStripePortal() {
 if (typeof window !== "undefined") {
   window.aiAuthHeaders = aiAuthHeaders;
   window.lcFetch = lcFetch;
+  window.commitExamQuota = commitExamQuota;
+  window.commitPersonalPoolQuota = commitPersonalPoolQuota;
   window.normalizeTtsQueryText = normalizeTtsQueryText;
   window.fetchTtsAudio = fetchTtsAudio;
   window.generateTtsAudio = generateTtsAudio;
   window.ttsVoiceForLang = ttsVoiceForLang;
   window.startStripeCheckout = startStripeCheckout;
+  window.fetchHybridExamPlan = fetchHybridExamPlan;
+  window.executeHybridLesenExam = executeHybridLesenExam;
   window.fetchExamPart = fetchExamPart;
   window.fetchExamPartVocab = fetchExamPartVocab;
+  window.startOfficialExamTimer = startOfficialExamTimer;
+  window.finishOfficialExamTimer = finishOfficialExamTimer;
 }

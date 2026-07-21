@@ -1,0 +1,384 @@
+{
+  "generatedAt": "2026-07-06T12:33:13.309Z",
+  "flashBaseline": {
+    "model": "gemini-2.5-flash",
+    "source": "pool-fill-fresh-sample (2026-07-06, sin exclude intra-sesión)",
+    "okParts": 14,
+    "summary": {
+      "parts": 14,
+      "capsInOptions": 6,
+      "capsPerPart": 0.43,
+      "keyMismatch": 4,
+      "keyMismatchPerPart": 0.29,
+      "wordMatching": 0,
+      "wordMatchingPerPart": 0
+    },
+    "structuralClones": [
+      {
+        "moldKey": "Familie×T4:handy_schule",
+        "count": 2,
+        "files": [
+          "batches/generated/lesen-t4-gemini-031.json",
+          "batches/generated/lesen-t4-gemini-032.json"
+        ]
+      },
+      {
+        "moldKey": "Gesundheit×T5:freizeitzentrum",
+        "count": 4,
+        "files": [
+          "batches/generated/lesen-t5-gemini-050.json",
+          "batches/generated/lesen-t5-gemini-051.json",
+          "batches/generated/lesen-t5-gemini-052.json",
+          "batches/generated/lesen-t5-gemini-053.json"
+        ]
+      }
+    ],
+    "cloneGroups": 2
+  },
+  "experiment": {
+    "model": "gemini-2.5-pro",
+    "intraSessionExclude": true,
+    "plan": 10,
+    "ok": 8,
+    "runs": [
+      {
+        "n": 1,
+        "teil": 1,
+        "topic": "Wohnen",
+        "ok": false,
+        "genCalls": 3,
+        "ms": 108613,
+        "costUsd": 0.0564,
+        "tokens": {
+          "promptTokens": 12799,
+          "outputTokens": 4044
+        }
+      },
+      {
+        "n": 2,
+        "teil": 1,
+        "topic": "Bildung",
+        "ok": false,
+        "genCalls": 4,
+        "ms": 138836,
+        "costUsd": 0.065,
+        "tokens": {
+          "promptTokens": 13405,
+          "outputTokens": 4828
+        }
+      },
+      {
+        "n": 3,
+        "teil": 2,
+        "topic": "Bildung",
+        "ok": true,
+        "file": "batches/generated/lesen-t2-gemini-087.json",
+        "genCalls": 2,
+        "attempts": 2,
+        "ms": 93247,
+        "costUsd": 0.0497,
+        "tokens": {
+          "promptTokens": 8819,
+          "outputTokens": 3864
+        },
+        "analysis": {
+          "file": "batches/generated/lesen-t2-gemini-087.json",
+          "teil": 2,
+          "topic": "Bildung",
+          "moldKey": null,
+          "defects": {
+            "capsInOptions": 0,
+            "keyExplanationMismatch": 0,
+            "wordMatching": 0
+          },
+          "details": {
+            "caps": [],
+            "keyMismatch": [],
+            "wordMatch": []
+          }
+        }
+      },
+      {
+        "n": 4,
+        "teil": 2,
+        "topic": "Wohnen",
+        "ok": true,
+        "file": "batches/generated/lesen-t2-gemini-088.json",
+        "genCalls": 1,
+        "attempts": 1,
+        "ms": 41420,
+        "costUsd": 0.0248,
+        "tokens": {
+          "promptTokens": 4353,
+          "outputTokens": 1938
+        },
+        "analysis": {
+          "file": "batches/generated/lesen-t2-gemini-088.json",
+          "teil": 2,
+          "topic": "Wohnen",
+          "moldKey": null,
+          "defects": {
+            "capsInOptions": 0,
+            "keyExplanationMismatch": 0,
+            "wordMatching": 0
+          },
+          "details": {
+            "caps": [],
+            "keyMismatch": [],
+            "wordMatch": []
+          }
+        }
+      },
+      {
+        "n": 5,
+        "teil": 5,
+        "topic": "Gesundheit",
+        "ok": true,
+        "file": "batches/generated/lesen-t5-gemini-057.json",
+        "genCalls": 2,
+        "attempts": 2,
+        "ms": 78824,
+        "costUsd": 0.0391,
+        "tokens": {
+          "promptTokens": 7363,
+          "outputTokens": 2993
+        },
+        "analysis": {
+          "file": "batches/generated/lesen-t5-gemini-057.json",
+          "teil": 5,
+          "topic": "Gesundheit",
+          "moldKey": "Gesundheit×T5:kantine",
+          "defects": {
+            "capsInOptions": 0,
+            "keyExplanationMismatch": 0,
+            "wordMatching": 0
+          },
+          "details": {
+            "caps": [],
+            "keyMismatch": [],
+            "wordMatch": []
+          }
+        }
+      },
+      {
+        "n": 6,
+        "teil": 5,
+        "topic": "Familie",
+        "ok": true,
+        "file": "batches/generated/lesen-t5-gemini-058.json",
+        "genCalls": 1,
+        "attempts": 1,
+        "ms": 48377,
+        "costUsd": 0.0197,
+        "tokens": {
+          "promptTokens": 3589,
+          "outputTokens": 1522
+        },
+        "analysis": {
+          "file": "batches/generated/lesen-t5-gemini-058.json",
+          "teil": 5,
+          "topic": "Familie",
+          "moldKey": "Familie×T5:park",
+          "defects": {
+            "capsInOptions": 0,
+            "keyExplanationMismatch": 2,
+            "wordMatching": 0
+          },
+          "details": {
+            "caps": [],
+            "keyMismatch": [
+              {
+                "itemId": "gen-q-5-bf1cb2d2-1",
+                "correct": "b",
+                "overlapCorrect": 0,
+                "overlapWrong": 2,
+                "expl": "Laut den Regeln ist das Grillen nur in Zone C gestattet und die Gebühr muss im Büro bezahlt werden, ",
+                "wrongHint": "Das Grillen ist nur bis 19:00 Uhr erlaubt und am Wochenende kostenlos."
+              },
+              {
+                "itemId": "gen-q-5-bf1cb2d2-2",
+                "correct": "c",
+                "overlapCorrect": 1,
+                "overlapWrong": 2,
+                "expl": "Der Text besagt, dass der Spielplatz um 19:00 Uhr schließt, der gesamte Park aber bis 21:00 Uhr geöf",
+                "wrongHint": "Der Spielplatz ist bis 21:00 Uhr geöffnet, aber laute Musik ist verboten."
+              }
+            ],
+            "wordMatch": []
+          }
+        }
+      },
+      {
+        "n": 7,
+        "teil": 4,
+        "topic": "Familie",
+        "ok": true,
+        "file": "batches/generated/lesen-t4-gemini-033.json",
+        "genCalls": 2,
+        "attempts": 2,
+        "ms": 71859,
+        "costUsd": 0.0505,
+        "tokens": {
+          "promptTokens": 9821,
+          "outputTokens": 3825
+        },
+        "analysis": {
+          "file": "batches/generated/lesen-t4-gemini-033.json",
+          "teil": 4,
+          "topic": "Familie",
+          "moldKey": "Familie×T4:schwimmbad_gratis",
+          "defects": {
+            "capsInOptions": 0,
+            "keyExplanationMismatch": 0,
+            "wordMatching": 0
+          },
+          "details": {
+            "caps": [],
+            "keyMismatch": [],
+            "wordMatch": []
+          }
+        }
+      },
+      {
+        "n": 8,
+        "teil": 4,
+        "topic": "Medien",
+        "ok": true,
+        "file": "batches/generated/lesen-t4-gemini-034.json",
+        "genCalls": 2,
+        "attempts": 2,
+        "ms": 67191,
+        "costUsd": 0.0493,
+        "tokens": {
+          "promptTokens": 9618,
+          "outputTokens": 3727
+        },
+        "analysis": {
+          "file": "batches/generated/lesen-t4-gemini-034.json",
+          "teil": 4,
+          "topic": "Medien",
+          "moldKey": "Medien×T4:handy_schule",
+          "defects": {
+            "capsInOptions": 0,
+            "keyExplanationMismatch": 0,
+            "wordMatching": 0
+          },
+          "details": {
+            "caps": [],
+            "keyMismatch": [],
+            "wordMatch": []
+          }
+        }
+      },
+      {
+        "n": 9,
+        "teil": 1,
+        "topic": "Arbeit",
+        "ok": true,
+        "file": "batches/generated/lesen-t1-gemini-172.json",
+        "genCalls": 1,
+        "attempts": 1,
+        "ms": 44830,
+        "costUsd": 0.0185,
+        "tokens": {
+          "promptTokens": 4196,
+          "outputTokens": 1321
+        },
+        "analysis": {
+          "file": "batches/generated/lesen-t1-gemini-172.json",
+          "teil": 1,
+          "topic": "Arbeit",
+          "moldKey": null,
+          "defects": {
+            "capsInOptions": 0,
+            "keyExplanationMismatch": 0,
+            "wordMatching": 0
+          },
+          "details": {
+            "caps": [],
+            "keyMismatch": [],
+            "wordMatch": []
+          }
+        }
+      },
+      {
+        "n": 10,
+        "teil": 5,
+        "topic": "Arbeit",
+        "ok": true,
+        "file": "batches/generated/lesen-t5-gemini-059.json",
+        "genCalls": 2,
+        "attempts": 2,
+        "ms": 78878,
+        "costUsd": 0.0391,
+        "tokens": {
+          "promptTokens": 7679,
+          "outputTokens": 2953
+        },
+        "analysis": {
+          "file": "batches/generated/lesen-t5-gemini-059.json",
+          "teil": 5,
+          "topic": "Arbeit",
+          "moldKey": "Arbeit×T5:schule",
+          "defects": {
+            "capsInOptions": 0,
+            "keyExplanationMismatch": 1,
+            "wordMatching": 0
+          },
+          "details": {
+            "caps": [],
+            "keyMismatch": [
+              {
+                "itemId": "gen-q-5-43810df2-3",
+                "correct": "b",
+                "overlapCorrect": 0,
+                "overlapWrong": 2,
+                "expl": "Werkzeuge können nur zu den angegebenen Öffnungszeiten geholt werden und die Frist für die Rückgabe ",
+                "wrongHint": "Die Werkzeuge sind nur vormittags offen und müssen innerhalb einer Woche zurückg"
+              }
+            ],
+            "wordMatch": []
+          }
+        }
+      }
+    ],
+    "summary": {
+      "parts": 8,
+      "capsInOptions": 0,
+      "capsPerPart": 0,
+      "keyMismatch": 3,
+      "keyMismatchPerPart": 0.38,
+      "wordMatching": 0,
+      "wordMatchingPerPart": 0
+    },
+    "structuralClones": [],
+    "cloneGroups": 0,
+    "apiCalls": 20,
+    "tokens": {
+      "promptTokens": 81642,
+      "outputTokens": 31015,
+      "totalTokens": 182769
+    },
+    "costUsdTotal": 0.4122,
+    "costUsdPerOkPart": 0.0515
+  },
+  "comparison": {
+    "capsPerPart": {
+      "flash": 0.43,
+      "pro": 0
+    },
+    "keyMismatchPerPart": {
+      "flash": 0.29,
+      "pro": 0.38
+    },
+    "wordMatchingPerPart": {
+      "flash": 0,
+      "pro": 0
+    },
+    "cloneGroups": {
+      "flash": 2,
+      "pro": 0
+    },
+    "costUsdPerOkPart": 0.0515
+  }
+}

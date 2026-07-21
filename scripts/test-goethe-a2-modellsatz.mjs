@@ -58,6 +58,12 @@ assert(lesen.parts[3].passageLengthExempt === true, 'Lesen Teil 4 passageLengthE
 assert(horen.parts[0].plays === 2 && horen.parts[3].plays === 2, 'Hören Teil 1/4 zweimal');
 assert(horen.parts[1].plays === 1 && horen.parts[2].plays === 1, 'Hören Teil 2/3 einmal');
 
+const h2 = horen.parts.find((p) => p.teil === 2);
+assert(h2.slotType === 'picture_matching', 'Hören T2 slotType picture_matching');
+assert(h2.pictureOptions === 9, 'Hören T2 pictureOptions 9');
+assert(h2.uniqueAnswerKeys === true, 'Hören T2 uniqueAnswerKeys');
+assert(h2.questionTypes?.includes('matching'), 'Hören T2 questionTypes matching');
+
 const shortExempt = CefrGate.validatePassage('Kurze Anzeige für Sprachkurs.', {
   level: 'A2',
   lang: 'de',

@@ -12,7 +12,7 @@ import { fileURLToPath } from 'node:url';
 const require = createRequire(import.meta.url);
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
-const { AI_COSTS, checkActionAccess } = require(path.join(ROOT, 'netlify/functions/lib/aiCredits.js'));
+const { AI_COSTS, resolveAiCost, checkActionAccess } = require(path.join(ROOT, 'netlify/functions/lib/aiCredits.js'));
 const { ACTION_ACCESS, checkActionAccess: matrixCheck, feedbackLevelForPlan } = require(
   path.join(ROOT, 'netlify/functions/lib/actionAccessLib.js'),
 );
@@ -44,12 +44,20 @@ pass('legacy snapshot: pro was 100 credits', LEGACY_SNAPSHOT.proMax === 100);
 pass('legacy snapshot: free trial was 30', LEGACY_SNAPSHOT.freeTrialMax === 30);
 
 // ── Cost table ─────────────────────────────────────────────────────────────
-pass('personal_exam costs 3', AI_COSTS.personal_exam === 3);
+pass('resolveAiCost personal_lesen is 0', resolveAiCost('personal_lesen') === 0);
+pass('resolveAiCost personal_horen is 0', resolveAiCost('personal_horen') === 0);
+pass('resolveAiCost unknown is null', resolveAiCost('not_an_action') === null);
+pass('personal_lesen costs 0', AI_COSTS.personal_lesen === 0);
+pass('personal_horen costs 0', AI_COSTS.personal_horen === 0);
+pass('personal_schreiben costs 2', AI_COSTS.personal_schreiben === 2);
+pass('personal_sprechen_gen costs 2', AI_COSTS.personal_sprechen_gen === 2);
+pass('speaking_realtime costs 4', AI_COSTS.speaking_realtime === 4);
 pass('writing_correction costs 1', AI_COSTS.writing_correction === 1);
 pass('vocab_quiz costs 2', AI_COSTS.vocab_quiz === 2);
 pass('grammar_coaching costs 1', AI_COSTS.grammar_coaching === 1);
 pass('speaking costs 2', AI_COSTS.speaking === 2);
-pass('listening_game costs 1', AI_COSTS.listening_game === 1);
+pass('listening_game costs 2', AI_COSTS.listening_game === 2);
+pass('vocab_phrases costs 1', AI_COSTS.vocab_phrases === 1);
 pass('tts costs 1', AI_COSTS.tts === 1);
 
 // ── Monthly pools ──────────────────────────────────────────────────────────
@@ -74,7 +82,10 @@ expectAccess('free', 'speaking', true);
 expectAccess('free', 'writing_correction', true);
 expectAccess('free', 'vocab_quiz', true);
 expectAccess('free', 'listening_game', true);
+expectAccess('free', 'vocab_phrases', true);
 expectAccess('free', 'personal_exam', false, 'pro_only');
+expectAccess('free', 'personal_lesen', true);
+expectAccess('free', 'personal_horen', true);
 expectAccess('free', 'grammar_coaching', false, 'pro_only');
 expectAccess('free', 'tts', false, 'pro_only');
 expectAccess('guest', 'speaking', false, 'login_required');
@@ -107,14 +118,18 @@ function simulateConsume(current, action, plan = 'pro', user = null) {
 
 {
   let blob = null;
-  const actions = ['speaking', 'writing_correction', 'vocab_quiz', 'listening_game'];
+  const actions = ['speaking', 'writing_correction', 'vocab_quiz'];
   for (const a of actions) {
     const r = simulateConsume(blob, a, 'free', expiredUser);
     pass(`free can ${a}`, r.ok);
     blob = r.payload;
   }
-  pass('free used 6 credits total', blob.aiUsed === 6);
-  const blocked = simulateConsume(blob, 'speaking', 'free', expiredUser);
+  pass('free used 5 credits on core actions', blob.aiUsed === 5);
+  const listenBlocked = simulateConsume(blob, 'listening_game', 'free', expiredUser);
+  pass('free listening_game blocked when only 1 credit left (costs 2)', !listenBlocked.ok && listenBlocked.error === 'ai_credits_exhausted');
+  const phrasesOk = simulateConsume(blob, 'vocab_phrases', 'free', expiredUser);
+  pass('free can vocab_phrases with 1 credit left', phrasesOk.ok && phrasesOk.payload.aiUsed === 6);
+  const blocked = simulateConsume(phrasesOk.payload, 'speaking', 'free', expiredUser);
   pass('free blocked after 6 credits', !blocked.ok && blocked.error === 'ai_credits_exhausted');
   const proOnly = simulateConsume(blob, 'personal_exam', 'free', expiredUser);
   pass('free personal_exam pro_only', !proOnly.ok && proOnly.error === 'pro_only');
@@ -123,7 +138,7 @@ function simulateConsume(current, action, plan = 'pro', user = null) {
 {
   let blob = null;
   const r1 = simulateConsume(blob, 'personal_exam', 'pro');
-  pass('pro personal_exam consumes 3', r1.ok && r1.payload.aiUsed === 3);
+  pass('pro personal_exam consumes 4', r1.ok && r1.payload.aiUsed === 4);
   blob = { month: getMonthKey(), aiUsed: 38, aiMax: 40 };
   const r2 = simulateConsume(blob, 'speaking', 'pro');
   pass('pro speaking costs 2 (38+2=40)', r2.ok && r2.payload.aiUsed === 40);
@@ -132,7 +147,7 @@ function simulateConsume(current, action, plan = 'pro', user = null) {
 {
   const blob = { month: getMonthKey(), aiUsed: 0, aiMax: 150 };
   const r = simulateConsume(blob, 'personal_exam', 'pro_max');
-  pass('pro_max personal_exam ok', r.ok && r.remaining === 147);
+  pass('pro_max personal_exam ok', r.ok && r.remaining === 146);
 }
 
 // ── Feedback levels ────────────────────────────────────────────────────────
@@ -192,6 +207,6 @@ pass('basic schreiben item has feedbackLevel', basicItem.feedbackLevel === 'basi
 
 // ── ACTION_ACCESS exported from aiCredits re-export ─────────────────────────
 pass('checkActionAccess re-export works', checkActionAccess('free', 'tts').error === 'pro_only');
-pass('ACTION_ACCESS has 7 actions', Object.keys(ACTION_ACCESS).length === 7);
+pass('ACTION_ACCESS has 13 actions', Object.keys(ACTION_ACCESS).length === 13);
 
 console.log('\nAI credits acceptance tests done.\n');

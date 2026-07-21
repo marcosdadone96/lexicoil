@@ -1,0 +1,556 @@
+{
+  "stampAt": "2026-07-11T11:12:20.334Z",
+  "version": "v2.3.5-separable-split-2026-07-11",
+  "dryRun": false,
+  "recount": {
+    "oldTotal": 51,
+    "stillEmitted": 42,
+    "dropped": 9,
+    "genuineKept": 42,
+    "genuineLost": 1,
+    "fpKept": 0,
+    "fpDropped": 8,
+    "byCombo": {
+      "teilnehmen": {
+        "old": 11,
+        "kept": 11,
+        "dropped": 0,
+        "genuine": 11,
+        "fp": 0
+      },
+      "aufmachen": {
+        "old": 2,
+        "kept": 0,
+        "dropped": 2,
+        "genuine": 0,
+        "fp": 2
+      },
+      "einkaufen": {
+        "old": 1,
+        "kept": 1,
+        "dropped": 0,
+        "genuine": 1,
+        "fp": 0
+      },
+      "mitnehmen": {
+        "old": 3,
+        "kept": 2,
+        "dropped": 1,
+        "genuine": 3,
+        "fp": 0
+      },
+      "zunehmen": {
+        "old": 1,
+        "kept": 1,
+        "dropped": 0,
+        "genuine": 1,
+        "fp": 0
+      },
+      "anfangen": {
+        "old": 2,
+        "kept": 2,
+        "dropped": 0,
+        "genuine": 2,
+        "fp": 0
+      },
+      "vornehmen": {
+        "old": 1,
+        "kept": 1,
+        "dropped": 0,
+        "genuine": 1,
+        "fp": 0
+      },
+      "mitmachen": {
+        "old": 11,
+        "kept": 8,
+        "dropped": 3,
+        "genuine": 8,
+        "fp": 3
+      },
+      "mitkommen": {
+        "old": 3,
+        "kept": 2,
+        "dropped": 1,
+        "genuine": 2,
+        "fp": 1
+      },
+      "einnehmen": {
+        "old": 1,
+        "kept": 1,
+        "dropped": 0,
+        "genuine": 1,
+        "fp": 0
+      },
+      "ausschalten": {
+        "old": 6,
+        "kept": 6,
+        "dropped": 0,
+        "genuine": 6,
+        "fp": 0
+      },
+      "zuziehen": {
+        "old": 1,
+        "kept": 1,
+        "dropped": 0,
+        "genuine": 1,
+        "fp": 0
+      },
+      "aufräumen": {
+        "old": 2,
+        "kept": 0,
+        "dropped": 2,
+        "genuine": 0,
+        "fp": 2
+      },
+      "anrufen": {
+        "old": 1,
+        "kept": 1,
+        "dropped": 0,
+        "genuine": 1,
+        "fp": 0
+      },
+      "aufladen": {
+        "old": 2,
+        "kept": 2,
+        "dropped": 0,
+        "genuine": 2,
+        "fp": 0
+      },
+      "mitbringen": {
+        "old": 2,
+        "kept": 2,
+        "dropped": 0,
+        "genuine": 2,
+        "fp": 0
+      },
+      "einladen": {
+        "old": 1,
+        "kept": 1,
+        "dropped": 0,
+        "genuine": 1,
+        "fp": 0
+      }
+    },
+    "losses": [
+      {
+        "file": "lesen-t1-gemini-075.json",
+        "id": "gen-q-1-2294-6",
+        "tag": "mitnehmen",
+        "sample": "Sie meidet jegliche Veranstaltungen zu ihrem neuen Hobby. Sie nimmt regelmäßig an einem Programm mit"
+      }
+    ],
+    "fpRemaining": [],
+    "handAdjusted": [
+      {
+        "file": "lesen-t5-gemini-029.json",
+        "id": "gen-q-5-0d9a36a9-2",
+        "tag": "aufräumen",
+        "label": "Räumen…auf",
+        "stillEmitted": false
+      },
+      {
+        "file": "lesen-t5-gemini-033.json",
+        "id": "gen-q-5-21c7dc2c-2",
+        "tag": "aufräumen",
+        "label": "Räumen…auf",
+        "stillEmitted": false
+      }
+    ]
+  },
+  "modified": [
+    "horen-t2-gemini-003.json",
+    "lesen-t1-gemini-075.json",
+    "lesen-t1-gemini-108.json",
+    "lesen-t1-gemini-179.json",
+    "lesen-t4-gemini-019.json",
+    "lesen-t5-gemini-029.json",
+    "lesen-t5-gemini-033.json",
+    "schreiben-gemini-006.json",
+    "sprechen-gemini-001.json",
+    "sprechen-gemini-008.json"
+  ],
+  "unchangedCount": 124,
+  "perFile": [
+    {
+      "file": "horen-t2-gemini-003.json",
+      "questionsChanged": 1,
+      "qChanges": [
+        {
+          "id": "gen-q-h2-5e785889-q3",
+          "before": [
+            "aufmachen",
+            "kampagnen",
+            "höflich",
+            "aufklärungskampagnen",
+            "umgangsformen",
+            "Kommunikation"
+          ],
+          "after": [
+            "kampagnen",
+            "höflich",
+            "aufklärungskampagnen",
+            "umgangsformen",
+            "Kommunikation",
+            "unternehmen"
+          ],
+          "removedCombos": [
+            "aufmachen"
+          ],
+          "addedCombos": []
+        }
+      ]
+    },
+    {
+      "file": "lesen-t1-gemini-075.json",
+      "questionsChanged": 1,
+      "qChanges": [
+        {
+          "id": "gen-q-1-2294-6",
+          "before": [
+            "mitnehmen",
+            "Hobby",
+            "Veranstaltungen",
+            "Programm",
+            "jeglich",
+            "meidet"
+          ],
+          "after": [
+            "Hobby",
+            "Veranstaltungen",
+            "Programm",
+            "jeglich",
+            "meidet",
+            "neuen"
+          ],
+          "removedCombos": [
+            "mitnehmen"
+          ],
+          "addedCombos": []
+        }
+      ]
+    },
+    {
+      "file": "lesen-t1-gemini-108.json",
+      "questionsChanged": 1,
+      "qChanges": [
+        {
+          "id": "gen-q-1-c3f9ea77-5",
+          "before": [
+            "mitkommen",
+            "familien",
+            "Verein",
+            "Viele",
+            "erwachsenen",
+            "arbeiten"
+          ],
+          "after": [
+            "familien",
+            "Verein",
+            "Viele",
+            "erwachsenen",
+            "arbeiten",
+            "kindern"
+          ],
+          "removedCombos": [
+            "mitkommen"
+          ],
+          "addedCombos": []
+        }
+      ]
+    },
+    {
+      "file": "lesen-t1-gemini-179.json",
+      "questionsChanged": 1,
+      "qChanges": [
+        {
+          "id": "gen-q-1-e66a7494-4",
+          "before": [
+            "mitmachen",
+            "Wochenende",
+            "schreiben",
+            "fahrten",
+            "kindern",
+            "touren"
+          ],
+          "after": [
+            "Wochenende",
+            "schreiben",
+            "fahrten",
+            "kindern",
+            "touren",
+            "kaufen"
+          ],
+          "removedCombos": [
+            "mitmachen"
+          ],
+          "addedCombos": []
+        }
+      ]
+    },
+    {
+      "file": "lesen-t4-gemini-019.json",
+      "questionsChanged": 1,
+      "qChanges": [
+        {
+          "id": "gen-q-4-06243115-7",
+          "before": [
+            "mitmachen",
+            "Umwelt",
+            "skeptisch",
+            "Projekte",
+            "Organisation",
+            "Erfahrung"
+          ],
+          "after": [
+            "Umwelt",
+            "skeptisch",
+            "Projekte",
+            "Organisation",
+            "Erfahrung",
+            "Umsetzung"
+          ],
+          "removedCombos": [
+            "mitmachen"
+          ],
+          "addedCombos": []
+        }
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-029.json",
+      "questionsChanged": 1,
+      "qChanges": [
+        {
+          "id": "gen-q-5-0d9a36a9-2",
+          "before": [
+            "aufräumen",
+            "erreichen",
+            "ungenutzten",
+            "Heizung",
+            "bleiben",
+            "heizen"
+          ],
+          "after": [
+            "erreichen",
+            "ungenutzten",
+            "Heizung",
+            "bleiben",
+            "heizen",
+            "räumen"
+          ],
+          "removedCombos": [
+            "aufräumen"
+          ],
+          "addedCombos": []
+        }
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-033.json",
+      "questionsChanged": 1,
+      "qChanges": [
+        {
+          "id": "gen-q-5-21c7dc2c-2",
+          "before": [
+            "aufräumen",
+            "ausschalten",
+            "Elektronischen",
+            "ungenutzten",
+            "Bewohner",
+            "Heizung"
+          ],
+          "after": [
+            "ausschalten",
+            "Elektronischen",
+            "ungenutzten",
+            "Bewohner",
+            "Heizung",
+            "stunden"
+          ],
+          "removedCombos": [
+            "aufräumen"
+          ],
+          "addedCombos": []
+        }
+      ]
+    },
+    {
+      "file": "schreiben-gemini-006.json",
+      "questionsChanged": 1,
+      "qChanges": [
+        {
+          "id": "gen-q-s-t2-4e264c3c-q1",
+          "before": [
+            "mitmachen",
+            "unterstützen",
+            "Wortschatz",
+            "Grammatik",
+            "ausschließlich",
+            "Arbeitgeber"
+          ],
+          "after": [
+            "unterstützen",
+            "Wortschatz",
+            "Grammatik",
+            "ausschließlich",
+            "Arbeitgeber",
+            "Vorteile"
+          ],
+          "removedCombos": [
+            "mitmachen"
+          ],
+          "addedCombos": []
+        }
+      ]
+    },
+    {
+      "file": "sprechen-gemini-001.json",
+      "questionsChanged": 1,
+      "qChanges": [
+        {
+          "id": "gen-q-sp-t1-21ad5163-q1",
+          "before": [
+            "aufmachen",
+            "informieren",
+            "beschwerden",
+            "Beispiel",
+            "Partner",
+            "Werbung"
+          ],
+          "after": [
+            "informieren",
+            "beschwerden",
+            "Beispiel",
+            "Partner",
+            "Werbung",
+            "teilnehmen"
+          ],
+          "removedCombos": [
+            "aufmachen"
+          ],
+          "addedCombos": [
+            "teilnehmen"
+          ]
+        }
+      ]
+    },
+    {
+      "file": "sprechen-gemini-008.json",
+      "questionsChanged": 1,
+      "qChanges": [
+        {
+          "id": "gen-q-sp-t2-9a72-q1",
+          "before": [
+            "Situation",
+            "Aussprache",
+            "Kochkurs",
+            "beliebt",
+            "Details",
+            "Schluss"
+          ],
+          "after": [
+            "aussehen",
+            "Situation",
+            "Aussprache",
+            "Kochkurs",
+            "beliebt",
+            "Details"
+          ],
+          "removedCombos": [],
+          "addedCombos": [
+            "aussehen"
+          ]
+        }
+      ]
+    }
+  ],
+  "final": {
+    "total": 44,
+    "genuine": 44,
+    "fp": 0,
+    "byCombo": {
+      "teilnehmen": {
+        "total": 12,
+        "genuine": 12,
+        "fp": 0
+      },
+      "einkaufen": {
+        "total": 1,
+        "genuine": 1,
+        "fp": 0
+      },
+      "mitnehmen": {
+        "total": 2,
+        "genuine": 2,
+        "fp": 0
+      },
+      "zunehmen": {
+        "total": 1,
+        "genuine": 1,
+        "fp": 0
+      },
+      "anfangen": {
+        "total": 2,
+        "genuine": 2,
+        "fp": 0
+      },
+      "vornehmen": {
+        "total": 1,
+        "genuine": 1,
+        "fp": 0
+      },
+      "mitmachen": {
+        "total": 8,
+        "genuine": 8,
+        "fp": 0
+      },
+      "mitkommen": {
+        "total": 2,
+        "genuine": 2,
+        "fp": 0
+      },
+      "einnehmen": {
+        "total": 1,
+        "genuine": 1,
+        "fp": 0
+      },
+      "ausschalten": {
+        "total": 6,
+        "genuine": 6,
+        "fp": 0
+      },
+      "zuziehen": {
+        "total": 1,
+        "genuine": 1,
+        "fp": 0
+      },
+      "anrufen": {
+        "total": 1,
+        "genuine": 1,
+        "fp": 0
+      },
+      "aufladen": {
+        "total": 2,
+        "genuine": 2,
+        "fp": 0
+      },
+      "mitbringen": {
+        "total": 2,
+        "genuine": 2,
+        "fp": 0
+      },
+      "einladen": {
+        "total": 1,
+        "genuine": 1,
+        "fp": 0
+      },
+      "aussehen": {
+        "total": 1,
+        "genuine": 1,
+        "fp": 0
+      }
+    },
+    "fps": []
+  },
+  "allowlistHasEinnehmen": true
+}

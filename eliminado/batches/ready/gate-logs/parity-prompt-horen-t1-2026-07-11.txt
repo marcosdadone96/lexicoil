@@ -1,0 +1,170 @@
+# Plantilla de generación — Hören B1 · Teil 1
+
+Pega TODO este texto en Gemini/ChatGPT. Devuelve **SOLO JSON**.
+Formato oficial Goethe: **5 audios cortos × 2 preguntas = 10 items**.
+
+---
+
+Eres examinador del Goethe-Zertifikat B1. Genera **UNA** parte de **Hören Teil 1**
+(anuncios, Durchsagen, Telefonate, Kurzgespräche), alemán **hablado**, nivel B1.
+
+## Reglas estrictas
+- **5 segmentos** de audio (`passages` s1…s5), cada uno **50–85 palabras** (mín. 40, máx. 90).
+- **10 preguntas** exactas — por segmento:
+  1. `type: "richtig_falsch"` · `options: []` · `correct`: `"Richtig"` o `"Falsch"`
+  2. `type: "multiple_choice"` · 3 opciones `a) …`, `b) …`, `c) …` · `correct`: `"a"`/`"b"`/`"c"`
+- Escucha oficial: **2×** (implícito; no escribas meta-texto sobre ello).
+- `segmentLabel`: `"Aufnahme 1"` … `"Aufnahme 5"` en cada pregunta.
+- Cada pregunta con `passageId` del segmento correcto.
+
+## ESTILO (obligatorio — suena hablado, no redacción)
+- Anuncios: «Guten Tag, …», «Achtung, …», precios, horarios, lugares concretos.
+- Telefonat: turnos cortos, preguntas directas.
+- **PROHIBIDO:** tono de ensayo, «Im folgenden Text…», listas numeradas formales.
+
+## VOCABULARIO B1 (OBLIGATORIO — el sistema rechaza C1/C2 automáticamente)
+- Usa léxico hablado frecuente: Kurs, Termin, Anmeldung, Gebühr, Veranstaltung, Öffnungszeiten, Angebot, Auskunft, Treffpunkt, Unterricht, Abmeldung.
+- **PROHIBIDO usar «Workshop»** — el checker lo rechaza. Usa siempre: **Kurs**, **Seminar** o **Werkstatt**.
+- Evita anglicismos: gardening→Gartenarbeit, jogging→Joggen, hiking→Wandern, cycling→Radfahren, Workshop→Kurs/Seminar.
+- Evita C1/académico: implementieren, evaluieren, optimieren, Infrastruktur, systemisch.
+- Préstamos válidos (capitalizados como sustantivos alemanes): Team, E-Mail, Computer, Internet, App, Event, Podcast.
+
+## REGLAS DE CALIDAD (rechazo si fallas)
+1. Segmentos **temáticamente distintos** (no 5 veces el mismo tipo de anuncio).
+2. RF: mezcla ~5 Richtig / ~5 Falsch; al menos **2 Falsch** con trampa (nur/alle/immer/nie).
+3. MCQ: respuesta inferible del audio; **varía** correct entre a, b, c (no siempre b).
+4. Anti word-matching: ver sección específica abajo — **CAUSA DE RECHAZO AUTOMÁTICO**.
+5. Pregunta MCQ ≠ misma formulación que la afirmación RF del mismo segmento.
+
+## ANTI WORD-MATCHING — OBLIGATORIO (causa de rechazo automático)
+Las preguntas (RF y MCQ) y las opciones correctas **no deben copiar ≥4 palabras seguidas** del transcript. Parafrasea siempre.
+
+**Transcript:** *«Achtung, die Beleuchtung im Treppenhaus ist defekt und wird morgen repariert.»*
+
+❌ **MALO (rechazado):** opción correcta `"Die Beleuchtung im Treppenhaus ist defekt."` → copia 4 palabras del audio.
+✅ **BUENO:** `"Das Licht im Hausflur funktioniert zurzeit nicht."` → misma información, reformulada.
+
+❌ **MALO (rechazado):** pregunta RF `"Die Reparatur findet für die nächste Woche statt."` cuando el audio dice `"für die nächste Woche"`.
+✅ **BUENO:** `"Die Instandsetzung ist für morgen geplant."` → paráfrasis sin copiar.
+
+**Proceso obligatorio antes de finalizar:** lista las 5–8 palabras clave de cada transcript. Verifica que ninguna pregunta ni opción correcta contiene ≥4 de esas palabras en secuencia.
+
+## VOCABULARIO SUGERIDO (preferencia — no obligación)
+Usa de forma NATURAL estas palabras si encajan: termin, kurs, stadt, familie, anmeldung, transport, gebühr, organisation, freizeit, beratung.
+**Estas palabras son OPCIONALES.** Integra solo las que suenen 100% naturales en un anuncio/telefonat/radio-Tipp B1 hablado.
+
+**PROHIBIDO** insertar una palabra objetivo si no encaja de forma natural en el contexto del segmento.
+- Ejemplo INCORRECTO: meter «Ontologie» (término filosófico) en un consejo de salud coloquial → «die Ontologie des Stresses».
+- Ejemplo INCORRECTO: saltar a «Klimawandel» en medio de una Durchsage de farmacia sobre un jarabe para la tos.
+- Ejemplo INCORRECTO: comentario meta-gramatical («So ein Konjunktiv hilft…») solo para colar la palabra.
+- Ejemplo CORRECTO: si la palabra no encaja de forma natural, **OMÍTELA** — es preferible usar menos palabras objetivo que forzar una que rompa la coherencia del texto.
+
+## AUTORREVISIÓN
+- ¿5 passages + 10 questions con segmentLabel?
+- ¿Orden sN-q1=RF, sN-q2=MCQ en los 5 segmentos?
+- ¿Cada transcript 50–85 palabras contadas?
+- ¿Ninguna pregunta ni opción correcta copia ≥4 palabras seguidas del transcript? (verificar segmento por segmento)
+- ¿La palabra «Workshop» aparece en algún transcript o pregunta? → Si sí, REEMPLAZAR por «Kurs» o «Seminar» antes de enviar.
+- ¿Cada explanation tiene ≥10 palabras? (CHK-18 rechaza si hay MCQ con explanation más corta)
+- ¿module:"horen", teil:1, lang:"de", level:"B1"?
+- ¿Solo JSON?
+
+## Formato de salida
+Devuelve SOLO `{ "passages": [...], "questions": [...] }`.
+- Passage IDs: `gen-p-h1-XXXX-s1` … `s5`
+- Question IDs: `gen-q-h1-XXXX-s1-q1`, `s1-q2`, … `s5-q2`
+- Campos: `passageVocab` (3–5 lemas), `explanation` en alemán, `skills:["listening"]`
+
+## EJEMPLO ESTRUCTURAL (1 segmento — imita formato, contenido nuevo)
+
+```json
+{
+  "passages": [
+    {
+      "id": "gen-p-h1-8842-s1",
+      "module": "horen",
+      "teil": 1,
+      "title": "Ansage Bahnhof",
+      "text": "Achtung, liebe Fahrgäste! Der Regionalzug nach München fährt heute von Gleis 4 ab, nicht von Gleis 7. Abfahrt ist um 14:32 Uhr. Bitte achten Sie auf Ihre Fahrkarte. Der nächste Zug nach Nürnberg verlässt den Bahnhof in zwanzig Minuten von Gleis 2.",
+      "passageVocab": ["fahrgast", "gleis", "abfahrt", "fahrkarte"]
+    }
+  ],
+  "questions": [
+    {
+      "id": "gen-q-h1-8842-s1-q1",
+      "module": "horen",
+      "teil": 1,
+      "type": "richtig_falsch",
+      "question": "Der Zug nach München fährt von Gleis 7 ab.",
+      "options": [],
+      "correct": "Falsch",
+      "correctAnswer": "Falsch",
+      "explanation": "Die Durchsage korrigiert das Gleis: Der Zug fährt von Gleis 4 ab, nicht von Gleis 7.",
+      "segmentLabel": "Aufnahme 1",
+      "passageId": "gen-p-h1-8842-s1",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-h1-8842-s1-q2",
+      "module": "horen",
+      "teil": 1,
+      "type": "multiple_choice",
+      "question": "Wann fährt der Zug nach München ab?",
+      "options": ["a) Um 14:15 Uhr", "b) Um 14:32 Uhr", "c) Um 15:00 Uhr"],
+      "correct": "b",
+      "correctAnswer": "b",
+      "explanation": "Die Ansage nennt als Abfahrtszeit ausdrücklich 14:32 Uhr — nicht 14:15 oder 15:00.",
+      "segmentLabel": "Aufnahme 1",
+      "passageId": "gen-p-h1-8842-s1",
+      "lang": "de",
+      "level": "B1"
+    }
+  ]
+}
+```
+
+Genera **5 segmentos completos** (s1–s5) y **10 preguntas**. Integra el vocabulario sugerido **solo si encaja**; omite el resto. Devuelve solo el JSON.
+
+## VOCABULARIO SUGERIDO (preferencia — no obligación)
+- Usa de forma NATURAL estas palabras si encajan: Anmeldung, Termin, Kurs, Büro, Frist. Prioriza naturalidad y nivel B1 — si una palabra no encaja, OMÍTELA, no la fuerces. Mejor un texto natural con algunas de estas palabras que uno forzado con todas.
+- **Estas palabras son OPCIONALES.** Intégralas solo si suenan 100% naturales en alemán **hablado** B1 (Ansage, Telefonat, Radio-Tipp). **PROHIBIDO** insertar una palabra objetivo si no encaja de forma natural. Ejemplo INCORRECTO: «die Ontologie des Stresses» en un consejo de salud coloquial; o meter «Klimawandel» en una Durchsage de farmacia sobre un Hustenmittel; o un comentario meta-gramatical («So ein Konjunktiv hilft…») solo para colar la palabra. Ejemplo CORRECTO: si no encaja, **OMÍTELA** — menos palabras objetivo es mejor que forzar una que rompa la coherencia. REGLA DISTRACTORES (Hören MCQ a/b/c — T1 y T2): las opciones incorrectas (distractores) deben ser semánticamente coherentes con el tema del pasaje/segmento, aunque sean falsas — NUNCA insertes una palabra objetivo en un distractor si el resultado no tiene relación con el tema. Ejemplo INCORRECTO: en un pasaje sobre gestión del estrés, la opción «Die Notwendigkeit, einen Dolmetscher zu konsultieren» (necesidad de un intérprete) es un non-sequitur — no tiene nada que ver con el tema, aunque la palabra en sí exista en alemán correcto. Ejemplo CORRECTO: si la palabra objetivo no encaja de forma natural en un distractor temáticamente coherente, OMÍTELA del distractor — usa vocabulario del propio campo semántico del pasaje en su lugar.
+- Intégralas sobre todo en el **pasaje/transcript**, no en las preguntas literalmente.
+- Si una palabra no encaja en el tema elegido, **omítela** sin forzar.
+
+
+- APERTURAS POR TIPO DE SEGMENTO (Hören T1): cada uno de los 5 segmentos debe ser de un tipo distinto (Durchsage, Telefonat, Radio-Tipp, Gespräch/Kurzgespräch, Hinweis/Ansage). Elegí la apertura del banco del TIPO correspondiente — NO uses la misma fórmula en dos segmentos del mismo archivo ni repitas aperturas ya usadas en esta sesión. Tipos y ejemplos: Durchsage: Achtung bitte, eine kurze Durchsage · Liebe Kundinnen und Kunden, einen Moment Aufmerksamkeit · Wir bitten um Ihre Aufmerksamkeit für eine Durchsage · Kurzinfo für alle Anwesenden · Hören Sie bitte kurz zu — wichtige Durchsage · Eine Mitteilung für alle im Haus; Telefonat: Guten Tag, hier ist die Zentrale · Hallo, ich melde mich wegen unseres Termins · Guten Tag, ich rufe wegen einer Rückfrage an · Hier ist die Anmeldung, guten Tag · Hallo, ich wollte kurz nachfragen · Guten Tag, Sie sprechen mit der Beratung; Radio-Tipp: Willkommen zu unserem kurzen Alltagstipp · Schön, dass Sie einschalten — hier kommt ein Tipp · Heute ein praktischer Hinweis für den Alltag · Ein kurzer Tipp aus dem Studio für Sie · Liebe Zuhörerinnen und Zuhörer, ein Tipp für heute · Willkommen zurück — unser Tipp des Tages; Gespräch: Entschuldigung, haben Sie kurz Zeit? · Sag mal, darf ich dich kurz stören? · Hallo, ich wollte dich kurz etwas fragen · Moment, ich muss dich kurz ansprechen · Hey, hast du eine Minute? · Guten Tag, darf ich Sie kurz unterbrechen?; Hinweis: Bitte beachten Sie folgenden Hinweis · Wichtiger Hinweis für alle Besucher · Zur Information möchten wir Sie bitten · Liebe Gäste, bitte beachten Sie · Ein kurzer Hinweis vorab · Zur Sicherheit bitten wir um Folgendes. PROHIBIDO reutilizar «Guten Morgen, liebe Hörerinnen und Hörer» (ya apareció en el lote staging).
+
+- NOMBRES DE PERSONAJES (Hören T1): variá Herr/Frau + Apellido entre segmentos y entre archivos. NO reutilices apellidos ya sobrerrepresentados (Müller, Meier, Schmidt, Ott, Weber, Held, Berg, Falk, Stein, Bachs, Roth). Preferí del banco: Herr Keller, Frau Braun, Herr Neumann, Frau Richter, Herr Krüger, Frau Hartmann, Herr Schäfer, Frau Vogel, Herr Lehmann, Frau König, Herr Lorenz, Frau Seidel (o equivalentes propios no excluidos). En un mismo archivo no repitas el mismo apellido en roles distintos salvo que sea deliberadamente la misma persona.
+
+
+IMPORTANTE — IDs de esta generación:
+- Passages T1: gen-p-h1-paritytest-sN (N=1…5 solo T1)
+- Preguntas: gen-q-h1-paritytest-…
+No reutilices IDs del ejemplo ni del banco existente.
+
+## LONGITUD CEFR (OBLIGATORIO — ingest RECHAZA si fallas)
+- Ámbito: **cada passages[i].text (5 segmentos s1–s5)** (10 preguntas: por segmento 1× richtig_falsch + 1× multiple (a/b/c). Lenguaje hablado.)
+- Objetivo: **50–85 por segmento palabras**.
+- Mínimo absoluto: **40** · máximo: **90**.
+- **CUENTA las palabras antes de responder.** Transcript = lenguaje **hablado**, no ensayo escrito.
+- Prefiere léxico B1 frecuente (≤B1 CEFR). Evita meta-texto («Dieser Text hat 280 Wörter…») y términos C1/académicos (kontextualisieren, Polyphonie, Paradigma, Manifestation…). REGLA ANTI-ANGLICISMOS: NUNCA escribas verbos/sustantivos ingleses sin traducir — gardening→Gartenarbeit/Gärtnern, jogging→Joggen, hiking→Wandern, cycling→Radfahren, shopping→Einkaufen, cooking→Kochen, Workshop→Kurs/Seminar/Werkstatt. Préstamos aceptados en alemán moderno (Deadline, Meeting, Team, Job, Computer, Internet, E-Mail, Video, Blog, Podcast, App, Design, Event, Check-in, Feedback) son válidos SOLO si van capitalizados como sustantivos: «die Deadline», «das Meeting», «das Team». REGLA ORTOGRÁFICA OBLIGATORIA: en alemán TODOS los sustantivos van en MAYÚSCULA — también en enumeraciones y después de «kein/keine» («Blumen und Pflanzen», «keine Hypothese», no «blumen», no «keine hypothese»). Repasa cada sustantivo antes de enviar. LÍMITE INVERSO — NUNCA capitalices a mitad de frase palabras que NO sean sustantivos ni nombres propios: adjetivos (schwierig, persönlich, zugänglich, einfach, möglich), cuantificadores (viele, wenige, einige), adverbios (lange, eher, leider, trotzdem, natürlich) y verbos conjugados (ich glaube, ich stimme, ich denke) van en MINÚSCULA a mitad de frase. Solo SUSTANTIVOS y nombres propios llevan mayúscula. Ejemplos correctos: «viele Menschen» (NO «Viele»), «in der Praxis schwierig» (NO «Schwierig»), «ich glaube» (NO «Glaube»), «ich stimme zu» (NO «Stimme»), «leicht zugänglich» (NO «Zugänglich»).
+- VOCABULARIO SUGERIDO: OPCIONAL — solo si suena natural en el transcript; si no encaja, OMÍTELA (nunca fuerces términos académicos/meta-gramaticales).
+
+CHECKLIST FINAL (Goethe B1 — debe pasar validate-batch.mjs):
+- Responde SOLO JSON: { "passages": [...], "questions": [...] } — sin markdown, sin ```.
+- correct === correctAnswer en todas las preguntas.
+- module correcto en cada question; lang:"de", level:"B1".
+- IDs únicos con el prefijo indicado arriba (no reutilizar el ejemplo).
+- explanation en alemán en cada pregunta (nunca vacía; ≥10 palabras para multiple_choice — CHK-18 rechaza si es más corta).
+- VOCABULARIO SUGERIDO: integra palabras solo si encajan; omite las que no encajen.
+- MAYÚSCULAS: TODO sustantivo alemán en mayúscula — también tras kein/keine/mit/für/von/ohne, en enumeraciones y listas. ¡Compruébalo antes de enviar!
+- ANTI-ANGLICISMOS: CERO palabras inglesas sin traducir (gardening, jogging, hiking, cycling, Workshop…). Préstamos aceptados (Deadline, Meeting, Team, Computer, E-Mail, App, Blog, Podcast, Event) SOLO capitalizados. Workshop SIEMPRE → Kurs/Seminar/Werkstatt.
+- 5 passages (s1–s5) + 10 questions (sN-q1 RF, sN-q2 MCQ).
+- segmentLabel en cada pregunta (Aufnahme 1 … 5).
+- MCQ: options a)/b)/c); correct solo letra; varía a/b/c.
+- DISTRACTOR COHERENTE (MCQ): cada distractor debe relacionarse temáticamente con el segmento. Si una palabra objetivo no encaja de forma natural y coherente en un distractor, OMITÍLA — no la fuerces (ver regla de vocabulario arriba).
+- LONGITUD MCQ: la opción correcta y los 2 distractores deben tener longitud COMPARABLE (palabras/caracteres) — ninguno conspicuamente más largo o más detallado, o se puede adivinar sin escuchar el audio. Si la correcta necesita más detalle para ser precisa, agregá detalle equivalente (no el mismo contenido) a los distractores. Ejemplo INCORRECTO: correcta «Die Anmeldung endet am Freitag, den 12. Mai.» vs distractores cortos «Online.» / «Im Büro.» Ejemplo CORRECTO: tres opciones de longitud similar, p. ej. «Persönlich im Büro bis Freitag.» / «Nur online bis Montagabend.» / «Per E-Mail ohne Frist.».
+- APERTURA POR TIPO: cada segmento es un tipo distinto (Durchsage / Telefonat / Radio-Tipp / Gespräch / Hinweis). Elegí apertura del banco del tipo correspondiente; variá entre los 5 segmentos del archivo y respecto a lo ya generado. Ver bloque de aperturas arriba.
+- NOMBRES: variá Herr/Frau + Apellido entre segmentos y archivos; no reuses apellidos excluidos/sobrerrepresentados. Ver bloque de nombres arriba.
+- explanation (MCQ): NUNCA digas "Option a/b/c)" ni "la opción X es correcta" — el orden a/b/c puede reordenarse después. Explica el contenido de la respuesta correcta en prosa.

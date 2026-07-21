@@ -11,7 +11,7 @@ const MODULE_MIN = {
   'horen:3': 16384,
   'horen:4': 16384,
   'schreiben:1': 8192,
-  'sprechen:1': 8192,
+  'sprechen:1': 12288,
 };
 
 const ABS_MAX = 16384;

@@ -1,0 +1,81 @@
+{
+  "generatedAt": "2026-07-06T10:57:39.024Z",
+  "factory": {
+    "semantic": true,
+    "skipSem2": true
+  },
+  "parts": 6,
+  "ok": 2,
+  "semKeyBlockedDuringGen": 0,
+  "sem1CallsTotal": 2,
+  "sem2LlmCalls": 0,
+  "genLlmCallsTotal": 16,
+  "avgSem1PerPart": 0.33,
+  "avgGenPerPart": 2.67,
+  "results": [
+    {
+      "teil": 1,
+      "ok": true,
+      "attempts": 3,
+      "genCalls": 3,
+      "sem1Calls": 1,
+      "semKeyIssues": 0,
+      "semIssueSample": null,
+      "ms": 87245
+    },
+    {
+      "teil": 1,
+      "ok": false,
+      "reason": "gen-q-1-68fd0f80-2: ≥3 palabras idénticas con el pasaje (früher, e-mails, computer)",
+      "gate": "calidad",
+      "genCalls": 3,
+      "sem1Calls": 0,
+      "semKeyIssues": 0,
+      "semIssueSample": null,
+      "ms": 62661
+    },
+    {
+      "teil": 2,
+      "ok": true,
+      "attempts": 3,
+      "genCalls": 6,
+      "sem1Calls": 1,
+      "semKeyIssues": 0,
+      "semIssueSample": null,
+      "ms": 137593
+    },
+    {
+      "teil": 2,
+      "ok": false,
+      "reason": "gen-q-2-2af103e9-2: opción correcta copia ≥4 palabras del pasaje («auf den schutz der»)",
+      "gate": "calidad",
+      "genCalls": 4,
+      "sem1Calls": 0,
+      "semKeyIssues": 0,
+      "semIssueSample": null,
+      "ms": 108394
+    },
+    {
+      "teil": 3,
+      "ok": false,
+      "reason": "Adjetivo/adverbio/cardinal «Lang» en mayúscula errónea (debería ser «lang»). Contexto: \"...Bei Herrn Lang ist ein Bügel der Sehhilfe abgebro...\"",
+      "gate": "audit2",
+      "genCalls": 0,
+      "sem1Calls": 0,
+      "semKeyIssues": 0,
+      "semIssueSample": null,
+      "ms": 47
+    },
+    {
+      "teil": 3,
+      "ok": false,
+      "reason": "Adjetivo/adverbio/cardinal «Englisch» en mayúscula errónea (debería ser «englisch»). Contexto: \"...I) Sprachpunkt — Nachhilfe in Englisch, auch zur Prüfungsvorbereitung, Mo...\"",
+      "gate": "audit2",
+      "genCalls": 0,
+      "sem1Calls": 0,
+      "semKeyIssues": 0,
+      "semIssueSample": null,
+      "ms": 36
+    }
+  ]
+}

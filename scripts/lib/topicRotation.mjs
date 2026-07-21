@@ -11,58 +11,15 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
+import { createRequire } from 'node:module';
+import { B1_TOPICS, isValidB1Topic } from './b1Topics.mjs';
 
-export const TOPICS = [
-  'Reisen',
-  'Gesundheit',
-  'Arbeit',
-  'Technik',
-  'Wohnen',
-  'Konsum',
-  'Bildung',
-  'Familie',
-  'Umwelt',
-  'Ernährung',
-  'Kultur',
-  'Sport',
-  'Freizeit',
-  'Verkehr',
-  'Stadtleben',
-];
+const require = createRequire(import.meta.url);
+const { detectTopic } = require('../../js/engine/partTopicDetect.js');
 
-/** Palabras clave → tema (orden importa: más específico primero) */
-const TOPIC_KEYWORDS = {
-  Reisen:     ['Urlaub', 'Reise', 'Flug', 'Koffer', 'Hotel', 'Ausland', 'Ticket', 'Bahnhof', 'Zugfahrt', 'Tourist'],
-  Gesundheit: ['Arzt', 'Krankenhaus', 'krank', 'Medikament', 'Krankheit', 'Therapie', 'Impfung', 'Fitness', 'Ernährungsberater', 'Schmerz'],
-  Arbeit:     ['Beruf', 'Stelle', 'Bewerbung', 'Chef', 'Kollege', 'Gehalt', 'Praktikum', 'Büro', 'Homeoffice', 'Arbeitgeber'],
-  Technik:    ['Smartphone', 'Internet', 'App', 'Computer', 'digitale', 'Gerät', 'Software', 'Handy', 'Bildschirm', 'Technologie'],
-  Wohnen:     ['Wohnung', 'Miete', 'Zimmer', 'Haus', 'Umzug', 'Nachbar', 'Küche', 'Schlafzimmer', 'Vermieter', 'Einzug'],
-  Konsum:     ['kaufen', 'Einkauf', 'Supermarkt', 'Preis', 'Produkt', 'Angebot', 'Marke', 'Rabatt', 'Laden', 'Bestellung'],
-  Bildung:    ['Schule', 'Studium', 'Universität', 'Prüfung', 'Kurs', 'Lehrer', 'Unterricht', 'Lernmaterial', 'Ausbildung', 'Abitur'],
-  Familie:    ['Eltern', 'Kind', 'Schwester', 'Bruder', 'Großeltern', 'Mutter', 'Vater', 'Haushalt', 'Erziehung', 'Geschwister'],
-  Umwelt:     ['Umwelt', 'Klima', 'Recycling', 'Plastik', 'Nachhaltigkeit', 'CO2', 'Energie', 'erneuerbar', 'Naturschutz', 'Müll'],
-  Ernährung:  ['Essen', 'Kochen', 'Rezept', 'vegetarisch', 'vegan', 'Lebensmittel', 'Restaurant', 'Mahlzeit', 'Küche', 'Ernährung'],
-  Kultur:     ['Theater', 'Konzert', 'Museum', 'Ausstellung', 'Film', 'Musik', 'Kunst', 'Kino', 'Festival', 'Veranstaltung'],
-  Sport:      ['Sport', 'Fußball', 'Training', 'Wettkampf', 'Mannschaft', 'Schwimmen', 'Laufen', 'Turnier', 'Spiel', 'Vereinssport'],
-  Freizeit:   ['Hobby', 'Wochenende', 'Freizeit', 'Freund', 'Party', 'Ausflug', 'Spaziergang', 'Garten', 'Lesen', 'Spielen'],
-  Verkehr:    ['Bus', 'Fahrrad', 'Auto', 'Straße', 'Stau', 'ÖPNV', 'Bahn', 'Parkplatz', 'Führerschein', 'Fahrt'],
-  Stadtleben: ['Stadt', 'Stadtmitte', 'Viertel', 'Bürger', 'Marktplatz', 'Innenstadt', 'öffentlich', 'Gemeinschaft', 'Engagement', 'Infrastruktur'],
-};
-
-/**
- * Detecta el tema dominante de un texto de pasaje.
- * Devuelve el topic con más hits, o null si empate vacío.
- */
-export function detectTopic(text) {
-  if (!text || typeof text !== 'string') return null;
-  const lower = text.toLowerCase();
-  const scores = {};
-  for (const [topic, keywords] of Object.entries(TOPIC_KEYWORDS)) {
-    scores[topic] = keywords.filter(kw => lower.includes(kw.toLowerCase())).length;
-  }
-  const best = Object.entries(scores).sort((a, b) => b[1] - a[1])[0];
-  return best && best[1] > 0 ? best[0] : null;
-}
+/** @deprecated alias — use B1_TOPICS from b1Topics.mjs */
+export const TOPICS = B1_TOPICS;
+export { B1_TOPICS, isValidB1Topic, detectTopic };
 
 /**
  * Lee todos los archivos generados y cuenta cuántas veces aparece cada topic.
@@ -84,8 +41,19 @@ export function getTopicStats(generatedDir, { module = null, teil = null } = {})
     }
     try {
       const batch = JSON.parse(fs.readFileSync(path.join(generatedDir, filename), 'utf8'));
+      let counted = false;
       for (const p of batch.passages || []) {
         const tag = p.topicTag || detectTopic(p.text || p.title || '');
+        if (tag && counts[tag] !== undefined) {
+          counts[tag]++;
+          counted = true;
+        }
+      }
+      // Sprechen/Schreiben: passages vacíos — contar topicTags de questions / root
+      if (!counted) {
+        const root = batch.topicTag || batch._requestedTopic;
+        const qTag = batch.questions?.[0]?.topicTags?.[0] || batch.questions?.[0]?.topicTag;
+        const tag = root || qTag;
         if (tag && counts[tag] !== undefined) counts[tag]++;
       }
     } catch (_) { /* skip corrupt files */ }
@@ -105,34 +73,53 @@ export function pickNextTopic(generatedDir, { module = null, teil = null } = {})
 }
 
 /**
- * Inyecta la línea de tema obligatorio en un prompt ya construido.
- * Busca la sección PALABRAS OBJETIVO y añade TEMA antes de ella.
+ * Bloque de tema obligatorio (sufijo variable — va después del STATIC_CORE cacheable).
+ * @param {string} topic
+ * @returns {string}
  */
-export function injectTopicIntoPrompt(prompt, topic) {
-  if (!topic) return prompt;
-  const topicLine = `\n## TEMA OBLIGATORIO\nDesarrolla el contenido EXCLUSIVAMENTE en torno a: **${topic}**\nEl pasaje, los personajes y las preguntas deben girar en torno a este tema.\n`;
-
-  // Insertar antes de PALABRAS OBJETIVO si existe, o al principio de AUTORREVISIÓN, o al final
-  const marker = prompt.indexOf('## PALABRAS OBJETIVO');
-  if (marker >= 0) return prompt.slice(0, marker) + topicLine + prompt.slice(marker);
-
-  const marker2 = prompt.indexOf('## AUTORREVISIÓN');
-  if (marker2 >= 0) return prompt.slice(0, marker2) + topicLine + prompt.slice(marker2);
-
-  return prompt + topicLine;
+export function buildTopicPromptBlock(topic) {
+  if (!topic) return '';
+  return (
+    `\n## TEMA OBLIGATORIO\nDesarrolla el contenido EXCLUSIVAMENTE en torno a: **${topic}**\n` +
+    `El pasaje, los personajes y las preguntas deben girar en torno a este tema.\n` +
+    `- En **Lesen T2**: los **DOS** textos de prensa deben tratar **${topic}** (no mezclar Bildung/Reisen/Ernährung en el segundo texto).\n` +
+    `- El campo \`topicTag\` de **cada** passage debe ser exactamente «${topic}».\n`
+  );
 }
 
 /**
- * Añade topicTag a cada passage de un batch.
- * Si el pasaje ya tiene topicTag, lo respeta.
+ * @deprecated Prefer passing `topic` into buildLesenPrompt / buildExamPrompt options.
+ * Appends topic block to the variable suffix (end of prompt).
+ */
+export function injectTopicIntoPrompt(prompt, topic) {
+  const block = buildTopicPromptBlock(topic);
+  if (!block) return prompt;
+  const marker = prompt.indexOf('## CONTEXTO DE ESTA GENERACIÓN');
+  if (marker >= 0) {
+    const insertAt = prompt.indexOf('\n', marker) + 1;
+    return prompt.slice(0, insertAt) + block + prompt.slice(insertAt);
+  }
+  return prompt + block;
+}
+
+/**
+ * Añade topicTag al batch, a cada passage y a questions[].topicTags.
+ * Fuerza el tema pedido (ignora topicTag del LLM / detectTopic).
+ * Crítico para Sprechen/Schreiben (passages: []): sin esto las questions
+ * quedan con fallback daily_life / sin tema.
  */
 export function tagBatchWithTopic(batch, topic) {
   if (!batch || !topic) return batch;
-  const tagged = { ...batch };
-  tagged.passages = (batch.passages || []).map(p => {
-    if (p.topicTag) return p;
-    const detected = detectTopic(p.text || p.title || '');
-    return { ...p, topicTag: detected || topic };
-  });
+  const tagged = {
+    ...batch,
+    topicTag: topic,
+    _requestedTopic: batch._requestedTopic || topic,
+  };
+  tagged.passages = (batch.passages || []).map((p) => ({ ...p, topicTag: topic }));
+  tagged.questions = (batch.questions || []).map((q) => ({
+    ...q,
+    topicTags: [topic],
+    ...(q.topicTag != null ? { topicTag: topic } : {}),
+  }));
   return tagged;
 }

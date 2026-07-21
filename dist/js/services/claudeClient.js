@@ -1,4 +1,6 @@
 const CLAUDE_ENDPOINT = "/.netlify/functions/claude-chat";
+const EXAM_PLAN_ENDPOINT = "/.netlify/functions/exam-plan";
+const HYBRID_EXECUTE_ENDPOINT = "/.netlify/functions/exam-hybrid-execute";
 
 function aiAuthHeaders() {
   if (typeof lcAuthHeaders === 'function') return lcAuthHeaders();
@@ -136,6 +138,97 @@ async function renewExamGeneration(genTicket) {
     throw new Error(data.error || 'renew_failed');
   }
   return data.ticket;
+}
+
+/**
+ * Hybrid exam plan — pool vs live decision (no generation).
+ * @returns {Promise<{ plan: object, meta: object }>}
+ */
+async function fetchHybridExamPlan(params) {
+  const res = await lcFetch(EXAM_PLAN_ENDPOINT, {
+    method: 'POST',
+    headers: aiAuthHeaders(),
+    body: JSON.stringify(params),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    handleAiAuthError(res, data);
+    throw new Error(data.error || 'exam_plan_failed');
+  }
+  return { plan: data.plan, meta: data.meta };
+}
+
+/**
+ * Execute hybrid Lesen exam (pool + Gemini factory). Requires genTicket from startExamGeneration.
+ * Client should call deliverExamGeneration(genTicket) when the exam is shown, or
+ * releaseExamGeneration(genTicket) on total failure.
+ */
+async function executeHybridLesenExam({
+  genTicket,
+  topic,
+  vocab,
+  lang = 'de',
+  level = 'B1',
+  module = 'lesen',
+  plan = null,
+  planMeta = null,
+  teils = null,
+  poolThreshold = null,
+  skipLive = false,
+  timeoutMs = 280000,
+} = {}) {
+  if (!genTicket) throw new Error('genTicket_required');
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  let res;
+  try {
+    res = await lcFetch(HYBRID_EXECUTE_ENDPOINT, {
+      method: 'POST',
+      headers: aiAuthHeaders(),
+      signal: controller.signal,
+      body: JSON.stringify({
+        genTicket,
+        topic,
+        vocab,
+        lang,
+        level,
+        module,
+        plan,
+        planMeta,
+        teils,
+        poolThreshold,
+        skipLive,
+      }),
+    });
+  } catch (err) {
+    clearTimeout(timer);
+    if (err.name === 'AbortError') {
+      const e = new Error('Hybrid exam generation timed out');
+      e.code = 'timeout';
+      throw e;
+    }
+    throw err;
+  }
+  clearTimeout(timer);
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    handleAiAuthError(res, data);
+    if (res.status === 402 && data.error === 'ai_credits_exhausted') {
+      const e = new Error('ai_credits_exhausted');
+      e.code = 'ai_credits_exhausted';
+      throw e;
+    }
+    if (res.status === 503 && data.error === 'live_gen_disabled') {
+      const e = new Error('live_gen_disabled');
+      e.code = 'live_gen_disabled';
+      throw e;
+    }
+    const e = new Error(data.error || data.message || `hybrid_execute_${res.status}`);
+    e.code = data.error;
+    e.details = data.details;
+    throw e;
+  }
+  return data;
 }
 
 async function callAI(prompt, maxTokens = 6000, options = {}) {
@@ -517,6 +610,35 @@ async function fetchExamPart(lang, level, module, excludeIds, teil) {
   }
 }
 
+/**
+ * Igual que fetchExamPart pero consciente de vocabulario (A.2) y devuelve el objeto
+ * completo: { part, id, coveredWords, coverage, topic, requestedLemmas } o null.
+ */
+async function fetchExamPartVocab(lang, level, module, opts = {}) {
+  const { excludeIds = [], teil = null, words = [], excludeTopics = [] } = opts;
+  const params = { lang, level, module };
+  if (excludeIds.length) params.exclude = excludeIds.slice(0, 40).join(",");
+  if (teil != null && Number.isFinite(Number(teil))) params.teil = String(Number(teil));
+  if (words.length) params.words = words.slice(0, 40).join(",");
+  if (excludeTopics.length) params.excludeTopics = excludeTopics.slice(0, 20).join(",");
+  const q = new URLSearchParams(params);
+  try {
+    const res = await lcFetch(`/.netlify/functions/exam-part?${q}`);
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok || !data.part) return null;
+    return {
+      part: data.part,
+      id: data.id || data.part.id || null,
+      coveredWords: data.coveredWords || [],
+      coverage: data.coverage || null,
+      topic: data.topic || data.part.topic || null,
+      requestedLemmas: data.requestedLemmas || [],
+    };
+  } catch (_) {
+    return null;
+  }
+}
+
 async function fetchVocabCache(from, to, text, context, signal) {
   const params = new URLSearchParams({ from, to, text: String(text || "") });
   const ctx = String(context || "").trim();
@@ -749,4 +871,8 @@ if (typeof window !== "undefined") {
   window.generateTtsAudio = generateTtsAudio;
   window.ttsVoiceForLang = ttsVoiceForLang;
   window.startStripeCheckout = startStripeCheckout;
+  window.fetchHybridExamPlan = fetchHybridExamPlan;
+  window.executeHybridLesenExam = executeHybridLesenExam;
+  window.fetchExamPart = fetchExamPart;
+  window.fetchExamPartVocab = fetchExamPartVocab;
 }

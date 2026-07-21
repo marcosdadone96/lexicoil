@@ -1,0 +1,249 @@
+{
+  "generatedAt": "2026-07-12T11:44:22.779Z",
+  "dryRun": false,
+  "capsVersion": "v3.13-viel-inflections-2026-07-12",
+  "vocabVersion": "v2.3.12-beispielfragen-stem-2026-07-12",
+  "scope": "schreiben+sprechen-11-files-caps-v313+R7",
+  "typoFixes": [],
+  "capsFixes": [],
+  "perFile": [
+    {
+      "file": "schreiben-gemini-004.json",
+      "questionsChanged": 0,
+      "changes": [],
+      "capsChangeCount": 0
+    },
+    {
+      "file": "schreiben-gemini-005.json",
+      "questionsChanged": 0,
+      "changes": [],
+      "capsChangeCount": 0
+    },
+    {
+      "file": "schreiben-gemini-006.json",
+      "questionsChanged": 0,
+      "changes": [],
+      "capsChangeCount": 0
+    },
+    {
+      "file": "schreiben-gemini-007.json",
+      "questionsChanged": 0,
+      "changes": [],
+      "capsChangeCount": 0
+    },
+    {
+      "file": "schreiben-gemini-009.json",
+      "questionsChanged": 0,
+      "changes": [],
+      "capsChangeCount": 0
+    },
+    {
+      "file": "schreiben-gemini-010.json",
+      "questionsChanged": 0,
+      "changes": [],
+      "capsChangeCount": 0
+    },
+    {
+      "file": "sprechen-gemini-001.json",
+      "questionsChanged": 1,
+      "changes": [
+        {
+          "id": "gen-q-sp-t3-21ad5163-q1",
+          "teil": 3,
+          "before": [
+            "Bedeutung",
+            "Partner",
+            "besuchen",
+            "beispielfragen",
+            "Präsentation",
+            "kulturfesten"
+          ],
+          "after": [
+            "Bedeutung",
+            "Partner",
+            "besuchen",
+            "Präsentation",
+            "kulturfesten",
+            "beantworten"
+          ],
+          "metaBefore": [
+            "beispielfragen"
+          ],
+          "metaAfter": []
+        }
+      ],
+      "capsChangeCount": 0
+    },
+    {
+      "file": "sprechen-gemini-005.json",
+      "questionsChanged": 0,
+      "changes": [],
+      "capsChangeCount": 0
+    },
+    {
+      "file": "sprechen-gemini-006.json",
+      "questionsChanged": 0,
+      "changes": [],
+      "capsChangeCount": 0
+    },
+    {
+      "file": "sprechen-gemini-007.json",
+      "questionsChanged": 1,
+      "changes": [
+        {
+          "id": "gen-q-sp-t3-b121cb3f-q1",
+          "teil": 3,
+          "before": [
+            "Wortschatz",
+            "Bedeutung",
+            "Grammatik",
+            "Partner",
+            "sondern",
+            "achten"
+          ],
+          "after": [
+            "Bedeutung",
+            "Partner",
+            "achten",
+            "ausschließlich",
+            "Vergleich",
+            "weiterbildungszertifikaten"
+          ],
+          "metaBefore": [
+            "Wortschatz",
+            "Grammatik"
+          ],
+          "metaAfter": []
+        }
+      ],
+      "capsChangeCount": 0
+    },
+    {
+      "file": "sprechen-gemini-008.json",
+      "questionsChanged": 1,
+      "changes": [
+        {
+          "id": "gen-q-sp-t3-9a72-q1",
+          "teil": 3,
+          "before": [
+            "Aktivität",
+            "besuchen",
+            "beispielfragen",
+            "Präsentation",
+            "Gesellschaft",
+            "Darstellung"
+          ],
+          "after": [
+            "Aktivität",
+            "besuchen",
+            "Präsentation",
+            "Gesellschaft",
+            "Darstellung",
+            "Erfahrung"
+          ],
+          "metaBefore": [
+            "beispielfragen"
+          ],
+          "metaAfter": []
+        }
+      ],
+      "capsChangeCount": 0
+    }
+  ],
+  "questionsChanged": 3,
+  "questionsTotal": 33,
+  "postScanRubricResidue": [],
+  "residueCount": 0,
+  "ok": true,
+  "diagnosis": {
+    "dieVielen": "Genuine gap: ADJ_NEEDS_ARTICLE_GUARD had viele/viel but not vielen/vieler/vieles/vielem. tokenLemma only lowercases, so looksLikeAttributiveAdjective(Vielen)=false. Not a quote-exclusion — quotes are walked; Die after period is mid-sentence for Vielen after lastWord=Die.",
+    "fix": "v3.13 add vielen/vieler/vieles/vielem (+ wenig*/einig* parallels)"
+  },
+  "firstPassSummary": {
+    "questionsTotal": 33,
+    "questionsChanged": 33,
+    "note": "All 33 questions retagged on first R7 pass (explanation excluded)."
+  },
+  "knownBeforeAfterSamples": [
+    {
+      "file": "schreiben-gemini-004.json",
+      "teil": 1,
+      "before": [
+        "Wortschatz",
+        "Grammatik",
+        "Buchung",
+        "Urlaub",
+        "mitkommen",
+        "informell"
+      ],
+      "after": [
+        "Buchung",
+        "achten",
+        "Urlaub",
+        "bitten",
+        "mitkommen",
+        "einladen"
+      ]
+    },
+    {
+      "file": "schreiben-gemini-004.json",
+      "teil": 2,
+      "before": [
+        "Wortschatz",
+        "Grammatik",
+        "bedenken",
+        "Umwelt",
+        "marketing-kampagnen",
+        "konsumverhalten"
+      ],
+      "after": [
+        "diskutieren",
+        "bedenken",
+        "Umwelt",
+        "marketing-kampagnen",
+        "konsumverhalten",
+        "konsumentinnen"
+      ]
+    },
+    {
+      "file": "sprechen-gemini-005.json",
+      "teil": 1,
+      "before": [
+        "unterstützen",
+        "Wortschatz",
+        "Grammatik",
+        "anfragen",
+        "stattfinden",
+        "Aussprache"
+      ],
+      "after": [
+        "unterstützen",
+        "diskutieren",
+        "anfragen",
+        "gehören",
+        "stattfinden",
+        "gemeinsam"
+      ]
+    },
+    {
+      "file": "sprechen-gemini-001.json",
+      "teil": 3,
+      "before": [
+        "Bedeutung",
+        "Partner",
+        "besuchen",
+        "beispielfragen",
+        "Präsentation",
+        "kulturfesten"
+      ],
+      "after": [
+        "Bedeutung",
+        "Partner",
+        "besuchen",
+        "Präsentation",
+        "kulturfesten",
+        "beantworten"
+      ]
+    }
+  ]
+}

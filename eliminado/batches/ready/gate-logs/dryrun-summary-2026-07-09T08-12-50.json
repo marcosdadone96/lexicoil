@@ -1,0 +1,101 @@
+{
+  "generatedAt": "2026-07-09T08:12:58.635Z",
+  "files": 208,
+  "summary": {
+    "Q4-metadataSchema": {
+      "pass": 27,
+      "warn": 174,
+      "block": 7,
+      "findings": 194,
+      "files": 208
+    },
+    "Q1-duplicateContent": {
+      "pass": 49,
+      "warn": 0,
+      "block": 159,
+      "findings": 171,
+      "files": 208
+    },
+    "Q3-passageCoherence": {
+      "pass": 185,
+      "warn": 0,
+      "block": 23,
+      "findings": 160,
+      "files": 208
+    }
+  },
+  "validationRows": [
+    {
+      "gate": "Q3-passageCoherence",
+      "file": "lesen-t5-gemini-065.json",
+      "expected": "block",
+      "actual": "block",
+      "match": "sí",
+      "findings": "markdown_leak, markdown_leak, markdown_leak, markdown_leak, markdown_leak, possible_sentence_case_error, possible_sentence_case_error",
+      "note": "markdown ** + sentence case warn"
+    },
+    {
+      "gate": "Q3-passageCoherence",
+      "file": "lesen-t5-gemini-063.json",
+      "expected": "block",
+      "actual": "block",
+      "match": "sí",
+      "findings": "markdown_leak, markdown_leak, markdown_leak, markdown_leak, markdown_leak, markdown_leak, possible_sentence_case_error, possible_sentence_case_error",
+      "note": "markdown ** + sentence case warn"
+    },
+    {
+      "gate": "Q1-duplicateContent",
+      "file": "lesen-t3-auto-qeh7ew.json",
+      "expected": "block",
+      "actual": "block",
+      "match": "sí",
+      "findings": "near_duplicate",
+      "note": "dup con tz7n7y"
+    },
+    {
+      "gate": "Q3-passageCoherence",
+      "file": "lesen-t3-auto-qeh7ew.json",
+      "expected": "pass",
+      "actual": "pass",
+      "match": "sí",
+      "findings": "",
+      "note": "dup con tz7n7y"
+    },
+    {
+      "gate": "Q1-duplicateContent",
+      "file": "lesen-t3-auto-tz7n7y.json",
+      "expected": "block",
+      "actual": "block",
+      "match": "sí",
+      "findings": "near_duplicate",
+      "note": "dup con qeh7ew"
+    },
+    {
+      "gate": "Q3-passageCoherence",
+      "file": "lesen-t3-auto-tz7n7y.json",
+      "expected": "pass",
+      "actual": "pass",
+      "match": "sí",
+      "findings": "",
+      "note": "dup con qeh7ew"
+    },
+    {
+      "gate": "Q1-duplicateContent",
+      "file": "lesen-t2-gemini-091.json",
+      "expected": "block|warn",
+      "actual": "pass",
+      "match": "no",
+      "findings": "",
+      "note": "dup exacto Familienzeit"
+    },
+    {
+      "gate": "Q1-duplicateContent",
+      "file": "lesen-t1-gemini-177.json",
+      "expected": "block|warn",
+      "actual": "pass",
+      "match": "no",
+      "findings": "",
+      "note": "dup exacto Theaterverein (si en bank/generated)"
+    }
+  ]
+}

@@ -59,7 +59,9 @@
     } catch (e) {
       const msg =
         e.code === 'no_billing_account'
-          ? 'No billing account found. Contact support if you subscribed with a different email.'
+          ? S.user?.billingSource === 'manual'
+            ? 'Your Pro plan was activated without Stripe billing. Contact support to manage it.'
+            : 'No billing account found. Contact support if you subscribed with a different email.'
           : e.message === 'login_required'
             ? 'Please sign in first.'
             : 'Could not open billing portal. Try again later.';
@@ -155,6 +157,12 @@
     if (resetToken) {
       history.replaceState({}, '', location.pathname);
       if (typeof showResetPasswordForm === 'function') showResetPasswordForm(resetToken);
+    }
+    if (p.get('emailVerified') === '1') {
+      history.replaceState({}, '', location.pathname);
+      if (typeof lcToast === 'function') lcToast('Email confirmed. You can sign in now.', 'ok', 6000);
+      if (typeof switchTab === 'function') switchTab('login');
+      if (typeof showAuthOverlay === 'function') showAuthOverlay();
     }
   };
 

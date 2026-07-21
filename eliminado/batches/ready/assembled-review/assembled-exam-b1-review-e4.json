@@ -1,0 +1,2387 @@
+{
+  "_meta": {
+    "examNumber": 4,
+    "examId": "review-de-B1-e4",
+    "generatedAt": "2026-07-10T09:39:46.451Z",
+    "purpose": "unit-review (Lesen+Hören+Schreiben, no Sprechen)",
+    "gate1": {
+      "ok": true,
+      "blocking": []
+    },
+    "discardGate": {
+      "ok": true,
+      "blockedIdsChecked": 19
+    },
+    "partIds": {
+      "lesen_1": "lesen-t1-gemini-174",
+      "lesen_2": "lesen-t2-gemini-091",
+      "lesen_3": "lesen-t3-auto-5bw5c5",
+      "lesen_4": "lesen-t4-gemini-040",
+      "lesen_5": "lesen-t5-gemini-066",
+      "horen_1": "horen-t1-gemini-001",
+      "horen_2": "horen-t2-gemini-005",
+      "horen_3": "bank-de-B1-horen-t3-e9ab2b5575d9fb02",
+      "horen_4": "horen-t4-gemini-008",
+      "schreiben_1": "schreiben-gemini-010-t1",
+      "schreiben_2": "schreiben-gemini-010-t2",
+      "schreiben_3": "schreiben-gemini-010-t3"
+    },
+    "topics": {
+      "lesen_1": "Medien",
+      "lesen_2": "Familie",
+      "lesen_3": null,
+      "lesen_4": "Technik",
+      "lesen_5": "Bildung",
+      "horen_1": "daily_life",
+      "horen_2": "Sport",
+      "horen_3": "Arbeit",
+      "horen_4": "daily_life",
+      "schreiben_1": "Wohnen",
+      "schreiben_2": "Wohnen",
+      "schreiben_3": "Wohnen"
+    },
+    "t3SituationFp": "1c7425f6c36ff451",
+    "t3BlueprintSlug": null,
+    "sources": {
+      "lesen_1": "lesen-t1-gemini-174.json",
+      "lesen_2": "lesen-t2-gemini-091.json",
+      "lesen_3": "lesen-t3-auto-5bw5c5.json",
+      "lesen_4": "lesen-t4-gemini-040.json",
+      "lesen_5": "lesen-t5-gemini-066.json",
+      "horen_1": "horen-t1-gemini-001.json",
+      "horen_2": "horen-t2-gemini-005.json",
+      "horen_3": "seed",
+      "horen_4": "horen-t4-gemini-008.json",
+      "schreiben_1": "schreiben-gemini-010.json",
+      "schreiben_2": "schreiben-gemini-010.json",
+      "schreiben_3": "schreiben-gemini-010.json"
+    },
+    "refreshedAt": "2026-07-10T10:21:32.097Z",
+    "refreshNote": "caps v3.3 + T5 library rename Lesewelt (sources in-place)"
+  },
+  "exam": {
+    "lesenParts": [
+      {
+        "teil": 1,
+        "instruction": "",
+        "text": "Ich erinnere mich noch gut an die Zeit, als ich als Kind nur wenige Fernsehprogramme hatte. Heute ist das ganz anders. Ich nutze verschiedene Medien, um informiert zu bleiben und meine Freizeit zu gestalten. Morgens lese ich oft die Nachrichten online, bevor ich zur Arbeit gehe. Das ist für mich wichtig, um zu wissen, was in der Stadt und der Welt passiert. Mittags schaue ich mir manchmal kurze Videos an oder höre einen Podcast, besonders wenn ich unterwegs bin. Meine Familie und ich haben auch einen Abend in der Woche, an dem wir gemeinsam einen Film oder eine Serie sehen. Das ist eine schöne Tradition für uns. Meine Kinder nutzen das Internet für die Schule und auch für ihre Hobbys. Ich versuche, ihnen zu zeigen, wie man Medien verantwortungsvoll nutzt. Manchmal fühle ich mich aber auch überfordert von der Menge an Informationen. Es gibt so viele Kanäle und Berichte, dass es schwer ist, alles zu verfolgen. Am Wochenende versuche ich, weniger Zeit vor dem Bildschirm zu verbringen. Dann treffe ich lieber Freunde oder gehe in den Park. Ich habe gemerkt, dass es gut ist, eine Balance zu finden. Meine Erfahrungen mit Medien sind also gemischt, aber insgesamt finde ich sie sehr nützlich für den Alltag und die Kommunikation.",
+        "textTitle": "Meine Medienwelt im Alltag",
+        "passageId": "gen-l1-603e0e1f",
+        "questions": [
+          {
+            "id": "gen-q-1-603e0e1f-4",
+            "type": "richtig_falsch",
+            "question": "Die Kinder der Autorin verwenden Online-Angebote nicht für die Schule.",
+            "correct": "Falsch",
+            "correctAnswer": "Falsch",
+            "explanation": "Sie schreibt, dass ihre Kinder das Internet sowohl für die Schule als auch für ihre Hobbys nutzen.",
+            "passageId": "gen-l1-603e0e1f",
+            "module": "lesen",
+            "teil": 1
+          },
+          {
+            "id": "gen-q-1-603e0e1f-5",
+            "type": "richtig_falsch",
+            "question": "Die Vielen Medieninhalte empfindet sie manchmal als zu viel.",
+            "correct": "Richtig",
+            "correctAnswer": "Richtig",
+            "explanation": "Sie fühlt sich manchmal überfordert von der Menge an Informationen und Kanälen, was bedeutet, es ist zu viel.",
+            "passageId": "gen-l1-603e0e1f",
+            "module": "lesen",
+            "teil": 1
+          },
+          {
+            "id": "gen-q-1-603e0e1f-3",
+            "type": "richtig_falsch",
+            "question": "Die Familie der Autorin sieht sich ausschließlich am Wochenende zusammen Filme an.",
+            "correct": "Falsch",
+            "correctAnswer": "Falsch",
+            "explanation": "Im Text steht, dass die Familie an einem Abend in der Woche gemeinsam Filme schaut, nicht nur am Wochenende.",
+            "passageId": "gen-l1-603e0e1f",
+            "module": "lesen",
+            "teil": 1
+          },
+          {
+            "id": "gen-q-1-603e0e1f-6",
+            "type": "richtig_falsch",
+            "question": "Sie verbringt am Wochenende viel Zeit mit digitalen geräten.",
+            "correct": "Falsch",
+            "correctAnswer": "Falsch",
+            "explanation": "Sie versucht am Wochenende, weniger Zeit vor dem Bildschirm zu verbringen, und trifft lieber Freunde oder geht in den Park.",
+            "passageId": "gen-l1-603e0e1f",
+            "module": "lesen",
+            "teil": 1
+          },
+          {
+            "id": "gen-q-1-603e0e1f-1",
+            "type": "richtig_falsch",
+            "question": "Als Kind hatte die Autorin eine kleine Auswahl an Fernsehsendungen.",
+            "correct": "Richtig",
+            "correctAnswer": "Richtig",
+            "explanation": "Der Text sagt, dass sie als Kind nur wenige Fernsehprogramme hatte, was eine kleine Auswahl bedeutet.",
+            "passageId": "gen-l1-603e0e1f",
+            "module": "lesen",
+            "teil": 1
+          },
+          {
+            "id": "gen-q-1-603e0e1f-2",
+            "type": "richtig_falsch",
+            "question": "Sie liest am Morgen digitale Nachrichten, um informiert zu sein.",
+            "correct": "Richtig",
+            "correctAnswer": "Richtig",
+            "explanation": "Sie erwähnt, dass sie morgens online Nachrichten liest, um zu wissen, was in der Welt passiert.",
+            "passageId": "gen-l1-603e0e1f",
+            "module": "lesen",
+            "teil": 1
+          }
+        ]
+      },
+      {
+        "teil": 2,
+        "instruction": "",
+        "passages": [
+          {
+            "passageId": "gen-l2-f2898d9a-a",
+            "textTitle": "Familienzeit am Wochenende",
+            "text": "Viele Familien in Deutschland nutzen das Wochenende, um gemeinsam Zeit zu verbringen. Eine aktuelle Umfrage zeigt, dass Aktivitäten im Freien sehr beliebt sind. Dazu gehören Spaziergänge im Park, Fahrradtouren oder Besuche auf Spielplätzen. Auch gemeinsame Mahlzeiten spielen eine wichtige Rolle. Viele Eltern kochen am Samstag oder Sonntag zusammen mit ihren Kindern. Das stärkt den Zusammenhalt und bietet die Möglichkeit für gute Gespräche. Manche Familien besuchen auch Verwandte, wie Großeltern oder Tanten und Onkel. Diese Treffen sind oft Gelegenheiten, um Erfahrungen auszutauschen und sich gegenseitig zu unterstützen. Für Kinder ist es schön, ihre Cousins und Cousinen zu sehen und zusammen zu spielen. Andere Familien bevorzugen ruhigere Aktivitäten zu Hause, wie Brettspiele, Lesen oder Filme schauen. Ein Bericht einer Organisation für Familienhilfe betont, dass es wichtig ist, die Wünsche aller Familienmitglieder zu berücksichtigen. So fühlen sich alle wohl und die gemeinsame Zeit wird positiv erlebt. Eine Studie der Stadtverwaltung ergab, dass Familien, die regelmäßig gemeinsame Aktivitäten planen, oft glücklicher sind. Fast 70 Prozent der befragten Eltern gaben an, dass das Wochenende die wichtigste Zeit für die Familie ist."
+          },
+          {
+            "passageId": "gen-l2-f2898d9a-b",
+            "textTitle": "Generationen helfen sich im Alltag",
+            "text": "In vielen Städten unterstützen sich Familien über Generationen hinweg im Alltag. Großeltern kümmern sich oft um ihre Enkelkinder, wenn die Eltern arbeiten. Das hilft den Eltern sehr und gibt den Kindern eine enge Beziehung zu ihren Großeltern. Eine neue Untersuchung zeigt, dass diese Form der Unterstützung in deutschen Familien weit verbreitet ist. Über 60 Prozent der Großeltern helfen regelmäßig bei der Betreuung der Kinder. Aber die Hilfe geht auch in die andere Richtung. Jüngere Familienmitglieder helfen älteren Verwandten bei Einkäufen, Arztbesuchen oder im Haushalt. Zum Beispiel bringen sie Lebensmittel oder erledigen kleine Reparaturen. Diese gegenseitige Unterstützung stärkt das Gefühl der Gemeinschaft und reduziert die Belastung für alle Beteiligten. Ein Programm der lokalen Stadtverwaltung fördert solche generationenübergreifenden Projekte. Ein Sprecher der Organisation erklärte, dass der Austausch von Wissen und Fähigkeiten zwischen den Generationen sehr wertvoll ist. Ältere Menschen geben ihre Lebenserfahrungen weiter, während jüngere oft bei digitalen Themen helfen. Diese Zusammenarbeit führt zu mehr Verständnis und einem besseren Miteinander in der Familie. Ein aktueller Bericht beschreibt positive Beispiele aus verschiedenen Regionen und zeigt, wie solche Modelle in Zukunft noch stärker werden können."
+          }
+        ],
+        "textTitle": "Familienzeit am Wochenende",
+        "questions": [
+          {
+            "id": "gen-q-2-f2898d9a-1",
+            "type": "multiple_choice",
+            "question": "Was machen viele Familien laut der Umfrage am Wochenende am liebsten?",
+            "options": [
+              {
+                "key": "A",
+                "text": "Sie gehen meistens ins Kino oder ins Theater."
+              },
+              {
+                "key": "B",
+                "text": "Sie arbeiten an Projekten für die Schule oder den Beruf."
+              },
+              {
+                "key": "C",
+                "text": "Sie sind oft draußen in der Natur oder auf Spielplätzen."
+              }
+            ],
+            "correct": "c",
+            "correctAnswer": "c",
+            "explanation": "Laut der Umfrage sind Aktivitäten im Freien wie Spaziergänge, Fahrradtouren und Spielplatzbesuche sehr beliebt bei Familien am Wochenende.",
+            "passageId": "gen-l2-f2898d9a-a",
+            "module": "lesen",
+            "teil": 2
+          },
+          {
+            "id": "gen-q-2-f2898d9a-2",
+            "type": "multiple_choice",
+            "question": "Was ist ein wichtiger Bestandteil der Wochenendgestaltung für viele Eltern?",
+            "options": [
+              {
+                "key": "A",
+                "text": "Sie bereiten gemeinsam mit ihren Kindern Essen zu."
+              },
+              {
+                "key": "B",
+                "text": "Sie besuchen immer teure Restaurants."
+              },
+              {
+                "key": "C",
+                "text": "Sie lassen ihre Kinder allein spielen."
+              }
+            ],
+            "correct": "a",
+            "correctAnswer": "a",
+            "explanation": "Der Text sagt, dass gemeinsame Mahlzeiten eine wichtige Rolle spielen und viele Eltern am Wochenende zusammen mit ihren Kindern kochen.",
+            "passageId": "gen-l2-f2898d9a-a",
+            "module": "lesen",
+            "teil": 2
+          },
+          {
+            "id": "gen-q-2-f2898d9a-3",
+            "type": "multiple_choice",
+            "question": "Was empfiehlt ein Bericht einer Organisation für Familien?",
+            "options": [
+              {
+                "key": "A",
+                "text": "Es ist am besten, wenn alle Familienmitglieder zu Hause bleiben."
+              },
+              {
+                "key": "B",
+                "text": "Die Vorstellungen aller Personen in der Familie sollen beachtet werden."
+              },
+              {
+                "key": "C",
+                "text": "Man sollte immer nur das tun, was die Eltern wollen."
+              }
+            ],
+            "correct": "b",
+            "correctAnswer": "b",
+            "explanation": "Der Bericht betont, dass es wichtig ist, die Wünsche aller Familienmitglieder zu berücksichtigen, damit sich alle wohlfühlen.",
+            "passageId": "gen-l2-f2898d9a-a",
+            "module": "lesen",
+            "teil": 2
+          },
+          {
+            "id": "gen-q-2-f2898d9a-4",
+            "type": "multiple_choice",
+            "question": "Was ist eine häufige Form der Unterstützung, die Großeltern ihren Familien bieten?",
+            "options": [
+              {
+                "key": "A",
+                "text": "Sie bezahlen alle Rechnungen für die Familie."
+              },
+              {
+                "key": "B",
+                "text": "Sie kaufen immer neue Kleidung für die Enkelkinder."
+              },
+              {
+                "key": "C",
+                "text": "Sie betreuen die Kinder, während die Eltern ihrer Arbeit nachgehen."
+              }
+            ],
+            "correct": "c",
+            "correctAnswer": "c",
+            "explanation": "Laut dem Text kümmern sich Großeltern oft um ihre Enkelkinder, wenn die Eltern arbeiten, was eine wichtige Unterstützung ist.",
+            "passageId": "gen-l2-f2898d9a-b",
+            "module": "lesen",
+            "teil": 2
+          },
+          {
+            "id": "gen-q-2-f2898d9a-5",
+            "type": "multiple_choice",
+            "question": "Wie helfen jüngere Familienmitglieder den älteren Verwandten?",
+            "options": [
+              {
+                "key": "A",
+                "text": "Sie renovieren deren Wohnungen komplett."
+              },
+              {
+                "key": "B",
+                "text": "Sie helfen bei alltäglichen Aufgaben wie Einkäufen oder kleinen Reparaturen."
+              },
+              {
+                "key": "C",
+                "text": "Sie organisieren große Reisen für die älteren Menschen."
+              }
+            ],
+            "correct": "b",
+            "correctAnswer": "b",
+            "explanation": "Jüngere Familienmitglieder helfen älteren Verwandten bei Einkäufen, Arztbesuchen oder im Haushalt, zum Beispiel bei kleinen Reparaturen.",
+            "passageId": "gen-l2-f2898d9a-b",
+            "module": "lesen",
+            "teil": 2
+          },
+          {
+            "id": "gen-q-2-f2898d9a-6",
+            "type": "multiple_choice",
+            "question": "Was ist nach Aussage eines Vertreters der Organisation wichtig für die Familien?",
+            "options": [
+              {
+                "key": "A",
+                "text": "Dass Erfahrungen und Kenntnisse von allen Altersgruppen weitergegeben werden."
+              },
+              {
+                "key": "B",
+                "text": "Dass die älteren Menschen alle digitalen Geräte kaufen."
+              },
+              {
+                "key": "C",
+                "text": "Dass nur die Jüngeren von den Älteren lernen."
+              }
+            ],
+            "correct": "a",
+            "correctAnswer": "a",
+            "explanation": "Ein Sprecher der Organisation erklärte, dass der Austausch von Wissen und Fähigkeiten zwischen den Generationen sehr wertvoll ist.",
+            "passageId": "gen-l2-f2898d9a-b",
+            "module": "lesen",
+            "teil": 2
+          }
+        ]
+      },
+      {
+        "teil": 3,
+        "instruction": "",
+        "text": "",
+        "textTitle": "",
+        "ads": [
+          {
+            "key": "A",
+            "title": "TragHilfe",
+            "text": "Wir packen bei Ihrem Umzug an, auch sonntags, ab 40 Euro pro Stunde."
+          },
+          {
+            "key": "B",
+            "title": "ErdReich",
+            "text": "Anfängerkurs Töpfern für Erwachsene, Sa 10–13 Uhr, Material inklusive."
+          },
+          {
+            "key": "C",
+            "title": "StimmRaum",
+            "text": "Anfängerkurs Gesang für Erwachsene, Mo 18–19 Uhr, kleine Gruppen."
+          },
+          {
+            "key": "D",
+            "title": "BühnenLuft",
+            "text": "Anfängerkurs Theaterspielen, Mi 18–20 Uhr, ohne Vorkenntnisse, Anmeldung nötig."
+          },
+          {
+            "key": "E",
+            "title": "Pfotenglück",
+            "text": "Pflege Ihres Hundes im Urlaub, großer Garten, 18 Euro pro Tag."
+          },
+          {
+            "key": "F",
+            "title": "WohnVermitt",
+            "text": "Wir vermitteln zwei- und Dreizimmerwohnungen, faire Provision, kurzfristig."
+          },
+          {
+            "key": "G",
+            "title": "TonWerk",
+            "text": "Wir reparieren Kopfhörer und kleine Lautsprecher, Werkstatt zentral, Mo–Fr."
+          },
+          {
+            "key": "H",
+            "title": "BildScharf",
+            "text": "Wir reparieren Fotokameras und wechseln Objektive, Abgabe Di–Sa bis 17 Uhr."
+          },
+          {
+            "key": "I",
+            "title": "Glanzweg",
+            "text": "Pflege und Reinigung von Fenstern und Büro, Sa 10–14 Uhr nach Absprache."
+          },
+          {
+            "key": "J",
+            "title": "KlangFix",
+            "text": "Wir reparieren defekte Boxen und Verstärker aller Marken, Hausbesuch möglich."
+          }
+        ],
+        "questions": [
+          {
+            "id": "gen-q-3-odbyqv-1",
+            "type": "matching",
+            "question": "Bei Lena macht das Gerät zum Fotografieren keine scharfen Bilder mehr; es soll gerichtet werden.",
+            "options": [
+              {
+                "key": "A",
+                "text": "A"
+              },
+              {
+                "key": "B",
+                "text": "B"
+              },
+              {
+                "key": "C",
+                "text": "C"
+              },
+              {
+                "key": "D",
+                "text": "D"
+              },
+              {
+                "key": "E",
+                "text": "E"
+              },
+              {
+                "key": "F",
+                "text": "F"
+              },
+              {
+                "key": "G",
+                "text": "G"
+              },
+              {
+                "key": "H",
+                "text": "H"
+              },
+              {
+                "key": "I",
+                "text": "I"
+              },
+              {
+                "key": "J",
+                "text": "J"
+              },
+              {
+                "key": "K",
+                "text": "0"
+              }
+            ],
+            "correct": "H",
+            "correctAnswer": "H",
+            "explanation": "BildScharf repariert Kameras.",
+            "module": "lesen",
+            "teil": 3
+          },
+          {
+            "id": "gen-q-3-odbyqv-2",
+            "type": "matching",
+            "question": "Toms Hörer fürs Musikhören geben auf einer Seite keinen Ton mehr.",
+            "options": [
+              {
+                "key": "A",
+                "text": "A"
+              },
+              {
+                "key": "B",
+                "text": "B"
+              },
+              {
+                "key": "C",
+                "text": "C"
+              },
+              {
+                "key": "D",
+                "text": "D"
+              },
+              {
+                "key": "E",
+                "text": "E"
+              },
+              {
+                "key": "F",
+                "text": "F"
+              },
+              {
+                "key": "G",
+                "text": "G"
+              },
+              {
+                "key": "H",
+                "text": "H"
+              },
+              {
+                "key": "I",
+                "text": "I"
+              },
+              {
+                "key": "J",
+                "text": "J"
+              },
+              {
+                "key": "K",
+                "text": "0"
+              }
+            ],
+            "correct": "G",
+            "correctAnswer": "G",
+            "explanation": "TonWerk repariert Kopfhörer.",
+            "module": "lesen",
+            "teil": 3
+          },
+          {
+            "id": "gen-q-3-odbyqv-3",
+            "type": "matching",
+            "question": "Bei Herrn Cems Anlage knistern die großen Boxen; er sucht eine Werkstatt.",
+            "options": [
+              {
+                "key": "A",
+                "text": "A"
+              },
+              {
+                "key": "B",
+                "text": "B"
+              },
+              {
+                "key": "C",
+                "text": "C"
+              },
+              {
+                "key": "D",
+                "text": "D"
+              },
+              {
+                "key": "E",
+                "text": "E"
+              },
+              {
+                "key": "F",
+                "text": "F"
+              },
+              {
+                "key": "G",
+                "text": "G"
+              },
+              {
+                "key": "H",
+                "text": "H"
+              },
+              {
+                "key": "I",
+                "text": "I"
+              },
+              {
+                "key": "J",
+                "text": "J"
+              },
+              {
+                "key": "K",
+                "text": "0"
+              }
+            ],
+            "correct": "J",
+            "correctAnswer": "J",
+            "explanation": "KlangFix repariert Lautsprecher.",
+            "module": "lesen",
+            "teil": 3
+          },
+          {
+            "id": "gen-q-3-odbyqv-4",
+            "type": "matching",
+            "question": "Frau Berg singt gern und möchte ihre Stimme richtig ausbilden lassen.",
+            "options": [
+              {
+                "key": "A",
+                "text": "A"
+              },
+              {
+                "key": "B",
+                "text": "B"
+              },
+              {
+                "key": "C",
+                "text": "C"
+              },
+              {
+                "key": "D",
+                "text": "D"
+              },
+              {
+                "key": "E",
+                "text": "E"
+              },
+              {
+                "key": "F",
+                "text": "F"
+              },
+              {
+                "key": "G",
+                "text": "G"
+              },
+              {
+                "key": "H",
+                "text": "H"
+              },
+              {
+                "key": "I",
+                "text": "I"
+              },
+              {
+                "key": "J",
+                "text": "J"
+              },
+              {
+                "key": "K",
+                "text": "0"
+              }
+            ],
+            "correct": "C",
+            "correctAnswer": "C",
+            "explanation": "StimmRaum bietet Gesang.",
+            "module": "lesen",
+            "teil": 3
+          },
+          {
+            "id": "gen-q-3-odbyqv-5",
+            "type": "matching",
+            "question": "Paul möchte das Spielen auf der Bühne von Grund auf lernen.",
+            "options": [
+              {
+                "key": "A",
+                "text": "A"
+              },
+              {
+                "key": "B",
+                "text": "B"
+              },
+              {
+                "key": "C",
+                "text": "C"
+              },
+              {
+                "key": "D",
+                "text": "D"
+              },
+              {
+                "key": "E",
+                "text": "E"
+              },
+              {
+                "key": "F",
+                "text": "F"
+              },
+              {
+                "key": "G",
+                "text": "G"
+              },
+              {
+                "key": "H",
+                "text": "H"
+              },
+              {
+                "key": "I",
+                "text": "I"
+              },
+              {
+                "key": "J",
+                "text": "J"
+              },
+              {
+                "key": "K",
+                "text": "0"
+              }
+            ],
+            "correct": "D",
+            "correctAnswer": "D",
+            "explanation": "BühnenLuft bietet Theater.",
+            "module": "lesen",
+            "teil": 3
+          },
+          {
+            "id": "gen-q-3-odbyqv-6",
+            "type": "matching",
+            "question": "Sara will lernen, aus Ton Schalen zu formen.",
+            "options": [
+              {
+                "key": "A",
+                "text": "A"
+              },
+              {
+                "key": "B",
+                "text": "B"
+              },
+              {
+                "key": "C",
+                "text": "C"
+              },
+              {
+                "key": "D",
+                "text": "D"
+              },
+              {
+                "key": "E",
+                "text": "E"
+              },
+              {
+                "key": "F",
+                "text": "F"
+              },
+              {
+                "key": "G",
+                "text": "G"
+              },
+              {
+                "key": "H",
+                "text": "H"
+              },
+              {
+                "key": "I",
+                "text": "I"
+              },
+              {
+                "key": "J",
+                "text": "J"
+              },
+              {
+                "key": "K",
+                "text": "0"
+              }
+            ],
+            "correct": "B",
+            "correctAnswer": "B",
+            "explanation": "ErdReich lehrt Töpfern.",
+            "module": "lesen",
+            "teil": 3
+          },
+          {
+            "id": "gen-q-3-odbyqv-7",
+            "type": "matching",
+            "question": "Herr Ott sucht eine günstige Unterkunft für den Sommer.",
+            "options": [
+              {
+                "key": "A",
+                "text": "A"
+              },
+              {
+                "key": "B",
+                "text": "B"
+              },
+              {
+                "key": "C",
+                "text": "C"
+              },
+              {
+                "key": "D",
+                "text": "D"
+              },
+              {
+                "key": "E",
+                "text": "E"
+              },
+              {
+                "key": "F",
+                "text": "F"
+              },
+              {
+                "key": "G",
+                "text": "G"
+              },
+              {
+                "key": "H",
+                "text": "H"
+              },
+              {
+                "key": "I",
+                "text": "I"
+              },
+              {
+                "key": "J",
+                "text": "J"
+              },
+              {
+                "key": "K",
+                "text": "0"
+              }
+            ],
+            "correct": "0",
+            "correctAnswer": "0",
+            "explanation": "Keine Anzeige bietet Unterkunft an.",
+            "module": "lesen",
+            "teil": 3
+          }
+        ],
+        "example": {
+          "number": 0,
+          "label": "Beispiel",
+          "situation": "Herr Ott sucht eine günstige Unterkunft für den Sommer.",
+          "question": "Herr Ott sucht eine günstige Unterkunft für den Sommer.",
+          "correct": "0",
+          "correctAnswer": "0"
+        },
+        "_t3HasNoMatch": true
+      },
+      {
+        "teil": 4,
+        "instruction": "",
+        "text": "In vielen Familien ist die Nutzung von Smartphones ein wichtiges Thema. Eine neue Idee schlägt vor, dass Smartphones nach zwei Stunden Bildschirmzeit pro Tag Apps automatisch sperren sollen. Dies soll besonders Kindern und Jugendlichen helfen, weniger Zeit vor dem Bildschirm zu verbringen. Im Forum diskutieren wir die Meinungen dazu. Was denken die Leute über diesen Plan?",
+        "textTitle": "Forum: Smartphone-Nutzung begrenzen?",
+        "questions": [
+          {
+            "id": "gen-q-4-2a24cd09-2",
+            "module": "lesen",
+            "teil": 4,
+            "type": "ja_nein",
+            "question": "Ist Ben für den Vorschlag?",
+            "signText": "Die Idee ist gut gemeint, aber nicht alle Apps sind schlecht. Ich nutze mein Handy auch für die Arbeit und für wichtige Nachrichten. Eine Automatische Sperre ist zu streng. Ich lehne den Vorschlag ab.",
+            "correct": "Nein",
+            "correctAnswer": "Nein",
+            "explanation": "Ben findet die Idee gut gemeint, aber die Automatische Sperre ist ihm zu streng, da er das Handy auch beruflich nutzt.",
+            "options": [
+              "a) Ja",
+              "b) Nein"
+            ]
+          },
+          {
+            "id": "gen-q-4-2a24cd09-4",
+            "module": "lesen",
+            "teil": 4,
+            "type": "ja_nein",
+            "question": "Ist David für den Vorschlag?",
+            "signText": "Jeder sollte selbst entscheiden, wie lange er sein Smartphone nutzt. Das ist eine persönliche Sache. Eine App-Sperre nimmt uns die Freiheit. Für mich ist der Vorschlag nicht gut.",
+            "correct": "Nein",
+            "correctAnswer": "Nein",
+            "explanation": "David betont die persönliche Freiheit und lehnt den Vorschlag ab, da er eine Automatische Sperre als Einschränkung sieht.",
+            "options": [
+              "a) Ja",
+              "b) Nein"
+            ]
+          },
+          {
+            "id": "gen-q-4-2a24cd09-1",
+            "module": "lesen",
+            "teil": 4,
+            "type": "ja_nein",
+            "question": "Ist Anna für den Vorschlag?",
+            "signText": "Ich finde die Idee gut, weil viele Kinder zu lange am Handy sind. Es ist wichtig, dass sie auch draußen spielen. Zwei Stunden sind vielleicht wenig, aber es ist ein Anfang. Ich unterstütze den Vorschlag.",
+            "correct": "Ja",
+            "correctAnswer": "Ja",
+            "explanation": "Anna sieht den Vorteil für Kinder, weniger Zeit am Handy zu verbringen, und unterstützt den Vorschlag trotz kleiner Bedenken.",
+            "options": [
+              "a) Ja",
+              "b) Nein"
+            ]
+          },
+          {
+            "id": "gen-q-4-2a24cd09-3",
+            "module": "lesen",
+            "teil": 4,
+            "type": "ja_nein",
+            "question": "Ist Clara für den Vorschlag?",
+            "signText": "Endlich denkt jemand an die Gesundheit der Augen und den Schlaf! Viele Jugendliche schlafen schlecht wegen zu viel Bildschirmzeit. Eine Regelung ist wichtig für die Familie. Ich bin dafür.",
+            "correct": "Ja",
+            "correctAnswer": "Ja",
+            "explanation": "Clara befürwortet den Vorschlag, da er der Gesundheit und dem Schlaf von Jugendlichen zugutekommt.",
+            "options": [
+              "a) Ja",
+              "b) Nein"
+            ]
+          },
+          {
+            "id": "gen-q-4-2a24cd09-7",
+            "module": "lesen",
+            "teil": 4,
+            "type": "ja_nein",
+            "question": "Ist Greta für den Vorschlag?",
+            "signText": "Ich denke, Eltern sind für die Regeln zuständig, nicht das Smartphone. Eine App kann die Verantwortung der Familie nicht ersetzen. Wir müssen mit den Kindern reden, nicht sperren. Deshalb sage ich Nein.",
+            "correct": "Nein",
+            "correctAnswer": "Nein",
+            "explanation": "Greta ist der Meinung, dass Eltern die Verantwortung für die Regeln tragen und nicht eine Automatische App-Sperre.",
+            "options": [
+              "a) Ja",
+              "b) Nein"
+            ]
+          },
+          {
+            "id": "gen-q-4-2a24cd09-5",
+            "module": "lesen",
+            "teil": 4,
+            "type": "ja_nein",
+            "question": "Ist Emma für den Vorschlag?",
+            "signText": "Ich finde es wichtig, dass wir über die Nutzung von Technik sprechen. Zwei Stunden sind eine gute Orientierung. Es ist ein guter Schritt für mehr Balance. Ich unterstütze den Vorschlag.",
+            "correct": "Ja",
+            "correctAnswer": "Ja",
+            "explanation": "Emma sieht den Vorschlag als wichtigen Schritt für mehr Balance in der Techniknutzung und unterstützt ihn.",
+            "options": [
+              "a) Ja",
+              "b) Nein"
+            ]
+          },
+          {
+            "id": "gen-q-4-2a24cd09-6",
+            "module": "lesen",
+            "teil": 4,
+            "type": "ja_nein",
+            "question": "Ist Finn für den Vorschlag?",
+            "signText": "Meine Kinder nutzen das Tablet für die Schule und lernen damit. Eine Sperre würde den Unterricht stören und neue Probleme schaffen. Wir brauchen flexible Lösungen, nicht starre Regeln. Deshalb sage ich Nein.",
+            "correct": "Nein",
+            "correctAnswer": "Nein",
+            "explanation": "Finn befürchtet, dass die Sperre den Schulunterricht seiner Kinder stören würde und bevorzugt flexible Lösungen.",
+            "options": [
+              "a) Ja",
+              "b) Nein"
+            ]
+          }
+        ]
+      },
+      {
+        "teil": 5,
+        "instruction": "",
+        "text": "Diese Ordnung sichert ein gutes Miteinander und die Nutzung unserer Angebote für Bildung. Alle Besucher müssen die Regeln beachten.\n\nÖffnungszeiten: Die Bibliothek ist von Montag bis Freitag von 10:00 Uhr bis 18:00 Uhr und am Samstag von 10:00 Uhr bis 14:00 Uhr geöffnet. An Sonntagen und gesetzlichen Feiertagen bleibt die Bibliothek geschlossen. Für besondere Veranstaltungen können Ausnahmen gelten, die vorher bekannt gegeben werden.\nAusleihe und Leihfrist: Sie können maximal 15 Medien gleichzeitig ausleihen. Die Leihfrist für Bücher beträgt vier Wochen, für DVDs und CDs zwei Wochen. Eine Verlängerung ist bis zu zweimal möglich, wenn das Medium nicht von einem anderen Nutzer reserviert wurde. Dies kann online oder persönlich am Schalter erfolgen.\nGebühren: Bei Überschreitung der Leihfrist fallen Gebühren an. Pro Medium und angefangener Woche sind 0,50 Euro zu zahlen. Bitte geben Sie Medien pünktlich zurück, um zusätzliche Kosten zu vermeiden.\nRuhe und Lernbereiche: In den Lesesälen und Lernräumen ist absolute Ruhe wichtig. Handys müssen auf lautlos gestellt werden. Laute Gespräche sind nur in den dafür vorgesehenen Zonen erlaubt. Wir unterstützen eine konzentrierte Lernatmosphäre.\nAnmeldung für Kurse: Für die Teilnahme an unseren Bildungskursen und Workshops (z.B. zur digitalen Literatur oder Sprachförderung) ist eine Anmeldung mindestens drei Werktage im Voraus erforderlich. Die Plätze sind oft begrenzt.\nUmgang mit Medien: Bitte behandeln Sie alle Medien sorgfältig. Beschädigungen oder der Verlust von Büchern oder anderen Materialien müssen gemeldet werden. In solchen Fällen müssen Sie die Kosten für den Ersatz tragen.\nInternet und Computer: Kostenloses WLAN steht zur Verfügung. Die Nutzung der Computer ist für Bildungs- und Informationszwecke vorgesehen.",
+        "textTitle": "Bibliotheksordnung der Stadtbibliothek 'Wissenstor'",
+        "passageId": "gen-l5-9c847fa2",
+        "questions": [
+          {
+            "id": "gen-q-5-9c847fa2-1",
+            "type": "multiple_choice",
+            "question": "Wann ist die Bibliothek normalerweise nicht geöffnet?",
+            "options": [
+              {
+                "key": "A",
+                "text": "Nur am Wochenende."
+              },
+              {
+                "key": "B",
+                "text": "Jeden Tag nach 14 Uhr."
+              },
+              {
+                "key": "C",
+                "text": "An Sonntagen, Feiertagen und nach 18 Uhr an Wochentagen."
+              }
+            ],
+            "correct": "c",
+            "correctAnswer": "c",
+            "explanation": "Die Bibliothek ist an Sonntagen und gesetzlichen Feiertagen geschlossen. An Wochentagen ist sie bis 18:00 Uhr geöffnet, danach also nicht mehr.",
+            "passageId": "gen-l5-9c847fa2",
+            "module": "lesen",
+            "teil": 5
+          },
+          {
+            "id": "gen-q-5-9c847fa2-2",
+            "type": "multiple_choice",
+            "question": "Was ist richtig bezüglich der Ausleihe von Büchern?",
+            "options": [
+              {
+                "key": "A",
+                "text": "Man kann Bücher zweimal verlängern, wenn sie nicht schon jemand anders möchte."
+              },
+              {
+                "key": "B",
+                "text": "Man darf maximal vier Bücher für zwei Wochen ausleihen."
+              },
+              {
+                "key": "C",
+                "text": "Eine Verlängerung ist nur persönlich am Schalter möglich."
+              }
+            ],
+            "correct": "a",
+            "correctAnswer": "a",
+            "explanation": "Bücher können bis zu zweimal verlängert werden, solange sie nicht von einer anderen Person vorbestellt sind. Dies ist online oder persönlich möglich.",
+            "passageId": "gen-l5-9c847fa2",
+            "module": "lesen",
+            "teil": 5
+          },
+          {
+            "id": "gen-q-5-9c847fa2-3",
+            "type": "multiple_choice",
+            "question": "Wie hoch sind die Kosten, wenn man ein Buch zwei Wochen zu spät zurückgibt?",
+            "options": [
+              {
+                "key": "A",
+                "text": "Zwei Euro pro Buch."
+              },
+              {
+                "key": "B",
+                "text": "Ein Euro pro Buch."
+              },
+              {
+                "key": "C",
+                "text": "Fünfzig Cent pro Buch."
+              }
+            ],
+            "correct": "b",
+            "correctAnswer": "b",
+            "explanation": "Bei einer Überschreitung der Leihfrist von zwei Wochen fallen pro Buch 0,50 Euro pro angefangener Woche an, was insgesamt einem Euro entspricht.",
+            "passageId": "gen-l5-9c847fa2",
+            "module": "lesen",
+            "teil": 5
+          },
+          {
+            "id": "gen-q-5-9c847fa2-4",
+            "type": "multiple_choice",
+            "question": "Was muss man beachten, wenn man an einem Kurs teilnehmen möchte?",
+            "options": [
+              {
+                "key": "A",
+                "text": "Man muss sich mindestens drei Arbeitstage vor dem Start anmelden."
+              },
+              {
+                "key": "B",
+                "text": "Eine Anmeldung ist nicht nötig, wenn noch Plätze frei sind."
+              },
+              {
+                "key": "C",
+                "text": "Man kann sich bis zum Tag des Kurses anmelden."
+              }
+            ],
+            "correct": "a",
+            "correctAnswer": "a",
+            "explanation": "Für die Teilnahme an einem Kurs ist es notwendig, sich mindestens drei Werktage vor Kursbeginn anzumelden, da die Plätze oft begrenzt sind.",
+            "passageId": "gen-l5-9c847fa2",
+            "module": "lesen",
+            "teil": 5
+          }
+        ]
+      }
+    ],
+    "horenParts": [
+      {
+        "teil": 1,
+        "instruction": "",
+        "segments": [
+          {
+            "passageId": "gen-p-h1-eac46715-s1",
+            "label": "Durchsage Supermarkt",
+            "text": "Guten Tag, liebe Kundschaft! Wir haben heute ein besonderes Angebot in unserer Frischeabteilung. Frisches Bio-Gemüse aus der Region zu unschlagbaren Preisen. Und denken Sie daran: Unsere neue Treuekarte bietet Ihnen viele Vorteile und Rabatte. Besuchen Sie auch unsere Feinkosttheke für internationale Spezialitäten. Wir möchten unsere Bekanntheit für Qualität und Frische weiter steigern. Vielen Dank für Ihren Einkauf!",
+            "transcript": "Guten Tag, liebe Kundschaft! Wir haben heute ein besonderes Angebot in unserer Frischeabteilung. Frisches Bio-Gemüse aus der Region zu unschlagbaren Preisen. Und denken Sie daran: Unsere neue Treuekarte bietet Ihnen viele Vorteile und Rabatte. Besuchen Sie auch unsere Feinkosttheke für internationale Spezialitäten. Wir möchten unsere Bekanntheit für Qualität und Frische weiter steigern. Vielen Dank für Ihren Einkauf!",
+            "questions": [
+              {
+                "id": "gen-q-h1-eac46715-s1-q1",
+                "module": "horen",
+                "teil": 1,
+                "type": "richtig_falsch",
+                "question": "Im Supermarkt gibt es heute regionales Bio-Gemüse günstiger.",
+                "options": [],
+                "correct": "Richtig",
+                "correctAnswer": "Richtig",
+                "explanation": "Die Ansage spricht von 'Bio-Gemüse aus der Region zu unschlagbaren Preisen'.",
+                "segmentLabel": "Aufnahme 1",
+                "passageId": "gen-p-h1-eac46715-s1",
+                "lang": "de",
+                "level": "B1",
+                "skills": [
+                  "listening"
+                ],
+                "language": "de",
+                "examType": "goethe",
+                "difficulty": 5,
+                "topicTags": [
+                  "daily_life"
+                ]
+              },
+              {
+                "id": "gen-q-h1-eac46715-s1-q2",
+                "module": "horen",
+                "teil": 1,
+                "type": "multiple_choice",
+                "question": "Was ist neu im Supermarkt?",
+                "options": [
+                  "a) Eine Karte für Stammkunden.",
+                  "b) Mehr Bio-Gemüse im Angebot.",
+                  "c) Eine internationale Feinkosttheke."
+                ],
+                "correct": "a",
+                "correctAnswer": "a",
+                "explanation": "Die Ansage erwähnt: 'Unsere neue Treuekarte bietet Ihnen viele Vorteile'.",
+                "segmentLabel": "Aufnahme 1",
+                "passageId": "gen-p-h1-eac46715-s1",
+                "lang": "de",
+                "level": "B1",
+                "skills": [
+                  "listening"
+                ],
+                "language": "de",
+                "examType": "goethe",
+                "difficulty": 5,
+                "topicTags": [
+                  "daily_life"
+                ]
+              }
+            ]
+          },
+          {
+            "passageId": "gen-p-h1-eac46715-s2",
+            "label": "Anrufbeantworter Praxis",
+            "text": "Hallo, hier ist die Praxis Dr. Müller. Wir sind momentan nicht erreichbar. Unsere Sprechzeiten sind Montag bis Freitag von 9 bis 12 Uhr und Montag, Dienstag, Donnerstag von 14 bis 17 Uhr. Bitte rufen Sie uns während dieser Zeiten an, um einen Termin zu vereinbaren. Für Notfälle kontaktieren Sie bitte den ärztlichen Bereitschaftsdienst. Wir haben eine volle Agenda und bitten um Ihr Verständnis für mögliche Wartezeiten. Vielen Dank!",
+            "transcript": "Hallo, hier ist die Praxis Dr. Müller. Wir sind momentan nicht erreichbar. Unsere Sprechzeiten sind Montag bis Freitag von 9 bis 12 Uhr und Montag, Dienstag, Donnerstag von 14 bis 17 Uhr. Bitte rufen Sie uns während dieser Zeiten an, um einen Termin zu vereinbaren. Für Notfälle kontaktieren Sie bitte den ärztlichen Bereitschaftsdienst. Wir haben eine volle Agenda und bitten um Ihr Verständnis für mögliche Wartezeiten. Vielen Dank!",
+            "questions": [
+              {
+                "id": "gen-q-h1-eac46715-s2-q1",
+                "module": "horen",
+                "teil": 1,
+                "type": "richtig_falsch",
+                "question": "Man kann die Praxis von Dr. Müller nur vormittags erreichen.",
+                "options": [],
+                "correct": "Falsch",
+                "correctAnswer": "Falsch",
+                "explanation": "Die Praxis ist auch Montag, Dienstag und Donnerstag nachmittags erreichbar.",
+                "segmentLabel": "Aufnahme 2",
+                "passageId": "gen-p-h1-eac46715-s2",
+                "lang": "de",
+                "level": "B1",
+                "skills": [
+                  "listening"
+                ],
+                "language": "de",
+                "examType": "goethe",
+                "difficulty": 5,
+                "topicTags": [
+                  "daily_life"
+                ]
+              },
+              {
+                "id": "gen-q-h1-eac46715-s2-q2",
+                "module": "horen",
+                "teil": 1,
+                "type": "multiple_choice",
+                "question": "Wann kann man die Praxis nachmittags erreichen?",
+                "options": [
+                  "a) Am Montag und Donnerstag.",
+                  "b) Am Montag, Dienstag und Donnerstag.",
+                  "c) Nur am Mittwoch."
+                ],
+                "correct": "b",
+                "correctAnswer": "b",
+                "explanation": "Die Sprechzeiten sind 'Montag, Dienstag, Donnerstag von 14 bis 17 Uhr'.",
+                "segmentLabel": "Aufnahme 2",
+                "passageId": "gen-p-h1-eac46715-s2",
+                "lang": "de",
+                "level": "B1",
+                "skills": [
+                  "listening"
+                ],
+                "language": "de",
+                "examType": "goethe",
+                "difficulty": 5,
+                "topicTags": [
+                  "daily_life"
+                ]
+              }
+            ]
+          },
+          {
+            "passageId": "gen-p-h1-eac46715-s3",
+            "label": "Durchsage Wohnhaus",
+            "text": "Achtung, liebe Bewohnerinnen und Bewohner! Im Treppenhaus wurde in letzter Zeit leider wiederholt Müll abgestellt. Das ist nicht erlaubt und behindert die Reinigung. Wir bitten Sie dringend, Ihren Abfall ausschließlich in den dafür vorgesehenen Mülltonnen zu entsorgen. Auch haben wir festgestellt, dass fremde Personen das Haus betreten. Bitte beobachten Sie, wer ins Gebäude geht und schließen Sie die Haustür immer gut ab. Vielen Dank für Ihre Mithilfe!",
+            "transcript": "Achtung, liebe Bewohnerinnen und Bewohner! Im Treppenhaus wurde in letzter Zeit leider wiederholt Müll abgestellt. Das ist nicht erlaubt und behindert die Reinigung. Wir bitten Sie dringend, Ihren Abfall ausschließlich in den dafür vorgesehenen Mülltonnen zu entsorgen. Auch haben wir festgestellt, dass fremde Personen das Haus betreten. Bitte beobachten Sie, wer ins Gebäude geht und schließen Sie die Haustür immer gut ab. Vielen Dank für Ihre Mithilfe!",
+            "questions": [
+              {
+                "id": "gen-q-h1-eac46715-s3-q1",
+                "module": "horen",
+                "teil": 1,
+                "type": "richtig_falsch",
+                "question": "Es wurden fremde Personen im Gebäude gesehen.",
+                "options": [],
+                "correct": "Richtig",
+                "correctAnswer": "Richtig",
+                "explanation": "Die Durchsage sagt: 'Auch haben wir festgestellt, dass fremde Personen das Haus betreten.'",
+                "segmentLabel": "Aufnahme 3",
+                "passageId": "gen-p-h1-eac46715-s3",
+                "lang": "de",
+                "level": "B1",
+                "skills": [
+                  "listening"
+                ],
+                "language": "de",
+                "examType": "goethe",
+                "difficulty": 5,
+                "topicTags": [
+                  "daily_life"
+                ]
+              },
+              {
+                "id": "gen-q-h1-eac46715-s3-q2",
+                "module": "horen",
+                "teil": 1,
+                "type": "multiple_choice",
+                "question": "Was sollen die Bewohner mit ihrem Müll machen?",
+                "options": [
+                  "a) Andere Bewohner um Entsorgung bitten.",
+                  "b) Ihn in die dafür vorgesehenen Behälter werfen.",
+                  "c) Den Müll im Treppenhaus lassen."
+                ],
+                "correct": "b",
+                "correctAnswer": "b",
+                "explanation": "Die Ansage fordert auf, den Abfall 'ausschließlich in den dafür vorgesehenen Mülltonnen zu entsorgen'.",
+                "segmentLabel": "Aufnahme 3",
+                "passageId": "gen-p-h1-eac46715-s3",
+                "lang": "de",
+                "level": "B1",
+                "skills": [
+                  "listening"
+                ],
+                "language": "de",
+                "examType": "goethe",
+                "difficulty": 5,
+                "topicTags": [
+                  "daily_life"
+                ]
+              }
+            ]
+          },
+          {
+            "passageId": "gen-p-h1-eac46715-s4",
+            "label": "Verkehrsmeldung Radio",
+            "text": "Guten Abend, liebe Hörerinnen und Hörer. Eine wichtige Meldung für alle Autofahrer: Wegen Bauarbeiten ist die A7 ab morgen für zwei Tage zwischen den Anschlussstellen Nord und Ost gesperrt. Bitte nutzen Sie die ausgeschilderten Umleitungen. Die Polizei bittet um erhöhte Vorsicht und Geduld im Straßenverkehr. Auch am Wochenende wird es zu Verkehrsbehinderungen kommen, da ein großer Marathon durch die Innenstadt führt. Planen Sie Ihre Fahrten entsprechend.",
+            "transcript": "Guten Abend, liebe Hörerinnen und Hörer. Eine wichtige Meldung für alle Autofahrer: Wegen Bauarbeiten ist die A7 ab morgen für zwei Tage zwischen den Anschlussstellen Nord und Ost gesperrt. Bitte nutzen Sie die ausgeschilderten Umleitungen. Die Polizei bittet um erhöhte Vorsicht und Geduld im Straßenverkehr. Auch am Wochenende wird es zu Verkehrsbehinderungen kommen, da ein großer Marathon durch die Innenstadt führt. Planen Sie Ihre Fahrten entsprechend.",
+            "questions": [
+              {
+                "id": "gen-q-h1-eac46715-s4-q1",
+                "module": "horen",
+                "teil": 1,
+                "type": "richtig_falsch",
+                "question": "Die Autobahn A7 ist wegen eines Marathons gesperrt.",
+                "options": [],
+                "correct": "Falsch",
+                "correctAnswer": "Falsch",
+                "explanation": "Die A7 ist 'Wegen Bauarbeiten' gesperrt, der Marathon führt zu anderen Verkehrsbehinderungen.",
+                "segmentLabel": "Aufnahme 4",
+                "passageId": "gen-p-h1-eac46715-s4",
+                "lang": "de",
+                "level": "B1",
+                "skills": [
+                  "listening"
+                ],
+                "language": "de",
+                "examType": "goethe",
+                "difficulty": 5,
+                "topicTags": [
+                  "daily_life"
+                ]
+              },
+              {
+                "id": "gen-q-h1-eac46715-s4-q2",
+                "module": "horen",
+                "teil": 1,
+                "type": "multiple_choice",
+                "question": "Was sollen Autofahrer wegen der Sperrung der A7 tun?",
+                "options": [
+                  "a) Zwei Tage zu Hause bleiben.",
+                  "b) Die nächste Ausfahrt nehmen.",
+                  "c) Eine andere Route fahren."
+                ],
+                "correct": "c",
+                "correctAnswer": "c",
+                "explanation": "Es wird gebeten, 'die ausgeschilderten Umleitungen' zu nutzen, was eine andere Route bedeutet.",
+                "segmentLabel": "Aufnahme 4",
+                "passageId": "gen-p-h1-eac46715-s4",
+                "lang": "de",
+                "level": "B1",
+                "skills": [
+                  "listening"
+                ],
+                "language": "de",
+                "examType": "goethe",
+                "difficulty": 5,
+                "topicTags": [
+                  "daily_life"
+                ]
+              }
+            ]
+          },
+          {
+            "passageId": "gen-p-h1-eac46715-s5",
+            "label": "Ankündigung Sommerfest",
+            "text": "Hallo zusammen! Nächsten Samstag treffen wir uns um 10 Uhr im Gemeindehaus für unser jährliches Sommerfest. Jeder ist herzlich eingeladen, etwas zum Buffet beizutragen. Es wird Spiele für Kinder und Erwachsene geben. Wir wollen unsere Gemeinschaft stärken und einfach einen schönen Tag verbringen. Bitte meldet euch bis Mittwoch bei Herrn Meier an, damit wir besser planen können. Wir freuen uns auf viele Teilnehmer und gutes Wetter!",
+            "transcript": "Hallo zusammen! Nächsten Samstag treffen wir uns um 10 Uhr im Gemeindehaus für unser jährliches Sommerfest. Jeder ist herzlich eingeladen, etwas zum Buffet beizutragen. Es wird Spiele für Kinder und Erwachsene geben. Wir wollen unsere Gemeinschaft stärken und einfach einen schönen Tag verbringen. Bitte meldet euch bis Mittwoch bei Herrn Meier an, damit wir besser planen können. Wir freuen uns auf viele Teilnehmer und gutes Wetter!",
+            "questions": [
+              {
+                "id": "gen-q-h1-eac46715-s5-q1",
+                "module": "horen",
+                "teil": 1,
+                "type": "richtig_falsch",
+                "question": "Das Sommerfest findet im Freien statt, wenn das Wetter gut ist.",
+                "options": [],
+                "correct": "Falsch",
+                "correctAnswer": "Falsch",
+                "explanation": "Das Treffen ist 'im Gemeindehaus' geplant, unabhängig vom Wetter, auch wenn auf gutes Wetter gehofft wird.",
+                "segmentLabel": "Aufnahme 5",
+                "passageId": "gen-p-h1-eac46715-s5",
+                "lang": "de",
+                "level": "B1",
+                "skills": [
+                  "listening"
+                ],
+                "language": "de",
+                "examType": "goethe",
+                "difficulty": 5,
+                "topicTags": [
+                  "daily_life"
+                ]
+              },
+              {
+                "id": "gen-q-h1-eac46715-s5-q2",
+                "module": "horen",
+                "teil": 1,
+                "type": "multiple_choice",
+                "question": "Was ist von den Teilnehmern für das Sommerfest erwartet?",
+                "options": [
+                  "a) Eine Speise oder ein Getränk mitbringen.",
+                  "b) Nur für die Kinder Spiele organisieren.",
+                  "c) Nur Herrn Meier über die Teilnahme informieren."
+                ],
+                "correct": "a",
+                "correctAnswer": "a",
+                "explanation": "Die Ansage sagt: 'Jeder ist herzlich eingeladen, etwas zum Buffet beizutragen.'",
+                "segmentLabel": "Aufnahme 5",
+                "passageId": "gen-p-h1-eac46715-s5",
+                "lang": "de",
+                "level": "B1",
+                "skills": [
+                  "listening"
+                ],
+                "language": "de",
+                "examType": "goethe",
+                "difficulty": 5,
+                "topicTags": [
+                  "daily_life"
+                ]
+              }
+            ]
+          }
+        ],
+        "transcript": "Guten Tag, liebe Kundschaft! Wir haben heute ein besonderes Angebot in unserer Frischeabteilung. Frisches Bio-Gemüse aus der Region zu unschlagbaren Preisen. Und denken Sie daran: Unsere neue Treuekarte bietet Ihnen viele Vorteile und Rabatte. Besuchen Sie auch unsere Feinkosttheke für internationale Spezialitäten. Wir möchten unsere Bekanntheit für Qualität und Frische weiter steigern. Vielen Dank für Ihren Einkauf!",
+        "questions": [
+          {
+            "id": "gen-q-h1-eac46715-s1-q1",
+            "module": "horen",
+            "teil": 1,
+            "type": "richtig_falsch",
+            "question": "Im Supermarkt gibt es heute regionales Bio-Gemüse günstiger.",
+            "options": [],
+            "correct": "Richtig",
+            "correctAnswer": "Richtig",
+            "explanation": "Die Ansage spricht von 'Bio-Gemüse aus der Region zu unschlagbaren Preisen'.",
+            "segmentLabel": "Aufnahme 1",
+            "passageId": "gen-p-h1-eac46715-s1",
+            "lang": "de",
+            "level": "B1",
+            "skills": [
+              "listening"
+            ],
+            "language": "de",
+            "examType": "goethe",
+            "difficulty": 5,
+            "topicTags": [
+              "daily_life"
+            ]
+          },
+          {
+            "id": "gen-q-h1-eac46715-s1-q2",
+            "module": "horen",
+            "teil": 1,
+            "type": "multiple_choice",
+            "question": "Was ist neu im Supermarkt?",
+            "options": [
+              "a) Eine Karte für Stammkunden.",
+              "b) Mehr Bio-Gemüse im Angebot.",
+              "c) Eine internationale Feinkosttheke."
+            ],
+            "correct": "a",
+            "correctAnswer": "a",
+            "explanation": "Die Ansage erwähnt: 'Unsere neue Treuekarte bietet Ihnen viele Vorteile'.",
+            "segmentLabel": "Aufnahme 1",
+            "passageId": "gen-p-h1-eac46715-s1",
+            "lang": "de",
+            "level": "B1",
+            "skills": [
+              "listening"
+            ],
+            "language": "de",
+            "examType": "goethe",
+            "difficulty": 5,
+            "topicTags": [
+              "daily_life"
+            ]
+          },
+          {
+            "id": "gen-q-h1-eac46715-s2-q1",
+            "module": "horen",
+            "teil": 1,
+            "type": "richtig_falsch",
+            "question": "Man kann die Praxis von Dr. Müller nur vormittags erreichen.",
+            "options": [],
+            "correct": "Falsch",
+            "correctAnswer": "Falsch",
+            "explanation": "Die Praxis ist auch Montag, Dienstag und Donnerstag nachmittags erreichbar.",
+            "segmentLabel": "Aufnahme 2",
+            "passageId": "gen-p-h1-eac46715-s2",
+            "lang": "de",
+            "level": "B1",
+            "skills": [
+              "listening"
+            ],
+            "language": "de",
+            "examType": "goethe",
+            "difficulty": 5,
+            "topicTags": [
+              "daily_life"
+            ]
+          },
+          {
+            "id": "gen-q-h1-eac46715-s2-q2",
+            "module": "horen",
+            "teil": 1,
+            "type": "multiple_choice",
+            "question": "Wann kann man die Praxis nachmittags erreichen?",
+            "options": [
+              "a) Am Montag und Donnerstag.",
+              "b) Am Montag, Dienstag und Donnerstag.",
+              "c) Nur am Mittwoch."
+            ],
+            "correct": "b",
+            "correctAnswer": "b",
+            "explanation": "Die Sprechzeiten sind 'Montag, Dienstag, Donnerstag von 14 bis 17 Uhr'.",
+            "segmentLabel": "Aufnahme 2",
+            "passageId": "gen-p-h1-eac46715-s2",
+            "lang": "de",
+            "level": "B1",
+            "skills": [
+              "listening"
+            ],
+            "language": "de",
+            "examType": "goethe",
+            "difficulty": 5,
+            "topicTags": [
+              "daily_life"
+            ]
+          },
+          {
+            "id": "gen-q-h1-eac46715-s3-q1",
+            "module": "horen",
+            "teil": 1,
+            "type": "richtig_falsch",
+            "question": "Es wurden fremde Personen im Gebäude gesehen.",
+            "options": [],
+            "correct": "Richtig",
+            "correctAnswer": "Richtig",
+            "explanation": "Die Durchsage sagt: 'Auch haben wir festgestellt, dass fremde Personen das Haus betreten.'",
+            "segmentLabel": "Aufnahme 3",
+            "passageId": "gen-p-h1-eac46715-s3",
+            "lang": "de",
+            "level": "B1",
+            "skills": [
+              "listening"
+            ],
+            "language": "de",
+            "examType": "goethe",
+            "difficulty": 5,
+            "topicTags": [
+              "daily_life"
+            ]
+          },
+          {
+            "id": "gen-q-h1-eac46715-s3-q2",
+            "module": "horen",
+            "teil": 1,
+            "type": "multiple_choice",
+            "question": "Was sollen die Bewohner mit ihrem Müll machen?",
+            "options": [
+              "a) Andere Bewohner um Entsorgung bitten.",
+              "b) Ihn in die dafür vorgesehenen Behälter werfen.",
+              "c) Den Müll im Treppenhaus lassen."
+            ],
+            "correct": "b",
+            "correctAnswer": "b",
+            "explanation": "Die Ansage fordert auf, den Abfall 'ausschließlich in den dafür vorgesehenen Mülltonnen zu entsorgen'.",
+            "segmentLabel": "Aufnahme 3",
+            "passageId": "gen-p-h1-eac46715-s3",
+            "lang": "de",
+            "level": "B1",
+            "skills": [
+              "listening"
+            ],
+            "language": "de",
+            "examType": "goethe",
+            "difficulty": 5,
+            "topicTags": [
+              "daily_life"
+            ]
+          },
+          {
+            "id": "gen-q-h1-eac46715-s4-q1",
+            "module": "horen",
+            "teil": 1,
+            "type": "richtig_falsch",
+            "question": "Die Autobahn A7 ist wegen eines Marathons gesperrt.",
+            "options": [],
+            "correct": "Falsch",
+            "correctAnswer": "Falsch",
+            "explanation": "Die A7 ist 'Wegen Bauarbeiten' gesperrt, der Marathon führt zu anderen Verkehrsbehinderungen.",
+            "segmentLabel": "Aufnahme 4",
+            "passageId": "gen-p-h1-eac46715-s4",
+            "lang": "de",
+            "level": "B1",
+            "skills": [
+              "listening"
+            ],
+            "language": "de",
+            "examType": "goethe",
+            "difficulty": 5,
+            "topicTags": [
+              "daily_life"
+            ]
+          },
+          {
+            "id": "gen-q-h1-eac46715-s4-q2",
+            "module": "horen",
+            "teil": 1,
+            "type": "multiple_choice",
+            "question": "Was sollen Autofahrer wegen der Sperrung der A7 tun?",
+            "options": [
+              "a) Zwei Tage zu Hause bleiben.",
+              "b) Die nächste Ausfahrt nehmen.",
+              "c) Eine andere Route fahren."
+            ],
+            "correct": "c",
+            "correctAnswer": "c",
+            "explanation": "Es wird gebeten, 'die ausgeschilderten Umleitungen' zu nutzen, was eine andere Route bedeutet.",
+            "segmentLabel": "Aufnahme 4",
+            "passageId": "gen-p-h1-eac46715-s4",
+            "lang": "de",
+            "level": "B1",
+            "skills": [
+              "listening"
+            ],
+            "language": "de",
+            "examType": "goethe",
+            "difficulty": 5,
+            "topicTags": [
+              "daily_life"
+            ]
+          },
+          {
+            "id": "gen-q-h1-eac46715-s5-q1",
+            "module": "horen",
+            "teil": 1,
+            "type": "richtig_falsch",
+            "question": "Das Sommerfest findet im Freien statt, wenn das Wetter gut ist.",
+            "options": [],
+            "correct": "Falsch",
+            "correctAnswer": "Falsch",
+            "explanation": "Das Treffen ist 'im Gemeindehaus' geplant, unabhängig vom Wetter, auch wenn auf gutes Wetter gehofft wird.",
+            "segmentLabel": "Aufnahme 5",
+            "passageId": "gen-p-h1-eac46715-s5",
+            "lang": "de",
+            "level": "B1",
+            "skills": [
+              "listening"
+            ],
+            "language": "de",
+            "examType": "goethe",
+            "difficulty": 5,
+            "topicTags": [
+              "daily_life"
+            ]
+          },
+          {
+            "id": "gen-q-h1-eac46715-s5-q2",
+            "module": "horen",
+            "teil": 1,
+            "type": "multiple_choice",
+            "question": "Was ist von den Teilnehmern für das Sommerfest erwartet?",
+            "options": [
+              "a) Eine Speise oder ein Getränk mitbringen.",
+              "b) Nur für die Kinder Spiele organisieren.",
+              "c) Nur Herrn Meier über die Teilnahme informieren."
+            ],
+            "correct": "a",
+            "correctAnswer": "a",
+            "explanation": "Die Ansage sagt: 'Jeder ist herzlich eingeladen, etwas zum Buffet beizutragen.'",
+            "segmentLabel": "Aufnahme 5",
+            "passageId": "gen-p-h1-eac46715-s5",
+            "lang": "de",
+            "level": "B1",
+            "skills": [
+              "listening"
+            ],
+            "language": "de",
+            "examType": "goethe",
+            "difficulty": 5,
+            "topicTags": [
+              "daily_life"
+            ]
+          }
+        ]
+      },
+      {
+        "teil": 2,
+        "instruction": "",
+        "transcript": "Guten Tag, liebe Sportfreunde und Interessierte. Herzlich willkommen zu meinem Vortrag über die zentrale Rolle von Sport in unserem Leben. Viele Menschen wissen, dass Bewegung wichtig ist, aber oft gibt es Bedenken oder man findet einfach nicht die Zeit. Ich möchte heute erklären, warum Sport so unverzichtbar ist und wie man ihn leicht in den Alltag integrieren kann.\n\nZunächst einmal ist regelmäßige körperliche Aktivität entscheidend für unsere körperliche Gesundheit. Sie stärkt das Herz-Kreislauf-System, verbessert die Muskelkraft und hilft, ein gesundes Gewicht zu halten. Aber Sport ist nicht nur gut für den Körper, sondern auch für den Geist. Er reduziert Stress, verbessert die Stimmung und kann sogar Schlafprobleme lindern. Das ist doch verständlich, oder? Wenn wir uns bewegen, produziert unser Körper Glückshormone.\n\nEs muss nicht immer Hochleistungssport sein. Schon kleine Veränderungen machen einen großen Unterschied. Ein täglicher Spaziergang, Radfahren zur Arbeit oder Treppensteigen statt Aufzug – all das zählt. Wichtig ist, eine Sportart zu finden, die Ihnen Spaß macht. Ob Schwimmen, Tanzen, Wandern oder ein Teamsport im Verein, die Auswahl ist groß. Man sollte sich nicht überfordern, besonders am Anfang. Setzen Sie sich realistische Ziele.\n\nViele haben Vorräte an Ausreden, warum sie keinen Sport machen können. 'Keine Zeit', 'zu müde', 'zu teuer'. Aber oft sind das nur Ausreden. Es gibt viele kostenlose Möglichkeiten, aktiv zu sein, zum Beispiel Joggen im Park. Machen Sie Sport zu einem festen Bestandteil Ihres Wochenplans. Das ist wie ein wichtiger Termin, den man nicht absagt.\n\nZum Schluss möchte ich betonen: Sport ist eine Investition in Ihre Zukunft. Er verbessert nicht nur Ihre Lebensqualität heute, sondern hilft Ihnen auch, bis ins hohe Alter fit und gesund zu bleiben. Fangen Sie noch heute an!",
+        "questions": [
+          {
+            "id": "gen-q-h2-e0b897d8-q1",
+            "module": "horen",
+            "teil": 2,
+            "type": "multiple_choice",
+            "question": "Worum geht es hauptsächlich in diesem Vortrag?",
+            "options": [
+              "a) Die Wichtigkeit von Bewegung für Körper und Geist.",
+              "b) Neue Sportarten für Senioren.",
+              "c) Die Kosten für verschiedene Sportvereine."
+            ],
+            "correct": "a",
+            "correctAnswer": "a",
+            "explanation": "Der Sprecher betont durchgehend die Bedeutung von Sport für die körperliche und geistige Gesundheit und gibt Tipps zur Integration in den Alltag.",
+            "passageId": "gen-p-h2-e0b897d8-s1",
+            "lang": "de",
+            "level": "B1",
+            "skills": [
+              "listening"
+            ],
+            "language": "de",
+            "examType": "goethe",
+            "difficulty": 5,
+            "topicTags": [
+              "Sport"
+            ]
+          },
+          {
+            "id": "gen-q-h2-e0b897d8-q2",
+            "module": "horen",
+            "teil": 2,
+            "type": "multiple_choice",
+            "question": "Was kann man durch Sport auch erreichen, abgesehen von körperlicher Fitness?",
+            "options": [
+              "a) Man kann teure Ausrüstung gewinnen.",
+              "b) Man kann Stress abbauen und die Stimmung verbessern.",
+              "c) Man kann sofort eine neue Arbeitsstelle finden."
+            ],
+            "correct": "b",
+            "correctAnswer": "b",
+            "explanation": "Der Sprecher erklärt, dass Sport nicht nur gut für den Körper, sondern auch für den Geist ist, da er Stress reduziert und die Stimmung verbessert.",
+            "passageId": "gen-p-h2-e0b897d8-s1",
+            "lang": "de",
+            "level": "B1",
+            "skills": [
+              "listening"
+            ],
+            "language": "de",
+            "examType": "goethe",
+            "difficulty": 5,
+            "topicTags": [
+              "Sport"
+            ]
+          },
+          {
+            "id": "gen-q-h2-e0b897d8-q3",
+            "module": "horen",
+            "teil": 2,
+            "type": "multiple_choice",
+            "question": "Was empfiehlt der Sprecher für den Einstieg in sportliche Aktivitäten?",
+            "options": [
+              "a) Sofort mit Hochleistungssport beginnen, um schnelle Ergebnisse zu erzielen.",
+              "b) Teure Ausrüstung kaufen und sich einem exklusiven Verein anschließen.",
+              "c) Eine Sportart wählen, die Freude bereitet, und sich realistische Ziele setzen."
+            ],
+            "correct": "c",
+            "correctAnswer": "c",
+            "explanation": "Der Sprecher rät, eine Sportart zu finden, die Spaß macht, und sich nicht zu überfordern, sondern realistische Ziele zu setzen.",
+            "passageId": "gen-p-h2-e0b897d8-s1",
+            "lang": "de",
+            "level": "B1",
+            "skills": [
+              "listening"
+            ],
+            "language": "de",
+            "examType": "goethe",
+            "difficulty": 5,
+            "topicTags": [
+              "Sport"
+            ]
+          },
+          {
+            "id": "gen-q-h2-e0b897d8-q4",
+            "module": "horen",
+            "teil": 2,
+            "type": "multiple_choice",
+            "question": "Was schlägt der Sprecher vor, um typische Ausreden zu überwinden?",
+            "options": [
+              "a) Man sollte warten, bis man mehr Zeit hat.",
+              "b) Man sollte kostenlose Möglichkeiten nutzen und Sport fest einplanen.",
+              "c) Man sollte sich teure Fitnessstudios leisten."
+            ],
+            "correct": "b",
+            "correctAnswer": "b",
+            "explanation": "Der Referent erwähnt, dass es viele kostenlose Möglichkeiten gibt, aktiv zu sein, und rät, Sport zu einem festen Bestandteil des Wochenplans zu machen.",
+            "passageId": "gen-p-h2-e0b897d8-s1",
+            "lang": "de",
+            "level": "B1",
+            "skills": [
+              "listening"
+            ],
+            "language": "de",
+            "examType": "goethe",
+            "difficulty": 5,
+            "topicTags": [
+              "Sport"
+            ]
+          },
+          {
+            "id": "gen-q-h2-e0b897d8-q5",
+            "module": "horen",
+            "teil": 2,
+            "type": "multiple_choice",
+            "question": "Was ist laut dem Vortrag die langfristige Wirkung von Sport?",
+            "options": [
+              "a) Er ist eine Investition, die die Lebensqualität und Gesundheit im Alter sichert.",
+              "b) Er führt dazu, dass man weniger arbeiten muss und mehr Freizeit hat.",
+              "c) Er garantiert, dass man nie wieder krank wird und immer jung bleibt."
+            ],
+            "correct": "a",
+            "correctAnswer": "a",
+            "explanation": "Am Ende des Vortrags betont der Sprecher, dass Sport eine Investition in die Zukunft ist, die die Lebensqualität und Gesundheit bis ins hohe Alter verbessert.",
+            "passageId": "gen-p-h2-e0b897d8-s1",
+            "lang": "de",
+            "level": "B1",
+            "skills": [
+              "listening"
+            ],
+            "language": "de",
+            "examType": "goethe",
+            "difficulty": 5,
+            "topicTags": [
+              "Sport"
+            ]
+          }
+        ],
+        "passageId": "gen-p-h2-e0b897d8-s1"
+      },
+      {
+        "teil": 3,
+        "instruction": "Sie hören ein Gespräch. Sie hören das Gespräch einmal. Lösen Sie sieben Aufgaben: Sind die Aussagen Richtig oder Falsch?",
+        "segments": [
+          {
+            "id": "seg_3_0",
+            "label": "Aufnahme 1",
+            "transcript": "Lena: Hallo Tom, hast du die E-Mail zum Büroumzug gelesen? Es ist nächste Woche Freitag!\nTom: Ja, Lena! Ich habe es gesehen. Das ist wirklich kurzfristig, finde ich. Wir haben kaum Zeit.\nLena: Absolut! Ich habe noch nicht einmal angefangen zu packen. Was ist mit den Kartons? Bekommen wir die gestellt?\nTom: Ja, die Umzugsfirma liefert am Montag spezielle Kartons. Jeder bekommt drei Stück. Wir müssen sie bis Donnerstagabend gepackt und beschriftet haben.\nLena: Nur drei? Das ist aber wenig! Meine Akten und persönlichen Sachen füllen doch viel mehr. Und die Computer? Müssen wir die selbst abbauen?\nTom: Nein, zum Glück nicht. Die IT-Abteilung kümmert sich um die gesamte Technik. Sie bauen die PCs am Freitagmorgen ab und am neuen Standort wieder auf. Wir müssen nur Monitore und Tastaturen einpacken.\nLena: Puh, wenigstens etwas. Aber ich mache mir Sorgen wegen der Internetverbindung im neuen Büro. Ich habe gehört, die ist noch nicht stabil.\nTom: Da gab es letzte Woche Probleme bei der Installation. Aber Herr Wagner von der IT hat versprochen, dass alles bis Donnerstagabend behoben sein wird. Sie arbeiten mit Hochdruck daran.\nLena: Das ist gut zu hören. Und was ist mit den Möbeln? Bleiben unsere alten Schreibtische und Stühle? Mein Stuhl ist so bequem.\nTom: Nein, Lena, das ist der beste Teil! Wir bekommen alle neue, moderne Büromöbel. Die alten werden entsorgt. Ich freue mich schon auf einen höhenverstellbaren Schreibtisch.\nLena: Wirklich? Das wusste ich nicht! Das ist ja super! Das macht den Umzugsstress gleich viel erträglicher. Dann muss ich mich nur noch um meine Unterlagen kümmern.\nTom: Genau. Und vergiss nicht, die Kartons mit Name und neuer Zimmernummer zu beschriften. Das ist wichtig für die Zustellung.\nLena: Alles klar, Tom. Vielen Dank für die Infos. Jetzt bin ich etwas beruhigter.",
+            "passageId": "de-b1-p-horen-t3-bueroumzug-04",
+            "questions": [
+              {
+                "id": "ql_de-b1-h-t3-bueroumzug-04-q1",
+                "type": "richtig_falsch",
+                "question": "Der Büroumzug findet in zwei Wochen statt.",
+                "correct": "Falsch",
+                "correctAnswer": "Falsch",
+                "explanation": "Lena und Tom besprechen, dass der Umzug \"nächste Woche Freitag\" ist, was bedeutet, dass er in weniger als zwei Wochen stattfindet.",
+                "grammarTags": [
+                  "g-de-b1-dativ"
+                ],
+                "topicTags": [
+                  "work"
+                ],
+                "vocabularyTags": [
+                  "umzug",
+                  "woche",
+                  "stattfinden"
+                ],
+                "difficulty": 4,
+                "passageId": "de-b1-p-horen-t3-bueroumzug-04",
+                "module": "horen",
+                "teil": 3
+              },
+              {
+                "id": "ql_de-b1-h-t3-bueroumzug-04-q2",
+                "type": "richtig_falsch",
+                "question": "Die Mitarbeiter bekommen drei Kartons von der Umzugsfirma.",
+                "correct": "Richtig",
+                "correctAnswer": "Richtig",
+                "explanation": "Tom sagt: \"Jeder bekommt drei Stück.\" Er bezieht sich auf die von der Umzugsfirma gelieferten Kartons.",
+                "grammarTags": [
+                  "g-de-b1-dativ"
+                ],
+                "topicTags": [
+                  "work"
+                ],
+                "vocabularyTags": [
+                  "mitarbeiter",
+                  "karton",
+                  "umzugsfirma"
+                ],
+                "difficulty": 3,
+                "passageId": "de-b1-p-horen-t3-bueroumzug-04",
+                "module": "horen",
+                "teil": 3
+              },
+              {
+                "id": "ql_de-b1-h-t3-bueroumzug-04-q3",
+                "type": "richtig_falsch",
+                "question": "Lena muss ihre Akten und persönlichen Sachen in nur drei Kartons packen.",
+                "correct": "Richtig",
+                "correctAnswer": "Richtig",
+                "explanation": "Lena beklagt sich: \"Nur drei? Das ist aber wenig! Meine Akten und persönlichen Sachen füllen doch viel mehr.\" Dies bestätigt, dass sie nur drei Kartons zur Verfügung hat.",
+                "grammarTags": [
+                  "g-de-b1-modalverben"
+                ],
+                "topicTags": [
+                  "work"
+                ],
+                "vocabularyTags": [
+                  "akten",
+                  "persoenlich",
+                  "sachen",
+                  "packen",
+                  "karton"
+                ],
+                "difficulty": 4,
+                "passageId": "de-b1-p-horen-t3-bueroumzug-04",
+                "module": "horen",
+                "teil": 3
+              },
+              {
+                "id": "ql_de-b1-h-t3-bueroumzug-04-q4",
+                "type": "richtig_falsch",
+                "question": "Die Mitarbeiter müssen ihre Computer selbst abbauen und im neuen Büro wieder aufbauen.",
+                "correct": "Falsch",
+                "correctAnswer": "Falsch",
+                "explanation": "Tom erklärt: \"Nein, zum Glück nicht. Die IT-Abteilung kümmert sich um die gesamte Technik.\" Sie bauen die PCs ab und wieder auf, die Mitarbeiter packen nur Monitore und Tastaturen ein.",
+                "grammarTags": [
+                  "g-de-b1-modalverben",
+                  "g-de-b1-passiv"
+                ],
+                "topicTags": [
+                  "work"
+                ],
+                "vocabularyTags": [
+                  "mitarbeiter",
+                  "computer",
+                  "abbauen",
+                  "aufbauen",
+                  "it-abteilung"
+                ],
+                "difficulty": 5,
+                "passageId": "de-b1-p-horen-t3-bueroumzug-04",
+                "module": "horen",
+                "teil": 3
+              },
+              {
+                "id": "ql_de-b1-h-t3-bueroumzug-04-q5",
+                "type": "richtig_falsch",
+                "question": "Die Internetverbindung im neuen Büro funktioniert bereits einwandfrei.",
+                "correct": "Falsch",
+                "correctAnswer": "Falsch",
+                "explanation": "Lena äußert sich besorgt: \"Ich habe gehört, die [Internetverbindung] ist noch nicht stabil.\" Tom bestätigt, dass es \"letzte Woche Probleme bei der Installation\" gab.",
+                "grammarTags": [
+                  "g-de-b1-nebensatz"
+                ],
+                "topicTags": [
+                  "work"
+                ],
+                "vocabularyTags": [
+                  "internetverbindung",
+                  "buero",
+                  "einwandfrei",
+                  "stabil",
+                  "problem"
+                ],
+                "difficulty": 4,
+                "passageId": "de-b1-p-horen-t3-bueroumzug-04",
+                "module": "horen",
+                "teil": 3
+              },
+              {
+                "id": "ql_de-b1-h-t3-bueroumzug-04-q6",
+                "type": "richtig_falsch",
+                "question": "Herr Wagner von der IT-Abteilung hat versprochen, die Internetprobleme bis Donnerstagabend zu lösen.",
+                "correct": "Richtig",
+                "correctAnswer": "Richtig",
+                "explanation": "Tom sagt: \"Aber Herr Wagner von der IT hat versprochen, dass alles bis Donnerstagabend behoben sein wird.\"",
+                "grammarTags": [
+                  "g-de-b1-perfekt",
+                  "g-de-b1-futur"
+                ],
+                "topicTags": [
+                  "work"
+                ],
+                "vocabularyTags": [
+                  "it-abteilung",
+                  "problem",
+                  "loesen",
+                  "beheben"
+                ],
+                "difficulty": 3,
+                "passageId": "de-b1-p-horen-t3-bueroumzug-04",
+                "module": "horen",
+                "teil": 3
+              },
+              {
+                "id": "ql_de-b1-h-t3-bueroumzug-04-q7",
+                "type": "richtig_falsch",
+                "question": "Alle Mitarbeiter bekommen im neuen Büro neue Möbel.",
+                "correct": "Richtig",
+                "correctAnswer": "Richtig",
+                "explanation": "Tom bestätigt: \"Wir bekommen alle neue, moderne Büromöbel.\" Lena freut sich darüber.",
+                "grammarTags": [
+                  "g-de-b1-adjektivdeklination"
+                ],
+                "topicTags": [
+                  "work"
+                ],
+                "vocabularyTags": [
+                  "mitarbeiter",
+                  "buero",
+                  "moebel",
+                  "neu",
+                  "modern"
+                ],
+                "difficulty": 3,
+                "passageId": "de-b1-p-horen-t3-bueroumzug-04",
+                "module": "horen",
+                "teil": 3
+              }
+            ]
+          }
+        ],
+        "transcript": "Lena: Hallo Tom, hast du die E-Mail zum Büroumzug gelesen? Es ist nächste Woche Freitag!\nTom: Ja, Lena! Ich habe es gesehen. Das ist wirklich kurzfristig, finde ich. Wir haben kaum Zeit.\nLena: Absolut! Ich habe noch nicht einmal angefangen zu packen. Was ist mit den Kartons? Bekommen wir die gestellt?\nTom: Ja, die Umzugsfirma liefert am Montag spezielle Kartons. Jeder bekommt drei Stück. Wir müssen sie bis Donnerstagabend gepackt und beschriftet haben.\nLena: Nur drei? Das ist aber wenig! Meine Akten und persönlichen Sachen füllen doch viel mehr. Und die Computer? Müssen wir die selbst abbauen?\nTom: Nein, zum Glück nicht. Die IT-Abteilung kümmert sich um die gesamte Technik. Sie bauen die PCs am Freitagmorgen ab und am neuen Standort wieder auf. Wir müssen nur Monitore und Tastaturen einpacken.\nLena: Puh, wenigstens etwas. Aber ich mache mir Sorgen wegen der Internetverbindung im neuen Büro. Ich habe gehört, die ist noch nicht stabil.\nTom: Da gab es letzte Woche Probleme bei der Installation. Aber Herr Wagner von der IT hat versprochen, dass alles bis Donnerstagabend behoben sein wird. Sie arbeiten mit Hochdruck daran.\nLena: Das ist gut zu hören. Und was ist mit den Möbeln? Bleiben unsere alten Schreibtische und Stühle? Mein Stuhl ist so bequem.\nTom: Nein, Lena, das ist der beste Teil! Wir bekommen alle neue, moderne Büromöbel. Die alten werden entsorgt. Ich freue mich schon auf einen höhenverstellbaren Schreibtisch.\nLena: Wirklich? Das wusste ich nicht! Das ist ja super! Das macht den Umzugsstress gleich viel erträglicher. Dann muss ich mich nur noch um meine Unterlagen kümmern.\nTom: Genau. Und vergiss nicht, die Kartons mit Name und neuer Zimmernummer zu beschriften. Das ist wichtig für die Zustellung.\nLena: Alles klar, Tom. Vielen Dank für die Infos. Jetzt bin ich etwas beruhigter.",
+        "questions": [
+          {
+            "id": "ql_de-b1-h-t3-bueroumzug-04-q5",
+            "type": "richtig_falsch",
+            "question": "Die Internetverbindung im neuen Büro funktioniert bereits einwandfrei.",
+            "correct": "Falsch",
+            "correctAnswer": "Falsch",
+            "explanation": "Lena äußert sich besorgt: \"Ich habe gehört, die [Internetverbindung] ist noch nicht stabil.\" Tom bestätigt, dass es \"letzte Woche Probleme bei der Installation\" gab.",
+            "grammarTags": [
+              "g-de-b1-nebensatz"
+            ],
+            "topicTags": [
+              "work"
+            ],
+            "vocabularyTags": [
+              "internetverbindung",
+              "buero",
+              "einwandfrei",
+              "stabil",
+              "problem"
+            ],
+            "difficulty": 4,
+            "passageId": "de-b1-p-horen-t3-bueroumzug-04",
+            "module": "horen",
+            "teil": 3
+          },
+          {
+            "id": "ql_de-b1-h-t3-bueroumzug-04-q3",
+            "type": "richtig_falsch",
+            "question": "Lena muss ihre Akten und persönlichen Sachen in nur drei Kartons packen.",
+            "correct": "Richtig",
+            "correctAnswer": "Richtig",
+            "explanation": "Lena beklagt sich: \"Nur drei? Das ist aber wenig! Meine Akten und persönlichen Sachen füllen doch viel mehr.\" Dies bestätigt, dass sie nur drei Kartons zur Verfügung hat.",
+            "grammarTags": [
+              "g-de-b1-modalverben"
+            ],
+            "topicTags": [
+              "work"
+            ],
+            "vocabularyTags": [
+              "akten",
+              "persoenlich",
+              "sachen",
+              "packen",
+              "karton"
+            ],
+            "difficulty": 4,
+            "passageId": "de-b1-p-horen-t3-bueroumzug-04",
+            "module": "horen",
+            "teil": 3
+          },
+          {
+            "id": "ql_de-b1-h-t3-bueroumzug-04-q1",
+            "type": "richtig_falsch",
+            "question": "Der Büroumzug findet in zwei Wochen statt.",
+            "correct": "Falsch",
+            "correctAnswer": "Falsch",
+            "explanation": "Lena und Tom besprechen, dass der Umzug \"nächste Woche Freitag\" ist, was bedeutet, dass er in weniger als zwei Wochen stattfindet.",
+            "grammarTags": [
+              "g-de-b1-dativ"
+            ],
+            "topicTags": [
+              "work"
+            ],
+            "vocabularyTags": [
+              "umzug",
+              "woche",
+              "stattfinden"
+            ],
+            "difficulty": 4,
+            "passageId": "de-b1-p-horen-t3-bueroumzug-04",
+            "module": "horen",
+            "teil": 3
+          },
+          {
+            "id": "ql_de-b1-h-t3-bueroumzug-04-q4",
+            "type": "richtig_falsch",
+            "question": "Die Mitarbeiter müssen ihre Computer selbst abbauen und im neuen Büro wieder aufbauen.",
+            "correct": "Falsch",
+            "correctAnswer": "Falsch",
+            "explanation": "Tom erklärt: \"Nein, zum Glück nicht. Die IT-Abteilung kümmert sich um die gesamte Technik.\" Sie bauen die PCs ab und wieder auf, die Mitarbeiter packen nur Monitore und Tastaturen ein.",
+            "grammarTags": [
+              "g-de-b1-modalverben",
+              "g-de-b1-passiv"
+            ],
+            "topicTags": [
+              "work"
+            ],
+            "vocabularyTags": [
+              "mitarbeiter",
+              "computer",
+              "abbauen",
+              "aufbauen",
+              "it-abteilung"
+            ],
+            "difficulty": 5,
+            "passageId": "de-b1-p-horen-t3-bueroumzug-04",
+            "module": "horen",
+            "teil": 3
+          },
+          {
+            "id": "ql_de-b1-h-t3-bueroumzug-04-q7",
+            "type": "richtig_falsch",
+            "question": "Alle Mitarbeiter bekommen im neuen Büro neue Möbel.",
+            "correct": "Richtig",
+            "correctAnswer": "Richtig",
+            "explanation": "Tom bestätigt: \"Wir bekommen alle neue, moderne Büromöbel.\" Lena freut sich darüber.",
+            "grammarTags": [
+              "g-de-b1-adjektivdeklination"
+            ],
+            "topicTags": [
+              "work"
+            ],
+            "vocabularyTags": [
+              "mitarbeiter",
+              "buero",
+              "moebel",
+              "neu",
+              "modern"
+            ],
+            "difficulty": 3,
+            "passageId": "de-b1-p-horen-t3-bueroumzug-04",
+            "module": "horen",
+            "teil": 3
+          },
+          {
+            "id": "ql_de-b1-h-t3-bueroumzug-04-q6",
+            "type": "richtig_falsch",
+            "question": "Herr Wagner von der IT-Abteilung hat versprochen, die Internetprobleme bis Donnerstagabend zu lösen.",
+            "correct": "Richtig",
+            "correctAnswer": "Richtig",
+            "explanation": "Tom sagt: \"Aber Herr Wagner von der IT hat versprochen, dass alles bis Donnerstagabend behoben sein wird.\"",
+            "grammarTags": [
+              "g-de-b1-perfekt",
+              "g-de-b1-futur"
+            ],
+            "topicTags": [
+              "work"
+            ],
+            "vocabularyTags": [
+              "it-abteilung",
+              "problem",
+              "loesen",
+              "beheben"
+            ],
+            "difficulty": 3,
+            "passageId": "de-b1-p-horen-t3-bueroumzug-04",
+            "module": "horen",
+            "teil": 3
+          },
+          {
+            "id": "ql_de-b1-h-t3-bueroumzug-04-q2",
+            "type": "richtig_falsch",
+            "question": "Die Mitarbeiter bekommen drei Kartons von der Umzugsfirma.",
+            "correct": "Richtig",
+            "correctAnswer": "Richtig",
+            "explanation": "Tom sagt: \"Jeder bekommt drei Stück.\" Er bezieht sich auf die von der Umzugsfirma gelieferten Kartons.",
+            "grammarTags": [
+              "g-de-b1-dativ"
+            ],
+            "topicTags": [
+              "work"
+            ],
+            "vocabularyTags": [
+              "mitarbeiter",
+              "karton",
+              "umzugsfirma"
+            ],
+            "difficulty": 3,
+            "passageId": "de-b1-p-horen-t3-bueroumzug-04",
+            "module": "horen",
+            "teil": 3
+          }
+        ]
+      },
+      {
+        "teil": 4,
+        "instruction": "",
+        "transcript": "Moderator: Herzlich willkommen zu „Familien im Fokus“, unserem heutigen Gespräch. Die Familie ist der Kern unserer Gesellschaft, doch ihre Formen und Herausforderungen ändern sich ständig. Heute diskutieren wir, was Familie heute bedeutet und wie wir sie stärken können. Ich begrüße dazu Frau Dr. Dana Schneider, eine Familienforscherin, und Herrn Florian Weber, einen engagierten Vater und Sozialpädagogen.\nDana: Vielen Dank für die Einladung. Es ist ein wichtiges Thema, denn die Anforderungen an Familien sind heute vielfältiger denn je. Es geht nicht mehr nur um die klassische Kernfamilie.\nFlorian: Das stimmt. Viele Familien wagen es heute, ganz neue Wege zu gehen. Aber ich sehe auch, dass der Druck auf Eltern, alles perfekt zu machen, enorm ist. Man muss Beruf, Kindererziehung und Partnerschaft unter einen Hut bringen.\nModerator: Frau Dr. Schneider, welche neuen Familienmodelle sehen Sie als besonders prägend an?\nDana: Wir sehen Patchwork-Familien, Alleinerziehende, Regenbogenfamilien. Wichtig ist nicht die Form, sondern die Funktion: Liebe, Unterstützung und Zusammenhalt. Man muss die Vielfalt schätzen lernen.\nFlorian: Ich finde es toll, wenn Familien gemeinsam aktiv sind. Meine Kinder und ich haben zum Beispiel ein Hochbeet im Garten angelegt. Das ist eine einfache, aber wertvolle Möglichkeit, Zeit miteinander zu verbringen und etwas zu lernen.\nModerator: Das klingt nach einer schönen Idee. Aber wie können wir Familien in der Gesellschaft besser unterstützen, Herr Weber?\nFlorian: Ich denke, flexible Arbeitszeiten sind entscheidend. Und eine bessere Vereinbarkeit von Familie und Beruf. Es ist eine große Herausforderung, wenn man als Elternteil eine Karriere verfolgen möchte.\nDana: Dem Stimme ich zu. Aber auch die Wertschätzung für die Familienarbeit muss steigen. Es ist keine Selbstverständlichkeit, Kinder großzuziehen. Manchmal denke ich an berühmte Persönlichkeiten, die sich für Familienrechte eingesetzt haben – ihre Botschaften sind heute noch relevant.\nModerator: Sie sprechen von Wertschätzung. Wie können wir diese im Alltag zeigen?\nDana: Indem wir zum Beispiel mehr Angebote für Familien schaffen, die leicht zugänglich sind. Spielplätze, Beratungsstellen, aber auch kulturelle Events, die für alle Generationen interessant sind.\nFlorian: Und wir sollten als Gesellschaft akzeptieren, dass es nicht die eine „richtige“ Art gibt, Familie zu leben. Jede Familie findet ihren eigenen Weg. Das ist das Schöne daran.\nModerator: Eine sehr positive Botschaft zum Schluss. Vielen Dank, Frau Dr. Schneider und Herr Weber, für diese aufschlussreiche Diskussion.",
+        "questions": [
+          {
+            "id": "gen-q-h4-7b0d3ffb-1",
+            "module": "horen",
+            "teil": 4,
+            "type": "matching",
+            "question": "Die Anforderungen an moderne Familien sind sehr vielfältig.",
+            "options": [
+              "a) Moderator",
+              "b) Dana Schneider",
+              "c) Florian Weber"
+            ],
+            "correct": "b",
+            "correctAnswer": "b",
+            "explanation": "Dana betont, dass die Anforderungen an Familien heute sehr vielfältig sind.",
+            "passageId": "gen-p-h4-7b0d3ffb-s1",
+            "lang": "de",
+            "level": "B1",
+            "language": "de",
+            "examType": "goethe",
+            "difficulty": 5,
+            "skills": [
+              "listening"
+            ],
+            "topicTags": [
+              "daily_life"
+            ]
+          },
+          {
+            "id": "gen-q-h4-7b0d3ffb-2",
+            "module": "horen",
+            "teil": 4,
+            "type": "matching",
+            "question": "Die Balance zwischen Arbeit und Privatleben stellt Eltern vor große Schwierigkeiten.",
+            "options": [
+              "a) Moderator",
+              "b) Dana Schneider",
+              "c) Florian Weber"
+            ],
+            "correct": "c",
+            "correctAnswer": "c",
+            "explanation": "Florian spricht über die Schwierigkeit, Beruf und Familie zu vereinbaren.",
+            "passageId": "gen-p-h4-7b0d3ffb-s1",
+            "lang": "de",
+            "level": "B1",
+            "language": "de",
+            "examType": "goethe",
+            "difficulty": 5,
+            "skills": [
+              "listening"
+            ],
+            "topicTags": [
+              "daily_life"
+            ]
+          },
+          {
+            "id": "gen-q-h4-7b0d3ffb-3",
+            "module": "horen",
+            "teil": 4,
+            "type": "matching",
+            "question": "Nicht die Form der Familie, sondern Liebe und Zusammenhalt sind entscheidend.",
+            "options": [
+              "a) Moderator",
+              "b) Dana Schneider",
+              "c) Florian Weber"
+            ],
+            "correct": "b",
+            "correctAnswer": "b",
+            "explanation": "Dana hebt hervor, dass die innere Qualität der Familie wichtiger ist als ihre äußere Struktur.",
+            "passageId": "gen-p-h4-7b0d3ffb-s1",
+            "lang": "de",
+            "level": "B1",
+            "language": "de",
+            "examType": "goethe",
+            "difficulty": 5,
+            "skills": [
+              "listening"
+            ],
+            "topicTags": [
+              "daily_life"
+            ]
+          },
+          {
+            "id": "gen-q-h4-7b0d3ffb-4",
+            "module": "horen",
+            "teil": 4,
+            "type": "matching",
+            "question": "Gemeinsame Aktivitäten wie Gartenarbeit stärken den Familienzusammenhalt.",
+            "options": [
+              "a) Moderator",
+              "b) Dana Schneider",
+              "c) Florian Weber"
+            ],
+            "correct": "c",
+            "correctAnswer": "c",
+            "explanation": "Florian nennt das Anlegen eines Hochbeets als Beispiel für gemeinsame Familienaktivitäten.",
+            "passageId": "gen-p-h4-7b0d3ffb-s1",
+            "lang": "de",
+            "level": "B1",
+            "language": "de",
+            "examType": "goethe",
+            "difficulty": 5,
+            "skills": [
+              "listening"
+            ],
+            "topicTags": [
+              "daily_life"
+            ]
+          },
+          {
+            "id": "gen-q-h4-7b0d3ffb-5",
+            "module": "horen",
+            "teil": 4,
+            "type": "matching",
+            "question": "Die Gesellschaft sollte die Arbeit, die in der Familie geleistet wird, mehr anerkennen.",
+            "options": [
+              "a) Moderator",
+              "b) Dana Schneider",
+              "c) Florian Weber"
+            ],
+            "correct": "b",
+            "correctAnswer": "b",
+            "explanation": "Dana fordert eine höhere Wertschätzung für die Familienarbeit.",
+            "passageId": "gen-p-h4-7b0d3ffb-s1",
+            "lang": "de",
+            "level": "B1",
+            "language": "de",
+            "examType": "goethe",
+            "difficulty": 5,
+            "skills": [
+              "listening"
+            ],
+            "topicTags": [
+              "daily_life"
+            ]
+          },
+          {
+            "id": "gen-q-h4-7b0d3ffb-6",
+            "module": "horen",
+            "teil": 4,
+            "type": "matching",
+            "question": "Flexible Arbeitszeiten sind wichtig, um Familien zu entlasten.",
+            "options": [
+              "a) Moderator",
+              "b) Dana Schneider",
+              "c) Florian Weber"
+            ],
+            "correct": "c",
+            "correctAnswer": "c",
+            "explanation": "Florian betont die Bedeutung flexibler Arbeitszeiten für Familien.",
+            "passageId": "gen-p-h4-7b0d3ffb-s1",
+            "lang": "de",
+            "level": "B1",
+            "language": "de",
+            "examType": "goethe",
+            "difficulty": 5,
+            "skills": [
+              "listening"
+            ],
+            "topicTags": [
+              "daily_life"
+            ]
+          },
+          {
+            "id": "gen-q-h4-7b0d3ffb-7",
+            "module": "horen",
+            "teil": 4,
+            "type": "matching",
+            "question": "Am Ende der Diskussion wird eine positive Einstellung zur Vielfalt der Familienformen deutlich.",
+            "options": [
+              "a) Moderator",
+              "b) Dana Schneider",
+              "c) Florian Weber"
+            ],
+            "correct": "a",
+            "correctAnswer": "a",
+            "explanation": "Der Moderator fasst die Diskussion mit einer positiven Botschaft zusammen.",
+            "passageId": "gen-p-h4-7b0d3ffb-s1",
+            "lang": "de",
+            "level": "B1",
+            "language": "de",
+            "examType": "goethe",
+            "difficulty": 5,
+            "skills": [
+              "listening"
+            ],
+            "topicTags": [
+              "daily_life"
+            ]
+          },
+          {
+            "id": "gen-q-h4-7b0d3ffb-8",
+            "module": "horen",
+            "teil": 4,
+            "type": "matching",
+            "question": "Die Sendung thematisiert die aktuelle Bedeutung und die Stärkung von Familien.",
+            "options": [
+              "a) Moderator",
+              "b) Dana Schneider",
+              "c) Florian Weber"
+            ],
+            "correct": "a",
+            "correctAnswer": "a",
+            "explanation": "Der Moderator stellt das Thema der Sendung vor, das sich um die Bedeutung und Stärkung der Familie dreht.",
+            "passageId": "gen-p-h4-7b0d3ffb-s1",
+            "lang": "de",
+            "level": "B1",
+            "language": "de",
+            "examType": "goethe",
+            "difficulty": 5,
+            "skills": [
+              "listening"
+            ],
+            "topicTags": [
+              "daily_life"
+            ]
+          }
+        ],
+        "passageId": "gen-p-h4-7b0d3ffb-s1"
+      }
+    ],
+    "schreibenParts": [
+      {
+        "teil": 1,
+        "instruction": "Sie haben sich vor Kurzem für einen interessanten Kurs in der Stadt angemeldet. Ein guter Freund von Ihnen möchte auch teilnehmen und hat Sie nach Details gefragt.\nSchreiben Sie eine E-Mail (circa 80 Wörter). Schreiben Sie etwas zu allen drei Punkten. Achten Sie auf Anrede und Gruß.\n\n• Erklären Sie, warum Sie diese Anmeldung gemacht haben.\n• Beschreiben Sie, wie die Organisation des Unterrichts funktioniert.\n• Geben Sie Informationen über die monatliche Gebühr.",
+        "task": "Sie haben sich vor Kurzem für einen interessanten Kurs in der Stadt angemeldet. Ein guter Freund von Ihnen möchte auch teilnehmen und hat Sie nach Details gefragt.\nSchreiben Sie eine E-Mail (circa 80 Wörter). Schreiben Sie etwas zu allen drei Punkten. Achten Sie auf Anrede und Gruß.\n\n• Erklären Sie, warum Sie diese Anmeldung gemacht haben.\n• Beschreiben Sie, wie die Organisation des Unterrichts funktioniert.\n• Geben Sie Informationen über die monatliche Gebühr.",
+        "minWords": 80,
+        "maxWords": 120,
+        "questions": [
+          {
+            "id": "gen-q-s-t1-9231-q1",
+            "module": "schreiben",
+            "teil": 1,
+            "type": "short_answer",
+            "question": "Sie haben sich vor Kurzem für einen interessanten Kurs in der Stadt angemeldet. Ein guter Freund von Ihnen möchte auch teilnehmen und hat Sie nach Details gefragt.\nSchreiben Sie eine E-Mail (circa 80 Wörter). Schreiben Sie etwas zu allen drei Punkten. Achten Sie auf Anrede und Gruß.\n\n• Erklären Sie, warum Sie diese Anmeldung gemacht haben.\n• Beschreiben Sie, wie die Organisation des Unterrichts funktioniert.\n• Geben Sie Informationen über die monatliche Gebühr.",
+            "options": [],
+            "correct": "rubric",
+            "correctAnswer": "rubric",
+            "explanation": "Bewertung: Vollständigkeit (alle 3 Punkte, 0-5), korrekte informelle Anrede/Gruß (0-3), B1-Grammatik und Wortschatz (0-5), Einhaltung der Wortanzahl ca. 80 Wörter (0-3).",
+            "lang": "de",
+            "level": "B1",
+            "skills": [
+              "writing"
+            ],
+            "language": "de",
+            "examType": "goethe",
+            "difficulty": 6,
+            "topicTags": [
+              "Wohnen"
+            ]
+          }
+        ]
+      },
+      {
+        "teil": 2,
+        "instruction": "Sie haben im Internet einen Beitrag zum Thema Freizeitgestaltung gelesen.\n\nEin Nutzer schreibt: \"Ich finde, dass man in der modernen Welt viel zu wenig Zeit mit der eigenen Familie verbringt, weil alle nur noch beschäftigt sind.\"\n\nSchreiben Sie Ihre Meinung zu diesem Thema (circa 80 Wörter). Gehen Sie auf folgende Punkte ein:\n\n• Nennen Sie Ihre eigene Meinung zu diesem Thema.\n• Nennen Sie Vorteile und Nachteile von gemeinsamer Familienzeit.\n• Geben Sie eine Begründung für Ihre Position.",
+        "task": "Sie haben im Internet einen Beitrag zum Thema Freizeitgestaltung gelesen.\n\nEin Nutzer schreibt: \"Ich finde, dass man in der modernen Welt viel zu wenig Zeit mit der eigenen Familie verbringt, weil alle nur noch beschäftigt sind.\"\n\nSchreiben Sie Ihre Meinung zu diesem Thema (circa 80 Wörter). Gehen Sie auf folgende Punkte ein:\n\n• Nennen Sie Ihre eigene Meinung zu diesem Thema.\n• Nennen Sie Vorteile und Nachteile von gemeinsamer Familienzeit.\n• Geben Sie eine Begründung für Ihre Position.",
+        "minWords": 80,
+        "maxWords": 120,
+        "questions": [
+          {
+            "id": "gen-q-s-t2-9231-q1",
+            "module": "schreiben",
+            "teil": 2,
+            "type": "short_answer",
+            "question": "Sie haben im Internet einen Beitrag zum Thema Freizeitgestaltung gelesen.\n\nEin Nutzer schreibt: \"Ich finde, dass man in der modernen Welt viel zu wenig Zeit mit der eigenen Familie verbringt, weil alle nur noch beschäftigt sind.\"\n\nSchreiben Sie Ihre Meinung zu diesem Thema (circa 80 Wörter). Gehen Sie auf folgende Punkte ein:\n\n• Nennen Sie Ihre eigene Meinung zu diesem Thema.\n• Nennen Sie Vorteile und Nachteile von gemeinsamer Familienzeit.\n• Geben Sie eine Begründung für Ihre Position.",
+            "options": [],
+            "correct": "rubric",
+            "correctAnswer": "rubric",
+            "explanation": "Bewertung: Inhaltliche Vollständigkeit inkl. Vor- und Nachteile (0-5), logischer Aufbau und Begründung (0-5), B1-Sprachniveau und Ausdruck (0-5), Länge ca. 80 Wörter (0-3).",
+            "lang": "de",
+            "level": "B1",
+            "skills": [
+              "writing"
+            ],
+            "language": "de",
+            "examType": "goethe",
+            "difficulty": 6,
+            "topicTags": [
+              "Wohnen"
+            ]
+          }
+        ]
+      },
+      {
+        "teil": 3,
+        "instruction": "Ihr Nachbar Herr Klein hat Ihnen angeboten, Sie bei der nächsten Beratung zur städtischen Abfalltrennung zu unterstützen, da Sie den ersten Termin verpasst haben. Sie möchten dieses Angebot annehmen.\nSchreiben Sie an Herrn Klein. Schreiben Sie circa 40 Wörter. Vergessen Sie nicht Anrede und Gruß.\n\n• Bedanken Sie sich für das freundliche Angebot.\n• Bestätigen Sie, dass Sie das Gespräch gerne wahrnehmen möchten.\n• Schlagen Sie einen Transport zu seinem Haus vor, falls Sie Hilfe benötigen.",
+        "task": "Ihr Nachbar Herr Klein hat Ihnen angeboten, Sie bei der nächsten Beratung zur städtischen Abfalltrennung zu unterstützen, da Sie den ersten Termin verpasst haben. Sie möchten dieses Angebot annehmen.\nSchreiben Sie an Herrn Klein. Schreiben Sie circa 40 Wörter. Vergessen Sie nicht Anrede und Gruß.\n\n• Bedanken Sie sich für das freundliche Angebot.\n• Bestätigen Sie, dass Sie das Gespräch gerne wahrnehmen möchten.\n• Schlagen Sie einen Transport zu seinem Haus vor, falls Sie Hilfe benötigen.",
+        "minWords": 40,
+        "maxWords": 60,
+        "questions": [
+          {
+            "id": "gen-q-s-t3-9231-q1",
+            "module": "schreiben",
+            "teil": 3,
+            "type": "short_answer",
+            "question": "Ihr Nachbar Herr Klein hat Ihnen angeboten, Sie bei der nächsten Beratung zur städtischen Abfalltrennung zu unterstützen, da Sie den ersten Termin verpasst haben. Sie möchten dieses Angebot annehmen.\nSchreiben Sie an Herrn Klein. Schreiben Sie circa 40 Wörter. Vergessen Sie nicht Anrede und Gruß.\n\n• Bedanken Sie sich für das freundliche Angebot.\n• Bestätigen Sie, dass Sie das Gespräch gerne wahrnehmen möchten.\n• Schlagen Sie einen Transport zu seinem Haus vor, falls Sie Hilfe benötigen.",
+            "options": [],
+            "correct": "rubric",
+            "correctAnswer": "rubric",
+            "explanation": "Bewertung: Mitteilung vollständig (alle 3 Punkte, 0-5), korrekte formelle Anrede/Gruß für den Nachbarn (0-3), B1-Grammatik und Wortschatz (0-3), Länge ca. 40 Wörter (0-3).",
+            "lang": "de",
+            "level": "B1",
+            "skills": [
+              "writing"
+            ],
+            "language": "de",
+            "examType": "goethe",
+            "difficulty": 6,
+            "topicTags": [
+              "Wohnen"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

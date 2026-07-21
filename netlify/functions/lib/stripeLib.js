@@ -19,12 +19,48 @@ async function stripeRequest(path, { method = 'GET', body = null } = {}, secret)
   return data;
 }
 
+function stripeQueryEscape(value) {
+  return String(value).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+}
+
 async function findCustomerByEmail(email, secret) {
   const q = new URLSearchParams();
   q.set('email', email);
   q.set('limit', '1');
   const data = await stripeRequest(`/customers?${q.toString()}`, {}, secret);
   return data.data?.[0]?.id || null;
+}
+
+/** Stripe Search API — catches customers the list endpoint misses. */
+async function searchCustomerByEmail(email, secret) {
+  const esc = stripeQueryEscape(email);
+  const q = new URLSearchParams();
+  q.set('query', `email:'${esc}'`);
+  q.set('limit', '1');
+  try {
+    const data = await stripeRequest(`/customers/search?${q.toString()}`, {}, secret);
+    return data.data?.[0]?.id || null;
+  } catch (_) {
+    return null;
+  }
+}
+
+/** Match checkout metadata email on active/trialing subscriptions. */
+async function findCustomerIdBySubscriptionEmail(email, secret) {
+  const esc = stripeQueryEscape(email);
+  const q = new URLSearchParams();
+  q.set('query', `metadata['email']:'${esc}'`);
+  q.set('limit', '10');
+  try {
+    const data = await stripeRequest(`/subscriptions/search?${q.toString()}`, {}, secret);
+    for (const sub of data.data || []) {
+      const cid = typeof sub.customer === 'string' ? sub.customer : sub.customer?.id;
+      if (cid) return cid;
+    }
+  } catch (_) {
+    /* search unavailable or no hits */
+  }
+  return null;
 }
 
 async function persistStripeCustomerId(store, email, customerId) {
@@ -37,7 +73,7 @@ async function persistStripeCustomerId(store, email, customerId) {
     user = null;
   }
   if (!user || user.stripeCustomerId === customerId) return;
-  await store.setJSON(key, { ...user, stripeCustomerId: customerId });
+  await store.setJSON(key, { ...user, stripeCustomerId: customerId, billingSource: 'stripe' });
 }
 
 async function resolveStripeCustomerId(store, email, secret) {
@@ -50,9 +86,19 @@ async function resolveStripeCustomerId(store, email, secret) {
   }
   if (user?.stripeCustomerId) return user.stripeCustomerId;
 
-  const found = await findCustomerByEmail(email, secret);
-  if (found) await persistStripeCustomerId(store, email, found);
-  return found;
+  const lookups = [
+    () => findCustomerByEmail(email, secret),
+    () => searchCustomerByEmail(email, secret),
+    () => findCustomerIdBySubscriptionEmail(email, secret),
+  ];
+  for (const lookup of lookups) {
+    const found = await lookup();
+    if (found) {
+      await persistStripeCustomerId(store, email, found);
+      return found;
+    }
+  }
+  return null;
 }
 
 async function createBillingPortalSession(customerId, returnUrl, secret) {
@@ -71,10 +117,47 @@ function checkoutSessionIsPaid(session) {
   return session.payment_status === 'paid';
 }
 
+/** Cancel all billable subscriptions for a customer (account deletion / refund). */
+async function cancelActiveSubscriptions(customerId, secret) {
+  if (!customerId || !secret) return { cancelled: 0 };
+  const statuses = ['active', 'trialing', 'past_due', 'unpaid'];
+  let cancelled = 0;
+  for (const status of statuses) {
+    const q = new URLSearchParams();
+    q.set('customer', customerId);
+    q.set('status', status);
+    q.set('limit', '20');
+    let data;
+    try {
+      data = await stripeRequest(`/subscriptions?${q.toString()}`, {}, secret);
+    } catch (err) {
+      console.warn('[stripeLib] list subscriptions:', err.message);
+      continue;
+    }
+    for (const sub of data.data || []) {
+      if (!sub?.id) continue;
+      try {
+        const params = new URLSearchParams();
+        params.set('invoice_now', 'false');
+        params.set('prorate', 'false');
+        await stripeRequest(`/subscriptions/${encodeURIComponent(sub.id)}`, { method: 'DELETE', body: params }, secret);
+        cancelled++;
+      } catch (err) {
+        console.warn('[stripeLib] cancel subscription:', sub.id, err.message);
+      }
+    }
+  }
+  return { cancelled };
+}
+
 module.exports = {
+  stripeRequest,
   findCustomerByEmail,
+  searchCustomerByEmail,
+  findCustomerIdBySubscriptionEmail,
   persistStripeCustomerId,
   resolveStripeCustomerId,
   createBillingPortalSession,
   checkoutSessionIsPaid,
+  cancelActiveSubscriptions,
 };

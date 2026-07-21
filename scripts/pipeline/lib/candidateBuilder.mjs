@@ -121,6 +121,7 @@ export function lesenPartToCandidate(part, { lang, level, blueprint, batchId, so
     questions,
     ads: part.ads || undefined,
     opinions: part.opinions || undefined,
+    topicTag: part.topicTag || null,
     validation: null,
     review: { notes: '', editedAt: null, reviewedAt: null },
     provenance: {
@@ -198,6 +199,7 @@ export function horenPartToCandidate(part, { lang, level, blueprint, batchId, so
     passage,
     questions,
     plays: part.plays,
+    topicTag: part.topicTag || null,
     validation: null,
     review: { notes: '', editedAt: null, reviewedAt: null },
     provenance: {
@@ -246,6 +248,7 @@ export function schreibenPartToCandidate(part, { lang, level, blueprint, batchId
     label: bpPart?.label || `Schreiben Teil ${teil}`,
     passage: null,
     questions,
+    topicTag: part.topicTag || null,
     validation: null,
     review: { notes: '', editedAt: null, reviewedAt: null },
     provenance: {
@@ -295,6 +298,7 @@ export function sprechenPartToCandidate(part, { lang, level, blueprint, batchId,
     label: bpPart?.label || `Sprechen Teil ${teil}`,
     passage: null,
     questions,
+    topicTag: part.topicTag || null,
     validation: null,
     review: { notes: '', editedAt: null, reviewedAt: null },
     provenance: {
@@ -366,6 +370,7 @@ export function batchToCandidates(batch, { lang, level, blueprint, batchId, sour
       passage: linkedPassages[0] || null,
       passages: linkedPassages.length > 1 ? linkedPassages : undefined,
       questions: g.questions,
+      topicTag: batch.topicTag || linkedPassages[0]?.topicTag || null,
       validation: null,
       review: { notes: '', editedAt: null, reviewedAt: null },
       provenance: {

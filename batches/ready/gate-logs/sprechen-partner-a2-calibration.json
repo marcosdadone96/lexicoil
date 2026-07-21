@@ -1,0 +1,43 @@
+{
+  "at": "2026-07-20T13:46:44.291Z",
+  "prompts": {
+    "a2KimT1Snippet": "Du bist Kim, eine sehr zurückhaltende Prüfungspartnerin im Goethe-Zertifikat A2 Sprechen. Du antwortest mit sehr einfachen Sätzen und lässt die Kandidatin / den Kandidaten führen.\nVERBOSITÄT (Kim A2 — streng einhalten):\n- MAXIMAL 1 sehr kurzer Satz (höchstens 8 Wörter — zähle mit!).\n- Wenn du 2 Sätze brauchst: jeder Satz höchstens 5 Wörter.\n- Nur Präsens oder einfaches Perfekt. Keine Nebensätze mi",
+    "b1KimT1Snippet": "Du bist Kim, eine sehr zurückhaltende Prüfungspartnerin im Goethe-Zertifikat B1 Sprechen. Du sprichst wenig und lässt die Kandidatin / den Kandidaten führen.\nVERBOSITÄT (Kim — streng einhalten):\n- MAXIMAL 1 kurzer Satz pro Redebeitrag (höchstens 12 Wörter).\n- Höchstens 1 kurze Rückfrage (≤ 6 Wörter). Keine Erklärungen, keine Beispiele.\n- Reagiere mit kurzem Zustimmung oder einer einzigen Gegenfrag",
+    "a2AlexT3TaskLine": "AUFGABENTYP (Teil 3 — Gemeinsam planen + Termin finden, A2):",
+    "b1AlexT3TaskLine": "AUFGABENTYP (Teil 3 — Feedback und Fragen, B1):",
+    "openerA2": "Prüfungsaufgabe (Goethe-Zertifikat A2 Sprechen, Teil 1):\nSie bekommen vier Karten und stellen mit diesen Karten vier Fragen. Ihr Partner/Ihre Partnerin antwortet. Dann stellt Ihr Partner/Ihre Partnerin vier Fragen und Sie antworten.\n\nIhre Karten:\n1. Geburtstag — Wann haben Sie Geburtstag?\n2. Wohnort — Wo wohnen Sie?\n3. Beruf — Was arbeiten Sie?\n4. Hobby — Was machen Sie gern?\n\nBegrüße die Prüfungskandidatin / den Prüfungskandidaten kurz und starte das Gespräch passend zur Aufgabe auf A2-Niveau."
+  },
+  "live": {
+    "results": [
+      {
+        "label": "Kim-A2-T1",
+        "words": 16,
+        "avgWordLen": 4.5,
+        "maxWordsCap": 8,
+        "sample": "Mein Geburtstag ist am 15. März. Ich wohne in Berlin.\n\nUnd du? Wann ist dein Geburtstag?"
+      },
+      {
+        "label": "Kim-B1-T1",
+        "words": 13,
+        "avgWordLen": 5.2,
+        "maxWordsCap": 12,
+        "sample": "Das ist nicht für unsere Planung wichtig. Wollen wir mit der Sportart beginnen?"
+      },
+      {
+        "label": "Alex-A2-T3",
+        "words": 16,
+        "avgWordLen": 3.7,
+        "maxWordsCap": 20,
+        "sample": "Dienstag ist gut! Aber ich bin erst ab 14 Uhr frei. Passt 14 Uhr für dich?"
+      },
+      {
+        "label": "Alex-B1-T3",
+        "words": 53,
+        "avgWordLen": 5.4,
+        "maxWordsCap": 35,
+        "sample": "Entschuldigung, ich glaube, du hast mich verwechselt! Wir sind hier in der Goethe-Prüfung Teil 3 — du solltest mir gerade Feedback zu meiner Sportpräsentation geben und ein paar Fragen stellen.\n\nLass uns beginnen: Ich habe über Joggen als tägliches Training gesprochen. Was hat dir an meiner Präsentation gefallen oder nicht so gut gefallen?"
+      }
+    ],
+    "pass": true
+  }
+}

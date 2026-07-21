@@ -1,0 +1,94 @@
+{
+  "at": "2026-07-13T16:39:15.232Z",
+  "proposal": {
+    "minPct": 20,
+    "minChars": 10,
+    "severePct": 35,
+    "severeChars": 22,
+    "batchFailCount": 2,
+    "note": "Gate fails if ≥1 severe OR ≥2 significant; ties (correct not strictly longest) ignored."
+  },
+  "oldGate": {
+    "rule": "correctLen === max (zero tolerance, incl. +1 char / +1%)"
+  },
+  "logStats": {
+    "attempts": 64,
+    "qualityOkPasses": 10,
+    "published028029": 2,
+    "lengthBiasTerminalFailures": 689,
+    "uniqueLengthFailQuestions": 689,
+    "marginalWouldPassNewGate": 273,
+    "stillFailNewGate": 416,
+    "lastFailureLengthOnly": 21,
+    "lastFailureLengthOnlyMarginal": 12,
+    "pctMarginalOfLengthFails": 40
+  },
+  "examplesMarginal": [
+    {
+      "diff": 4,
+      "diffPct": 17
+    },
+    {
+      "diff": 6,
+      "diffPct": 10
+    },
+    {
+      "diff": 6,
+      "diffPct": 10
+    },
+    {
+      "diff": 6,
+      "diffPct": 10
+    },
+    {
+      "diff": 9,
+      "diffPct": 18
+    },
+    {
+      "diff": 7,
+      "diffPct": 12
+    },
+    {
+      "diff": 7,
+      "diffPct": 12
+    },
+    {
+      "diff": 3,
+      "diffPct": 4
+    }
+  ],
+  "examplesStillFail": [
+    {
+      "diff": 19,
+      "diffPct": 68
+    },
+    {
+      "diff": 17,
+      "diffPct": 60
+    },
+    {
+      "diff": 18,
+      "diffPct": 43
+    },
+    {
+      "diff": 19,
+      "diffPct": 68
+    },
+    {
+      "diff": 13,
+      "diffPct": 35
+    },
+    {
+      "diff": 11,
+      "diffPct": 19
+    },
+    {
+      "diff": 20,
+      "diffPct": 48
+    },
+    {
+      "diff": 19,
+      "diffPct": 53
+    }
+  ]
+}

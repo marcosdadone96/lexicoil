@@ -1,0 +1,642 @@
+﻿=== RETRY WAVE 2026-07-11T18:43:48.4851627+02:00 ===
+
+======== LESEN T5 Bildung ========
+
+> lexicoil@1.0.0 generate:lesen:gemini
+> node --use-system-ca scripts/generate-lesen-part-gemini.mjs --teil 5 --topic Bildung --count 1 --from-coverage --skip-pool-ready --fix-retries 3
+
+
+Generador Lesen (de/B1) · gemini · gemini-2.5-flash · Teile: 5 × 1
+Palabras objetivo por parte: 5 (--word-count)
+Umbral cobertura CEFR (cefr_gate): 55% (default 0.55)
+Cuota Gemini: max 200 llamadas · pausa ≥6000ms · fix-retries=3 · api-retries=1
+Salida: batches/generated/
+Tema: Bildung (elegido)
+T5 subtipo: Schul-/Ausbildungsordnung (preferred) · celda Bildung×T5: 1 en pool · excluye subtipos: sportverein
+
+── Lesen T5 · lesen-t5-gemini-003.json ──
+Proveedor: gemini · Palabras (5): stille, gerechtigkeit, stadtbewohner, mittlerweile, verzögerung
+Modelo: gemini-2.5-flash · max_output_tokens=8192
+Llamada API 1/200 · gemini-2.5-flash
+Validando formato…
+Comprobando calidad pedagógica…
+Calidad pedagógica OK ✅ (estimación ~98%)
+Avisos (1):
+  · POS caps gate skipped: Python was not found; run without arguments to install from the Microsoft Store, or disable this shortcut from Settings > Apps > Advanced app settings > App execution aliases.
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 4 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 9 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 3 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 5 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 4 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 2 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 2 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 6 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 3 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+Audit-pass-2 BLOQUEADO: [IMPORTANT][CHK-29] CHK-29: molde estructural «schule» ya usado en Bildung×T5 (similar a lesen-t5-gemini-020). Elige otro subtipo/debate.
+  CHK-29 → excluir molde duplicado y regenerar T5 con subtipo/debate distinto…
+T5 subtipo: Bibliotheksordnung (preferred) · celda Bildung×T5: 1 en pool · excluye subtipos: sportverein, schule
+Llamada API 2/200 · gemini-2.5-flash
+Validando formato…
+Comprobando calidad pedagógica…
+Calidad pedagógica FAIL (1 problemas, estimación ~90%)
+  - gen-q-5-5bcf61e7-3: opción correcta copia ≥5 palabras del pasaje («nur in der eingangshalle und»)
+Avisos (1):
+  · POS caps gate skipped: Python was not found; run without arguments to install from the Microsoft Store, or disable this shortcut from Settings > Apps > Advanced app settings > App execution aliases.
+  word-matching → reparación localizada T5 (pasaje fijo)…
+T5: reparando pregunta gen-q-5-5bcf61e7-3 (word-copy, pasaje fijo, intento 1/2)…
+Llamada API 3/200 · gemini-2.5-flash
+T5: reparando pregunta gen-q-5-5bcf61e7-3 (word-copy, pasaje fijo, intento 2/2)…
+Llamada API 4/200 · gemini-2.5-flash
+
+Reintento 1/3 · gen-q-5-5bcf61e7-3: opción correcta copia ≥5 palabras del pasaje («nur in der eingangshalle und»)…
+Llamada API 5/200 · gemini-2.5-flash
+Validando formato…
+Calidad pedagógica OK ✅ (estimación ~98%)
+Avisos (1):
+  · POS caps gate skipped: Python was not found; run without arguments to install from the Microsoft Store, or disable this shortcut from Settings > Apps > Advanced app settings > App execution aliases.
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 4 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 9 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 3 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 5 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 4 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 2 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 2 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 6 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 3 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+Audit-pass-2 BLOQUEADO: [IMPORTANT][CHK-29] CHK-29: molde estructural «bibliothek» ya usado en Bildung×T5 (similar a lesen-t5-gemini-046). Elige otro subtipo/debate.
+  CHK-29 → excluir molde duplicado y regenerar T5 con subtipo/debate distinto…
+T5 subtipo: Kantinen-/Mensaordnung (preferred) · celda Bildung×T5: 1 en pool · excluye subtipos: sportverein, schule, bibliothek
+
+Reintento 1/3 · CHK-29: molde estructural «bibliothek» ya usado en Bildung×T5 (similar a lesen-t5-gemini-046). Elige otro subtipo/debate.…
+Llamada API 6/200 · gemini-2.5-flash
+Validando formato…
+Calidad pedagógica FAIL (1 problemas, estimación ~90%)
+  - gen-q-5-716912b4-3: opción correcta copia ≥5 palabras del pasaje («müssen sich vor dem essen»)
+Avisos (1):
+  · POS caps gate skipped: Python was not found; run without arguments to install from the Microsoft Store, or disable this shortcut from Settings > Apps > Advanced app settings > App execution aliases.
+  word-matching → reparación localizada T5 (pasaje fijo)…
+T5: reparando pregunta gen-q-5-716912b4-3 (word-copy, pasaje fijo, intento 1/2)…
+Llamada API 7/200 · gemini-2.5-flash
+T5: reparando pregunta gen-q-5-716912b4-3 (word-copy, pasaje fijo, intento 2/2)…
+Llamada API 8/200 · gemini-2.5-flash
+
+Reintento 2/3 · gen-q-5-716912b4-3: opción correcta copia ≥5 palabras del pasaje («müssen sich vor dem essen»)…
+Llamada API 9/200 · gemini-2.5-flash
+Validando formato…
+Calidad pedagógica OK ✅ (estimación ~98%)
+Avisos (1):
+  · POS caps gate skipped: Python was not found; run without arguments to install from the Microsoft Store, or disable this shortcut from Settings > Apps > Advanced app settings > App execution aliases.
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 4 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 9 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 3 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 5 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 4 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 2 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 2 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 6 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 3 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+Audit-pass-2 BLOQUEADO: [IMPORTANT][CHK-18b] gen-q-5-716912b4-2: clave «c» pero la explicación encaja mejor con otra opción (overlap correct=2, wrong=3, opción incorrecta a)).
+  CHK-18b → reparación localizada T5 (solo explanation, pasaje fijo)…
+T5: reparando explanation gen-q-5-716912b4-2 (CHK-18b, pasaje fijo, intento 1/2)…
+Llamada API 10/200 · gemini-2.5-flash
+T5: reparando explanation gen-q-5-716912b4-2 (CHK-18b, pasaje fijo, intento 2/2)…
+Cola API: pausa 0.4s…
+Llamada API 11/200 · gemini-2.5-flash
+Calidad pedagógica OK ✅ (estimación ~98%)
+Avisos (1):
+  · POS caps gate skipped: Python was not found; run without arguments to install from the Microsoft Store, or disable this shortcut from Settings > Apps > Advanced app settings > App execution aliases.
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 4 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 9 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 3 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 5 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 4 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 2 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 2 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 6 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 3 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+Guardado: batches/generated/lesen-t5-gemini-003.json (4 preguntas, 1 passages)
+Validación técnica OK ✅
+Calidad pedagógica OK ✅
+Comprobando pre-ingest (CEFR + staging)…
+Ingest pre-check OK ✅
+  T5: OK
+Siguiente: node scripts/ingest-to-staging.mjs --lang de --level B1 --file batches/generated/lesen-t5-gemini-003.json --auto-approve
+  Reparación explanation OK → guardado sin regenerar parte
+
+══ Resumen generador Lesen ══
+Proveedor: gemini · Modelo: gemini-2.5-flash
+Intentos totales: 11
+Partes guardadas (formato + calidad OK): 1
+Partes descartadas: 0
+Llamadas API Gemini: 11/200
+Por Teil (guardadas / descartadas · intentos):
+  T5: 1 guardadas, 0 descartadas, 5 intentos
+COPIED lesen-t5-gemini-003.json exit=0
+
+======== LESEN T4 Familie ========
+
+> lexicoil@1.0.0 generate:lesen:gemini
+> node --use-system-ca scripts/generate-lesen-part-gemini.mjs --teil 4 --topic Familie --count 1 --from-coverage --skip-pool-ready --fix-retries 3
+
+
+Generador Lesen (de/B1) · gemini · gemini-2.5-flash · Teile: 4 × 1
+Palabras objetivo por parte: 5 (--word-count)
+Umbral cobertura CEFR (cefr_gate): 55% (default 0.55)
+Cuota Gemini: max 200 llamadas · pausa ≥6000ms · fix-retries=3 · api-retries=1
+Salida: batches/generated/
+Tema: Familie (elegido)
+T4 seed: Eltern sollen zwei Monate bezahlte Elternzeit extra bekommen, wenn sie e… (fresh) · celda Familie×T4: 4 en pool · excluye seeds: 3
+
+── Lesen T4 · lesen-t4-gemini-003.json ──
+Proveedor: gemini · Palabras (5): fehlen, situation, kapitel, paragraph, ereignis
+Modelo: gemini-2.5-flash · max_output_tokens=16384
+Llamada API 1/200 · gemini-2.5-flash
+  [normalizeNouns] 1 sustantivo(s) capitalizados automáticamente
+Validando formato…
+Comprobando calidad pedagógica…
+Calidad pedagógica OK ✅ (estimación ~98%)
+Avisos (1):
+  · POS caps gate skipped: Python was not found; run without arguments to install from the Microsoft Store, or disable this shortcut from Settings > Apps > Advanced app settings > App execution aliases.
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 4 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 9 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 3 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 5 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 4 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 2 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 2 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 6 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 3 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+Audit-pass-2 BLOQUEADO: [IMPORTANT][CHK-27] Lesen T4: debate «Mehr Geld für Vereine» no encaja con tema pedido «Familie» (válido: Freizeit, Sport, Kultur). El foro debe tratar de «Familie».
+
+Reintento 1/3 · Lesen T4: debate «Mehr Geld für Vereine» no encaja con tema pedido «Familie» (válido: Freizeit, Sport, Kultur). El foro debe tratar de «Familie».…
+Llamada API 2/200 · gemini-2.5-flash
+  [normalizeNouns] 1 sustantivo(s) capitalizados automáticamente
+Validando formato…
+Calidad pedagógica OK ✅ (estimación ~98%)
+Avisos (1):
+  · POS caps gate skipped: Python was not found; run without arguments to install from the Microsoft Store, or disable this shortcut from Settings > Apps > Advanced app settings > App execution aliases.
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 4 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 9 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 3 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 5 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 4 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 2 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 2 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 6 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 3 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+Audit-pass-2 BLOQUEADO: [IMPORTANT][CHK-27] Lesen T4: debate «Mehr Geld für Vereine» no encaja con tema pedido «Familie» (válido: Freizeit, Sport, Kultur). El foro debe tratar de «Familie».
+  Triaje CUBO A: reparado (CHK-19) — re-validando sin LLM…
+Calidad pedagógica OK ✅ (estimación ~98%)
+Avisos (1):
+  · POS caps gate skipped: Python was not found; run without arguments to install from the Microsoft Store, or disable this shortcut from Settings > Apps > Advanced app settings > App execution aliases.
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 4 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 9 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 3 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 5 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 4 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 2 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 2 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 6 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 3 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+Audit-pass-2 BLOQUEADO: [IMPORTANT][CHK-27] Lesen T4: debate «Mehr Geld für Vereine» no encaja con tema pedido «Familie» (válido: Freizeit, Sport, Kultur). El foro debe tratar de «Familie».
+
+Reintento 2/3 · Lesen T4: debate «Mehr Geld für Vereine» no encaja con tema pedido «Familie» (válido: Freizeit, Sport, Kultur). El foro debe tratar de «Familie».…
+Llamada API 3/200 · gemini-2.5-flash
+  [normalizeNouns] 1 sustantivo(s) capitalizados automáticamente
+Validando formato…
+Calidad pedagógica OK ✅ (estimación ~98%)
+Avisos (1):
+  · POS caps gate skipped: Python was not found; run without arguments to install from the Microsoft Store, or disable this shortcut from Settings > Apps > Advanced app settings > App execution aliases.
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 4 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 9 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 3 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 5 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 4 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 2 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 2 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 6 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 3 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+Audit-pass-2 BLOQUEADO: [IMPORTANT][CHK-27] Lesen T4: debate «Mehr Geld für Vereine» no encaja con tema pedido «Familie» (válido: Freizeit, Sport, Kultur). El foro debe tratar de «Familie».
+  Triaje CUBO A: reparado (CHK-19) — re-validando sin LLM…
+Calidad pedagógica OK ✅ (estimación ~98%)
+Avisos (1):
+  · POS caps gate skipped: Python was not found; run without arguments to install from the Microsoft Store, or disable this shortcut from Settings > Apps > Advanced app settings > App execution aliases.
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 4 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 9 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 3 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 5 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 4 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 2 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 2 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 6 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 3 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+Audit-pass-2 BLOQUEADO: [IMPORTANT][CHK-27] Lesen T4: debate «Mehr Geld für Vereine» no encaja con tema pedido «Familie» (válido: Freizeit, Sport, Kultur). El foro debe tratar de «Familie».
+
+Reintento 3/3 · Lesen T4: debate «Mehr Geld für Vereine» no encaja con tema pedido «Familie» (válido: Freizeit, Sport, Kultur). El foro debe tratar de «Familie».…
+Llamada API 4/200 · gemini-2.5-flash
+  [normalizeNouns] 1 sustantivo(s) capitalizados automáticamente
+Validando formato…
+Calidad pedagógica OK ✅ (estimación ~98%)
+Avisos (1):
+  · POS caps gate skipped: Python was not found; run without arguments to install from the Microsoft Store, or disable this shortcut from Settings > Apps > Advanced app settings > App execution aliases.
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 4 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 9 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 3 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 5 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 4 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 2 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 2 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 6 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 3 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+Audit-pass-2 BLOQUEADO: [IMPORTANT][CHK-27] Lesen T4: debate «Mehr Geld für Vereine» no encaja con tema pedido «Familie» (válido: Freizeit, Sport, Kultur). El foro debe tratar de «Familie».
+  Triaje CUBO A: reparado (CHK-19) — re-validando sin LLM…
+Calidad pedagógica OK ✅ (estimación ~98%)
+Avisos (1):
+  · POS caps gate skipped: Python was not found; run without arguments to install from the Microsoft Store, or disable this shortcut from Settings > Apps > Advanced app settings > App execution aliases.
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 4 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 9 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 3 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 5 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 4 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 2 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 2 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 6 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 3 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 sustantivo(s) capitalizados automáticamente
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+Audit-pass-2 BLOQUEADO: [IMPORTANT][CHK-27] Lesen T4: debate «Mehr Geld für Vereine» no encaja con tema pedido «Familie» (válido: Freizeit, Sport, Kultur). El foro debe tratar de «Familie».
+Lesen T4: debate «Mehr Geld für Vereine» no encaja con tema pedido «Familie» (válido: Freizeit, Sport, Kultur). El foro debe tratar de «Familie».
+L4: autores repetidos en signText: Die×2. Cada ítem debe ser de un autor distinto.
+Rechazado guardado en: batches/generated/.rejected/lesen-t4-gemini-003-2026-07-11T16-48-43-104Z.json
+
+══ Resumen generador Lesen ══
+Proveedor: gemini · Modelo: gemini-2.5-flash
+Intentos totales: 4
+Partes guardadas (formato + calidad OK): 0
+Partes descartadas: 1
+Llamadas API Gemini: 4/200
+Por Teil (guardadas / descartadas · intentos):
+  T4: 0 guardadas, 1 descartadas, 4 intentos
+FAIL_NO_FILE exit=1
+
+======== HOREN T3 Familie ========
+
+> lexicoil@1.0.0 generate:horen:gemini
+> node --use-system-ca scripts/generate-part-gemini.mjs --module horen --teil 3 --topic Familie --count 1 --from-coverage --skip-pool-ready --fix-retries 3
+
+
+Generador horen (de/B1) · gemini · gemini-2.5-flash · T3 × 1
+Palabras objetivo por parte: 5 (--word-count)
+Cuota Gemini: max 200 llamadas · pausa ≥6000ms · fix-retries=3 · api-retries=1
+Salida: batches/generated/ (solo pasa formato + calidad pedagógica)
+Tema: Familie (elegido)
+
+── horen T3 · horen-t3-gemini-004.json ──
+Proveedor: gemini · Palabras (5): besser, hektisch, schwächen, künftig, empathie
+Modelo: gemini-2.5-flash · max_output_tokens=16384
+Llamada API 1/200 · gemini-2.5-flash
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 6 sustantivo(s) capitalizados automáticamente
+Validando formato…
+Comprobando calidad pedagógica…
+Calidad Hören T3: OK ✅ (estimación ~100%)
+Audit-pass-2 BLOQUEADO: [IMPORTANT][CHK-14] Sustantivo en minúscula: "paar" (tras artículo/conjunción). En alemán los sustantivos van en mayúscula. Contexto: "... Mein Vater hat da schon ein paar Ideen für Wanderungen in der ..."
+  Triaje CUBO A: reparado (CHK-14) — re-validando sin LLM…
+Calidad Hören T3: OK ✅ (estimación ~100%)
+Audit-pass-2 BLOQUEADO: [IMPORTANT][CHK-14] Sustantivo en minúscula: "paar" (tras artículo/conjunción). En alemán los sustantivos van en mayúscula. Contexto: "... Mein Vater hat da schon ein paar Ideen für Wanderungen in der ..."
+Calidad FAIL → regeneración limpia en siguiente intento si persiste…
+
+Reintento 1/3 · Sustantivo en minúscula: "paar" (tras artículo/conjunción). En alemán los sustantivos van en mayúscula. Contexto: "... Mein Vater hat da schon ein paar Ideen für Wanderungen in der ..."…
+  Temperatura reducida a 0.3 (reintento de calidad)
+Llamada API 2/200 · gemini-2.5-flash
+  [normalizeNouns] 4 sustantivo(s) capitalizados automáticamente
+Validando formato…
+  [Q4 audit-only] 1 topic_mismatch (no block):
+    · passage:gen-p-h3-c20b0205-s1 topicTag «Familie» no encaja con contenido (detectado «Wohnen» score=2 vs tag score=1; hits={"Reisen":1,"Wohnen":2,"Familie":1,"Sport":1,"Freizeit":1,"Verkehr":1})
+Calidad Hören T3: FAIL (2 problemas, estimación ~84%)
+  - gen-q-h3-c20b0205-7: pregunta copia ≥4 palabras de la transcripción («kümmert sich um die»)
+  - gen-q-h3-c20b0205-3: pregunta copia ≥4 palabras de la transcripción («routen in den alpen»)
+
+Reintento 2/3 · gen-q-h3-c20b0205-7: pregunta copia ≥4 palabras de la transcripción («kümmert sich um die»)…
+  Temperatura reducida a 0.3 (reintento de calidad)
+Llamada API 3/200 · gemini-2.5-flash
+  [normalizeNouns] 4 sustantivo(s) capitalizados automáticamente
+Validando formato…
+  [Q4 audit-only] block: 2 finding(s)
+Calidad Hören T3: OK ✅ (estimación ~100%)
+Audit-pass-2 BLOQUEADO: [IMPORTANT][CHK-14] Sustantivo en minúscula: "glaube" (tras artículo/conjunción). En alemán los sustantivos van en mayúscula. Contexto: "...auch wieder schön. Anna: Das glaube ich dir. Es ist wichtig, dies..."
+  Triaje CUBO A: reparado (CHK-14) — re-validando sin LLM…
+  [Q4 audit-only] block: 2 finding(s)
+Calidad Hören T3: OK ✅ (estimación ~100%)
+Audit-pass-2 BLOQUEADO: [IMPORTANT][CHK-14] Sustantivo en minúscula: "glaube" (tras artículo/conjunción). En alemán los sustantivos van en mayúscula. Contexto: "...auch wieder schön. Anna: Das glaube ich dir. Es ist wichtig, dies..."
+
+Reintento 3/3 · Sustantivo en minúscula: "glaube" (tras artículo/conjunción). En alemán los sustantivos van en mayúscula. Contexto: "...auch wieder schön. Anna: Das glaube ich dir. Es ist wichtig, dies..."…
+  Temperatura reducida a 0.3 (reintento de calidad)
+Llamada API 4/200 · gemini-2.5-flash
+  [normalizeNouns] 5 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 5 sustantivo(s) capitalizados automáticamente
+Validando formato…
+  [germanCapsNormalize] markdown=0 decap=2 cap=0 fields=2
+Calidad Hören T3: OK ✅ (estimación ~100%)
+Audit-pass-2 BLOQUEADO: [IMPORTANT][CHK-14] Sustantivo en minúscula: "essen" (tras artículo/conjunción). En alemán los sustantivos van en mayúscula. Contexto: "...us: Genau! Und dann noch das essen. Sie kocht immer so viel, als ..."
+  Triaje CUBO A: reparado (CHK-14) — re-validando sin LLM…
+  [germanCapsNormalize] markdown=0 decap=2 cap=0 fields=2
+Calidad Hören T3: OK ✅ (estimación ~100%)
+Audit-pass-2 BLOQUEADO: [IMPORTANT][CHK-14] Sustantivo en minúscula: "essen" (tras artículo/conjunción). En alemán los sustantivos van en mayúscula. Contexto: "...us: Genau! Und dann noch das essen. Sie kocht immer so viel, als ..."
+Sustantivo en minúscula: "essen" (tras artículo/conjunción). En alemán los sustantivos van en mayúscula. Contexto: "...us: Genau! Und dann noch das essen. Sie kocht immer so viel, als ..."
+
+══ Resumen generador horen ══
+Proveedor: gemini · Modelo: gemini-2.5-flash
+Intentos totales: 4
+Partes guardadas (formato + calidad OK): 0
+Partes descartadas: 1
+Llamadas API Gemini: 4/200
+Por parte (guardadas / descartadas · intentos):
+  T3: 0 guardadas, 1 descartadas, 4 intentos
+FAIL_NO_FILE exit=1
+
+======== HOREN T3 Medien ========
+
+> lexicoil@1.0.0 generate:horen:gemini
+> node --use-system-ca scripts/generate-part-gemini.mjs --module horen --teil 3 --topic Medien --count 1 --from-coverage --skip-pool-ready --fix-retries 3
+
+
+Generador horen (de/B1) · gemini · gemini-2.5-flash · T3 × 1
+Palabras objetivo por parte: 5 (--word-count)
+Cuota Gemini: max 200 llamadas · pausa ≥6000ms · fix-retries=3 · api-retries=1
+Salida: batches/generated/ (solo pasa formato + calidad pedagógica)
+Tema: Medien (elegido)
+
+── horen T3 · horen-t3-gemini-004.json ──
+Proveedor: gemini · Palabras (5): besitzen, sogenannte, bestände, persönlich, gekommen
+Modelo: gemini-2.5-flash · max_output_tokens=16384
+Llamada API 1/200 · gemini-2.5-flash
+  [normalizeNouns] 1 sustantivo(s) capitalizados automáticamente
+Validando formato…
+Comprobando calidad pedagógica…
+  [germanCapsNormalize] markdown=0 decap=1 cap=0 fields=1
+Calidad Hören T3: OK ✅ (estimación ~100%)
+Guardado: batches/generated/horen-t3-gemini-004.json (7 preguntas, 1 passages) · horen Teil 3
+Validación técnica OK ✅
+Calidad pedagógica OK ✅
+
+══ Resumen generador horen ══
+Proveedor: gemini · Modelo: gemini-2.5-flash
+Intentos totales: 1
+Partes guardadas (formato + calidad OK): 1
+Partes descartadas: 0
+Llamadas API Gemini: 1/200
+Por parte (guardadas / descartadas · intentos):
+  T3: 1 guardadas, 0 descartadas, 1 intentos
+COPIED horen-t3-gemini-004.json exit=0

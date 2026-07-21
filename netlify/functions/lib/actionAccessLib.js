@@ -3,12 +3,17 @@
 /** Monthly AI credit actions and which plans may use them (before balance check). */
 const ACTION_ACCESS = {
   personal_exam: ['pro', 'pro_max'],
+  personal_lesen: ['free', 'pro', 'pro_max'],
+  personal_horen: ['free', 'pro', 'pro_max'],
+  personal_schreiben: ['pro', 'pro_max'],
+  personal_sprechen_gen: ['pro', 'pro_max'],
   grammar_coaching: ['pro', 'pro_max'],
   writing_correction: ['free', 'pro', 'pro_max'],
   speaking: ['free', 'pro', 'pro_max'],
   speaking_realtime: ['pro', 'pro_max'],
   vocab_quiz: ['free', 'pro', 'pro_max'],
   listening_game: ['free', 'pro', 'pro_max'],
+  vocab_phrases: ['free', 'pro', 'pro_max'],
   tts: ['pro', 'pro_max'],
 };
 

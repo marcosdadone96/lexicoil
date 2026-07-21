@@ -1,0 +1,236 @@
+Eres examinador del Goethe-Zertifikat B1. Genera **UNA** parte de **Lesen Teil 4**
+(foro con opiniones, Ja/Nein), alemán estándar, nivel B1.
+
+## Reglas estrictas
+- Formato: **forum_opinions** — 1 intro breve + **7 opiniones** en `signText`.
+- **7 preguntas** exactas, tipo **ja_nein** con opciones **a) Ja** / **b) Nein**.
+- **LAS 7 PREGUNTAS DEBEN TENER EL MISMO ENUNCIADO AFIRMATIVO**, por ejemplo:
+  `"Ist [Vorname] für den Vorschlag?"` — solo varía el nombre.
+- **PROHIBIDO en el enunciado de pregunta:** nicht, kein, lehnt, gegen, ablehnen, widerspricht.
+  ❌ "Lehnt Thomas den Vorschlag ab?" → ✅ "Ist Thomas für den Vorschlag?"
+
+## LONGITUD CEFR (OBLIGATORIO)
+- `passages[0].text`: intro al debate, **50–70 palabras**.
+- Cada pregunta lleva **`signText`** con la opinión (~**25–35 palabras**).
+- **Suma total** (intro + 7 × signText): **150–380 palabras**, máximo **400**.
+- No repitas el mismo texto en `text` y `signText`.
+
+## VOCABULARIO B1 (cobertura ≥75% — OBLIGATORIO)
+Usa léxico **simple y frecuente**:
+
+> Stadt, Transport, Auto, Nachhaltigkeit, Kinder, Besucher, Organisation, Nachbar, Familie, Erfahrung, Meinung, Problem, Vorteil, Plan, Regel
+
+**PROHIBIDO:** empfand, faszinierend, jurídico-raro, tono moralizante («Abschließend…», «man sollte wissen»).
+
+**Usa:** finden, denken, meinen, wichtig, weil, dass — frases claras B1.
+
+## REGLAS DE CALIDAD (rechazo automático si fallas)
+1. **Enunciado igual para todos:** las 7 preguntas = "Ist [Nombre] für den Vorschlag?" (solo cambia el nombre). **PROHIBIDA cualquier negación en el enunciado.**
+2. Opciones siempre exactamente **a) Ja** y **b) Nein**.
+3. **Distribución OBLIGATORIA:** exactamente **3 Ja y 4 Nein** (o 4 Ja y 3 Nein) — NUNCA ≥5 del mismo.
+4. **≥2 opiniones con matices:** crítica parcial pero a favor en general (→ Ja), o reconocimiento parcial pero en contra (→ Nein). **PERO:** el matiz va **SIEMPRE** en las primeras frases del `signText`, y la **ÚLTIMA frase** de **CADA** `signText` debe ser una declaración de postura inequívoca usando **EXACTAMENTE** una de estas fórmulas (o variación mínima):
+   - **Para Ja:** «Ich bin dafür.» / «Ich unterstütze den Vorschlag.» / «Deshalb finde ich den Vorschlag gut.»
+   - **Para Nein:** «Ich bin dagegen.» / «Ich lehne den Vorschlag ab.» / «Deshalb sage ich Nein.» / «Für mich ist der Vorschlag nicht gut.»
+   **PROHIBIDO** terminar con posturas ambiguas («Ich bin nicht grundsätzlich dagegen…», «Ich bin implizit dagegen», «Ich bin skeptisch» como frase final sin fórmula clara después).
+5. **Anti word-matching:** pregunta ↔ `signText` — el nombre está permitido; el resto ≤2 palabras de contenido comunes.
+6. **Coherencia clave ↔ signText (OBLIGATORIO):**
+   - `signText` con «nicht gut», «bin dagegen», «sage ich Nein», «lehne ab» → `correct` = **Nein**
+   - `signText` con «bin dafür», «finde ich gut», «unterstütze», «stimme zu» → `correct` = **Ja**
+   - Verifica cada ítem antes de emitir. Una clave invertida provoca rechazo automático.
+
+## ANTI WORD-MATCHING — MALO vs BUENO (léelo antes de escribir)
+
+Opinión: *«Ich finde **Fahrrad**fahren gut…»*
+
+❌ **MALO:** «Findet die Person **Fahrrad**fahren gut?»
+✅ **BUENO:** «Hält die Person Radfahren für eine gute Alternative zum Auto?» (≤2 palabras del signText).
+
+**Proceso obligatorio:** escribe cada `signText`; luego redacta la pregunta **sin** repetir sustantivos/verbos clave.
+
+## VOCABULARIO SUGERIDO (preferencia — no obligación)
+- Usa de forma NATURAL estas palabras si encajan: Stadt, Freizeit, Arbeit, Familie, Kurs. Prioriza naturalidad y nivel B1 — si una palabra no encaja, OMÍTELA, no la fuerces. Mejor un texto natural con algunas de estas palabras que uno forzado con todas.
+- **Estas palabras son OPCIONALES.** Integra solo las que suenen 100% naturales en un foro/reglamento B1. Forzar una palabra que no encaja es motivo de rechazo.
+- Intégralas sobre todo en el **pasaje/transcript**, no en las preguntas literalmente.
+- Si una palabra no encaja en el tema elegido, **omítela** sin forzar.
+
+
+
+## PREMISA FIJA DEL DEBATE (no la cambies, no la reformules)
+El foro debate EXACTAMENTE este Vorschlag: «[object Object]».
+El título del pasaje y la intro deben referirse a este Vorschlag.
+Las 7 opiniones responden a este Vorschlag y a ningún otro.
+- Intro (`passages[0].text`): presenta el debate sobre este Vorschlag (50–70 palabras).
+- Las 7 opiniones en `signText` deben referirse a **este** Vorschlag — no a otro tema.
+- Enunciado fijo de las 7 preguntas: «Ist [Vorname] für den Vorschlag?» — «der Vorschlag» = el de arriba.
+- **NO** reutilices el debate del ejemplo (Autofreie Innenstadt) ni Vorschläge ya prohibidos abajo.
+## AUTORREVISIÓN (obligatoria)
+- ¿Intro 50–70 palabras + 7 signText (~25–35 c/u), suma 150–380?
+- ¿Las **7 preguntas tienen el mismo enunciado** "Ist [Name] für den Vorschlag?" (solo varía el nombre)?
+- ¿Ningún enunciado de pregunta contiene nicht/kein/lehnt/gegen/ablehnen?
+- ¿Cada pregunta tiene `signText` y `passageId`?
+- ¿Opciones exactamente a) Ja / b) Nein?
+- ¿3–4 Ja y 4–3 Nein?
+- ¿`correct` coincide con la postura real del `signText`? (una clave invertida = rechazo)
+- ¿Sin tono moralizante?
+- ¿La ÚLTIMA frase de cada signText es una fórmula de postura de la lista?
+- PROHIBIDO usar **negrita** (asteriscos dobles) en el campo `text` del pasaje. Ejemplo INCORRECTO: '**Öffnungszeiten:** Das Zentrum öffnet...'. Ejemplo CORRECTO: 'Öffnungszeiten: Das Zentrum öffnet...' (dos puntos, sin asteriscos).
+
+## Formato de salida
+Devuelve SOLO `{ "passages": [...], "questions": [...] }` — sin ```, sin texto extra.
+- IDs únicos: `gen-l4-XXXX` / `gen-q-4-XXXX-N` (XXXX aleatorio, no reutilizar ejemplo).
+- `module`:"lesen", `teil`:4 (número), `lang`:"de", `level`:"B1".
+- `correct` = `correctAnswer` (**Ja** o **Nein**). Cada pregunta con **`signText`** + `passageId`.
+
+## EJEMPLO VERIFICADO (100% checker — imita estructura, matices y parafraseo)
+
+```json
+{
+  "passages": [
+    {
+      "id": "gen-l4-8842",
+      "module": "lesen",
+      "teil": 4,
+      "title": "Forum: Autofreie Innenstadt — ja oder nein?",
+      "text": "Die Organisation in der Stadt plant neue Regeln für Autos im Zentrum an normalen Tagen. Viele Besucher wünschen weniger Verkehr und bessere Luft, weil Transport und Nachhaltigkeit wichtige Themen bleiben. Viele Nachbarn beschreiben Erfahrungen in lokalen Programmen und in Zeitungen. Lesen Sie die Meinungen — stimmt die Person dem Vorschlag insgesamt zu?"
+    }
+  ],
+  "questions": [
+    {
+      "id": "gen-q-4-8842-1",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Ist Sabine für den Vorschlag?",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Sabine befürwortet die autofreie Mitte, verlangt aber, dass die Organisation Lieferzeiten für Läden einplant.",
+      "signText": "Weniger Autos in der Mitte finde ich gut, weil Besucher dort in Ruhe gehen können und Kinder mehr Platz auf den Straßen haben. Läden brauchen Zeiten für Lieferungen, aber die Organisation kann das planen. Ich unterstütze den Vorschlag insgesamt.",
+      "passageId": "gen-l4-8842",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-8842-2",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Ist Thomas für den Vorschlag?",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Nein",
+      "correctAnswer": "Nein",
+      "explanation": "Er sagt explizit 'nicht gut' — er ist gegen den Vorschlag (Nein).",
+      "signText": "Ich wohne am Stadtrand und die Busse fahren selten zu meinen Zeiten, obwohl ich den Plan verstehe. Ohne Auto komme ich nicht zum Arzt oder zum Einkauf in der Stadt. Für mich ist der Vorschlag deshalb nicht gut.",
+      "passageId": "gen-l4-8842",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-8842-3",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Ist Mira für den Vorschlag?",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Sie will weniger Autos, findet aber den Zeitplan zu schnell.",
+      "signText": "Weniger Autos sind richtig für Kinder und Besucher in der Stadt, weil die Straßen dann sicherer werden. Alles schon nächsten Monat zu ändern ist aus meiner Sicht zu schnell. Das Ziel finde ich trotzdem gut.",
+      "passageId": "gen-l4-8842",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-8842-4",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Ist Oskar für den Vorschlag?",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Nein",
+      "correctAnswer": "Nein",
+      "explanation": "Er sagt 'sage ich Nein' — er ist gegen den Vorschlag (Nein).",
+      "signText": "Als Ladenbesitzer in der Stadt sage ich Nein, weil viele Kundinnen mit dem Auto kommen und schwere Sachen kaufen. Ohne Parkplätze vor der Tür gehen sie woanders hin, und das sehe ich schon jetzt in meinem Geschäft.",
+      "passageId": "gen-l4-8842",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-8842-5",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Ist Jana für den Vorschlag?",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Nein",
+      "correctAnswer": "Nein",
+      "explanation": "Sie erkennt bessere Luft an und will einen Test, lehnt den starren Plan aber ab (Nein).",
+      "signText": "Die Luft wäre sicher besser, da gebe ich zu, weil weniger Autos oft helfen. Trotzdem will ich erst ein halbes Jahr testen, statt gleich alles zu verbieten. Deshalb lehne ich den Vorschlag ab.",
+      "passageId": "gen-l4-8842",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-8842-6",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Ist Felix für den Vorschlag?",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Ja",
+      "correctAnswer": "Ja",
+      "explanation": "Er pendelt mit ÖPNV und sieht keinen Bedarf für private Autos im Zentrum.",
+      "signText": "Ich fahre mit der Straßenbahn ins Büro, weil das für mich schneller ist als im Stau mit dem Auto. Autos in der Mitte brauchen wir nicht, solange Bus und Bahn im Takt laufen. Deshalb bin ich dafür.",
+      "passageId": "gen-l4-8842",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-4-8842-7",
+      "module": "lesen",
+      "teil": 4,
+      "type": "ja_nein",
+      "question": "Ist Helena für den Vorschlag?",
+      "options": ["a) Ja", "b) Nein"],
+      "correct": "Nein",
+      "correctAnswer": "Nein",
+      "explanation": "Sie warnt vor teureren Lieferungen und verlangt Ausnahmen, lehnt den Vorschlag aber insgesamt ab (Nein).",
+      "signText": "Lieferwagen brauchen Zufahrt in die Stadt, sonst werden Produkte teurer und Nachbarn zahlen mehr. Ausnahmen für Lieferungen sind wichtig, aber der starre Plan passt nicht zu unseren Bedürfnissen. Deshalb sage ich Nein.",
+      "passageId": "gen-l4-8842",
+      "lang": "de",
+      "level": "B1"
+    }
+  ]
+}
+```
+
+Genera UNA parte **NUEVA** (tema distinto al ejemplo), mismas reglas, integrando PALABRAS OBJETIVO. Devuelve solo el JSON.
+
+IMPORTANTE — IDs de esta generación:
+- Prefijo de passages: gen-l4-parity
+- Prefijo de preguntas: gen-q-4-parity-
+No reutilices IDs del ejemplo ni del banco existente.
+
+## LONGITUD CEFR (OBLIGATORIO — ingest RECHAZA si fallas)
+- Ámbito: **passages[0].text + todos los signText (suma total ≤400, ≥150)** (Cada pregunta ja_nein lleva signText con la opinión (sin repetir el nombre al inicio).)
+- Objetivo: **intro 50-70 + 7 opiniones ~25-35 palabras**.
+- Mínimo absoluto del gate: **150** · máximo blueprint: **400**.
+- **CUENTA las palabras antes de responder.** Si estás por debajo, añade 2-4 frases nuevas con contenido (no relleno con adjetivos).
+- El ejemplo JSON puede ser más corto por legibilidad; **tu salida NO puede ser más corta que el mínimo**.
+- Prefiere léxico B1 frecuente: Bewohner, Nachbarn, Stadt, Programm, Organisation, Erfahrungen, Familie, Kinder, Schule, Arbeit, Transport, Kurs, Projekt, Freizeit, Bericht, Termin. Evita rarezas (Begabung, künstlerisch, Denkmuster…) salvo en PALABRAS OBJETIVO. Evita términos C1/académicos (kontextualisieren, Polyphonie, Paradigma, Manifestation, Epistemologie…). ANTI-ANGLICISMOS: NUNCA escribas verbos/sustantivos ingleses sin traducir — gardening→Gartenarbeit/Gärtnern, jogging→Joggen, hiking→Wandern, cycling→Radfahren. Préstamos aceptados (Deadline, Meeting, Team, Computer, E-Mail, App, Blog, Event) SOLO si van capitalizados como sustantivos alemanes: «die Deadline», «das Meeting». ORTOGRAFÍA OBLIGATORIA: todos los sustantivos en MAYÚSCULA — también tras kein/keine, mit/für/von/ohne, en listas y enumeraciones («Blumen und Pflanzen», «keine Hypothese», no «blumen», no «keine hypothese»). Repasa cada sustantivo antes de enviar. LÍMITE INVERSO — NUNCA capitalices a mitad de frase palabras que NO sean sustantivos ni nombres propios: adjetivos (schwierig, persönlich, zugänglich, einfach, möglich), cuantificadores (viele, wenige, einige), adverbios (lange, eher, leider, trotzdem, natürlich) y verbos conjugados (ich glaube, ich stimme, ich denke) van en MINÚSCULA a mitad de frase. Solo SUSTANTIVOS y nombres propios llevan mayúscula. Ejemplos correctos: «viele Menschen» (NO «Viele»), «in der Praxis schwierig» (NO «Schwierig»), «ich glaube» (NO «Glaube»), «ich stimme zu» (NO «Stimme»), «leicht zugänglich» (NO «Zugänglich»).
+- ANTI-MULETILLAS DE FUENTE FICTICIA: no abuses de «Ein Bericht zeigt…», «Eine Studie zeigt…», «Eine Umfrage ergab/zeigt…», «Experten erklären…», «Ein Artikel lobt…» como muleta repetida. Como máximo UNA mención de fuente por pasaje, y varía (Zeitung, Nachbar, eigene Erfahrung, Zahlen der Stadt). Si no hay dato concreto, escribe el hecho directamente sin inventar estudio/informe. ANTI-TONO EMOCIONAL/IA: PROHIBIDO fórmulas como «könnte/wäre ein kleines Wunder…», «verändert mein Leben für immer», «magische Erfahrung», hipérboles sentimentales. Prefiere registro neutro/informativo típico Goethe B1 (hechos, reglas, opiniones mesuradas).
+- Cobertura léxica B1 objetivo: **≥75%** (palabras fuera de lista B1 frecuente penalizan).
+
+CHECKLIST FINAL (Goethe Hard Mode + CEFR):
+- Cumple la sección «Goethe Hard Mode» de esta plantilla.
+- Anti–word-matching: parafraseo, no emparejar palabras sueltas.
+- Longitud: cumple el mínimo CEFR de arriba (cuenta palabras).
+- El batch debe pasar check-lesen-batch-quality.mjs y check-lesen-batch-ingest.mjs sin errores.
+- VOCABULARIO SUGERIDO: integra palabras solo si encajan; omite las que no encajen.
+- Anti word-matching: máx. 2 palabras de contenido iguales al pasaje por afirmación/pregunta.
+- Parafraseo B1 (T1/T2): vocabulario de preguntas/opciones/explanations ≤ B1 — sinónimo NO más difícil que el pasaje. PROHIBIDO modifizieren, Gelassenheit, Angehörige, elektronische Mitteilungen, sich austauschen, jerga B2.
+- CEFR: evita Eigenregie, empfand, faszinierend, gebucht, Smartphone — usa léxico simple.
+- (T4) El foro debate el Vorschlag fijado y debe tratar del **tema B1 pedido** (topicTag); no debates genéricos de otro ámbito (p. ej. Homeoffice si el tema es Technik).
+- (T4) APERTURA ESTRUCTURAL del Vorschlag / intro del foro: variá cómo se presenta la propuesta — NO siempre el mismo molde «In unserer Stadt gibt es einen neuen Vorschlag: …». Alterná: contexto breve + propuesta, pregunta al lector, o anuncio de medida concreta. Las opiniones (signText) empiezan con postura, no con el nombre del autor.
+- explanation: ≥10 palabras para multiple_choice (CHK-18 rechaza si es más corta). Usa frases completas que justifiquen la respuesta.
+- Responde SOLO con el objeto JSON (sin markdown, sin ```, sin texto antes ni después).

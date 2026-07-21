@@ -1,0 +1,89 @@
+{
+  "generatedAt": "2026-07-12T11:20:54.918Z",
+  "markerSince": "2026-07-12T11:08:06.178Z",
+  "flags": "--teil 2 --from-coverage --skip-pool-ready --fix-retries 3",
+  "topicsAttempted": [
+    "Arbeit",
+    "Wohnen",
+    "Bildung",
+    "Freizeit"
+  ],
+  "topicsFailed": [
+    {
+      "topic": "Arbeit",
+      "reason": "CHK-14 FP später/glauben tras fix-retries=3"
+    }
+  ],
+  "savedFiles": [
+    {
+      "file": "batches/generated/lesen-t2-gemini-099.json",
+      "topic": "Wohnen"
+    },
+    {
+      "file": "batches/generated/lesen-t2-gemini-100.json",
+      "topic": "Bildung"
+    },
+    {
+      "file": "batches/generated/lesen-t2-gemini-101.json",
+      "topic": "Freizeit"
+    }
+  ],
+  "promoted": false,
+  "namesOpenings": {
+    "applies": false,
+    "reason": "Lesen T2 = prensa/noticias. Sin personajes recurrentes ni aperturas de diálogo Name:. Chequeo canario de nombres/aperturas NO APLICA.",
+    "characterNamesFound": []
+  },
+  "dateWeekday": {
+    "allOk": true,
+    "findings": 0
+  },
+  "languagetool": {
+    "byFile": [
+      {
+        "file": "lesen-t2-gemini-099.json",
+        "topic": "Wohnen",
+        "realTotal": 12
+      },
+      {
+        "file": "lesen-t2-gemini-100.json",
+        "topic": "Bildung",
+        "realTotal": 4
+      },
+      {
+        "file": "lesen-t2-gemini-101.json",
+        "topic": "Freizeit",
+        "realTotal": 0
+      }
+    ],
+    "note": "099: 12 real (DE_CASE, Tiny/Houses speller). 100: 4 real. 101: 0."
+  },
+  "cost": {
+    "calls": 28,
+    "okCalls": 3,
+    "failCalls": 25,
+    "successRate": 0.10714285714285714,
+    "totalCostUsd": 0.225141,
+    "okCostUsd": 0.0342354,
+    "failCostUsd": 0.1909056,
+    "failSpendShare": 0.8479379588791024,
+    "costPerSuccessfulFileUsd": 0.075047
+  },
+  "comparisonVsBaseline": {
+    "baseline": {
+      "successRate": 0.226,
+      "failSpendShare": 0.79,
+      "source": "canary-report §5 (cifras citadas como primer lote caro; Hören T1 fue pre-logging)"
+    },
+    "thisRun": {
+      "successRate": 0.10714285714285714,
+      "failSpendShare": 0.8479379588791024,
+      "costPerSuccessfulFileUsd": 0.075047
+    },
+    "verdict": {
+      "successRate": "PEOR",
+      "failSpendShare": "PEOR",
+      "overall": "PEOR eficiencia vs baseline 22.6%/79% — fixes de hoy no bajaron fallo/costo en este lote T2"
+    }
+  }
+}

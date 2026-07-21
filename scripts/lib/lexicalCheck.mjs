@@ -9,7 +9,8 @@
  *   if (!result.ok) console.log(result.issues);
  */
 
-import { BLACKLIST } from '../blacklist.mjs';
+import { BLACKLIST, B2_QUESTION_BLACKLIST, questionBlacklistForLevel, questionBlacklistLabel, questionBlacklistTargetLevel } from '../blacklist.mjs';
+import { isVocabBankLemma, loadVocabBankLemmaSet, foldLemma } from './vocabBank.mjs';
 
 /**
  * Each rule:
@@ -80,16 +81,83 @@ const LEXICAL_RULES = [
   },
 ];
 
-/** Extract all text fields from a batch for lexical analysis. */
-function extractTexts(batch) {
+function pushBlacklistIssues(issues, field, text, entries, label, targetLevel = 'B1') {
+  for (const entry of entries) {
+    if (!entry.term.test(text)) continue;
+    const match = text.match(entry.term)?.[0] || '';
+    const msg = entry.grammar
+      ? `${field}: error gramatical «${match}» → ${entry.suggestion}`
+      : `${field}: ${label} «${match}» → usa «${entry.suggestion}» (${targetLevel})`;
+    issues.push(msg);
+  }
+}
+
+/**
+ * True if a lemma/inflected form matches the C1/C2 passage blacklist (BLACKLIST).
+ * Used to pre-filter prompt target words before generation.
+ */
+export function isBlacklistedLemma(word) {
+  const text = String(word || '').trim();
+  if (!text) return false;
+  return BLACKLIST.some((entry) => entry.term.test(text));
+}
+
+/**
+ * Filter prompt target words.
+ * Admission is POSITIVE (whitelist): lemma must exist in library/vocab/{lang}/{level}.json.
+ * Blacklist C1/C2 is a second barrier.
+ *
+ * @param {string[]} words
+ * @param {{ log?: boolean, lang?: string, level?: string, requireBank?: boolean }} [opts]
+ * @returns {string[]}
+ */
+export function filterPromptTargetWords(
+  words,
+  { log = true, lang = 'de', level = 'B1', requireBank = true } = {},
+) {
+  const bank = requireBank ? loadVocabBankLemmaSet(lang, level) : null;
+  const qBlacklist = questionBlacklistForLevel(level);
+  const kept = [];
+  for (const w of words || []) {
+    const word = String(w).trim();
+    if (!word) continue;
+    const key = foldLemma(word);
+    if (requireBank && bank && !bank.has(key)) {
+      if (log) console.log(`Palabra excluida (fuera de banco ${level}): ${word}`);
+      continue;
+    }
+    if (isBlacklistedLemma(word)) {
+      if (log) console.log(`Palabra excluida (registro C1/C2): ${word}`);
+      continue;
+    }
+    if (qBlacklist.some((entry) => entry.term.test(word))) {
+      if (log) console.log(`Palabra excluida (registro ${level === 'A2' ? 'B1+' : 'B2+'}): ${word}`);
+      continue;
+    }
+    kept.push(word);
+  }
+  return kept;
+}
+
+export { isVocabBankLemma, loadVocabBankLemmaSet };
+
+/** Passage-side text fields (title, body, signText on passage). */
+export function extractPassageLexicalTexts(batch) {
   const texts = [];
   for (const p of batch.passages || []) {
     if (p.title) texts.push({ field: `passage ${p.id} title`, text: p.title });
     if (p.text) texts.push({ field: `passage ${p.id} text`, text: p.text });
     if (p.signText) texts.push({ field: `passage ${p.id} signText`, text: p.signText });
   }
+  return texts;
+}
+
+/** Question-side text fields — gate target for B2 vocabulary (P0). */
+export function extractQuestionLexicalTexts(batch) {
+  const texts = [];
   for (const q of batch.questions || []) {
     if (q.question) texts.push({ field: `question ${q.id}`, text: q.question });
+    if (q.explanation) texts.push({ field: `question ${q.id} explanation`, text: q.explanation });
     if (q.signText) texts.push({ field: `question ${q.id} signText`, text: q.signText });
     for (const opt of q.options || []) {
       texts.push({ field: `question ${q.id} option`, text: String(opt) });
@@ -98,44 +166,53 @@ function extractTexts(batch) {
   return texts;
 }
 
-/**
- * @param {object} batch
- * @returns {{ ok: boolean, issues: string[], warnings: string[] }}
- */
-export function checkLexical(batch) {
-  const issues = [];
-  const warnings = [];
-  const texts = extractTexts(batch);
+/** All free-text fields (passages + questions). */
+function extractAllLexicalTexts(batch) {
+  return [...extractPassageLexicalTexts(batch), ...extractQuestionLexicalTexts(batch)];
+}
 
+function runLexicalRules(texts, issues, warnings) {
   for (const { field, text } of texts) {
-    // Context-dependent lexical rules
     for (const rule of LEXICAL_RULES) {
       if (!rule.word.test(text)) continue;
-      // If context pattern is set, only flag when context also matches
       if (rule.context && !rule.context.test(text)) continue;
 
-      // Grammar mistake → hard issue; style suggestion → warning
       const isGrammar = rule.message.toLowerCase().includes('grammatik');
       const msg = `${field}: ${rule.message} → sugiere «${rule.suggestion}»`;
-      if (isGrammar) {
-        issues.push(msg);
-      } else {
-        warnings.push(msg);
-      }
-    }
-
-    // C1/C2 vocabulary blacklist — always block regardless of context
-    for (const entry of BLACKLIST) {
-      if (!entry.term.test(text)) continue;
-      const match = text.match(entry.term)?.[0] || '';
-      const msg = entry.grammar
-        ? `${field}: error gramatical «${match}» → ${entry.suggestion}`
-        : `${field}: vocabulario C1/C2 «${match}» → usa «${entry.suggestion}» (B1)`;
-      issues.push(msg);
+      if (isGrammar) issues.push(msg);
+      else warnings.push(msg);
     }
   }
+}
 
-  return { ok: issues.length === 0, issues, warnings };
+/**
+ * @param {object} batch
+ * @param {{ level?: string }} [opts]
+ * @returns {{ ok: boolean, issues: string[], warnings: string[] }}
+ */
+export function checkLexical(batch, opts = {}) {
+  const level = String(
+    opts.level || batch?.level || batch?.questions?.[0]?.level || batch?.passages?.[0]?.level || 'B1',
+  ).toUpperCase();
+  const issues = [];
+  const warnings = [];
+  const passageTexts = extractPassageLexicalTexts(batch);
+  const questionTexts = extractQuestionLexicalTexts(batch);
+  const qBlacklist = questionBlacklistForLevel(level);
+  const qLabel = questionBlacklistLabel(level);
+  const qTarget = questionBlacklistTargetLevel(level);
+
+  runLexicalRules([...passageTexts, ...questionTexts], issues, warnings);
+
+  for (const { field, text } of extractAllLexicalTexts(batch)) {
+    pushBlacklistIssues(issues, field, text, BLACKLIST, 'vocabulario C1/C2', 'B1');
+  }
+
+  for (const { field, text } of questionTexts) {
+    pushBlacklistIssues(issues, field, text, qBlacklist, qLabel, qTarget);
+  }
+
+  return { ok: issues.length === 0, issues, warnings, level };
 }
 
 /** Format a lexical check result for CLI output. */

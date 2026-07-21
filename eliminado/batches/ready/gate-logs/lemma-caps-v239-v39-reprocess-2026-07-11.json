@@ -1,0 +1,1859 @@
+{
+  "generatedAt": "2026-07-11T19:53:40.251Z",
+  "dryRun": false,
+  "versions": {
+    "vocab": "v2.3.9-adj-adv-laesst-lemma-2026-07-11",
+    "caps": "v3.9-attr-adj-unternehmen-2026-07-11"
+  },
+  "filesScanned": 157,
+  "filesChanged": [
+    "pool-verified/horen-t1-gemini-001.json",
+    "pool-verified/horen-t1-gemini-002.json",
+    "pool-verified/horen-t1-gemini-003.json",
+    "pool-verified/horen-t1-gemini-004.json",
+    "pool-verified/horen-t1-gemini-005.json",
+    "pool-verified/horen-t1-gemini-016.json",
+    "pool-verified/horen-t2-gemini-001.json",
+    "pool-verified/horen-t2-gemini-003.json",
+    "pool-verified/horen-t2-gemini-005.json",
+    "pool-verified/horen-t2-gemini-006.json",
+    "pool-verified/horen-t2-gemini-007.json",
+    "pool-verified/horen-t2-gemini-008.json",
+    "pool-verified/horen-t2-gemini-009.json",
+    "pool-verified/horen-t2-gemini-010.json",
+    "pool-verified/horen-t2-gemini-011.json",
+    "pool-verified/horen-t2-gemini-012.json",
+    "pool-verified/horen-t2-gemini-013.json",
+    "pool-verified/horen-t2-gemini-015.json",
+    "pool-verified/horen-t2-gemini-016.json",
+    "pool-verified/horen-t2-gemini-017.json",
+    "pool-verified/horen-t2-gemini-018.json",
+    "pool-verified/horen-t2-gemini-019.json",
+    "pool-verified/horen-t2-gemini-020.json",
+    "pool-verified/horen-t2-gemini-021.json",
+    "pool-verified/horen-t2-gemini-023.json",
+    "pool-verified/horen-t3-gemini-001.json",
+    "pool-verified/horen-t3-gemini-002.json",
+    "pool-verified/horen-t3-gemini-003.json",
+    "pool-verified/horen-t3-gemini-004.json",
+    "pool-verified/horen-t3-gemini-007.json",
+    "pool-verified/horen-t4-gemini-003.json",
+    "pool-verified/horen-t4-gemini-006.json",
+    "pool-verified/horen-t4-gemini-007.json",
+    "pool-verified/horen-t4-gemini-008.json",
+    "pool-verified/horen-t4-gemini-009.json",
+    "pool-verified/horen-t4-gemini-010.json",
+    "pool-verified/horen-t4-gemini-011.json",
+    "pool-verified/horen-t4-gemini-012.json",
+    "pool-verified/horen-t4-gemini-013.json",
+    "pool-verified/lesen-t1-gemini-075.json",
+    "pool-verified/lesen-t1-gemini-081.json",
+    "pool-verified/lesen-t1-gemini-082.json",
+    "pool-verified/lesen-t1-gemini-084.json",
+    "pool-verified/lesen-t1-gemini-086.json",
+    "pool-verified/lesen-t1-gemini-087.json",
+    "pool-verified/lesen-t1-gemini-089.json",
+    "pool-verified/lesen-t1-gemini-090.json",
+    "pool-verified/lesen-t1-gemini-092.json",
+    "pool-verified/lesen-t1-gemini-095.json",
+    "pool-verified/lesen-t1-gemini-097.json",
+    "pool-verified/lesen-t1-gemini-099.json",
+    "pool-verified/lesen-t1-gemini-108.json",
+    "pool-verified/lesen-t1-gemini-113.json",
+    "pool-verified/lesen-t1-gemini-117.json",
+    "pool-verified/lesen-t1-gemini-119.json",
+    "pool-verified/lesen-t1-gemini-121.json",
+    "pool-verified/lesen-t1-gemini-122.json",
+    "pool-verified/lesen-t1-gemini-125.json",
+    "pool-verified/lesen-t1-gemini-126.json",
+    "pool-verified/lesen-t1-gemini-127.json",
+    "pool-verified/lesen-t1-gemini-130.json",
+    "pool-verified/lesen-t1-gemini-135.json",
+    "pool-verified/lesen-t1-gemini-136.json",
+    "pool-verified/lesen-t1-gemini-137.json",
+    "pool-verified/lesen-t1-gemini-138.json",
+    "pool-verified/lesen-t1-gemini-139.json",
+    "pool-verified/lesen-t1-gemini-140.json",
+    "pool-verified/lesen-t1-gemini-142.json",
+    "pool-verified/lesen-t1-gemini-143.json",
+    "pool-verified/lesen-t1-gemini-144.json",
+    "pool-verified/lesen-t1-gemini-149.json",
+    "pool-verified/lesen-t1-gemini-155.json",
+    "pool-verified/lesen-t1-gemini-165.json",
+    "pool-verified/lesen-t1-gemini-175.json",
+    "pool-verified/lesen-t1-gemini-177.json",
+    "pool-verified/lesen-t1-gemini-179.json",
+    "pool-verified/lesen-t1-gemini-180.json",
+    "pool-verified/lesen-t2-gemini-055.json",
+    "pool-verified/lesen-t2-gemini-057.json",
+    "pool-verified/lesen-t2-gemini-093.json",
+    "pool-verified/lesen-t2-gemini-094.json",
+    "pool-verified/lesen-t2-gemini-096.json",
+    "pool-verified/lesen-t2-gemini-097.json",
+    "pool-verified/lesen-t3-auto-5bw5c5.json",
+    "pool-verified/lesen-t3-auto-ma7vt8.json",
+    "pool-verified/lesen-t3-auto-t725x5.json",
+    "pool-verified/lesen-t3-auto-vqxy1z.json",
+    "pool-verified/lesen-t3-auto-w8hk4n.json",
+    "pool-verified/lesen-t3-auto-we7l2c.json",
+    "pool-verified/lesen-t3-auto-wyw6fo.json",
+    "pool-verified/lesen-t3-auto-x4k027.json",
+    "pool-verified/lesen-t3-auto-xcph87.json",
+    "pool-verified/lesen-t3-auto-xqens7.json",
+    "pool-verified/lesen-t3-auto-yii0su.json",
+    "pool-verified/lesen-t3-auto-yu9vyl.json",
+    "pool-verified/lesen-t3-auto-yulvio.json",
+    "pool-verified/lesen-t3-auto-zfand7.json",
+    "pool-verified/lesen-t3-auto-zspq8n.json",
+    "pool-verified/lesen-t4-gemini-002.json",
+    "pool-verified/lesen-t4-gemini-006.json",
+    "pool-verified/lesen-t4-gemini-016.json",
+    "pool-verified/lesen-t4-gemini-017.json",
+    "pool-verified/lesen-t4-gemini-019.json",
+    "pool-verified/lesen-t5-gemini-009.json",
+    "pool-verified/lesen-t5-gemini-014.json",
+    "pool-verified/lesen-t5-gemini-015.json",
+    "pool-verified/lesen-t5-gemini-022.json",
+    "pool-verified/lesen-t5-gemini-023.json",
+    "pool-verified/lesen-t5-gemini-024.json",
+    "pool-verified/lesen-t5-gemini-026.json",
+    "pool-verified/lesen-t5-gemini-027.json",
+    "pool-verified/lesen-t5-gemini-028.json",
+    "pool-verified/lesen-t5-gemini-029.json",
+    "pool-verified/lesen-t5-gemini-030.json",
+    "pool-verified/lesen-t5-gemini-033.json",
+    "pool-verified/lesen-t5-gemini-034.json",
+    "pool-verified/lesen-t5-gemini-035.json",
+    "pool-verified/lesen-t5-gemini-036.json",
+    "pool-verified/lesen-t5-gemini-037.json",
+    "pool-verified/lesen-t5-gemini-050.json",
+    "pool-verified/lesen-t5-gemini-053.json",
+    "pool-verified/lesen-t5-gemini-057.json",
+    "pool-verified/lesen-t5-gemini-063.json",
+    "pool-verified/lesen-t5-gemini-064.json",
+    "pool-verified/lesen-t5-gemini-065.json",
+    "pool-verified/lesen-t5-gemini-070.json",
+    "pool-verified/lesen-t5-gemini-071.json",
+    "pool-verified/lesen-t5-gemini-073.json",
+    "pool-verified/schreiben-gemini-004.json",
+    "pool-verified/schreiben-gemini-005.json",
+    "pool-verified/schreiben-gemini-006.json",
+    "pool-verified/schreiben-gemini-007.json",
+    "pool-verified/schreiben-gemini-009.json",
+    "pool-verified/schreiben-gemini-010.json",
+    "pool-verified/sprechen-gemini-001.json",
+    "pool-verified/sprechen-gemini-005.json",
+    "pool-verified/sprechen-gemini-006.json",
+    "pool-verified/sprechen-gemini-007.json",
+    "pool-verified/sprechen-gemini-008.json",
+    "lesen-t4-staging-2026-07-11-canary/lesen-t4-gemini-001.json",
+    "lesen-t4-staging-2026-07-11-canary/lesen-t4-gemini-002.json",
+    "lesen-t4-staging-2026-07-11-canary/lesen-t4-gemini-003.json",
+    "lesen-t5-staging-2026-07-11-canary/lesen-t5-gemini-001.json",
+    "lesen-t5-staging-2026-07-11-canary/lesen-t5-gemini-002.json",
+    "lesen-t5-staging-2026-07-11-canary/lesen-t5-gemini-003.json",
+    "horen-t3-staging-2026-07-11-canary/horen-t3-gemini-001.json",
+    "horen-t3-staging-2026-07-11-canary/horen-t3-gemini-002.json",
+    "horen-t3-staging-2026-07-11-canary/horen-t3-gemini-004.json",
+    "canary-all-staging-2026-07-11/horen-t3-gemini-001.json",
+    "canary-all-staging-2026-07-11/horen-t3-gemini-002.json",
+    "canary-all-staging-2026-07-11/horen-t3-gemini-004.json",
+    "canary-all-staging-2026-07-11/lesen-t4-gemini-001.json",
+    "canary-all-staging-2026-07-11/lesen-t4-gemini-002.json",
+    "canary-all-staging-2026-07-11/lesen-t4-gemini-003.json",
+    "canary-all-staging-2026-07-11/lesen-t5-gemini-001.json",
+    "canary-all-staging-2026-07-11/lesen-t5-gemini-002.json",
+    "canary-all-staging-2026-07-11/lesen-t5-gemini-003.json"
+  ],
+  "stampOnly": [],
+  "vocabTagChanges": 22,
+  "capsTextChanges": 5,
+  "details": {
+    "pool-verified/horen-t1-gemini-001.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/horen-t1-gemini-002.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 2,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/horen-t1-gemini-003.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/horen-t1-gemini-004.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/horen-t1-gemini-005.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/horen-t1-gemini-016.json": {
+      "vocabTagDiffs": 1,
+      "vocabSamples": [
+        {
+          "qid": "gen-q-h1-8e7e4170-s1-q2",
+          "before": [
+            "Registrierung",
+            "Anmeldung",
+            "Option",
+            "Sportangebote",
+            "beginnt",
+            "korrekt"
+          ],
+          "after": [
+            "Registrierung",
+            "Anmeldung",
+            "Sportangebote",
+            "beginnt",
+            "Freitag",
+            "Bereits"
+          ]
+        }
+      ],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/horen-t2-gemini-001.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/horen-t2-gemini-003.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/horen-t2-gemini-005.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/horen-t2-gemini-006.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/horen-t2-gemini-007.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/horen-t2-gemini-008.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/horen-t2-gemini-009.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/horen-t2-gemini-010.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/horen-t2-gemini-011.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/horen-t2-gemini-012.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/horen-t2-gemini-013.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/horen-t2-gemini-015.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/horen-t2-gemini-016.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/horen-t2-gemini-017.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/horen-t2-gemini-018.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/horen-t2-gemini-019.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/horen-t2-gemini-020.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/horen-t2-gemini-021.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/horen-t2-gemini-023.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/horen-t3-gemini-001.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/horen-t3-gemini-002.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/horen-t3-gemini-003.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/horen-t3-gemini-004.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/horen-t3-gemini-007.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/horen-t4-gemini-003.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/horen-t4-gemini-006.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/horen-t4-gemini-007.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/horen-t4-gemini-008.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/horen-t4-gemini-009.json": {
+      "vocabTagDiffs": 1,
+      "vocabSamples": [
+        {
+          "qid": "gen-q-h4-de75ba58-5",
+          "before": [
+            "Unterstützung",
+            "motivieren",
+            "Anwendungen",
+            "fitness-app",
+            "Digitale",
+            "nützlich"
+          ],
+          "after": [
+            "Unterstützung",
+            "motivieren",
+            "fitness-apps",
+            "Anwendungen",
+            "Digitale",
+            "nützlich"
+          ]
+        }
+      ],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/horen-t4-gemini-010.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/horen-t4-gemini-011.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/horen-t4-gemini-012.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/horen-t4-gemini-013.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 4,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t1-gemini-075.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t1-gemini-081.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t1-gemini-082.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t1-gemini-084.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t1-gemini-086.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t1-gemini-087.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t1-gemini-089.json": {
+      "vocabTagDiffs": 1,
+      "vocabSamples": [
+        {
+          "qid": "gen-q-1-9921-6",
+          "before": [
+            "wandern",
+            "meisten",
+            "Energie"
+          ],
+          "after": [
+            "wandern",
+            "meistens",
+            "Energie"
+          ]
+        }
+      ],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t1-gemini-090.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t1-gemini-092.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t1-gemini-095.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t1-gemini-097.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t1-gemini-099.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t1-gemini-108.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t1-gemini-113.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t1-gemini-117.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t1-gemini-119.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t1-gemini-121.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t1-gemini-122.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t1-gemini-125.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t1-gemini-126.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t1-gemini-127.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t1-gemini-130.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t1-gemini-135.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 2,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t1-gemini-136.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t1-gemini-137.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t1-gemini-138.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t1-gemini-139.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t1-gemini-140.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t1-gemini-142.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t1-gemini-143.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t1-gemini-144.json": {
+      "vocabTagDiffs": 1,
+      "vocabSamples": [
+        {
+          "qid": "gen-q-1-ea42974d-3",
+          "before": [
+            "Unterstützung",
+            "Hausaufgabenbetreuung",
+            "meisten",
+            "Mensch",
+            "helfen",
+            "hauptsächlich"
+          ],
+          "after": [
+            "Unterstützung",
+            "Hausaufgabenbetreuung",
+            "Mensch",
+            "helfen",
+            "hauptsächlich",
+            "konzentriert"
+          ]
+        }
+      ],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t1-gemini-149.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t1-gemini-155.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t1-gemini-165.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t1-gemini-175.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t1-gemini-177.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t1-gemini-179.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t1-gemini-180.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t2-gemini-055.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t2-gemini-057.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t2-gemini-093.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t2-gemini-094.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t2-gemini-096.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t2-gemini-097.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t3-auto-5bw5c5.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t3-auto-ma7vt8.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t3-auto-t725x5.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t3-auto-vqxy1z.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t3-auto-w8hk4n.json": {
+      "vocabTagDiffs": 1,
+      "vocabSamples": [
+        {
+          "qid": "gen-q-3-hquph6-5",
+          "before": [
+            "ausgefallen",
+            "liebsten",
+            "Abholung",
+            "abholen",
+            "repair-cafe",
+            "Reparatur"
+          ],
+          "after": [
+            "ausgefallen",
+            "liebsten",
+            "Abholung",
+            "abholen",
+            "repair-caf",
+            "Reparatur"
+          ]
+        }
+      ],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t3-auto-we7l2c.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t3-auto-wyw6fo.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t3-auto-x4k027.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t3-auto-xcph87.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t3-auto-xqens7.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t3-auto-yii0su.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t3-auto-yu9vyl.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t3-auto-yulvio.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t3-auto-zfand7.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t3-auto-zspq8n.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t4-gemini-002.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t4-gemini-006.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t4-gemini-016.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t4-gemini-017.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t4-gemini-019.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t5-gemini-009.json": {
+      "vocabTagDiffs": 1,
+      "vocabSamples": [
+        {
+          "qid": "gen-q-5-64b1360b-4",
+          "before": [
+            "kündigen",
+            "bepflanzen",
+            "pflichten",
+            "mindesten",
+            "Kündigung",
+            "erfolgen"
+          ],
+          "after": [
+            "kündigen",
+            "bepflanzen",
+            "pflichten",
+            "Kündigung",
+            "erfolgen",
+            "nutzen"
+          ]
+        }
+      ],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t5-gemini-014.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t5-gemini-015.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t5-gemini-022.json": {
+      "vocabTagDiffs": 1,
+      "vocabSamples": [
+        {
+          "qid": "gen-q-5-efc96246-1",
+          "before": [
+            "öffnungszeiten",
+            "abgeben",
+            "dürfen",
+            "sammelstell",
+            "Wertstoffe",
+            "Altmetall"
+          ],
+          "after": [
+            "öffnungszeiten",
+            "abgeben",
+            "dürfen",
+            "Sammelstelle",
+            "Wertstoffe",
+            "Altmetall"
+          ]
+        }
+      ],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t5-gemini-023.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t5-gemini-024.json": {
+      "vocabTagDiffs": 1,
+      "vocabSamples": [
+        {
+          "qid": "gen-q-5-7c35a128-3",
+          "before": [
+            "ausschalten",
+            "Licht",
+            "gewährleisten",
+            "Hausordnung",
+            "Sicherheit",
+            "mindesten"
+          ],
+          "after": [
+            "ausschalten",
+            "Licht",
+            "gewährleisten",
+            "Hausordnung",
+            "Sicherheit",
+            "anlassen"
+          ]
+        }
+      ],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t5-gemini-026.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t5-gemini-027.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t5-gemini-028.json": {
+      "vocabTagDiffs": 1,
+      "vocabSamples": [
+        {
+          "qid": "gen-q-5-6046b479-2",
+          "before": [
+            "frisch",
+            "Luft",
+            "Abwesenheit",
+            "reduzieren",
+            "empfehlen",
+            "mindesten"
+          ],
+          "after": [
+            "frisch",
+            "Luft",
+            "Abwesenheit",
+            "reduzieren",
+            "empfehlen",
+            "Heizung"
+          ]
+        }
+      ],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t5-gemini-029.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t5-gemini-030.json": {
+      "vocabTagDiffs": 1,
+      "vocabSamples": [
+        {
+          "qid": "gen-q-5-b2260853-4",
+          "before": [
+            "rund",
+            "E-bike-ladestation",
+            "Ladestation",
+            "Bezahlung",
+            "Nutzung",
+            "sieben"
+          ],
+          "after": [
+            "rund",
+            "Ladestation",
+            "Bezahlung",
+            "Nutzung",
+            "sieben",
+            "nutzen"
+          ]
+        }
+      ],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t5-gemini-033.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t5-gemini-034.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t5-gemini-035.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t5-gemini-036.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t5-gemini-037.json": {
+      "vocabTagDiffs": 1,
+      "vocabSamples": [
+        {
+          "qid": "gen-q-5-c30f2ab4-3",
+          "before": [
+            "notwendig",
+            "Hausverwaltung",
+            "Entsorgung",
+            "Verwaltung",
+            "entsorgen",
+            "mindesten"
+          ],
+          "after": [
+            "notwendig",
+            "Hausverwaltung",
+            "Entsorgung",
+            "Verwaltung",
+            "entsorgen",
+            "Anmeldung"
+          ]
+        }
+      ],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t5-gemini-050.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t5-gemini-053.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t5-gemini-057.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t5-gemini-063.json": {
+      "vocabTagDiffs": 1,
+      "vocabSamples": [
+        {
+          "qid": "gen-q-5-11d79a5d-3",
+          "before": [
+            "teilnehmen",
+            "besuchen",
+            "Registrierung",
+            "mindesten",
+            "vermeiden",
+            "Abmeldung"
+          ],
+          "after": [
+            "teilnehmen",
+            "besuchen",
+            "Registrierung",
+            "vermeiden",
+            "Abmeldung",
+            "entstehen"
+          ]
+        }
+      ],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t5-gemini-064.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t5-gemini-065.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t5-gemini-070.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t5-gemini-071.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/lesen-t5-gemini-073.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/schreiben-gemini-004.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/schreiben-gemini-005.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/schreiben-gemini-006.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/schreiben-gemini-007.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/schreiben-gemini-009.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/schreiben-gemini-010.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/sprechen-gemini-001.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/sprechen-gemini-005.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/sprechen-gemini-006.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/sprechen-gemini-007.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "pool-verified/sprechen-gemini-008.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "lesen-t4-staging-2026-07-11-canary/lesen-t4-gemini-001.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "lesen-t4-staging-2026-07-11-canary/lesen-t4-gemini-002.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 1,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "lesen-t4-staging-2026-07-11-canary/lesen-t4-gemini-003.json": {
+      "vocabTagDiffs": 1,
+      "vocabSamples": [
+        {
+          "qid": "gen-q-4-3c13df4d-1",
+          "before": [
+            "unterstützen",
+            "Gesundheit",
+            "Wartung",
+            "finden",
+            "robuen",
+            "warten"
+          ],
+          "after": [
+            "unterstützen",
+            "Gesundheit",
+            "Wartung",
+            "finden",
+            "warten",
+            "grundsätzlich"
+          ]
+        }
+      ],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "lesen-t5-staging-2026-07-11-canary/lesen-t5-gemini-001.json": {
+      "vocabTagDiffs": 3,
+      "vocabSamples": [
+        {
+          "qid": "gen-q-5-a764778f-1",
+          "before": [
+            "mittagessen",
+            "ausgegeben",
+            "bekommen",
+            "Zwischen",
+            "Mitarbeiter",
+            "Ausgabe"
+          ],
+          "after": [
+            "mittagessen",
+            "ausgegeben",
+            "bekommen",
+            "Zwischen",
+            "Mitarbeiter",
+            "spätestens"
+          ]
+        },
+        {
+          "qid": "gen-q-5-a764778f-3",
+          "before": [
+            "notwendig",
+            "Bezahlung",
+            "mindesten",
+            "guthaben",
+            "bezahlen",
+            "aufladen"
+          ],
+          "after": [
+            "notwendig",
+            "Bezahlung",
+            "guthaben",
+            "bezahlen",
+            "aufladen",
+            "Nutzung"
+          ]
+        },
+        {
+          "qid": "gen-q-5-a764778f-4",
+          "before": [
+            "informieren",
+            "Wünsche",
+            "Vorbestellung",
+            "allergien",
+            "mindesten",
+            "stunden"
+          ],
+          "after": [
+            "informieren",
+            "Wünsche",
+            "Vorbestellung",
+            "allergien",
+            "stunden",
+            "angeben"
+          ]
+        }
+      ],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "lesen-t5-staging-2026-07-11-canary/lesen-t5-gemini-002.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "lesen-t5-staging-2026-07-11-canary/lesen-t5-gemini-003.json": {
+      "vocabTagDiffs": 1,
+      "vocabSamples": [
+        {
+          "qid": "gen-q-5-716912b4-4",
+          "before": [
+            "mitbringen",
+            "Mülltrennung",
+            "hinterlässen",
+            "Sauberkeit",
+            "speisen",
+            "trennen"
+          ],
+          "after": [
+            "mitbringen",
+            "Mülltrennung",
+            "hinterlassen",
+            "Sauberkeit",
+            "speisen",
+            "trennen"
+          ]
+        }
+      ],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "horen-t3-staging-2026-07-11-canary/horen-t3-gemini-001.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "horen-t3-staging-2026-07-11-canary/horen-t3-gemini-002.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "horen-t3-staging-2026-07-11-canary/horen-t3-gemini-004.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "canary-all-staging-2026-07-11/horen-t3-gemini-001.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "canary-all-staging-2026-07-11/horen-t3-gemini-002.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "canary-all-staging-2026-07-11/horen-t3-gemini-004.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "canary-all-staging-2026-07-11/lesen-t4-gemini-001.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "canary-all-staging-2026-07-11/lesen-t4-gemini-002.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 1,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "canary-all-staging-2026-07-11/lesen-t4-gemini-003.json": {
+      "vocabTagDiffs": 1,
+      "vocabSamples": [
+        {
+          "qid": "gen-q-4-3c13df4d-1",
+          "before": [
+            "unterstützen",
+            "Gesundheit",
+            "Wartung",
+            "finden",
+            "robuen",
+            "warten"
+          ],
+          "after": [
+            "unterstützen",
+            "Gesundheit",
+            "Wartung",
+            "finden",
+            "warten",
+            "grundsätzlich"
+          ]
+        }
+      ],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "canary-all-staging-2026-07-11/lesen-t5-gemini-001.json": {
+      "vocabTagDiffs": 3,
+      "vocabSamples": [
+        {
+          "qid": "gen-q-5-a764778f-1",
+          "before": [
+            "mittagessen",
+            "ausgegeben",
+            "bekommen",
+            "Zwischen",
+            "Mitarbeiter",
+            "Ausgabe"
+          ],
+          "after": [
+            "mittagessen",
+            "ausgegeben",
+            "bekommen",
+            "Zwischen",
+            "Mitarbeiter",
+            "spätestens"
+          ]
+        },
+        {
+          "qid": "gen-q-5-a764778f-3",
+          "before": [
+            "notwendig",
+            "Bezahlung",
+            "mindesten",
+            "guthaben",
+            "bezahlen",
+            "aufladen"
+          ],
+          "after": [
+            "notwendig",
+            "Bezahlung",
+            "guthaben",
+            "bezahlen",
+            "aufladen",
+            "Nutzung"
+          ]
+        },
+        {
+          "qid": "gen-q-5-a764778f-4",
+          "before": [
+            "informieren",
+            "Wünsche",
+            "Vorbestellung",
+            "allergien",
+            "mindesten",
+            "stunden"
+          ],
+          "after": [
+            "informieren",
+            "Wünsche",
+            "Vorbestellung",
+            "allergien",
+            "stunden",
+            "angeben"
+          ]
+        }
+      ],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "canary-all-staging-2026-07-11/lesen-t5-gemini-002.json": {
+      "vocabTagDiffs": 0,
+      "vocabSamples": [],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    },
+    "canary-all-staging-2026-07-11/lesen-t5-gemini-003.json": {
+      "vocabTagDiffs": 1,
+      "vocabSamples": [
+        {
+          "qid": "gen-q-5-716912b4-4",
+          "before": [
+            "mitbringen",
+            "Mülltrennung",
+            "hinterlässen",
+            "Sauberkeit",
+            "speisen",
+            "trennen"
+          ],
+          "after": [
+            "mitbringen",
+            "Mülltrennung",
+            "hinterlassen",
+            "Sauberkeit",
+            "speisen",
+            "trennen"
+          ]
+        }
+      ],
+      "capsFixed": 0,
+      "capsSamples": [],
+      "contentChanged": true,
+      "stampOnly": false
+    }
+  }
+}

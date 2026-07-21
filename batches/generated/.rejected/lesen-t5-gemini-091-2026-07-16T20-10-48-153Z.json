@@ -1,0 +1,173 @@
+{
+  "_rejectedReason": "gen-q-5-a2de6877-4: opción correcta copia ≥5 palabras del pasaje («die endreinigung ist im preis»)\n\nCalidad pedagógica FAIL (5 problemas, estimación ~58%)\n  - gen-q-5-a2de6877-4: opción correcta copia ≥5 palabras del pasaje («die endreinigung ist im preis»)\n  - gen-q-5-a2de6877-1: sesgo de longitud MCQ (B1) — opción correcta «a» es la más larga (79 vs 50/35; Δ +37 chars, +86% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable.\n  - gen-q-5-a2de6877-2: sesgo de longitud MCQ (B1) — opción correcta «b» es la más larga (118 vs 51/53; Δ +66 chars, +127% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable.\n  - gen-q-5-a2de6877-3: sesgo de longitud MCQ (B1) — opción correcta «c» es la más larga (93 vs 70/44; Δ +36 chars, +63% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable.\n  - gen-q-5-a2de6877-4: sesgo de longitud MCQ (B1) — opción correcta «a» es la más larga (114 vs 89/64; Δ +38 chars, +49% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable.\nAvisos (1):\n  · POS caps gate skipped: Python was not found; run without arguments to install from the Microsoft Store, or disable this shortcut from Settings > Apps > Advanced app settings > App execution aliases.",
+  "_rejectedGate": "calidad",
+  "_rejectedAt": "2026-07-16T20:10:48.153Z",
+  "passages": [
+    {
+      "id": "gen-l5-a2de6877",
+      "module": "lesen",
+      "teil": 5,
+      "title": "Mietbedingungen für Ferienwohnungen \"Meerblick\"",
+      "text": "Herzlich willkommen in unseren Ferienwohnungen \"Meerblick\"! Damit Ihr Urlaub angenehm wird und alle Gäste eine schöne Zeit haben, bitten wir Sie, die folgenden Regeln zu beachten:\n1. Buchung und Bezahlung: Eine Buchung ist erst nach Erhalt einer schriftlichen Bestätigung und einer Anzahlung von 20% des Gesamtpreises direkt gültig. Der Restbetrag muss spätestens 30 Tage vor Anreise bezahlt werden. Bei kurzfristigen Buchungen (weniger als 30 Tage vor Anreise) ist der volle Betrag sofort fällig.\n2. Anreise und Abreise: Die Ferienwohnung steht Ihnen am Anreisetag ab 16:00 Uhr zur Verfügung. Am Abreisetag bitten wir Sie, die Wohnung bis 10:00 Uhr zu verlassen. Eine spätere Abreise ist nur nach Absprache und gegen eine Gebühr von 25 Euro pro Stunde möglich, falls keine neue Anreise geplant ist.\n3. Haustiere: Haustiere sind in unseren Wohnungen nicht erlaubt. Wir bitten um Ihr Verständnis.\n4. Ruhezeiten: Um die Erholung aller Nachbarn zu gewährleisten, bitten wir Sie, zwischen 22:00 Uhr und 7:00 Uhr sowie zwischen 13:00 Uhr und 15:00 Uhr (Mittagsruhe) besondere Rücksicht zu nehmen. Laute Musik oder Partys sind nicht gestattet.\n5. Reinigung: Die Endreinigung ist im Preis enthalten. Wir erwarten jedoch, dass die Wohnung bei Abreise besenrein und aufgeräumt ist. Müll muss in die dafür vorgesehenen Behälter entsorgt werden.\n6. Schäden: Für Schäden, die während Ihres Aufenthalts entstehen, haften Sie als Mieter. Bitte melden Sie größere Schäden sofort, damit wir sie beheben können. Kleinere Probleme können Sie uns auch bei der Abreise mitteilen.\n7. Parkplatz: Pro Wohnung steht ein kostenloser Parkplatz zur Verfügung. Weitere Fahrzeuge müssen auf öffentlichen Parkplätzen abgestellt werden.",
+      "lang": "de",
+      "level": "B1",
+      "topicTag": "Reisen"
+    }
+  ],
+  "questions": [
+    {
+      "id": "gen-q-5-a2de6877-1",
+      "module": "lesen",
+      "teil": 5,
+      "type": "multiple_choice",
+      "question": "Wann muss der volle Mietpreis bezahlt werden?",
+      "options": [
+        "a) Sofort, falls die Buchung kurz vor dem Reisetermin stattfindet (unter 30 Tage).",
+        "b) Nach der Anreise, sobald die Bestätigung vorliegt.",
+        "c) Spätestens 20 Tage vor der Anreise."
+      ],
+      "correct": "a",
+      "correctAnswer": "a",
+      "explanation": "Wenn eine Buchung weniger als 30 Tage vor der Reise erfolgt, muss der gesamte Betrag sofort bezahlt werden.",
+      "passageId": "gen-l5-a2de6877",
+      "lang": "de",
+      "level": "B1",
+      "topicTags": [
+        "Reisen"
+      ]
+    },
+    {
+      "id": "gen-q-5-a2de6877-2",
+      "module": "lesen",
+      "teil": 5,
+      "type": "multiple_choice",
+      "question": "Was passiert, wenn man später als 10:00 Uhr abreisen möchte?",
+      "options": [
+        "a) Das ist kostenlos möglich, wenn man es vorher sagt.",
+        "b) Man muss 25 Euro pro Stunde bezahlen, aber nur nach Absprache und wenn die Wohnung nicht direkt wieder vermietet wird.",
+        "c) Eine spätere Abreise ist grundsätzlich nicht erlaubt."
+      ],
+      "correct": "b",
+      "correctAnswer": "b",
+      "explanation": "Eine spätere Abreise als 10:00 Uhr ist nur nach vorheriger Vereinbarung und gegen eine zusätzliche Gebühr von 25 Euro pro Stunde möglich, sofern keine andere Buchung vorliegt.",
+      "passageId": "gen-l5-a2de6877",
+      "lang": "de",
+      "level": "B1",
+      "topicTags": [
+        "Reisen"
+      ]
+    },
+    {
+      "id": "gen-q-5-a2de6877-3",
+      "module": "lesen",
+      "teil": 5,
+      "type": "multiple_choice",
+      "question": "Welche dieser Aussagen ist korrekt?",
+      "options": [
+        "a) Laute Partys sind bis 23:00 Uhr erlaubt, aber Haustiere sind verboten.",
+        "b) Haustiere sind erlaubt, wenn sie leise sind.",
+        "c) Zwischen 13:00 und 15:00 Uhr ist Ruhe zu halten, und Tiere sind in der Wohnung nicht erlaubt."
+      ],
+      "correct": "c",
+      "correctAnswer": "c",
+      "explanation": "Die Mittagsruhe gilt von 13:00 bis 15:00 Uhr, und es ist generell nicht erlaubt, Haustiere in den Ferienwohnungen zu haben.",
+      "passageId": "gen-l5-a2de6877",
+      "lang": "de",
+      "level": "B1",
+      "topicTags": [
+        "Reisen"
+      ]
+    },
+    {
+      "id": "gen-q-5-a2de6877-4",
+      "module": "lesen",
+      "teil": 5,
+      "type": "multiple_choice",
+      "question": "Was gilt für die Endreinigung und das Parken?",
+      "options": [
+        "a) Ein Parkplatz ist kostenlos, und die Endreinigung ist im Preis, aber die Wohnung muss ordentlich verlassen werden.",
+        "b) Man muss die Wohnung selbst komplett reinigen, und Parkplätze sind immer kostenpflichtig.",
+        "c) Die Endreinigung kostet extra, aber alle Parkplätze sind gratis."
+      ],
+      "correct": "a",
+      "correctAnswer": "a",
+      "explanation": "Ein Parkplatz ist inklusive, und die Endreinigung ist bereits bezahlt, jedoch wird erwartet, dass die Wohnung bei der Abreise sauber und aufgeräumt ist.",
+      "passageId": "gen-l5-a2de6877",
+      "lang": "de",
+      "level": "B1",
+      "topicTags": [
+        "Reisen"
+      ]
+    }
+  ],
+  "topicTag": "Reisen",
+  "_requestedTopic": "Reisen",
+  "_textSubtype": "freizeitzentrum",
+  "userVocabFeedback": {
+    "topic": "Reisen",
+    "requested": [
+      "direkt",
+      "zukunft",
+      "erwachsen",
+      "schritt",
+      "täglich",
+      "angenehm"
+    ],
+    "prompted": [
+      "direkt",
+      "zukunft",
+      "erwachsen",
+      "schritt",
+      "täglich",
+      "angenehm"
+    ],
+    "used": [
+      "direkt",
+      "angenehm"
+    ],
+    "notUsed": [
+      "zukunft",
+      "erwachsen",
+      "schritt",
+      "täglich"
+    ],
+    "excluded": [],
+    "ratio": 0.3333333333333333,
+    "targetUsage": [
+      {
+        "word": "direkt",
+        "surfaces": [
+          "direkt"
+        ]
+      },
+      {
+        "word": "angenehm",
+        "surfaces": [
+          "angenehm"
+        ]
+      }
+    ]
+  },
+  "targetUsage": [
+    {
+      "word": "direkt",
+      "surfaces": [
+        "direkt"
+      ]
+    },
+    {
+      "word": "angenehm",
+      "surfaces": [
+        "angenehm"
+      ]
+    }
+  ],
+  "generationMetadata": {
+    "usedFeedback": false,
+    "feedbackRules": [],
+    "feedbackCount": 0,
+    "feedbackCategories": [],
+    "feedbackMode": "off",
+    "feedbackVersion": "v1"
+  }
+}

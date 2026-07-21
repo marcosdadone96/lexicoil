@@ -1,0 +1,148 @@
+{
+  "ts": "2026-07-06T09:03:59.750Z",
+  "teil": 1,
+  "topic": "Technik",
+  "countPerArm": 2,
+  "goldSources": [
+    {
+      "source": "pilot-gate-control/pilot-t1-technik.json",
+      "topic": "Technik"
+    },
+    {
+      "source": "lesen-t1-gemini-118.json",
+      "topic": "?"
+    },
+    {
+      "source": "lesen-t1-gemini-127.json",
+      "topic": "?"
+    },
+    {
+      "source": "lesen-t1-gemini-128.json",
+      "topic": "?"
+    },
+    {
+      "source": "lesen-t1-gemini-129.json",
+      "topic": "?"
+    }
+  ],
+  "control": {
+    "summary": {
+      "n": 2,
+      "genOk": 1,
+      "genOkRate": 0.5,
+      "firstTryPublish": 0,
+      "firstTryRate": 0,
+      "fullGatePass": 1,
+      "fullGateRate": 0.5,
+      "avgDefects": 0,
+      "avgB2": 0,
+      "avgWordMatch": 0,
+      "avgAbsolute": 0,
+      "avgCoherence": 0,
+      "avgSem1": 0,
+      "avgQualityIssues": 0,
+      "avgScoreEstimate": 100,
+      "avgAttempts": 2
+    },
+    "rows": [
+      {
+        "arm": "control",
+        "index": 1,
+        "genOk": true,
+        "attempts": 2,
+        "firstTryPublish": false,
+        "apiCalls": 2,
+        "reason": null,
+        "ms": 52943,
+        "score": {
+          "qualityOk": true,
+          "lexicalOk": true,
+          "pool2Ok": true,
+          "fullOk": true,
+          "qualityIssues": 0,
+          "lexicalIssues": 0,
+          "blockingCount": 0,
+          "defectCount": 0,
+          "b2": 0,
+          "wordMatch": 0,
+          "absolute": 0,
+          "explanation": 0,
+          "coherence": 0,
+          "sem1": 0,
+          "semanticStruct": 0,
+          "chkIds": [],
+          "blocking": [],
+          "scoreEstimate": 100
+        },
+        "file": "batches/generated/lesen-t1-gemini-159.json"
+      },
+      {
+        "arm": "control",
+        "index": 2,
+        "genOk": false,
+        "attempts": null,
+        "firstTryPublish": false,
+        "apiCalls": 3,
+        "reason": "gen-q-1-a26cfa3f-5: ≥3 palabras idénticas con el pasaje (familie, unterstützt, immer)",
+        "ms": 143781,
+        "score": null
+      }
+    ]
+  },
+  "fewshot": {
+    "summary": {
+      "n": 2,
+      "genOk": 0,
+      "genOkRate": 0,
+      "firstTryPublish": 0,
+      "firstTryRate": 0,
+      "fullGatePass": 0,
+      "fullGateRate": 0,
+      "avgDefects": 0,
+      "avgB2": 0,
+      "avgWordMatch": 0,
+      "avgAbsolute": 0,
+      "avgCoherence": 0,
+      "avgSem1": 0,
+      "avgQualityIssues": 0,
+      "avgScoreEstimate": 0,
+      "avgAttempts": 0
+    },
+    "rows": [
+      {
+        "arm": "fewshot",
+        "index": 1,
+        "genOk": false,
+        "attempts": null,
+        "firstTryPublish": false,
+        "apiCalls": 3,
+        "reason": "undefined: ≥3 palabras idénticas con el pasaje (technik, nutzung, familie)",
+        "ms": 54326,
+        "score": null
+      },
+      {
+        "arm": "fewshot",
+        "index": 2,
+        "genOk": false,
+        "attempts": null,
+        "firstTryPublish": false,
+        "apiCalls": 3,
+        "reason": "Campo obligatorio faltante: \"id\"",
+        "ms": 59561,
+        "score": null
+      }
+    ]
+  },
+  "delta": {
+    "firstTryRate": 0,
+    "fullGateRate": -0.5,
+    "avgDefects": 0,
+    "avgB2": 0,
+    "avgWordMatch": 0,
+    "avgSem1": 0
+  },
+  "apiCalls": {
+    "control": 5,
+    "fewshot": 6
+  }
+}

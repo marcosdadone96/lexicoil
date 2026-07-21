@@ -1,0 +1,269 @@
+{
+  "at": "2026-07-13T14:34:23.356Z",
+  "part0": {
+    "file": "horen-t3-gemini-012.json",
+    "verdict": "FALSE_POSITIVE",
+    "reason": "Auto-anchored q1/q2/q6 on vocabularyTag «Wohnung»@140 (Sophie opening); phrase-based order strictly monotonic",
+    "beforePositions": [
+      229,
+      436,
+      485,
+      827,
+      888,
+      993,
+      1284
+    ],
+    "afterPositions": [
+      229,
+      436,
+      485,
+      827,
+      888,
+      993,
+      1284
+    ],
+    "phraseAudit": [
+      {
+        "id": "gen-q-h3-b68e1086-1",
+        "phrasePos": 229,
+        "needle": "drei Zimmer, ein Wohnzimmer"
+      },
+      {
+        "id": "gen-q-h3-b68e1086-2",
+        "phrasePos": 436,
+        "needle": "ein Bisschen schon, aber es lohnt sich"
+      },
+      {
+        "id": "gen-q-h3-b68e1086-3",
+        "phrasePos": 485,
+        "needle": "Der Vermieter ist auch sehr nett"
+      },
+      {
+        "id": "gen-q-h3-b68e1086-4",
+        "autoPos": 827,
+        "via": "substr"
+      },
+      {
+        "id": "gen-q-h3-b68e1086-5",
+        "autoPos": 888,
+        "via": "substr"
+      },
+      {
+        "id": "gen-q-h3-b68e1086-6",
+        "phrasePos": 993,
+        "needle": "Das war dir doch immer so wichtig"
+      },
+      {
+        "id": "gen-q-h3-b68e1086-7",
+        "autoPos": 1284,
+        "via": "substr"
+      }
+    ],
+    "okAfterFix": true
+  },
+  "part1": {
+    "patched": [
+      {
+        "file": "schreiben-gemini-004.json",
+        "before": "free:die heizung in ihrer wohnung funktioniert seit gestern nicht richtig sie mochten die hausverwaltung informieren schreibe",
+        "after": "free:die heizung in ihrer wohnung funktioniert seit gestern nicht richtig sie mochten die hausverwaltung informieren schreibe"
+      },
+      {
+        "file": "schreiben-gemini-009.json",
+        "before": "free:sie haben auf dem parkplatz vor ihrem buro einen schlusselbund gefunden schreiben sie eine kurze mitteilung an die hausm",
+        "after": "free:sie haben auf dem parkplatz vor ihrem buro einen schlusselbund gefunden schreiben sie eine kurze mitteilung an die hausm"
+      },
+      {
+        "file": "schreiben-gemini-013.json",
+        "before": "appointment_cancel_reschedule",
+        "after": "appointment_cancel_reschedule"
+      },
+      {
+        "file": "schreiben-gemini-014.json",
+        "before": "free:sie haben von ihrem nachbarn herrn neumann erfahren dass er erfahrung mit der reparatur von fahrradern hat ihr fahrrad h",
+        "after": "free:sie haben von ihrem nachbarn herrn neumann erfahren dass er erfahrung mit der reparatur von fahrradern hat ihr fahrrad h"
+      }
+    ],
+    "remainingDuplicateGroups": []
+  },
+  "part2": {
+    "filesPatched": 6,
+    "remainingHits": []
+  },
+  "part3": {
+    "lesenT4": [
+      {
+        "file": "lesen-t4-gemini-002.json",
+        "skipped": true,
+        "reason": "no recycled names"
+      },
+      {
+        "file": "lesen-t4-gemini-006.json",
+        "skipped": true,
+        "reason": "no recycled names"
+      },
+      {
+        "file": "lesen-t4-gemini-016.json",
+        "skipped": true,
+        "reason": "no recycled names"
+      },
+      {
+        "file": "lesen-t4-gemini-017.json",
+        "skipped": true,
+        "reason": "no recycled names"
+      },
+      {
+        "file": "lesen-t4-gemini-019.json",
+        "skipped": true,
+        "reason": "no recycled names"
+      },
+      {
+        "file": "lesen-t4-gemini-043.json",
+        "from": [
+          "Ben",
+          "David",
+          "Finn",
+          "Anna",
+          "Eva",
+          "Clara",
+          "Greta"
+        ],
+        "to": [
+          "Lukas",
+          "Paul",
+          "Noah",
+          "Mira",
+          "Pia",
+          "Sofia",
+          "Hannah"
+        ],
+        "replacements": 0
+      },
+      {
+        "file": "lesen-t4-gemini-044.json",
+        "from": [
+          "Anna",
+          "Gustav",
+          "Emil",
+          "Fiona",
+          "Clara",
+          "David",
+          "Ben"
+        ],
+        "to": [
+          "Aylin",
+          "Erik",
+          "Tim",
+          "Nele",
+          "Zara",
+          "Jonas",
+          "Felix"
+        ],
+        "replacements": 14
+      },
+      {
+        "file": "lesen-t4-gemini-045.json",
+        "from": [
+          "Lena",
+          "Julia",
+          "David",
+          "Clara",
+          "Markus",
+          "Peter",
+          "Sophie"
+        ],
+        "to": [
+          "Laura",
+          "Ruth",
+          "Felix",
+          "Amina",
+          "Leon",
+          "Jan",
+          "Pia"
+        ],
+        "replacements": 14
+      }
+    ],
+    "schreibenT3": [
+      {
+        "file": "schreiben-gemini-004.json",
+        "fromSurname": "Schmidt",
+        "toSurname": "Krüger"
+      },
+      {
+        "file": "schreiben-gemini-005.json",
+        "fromSurname": "Schmidt",
+        "toSurname": "Hartmann"
+      },
+      {
+        "file": "schreiben-gemini-010.json",
+        "fromSurname": "Klein",
+        "toSurname": "Schäfer"
+      }
+    ]
+  },
+  "part4": {
+    "chk26FixScope": "GENERAL — lesenT3TopicFilter.mjs + topicFamilies used in audit-pass-2 chk26 for all Lesen T3",
+    "konusmSpecificOnly": false,
+    "poolT3Total": 16,
+    "incompatibleBefore": 9,
+    "incompatibleAfterGeneralFix": 9,
+    "resolvedByGeneralFixAlone": 0,
+    "needRetagOrRegen": 9,
+    "files": [
+      {
+        "file": "lesen-t3-auto-5bw5c5.json",
+        "expected": "Wohnen",
+        "detected": "Technik"
+      },
+      {
+        "file": "lesen-t3-auto-ma7vt8.json",
+        "expected": "Wohnen",
+        "detected": "Reisen"
+      },
+      {
+        "file": "lesen-t3-auto-t725x5.json",
+        "expected": "Technik",
+        "detected": "Reisen"
+      },
+      {
+        "file": "lesen-t3-auto-vqxy1z.json",
+        "expected": "Wohnen",
+        "detected": "Sport"
+      },
+      {
+        "file": "lesen-t3-auto-w8hk4n.json",
+        "expected": "Verkehr",
+        "detected": "Wohnen"
+      },
+      {
+        "file": "lesen-t3-auto-xcph87.json",
+        "expected": "Wohnen",
+        "detected": "Technik"
+      },
+      {
+        "file": "lesen-t3-auto-yu9vyl.json",
+        "expected": "Wohnen",
+        "detected": "Reisen"
+      },
+      {
+        "file": "lesen-t3-auto-zfand7.json",
+        "expected": "Wohnen",
+        "detected": "Technik"
+      },
+      {
+        "file": "lesen-t3-auto-zspq8n.json",
+        "expected": "Wohnen",
+        "detected": "Bildung"
+      }
+    ],
+    "note": "All 9 mismatches are cross-family (not Wohnen↔Konsum/Stadtleben). No code change needed; content/topicTag fixes required."
+  },
+  "part5": {
+    "horenT3ChronoFails": 0,
+    "schreibenPremiseDupFiles": 0,
+    "schreibenRubricNonCanonical": 0,
+    "nameRotationHits": 0,
+    "lesenT3TopicDrift": 9
+  }
+}

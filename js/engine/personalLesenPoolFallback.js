@@ -432,6 +432,159 @@ function splitTranscriptChunks(text, count) {
 
 
 
+function ensureLesenT3Example(part) {
+  if (!part || Number(part.teil) !== 3) return part;
+  const slot = String(part.slotType || part.blueprintSlot || '').toLowerCase();
+  const adsLike = slot.includes('ads_matching') || slot.includes('matching_ads') || (part.ads?.length >= 10);
+  if (!adsLike) return part;
+  const ex = part.example || part.solvedExample;
+  if (ex && String(ex.situation || ex.question || ex.text || '').trim()) return part;
+  let template;
+  if (typeof require !== 'undefined') {
+    try {
+      ({ GOETHE_B1_LESEN_T3_EXAMPLE: template } = require('../library/goetheB1Constants.js'));
+    } catch (_) {
+      /* optional */
+    }
+  }
+  if (!template && typeof window !== 'undefined' && window.GoetheB1Constants) {
+    template = window.GoetheB1Constants.GOETHE_B1_LESEN_T3_EXAMPLE;
+  }
+  if (template) part.example = { ...template };
+  return part;
+}
+
+/** Build part.ads[] from embedded A–J option lines (make-t3 / bank format). Idempotent. */
+function coalesceLesenAdsMatchingPart(part) {
+  if (!part || typeof part !== 'object') return part;
+  const teil = Number(part.teil ?? 0);
+  const slot = String(part.slotType || part.blueprintSlot || '').toLowerCase();
+  const matchingLike =
+    teil === 3 ||
+    slot.includes('ads_matching') ||
+    slot.includes('matching_ads') ||
+    (part.ads?.length >= 3) ||
+    (part.items || []).some((it) => String(it.type || '').toLowerCase() === 'matching') ||
+    (part.questions || []).some((q) => String(q.type || '').toLowerCase() === 'matching');
+  if (!matchingLike) return part;
+
+  part.blueprintSlot = part.blueprintSlot || 'ads_matching';
+  part.slotType = part.slotType || 'ads_matching';
+
+  let AdsMatching;
+  if (typeof require !== 'undefined') {
+    try {
+      AdsMatching = require('../library/adsMatching.js');
+    } catch (_) {
+      /* optional */
+    }
+  }
+  if (!AdsMatching && typeof window !== 'undefined') AdsMatching = window.AdsMatching;
+
+  if (!part.items?.length && part.questions?.length) {
+    part.items = part.questions
+      .map((q) => ({
+        id: q.id,
+        signText: q.signText || q.statement || q.question || q.text,
+        type: q.type || 'matching',
+        correct: q.correct ?? q.correctAnswer,
+        options: q.options,
+      }))
+      .filter((it) => (it.signText && String(it.signText).trim()) || it.correct != null);
+  }
+
+  if (!part.ads?.length && AdsMatching?.buildAdsFromBankQuestions) {
+    const pool = [...(part.questions || []), ...(part.items || [])];
+    const built = AdsMatching.buildAdsFromBankQuestions(pool);
+    if (built.length >= 3) part.ads = built;
+  }
+
+  const ADS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  if (part.ads?.length) {
+    part.ads = part.ads
+      .map((a, i) => ({
+        key: String(a.key || ADS[i] || i + 1).toUpperCase(),
+        title: a.title || '',
+        text: a.text || a.title || '',
+      }))
+      .filter((a) => a.text || a.title)
+      .map((a, i) => ({ ...a, key: ADS[i] || String(i + 1) }));
+  }
+
+  const startNum = teil === 3 ? 13 : 1;
+  (part.items || []).forEach((item, i) => {
+    if (!item.signText && item.text) item.signText = item.text;
+    if (!item.signText && item.question) item.signText = item.question;
+    if (!item.id || /^l\d/i.test(String(item.id)) || teil === 3) item.id = String(startNum + i);
+    if (!item.type || item.type === 'multiple' || item.type === 'multiple_choice') item.type = 'matching';
+    if (part.ads?.length) delete item.options;
+  });
+
+  if (part.items?.length) {
+    part.questions = (part.questions || []).filter((q) => {
+      const t = String(q?.type || '').toLowerCase();
+      return !['matching', 'match', 'abcd'].includes(t);
+    });
+  }
+
+  if ((part.items || []).some((it) => String(it.correct ?? it.correctAnswer ?? '').trim().toUpperCase() === '0')) {
+    part._t3HasNoMatch = true;
+  }
+
+  if (teil === 3) ensureLesenT3Example(part);
+  return part;
+}
+
+function repairLesenPartsForValidation(exam) {
+  if (!exam || !Array.isArray(exam.lesenParts)) return exam;
+  for (const part of exam.lesenParts) coalesceLesenAdsMatchingPart(part);
+  return exam;
+}
+
+/**
+ * Resolve stable passage/transcript locator for assembled exam parts.
+ * Prefer explicit passage.id / passage.passageId; else first question.passageId.
+ * Does not invent IDs — returns null if none exist.
+ */
+function resolvePassageIdFromPool(poolPart, passage, questions) {
+  const p = passage && typeof passage === 'object' ? passage : {};
+  if (p.id != null && String(p.id).trim() !== '') return String(p.id);
+  if (p.passageId != null && String(p.passageId).trim() !== '') return String(p.passageId);
+  const qs = Array.isArray(questions) ? questions : [];
+  for (const q of qs) {
+    if (q && q.passageId != null && String(q.passageId).trim() !== '') return String(q.passageId);
+  }
+  if (Array.isArray(poolPart?.passages)) {
+    for (const pp of poolPart.passages) {
+      if (!pp || typeof pp !== 'object') continue;
+      if (pp.id != null && String(pp.id).trim() !== '') return String(pp.id);
+      if (pp.passageId != null && String(pp.passageId).trim() !== '') return String(pp.passageId);
+    }
+  }
+  return null;
+}
+
+/**
+ * Lesen/Hören pool only: force DifficultyScorer recompute (ignore persisted 4/5).
+ * Schreiben/Sprechen converters must NOT call this.
+ */
+function applyRuntimeDifficultyToLesenHorenPoolPart(part, poolPart) {
+  if (!part) return part;
+  let Scorer = typeof DifficultyScorer !== 'undefined' ? DifficultyScorer : null;
+  if (!Scorer) {
+    try {
+      Scorer = require('./validation/difficultyScorer.js');
+    } catch (_) {
+      Scorer = null;
+    }
+  }
+  if (!Scorer || typeof Scorer.applyRuntimeDifficultyToPoolPart !== 'function') return part;
+  return Scorer.applyRuntimeDifficultyToPoolPart(part, {
+    lang: poolPart?.lang || poolPart?.language || 'de',
+    level: poolPart?.level || 'B1',
+  });
+}
+
 function reusablePartToLesenPart(poolPart) {
 
   if (!poolPart) return null;
@@ -441,6 +594,8 @@ function reusablePartToLesenPart(poolPart) {
   const passage = poolPart.passage || {};
 
   const questions = Array.isArray(poolPart.questions) ? poolPart.questions : [];
+
+  const passageId = resolvePassageIdFromPool(poolPart, passage, questions);
 
   const part = {
 
@@ -453,6 +608,19 @@ function reusablePartToLesenPart(poolPart) {
     _poolPartId: poolPart.id || null,
 
   };
+
+  if (poolPart.bgGenerated) {
+    part.bgGenerated = true;
+    part.bgVocabLemmas = Array.isArray(poolPart.bgVocabLemmas) ? poolPart.bgVocabLemmas : [];
+  }
+
+  if (passageId) {
+
+    part.passageId = passageId;
+
+    part.id = passageId;
+
+  }
 
 
 
@@ -503,6 +671,7 @@ function reusablePartToLesenPart(poolPart) {
       .filter((it) => (it.signText && String(it.signText).trim()) || it.correct != null);
 
     if (poolPart.example) part.example = poolPart.example;
+    else if (poolPart.solvedExample) part.example = poolPart.solvedExample;
 
   } else if (
 
@@ -574,7 +743,8 @@ function reusablePartToLesenPart(poolPart) {
 
   }
 
-  return part;
+  const lesenOut = ensureLesenT3Example(coalesceLesenAdsMatchingPart(part));
+  return applyRuntimeDifficultyToLesenHorenPoolPart(lesenOut, poolPart);
 
 }
 
@@ -592,7 +762,7 @@ function reusablePartToHorenPart(poolPart, blueprint) {
 
   const storedSegments = poolPart.segments || passage.segments;
 
-
+  const passageId = resolvePassageIdFromPool(poolPart, passage, questions);
 
   const part = {
 
@@ -608,9 +778,27 @@ function reusablePartToHorenPart(poolPart, blueprint) {
 
   };
 
+  if (poolPart.bgGenerated) {
+    part.bgGenerated = true;
+    part.bgVocabLemmas = Array.isArray(poolPart.bgVocabLemmas) ? poolPart.bgVocabLemmas : [];
+  }
+
+  if (passageId) {
+
+    part.passageId = passageId;
+
+    part.id = passageId;
+
+  }
+
 
 
   if (teil === 1) part.blueprintSlot = 'short_texts_twice';
+
+  if (teil === 2 && String(poolPart.level || blueprint?.level || '').toUpperCase() === 'A2') {
+    part.blueprintSlot = 'picture_matching';
+    part.plays = 1;
+  }
 
   if (teil === 4) part.blueprintSlot = 'discussion_twice';
 
@@ -626,13 +814,15 @@ function reusablePartToHorenPart(poolPart, blueprint) {
 
       transcript: seg.transcript || seg.text || '',
 
-      passageId: seg.passageId || seg.id,
+      passageId: seg.passageId || seg.id || passageId || null,
+
+      pictures: seg.pictures || passage.pictures || poolPart.pictures || undefined,
 
       questions: (seg.questions || []).map((q) => ({ ...q })),
 
     }));
 
-    return part;
+    return applyRuntimeDifficultyToLesenHorenPoolPart(part, poolPart);
 
   }
 
@@ -648,17 +838,31 @@ function reusablePartToHorenPart(poolPart, blueprint) {
 
     const transcripts = splitTranscriptChunks(transcriptText, Math.max(5, groups.length));
 
-    part.segments = groups.slice(0, 5).map((qs, i) => ({
+    part.segments = groups.slice(0, 5).map((qs, i) => {
 
-      id: `seg_pool_${i}`,
+      const segPassageId =
 
-      label: `Aufnahme ${i + 1}`,
+        (qs || []).map((q) => q && q.passageId).find((pid) => pid != null && String(pid).trim() !== '') ||
 
-      transcript: transcripts[i] || transcripts[0] || 'Kurzer Hörtext.',
+        (groups.length === 1 ? passageId : null) ||
 
-      questions: qs,
+        null;
 
-    }));
+      return {
+
+        id: segPassageId ? String(segPassageId) : `seg_pool_${i}`,
+
+        label: `Aufnahme ${i + 1}`,
+
+        transcript: transcripts[i] || transcripts[0] || 'Kurzer Hörtext.',
+
+        passageId: segPassageId ? String(segPassageId) : passageId || null,
+
+        questions: qs,
+
+      };
+
+    });
 
     while (part.segments.length < 5) {
 
@@ -669,6 +873,8 @@ function reusablePartToHorenPart(poolPart, blueprint) {
         label: `Aufnahme ${part.segments.length + 1}`,
 
         transcript: 'Kurzer Hörtext.',
+
+        passageId: null,
 
         questions: [],
 
@@ -682,11 +888,13 @@ function reusablePartToHorenPart(poolPart, blueprint) {
 
       {
 
-        id: 'seg_pool_0',
+        id: passageId || 'seg_pool_0',
 
         label: 'Aufnahme 1',
 
         transcript: transcriptText,
+
+        passageId: passageId || null,
 
         questions,
 
@@ -698,7 +906,7 @@ function reusablePartToHorenPart(poolPart, blueprint) {
 
 
 
-  return part;
+  return applyRuntimeDifficultyToLesenHorenPoolPart(part, poolPart);
 
 }
 
@@ -846,6 +1054,11 @@ function reusablePartToSchreibenPart(poolPart, blueprint) {
 
   };
 
+  if (poolPart.bgGenerated) {
+    part.bgGenerated = true;
+    part.bgVocabLemmas = Array.isArray(poolPart.bgVocabLemmas) ? poolPart.bgVocabLemmas : [];
+  }
+
 }
 
 
@@ -869,6 +1082,123 @@ function insertSchreibenTeil(exam, schreibenPart, teil) {
     (a, b) => Number(a.teil ?? a.aufgabe) - Number(b.teil ?? b.aufgabe),
 
   );
+
+  return exam;
+
+}
+
+
+
+function sprechenBlueprintTeils(blueprint) {
+
+  return blueprintModuleTeils(blueprint, 'sprechen', [1, 2, 3]);
+
+}
+
+
+
+function sprechenTeilIsValid(part, teil, blueprint) {
+
+  if (!part) return false;
+
+  const situation = String(
+
+    part.situation || part.task || part.instruction || part.prompt || '',
+
+  ).trim();
+
+  return situation.length >= 40;
+
+}
+
+
+
+function reusablePartToSprechenPart(poolPart, blueprint) {
+
+  if (!poolPart) return null;
+
+  const teil = Number(poolPart.teil ?? 1);
+
+  const situation = String(
+
+    poolPart.task ||
+
+      poolPart.situation ||
+
+      poolPart.passage?.text ||
+
+      poolPart.questions?.[0]?.question ||
+
+      '',
+
+  ).trim();
+
+  const q0 = poolPart.questions?.[0] || {};
+
+  const part = {
+
+    teil,
+
+    title: poolPart.title || q0.type || `Teil ${teil}`,
+
+    fieldId: poolPart.fieldId || `speak_bp_${teil}`,
+
+    situation,
+
+    points: Array.isArray(poolPart.points) ? [...poolPart.points] : [],
+
+    prompts: Array.isArray(poolPart.prompts) ? [...poolPart.prompts] : [],
+
+    grammarTags: Array.isArray(q0.grammarTags) ? [...q0.grammarTags] : [],
+
+    topicTags: Array.isArray(poolPart.topicTags || q0.topicTags)
+
+      ? [...(poolPart.topicTags || q0.topicTags)]
+
+      : [],
+
+    _fromPool: true,
+
+    _poolPartId: poolPart.id || null,
+
+  };
+
+  if (poolPart.bgGenerated) {
+    part.bgGenerated = true;
+    part.bgVocabLemmas = Array.isArray(poolPart.bgVocabLemmas) ? poolPart.bgVocabLemmas : [];
+  }
+
+  if (Number(teil) === 2 && Array.isArray(poolPart.slides) && poolPart.slides.length) {
+
+    part.slides = poolPart.slides.map((s) => ({ ...s }));
+
+  }
+
+  if (!part.points.length && typeof SprechenBriefing !== 'undefined') {
+    const bullets = SprechenBriefing.parseSprechenBriefing(situation, teil).bullets;
+    if (bullets.length) {
+      part.points = bullets;
+      part.prompts = bullets;
+    }
+  }
+
+  return part;
+
+}
+
+
+
+function insertSprechenTeil(exam, sprechenPart, teil) {
+
+  if (!exam || !sprechenPart) return exam;
+
+  const t = Number(teil);
+
+  exam.sprechenParts = (exam.sprechenParts || []).filter((p) => Number(p.teil) !== t);
+
+  exam.sprechenParts.push({ ...sprechenPart, teil: t });
+
+  exam.sprechenParts.sort((a, b) => Number(a.teil) - Number(b.teil));
 
   return exam;
 
@@ -906,6 +1236,12 @@ const PersonalLesenPoolFallback = Object.freeze({
 
   filterPersonalAiChunks,
 
+  ensureLesenT3Example,
+
+  coalesceLesenAdsMatchingPart,
+
+  repairLesenPartsForValidation,
+
   reusablePartToLesenPart,
 
   reusablePartToHorenPart,
@@ -927,6 +1263,14 @@ const PersonalLesenPoolFallback = Object.freeze({
   reusablePartToSchreibenPart,
 
   insertSchreibenTeil,
+
+  sprechenBlueprintTeils,
+
+  sprechenTeilIsValid,
+
+  reusablePartToSprechenPart,
+
+  insertSprechenTeil,
 
 });
 

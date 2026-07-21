@@ -1,0 +1,53 @@
+{
+  "generatedAt": "2026-07-12T14:30:00.000Z",
+  "phase": 0,
+  "goal": "Real gpt-realtime-mini PTT call (Kim/Alex/Leo instructions) — measure latency, voice quality, real cost",
+  "result": "BLOCKED_NO_OPENAI_CREDENTIALS",
+  "couldRunRealtimeCall": false,
+  "measurements": {
+    "latencyMs": null,
+    "audioInTokens": null,
+    "audioOutTokens": null,
+    "textTokens": null,
+    "costUsd": null,
+    "perceivedVoiceQuality": null,
+    "vsEstimateUsdPerSession": {
+      "estimateRange": [0.04, 0.13],
+      "measured": null,
+      "verdict": "cannot_validate_until_live_call"
+    }
+  },
+  "environmentProbe": {
+    "localDotEnvHasOpenAI": false,
+    "shellProcessEnvHasOpenAI": false,
+    "codebaseReferencesOpenAI": false,
+    "localDotEnvProvidersPresent": [
+      "ANTHROPIC_API_KEY",
+      "GEMINI_API_KEY",
+      "GROQ_API_KEY",
+      "XAI_API_KEY",
+      "ELEVENLABS_API_KEY"
+    ],
+    "note": "LexiCoil pipeline/product AI uses Anthropic/Gemini/Groq/xAI/ElevenLabs — not OpenAI. Realtime voice requires a separate OpenAI Platform account/key."
+  },
+  "accessRequirements": {
+    "provider": "OpenAI Platform (platform.openai.com) — distinct from Gemini/Anthropic already in use",
+    "freeTierRealtime": "Not supported (docs: gpt-realtime-mini Free = Not supported)",
+    "minimumTier": "Tier 1+",
+    "tier1Qualification": "$5 paid prepaid credits on the API billing account (not ChatGPT Plus subscription)",
+    "specialRealtimeToggle": false,
+    "concreteNextSteps": [
+      "1. Create or open an OpenAI Platform org at https://platform.openai.com",
+      "2. Billing → purchase ≥$5 API credits (Tier 1 unlocks Realtime)",
+      "3. Limits page: confirm org is Tier 1+ and gpt-realtime-mini is listed",
+      "4. Create an API key; set OPENAI_API_KEY in local .env (and Netlify when building)",
+      "5. Re-run Phase 0 probe: short PTT WebSocket session with Alex instructions + turn_detection null"
+    ]
+  },
+  "personaReady": {
+    "source": "js/config/speakingModes.js + netlify/functions/speaking-chat.js",
+    "chosenForProbe": "Alex (balanced)",
+    "instructions": "Du bist Alex, ein ausgewogener Prüfungspartner im Goethe-Zertifikat B1 Sprechen. Antworte natürlich (2–4 Sätze). Stelle Fragen und reagiere fair. Bleibe auf B1-Niveau. Antworte nur auf Deutsch."
+  },
+  "decisionGate": "Do NOT start building production Realtime Sprechen until Phase 0 live call succeeds with measured cost/latency."
+}

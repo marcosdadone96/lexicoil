@@ -1,0 +1,88 @@
+{
+  "gateVersion": "v6.1-B-G2 (frozen)",
+  "file": "lesen-t1-gemini-175.json",
+  "teil": 1,
+  "textFields": 13,
+  "findings": {
+    "blocking": 1,
+    "observations": 0,
+    "byReason": {
+      "lexicon_override_tag": 1
+    },
+    "byRegime": {
+      "PROSE": 1
+    },
+    "byField": {
+      "questions.explanation": 1
+    },
+    "list": [
+      {
+        "type": "noun_lowercase",
+        "word": "mitmachen",
+        "pos": "VERB",
+        "tag": "VVFIN",
+        "confidence": "high",
+        "reason": "lexicon_override_tag",
+        "context": ", dass sie gerne mitmachen.",
+        "prevWord": "gerne",
+        "prevPos": "ADV",
+        "prevTag": "ADV",
+        "textIndex": 0,
+        "regime": "PROSE",
+        "field": "questions.explanation",
+        "id": "lesen-t1-gemini-175.json::questions.explanation::8",
+        "file": "lesen-t1-gemini-175.json",
+        "textPreview": "Die Kinder gießen die Pflanzen und ernten die Erdbeeren, was zeigt, dass sie gerne mitmachen."
+      }
+    ]
+  },
+  "observations": [],
+  "expected": {
+    "dominantRegime": "PROSE",
+    "telegraphicFpExpected": 0,
+    "notes": "Textos continuos + preguntas MCQ; caps gate activo en prosa."
+  },
+  "comparison": {
+    "calibrationPoolFindingsThisTeil": 9,
+    "calibrationAvgPerFile": 1.8,
+    "pilotFindings": 1,
+    "deltaVsCalAvg": -0.8,
+    "telegraphicFindings": 0,
+    "telegraphicFpExpected": 0,
+    "telegraphicOk": true
+  },
+  "qualityGate": {
+    "errors": [],
+    "warnings": [
+      "Mayúsculas alemanas: noun_lowercase: «mitmachen» (VVFIN) [high] en questions.explanation — …, dass sie gerne mitmachen.…"
+    ]
+  },
+  "qualitative": {
+    "textFieldCount": 13,
+    "gateFindings": 1,
+    "gateObservations": 0,
+    "issues": {
+      "educationalPhrases": [],
+      "suspiciousCapsInText": [
+        {
+          "kind": "passage",
+          "snippet": "Ich bin Anna und lebe mit meiner Familie in einer kleinen Stadt. Mein Mann und ich haben zwei Kinder, einen Jungen und e"
+        },
+        {
+          "kind": "explanation",
+          "snippet": "Die Kinder gießen die Pflanzen und ernten die Erdbeeren, was zeigt, dass sie gerne mitmachen."
+        },
+        {
+          "kind": "explanation",
+          "snippet": "Ihre Eltern unterstützen sie viel, besonders bei Terminen, und wohnen nicht weit weg."
+        }
+      ],
+      "veryLongSentences": [],
+      "b1Notes": [
+        "Longitud media coherente con B1"
+      ],
+      "newPatterns": []
+    },
+    "samplePassage": "Ich bin Anna und lebe mit meiner Familie in einer kleinen Stadt. Mein Mann und ich haben zwei Kinder, einen Jungen und ein Mädchen. Sie gehen noch zur Schule. Mein Alltag ist oft sehr voll. Ich arbeite Teilzeit in einem Büro und nachmittags kümmere ich mich um die Kinder und den Haushalt. Am Wochenende versuchen wir immer, etwas Besonderes zusammen zu machen. Letzten Monat haben wir uns entschiede"
+  }
+}

@@ -40,6 +40,19 @@ function applyMonthlyAiReset(current, aiMax, month) {
     used = 0;
   }
 
+  let personalLesenUsed = storedMonth === month ? Math.max(0, Number(q.personalLesenUsed) || 0) : 0;
+  let personalHorenUsed = storedMonth === month ? Math.max(0, Number(q.personalHorenUsed) || 0) : 0;
+  let bgGenCountMonth = storedMonth === month ? Math.max(0, Number(q.bgGenCountMonth) || 0) : 0;
+  let bgGenLesenCount = storedMonth === month ? Math.max(0, Number(q.bgGenLesenCount) || 0) : 0;
+  let bgGenHorenCount = storedMonth === month ? Math.max(0, Number(q.bgGenHorenCount) || 0) : 0;
+  if (storedMonth && storedMonth !== month) {
+    personalLesenUsed = 0;
+    personalHorenUsed = 0;
+    bgGenCountMonth = 0;
+    bgGenLesenCount = 0;
+    bgGenHorenCount = 0;
+  }
+
   return {
     used,
     aiUsed,
@@ -49,6 +62,26 @@ function applyMonthlyAiReset(current, aiMax, month) {
     creditTopups,
     overdraft,
     autoRecharge,
+    personalLesenUsed,
+    personalHorenUsed,
+    bgGenCountMonth,
+    bgGenLesenCount,
+    bgGenHorenCount,
+    bgVocabPending: Array.isArray(q.bgVocabPending) ? q.bgVocabPending : [],
+    bgVocabPendingCount: Math.max(0, Number(q.bgVocabPendingCount) || 0),
+    bgVocabIneligible: Array.isArray(q.bgVocabIneligible) ? q.bgVocabIneligible : [],
+    bgVocabQuarantine: Array.isArray(q.bgVocabQuarantine) ? q.bgVocabQuarantine : [],
+    bgVocabDroppedCount: Math.max(0, Number(q.bgVocabDroppedCount) || 0),
+    lastBgGenAt: q.lastBgGenAt || null,
+    lastBgGenDayKey: q.lastBgGenDayKey || null,
+    lastBgGenModule: q.lastBgGenModule === 'horen' ? 'horen' : 'lesen',
+    bgGenPending: q.bgGenPending === true,
+    bgGenStartedAt: q.bgGenStartedAt || null,
+    bgGenStartedPlan: q.bgGenStartedPlan || null,
+    bgGenCountDay: Math.max(0, Number(q.bgGenCountDay) || 0),
+    bgGenLastError: q.bgGenLastError || null,
+    bgGenLastRequestId: q.bgGenLastRequestId || null,
+    bgGenPruneLog: Array.isArray(q.bgGenPruneLog) ? q.bgGenPruneLog : [],
     version: Number(q.version) || 0,
   };
 }
@@ -134,6 +167,26 @@ function buildQuotaPayload(rec, versionBump = true) {
     creditTopups: rec.creditTopups,
     overdraft: rec.overdraft,
     autoRecharge: rec.autoRecharge,
+    personalLesenUsed: rec.personalLesenUsed || 0,
+    personalHorenUsed: rec.personalHorenUsed || 0,
+    bgGenCountMonth: rec.bgGenCountMonth || 0,
+    bgGenLesenCount: rec.bgGenLesenCount || 0,
+    bgGenHorenCount: rec.bgGenHorenCount || 0,
+    bgVocabPending: Array.isArray(rec.bgVocabPending) ? rec.bgVocabPending : [],
+    bgVocabPendingCount: Math.max(0, Number(rec.bgVocabPendingCount) || 0),
+    bgVocabIneligible: Array.isArray(rec.bgVocabIneligible) ? rec.bgVocabIneligible : [],
+    bgVocabQuarantine: Array.isArray(rec.bgVocabQuarantine) ? rec.bgVocabQuarantine : [],
+    bgVocabDroppedCount: Math.max(0, Number(rec.bgVocabDroppedCount) || 0),
+    lastBgGenAt: rec.lastBgGenAt || null,
+    lastBgGenDayKey: rec.lastBgGenDayKey || null,
+    lastBgGenModule: rec.lastBgGenModule === 'horen' ? 'horen' : 'lesen',
+    bgGenPending: rec.bgGenPending === true,
+    bgGenStartedAt: rec.bgGenStartedAt || null,
+    bgGenStartedPlan: rec.bgGenStartedPlan || null,
+    bgGenCountDay: Math.max(0, Number(rec.bgGenCountDay) || 0),
+    bgGenLastError: rec.bgGenLastError || null,
+    bgGenLastRequestId: rec.bgGenLastRequestId || null,
+    bgGenPruneLog: Array.isArray(rec.bgGenPruneLog) ? rec.bgGenPruneLog : [],
     version: versionBump ? (Number(rec.version) || 0) + 1 : Number(rec.version) || 0,
   };
 }

@@ -1,0 +1,129 @@
+{
+  "version": "v2.3.10-no-explanation-2026-07-12",
+  "note": "Simulation only — pool files not modified",
+  "sampleCount": 8,
+  "sampleResults": [
+    {
+      "file": "horen-t3-gemini-008.json",
+      "beforeMetaTagQuestions": 2,
+      "beforeDetail": [
+        {
+          "id": "gen-q-h3-6bda70e0-1",
+          "oldTags": [
+            "zeigt"
+          ],
+          "onlyFromExpl": [
+            "zeigt"
+          ]
+        },
+        {
+          "id": "gen-q-h3-6bda70e0-7",
+          "oldTags": [
+            "bedeutet"
+          ],
+          "onlyFromExpl": [
+            "bedeutet"
+          ]
+        }
+      ],
+      "afterMetaTagQuestions": 0,
+      "afterDetail": [],
+      "version": "v2.3.10-no-explanation-2026-07-12"
+    },
+    {
+      "file": "horen-t3-gemini-009.json",
+      "beforeMetaTagQuestions": 3,
+      "beforeDetail": [
+        {
+          "id": "gen-q-h3-f31303bd-3",
+          "oldTags": [
+            "widerspricht"
+          ],
+          "onlyFromExpl": [
+            "widerspricht"
+          ]
+        },
+        {
+          "id": "gen-q-h3-f31303bd-4",
+          "oldTags": [
+            "entspricht"
+          ],
+          "onlyFromExpl": [
+            "entspricht"
+          ]
+        },
+        {
+          "id": "gen-q-h3-f31303bd-5",
+          "oldTags": [
+            "bedeutet"
+          ],
+          "onlyFromExpl": [
+            "bedeutet"
+          ]
+        }
+      ],
+      "afterMetaTagQuestions": 0,
+      "afterDetail": [],
+      "version": "v2.3.10-no-explanation-2026-07-12"
+    },
+    {
+      "file": "horen-t3-gemini-010.json",
+      "beforeMetaTagQuestions": 0,
+      "beforeDetail": [],
+      "afterMetaTagQuestions": 0,
+      "afterDetail": [],
+      "version": "v2.3.10-no-explanation-2026-07-12"
+    },
+    {
+      "file": "horen-t3-gemini-001.json",
+      "beforeMetaTagQuestions": 0,
+      "beforeDetail": [],
+      "afterMetaTagQuestions": 0,
+      "afterDetail": [],
+      "version": "v2.3.10-no-explanation-2026-07-12"
+    },
+    {
+      "file": "horen-t3-gemini-002.json",
+      "beforeMetaTagQuestions": 0,
+      "beforeDetail": [],
+      "afterMetaTagQuestions": 0,
+      "afterDetail": [],
+      "version": "v2.3.10-no-explanation-2026-07-12"
+    },
+    {
+      "file": "lesen-t4-gemini-043.json",
+      "beforeMetaTagQuestions": 0,
+      "beforeDetail": [],
+      "afterMetaTagQuestions": 0,
+      "afterDetail": [],
+      "version": "v2.3.10-no-explanation-2026-07-12"
+    },
+    {
+      "file": "lesen-t5-gemini-076.json",
+      "beforeMetaTagQuestions": 0,
+      "beforeDetail": [],
+      "afterMetaTagQuestions": 0,
+      "afterDetail": [],
+      "version": "v2.3.10-no-explanation-2026-07-12"
+    },
+    {
+      "file": "horen-t1-gemini-004.json",
+      "beforeMetaTagQuestions": 0,
+      "beforeDetail": [],
+      "afterMetaTagQuestions": 0,
+      "afterDetail": [],
+      "version": "v2.3.10-no-explanation-2026-07-12"
+    }
+  ],
+  "poolEstimate": {
+    "totalPoolJson": 148,
+    "filesWithMetaTagOnlyFromExplanation": 3,
+    "questionsWithMetaTagOnlyFromExplanation": 6,
+    "sampleAffectedFiles": [
+      "horen-t3-gemini-008.json",
+      "horen-t3-gemini-009.json",
+      "lesen-t1-gemini-177.json"
+    ],
+    "estimateNote": "Counts files where vocabularyTags already contain bedeutet/zeigt/widerspricht/entspricht (or lemmas) AND that form appears in explanation but not in question/options/signText/transcript/statement. Tags that also occur in passage/content may remain after reprocess — this is the lower-bound \"explanation residue\" set."
+  }
+}

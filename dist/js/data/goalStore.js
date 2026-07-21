@@ -169,35 +169,6 @@ const GoalStore = (() => {
     return certLbl(goal.subject, goal.level);
   }
 
-  function migrateFlashcardSourceLevel(fc) {
-    if (!fc || fc.sourceLevel) return false;
-    const derived = fcSourceLevel(fc);
-    if (derived) {
-      fc.sourceLevel = derived;
-      return true;
-    }
-    const lang = fc.sourceLang || fc.lang;
-    if (lang && hasState() && Array.isArray(S.goals)) {
-      const matches = S.goals.filter((g) => g.subject === lang);
-      if (matches.length === 1) {
-        fc.sourceLevel = normalizeGoalLevel(matches[0].level);
-        return true;
-      }
-    }
-    return false;
-  }
-
-  function migrateAllFlashcardSourceLevels() {
-    if (!hasState()) return { migrated: 0, undetermined: 0 };
-    let migrated = 0;
-    let undetermined = 0;
-    (S.flashcards || []).forEach((fc) => {
-      if (migrateFlashcardSourceLevel(fc)) migrated++;
-      else if (!fcSourceLevel(fc)) undetermined++;
-    });
-    return { migrated, undetermined };
-  }
-
   function deckFor(goal) {
     return (S.flashcards || []).filter((f) => fcMatchesGoal(f, goal));
   }
@@ -293,8 +264,6 @@ const GoalStore = (() => {
     slug,
     findBySlug,
     label,
-    migrateFlashcardSourceLevel,
-    migrateAllFlashcardSourceLevels,
     deckFor,
     dueFor,
     historyFor,
@@ -316,6 +285,50 @@ function saveGoals() {
 function getActiveGoal() {
   return GoalStore.getActive();
 }
+
+/**
+ * Repara flashcards sin sourceLevel. Idempotente y SIN flag que pueda "mentir":
+ * recorre siempre; si no hay nada que reparar, no hace nada.
+ * Llamar (a) al arrancar tras cargar S.flashcards y (b) después de cada pullSync.
+ */
+function fixFlashcardLevels() {
+  try { localStorage.removeItem('lc_fc_levelfix_v1'); } catch (_) {}
+
+  if (typeof S === 'undefined' || !Array.isArray(S.flashcards) || !S.flashcards.length) return false;
+
+  const norm = (l) => (l ? String(l).toUpperCase() : '');
+  const DEFAULT_LEVEL = 'B1';
+
+  let changed = 0;
+  for (const f of S.flashcards) {
+    if (f.sourceLevel) continue;
+
+    const lang = f.sourceLang || f.lang;
+    const goals = (Array.isArray(S.goals) ? S.goals : [])
+      .filter((g) => g.subject === lang);
+    const active = typeof getActiveGoal === 'function' ? getActiveGoal() : null;
+
+    let lvl =
+      norm(f.sourceExam && f.sourceExam.level) ||
+      (goals.length === 1 ? norm(goals[0].level) : '') ||
+      (active && active.subject === lang ? norm(active.level) : '') ||
+      DEFAULT_LEVEL;
+
+    f.sourceLevel = lvl;
+    if (!f.sourceLang && f.lang) f.sourceLang = f.lang;
+    changed++;
+  }
+
+  if (changed > 0) {
+    if (typeof saveFC === 'function') saveFC();
+    const log = typeof lcDebug !== 'undefined' ? lcDebug : (typeof debugLog !== 'undefined' ? debugLog : null);
+    if (log && typeof log.warn === 'function') {
+      log.warn(`[fc] level-fix: reparadas ${changed} flashcards`);
+    }
+  }
+  return changed > 0;
+}
+
 function prepGoalContext(goal) {
   GoalStore.prepContext(goal);
 }
@@ -343,9 +356,6 @@ function updateWorkspaceUrl(goal, opts) {
 }
 function goalLabel(goal) {
   return GoalStore.label(goal);
-}
-function migrateFlashcardSourceLevels() {
-  return GoalStore.migrateAllFlashcardSourceLevels();
 }
 function deckForGoal(goal) {
   return GoalStore.deckFor(goal);

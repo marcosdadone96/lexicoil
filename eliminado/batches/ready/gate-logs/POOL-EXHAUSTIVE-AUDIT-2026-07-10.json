@@ -1,0 +1,447 @@
+{
+  "generatedAt": "2026-07-10T11:58:32.197Z",
+  "summary": {
+    "scanned": 289,
+    "byPool": {
+      "pool-verified": 134,
+      "pool-content-ok-lesen": 155
+    },
+    "byModule": {
+      "horen": 34,
+      "lesen": 244,
+      "schreiben": 6,
+      "sprechen": 5
+    }
+  },
+  "checks": {
+    "1a_vocab_identical_across_questions": {
+      "files": 138,
+      "note": "≥50% of question-pairs share identical vocabularyTags (shared-block pattern)",
+      "examples": [
+        {
+          "file": "horen-t2-gemini-003.json",
+          "pool": "pool-verified",
+          "module": "horen",
+          "identicalPairs": 10,
+          "pairCount": 10,
+          "identicalRatio": 1,
+          "exampleTags": [
+            "abschnitt",
+            "beispiel",
+            "empfinden",
+            "höflichkeit",
+            "kampagnen",
+            "konsument"
+          ],
+          "nQuestions": 5
+        },
+        {
+          "file": "horen-t2-gemini-006.json",
+          "pool": "pool-verified",
+          "module": "horen",
+          "identicalPairs": 6,
+          "pairCount": 10,
+          "identicalRatio": 0.6,
+          "exampleTags": [
+            "beispiel",
+            "einstellung",
+            "entscheidung",
+            "familien",
+            "verbringen",
+            "wohlbefinden"
+          ],
+          "nQuestions": 5
+        },
+        {
+          "file": "horen-t2-gemini-009.json",
+          "pool": "pool-verified",
+          "module": "horen",
+          "identicalPairs": 6,
+          "pairCount": 10,
+          "identicalRatio": 0.6,
+          "exampleTags": [
+            "alltag",
+            "beispiel",
+            "engagement",
+            "entdecken",
+            "unterstützen",
+            "wortschatz"
+          ],
+          "nQuestions": 5
+        }
+      ],
+      "byTeil": {
+        "horen-t2": 10,
+        "horen-t3": 5,
+        "horen-t4": 7,
+        "lesen-t1": 36,
+        "lesen-t3": 59,
+        "lesen-t5": 21
+      }
+    },
+    "1a_vocab_near_identical_across_questions": {
+      "files": 0,
+      "note": "pairs with Jaccard≥0.8 but not counted as identical-majority",
+      "examples": []
+    },
+    "1b_ss_instead_of_eszett_in_vocabTags": {
+      "files": 0,
+      "examples": []
+    },
+    "1b_ss_instead_of_eszett_in_text_fields": {
+      "files": 0,
+      "examples": []
+    },
+    "1c_conjugated_verb_in_vocabTags": {
+      "files": 0,
+      "examples": []
+    },
+    "1d_lowercase_noun_in_vocabTags": {
+      "files": 1,
+      "examples": [
+        {
+          "file": "lesen-t4-gemini-026.json",
+          "pool": "pool-content-ok-lesen",
+          "module": "lesen",
+          "samples": [
+            "verein"
+          ]
+        }
+      ]
+    },
+    "1e_inflected_adj_in_vocabTags": {
+      "files": 0,
+      "examples": []
+    },
+    "1_function_word_in_vocabTags": {
+      "files": 0,
+      "examples": []
+    },
+    "2_grammarTags_low_overlap_vs_inferred_SAMPLE": {
+      "files": 2,
+      "sampleSize": 40,
+      "note": "Not 100% automatable as ground-truth; heuristic: jaccard(stored, re-inferred)<0.34 on up to 4 qs",
+      "examples": [
+        {
+          "file": "horen-t1-gemini-016.json",
+          "pool": "pool-verified",
+          "module": "horen",
+          "mismatchQs": 1,
+          "examples": [
+            {
+              "id": "gen-q-h1-8e7e4170-s1-q1",
+              "stored": [
+                "g-de-b1-relativ",
+                "g-de-b1-modalverben"
+              ],
+              "inferred": [
+                "g-de-b1-nebensatz",
+                "g-de-b1-relativ"
+              ],
+              "jac": 0.33
+            }
+          ]
+        },
+        {
+          "file": "horen-t2-gemini-016.json",
+          "pool": "pool-verified",
+          "module": "horen",
+          "mismatchQs": 1,
+          "examples": [
+            {
+              "id": "gen-q-h2-1ed9a47a-q4",
+              "stored": [
+                "g-de-b1-relativ",
+                "g-de-b1-passiv"
+              ],
+              "inferred": [
+                "g-de-b1-relativ",
+                "g-de-b1-konjunktiv"
+              ],
+              "jac": 0.33
+            }
+          ]
+        }
+      ]
+    },
+    "3_topicTag_content_mismatch": {
+      "files": 0,
+      "findings": 0,
+      "examples": []
+    },
+    "4_poolRejectReason_in_pool_verified": {
+      "files": 0,
+      "examples": []
+    },
+    "5_internal_duplicate_passages": {
+      "files": 0,
+      "examples": []
+    },
+    "5_internal_near_duplicate_questions": {
+      "files": 47,
+      "examples": [
+        {
+          "file": "lesen-t3-auto-we7l2c.json",
+          "pool": "pool-verified",
+          "module": "lesen",
+          "pairs": [
+            {
+              "i": 0,
+              "j": 2,
+              "jac": 0.87,
+              "a": "Der Schüler Jan möchte die Sprache Russlands von Grund auf lernen.",
+              "b": "Herr Sami möchte die arabische Schrift und Sprache erlernen."
+            }
+          ]
+        },
+        {
+          "file": "lesen-t3-auto-x4k027.json",
+          "pool": "pool-verified",
+          "module": "lesen",
+          "pairs": [
+            {
+              "i": 0,
+              "j": 1,
+              "jac": 0.85,
+              "a": "Bei Herrn lang ist ein Bügel der Sehhilfe abgebrochen; sie soll gerichtet werden",
+              "b": "An Saras Reisegepäck ist eine Rolle abgebrochen, die ersetzt werden soll."
+            }
+          ]
+        },
+        {
+          "file": "lesen-t3-auto-yii0su.json",
+          "pool": "pool-verified",
+          "module": "lesen",
+          "pairs": [
+            {
+              "i": 3,
+              "j": 4,
+              "jac": 0.88,
+              "a": "Lena möchte lernen, eigene Kleidung selbst anzufertigen, und sucht einen Einstei",
+              "b": "Frau Held will warme Mützen selbst herstellen und sucht einen Einsteigerkurs."
+            },
+            {
+              "i": 3,
+              "j": 5,
+              "jac": 0.87,
+              "a": "Lena möchte lernen, eigene Kleidung selbst anzufertigen, und sucht einen Einstei",
+              "b": "Ben träumt davon, sich eigene Hosen anzufertigen, und sucht einen Kurs dafür."
+            }
+          ]
+        }
+      ]
+    },
+    "6_gender_agreement_partial_lexicon": {
+      "files": 0,
+      "note": "Partial deterministic lexicon only — false negatives expected; false positives possible on edge cases",
+      "examples": []
+    },
+    "7_forced_vocab_register_heuristic": {
+      "files": 0,
+      "note": "Deterministic proxy (academic jargon / known forced phrases). Full Q3B needs LLM — not run ($).",
+      "examples": []
+    }
+  },
+  "full": {
+    "vocabIdenticalAcrossQs": [
+      "horen-t2-gemini-003.json",
+      "horen-t2-gemini-006.json",
+      "horen-t2-gemini-009.json",
+      "horen-t2-gemini-010.json",
+      "horen-t2-gemini-012.json",
+      "horen-t2-gemini-013.json",
+      "horen-t2-gemini-016.json",
+      "horen-t2-gemini-017.json",
+      "horen-t2-gemini-020.json",
+      "horen-t2-gemini-021.json",
+      "horen-t3-gemini-001.json",
+      "horen-t3-gemini-002.json",
+      "horen-t3-gemini-003.json",
+      "horen-t3-gemini-004.json",
+      "horen-t3-gemini-007.json",
+      "horen-t4-gemini-003.json",
+      "horen-t4-gemini-006.json",
+      "horen-t4-gemini-008.json",
+      "horen-t4-gemini-010.json",
+      "horen-t4-gemini-011.json",
+      "horen-t4-gemini-012.json",
+      "horen-t4-gemini-013.json",
+      "lesen-t1-gemini-081.json",
+      "lesen-t1-gemini-084.json",
+      "lesen-t1-gemini-087.json",
+      "lesen-t1-gemini-089.json",
+      "lesen-t1-gemini-092.json",
+      "lesen-t1-gemini-097.json",
+      "lesen-t1-gemini-108.json",
+      "lesen-t1-gemini-113.json",
+      "lesen-t1-gemini-117.json",
+      "lesen-t1-gemini-119.json",
+      "lesen-t1-gemini-121.json",
+      "lesen-t1-gemini-122.json",
+      "lesen-t1-gemini-125.json",
+      "lesen-t1-gemini-126.json",
+      "lesen-t1-gemini-127.json",
+      "lesen-t1-gemini-130.json",
+      "lesen-t1-gemini-135.json",
+      "lesen-t1-gemini-136.json",
+      "lesen-t1-gemini-137.json",
+      "lesen-t1-gemini-138.json",
+      "lesen-t1-gemini-140.json",
+      "lesen-t1-gemini-142.json",
+      "lesen-t1-gemini-143.json",
+      "lesen-t1-gemini-144.json",
+      "lesen-t1-gemini-149.json",
+      "lesen-t1-gemini-165.json",
+      "lesen-t1-gemini-175.json",
+      "lesen-t1-gemini-179.json",
+      "lesen-t1-gemini-180.json",
+      "lesen-t3-auto-we7l2c.json",
+      "lesen-t3-auto-x4k027.json",
+      "lesen-t3-auto-xcph87.json",
+      "lesen-t3-auto-yulvio.json",
+      "lesen-t3-auto-zfand7.json",
+      "lesen-t3-auto-zspq8n.json",
+      "lesen-t5-gemini-009.json",
+      "lesen-t5-gemini-014.json",
+      "lesen-t5-gemini-015.json",
+      "lesen-t5-gemini-024.json",
+      "lesen-t5-gemini-026.json",
+      "lesen-t5-gemini-027.json",
+      "lesen-t5-gemini-033.json",
+      "lesen-t5-gemini-035.json",
+      "lesen-t5-gemini-036.json",
+      "lesen-t5-gemini-037.json",
+      "lesen-t5-gemini-053.json",
+      "lesen-t5-gemini-057.json",
+      "lesen-t5-gemini-063.json",
+      "lesen-t5-gemini-064.json",
+      "lesen-t5-gemini-065.json",
+      "lesen-t5-gemini-071.json",
+      "lesen-t1-gemini-040.json",
+      "lesen-t1-gemini-064.json",
+      "lesen-t1-gemini-079.json",
+      "lesen-t1-gemini-093.json",
+      "lesen-t1-gemini-151.json",
+      "lesen-t1-gemini-157.json",
+      "lesen-t1-gemini-158.json",
+      "lesen-t3-auto-0oquml.json",
+      "lesen-t3-auto-0ouon0.json",
+      "lesen-t3-auto-1g1gfz.json",
+      "lesen-t3-auto-1mkzfu.json",
+      "lesen-t3-auto-1obynh.json",
+      "lesen-t3-auto-1ticrt.json",
+      "lesen-t3-auto-1u2l8c.json",
+      "lesen-t3-auto-1vcafu.json",
+      "lesen-t3-auto-2cm279.json",
+      "lesen-t3-auto-34kgfy.json",
+      "lesen-t3-auto-5au6un.json",
+      "lesen-t3-auto-5auooa.json",
+      "lesen-t3-auto-5espek.json",
+      "lesen-t3-auto-5hhflb.json",
+      "lesen-t3-auto-650cms.json",
+      "lesen-t3-auto-7f3sof.json",
+      "lesen-t3-auto-7ke4ej.json",
+      "lesen-t3-auto-8iqtuk.json",
+      "lesen-t3-auto-8nyjl4.json",
+      "lesen-t3-auto-8tv5wv.json",
+      "lesen-t3-auto-95u8xx.json",
+      "lesen-t3-auto-a5ww5a.json",
+      "lesen-t3-auto-awiqam.json",
+      "lesen-t3-auto-ayfpm6.json",
+      "lesen-t3-auto-bmqc6b.json",
+      "lesen-t3-auto-cf704m.json",
+      "lesen-t3-auto-dnwjh5.json",
+      "lesen-t3-auto-esxj03.json",
+      "lesen-t3-auto-fotjw3.json",
+      "lesen-t3-auto-hi9i8q.json",
+      "lesen-t3-auto-j17r0k.json",
+      "lesen-t3-auto-jae7ue.json",
+      "lesen-t3-auto-jja73u.json",
+      "lesen-t3-auto-juqpjs.json",
+      "lesen-t3-auto-jx5dzs.json",
+      "lesen-t3-auto-lmhlvz.json",
+      "lesen-t3-auto-mjupop.json",
+      "lesen-t3-auto-n0lt9z.json",
+      "lesen-t3-auto-ni5zr2.json",
+      "lesen-t3-auto-o0m9i5.json",
+      "lesen-t3-auto-pnkvg3.json",
+      "lesen-t3-auto-qc9cvz.json",
+      "lesen-t3-auto-qghdg5.json",
+      "lesen-t3-auto-r3llz2.json",
+      "lesen-t3-auto-rrg1xx.json",
+      "lesen-t3-auto-t81jfr.json",
+      "lesen-t3-auto-th804n.json",
+      "lesen-t3-auto-u7x6w8.json",
+      "lesen-t3-auto-vtd12m.json",
+      "lesen-t3-auto-vtrmc6.json",
+      "lesen-t3-auto-w474fi.json",
+      "lesen-t3-auto-x8ixj4.json",
+      "lesen-t3-auto-z29mtv.json",
+      "lesen-t5-gemini-039.json",
+      "lesen-t5-gemini-040.json",
+      "lesen-t5-gemini-042.json",
+      "lesen-t5-gemini-048.json",
+      "lesen-t5-gemini-051.json"
+    ],
+    "vocabConjugated": [],
+    "vocabLowerNoun": [
+      "lesen-t4-gemini-026.json"
+    ],
+    "vocabInflectedAdj": [],
+    "ssInText": [],
+    "topicMismatch": [],
+    "genderAgreement": [],
+    "questionNearDupInternal": [
+      "lesen-t3-auto-we7l2c.json",
+      "lesen-t3-auto-x4k027.json",
+      "lesen-t3-auto-yii0su.json",
+      "lesen-t3-auto-yu9vyl.json",
+      "lesen-t3-auto-zspq8n.json",
+      "lesen-t3-auto-0oquml.json",
+      "lesen-t3-auto-0ouon0.json",
+      "lesen-t3-auto-1g1gfz.json",
+      "lesen-t3-auto-1ticrt.json",
+      "lesen-t3-auto-1u2l8c.json",
+      "lesen-t3-auto-1vcafu.json",
+      "lesen-t3-auto-2cm279.json",
+      "lesen-t3-auto-2u81ll.json",
+      "lesen-t3-auto-33srkf.json",
+      "lesen-t3-auto-4v8o7g.json",
+      "lesen-t3-auto-5au6un.json",
+      "lesen-t3-auto-5hhflb.json",
+      "lesen-t3-auto-64r4mz.json",
+      "lesen-t3-auto-650cms.json",
+      "lesen-t3-auto-7f3sof.json",
+      "lesen-t3-auto-7ke4ej.json",
+      "lesen-t3-auto-8nyjl4.json",
+      "lesen-t3-auto-8tv5wv.json",
+      "lesen-t3-auto-95u8xx.json",
+      "lesen-t3-auto-9ypb8f.json",
+      "lesen-t3-auto-ayfpm6.json",
+      "lesen-t3-auto-cf704m.json",
+      "lesen-t3-auto-dnwjh5.json",
+      "lesen-t3-auto-euvmz3.json",
+      "lesen-t3-auto-fotjw3.json",
+      "lesen-t3-auto-i4khxb.json",
+      "lesen-t3-auto-jae7ue.json",
+      "lesen-t3-auto-juqpjs.json",
+      "lesen-t3-auto-jx5dzs.json",
+      "lesen-t3-auto-jzhmvx.json",
+      "lesen-t3-auto-n0lt9z.json",
+      "lesen-t3-auto-ni5zr2.json",
+      "lesen-t3-auto-onfx6s.json",
+      "lesen-t3-auto-pnkvg3.json",
+      "lesen-t3-auto-qc9cvz.json",
+      "lesen-t3-auto-qghdg5.json",
+      "lesen-t3-auto-qk6x1k.json",
+      "lesen-t3-auto-t81jfr.json",
+      "lesen-t3-auto-u7x6w8.json",
+      "lesen-t3-auto-vtrmc6.json",
+      "lesen-t3-auto-w474fi.json",
+      "lesen-t3-auto-x8ixj4.json"
+    ],
+    "passageDupInternal": [],
+    "forcedVocabHeuristic": [],
+    "rejectMetaInVerified": []
+  }
+}

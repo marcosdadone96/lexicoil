@@ -1,0 +1,1809 @@
+{
+  "criterion": "strong: bestScore - tagScore >= 2; weak: otherwise (incl 1 vs 0 and tag_unsupported)",
+  "filesStrong": 61,
+  "filesWeakOnly": 70,
+  "filesUnsupportedOnly": 1,
+  "strongFindings": [
+    {
+      "file": "horen-t1-gemini-001.json",
+      "passageId": "",
+      "tag": "Konsum",
+      "detected": "Umwelt",
+      "bestScore": 2,
+      "tagScore": 0,
+      "diff": 2
+    },
+    {
+      "file": "horen-t1-gemini-001.json",
+      "passageId": "gen-p-h1-eac46715-s3",
+      "tag": "Konsum",
+      "detected": "Umwelt",
+      "bestScore": 2,
+      "tagScore": 0,
+      "diff": 2
+    },
+    {
+      "file": "horen-t1-gemini-002.json",
+      "passageId": "",
+      "tag": "Kultur",
+      "detected": "Verkehr",
+      "bestScore": 2,
+      "tagScore": 0,
+      "diff": 2
+    },
+    {
+      "file": "horen-t1-gemini-002.json",
+      "passageId": "",
+      "tag": "Kultur",
+      "detected": "Arbeit",
+      "bestScore": 2,
+      "tagScore": 0,
+      "diff": 2
+    },
+    {
+      "file": "horen-t1-gemini-002.json",
+      "passageId": "gen-p-h1-5562f6a3-s1",
+      "tag": "Kultur",
+      "detected": "Verkehr",
+      "bestScore": 2,
+      "tagScore": 0,
+      "diff": 2
+    },
+    {
+      "file": "horen-t1-gemini-002.json",
+      "passageId": "gen-p-h1-5562f6a3-s5",
+      "tag": "Kultur",
+      "detected": "Arbeit",
+      "bestScore": 2,
+      "tagScore": 0,
+      "diff": 2
+    },
+    {
+      "file": "horen-t1-gemini-004.json",
+      "passageId": "",
+      "tag": "Sport",
+      "detected": "Ernährung",
+      "bestScore": 2,
+      "tagScore": 0,
+      "diff": 2
+    },
+    {
+      "file": "horen-t1-gemini-004.json",
+      "passageId": "gen-p-h1-5522-s5",
+      "tag": "Sport",
+      "detected": "Ernährung",
+      "bestScore": 2,
+      "tagScore": 0,
+      "diff": 2
+    },
+    {
+      "file": "horen-t1-gemini-006.json",
+      "passageId": "",
+      "tag": "Sport",
+      "detected": "Bildung",
+      "bestScore": 2,
+      "tagScore": 0,
+      "diff": 2
+    },
+    {
+      "file": "horen-t1-gemini-006.json",
+      "passageId": "gen-p-h1-2290-s5",
+      "tag": "Sport",
+      "detected": "Bildung",
+      "bestScore": 2,
+      "tagScore": 0,
+      "diff": 2
+    },
+    {
+      "file": "horen-t1-gemini-007.json",
+      "passageId": "",
+      "tag": "Verkehr",
+      "detected": "Kultur",
+      "bestScore": 2,
+      "tagScore": 0,
+      "diff": 2
+    },
+    {
+      "file": "horen-t1-gemini-007.json",
+      "passageId": "",
+      "tag": "Verkehr",
+      "detected": "Gesundheit",
+      "bestScore": 2,
+      "tagScore": 0,
+      "diff": 2
+    },
+    {
+      "file": "horen-t1-gemini-007.json",
+      "passageId": "gen-p-h1-8c1314af-s1",
+      "tag": "Verkehr",
+      "detected": "Kultur",
+      "bestScore": 2,
+      "tagScore": 0,
+      "diff": 2
+    },
+    {
+      "file": "horen-t1-gemini-007.json",
+      "passageId": "gen-p-h1-8c1314af-s3",
+      "tag": "Verkehr",
+      "detected": "Gesundheit",
+      "bestScore": 2,
+      "tagScore": 0,
+      "diff": 2
+    },
+    {
+      "file": "horen-t1-gemini-008.json",
+      "passageId": "",
+      "tag": "Sport",
+      "detected": "Kultur",
+      "bestScore": 2,
+      "tagScore": 0,
+      "diff": 2
+    },
+    {
+      "file": "horen-t1-gemini-008.json",
+      "passageId": "gen-p-h1-40543102-s2",
+      "tag": "Sport",
+      "detected": "Kultur",
+      "bestScore": 2,
+      "tagScore": 0,
+      "diff": 2
+    },
+    {
+      "file": "horen-t1-gemini-009.json",
+      "passageId": "",
+      "tag": "Gesundheit",
+      "detected": "Sport",
+      "bestScore": 2,
+      "tagScore": 0,
+      "diff": 2
+    },
+    {
+      "file": "horen-t1-gemini-009.json",
+      "passageId": "gen-p-h1-75f1e7f1-s5",
+      "tag": "Gesundheit",
+      "detected": "Sport",
+      "bestScore": 2,
+      "tagScore": 0,
+      "diff": 2
+    },
+    {
+      "file": "horen-t1-gemini-012.json",
+      "passageId": "",
+      "tag": "Arbeit",
+      "detected": "Bildung",
+      "bestScore": 4,
+      "tagScore": 0,
+      "diff": 4
+    },
+    {
+      "file": "horen-t1-gemini-012.json",
+      "passageId": "gen-p-h1-403eea43-s4",
+      "tag": "Arbeit",
+      "detected": "Bildung",
+      "bestScore": 4,
+      "tagScore": 0,
+      "diff": 4
+    },
+    {
+      "file": "horen-t1-gemini-013.json",
+      "passageId": "",
+      "tag": "Ernährung",
+      "detected": "Umwelt",
+      "bestScore": 4,
+      "tagScore": 0,
+      "diff": 4
+    },
+    {
+      "file": "horen-t1-gemini-013.json",
+      "passageId": "",
+      "tag": "Ernährung",
+      "detected": "Umwelt",
+      "bestScore": 2,
+      "tagScore": 0,
+      "diff": 2
+    },
+    {
+      "file": "horen-t1-gemini-013.json",
+      "passageId": "",
+      "tag": "Ernährung",
+      "detected": "Stadtleben",
+      "bestScore": 2,
+      "tagScore": 0,
+      "diff": 2
+    },
+    {
+      "file": "horen-t1-gemini-013.json",
+      "passageId": "",
+      "tag": "Ernährung",
+      "detected": "Umwelt",
+      "bestScore": 2,
+      "tagScore": 0,
+      "diff": 2
+    },
+    {
+      "file": "horen-t1-gemini-013.json",
+      "passageId": "gen-p-h1-856641ae-s1",
+      "tag": "Ernährung",
+      "detected": "Umwelt",
+      "bestScore": 4,
+      "tagScore": 0,
+      "diff": 4
+    },
+    {
+      "file": "horen-t1-gemini-013.json",
+      "passageId": "gen-p-h1-856641ae-s2",
+      "tag": "Ernährung",
+      "detected": "Umwelt",
+      "bestScore": 2,
+      "tagScore": 0,
+      "diff": 2
+    },
+    {
+      "file": "horen-t1-gemini-013.json",
+      "passageId": "gen-p-h1-856641ae-s4",
+      "tag": "Ernährung",
+      "detected": "Stadtleben",
+      "bestScore": 2,
+      "tagScore": 0,
+      "diff": 2
+    },
+    {
+      "file": "horen-t1-gemini-013.json",
+      "passageId": "gen-p-h1-856641ae-s5",
+      "tag": "Ernährung",
+      "detected": "Umwelt",
+      "bestScore": 2,
+      "tagScore": 0,
+      "diff": 2
+    },
+    {
+      "file": "horen-t1-gemini-017.json",
+      "passageId": "",
+      "tag": "Stadtleben",
+      "detected": "Verkehr",
+      "bestScore": 4,
+      "tagScore": 0,
+      "diff": 4
+    },
+    {
+      "file": "horen-t1-gemini-017.json",
+      "passageId": "gen-p-h1-a5cd95df-s2",
+      "tag": "Stadtleben",
+      "detected": "Verkehr",
+      "bestScore": 4,
+      "tagScore": 0,
+      "diff": 4
+    },
+    {
+      "file": "horen-t2-gemini-002.json",
+      "passageId": "",
+      "tag": "Wohnen",
+      "detected": "Ernährung",
+      "bestScore": 3,
+      "tagScore": 1,
+      "diff": 2
+    },
+    {
+      "file": "horen-t2-gemini-002.json",
+      "passageId": "gen-p-h2-430e5562-s1",
+      "tag": "Wohnen",
+      "detected": "Ernährung",
+      "bestScore": 3,
+      "tagScore": 1,
+      "diff": 2
+    },
+    {
+      "file": "lesen-t1-gemini-075.json",
+      "passageId": "gen-l1-2294",
+      "tag": "Freizeit",
+      "detected": "Verkehr",
+      "bestScore": 3,
+      "tagScore": 1,
+      "diff": 2
+    },
+    {
+      "file": "lesen-t1-gemini-089.json",
+      "passageId": "gen-l1-9921",
+      "tag": "Sport",
+      "detected": "Freizeit",
+      "bestScore": 2,
+      "tagScore": 0,
+      "diff": 2
+    },
+    {
+      "file": "lesen-t1-gemini-130.json",
+      "passageId": "gen-l1-d3172d0f",
+      "tag": "Freizeit",
+      "detected": "Stadtleben",
+      "bestScore": 4,
+      "tagScore": 2,
+      "diff": 2
+    },
+    {
+      "file": "lesen-t1-gemini-138.json",
+      "passageId": "gen-l1-e4a28c34",
+      "tag": "Freizeit",
+      "detected": "Stadtleben",
+      "bestScore": 4,
+      "tagScore": 2,
+      "diff": 2
+    },
+    {
+      "file": "lesen-t1-gemini-139.json",
+      "passageId": "gen-l1-fa022359",
+      "tag": "Familie",
+      "detected": "Freizeit",
+      "bestScore": 2,
+      "tagScore": 0,
+      "diff": 2
+    },
+    {
+      "file": "lesen-t1-gemini-140.json",
+      "passageId": "gen-l1-900c752d",
+      "tag": "Freizeit",
+      "detected": "Stadtleben",
+      "bestScore": 4,
+      "tagScore": 2,
+      "diff": 2
+    },
+    {
+      "file": "lesen-t1-gemini-143.json",
+      "passageId": "gen-l1-60cd630d",
+      "tag": "Freizeit",
+      "detected": "Stadtleben",
+      "bestScore": 3,
+      "tagScore": 1,
+      "diff": 2
+    },
+    {
+      "file": "lesen-t1-gemini-144.json",
+      "passageId": "gen-l1-ea42974d",
+      "tag": "Wohnen",
+      "detected": "Freizeit",
+      "bestScore": 2,
+      "tagScore": 0,
+      "diff": 2
+    },
+    {
+      "file": "lesen-t1-gemini-164.json",
+      "passageId": "gen-l1-56609157",
+      "tag": "Technik",
+      "detected": "Freizeit",
+      "bestScore": 4,
+      "tagScore": 2,
+      "diff": 2
+    },
+    {
+      "file": "lesen-t1-gemini-166.json",
+      "passageId": "gen-l1-8297e7d4",
+      "tag": "Arbeit",
+      "detected": "Freizeit",
+      "bestScore": 3,
+      "tagScore": 1,
+      "diff": 2
+    },
+    {
+      "file": "lesen-t1-gemini-173.json",
+      "passageId": "gen-l1-5b6dc8fb",
+      "tag": "Gesundheit",
+      "detected": "Freizeit",
+      "bestScore": 3,
+      "tagScore": 0,
+      "diff": 3
+    },
+    {
+      "file": "lesen-t1-gemini-181.json",
+      "passageId": "gen-l1-7d42939c",
+      "tag": "Medien",
+      "detected": "Freizeit",
+      "bestScore": 4,
+      "tagScore": 2,
+      "diff": 2
+    },
+    {
+      "file": "lesen-t2-gemini-028.json",
+      "passageId": "gen-l2-e932b",
+      "tag": "Verkehr",
+      "detected": "Bildung",
+      "bestScore": 2,
+      "tagScore": 0,
+      "diff": 2
+    },
+    {
+      "file": "lesen-t2-gemini-029.json",
+      "passageId": "gen-l2-f412b",
+      "tag": "Sport",
+      "detected": "Arbeit",
+      "bestScore": 2,
+      "tagScore": 0,
+      "diff": 2
+    },
+    {
+      "file": "lesen-t2-gemini-030.json",
+      "passageId": "gen-l2-g215a",
+      "tag": "Arbeit",
+      "detected": "Stadtleben",
+      "bestScore": 2,
+      "tagScore": 0,
+      "diff": 2
+    },
+    {
+      "file": "lesen-t2-gemini-034.json",
+      "passageId": "gen-l2-a774a",
+      "tag": "Bildung",
+      "detected": "Arbeit",
+      "bestScore": 3,
+      "tagScore": 1,
+      "diff": 2
+    },
+    {
+      "file": "lesen-t2-gemini-038.json",
+      "passageId": "gen-l2-f777a",
+      "tag": "Arbeit",
+      "detected": "Verkehr",
+      "bestScore": 3,
+      "tagScore": 0,
+      "diff": 3
+    },
+    {
+      "file": "lesen-t2-gemini-047.json",
+      "passageId": "gen-l2-6965b",
+      "tag": "Verkehr",
+      "detected": "Stadtleben",
+      "bestScore": 2,
+      "tagScore": 0,
+      "diff": 2
+    },
+    {
+      "file": "lesen-t2-gemini-048.json",
+      "passageId": "gen-l2-6966b",
+      "tag": "Sport",
+      "detected": "Bildung",
+      "bestScore": 3,
+      "tagScore": 0,
+      "diff": 3
+    },
+    {
+      "file": "lesen-t2-gemini-052.json",
+      "passageId": "gen-l2-4afce3fe-b",
+      "tag": "Wohnen",
+      "detected": "Bildung",
+      "bestScore": 2,
+      "tagScore": 0,
+      "diff": 2
+    },
+    {
+      "file": "lesen-t2-gemini-056.json",
+      "passageId": "gen-l2-61d60ea9a",
+      "tag": "Sport",
+      "detected": "Umwelt",
+      "bestScore": 2,
+      "tagScore": 0,
+      "diff": 2
+    },
+    {
+      "file": "lesen-t2-gemini-060.json",
+      "passageId": "gen-l2-c0a4a40e-a",
+      "tag": "Konsum",
+      "detected": "Gesundheit",
+      "bestScore": 2,
+      "tagScore": 0,
+      "diff": 2
+    },
+    {
+      "file": "lesen-t2-gemini-060.json",
+      "passageId": "gen-l2-c0a4a40e-b",
+      "tag": "Konsum",
+      "detected": "Bildung",
+      "bestScore": 3,
+      "tagScore": 0,
+      "diff": 3
+    },
+    {
+      "file": "lesen-t2-gemini-061.json",
+      "passageId": "gen-l2-4c1435c2a",
+      "tag": "Reisen",
+      "detected": "Umwelt",
+      "bestScore": 3,
+      "tagScore": 1,
+      "diff": 2
+    },
+    {
+      "file": "lesen-t2-gemini-062.json",
+      "passageId": "gen-l2-69492eda-a",
+      "tag": "Konsum",
+      "detected": "Gesundheit",
+      "bestScore": 2,
+      "tagScore": 0,
+      "diff": 2
+    },
+    {
+      "file": "lesen-t2-gemini-062.json",
+      "passageId": "gen-l2-69492eda-b",
+      "tag": "Konsum",
+      "detected": "Umwelt",
+      "bestScore": 3,
+      "tagScore": 1,
+      "diff": 2
+    },
+    {
+      "file": "lesen-t2-gemini-063.json",
+      "passageId": "gen-l2-a3215fda-1",
+      "tag": "Konsum",
+      "detected": "Gesundheit",
+      "bestScore": 2,
+      "tagScore": 0,
+      "diff": 2
+    },
+    {
+      "file": "lesen-t2-gemini-064.json",
+      "passageId": "gen-l2-f5dd2b2c-1",
+      "tag": "Ernährung",
+      "detected": "Freizeit",
+      "bestScore": 3,
+      "tagScore": 0,
+      "diff": 3
+    },
+    {
+      "file": "lesen-t2-gemini-065.json",
+      "passageId": "gen-l2-358dc234a",
+      "tag": "Reisen",
+      "detected": "Umwelt",
+      "bestScore": 4,
+      "tagScore": 0,
+      "diff": 4
+    },
+    {
+      "file": "lesen-t2-gemini-068.json",
+      "passageId": "gen-l2-5f6a90a2b",
+      "tag": "Freizeit",
+      "detected": "Bildung",
+      "bestScore": 3,
+      "tagScore": 1,
+      "diff": 2
+    },
+    {
+      "file": "lesen-t2-gemini-069.json",
+      "passageId": "gen-l2-d2f73cdf-2",
+      "tag": "Freizeit",
+      "detected": "Reisen",
+      "bestScore": 2,
+      "tagScore": 0,
+      "diff": 2
+    },
+    {
+      "file": "lesen-t2-gemini-070.json",
+      "passageId": "gen-l2-35e3f56a-2",
+      "tag": "Technik",
+      "detected": "Bildung",
+      "bestScore": 4,
+      "tagScore": 1,
+      "diff": 3
+    },
+    {
+      "file": "lesen-t2-gemini-071.json",
+      "passageId": "gen-l2-1c011fef-b",
+      "tag": "Technik",
+      "detected": "Bildung",
+      "bestScore": 4,
+      "tagScore": 1,
+      "diff": 3
+    },
+    {
+      "file": "lesen-t2-gemini-073.json",
+      "passageId": "gen-l2-0232c450b",
+      "tag": "Technik",
+      "detected": "Bildung",
+      "bestScore": 4,
+      "tagScore": 2,
+      "diff": 2
+    },
+    {
+      "file": "lesen-t2-gemini-074.json",
+      "passageId": "gen-l2-4179686b",
+      "tag": "Technik",
+      "detected": "Bildung",
+      "bestScore": 6,
+      "tagScore": 3,
+      "diff": 3
+    },
+    {
+      "file": "lesen-t2-gemini-076.json",
+      "passageId": "gen-l2-262dcd74a",
+      "tag": "Technik",
+      "detected": "Umwelt",
+      "bestScore": 3,
+      "tagScore": 0,
+      "diff": 3
+    },
+    {
+      "file": "lesen-t2-gemini-078.json",
+      "passageId": "gen-l2-a26eaeea-b",
+      "tag": "Technik",
+      "detected": "Umwelt",
+      "bestScore": 4,
+      "tagScore": 2,
+      "diff": 2
+    },
+    {
+      "file": "lesen-t2-gemini-079.json",
+      "passageId": "gen-l2-831ec385a",
+      "tag": "Technik",
+      "detected": "Umwelt",
+      "bestScore": 2,
+      "tagScore": 0,
+      "diff": 2
+    },
+    {
+      "file": "lesen-t2-gemini-080.json",
+      "passageId": "gen-l2-03dea0c3a",
+      "tag": "Technik",
+      "detected": "Bildung",
+      "bestScore": 5,
+      "tagScore": 3,
+      "diff": 2
+    },
+    {
+      "file": "lesen-t2-gemini-080.json",
+      "passageId": "gen-l2-03dea0c3b",
+      "tag": "Technik",
+      "detected": "Umwelt",
+      "bestScore": 3,
+      "tagScore": 0,
+      "diff": 3
+    },
+    {
+      "file": "lesen-t2-gemini-095.json",
+      "passageId": "gen-l2-0d078700b",
+      "tag": "Gesundheit",
+      "detected": "Arbeit",
+      "bestScore": 2,
+      "tagScore": 0,
+      "diff": 2
+    },
+    {
+      "file": "lesen-t4-gemini-002.json",
+      "passageId": "gen-l4-55c71c3e",
+      "tag": "Freizeit",
+      "detected": "Stadtleben",
+      "bestScore": 3,
+      "tagScore": 1,
+      "diff": 2
+    },
+    {
+      "file": "lesen-t4-gemini-006.json",
+      "passageId": "gen-l4-92df3345",
+      "tag": "Bildung",
+      "detected": "Stadtleben",
+      "bestScore": 2,
+      "tagScore": 0,
+      "diff": 2
+    },
+    {
+      "file": "lesen-t4-gemini-030.json",
+      "passageId": "gen-l4-849fe147",
+      "tag": "Technik",
+      "detected": "Freizeit",
+      "bestScore": 2,
+      "tagScore": 0,
+      "diff": 2
+    },
+    {
+      "file": "lesen-t4-gemini-031.json",
+      "passageId": "gen-l4-c234ed1f",
+      "tag": "Familie",
+      "detected": "Bildung",
+      "bestScore": 3,
+      "tagScore": 1,
+      "diff": 2
+    },
+    {
+      "file": "lesen-t4-gemini-032.json",
+      "passageId": "gen-l4-cfe1e312",
+      "tag": "Familie",
+      "detected": "Bildung",
+      "bestScore": 2,
+      "tagScore": 0,
+      "diff": 2
+    },
+    {
+      "file": "lesen-t4-gemini-033.json",
+      "passageId": "gen-l4-7d1f9527",
+      "tag": "Familie",
+      "detected": "Sport",
+      "bestScore": 2,
+      "tagScore": 0,
+      "diff": 2
+    },
+    {
+      "file": "lesen-t5-gemini-046.json",
+      "passageId": "gen-l5-af60e599",
+      "tag": "Freizeit",
+      "detected": "Technik",
+      "bestScore": 3,
+      "tagScore": 1,
+      "diff": 2
+    },
+    {
+      "file": "lesen-t5-gemini-052.json",
+      "passageId": "gen-l5-f750c057",
+      "tag": "Gesundheit",
+      "detected": "Sport",
+      "bestScore": 2,
+      "tagScore": 0,
+      "diff": 2
+    },
+    {
+      "file": "lesen-t5-gemini-054.json",
+      "passageId": "gen-l5-f8a82034",
+      "tag": "Gesundheit",
+      "detected": "Konsum",
+      "bestScore": 3,
+      "tagScore": 0,
+      "diff": 3
+    },
+    {
+      "file": "lesen-t5-gemini-060.json",
+      "passageId": "gen-l5-2faf8867",
+      "tag": "Kultur",
+      "detected": "Technik",
+      "bestScore": 2,
+      "tagScore": 0,
+      "diff": 2
+    },
+    {
+      "file": "lesen-t5-gemini-066.json",
+      "passageId": "gen-l5-9c847fa2",
+      "tag": "Bildung",
+      "detected": "Technik",
+      "bestScore": 3,
+      "tagScore": 0,
+      "diff": 3
+    },
+    {
+      "file": "lesen-t5-gemini-070.json",
+      "passageId": "gen-l5-e8c95797",
+      "tag": "Konsum",
+      "detected": "Ernährung",
+      "bestScore": 2,
+      "tagScore": 0,
+      "diff": 2
+    }
+  ],
+  "weakFindings": [
+    {
+      "file": "horen-t1-gemini-003.json",
+      "passageId": "",
+      "tag": "Ernährung",
+      "detected": null,
+      "bestScore": 0,
+      "tagScore": 0,
+      "diff": 0,
+      "unsupported": true
+    },
+    {
+      "file": "horen-t1-gemini-003.json",
+      "passageId": "",
+      "tag": "Ernährung",
+      "detected": "Technik",
+      "bestScore": 1,
+      "tagScore": 0,
+      "diff": 1
+    },
+    {
+      "file": "horen-t1-gemini-003.json",
+      "passageId": "",
+      "tag": "Ernährung",
+      "detected": "Reisen",
+      "bestScore": 1,
+      "tagScore": 0,
+      "diff": 1
+    },
+    {
+      "file": "horen-t1-gemini-003.json",
+      "passageId": "",
+      "tag": "Ernährung",
+      "detected": "Wohnen",
+      "bestScore": 1,
+      "tagScore": 0,
+      "diff": 1
+    },
+    {
+      "file": "horen-t1-gemini-003.json",
+      "passageId": "gen-p-h1-3921-s1",
+      "tag": "Ernährung",
+      "detected": null,
+      "bestScore": 0,
+      "tagScore": 0,
+      "diff": 0,
+      "unsupported": true
+    },
+    {
+      "file": "horen-t1-gemini-003.json",
+      "passageId": "gen-p-h1-3921-s2",
+      "tag": "Ernährung",
+      "detected": "Technik",
+      "bestScore": 1,
+      "tagScore": 0,
+      "diff": 1
+    },
+    {
+      "file": "horen-t1-gemini-003.json",
+      "passageId": "gen-p-h1-3921-s4",
+      "tag": "Ernährung",
+      "detected": "Reisen",
+      "bestScore": 1,
+      "tagScore": 0,
+      "diff": 1
+    },
+    {
+      "file": "horen-t1-gemini-003.json",
+      "passageId": "gen-p-h1-3921-s5",
+      "tag": "Ernährung",
+      "detected": "Wohnen",
+      "bestScore": 1,
+      "tagScore": 0,
+      "diff": 1
+    },
+    {
+      "file": "horen-t1-gemini-010.json",
+      "passageId": "",
+      "tag": "Freizeit",
+      "detected": "Familie",
+      "bestScore": 2,
+      "tagScore": 1,
+      "diff": 1
+    },
+    {
+      "file": "horen-t1-gemini-010.json",
+      "passageId": "",
+      "tag": "Freizeit",
+      "detected": null,
+      "bestScore": 0,
+      "tagScore": 0,
+      "diff": 0,
+      "unsupported": true
+    },
+    {
+      "file": "horen-t1-gemini-010.json",
+      "passageId": "",
+      "tag": "Freizeit",
+      "detected": "Familie",
+      "bestScore": 1,
+      "tagScore": 0,
+      "diff": 1
+    },
+    {
+      "file": "horen-t1-gemini-010.json",
+      "passageId": "gen-p-h1-4b99c7e9-s2",
+      "tag": "Freizeit",
+      "detected": "Familie",
+      "bestScore": 2,
+      "tagScore": 1,
+      "diff": 1
+    },
+    {
+      "file": "horen-t1-gemini-010.json",
+      "passageId": "gen-p-h1-4b99c7e9-s3",
+      "tag": "Freizeit",
+      "detected": null,
+      "bestScore": 0,
+      "tagScore": 0,
+      "diff": 0,
+      "unsupported": true
+    },
+    {
+      "file": "horen-t1-gemini-010.json",
+      "passageId": "gen-p-h1-4b99c7e9-s4",
+      "tag": "Freizeit",
+      "detected": "Familie",
+      "bestScore": 1,
+      "tagScore": 0,
+      "diff": 1
+    },
+    {
+      "file": "horen-t1-gemini-011.json",
+      "passageId": "",
+      "tag": "Arbeit",
+      "detected": null,
+      "bestScore": 0,
+      "tagScore": 0,
+      "diff": 0,
+      "unsupported": true
+    },
+    {
+      "file": "horen-t1-gemini-011.json",
+      "passageId": "",
+      "tag": "Arbeit",
+      "detected": "Gesundheit",
+      "bestScore": 1,
+      "tagScore": 0,
+      "diff": 1
+    },
+    {
+      "file": "horen-t1-gemini-011.json",
+      "passageId": "gen-p-h1-e4b71873-s2",
+      "tag": "Arbeit",
+      "detected": null,
+      "bestScore": 0,
+      "tagScore": 0,
+      "diff": 0,
+      "unsupported": true
+    },
+    {
+      "file": "horen-t1-gemini-011.json",
+      "passageId": "gen-p-h1-e4b71873-s5",
+      "tag": "Arbeit",
+      "detected": "Gesundheit",
+      "bestScore": 1,
+      "tagScore": 0,
+      "diff": 1
+    },
+    {
+      "file": "horen-t1-gemini-014.json",
+      "passageId": "",
+      "tag": "Familie",
+      "detected": null,
+      "bestScore": 0,
+      "tagScore": 0,
+      "diff": 0,
+      "unsupported": true
+    },
+    {
+      "file": "horen-t1-gemini-014.json",
+      "passageId": "",
+      "tag": "Familie",
+      "detected": "Arbeit",
+      "bestScore": 1,
+      "tagScore": 0,
+      "diff": 1
+    },
+    {
+      "file": "horen-t1-gemini-014.json",
+      "passageId": "",
+      "tag": "Familie",
+      "detected": "Kultur",
+      "bestScore": 1,
+      "tagScore": 0,
+      "diff": 1
+    },
+    {
+      "file": "horen-t1-gemini-014.json",
+      "passageId": "",
+      "tag": "Familie",
+      "detected": "Wohnen",
+      "bestScore": 1,
+      "tagScore": 0,
+      "diff": 1
+    },
+    {
+      "file": "horen-t1-gemini-014.json",
+      "passageId": "gen-p-h1-2b4f91be-s1",
+      "tag": "Familie",
+      "detected": null,
+      "bestScore": 0,
+      "tagScore": 0,
+      "diff": 0,
+      "unsupported": true
+    },
+    {
+      "file": "horen-t1-gemini-014.json",
+      "passageId": "gen-p-h1-2b4f91be-s2",
+      "tag": "Familie",
+      "detected": "Arbeit",
+      "bestScore": 1,
+      "tagScore": 0,
+      "diff": 1
+    },
+    {
+      "file": "horen-t1-gemini-014.json",
+      "passageId": "gen-p-h1-2b4f91be-s3",
+      "tag": "Familie",
+      "detected": "Kultur",
+      "bestScore": 1,
+      "tagScore": 0,
+      "diff": 1
+    },
+    {
+      "file": "horen-t1-gemini-014.json",
+      "passageId": "gen-p-h1-2b4f91be-s4",
+      "tag": "Familie",
+      "detected": "Wohnen",
+      "bestScore": 1,
+      "tagScore": 0,
+      "diff": 1
+    },
+    {
+      "file": "horen-t1-gemini-015.json",
+      "passageId": "",
+      "tag": "Reisen",
+      "detected": "Sport",
+      "bestScore": 1,
+      "tagScore": 0,
+      "diff": 1
+    },
+    {
+      "file": "horen-t1-gemini-015.json",
+      "passageId": "gen-p-h1-84beccfd-s3",
+      "tag": "Reisen",
+      "detected": "Sport",
+      "bestScore": 1,
+      "tagScore": 0,
+      "diff": 1
+    },
+    {
+      "file": "horen-t2-gemini-004.json",
+      "passageId": "",
+      "tag": "Freizeit",
+      "detected": "Umwelt",
+      "bestScore": 2,
+      "tagScore": 1,
+      "diff": 1
+    },
+    {
+      "file": "horen-t2-gemini-004.json",
+      "passageId": "gen-p-h2-75cdc4f7-s1",
+      "tag": "Freizeit",
+      "detected": "Umwelt",
+      "bestScore": 2,
+      "tagScore": 1,
+      "diff": 1
+    },
+    {
+      "file": "horen-t2-gemini-022.json",
+      "passageId": "",
+      "tag": "Wohnen",
+      "detected": "Umwelt",
+      "bestScore": 2,
+      "tagScore": 1,
+      "diff": 1
+    },
+    {
+      "file": "horen-t2-gemini-022.json",
+      "passageId": "gen-p-h2-88a7933f",
+      "tag": "Wohnen",
+      "detected": "Umwelt",
+      "bestScore": 2,
+      "tagScore": 1,
+      "diff": 1
+    },
+    {
+      "file": "horen-t3-gemini-005.json",
+      "passageId": "",
+      "tag": "Gesundheit",
+      "detected": "Technik",
+      "bestScore": 1,
+      "tagScore": 0,
+      "diff": 1
+    },
+    {
+      "file": "horen-t3-gemini-005.json",
+      "passageId": "gen-p-h3-h4d2-s1",
+      "tag": "Gesundheit",
+      "detected": "Technik",
+      "bestScore": 1,
+      "tagScore": 0,
+      "diff": 1
+    },
+    {
+      "file": "horen-t3-gemini-006.json",
+      "passageId": "",
+      "tag": "Arbeit",
+      "detected": "Bildung",
+      "bestScore": 3,
+      "tagScore": 2,
+      "diff": 1
+    },
+    {
+      "file": "horen-t3-gemini-006.json",
+      "passageId": "gen-p-h3-391b282c-s1",
+      "tag": "Arbeit",
+      "detected": "Bildung",
+      "bestScore": 3,
+      "tagScore": 2,
+      "diff": 1
+    },
+    {
+      "file": "horen-t4-gemini-005.json",
+      "passageId": "",
+      "tag": "Konsum",
+      "detected": "Umwelt",
+      "bestScore": 3,
+      "tagScore": 2,
+      "diff": 1
+    },
+    {
+      "file": "horen-t4-gemini-005.json",
+      "passageId": "gen-p-h4-114aba57-s1",
+      "tag": "Konsum",
+      "detected": "Umwelt",
+      "bestScore": 3,
+      "tagScore": 2,
+      "diff": 1
+    },
+    {
+      "file": "lesen-t1-gemini-071.json",
+      "passageId": "gen-l1-2094",
+      "tag": "Freizeit",
+      "detected": "Stadtleben",
+      "bestScore": 2,
+      "tagScore": 1,
+      "diff": 1
+    },
+    {
+      "file": "lesen-t1-gemini-096.json",
+      "passageId": "gen-l1-64697954",
+      "tag": "Freizeit",
+      "detected": "Stadtleben",
+      "bestScore": 4,
+      "tagScore": 3,
+      "diff": 1
+    },
+    {
+      "file": "lesen-t1-gemini-112.json",
+      "passageId": "gen-l1-6fa67c29",
+      "tag": "Freizeit",
+      "detected": "Stadtleben",
+      "bestScore": 4,
+      "tagScore": 3,
+      "diff": 1
+    },
+    {
+      "file": "lesen-t1-gemini-114.json",
+      "passageId": "gen-l1-4b5a5cac",
+      "tag": "Bildung",
+      "detected": "Freizeit",
+      "bestScore": 3,
+      "tagScore": 2,
+      "diff": 1
+    },
+    {
+      "file": "lesen-t1-gemini-115.json",
+      "passageId": "gen-l1-6224d4f6",
+      "tag": "Freizeit",
+      "detected": "Stadtleben",
+      "bestScore": 3,
+      "tagScore": 2,
+      "diff": 1
+    },
+    {
+      "file": "lesen-t1-gemini-120.json",
+      "passageId": "gen-l1-1c6ba818",
+      "tag": "Freizeit",
+      "detected": "Stadtleben",
+      "bestScore": 3,
+      "tagScore": 2,
+      "diff": 1
+    },
+    {
+      "file": "lesen-t1-gemini-123.json",
+      "passageId": "gen-l1-9b370fcf",
+      "tag": "Freizeit",
+      "detected": "Stadtleben",
+      "bestScore": 2,
+      "tagScore": 1,
+      "diff": 1
+    },
+    {
+      "file": "lesen-t1-gemini-141.json",
+      "passageId": "gen-l1-2051849b",
+      "tag": "Umwelt",
+      "detected": "Stadtleben",
+      "bestScore": 3,
+      "tagScore": 2,
+      "diff": 1
+    },
+    {
+      "file": "lesen-t1-gemini-146.json",
+      "passageId": "gen-l1-ce2d6517",
+      "tag": "Technik",
+      "detected": "Bildung",
+      "bestScore": 2,
+      "tagScore": 1,
+      "diff": 1
+    },
+    {
+      "file": "lesen-t1-gemini-148.json",
+      "passageId": "gen-l1-1ab0501d",
+      "tag": "Medien",
+      "detected": "Stadtleben",
+      "bestScore": 2,
+      "tagScore": 1,
+      "diff": 1
+    },
+    {
+      "file": "lesen-t1-gemini-150.json",
+      "passageId": "gen-l1-09b644d7",
+      "tag": "Freizeit",
+      "detected": "Stadtleben",
+      "bestScore": 3,
+      "tagScore": 2,
+      "diff": 1
+    },
+    {
+      "file": "lesen-t1-gemini-152.json",
+      "passageId": "gen-l1-9003796c",
+      "tag": "Konsum",
+      "detected": "Umwelt",
+      "bestScore": 3,
+      "tagScore": 2,
+      "diff": 1
+    },
+    {
+      "file": "lesen-t1-gemini-153.json",
+      "passageId": "gen-l1-d3f64de7",
+      "tag": "Ernährung",
+      "detected": "Bildung",
+      "bestScore": 2,
+      "tagScore": 1,
+      "diff": 1
+    },
+    {
+      "file": "lesen-t1-gemini-160.json",
+      "passageId": "gen-l1-c52e0e6c",
+      "tag": "Technik",
+      "detected": "Freizeit",
+      "bestScore": 4,
+      "tagScore": 3,
+      "diff": 1
+    },
+    {
+      "file": "lesen-t1-gemini-161.json",
+      "passageId": "gen-l1-39f5e0a5",
+      "tag": "Technik",
+      "detected": "Bildung",
+      "bestScore": 4,
+      "tagScore": 3,
+      "diff": 1
+    },
+    {
+      "file": "lesen-t1-gemini-167.json",
+      "passageId": "gen-l1-8da9927a",
+      "tag": "Arbeit",
+      "detected": "Freizeit",
+      "bestScore": 2,
+      "tagScore": 1,
+      "diff": 1
+    },
+    {
+      "file": "lesen-t1-gemini-169.json",
+      "passageId": "gen-l1-911412d3",
+      "tag": "Arbeit",
+      "detected": "Freizeit",
+      "bestScore": 2,
+      "tagScore": 1,
+      "diff": 1
+    },
+    {
+      "file": "lesen-t1-gemini-170.json",
+      "passageId": "gen-l1-ee094160",
+      "tag": "Wohnen",
+      "detected": "Freizeit",
+      "bestScore": 4,
+      "tagScore": 3,
+      "diff": 1
+    },
+    {
+      "file": "lesen-t1-gemini-176.json",
+      "passageId": "gen-l1-6d2ac76b",
+      "tag": "Kultur",
+      "detected": "Stadtleben",
+      "bestScore": 2,
+      "tagScore": 1,
+      "diff": 1
+    },
+    {
+      "file": "lesen-t1-gemini-178.json",
+      "passageId": "gen-l1-8ec93089",
+      "tag": "Gesundheit",
+      "detected": "Umwelt",
+      "bestScore": 1,
+      "tagScore": 0,
+      "diff": 1
+    },
+    {
+      "file": "lesen-t2-gemini-002.json",
+      "passageId": "gen-l2-7291a",
+      "tag": "Sport",
+      "detected": "Stadtleben",
+      "bestScore": 3,
+      "tagScore": 2,
+      "diff": 1
+    },
+    {
+      "file": "lesen-t2-gemini-020.json",
+      "passageId": "gen-l2-cf4c-a",
+      "tag": "Bildung",
+      "detected": "Freizeit",
+      "bestScore": 2,
+      "tagScore": 1,
+      "diff": 1
+    },
+    {
+      "file": "lesen-t2-gemini-031.json",
+      "passageId": "gen-l2-e686a",
+      "tag": "Bildung",
+      "detected": "Freizeit",
+      "bestScore": 2,
+      "tagScore": 1,
+      "diff": 1
+    },
+    {
+      "file": "lesen-t2-gemini-032.json",
+      "passageId": "gen-l2-f909b",
+      "tag": "Arbeit",
+      "detected": "Stadtleben",
+      "bestScore": 2,
+      "tagScore": 1,
+      "diff": 1
+    },
+    {
+      "file": "lesen-t2-gemini-054.json",
+      "passageId": "gen-l2-006c0335b",
+      "tag": "Stadtleben",
+      "detected": "Arbeit",
+      "bestScore": 1,
+      "tagScore": 0,
+      "diff": 1
+    },
+    {
+      "file": "lesen-t2-gemini-058.json",
+      "passageId": "gen-l2-8dfdafc7b",
+      "tag": "Ernährung",
+      "detected": "Arbeit",
+      "bestScore": 2,
+      "tagScore": 1,
+      "diff": 1
+    },
+    {
+      "file": "lesen-t2-gemini-059.json",
+      "passageId": "gen-l2-42c0c14e-b",
+      "tag": "Kultur",
+      "detected": "Technik",
+      "bestScore": 1,
+      "tagScore": 0,
+      "diff": 1
+    },
+    {
+      "file": "lesen-t2-gemini-066.json",
+      "passageId": "gen-l2-703107f4a",
+      "tag": "Freizeit",
+      "detected": "Stadtleben",
+      "bestScore": 3,
+      "tagScore": 2,
+      "diff": 1
+    },
+    {
+      "file": "lesen-t2-gemini-066.json",
+      "passageId": "gen-l2-703107f4b",
+      "tag": "Freizeit",
+      "detected": "Medien",
+      "bestScore": 3,
+      "tagScore": 2,
+      "diff": 1
+    },
+    {
+      "file": "lesen-t2-gemini-072.json",
+      "passageId": "gen-l2-918879ec-b",
+      "tag": "Technik",
+      "detected": "Bildung",
+      "bestScore": 4,
+      "tagScore": 3,
+      "diff": 1
+    },
+    {
+      "file": "lesen-t2-gemini-075.json",
+      "passageId": "gen-l2-83318bd1b",
+      "tag": "Technik",
+      "detected": "Bildung",
+      "bestScore": 4,
+      "tagScore": 3,
+      "diff": 1
+    },
+    {
+      "file": "lesen-t2-gemini-077.json",
+      "passageId": "gen-l2-6192adf1a",
+      "tag": "Technik",
+      "detected": "Umwelt",
+      "bestScore": 2,
+      "tagScore": 1,
+      "diff": 1
+    },
+    {
+      "file": "lesen-t2-gemini-082.json",
+      "passageId": "gen-l2-f6f5c5dd-b",
+      "tag": "Freizeit",
+      "detected": "Gesundheit",
+      "bestScore": 2,
+      "tagScore": 1,
+      "diff": 1
+    },
+    {
+      "file": "lesen-t2-gemini-086.json",
+      "passageId": "gen-l2-a2982e46b",
+      "tag": "Wohnen",
+      "detected": "Umwelt",
+      "bestScore": 1,
+      "tagScore": 0,
+      "diff": 1
+    },
+    {
+      "file": "lesen-t2-gemini-090.json",
+      "passageId": "gen-l2-3b8b2651a",
+      "tag": "Gesundheit",
+      "detected": "Freizeit",
+      "bestScore": 3,
+      "tagScore": 2,
+      "diff": 1
+    },
+    {
+      "file": "lesen-t2-gemini-091.json",
+      "passageId": "gen-l2-f2898d9a-a",
+      "tag": "Familie",
+      "detected": "Freizeit",
+      "bestScore": 3,
+      "tagScore": 2,
+      "diff": 1
+    },
+    {
+      "file": "lesen-t2-gemini-092.json",
+      "passageId": "gen-l2-6ee95c1b-b",
+      "tag": "Kultur",
+      "detected": "Wohnen",
+      "bestScore": 1,
+      "tagScore": 0,
+      "diff": 1
+    },
+    {
+      "file": "lesen-t2-gemini-098.json",
+      "passageId": "gen-l2-bc20349f-b",
+      "tag": "Kultur",
+      "detected": "Technik",
+      "bestScore": 2,
+      "tagScore": 1,
+      "diff": 1
+    },
+    {
+      "file": "lesen-t4-gemini-001.json",
+      "passageId": "gen-l4-b9914c4e",
+      "tag": "Umwelt",
+      "detected": "Stadtleben",
+      "bestScore": 2,
+      "tagScore": 1,
+      "diff": 1
+    },
+    {
+      "file": "lesen-t4-gemini-009.json",
+      "passageId": "gen-l4-bb4ff14f",
+      "tag": "Freizeit",
+      "detected": "Stadtleben",
+      "bestScore": 1,
+      "tagScore": 0,
+      "diff": 1
+    },
+    {
+      "file": "lesen-t4-gemini-011.json",
+      "passageId": "gen-l4-6145bc88",
+      "tag": "Bildung",
+      "detected": "Arbeit",
+      "bestScore": 1,
+      "tagScore": 0,
+      "diff": 1
+    },
+    {
+      "file": "lesen-t4-gemini-012.json",
+      "passageId": "gen-l4-99aa3217",
+      "tag": "Reisen",
+      "detected": "Gesundheit",
+      "bestScore": 1,
+      "tagScore": 0,
+      "diff": 1
+    },
+    {
+      "file": "lesen-t4-gemini-014.json",
+      "passageId": "gen-l4-1316d4d6",
+      "tag": "Bildung",
+      "detected": "Sport",
+      "bestScore": 1,
+      "tagScore": 0,
+      "diff": 1
+    },
+    {
+      "file": "lesen-t4-gemini-029.json",
+      "passageId": "gen-l4-41578898",
+      "tag": "Technik",
+      "detected": "Arbeit",
+      "bestScore": 1,
+      "tagScore": 0,
+      "diff": 1
+    },
+    {
+      "file": "lesen-t4-gemini-037.json",
+      "passageId": "gen-l4-98b04d70",
+      "tag": "Konsum",
+      "detected": "Freizeit",
+      "bestScore": 2,
+      "tagScore": 1,
+      "diff": 1
+    },
+    {
+      "file": "lesen-t5-gemini-010.json",
+      "passageId": "gen-l5-f5e3b9a2",
+      "tag": "Wohnen",
+      "detected": "Umwelt",
+      "bestScore": 1,
+      "tagScore": 0,
+      "diff": 1
+    },
+    {
+      "file": "lesen-t5-gemini-011.json",
+      "passageId": "gen-l5-9c230cd7",
+      "tag": "Ernährung",
+      "detected": "Technik",
+      "bestScore": 1,
+      "tagScore": 0,
+      "diff": 1
+    },
+    {
+      "file": "lesen-t5-gemini-013.json",
+      "passageId": "gen-l5-34cfa659",
+      "tag": "Arbeit",
+      "detected": "Stadtleben",
+      "bestScore": 2,
+      "tagScore": 1,
+      "diff": 1
+    },
+    {
+      "file": "lesen-t5-gemini-017.json",
+      "passageId": "gen-l5-b43aec48",
+      "tag": "Arbeit",
+      "detected": "Freizeit",
+      "bestScore": 1,
+      "tagScore": 0,
+      "diff": 1
+    },
+    {
+      "file": "lesen-t5-gemini-020.json",
+      "passageId": "gen-l5-60d4cc05",
+      "tag": "Bildung",
+      "detected": "Ernährung",
+      "bestScore": 1,
+      "tagScore": 0,
+      "diff": 1
+    },
+    {
+      "file": "lesen-t5-gemini-045.json",
+      "passageId": "gen-l5-bc914684",
+      "tag": "Freizeit",
+      "detected": "Sport",
+      "bestScore": 2,
+      "tagScore": 1,
+      "diff": 1
+    },
+    {
+      "file": "lesen-t5-gemini-047.json",
+      "passageId": "gen-l5-06ffadec",
+      "tag": "Freizeit",
+      "detected": "Medien",
+      "bestScore": 1,
+      "tagScore": 0,
+      "diff": 1
+    },
+    {
+      "file": "lesen-t5-gemini-049.json",
+      "passageId": "gen-l5-29cc61f2",
+      "tag": "Technik",
+      "detected": "Sport",
+      "bestScore": 2,
+      "tagScore": 1,
+      "diff": 1
+    },
+    {
+      "file": "lesen-t5-gemini-058.json",
+      "passageId": "gen-l5-bf1cb2d2",
+      "tag": "Familie",
+      "detected": "Umwelt",
+      "bestScore": 1,
+      "tagScore": 0,
+      "diff": 1
+    },
+    {
+      "file": "lesen-t5-gemini-059.json",
+      "passageId": "gen-l5-43810df2",
+      "tag": "Arbeit",
+      "detected": "Bildung",
+      "bestScore": 1,
+      "tagScore": 0,
+      "diff": 1
+    },
+    {
+      "file": "lesen-t5-gemini-061.json",
+      "passageId": "gen-l5-40eebfba",
+      "tag": "Reisen",
+      "detected": "Technik",
+      "bestScore": 2,
+      "tagScore": 1,
+      "diff": 1
+    },
+    {
+      "file": "lesen-t5-gemini-068.json",
+      "passageId": "gen-l5-fab50345",
+      "tag": "Kultur",
+      "detected": "Konsum",
+      "bestScore": 1,
+      "tagScore": 0,
+      "diff": 1
+    },
+    {
+      "file": "lesen-t5-gemini-069.json",
+      "passageId": "gen-l5-aee6a922",
+      "tag": "Reisen",
+      "detected": "Sport",
+      "bestScore": 2,
+      "tagScore": 1,
+      "diff": 1
+    },
+    {
+      "file": "lesen-t5-gemini-072.json",
+      "passageId": "gen-l5-c20d96ab",
+      "tag": "Sport",
+      "detected": "Technik",
+      "bestScore": 1,
+      "tagScore": 0,
+      "diff": 1
+    },
+    {
+      "file": "lesen-t5-gemini-074.json",
+      "passageId": "gen-l5-e4d0547a",
+      "tag": "Kultur",
+      "detected": "Konsum",
+      "bestScore": 1,
+      "tagScore": 0,
+      "diff": 1
+    },
+    {
+      "file": "lesen-t5-gemini-075.json",
+      "passageId": "gen-l5-337fe59e",
+      "tag": "Ernährung",
+      "detected": "Technik",
+      "bestScore": 2,
+      "tagScore": 1,
+      "diff": 1
+    }
+  ],
+  "strongFiles": [
+    "horen-t1-gemini-001.json",
+    "horen-t1-gemini-002.json",
+    "horen-t1-gemini-004.json",
+    "horen-t1-gemini-006.json",
+    "horen-t1-gemini-007.json",
+    "horen-t1-gemini-008.json",
+    "horen-t1-gemini-009.json",
+    "horen-t1-gemini-012.json",
+    "horen-t1-gemini-013.json",
+    "horen-t1-gemini-017.json",
+    "horen-t2-gemini-002.json",
+    "lesen-t1-gemini-075.json",
+    "lesen-t1-gemini-089.json",
+    "lesen-t1-gemini-130.json",
+    "lesen-t1-gemini-138.json",
+    "lesen-t1-gemini-139.json",
+    "lesen-t1-gemini-140.json",
+    "lesen-t1-gemini-143.json",
+    "lesen-t1-gemini-144.json",
+    "lesen-t1-gemini-164.json",
+    "lesen-t1-gemini-166.json",
+    "lesen-t1-gemini-173.json",
+    "lesen-t1-gemini-181.json",
+    "lesen-t2-gemini-028.json",
+    "lesen-t2-gemini-029.json",
+    "lesen-t2-gemini-030.json",
+    "lesen-t2-gemini-034.json",
+    "lesen-t2-gemini-038.json",
+    "lesen-t2-gemini-047.json",
+    "lesen-t2-gemini-048.json",
+    "lesen-t2-gemini-052.json",
+    "lesen-t2-gemini-056.json",
+    "lesen-t2-gemini-060.json",
+    "lesen-t2-gemini-061.json",
+    "lesen-t2-gemini-062.json",
+    "lesen-t2-gemini-063.json",
+    "lesen-t2-gemini-064.json",
+    "lesen-t2-gemini-065.json",
+    "lesen-t2-gemini-068.json",
+    "lesen-t2-gemini-069.json",
+    "lesen-t2-gemini-070.json",
+    "lesen-t2-gemini-071.json",
+    "lesen-t2-gemini-073.json",
+    "lesen-t2-gemini-074.json",
+    "lesen-t2-gemini-076.json",
+    "lesen-t2-gemini-078.json",
+    "lesen-t2-gemini-079.json",
+    "lesen-t2-gemini-080.json",
+    "lesen-t2-gemini-095.json",
+    "lesen-t4-gemini-002.json",
+    "lesen-t4-gemini-006.json",
+    "lesen-t4-gemini-030.json",
+    "lesen-t4-gemini-031.json",
+    "lesen-t4-gemini-032.json",
+    "lesen-t4-gemini-033.json",
+    "lesen-t5-gemini-046.json",
+    "lesen-t5-gemini-052.json",
+    "lesen-t5-gemini-054.json",
+    "lesen-t5-gemini-060.json",
+    "lesen-t5-gemini-066.json",
+    "lesen-t5-gemini-070.json"
+  ],
+  "weakOnlyFiles": [
+    "horen-t1-gemini-003.json",
+    "horen-t1-gemini-010.json",
+    "horen-t1-gemini-011.json",
+    "horen-t1-gemini-014.json",
+    "horen-t1-gemini-015.json",
+    "horen-t2-gemini-004.json",
+    "horen-t2-gemini-022.json",
+    "horen-t3-gemini-005.json",
+    "horen-t3-gemini-006.json",
+    "horen-t4-gemini-005.json",
+    "lesen-t1-gemini-071.json",
+    "lesen-t1-gemini-096.json",
+    "lesen-t1-gemini-112.json",
+    "lesen-t1-gemini-114.json",
+    "lesen-t1-gemini-115.json",
+    "lesen-t1-gemini-120.json",
+    "lesen-t1-gemini-123.json",
+    "lesen-t1-gemini-141.json",
+    "lesen-t1-gemini-146.json",
+    "lesen-t1-gemini-148.json",
+    "lesen-t1-gemini-150.json",
+    "lesen-t1-gemini-152.json",
+    "lesen-t1-gemini-153.json",
+    "lesen-t1-gemini-160.json",
+    "lesen-t1-gemini-161.json",
+    "lesen-t1-gemini-167.json",
+    "lesen-t1-gemini-169.json",
+    "lesen-t1-gemini-170.json",
+    "lesen-t1-gemini-176.json",
+    "lesen-t1-gemini-178.json",
+    "lesen-t2-gemini-002.json",
+    "lesen-t2-gemini-020.json",
+    "lesen-t2-gemini-031.json",
+    "lesen-t2-gemini-032.json",
+    "lesen-t2-gemini-054.json",
+    "lesen-t2-gemini-058.json",
+    "lesen-t2-gemini-059.json",
+    "lesen-t2-gemini-066.json",
+    "lesen-t2-gemini-072.json",
+    "lesen-t2-gemini-075.json",
+    "lesen-t2-gemini-077.json",
+    "lesen-t2-gemini-082.json",
+    "lesen-t2-gemini-086.json",
+    "lesen-t2-gemini-090.json",
+    "lesen-t2-gemini-091.json",
+    "lesen-t2-gemini-092.json",
+    "lesen-t2-gemini-098.json",
+    "lesen-t4-gemini-001.json",
+    "lesen-t4-gemini-009.json",
+    "lesen-t4-gemini-011.json",
+    "lesen-t4-gemini-012.json",
+    "lesen-t4-gemini-014.json",
+    "lesen-t4-gemini-029.json",
+    "lesen-t4-gemini-037.json",
+    "lesen-t5-gemini-010.json",
+    "lesen-t5-gemini-011.json",
+    "lesen-t5-gemini-013.json",
+    "lesen-t5-gemini-017.json",
+    "lesen-t5-gemini-020.json",
+    "lesen-t5-gemini-045.json",
+    "lesen-t5-gemini-047.json",
+    "lesen-t5-gemini-049.json",
+    "lesen-t5-gemini-058.json",
+    "lesen-t5-gemini-059.json",
+    "lesen-t5-gemini-061.json",
+    "lesen-t5-gemini-068.json",
+    "lesen-t5-gemini-069.json",
+    "lesen-t5-gemini-072.json",
+    "lesen-t5-gemini-074.json",
+    "lesen-t5-gemini-075.json"
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "file": "batches/ready/lesen/lesen-t1-gemini-096.json",
+  "items": 6,
+  "promptChars": 10016,
+  "maxTokens": 1580,
+  "analysis": {
+    "totalChars": 1701,
+    "hasMarkdownFence": true,
+    "prefixBeforeBracket": "```json\n",
+    "suffixAfterBracket": "\n```",
+    "sliceChars": 1689,
+    "parseErr": "Expected ',' or '}' after property value in JSON at position 280 (line 8 column 130)",
+    "line8": "    \"motivo\": \"Die Explanation belegt direkt aus dem Text: „Am Anfang gab es eine Sprachbarriere und kleine Kommunikationsfehler\".\"",
+    "aroundError": "n belegt direkt aus dem Text: „Am Anfang gab es eine Sprachbarriere und kleine Kommunikationsfehler\""
+  },
+  "rawText": "```json\n[\n  {\n    \"itemId\": \"gen-q-1-64697954-1\",\n    \"declaredKey\": \"Richtig\",\n    \"inferredKey\": \"Richtig\",\n    \"justified\": true,\n    \"confidence\": \"high\",\n    \"motivo\": \"Die Explanation belegt direkt aus dem Text: „Am Anfang gab es eine Sprachbarriere und kleine Kommunikationsfehler\".\"\n  },\n  {\n    \"itemId\": \"gen-q-1-64697954-2\",\n    \"declaredKey\": \"Falsch\",\n    \"inferredKey\": \"Falsch\",\n    \"justified\": true,\n    \"confidence\": \"high\",\n    \"motivo\": \"Die Explanation zeigt, dass sie sich an den Lärmpegel gewöhnt hat, also ist es kein großes Problem mehr.\"\n  },\n  {\n    \"itemId\": \"gen-q-1-64697954-3\",\n    \"declaredKey\": \"Richtig\",\n    \"inferredKey\": \"Richtig\",\n    \"justified\": true,\n    \"confidence\": \"high\",\n    \"motivo\": \"Die Explanation belegt: „Meine Trainerin war sehr nett und hat mir viel geholfen\" = tatkräftige Unterstützung.\"\n  },\n  {\n    \"itemId\": \"gen-q-1-64697954-4\",\n    \"declaredKey\": \"Falsch\",\n    \"inferredKey\": \"Falsch\",\n    \"justified\": true,\n    \"confidence\": \"high\",\n    \"motivo\": \"Die Explanation zeigt, dass sie auch eigenes Gemüse im Gemeinschaftsgarten anbaut, nicht nur aus dem Geschäft bezieht.\"\n  },\n  {\n    \"itemId\": \"gen-q-1-64697954-5\",\n    \"declaredKey\": \"Richtig\",\n    \"inferredKey\": \"Richtig\",\n    \"justified\": true,\n    \"confidence\": \"high\",\n    \"motivo\": \"Die Explanation belegt: freundliche Bewohner und offene Nachbarn in direkter Umgebung sind nette Kontakte.\"\n  },\n  {\n    \"itemId\": \"gen-q-1-64697954-6\",\n    \"declaredKey\": \"Falsch\",\n    \"inferredKey\": \"Falsch\",\n    \"justified\": true,\n    \"confidence\": \"high\",\n    \"motivo\": \"Die Explanation zeigt, dass sie auch bei Freizeit-Programmen eines lokalen Vereins hilft, nicht nur Garten pflegt.\"\n  }\n]\n```"
+}

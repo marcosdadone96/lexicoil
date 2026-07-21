@@ -1,0 +1,37 @@
+{
+  "generatedAt": "2026-07-12T10:07:55.053Z",
+  "version": "v2.3.11-ge-participle-2026-07-12",
+  "diagnosis": "tryDeFiniteT did gezeigt→gezeigen (blind -t→-en keeping ge-). enrich toVerbInfinitive had ge-strip but looksLikeInfinitive rejected zeigen via /ig/en$/ false positive. Fixed: strip ge- before -en in tryDeFiniteT; ge-strip first in toVerbInfinitive; looksLikeInfinitive only treats -igen as adj when len>=9.",
+  "poolTagScan": {
+    "garbageTag": "gezeigen",
+    "filesWithTag": [
+      "horen-t3-gemini-009.json"
+    ],
+    "note": "Only lowercase verb-garbage tag in pool; noun tags like Generationen are unrelated."
+  },
+  "perFile": [
+    {
+      "file": "horen-t3-gemini-009.json",
+      "changes": [
+        {
+          "id": "gen-q-h3-f31303bd-4",
+          "question": "Die Kinder haben beim Familientreffen eine Aufführung gezeigt.",
+          "before": [
+            "familientreffen",
+            "Aufführung",
+            "gezeigen",
+            "Kinder"
+          ],
+          "after": [
+            "familientreffen",
+            "Aufführung",
+            "zeigen",
+            "Kinder"
+          ]
+        }
+      ]
+    }
+  ],
+  "postScanGezeigenFiles": [],
+  "ok": true
+}

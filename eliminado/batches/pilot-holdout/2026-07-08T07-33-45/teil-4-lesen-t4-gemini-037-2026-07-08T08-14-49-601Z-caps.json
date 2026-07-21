@@ -1,0 +1,107 @@
+{
+  "gateVersion": "v6.1-B-G2 (frozen)",
+  "file": "lesen-t4-gemini-037-2026-07-08T08-14-49-601Z.json",
+  "teil": 4,
+  "pipeline": {
+    "status": "audit_rejected",
+    "gate": "audit2",
+    "reason": "Sustantivo en minúscula: \"vielfältig\" (tras artículo/conjunción). En alemán los sustantivos van en mayúscula. Contexto: \"...getarisches Essen lecker und vielfältig und sieht es als Wichtigen Sc...\""
+  },
+  "textFields": 36,
+  "findings": {
+    "blocking": 3,
+    "observations": 0,
+    "byReason": {
+      "adj_before_noun": 2,
+      "lexicon_after_adj": 1
+    },
+    "byRegime": {
+      "TITLE_HEADING": 1,
+      "PROSE": 2
+    },
+    "list": [
+      {
+        "type": "wrong_capitalized",
+        "word": "Wichtiger",
+        "pos": "ADJ",
+        "tag": "ADJA",
+        "confidence": "high",
+        "reason": "adj_before_noun",
+        "context": ". Das ist ein Wichtiger Schritt für unsere Nachhaltigkeit",
+        "prevWord": "ein",
+        "prevPos": "DET",
+        "prevTag": "ART",
+        "textIndex": 0,
+        "regime": "TITLE_HEADING",
+        "field": "questions.signText",
+        "id": "lesen-t4-gemini-037-2026-07-08T08-14-49-601Z.json::questions.signText::27",
+        "file": "lesen-t4-gemini-037-2026-07-08T08-14-49-601Z.json",
+        "textPreview": "Vegetarisches Essen ist lecker und vielfältig. Es gibt viele gute Rezepte, die man in Kantinen anbieten kann. Das ist ein Wichtiger Schritt für unsere Nachhalti"
+      },
+      {
+        "type": "wrong_capitalized",
+        "word": "Wichtigen",
+        "pos": "ADJ",
+        "tag": "NN",
+        "confidence": "high",
+        "reason": "adj_before_noun",
+        "context": "und sieht es als Wichtigen Schritt für Nachhaltigkeit und",
+        "prevWord": "als",
+        "prevPos": "ADP",
+        "prevTag": "APPR",
+        "textIndex": 0,
+        "regime": "PROSE",
+        "field": "questions.explanation",
+        "id": "lesen-t4-gemini-037-2026-07-08T08-14-49-601Z.json::questions.explanation::28",
+        "file": "lesen-t4-gemini-037-2026-07-08T08-14-49-601Z.json",
+        "textPreview": "Clara findet vegetarisches Essen lecker und vielfältig und sieht es als Wichtigen Schritt für Nachhaltigkeit und Gesundheit. Sie findet den Vorschlag gut."
+      },
+      {
+        "type": "noun_lowercase",
+        "word": "essen",
+        "pos": "VERB",
+        "tag": "VVINF",
+        "confidence": "high",
+        "reason": "lexicon_after_adj",
+        "context": "nicht jeden Tag vegetarisch essen. Er lehnt den",
+        "prevWord": "vegetarisch",
+        "prevPos": "ADV",
+        "prevTag": "ADJD",
+        "textIndex": 0,
+        "regime": "PROSE",
+        "field": "questions.explanation",
+        "id": "lesen-t4-gemini-037-2026-07-08T08-14-49-601Z.json::questions.explanation::33",
+        "file": "lesen-t4-gemini-037-2026-07-08T08-14-49-601Z.json",
+        "textPreview": "David isst gern Fleisch und braucht das für seine Energie bei der Arbeit. Er möchte nicht jeden Tag vegetarisch essen. Er lehnt den Vorschlag ab."
+      }
+    ]
+  },
+  "observations": [],
+  "expected": {
+    "dominantRegime": "TITLE + PROSE",
+    "telegraphicFpExpected": 0,
+    "notes": "signText TITLE, explanation PROSE."
+  },
+  "comparison": {
+    "calibrationPoolFindingsThisTeil": 14,
+    "calibrationAvgPerFile": 1.4,
+    "pilotFindings": 3,
+    "deltaVsCalAvg": 1.6,
+    "telegraphicFindings": 0,
+    "telegraphicFpExpected": 0,
+    "telegraphicOk": true
+  },
+  "qualityGate": {
+    "errors": [],
+    "warnings": [
+      "Mayúsculas alemanas: wrong_capitalized: «Wichtiger» (ADJA) [high] en questions.signText — …. Das ist ein Wichtiger Schritt für unsere Nachhaltigkeit…",
+      "Mayúsculas alemanas: wrong_capitalized: «Wichtigen» (NN) [high] en questions.explanation — …und sieht es als Wichtigen Schritt für Nachhaltigkeit und…",
+      "Mayúsculas alemanas: noun_lowercase: «essen» (VVINF) [high] en questions.explanation — …nicht jeden Tag vegetarisch essen. Er lehnt den…"
+    ]
+  },
+  "generatorCapsWarnings": [
+    "Mayúsculas alemanas: wrong_capitalized: «Wichtiger» (ADJA) [high] en questions.signText — …. Das ist ein Wichtiger Schritt für unsere Nachhaltigkeit…",
+    "Mayúsculas alemanas: wrong_capitalized: «Wichtigen» (NN) [high] en questions.explanation — …und sieht es als Wichtigen Schritt für Nachhaltigkeit und…",
+    "Mayúsculas alemanas: noun_lowercase: «essen» (VVINF) [high] en questions.explanation — …nicht jeden Tag vegetarisch essen. Er lehnt den…"
+  ]
+}

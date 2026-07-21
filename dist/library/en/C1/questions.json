@@ -2,105 +2,86 @@
   "meta": {
     "language": "en",
     "level": "C1",
-    "version": 2,
-    "generatedAt": "2026-06-22",
-    "source": "seed-coverage-levels"
+    "version": 1,
+    "generatedAt": "2026-06-09"
   },
   "passages": [
     {
-      "id": "p-en-C1-lesen",
+      "id": "p-lesen-1",
       "module": "lesen",
-      "title": "C1 reading",
-      "text": "Artificial intelligence is reshaping professional life across sectors once considered stable. While automation eliminates routine tasks, it also creates demand for skills in data literacy and ethical oversight. Policymakers argue that education systems must adapt faster than traditional curricula allow."
+      "title": "Ethics of Artificial Intelligence",
+      "text": "Philosophers increasingly debate whether autonomous systems should be granted limited moral agency. Proponents claim that transparency in algorithmic decision-making could restore public trust. Critics counter that responsibility must remain with human institutions, lest accountability dissolve into technical obscurity."
     },
     {
-      "id": "p-en-C1-horen",
+      "id": "p-horen-1",
       "module": "horen",
-      "title": "C1 listening",
-      "text": "Host: Good morning! Guest: I am looking for a flat in the city.\nHost: Have you seen any adverts? Guest: Yes, a small flat near the park."
+      "title": "Lecture excerpt: Democracy",
+      "text": "Lecturer: Democratic resilience depends not only on institutions but on civic literacy. When citizens cannot distinguish evidence from persuasion, deliberation collapses. Education policy, therefore, is not peripheral to democracy — it is foundational."
     }
   ],
   "questions": [
     {
       "id": "lb-en-c1-l1",
       "module": "lesen",
-      "type": "true_false",
-      "question": "The text describes a person or situation.",
-      "correct": "True",
-      "correctAnswer": "True",
-      "explanation": "See passage or transcript.",
+      "type": "multiple",
+      "question": "What could restore public trust according to proponents?",
+      "options": [
+        "a) Secrecy",
+        "b) Transparency in algorithms",
+        "c) Faster computers"
+      ],
+      "correct": "b",
+      "correctAnswer": "b",
+      "explanation": "Transparency in algorithmic decision-making.",
       "grammarTags": [
         "g-en-c1-inversion"
       ],
       "topicTags": [
-        "daily_life"
+        "ethics"
       ],
-      "difficulty": 5,
-      "passageId": "p-en-C1-lesen",
+      "difficulty": 4,
+      "passageId": "p-lesen-1",
       "teil": 1
     },
     {
       "id": "lb-en-c1-l2",
       "module": "lesen",
       "type": "true_false",
-      "question": "There is no information about work or study.",
-      "correct": "False",
-      "correctAnswer": "False",
-      "explanation": "See passage or transcript.",
-      "grammarTags": [
-        "g-en-c1-ellipsis"
-      ],
-      "topicTags": [
-        "travel"
-      ],
-      "difficulty": 5,
-      "passageId": "p-en-C1-lesen",
-      "teil": 1
-    },
-    {
-      "id": "lb-en-c1-l3",
-      "module": "lesen",
-      "type": "multiple",
-      "question": "What is the text mainly about?",
-      "options": [
-        "a) Sport",
-        "b) Daily life, work or city life",
-        "c) Ancient history"
-      ],
-      "correct": "b",
-      "correctAnswer": "b",
-      "explanation": "See passage or transcript.",
+      "question": "Critics believe accountability should stay with human institutions.",
+      "correct": "True",
+      "correctAnswer": "True",
+      "explanation": "Responsibility must remain with human institutions.",
       "grammarTags": [
         "g-en-c1-inversion"
       ],
       "topicTags": [
-        "work"
+        "politics"
       ],
-      "difficulty": 5,
-      "passageId": "p-en-C1-lesen",
-      "teil": 2
+      "difficulty": 4,
+      "passageId": "p-lesen-1",
+      "teil": 1
     },
     {
       "id": "lb-en-c1-h1",
       "module": "horen",
       "type": "multiple",
-      "question": "What is the conversation about?",
+      "question": "What collapses without civic literacy?",
       "options": [
-        "a) Weather only",
-        "b) Daily life or a current topic",
-        "c) Mathematics"
+        "a) Deliberation",
+        "b) Architecture",
+        "c) Currency"
       ],
-      "correct": "b",
-      "correctAnswer": "b",
-      "explanation": "See passage or transcript.",
+      "correct": "a",
+      "correctAnswer": "a",
+      "explanation": "Deliberation collapses without literacy.",
       "grammarTags": [
         "g-en-c1-inversion"
       ],
       "topicTags": [
-        "daily_life"
+        "politics"
       ],
       "difficulty": 5,
-      "passageId": "p-en-C1-horen",
+      "passageId": "p-horen-1",
       "segmentLabel": "Recording 1",
       "teil": 1
     },
@@ -108,78 +89,37 @@
       "id": "lb-en-c1-h2",
       "module": "horen",
       "type": "true_false",
-      "question": "There are at least two speakers in the dialogue.",
+      "question": "Education policy is foundational to democracy.",
       "correct": "True",
       "correctAnswer": "True",
-      "explanation": "See passage or transcript.",
+      "explanation": "Stated directly by the lecturer.",
       "grammarTags": [
-        "g-en-c1-ellipsis"
+        "g-en-c1-inversion"
       ],
       "topicTags": [
-        "travel"
+        "education"
       ],
-      "difficulty": 5,
-      "passageId": "p-en-C1-horen",
+      "difficulty": 4,
+      "passageId": "p-horen-1",
       "segmentLabel": "Recording 1",
-      "teil": 1
-    },
-    {
-      "id": "lb-en-c1-g1",
-      "module": "grammatik",
-      "type": "gap_fill",
-      "question": "Complete: It is important ___ protect the environment.",
-      "correct": "to",
-      "correctAnswer": "to",
-      "explanation": "Grammar gap.",
-      "grammarTags": [
-        "g-en-c1-inversion"
-      ],
-      "topicTags": [
-        "daily_life"
-      ],
-      "difficulty": 5,
-      "teil": 2
-    },
-    {
-      "id": "lb-en-c1-g2",
-      "module": "grammatik",
-      "type": "gap_fill",
-      "question": "Complete: She has lived here ___ 2019.",
-      "correct": "since",
-      "correctAnswer": "since",
-      "explanation": "Grammar gap.",
-      "grammarTags": [
-        "g-en-c1-ellipsis"
-      ],
-      "topicTags": [
-        "travel"
-      ],
-      "difficulty": 5,
-      "teil": 3
-    },
-    {
-      "id": "lb-en-c1-m1",
-      "module": "lesen",
-      "type": "matching",
-      "question": "Who mentions cost reduction?",
-      "options": [
-        "A) Presenter",
-        "B) Expert",
-        "C) Neither"
-      ],
-      "correct": "B",
-      "correctAnswer": "B",
-      "explanation": "Match the speaker.",
-      "grammarTags": [
-        "g-en-c1-inversion"
-      ],
-      "topicTags": [
-        "work"
-      ],
-      "difficulty": 5,
-      "passageId": "p-en-C1-horen",
       "teil": 1
     }
   ],
-  "vocabulary": {}
+  "vocabulary": {
+    "accountability": {
+      "es": "responsabilidad",
+      "de": "Verantwortlichkeit",
+      "type": "noun"
+    },
+    "deliberation": {
+      "es": "deliberación",
+      "de": "Beratung",
+      "type": "noun"
+    },
+    "algorithmic": {
+      "es": "algorítmico",
+      "de": "algorithmisch",
+      "type": "adjective"
+    }
+  }
 }

@@ -37,6 +37,24 @@ const LEVEL_OVERRIDES = {
   },
 };
 
+function publishedLiveExamCount(lang, level) {
+  const catalogPath = path.join(
+    ROOT,
+    'library',
+    'published-exams',
+    String(lang).toLowerCase(),
+    String(level).toUpperCase(),
+    '_catalog.json',
+  );
+  if (!fs.existsSync(catalogPath)) return 0;
+  try {
+    const catalog = JSON.parse(fs.readFileSync(catalogPath, 'utf8'));
+    return (catalog.exams || []).filter((e) => e.status === 'live').length;
+  } catch {
+    return 0;
+  }
+}
+
 function mergeLevelOverrides(manifest) {
   for (const [lang, levels] of Object.entries(LEVEL_OVERRIDES)) {
     if (!manifest[lang]) manifest[lang] = {};
@@ -98,6 +116,10 @@ function assessCombo(lang, level, cap) {
 
   const allPass = entries.every(({ exam }) => validateExamAgainstBlueprint(exam, blueprint).ok);
   let status = allPass ? 'live' : 'beta';
+  const publishedLive = publishedLiveExamCount(lang, level);
+  if (!allPass && publishedLive > 0 && entries.length > 0 && publishedLive === entries.length) {
+    status = 'live';
+  }
   if (
     cap?.capStatus &&
     cap.capLang === lang &&

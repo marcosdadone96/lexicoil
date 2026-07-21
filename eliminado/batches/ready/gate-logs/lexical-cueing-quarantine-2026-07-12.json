@@ -1,0 +1,597 @@
+{
+  "generatedAt": "2026-07-12T14:34:41.508Z",
+  "dryRun": false,
+  "method": {
+    "detection": "Same as audit-lexical-cueing.mjs (rare ∉ A1∪A2; exclusive to stem∪correct)",
+    "classification": "problematico if ≥2 strong option cues OR single strong cue len≥12; skip stem_only / ultra-weak singles / borderline singles",
+    "ultraWeak": [
+      "selben",
+      "selbst",
+      "weiteren",
+      "weiter",
+      "anderen",
+      "ander",
+      "meisten",
+      "meist",
+      "speziell",
+      "speziellen",
+      "kleinen",
+      "klein",
+      "klei",
+      "sollten",
+      "sollte"
+    ],
+    "sampleCalibration": "Matches quarantine decisions on lexical-cueing-sample-2026-07-12.json"
+  },
+  "cueingDetected": 138,
+  "byClass": {
+    "problematico": 19,
+    "borderline": 68,
+    "stem_only": 42,
+    "falso_positivo": 4,
+    "debil": 5
+  },
+  "quarantinedCount": 19,
+  "skippedCount": 119,
+  "byPart": {
+    "lesen-t2": 5,
+    "lesen-t5": 6,
+    "horen-t2": 8
+  },
+  "filesTouched": [
+    "horen-t2-gemini-001.json",
+    "horen-t2-gemini-005.json",
+    "horen-t2-gemini-009.json",
+    "horen-t2-gemini-015.json",
+    "horen-t2-gemini-016.json",
+    "horen-t2-gemini-018.json",
+    "horen-t2-gemini-021.json",
+    "lesen-t2-gemini-094.json",
+    "lesen-t2-gemini-103.json",
+    "lesen-t2-gemini-104.json",
+    "lesen-t2-gemini-106.json",
+    "lesen-t5-gemini-023.json",
+    "lesen-t5-gemini-037.json",
+    "lesen-t5-gemini-057.json",
+    "lesen-t5-gemini-064.json",
+    "lesen-t5-gemini-077.json"
+  ],
+  "combinedWithLengthBias": {
+    "lengthOnly": 179,
+    "lexicalOnly": 2,
+    "both": 17,
+    "unionUniqueQuestions": 198,
+    "note": "Union of _lengthBiasQuarantine ∪ _lexicalCueingQuarantine (official exclusion set)"
+  },
+  "quarantinedIds": [
+    {
+      "file": "horen-t2-gemini-001.json",
+      "part": "horen-t2",
+      "qid": "gen-q-h2-d5028372-q3",
+      "optionCueWords": [
+        "konzentrieren"
+      ],
+      "reason": "single compound/specific cue len≥12: konzentrieren"
+    },
+    {
+      "file": "horen-t2-gemini-005.json",
+      "part": "horen-t2",
+      "qid": "gen-q-h2-e0b897d8-q3",
+      "optionCueWords": [
+        "realistisch",
+        "setzen"
+      ],
+      "reason": "≥2 option cues with strong=realistisch,setzen"
+    },
+    {
+      "file": "horen-t2-gemini-009.json",
+      "part": "horen-t2",
+      "qid": "gen-q-h2-cb37a553-q2",
+      "optionCueWords": [
+        "eigenen",
+        "erweitern"
+      ],
+      "reason": "≥2 option cues with strong=eigenen,erweitern"
+    },
+    {
+      "file": "horen-t2-gemini-015.json",
+      "part": "horen-t2",
+      "qid": "gen-q-h2-3afcaed7-q5",
+      "optionCueWords": [
+        "angepassen",
+        "lokal"
+      ],
+      "reason": "≥2 option cues with strong=angepassen,lokal"
+    },
+    {
+      "file": "horen-t2-gemini-016.json",
+      "part": "horen-t2",
+      "qid": "gen-q-h2-1ed9a47a-q5",
+      "optionCueWords": [
+        "bewusst",
+        "sollten"
+      ],
+      "reason": "≥2 option cues with strong=bewusst"
+    },
+    {
+      "file": "horen-t2-gemini-018.json",
+      "part": "horen-t2",
+      "qid": "gen-q-h2-4a57e42c-q1",
+      "optionCueWords": [
+        "ganzheitlich"
+      ],
+      "reason": "single compound/specific cue len≥12: ganzheitlich"
+    },
+    {
+      "file": "horen-t2-gemini-021.json",
+      "part": "horen-t2",
+      "qid": "gen-q-h2-88828b35-q3",
+      "optionCueWords": [
+        "leis",
+        "stark"
+      ],
+      "reason": "≥2 option cues with strong=leis,stark"
+    },
+    {
+      "file": "horen-t2-gemini-021.json",
+      "part": "horen-t2",
+      "qid": "gen-q-h2-88828b35-q4",
+      "optionCueWords": [
+        "durchgehenden",
+        "fehlen"
+      ],
+      "reason": "≥2 option cues with strong=durchgehenden,fehlen"
+    },
+    {
+      "file": "lesen-t2-gemini-094.json",
+      "part": "lesen-t2",
+      "qid": "gen-q-2-698a2191-3",
+      "optionCueWords": [
+        "bereien",
+        "zahlen"
+      ],
+      "reason": "≥2 option cues with strong=bereien,zahlen"
+    },
+    {
+      "file": "lesen-t2-gemini-103.json",
+      "part": "lesen-t2",
+      "qid": "gen-q-2-05fc623e-4",
+      "optionCueWords": [
+        "begrenzten",
+        "bieten"
+      ],
+      "reason": "≥2 option cues with strong=begrenzten,bieten"
+    },
+    {
+      "file": "lesen-t2-gemini-104.json",
+      "part": "lesen-t2",
+      "qid": "gen-q-2-f76d3112-5",
+      "optionCueWords": [
+        "ausserhalb",
+        "ermöglichen"
+      ],
+      "reason": "≥2 option cues with strong=ausserhalb,ermöglichen"
+    },
+    {
+      "file": "lesen-t2-gemini-106.json",
+      "part": "lesen-t2",
+      "qid": "gen-q-2-e7ae4d43-3",
+      "optionCueWords": [
+        "gleichzeitig"
+      ],
+      "reason": "single compound/specific cue len≥12: gleichzeitig"
+    },
+    {
+      "file": "lesen-t2-gemini-106.json",
+      "part": "lesen-t2",
+      "qid": "gen-q-2-e7ae4d43-6",
+      "optionCueWords": [
+        "weiterzubilden"
+      ],
+      "reason": "single compound/specific cue len≥12: weiterzubilden"
+    },
+    {
+      "file": "lesen-t5-gemini-023.json",
+      "part": "lesen-t5",
+      "qid": "gen-q-5-7cd9cc8e-1",
+      "optionCueWords": [
+        "kompostierbar"
+      ],
+      "reason": "single compound/specific cue len≥12: kompostierbar"
+    },
+    {
+      "file": "lesen-t5-gemini-023.json",
+      "part": "lesen-t5",
+      "qid": "gen-q-5-7cd9cc8e-4",
+      "optionCueWords": [
+        "brachen",
+        "speziellen"
+      ],
+      "reason": "≥2 option cues with strong=brachen"
+    },
+    {
+      "file": "lesen-t5-gemini-037.json",
+      "part": "lesen-t5",
+      "qid": "gen-q-5-c30f2ab4-2",
+      "optionCueWords": [
+        "eingestellen"
+      ],
+      "reason": "single compound/specific cue len≥12: eingestellen"
+    },
+    {
+      "file": "lesen-t5-gemini-057.json",
+      "part": "lesen-t5",
+      "qid": "gen-q-5-e415661a-2",
+      "optionCueWords": [
+        "erwerben",
+        "speziell"
+      ],
+      "reason": "≥2 option cues with strong=erwerben"
+    },
+    {
+      "file": "lesen-t5-gemini-064.json",
+      "part": "lesen-t5",
+      "qid": "gen-q-5-ee0e5f1b-3",
+      "optionCueWords": [
+        "verschließbaren"
+      ],
+      "reason": "single compound/specific cue len≥12: verschließbaren"
+    },
+    {
+      "file": "lesen-t5-gemini-077.json",
+      "part": "lesen-t5",
+      "qid": "gen-q-5-3f265ed6-4",
+      "optionCueWords": [
+        "kurzzeitparken",
+        "maximal"
+      ],
+      "reason": "≥2 option cues with strong=kurzzeitparken,maximal"
+    }
+  ],
+  "skippedSample": [
+    {
+      "file": "horen-t2-gemini-001.json",
+      "qid": "gen-q-h2-d5028372-q5",
+      "class": "borderline",
+      "optionCueWords": [
+        "klaren"
+      ],
+      "reason": "single non-weak cue len<12 (klaren); sample pattern like untersagen — skip"
+    },
+    {
+      "file": "horen-t2-gemini-003.json",
+      "qid": "gen-q-h2-5e785889-q3",
+      "class": "borderline",
+      "optionCueWords": [
+        "starten"
+      ],
+      "reason": "single non-weak cue len<12 (starten); sample pattern like untersagen — skip"
+    },
+    {
+      "file": "horen-t2-gemini-003.json",
+      "qid": "gen-q-h2-5e785889-q4",
+      "class": "borderline",
+      "optionCueWords": [
+        "bewusst"
+      ],
+      "reason": "single non-weak cue len<12 (bewusst); sample pattern like untersagen — skip"
+    },
+    {
+      "file": "horen-t2-gemini-005.json",
+      "qid": "gen-q-h2-e0b897d8-q2",
+      "class": "stem_only",
+      "optionCueWords": [],
+      "reason": "cue only in stem — not treated as MCQ option exploit"
+    },
+    {
+      "file": "horen-t2-gemini-006.json",
+      "qid": "gen-q-h2-34538a4d-q3",
+      "class": "borderline",
+      "optionCueWords": [
+        "gemeinsam"
+      ],
+      "reason": "single non-weak cue len<12 (gemeinsam); sample pattern like untersagen — skip"
+    },
+    {
+      "file": "horen-t2-gemini-007.json",
+      "qid": "gen-q-h2-41c1f630-q1",
+      "class": "borderline",
+      "optionCueWords": [
+        "bewusst"
+      ],
+      "reason": "single non-weak cue len<12 (bewusst); sample pattern like untersagen — skip"
+    },
+    {
+      "file": "horen-t2-gemini-008.json",
+      "qid": "gen-q-h2-45959318-q1",
+      "class": "borderline",
+      "optionCueWords": [
+        "bewusst"
+      ],
+      "reason": "single non-weak cue len<12 (bewusst); sample pattern like untersagen — skip"
+    },
+    {
+      "file": "horen-t2-gemini-008.json",
+      "qid": "gen-q-h2-45959318-q2",
+      "class": "borderline",
+      "optionCueWords": [
+        "belieben"
+      ],
+      "reason": "single non-weak cue len<12 (belieben); sample pattern like untersagen — skip"
+    },
+    {
+      "file": "horen-t2-gemini-008.json",
+      "qid": "gen-q-h2-45959318-q3",
+      "class": "falso_positivo",
+      "optionCueWords": [
+        "selben"
+      ],
+      "reason": "only ultra-weak option cues: selben"
+    },
+    {
+      "file": "horen-t2-gemini-008.json",
+      "qid": "gen-q-h2-45959318-q4",
+      "class": "borderline",
+      "optionCueWords": [
+        "hilfen"
+      ],
+      "reason": "single non-weak cue len<12 (hilfen); sample pattern like untersagen — skip"
+    },
+    {
+      "file": "horen-t2-gemini-008.json",
+      "qid": "gen-q-h2-45959318-q5",
+      "class": "stem_only",
+      "optionCueWords": [],
+      "reason": "cue only in stem — not treated as MCQ option exploit"
+    },
+    {
+      "file": "horen-t2-gemini-009.json",
+      "qid": "gen-q-h2-cb37a553-q3",
+      "class": "borderline",
+      "optionCueWords": [
+        "produktiv"
+      ],
+      "reason": "single non-weak cue len<12 (produktiv); sample pattern like untersagen — skip"
+    },
+    {
+      "file": "horen-t2-gemini-009.json",
+      "qid": "gen-q-h2-cb37a553-q4",
+      "class": "borderline",
+      "optionCueWords": [
+        "staendig"
+      ],
+      "reason": "single non-weak cue len<12 (staendig); sample pattern like untersagen — skip"
+    },
+    {
+      "file": "horen-t2-gemini-009.json",
+      "qid": "gen-q-h2-cb37a553-q5",
+      "class": "borderline",
+      "optionCueWords": [
+        "aktiv"
+      ],
+      "reason": "single non-weak cue len<12 (aktiv); sample pattern like untersagen — skip"
+    },
+    {
+      "file": "horen-t2-gemini-010.json",
+      "qid": "gen-q-h2-857be1ea-q2",
+      "class": "borderline",
+      "optionCueWords": [
+        "laerm"
+      ],
+      "reason": "single non-weak cue len<12 (laerm); sample pattern like untersagen — skip"
+    },
+    {
+      "file": "horen-t2-gemini-010.json",
+      "qid": "gen-q-h2-857be1ea-q3",
+      "class": "borderline",
+      "optionCueWords": [
+        "bieten"
+      ],
+      "reason": "single non-weak cue len<12 (bieten); sample pattern like untersagen — skip"
+    },
+    {
+      "file": "horen-t2-gemini-010.json",
+      "qid": "gen-q-h2-857be1ea-q4",
+      "class": "borderline",
+      "optionCueWords": [
+        "gemeinsam"
+      ],
+      "reason": "single non-weak cue len<12 (gemeinsam); sample pattern like untersagen — skip"
+    },
+    {
+      "file": "horen-t2-gemini-010.json",
+      "qid": "gen-q-h2-857be1ea-q5",
+      "class": "borderline",
+      "optionCueWords": [
+        "bewusst"
+      ],
+      "reason": "single non-weak cue len<12 (bewusst); sample pattern like untersagen — skip"
+    },
+    {
+      "file": "horen-t2-gemini-011.json",
+      "qid": "gen-q-h2-5b8f9f1e-fzt-q1",
+      "class": "stem_only",
+      "optionCueWords": [],
+      "reason": "cue only in stem — not treated as MCQ option exploit"
+    },
+    {
+      "file": "horen-t2-gemini-011.json",
+      "qid": "gen-q-h2-5b8f9f1e-fzt-q4",
+      "class": "borderline",
+      "optionCueWords": [
+        "bereiten"
+      ],
+      "reason": "single non-weak cue len<12 (bereiten); sample pattern like untersagen — skip"
+    },
+    {
+      "file": "horen-t2-gemini-012.json",
+      "qid": "gen-q-h2-d7e1a2b3-q2",
+      "class": "borderline",
+      "optionCueWords": [
+        "koerperlich"
+      ],
+      "reason": "single non-weak cue len<12 (koerperlich); sample pattern like untersagen — skip"
+    },
+    {
+      "file": "horen-t2-gemini-012.json",
+      "qid": "gen-q-h2-d7e1a2b3-q3",
+      "class": "borderline",
+      "optionCueWords": [
+        "aktiv"
+      ],
+      "reason": "single non-weak cue len<12 (aktiv); sample pattern like untersagen — skip"
+    },
+    {
+      "file": "horen-t2-gemini-012.json",
+      "qid": "gen-q-h2-d7e1a2b3-q4",
+      "class": "borderline",
+      "optionCueWords": [
+        "moderaten"
+      ],
+      "reason": "single non-weak cue len<12 (moderaten); sample pattern like untersagen — skip"
+    },
+    {
+      "file": "horen-t2-gemini-012.json",
+      "qid": "gen-q-h2-d7e1a2b3-q5",
+      "class": "stem_only",
+      "optionCueWords": [],
+      "reason": "cue only in stem — not treated as MCQ option exploit"
+    },
+    {
+      "file": "horen-t2-gemini-013.json",
+      "qid": "gen-q-h2-62f5bf71-q2",
+      "class": "borderline",
+      "optionCueWords": [
+        "nutzen"
+      ],
+      "reason": "single non-weak cue len<12 (nutzen); sample pattern like untersagen — skip"
+    },
+    {
+      "file": "horen-t2-gemini-013.json",
+      "qid": "gen-q-h2-62f5bf71-q4",
+      "class": "borderline",
+      "optionCueWords": [
+        "entspannt"
+      ],
+      "reason": "single non-weak cue len<12 (entspannt); sample pattern like untersagen — skip"
+    },
+    {
+      "file": "horen-t2-gemini-013.json",
+      "qid": "gen-q-h2-62f5bf71-q5",
+      "class": "borderline",
+      "optionCueWords": [
+        "bewusst"
+      ],
+      "reason": "single non-weak cue len<12 (bewusst); sample pattern like untersagen — skip"
+    },
+    {
+      "file": "horen-t2-gemini-015.json",
+      "qid": "gen-q-h2-3afcaed7-q2",
+      "class": "borderline",
+      "optionCueWords": [
+        "bieten"
+      ],
+      "reason": "single non-weak cue len<12 (bieten); sample pattern like untersagen — skip"
+    },
+    {
+      "file": "horen-t2-gemini-015.json",
+      "qid": "gen-q-h2-3afcaed7-q4",
+      "class": "borderline",
+      "optionCueWords": [
+        "gemeinsam"
+      ],
+      "reason": "single non-weak cue len<12 (gemeinsam); sample pattern like untersagen — skip"
+    },
+    {
+      "file": "horen-t2-gemini-016.json",
+      "qid": "gen-q-h2-1ed9a47a-q2",
+      "class": "stem_only",
+      "optionCueWords": [],
+      "reason": "cue only in stem — not treated as MCQ option exploit"
+    },
+    {
+      "file": "horen-t2-gemini-016.json",
+      "qid": "gen-q-h2-1ed9a47a-q4",
+      "class": "borderline",
+      "optionCueWords": [
+        "bewusst"
+      ],
+      "reason": "single non-weak cue len<12 (bewusst); sample pattern like untersagen — skip"
+    },
+    {
+      "file": "horen-t2-gemini-017.json",
+      "qid": "gen-q-h2-a5acd2d8-q2",
+      "class": "borderline",
+      "optionCueWords": [
+        "kreativ"
+      ],
+      "reason": "single non-weak cue len<12 (kreativ); sample pattern like untersagen — skip"
+    },
+    {
+      "file": "horen-t2-gemini-017.json",
+      "qid": "gen-q-h2-a5acd2d8-q4",
+      "class": "borderline",
+      "optionCueWords": [
+        "erweiteren"
+      ],
+      "reason": "single non-weak cue len<12 (erweiteren); sample pattern like untersagen — skip"
+    },
+    {
+      "file": "horen-t2-gemini-018.json",
+      "qid": "gen-q-h2-4a57e42c-q4",
+      "class": "borderline",
+      "optionCueWords": [
+        "gönnen"
+      ],
+      "reason": "single non-weak cue len<12 (gönnen); sample pattern like untersagen — skip"
+    },
+    {
+      "file": "horen-t2-gemini-019.json",
+      "qid": "gen-q-h2-af4f9d1d-q2",
+      "class": "borderline",
+      "optionCueWords": [
+        "teilzuhaben"
+      ],
+      "reason": "single non-weak cue len<12 (teilzuhaben); sample pattern like untersagen — skip"
+    },
+    {
+      "file": "horen-t2-gemini-019.json",
+      "qid": "gen-q-h2-af4f9d1d-q4",
+      "class": "stem_only",
+      "optionCueWords": [],
+      "reason": "cue only in stem — not treated as MCQ option exploit"
+    },
+    {
+      "file": "horen-t2-gemini-019.json",
+      "qid": "gen-q-h2-af4f9d1d-q5",
+      "class": "borderline",
+      "optionCueWords": [
+        "bewusst"
+      ],
+      "reason": "single non-weak cue len<12 (bewusst); sample pattern like untersagen — skip"
+    },
+    {
+      "file": "horen-t2-gemini-020.json",
+      "qid": "gen-q-h2-a3a4f080-q2",
+      "class": "stem_only",
+      "optionCueWords": [],
+      "reason": "cue only in stem — not treated as MCQ option exploit"
+    },
+    {
+      "file": "horen-t2-gemini-020.json",
+      "qid": "gen-q-h2-a3a4f080-q3",
+      "class": "borderline",
+      "optionCueWords": [
+        "anzupassen"
+      ],
+      "reason": "single non-weak cue len<12 (anzupassen); sample pattern like untersagen — skip"
+    },
+    {
+      "file": "horen-t2-gemini-020.json",
+      "qid": "gen-q-h2-a3a4f080-q4",
+      "class": "stem_only",
+      "optionCueWords": [],
+      "reason": "cue only in stem — not treated as MCQ option exploit"
+    }
+  ]
+}

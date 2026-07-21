@@ -1,0 +1,129 @@
+{
+  "generatedAt": "2026-07-13T20:58:43.176Z",
+  "probes": [
+    {
+      "index": 0,
+      "module": "lesen",
+      "teil": 2,
+      "topic": "Arbeit",
+      "words": [
+        "gehalt",
+        "kollege"
+      ],
+      "ok": false,
+      "file": null,
+      "reason": "TLS interceptado por antivirus/proxy: ejecuta con NODE_OPTIONS=--use-system-ca o define NODE_EXTRA_CA_CERTS. Ver README.\n(unable to verify the first certificate; if the root CA is installed locally, try running Node.js with --use-system-ca)",
+      "apiCalls": 3,
+      "ms": 12151,
+      "requested": 2,
+      "used": null,
+      "usedWords": null,
+      "notUsed": null,
+      "bothHit": false,
+      "ratio": null
+    },
+    {
+      "index": 1,
+      "module": "lesen",
+      "teil": 3,
+      "topic": "Umwelt",
+      "words": [
+        "recycling",
+        "energie"
+      ],
+      "ok": false,
+      "file": null,
+      "reason": "T3 generator: ningún blueprint compatible con tema «Umwelt» (filtrados 15 esqueletos)",
+      "apiCalls": 0,
+      "ms": 29,
+      "requested": 2,
+      "used": null,
+      "usedWords": null,
+      "notUsed": null,
+      "bothHit": false,
+      "ratio": null
+    },
+    {
+      "index": 2,
+      "module": "horen",
+      "teil": 2,
+      "topic": "Reisen",
+      "words": [
+        "urlaub",
+        "hotel"
+      ],
+      "ok": false,
+      "file": null,
+      "reason": "TLS interceptado por antivirus/proxy: ejecuta con NODE_OPTIONS=--use-system-ca o define NODE_EXTRA_CA_CERTS. Ver README.\n(unable to verify the first certificate; if the root CA is installed locally, try running Node.js with --use-system-ca)",
+      "apiCalls": 3,
+      "ms": 12145,
+      "requested": 2,
+      "used": null,
+      "usedWords": null,
+      "notUsed": null,
+      "bothHit": false,
+      "ratio": null
+    },
+    {
+      "index": 3,
+      "module": "horen",
+      "teil": 3,
+      "topic": "Arbeit",
+      "words": [
+        "bewerbung",
+        "firma"
+      ],
+      "ok": false,
+      "file": null,
+      "reason": "TLS interceptado por antivirus/proxy: ejecuta con NODE_OPTIONS=--use-system-ca o define NODE_EXTRA_CA_CERTS. Ver README.\n(unable to verify the first certificate; if the root CA is installed locally, try running Node.js with --use-system-ca)",
+      "apiCalls": 3,
+      "ms": 13052,
+      "requested": 2,
+      "used": null,
+      "usedWords": null,
+      "notUsed": null,
+      "bothHit": false,
+      "ratio": null
+    },
+    {
+      "index": 4,
+      "module": "lesen",
+      "teil": 2,
+      "topic": "Gesundheit",
+      "words": [
+        "arzt",
+        "therapie"
+      ],
+      "ok": false,
+      "file": null,
+      "reason": "TLS interceptado por antivirus/proxy: ejecuta con NODE_OPTIONS=--use-system-ca o define NODE_EXTRA_CA_CERTS. Ver README.\n(unable to verify the first certificate; if the root CA is installed locally, try running Node.js with --use-system-ca)",
+      "apiCalls": 3,
+      "ms": 12161,
+      "requested": 2,
+      "used": null,
+      "usedWords": null,
+      "notUsed": null,
+      "bothHit": false,
+      "ratio": null
+    }
+  ],
+  "okCount": 0,
+  "bothHitCount": 0,
+  "bothHitRateOnOk": null,
+  "avgUsedOnOk": null,
+  "totalApiCalls": 12,
+  "retryWithSystemCa": {
+    "note": "Reintento con NODE_OPTIONS=--use-system-ca; créditos Gemini agotados tras 1/5.",
+    "partialResults": [
+      {
+        "module": "lesen",
+        "teil": 2,
+        "topic": "Arbeit",
+        "words": ["gehalt", "kollege"],
+        "contentIntegration": "2/2 en 2 intentos LLM (TargetUsage)",
+        "published": false,
+        "failReason": "gate MCQ length bias; luego 429 créditos prepago agotados"
+      }
+    ]
+  }
+}

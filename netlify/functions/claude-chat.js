@@ -1,8 +1,13 @@
 'use strict';
 
-const { checkQuota, incrementQuota, decrementQuota, getQuotaState } = require('./lib/quotaLib.js');
+const { checkQuota, incrementQuota, decrementQuota, getQuotaState, checkPersonalPoolQuota, incrementPersonalPoolQuota } = require('./lib/quotaLib.js');
 const { corsHeaders, jsonResponse } = require('./lib/http.js');
 const { validateGeneratedExam, verifyAnswerKeysWithAI, verifyAndSanitizePersonalExam } = require('./lib/examQualityGate.js');
+const {
+  isAllowLiveGenEnabled,
+  liveGenDisabledResponse,
+  verifyUnavailableResponse,
+} = require('./lib/liveGenGate.js');
 const { verifyTopicCoherenceExam } = require('./lib/topicCoherenceGate.js');
 const { resolveBlueprint } = require('../../js/engine/validation/blueprintResolver.js');
 const {
@@ -15,8 +20,26 @@ const {
 } = require('./lib/proAiModes.js');
 const { getAiCredits, checkAiCredits, confirmAiCreditConsumption, releaseAiCreditConsumption } = require('./lib/aiCredits.js');
 const { getStoreForEvent } = require('./lib/blobStore.js');
+const { gatePersonalExamChunk } = require('./lib/webPartGate.js');
 const { casWriteJson } = require('./lib/casBlob.js');
-const { linkTicketQuotaCharge, releaseGenerationQuota, deliverGenerationQuota, renewGenerationTicket } = require('./lib/releaseGeneration.js');
+const { linkTicketQuotaCharge, releaseGenerationQuota, deliverGenerationQuota, renewGenerationTicket, ticketSubForQuotaState, assertGenerationTicketOwner } = require('./lib/releaseGeneration.js');
+const { parseRequestId } = require('./lib/requestId.js');
+const {
+  validateQuizOptionsQuality,
+  repairQuizOptions,
+  weightedPickQuizTargets,
+} = require('./lib/vocabQuizUtils.js');
+const {
+  normalizeSeparablePhraseItem,
+  buildSeparablePromptRules,
+  isSeparableTarget,
+} = require('./lib/vocabPhrasesUtils.js');
+const { synthesize } = require('./lib/ttsProvider.js');
+const { resolveVoiceId } = require('./lib/ttsVoices.js');
+const {
+  detectAppearedWords,
+  pickWordsForPassage,
+} = require('./lib/listeningGameUtils.js');
 const { getJwtSecret, emailToUserId } = require('./lib/authLib.js');
 const {
   createGenTicket,
@@ -190,6 +213,11 @@ exports.handler = async function handler(event) {
 
   // ── validateExam branch (C-2: quota-gated) ──────────────────────────────
   if (body.validateExam === true && body.exam) {
+    const personalVerifyPath =
+      body.verifyAnswerKeys === true && body.discardFailedItems === true;
+    if (personalVerifyPath && !isAllowLiveGenEnabled()) {
+      return liveGenDisabledResponse(jsonResponse, cors);
+    }
     try {
       const quotaGate = await checkQuota(event).catch(() => null);
       if (!quotaGate || !quotaGate.ok) {
@@ -218,12 +246,18 @@ exports.handler = async function handler(event) {
         });
       }
       if (body.verifyAnswerKeys === true && body.discardFailedItems === true) {
+        if (process.env.EXAM_ANSWER_KEY_VERIFY !== '1') {
+          return verifyUnavailableResponse(jsonResponse, cors, 'verify_disabled');
+        }
         try {
           const sanitizeOpts = { blueprint };
           if (body.partialExam === true || body.partialExam === false) {
             sanitizeOpts.partialExam = body.partialExam;
           }
           const sanitized = await verifyAndSanitizePersonalExam(body.exam, apiKey, sanitizeOpts);
+          if (sanitized.verifySkipped) {
+            return verifyUnavailableResponse(jsonResponse, cors, sanitized.verifySkipReason || 'verify_skipped');
+          }
           if (!sanitized.valid || !sanitized.renderable) {
             console.warn('[claude-chat] personal exam empty after verify discard:', sanitized.errors);
             return jsonResponse(422, cors, {
@@ -245,12 +279,7 @@ exports.handler = async function handler(event) {
           });
         } catch (err) {
           console.warn('[claude-chat] verify sanitize error:', err.message);
-          return jsonResponse(200, cors, {
-            valid: true,
-            exam: body.exam,
-            verifySkipped: true,
-            placeholders: gate.placeholders,
-          });
+          return verifyUnavailableResponse(jsonResponse, cors, err.message || 'verify_error');
         }
       }
       if (body.verifyAnswerKeys === true) {
@@ -274,6 +303,7 @@ exports.handler = async function handler(event) {
           }
         } catch (err) {
           console.warn('[claude-chat] answer-key verify error:', err.message);
+          return verifyUnavailableResponse(jsonResponse, cors, err.message || 'answer_key_verify_error');
         }
       }
       try {
@@ -303,24 +333,25 @@ exports.handler = async function handler(event) {
         }
       } catch (err) {
         console.warn('[claude-chat] topic coherence gate error:', err.message);
+        if (personalVerifyPath) {
+          return verifyUnavailableResponse(jsonResponse, cors, err.message || 'topic_coherence_error');
+        }
       }
       return jsonResponse(200, cors, { valid: true, placeholders: gate.placeholders });
     } catch (err) {
       console.error('[claude-chat] validateExam error:', err.message, err.stack);
+      if (personalVerifyPath) {
+        return verifyUnavailableResponse(jsonResponse, cors, err.message || 'validate_failed');
+      }
       try {
         const gate = validateGeneratedExam(body.exam, { blueprint: resolveBlueprint(body.exam, body.blueprint) });
-        if (gate.valid) {
-          return jsonResponse(200, cors, {
-            valid: true,
-            exam: body.exam,
-            verifySkipped: true,
-            placeholders: gate.placeholders,
+        if (!gate.valid) {
+          return jsonResponse(422, cors, {
+            error: 'exam_invalid',
+            validationErrors: gate.errors,
           });
         }
-        return jsonResponse(422, cors, {
-          error: 'exam_invalid',
-          validationErrors: gate.errors,
-        });
+        return verifyUnavailableResponse(jsonResponse, cors, err.message || 'validate_failed');
       } catch (inner) {
         return jsonResponse(500, cors, { error: 'validate_failed', message: inner.message || err.message });
       }
@@ -444,7 +475,8 @@ exports.handler = async function handler(event) {
 
   // ── startGeneration branch ───────────────────────────────────────────────
   // Issues a signed ticket after charging once:
-  //   personal_exam → 3 AI credits (Pro)
+  //   personal_exam → 4 AI credits (Pro) — Schreiben+Sprechen package (Lesen/Hören pool = free)
+  //   personal_schreiben / personal_sprechen_gen → 2 AI credits each (single-module Via B)
   //   exam_generation / quick_exam → monthly exam quota
   if (body.startGeneration === true) {
     const scope = typeof body.scope === 'string' ? body.scope.trim() : '';
@@ -471,13 +503,17 @@ exports.handler = async function handler(event) {
     const qState = quotaCheck.state;
     const sub = qState.authenticated ? qState.email : `guest:${qState.ipHash || 'unknown'}`;
 
-    if (scope === 'personal_exam') {
-      const access = await requireActionAccess(event, 'personal_exam');
+    const PERSONAL_CREDIT_SCOPES = new Set(['personal_exam', 'personal_schreiben', 'personal_sprechen_gen']);
+    if (PERSONAL_CREDIT_SCOPES.has(scope)) {
+      if (!isAllowLiveGenEnabled()) {
+        return liveGenDisabledResponse(jsonResponse, cors);
+      }
+      const access = await requireActionAccess(event, scope);
       if (!access.ok) {
         return jsonResponse(access.status || 403, cors, { error: access.error, plan: access.plan });
       }
 
-      const creditCheck = await checkAiCredits(event, 'personal_exam');
+      const creditCheck = await checkAiCredits(event, scope);
       if (!creditCheck.ok) {
         return jsonResponse(creditCheck.error === 'ai_credits_exhausted' ? 402 : 403, cors, {
           error: creditCheck.error,
@@ -493,7 +529,7 @@ exports.handler = async function handler(event) {
       const { token: ticket, payload: ticketPayload } = createGenTicket(sub, scope, maxChunks, secret);
       let aiMeta;
       try {
-        aiMeta = await confirmAiCreditConsumption(event, 'personal_exam', {
+        aiMeta = await confirmAiCreditConsumption(event, scope, {
           requestId: ticketPayload.nonce,
         });
       } catch (err) {
@@ -510,7 +546,8 @@ exports.handler = async function handler(event) {
         });
       }
 
-      console.log('[claude-chat] startGeneration personal_exam (AI credits)', {
+      console.log('[claude-chat] startGeneration personal (AI credits)', {
+        scope,
         maxChunks,
         sub: sub.slice(0, 30),
       });
@@ -534,8 +571,13 @@ exports.handler = async function handler(event) {
     }
 
     let quotaMeta;
+    const EXAM_QUOTA_SCOPES = new Set(['exam_generation', 'quick_exam']);
+    const startRequestId = EXAM_QUOTA_SCOPES.has(scope) ? parseRequestId(body.requestId) : null;
+    if (EXAM_QUOTA_SCOPES.has(scope) && !startRequestId) {
+      return jsonResponse(400, cors, { error: 'request_id_required' });
+    }
     try {
-      quotaMeta = await incrementQuota(quotaCheck, { requestId: body.requestId || null });
+      quotaMeta = await incrementQuota(quotaCheck, { requestId: startRequestId });
     } catch (err) {
       console.error('[claude-chat] startGeneration quota reserve failed:', err);
       return jsonResponse(503, cors, { error: 'quota_service_unavailable' });
@@ -782,6 +824,20 @@ Max 4 topics, concise. Language: ${lang === 'de' ? 'German' : lang === 'es' ? 'S
         return jsonResponse(400, cors, { error: 'need_at_least_4_words' });
       }
       const count = Math.min(Math.max(Number(body.count) || 10, 1), 10, words.length);
+      const rawMeta = Array.isArray(body.wordMeta) ? body.wordMeta : [];
+      const wordMeta = words.map((w) => {
+        const hit = rawMeta.find((m) => String(m?.word || '').trim().toLowerCase() === w.toLowerCase());
+        return {
+          word: w,
+          type: String(hit?.type || 'other').trim() || 'other',
+          translation: String(hit?.translation || '').trim(),
+          missCount: Number(hit?.missCount) || 0,
+        };
+      });
+      const preferTargets = Array.isArray(body.preferTargets)
+        ? body.preferTargets.map((w) => String(w || '').trim()).filter(Boolean)
+        : [];
+      const targetPool = weightedPickQuizTargets(wordMeta, count, preferTargets);
       const requestId = body.requestId || null;
       const aiMeta = await confirmAiCreditConsumption(event, 'vocab_quiz', { requestId });
       if (aiMeta?.error) {
@@ -795,8 +851,8 @@ Max 4 topics, concise. Language: ${lang === 'de' ? 'German' : lang === 'es' ? 'S
       }
 
       const sourceLangName = lang === 'de' ? 'German' : lang === 'es' ? 'Spanish' : 'English';
-      const hintLangName =
-        hintLang === 'de' ? 'German' : hintLang === 'es' ? 'Spanish' : 'English';
+      const UI_LANG_NAMES = { en: 'English', es: 'Spanish', fr: 'French', it: 'Italian', de: 'German' };
+      const hintLangName = UI_LANG_NAMES[hintLang] || UI_LANG_NAMES.en;
       const hintMode = body.hintLanguageMode === 'immersion' ? 'immersion' : 'interface';
       const allHintsLangName = hintMode === 'immersion' ? sourceLangName : hintLangName;
       const quizModel = cleanModel(process.env.CLAUDE_CORRECTION_MODEL || 'claude-haiku-4-5');
@@ -805,15 +861,24 @@ Return ONLY valid JSON (no markdown):
 {"questions":[{"word":"TARGET","hintType":"synonym|antonym|explanation","hintLanguage":"${hintMode === 'immersion' ? lang : hintLang}","hint":"...","options":["w1","w2","w3","w4"]}]}
 
 Rules:
-- Generate exactly ${count} questions, each with a different "word" from the list when possible.
+- Generate exactly ${count} questions. Use these target words in order when possible: ${targetPool.join(', ')}.
+- Each question must use a different "word" target from the list when possible.
 - "word" must match one vocabulary item exactly (same spelling).
 - "options" must be exactly 4 distinct words copied verbatim from the vocabulary list, including the correct "word".
+- OPTION QUALITY (important): pick distractors that are plausible but clearly wrong — same part of speech as the target when possible (verbs with verbs, nouns with nouns). Do NOT pick four near-synonyms or words from the exact same semantic micro-cluster. Do NOT pick one obvious outlier (e.g. one verb among three nouns) that can be eliminated without reading the hint.
 - Rotate hintType evenly across synonym, antonym, and explanation.
 - ALL hints (synonym, antonym, explanation): write in ${allHintsLangName} only — same language for every hint in this quiz.
 - Keep hints short (max 15 words). Do NOT include the target word.
 - Set hintLanguage to "${hintMode === 'immersion' ? lang : hintLang}" on every question.
 - Shuffle option order randomly.`;
-      const userContent = `Vocabulary list (${sourceLangName}):\n${words.map((w, i) => `${i + 1}. ${w}`).join('\n')}`;
+      const metaLines = wordMeta
+        .map((m, i) => {
+          const pos = m.type && m.type !== 'other' ? ` [${m.type}]` : '';
+          const tr = m.translation ? ` — ${m.translation}` : '';
+          return `${i + 1}. ${m.word}${pos}${tr}`;
+        })
+        .join('\n');
+      const userContent = `Vocabulary list (${sourceLangName}):\n${metaLines}`;
 
       const t0 = Date.now();
       let text;
@@ -846,26 +911,12 @@ Rules:
         if (!word || !hint || uniqOpts.length < 4) continue;
         if (!wordSet.has(word.toLowerCase())) continue;
         if (usedTargets.has(word.toLowerCase())) continue;
-        const validOpts = uniqOpts.filter((o) => wordSet.has(o.toLowerCase())).slice(0, 4);
-        if (validOpts.length < 4 || !validOpts.some((o) => o.toLowerCase() === word.toLowerCase())) {
-          const fillers = words.filter((w) => w.toLowerCase() !== word.toLowerCase());
-          while (validOpts.length < 4 && fillers.length) {
-            const pick = fillers.splice(Math.floor(Math.random() * fillers.length), 1)[0];
-            if (!validOpts.some((o) => o.toLowerCase() === pick.toLowerCase())) validOpts.push(pick);
-          }
-          if (!validOpts.some((o) => o.toLowerCase() === word.toLowerCase())) validOpts[0] = word;
-        }
-        const finalOpts = [...new Set(validOpts)].slice(0, 4);
-        while (finalOpts.length < 4) {
-          const extra = words.find((w) => !finalOpts.some((o) => o.toLowerCase() === w.toLowerCase()));
-          if (!extra) break;
-          finalOpts.push(extra);
-        }
+        let finalOpts = repairQuizOptions(word, uniqOpts, wordMeta);
         if (finalOpts.length < 4) continue;
-        for (let i = finalOpts.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [finalOpts[i], finalOpts[j]] = [finalOpts[j], finalOpts[i]];
+        if (!validateQuizOptionsQuality(word, finalOpts, wordMeta)) {
+          finalOpts = repairQuizOptions(word, [], wordMeta);
         }
+        if (finalOpts.length < 4 || !validateQuizOptionsQuality(word, finalOpts, wordMeta)) continue;
         usedTargets.add(word.toLowerCase());
         questions.push({
           word,
@@ -875,6 +926,21 @@ Rules:
           options: finalOpts.slice(0, 4),
         });
         if (questions.length >= count) break;
+      }
+
+      for (const forcedWord of targetPool) {
+        if (questions.length >= count) break;
+        if (usedTargets.has(forcedWord.toLowerCase())) continue;
+        const finalOpts = repairQuizOptions(forcedWord, [], wordMeta);
+        if (finalOpts.length < 4 || !validateQuizOptionsQuality(forcedWord, finalOpts, wordMeta)) continue;
+        usedTargets.add(forcedWord.toLowerCase());
+        questions.push({
+          word: forcedWord,
+          hintType: 'explanation',
+          hint: `A ${sourceLangName} word from your vocabulary list.`,
+          hintLanguage: hintMode === 'immersion' ? lang : hintLang,
+          options: finalOpts.slice(0, 4),
+        });
       }
 
       console.log('[claude-chat] generateVocabQuiz', {
@@ -899,6 +965,262 @@ Rules:
       });
     } catch (err) {
       console.error('[claude-chat] generateVocabQuiz failed:', err.message);
+      return jsonResponse(502, cors, { error: 'ai_unavailable' });
+    }
+  }
+
+  // ── generateListeningGame (2 AI credits — script + bundled passage TTS) ───
+  if (body.generateListeningGame === true) {
+    try {
+      const access = await requireActionAccess(event, 'listening_game');
+      if (!access.ok) {
+        return jsonResponse(access.status || 403, cors, { error: access.error, plan: access.plan });
+      }
+      const creditCheck = await checkAiCredits(event, 'listening_game');
+      if (!creditCheck.ok) {
+        return jsonResponse(creditCheck.error === 'ai_credits_exhausted' ? 402 : 403, cors, {
+          error: creditCheck.error,
+          remaining: creditCheck.remaining,
+          aiUsed: creditCheck.used,
+          aiMax: creditCheck.max,
+          plan: access.plan,
+        });
+      }
+      const lang = String(body.lang || 'de').slice(0, 2);
+      const level = String(body.level || 'B1').toUpperCase();
+      const topic = String(body.topic || '').trim().slice(0, 120);
+      const rawWords = Array.isArray(body.words) ? body.words : [];
+      const words = [...new Set(rawWords.map((w) => String(w || '').trim()).filter(Boolean))].slice(0, 16);
+      if (words.length < 3) {
+        return jsonResponse(400, cors, { error: 'need_at_least_3_words' });
+      }
+      const requestId = body.requestId || null;
+      const aiMeta = await confirmAiCreditConsumption(event, 'listening_game', { requestId });
+      if (aiMeta?.error) {
+        return jsonResponse(402, cors, {
+          error: aiMeta.error,
+          aiUsed: aiMeta.aiUsed,
+          aiMax: aiMeta.aiMax,
+          remaining: aiMeta.remaining,
+          plan: access.plan,
+        });
+      }
+      const sourceLangName = lang === 'de' ? 'German' : lang === 'es' ? 'Spanish' : 'English';
+      const weaveWords = pickWordsForPassage(words, { ratio: 0.65 });
+      const quizModel = cleanModel(process.env.CLAUDE_CORRECTION_MODEL || 'claude-haiku-4-5');
+      const topicLine = topic ? `Topic: ${topic}.` : 'Topic: everyday life (work, home, errands, plans).';
+      const system = `You write short listening passages for ${level} ${sourceLangName} learners.
+Return ONLY valid JSON: {"passage":"..."}
+
+Rules:
+- ${topicLine}
+- 80–140 words (~30–60 seconds spoken). Natural, conversational monologue (first person or casual narration).
+- MUST naturally include these vocabulary items (use inflected/separable forms when natural): ${weaveWords.join(', ')}.
+- For separable verbs, you may split them in a clause (e.g. "schlägt … vor" for vorschlagen).
+- Do NOT list words; write flowing prose. No bullet points.`;
+      const userContent = `Full vocabulary pool (only some need to appear — prioritize weave list):\n${words.map((w, i) => `${i + 1}. ${w}`).join('\n')}`;
+      const t0 = Date.now();
+      let text;
+      try {
+        ({ text } = await callAnthropicJson(apiKey, {
+          model: quizModel,
+          maxTokens: 900,
+          system,
+          userContent,
+        }));
+      } catch (err) {
+        await refundAiCredits(event, 'listening_game', requestId);
+        throw err;
+      }
+      const parsed = extractJsonObject(text);
+      const passage = String(parsed?.passage || '').trim();
+      if (!passage || passage.length < 40) {
+        await refundAiCredits(event, 'listening_game', requestId);
+        return jsonResponse(200, cors, { ok: false, error: 'parse_failed' });
+      }
+      const detected = detectAppearedWords(words, passage, lang);
+      if (detected.appeared.length < 2) {
+        await refundAiCredits(event, 'listening_game', requestId);
+        return jsonResponse(200, cors, { ok: false, error: 'passage_missing_words' });
+      }
+      let audioBase64 = null;
+      const voice = lang === 'es' ? 'es-ES' : lang === 'en' ? 'en-GB' : 'de-DE';
+      try {
+        const audioBuf = await synthesize(passage, voice, lang);
+        if (audioBuf && audioBuf.length) audioBase64 = audioBuf.toString('base64');
+      } catch (ttsErr) {
+        console.warn('[claude-chat] listening game TTS optional fail:', ttsErr.message);
+      }
+      console.log('[claude-chat] generateListeningGame', {
+        ok: true,
+        words: words.length,
+        appeared: detected.appeared.length,
+        hasAudio: !!audioBase64,
+        ms: Date.now() - t0,
+      });
+      return jsonResponse(200, cors, {
+        ok: true,
+        passage,
+        topic: topic || null,
+        displayWords: detected.all,
+        appeared: detected.appeared,
+        absent: detected.absent,
+        audioBase64,
+        audioMime: 'audio/mpeg',
+        plan: access.plan,
+        aiUsed: aiMeta?.aiUsed,
+        aiMax: aiMeta?.aiMax,
+        aiRemaining: aiMeta?.aiRemaining ?? aiMeta?.remaining,
+      });
+    } catch (err) {
+      console.error('[claude-chat] generateListeningGame failed:', err.message);
+      return jsonResponse(502, cors, { error: 'ai_unavailable' });
+    }
+  }
+
+  // ── generateVocabPhrases (1 AI credit) ───────────────────────────────────
+  if (body.generateVocabPhrases === true) {
+    try {
+      const access = await requireActionAccess(event, 'vocab_phrases');
+      if (!access.ok) {
+        return jsonResponse(access.status || 403, cors, { error: access.error, plan: access.plan });
+      }
+      const creditCheck = await checkAiCredits(event, 'vocab_phrases');
+      if (!creditCheck.ok) {
+        return jsonResponse(creditCheck.error === 'ai_credits_exhausted' ? 402 : 403, cors, {
+          error: creditCheck.error,
+          remaining: creditCheck.remaining,
+          plan: access.plan,
+        });
+      }
+      const lang = String(body.lang || 'de').slice(0, 2);
+      const level = String(body.level || 'B1').toUpperCase();
+      const rawWords = Array.isArray(body.words) ? body.words : [];
+      const words = [...new Set(rawWords.map((w) => String(w || '').trim()).filter(Boolean))].slice(0, 20);
+      if (words.length < 2) {
+        return jsonResponse(400, cors, { error: 'need_at_least_2_words' });
+      }
+      const count = Math.min(Math.max(Number(body.count) || 4, 3), 5, words.length);
+      const requestId = body.requestId || null;
+      const aiMeta = await confirmAiCreditConsumption(event, 'vocab_phrases', { requestId });
+      if (aiMeta?.error) {
+        return jsonResponse(402, cors, {
+          error: aiMeta.error,
+          remaining: aiMeta.remaining,
+          plan: access.plan,
+        });
+      }
+      const sourceLangName = lang === 'de' ? 'German' : lang === 'es' ? 'Spanish' : 'English';
+      const quizModel = cleanModel(process.env.CLAUDE_CORRECTION_MODEL || 'claude-haiku-4-5');
+      const separableRules = buildSeparablePromptRules(words);
+      const baseSystem = `You create short everyday ${sourceLangName} phrases for ${level} learners using their vocabulary.
+Return ONLY valid JSON:
+{"phrases":[{"targetWord":"lemma","full":"complete sentence","blankToken":"word hidden in gap phase","blankPos":"noun|verb|adjective|adverb|other","tokens":["word","word",...]}]}
+
+Rules:
+- Exactly ${count} phrases. Each phrase uses ONE target word from the list (different targets when possible).
+- "full" = natural short sentence (6–14 words) with the target in context.
+- "blankToken" = the exact surface form as it appears in "full" (may be inflected).
+- "blankPos" = part of speech of blankToken: noun|verb|adjective|adverb|other.
+- Gap-fill distractors will be same POS as blankPos — write sentences where the blank clearly needs that word class.
+- "tokens" = split "full" into click-order words (keep punctuation attached to words, e.g. "vor,").
+- Everyday register only. One target per phrase — do not cram multiple deck words into one sentence.${separableRules}`;
+
+      function parsePhrasesFromAi(text) {
+        const parsed = extractJsonObject(text);
+        const rawPhrases = Array.isArray(parsed?.phrases) ? parsed.phrases : [];
+        const wordSet = new Set(words.map((w) => w.toLowerCase()));
+        const out = [];
+        const used = new Set();
+        const rejected = [];
+        for (const p of rawPhrases) {
+          const targetWord = String(p?.targetWord || '').trim();
+          const full = String(p?.full || '').trim();
+          const blankToken = String(p?.blankToken || '').trim();
+          let blankPos = String(p?.blankPos || '').trim().toLowerCase();
+          if (!['noun', 'verb', 'adjective', 'adverb'].includes(blankPos)) blankPos = 'other';
+          const tokens = Array.isArray(p?.tokens)
+            ? p.tokens.map((t) => String(t || '').trim()).filter(Boolean)
+            : full.split(/\s+/).filter(Boolean);
+          if (!targetWord || !full || !blankToken || tokens.length < 3) continue;
+          if (!wordSet.has(targetWord.toLowerCase())) continue;
+          if (used.has(targetWord.toLowerCase())) continue;
+          if (!full.toLowerCase().includes(blankToken.toLowerCase())) continue;
+
+          const norm = normalizeSeparablePhraseItem({
+            targetWord,
+            full,
+            blankToken,
+            blankPos,
+            tokens,
+          });
+          if (!norm.ok) {
+            rejected.push({ targetWord, reason: norm.reason, full, blankToken });
+            continue;
+          }
+          used.add(targetWord.toLowerCase());
+          out.push(norm.phrase);
+          if (out.length >= count) break;
+        }
+        return { phrases: out, rejected };
+      }
+
+      let phrases = [];
+      let rejected = [];
+      const maxAttempts = 3;
+      for (let attempt = 1; attempt <= maxAttempts && phrases.length < count; attempt++) {
+        const retryHint =
+          attempt > 1 && rejected.length
+            ? `\n\nREJECTED (fix these — separable verbs MUST be split, blankToken = root only): ${rejected
+                .map((r) => `${r.targetWord}: ${r.reason} in "${r.full}" (blank="${r.blankToken}")`)
+                .join('; ')}`
+            : '';
+        const system = baseSystem + retryHint;
+        const userContent = `Vocabulary (${sourceLangName}):\n${words.map((w, i) => `${i + 1}. ${w}`).join('\n')}`;
+        let text;
+        try {
+          ({ text } = await callAnthropicJson(apiKey, {
+            model: quizModel,
+            maxTokens: 1800,
+            system,
+            userContent,
+          }));
+        } catch (err) {
+          if (attempt === maxAttempts) {
+            await refundAiCredits(event, 'vocab_phrases', requestId);
+            throw err;
+          }
+          continue;
+        }
+        const parsed = parsePhrasesFromAi(text);
+        rejected = parsed.rejected;
+        for (const p of parsed.phrases) {
+          if (!phrases.some((x) => x.targetWord.toLowerCase() === p.targetWord.toLowerCase())) {
+            phrases.push(p);
+          }
+        }
+        if (phrases.length >= count) break;
+        if (attempt < maxAttempts && rejected.some((r) => isSeparableTarget(r.targetWord))) {
+          console.log('[claude-chat] generateVocabPhrases separable gate retry', {
+            attempt,
+            rejected: rejected.map((r) => r.targetWord + ':' + r.reason),
+          });
+        }
+      }
+      if (phrases.length < 3) {
+        await refundAiCredits(event, 'vocab_phrases', requestId);
+        return jsonResponse(200, cors, { ok: false, error: 'parse_failed', rejected });
+      }
+      return jsonResponse(200, cors, {
+        ok: true,
+        phrases: phrases.slice(0, count),
+        plan: access.plan,
+        aiUsed: aiMeta?.aiUsed,
+        aiMax: aiMeta?.aiMax,
+        aiRemaining: aiMeta?.aiRemaining ?? aiMeta?.remaining,
+      });
+    } catch (err) {
+      console.error('[claude-chat] generateVocabPhrases failed:', err.message);
       return jsonResponse(502, cors, { error: 'ai_unavailable' });
     }
   }
@@ -933,6 +1255,49 @@ Rules:
       });
     } catch (err) {
       console.error('[claude-chat] consumeAiAction failed:', err.message);
+      return jsonResponse(503, cors, { error: 'quota_service_unavailable' });
+    }
+  }
+
+  // ── personalPoolCommit (Lesen/Hören pool assembly quota — no AI credits) ──
+  if (body.personalPoolCommit === 'lesen' || body.personalPoolCommit === 'horen') {
+    try {
+      const check = await checkPersonalPoolQuota(event, body.personalPoolCommit);
+      if (!check.ok) {
+        return jsonResponse(check.status || 429, cors, {
+          error: check.error || 'personal_pool_quota_exceeded',
+          module: check.module,
+          used: check.used,
+          max: check.max,
+          plan: check.plan,
+        });
+      }
+      const meta = await incrementPersonalPoolQuota(check, { requestId: body.requestId || null });
+      if (meta?.error === 'personal_pool_quota_exceeded') {
+        return jsonResponse(429, cors, {
+          error: 'personal_pool_quota_exceeded',
+          module: meta.module,
+          used: meta.used,
+          max: meta.max,
+          plan: meta.plan,
+        });
+      }
+      const aiSnap = await getAiCredits(event);
+      return jsonResponse(200, cors, {
+        ok: true,
+        plan: aiSnap.plan,
+        personalLesenUsed: meta?.personalLesenUsed ?? aiSnap.personalLesenUsed,
+        personalHorenUsed: meta?.personalHorenUsed ?? aiSnap.personalHorenUsed,
+        personalLesenMax: aiSnap.personalLesenMax,
+        personalHorenMax: aiSnap.personalHorenMax,
+        aiUsed: aiSnap.used,
+        aiMax: aiSnap.max,
+        aiRemaining: aiSnap.remaining,
+        remaining: aiSnap.remaining,
+        month: aiSnap.month,
+      });
+    } catch (err) {
+      console.error('[claude-chat] personalPoolCommit failed:', err);
       return jsonResponse(503, cors, { error: 'quota_service_unavailable' });
     }
   }
@@ -973,6 +1338,9 @@ Rules:
       const quotaMeta = await incrementQuota(quotaCheck, {
         requestId: body.requestId || null,
       });
+      if (!quotaMeta || typeof quotaMeta.used !== 'number') {
+        return jsonResponse(503, cors, { error: 'quota_increment_failed' });
+      }
       const aiAfter = await getAiCredits(event);
       return jsonResponse(200, cors, {
         ok: true,
@@ -1012,6 +1380,7 @@ Rules:
     'speaking',
     'listening_game',
     'vocab_quiz',
+    'vocab_phrases',
     'tts',
   ]);
   const aiAction = typeof body.aiAction === 'string' ? body.aiAction.trim() : null;
@@ -1069,8 +1438,16 @@ Rules:
       return jsonResponse(403, cors, { error: 'ticket_invalid' });
     }
     genTicketPayload = ticketPayload;
+    const owner = await assertGenerationTicketOwner(event, ticketPayload);
+    if (!owner.ok) {
+      return jsonResponse(403, cors, { error: owner.error || 'ticket_owner_mismatch' });
+    }
     if (!TICKETED_SCOPES.has(ticketPayload.scope)) {
       return jsonResponse(403, cors, { error: 'ticket_scope_invalid' });
+    }
+    const PERSONAL_LIVE_SCOPES = new Set(['personal_exam', 'personal_schreiben', 'personal_sprechen_gen']);
+    if (PERSONAL_LIVE_SCOPES.has(ticketPayload.scope) && !isAllowLiveGenEnabled()) {
+      return liveGenDisabledResponse(jsonResponse, cors);
     }
 
     // Atomically increment the per-ticket chunk counter (server-controlled)
@@ -1209,9 +1586,12 @@ Rules:
       return jsonResponse(502, cors, { error: 'Empty response from AI' });
     }
 
+    let examChunkParsed = null;
+    let examResponseText = text;
+
     if (body.examGeneration) {
-      const parsed = extractJsonObject(text);
-      if (!parsed) {
+      examChunkParsed = extractJsonObject(text);
+      if (!examChunkParsed) {
         console.warn('[claude-chat] exam chunk JSON unparseable', {
           teil: Number.isFinite(chunkTeil) ? chunkTeil : null,
           slot: chunkSlot || null,
@@ -1232,13 +1612,53 @@ Rules:
 
     if (body.examGeneration) {
       const placeholderCount = (
-        text.match(/\.\.\.|Option [A-D]"|"Text here"|"Question here"|Ein Text ueber|Ein Text .ber|An article about/gi) || []
+        examResponseText.match(/\.\.\.|Option [A-D]"|"Text here"|"Question here"|Ein Text ueber|Ein Text .ber|An article about/gi) || []
       ).length;
       if (placeholderCount > 5) {
         console.warn('[claude-chat] exam has too many placeholders:', placeholderCount);
         return jsonResponse(422, cors, {
           error: 'exam_low_quality',
           message: 'Generated exam contains placeholder content. Retry recommended.',
+        });
+      }
+    }
+
+    // POOL-2 part gate (personal_exam only) — fail-closed; response text = normalized chunk JSON
+    if (body.examGeneration && genTicketPayload?.scope === 'personal_exam') {
+      try {
+        const gateResult = await gatePersonalExamChunk(getStoreForEvent(event), {
+          parsed: examChunkParsed,
+          lang: body.lang || examChunkParsed?.lang,
+          level: body.level || examChunkParsed?.level,
+          chunkTeil: Number.isFinite(chunkTeil) ? chunkTeil : null,
+          semantic: true,
+        });
+        if (!gateResult.ok) {
+          const blocking = (gateResult.blocking || []).slice(0, 5).map((f) => ({
+            id: f.id,
+            severity: f.severity,
+            message: f.message,
+          }));
+          console.warn('[claude-chat] part gate rejected:', gateResult.gateId, blocking[0]?.message);
+          await refundExamQuota(reservedQuotaCheck, requestId);
+          await logExamGenChunk(event, genTicketPayload, body, { ok: false, model, usage: anthropicUsage });
+          return jsonResponse(422, cors, {
+            error: 'part_gate_rejected',
+            gate: gateResult.gateId,
+            blocking,
+            message: gateResult.message || 'Part failed quality gate',
+            teil: Number.isFinite(chunkTeil) ? chunkTeil : null,
+          });
+        }
+        examChunkParsed = gateResult.chunk;
+        examResponseText = JSON.stringify(gateResult.chunk);
+      } catch (gateErr) {
+        console.error('[claude-chat] part gate unavailable:', gateErr.message, gateErr.stack);
+        await refundExamQuota(reservedQuotaCheck, requestId);
+        await logExamGenChunk(event, genTicketPayload, body, { ok: false, model, usage: anthropicUsage });
+        return jsonResponse(503, cors, {
+          error: 'part_gate_unavailable',
+          message: gateErr.message || 'Part gate could not run',
         });
       }
     }
@@ -1255,9 +1675,10 @@ Rules:
     console.log('[claude-chat] ok', {
       model,
       exam: !!body.examGeneration,
+      partGate: !!(body.examGeneration && genTicketPayload?.scope === 'personal_exam'),
       ms: Date.now() - t0,
       maxTokens,
-      outChars: text.length,
+      outChars: examResponseText.length,
     });
 
     if (body.examGeneration) {
@@ -1265,7 +1686,7 @@ Rules:
     }
 
     return jsonResponse(200, cors, {
-      text,
+      text: examResponseText,
       model,
       usage: data.usage || null,
       used: quotaMeta?.used,

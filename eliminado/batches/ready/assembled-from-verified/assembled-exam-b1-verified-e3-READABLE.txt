@@ -1,0 +1,784 @@
+EXAMEN verified-de-B1-e3 · de/B1
+Generado: 2026-07-12T12:31:28.603Z
+GATE-1: PASS
+
+Fuentes (pool-verified):
+  lesen_1        lesen-t1-gemini-175.json
+  lesen_2        lesen-t2-gemini-094.json
+  lesen_3        lesen-t3-auto-t725x5.json
+  lesen_4        lesen-t4-gemini-043.json
+  lesen_5        lesen-t5-gemini-015.json
+  horen_1        horen-t1-gemini-003.json
+  horen_2        horen-t2-gemini-011.json
+  horen_3        horen-t3-gemini-001.json
+  horen_4        horen-t4-gemini-006.json
+  schreiben_1    schreiben-gemini-007.json
+  schreiben_2    schreiben-gemini-007.json
+  schreiben_3    schreiben-gemini-007.json
+  sprechen_1     sprechen-gemini-008.json
+  sprechen_2     sprechen-gemini-008.json
+  sprechen_3     sprechen-gemini-008.json
+
+IDs de partes:
+  lesen_1        lesen-t1-gemini-175
+  lesen_2        lesen-t2-gemini-094
+  lesen_3        lesen-t3-auto-t725x5
+  lesen_4        lesen-t4-gemini-043
+  lesen_5        lesen-t5-gemini-015
+  horen_1        horen-t1-gemini-003
+  horen_2        horen-t2-gemini-011
+  horen_3        horen-t3-gemini-001
+  horen_4        horen-t4-gemini-006
+  schreiben_1    schreiben-gemini-007-t1
+  schreiben_2    schreiben-gemini-007-t2
+  schreiben_3    schreiben-gemini-007-t3
+  sprechen_1     sprechen-gemini-008-t1
+  sprechen_2     sprechen-gemini-008-t2
+  sprechen_3     sprechen-gemini-008-t3
+
+════════════════════════════════════════════════════════════════════════
+LESEN Teil 1
+════════════════════════════════════════════════════════════════════════
+
+--- Text 1: Unser Familienprojekt: Der Garten ---
+Ich bin Anna und lebe mit meiner Familie in einer kleinen Stadt. Mein Mann und ich haben zwei Kinder, einen Jungen und ein Mädchen. Sie gehen noch zur Schule. Mein Alltag ist oft sehr voll. Ich arbeite Teilzeit in einem Büro und nachmittags kümmere ich mich um die Kinder und den Haushalt. Am Wochenende versuchen wir immer, etwas Besonderes zusammen zu machen. Letzten Monat haben wir uns entschieden, ein neues Hobby zu beginnen: Wir bauen einen kleinen Garten hinter unserem Haus. Das war eine gemeinsame Entscheidung. Es ist toll zu sehen, wie die ganze Familie mitmacht. Die Kinder lieben es, die Pflanzen zu gießen und die reifen Erdbeeren zu ernten. Mein Mann hat das Beet gebaut und ich kümmere mich um die Organisation, welche Pflanzen wir kaufen. Manchmal kommen auch unsere Nachbarn vorbei und geben uns gute Tipps. Es ist eine schöne Erfahrung, etwas zusammen zu schaffen. Diese gemeinsame Zeit ist mir sehr wichtig. Ich merke, wie wir als Familie enger zusammenwachsen. Auch wenn es manchmal viel Arbeit ist, gibt mir der Garten viel Freude und Entspannung. Wir planen schon, im nächsten Jahr noch mehr Gemüse anzubauen. Das ist unser kleines Familienprojekt. Mein Bruder und seine Familie wohnen nicht weit weg, und wir besuchen uns oft. Meine Eltern unterstützen uns auch viel, besonders wenn wir mal einen Termin haben. Diese Unterstützung ist für uns sehr wertvoll.
+
+Frage gen-q-1-7e7de65a-5 [richtig_falsch]
+Sie bekommt Ratschläge von ihren Nachbarn.
+  → Antwort (Schlüssel): Richtig
+  Erklärung: Die Nachbarn kommen vorbei und geben der Familie gute Tipps für den Garten.
+
+Frage gen-q-1-7e7de65a-6 [richtig_falsch]
+Ihre Verwandten leben in der Ferne und bieten ihr keine Hilfe an.
+  → Antwort (Schlüssel): Falsch
+  Erklärung: Ihre Eltern unterstützen sie viel, besonders bei Terminen, und wohnen nicht weit weg.
+
+Frage gen-q-1-7e7de65a-3 [richtig_falsch]
+Alle in der Familie waren mit dem neuen Projekt einverstanden.
+  → Antwort (Schlüssel): Richtig
+  Erklärung: Der Text beschreibt, dass der Gartenbau eine gemeinsame Entscheidung war und die ganze Familie mitmacht.
+
+Frage gen-q-1-7e7de65a-2 [richtig_falsch]
+Sie arbeitet den ganzen Tag im Büro.
+  → Antwort (Schlüssel): Falsch
+  Erklärung: Sie arbeitet nur Teilzeit in einem Büro, nicht den ganzen Tag.
+
+Frage gen-q-1-7e7de65a-4 [richtig_falsch]
+Ihre Kinder helfen gern bei der Gartenarbeit.
+  → Antwort (Schlüssel): Richtig
+  Erklärung: Die Kinder gießen die Pflanzen und ernten die Erdbeeren, was zeigt, dass sie gerne mitmachen.
+
+Frage gen-q-1-7e7de65a-1 [richtig_falsch]
+Die Autorin hat zwei schulpflichtige Kinder.
+  → Antwort (Schlüssel): Richtig
+  Erklärung: Im Text steht, dass sie zwei Kinder hat, die noch zur Schule gehen.
+
+════════════════════════════════════════════════════════════════════════
+LESEN Teil 2
+════════════════════════════════════════════════════════════════════════
+
+--- Text 1 ---
+In vielen Städten fragen sich die Bewohner, wie sie in Zukunft ihre lokalen Nachrichten erhalten werden. Früher war die gedruckte Zeitung am Morgen der wichtigste Weg, um Informationen über die Stadt zu bekommen. Heute nutzen viele Menschen das Internet und digitale Plattformen. Eine aktuelle Umfrage zeigt, dass besonders junge Leute ihre Nachrichten oft über soziale Medien oder Nachrichten-Apps auf dem Handy lesen. Ältere Generationen bleiben der traditionellen Zeitung treu.
+
+Ein Bericht einer Medienorganisation erklärt, dass lokale Informationen sehr wichtig für die Gemeinschaft sind. Die Menschen wollen wissen, was in ihrer Nachbarschaft passiert, welche Programme die Stadt anbietet oder welche Entscheidungen im Rathaus getroffen werden. Viele Zeitungen haben deshalb auch Online-Angebote geschaffen. Sie stellen ihre Artikel ins Internet, oft mit Fotos und Videos. Manchmal gibt es auch spezielle digitale Abonnements.
+
+Die Herausforderung ist, wie diese Angebote finanziert werden können. Viele Nutzer erwarten, dass Nachrichten im Internet gratis sind. Doch die Produktion von guten Berichten kostet Geld. Einige Verlage experimentieren mit neuen Modellen, zum Beispiel mit Spenden oder kleinen monatlichen Beiträgen. Die Zukunft der lokalen Medien hängt davon ab, ob die Menschen bereit sind, für Qualität zu zahlen. Es ist eine wichtige Frage für die Demokratie und die lokale Identität.
+
+--- Text 2 ---
+Soziale Medien sind aus dem Alltag vieler Familien nicht mehr wegzudenken. Sie bieten eine einfache Möglichkeit, mit Freunden und Verwandten in Kontakt zu bleiben, die weit weg wohnen. Viele teilen Fotos von ihren Kindern, Videos vom Urlaub oder kurze Berichte über ihr Wochenende. Eine aktuelle Studie der Universität Berlin hat die Erfahrungen von Familien mit diesen Plattformen untersucht. Die Umfrage zeigte, dass über 80 Prozent der Eltern soziale Medien nutzen, um mit der Familie verbunden zu bleiben.
+
+Doch es gibt auch Herausforderungen. Manchmal fühlen sich Familienmitglieder unter Druck gesetzt, immer alles zu teilen. Experten raten, klare Regeln für die Nutzung zu finden. Zum Beispiel, welche Fotos von Kindern online gestellt werden dürfen und welche nicht. Eine Organisation bietet Programme an, die Familien helfen, sicherer im Internet unterwegs zu sein. Sie erklären, wie man die Privatsphäre schützt und welche Informationen besser nicht öffentlich gemacht werden sollten.
+
+Es ist wichtig, dass Eltern und Kinder gemeinsam über die Nutzung sprechen. So können alle lernen, die Vorteile zu nutzen und die Risiken zu minimieren. Viele Schulen bieten auch Kurse an, um Schüler über den sicheren Umgang mit digitalen Medien zu informieren. Das Ziel ist, dass die Kommunikation in der Familie gut funktioniert und alle sich wohlfühlen.
+
+Frage gen-q-2-698a2191-1 [multiple_choice]
+Was war früher der Hauptweg, um sich über das Geschehen in der Nähe zu informieren?
+  a) Man bekam die gedruckte Ausgabe am Morgen.
+  b) Man suchte im Internet nach Neuigkeiten.
+  c) Man fragte Freunde und Nachbarn.
+  → Antwort (Schlüssel): a
+  Erklärung: Laut Text war die gedruckte Zeitung am Morgen der wichtigste Weg, um lokale Informationen zu erhalten.
+
+Frage gen-q-2-698a2191-2 [multiple_choice]
+Was ist laut Text ein Grund, warum lokale Informationen für die Gemeinschaft wichtig sind?
+  a) Sie informieren über die besten Einkaufsmöglichkeiten in der Stadt.
+  b) Sie berichten über Ereignisse in der Nachbarschaft und Entscheidungen im Rathaus.
+  c) Sie helfen den Menschen, neue Freunde zu finden.
+  → Antwort (Schlüssel): b
+  Erklärung: Der Text erklärt, dass lokale Informationen über Geschehnisse in der Nachbarschaft und Entscheidungen im Rathaus berichten, was für die Gemeinschaft wichtig ist.
+
+Frage gen-q-2-698a2191-3 [multiple_choice]
+Was ist laut Text ein Problem für Zeitungen bei ihren Online-Diensten?
+  a) Die Produktion von guten Artikeln ist zu teuer für digitale Formate.
+  b) Es gibt zu viele andere Informationsquellen im Internet.
+  c) Die meisten Leser sind nicht bereit, für digitale Nachrichten zu zahlen.
+  → Antwort (Schlüssel): c
+  Erklärung: Der Text nennt als Problem, dass viele Nutzer erwarten, dass digitale Nachrichten im Internet kostenlos sind und nicht dafür bezahlen möchten.
+
+Frage gen-q-2-698a2191-4 [multiple_choice]
+Was ist ein Vorteil von sozialen Medien für Familien?
+  a) Man kann neue Rezepte mit Freunden austauschen.
+  b) Sie bieten eine schnelle Möglichkeit, mit entfernten Verwandten in Verbindung zu bleiben.
+  c) Man findet schnell einen neuen Job.
+  → Antwort (Schlüssel): b
+  Erklärung: Soziale Medien bieten Familien die einfache Möglichkeit, mit Freunden und Verwandten, die weiter entfernt leben, in Kontakt zu bleiben.
+
+Frage gen-q-2-698a2191-5 [multiple_choice]
+Was empfehlen Experten Familien bezüglich der Nutzung sozialer Medien?
+  a) Sie sollten keine privaten Informationen mehr teilen.
+  b) Sie sollten alle Fotos von Kindern sofort löschen.
+  c) Sie sollten klare Absprachen für die Verwendung treffen.
+  → Antwort (Schlüssel): c
+  Erklärung: Experten raten Familien, klare Regeln und Absprachen für die Nutzung sozialer Medien zu finden, um Probleme zu vermeiden.
+
+Frage gen-q-2-698a2191-6 [multiple_choice]
+Was ist ein wichtiger Rat von Experten zum Schutz der Privatsphäre online?
+  a) Man sollte keine persönlichen Informationen öffentlich machen.
+  b) Man sollte nur mit Freunden kommunizieren, die man persönlich kennt.
+  c) Man sollte nie Fotos von Kindern teilen.
+  → Antwort (Schlüssel): a
+  Erklärung: Experten betonen, dass man zum Schutz der Privatsphäre online keine persönlichen Informationen öffentlich machen sollte.
+
+════════════════════════════════════════════════════════════════════════
+LESEN Teil 3
+════════════════════════════════════════════════════════════════════════
+
+--- Anzeigen (A–J) ---
+: Unterricht an der Geige für Anfänger, Sa vormittags, kleine Gruppen.
+: Pflege und Reinigung von Fenstern und Treppenhaus, Sa nach Absprache.
+: Wir reparieren Pannen und tauschen Bremsen am Wagen, Termin per Telefon.
+: Unterricht an der Gitarre für Erwachsene, auch ohne Vorkenntnisse, abends.
+: Unterricht am Klavier für Kinder und Erwachsene, Termine am Nachmittag und Abend.
+: Wir vermitteln kleine Wohnungen in Uninähe, faire Provision.
+: Wir reparieren Fahrräder direkt vor Ihrer Tür, Termin nur über die App.
+: Wir packen bei Ihrem Umzug an, auch sonntags, ab 40 Euro pro Stunde.
+: Wir reparieren Computer und Drucker bei Ihnen daheim, Hausbesuch in 24 Stunden.
+: Pflege Ihres Hundes im Urlaub, großer Garten, 18 Euro pro Tag.
+
+Beispiel: {"number":0,"label":"Beispiel","situation":"Herr Wolf sucht einen günstigen Flug nach Spanien für den Sommer.","question":"Herr Wolf sucht einen günstigen Flug nach Spanien für den Sommer.","correct":"0","correctAnswer":"0"}
+
+Frage gen-q-3-njtc03-1 [matching]
+Die kleine Emma soll ein Tasteninstrument erlernen.
+  a) A
+  b) B
+  c) C
+  d) D
+  e) E
+  f) F
+  g) G
+  h) H
+  i) I
+  j) J
+  k) 0
+  → Antwort (Schlüssel): E
+  Erklärung: TastenWelt gibt Klavierunterricht.
+
+Frage gen-q-3-njtc03-2 [matching]
+Paul möchte das Zupfinstrument mit sechs Saiten spielen lernen.
+  a) A
+  b) B
+  c) C
+  d) D
+  e) E
+  f) F
+  g) G
+  h) H
+  i) I
+  j) J
+  k) 0
+  → Antwort (Schlüssel): D
+  Erklärung: SaitenKlang lehrt Gitarre.
+
+Frage gen-q-3-njtc03-3 [matching]
+Frau Berg träumt davon, ein Streichinstrument zu lernen, und sucht einen Anfängerkurs.
+  a) A
+  b) B
+  c) C
+  d) D
+  e) E
+  f) F
+  g) G
+  h) H
+  i) I
+  j) J
+  k) 0
+  → Antwort (Schlüssel): A
+  Erklärung: BogenStrich lehrt Geige.
+
+Frage gen-q-3-njtc03-4 [matching]
+Bei Tom läuft der Rechner nicht mehr und das Gerät zum Ausdrucken streikt.
+  a) A
+  b) B
+  c) C
+  d) D
+  e) E
+  f) F
+  g) G
+  h) H
+  i) I
+  j) J
+  k) 0
+  → Antwort (Schlüssel): I
+  Erklärung: PC-Hilfe repariert Computer.
+
+Frage gen-q-3-njtc03-5 [matching]
+Lenas Fahrrad hat einen Platten, den sie nicht selbst beheben will.
+  a) A
+  b) B
+  c) C
+  d) D
+  e) E
+  f) F
+  g) G
+  h) H
+  i) I
+  j) J
+  k) 0
+  → Antwort (Schlüssel): G
+  Erklärung: RadProfi repariert Fahrräder.
+
+Frage gen-q-3-njtc03-6 [matching]
+Bei Herrn Cems Wagen leuchtet eine Warnung; eine Panne soll behoben werden.
+  a) A
+  b) B
+  c) C
+  d) D
+  e) E
+  f) F
+  g) G
+  h) H
+  i) I
+  j) J
+  k) 0
+  → Antwort (Schlüssel): C
+  Erklärung: AutoMedic repariert Pannen.
+
+Frage gen-q-3-njtc03-7 [matching]
+Herr Wolf sucht einen günstigen Flug nach Spanien für den Sommer.
+  a) A
+  b) B
+  c) C
+  d) D
+  e) E
+  f) F
+  g) G
+  h) H
+  i) I
+  j) J
+  k) 0
+  → Antwort (Schlüssel): 0
+  Erklärung: Keine Anzeige bietet Flüge an.
+
+════════════════════════════════════════════════════════════════════════
+LESEN Teil 4
+════════════════════════════════════════════════════════════════════════
+
+--- Text 1: Forum: Vier-Tage-Woche im Büro – eine gute Idee? ---
+In vielen Firmen wird über neue Arbeitsmodelle gesprochen. Ein Vorschlag, der oft diskutiert wird, ist die Einführung einer Vier-Tage-Woche. Das bedeutet, dass alle Kollegen nur vier Tage pro Woche im Büro arbeiten müssen. Dies soll die Entspannung fördern und die Organisation der Arbeit verbessern. Wir haben einige Meinungen dazu gesammelt. Lesen Sie die Beiträge und entscheiden Sie, ob die Person den Vorschlag unterstützt.
+
+Frage gen-q-4-48efb5d9-6 [ja_nein]
+Ist Finn für den Vorschlag?
+Schild: Unsere Firma hat viele Termine mit internationalen Partnern. Eine Vier-Tage-Woche würde das schwierig machen. Wir müssen erreichbar sein. Das ist ein großes Problem für unsere Organisation. Deshalb sage ich Nein.
+  a) Ja
+  b) Nein
+  → Antwort (Schlüssel): Nein
+  Erklärung: Finn sieht Schwierigkeiten bei der Erreichbarkeit für internationale Partner und ein Problem für die Organisation, weshalb er den Vorschlag ablehnt.
+
+Frage gen-q-4-48efb5d9-4 [ja_nein]
+Ist David für den Vorschlag?
+Schild: Ich arbeite lieber fünf Tage mit normalen Stunden. Wenn ich alles in vier Tage packen muss, werden die Tage viel länger. Das ist nicht gut für meine Familie und meine Planung. Ich lehne den Vorschlag ab.
+  a) Ja
+  b) Nein
+  → Antwort (Schlüssel): Nein
+  Erklärung: David möchte keine längeren Arbeitstage und sieht Probleme für seine Familie und Planung, weshalb er den Vorschlag ablehnt.
+
+Frage gen-q-4-48efb5d9-2 [ja_nein]
+Ist Ben für den Vorschlag?
+Schild: Mehr Freizeit klingt gut, aber ich denke, dass es für unser Team schwierig wird. Wir haben viele Projekte, die volle fünf Tage brauchen. Die Qualität der Arbeit könnte leiden. Für mich ist der Vorschlag nicht gut.
+  a) Ja
+  b) Nein
+  → Antwort (Schlüssel): Nein
+  Erklärung: Ben befürchtet, dass die Qualität der Arbeit unter der kürzeren Woche leiden könnte, da sein Team viele Projekte hat.
+
+Frage gen-q-4-48efb5d9-5 [ja_nein]
+Ist Eva für den Vorschlag?
+Schild: Ich sehe Vorteile für die Nachhaltigkeit, weil weniger Leute pendeln müssen. Die Gesundheit der Mitarbeiter kann auch besser werden. Der Kontakt zu Kunden muss nur gut bleiben. Ich unterstütze den Vorschlag.
+  a) Ja
+  b) Nein
+  → Antwort (Schlüssel): Ja
+  Erklärung: Eva sieht positive Effekte auf Nachhaltigkeit und Gesundheit, solange der Kundenkontakt gesichert ist, und unterstützt den Vorschlag.
+
+Frage gen-q-4-48efb5d9-7 [ja_nein]
+Ist Greta für den Vorschlag?
+Schild: Ich verstehe den Wunsch nach mehr Freizeit. Aber ich glaube, dass wir dann mehr Stress haben, um alles zu schaffen. Das führt zu mehr Druck und nicht zu Entspannung. Ich bin dagegen.
+  a) Ja
+  b) Nein
+  → Antwort (Schlüssel): Nein
+  Erklärung: Greta befürchtet, dass die kürzere Woche zu mehr Stress und Druck führt, anstatt zu Entspannung, und ist dagegen.
+
+Frage gen-q-4-48efb5d9-1 [ja_nein]
+Ist Anna für den Vorschlag?
+Schild: Ich finde die Idee super, weil man mehr Zeit für Familie und Hobbys hat. Das kann die Motivation bei der Arbeit steigern. Die Organisation der Aufgaben muss nur gut sein. Ich bin dafür.
+  a) Ja
+  b) Nein
+  → Antwort (Schlüssel): Ja
+  Erklärung: Anna sieht Vorteile für Familie und Motivation, wenn die Organisation der Aufgaben stimmt, und ist insgesamt dafür.
+
+Frage gen-q-4-48efb5d9-3 [ja_nein]
+Ist Clara für den Vorschlag?
+Schild: Ich arbeite oft lange und fühle mich manchmal müde. Eine Vier-Tage-Woche würde mir mehr Entspannung geben. Ich könnte dann besser arbeiten und wäre kreativer. Deshalb finde ich den Vorschlag gut.
+  a) Ja
+  b) Nein
+  → Antwort (Schlüssel): Ja
+  Erklärung: Clara erwartet mehr Entspannung und Kreativität durch die kürzere Arbeitswoche und findet den Vorschlag gut.
+
+════════════════════════════════════════════════════════════════════════
+LESEN Teil 5
+════════════════════════════════════════════════════════════════════════
+
+--- Text 1: Hausordnung für Familien im Wohnpark Sonnenblick ---
+Liebe Bewohnerinnen und Bewohner,
+
+um ein harmonisches Zusammenleben zu gewährleisten, bitten wir alle Familien, die folgenden Regeln zu beachten. Wir sind zuerst eine Gemeinschaft und möchten, dass sich jeder wohlfühlt.
+
+1.  Ruhezeiten: Besonders für Familien mit kleinen Kindern ist Ruhe wichtig. Die allgemeine Ruhezeit gilt von 22:00 Uhr abends bis 7:00 Uhr morgens. Sonntags und an Feiertagen ist die Ruhezeit ganztägig von 13:00 Uhr bis 15:00 Uhr für die mittägliche Erholung zu respektierten. Kinderlärm ist tagsüber erlaubt, sollte aber nicht übermäßig stören.
+2.  Spielplätze und Grünflächen: Die Spielplätze sind für Kinder bis 12 Jahre vorgesehen und dürfen täglich von 8:00 Uhr bis 20:00 Uhr genutzt werden. Eltern sind für die Aufsicht ihrer Kinder verantwortlich. Bitte hinterlassen Sie die Spielbereiche sauber. Grillen ist auf den Grünflächen nicht erlaubt.
+3.  Besucher: Familienbesuch ist jederzeit willkommen. Bei längeren Besuchen (über drei Tage) bitten wir um eine kurze Information an die Verwaltung. Gäste dürfen Gemeinschaftsräume nur in Begleitung eines Bewohners nutzen.
+4.  Mülltrennung: Eine korrekte Mülltrennung ist ein wunderbarer Beitrag zum Umweltschutz. Bitte trennen Sie Papier, Plastik und Restmüll sorgfältig. Sperrmüll kann einmal im Monat nach Anmeldung entsorgt werden.
+5.  Fahrradabstellplätze: Fahrräder, Kinderwagen und Roller müssen in den dafür vorgesehenen Abstellräumen im Keller oder in den Fahrradständern im Hof abgestellt werden. Flure und Treppenhäuser müssen aus Sicherheitsgründen frei bleiben.
+6.  Veranstaltungen: Für private Feiern in Gemeinschaftsräumen muss zuerst ein Termin bei der Verwaltung in München vereinbart werden. Eine Gebühr von 50 Euro für Reinigung und Nutzung ist vorab zu entrichten. Die Räume müssen bis spätestens 23:00 Uhr geräumt sein.
+
+Wir danken Ihnen für Ihr Verständnis und Ihre Mitarbeit.
+
+Frage gen-q-5-cc5b0d7b-1 [multiple_choice]
+Wann müssen Bewohner in der Wohnanlage besonders auf die Ruhe achten?
+  a) Nachts und zusätzlich am Sonntagnachmittag.
+  b) Tagsüber, wenn Kinder spielen.
+  c) Nur am Abend nach 22 Uhr.
+  → Antwort (Schlüssel): a
+  Erklärung: Die allgemeine Ruhezeit gilt von 22:00 Uhr abends bis 7:00 Uhr morgens. Sonntags und an Feiertagen ist die Ruhezeit ganztägig von 13:00 Uhr bis 15:00 Uhr.
+
+Frage gen-q-5-cc5b0d7b-2 [multiple_choice]
+Welche Regel gilt für die Nutzung der Spielplätze?
+  a) Kinder über 12 Jahre dürfen sie nach 20 Uhr nutzen.
+  b) Eltern dürfen dort grillen, während ihre Kinder spielen.
+  c) Sie sind für alle Kinder bis 12 Jahre von morgens bis abends geöffnet.
+  → Antwort (Schlüssel): c
+  Erklärung: Die Spielplätze sind für Kinder bis 12 Jahre vorgesehen und dürfen täglich von 8:00 Uhr bis 20:00 Uhr genutzt werden.
+
+Frage gen-q-5-cc5b0d7b-3 [multiple_choice]
+Was ist bezüglich Besuchern und Gemeinschaftsräumen zu beachten?
+  a) Besucher können die Gemeinschaftsräume jederzeit selbstständig nutzen.
+  b) Wenn Gäste länger bleiben, ist eine Meldung nötig, und sie dürfen Gemeinschaftsräume nicht allein betreten.
+  c) Besucher dürfen nur drei Tage bleiben und keine Gemeinschaftsräume nutzen.
+  → Antwort (Schlüssel): b
+  Erklärung: Bei längeren Besuchen (über drei Tage) bitten wir um eine kurze Information an die Verwaltung. Gäste dürfen Gemeinschaftsräume nur in Begleitung eines Bewohners nutzen.
+
+Frage gen-q-5-cc5b0d7b-4 [multiple_choice]
+Welche Bedingungen gelten für private Feiern in den Gemeinschaftsräumen?
+  a) Es ist keine Anmeldung nötig, wenn man vor 23 Uhr fertig ist.
+  b) Sie sind kostenlos, müssen aber bis Mitternacht beendet sein.
+  c) Man muss eine Gebühr zahlen und die Räume bis 23 Uhr verlassen.
+  → Antwort (Schlüssel): c
+  Erklärung: Eine Gebühr von 50 Euro für Reinigung und Nutzung ist vorab zu entrichten. Die Räume müssen bis spätestens 23:00 Uhr geräumt sein.
+
+════════════════════════════════════════════════════════════════════════
+HÖREN Teil 1
+════════════════════════════════════════════════════════════════════════
+
+--- Text 1 ---
+Guten Tag, Sie sind verbunden mit der Praxis Dr. Lorenz. Unsere Sprechzeiten sind Montag bis Freitag von 8 bis 12 Uhr und zusätzlich Dienstag und Donnerstag von 14 bis 17 Uhr. Für Termine rufen Sie bitte während dieser Zeiten an. Bei Notfällen außerhalb der Sprechzeiten wählen Sie bitte die 112. Bitte beachten Sie, dass wir aktuell längere Wartezeiten für Routineuntersuchungen haben. Wir bitten um Ihr Verständnis. Bleiben Sie gesund!
+
+--- Segment 1: Telefonansage Arztpraxis ---
+Guten Tag, Sie sind verbunden mit der Praxis Dr. Lorenz. Unsere Sprechzeiten sind Montag bis Freitag von 8 bis 12 Uhr und zusätzlich Dienstag und Donnerstag von 14 bis 17 Uhr. Für Termine rufen Sie bitte während dieser Zeiten an. Bei Notfällen außerhalb der Sprechzeiten wählen Sie bitte die 112. Bitte beachten Sie, dass wir aktuell längere Wartezeiten für Routineuntersuchungen haben. Wir bitten um Ihr Verständnis. Bleiben Sie gesund!
+
+Frage gen-q-h1-0fd35b59-s1-q1 [richtig_falsch] (Aufnahme 1)
+Die Praxis ist an zwei Nachmittagen in der Woche geöffnet.
+  → Antwort (Schlüssel): Richtig
+  Erklärung: Die Ansage informiert, dass die Praxis zusätzlich Dienstag und Donnerstag von 14 bis 17 Uhr geöffnet ist, also an zwei Nachmittagen.
+
+Frage gen-q-h1-0fd35b59-s1-q2 [multiple_choice] (Aufnahme 1)
+Was sollen Patienten bei Notfällen außerhalb der Sprechzeiten tun?
+  a) Bis zum nächsten Morgen warten.
+  b) Trotzdem in die Praxis kommen.
+  c) Die Notrufnummer 112 wählen.
+  → Antwort (Schlüssel): c
+  Erklärung: Die Ansage bittet bei Notfällen außerhalb der Sprechzeiten ausdrücklich darum, die 112 zu wählen, nicht die Praxis aufzusuchen.
+
+--- Segment 2: Radio-Tipp Gesunde Ernährung ---
+Hallo Hörerinnen und Hörer! Heute ein kurzer Tipp für Ihre Gesundheit: Essen Sie täglich ausreichend Obst und Gemüse. Fünf Portionen sind ideal, zum Beispiel drei Portionen Gemüse und zwei Portionen Obst. Das stärkt Ihr Immunsystem und gibt Ihnen Energie für den Tag. Versuchen Sie, verschiedene Farben zu wählen, denn jede Farbe enthält andere wichtige Vitamine. Eine gesunde Ernährung ist der beste Schutz vor vielen Krankheiten. Bleiben Sie fit!
+
+Frage gen-q-h1-0fd35b59-s2-q1 [richtig_falsch] (Aufnahme 2)
+Es wird empfohlen, mehr Obst als Gemüse zu essen.
+  → Antwort (Schlüssel): Falsch
+  Erklärung: Der Tipp schlägt vor, drei Portionen Gemüse und zwei Portionen Obst zu essen, also mehr Gemüse als Obst.
+
+Frage gen-q-h1-0fd35b59-s2-q2 [multiple_choice] (Aufnahme 2)
+Warum empfiehlt der Tipp, verschiedene Farben zu wählen?
+  a) Weil das Essen dann länger haltbar ist.
+  b) Weil jede Farbe andere Vitamine enthält.
+  c) Weil es nur so fünf Portionen gibt.
+  → Antwort (Schlüssel): b
+  Erklärung: Der Radiotipp erklärt, dass verschiedene Farben gewählt werden sollten, weil jede Farbe andere wichtige Vitamine enthält.
+
+--- Segment 3: Durchsage Fitnessstudio ---
+Achtung, liebe Mitglieder! Wir haben eine wichtige Information zu unserem neuen Rückenkurs. Dieser Kurs startet nächste Woche am Montag um 18 Uhr. Die Teilnehmerzahl ist begrenzt, daher ist eine schnelle Anmeldung erforderlich. Sie können sich ab sofort an der Rezeption oder online über unsere App anmelden. Die Gebühr für den zehnteiligen Kurs beträgt 80 Euro für Mitglieder. Gäste zahlen 100 Euro. Sichern Sie sich Ihren Platz für eine starke und gesunde Rückenmuskulatur!
+
+Frage gen-q-h1-0fd35b59-s3-q1 [richtig_falsch] (Aufnahme 3)
+Der Kurs startet am Montag in der nächsten Woche.
+  → Antwort (Schlüssel): Richtig
+  Erklärung: Die Durchsage gibt an, dass der Kurs nächste Woche am Montag beginnt, was mit der Aussage übereinstimmt.
+
+Frage gen-q-h1-0fd35b59-s3-q2 [multiple_choice] (Aufnahme 3)
+Wie hoch ist die Kursgebühr für Nicht-Mitglieder?
+  a) 80 Euro.
+  b) Die Gebühr ist noch nicht bekannt.
+  c) 100 Euro.
+  → Antwort (Schlüssel): c
+  Erklärung: Die Durchsage informiert, dass die Gebühr für Gäste, also Nicht-Mitglieder, 100 Euro beträgt, während Mitglieder 80 Euro zahlen.
+
+--- Segment 4: Anrufbeantworter Apotheke ---
+Guten Tag, Apotheke am Markt, hier ist Frau Schneider. Ich rufe wegen eines Hustenmittels an. Ich brauche bitte das Mittel 'Broncho-Fit'. Ich weiß, dass Sie es vorrätig haben. Eine Beratung brauche ich nicht, ich kenne das Produkt schon. Ich komme gleich vorbei. Vielen Dank und bis gleich!
+
+Frage gen-q-h1-0fd35b59-s4-q1 [richtig_falsch] (Aufnahme 4)
+Die Anruferin benötigt eine ausführliche Beratung zum Hustenmittel.
+  → Antwort (Schlüssel): Falsch
+  Erklärung: In der Nachricht sagt die Anruferin ausdrücklich, dass sie keine Beratung braucht, weil sie das Hustenmittel schon kennt.
+
+Frage gen-q-h1-0fd35b59-s4-q2 [multiple_choice] (Aufnahme 4)
+Was weiß die Anruferin bereits über das Hustenmittel?
+  a) Es ist sehr teuer.
+  b) Sie kennt das Produkt schon.
+  c) Es ist nicht vorrätig.
+  → Antwort (Schlüssel): b
+  Erklärung: Die Anruferin teilt mit, dass sie das Hustenmittel bereits kennt und daher keine weitere Beratung benötigt.
+
+--- Segment 5: Hinweis Wartezimmer Hygiene ---
+Liebe Patienten, zu Ihrem Schutz und dem Schutz anderer bitten wir Sie, einige Hygieneregeln zu beachten. Bitte desinfizieren Sie Ihre Hände beim Betreten und Verlassen der Praxis. Halten Sie mindestens 1,5 Meter Abstand zu anderen Personen. Husten und Niesen Sie bitte in die Armbeuge. Bei Fieber oder starken Erkältungssymptomen melden Sie sich bitte telefonisch, bevor Sie die Praxis betreten. Vielen Dank für Ihr Verständnis und Ihre Mithilfe für eine gesunde Umgebung.
+
+Frage gen-q-h1-0fd35b59-s5-q1 [richtig_falsch] (Aufnahme 5)
+Man soll die Hände nur beim Verlassen der Praxis desinfizieren.
+  → Antwort (Schlüssel): Falsch
+  Erklärung: Der Hinweis bittet darum, die Hände beim Betreten und Verlassen der Praxis zu desinfizieren, nicht nur beim Verlassen.
+
+Frage gen-q-h1-0fd35b59-s5-q2 [multiple_choice] (Aufnahme 5)
+Welche Hygienemaßnahme ist besonders wichtig?
+  a) Händedesinfektion beim Kommen und Gehen.
+  b) Händeschütteln mit anderen Patienten.
+  c) Husten in die Hand.
+  → Antwort (Schlüssel): a
+  Erklärung: Der Hinweis fordert dazu auf, die Hände beim Betreten und Verlassen der Praxis zu desinfizieren, was eine grundlegende Hygienemaßnahme ist.
+
+════════════════════════════════════════════════════════════════════════
+HÖREN Teil 2
+════════════════════════════════════════════════════════════════════════
+
+--- Text 1 ---
+Herzlich willkommen zu unserer heutigen Sendung. Heute sprechen wir über ein Thema, das uns alle betrifft: unsere Freizeit. Wie verbringen wir sie am besten, um wirklich zu entspannen und neue Energie zu tanken? Viele Menschen fühlen sich oft gestresst, auch wenn sie eigentlich frei haben. Das liegt daran, dass wir unsere Freizeit nicht immer bewusst gestalten.
+
+Ein wichtiger Punkt ist, sich nicht zu viele Termine für das Wochenende vorzunehmen. Oft planen wir das ganze Wochenende voll mit Aktivitäten oder Erledigungen. Das führt dazu, dass wir am Sonntagabend müder sind als am Freitag. Versuchen Sie stattdessen, bewusst Pausen einzuplanen. Das bedeutet, sich Zeit für spontane Dinge zu lassen oder einfach mal nichts zu tun.
+
+Manche entdecken in ihrer Freizeit neue Hobbys. Das kann Gartenarbeit sein, ein Instrument lernen oder Sport treiben. Solche Aktivitäten helfen uns, den Kopf freizubekommen und uns auf etwas anderes zu konzentrieren. Es ist wichtig, etwas zu finden, das uns Freude bereitet und nicht als Pflicht erscheint.
+
+Auch die Nutzung von digitalen Medien spielt eine Rolle. Viele verbringen Stunden vor dem Bildschirm. Eine bewusste Reduzierung der Bildschirmzeit kann die Qualität der Freizeit deutlich steigern. Vielleicht können Sie stattdessen ein Buch lesen oder einen Spaziergang in der Natur machen.
+
+Zum Schluss möchte ich betonen: Freizeit ist wertvoll. Nutzen Sie sie, um sich zu erholen und das zu tun, was Ihnen guttut. Ob das nun ein ruhiger Abend zu Hause ist oder ein Ausflug mit Freunden – wichtig ist, dass Sie sich danach besser fühlen. Denken Sie daran, Ihre Freizeit bewusst zu gestalten, um wirklich davon zu profitieren.
+
+Frage gen-q-h2-5b8f9f1e-fzt-q1 [multiple_choice]
+Was ist laut dem Sprecher ein häufiger Grund dafür, dass Menschen sich in ihrer Freizeit gestresst fühlen?
+  a) Das Fehlen von spannenden Hobbys.
+  b) Zu wenig Kontakt zu Freunden.
+  c) Eine unbewusste Gestaltung der freien Zeit.
+  → Antwort (Schlüssel): c
+  Erklärung: Der Sprecher erklärt, dass viele Menschen gestresst sind, weil sie ihre Freizeit nicht immer bewusst gestalten.
+
+Frage gen-q-h2-5b8f9f1e-fzt-q2 [multiple_choice]
+Welches Problem beschreibt der Sprecher oft im Zusammenhang mit dem Wochenende?
+  a) Man hat zu wenig Zeit für soziale Kontakte.
+  b) Man ist am Ende des Wochenendes erschöpfter als am Anfang.
+  c) Man findet keine passenden Hobbys.
+  → Antwort (Schlüssel): b
+  Erklärung: Der Sprecher erwähnt, dass zu viele Termine am Wochenende dazu führen, dass man am Sonntagabend müder ist als am Freitag.
+
+Frage gen-q-h2-5b8f9f1e-fzt-q3 [multiple_choice]
+Was schlägt der Sprecher als Alternative zu übermäßiger Bildschirmzeit vor?
+  a) Zur Abwechslung lesen oder draußen spazieren gehen.
+  b) Mehr Zeit in sozialen Medien verbringen.
+  c) Mehr Filme und Serien schauen.
+  → Antwort (Schlüssel): a
+  Erklärung: Der Sprecher empfiehlt als Alternative zum Bildschirm, zu lesen oder draußen spazieren zu gehen.
+
+Frage gen-q-h2-5b8f9f1e-fzt-q4 [multiple_choice]
+Was ist nach Ansicht des Sprechers bei der Wahl eines Hobbys wichtig?
+  a) Es sollte hauptsächlich mit digitalen Medien verbunden sein.
+  b) Es sollte Freude bereiten und keine Verpflichtung sein.
+  c) Es sollte sehr anspruchsvoll und zeitintensiv sein.
+  → Antwort (Schlüssel): b
+  Erklärung: Der Sprecher betont, dass es wichtig ist, etwas zu finden, das Freude bereitet und nicht als Pflicht erscheint.
+
+Frage gen-q-h2-5b8f9f1e-fzt-q5 [multiple_choice]
+Welche Botschaft vermittelt der Sprecher am Ende seines Vortrags über Freizeit?
+  a) Freizeit verbringt man am besten allein und ruhig zu Hause.
+  b) Freizeit sollte hauptsächlich für arbeitsbezogene Aufgaben genutzt werden.
+  c) Freizeit ist kostbar und dient der Erholung sowie dem persönlichen Wohlbefinden.
+  → Antwort (Schlüssel): c
+  Erklärung: Zum Schluss betont der Sprecher, dass Freizeit wertvoll ist und man sie nutzen sollte, um sich zu erholen und das zu tun, was einem guttut.
+
+════════════════════════════════════════════════════════════════════════
+HÖREN Teil 3
+════════════════════════════════════════════════════════════════════════
+
+--- Text 1 ---
+Anna: Na, Lukas, wie geht's? Du siehst gestresst aus.
+Lukas: Ach, Anna, es geht. Ich hatte heute ein Vorstellungsgespräch für das Praktikum, das ich dir erzählt habe.
+Anna: Oh, super! Und, wie lief's?
+Lukas: Ganz okay, denke ich. Sie haben viele Fragen gestellt, besonders zu meinen früheren Erfahrungen. Sie wollten auch Referenzen haben.
+Anna: Das ist normal. Hast du deine alten Chefs angegeben?
+Lukas: Ja, klar. Ich hoffe, die rufen da wirklich an. Aber das Praktikum ist nur für ein Halbjahr. Ich bin mir nicht sicher, ob das genug Zeit ist, um wirklich was zu lernen.
+Anna: Ein halbes Jahr ist doch schon eine gute Zeit. Besser als nichts. Was ist denn das Hauptmerkmal dieser Stelle?
+Lukas: Sie suchen jemanden, der gut mit Kunden umgehen kann und flexibel ist. Es geht um Projektmanagement. Ich habe auch erzählt, dass ich schon mal in einem ähnlichen Bereich gearbeitet habe, ehe ich angefangen habe zu studieren.
+Anna: Das ist doch perfekt! Du bist doch immer so organisiert. Hast du auch gefragt, wie das Team ist?
+Lukas: Ja, die Atmosphäre schien gut zu sein. Wir haben auch zusammen in der Kantine gegessen. Die Leute waren sehr nett.
+Anna: Das ist wichtig. Und wann hörst du von ihnen?
+Lukas: Sie meinten, sie melden sich nächste Woche. Ich bin echt gespannt.
+Anna: Drücke dir die Daumen! Ich bin sicher, das klappt.
+
+Frage gen-q-h3-6f78252f-1 [richtig_falsch]
+Lukas ist besorgt wegen eines noch bevorstehenden Vorstellungsgesprächs.
+  → Antwort (Schlüssel): Falsch
+  Erklärung: Lukas sagt, er hatte das Vorstellungsgespräch bereits heute ('Ich hatte heute ein Vorstellungsgespräch').
+
+Frage gen-q-h3-6f78252f-2 [richtig_falsch]
+Für die Praktikumsstelle sind vorherige berufliche Tätigkeiten von Bedeutung.
+  → Antwort (Schlüssel): Richtig
+  Erklärung: Lukas erwähnt, dass viele Fragen zu seinen 'früheren Erfahrungen' gestellt wurden und er schon in einem ähnlichen Bereich gearbeitet hat.
+
+Frage gen-q-h3-6f78252f-3 [richtig_falsch]
+Lukas musste Kontaktdaten von ehemaligen Vorgesetzten angeben.
+  → Antwort (Schlüssel): Richtig
+  Erklärung: Er sagt, dass 'Sie wollten auch Referenzen haben' und er seine 'alten Chefs' angegeben hat.
+
+Frage gen-q-h3-6f78252f-4 [richtig_falsch]
+Lukas befürchtet, dass das Praktikum ein halbes Jahr zu lange dauert.
+  → Antwort (Schlüssel): Falsch
+  Erklärung: Lukas ist unsicher, ob ein Halbjahr 'genug Zeit ist, um wirklich was zu lernen', er findet es also eher zu kurz.
+
+Frage gen-q-h3-6f78252f-5 [richtig_falsch]
+Eine wichtige Eigenschaft für diese Stelle ist ein guter Umgang mit Klienten.
+  → Antwort (Schlüssel): Richtig
+  Erklärung: Lukas sagt: "Sie suchen jemanden, der gut mit Kunden umgehen kann und flexibel ist."
+
+Frage gen-q-h3-6f78252f-6 [richtig_falsch]
+Lukas hat vor Beginn seines Studiums keine ähnliche Berufserfahrung gesammelt.
+  → Antwort (Schlüssel): Falsch
+  Erklärung: Er hat 'schon mal in einem ähnlichen Bereich gearbeitet, ehe ich angefangen habe zu studieren'.
+
+Frage gen-q-h3-6f78252f-7 [richtig_falsch]
+Lukas wird in ungefähr zwei Wochen eine Rückmeldung erhalten.
+  → Antwort (Schlüssel): Falsch
+  Erklärung: Die Firma meldet sich 'nächste Woche', also in etwa einer Woche.
+
+════════════════════════════════════════════════════════════════════════
+HÖREN Teil 4
+════════════════════════════════════════════════════════════════════════
+
+--- Text 1 ---
+Moderator: Herzlich willkommen zu unserer Sendung „Gesund leben – einfach gemacht?“. Heute diskutieren wir, wie man einen gesunden Lebensstil in den Alltag integrieren kann. Dazu begrüße ich Mira Schmidt, Ernährungsberaterin, und Markus Fischer, Journalist.
+Mira: Guten Tag. Ich glaube fest, ein gesunder Lebensstil muss nicht kompliziert sein. Kleine Änderungen bewirken schon viel und sind oft leichter umzusetzen. Zum Beispiel mehr frisches Gemüse essen oder öfter mal zu Fuß gehen. Das macht einen Unterschied.
+Markus: Das klingt gut in der Theorie, Mira. Aber die Realität sieht oft anders aus. Viele haben einen stressigen Arbeitsalltag, volle Kalender mit Projekten und wenig Freizeit. Da ist es schwer, sich um gesunde Ernährung oder Sport zu kümmern. Man ist abends müde und will nur noch entspannen.
+Moderator: Markus spricht das Thema Entspannung an. Wie wichtig ist das für einen gesunden Lebensstil, Mira?
+Mira: Entspannung ist absolut entscheidend! Ohne sie kann der Körper nicht regenerieren. Kurze Pausen am Tag sind Gold wert. Schon ein paar Minuten bewusst atmen oder aus dem Fenster schauen. Das ist machbar, selbst bei viel zu tun. Es geht nicht immer um lange Meditationen.
+Markus: Für viele ist es aber schwierig, wirklich abzuschalten. Der Druck, immer erreichbar zu sein und den eigenen Status im Job zu halten, ist enorm. Man hat das Gefühl, keine Zeit für Entspannung zu haben. Die Gedanken kreisen ständig um die Arbeit.
+Moderator: Sehen Sie eine Veränderung in der Gesellschaft? Sind die Menschen mittlerweile bewusster, was ihre Gesundheit angeht?
+Mira: Ja, auf jeden Fall. Ich sehe, dass immer mehr Menschen sich informieren und gesündere Optionen suchen. Es gibt ein wachsendes Interesse an regionalen Produkten und nachhaltiger Ernährung. Der Trend ist positiv.
+Markus: Ein Bewusstsein ist da, das stimmt. Aber zwischen Wissen und Handeln liegt oft ein großer Unterschied. Viele wissen, was gesund wäre, setzen es aber im Alltag nicht um. Der innere Schweinehund ist oft stärker als der gute Vorsatz.
+Moderator: Was wäre Ihr wichtigster Tipp für unsere Zuhörer?
+Mira: Fangen Sie klein an! Suchen Sie sich eine Sache aus, die Ihnen Spaß macht, und machen Sie daraus eine Gewohnheit. Zum Beispiel jeden Morgen ein Glas Wasser trinken oder einen kurzen Spaziergang in der Mittagspause.
+Markus: Seien Sie ehrlich zu sich selbst. Wenn Sie merken, dass es alleine nicht geht, scheuen Sie sich nicht, professionelle Hilfe zu suchen. Ein Personal Trainer oder eine Ernährungsberatung kann den nötigen Anstoß geben.
+Moderator: Vielen Dank an Mira Schmidt und Markus Fischer für diese interessante Diskussion.
+
+Frage gen-q-h4-2ee3bd66-1 [matching]
+Kleine Veränderungen im Alltag können viel für die Gesundheit bewirken.
+  a) Moderator
+  b) Mira
+  c) Markus
+  → Antwort (Schlüssel): b
+  Erklärung: Mira sagt, dass kleine Änderungen schon viel bewirken und leichter umzusetzen sind.
+
+Frage gen-q-h4-2ee3bd66-2 [matching]
+Stressige Arbeitstage machen es schwierig, sich um einen gesunden Lebensstil zu kümmern.
+  a) Moderator
+  b) Mira
+  c) Markus
+  → Antwort (Schlüssel): c
+  Erklärung: Markus erwähnt den stressigen Arbeitsalltag und die vollen Kalender als Hindernis.
+
+Frage gen-q-h4-2ee3bd66-3 [matching]
+Kurze Erholungspausen während des Tages sind für die Körperregeneration sehr wichtig.
+  a) Moderator
+  b) Mira
+  c) Markus
+  → Antwort (Schlüssel): b
+  Erklärung: Mira betont, dass kurze Pausen am Tag Gold wert sind und der Körper sie zur Regeneration braucht.
+
+Frage gen-q-h4-2ee3bd66-4 [matching]
+Der berufliche Druck verhindert oft, dass man wirklich abschalten kann.
+  a) Moderator
+  b) Mira
+  c) Markus
+  → Antwort (Schlüssel): c
+  Erklärung: Markus spricht an, dass der Druck, erreichbar zu sein und den Status zu halten, das Abschalten erschwert.
+
+Frage gen-q-h4-2ee3bd66-5 [matching]
+Immer mehr Menschen zeigen Interesse an einer bewussteren Lebensweise.
+  a) Moderator
+  b) Mira
+  c) Markus
+  → Antwort (Schlüssel): b
+  Erklärung: Mira beobachtet, dass sich immer mehr Menschen informieren und gesündere Optionen suchen.
+
+Frage gen-q-h4-2ee3bd66-6 [matching]
+Das Wissen um gesunde Gewohnheiten führt nicht immer zu deren Umsetzung.
+  a) Moderator
+  b) Mira
+  c) Markus
+  → Antwort (Schlüssel): c
+  Erklärung: Markus erklärt, dass zwischen Wissen und Handeln oft ein großer Unterschied liegt.
+
+Frage gen-q-h4-2ee3bd66-7 [matching]
+Das Hauptthema der Sendung ist die Integration eines gesunden Lebensstils in den Alltag.
+  a) Moderator
+  b) Mira
+  c) Markus
+  → Antwort (Schlüssel): a
+  Erklärung: Der Moderator leitet die Sendung mit dieser Fragestellung ein.
+
+Frage gen-q-h4-2ee3bd66-8 [matching]
+Wenn man Schwierigkeiten hat, alleine gesunde Gewohnheiten zu etablieren, sollte man sich Hilfe suchen.
+  a) Moderator
+  b) Mira
+  c) Markus
+  → Antwort (Schlüssel): c
+  Erklärung: Markus rät, professionelle Hilfe zu suchen, wenn es alleine nicht geht.
+
+════════════════════════════════════════════════════════════════════════
+SCHREIBEN Teil 1
+════════════════════════════════════════════════════════════════════════
+
+Instrucción: Sie haben gehört, dass Ihr Freund/Ihre Freundin sich einen Kurzurlaub wünscht. Sie möchten ihn/sie dazu einladen, gemeinsam etwas zu planen.
+Schreiben Sie eine E-Mail (circa 80 Wörter). Schreiben Sie etwas zu allen drei Punkten. Achten Sie auf Anrede und Gruß.
+
+• Fragen Sie, wohin Ihr Freund/Ihre Freundin gerne reisen möchte und was er/sie sich wünscht.
+• Schlagen Sie eine konkrete Aktivität vor, die Sie dort machen könnten.
+• Machen Sie einen Vorschlag für einen möglichen Reisetermin.
+
+Frage gen-q-s-t1-0810413b-q1 [short_answer]
+Sie haben gehört, dass Ihr Freund/Ihre Freundin sich einen Kurzurlaub wünscht. Sie möchten ihn/sie dazu einladen, gemeinsam etwas zu planen.
+Schreiben Sie eine E-Mail (circa 80 Wörter). Schreiben Sie etwas zu allen drei Punkten. Achten Sie auf Anrede und Gruß.
+
+• Fragen Sie, wohin Ihr Freund/Ihre Freundin gerne reisen möchte und was er/sie sich wünscht.
+• Schlagen Sie eine konkrete Aktivität vor, die Sie dort machen könnten.
+• Machen Sie einen Vorschlag für einen möglichen Reisetermin.
+  → Antwort (Schlüssel): rubric
+  Erklärung: Bewertung (Goethe-offiziell): Erfüllung (0–10) – alle 3 Punkte behandelt; Kohärenz (0–10) – Textaufbau und Verknüpfung; Wortschatz (0–10) – B1-Niveau; Strukturen (0–10) – Grammatik B1. Ca. 80 Wörter (unter 50 % oder Thema verfehlt → Erfüllung 0). Anrede/Gruß: informell – du-Form.
+
+════════════════════════════════════════════════════════════════════════
+SCHREIBEN Teil 2
+════════════════════════════════════════════════════════════════════════
+
+Instrucción: Im Online-Forum „Sprachen lernen“ diskutieren die Mitglieder über die Bedeutung von Fremdsprachen für Kinder. Sie lesen folgenden Beitrag:
+«Ich finde es wichtig, dass Kinder schon früh eine Zweitsprache lernen. Das erweitert nicht nur den Wortschatz, sondern öffnet auch Türen zu anderen Kulturen.»
+Schreiben Sie nun Ihre Meinung (circa 80 Wörter). Begründen Sie Ihre Meinung und nennen Sie Vor- und Nachteile des frühen Fremdsprachenlernens.
+
+Frage gen-q-s-t2-0810413b-q1 [short_answer]
+Im Online-Forum „Sprachen lernen“ diskutieren die Mitglieder über die Bedeutung von Fremdsprachen für Kinder. Sie lesen folgenden Beitrag:
+«Ich finde es wichtig, dass Kinder schon früh eine Zweitsprache lernen. Das erweitert nicht nur den Wortschatz, sondern öffnet auch Türen zu anderen Kulturen.»
+Schreiben Sie nun Ihre Meinung (circa 80 Wörter). Begründen Sie Ihre Meinung und nennen Sie Vor- und Nachteile des frühen Fremdsprachenlernens.
+  → Antwort (Schlüssel): rubric
+  Erklärung: Bewertung (Goethe-offiziell): Erfüllung (0–10) – Meinung, Begründung, Vor- und Nachteile behandelt; Kohärenz (0–10) – Textaufbau und Verknüpfung; Wortschatz (0–10) – B1-Niveau; Strukturen (0–10) – Grammatik B1. Ca. 80 Wörter (unter 50 % oder Thema verfehlt → Erfüllung 0). Anrede/Gruß: Forumsbeitrag – kein Briefregister nötig.
+
+════════════════════════════════════════════════════════════════════════
+SCHREIBEN Teil 3
+════════════════════════════════════════════════════════════════════════
+
+Instrucción: Ihr Nachbar, Herr Weber, spielt oft laut Musik und Sie möchten ihn bitten, abends etwas leiser zu sein, da Sie Ruhe brauchen.
+Schreiben Sie an Herrn Weber (circa 40 Wörter). Vergessen Sie nicht Anrede und Gruß.
+
+• Erklären Sie, dass Sie abends mehr Stille brauchen.
+• Bitten Sie ihn freundlich, die Musik leiser zu stellen.
+• Schlagen Sie eine Uhrzeit vor, ab der die Lautstärke reduziert werden sollte.
+
+Frage gen-q-s-t3-0810413b-q1 [short_answer]
+Ihr Nachbar, Herr Weber, spielt oft laut Musik und Sie möchten ihn bitten, abends etwas leiser zu sein, da Sie Ruhe brauchen.
+Schreiben Sie an Herrn Weber (circa 40 Wörter). Vergessen Sie nicht Anrede und Gruß.
+
+• Erklären Sie, dass Sie abends mehr Stille brauchen.
+• Bitten Sie ihn freundlich, die Musik leiser zu stellen.
+• Schlagen Sie eine Uhrzeit vor, ab der die Lautstärke reduziert werden sollte.
+  → Antwort (Schlüssel): rubric
+  Erklärung: Bewertung (Goethe-offiziell): Erfüllung (0–4) – Mitteilung vollständig (Ruhebedarf, Bitte um leisere Musik, Uhrzeitvorschlag); Kohärenz (0–4) – Textaufbau; Wortschatz (0–6) – B1-Niveau; Strukturen (0–6) – Grammatik B1. Ca. 40 Wörter (unter 50 % oder Thema verfehlt → Erfüllung 0). Anrede/Gruß passend zum Empfänger im Aufgabentext: "Lieber Herr Weber" / korrekt Sie-Form.
+
+════════════════════════════════════════════════════════════════════════
+SPRECHEN Teil 1
+════════════════════════════════════════════════════════════════════════
+
+Instrucción: Sie und Ihr Partner möchten für die nächste Woche einen gemeinsamen Kochkurs in der Stadt planen. Besprechen Sie die folgenden Punkte:
+
+• Welchen Kurs wählen wir aus?
+• Wann ist der beste Termin für beide?
+• Welche Organisation ist für die Vorbereitung nötig?
+• Welche Hilfe brauchen wir aus unserer Familie?
+• Wie ist der Transport zum Kursort am besten?
+
+Frage gen-q-sp-t1-9a72-q1 [planungsaufgabe]
+Sie und Ihr Partner möchten für die nächste Woche einen gemeinsamen Kochkurs in der Stadt planen. Besprechen Sie die folgenden Punkte:
+
+• Welchen Kurs wählen wir aus?
+• Wann ist der beste Termin für beide?
+• Welche Organisation ist für die Vorbereitung nötig?
+• Welche Hilfe brauchen wir aus unserer Familie?
+• Wie ist der Transport zum Kursort am besten?
+  → Antwort (Schlüssel): rubric
+  Erklärung: Bewertung: Interaktion (Vorschläge machen, zustimmen/ablehnen), Strukturierung der Planung, Wortschatz zur Organisation, grammatikalische Korrektheit, Flüssigkeit.
+
+════════════════════════════════════════════════════════════════════════
+SPRECHEN Teil 2
+════════════════════════════════════════════════════════════════════════
+
+Instrucción: Halten Sie eine kurze Präsentation zum Thema „Ein beliebter Freizeitkurs in meinem Heimatland“ (z.B. Sportkurs, Kochkurs, Tanzkurs). Nutzen Sie folgende Gliederung:
+
+1. Einleitung: Thema nennen (Warum habe ich das Thema gewählt?)
+2. Situation: Gibt es diese Freizeitaktivität in Ihrem Heimatland?
+3. Details: Wie sieht ein typischer Kurs oder Ablauf aus?
+4. Vor- und Nachteile: Was ist positiv, was ist eher schwierig?
+5. Persönliche Meinung und Schluss: Was ist Ihre Meinung dazu?
+
+Frage gen-q-sp-t2-9a72-q1 [praesentation]
+Halten Sie eine kurze Präsentation zum Thema „Ein beliebter Freizeitkurs in meinem Heimatland“ (z.B. Sportkurs, Kochkurs, Tanzkurs). Nutzen Sie folgende Gliederung:
+
+1. Einleitung: Thema nennen (Warum habe ich das Thema gewählt?)
+2. Situation: Gibt es diese Freizeitaktivität in Ihrem Heimatland?
+3. Details: Wie sieht ein typischer Kurs oder Ablauf aus?
+4. Vor- und Nachteile: Was ist positiv, was ist eher schwierig?
+5. Persönliche Meinung und Schluss: Was ist Ihre Meinung dazu?
+  → Antwort (Schlüssel): rubric
+  Erklärung: Bewertung: Struktur der Präsentation, freies Sprechen, Verwendung von Redemitteln zur Meinungsäußerung, B1-Wortschatz, Aussprache und Intonation.
+
+════════════════════════════════════════════════════════════════════════
+SPRECHEN Teil 3
+════════════════════════════════════════════════════════════════════════
+
+Instrucción: Nach der Präsentation in Teil 2 geben Sie Feedback zu der Darstellung Ihres Partners. Stellen Sie anschließend zwei Fragen zu seinem/ihrem Vortrag. Beispielfragen:
+
+• Wie hat sich Ihre Erfahrung mit diesem Thema im Laufe der Zeit verändert?
+• Welche Rolle spielt diese Aktivität für die Gesellschaft in Ihrem Heimatland?
+• Würden Sie diesen Kurs auch in Deutschland besuchen? Warum (nicht)?
+
+Frage gen-q-sp-t3-9a72-q1 [feedback_diskussion]
+Nach der Präsentation in Teil 2 geben Sie Feedback zu der Darstellung Ihres Partners. Stellen Sie anschließend zwei Fragen zu seinem/ihrem Vortrag. Beispielfragen:
+
+• Wie hat sich Ihre Erfahrung mit diesem Thema im Laufe der Zeit verändert?
+• Welche Rolle spielt diese Aktivität für die Gesellschaft in Ihrem Heimatland?
+• Würden Sie diesen Kurs auch in Deutschland besuchen? Warum (nicht)?
+  → Antwort (Schlüssel): rubric
+  Erklärung: Bewertung: Konstruktives Feedback geben, auf Fragen des Prüfers eingehend antworten, grammatikalische Genauigkeit, Wortschatzreichtum.

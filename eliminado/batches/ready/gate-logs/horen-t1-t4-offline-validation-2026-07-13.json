@@ -1,0 +1,258 @@
+{
+  "generatedAt": "2026-07-13T22:13:08.975Z",
+  "note": "Offline validation on pool-verified parts; live 2-word Gemini probe blocked (prepay credits depleted).",
+  "results": [
+    {
+      "file": "horen-t1-gemini-001.json",
+      "teil": 1,
+      "passageCount": 5,
+      "questionCount": 10,
+      "targetWords": [
+        "bitte",
+        "danke"
+      ],
+      "used": [
+        "bitte",
+        "danke"
+      ],
+      "bothHit": true,
+      "passageDist": [
+        {
+          "index": 1,
+          "title": "Jobangebot",
+          "hits": [
+            "bitte"
+          ]
+        },
+        {
+          "index": 2,
+          "title": "Telefonat Terminverschiebung",
+          "hits": [
+            "bitte",
+            "danke"
+          ]
+        },
+        {
+          "index": 3,
+          "title": "Radio-Tipp Weiterbildung",
+          "hits": []
+        },
+        {
+          "index": 4,
+          "title": "Durchsage Supermarkt",
+          "hits": [
+            "bitte",
+            "danke"
+          ]
+        },
+        {
+          "index": 5,
+          "title": "Anrufbeantworter Projekt",
+          "hits": [
+            "bitte",
+            "danke"
+          ]
+        }
+      ],
+      "speakerHits": null
+    },
+    {
+      "file": "horen-t1-gemini-002.json",
+      "teil": 1,
+      "passageCount": 5,
+      "questionCount": 10,
+      "targetWords": [
+        "einen",
+        "guten"
+      ],
+      "used": [
+        "einen",
+        "guten"
+      ],
+      "bothHit": true,
+      "passageDist": [
+        {
+          "index": 1,
+          "title": "Radio-Tipp: Spaziergang im Stadtpark",
+          "hits": [
+            "einen",
+            "guten"
+          ]
+        },
+        {
+          "index": 2,
+          "title": "Telefonat: Yoga-Kurs",
+          "hits": [
+            "guten"
+          ]
+        },
+        {
+          "index": 3,
+          "title": "Durchsage: Stadtfest",
+          "hits": [
+            "einen"
+          ]
+        },
+        {
+          "index": 4,
+          "title": "Radio-Tipp: Kinoabend",
+          "hits": [
+            "einen"
+          ]
+        },
+        {
+          "index": 5,
+          "title": "Telefonat: Museumsbesuch",
+          "hits": [
+            "guten"
+          ]
+        }
+      ],
+      "speakerHits": null
+    },
+    {
+      "file": "horen-t1-gemini-003.json",
+      "teil": 1,
+      "passageCount": 5,
+      "questionCount": 10,
+      "targetWords": [
+        "bitte",
+        "praxis"
+      ],
+      "used": [
+        "bitte",
+        "praxis"
+      ],
+      "bothHit": true,
+      "passageDist": [
+        {
+          "index": 1,
+          "title": "Telefonansage Arztpraxis",
+          "hits": [
+            "bitte",
+            "praxis"
+          ]
+        },
+        {
+          "index": 2,
+          "title": "Radio-Tipp Gesunde Ernährung",
+          "hits": []
+        },
+        {
+          "index": 3,
+          "title": "Durchsage Fitnessstudio",
+          "hits": []
+        },
+        {
+          "index": 4,
+          "title": "Anrufbeantworter Apotheke",
+          "hits": [
+            "bitte"
+          ]
+        },
+        {
+          "index": 5,
+          "title": "Hinweis Wartezimmer Hygiene",
+          "hits": [
+            "bitte",
+            "praxis"
+          ]
+        }
+      ],
+      "speakerHits": null
+    },
+    {
+      "file": "horen-t4-gemini-003.json",
+      "teil": 4,
+      "passageCount": 1,
+      "questionCount": 8,
+      "targetWords": [
+        "moderator",
+        "jeder"
+      ],
+      "used": [
+        "moderator",
+        "jeder"
+      ],
+      "bothHit": true,
+      "passageDist": null,
+      "speakerHits": {
+        "Moderator": [
+          "moderator"
+        ],
+        "Lena": [
+          "jeder"
+        ],
+        "Max": [
+          "jeder"
+        ]
+      }
+    },
+    {
+      "file": "horen-t4-gemini-006.json",
+      "teil": 4,
+      "passageCount": 1,
+      "questionCount": 8,
+      "targetWords": [
+        "markus",
+        "nicht"
+      ],
+      "used": [
+        "markus",
+        "nicht"
+      ],
+      "bothHit": true,
+      "passageDist": null,
+      "speakerHits": {
+        "Moderator": [
+          "markus"
+        ],
+        "Mira": [
+          "nicht"
+        ],
+        "Markus": [
+          "markus",
+          "nicht"
+        ]
+      }
+    },
+    {
+      "file": "horen-t4-gemini-007.json",
+      "teil": 4,
+      "passageCount": 1,
+      "questionCount": 8,
+      "targetWords": [
+        "moderator",
+        "viele"
+      ],
+      "used": [
+        "moderator",
+        "viele"
+      ],
+      "bothHit": true,
+      "passageDist": null,
+      "speakerHits": {
+        "Moderator": [
+          "moderator",
+          "viele"
+        ],
+        "Mark": [
+          "viele"
+        ],
+        "Lisa": [
+          "viele"
+        ]
+      }
+    }
+  ],
+  "t1": {
+    "n": 3,
+    "bothHit": 3
+  },
+  "t4": {
+    "n": 3,
+    "bothHit": 3
+  },
+  "liveProbeBlocked": "Gemini 429 prepay credits depleted",
+  "verdict": true
+}

@@ -154,6 +154,17 @@ const ManualVocab = (() => {
     return conj?.lemma ? 'verb' : null;
   }
 
+  /** Lexicon gender hit (incl. inflected noun → lemma) ⇒ noun, not verb -en heuristic. */
+  function lexiconSuggestsNoun(word, subject) {
+    if (subject !== 'de' || typeof ArticleLexicon === 'undefined' || !ArticleLexicon.lookupGender) {
+      return false;
+    }
+    const core = String(word || '').trim();
+    if (!core) return false;
+    const g = ArticleLexicon.lookupGender(core, 'de');
+    return g === 'm' || g === 'f' || g === 'n' || g === 'p';
+  }
+
   function inferPos(fc, subject) {
     const sub = subject || fc?.sourceLang || '';
     const parsed = parseLeadingArticle(fc?.word, sub);
@@ -169,6 +180,7 @@ const ManualVocab = (() => {
         if (/ieren$/i.test(low)) return 'verb';
         if (/(ionen|ungen|heiten|keiten|schaften|tionen|eln)$/i.test(low)) return 'noun';
         if (/en$/i.test(low) && low.length > 3 && !/(ung|heit|keit|schaft|tion|ismus|ment|chen|lein|tum|nis|sal|mal|ion)$/i.test(low)) {
+          if (lexiconSuggestsNoun(parsed.word || raw, sub)) return 'noun';
           return 'verb';
         }
         return 'noun';
@@ -185,6 +197,7 @@ const ManualVocab = (() => {
         return 'noun';
       }
       if (/en$/.test(low) && low.length > 5 && !/(ung|heit|keit|schaft|tion|ismus|ment|ieren|lich|ig|isch)$/i.test(low)) {
+        if (lexiconSuggestsNoun(raw, sub)) return 'noun';
         return 'verb';
       }
     }
@@ -481,7 +494,10 @@ const ManualVocab = (() => {
   }
 
   /**
-   * Map learner words to canonical spellings before AI generation (safety net).
+   * Spelling-only safety net before pool/AI generation.
+   * Does NOT lemmatize — server canonicalizeVocabQuery (lemmatizer.js) owns lemmas.
+   * Fuzzy: max edit distance 1 only (was maxEditDistance(len) → 2 for len 5–9,
+   * which caused zumachen→Machen etc.).
    * @returns {Promise<{words:string[], corrections:{from:string,to:string}[]}>}
    */
   async function canonicalizeForGeneration(words, subject, level) {
@@ -490,6 +506,7 @@ const ManualVocab = (() => {
     const corrections = [];
     const excluded = [];
     const seen = new Set();
+    const FUZZY_MAX_DIST = 1;
     for (const raw of words || []) {
       const trimmed = String(raw || '').trim();
       if (!trimmed) continue;
@@ -510,11 +527,15 @@ const ManualVocab = (() => {
       } else if (exact) {
         canonical = exact.word;
       } else {
-        const sug = findSpellingSuggestion(core, index) || findSpellingSuggestion(trimmed, index);
+        // Evident typos only (1 char). No lemmatization / conjugation rewriting.
+        const sug =
+          findSpellingSuggestion(core, index, FUZZY_MAX_DIST) ||
+          findSpellingSuggestion(trimmed, index, FUZZY_MAX_DIST);
         if (sug) {
           canonical = sug.word;
         } else {
-          // Keep correctly spelled words even when not in the level library index.
+          // Unknown to index: keep surface as written (article stripped if present).
+          // No suffix strip / lemma path here.
           canonical = parsed.word || trimmed;
         }
       }
@@ -596,6 +617,44 @@ const ManualVocab = (() => {
     return dirty;
   }
 
+  /** Lexicon + heuristics missed — eligible for Gemini gender safety net (singular or plural). */
+  function needsAiGenderFallback(fc, subject) {
+    const sub = subject || fc?.sourceLang || 'de';
+    if (sub !== 'de') return false;
+    if (fc?.articleUserLocked || fc?.gender || fc?.article || fc?.plural) return false;
+    const pos = typeof normWordType === 'function' ? normWordType(fc?.type || fc?.pos) : (fc?.type || fc?.pos);
+    if (pos !== 'noun') return false;
+    if (typeof ArticleLexicon !== 'undefined' && ArticleLexicon.lookupGender) {
+      if (ArticleLexicon.lookupGender(fc.word, sub)) return false;
+    }
+    return true;
+  }
+
+  /** Sync enrich + optional async AI gender when lexicon misses (tap-to-save + manual). */
+  async function enrichGenderAiFallback(fc, subject) {
+    if (!fc) return fc;
+    const sub = subject || fc.sourceLang || 'de';
+    enrichFlashcard(fc, sub);
+    if (!needsAiGenderFallback(fc, sub)) return fc;
+    if (typeof fetchVocabGender !== 'function') return fc;
+    const likelyPlural =
+      typeof ArticleLexicon !== 'undefined' && ArticleLexicon.likelyPluralUnknownDe
+        ? ArticleLexicon.likelyPluralUnknownDe(fc.word, sub)
+        : false;
+    try {
+      const hit = await fetchVocabGender(fc.word, { likelyPlural });
+      if (hit?.found && hit.article && hit.gender) {
+        fc.article = hit.article;
+        fc.gender = hit.gender;
+        fc.genderSource = hit.source || 'gemini';
+        if (hit.plural || (likelyPlural && hit.article === 'die')) fc.plural = true;
+      }
+    } catch (_) {
+      /* keep lexicon/heuristic result or none */
+    }
+    return fc;
+  }
+
   return {
     validate,
     loadWordIndex,
@@ -606,6 +665,8 @@ const ManualVocab = (() => {
     inferPos,
     inferNounGender,
     enrichFlashcard,
+    enrichGenderAiFallback,
+    needsAiGenderFallback,
     enrichFlashcardFromBank,
     parseLeadingArticle,
     reclassifyStoredFlashcards,

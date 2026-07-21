@@ -207,14 +207,48 @@ function itemToQ(item,idx){
 function isLesenForumOpinionsPart(part){
   const slot=String(part?.blueprintSlot||part?.slotType||'').toLowerCase();
   if(slot.includes('forum')||slot.includes('opinion'))return true;
+  if(Number(part?.teil)!==4)return false;
+  const instr=String(part.instruction||'').toLowerCase();
+  if(/meinungen.*(?:20|21)|ja oder nein|yes or no|stimmt die person/i.test(instr))return true;
   const items=part?.items||[];
-  if(Number(part?.teil)===4&&items.length>=5){
+  if(items.length>=5){
     return items.some(it=>{
       const t=String(it.type||'').toLowerCase();
       return(t==='yn'||t==='ja_nein')&&(it.signText||it.text);
     });
   }
-  return false;
+  return(part.questions||[]).some(q=>{
+    const c=String(q.correct??q.correctAnswer??'').trim();
+    return(q.signText||q.text)&&/^(J|N|Ja|Nein|Yes|No)$/i.test(c);
+  });
+}
+function lesenForumDisplayNum(item,idx,part){
+  return scorableDisplayNum(item,idx,part);
+}
+/** Official display number for any scorable item (uses ExamRenumber metadata when present). */
+function scorableDisplayNum(item,idx,part){
+  const fromMeta=Number(item?.number??item?.nr??item?.nummer);
+  if(Number.isFinite(fromMeta)&&fromMeta>=1)return String(fromMeta);
+  const bareId=Number(item?.id);
+  if(Number.isFinite(bareId)&&bareId>=1&&bareId<=99)return String(bareId);
+  const start=part?._numberRange?.start;
+  if(Number.isFinite(start))return String(start+idx);
+  const teil=Number(part?.teil);
+  if(teil===2)return String(7+idx);
+  if(teil===3)return String(13+idx);
+  if(teil===4)return String(20+idx);
+  if(teil===5)return String(27+idx);
+  return String(idx+1);
+}
+function inferLesenT3HasNoMatch(part){
+  if(part._t3HasNoMatch)return true;
+  const pool=[...(part.items||[]),...(part.questions||[])];
+  return pool.some(it=>String(it?.correct??it?.correctAnswer??'').trim()==='0');
+}
+function lesenForumYnShouldHideQuestion(question){
+  const q=String(question||'').trim();
+  if(!q)return true;
+  return /stimmt die person|ja oder nein|dem thema zu|agree with the topic|does the person agree/i.test(q);
 }
 function lesenItemIsAnswerable(item,part){
   if(!item)return false;
@@ -244,17 +278,49 @@ function lesenItemToAnswerQ(item,part,ui,idx){
   }
   return q;
 }
+function normalizeLesenT3Part(part){
+  if(part._t3Normalized||part.ads||!part.items?.length)return;
+  const firstOpts=part.items[0]?.options;
+  if(!Array.isArray(firstOpts)||firstOpts.length<2||typeof firstOpts[0]!=='string')return;
+  if(!/^[A-Z]\)/i.test(firstOpts[0]))return;
+  const hasCorrect=part.items.some(it=>String(it.type||'').toLowerCase()==='matching'||(it.correct!=null&&typeof it.correct==='string'&&/^[A-Za-z0]/i.test(it.correct)));
+  if(!hasCorrect)return;
+  const ads=[];
+  let hasNoMatch=false;
+  firstOpts.forEach(o=>{
+    // "k) 0) Keine Zuordnung" or "0) ..." → no-match pill, not an ad
+    if(/^[kK]\)\s*0\)/i.test(String(o))||/^0\)/i.test(String(o))){hasNoMatch=true;return;}
+    const cleaned=String(o).replace(/\s*flojos>\.?\s*$/,'');
+    const m=cleaned.match(/^([A-Za-z])\)\s*(.+)/);
+    if(m&&m[1].toLowerCase()!=='k')ads.push({key:m[1].toUpperCase(),title:m[2].trim(),text:''});
+  });
+  if(!hasNoMatch)hasNoMatch=part.items.some(it=>String(it.correct||'')===('0'));
+  if(ads.length<2)return;
+  part.ads=ads;
+  if(hasNoMatch)part._t3HasNoMatch=true;
+  part._t3Normalized=true;
+}
 function isLesenAdsMatchingRender(part){
   if(isLesenForumOpinionsPart(part))return false;
-  return!!(part?.ads?.length>=2&&(part.items||[]).some(it=>(it.signText||it.text||it.question)&&(it.correct!=null||String(it.type||'').toLowerCase()==='matching')));
+  normalizeLesenT3Part(part);
+  if(!(part?.ads?.length>=2))return false;
+  // Items format (pool): items array with matching situations
+  if((part.items||[]).some(it=>(it.signText||it.text||it.question)&&(it.correct!=null||String(it.type||'').toLowerCase()==='matching')))return true;
+  // Questions format (library/published): separate questions array with matching type or letter answers
+  if((part.questions||[]).some(q=>{
+    const t=String(q.type||'').toLowerCase();
+    if(['matching','match','abcd'].includes(t)&&(q.question||q.text))return true;
+    const c=String(q.correct??q.correctAnswer??'').trim();
+    return(q.question||q.text||q.signText)&&/^[A-J0]$/i.test(c);
+  }))return true;
+  return false;
 }
 function renderLesenAdsBlock(part,pi,isPrac,ui){
-  const adLbl=ui.option||'Option';
-  return `<div class="off-ads">${part.ads.map((a,i)=>{
+  const label=ui.lang==='de'?'Anzeigen':'Advertisements';
+  return `<div class="pt-ads-block"><div class="pt-ads-header">${esc(label)}</div>${part.ads.map((a,i)=>{
     const k=String(a.key||String.fromCharCode(65+i)).toUpperCase();
-    const title=a.title?`: ${esc(a.title)}`:'';
-    const body=[a.title,a.text].filter(Boolean).join(' — ')||a.text||a.title||'';
-    return `<div class="off-ad"><b>${adLbl} ${k}${title}</b>${wrapW(body,'lesen_'+pi+'_ad_'+k,isPrac)}</div>`;
+    const body=a.title&&a.text?`${esc(a.title)} — ${wrapW(a.text,'lesen_'+pi+'_ad_'+k,isPrac)}`:wrapW(a.title||a.text||'','lesen_'+pi+'_ad_'+k,isPrac);
+    return `<div class="pt-ad-item"><span class="pt-ad-key">${k})</span><span class="pt-ad-body">${body}</span></div>`;
   }).join('')}</div>`;
 }
 function renderGoetheLesenPart(part,pi,isPrac,ui){
@@ -265,39 +331,62 @@ function renderGoetheLesenPart(part,pi,isPrac,ui){
   }
   const modLabel=ui.reading;
   const teilLabel=ui.teil;
-  let h=`<section class="module-wrap"><div class="off-teil">${modLabel} — ${teilLabel} ${part.teil}${part.arbeitszeit?' · '+part.arbeitszeit:''}</div><div class="off-instr">${esc(part.instruction)}</div>`;
+  let h=`<section class="module-wrap"><div class="module-tag tag-lesen">${modLabel} — ${teilLabel} ${part.teil}${part.arbeitszeit?' · '+part.arbeitszeit:''}</div><div class="off-instr">${esc(part.instruction)}</div>`;
   const mod='lesen_'+pi;
   const adsMatching=isLesenAdsMatchingRender(part);
   if(adsMatching){
-    h+=renderLesenAdsBlock(part,pi,isPrac,ui);
+    const sitHdr=ui.lang==='de'?'Situationen':'Situations';
+    h+=`<div class="pt-t3-layout"><div class="pt-t3-main">`;
     const ex=part.example||part.solvedExample;
     if(ex&&(ex.situation||ex.question||ex.text)){
       const exLbl=ex.label||(ui.lang==='de'?'Beispiel':'Example');
       h+=`<div class="off-sign off-sign-example"><div class="off-sign-label">${esc(exLbl)} ${ex.number!=null?esc(String(ex.number)):''}</div>${wrapW(ex.situation||ex.question||ex.text,'lesen_'+pi+'_ex',isPrac)}<div class="off-example-ans" style="margin-top:8px;font-size:13px;color:var(--text-muted)">${ui.lang==='de'?'Lösung:':'Answer:'} <b>0</b></div></div>`;
     }
-    const matchQ=ui.lang==='de'?'Welche Anzeige passt?':'Which ad fits?';
-    part.items.forEach((item,idx)=>{
-      const num=String(item.id||'');
-      if(item.signText||item.text){
-        h+=`<div class="off-sign"><div class="off-sign-label">${esc(num)}</div>${wrapW(item.signText||item.text,'lesen_'+pi+'_sit_'+num,isPrac)}</div>`;
-      }
-      const q=lesenItemToAnswerQ(item,part,ui,idx);
-      if(!q.question||/welche anzeige|which ad|qué anuncio|passende anzeige|text \d/i.test(String(q.question)))q.question=matchQ;
-      h+=renderQ(q,num,mod,ui.trueL,ui.falseL,ui.trueK,true);
+    h+=`<div class="pt-situations-header">${esc(sitHdr)}</div>`;
+    const adLetters=part.ads.map((a,i)=>String(a.key||String.fromCharCode(65+i)).toUpperCase());
+    if(inferLesenT3HasNoMatch(part)&&!adLetters.includes('0'))adLetters.push('0');
+    const situations=part.items?.length
+      ?part.items
+      :(part.questions||[]).filter(q=>String(q.type||'').toLowerCase()==='matching'||(q.question||q.text));
+    situations.forEach((item,idx)=>{
+      const num=scorableDisplayNum(item,idx,part);
+      const situation=item.signText||item.text||item.question||'';
+      const ak=`${mod}_${item.id||num}`;
+      const saved=S.answers?.[ak]||'';
+      h+=`<div class="pt-match-question" data-ak="${esc(ak)}">`;
+      if(situation){h+=`<div class="pt-match-situation"><span class="pt-match-num">${esc(num)}.</span> ${wrapW(situation,'lesen_'+pi+'_sit_'+num,isPrac)}</div>`;}
+      h+=`<div class="pt-match-pills">`;
+      adLetters.forEach(letter=>{
+        const sel=saved===letter;
+        h+=`<button type="button" class="pt-letter-pill${sel?' selected':''}" onclick='ptSetMatch(${jsLit(ak)},${jsLit(letter)},this)'>${letter}</button>`;
+      });
+      h+=`</div></div>`;
     });
+    h+=`</div><aside class="pt-t3-ads" aria-label="${esc(ui.lang==='de'?'Anzeigen':'Advertisements')}">`;
+    h+=renderLesenAdsBlock(part,pi,isPrac,ui);
+    h+=`</aside></div>`;
     return h+'</section><hr class="section-div">';
   }
   if(isLesenForumOpinionsPart(part)){
     if(part.textTitle)h+=`<div class="text-display"><h3>${esc(part.textTitle)}</h3></div>`;
-    part.items.forEach((item,idx)=>{
-      const num=String(item.id||'');
+    const forumItems=part.items?.length
+      ?part.items
+      :(part.questions||[]).filter(q=>q&&(q.signText||q.text)).map((q,i)=>({
+        id:String(20+i),
+        signText:q.signText||q.text||'',
+        question:q.question||'',
+        type:'ja_nein',
+        correct:q.correct??q.correctAnswer,
+      }));
+    forumItems.forEach((item,idx)=>{
+      const num=lesenForumDisplayNum(item,idx,part);
       if(item.signText||item.text){
         h+=`<div class="off-sign"><div class="off-sign-label">${esc(num)}</div>${wrapW(item.signText||item.text,'lesen_'+pi+'_sit_'+num,isPrac)}</div>`;
       }
       if(lesenItemIsAnswerable(item,part)){
         const q=lesenItemToAnswerQ(item,part,ui,idx);
-        if(q.type==='yn'&&(item.signText||item.text))q.question='';
-        h+=renderQ(q,num||idx+1,mod,ui.trueL,ui.falseL,ui.trueK,true);
+        if(q.type==='yn'&&(item.signText||item.text)&&lesenForumYnShouldHideQuestion(q.question))q.question='';
+        h+=renderQ(q,num,mod,ui.trueL,ui.falseL,ui.trueK,true);
       }
     });
     return h+'</section><hr class="section-div">';
@@ -317,9 +406,9 @@ function renderGoetheLesenPart(part,pi,isPrac,ui){
       if(lesenItemIsAnswerable(item,part)){
         const q=lesenItemToAnswerQ(item,part,ui,idx);
         if(q.type==='yn'&&item.signText&&!item.question)q.question='';
-        h+=renderQ(q,item.id??idx+1,mod,ui.trueL,ui.falseL,ui.trueK,true);
+        h+=renderQ(q,scorableDisplayNum(item,idx,part),mod,ui.trueL,ui.falseL,ui.trueK,true);
       }else if(item.question&&(item.options?.length||item.correct)){
-        h+=renderQ(itemToQ(item,idx),idx+1,mod,ui.trueL,ui.falseL,ui.trueK,true);
+        h+=renderQ(itemToQ(item,idx),scorableDisplayNum(item,idx,part),mod,ui.trueL,ui.falseL,ui.trueK,true);
       }
     });
   }
@@ -353,7 +442,7 @@ function renderGoetheLesenPart(part,pi,isPrac,ui){
   if(part.opinions){
     h+=`<div class="off-opinions">${part.opinions.map((o,i)=>`<div class="off-ad"><b>${esc(o.name)}:</b> ${wrapW(o.text,'lesen_'+pi+'_op_'+i,isPrac)}</div>`).join('')}</div>`;
   }
-  if(part.questions)h+=part.questions.map((q,i)=>q.type==='gap_fill'?renderGapFillQ(q,i+1,mod,part,ui.lang==='de'):renderQ(q,i+1,mod,ui.trueL,ui.falseL,ui.trueK,true)).join('');
+  if(part.questions)h+=part.questions.map((q,i)=>q.type==='gap_fill'?renderGapFillQ(q,scorableDisplayNum(q,i,part),mod,part,ui.lang==='de'):renderQ(q,scorableDisplayNum(q,i,part),mod,ui.trueL,ui.falseL,ui.trueK,true)).join('');
   return h+'</section><hr class="section-div">';
 }
 function renderGoetheHorenPart(part,pi,isPrac,ui){
@@ -367,7 +456,7 @@ function renderGoetheHorenPart(part,pi,isPrac,ui){
   const mod='horen_'+pi;
   const plays=part.plays||2;
   const lang=ui.speechLang;
-  let h=`<section class="module-wrap"><div class="off-teil">${modLabel} — ${teilLabel} ${part.teil}</div><div class="off-instr">${esc(part.instruction)}</div>`;
+  let h=`<section class="module-wrap"><div class="module-tag tag-horen">${modLabel} — ${teilLabel} ${part.teil}</div><div class="off-instr">${esc(part.instruction)}</div>`;
   if(part.context)h+=`<p class="module-desc">${esc(part.context)}</p>`;
   if(part.speakers)h+=`<p class="module-desc" style="font-size:11px"><b>${part.speakers.map((s)=>esc(s)).join(' · ')}</b></p>`;
   const renderListen=(id,label)=>{
@@ -381,7 +470,7 @@ function renderGoetheHorenPart(part,pi,isPrac,ui){
     if(!text)return'';
     stashPassageMeta(blockId,text,translations);
     const summary=ui.showTranscript||(ui.lang==='de'?'Transkript anzeigen':'Show transcript');
-    return `<details class="horen-transcript-details" style="margin-top:12px"><summary style="font-size:12px;color:var(--text-muted);cursor:pointer;font-weight:600;padding:6px 0">${esc(summary)}</summary><div class="text-display" style="margin-top:8px"><div class="audio-chip">${ui.transcript}</div><div class="readable-text">${wrapW(text,sec,isPrac)}</div>${passageToolbarHtml(blockId,isPrac,ui)}</div></details>`;
+    return `<details class="horen-transcript-details"><summary>${esc(summary)}<span class="tr-arrow">▼</span></summary><div class="transcript-body">${wrapW(text,sec,isPrac)}${passageToolbarHtml(blockId,isPrac,ui)}</div></details>`;
   };
   if(part.segments){
     part.segments.forEach((seg,si)=>{
@@ -392,7 +481,7 @@ function renderGoetheHorenPart(part,pi,isPrac,ui){
         h+=`<p class="module-desc" style="font-size:12px;margin:8px 0 12px"><b>${spLbl}:</b> ${esc(seg.speakerLegend.join(' · '))}</p>`;
       }
       h+=renderTranscript(seg.transcript,'horen_'+pi+'_'+si,seg.translations,'horen_'+pi+'_'+si);
-      segToQ(seg).forEach((q,i)=>{h+=renderQ(q,i+1,mod+'_'+si,ui.trueL,ui.falseL,ui.trueK,true);});
+      segToQ(seg).forEach((q,i)=>{h+=renderQ(q,scorableDisplayNum(q,i,part),mod+'_'+si,ui.trueL,ui.falseL,ui.trueK,true);});
     });
   }else if(part.noteFields){
     h+=renderListen(String(pi),part.context||ui.recording);
@@ -405,7 +494,7 @@ function renderGoetheHorenPart(part,pi,isPrac,ui){
   }else{
     h+=renderListen(String(pi),part.context||ui.recording);
     h+=renderTranscript(part.transcript,'horen_'+pi,part.translations,'horen_'+pi);
-    if(part.questions)h+=part.questions.map((q,i)=>renderQ(q,i+1,mod,ui.trueL,ui.falseL,ui.trueK,true)).join('');
+    if(part.questions)h+=part.questions.map((q,i)=>renderQ(q,scorableDisplayNum(q,i,part),mod,ui.trueL,ui.falseL,ui.trueK,true)).join('');
   }
   return h+'</section><hr class="section-div">';
 }
@@ -419,14 +508,15 @@ function renderGoetheSchreibenPart(part,ui){
   }
   const modLabel=ui.writing;
   const aufLabel=ui.teil;
-  return `<section class="module-wrap"><div class="off-teil">${modLabel} — ${aufLabel} ${part.aufgabe}${part.arbeitszeit?' · '+part.arbeitszeit:''}</div>${body}</section><hr class="section-div">`;
+  return `<section class="module-wrap"><div class="module-tag tag-schreiben">${modLabel} — ${aufLabel} ${part.aufgabe}${part.arbeitszeit?' · '+part.arbeitszeit:''}</div>${body}</section><hr class="section-div">`;
 }
 function renderGoetheSprechenPart(part,ui){
+  if(typeof SpeakingFlow!=='undefined')return SpeakingFlow.renderGoetheSprechenPart(part,ui);
   const pts=part.points||part.prompts||[];
   const slides=part.slides||[];
   const modLabel=ui.speaking;
   const teilLabel=ui.teil;
-  let h=`<section class="module-wrap"><div class="off-teil">${modLabel} — ${teilLabel} ${part.teil}: ${part.title}${part.dauer?' · '+part.dauer:''}</div><div class="off-instr">${esc(part.situation)}</div>`;
+  let h=`<section class="module-wrap"><div class="module-tag tag-sprechen">${modLabel} — ${teilLabel} ${part.teil}: ${part.title}${part.dauer?' · '+part.dauer:''}</div><div class="off-instr">${esc(part.situation)}</div>`;
   if(part.cardText)h+=`<div class="off-card-scene"><b>${ui.card}</b> ${esc(part.cardText)}</div>`;
   if(part.photoDescriptions?.length){
     h+=`<div class="off-photos">${part.photoDescriptions.map(p=>`<div class="off-ad">${esc(p)}</div>`).join('')}</div>`;
@@ -567,9 +657,15 @@ async function playHorenPart(id){
 }
 function updWGoethe(){updProg();const d=S.examData;if(!d?.schreibenParts)return;d.schreibenParts.forEach(p=>{const el=document.getElementById('meter_'+p.fieldId);if(!el)return;if(p.formFields){const filled=p.formFields.filter((_,i)=>document.getElementById(p.fieldId+'_'+i)?.value.trim()).length;el.textContent=filled+' / '+p.formFields.length+' Felder';el.className='word-meter'+(filled>=p.formFields.length?' ok':'');return;}const ta=document.getElementById(p.fieldId);if(!ta)return;const w=ta.value.trim().split(/\s+/).filter(x=>x).length,min=p.minWords||0;el.textContent=w+' Wörter'+(min?' — min '+min:'');el.className='word-meter'+(min&&w>=min?' ok':'');});}
 function forEachGoetheLesenItems(p,pi,fn){
+  normalizeLesenT3Part(p);
   const mod='lesen_'+pi;
   if(isLesenAdsMatchingRender(p)||isLesenForumOpinionsPart(p)){
-    p.items?.forEach((item,idx)=>{if(lesenItemIsAnswerable(item,p))fn(mod,lesenItemToAnswerQ(item,p,null,idx));});
+    if(p.items?.length){
+      p.items.forEach((item,idx)=>{if(lesenItemIsAnswerable(item,p))fn(mod,lesenItemToAnswerQ(item,p,null,idx));});
+    }else{
+      // Library format: questions array with matching type
+      (p.questions||[]).filter(q=>String(q.type||'').toLowerCase()==='matching').forEach(q=>fn(mod,q));
+    }
     return;
   }
   const signBlock=p.items?.length&&p.items.every(it=>it.signText&&!it.question&&!lesenItemIsAnswerable(it,p));
@@ -589,11 +685,16 @@ function forEachGoetheQ(d,fn){
   });
   d.horenParts?.forEach((p,pi)=>{
     const meta={module:'horen',teil:p.teil,part:p};
-    if(p.questions)p.questions.forEach(q=>fn('horen_'+pi,q,meta));
-    p.segments?.forEach((s,si)=>{
-      const segMeta={...meta,segment:si};
-      segToQ(s).forEach(q=>fn('horen_'+pi+'_'+si,q,segMeta));
-    });
+    if(p.segments?.length){
+      // Eje-2 Fase B: segments es autoridad — iterar solo segments (elimina doble visita V-21)
+      p.segments.forEach((s,si)=>{
+        const segMeta={...meta,segment:si};
+        segToQ(s).forEach(q=>fn('horen_'+pi+'_'+si,q,segMeta));
+      });
+    }else{
+      // Sin segments: questions[] es la fuente (H4 plano, fallback)
+      (p.questions||[]).forEach(q=>fn('horen_'+pi,q,meta));
+    }
   });
 }
 function forEachGoetheNotes(d,fn){
@@ -628,20 +729,23 @@ function renderExam(){
     if(!S.activeSession)initExamSession(S.mode);
     autosaveSession();
   }
-  const scr=document.getElementById('examScreen');scr.innerHTML='';scr.style.display='block';
+  const isDE=d.lang==='de',isPrac=isPracticeMode(),isQ=!!S.quickMod,isOff=!!d.demo;
+  const isOffMode=isOfficialMode();
+  const scr=document.getElementById('examScreen');
+  scr.innerHTML='';
+  scr.style.display='block';
+  scr.className=isOffMode?'mode-official':isPrac?'mode-practice':'';
   if(d.vocabPersonal&&d.vocabWords?.length&&typeof TargetUsage!=='undefined'&&!d.targetUsageVerified?.length){
     TargetUsage.applyVerified(d,d.vocabWords);
     S.examData=d;
   }
-  const isDE=d.lang==='de',isPrac=isPracticeMode(),isQ=!!S.quickMod,isOff=!!d.demo;
-  const isOffMode=isOfficialMode();
   const rfT=isDE?'Richtig':'True',rfF=isDE?'Falsch':'False',trK=isDE?'R':'T';
   const timerH=(isOffMode&&!isQ)?`<div class="timer-wrap"><span class="timer-val" id="timerVal">--:--</span></div>`:'';
-  const practH=isPrac?`<div style="background:var(--blue-bg);border:.5px solid rgba(93,184,232,.2);border-radius:8px;padding:9px 13px;font-size:12px;color:var(--blue);margin-bottom:14px"><b>Practice Mode:</b> Click any word to translate and save to your deck. Saved words are highlighted in <span style="color:var(--green);font-weight:700">green</span>.</div>`:'';
+  const practH=isPrac?`<div class="exam-prac-banner exam-mode-banner"><b>${isDE?'Übungsmodus':'Practice mode'}:</b> ${isDE?'Tippe auf Wörter für Übersetzung und Speichern. Gespeicherte Wörter sind farbcodiert —':'Tap words to translate and save. Saved words are color-coded —'} <span class="vocab-legend vocab-pos-noun">${isDE?'Nomen':'noun'}</span> <span class="vocab-legend vocab-pos-verb">${isDE?'Verb':'verb'}</span> <span class="vocab-legend vocab-pos-adjective">${isDE?'Adj':'adj'}</span> <span class="vocab-legend vocab-pos-adverb">${isDE?'Adv':'adv'}</span>.</div>`:'';
   const partialGenH=d._partialGen?`<div class="personal-gen-banner"><b>Partial generation</b> — some Teile were skipped.${d._failedTeile?.length?` Missing: ${esc(d._failedTeile.slice(0,4).join(', '))}${d._failedTeile.length>4?'…':''}.`:''} <button type="button" class="btn-sm accent" onclick="retryFailedPersonalParts()">Retry failed parts</button></div>`:'';
-  const officialH=isOffMode?`<div class="mode-markmsg" style="margin-bottom:14px">Official mode: tap words you struggle with to mark them. Translations appear on the results screen — not during the exam.</div>`:'';
+  const officialH=isOffMode?`<div class="exam-official-banner exam-mode-banner"><b>${isDE?'Official-Modus':'Official mode'}:</b> ${isDE?'Tippe auf ein Wort, um es zu markieren (nochmal tippen = entfernen). Keine Übersetzungen während des Exams — markierte Wörter siehst du danach in den Ergebnissen.':'Tap a word to mark it (tap again to unmark). No translations during the exam — review marked words on the results screen.'}</div>`:'';
   const demoH=d.guidedDemo?`<div class="demo-banner"><b>5-minute product demo</b> — Experience every module at reduced volume. Click words you miss to see vocabulary detection.</div>`:'';
-  const langH=isPrac&&!isQ?`<div style="display:flex;align-items:center;gap:7px;margin-bottom:14px;flex-wrap:wrap"><span style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.08em">${isDE?'Übersetzen:':'Translate to:'}</span>${LANGS.map(l=>`<button class="vt-lb ex-lb${S.vocabLang===l.code?' active':''}" onclick="setVL('${l.code}',this)">${l.l}</button>`).join('')}<span style="font-size:11px;color:var(--text-muted);margin-left:6px">· Click any word to translate &amp; save to deck</span></div>`:'';
+  const langH=isPrac&&!isQ?`<div class="exam-lang-toolbar"><span class="exam-lang-label">${isDE?'Übersetzen:':'Translate to:'}</span>${LANGS.map(l=>`<button class="vt-lb ex-lb${S.vocabLang===l.code?' active':''}" onclick="setVL('${l.code}',this)">${l.l}</button>`).join('')}</div>`:'';
   let secs='';
   if(d.goetheFormat&&(!isQ)){
     secs=renderGoetheExam(d,isPrac,isQ);
@@ -683,9 +787,11 @@ function renderExam(){
     secs+=`<section class="module-wrap"><div class="module-tag tag-sprechen">${esc(teil)}</div><h2 class="module-title">${isDE?'Sprechen':'Speaking'}</h2><p class="module-desc">${esc(d.sprechen.situation||'')}</p><div class="speak-points">${(d.sprechen.points||[]).map(p=>`<div class="speak-point">${esc(p)}</div>`).join('')}</div><div class="starter-msg"><div class="starter-av">${isDE?'P':'E'}</div><div><div class="starter-who">${esc(d.sprechen.roleB||'')}</div><div class="starter-line">${esc(d.sprechen.starterLine||'')}</div></div></div><button class="btn-sm blue" onclick="speak(${jsLit(d.sprechen.starterLine||'')},${jsLit(lang)})" style="margin-bottom:10px">${isDE?'Anfangssatz anhören':'Hear starter line'}</button><div style="font-size:12px;color:var(--text-muted);margin-bottom:7px">${speakFmt}</div>${micHtml}</section>`;
   }
   const isDemo=!!d.demo||!!S.isDemo;
-  const isPool=!!(d.poolSource||S.examSource==='pool'||S.examSource==='library');
+  const fromQuestionLibrary=S.examSource==='question-library';
+  const fromPool=!!(d.poolSource||S.examSource==='pool'||S.examSource==='part'||S.examSource==='library');
+  const isPool=fromQuestionLibrary||fromPool;
   const isPersonal=!!d.vocabPersonal;
-  const bc=isDemo?'demo':isPool?'pool':isPersonal?'vocab':isQ?'quick':isPrac?'practice':'official',bl=isDemo?'Demo Exam':isPool?'From library':isPersonal?'Personal Mock':isQ?('Quick: '+S.quickMod):isPrac?'Practice':'Official Exam';
+  const bc=isDemo?'demo':isPool?'pool':isPersonal?'vocab':isQ?'quick':isPrac?'practice':'official',bl=isDemo?'Demo Exam':fromQuestionLibrary?'From library':fromPool?'From pool':isPersonal?'Personal Mock':isQ?('Quick: '+S.quickMod):isPrac?'Practice':'Official Exam';
   const titleTxt=esc(isOff?(d.official?.certificate||d.topic):(isPersonal?('Personal · '+d.topic):(isDE?'Deutsch':'English')+' — '+d.topic));
   const personalVerified=(d._coverageOverall?.found??d.targetUsageVerified?.length??0);
   const personalTotal=(d._coverageOverall?.total??d.vocabWords?.length)||0;
@@ -701,7 +807,8 @@ function renderExam(){
   if(S._resumeFieldValues){restoreExamFieldValues(S._resumeFieldValues);S._resumeFieldValues=null;}
   restoreExamAnswers();
   updProg();
-  if(typeof initSpeakingMicsForExam==='function')initSpeakingMicsForExam(d,S.subject);
+  if(typeof SpeakingFlow!=='undefined')SpeakingFlow.initForExam(d,S.subject);
+  else if(typeof initSpeakingMicsForExam==='function')initSpeakingMicsForExam(d,S.subject);
   if(d.goetheFormat)updWGoethe();
   if(isOffMode&&!isQ){
     const resumeEnds=S._resumeTimerEndsAt;
@@ -881,8 +988,8 @@ function renderGapFillQ(q,num,mod,part,isDE){
 }
 function renderQ(q,num,mod,rfT,rfF,trK,isOff){
   const ak=`${mod}_${q.id}`;
-  const head=isOff?esc(q.question):`${num}. ${esc(q.question)}`;
-  const sub=isOff?'':`<div class="q-text">${esc(q.question)}</div>`;
+  const head=`${num}. ${esc(q.question)}`;
+  const sub='';
   if(q.type==='yn'||q.type==='ja_nein'){
     return `<div class="question-block"><div class="q-number">${head}</div>${sub}<div class="rf-row"><button type="button" class="rf-btn" onclick='setRF(${jsLit(ak)},${jsLit('J')},this,${jsLit('sel-r')})'>Ja</button><button type="button" class="rf-btn" onclick='setRF(${jsLit(ak)},${jsLit('N')},this,${jsLit('sel-f')})'>Nein</button></div></div>`;
   }
@@ -918,6 +1025,7 @@ function renderQ(q,num,mod,rfT,rfF,trK,isOff){
   if(!opts.length)return `<div class="question-block"><div class="q-number">${head}</div>${sub}<div style="color:var(--text-muted);font-size:12px">${isOff?'Keine Optionen':'No options'}</div></div>`;
   return `<div class="question-block"><div class="q-number">${head}</div>${sub}<div class="options">${opts.map(opt=>{const val=optKey(opt);const label=optLabel(opt);return `<label class="opt"><input type="radio" name="${esc(ak)}" value="${esc(val)}" onchange='S.answers[${jsLit(ak)}]=this.value;this.closest(".options").querySelectorAll(".opt").forEach(o=>o.classList.remove("selected"));this.closest(".opt").classList.add("selected");updProg()'><span>${esc(label)}</span></label>`;}).join('')}</div></div>`;
 }
+function ptSetMatch(k,v,btn){S.answers[k]=v;btn.closest('.pt-match-pills').querySelectorAll('.pt-letter-pill').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected');updProg();}
 function setRF(k,v,btn,cls){S.answers[k]=v;btn.parentElement.querySelectorAll('.rf-btn').forEach(b=>b.classList.remove('sel-r','sel-f','sel-n'));btn.classList.add(cls);updProg();}
 function setRFN(k,v,btn){S.answers[k]=v;btn.parentElement.querySelectorAll('.rf-btn').forEach(b=>b.classList.remove('sel-r','sel-f','sel-n'));if(v==='R')btn.classList.add('sel-r');else if(v==='F')btn.classList.add('sel-f');else btn.classList.add('sel-n');updProg();}
 function updProg(){
@@ -951,6 +1059,7 @@ function updW(){
   updProg();
 }
 
+window.ptSetMatch = ptSetMatch;
 window.flushExamAutosave = flushExamAutosave;
 window.scheduleExamAutosave = scheduleExamAutosave;
 window.writeGuestExamProgress = writeGuestExamProgress;

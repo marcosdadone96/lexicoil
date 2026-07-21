@@ -198,6 +198,9 @@ exports.handler = async function handler(event) {
       memberSince: user.createdAt || null,
       quota: { used, max, month },
       freeCombo: freeComboForResponse(user),
+      isAdmin: sb.isConfigured()
+        ? !!(await sb.isAdminByEmail(email)) || !!(await sb.isAdmin(sbUser.id))
+        : false,
     },
   }, session.token, event);
   } catch (err) {

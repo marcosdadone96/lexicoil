@@ -80,12 +80,6 @@ function fcId(fc){
 }
 function ensureFcIds(){
   let genderDirty=false;
-  let levelDirty=false;
-  if(typeof migrateFlashcardSourceLevels==='function'){
-    const mig=migrateFlashcardSourceLevels();
-    if(mig.migrated>0)levelDirty=true;
-    if(mig.undetermined>0&&typeof lcDebug!=='undefined')lcDebug.warn('[fc] flashcards without determinable sourceLevel:',mig.undetermined);
-  }
   (S.flashcards||[]).forEach(fc=>{
     fcId(fc);
     if(typeof normalizeFlashcard==='function')normalizeFlashcard(fc);
@@ -96,7 +90,7 @@ function ensureFcIds(){
     const after=(fc.gender||'')+'|'+(fc.article||'')+'|'+(fc.type||fc.pos||'');
     if(before!==after)genderDirty=true;
   });
-  if((genderDirty||levelDirty)&&typeof saveFC==='function')saveFC();
+  if((genderDirty)&&typeof saveFC==='function')saveFC();
 }
 function loadLS(){
   try{const u=localStorage.getItem('lc_user');if(u)S.user=JSON.parse(u);}catch(e){}
@@ -145,6 +139,7 @@ function loadLS(){
   if(S.mode==='real')S.mode='official';
   if(typeof ExamProfile!=='undefined')ExamProfile.migrateFromGoal();
   GoalStore.afterLoad();
+  if(typeof fixFlashcardLevels==='function')fixFlashcardLevels();
   ensureFcIds();
   if(typeof ArticleLexicon!=='undefined'&&ArticleLexicon.preload){
     void ArticleLexicon.preload('de').then(()=>{

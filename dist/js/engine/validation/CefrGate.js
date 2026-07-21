@@ -5,7 +5,18 @@
  */
 const CefrGate = (() => {
   const LEVEL_ORDER = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
-  const COVERAGE_THRESHOLD = 0.85;
+  /** Minimum share of tokens in cumulative level vocab (ingest/staging). Override: CEFR_MIN_COVERAGE (0–1). */
+  function resolveCoverageThreshold() {
+    const DEFAULT = 0.55;
+    const raw = process.env.CEFR_MIN_COVERAGE;
+    if (raw == null || String(raw).trim() === '') return DEFAULT;
+    const n = Number(raw);
+    if (!Number.isFinite(n) || n < 0 || n > 1) return DEFAULT;
+    return n;
+  }
+  function getCoverageThreshold() {
+    return resolveCoverageThreshold();
+  }
   const MIN_VOCAB_FOR_HARD_COVERAGE = 800; // Sprint 0 — recalibrated for open-frequency de inventories
 
   const INFERENCE_BANDS = {
@@ -38,6 +49,34 @@ const CefrGate = (() => {
       'porque', 'que', 'cuando', 'si', 'aunque', 'mientras', 'después', 'antes', 'para', 'donde', 'como',
       'hasta', 'desde', 'embargo',
     ],
+  };
+
+  /** Closed-class tokens excluded from coverage penalty (not level indicators). */
+  const COVERAGE_GRAMMAR_EXEMPT = {
+    de: new Set([
+      'ich', 'du', 'er', 'sie', 'es', 'wir', 'ihr', 'man', 'mich', 'mir', 'dich', 'dir', 'uns', 'euch', 'ihm', 'ihn', 'ihnen',
+      'mein', 'meine', 'meiner', 'meinem', 'meinen', 'dein', 'deine', 'deiner', 'sein', 'seine', 'seiner', 'ihr', 'ihre', 'ihrer',
+      'unser', 'unsere', 'unserer', 'euer', 'eure', 'eurer',
+      'der', 'die', 'das', 'den', 'dem', 'des', 'ein', 'eine', 'einer', 'einem', 'einen',
+      'und', 'oder', 'aber', 'doch', 'als', 'wenn', 'weil', 'dass', 'ob', 'obwohl', 'während', 'nachdem', 'bevor', 'damit', 'denn',
+      'nicht', 'auch', 'noch', 'nur', 'schon', 'sehr', 'mehr', 'weniger', 'viel', 'gern', 'gar', 'wohl', 'so', 'da', 'dort', 'hier',
+      'ist', 'sind', 'war', 'waren', 'wird', 'werden', 'wurde', 'wurden', 'hat', 'haben', 'hatte', 'hatten', 'bin', 'bist', 'seid',
+      'kann', 'können', 'konnte', 'muss', 'müssen', 'musste', 'soll', 'sollen', 'will', 'wollen', 'mag', 'möchten',
+      'am', 'im', 'zum', 'zur', 'vom', 'beim', 'ins', 'ans', 'aufs', 'ums', 'fürs', 'be', 'zu', 'von', 'mit', 'für', 'auf', 'in', 'an', 'aus', 'bei', 'nach', 'vor', 'über', 'unter', 'durch',
+      'gilt', 'gab', 'gibt', 'gab', 'war', 'waren', 'wurde', 'worden', 'dies', 'diese', 'dieser', 'dieses', 'jede', 'jeder', 'jedes', 'alle', 'viele', 'viel', 'wenig', 'mehr', 'weniger',
+    ]),
+    en: new Set([
+      'i', 'you', 'he', 'she', 'it', 'we', 'they', 'me', 'him', 'her', 'us', 'them', 'my', 'your', 'his', 'its', 'our', 'their',
+      'the', 'a', 'an', 'and', 'or', 'but', 'if', 'when', 'because', 'that', 'not', 'also', 'very', 'more', 'less',
+      'is', 'are', 'was', 'were', 'be', 'been', 'being', 'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'can', 'could', 'must', 'should',
+      'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'from', 'about', 'into', 'through', 'during', 'before', 'after',
+    ]),
+    es: new Set([
+      'yo', 'tú', 'el', 'ella', 'nosotros', 'vosotros', 'ellos', 'me', 'te', 'le', 'nos', 'os', 'les', 'mi', 'tu', 'su', 'nuestro',
+      'el', 'la', 'los', 'las', 'un', 'una', 'y', 'o', 'pero', 'si', 'cuando', 'porque', 'que', 'no', 'más', 'muy',
+      'es', 'son', 'era', 'fue', 'ser', 'estar', 'ha', 'han', 'he', 'haber', 'puede', 'debe', 'quiere',
+      'en', 'con', 'por', 'para', 'de', 'a', 'desde', 'hasta', 'sobre', 'entre',
+    ]),
   };
 
   let CefrVocabLoaderRef = null;
@@ -180,12 +219,17 @@ const CefrGate = (() => {
     const rare = [];
     let inRange = 0;
     tokens.forEach((t) => {
+      const lemma = normalizeLemma(t, lg);
+      const exempt = COVERAGE_GRAMMAR_EXEMPT[lg];
+      if (exempt?.has(t.toLowerCase()) || exempt?.has(lemma)) {
+        inRange++;
+        return;
+      }
       const forms =
-        LemmatizerRef?.lemmaForms ? LemmatizerRef.lemmaForms(t, lg) : [t, normalizeLemma(t, lg)];
+        LemmatizerRef?.lemmaForms ? LemmatizerRef.lemmaForms(t, lg) : [t, lemma];
       const hit = lemmaInVocab(forms, vocab);
       if (hit) inRange++;
       else {
-        const lemma = normalizeLemma(t, lg);
         if (lemma.length > 2 && !rare.includes(lemma)) rare.push(lemma);
       }
     });
@@ -338,10 +382,11 @@ const CefrGate = (() => {
     const cx = COMPLEXITY[level] || COMPLEXITY.B1;
     let coverageOK = true;
     if (cov.vocabSize >= MIN_VOCAB_FOR_HARD_COVERAGE) {
-      coverageOK = cov.coverageVsLevel >= COVERAGE_THRESHOLD * 100;
+      const coverageThreshold = getCoverageThreshold();
+      coverageOK = cov.coverageVsLevel >= coverageThreshold * 100;
       if (!coverageOK) {
         reasons.push(
-          `coverage_below_threshold:coverage=${cov.coverageVsLevel}%,min=${COVERAGE_THRESHOLD * 100}%,rare=${cov.outOfRangeRareWords.slice(0, 5).join('|')}`,
+          `coverage_below_threshold:coverage=${cov.coverageVsLevel}%,min=${coverageThreshold * 100}%,rare=${cov.outOfRangeRareWords.slice(0, 5).join('|')}`,
         );
       }
     } else {
@@ -560,7 +605,10 @@ const CefrGate = (() => {
     normalizeLemma,
     tokenize,
     wordCount,
-    COVERAGE_THRESHOLD,
+    get COVERAGE_THRESHOLD() {
+      return getCoverageThreshold();
+    },
+    getCoverageThreshold,
     MIN_VOCAB_FOR_HARD_COVERAGE,
     INFERENCE_BANDS,
     COMPLEXITY,

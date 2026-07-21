@@ -307,18 +307,35 @@ const PromptBuilder = (() => {
     const Mod = getModInstr();
     const rules = vocabExamRules(spec, isDE);
     const weave = Mod.vocabWeavingRules(spec);
-    const lines = [
-      'PERSONAL VOCABULARY REVIEW (official part structure — items must be pool-compatible):',
-    ];
+    const modId = String(ctx?.moduleId || '').toLowerCase();
+    const isOral = /sprechen|speaking/.test(modId) || spec.vocabPolicy?.suggestionOnly;
+    const isWriting = /schreiben|writing/.test(modId);
+    const suggestionMode = !!spec.vocabPolicy?.suggestionOnly || isOral || isWriting;
+    const lines = suggestionMode
+      ? [
+          'SUGGESTED LEARNER VOCABULARY (preference — not mandatory):',
+        ]
+      : [
+          'PERSONAL VOCABULARY REVIEW (official part structure — items must be pool-compatible):',
+        ];
     if (words.length) {
       lines.push(
-        `Weave these learner words naturally where authentic: ${words.map((w) => `"${w}"`).join(', ')}.`,
+        suggestionMode
+          ? `If they fit naturally, try to include these words: ${words.map((w) => `"${w}"`).join(', ')}.`
+          : `Use NATURALLY these learner words if they fit: ${words.map((w) => `"${w}"`).join(', ')}.`,
+      );
+      lines.push(
+        'Prioritize natural B1 German and omit any word that does not fit — do NOT force vocabulary into broken sentences.',
       );
       lines.push(
         'Use standard dictionary spellings for vocabulary words in all generated German/English/Spanish text — never propagate obvious typos from the word list.',
       );
     }
-    if (spec.vocabPolicy?.maximizeCoverage) {
+    if (suggestionMode || (spec.vocabPolicy?.preferCoverage && !spec.vocabPolicy?.maximizeCoverage)) {
+      lines.push(
+        'Suggested vocabulary is a preference, not a requirement — a natural passage using some words is better than a forced passage using all.',
+      );
+    } else if (spec.vocabPolicy?.maximizeCoverage) {
       lines.push(
         `Use as many learner words as possible naturally for level ${spec.level}; do not force words artificially.`,
       );

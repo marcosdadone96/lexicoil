@@ -1,0 +1,392 @@
+{
+  "generatedAt": "2026-07-12T11:49:36.108Z",
+  "note": "Post-fix LT over questions for Schreiben/Sprechen 11 files",
+  "totalMatches": 26,
+  "byRuleId": {
+    "WHITESPACE_RULE": 23,
+    "DE_CASE": 2,
+    "GERMAN_SPELLER_RULE": 1
+  },
+  "asserts": {
+    "noDieVielen": true,
+    "hasDievielen": true,
+    "noAnzuziechen": true,
+    "hasAnzuziehen": true,
+    "targetFindingsRemaining": 0
+  },
+  "ok": true,
+  "files": [
+    {
+      "file": "schreiben-gemini-004.json",
+      "matchCount": 0,
+      "matches": []
+    },
+    {
+      "file": "schreiben-gemini-005.json",
+      "matchCount": 0,
+      "matches": []
+    },
+    {
+      "file": "schreiben-gemini-006.json",
+      "matchCount": 1,
+      "matches": [
+        {
+          "file": "schreiben-gemini-006.json",
+          "field": "questions[2].explanation",
+          "teil": 3,
+          "ruleId": "GERMAN_SPELLER_RULE",
+          "message": "Möglicher Tippfehler gefunden.",
+          "context": "... vollständig (Anliegen, Bitte um Hilfe, Treffensvorschlag); Kohärenz (0–4) – Textaufbau; Wortscha...",
+          "slice": "Treffensvorschlag",
+          "replacements": [
+            "Treffens-verschlag"
+          ]
+        }
+      ]
+    },
+    {
+      "file": "schreiben-gemini-007.json",
+      "matchCount": 0,
+      "matches": []
+    },
+    {
+      "file": "schreiben-gemini-009.json",
+      "matchCount": 0,
+      "matches": []
+    },
+    {
+      "file": "schreiben-gemini-010.json",
+      "matchCount": 0,
+      "matches": []
+    },
+    {
+      "file": "sprechen-gemini-001.json",
+      "matchCount": 5,
+      "matches": [
+        {
+          "file": "sprechen-gemini-001.json",
+          "field": "questions[1].question",
+          "teil": 2,
+          "ruleId": "WHITESPACE_RULE",
+          "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+          "context": "...on sollte folgende Punkte enthalten:  1.  Einleitung: Nennen Sie das Thema Ihrer P...",
+          "slice": "  ",
+          "replacements": [
+            " "
+          ]
+        },
+        {
+          "file": "sprechen-gemini-001.json",
+          "field": "questions[1].question",
+          "teil": 2,
+          "ruleId": "WHITESPACE_RULE",
+          "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+          "context": "...nen Sie das Thema Ihrer Präsentation. 2.  Situation/Erfahrung im Heimatland: Welch...",
+          "slice": "  ",
+          "replacements": [
+            " "
+          ]
+        },
+        {
+          "file": "sprechen-gemini-001.json",
+          "field": "questions[1].question",
+          "teil": 2,
+          "ruleId": "WHITESPACE_RULE",
+          "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+          "context": "...ie wichtig sind sie für die Menschen? 3.  Details / Beispiele: Geben Sie konkrete ...",
+          "slice": "  ",
+          "replacements": [
+            " "
+          ]
+        },
+        {
+          "file": "sprechen-gemini-001.json",
+          "field": "questions[1].question",
+          "teil": 2,
+          "ruleId": "WHITESPACE_RULE",
+          "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+          "context": "...was dort typischerweise gemacht wird. 4.  Vor- und Nachteile: Welche Positiven und...",
+          "slice": "  ",
+          "replacements": [
+            " "
+          ]
+        },
+        {
+          "file": "sprechen-gemini-001.json",
+          "field": "questions[1].question",
+          "teil": 2,
+          "ruleId": "WHITESPACE_RULE",
+          "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+          "context": "...este für die Stadt und ihre Bewohner? 5.  Persönliche Meinung + Schluss: Was ist I...",
+          "slice": "  ",
+          "replacements": [
+            " "
+          ]
+        }
+      ]
+    },
+    {
+      "file": "sprechen-gemini-005.json",
+      "matchCount": 9,
+      "matches": [
+        {
+          "file": "sprechen-gemini-005.json",
+          "field": "questions[0].question",
+          "teil": 1,
+          "ruleId": "DE_CASE",
+          "message": "Außer am Satzanfang werden nur Nomen und Eigennamen großgeschrieben.",
+          "context": "... Kuchenverkauf, Flohmarkt, Spendenlauf) Wer soll die Aktion unterstützen und wie kö...",
+          "slice": "Wer",
+          "replacements": [
+            "wer"
+          ]
+        },
+        {
+          "file": "sprechen-gemini-005.json",
+          "field": "questions[1].question",
+          "teil": 2,
+          "ruleId": "WHITESPACE_RULE",
+          "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+          "context": "...ation soll folgende Punkte enthalten: 1.  Einleitung: Nennen Sie das Thema Ihrer P...",
+          "slice": "  ",
+          "replacements": [
+            " "
+          ]
+        },
+        {
+          "file": "sprechen-gemini-005.json",
+          "field": "questions[1].question",
+          "teil": 2,
+          "ruleId": "WHITESPACE_RULE",
+          "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+          "context": "...nen Sie das Thema Ihrer Präsentation. 2.  Situation in Ihrem Heimatland: Wie verbr...",
+          "slice": "  ",
+          "replacements": [
+            " "
+          ]
+        },
+        {
+          "file": "sprechen-gemini-005.json",
+          "field": "questions[1].question",
+          "teil": 2,
+          "ruleId": "WHITESPACE_RULE",
+          "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+          "context": "...edien dort? Welche Rolle spielen sie? 3.  Details / Beispiele: Nennen Sie konkrete...",
+          "slice": "  ",
+          "replacements": [
+            " "
+          ]
+        },
+        {
+          "file": "sprechen-gemini-005.json",
+          "field": "questions[1].question",
+          "teil": 2,
+          "ruleId": "WHITESPACE_RULE",
+          "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+          "context": "...rmation, Unterhaltung, Arbeitssuche). 4.  Vor- und Nachteile: Welche Positiven und...",
+          "slice": "  ",
+          "replacements": [
+            " "
+          ]
+        },
+        {
+          "file": "sprechen-gemini-005.json",
+          "field": "questions[1].question",
+          "teil": 2,
+          "ruleId": "WHITESPACE_RULE",
+          "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+          "context": "...e das Bild, das Andere von uns haben? 5.  Persönliche Meinung + Schluss: Fassen Si...",
+          "slice": "  ",
+          "replacements": [
+            " "
+          ]
+        },
+        {
+          "file": "sprechen-gemini-005.json",
+          "field": "questions[2].question",
+          "teil": 3,
+          "ruleId": "WHITESPACE_RULE",
+          "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+          "context": "...ma der Präsentation.  Beispielfragen: 1.  Sie haben über die Vor- und Nachteile vo...",
+          "slice": "  ",
+          "replacements": [
+            " "
+          ]
+        },
+        {
+          "file": "sprechen-gemini-005.json",
+          "field": "questions[2].question",
+          "teil": 3,
+          "ruleId": "WHITESPACE_RULE",
+          "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+          "context": "...Cybermobbing schützen? Warum (nicht)? 2.  Wie unterscheidet sich die Nutzung sozia...",
+          "slice": "  ",
+          "replacements": [
+            " "
+          ]
+        },
+        {
+          "file": "sprechen-gemini-005.json",
+          "field": "questions[2].question",
+          "teil": 3,
+          "ruleId": "WHITESPACE_RULE",
+          "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+          "context": "...ren Generationen in Ihrem Heimatland? 3.  Wenn Sie die Möglichkeit hätten, eine ne...",
+          "slice": "  ",
+          "replacements": [
+            " "
+          ]
+        }
+      ]
+    },
+    {
+      "file": "sprechen-gemini-006.json",
+      "matchCount": 6,
+      "matches": [
+        {
+          "file": "sprechen-gemini-006.json",
+          "field": "questions[0].question",
+          "teil": 1,
+          "ruleId": "DE_CASE",
+          "message": "Außer am Satzanfang werden nur Nomen und Eigennamen großgeschrieben.",
+          "context": "...ende Punkte: Termin und Ort des Marktes Welche Art von Produkten und regionalen Spezia...",
+          "slice": "Welche",
+          "replacements": [
+            "welche"
+          ]
+        },
+        {
+          "file": "sprechen-gemini-006.json",
+          "field": "questions[1].question",
+          "teil": 2,
+          "ruleId": "WHITESPACE_RULE",
+          "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+          "context": "....  Sprechen Sie über folgende Punkte: 1.  Einleitung: Nennen Sie das Thema Ihrer P...",
+          "slice": "  ",
+          "replacements": [
+            " "
+          ]
+        },
+        {
+          "file": "sprechen-gemini-006.json",
+          "field": "questions[1].question",
+          "teil": 2,
+          "ruleId": "WHITESPACE_RULE",
+          "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+          "context": "...nen Sie das Thema Ihrer Präsentation. 2.  Situation/Erfahrung im Heimatland: Wo ka...",
+          "slice": "  ",
+          "replacements": [
+            " "
+          ]
+        },
+        {
+          "file": "sprechen-gemini-006.json",
+          "field": "questions[1].question",
+          "teil": 2,
+          "ruleId": "WHITESPACE_RULE",
+          "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+          "context": "... Erfahrungen haben Sie damit gemacht? 3.  Details / Beispiele: Nennen Sie konkrete...",
+          "slice": "  ",
+          "replacements": [
+            " "
+          ]
+        },
+        {
+          "file": "sprechen-gemini-006.json",
+          "field": "questions[1].question",
+          "teil": 2,
+          "ruleId": "WHITESPACE_RULE",
+          "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+          "context": "...klären Sie, warum diese wichtig sind. 4.  Vor- und Nachteile: Welche Vorteile habe...",
+          "slice": "  ",
+          "replacements": [
+            " "
+          ]
+        },
+        {
+          "file": "sprechen-gemini-006.json",
+          "field": "questions[1].question",
+          "teil": 2,
+          "ruleId": "WHITESPACE_RULE",
+          "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+          "context": "...en Produkten? Gibt es auch Nachteile? 5.  Persönliche Meinung + Schluss: Was denke...",
+          "slice": "  ",
+          "replacements": [
+            " "
+          ]
+        }
+      ]
+    },
+    {
+      "file": "sprechen-gemini-007.json",
+      "matchCount": 5,
+      "matches": [
+        {
+          "file": "sprechen-gemini-007.json",
+          "field": "questions[1].question",
+          "teil": 2,
+          "ruleId": "WHITESPACE_RULE",
+          "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+          "context": "...sentation nach den folgenden Punkten: 1.  Einleitung: Nennen Sie das Thema Ihrer P...",
+          "slice": "  ",
+          "replacements": [
+            " "
+          ]
+        },
+        {
+          "file": "sprechen-gemini-007.json",
+          "field": "questions[1].question",
+          "teil": 2,
+          "ruleId": "WHITESPACE_RULE",
+          "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+          "context": "...nen Sie das Thema Ihrer Präsentation. 2.  Situation/Erfahrung im Heimatland: Besch...",
+          "slice": "  ",
+          "replacements": [
+            " "
+          ]
+        },
+        {
+          "file": "sprechen-gemini-007.json",
+          "field": "questions[1].question",
+          "teil": 2,
+          "ruleId": "WHITESPACE_RULE",
+          "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+          "context": "... Erfahrungen Sie damit gemacht haben. 3.  Details / Beispiele: Geben Sie konkrete ...",
+          "slice": "  ",
+          "replacements": [
+            " "
+          ]
+        },
+        {
+          "file": "sprechen-gemini-007.json",
+          "field": "questions[1].question",
+          "teil": 2,
+          "ruleId": "WHITESPACE_RULE",
+          "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+          "context": "...ondern nennen Sie konkrete Beispiele. 4.  Vor- und Nachteile: Nennen Sie Vorteile ...",
+          "slice": "  ",
+          "replacements": [
+            " "
+          ]
+        },
+        {
+          "file": "sprechen-gemini-007.json",
+          "field": "questions[1].question",
+          "teil": 2,
+          "ruleId": "WHITESPACE_RULE",
+          "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+          "context": "...ung für Arbeitnehmer und Arbeitgeber. 5.  Persönliche Meinung + Schluss: Fassen Si...",
+          "slice": "  ",
+          "replacements": [
+            " "
+          ]
+        }
+      ]
+    },
+    {
+      "file": "sprechen-gemini-008.json",
+      "matchCount": 0,
+      "matches": []
+    }
+  ]
+}

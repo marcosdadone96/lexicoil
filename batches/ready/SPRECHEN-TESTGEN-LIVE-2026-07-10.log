@@ -1,0 +1,69 @@
+
+> lexicoil@1.0.0 generate:sprechen:gemini
+> node --use-system-ca scripts/generate-part-gemini.mjs --module sprechen --from-coverage --count 1 --lang de --level B1 --fix-retries 5 --keep-failed
+
+
+Generador sprechen (de/B1) · gemini · gemini-2.5-flash · Teile 1–3 × 1
+Palabras objetivo por parte: 5 (--word-count)
+Cuota Gemini: max 200 llamadas · pausa ≥6000ms · fix-retries=5 · api-retries=1
+Salida: batches/generated/ (solo pasa formato + calidad pedagógica)
+Tema: Wohnen (rotación)
+
+── sprechen sprechen · sprechen-gemini-009.json ──
+Proveedor: gemini · Palabras (5): berühmtheit, was, letzte, reklamation, raeume
+Modelo: gemini-2.5-flash · max_output_tokens=8192
+Llamada API 1/200 · gemini-2.5-flash
+
+Reintento 1/5 · JSON raíz inválido (falta array questions)…
+Llamada API 2/200 · gemini-2.5-flash
+Validando formato…
+Calidad sprechen T1: OK ✅ (estimación ~100%)
+Calidad sprechen T2: OK ✅ (estimación ~100%)
+Calidad sprechen T3: OK ✅ (estimación ~100%)
+Audit-pass-2 BLOQUEADO: [IMPORTANT][CHK-14] Sustantivo en minúscula: "verständlich" (tras artículo/conjunción). En alemán los sustantivos van en mayúscula. Contexto: "...ungen und Meinungen klar und verständlich zu formulieren...."
+  Triaje CUBO A: reparado (CHK-14) — re-validando sin LLM…
+Calidad sprechen T1: OK ✅ (estimación ~100%)
+Calidad sprechen T2: OK ✅ (estimación ~100%)
+Calidad sprechen T3: OK ✅ (estimación ~100%)
+Audit-pass-2 BLOQUEADO: [IMPORTANT][CHK-14] Sustantivo en minúscula: "verständlich" (tras artículo/conjunción). En alemán los sustantivos van en mayúscula. Contexto: "...ungen und Meinungen klar und verständlich zu formulieren...."
+
+Reintento 2/5 · Sustantivo en minúscula: "verständlich" (tras artículo/conjunción). En alemán los sustantivos van en mayúscula. Contexto: "...ungen und Meinungen klar und verständlich zu formulieren...."…
+  Temperatura reducida a 0.3 (reintento de calidad)
+Llamada API 3/200 · gemini-2.5-flash
+
+Reintento 3/5 · JSON raíz inválido (falta array questions)…
+Llamada API 4/200 · gemini-2.5-flash
+  [normalizeNouns] 1 sustantivo(s) capitalizados automáticamente
+Validando formato…
+Calidad sprechen T1: OK ✅ (estimación ~100%)
+Calidad sprechen T2: OK ✅ (estimación ~100%)
+Calidad sprechen T3: OK ✅ (estimación ~100%)
+Léxico FAIL (2 errores)
+  ✗ question gen-q-sp-t2-2773e909-q1: vocabulario B2+ en pregunta «Aspekte» → usa «Teil / Punkt» (B1)
+  ✗ question gen-q-sp-t3-2773e909-q1: vocabulario B2+ en pregunta «Herausforderungen» → usa «Problem / Schwierigkeit» (B1)
+
+Reintento 4/5 · question gen-q-sp-t2-2773e909-q1: vocabulario B2+ en pregunta «Aspekte» → usa «Teil / Punkt» (B1)…
+  Temperatura reducida a 0.3 (reintento de calidad)
+Llamada API 5/200 · gemini-2.5-flash
+
+Reintento 5/5 · JSON raíz inválido (falta array questions)…
+Llamada API 6/200 · gemini-2.5-flash
+  [normalizeNouns] 1 sustantivo(s) capitalizados automáticamente
+Validando formato…
+Calidad sprechen T1: OK ✅ (estimación ~100%)
+Calidad sprechen T2: OK ✅ (estimación ~100%)
+Calidad sprechen T3: OK ✅ (estimación ~100%)
+Léxico FAIL (1 errores)
+  ✗ question gen-q-sp-t3-2773e909-q1: vocabulario B2+ en pregunta «Herausforderungen» → usa «Problem / Schwierigkeit» (B1)
+Léxico FAIL (1 errores)
+  ✗ question gen-q-sp-t3-2773e909-q1: vocabulario B2+ en pregunta «Herausforderungen» → usa «Problem / Schwierigkeit» (B1)
+Rechazado guardado en: batches/generated/.rejected/sprechen-gemini-009-2026-07-10T08-26-35-890Z.json
+
+══ Resumen generador sprechen ══
+Proveedor: gemini · Modelo: gemini-2.5-flash
+Intentos totales: 6
+Partes guardadas (formato + calidad OK): 0
+Partes descartadas: 1
+Llamadas API Gemini: 6/200
+Por parte (guardadas / descartadas · intentos):
+  sprechen: 0 guardadas, 1 descartadas, 6 intentos

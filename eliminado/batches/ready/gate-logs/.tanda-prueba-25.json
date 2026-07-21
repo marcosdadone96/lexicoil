@@ -1,0 +1,55 @@
+{
+  "label": "tanda-prueba-25",
+  "startedAt": "2026-07-09T09:30:00.000Z",
+  "audFixPilotAt": "2026-07-09T11:42:24.160Z",
+  "teile": [1, 2, 3, 4, 5],
+  "countPerTeil": 5,
+  "command": "node scripts/generate-lesen-part-gemini.mjs --all-teile --count 5 --from-coverage --max-api-calls 100",
+  "files": {
+    "t1": [
+      "lesen-t1-gemini-178.json",
+      "lesen-t1-gemini-179.json",
+      "lesen-t1-gemini-180.json",
+      "lesen-t1-gemini-181.json",
+      "lesen-t1-gemini-182.json"
+    ],
+    "t2": [
+      "lesen-t2-gemini-094.json",
+      "lesen-t2-gemini-095.json",
+      "lesen-t2-gemini-096.json",
+      "lesen-t2-gemini-097.json",
+      "lesen-t2-gemini-098.json"
+    ],
+    "t3": [
+      "lesen-t3-auto-5hhflb.json",
+      "lesen-t3-auto-jhnc6c.json",
+      "lesen-t3-auto-dfn273.json",
+      "lesen-t3-auto-n0lt9z.json",
+      "lesen-t3-auto-sds0gv.json"
+    ],
+    "t3Replaced": {
+      "deleted": [
+        "lesen-t3-auto-ztz0q6.json",
+        "lesen-t3-auto-0dcsj1.json",
+        "lesen-t3-auto-px3otp.json",
+        "lesen-t3-auto-x52enh.json",
+        "lesen-t3-auto-nnw057.json"
+      ],
+      "reason": "AUD-1 fix in make-t3.mjs — regenerated with patched generator"
+    },
+    "t4": [
+      "lesen-t4-gemini-038.json",
+      "lesen-t4-gemini-039.json",
+      "lesen-t4-gemini-040.json",
+      "lesen-t4-gemini-041.json",
+      "lesen-t4-gemini-042.json"
+    ],
+    "t5": [
+      "lesen-t5-gemini-068.json",
+      "lesen-t5-gemini-069.json",
+      "lesen-t5-gemini-070.json",
+      "lesen-t5-gemini-071.json",
+      "lesen-t5-gemini-072.json"
+    ]
+  }
+}

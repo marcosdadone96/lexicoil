@@ -18,7 +18,7 @@ function readFile(relOrAbs) {
   return fs.readFileSync(p, 'utf8');
 }
 
-function main() {
+async function main() {
   const args = parsePasteArgs(process.argv.slice(2));
   if (!args.file || !args.module) {
     console.error(`Uso:
@@ -49,7 +49,7 @@ Atajos: npm run horen:upload:t1 | schreiben:upload | sprechen:upload`);
     console.log(`Procesando ${label}${teilHint ? ` (Teil ${teilHint})` : ''}`);
     console.log('═'.repeat(60));
 
-    const res = processExamBatch(batch, args, { teil: teilHint, tag: args.tag, label });
+    const res = await processExamBatch(batch, args, { teil: teilHint, tag: args.tag, label });
     results.push(res);
 
     if (!res.ok && !args.continueOnError) {
@@ -87,4 +87,7 @@ Atajos: npm run horen:upload:t1 | schreiben:upload | sprechen:upload`);
   process.exit(fail.length ? 1 : 0);
 }
 
-main();
+main().catch((e) => {
+  console.error(e);
+  process.exit(1);
+});

@@ -61,7 +61,7 @@ const ExamBlueprint = (() => {
     const t = String(q.questionType || q.type || '').toLowerCase();
     if (t === 'multiple' || t === 'mcq' || t === 'mc') return 'multiple_choice';
     if (t === 'match') return 'matching';
-    if (t === 'richtig_falsch') return 'true_false';
+    if (t === 'richtig_falsch' || t === 'true_false') return 'richtig_falsch';
     return t;
   }
 
@@ -69,7 +69,7 @@ const ExamBlueprint = (() => {
     const t = String(x || '').toLowerCase();
     if (t === 'multiple') return 'multiple_choice';
     if (t === 'match') return 'matching';
-    if (t === 'richtig_falsch' || t === 'true_false') return 'true_false';
+    if (t === 'richtig_falsch' || t === 'true_false') return 'richtig_falsch';
     return t;
   }
 
@@ -153,12 +153,46 @@ const ExamBlueprint = (() => {
 
     const perSegment = Math.max(1, Math.round(target / segmentsTotal));
     const byPassage = groupCandidatesByPassage(candidates);
-    const viable = [...byPassage.entries()].filter(([, qs]) => qs.length >= perSegment);
+
+    // For mixed-type Teile (e.g. Hören T1: 1 RF + 1 MC per segment), enforce that each
+    // passage group has at least one question of each required type. A group of 2 MCQ with
+    // no RF is not viable — picking it would produce a 0RF+2MC segment that CHK-20 rejects.
+    const questionTypes = partSpec.questionTypes || [];
+    const needsTypeBalance = questionTypes.length >= 2;
+
+    function pickBalanced(qs) {
+      if (!needsTypeBalance) return shuffle(qs).slice(0, perSegment);
+      // Collect one of each required type, then fill remaining slots from the rest.
+      const result = [];
+      const remaining = [...qs];
+      for (const t of questionTypes) {
+        const idx = remaining.findIndex(
+          (q) => q.type === t || (t === 'richtig_falsch' && q.type === 'true_false'),
+        );
+        if (idx === -1) return null; // group lacks this type — not viable
+        result.push(remaining.splice(idx, 1)[0]);
+        if (result.length === perSegment) break;
+      }
+      while (result.length < perSegment && remaining.length) {
+        result.push(remaining.shift());
+      }
+      return result.length === perSegment ? result : null;
+    }
+
+    const viable = [];
+    for (const entry of byPassage.entries()) {
+      const [pid, qs] = entry;
+      if (qs.length < perSegment) continue;
+      const sample = pickBalanced(shuffle([...qs]));
+      if (sample) viable.push([pid, qs]);
+    }
     if (viable.length < segmentsTotal) return null;
 
     const picked = [];
     for (const [, qs] of shuffle(viable).slice(0, segmentsTotal)) {
-      picked.push(...shuffle(qs).slice(0, perSegment));
+      const sample = pickBalanced(shuffle([...qs]));
+      if (!sample) continue; // defensive — viable check above should prevent this
+      picked.push(...sample);
     }
     return picked.length >= target ? picked.slice(0, target) : picked.length ? picked : null;
   }
@@ -199,20 +233,105 @@ const ExamBlueprint = (() => {
     const IC = typeof ItemCalibration !== 'undefined' ? ItemCalibration : null;
     let picked = pickSegmentsAligned(candidates, partSpec, target);
     if (!picked?.length) picked = pickPassageAligned(candidates, partSpec, target);
+
+    // ── Coherent T3 set (Lesen Teil 3 — ads matching) ─────────────────────────
+    // INVARIANT: all 7 items must share the same A-J options list (one set).
+    // Strategy: (1) find a complete coherent set in the bank; (2) if none, call
+    // LesenPartGenerators.buildValidatedT3Part() which generates from blueprints;
+    // (3) if no generator available (browser), leave picked empty → coverage fails
+    // loudly → no Frankenstein ever reaches the served exam.
+    if (!picked?.length && modId === 'lesen' && teil === 3) {
+      // Group candidates by canonical options fingerprint (same A-J list = same set)
+      const byFp = new Map();
+      for (const q of candidates) {
+        const opts7 = (q.options || []).filter(o => typeof o === 'string' && o.length > 2);
+        if (opts7.length < 7) continue; // skip bare-key items
+        const fp = opts7.map(o => String(o).trim()).join('|');
+        if (!byFp.has(fp)) byFp.set(fp, []);
+        byFp.get(fp).push(q);
+      }
+      const completeGroups = [...byFp.values()].filter(qs => qs.length >= 7);
+      if (completeGroups.length) {
+        picked = shuffle(completeGroups)[0].slice(0, 7);
+      } else if (typeof LesenPartGenerators !== 'undefined' &&
+                 typeof LesenPartGenerators.buildValidatedT3Part === 'function') {
+        try {
+          const batch = LesenPartGenerators.buildValidatedT3Part(
+            opts._lesenExclude ? { exclude: opts._lesenExclude.t3 } : {}
+          );
+          picked = batch.questions;
+          if (opts._lesenExclude && batch._blueprintSlug) {
+            opts._lesenExclude.t3.add(batch._blueprintSlug);
+          }
+        } catch (err) {
+          if (typeof lcDebug !== 'undefined') lcDebug.warn('[ExamBlueprint] T3 generator failed:', err);
+        }
+      }
+      // If still empty: leave as [] → coverage.complete = false → exam rejected
+    }
+
+    // ── Coherent T4 set (Lesen Teil 4 — forum opinions) ───────────────────────
+    // INVARIANT: all 7 items must come from a single blueprint/source with unique authors.
+    // Regex recognises both bank IDs (-l-t4-SLUG-qN) and generator IDs (gen-q-4-PREFIX-N).
     if (!picked?.length && modId === 'lesen' && teil === 4) {
+      function t4GroupKey(q) {
+        const bankM = String(q.id || '').match(/-l-t4-(.+?)-q\d+$/i);
+        if (bankM) return 'bank:' + bankM[1];
+        const genM = String(q.id || '').match(/^gen-q-4-([a-z0-9]+)-\d+$/i);
+        if (genM) return 'gen:' + genM[1];
+        return null;
+      }
+      function t4GroupIsCoherent(items) {
+        if (items.length < 7) return false;
+        const texts = items.map(q => String(q.signText || '').trim());
+        if (new Set(texts).size !== texts.length) return false;
+        if (texts.some(t => t.split(/\s+/).filter(Boolean).length < 15)) return false;
+        const authors = items.map(q => {
+          const t = String(q.signText || '');
+          const m = t.match(/^(?:Meinung von|Sagt)\s+([A-ZÄÖÜ][a-zäöüß]+)/);
+          return m ? m[1] : (t.match(/^([A-ZÄÖÜ][a-zäöüß]+)/)?.[1] || '');
+        });
+        return new Set(authors.filter(Boolean)).size === authors.filter(Boolean).length;
+      }
       const bySlug = new Map();
       for (const q of candidates) {
-        const m = String(q.id || '').match(/-l-t4-(.+?)-q\d+$/i);
-        if (!m) continue;
-        const slug = m[1];
-        if (!bySlug.has(slug)) bySlug.set(slug, []);
-        bySlug.get(slug).push(q);
+        const key = t4GroupKey(q);
+        if (!key) continue;
+        if (!bySlug.has(key)) bySlug.set(key, []);
+        bySlug.get(key).push(q);
       }
-      const viable = [...bySlug.values()].filter((qs) => qs.length >= target);
-      if (viable.length) picked = shuffle(viable[0]).slice(0, target);
+      const viable = [...bySlug.values()].filter(qs => qs.length >= target && t4GroupIsCoherent(qs));
+      if (viable.length) {
+        picked = shuffle(viable)[0].slice(0, target);
+      } else if (typeof LesenPartGenerators !== 'undefined' &&
+                 typeof LesenPartGenerators.buildValidatedT4Part === 'function') {
+        try {
+          const batch = LesenPartGenerators.buildValidatedT4Part(
+            opts._lesenExclude ? { exclude: opts._lesenExclude.t4 } : {}
+          );
+          picked = batch.questions;
+          if (opts._lesenExclude && batch._blueprintSlug) {
+            opts._lesenExclude.t4.add(batch._blueprintSlug);
+          }
+        } catch (err) {
+          if (typeof lcDebug !== 'undefined') lcDebug.warn('[ExamBlueprint] T4 generator failed:', err);
+        }
+      }
+      // If still empty: leave as [] → coverage.complete = false → exam rejected
     }
+
     if (!picked?.length) {
-      if (calibration && IC && candidates.length > target) {
+      if (modId === 'lesen' && (teil === 3 || teil === 4)) {
+        // Never fall through to individual-item shuffle for T3/T4 — coherence cannot be
+        // guaranteed. Leave picked empty so coverage.complete = false signals the gap.
+        picked = [];
+      } else if (modId === 'horen' && teil === 1) {
+        // H1 requires segment-aligned picking (5 passages × 1RF+1MC each).
+        // If pickSegmentsAligned failed (insufficient viable groups or wrong type balance),
+        // do not fall through to random shuffle — coherence cannot be guaranteed.
+        // Leave empty → coverage.complete = false → exam rejected upstream (same as L3/T4).
+        picked = [];
+      } else if (calibration && IC && candidates.length > target) {
         picked = IC.pickCalibrated(candidates, target, {
           module: modId || inferModuleFromPool(pool),
           teil,
@@ -320,7 +439,11 @@ const ExamBlueprint = (() => {
         return {
           id: eq.id,
           type: eq.type,
-          signText: passage?.text || q.signText || q.text || '',
+          // For forum opinions (T4), each question carries its own individual opinion in
+          // q.signText.  The shared passage.text is the forum intro, NOT the per-item text.
+          // Prefer q.signText so individual opinions are preserved; only fall back to the
+          // passage text when the question has no signText of its own (e.g. future layouts).
+          signText: q.signText || q.text || passage?.text || '',
           passageId: pid || passage?.id || undefined,
           question: q.question,
           options: eq.options,
@@ -340,10 +463,22 @@ const ExamBlueprint = (() => {
         part.passageId = sharedPassage.id;
         if (sharedPassage.translations) part.translations = { ...sharedPassage.translations };
       }
-      const sharedOpts = enriched.find((q) => q.options?.length)?.options;
-      if (!part.text && Array.isArray(sharedOpts) && sharedOpts.length) {
-        part.text = sharedOpts.join('\n');
+      // When PassageResolver is unavailable (Node.js scripts context), sharedPassage is null.
+      // For forum opinions (T4), the shared forum intro passage is in bank.passages[] keyed by
+      // the questions' common passageId — resolve it directly so part.text = forum intro text
+      // instead of falling through to the options-join fallback below.
+      if (!part.text) {
+        const repPid = enriched[0]?.passageId;
+        const repP = repPid ? (bank.passages || []).find((p) => p.id === repPid) : null;
+        if (repP?.text) {
+          part.text = repP.text;
+          part.textTitle = repP.title || '';
+          part.passageId = repP.id;
+        }
       }
+      // NOTE: the sharedOpts.join('\n') fallback was removed here because for forum opinions
+      // the options are ["a) Ja","b) Nein"] which should NOT become the passage text.
+      // Any layout that genuinely needs the options as text can re-add it here with a guard.
       return part;
     }
 

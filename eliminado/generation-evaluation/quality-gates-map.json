@@ -1,0 +1,112 @@
+{
+  "title": "PASO 9 — Quality gates map (pre pool-verified)",
+  "generatedAt": "2026-07-10",
+  "mode": "audit_only",
+  "note": "QualityGateRunner does not replace finalizePoolReady/poolReadyCheck; it adds an objective audit layer.",
+  "existingGates": [
+    {
+      "gate": "validate-batch",
+      "file": "scripts/validate-batch.mjs",
+      "validates": "JSON schema, correct≡correctAnswer, passageId refs",
+      "result": "blocking at generation"
+    },
+    {
+      "gate": "Lesen/Hören/Schreiben quality",
+      "file": "scripts/lib/lesenBatchQuality.mjs | horenBatchQuality.mjs | promptBatchQuality.mjs",
+      "validates": "Goethe pedagogical structure per Teil",
+      "result": "blocking at generation"
+    },
+    {
+      "gate": "lexicalCheck",
+      "file": "scripts/lib/lexicalCheck.mjs",
+      "validates": "wrong-context lemmas, B2 blacklist",
+      "result": "blocking / warnings"
+    },
+    {
+      "gate": "germanCapsNormalize / germanCapsGate",
+      "file": "scripts/lib/germanCapsNormalize.mjs | germanCapsGate.mjs",
+      "validates": "German noun capitalization",
+      "result": "repair + optional block"
+    },
+    {
+      "gate": "isPartPoolReady (POOL-2)",
+      "file": "scripts/audit-pass-2.mjs",
+      "validates": "CHK-1..29 structural/pedagogical",
+      "result": "blocking CRITICAL + GATE_BLOCK_CHECKS"
+    },
+    {
+      "gate": "CefrGate",
+      "file": "js/engine/validation/CefrGate.js",
+      "validates": "coverage, sentence complexity vs CEFR level",
+      "result": "blocking on staging/ingest path; not inside poolReadyCheck"
+    },
+    {
+      "gate": "poolReadyCheck gates 1–8",
+      "file": "scripts/lib/poolReadyCheck.mjs",
+      "validates": "caps, markdown, topic, discard, Q1, Q2, retrieval metadata",
+      "result": "READY → pool-verified / REJECT → needs-regeneration"
+    },
+    {
+      "gate": "Q1/Q2/Q3/Q4 qualityGates/*",
+      "file": "scripts/lib/qualityGates/*.mjs",
+      "validates": "dedup, answer-key, metadata schema, coherence",
+      "result": "mixed shadow/block"
+    },
+    {
+      "gate": "staging approval",
+      "file": "scripts/pipeline/lib/stagingStore.mjs + admin-api",
+      "validates": "human pending→approved→promoted",
+      "result": "human gate"
+    },
+    {
+      "gate": "checkRetrievalMetadata (vocab/grammar tags)",
+      "file": "scripts/lib/poolReadyCheck.mjs",
+      "validates": "vocabularyTags + grammarTags present",
+      "result": "blocks pool-verified (gate 8)"
+    }
+  ],
+  "newInPaso9": [
+    {
+      "gate": "json_integrity",
+      "file": "scripts/lib/qualityGates/qualityGateRunner.mjs",
+      "validates": "unique IDs, correctAnswer, options, passageId orphans",
+      "result": "FAIL → staging rejected (hint only)"
+    },
+    {
+      "gate": "goethe_structure",
+      "file": "scripts/lib/qualityGates/qualityGateRunner.mjs",
+      "validates": "Teil + expected question counts/types",
+      "result": "FAIL / WARNING"
+    },
+    {
+      "gate": "language_quality",
+      "file": "scripts/lib/qualityGates/qualityGateRunner.mjs",
+      "validates": "artificial phrases + active feedback avoid patterns",
+      "result": "FAIL / WARNING"
+    },
+    {
+      "gate": "cefr (runner wrapper)",
+      "file": "scripts/lib/qualityGates/qualityGateRunner.mjs",
+      "validates": "B2 marker heuristic + optional CefrGate",
+      "result": "hard FAIL vs WARNING"
+    },
+    {
+      "gate": "metadata_quality",
+      "file": "scripts/lib/qualityGates/qualityGateRunner.mjs",
+      "validates": "vocab stopwords/dupes, grammar narrowness, difficulty range",
+      "result": "FAIL / WARNING"
+    },
+    {
+      "gate": "QualityGateRunner + CLI",
+      "file": "scripts/run-quality-gates.mjs",
+      "validates": "orchestrates all five + qualityReport.json",
+      "result": "audit table PASS/WARNING/FAIL"
+    }
+  ],
+  "stagingMapping": {
+    "PASS": "candidate_ready",
+    "WARNING": "needs_review",
+    "FAIL": "rejected"
+  },
+  "productionBlocking": false
+}

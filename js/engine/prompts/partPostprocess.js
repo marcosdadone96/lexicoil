@@ -8,7 +8,27 @@
  *    distinta de "0") debe usarse como máximo una vez; devuelve los conflictos.
  *
  * Funciona con el formato de la app: options=[{key,text}], correct="B".
+ *
+ * Option-letter explanation resync: SINGLE SOURCE in explanationOptionResync.js
+ * (shared with scripts/lib/balanceMcq.mjs — do not fork the regex list here).
  */
+
+function resolveResyncFn() {
+  if (typeof require === 'function') {
+    try {
+      return require('./explanationOptionResync.js').resyncExplanationOptionLetter;
+    } catch (_) {
+      /* browser script tag path */
+    }
+  }
+  if (typeof globalThis !== 'undefined' && globalThis.ExplanationOptionResync) {
+    return globalThis.ExplanationOptionResync.resyncExplanationOptionLetter;
+  }
+  // Last resort no-op (should not happen if script order is correct).
+  return (explanation) => explanation;
+}
+
+const resyncExplanationOptionLetter = resolveResyncFn();
 
 function balanceAnswerPositions(questions) {
   if (!Array.isArray(questions)) return { changed: 0 };
@@ -30,6 +50,7 @@ function balanceAnswerPositions(questions) {
     mcqIndex++;
     if (targetIdx === correctIdx) continue; // ya está donde toca
 
+    const oldLetter = String(correctKey);
     // Reordena: mueve el texto correcto a targetIdx, el resto conserva su orden relativo.
     const texts = opts.map((o) => o.text);
     const correctText = texts[correctIdx];
@@ -43,6 +64,9 @@ function balanceAnswerPositions(questions) {
     opts.forEach((o, i) => { o.text = newTexts[i]; });
     q.correct = String(opts[targetIdx].key);
     if (q.correctAnswer !== undefined) q.correctAnswer = q.correct;
+    if (q.explanation) {
+      q.explanation = resyncExplanationOptionLetter(q.explanation, oldLetter, q.correct);
+    }
     changed++;
   }
   return { changed };

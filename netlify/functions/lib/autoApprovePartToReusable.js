@@ -69,6 +69,7 @@ async function approvePartToReusable(store, candidate, { blueprint = null, verif
     targetCount,
     contributor: contributor  || null,
     createdAt,
+    topicTag:    candidate.topicTag || candidate.topic || null,
   };
 
   try {

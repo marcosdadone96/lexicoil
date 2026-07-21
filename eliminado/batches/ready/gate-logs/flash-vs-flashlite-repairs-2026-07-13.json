@@ -1,0 +1,54 @@
+{
+  "generatedAt": "2026-07-13T20:24:49.328Z",
+  "prices": {
+    "flash": {
+      "input": 0.3,
+      "output": 2.5
+    },
+    "lite": {
+      "input": 0.1,
+      "output": 0.4
+    }
+  },
+  "repairComparisons": [
+    {
+      "caseId": "horen-t2-word-copy",
+      "kind": "word_match",
+      "models": {
+        "flash": {
+          "model": "gemini-2.5-flash",
+          "error": "No se encontró JSON válido en la respuesta"
+        },
+        "flashLite": {
+          "model": "gemini-2.5-flash-lite",
+          "promptTokens": 735,
+          "candidatesTokens": 158,
+          "thoughtsTokens": 0,
+          "costUsd": 0.0001367,
+          "qualityPass": false,
+          "qualityDetail": {
+            "pass": false,
+            "longCopy": "direkt vor unserer haustür",
+            "sharedTokens": 16,
+            "correctLetter": "c",
+            "option": "Die Bedeutung von Kultur direkt vor unserer Haustür im täglichen Leben"
+          }
+        }
+      }
+    }
+  ],
+  "thinkingProbe": {
+    "caseId": "thinking-budget-repair",
+    "models": {
+      "flashDefault": {
+        "error": "No se encontró JSON válido en la respuesta"
+      },
+      "flashThinking0": {
+        "thoughtsTokens": 0,
+        "candidatesTokens": 166,
+        "costUsd": 0.0006355,
+        "qualityPass": false
+      }
+    }
+  }
+}

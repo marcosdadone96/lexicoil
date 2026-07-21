@@ -1,0 +1,266 @@
+{
+  "since": "2026-07-09T09:30:00.000Z",
+  "fileCount": 7,
+  "byTeil": [
+    {
+      "teil": 1,
+      "count": 2,
+      "q4Rejected": 0
+    },
+    {
+      "teil": 2,
+      "count": 0,
+      "q4Rejected": 0
+    },
+    {
+      "teil": 3,
+      "count": 5,
+      "q4Rejected": 0
+    },
+    {
+      "teil": 4,
+      "count": 0,
+      "q4Rejected": 0
+    },
+    {
+      "teil": 5,
+      "count": 0,
+      "q4Rejected": 0
+    }
+  ],
+  "q4Rejected": [],
+  "rows": [
+    {
+      "file": "lesen-t1-gemini-178.json",
+      "teil": 1,
+      "iso": "2026-07-09T09:33:04.528Z",
+      "q4": "pass",
+      "q4Blocked": false,
+      "q3": "pass",
+      "q1": "pass",
+      "wouldReject": false
+    },
+    {
+      "file": "lesen-t1-gemini-179.json",
+      "teil": 1,
+      "iso": "2026-07-09T09:33:55.502Z",
+      "q4": "pass",
+      "q4Blocked": false,
+      "q3": "pass",
+      "q1": "pass",
+      "wouldReject": false
+    },
+    {
+      "file": "lesen-t3-auto-ztz0q6.json",
+      "teil": 3,
+      "iso": "2026-07-09T09:44:45.513Z",
+      "q4": "warn",
+      "q4Blocked": false,
+      "q3": "pass",
+      "q1": "block",
+      "wouldReject": true
+    },
+    {
+      "file": "lesen-t3-auto-0dcsj1.json",
+      "teil": 3,
+      "iso": "2026-07-09T09:44:50.237Z",
+      "q4": "warn",
+      "q4Blocked": false,
+      "q3": "pass",
+      "q1": "block",
+      "wouldReject": true
+    },
+    {
+      "file": "lesen-t3-auto-px3otp.json",
+      "teil": 3,
+      "iso": "2026-07-09T09:44:54.025Z",
+      "q4": "warn",
+      "q4Blocked": false,
+      "q3": "pass",
+      "q1": "block",
+      "wouldReject": true
+    },
+    {
+      "file": "lesen-t3-auto-x52enh.json",
+      "teil": 3,
+      "iso": "2026-07-09T09:44:57.832Z",
+      "q4": "warn",
+      "q4Blocked": false,
+      "q3": "pass",
+      "q1": "block",
+      "wouldReject": true
+    },
+    {
+      "file": "lesen-t3-auto-nnw057.json",
+      "teil": 3,
+      "iso": "2026-07-09T09:45:01.965Z",
+      "q4": "warn",
+      "q4Blocked": false,
+      "q3": "pass",
+      "q1": "block",
+      "wouldReject": true
+    }
+  ],
+  "issues": [
+    {
+      "file": "lesen-t3-auto-ztz0q6.json",
+      "teil": 3,
+      "q4": {
+        "verdict": "warn",
+        "findings": [
+          {
+            "severity": "warn",
+            "rule": "topic_field_missing",
+            "detail": "Sin _requestedTopic ni topicTag en batch/passages/questions"
+          }
+        ],
+        "blocked": false
+      },
+      "q3": {
+        "verdict": "pass",
+        "findings": []
+      },
+      "q1": {
+        "verdict": "block",
+        "wouldReject": true,
+        "findings": [
+          {
+            "severity": "block",
+            "rule": "near_duplicate",
+            "detail": "T3 matching fingerprint idéntico (52ee525b4b9d47f7) con «batches/ready/lesen/lesen-t3-gemini-071.json» (invariante a reordenación A–J)",
+            "span": "Bei Frau Held wackelt der Esszimmerstuhl bedenklich; er soll"
+          }
+        ]
+      },
+      "human": "\n### Pregunta 1 [gen-q-3-n7yptc-1]\nBei Frau Held wackelt der Esszimmerstuhl bedenklich; er soll gerichtet werden.\n  - A) TragHilfe — Wir packen bei Ihrem Umzug an, auch sonntags, ab 40 Euro pro Stunde.\n  - B) DatenKlar — Nachhilfe in Statistik für Studierende, Mi ab 16 Uhr, kleine Gruppen.\n  - C) PolsterFix — Wir reparieren Polstermöbel und beziehen Sitzflächen neu, nur mit Termin.\n  - D) Glanzweg — Pflege und Reinigung von Fenstern und Büro, Sa 10–14 Uhr nach Absprache.\n  - E) WohnVermitt — Wir vermitteln zwei- und Dreizimmerwohnungen, faire Provision, kurzfristig.\n  - F) Pfotenglück — Pflege Ihres Hundes im Urlaub, großer Garten, 18 Euro pro Tag.\n  - G) HolzWerk — Wir reparieren wackelige Stühle und lose Tischbeine, Leim und Schliff, Mo–Fr.\n  - H) CodeStart — Nachhilfe in Programmieren für Einsteiger, online, Di und Do 18 Uhr.\n  - I) RechnerWissen — Nachhilfe in Informatik für die Oberstufe, Mo und Mi 17–18 Uhr.\n  - J) SchrankDoc — Wir reparieren klemmende Schranktüren und Scharniere, Abgabe Di–Sa.\ncorrect: G\nexplanation: HolzWerk repariert Stühle.\n\n### Pregunta 2 [gen-q-3-n7yptc-2]\nToms Sessel hat einen Riss im Bezug, der erneuert werden soll.\n  - A) TragHilfe — Wir packen bei Ihrem Umzug an, auch sonntags, ab 40 Euro pro Stunde.\n  - B) DatenKlar — Nachhilfe in Statistik für Studierende, Mi ab 16 Uhr, kleine Gruppen.\n  - C) PolsterFix — Wir reparieren Polstermöbel und beziehen Sitzflächen neu, nur mit Termin.\n  - D) Glanzweg — Pflege und Reinigung von Fenstern und Büro, Sa 10–14 Uhr nach Absprache.\n  - E) WohnVermitt — Wir vermitteln zwei- und Dreizimmerwohnungen, faire Provision, kurzfristig.\n  - F) Pfotenglück — Pflege Ihres Hundes im Urlaub, großer Garten, 18 Euro pro Tag.\n  - G) HolzWerk — Wir reparieren wackelige Stühle und lose Tischbeine, Leim und Schliff, Mo–Fr.\n  - H) CodeStart — Nachhilfe in Programmieren für Einsteiger, online, Di und Do 18 Uhr.\n  - I) RechnerWissen — Nachhilfe in Informatik für die Oberstufe, Mo und Mi 17–18 Uhr.\n  - J) SchrankDoc — Wir reparieren klemmende Schranktüren und Scharniere, Abgabe Di–Sa.\ncorrect: C\nexplanation: PolsterFix bezieht Sitzflächen neu.\n\n### Pregunta 3 [gen-q-3-n7yptc-3]\nAn Lenas Kleiderschrank schließt eine Tür nicht mehr; das Scharnier ist locker.\n  - A) TragHilfe — Wir packen bei Ihrem Umzug an, auch sonntags, ab 40 Euro pro Stunde.\n  - B) DatenKlar — Nachhilfe in Statistik für Studierende, Mi ab 16 Uhr, kleine Gruppen.\n  - C) PolsterFix — Wir reparieren Polstermöbel und beziehen Sitzflächen neu, nur mit Termin.\n  - D) Glanzweg — Pflege und Reinigung von Fenstern und Büro, Sa 10–14 Uhr nach Absprache.\n  - E) WohnVermitt — Wir vermitteln zwei- und Dreizimmerwohnungen, faire Provision, kurzfristig.\n  - F) Pfotenglück — Pflege Ihres Hundes im Urlaub, großer Garten, 18 Euro pro Tag.\n  - G) HolzWerk — Wir reparieren wackelige Stühle und lose Tischbeine, Leim und Schliff, Mo–Fr.\n  - H) CodeStart — Nachhilfe in Programmieren für Einsteiger, online, Di und Do 18 Uhr.\n  - I) RechnerWissen — Nachhilfe in Informatik für die Oberstufe, Mo und Mi 17–18 Uhr.\n  - J) SchrankDoc — Wir reparieren klemmende Schranktüren und Scharniere, Abgabe Di–Sa.\ncorrect: J\nexplanation: SchrankDoc repariert Schranktüren.\n\n### Pregunta 4 [gen-q-3-n7yptc-4]\nDer Anfänger Ben will lernen, einfache Programme selbst zu schreiben.\n  - A) TragHilfe — Wir packen bei Ihrem Umzug an, auch sonntags, ab 40 Euro pro Stunde.\n  - B) DatenKlar — Nachhilfe in Statistik für Studierende, Mi ab 16 Uhr, kleine Gruppen.\n  - C) PolsterFix — Wir reparieren Polstermöbel und beziehen Sitzflächen neu, nur mit Termin.\n  - D) Glanzweg — Pflege und Reinigung von Fenstern und Büro, Sa 10–14 Uhr nach Absprache.\n  - E) WohnVermitt — Wir vermitteln zwei- und Dreizimmerwohnungen, faire Provision, kurzfristig.\n  - F) Pfotenglück — Pflege Ihres Hundes im Urlaub, großer Garten, 18 Euro pro Tag.\n  - G) HolzWerk — Wir reparieren wackelige Stühle und lose Tischbeine, Leim und Schliff, Mo–Fr.\n  - H) CodeStart — Nachhilfe in Programmieren für Einsteiger, online, Di und Do 18 Uhr.\n  - I) RechnerWissen — Nachhilfe in Informatik für die Oberstufe, Mo und Mi 17–18 Uhr.\n  - J) SchrankDoc — Wir reparieren klemmende Schranktüren und Scharniere, Abgabe Di–Sa.\ncorrect: H\nexplanation: CodeStart lehrt Programmieren.\n\n### Pregunta 5 [gen-q-3-n7yptc-5]\nDie Studentin Mia kämpft mit der Auswertung von Daten und sucht Unterstützung.\n  - A) TragHilfe — Wir packen bei Ihrem Umzug an, auch sonntags, ab 40 Euro pro Stunde.\n  - B) DatenKlar — Nachhilfe in Statistik für Studierende, Mi ab 16 Uhr, kleine Gruppen.\n  - C) PolsterFix — Wir reparieren Polstermöbel und beziehen Sitzflächen neu, nur mit Termin.\n  - D) Glanzweg — Pflege und Reinigung von Fenstern und Büro, Sa 10–14 Uhr nach Absprache.\n  - E) WohnVermitt — Wir vermitteln zwei- und Dreizimmerwohnungen, faire Provision, kurzfristig.\n  - F) Pfotenglück — Pflege Ihres Hundes im Urlaub, großer Garten, 18 Euro pro Tag.\n  - G) HolzWerk — Wir reparieren wackelige Stühle und lose Tischbeine, Leim und Schliff, Mo–Fr.\n  - H) CodeStart — Nachhilfe in Programmieren für Einsteiger, online, Di und Do 18 Uhr.\n  - I) RechnerWissen — Nachhilfe in Informatik für die Oberstufe, Mo und Mi 17–18 Uhr.\n  - J) SchrankDoc — Wir reparieren klemmende Schranktüren und Scharniere, Abgabe Di–Sa.\ncorrect: B\nexplanation: DatenKlar bietet Statistik.\n\n### Pregunta 6 [gen-q-3-n7yptc-6]\nDer Oberstufenschüler Jan braucht Hilfe im Fach rund um Computer und Logik.\n  - A) TragHilfe — Wir packen bei Ihrem Umzug an, auch sonntags, ab 40 Euro pro Stunde.\n  - B) DatenKlar — Nachhilfe in Statistik für Studierende, Mi ab 16 Uhr, kleine Gruppen.\n  - C) PolsterFix — Wir reparieren Polstermöbel und beziehen Sitzflächen neu, nur mit Termin.\n  - D) Glanzweg — Pflege und Reinigung von Fenstern und Büro, Sa 10–14 Uhr nach Absprache.\n  - E) WohnVermitt — Wir vermitteln zwei- und Dreizimmerwohnungen, faire Provision, kurzfristig.\n  - F) Pfotenglück — Pflege Ihres Hundes im Urlaub, großer Garten, 18 Euro pro Tag.\n  - G) HolzWerk — Wir reparieren wackelige Stühle und lose Tischbeine, Leim und Schliff, Mo–Fr.\n  - H) CodeStart — Nachhilfe in Programmieren für Einsteiger, online, Di und Do 18 Uhr.\n  - I) RechnerWissen — Nachhilfe in Informatik für die Oberstufe, Mo und Mi 17–18 Uhr.\n  - J) SchrankDoc — Wir reparieren klemmende Schranktüren und Scharniere, Abgabe Di–Sa.\ncorrect: I\nexplanation: RechnerWissen bietet Informatik.\n\n### Pregunta 7 [gen-q-3-n7yptc-7]\nHerr Ott sucht eine kostenlose Beratung zu seiner Rente.\n  - A) TragHilfe — Wir packen bei Ihrem Umzug an, auch sonntags, ab 40 Euro pro Stunde.\n  - B) DatenKlar — Nachhilfe in Statistik für Studierende, Mi ab 16 Uhr, kleine Gruppen.\n  - C) PolsterFix — Wir reparieren Polstermöbel und beziehen Sitzflächen neu, nur mit Termin.\n  - D) Glanzweg — Pflege und Reinigung von Fenstern und Büro, Sa 10–14 Uhr nach Absprache.\n  - E) WohnVermitt — Wir vermitteln zwei- und Dreizimmerwohnungen, faire Provision, kurzfristig.\n  - F) Pfotenglück — Pflege Ihres Hundes im Urlaub, großer Garten, 18 Euro pro Tag.\n  - G) HolzWerk — Wir reparieren wackelige Stühle und lose Tischbeine, Leim und Schliff, Mo–Fr.\n  - H) CodeStart — Nachhilfe in Programmieren für Einsteiger, online, Di und Do 18 Uhr.\n  - I) RechnerWissen — Nachhilfe in Informatik für die Oberstufe, Mo und Mi 17–18 Uhr.\n  - J) SchrankDoc — Wir reparieren klemmende Schranktüren und Scharniere, Abgabe Di–Sa.\ncorrect: 0\nexplanation: Keine Anzeige bietet Rentenberatung."
+    },
+    {
+      "file": "lesen-t3-auto-0dcsj1.json",
+      "teil": 3,
+      "q4": {
+        "verdict": "warn",
+        "findings": [
+          {
+            "severity": "warn",
+            "rule": "topic_field_missing",
+            "detail": "Sin _requestedTopic ni topicTag en batch/passages/questions"
+          }
+        ],
+        "blocked": false
+      },
+      "q3": {
+        "verdict": "pass",
+        "findings": []
+      },
+      "q1": {
+        "verdict": "block",
+        "wouldReject": true,
+        "findings": [
+          {
+            "severity": "block",
+            "rule": "near_duplicate",
+            "detail": "T3 matching fingerprint idéntico (465b3d3f6b77de6d) con «batches/generated/lesen-t3-auto-tz7n7y.json» (invariante a reordenación A–J)",
+            "span": "Die kleine Emma soll ein Tasteninstrument erlernen."
+          }
+        ]
+      },
+      "human": "\n### Pregunta 1 [gen-q-3-sr3vab-1]\nDie kleine Emma soll ein Tasteninstrument erlernen.\n  - A) Tierpension — Pflege Ihres Hundes im Urlaub, großer Garten, 18 Euro pro Tag.\n  - B) RadProfi — Wir reparieren Fahrräder direkt vor Ihrer Tür, Termin nur über die App.\n  - C) PC-Hilfe — Wir reparieren Computer und Drucker bei Ihnen daheim, Hausbesuch in 24 Stunden.\n  - D) WohnTraum — Wir vermitteln kleine Wohnungen in Uninähe, faire Provision.\n  - E) TragHilfe — Wir packen bei Ihrem Umzug an, auch sonntags, ab 40 Euro pro Stunde.\n  - F) SaitenKlang — Unterricht an der Gitarre für Erwachsene, auch ohne Vorkenntnisse, abends.\n  - G) AutoMedic — Wir reparieren Pannen und tauschen Bremsen am Wagen, Termin per Telefon.\n  - H) BogenStrich — Unterricht an der Geige für Anfänger, Sa vormittags, kleine Gruppen.\n  - I) TastenWelt — Unterricht am Klavier für Kinder und Erwachsene, Termine am Nachmittag und Abend.\n  - J) Frischeglanz — Pflege und Reinigung von Fenstern und Treppenhaus, Sa nach Absprache.\ncorrect: I\nexplanation: TastenWelt gibt Klavierunterricht.\n\n### Pregunta 2 [gen-q-3-sr3vab-2]\nPaul möchte das Zupfinstrument mit sechs Saiten spielen lernen.\n  - A) Tierpension — Pflege Ihres Hundes im Urlaub, großer Garten, 18 Euro pro Tag.\n  - B) RadProfi — Wir reparieren Fahrräder direkt vor Ihrer Tür, Termin nur über die App.\n  - C) PC-Hilfe — Wir reparieren Computer und Drucker bei Ihnen daheim, Hausbesuch in 24 Stunden.\n  - D) WohnTraum — Wir vermitteln kleine Wohnungen in Uninähe, faire Provision.\n  - E) TragHilfe — Wir packen bei Ihrem Umzug an, auch sonntags, ab 40 Euro pro Stunde.\n  - F) SaitenKlang — Unterricht an der Gitarre für Erwachsene, auch ohne Vorkenntnisse, abends.\n  - G) AutoMedic — Wir reparieren Pannen und tauschen Bremsen am Wagen, Termin per Telefon.\n  - H) BogenStrich — Unterricht an der Geige für Anfänger, Sa vormittags, kleine Gruppen.\n  - I) TastenWelt — Unterricht am Klavier für Kinder und Erwachsene, Termine am Nachmittag und Abend.\n  - J) Frischeglanz — Pflege und Reinigung von Fenstern und Treppenhaus, Sa nach Absprache.\ncorrect: F\nexplanation: SaitenKlang lehrt Gitarre.\n\n### Pregunta 3 [gen-q-3-sr3vab-3]\nFrau Berg träumt davon, ein Streichinstrument zu lernen, und sucht einen Anfängerkurs.\n  - A) Tierpension — Pflege Ihres Hundes im Urlaub, großer Garten, 18 Euro pro Tag.\n  - B) RadProfi — Wir reparieren Fahrräder direkt vor Ihrer Tür, Termin nur über die App.\n  - C) PC-Hilfe — Wir reparieren Computer und Drucker bei Ihnen daheim, Hausbesuch in 24 Stunden.\n  - D) WohnTraum — Wir vermitteln kleine Wohnungen in Uninähe, faire Provision.\n  - E) TragHilfe — Wir packen bei Ihrem Umzug an, auch sonntags, ab 40 Euro pro Stunde.\n  - F) SaitenKlang — Unterricht an der Gitarre für Erwachsene, auch ohne Vorkenntnisse, abends.\n  - G) AutoMedic — Wir reparieren Pannen und tauschen Bremsen am Wagen, Termin per Telefon.\n  - H) BogenStrich — Unterricht an der Geige für Anfänger, Sa vormittags, kleine Gruppen.\n  - I) TastenWelt — Unterricht am Klavier für Kinder und Erwachsene, Termine am Nachmittag und Abend.\n  - J) Frischeglanz — Pflege und Reinigung von Fenstern und Treppenhaus, Sa nach Absprache.\ncorrect: H\nexplanation: BogenStrich lehrt Geige.\n\n### Pregunta 4 [gen-q-3-sr3vab-4]\nBei Tom läuft der Rechner nicht mehr und das Gerät zum Ausdrucken streikt.\n  - A) Tierpension — Pflege Ihres Hundes im Urlaub, großer Garten, 18 Euro pro Tag.\n  - B) RadProfi — Wir reparieren Fahrräder direkt vor Ihrer Tür, Termin nur über die App.\n  - C) PC-Hilfe — Wir reparieren Computer und Drucker bei Ihnen daheim, Hausbesuch in 24 Stunden.\n  - D) WohnTraum — Wir vermitteln kleine Wohnungen in Uninähe, faire Provision.\n  - E) TragHilfe — Wir packen bei Ihrem Umzug an, auch sonntags, ab 40 Euro pro Stunde.\n  - F) SaitenKlang — Unterricht an der Gitarre für Erwachsene, auch ohne Vorkenntnisse, abends.\n  - G) AutoMedic — Wir reparieren Pannen und tauschen Bremsen am Wagen, Termin per Telefon.\n  - H) BogenStrich — Unterricht an der Geige für Anfänger, Sa vormittags, kleine Gruppen.\n  - I) TastenWelt — Unterricht am Klavier für Kinder und Erwachsene, Termine am Nachmittag und Abend.\n  - J) Frischeglanz — Pflege und Reinigung von Fenstern und Treppenhaus, Sa nach Absprache.\ncorrect: C\nexplanation: PC-Hilfe repariert Computer.\n\n### Pregunta 5 [gen-q-3-sr3vab-5]\nLenas Fahrrad hat einen Platten, den sie nicht selbst beheben will.\n  - A) Tierpension — Pflege Ihres Hundes im Urlaub, großer Garten, 18 Euro pro Tag.\n  - B) RadProfi — Wir reparieren Fahrräder direkt vor Ihrer Tür, Termin nur über die App.\n  - C) PC-Hilfe — Wir reparieren Computer und Drucker bei Ihnen daheim, Hausbesuch in 24 Stunden.\n  - D) WohnTraum — Wir vermitteln kleine Wohnungen in Uninähe, faire Provision.\n  - E) TragHilfe — Wir packen bei Ihrem Umzug an, auch sonntags, ab 40 Euro pro Stunde.\n  - F) SaitenKlang — Unterricht an der Gitarre für Erwachsene, auch ohne Vorkenntnisse, abends.\n  - G) AutoMedic — Wir reparieren Pannen und tauschen Bremsen am Wagen, Termin per Telefon.\n  - H) BogenStrich — Unterricht an der Geige für Anfänger, Sa vormittags, kleine Gruppen.\n  - I) TastenWelt — Unterricht am Klavier für Kinder und Erwachsene, Termine am Nachmittag und Abend.\n  - J) Frischeglanz — Pflege und Reinigung von Fenstern und Treppenhaus, Sa nach Absprache.\ncorrect: B\nexplanation: RadProfi repariert Fahrräder.\n\n### Pregunta 6 [gen-q-3-sr3vab-6]\nBei Herrn Cems Wagen leuchtet eine Warnung; eine Panne soll behoben werden.\n  - A) Tierpension — Pflege Ihres Hundes im Urlaub, großer Garten, 18 Euro pro Tag.\n  - B) RadProfi — Wir reparieren Fahrräder direkt vor Ihrer Tür, Termin nur über die App.\n  - C) PC-Hilfe — Wir reparieren Computer und Drucker bei Ihnen daheim, Hausbesuch in 24 Stunden.\n  - D) WohnTraum — Wir vermitteln kleine Wohnungen in Uninähe, faire Provision.\n  - E) TragHilfe — Wir packen bei Ihrem Umzug an, auch sonntags, ab 40 Euro pro Stunde.\n  - F) SaitenKlang — Unterricht an der Gitarre für Erwachsene, auch ohne Vorkenntnisse, abends.\n  - G) AutoMedic — Wir reparieren Pannen und tauschen Bremsen am Wagen, Termin per Telefon.\n  - H) BogenStrich — Unterricht an der Geige für Anfänger, Sa vormittags, kleine Gruppen.\n  - I) TastenWelt — Unterricht am Klavier für Kinder und Erwachsene, Termine am Nachmittag und Abend.\n  - J) Frischeglanz — Pflege und Reinigung von Fenstern und Treppenhaus, Sa nach Absprache.\ncorrect: G\nexplanation: AutoMedic repariert Pannen.\n\n### Pregunta 7 [gen-q-3-sr3vab-7]\nFrau Ott sucht einen günstigen Flug nach Spanien für den Sommer.\n  - A) Tierpension — Pflege Ihres Hundes im Urlaub, großer Garten, 18 Euro pro Tag.\n  - B) RadProfi — Wir reparieren Fahrräder direkt vor Ihrer Tür, Termin nur über die App.\n  - C) PC-Hilfe — Wir reparieren Computer und Drucker bei Ihnen daheim, Hausbesuch in 24 Stunden.\n  - D) WohnTraum — Wir vermitteln kleine Wohnungen in Uninähe, faire Provision.\n  - E) TragHilfe — Wir packen bei Ihrem Umzug an, auch sonntags, ab 40 Euro pro Stunde.\n  - F) SaitenKlang — Unterricht an der Gitarre für Erwachsene, auch ohne Vorkenntnisse, abends.\n  - G) AutoMedic — Wir reparieren Pannen und tauschen Bremsen am Wagen, Termin per Telefon.\n  - H) BogenStrich — Unterricht an der Geige für Anfänger, Sa vormittags, kleine Gruppen.\n  - I) TastenWelt — Unterricht am Klavier für Kinder und Erwachsene, Termine am Nachmittag und Abend.\n  - J) Frischeglanz — Pflege und Reinigung von Fenstern und Treppenhaus, Sa nach Absprache.\ncorrect: 0\nexplanation: Keine Anzeige bietet Flüge an."
+    },
+    {
+      "file": "lesen-t3-auto-px3otp.json",
+      "teil": 3,
+      "q4": {
+        "verdict": "warn",
+        "findings": [
+          {
+            "severity": "warn",
+            "rule": "topic_field_missing",
+            "detail": "Sin _requestedTopic ni topicTag en batch/passages/questions"
+          }
+        ],
+        "blocked": false
+      },
+      "q3": {
+        "verdict": "pass",
+        "findings": []
+      },
+      "q1": {
+        "verdict": "block",
+        "wouldReject": true,
+        "findings": [
+          {
+            "severity": "block",
+            "rule": "near_duplicate",
+            "detail": "T3 matching fingerprint idéntico (09c89108eba6dc01) con «batches/ready/lesen/lesen-t3-gemini-070.json» (invariante a reordenación A–J)",
+            "span": "Bei Lauras Wagen ist ein Reifen platt und muss instand geset"
+          }
+        ]
+      },
+      "human": "\n### Pregunta 1 [gen-q-3-1jkgs8-1]\nBei Lauras Wagen ist ein Reifen platt und muss instand gesetzt werden.\n  - A) ParagraphPlus — Nachhilfe in Jura-Grundlagen für Erstsemester, Mi ab 16 Uhr.\n  - B) TragHilfe — Wir packen bei Ihrem Umzug an, auch sonntags, ab 40 Euro pro Stunde.\n  - C) StromDoc — Wir prüfen und reparieren schwache Autobatterien und Lichtmaschinen, Mo–Sa.\n  - D) Pfotenglück — Pflege Ihres Hundes im Urlaub, großer Garten, 18 Euro pro Tag.\n  - E) ReifenProfi — Wir reparieren platte Reifen und wuchten Räder, Werkstatt zentral, Mo–Fr 9–18 Uhr.\n  - F) KontoKlar — Nachhilfe in Rechnungswesen für Einsteiger, Mo 17–18 Uhr, kleine Gruppen.\n  - G) WohnVermitt — Wir vermitteln zwei- und Dreizimmerwohnungen, faire Provision, kurzfristig.\n  - H) AbgasFix — Wir reparieren defekte Auspuffanlagen und wechseln Teile, nur mit Termin.\n  - I) Glanzweg — Pflege und Reinigung von Fenstern und Büro, Sa 10–14 Uhr nach Absprache.\n  - J) WirtschaftsWissen — Nachhilfe in BWL für Studierende, online, Di und Do 18 Uhr.\ncorrect: E\nexplanation: ReifenProfi repariert Reifen.\n\n### Pregunta 2 [gen-q-3-1jkgs8-2]\nBens Auto ist hinten sehr laut geworden; die Abgasanlage scheint defekt.\n  - A) ParagraphPlus — Nachhilfe in Jura-Grundlagen für Erstsemester, Mi ab 16 Uhr.\n  - B) TragHilfe — Wir packen bei Ihrem Umzug an, auch sonntags, ab 40 Euro pro Stunde.\n  - C) StromDoc — Wir prüfen und reparieren schwache Autobatterien und Lichtmaschinen, Mo–Sa.\n  - D) Pfotenglück — Pflege Ihres Hundes im Urlaub, großer Garten, 18 Euro pro Tag.\n  - E) ReifenProfi — Wir reparieren platte Reifen und wuchten Räder, Werkstatt zentral, Mo–Fr 9–18 Uhr.\n  - F) KontoKlar — Nachhilfe in Rechnungswesen für Einsteiger, Mo 17–18 Uhr, kleine Gruppen.\n  - G) WohnVermitt — Wir vermitteln zwei- und Dreizimmerwohnungen, faire Provision, kurzfristig.\n  - H) AbgasFix — Wir reparieren defekte Auspuffanlagen und wechseln Teile, nur mit Termin.\n  - I) Glanzweg — Pflege und Reinigung von Fenstern und Büro, Sa 10–14 Uhr nach Absprache.\n  - J) WirtschaftsWissen — Nachhilfe in BWL für Studierende, online, Di und Do 18 Uhr.\ncorrect: H\nexplanation: AbgasFix repariert Auspuffanlagen.\n\n### Pregunta 3 [gen-q-3-1jkgs8-3]\nBei Herrn Cems Fahrzeug startet der Motor morgens kaum; die Batterie ist wohl schwach.\n  - A) ParagraphPlus — Nachhilfe in Jura-Grundlagen für Erstsemester, Mi ab 16 Uhr.\n  - B) TragHilfe — Wir packen bei Ihrem Umzug an, auch sonntags, ab 40 Euro pro Stunde.\n  - C) StromDoc — Wir prüfen und reparieren schwache Autobatterien und Lichtmaschinen, Mo–Sa.\n  - D) Pfotenglück — Pflege Ihres Hundes im Urlaub, großer Garten, 18 Euro pro Tag.\n  - E) ReifenProfi — Wir reparieren platte Reifen und wuchten Räder, Werkstatt zentral, Mo–Fr 9–18 Uhr.\n  - F) KontoKlar — Nachhilfe in Rechnungswesen für Einsteiger, Mo 17–18 Uhr, kleine Gruppen.\n  - G) WohnVermitt — Wir vermitteln zwei- und Dreizimmerwohnungen, faire Provision, kurzfristig.\n  - H) AbgasFix — Wir reparieren defekte Auspuffanlagen und wechseln Teile, nur mit Termin.\n  - I) Glanzweg — Pflege und Reinigung von Fenstern und Büro, Sa 10–14 Uhr nach Absprache.\n  - J) WirtschaftsWissen — Nachhilfe in BWL für Studierende, online, Di und Do 18 Uhr.\ncorrect: C\nexplanation: StromDoc repariert Autobatterien.\n\n### Pregunta 4 [gen-q-3-1jkgs8-4]\nDie Studentin Mia kommt mit den Grundlagen der Betriebswirtschaft nicht klar.\n  - A) ParagraphPlus — Nachhilfe in Jura-Grundlagen für Erstsemester, Mi ab 16 Uhr.\n  - B) TragHilfe — Wir packen bei Ihrem Umzug an, auch sonntags, ab 40 Euro pro Stunde.\n  - C) StromDoc — Wir prüfen und reparieren schwache Autobatterien und Lichtmaschinen, Mo–Sa.\n  - D) Pfotenglück — Pflege Ihres Hundes im Urlaub, großer Garten, 18 Euro pro Tag.\n  - E) ReifenProfi — Wir reparieren platte Reifen und wuchten Räder, Werkstatt zentral, Mo–Fr 9–18 Uhr.\n  - F) KontoKlar — Nachhilfe in Rechnungswesen für Einsteiger, Mo 17–18 Uhr, kleine Gruppen.\n  - G) WohnVermitt — Wir vermitteln zwei- und Dreizimmerwohnungen, faire Provision, kurzfristig.\n  - H) AbgasFix — Wir reparieren defekte Auspuffanlagen und wechseln Teile, nur mit Termin.\n  - I) Glanzweg — Pflege und Reinigung von Fenstern und Büro, Sa 10–14 Uhr nach Absprache.\n  - J) WirtschaftsWissen — Nachhilfe in BWL für Studierende, online, Di und Do 18 Uhr.\ncorrect: J\nexplanation: WirtschaftsWissen bietet BWL-Nachhilfe.\n\n### Pregunta 5 [gen-q-3-1jkgs8-5]\nDer Erstsemester Tom braucht Hilfe bei den ersten Rechtsthemen.\n  - A) ParagraphPlus — Nachhilfe in Jura-Grundlagen für Erstsemester, Mi ab 16 Uhr.\n  - B) TragHilfe — Wir packen bei Ihrem Umzug an, auch sonntags, ab 40 Euro pro Stunde.\n  - C) StromDoc — Wir prüfen und reparieren schwache Autobatterien und Lichtmaschinen, Mo–Sa.\n  - D) Pfotenglück — Pflege Ihres Hundes im Urlaub, großer Garten, 18 Euro pro Tag.\n  - E) ReifenProfi — Wir reparieren platte Reifen und wuchten Räder, Werkstatt zentral, Mo–Fr 9–18 Uhr.\n  - F) KontoKlar — Nachhilfe in Rechnungswesen für Einsteiger, Mo 17–18 Uhr, kleine Gruppen.\n  - G) WohnVermitt — Wir vermitteln zwei- und Dreizimmerwohnungen, faire Provision, kurzfristig.\n  - H) AbgasFix — Wir reparieren defekte Auspuffanlagen und wechseln Teile, nur mit Termin.\n  - I) Glanzweg — Pflege und Reinigung von Fenstern und Büro, Sa 10–14 Uhr nach Absprache.\n  - J) WirtschaftsWissen — Nachhilfe in BWL für Studierende, online, Di und Do 18 Uhr.\ncorrect: A\nexplanation: ParagraphPlus bietet Jura-Nachhilfe.\n\n### Pregunta 6 [gen-q-3-1jkgs8-6]\nSara muss fürs Studium lernen, Geschäftszahlen korrekt zu verbuchen.\n  - A) ParagraphPlus — Nachhilfe in Jura-Grundlagen für Erstsemester, Mi ab 16 Uhr.\n  - B) TragHilfe — Wir packen bei Ihrem Umzug an, auch sonntags, ab 40 Euro pro Stunde.\n  - C) StromDoc — Wir prüfen und reparieren schwache Autobatterien und Lichtmaschinen, Mo–Sa.\n  - D) Pfotenglück — Pflege Ihres Hundes im Urlaub, großer Garten, 18 Euro pro Tag.\n  - E) ReifenProfi — Wir reparieren platte Reifen und wuchten Räder, Werkstatt zentral, Mo–Fr 9–18 Uhr.\n  - F) KontoKlar — Nachhilfe in Rechnungswesen für Einsteiger, Mo 17–18 Uhr, kleine Gruppen.\n  - G) WohnVermitt — Wir vermitteln zwei- und Dreizimmerwohnungen, faire Provision, kurzfristig.\n  - H) AbgasFix — Wir reparieren defekte Auspuffanlagen und wechseln Teile, nur mit Termin.\n  - I) Glanzweg — Pflege und Reinigung von Fenstern und Büro, Sa 10–14 Uhr nach Absprache.\n  - J) WirtschaftsWissen — Nachhilfe in BWL für Studierende, online, Di und Do 18 Uhr.\ncorrect: F\nexplanation: KontoKlar bietet Rechnungswesen-Nachhilfe.\n\n### Pregunta 7 [gen-q-3-1jkgs8-7]\nHerr Ott sucht eine günstige Pauschalreise nach Italien für den Sommer.\n  - A) ParagraphPlus — Nachhilfe in Jura-Grundlagen für Erstsemester, Mi ab 16 Uhr.\n  - B) TragHilfe — Wir packen bei Ihrem Umzug an, auch sonntags, ab 40 Euro pro Stunde.\n  - C) StromDoc — Wir prüfen und reparieren schwache Autobatterien und Lichtmaschinen, Mo–Sa.\n  - D) Pfotenglück — Pflege Ihres Hundes im Urlaub, großer Garten, 18 Euro pro Tag.\n  - E) ReifenProfi — Wir reparieren platte Reifen und wuchten Räder, Werkstatt zentral, Mo–Fr 9–18 Uhr.\n  - F) KontoKlar — Nachhilfe in Rechnungswesen für Einsteiger, Mo 17–18 Uhr, kleine Gruppen.\n  - G) WohnVermitt — Wir vermitteln zwei- und Dreizimmerwohnungen, faire Provision, kurzfristig.\n  - H) AbgasFix — Wir reparieren defekte Auspuffanlagen und wechseln Teile, nur mit Termin.\n  - I) Glanzweg — Pflege und Reinigung von Fenstern und Büro, Sa 10–14 Uhr nach Absprache.\n  - J) WirtschaftsWissen — Nachhilfe in BWL für Studierende, online, Di und Do 18 Uhr.\ncorrect: 0\nexplanation: Keine Anzeige bietet Flüge oder Pauschalreisen an."
+    },
+    {
+      "file": "lesen-t3-auto-x52enh.json",
+      "teil": 3,
+      "q4": {
+        "verdict": "warn",
+        "findings": [
+          {
+            "severity": "warn",
+            "rule": "topic_field_missing",
+            "detail": "Sin _requestedTopic ni topicTag en batch/passages/questions"
+          }
+        ],
+        "blocked": false
+      },
+      "q3": {
+        "verdict": "pass",
+        "findings": []
+      },
+      "q1": {
+        "verdict": "block",
+        "wouldReject": true,
+        "findings": [
+          {
+            "severity": "block",
+            "rule": "near_duplicate",
+            "detail": "T3 matching fingerprint idéntico (272faa2cead33e95) con «batches/ready/lesen/lesen-t3-claude-bp-020.json» (invariante a reordenación A–J)",
+            "span": "Pauls Tochter kommt in der Grundschule beim Schreiben nicht "
+          }
+        ]
+      },
+      "human": "\n### Pregunta 1 [gen-q-3-4rhhn1-1]\nPauls Tochter kommt in der Grundschule beim Schreiben nicht mit und braucht Förderung.\n  - A) Sauberzauber — Pflege und Reinigung von Fenstern und Treppenhaus, Sa nach Absprache.\n  - B) WohnTraum — Wir vermitteln familiengerechte Wohnungen, faire Provision, kurzfristig.\n  - C) RechenKind — Nachhilfe in Mathematik für die Klassen 3–6, online oder daheim, Di ab 15 Uhr.\n  - D) TragHilfe — Wir packen bei Ihrem Umzug an, auch sonntags, ab 40 Euro pro Stunde.\n  - E) LernZwerg — Nachhilfe in deutsch für die Grundschule, Mo und Mi 15–16 Uhr, kleine Gruppen.\n  - F) Tierpension — Pflege Ihres Hundes im Urlaub, großer Garten, 18 Euro pro Tag.\n  - G) HolzFix — Wir reparieren Holzspielzeug und Kinderstühle, Leim und Schliff, nur mit Termin.\n  - H) RadFix — Wir reparieren Kinderfahrräder und Roller, Werkstatt zentral, Mo–Fr 9–17 Uhr.\n  - I) LeseLust — Nachhilfe im Lesen und Schreiben für Kinder, Do 15–16 Uhr, ruhige Betreuung.\n  - J) PuppenDoktor — Wir reparieren Puppen und Stofftiere, Naht und Füllung, Abgabe Di–Sa.\ncorrect: E\nexplanation: LernZwerg bietet Deutsch-Nachhilfe.\n\n### Pregunta 2 [gen-q-3-4rhhn1-2]\nSaras Sohn tut sich in den unteren Klassen mit dem Rechnen schwer.\n  - A) Sauberzauber — Pflege und Reinigung von Fenstern und Treppenhaus, Sa nach Absprache.\n  - B) WohnTraum — Wir vermitteln familiengerechte Wohnungen, faire Provision, kurzfristig.\n  - C) RechenKind — Nachhilfe in Mathematik für die Klassen 3–6, online oder daheim, Di ab 15 Uhr.\n  - D) TragHilfe — Wir packen bei Ihrem Umzug an, auch sonntags, ab 40 Euro pro Stunde.\n  - E) LernZwerg — Nachhilfe in deutsch für die Grundschule, Mo und Mi 15–16 Uhr, kleine Gruppen.\n  - F) Tierpension — Pflege Ihres Hundes im Urlaub, großer Garten, 18 Euro pro Tag.\n  - G) HolzFix — Wir reparieren Holzspielzeug und Kinderstühle, Leim und Schliff, nur mit Termin.\n  - H) RadFix — Wir reparieren Kinderfahrräder und Roller, Werkstatt zentral, Mo–Fr 9–17 Uhr.\n  - I) LeseLust — Nachhilfe im Lesen und Schreiben für Kinder, Do 15–16 Uhr, ruhige Betreuung.\n  - J) PuppenDoktor — Wir reparieren Puppen und Stofftiere, Naht und Füllung, Abgabe Di–Sa.\ncorrect: C\nexplanation: RechenKind bietet Mathe-Nachhilfe.\n\n### Pregunta 3 [gen-q-3-4rhhn1-3]\nDas Kind von Frau Held kommt beim Entziffern von Texten kaum voran und braucht Unterstützung.\n  - A) Sauberzauber — Pflege und Reinigung von Fenstern und Treppenhaus, Sa nach Absprache.\n  - B) WohnTraum — Wir vermitteln familiengerechte Wohnungen, faire Provision, kurzfristig.\n  - C) RechenKind — Nachhilfe in Mathematik für die Klassen 3–6, online oder daheim, Di ab 15 Uhr.\n  - D) TragHilfe — Wir packen bei Ihrem Umzug an, auch sonntags, ab 40 Euro pro Stunde.\n  - E) LernZwerg — Nachhilfe in deutsch für die Grundschule, Mo und Mi 15–16 Uhr, kleine Gruppen.\n  - F) Tierpension — Pflege Ihres Hundes im Urlaub, großer Garten, 18 Euro pro Tag.\n  - G) HolzFix — Wir reparieren Holzspielzeug und Kinderstühle, Leim und Schliff, nur mit Termin.\n  - H) RadFix — Wir reparieren Kinderfahrräder und Roller, Werkstatt zentral, Mo–Fr 9–17 Uhr.\n  - I) LeseLust — Nachhilfe im Lesen und Schreiben für Kinder, Do 15–16 Uhr, ruhige Betreuung.\n  - J) PuppenDoktor — Wir reparieren Puppen und Stofftiere, Naht und Füllung, Abgabe Di–Sa.\ncorrect: I\nexplanation: LeseLust hilft Kindern beim Lesen.\n\n### Pregunta 4 [gen-q-3-4rhhn1-4]\nTims Lieblingsstofftier ist an der Naht gerissen und soll geflickt werden.\n  - A) Sauberzauber — Pflege und Reinigung von Fenstern und Treppenhaus, Sa nach Absprache.\n  - B) WohnTraum — Wir vermitteln familiengerechte Wohnungen, faire Provision, kurzfristig.\n  - C) RechenKind — Nachhilfe in Mathematik für die Klassen 3–6, online oder daheim, Di ab 15 Uhr.\n  - D) TragHilfe — Wir packen bei Ihrem Umzug an, auch sonntags, ab 40 Euro pro Stunde.\n  - E) LernZwerg — Nachhilfe in deutsch für die Grundschule, Mo und Mi 15–16 Uhr, kleine Gruppen.\n  - F) Tierpension — Pflege Ihres Hundes im Urlaub, großer Garten, 18 Euro pro Tag.\n  - G) HolzFix — Wir reparieren Holzspielzeug und Kinderstühle, Leim und Schliff, nur mit Termin.\n  - H) RadFix — Wir reparieren Kinderfahrräder und Roller, Werkstatt zentral, Mo–Fr 9–17 Uhr.\n  - I) LeseLust — Nachhilfe im Lesen und Schreiben für Kinder, Do 15–16 Uhr, ruhige Betreuung.\n  - J) PuppenDoktor — Wir reparieren Puppen und Stofftiere, Naht und Füllung, Abgabe Di–Sa.\ncorrect: J\nexplanation: PuppenDoktor repariert Stofftiere.\n\n### Pregunta 5 [gen-q-3-4rhhn1-5]\nAn Lenas Holzstuhl für die kleine ist ein Bein locker; es soll gerichtet werden.\n  - A) Sauberzauber — Pflege und Reinigung von Fenstern und Treppenhaus, Sa nach Absprache.\n  - B) WohnTraum — Wir vermitteln familiengerechte Wohnungen, faire Provision, kurzfristig.\n  - C) RechenKind — Nachhilfe in Mathematik für die Klassen 3–6, online oder daheim, Di ab 15 Uhr.\n  - D) TragHilfe — Wir packen bei Ihrem Umzug an, auch sonntags, ab 40 Euro pro Stunde.\n  - E) LernZwerg — Nachhilfe in deutsch für die Grundschule, Mo und Mi 15–16 Uhr, kleine Gruppen.\n  - F) Tierpension — Pflege Ihres Hundes im Urlaub, großer Garten, 18 Euro pro Tag.\n  - G) HolzFix — Wir reparieren Holzspielzeug und Kinderstühle, Leim und Schliff, nur mit Termin.\n  - H) RadFix — Wir reparieren Kinderfahrräder und Roller, Werkstatt zentral, Mo–Fr 9–17 Uhr.\n  - I) LeseLust — Nachhilfe im Lesen und Schreiben für Kinder, Do 15–16 Uhr, ruhige Betreuung.\n  - J) PuppenDoktor — Wir reparieren Puppen und Stofftiere, Naht und Füllung, Abgabe Di–Sa.\ncorrect: G\nexplanation: HolzFix repariert Kinderstühle.\n\n### Pregunta 6 [gen-q-3-4rhhn1-6]\nDas kleine Laufrad von Bens Sohn hat ein kaputtes Rad, das ersetzt werden soll.\n  - A) Sauberzauber — Pflege und Reinigung von Fenstern und Treppenhaus, Sa nach Absprache.\n  - B) WohnTraum — Wir vermitteln familiengerechte Wohnungen, faire Provision, kurzfristig.\n  - C) RechenKind — Nachhilfe in Mathematik für die Klassen 3–6, online oder daheim, Di ab 15 Uhr.\n  - D) TragHilfe — Wir packen bei Ihrem Umzug an, auch sonntags, ab 40 Euro pro Stunde.\n  - E) LernZwerg — Nachhilfe in deutsch für die Grundschule, Mo und Mi 15–16 Uhr, kleine Gruppen.\n  - F) Tierpension — Pflege Ihres Hundes im Urlaub, großer Garten, 18 Euro pro Tag.\n  - G) HolzFix — Wir reparieren Holzspielzeug und Kinderstühle, Leim und Schliff, nur mit Termin.\n  - H) RadFix — Wir reparieren Kinderfahrräder und Roller, Werkstatt zentral, Mo–Fr 9–17 Uhr.\n  - I) LeseLust — Nachhilfe im Lesen und Schreiben für Kinder, Do 15–16 Uhr, ruhige Betreuung.\n  - J) PuppenDoktor — Wir reparieren Puppen und Stofftiere, Naht und Füllung, Abgabe Di–Sa.\ncorrect: H\nexplanation: RadFix repariert Kinderfahrräder.\n\n### Pregunta 7 [gen-q-3-4rhhn1-7]\nHerr Ott sucht einen kostenlosen Deutschkurs für Geflüchtete am Abend.\n  - A) Sauberzauber — Pflege und Reinigung von Fenstern und Treppenhaus, Sa nach Absprache.\n  - B) WohnTraum — Wir vermitteln familiengerechte Wohnungen, faire Provision, kurzfristig.\n  - C) RechenKind — Nachhilfe in Mathematik für die Klassen 3–6, online oder daheim, Di ab 15 Uhr.\n  - D) TragHilfe — Wir packen bei Ihrem Umzug an, auch sonntags, ab 40 Euro pro Stunde.\n  - E) LernZwerg — Nachhilfe in deutsch für die Grundschule, Mo und Mi 15–16 Uhr, kleine Gruppen.\n  - F) Tierpension — Pflege Ihres Hundes im Urlaub, großer Garten, 18 Euro pro Tag.\n  - G) HolzFix — Wir reparieren Holzspielzeug und Kinderstühle, Leim und Schliff, nur mit Termin.\n  - H) RadFix — Wir reparieren Kinderfahrräder und Roller, Werkstatt zentral, Mo–Fr 9–17 Uhr.\n  - I) LeseLust — Nachhilfe im Lesen und Schreiben für Kinder, Do 15–16 Uhr, ruhige Betreuung.\n  - J) PuppenDoktor — Wir reparieren Puppen und Stofftiere, Naht und Füllung, Abgabe Di–Sa.\ncorrect: 0\nexplanation: Keine Anzeige bietet Deutschkurs für Geflüchtete am Abend."
+    },
+    {
+      "file": "lesen-t3-auto-nnw057.json",
+      "teil": 3,
+      "q4": {
+        "verdict": "warn",
+        "findings": [
+          {
+            "severity": "warn",
+            "rule": "topic_field_missing",
+            "detail": "Sin _requestedTopic ni topicTag en batch/passages/questions"
+          }
+        ],
+        "blocked": false
+      },
+      "q3": {
+        "verdict": "pass",
+        "findings": []
+      },
+      "q1": {
+        "verdict": "block",
+        "wouldReject": true,
+        "findings": [
+          {
+            "severity": "block",
+            "rule": "near_duplicate",
+            "detail": "T3 matching fingerprint idéntico (b4f1ca4009b49ab8) con «batches/ready/lesen/lesen-t3-gemini-072.json» (invariante a reordenación A–J)",
+            "span": "Der Schüler Jan möchte die Sprache Russlands von Grund auf l"
+          }
+        ]
+      },
+      "human": "\n### Pregunta 1 [gen-q-3-9bzvpi-1]\nDer Schüler Jan möchte die Sprache Russlands von Grund auf lernen.\n  - A) DisplayFix — Wir reparieren Handys und tauschen gesprungene Bildschirme, Mo–Fr 10–18 Uhr.\n  - B) FernOst — Nachhilfe in chinesisch für Anfänger, Mi ab 16 Uhr, kleine Gruppen.\n  - C) TragHilfe — Wir packen bei Ihrem Umzug an, auch sonntags, ab 40 Euro pro Stunde.\n  - D) TabletDoc — Wir reparieren Tablets und wechseln schwache Akkus, Abgabe Di–Sa bis 17 Uhr.\n  - E) SprachTor — Nachhilfe in arabisch, auch Schrift, Mo 18–19 Uhr, geduldige Betreuung.\n  - F) WohnVermitt — Wir vermitteln zwei- und Dreizimmerwohnungen, faire Provision, kurzfristig.\n  - G) OstWort — Nachhilfe in russisch für alle Stufen, online, Di und Do 17–19 Uhr.\n  - H) Glanzweg — Pflege und Reinigung von Fenstern und Büro, Sa 10–14 Uhr nach Absprache.\n  - I) Pfotenglück — Pflege Ihres Hundes im Urlaub, großer Garten, 18 Euro pro Tag.\n  - J) SpielFix — Wir reparieren Spielkonsolen und Controller aller Marken, Werkstatt zentral.\ncorrect: G\nexplanation: OstWort bietet Russisch.\n\n### Pregunta 2 [gen-q-3-9bzvpi-2]\nFrau Wolf reist beruflich nach Peking und will die Landessprache lernen.\n  - A) DisplayFix — Wir reparieren Handys und tauschen gesprungene Bildschirme, Mo–Fr 10–18 Uhr.\n  - B) FernOst — Nachhilfe in chinesisch für Anfänger, Mi ab 16 Uhr, kleine Gruppen.\n  - C) TragHilfe — Wir packen bei Ihrem Umzug an, auch sonntags, ab 40 Euro pro Stunde.\n  - D) TabletDoc — Wir reparieren Tablets und wechseln schwache Akkus, Abgabe Di–Sa bis 17 Uhr.\n  - E) SprachTor — Nachhilfe in arabisch, auch Schrift, Mo 18–19 Uhr, geduldige Betreuung.\n  - F) WohnVermitt — Wir vermitteln zwei- und Dreizimmerwohnungen, faire Provision, kurzfristig.\n  - G) OstWort — Nachhilfe in russisch für alle Stufen, online, Di und Do 17–19 Uhr.\n  - H) Glanzweg — Pflege und Reinigung von Fenstern und Büro, Sa 10–14 Uhr nach Absprache.\n  - I) Pfotenglück — Pflege Ihres Hundes im Urlaub, großer Garten, 18 Euro pro Tag.\n  - J) SpielFix — Wir reparieren Spielkonsolen und Controller aller Marken, Werkstatt zentral.\ncorrect: B\nexplanation: FernOst bietet Chinesisch.\n\n### Pregunta 3 [gen-q-3-9bzvpi-3]\nHerr Sami möchte die arabische Schrift und Sprache erlernen.\n  - A) DisplayFix — Wir reparieren Handys und tauschen gesprungene Bildschirme, Mo–Fr 10–18 Uhr.\n  - B) FernOst — Nachhilfe in chinesisch für Anfänger, Mi ab 16 Uhr, kleine Gruppen.\n  - C) TragHilfe — Wir packen bei Ihrem Umzug an, auch sonntags, ab 40 Euro pro Stunde.\n  - D) TabletDoc — Wir reparieren Tablets und wechseln schwache Akkus, Abgabe Di–Sa bis 17 Uhr.\n  - E) SprachTor — Nachhilfe in arabisch, auch Schrift, Mo 18–19 Uhr, geduldige Betreuung.\n  - F) WohnVermitt — Wir vermitteln zwei- und Dreizimmerwohnungen, faire Provision, kurzfristig.\n  - G) OstWort — Nachhilfe in russisch für alle Stufen, online, Di und Do 17–19 Uhr.\n  - H) Glanzweg — Pflege und Reinigung von Fenstern und Büro, Sa 10–14 Uhr nach Absprache.\n  - I) Pfotenglück — Pflege Ihres Hundes im Urlaub, großer Garten, 18 Euro pro Tag.\n  - J) SpielFix — Wir reparieren Spielkonsolen und Controller aller Marken, Werkstatt zentral.\ncorrect: E\nexplanation: SprachTor bietet Arabisch.\n\n### Pregunta 4 [gen-q-3-9bzvpi-4]\nBei Lena ist der Bildschirm des Telefons gesprungen; er soll ersetzt werden.\n  - A) DisplayFix — Wir reparieren Handys und tauschen gesprungene Bildschirme, Mo–Fr 10–18 Uhr.\n  - B) FernOst — Nachhilfe in chinesisch für Anfänger, Mi ab 16 Uhr, kleine Gruppen.\n  - C) TragHilfe — Wir packen bei Ihrem Umzug an, auch sonntags, ab 40 Euro pro Stunde.\n  - D) TabletDoc — Wir reparieren Tablets und wechseln schwache Akkus, Abgabe Di–Sa bis 17 Uhr.\n  - E) SprachTor — Nachhilfe in arabisch, auch Schrift, Mo 18–19 Uhr, geduldige Betreuung.\n  - F) WohnVermitt — Wir vermitteln zwei- und Dreizimmerwohnungen, faire Provision, kurzfristig.\n  - G) OstWort — Nachhilfe in russisch für alle Stufen, online, Di und Do 17–19 Uhr.\n  - H) Glanzweg — Pflege und Reinigung von Fenstern und Büro, Sa 10–14 Uhr nach Absprache.\n  - I) Pfotenglück — Pflege Ihres Hundes im Urlaub, großer Garten, 18 Euro pro Tag.\n  - J) SpielFix — Wir reparieren Spielkonsolen und Controller aller Marken, Werkstatt zentral.\ncorrect: A\nexplanation: DisplayFix repariert Handys.\n\n### Pregunta 5 [gen-q-3-9bzvpi-5]\nToms flacher Taschencomputer hält den Strom nicht mehr; der Akku soll getauscht werden.\n  - A) DisplayFix — Wir reparieren Handys und tauschen gesprungene Bildschirme, Mo–Fr 10–18 Uhr.\n  - B) FernOst — Nachhilfe in chinesisch für Anfänger, Mi ab 16 Uhr, kleine Gruppen.\n  - C) TragHilfe — Wir packen bei Ihrem Umzug an, auch sonntags, ab 40 Euro pro Stunde.\n  - D) TabletDoc — Wir reparieren Tablets und wechseln schwache Akkus, Abgabe Di–Sa bis 17 Uhr.\n  - E) SprachTor — Nachhilfe in arabisch, auch Schrift, Mo 18–19 Uhr, geduldige Betreuung.\n  - F) WohnVermitt — Wir vermitteln zwei- und Dreizimmerwohnungen, faire Provision, kurzfristig.\n  - G) OstWort — Nachhilfe in russisch für alle Stufen, online, Di und Do 17–19 Uhr.\n  - H) Glanzweg — Pflege und Reinigung von Fenstern und Büro, Sa 10–14 Uhr nach Absprache.\n  - I) Pfotenglück — Pflege Ihres Hundes im Urlaub, großer Garten, 18 Euro pro Tag.\n  - J) SpielFix — Wir reparieren Spielkonsolen und Controller aller Marken, Werkstatt zentral.\ncorrect: D\nexplanation: TabletDoc repariert Tablets.\n\n### Pregunta 6 [gen-q-3-9bzvpi-6]\nAn Bens Gerät zum Videospielen reagiert der Controller nicht mehr richtig.\n  - A) DisplayFix — Wir reparieren Handys und tauschen gesprungene Bildschirme, Mo–Fr 10–18 Uhr.\n  - B) FernOst — Nachhilfe in chinesisch für Anfänger, Mi ab 16 Uhr, kleine Gruppen.\n  - C) TragHilfe — Wir packen bei Ihrem Umzug an, auch sonntags, ab 40 Euro pro Stunde.\n  - D) TabletDoc — Wir reparieren Tablets und wechseln schwache Akkus, Abgabe Di–Sa bis 17 Uhr.\n  - E) SprachTor — Nachhilfe in arabisch, auch Schrift, Mo 18–19 Uhr, geduldige Betreuung.\n  - F) WohnVermitt — Wir vermitteln zwei- und Dreizimmerwohnungen, faire Provision, kurzfristig.\n  - G) OstWort — Nachhilfe in russisch für alle Stufen, online, Di und Do 17–19 Uhr.\n  - H) Glanzweg — Pflege und Reinigung von Fenstern und Büro, Sa 10–14 Uhr nach Absprache.\n  - I) Pfotenglück — Pflege Ihres Hundes im Urlaub, großer Garten, 18 Euro pro Tag.\n  - J) SpielFix — Wir reparieren Spielkonsolen und Controller aller Marken, Werkstatt zentral.\ncorrect: J\nexplanation: SpielFix repariert Konsolen.\n\n### Pregunta 7 [gen-q-3-9bzvpi-7]\nHerr Ott sucht eine kostenlose Beratung zur Krankenversicherung.\n  - A) DisplayFix — Wir reparieren Handys und tauschen gesprungene Bildschirme, Mo–Fr 10–18 Uhr.\n  - B) FernOst — Nachhilfe in chinesisch für Anfänger, Mi ab 16 Uhr, kleine Gruppen.\n  - C) TragHilfe — Wir packen bei Ihrem Umzug an, auch sonntags, ab 40 Euro pro Stunde.\n  - D) TabletDoc — Wir reparieren Tablets und wechseln schwache Akkus, Abgabe Di–Sa bis 17 Uhr.\n  - E) SprachTor — Nachhilfe in arabisch, auch Schrift, Mo 18–19 Uhr, geduldige Betreuung.\n  - F) WohnVermitt — Wir vermitteln zwei- und Dreizimmerwohnungen, faire Provision, kurzfristig.\n  - G) OstWort — Nachhilfe in russisch für alle Stufen, online, Di und Do 17–19 Uhr.\n  - H) Glanzweg — Pflege und Reinigung von Fenstern und Büro, Sa 10–14 Uhr nach Absprache.\n  - I) Pfotenglück — Pflege Ihres Hundes im Urlaub, großer Garten, 18 Euro pro Tag.\n  - J) SpielFix — Wir reparieren Spielkonsolen und Controller aller Marken, Werkstatt zentral.\ncorrect: 0\nexplanation: Keine Anzeige bietet eine solche Beratung."
+    }
+  ]
+}

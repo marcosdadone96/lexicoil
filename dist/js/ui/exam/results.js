@@ -212,11 +212,33 @@ function buildCorrection(d, isDE, writeAns, speakAns, passPercent = 60) {
     });
     d.horenParts?.forEach((p, pi) => {
       const meta = { module: 'horen', teil: p.teil, part: p };
-      if (p.questions) {
+      // Eje-2 Fase B: segments es autoridad cuando existe; questions[] es fallback.
+      // Elimina la doble sección de corrección (V-21) para partes con segments.
+      if (p.segments?.length) {
+        p.segments.forEach((s, si) => {
+          const label = p.segments.length > 1
+            ? `${isDE ? 'Hörverstehen' : 'Listening'} — ${isDE ? 'Teil' : 'Part'} ${p.teil} (${s.label})`
+            : `${isDE ? 'Hörverstehen' : 'Listening'} — ${isDE ? 'Teil' : 'Part'} ${p.teil}`;
+          pushQ(
+            'horen',
+            label,
+            segToQ(s).flatMap((q) => {
+              if (!isAnswerKeyRenderable(q, p)) {
+                registerInvalidGradingItem(d, meta, q);
+                return [];
+              }
+              const mod = 'horen_' + pi + '_' + si;
+              const user = S.answers[mod + '_' + q.id];
+              return [{ ok: goetheAnswersMatch(user, q.correct), q: q.question, yours: ansLabel(q, user, isDE), correct: correctLabel(q, isDE), explanation: q.explanation || '', grammarTags: q.grammarTags || [] }];
+            })
+          );
+        });
+      } else {
+        // Sin segments: questions[] es la fuente (H4 plano)
         pushQ(
           'horen',
           `${isDE ? 'Hörverstehen' : 'Listening'} — ${isDE ? 'Teil' : 'Part'} ${p.teil}`,
-          p.questions.flatMap((q) => {
+          (p.questions || []).flatMap((q) => {
             if (!isAnswerKeyRenderable(q, p)) {
               registerInvalidGradingItem(d, meta, q);
               return [];
@@ -226,21 +248,6 @@ function buildCorrection(d, isDE, writeAns, speakAns, passPercent = 60) {
           })
         );
       }
-      p.segments?.forEach((s, si) => {
-        pushQ(
-          'horen',
-          `${isDE ? 'Hörverstehen' : 'Listening'} — ${isDE ? 'Teil' : 'Part'} ${p.teil} (${s.label})`,
-          segToQ(s).flatMap((q) => {
-            if (!isAnswerKeyRenderable(q, p)) {
-              registerInvalidGradingItem(d, meta, q);
-              return [];
-            }
-            const mod = 'horen_' + pi + '_' + si;
-            const user = S.answers[mod + '_' + q.id];
-            return [{ ok: goetheAnswersMatch(user, q.correct), q: q.question, yours: ansLabel(q, user, isDE), correct: correctLabel(q, isDE), explanation: q.explanation || '', grammarTags: q.grammarTags || [] }];
-          })
-        );
-      });
       if (p.noteFields) {
         pushQ(
           'horen',
@@ -800,7 +807,8 @@ function renderResults(score,moduleResults,d,isDE,writeAns,speakAns,entryId,corr
   const weakMods=wholeExam?[]:getResultsWeakModules(mods,passPercent,isDE);
   const weakHtml=wholeExam?wholeExamSummaryHtml:weakMods.length?`<div class="results-detail"><h4>${isDE?'Schwache Bereiche':'Weak areas'}</h4><ul class="results-weak-list">${weakMods.map(w=>`<li>${esc(w.label)} — ${w.score}%</li>`).join('')}</ul></div>`:`<div class="results-detail"><h4>${isDE?'Schwache Bereiche':'Weak areas'}</h4><p class="u-text-xs u-text-secondary">${isDE?'Gute Leistung in den bewerteten Modulen.':'Strong performance across scored modules.'}</p></div>`;
   const markedList=markedWordsOverride||S.lastMarkedWords||[];
-  const markedHtml=markedList.length?`<div class="results-detail results-marked"><h4>Review the words you marked</h4><p style="font-size:12px;font-weight:600;color:var(--text-secondary);margin-bottom:10px">In official mode, marked words are translated here — save any you want to your deck.</p>${markedList.map((m,i)=>`<div class="marked-word-row" id="markedRow_${i}"><span class="marked-word">${esc(m.word)}</span><div class="marked-trans" id="markedTrans_${i}"><button type="button" class="btn-sm" onclick="expandMarkedWord('${encodeURIComponent(m.word)}',${i})">Show translation</button></div></div>`).join('')}</div>`:'';
+  const markedPosCls=typeof markedWordPosClass==='function'?markedWordPosClass:(w=>'');
+  const markedHtml=markedList.length?`<div class="results-detail results-marked"><h4>${isDE?'Markierte Wörter nachsehen':'Review the words you marked'}</h4><p style="font-size:12px;font-weight:600;color:var(--text-secondary);margin-bottom:10px">${isDE?'Im Official-Modus wurden markierte Wörter hier übersetzt — speichere sie optional in deinem Deck. Farben zeigen Wortart (Nomen, Verb …).':'In official mode, marked words are translated here — save any you want to your deck. Colors show word type (noun, verb …).'}</p>${markedList.map((m,i)=>{const w=typeof m==='string'?m:m.word;const posCls=markedPosCls(w);return`<div class="marked-word-row" id="markedRow_${i}"><span class="marked-word${posCls}">${esc(w)}</span><div class="marked-trans" id="markedTrans_${i}"><button type="button" class="btn-sm" onclick="expandMarkedWord('${encodeURIComponent(w)}',${i})">${isDE?'Übersetzung zeigen':'Show translation'}</button></div></div>`;}).join('')}</div>`:'';
   const vocabHtml=savedWords.length?`<div class="results-detail"><h4>Vocabulary detected</h4><ul class="results-vocab-list">${savedWords.slice(0,12).map(w=>`<li>${esc(w)}</li>`).join('')}${savedWords.length>12?`<li>+${savedWords.length-12} more</li>`:''}</ul></div>`:(isPracticeMode()?`<div class="results-detail"><h4>Vocabulary detected</h4><p class="u-text-xs u-text-secondary">Words you saved during practice appear in your deck.</p></div>`:'');
   const vocabGameHtml=renderVocabGameSection(histEntry,isDE);
   const goalForBatch=getActiveGoal();

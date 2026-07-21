@@ -29,24 +29,24 @@ function readOverrides(lang) {
   };
 }
 
-function readLegacyPool(lang) {
+function readLegacyPool(lang, maxLevel = 'C2') {
   const pool = new Set();
-  const legacyDir = path.join(ROOT, 'knowledge', 'cefr', 'vocab', lang);
-  if (fs.existsSync(legacyDir)) {
-    for (const f of fs.readdirSync(legacyDir)) {
-      if (!f.endsWith('.json')) continue;
-      const data = JSON.parse(fs.readFileSync(path.join(legacyDir, f), 'utf8'));
-      (data.lemmas || []).forEach((w) => pool.add(String(w).toLowerCase()));
-    }
-  }
-  const currentDir = path.join(ROOT, 'library', 'vocab', lang);
-  if (fs.existsSync(currentDir)) {
-    for (const f of fs.readdirSync(currentDir)) {
+  const maxIdx = LEVELS.indexOf(maxLevel);
+  const allowed = new Set(maxIdx >= 0 ? LEVELS.slice(0, maxIdx + 1) : LEVELS);
+
+  function ingestDir(dir) {
+    if (!fs.existsSync(dir)) return;
+    for (const f of fs.readdirSync(dir)) {
       if (!f.endsWith('.json') || f.startsWith('_')) continue;
-      const data = JSON.parse(fs.readFileSync(path.join(currentDir, f), 'utf8'));
+      const level = f.replace(/\.json$/i, '').toUpperCase();
+      if (LEVELS.includes(level) && !allowed.has(level)) continue;
+      const data = JSON.parse(fs.readFileSync(path.join(dir, f), 'utf8'));
       (data.lemmas || []).forEach((w) => pool.add(String(w).toLowerCase()));
     }
   }
+
+  ingestDir(path.join(ROOT, 'knowledge', 'cefr', 'vocab', lang));
+  ingestDir(path.join(ROOT, 'library', 'vocab', lang));
   return pool;
 }
 
@@ -99,11 +99,25 @@ function buildRankedList(lang, overrides) {
     seen.add(normalizeLemma(lemma));
   }
 
-  const pool = readLegacyPool(lang);
-  readExpansionPool().forEach((w) => pool.add(w));
+  const poolB1 = readLegacyPool(lang, 'B1');
+  const poolAll = readLegacyPool(lang, 'C2');
+  readExpansionPool().forEach((w) => {
+    // Expansion only enters ≤B1 band if not already tagged as C1/C2-only in knowledge
+    poolB1.add(w);
+    poolAll.add(w);
+  });
 
-  const filler = [...pool].filter((w) => isValidLemma(w) && !seen.has(w)).sort((a, b) => a.localeCompare(b, 'de'));
-  filler.forEach(push);
+  // Filler for ≤B1 cut: only A1–B1 legacy (prevents morphologie/hegemonie in B1 slice)
+  const fillerB1 = [...poolB1]
+    .filter((w) => isValidLemma(w) && !seen.has(w))
+    .sort((a, b) => a.localeCompare(b, 'de'));
+  fillerB1.forEach(push);
+
+  // Higher-band filler (B2–C2) only after cores+B1 filler — keeps C1/C2 out of B1 slice
+  const fillerHigh = [...poolAll]
+    .filter((w) => isValidLemma(w) && !seen.has(w) && !poolB1.has(w))
+    .sort((a, b) => a.localeCompare(b, 'de'));
+  fillerHigh.forEach(push);
 
   while (ranked.length < CUMULATIVE_CUTS.C2) {
     const i = ranked.length + 1;
@@ -163,6 +177,18 @@ function main() {
     ranked = buildRankedList(lang, overrides);
   } else {
     ranked = ranked.filter((w) => !overrides.exclude.has(w));
+  }
+
+  for (const [lemma, level] of Object.entries(overrides.forceInclude)) {
+    const lv = String(level).toUpperCase();
+    const idx = LEVELS.indexOf(lv);
+    if (idx < 0) continue;
+    const cut = CUMULATIVE_CUTS[lv];
+    const norm = normalizeLemma(lemma);
+    const pos = ranked.indexOf(norm);
+    if (pos >= 0) ranked.splice(pos, 1);
+    const insertAt = Math.min(cut - 1, ranked.length);
+    ranked.splice(insertAt, 0, norm);
   }
 
   if (writeFreq) writeFrequencyFile(lang, ranked);

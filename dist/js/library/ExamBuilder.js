@@ -383,6 +383,24 @@ const ExamBuilder = (() => {
             ? `Weakness focus: ${grammarTags.slice(0, 2).join(', ')}`
             : topicTagList[0] || `${cert.certificate} practice`;
 
+    // Normalize schreibenParts: ensure `teil` is always set (source field is `aufgabe`).
+    // DESIGN NOTE — Schreiben theme choice: the real Goethe B1 exam offers 2 theme
+    // alternatives per Teil 1 and 2. This implementation uses 3 fixed tasks with no
+    // choice. This is an intentional simplification for the practice mode; when the
+    // bank grows to include paired alternatives, add `alternatives: [taskA, taskB]`
+    // to each schreiben slot and update the renderer to show the choice UI.
+    (schreibenParts || []).forEach((p, idx) => {
+      if (p.teil == null) {
+        p.teil = (typeof p.aufgabe === 'number') ? p.aufgabe : idx + 1;
+      }
+    });
+
+    // Normalize Hören T1 segment labels to Aufnahme 1…N based on position (not source id).
+    const h1Part = (horenParts || []).find((p) => p.teil === 1);
+    if (h1Part && Array.isArray(h1Part.segments)) {
+      h1Part.segments.forEach((seg, idx) => { seg.label = `Aufnahme ${idx + 1}`; });
+    }
+
     const exam = {
       topic: topicLabel,
       level,

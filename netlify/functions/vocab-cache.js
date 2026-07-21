@@ -3,7 +3,11 @@
 const crypto = require('crypto');
 const { getStoreForEvent } = require('./lib/blobStore.js');
 const { corsHeaders, parseJsonBody, jsonResponse } = require('./lib/http.js');
-const { freeTranslate } = require('./lib/freeTranslate.js');
+const { freeTranslate, isJunkTranslation } = require('./lib/freeTranslate.js');
+const {
+  isPassageText,
+  isCompletePassageTranslation,
+} = require('../../js/engine/passageTranslate.js');
 
 const PASSAGE_MAX = 4000;
 const PUT_LIMIT = 40;
@@ -96,6 +100,25 @@ function validateEntry(from, to, text, translation) {
   const tr = String(translation || '').trim();
   if (!t || !tr) return 'empty';
   if (t.length > PASSAGE_MAX || tr.length > PASSAGE_MAX) return 'too_long';
+  if (isJunkTranslation(tr)) return 'junk_translation';
+  return null;
+}
+
+function lemmaCacheKey(surface, context) {
+  const s = normalizeText(surface);
+  const c = normalizeText(String(context || '').slice(0, 500));
+  return `lemma:de:${textHash(`${s}||${c}`)}`;
+}
+
+function genderCacheKey(word) {
+  return `gender:de:${textHash(normalizeText(word))}`;
+}
+
+function articleToGender(article) {
+  const a = String(article || '').toLowerCase();
+  if (a === 'der') return 'm';
+  if (a === 'die') return 'f';
+  if (a === 'das') return 'n';
   return null;
 }
 
@@ -108,10 +131,98 @@ exports.handler = async (event) => {
 
     if (event.httpMethod === 'GET') {
     const params = event.queryStringParameters || {};
+    const action = String(params.action || 'translate').trim().toLowerCase();
     const from = String(params.from || '').trim().toLowerCase();
     const to = String(params.to || '').trim().toLowerCase();
     const text = String(params.text || '');
     const context = String(params.context || '').trim().slice(0, PASSAGE_MAX);
+
+    // Separable-verb lemma safety net (only used when client allowlist reunify failed)
+    if (action === 'lemma') {
+      if (from !== 'de' || !text.trim() || context.length < 8) {
+        return jsonResponse(400, cors, { error: 'invalid_params' });
+      }
+      const { geminiApiKey, resolveSeparableLemma } = require('./lib/freeTranslate.js');
+      if (!geminiApiKey()) {
+        return jsonResponse(200, cors, { found: false, reason: 'no_api_key' });
+      }
+      const key = lemmaCacheKey(text, context);
+      const entry = await cacheGet(store, key);
+      if (entry?.lemma && !isJunkTranslation(entry.lemma)) {
+        return jsonResponse(
+          200,
+          { ...cors, 'Cache-Control': 'public, max-age=86400' },
+          { found: true, lemma: entry.lemma, source: entry.source || 'cache' },
+        );
+      }
+      const result = await resolveSeparableLemma(text.trim(), context);
+      if (result?.lemma && !isJunkTranslation(result.lemma)) {
+        await cacheSet(store, key, {
+          lemma: result.lemma,
+          source: result.source || 'gemini',
+          createdAt: Date.now(),
+        });
+        return jsonResponse(
+          200,
+          { ...cors, 'Cache-Control': 'public, max-age=86400' },
+          { found: true, lemma: result.lemma, source: result.source || 'gemini' },
+        );
+      }
+      return jsonResponse(200, cors, { found: false, reason: result?.reason || 'lemma_failed' });
+    }
+
+    // German noun gender safety net (only when client lexicon missed)
+    if (action === 'gender') {
+      if (from !== 'de' || !text.trim()) {
+        return jsonResponse(400, cors, { error: 'invalid_params' });
+      }
+      const likelyPlural =
+        params.likelyPlural === '1' ||
+        params.likelyPlural === 'true' ||
+        params.likelyPlural === true;
+      const { geminiApiKey, resolveGermanGender } = require('./lib/freeTranslate.js');
+      if (!geminiApiKey()) {
+        return jsonResponse(200, cors, { found: false, reason: 'no_api_key' });
+      }
+      const key = genderCacheKey(text);
+      const entry = await cacheGet(store, key);
+      if (entry?.article && articleToGender(entry.article)) {
+        return jsonResponse(
+          200,
+          { ...cors, 'Cache-Control': 'public, max-age=86400' },
+          {
+            found: true,
+            article: entry.article,
+            gender: entry.gender || articleToGender(entry.article),
+            plural: !!entry.plural,
+            source: entry.source || 'cache',
+          },
+        );
+      }
+      const result = await resolveGermanGender(text.trim(), { likelyPlural });
+      const gender = articleToGender(result?.article);
+      if (result?.article && gender) {
+        await cacheSet(store, key, {
+          article: result.article,
+          gender,
+          plural: !!result.plural,
+          source: result.source || 'gemini',
+          createdAt: Date.now(),
+        });
+        return jsonResponse(
+          200,
+          { ...cors, 'Cache-Control': 'public, max-age=86400' },
+          {
+            found: true,
+            article: result.article,
+            gender,
+            plural: !!result.plural,
+            source: result.source || 'gemini',
+          },
+        );
+      }
+      return jsonResponse(200, cors, { found: false, reason: result?.reason || 'gender_failed' });
+    }
 
     if (!validLang(from) || !validLang(to) || !text.trim()) {
       return jsonResponse(400, cors, { error: 'invalid_params' });
@@ -127,17 +238,28 @@ exports.handler = async (event) => {
       const key = cacheKey(from, to, text);
       const entry = await cacheGet(store, key);
 
-    if (entry?.translation) {
-      return jsonResponse(
-        200,
-        { ...cors, 'Cache-Control': 'public, max-age=86400' },
-        { found: true, translation: entry.translation, source: entry.source || 'cache' },
-      );
+    // Serve cache only if translation looks like a real gloss (drop poisoned MyMemory spam)
+    if (entry?.translation && !isJunkTranslation(entry.translation)) {
+      if (
+        !isPassageText(text) ||
+        isCompletePassageTranslation(text, entry.translation)
+      ) {
+        return jsonResponse(
+          200,
+          { ...cors, 'Cache-Control': 'public, max-age=86400' },
+          { found: true, translation: entry.translation, source: entry.source || 'cache' },
+        );
+      }
+    }
+
+    // Long passages: never use word-level freeTranslate (200-char cap / 128 output tokens).
+    if (isPassageText(text)) {
+      return jsonResponse(200, cors, { found: false, reason: 'passage_requires_ai' });
     }
 
     const result = await freeTranslate(text.trim(), from, to, context || undefined);
     const translated = result?.translation;
-    if (translated) {
+    if (translated && !isJunkTranslation(translated)) {
       const payload = {
         translation: translated,
         source: result.source || 'gemini',
@@ -150,7 +272,7 @@ exports.handler = async (event) => {
       return jsonResponse(
         200,
         { ...cors, 'Cache-Control': 'public, max-age=86400' },
-        { found: true, translation: translated, source: 'gemini' },
+        { found: true, translation: translated, source: result.source || 'gemini' },
       );
     }
 

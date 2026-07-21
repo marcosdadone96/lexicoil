@@ -25,6 +25,9 @@ const PracticeDictionary = (() => {
       fc.meaning ||
       (fc.translations && (fc.translations[targetLang] || Object.values(fc.translations)[0]));
     if (!trans) return null;
+    // Never reuse MyMemory spam / URL "translations" saved earlier
+    const t = String(trans).trim();
+    if (/^https?:\/\//i.test(t) || /\bhttps?:\/\//i.test(t)) return null;
     return {
       word: fc.word,
       type: fc.type || fc.pos || '',

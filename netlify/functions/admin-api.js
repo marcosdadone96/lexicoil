@@ -30,6 +30,24 @@
  *   POST /admin-api  { action: 'disable_reusable_part', lang, level, module, id }
  *   POST /admin-api  { action: 'enable_reusable_part',  lang, level, module, id }
  *   POST /admin-api  { action: 'delete_reusable_part',  lang, level, module, id }
+ *   GET  /admin-api?action=content_corrections[&status=pending][&limit] — list content corrections (Blobs)
+ *   GET  /admin-api?action=content_correction&id= — one correction
+ *   GET  /admin-api?action=generation_feedback[&status=candidate][&limit] — list learning rules (P0-2)
+ *   GET  /admin-api?action=generation_feedback_one&id= — one feedback rule
+ *   POST /admin-api  { action: 'create_content_correction', ...fields }
+ *   POST /admin-api  { action: 'update_content_correction', id, status?, newValue?, ... }
+ *   POST /admin-api  { action: 'reject_content_correction', id }
+ *   POST /admin-api  { action: 'dry_run_apply_corrections', sourceFile?, module?, ids? }
+ *   POST /admin-api  { action: 'apply_content_correction', id, confirm? }
+ *   POST /admin-api  { action: 'apply_approved_corrections', confirm?, sourceFile?, module?, ids? }
+ *   POST /admin-api  { action: 'update_generation_feedback', id, rule?, severity?, ... } — edit fields (no status)
+ *   POST /admin-api  { action: 'approve_generation_feedback', id }
+ *   POST /admin-api  { action: 'activate_generation_feedback', id, rule?, ... }
+ *   POST /admin-api  { action: 'deprecate_generation_feedback', id, note? }
+ *   POST /admin-api  { action: 'run_quality_on_candidate', id, lang, level, persist? }
+ *   POST /admin-api  { action: 'approve_candidate', id, forceApprove?, manualReviewed? }
+ *
+ * Prefer REST: /.netlify/functions/content-corrections (or /api/admin/content-corrections).
  */
 
 const { getJwtSecret, verifyAuthToken, normalizeEmail, emailToUserId } = require('./lib/authLib.js');
@@ -43,6 +61,7 @@ const {
   loadStagingCandidate,
   candidateSummary,
   updateCandidateStatus,
+  saveStagingCandidate,
 } = require('./lib/stagingStore.js');
 const { maybePromote, loadBlueprint } = require('./lib/promoteFromApproved.js');
 const {
@@ -58,6 +77,34 @@ const {
   getReusablePart,
 } = require('./lib/reusablePartsStore.js');
 const { approvePartToReusable } = require('./lib/autoApprovePartToReusable.js');
+const {
+  createCorrection,
+  listCorrections,
+  loadCorrection,
+  updateCorrection,
+  deleteCorrection,
+} = require('./lib/contentCorrectionsStore.js');
+const {
+  applyCorrection,
+  applyApprovedCorrections,
+  buildAdminApplyOptions,
+} = require('./lib/applyContentCorrections.js');
+const {
+  listFeedback,
+  loadFeedback,
+  updateFeedback,
+  approveFeedback,
+  activateFeedback,
+  deprecateFeedback,
+  feedbackMetrics,
+} = require('./lib/generationFeedbackStore.js');
+const {
+  canPromotePart,
+  partFromStagingCandidate,
+  loadQualityGatePolicy,
+  buildQualityMetadata,
+} = require('./lib/qualityGatePolicy.js');
+const { runQualityGates } = require('./lib/qualityGateRunner.js');
 const sb = require('./lib/supabaseAdmin.js');
 
 const POOL_LANGS = ['de', 'en', 'es'];
@@ -88,7 +135,7 @@ exports.handler = async (event) => {
   const auth = verifyAuthToken(getBearer(event));
   if (!auth.ok) return jsonResponse(401, cors, { error: 'unauthorized' });
 
-  // Verify admin (email + derived user id)
+  // Verify full admin (content_corrector uses content-corrections API only)
   const adminOk =
     (await sb.isAdminByEmail(auth.email)) ||
     (await sb.isAdmin(auth.userId));
@@ -260,6 +307,64 @@ exports.handler = async (event) => {
       return jsonResponse(200, cors, { part, id, lang, level, module });
     }
 
+    if (action === 'content_corrections') {
+      const store = getStoreForEvent(event);
+      if (!store) return jsonResponse(503, cors, { error: 'blobs_unavailable' });
+      const result = await listCorrections(store, {
+        status: params.status || 'pending',
+        limit: params.limit,
+        module: params.module,
+        sourceFile: params.sourceFile,
+      });
+      if (!result.ok) return jsonResponse(400, cors, { error: result.error });
+      return jsonResponse(200, cors, {
+        corrections: result.corrections,
+        count: result.count,
+        counts: result.counts,
+        status: result.status,
+      });
+    }
+
+    if (action === 'content_correction') {
+      const id = String(params.id || '').trim();
+      if (!id) return jsonResponse(400, cors, { error: 'missing_id' });
+      const store = getStoreForEvent(event);
+      if (!store) return jsonResponse(503, cors, { error: 'blobs_unavailable' });
+      const correction = await loadCorrection(store, id);
+      if (!correction) return jsonResponse(404, cors, { error: 'not_found' });
+      return jsonResponse(200, cors, { correction });
+    }
+
+    if (action === 'generation_feedback') {
+      const store = getStoreForEvent(event);
+      if (!store) return jsonResponse(503, cors, { error: 'blobs_unavailable' });
+      const result = await listFeedback(store, {
+        status: params.status || 'candidate',
+        type: params.type,
+        category: params.category,
+        module: params.module,
+        limit: params.limit,
+      });
+      if (!result.ok) return jsonResponse(400, cors, { error: result.error });
+      return jsonResponse(200, cors, {
+        feedback: result.feedback,
+        count: result.count,
+        counts: result.counts,
+        metrics: feedbackMetrics(result.counts),
+        status: result.status,
+      });
+    }
+
+    if (action === 'generation_feedback_one') {
+      const id = String(params.id || '').trim();
+      if (!id) return jsonResponse(400, cors, { error: 'missing_id' });
+      const store = getStoreForEvent(event);
+      if (!store) return jsonResponse(503, cors, { error: 'blobs_unavailable' });
+      const feedback = await loadFeedback(store, id);
+      if (!feedback) return jsonResponse(404, cors, { error: 'not_found' });
+      return jsonResponse(200, cors, { feedback });
+    }
+
     return jsonResponse(400, cors, { error: 'unknown_action' });
   }
 
@@ -345,14 +450,17 @@ exports.handler = async (event) => {
 
     if (action === 'add_admin') {
       if (!body.email) return jsonResponse(400, cors, { error: 'missing_email' });
+      const allowedRoles = new Set(['admin', 'superadmin', 'content_corrector']);
+      const role = String(body.role || 'admin').trim().toLowerCase();
+      if (!allowedRoles.has(role)) return jsonResponse(400, cors, { error: 'invalid_role' });
       const client = sb.getClient();
       if (!client) return jsonResponse(503, cors, { error: 'supabase_not_configured' });
       const profile = await sb.getUserProfileByEmail(body.email);
       if (!profile) return jsonResponse(404, cors, { error: 'user_not_found' });
       const { error } = await client
         .from('lc_admin_roles')
-        .upsert({ user_id: profile.id, email: body.email, role: body.role || 'admin' }, { onConflict: 'user_id' });
-      return jsonResponse(error ? 500 : 200, cors, { ok: !error, error: error?.message });
+        .upsert({ user_id: profile.id, email: body.email, role }, { onConflict: 'user_id' });
+      return jsonResponse(error ? 500 : 200, cors, { ok: !error, error: error?.message, role });
     }
 
     if (action === 'approve_candidate') {
@@ -366,6 +474,48 @@ exports.handler = async (event) => {
       const retryReusable = body.retryReusable === true;
       if (candidate.status !== 'pending' && !(retryReusable && candidate.status === 'approved')) {
         return jsonResponse(400, cors, { error: 'not_pending', status: candidate.status });
+      }
+
+      // PASO 10 — quality promotion guard (advisory by default → always allowed)
+      let qualityAdvisory = null;
+      try {
+        const policy = loadQualityGatePolicy({ mode: body.policyMode });
+        const part = partFromStagingCandidate(candidate);
+        const report = await runQualityGates({
+          part,
+          source: `staging:${candidate.id}`,
+          level,
+          lang,
+          teil: candidate.teil,
+          policyMode: policy.mode,
+          checkedBy: auth.email || 'admin',
+        });
+        const promotion = canPromotePart(report, {
+          mode: policy.mode,
+          manualReviewed: body.manualReviewed === true,
+          forceApprove: body.forceApprove === true,
+        });
+        qualityAdvisory = {
+          status: report.status,
+          policyMode: policy.mode,
+          promotion,
+          qualityMetadata: report.qualityMetadata,
+          gates: (report.gates || []).map((g) => ({ name: g.name, status: g.status })),
+        };
+        // Persist qualityMetadata on candidate (does not change staging status)
+        candidate.qualityMetadata = report.qualityMetadata;
+        await saveStagingCandidate(store, lang, level, candidate);
+
+        if (!promotion.allowed) {
+          return jsonResponse(403, cors, {
+            error: 'quality_blocks_promotion',
+            message: 'Quality policy blocks promotion. Use forceApprove after human review, or switch policy to advisory.',
+            qualityAdvisory,
+          });
+        }
+      } catch (qgErr) {
+        console.warn('[admin-api] quality gate advisory failed (continuing):', qgErr.message);
+        qualityAdvisory = { error: qgErr.message, policyMode: 'advisory', skipped: true };
       }
 
       // Save to reusable store first — promotion must not block this.
@@ -406,6 +556,40 @@ exports.handler = async (event) => {
         promoted,
         savedToReusable: true,
         reusableId: partResult?.id || partResult?.partKey || null,
+        qualityAdvisory,
+      });
+    }
+
+    if (action === 'run_quality_on_candidate') {
+      if (!body.id) return jsonResponse(400, cors, { error: 'missing_id' });
+      const lang = String(body.lang || '').trim().toLowerCase();
+      const level = String(body.level || '').trim().toUpperCase();
+      if (!lang || !level) return jsonResponse(400, cors, { error: 'missing_lang_level' });
+      const store = getStoreForEvent(event);
+      const candidate = await loadStagingCandidate(store, lang, level, body.id);
+      if (!candidate) return jsonResponse(404, cors, { error: 'not_found' });
+      const policy = loadQualityGatePolicy({ mode: body.policyMode });
+      const part = partFromStagingCandidate(candidate);
+      const report = await runQualityGates({
+        part,
+        source: `staging:${candidate.id}`,
+        level,
+        lang,
+        teil: candidate.teil,
+        policyMode: policy.mode,
+        checkedBy: auth.email || 'admin',
+      });
+      const promotion = canPromotePart(report, { mode: policy.mode });
+      if (body.persist !== false) {
+        candidate.qualityMetadata = report.qualityMetadata || buildQualityMetadata(report, { policyMode: policy.mode });
+        await saveStagingCandidate(store, lang, level, candidate);
+      }
+      return jsonResponse(200, cors, {
+        ok: true,
+        report,
+        promotion,
+        qualityMetadata: candidate.qualityMetadata,
+        suggestedStatus: report.stagingStatus,
       });
     }
 
@@ -455,6 +639,173 @@ exports.handler = async (event) => {
       }
       await updateCandidateStatus(store, lang, level, body.id, 'rejected');
       return jsonResponse(200, cors, { rejected: true });
+    }
+
+    if (action === 'create_content_correction') {
+      const store = getStoreForEvent(event);
+      if (!store) return jsonResponse(503, cors, { error: 'blobs_unavailable' });
+      const result = await createCorrection(store, body, { email: auth.email, isAdmin: true });
+      if (!result.ok) {
+        return jsonResponse(400, cors, {
+          error: result.error,
+          errors: result.errors || [],
+          warnings: result.warnings || [],
+        });
+      }
+      return jsonResponse(201, cors, { correction: result.correction, warnings: result.warnings || [] });
+    }
+
+    if (action === 'update_content_correction') {
+      const id = String(body.id || '').trim();
+      if (!id) return jsonResponse(400, cors, { error: 'missing_id' });
+      const store = getStoreForEvent(event);
+      if (!store) return jsonResponse(503, cors, { error: 'blobs_unavailable' });
+      const { id: _omit, action: _a, ...patch } = body;
+      const result = await updateCorrection(store, id, patch, { email: auth.email });
+      if (!result.ok) {
+        const code = result.error === 'not_found' ? 404 : 400;
+        return jsonResponse(code, cors, { error: result.error, errors: result.errors || [] });
+      }
+      return jsonResponse(200, cors, { correction: result.correction });
+    }
+
+    if (action === 'update_generation_feedback') {
+      const id = String(body.id || '').trim();
+      if (!id) return jsonResponse(400, cors, { error: 'missing_id' });
+      const store = getStoreForEvent(event);
+      if (!store) return jsonResponse(503, cors, { error: 'blobs_unavailable' });
+      const { id: _omit, action: _a, status: _s, ...patch } = body;
+      const result = await updateFeedback(store, id, patch, { email: auth.email });
+      if (!result.ok) {
+        const code = result.error === 'not_found' ? 404 : 400;
+        return jsonResponse(code, cors, {
+          error: result.error,
+          errors: result.errors || [],
+          message: result.message,
+        });
+      }
+      return jsonResponse(200, cors, { feedback: result.feedback });
+    }
+
+    if (action === 'approve_generation_feedback') {
+      const id = String(body.id || '').trim();
+      if (!id) return jsonResponse(400, cors, { error: 'missing_id' });
+      const store = getStoreForEvent(event);
+      if (!store) return jsonResponse(503, cors, { error: 'blobs_unavailable' });
+      const result = await approveFeedback(store, id, { email: auth.email });
+      if (!result.ok) {
+        const code = result.error === 'not_found' ? 404 : 400;
+        return jsonResponse(code, cors, { error: result.error, from: result.from, to: result.to });
+      }
+      return jsonResponse(200, cors, { feedback: result.feedback });
+    }
+
+    if (action === 'activate_generation_feedback') {
+      const id = String(body.id || '').trim();
+      if (!id) return jsonResponse(400, cors, { error: 'missing_id' });
+      const store = getStoreForEvent(event);
+      if (!store) return jsonResponse(503, cors, { error: 'blobs_unavailable' });
+      const { id: _omit, action: _a, status: _s, ...patch } = body;
+      const result = await activateFeedback(store, id, { email: auth.email, patch });
+      if (!result.ok) {
+        const code = result.error === 'not_found' ? 404 : 400;
+        return jsonResponse(code, cors, {
+          error: result.error,
+          reasons: result.reasons || [],
+          warnings: result.warnings || [],
+          from: result.from,
+          to: result.to,
+        });
+      }
+      return jsonResponse(200, cors, { feedback: result.feedback, gate: result.gate });
+    }
+
+    if (action === 'deprecate_generation_feedback') {
+      const id = String(body.id || '').trim();
+      if (!id) return jsonResponse(400, cors, { error: 'missing_id' });
+      const store = getStoreForEvent(event);
+      if (!store) return jsonResponse(503, cors, { error: 'blobs_unavailable' });
+      const result = await deprecateFeedback(store, id, { email: auth.email, note: body.note });
+      if (!result.ok) {
+        const code = result.error === 'not_found' ? 404 : 400;
+        return jsonResponse(code, cors, { error: result.error, from: result.from, to: result.to });
+      }
+      return jsonResponse(200, cors, { feedback: result.feedback });
+    }
+
+    if (action === 'reject_content_correction') {
+      const id = String(body.id || '').trim();
+      if (!id) return jsonResponse(400, cors, { error: 'missing_id' });
+      const store = getStoreForEvent(event);
+      if (!store) return jsonResponse(503, cors, { error: 'blobs_unavailable' });
+      const result = await deleteCorrection(store, id, {
+        email: auth.email,
+        hard: !!body.hard,
+        comment: body.comment != null ? body.comment : body.note,
+      });
+      if (!result.ok) {
+        const code = result.error === 'not_found' ? 404 : 400;
+        return jsonResponse(code, cors, { error: result.error });
+      }
+      return jsonResponse(200, cors, result);
+    }
+
+    if (action === 'dry_run_apply_corrections') {
+      const store = getStoreForEvent(event);
+      if (!store) return jsonResponse(503, cors, { error: 'blobs_unavailable' });
+      const adminOpts = buildAdminApplyOptions({ ...body, confirm: false }, auth.email);
+      const result = await applyApprovedCorrections(store, {
+        ...adminOpts,
+        dryRun: true,
+        confirm: false,
+        sourceFile: body.sourceFile,
+        module: body.module,
+        ids: body.ids,
+        limit: body.limit,
+      });
+      return jsonResponse(200, cors, result);
+    }
+
+    if (action === 'apply_content_correction') {
+      const id = String(body.id || body.correctionId || '').trim();
+      if (!id) return jsonResponse(400, cors, { error: 'missing_id' });
+      const store = getStoreForEvent(event);
+      if (!store) return jsonResponse(503, cors, { error: 'blobs_unavailable' });
+      const adminOpts = buildAdminApplyOptions(body, auth.email);
+      const result = await applyCorrection(store, id, adminOpts);
+      return jsonResponse(result.ok || result.dryRun ? 200 : 409, cors, result);
+    }
+
+    if (action === 'apply_approved_corrections') {
+      const store = getStoreForEvent(event);
+      if (!store) return jsonResponse(503, cors, { error: 'blobs_unavailable' });
+      if (body.confirm !== true) {
+        const adminOpts = buildAdminApplyOptions({ ...body, confirm: false }, auth.email);
+        const result = await applyApprovedCorrections(store, {
+          ...adminOpts,
+          dryRun: true,
+          confirm: false,
+          sourceFile: body.sourceFile,
+          module: body.module,
+          ids: body.ids,
+          limit: body.limit,
+        });
+        return jsonResponse(200, cors, {
+          ...result,
+          message: result.message || 'Dry run — pasa confirm:true para aplicar.',
+        });
+      }
+      const adminOpts = buildAdminApplyOptions(body, auth.email);
+      const result = await applyApprovedCorrections(store, {
+        ...adminOpts,
+        dryRun: false,
+        confirm: true,
+        sourceFile: body.sourceFile,
+        module: body.module,
+        ids: body.ids,
+        limit: body.limit,
+      });
+      return jsonResponse(result.ok ? 200 : 409, cors, result);
     }
 
     if (action === 'reset_quota') {

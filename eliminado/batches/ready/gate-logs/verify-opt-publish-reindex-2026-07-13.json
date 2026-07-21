@@ -1,0 +1,357 @@
+{
+  "generatedAt": "2026-07-13T21:12:18.850Z",
+  "fileCount": 55,
+  "backup": "library\\reusable-seed\\backups\\de_B1.pre-publish-reindex-55.2026-07-13T21-12-00-706Z.json",
+  "ok": [
+    {
+      "file": "lesen-t2-gemini-103.json",
+      "id": "lesen-t2-gemini-103"
+    },
+    {
+      "file": "lesen-t2-gemini-104.json",
+      "id": "lesen-t2-gemini-104"
+    },
+    {
+      "file": "lesen-t2-gemini-105.json",
+      "id": "lesen-t2-gemini-105"
+    },
+    {
+      "file": "lesen-t2-gemini-106.json",
+      "id": "lesen-t2-gemini-106"
+    },
+    {
+      "file": "lesen-t4-gemini-043.json",
+      "id": "lesen-t4-gemini-043"
+    },
+    {
+      "file": "lesen-t4-gemini-044.json",
+      "id": "lesen-t4-gemini-044"
+    },
+    {
+      "file": "lesen-t4-gemini-045.json",
+      "id": "lesen-t4-gemini-045"
+    },
+    {
+      "file": "lesen-t5-gemini-076.json",
+      "id": "lesen-t5-gemini-076"
+    },
+    {
+      "file": "lesen-t5-gemini-077.json",
+      "id": "lesen-t5-gemini-077"
+    },
+    {
+      "file": "lesen-t5-gemini-078.json",
+      "id": "lesen-t5-gemini-078"
+    }
+  ],
+  "fail": [
+    {
+      "file": "lesen-t1-gemini-183.json",
+      "ok": false,
+      "error": "POOL-DEDUP: pasaje demasiado similar (100% Jaccard ≥ 55%) a pub-de-B1-lesen-t1-b140a8426fc6 en celda Stadtleben×T1. Regenera con otro tipo de texto.",
+      "reason": "pool_dedup"
+    },
+    {
+      "file": "lesen-t2-gemini-107.json",
+      "ok": false,
+      "error": "POOL-DEDUP: pasaje demasiado similar (100% Jaccard ≥ 55%) a pub-de-B1-lesen-t2-30f4e4dadcd1 en celda Medien×T2. Regenera con otro tipo de texto.",
+      "reason": "pool_dedup"
+    },
+    {
+      "file": "lesen-t2-gemini-112.json",
+      "ok": false,
+      "error": "POOL-DEDUP: pasaje demasiado similar (100% Jaccard ≥ 55%) a pub-de-B1-lesen-t2-4de646ea75b0 en celda Umwelt×T2. Regenera con otro tipo de texto.",
+      "reason": "pool_dedup"
+    },
+    {
+      "file": "lesen-t4-gemini-046.json",
+      "ok": false,
+      "error": "POOL-DEDUP: pasaje demasiado similar (100% Jaccard ≥ 55%) a pub-de-B1-lesen-t4-4985794766cd en celda Konsum×T4. Regenera con otro tipo de texto.",
+      "reason": "pool_dedup"
+    },
+    {
+      "file": "lesen-t4-gemini-048.json",
+      "ok": false,
+      "error": "POOL-DEDUP: pasaje demasiado similar (100% Jaccard ≥ 55%) a pub-de-B1-lesen-t4-a270da07c854 en celda Ernährung×T4. Regenera con otro tipo de texto.",
+      "reason": "pool_dedup"
+    },
+    {
+      "file": "lesen-t5-gemini-079.json",
+      "ok": false,
+      "error": "POOL-DEDUP: pasaje demasiado similar (100% Jaccard ≥ 55%) a pub-de-B1-lesen-t5-da5fe82e08cf en celda Reisen×T5. Regenera con otro tipo de texto.",
+      "reason": "pool_dedup"
+    },
+    {
+      "file": "lesen-t5-gemini-081.json",
+      "ok": false,
+      "error": "POOL-DEDUP: pasaje demasiado similar (100% Jaccard ≥ 55%) a pub-de-B1-lesen-t5-7218fbf35308 en celda Arbeit×T5. Regenera con otro tipo de texto.",
+      "reason": "pool_dedup"
+    }
+  ],
+  "skip": [
+    {
+      "file": "horen-t1-gemini-001.json",
+      "duplicate": true
+    },
+    {
+      "file": "horen-t1-gemini-002.json",
+      "duplicate": true
+    },
+    {
+      "file": "horen-t1-gemini-003.json",
+      "duplicate": true
+    },
+    {
+      "file": "horen-t1-gemini-004.json",
+      "duplicate": true
+    },
+    {
+      "file": "horen-t1-gemini-005.json",
+      "duplicate": true
+    },
+    {
+      "file": "horen-t1-gemini-024.json",
+      "duplicate": true
+    },
+    {
+      "file": "horen-t1-gemini-025.json",
+      "duplicate": true
+    },
+    {
+      "file": "horen-t2-gemini-028.json",
+      "duplicate": true
+    },
+    {
+      "file": "horen-t2-gemini-029.json",
+      "duplicate": true
+    },
+    {
+      "file": "horen-t2-gemini-030.json",
+      "duplicate": true
+    },
+    {
+      "file": "horen-t2-gemini-031.json",
+      "duplicate": true
+    },
+    {
+      "file": "horen-t2-gemini-032.json",
+      "duplicate": true
+    },
+    {
+      "file": "horen-t2-gemini-033.json",
+      "duplicate": true
+    },
+    {
+      "file": "horen-t3-gemini-008.json",
+      "duplicate": true
+    },
+    {
+      "file": "horen-t3-gemini-009.json",
+      "duplicate": true
+    },
+    {
+      "file": "horen-t3-gemini-010.json",
+      "duplicate": true
+    },
+    {
+      "file": "horen-t3-gemini-011.json",
+      "duplicate": true
+    },
+    {
+      "file": "horen-t3-gemini-012.json",
+      "duplicate": true
+    },
+    {
+      "file": "horen-t3-gemini-013.json",
+      "duplicate": true
+    },
+    {
+      "file": "horen-t4-gemini-014.json",
+      "duplicate": true
+    },
+    {
+      "file": "horen-t4-gemini-015.json",
+      "duplicate": true
+    },
+    {
+      "file": "horen-t4-gemini-016.json",
+      "duplicate": true
+    },
+    {
+      "file": "lesen-t3-auto-3258cv.json",
+      "duplicate": true
+    },
+    {
+      "file": "lesen-t3-gemini-002.json",
+      "duplicate": true
+    },
+    {
+      "file": "schreiben-gemini-011-t1",
+      "duplicate": true
+    },
+    {
+      "file": "schreiben-gemini-011-t2",
+      "duplicate": true
+    },
+    {
+      "file": "schreiben-gemini-011-t3",
+      "duplicate": true
+    },
+    {
+      "file": "schreiben-gemini-012-t1",
+      "duplicate": true
+    },
+    {
+      "file": "schreiben-gemini-012-t2",
+      "duplicate": true
+    },
+    {
+      "file": "schreiben-gemini-012-t3",
+      "duplicate": true
+    },
+    {
+      "file": "schreiben-gemini-013-t1",
+      "duplicate": true
+    },
+    {
+      "file": "schreiben-gemini-013-t2",
+      "duplicate": true
+    },
+    {
+      "file": "schreiben-gemini-013-t3",
+      "duplicate": true
+    },
+    {
+      "file": "schreiben-gemini-014-t1",
+      "duplicate": true
+    },
+    {
+      "file": "schreiben-gemini-014-t2",
+      "duplicate": true
+    },
+    {
+      "file": "schreiben-gemini-014-t3",
+      "duplicate": true
+    },
+    {
+      "file": "schreiben-gemini-015-t1",
+      "duplicate": true
+    },
+    {
+      "file": "schreiben-gemini-015-t2",
+      "duplicate": true
+    },
+    {
+      "file": "schreiben-gemini-015-t3",
+      "duplicate": true
+    },
+    {
+      "file": "schreiben-gemini-016-t1",
+      "duplicate": true
+    },
+    {
+      "file": "schreiben-gemini-016-t2",
+      "duplicate": true
+    },
+    {
+      "file": "schreiben-gemini-016-t3",
+      "duplicate": true
+    },
+    {
+      "file": "schreiben-gemini-017-t1",
+      "duplicate": true
+    },
+    {
+      "file": "schreiben-gemini-017-t2",
+      "duplicate": true
+    },
+    {
+      "file": "schreiben-gemini-017-t3",
+      "duplicate": true
+    },
+    {
+      "file": "schreiben-gemini-018-t1",
+      "duplicate": true
+    },
+    {
+      "file": "schreiben-gemini-018-t2",
+      "duplicate": true
+    },
+    {
+      "file": "schreiben-gemini-018-t3",
+      "duplicate": true
+    },
+    {
+      "file": "schreiben-gemini-019-t1",
+      "duplicate": true
+    },
+    {
+      "file": "schreiben-gemini-019-t2",
+      "duplicate": true
+    },
+    {
+      "file": "schreiben-gemini-019-t3",
+      "duplicate": true
+    },
+    {
+      "file": "sprechen-gemini-009-t1",
+      "duplicate": true
+    },
+    {
+      "file": "sprechen-gemini-009-t2",
+      "duplicate": true
+    },
+    {
+      "file": "sprechen-gemini-009-t3",
+      "duplicate": true
+    },
+    {
+      "file": "sprechen-gemini-010-t1",
+      "duplicate": true
+    },
+    {
+      "file": "sprechen-gemini-010-t2",
+      "duplicate": true
+    },
+    {
+      "file": "sprechen-gemini-010-t3",
+      "duplicate": true
+    },
+    {
+      "file": "sprechen-gemini-011-t1",
+      "duplicate": true
+    },
+    {
+      "file": "sprechen-gemini-011-t2",
+      "duplicate": true
+    },
+    {
+      "file": "sprechen-gemini-011-t3",
+      "duplicate": true
+    },
+    {
+      "file": "sprechen-gemini-012-t1",
+      "duplicate": true
+    },
+    {
+      "file": "sprechen-gemini-012-t2",
+      "duplicate": true
+    },
+    {
+      "file": "sprechen-gemini-012-t3",
+      "duplicate": true
+    },
+    {
+      "file": "sprechen-gemini-013-t1",
+      "duplicate": true
+    },
+    {
+      "file": "sprechen-gemini-013-t2",
+      "duplicate": true
+    },
+    {
+      "file": "sprechen-gemini-013-t3",
+      "duplicate": true
+    }
+  ]
+}

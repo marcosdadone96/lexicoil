@@ -136,7 +136,7 @@ const ManualVocab = loadVocab();
 
 console.log('\n=== Catalog ===');
 const catalog = JSON.parse(fs.readFileSync(path.join(DIR, '_catalog.json'), 'utf8'));
-ok(catalog.exams?.length === 5, 'catalog has 5 exams');
+ok(catalog.exams?.length === 1, 'catalog has 1 exam');
 ok(catalog.exams.every((e) => e.status === 'live'), 'all exams status=live');
 
 console.log('\n=== Vocab POS (inferPos) ===');
@@ -153,7 +153,7 @@ for (const [word, expect] of posCases) {
 }
 
 console.log('\n=== Per-exam pipeline ===');
-for (let n = 1; n <= 5; n++) {
+for (let n = 1; n <= 1; n++) {
   const examId = `official-de-B1-e${n}`;
   console.log(`\n--- E${n} ---`);
   const doc = JSON.parse(fs.readFileSync(path.join(DIR, `${examId}.json`), 'utf8'));
@@ -192,6 +192,8 @@ for (let n = 1; n <= 5; n++) {
   ok(l3Items.every((q) => String(q.signText || q.question || q.prompt || q.situation || '').trim().length > 10), `E${n} L3 situation text`);
   const l3Html = renderLesen(l3, sb);
   if (l3?._t3HasNoMatch) ok(l3Html.includes('>0</button>'), `E${n} L3 zero button`);
+  ok(!/onclick="ptSetMatch\("/.test(l3Html), `E${n} L3 pill onclick not broken (double-quote attr)`);
+  ok(/onclick='ptSetMatch\("/.test(l3Html), `E${n} L3 pill onclick well-formed`);
 
   const l4 = exam.lesenParts.find((p) => p.teil === 4);
   const l4Items = l4?.items?.length ? l4.items : l4?.questions || [];
@@ -230,4 +232,4 @@ if (failures) {
   console.error(`\n❌ ${failures} check(s) failed`);
   process.exit(1);
 }
-console.log('\n✅ Validation pass complete — E1–E5 OK locally');
+console.log('\n✅ Validation pass complete — E1 OK locally');

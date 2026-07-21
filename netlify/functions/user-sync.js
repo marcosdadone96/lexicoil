@@ -12,9 +12,14 @@
  */
 
 const { getStoreForEvent }    = require('./lib/blobStore.js');
-const { getJwtSecret, requireAuth, syncKey } = require('./lib/authLib.js');
+const { getJwtSecret, requireAuth, syncKey, userKey } = require('./lib/authLib.js');
 const { corsHeaders, parseJsonBody, jsonResponse } = require('./lib/http.js');
 const sb = require('./lib/supabaseAdmin.js');
+const { resolvePlan, getMonthKey } = require('./lib/quotaLib.js');
+const { aiMaxForPlan } = require('./lib/freeTrialLib.js');
+const { processVocabSyncForBg } = require('./lib/vocabBgQuota.js');
+const { syncVocabBgSweepQueue } = require('./lib/vocabBgSweepQueue.js');
+const crypto = require('crypto');
 
 const MAX_BODY = 900_000;
 
@@ -446,7 +451,76 @@ async function writeToSupabase(userId, email, data) {
   }
 }
 
-// ── Handler ───────────────────────────────────────────────────────────────────
+function vocabBgSecret() {
+  return String(process.env.VOCAB_BG_INTERNAL_SECRET || process.env.AUTH_JWT_SECRET || '').trim();
+}
+
+async function fireVocabBgTrigger(event, email, requestId) {
+  const secret = vocabBgSecret();
+  if (!secret) return;
+  const base =
+    process.env.URL ||
+    process.env.DEPLOY_PRIME_URL ||
+    (event.headers?.host ? `https://${event.headers.host}` : '');
+  if (!base) return;
+  const url = `${String(base).replace(/\/$/, '')}/.netlify/functions/vocab-bg-trigger`;
+  try {
+    await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-vocab-bg-secret': secret,
+      },
+      body: JSON.stringify({ email, requestId }),
+    });
+  } catch (err) {
+    console.warn('[user-sync] vocab-bg trigger failed:', err.message);
+  }
+}
+
+async function handleVocabBgAfterSync(event, store, auth, existing, merged) {
+  const email = auth.email;
+  const qKey = `quota:${email}`;
+  const user = await store.get(userKey(email), { type: 'json' }).catch(() => null);
+  const plan = resolvePlan(user);
+  const month = getMonthKey();
+  const aiMax = aiMaxForPlan(plan, user, month);
+
+  const prevCards = existing?.flashcards || [];
+  const nextCards = merged?.flashcards || [];
+  const tombstones = merged?.deletedFlashcards || existing?.deletedFlashcards || [];
+
+  let syncResult;
+  try {
+    syncResult = await processVocabSyncForBg(store, qKey, {
+      prevCards,
+      nextCards,
+      plan,
+      month,
+      tombstones,
+    });
+  } catch (err) {
+    console.warn('[user-sync] vocab-bg state update failed:', err.message);
+    return;
+  }
+
+  const result = syncResult?.result || syncResult;
+  const mergedRec = result?.rec;
+  if (mergedRec) {
+    await syncVocabBgSweepQueue(store, email, mergedRec, {
+      forceEnqueue: !!result?.bulkDeferTrigger,
+      reason: result?.bulkDeferTrigger ? 'bulk_defer' : 'sync',
+    });
+  }
+  if (result?.bulkDeferTrigger) {
+    console.log('[user-sync] vocab-bg trigger deferred (bulk import >20 words)');
+    return;
+  }
+  if (!result?.eligibility?.eligible) return;
+
+  const requestId = crypto.randomUUID();
+  await fireVocabBgTrigger(event, email, requestId);
+}
 exports.handler = async (event) => {
   const cors = corsHeaders(event, 'GET, PUT, OPTIONS');
   if (event.httpMethod === 'OPTIONS') return { statusCode: 204, headers: cors };
@@ -531,6 +605,12 @@ exports.handler = async (event) => {
       writes.push(writeToSupabase(auth.userId, auth.email, merged));
     }
     await Promise.allSettled(writes);
+
+    try {
+      await handleVocabBgAfterSync(event, store, auth, existing, merged);
+    } catch (err) {
+      console.warn('[user-sync] vocab-bg hook error:', err.message);
+    }
 
     return jsonResponse(200, cors, { ok: true, updatedAt: merged.updatedAt });
   }

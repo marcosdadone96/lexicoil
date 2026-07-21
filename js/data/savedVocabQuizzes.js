@@ -241,7 +241,10 @@
     S.vePool = poolFromSnapshots(saved);
     S.veRetakeQuizId = saved.id;
     S.veSavedQuizId = null;
-    if (saved.hintLang) S.fcLang = saved.hintLang;
+    if (saved.hintLang) {
+      if (typeof setVocabUiLang === 'function') setVocabUiLang(saved.hintLang);
+      else S.fcLang = saved.hintLang;
+    }
     if (typeof setVeHintLangMode === 'function') {
       setVeHintLangMode(saved.hintLanguageMode || 'interface');
     }
@@ -250,6 +253,7 @@
     }
     if (typeof hideAll === 'function') hideAll();
     if (typeof show === 'function') show('vocabExamScreen');
+    if (typeof applyVocabExamChrome === 'function') applyVocabExamChrome();
     const titleEl = document.getElementById('veTitle');
     if (titleEl) {
       titleEl.textContent =

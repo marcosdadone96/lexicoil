@@ -39,7 +39,8 @@ const LexiCoilEngine = (() => {
     const Domain = window.LexiCoilDomain;
     const KE = window.KnowledgeEngine;
     const provider = { de: 'goethe', en: 'cambridge', es: 'dele' }[subject];
-    let targetWords = [...(words || [])];
+    const userVocabRequested = [...(words || [])];
+    let targetWords = [...userVocabRequested];
     if (typeof ManualVocab !== 'undefined' && ManualVocab.canonicalizeForGeneration) {
       const canon = await ManualVocab.canonicalizeForGeneration(targetWords, subject, level);
       targetWords = canon.words;
@@ -55,15 +56,70 @@ const LexiCoilEngine = (() => {
         );
       }
     }
+
+    let userVocabMeta = null;
+    if (typeof VocabPrefilter !== 'undefined' && VocabPrefilter.classifyUserVocab) {
+      userVocabMeta = VocabPrefilter.classifyUserVocab(targetWords, { lang: subject, level });
+      targetWords = userVocabMeta.prompted;
+      if (userVocabMeta.warnings?.length && typeof notify === 'function') {
+        const sample = userVocabMeta.warnings
+          .slice(0, 2)
+          .map((w) => w.word)
+          .join(', ');
+        notify(
+          `Some words are not in the B1 list (${sample}${userVocabMeta.warnings.length > 2 ? '…' : ''}) — the generator may omit them if they do not fit.`,
+          'info',
+          7000,
+        );
+      }
+      if (userVocabMeta.excluded?.length && typeof notify === 'function') {
+        const sample = userVocabMeta.excluded
+          .slice(0, 3)
+          .map((e) => `${e.word} (${e.band})`)
+          .join(', ');
+        notify(
+          `Advanced-level words excluded from generation: ${sample}${userVocabMeta.excluded.length > 3 ? '…' : ''}`,
+          'warn',
+          8000,
+        );
+      }
+    }
+
+    let topic = 'Personal vocabulary review';
+    if (options.topic) {
+      const canon =
+        typeof B1Topics !== 'undefined' && B1Topics.normalizeB1Topic
+          ? B1Topics.normalizeB1Topic(options.topic)
+          : null;
+      if (canon) topic = canon;
+      else if (typeof lcDebug !== 'undefined') {
+        lcDebug.warn('[personal] invalid B1 topic ignored:', options.topic);
+      }
+    }
+
+    const skillList = skills || ['lesen'];
+    const isGenSuggestionModule = skillList.some((s) =>
+      ['schreiben', 'writing', 'sprechen', 'speaking'].includes(String(s).toLowerCase()),
+    );
+
     const spec = await KE.buildSpec({
       language: Domain.languageFromSubjectCode(subject),
       level,
       provider,
       contentType: 'VocabularyExercise',
       targetWords,
-      topic: 'Personal vocabulary review',
-      skills: skills || ['lesen'],
-      vocabPolicy: { targetWords, maximizeCoverage: true, ensureDensePart: true },
+      topic,
+      skills: skillList,
+      vocabPolicy: {
+        targetWords,
+        preferCoverage: !isGenSuggestionModule,
+        maximizeCoverage: false,
+        suggestionOnly: isGenSuggestionModule,
+      },
+      metadata: {
+        userVocabRequested,
+        userVocabExcluded: userVocabMeta?.excluded || [],
+      },
     });
     let blueprint = options.blueprint;
     if (
@@ -99,6 +155,11 @@ const LexiCoilEngine = (() => {
     return window.KnowledgeEngine.listTopics(subject, level);
   }
 
+  async function listB1Topics() {
+    if (typeof B1Topics !== 'undefined') return [...B1Topics.B1_TOPICS];
+    return [];
+  }
+
   return Object.freeze({
     buildExamSpec,
     generateExam,
@@ -107,6 +168,7 @@ const LexiCoilEngine = (() => {
     generateFromSpec,
     pickTopic,
     listTopics,
+    listB1Topics,
   });
 })();
 

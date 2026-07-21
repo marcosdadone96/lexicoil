@@ -223,7 +223,8 @@ function renderExamConfigurator(){
     }
   }
   if(genBtn){
-    const aiOk=typeof canUseAiGeneration!=='function'||canUseAiGeneration();
+    const poolOnly=typeof isExamPoolOnly==='function'?isExamPoolOnly():(typeof window!=='undefined'&&(window.EXAM_POOL_ONLY??true));
+    const aiOk=poolOnly||(typeof canUseAiGeneration!=='function'||canUseAiGeneration());
     genBtn.disabled=selN<2||_examConfig.skills.size<1||!aiOk;
     if(!aiOk){
       if(typeof getAiCreditsRemaining==='function'&&getAiCreditsRemaining()===0)genBtn.textContent='No credits left — upgrade to Pro';
@@ -246,8 +247,9 @@ function submitExamConfig(){
   const skills=[..._examConfig.skills].slice(0,1);
   if(words.length<2){lcToast('Select at least 2 words.','warn');return;}
   if(skills.length<1){lcToast('Select one exam part.','warn');return;}
-  if(typeof requirePersonalized==='function'&&!requirePersonalized())return;
-  if(typeof canUseAiGeneration==='function'&&!canUseAiGeneration()){
+  const poolOnly=typeof isExamPoolOnly==='function'?isExamPoolOnly():(typeof window!=='undefined'&&(window.EXAM_POOL_ONLY??true));
+  if(!poolOnly&&typeof requirePersonalized==='function'&&!requirePersonalized())return;
+  if(!poolOnly&&typeof canUseAiGeneration==='function'&&!canUseAiGeneration()){
     if(typeof isPro==='function'&&isPro()){
       if(typeof openCreditPackModal==='function')openCreditPackModal();
       else if(typeof showAiCreditsExhausted==='function')showAiCreditsExhausted();

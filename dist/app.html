@@ -38,8 +38,8 @@ gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personali
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/css/lexicoil-design-system.css?v=4">
-<link rel="stylesheet" href="/assets/css/app.css?v=22">
-<link rel="stylesheet" href="/assets/css/app-utilities.css?v=2">
+<link rel="stylesheet" href="/assets/css/app.css?v=24">
+<link rel="stylesheet" href="/assets/css/app-utilities.css?v=3">
 <link rel="stylesheet" href="/assets/css/feedback-modal.css?v=1">
 </head>
 <body>
@@ -449,8 +449,8 @@ gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personali
 <script src="js/services/supabaseClient.js?v=9"></script>
 <script src="js/data/activityTrack.js?v=2"></script>
 <script src="js/services/syncMerge.js?v=6"></script>
-<script src="js/services/authClient.js?v=17"></script>
-<script src="js/services/claudeClient.js?v=24"></script>
+<script src="js/services/authClient.js?v=18"></script>
+<script src="js/services/claudeClient.js?v=26"></script>
 <script src="js/engine/domain/lexicoilDomain.js?v=1"></script>
 <script src="js/engine/knowledge/KnowledgeLoader.js?v=1"></script>
 <script src="js/engine/providers/baseProviderAdapter.js?v=1"></script>
@@ -497,7 +497,9 @@ gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personali
 <script src="js/analytics/types.js?v=1"></script>
 <script src="js/core/metadataResolver.js?v=1"></script>
 <script src="js/core/schemaValidator.js?v=1"></script>
-<script src="js/data/examLibrary.js?v=5"></script>
+<script src="js/config/examSource.js?v=1"></script>
+<script src="js/data/publishedExamAdapter.js?v=3"></script>
+<script src="js/data/examLibrary.js?v=6"></script>
 <script src="js/library/libraryCatalog.js?v=3"></script>
 <script src="js/library/TaggingGate.js?v=1"></script>
 <script src="js/bootstrap/listeningScript.js?v=1"></script>
@@ -522,9 +524,9 @@ gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personali
 <script src="js/library/vocabularyLoader.js?v=1"></script>
 <script src="js/library/phrasesLoader.js?v=1"></script>
 <script src="js/data/articleLexicon.js?v=4"></script>
-<script src="js/data/manualVocab.js?v=10"></script>
+<script src="js/data/manualVocab.js?v=11"></script>
 <script src="js/data/verbConjugation.js?v=2"></script>
-<script src="js/data/goalStore.js?v=6"></script>
+<script src="js/data/goalStore.js?v=8"></script>
 <script src="js/data/savedVocabQuizzes.js?v=1"></script>
 <script src="js/ui/mastery/masteryView.js?v=2"></script>
 <script src="js/ui/dashboard/dashboardLayout.js?v=2"></script>
@@ -544,31 +546,38 @@ gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personali
 <script src="js/bootstrap/auth.js?v=5"></script>
 <script src="js/bootstrap/theme.js?v=2"></script>
 <script src="js/ui/workspace/vocabHub.js?v=14"></script>
-<script src="js/ui/exam/examConfig.js?v=7"></script>
+<script src="js/ui/exam/examConfig.js?v=8"></script>
 <script src="js/ui/exam/mistakeReview.js?v=1"></script>
+<script src="js/config/speakingModes.js?v=1"></script>
 <script src="js/ui/exam/speakingMic.js?v=1"></script>
+<script src="js/ui/exam/speakingConversation.js?v=1"></script>
+<script src="js/ui/exam/speakingFlow.js?v=1"></script>
 <script src="js/ui/exam/oralPractice.js?v=3"></script>
 <script src="js/ui/app/coach.js?v=2"></script>
 <script src="js/ui/components/a11y.js?v=1"></script>
 <script src="js/bootstrap/router.js?v=3"></script>
 <script src="js/bootstrap/nav.js?v=6"></script>
 <script src="js/ui/exam/examValidation.js?v=2"></script>
-<script>window.LC_DIRECT_POOL='1';window.DEBUG_LEXICOIL='1';/* staging: window.LEXICOIL_SHOW_BETA_LEVELS=true */</script>
+<script>window.LC_DIRECT_POOL='1';window.DEBUG_LEXICOIL='1';/* staging: window.LEXICOIL_SHOW_BETA_LEVELS=true */
+/* Live AI personal exams (OFF by default): window.ALLOW_LIVE_GEN='1' + window.EXAM_POOL_ONLY=false; Netlify env ALLOW_LIVE_GEN=1 required too */
+/* Lesen B1 DE uses hybrid (pool + Gemini) when live is on; window.EXAM_HYBRID=false to force Claude serial path */
+/* Official B1 content: 'published' = library/published-exams/ | 'legacy' = data/exams/de_B1.json */
+window.LEXICOIL_EXAM_SOURCE='published';</script>
 <script src="js/engine/strategyBFlags.js?v=3"></script>
 <script src="js/ui/exam/examSources.js?v=3"></script>
 <script src="js/engine/prompts/partPostprocess.js?v=1"></script>
 <script src="js/engine/personalLesenPoolFallback.js?v=5"></script>
 <script src="js/engine/personalExamCoverage.js?v=2"></script>
 <script src="js/engine/validation/lesenPassageIntegrity.js?v=1"></script>
-<script src="js/ui/exam/examGeneration.js?v=30"></script>
-<script src="js/ui/exam/results.js?v=14"></script>
+<script src="js/ui/exam/examGeneration.js?v=35"></script>
+<script src="js/ui/exam/results.js?v=15"></script>
 <script src="js/ui/exam/examKeyboard.js?v=1"></script>
-<script src="js/ui/exam/examRunner.js?v=13"></script>
+<script src="js/ui/exam/examRunner.js?v=19"></script>
 <script src="js/ui/exam/saveExams.js?v=3"></script>
-<script src="js/ui/vocabulary/tooltip.js?v=13"></script>
+<script src="js/ui/vocabulary/tooltip.js?v=15"></script>
 <script src="js/bootstrap/audio.js?v=4"></script>
 <script src="js/ui/vocabulary/fcKeyboard.js?v=1"></script>
-<script src="js/ui/vocabulary/flashcards.js?v=21"></script>
+<script src="js/ui/vocabulary/flashcards.js?v=22"></script>
 <script src="js/bootstrap/featureQuota.js?v=11"></script>
 <script src="js/bootstrap/init.js?v=5"></script>
 <script src="js/bootstrap/featureNotebook.js?v=1"></script>

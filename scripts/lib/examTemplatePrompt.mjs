@@ -2,10 +2,28 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { ROOT } from './loadEnv.mjs';
 import {
-  injectTargetWords,
   pickTargetWords,
   stripHumanHeader,
 } from './lesenTemplatePrompt.mjs';
+import { reinforceVocabOptionalBlock } from './userVocabPrompt.mjs';
+import { buildExcludedPremisesPromptBlock } from './excludedPremises.mjs';
+import { buildHorenT2OpeningsPromptBlock } from './horenOpeningsBank.mjs';
+import { buildHorenT1OpeningsPromptBlock } from './horenT1OpeningsBank.mjs';
+import { buildHorenT1NamesPromptBlock } from './horenT1NamesBank.mjs';
+import { buildHorenPremiseExcludePromptBlock } from './horenPremiseDedup.mjs';
+import { buildSchreibenT3NamesPromptBlock } from './schreibenT3NamesBank.mjs';
+import { buildHorenT3OpeningsPromptBlock } from './horenT3OpeningsBank.mjs';
+import { buildHorenT3NamesPromptBlock } from './horenT3NamesBank.mjs';
+import { buildHorenT4OpeningsPromptBlock } from './horenT4OpeningsBank.mjs';
+import { buildSprechenPremiseExcludePromptBlock } from './sprechenPremiseDedup.mjs';
+import { buildSchreibenT3PremiseExcludePromptBlock } from './schreibenT3PremiseDedup.mjs';
+import { appendGenerationFeedback } from './resolveGenerationFeedback.mjs';
+import { buildTopicPromptBlock } from './topicRotation.mjs';
+import {
+  assemblePrompt,
+  buildVocabVariableBlock,
+  stripVocabSectionFromTemplate,
+} from './promptAssembly.mjs';
 
 export { pickTargetWords };
 
@@ -15,9 +33,60 @@ const MODULE_DIRS = {
   sprechen: 'plantillas-sprechen-b1',
 };
 
-/** B1 Goethe length + batch rules injected into every prompt. */
+const HOREN_MODULE_DIRS = {
+  A2: 'plantillas-horen-a2',
+  B1: 'plantillas-horen-b1',
+};
+
+const SPRECHEN_MODULE_DIRS = {
+  A2: 'plantillas-sprechen-a2',
+  B1: 'plantillas-sprechen-b1',
+};
+
+const SCHREIBEN_MODULE_DIRS = {
+  A2: 'plantillas-schreiben-a2',
+  B1: 'plantillas-schreiben-b1',
+};
+
+function resolveModuleDir(module, level) {
+  const mod = String(module || '').toLowerCase();
+  const lv = String(level || 'B1').trim().toUpperCase();
+  if (mod === 'horen') return HOREN_MODULE_DIRS[lv] || HOREN_MODULE_DIRS.B1;
+  if (mod === 'sprechen') return SPRECHEN_MODULE_DIRS[lv] || SPRECHEN_MODULE_DIRS.B1;
+  if (mod === 'schreiben') return SCHREIBEN_MODULE_DIRS[lv] || SCHREIBEN_MODULE_DIRS.B1;
+  return MODULE_DIRS[mod];
+}
+
+export function isSprechenA2PerTeil(module, level) {
+  return String(module || '').toLowerCase() === 'sprechen' && String(level || 'B1').trim().toUpperCase() === 'A2';
+}
+
+/** Goethe length + batch rules injected into every prompt. */
 const EXAM_LENGTH_RULES = {
   horen: {
+    A2: {
+      2: {
+        target: '80–150',
+        min: 70,
+        max: 160,
+        scope: 'passages[0].text (diálogo 2 personas)',
+        note: '9 actividades en pictures[] (a–i) + 5 matching por día (Montag–Freitag), letras únicas, escucha 1×.',
+      },
+      3: {
+        target: '15–50 por segmento',
+        min: 12,
+        max: 55,
+        scope: 'cada passages[i].text (5 diálogos cortos s1–s5)',
+        note: '5 segmentos + 5 MCQ a/b/c con segmentLabel. NO 7 Richtig/Falsch.',
+      },
+      4: {
+        target: '150–250',
+        min: 140,
+        max: 260,
+        scope: 'passages[0].text (Radiointerview)',
+        note: '5× ja_nein; options: []. NO matching M/A/B.',
+      },
+    },
     1: {
       target: '50–85 por segmento',
       min: 40,
@@ -36,7 +105,7 @@ const EXAM_LENGTH_RULES = {
       target: '270–330',
       min: 250,
       max: 350,
-      scope: 'passages[0].text (diálogo Person A:/Person B:)',
+      scope: 'passages[0].text (diálogo Name:/Name: — 2 hablantes)',
       note: '7 preguntas richtig_falsch, escucha 1×.',
     },
     4: {
@@ -48,6 +117,22 @@ const EXAM_LENGTH_RULES = {
     },
   },
   schreiben: {
+    A2: {
+      1: {
+        target: '20–30',
+        min: 0,
+        max: 0,
+        scope: 'question Teil 1 (SMS)',
+        note: '1 consigna SMS informal a Freund/in, 3 bullet points.',
+      },
+      2: {
+        target: '30–40',
+        min: 0,
+        max: 0,
+        scope: 'question Teil 2 (E-Mail al Chef)',
+        note: '1 consigna E-Mail semiformal: Dank + Zusage mit Begleitung + Wegfrage. OBLIGATORIO «Chef».',
+      },
+    },
     all: {
       target: 'T1 ~80, T2 ~80, T3 ~40 palabras (consigna)',
       min: 0,
@@ -57,6 +142,29 @@ const EXAM_LENGTH_RULES = {
     },
   },
   sprechen: {
+    A2: {
+      1: {
+        target: '4 Karten + instrucción paarweise',
+        min: 0,
+        max: 0,
+        scope: 'question (Teil 1 personal_questions)',
+        note: '1 pregunta · Geburtstag/Wohnort/Beruf/Hobby · 4+4 Fragen sin Vorbereitung. passages: [].',
+      },
+      2: {
+        target: '1 Karte temática + monólogo',
+        min: 0,
+        max: 0,
+        scope: 'question (Teil 2 about_self)',
+        note: '1 pregunta · Von sich erzählen · tema concreto en Karte. passages: [].',
+      },
+      3: {
+        target: 'plan + 2 agendas horarias',
+        min: 0,
+        max: 0,
+        scope: 'question (Teil 3 plan_together)',
+        note: '1 pregunta · Gemeinsam planen · zwei Wochenpläne + Termin finden. passages: [].',
+      },
+    },
     all: {
       target: 'consignas claras con tiempos oficiales',
       min: 0,
@@ -67,22 +175,40 @@ const EXAM_LENGTH_RULES = {
   },
 };
 
+const CEFR_A2_VOCAB_HINT =
+  'Prefiere léxico A2 frecuente (vida cotidiana: Familie, Wohnung, Arbeit, Freizeit, Einkaufen, Termin). ' +
+  'Evita términos B1+ académicos o de planificación compleja (Ehrenamt, Konferenz, Präsentation, Feedback, Workshop…). ' +
+  'REGLA ORTOGRÁFICA: sustantivos alemanes en MAYÚSCULA.';
+
 const CEFR_VOCAB_HINT =
   'Prefiere léxico B1 frecuente (≤B1 CEFR). Evita meta-texto («Dieser Text hat 280 Wörter…») y términos C1/académicos (kontextualisieren, Polyphonie, Paradigma, Manifestation…). ' +
   'REGLA ANTI-ANGLICISMOS: NUNCA escribas verbos/sustantivos ingleses sin traducir — ' +
   'gardening→Gartenarbeit/Gärtnern, jogging→Joggen, hiking→Wandern, cycling→Radfahren, ' +
-  'shopping→Einkaufen, cooking→Kochen. ' +
+  'shopping→Einkaufen, cooking→Kochen, Workshop→Kurs/Seminar/Werkstatt. ' +
   'Préstamos aceptados en alemán moderno (Deadline, Meeting, Team, Job, Computer, Internet, ' +
   'E-Mail, Video, Blog, Podcast, App, Design, Event, Check-in, Feedback) son válidos ' +
   'SOLO si van capitalizados como sustantivos: «die Deadline», «das Meeting», «das Team». ' +
   'REGLA ORTOGRÁFICA OBLIGATORIA: en alemán TODOS los sustantivos van en MAYÚSCULA — ' +
   'también en enumeraciones y después de «kein/keine» ' +
   '(«Blumen und Pflanzen», «keine Hypothese», no «blumen», no «keine hypothese»). ' +
-  'Repasa cada sustantivo antes de enviar.';
+  'Repasa cada sustantivo antes de enviar. ' +
+  'LÍMITE INVERSO — NUNCA capitalices a mitad de frase palabras que NO sean sustantivos ni nombres propios: ' +
+  'adjetivos (schwierig, persönlich, zugänglich, einfach, möglich), ' +
+  'cuantificadores (viele, wenige, einige), ' +
+  'adverbios (lange, eher, leider, trotzdem, natürlich) ' +
+  'y verbos conjugados (ich glaube, ich stimme, ich denke) van en MINÚSCULA a mitad de frase. ' +
+  'Solo SUSTANTIVOS y nombres propios llevan mayúscula. ' +
+  'Ejemplos correctos: «viele Menschen» (NO «Viele»), «in der Praxis schwierig» (NO «Schwierig»), ' +
+  '«ich glaube» (NO «Glaube»), «ich stimme zu» (NO «Stimme»), «leicht zugänglich» (NO «Zugänglich»).';
 
-export function examTemplatePath(module, teil) {
+const GERMAN_OUTPUT_LANGUAGE_RULE =
+  'IDIOMA DE SALIDA OBLIGATORIO: TODO el contenido del examen (passages, questions, options, explanation) ' +
+  'debe estar 100% en ALEMÁN. PROHIBIDO español/inglés/otro idioma en preguntas u opciones. ' +
+  'lang:"de" en cada ítem. El checker Q5 rechaza automáticamente cualquier texto no alemán.';
+
+export function examTemplatePath(module, teil, level = 'B1') {
   const mod = String(module || '').toLowerCase();
-  const dirName = MODULE_DIRS[mod];
+  const dirName = resolveModuleDir(mod, level);
   if (!dirName) throw new Error(`Módulo inválido: ${module} (horen|schreiben|sprechen)`);
 
   let fileName;
@@ -90,6 +216,14 @@ export function examTemplatePath(module, teil) {
     const t = Number(teil);
     if (!Number.isFinite(t) || t < 1 || t > 4) throw new Error(`Hören teil inválido: ${teil}`);
     fileName = `horen-teil${t}.md`;
+  } else if (mod === 'sprechen' && String(level || 'B1').trim().toUpperCase() === 'A2') {
+    const t = Number(teil);
+    if (!Number.isFinite(t) || t < 1 || t > 3) throw new Error(`Sprechen A2 teil inválido: ${teil}`);
+    fileName = `sprechen-teil${t}.md`;
+  } else if (mod === 'schreiben' && String(level || 'B1').trim().toUpperCase() === 'A2') {
+    const t = Number(teil);
+    if (!Number.isFinite(t) || t < 1 || t > 2) throw new Error(`Schreiben A2 teil inválido: ${teil}`);
+    fileName = `schreiben-teil${t}.md`;
   } else {
     fileName = `${mod}-b1.md`;
   }
@@ -101,24 +235,40 @@ export function examTemplatePath(module, teil) {
   return file;
 }
 
-export function loadExamTemplate(module, teil) {
-  return fs.readFileSync(examTemplatePath(module, teil), 'utf8');
+export function loadExamTemplate(module, teil, level = 'B1') {
+  return fs.readFileSync(examTemplatePath(module, teil, level), 'utf8');
 }
 
-function lengthBlock(module, teil) {
+function lengthBlock(module, teil, level = 'B1') {
   const modRules = EXAM_LENGTH_RULES[module];
-  const key = module === 'horen' ? Number(teil) : 'all';
-  const r = modRules?.[key];
+  const lv = String(level || 'B1').trim().toUpperCase();
+  const levelRules = modRules?.[lv] || modRules;
+  const key =
+    module === 'horen'
+      ? Number(teil)
+      : (module === 'sprechen' || module === 'schreiben') && lv === 'A2'
+        ? Number(teil)
+        : 'all';
+  const r = levelRules?.[key] ?? levelRules?.all;
   if (!r) return '';
 
+  const vocabHint = lv === 'A2' ? CEFR_A2_VOCAB_HINT : CEFR_VOCAB_HINT;
+
   if (module === 'schreiben' || module === 'sprechen') {
+    const vocabLine =
+      module === 'sprechen'
+        ? lv === 'A2'
+          ? `- VOCABULARIO SUGERIDO: léxico A2 del bloque variable; frase forzada = rechazo.`
+          : `- VOCABULARIO SUGERIDO: OPCIONAL — solo si suena 100% natural en una consigna oral B1; frase forzada = rechazo.`
+        : `- Integra PALABRAS OBJETIVO en las consignas y vocabulario sugerido, no en respuestas modelo.`;
     return (
       `\n\n## LONGITUD / FORMATO OFICIAL (OBLIGATORIO)\n` +
       `- ${r.note}\n` +
       `- Ámbito: **${r.scope}**\n` +
       `- Objetivo: **${r.target}**\n` +
-      `- ${CEFR_VOCAB_HINT}\n` +
-      `- Integra PALABRAS OBJETIVO en las consignas y vocabulario sugerido, no en respuestas modelo.`
+      `- ${vocabHint}\n` +
+      `- ${GERMAN_OUTPUT_LANGUAGE_RULE}\n` +
+      vocabLine
     );
   }
 
@@ -128,105 +278,319 @@ function lengthBlock(module, teil) {
     `- Objetivo: **${r.target} palabras**.\n` +
     `- Mínimo absoluto: **${r.min}** · máximo: **${r.max}**.\n` +
     `- **CUENTA las palabras antes de responder.** Transcript = lenguaje **hablado**, no ensayo escrito.\n` +
-    `- ${CEFR_VOCAB_HINT}\n` +
-    `- Integra PALABRAS OBJETIVO en los transcripts (Hören), no en las preguntas literalmente.`
+    `- ${vocabHint}\n` +
+    `- ${GERMAN_OUTPUT_LANGUAGE_RULE}\n` +
+    `- VOCABULARIO SUGERIDO: OPCIONAL — solo si suena natural en el transcript; si no encaja, OMÍTELA (nunca fuerces términos académicos/meta-gramaticales).`
   );
 }
 
-function checklistBlock(module, teil) {
+function checklistBlock(module, teil, level = 'B1') {
   const t = Number(teil);
+  const lv = String(level || 'B1').trim().toUpperCase();
+  const levelLabel = lv === 'A2' ? 'A2' : 'B1';
   const common =
-    `\n\nCHECKLIST FINAL (Goethe B1 — debe pasar validate-batch.mjs):\n` +
+    `\n\nCHECKLIST FINAL (Goethe ${levelLabel} — debe pasar validate-batch.mjs):\n` +
     `- Responde SOLO JSON: { "passages": [...], "questions": [...] } — sin markdown, sin \`\`\`.\n` +
     `- correct === correctAnswer en todas las preguntas.\n` +
-    `- module correcto en cada question; lang:"de", level:"B1".\n` +
+    `- module correcto en cada question; lang:"de", level:"${levelLabel}".\n` +
+    `- ${GERMAN_OUTPUT_LANGUAGE_RULE}\n` +
     `- IDs únicos con el prefijo indicado arriba (no reutilizar el ejemplo).\n` +
-    `- explanation en alemán en cada pregunta (nunca vacía).\n` +
-    `- PALABRAS OBJETIVO: 8–12 lemas B1 integrados en el contenido.\n` +
+    `- explanation en alemán en cada pregunta (nunca vacía; ≥10 palabras para multiple_choice — CHK-18 rechaza si es más corta).\n` +
+    `- VOCABULARIO SUGERIDO: integra palabras solo si encajan; omite las que no encajen.\n` +
     `- MAYÚSCULAS: TODO sustantivo alemán en mayúscula — también tras kein/keine/mit/für/von/ohne, en enumeraciones y listas. ¡Compruébalo antes de enviar!\n` +
-    `- ANTI-ANGLICISMOS: CERO palabras inglesas sin traducir (gardening, jogging, hiking, cycling…). Préstamos aceptados (Deadline, Meeting, Team, Computer, E-Mail, App, Blog, Podcast, Event) SOLO capitalizados.\n`;
+    `- ANTI-ANGLICISMOS: CERO palabras inglesas sin traducir (gardening, jogging, hiking, cycling, Workshop…). Préstamos aceptados (Deadline, Meeting, Team, Computer, E-Mail, App, Blog, Podcast, Event) SOLO capitalizados. Workshop SIEMPRE → Kurs/Seminar/Werkstatt.\n`;
 
   if (module === 'horen' && t === 1) {
     return (
       common +
       `- 5 passages (s1–s5) + 10 questions (sN-q1 RF, sN-q2 MCQ).\n` +
       `- segmentLabel en cada pregunta (Aufnahme 1 … 5).\n` +
-      `- MCQ: options a)/b)/c); correct solo letra; varía a/b/c.\n`
+      `- MCQ: options a)/b)/c); correct solo letra; varía a/b/c.\n` +
+      `- DISTRACTOR COHERENTE (MCQ): cada distractor debe relacionarse temáticamente con el segmento. Si una palabra objetivo no encaja de forma natural y coherente en un distractor, OMITÍLA — no la fuerces (ver regla de vocabulario arriba).\n` +
+      `- LONGITUD MCQ: la opción correcta y los 2 distractores deben tener longitud COMPARABLE ` +
+      `(palabras/caracteres) — ninguno conspicuamente más largo o más detallado, o se puede adivinar ` +
+      `sin escuchar el audio. Si la correcta necesita más detalle para ser precisa, agregá detalle ` +
+      `equivalente (no el mismo contenido) a los distractores. ` +
+      `Ejemplo INCORRECTO: correcta «Die Anmeldung endet am Freitag, den 12. Mai.» ` +
+      `vs distractores cortos «Online.» / «Im Büro.» ` +
+      `Ejemplo CORRECTO: tres opciones de longitud similar, p. ej. «Persönlich im Büro bis Freitag.» / ` +
+      `«Nur online bis Montagabend.» / «Per E-Mail ohne Frist.».\n` +
+      `- APERTURA POR TIPO: cada segmento es un tipo monológico distinto (Durchsage / Telefonat-Anrufbeantworter / Radio-Tipp / Hinweis-Ansage). Elegí apertura del banco del tipo correspondiente; variá entre los 5 segmentos del archivo y respecto a lo ya generado. Ver bloque de aperturas arriba.\n` +
+      `- SOLO MONÓLOGO (formato oficial Goethe B1 T1): PROHIBIDO diálogo, Gespräch, Kurzgespräch o turnos «Name: …». Cada segmento = una sola voz (Durchsage, Ansage, Anrufbeantworter, Radio-Tipp, Hinweis).\n` +
+      `- RF ≠ MCQ (dato distinto): en cada segmento, el Richtig/Falsch y el MCQ deben evaluar DATOS distintos del audio — no la misma información parafraseada. Ejemplo INCORRECTO: RF «geöffnet Di+Do» + MCQ «wann nachmittags? → Di+Do». Ejemplo CORRECTO: RF sobre horario + MCQ sobre Notfallnummer / Gebühr / Anmeldung.\n` +
+      `- NOMBRES: variá Herr/Frau + Apellido entre segmentos y archivos; no reuses apellidos excluidos/sobrerrepresentados. Ver bloque de nombres arriba.\n` +
+      `- explanation (MCQ): NUNCA digas "Option a/b/c)" ni "la opción X es correcta" — el orden a/b/c puede reordenarse después. Explica el contenido de la respuesta correcta en prosa.\n`
+    );
+  }
+  if (module === 'horen' && t === 2 && lv === 'A2') {
+    return (
+      common +
+      `- 1 passage diálogo (2 hablantes «Name:») + pictures[9] en el passage (banco a–i con icon+label).\n` +
+      `- 5 preguntas matching: enunciado = Montag, Dienstag, Mittwoch, Donnerstag, Freitag.\n` +
+      `- SIN options en preguntas; correct = letra a–i minúscula; 5 letras distintas.\n` +
+      `- PROHIBIDO monólogo (eso es B1 T2, no A2).\n`
     );
   }
   if (module === 'horen' && t === 2) {
-    return common + `- 1 passage + 5 MCQ; distractores plausibles.\n`;
+    return (
+      common +
+      `- 1 passage + 5 MCQ; distractores plausibles.\n` +
+      `\n## ANTI-COPIA DE AUDIO (Hören MCQ) — OBLIGATORIO\n` +
+      `MAL ❌ Transcripción: «…der Wohnungsmarkt ist momentan sehr angespannt…»\n` +
+      `     Pregunta: «Der Wohnungsmarkt ist momentan sehr angespannt.»\n` +
+      `     → FAIL: copia ≥4 palabras seguidas.\n` +
+      `BIEN ✅ Pregunta: «Wie ist die Lage auf dem Wohnungsmarkt laut dem Gespräch?»\n` +
+      `     Opción correcta: «Es ist schwierig, eine Wohnung zu finden.»\n` +
+      `     → Parafraseo B1; máx. 3 palabras de contenido iguales al audio.\n` +
+      `\n## ANTI-SESGO DE LONGITUD MCQ — OBLIGATORIO\n` +
+      `En el JSON, cada option es UN string con UNA sola etiqueta minúscula al inicio («a) …», «b) …», «c) …»). ` +
+      `NUNCA repitas la letra dentro del texto («a) A) …» está PROHIBIDO).\n` +
+      `MAL ❌ Opción 1: «Nur am Wochenende.» (22 chars)\n` +
+      `     Opción 2: «Immer nach 22 Uhr.» (19 chars)\n` +
+      `     Opción 3: «Am Sonntag und nachts sowie an Wochentagen in der Mittagszeit.» (66 chars) ← correcta\n` +
+      `     → FAIL: correcta es 3× más larga; se elige sin escuchar.\n` +
+      `BIEN ✅ Opción 1: «Am Sonntag und in der Nacht.» (32 chars)\n` +
+      `     Opción 2: «Nur an Feiertagen und abends.» (31 chars)\n` +
+      `     Opción 3: «Von Montag bis Samstag nach 20 Uhr.» (38 chars) ← correcta\n` +
+      `     → Longitudes comparables (~30–40 chars); hay que entender el audio.\n` +
+      `- DISTRACTOR COHERENTE: cada distractor debe relacionarse temáticamente con el pasaje. Si una palabra objetivo no encaja de forma natural y coherente en un distractor, OMITÍLA — no la fuerces (ver regla de vocabulario arriba).\n` +
+      `- ANTI-ATAJO MCQ (objetivo): ningún candidato debe poder identificar la respuesta correcta ` +
+      `sin comprender el audio — ni por longitud, ni porque un distractor sea obviamente más simple/genérico, ` +
+      `ni por cueing léxico (la clave reusa una palabra específica del monólogo que ningún distractor comparte). ` +
+      `Longitud pareja y léxico de especificidad comparable son formas de lograrlo, no el objetivo en sí. ` +
+      `Si la clave necesita más detalle o un término del audio, agregá detalle/especificidad EQUIVALENTE ` +
+      `(no el mismo contenido ni la misma palabra-gancho) a los distractores. ` +
+      `Ejemplo INCORRECTO (longitud): correcta «Sie sollen das Medikament dreimal täglich nach dem Essen einnehmen.» ` +
+      `vs distractores tan cortos/genéricos que se descartan sin escuchar («Nur morgens.» / «Vor dem Schlafen.»). ` +
+      `Ejemplo INCORRECTO (cueing léxico): audio «Kurzzeitparken für Besucher (maximal 2 Stunden)…» ` +
+      `→ correcta que repite «Kurzzeitparken…maximal…» vs distractores genéricos sin ese léxico. ` +
+      `Ejemplo CORRECTO: tres opciones con el mismo nivel de detalle, p. ej. «Dreimal täglich nach dem Essen.» / ` +
+      `«Nur morgens und abends vor dem Essen.» / «Einmal täglich vor dem Schlafengehen.» — hay que oír el monólogo.\n` +
+      `- APERTURA: prohibido usar "Guten Tag, liebe Zuhörerinnen und Zuhörer" (sobreusada). Ver bloque de aperturas sugeridas arriba en el prompt.\n` +
+      `- explanation (MCQ): NUNCA digas "Option a/b/c)" ni "la opción X es correcta" — el orden a/b/c puede reordenarse después. Explica el contenido de la respuesta correcta en prosa.\n`
+    );
   }
   if (module === 'horen' && t === 3) {
+    if (lv === 'A2') {
+      return (
+        common +
+        `- 5 passages (s1–s5), cada uno diálogo corto 15–50 palabras, 2 hablantes «Name:».\n` +
+        `- 5× multiple_choice a/b/c; cada question con segmentLabel «Text 1»…«Text 5» y passageId.\n` +
+        `- PROHIBIDO: 1 diálogo largo + 7 Richtig/Falsch (eso es B1).\n`
+      );
+    }
     return (
       common +
       `- Cada passage: "module":"horen". Cada question: "module":"horen","teil":3,"lang":"de","level":"B1","correctAnswer" (= correct).\n` +
-      `- Diálogo con Person A:/Person B: alternando.\n` +
+      `- Diálogo informal B1 con exactamente 2 hablantes; formato «Name: …» alternando (nombres de pila reales, NO «Person A:/Person B:»).\n` +
+      `- NOMBRES: ver bloque de pares sugeridos / excluidos en el prompt (variedad; no Anna+Ben ni Lena/Markus).\n` +
+      `- APERTURA: ver bloque de aperturas sugeridas — evitar el estereotipo «Hallo/Hey [Name], wie geht's / Wochenende».\n` +
       `- 7× richtig_falsch; mezcla Richtig/Falsch; al menos 2 inferencia/paráfrasis.\n`
     );
   }
   if (module === 'horen' && t === 4) {
+    if (lv === 'A2') {
+      return (
+        common +
+        `- 1 Radiointerview 150–250 palabras; presentador + invitado/a.\n` +
+        `- 5× ja_nein; correct "Ja"/"Nein"; options: [].\n` +
+        `- PROHIBIDO: 8 matching M/A/B (eso es B1 T4).\n`
+      );
+    }
     return (
       common +
       `- 1 debate; 8× matching; options **idénticas** en las 8: ["M) Moderator","A) …","B) …"].\n` +
       `- correct ∈ {M,A,B}; reparte M/A/B (no todo en A).\n` +
-      `- PROHIBIDO gap_fill o matching sin options.\n`
+      `- PROHIBIDO gap_fill o matching sin options.\n` +
+      `- APERTURA DEL MODERADOR: prohibido el estereotipo «Herzlich willkommen zu \"… im Fokus\"». Ver bloque de aperturas sugeridas arriba.\n` +
+      `- NOMBRES DE INVITADOS: usar el bloque de rotación de nombres (nameRotation) — no Dana/Florian de plantilla.\n`
     );
   }
   if (module === 'schreiben') {
+    if (lv === 'A2') {
+      return (
+        common +
+        `\n## FORMATO JSON Schreiben A2 — OBLIGATORIO\n` +
+        `- passages: [] · **1 question** por Teil generado (teil 1 o 2).\n` +
+        `- type:"short_answer", correct:"rubric", options:[].\n` +
+        (t === 1
+          ? `- T1 SMS 20–30 Wörter a Freund/in, 3 bullet points.\n`
+          : `- T2 E-Mail semiformal 30–40 Wörter **an Ihren Chef**: Dank + kommen mit Begleitung + Wegfrage. OBLIGATORIO «Chef».\n`) +
+        `- PROHIBIDO Forum/Forumpost/Meinung (formato B1).\n`
+      );
+    }
     return (
       common +
+      `\n## FORMATO JSON Schreiben — OBLIGATORIO\n` +
+      `MAL ❌ Responder con un solo objeto task sin array:\n` +
+      `     { "passages": [...], "task": "..." }  → FAIL: falta array questions\n` +
+      `BIEN ✅ Raíz SIEMPRE con ambos arrays:\n` +
+      `     { "passages": [{ "id": "...", "text": "..." }],\n` +
+      `       "questions": [{ "id": "...", "module": "schreiben", "teil": 2, ... }] }\n` +
+      `     → El checker rechaza cualquier respuesta sin "questions": [...]\n` +
       `- passages: [] · exactamente 3 questions (teil 1,2,3).\n` +
       `- type:"short_answer", correct:"rubric", options:[].\n` +
-      `- T1 E-Mail Freund/in ~80W · T2 Forumpost ~80W con cita · T3 nota semiformal ~40W.\n`
+      `- T1 E-Mail Freund/in ~80W · T2 Forumpost ~80W con cita · T3 nota semiformal ~40W.\n` +
+      `- PROHIBIDO placeholders entre corchetes ([Name], [Name des Freundes/der Freundin], [Dein Name]). ` +
+      `La consigna NO incluye Anrede pre-escrita con corchetes — el alumno elige Anrede/Gruß.\n` +
+      `- explanation: usa SOLO la plantilla canónica Goethe (4 criterios); no inventes otra estructura.\n`
+    );
+  }
+  if (module === 'sprechen' && lv === 'A2' && t === 1) {
+    return (
+      common +
+      `- passages: [] · exactamente **1** question con "teil":1.\n` +
+      `- type canónico: **personal_questions** · difficulty:3.\n` +
+      `- OBLIGATORIO: 4 Karten **Geburtstag, Wohnort, Beruf, Hobby** numeradas.\n` +
+      `- OBLIGATORIO: interacción paarweise (4 Fragen + 4 Antworten), sin Vorbereitung.\n` +
+      `- PROHIBIDO Planungsaufgabe B1 / Präsentation / Feedback.\n`
+    );
+  }
+  if (module === 'sprechen' && lv === 'A2' && t === 2) {
+    return (
+      common +
+      `- passages: [] · exactamente **1** question con "teil":2.\n` +
+      `- type canónico: **about_self** · difficulty:3.\n` +
+      `- OBLIGATORIO: 1 Karte con tema concreto («…») + instrucción **erzählen**.\n` +
+      `- PROHIBIDO Präsentation / 5 Punkte / 3 Minuten (formato B1).\n`
+    );
+  }
+  if (module === 'sprechen' && lv === 'A2' && t === 3) {
+    return (
+      common +
+      `- passages: [] · exactamente **1** question con "teil":3.\n` +
+      `- type canónico: **plan_together** · difficulty:3.\n` +
+      `- OBLIGATORIO: situación concreta + **zwei Wochenpläne/Agenden** + Termin finden.\n` +
+      `- PROHIBIDO Feedback/Rückmeldung sobre Präsentation (eso es B1 T3).\n` +
+      `- Partner/Partnerin; PROHIBIDO Kandidat* / Prüfer / 1ª persona examinador.\n`
     );
   }
   if (module === 'sprechen') {
     return (
       common +
-      `- passages: [] · exactamente 3 questions (teil 1,2,3).\n` +
-      `- T1 planungsaufgabe: 5 bullet points · T2 präsentation: 5 slides en question · T3 feedback + 2–3 Fragen Beispiel.\n` +
-      `- correct:"rubric" · T3 referencia el tema de T2.\n`
+      `- passages: [] · exactamente 3 questions con "teil":1, "teil":2, "teil":3 (una por Aufgabe).\n` +
+      `- type canónico: T1 planungsaufgabe · T2 praesentation · T3 feedback_diskussion · difficulty:5.\n` +
+      `- T2 OBLIGATORIO en question: palabra «Präsentation» o «Thema» + ≥5 puntos numerados 1.–5. ` +
+      `(Einleitung, Erfahrung/Details, Vor- und Nachteile, Meinung/Schluss).\n` +
+      `- T3 OBLIGATORIO: «Feedback» o «Rückmeldung» + «Stellen Sie … Fragen» (o «2-3 Fragen») + línea «Beispielfragen:».\n` +
+      `- Sie obligatorio; T2 tema CONCRETO entre comillas; puntos sin * / •.\n` +
+      `- PROHIBIDO 1ª persona del examinador / «für den Prüfer» / «die Kandidaten».\n` +
+      `- PROHIBIDO usar "Kandidat/Kandidatin" para referirse al compañero de examen en T3 — usar siempre "Partner/Partnerin" (registro entre candidatos, no de examinador).\n` +
+      `- correct:"rubric" · T3 referencia el tema concreto de T2.\n`
     );
   }
   return common;
 }
 
-export function buildExamPrompt(module, teil, words, { idSuffix } = {}) {
-  const raw = loadExamTemplate(module, teil);
-  let prompt = injectTargetWords(stripHumanHeader(raw), words);
+/** Cacheable prefix — identical for every generation of the same module/teil/level. */
+export function buildExamStaticCore(module, teil, level = 'B1') {
+  const raw = stripHumanHeader(loadExamTemplate(module, teil, level));
+  const body = stripVocabSectionFromTemplate(raw);
+  return body.trim() + lengthBlock(module, teil, level) + checklistBlock(module, teil, level);
+}
+
+/** Per-request tail — topic, vocab, openings, IDs, etc. */
+export function buildExamVariableSuffix(module, teil, words, options = {}) {
+  const { idSuffix, topic, schreibenT3Surname, retryNote } = options;
+  let suffix = buildTopicPromptBlock(topic);
+
+  if (module === 'sprechen') {
+    let vocab = buildVocabVariableBlock(words, { oral: true });
+    vocab = reinforceVocabOptionalBlock(vocab, { oral: true });
+    suffix += vocab;
+  } else if (module === 'horen') {
+    let vocab = buildVocabVariableBlock(words, { horen: true });
+    vocab = reinforceVocabOptionalBlock(vocab, { horen: true });
+    suffix += vocab;
+    if (Number(teil) === 1) {
+      suffix += buildHorenT1OpeningsPromptBlock();
+      suffix += buildHorenT1NamesPromptBlock();
+      suffix += buildHorenPremiseExcludePromptBlock(1);
+    }
+    if (Number(teil) === 2) {
+      suffix += buildHorenT2OpeningsPromptBlock();
+      suffix += buildHorenPremiseExcludePromptBlock(2);
+    }
+    if (Number(teil) === 3) {
+      suffix += buildHorenT3OpeningsPromptBlock();
+      suffix += buildHorenT3NamesPromptBlock();
+    }
+    if (Number(teil) === 4) suffix += buildHorenT4OpeningsPromptBlock();
+  } else {
+    suffix += buildVocabVariableBlock(words);
+  }
+
+  if (module === 'schreiben') {
+    suffix += buildSchreibenT3PremiseExcludePromptBlock();
+    suffix += buildSchreibenT3NamesPromptBlock(schreibenT3Surname || null);
+  }
+
+  if (module === 'sprechen') {
+    suffix += buildExcludedPremisesPromptBlock();
+    suffix += buildSprechenPremiseExcludePromptBlock();
+  }
 
   if (idSuffix) {
     const mod = module === 'horen' ? 'h' : module === 'schreiben' ? 's' : 'sp';
     if (module === 'horen') {
-      prompt +=
+      suffix +=
         `\n\nIMPORTANTE — IDs de esta generación:\n` +
         `- Passages T${teil}: gen-p-h${teil}-${idSuffix}-sN (N=1…5 solo T1)\n` +
         `- Preguntas: gen-q-h${teil}-${idSuffix}-…\n`;
+    } else if (module === 'sprechen' && String(options.level || 'B1').trim().toUpperCase() === 'A2') {
+      suffix +=
+        `\n\nIMPORTANTE — IDs de esta generación:\n` +
+        `- Pregunta: gen-q-sp-t${teil}-${idSuffix}-q1\n`;
     } else {
-      prompt +=
+      suffix +=
         `\n\nIMPORTANTE — IDs de esta generación:\n` +
         `- Preguntas: gen-q-${mod}-t{1,2,3}-${idSuffix}-q1\n`;
     }
-    prompt += `No reutilices IDs del ejemplo ni del banco existente.`;
+    suffix += `No reutilices IDs del ejemplo ni del banco existente.`;
   }
 
-  prompt += lengthBlock(module, teil);
-  prompt += checklistBlock(module, teil);
-  return prompt;
+  if (retryNote) suffix += retryNote;
+  return suffix.trim();
 }
 
-export function buildExamPromptHeader(module, teil) {
+export function buildExamPrompt(module, teil, words, options = {}) {
+  const level = options.level || 'B1';
+  const staticCore = buildExamStaticCore(module, teil, level);
+  const variableSuffix = buildExamVariableSuffix(module, teil, words, options);
+  let prompt = assemblePrompt(staticCore, variableSuffix);
+
+  // PASO 7/8 — separate quality block (feature-flagged / feedbackMode)
+  const fb = appendGenerationFeedback(prompt, {
+    rules: options.feedbackRules,
+    enabled: options.generationFeedbackEnabled,
+    feedbackMode: options.feedbackMode,
+    maxRules: options.maxFeedbackRules,
+  });
+  if (options.feedbackMetaOut && typeof options.feedbackMetaOut === 'object') {
+    Object.assign(options.feedbackMetaOut, {
+      ...fb.generationMetadata,
+      feedbackRulesApplied: fb.feedbackRulesApplied,
+    });
+  }
+  return fb.prompt;
+}
+
+export function buildExamPromptHeader(module, teil, level = 'B1') {
+  const lv = String(level || 'B1').trim().toUpperCase();
   const label =
     module === 'horen'
-      ? `Hören B1 · Teil ${teil}`
+      ? `Hören ${lv} · Teil ${teil}`
       : module === 'schreiben'
-        ? 'Schreiben B1 · Teile 1–3'
-        : 'Sprechen B1 · Teile 1–3';
+        ? `Schreiben ${lv} · Teile 1–3`
+        : lv === 'A2'
+          ? `Sprechen A2 · Teil ${teil}`
+          : 'Sprechen B1 · Teile 1–3';
   const regen =
     module === 'horen'
       ? `npm run horen:prompt:t${teil}`
-      : `${module}:prompt`;
+      : module === 'sprechen' && lv === 'A2'
+        ? `build-exam-prompt --module sprechen --level A2 --teil ${teil}`
+        : `${module}:prompt`;
   return (
     `# Prompt generado — ${label}\n` +
     `Copia TODO (desde la línea ---) y pégalo en Gemini/ChatGPT. Devuelve SOLO JSON.\n` +
@@ -238,9 +602,11 @@ export function buildExamPromptFull(module, teil, words, options = {}) {
   return buildExamPromptHeader(module, teil) + buildExamPrompt(module, teil, words, options);
 }
 
-export function teileForModule(module, allTeile = false) {
+export function teileForModule(module, allTeile = false, level = 'B1') {
   const mod = String(module).toLowerCase();
+  const lv = String(level || 'B1').trim().toUpperCase();
   if (mod === 'horen') return allTeile ? [1, 2, 3, 4] : null;
+  if (mod === 'sprechen' && lv === 'A2') return allTeile ? [1, 2, 3] : null;
   if (mod === 'schreiben' || mod === 'sprechen') return ['all'];
   throw new Error(`Módulo inválido: ${module}`);
 }

@@ -2,22 +2,21 @@
   "meta": {
     "language": "en",
     "level": "B2",
-    "version": 2,
-    "generatedAt": "2026-06-22",
-    "source": "seed-coverage-levels"
+    "version": 1,
+    "generatedAt": "2026-06-09"
   },
   "passages": [
     {
-      "id": "p-en-B2-lesen",
+      "id": "p-lesen-1",
       "module": "lesen",
-      "title": "B2 reading",
-      "text": "Many cities are investing in cycling infrastructure as commuters seek healthier alternatives to driving. Supporters argue that safe bike lanes reduce congestion and emissions. Critics warn that funding must also improve public transport links."
+      "title": "Remote Work and City Life",
+      "text": "Many companies now allow employees to work remotely two or three days a week. Supporters argue that commuting less reduces stress and carbon emissions. However, city centre shops and cafés report fewer customers on weekdays. Some economists suggest hybrid models may rebalance urban economies over time."
     },
     {
-      "id": "p-en-B2-horen",
+      "id": "p-horen-1",
       "module": "horen",
-      "title": "B2 listening",
-      "text": "Host: Good morning! Guest: I am looking for a flat in the city.\nHost: Have you seen any adverts? Guest: Yes, a small flat near the park."
+      "title": "Interview: Climate Policy",
+      "text": "Presenter: Can individual choices really fight climate change? Scientist: They help, but systemic policy is essential. Governments must invest in renewable energy and public transport. Presenter: Are consumers willing to pay more? Scientist: Surveys show growing support among younger voters."
     }
   ],
   "questions": [
@@ -25,82 +24,87 @@
       "id": "lb-en-b2-l1",
       "module": "lesen",
       "type": "true_false",
-      "question": "The text describes a person or situation.",
+      "question": "Remote work can reduce commuting.",
       "correct": "True",
       "correctAnswer": "True",
-      "explanation": "See passage or transcript.",
+      "explanation": "Supporters argue commuting less reduces stress.",
       "grammarTags": [
         "g-en-b2-clauses"
       ],
       "topicTags": [
-        "daily_life"
+        "technology"
       ],
-      "difficulty": 4,
-      "passageId": "p-en-B2-lesen",
+      "difficulty": 2,
+      "passageId": "p-lesen-1",
       "teil": 1
     },
     {
       "id": "lb-en-b2-l2",
       "module": "lesen",
-      "type": "true_false",
-      "question": "There is no information about work or study.",
-      "correct": "False",
-      "correctAnswer": "False",
-      "explanation": "See passage or transcript.",
+      "type": "multiple",
+      "question": "What problem do city centres face?",
+      "options": [
+        "a) Too many tourists",
+        "b) Fewer weekday customers",
+        "c) Higher rent only"
+      ],
+      "correct": "b",
+      "correctAnswer": "b",
+      "explanation": "Shops report fewer customers on weekdays.",
       "grammarTags": [
         "g-en-b2-reported"
       ],
       "topicTags": [
-        "travel"
+        "economics"
       ],
-      "difficulty": 4,
-      "passageId": "p-en-B2-lesen",
+      "difficulty": 3,
+      "passageId": "p-lesen-1",
       "teil": 1
     },
     {
       "id": "lb-en-b2-l3",
       "module": "lesen",
       "type": "multiple",
-      "question": "What is the text mainly about?",
+      "question": "What might hybrid models do?",
       "options": [
-        "a) Sport",
-        "b) Daily life, work or city life",
-        "c) Ancient history"
+        "a) Rebalance urban economies",
+        "b) End all office work",
+        "c) Ban public transport"
       ],
-      "correct": "b",
-      "correctAnswer": "b",
-      "explanation": "See passage or transcript.",
+      "correct": "a",
+      "correctAnswer": "a",
+      "explanation": "Economists suggest rebalancing over time.",
       "grammarTags": [
         "g-en-b2-clauses"
       ],
       "topicTags": [
-        "work"
+        "migration"
       ],
       "difficulty": 4,
-      "passageId": "p-en-B2-lesen",
+      "passageId": "p-lesen-1",
       "teil": 2
     },
     {
       "id": "lb-en-b2-h1",
       "module": "horen",
       "type": "multiple",
-      "question": "What is the conversation about?",
+      "question": "What does the scientist say is essential?",
       "options": [
-        "a) Weather only",
-        "b) Daily life or a current topic",
-        "c) Mathematics"
+        "a) Systemic policy",
+        "b) More advertising",
+        "c) Shorter holidays"
       ],
-      "correct": "b",
-      "correctAnswer": "b",
-      "explanation": "See passage or transcript.",
+      "correct": "a",
+      "correctAnswer": "a",
+      "explanation": "Systemic policy is essential.",
       "grammarTags": [
-        "g-en-b2-clauses"
+        "g-en-b2-reported"
       ],
       "topicTags": [
-        "daily_life"
+        "climate"
       ],
-      "difficulty": 4,
-      "passageId": "p-en-B2-horen",
+      "difficulty": 3,
+      "passageId": "p-horen-1",
       "segmentLabel": "Recording 1",
       "teil": 1
     },
@@ -108,78 +112,61 @@
       "id": "lb-en-b2-h2",
       "module": "horen",
       "type": "true_false",
-      "question": "There are at least two speakers in the dialogue.",
+      "question": "Governments should invest in renewable energy.",
       "correct": "True",
       "correctAnswer": "True",
-      "explanation": "See passage or transcript.",
+      "explanation": "Explicitly stated in the interview.",
       "grammarTags": [
-        "g-en-b2-reported"
+        "g-en-b2-clauses"
       ],
       "topicTags": [
-        "travel"
+        "science"
       ],
-      "difficulty": 4,
-      "passageId": "p-en-B2-horen",
+      "difficulty": 3,
+      "passageId": "p-horen-1",
       "segmentLabel": "Recording 1",
       "teil": 1
     },
     {
-      "id": "lb-en-b2-g1",
-      "module": "grammatik",
-      "type": "gap_fill",
-      "question": "Complete: It is important ___ protect the environment.",
-      "correct": "to",
-      "correctAnswer": "to",
-      "explanation": "Grammar gap.",
-      "grammarTags": [
-        "g-en-b2-clauses"
+      "id": "lb-en-b2-h3",
+      "module": "horen",
+      "type": "multiple",
+      "question": "Who shows growing support in surveys?",
+      "options": [
+        "a) Younger voters",
+        "b) Only retirees",
+        "c) Nobody"
       ],
-      "topicTags": [
-        "daily_life"
-      ],
-      "difficulty": 4,
-      "teil": 2
-    },
-    {
-      "id": "lb-en-b2-g2",
-      "module": "grammatik",
-      "type": "gap_fill",
-      "question": "Complete: She has lived here ___ 2019.",
-      "correct": "since",
-      "correctAnswer": "since",
-      "explanation": "Grammar gap.",
+      "correct": "a",
+      "correctAnswer": "a",
+      "explanation": "Growing support among younger voters.",
       "grammarTags": [
         "g-en-b2-reported"
       ],
       "topicTags": [
-        "travel"
+        "politics"
       ],
       "difficulty": 4,
-      "teil": 3
-    },
-    {
-      "id": "lb-en-b2-m1",
-      "module": "lesen",
-      "type": "matching",
-      "question": "Who mentions cost reduction?",
-      "options": [
-        "A) Presenter",
-        "B) Expert",
-        "C) Neither"
-      ],
-      "correct": "B",
-      "correctAnswer": "B",
-      "explanation": "Match the speaker.",
-      "grammarTags": [
-        "g-en-b2-clauses"
-      ],
-      "topicTags": [
-        "work"
-      ],
-      "difficulty": 4,
-      "passageId": "p-en-B2-horen",
-      "teil": 1
+      "passageId": "p-horen-1",
+      "segmentLabel": "Recording 1",
+      "teil": 2
     }
   ],
-  "vocabulary": {}
+  "vocabulary": {
+    "commuting": {
+      "es": "desplazamiento al trabajo",
+      "de": "Pendeln",
+      "type": "noun"
+    },
+    "renewable": {
+      "es": "renovable",
+      "de": "erneuerbar",
+      "type": "adjective"
+    },
+    "hybrid": {
+      "es": "híbrido",
+      "de": "hybrid",
+      "type": "adjective"
+    }
+  }
 }

@@ -1,0 +1,163 @@
+{
+  "pool": "v6.1-B-G2",
+  "total": 88,
+  "byReason": {
+    "verb_census_no_finite": 33,
+    "adv_before_verb": 1,
+    "lexicon_override_tag": 12,
+    "modal_final_infinitive": 12,
+    "adj_before_noun": 8,
+    "adv_after_pronoun": 1,
+    "quantifier_capitalized": 1,
+    "lexicon_after_adj": 1,
+    "modal_noun_object": 2,
+    "prose_strict_homograph": 10,
+    "lexicon_nn": 5,
+    "zu_adv_capitalized": 2
+  },
+  "byClass": {
+    "real_error": 48,
+    "fp_clear": 23,
+    "ambiguous": 17
+  },
+  "byFamily": {
+    "verb_census_no_finite": {
+      "real": 21,
+      "fp": 8,
+      "amb": 4,
+      "total": 33
+    },
+    "other": {
+      "real": 9,
+      "fp": 0,
+      "amb": 7,
+      "total": 16
+    },
+    "lexicon_noun_lowercase": {
+      "real": 5,
+      "fp": 14,
+      "amb": 1,
+      "total": 20
+    },
+    "adj_before_noun": {
+      "real": 6,
+      "fp": 1,
+      "amb": 1,
+      "total": 8
+    },
+    "quantifier_capitalized": {
+      "real": 1,
+      "fp": 0,
+      "amb": 0,
+      "total": 1
+    },
+    "title_heading": {
+      "real": 6,
+      "fp": 0,
+      "amb": 4,
+      "total": 10
+    }
+  },
+  "fpFamilies": {
+    "lexicon_noun_lowercase": 14,
+    "verb_census_no_finite": 8,
+    "adj_before_noun": 1
+  },
+  "fpPatternsSorted": [
+    {
+      "pattern": "lexicon_noun_lowercase :: lexicon_override_tag :: PROSE :: prev=einfacher+ADV",
+      "count": 2
+    },
+    {
+      "pattern": "verb_census_no_finite :: verb_census_no_finite :: PROSE :: prev=nur+ADV",
+      "count": 2
+    },
+    {
+      "pattern": "lexicon_noun_lowercase :: lexicon_override_tag :: PROSE :: prev=wieder+ADV",
+      "count": 2
+    },
+    {
+      "pattern": "lexicon_noun_lowercase :: lexicon_override_tag :: PROSE :: prev=vorher+ADV",
+      "count": 2
+    },
+    {
+      "pattern": "verb_census_no_finite :: verb_census_no_finite :: PROSE :: prev=zu+ADP",
+      "count": 1
+    },
+    {
+      "pattern": "lexicon_noun_lowercase :: lexicon_override_tag :: PROSE :: prev=Jetzt+ADV",
+      "count": 1
+    },
+    {
+      "pattern": "lexicon_noun_lowercase :: lexicon_override_tag :: PROSE :: prev=smarter+ADV",
+      "count": 1
+    },
+    {
+      "pattern": "verb_census_no_finite :: verb_census_no_finite :: PROSE :: prev=Ausschließlich+ADV",
+      "count": 1
+    },
+    {
+      "pattern": "verb_census_no_finite :: verb_census_no_finite :: PROSE :: prev=Nur+ADV",
+      "count": 1
+    },
+    {
+      "pattern": "lexicon_noun_lowercase :: lexicon_after_adj :: PROSE :: prev=regelmäßig+ADV",
+      "count": 1
+    },
+    {
+      "pattern": "lexicon_noun_lowercase :: lexicon_override_tag :: PROSE :: prev=interaktiver+ADV",
+      "count": 1
+    },
+    {
+      "pattern": "verb_census_no_finite :: verb_census_no_finite :: PROSE :: prev=sie+PRON",
+      "count": 1
+    },
+    {
+      "pattern": "lexicon_noun_lowercase :: lexicon_override_tag :: PROSE :: prev=nur+ADV",
+      "count": 1
+    },
+    {
+      "pattern": "lexicon_noun_lowercase :: lexicon_override_tag :: PROSE :: prev=sofort+ADV",
+      "count": 1
+    },
+    {
+      "pattern": "adj_before_noun :: adj_before_noun :: PROSE :: prev=auf+ADP",
+      "count": 1
+    },
+    {
+      "pattern": "lexicon_noun_lowercase :: lexicon_nn :: PROSE :: prev=von+ADP",
+      "count": 1
+    },
+    {
+      "pattern": "verb_census_no_finite :: verb_census_no_finite :: PROSE :: prev=Euro+NOUN",
+      "count": 1
+    },
+    {
+      "pattern": "lexicon_noun_lowercase :: lexicon_nn :: PROSE :: prev=Alle+DET",
+      "count": 1
+    },
+    {
+      "pattern": "verb_census_no_finite :: verb_census_no_finite :: PROSE :: prev=Tagen+NOUN",
+      "count": 1
+    }
+  ],
+  "groupsGte5Fp": [
+    {
+      "family": "lexicon_noun_lowercase",
+      "fp": 14
+    },
+    {
+      "family": "verb_census_no_finite",
+      "fp": 8
+    }
+  ],
+  "mustCatchInPool": 30,
+  "ambiguousByReason": {
+    "adv_before_verb": 1,
+    "modal_final_infinitive": 6,
+    "adj_before_noun": 1,
+    "verb_census_no_finite": 4,
+    "modal_noun_object": 1,
+    "prose_strict_homograph": 4
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "generatedAt": "2026-07-12T14:05:45.324Z",
+  "dryRun": false,
+  "capsVersion": "v3.15-was-subst-adj-2026-07-12",
+  "scanHits": [
+    {
+      "file": "schreiben-gemini-005.json",
+      "hits": [
+        {
+          "where": "q.gen-q-s-t1-d252d1e4-q1.question",
+          "kind": "lower_needs_cap",
+          "match": "was Sie am Wochenende schönes unternommen",
+          "adj": "schönes",
+          "verb": "unternommen",
+          "expected": "Schönes"
+        }
+      ]
+    }
+  ],
+  "reprocessed": [
+    {
+      "file": "schreiben-gemini-005.json",
+      "beforeHits": 1,
+      "afterLowerHits": 0,
+      "capsStats": {
+        "markdownFixed": 0,
+        "decapFixed": 0,
+        "capFixed": 1,
+        "fieldsChanged": 1,
+        "tokenChanges": 1
+      },
+      "changeCount": 1,
+      "remaining": []
+    }
+  ],
+  "unitChecks": [
+    {
+      "name": "schreiben-005 golden",
+      "input": "Erzählen Sie, was Sie am Wochenende Schönes unternommen haben.",
+      "want": "Erzählen Sie, was Sie am Wochenende Schönes unternommen haben.",
+      "decap": "Erzählen Sie, was Sie am Wochenende Schönes unternommen haben.",
+      "cap": "Erzählen Sie, was Sie am Wochenende Schönes unternommen haben.",
+      "ok": true
+    },
+    {
+      "name": "schreiben-005 lower→cap",
+      "input": "Erzählen Sie, was Sie am Wochenende schönes unternommen haben.",
+      "wantCap": "Erzählen Sie, was Sie am Wochenende Schönes unternommen haben.",
+      "decap": "Erzählen Sie, was Sie am Wochenende schönes unternommen haben.",
+      "cap": "Erzählen Sie, was Sie am Wochenende Schönes unternommen haben.",
+      "ok": true
+    },
+    {
+      "name": "attributive",
+      "input": "Sie haben vor Kurzem ein schönes Wochenende erlebt.",
+      "want": "Sie haben vor Kurzem ein schönes Wochenende erlebt.",
+      "decap": "Sie haben vor Kurzem ein schönes Wochenende erlebt.",
+      "cap": "Sie haben vor Kurzem ein schönes Wochenende erlebt.",
+      "ok": true
+    },
+    {
+      "name": "etwas Gutes",
+      "input": "Jeder kann etwas Gutes tun.",
+      "want": "Jeder kann etwas Gutes tun.",
+      "decap": "Jeder kann etwas Gutes tun.",
+      "cap": "Jeder kann etwas Gutes tun.",
+      "ok": true
+    }
+  ]
+}

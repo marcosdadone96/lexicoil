@@ -1,0 +1,208 @@
+{
+  "generatedAt": "2026-07-10T12:24:05.916Z",
+  "promptVersion": "v1.1-t3zero-quote-lex-2026-07-10",
+  "sampleSize": 8,
+  "cost": {
+    "estimateUsd": 0.0443,
+    "realUsd": 0.032,
+    "realInputTokens": 24159,
+    "realOutputTokens": 1576
+  },
+  "score": "8/8",
+  "readyToScaleWarnFirst": true,
+  "failed": [],
+  "results": [
+    {
+      "file": "lesen-t3-auto-ma7vt8.json",
+      "role": "prior_fp",
+      "check": "no_t3_zero_non_sequitur",
+      "why": "FP v1: Ott/Portugal correct=0 marked non_sequitur — must be clean on that",
+      "pass": true,
+      "checkDetail": "no naturalness/non_sequitur on correct=0",
+      "findings": [],
+      "filteredT3Zero": 0,
+      "usage": {
+        "inputTokens": 4516,
+        "outputTokens": 24
+      },
+      "costUsd": 0.004636,
+      "model": "claude-haiku-4-5"
+    },
+    {
+      "file": "horen-t4-gemini-003.json",
+      "role": "prior_miss",
+      "check": "detect_reserven",
+      "why": "Missed Reserven in v1 — must flag wrong_lexeme Reserven",
+      "pass": true,
+      "checkDetail": "Reserven/Ressourcen flagged",
+      "findings": [
+        {
+          "axis": "lexicon",
+          "reason": "wrong_lexeme",
+          "severity": "block",
+          "passageId": "gen-p-h4-b2fee41c-s1",
+          "questionId": null,
+          "field": "passage.text",
+          "quote": "Solange Industrie und Politik keine ernsthaften Maßnahmen zum Schutz unserer natürlichen Reserven ergreifen",
+          "detail": "«natürlichen Reserven» es incorrecto en contexto de sostenibilidad/recursos. Debe ser «Ressourcen» (recursos naturales). «Reserven» = reservas financieras/militares, no recursos ambientales."
+        },
+        {
+          "axis": "lexicon",
+          "reason": "wrong_lexeme",
+          "severity": "block",
+          "passageId": "gen-p-h4-b2fee41c-s1",
+          "questionId": null,
+          "field": "passage.text",
+          "quote": "Unternehmen sollten ein Protokoll über ihre Nachhaltigkeitsbemühungen veröffentlichen",
+          "detail": "«Protokoll veröffentlichen» es incorrecto. En contexto de sostenibilidad/transparencia corporativa, debe ser «Bericht» (informe). «Protokoll» = acta de reunión, no informe de sostenibilidad."
+        }
+      ],
+      "filteredT3Zero": 0,
+      "usage": {
+        "inputTokens": 3024,
+        "outputTokens": 385
+      },
+      "costUsd": 0.004949,
+      "model": "claude-haiku-4-5"
+    },
+    {
+      "file": "horen-t3-gemini-003.json",
+      "role": "prior_tp",
+      "check": "detect_fabricated_quote",
+      "why": "True positive v1 — must still flag Ich werde es mal probieren",
+      "pass": true,
+      "checkDetail": "fabricated quote still detected",
+      "findings": [
+        {
+          "axis": "quote_fidelity",
+          "reason": "fabricated_quote",
+          "severity": "block",
+          "passageId": "gen-p-h3-28eec3b4-s1",
+          "questionId": "gen-q-h3-28eec3b4-7",
+          "field": "explanation",
+          "quote": "Ich werde es mal probieren.",
+          "detail": "La explicación atribuye a Max la frase 'Ich werde es mal probieren.' pero en el diálogo Max nunca dice esto; solo dice 'Vielleicht mache ich das nächstes Wochenende.'"
+        }
+      ],
+      "filteredT3Zero": 0,
+      "usage": {
+        "inputTokens": 2682,
+        "outputTokens": 199
+      },
+      "costUsd": 0.003677,
+      "model": "claude-haiku-4-5"
+    },
+    {
+      "file": "horen-t2-gemini-001.json",
+      "role": "prior_tp",
+      "check": "detect_akzent_or_protokoll",
+      "why": "True positive v1 — must still flag Akzent and/or Protokoll",
+      "pass": true,
+      "checkDetail": "Akzent/Protokoll-class issue still detected",
+      "findings": [
+        {
+          "axis": "lexicon",
+          "reason": "wrong_lexeme",
+          "severity": "warn",
+          "passageId": "gen-p-h2-d5028372",
+          "questionId": null,
+          "field": "passage.text",
+          "quote": "Ein klarer Akzent in der Aussprache",
+          "detail": "«Akzent» es incorrecto en este contexto; debería ser «Aussprache» o «Tonfall». Akzent = acento regional/extranjero, no claridad de pronunciación."
+        },
+        {
+          "axis": "lexicon",
+          "reason": "wrong_lexeme",
+          "severity": "warn",
+          "passageId": "gen-p-h2-d5028372",
+          "questionId": null,
+          "field": "passage.text",
+          "quote": "Gruppentreffen sollten ein klares Protokoll haben",
+          "detail": "«Protokoll» es incorrecto; debería ser «Tagesordnung» o «Agenda». Protokoll = acta de reunión, no plan/orden del día."
+        }
+      ],
+      "filteredT3Zero": 0,
+      "usage": {
+        "inputTokens": 2633,
+        "outputTokens": 316
+      },
+      "costUsd": 0.004213,
+      "model": "claude-haiku-4-5"
+    },
+    {
+      "file": "lesen-t1-gemini-075.json",
+      "role": "prior_clean",
+      "check": "no_block",
+      "why": "Was warn-only; must not gain block findings from prompt tweak",
+      "pass": true,
+      "checkDetail": "no blocks",
+      "findings": [
+        {
+          "axis": "lexicon",
+          "reason": "wrong_lexeme",
+          "severity": "warn",
+          "passageId": "gen-l1-2294",
+          "questionId": null,
+          "field": "passage.text",
+          "quote": "Dieser Kurs in Sachen Mobilität war für mich der beste Schritt",
+          "detail": "«Kurs» (curso/clase) es incorrecto en contexto; debería ser «Schritt» (paso) o «Weg» (camino). Un «Kurs» implica educación formal estructurada, no un cambio de estilo de vida personal."
+        }
+      ],
+      "filteredT3Zero": 0,
+      "usage": {
+        "inputTokens": 2147,
+        "outputTokens": 194
+      },
+      "costUsd": 0.003117,
+      "model": "claude-haiku-4-5"
+    },
+    {
+      "file": "horen-t2-gemini-013.json",
+      "role": "prior_clean",
+      "check": "no_findings",
+      "why": "Was fully clean — regression guard",
+      "pass": true,
+      "checkDetail": "still clean",
+      "findings": [],
+      "filteredT3Zero": 0,
+      "usage": {
+        "inputTokens": 2693,
+        "outputTokens": 24
+      },
+      "costUsd": 0.002813,
+      "model": "claude-haiku-4-5"
+    },
+    {
+      "file": "schreiben-gemini-006.json",
+      "role": "prior_clean",
+      "check": "no_findings",
+      "why": "Was fully clean — regression guard",
+      "pass": true,
+      "checkDetail": "still clean",
+      "findings": [],
+      "filteredT3Zero": 0,
+      "usage": {
+        "inputTokens": 2058,
+        "outputTokens": 410
+      },
+      "costUsd": 0.004108,
+      "model": "claude-haiku-4-5"
+    },
+    {
+      "file": "lesen-t3-auto-we7l2c.json",
+      "role": "new_t3_zero",
+      "check": "no_t3_zero_non_sequitur",
+      "why": "Unseen in clean set; has correct=0 Krankenversicherung — must not FP",
+      "pass": true,
+      "checkDetail": "no naturalness/non_sequitur on correct=0",
+      "findings": [],
+      "filteredT3Zero": 0,
+      "usage": {
+        "inputTokens": 4406,
+        "outputTokens": 24
+      },
+      "costUsd": 0.004526,
+      "model": "claude-haiku-4-5"
+    }
+  ]
+}

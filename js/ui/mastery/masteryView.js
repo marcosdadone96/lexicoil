@@ -109,7 +109,7 @@ const MasteryView = (() => {
     }
 
     const fc = typeof deckForGoal === 'function' ? deckForGoal(goal) : [];
-    const hist = typeof historyForGoal === 'function' ? historyForGoal(goal) : [];
+    const hist = typeof examHistoryForGoal === 'function' ? examHistoryForGoal(goal) : (typeof historyForGoal === 'function' ? historyForGoal(goal) : []);
     const due = typeof dueForGoal === 'function' ? dueForGoal(goal).length : 0;
 
     if (due >= 3) {
@@ -177,11 +177,12 @@ const MasteryView = (() => {
     }
 
     const last = hist[0];
-    if (last.score < 70) {
+    const lastSc = typeof ModuleGrading !== 'undefined' ? ModuleGrading.resolveHistoryScore(last) : Number(last.score);
+    if (Number.isFinite(lastSc) && lastSc < 70) {
       return {
         kind: 'retry',
         title: 'Practice your weak areas',
-        desc: 'Last score: ' + last.score + '% on ' + (last.topic || 'your last exam') + '.',
+        desc: 'Last score: ' + lastSc + '% on ' + (last.topic || 'your last exam') + '.',
         cta: 'Practice again →',
         badges: [],
         oneClick: true,

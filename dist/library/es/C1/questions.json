@@ -2,105 +2,86 @@
   "meta": {
     "language": "es",
     "level": "C1",
-    "version": 2,
-    "generatedAt": "2026-06-22",
-    "source": "seed-coverage-levels"
+    "version": 1,
+    "generatedAt": "2026-06-09"
   },
   "passages": [
     {
-      "id": "p-es-C1-lesen",
+      "id": "p-lesen-1",
       "module": "lesen",
-      "title": "C1 reading",
-      "text": "La inteligencia artificial transforma sectores que antes parecían estables. Aunque automatiza tareas rutinarias, también exige competencias digitales y criterio ético. Los responsables políticos insisten en reformar la formación profesional con mayor rapidez."
+      "title": "Literatura y crítica social",
+      "text": "Varios académicos sostienen que la novela contemporánea funciona como archivo moral de tensiones sociales. Lejos de ser mero entretenimiento, articula conflictos que los medios simplifican. El reto del lector crítico consiste en reconocer la ideología sin reducir la obra a un manifiesto."
     },
     {
-      "id": "p-es-C1-horen",
+      "id": "p-horen-1",
       "module": "horen",
-      "title": "C1 listening",
-      "text": "Presentadora: ¡Buenos días! Invitado: Busco un piso en la ciudad.\nPresentadora: ¿Has visto algún anuncio? Invitado: Sí, un piso pequeño cerca del parque."
+      "title": "Conferencia: ética de la IA",
+      "text": "Ponente: La regulación debe anticipar riesgos sistémicos, no solo casos aislados. Pregunta: ¿Quién responde cuando falla un algoritmo? Ponente: La cadena de responsabilidad debe ser explícita y verificable."
     }
   ],
   "questions": [
     {
       "id": "lb-es-c1-l1",
       "module": "lesen",
-      "type": "true_false",
-      "question": "El texto describe una persona o situación.",
-      "correct": "True",
-      "correctAnswer": "True",
-      "explanation": "See passage or transcript.",
+      "type": "multiple",
+      "question": "¿Cómo describen los académicos la novela contemporánea?",
+      "options": [
+        "a) Como archivo moral",
+        "b) Como manual técnico",
+        "c) Como deporte"
+      ],
+      "correct": "a",
+      "correctAnswer": "a",
+      "explanation": "Funciona como archivo moral.",
       "grammarTags": [
         "g-es-c1-register"
       ],
       "topicTags": [
-        "vida"
+        "literatura"
       ],
-      "difficulty": 5,
-      "passageId": "p-es-C1-lesen",
+      "difficulty": 4,
+      "passageId": "p-lesen-1",
       "teil": 1
     },
     {
       "id": "lb-es-c1-l2",
       "module": "lesen",
       "type": "true_false",
-      "question": "No hay información sobre trabajo o estudios.",
-      "correct": "False",
-      "correctAnswer": "False",
-      "explanation": "See passage or transcript.",
-      "grammarTags": [
-        "g-es-c1-subj-plus"
-      ],
-      "topicTags": [
-        "viajes"
-      ],
-      "difficulty": 5,
-      "passageId": "p-es-C1-lesen",
-      "teil": 1
-    },
-    {
-      "id": "lb-es-c1-l3",
-      "module": "lesen",
-      "type": "multiple",
-      "question": "¿De qué trata principalmente el texto?",
-      "options": [
-        "a) Deporte",
-        "b) Vida diaria, trabajo o ciudad",
-        "c) Historia"
-      ],
-      "correct": "b",
-      "correctAnswer": "b",
-      "explanation": "See passage or transcript.",
+      "question": "El lector crítico debe evitar reducir la obra a un manifiesto.",
+      "correct": "True",
+      "correctAnswer": "True",
+      "explanation": "Reconocer ideología sin reducir la obra.",
       "grammarTags": [
         "g-es-c1-register"
       ],
       "topicTags": [
-        "trabajo"
+        "filosofia"
       ],
       "difficulty": 5,
-      "passageId": "p-es-C1-lesen",
-      "teil": 2
+      "passageId": "p-lesen-1",
+      "teil": 1
     },
     {
       "id": "lb-es-c1-h1",
       "module": "horen",
       "type": "multiple",
-      "question": "¿De qué trata la conversación?",
+      "question": "¿Qué debe anticipar la regulación?",
       "options": [
-        "a) Tiempo",
-        "b) Vida diaria o tema actual",
-        "c) Matemáticas"
+        "a) Riesgos sistémicos",
+        "b) Solo moda",
+        "c) Nada"
       ],
-      "correct": "b",
-      "correctAnswer": "b",
-      "explanation": "See passage or transcript.",
+      "correct": "a",
+      "correctAnswer": "a",
+      "explanation": "Anticipar riesgos sistémicos.",
       "grammarTags": [
         "g-es-c1-register"
       ],
       "topicTags": [
-        "vida"
+        "etica"
       ],
       "difficulty": 5,
-      "passageId": "p-es-C1-horen",
+      "passageId": "p-horen-1",
       "segmentLabel": "Grabación 1",
       "teil": 1
     },
@@ -108,78 +89,37 @@
       "id": "lb-es-c1-h2",
       "module": "horen",
       "type": "true_false",
-      "question": "Hay al menos dos hablantes en el diálogo.",
+      "question": "La responsabilidad debe ser verificable.",
       "correct": "True",
       "correctAnswer": "True",
-      "explanation": "See passage or transcript.",
+      "explanation": "Cadena explícita y verificable.",
       "grammarTags": [
-        "g-es-c1-subj-plus"
+        "g-es-c1-register"
       ],
       "topicTags": [
-        "viajes"
+        "derechos"
       ],
-      "difficulty": 5,
-      "passageId": "p-es-C1-horen",
+      "difficulty": 4,
+      "passageId": "p-horen-1",
       "segmentLabel": "Grabación 1",
-      "teil": 1
-    },
-    {
-      "id": "lb-es-c1-g1",
-      "module": "grammatik",
-      "type": "gap_fill",
-      "question": "Complete: It is important ___ protect the environment.",
-      "correct": "to",
-      "correctAnswer": "to",
-      "explanation": "Grammar gap.",
-      "grammarTags": [
-        "g-es-c1-register"
-      ],
-      "topicTags": [
-        "vida"
-      ],
-      "difficulty": 5,
-      "teil": 2
-    },
-    {
-      "id": "lb-es-c1-g2",
-      "module": "grammatik",
-      "type": "gap_fill",
-      "question": "Complete: She has lived here ___ 2019.",
-      "correct": "since",
-      "correctAnswer": "since",
-      "explanation": "Grammar gap.",
-      "grammarTags": [
-        "g-es-c1-subj-plus"
-      ],
-      "topicTags": [
-        "viajes"
-      ],
-      "difficulty": 5,
-      "teil": 3
-    },
-    {
-      "id": "lb-es-c1-m1",
-      "module": "lesen",
-      "type": "matching",
-      "question": "Who mentions cost reduction?",
-      "options": [
-        "A) Presenter",
-        "B) Expert",
-        "C) Neither"
-      ],
-      "correct": "B",
-      "correctAnswer": "B",
-      "explanation": "Match the speaker.",
-      "grammarTags": [
-        "g-es-c1-register"
-      ],
-      "topicTags": [
-        "trabajo"
-      ],
-      "difficulty": 5,
-      "passageId": "p-es-C1-horen",
       "teil": 1
     }
   ],
-  "vocabulary": {}
+  "vocabulary": {
+    "ideología": {
+      "en": "ideology",
+      "de": "Ideologie",
+      "type": "noun"
+    },
+    "manifiesto": {
+      "en": "manifesto",
+      "de": "Manifest",
+      "type": "noun"
+    },
+    "verificable": {
+      "en": "verifiable",
+      "de": "überprüfbar",
+      "type": "adjective"
+    }
+  }
 }

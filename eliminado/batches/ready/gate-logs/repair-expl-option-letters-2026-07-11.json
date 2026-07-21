@@ -1,0 +1,30 @@
+{
+  "scanned": 139,
+  "filesTouched": [
+    "horen-t1-gemini-005.json"
+  ],
+  "desyncFixed": [
+    {
+      "file": "horen-t1-gemini-005.json",
+      "qid": "gen-q-h1-c0c5c593-s5-q2",
+      "correct": "a",
+      "fixes": [
+        {
+          "from": "c",
+          "to": "a"
+        }
+      ],
+      "before": "Der Text gibt an, dass die Gebühr für den Kurs 'fünfzig Euro pro Person' beträgt, was Option c korrekt macht.",
+      "after": "Der Text gibt an, dass die Gebühr für den Kurs 'fünfzig Euro pro Person' beträgt, was Option a korrekt macht."
+    }
+  ],
+  "syncLeftAlone": [
+    {
+      "file": "horen-t1-gemini-016.json",
+      "qid": "gen-q-h1-8e7e4170-s1-q2",
+      "letter": "b",
+      "explanation": "Die Ansage nennt, dass die Anmeldung nächste Woche am Montag, dem 15. Mai, beginnt. Option b) ist die korrekte Aussage."
+    }
+  ],
+  "stillDesync": []
+}

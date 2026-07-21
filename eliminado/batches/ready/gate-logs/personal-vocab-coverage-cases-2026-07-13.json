@@ -1,0 +1,865 @@
+{
+  "generatedAt": "2026-07-13T21:12:52.374Z",
+  "algorithm": "one part per Teil, greedy max overlap; remaining lemmas shrink after each pick",
+  "poolStock": {
+    "lesen:T1": 71,
+    "lesen:T2": 46,
+    "lesen:T4": 67,
+    "lesen:T3": 22,
+    "lesen:T5": 35,
+    "horen:T1": 29,
+    "horen:T2": 20,
+    "horen:T3": 13,
+    "horen:T4": 28,
+    "schreiben:T1": 10,
+    "schreiben:T2": 10,
+    "schreiben:T3": 10,
+    "sprechen:T1": 20,
+    "sprechen:T2": 20,
+    "sprechen:T3": 20
+  },
+  "cases": [
+    {
+      "id": 1,
+      "module": "lesen",
+      "topic": "Umwelt",
+      "nSelected": 5,
+      "nLemmas": 5,
+      "nCovered": 0,
+      "coveragePct": 0,
+      "teilsServed": 5,
+      "teilsTotal": 5,
+      "uncovered": [
+        "recycling",
+        "klimawandel",
+        "müll",
+        "energi",
+        "umwelen"
+      ],
+      "picks": [
+        {
+          "teil": 1,
+          "score": 0,
+          "topicRelaxed": true,
+          "covered": []
+        },
+        {
+          "teil": 2,
+          "score": 0,
+          "topicRelaxed": false,
+          "covered": []
+        },
+        {
+          "teil": 3,
+          "score": 0,
+          "topicRelaxed": true,
+          "covered": []
+        },
+        {
+          "teil": 4,
+          "score": 0,
+          "topicRelaxed": true,
+          "covered": []
+        },
+        {
+          "teil": 5,
+          "score": 0,
+          "topicRelaxed": false,
+          "covered": []
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "module": "lesen",
+      "topic": "Umwelt",
+      "nSelected": 15,
+      "nLemmas": 15,
+      "nCovered": 1,
+      "coveragePct": 6.7,
+      "teilsServed": 5,
+      "teilsTotal": 5,
+      "uncovered": [
+        "recycling",
+        "klimawandel",
+        "müll",
+        "energi",
+        "umwelen",
+        "verschmutzung",
+        "naturschutz",
+        "abfall",
+        "solar",
+        "windkrafen",
+        "ressourcen",
+        "klima",
+        "emissio",
+        "pflanzen"
+      ],
+      "picks": [
+        {
+          "teil": 1,
+          "score": 0,
+          "topicRelaxed": true,
+          "covered": []
+        },
+        {
+          "teil": 2,
+          "score": 0,
+          "topicRelaxed": false,
+          "covered": []
+        },
+        {
+          "teil": 3,
+          "score": 0,
+          "topicRelaxed": true,
+          "covered": []
+        },
+        {
+          "teil": 4,
+          "score": 1,
+          "topicRelaxed": true,
+          "covered": [
+            "nachhaltig"
+          ]
+        },
+        {
+          "teil": 5,
+          "score": 0,
+          "topicRelaxed": false,
+          "covered": []
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "module": "lesen",
+      "topic": "Arbeit",
+      "nSelected": 5,
+      "nLemmas": 5,
+      "nCovered": 1,
+      "coveragePct": 20,
+      "teilsServed": 5,
+      "teilsTotal": 5,
+      "uncovered": [
+        "beruf",
+        "halen",
+        "bewerbung",
+        "firma"
+      ],
+      "picks": [
+        {
+          "teil": 1,
+          "score": 0,
+          "topicRelaxed": false,
+          "covered": []
+        },
+        {
+          "teil": 2,
+          "score": 0,
+          "topicRelaxed": true,
+          "covered": []
+        },
+        {
+          "teil": 3,
+          "score": 0,
+          "topicRelaxed": true,
+          "covered": []
+        },
+        {
+          "teil": 4,
+          "score": 1,
+          "topicRelaxed": true,
+          "covered": [
+            "kollegen"
+          ]
+        },
+        {
+          "teil": 5,
+          "score": 0,
+          "topicRelaxed": false,
+          "covered": []
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "module": "lesen",
+      "topic": "Arbeit",
+      "nSelected": 20,
+      "nLemmas": 20,
+      "nCovered": 1,
+      "coveragePct": 5,
+      "teilsServed": 5,
+      "teilsTotal": 5,
+      "uncovered": [
+        "beruf",
+        "halen",
+        "bewerbung",
+        "firma",
+        "arbeitsplatz",
+        "vertrag",
+        "vorgesetzt",
+        "teilzeien",
+        "überstunden",
+        "kündigung",
+        "praktikum",
+        "qualifikatio",
+        "team",
+        "stres",
+        "pausen",
+        "loh",
+        "stell",
+        "karrieren",
+        "arbeitszeien"
+      ],
+      "picks": [
+        {
+          "teil": 1,
+          "score": 0,
+          "topicRelaxed": false,
+          "covered": []
+        },
+        {
+          "teil": 2,
+          "score": 0,
+          "topicRelaxed": true,
+          "covered": []
+        },
+        {
+          "teil": 3,
+          "score": 0,
+          "topicRelaxed": true,
+          "covered": []
+        },
+        {
+          "teil": 4,
+          "score": 1,
+          "topicRelaxed": true,
+          "covered": [
+            "kollegen"
+          ]
+        },
+        {
+          "teil": 5,
+          "score": 0,
+          "topicRelaxed": false,
+          "covered": []
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "module": "lesen",
+      "topic": "Technik",
+      "nSelected": 12,
+      "nLemmas": 12,
+      "nCovered": 1,
+      "coveragePct": 8.3,
+      "teilsServed": 5,
+      "teilsTotal": 5,
+      "uncovered": [
+        "smartphonen",
+        "internet",
+        "comput",
+        "app",
+        "digital",
+        "softwaren",
+        "gerät",
+        "onlin",
+        "daten",
+        "netzwerk",
+        "passworen"
+      ],
+      "picks": [
+        {
+          "teil": 1,
+          "score": 0,
+          "topicRelaxed": true,
+          "covered": []
+        },
+        {
+          "teil": 2,
+          "score": 0,
+          "topicRelaxed": false,
+          "covered": []
+        },
+        {
+          "teil": 3,
+          "score": 0,
+          "topicRelaxed": false,
+          "covered": []
+        },
+        {
+          "teil": 4,
+          "score": 1,
+          "topicRelaxed": true,
+          "covered": [
+            "technik"
+          ]
+        },
+        {
+          "teil": 5,
+          "score": 0,
+          "topicRelaxed": false,
+          "covered": []
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "module": "lesen",
+      "topic": "Gesundheit",
+      "nSelected": 8,
+      "nLemmas": 8,
+      "nCovered": 1,
+      "coveragePct": 12.5,
+      "teilsServed": 5,
+      "teilsTotal": 5,
+      "uncovered": [
+        "arzt",
+        "krank",
+        "medikamenen",
+        "gesund",
+        "sport",
+        "schmerz",
+        "therapi"
+      ],
+      "picks": [
+        {
+          "teil": 1,
+          "score": 0,
+          "topicRelaxed": true,
+          "covered": []
+        },
+        {
+          "teil": 2,
+          "score": 0,
+          "topicRelaxed": true,
+          "covered": []
+        },
+        {
+          "teil": 3,
+          "score": 0,
+          "topicRelaxed": true,
+          "covered": []
+        },
+        {
+          "teil": 4,
+          "score": 1,
+          "topicRelaxed": true,
+          "covered": [
+            "ernährung"
+          ]
+        },
+        {
+          "teil": 5,
+          "score": 0,
+          "topicRelaxed": false,
+          "covered": []
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "module": "horen",
+      "topic": "Arbeit",
+      "nSelected": 5,
+      "nLemmas": 5,
+      "nCovered": 1,
+      "coveragePct": 20,
+      "teilsServed": 4,
+      "teilsTotal": 4,
+      "uncovered": [
+        "beruf",
+        "halen",
+        "bewerbung",
+        "firma"
+      ],
+      "picks": [
+        {
+          "teil": 1,
+          "score": 1,
+          "topicRelaxed": false,
+          "covered": [
+            "kollegen"
+          ]
+        },
+        {
+          "teil": 2,
+          "score": 0,
+          "topicRelaxed": false,
+          "covered": []
+        },
+        {
+          "teil": 3,
+          "score": 0,
+          "topicRelaxed": true,
+          "covered": []
+        },
+        {
+          "teil": 4,
+          "score": 0,
+          "topicRelaxed": true,
+          "covered": []
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "module": "horen",
+      "topic": "Arbeit",
+      "nSelected": 15,
+      "nLemmas": 15,
+      "nCovered": 1,
+      "coveragePct": 6.7,
+      "teilsServed": 4,
+      "teilsTotal": 4,
+      "uncovered": [
+        "beruf",
+        "halen",
+        "bewerbung",
+        "firma",
+        "arbeitsplatz",
+        "vertrag",
+        "vorgesetzt",
+        "teilzeien",
+        "überstunden",
+        "kündigung",
+        "praktikum",
+        "qualifikatio",
+        "team",
+        "stres"
+      ],
+      "picks": [
+        {
+          "teil": 1,
+          "score": 1,
+          "topicRelaxed": false,
+          "covered": [
+            "kollegen"
+          ]
+        },
+        {
+          "teil": 2,
+          "score": 0,
+          "topicRelaxed": false,
+          "covered": []
+        },
+        {
+          "teil": 3,
+          "score": 0,
+          "topicRelaxed": true,
+          "covered": []
+        },
+        {
+          "teil": 4,
+          "score": 0,
+          "topicRelaxed": true,
+          "covered": []
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "module": "horen",
+      "topic": "Reisen",
+      "nSelected": 10,
+      "nLemmas": 10,
+      "nCovered": 1,
+      "coveragePct": 10,
+      "teilsServed": 4,
+      "teilsTotal": 4,
+      "uncovered": [
+        "reis",
+        "flug",
+        "hotel",
+        "gepäck",
+        "ticket",
+        "bah",
+        "ausflug",
+        "koff",
+        "ankunfen"
+      ],
+      "picks": [
+        {
+          "teil": 1,
+          "score": 1,
+          "topicRelaxed": true,
+          "covered": [
+            "urlaub"
+          ]
+        },
+        {
+          "teil": 2,
+          "score": 0,
+          "topicRelaxed": true,
+          "covered": []
+        },
+        {
+          "teil": 3,
+          "score": 0,
+          "topicRelaxed": true,
+          "covered": []
+        },
+        {
+          "teil": 4,
+          "score": 0,
+          "topicRelaxed": true,
+          "covered": []
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "module": "horen",
+      "topic": "Bildung",
+      "nSelected": 5,
+      "nLemmas": 5,
+      "nCovered": 0,
+      "coveragePct": 0,
+      "teilsServed": 4,
+      "teilsTotal": 4,
+      "uncovered": [
+        "schul",
+        "lernen",
+        "prüfung",
+        "kur",
+        "universitäen"
+      ],
+      "picks": [
+        {
+          "teil": 1,
+          "score": 0,
+          "topicRelaxed": true,
+          "covered": []
+        },
+        {
+          "teil": 2,
+          "score": 0,
+          "topicRelaxed": true,
+          "covered": []
+        },
+        {
+          "teil": 3,
+          "score": 0,
+          "topicRelaxed": true,
+          "covered": []
+        },
+        {
+          "teil": 4,
+          "score": 0,
+          "topicRelaxed": true,
+          "covered": []
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "module": "lesen",
+      "topic": "Bildung",
+      "nSelected": 25,
+      "nLemmas": 25,
+      "nCovered": 3,
+      "coveragePct": 12,
+      "teilsServed": 5,
+      "teilsTotal": 5,
+      "uncovered": [
+        "schul",
+        "lernen",
+        "prüfung",
+        "kur",
+        "universitäen",
+        "lehr",
+        "schül",
+        "hausaufgaben",
+        "not",
+        "abschlus",
+        "seminar",
+        "fach",
+        "vorlesung",
+        "ausbildung",
+        "dozenen",
+        "campu",
+        "zeugni",
+        "stipendium",
+        "praktikum",
+        "wissen",
+        "unterrichen",
+        "prüf"
+      ],
+      "picks": [
+        {
+          "teil": 1,
+          "score": 1,
+          "topicRelaxed": true,
+          "covered": [
+            "bildung"
+          ]
+        },
+        {
+          "teil": 2,
+          "score": 0,
+          "topicRelaxed": false,
+          "covered": []
+        },
+        {
+          "teil": 3,
+          "score": 1,
+          "topicRelaxed": true,
+          "covered": [
+            "studium"
+          ]
+        },
+        {
+          "teil": 4,
+          "score": 0,
+          "topicRelaxed": true,
+          "covered": []
+        },
+        {
+          "teil": 5,
+          "score": 1,
+          "topicRelaxed": true,
+          "covered": [
+            "bibliothek"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "module": "horen",
+      "topic": "Umwelt",
+      "nSelected": 18,
+      "nLemmas": 18,
+      "nCovered": 2,
+      "coveragePct": 11.1,
+      "teilsServed": 4,
+      "teilsTotal": 4,
+      "uncovered": [
+        "recycling",
+        "klimawandel",
+        "müll",
+        "energi",
+        "umwelen",
+        "verschmutzung",
+        "naturschutz",
+        "abfall",
+        "solar",
+        "windkrafen",
+        "nachhaltig",
+        "ressourcen",
+        "klima",
+        "emissio",
+        "wald",
+        "wass"
+      ],
+      "picks": [
+        {
+          "teil": 1,
+          "score": 0,
+          "topicRelaxed": true,
+          "covered": []
+        },
+        {
+          "teil": 2,
+          "score": 1,
+          "topicRelaxed": true,
+          "covered": [
+            "luft"
+          ]
+        },
+        {
+          "teil": 3,
+          "score": 1,
+          "topicRelaxed": true,
+          "covered": [
+            "pflanzen"
+          ]
+        },
+        {
+          "teil": 4,
+          "score": 0,
+          "topicRelaxed": false,
+          "covered": []
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "module": "lesen",
+      "topic": "Reisen",
+      "nSelected": 6,
+      "nLemmas": 6,
+      "nCovered": 0,
+      "coveragePct": 0,
+      "teilsServed": 5,
+      "teilsTotal": 5,
+      "uncovered": [
+        "reis",
+        "flug",
+        "hotel",
+        "gepäck",
+        "ticket",
+        "bah"
+      ],
+      "picks": [
+        {
+          "teil": 1,
+          "score": 0,
+          "topicRelaxed": false,
+          "covered": []
+        },
+        {
+          "teil": 2,
+          "score": 0,
+          "topicRelaxed": true,
+          "covered": []
+        },
+        {
+          "teil": 3,
+          "score": 0,
+          "topicRelaxed": true,
+          "covered": []
+        },
+        {
+          "teil": 4,
+          "score": 0,
+          "topicRelaxed": true,
+          "covered": []
+        },
+        {
+          "teil": 5,
+          "score": 0,
+          "topicRelaxed": false,
+          "covered": []
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "module": "horen",
+      "topic": "Technik",
+      "nSelected": 22,
+      "nLemmas": 22,
+      "nCovered": 3,
+      "coveragePct": 13.6,
+      "teilsServed": 4,
+      "teilsTotal": 4,
+      "uncovered": [
+        "smartphonen",
+        "app",
+        "digital",
+        "softwaren",
+        "gerät",
+        "onlin",
+        "daten",
+        "technik",
+        "netzwerk",
+        "passworen",
+        "laptop",
+        "tablet",
+        "updaten",
+        "download",
+        "serv",
+        "cloud",
+        "programm",
+        "tastatur",
+        "bildschirm"
+      ],
+      "picks": [
+        {
+          "teil": 1,
+          "score": 1,
+          "topicRelaxed": true,
+          "covered": [
+            "sicher"
+          ]
+        },
+        {
+          "teil": 2,
+          "score": 1,
+          "topicRelaxed": false,
+          "covered": [
+            "internet"
+          ]
+        },
+        {
+          "teil": 3,
+          "score": 1,
+          "topicRelaxed": false,
+          "covered": [
+            "comput"
+          ]
+        },
+        {
+          "teil": 4,
+          "score": 0,
+          "topicRelaxed": false,
+          "covered": []
+        }
+      ]
+    },
+    {
+      "id": 15,
+      "module": "lesen",
+      "topic": "Gesundheit",
+      "nSelected": 15,
+      "nLemmas": 15,
+      "nCovered": 1,
+      "coveragePct": 6.7,
+      "teilsServed": 5,
+      "teilsTotal": 5,
+      "uncovered": [
+        "arzt",
+        "krank",
+        "medikamenen",
+        "gesund",
+        "sport",
+        "schmerz",
+        "therapi",
+        "krankenhau",
+        "allergi",
+        "impfung",
+        "ruh",
+        "stres",
+        "vitaminen",
+        "untersuchung"
+      ],
+      "picks": [
+        {
+          "teil": 1,
+          "score": 0,
+          "topicRelaxed": true,
+          "covered": []
+        },
+        {
+          "teil": 2,
+          "score": 0,
+          "topicRelaxed": true,
+          "covered": []
+        },
+        {
+          "teil": 3,
+          "score": 0,
+          "topicRelaxed": true,
+          "covered": []
+        },
+        {
+          "teil": 4,
+          "score": 1,
+          "topicRelaxed": true,
+          "covered": [
+            "ernährung"
+          ]
+        },
+        {
+          "teil": 5,
+          "score": 0,
+          "topicRelaxed": false,
+          "covered": []
+        }
+      ]
+    }
+  ]
+}

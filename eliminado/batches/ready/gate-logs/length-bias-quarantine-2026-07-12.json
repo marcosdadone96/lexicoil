@@ -1,0 +1,1052 @@
+{
+  "generatedAt": "2026-07-12T14:20:53.685Z",
+  "dryRun": false,
+  "method": "Same as audit-answer-length-bias.mjs: correct option length === max among a/b/c (ties for longest included). Scope lesen-t2, lesen-t5, horen-t2.",
+  "originalAuditCount2026_07_11": 168,
+  "quarantinedCount": 196,
+  "byPart": {
+    "lesen-t2": 50,
+    "lesen-t5": 82,
+    "horen-t2": 64
+  },
+  "filesTouched": [
+    "horen-t2-gemini-001.json",
+    "horen-t2-gemini-003.json",
+    "horen-t2-gemini-005.json",
+    "horen-t2-gemini-006.json",
+    "horen-t2-gemini-007.json",
+    "horen-t2-gemini-008.json",
+    "horen-t2-gemini-009.json",
+    "horen-t2-gemini-010.json",
+    "horen-t2-gemini-011.json",
+    "horen-t2-gemini-012.json",
+    "horen-t2-gemini-013.json",
+    "horen-t2-gemini-015.json",
+    "horen-t2-gemini-016.json",
+    "horen-t2-gemini-017.json",
+    "horen-t2-gemini-018.json",
+    "horen-t2-gemini-019.json",
+    "horen-t2-gemini-020.json",
+    "horen-t2-gemini-021.json",
+    "horen-t2-gemini-023.json",
+    "lesen-t2-gemini-055.json",
+    "lesen-t2-gemini-057.json",
+    "lesen-t2-gemini-093.json",
+    "lesen-t2-gemini-094.json",
+    "lesen-t2-gemini-096.json",
+    "lesen-t2-gemini-097.json",
+    "lesen-t2-gemini-103.json",
+    "lesen-t2-gemini-104.json",
+    "lesen-t2-gemini-105.json",
+    "lesen-t2-gemini-106.json",
+    "lesen-t5-gemini-009.json",
+    "lesen-t5-gemini-014.json",
+    "lesen-t5-gemini-015.json",
+    "lesen-t5-gemini-022.json",
+    "lesen-t5-gemini-023.json",
+    "lesen-t5-gemini-024.json",
+    "lesen-t5-gemini-026.json",
+    "lesen-t5-gemini-027.json",
+    "lesen-t5-gemini-028.json",
+    "lesen-t5-gemini-029.json",
+    "lesen-t5-gemini-030.json",
+    "lesen-t5-gemini-033.json",
+    "lesen-t5-gemini-034.json",
+    "lesen-t5-gemini-035.json",
+    "lesen-t5-gemini-036.json",
+    "lesen-t5-gemini-037.json",
+    "lesen-t5-gemini-053.json",
+    "lesen-t5-gemini-057.json",
+    "lesen-t5-gemini-063.json",
+    "lesen-t5-gemini-064.json",
+    "lesen-t5-gemini-065.json",
+    "lesen-t5-gemini-070.json",
+    "lesen-t5-gemini-071.json",
+    "lesen-t5-gemini-073.json",
+    "lesen-t5-gemini-076.json",
+    "lesen-t5-gemini-077.json",
+    "lesen-t5-gemini-078.json"
+  ],
+  "ids": [
+    {
+      "file": "horen-t2-gemini-001.json",
+      "qid": "gen-q-h2-d5028372-q1",
+      "part": "horen-t2"
+    },
+    {
+      "file": "horen-t2-gemini-001.json",
+      "qid": "gen-q-h2-d5028372-q3",
+      "part": "horen-t2"
+    },
+    {
+      "file": "horen-t2-gemini-001.json",
+      "qid": "gen-q-h2-d5028372-q4",
+      "part": "horen-t2"
+    },
+    {
+      "file": "horen-t2-gemini-003.json",
+      "qid": "gen-q-h2-5e785889-q1",
+      "part": "horen-t2"
+    },
+    {
+      "file": "horen-t2-gemini-005.json",
+      "qid": "gen-q-h2-e0b897d8-q1",
+      "part": "horen-t2"
+    },
+    {
+      "file": "horen-t2-gemini-005.json",
+      "qid": "gen-q-h2-e0b897d8-q2",
+      "part": "horen-t2"
+    },
+    {
+      "file": "horen-t2-gemini-005.json",
+      "qid": "gen-q-h2-e0b897d8-q3",
+      "part": "horen-t2"
+    },
+    {
+      "file": "horen-t2-gemini-005.json",
+      "qid": "gen-q-h2-e0b897d8-q4",
+      "part": "horen-t2"
+    },
+    {
+      "file": "horen-t2-gemini-005.json",
+      "qid": "gen-q-h2-e0b897d8-q5",
+      "part": "horen-t2"
+    },
+    {
+      "file": "horen-t2-gemini-006.json",
+      "qid": "gen-q-h2-34538a4d-q2",
+      "part": "horen-t2"
+    },
+    {
+      "file": "horen-t2-gemini-006.json",
+      "qid": "gen-q-h2-34538a4d-q4",
+      "part": "horen-t2"
+    },
+    {
+      "file": "horen-t2-gemini-006.json",
+      "qid": "gen-q-h2-34538a4d-q5",
+      "part": "horen-t2"
+    },
+    {
+      "file": "horen-t2-gemini-007.json",
+      "qid": "gen-q-h2-41c1f630-q1",
+      "part": "horen-t2"
+    },
+    {
+      "file": "horen-t2-gemini-007.json",
+      "qid": "gen-q-h2-41c1f630-q2",
+      "part": "horen-t2"
+    },
+    {
+      "file": "horen-t2-gemini-007.json",
+      "qid": "gen-q-h2-41c1f630-q3",
+      "part": "horen-t2"
+    },
+    {
+      "file": "horen-t2-gemini-007.json",
+      "qid": "gen-q-h2-41c1f630-q5",
+      "part": "horen-t2"
+    },
+    {
+      "file": "horen-t2-gemini-008.json",
+      "qid": "gen-q-h2-45959318-q2",
+      "part": "horen-t2"
+    },
+    {
+      "file": "horen-t2-gemini-008.json",
+      "qid": "gen-q-h2-45959318-q4",
+      "part": "horen-t2"
+    },
+    {
+      "file": "horen-t2-gemini-008.json",
+      "qid": "gen-q-h2-45959318-q5",
+      "part": "horen-t2"
+    },
+    {
+      "file": "horen-t2-gemini-009.json",
+      "qid": "gen-q-h2-cb37a553-q1",
+      "part": "horen-t2"
+    },
+    {
+      "file": "horen-t2-gemini-009.json",
+      "qid": "gen-q-h2-cb37a553-q2",
+      "part": "horen-t2"
+    },
+    {
+      "file": "horen-t2-gemini-009.json",
+      "qid": "gen-q-h2-cb37a553-q4",
+      "part": "horen-t2"
+    },
+    {
+      "file": "horen-t2-gemini-010.json",
+      "qid": "gen-q-h2-857be1ea-q1",
+      "part": "horen-t2"
+    },
+    {
+      "file": "horen-t2-gemini-010.json",
+      "qid": "gen-q-h2-857be1ea-q3",
+      "part": "horen-t2"
+    },
+    {
+      "file": "horen-t2-gemini-010.json",
+      "qid": "gen-q-h2-857be1ea-q4",
+      "part": "horen-t2"
+    },
+    {
+      "file": "horen-t2-gemini-010.json",
+      "qid": "gen-q-h2-857be1ea-q5",
+      "part": "horen-t2"
+    },
+    {
+      "file": "horen-t2-gemini-011.json",
+      "qid": "gen-q-h2-5b8f9f1e-fzt-q1",
+      "part": "horen-t2"
+    },
+    {
+      "file": "horen-t2-gemini-011.json",
+      "qid": "gen-q-h2-5b8f9f1e-fzt-q2",
+      "part": "horen-t2"
+    },
+    {
+      "file": "horen-t2-gemini-011.json",
+      "qid": "gen-q-h2-5b8f9f1e-fzt-q3",
+      "part": "horen-t2"
+    },
+    {
+      "file": "horen-t2-gemini-011.json",
+      "qid": "gen-q-h2-5b8f9f1e-fzt-q5",
+      "part": "horen-t2"
+    },
+    {
+      "file": "horen-t2-gemini-012.json",
+      "qid": "gen-q-h2-d7e1a2b3-q1",
+      "part": "horen-t2"
+    },
+    {
+      "file": "horen-t2-gemini-012.json",
+      "qid": "gen-q-h2-d7e1a2b3-q2",
+      "part": "horen-t2"
+    },
+    {
+      "file": "horen-t2-gemini-012.json",
+      "qid": "gen-q-h2-d7e1a2b3-q3",
+      "part": "horen-t2"
+    },
+    {
+      "file": "horen-t2-gemini-012.json",
+      "qid": "gen-q-h2-d7e1a2b3-q4",
+      "part": "horen-t2"
+    },
+    {
+      "file": "horen-t2-gemini-012.json",
+      "qid": "gen-q-h2-d7e1a2b3-q5",
+      "part": "horen-t2"
+    },
+    {
+      "file": "horen-t2-gemini-013.json",
+      "qid": "gen-q-h2-62f5bf71-q1",
+      "part": "horen-t2"
+    },
+    {
+      "file": "horen-t2-gemini-013.json",
+      "qid": "gen-q-h2-62f5bf71-q2",
+      "part": "horen-t2"
+    },
+    {
+      "file": "horen-t2-gemini-013.json",
+      "qid": "gen-q-h2-62f5bf71-q3",
+      "part": "horen-t2"
+    },
+    {
+      "file": "horen-t2-gemini-013.json",
+      "qid": "gen-q-h2-62f5bf71-q5",
+      "part": "horen-t2"
+    },
+    {
+      "file": "horen-t2-gemini-015.json",
+      "qid": "gen-q-h2-3afcaed7-q1",
+      "part": "horen-t2"
+    },
+    {
+      "file": "horen-t2-gemini-015.json",
+      "qid": "gen-q-h2-3afcaed7-q3",
+      "part": "horen-t2"
+    },
+    {
+      "file": "horen-t2-gemini-015.json",
+      "qid": "gen-q-h2-3afcaed7-q4",
+      "part": "horen-t2"
+    },
+    {
+      "file": "horen-t2-gemini-015.json",
+      "qid": "gen-q-h2-3afcaed7-q5",
+      "part": "horen-t2"
+    },
+    {
+      "file": "horen-t2-gemini-016.json",
+      "qid": "gen-q-h2-1ed9a47a-q1",
+      "part": "horen-t2"
+    },
+    {
+      "file": "horen-t2-gemini-016.json",
+      "qid": "gen-q-h2-1ed9a47a-q2",
+      "part": "horen-t2"
+    },
+    {
+      "file": "horen-t2-gemini-016.json",
+      "qid": "gen-q-h2-1ed9a47a-q3",
+      "part": "horen-t2"
+    },
+    {
+      "file": "horen-t2-gemini-016.json",
+      "qid": "gen-q-h2-1ed9a47a-q5",
+      "part": "horen-t2"
+    },
+    {
+      "file": "horen-t2-gemini-017.json",
+      "qid": "gen-q-h2-a5acd2d8-q1",
+      "part": "horen-t2"
+    },
+    {
+      "file": "horen-t2-gemini-017.json",
+      "qid": "gen-q-h2-a5acd2d8-q4",
+      "part": "horen-t2"
+    },
+    {
+      "file": "horen-t2-gemini-018.json",
+      "qid": "gen-q-h2-4a57e42c-q1",
+      "part": "horen-t2"
+    },
+    {
+      "file": "horen-t2-gemini-018.json",
+      "qid": "gen-q-h2-4a57e42c-q2",
+      "part": "horen-t2"
+    },
+    {
+      "file": "horen-t2-gemini-018.json",
+      "qid": "gen-q-h2-4a57e42c-q5",
+      "part": "horen-t2"
+    },
+    {
+      "file": "horen-t2-gemini-019.json",
+      "qid": "gen-q-h2-af4f9d1d-q1",
+      "part": "horen-t2"
+    },
+    {
+      "file": "horen-t2-gemini-019.json",
+      "qid": "gen-q-h2-af4f9d1d-q2",
+      "part": "horen-t2"
+    },
+    {
+      "file": "horen-t2-gemini-020.json",
+      "qid": "gen-q-h2-a3a4f080-q2",
+      "part": "horen-t2"
+    },
+    {
+      "file": "horen-t2-gemini-020.json",
+      "qid": "gen-q-h2-a3a4f080-q3",
+      "part": "horen-t2"
+    },
+    {
+      "file": "horen-t2-gemini-020.json",
+      "qid": "gen-q-h2-a3a4f080-q4",
+      "part": "horen-t2"
+    },
+    {
+      "file": "horen-t2-gemini-021.json",
+      "qid": "gen-q-h2-88828b35-q1",
+      "part": "horen-t2"
+    },
+    {
+      "file": "horen-t2-gemini-021.json",
+      "qid": "gen-q-h2-88828b35-q3",
+      "part": "horen-t2"
+    },
+    {
+      "file": "horen-t2-gemini-021.json",
+      "qid": "gen-q-h2-88828b35-q5",
+      "part": "horen-t2"
+    },
+    {
+      "file": "horen-t2-gemini-023.json",
+      "qid": "gen-q-h2-84bf51f4-q1",
+      "part": "horen-t2"
+    },
+    {
+      "file": "horen-t2-gemini-023.json",
+      "qid": "gen-q-h2-84bf51f4-q2",
+      "part": "horen-t2"
+    },
+    {
+      "file": "horen-t2-gemini-023.json",
+      "qid": "gen-q-h2-84bf51f4-q4",
+      "part": "horen-t2"
+    },
+    {
+      "file": "horen-t2-gemini-023.json",
+      "qid": "gen-q-h2-84bf51f4-q5",
+      "part": "horen-t2"
+    },
+    {
+      "file": "lesen-t2-gemini-055.json",
+      "qid": "gen-q-2-759e7c8f-1",
+      "part": "lesen-t2"
+    },
+    {
+      "file": "lesen-t2-gemini-055.json",
+      "qid": "gen-q-2-759e7c8f-2",
+      "part": "lesen-t2"
+    },
+    {
+      "file": "lesen-t2-gemini-055.json",
+      "qid": "gen-q-2-759e7c8f-3",
+      "part": "lesen-t2"
+    },
+    {
+      "file": "lesen-t2-gemini-055.json",
+      "qid": "gen-q-2-759e7c8f-5",
+      "part": "lesen-t2"
+    },
+    {
+      "file": "lesen-t2-gemini-055.json",
+      "qid": "gen-q-2-759e7c8f-6",
+      "part": "lesen-t2"
+    },
+    {
+      "file": "lesen-t2-gemini-057.json",
+      "qid": "gen-q-2-0a946252-1",
+      "part": "lesen-t2"
+    },
+    {
+      "file": "lesen-t2-gemini-057.json",
+      "qid": "gen-q-2-0a946252-2",
+      "part": "lesen-t2"
+    },
+    {
+      "file": "lesen-t2-gemini-057.json",
+      "qid": "gen-q-2-0a946252-3",
+      "part": "lesen-t2"
+    },
+    {
+      "file": "lesen-t2-gemini-057.json",
+      "qid": "gen-q-2-0a946252-4",
+      "part": "lesen-t2"
+    },
+    {
+      "file": "lesen-t2-gemini-057.json",
+      "qid": "gen-q-2-0a946252-5",
+      "part": "lesen-t2"
+    },
+    {
+      "file": "lesen-t2-gemini-057.json",
+      "qid": "gen-q-2-0a946252-6",
+      "part": "lesen-t2"
+    },
+    {
+      "file": "lesen-t2-gemini-093.json",
+      "qid": "gen-q-2-10c0f9b9-3",
+      "part": "lesen-t2"
+    },
+    {
+      "file": "lesen-t2-gemini-093.json",
+      "qid": "gen-q-2-10c0f9b9-4",
+      "part": "lesen-t2"
+    },
+    {
+      "file": "lesen-t2-gemini-093.json",
+      "qid": "gen-q-2-10c0f9b9-5",
+      "part": "lesen-t2"
+    },
+    {
+      "file": "lesen-t2-gemini-093.json",
+      "qid": "gen-q-2-10c0f9b9-6",
+      "part": "lesen-t2"
+    },
+    {
+      "file": "lesen-t2-gemini-094.json",
+      "qid": "gen-q-2-698a2191-1",
+      "part": "lesen-t2"
+    },
+    {
+      "file": "lesen-t2-gemini-094.json",
+      "qid": "gen-q-2-698a2191-2",
+      "part": "lesen-t2"
+    },
+    {
+      "file": "lesen-t2-gemini-094.json",
+      "qid": "gen-q-2-698a2191-3",
+      "part": "lesen-t2"
+    },
+    {
+      "file": "lesen-t2-gemini-094.json",
+      "qid": "gen-q-2-698a2191-4",
+      "part": "lesen-t2"
+    },
+    {
+      "file": "lesen-t2-gemini-094.json",
+      "qid": "gen-q-2-698a2191-5",
+      "part": "lesen-t2"
+    },
+    {
+      "file": "lesen-t2-gemini-096.json",
+      "qid": "gen-q-2-632a83e2-1",
+      "part": "lesen-t2"
+    },
+    {
+      "file": "lesen-t2-gemini-096.json",
+      "qid": "gen-q-2-632a83e2-3",
+      "part": "lesen-t2"
+    },
+    {
+      "file": "lesen-t2-gemini-096.json",
+      "qid": "gen-q-2-632a83e2-4",
+      "part": "lesen-t2"
+    },
+    {
+      "file": "lesen-t2-gemini-096.json",
+      "qid": "gen-q-2-632a83e2-6",
+      "part": "lesen-t2"
+    },
+    {
+      "file": "lesen-t2-gemini-097.json",
+      "qid": "gen-q-2-ab60fe4b-1",
+      "part": "lesen-t2"
+    },
+    {
+      "file": "lesen-t2-gemini-097.json",
+      "qid": "gen-q-2-ab60fe4b-2",
+      "part": "lesen-t2"
+    },
+    {
+      "file": "lesen-t2-gemini-097.json",
+      "qid": "gen-q-2-ab60fe4b-3",
+      "part": "lesen-t2"
+    },
+    {
+      "file": "lesen-t2-gemini-097.json",
+      "qid": "gen-q-2-ab60fe4b-4",
+      "part": "lesen-t2"
+    },
+    {
+      "file": "lesen-t2-gemini-097.json",
+      "qid": "gen-q-2-ab60fe4b-5",
+      "part": "lesen-t2"
+    },
+    {
+      "file": "lesen-t2-gemini-097.json",
+      "qid": "gen-q-2-ab60fe4b-6",
+      "part": "lesen-t2"
+    },
+    {
+      "file": "lesen-t2-gemini-103.json",
+      "qid": "gen-q-2-05fc623e-1",
+      "part": "lesen-t2"
+    },
+    {
+      "file": "lesen-t2-gemini-103.json",
+      "qid": "gen-q-2-05fc623e-2",
+      "part": "lesen-t2"
+    },
+    {
+      "file": "lesen-t2-gemini-103.json",
+      "qid": "gen-q-2-05fc623e-3",
+      "part": "lesen-t2"
+    },
+    {
+      "file": "lesen-t2-gemini-103.json",
+      "qid": "gen-q-2-05fc623e-4",
+      "part": "lesen-t2"
+    },
+    {
+      "file": "lesen-t2-gemini-103.json",
+      "qid": "gen-q-2-05fc623e-5",
+      "part": "lesen-t2"
+    },
+    {
+      "file": "lesen-t2-gemini-103.json",
+      "qid": "gen-q-2-05fc623e-6",
+      "part": "lesen-t2"
+    },
+    {
+      "file": "lesen-t2-gemini-104.json",
+      "qid": "gen-q-2-f76d3112-1",
+      "part": "lesen-t2"
+    },
+    {
+      "file": "lesen-t2-gemini-104.json",
+      "qid": "gen-q-2-f76d3112-2",
+      "part": "lesen-t2"
+    },
+    {
+      "file": "lesen-t2-gemini-104.json",
+      "qid": "gen-q-2-f76d3112-3",
+      "part": "lesen-t2"
+    },
+    {
+      "file": "lesen-t2-gemini-104.json",
+      "qid": "gen-q-2-f76d3112-4",
+      "part": "lesen-t2"
+    },
+    {
+      "file": "lesen-t2-gemini-104.json",
+      "qid": "gen-q-2-f76d3112-5",
+      "part": "lesen-t2"
+    },
+    {
+      "file": "lesen-t2-gemini-105.json",
+      "qid": "gen-q-2-84432190-1",
+      "part": "lesen-t2"
+    },
+    {
+      "file": "lesen-t2-gemini-105.json",
+      "qid": "gen-q-2-84432190-3",
+      "part": "lesen-t2"
+    },
+    {
+      "file": "lesen-t2-gemini-105.json",
+      "qid": "gen-q-2-84432190-5",
+      "part": "lesen-t2"
+    },
+    {
+      "file": "lesen-t2-gemini-105.json",
+      "qid": "gen-q-2-84432190-6",
+      "part": "lesen-t2"
+    },
+    {
+      "file": "lesen-t2-gemini-106.json",
+      "qid": "gen-q-2-e7ae4d43-1",
+      "part": "lesen-t2"
+    },
+    {
+      "file": "lesen-t2-gemini-106.json",
+      "qid": "gen-q-2-e7ae4d43-2",
+      "part": "lesen-t2"
+    },
+    {
+      "file": "lesen-t2-gemini-106.json",
+      "qid": "gen-q-2-e7ae4d43-3",
+      "part": "lesen-t2"
+    },
+    {
+      "file": "lesen-t2-gemini-106.json",
+      "qid": "gen-q-2-e7ae4d43-5",
+      "part": "lesen-t2"
+    },
+    {
+      "file": "lesen-t2-gemini-106.json",
+      "qid": "gen-q-2-e7ae4d43-6",
+      "part": "lesen-t2"
+    },
+    {
+      "file": "lesen-t5-gemini-009.json",
+      "qid": "gen-q-5-64b1360b-1",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-009.json",
+      "qid": "gen-q-5-64b1360b-2",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-009.json",
+      "qid": "gen-q-5-64b1360b-3",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-009.json",
+      "qid": "gen-q-5-64b1360b-4",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-014.json",
+      "qid": "gen-q-5-a994fb06-1",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-015.json",
+      "qid": "gen-q-5-cc5b0d7b-1",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-015.json",
+      "qid": "gen-q-5-cc5b0d7b-2",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-015.json",
+      "qid": "gen-q-5-cc5b0d7b-3",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-015.json",
+      "qid": "gen-q-5-cc5b0d7b-4",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-022.json",
+      "qid": "gen-q-5-efc96246-1",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-022.json",
+      "qid": "gen-q-5-efc96246-3",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-022.json",
+      "qid": "gen-q-5-efc96246-4",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-023.json",
+      "qid": "gen-q-5-7cd9cc8e-1",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-023.json",
+      "qid": "gen-q-5-7cd9cc8e-2",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-023.json",
+      "qid": "gen-q-5-7cd9cc8e-3",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-023.json",
+      "qid": "gen-q-5-7cd9cc8e-4",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-024.json",
+      "qid": "gen-q-5-7c35a128-1",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-024.json",
+      "qid": "gen-q-5-7c35a128-2",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-024.json",
+      "qid": "gen-q-5-7c35a128-4",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-026.json",
+      "qid": "gen-q-5-aa09b216-1",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-026.json",
+      "qid": "gen-q-5-aa09b216-2",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-026.json",
+      "qid": "gen-q-5-aa09b216-3",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-026.json",
+      "qid": "gen-q-5-aa09b216-4",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-027.json",
+      "qid": "gen-q-5-bea130ae-1",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-027.json",
+      "qid": "gen-q-5-bea130ae-2",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-027.json",
+      "qid": "gen-q-5-bea130ae-4",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-028.json",
+      "qid": "gen-q-5-6046b479-1",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-028.json",
+      "qid": "gen-q-5-6046b479-2",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-028.json",
+      "qid": "gen-q-5-6046b479-3",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-029.json",
+      "qid": "gen-q-5-0d9a36a9-1",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-029.json",
+      "qid": "gen-q-5-0d9a36a9-2",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-029.json",
+      "qid": "gen-q-5-0d9a36a9-3",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-029.json",
+      "qid": "gen-q-5-0d9a36a9-4",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-030.json",
+      "qid": "gen-q-5-b2260853-1",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-030.json",
+      "qid": "gen-q-5-b2260853-2",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-030.json",
+      "qid": "gen-q-5-b2260853-3",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-030.json",
+      "qid": "gen-q-5-b2260853-4",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-033.json",
+      "qid": "gen-q-5-21c7dc2c-1",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-033.json",
+      "qid": "gen-q-5-21c7dc2c-2",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-033.json",
+      "qid": "gen-q-5-21c7dc2c-4",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-034.json",
+      "qid": "gen-q-5-2df0ca3f-1",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-034.json",
+      "qid": "gen-q-5-2df0ca3f-2",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-034.json",
+      "qid": "gen-q-5-2df0ca3f-3",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-035.json",
+      "qid": "gen-q-5-5d8ee76e-1",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-035.json",
+      "qid": "gen-q-5-5d8ee76e-2",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-035.json",
+      "qid": "gen-q-5-5d8ee76e-3",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-035.json",
+      "qid": "gen-q-5-5d8ee76e-4",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-036.json",
+      "qid": "gen-q-5-d299f084-1",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-036.json",
+      "qid": "gen-q-5-d299f084-4",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-037.json",
+      "qid": "gen-q-5-c30f2ab4-1",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-037.json",
+      "qid": "gen-q-5-c30f2ab4-2",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-037.json",
+      "qid": "gen-q-5-c30f2ab4-3",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-053.json",
+      "qid": "gen-q-5-49b206d4-4",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-057.json",
+      "qid": "gen-q-5-e415661a-2",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-057.json",
+      "qid": "gen-q-5-e415661a-3",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-063.json",
+      "qid": "gen-q-5-11d79a5d-1",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-063.json",
+      "qid": "gen-q-5-11d79a5d-2",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-063.json",
+      "qid": "gen-q-5-11d79a5d-3",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-063.json",
+      "qid": "gen-q-5-11d79a5d-4",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-064.json",
+      "qid": "gen-q-5-ee0e5f1b-2",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-064.json",
+      "qid": "gen-q-5-ee0e5f1b-3",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-064.json",
+      "qid": "gen-q-5-ee0e5f1b-4",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-065.json",
+      "qid": "gen-q-5-4a873a4f-1",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-065.json",
+      "qid": "gen-q-5-4a873a4f-2",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-065.json",
+      "qid": "gen-q-5-4a873a4f-4",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-070.json",
+      "qid": "gen-q-5-e8c95797-2",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-070.json",
+      "qid": "gen-q-5-e8c95797-3",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-070.json",
+      "qid": "gen-q-5-e8c95797-4",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-071.json",
+      "qid": "gen-q-5-66cdeb73-1",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-071.json",
+      "qid": "gen-q-5-66cdeb73-2",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-071.json",
+      "qid": "gen-q-5-66cdeb73-3",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-071.json",
+      "qid": "gen-q-5-66cdeb73-4",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-073.json",
+      "qid": "gen-q-5-5a4d06b3-1",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-073.json",
+      "qid": "gen-q-5-5a4d06b3-2",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-076.json",
+      "qid": "gen-q-5-a764778f-2",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-076.json",
+      "qid": "gen-q-5-a764778f-4",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-077.json",
+      "qid": "gen-q-5-3f265ed6-1",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-077.json",
+      "qid": "gen-q-5-3f265ed6-2",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-078.json",
+      "qid": "gen-q-5-716912b4-1",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-078.json",
+      "qid": "gen-q-5-716912b4-2",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-078.json",
+      "qid": "gen-q-5-716912b4-3",
+      "part": "lesen-t5"
+    },
+    {
+      "file": "lesen-t5-gemini-078.json",
+      "qid": "gen-q-5-716912b4-4",
+      "part": "lesen-t5"
+    }
+  ]
+}

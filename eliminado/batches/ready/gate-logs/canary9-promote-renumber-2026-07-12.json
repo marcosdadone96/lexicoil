@@ -1,0 +1,163 @@
+{
+  "promotedAt": "2026-07-12T09:50:55.823Z",
+  "poolCountBefore": 139,
+  "poolCountAfter": 148,
+  "delta": 9,
+  "expectedDelta": 9,
+  "maxBefore": {
+    "lesen-t4-gemini": 42,
+    "lesen-t5-gemini": 75,
+    "horen-t3-gemini": 7
+  },
+  "promoted": [
+    {
+      "old": "lesen-t4-gemini-001.json",
+      "new": "lesen-t4-gemini-043.json",
+      "from": "lesen-t4-staging-2026-07-11-canary/lesen-t4-gemini-001.json",
+      "topic": "Arbeit",
+      "prefix": "lesen-t4-gemini",
+      "destSha256": "2e052d4e05630ddb79517200a3883c9a5b3823b1d52beb5e2bdd0d2beccf1473",
+      "bytes": 8374
+    },
+    {
+      "old": "lesen-t4-gemini-002.json",
+      "new": "lesen-t4-gemini-044.json",
+      "from": "lesen-t4-staging-2026-07-11-canary/lesen-t4-gemini-002.json",
+      "topic": "Freizeit",
+      "prefix": "lesen-t4-gemini",
+      "destSha256": "c63a2c68bb745349119423e3e6d6ad41a854ce135fde42445972b9b9e865f184",
+      "bytes": 8674
+    },
+    {
+      "old": "lesen-t4-gemini-003.json",
+      "new": "lesen-t4-gemini-045.json",
+      "from": "lesen-t4-staging-2026-07-11-canary/lesen-t4-gemini-003.json",
+      "topic": "Sport",
+      "prefix": "lesen-t4-gemini",
+      "destSha256": "397b5f62e6b3e8f0a2ef889111d30f0205eb6d8d0e74d1b4af650def8a263178",
+      "bytes": 8495
+    },
+    {
+      "old": "lesen-t5-gemini-001.json",
+      "new": "lesen-t5-gemini-076.json",
+      "from": "lesen-t5-staging-2026-07-11-canary/lesen-t5-gemini-001.json",
+      "topic": "Arbeit",
+      "prefix": "lesen-t5-gemini",
+      "destSha256": "0d702dab857edae7afef28c33e0f29921790af28622dac5d52b6736360b227cb",
+      "bytes": 6755
+    },
+    {
+      "old": "lesen-t5-gemini-002.json",
+      "new": "lesen-t5-gemini-077.json",
+      "from": "lesen-t5-staging-2026-07-11-canary/lesen-t5-gemini-002.json",
+      "topic": "Wohnen",
+      "prefix": "lesen-t5-gemini",
+      "destSha256": "f812ecfd3c7cb008e0da3f9b46c839a8bc12e380c7c10a3b26a7b765db30eb80",
+      "bytes": 6683
+    },
+    {
+      "old": "lesen-t5-gemini-003.json",
+      "new": "lesen-t5-gemini-078.json",
+      "from": "lesen-t5-staging-2026-07-11-canary/lesen-t5-gemini-003.json",
+      "topic": "Bildung",
+      "prefix": "lesen-t5-gemini",
+      "destSha256": "ee1959f78e8729f9f86b28a0009f24a2293e770129660f3d8bdd44f012544eae",
+      "bytes": 6558
+    },
+    {
+      "old": "horen-t3-gemini-001.json",
+      "new": "horen-t3-gemini-008.json",
+      "from": "horen-t3-staging-2026-07-11-canary/horen-t3-gemini-001.json",
+      "topic": "Gesundheit",
+      "prefix": "horen-t3-gemini",
+      "destSha256": "7d31a9dcda7176804bbf660ee56bcac4da1a4701fb13d817d100788b7562fcc4",
+      "bytes": 12583
+    },
+    {
+      "old": "horen-t3-gemini-002.json",
+      "new": "horen-t3-gemini-009.json",
+      "from": "horen-t3-staging-2026-07-11-canary/horen-t3-gemini-002.json",
+      "topic": "Familie",
+      "prefix": "horen-t3-gemini",
+      "destSha256": "634bfef06baabdb47fcfeee71190cdfa689ac6c164c6438530a4fd12a5c104de",
+      "bytes": 12431
+    },
+    {
+      "old": "horen-t3-gemini-004.json",
+      "new": "horen-t3-gemini-010.json",
+      "from": "horen-t3-staging-2026-07-11-canary/horen-t3-gemini-004.json",
+      "topic": "Medien",
+      "prefix": "horen-t3-gemini",
+      "destSha256": "6dd8473b04e11e16efd73a091c7241a836f6031e90384eb190926866f823f7b5",
+      "bytes": 12820
+    }
+  ],
+  "newFilesOnly": [
+    "horen-t3-gemini-008.json",
+    "horen-t3-gemini-009.json",
+    "horen-t3-gemini-010.json",
+    "lesen-t4-gemini-043.json",
+    "lesen-t4-gemini-044.json",
+    "lesen-t4-gemini-045.json",
+    "lesen-t5-gemini-076.json",
+    "lesen-t5-gemini-077.json",
+    "lesen-t5-gemini-078.json"
+  ],
+  "deletedOrMissingFromBefore": [],
+  "collisionHashesUnchanged": true,
+  "collisionBefore": {
+    "lesen-t4-gemini-002.json": "042855c596641bc663c9b33acd5d1b5d8a99dbd14c1bea9480d876672abcecfe",
+    "horen-t3-gemini-001.json": "452efa365407cd69d9671d18bd55a8aae616ce0a9f09f21e2f3f6603317d5c0b",
+    "horen-t3-gemini-002.json": "f438a8508bee571422ac31884453f726b663a7ac6c7e9360e0f15a7178d6283e",
+    "horen-t3-gemini-004.json": "4ca45c81e6dad8796dd376c166468a5682eaaa115e4c295117d3c97862b9c3ad"
+  },
+  "collisionAfter": {
+    "lesen-t4-gemini-002.json": "042855c596641bc663c9b33acd5d1b5d8a99dbd14c1bea9480d876672abcecfe",
+    "horen-t3-gemini-001.json": "452efa365407cd69d9671d18bd55a8aae616ce0a9f09f21e2f3f6603317d5c0b",
+    "horen-t3-gemini-002.json": "f438a8508bee571422ac31884453f726b663a7ac6c7e9360e0f15a7178d6283e",
+    "horen-t3-gemini-004.json": "4ca45c81e6dad8796dd376c166468a5682eaaa115e4c295117d3c97862b9c3ad"
+  },
+  "t1AlreadyInPool": [
+    {
+      "file": "horen-t1-gemini-001.json",
+      "present": true
+    },
+    {
+      "file": "horen-t1-gemini-002.json",
+      "present": true
+    },
+    {
+      "file": "horen-t1-gemini-003.json",
+      "present": true
+    },
+    {
+      "file": "horen-t1-gemini-004.json",
+      "present": true
+    },
+    {
+      "file": "horen-t1-gemini-005.json",
+      "present": true
+    },
+    {
+      "file": "horen-t1-gemini-016.json",
+      "present": true
+    }
+  ],
+  "stockByTeil": {
+    "horen-t1": 6,
+    "horen-t2": 19,
+    "horen-t3": 8,
+    "horen-t4": 9,
+    "lesen-t1": 38,
+    "lesen-t2": 6,
+    "_other": 26,
+    "lesen-t4": 8,
+    "lesen-t5": 28
+  },
+  "focusStock": {
+    "horen-t1": 6,
+    "lesen-t4": 8,
+    "lesen-t5": 28,
+    "horen-t3": 8
+  }
+}

@@ -64,6 +64,7 @@ function loadAuthSandbox({ user, plan, quotaPlan, guest = false, authenticated =
     GUEST_QUOTA: 2,
     FREE_QUOTA: 5,
     PRO_QUOTA: 12,
+    esc: (s) => String(s ?? ''),
     console,
   };
   sandbox.window = sandbox;
@@ -95,6 +96,15 @@ function assertDropdown(sandbox, { upgradeHidden, signInHidden, manageVisible, p
   assert.equal(plan.textContent, planLabel, `udPlan label ${planLabel}`);
 }
 
+function setUserBilling(sandbox, patch) {
+  sandbox.S.user = { ...sandbox.S.user, ...patch };
+  const raw = sandbox.localStorage.getItem('lc_user');
+  if (raw) {
+    const u = JSON.parse(raw);
+    sandbox.localStorage.setItem('lc_user', JSON.stringify({ ...u, ...patch }));
+  }
+}
+
 {
   const sb = loadAuthSandbox({
     user: { name: 'Pro User', email: 'pro@test.com', plan: 'pro', avatar: 'P' },
@@ -104,6 +114,16 @@ function assertDropdown(sandbox, { upgradeHidden, signInHidden, manageVisible, p
   assert.equal(sb.resolveAppPlan(), 'pro', 'resolveAppPlan prefers pro from user/quota');
   assertDropdown(sb, { upgradeHidden: true, signInHidden: true, manageVisible: true, planLabel: 'Pro' });
   console.log('OK   Pro session hides upgrade + sign-in even when S.plan stale');
+}
+
+{
+  const sb = loadAuthSandbox({
+    user: { name: 'Manual Pro', email: 'manual@test.com', plan: 'pro', avatar: 'M', billingSource: 'manual' },
+    plan: 'pro',
+    quotaPlan: 'pro',
+  });
+  assertDropdown(sb, { upgradeHidden: true, signInHidden: true, manageVisible: false, planLabel: 'Pro' });
+  console.log('OK   Manual Pro hides manage subscription');
 }
 
 {

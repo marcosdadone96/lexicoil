@@ -1,16 +1,14 @@
 #!/usr/bin/env node
 /**
- * Acceptance: PDF grammar grouping + compact structure (no browser).
+ * Acceptance: PDF grammar grouping + compact structure + UI localization (no browser).
  */
 import { createRequire } from 'node:module';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import fs from 'node:fs';
 
 const require = createRequire(import.meta.url);
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
-// Minimal browser globals for featurePdf.js
 globalThis.S = { user: { name: 'Test User' }, subject: 'de', level: 'B1' };
 globalThis.esc = (s) =>
   String(s ?? '')
@@ -21,7 +19,10 @@ globalThis.esc = (s) =>
 globalThis.isPro = () => true;
 globalThis.notify = () => {};
 globalThis.window = globalThis;
+globalThis.localStorage = { getItem: () => 'es' };
 
+require(path.join(ROOT, 'js/i18n/consentLocale.js'));
+require(path.join(ROOT, 'js/i18n/pdfReportLocale.js'));
 require(path.join(ROOT, 'js/bootstrap/featurePdf.js'));
 
 const correction = {
@@ -61,33 +62,57 @@ const correction = {
   ],
 };
 
-const html = globalThis.buildPdfHtml(
-  62,
-  { lesen: 55, schreiben: 72 },
-  { level: 'B1', lang: 'de', topic: 'Alltag', official: { certificate: 'Goethe B1' } },
-  true,
-  correction,
-  null,
-  { topics: [{ tag: 'g-de-b1-passiv', title: 'Passiv', explanation: 'Kurz erklärt.', examples: ['Das Haus wird gebaut.'], tip: 'Achte auf werden + Partizip II.' }] },
-);
+const exam = { level: 'B1', lang: 'de', topic: 'Alltag', official: { certificate: 'Goethe B1' } };
+const coaching = {
+  topics: [
+    {
+      tag: 'g-de-b1-passiv',
+      title: 'Passiv',
+      explanation: 'Kurz erklärt.',
+      examples: ['Das Haus wird gebaut.'],
+      tip: 'Achte auf werden + Partizip II.',
+    },
+  ],
+};
 
-const pageBreaks = (html.match(/pdf-page-break/g) || []).length;
-const hasGrammar = html.includes('Resumen de fallos por gramática');
-const hasWriting = html.includes('Schreiben — tu texto corregido');
-const hasCoaching = html.includes('Explicación gramatical');
-const hasPassiv = html.includes('Passiv');
+const htmlEs = globalThis.buildPdfHtml(62, { lesen: 55, schreiben: 72 }, exam, true, correction, null, coaching, 'es');
+const htmlDe = globalThis.buildPdfHtml(62, { lesen: 55, schreiben: 72 }, exam, true, correction, null, coaching, 'de');
+const htmlEnOne = globalThis.buildPdfHtml(
+  62,
+  { lesen: 55 },
+  exam,
+  true,
+  {
+    parts: [
+      {
+        title: 'Reading — Part 1',
+        items: [{ ok: false, q: 'Q1', yours: 'A', correct: 'B', explanation: 'One error.', grammarTags: ['g-en-b1-tense'] }],
+      },
+    ],
+  },
+  null,
+  null,
+  'en',
+);
 
 function assert(label, cond) {
   console.log(`${cond ? 'PASS' : 'FAIL'}: ${label}`);
   if (!cond) process.exitCode = 1;
 }
 
-assert('no legacy page-break class', pageBreaks === 0);
-assert('grammar summary section', hasGrammar);
-assert('writing corrected section', hasWriting);
-assert('AI coaching section', hasCoaching);
-assert('groups passiv tag', hasPassiv);
-assert('compact html length < 8000 chars', html.length < 8000);
+assert('ES grammar summary section', htmlEs.includes('Resumen de fallos por gramática'));
+assert('ES writing corrected section', htmlEs.includes('Escritura — tu texto corregido'));
+assert('ES AI coaching section', htmlEs.includes('Explicación gramatical (IA)'));
+assert('ES module detail labels', htmlEs.includes('Tuyo:') && htmlEs.includes('Correcto:'));
+assert('DE grammar summary section', htmlDe.includes('Fehler nach Grammatikthema'));
+assert('DE module detail labels', htmlDe.includes('Deine Antwort:') && htmlDe.includes('Richtig:'));
+assert('groups passiv tag', htmlEs.includes('Passiv'));
+assert('no legacy page-break class', (htmlEs.match(/pdf-page-break/g) || []).length === 0);
+assert('compact html length < 8000 chars', htmlEs.length < 8000);
+assert('EN singular: 1 mistake', htmlEnOne.includes('1 mistake') && !htmlEnOne.includes('1 mistakes'));
+assert('ES plural: 2 errores', htmlEs.includes('2 errores') && !htmlEs.includes('2 error</span>'));
+assert('DE plural: 2 Fehler', htmlDe.includes('2 Fehler'));
+assert('custom doc footer present', htmlEs.includes('LexiCoil · lexicoil.com'));
 
-console.log(`\nPDF HTML length: ${html.length} chars`);
+console.log(`\nPDF HTML length (ES): ${htmlEs.length} chars`);
 console.log('\nPDF structure tests done.\n');

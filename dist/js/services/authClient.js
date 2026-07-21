@@ -260,6 +260,7 @@ const Auth = (() => {
       S.activeGoalId = merged.activeGoalId;
       localStorage.setItem('lc_active_goal', merged.activeGoalId);
     }
+    if (typeof fixFlashcardLevels === 'function') fixFlashcardLevels();
     if (merged.notebook) {
       S.notebook = merged.notebook;
       localStorage.setItem('lc_notes', JSON.stringify(merged.notebook));

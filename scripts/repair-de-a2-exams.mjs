@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Repair curated de/A2 exams: Lesen T4, Hören T2 MCQ, Sprechen bank fill, Schreiben A2 word counts.
+ * Repair curated de/A2 exams: Lesen T4, Hören T2 picture_matching, Sprechen bank fill, Schreiben A2 word counts.
  * Does NOT regenerate Lesen T1–T3 or Hören T1/T3/T4.
  *
  * Usage:
@@ -32,11 +32,13 @@ const T4_SET_BY_TOPIC = {
 };
 
 const HOREN_T2_PASSAGE_BY_TOPIC = {
-  health: 'de-a2-p-horen-t2-gesund-leben-01',
-  work: 'de-a2-p-horen-t2-stadtplanung-01',
-  society: 'de-a2-p-horen-t2-ehrenamt-chancen-01',
-  education: 'de-a2-p-horen-t2-umweltschutz-vortrag-01',
+  health: 'de-a2-p-horen-t2-health-pic01',
+  work: 'de-a2-p-horen-t2-work-pic01',
+  society: 'de-a2-p-horen-t2-society-pic01',
+  education: 'de-a2-p-horen-t2-education-pic01',
 };
+
+const HOREN_T2_WEEKDAYS = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag'];
 
 const SPRECHEN_SET_BY_TOPIC = {
   health: 'gesund-leben-02',
@@ -65,69 +67,61 @@ function bankQuestions(bank, filter) {
   return (bank.questions || []).filter(filter);
 }
 
-function parseMatchingOption(raw) {
-  const m = String(raw || '')
-    .trim()
-    .match(/^([a-i])\)\s*(.+)$/i);
-  return m ? { letter: m[1].toLowerCase(), text: m[2].trim() } : null;
-}
-
-function matchingToMcq(q, number) {
-  const correctLetter =
-    String(q.correct || q.correctAnswer || 'a')
-      .toLowerCase()
-      .replace(/[^a-i]/, '') || 'a';
-  const parsed = (q.options || []).map(parseMatchingOption).filter(Boolean);
-  const correctOpt = parsed.find((o) => o.letter === correctLetter);
-  if (!correctOpt) throw new Error(`No correct option ${correctLetter} in ${q.id}`);
-  const wrong = parsed.filter((o) => o.letter !== correctLetter);
-  if (wrong.length < 2) throw new Error(`Not enough distractors in ${q.id}`);
-  const trio = [correctOpt, wrong[0], wrong[1]];
-  const rot = number % 3;
-  const ordered = [trio[rot], trio[(rot + 1) % 3], trio[(rot + 2) % 3]];
-  const letters = ['a', 'b', 'c'];
-  const correctIdx = ordered.findIndex((o) => o.letter === correctLetter);
-  return {
-    id: String(number),
-    type: 'multiple',
-    question: q.question || 'Welche Aussage passt zum Gespräch?',
-    options: ordered.map((o, i) => `${letters[i]}) ${o.text}`),
-    correct: letters[correctIdx],
-    correctAnswer: letters[correctIdx],
-    explanation: q.explanation || '',
-    grammarTags: q.grammarTags || [],
-    topicTags: q.topicTags || [],
-    vocabularyTags: q.vocabularyTags || [],
-    difficulty: q.difficulty ?? 2,
-    passageId: q.passageId || '',
-    number,
-    nr: number,
-    nummer: number,
-  };
+function weekdaySortKey(label) {
+  const idx = HOREN_T2_WEEKDAYS.indexOf(String(label || '').trim());
+  return idx >= 0 ? idx : 99;
 }
 
 function buildHorenT2Part(passageId, bank) {
   const passage = (bank.passages || []).find((p) => p.id === passageId);
   if (!passage) throw new Error(`Missing horen T2 passage: ${passageId}`);
+  const pictures = passage.pictures || [];
+  if (pictures.length < 9) {
+    throw new Error(`Horen T2 passage ${passageId} missing pictures[] (got ${pictures.length}, need 9)`);
+  }
   const bankQs = bankQuestions(
     bank,
     (q) => q.module === 'horen' && q.teil === 2 && q.passageId === passageId,
-  ).sort((a, b) => String(a.id).localeCompare(String(b.id)));
+  ).sort((a, b) => weekdaySortKey(a.question) - weekdaySortKey(b.question) || String(a.id).localeCompare(String(b.id)));
   if (bankQs.length < 5) throw new Error(`Horen T2 questions incomplete: ${passageId} (${bankQs.length}/5)`);
-  const questions = bankQs.slice(0, 5).map((q, i) => matchingToMcq(q, 6 + i));
+  const questions = bankQs.slice(0, 5).map((q, i) => {
+    const number = 6 + i;
+    const correctKey = String(q.correct || q.correctAnswer || '')
+      .trim()
+      .toLowerCase()
+      .replace(/[^a-i]/g, '');
+    return {
+      id: String(number),
+      type: 'matching',
+      question: q.question || HOREN_T2_WEEKDAYS[i],
+      correct: correctKey,
+      correctAnswer: correctKey,
+      explanation: q.explanation || '',
+      grammarTags: q.grammarTags || [],
+      topicTags: q.topicTags || [],
+      vocabularyTags: q.vocabularyTags || [],
+      difficulty: q.difficulty ?? 2,
+      passageId,
+      number,
+      nr: number,
+      nummer: number,
+      _keyOnlyMatch: true,
+    };
+  });
   const transcript = passage.text || '';
   return {
     teil: 2,
     instruction: GOETHE_A2_INSTRUCTIONS.horen[1],
-    blueprintSlot: 'conversation_mcq',
+    blueprintSlot: 'picture_matching',
     plays: 1,
     transcript,
     segments: [
       {
         id: `seg_t2_${passageId.slice(-12)}`,
-        label: passage.title || 'Aufnahme 1',
+        label: passage.title || 'Wochenpläne',
         transcript,
         passageId,
+        pictures,
         questions,
       },
     ],
@@ -228,13 +222,18 @@ function buildLesenT4(setSlug, bank) {
 
   const examItems = items.slice(0, 5).map((q, i) => {
     const rawCorrect = String(q.correct || q.correctAnswer || '').trim();
-    const correct = rawCorrect.toUpperCase() === 'X' ? 'g' : rawCorrect.toLowerCase();
+    const correct = rawCorrect.toUpperCase() === 'X' ? 'X' : rawCorrect.toLowerCase();
+    const options = q.options || ['a', 'b', 'c', 'd', 'e', 'f', 'X'];
+    const normOpts =
+      options.length === 7 && options.every((o) => /^[a-fX]$/i.test(String(o).trim()))
+        ? options.map((o) => String(o).trim())
+        : ['a', 'b', 'c', 'd', 'e', 'f', 'X'];
     return {
       id: String(16 + i),
       type: 'matching',
       signText: '',
       question: q.question || '',
-      options: q.options || ['a) a', 'b) b', 'c) c', 'd) d', 'e) e', 'f) f', 'g) X'],
+      options: normOpts,
       correct,
       correctAnswer: correct,
       explanation: q.explanation || '',
@@ -411,8 +410,8 @@ function dedupeHorenExam(exam, bank, globalUsed) {
 function patchBlueprintCoverage(exam) {
   for (const row of exam.blueprintCoverage || []) {
     if (row.module === 'horen' && row.teil === 2) {
-      row.slotType = 'conversation_mcq';
-      row.taskFormat = 'short_dialogue_mcq';
+      row.slotType = 'picture_matching';
+      row.taskFormat = 'picture_schedule_matching';
     }
     if (row.module === 'schreiben') {
       const teil = Number(row.teil);

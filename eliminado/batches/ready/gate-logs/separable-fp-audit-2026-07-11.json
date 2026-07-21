@@ -1,0 +1,762 @@
+{
+  "rows": [
+    {
+      "full": "mitmachen",
+      "p": "mit",
+      "r": "machen",
+      "total": 14,
+      "genuine": 8,
+      "fp": 6,
+      "traps": {},
+      "examples": [
+        {
+          "f": "lesen-t1-gemini-082.json",
+          "path": "questions[2]",
+          "kind": "genuine",
+          "how": "zu-infinitive",
+          "evidence": "mitzumachen"
+        },
+        {
+          "f": "lesen-t1-gemini-087.json",
+          "path": "questions[3]",
+          "kind": "genuine",
+          "how": "full-infinitive",
+          "evidence": "mitmachen"
+        },
+        {
+          "f": "lesen-t1-gemini-089.json",
+          "path": "questions[3]",
+          "kind": "genuine",
+          "how": "full-infinitive",
+          "evidence": "mitmachen"
+        },
+        {
+          "f": "lesen-t1-gemini-143.json",
+          "path": "questions[4]",
+          "kind": "fp",
+          "traps": [
+            "mit+PREP/N (preposition near machen)"
+          ],
+          "textSample": "Das Organisieren von Festen für Kinder bereitet ihr große Freude. Besonders die Arbeit mit den Kindern bei den Festen ma"
+        },
+        {
+          "f": "lesen-t1-gemini-179.json",
+          "path": "questions[5]",
+          "kind": "fp",
+          "traps": [
+            "mit+PREP/N (preposition near machen)"
+          ],
+          "textSample": "Ihr neues Fahrrad nutzt sie für gemeinsame Fahrten mit dem Nachwuchs. Sie schreibt, dass sie am Wochenende lange Touren "
+        }
+      ]
+    },
+    {
+      "full": "mitsehen",
+      "p": "mit",
+      "r": "sehen",
+      "total": 4,
+      "genuine": 1,
+      "fp": 3,
+      "traps": {},
+      "examples": [
+        {
+          "f": "lesen-t3-auto-w8hk4n.json",
+          "path": "questions[0]",
+          "kind": "fp",
+          "traps": [],
+          "textSample": "Seit dem Umzug spinnt zu Hause der Drucker, und das WLAN ist unzuverlässig. Jemand soll vor Ort nach dem Rechten sehen. "
+        },
+        {
+          "f": "lesen-t4-gemini-017.json",
+          "path": "questions[2]",
+          "kind": "genuine",
+          "how": "split-verb-then-particle",
+          "evidence": "sieht zwar ein Problem mit"
+        },
+        {
+          "f": "lesen-t4-gemini-017.json",
+          "path": "questions[5]",
+          "kind": "fp",
+          "traps": [],
+          "textSample": "Ist Emma für den Vorschlag? a) Ja b) Nein Emma ist skeptisch wegen der Kosten und der Pflege der Pflanzen und lehnt den "
+        },
+        {
+          "f": "lesen-t4-gemini-019.json",
+          "path": "questions[0]",
+          "kind": "fp",
+          "traps": [
+            "mit+PREP/N (preposition near sehen)"
+          ],
+          "textSample": "Ist Lena für den Vorschlag? a) Ja b) Nein Lena findet die Idee mit mehr Pflanzen gut und sieht den Plan als wichtigen Sc"
+        }
+      ]
+    },
+    {
+      "full": "einsehen",
+      "p": "ein",
+      "r": "sehen",
+      "total": 5,
+      "genuine": 3,
+      "fp": 2,
+      "traps": {},
+      "examples": [
+        {
+          "f": "horen-t3-gemini-004.json",
+          "path": "questions[3]",
+          "kind": "fp",
+          "traps": [
+            "ein+PREP/N (preposition near sehen)"
+          ],
+          "textSample": "Die Ausstellung wird voraussichtlich länger als ein halbes Jahr zu sehen sein. Mia sagt, die Ausstellung soll 'erst mal "
+        },
+        {
+          "f": "lesen-t4-gemini-017.json",
+          "path": "questions[2]",
+          "kind": "genuine",
+          "how": "split-verb-then-particle",
+          "evidence": "sieht zwar ein"
+        },
+        {
+          "f": "lesen-t4-gemini-017.json",
+          "path": "questions[5]",
+          "kind": "fp",
+          "traps": [
+            "einen"
+          ],
+          "textSample": "Ist Emma für den Vorschlag? a) Ja b) Nein Emma ist skeptisch wegen der Kosten und der Pflege der Pflanzen und lehnt den "
+        }
+      ]
+    },
+    {
+      "full": "mitkommen",
+      "p": "mit",
+      "r": "kommen",
+      "total": 4,
+      "genuine": 2,
+      "fp": 2,
+      "traps": {},
+      "examples": [
+        {
+          "f": "lesen-t1-gemini-108.json",
+          "path": "questions[4]",
+          "kind": "fp",
+          "traps": [
+            "mit+PREP/N (preposition near kommen)"
+          ],
+          "textSample": "Sie arbeitet nur mit Erwachsenen im Verein. Viele Familien mit Kindern kommen zum Verein."
+        },
+        {
+          "f": "lesen-t1-gemini-140.json",
+          "path": "questions[5]",
+          "kind": "genuine",
+          "how": "split-verb-then-particle",
+          "evidence": "kommt manchmal mit"
+        },
+        {
+          "f": "lesen-t3-auto-yu9vyl.json",
+          "path": "questions[3]",
+          "kind": "fp",
+          "traps": [
+            "mit+PREP/N (preposition near kommen)"
+          ],
+          "textSample": "Die Studentin Mia kommt mit den Grundlagen der Betriebswirtschaft nicht klar. A) WohnVermitt — Wir vermitteln zwei- und "
+        }
+      ]
+    },
+    {
+      "full": "einnehmen",
+      "p": "ein",
+      "r": "nehmen",
+      "total": 3,
+      "genuine": 1,
+      "fp": 2,
+      "traps": {},
+      "examples": [
+        {
+          "f": "horen-t2-gemini-018.json",
+          "path": "questions[1]",
+          "kind": "fp",
+          "traps": [],
+          "textSample": "Was betont der Sprecher bezüglich des Gesundheitsbegriffs? a) Gesundheit bedeutet, keine Medikamente nehmen zu müssen. b"
+        },
+        {
+          "f": "lesen-t1-gemini-180.json",
+          "path": "questions[1]",
+          "kind": "genuine",
+          "how": "split-verb-then-particle",
+          "evidence": "nimmt die Abendmahlzeiten getrennt ein"
+        },
+        {
+          "f": "schreiben-gemini-006.json",
+          "path": "questions[1]",
+          "kind": "fp",
+          "traps": [],
+          "textSample": "Im Internetforum „Arbeitswelt heute“ diskutieren die Nutzer über das Thema Home-Office. Sie lesen folgenden Beitrag: «Ho"
+        }
+      ]
+    },
+    {
+      "full": "aufsehen",
+      "p": "auf",
+      "r": "sehen",
+      "total": 2,
+      "genuine": 0,
+      "fp": 2,
+      "traps": {},
+      "examples": [
+        {
+          "f": "horen-t2-gemini-010.json",
+          "path": "questions[4]",
+          "kind": "fp",
+          "traps": [
+            "auf+PREP/N (preposition near sehen)"
+          ],
+          "textSample": "Was empfiehlt die Sprecherin, um das Stadtleben positiver zu erleben? a) Die Probleme der Stadt zu vergessen. b) Die kle"
+        },
+        {
+          "f": "lesen-t1-gemini-165.json",
+          "path": "questions[0]",
+          "kind": "fp",
+          "traps": [
+            "auf+PREP/N (preposition near sehen)"
+          ],
+          "textSample": "Sie hat eine spezielle Software genutzt, um ihre Nutzungszeiten zu verfolgen. Sie installierte ein Programm auf ihrem Co"
+        }
+      ]
+    },
+    {
+      "full": "einmachen",
+      "p": "ein",
+      "r": "machen",
+      "total": 2,
+      "genuine": 0,
+      "fp": 2,
+      "traps": {},
+      "examples": [
+        {
+          "f": "lesen-t1-gemini-140.json",
+          "path": "questions[2]",
+          "kind": "fp",
+          "traps": [
+            "ein+PREP/N (preposition near machen)"
+          ],
+          "textSample": "Ihre Tätigkeiten im Projekt umfassen immer mehrere Bereiche. Ihre Aufgaben sind vielfältig, sie teilt die Arbeit in vers"
+        },
+        {
+          "f": "lesen-t4-gemini-016.json",
+          "path": "questions[1]",
+          "kind": "fp",
+          "traps": [],
+          "textSample": "Ist Sofia für den Vorschlag? a) Ja b) Nein Sofia unterstützt die Idee der Plastikreduzierung, hat aber Bedenken bezüglic"
+        }
+      ]
+    },
+    {
+      "full": "mitnehmen",
+      "p": "mit",
+      "r": "nehmen",
+      "total": 4,
+      "genuine": 3,
+      "fp": 1,
+      "traps": {},
+      "examples": [
+        {
+          "f": "horen-t2-gemini-007.json",
+          "path": "questions[1]",
+          "kind": "genuine",
+          "how": "zu-infinitive",
+          "evidence": "mitzunehmen"
+        },
+        {
+          "f": "horen-t2-gemini-015.json",
+          "path": "questions[2]",
+          "kind": "fp",
+          "traps": [
+            "mit+PREP/N (preposition near nehmen)"
+          ],
+          "textSample": "Was können Bürgerinnen und Bürger im Alltag für die Umwelt tun? a) Bus und Bahn nehmen oder mit dem Rad unterwegs sein. "
+        },
+        {
+          "f": "horen-t2-gemini-023.json",
+          "path": "questions[4]",
+          "kind": "genuine",
+          "how": "full-infinitive",
+          "evidence": "mitnehmen"
+        }
+      ]
+    },
+    {
+      "full": "aufräumen",
+      "p": "auf",
+      "r": "räumen",
+      "total": 3,
+      "genuine": 2,
+      "fp": 1,
+      "traps": {},
+      "examples": [
+        {
+          "f": "lesen-t5-gemini-029.json",
+          "path": "questions[1]",
+          "kind": "genuine",
+          "how": "split-verb-then-particle",
+          "evidence": "Räumen sollte auf"
+        },
+        {
+          "f": "lesen-t5-gemini-033.json",
+          "path": "questions[1]",
+          "kind": "genuine",
+          "how": "split-verb-then-particle",
+          "evidence": "Räumen auf"
+        },
+        {
+          "f": "lesen-t5-gemini-034.json",
+          "path": "questions[1]",
+          "kind": "fp",
+          "traps": [
+            "auf+PREP/N (preposition near räumen)"
+          ],
+          "textSample": "Was wird bezüglich der Heizung in nicht genutzten Räumen empfohlen? a) Sie sollte auf einer Niedrigen Stufe bleiben, auc"
+        }
+      ]
+    },
+    {
+      "full": "aufnehmen",
+      "p": "auf",
+      "r": "nehmen",
+      "total": 1,
+      "genuine": 0,
+      "fp": 1,
+      "traps": {},
+      "examples": [
+        {
+          "f": "schreiben-gemini-006.json",
+          "path": "questions[1]",
+          "kind": "fp",
+          "traps": [
+            "auf+PREP/N (preposition near nehmen)"
+          ],
+          "textSample": "Im Internetforum „Arbeitswelt heute“ diskutieren die Nutzer über das Thema Home-Office. Sie lesen folgenden Beitrag: «Ho"
+        }
+      ]
+    },
+    {
+      "full": "aufkommen",
+      "p": "auf",
+      "r": "kommen",
+      "total": 1,
+      "genuine": 0,
+      "fp": 1,
+      "traps": {},
+      "examples": [
+        {
+          "f": "sprechen-gemini-005.json",
+          "path": "questions[0]",
+          "kind": "fp",
+          "traps": [
+            "Aufgaben"
+          ],
+          "textSample": "Sie haben gehört, dass das Jugendzentrum in Ihrer Stadt dringend neue Sportgeräte benötigt. Sie möchten eine Spendenakti"
+        }
+      ]
+    },
+    {
+      "full": "ankommen",
+      "p": "an",
+      "r": "kommen",
+      "total": 1,
+      "genuine": 0,
+      "fp": 1,
+      "traps": {},
+      "examples": [
+        {
+          "f": "lesen-t1-gemini-177.json",
+          "path": "questions[3]",
+          "kind": "fp",
+          "traps": [
+            "an+PREP/N (preposition near kommen)"
+          ],
+          "textSample": "Ihre Familie ist nicht an den Aufführungen interessiert. Ihre Familie kommt oft zu den Aufführungen und ist stolz auf si"
+        }
+      ]
+    },
+    {
+      "full": "ausmachen",
+      "p": "aus",
+      "r": "machen",
+      "total": 1,
+      "genuine": 0,
+      "fp": 1,
+      "traps": {},
+      "examples": [
+        {
+          "f": "horen-t2-gemini-023.json",
+          "path": "questions[1]",
+          "kind": "fp",
+          "traps": [],
+          "textSample": "Was hat das Reisen für viele Menschen einfacher gemacht? a) Die Kombination aus preiswerten Flügen und attraktiven Reise"
+        }
+      ]
+    },
+    {
+      "full": "teilnehmen",
+      "p": "teil",
+      "r": "nehmen",
+      "total": 11,
+      "genuine": 11,
+      "fp": 0,
+      "traps": {},
+      "examples": [
+        {
+          "f": "horen-t1-gemini-016.json",
+          "path": "questions[6]",
+          "kind": "genuine",
+          "how": "full-infinitive",
+          "evidence": "teilnehmen"
+        },
+        {
+          "f": "horen-t2-gemini-009.json",
+          "path": "questions[4]",
+          "kind": "genuine",
+          "how": "full-infinitive",
+          "evidence": "teilnehmen"
+        },
+        {
+          "f": "horen-t2-gemini-019.json",
+          "path": "questions[1]",
+          "kind": "genuine",
+          "how": "zu-infinitive",
+          "evidence": "teilzunehmen"
+        }
+      ]
+    },
+    {
+      "full": "ausschalten",
+      "p": "aus",
+      "r": "schalten",
+      "total": 6,
+      "genuine": 6,
+      "fp": 0,
+      "traps": {},
+      "examples": [
+        {
+          "f": "lesen-t2-gemini-096.json",
+          "path": "questions[5]",
+          "kind": "genuine",
+          "how": "zu-infinitive",
+          "evidence": "auszuschalten"
+        },
+        {
+          "f": "lesen-t5-gemini-024.json",
+          "path": "questions[2]",
+          "kind": "genuine",
+          "how": "full-infinitive",
+          "evidence": "ausschalten"
+        },
+        {
+          "f": "lesen-t5-gemini-026.json",
+          "path": "questions[2]",
+          "kind": "genuine",
+          "how": "full-infinitive",
+          "evidence": "ausschalten"
+        }
+      ]
+    },
+    {
+      "full": "mitbringen",
+      "p": "mit",
+      "r": "bringen",
+      "total": 2,
+      "genuine": 2,
+      "fp": 0,
+      "traps": {},
+      "examples": [
+        {
+          "f": "lesen-t5-gemini-053.json",
+          "path": "questions[1]",
+          "kind": "genuine",
+          "how": "full-infinitive",
+          "evidence": "mitbringen"
+        },
+        {
+          "f": "lesen-t5-gemini-070.json",
+          "path": "questions[3]",
+          "kind": "genuine",
+          "how": "full-infinitive",
+          "evidence": "mitbringen"
+        }
+      ]
+    },
+    {
+      "full": "aufladen",
+      "p": "auf",
+      "r": "laden",
+      "total": 2,
+      "genuine": 2,
+      "fp": 0,
+      "traps": {},
+      "examples": [
+        {
+          "f": "lesen-t5-gemini-033.json",
+          "path": "questions[3]",
+          "kind": "genuine",
+          "how": "full-infinitive",
+          "evidence": "aufladen"
+        },
+        {
+          "f": "lesen-t5-gemini-057.json",
+          "path": "questions[1]",
+          "kind": "genuine",
+          "how": "full-infinitive",
+          "evidence": "aufladen"
+        }
+      ]
+    },
+    {
+      "full": "anfangen",
+      "p": "an",
+      "r": "fangen",
+      "total": 2,
+      "genuine": 2,
+      "fp": 0,
+      "traps": {},
+      "examples": [
+        {
+          "f": "horen-t3-gemini-001.json",
+          "path": "questions[5]",
+          "kind": "genuine",
+          "how": "participle",
+          "evidence": "angefangen"
+        },
+        {
+          "f": "lesen-t1-gemini-099.json",
+          "path": "questions[1]",
+          "kind": "genuine",
+          "how": "full-infinitive",
+          "evidence": "anfangen"
+        }
+      ]
+    },
+    {
+      "full": "mitkaufen",
+      "p": "mit",
+      "r": "kaufen",
+      "total": 1,
+      "genuine": 1,
+      "fp": 0,
+      "traps": {},
+      "examples": [
+        {
+          "f": "lesen-t5-gemini-057.json",
+          "path": "questions[1]",
+          "kind": "genuine",
+          "how": "split-verb-then-particle",
+          "evidence": "kaufen und diese dann mit"
+        }
+      ]
+    },
+    {
+      "full": "anrufen",
+      "p": "an",
+      "r": "rufen",
+      "total": 1,
+      "genuine": 1,
+      "fp": 0,
+      "traps": {},
+      "examples": [
+        {
+          "f": "lesen-t5-gemini-030.json",
+          "path": "questions[2]",
+          "kind": "genuine",
+          "how": "full-infinitive",
+          "evidence": "anrufen"
+        }
+      ]
+    },
+    {
+      "full": "aussehen",
+      "p": "aus",
+      "r": "sehen",
+      "total": 1,
+      "genuine": 1,
+      "fp": 0,
+      "traps": {},
+      "examples": [
+        {
+          "f": "sprechen-gemini-008.json",
+          "path": "questions[1]",
+          "kind": "genuine",
+          "how": "split-verb-then-particle",
+          "evidence": "sieht ein typischer Kurs oder Ablauf aus"
+        }
+      ]
+    },
+    {
+      "full": "einkommen",
+      "p": "ein",
+      "r": "kommen",
+      "total": 1,
+      "genuine": 1,
+      "fp": 0,
+      "traps": {},
+      "examples": [
+        {
+          "f": "lesen-t3-auto-yulvio.json",
+          "path": "questions[0]",
+          "kind": "genuine",
+          "how": "split-verb-then-particle",
+          "evidence": "kommt nur noch ein"
+        }
+      ]
+    },
+    {
+      "full": "einziehen",
+      "p": "ein",
+      "r": "ziehen",
+      "total": 1,
+      "genuine": 1,
+      "fp": 0,
+      "traps": {},
+      "examples": [
+        {
+          "f": "sprechen-gemini-007.json",
+          "path": "questions[1]",
+          "kind": "genuine",
+          "how": "split-verb-then-particle",
+          "evidence": "ziehen Sie ein"
+        }
+      ]
+    },
+    {
+      "full": "einladen",
+      "p": "ein",
+      "r": "laden",
+      "total": 1,
+      "genuine": 1,
+      "fp": 0,
+      "traps": {},
+      "examples": [
+        {
+          "f": "schreiben-gemini-007.json",
+          "path": "questions[0]",
+          "kind": "genuine",
+          "how": "full-infinitive",
+          "evidence": "einladen"
+        }
+      ]
+    },
+    {
+      "full": "einkaufen",
+      "p": "ein",
+      "r": "kaufen",
+      "total": 1,
+      "genuine": 1,
+      "fp": 0,
+      "traps": {},
+      "examples": [
+        {
+          "f": "horen-t2-gemini-007.json",
+          "path": "questions[1]",
+          "kind": "genuine",
+          "how": "full-infinitive",
+          "evidence": "einkaufen"
+        }
+      ]
+    },
+    {
+      "full": "zunehmen",
+      "p": "zu",
+      "r": "nehmen",
+      "total": 1,
+      "genuine": 1,
+      "fp": 0,
+      "traps": {},
+      "examples": [
+        {
+          "f": "horen-t2-gemini-008.json",
+          "path": "questions[3]",
+          "kind": "genuine",
+          "how": "zu-infinitive",
+          "evidence": "zuzunehmen"
+        }
+      ]
+    },
+    {
+      "full": "zuziehen",
+      "p": "zu",
+      "r": "ziehen",
+      "total": 1,
+      "genuine": 1,
+      "fp": 0,
+      "traps": {},
+      "examples": [
+        {
+          "f": "lesen-t3-auto-yii0su.json",
+          "path": "questions[1]",
+          "kind": "genuine",
+          "how": "full-infinitive",
+          "evidence": "zuziehen"
+        }
+      ]
+    },
+    {
+      "full": "vornehmen",
+      "p": "vor",
+      "r": "nehmen",
+      "total": 1,
+      "genuine": 1,
+      "fp": 0,
+      "traps": {},
+      "examples": [
+        {
+          "f": "horen-t3-gemini-007.json",
+          "path": "questions[6]",
+          "kind": "genuine",
+          "how": "full-infinitive",
+          "evidence": "vornehmen"
+        }
+      ]
+    }
+  ],
+  "byPrefix": {
+    "mit": {
+      "total": 29,
+      "genuine": 17,
+      "fp": 12
+    },
+    "ein": {
+      "total": 14,
+      "genuine": 8,
+      "fp": 6
+    },
+    "auf": {
+      "total": 9,
+      "genuine": 4,
+      "fp": 5
+    },
+    "an": {
+      "total": 4,
+      "genuine": 3,
+      "fp": 1
+    },
+    "aus": {
+      "total": 8,
+      "genuine": 7,
+      "fp": 1
+    },
+    "teil": {
+      "total": 11,
+      "genuine": 11,
+      "fp": 0
+    },
+    "zu": {
+      "total": 2,
+      "genuine": 2,
+      "fp": 0
+    },
+    "vor": {
+      "total": 1,
+      "genuine": 1,
+      "fp": 0
+    }
+  }
+}

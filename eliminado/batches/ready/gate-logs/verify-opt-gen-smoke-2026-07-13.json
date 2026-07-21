@@ -1,0 +1,98 @@
+{
+  "generatedAt": "2026-07-13T20:59:17.007Z",
+  "baselineTodayFirstFailRate": 0.79,
+  "horenT2": {
+    "summary": {
+      "n": 5,
+      "ok": 2,
+      "firstPass": 1,
+      "firstPassRate": 0.2,
+      "firstFailRate": 0.8
+    },
+    "rows": [
+      {
+        "topic": "Gesundheit",
+        "ok": false,
+        "attempts": 3,
+        "firstPass": false,
+        "genCalls": null,
+        "reason": "gen-q-h2-b38ac7da-q5: opción correcta copia ≥4 palabras del audio («es ist wichtig auf»)",
+        "file": null
+      },
+      {
+        "topic": "Kultur",
+        "ok": true,
+        "attempts": 3,
+        "firstPass": false,
+        "genCalls": null,
+        "reason": null,
+        "file": "batches/ready/pool-verified/horen-t2-gemini-034.json"
+      },
+      {
+        "topic": "Freizeit",
+        "ok": false,
+        "attempts": 3,
+        "firstPass": false,
+        "genCalls": null,
+        "reason": "gen-q-h2-80fda6f4-q3: sesgo de longitud MCQ — opción correcta «b» es la más larga (73 vs 43/41; Δ +31 chars, +74% vs media distractores). Parafrasea o alarga los distractores hasta longitud comparable.",
+        "file": null
+      },
+      {
+        "topic": "Arbeit",
+        "ok": false,
+        "attempts": 3,
+        "firstPass": false,
+        "genCalls": null,
+        "reason": "question gen-q-h2-2d5fe5a8-q1 option: vocabulario B2+ en pregunta «Herausforderungen» → usa «Problem / Schwierigkeit» (B1)",
+        "file": null
+      },
+      {
+        "topic": "Wohnen",
+        "ok": true,
+        "attempts": 1,
+        "firstPass": true,
+        "genCalls": null,
+        "reason": null,
+        "file": "batches/ready/pool-verified/horen-t2-gemini-035.json"
+      }
+    ]
+  },
+  "schreiben": {
+    "summary": {
+      "n": 3,
+      "ok": 1,
+      "firstPass": 0,
+      "firstPassRate": 0,
+      "firstFailRate": 1
+    },
+    "rows": [
+      {
+        "topic": "Konsum",
+        "ok": false,
+        "attempts": 1,
+        "firstPass": false,
+        "genCalls": null,
+        "reason": "Deduplicación: Schreiben T3: escenario duplicado «borrowed_item_return_delay» (ya en schreiben-gemini-012.json) — varía la situación (no solo objeto/nombre)",
+        "file": null
+      },
+      {
+        "topic": "Arbeit",
+        "ok": false,
+        "attempts": 1,
+        "firstPass": false,
+        "genCalls": null,
+        "reason": "Deduplicación: Schreiben T3: escenario duplicado «borrowed_item_return_delay» (ya en schreiben-gemini-012.json) — varía la situación (no solo objeto/nombre)",
+        "file": null
+      },
+      {
+        "topic": "Familie",
+        "ok": true,
+        "attempts": 2,
+        "firstPass": false,
+        "genCalls": null,
+        "reason": null,
+        "file": "batches/ready/pool-verified/schreiben-gemini-020.json"
+      }
+    ]
+  }
+}

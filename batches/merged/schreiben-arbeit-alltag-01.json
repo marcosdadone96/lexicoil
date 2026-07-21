@@ -7,8 +7,8 @@
       "teil": 1,
       "type": "short_answer",
       "question": "Sie haben einen neuen Job. Schreiben Sie eine SMS an einen Freund (20–30 Wörter). Schreiben Sie zu drei Punkten:\n• Wie ist der neue Job?\n• Was gefällt Ihnen?\n• Wann treffen Sie sich?",
-      "correct": true,
-      "correctAnswer": "Hallo! Mein neuer Job ist super. Die Arbeit macht Spaß und die Kollegen sind nett. Treffen wir uns am Freitag nach der Arbeit?",
+      "correct": "rubric",
+      "correctAnswer": "rubric",
       "explanation": "Eine korrekte SMS antwortet auf alle drei Punkte, ist informell und hat etwa 25–30 Wörter. Beispiel: ‚Hallo! Mein neuer Job ist super. Die Arbeit macht Spaß und die Kollegen sind nett. Treffen wir uns am Freitag nach der Arbeit?'",
       "options": [],
       "grammarTags": [
@@ -26,13 +26,16 @@
       ],
       "difficulty": 2,
       "skills": [
-        "writing",
         "writing"
       ],
       "language": "de",
       "level": "A2",
       "examType": "goethe",
-      "rubric": "Erfüllung der Aufgabe (alle 3 Punkte): 0–5 Punkte | Wortschatz und Grammatik: 0–5 Punkte | Länge (20–30 Wörter): 0–5 Punkte"
+      "rubric": {
+        "content": "Erfüllung der Aufgabe (alle 3 Punkte): 0–5 Punkte",
+        "vocabulary": "Wortschatz und Grammatik: 0–5 Punkte",
+        "length": "Länge (20–30 Wörter): 0–5 Punkte"
+      }
     },
     {
       "id": "de-a2-s-t2-arbeit-alltag-01-q1",
@@ -40,9 +43,9 @@
       "teil": 2,
       "type": "short_answer",
       "question": "Sie arbeiten viel und machen oft Überstunden. Schreiben Sie eine E-Mail an einen Kollegen (30–40 Wörter). Schreiben Sie zu drei Punkten:\n• Wie viele Stunden arbeiten Sie pro Woche?\n• Ist das ein Problem für Sie?\n• Was möchten Sie tun?",
-      "correct": true,
-      "correctAnswer": "Lieber Martin,\nich arbeite etwa 50 Stunden pro Woche und mache oft Überstunden. Das ist manchmal anstrengend. Ich möchte gerne weniger arbeiten und mehr Freizeit haben. Viele Grüße",
-      "explanation": "Eine korrekte E-Mail beantwortet alle drei Punkte, ist semiformal mit Anrede und Gruß, und hat etwa 35–40 Wörter. Sie beschreibt die Situation, das Problem und die Lösung.",
+      "correct": "rubric",
+      "correctAnswer": "rubric",
+      "explanation": "Eine korrekte E-Mail beantwortet alle drei Punkte, ist semiformal mit Anrede und Gruß, und hat etwa 35–40 Wörter. Sie beschreibt die Situation, das Problem und die Lösung. Beispiel: Lieber Martin,\nich arbeite etwa 50 Stunden pro Woche und mache oft Überstunden. Das ist manchmal anstrengend. Ich möchte gerne weniger arbeiten und mehr Freizeit haben. Viele Grüße",
       "options": [],
       "grammarTags": [
         "g-de-a2-praesens",
@@ -60,13 +63,17 @@
       ],
       "difficulty": 2,
       "skills": [
-        "writing",
         "writing"
       ],
       "language": "de",
       "level": "A2",
       "examType": "goethe",
-      "rubric": "Erfüllung der Aufgabe (alle 3 Punkte): 0–5 Punkte | Wortschatz und Grammatik: 0–5 Punkte | Länge (30–40 Wörter): 0–5 Punkte | Anrede und Gruß: 0–5 Punkte"
+      "rubric": {
+        "content": "Erfüllung der Aufgabe (alle 3 Punkte): 0–5 Punkte",
+        "vocabulary": "Wortschatz und Grammatik: 0–5 Punkte",
+        "length": "Länge (30–40 Wörter): 0–5 Punkte",
+        "coherence": "Anrede und Gruß: 0–5 Punkte"
+      }
     }
   ]
 }

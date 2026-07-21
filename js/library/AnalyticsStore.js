@@ -300,7 +300,14 @@ const AnalyticsStore = (() => {
     applyTemporalDecay(profile);
     const tagStats = computeTagStats(examData, answers);
 
+    const prodGrammar =
+      typeof GrammarCategories !== 'undefined' && GrammarCategories.collectProductionGrammar
+        ? GrammarCategories.collectProductionGrammar(entry, goal?.subject || entry?.lang, goal?.level || entry?.level)
+        : {};
+
     mergeTagMaps(profile.grammarTags, tagStats.grammarTags);
+    if (Object.keys(prodGrammar).length) mergeTagMaps(profile.grammarTags, prodGrammar);
+    mergeTagMaps(tagStats.grammarTags, prodGrammar);
     mergeTagMaps(profile.topicTags, tagStats.topicTags);
     mergeModuleMaps(profile.modules, tagStats.modules);
     mergeItemMaps(profile.itemStats, tagStats.itemStats);

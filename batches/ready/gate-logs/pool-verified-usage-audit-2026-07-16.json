@@ -1,0 +1,3611 @@
+{
+  "generatedAt": "2026-07-17T08:46:06.613Z",
+  "poolVerifiedDir": "batches/ready/pool-verified/B1",
+  "totalFiles": 266,
+  "personalPathNote": "exam-part.js → pickReusablePartByVocab reads Netlify Blobs (reusable_part_idx) + local seed de_B1.json in dev; NEVER reads pool-verified/ directly.",
+  "seedRecords": 658,
+  "seedLinkedToPv": 206,
+  "officialCatalogFiles": 42,
+  "officialPartRefs": 60,
+  "officialMissingInPoolVerified": [],
+  "totals": {
+    "total": 266,
+    "official": 42,
+    "personal": 206,
+    "both": 37,
+    "usedAny": 211,
+    "orphan": 55,
+    "quarantine": 48
+  },
+  "byTeil": {
+    "horen_t1": {
+      "total": 18,
+      "official": 4,
+      "personal": 14,
+      "both": 4,
+      "orphan": 4,
+      "quarantine": 0
+    },
+    "horen_t2": {
+      "total": 34,
+      "official": 4,
+      "personal": 27,
+      "both": 4,
+      "orphan": 7,
+      "quarantine": 19
+    },
+    "horen_t3": {
+      "total": 16,
+      "official": 4,
+      "personal": 12,
+      "both": 4,
+      "orphan": 4,
+      "quarantine": 0
+    },
+    "horen_t4": {
+      "total": 20,
+      "official": 4,
+      "personal": 12,
+      "both": 1,
+      "orphan": 5,
+      "quarantine": 0
+    },
+    "lesen_t1": {
+      "total": 46,
+      "official": 4,
+      "personal": 38,
+      "both": 4,
+      "orphan": 8,
+      "quarantine": 0
+    },
+    "lesen_t2": {
+      "total": 22,
+      "official": 4,
+      "personal": 12,
+      "both": 3,
+      "orphan": 9,
+      "quarantine": 8
+    },
+    "lesen_t3": {
+      "total": 27,
+      "official": 3,
+      "personal": 23,
+      "both": 3,
+      "orphan": 4,
+      "quarantine": 0
+    },
+    "lesen_t4": {
+      "total": 15,
+      "official": 4,
+      "personal": 10,
+      "both": 4,
+      "orphan": 5,
+      "quarantine": 0
+    },
+    "lesen_t5": {
+      "total": 28,
+      "official": 4,
+      "personal": 26,
+      "both": 3,
+      "orphan": 1,
+      "quarantine": 21
+    },
+    "schreiben": {
+      "total": 23,
+      "official": 4,
+      "personal": 19,
+      "both": 4,
+      "orphan": 4,
+      "quarantine": 0
+    },
+    "sprechen": {
+      "total": 17,
+      "official": 3,
+      "personal": 13,
+      "both": 3,
+      "orphan": 4,
+      "quarantine": 0
+    }
+  },
+  "rows": [
+    {
+      "file": "horen-t1-cur-education.json",
+      "teil": "horen_t1",
+      "usage": "orphan",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [],
+      "orphanReasons": [
+        "not-in-seed-and-fails-partPublishGate"
+      ]
+    },
+    {
+      "file": "horen-t1-cur-health.json",
+      "teil": "horen_t1",
+      "usage": "orphan",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [],
+      "orphanReasons": [
+        "not-in-seed-and-fails-partPublishGate"
+      ]
+    },
+    {
+      "file": "horen-t1-cur-society.json",
+      "teil": "horen_t1",
+      "usage": "orphan",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [],
+      "orphanReasons": [
+        "not-in-seed-and-fails-partPublishGate"
+      ]
+    },
+    {
+      "file": "horen-t1-cur-work.json",
+      "teil": "horen_t1",
+      "usage": "orphan",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [],
+      "orphanReasons": [
+        "not-in-seed-and-fails-partPublishGate"
+      ]
+    },
+    {
+      "file": "horen-t1-gemini-001.json",
+      "teil": "horen_t1",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "horen-t1-gemini-001",
+        "horen-t1-gemini-001"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "horen-t1-gemini-002.json",
+      "teil": "horen_t1",
+      "usage": "both",
+      "quarantine": false,
+      "officialExams": [
+        "official-de-B1-e2"
+      ],
+      "officialPartIds": [
+        "horen-t1-gemini-002"
+      ],
+      "seedIds": [
+        "horen-t1-gemini-002",
+        "horen-t1-gemini-002"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "horen-t1-gemini-003.json",
+      "teil": "horen_t1",
+      "usage": "both",
+      "quarantine": false,
+      "officialExams": [
+        "official-de-B1-e3"
+      ],
+      "officialPartIds": [
+        "horen-t1-gemini-003"
+      ],
+      "seedIds": [
+        "horen-t1-gemini-003",
+        "horen-t1-gemini-003"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "horen-t1-gemini-004.json",
+      "teil": "horen_t1",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "horen-t1-gemini-004",
+        "horen-t1-gemini-004"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "horen-t1-gemini-005.json",
+      "teil": "horen_t1",
+      "usage": "both",
+      "quarantine": false,
+      "officialExams": [
+        "official-de-B1-e4"
+      ],
+      "officialPartIds": [
+        "horen-t1-gemini-005"
+      ],
+      "seedIds": [
+        "horen-t1-gemini-005",
+        "horen-t1-gemini-005"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "horen-t1-gemini-016.json",
+      "teil": "horen_t1",
+      "usage": "both",
+      "quarantine": false,
+      "officialExams": [
+        "official-de-B1-e1"
+      ],
+      "officialPartIds": [
+        "horen-t1-gemini-016"
+      ],
+      "seedIds": [
+        "horen-t1-gemini-016",
+        "horen-t1-gemini-016"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "horen-t1-gemini-024.json",
+      "teil": "horen_t1",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "horen-t1-gemini-024",
+        "horen-t1-gemini-024"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "horen-t1-gemini-025.json",
+      "teil": "horen_t1",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "horen-t1-gemini-025",
+        "horen-t1-gemini-025"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "horen-t1-gemini-026.json",
+      "teil": "horen_t1",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "horen-t1-gemini-026",
+        "horen-t1-gemini-026"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "horen-t1-gemini-027.json",
+      "teil": "horen_t1",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "horen-t1-gemini-027",
+        "horen-t1-gemini-027"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "horen-t1-gemini-028.json",
+      "teil": "horen_t1",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "horen-t1-gemini-028",
+        "horen-t1-gemini-028"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "horen-t1-gemini-031.json",
+      "teil": "horen_t1",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "horen-t1-gemini-031",
+        "horen-t1-gemini-031"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "horen-t1-gemini-032.json",
+      "teil": "horen_t1",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "horen-t1-gemini-032",
+        "horen-t1-gemini-032"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "horen-t1-gemini-033.json",
+      "teil": "horen_t1",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "horen-t1-gemini-033",
+        "horen-t1-gemini-033"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "horen-t2-cur-education.json",
+      "teil": "horen_t2",
+      "usage": "orphan",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [],
+      "orphanReasons": [
+        "not-in-seed-and-fails-partPublishGate"
+      ]
+    },
+    {
+      "file": "horen-t2-cur-health.json",
+      "teil": "horen_t2",
+      "usage": "orphan",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [],
+      "orphanReasons": [
+        "not-in-seed-and-fails-partPublishGate"
+      ]
+    },
+    {
+      "file": "horen-t2-cur-society.json",
+      "teil": "horen_t2",
+      "usage": "orphan",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [],
+      "orphanReasons": [
+        "not-in-seed-and-fails-partPublishGate"
+      ]
+    },
+    {
+      "file": "horen-t2-cur-work.json",
+      "teil": "horen_t2",
+      "usage": "orphan",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [],
+      "orphanReasons": [
+        "not-in-seed-and-fails-partPublishGate"
+      ]
+    },
+    {
+      "file": "horen-t2-gemini-001.json",
+      "teil": "horen_t2",
+      "usage": "personal-only",
+      "quarantine": true,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "horen-t2-gemini-001",
+        "horen-t2-gemini-001"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "horen-t2-gemini-003.json",
+      "teil": "horen_t2",
+      "usage": "both",
+      "quarantine": true,
+      "officialExams": [
+        "official-de-B1-e2"
+      ],
+      "officialPartIds": [
+        "horen-t2-gemini-003"
+      ],
+      "seedIds": [
+        "pub-horen-t2-26b4abfdd46d"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "horen-t2-gemini-005.json",
+      "teil": "horen_t2",
+      "usage": "personal-only",
+      "quarantine": true,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "horen-t2-gemini-005",
+        "horen-t2-gemini-005"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "horen-t2-gemini-006.json",
+      "teil": "horen_t2",
+      "usage": "both",
+      "quarantine": true,
+      "officialExams": [
+        "official-de-B1-e1"
+      ],
+      "officialPartIds": [
+        "horen-t2-gemini-006"
+      ],
+      "seedIds": [
+        "pub-horen-t2-8844ff61208c"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "horen-t2-gemini-007.json",
+      "teil": "horen_t2",
+      "usage": "personal-only",
+      "quarantine": true,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "horen-t2-gemini-007",
+        "horen-t2-gemini-007"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "horen-t2-gemini-008.json",
+      "teil": "horen_t2",
+      "usage": "personal-only",
+      "quarantine": true,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "horen-t2-gemini-008",
+        "horen-t2-gemini-008"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "horen-t2-gemini-009.json",
+      "teil": "horen_t2",
+      "usage": "orphan",
+      "quarantine": true,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [],
+      "orphanReasons": [
+        "not-in-seed-and-fails-partPublishGate",
+        "official-quarantine-blocks-catalog"
+      ]
+    },
+    {
+      "file": "horen-t2-gemini-010.json",
+      "teil": "horen_t2",
+      "usage": "personal-only",
+      "quarantine": true,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "horen-t2-gemini-010",
+        "horen-t2-gemini-010"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "horen-t2-gemini-011.json",
+      "teil": "horen_t2",
+      "usage": "both",
+      "quarantine": true,
+      "officialExams": [
+        "official-de-B1-e3"
+      ],
+      "officialPartIds": [
+        "horen-t2-gemini-011"
+      ],
+      "seedIds": [
+        "pub-horen-t2-ee9a3e128bde"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "horen-t2-gemini-012.json",
+      "teil": "horen_t2",
+      "usage": "personal-only",
+      "quarantine": true,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "horen-t2-gemini-012",
+        "horen-t2-gemini-012"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "horen-t2-gemini-013.json",
+      "teil": "horen_t2",
+      "usage": "orphan",
+      "quarantine": true,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [],
+      "orphanReasons": [
+        "not-in-seed-and-fails-partPublishGate",
+        "official-quarantine-blocks-catalog"
+      ]
+    },
+    {
+      "file": "horen-t2-gemini-015.json",
+      "teil": "horen_t2",
+      "usage": "personal-only",
+      "quarantine": true,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pub-horen-t2-b5996c89643d"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "horen-t2-gemini-016.json",
+      "teil": "horen_t2",
+      "usage": "personal-only",
+      "quarantine": true,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "horen-t2-gemini-016",
+        "horen-t2-gemini-016"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "horen-t2-gemini-017.json",
+      "teil": "horen_t2",
+      "usage": "personal-only",
+      "quarantine": true,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "horen-t2-gemini-017",
+        "horen-t2-gemini-017"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "horen-t2-gemini-018.json",
+      "teil": "horen_t2",
+      "usage": "personal-only",
+      "quarantine": true,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "horen-t2-gemini-018",
+        "horen-t2-gemini-018"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "horen-t2-gemini-019.json",
+      "teil": "horen_t2",
+      "usage": "personal-only",
+      "quarantine": true,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "horen-t2-gemini-019",
+        "horen-t2-gemini-019"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "horen-t2-gemini-020.json",
+      "teil": "horen_t2",
+      "usage": "personal-only",
+      "quarantine": true,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "horen-t2-gemini-020",
+        "horen-t2-gemini-020"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "horen-t2-gemini-021.json",
+      "teil": "horen_t2",
+      "usage": "personal-only",
+      "quarantine": true,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "horen-t2-gemini-021",
+        "horen-t2-gemini-021"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "horen-t2-gemini-023.json",
+      "teil": "horen_t2",
+      "usage": "personal-only",
+      "quarantine": true,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "horen-t2-gemini-023",
+        "horen-t2-gemini-023"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "horen-t2-gemini-028.json",
+      "teil": "horen_t2",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "horen-t2-gemini-028",
+        "horen-t2-gemini-028"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "horen-t2-gemini-029.json",
+      "teil": "horen_t2",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "horen-t2-gemini-029",
+        "horen-t2-gemini-029"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "horen-t2-gemini-030.json",
+      "teil": "horen_t2",
+      "usage": "both",
+      "quarantine": false,
+      "officialExams": [
+        "official-de-B1-e4"
+      ],
+      "officialPartIds": [
+        "horen-t2-gemini-030"
+      ],
+      "seedIds": [
+        "horen-t2-gemini-030",
+        "horen-t2-gemini-030"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "horen-t2-gemini-031.json",
+      "teil": "horen_t2",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "horen-t2-gemini-031",
+        "horen-t2-gemini-031"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "horen-t2-gemini-032.json",
+      "teil": "horen_t2",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "horen-t2-gemini-032",
+        "horen-t2-gemini-032"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "horen-t2-gemini-033.json",
+      "teil": "horen_t2",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "horen-t2-gemini-033",
+        "horen-t2-gemini-033"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "horen-t2-gemini-034.json",
+      "teil": "horen_t2",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pub-horen-t2-2cd9a5abc497"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "horen-t2-gemini-035.json",
+      "teil": "horen_t2",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pub-horen-t2-f5a387673a79"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "horen-t2-gemini-038.json",
+      "teil": "horen_t2",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pub-horen-t2-d749f0607b54"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "horen-t2-gemini-039.json",
+      "teil": "horen_t2",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pub-horen-t2-6d17505773ec"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "horen-t2-gemini-040.json",
+      "teil": "horen_t2",
+      "usage": "orphan",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [],
+      "orphanReasons": [
+        "not-in-seed-and-fails-partPublishGate"
+      ]
+    },
+    {
+      "file": "horen-t3-cur-education.json",
+      "teil": "horen_t3",
+      "usage": "orphan",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [],
+      "orphanReasons": [
+        "not-in-seed-and-fails-partPublishGate"
+      ]
+    },
+    {
+      "file": "horen-t3-cur-health.json",
+      "teil": "horen_t3",
+      "usage": "orphan",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [],
+      "orphanReasons": [
+        "not-in-seed-and-fails-partPublishGate"
+      ]
+    },
+    {
+      "file": "horen-t3-cur-society.json",
+      "teil": "horen_t3",
+      "usage": "orphan",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [],
+      "orphanReasons": [
+        "not-in-seed-and-fails-partPublishGate"
+      ]
+    },
+    {
+      "file": "horen-t3-cur-work.json",
+      "teil": "horen_t3",
+      "usage": "orphan",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [],
+      "orphanReasons": [
+        "not-in-seed-and-fails-partPublishGate"
+      ]
+    },
+    {
+      "file": "horen-t3-gemini-001.json",
+      "teil": "horen_t3",
+      "usage": "both",
+      "quarantine": false,
+      "officialExams": [
+        "official-de-B1-e3"
+      ],
+      "officialPartIds": [
+        "horen-t3-gemini-001"
+      ],
+      "seedIds": [
+        "pub-horen-t3-55fbfdb4ae3e"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "horen-t3-gemini-002.json",
+      "teil": "horen_t3",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pub-horen-t3-c2cf33de793f"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "horen-t3-gemini-003.json",
+      "teil": "horen_t3",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "horen-t3-gemini-003",
+        "horen-t3-gemini-003"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "horen-t3-gemini-004.json",
+      "teil": "horen_t3",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "horen-t3-gemini-004",
+        "horen-t3-gemini-004"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "horen-t3-gemini-007.json",
+      "teil": "horen_t3",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "horen-t3-gemini-007",
+        "horen-t3-gemini-007"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "horen-t3-gemini-008.json",
+      "teil": "horen_t3",
+      "usage": "both",
+      "quarantine": false,
+      "officialExams": [
+        "official-de-B1-e1"
+      ],
+      "officialPartIds": [
+        "horen-t3-gemini-008"
+      ],
+      "seedIds": [
+        "horen-t3-gemini-008",
+        "horen-t3-gemini-008"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "horen-t3-gemini-009.json",
+      "teil": "horen_t3",
+      "usage": "both",
+      "quarantine": false,
+      "officialExams": [
+        "official-de-B1-e2"
+      ],
+      "officialPartIds": [
+        "horen-t3-gemini-009"
+      ],
+      "seedIds": [
+        "horen-t3-gemini-009",
+        "horen-t3-gemini-009"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "horen-t3-gemini-010.json",
+      "teil": "horen_t3",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "horen-t3-gemini-010",
+        "horen-t3-gemini-010"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "horen-t3-gemini-011.json",
+      "teil": "horen_t3",
+      "usage": "both",
+      "quarantine": false,
+      "officialExams": [
+        "official-de-B1-e4"
+      ],
+      "officialPartIds": [
+        "horen-t3-gemini-011"
+      ],
+      "seedIds": [
+        "horen-t3-gemini-011",
+        "horen-t3-gemini-011"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "horen-t3-gemini-012.json",
+      "teil": "horen_t3",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "horen-t3-gemini-012",
+        "horen-t3-gemini-012"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "horen-t3-gemini-013.json",
+      "teil": "horen_t3",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "horen-t3-gemini-013",
+        "horen-t3-gemini-013"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "horen-t3-gemini-014.json",
+      "teil": "horen_t3",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "horen-t3-gemini-014",
+        "horen-t3-gemini-014"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "horen-t4-cur-education.json",
+      "teil": "horen_t4",
+      "usage": "orphan",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [],
+      "orphanReasons": [
+        "not-in-seed-and-fails-partPublishGate"
+      ]
+    },
+    {
+      "file": "horen-t4-cur-health.json",
+      "teil": "horen_t4",
+      "usage": "orphan",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [],
+      "orphanReasons": [
+        "not-in-seed-and-fails-partPublishGate"
+      ]
+    },
+    {
+      "file": "horen-t4-cur-society.json",
+      "teil": "horen_t4",
+      "usage": "orphan",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [],
+      "orphanReasons": [
+        "not-in-seed-and-fails-partPublishGate"
+      ]
+    },
+    {
+      "file": "horen-t4-cur-work.json",
+      "teil": "horen_t4",
+      "usage": "orphan",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [],
+      "orphanReasons": [
+        "not-in-seed-and-fails-partPublishGate"
+      ]
+    },
+    {
+      "file": "horen-t4-gemini-003.json",
+      "teil": "horen_t4",
+      "usage": "official-only",
+      "quarantine": false,
+      "officialExams": [
+        "official-de-B1-e1"
+      ],
+      "officialPartIds": [
+        "horen-t4-gemini-003"
+      ],
+      "seedIds": [],
+      "orphanReasons": []
+    },
+    {
+      "file": "horen-t4-gemini-006.json",
+      "teil": "horen_t4",
+      "usage": "official-only",
+      "quarantine": false,
+      "officialExams": [
+        "official-de-B1-e3"
+      ],
+      "officialPartIds": [
+        "horen-t4-gemini-006"
+      ],
+      "seedIds": [],
+      "orphanReasons": []
+    },
+    {
+      "file": "horen-t4-gemini-007.json",
+      "teil": "horen_t4",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "horen-t4-gemini-007",
+        "horen-t4-gemini-007"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "horen-t4-gemini-008.json",
+      "teil": "horen_t4",
+      "usage": "orphan",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [],
+      "orphanReasons": [
+        "not-in-seed-and-fails-partPublishGate"
+      ]
+    },
+    {
+      "file": "horen-t4-gemini-009.json",
+      "teil": "horen_t4",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pub-horen-t4-be12805deccc"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "horen-t4-gemini-010.json",
+      "teil": "horen_t4",
+      "usage": "official-only",
+      "quarantine": false,
+      "officialExams": [
+        "official-de-B1-e4"
+      ],
+      "officialPartIds": [
+        "horen-t4-gemini-010"
+      ],
+      "seedIds": [],
+      "orphanReasons": []
+    },
+    {
+      "file": "horen-t4-gemini-011.json",
+      "teil": "horen_t4",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "horen-t4-gemini-011",
+        "horen-t4-gemini-011"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "horen-t4-gemini-012.json",
+      "teil": "horen_t4",
+      "usage": "both",
+      "quarantine": false,
+      "officialExams": [
+        "official-de-B1-e2"
+      ],
+      "officialPartIds": [
+        "horen-t4-gemini-012"
+      ],
+      "seedIds": [
+        "pub-horen-t4-0fd44ce807cb"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "horen-t4-gemini-013.json",
+      "teil": "horen_t4",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "horen-t4-gemini-013",
+        "horen-t4-gemini-013"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "horen-t4-gemini-014.json",
+      "teil": "horen_t4",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "horen-t4-gemini-014",
+        "horen-t4-gemini-014"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "horen-t4-gemini-015.json",
+      "teil": "horen_t4",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "horen-t4-gemini-015",
+        "horen-t4-gemini-015"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "horen-t4-gemini-016.json",
+      "teil": "horen_t4",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "horen-t4-gemini-016",
+        "horen-t4-gemini-016"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "horen-t4-gemini-017.json",
+      "teil": "horen_t4",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pub-horen-t4-126b82590b3f"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "horen-t4-gemini-018.json",
+      "teil": "horen_t4",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "horen-t4-gemini-018",
+        "horen-t4-gemini-018"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "horen-t4-gemini-019.json",
+      "teil": "horen_t4",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "horen-t4-gemini-019",
+        "horen-t4-gemini-019"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "horen-t4-gemini-020.json",
+      "teil": "horen_t4",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "horen-t4-gemini-020",
+        "horen-t4-gemini-020"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t1-cur-education.json",
+      "teil": "lesen_t1",
+      "usage": "orphan",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [],
+      "orphanReasons": [
+        "not-in-seed-and-fails-partPublishGate"
+      ]
+    },
+    {
+      "file": "lesen-t1-cur-health.json",
+      "teil": "lesen_t1",
+      "usage": "orphan",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [],
+      "orphanReasons": [
+        "not-in-seed-and-fails-partPublishGate"
+      ]
+    },
+    {
+      "file": "lesen-t1-cur-society.json",
+      "teil": "lesen_t1",
+      "usage": "orphan",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [],
+      "orphanReasons": [
+        "not-in-seed-and-fails-partPublishGate"
+      ]
+    },
+    {
+      "file": "lesen-t1-cur-work.json",
+      "teil": "lesen_t1",
+      "usage": "orphan",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [],
+      "orphanReasons": [
+        "not-in-seed-and-fails-partPublishGate"
+      ]
+    },
+    {
+      "file": "lesen-t1-gemini-075.json",
+      "teil": "lesen_t1",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pv-de-B1-lesen-t1-b26c6ed214e2"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t1-gemini-081.json",
+      "teil": "lesen_t1",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pv-de-B1-lesen-t1-d135e57fa78a"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t1-gemini-082.json",
+      "teil": "lesen_t1",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pv-de-B1-lesen-t1-69acb7a987c3"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t1-gemini-084.json",
+      "teil": "lesen_t1",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pv-de-B1-lesen-t1-eb8608541b9b"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t1-gemini-086.json",
+      "teil": "lesen_t1",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pv-de-B1-lesen-t1-bb67a0fa7d31"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t1-gemini-087.json",
+      "teil": "lesen_t1",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pv-de-B1-lesen-t1-5a71e47b3dd4"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t1-gemini-089.json",
+      "teil": "lesen_t1",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pv-de-B1-lesen-t1-23d1513a25ec"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t1-gemini-090.json",
+      "teil": "lesen_t1",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pv-de-B1-lesen-t1-3fa0755b4fa4"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t1-gemini-092.json",
+      "teil": "lesen_t1",
+      "usage": "orphan",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [],
+      "orphanReasons": [
+        "not-in-seed-and-fails-partPublishGate"
+      ]
+    },
+    {
+      "file": "lesen-t1-gemini-095.json",
+      "teil": "lesen_t1",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pv-de-B1-lesen-t1-c866cfc2b145"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t1-gemini-097.json",
+      "teil": "lesen_t1",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pv-de-B1-lesen-t1-b0c926cc30ef"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t1-gemini-099.json",
+      "teil": "lesen_t1",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pv-de-B1-lesen-t1-4c77be98484a"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t1-gemini-108.json",
+      "teil": "lesen_t1",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pv-de-B1-lesen-t1-e3f03d6946fd"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t1-gemini-113.json",
+      "teil": "lesen_t1",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pv-de-B1-lesen-t1-99b5c499196a"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t1-gemini-117.json",
+      "teil": "lesen_t1",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pv-de-B1-lesen-t1-c31641df0696"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t1-gemini-119.json",
+      "teil": "lesen_t1",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pv-de-B1-lesen-t1-60151cd3c4f1"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t1-gemini-121.json",
+      "teil": "lesen_t1",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pv-de-B1-lesen-t1-e5f1c4e01941"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t1-gemini-122.json",
+      "teil": "lesen_t1",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pv-de-B1-lesen-t1-c0bc5e54a733"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t1-gemini-125.json",
+      "teil": "lesen_t1",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pv-de-B1-lesen-t1-b53e18202a28"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t1-gemini-126.json",
+      "teil": "lesen_t1",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pv-de-B1-lesen-t1-148595e85c38"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t1-gemini-127.json",
+      "teil": "lesen_t1",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pv-de-B1-lesen-t1-bf863af759bc"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t1-gemini-130.json",
+      "teil": "lesen_t1",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pv-de-B1-lesen-t1-f508937cd24c"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t1-gemini-135.json",
+      "teil": "lesen_t1",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pv-de-B1-lesen-t1-93f374dd49bb"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t1-gemini-136.json",
+      "teil": "lesen_t1",
+      "usage": "both",
+      "quarantine": false,
+      "officialExams": [
+        "official-de-B1-e1"
+      ],
+      "officialPartIds": [
+        "lesen-t1-gemini-136"
+      ],
+      "seedIds": [
+        "pv-de-B1-lesen-t1-83922bf40688"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t1-gemini-137.json",
+      "teil": "lesen_t1",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pv-de-B1-lesen-t1-0e4fab6902df"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t1-gemini-138.json",
+      "teil": "lesen_t1",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pv-de-B1-lesen-t1-abddfb76020a"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t1-gemini-139.json",
+      "teil": "lesen_t1",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pv-de-B1-lesen-t1-b2026dd925d9"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t1-gemini-140.json",
+      "teil": "lesen_t1",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pv-de-B1-lesen-t1-93353d5b575e"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t1-gemini-142.json",
+      "teil": "lesen_t1",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pv-de-B1-lesen-t1-53dd277ef220"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t1-gemini-143.json",
+      "teil": "lesen_t1",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pv-de-B1-lesen-t1-2cf4b93dcf05"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t1-gemini-144.json",
+      "teil": "lesen_t1",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pv-de-B1-lesen-t1-23a76518ea58"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t1-gemini-149.json",
+      "teil": "lesen_t1",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pv-de-B1-lesen-t1-3a85f981b015"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t1-gemini-155.json",
+      "teil": "lesen_t1",
+      "usage": "both",
+      "quarantine": false,
+      "officialExams": [
+        "official-de-B1-e2"
+      ],
+      "officialPartIds": [
+        "lesen-t1-gemini-155"
+      ],
+      "seedIds": [
+        "pub-de-B1-lesen-t1-17b3f5356c02"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t1-gemini-165.json",
+      "teil": "lesen_t1",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pub-de-B1-lesen-t1-9815cc12705b"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t1-gemini-175.json",
+      "teil": "lesen_t1",
+      "usage": "both",
+      "quarantine": false,
+      "officialExams": [
+        "official-de-B1-e3"
+      ],
+      "officialPartIds": [
+        "lesen-t1-gemini-175"
+      ],
+      "seedIds": [
+        "pub-de-B1-lesen-t1-7e3210bc0838"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t1-gemini-177.json",
+      "teil": "lesen_t1",
+      "usage": "both",
+      "quarantine": false,
+      "officialExams": [
+        "official-de-B1-e4"
+      ],
+      "officialPartIds": [
+        "lesen-t1-gemini-177"
+      ],
+      "seedIds": [
+        "pub-de-B1-lesen-t1-a6373561bc7f"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t1-gemini-179.json",
+      "teil": "lesen_t1",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pub-de-B1-lesen-t1-d5d84eedcc2f"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t1-gemini-180.json",
+      "teil": "lesen_t1",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pub-de-B1-lesen-t1-28f218d0edb8"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t1-gemini-183.json",
+      "teil": "lesen_t1",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pub-de-B1-lesen-t1-b140a8426fc6"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t1-gemini-189.json",
+      "teil": "lesen_t1",
+      "usage": "orphan",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [],
+      "orphanReasons": [
+        "not-in-seed-and-fails-partPublishGate"
+      ]
+    },
+    {
+      "file": "lesen-t1-gemini-190.json",
+      "teil": "lesen_t1",
+      "usage": "orphan",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [],
+      "orphanReasons": [
+        "not-in-seed-and-fails-partPublishGate"
+      ]
+    },
+    {
+      "file": "lesen-t1-gemini-191.json",
+      "teil": "lesen_t1",
+      "usage": "orphan",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [],
+      "orphanReasons": [
+        "not-in-seed-and-fails-partPublishGate"
+      ]
+    },
+    {
+      "file": "lesen-t2-cur-education.json",
+      "teil": "lesen_t2",
+      "usage": "orphan",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [],
+      "orphanReasons": [
+        "not-in-seed-and-fails-partPublishGate"
+      ]
+    },
+    {
+      "file": "lesen-t2-cur-health.json",
+      "teil": "lesen_t2",
+      "usage": "orphan",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [],
+      "orphanReasons": [
+        "not-in-seed-and-fails-partPublishGate"
+      ]
+    },
+    {
+      "file": "lesen-t2-cur-society.json",
+      "teil": "lesen_t2",
+      "usage": "orphan",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [],
+      "orphanReasons": [
+        "not-in-seed-and-fails-partPublishGate"
+      ]
+    },
+    {
+      "file": "lesen-t2-cur-work.json",
+      "teil": "lesen_t2",
+      "usage": "orphan",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [],
+      "orphanReasons": [
+        "not-in-seed-and-fails-partPublishGate"
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-057.json",
+      "teil": "lesen_t2",
+      "usage": "both",
+      "quarantine": true,
+      "officialExams": [
+        "official-de-B1-e1"
+      ],
+      "officialPartIds": [
+        "lesen-t2-gemini-057"
+      ],
+      "seedIds": [
+        "pv-de-B1-lesen-t2-7f618ab9b2c9"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t2-gemini-093.json",
+      "teil": "lesen_t2",
+      "usage": "both",
+      "quarantine": true,
+      "officialExams": [
+        "official-de-B1-e2"
+      ],
+      "officialPartIds": [
+        "lesen-t2-gemini-093"
+      ],
+      "seedIds": [
+        "pv-de-B1-lesen-t2-d74a86aae27e"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t2-gemini-094.json",
+      "teil": "lesen_t2",
+      "usage": "both",
+      "quarantine": true,
+      "officialExams": [
+        "official-de-B1-e3"
+      ],
+      "officialPartIds": [
+        "lesen-t2-gemini-094"
+      ],
+      "seedIds": [
+        "pv-de-B1-lesen-t2-a6f1bea1a33b"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t2-gemini-096.json",
+      "teil": "lesen_t2",
+      "usage": "personal-only",
+      "quarantine": true,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pv-de-B1-lesen-t2-ed63a7dffc7a"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t2-gemini-103.json",
+      "teil": "lesen_t2",
+      "usage": "personal-only",
+      "quarantine": true,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "lesen-t2-gemini-103",
+        "lesen-t2-gemini-103"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t2-gemini-104.json",
+      "teil": "lesen_t2",
+      "usage": "personal-only",
+      "quarantine": true,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "lesen-t2-gemini-104",
+        "lesen-t2-gemini-104"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t2-gemini-105.json",
+      "teil": "lesen_t2",
+      "usage": "personal-only",
+      "quarantine": true,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "lesen-t2-gemini-105",
+        "lesen-t2-gemini-105"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t2-gemini-106.json",
+      "teil": "lesen_t2",
+      "usage": "personal-only",
+      "quarantine": true,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "lesen-t2-gemini-106",
+        "lesen-t2-gemini-106"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t2-gemini-107.json",
+      "teil": "lesen_t2",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pub-de-B1-lesen-t2-30f4e4dadcd1"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t2-gemini-109.json",
+      "teil": "lesen_t2",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pv-de-B1-lesen-t2-1952135cf9fa"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t2-gemini-112.json",
+      "teil": "lesen_t2",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pub-de-B1-lesen-t2-4de646ea75b0"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t2-gemini-113.json",
+      "teil": "lesen_t2",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pv-de-B1-lesen-t2-6c9d619bd674"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t2-gemini-115.json",
+      "teil": "lesen_t2",
+      "usage": "orphan",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [],
+      "orphanReasons": [
+        "not-in-seed-and-fails-partPublishGate"
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-116.json",
+      "teil": "lesen_t2",
+      "usage": "official-only",
+      "quarantine": false,
+      "officialExams": [
+        "official-de-B1-e4"
+      ],
+      "officialPartIds": [
+        "lesen-t2-gemini-116"
+      ],
+      "seedIds": [],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t2-gemini-117.json",
+      "teil": "lesen_t2",
+      "usage": "orphan",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [],
+      "orphanReasons": [
+        "not-in-seed-and-fails-partPublishGate"
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-118.json",
+      "teil": "lesen_t2",
+      "usage": "orphan",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [],
+      "orphanReasons": [
+        "not-in-seed-and-fails-partPublishGate"
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-119.json",
+      "teil": "lesen_t2",
+      "usage": "orphan",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [],
+      "orphanReasons": [
+        "not-in-seed-and-fails-partPublishGate"
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-122.json",
+      "teil": "lesen_t2",
+      "usage": "orphan",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [],
+      "orphanReasons": [
+        "not-in-seed-and-fails-partPublishGate"
+      ]
+    },
+    {
+      "file": "lesen-t3-auto-3258cv.json",
+      "teil": "lesen_t3",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "lesen-t3-auto-3258cv",
+        "lesen-t3-auto-3258cv"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t3-auto-5bw5c5.json",
+      "teil": "lesen_t3",
+      "usage": "both",
+      "quarantine": false,
+      "officialExams": [
+        "official-de-B1-e1"
+      ],
+      "officialPartIds": [
+        "lesen-t3-auto-5bw5c5"
+      ],
+      "seedIds": [
+        "pv-de-B1-lesen-t3-bc6c0f3a0bcb"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t3-auto-ma7vt8.json",
+      "teil": "lesen_t3",
+      "usage": "both",
+      "quarantine": false,
+      "officialExams": [
+        "official-de-B1-e2"
+      ],
+      "officialPartIds": [
+        "lesen-t3-auto-ma7vt8"
+      ],
+      "seedIds": [
+        "pv-de-B1-lesen-t3-ba281f0bdc5d"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t3-auto-p8ebr7.json",
+      "teil": "lesen_t3",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pv-de-B1-lesen-t3-bf55fd7ca6d2"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t3-auto-t725x5.json",
+      "teil": "lesen_t3",
+      "usage": "both",
+      "quarantine": false,
+      "officialExams": [
+        "official-de-B1-e3",
+        "official-de-B1-e4"
+      ],
+      "officialPartIds": [
+        "lesen-t3-auto-t725x5",
+        "lesen-t3-auto-t725x5"
+      ],
+      "seedIds": [
+        "pv-de-B1-lesen-t3-f53be1f7f492"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t3-auto-vqxy1z.json",
+      "teil": "lesen_t3",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pv-de-B1-lesen-t3-2a20dbfd8c08"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t3-auto-w8hk4n.json",
+      "teil": "lesen_t3",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pv-de-B1-lesen-t3-103b4635de1c"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t3-auto-we7l2c.json",
+      "teil": "lesen_t3",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pub-de-B1-lesen-t3-f2d56aa08492"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t3-auto-wyw6fo.json",
+      "teil": "lesen_t3",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pv-de-B1-lesen-t3-8d31883ad8d7"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t3-auto-x4k027.json",
+      "teil": "lesen_t3",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pv-de-B1-lesen-t3-c6b437cd3bfd"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t3-auto-xcph87.json",
+      "teil": "lesen_t3",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pv-de-B1-lesen-t3-52541670dcff"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t3-auto-xqens7.json",
+      "teil": "lesen_t3",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pv-de-B1-lesen-t3-1d00a0106067"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t3-auto-yii0su.json",
+      "teil": "lesen_t3",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pv-de-B1-lesen-t3-527a1de811a1"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t3-auto-yu9vyl.json",
+      "teil": "lesen_t3",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pv-de-B1-lesen-t3-893c74a7082e"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t3-auto-yulvio.json",
+      "teil": "lesen_t3",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pub-de-B1-lesen-t3-fac2ed909a89"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t3-auto-zfand7.json",
+      "teil": "lesen_t3",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pv-de-B1-lesen-t3-685e53b5c94f"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t3-auto-zspq8n.json",
+      "teil": "lesen_t3",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pv-de-B1-lesen-t3-9b78d5c8007f"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t3-cur-education.json",
+      "teil": "lesen_t3",
+      "usage": "orphan",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [],
+      "orphanReasons": [
+        "not-in-seed-and-fails-partPublishGate"
+      ]
+    },
+    {
+      "file": "lesen-t3-cur-health.json",
+      "teil": "lesen_t3",
+      "usage": "orphan",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [],
+      "orphanReasons": [
+        "not-in-seed-and-fails-partPublishGate"
+      ]
+    },
+    {
+      "file": "lesen-t3-cur-society.json",
+      "teil": "lesen_t3",
+      "usage": "orphan",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [],
+      "orphanReasons": [
+        "not-in-seed-and-fails-partPublishGate"
+      ]
+    },
+    {
+      "file": "lesen-t3-cur-work.json",
+      "teil": "lesen_t3",
+      "usage": "orphan",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [],
+      "orphanReasons": [
+        "not-in-seed-and-fails-partPublishGate"
+      ]
+    },
+    {
+      "file": "lesen-t3-gemini-002.json",
+      "teil": "lesen_t3",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "lesen-t3-gemini-002",
+        "lesen-t3-gemini-002"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t3-gemini-003.json",
+      "teil": "lesen_t3",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pv-de-B1-lesen-t3-f3f950d2bfdd"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t3-gemini-004.json",
+      "teil": "lesen_t3",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pv-de-B1-lesen-t3-fe55379e064f"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t3-gemini-006.json",
+      "teil": "lesen_t3",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pv-de-B1-lesen-t3-3622e0ab6fdf"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t3-gemini-007.json",
+      "teil": "lesen_t3",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pv-de-B1-lesen-t3-3ea19e2b01d3"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t3-gemini-009.json",
+      "teil": "lesen_t3",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pv-de-B1-lesen-t3-4921efd087b0"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t4-cur-education.json",
+      "teil": "lesen_t4",
+      "usage": "orphan",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [],
+      "orphanReasons": [
+        "not-in-seed-and-fails-partPublishGate"
+      ]
+    },
+    {
+      "file": "lesen-t4-cur-health.json",
+      "teil": "lesen_t4",
+      "usage": "orphan",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [],
+      "orphanReasons": [
+        "not-in-seed-and-fails-partPublishGate"
+      ]
+    },
+    {
+      "file": "lesen-t4-cur-society.json",
+      "teil": "lesen_t4",
+      "usage": "orphan",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [],
+      "orphanReasons": [
+        "not-in-seed-and-fails-partPublishGate"
+      ]
+    },
+    {
+      "file": "lesen-t4-cur-work.json",
+      "teil": "lesen_t4",
+      "usage": "orphan",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [],
+      "orphanReasons": [
+        "not-in-seed-and-fails-partPublishGate"
+      ]
+    },
+    {
+      "file": "lesen-t4-gemini-002.json",
+      "teil": "lesen_t4",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pv-de-B1-lesen-t4-b989262f518e"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t4-gemini-006.json",
+      "teil": "lesen_t4",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pv-de-B1-lesen-t4-cabb608cd38e"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t4-gemini-016.json",
+      "teil": "lesen_t4",
+      "usage": "both",
+      "quarantine": false,
+      "officialExams": [
+        "official-de-B1-e2"
+      ],
+      "officialPartIds": [
+        "lesen-t4-gemini-016"
+      ],
+      "seedIds": [
+        "pub-de-B1-lesen-t4-3b40d020b335"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t4-gemini-017.json",
+      "teil": "lesen_t4",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pv-de-B1-lesen-t4-7a14237aea63"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t4-gemini-019.json",
+      "teil": "lesen_t4",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pv-de-B1-lesen-t4-cb3aace215f8"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t4-gemini-043.json",
+      "teil": "lesen_t4",
+      "usage": "both",
+      "quarantine": false,
+      "officialExams": [
+        "official-de-B1-e3"
+      ],
+      "officialPartIds": [
+        "lesen-t4-gemini-043"
+      ],
+      "seedIds": [
+        "lesen-t4-gemini-043",
+        "lesen-t4-gemini-043"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t4-gemini-044.json",
+      "teil": "lesen_t4",
+      "usage": "both",
+      "quarantine": false,
+      "officialExams": [
+        "official-de-B1-e1"
+      ],
+      "officialPartIds": [
+        "lesen-t4-gemini-044"
+      ],
+      "seedIds": [
+        "lesen-t4-gemini-044",
+        "lesen-t4-gemini-044"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t4-gemini-045.json",
+      "teil": "lesen_t4",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "lesen-t4-gemini-045",
+        "lesen-t4-gemini-045"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t4-gemini-046.json",
+      "teil": "lesen_t4",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pub-de-B1-lesen-t4-4985794766cd"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t4-gemini-048.json",
+      "teil": "lesen_t4",
+      "usage": "both",
+      "quarantine": false,
+      "officialExams": [
+        "official-de-B1-e4"
+      ],
+      "officialPartIds": [
+        "lesen-t4-gemini-048"
+      ],
+      "seedIds": [
+        "pub-de-B1-lesen-t4-a270da07c854"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t4-gemini-049.json",
+      "teil": "lesen_t4",
+      "usage": "orphan",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [],
+      "orphanReasons": [
+        "not-in-seed-and-fails-partPublishGate"
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-009.json",
+      "teil": "lesen_t5",
+      "usage": "personal-only",
+      "quarantine": true,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pv-de-B1-lesen-t5-bea66017d68c"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t5-gemini-014.json",
+      "teil": "lesen_t5",
+      "usage": "personal-only",
+      "quarantine": true,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pv-de-B1-lesen-t5-d5892f8b5db1"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t5-gemini-015.json",
+      "teil": "lesen_t5",
+      "usage": "both",
+      "quarantine": true,
+      "officialExams": [
+        "official-de-B1-e3"
+      ],
+      "officialPartIds": [
+        "lesen-t5-gemini-015"
+      ],
+      "seedIds": [
+        "pv-de-B1-lesen-t5-4b64837e4a90"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t5-gemini-023.json",
+      "teil": "lesen_t5",
+      "usage": "personal-only",
+      "quarantine": true,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pv-de-B1-lesen-t5-2b2a3ea2fa22"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t5-gemini-024.json",
+      "teil": "lesen_t5",
+      "usage": "personal-only",
+      "quarantine": true,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pv-de-B1-lesen-t5-cd0f7af594e3"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t5-gemini-027.json",
+      "teil": "lesen_t5",
+      "usage": "personal-only",
+      "quarantine": true,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pv-de-B1-lesen-t5-833dd31e9afe"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t5-gemini-028.json",
+      "teil": "lesen_t5",
+      "usage": "personal-only",
+      "quarantine": true,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pv-de-B1-lesen-t5-cd40a1a3a9b1"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t5-gemini-029.json",
+      "teil": "lesen_t5",
+      "usage": "personal-only",
+      "quarantine": true,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pv-de-B1-lesen-t5-bb516860c2c0"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t5-gemini-030.json",
+      "teil": "lesen_t5",
+      "usage": "personal-only",
+      "quarantine": true,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pv-de-B1-lesen-t5-64cd145b9446"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t5-gemini-033.json",
+      "teil": "lesen_t5",
+      "usage": "personal-only",
+      "quarantine": true,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pv-de-B1-lesen-t5-cdb63f388cc9"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t5-gemini-034.json",
+      "teil": "lesen_t5",
+      "usage": "personal-only",
+      "quarantine": true,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pv-de-B1-lesen-t5-f271ea241d87"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t5-gemini-036.json",
+      "teil": "lesen_t5",
+      "usage": "personal-only",
+      "quarantine": true,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pv-de-B1-lesen-t5-d81f7a96464c"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t5-gemini-037.json",
+      "teil": "lesen_t5",
+      "usage": "personal-only",
+      "quarantine": true,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pv-de-B1-lesen-t5-730ff1cd9c5f"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t5-gemini-050.json",
+      "teil": "lesen_t5",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pub-de-B1-lesen-t5-b66d7ce4cde7"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t5-gemini-053.json",
+      "teil": "lesen_t5",
+      "usage": "both",
+      "quarantine": true,
+      "officialExams": [
+        "official-de-B1-e2"
+      ],
+      "officialPartIds": [
+        "lesen-t5-gemini-053"
+      ],
+      "seedIds": [
+        "pub-de-B1-lesen-t5-124d088574df"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t5-gemini-057.json",
+      "teil": "lesen_t5",
+      "usage": "personal-only",
+      "quarantine": true,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pv-de-B1-lesen-t5-c59b2d82adb0"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t5-gemini-063.json",
+      "teil": "lesen_t5",
+      "usage": "personal-only",
+      "quarantine": true,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pv-de-B1-lesen-t5-b071933d25f2"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t5-gemini-064.json",
+      "teil": "lesen_t5",
+      "usage": "personal-only",
+      "quarantine": true,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pub-de-B1-lesen-t5-d09cd053fe64"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t5-gemini-065.json",
+      "teil": "lesen_t5",
+      "usage": "personal-only",
+      "quarantine": true,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pv-de-B1-lesen-t5-97037d7b9a99"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t5-gemini-073.json",
+      "teil": "lesen_t5",
+      "usage": "personal-only",
+      "quarantine": true,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pub-de-B1-lesen-t5-388d063c343c"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t5-gemini-076.json",
+      "teil": "lesen_t5",
+      "usage": "personal-only",
+      "quarantine": true,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "lesen-t5-gemini-076",
+        "lesen-t5-gemini-076"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t5-gemini-077.json",
+      "teil": "lesen_t5",
+      "usage": "both",
+      "quarantine": true,
+      "officialExams": [
+        "official-de-B1-e1"
+      ],
+      "officialPartIds": [
+        "lesen-t5-gemini-077"
+      ],
+      "seedIds": [
+        "lesen-t5-gemini-077",
+        "lesen-t5-gemini-077"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t5-gemini-079.json",
+      "teil": "lesen_t5",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pub-de-B1-lesen-t5-da5fe82e08cf"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t5-gemini-081.json",
+      "teil": "lesen_t5",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pub-de-B1-lesen-t5-7218fbf35308"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t5-gemini-082.json",
+      "teil": "lesen_t5",
+      "usage": "orphan",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [],
+      "orphanReasons": [
+        "not-in-seed-and-fails-partPublishGate"
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-083.json",
+      "teil": "lesen_t5",
+      "usage": "official-only",
+      "quarantine": false,
+      "officialExams": [
+        "official-de-B1-e4"
+      ],
+      "officialPartIds": [
+        "lesen-t5-gemini-083"
+      ],
+      "seedIds": [],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t5-gemini-095.json",
+      "teil": "lesen_t5",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pv-de-B1-lesen-t5-7a1858bf3749"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "lesen-t5-gemini-099.json",
+      "teil": "lesen_t5",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pv-de-B1-lesen-t5-aac599013f5a"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "schreiben-cur-education.json",
+      "teil": "schreiben",
+      "usage": "orphan",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [],
+      "orphanReasons": [
+        "not-in-seed-and-fails-partPublishGate"
+      ]
+    },
+    {
+      "file": "schreiben-cur-health.json",
+      "teil": "schreiben",
+      "usage": "orphan",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [],
+      "orphanReasons": [
+        "not-in-seed-and-fails-partPublishGate"
+      ]
+    },
+    {
+      "file": "schreiben-cur-society.json",
+      "teil": "schreiben",
+      "usage": "orphan",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [],
+      "orphanReasons": [
+        "not-in-seed-and-fails-partPublishGate"
+      ]
+    },
+    {
+      "file": "schreiben-cur-work.json",
+      "teil": "schreiben",
+      "usage": "orphan",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [],
+      "orphanReasons": [
+        "not-in-seed-and-fails-partPublishGate"
+      ]
+    },
+    {
+      "file": "schreiben-gemini-004.json",
+      "teil": "schreiben",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "schreiben-gemini-004-t1",
+        "schreiben-gemini-004-t1",
+        "schreiben-gemini-004-t2",
+        "schreiben-gemini-004-t2",
+        "schreiben-gemini-004-t3"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "schreiben-gemini-005.json",
+      "teil": "schreiben",
+      "usage": "both",
+      "quarantine": false,
+      "officialExams": [
+        "official-de-B1-e1"
+      ],
+      "officialPartIds": [
+        "schreiben-gemini-005-t1",
+        "schreiben-gemini-005-t2",
+        "schreiben-gemini-005-t3"
+      ],
+      "seedIds": [
+        "pub-schreiben-t1-51fe1de3c29d"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "schreiben-gemini-006.json",
+      "teil": "schreiben",
+      "usage": "both",
+      "quarantine": false,
+      "officialExams": [
+        "official-de-B1-e2"
+      ],
+      "officialPartIds": [
+        "schreiben-gemini-006-t1",
+        "schreiben-gemini-006-t2",
+        "schreiben-gemini-006-t3"
+      ],
+      "seedIds": [
+        "pub-schreiben-t1-2a5eef2db8df"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "schreiben-gemini-007.json",
+      "teil": "schreiben",
+      "usage": "both",
+      "quarantine": false,
+      "officialExams": [
+        "official-de-B1-e3"
+      ],
+      "officialPartIds": [
+        "schreiben-gemini-007-t1",
+        "schreiben-gemini-007-t2",
+        "schreiben-gemini-007-t3"
+      ],
+      "seedIds": [
+        "pub-schreiben-t1-e34b3a974ba8"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "schreiben-gemini-009.json",
+      "teil": "schreiben",
+      "usage": "both",
+      "quarantine": false,
+      "officialExams": [
+        "official-de-B1-e4"
+      ],
+      "officialPartIds": [
+        "schreiben-gemini-009-t1",
+        "schreiben-gemini-009-t2",
+        "schreiben-gemini-009-t3"
+      ],
+      "seedIds": [
+        "pub-schreiben-t1-eec60f5c9450"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "schreiben-gemini-010.json",
+      "teil": "schreiben",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pub-schreiben-t1-62783a40d580"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "schreiben-gemini-011.json",
+      "teil": "schreiben",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "schreiben-gemini-011-t1",
+        "schreiben-gemini-011-t1",
+        "schreiben-gemini-011-t2",
+        "schreiben-gemini-011-t2",
+        "schreiben-gemini-011-t3"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "schreiben-gemini-012.json",
+      "teil": "schreiben",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "schreiben-gemini-012-t1",
+        "schreiben-gemini-012-t1",
+        "schreiben-gemini-012-t2",
+        "schreiben-gemini-012-t2",
+        "schreiben-gemini-012-t3"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "schreiben-gemini-013.json",
+      "teil": "schreiben",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "schreiben-gemini-013-t1",
+        "schreiben-gemini-013-t1",
+        "schreiben-gemini-013-t2",
+        "schreiben-gemini-013-t2",
+        "schreiben-gemini-013-t3"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "schreiben-gemini-014.json",
+      "teil": "schreiben",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "schreiben-gemini-014-t1",
+        "schreiben-gemini-014-t1",
+        "schreiben-gemini-014-t2",
+        "schreiben-gemini-014-t2",
+        "schreiben-gemini-014-t3"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "schreiben-gemini-015.json",
+      "teil": "schreiben",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "schreiben-gemini-015-t1",
+        "schreiben-gemini-015-t1",
+        "schreiben-gemini-015-t2",
+        "schreiben-gemini-015-t2",
+        "schreiben-gemini-015-t3"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "schreiben-gemini-016.json",
+      "teil": "schreiben",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "schreiben-gemini-016-t1",
+        "schreiben-gemini-016-t1",
+        "schreiben-gemini-016-t2",
+        "schreiben-gemini-016-t2",
+        "schreiben-gemini-016-t3"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "schreiben-gemini-017.json",
+      "teil": "schreiben",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "schreiben-gemini-017-t1",
+        "schreiben-gemini-017-t1",
+        "schreiben-gemini-017-t2",
+        "schreiben-gemini-017-t2",
+        "schreiben-gemini-017-t3"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "schreiben-gemini-018.json",
+      "teil": "schreiben",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "schreiben-gemini-018-t1",
+        "schreiben-gemini-018-t1",
+        "schreiben-gemini-018-t2",
+        "schreiben-gemini-018-t2",
+        "schreiben-gemini-018-t3"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "schreiben-gemini-019.json",
+      "teil": "schreiben",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "schreiben-gemini-019-t1",
+        "schreiben-gemini-019-t1",
+        "schreiben-gemini-019-t2",
+        "schreiben-gemini-019-t2",
+        "schreiben-gemini-019-t3"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "schreiben-gemini-020.json",
+      "teil": "schreiben",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "schreiben-gemini-020-t1",
+        "schreiben-gemini-020-t1",
+        "schreiben-gemini-020-t2",
+        "schreiben-gemini-020-t2",
+        "schreiben-gemini-020-t3"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "schreiben-gemini-021.json",
+      "teil": "schreiben",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pub-schreiben-t1-431a7e9375e1"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "schreiben-gemini-022.json",
+      "teil": "schreiben",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pub-schreiben-t1-83023d8da562"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "schreiben-gemini-023.json",
+      "teil": "schreiben",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pub-schreiben-t1-39dbe67b46b6"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "sprechen-cur-education.json",
+      "teil": "sprechen",
+      "usage": "orphan",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [],
+      "orphanReasons": [
+        "not-in-seed-and-fails-partPublishGate"
+      ]
+    },
+    {
+      "file": "sprechen-cur-health.json",
+      "teil": "sprechen",
+      "usage": "orphan",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [],
+      "orphanReasons": [
+        "not-in-seed-and-fails-partPublishGate"
+      ]
+    },
+    {
+      "file": "sprechen-cur-society.json",
+      "teil": "sprechen",
+      "usage": "orphan",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [],
+      "orphanReasons": [
+        "not-in-seed-and-fails-partPublishGate"
+      ]
+    },
+    {
+      "file": "sprechen-cur-work.json",
+      "teil": "sprechen",
+      "usage": "orphan",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [],
+      "orphanReasons": [
+        "not-in-seed-and-fails-partPublishGate"
+      ]
+    },
+    {
+      "file": "sprechen-gemini-001.json",
+      "teil": "sprechen",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pub-sprechen-t1-ddc5c096ecc6"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "sprechen-gemini-005.json",
+      "teil": "sprechen",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pub-sprechen-t1-cda221692721"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "sprechen-gemini-006.json",
+      "teil": "sprechen",
+      "usage": "both",
+      "quarantine": false,
+      "officialExams": [
+        "official-de-B1-e1"
+      ],
+      "officialPartIds": [
+        "sprechen-gemini-006-t1",
+        "sprechen-gemini-006-t2",
+        "sprechen-gemini-006-t3"
+      ],
+      "seedIds": [
+        "pub-sprechen-t1-ebe00d059774"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "sprechen-gemini-007.json",
+      "teil": "sprechen",
+      "usage": "both",
+      "quarantine": false,
+      "officialExams": [
+        "official-de-B1-e2",
+        "official-de-B1-e4"
+      ],
+      "officialPartIds": [
+        "sprechen-gemini-007-t1",
+        "sprechen-gemini-007-t2",
+        "sprechen-gemini-007-t3",
+        "sprechen-gemini-007-t1",
+        "sprechen-gemini-007-t2",
+        "sprechen-gemini-007-t3"
+      ],
+      "seedIds": [
+        "pub-sprechen-t1-3a91a5cd8019"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "sprechen-gemini-008.json",
+      "teil": "sprechen",
+      "usage": "both",
+      "quarantine": false,
+      "officialExams": [
+        "official-de-B1-e3"
+      ],
+      "officialPartIds": [
+        "sprechen-gemini-008-t1",
+        "sprechen-gemini-008-t2",
+        "sprechen-gemini-008-t3"
+      ],
+      "seedIds": [
+        "pub-sprechen-t1-c20511f29b4c"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "sprechen-gemini-009.json",
+      "teil": "sprechen",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "sprechen-gemini-009-t1",
+        "sprechen-gemini-009-t1",
+        "sprechen-gemini-009-t2",
+        "sprechen-gemini-009-t2",
+        "sprechen-gemini-009-t3"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "sprechen-gemini-010.json",
+      "teil": "sprechen",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "sprechen-gemini-010-t1",
+        "sprechen-gemini-010-t1",
+        "sprechen-gemini-010-t2",
+        "sprechen-gemini-010-t2",
+        "sprechen-gemini-010-t3"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "sprechen-gemini-011.json",
+      "teil": "sprechen",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "sprechen-gemini-011-t1",
+        "sprechen-gemini-011-t1",
+        "sprechen-gemini-011-t2",
+        "sprechen-gemini-011-t2",
+        "sprechen-gemini-011-t3"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "sprechen-gemini-012.json",
+      "teil": "sprechen",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "sprechen-gemini-012-t1",
+        "sprechen-gemini-012-t1",
+        "sprechen-gemini-012-t2",
+        "sprechen-gemini-012-t2",
+        "sprechen-gemini-012-t3"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "sprechen-gemini-013.json",
+      "teil": "sprechen",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "sprechen-gemini-013-t1",
+        "sprechen-gemini-013-t1",
+        "sprechen-gemini-013-t2",
+        "sprechen-gemini-013-t2",
+        "sprechen-gemini-013-t3"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "sprechen-gemini-014.json",
+      "teil": "sprechen",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pub-sprechen-t1-a029b6105a22"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "sprechen-gemini-015.json",
+      "teil": "sprechen",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pub-sprechen-t1-ce1a2bd8e72c"
+      ],
+      "orphanReasons": []
+    },
+    {
+      "file": "sprechen-gemini-016.json",
+      "teil": "sprechen",
+      "usage": "personal-only",
+      "quarantine": false,
+      "officialExams": [],
+      "officialPartIds": [],
+      "seedIds": [
+        "pub-sprechen-t1-f59f1a6d788d"
+      ],
+      "orphanReasons": []
+    }
+  ]
+}

@@ -10,8 +10,9 @@ Eres examinador del Goethe-Zertifikat B1. Genera **UNA** parte de **Hören Teil 
 
 ## Reglas estrictas
 - **1 passage** (discusión radiofónica entre 3 voces), **300–450 palabras** de transcripción.
-- **3 hablantes fijos:** Moderator + 2 invitados con posturas distintas (p. ej. Dana / Florian).
-- Cada turno empieza con el nombre del hablante y dos puntos, separado por salto de línea, SIN comillas tipográficas: `Moderator: Herzlich willkommen.\nDana: Ich denke, dass…`
+- **3 hablantes fijos:** Moderator + 2 invitados con posturas distintas.
+- Si el prompt incluye **NOMBRES DE LOS INVITADOS**, usa exactamente esos dos nombres (no Dana/Florian ni otros de la plantilla).
+- Cada turno empieza con el nombre del hablante y dos puntos, separado por salto de línea, SIN comillas tipográficas: `Moderator: Herzlich willkommen.\n[Invitado1]: Ich denke, dass…`
 - **Mínimo 12 turnos** de conversación en total.
 - **8 preguntas** `type: "matching"` — cada una es una afirmación que corresponde a UN hablante.
 - `options` de CADA pregunta = exactamente 3 strings: `["a) Moderator", "b) [Invitado1]", "c) [Invitado2]"]`

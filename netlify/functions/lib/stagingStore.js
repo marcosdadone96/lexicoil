@@ -63,6 +63,7 @@ function mergeCandidateIntoBank(bank, candidate) {
 function candidateSummary(candidate) {
   const firstQ = candidate.questions?.[0]?.question || '';
   const passageStart = candidate.passage?.text?.slice(0, 120) || '';
+  const qm = candidate.qualityMetadata || null;
   return {
     id: candidate.id,
     lang: candidate.lang,
@@ -74,6 +75,17 @@ function candidateSummary(candidate) {
     questionPreview: firstQ.slice(0, 120),
     passagePreview: passageStart,
     contributor: candidate.contributor || null,
+    qualityStatus: qm?.status || null,
+    qualityMetadata: qm
+      ? {
+          status: qm.status,
+          checkedAt: qm.checkedAt,
+          policyMode: qm.policyMode,
+          gates: qm.gates || {},
+          summary: qm.summary || null,
+        }
+      : null,
+    suggestedQualityStatus: candidate._suggestedStatus || qm?.stagingStatus || null,
   };
 }
 

@@ -1,0 +1,1020 @@
+{
+  "generatedAt": "2026-07-11T19:56:05.487Z",
+  "base": "http://127.0.0.1:8010",
+  "language": "de-DE",
+  "delayMs": 80,
+  "poolDir": "batches/ready/gate-logs/_lt-lemma-caps-v239-tmp",
+  "ping": {
+    "ok": true,
+    "languageCount": 60,
+    "deCodes": [
+      "de",
+      "de",
+      "de",
+      "de",
+      "de-DE-x-simple-language",
+      "de-DE-x-simple-language",
+      "de"
+    ]
+  },
+  "summary": {
+    "filesScanned": 19,
+    "filesWithPassageText": 18,
+    "filesSkippedNoText": 1,
+    "filesZeroMatches": 7,
+    "filesWithMatches": 11,
+    "filesErrored": 0,
+    "totalPassagesChecked": 26,
+    "totalMatches": 46,
+    "uniqueRuleIds": 7
+  },
+  "byRuleId": [
+    {
+      "ruleId": "WHITESPACE_RULE",
+      "count": 34
+    },
+    {
+      "ruleId": "DE_CASE",
+      "count": 5
+    },
+    {
+      "ruleId": "EINHEIT_LEERZEICHEN",
+      "count": 2
+    },
+    {
+      "ruleId": "GERMAN_SPELLER_RULE",
+      "count": 2
+    },
+    {
+      "ruleId": "DEN_DEM",
+      "count": 1
+    },
+    {
+      "ruleId": "NOMEN_KLEIN",
+      "count": 1
+    },
+    {
+      "ruleId": "UPPERCASE_SENTENCE_START",
+      "count": 1
+    }
+  ],
+  "files": [
+    {
+      "file": "horen-t1-gemini-002.json",
+      "matchCount": 1,
+      "passages": [
+        {
+          "passageIndex": 0,
+          "textLength": 418,
+          "text": "Guten Morgen, liebe Hörerinnen und Hörer! Heute haben wir einen tollen Tipp für Ihre Freizeit. Wie wäre es mit einem Spaziergang im Stadtpark? Dort gibt es neue Wege und auch einen kleinen See. Für Familien mit Kindern ist das ideal. Man kann die Natur genießen und frische Luft schnappen. Packen Sie ein Picknick ein und verbringen Sie einen schönen Nachmittag draußen. Der Park ist täglich von 8 bis 20 Uhr geöffnet.",
+          "matchCount": 1,
+          "matches": [
+            {
+              "ruleId": "NOMEN_KLEIN",
+              "category": "CASING",
+              "issueType": "uncategorized",
+              "message": "Bitte prüfen Sie, ob „Ideal“ hier als Nomen gebraucht wird und daher großgeschrieben werden muss.",
+              "shortMessage": "Bitte überprüfen Sie die Groß-/Kleinschreibung.",
+              "offset": 227,
+              "length": 5,
+              "context": "...n See. Für Familien mit Kindern ist das ideal. Man kann die Natur genießen und frisch...",
+              "contextOffset": 43,
+              "replacements": [
+                "Ideal"
+              ]
+            }
+          ]
+        },
+        {
+          "passageIndex": 1,
+          "textLength": 395,
+          "text": "Guten Tag, hier ist das Sportzentrum. Sie rufen wegen des neuen Yoga-Kurses am Dienstag an, richtig? Ja, der Kurs beginnt nächste Woche, am 15. Mai um 18 Uhr. Die Anmeldung ist noch bis Freitag möglich. Die Gebühr beträgt 60 Euro für zehn Termine. Bitte beachten Sie, dass die Teilnehmerzahl begrenzt ist. Sie können sich online anmelden oder persönlich an der Rezeption. Wir freuen uns auf Sie!",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "passageIndex": 2,
+          "textLength": 402,
+          "text": "Achtung, liebe Besucher des Stadtfestes! Wegen des starken Regens muss das Konzert auf der Hauptbühne leider verschoben werden. Es findet stattdessen morgen Abend um 19 Uhr statt. Die Kinder-Werkstatt im Zelt ist aber weiterhin geöffnet und bietet viele Aktivitäten für die Kleinen. Auch die Essensstände bleiben bis 22 Uhr geöffnet. Wir bitten um Ihr Verständnis und wünschen Ihnen trotzdem viel Spaß!",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "passageIndex": 3,
+          "textLength": 405,
+          "text": "Hallo Filmfreunde! Für Ihren gemütlichen Freizeitabend empfehlen wir heute das Kino 'Traumwelt'. Dort läuft um 20:30 Uhr der neue deutsche Film 'Sommerliebe'. Tickets können Sie online reservieren oder direkt an der Abendkasse kaufen. Achtung: Am Montag ist Kinotag, da sind alle Karten günstiger! Ein perfekter Plan für einen entspannten Abend mit Freunden oder der Familie. Genießen Sie die Vorstellung!",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "passageIndex": 4,
+          "textLength": 421,
+          "text": "Guten Tag, Sie sind mit dem Stadtmuseum verbunden. Ja, wir haben am Wochenende spezielle Führungen zum Thema 'Alte Handwerke'. Die erste Führung beginnt Samstag um 11 Uhr, die zweite Sonntag um 14 Uhr. Eine Anmeldung ist nicht nötig, aber wir empfehlen, pünktlich zu sein. Der Eintritt kostet 8 Euro pro Person. Kinder unter 12 Jahren haben freien Eintritt. Wir freuen uns auf Ihren Besuch und wünschen Ihnen viel Freude!",
+          "matchCount": 0,
+          "matches": []
+        }
+      ]
+    },
+    {
+      "file": "horen-t1-gemini-016.json",
+      "matchCount": 2,
+      "passages": [
+        {
+          "passageIndex": 0,
+          "textLength": 404,
+          "text": "Guten Tag, liebe Sportfreunde! Der Sportverein 'Aktiver Körper' informiert über die neuen Kurse. Die Anmeldung für unser beliebtes Schwimmseminar und den Yogakurs beginnt nächste Woche, am Freitag, den 15. Mai. Sie müssen sich persönlich in unserem Büro anmelden. Die Gebühr ist direkt bei der Anmeldung zu bezahlen. Für weitere Auskünfte rufen Sie uns bitte an. Wir freuen uns auf viele neue Mitglieder!",
+          "matchCount": 1,
+          "matches": [
+            {
+              "ruleId": "DEN_DEM",
+              "category": "GRAMMAR",
+              "issueType": "uncategorized",
+              "message": "Standardsprachlich wird in diesem Fall empfohlen, „dem“ zu schreiben.",
+              "shortMessage": null,
+              "offset": 198,
+              "length": 3,
+              "context": "...kurs beginnt nächste Woche, am Freitag, den 15. Mai. Sie müssen sich persönlich in ...",
+              "contextOffset": 43,
+              "replacements": [
+                "dem"
+              ]
+            }
+          ]
+        },
+        {
+          "passageIndex": 1,
+          "textLength": 451,
+          "text": "Achtung, Läuferinnen und Läufer! Der diesjährige 'Stadtlauf am Fluss' findet am 10. Juni statt. Es ist ein großes nationales Event, das viele Sportler anzieht. Die Strecke ist zehn Kilometer lang und führt durch die schönsten Teile unserer Stadt. Die Startgebühr beträgt 25 Euro. Sie können sich bis zum 3. Juni online registrieren. Alle Teilnehmer erhalten ein T-Shirt und eine Medaille. Wir hoffen, Sie empfinden die Herausforderung als motivierend!",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "passageIndex": 2,
+          "textLength": 430,
+          "text": "Hallo Sportbegeisterte! Das Fitnessstudio 'Fit & Gesund' hat ein tolles Angebot für Sie. Werden Sie jetzt Mitglied und trainieren Sie die ersten drei Monate gratis! Danach zahlen Sie nur 29 Euro pro Monat. Dieses Angebot gilt nur für Neukunden und ist bis Ende des Monats gültig. Kommen Sie vorbei und überzeugen Sie sich selbst. Unser Team berät Sie gerne. Wir freuen uns, wenn Sie sich bei uns wohlfühlen und den Sport genießen.",
+          "matchCount": 1,
+          "matches": [
+            {
+              "ruleId": "DE_CASE",
+              "category": "CASING",
+              "issueType": "uncategorized",
+              "message": "Außer am Satzanfang werden nur Nomen und Eigennamen großgeschrieben.",
+              "shortMessage": null,
+              "offset": 49,
+              "length": 6,
+              "context": "...rtbegeisterte! Das Fitnessstudio 'Fit & Gesund' hat ein tolles Angebot für Sie. Werden...",
+              "contextOffset": 43,
+              "replacements": [
+                "gesund"
+              ]
+            }
+          ]
+        },
+        {
+          "passageIndex": 3,
+          "textLength": 462,
+          "text": "Liebe Eltern, aufgepasst! Die Anmeldung für unsere beliebten Kinderschwimmkurse beginnt am 1. September. Die Kurse sind für Kinder ab fünf Jahren geeignet. Wir bieten Anfänger- und Fortgeschrittenenkurse an. Die Plätze sind begrenzt, daher ist eine schnelle Anmeldung wichtig. Für internationale Familien steht bei der Informationsveranstaltung ein Übersetzer zur Verfügung, der alle Fragen beantworten kann. Der Unterricht findet im städtischen Hallenbad statt.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "passageIndex": 4,
+          "textLength": 437,
+          "text": "Achtung, Sportler! Der Fußballplatz am Park muss wegen dringender Renovierungsarbeiten geschlossen werden. Die Arbeiten beginnen am 20. Juli und dauern voraussichtlich vier Wochen. In dieser Zeit ist der Platz nicht nutzbar. Wir bitten um Ihr Verständnis. Die Renovierung ist notwendig, da in der Nähe ein neues Wohnungsbauprojekt startet und der Platz modernisiert werden muss. Wir informieren Sie, sobald der Platz wieder geöffnet ist.",
+          "matchCount": 0,
+          "matches": []
+        }
+      ]
+    },
+    {
+      "file": "horen-t4-gemini-009.json",
+      "matchCount": 2,
+      "passages": [
+        {
+          "passageIndex": 0,
+          "textLength": 2829,
+          "text": "Moderator: Herzlich willkommen zu \"Fit und Gesund\", Ihrer Sendung rund um das Thema Sport. Heute diskutieren wir: Wie wichtig ist Sport in unserem Alltag und wie können wir ihn besser integrieren? Dazu begrüße ich Nele Schmidt, Sportwissenschaftlerin, und Paul Weber, Journalist und Kritiker des modernen Sportwahns.\nNele: Guten Abend. Ich freue mich, hier zu sein. Für mich ist Sport absolut essenziell. Er hält nicht nur den Körper fit, sondern auch den Geist. Schon kleine Bewegungen können einen großen Unterschied machen. Man muss nicht gleich Marathon Laufen.\nPaul: Guten Abend. Ich sehe das etwas kritischer. Viele Menschen fühlen sich unter Druck gesetzt, ständig sportlich sein zu müssen. Der sogenannte Leistungsdruck im Sport kann sogar demotivierend wirken. Und wem die Zeit fehlt, der hat oft ein schlechtes Gewissen.\nModerator: Das ist ein wichtiger Punkt, Paul. Nele, wie sehen Sie das mit dem Druck?\nNele: Ich verstehe Pauls Bedenken. Aber Sport sollte Spaß machen, nicht stressen. Es gibt so viele Möglichkeiten: Schwimmen, Radfahren, Wandern, oder auch einfach nur tanzen! Das ist eine wunderbare Art, sich zu bewegen und gleichzeitig Freude zu haben.\nPaul: Tanzen ist sicher eine gute Option. Aber viele verbinden Sport mit Fitnessstudios und teuren Geräten. Und dann gibt es noch die ständige Ablenkung durch das Smartphone. Man sieht Leute im Fitnessstudio, die mehr auf ihr Handy schauen, als zu trainieren. Das ist doch absurd.\nModerator: Ein interessanter Gedanke. Das Smartphone als Ablenkung. Aber kann es nicht auch helfen, zum Beispiel mit Fitness-Apps?\nNele: Absolut! Fitness-Apps können motivieren und Struktur geben. Sie helfen, Ziele zu setzen und Fortschritte zu verfolgen. Für viele ist das eine große Hilfe, besonders wenn sie alleine trainieren. Man muss nur lernen, es richtig zu nutzen.\nPaul: Ich finde, es fehlen oft die ruhigen Momente. Sport ist für viele nur noch ein weiterer Termin im vollen Kalender. Ich persönlich bevorzuge ruhigere Aktivitäten wie lange Spaziergänge in der Natur. Da kann man wirklich abschalten, ohne ständig auf die Uhr oder das Handy zu schauen.\nModerator: Also geht es nicht nur um Leistung, sondern auch um Entspannung?\nNele: Genau. Sport ist auch eine Form der Selbstfürsorge. Es geht darum, sich gut zu fühlen. Ob man nun intensiv trainiert oder einen entspannten Yoga-Kurs macht, ist zweitrangig. Hauptsache, man bewegt sich regelmäßig.\nPaul: Ich stimme zu, dass Bewegung wichtig ist. Aber die Art und Weise, wie Sport oft präsentiert wird, ist problematisch. Es muss nicht immer um Rekorde oder den perfekten Körper gehen. Ein gesunder Lebensstil ist viel mehr als nur intensives Training.\nModerator: Eine sehr ausgewogene Diskussion. Vielen Dank an Nele Schmidt und Paul Weber für diese Einblicke. Wir hören uns nächste Woche wieder bei \"Fit und Gesund\".",
+          "matchCount": 2,
+          "matches": [
+            {
+              "ruleId": "DE_CASE",
+              "category": "CASING",
+              "issueType": "uncategorized",
+              "message": "Außer am Satzanfang werden nur Nomen und Eigennamen großgeschrieben.",
+              "shortMessage": null,
+              "offset": 43,
+              "length": 6,
+              "context": "...erator: Herzlich willkommen zu \"Fit und Gesund\", Ihrer Sendung rund um das Thema Sport...",
+              "contextOffset": 43,
+              "replacements": [
+                "gesund"
+              ]
+            },
+            {
+              "ruleId": "DE_CASE",
+              "category": "CASING",
+              "issueType": "uncategorized",
+              "message": "Außer am Satzanfang werden nur Nomen und Eigennamen großgeschrieben.",
+              "shortMessage": null,
+              "offset": 2821,
+              "length": 6,
+              "context": "...n uns nächste Woche wieder bei \"Fit und Gesund\".",
+              "contextOffset": 43,
+              "replacements": [
+                "gesund"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "horen-t4-gemini-013.json",
+      "matchCount": 0,
+      "passages": [
+        {
+          "passageIndex": 0,
+          "textLength": 2617,
+          "text": "Moderator: Herzlich willkommen zu „Bildung im Fokus“, unserer Sendung über die Zukunft des Lernens. Heute diskutieren wir, wie Bildung am besten gelingt. Bei mir sind Felix Schneider, ein Lehrer mit langjähriger Erfahrung, und Aylin Yilmaz, eine Expertin für digitale Lernmethoden. Guten Abend.\nFelix: Guten Abend. Ich freue mich, hier zu sein.\nAylin: Auch von meiner Seite einen schönen Abend.\nModerator: Felix, Sie vertreten eher traditionelle Ansichten. Was ist für Sie das Wichtigste in der Schule?\nFelix: Für mich ist der persönliche Kontakt zwischen Lehrern und Schülern unersetzlich. In der Klasse lernen Kinder nicht nur Fakten, sondern auch soziale Kompetenzen. Sie lernen, wie man sich in einer Gruppe verhält, wie man Konflikte löst. Das kann man fern von der Schule nur schwer vermitteln.\nAylin: Ich stimme zu, dass soziale Kompetenzen wichtig sind. Aber digitale Medien bieten neue Möglichkeiten, Wissen einfach zu machen und individuelles Lernen zu fördern. Online-Plattformen können hier viel flexibler sein.\nModerator: Aylin, sehen Sie keine Nachteile im digitalen Lernen?\nAylin: Natürlich gibt es Herausforderungen. Nicht alle Familien haben Zugang zu schnellem Internet oder den nötigen Geräten. Und die Selbstdisziplin der Schüler ist gefragt. Aber das sind Probleme, die wir lösen können, zum Beispiel durch staatliche Unterstützung.\nFelix: Ich mache mir auch Sorgen wegen der sozialen Ungleichheit. Nicht alle Kinder haben zu Hause die Unterstützung, die sie für digitales Lernen brauchen. Und was ist mit der Konzentration? Viele Kinder sind schnell abgelenkt, wenn sie allein vor dem Bildschirm sitzen.\nModerator: Felix, wie sehen Sie die Rolle der Eltern in diesem Prozess?\nFelix: Eltern sind extrem wichtig. Sie müssen ihre Kinder motivieren und unterstützen. Aber die Hauptverantwortung für die Bildung liegt bei der Schule. Wir müssen starke Strukturen bieten, die alle Kinder erreichen, unabhängig vom Elternhaus.\nAylin: Ich denke, Eltern können eine noch aktivere Rolle spielen, wenn sie Zugang zu den Richtigen digitalen Lernmaterialien haben. Sie können ihre Kinder besser begleiten und sehen, welche Fortschritte sie machen. Das stärkt auch die Bindung.\nModerator: Wir haben nur noch wenig Zeit. Was ist Ihr Fazit?\nFelix: Wir brauchen eine gute Mischung. Digitale Tools können ergänzen, aber der Kern der Bildung bleibt der persönliche Austausch und die Gemeinschaft in der Schule.\nAylin: Ich sehe das Ähnlich. Es geht nicht darum, das eine durch das Andere zu ersetzen, sondern die besten Zutaten aus beiden Welten zu nehmen, um eine moderne und gerechte Bildung für alle zu schaffen.",
+          "matchCount": 0,
+          "matches": []
+        }
+      ]
+    },
+    {
+      "file": "lesen-t1-gemini-089.json",
+      "matchCount": 0,
+      "passages": [
+        {
+          "passageIndex": 0,
+          "textLength": 1204,
+          "text": "Ich wollte in meiner Freizeit endlich mehr Bewegung haben und habe mich deshalb bei einem Wanderverein in meiner Stadt angemeldet. Das war eine wirklich bereichernde Erfahrung für mich. Mein Nachbar ist ebenfalls sehr sportlich und hat mir den Tipp gegeben, diesen Verein zu besuchen. Unser festes Programm sieht vor, dass wir uns jeden zweiten Samstag treffen. Jeder Bewohner, der gerne in der Natur ist, kann bei uns mitmachen, ganz ohne Leistungsdruck. Meine Familie unterstützt mich bei diesem Hobby sehr und findet es gut, dass ich öfter an der frischen Luft bin. Ich besuche derzeit keinen speziellen Sportkurs, da wir uns in der Gruppe gegenseitig motivieren und Tipps zur Umgebung geben. Die Touren sind toll und helfen mir dabei, den Stress des Berufslebens zu vergessen. Ich habe durch die Gruppe bereits viele nette Leute kennengelernt und wir planen sogar eine größere Reise für das nächste Jahr. Ich fühle mich nach den Wanderungen viel besser und habe deutlich mehr Energie für meine tägliche Arbeit. Es ist schön zu sehen, dass man durch einfache Aktivitäten viel für seine Gesundheit tun kann. Ich bin froh, mich für diesen Schritt entschieden zu haben, da er mein Leben enorm bereichert.",
+          "matchCount": 0,
+          "matches": []
+        }
+      ]
+    },
+    {
+      "file": "lesen-t1-gemini-135.json",
+      "matchCount": 0,
+      "passages": [
+        {
+          "passageIndex": 0,
+          "textLength": 1347,
+          "text": "Ich engagiere mich seit einem Jahr in einem lokalen Projekt, das Kindern in unserer Stadt kostenlose Nachhilfe anbietet. Es ist eine tolle Organisation, die viel Unterstützung braucht. Meine Entscheidung, dort mitzumachen, war eine der Besten. Ich bin oft nach der Arbeit dort und helfe den Kindern bei den Hausaufgaben. Manchmal organisiere ich auch kleine Bastelstunden, um ihre Kreativität zu fördern. Es ist schön zu sehen, wie die Kinder Fortschritte machen. Letztes Wochenende haben wir ein kleines Fest für die Familien veranstaltet. Ich habe in der Küche geholfen, Brötchen gebacken und Obst geschnitten. Die Gemeinschaft ist mir sehr wichtig. Einmal gab es ein Problem mit Lärm, und die Polizei musste kurz kommen, aber alles hat sich schnell geklärt. Diese Erfahrung hat mein bisheriges Paradigma, wie man Probleme in der Stadt gemeinsam lösen kann, positiv beeinflusst. Ich habe gelernt, dass man mit Kommunikation viel erreichen kann. Ich habe auch einen kleinen Bericht über unsere Arbeit geschrieben und dabei besonders auf die Stilistik geachtet, damit er gut lesbar ist. Meine Erfahrungen hier sind sehr wertvoll und ich plane, noch lange dabei zu bleiben. Es ist nicht nur Arbeit, sondern auch meine Freizeit, die ich sinnvoll verbringe. Ich habe viele neue Nachbarn kennengelernt, und wir treffen uns auch außerhalb des Projekts.",
+          "matchCount": 0,
+          "matches": []
+        }
+      ]
+    },
+    {
+      "file": "lesen-t1-gemini-144.json",
+      "matchCount": 0,
+      "passages": [
+        {
+          "passageIndex": 0,
+          "textLength": 1184,
+          "text": "Ich habe vor ein paar Monaten eine neue Erfahrung gemacht: Ich arbeite ehrenamtlich in einem lokalen Verein. Es war eine spontane Entscheidung, aber eine sehr positive. Ich wollte meine Freizeit sinnvoll nutzen und etwas Neues lernen. Der Verein organisiert verschiedene Programme für Kinder und ältere Bewohner in unserer Stadt. Am Anfang war ich etwas unsicher, wie ich mich einbringen könnte, aber die Organisation hat mich super unterstützt. Ich helfe jetzt meistens bei der Hausaufgabenbetreuung für Schulkinder am Nachmittag und manchmal auch bei Ausflügen am Wochenende. Die Arbeit ist sehr erfüllend. Ich sehe, wie die Kinder Fortschritte machen, und das gibt mir ein gutes Gefühl. Manchmal bedarf es viel Geduld, aber die lachenden Gesichter sind die beste Belohnung. Ich habe auch viele nette Nachbarn kennengelernt, die ebenfalls ehrenamtlich aktiv sind. Wir tauschen uns oft über unsere Erfahrungen aus. Es ist schön, Teil einer solchen Gemeinschaft zu sein. Ich merke, wie ich wieder mehr Energie habe, obwohl ich oft müde bin nach der normalen Arbeit. Diese Tätigkeit bringt mich im Leben vorne und gibt mir eine neue Perspektive. Ich plane, noch lange dabei zu bleiben.",
+          "matchCount": 0,
+          "matches": []
+        }
+      ]
+    },
+    {
+      "file": "lesen-t3-auto-w8hk4n.json",
+      "skipped": true,
+      "reason": "no_passage_text",
+      "matchCount": 0,
+      "passages": []
+    },
+    {
+      "file": "lesen-t4-gemini-002.json",
+      "matchCount": 0,
+      "passages": [
+        {
+          "passageIndex": 0,
+          "textLength": 417,
+          "text": "In unserer Stadt gibt es einen neuen Vorschlag: Die Stadt soll mehr kostenlose Hobby-Kurse am Wochenende anbieten. Viele Bewohner finden, dass das die Freizeit-Angebote für Familien und Kinder verbessern könnte. Es gibt verschiedene Meinungen zu diesem Plan. Einige sehen viele Vorteile, andere haben Bedenken oder sehen Probleme. Lesen Sie die Kommentare und entscheiden Sie, ob die Person den Vorschlag unterstützt.",
+          "matchCount": 0,
+          "matches": []
+        }
+      ]
+    },
+    {
+      "file": "lesen-t4-gemini-003.json",
+      "matchCount": 0,
+      "passages": [
+        {
+          "passageIndex": 0,
+          "textLength": 417,
+          "text": "Die Stadtverwaltung diskutiert einen neuen Vorschlag: In den Stadtparks sollen kostenlose Fitnessgeräte für Training und Sport aufgestellt werden. Viele Bewohner und Besucher haben dazu eine Meinung. Es geht um die Nutzung öffentlicher Räume und die Förderung von Bewegung. Ist das eine gute Idee für unsere Gemeinde? Lesen Sie die verschiedenen Ansichten und entscheiden Sie, ob die Person den Vorschlag unterstützt.",
+          "matchCount": 0,
+          "matches": []
+        }
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-001.json",
+      "matchCount": 0,
+      "passages": [
+        {
+          "passageIndex": 0,
+          "textLength": 1703,
+          "text": "Liebe Mitarbeiterinnen und Mitarbeiter,\n\nUm einen angenehmen und reibungslosen Ablauf in unserer Mensa zu gewährleisten, bitten wir Sie, die folgenden Regeln zu beachten:\n\nÖffnungszeiten: Die Mensa ist montags bis freitags von 11:30 Uhr bis 14:00 Uhr für das Mittagessen geöffnet. Für Kaffee und kleine Snacks steht der Bereich von 8:00 Uhr bis 16:00 Uhr zur Verfügung.\n\nEssensausgabe: Das warme Mittagessen wird nur bis 13:45 Uhr ausgegeben. Bitte beachten Sie dies bei Ihrer Planung.\n\nVorbestellung: Für das Mittagessen ist eine Vorbestellung bis spätestens 9:00 Uhr am jeweiligen Tag über das Intranet-Portal notwendig. Ohne Vorbestellung kann die Verfügbarkeit nicht garantiert werden.\n\nBezahlung: Die Bezahlung erfolgt bargeldlos mit dem Firmenausweis. Ein Aufladen des Ausweises ist an der Kasse oder online möglich. Ein Guthaben von mindestens 5 Euro ist für die Nutzung erforderlich.\n\nGäste: Externe Gäste sind in unserer Mensa herzlich willkommen. Sie müssen sich jedoch am Empfang anmelden und erhalten dort einen temporären Gästeausweis. Die Kosten für Gäste sind 2 Euro höher pro Mahlzeit als für Mitarbeiter.\n\nHygiene und Ordnung: Bitte halten Sie Ihren Platz sauber. Tabletts und Geschirr müssen nach dem Essen sofort an die dafür vorgesehenen Rückgabestellen gebracht werden. Essensreste gehören in die dafür bereitgestellten Mülleimer.\n\nRuhebereich: Der hintere Bereich der Mensa ist als Ruhezone gedacht. Bitte vermeiden Sie dort laute Gespräche und Telefonate, um die Erholung der Kollegen nicht zu stören.\n\nSonderwünsche: Allergien oder spezielle Ernährungsbedürfnisse können bei der Vorbestellung vermerkt werden. Bitte informieren Sie das Küchenteam mindestens 24 Stunden im Voraus.",
+          "matchCount": 0,
+          "matches": []
+        }
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-003.json",
+      "matchCount": 2,
+      "passages": [
+        {
+          "passageIndex": 0,
+          "textLength": 1409,
+          "text": "1. Öffnungszeiten: Die Mensa ist montags bis freitags geöffnet. Das Mittagessen wird von 11:30 Uhr bis 14:00 Uhr ausgegeben. Für Kaffee, Getränke und kleine Snacks gibt es einen separaten Bereich, der von 8:00 Uhr bis 16:00 Uhr zugänglich ist. Am Wochenende bleibt die Mensa geschlossen.\n\n2. Essensbestellung und Bezahlung: Hauptgerichte müssen bis spätestens 10:00 Uhr am Vortag über das Online-Portal vorbestellt werden. Eine spontane Bestellung ist nur für vegetarische Gerichte möglich, solange der Vorrat reicht. Die Bezahlung ist nur bargeldlos mit MensaCard oder EC-Karte möglich. Studierende erhalten 20% Rabatt. Externe Gäste zahlen den vollen Preis und melden sich an der Kasse an.\n\n3. Ordnung und Sauberkeit: Tabletts und Geschirr müssen nach dem Essen umgehend zu den dafür vorgesehenen Rückgabestellen gebracht werden. Eigene Speisen und Getränke dürfen im Essbereich nicht verzehrt werden. Bitte nutzen Sie die Mülltrennung korrekt; Behälter für Restmüll, Bioabfälle und Wertstoffe stehen bereit.\n\n4. Ruhe: Im Essbereich ist eine ruhige Atmosphäre wichtig, besonders während der Prüfungszeiten. Laute Gespräche oder Musik sind nicht erlaubt.\n\n5. Besondere Anfragen: Für Gruppenreservierungen ab zehn Personen oder spezielle Ernährungsbedürfnisse (z.B. Allergien) ist eine frühzeitige Kontaktaufnahme mit der Mensa-Organisation notwendig. Bitte melden Sie sich mindestens drei Werktage im Voraus.",
+          "matchCount": 2,
+          "matches": [
+            {
+              "ruleId": "GERMAN_SPELLER_RULE",
+              "category": "TYPOS",
+              "issueType": "misspelling",
+              "message": "Möglicher Tippfehler gefunden.",
+              "shortMessage": "Rechtschreibfehler",
+              "offset": 555,
+              "length": 9,
+              "context": "...t. Die Bezahlung ist nur bargeldlos mit MensaCard oder EC-Karte möglich. Studierende erha...",
+              "contextOffset": 43,
+              "replacements": [
+                "Mensakarte"
+              ]
+            },
+            {
+              "ruleId": "EINHEIT_LEERZEICHEN",
+              "category": "PUNCTUATION",
+              "issueType": "typographical",
+              "message": "Vor Einheitenzeichen sollte ein Leerzeichen gesetzt werden.",
+              "shortMessage": null,
+              "offset": 609,
+              "length": 3,
+              "context": "... EC-Karte möglich. Studierende erhalten 20% Rabatt. Externe Gäste zahlen den vollen...",
+              "contextOffset": 43,
+              "replacements": [
+                "20 %"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-009.json",
+      "matchCount": 7,
+      "passages": [
+        {
+          "passageIndex": 0,
+          "textLength": 1449,
+          "text": "Liebe Gartenfreunde,\nfür ein gutes Miteinander in unserer sogenannten Gartenanlage bitten wir um Beachtung dieser Regeln:\n\n1.  Gartenpflege und Anbau: Jeder Garten muss regelmäßig gepflegt werden. Der Anbau von Obst und Gemüse ist erwünscht. Mindestens 60% der Fläche sollen für Anbau genutzt werden. Hohe Bäume, die Nachbargärten beschatten, sind nicht erlaubt.\n\n2.  Ruhezeiten: Die Ruhezeit ist werktags von 13:00 bis 15:00 Uhr und von 20:00 bis 7:00 Uhr. Sonntags und an Feiertagen gilt ganztägig Ruhe. Laute Maschinenarbeiten sind in diesen Zeiten streng untersagt.\n\n3.  Wasserverbrauch: Wasser ist wertvoll. Eine indirekte Bewässerung mit Sprinklern ist nur zwischen 22:00 Uhr und 6:00 Uhr erlaubt. Autos dürfen im Garten nicht gewaschen werden.\n\n4.  Müllentsorgung: Abfälle sind zu trennen und in den Containern zu entsorgen. Gartenabfälle wie Grünschnitt kommen auf den Gemeinschaftskompostplatz. Das Verbrennen von Gartenabfällen ist verboten.\n\n5.  Gemeinschaftsarbeit: Jedes Mitglied muss jährlich mindestens 8 Stunden Gemeinschaftsarbeit leisten. Termine stehen am schwarzen Brett. Wer nicht teilnehmen kann, muss sich 3 Tage vorher beim Vorstand melden. Ohne Abmeldung kostet Nichtteilnahme 15 Euro pro Stunde.\n\n6.  Pachtvertrag: Wer den Pachtvertrag kündigen möchte, muss dies schriftlich bis zum 30. September für das nächste Gartenjahr tun. Eine spätere Kündigung geht nur in Ausnahmefällen. Wir hoffen künftig auf gute Zusammenarbeit.",
+          "matchCount": 7,
+          "matches": [
+            {
+              "ruleId": "WHITESPACE_RULE",
+              "category": "TYPOGRAPHY",
+              "issueType": "whitespace",
+              "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+              "shortMessage": null,
+              "offset": 125,
+              "length": 2,
+              "context": "...tten wir um Beachtung dieser Regeln:  1.  Gartenpflege und Anbau: Jeder Garten mus...",
+              "contextOffset": 43,
+              "replacements": [
+                " "
+              ]
+            },
+            {
+              "ruleId": "EINHEIT_LEERZEICHEN",
+              "category": "PUNCTUATION",
+              "issueType": "typographical",
+              "message": "Vor Einheitenzeichen sollte ein Leerzeichen gesetzt werden.",
+              "shortMessage": null,
+              "offset": 253,
+              "length": 3,
+              "context": "...st und Gemüse ist erwünscht. Mindestens 60% der Fläche sollen für Anbau genutzt wer...",
+              "contextOffset": 43,
+              "replacements": [
+                "60 %"
+              ]
+            },
+            {
+              "ruleId": "WHITESPACE_RULE",
+              "category": "TYPOGRAPHY",
+              "issueType": "whitespace",
+              "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+              "shortMessage": null,
+              "offset": 366,
+              "length": 2,
+              "context": "...rten beschatten, sind nicht erlaubt.  2.  Ruhezeiten: Die Ruhezeit ist werktags vo...",
+              "contextOffset": 43,
+              "replacements": [
+                " "
+              ]
+            },
+            {
+              "ruleId": "WHITESPACE_RULE",
+              "category": "TYPOGRAPHY",
+              "issueType": "whitespace",
+              "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+              "shortMessage": null,
+              "offset": 573,
+              "length": 2,
+              "context": "...d in diesen Zeiten streng untersagt.  3.  Wasserverbrauch: Wasser ist wertvoll. Ei...",
+              "contextOffset": 43,
+              "replacements": [
+                " "
+              ]
+            },
+            {
+              "ruleId": "WHITESPACE_RULE",
+              "category": "TYPOGRAPHY",
+              "issueType": "whitespace",
+              "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+              "shortMessage": null,
+              "offset": 754,
+              "length": 2,
+              "context": "...en im Garten nicht gewaschen werden.  4.  Müllentsorgung: Abfälle sind zu trennen ...",
+              "contextOffset": 43,
+              "replacements": [
+                " "
+              ]
+            },
+            {
+              "ruleId": "WHITESPACE_RULE",
+              "category": "TYPOGRAPHY",
+              "issueType": "whitespace",
+              "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+              "shortMessage": null,
+              "offset": 955,
+              "length": 2,
+              "context": "...nen von Gartenabfällen ist verboten.  5.  Gemeinschaftsarbeit: Jedes Mitglied muss...",
+              "contextOffset": 43,
+              "replacements": [
+                " "
+              ]
+            },
+            {
+              "ruleId": "WHITESPACE_RULE",
+              "category": "TYPOGRAPHY",
+              "issueType": "whitespace",
+              "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+              "shortMessage": null,
+              "offset": 1225,
+              "length": 2,
+              "context": "...t Nichtteilnahme 15 Euro pro Stunde.  6.  Pachtvertrag: Wer den Pachtvertrag kündi...",
+              "contextOffset": 43,
+              "replacements": [
+                " "
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-022.json",
+      "matchCount": 8,
+      "passages": [
+        {
+          "passageIndex": 0,
+          "textLength": 1850,
+          "text": "Liebe Bewohnerinnen und Bewohner,\num unser Grünes Viertel umweltfreundlich zu gestalten und den Klimawandel zu bekämpfen, bitten wir Sie, folgende Regeln zu beachten:\n\n1.  Mülltrennung: Alle Abfälle müssen sorgfältig getrennt werden. Bioabfall kommt in die grüne Tonne, Papier in die Blaue und Plastik sowie Verpackungen in die gelbe Tonne. Restmüll gehört in die graue Tonne. Glas und Altmetall sind zu den Sammelstellen im Stadtteil zu bringen, die Öffnungszeiten sind Montag bis Freitag von 8 bis 18 Uhr und Samstag von 9 bis 14 Uhr.\n\n2.  Energie sparen: Bitte achten Sie auf den Energieverbrauch. Schalten Sie Licht aus, wenn Sie einen Raum verlassen, und ziehen Sie Ladegeräte aus der Steckdose. Die Heizung sollte in ungenutzten Räumen auf maximal 18 Grad Celsius eingestellt werden, um unnötige Kosten zu vermeiden und Naturschutz zu fördern.\n\n3.  Wasserverbrauch: Reduzieren Sie den Wasserverbrauch. Melden Sie tropfende Wasserhähne oder undichte Toiletten sofort der Hausverwaltung. Das Gießen von Pflanzen auf Balkonen ist nur mit Regenwasser oder gesammeltem Brauchwasser erlaubt, nicht mit frischem Trinkwasser.\n\n4.  Fahrradnutzung: Fördern Sie nachhaltigen Transport. Fahrräder sollen in den dafür vorgesehenen Fahrradkellern abgestellt werden, nicht im Hausflur. Für E-Bikes gibt es spezielle Ladestationen im Keller, die von 6 bis 22 Uhr genutzt werden können.\n\n5.  Gartenpflege: Unser Gemeinschaftsgarten wird ökologisch gepflegt. Bitte verwenden Sie keine chemischen Schädlingsbekämpfungsmittel. Kompostierbare Gartenabfälle können auf dem Komposthaufen hinter dem Spielplatz entsorgt werden.\n\n6.  Sonderabfälle: Batterien, Elektrogeräte und andere Sonderabfälle dürfen nicht im Hausmüll entsorgt werden. Bringen Sie diese zu den städtischen Recyclinghöfen. Informationen zu adressen und Öffnungszeiten finden Sie am schwarzen Brett.",
+          "matchCount": 8,
+          "matches": [
+            {
+              "ruleId": "DE_CASE",
+              "category": "CASING",
+              "issueType": "uncategorized",
+              "message": "Außer am Satzanfang werden nur Nomen und Eigennamen großgeschrieben.",
+              "shortMessage": null,
+              "offset": 43,
+              "length": 6,
+              "context": "...be Bewohnerinnen und Bewohner, um unser Grünes Viertel umweltfreundlich zu gestalten u...",
+              "contextOffset": 43,
+              "replacements": [
+                "grünes"
+              ]
+            },
+            {
+              "ruleId": "WHITESPACE_RULE",
+              "category": "TYPOGRAPHY",
+              "issueType": "whitespace",
+              "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+              "shortMessage": null,
+              "offset": 170,
+              "length": 2,
+              "context": "...ir Sie, folgende Regeln zu beachten:  1.  Mülltrennung: Alle Abfälle müssen sorgfä...",
+              "contextOffset": 43,
+              "replacements": [
+                " "
+              ]
+            },
+            {
+              "ruleId": "WHITESPACE_RULE",
+              "category": "TYPOGRAPHY",
+              "issueType": "whitespace",
+              "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+              "shortMessage": null,
+              "offset": 540,
+              "length": 2,
+              "context": "...18 Uhr und Samstag von 9 bis 14 Uhr.  2.  Energie sparen: Bitte achten Sie auf den...",
+              "contextOffset": 43,
+              "replacements": [
+                " "
+              ]
+            },
+            {
+              "ruleId": "WHITESPACE_RULE",
+              "category": "TYPOGRAPHY",
+              "issueType": "whitespace",
+              "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+              "shortMessage": null,
+              "offset": 853,
+              "length": 2,
+              "context": "...ermeiden und Naturschutz zu fördern.  3.  Wasserverbrauch: Reduzieren Sie den Wass...",
+              "contextOffset": 43,
+              "replacements": [
+                " "
+              ]
+            },
+            {
+              "ruleId": "WHITESPACE_RULE",
+              "category": "TYPOGRAPHY",
+              "issueType": "whitespace",
+              "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+              "shortMessage": null,
+              "offset": 1127,
+              "length": 2,
+              "context": "...ubt, nicht mit frischem Trinkwasser.  4.  Fahrradnutzung: Fördern Sie nachhaltigen...",
+              "contextOffset": 43,
+              "replacements": [
+                " "
+              ]
+            },
+            {
+              "ruleId": "WHITESPACE_RULE",
+              "category": "TYPOGRAPHY",
+              "issueType": "whitespace",
+              "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+              "shortMessage": null,
+              "offset": 1379,
+              "length": 2,
+              "context": "... 6 bis 22 Uhr genutzt werden können.  5.  Gartenpflege: Unser Gemeinschaftsgarten ...",
+              "contextOffset": 43,
+              "replacements": [
+                " "
+              ]
+            },
+            {
+              "ruleId": "WHITESPACE_RULE",
+              "category": "TYPOGRAPHY",
+              "issueType": "whitespace",
+              "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+              "shortMessage": null,
+              "offset": 1613,
+              "length": 2,
+              "context": "...nter dem Spielplatz entsorgt werden.  6.  Sonderabfälle: Batterien, Elektrogeräte ...",
+              "contextOffset": 43,
+              "replacements": [
+                " "
+              ]
+            },
+            {
+              "ruleId": "GERMAN_SPELLER_RULE",
+              "category": "TYPOS",
+              "issueType": "misspelling",
+              "message": "Möglicher Tippfehler gefunden.",
+              "shortMessage": "Rechtschreibfehler",
+              "offset": 1792,
+              "length": 8,
+              "context": "...ischen Recyclinghöfen. Informationen zu adressen und Öffnungszeiten finden Sie am schwar...",
+              "contextOffset": 43,
+              "replacements": [
+                "Adressen",
+                "stressen",
+                "dessen",
+                "Straßen",
+                "fressen"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-024.json",
+      "matchCount": 1,
+      "passages": [
+        {
+          "passageIndex": 0,
+          "textLength": 1729,
+          "text": "Liebe Bewohnerinnen und Bewohner,\n\num unser Wohnhaus und unsere Umwelt zu schützen, bitten wir Sie, die folgenden Regeln zu beachten. Gemeinsam können wir einen wichtigen Beitrag zum Klimaschutz leisten und den Energieverbrauch senken.\n\nMülltrennung: Bitte trennen Sie Ihren Müll sorgfältig. Papier, Plastik und Bioabfall gehören in die dafür vorgesehenen Behälter im Hof. Restmüll wird nur alle zwei Wochen abgeholt. Bitte beachten Sie die genauen Termine am schwarzen Brett. Größere Gegenstände wie alte Möbel oder Elektroschrott müssen Sie selbst zum Wertstoffhof bringen oder einen Termin für die Abholung vereinbaren.\n\nWassersparen: Achten Sie auf Ihren Wasserverbrauch. Duschen Sie kurz statt zu baden. Die Waschmaschine sollte immer voll beladen sein, um Wasser und Energie zu sparen. Für die Bewässerung der Gemeinschaftsgärten nutzen wir ausschließlich gesammeltes Regenwasser.\n\nEnergieeffizienz: Schalten Sie das Licht aus, wenn Sie einen Raum verlassen. Die Heizung sollte in den Wohnräumen nicht über 20 Grad Celsius eingestellt werden. Lüften Sie kurz und kräftig, anstatt die Fenster dauerhaft gekippt zu lassen. Überprüfen Sie alte Geräte auf ihren Energieverbrauch.\n\nnachhaltiger Transport: Fahrräder sind im Fahrradraum im Keller abzustellen, nicht im Treppenhaus oder vor den Eingängen. Wir empfehlen die Nutzung öffentlicher Verkehrsmittel oder des Fahrrads für kurze Wege, um den Ausstoß von Abgasen zu reduzieren.\n\nGrünflächenpflege: In den Gemeinschaftsgärten sind chemische Pflanzenschutzmittel streng verboten. Wir fördern den Anbau von heimischen Pflanzen, die weniger Wasser benötigen und Insekten unterstützen. Bitte helfen Sie mit, unsere Grünflächen sauber zu halten.\n\nVielen Dank für Ihre Mitarbeit!",
+          "matchCount": 1,
+          "matches": [
+            {
+              "ruleId": "UPPERCASE_SENTENCE_START",
+              "category": "CASING",
+              "issueType": "typographical",
+              "message": "Dieser Satz fängt nicht mit einem großgeschriebenen Wort an.",
+              "shortMessage": "Groß-/Kleinschreibung",
+              "offset": 1183,
+              "length": 12,
+              "context": "...lte Geräte auf ihren Energieverbrauch.  nachhaltiger Transport: Fahrräder sind im Fahrradrau...",
+              "contextOffset": 43,
+              "replacements": [
+                "Nachhaltiger"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-028.json",
+      "matchCount": 5,
+      "passages": [
+        {
+          "passageIndex": 0,
+          "textLength": 1808,
+          "text": "Liebe Bewohnerinnen und Bewohner,\nunsere Wohnanlage legt großen Wert auf Umweltschutz und Nachhaltigkeit. Bitte beachten Sie die folgenden Regeln, um gemeinsam einen Beitrag zum Klimaschutz zu leisten:\n\n1.  Mülltrennung: Trennen Sie Ihren Abfall sorgfältig. Bioabfälle gehören in die grüne Tonne, Papier und Karton in die blaue Tonne. Plastikverpackungen und Metall in die gelbe Tonne. Restmüll kommt in die graue Tonne. Glasflaschen und Altglas sind zu den öffentlichen Sammelcontainern zu bringen, die sich drei Gehminuten entfernt befinden. Die Abholung der gelben Tonne erfolgt alle zwei Wochen, die anderen Tonnen wöchentlich.\n\n2.  Energie sparen: Achten Sie auf Ihren Energieverbrauch. Reduzieren Sie die Heizung in Ihrer Wohnung nachts und bei längerer Abwesenheit auf maximal 18 Grad Celsius. Vermeiden Sie dauerhaft gekippte Fenster, besonders wenn die Heizung an ist. Schalten Sie Licht aus, wenn Sie einen Raum verlassen.\n\n3.  Wassersparen: Gehen Sie sparsam mit Wasser um. Kurze Duschzeiten von maximal fünf Minuten helfen, Wasser zu sparen. Melden Sie defekte Wasserhähne oder undichte Toiletten umgehend der Hausverwaltung, damit Reparaturen schnell erfolgen können.\n\n4.  Grünflächenpflege: Für unsere Gemeinschaftsgärten sind nur biologische Dünger erlaubt. Chemische Mittel sind streng verboten. Wir empfehlen, Regenwasser für die Bewässerung der Pflanzen zu sammeln. Ein Behälter steht im Hof bereit.\n\n5.  Umweltfreundlicher Transport: Nutzen Sie für kurze Wege das Fahrrad oder öffentliche Verkehrsmittel. Fahrradstellplätze finden Sie im überdachten Bereich des Hofes. Das Abstellen von Fahrrädern im Treppenhaus ist aus Sicherheitsgründen nicht gestattet.\n\nDiese Regeln tragen dazu bei, den Verbrauch von Ressourcen zu senken und unsere Umwelt zu schützen. Vielen Dank für Ihre Mitarbeit!",
+          "matchCount": 5,
+          "matches": [
+            {
+              "ruleId": "WHITESPACE_RULE",
+              "category": "TYPOGRAPHY",
+              "issueType": "whitespace",
+              "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+              "shortMessage": null,
+              "offset": 205,
+              "length": 2,
+              "context": "... Beitrag zum Klimaschutz zu leisten:  1.  Mülltrennung: Trennen Sie Ihren Abfall s...",
+              "contextOffset": 43,
+              "replacements": [
+                " "
+              ]
+            },
+            {
+              "ruleId": "WHITESPACE_RULE",
+              "category": "TYPOGRAPHY",
+              "issueType": "whitespace",
+              "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+              "shortMessage": null,
+              "offset": 635,
+              "length": 2,
+              "context": "...hen, die anderen Tonnen wöchentlich.  2.  Energie sparen: Achten Sie auf Ihren Ene...",
+              "contextOffset": 43,
+              "replacements": [
+                " "
+              ]
+            },
+            {
+              "ruleId": "WHITESPACE_RULE",
+              "category": "TYPOGRAPHY",
+              "issueType": "whitespace",
+              "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+              "shortMessage": null,
+              "offset": 936,
+              "length": 2,
+              "context": "... aus, wenn Sie einen Raum verlassen.  3.  Wassersparen: Gehen Sie sparsam mit Wass...",
+              "contextOffset": 43,
+              "replacements": [
+                " "
+              ]
+            },
+            {
+              "ruleId": "WHITESPACE_RULE",
+              "category": "TYPOGRAPHY",
+              "issueType": "whitespace",
+              "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+              "shortMessage": null,
+              "offset": 1184,
+              "length": 2,
+              "context": "...Reparaturen schnell erfolgen können.  4.  Grünflächenpflege: Für unsere Gemeinscha...",
+              "contextOffset": 43,
+              "replacements": [
+                " "
+              ]
+            },
+            {
+              "ruleId": "WHITESPACE_RULE",
+              "category": "TYPOGRAPHY",
+              "issueType": "whitespace",
+              "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+              "shortMessage": null,
+              "offset": 1421,
+              "length": 2,
+              "context": "...n. Ein Behälter steht im Hof bereit.  5.  Umweltfreundlicher Transport: Nutzen Sie...",
+              "contextOffset": 43,
+              "replacements": [
+                " "
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-030.json",
+      "matchCount": 6,
+      "passages": [
+        {
+          "passageIndex": 0,
+          "textLength": 1484,
+          "text": "Liebe Bewohnerinnen und Bewohner,\nfür ein nachhaltiges Zusammenleben bitten wir Sie, folgende Regeln zu beachten:\n\n1.  Mülltrennung: Trennen Sie Müll sorgfältig: Bioabfälle in die grüne, Papier in die blaue, Plastik in die Gelbe und Restmüll in die graue Tonne. Glas und Altmetall bringen Sie zu den Sammelcontainern an der Hauptstraße, zugänglich von 8:00 bis 20:00 Uhr. Falsche Trennung kann kosten Verursachen.\n\n2.  Energie sparen: Schalten Sie Licht in Gemeinschaftsräumen wie Treppenhaus oder Keller aus. Lassen Sie Fenster im Winter nicht lange offen, um Heizenergie zu sparen. Die Heizung in ungenutzten Räumen sollte maximal 18 Grad Celsius betragen.\n\n3.  Wasserverbrauch: Nutzen Sie Wasser sparsam. Melden Sie tropfende Hähne oder undichte Toiletten der Hausverwaltung (telefonisch 030-1234567, 9:00-17:00 Uhr). Das Waschen von Autos auf Parkplätzen ist nicht erlaubt, um den Naturschutz zu unterstützen.\n\n4.  Fahrradnutzung: Nutzen Sie Fahrräder. Ein abschließbarer Fahrradraum im Keller ist vorhanden. Stellen Sie Fahrräder nicht im Treppenhaus ab. Für E-Bikes gibt es dort drei kostenlose Ladestationen, nutzbar von 7:00 bis 22:00 Uhr.\n\n5.  Gartenpflege: Pflanzen Sie keine eigenen Pflanzen ohne Absprache mit der Hausverwaltung. Das Gießen der Gemeinschaftsbeete ist von Mai bis September mit Regenwasser aus den Tonnen erlaubt.\n\n6.  Ruhezeiten: Laute Arbeiten oder Partys sind nach 22:00 Uhr und vor 7:00 Uhr nicht gestattet. Am Sonntag gilt die Ruhezeit den ganzen Tag.",
+          "matchCount": 6,
+          "matches": [
+            {
+              "ruleId": "WHITESPACE_RULE",
+              "category": "TYPOGRAPHY",
+              "issueType": "whitespace",
+              "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+              "shortMessage": null,
+              "offset": 117,
+              "length": 2,
+              "context": "...ir Sie, folgende Regeln zu beachten:  1.  Mülltrennung: Trennen Sie Müll sorgfälti...",
+              "contextOffset": 43,
+              "replacements": [
+                " "
+              ]
+            },
+            {
+              "ruleId": "WHITESPACE_RULE",
+              "category": "TYPOGRAPHY",
+              "issueType": "whitespace",
+              "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+              "shortMessage": null,
+              "offset": 417,
+              "length": 2,
+              "context": "...he Trennung kann kosten Verursachen.  2.  Energie sparen: Schalten Sie Licht in Ge...",
+              "contextOffset": 43,
+              "replacements": [
+                " "
+              ]
+            },
+            {
+              "ruleId": "WHITESPACE_RULE",
+              "category": "TYPOGRAPHY",
+              "issueType": "whitespace",
+              "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+              "shortMessage": null,
+              "offset": 662,
+              "length": 2,
+              "context": "...te maximal 18 Grad Celsius betragen.  3.  Wasserverbrauch: Nutzen Sie Wasser spars...",
+              "contextOffset": 43,
+              "replacements": [
+                " "
+              ]
+            },
+            {
+              "ruleId": "WHITESPACE_RULE",
+              "category": "TYPOGRAPHY",
+              "issueType": "whitespace",
+              "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+              "shortMessage": null,
+              "offset": 917,
+              "length": 2,
+              "context": "... um den Naturschutz zu unterstützen.  4.  Fahrradnutzung: Nutzen Sie Fahrräder. Ei...",
+              "contextOffset": 43,
+              "replacements": [
+                " "
+              ]
+            },
+            {
+              "ruleId": "WHITESPACE_RULE",
+              "category": "TYPOGRAPHY",
+              "issueType": "whitespace",
+              "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+              "shortMessage": null,
+              "offset": 1151,
+              "length": 2,
+              "context": "...nen, nutzbar von 7:00 bis 22:00 Uhr.  5.  Gartenpflege: Pflanzen Sie keine eigenen...",
+              "contextOffset": 43,
+              "replacements": [
+                " "
+              ]
+            },
+            {
+              "ruleId": "WHITESPACE_RULE",
+              "category": "TYPOGRAPHY",
+              "issueType": "whitespace",
+              "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+              "shortMessage": null,
+              "offset": 1345,
+              "length": 2,
+              "context": "... Regenwasser aus den Tonnen erlaubt.  6.  Ruhezeiten: Laute Arbeiten oder Partys s...",
+              "contextOffset": 43,
+              "replacements": [
+                " "
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-037.json",
+      "matchCount": 6,
+      "passages": [
+        {
+          "passageIndex": 0,
+          "textLength": 1733,
+          "text": "Liebe Bewohnerinnen und Bewohner,\num unser Grünes Viertel auch in Zukunft lebenswert zu erhalten und einen Beitrag zum Naturschutz zu leisten, bitten wir Sie, folgende Regeln zu beachten. Gemeinsam können wir den Klimawandel positiv beeinflussen und Energie sparen.\n\n1.  Mülltrennung: Bitte trennen Sie Ihren Müll sorgfältig. Für Plastik und Verpackungen gibt es gelbe Tonnen, für Papier und Karton blaue Tonnen. Biomüll gehört in die grüne Tonne. Restmüll wird in den grauen Tonnen gesammelt. Die Abholung für Plastik und Biomüll findet jeden Dienstag statt, für Papier einmal im Monat am ersten Montag. Sperrmüll muss selbst bei der Wertstoffannahmestelle abgegeben werden oder Sie vereinbaren einen Termin mit der Hausverwaltung, mindestens drei Werktage im Voraus.\n\n2.  Energieverbrauch: Achten Sie darauf, Licht in ungenutzten Räumen auszuschalten. Die Heizung sollte in Abwesenheit nicht über 18 Grad Celsius eingestellt sein, um unnötigen Energieverbrauch zu vermeiden. Erneuerbare Energien werden in unserer Anlage durch Solarpanels auf dem Dach unterstützt.\n\n3.  Wasser sparen: Vermeiden Sie unnötigen Wasserverbrauch. Duschen ist dem Baden vorzuziehen. Für die Gartenbewässerung der Gemeinschaftsflächen bitten wir Sie, Regenwasser aus den dafür vorgesehenen Tonnen zu nutzen.\n\n4.  Fahrräder: Nutzen Sie Fahrräder für kurze Wege. Abstellplätze finden Sie im Fahrradkeller. Das Abstellen im Hausflur ist aus Sicherheitsgründen nicht erlaubt.\n\n5.  Grünflächen: Die Nutzung von chemischen Pflanzenschutzmitteln ist in den Gemeinschaftsgärten verboten. Organische Abfälle aus dem Garten können auf dem Komposthaufen hinter dem Gebäude entsorgt werden.\n\nVielen Dank für Ihre Mitarbeit und Ihr Engagement für eine bessere Umwelt.",
+          "matchCount": 6,
+          "matches": [
+            {
+              "ruleId": "DE_CASE",
+              "category": "CASING",
+              "issueType": "uncategorized",
+              "message": "Außer am Satzanfang werden nur Nomen und Eigennamen großgeschrieben.",
+              "shortMessage": null,
+              "offset": 43,
+              "length": 6,
+              "context": "...be Bewohnerinnen und Bewohner, um unser Grünes Viertel auch in Zukunft lebenswert zu e...",
+              "contextOffset": 43,
+              "replacements": [
+                "grünes"
+              ]
+            },
+            {
+              "ruleId": "WHITESPACE_RULE",
+              "category": "TYPOGRAPHY",
+              "issueType": "whitespace",
+              "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+              "shortMessage": null,
+              "offset": 269,
+              "length": 2,
+              "context": "...tiv beeinflussen und Energie sparen.  1.  Mülltrennung: Bitte trennen Sie Ihren Mü...",
+              "contextOffset": 43,
+              "replacements": [
+                " "
+              ]
+            },
+            {
+              "ruleId": "WHITESPACE_RULE",
+              "category": "TYPOGRAPHY",
+              "issueType": "whitespace",
+              "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+              "shortMessage": null,
+              "offset": 772,
+              "length": 2,
+              "context": "... mindestens drei Werktage im Voraus.  2.  Energieverbrauch: Achten Sie darauf, Lic...",
+              "contextOffset": 43,
+              "replacements": [
+                " "
+              ]
+            },
+            {
+              "ruleId": "WHITESPACE_RULE",
+              "category": "TYPOGRAPHY",
+              "issueType": "whitespace",
+              "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+              "shortMessage": null,
+              "offset": 1070,
+              "length": 2,
+              "context": "...olarpanels auf dem Dach unterstützt.  3.  Wasser sparen: Vermeiden Sie unnötigen W...",
+              "contextOffset": 43,
+              "replacements": [
+                " "
+              ]
+            },
+            {
+              "ruleId": "WHITESPACE_RULE",
+              "category": "TYPOGRAPHY",
+              "issueType": "whitespace",
+              "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+              "shortMessage": null,
+              "offset": 1290,
+              "length": 2,
+              "context": "...dafür vorgesehenen Tonnen zu nutzen.  4.  Fahrräder: Nutzen Sie Fahrräder für kurz...",
+              "contextOffset": 43,
+              "replacements": [
+                " "
+              ]
+            },
+            {
+              "ruleId": "WHITESPACE_RULE",
+              "category": "TYPOGRAPHY",
+              "issueType": "whitespace",
+              "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+              "shortMessage": null,
+              "offset": 1454,
+              "length": 2,
+              "context": "...us Sicherheitsgründen nicht erlaubt.  5.  Grünflächen: Die Nutzung von chemischen ...",
+              "contextOffset": 43,
+              "replacements": [
+                " "
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-063.json",
+      "matchCount": 6,
+      "passages": [
+        {
+          "passageIndex": 0,
+          "textLength": 1620,
+          "text": "Liebe Mitglieder,\num ein angenehmes Training für alle zu gewährleisten, bitten wir Sie, folgende Regeln zu beachten:\n\n1.  Mitgliedschaft und Zugang: Der Zutritt zu den Sportanlagen ist nur mit einer gültigen Mitgliedskarte möglich. Gäste können nach vorheriger Anmeldung und Zahlung einer Tagesgebühr von 10 Euro teilnehmen. Kinder unter 14 Jahren dürfen die Fitnessräume nur in Begleitung eines Erwachsenen nutzen.\n2.  Hallen- und Gerätenutzung: Die Sportgeräte müssen nach Gebrauch gereinigt werden. Sportschuhe sind in allen Hallen Pflicht. Die Nutzung der großen Sporthalle für freies Training ist nur außerhalb der Kurszeiten erlaubt. Den aktuellen Kursplan finden Sie an der Information und online.\n3.  Umkleiden und Schließfächer: persönliche Gegenstände sind in den Schließfächern aufzubewahren. Bitte leeren Sie Ihr Schließfach nach jedem Besuch. Für verlorene Schlüssel wird eine Gebühr von 15 Euro erhoben. Der Verein übernimmt keine Haftung für Wertgegenstände.\n4.  Sauna und Wellnessbereich: Der Saunabereich ist täglich von 16:00 bis 22:00 Uhr geöffnet. Am Wochenende beginnt die Öffnungszeit bereits um 10:00 Uhr. Kinder unter 16 Jahren haben keinen Zutritt zum Saunabereich.\n5.  Kursanmeldung: Für alle Kurse ist eine vorherige Anmeldung erforderlich. Dies kann online oder direkt an der Rezeption erfolgen. Eine Abmeldung muss mindestens 24 Stunden vor Kursbeginn stattfinden, sonst wird die Kursgebühr berechnet.\n6.  Ruhezeiten: In allen Bereichen des Vereins ist auf die Ruhe der anderen Mitglieder Rücksicht zu nehmen, besonders in den Umkleiden und im Wellnessbereich. Laute Musik ist nicht erlaubt.",
+          "matchCount": 6,
+          "matches": [
+            {
+              "ruleId": "WHITESPACE_RULE",
+              "category": "TYPOGRAPHY",
+              "issueType": "whitespace",
+              "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+              "shortMessage": null,
+              "offset": 120,
+              "length": 2,
+              "context": "...ir Sie, folgende Regeln zu beachten:  1.  Mitgliedschaft und Zugang: Der Zutritt z...",
+              "contextOffset": 43,
+              "replacements": [
+                " "
+              ]
+            },
+            {
+              "ruleId": "WHITESPACE_RULE",
+              "category": "TYPOGRAPHY",
+              "issueType": "whitespace",
+              "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+              "shortMessage": null,
+              "offset": 418,
+              "length": 2,
+              "context": "... Begleitung eines Erwachsenen nutzen. 2.  Hallen- und Gerätenutzung: Die Sportgerä...",
+              "contextOffset": 43,
+              "replacements": [
+                " "
+              ]
+            },
+            {
+              "ruleId": "WHITESPACE_RULE",
+              "category": "TYPOGRAPHY",
+              "issueType": "whitespace",
+              "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+              "shortMessage": null,
+              "offset": 707,
+              "length": 2,
+              "context": "...en Sie an der Information und online. 3.  Umkleiden und Schließfächer: persönliche...",
+              "contextOffset": 43,
+              "replacements": [
+                " "
+              ]
+            },
+            {
+              "ruleId": "WHITESPACE_RULE",
+              "category": "TYPOGRAPHY",
+              "issueType": "whitespace",
+              "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+              "shortMessage": null,
+              "offset": 976,
+              "length": 2,
+              "context": "...mt keine Haftung für Wertgegenstände. 4.  Sauna und Wellnessbereich: Der Saunabere...",
+              "contextOffset": 43,
+              "replacements": [
+                " "
+              ]
+            },
+            {
+              "ruleId": "WHITESPACE_RULE",
+              "category": "TYPOGRAPHY",
+              "issueType": "whitespace",
+              "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+              "shortMessage": null,
+              "offset": 1193,
+              "length": 2,
+              "context": "...aben keinen Zutritt zum Saunabereich. 5.  Kursanmeldung: Für alle Kurse ist eine v...",
+              "contextOffset": 43,
+              "replacements": [
+                " "
+              ]
+            },
+            {
+              "ruleId": "WHITESPACE_RULE",
+              "category": "TYPOGRAPHY",
+              "issueType": "whitespace",
+              "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+              "shortMessage": null,
+              "offset": 1433,
+              "length": 2,
+              "context": "... sonst wird die Kursgebühr berechnet. 6.  Ruhezeiten: In allen Bereichen des Verei...",
+              "contextOffset": 43,
+              "replacements": [
+                " "
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

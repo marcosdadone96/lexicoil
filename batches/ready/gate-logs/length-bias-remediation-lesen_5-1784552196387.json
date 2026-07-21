@@ -1,0 +1,73 @@
+{
+  "generatedAt": "2026-07-20T12:56:36.388Z",
+  "dryRun": false,
+  "cells": [
+    "lesen_5"
+  ],
+  "results": [
+    {
+      "file": "lesen-t5-gemini-024.json",
+      "cell": "lesen_5",
+      "phase": "stamp-only",
+      "outcome": "reclassified_to_llm",
+      "stillBad": [
+        {
+          "id": "gen-q-5-7c35a128-1",
+          "detail": "gen-q-5-7c35a128-1: sesgo de longitud MCQ (B1) — opción correcta «b» es la más larga (123 vs 113/112; Δ +11 chars, +9% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable."
+        },
+        {
+          "id": "gen-q-5-7c35a128-2",
+          "detail": "gen-q-5-7c35a128-2: sesgo de longitud MCQ (B1) — opción correcta «c» es la más larga (70 vs 59/60; Δ +11 chars, +18% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable."
+        }
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-009.json",
+      "cell": "lesen_5",
+      "phase": "llm",
+      "outcome": "partial-still-quarantined",
+      "costUsd": 0.0022611,
+      "officialReady": false,
+      "partGate": {
+        "ok": false,
+        "issue": "Sustantivo en minúscula: \"indirekte\" (tras artículo/conjunción). En alemán los sustantivos van en mayúscula. Contexto: \"...ch: Wasser ist wertvoll. Eine indirekte Bewässerung mit Sprinklern is...\""
+      }
+    },
+    {
+      "file": "lesen-t5-gemini-014.json",
+      "cell": "lesen_5",
+      "phase": "llm",
+      "outcome": "partial-still-quarantined",
+      "costUsd": 0.0006397,
+      "officialReady": false,
+      "partGate": {
+        "ok": false,
+        "issue": "Explanation demasiado corta (9 palabras): \"Die maximale Parkdauer vor dem Zentrum beträgt drei Stunden.\". Mínimo: 10 para tipo multiple_choice."
+      }
+    },
+    {
+      "file": "lesen-t5-gemini-015.json",
+      "cell": "lesen_5",
+      "phase": "llm",
+      "outcome": "partial-still-quarantined",
+      "costUsd": 0.0036848000000000002,
+      "officialReady": false,
+      "partGate": {
+        "ok": true
+      }
+    },
+    {
+      "file": "lesen-t5-gemini-028.json",
+      "cell": "lesen_5",
+      "phase": "llm",
+      "outcome": "partial-still-quarantined",
+      "costUsd": 0.0012376,
+      "officialReady": false,
+      "partGate": {
+        "ok": true
+      }
+    }
+  ],
+  "totalCostUsd": 0.0078232,
+  "officialReadyCount": 0
+}

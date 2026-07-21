@@ -1,7 +1,7 @@
 // ═══════════════════════════════════════════
 // NAVIGATION
 // ═══════════════════════════════════════════
-const SCREENS=['homeScreen','goalWorkspaceScreen','examConfigScreen','oralPracticeScreen','profileSetupScreen','loadingScreen','examScreen','resultsScreen','mistakeReviewScreen','flashcardScreen','vocabExamScreen','horenGameScreen','grammarScreen'];
+const SCREENS=['homeScreen','goalWorkspaceScreen','examConfigScreen','oralPracticeScreen','profileSetupScreen','loadingScreen','examScreen','resultsScreen','mistakeReviewScreen','flashcardScreen','vocabExamScreen','vocabPhrasesScreen','horenGameScreen','grammarScreen'];
 function getActiveScreenId(){
   for(const id of SCREENS){
     const el=document.getElementById(id);
@@ -131,5 +131,4 @@ function goHistory(){
 }
 function setExamMode(m){
   S.mode=normalizeMode(m);
-  if(S.mode==='practice')S.vocabLang=vocabLangFor(S.subject);
 }

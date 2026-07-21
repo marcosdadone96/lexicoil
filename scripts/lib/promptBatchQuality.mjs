@@ -4,6 +4,21 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { ROOT } from './loadEnv.mjs';
+import { inferTeilFromQuestionId } from './normalizeBatch.mjs';
+
+/** Resolve question for Sprechen/Schreiben quality checks (3 Teile per batch). */
+export function resolveExamQuestion(qs, teil, module) {
+  const t = Number(teil);
+  const mod = String(module || '').toLowerCase();
+  const byField = qs.find((x) => Number(x.teil) === t);
+  if (byField) return byField;
+  if (mod === 'sprechen' || mod === 'schreiben') {
+    const byId = qs.find((x) => inferTeilFromQuestionId(x.id) === t);
+    if (byId) return byId;
+    if (qs.length === 3 && t >= 1 && t <= 3) return qs[t - 1];
+  }
+  return qs[0];
+}
 
 function normalizeText(s) {
   return String(s || '')
@@ -72,7 +87,58 @@ function countArgumentPrompts(text) {
   return n;
 }
 
+import { findUnresolvedSchreibenPlaceholders } from './schreibenPlaceholderGate.mjs';
+
+function checkSchreibenPlaceholders(text, teil, issues) {
+  const hits = findUnresolvedSchreibenPlaceholders(text);
+  if (hits.length) {
+    issues.push(
+      `Schreiben T${teil}: placeholder sin resolver (${hits.slice(0, 2).join(', ')}) — sin corchetes [Name…]; el alumno escribe Anrede/Gruß`,
+    );
+  }
+}
+
+function checkSchreibenA2Teil1(text, issues) {
+  checkSchreibenPlaceholders(text, 1, issues);
+  if (!hasWordTarget(text, 40) && !/\b20\b/.test(text) && !/\b30\b/.test(text)) {
+    issues.push('Schreiben A2 T1: falta objetivo 20–30 Wörter');
+  }
+  if (/\bSMS\b/i.test(text) === false && !/kurz.*nachricht/i.test(text)) {
+    issues.push('Schreiben A2 T1: debe indicar SMS');
+  }
+  if (countBulletPoints(text) < 2 && !/\b(?:drei|3)\s+punkte\b/i.test(text)) {
+    issues.push('Schreiben A2 T1: se esperan 3 puntos concretos');
+  }
+  if (/\bForum|Forumpost\b/i.test(text)) {
+    issues.push('Schreiben A2 T1: PROHIBIDO formato Forum');
+  }
+}
+
+function checkSchreibenA2Teil2(text, issues) {
+  checkSchreibenPlaceholders(text, 2, issues);
+  if (!/\bChef\b/i.test(text)) {
+    issues.push('Schreiben A2 T2: falta destinatario «Chef» (E-Mail semiformal oficial)');
+  }
+  if (!hasWordTarget(text, 40) && !/\b30\b/.test(text)) {
+    issues.push('Schreiben A2 T2: falta objetivo 30–40 Wörter');
+  }
+  if (/\bForum|Forumsbeitrag|Internetforum|Forumthema|Meinung zu\b/i.test(text)) {
+    issues.push('Schreiben A2 T2: formato Forum detectado (debe ser E-Mail al Chef)');
+  }
+  const bullets =
+    (/\bbedank/i.test(text) ? 1 : 0) +
+    (/\bkommen\b|\bmitbringen\b|\bbegleit/i.test(text) ? 1 : 0) +
+    (/\bweg\b|\banfahrt\b|\banreise\b|\bkomme ich\b/i.test(text) ? 1 : 0);
+  if (bullets < 2 && countBulletPoints(text) < 3) {
+    issues.push('Schreiben A2 T2: deben pedirse Dank + Zusage/Begleitung + Wegfrage');
+  }
+  if (!hasFormalSie(text)) {
+    issues.push('Schreiben A2 T2: registro semiformal con Sie ausente');
+  }
+}
+
 function checkSchreibenTeil1(text, issues) {
+  checkSchreibenPlaceholders(text, 1, issues);
   if (!hasWordTarget(text, 80)) {
     issues.push('Schreiben T1: falta objetivo de palabras (circa/ca. 80 Wörter)');
   }
@@ -88,6 +154,7 @@ function checkSchreibenTeil1(text, issues) {
 }
 
 function checkSchreibenTeil2(text, issues) {
+  checkSchreibenPlaceholders(text, 2, issues);
   if (!hasWordTarget(text, 80) && !/\b80\b/.test(text)) {
     issues.push('Schreiben T2: falta objetivo de palabras (~80)');
   }
@@ -124,6 +191,7 @@ function hasInstitutionalAddress(text) {
 }
 
 function checkSchreibenTeil3(text, issues, warnings) {
+  checkSchreibenPlaceholders(text, 3, issues);
   if (!hasWordTarget(text, 40) && !/\b40\b/.test(text)) {
     issues.push('Schreiben T3: falta objetivo de palabras (~40 Wörter)');
   }
@@ -153,6 +221,58 @@ function checkSchreibenTeil3(text, issues, warnings) {
   // Warn about register mixing (but don't fail — it may be intentional in edge cases)
   if (hasInformal && hasFormal) {
     warnings.push('Schreiben T3: mezcla de registro informal (du) y formal (Sie) — mantén uno coherente');
+  }
+}
+
+function checkGermanBasics(text, issues, level = 'B1') {
+  const lv = String(level || 'B1').toUpperCase();
+  const hint = lv === 'A2' ? /Planen|schreiben|Frage|Karte/i : /\b(und|der|die|Sie|schreiben|Planen)\b/i;
+  if (!/[äöüßÄÖÜ]/.test(text) && !hint.test(text)) {
+    issues.push(`Texto no parece alemán ${lv} (falta léxico alemán básico)`);
+  }
+}
+
+function checkSprechenA2Teil1(text, issues) {
+  const hasCards =
+    /geburtstag/i.test(text) &&
+    /wohnort|wohnen/i.test(text) &&
+    /beruf|arbeit/i.test(text) &&
+    /hobby|freizeit/i.test(text);
+  if (!hasCards) {
+    issues.push('Sprechen A2 T1: faltan las 4 Karten (Geburtstag, Wohnort, Beruf, Hobby)');
+  }
+  const hasPairwise =
+    /\bvier\b.*\bfrage/i.test(text) ||
+    (/frage/i.test(text) && /partner/i.test(text) && /antwort/i.test(text));
+  if (!hasPairwise) {
+    issues.push('Sprechen A2 T1: falta instrucción paarweise (4 Fragen + respuestas)');
+  }
+  if (/\bpr[äa]sentation\b|\bfeedback\b|\bplanungsaufgabe\b/i.test(text)) {
+    issues.push('Sprechen A2 T1: contiene formato B1 (Präsentation/Feedback/Planungsaufgabe)');
+  }
+}
+
+function checkSprechenA2Teil2(text, issues) {
+  const hasCard = /\bkarte\b/i.test(text) || /«[^»]+»/.test(text) || /„[^"]+"/.test(text);
+  const hasErzaehlen = /\berzählen\b/i.test(text) || /\berzaehlen\b/i.test(text);
+  if (!hasCard) issues.push('Sprechen A2 T2: falta Karte temática');
+  if (!hasErzaehlen) issues.push('Sprechen A2 T2: falta instrucción «erzählen» (monólogo A2)');
+  if (/\bpr[äa]sentation\b/i.test(text) && /\b5\b|einleitung|vor- und nachteil/i.test(text)) {
+    issues.push('Sprechen A2 T2: estructura B1 Präsentation detectada');
+  }
+}
+
+function checkSprechenA2Teil3(text, issues) {
+  const hasPlan =
+    /\bplanen\b|\bgemeinsam\b|\btermin\b|\beinigen\b/i.test(text);
+  const hasAgenda =
+    (/montag|dienstag|mittwoch|donnerstag|freitag/i.test(text) &&
+      (/uhr|:\d{2}/i.test(text) || /\d{1,2}[-–]\d{1,2}/.test(text))) ||
+    /woche.*partner/i.test(text);
+  if (!hasPlan) issues.push('Sprechen A2 T3: falta instrucción de planificar juntos / Termin');
+  if (!hasAgenda) issues.push('Sprechen A2 T3: faltan dos agendas/Wochenpläne con horarios');
+  if (/\bfeedback\b|\br[üu]ckmeldung\b|\bpr[äa]sentation\b.*teil\s*2/i.test(text)) {
+    issues.push('Sprechen A2 T3: contiene Feedback B1 (debe ser plan_together A2)');
   }
 }
 
@@ -256,9 +376,7 @@ function checkDuplicatePrompt(text, module, lang, level, issues, warnings) {
 }
 
 function checkGermanB1Basics(text, issues) {
-  if (!/[äöüßÄÖÜ]/.test(text) && !/\b(und|der|die|Sie|schreiben|Planen)\b/i.test(text)) {
-    issues.push('Texto no parece alemán B1 (falta léxico alemán básico)');
-  }
+  checkGermanBasics(text, issues, 'B1');
 }
 
 /**
@@ -272,6 +390,7 @@ export function checkPromptBatchQuality(batch, module, teil, opts = {}) {
   const warnings = [];
   const lang = opts.lang || 'de';
   const level = opts.level || 'B1';
+  const lv = String(level).toUpperCase();
   const t = Number(teil);
   const mod = String(module || '').toLowerCase();
 
@@ -280,16 +399,20 @@ export function checkPromptBatchQuality(batch, module, teil, opts = {}) {
     return { ok: false, issues: ['Batch sin preguntas del módulo'], warnings: [], scoreEstimate: 0 };
   }
 
-  const q = qs.find((x) => Number(x.teil) === t) || qs[0];
+  const q = resolveExamQuestion(qs, t, mod);
   const text = String(q.question || '').trim();
   if (!text) {
     return { ok: false, issues: ['Pregunta/consigna vacía'], warnings: [], scoreEstimate: 0 };
   }
 
-  checkGermanB1Basics(text, issues);
+  checkGermanBasics(text, issues, level);
 
   if (mod === 'schreiben') {
-    if (t === 1) checkSchreibenTeil1(text, issues);
+    if (lv === 'A2') {
+      if (t === 1) checkSchreibenA2Teil1(text, issues);
+      else if (t === 2) checkSchreibenA2Teil2(text, issues);
+      else issues.push(`Schreiben A2: Teil ${t} no soportado (usa 1–2)`);
+    } else if (t === 1) checkSchreibenTeil1(text, issues);
     else if (t === 2) checkSchreibenTeil2(text, issues);
     else if (t === 3) {
       checkSchreibenTeil3(text, issues, warnings);
@@ -309,7 +432,12 @@ export function checkPromptBatchQuality(batch, module, teil, opts = {}) {
     }
     else issues.push(`Schreiben: Teil ${t} no soportado (usa 1–3)`);
   } else if (mod === 'sprechen') {
-    if (t === 1) checkSprechenTeil1(text, issues);
+    if (lv === 'A2') {
+      if (t === 1) checkSprechenA2Teil1(text, issues);
+      else if (t === 2) checkSprechenA2Teil2(text, issues);
+      else if (t === 3) checkSprechenA2Teil3(text, issues);
+      else issues.push(`Sprechen A2: Teil ${t} no soportado (usa 1–3)`);
+    } else if (t === 1) checkSprechenTeil1(text, issues);
     else if (t === 2) checkSprechenTeil2(text, issues);
     else if (t === 3) checkSprechenTeil3(text, issues);
     else issues.push(`Sprechen: Teil ${t} no soportado (usa 1–3)`);

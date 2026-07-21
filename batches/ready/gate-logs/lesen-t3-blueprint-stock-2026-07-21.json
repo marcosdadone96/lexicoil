@@ -1,0 +1,274 @@
+{
+  "scannedAt": "2026-07-21T08:58:28.896Z",
+  "passingBlueprints": 20,
+  "poolVerifiedSlugs": {
+    "bp-mobilitaet-reisen": 1,
+    "bp-musik": 2,
+    "bp-sport": 1,
+    "bp-dienstleistungen": 1,
+    "bp-sprachen2": 1,
+    "bp-freizeit-garten": 2,
+    "bp-koffer-brille": 1,
+    "bp-moebel-it": 1,
+    "bp-elektronik": 1,
+    "bp-fahrzeugteile": 1,
+    "bp-buero": 1,
+    "bp-haushalt-technik": 1,
+    "bp-familie": 1,
+    "bp-umwelt": 1
+  },
+  "sharedMoldFamilyInPool": [
+    {
+      "file": "lesen-t3-gemini-006.json",
+      "slug": "bp-umwelt"
+    }
+  ],
+  "topics": {
+    "Bildung": {
+      "topic": "Bildung",
+      "preference": null,
+      "compatibleTotal": 0,
+      "availableTotal": 0,
+      "availableSlugs": [],
+      "compatibleSlugs": [],
+      "blocks": [],
+      "generatable": false
+    },
+    "Familie": {
+      "topic": "Familie",
+      "preference": [
+        "bp-familie"
+      ],
+      "compatibleTotal": 1,
+      "availableTotal": 0,
+      "availableSlugs": [],
+      "compatibleSlugs": [
+        "bp-familie"
+      ],
+      "blocks": [
+        {
+          "slug": "bp-familie",
+          "detected": "Familie",
+          "reason": "core_fp_in_pool",
+          "detail": "core fp 803da8461606367a ya en pool-verified/lesen-t3-auto-zspq8n.json (slug bp-familie)"
+        }
+      ],
+      "generatable": false
+    },
+    "Gesundheit": {
+      "topic": "Gesundheit",
+      "preference": [
+        "bp-gesundheit"
+      ],
+      "compatibleTotal": 1,
+      "availableTotal": 0,
+      "availableSlugs": [],
+      "compatibleSlugs": [
+        "bp-gesundheit"
+      ],
+      "blocks": [
+        {
+          "slug": "bp-gesundheit",
+          "detected": "Gesundheit",
+          "reason": "shared_mold_family_limit",
+          "detail": "familia molde compartido ya tiene 1 en pool: lesen-t3-gemini-006.json(bp-umwelt)"
+        }
+      ],
+      "generatable": false
+    },
+    "Medien": {
+      "topic": "Medien",
+      "preference": null,
+      "compatibleTotal": 5,
+      "availableTotal": 0,
+      "availableSlugs": [],
+      "compatibleSlugs": [
+        "bp-audio-foto",
+        "bp-buero",
+        "bp-elektronik",
+        "bp-moebel-it",
+        "bp-sprachen2"
+      ],
+      "blocks": [
+        {
+          "slug": "bp-audio-foto",
+          "detected": "Technik",
+          "reason": "core_fp_in_pool",
+          "detail": "core fp 7dbf66d0ca85afcd ya en pool-verified/lesen-t3-auto-5bw5c5.json (slug ?)"
+        },
+        {
+          "slug": "bp-buero",
+          "detected": "Technik",
+          "reason": "core_fp_in_pool",
+          "detail": "core fp 6d99e0354583d27b ya en pool-verified/lesen-t3-auto-yulvio.json (slug bp-buero)"
+        },
+        {
+          "slug": "bp-elektronik",
+          "detected": "Technik",
+          "reason": "core_fp_in_pool",
+          "detail": "core fp 037efa3a6e81c151 ya en pool-verified/lesen-t3-auto-3258cv.json (slug ?)"
+        },
+        {
+          "slug": "bp-moebel-it",
+          "detected": "Technik",
+          "reason": "core_fp_in_pool",
+          "detail": "core fp 694592dc1405c1a7 ya en pool-verified/lesen-t3-auto-xcph87.json (slug bp-moebel-it)"
+        },
+        {
+          "slug": "bp-sprachen2",
+          "detected": "Technik",
+          "reason": "core_fp_in_pool",
+          "detail": "core fp 8865b5f041c97acd ya en pool-verified/lesen-t3-auto-we7l2c.json (slug bp-sprachen2)"
+        }
+      ],
+      "generatable": false
+    },
+    "Stadtleben": {
+      "topic": "Stadtleben",
+      "preference": null,
+      "compatibleTotal": 1,
+      "availableTotal": 0,
+      "availableSlugs": [],
+      "compatibleSlugs": [
+        "bp-dienstleistungen"
+      ],
+      "blocks": [
+        {
+          "slug": "bp-dienstleistungen",
+          "detected": "Wohnen",
+          "reason": "core_fp_in_pool",
+          "detail": "core fp 6dc020416784e639 ya en pool-verified/lesen-t3-auto-w8hk4n.json (slug bp-dienstleistungen)"
+        }
+      ],
+      "generatable": false
+    },
+    "Ernährung": {
+      "topic": "Ernährung",
+      "preference": [
+        "bp-ernaehrung"
+      ],
+      "compatibleTotal": 1,
+      "availableTotal": 0,
+      "availableSlugs": [],
+      "compatibleSlugs": [
+        "bp-ernaehrung"
+      ],
+      "blocks": [
+        {
+          "slug": "bp-ernaehrung",
+          "detected": "Ernährung",
+          "reason": "shared_mold_family_limit",
+          "detail": "familia molde compartido ya tiene 1 en pool: lesen-t3-gemini-006.json(bp-umwelt)"
+        }
+      ],
+      "generatable": false
+    },
+    "Kultur": {
+      "topic": "Kultur",
+      "preference": [
+        "bp-musik"
+      ],
+      "compatibleTotal": 1,
+      "availableTotal": 0,
+      "availableSlugs": [],
+      "compatibleSlugs": [
+        "bp-musik"
+      ],
+      "blocks": [
+        {
+          "slug": "bp-musik",
+          "detected": "Kultur",
+          "reason": "core_fp_in_pool",
+          "detail": "core fp 7ceb8178ea725700 ya en pool-verified/lesen-t3-gemini-007.json (slug bp-musik)"
+        }
+      ],
+      "generatable": false
+    },
+    "Reisen": {
+      "topic": "Reisen",
+      "preference": null,
+      "compatibleTotal": 3,
+      "availableTotal": 0,
+      "availableSlugs": [],
+      "compatibleSlugs": [
+        "bp-fahrzeugteile",
+        "bp-koffer-brille",
+        "bp-mobilitaet-reisen"
+      ],
+      "blocks": [
+        {
+          "slug": "bp-fahrzeugteile",
+          "detected": "Reisen",
+          "reason": "core_fp_in_pool",
+          "detail": "core fp 52de26a5db80fdaa ya en pool-verified/lesen-t3-auto-yu9vyl.json (slug bp-fahrzeugteile)"
+        },
+        {
+          "slug": "bp-koffer-brille",
+          "detected": "Reisen",
+          "reason": "core_fp_in_pool",
+          "detail": "core fp 8473b93ba9d99558 ya en pool-verified/lesen-t3-auto-x4k027.json (slug bp-koffer-brille)"
+        },
+        {
+          "slug": "bp-mobilitaet-reisen",
+          "detected": "Reisen",
+          "reason": "core_fp_in_pool",
+          "detail": "core fp 257c6ff019bae2a2 ya en pool-verified/lesen-t3-auto-ma7vt8.json (slug bp-mobilitaet-reisen)"
+        }
+      ],
+      "generatable": false
+    },
+    "Umwelt": {
+      "topic": "Umwelt",
+      "preference": [
+        "bp-umwelt"
+      ],
+      "compatibleTotal": 1,
+      "availableTotal": 0,
+      "availableSlugs": [],
+      "compatibleSlugs": [
+        "bp-umwelt"
+      ],
+      "blocks": [
+        {
+          "slug": "bp-umwelt",
+          "detected": "Umwelt",
+          "reason": "core_fp_in_pool",
+          "detail": "core fp 7ade179d1143f7d9 ya en pool-verified/lesen-t3-gemini-006.json (slug bp-umwelt)"
+        }
+      ],
+      "generatable": false
+    },
+    "Arbeit": {
+      "topic": "Arbeit",
+      "preference": null,
+      "compatibleTotal": 1,
+      "availableTotal": 0,
+      "availableSlugs": [],
+      "compatibleSlugs": [
+        "bp-klima-tanz"
+      ],
+      "blocks": [
+        {
+          "slug": "bp-klima-tanz",
+          "detected": "Arbeit",
+          "reason": "core_fp_in_pool",
+          "detail": "core fp 497e35d55c4e6d3f ya en pool-verified/lesen-t3-gemini-003.json (slug ?)"
+        }
+      ],
+      "generatable": false
+    }
+  },
+  "generatable": [],
+  "blocked": [
+    "Bildung",
+    "Familie",
+    "Gesundheit",
+    "Medien",
+    "Stadtleben",
+    "Ernährung",
+    "Kultur",
+    "Reisen",
+    "Umwelt",
+    "Arbeit"
+  ]
+}

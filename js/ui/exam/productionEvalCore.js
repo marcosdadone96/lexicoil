@@ -68,19 +68,57 @@ function averageScores(items) {
   return Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
 }
 
+/**
+ * Goethe B1 Schreiben module score: T1=40%, T2=40%, T3=20% (official format).
+ * NOT used for Lesen/Hören/Sprechen — those keep equal / their own rules.
+ * Missing Teile: renormalize weights among scored parts so partial exams still work.
+ */
+const GOETHE_SCHREIBEN_TEIL_WEIGHTS = Object.freeze({ 1: 0.4, 2: 0.4, 3: 0.2 });
+
+function resolveSchreibenTeil(item, index) {
+  const raw = item?.partMeta?.teil ?? item?.teil ?? item?.aufgabe ?? item?.id;
+  const n = Number(raw);
+  if (Number.isFinite(n) && n >= 1 && n <= 3) return n;
+  const idx = Number(index) + 1;
+  return idx >= 1 && idx <= 3 ? idx : null;
+}
+
+function weightedSchreibenModuleScore(items) {
+  const scored = (items || []).filter(
+    (x) => x != null && x.score != null && Number.isFinite(Number(x.score)),
+  );
+  if (!scored.length) return null;
+  let weightSum = 0;
+  let acc = 0;
+  scored.forEach((item, i) => {
+    const teil = resolveSchreibenTeil(item, i);
+    const w =
+      teil != null && GOETHE_SCHREIBEN_TEIL_WEIGHTS[teil] != null
+        ? GOETHE_SCHREIBEN_TEIL_WEIGHTS[teil]
+        : 1 / scored.length;
+    weightSum += w;
+    acc += Number(item.score) * w;
+  });
+  if (weightSum <= 0) return averageScores(items);
+  return Math.round(acc / weightSum);
+}
+
 function applyProductionEvalToModules(moduleResults, prodEval, passPercent, MG) {
   const out = { ...(moduleResults || {}) };
   if (!prodEval?.ok) return out;
   if (prodEval.schreiben?.length && MG) {
-    const avg = averageScores(prodEval.schreiben);
+    // Schreiben only: Goethe 40/40/20 — do not use equal averageScores here.
+    const avg = weightedSchreibenModuleScore(prodEval.schreiben);
     if (avg != null) {
       out.schreiben = MG.aiEvaluatedModuleResult(avg, passPercent, {
         ai: true,
         parts: prodEval.schreiben,
+        schreibenWeights: GOETHE_SCHREIBEN_TEIL_WEIGHTS,
       });
     }
   }
   if (prodEval.sprechen?.length && MG) {
+    // Sprechen unchanged: equal average of part scores.
     const avg = averageScores(prodEval.sprechen);
     if (avg != null) {
       out.sprechen = MG.aiEvaluatedModuleResult(avg, passPercent, {
@@ -113,6 +151,8 @@ const productionEvalCoreExports = {
   applyProductionEvalToModules,
   applyOrientativeFallback,
   averageScores,
+  weightedSchreibenModuleScore,
+  GOETHE_SCHREIBEN_TEIL_WEIGHTS,
   CACHE_KEY,
 };
 

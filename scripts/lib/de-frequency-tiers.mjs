@@ -26,7 +26,7 @@ export const A1_CORE = [
   'wohnen', 'leben', 'kaufen', 'essen', 'trinken', 'schlafen', 'spielen', 'finden', 'suchen', 'helfen', 'fragen',
   'antworten', 'brauchen', 'möchten', 'wissen', 'denken', 'glauben', 'fühlen', 'bleiben', 'fahren', 'laufen',
   'stehen', 'sitzen', 'liegen', 'heißen', 'kennen', 'verstehen', 'zeigen', 'bringen', 'holen', 'öffnen',
-  'schließen', 'beginnen', 'aufhören', 'nicht', 'kein', 'keine', 'keiner', 'ja', 'nein', 'vielleicht', 'auch',
+  'schließen', 'beginnen', 'aufhören', 'halten', 'freuen', 'zusammen', 'einmal', 'nicht', 'kein', 'keine', 'keiner', 'ja', 'nein', 'vielleicht', 'auch',
   'noch', 'schon', 'nur', 'sehr', 'mehr', 'weniger', 'viel', 'wenig', 'alle', 'alles', 'jeder', 'jede', 'jedes',
   'andere', 'anderer', 'anderes', 'dieser', 'diese', 'dieses', 'welche', 'welcher', 'welches', 'hier', 'dort',
   'da', 'dort', 'heute', 'morgen', 'gestern', 'jetzt', 'später', 'früher', 'immer', 'nie', 'oft', 'manchmal',
@@ -81,6 +81,8 @@ export const A2_CORE = [
   'trotzdem', 'deshalb', 'obwohl', 'damit', 'bevor', 'nachdem', 'während', 'bis', 'seit', 'von', 'her', 'hin',
   'mitarbeiter', 'angestellter', 'angestellte', 'personal', 'kunde', 'kundin', 'service', 'qualität', 'produkt',
   'firma', 'unternehmen', 'markt', 'angebot', 'nachfrage', 'bestellung', 'lager', 'transport', 'lieferung',
+  'nutzen', 'gemeinsam', 'sondern', 'versuchen', 'aktiv', 'gehören', 'melden', 'anmeldung', 'trennen',
+  'bedeuten', 'packen', 'vorteil', 'gerät', 'aufgabe', 'direkt', 'täglich', 'zukunft',
 ];
 
 /** B1 band — opinions, work, society, environment (~1200). */
@@ -192,4 +194,9 @@ export const B1_CORE = [
   'stadtbewohner', 'stadtbewohnerin', 'brachfläche', 'brachflächen', 'lokal', 'lokal', 'regional', 'regional',
   'global', 'global', 'international', 'international', 'national', 'national', 'europäisch', 'europäisch',
   'arbeitsnehmer', 'arbeitnehmer', 'arbeitgeber', 'arbeitgeberin',
+  // 2026-07-12 CEFR bank gap-fill (everyday B1; cross-checked vs pool unknowns + Goethe exam use)
+  'bitten', 'beachten', 'aktuell', 'angenehm', 'bieten', 'pflegen', 'achten', 'schaffen', 'diskutieren',
+  'vermitteln', 'positiv', 'speziell', 'genießen', 'zentral', 'verlassen', 'nutzung', 'heizung', 'bedeutung',
+  'reinigung', 'mülltrennung', 'sorgfältig', 'finanziell', 'aktivität', 'erwachsen', 'erfolgen', 'betreffen',
+  'schritt',
 ];

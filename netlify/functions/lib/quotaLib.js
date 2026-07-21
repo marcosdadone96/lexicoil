@@ -10,6 +10,7 @@ const { verifyAuthToken, userKey } = require('./authLib.js');
 const { getBearer }  = require('./http.js');
 const { applyMonthlyAiReset, buildQuotaPayload } = require('./aiQuotaState.js');
 const { aiMaxForPlan } = require('./freeTrialLib.js');
+const PersonalPoolQuota = require('../../../js/library/personalPoolQuota.js');
 
 const GUEST_MAX     = 2;
 const FREE_MAX      = 5;
@@ -252,6 +253,104 @@ async function incrementQuota(quotaCheck, opts = {}) {
   return result;
 }
 
+function personalPoolIdemKey(scopeKey, module, requestId) {
+  return `personal_pool:${scopeKey}:${module}:${requestId}`;
+}
+
+/** Pre-flight personal Lesen/Hören pool quota (no AI credits). */
+async function checkPersonalPoolQuota(event, module) {
+  const mod = PersonalPoolQuota.normalizeModule(module);
+  if (!mod) return { ok: false, error: 'invalid_module' };
+  const state = await getQuotaState(event);
+  if (!state.ok || !state.authenticated) {
+    return { ok: false, error: 'login_required', status: 401, module: mod };
+  }
+  const month = getMonthKey();
+  let current = null;
+  try {
+    current = await state.store.get(state.qKey, { type: 'json' });
+  } catch (_) {
+    current = null;
+  }
+  const aiMax = state.aiMax ?? aiMaxForPlan(state.plan, state.user, month);
+  const rec = applyMonthlyAiReset(current, aiMax, month);
+  const max = PersonalPoolQuota.maxFor(state.plan, mod);
+  const used = PersonalPoolQuota.usedFromRecord(rec, mod);
+  if (used >= max) {
+    return {
+      ok: false,
+      error: 'personal_pool_quota_exceeded',
+      status: 429,
+      module: mod,
+      used,
+      max,
+      plan: state.plan,
+    };
+  }
+  return { ok: true, state, module: mod, used, max, plan: state.plan, rec };
+}
+
+async function incrementPersonalPoolQuota(check, opts = {}) {
+  if (!check?.ok || !check.state) return null;
+  const s = check.state;
+  const mod = check.module;
+  const requestId = opts.requestId || null;
+  const month = getMonthKey();
+  const field = mod === 'lesen' ? 'personalLesenUsed' : 'personalHorenUsed';
+
+  if (requestId) {
+    const idemKey = personalPoolIdemKey(s.qKey, mod, requestId);
+    const prior = await readIdempotentResult(s.store, idemKey);
+    if (prior) return prior;
+  }
+
+  const result = await casWriteJson(
+    s.store,
+    s.qKey,
+    (current) => {
+      const aiMax = s.aiMax ?? aiMaxForPlan(s.plan, s.user, month);
+      const normalized = applyMonthlyAiReset(current, aiMax, month);
+      const max = PersonalPoolQuota.maxFor(s.plan, mod);
+      const used = PersonalPoolQuota.usedFromRecord(normalized, mod);
+      if (used >= max) {
+        return {
+          skip: true,
+          result: {
+            error: 'personal_pool_quota_exceeded',
+            module: mod,
+            used,
+            max,
+            plan: s.plan,
+          },
+        };
+      }
+      const nextUsed = used + 1;
+      const payload = buildQuotaPayload(
+        { ...normalized, [field]: nextUsed },
+        true,
+      );
+      return {
+        payload,
+        result: {
+          module: mod,
+          used: nextUsed,
+          max,
+          plan: s.plan,
+          personalLesenUsed: payload.personalLesenUsed,
+          personalHorenUsed: payload.personalHorenUsed,
+        },
+      };
+    },
+    { logTag: '[personal-pool-cas]' },
+  );
+
+  if (requestId && result) {
+    const idemKey = personalPoolIdemKey(s.qKey, mod, requestId);
+    return writeIdempotentResult(s.store, idemKey, result);
+  }
+  return result;
+}
+
 // Refund one exam quota unit after a failed AI call (CAS + optional idempotency).
 async function decrementQuota(quotaCheck, opts = {}) {
   if (!quotaCheck) return null;
@@ -355,4 +454,6 @@ module.exports = {
   quotaRefundIdemKey,
   maxForPlan,
   resolvePlan,
+  checkPersonalPoolQuota,
+  incrementPersonalPoolQuota,
 };

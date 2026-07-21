@@ -11,6 +11,7 @@ const {
   getTokenVersion,
 } = require('./lib/authLib.js');
 const { corsHeaders, parseJsonBody, authSessionResponse, jsonResponse } = require('./lib/http.js');
+const { isEmailVerified } = require('./lib/emailVerify.js');
 
 exports.handler = async (event) => {
   const cors = corsHeaders(event);
@@ -80,6 +81,10 @@ exports.handler = async (event) => {
       resetAt: Date.now() + 15 * 60 * 1000,
     });
     return jsonResponse(401, cors, { error: 'bad_credentials' });
+  }
+
+  if (!isEmailVerified(user)) {
+    return jsonResponse(403, cors, { error: 'email_not_confirmed' });
   }
 
   try {

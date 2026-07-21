@@ -1,0 +1,573 @@
+{
+  "generatedAt": "2026-07-12T09:40:40.378Z",
+  "balanceMcq": "v1.2-no-rf-chrono-shuffle-2026-07-11",
+  "chronoEvidence": "v1-char-pos-passages0-text-2026-07-12",
+  "forbiddenMetric": "audio-turn-token-overlap (NOT chronological; false-green risk)",
+  "note": "Canonical chrono = char offset in passages[0].text. Audio-turn overlap is forbidden.",
+  "files": [
+    {
+      "file": "batches/ready/horen-t3-staging-2026-07-11-canary/horen-t3-gemini-001.json",
+      "chronoChanged": false,
+      "mode": "char-evidence",
+      "beforePos": [
+        79,
+        346,
+        383,
+        700,
+        827,
+        987,
+        1338
+      ],
+      "afterPos": [
+        79,
+        346,
+        383,
+        700,
+        827,
+        987,
+        1338
+      ],
+      "beforeIds": [
+        "gen-q-h3-6bda70e0-1",
+        "gen-q-h3-6bda70e0-2",
+        "gen-q-h3-6bda70e0-3",
+        "gen-q-h3-6bda70e0-4",
+        "gen-q-h3-6bda70e0-5",
+        "gen-q-h3-6bda70e0-6",
+        "gen-q-h3-6bda70e0-7"
+      ],
+      "afterIds": [
+        "gen-q-h3-6bda70e0-1",
+        "gen-q-h3-6bda70e0-2",
+        "gen-q-h3-6bda70e0-3",
+        "gen-q-h3-6bda70e0-4",
+        "gen-q-h3-6bda70e0-5",
+        "gen-q-h3-6bda70e0-6",
+        "gen-q-h3-6bda70e0-7"
+      ],
+      "beforeMono": true,
+      "afterMono": true,
+      "detailsAfter": [
+        {
+          "id": "gen-q-h3-6bda70e0-1",
+          "pos": 79,
+          "via": "quote-ci",
+          "needle": "Ich bin gestresst. Die Arbeit und die Uni-Aufgaben",
+          "q": "Ben fühlt sich wegen seiner Arbeit und des Studiums überfordert."
+        },
+        {
+          "id": "gen-q-h3-6bda70e0-2",
+          "pos": 346,
+          "via": "quote",
+          "needle": "auf Dauer ist das keine gute Lösung.",
+          "q": "Ben trinkt viel Kaffee, weil er das für eine gute Langzeitlösung gegen"
+        },
+        {
+          "id": "gen-q-h3-6bda70e0-3",
+          "pos": 383,
+          "via": "quote",
+          "needle": "Ich habe neulich einen Artikel über Achtsamkeit ge",
+          "q": "Anna hat durch einen Artikel neue Ideen zur Stressbewältigung bekommen"
+        },
+        {
+          "id": "gen-q-h3-6bda70e0-4",
+          "pos": 700,
+          "via": "quote",
+          "needle": "Ich bin skeptisch, aber wenn es hilft...",
+          "q": "Ben ist sofort überzeugt von Annas Vorschlag, Achtsamkeit zu praktizie"
+        },
+        {
+          "id": "gen-q-h3-6bda70e0-5",
+          "pos": 827,
+          "via": "quote",
+          "needle": "Machst du Sport?",
+          "q": "Anna empfiehlt Ben, mehr Sport zu treiben, um seine Gesundheit zu verb"
+        },
+        {
+          "id": "gen-q-h3-6bda70e0-6",
+          "pos": 987,
+          "via": "quote",
+          "needle": "Ich habe mal überlegt, mit Yoga anzufangen",
+          "q": "Ben hat bereits Erfahrung mit Yoga und findet es sehr entspannend."
+        },
+        {
+          "id": "gen-q-h3-6bda70e0-7",
+          "pos": 1338,
+          "via": "quote",
+          "needle": "Du musst nicht gleich alles auf einmal umstellen. ",
+          "q": "Anna empfiehlt Ben, seine Gewohnheiten langsam anzupassen."
+        }
+      ]
+    },
+    {
+      "file": "batches/ready/horen-t3-staging-2026-07-11-canary/horen-t3-gemini-002.json",
+      "chronoChanged": false,
+      "mode": "char-evidence",
+      "beforePos": [
+        120,
+        393,
+        447,
+        702,
+        872,
+        990,
+        1302
+      ],
+      "afterPos": [
+        120,
+        393,
+        447,
+        702,
+        872,
+        990,
+        1302
+      ],
+      "beforeIds": [
+        "gen-q-h3-f31303bd-1",
+        "gen-q-h3-f31303bd-2",
+        "gen-q-h3-f31303bd-3",
+        "gen-q-h3-f31303bd-4",
+        "gen-q-h3-f31303bd-5",
+        "gen-q-h3-f31303bd-6",
+        "gen-q-h3-f31303bd-7"
+      ],
+      "afterIds": [
+        "gen-q-h3-f31303bd-1",
+        "gen-q-h3-f31303bd-2",
+        "gen-q-h3-f31303bd-3",
+        "gen-q-h3-f31303bd-4",
+        "gen-q-h3-f31303bd-5",
+        "gen-q-h3-f31303bd-6",
+        "gen-q-h3-f31303bd-7"
+      ],
+      "beforeMono": true,
+      "afterMono": true,
+      "detailsAfter": [
+        {
+          "id": "gen-q-h3-f31303bd-1",
+          "pos": 120,
+          "via": "quote",
+          "needle": "Wir hatten ein großes Familientreffen bei meinen E",
+          "q": "Ben hat das Familientreffen bei sich zu Hause ausgerichtet."
+        },
+        {
+          "id": "gen-q-h3-f31303bd-2",
+          "pos": 393,
+          "via": "substr",
+          "needle": " bestimmt zwanzig personen",
+          "q": "Es waren etwa zwanzig Familienmitglieder bei dem Treffen anwesend."
+        },
+        {
+          "id": "gen-q-h3-f31303bd-3",
+          "pos": 447,
+          "via": "substr",
+          "needle": " zum glück groß genug für alle",
+          "q": "Das Haus von Bens Eltern ist zu Klein für so viele Besucher."
+        },
+        {
+          "id": "gen-q-h3-f31303bd-4",
+          "pos": 702,
+          "via": "substr",
+          "needle": " ein kleines theaterstück aufgeführt",
+          "q": "Die Kinder haben beim Familientreffen eine Aufführung gezeigt."
+        },
+        {
+          "id": "gen-q-h3-f31303bd-5",
+          "pos": 872,
+          "via": "quote",
+          "needle": "Ich finde es wichtig, solche Momente zu dokumentie",
+          "q": "Anna ist der Meinung, dass man Familienmomente festhalten sollte."
+        },
+        {
+          "id": "gen-q-h3-f31303bd-6",
+          "pos": 990,
+          "via": "substr",
+          "needle": " eine ganze galerie auf ihrem handy",
+          "q": "Ben hat noch keine Fotos oder Videos vom Familientreffen."
+        },
+        {
+          "id": "gen-q-h3-f31303bd-7",
+          "pos": 1302,
+          "via": "substr",
+          "needle": "eine tante plant eine reise",
+          "q": "Bens Tante hat vor, in eine andere Wohnung zu ziehen."
+        }
+      ]
+    },
+    {
+      "file": "batches/ready/horen-t3-staging-2026-07-11-canary/horen-t3-gemini-004.json",
+      "chronoChanged": false,
+      "mode": "char-evidence",
+      "beforePos": [
+        81,
+        224,
+        504,
+        744,
+        896,
+        1110,
+        1919
+      ],
+      "afterPos": [
+        81,
+        224,
+        504,
+        744,
+        896,
+        1110,
+        1919
+      ],
+      "beforeIds": [
+        "gen-q-h3-650de91f-1",
+        "gen-q-h3-650de91f-2",
+        "gen-q-h3-650de91f-3",
+        "gen-q-h3-650de91f-4",
+        "gen-q-h3-650de91f-5",
+        "gen-q-h3-650de91f-6",
+        "gen-q-h3-650de91f-7"
+      ],
+      "afterIds": [
+        "gen-q-h3-650de91f-1",
+        "gen-q-h3-650de91f-2",
+        "gen-q-h3-650de91f-3",
+        "gen-q-h3-650de91f-4",
+        "gen-q-h3-650de91f-5",
+        "gen-q-h3-650de91f-6",
+        "gen-q-h3-650de91f-7"
+      ],
+      "beforeMono": true,
+      "afterMono": true,
+      "detailsAfter": [
+        {
+          "id": "gen-q-h3-650de91f-1",
+          "pos": 81,
+          "via": "substr",
+          "needle": " die berichterstattung über die ",
+          "q": "Lena findet, dass die Nachrichtenberichterstattung oft ausgewogen ist."
+        },
+        {
+          "id": "gen-q-h3-650de91f-2",
+          "pos": 224,
+          "via": "substr",
+          "needle": " keine traditionellen nachrichten mehr ",
+          "q": "Markus bevorzugt Online-Medien gegenüber traditionellen Nachrichtenque"
+        },
+        {
+          "id": "gen-q-h3-650de91f-3",
+          "pos": 504,
+          "via": "quote",
+          "needle": "Fake News",
+          "q": "Lena ist besorgt über die Verbreitung von Falschinformationen im Inter"
+        },
+        {
+          "id": "gen-q-h3-650de91f-4",
+          "pos": 744,
+          "via": "substr",
+          "needle": " gut recherchieren",
+          "q": "Markus vertraut allen Journalisten, die er online findet."
+        },
+        {
+          "id": "gen-q-h3-650de91f-5",
+          "pos": 896,
+          "via": "substr",
+          "needle": " plattformen wie instagram oder tiktok",
+          "q": "Viele von Lenas Freunden nutzen Social Media als Hauptinformationsquel"
+        },
+        {
+          "id": "gen-q-h3-650de91f-6",
+          "pos": 1110,
+          "via": "substr",
+          "needle": " zu einer informationsblase führen",
+          "q": "Markus sieht keine Probleme in der Art, wie Social-Media-Algorithmen f"
+        },
+        {
+          "id": "gen-q-h3-650de91f-7",
+          "pos": 1919,
+          "via": "density",
+          "needle": "kritische",
+          "q": "Beide Gesprächspartner sind sich einig, dass eine kritische Haltung ge"
+        }
+      ]
+    },
+    {
+      "file": "batches/ready/canary-all-staging-2026-07-11/horen-t3-gemini-001.json",
+      "chronoChanged": false,
+      "mode": "char-evidence",
+      "beforePos": [
+        79,
+        346,
+        383,
+        700,
+        827,
+        987,
+        1338
+      ],
+      "afterPos": [
+        79,
+        346,
+        383,
+        700,
+        827,
+        987,
+        1338
+      ],
+      "beforeIds": [
+        "gen-q-h3-6bda70e0-1",
+        "gen-q-h3-6bda70e0-2",
+        "gen-q-h3-6bda70e0-3",
+        "gen-q-h3-6bda70e0-4",
+        "gen-q-h3-6bda70e0-5",
+        "gen-q-h3-6bda70e0-6",
+        "gen-q-h3-6bda70e0-7"
+      ],
+      "afterIds": [
+        "gen-q-h3-6bda70e0-1",
+        "gen-q-h3-6bda70e0-2",
+        "gen-q-h3-6bda70e0-3",
+        "gen-q-h3-6bda70e0-4",
+        "gen-q-h3-6bda70e0-5",
+        "gen-q-h3-6bda70e0-6",
+        "gen-q-h3-6bda70e0-7"
+      ],
+      "beforeMono": true,
+      "afterMono": true,
+      "detailsAfter": [
+        {
+          "id": "gen-q-h3-6bda70e0-1",
+          "pos": 79,
+          "via": "quote-ci",
+          "needle": "Ich bin gestresst. Die Arbeit und die Uni-Aufgaben",
+          "q": "Ben fühlt sich wegen seiner Arbeit und des Studiums überfordert."
+        },
+        {
+          "id": "gen-q-h3-6bda70e0-2",
+          "pos": 346,
+          "via": "quote",
+          "needle": "auf Dauer ist das keine gute Lösung.",
+          "q": "Ben trinkt viel Kaffee, weil er das für eine gute Langzeitlösung gegen"
+        },
+        {
+          "id": "gen-q-h3-6bda70e0-3",
+          "pos": 383,
+          "via": "quote",
+          "needle": "Ich habe neulich einen Artikel über Achtsamkeit ge",
+          "q": "Anna hat durch einen Artikel neue Ideen zur Stressbewältigung bekommen"
+        },
+        {
+          "id": "gen-q-h3-6bda70e0-4",
+          "pos": 700,
+          "via": "quote",
+          "needle": "Ich bin skeptisch, aber wenn es hilft...",
+          "q": "Ben ist sofort überzeugt von Annas Vorschlag, Achtsamkeit zu praktizie"
+        },
+        {
+          "id": "gen-q-h3-6bda70e0-5",
+          "pos": 827,
+          "via": "quote",
+          "needle": "Machst du Sport?",
+          "q": "Anna empfiehlt Ben, mehr Sport zu treiben, um seine Gesundheit zu verb"
+        },
+        {
+          "id": "gen-q-h3-6bda70e0-6",
+          "pos": 987,
+          "via": "quote",
+          "needle": "Ich habe mal überlegt, mit Yoga anzufangen",
+          "q": "Ben hat bereits Erfahrung mit Yoga und findet es sehr entspannend."
+        },
+        {
+          "id": "gen-q-h3-6bda70e0-7",
+          "pos": 1338,
+          "via": "quote",
+          "needle": "Du musst nicht gleich alles auf einmal umstellen. ",
+          "q": "Anna empfiehlt Ben, seine Gewohnheiten langsam anzupassen."
+        }
+      ]
+    },
+    {
+      "file": "batches/ready/canary-all-staging-2026-07-11/horen-t3-gemini-002.json",
+      "chronoChanged": false,
+      "mode": "char-evidence",
+      "beforePos": [
+        120,
+        393,
+        447,
+        702,
+        872,
+        990,
+        1302
+      ],
+      "afterPos": [
+        120,
+        393,
+        447,
+        702,
+        872,
+        990,
+        1302
+      ],
+      "beforeIds": [
+        "gen-q-h3-f31303bd-1",
+        "gen-q-h3-f31303bd-2",
+        "gen-q-h3-f31303bd-3",
+        "gen-q-h3-f31303bd-4",
+        "gen-q-h3-f31303bd-5",
+        "gen-q-h3-f31303bd-6",
+        "gen-q-h3-f31303bd-7"
+      ],
+      "afterIds": [
+        "gen-q-h3-f31303bd-1",
+        "gen-q-h3-f31303bd-2",
+        "gen-q-h3-f31303bd-3",
+        "gen-q-h3-f31303bd-4",
+        "gen-q-h3-f31303bd-5",
+        "gen-q-h3-f31303bd-6",
+        "gen-q-h3-f31303bd-7"
+      ],
+      "beforeMono": true,
+      "afterMono": true,
+      "detailsAfter": [
+        {
+          "id": "gen-q-h3-f31303bd-1",
+          "pos": 120,
+          "via": "quote",
+          "needle": "Wir hatten ein großes Familientreffen bei meinen E",
+          "q": "Ben hat das Familientreffen bei sich zu Hause ausgerichtet."
+        },
+        {
+          "id": "gen-q-h3-f31303bd-2",
+          "pos": 393,
+          "via": "substr",
+          "needle": " bestimmt zwanzig personen",
+          "q": "Es waren etwa zwanzig Familienmitglieder bei dem Treffen anwesend."
+        },
+        {
+          "id": "gen-q-h3-f31303bd-3",
+          "pos": 447,
+          "via": "substr",
+          "needle": " zum glück groß genug für alle",
+          "q": "Das Haus von Bens Eltern ist zu Klein für so viele Besucher."
+        },
+        {
+          "id": "gen-q-h3-f31303bd-4",
+          "pos": 702,
+          "via": "substr",
+          "needle": " ein kleines theaterstück aufgeführt",
+          "q": "Die Kinder haben beim Familientreffen eine Aufführung gezeigt."
+        },
+        {
+          "id": "gen-q-h3-f31303bd-5",
+          "pos": 872,
+          "via": "quote",
+          "needle": "Ich finde es wichtig, solche Momente zu dokumentie",
+          "q": "Anna ist der Meinung, dass man Familienmomente festhalten sollte."
+        },
+        {
+          "id": "gen-q-h3-f31303bd-6",
+          "pos": 990,
+          "via": "substr",
+          "needle": " eine ganze galerie auf ihrem handy",
+          "q": "Ben hat noch keine Fotos oder Videos vom Familientreffen."
+        },
+        {
+          "id": "gen-q-h3-f31303bd-7",
+          "pos": 1302,
+          "via": "substr",
+          "needle": "eine tante plant eine reise",
+          "q": "Bens Tante hat vor, in eine andere Wohnung zu ziehen."
+        }
+      ]
+    },
+    {
+      "file": "batches/ready/canary-all-staging-2026-07-11/horen-t3-gemini-004.json",
+      "chronoChanged": false,
+      "mode": "char-evidence",
+      "beforePos": [
+        81,
+        224,
+        504,
+        744,
+        896,
+        1110,
+        1919
+      ],
+      "afterPos": [
+        81,
+        224,
+        504,
+        744,
+        896,
+        1110,
+        1919
+      ],
+      "beforeIds": [
+        "gen-q-h3-650de91f-1",
+        "gen-q-h3-650de91f-2",
+        "gen-q-h3-650de91f-3",
+        "gen-q-h3-650de91f-4",
+        "gen-q-h3-650de91f-5",
+        "gen-q-h3-650de91f-6",
+        "gen-q-h3-650de91f-7"
+      ],
+      "afterIds": [
+        "gen-q-h3-650de91f-1",
+        "gen-q-h3-650de91f-2",
+        "gen-q-h3-650de91f-3",
+        "gen-q-h3-650de91f-4",
+        "gen-q-h3-650de91f-5",
+        "gen-q-h3-650de91f-6",
+        "gen-q-h3-650de91f-7"
+      ],
+      "beforeMono": true,
+      "afterMono": true,
+      "detailsAfter": [
+        {
+          "id": "gen-q-h3-650de91f-1",
+          "pos": 81,
+          "via": "substr",
+          "needle": " die berichterstattung über die ",
+          "q": "Lena findet, dass die Nachrichtenberichterstattung oft ausgewogen ist."
+        },
+        {
+          "id": "gen-q-h3-650de91f-2",
+          "pos": 224,
+          "via": "substr",
+          "needle": " keine traditionellen nachrichten mehr ",
+          "q": "Markus bevorzugt Online-Medien gegenüber traditionellen Nachrichtenque"
+        },
+        {
+          "id": "gen-q-h3-650de91f-3",
+          "pos": 504,
+          "via": "quote",
+          "needle": "Fake News",
+          "q": "Lena ist besorgt über die Verbreitung von Falschinformationen im Inter"
+        },
+        {
+          "id": "gen-q-h3-650de91f-4",
+          "pos": 744,
+          "via": "substr",
+          "needle": " gut recherchieren",
+          "q": "Markus vertraut allen Journalisten, die er online findet."
+        },
+        {
+          "id": "gen-q-h3-650de91f-5",
+          "pos": 896,
+          "via": "substr",
+          "needle": " plattformen wie instagram oder tiktok",
+          "q": "Viele von Lenas Freunden nutzen Social Media als Hauptinformationsquel"
+        },
+        {
+          "id": "gen-q-h3-650de91f-6",
+          "pos": 1110,
+          "via": "substr",
+          "needle": " zu einer informationsblase führen",
+          "q": "Markus sieht keine Probleme in der Art, wie Social-Media-Algorithmen f"
+        },
+        {
+          "id": "gen-q-h3-650de91f-7",
+          "pos": 1919,
+          "via": "density",
+          "needle": "kritische",
+          "q": "Beide Gesprächspartner sind sich einig, dass eine kritische Haltung ge"
+        }
+      ]
+    }
+  ]
+}

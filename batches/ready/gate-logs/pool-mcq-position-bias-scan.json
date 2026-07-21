@@ -1,0 +1,515 @@
+{
+  "generatedAt": "2026-07-20T09:48:42.315Z",
+  "scope": "pool-verified (all levels), lesen-t2/t5 + horen-t2 MCQ",
+  "thresholdPct": 55,
+  "extremeBiasCount": 2,
+  "missingBalanceStampCount": 24,
+  "extremeBias": [
+    {
+      "file": "batches/ready/pool-verified/A2/lesen-t2-cur-education.json",
+      "level": "B1",
+      "part": "lesen-t2",
+      "seq": [
+        "b",
+        "b",
+        "a",
+        "b",
+        "a"
+      ],
+      "counts": {
+        "a": 2,
+        "b": 3,
+        "c": 0
+      },
+      "maxPct": 60,
+      "maxLetter": "b",
+      "balanceStamp": null
+    },
+    {
+      "file": "batches/ready/pool-verified/A2/lesen-t2-cur-work.json",
+      "level": "B1",
+      "part": "lesen-t2",
+      "seq": [
+        "b",
+        "b",
+        "c",
+        "a",
+        "b"
+      ],
+      "counts": {
+        "a": 1,
+        "b": 3,
+        "c": 1
+      },
+      "maxPct": 60,
+      "maxLetter": "b",
+      "balanceStamp": null
+    }
+  ],
+  "missingBalanceStamp": [
+    {
+      "file": "batches/ready/pool-verified/A2/lesen-t2-cur-education.json",
+      "part": "lesen-t2",
+      "seq": [
+        "b",
+        "b",
+        "a",
+        "b",
+        "a"
+      ],
+      "counts": {
+        "a": 2,
+        "b": 3,
+        "c": 0
+      },
+      "n": 5,
+      "maxPct": 0.6,
+      "maxLetter": "b"
+    },
+    {
+      "file": "batches/ready/pool-verified/A2/lesen-t2-cur-health.json",
+      "part": "lesen-t2",
+      "seq": [
+        "b",
+        "b",
+        "a",
+        "a",
+        "c"
+      ],
+      "counts": {
+        "a": 2,
+        "b": 2,
+        "c": 1
+      },
+      "n": 5,
+      "maxPct": 0.4,
+      "maxLetter": "a"
+    },
+    {
+      "file": "batches/ready/pool-verified/A2/lesen-t2-cur-society.json",
+      "part": "lesen-t2",
+      "seq": [
+        "a",
+        "c",
+        "b",
+        "a",
+        "c"
+      ],
+      "counts": {
+        "a": 2,
+        "b": 1,
+        "c": 2
+      },
+      "n": 5,
+      "maxPct": 0.4,
+      "maxLetter": "a"
+    },
+    {
+      "file": "batches/ready/pool-verified/A2/lesen-t2-cur-work.json",
+      "part": "lesen-t2",
+      "seq": [
+        "b",
+        "b",
+        "c",
+        "a",
+        "b"
+      ],
+      "counts": {
+        "a": 1,
+        "b": 3,
+        "c": 1
+      },
+      "n": 5,
+      "maxPct": 0.6,
+      "maxLetter": "b"
+    },
+    {
+      "file": "batches/ready/pool-verified/B1/lesen-t2-gemini-103.json",
+      "part": "lesen-t2",
+      "seq": [
+        "a",
+        "b",
+        "a",
+        "c",
+        "c",
+        "b"
+      ],
+      "counts": {
+        "a": 2,
+        "b": 2,
+        "c": 2
+      },
+      "n": 6,
+      "maxPct": 0.3333333333333333,
+      "maxLetter": "a"
+    },
+    {
+      "file": "batches/ready/pool-verified/B1/lesen-t2-gemini-104.json",
+      "part": "lesen-t2",
+      "seq": [
+        "a",
+        "b",
+        "c",
+        "b",
+        "a",
+        "c"
+      ],
+      "counts": {
+        "a": 2,
+        "b": 2,
+        "c": 2
+      },
+      "n": 6,
+      "maxPct": 0.3333333333333333,
+      "maxLetter": "a"
+    },
+    {
+      "file": "batches/ready/pool-verified/B1/lesen-t2-gemini-105.json",
+      "part": "lesen-t2",
+      "seq": [
+        "a",
+        "b",
+        "a",
+        "b",
+        "c",
+        "c"
+      ],
+      "counts": {
+        "a": 2,
+        "b": 2,
+        "c": 2
+      },
+      "n": 6,
+      "maxPct": 0.3333333333333333,
+      "maxLetter": "a"
+    },
+    {
+      "file": "batches/ready/pool-verified/B1/lesen-t2-gemini-106.json",
+      "part": "lesen-t2",
+      "seq": [
+        "a",
+        "b",
+        "c",
+        "b",
+        "c",
+        "a"
+      ],
+      "counts": {
+        "a": 2,
+        "b": 2,
+        "c": 2
+      },
+      "n": 6,
+      "maxPct": 0.3333333333333333,
+      "maxLetter": "a"
+    },
+    {
+      "file": "batches/ready/pool-verified/B1/lesen-t2-gemini-107.json",
+      "part": "lesen-t2",
+      "seq": [
+        "c",
+        "a",
+        "b",
+        "b",
+        "c",
+        "a"
+      ],
+      "counts": {
+        "a": 2,
+        "b": 2,
+        "c": 2
+      },
+      "n": 6,
+      "maxPct": 0.3333333333333333,
+      "maxLetter": "a"
+    },
+    {
+      "file": "batches/ready/pool-verified/B1/lesen-t2-gemini-109.json",
+      "part": "lesen-t2",
+      "seq": [
+        "c",
+        "c",
+        "a",
+        "a",
+        "b",
+        "b"
+      ],
+      "counts": {
+        "a": 2,
+        "b": 2,
+        "c": 2
+      },
+      "n": 6,
+      "maxPct": 0.3333333333333333,
+      "maxLetter": "a"
+    },
+    {
+      "file": "batches/ready/pool-verified/B1/lesen-t2-gemini-112.json",
+      "part": "lesen-t2",
+      "seq": [
+        "c",
+        "b",
+        "a",
+        "b",
+        "a",
+        "c"
+      ],
+      "counts": {
+        "a": 2,
+        "b": 2,
+        "c": 2
+      },
+      "n": 6,
+      "maxPct": 0.3333333333333333,
+      "maxLetter": "a"
+    },
+    {
+      "file": "batches/ready/pool-verified/B1/lesen-t2-gemini-113.json",
+      "part": "lesen-t2",
+      "seq": [
+        "b",
+        "a",
+        "a",
+        "c",
+        "b",
+        "c"
+      ],
+      "counts": {
+        "a": 2,
+        "b": 2,
+        "c": 2
+      },
+      "n": 6,
+      "maxPct": 0.3333333333333333,
+      "maxLetter": "a"
+    },
+    {
+      "file": "batches/ready/pool-verified/B1/lesen-t2-gemini-115.json",
+      "part": "lesen-t2",
+      "seq": [
+        "c",
+        "b",
+        "a",
+        "a",
+        "c",
+        "b"
+      ],
+      "counts": {
+        "a": 2,
+        "b": 2,
+        "c": 2
+      },
+      "n": 6,
+      "maxPct": 0.3333333333333333,
+      "maxLetter": "a"
+    },
+    {
+      "file": "batches/ready/pool-verified/B1/lesen-t2-gemini-116.json",
+      "part": "lesen-t2",
+      "seq": [
+        "c",
+        "b",
+        "b",
+        "a",
+        "a",
+        "c"
+      ],
+      "counts": {
+        "a": 2,
+        "b": 2,
+        "c": 2
+      },
+      "n": 6,
+      "maxPct": 0.3333333333333333,
+      "maxLetter": "a"
+    },
+    {
+      "file": "batches/ready/pool-verified/B1/lesen-t2-gemini-117.json",
+      "part": "lesen-t2",
+      "seq": [
+        "c",
+        "c",
+        "a",
+        "b",
+        "a",
+        "b"
+      ],
+      "counts": {
+        "a": 2,
+        "b": 2,
+        "c": 2
+      },
+      "n": 6,
+      "maxPct": 0.3333333333333333,
+      "maxLetter": "a"
+    },
+    {
+      "file": "batches/ready/pool-verified/B1/lesen-t2-gemini-118.json",
+      "part": "lesen-t2",
+      "seq": [
+        "a",
+        "c",
+        "a",
+        "b",
+        "b",
+        "c"
+      ],
+      "counts": {
+        "a": 2,
+        "b": 2,
+        "c": 2
+      },
+      "n": 6,
+      "maxPct": 0.3333333333333333,
+      "maxLetter": "a"
+    },
+    {
+      "file": "batches/ready/pool-verified/B1/lesen-t2-gemini-119.json",
+      "part": "lesen-t2",
+      "seq": [
+        "b",
+        "c",
+        "b",
+        "c",
+        "a",
+        "a"
+      ],
+      "counts": {
+        "a": 2,
+        "b": 2,
+        "c": 2
+      },
+      "n": 6,
+      "maxPct": 0.3333333333333333,
+      "maxLetter": "a"
+    },
+    {
+      "file": "batches/ready/pool-verified/B1/lesen-t2-gemini-122.json",
+      "part": "lesen-t2",
+      "seq": [
+        "a",
+        "c",
+        "c",
+        "b",
+        "a",
+        "b"
+      ],
+      "counts": {
+        "a": 2,
+        "b": 2,
+        "c": 2
+      },
+      "n": 6,
+      "maxPct": 0.3333333333333333,
+      "maxLetter": "a"
+    },
+    {
+      "file": "batches/ready/pool-verified/B1/lesen-t5-gemini-079.json",
+      "part": "lesen-t5",
+      "seq": [
+        "b",
+        "c",
+        "a",
+        "c"
+      ],
+      "counts": {
+        "a": 1,
+        "b": 1,
+        "c": 2
+      },
+      "n": 4,
+      "maxPct": 0.5,
+      "maxLetter": "c"
+    },
+    {
+      "file": "batches/ready/pool-verified/B1/lesen-t5-gemini-081.json",
+      "part": "lesen-t5",
+      "seq": [
+        "b",
+        "b",
+        "a",
+        "c"
+      ],
+      "counts": {
+        "a": 1,
+        "b": 2,
+        "c": 1
+      },
+      "n": 4,
+      "maxPct": 0.5,
+      "maxLetter": "b"
+    },
+    {
+      "file": "batches/ready/pool-verified/B1/lesen-t5-gemini-082.json",
+      "part": "lesen-t5",
+      "seq": [
+        "a",
+        "b",
+        "a",
+        "c"
+      ],
+      "counts": {
+        "a": 2,
+        "b": 1,
+        "c": 1
+      },
+      "n": 4,
+      "maxPct": 0.5,
+      "maxLetter": "a"
+    },
+    {
+      "file": "batches/ready/pool-verified/B1/lesen-t5-gemini-083.json",
+      "part": "lesen-t5",
+      "seq": [
+        "a",
+        "b",
+        "c",
+        "a"
+      ],
+      "counts": {
+        "a": 2,
+        "b": 1,
+        "c": 1
+      },
+      "n": 4,
+      "maxPct": 0.5,
+      "maxLetter": "a"
+    },
+    {
+      "file": "batches/ready/pool-verified/B1/lesen-t5-gemini-095.json",
+      "part": "lesen-t5",
+      "seq": [
+        "a",
+        "c",
+        "a",
+        "b"
+      ],
+      "counts": {
+        "a": 2,
+        "b": 1,
+        "c": 1
+      },
+      "n": 4,
+      "maxPct": 0.5,
+      "maxLetter": "a"
+    },
+    {
+      "file": "batches/ready/pool-verified/B1/lesen-t5-gemini-099.json",
+      "part": "lesen-t5",
+      "seq": [
+        "a",
+        "c",
+        "b",
+        "c"
+      ],
+      "counts": {
+        "a": 1,
+        "b": 1,
+        "c": 2
+      },
+      "n": 4,
+      "maxPct": 0.5,
+      "maxLetter": "c"
+    }
+  ]
+}

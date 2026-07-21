@@ -1,0 +1,190 @@
+{
+  "source": "languagetool-audit-2026-07-11.json",
+  "generatedAt": "2026-07-11T12:37:27.378Z",
+  "count": 11,
+  "byRule": {
+    "KOMMA_ZWISCHEN_HAUPT_UND_NEBENSATZ_2": 1,
+    "DE_AGREEMENT": 1,
+    "FEHLERHAFTES_KOMMA_ALLG": 1,
+    "ART_ADJ_SOL": 1,
+    "KOMMA_VOR_UND_ODER": 1,
+    "COMPOUND_INFINITIV_RULE": 3,
+    "GERMAN_WORD_REPEAT_BEGINNING_RULE": 3
+  },
+  "cases": [
+    {
+      "file": "horen-t2-gemini-019.json",
+      "passageIndex": 0,
+      "ruleId": "KOMMA_ZWISCHEN_HAUPT_UND_NEBENSATZ_2",
+      "category": "HILFESTELLUNG_KOMMASETZUNG",
+      "issueType": "uncategorized",
+      "message": "Hier sollte ein Komma eingefügt werden, wenn es sich um einen Haupt- und Nebensatz oder zwei Hauptsätze handelt.",
+      "replacements": [
+        "schön, dass"
+      ],
+      "offset": 16,
+      "length": 10,
+      "marked": "schön dass",
+      "context": "Hallo zusammen, schön dass Sie einschalten. Heute sprechen wir übe...",
+      "snippet": "Hallo zusammen, schön dass Sie einschalten. Heute sprechen wir über ein Thema, das uns"
+    },
+    {
+      "file": "horen-t3-gemini-003.json",
+      "passageIndex": 0,
+      "ruleId": "DE_AGREEMENT",
+      "category": "GRAMMAR",
+      "issueType": "uncategorized",
+      "message": "Möglicherweise passen das Nomen und die Wörter, die das Nomen beschreiben, grammatisch nicht zusammen.",
+      "replacements": [
+        "einem digitalen Detox",
+        "eines digitalen Detox"
+      ],
+      "offset": 113,
+      "length": 21,
+      "marked": "einen digitalen Detox",
+      "context": "...ig aus. Lena: Ach, Max, super! Ich habe einen digitalen Detox gemacht. Max: Echt? Mutig! Ich könnte m...",
+      "snippet": "ig aus. Lena: Ach, Max, super! Ich habe einen digitalen Detox gemacht. Max: Echt? Mutig! Ich könnte mir das kaum vorstell"
+    },
+    {
+      "file": "horen-t3-gemini-003.json",
+      "passageIndex": 0,
+      "ruleId": "FEHLERHAFTES_KOMMA_ALLG",
+      "category": "HILFESTELLUNG_KOMMASETZUNG",
+      "issueType": "uncategorized",
+      "message": "Wenn es sich hier um keinen Haupt- und Nebensatz handelt, wird in der Regel kein Komma gesetzt.",
+      "replacements": [
+        " im"
+      ],
+      "offset": 971,
+      "length": 4,
+      "marked": ", im",
+      "context": "...r schnell etwas nachschlagen. Lena: Klar, im Alltag ist es schwer. Aber für einen Ta...",
+      "snippet": "r schnell etwas nachschlagen. Lena: Klar, im Alltag ist es schwer. Aber für einen Tag am Wochenende ist "
+    },
+    {
+      "file": "horen-t3-gemini-003.json",
+      "passageIndex": 0,
+      "ruleId": "ART_ADJ_SOL",
+      "category": "GRAMMAR",
+      "issueType": "uncategorized",
+      "message": "Nach einem Artikel steht in der Regel kein stark oder gemischt flektiertes Adjektiv (Beispiel: ‚im heißem Ofen‘ statt korrekt ‚im heißen Ofen‘). Oder fehlt vielleicht ein Komma vor dem Artikel?",
+      "replacements": [
+        "das nahe",
+        "das nahen",
+        "das nächste",
+        "das nächsten"
+      ],
+      "offset": 1371,
+      "length": 12,
+      "marked": "das nächstes",
+      "context": "...war herrlich. Max: Vielleicht mache ich das nächstes Wochenende. Handy weglegen und die Stad...",
+      "snippet": "war herrlich. Max: Vielleicht mache ich das nächstes Wochenende. Handy weglegen und die Stadt anders erleben. Le"
+    },
+    {
+      "file": "horen-t4-gemini-008.json",
+      "passageIndex": 0,
+      "ruleId": "KOMMA_VOR_UND_ODER",
+      "category": "PUNCTUATION",
+      "issueType": "typographical",
+      "message": "Wenn es sich um eine Aufzählung handelt, wird hier in der Regel kein Komma vor ‚und‘ gesetzt.",
+      "replacements": [
+        " und"
+      ],
+      "offset": 338,
+      "length": 5,
+      "marked": ", und",
+      "context": "...annah Schneider, eine Familienforscherin, und Herrn Erik Weber, einen engagierten Vat...",
+      "snippet": "annah Schneider, eine Familienforscherin, und Herrn Erik Weber, einen engagierten Vater und Sozialpädagog"
+    },
+    {
+      "file": "lesen-t1-gemini-075.json",
+      "passageIndex": 0,
+      "ruleId": "COMPOUND_INFINITIV_RULE",
+      "category": "COMPOUNDING",
+      "issueType": "misspelling",
+      "message": "Wenn der erweiterte Infinitiv von dem Verb ‚stehenlassen‘ abgeleitet ist, sollte er zusammengeschrieben werden.",
+      "replacements": [
+        "stehenzulassen"
+      ],
+      "offset": 122,
+      "length": 16,
+      "marked": "stehen zu lassen",
+      "context": "...r genervt. Meine Entscheidung, das Auto stehen zu lassen und das Fahrrad zu benutzen, hat meinen...",
+      "snippet": "r genervt. Meine Entscheidung, das Auto stehen zu lassen und das Fahrrad zu benutzen, hat meinen Alltag komplett ver"
+    },
+    {
+      "file": "lesen-t1-gemini-081.json",
+      "passageIndex": 0,
+      "ruleId": "COMPOUND_INFINITIV_RULE",
+      "category": "COMPOUNDING",
+      "issueType": "misspelling",
+      "message": "Wenn der erweiterte Infinitiv von dem Verb ‚freibekommen‘ abgeleitet ist, sollte er zusammengeschrieben werden.",
+      "replacements": [
+        "freizubekommen"
+      ],
+      "offset": 1044,
+      "length": 16,
+      "marked": "frei zu bekommen",
+      "context": "...und eine gute Organisation, um den Kopf frei zu bekommen.",
+      "snippet": "und eine gute Organisation, um den Kopf frei zu bekommen."
+    },
+    {
+      "file": "lesen-t1-gemini-086.json",
+      "passageIndex": 0,
+      "ruleId": "COMPOUND_INFINITIV_RULE",
+      "category": "COMPOUNDING",
+      "issueType": "misspelling",
+      "message": "Wenn der erweiterte Infinitiv von dem Verb ‚freibekommen‘ abgeleitet ist, sollte er zusammengeschrieben werden.",
+      "replacements": [
+        "freizubekommen"
+      ],
+      "offset": 853,
+      "length": 16,
+      "marked": "frei zu bekommen",
+      "context": "...en Kopf nach einer arbeitsreichen Woche frei zu bekommen. Ich habe bisher keine Sekunde bereut, ...",
+      "snippet": "en Kopf nach einer arbeitsreichen Woche frei zu bekommen. Ich habe bisher keine Sekunde bereut, mich für diesen Vere"
+    },
+    {
+      "file": "lesen-t1-gemini-090.json",
+      "passageIndex": 0,
+      "ruleId": "GERMAN_WORD_REPEAT_BEGINNING_RULE",
+      "category": "REPETITIONS_STYLE",
+      "issueType": "style",
+      "message": "Drei aufeinanderfolgende Sätze beginnen mit dem gleichen Wort. Evtl. können Sie den Satz umformulieren, zum Beispiel, indem Sie ein Synonym nutzen.",
+      "replacements": [],
+      "offset": 916,
+      "length": 3,
+      "marked": "Ich",
+      "context": "...ivation für meine beruflichen Aufgaben. Ich bin sehr froh, diesen Schritt gewagt zu...",
+      "snippet": "ivation für meine beruflichen Aufgaben. Ich bin sehr froh, diesen Schritt gewagt zu haben, da er mir ei"
+    },
+    {
+      "file": "lesen-t1-gemini-119.json",
+      "passageIndex": 0,
+      "ruleId": "GERMAN_WORD_REPEAT_BEGINNING_RULE",
+      "category": "REPETITIONS_STYLE",
+      "issueType": "style",
+      "message": "Drei aufeinanderfolgende Sätze beginnen mit dem gleichen Wort. Evtl. können Sie den Satz umformulieren, zum Beispiel, indem Sie ein Synonym nutzen.",
+      "replacements": [],
+      "offset": 1180,
+      "length": 3,
+      "marked": "Ich",
+      "context": "...n gemacht und bin froh über meine Wahl. Ich freue mich auf die Zukunft hier.",
+      "snippet": "n gemacht und bin froh über meine Wahl. Ich freue mich auf die Zukunft hier."
+    },
+    {
+      "file": "lesen-t1-gemini-137.json",
+      "passageIndex": 0,
+      "ruleId": "GERMAN_WORD_REPEAT_BEGINNING_RULE",
+      "category": "REPETITIONS_STYLE",
+      "issueType": "style",
+      "message": "Drei aufeinanderfolgende Sätze beginnen mit dem gleichen Wort. Evtl. können Sie den Satz umformulieren, zum Beispiel, indem Sie ein Synonym nutzen.",
+      "replacements": [],
+      "offset": 972,
+      "length": 3,
+      "marked": "Ich",
+      "context": "...elegt, um noch besser helfen zu können. Ich habe überhaupt nicht erwartet, dass die...",
+      "snippet": "elegt, um noch besser helfen zu können. Ich habe überhaupt nicht erwartet, dass diese Arbeit so erfülle"
+    }
+  ]
+}

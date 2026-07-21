@@ -1,9 +1,34 @@
 /**
  * Fix common Gemini output mistakes before validate/merge.
  */
-import { capitalizeBatchNouns, decapitalizeBatchMidSentence } from './capitalizeNouns.mjs';
-import { balanceMcqGroup, antiRuns } from './balanceMcq.mjs';
+import { applyGermanCapsNormalize } from './germanCapsNormalize.mjs';
+import { stripMarkdownLeakInText } from './stripMarkdownLeak.mjs';
+import {
+  balanceMcqGroup,
+  antiRuns,
+  derivePartShuffleSeed,
+  shuffleKeyedQuestionOrder,
+  BALANCE_MCQ_VERSION,
+} from './balanceMcq.mjs';
 import { normalizeT3 } from './normalizeT3.mjs';
+import { dedupSkillsArray } from './dedupSkills.mjs';
+import {
+  normalizeSchreibenCorrectFields,
+  normalizeSchreibenRubric,
+} from './normalizeSchreibenRubric.mjs';
+import { canonicalSchreibenExplanation } from './schreibenDisplayRubric.mjs';
+import { canonicalSprechenExplanation } from './sprechenDisplayRubric.mjs';
+import {
+  canonicalSprechenType,
+  normalizeSprechenTopicTags,
+} from './sprechenTaxonomy.mjs';
+import { createRequire } from 'node:module';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const require = createRequire(import.meta.url);
+const ROOT_NORM = path.join(path.dirname(fileURLToPath(import.meta.url)), '../..');
+const HorenPictureMatching = require(path.join(ROOT_NORM, 'js/engine/horenPictureMatching.js'));
 const SKILL_MAP = {
   listening: 'listening',
   listening_comprehension: 'listening',
@@ -51,7 +76,8 @@ function normalizeDifficulty(value, module) {
     if (!Number.isNaN(n) && n >= 1 && n <= 10) return n;
   }
   if (module === 'horen') return 5;
-  if (module === 'schreiben' || module === 'sprechen') return 6;
+  if (module === 'sprechen') return 5; // SP-2: fixed B1 Sprechen difficulty
+  if (module === 'schreiben') return 6;
   return 4;
 }
 
@@ -62,7 +88,10 @@ function normalizeSkills(value, module) {
     return SKILL_MAP[key] || (['listening', 'reading', 'writing', 'speaking', 'grammar'].includes(key) ? key : fallback);
   };
   if (Array.isArray(value) && value.length) {
-    return value.map(mapOne).filter(Boolean);
+    // Map synonyms then dedup: ["writing","schreiben","writing"] → ["writing"]
+    // (shared with backlog reprocessors via dedupSkillsArray)
+    const mapped = value.map(mapOne).filter(Boolean);
+    return dedupSkillsArray(mapped).skills;
   }
   if (typeof value === 'string' && value.trim()) {
     return [mapOne(value)];
@@ -70,10 +99,49 @@ function normalizeSkills(value, module) {
   return [fallback];
 }
 
-function normalizeTopicTags(value) {
-  if (Array.isArray(value)) return value.length > 1 ? [value[0]] : value;
-  if (typeof value === 'string' && value.trim()) return [value.trim()];
-  return ['daily_life'];
+function normalizeTopicTags(value, rootTopicTag = null) {
+  if (Array.isArray(value) && value.length) {
+    const tag = value.length > 1 ? value[0] : value[0];
+    if (tag === 'daily_life' && rootTopicTag) return [rootTopicTag];
+    return [tag];
+  }
+  if (typeof value === 'string' && value.trim()) {
+    const tag = value.trim();
+    if (tag === 'daily_life' && rootTopicTag) return [rootTopicTag];
+    return [tag];
+  }
+  return null;
+}
+
+/**
+ * Elimina metadatos legacy estampados por normalizeBatch (pool Lesen B1).
+ *
+ * difficulty (Opción B, 2026-07-10): se calcula exclusivamente en runtime vía
+ * ExamBuilder.applyExamDifficulty → DifficultyScorer.deriveExamDifficulty /
+ * scoreQuestion al ensamblar el examen. El pool NO guarda un valor fijo, para
+ * evitar el short-circuit de DifficultyScorer (~L67–70: si q.difficulty ∈ [1,10]
+ * se reutiliza sin recalcular). Así un scorer mejorado no queda bloqueado por
+ * JSON antiguo. Revisitar solo si surge necesidad real de filtrar el pool por
+ * dificultad (entonces: función de solo lectura sobre CefrGate/DifficultyScorer,
+ * nunca persistir el score en el JSON). Ver BACKLOG.md → DIFF-SCORE / DIFF-POOL-RO.
+ */
+export function stripPoolLegacyQuestionFields(q, ctx = {}) {
+  const out = { ...q };
+  const lang = ctx.lang || 'de';
+  const rootTopicTag = ctx.rootTopicTag || ctx.topicTag || null;
+
+  delete out.difficulty;
+  delete out.skills;
+  delete out.examType;
+  delete out.topicTags;
+  if (!out.language || out.language === lang) delete out.language;
+  if (out.topicTag && rootTopicTag && out.topicTag === rootTopicTag) delete out.topicTag;
+
+  return out;
+}
+
+function isLesenPoolNormalize(ctx) {
+  return String(ctx?.module || '').toLowerCase() === 'lesen' && ctx?.stripPoolLegacy !== false;
 }
 
 function defaultExplanation(q) {
@@ -117,8 +185,11 @@ function normalizeQuestionType(raw) {
   return t;
 }
 
-function normalizeQuestion(q) {
+function normalizeQuestion(q, ctx = {}) {
   const out = { ...q };
+  const poolLesen = isLesenPoolNormalize(ctx);
+  const rootTopicTag = ctx.rootTopicTag || ctx.topicTag || null;
+  const lang = ctx.lang || 'de';
   if (typeof out.teil === 'string') out.teil = Number(out.teil);
   // If teil is still missing, try to extract it from the question ID
   // Patterns: gen-q-sp-t1-..., gen-q-s-t2-..., gen-q-h1-...-s1-q1
@@ -132,23 +203,66 @@ function normalizeQuestion(q) {
   if (out.correct == null && out.correctAnswer != null) {
     out.correct = out.correctAnswer;
   }
-  if (out.module === 'schreiben' || out.module === 'sprechen') {
+  // Canonical key normalization: multiple_choice correct must be lowercase letter (a/b/c/d).
+  // Gemini sometimes returns uppercase "A", "B", "C" — normalize here before POOL-2.
+  if (out.type === 'multiple_choice' && out.correct != null) {
+    const cs = String(out.correct);
+    if (/^[A-Z]$/.test(cs)) out.correct = cs.toLowerCase();
+  }
+  if (out.module === 'schreiben') {
     if (
       out.type === 'rubric' ||
       out.type === 'schreiben' ||
-      out.type === 'sprechen' ||
-      out.type === 'speaking_task' ||
-      out.type === 'oral_task' ||
-      out.type === 'speaking' ||
-      ['planungsaufgabe', 'praesentation', 'praesentationsaufgabe', 'feedback', 'feedback_diskussion', 'feedback_und_fragen', 'diskussion'].includes(out.type) ||
+      out.type === 'writing_task' ||
+      out.type === 'writing' ||
       !out.type
     ) {
       out.type = 'short_answer';
     }
   }
-  out.difficulty = normalizeDifficulty(out.difficulty, out.module);
-  out.skills = normalizeSkills(out.skills, out.module);
-  out.topicTags = normalizeTopicTags(out.topicTags);
+  // Sprechen: canonical types by Teil (B1 SP-2 / A2 official).
+  if (out.module === 'sprechen') {
+    const level = String(ctx.level || out.level || 'B1').trim().toUpperCase();
+    out.type = canonicalSprechenType(out.type, out.teil, level);
+    const canonExpl = canonicalSprechenExplanation(out.teil, level);
+    if (canonExpl) out.explanation = canonExpl;
+  }
+  // Schreiben: B1 convention correct/correctAnswer = "rubric"; examples live in explanation.
+  // Rubric object normalized to fixed English keys (shared with A2 backlog reprocessor).
+  if (out.module === 'schreiben') {
+    Object.assign(out, normalizeSchreibenCorrectFields(out));
+    if (out.rubric != null) {
+      const normalizedRubric = normalizeSchreibenRubric(out.rubric);
+      if (normalizedRubric) out.rubric = normalizedRubric;
+      else delete out.rubric;
+    }
+    const canonExpl = canonicalSchreibenExplanation(out.teil);
+    if (canonExpl) out.explanation = canonExpl;
+  }
+  if (poolLesen) {
+    // Opción B (2026-07-10): no persistir difficulty — ver stripPoolLegacyQuestionFields.
+    delete out.difficulty;
+    delete out.skills;
+    delete out.examType;
+    delete out.topicTags;
+    if (out.language === lang || !out.language) delete out.language;
+    if (out.topicTag && rootTopicTag && out.topicTag === rootTopicTag) delete out.topicTag;
+  } else {
+    out.difficulty =
+      out.module === 'sprechen'
+        ? String(ctx.level || out.level || 'B1').trim().toUpperCase() === 'A2'
+          ? 3
+          : 5
+        : normalizeDifficulty(out.difficulty, out.module);
+    out.skills = normalizeSkills(out.skills, out.module);
+    if (out.module === 'sprechen') {
+      const mapped = normalizeSprechenTopicTags(out.topicTags, rootTopicTag);
+      out.topicTags = mapped || (rootTopicTag ? [rootTopicTag] : ['Freizeit']);
+    } else {
+      const mapped = normalizeTopicTags(out.topicTags, rootTopicTag);
+      out.topicTags = mapped || ['daily_life'];
+    }
+  }
   out.options = normalizeOptions(out.options, out.type);
   if (out.type === 'richtig_falsch' && Array.isArray(out.options) && out.options.length) {
     out.options = [];
@@ -165,6 +279,51 @@ function normalizeQuestion(q) {
   return out;
 }
 
+/** Extract teil from gen-q-sp-t2-… / gen-q-s-t3-… style IDs. */
+export function inferTeilFromQuestionId(id) {
+  if (!id) return null;
+  const m = String(id).match(/[_-]t(\d)[_-]/i);
+  const n = m ? Number(m[1]) : NaN;
+  return Number.isFinite(n) && n >= 1 && n <= 5 ? n : null;
+}
+
+/**
+ * Sprechen/Schreiben batches ship 3 questions (Teile 1–3) in one JSON.
+ * Never inherit the CLI cell teil (sprechen-t2) onto every question.
+ */
+export function assignMultiTeilQuestions(questions, module) {
+  const mod = String(module || '').toLowerCase();
+  if (mod !== 'sprechen' && mod !== 'schreiben') return questions;
+  if (!Array.isArray(questions) || !questions.length) return questions;
+
+  const tagged = questions.map((q, origIdx) => {
+    let teil = q.teil != null && q.teil !== '' ? Number(q.teil) : null;
+    if (!Number.isFinite(teil)) teil = null;
+    const fromId = inferTeilFromQuestionId(q.id);
+    return { q, origIdx, teil, fromId };
+  });
+
+  const validTeils = tagged.map((x) => x.teil).filter((t) => t >= 1 && t <= 3);
+  if (
+    validTeils.length === questions.length &&
+    new Set(validTeils).size === questions.length
+  ) {
+    return questions;
+  }
+
+  const sorted = [...tagged].sort((a, b) => {
+    if (a.fromId != null && b.fromId != null) return a.fromId - b.fromId;
+    if (a.fromId != null) return -1;
+    if (b.fromId != null) return 1;
+    return a.origIdx - b.origIdx;
+  });
+
+  return sorted.map((item, idx) => ({
+    ...item.q,
+    teil: Math.min(idx + 1, 3),
+  }));
+}
+
 /**
  * Inject module/teil/lang/level and link passageId when Gemini omits bank fields.
  */
@@ -173,6 +332,7 @@ export function enrichBatchMetadata(batch, ctx = {}) {
   const teilNum = ctx.teil != null && Number.isFinite(Number(ctx.teil)) ? Number(ctx.teil) : null;
   const lang = ctx.lang || 'de';
   const level = ctx.level || 'B1';
+  const multiTeilSet = mod === 'schreiben' || (mod === 'sprechen' && level !== 'A2');
 
   const passages = (batch.passages || []).map((p) => {
     const out = { ...p };
@@ -186,13 +346,31 @@ export function enrichBatchMetadata(batch, ctx = {}) {
   const questions = (batch.questions || []).map((q, idx) => {
     const out = { ...q };
     if (mod && !out.module) out.module = mod;
-    if (teilNum != null && (out.teil == null || out.teil === '')) out.teil = teilNum;
-    if (!out.language) out.language = lang;
+    if (
+      teilNum != null &&
+      (out.teil == null || out.teil === '') &&
+      (!multiTeilSet || (mod === 'sprechen' && level === 'A2'))
+    ) {
+      out.teil = teilNum;
+    }
     if (!out.level) out.level = level;
-    if (!out.examType) out.examType = 'goethe';
+    if (!isLesenPoolNormalize(ctx)) {
+      if (!out.language) out.language = lang;
+      if (!out.examType) out.examType = 'goethe';
+    }
     // `correct` is canonical; backfill only when correct is absent.
     if (out.correct == null && out.correctAnswer != null) out.correct = out.correctAnswer;
-    if (out.correct != null) out.correctAnswer = out.correct;
+    // Mirror correct → correctAnswer, but never clobber a prose model answer with
+    // boolean `true` (legacy Schreiben A2: correct:true + example in correctAnswer).
+    if (out.correct != null) {
+      const ca = out.correctAnswer;
+      const preserveProseExample =
+        out.correct === true &&
+        typeof ca === 'string' &&
+        ca.trim() !== '' &&
+        ca.trim().toLowerCase() !== 'rubric';
+      if (!preserveProseExample) out.correctAnswer = out.correct;
+    }
     if ((mod === 'horen' || mod === 'lesen') && !out.passageId && solePassageId) {
       out.passageId = solePassageId;
     }
@@ -210,35 +388,6 @@ export function enrichBatchMetadata(batch, ctx = {}) {
   return { passages, questions };
 }
 
-/**
- * Rotate 3-option MCQ so the correct answer lands in slot (questionIdx % 3).
- * For a 6-question batch this guarantees exactly 2×a, 2×b, 2×c.
- * Accepts 3-option arrays only (T2/T5). Returns { options, correct, correctAnswer }.
- */
-export function shuffleMcqOptions(options, correct, questionIdx = 0) {
-  if (!Array.isArray(options) || options.length !== 3) return { options, correct, correctAnswer: correct };
-  const correctLetter = String(correct || '').toLowerCase().replace(/[^a-c]/g, '');
-  const correctIdx = correctLetter ? correctLetter.charCodeAt(0) - 97 : -1;
-  if (correctIdx < 0 || correctIdx >= options.length) return { options, correct, correctAnswer: correct };
-
-  // Target slot for this question (0→a, 1→b, 2→c)
-  const targetIdx = questionIdx % 3;
-  // How many positions to rotate left so correctIdx lands at targetIdx
-  const shift = ((correctIdx - targetIdx) + 3) % 3;
-  if (shift === 0) return { options, correct, correctAnswer: correct };
-
-  const arr = options.map((o, i) => ({ text: o, originalIdx: i }));
-  const rotated = [...arr.slice(shift), ...arr.slice(0, shift)];
-
-  const newCorrectIdx = rotated.findIndex((x) => x.originalIdx === correctIdx);
-  const newLetter = String.fromCharCode(97 + newCorrectIdx);
-  const newOptions = rotated.map((x, i) => {
-    const letter = String.fromCharCode(97 + i);
-    return String(x.text).replace(/^[a-c]\)\s*/i, `${letter}) `);
-  });
-  return { options: newOptions, correct: newLetter, correctAnswer: newLetter };
-}
-
 /** Remove internal LLM markup backticks: `word` → word */
 function stripBackticks(obj) {
   if (typeof obj === 'string') return obj.replace(/`([^`]+)`/g, '$1');
@@ -251,19 +400,24 @@ function stripBackticks(obj) {
   return obj;
 }
 
-/** Remove markdown bold/italic from question text fields only (not explanation metadata). */
+/** Remove markdown bold/italic/list-bullets from question text fields (not explanation). */
 const QUESTION_TEXT_FIELDS = new Set(['question', 'signText', 'title']);
 function stripMarkdownBold(q) {
   const out = { ...q };
   for (const field of QUESTION_TEXT_FIELDS) {
     if (typeof out[field] === 'string') {
-      out[field] = out[field].replace(/\*\*(.+?)\*\*/g, '$1').replace(/(?<!\w)_(.+?)_(?!\w)/g, '$1');
+      // Bold/italic legacy + AUD-4b line-start * / - bullets (Sprechen consignas)
+      let t = out[field].replace(/\*\*(.+?)\*\*/g, '$1').replace(/(?<!\w)_(.+?)_(?!\w)/g, '$1');
+      t = stripMarkdownLeakInText(t).result;
+      out[field] = t;
     }
   }
   if (Array.isArray(out.options)) {
-    out.options = out.options.map((o) =>
-      typeof o === 'string' ? o.replace(/\*\*(.+?)\*\*/g, '$1').replace(/(?<!\w)_(.+?)_(?!\w)/g, '$1') : o,
-    );
+    out.options = out.options.map((o) => {
+      if (typeof o !== 'string') return o;
+      let t = o.replace(/\*\*(.+?)\*\*/g, '$1').replace(/(?<!\w)_(.+?)_(?!\w)/g, '$1');
+      return stripMarkdownLeakInText(t).result;
+    });
   }
   return out;
 }
@@ -310,13 +464,72 @@ function deriveAudioFallback(passage, module, teil) {
   return turns.length >= 2 ? turns : null;
 }
 
+/** Collapse duplicate passages with identical text (Gemini T2 sometimes emits
+ *  base id + `-s1` clone). Keeps the passage referenced by questions when possible. */
+export function collapseIdenticalPassages(batch) {
+  const passages = batch?.passages;
+  if (!Array.isArray(passages) || passages.length < 2) return batch;
+
+  const kept = [];
+  const dropIds = new Set();
+  const textToKeeper = new Map();
+
+  for (const p of passages) {
+    const key = String(p?.text || '').trim();
+    if (!key) {
+      kept.push(p);
+      continue;
+    }
+    const existing = textToKeeper.get(key);
+    if (!existing) {
+      textToKeeper.set(key, p);
+      kept.push(p);
+      continue;
+    }
+    // Prefer id without -sN suffix as canonical; drop the clone.
+    const existingIsSeg = /-(s\d+)$/i.test(String(existing.id || ''));
+    const curIsSeg = /-(s\d+)$/i.test(String(p.id || ''));
+    if (existingIsSeg && !curIsSeg) {
+      // replace keeper with non-segment id
+      const idx = kept.indexOf(existing);
+      if (idx >= 0) kept[idx] = p;
+      dropIds.add(existing.id);
+      textToKeeper.set(key, p);
+    } else {
+      dropIds.add(p.id);
+    }
+  }
+
+  if (!dropIds.size) return batch;
+
+  const keepIds = new Set(kept.map((p) => p.id).filter(Boolean));
+  const soleId = keepIds.size === 1 ? [...keepIds][0] : null;
+  const questions = (batch.questions || []).map((q) => {
+    if (!q?.passageId || keepIds.has(q.passageId)) return q;
+    if (soleId) return { ...q, passageId: soleId };
+    return q;
+  });
+
+  return { ...batch, passages: kept, questions };
+}
+
 export function normalizeBatch(batch, ctx) {
   const cleaned = stripBackticks(batch);
-  const base = ctx ? enrichBatchMetadata(cleaned, ctx) : cleaned;
+  const baseRaw = ctx ? enrichBatchMetadata(cleaned, ctx) : cleaned;
   const mod = String(ctx?.module || '').toLowerCase();
   const teil = ctx?.teil;
+  const batchLevel = String(ctx?.level || 'B1').trim().toUpperCase();
+  const base =
+    mod === 'sprechen' && batchLevel === 'A2'
+      ? baseRaw
+      : mod === 'sprechen' || mod === 'schreiben'
+        ? {
+            ...baseRaw,
+            questions: assignMultiTeilQuestions(baseRaw.questions || [], mod),
+          }
+        : baseRaw;
 
-  const passages = (base.passages || []).map((p) => {
+  let passages = (base.passages || []).map((p) => {
     const out = { ...p };
     // Add audio fallback for Hören T3 / T4 if not already present
     if (mod === 'horen' && (teil === 3 || teil === 4) && !out.audio) {
@@ -329,33 +542,65 @@ export function normalizeBatch(batch, ctx) {
   // Balance MCQ letter distribution and break consecutive runs (all MCQ teils:
   // lesen T2/T5, horen T1/T2).  richtig_falsch, ja_nein and matching untouched.
   const rawQuestions = (base.questions || []).map((q) =>
-    normalizeQuestion(stripStichworte(stripMarkdownBold(q))),
+    normalizeQuestion(stripStichworte(stripMarkdownBold(q)), ctx),
   );
-  const balancedQuestions = antiRuns(balanceMcqGroup(rawQuestions));
+  const shuffleSeed = derivePartShuffleSeed(rawQuestions);
+  const balancedQuestions = shuffleKeyedQuestionOrder(
+    antiRuns(balanceMcqGroup(rawQuestions, { seed: shuffleSeed })),
+    { seed: shuffleSeed },
+  );
 
   let normalized = {
+    ...base,
     passages,
     questions: balancedQuestions,
   };
 
-  // Lesen T3: canonicalize matching format (uppercase correct, sync correctAnswer,
-  // unify whitespace in shared A-J options list). Does NOT change options[] structure.
-  if (mod === 'lesen' && teil === 3) {
+  // Hören: collapse Gemini duplicate passages (identical text, e.g. id + id-s1).
+  // Safe for T1 (distinct texts kept); only removes exact text clones.
+  if (mod === 'horen') {
+    const before = (normalized.passages || []).length;
+    normalized = collapseIdenticalPassages(normalized);
+    const after = (normalized.passages || []).length;
+    if (after < before) {
+      console.log(`  [normalizeBatch] collapsed ${before - after} duplicate passage(s) (identical text)`);
+    }
+  }
+
+  // Lesen T3 B1: canonicalize matching format (A-J ads). A2 T3 = email MCQ, skip.
+  if (mod === 'lesen' && teil === 3 && batchLevel !== 'A2') {
     normalized = normalizeT3(normalized);
   }
 
-  // Step N-1: lower-case adjectives/adverbs that Gemini over-capitalises mid-sentence
-  const { batch: decapped, totalFixed: nDecap } = decapitalizeBatchMidSentence(normalized);
-  if (nDecap > 0) {
-    console.log(`  [normalizeNouns] ${nDecap} adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)`);
+  // Hören A2 T2: picture_matching — banco compartido a–i, preguntas sin options.
+  if (HorenPictureMatching.isPictureMatchingCtx({ module: mod, teil, level: ctx?.level })) {
+    normalized = HorenPictureMatching.normalizePictureMatchingBatch(normalized, {
+      module: mod,
+      teil,
+      level: ctx?.level,
+    });
   }
 
-  // Last step: deterministic noun capitalization via lexicon
-  const { batch: capitalized, totalFixed } = capitalizeBatchNouns(decapped);
-  if (totalFixed > 0) {
-    console.log(`  [normalizeNouns] ${totalFixed} sustantivo(s) capitalizados automáticamente`);
+  // Post-gen caps normalization (decap adj/adv → cap nouns → MCQ option caps)
+  let { batch: withMcqCaps, stats: capsStats } = applyGermanCapsNormalize(normalized);
+  if (capsStats.decapFixed > 0) {
+    console.log(`  [normalizeNouns] ${capsStats.decapFixed} adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)`);
   }
-  return capitalized;
+  if (capsStats.capFixed > 0) {
+    console.log(`  [normalizeNouns] ${capsStats.capFixed} sustantivo(s) capitalizados automáticamente`);
+  }
+
+  if (isLesenPoolNormalize(ctx)) {
+    withMcqCaps = {
+      ...withMcqCaps,
+      questions: (withMcqCaps.questions || []).map((q) => stripPoolLegacyQuestionFields(q, ctx)),
+    };
+  }
+  return {
+    ...withMcqCaps,
+    _balanceMcqVersion: BALANCE_MCQ_VERSION,
+    _balanceMcqNormalizedAt: new Date().toISOString(),
+  };
 }
 
 /** Tras generación LLM: fuerza module/teil/lang/type del slot objetivo. */
@@ -398,6 +643,8 @@ export function coerceGeneratedLesenPart(batch, ctx = {}) {
     teil: Number.isFinite(teil) ? teil : ctx.teil,
     lang,
     level,
+    rootTopicTag: ctx.rootTopicTag || batch.topicTag || batch._requestedTopic || null,
+    stripPoolLegacy: ctx.stripPoolLegacy !== false,
   });
   const teilNum = Number.isFinite(teil) ? teil : null;
   const slotType = teilNum != null ? TEIL_QUESTION_TYPE[teilNum] : null;
@@ -430,13 +677,6 @@ export function coerceGeneratedLesenPart(batch, ctx = {}) {
           out = { ...out, ...normalizeJaNeinAnswer(out) };
         } else if (slotType === 'multiple_choice') {
           out.options = normalizeOptions(out.options, slotType);
-          // Rotate 3-option MCQ (T2/T5) by question index for balanced distribution
-          if (out.options.length === 3) {
-            const shuffled = shuffleMcqOptions(out.options, out.correct, qIdx);
-            out.options = shuffled.options;
-            out.correct = shuffled.correct;
-            out.correctAnswer = shuffled.correctAnswer;
-          }
         }
       }
       if ((out.module === 'lesen' || !out.passageId) && solePassageId && !out.passageId) {

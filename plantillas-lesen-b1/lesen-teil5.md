@@ -15,6 +15,7 @@ Eres examinador del Goethe-Zertifikat B1. Genera **UNA** parte de **Lesen Teil 5
 
 ## LONGITUD CEFR (OBLIGATORIO)
 Si el texto tiene menos de 185 palabras, **añade reglas concretas** (horarios, precios, excepciones, plazos).
+Si supera 230 palabras, **ELIMINA** la regla menos importante o las frases de relleno sin datos. Cuenta las palabras del pasaje antes de emitir: el número debe estar entre 185 y 230.
 Incluye **≥5 reglas distintas** con cifras o condiciones claras.
 
 ## VOCABULARIO B1 (cobertura ≥75% — OBLIGATORIO)
@@ -24,12 +25,20 @@ Usa formulaciones **normativas simples**:
 
 **PROHIBIDO:** jerga jurídica densa, empfand, faszinierend, tono moralizante, anglicismos raros.
 
+## REGISTRO T5 (pasaje vs ítems)
+El pasaje normativo puede usar registro formal, pero **PREGUNTAS, OPCIONES y EXPLANATIONS** deben mantenerse en **B1 llano**. **PROHIBIDO** en opciones/explanations: «zieht … nach sich», «in Rechnung gestellt», «umgehend», «gestattet» (usa «erlaubt»), «erfolgen» (usa «passieren/stattfinden»).
+
+## OPCIONES MCQ
+Tras **a)**, **b)**, **c)** la primera palabra en **mayúscula** (p. ej. «a) Zehn Euro…», no «a) zehn Euro…»). Mantén el mismo estilo en las 12 opciones del batch.
+
 ## REGLAS DE CALIDAD (rechazo automático si fallas)
 1. **Sin tono moralizante** (mismas frases prohibidas que en T1).
-2. Cada pregunta exige **combinar ≥2 datos** del texto (plazo + condición, horario + excepción…).
-3. **Anti word-matching:** pregunta y opción correcta — **máximo 2 palabras de contenido (≥4 letras) iguales al pasaje** cada una.
-4. La opción correcta **NO copia 4+ palabras seguidas** del pasaje.
-5. **Distractores:** cifras/horarios/reglas **cercanos pero incorrectos** (no absurdos).
+2. **Sin tono emocional/IA ni fuentes ficticias:** NO «kleines Wunder», NO «Eine Studie zeigt…» en Hausordnung — registro normativo neutro.
+3. Cada pregunta exige **combinar ≥2 datos** del texto (plazo + condición, horario + excepción…).
+4. **Anti word-matching:** pregunta y opción correcta — **máximo 2 palabras de contenido (≥4 letras) iguales al pasaje** cada una.
+5. La opción correcta **NO copia 4+ palabras seguidas** del pasaje.
+6. **Distractores:** cifras/horarios/reglas **cercanos pero incorrectos** (no absurdos).
+7. **Explanation:** debe justificar **LA OPCIÓN CORRECTA** parafraseándola — empieza refiriéndote a lo que dice la opción correcta con otras palabras y explica por qué es cierta según el texto. **PROHIBIDO** copiar ≥5 palabras seguidas del pasaje en la explanation. **PROHIBIDO** que la explanation sea solo una cita de la regla sin mencionar el contenido de la opción.
 
 ## ANTI WORD-MATCHING — MALO vs BUENO (léelo antes de escribir)
 
@@ -48,12 +57,17 @@ Regla: *«**Ruhe** abends spät bis morgens früh…»*
 <<< bewohner, ruhe, termin, organisation, parkplatz, müll, raum, gebühr, nachbar, familie >>>
 
 ## AUTORREVISIÓN (obligatoria)
+- ¿Pasaje entre 185 y 230 palabras contadas?
 - ¿Pasaje ≥185 palabras (mín. 180) con ≥5 reglas concretas?
 - ¿4 preguntas a/b/c que combinan ≥2 datos del texto?
 - ¿Pregunta + opción correcta comparten ≤2 palabras de contenido con el pasaje?
 - ¿Distractores plausibles con cifras/horarios cercanos?
 - ¿Sin tono moralizante?
-- ¿Solo JSON, sin markdown?
+- ¿Cada explanation parafrasea la opción correcta (no cita literal del pasaje)?
+- ¿Cada explanation tiene ≥10 palabras? Cuenta: si tiene 9 o menos, añade una frase explicativa. (CHK-18 rechaza automáticamente)
+- ¿Opciones a/b/c con primera palabra en mayúscula (estilo uniforme)?
+- ¿Preguntas/opciones/explanations en B1 llano (sin «gestattet», «umgehend», «in Rechnung gestellt», etc.)?
+- PROHIBIDO usar **negrita** (asteriscos dobles) en el campo `text` del pasaje. Ejemplo INCORRECTO: '**Öffnungszeiten:** Das Zentrum öffnet...'. Ejemplo CORRECTO: 'Öffnungszeiten: Das Zentrum öffnet...' (dos puntos, sin asteriscos).
 
 ## Formato de salida
 Devuelve SOLO `{ "passages": [...], "questions": [...] }` — sin ```, sin texto extra.

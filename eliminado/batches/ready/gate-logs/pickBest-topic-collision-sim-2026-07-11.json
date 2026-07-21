@@ -1,0 +1,276 @@
+{
+  "generatedAt": "2026-07-11T14:05:17.494Z",
+  "poolMode": "full",
+  "note": "Independent exams (usedIds reset each trial). Pool shuffled per cell so pickBest first-wins ties are explored. protected = verbatim pickBest; unprotected = same but no -40 topic penalty; uniform = pick random file per cell. Default poolMode=full (all pool-verified LH files) to match prior 95.2% baseline; use --gated for assembler quality-gate screen. Note: pickBest never hard-rejects on topic (−40 soft score only); the empty-usedTopics retry only fires when all ids/fps are exhausted.",
+  "stock": {
+    "lesen_1": 38,
+    "lesen_2": 6,
+    "lesen_3": 15,
+    "lesen_4": 5,
+    "lesen_5": 25,
+    "horen_1": 1,
+    "horen_2": 19,
+    "horen_3": 5,
+    "horen_4": 9
+  },
+  "stockTopics": {
+    "lesen_1": {
+      "Verkehr": 2,
+      "Freizeit": 11,
+      "Ernährung": 3,
+      "Sport": 4,
+      "Wohnen": 3,
+      "Stadtleben": 10,
+      "Technik": 2,
+      "Familie": 2,
+      "Kultur": 1
+    },
+    "lesen_2": {
+      "Konsum": 1,
+      "Sport": 2,
+      "Medien": 1,
+      "Umwelt": 1,
+      "Familie": 1
+    },
+    "lesen_3": {
+      "(null)": 15
+    },
+    "lesen_4": {
+      "Stadtleben": 2,
+      "Umwelt": 3
+    },
+    "lesen_5": {
+      "Freizeit": 1,
+      "Stadtleben": 1,
+      "Umwelt": 14,
+      "Gesundheit": 3,
+      "Sport": 1,
+      "Ernährung": 2,
+      "Medien": 2,
+      "Verkehr": 1
+    },
+    "horen_1": {
+      "Sport": 1
+    },
+    "horen_2": {
+      "Technik": 2,
+      "Sport": 2,
+      "Familie": 1,
+      "Konsum": 1,
+      "Ernährung": 1,
+      "Kultur": 1,
+      "Stadtleben": 1,
+      "Freizeit": 1,
+      "Verkehr": 2,
+      "Umwelt": 1,
+      "Medien": 2,
+      "Bildung": 2,
+      "Gesundheit": 1,
+      "Reisen": 1
+    },
+    "horen_3": {
+      "Arbeit": 2,
+      "Technik": 1,
+      "Kultur": 1,
+      "Reisen": 1
+    },
+    "horen_4": {
+      "Umwelt": 1,
+      "Ernährung": 1,
+      "Verkehr": 1,
+      "Familie": 1,
+      "Sport": 1,
+      "Freizeit": 1,
+      "Arbeit": 1,
+      "Kultur": 1,
+      "Bildung": 1
+    }
+  },
+  "schreibenSets": 6,
+  "sprechenSets": 5,
+  "capacityWithoutReplacement": 1,
+  "deterministicAssembly": {
+    "topics": {
+      "lesen_1": "Verkehr",
+      "lesen_2": "Konsum",
+      "lesen_3": null,
+      "lesen_4": "Stadtleben",
+      "lesen_5": "Freizeit",
+      "horen_1": "Sport",
+      "horen_2": "Technik",
+      "horen_3": "Arbeit",
+      "horen_4": "Umwelt"
+    },
+    "collision": false,
+    "h1Involved": false,
+    "fallbackCells": 0
+  },
+  "previousUniformBaselinePct": 95.2,
+  "results": {
+    "protected": {
+      "trials": 2000,
+      "collisionPct": 54.2,
+      "noCollisionPct": 45.9,
+      "h1InvolvedInCollisionPct": 49.7,
+      "h1InvolvedCount": 994,
+      "fallbackExamPct": 0,
+      "avgFallbackCellsWhenUsed": 0,
+      "topDupTopics": [
+        {
+          "topic": "Sport",
+          "trials": 994,
+          "pct": 49.7
+        },
+        {
+          "topic": "Stadtleben",
+          "trials": 53,
+          "pct": 2.7
+        },
+        {
+          "topic": "Umwelt",
+          "trials": 48,
+          "pct": 2.4
+        }
+      ]
+    },
+    "unprotected": {
+      "trials": 2000,
+      "collisionPct": 93.4,
+      "noCollisionPct": 6.6,
+      "h1InvolvedInCollisionPct": 53.1,
+      "h1InvolvedCount": 1062,
+      "fallbackExamPct": 0,
+      "avgFallbackCellsWhenUsed": 0,
+      "topDupTopics": [
+        {
+          "topic": "Sport",
+          "trials": 1062,
+          "pct": 53.1
+        },
+        {
+          "topic": "Umwelt",
+          "trials": 978,
+          "pct": 48.9
+        },
+        {
+          "topic": "Stadtleben",
+          "trials": 292,
+          "pct": 14.6
+        },
+        {
+          "topic": "Freizeit",
+          "trials": 129,
+          "pct": 6.5
+        },
+        {
+          "topic": "Arbeit",
+          "trials": 101,
+          "pct": 5.1
+        },
+        {
+          "topic": "Kultur",
+          "trials": 95,
+          "pct": 4.8
+        },
+        {
+          "topic": "Medien",
+          "trials": 85,
+          "pct": 4.3
+        },
+        {
+          "topic": "Familie",
+          "trials": 80,
+          "pct": 4
+        }
+      ]
+    },
+    "uniform": {
+      "trials": 2000,
+      "collisionPct": 92.8,
+      "noCollisionPct": 7.3,
+      "h1InvolvedInCollisionPct": 53.3,
+      "h1InvolvedCount": 1065,
+      "fallbackExamPct": 0,
+      "avgFallbackCellsWhenUsed": 0,
+      "topDupTopics": [
+        {
+          "topic": "Sport",
+          "trials": 1065,
+          "pct": 53.3
+        },
+        {
+          "topic": "Umwelt",
+          "trials": 949,
+          "pct": 47.5
+        },
+        {
+          "topic": "Stadtleben",
+          "trials": 298,
+          "pct": 14.9
+        },
+        {
+          "topic": "Freizeit",
+          "trials": 138,
+          "pct": 6.9
+        },
+        {
+          "topic": "Arbeit",
+          "trials": 96,
+          "pct": 4.8
+        },
+        {
+          "topic": "Kultur",
+          "trials": 85,
+          "pct": 4.3
+        },
+        {
+          "topic": "Familie",
+          "trials": 80,
+          "pct": 4
+        },
+        {
+          "topic": "Medien",
+          "trials": 76,
+          "pct": 3.8
+        }
+      ]
+    }
+  },
+  "gatedSecondaryNote": "Same harness with --gated (isPartPoolReady). Stock collapses; H1 still 1x Sport.",
+  "gatedSecondary": {
+    "stock": {
+      "lesen_1": 5,
+      "lesen_2": 5,
+      "lesen_3": 13,
+      "lesen_4": 1,
+      "lesen_5": 13,
+      "horen_1": 1,
+      "horen_2": 4,
+      "horen_3": 1,
+      "horen_4": 4
+    },
+    "protected": {
+      "collisionPct": 80.5,
+      "h1InvolvedInCollisionPct": 57.8,
+      "h1InvolvedCount": 1155
+    },
+    "unprotected": {
+      "collisionPct": 98.3,
+      "h1InvolvedInCollisionPct": 68.6
+    },
+    "uniform": {
+      "collisionPct": 98.1,
+      "h1InvolvedInCollisionPct": 68.6
+    }
+  },
+  "hypothesis": {
+    "softProtectionHelpsSignificantly": true,
+    "reducesFrom": "~95% uniform / 93% unprotected pickBest",
+    "to": "54.2% with pickBest topic penalty",
+    "stillAbove30to40": true,
+    "residualDominatedByHorenT1Sport": true,
+    "h1ShareOfProtectedCollisions": "994/1084 ≈ 92% of collision exams involve Sport=H1",
+    "fallbackNotTheIssue": "pickBest never hard-filters topics; empty-usedTopics retry never fired (0%). Soft −40 always applies when an unused-topic alternative exists in-cell.",
+    "conclusion": "CONFIRM stock-scarcity hypothesis for residual rate: protection works where cells have topic choice (Umwelt dups 48.9%→2.4%); residual ~50pp is almost entirely Hören T1 fixed Sport colliding with earlier Sport picks. Generating more Hören T1 topics is the binding fix, not rewriting pickBest."
+  }
+}

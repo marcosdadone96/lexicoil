@@ -3,9 +3,123 @@
 // ═══════════════════════════════════════════
 const AUTO_SAVE_CAP = 10;
 const GLOBAL_SAVE_CAP = 50;
+let _savedExamSelection = new Set();
 
 function savedExamTs(e) {
   return Number(e?.updatedAt) || Date.parse(e?.savedAtIso) || Date.parse(e?.savedAt) || Number(e?.id) || 0;
+}
+
+function savedExamStatusRank(st) {
+  if (st === 'completed') return 4;
+  if (st === 'in_progress') return 3;
+  if (st === 'aborted') return 2;
+  if (st === 'auto') return 1;
+  return 0;
+}
+
+function savedExamGoalMatch(e, goalId) {
+  if (!goalId) return true;
+  if (e.goalId === goalId) return true;
+  if (!e.goalId && typeof S !== 'undefined') {
+    const goal = (S.goals || []).find((g) => g.id === goalId);
+    if (goal && e.lang === goal.subject && e.level === goal.level) return true;
+  }
+  return false;
+}
+
+/** Stable key for the same catalog exam (published / pool) within a goal + mode. */
+function getExamContentKey(examData, goalId, mode) {
+  if (!examData) return null;
+  const gid = goalId || examData.goalId || '';
+  const m = normalizeMode(mode || (typeof S !== 'undefined' ? S.mode : null) || examData.mode || 'practice');
+  const catalogId =
+    examData.examId ||
+    examData.poolId ||
+    (examData.publishedExam && examData.id ? examData.id : null) ||
+    null;
+  if (catalogId) {
+    return [examData.lang || examData.subject, examData.level, catalogId, gid, m].join('|');
+  }
+  if (examData.demo) {
+    return ['demo', examData.lang, examData.level, examData.topic || '', gid, m].join('|');
+  }
+  return null;
+}
+
+function resolveSavedExamIdentity(examData, goalId, mode) {
+  const contentKey = getExamContentKey(examData, goalId, mode);
+  if (!contentKey) {
+    const id = examData._savedId || examData._flightId || Date.now();
+    return { id, contentKey: null };
+  }
+  const existing = (S.savedExams || []).find(
+    (e) => e.contentKey === contentKey && savedExamGoalMatch(e, goalId || examData.goalId),
+  );
+  const id = existing?.id || examData._savedId || `ck:${contentKey}`;
+  return { id, contentKey };
+}
+
+function assignSavedExamIdentity(examData, goalId, mode) {
+  if (!examData) return;
+  const { id, contentKey } = resolveSavedExamIdentity(
+    examData,
+    goalId || (typeof S !== 'undefined' ? S.activeGoalId : null),
+    mode || (typeof S !== 'undefined' ? S.mode : null),
+  );
+  examData._savedId = id;
+  if (contentKey) {
+    examData._contentKey = contentKey;
+    delete examData._flightId;
+  } else if (!examData._savedId && !examData._flightId) {
+    examData._flightId = Date.now();
+    examData._savedId = examData._flightId;
+  }
+}
+
+function findSavedExamIndex(examData, goalId, mode, preferredId) {
+  if (preferredId != null) {
+    const byId = S.savedExams.findIndex((e) => String(e.id) === String(preferredId));
+    if (byId >= 0) return byId;
+  }
+  const contentKey = getExamContentKey(examData, goalId, mode);
+  if (!contentKey) return -1;
+  return S.savedExams.findIndex(
+    (e) => e.contentKey === contentKey && savedExamGoalMatch(e, goalId || examData?.goalId),
+  );
+}
+
+function mergeSavedExamEntries(keep, drop) {
+  const winner = savedExamStatusRank(keep.status) >= savedExamStatusRank(drop.status) ? keep : drop;
+  const loser = winner === keep ? drop : keep;
+  return {
+    ...loser,
+    ...winner,
+    id: winner.id,
+    contentKey: winner.contentKey || loser.contentKey || getExamContentKey(winner.data, winner.goalId, winner.mode),
+    score: winner.score != null ? winner.score : loser.score,
+    updatedAt: Math.max(savedExamTs(winner), savedExamTs(loser)),
+  };
+}
+
+function dedupeSavedExamsByContentKey() {
+  if (!Array.isArray(S.savedExams) || !S.savedExams.length) return;
+  const keyed = new Map();
+  const rest = [];
+  for (const e of S.savedExams) {
+    const key = e.contentKey || getExamContentKey(e.data, e.goalId, e.mode);
+    if (!key) {
+      rest.push(e);
+      continue;
+    }
+    e.contentKey = key;
+    const mapKey = `${key}::${e.goalId || ''}`;
+    if (keyed.has(mapKey)) {
+      keyed.set(mapKey, mergeSavedExamEntries(keyed.get(mapKey), e));
+    } else {
+      keyed.set(mapKey, e);
+    }
+  }
+  S.savedExams = [...keyed.values(), ...rest].sort((a, b) => savedExamTs(b) - savedExamTs(a));
 }
 
 function isProtectedSavedStatus(st) {
@@ -57,10 +171,12 @@ function saveCurrentExam(statusOverride, opts) {
     if (!opts?.silent) lcToast('No exam loaded yet.', 'warn');
     return;
   }
-  const id = S.examData._savedId || S.examData._flightId || Date.now();
+  assignSavedExamIdentity(S.examData, S.activeGoalId, S.mode);
+  const { id, contentKey } = resolveSavedExamIdentity(S.examData, S.activeGoalId, S.mode);
   S.examData._savedId = id;
+  if (contentKey) S.examData._contentKey = contentKey;
   if (S.activeGoalId) S.examData.goalId = S.activeGoalId;
-  const existing = S.savedExams.findIndex((e) => e.id === id);
+  const existing = findSavedExamIndex(S.examData, S.activeGoalId, S.mode, id);
   if (statusOverride === 'auto' && existing >= 0) {
     const prev = S.savedExams[existing].status;
     if (isProtectedSavedStatus(prev)) return;
@@ -82,6 +198,7 @@ function saveCurrentExam(statusOverride, opts) {
   }
   const entry = {
     id,
+    contentKey: contentKey || S.examData._contentKey || null,
     savedAt: new Date().toLocaleDateString(),
     savedAtIso: new Date().toISOString(),
     updatedAt: Date.now(),
@@ -201,12 +318,13 @@ function retakeExam(i, resume) {
   if (!e) return;
   if (e.status === 'auto') promoteAutoSavedAtIndex(i, 'in_progress');
   S.examData = e.data;
+  S.examData._savedId = e.id;
+  if (e.contentKey) S.examData._contentKey = e.contentKey;
   S.examData._fromSaved = true;
   S.quickMod = null;
   S.subject = e.lang;
   S.level = e.level;
   S.mode = normalizeMode(e.mode || 'official');
-  if (S.mode === 'practice') S.vocabLang = vocabLangFor(S.subject);
   if (e.goalId) {
     S.activeGoalId = e.goalId;
     const g = S.goals.find((x) => x.id === e.goalId);
@@ -234,23 +352,136 @@ function retakeExam(i, resume) {
   renderExam();
 }
 
+function recordDeletedSavedExam(removed) {
+  if (!removed?.id) return;
+  if (!Array.isArray(S.deletedSavedExams)) S.deletedSavedExams = [];
+  S.deletedSavedExams.push({ id: removed.id, deletedAt: Date.now() });
+  try {
+    localStorage.setItem('lc_saved_del', JSON.stringify(S.deletedSavedExams));
+  } catch (_) {}
+}
+
 function deleteSaved(i) {
   if (!confirm('Remove this saved exam?')) return;
   const removed = S.savedExams[i];
-  if (removed?.id) {
-    if (!Array.isArray(S.deletedSavedExams)) S.deletedSavedExams = [];
-    S.deletedSavedExams.push({ id: removed.id, deletedAt: Date.now() });
-    try {
-      localStorage.setItem('lc_saved_del', JSON.stringify(S.deletedSavedExams));
-    } catch (_) {}
-  }
+  recordDeletedSavedExam(removed);
+  if (removed?.id) _savedExamSelection.delete(String(removed.id));
   S.savedExams.splice(i, 1);
   saveSaved();
   const goal = getActiveGoal();
   if (goal && document.getElementById('wsSavedGrid')) renderWsSavedExams(goal);
 }
 
+function deleteSavedById(id) {
+  const i = S.savedExams.findIndex((e) => String(e.id) === String(id));
+  if (i >= 0) deleteSaved(i);
+}
+
+function setSavedExamArchived(id, archived) {
+  const i = S.savedExams.findIndex((e) => String(e.id) === String(id));
+  if (i < 0) return;
+  S.savedExams[i] = { ...S.savedExams[i], archived: !!archived, updatedAt: Date.now() };
+  saveSaved();
+  const goal = typeof getActiveGoal === 'function' ? getActiveGoal() : null;
+  if (goal && document.getElementById('wsSavedGrid')) renderWsSavedExams(goal);
+}
+
+function archiveSavedExam(id) {
+  setSavedExamArchived(id, true);
+  _savedExamSelection.delete(String(id));
+}
+
+function archiveSavedExamAt(i) {
+  const e = S.savedExams[i];
+  if (e) archiveSavedExam(e.id);
+}
+
+function unarchiveSavedExamAt(i) {
+  const e = S.savedExams[i];
+  if (e) unarchiveSavedExam(e.id);
+}
+
+function unarchiveSavedExam(id) {
+  setSavedExamArchived(id, false);
+}
+
+function toggleSavedExamSelect(id, checked) {
+  const key = String(id);
+  if (checked) _savedExamSelection.add(key);
+  else _savedExamSelection.delete(key);
+}
+
+function toggleSavedExamSelectAt(i, checked) {
+  const e = S.savedExams[i];
+  if (e) toggleSavedExamSelect(e.id, checked);
+}
+
+function isSavedExamSelected(id) {
+  return _savedExamSelection.has(String(id));
+}
+
+function clearSavedExamSelection() {
+  _savedExamSelection.clear();
+}
+
+function getSavedExamsForGoal(goal) {
+  return (S.savedExams || []).filter((e) => {
+    if (e.lang !== goal.subject || e.level !== goal.level) return false;
+    if (e.goalId && e.goalId !== goal.id) return false;
+    return true;
+  });
+}
+
+function deleteSelectedSavedExams(goalId) {
+  const goal = (S.goals || []).find((g) => g.id === goalId) || (typeof getActiveGoal === 'function' ? getActiveGoal() : null);
+  if (!goal || !_savedExamSelection.size) return;
+  if (!confirm(`Delete ${_savedExamSelection.size} saved exam(s)?`)) return;
+  const drop = new Set(_savedExamSelection);
+  S.savedExams.filter((e) => drop.has(String(e.id))).forEach(recordDeletedSavedExam);
+  S.savedExams = S.savedExams.filter((e) => !drop.has(String(e.id)));
+  clearSavedExamSelection();
+  saveSaved();
+  if (document.getElementById('wsSavedGrid')) renderWsSavedExams(goal);
+}
+
+function archiveSelectedSavedExams(goalId) {
+  const goal = (S.goals || []).find((g) => g.id === goalId) || (typeof getActiveGoal === 'function' ? getActiveGoal() : null);
+  if (!goal || !_savedExamSelection.size) return;
+  const drop = new Set(_savedExamSelection);
+  S.savedExams.forEach((e, i) => {
+    if (drop.has(String(e.id))) {
+      S.savedExams[i] = { ...e, archived: true, updatedAt: Date.now() };
+    }
+  });
+  clearSavedExamSelection();
+  saveSaved();
+  if (document.getElementById('wsSavedGrid')) renderWsSavedExams(goal);
+}
+
+function selectAllVisibleSavedExams(goalId, checked) {
+  const goal = (S.goals || []).find((g) => g.id === goalId);
+  if (!goal) return;
+  getSavedExamsForGoal(goal)
+    .filter((e) => !e.archived)
+    .forEach((e) => toggleSavedExamSelect(e.id, checked));
+  renderWsSavedExams(goal);
+}
+
 window.autoSaveExam = autoSaveExam;
 window.pinSavedExam = pinSavedExam;
+window.assignSavedExamIdentity = assignSavedExamIdentity;
+window.dedupeSavedExamsByContentKey = dedupeSavedExamsByContentKey;
+window.getExamContentKey = getExamContentKey;
+window.deleteSavedById = deleteSavedById;
+window.archiveSavedExam = archiveSavedExam;
+window.unarchiveSavedExam = unarchiveSavedExam;
+window.toggleSavedExamSelect = toggleSavedExamSelect;
+window.toggleSavedExamSelectAt = toggleSavedExamSelectAt;
+window.isSavedExamSelected = isSavedExamSelected;
+window.deleteSelectedSavedExams = deleteSelectedSavedExams;
+window.archiveSelectedSavedExams = archiveSelectedSavedExams;
+window.selectAllVisibleSavedExams = selectAllVisibleSavedExams;
+window.archiveSavedExamAt = archiveSavedExamAt;
+window.unarchiveSavedExamAt = unarchiveSavedExamAt;
 
 // History UI now lives in the workspace Progress tab (renderGoalHistoryHtml in workspaceUi.js).

@@ -1,0 +1,131 @@
+# Plantilla de generación — Hören B1 · Teil 2
+
+Pega TODO este texto en Gemini/ChatGPT. Devuelve **SOLO JSON**.
+Formato oficial: **1 monólogo + 5 MCQ**, escucha **1×**.
+
+---
+
+Eres examinador del Goethe-Zertifikat B1. Genera **UNA** parte de **Hören Teil 2**
+(Vortrag, Einführung, Referat), alemán **hablado**, nivel B1.
+
+## Reglas estrictas
+- **1 passage** (monólogo de una persona), **240–300 palabras** (mín. 220, máx. 320).
+- **5 preguntas** `type: "multiple_choice"` con exactamente **3 opciones** a)/b)/c).
+- `correct` / `correctAnswer`: solo `"a"`, `"b"` o `"c"`.
+- **`options` = array de STRINGS**, nunca objetos:
+  `"options": ["a) Texto…", "b) Texto…", "c) Texto…"]`
+- **PROHIBIDO:** `{ "key": "a", "text": "…" }` — el esquema rechaza objetos.
+- Todas las preguntas con el mismo `passageId`.
+
+## ESTILO
+- Una persona habla de forma sostenida (Universität, Verein, Beruf, Umwelt, Gesundheit…).
+- Marcadores orales naturales: «Heute möchte ich …», «Zum Schluss …», «Das bedeutet …»
+- **PROHIBIDO:** diálogo con Person A/B (eso es Teil 3).
+
+## REGLAS DE CALIDAD
+1. **Varía** la letra correcta (no 5× `"b"`).
+2. Distractores plausibles pero incorrectos si se escuchó con atención.
+3. Mezcla: ~3 preguntas explícitas + ~2 inferencia/paráfrasis.
+4. Anti word-matching: la pregunta no repite 4+ palabras seguidas del monólogo.
+
+## CAMPO AUDIO (obligatorio para TTS)
+Incluye en el passage un campo `"audio"` con los turnos del monólogo:
+```json
+"audio": [
+  { "speaker": "Sprecher", "voiceId": "de-DE-ConradNeural", "text": "Guten Tag, heute möchte ich über…" }
+]
+```
+- T2 tiene **1 solo hablante** — una única voz (`de-DE-ConradNeural` para hombre, `de-DE-KatjaNeural` para mujer).
+- El `text` puede ser el pasaje completo o dividido en bloques de ≤500 chars.
+- No incluye el prefijo `Sprecher:`.
+
+
+## VOCABULARIO SUGERIDO (preferencia — no obligación)
+- Usa de forma NATURAL estas palabras si encajan: Anmeldung, Termin, Kurs, Büro, Frist. Prioriza naturalidad y nivel B1 — si una palabra no encaja, OMÍTELA, no la fuerces. Mejor un texto natural con algunas de estas palabras que uno forzado con todas.
+- **Estas palabras son OPCIONALES.** Intégralas solo si suenan 100% naturales en alemán **hablado** B1 (Ansage, Telefonat, Radio-Tipp). **PROHIBIDO** insertar una palabra objetivo si no encaja de forma natural. Ejemplo INCORRECTO: «die Ontologie des Stresses» en un consejo de salud coloquial; o meter «Klimawandel» en una Durchsage de farmacia sobre un Hustenmittel; o un comentario meta-gramatical («So ein Konjunktiv hilft…») solo para colar la palabra. Ejemplo CORRECTO: si no encaja, **OMÍTELA** — menos palabras objetivo es mejor que forzar una que rompa la coherencia. REGLA DISTRACTORES (Hören MCQ a/b/c — T1 y T2): las opciones incorrectas (distractores) deben ser semánticamente coherentes con el tema del pasaje/segmento, aunque sean falsas — NUNCA insertes una palabra objetivo en un distractor si el resultado no tiene relación con el tema. Ejemplo INCORRECTO: en un pasaje sobre gestión del estrés, la opción «Die Notwendigkeit, einen Dolmetscher zu konsultieren» (necesidad de un intérprete) es un non-sequitur — no tiene nada que ver con el tema, aunque la palabra en sí exista en alemán correcto. Ejemplo CORRECTO: si la palabra objetivo no encaja de forma natural en un distractor temáticamente coherente, OMÍTELA del distractor — usa vocabulario del propio campo semántico del pasaje en su lugar.
+- Intégralas sobre todo en el **pasaje/transcript**, no en las preguntas literalmente.
+- Si una palabra no encaja en el tema elegido, **omítela** sin forzar.
+
+
+
+## ANTI WORD-MATCHING — OBLIGATORIO
+El monólogo puede contener ideas como: *«…estudios demuestran que descansar con frecuencia mejora el rendimiento…»*
+(usa SIEMPRE una paráfrasis distinta; **PROHIBIDO** copiar literalmente frases de ejemplo del prompt).
+
+❌ **MALO (rechazado):** «Laut dem Sprecher zeigen Studien, dass Pausen den Leistung verbessern?»
+→ Copia «Studien» «Pausen» «Leistung» del monólogo.
+
+✅ **BUENO:** «Was empfiehlt der Referent für effizienteres Arbeiten?»
+→ La pregunta es nueva, las opciones parafrasean la idea sin copiar.
+
+**Proceso obligatorio:** tras escribir el monólogo, lista sus 20 palabras clave. Las preguntas NO deben contener 4+ palabras consecutivas del monólogo. Para el enunciado usa: «Was sagt der Sprecher über…?», «Welchen Rat gibt der Referent bezüglich…?», «Was erfährt man über…?»
+
+**PROHIBIDO anclarse a frases fijas del prompt:** no copies ni parafrasees de cerca ningún ejemplo de esta plantilla. Cada monólogo debe formular ideas equivalentes con vocabulario y estructura propios (evita openers clichés tipo «Die Erfahrung zeigt…» / «Studien zeigen…» repetidos entre batches).
+
+## AUTORREVISIÓN
+- ¿1 passage 240–300 palabras contadas?
+- ¿Passage incluye campo `"audio"` con voiceId?
+- ¿5 preguntas con campo `question` (enunciado), opciones `a)/b)/c)` como strings?
+- ¿`correct` solo letra: "a", "b" o "c"? ¿`type: "multiple_choice"` en las 5?
+- ¿Ninguna pregunta copia 4+ palabras seguidas del monólogo?
+- ¿module:"horen", teil:2? ¿Solo JSON?
+
+## Formato de salida
+- Passage: `gen-p-h2-XXXX`
+- Questions: `gen-q-h2-XXXX-q1` … `q5`
+- `explanation` en alemán · `skills:["listening"]`
+
+## EJEMPLO ESTRUCTURAL (imita format, NO el contenido)
+```json
+{
+  "passages": [{
+    "id": "gen-p-h2-5a3f",
+    "module": "horen", "teil": 2, "lang": "de", "level": "B1",
+    "title": "Vortrag über nachhaltiges Reisen",
+    "text": "Guten Tag, meine Damen und Herren. Heute möchte ich Ihnen etwas über nachhaltiges Reisen erzählen. Immer mehr Menschen entscheiden sich dafür, umweltfreundliche Transportmittel zu nutzen. Das bedeutet zum Beispiel, mit dem Zug statt mit dem Flugzeug zu fahren. Natürlich kostet das manchmal mehr Zeit, aber viele Reisende berichten, dass sie die Fahrt selbst als Erlebnis schätzen. Zum Schluss möchte ich betonen: Kleine Änderungen im Reiseverhalten können große Wirkung haben."
+  }],
+  "questions": [
+    {
+      "id": "gen-q-h2-5a3f-q1",
+      "module": "horen", "teil": 2, "type": "multiple_choice",
+      "question": "Was ist das Hauptthema des Vortrags?",
+      "options": ["a) Günstige Urlaubsangebote", "b) Umweltfreundliches Reisen", "c) Neue Zugverbindungen"],
+      "correct": "b", "correctAnswer": "b",
+      "explanation": "Der Referent erläutert, wie umweltfreundliche Transportmittel wie der Zug das Reiseverhalten verändern können.",
+      "passageId": "gen-p-h2-5a3f", "lang": "de", "level": "B1", "skills": ["listening"]
+    }
+  ]
+}
+```
+
+Genera **UN monólogo nuevo** (240–300 palabras) + **5 preguntas completas**, integrando PALABRAS OBJETIVO. Devuelve solo JSON.
+- Varía la apertura del Vortrag — NO uses "Guten Tag, liebe Zuhörerinnen und Zuhörer" (sobreusada en el pool existente). Elegí una fórmula distinta, natural, del estilo de estas (o una equivalente propia): Guten Tag, liebe Hörerinnen und Hörer, Herzlich willkommen zu unserer heutigen Sendung, Schön, dass Sie eingeschaltet haben, Willkommen zu einem neuen Beitrag, Guten Tag zusammen und herzlich willkommen, Hallo und willkommen bei uns, Ich freue mich, dass Sie zuhören, Willkommen, liebe Zuhörerschaft. No repitas la misma apertura de un batch a otro dentro de la misma sesión.
+
+
+IMPORTANTE — IDs de esta generación:
+- Passages T2: gen-p-h2-paritytest-sN (N=1…5 solo T1)
+- Preguntas: gen-q-h2-paritytest-…
+No reutilices IDs del ejemplo ni del banco existente.
+
+## LONGITUD CEFR (OBLIGATORIO — ingest RECHAZA si fallas)
+- Ámbito: **passages[0].text (monólogo/Vortrag)** (5 preguntas multiple_choice, escucha 1×.)
+- Objetivo: **240–300 palabras**.
+- Mínimo absoluto: **220** · máximo: **320**.
+- **CUENTA las palabras antes de responder.** Transcript = lenguaje **hablado**, no ensayo escrito.
+- Prefiere léxico B1 frecuente (≤B1 CEFR). Evita meta-texto («Dieser Text hat 280 Wörter…») y términos C1/académicos (kontextualisieren, Polyphonie, Paradigma, Manifestation…). REGLA ANTI-ANGLICISMOS: NUNCA escribas verbos/sustantivos ingleses sin traducir — gardening→Gartenarbeit/Gärtnern, jogging→Joggen, hiking→Wandern, cycling→Radfahren, shopping→Einkaufen, cooking→Kochen, Workshop→Kurs/Seminar/Werkstatt. Préstamos aceptados en alemán moderno (Deadline, Meeting, Team, Job, Computer, Internet, E-Mail, Video, Blog, Podcast, App, Design, Event, Check-in, Feedback) son válidos SOLO si van capitalizados como sustantivos: «die Deadline», «das Meeting», «das Team». REGLA ORTOGRÁFICA OBLIGATORIA: en alemán TODOS los sustantivos van en MAYÚSCULA — también en enumeraciones y después de «kein/keine» («Blumen und Pflanzen», «keine Hypothese», no «blumen», no «keine hypothese»). Repasa cada sustantivo antes de enviar. LÍMITE INVERSO — NUNCA capitalices a mitad de frase palabras que NO sean sustantivos ni nombres propios: adjetivos (schwierig, persönlich, zugänglich, einfach, möglich), cuantificadores (viele, wenige, einige), adverbios (lange, eher, leider, trotzdem, natürlich) y verbos conjugados (ich glaube, ich stimme, ich denke) van en MINÚSCULA a mitad de frase. Solo SUSTANTIVOS y nombres propios llevan mayúscula. Ejemplos correctos: «viele Menschen» (NO «Viele»), «in der Praxis schwierig» (NO «Schwierig»), «ich glaube» (NO «Glaube»), «ich stimme zu» (NO «Stimme»), «leicht zugänglich» (NO «Zugänglich»).
+- VOCABULARIO SUGERIDO: OPCIONAL — solo si suena natural en el transcript; si no encaja, OMÍTELA (nunca fuerces términos académicos/meta-gramaticales).
+
+CHECKLIST FINAL (Goethe B1 — debe pasar validate-batch.mjs):
+- Responde SOLO JSON: { "passages": [...], "questions": [...] } — sin markdown, sin ```.
+- correct === correctAnswer en todas las preguntas.
+- module correcto en cada question; lang:"de", level:"B1".
+- IDs únicos con el prefijo indicado arriba (no reutilizar el ejemplo).
+- explanation en alemán en cada pregunta (nunca vacía; ≥10 palabras para multiple_choice — CHK-18 rechaza si es más corta).
+- VOCABULARIO SUGERIDO: integra palabras solo si encajan; omite las que no encajen.
+- MAYÚSCULAS: TODO sustantivo alemán en mayúscula — también tras kein/keine/mit/für/von/ohne, en enumeraciones y listas. ¡Compruébalo antes de enviar!
+- ANTI-ANGLICISMOS: CERO palabras inglesas sin traducir (gardening, jogging, hiking, cycling, Workshop…). Préstamos aceptados (Deadline, Meeting, Team, Computer, E-Mail, App, Blog, Podcast, Event) SOLO capitalizados. Workshop SIEMPRE → Kurs/Seminar/Werkstatt.
+- 1 passage + 5 MCQ; distractores plausibles.
+- DISTRACTOR COHERENTE: cada distractor debe relacionarse temáticamente con el pasaje. Si una palabra objetivo no encaja de forma natural y coherente en un distractor, OMITÍLA — no la fuerces (ver regla de vocabulario arriba).
+- LONGITUD MCQ: la opción correcta y los 2 distractores deben tener longitud COMPARABLE (palabras/caracteres) — ninguno conspicuamente más largo o más detallado, o se puede adivinar sin escuchar el audio. Si la correcta necesita más detalle para ser precisa, agregá detalle equivalente (no el mismo contenido) a los distractores. Ejemplo INCORRECTO: correcta «Sie sollen das Medikament dreimal täglich nach dem Essen einnehmen.» vs distractores cortos «Nur morgens.» / «Vor dem Schlafen.» Ejemplo CORRECTO: tres opciones de longitud similar, p. ej. «Dreimal täglich nach dem Essen.» / «Nur morgens und abends vor dem Essen.» / «Einmal täglich vor dem Schlafengehen.».
+- APERTURA: prohibido usar "Guten Tag, liebe Zuhörerinnen und Zuhörer" (sobreusada). Ver bloque de aperturas sugeridas arriba en el prompt.
+- explanation (MCQ): NUNCA digas "Option a/b/c)" ni "la opción X es correcta" — el orden a/b/c puede reordenarse después. Explica el contenido de la respuesta correcta en prosa.

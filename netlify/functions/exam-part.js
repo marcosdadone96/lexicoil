@@ -5,7 +5,9 @@
  *
  * GET  ?lang=&level=&module=[&teil=][&exclude=id,id,...]
  *   → { part } or { part: null }
- *   Public (parts are not user-specific content).
+ *   Public when no ?words= (generic pool pick).
+ *   With ?words= (personal pool): requires auth + personal_lesen/horen quota
+ *   (checkPersonalPoolQuota + CAS via poolRequestId) before serving.
  *
  * POST (requireAuth) — submit a part from the approval flow.
  *   Body: { lang, level, module, teil, passage, questions, complete, verified,
@@ -24,11 +26,17 @@ const { getStoreForEvent }           = require('./lib/blobStore.js');
 const { requireAuth }                = require('./lib/authLib.js');
 const { corsHeaders, parseJsonBody, jsonResponse } = require('./lib/http.js');
 const { readAnthropicKey }           = require('./lib/anthropicKey.js');
-const { addReusablePart, pickReusablePart, pickReusablePartByVocab } = require('./lib/reusablePartsStore.js');
+const { resolveFromRoot } = require('./lib/projectRoot.js');
+const { normalizeB1Topic } = require(resolveFromRoot('js', 'data', 'b1Topics.js'));
+const { addReusablePart, pickReusablePart, pickReusablePartByTopic, pickReusablePartByVocab } = require('./lib/reusablePartsStore.js');
 const { pickFromLocalSeed } = require('./lib/reusablePartsLocalSeed.js');
+const { useLocalSeedInRuntime } = require('./lib/poolSourceMode.js');
 const { runPartQualityGate, partMinTargetFromBlueprint, applyPartPostprocess } = require('./lib/partQualityGate.js');
 const { verifyTopicCoherence } = require('./lib/topicCoherenceGate.js');
 const { releaseGenerationQuota }     = require('./lib/releaseGeneration.js');
+const { checkExamPartVocabRateLimit } = require('./lib/examPartVocabRateLimit.js');
+const { gatePersonalExamPartGet } = require('./lib/examPartPersonalQuota.js');
+const { normalizeAssembleMode, partPassesAssembleMode } = require('./lib/officialQuarantine.js');
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -46,7 +54,7 @@ let _ExamBlueprintIndex = null;
 function getExamBlueprintIndex() {
   if (_ExamBlueprintIndex) return _ExamBlueprintIndex;
   try {
-    const ExamBlueprint = require('../../js/library/ExamBlueprint.js');
+    const ExamBlueprint = require(resolveFromRoot('js', 'library', 'ExamBlueprint.js'));
     _ExamBlueprintIndex = ExamBlueprint.INDEX || {};
   } catch (_) {
     _ExamBlueprintIndex = {};
@@ -55,6 +63,8 @@ function getExamBlueprintIndex() {
 }
 
 function resolvePath(...segments) {
+  const fromRoot = resolveFromRoot(...segments);
+  if (fs.existsSync(fromRoot)) return fromRoot;
   const roots = [
     path.join(__dirname, '..', '..', ...segments),
     path.join(__dirname, '..', '..', '..', ...segments),
@@ -122,6 +132,28 @@ exports.handler = async (event) => {
       return jsonResponse(400, noCache, { error: 'invalid_params' });
     }
 
+    const partId = String(params.id || params.partId || '').trim();
+    const assembleModeById = normalizeAssembleMode(params.assembleMode || params.mode);
+    if (partId) {
+      try {
+        const { getReusablePart } = require('./lib/reusablePartsStore.js');
+        const { getFromLocalSeedById } = require('./lib/reusablePartsLocalSeed.js');
+        let hit = await getReusablePart(store, lang, level, module, partId);
+        if (!hit && useLocalSeedInRuntime()) {
+          hit = getFromLocalSeedById(lang, level, module, partId)?.part;
+        }
+        if (!hit) return jsonResponse(404, noCache, { part: null, id: partId });
+        if (!partPassesAssembleMode(hit, assembleModeById)) {
+          return jsonResponse(200, noCache, { part: null, id: partId, quarantined: true });
+        }
+        if (Array.isArray(hit.questions)) applyPartPostprocess(hit.questions);
+        return jsonResponse(200, noCache, { part: hit, id: partId });
+      } catch (err) {
+        console.error('[exam-part] GET by id error:', err.message);
+        return jsonResponse(500, noCache, { error: 'fetch_failed' });
+      }
+    }
+
     const excludeIds = parseExcludeList(params);
     const teilRaw = params.teil;
     const teil =
@@ -136,36 +168,90 @@ exports.handler = async (event) => {
       const excludeTopics = String(params.excludeTopics || '')
         .split(',').map((s) => s.trim()).filter(Boolean).slice(0, 20);
 
-      let wantLemmas = [];
+      let quotaGate = null;
+
+      // Via A abuse guard: rate-limit only vocab picks (?words=), not classic pool pick.
+      // Client intentionally skips canGenerate for pool assembly — this is the server backstop.
       if (wordsRaw.length) {
-        try {
-          const { lemmatizeWords } = require('./lib/passageVocab.js');
-          wantLemmas = lemmatizeWords(wordsRaw, lang);
-        } catch (lemErr) {
-          console.warn('[exam-part] lemmatizeWords failed:', lemErr.message);
-          wantLemmas = wordsRaw.map((w) => String(w).toLowerCase());
+        const rl = await checkExamPartVocabRateLimit(store, event);
+        if (!rl.ok) {
+          return jsonResponse(429, {
+            ...noCache,
+            'Retry-After': String(Math.max(1, Math.ceil((rl.resetAt - Date.now()) / 1000))),
+          }, {
+            error: 'rate_limited',
+            limit: rl.limit,
+            remaining: 0,
+            resetAt: rl.resetAt,
+            message: 'Too many vocabulary pool lookups. Wait a moment and try again.',
+          });
+        }
+
+        quotaGate = await gatePersonalExamPartGet(event, store, {
+          module,
+          poolRequestId: params.poolRequestId || params.requestId,
+          wordsPresent: true,
+        });
+        if (!quotaGate.ok) {
+          return jsonResponse(quotaGate.status || 429, noCache, {
+            error: quotaGate.error || 'personal_pool_quota_exceeded',
+            module: quotaGate.module,
+            used: quotaGate.used,
+            max: quotaGate.max,
+            plan: quotaGate.plan,
+          });
         }
       }
 
-      let result = null;
-      if (wantLemmas.length) {
-        result = await pickReusablePartByVocab(store, lang, level, module, {
-          excludeIds, teil, words: wantLemmas, excludeTopics,
-        });
-        if (!result) {
-          result = pickFromLocalSeed(lang, level, module, {
-            excludeIds, teil, words: wantLemmas, excludeTopics,
-          });
-          if (result) {
-            console.info(`[exam-part] local seed vocab ${module} T${teil ?? '?'} → ${result.id}`);
+      let wantLemmas = [];
+      if (wordsRaw.length) {
+        try {
+          const { canonicalizeVocabQuery } = require('./lib/vocabIndexQuality.js');
+          const canon = canonicalizeVocabQuery(wordsRaw, { lang });
+          wantLemmas = canon.words.length
+            ? canon.words
+            : (() => {
+                const { lemmatizeWords } = require('./lib/passageVocab.js');
+                return lemmatizeWords(wordsRaw, lang);
+              })();
+        } catch (lemErr) {
+          console.warn('[exam-part] canonicalizeVocabQuery failed:', lemErr.message);
+          try {
+            const { lemmatizeWords } = require('./lib/passageVocab.js');
+            wantLemmas = lemmatizeWords(wordsRaw, lang);
+          } catch (_) {
+            wantLemmas = wordsRaw.map((w) => String(w).toLowerCase());
           }
         }
       }
-      if (!result) {
-        result = await pickReusablePart(store, lang, level, module, { excludeIds, teil });
+
+      const topicRaw = String(params.topicTag || params.topic || '').trim();
+      const topicTag = topicRaw ? normalizeB1Topic(topicRaw) : null;
+      const assembleMode = normalizeAssembleMode(params.assembleMode || params.mode);
+
+      let result = null;
+      let poolRelaxed = false;
+
+      if (wantLemmas.length) {
+        result = await pickReusablePartByVocab(store, lang, level, module, {
+          excludeIds, teil, words: wantLemmas, excludeTopics, topicTag, assembleMode,
+        });
+        if (result?.source === 'local-seed') {
+          console.info(`[exam-part] local seed vocab ${module} T${teil ?? '?'} → ${result.id}`);
+        }
+        if (result?.topicRelaxed) poolRelaxed = true;
+      }
+      if (!result && topicTag) {
+        result = await pickReusablePartByTopic(store, lang, level, module, {
+          excludeIds, teil, topicTag, assembleMode,
+        });
       }
       if (!result) {
-        result = pickFromLocalSeed(lang, level, module, { excludeIds, teil });
+        result = await pickReusablePart(store, lang, level, module, { excludeIds, teil, assembleMode });
+        if (result && topicTag) poolRelaxed = true;
+      }
+      if (!result && useLocalSeedInRuntime()) {
+        result = pickFromLocalSeed(lang, level, module, { excludeIds, teil, assembleMode });
         if (result) {
           console.info(`[exam-part] local seed ${module} T${teil ?? '?'} → ${result.id}`);
         }
@@ -174,14 +260,21 @@ exports.handler = async (event) => {
       if (Array.isArray(result.part?.questions)) {
         applyPartPostprocess(result.part.questions);
       }
-      return jsonResponse(200, noCache, {
+      const payload = {
         part: result.part,
         id: result.id,
         coveredWords: result.coveredWords || [],
         coverage: result.coverage || null,
         topic: result.topic || result.part?.topic || null,
+        topicTag: result.topicTag || result.part?.topicTag || null,
+        topicRelaxed: poolRelaxed || !!result.topicRelaxed,
         requestedLemmas: wantLemmas,
-      });
+      };
+      if (wordsRaw.length && quotaGate?.quotaMeta && !quotaGate.quotaMeta.error) {
+        payload.personalLesenUsed = quotaGate.quotaMeta.personalLesenUsed;
+        payload.personalHorenUsed = quotaGate.quotaMeta.personalHorenUsed;
+      }
+      return jsonResponse(200, noCache, payload);
     } catch (err) {
       console.error('[exam-part] GET error:', err.message);
       return jsonResponse(200, noCache, { part: null });
@@ -335,6 +428,7 @@ exports.handler = async (event) => {
       targetCount: gateResult.targetCount,
       contributor: auth.email,
       createdAt:   body.createdAt || now,
+      topicTag:    body.topicTag || body.topic || null,
     };
 
     const { partKey } = await addReusablePart(store, part);

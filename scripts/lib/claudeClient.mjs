@@ -1,5 +1,7 @@
 const DEFAULT_MODEL = 'claude-haiku-4-5';
 
+import { rethrowIfTlsIntercept } from './tlsFetchHint.mjs';
+
 function sleep(ms) {
   return new Promise((r) => setTimeout(r, ms));
 }
@@ -34,15 +36,20 @@ export async function generateContent({ prompt, apiKey, model, maxRetries = 4, m
 
   let lastError;
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'x-api-key': key,
-        'anthropic-version': '2023-06-01',
-        'content-type': 'application/json',
-      },
-      body: JSON.stringify(body),
-    });
+    let res;
+    try {
+      res = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'x-api-key': key,
+          'anthropic-version': '2023-06-01',
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify(body),
+      });
+    } catch (err) {
+      rethrowIfTlsIntercept(err);
+    }
 
     const data = await res.json().catch(() => ({}));
 

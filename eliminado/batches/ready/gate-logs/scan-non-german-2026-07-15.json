@@ -1,0 +1,225 @@
+{
+  "scannedAt": "2026-07-15T13:37:33.692Z",
+  "filesScanned": 781,
+  "contaminatedBatches": 11,
+  "contaminatedSeedRecords": 0,
+  "contaminatedBankQuestions": 0,
+  "window": null,
+  "hits": [
+    {
+      "file": "batches/needs-regeneration/B1/horen-t1-gemini-014.json",
+      "kind": "batch",
+      "ts": 1783681071217,
+      "findings": [
+        {
+          "severity": "block",
+          "rule": "non_german_passage_text",
+          "detail": "gen-p-h1-2b4f91be-s4: texto no está en alemán (spanish_strong_signal)",
+          "span": "gen-p-h1-2b4f91be-s4"
+        }
+      ]
+    },
+    {
+      "file": "batches/needs-regeneration/B1/horen-t1-gemini-029.json",
+      "kind": "batch",
+      "ts": 1784117128158,
+      "findings": [
+        {
+          "severity": "block",
+          "rule": "non_german_exam_text",
+          "detail": "gen-q-h1-8c9bfefd-s1-q1: question no está en alemán (spanish_strong_signal): «La parada de autobús se traslada por un evento que se celebra el fin de semana.»",
+          "span": "gen-q-h1-8c9bfefd-s1-q1"
+        }
+      ]
+    },
+    {
+      "file": "batches/needs-regeneration/B1/horen-t1-gemini-030.json",
+      "kind": "batch",
+      "ts": 1784117203576,
+      "findings": [
+        {
+          "severity": "block",
+          "rule": "non_german_exam_text",
+          "detail": "gen-q-h1-1a19ed91-s3-q1: question no está en alemán (spanish_strong_signal): «La sugerencia aconseja emplear el coche para trayectos cortos.»",
+          "span": "gen-q-h1-1a19ed91-s3-q1"
+        },
+        {
+          "severity": "block",
+          "rule": "non_german_exam_text",
+          "detail": "gen-q-h1-1a19ed91-s3-q2: question no está en alemán (spanish_strong_signal): «¿Qué beneficios tiene usar la bicicleta o caminar?»",
+          "span": "gen-q-h1-1a19ed91-s3-q2"
+        }
+      ]
+    },
+    {
+      "file": "batches/needs-regeneration/B1/lesen-t2-gemini-055.json",
+      "kind": "batch",
+      "ts": 1784109416513,
+      "findings": [
+        {
+          "severity": "block",
+          "rule": "non_german_exam_text",
+          "detail": "gen-q-2-759e7c8f-6: option[0] no está en alemán (spanish_strong_signal): «Los clientes entregan sus artículos para ser revisados y vendidos.»",
+          "span": "gen-q-2-759e7c8f-6"
+        },
+        {
+          "severity": "block",
+          "rule": "non_german_exam_text",
+          "detail": "gen-q-2-759e7c8f-6: option[2] no está en alemán (spanish_strong_signal): «Die Läden holen die Kleidung direkt von zu Hause ab, nach una cita previa.»",
+          "span": "gen-q-2-759e7c8f-6"
+        }
+      ]
+    },
+    {
+      "file": "batches/needs-regeneration/B1/lesen-t2-gemini-097.json",
+      "kind": "batch",
+      "ts": 1784109552002,
+      "findings": [
+        {
+          "severity": "block",
+          "rule": "non_german_exam_text",
+          "detail": "gen-q-2-ab60fe4b-4: option[1] no está en alemán (spanish_strong_signal): «Actividades al aire libre, como paseos en bicicleta o visitas a parques.»",
+          "span": "gen-q-2-ab60fe4b-4"
+        },
+        {
+          "severity": "block",
+          "rule": "non_german_exam_text",
+          "detail": "gen-q-2-ab60fe4b-5: option[0] no está en alemán (spanish_strong_signal): «Las numerosas obligaciones laborales y agendas muy apretadas.»",
+          "span": "gen-q-2-ab60fe4b-5"
+        },
+        {
+          "severity": "block",
+          "rule": "non_german_exam_text",
+          "detail": "gen-q-2-ab60fe4b-5: option[1] no está en alemán (spanish_strong_signal): «La falta de ofertas de ocio en la ciudad.»",
+          "span": "gen-q-2-ab60fe4b-5"
+        },
+        {
+          "severity": "block",
+          "rule": "non_german_exam_text",
+          "detail": "gen-q-2-ab60fe4b-5: option[2] no está en alemán (spanish_strong_signal): «La poca cantidad de hijos en las familias.»",
+          "span": "gen-q-2-ab60fe4b-5"
+        },
+        {
+          "severity": "block",
+          "rule": "non_german_exam_text",
+          "detail": "gen-q-2-ab60fe4b-6: option[2] no está en alemán (spanish_strong_signal): «Tomar pausas conscientes y dedicarse a los seres queridos.»",
+          "span": "gen-q-2-ab60fe4b-6"
+        }
+      ]
+    },
+    {
+      "file": "batches/needs-regeneration/B1/lesen-t5-gemini-022.json",
+      "kind": "batch",
+      "ts": 1784109768916,
+      "findings": [
+        {
+          "severity": "block",
+          "rule": "non_german_exam_text",
+          "detail": "gen-q-5-efc96246-1: option[1] no está en alemán (spanish_strong_signal): «Es gibt bestimmte Orte und horarios fijos para la entrega.»",
+          "span": "gen-q-5-efc96246-1"
+        }
+      ]
+    },
+    {
+      "file": "batches/needs-regeneration/B1/lesen-t5-gemini-026.json",
+      "kind": "batch",
+      "ts": 1784109851090,
+      "findings": [
+        {
+          "severity": "block",
+          "rule": "non_german_exam_text",
+          "detail": "gen-q-5-aa09b216-2: option[0] no está en alemán (spanish_strong_signal): «Antes de las 9 de la mañana o después de las 6 de la tarde, pero no si llueve por más de dos día…»",
+          "span": "gen-q-5-aa09b216-2"
+        },
+        {
+          "severity": "block",
+          "rule": "non_german_exam_text",
+          "detail": "gen-q-5-aa09b216-3: option[2] no está en alemán (spanish_strong_signal): «Al salir hay que apagar luces y aparatos; la calefacción no debe superar los 20 grados Celsius.»",
+          "span": "gen-q-5-aa09b216-3"
+        },
+        {
+          "severity": "block",
+          "rule": "non_german_exam_text",
+          "detail": "gen-q-5-aa09b216-4: option[1] no está en alemán (spanish_strong_signal): «Las bicicletas tienen un lugar específico para aparcar, y los coches solo se permiten para entre…»",
+          "span": "gen-q-5-aa09b216-4"
+        }
+      ]
+    },
+    {
+      "file": "batches/needs-regeneration/B1/lesen-t5-gemini-035.json",
+      "kind": "batch",
+      "ts": 1784110062029,
+      "findings": [
+        {
+          "severity": "block",
+          "rule": "non_german_exam_text",
+          "detail": "gen-q-5-5d8ee76e-3: option[1] no está en alemán (spanish_strong_signal): «Jede Art von Einweggeschirr ist immer erlaubt, sin importar el número de personas.»",
+          "span": "gen-q-5-5d8ee76e-3"
+        },
+        {
+          "severity": "block",
+          "rule": "non_german_exam_text",
+          "detail": "gen-q-5-5d8ee76e-3: option[2] no está en alemán (spanish_strong_signal): «Es darf nur Einweggeschirr aus Plastik benutzt werden, para facilitar la limpieza.»",
+          "span": "gen-q-5-5d8ee76e-3"
+        },
+        {
+          "severity": "block",
+          "rule": "non_german_exam_text",
+          "detail": "gen-q-5-5d8ee76e-4: option[2] no está en alemán (spanish_dominant): «An jedem ersten Samstag im Monat, pero con productos químicos para mayor eficacia.»",
+          "span": "gen-q-5-5d8ee76e-4"
+        }
+      ]
+    },
+    {
+      "file": "batches/needs-regeneration/B1/lesen-t5-gemini-070.json",
+      "kind": "batch",
+      "ts": 1784110219378,
+      "findings": [
+        {
+          "severity": "block",
+          "rule": "non_german_exam_text",
+          "detail": "gen-q-5-e8c95797-3: option[0] no está en alemán (spanish_strong_signal): «Un adulto acompañante abona un extra, pero los niños pequeños hasta cinco años comen gratis.»",
+          "span": "gen-q-5-e8c95797-3"
+        },
+        {
+          "severity": "block",
+          "rule": "non_german_exam_text",
+          "detail": "gen-q-5-e8c95797-3: option[1] no está en alemán (spanish_strong_signal): «Todos los comensales, incluidos los niños, deben abonar un suplemento.»",
+          "span": "gen-q-5-e8c95797-3"
+        },
+        {
+          "severity": "block",
+          "rule": "non_german_exam_text",
+          "detail": "gen-q-5-e8c95797-3: option[2] no está en alemán (spanish_strong_signal): «Los visitantes externos siempre pagan 1,50 euros adicionales, incluso por los niños.»",
+          "span": "gen-q-5-e8c95797-3"
+        }
+      ]
+    },
+    {
+      "file": "batches/needs-regeneration/B1/lesen-t5-gemini-071.json",
+      "kind": "batch",
+      "ts": 1784110255996,
+      "findings": [
+        {
+          "severity": "block",
+          "rule": "non_german_exam_text",
+          "detail": "gen-q-5-66cdeb73-4: option[2] no está en alemán (spanish_strong_signal): «Nur am Wochenende mit Genehmigung, aber nicht unter la semana.»",
+          "span": "gen-q-5-66cdeb73-4"
+        }
+      ]
+    },
+    {
+      "file": "batches/needs-regeneration/B1/lesen-t5-gemini-078.json",
+      "kind": "batch",
+      "ts": 1784110388347,
+      "findings": [
+        {
+          "severity": "block",
+          "rule": "non_german_exam_text",
+          "detail": "gen-q-5-716912b4-2: option[2] no está en alemán (spanish_strong_signal): «Hauptgerichte sind einen Tag im Voraus zu bestellen, excepto los platos vegetarianos.»",
+          "span": "gen-q-5-716912b4-2"
+        }
+      ]
+    }
+  ]
+}

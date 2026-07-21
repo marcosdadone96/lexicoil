@@ -1,0 +1,204 @@
+{
+  "generatedAt": "2026-07-11T13:41:06.514Z",
+  "poolDir": "batches/ready/pool-verified",
+  "scope": {
+    "included": [
+      "lesen-t2",
+      "lesen-t5",
+      "horen-t2"
+    ],
+    "excludedNote": "Hören T4 excluded: options are fixed speaker roles, not content distractors. Same scope as audit-answer-position-bias.mjs."
+  },
+  "method": {
+    "lengthUnit": "characters of option body after stripping leading a)/b)/c) prefix",
+    "diff": "correctLen - mean(wrong1, wrong2)",
+    "diffPct": "100 * diff / mean(wrong1, wrong2)",
+    "longestShortest": "correct counted as longest/shortest if its length equals max/min among the 3 (ties included)",
+    "chanceBaselineLongestShortestPct": 33.3
+  },
+  "filesScanned": {
+    "lesen_t2": 6,
+    "lesen_t5": 25,
+    "horen_t2": 19,
+    "skipped": 84
+  },
+  "byPart": {
+    "lesen-t2": {
+      "raw": {
+        "n": 36,
+        "sumDiffChars": 599.5,
+        "sumDiffPct": 1560.4825634264494,
+        "correctLongest": 30,
+        "correctShortest": 2,
+        "correctMid": 4,
+        "allEqual": 0,
+        "tiesForLongest": 1,
+        "tiesForShortest": 1,
+        "skipped": 0
+      },
+      "summary": {
+        "n": 36,
+        "skipped": 0,
+        "meanDiffChars": 16.7,
+        "meanDiffPctVsWrongAvg": 43.3,
+        "correctIsLongest": {
+          "count": 30,
+          "pct": 83.3,
+          "expectedByChancePct": 33.3,
+          "deviationPp": 50
+        },
+        "correctIsShortest": {
+          "count": 2,
+          "pct": 5.6,
+          "expectedByChancePct": 33.3,
+          "deviationPp": -27.8
+        },
+        "correctIsMid": {
+          "count": 4,
+          "pct": 11.1
+        },
+        "allEqualLength": {
+          "count": 0,
+          "pct": 0
+        },
+        "ties": {
+          "forLongest": 1,
+          "forShortest": 1
+        }
+      }
+    },
+    "lesen-t5": {
+      "raw": {
+        "n": 100,
+        "sumDiffChars": 1584,
+        "sumDiffPct": 3132.0841823273927,
+        "correctLongest": 74,
+        "correctShortest": 9,
+        "correctMid": 15,
+        "allEqual": 2,
+        "tiesForLongest": 3,
+        "tiesForShortest": 1,
+        "skipped": 0
+      },
+      "summary": {
+        "n": 100,
+        "skipped": 0,
+        "meanDiffChars": 15.8,
+        "meanDiffPctVsWrongAvg": 31.3,
+        "correctIsLongest": {
+          "count": 74,
+          "pct": 74,
+          "expectedByChancePct": 33.3,
+          "deviationPp": 40.7
+        },
+        "correctIsShortest": {
+          "count": 9,
+          "pct": 9,
+          "expectedByChancePct": 33.3,
+          "deviationPp": -24.3
+        },
+        "correctIsMid": {
+          "count": 15,
+          "pct": 15
+        },
+        "allEqualLength": {
+          "count": 2,
+          "pct": 2
+        },
+        "ties": {
+          "forLongest": 3,
+          "forShortest": 1
+        }
+      }
+    },
+    "horen-t2": {
+      "raw": {
+        "n": 95,
+        "sumDiffChars": 871,
+        "sumDiffPct": 2011.7064835332308,
+        "correctLongest": 64,
+        "correctShortest": 13,
+        "correctMid": 18,
+        "allEqual": 0,
+        "tiesForLongest": 1,
+        "tiesForShortest": 0,
+        "skipped": 0
+      },
+      "summary": {
+        "n": 95,
+        "skipped": 0,
+        "meanDiffChars": 9.2,
+        "meanDiffPctVsWrongAvg": 21.2,
+        "correctIsLongest": {
+          "count": 64,
+          "pct": 67.4,
+          "expectedByChancePct": 33.3,
+          "deviationPp": 34
+        },
+        "correctIsShortest": {
+          "count": 13,
+          "pct": 13.7,
+          "expectedByChancePct": 33.3,
+          "deviationPp": -19.6
+        },
+        "correctIsMid": {
+          "count": 18,
+          "pct": 18.9
+        },
+        "allEqualLength": {
+          "count": 0,
+          "pct": 0
+        },
+        "ties": {
+          "forLongest": 1,
+          "forShortest": 0
+        }
+      }
+    }
+  },
+  "combined": {
+    "raw": {
+      "n": 231,
+      "sumDiffChars": 3054.5,
+      "sumDiffPct": 6704.273229287074,
+      "correctLongest": 168,
+      "correctShortest": 24,
+      "correctMid": 37,
+      "allEqual": 2,
+      "tiesForLongest": 5,
+      "tiesForShortest": 2,
+      "skipped": 0
+    },
+    "summary": {
+      "n": 231,
+      "skipped": 0,
+      "meanDiffChars": 13.2,
+      "meanDiffPctVsWrongAvg": 29,
+      "correctIsLongest": {
+        "count": 168,
+        "pct": 72.7,
+        "expectedByChancePct": 33.3,
+        "deviationPp": 39.4
+      },
+      "correctIsShortest": {
+        "count": 24,
+        "pct": 10.4,
+        "expectedByChancePct": 33.3,
+        "deviationPp": -22.9
+      },
+      "correctIsMid": {
+        "count": 37,
+        "pct": 16
+      },
+      "allEqualLength": {
+        "count": 2,
+        "pct": 0.9
+      },
+      "ties": {
+        "forLongest": 5,
+        "forShortest": 2
+      }
+    }
+  },
+  "anomalies": []
+}

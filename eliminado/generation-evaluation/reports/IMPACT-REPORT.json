@@ -1,0 +1,35 @@
+{
+  "title": "PASO 8 — Learning system impact report (initial)",
+  "status": "infrastructure_ready",
+  "generatedAt": "2026-07-10",
+  "measurementStatus": "awaiting_50_ab_pairs",
+  "sections": {
+    "rulesThatHelp": {
+      "note": "Populate after A/B audits show avoidHitsDelta > 0 and no new regressions.",
+      "ids": []
+    },
+    "rulesThatDoNotHelp": {
+      "note": "Rules present in active/approved but avoidHitsDelta ≈ 0 across pairs.",
+      "ids": []
+    },
+    "rulesThatHarm": {
+      "note": "Rules correlated with new artificialPhraseHits or quality gate failures.",
+      "ids": []
+    },
+    "promoteToActive": {
+      "note": "From audit recommendations.promoteToActive after human review — PASO 8 does not auto-promote.",
+      "ids": []
+    },
+    "demoteToCandidate": {
+      "note": "From audit recommendations.demoteToCandidate (narrow bans, overbroad tense rules, typos).",
+      "ids": []
+    }
+  },
+  "howToComplete": [
+    "node scripts/audit-generation-feedback.mjs",
+    "Fill generation-evaluation/pairs/*/without-feedback.json and with-feedback.json",
+    "node scripts/audit-generated-with-feedback.mjs --pair generation-evaluation/pairs/<id>",
+    "node scripts/prepare-generation-evaluation.mjs --summarize",
+    "Copy evidence into this report sections"
+  ]
+}

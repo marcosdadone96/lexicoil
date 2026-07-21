@@ -1,0 +1,111 @@
+{
+  "generatedAt": "2026-07-11T15:24:17.976Z",
+  "stagingDir": "batches/ready/horen-t1-staging-2026-07-11",
+  "notPromoted": false,
+  "promotedAt": "2026-07-11T15:55:36.599Z",
+  "promotedTo": "batches/ready/pool-verified",
+  "promoteNote": "Human-approved. finalizePoolReady alone REJECT on content_topic_mismatch (umbrella topicTag vs per-segment lexical). Promoted with override after enrich + caps repair; stamps _poolPromotedAt / _poolContentTopicOverride on each file.",
+  "topicsChosen": [
+    "Arbeit",
+    "Freizeit",
+    "Gesundheit",
+    "Wohnen",
+    "Familie"
+  ],
+  "umweltNote": "Umwelt agotó reintentos (word-copy ≥4 + falsos positivos CHK-14 en gelb/grün). Sustituido por Familie como 5º tema distinto de Sport.",
+  "openingsNote": "Banco de aperturas T2 NO aplica a T1. Con n=1 en pool no hay staleness cross-file medible; las aperturas de estos 5 batches ya varían entre sí.",
+  "rulesApplicability": {
+    "format": "5 segmentos × (1 RF + 1 MCQ a/b/c) = 10 preguntas",
+    "balancePosicionMcq": "SÍ aplica a las 5 MCQ (normalizeBatch/balanceMcq)",
+    "longitudMcqPrompt": "NO está en checklist T1 (solo T2 hoy) — no forzado",
+    "distractorCoherentePrompt": "NO está en checklist T1 (solo T2) — no forzado",
+    "openingsBank": "NO aplica (solo T2)"
+  },
+  "files": [
+    {
+      "file": "horen-t1-gemini-001.json",
+      "topic": "Arbeit",
+      "generationGates": {
+        "formatValidate": "OK (al guardar)",
+        "calidadPedagogica": "OK",
+        "qualityReport": "Calidad Hören TNaN: OK ✅ (estimación ~100%)",
+        "balanceMcqApplied": true,
+        "balanceMcqVersion": "v1.1-seed-remainder-rotate-2026-07-11"
+      },
+      "structure": {
+        "passages": 5,
+        "questions": 10,
+        "rf": 5,
+        "mcq": 5
+      }
+    },
+    {
+      "file": "horen-t1-gemini-002.json",
+      "topic": "Freizeit",
+      "generationGates": {
+        "formatValidate": "OK (al guardar)",
+        "calidadPedagogica": "OK",
+        "qualityReport": "Calidad Hören TNaN: OK ✅ (estimación ~100%)",
+        "balanceMcqApplied": true,
+        "balanceMcqVersion": "v1.1-seed-remainder-rotate-2026-07-11"
+      },
+      "structure": {
+        "passages": 5,
+        "questions": 10,
+        "rf": 5,
+        "mcq": 5
+      }
+    },
+    {
+      "file": "horen-t1-gemini-003.json",
+      "topic": "Gesundheit",
+      "generationGates": {
+        "formatValidate": "OK (al guardar)",
+        "calidadPedagogica": "OK",
+        "qualityReport": "Calidad Hören TNaN: OK ✅ (estimación ~100%)",
+        "balanceMcqApplied": true,
+        "balanceMcqVersion": "v1.1-seed-remainder-rotate-2026-07-11"
+      },
+      "structure": {
+        "passages": 5,
+        "questions": 10,
+        "rf": 5,
+        "mcq": 5
+      }
+    },
+    {
+      "file": "horen-t1-gemini-004.json",
+      "topic": "Wohnen",
+      "generationGates": {
+        "formatValidate": "OK (al guardar)",
+        "calidadPedagogica": "OK",
+        "qualityReport": "Calidad Hören TNaN: OK ✅ (estimación ~100%)",
+        "balanceMcqApplied": true,
+        "balanceMcqVersion": "v1.1-seed-remainder-rotate-2026-07-11"
+      },
+      "structure": {
+        "passages": 5,
+        "questions": 10,
+        "rf": 5,
+        "mcq": 5
+      }
+    },
+    {
+      "file": "horen-t1-gemini-005.json",
+      "topic": "Familie",
+      "generationGates": {
+        "formatValidate": "OK (al guardar)",
+        "calidadPedagogica": "OK",
+        "qualityReport": "Calidad Hören TNaN: OK ✅ (estimación ~100%)",
+        "balanceMcqApplied": true,
+        "balanceMcqVersion": "v1.1-seed-remainder-rotate-2026-07-11"
+      },
+      "structure": {
+        "passages": 5,
+        "questions": 10,
+        "rf": 5,
+        "mcq": 5
+      }
+    }
+  ]
+}

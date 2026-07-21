@@ -21,7 +21,8 @@ Model answer reference:
 ${part.modelAnswer || ''}
 
 Return JSON:
-{"criteria":[{"name":"Task Achievement","score":0-5,"comment":"..."},{"name":"Vocabulary Range","score":0-5,"comment":"..."},{"name":"Grammar Accuracy","score":0-5,"comment":"..."},{"name":"Coherence & Fluency","score":0-5,"comment":"..."}],"totalScore":0-100,"passed":true,"overallFeedback":"...","strongPoints":["..."],"improvements":["..."],"correctedVersion":"..."}`;
+{"criteria":[{"name":"Task Achievement","score":0-5,"comment":"..."},{"name":"Vocabulary Range","score":0-5,"comment":"..."},{"name":"Grammar Accuracy","score":0-5,"comment":"..."},{"name":"Coherence & Fluency","score":0-5,"comment":"..."}],"errors":[{"original":"...","correction":"...","type":"grammar|vocab|register|fluency","grammarCategory":"passiv|konjunktiv_ii|wortstellung|kasus|artikel|praeposition|konnektor|zeitform|adjektivdeklination|relativsatz|trennbare_verben|other (required when type=grammar)","explanation":"..."}],"grammarErrorSummary":[{"category":"...","count":0,"severity":"major|minor"}],"totalScore":0-100,"passed":true,"overallFeedback":"...","strongPoints":["..."],"improvements":["..."],"correctedVersion":"..."}
+For every error with type "grammar", include grammarCategory from the closed taxonomy above. Include grammarErrorSummary aggregating grammar errors by category. Max 8 errors.`;
   };
 
   window.buildOrientativeSpeakingHint = function (part, speakAns, isDE) {
@@ -52,6 +53,17 @@ Return JSON:
   window.gradeSpeakingOrientativeHint = window.buildOrientativeSpeakingHint;
 
   window.evalSpeakingWithAI = async function (parts, isDE) {
+    const hasText = parts.some((p) => document.getElementById(p.fieldId)?.value.trim());
+    if (hasText && typeof requireAiCredits === 'function' && !requireAiCredits('speaking')) {
+      return parts.map((p) => ({
+        ...buildOrientativeSpeakingHint(p, document.getElementById(p.fieldId)?.value.trim() || '', isDE),
+        part: p,
+        ai: false,
+        evaluated: false,
+        orientative: true,
+        score: null,
+      }));
+    }
     const out = [];
     for (const p of parts) {
       const txt = document.getElementById(p.fieldId)?.value.trim() || '';
@@ -72,6 +84,16 @@ Return JSON:
           requestId: `speak-${p.fieldId || p.teil || Date.now()}`,
         });
         const data = JSON.parse(raw.replace(/```json|```/g, '').trim());
+        const errors =
+          typeof GrammarCategories !== 'undefined' && GrammarCategories.normalizeGrammarErrors
+            ? GrammarCategories.normalizeGrammarErrors(data.errors)
+            : Array.isArray(data.errors)
+              ? data.errors.slice(0, 8)
+              : [];
+        const grammarErrorSummary =
+          typeof GrammarCategories !== 'undefined' && GrammarCategories.normalizeGrammarErrorSummary
+            ? GrammarCategories.normalizeGrammarErrorSummary(data.grammarErrorSummary, errors)
+            : data.grammarErrorSummary || [];
         out.push({
           part: p,
           ai: true,
@@ -79,6 +101,8 @@ Return JSON:
           score: data.totalScore || 0,
           passed: data.passed,
           criteria: data.criteria || [],
+          errors,
+          grammarErrorSummary,
           overallFeedback: data.overallFeedback,
           strongPoints: data.strongPoints || [],
           improvements: data.improvements || [],

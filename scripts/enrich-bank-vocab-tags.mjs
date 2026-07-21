@@ -7,6 +7,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { createRequire } from 'node:module';
+import { extractVocabularyFromText } from './lib/enrichBatchMetadata.mjs';
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
 const require = createRequire(import.meta.url);
@@ -62,6 +63,10 @@ function scoreLemma(lemma, b1Set) {
 }
 
 function extractFromText(text, lang, b1Set, max) {
+  // Shared DE pipeline (v2 lemma/caps); other langs keep legacy path
+  if (String(lang || 'de').toLowerCase().startsWith('de')) {
+    return extractVocabularyFromText(text, max).map((w) => String(w));
+  }
   const scored = new Map();
   for (const tok of tokenize(text)) {
     const lemma = lemmaOf(tok, lang);

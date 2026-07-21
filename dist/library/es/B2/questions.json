@@ -2,22 +2,21 @@
   "meta": {
     "language": "es",
     "level": "B2",
-    "version": 2,
-    "generatedAt": "2026-06-22",
-    "source": "seed-coverage-levels"
+    "version": 1,
+    "generatedAt": "2026-06-09"
   },
   "passages": [
     {
-      "id": "p-es-B2-lesen",
+      "id": "p-lesen-1",
       "module": "lesen",
-      "title": "B2 reading",
-      "text": "Muchas ciudades invierten en carriles bici porque los ciudadanos buscan alternativas saludables al coche. Los defensores afirman que reduce la congestión. Los críticos piden también mejor transporte público."
+      "title": "Turismo sostenible",
+      "text": "Muchas ciudades europeas limitan el número de visitantes para proteger el patrimonio histórico. Los hoteleros afirman que las restricciones reducen los ingresos, pero los vecinos celebran la disminución del ruido. Expertos recomiendan combinar cupos turísticos con transporte público eficiente."
     },
     {
-      "id": "p-es-B2-horen",
+      "id": "p-horen-1",
       "module": "horen",
-      "title": "B2 listening",
-      "text": "Presentadora: ¡Buenos días! Invitado: Busco un piso en la ciudad.\nPresentadora: ¿Has visto algún anuncio? Invitado: Sí, un piso pequeño cerca del parque."
+      "title": "Debate radiofónico: energía solar",
+      "text": "Presentadora: ¿Es viable cubrir todos los tejados con paneles solares? Ingeniero: Es una parte de la solución, no la solución completa. Hay que mejorar también el almacenamiento. Presentadora: ¿Y el coste? Ingeniero: Ha bajado un 40% en la última década."
     }
   ],
   "questions": [
@@ -25,82 +24,64 @@
       "id": "lb-es-b2-l1",
       "module": "lesen",
       "type": "true_false",
-      "question": "El texto describe una persona o situación.",
+      "question": "Algunas ciudades limitan el número de turistas.",
       "correct": "True",
       "correctAnswer": "True",
-      "explanation": "See passage or transcript.",
+      "explanation": "El texto lo afirma al inicio.",
       "grammarTags": [
         "g-es-b2-passive"
       ],
       "topicTags": [
-        "vida"
+        "turismo"
       ],
-      "difficulty": 4,
-      "passageId": "p-es-B2-lesen",
+      "difficulty": 3,
+      "passageId": "p-lesen-1",
       "teil": 1
     },
     {
       "id": "lb-es-b2-l2",
       "module": "lesen",
-      "type": "true_false",
-      "question": "No hay información sobre trabajo o estudios.",
-      "correct": "False",
-      "correctAnswer": "False",
-      "explanation": "See passage or transcript.",
+      "type": "multiple",
+      "question": "¿Qué recomiendan los expertos?",
+      "options": [
+        "a) Prohibir el turismo",
+        "b) Combinar cupos con transporte público",
+        "c) Cerrar los museos"
+      ],
+      "correct": "b",
+      "correctAnswer": "b",
+      "explanation": "Combinar cupos turísticos con transporte.",
       "grammarTags": [
         "g-es-b2-subj-past"
       ],
       "topicTags": [
-        "viajes"
+        "medio-ambiente"
       ],
       "difficulty": 4,
-      "passageId": "p-es-B2-lesen",
+      "passageId": "p-lesen-1",
       "teil": 1
-    },
-    {
-      "id": "lb-es-b2-l3",
-      "module": "lesen",
-      "type": "multiple",
-      "question": "¿De qué trata principalmente el texto?",
-      "options": [
-        "a) Deporte",
-        "b) Vida diaria, trabajo o ciudad",
-        "c) Historia"
-      ],
-      "correct": "b",
-      "correctAnswer": "b",
-      "explanation": "See passage or transcript.",
-      "grammarTags": [
-        "g-es-b2-passive"
-      ],
-      "topicTags": [
-        "trabajo"
-      ],
-      "difficulty": 4,
-      "passageId": "p-es-B2-lesen",
-      "teil": 2
     },
     {
       "id": "lb-es-b2-h1",
       "module": "horen",
       "type": "multiple",
-      "question": "¿De qué trata la conversación?",
+      "question": "¿Qué dice el ingeniero sobre los tejados solares?",
       "options": [
-        "a) Tiempo",
-        "b) Vida diaria o tema actual",
-        "c) Matemáticas"
+        "a) Son la solución completa",
+        "b) Son solo una parte de la solución",
+        "c) Son imposibles"
       ],
       "correct": "b",
       "correctAnswer": "b",
-      "explanation": "See passage or transcript.",
+      "explanation": "Una parte, no la solución completa.",
       "grammarTags": [
         "g-es-b2-passive"
       ],
       "topicTags": [
-        "vida"
+        "ciencia"
       ],
-      "difficulty": 4,
-      "passageId": "p-es-B2-horen",
+      "difficulty": 3,
+      "passageId": "p-horen-1",
       "segmentLabel": "Grabación 1",
       "teil": 1
     },
@@ -108,78 +89,37 @@
       "id": "lb-es-b2-h2",
       "module": "horen",
       "type": "true_false",
-      "question": "Hay al menos dos hablantes en el diálogo.",
+      "question": "El coste de la energía solar ha bajado en la última década.",
       "correct": "True",
       "correctAnswer": "True",
-      "explanation": "See passage or transcript.",
+      "explanation": "Ha bajado un 40%.",
       "grammarTags": [
         "g-es-b2-subj-past"
       ],
       "topicTags": [
-        "viajes"
+        "economia"
       ],
       "difficulty": 4,
-      "passageId": "p-es-B2-horen",
+      "passageId": "p-horen-1",
       "segmentLabel": "Grabación 1",
-      "teil": 1
-    },
-    {
-      "id": "lb-es-b2-g1",
-      "module": "grammatik",
-      "type": "gap_fill",
-      "question": "Complete: It is important ___ protect the environment.",
-      "correct": "to",
-      "correctAnswer": "to",
-      "explanation": "Grammar gap.",
-      "grammarTags": [
-        "g-es-b2-passive"
-      ],
-      "topicTags": [
-        "vida"
-      ],
-      "difficulty": 4,
-      "teil": 2
-    },
-    {
-      "id": "lb-es-b2-g2",
-      "module": "grammatik",
-      "type": "gap_fill",
-      "question": "Complete: She has lived here ___ 2019.",
-      "correct": "since",
-      "correctAnswer": "since",
-      "explanation": "Grammar gap.",
-      "grammarTags": [
-        "g-es-b2-subj-past"
-      ],
-      "topicTags": [
-        "viajes"
-      ],
-      "difficulty": 4,
-      "teil": 3
-    },
-    {
-      "id": "lb-es-b2-m1",
-      "module": "lesen",
-      "type": "matching",
-      "question": "Who mentions cost reduction?",
-      "options": [
-        "A) Presenter",
-        "B) Expert",
-        "C) Neither"
-      ],
-      "correct": "B",
-      "correctAnswer": "B",
-      "explanation": "Match the speaker.",
-      "grammarTags": [
-        "g-es-b2-passive"
-      ],
-      "topicTags": [
-        "trabajo"
-      ],
-      "difficulty": 4,
-      "passageId": "p-es-B2-horen",
       "teil": 1
     }
   ],
-  "vocabulary": {}
+  "vocabulary": {
+    "patrimonio": {
+      "en": "heritage",
+      "de": "Kulturerbe",
+      "type": "noun"
+    },
+    "tejado": {
+      "en": "roof",
+      "de": "Dach",
+      "type": "noun"
+    },
+    "almacenamiento": {
+      "en": "storage",
+      "de": "Speicherung",
+      "type": "noun"
+    }
+  }
 }

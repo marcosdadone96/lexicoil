@@ -9,7 +9,7 @@
     :root {
       --bg: #0f1117; --surface: #1a1d27; --border: #2a2d3a;
       --text: #e8eaf0; --muted: #8890a8; --brand: #e8c547;
-      --green: #34d399; --red: #f87171; --blue: #60a5fa;
+      --green: #34d399; --red: #f87171; --blue: #60a5fa; --orange: #fbbf24;
       --font: 'Inter', -apple-system, sans-serif;
     }
     body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; }
@@ -71,6 +71,74 @@
     .gen-detail { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; margin-top: 16px; display: none; }
     .gen-detail.open { display: block; }
     .gen-detail .meta { font-size: 11px; color: var(--muted); margin-bottom: 10px; display: flex; gap: 12px; flex-wrap: wrap; }
+
+    /* Content corrections panel (PASO 4) */
+    .main.cc-wide { max-width: 1280px; }
+    .cc-filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; align-items: center; }
+    .cc-filters input, .cc-filters select { padding: 7px 10px; font-size: 12px; border-radius: 7px; border: 1px solid var(--border); background: var(--surface); color: var(--text); min-width: 110px; }
+    .cc-filters input.cc-grow { flex: 1; min-width: 160px; }
+    .badge-cc-pending { background: rgba(251,191,36,.15); color: var(--orange); }
+    .badge-cc-approved { background: rgba(52,211,153,.12); color: var(--green); }
+    .badge-cc-rejected { background: rgba(248,113,113,.12); color: var(--red); }
+    .badge-cc-applied { background: rgba(96,165,250,.12); color: var(--blue); }
+    .badge-cc-conflict { background: rgba(251,146,60,.18); color: #ea580c; }
+    .badge-cc-failed { background: rgba(248,113,113,.2); color: #dc2626; }
+    .cc-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 12px; overflow: hidden; }
+    .cc-card.status-pending { border-left: 3px solid var(--orange); }
+    .cc-card.status-approved { border-left: 3px solid var(--green); }
+    .cc-card.status-rejected { border-left: 3px solid var(--red); }
+    .cc-card-hd { padding: 12px 16px; cursor: pointer; }
+    .cc-card-hd:hover { background: rgba(255,255,255,.02); }
+    .cc-card-title { font-size: 13px; font-weight: 600; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .cc-card-sub { font-size: 11px; color: var(--muted); margin-top: 4px; }
+    .cc-card-preview { padding: 0 16px 12px; }
+    .cc-reason { font-size: 12px; margin-bottom: 8px; }
+    .cc-card-body { padding: 0 16px 16px; border-top: 1px solid var(--border); }
+    .cc-meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 8px 14px; margin: 12px 0; font-size: 12px; }
+    .cc-meta-grid .cc-span2 { grid-column: 1 / -1; }
+    .cc-k { display: block; font-size: 10px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); margin-bottom: 2px; }
+    .cc-section { margin-top: 14px; }
+    .cc-diff { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 8px; }
+    @media (max-width: 800px) { .cc-diff { grid-template-columns: 1fr; } }
+    .cc-diff-col { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 10px; }
+    .cc-diff-lbl { font-size: 10px; font-weight: 700; letter-spacing: .06em; color: var(--muted); margin-bottom: 6px; }
+    .cc-diff-col.before .cc-diff-lbl { color: var(--red); }
+    .cc-diff-col.after .cc-diff-lbl { color: var(--green); }
+    .cc-diff-body { font-size: 12px; line-height: 1.55; white-space: pre-wrap; word-break: break-word; font-family: ui-monospace, monospace; margin: 0; max-height: 280px; overflow: auto; }
+    .cc-diff-body del { background: rgba(248,113,113,.25); text-decoration: none; border-radius: 2px; }
+    .cc-diff-body ins { background: rgba(52,211,153,.25); text-decoration: none; border-radius: 2px; }
+    .cc-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+    .cc-actions button.approve { background: rgba(52,211,153,.15); color: var(--green); border-color: rgba(52,211,153,.3); }
+    .cc-actions button.reject { background: rgba(248,113,113,.1); color: var(--red); border-color: rgba(248,113,113,.3); }
+    .cc-history { margin: 6px 0 0; padding-left: 18px; font-size: 12px; color: var(--text); }
+    .cc-history li { margin-bottom: 4px; }
+    .cc-muted { color: var(--muted); font-size: 12px; }
+    .cc-edit-form { margin-top: 12px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 12px; }
+    .cc-edit-form label { display: block; font-size: 11px; color: var(--muted); margin: 8px 0 4px; }
+    .cc-edit-form input, .cc-edit-form textarea { width: 100%; padding: 8px 10px; font-size: 13px; border-radius: 7px; border: 1px solid var(--border); background: var(--surface); color: var(--text); font-family: inherit; }
+    .cc-edit-actions { display: flex; gap: 8px; margin-top: 10px; justify-content: flex-end; }
+    .cc-group-stats { font-size: 12px; color: var(--muted); margin: 10px 0 16px; display: flex; flex-direction: column; gap: 6px; }
+    .cc-group-lbl { font-weight: 700; margin-right: 6px; color: var(--text); }
+    .cc-chip { display: inline-block; margin: 2px 4px 2px 0; padding: 2px 8px; border-radius: 999px; background: rgba(255,255,255,.04); border: 1px solid var(--border); font-size: 11px; }
+    .cc-st-pending .n { color: var(--orange); }
+    .cc-st-approved .n { color: var(--green); }
+    .cc-st-rejected .n { color: var(--red); }
+    .cc-st-conflict .n { color: #ea580c; }
+    .cc-st-failed .n { color: #dc2626; }
+    .cc-note { font-size: 12px; color: var(--muted); margin: 0 0 12px; line-height: 1.55; }
+    .gf-stats { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 12px; font-size: 12px; }
+    .gf-stat { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; }
+    .gf-card { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 14px; margin-bottom: 12px; }
+    .gf-hd { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 6px; font-size: 12px; }
+    .gf-pill { background: var(--surface, #eee); border-radius: 999px; padding: 2px 8px; font-size: 11px; }
+    .gf-meta { font-size: 11px; color: var(--muted); margin-bottom: 8px; }
+    .gf-label { display: block; font-size: 11px; font-weight: 700; margin: 8px 0 4px; }
+    .gf-rule { width: 100%; font: inherit; font-size: 12px; padding: 8px; border-radius: 8px; border: 1px solid var(--border); box-sizing: border-box; }
+    .gf-section { font-size: 12px; margin-top: 8px; }
+    .gf-section ul { margin: 4px 0 0 18px; padding: 0; }
+    .gf-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+    .gf-actions button { font-size: 12px; padding: 6px 10px; border-radius: 6px; border: 1px solid var(--border); cursor: pointer; background: var(--surface, #f5f5f5); }
+    .gf-actions .gf-primary { background: var(--brand, #2563eb); color: #fff; border-color: transparent; font-weight: 700; }
   </style>
 </head>
 <body>
@@ -101,6 +169,8 @@
       <button class="tab" onclick="switchTab('users',this)">Users</button>
       <button class="tab" onclick="switchTab('pool',this)">Pool exams</button>
       <button class="tab" onclick="switchTab('staging',this)">Staging / Aprobación</button>
+      <button class="tab" onclick="switchTab('corrections',this)">Correcciones</button>
+      <button class="tab" onclick="switchTab('feedback',this)">Generation Feedback</button>
       <button class="tab" onclick="switchTab('parts',this)">Partes reutilizables</button>
       <button class="tab" onclick="switchTab('generations',this)">Generaciones IA</button>
       <button class="tab" onclick="switchTab('tools',this)">Tools</button>
@@ -163,6 +233,79 @@
         <span style="font-size:12px;color:var(--muted)" id="stagingCount">—</span>
       </div>
       <div id="stagingList"></div>
+    </div>
+
+    <!-- Content corrections (PASO 5 — review + controlled apply) -->
+    <div class="panel" id="tab-corrections">
+      <p class="cc-note">
+        Cola de correcciones: revisar → aprobar → <b>dry-run</b> → aplicar al JSON del pool (con backup y rollback).
+        Las reglas de aprendizaje se revisan en la pestaña <b>Generation Feedback</b> (solo <code>active</code> puede entrar en prompts).
+      </p>
+      <div id="ccStats"></div>
+      <div class="cc-filters">
+        <select id="ccFilterStatus" onchange="ContentCorrectionsPanel.render()">
+          <option value="pending">Pending</option>
+          <option value="approved">Approved</option>
+          <option value="rejected">Rejected</option>
+          <option value="applied">Applied</option>
+          <option value="conflict">Conflict</option>
+          <option value="failed">Failed</option>
+          <option value="all">Todos</option>
+        </select>
+        <select id="ccFilterModule" onchange="ContentCorrectionsPanel.render()">
+          <option value="">Module</option>
+          <option value="lesen">lesen</option>
+          <option value="horen">horen</option>
+          <option value="schreiben">schreiben</option>
+          <option value="sprechen">sprechen</option>
+        </select>
+        <select id="ccFilterTeil" onchange="ContentCorrectionsPanel.render()">
+          <option value="">Teil</option>
+          <option value="1">1</option><option value="2">2</option><option value="3">3</option>
+          <option value="4">4</option><option value="5">5</option>
+        </select>
+        <input type="text" id="ccFilterSource" class="cc-grow" placeholder="Source file…" oninput="ContentCorrectionsPanel.render()">
+        <input type="text" id="ccFilterReason" placeholder="Reason…" oninput="ContentCorrectionsPanel.render()">
+        <input type="text" id="ccFilterBy" placeholder="Created by…" oninput="ContentCorrectionsPanel.render()">
+        <input type="text" id="ccFilterTarget" placeholder="TargetId…" oninput="ContentCorrectionsPanel.render()">
+        <input type="date" id="ccFilterFrom" title="Desde" onchange="ContentCorrectionsPanel.render()">
+        <input type="date" id="ccFilterTo" title="Hasta" onchange="ContentCorrectionsPanel.render()">
+        <input type="text" id="ccFilterQ" class="cc-grow" placeholder="Buscar (old/new/comment/…)" oninput="ContentCorrectionsPanel.render()">
+        <select id="ccSort" onchange="ContentCorrectionsPanel.render()">
+          <option value="newest">Más recientes</option>
+          <option value="oldest">Más antiguas</option>
+          <option value="sourceFile">sourceFile</option>
+          <option value="module">module</option>
+          <option value="teil">teil</option>
+          <option value="createdBy">createdBy</option>
+          <option value="status">status</option>
+        </select>
+        <button type="button" onclick="ContentCorrectionsPanel.load()">Cargar</button>
+        <button type="button" class="act approve" onclick="ContentCorrectionsPanel.dryRunBatch()">Dry-run aprobadas</button>
+        <button type="button" class="act" onclick="ContentCorrectionsPanel.applyBatch()">Apply aprobadas…</button>
+        <span style="font-size:12px;color:var(--muted)" id="ccCount">—</span>
+      </div>
+      <div id="ccList"></div>
+    </div>
+
+    <!-- Generation Feedback (PASO 13 P0-2) -->
+    <div class="panel" id="tab-feedback">
+      <p class="cc-note">
+        Flujo: <b>candidate → approved → active</b>. Solo <code>active</code> alimenta generación (si <code>GENERATION_FEEDBACK_MODE=active</code>).
+        Sin auto-activate. Edita la <b>rule</b> antes de activar.
+      </p>
+      <div id="gfStats" class="gf-stats"></div>
+      <div class="toolbar">
+        <select id="gfFilterStatus" onchange="GenerationFeedbackPanel.load()">
+          <option value="candidate">Candidates</option>
+          <option value="approved">Approved</option>
+          <option value="active">Active</option>
+          <option value="deprecated">Deprecated</option>
+          <option value="all">Todos</option>
+        </select>
+        <button type="button" onclick="GenerationFeedbackPanel.load()">Cargar</button>
+      </div>
+      <div id="gfList"></div>
     </div>
 
     <!-- Partes reutilizables -->
@@ -306,6 +449,8 @@
 
 <div id="toast"></div>
 
+<script src="/js/ui/admin/contentCorrectionsPanel.js?v=2"></script>
+<script src="/js/ui/admin/generationFeedbackPanel.js?v=1"></script>
 <script>
   const API = '/.netlify/functions/admin-api';
   const AUTH_KEY = 'lc_admin_token';
@@ -435,9 +580,13 @@
     document.querySelectorAll('.panel').forEach((p) => p.classList.remove('active'));
     if (btn) btn.classList.add('active');
     document.getElementById('tab-' + id).classList.add('active');
+    const main = document.querySelector('.main');
+    if (main) main.classList.toggle('cc-wide', id === 'corrections' || id === 'feedback');
     if (id === 'users') loadUsers();
     if (id === 'pool') loadPool();
     if (id === 'staging') loadStagingList();
+    if (id === 'corrections' && window.ContentCorrectionsPanel) ContentCorrectionsPanel.load();
+    if (id === 'feedback' && window.GenerationFeedbackPanel) GenerationFeedbackPanel.load();
     if (id === 'parts') loadReusableParts();
     if (id === 'generations') loadGenerations();
   }
@@ -870,14 +1019,17 @@
           <span>${esc(c.lang)}/${esc(c.level)}</span>
           <span>${fmtDate(c.createdAt)}</span>
           <span class="badge" style="background:${c.status==='approved'?'rgba(52,211,153,.15)':c.status==='rejected'?'rgba(248,113,113,.1)':'rgba(245,158,11,.12)'};color:${c.status==='approved'?'var(--green)':c.status==='rejected'?'var(--red)':'var(--orange)'}">${esc(c.status || 'pending')}</span>
+          ${qualityBadgeHtml(c)}
           ${c.contributor ? `<span>${esc(c.contributor)}</span>` : ''}
         </div>
         <div class="preview">
           ${c.questionPreview ? `<div><strong>P:</strong> ${esc(c.questionPreview)}</div>` : ''}
           ${c.passagePreview ? `<div style="color:var(--muted);margin-top:6px;font-size:12px">${esc(c.passagePreview)}…</div>` : ''}
+          ${qualityGatesHtml(c)}
         </div>
         <div class="actions">
           <button class="act" onclick="viewCandidateDetail('${esc(c.id)}','${esc(c.lang)}','${esc(c.level)}')">Ver parte</button>
+          <button class="act" onclick="runQualityOnCandidate('${esc(c.id)}')">Quality check</button>
           ${c.status === 'pending' ? `<button class="act approve" onclick="approveStaging('${esc(c.id)}')">Guardar/Aprobar parte</button>
           <button class="act reject" onclick="rejectStaging('${esc(c.id)}')">Rechazar</button>` : ''}
           ${c.status === 'approved' ? `<button class="act" onclick="retryReusableSave('${esc(c.id)}')">Reintentar guardar en reutilizables</button>
@@ -886,11 +1038,53 @@
       </div>`).join('');
   }
 
+  function qualityBadgeHtml(c) {
+    const st = c.qualityStatus || (c.qualityMetadata && c.qualityMetadata.status);
+    if (!st) return '<span class="badge" style="background:rgba(148,163,184,.12);color:var(--muted)">Quality —</span>';
+    const color = st === 'PASS' ? 'var(--green)' : st === 'FAIL' ? 'var(--red)' : 'var(--orange)';
+    const bg = st === 'PASS' ? 'rgba(52,211,153,.15)' : st === 'FAIL' ? 'rgba(248,113,113,.12)' : 'rgba(245,158,11,.12)';
+    return `<span class="badge" style="background:${bg};color:${color}">Quality ${esc(st)}</span>`;
+  }
+
+  function qualityGatesHtml(c) {
+    const gates = (c.qualityMetadata && c.qualityMetadata.gates) || {};
+    const keys = Object.keys(gates);
+    if (!keys.length) return '';
+    const icons = { pass: '✓', warning: '⚠', fail: '✗', PASS: '✓', WARNING: '⚠', FAIL: '✗' };
+    return `<div style="margin-top:8px;font-size:11px;color:var(--muted);line-height:1.5">${keys.map((k) => {
+      const s = String(gates[k] || '').toLowerCase();
+      const icon = icons[s] || icons[gates[k]] || '·';
+      return `<span style="margin-right:10px">${icon} ${esc(k)}</span>`;
+    }).join('')}</div>`;
+  }
+
+  async function runQualityOnCandidate(id) {
+    const lang = document.getElementById('stagingLang').value;
+    const level = document.getElementById('stagingLevel').value;
+    toast('Quality check…');
+    const r = await api('POST', {}, { action: 'run_quality_on_candidate', id, lang, level, persist: true });
+    if (r.error) {
+      toast('✗ ' + (r.message || r.error));
+      return;
+    }
+    const st = r.report?.status || r.qualityMetadata?.status || '?';
+    toast('Quality: ' + st + (r.promotion && !r.promotion.allowed ? ' — promotion blocked by policy' : ''));
+    loadStagingList();
+  }
+
   async function approveStaging(id) {
     const lang = document.getElementById('stagingLang').value;
     const level = document.getElementById('stagingLevel').value;
     if (!confirm('¿Guardar/Aprobar esta parte? Quedará disponible para práctica de sección de inmediato.')) return;
-    const r = await api('POST', {}, { action: 'approve_candidate', id, lang, level });
+    let r = await api('POST', {}, { action: 'approve_candidate', id, lang, level });
+    if (r.error === 'quality_blocks_promotion') {
+      const detail = (r.qualityAdvisory && r.qualityAdvisory.status) || '?';
+      if (!confirm('Quality policy bloquea promoción (' + detail + '). ¿Forzar aprobación manual?')) {
+        toast('✗ Bloqueado por quality: ' + detail);
+        return;
+      }
+      r = await api('POST', {}, { action: 'approve_candidate', id, lang, level, forceApprove: true, manualReviewed: true });
+    }
     if (r.error) {
       toast('✗ ' + (r.message || r.error));
       if (r.error === 'not_pending') toast('Estado: ' + (r.status || '?') + ' — prueba Reintentar si ya está aprobado');
@@ -902,6 +1096,7 @@
     }
     let msg = '✓ Parte guardada y disponible para práctica';
     if (r.promoted > 0) msg += ' — ' + r.promoted + ' examen(es) completo(s) al pool';
+    if (r.qualityAdvisory && r.qualityAdvisory.status) msg += ' · Quality ' + r.qualityAdvisory.status;
     toast(msg);
     loadStagingList();
   }
@@ -941,7 +1136,17 @@
          <span><strong>Teil:</strong> ${esc(String(c.teil))}</span>
          <span><strong>Estado:</strong> ${esc(c.status)}</span>
          <span><strong>Autor:</strong> ${esc(c.contributor || '—')}</span>
-         <span><strong>Válido:</strong> ${c.validation?.valid ? '✓' : '✗'}</span>`;
+         <span><strong>Válido:</strong> ${c.validation?.valid ? '✓' : '✗'}</span>
+         <span><strong>Quality:</strong> ${esc((c.qualityMetadata && c.qualityMetadata.status) || '—')}</span>`;
+      if (c.qualityMetadata && c.qualityMetadata.gates) {
+        const g = c.qualityMetadata.gates;
+        document.getElementById('candidateDetailMeta').innerHTML +=
+          `<div style="margin-top:8px;width:100%;font-size:12px">${Object.keys(g).map((k) => {
+            const s = String(g[k]).toLowerCase();
+            const icon = s === 'pass' ? '✓' : s === 'fail' ? '✗' : '⚠';
+            return `<span style="margin-right:12px">${icon} ${esc(k)}</span>`;
+          }).join('')}</div>`;
+      }
       if (c.passage) {
         document.getElementById('candidateDetailPassage').style.display = 'block';
         document.getElementById('candidateDetailPassagePre').textContent =
@@ -1123,6 +1328,13 @@
     el.textContent = msg; el.style.display = 'block';
     clearTimeout(_toastTimer);
     _toastTimer = setTimeout(() => { el.style.display = 'none'; }, 3000);
+  }
+
+  if (window.ContentCorrectionsPanel) {
+    ContentCorrectionsPanel.bind({ api, esc, toast, fmtDate });
+  }
+  if (window.GenerationFeedbackPanel) {
+    GenerationFeedbackPanel.bind({ api, esc, toast, fmtDate });
   }
 </script>
 </body>

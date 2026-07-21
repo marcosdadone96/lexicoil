@@ -64,3 +64,100 @@ export const BLACKLIST = [
   { term: /\binterdisziplin\w*\b/i,suggestion: 'fächerübergreifend (B1-Niveau)',      grammar: false },
   { term: /\bPräzedenz\w*\b/i,     suggestion: 'Beispiel / Vorbild (B1-Niveau)',      grammar: false },
 ];
+
+/**
+ * B2+ vocabulary forbidden in Lesen QUESTIONS (question, options, explanation, signText).
+ * Passages may still use some of these; questions/explanations must stay ≤ B1 for comprehension.
+ * Checked by checkLexical (pipeline) and CHK-6b (audit-pass-2).
+ */
+export const B2_QUESTION_BLACKLIST = [
+  { term: /\bmodifizier\w*\b/i,              suggestion: 'ändern / anpassen' },
+  { term: /\bGelassenheit\b/i,               suggestion: 'Ruhe / Entspannung / entspannt' },
+  { term: /\bAngehörig\w*\b/i,               suggestion: 'Familie / Verwandte' },
+  { term: /\belektronisch\w*\s+Mitteilung\w*\b/i, suggestion: 'Nachrichten / SMS' },
+  { term: /\bMitteilungen\b/i,               suggestion: 'Nachrichten' },
+  { term: /\bsich\s+austausch\w*\b/i,         suggestion: 'sprechen / schreiben / kommunizieren' },
+  { term: /\bUmstellung\b/i,                 suggestion: 'Änderung / neue Regel' },
+  { term: /\bDiskriminierung\b/i,            suggestion: 'Ungerechtigkeit / Unterschied' },
+  { term: /\bPräzision\b/i,                  suggestion: 'Genauigkeit / richtig schreiben' },
+  { term: /\bBürokratie\b/i,                 suggestion: 'viel Papierkram / viele Formulare' },
+  { term: /\bPotenzial\b/i,                  suggestion: 'Möglichkeit / Chance' },
+  { term: /\bRessourc\w*\b/i,                suggestion: 'Mittel / Möglichkeiten' },
+  { term: /\bNutzererfahrung\b/i,            suggestion: 'Erfahrung mit der App' },
+  { term: /\bBenutzerfreundlich\w*\b/i,      suggestion: 'einfach zu bedienen' },
+  { term: /\bKommunikationsmittel\b/i,       suggestion: 'Nachrichten / Telefon' },
+  { term: /\bKommunikationskanal\w*\b/i,    suggestion: 'Telefon / E-Mail / Chat' },
+  { term: /\beigene\s+Marke\b/i,             suggestion: 'bekannter werden / mehr Kunden' },
+  { term: /\bMarke\s+stärken\b/i,            suggestion: 'bekannter werden' },
+  { term: /\bHerausforderung\w*\b/i,         suggestion: 'Problem / Schwierigkeit' },
+  { term: /\bPerspektiv\w*\b/i,               suggestion: 'Sicht / Meinung' },
+  { term: /\bReflexion\w*\b/i,               suggestion: 'Nachdenken / Überlegung' },
+  { term: /\bReflektion\w*\b/i,              suggestion: 'Nachdenken / Überlegung' },
+  { term: /\bAspekt\w*\b/i,                  suggestion: 'Teil / Punkt' },
+  { term: /\bKonsequenz\w*\b/i,               suggestion: 'Folge / Ergebnis' },
+  { term: /\bDatensicherheit\b/i,            suggestion: 'Sicherheit der Daten / Privatsphäre' },
+  { term: /\bProtokoll\w*\b/i,               suggestion: 'Regeln / Anleitung' },
+  { term: /\bPriorität\w*\b/i,               suggestion: 'Wichtigkeit / wichtig' },
+  { term: /\bKlarheit\b/i,                   suggestion: 'deutlich / verständlich' },
+  { term: /\bZugänglich\w*\b/i,              suggestion: 'einfach / offen' },
+  { term: /\bReichweite\b/i,                 suggestion: 'viele Menschen / Bekanntheit' },
+  { term: /\bZielgruppe\w*\b/i,              suggestion: 'Teilnehmer' },
+  { term: /\bBranding\b/i,                   suggestion: 'Marke / Werbung' },
+  { term: /\bCorporate\b/i,                  suggestion: 'Firma / Unternehmen' },
+  { term: /\bMarketing\b/i,                  suggestion: 'Werbung / Reklame' },
+];
+
+/**
+ * B1+ vocabulary forbidden in A2 QUESTIONS (question, options, explanation, signText).
+ * Passages may use B1 words; questions/explanations must stay ≤ A2 for comprehension.
+ * Checked by checkLexical (A2 pipeline) and CHK-6c (audit-pass-2).
+ */
+export const B1_QUESTION_BLACKLIST = [
+  { term: /\bHerausforderung\w*\b/i,         suggestion: 'Problem / Schwierigkeit' },
+  { term: /\bPerspektiv\w*\b/i,               suggestion: 'Sicht / Meinung' },
+  { term: /\bDiskriminierung\b/i,            suggestion: 'Ungerechtigkeit / Unterschied' },
+  { term: /\bPotenzial\b/i,                  suggestion: 'Möglichkeit / Chance' },
+  { term: /\bRessourc\w*\b/i,                suggestion: 'Mittel / Möglichkeiten' },
+  { term: /\bUmstellung\b/i,                 suggestion: 'Änderung / neue Regel' },
+  { term: /\bReflexion\w*\b/i,               suggestion: 'Nachdenken / Überlegung' },
+  { term: /\bReflektion\w*\b/i,              suggestion: 'Nachdenken / Überlegung' },
+  { term: /\bKonsequenz\w*\b/i,               suggestion: 'Folge / Ergebnis' },
+  { term: /\bAspekt\w*\b/i,                  suggestion: 'Teil / Punkt' },
+  { term: /\bPriorität\w*\b/i,               suggestion: 'Wichtigkeit / wichtig' },
+  { term: /\bBürokratie\b/i,                 suggestion: 'viel Papierkram / viele Formulare' },
+  { term: /\bPräzision\b/i,                  suggestion: 'Genauigkeit / richtig schreiben' },
+  { term: /\bGelassenheit\b/i,               suggestion: 'Ruhe / Entspannung' },
+  { term: /\bNutzererfahrung\b/i,            suggestion: 'Erfahrung mit der App' },
+  { term: /\bBenutzerfreundlich\w*\b/i,      suggestion: 'einfach zu bedienen' },
+  { term: /\bKommunikationsmittel\b/i,       suggestion: 'Nachrichten / Telefon' },
+  { term: /\bKommunikationskanal\w*\b/i,    suggestion: 'Telefon / E-Mail / Chat' },
+  { term: /\bHerausfordernd\b/i,             suggestion: 'schwierig / anstrengend' },
+  { term: /\bImplementierung\b/i,            suggestion: 'Einführung / Umsetzung' },
+  { term: /\bFlexibilität\b/i,               suggestion: 'freie Zeiten / man kann wählen' },
+  { term: /\bWork-Life-Balance\b/i,          suggestion: 'Freizeit und Arbeit' },
+  { term: /\bEigenverantwortung\b/i,         suggestion: 'selbst entscheiden' },
+  { term: /\bNachhaltigkeit\b/i,             suggestion: 'Umweltschutz / gut für die Natur' },
+  { term: /\bDiversität\b/i,                 suggestion: 'Vielfalt / verschiedene Menschen' },
+];
+
+/** @param {string} level */
+export function questionBlacklistForLevel(level) {
+  const lv = String(level || 'B1').trim().toUpperCase();
+  if (lv === 'A2') return B1_QUESTION_BLACKLIST;
+  if (lv === 'B1') return B2_QUESTION_BLACKLIST;
+  return B2_QUESTION_BLACKLIST;
+}
+
+/** @param {string} level */
+export function questionBlacklistLabel(level) {
+  const lv = String(level || 'B1').trim().toUpperCase();
+  if (lv === 'A2') return 'vocabulario B1+ en pregunta';
+  return 'vocabulario B2+ en pregunta';
+}
+
+/** @param {string} level */
+export function questionBlacklistTargetLevel(level) {
+  const lv = String(level || 'B1').trim().toUpperCase();
+  if (lv === 'A2') return 'A2';
+  return 'B1';
+}

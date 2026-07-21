@@ -41,7 +41,7 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["id", "module", "question", "correctAnswer"],
+        "required": ["id", "module", "question", "correct"],
         "properties": {
           "id": { "type": "string" },
           "module": {
@@ -58,7 +58,7 @@
           "question": { "type": "string" },
           "options": { "type": "array", "items": { "type": "string" } },
           "correct": {},
-          "correctAnswer": {},
+          "correctAnswer": { "description": "DEPRECATED: mirror of correct. Must equal correct when both present. Will be removed in a future schema version." },
           "explanation": { "type": "string" },
           "grammarTags": { "type": "array", "items": { "type": "string" } },
           "topicTags": { "type": "array", "items": { "type": "string" } },

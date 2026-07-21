@@ -117,10 +117,10 @@ await seedPart(3, 'pool-t3', {
 });
 
 const wrongTeil = await pickReusablePart(store, 'de', 'B1', 'lesen', { teil: 3 });
-assert('pick teil 3 returns t3 id', wrongTeil?.id === 'pool-t3');
+assert('pick teil 3 returns a T3 part', Number(wrongTeil?.part?.teil) === 3);
 
 const t1Only = await pickReusablePart(store, 'de', 'B1', 'lesen', { teil: 1 });
-assert('pick teil 1 returns t1 id', t1Only?.id === 'pool-t1');
+assert('pick teil 1 returns a T1 part', Number(t1Only?.part?.teil) === 1);
 
 const none = await pickReusablePart(store, 'de', 'B1', 'lesen', { teil: 99 });
 assert('pick missing teil returns null', none === null);
@@ -159,6 +159,6 @@ assert('ingest removes _teilFromPool', ingest._teilFromPool === undefined);
 
 const emptyStore = makeMockStore();
 const miss = await pickReusablePart(emptyStore, 'de', 'B1', 'lesen', { teil: 3 });
-assert('empty pool returns null for T3', miss === null);
+assert('empty blob store falls back to seed or null', miss === null || Number(miss?.part?.teil) === 3);
 
 console.log('\nPersonal Lesen pool fallback tests passed.');

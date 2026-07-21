@@ -1,0 +1,5340 @@
+{
+  "generatedAt": "2026-07-08T14:27:42.715Z",
+  "gateVersion": "v6.1-B-G2 (frozen)",
+  "mode": "dry-run",
+  "normalizeMode": "decap-only",
+  "sourceDir": "batches/ready/lesen",
+  "summary": {
+    "files": 193,
+    "beforeFindings": 88,
+    "afterFindings": 79,
+    "deltaFindings": -9,
+    "beforeAvg": 0.46,
+    "afterAvg": 0.41,
+    "deltaAvg": -0.05,
+    "beforeFilesWithFindings": 37,
+    "afterFilesWithFindings": 35,
+    "deltaFilesWithFindings": -2,
+    "decapFixed": 200,
+    "capFixed": 0,
+    "fieldsChanged": 196,
+    "tokenChanges": 200,
+    "beforeByReason": {
+      "verb_census_no_finite": 33,
+      "adv_before_verb": 1,
+      "lexicon_override_tag": 12,
+      "modal_final_infinitive": 12,
+      "adj_before_noun": 8,
+      "adv_after_pronoun": 1,
+      "quantifier_capitalized": 1,
+      "lexicon_after_adj": 1,
+      "modal_noun_object": 2,
+      "prose_strict_homograph": 10,
+      "lexicon_nn": 5,
+      "zu_adv_capitalized": 2
+    },
+    "afterByReason": {
+      "verb_census_no_finite": 32,
+      "adv_before_verb": 1,
+      "lexicon_override_tag": 12,
+      "modal_final_infinitive": 12,
+      "adj_before_noun": 4,
+      "lexicon_after_adj": 1,
+      "modal_noun_object": 2,
+      "prose_strict_homograph": 10,
+      "lexicon_nn": 5
+    }
+  },
+  "byTeil": {
+    "1": {
+      "files": 17,
+      "before": 9,
+      "after": 8,
+      "delta": -1
+    },
+    "2": {
+      "files": 15,
+      "before": 36,
+      "after": 33,
+      "delta": -3
+    },
+    "3": {
+      "files": 125,
+      "before": 2,
+      "after": 2,
+      "delta": 0
+    },
+    "4": {
+      "files": 17,
+      "before": 14,
+      "after": 12,
+      "delta": -2
+    },
+    "5": {
+      "files": 19,
+      "before": 27,
+      "after": 24,
+      "delta": -3
+    }
+  },
+  "files": [
+    {
+      "file": "lesen-t1-gemini-147.json",
+      "teil": 1,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 3,
+        "capFixed": 0,
+        "fieldsChanged": 3,
+        "tokenChanges": 3
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": [
+        {
+          "kind": "token",
+          "path": "passages[0].text",
+          "from": "Neues",
+          "to": "neues",
+          "index": 92
+        },
+        {
+          "kind": "token",
+          "path": "questions[2].question",
+          "from": "Freien",
+          "to": "freien",
+          "index": 24
+        },
+        {
+          "kind": "token",
+          "path": "questions[5].explanation",
+          "from": "Neues",
+          "to": "neues",
+          "index": 14
+        }
+      ]
+    },
+    {
+      "file": "lesen-t1-gemini-154.json",
+      "teil": 1,
+      "beforeFindings": 3,
+      "afterFindings": 3,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {
+        "verb_census_no_finite": 2,
+        "adv_before_verb": 1
+      },
+      "afterByReason": {
+        "verb_census_no_finite": 2,
+        "adv_before_verb": 1
+      },
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t1-gemini-159.json",
+      "teil": 1,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t1-gemini-160.json",
+      "teil": 1,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t1-gemini-161.json",
+      "teil": 1,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t1-gemini-162.json",
+      "teil": 1,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 2,
+        "capFixed": 0,
+        "fieldsChanged": 2,
+        "tokenChanges": 2
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": [
+        {
+          "kind": "token",
+          "path": "passages[0].text",
+          "from": "Online",
+          "to": "online",
+          "index": 168
+        },
+        {
+          "kind": "token",
+          "path": "questions[5].explanation",
+          "from": "Online",
+          "to": "online",
+          "index": 22
+        }
+      ]
+    },
+    {
+      "file": "lesen-t1-gemini-163.json",
+      "teil": 1,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t1-gemini-164.json",
+      "teil": 1,
+      "beforeFindings": 1,
+      "afterFindings": 1,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {
+        "lexicon_override_tag": 1
+      },
+      "afterByReason": {
+        "lexicon_override_tag": 1
+      },
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t1-gemini-166.json",
+      "teil": 1,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t1-gemini-167.json",
+      "teil": 1,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 1,
+        "capFixed": 0,
+        "fieldsChanged": 1,
+        "tokenChanges": 1
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": [
+        {
+          "kind": "token",
+          "path": "passages[0].text",
+          "from": "Wissen",
+          "to": "wissen",
+          "index": 304
+        }
+      ]
+    },
+    {
+      "file": "lesen-t1-gemini-168.json",
+      "teil": 1,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t1-gemini-169.json",
+      "teil": 1,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t1-gemini-170.json",
+      "teil": 1,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t1-gemini-171.json",
+      "teil": 1,
+      "beforeFindings": 1,
+      "afterFindings": 1,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {
+        "modal_final_infinitive": 1
+      },
+      "afterByReason": {
+        "modal_final_infinitive": 1
+      },
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t1-gemini-172.json",
+      "teil": 1,
+      "beforeFindings": 1,
+      "afterFindings": 1,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 1,
+        "capFixed": 0,
+        "fieldsChanged": 1,
+        "tokenChanges": 1
+      },
+      "beforeByReason": {
+        "verb_census_no_finite": 1
+      },
+      "afterByReason": {
+        "verb_census_no_finite": 1
+      },
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": [
+        {
+          "kind": "token",
+          "path": "passages[0].text",
+          "from": "Neues",
+          "to": "neues",
+          "index": 248
+        }
+      ]
+    },
+    {
+      "file": "lesen-t1-gemini-173.json",
+      "teil": 1,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 3,
+        "capFixed": 0,
+        "fieldsChanged": 2,
+        "tokenChanges": 3
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": [
+        {
+          "kind": "token",
+          "path": "passages[0].text",
+          "from": "Spät",
+          "to": "spät",
+          "index": 376
+        },
+        {
+          "kind": "token",
+          "path": "passages[0].text",
+          "from": "Gutes",
+          "to": "gutes",
+          "index": 382
+        },
+        {
+          "kind": "token",
+          "path": "questions[1].question",
+          "from": "Freie",
+          "to": "freie",
+          "index": 6
+        }
+      ]
+    },
+    {
+      "file": "lesen-t1-gemini-174.json",
+      "teil": 1,
+      "beforeFindings": 3,
+      "afterFindings": 2,
+      "delta": -1,
+      "normalize": {
+        "decapFixed": 1,
+        "capFixed": 0,
+        "fieldsChanged": 1,
+        "tokenChanges": 1
+      },
+      "beforeByReason": {
+        "adj_before_noun": 1,
+        "adv_after_pronoun": 1,
+        "lexicon_override_tag": 1
+      },
+      "afterByReason": {
+        "adj_before_noun": 1,
+        "lexicon_override_tag": 1
+      },
+      "removedFindings": [
+        {
+          "type": "wrong_capitalized",
+          "word": "Morgens",
+          "pos": "PROPN",
+          "tag": "NE",
+          "confidence": "high",
+          "reason": "adv_after_pronoun",
+          "context": "erwähnt, dass sie Morgens online Nachrichten liest,",
+          "prevWord": "sie",
+          "prevPos": "PRON",
+          "prevTag": "PPER",
+          "textIndex": 0,
+          "regime": "PROSE",
+          "field": "questions.explanation",
+          "id": "lesen-t1-gemini-174.json::questions.explanation::6"
+        }
+      ],
+      "addedFindings": [],
+      "changes": [
+        {
+          "kind": "token",
+          "path": "questions[2].explanation",
+          "from": "Morgens",
+          "to": "morgens",
+          "index": 8
+        }
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-060.json",
+      "teil": 2,
+      "beforeFindings": 5,
+      "afterFindings": 3,
+      "delta": -2,
+      "normalize": {
+        "decapFixed": 4,
+        "capFixed": 0,
+        "fieldsChanged": 3,
+        "tokenChanges": 4
+      },
+      "beforeByReason": {
+        "quantifier_capitalized": 1,
+        "verb_census_no_finite": 3,
+        "adj_before_noun": 1
+      },
+      "afterByReason": {
+        "verb_census_no_finite": 3
+      },
+      "removedFindings": [
+        {
+          "type": "wrong_capitalized",
+          "word": "Viele",
+          "pos": "DET",
+          "tag": "PIAT",
+          "confidence": "high",
+          "reason": "quantifier_capitalized",
+          "context": ", dass regelmäßiges Gärtnern Viele positive Effekte auf die",
+          "prevWord": "Gärtnern",
+          "prevPos": "NOUN",
+          "prevTag": "NN",
+          "textIndex": 0,
+          "regime": "PROSE",
+          "field": "passages.text",
+          "id": "lesen-t2-gemini-060.json::passages.text::0"
+        },
+        {
+          "type": "wrong_capitalized",
+          "word": "Viele",
+          "pos": "DET",
+          "tag": "PIAT",
+          "confidence": "high",
+          "reason": "adj_before_noun",
+          "context": "Bericht zeigt, dass Viele Kinder zu wenig aktiv",
+          "prevWord": "dass",
+          "prevPos": "SCONJ",
+          "prevTag": "KOUS",
+          "textIndex": 0,
+          "regime": "PROSE",
+          "field": "passages.text",
+          "id": "lesen-t2-gemini-060.json::passages.text::1"
+        }
+      ],
+      "addedFindings": [],
+      "changes": [
+        {
+          "kind": "token",
+          "path": "passages[0].text",
+          "from": "Viele",
+          "to": "viele",
+          "index": 40
+        },
+        {
+          "kind": "token",
+          "path": "passages[0].text",
+          "from": "Eigenes",
+          "to": "eigenes",
+          "index": 196
+        },
+        {
+          "kind": "token",
+          "path": "passages[1].text",
+          "from": "Viele",
+          "to": "viele",
+          "index": 206
+        },
+        {
+          "kind": "token",
+          "path": "questions[5].options[2]",
+          "from": "Freien",
+          "to": "freien",
+          "index": 20
+        }
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-061.json",
+      "teil": 2,
+      "beforeFindings": 1,
+      "afterFindings": 0,
+      "delta": -1,
+      "normalize": {
+        "decapFixed": 5,
+        "capFixed": 0,
+        "fieldsChanged": 4,
+        "tokenChanges": 5
+      },
+      "beforeByReason": {
+        "verb_census_no_finite": 1
+      },
+      "afterByReason": {},
+      "removedFindings": [
+        {
+          "type": "wrong_capitalized",
+          "word": "Besuchen",
+          "pos": "VERB",
+          "tag": "VVINF",
+          "confidence": "high",
+          "reason": "verb_census_no_finite",
+          "context": "Viele neue Supermärkte zu Besuchen.",
+          "prevWord": "zu",
+          "prevPos": "ADP",
+          "prevTag": "APPR",
+          "textIndex": 0,
+          "regime": "PROSE",
+          "field": "questions.options",
+          "id": "lesen-t2-gemini-061.json::questions.options::15"
+        }
+      ],
+      "addedFindings": [],
+      "changes": [
+        {
+          "kind": "token",
+          "path": "passages[1].text",
+          "from": "Junge",
+          "to": "junge",
+          "index": 2
+        },
+        {
+          "kind": "token",
+          "path": "passages[1].text",
+          "from": "Junge",
+          "to": "junge",
+          "index": 370
+        },
+        {
+          "kind": "token",
+          "path": "questions[1].question",
+          "from": "Junge",
+          "to": "junge",
+          "index": 6
+        },
+        {
+          "kind": "token",
+          "path": "questions[2].options[1]",
+          "from": "Besuchen",
+          "to": "besuchen",
+          "index": 10
+        },
+        {
+          "kind": "token",
+          "path": "questions[4].options[1]",
+          "from": "Persönlich",
+          "to": "persönlich",
+          "index": 8
+        }
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-062.json",
+      "teil": 2,
+      "beforeFindings": 3,
+      "afterFindings": 3,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 1,
+        "capFixed": 0,
+        "fieldsChanged": 1,
+        "tokenChanges": 1
+      },
+      "beforeByReason": {
+        "verb_census_no_finite": 3
+      },
+      "afterByReason": {
+        "verb_census_no_finite": 3
+      },
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": [
+        {
+          "kind": "token",
+          "path": "passages[1].text",
+          "from": "Deutlich",
+          "to": "deutlich",
+          "index": 112
+        }
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-066.json",
+      "teil": 2,
+      "beforeFindings": 2,
+      "afterFindings": 2,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 2,
+        "capFixed": 0,
+        "fieldsChanged": 2,
+        "tokenChanges": 2
+      },
+      "beforeByReason": {
+        "adj_before_noun": 1,
+        "lexicon_override_tag": 1
+      },
+      "afterByReason": {
+        "adj_before_noun": 1,
+        "lexicon_override_tag": 1
+      },
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": [
+        {
+          "kind": "token",
+          "path": "passages[1].text",
+          "from": "Junge",
+          "to": "junge",
+          "index": 68
+        },
+        {
+          "kind": "token",
+          "path": "questions[3].explanation",
+          "from": "Junge",
+          "to": "junge",
+          "index": 10
+        }
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-067.json",
+      "teil": 2,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 1,
+        "capFixed": 0,
+        "fieldsChanged": 1,
+        "tokenChanges": 1
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": [
+        {
+          "kind": "token",
+          "path": "passages[0].text",
+          "from": "Nötig",
+          "to": "nötig",
+          "index": 286
+        }
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-072.json",
+      "teil": 2,
+      "beforeFindings": 2,
+      "afterFindings": 2,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 4,
+        "capFixed": 0,
+        "fieldsChanged": 3,
+        "tokenChanges": 4
+      },
+      "beforeByReason": {
+        "verb_census_no_finite": 1,
+        "lexicon_override_tag": 1
+      },
+      "afterByReason": {
+        "verb_census_no_finite": 1,
+        "lexicon_override_tag": 1
+      },
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": [
+        {
+          "kind": "token",
+          "path": "passages[0].text",
+          "from": "Junge",
+          "to": "junge",
+          "index": 126
+        },
+        {
+          "kind": "token",
+          "path": "passages[0].text",
+          "from": "Sicher",
+          "to": "sicher",
+          "index": 248
+        },
+        {
+          "kind": "token",
+          "path": "passages[1].text",
+          "from": "Zugänglich",
+          "to": "zugänglich",
+          "index": 122
+        },
+        {
+          "kind": "token",
+          "path": "questions[1].explanation",
+          "from": "Junge",
+          "to": "junge",
+          "index": 12
+        }
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-076.json",
+      "teil": 2,
+      "beforeFindings": 1,
+      "afterFindings": 1,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {
+        "modal_final_infinitive": 1
+      },
+      "afterByReason": {
+        "modal_final_infinitive": 1
+      },
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t2-gemini-077.json",
+      "teil": 2,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 2,
+        "capFixed": 0,
+        "fieldsChanged": 2,
+        "tokenChanges": 2
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": [
+        {
+          "kind": "token",
+          "path": "passages[1].text",
+          "from": "Computerkenntnissen",
+          "to": "computerkenntnissen",
+          "index": 62
+        },
+        {
+          "kind": "token",
+          "path": "questions[0].options[1]",
+          "from": "Verbrauchen",
+          "to": "verbrauchen",
+          "index": 16
+        }
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-079.json",
+      "teil": 2,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 5,
+        "capFixed": 0,
+        "fieldsChanged": 5,
+        "tokenChanges": 5
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": [
+        {
+          "kind": "token",
+          "path": "passages[0].text",
+          "from": "Sicher",
+          "to": "sicher",
+          "index": 252
+        },
+        {
+          "kind": "token",
+          "path": "passages[1].text",
+          "from": "Gleich",
+          "to": "gleich",
+          "index": 284
+        },
+        {
+          "kind": "token",
+          "path": "questions[1].explanation",
+          "from": "Sicher",
+          "to": "sicher",
+          "index": 28
+        },
+        {
+          "kind": "token",
+          "path": "questions[1].options[0]",
+          "from": "Sicher",
+          "to": "sicher",
+          "index": 16
+        },
+        {
+          "kind": "token",
+          "path": "questions[4].question",
+          "from": "Wissen",
+          "to": "wissen",
+          "index": 22
+        }
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-083.json",
+      "teil": 2,
+      "beforeFindings": 4,
+      "afterFindings": 4,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 1,
+        "capFixed": 0,
+        "fieldsChanged": 1,
+        "tokenChanges": 1
+      },
+      "beforeByReason": {
+        "verb_census_no_finite": 4
+      },
+      "afterByReason": {
+        "verb_census_no_finite": 4
+      },
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": [
+        {
+          "kind": "token",
+          "path": "questions[2].options[1]",
+          "from": "Verantwortlich",
+          "to": "verantwortlich",
+          "index": 10
+        }
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-085.json",
+      "teil": 2,
+      "beforeFindings": 1,
+      "afterFindings": 1,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {
+        "modal_final_infinitive": 1
+      },
+      "afterByReason": {
+        "modal_final_infinitive": 1
+      },
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t2-gemini-086.json",
+      "teil": 2,
+      "beforeFindings": 2,
+      "afterFindings": 2,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {
+        "lexicon_after_adj": 1,
+        "verb_census_no_finite": 1
+      },
+      "afterByReason": {
+        "lexicon_after_adj": 1,
+        "verb_census_no_finite": 1
+      },
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t2-gemini-087.json",
+      "teil": 2,
+      "beforeFindings": 3,
+      "afterFindings": 3,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 1,
+        "capFixed": 0,
+        "fieldsChanged": 1,
+        "tokenChanges": 1
+      },
+      "beforeByReason": {
+        "lexicon_override_tag": 2,
+        "verb_census_no_finite": 1
+      },
+      "afterByReason": {
+        "lexicon_override_tag": 2,
+        "verb_census_no_finite": 1
+      },
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": [
+        {
+          "kind": "token",
+          "path": "passages[0].text",
+          "from": "Online",
+          "to": "online",
+          "index": 64
+        }
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-088.json",
+      "teil": 2,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 2,
+        "capFixed": 0,
+        "fieldsChanged": 2,
+        "tokenChanges": 2
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": [
+        {
+          "kind": "token",
+          "path": "passages[0].text",
+          "from": "Verantwortlich",
+          "to": "verantwortlich",
+          "index": 96
+        },
+        {
+          "kind": "token",
+          "path": "questions[1].explanation",
+          "from": "Verantwortlich",
+          "to": "verantwortlich",
+          "index": 20
+        }
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-089.json",
+      "teil": 2,
+      "beforeFindings": 12,
+      "afterFindings": 12,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {
+        "verb_census_no_finite": 11,
+        "adj_before_noun": 1
+      },
+      "afterByReason": {
+        "verb_census_no_finite": 11,
+        "adj_before_noun": 1
+      },
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-auto-001.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-auto-002.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-auto-003.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-auto-004.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 7,
+        "capFixed": 0,
+        "fieldsChanged": 7,
+        "tokenChanges": 7
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": [
+        {
+          "kind": "token",
+          "path": "questions[0].options[9]",
+          "from": "Abends",
+          "to": "abends",
+          "index": 4
+        },
+        {
+          "kind": "token",
+          "path": "questions[1].options[9]",
+          "from": "Abends",
+          "to": "abends",
+          "index": 4
+        },
+        {
+          "kind": "token",
+          "path": "questions[2].options[9]",
+          "from": "Abends",
+          "to": "abends",
+          "index": 4
+        },
+        {
+          "kind": "token",
+          "path": "questions[3].options[9]",
+          "from": "Abends",
+          "to": "abends",
+          "index": 4
+        },
+        {
+          "kind": "token",
+          "path": "questions[4].options[9]",
+          "from": "Abends",
+          "to": "abends",
+          "index": 4
+        },
+        {
+          "kind": "token",
+          "path": "questions[5].options[9]",
+          "from": "Abends",
+          "to": "abends",
+          "index": 4
+        },
+        {
+          "kind": "token",
+          "path": "questions[6].options[9]",
+          "from": "Abends",
+          "to": "abends",
+          "index": 4
+        }
+      ]
+    },
+    {
+      "file": "lesen-t3-auto-007.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-auto-008.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-auto-009.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 7,
+        "capFixed": 0,
+        "fieldsChanged": 7,
+        "tokenChanges": 7
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": [
+        {
+          "kind": "token",
+          "path": "questions[0].options[6]",
+          "from": "Abends",
+          "to": "abends",
+          "index": 4
+        },
+        {
+          "kind": "token",
+          "path": "questions[1].options[6]",
+          "from": "Abends",
+          "to": "abends",
+          "index": 4
+        },
+        {
+          "kind": "token",
+          "path": "questions[2].options[6]",
+          "from": "Abends",
+          "to": "abends",
+          "index": 4
+        },
+        {
+          "kind": "token",
+          "path": "questions[3].options[6]",
+          "from": "Abends",
+          "to": "abends",
+          "index": 4
+        },
+        {
+          "kind": "token",
+          "path": "questions[4].options[6]",
+          "from": "Abends",
+          "to": "abends",
+          "index": 4
+        },
+        {
+          "kind": "token",
+          "path": "questions[5].options[6]",
+          "from": "Abends",
+          "to": "abends",
+          "index": 4
+        },
+        {
+          "kind": "token",
+          "path": "questions[6].options[6]",
+          "from": "Abends",
+          "to": "abends",
+          "index": 4
+        }
+      ]
+    },
+    {
+      "file": "lesen-t3-auto-010.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-auto-011.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 1,
+        "capFixed": 0,
+        "fieldsChanged": 1,
+        "tokenChanges": 1
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": [
+        {
+          "kind": "token",
+          "path": "questions[4].question",
+          "from": "Kleine",
+          "to": "kleine",
+          "index": 10
+        }
+      ]
+    },
+    {
+      "file": "lesen-t3-auto-013.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-auto-014.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-auto-015.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 1,
+        "capFixed": 0,
+        "fieldsChanged": 1,
+        "tokenChanges": 1
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": [
+        {
+          "kind": "token",
+          "path": "questions[0].question",
+          "from": "Lang",
+          "to": "lang",
+          "index": 4
+        }
+      ]
+    },
+    {
+      "file": "lesen-t3-auto-016.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-auto-017.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-auto-018.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-auto-0krnpo.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-auto-0su12l.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 9,
+        "capFixed": 0,
+        "fieldsChanged": 9,
+        "tokenChanges": 9
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": [
+        {
+          "kind": "token",
+          "path": "questions[0].question",
+          "from": "Lang",
+          "to": "lang",
+          "index": 4
+        },
+        {
+          "kind": "token",
+          "path": "questions[0].options[6]",
+          "from": "Erste",
+          "to": "erste",
+          "index": 6
+        },
+        {
+          "kind": "token",
+          "path": "questions[1].options[6]",
+          "from": "Erste",
+          "to": "erste",
+          "index": 6
+        },
+        {
+          "kind": "token",
+          "path": "questions[2].options[6]",
+          "from": "Erste",
+          "to": "erste",
+          "index": 6
+        },
+        {
+          "kind": "token",
+          "path": "questions[3].explanation",
+          "from": "Erste",
+          "to": "erste",
+          "index": 4
+        },
+        {
+          "kind": "token",
+          "path": "questions[3].options[6]",
+          "from": "Erste",
+          "to": "erste",
+          "index": 6
+        },
+        {
+          "kind": "token",
+          "path": "questions[4].options[6]",
+          "from": "Erste",
+          "to": "erste",
+          "index": 6
+        },
+        {
+          "kind": "token",
+          "path": "questions[5].options[6]",
+          "from": "Erste",
+          "to": "erste",
+          "index": 6
+        },
+        {
+          "kind": "token",
+          "path": "questions[6].options[6]",
+          "from": "Erste",
+          "to": "erste",
+          "index": 6
+        }
+      ]
+    },
+    {
+      "file": "lesen-t3-auto-0w7nrk.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-auto-0wccwj.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 7,
+        "capFixed": 0,
+        "fieldsChanged": 7,
+        "tokenChanges": 7
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": [
+        {
+          "kind": "token",
+          "path": "questions[0].options[2]",
+          "from": "Abends",
+          "to": "abends",
+          "index": 4
+        },
+        {
+          "kind": "token",
+          "path": "questions[1].options[2]",
+          "from": "Abends",
+          "to": "abends",
+          "index": 4
+        },
+        {
+          "kind": "token",
+          "path": "questions[2].options[2]",
+          "from": "Abends",
+          "to": "abends",
+          "index": 4
+        },
+        {
+          "kind": "token",
+          "path": "questions[3].options[2]",
+          "from": "Abends",
+          "to": "abends",
+          "index": 4
+        },
+        {
+          "kind": "token",
+          "path": "questions[4].options[2]",
+          "from": "Abends",
+          "to": "abends",
+          "index": 4
+        },
+        {
+          "kind": "token",
+          "path": "questions[5].options[2]",
+          "from": "Abends",
+          "to": "abends",
+          "index": 4
+        },
+        {
+          "kind": "token",
+          "path": "questions[6].options[2]",
+          "from": "Abends",
+          "to": "abends",
+          "index": 4
+        }
+      ]
+    },
+    {
+      "file": "lesen-t3-auto-1xjvus.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-auto-2opj13.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 7,
+        "capFixed": 0,
+        "fieldsChanged": 7,
+        "tokenChanges": 7
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": [
+        {
+          "kind": "token",
+          "path": "questions[0].options[7]",
+          "from": "Abends",
+          "to": "abends",
+          "index": 4
+        },
+        {
+          "kind": "token",
+          "path": "questions[1].options[7]",
+          "from": "Abends",
+          "to": "abends",
+          "index": 4
+        },
+        {
+          "kind": "token",
+          "path": "questions[2].options[7]",
+          "from": "Abends",
+          "to": "abends",
+          "index": 4
+        },
+        {
+          "kind": "token",
+          "path": "questions[3].options[7]",
+          "from": "Abends",
+          "to": "abends",
+          "index": 4
+        },
+        {
+          "kind": "token",
+          "path": "questions[4].options[7]",
+          "from": "Abends",
+          "to": "abends",
+          "index": 4
+        },
+        {
+          "kind": "token",
+          "path": "questions[5].options[7]",
+          "from": "Abends",
+          "to": "abends",
+          "index": 4
+        },
+        {
+          "kind": "token",
+          "path": "questions[6].options[7]",
+          "from": "Abends",
+          "to": "abends",
+          "index": 4
+        }
+      ]
+    },
+    {
+      "file": "lesen-t3-auto-36oufs.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-auto-4u5ssu.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-auto-4v0njj.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-auto-4w233t.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-auto-52dgek.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-auto-59l8g8.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-auto-5k38d3.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-auto-663dhi.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-auto-6n4rbl.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-auto-7deu3u.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-auto-8d7am3.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 9,
+        "capFixed": 0,
+        "fieldsChanged": 9,
+        "tokenChanges": 9
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": [
+        {
+          "kind": "token",
+          "path": "questions[0].question",
+          "from": "Lang",
+          "to": "lang",
+          "index": 4
+        },
+        {
+          "kind": "token",
+          "path": "questions[0].options[1]",
+          "from": "Erste",
+          "to": "erste",
+          "index": 6
+        },
+        {
+          "kind": "token",
+          "path": "questions[1].options[1]",
+          "from": "Erste",
+          "to": "erste",
+          "index": 6
+        },
+        {
+          "kind": "token",
+          "path": "questions[2].options[1]",
+          "from": "Erste",
+          "to": "erste",
+          "index": 6
+        },
+        {
+          "kind": "token",
+          "path": "questions[3].explanation",
+          "from": "Erste",
+          "to": "erste",
+          "index": 4
+        },
+        {
+          "kind": "token",
+          "path": "questions[3].options[1]",
+          "from": "Erste",
+          "to": "erste",
+          "index": 6
+        },
+        {
+          "kind": "token",
+          "path": "questions[4].options[1]",
+          "from": "Erste",
+          "to": "erste",
+          "index": 6
+        },
+        {
+          "kind": "token",
+          "path": "questions[5].options[1]",
+          "from": "Erste",
+          "to": "erste",
+          "index": 6
+        },
+        {
+          "kind": "token",
+          "path": "questions[6].options[1]",
+          "from": "Erste",
+          "to": "erste",
+          "index": 6
+        }
+      ]
+    },
+    {
+      "file": "lesen-t3-auto-8kg9ht.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-auto-8njzec.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-auto-8p1680.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-auto-9ctwhp.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-auto-9u7jcw.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-auto-9uf7ij.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 1,
+        "capFixed": 0,
+        "fieldsChanged": 1,
+        "tokenChanges": 1
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": [
+        {
+          "kind": "token",
+          "path": "questions[0].question",
+          "from": "Lang",
+          "to": "lang",
+          "index": 4
+        }
+      ]
+    },
+    {
+      "file": "lesen-t3-auto-9yauxw.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-auto-ab8pom.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 1,
+        "capFixed": 0,
+        "fieldsChanged": 1,
+        "tokenChanges": 1
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": [
+        {
+          "kind": "token",
+          "path": "questions[0].question",
+          "from": "Lang",
+          "to": "lang",
+          "index": 4
+        }
+      ]
+    },
+    {
+      "file": "lesen-t3-auto-btvapb.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 7,
+        "capFixed": 0,
+        "fieldsChanged": 7,
+        "tokenChanges": 7
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": [
+        {
+          "kind": "token",
+          "path": "questions[0].options[0]",
+          "from": "Abends",
+          "to": "abends",
+          "index": 4
+        },
+        {
+          "kind": "token",
+          "path": "questions[1].options[0]",
+          "from": "Abends",
+          "to": "abends",
+          "index": 4
+        },
+        {
+          "kind": "token",
+          "path": "questions[2].options[0]",
+          "from": "Abends",
+          "to": "abends",
+          "index": 4
+        },
+        {
+          "kind": "token",
+          "path": "questions[3].options[0]",
+          "from": "Abends",
+          "to": "abends",
+          "index": 4
+        },
+        {
+          "kind": "token",
+          "path": "questions[4].options[0]",
+          "from": "Abends",
+          "to": "abends",
+          "index": 4
+        },
+        {
+          "kind": "token",
+          "path": "questions[5].options[0]",
+          "from": "Abends",
+          "to": "abends",
+          "index": 4
+        },
+        {
+          "kind": "token",
+          "path": "questions[6].options[0]",
+          "from": "Abends",
+          "to": "abends",
+          "index": 4
+        }
+      ]
+    },
+    {
+      "file": "lesen-t3-auto-bvr15l.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-auto-csyavv.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-auto-d5a8cy.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-auto-f6zcot.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-auto-fwh3pk.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 9,
+        "capFixed": 0,
+        "fieldsChanged": 9,
+        "tokenChanges": 9
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": [
+        {
+          "kind": "token",
+          "path": "questions[0].question",
+          "from": "Lang",
+          "to": "lang",
+          "index": 4
+        },
+        {
+          "kind": "token",
+          "path": "questions[0].options[7]",
+          "from": "Erste",
+          "to": "erste",
+          "index": 6
+        },
+        {
+          "kind": "token",
+          "path": "questions[1].options[7]",
+          "from": "Erste",
+          "to": "erste",
+          "index": 6
+        },
+        {
+          "kind": "token",
+          "path": "questions[2].options[7]",
+          "from": "Erste",
+          "to": "erste",
+          "index": 6
+        },
+        {
+          "kind": "token",
+          "path": "questions[3].explanation",
+          "from": "Erste",
+          "to": "erste",
+          "index": 4
+        },
+        {
+          "kind": "token",
+          "path": "questions[3].options[7]",
+          "from": "Erste",
+          "to": "erste",
+          "index": 6
+        },
+        {
+          "kind": "token",
+          "path": "questions[4].options[7]",
+          "from": "Erste",
+          "to": "erste",
+          "index": 6
+        },
+        {
+          "kind": "token",
+          "path": "questions[5].options[7]",
+          "from": "Erste",
+          "to": "erste",
+          "index": 6
+        },
+        {
+          "kind": "token",
+          "path": "questions[6].options[7]",
+          "from": "Erste",
+          "to": "erste",
+          "index": 6
+        }
+      ]
+    },
+    {
+      "file": "lesen-t3-auto-h5017r.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 1,
+        "capFixed": 0,
+        "fieldsChanged": 1,
+        "tokenChanges": 1
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": [
+        {
+          "kind": "token",
+          "path": "questions[0].question",
+          "from": "Lang",
+          "to": "lang",
+          "index": 4
+        }
+      ]
+    },
+    {
+      "file": "lesen-t3-auto-hd5fmk.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-auto-hedsnx.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 1,
+        "capFixed": 0,
+        "fieldsChanged": 1,
+        "tokenChanges": 1
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": [
+        {
+          "kind": "token",
+          "path": "questions[4].question",
+          "from": "Kleine",
+          "to": "kleine",
+          "index": 10
+        }
+      ]
+    },
+    {
+      "file": "lesen-t3-auto-hq5qzd.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-auto-hsfj6s.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 1,
+        "capFixed": 0,
+        "fieldsChanged": 1,
+        "tokenChanges": 1
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": [
+        {
+          "kind": "token",
+          "path": "questions[4].question",
+          "from": "Kleine",
+          "to": "kleine",
+          "index": 10
+        }
+      ]
+    },
+    {
+      "file": "lesen-t3-auto-i6ao6o.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-auto-ic7x45.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-auto-icnjnr.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-auto-igi1o6.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-auto-ii609u.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-auto-k95wse.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-auto-km9wbo.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 7,
+        "capFixed": 0,
+        "fieldsChanged": 7,
+        "tokenChanges": 7
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": [
+        {
+          "kind": "token",
+          "path": "questions[0].options[5]",
+          "from": "Abends",
+          "to": "abends",
+          "index": 4
+        },
+        {
+          "kind": "token",
+          "path": "questions[1].options[5]",
+          "from": "Abends",
+          "to": "abends",
+          "index": 4
+        },
+        {
+          "kind": "token",
+          "path": "questions[2].options[5]",
+          "from": "Abends",
+          "to": "abends",
+          "index": 4
+        },
+        {
+          "kind": "token",
+          "path": "questions[3].options[5]",
+          "from": "Abends",
+          "to": "abends",
+          "index": 4
+        },
+        {
+          "kind": "token",
+          "path": "questions[4].options[5]",
+          "from": "Abends",
+          "to": "abends",
+          "index": 4
+        },
+        {
+          "kind": "token",
+          "path": "questions[5].options[5]",
+          "from": "Abends",
+          "to": "abends",
+          "index": 4
+        },
+        {
+          "kind": "token",
+          "path": "questions[6].options[5]",
+          "from": "Abends",
+          "to": "abends",
+          "index": 4
+        }
+      ]
+    },
+    {
+      "file": "lesen-t3-auto-lbt8nt.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-auto-lxmgvw.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-auto-m1mm7b.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-auto-m33zsz.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-auto-mw3lyd.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-auto-myhxcz.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-auto-nbzyxk.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-auto-nhikh5.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-auto-pcikiy.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-auto-peumnz.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-auto-pkoe89.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-auto-q34vu3.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-auto-rgi0u2.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-auto-rh1554.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-auto-s1isd7.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-auto-s6j0xw.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-auto-scn1uu.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-auto-tc5uia.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 1,
+        "capFixed": 0,
+        "fieldsChanged": 1,
+        "tokenChanges": 1
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": [
+        {
+          "kind": "token",
+          "path": "questions[4].question",
+          "from": "Kleine",
+          "to": "kleine",
+          "index": 10
+        }
+      ]
+    },
+    {
+      "file": "lesen-t3-auto-tklwoj.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-auto-u4r5ot.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-auto-ufwdz3.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-auto-urnm92.json",
+      "teil": 3,
+      "beforeFindings": 1,
+      "afterFindings": 1,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 9,
+        "capFixed": 0,
+        "fieldsChanged": 9,
+        "tokenChanges": 9
+      },
+      "beforeByReason": {
+        "lexicon_override_tag": 1
+      },
+      "afterByReason": {
+        "lexicon_override_tag": 1
+      },
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": [
+        {
+          "kind": "token",
+          "path": "questions[0].options[3]",
+          "from": "Freien",
+          "to": "freien",
+          "index": 10
+        },
+        {
+          "kind": "token",
+          "path": "questions[1].options[3]",
+          "from": "Freien",
+          "to": "freien",
+          "index": 10
+        },
+        {
+          "kind": "token",
+          "path": "questions[2].options[3]",
+          "from": "Freien",
+          "to": "freien",
+          "index": 10
+        },
+        {
+          "kind": "token",
+          "path": "questions[3].options[3]",
+          "from": "Freien",
+          "to": "freien",
+          "index": 10
+        },
+        {
+          "kind": "token",
+          "path": "questions[4].question",
+          "from": "Freien",
+          "to": "freien",
+          "index": 8
+        },
+        {
+          "kind": "token",
+          "path": "questions[4].options[3]",
+          "from": "Freien",
+          "to": "freien",
+          "index": 10
+        },
+        {
+          "kind": "token",
+          "path": "questions[5].options[3]",
+          "from": "Freien",
+          "to": "freien",
+          "index": 10
+        },
+        {
+          "kind": "token",
+          "path": "questions[6].question",
+          "from": "Geldsorgen",
+          "to": "geldsorgen",
+          "index": 14
+        },
+        {
+          "kind": "token",
+          "path": "questions[6].options[3]",
+          "from": "Freien",
+          "to": "freien",
+          "index": 10
+        }
+      ]
+    },
+    {
+      "file": "lesen-t3-auto-vo8jkj.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-auto-w0wrjg.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-auto-wskehx.json",
+      "teil": 3,
+      "beforeFindings": 1,
+      "afterFindings": 1,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 9,
+        "capFixed": 0,
+        "fieldsChanged": 9,
+        "tokenChanges": 9
+      },
+      "beforeByReason": {
+        "lexicon_override_tag": 1
+      },
+      "afterByReason": {
+        "lexicon_override_tag": 1
+      },
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": [
+        {
+          "kind": "token",
+          "path": "questions[0].options[9]",
+          "from": "Freien",
+          "to": "freien",
+          "index": 10
+        },
+        {
+          "kind": "token",
+          "path": "questions[1].options[9]",
+          "from": "Freien",
+          "to": "freien",
+          "index": 10
+        },
+        {
+          "kind": "token",
+          "path": "questions[2].options[9]",
+          "from": "Freien",
+          "to": "freien",
+          "index": 10
+        },
+        {
+          "kind": "token",
+          "path": "questions[3].options[9]",
+          "from": "Freien",
+          "to": "freien",
+          "index": 10
+        },
+        {
+          "kind": "token",
+          "path": "questions[4].question",
+          "from": "Freien",
+          "to": "freien",
+          "index": 8
+        },
+        {
+          "kind": "token",
+          "path": "questions[4].options[9]",
+          "from": "Freien",
+          "to": "freien",
+          "index": 10
+        },
+        {
+          "kind": "token",
+          "path": "questions[5].options[9]",
+          "from": "Freien",
+          "to": "freien",
+          "index": 10
+        },
+        {
+          "kind": "token",
+          "path": "questions[6].question",
+          "from": "Geldsorgen",
+          "to": "geldsorgen",
+          "index": 14
+        },
+        {
+          "kind": "token",
+          "path": "questions[6].options[9]",
+          "from": "Freien",
+          "to": "freien",
+          "index": 10
+        }
+      ]
+    },
+    {
+      "file": "lesen-t3-auto-xj31tk.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-auto-y97qgh.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-auto-zggjqq.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-auto-znvh6g.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 1,
+        "capFixed": 0,
+        "fieldsChanged": 1,
+        "tokenChanges": 1
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": [
+        {
+          "kind": "token",
+          "path": "questions[4].question",
+          "from": "Kleine",
+          "to": "kleine",
+          "index": 10
+        }
+      ]
+    },
+    {
+      "file": "lesen-t3-auto-zviwj3.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-auto-zzgl6b.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-claude-bp-015.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-claude-bp-016.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-claude-bp-017.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 7,
+        "capFixed": 0,
+        "fieldsChanged": 7,
+        "tokenChanges": 7
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": [
+        {
+          "kind": "token",
+          "path": "questions[0].options[0]",
+          "from": "Abends",
+          "to": "abends",
+          "index": 4
+        },
+        {
+          "kind": "token",
+          "path": "questions[1].options[0]",
+          "from": "Abends",
+          "to": "abends",
+          "index": 4
+        },
+        {
+          "kind": "token",
+          "path": "questions[2].options[0]",
+          "from": "Abends",
+          "to": "abends",
+          "index": 4
+        },
+        {
+          "kind": "token",
+          "path": "questions[3].options[0]",
+          "from": "Abends",
+          "to": "abends",
+          "index": 4
+        },
+        {
+          "kind": "token",
+          "path": "questions[4].options[0]",
+          "from": "Abends",
+          "to": "abends",
+          "index": 4
+        },
+        {
+          "kind": "token",
+          "path": "questions[5].options[0]",
+          "from": "Abends",
+          "to": "abends",
+          "index": 4
+        },
+        {
+          "kind": "token",
+          "path": "questions[6].options[0]",
+          "from": "Abends",
+          "to": "abends",
+          "index": 4
+        }
+      ]
+    },
+    {
+      "file": "lesen-t3-claude-bp-019.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-claude-bp-020.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 1,
+        "capFixed": 0,
+        "fieldsChanged": 1,
+        "tokenChanges": 1
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": [
+        {
+          "kind": "token",
+          "path": "questions[4].question",
+          "from": "Kleine",
+          "to": "kleine",
+          "index": 10
+        }
+      ]
+    },
+    {
+      "file": "lesen-t3-claude-bp-024.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-claude-bp-026.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-claude-bp-027.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 9,
+        "capFixed": 0,
+        "fieldsChanged": 9,
+        "tokenChanges": 9
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": [
+        {
+          "kind": "token",
+          "path": "questions[0].question",
+          "from": "Lang",
+          "to": "lang",
+          "index": 4
+        },
+        {
+          "kind": "token",
+          "path": "questions[0].options[1]",
+          "from": "Erste",
+          "to": "erste",
+          "index": 6
+        },
+        {
+          "kind": "token",
+          "path": "questions[1].options[1]",
+          "from": "Erste",
+          "to": "erste",
+          "index": 6
+        },
+        {
+          "kind": "token",
+          "path": "questions[2].options[1]",
+          "from": "Erste",
+          "to": "erste",
+          "index": 6
+        },
+        {
+          "kind": "token",
+          "path": "questions[3].explanation",
+          "from": "Erste",
+          "to": "erste",
+          "index": 4
+        },
+        {
+          "kind": "token",
+          "path": "questions[3].options[1]",
+          "from": "Erste",
+          "to": "erste",
+          "index": 6
+        },
+        {
+          "kind": "token",
+          "path": "questions[4].options[1]",
+          "from": "Erste",
+          "to": "erste",
+          "index": 6
+        },
+        {
+          "kind": "token",
+          "path": "questions[5].options[1]",
+          "from": "Erste",
+          "to": "erste",
+          "index": 6
+        },
+        {
+          "kind": "token",
+          "path": "questions[6].options[1]",
+          "from": "Erste",
+          "to": "erste",
+          "index": 6
+        }
+      ]
+    },
+    {
+      "file": "lesen-t3-claude-bp-028.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-claude-bp-029.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-claude-bp-030.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-claude-bp-032.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 1,
+        "capFixed": 0,
+        "fieldsChanged": 1,
+        "tokenChanges": 1
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": [
+        {
+          "kind": "token",
+          "path": "questions[0].question",
+          "from": "Lang",
+          "to": "lang",
+          "index": 4
+        }
+      ]
+    },
+    {
+      "file": "lesen-t3-claude-bp-033.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-claude-bp-034.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-gemini-001.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 7,
+        "capFixed": 0,
+        "fieldsChanged": 7,
+        "tokenChanges": 7
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": [
+        {
+          "kind": "token",
+          "path": "questions[0].options[0]",
+          "from": "Abends",
+          "to": "abends",
+          "index": 4
+        },
+        {
+          "kind": "token",
+          "path": "questions[1].options[0]",
+          "from": "Abends",
+          "to": "abends",
+          "index": 4
+        },
+        {
+          "kind": "token",
+          "path": "questions[2].options[0]",
+          "from": "Abends",
+          "to": "abends",
+          "index": 4
+        },
+        {
+          "kind": "token",
+          "path": "questions[3].options[0]",
+          "from": "Abends",
+          "to": "abends",
+          "index": 4
+        },
+        {
+          "kind": "token",
+          "path": "questions[4].options[0]",
+          "from": "Abends",
+          "to": "abends",
+          "index": 4
+        },
+        {
+          "kind": "token",
+          "path": "questions[5].options[0]",
+          "from": "Abends",
+          "to": "abends",
+          "index": 4
+        },
+        {
+          "kind": "token",
+          "path": "questions[6].options[0]",
+          "from": "Abends",
+          "to": "abends",
+          "index": 4
+        }
+      ]
+    },
+    {
+      "file": "lesen-t3-gemini-053.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-gemini-054.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-gemini-055.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-gemini-056.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-gemini-057.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-gemini-058.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-gemini-059.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-gemini-060.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-gemini-061.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 7,
+        "capFixed": 0,
+        "fieldsChanged": 7,
+        "tokenChanges": 7
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": [
+        {
+          "kind": "token",
+          "path": "questions[0].options[8]",
+          "from": "Abends",
+          "to": "abends",
+          "index": 4
+        },
+        {
+          "kind": "token",
+          "path": "questions[1].options[8]",
+          "from": "Abends",
+          "to": "abends",
+          "index": 4
+        },
+        {
+          "kind": "token",
+          "path": "questions[2].options[8]",
+          "from": "Abends",
+          "to": "abends",
+          "index": 4
+        },
+        {
+          "kind": "token",
+          "path": "questions[3].options[8]",
+          "from": "Abends",
+          "to": "abends",
+          "index": 4
+        },
+        {
+          "kind": "token",
+          "path": "questions[4].options[8]",
+          "from": "Abends",
+          "to": "abends",
+          "index": 4
+        },
+        {
+          "kind": "token",
+          "path": "questions[5].options[8]",
+          "from": "Abends",
+          "to": "abends",
+          "index": 4
+        },
+        {
+          "kind": "token",
+          "path": "questions[6].options[8]",
+          "from": "Abends",
+          "to": "abends",
+          "index": 4
+        }
+      ]
+    },
+    {
+      "file": "lesen-t3-gemini-062.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-gemini-063.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-gemini-064.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-gemini-065.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-gemini-066.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-gemini-067.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-gemini-068.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 7,
+        "capFixed": 0,
+        "fieldsChanged": 7,
+        "tokenChanges": 7
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": [
+        {
+          "kind": "token",
+          "path": "questions[0].options[3]",
+          "from": "Abends",
+          "to": "abends",
+          "index": 4
+        },
+        {
+          "kind": "token",
+          "path": "questions[1].options[3]",
+          "from": "Abends",
+          "to": "abends",
+          "index": 4
+        },
+        {
+          "kind": "token",
+          "path": "questions[2].options[3]",
+          "from": "Abends",
+          "to": "abends",
+          "index": 4
+        },
+        {
+          "kind": "token",
+          "path": "questions[3].options[3]",
+          "from": "Abends",
+          "to": "abends",
+          "index": 4
+        },
+        {
+          "kind": "token",
+          "path": "questions[4].options[3]",
+          "from": "Abends",
+          "to": "abends",
+          "index": 4
+        },
+        {
+          "kind": "token",
+          "path": "questions[5].options[3]",
+          "from": "Abends",
+          "to": "abends",
+          "index": 4
+        },
+        {
+          "kind": "token",
+          "path": "questions[6].options[3]",
+          "from": "Abends",
+          "to": "abends",
+          "index": 4
+        }
+      ]
+    },
+    {
+      "file": "lesen-t3-gemini-069.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-gemini-070.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-gemini-071.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-gemini-072.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-gemini-073.json",
+      "teil": 3,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t4-gemini-004.json",
+      "teil": 4,
+      "beforeFindings": 1,
+      "afterFindings": 1,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {
+        "verb_census_no_finite": 1
+      },
+      "afterByReason": {
+        "verb_census_no_finite": 1
+      },
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t4-gemini-009.json",
+      "teil": 4,
+      "beforeFindings": 1,
+      "afterFindings": 1,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {
+        "modal_noun_object": 1
+      },
+      "afterByReason": {
+        "modal_noun_object": 1
+      },
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t4-gemini-010.json",
+      "teil": 4,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t4-gemini-014.json",
+      "teil": 4,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 1,
+        "capFixed": 0,
+        "fieldsChanged": 1,
+        "tokenChanges": 1
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": [
+        {
+          "kind": "token",
+          "path": "questions[5].explanation",
+          "from": "Nötig",
+          "to": "nötig",
+          "index": 36
+        }
+      ]
+    },
+    {
+      "file": "lesen-t4-gemini-018.json",
+      "teil": 4,
+      "beforeFindings": 1,
+      "afterFindings": 1,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {
+        "prose_strict_homograph": 1
+      },
+      "afterByReason": {
+        "prose_strict_homograph": 1
+      },
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t4-gemini-020.json",
+      "teil": 4,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t4-gemini-021.json",
+      "teil": 4,
+      "beforeFindings": 1,
+      "afterFindings": 1,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {
+        "prose_strict_homograph": 1
+      },
+      "afterByReason": {
+        "prose_strict_homograph": 1
+      },
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t4-gemini-022.json",
+      "teil": 4,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t4-gemini-023.json",
+      "teil": 4,
+      "beforeFindings": 2,
+      "afterFindings": 2,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 1,
+        "capFixed": 0,
+        "fieldsChanged": 1,
+        "tokenChanges": 1
+      },
+      "beforeByReason": {
+        "prose_strict_homograph": 2
+      },
+      "afterByReason": {
+        "prose_strict_homograph": 2
+      },
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": [
+        {
+          "kind": "token",
+          "path": "questions[3].signText",
+          "from": "Sicher",
+          "to": "sicher",
+          "index": 52
+        }
+      ]
+    },
+    {
+      "file": "lesen-t4-gemini-024.json",
+      "teil": 4,
+      "beforeFindings": 1,
+      "afterFindings": 1,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {
+        "prose_strict_homograph": 1
+      },
+      "afterByReason": {
+        "prose_strict_homograph": 1
+      },
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t4-gemini-025.json",
+      "teil": 4,
+      "beforeFindings": 2,
+      "afterFindings": 2,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {
+        "prose_strict_homograph": 2
+      },
+      "afterByReason": {
+        "prose_strict_homograph": 2
+      },
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t4-gemini-028.json",
+      "teil": 4,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t4-gemini-029.json",
+      "teil": 4,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t4-gemini-031.json",
+      "teil": 4,
+      "beforeFindings": 2,
+      "afterFindings": 2,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {
+        "prose_strict_homograph": 2
+      },
+      "afterByReason": {
+        "prose_strict_homograph": 2
+      },
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t4-gemini-032.json",
+      "teil": 4,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 1,
+        "capFixed": 0,
+        "fieldsChanged": 1,
+        "tokenChanges": 1
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": [
+        {
+          "kind": "token",
+          "path": "passages[0].text",
+          "from": "Wissen",
+          "to": "wissen",
+          "index": 58
+        }
+      ]
+    },
+    {
+      "file": "lesen-t4-gemini-034.json",
+      "teil": 4,
+      "beforeFindings": 1,
+      "afterFindings": 1,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 2,
+        "capFixed": 0,
+        "fieldsChanged": 2,
+        "tokenChanges": 2
+      },
+      "beforeByReason": {
+        "prose_strict_homograph": 1
+      },
+      "afterByReason": {
+        "prose_strict_homograph": 1
+      },
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": [
+        {
+          "kind": "token",
+          "path": "questions[5].signText",
+          "from": "Online",
+          "to": "online",
+          "index": 32
+        },
+        {
+          "kind": "token",
+          "path": "questions[5].explanation",
+          "from": "Online",
+          "to": "online",
+          "index": 28
+        }
+      ]
+    },
+    {
+      "file": "lesen-t4-gemini-035.json",
+      "teil": 4,
+      "beforeFindings": 2,
+      "afterFindings": 0,
+      "delta": -2,
+      "normalize": {
+        "decapFixed": 2,
+        "capFixed": 0,
+        "fieldsChanged": 2,
+        "tokenChanges": 2
+      },
+      "beforeByReason": {
+        "adj_before_noun": 2
+      },
+      "afterByReason": {},
+      "removedFindings": [
+        {
+          "type": "wrong_capitalized",
+          "word": "Bessere",
+          "pos": "ADJ",
+          "tag": "ADJA",
+          "confidence": "high",
+          "reason": "adj_before_noun",
+          "context": "Stadt sollte lieber in Bessere Fahrradwege investieren. Das",
+          "prevWord": "in",
+          "prevPos": "ADP",
+          "prevTag": "APPR",
+          "textIndex": 0,
+          "regime": "TITLE_HEADING",
+          "field": "questions.signText",
+          "id": "lesen-t4-gemini-035.json::questions.signText::7"
+        },
+        {
+          "type": "wrong_capitalized",
+          "word": "Öffentlicher",
+          "pos": "ADJ",
+          "tag": "ADJA",
+          "confidence": "high",
+          "reason": "adj_before_noun",
+          "context": "Umwelt und die Nutzung Öffentlicher Verkehrsmittel, auch wenn",
+          "prevWord": "Nutzung",
+          "prevPos": "NOUN",
+          "prevTag": "NN",
+          "textIndex": 0,
+          "regime": "PROSE",
+          "field": "questions.explanation",
+          "id": "lesen-t4-gemini-035.json::questions.explanation::13"
+        }
+      ],
+      "addedFindings": [],
+      "changes": [
+        {
+          "kind": "token",
+          "path": "questions[1].signText",
+          "from": "Bessere",
+          "to": "bessere",
+          "index": 14
+        },
+        {
+          "kind": "token",
+          "path": "questions[2].explanation",
+          "from": "Öffentlicher",
+          "to": "öffentlicher",
+          "index": 18
+        }
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-012.json",
+      "teil": 5,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t5-gemini-016.json",
+      "teil": 5,
+      "beforeFindings": 1,
+      "afterFindings": 1,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {
+        "lexicon_override_tag": 1
+      },
+      "afterByReason": {
+        "lexicon_override_tag": 1
+      },
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t5-gemini-018.json",
+      "teil": 5,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 2,
+        "capFixed": 0,
+        "fieldsChanged": 2,
+        "tokenChanges": 2
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": [
+        {
+          "kind": "token",
+          "path": "passages[0].text",
+          "from": "Verantwortlich",
+          "to": "verantwortlich",
+          "index": 212
+        },
+        {
+          "kind": "token",
+          "path": "questions[1].options[2]",
+          "from": "Online",
+          "to": "online",
+          "index": 18
+        }
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-020.json",
+      "teil": 5,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 2,
+        "capFixed": 0,
+        "fieldsChanged": 2,
+        "tokenChanges": 2
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": [
+        {
+          "kind": "token",
+          "path": "passages[0].text",
+          "from": "Deutlich",
+          "to": "deutlich",
+          "index": 108
+        },
+        {
+          "kind": "token",
+          "path": "questions[0].explanation",
+          "from": "Deutlich",
+          "to": "deutlich",
+          "index": 14
+        }
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-021.json",
+      "teil": 5,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 1,
+        "capFixed": 0,
+        "fieldsChanged": 1,
+        "tokenChanges": 1
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": [
+        {
+          "kind": "token",
+          "path": "passages[0].text",
+          "from": "Nötig",
+          "to": "nötig",
+          "index": 430
+        }
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-025.json",
+      "teil": 5,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 1,
+        "capFixed": 0,
+        "fieldsChanged": 1,
+        "tokenChanges": 1
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": [
+        {
+          "kind": "token",
+          "path": "questions[3].options[1]",
+          "from": "Sicher",
+          "to": "sicher",
+          "index": 12
+        }
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-031.json",
+      "teil": 5,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t5-gemini-038.json",
+      "teil": 5,
+      "beforeFindings": 1,
+      "afterFindings": 1,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {
+        "modal_final_infinitive": 1
+      },
+      "afterByReason": {
+        "modal_final_infinitive": 1
+      },
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t5-gemini-041.json",
+      "teil": 5,
+      "beforeFindings": 4,
+      "afterFindings": 4,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 2,
+        "capFixed": 0,
+        "fieldsChanged": 2,
+        "tokenChanges": 2
+      },
+      "beforeByReason": {
+        "modal_final_infinitive": 1,
+        "lexicon_override_tag": 3
+      },
+      "afterByReason": {
+        "modal_final_infinitive": 1,
+        "lexicon_override_tag": 3
+      },
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": [
+        {
+          "kind": "token",
+          "path": "passages[0].text",
+          "from": "Nötig",
+          "to": "nötig",
+          "index": 258
+        },
+        {
+          "kind": "token",
+          "path": "questions[3].explanation",
+          "from": "Nötig",
+          "to": "nötig",
+          "index": 30
+        }
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-045.json",
+      "teil": 5,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 2,
+        "capFixed": 0,
+        "fieldsChanged": 2,
+        "tokenChanges": 2
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": [
+        {
+          "kind": "token",
+          "path": "passages[0].text",
+          "from": "Online",
+          "to": "online",
+          "index": 232
+        },
+        {
+          "kind": "token",
+          "path": "questions[3].question",
+          "from": "Junge",
+          "to": "junge",
+          "index": 8
+        }
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-046.json",
+      "teil": 5,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 1,
+        "capFixed": 0,
+        "fieldsChanged": 1,
+        "tokenChanges": 1
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": [
+        {
+          "kind": "token",
+          "path": "passages[0].text",
+          "from": "Online",
+          "to": "online",
+          "index": 206
+        }
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-049.json",
+      "teil": 5,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 1,
+        "capFixed": 0,
+        "fieldsChanged": 1,
+        "tokenChanges": 1
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": [
+        {
+          "kind": "token",
+          "path": "passages[0].text",
+          "from": "Online",
+          "to": "online",
+          "index": 66
+        }
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-052.json",
+      "teil": 5,
+      "beforeFindings": 2,
+      "afterFindings": 2,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 1,
+        "capFixed": 0,
+        "fieldsChanged": 1,
+        "tokenChanges": 1
+      },
+      "beforeByReason": {
+        "modal_final_infinitive": 2
+      },
+      "afterByReason": {
+        "modal_final_infinitive": 2
+      },
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": [
+        {
+          "kind": "token",
+          "path": "passages[0].text",
+          "from": "Verantwortlich",
+          "to": "verantwortlich",
+          "index": 288
+        }
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-054.json",
+      "teil": 5,
+      "beforeFindings": 1,
+      "afterFindings": 1,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 3,
+        "capFixed": 0,
+        "fieldsChanged": 3,
+        "tokenChanges": 3
+      },
+      "beforeByReason": {
+        "verb_census_no_finite": 1
+      },
+      "afterByReason": {
+        "verb_census_no_finite": 1
+      },
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": [
+        {
+          "kind": "token",
+          "path": "questions[1].explanation",
+          "from": "Online",
+          "to": "online",
+          "index": 26
+        },
+        {
+          "kind": "token",
+          "path": "questions[1].options[1]",
+          "from": "Online",
+          "to": "online",
+          "index": 16
+        },
+        {
+          "kind": "token",
+          "path": "questions[1].options[2]",
+          "from": "Online",
+          "to": "online",
+          "index": 20
+        }
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-055.json",
+      "teil": 5,
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {},
+      "afterByReason": {},
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t5-gemini-056.json",
+      "teil": 5,
+      "beforeFindings": 1,
+      "afterFindings": 1,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {
+        "adj_before_noun": 1
+      },
+      "afterByReason": {
+        "adj_before_noun": 1
+      },
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t5-gemini-060.json",
+      "teil": 5,
+      "beforeFindings": 4,
+      "afterFindings": 4,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {
+        "modal_final_infinitive": 1,
+        "lexicon_nn": 2,
+        "verb_census_no_finite": 1
+      },
+      "afterByReason": {
+        "modal_final_infinitive": 1,
+        "lexicon_nn": 2,
+        "verb_census_no_finite": 1
+      },
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t5-gemini-061.json",
+      "teil": 5,
+      "beforeFindings": 6,
+      "afterFindings": 3,
+      "delta": -3,
+      "normalize": {
+        "decapFixed": 3,
+        "capFixed": 0,
+        "fieldsChanged": 3,
+        "tokenChanges": 3
+      },
+      "beforeByReason": {
+        "verb_census_no_finite": 2,
+        "adj_before_noun": 1,
+        "modal_final_infinitive": 1,
+        "zu_adv_capitalized": 2
+      },
+      "afterByReason": {
+        "verb_census_no_finite": 2,
+        "modal_final_infinitive": 1
+      },
+      "removedFindings": [
+        {
+          "type": "wrong_capitalized",
+          "word": "Ganzen",
+          "pos": "ADJ",
+          "tag": "NN",
+          "confidence": "high",
+          "reason": "adj_before_noun",
+          "context": "Man kann dort den Ganzen Tag kostenlos Arbeiten.",
+          "prevWord": "den",
+          "prevPos": "DET",
+          "prevTag": "ART",
+          "textIndex": 0,
+          "regime": "PROSE",
+          "field": "questions.options",
+          "id": "lesen-t5-gemini-061.json::questions.options::15"
+        },
+        {
+          "type": "wrong_capitalized",
+          "word": "Spät",
+          "pos": "NOUN",
+          "tag": "NN",
+          "confidence": "high",
+          "reason": "zu_adv_capitalized",
+          "context": "man ein Medium zu Spät zurückgibt?",
+          "prevWord": "zu",
+          "prevPos": "ADP",
+          "prevTag": "APPR",
+          "textIndex": 0,
+          "regime": "PROSE",
+          "field": "questions.question",
+          "id": "lesen-t5-gemini-061.json::questions.question::16"
+        },
+        {
+          "type": "wrong_capitalized",
+          "word": "Spät",
+          "pos": "ADV",
+          "tag": "NE",
+          "confidence": "high",
+          "reason": "zu_adv_capitalized",
+          "context": "die für ein zu Spät zurückgegebenes Medium erhoben wird",
+          "prevWord": "zu",
+          "prevPos": "ADP",
+          "prevTag": "APPR",
+          "textIndex": 0,
+          "regime": "PROSE",
+          "field": "questions.explanation",
+          "id": "lesen-t5-gemini-061.json::questions.explanation::17"
+        }
+      ],
+      "addedFindings": [],
+      "changes": [
+        {
+          "kind": "token",
+          "path": "questions[2].options[2]",
+          "from": "Ganzen",
+          "to": "ganzen",
+          "index": 10
+        },
+        {
+          "kind": "token",
+          "path": "questions[3].question",
+          "from": "Spät",
+          "to": "spät",
+          "index": 22
+        },
+        {
+          "kind": "token",
+          "path": "questions[3].explanation",
+          "from": "Spät",
+          "to": "spät",
+          "index": 14
+        }
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-062.json",
+      "teil": 5,
+      "beforeFindings": 7,
+      "afterFindings": 7,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "beforeByReason": {
+        "lexicon_nn": 3,
+        "modal_noun_object": 1,
+        "modal_final_infinitive": 3
+      },
+      "afterByReason": {
+        "lexicon_nn": 3,
+        "modal_noun_object": 1,
+        "modal_final_infinitive": 3
+      },
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    }
+  ]
+}

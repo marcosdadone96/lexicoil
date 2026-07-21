@@ -1,0 +1,6798 @@
+{
+  "generatedAt": "2026-07-10T12:45:05.998Z",
+  "v31Version": "v3.1-stable",
+  "v31Source": "PHASE1-G2-DRYRUN.json",
+  "v32Version": "v3.5-stable",
+  "summary": {
+    "files": 193,
+    "v31Decap": 65,
+    "v32Decap": 63,
+    "v31Cap": 41,
+    "v32Cap": 1,
+    "v32Markdown": 0,
+    "deltaDecap": -2,
+    "deltaCap": -40,
+    "changedFiles": 51
+  },
+  "byTeil": {
+    "1": {
+      "files": 17,
+      "v31Decap": 11,
+      "v32Decap": 5,
+      "v31Cap": 7,
+      "v32Cap": 1,
+      "v32Markdown": 0,
+      "deltaDecap": -6,
+      "deltaCap": -6,
+      "changed": 10
+    },
+    "2": {
+      "files": 15,
+      "v31Decap": 28,
+      "v32Decap": 17,
+      "v31Cap": 14,
+      "v32Cap": 0,
+      "v32Markdown": 0,
+      "deltaDecap": -11,
+      "deltaCap": -14,
+      "changed": 15
+    },
+    "3": {
+      "files": 125,
+      "v31Decap": 0,
+      "v32Decap": 0,
+      "v31Cap": 0,
+      "v32Cap": 0,
+      "v32Markdown": 0,
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "changed": 0
+    },
+    "4": {
+      "files": 17,
+      "v31Decap": 7,
+      "v32Decap": 15,
+      "v31Cap": 5,
+      "v32Cap": 0,
+      "v32Markdown": 0,
+      "deltaDecap": 8,
+      "deltaCap": -5,
+      "changed": 11
+    },
+    "5": {
+      "files": 19,
+      "v31Decap": 19,
+      "v32Decap": 26,
+      "v31Cap": 15,
+      "v32Cap": 0,
+      "v32Markdown": 0,
+      "deltaDecap": 7,
+      "deltaCap": -15,
+      "changed": 15
+    }
+  },
+  "changedRows": [
+    {
+      "file": "lesen-t1-gemini-147.json",
+      "pool": "ready",
+      "teil": 1,
+      "v31": {
+        "decapFixed": 3,
+        "capFixed": 1,
+        "fieldsChanged": 3,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": -3,
+      "deltaCap": -1,
+      "tokenChanges": [
+        {
+          "path": "passages[0].text",
+          "before": "Neues→neues",
+          "after": "(none)"
+        },
+        {
+          "path": "passages[0].text",
+          "before": "ganz→Ganz",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[2].question",
+          "before": "Freien→freien",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[5].explanation",
+          "before": "Neues→neues",
+          "after": "(none)"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t1-gemini-154.json",
+      "pool": "ready",
+      "teil": 1,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 3,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 1
+      },
+      "deltaDecap": 3,
+      "deltaCap": 0,
+      "tokenChanges": [
+        {
+          "path": "passages[0].text",
+          "before": "(none)",
+          "after": "Unternehmen→unternehmen"
+        },
+        {
+          "path": "passages[0].text",
+          "before": "(none)",
+          "after": "Kochen→kochen"
+        },
+        {
+          "path": "passages[0].text",
+          "before": "(none)",
+          "after": "Glaube→glaube"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t1-gemini-161.json",
+      "pool": "ready",
+      "teil": 1,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 1,
+        "fieldsChanged": 1,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": -1,
+      "tokenChanges": [
+        {
+          "path": "questions[2].question",
+          "before": "beruflichen→Beruflichen",
+          "after": "(none)"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t1-gemini-162.json",
+      "pool": "ready",
+      "teil": 1,
+      "v31": {
+        "decapFixed": 2,
+        "capFixed": 0,
+        "fieldsChanged": 2,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": -2,
+      "deltaCap": 0,
+      "tokenChanges": [
+        {
+          "path": "passages[0].text",
+          "before": "Online→online",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[5].explanation",
+          "before": "Online→online",
+          "after": "(none)"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t1-gemini-163.json",
+      "pool": "ready",
+      "teil": 1,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 3,
+        "fieldsChanged": 2,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": -3,
+      "tokenChanges": [
+        {
+          "path": "passages[0].text",
+          "before": "ganz→Ganz",
+          "after": "(none)"
+        },
+        {
+          "path": "passages[0].text",
+          "before": "bisschen→Bisschen",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[2].question",
+          "before": "vielen→Vielen",
+          "after": "(none)"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t1-gemini-167.json",
+      "pool": "ready",
+      "teil": 1,
+      "v31": {
+        "decapFixed": 1,
+        "capFixed": 0,
+        "fieldsChanged": 1,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": -1,
+      "deltaCap": 0,
+      "tokenChanges": [
+        {
+          "path": "passages[0].text",
+          "before": "Wissen→wissen",
+          "after": "(none)"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t1-gemini-170.json",
+      "pool": "ready",
+      "teil": 1,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 1,
+        "capFixed": 1,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 1,
+      "deltaCap": 1,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t1-gemini-171.json",
+      "pool": "ready",
+      "teil": 1,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 1,
+        "fieldsChanged": 1,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": -1,
+      "tokenChanges": [
+        {
+          "path": "questions[4].question",
+          "before": "rein→Rein",
+          "after": "(none)"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t1-gemini-173.json",
+      "pool": "ready",
+      "teil": 1,
+      "v31": {
+        "decapFixed": 3,
+        "capFixed": 0,
+        "fieldsChanged": 2,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": -3,
+      "deltaCap": 0,
+      "tokenChanges": [
+        {
+          "path": "passages[0].text",
+          "before": "Spät→spät",
+          "after": "(none)"
+        },
+        {
+          "path": "passages[0].text",
+          "before": "Gutes→gutes",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[1].question",
+          "before": "Freie→freie",
+          "after": "(none)"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t1-gemini-174.json",
+      "pool": "ready",
+      "teil": 1,
+      "v31": {
+        "decapFixed": 1,
+        "capFixed": 1,
+        "fieldsChanged": 2,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": -1,
+      "deltaCap": -1,
+      "tokenChanges": [
+        {
+          "path": "passages[0].text",
+          "before": "ganz→Ganz",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[2].explanation",
+          "before": "Morgens→morgens",
+          "after": "(none)"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-060.json",
+      "pool": "ready",
+      "teil": 2,
+      "v31": {
+        "decapFixed": 4,
+        "capFixed": 3,
+        "fieldsChanged": 5,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 5,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 4
+      },
+      "deltaDecap": 1,
+      "deltaCap": -3,
+      "tokenChanges": [
+        {
+          "path": "passages[0].text",
+          "before": "Viele→viele",
+          "after": "(none)"
+        },
+        {
+          "path": "passages[0].text",
+          "before": "frischen→Frischen",
+          "after": "Frischen→frischen"
+        },
+        {
+          "path": "passages[0].text",
+          "before": "Eigenes→eigenes",
+          "after": "(none)"
+        },
+        {
+          "path": "passages[1].text",
+          "before": "Viele→viele",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[0].explanation",
+          "before": "frischen→Frischen",
+          "after": "Frischen→frischen"
+        },
+        {
+          "path": "questions[2].question",
+          "before": "zusätzlichen→Zusätzlichen",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[5].options[2]",
+          "before": "Freien→freien",
+          "after": "(none)"
+        },
+        {
+          "path": "passages[1].text",
+          "before": "(none)",
+          "after": "Wissen→wissen"
+        },
+        {
+          "path": "passages[1].text",
+          "before": "(none)",
+          "after": "Essen→essen"
+        },
+        {
+          "path": "questions[5].explanation",
+          "before": "(none)",
+          "after": "Essen→essen"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-061.json",
+      "pool": "ready",
+      "teil": 2,
+      "v31": {
+        "decapFixed": 5,
+        "capFixed": 0,
+        "fieldsChanged": 4,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": -5,
+      "deltaCap": 0,
+      "tokenChanges": [
+        {
+          "path": "passages[1].text",
+          "before": "Junge→junge",
+          "after": "(none)"
+        },
+        {
+          "path": "passages[1].text",
+          "before": "Junge→junge",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[1].question",
+          "before": "Junge→junge",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[2].options[1]",
+          "before": "Besuchen→besuchen",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[4].options[1]",
+          "before": "Persönlich→persönlich",
+          "after": "(none)"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-062.json",
+      "pool": "ready",
+      "teil": 2,
+      "v31": {
+        "decapFixed": 1,
+        "capFixed": 1,
+        "fieldsChanged": 2,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 3,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 2
+      },
+      "deltaDecap": 2,
+      "deltaCap": -1,
+      "tokenChanges": [
+        {
+          "path": "passages[0].text",
+          "before": "frischen→Frischen",
+          "after": "Frischen→frischen"
+        },
+        {
+          "path": "passages[1].text",
+          "before": "Deutlich→deutlich",
+          "after": "(none)"
+        },
+        {
+          "path": "passages[1].text",
+          "before": "(none)",
+          "after": "Kochen→kochen"
+        },
+        {
+          "path": "passages[1].text",
+          "before": "(none)",
+          "after": "Essen→essen"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-066.json",
+      "pool": "ready",
+      "teil": 2,
+      "v31": {
+        "decapFixed": 2,
+        "capFixed": 0,
+        "fieldsChanged": 2,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": -2,
+      "deltaCap": 0,
+      "tokenChanges": [
+        {
+          "path": "passages[1].text",
+          "before": "Junge→junge",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[3].explanation",
+          "before": "Junge→junge",
+          "after": "(none)"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-067.json",
+      "pool": "ready",
+      "teil": 2,
+      "v31": {
+        "decapFixed": 1,
+        "capFixed": 1,
+        "fieldsChanged": 2,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": -1,
+      "deltaCap": -1,
+      "tokenChanges": [
+        {
+          "path": "passages[0].text",
+          "before": "Nötig→nötig",
+          "after": "(none)"
+        },
+        {
+          "path": "passages[1].text",
+          "before": "langen→Langen",
+          "after": "(none)"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-072.json",
+      "pool": "ready",
+      "teil": 2,
+      "v31": {
+        "decapFixed": 4,
+        "capFixed": 2,
+        "fieldsChanged": 3,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 1,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 1
+      },
+      "deltaDecap": -3,
+      "deltaCap": -2,
+      "tokenChanges": [
+        {
+          "path": "passages[0].text",
+          "before": "zentrales→Zentrales",
+          "after": "Zentrales→zentrales"
+        },
+        {
+          "path": "passages[0].text",
+          "before": "Junge→junge",
+          "after": "(none)"
+        },
+        {
+          "path": "passages[0].text",
+          "before": "Sicher→sicher",
+          "after": "(none)"
+        },
+        {
+          "path": "passages[1].text",
+          "before": "Zugänglich→zugänglich",
+          "after": "(none)"
+        },
+        {
+          "path": "passages[1].text",
+          "before": "technischen→Technischen",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[1].explanation",
+          "before": "Junge→junge",
+          "after": "(none)"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-076.json",
+      "pool": "ready",
+      "teil": 2,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 1,
+        "fieldsChanged": 1,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": -1,
+      "tokenChanges": [
+        {
+          "path": "questions[1].options[1]",
+          "before": "schädlichen→Schädlichen",
+          "after": "(none)"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-077.json",
+      "pool": "ready",
+      "teil": 2,
+      "v31": {
+        "decapFixed": 2,
+        "capFixed": 0,
+        "fieldsChanged": 2,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": -2,
+      "deltaCap": 0,
+      "tokenChanges": [
+        {
+          "path": "passages[1].text",
+          "before": "Computerkenntnissen→computerkenntnissen",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[0].options[1]",
+          "before": "Verbrauchen→verbrauchen",
+          "after": "(none)"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-079.json",
+      "pool": "ready",
+      "teil": 2,
+      "v31": {
+        "decapFixed": 5,
+        "capFixed": 0,
+        "fieldsChanged": 5,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": -5,
+      "deltaCap": 0,
+      "tokenChanges": [
+        {
+          "path": "passages[0].text",
+          "before": "Sicher→sicher",
+          "after": "(none)"
+        },
+        {
+          "path": "passages[1].text",
+          "before": "Gleich→gleich",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[1].explanation",
+          "before": "Sicher→sicher",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[1].options[0]",
+          "before": "Sicher→sicher",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[4].question",
+          "before": "Wissen→wissen",
+          "after": "(none)"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-083.json",
+      "pool": "ready",
+      "teil": 2,
+      "v31": {
+        "decapFixed": 1,
+        "capFixed": 0,
+        "fieldsChanged": 1,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": -1,
+      "deltaCap": 0,
+      "tokenChanges": [
+        {
+          "path": "questions[2].options[1]",
+          "before": "Verantwortlich→verantwortlich",
+          "after": "(none)"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-085.json",
+      "pool": "ready",
+      "teil": 2,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 1,
+        "fieldsChanged": 1,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": -1,
+      "tokenChanges": [
+        {
+          "path": "questions[4].question",
+          "before": "technischen→Technischen",
+          "after": "(none)"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-086.json",
+      "pool": "ready",
+      "teil": 2,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 3,
+        "fieldsChanged": 3,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 1,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 1
+      },
+      "deltaDecap": 1,
+      "deltaCap": -3,
+      "tokenChanges": [
+        {
+          "path": "questions[1].question",
+          "before": "gemeinschaftlichen→Gemeinschaftlichen",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[4].explanation",
+          "before": "pflanzen→Pflanzen",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[5].options[0]",
+          "before": "anfänglichen→Anfänglichen",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[1].explanation",
+          "before": "(none)",
+          "after": "Erfolgreich→erfolgreich"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-087.json",
+      "pool": "ready",
+      "teil": 2,
+      "v31": {
+        "decapFixed": 1,
+        "capFixed": 0,
+        "fieldsChanged": 1,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": -1,
+      "deltaCap": 0,
+      "tokenChanges": [
+        {
+          "path": "passages[0].text",
+          "before": "Online→online",
+          "after": "(none)"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-088.json",
+      "pool": "ready",
+      "teil": 2,
+      "v31": {
+        "decapFixed": 2,
+        "capFixed": 1,
+        "fieldsChanged": 3,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": -2,
+      "deltaCap": -1,
+      "tokenChanges": [
+        {
+          "path": "passages[0].text",
+          "before": "Verantwortlich→verantwortlich",
+          "after": "(none)"
+        },
+        {
+          "path": "passages[1].text",
+          "before": "grüne→Grüne",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[1].explanation",
+          "before": "Verantwortlich→verantwortlich",
+          "after": "(none)"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-089.json",
+      "pool": "ready",
+      "teil": 2,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 1,
+        "fieldsChanged": 1,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 7,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 4
+      },
+      "deltaDecap": 7,
+      "deltaCap": -1,
+      "tokenChanges": [
+        {
+          "path": "questions[2].question",
+          "before": "positiven→Positiven",
+          "after": "(none)"
+        },
+        {
+          "path": "passages[0].text",
+          "before": "(none)",
+          "after": "Spielen→spielen"
+        },
+        {
+          "path": "passages[0].text",
+          "before": "(none)",
+          "after": "Berichten→berichten"
+        },
+        {
+          "path": "passages[0].text",
+          "before": "(none)",
+          "after": "Arbeiten→arbeiten"
+        },
+        {
+          "path": "passages[1].text",
+          "before": "(none)",
+          "after": "Folgen→folgen"
+        },
+        {
+          "path": "passages[1].text",
+          "before": "(none)",
+          "after": "Glauben→glauben"
+        },
+        {
+          "path": "questions[1].options[1]",
+          "before": "(none)",
+          "after": "Stellen→stellen"
+        },
+        {
+          "path": "questions[5].question",
+          "before": "(none)",
+          "after": "Raten→raten"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t4-gemini-020.json",
+      "pool": "ready",
+      "teil": 4,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 1,
+        "fieldsChanged": 1,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 2,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 2
+      },
+      "deltaDecap": 2,
+      "deltaCap": -1,
+      "tokenChanges": [
+        {
+          "path": "questions[2].signText",
+          "before": "machen→Machen",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[5].signText",
+          "before": "(none)",
+          "after": "Unternehmen→unternehmen"
+        },
+        {
+          "path": "questions[6].signText",
+          "before": "(none)",
+          "after": "Stimme→stimme"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t4-gemini-021.json",
+      "pool": "ready",
+      "teil": 4,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 1,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 1
+      },
+      "deltaDecap": 1,
+      "deltaCap": 0,
+      "tokenChanges": [
+        {
+          "path": "questions[3].signText",
+          "before": "(none)",
+          "after": "Stimme→stimme"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t4-gemini-023.json",
+      "pool": "ready",
+      "teil": 4,
+      "v31": {
+        "decapFixed": 1,
+        "capFixed": 0,
+        "fieldsChanged": 1,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 2,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 2
+      },
+      "deltaDecap": 1,
+      "deltaCap": 0,
+      "tokenChanges": [
+        {
+          "path": "questions[3].signText",
+          "before": "Sicher→sicher",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[0].signText",
+          "before": "(none)",
+          "after": "Stimme→stimme"
+        },
+        {
+          "path": "questions[3].signText",
+          "before": "(none)",
+          "after": "Glaube→glaube"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t4-gemini-024.json",
+      "pool": "ready",
+      "teil": 4,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 1,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 1
+      },
+      "deltaDecap": 1,
+      "deltaCap": 0,
+      "tokenChanges": [
+        {
+          "path": "questions[5].signText",
+          "before": "(none)",
+          "after": "Glaube→glaube"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t4-gemini-025.json",
+      "pool": "ready",
+      "teil": 4,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 2,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 2
+      },
+      "deltaDecap": 2,
+      "deltaCap": 0,
+      "tokenChanges": [
+        {
+          "path": "questions[5].signText",
+          "before": "(none)",
+          "after": "Glaube→glaube"
+        },
+        {
+          "path": "questions[6].signText",
+          "before": "(none)",
+          "after": "Stimme→stimme"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t4-gemini-028.json",
+      "pool": "ready",
+      "teil": 4,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 1,
+        "fieldsChanged": 1,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 1,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 1
+      },
+      "deltaDecap": 1,
+      "deltaCap": -1,
+      "tokenChanges": [
+        {
+          "path": "questions[6].signText",
+          "before": "frischen→Frischen",
+          "after": "Frischen→frischen"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t4-gemini-029.json",
+      "pool": "ready",
+      "teil": 4,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 1,
+        "fieldsChanged": 1,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 3,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 2
+      },
+      "deltaDecap": 3,
+      "deltaCap": -1,
+      "tokenChanges": [
+        {
+          "path": "questions[5].explanation",
+          "before": "positiven→Positiven",
+          "after": "(none)"
+        },
+        {
+          "path": "passages[0].text",
+          "before": "(none)",
+          "after": "Unternehmen→unternehmen"
+        },
+        {
+          "path": "passages[0].text",
+          "before": "(none)",
+          "after": "Zwei→zwei"
+        },
+        {
+          "path": "questions[5].signText",
+          "before": "(none)",
+          "after": "Zwei→zwei"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t4-gemini-031.json",
+      "pool": "ready",
+      "teil": 4,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 1,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 1
+      },
+      "deltaDecap": 1,
+      "deltaCap": 0,
+      "tokenChanges": [
+        {
+          "path": "questions[1].signText",
+          "before": "(none)",
+          "after": "Stimme→stimme"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t4-gemini-032.json",
+      "pool": "ready",
+      "teil": 4,
+      "v31": {
+        "decapFixed": 1,
+        "capFixed": 0,
+        "fieldsChanged": 1,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": -1,
+      "deltaCap": 0,
+      "tokenChanges": [
+        {
+          "path": "passages[0].text",
+          "before": "Wissen→wissen",
+          "after": "(none)"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t4-gemini-034.json",
+      "pool": "ready",
+      "teil": 4,
+      "v31": {
+        "decapFixed": 2,
+        "capFixed": 2,
+        "fieldsChanged": 4,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 1,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 1
+      },
+      "deltaDecap": -1,
+      "deltaCap": -2,
+      "tokenChanges": [
+        {
+          "path": "questions[4].signText",
+          "before": "langen→Langen",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[4].explanation",
+          "before": "langen→Langen",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[5].signText",
+          "before": "Online→online",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[5].explanation",
+          "before": "Online→online",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[2].signText",
+          "before": "(none)",
+          "after": "Stimme→stimme"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t4-gemini-035.json",
+      "pool": "ready",
+      "teil": 4,
+      "v31": {
+        "decapFixed": 2,
+        "capFixed": 0,
+        "fieldsChanged": 2,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": -2,
+      "deltaCap": 0,
+      "tokenChanges": [
+        {
+          "path": "questions[1].signText",
+          "before": "Bessere→bessere",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[2].explanation",
+          "before": "Öffentlicher→öffentlicher",
+          "after": "(none)"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-016.json",
+      "pool": "ready",
+      "teil": 5,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 2,
+        "fieldsChanged": 2,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 1,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 1
+      },
+      "deltaDecap": 1,
+      "deltaCap": -2,
+      "tokenChanges": [
+        {
+          "path": "questions[0].question",
+          "before": "späterer→Späterer",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[0].explanation",
+          "before": "späterer→Späterer",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[2].question",
+          "before": "(none)",
+          "after": "Drei→drei"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-018.json",
+      "pool": "ready",
+      "teil": 5,
+      "v31": {
+        "decapFixed": 2,
+        "capFixed": 0,
+        "fieldsChanged": 2,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 9,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 5
+      },
+      "deltaDecap": 7,
+      "deltaCap": 0,
+      "tokenChanges": [
+        {
+          "path": "passages[0].text",
+          "before": "Verantwortlich→verantwortlich",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[1].options[2]",
+          "before": "Online→online",
+          "after": "(none)"
+        },
+        {
+          "path": "passages[0].text",
+          "before": "(none)",
+          "after": "Zwei→zwei"
+        },
+        {
+          "path": "passages[0].text",
+          "before": "(none)",
+          "after": "Drei→drei"
+        },
+        {
+          "path": "passages[0].text",
+          "before": "(none)",
+          "after": "Zwei→zwei"
+        },
+        {
+          "path": "questions[1].explanation",
+          "before": "(none)",
+          "after": "Drei→drei"
+        },
+        {
+          "path": "questions[1].explanation",
+          "before": "(none)",
+          "after": "Zwei→zwei"
+        },
+        {
+          "path": "questions[1].options[1]",
+          "before": "(none)",
+          "after": "Drei→drei"
+        },
+        {
+          "path": "questions[1].options[1]",
+          "before": "(none)",
+          "after": "Zwei→zwei"
+        },
+        {
+          "path": "questions[2].explanation",
+          "before": "(none)",
+          "after": "Zwei→zwei"
+        },
+        {
+          "path": "questions[2].options[2]",
+          "before": "(none)",
+          "after": "Zwei→zwei"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-020.json",
+      "pool": "ready",
+      "teil": 5,
+      "v31": {
+        "decapFixed": 2,
+        "capFixed": 1,
+        "fieldsChanged": 2,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 2,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 2
+      },
+      "deltaDecap": 0,
+      "deltaCap": -1,
+      "tokenChanges": [
+        {
+          "path": "passages[0].text",
+          "before": "positive→Positive",
+          "after": "(none)"
+        },
+        {
+          "path": "passages[0].text",
+          "before": "Deutlich→deutlich",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[0].explanation",
+          "before": "Deutlich→deutlich",
+          "after": "(none)"
+        },
+        {
+          "path": "passages[0].text",
+          "before": "(none)",
+          "after": "Zwei→zwei"
+        },
+        {
+          "path": "questions[0].options[2]",
+          "before": "(none)",
+          "after": "Zwei→zwei"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-021.json",
+      "pool": "ready",
+      "teil": 5,
+      "v31": {
+        "decapFixed": 1,
+        "capFixed": 4,
+        "fieldsChanged": 2,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 1,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 1
+      },
+      "deltaDecap": 0,
+      "deltaCap": -4,
+      "tokenChanges": [
+        {
+          "path": "passages[0].text",
+          "before": "grüne→Grüne",
+          "after": "(none)"
+        },
+        {
+          "path": "passages[0].text",
+          "before": "blaue→Blaue",
+          "after": "(none)"
+        },
+        {
+          "path": "passages[0].text",
+          "before": "gelben→Gelben",
+          "after": "(none)"
+        },
+        {
+          "path": "passages[0].text",
+          "before": "Nötig→nötig",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[0].options[0]",
+          "before": "gelben→Gelben",
+          "after": "(none)"
+        },
+        {
+          "path": "passages[0].text",
+          "before": "(none)",
+          "after": "Zwei→zwei"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-025.json",
+      "pool": "ready",
+      "teil": 5,
+      "v31": {
+        "decapFixed": 1,
+        "capFixed": 3,
+        "fieldsChanged": 2,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": -1,
+      "deltaCap": -3,
+      "tokenChanges": [
+        {
+          "path": "passages[0].text",
+          "before": "grüne→Grüne",
+          "after": "(none)"
+        },
+        {
+          "path": "passages[0].text",
+          "before": "blaue→Blaue",
+          "after": "(none)"
+        },
+        {
+          "path": "passages[0].text",
+          "before": "gelbe→Gelbe",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[3].options[1]",
+          "before": "Sicher→sicher",
+          "after": "(none)"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-031.json",
+      "pool": "ready",
+      "teil": 5,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 1,
+        "fieldsChanged": 1,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": -1,
+      "tokenChanges": [
+        {
+          "path": "passages[0].text",
+          "before": "chemischen→Chemischen",
+          "after": "(none)"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-038.json",
+      "pool": "ready",
+      "teil": 5,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 1,
+        "fieldsChanged": 1,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": -1,
+      "tokenChanges": [
+        {
+          "path": "passages[0].text",
+          "before": "chemischen→Chemischen",
+          "after": "(none)"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-045.json",
+      "pool": "ready",
+      "teil": 5,
+      "v31": {
+        "decapFixed": 2,
+        "capFixed": 0,
+        "fieldsChanged": 2,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": -2,
+      "deltaCap": 0,
+      "tokenChanges": [
+        {
+          "path": "passages[0].text",
+          "before": "Online→online",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[3].question",
+          "before": "Junge→junge",
+          "after": "(none)"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-046.json",
+      "pool": "ready",
+      "teil": 5,
+      "v31": {
+        "decapFixed": 1,
+        "capFixed": 0,
+        "fieldsChanged": 1,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 6,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 4
+      },
+      "deltaDecap": 5,
+      "deltaCap": 0,
+      "tokenChanges": [
+        {
+          "path": "passages[0].text",
+          "before": "Online→online",
+          "after": "(none)"
+        },
+        {
+          "path": "passages[0].text",
+          "before": "(none)",
+          "after": "Zwei→zwei"
+        },
+        {
+          "path": "passages[0].text",
+          "before": "(none)",
+          "after": "Zwei→zwei"
+        },
+        {
+          "path": "questions[1].explanation",
+          "before": "(none)",
+          "after": "Zwei→zwei"
+        },
+        {
+          "path": "questions[1].explanation",
+          "before": "(none)",
+          "after": "Zwei→zwei"
+        },
+        {
+          "path": "questions[3].explanation",
+          "before": "(none)",
+          "after": "Zwei→zwei"
+        },
+        {
+          "path": "questions[3].options[0]",
+          "before": "(none)",
+          "after": "Zwei→zwei"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-049.json",
+      "pool": "ready",
+      "teil": 5,
+      "v31": {
+        "decapFixed": 1,
+        "capFixed": 0,
+        "fieldsChanged": 1,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 2,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 2
+      },
+      "deltaDecap": 1,
+      "deltaCap": 0,
+      "tokenChanges": [
+        {
+          "path": "passages[0].text",
+          "before": "Online→online",
+          "after": "(none)"
+        },
+        {
+          "path": "passages[0].text",
+          "before": "(none)",
+          "after": "Zwei→zwei"
+        },
+        {
+          "path": "questions[3].options[1]",
+          "before": "(none)",
+          "after": "Zwei→zwei"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-052.json",
+      "pool": "ready",
+      "teil": 5,
+      "v31": {
+        "decapFixed": 1,
+        "capFixed": 0,
+        "fieldsChanged": 1,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": -1,
+      "deltaCap": 0,
+      "tokenChanges": [
+        {
+          "path": "passages[0].text",
+          "before": "Verantwortlich→verantwortlich",
+          "after": "(none)"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-054.json",
+      "pool": "ready",
+      "teil": 5,
+      "v31": {
+        "decapFixed": 3,
+        "capFixed": 1,
+        "fieldsChanged": 4,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 1,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 1
+      },
+      "deltaDecap": -2,
+      "deltaCap": -1,
+      "tokenChanges": [
+        {
+          "path": "questions[1].explanation",
+          "before": "Online→online",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[1].options[1]",
+          "before": "Online→online",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[1].options[2]",
+          "before": "Online→online",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[3].question",
+          "before": "bedingungen→Bedingungen",
+          "after": "(none)"
+        },
+        {
+          "path": "passages[0].text",
+          "before": "(none)",
+          "after": "Waschen→waschen"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-055.json",
+      "pool": "ready",
+      "teil": 5,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 1,
+        "fieldsChanged": 1,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": -1,
+      "tokenChanges": [
+        {
+          "path": "passages[0].text",
+          "before": "vielen→Vielen",
+          "after": "(none)"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-056.json",
+      "pool": "ready",
+      "teil": 5,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 1,
+        "fieldsChanged": 1,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 1,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 1
+      },
+      "deltaDecap": 1,
+      "deltaCap": -1,
+      "tokenChanges": [
+        {
+          "path": "passages[0].text",
+          "before": "größeren→Größeren",
+          "after": "Größeren→größeren"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-061.json",
+      "pool": "ready",
+      "teil": 5,
+      "v31": {
+        "decapFixed": 3,
+        "capFixed": 0,
+        "fieldsChanged": 6,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 1,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 1
+      },
+      "deltaDecap": -2,
+      "deltaCap": 0,
+      "tokenChanges": [
+        {
+          "path": "questions[2].options[2]",
+          "before": "Ganzen→ganzen",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[3].question",
+          "before": "Spät→spät",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[3].explanation",
+          "before": "Spät→spät",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[3].options[0]",
+          "before": "zehn→Zehn",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[3].options[1]",
+          "before": "fünfzig→Fünfzig",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[3].options[2]",
+          "before": "zehn→Zehn",
+          "after": "(none)"
+        },
+        {
+          "path": "passages[0].text",
+          "before": "(none)",
+          "after": "Zahlen→zahlen"
+        }
+      ]
+    }
+  ],
+  "unexpected": [
+    {
+      "file": "lesen-t2-gemini-060.json",
+      "teil": 2,
+      "reason": "token change fuera de patrones AUD",
+      "changes": [
+        {
+          "path": "passages[0].text",
+          "before": "frischen→Frischen",
+          "after": "Frischen→frischen"
+        },
+        {
+          "path": "questions[0].explanation",
+          "before": "frischen→Frischen",
+          "after": "Frischen→frischen"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-062.json",
+      "teil": 2,
+      "reason": "token change fuera de patrones AUD",
+      "changes": [
+        {
+          "path": "passages[0].text",
+          "before": "frischen→Frischen",
+          "after": "Frischen→frischen"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-086.json",
+      "teil": 2,
+      "reason": "token change fuera de patrones AUD",
+      "changes": [
+        {
+          "path": "questions[1].explanation",
+          "before": "(none)",
+          "after": "Erfolgreich→erfolgreich"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t4-gemini-020.json",
+      "teil": 4,
+      "reason": "token change fuera de patrones AUD",
+      "changes": [
+        {
+          "path": "questions[6].signText",
+          "before": "(none)",
+          "after": "Stimme→stimme"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t4-gemini-021.json",
+      "teil": 4,
+      "reason": "token change fuera de patrones AUD",
+      "changes": [
+        {
+          "path": "questions[3].signText",
+          "before": "(none)",
+          "after": "Stimme→stimme"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t4-gemini-023.json",
+      "teil": 4,
+      "reason": "token change fuera de patrones AUD",
+      "changes": [
+        {
+          "path": "questions[0].signText",
+          "before": "(none)",
+          "after": "Stimme→stimme"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t4-gemini-025.json",
+      "teil": 4,
+      "reason": "token change fuera de patrones AUD",
+      "changes": [
+        {
+          "path": "questions[6].signText",
+          "before": "(none)",
+          "after": "Stimme→stimme"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t4-gemini-028.json",
+      "teil": 4,
+      "reason": "token change fuera de patrones AUD",
+      "changes": [
+        {
+          "path": "questions[6].signText",
+          "before": "frischen→Frischen",
+          "after": "Frischen→frischen"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t4-gemini-031.json",
+      "teil": 4,
+      "reason": "token change fuera de patrones AUD",
+      "changes": [
+        {
+          "path": "questions[1].signText",
+          "before": "(none)",
+          "after": "Stimme→stimme"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t4-gemini-034.json",
+      "teil": 4,
+      "reason": "token change fuera de patrones AUD",
+      "changes": [
+        {
+          "path": "questions[2].signText",
+          "before": "(none)",
+          "after": "Stimme→stimme"
+        }
+      ]
+    }
+  ],
+  "rows": [
+    {
+      "file": "lesen-t1-gemini-147.json",
+      "pool": "ready",
+      "teil": 1,
+      "v31": {
+        "decapFixed": 3,
+        "capFixed": 1,
+        "fieldsChanged": 3,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": -3,
+      "deltaCap": -1,
+      "tokenChanges": [
+        {
+          "path": "passages[0].text",
+          "before": "Neues→neues",
+          "after": "(none)"
+        },
+        {
+          "path": "passages[0].text",
+          "before": "ganz→Ganz",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[2].question",
+          "before": "Freien→freien",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[5].explanation",
+          "before": "Neues→neues",
+          "after": "(none)"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t1-gemini-154.json",
+      "pool": "ready",
+      "teil": 1,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 3,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 1
+      },
+      "deltaDecap": 3,
+      "deltaCap": 0,
+      "tokenChanges": [
+        {
+          "path": "passages[0].text",
+          "before": "(none)",
+          "after": "Unternehmen→unternehmen"
+        },
+        {
+          "path": "passages[0].text",
+          "before": "(none)",
+          "after": "Kochen→kochen"
+        },
+        {
+          "path": "passages[0].text",
+          "before": "(none)",
+          "after": "Glaube→glaube"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t1-gemini-159.json",
+      "pool": "ready",
+      "teil": 1,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t1-gemini-160.json",
+      "pool": "ready",
+      "teil": 1,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t1-gemini-161.json",
+      "pool": "ready",
+      "teil": 1,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 1,
+        "fieldsChanged": 1,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": -1,
+      "tokenChanges": [
+        {
+          "path": "questions[2].question",
+          "before": "beruflichen→Beruflichen",
+          "after": "(none)"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t1-gemini-162.json",
+      "pool": "ready",
+      "teil": 1,
+      "v31": {
+        "decapFixed": 2,
+        "capFixed": 0,
+        "fieldsChanged": 2,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": -2,
+      "deltaCap": 0,
+      "tokenChanges": [
+        {
+          "path": "passages[0].text",
+          "before": "Online→online",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[5].explanation",
+          "before": "Online→online",
+          "after": "(none)"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t1-gemini-163.json",
+      "pool": "ready",
+      "teil": 1,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 3,
+        "fieldsChanged": 2,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": -3,
+      "tokenChanges": [
+        {
+          "path": "passages[0].text",
+          "before": "ganz→Ganz",
+          "after": "(none)"
+        },
+        {
+          "path": "passages[0].text",
+          "before": "bisschen→Bisschen",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[2].question",
+          "before": "vielen→Vielen",
+          "after": "(none)"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t1-gemini-164.json",
+      "pool": "ready",
+      "teil": 1,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t1-gemini-166.json",
+      "pool": "ready",
+      "teil": 1,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t1-gemini-167.json",
+      "pool": "ready",
+      "teil": 1,
+      "v31": {
+        "decapFixed": 1,
+        "capFixed": 0,
+        "fieldsChanged": 1,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": -1,
+      "deltaCap": 0,
+      "tokenChanges": [
+        {
+          "path": "passages[0].text",
+          "before": "Wissen→wissen",
+          "after": "(none)"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t1-gemini-168.json",
+      "pool": "ready",
+      "teil": 1,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t1-gemini-169.json",
+      "pool": "ready",
+      "teil": 1,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t1-gemini-170.json",
+      "pool": "ready",
+      "teil": 1,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 1,
+        "capFixed": 1,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 1,
+      "deltaCap": 1,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t1-gemini-171.json",
+      "pool": "ready",
+      "teil": 1,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 1,
+        "fieldsChanged": 1,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": -1,
+      "tokenChanges": [
+        {
+          "path": "questions[4].question",
+          "before": "rein→Rein",
+          "after": "(none)"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t1-gemini-172.json",
+      "pool": "ready",
+      "teil": 1,
+      "v31": {
+        "decapFixed": 1,
+        "capFixed": 0,
+        "fieldsChanged": 1,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 1,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 1
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": [
+        {
+          "path": "passages[0].text",
+          "before": "Neues→neues",
+          "after": "(none)"
+        },
+        {
+          "path": "passages[0].text",
+          "before": "(none)",
+          "after": "Essen→essen"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t1-gemini-173.json",
+      "pool": "ready",
+      "teil": 1,
+      "v31": {
+        "decapFixed": 3,
+        "capFixed": 0,
+        "fieldsChanged": 2,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": -3,
+      "deltaCap": 0,
+      "tokenChanges": [
+        {
+          "path": "passages[0].text",
+          "before": "Spät→spät",
+          "after": "(none)"
+        },
+        {
+          "path": "passages[0].text",
+          "before": "Gutes→gutes",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[1].question",
+          "before": "Freie→freie",
+          "after": "(none)"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t1-gemini-174.json",
+      "pool": "ready",
+      "teil": 1,
+      "v31": {
+        "decapFixed": 1,
+        "capFixed": 1,
+        "fieldsChanged": 2,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": -1,
+      "deltaCap": -1,
+      "tokenChanges": [
+        {
+          "path": "passages[0].text",
+          "before": "ganz→Ganz",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[2].explanation",
+          "before": "Morgens→morgens",
+          "after": "(none)"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-060.json",
+      "pool": "ready",
+      "teil": 2,
+      "v31": {
+        "decapFixed": 4,
+        "capFixed": 3,
+        "fieldsChanged": 5,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 5,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 4
+      },
+      "deltaDecap": 1,
+      "deltaCap": -3,
+      "tokenChanges": [
+        {
+          "path": "passages[0].text",
+          "before": "Viele→viele",
+          "after": "(none)"
+        },
+        {
+          "path": "passages[0].text",
+          "before": "frischen→Frischen",
+          "after": "Frischen→frischen"
+        },
+        {
+          "path": "passages[0].text",
+          "before": "Eigenes→eigenes",
+          "after": "(none)"
+        },
+        {
+          "path": "passages[1].text",
+          "before": "Viele→viele",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[0].explanation",
+          "before": "frischen→Frischen",
+          "after": "Frischen→frischen"
+        },
+        {
+          "path": "questions[2].question",
+          "before": "zusätzlichen→Zusätzlichen",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[5].options[2]",
+          "before": "Freien→freien",
+          "after": "(none)"
+        },
+        {
+          "path": "passages[1].text",
+          "before": "(none)",
+          "after": "Wissen→wissen"
+        },
+        {
+          "path": "passages[1].text",
+          "before": "(none)",
+          "after": "Essen→essen"
+        },
+        {
+          "path": "questions[5].explanation",
+          "before": "(none)",
+          "after": "Essen→essen"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-061.json",
+      "pool": "ready",
+      "teil": 2,
+      "v31": {
+        "decapFixed": 5,
+        "capFixed": 0,
+        "fieldsChanged": 4,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": -5,
+      "deltaCap": 0,
+      "tokenChanges": [
+        {
+          "path": "passages[1].text",
+          "before": "Junge→junge",
+          "after": "(none)"
+        },
+        {
+          "path": "passages[1].text",
+          "before": "Junge→junge",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[1].question",
+          "before": "Junge→junge",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[2].options[1]",
+          "before": "Besuchen→besuchen",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[4].options[1]",
+          "before": "Persönlich→persönlich",
+          "after": "(none)"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-062.json",
+      "pool": "ready",
+      "teil": 2,
+      "v31": {
+        "decapFixed": 1,
+        "capFixed": 1,
+        "fieldsChanged": 2,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 3,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 2
+      },
+      "deltaDecap": 2,
+      "deltaCap": -1,
+      "tokenChanges": [
+        {
+          "path": "passages[0].text",
+          "before": "frischen→Frischen",
+          "after": "Frischen→frischen"
+        },
+        {
+          "path": "passages[1].text",
+          "before": "Deutlich→deutlich",
+          "after": "(none)"
+        },
+        {
+          "path": "passages[1].text",
+          "before": "(none)",
+          "after": "Kochen→kochen"
+        },
+        {
+          "path": "passages[1].text",
+          "before": "(none)",
+          "after": "Essen→essen"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-066.json",
+      "pool": "ready",
+      "teil": 2,
+      "v31": {
+        "decapFixed": 2,
+        "capFixed": 0,
+        "fieldsChanged": 2,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": -2,
+      "deltaCap": 0,
+      "tokenChanges": [
+        {
+          "path": "passages[1].text",
+          "before": "Junge→junge",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[3].explanation",
+          "before": "Junge→junge",
+          "after": "(none)"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-067.json",
+      "pool": "ready",
+      "teil": 2,
+      "v31": {
+        "decapFixed": 1,
+        "capFixed": 1,
+        "fieldsChanged": 2,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": -1,
+      "deltaCap": -1,
+      "tokenChanges": [
+        {
+          "path": "passages[0].text",
+          "before": "Nötig→nötig",
+          "after": "(none)"
+        },
+        {
+          "path": "passages[1].text",
+          "before": "langen→Langen",
+          "after": "(none)"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-072.json",
+      "pool": "ready",
+      "teil": 2,
+      "v31": {
+        "decapFixed": 4,
+        "capFixed": 2,
+        "fieldsChanged": 3,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 1,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 1
+      },
+      "deltaDecap": -3,
+      "deltaCap": -2,
+      "tokenChanges": [
+        {
+          "path": "passages[0].text",
+          "before": "zentrales→Zentrales",
+          "after": "Zentrales→zentrales"
+        },
+        {
+          "path": "passages[0].text",
+          "before": "Junge→junge",
+          "after": "(none)"
+        },
+        {
+          "path": "passages[0].text",
+          "before": "Sicher→sicher",
+          "after": "(none)"
+        },
+        {
+          "path": "passages[1].text",
+          "before": "Zugänglich→zugänglich",
+          "after": "(none)"
+        },
+        {
+          "path": "passages[1].text",
+          "before": "technischen→Technischen",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[1].explanation",
+          "before": "Junge→junge",
+          "after": "(none)"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-076.json",
+      "pool": "ready",
+      "teil": 2,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 1,
+        "fieldsChanged": 1,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": -1,
+      "tokenChanges": [
+        {
+          "path": "questions[1].options[1]",
+          "before": "schädlichen→Schädlichen",
+          "after": "(none)"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-077.json",
+      "pool": "ready",
+      "teil": 2,
+      "v31": {
+        "decapFixed": 2,
+        "capFixed": 0,
+        "fieldsChanged": 2,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": -2,
+      "deltaCap": 0,
+      "tokenChanges": [
+        {
+          "path": "passages[1].text",
+          "before": "Computerkenntnissen→computerkenntnissen",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[0].options[1]",
+          "before": "Verbrauchen→verbrauchen",
+          "after": "(none)"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-079.json",
+      "pool": "ready",
+      "teil": 2,
+      "v31": {
+        "decapFixed": 5,
+        "capFixed": 0,
+        "fieldsChanged": 5,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": -5,
+      "deltaCap": 0,
+      "tokenChanges": [
+        {
+          "path": "passages[0].text",
+          "before": "Sicher→sicher",
+          "after": "(none)"
+        },
+        {
+          "path": "passages[1].text",
+          "before": "Gleich→gleich",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[1].explanation",
+          "before": "Sicher→sicher",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[1].options[0]",
+          "before": "Sicher→sicher",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[4].question",
+          "before": "Wissen→wissen",
+          "after": "(none)"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-083.json",
+      "pool": "ready",
+      "teil": 2,
+      "v31": {
+        "decapFixed": 1,
+        "capFixed": 0,
+        "fieldsChanged": 1,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": -1,
+      "deltaCap": 0,
+      "tokenChanges": [
+        {
+          "path": "questions[2].options[1]",
+          "before": "Verantwortlich→verantwortlich",
+          "after": "(none)"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-085.json",
+      "pool": "ready",
+      "teil": 2,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 1,
+        "fieldsChanged": 1,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": -1,
+      "tokenChanges": [
+        {
+          "path": "questions[4].question",
+          "before": "technischen→Technischen",
+          "after": "(none)"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-086.json",
+      "pool": "ready",
+      "teil": 2,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 3,
+        "fieldsChanged": 3,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 1,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 1
+      },
+      "deltaDecap": 1,
+      "deltaCap": -3,
+      "tokenChanges": [
+        {
+          "path": "questions[1].question",
+          "before": "gemeinschaftlichen→Gemeinschaftlichen",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[4].explanation",
+          "before": "pflanzen→Pflanzen",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[5].options[0]",
+          "before": "anfänglichen→Anfänglichen",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[1].explanation",
+          "before": "(none)",
+          "after": "Erfolgreich→erfolgreich"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-087.json",
+      "pool": "ready",
+      "teil": 2,
+      "v31": {
+        "decapFixed": 1,
+        "capFixed": 0,
+        "fieldsChanged": 1,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": -1,
+      "deltaCap": 0,
+      "tokenChanges": [
+        {
+          "path": "passages[0].text",
+          "before": "Online→online",
+          "after": "(none)"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-088.json",
+      "pool": "ready",
+      "teil": 2,
+      "v31": {
+        "decapFixed": 2,
+        "capFixed": 1,
+        "fieldsChanged": 3,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": -2,
+      "deltaCap": -1,
+      "tokenChanges": [
+        {
+          "path": "passages[0].text",
+          "before": "Verantwortlich→verantwortlich",
+          "after": "(none)"
+        },
+        {
+          "path": "passages[1].text",
+          "before": "grüne→Grüne",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[1].explanation",
+          "before": "Verantwortlich→verantwortlich",
+          "after": "(none)"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-089.json",
+      "pool": "ready",
+      "teil": 2,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 1,
+        "fieldsChanged": 1,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 7,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 4
+      },
+      "deltaDecap": 7,
+      "deltaCap": -1,
+      "tokenChanges": [
+        {
+          "path": "questions[2].question",
+          "before": "positiven→Positiven",
+          "after": "(none)"
+        },
+        {
+          "path": "passages[0].text",
+          "before": "(none)",
+          "after": "Spielen→spielen"
+        },
+        {
+          "path": "passages[0].text",
+          "before": "(none)",
+          "after": "Berichten→berichten"
+        },
+        {
+          "path": "passages[0].text",
+          "before": "(none)",
+          "after": "Arbeiten→arbeiten"
+        },
+        {
+          "path": "passages[1].text",
+          "before": "(none)",
+          "after": "Folgen→folgen"
+        },
+        {
+          "path": "passages[1].text",
+          "before": "(none)",
+          "after": "Glauben→glauben"
+        },
+        {
+          "path": "questions[1].options[1]",
+          "before": "(none)",
+          "after": "Stellen→stellen"
+        },
+        {
+          "path": "questions[5].question",
+          "before": "(none)",
+          "after": "Raten→raten"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t3-auto-0aks1f.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-0ipawo.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-0yfri9.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-17jdoj.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-18z7tz.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-20m77g.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-2di8ft.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-2hh6sd.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-2r9alh.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-2s6ham.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-32x11a.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-364lem.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-38z9rm.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-3hp7qz.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-3no7om.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-3v5sgb.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-3w1s7g.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-4fob51.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-4mxa3f.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-4vbn2j.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-5jqmwm.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-5n00wd.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-5xry5q.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-653hd7.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-6r5mlz.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-6tg75g.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-6w1aa2.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-7dmin4.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-7kxudz.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-7ltwgp.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-7zpjg6.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-80ntmq.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-857r7i.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-8owcjz.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-8q4aij.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-9qr6nd.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-9rilii.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-ackuty.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-agfu58.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-atpi27.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-az6qd9.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-b1lhff.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-b4mg4c.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-bol951.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-bxa9ir.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-bybnyb.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-c2cp0e.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-c53hcf.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-cfp25v.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-cibsp4.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-cp7ri3.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-d1ahcg.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-dcig1a.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-dh2b79.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-epa55d.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-ev1k5m.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-exy06p.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-f0dewi.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-f98jal.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-fbp0w5.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-ftngcz.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-fwrckq.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-g81oz4.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-hat35n.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-i37cvu.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-ihmmfu.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-iqdvpr.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-irol9s.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-j6ehdn.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-jj8cz8.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-jywciq.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-k8l8nb.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-k9nxmw.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-kmsgpu.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-kmsy3c.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-lcaenh.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-lkoo82.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-lz3edj.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-m7o557.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-mfkep9.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-muv8sd.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-mwa6ve.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-mwavi9.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-nt7it4.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-o8x4po.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-onx533.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-opc80u.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-oum3tz.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-p75b7k.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-pa6v2l.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-pk139v.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-pmp33l.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-qusagx.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-qz4p2f.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-r39fvn.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-skkq4z.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-skyve4.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-sm0mit.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-spln1i.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-t3zxju.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-t8jpwd.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-tgvlkh.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-tkv1oy.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-u1ck01.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-uz2gin.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-v45u7p.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-v82s2m.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-vu6tok.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-w49dln.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-we7az9.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-wfvlgr.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-wlt14z.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-x3u3r1.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-x9b2n8.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-x9qgbs.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-xgh1r2.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-xhztfn.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-xyi7p0.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-xz8wf4.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-y6sqef.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-yiwyqa.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-z9zrzh.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-zateaz.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-zfo8ms.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t3-auto-zl0n4e.json",
+      "pool": "ready",
+      "teil": 3,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "n/a"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t4-gemini-004.json",
+      "pool": "ready",
+      "teil": 4,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t4-gemini-009.json",
+      "pool": "ready",
+      "teil": 4,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t4-gemini-010.json",
+      "pool": "ready",
+      "teil": 4,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t4-gemini-014.json",
+      "pool": "ready",
+      "teil": 4,
+      "v31": {
+        "decapFixed": 1,
+        "capFixed": 0,
+        "fieldsChanged": 1,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 1,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 1
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": [
+        {
+          "path": "questions[5].explanation",
+          "before": "Nötig→nötig",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[0].explanation",
+          "before": "(none)",
+          "after": "Mitmachen→mitmachen"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t4-gemini-018.json",
+      "pool": "ready",
+      "teil": 4,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t4-gemini-020.json",
+      "pool": "ready",
+      "teil": 4,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 1,
+        "fieldsChanged": 1,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 2,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 2
+      },
+      "deltaDecap": 2,
+      "deltaCap": -1,
+      "tokenChanges": [
+        {
+          "path": "questions[2].signText",
+          "before": "machen→Machen",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[5].signText",
+          "before": "(none)",
+          "after": "Unternehmen→unternehmen"
+        },
+        {
+          "path": "questions[6].signText",
+          "before": "(none)",
+          "after": "Stimme→stimme"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t4-gemini-021.json",
+      "pool": "ready",
+      "teil": 4,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 1,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 1
+      },
+      "deltaDecap": 1,
+      "deltaCap": 0,
+      "tokenChanges": [
+        {
+          "path": "questions[3].signText",
+          "before": "(none)",
+          "after": "Stimme→stimme"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t4-gemini-022.json",
+      "pool": "ready",
+      "teil": 4,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t4-gemini-023.json",
+      "pool": "ready",
+      "teil": 4,
+      "v31": {
+        "decapFixed": 1,
+        "capFixed": 0,
+        "fieldsChanged": 1,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 2,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 2
+      },
+      "deltaDecap": 1,
+      "deltaCap": 0,
+      "tokenChanges": [
+        {
+          "path": "questions[3].signText",
+          "before": "Sicher→sicher",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[0].signText",
+          "before": "(none)",
+          "after": "Stimme→stimme"
+        },
+        {
+          "path": "questions[3].signText",
+          "before": "(none)",
+          "after": "Glaube→glaube"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t4-gemini-024.json",
+      "pool": "ready",
+      "teil": 4,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 1,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 1
+      },
+      "deltaDecap": 1,
+      "deltaCap": 0,
+      "tokenChanges": [
+        {
+          "path": "questions[5].signText",
+          "before": "(none)",
+          "after": "Glaube→glaube"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t4-gemini-025.json",
+      "pool": "ready",
+      "teil": 4,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 2,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 2
+      },
+      "deltaDecap": 2,
+      "deltaCap": 0,
+      "tokenChanges": [
+        {
+          "path": "questions[5].signText",
+          "before": "(none)",
+          "after": "Glaube→glaube"
+        },
+        {
+          "path": "questions[6].signText",
+          "before": "(none)",
+          "after": "Stimme→stimme"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t4-gemini-028.json",
+      "pool": "ready",
+      "teil": 4,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 1,
+        "fieldsChanged": 1,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 1,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 1
+      },
+      "deltaDecap": 1,
+      "deltaCap": -1,
+      "tokenChanges": [
+        {
+          "path": "questions[6].signText",
+          "before": "frischen→Frischen",
+          "after": "Frischen→frischen"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t4-gemini-029.json",
+      "pool": "ready",
+      "teil": 4,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 1,
+        "fieldsChanged": 1,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 3,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 2
+      },
+      "deltaDecap": 3,
+      "deltaCap": -1,
+      "tokenChanges": [
+        {
+          "path": "questions[5].explanation",
+          "before": "positiven→Positiven",
+          "after": "(none)"
+        },
+        {
+          "path": "passages[0].text",
+          "before": "(none)",
+          "after": "Unternehmen→unternehmen"
+        },
+        {
+          "path": "passages[0].text",
+          "before": "(none)",
+          "after": "Zwei→zwei"
+        },
+        {
+          "path": "questions[5].signText",
+          "before": "(none)",
+          "after": "Zwei→zwei"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t4-gemini-031.json",
+      "pool": "ready",
+      "teil": 4,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 1,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 1
+      },
+      "deltaDecap": 1,
+      "deltaCap": 0,
+      "tokenChanges": [
+        {
+          "path": "questions[1].signText",
+          "before": "(none)",
+          "after": "Stimme→stimme"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t4-gemini-032.json",
+      "pool": "ready",
+      "teil": 4,
+      "v31": {
+        "decapFixed": 1,
+        "capFixed": 0,
+        "fieldsChanged": 1,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": -1,
+      "deltaCap": 0,
+      "tokenChanges": [
+        {
+          "path": "passages[0].text",
+          "before": "Wissen→wissen",
+          "after": "(none)"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t4-gemini-034.json",
+      "pool": "ready",
+      "teil": 4,
+      "v31": {
+        "decapFixed": 2,
+        "capFixed": 2,
+        "fieldsChanged": 4,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 1,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 1
+      },
+      "deltaDecap": -1,
+      "deltaCap": -2,
+      "tokenChanges": [
+        {
+          "path": "questions[4].signText",
+          "before": "langen→Langen",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[4].explanation",
+          "before": "langen→Langen",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[5].signText",
+          "before": "Online→online",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[5].explanation",
+          "before": "Online→online",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[2].signText",
+          "before": "(none)",
+          "after": "Stimme→stimme"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t4-gemini-035.json",
+      "pool": "ready",
+      "teil": 4,
+      "v31": {
+        "decapFixed": 2,
+        "capFixed": 0,
+        "fieldsChanged": 2,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": -2,
+      "deltaCap": 0,
+      "tokenChanges": [
+        {
+          "path": "questions[1].signText",
+          "before": "Bessere→bessere",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[2].explanation",
+          "before": "Öffentlicher→öffentlicher",
+          "after": "(none)"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-012.json",
+      "pool": "ready",
+      "teil": 5,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t5-gemini-016.json",
+      "pool": "ready",
+      "teil": 5,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 2,
+        "fieldsChanged": 2,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 1,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 1
+      },
+      "deltaDecap": 1,
+      "deltaCap": -2,
+      "tokenChanges": [
+        {
+          "path": "questions[0].question",
+          "before": "späterer→Späterer",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[0].explanation",
+          "before": "späterer→Späterer",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[2].question",
+          "before": "(none)",
+          "after": "Drei→drei"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-018.json",
+      "pool": "ready",
+      "teil": 5,
+      "v31": {
+        "decapFixed": 2,
+        "capFixed": 0,
+        "fieldsChanged": 2,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 9,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 5
+      },
+      "deltaDecap": 7,
+      "deltaCap": 0,
+      "tokenChanges": [
+        {
+          "path": "passages[0].text",
+          "before": "Verantwortlich→verantwortlich",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[1].options[2]",
+          "before": "Online→online",
+          "after": "(none)"
+        },
+        {
+          "path": "passages[0].text",
+          "before": "(none)",
+          "after": "Zwei→zwei"
+        },
+        {
+          "path": "passages[0].text",
+          "before": "(none)",
+          "after": "Drei→drei"
+        },
+        {
+          "path": "passages[0].text",
+          "before": "(none)",
+          "after": "Zwei→zwei"
+        },
+        {
+          "path": "questions[1].explanation",
+          "before": "(none)",
+          "after": "Drei→drei"
+        },
+        {
+          "path": "questions[1].explanation",
+          "before": "(none)",
+          "after": "Zwei→zwei"
+        },
+        {
+          "path": "questions[1].options[1]",
+          "before": "(none)",
+          "after": "Drei→drei"
+        },
+        {
+          "path": "questions[1].options[1]",
+          "before": "(none)",
+          "after": "Zwei→zwei"
+        },
+        {
+          "path": "questions[2].explanation",
+          "before": "(none)",
+          "after": "Zwei→zwei"
+        },
+        {
+          "path": "questions[2].options[2]",
+          "before": "(none)",
+          "after": "Zwei→zwei"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-020.json",
+      "pool": "ready",
+      "teil": 5,
+      "v31": {
+        "decapFixed": 2,
+        "capFixed": 1,
+        "fieldsChanged": 2,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 2,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 2
+      },
+      "deltaDecap": 0,
+      "deltaCap": -1,
+      "tokenChanges": [
+        {
+          "path": "passages[0].text",
+          "before": "positive→Positive",
+          "after": "(none)"
+        },
+        {
+          "path": "passages[0].text",
+          "before": "Deutlich→deutlich",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[0].explanation",
+          "before": "Deutlich→deutlich",
+          "after": "(none)"
+        },
+        {
+          "path": "passages[0].text",
+          "before": "(none)",
+          "after": "Zwei→zwei"
+        },
+        {
+          "path": "questions[0].options[2]",
+          "before": "(none)",
+          "after": "Zwei→zwei"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-021.json",
+      "pool": "ready",
+      "teil": 5,
+      "v31": {
+        "decapFixed": 1,
+        "capFixed": 4,
+        "fieldsChanged": 2,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 1,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 1
+      },
+      "deltaDecap": 0,
+      "deltaCap": -4,
+      "tokenChanges": [
+        {
+          "path": "passages[0].text",
+          "before": "grüne→Grüne",
+          "after": "(none)"
+        },
+        {
+          "path": "passages[0].text",
+          "before": "blaue→Blaue",
+          "after": "(none)"
+        },
+        {
+          "path": "passages[0].text",
+          "before": "gelben→Gelben",
+          "after": "(none)"
+        },
+        {
+          "path": "passages[0].text",
+          "before": "Nötig→nötig",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[0].options[0]",
+          "before": "gelben→Gelben",
+          "after": "(none)"
+        },
+        {
+          "path": "passages[0].text",
+          "before": "(none)",
+          "after": "Zwei→zwei"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-025.json",
+      "pool": "ready",
+      "teil": 5,
+      "v31": {
+        "decapFixed": 1,
+        "capFixed": 3,
+        "fieldsChanged": 2,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": -1,
+      "deltaCap": -3,
+      "tokenChanges": [
+        {
+          "path": "passages[0].text",
+          "before": "grüne→Grüne",
+          "after": "(none)"
+        },
+        {
+          "path": "passages[0].text",
+          "before": "blaue→Blaue",
+          "after": "(none)"
+        },
+        {
+          "path": "passages[0].text",
+          "before": "gelbe→Gelbe",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[3].options[1]",
+          "before": "Sicher→sicher",
+          "after": "(none)"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-031.json",
+      "pool": "ready",
+      "teil": 5,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 1,
+        "fieldsChanged": 1,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": -1,
+      "tokenChanges": [
+        {
+          "path": "passages[0].text",
+          "before": "chemischen→Chemischen",
+          "after": "(none)"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-038.json",
+      "pool": "ready",
+      "teil": 5,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 1,
+        "fieldsChanged": 1,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": -1,
+      "tokenChanges": [
+        {
+          "path": "passages[0].text",
+          "before": "chemischen→Chemischen",
+          "after": "(none)"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-041.json",
+      "pool": "ready",
+      "teil": 5,
+      "v31": {
+        "decapFixed": 2,
+        "capFixed": 0,
+        "fieldsChanged": 2,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 2,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 2
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": [
+        {
+          "path": "passages[0].text",
+          "before": "Nötig→nötig",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[3].explanation",
+          "before": "Nötig→nötig",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[1].question",
+          "before": "(none)",
+          "after": "Zwei→zwei"
+        },
+        {
+          "path": "questions[1].explanation",
+          "before": "(none)",
+          "after": "Zwei→zwei"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-045.json",
+      "pool": "ready",
+      "teil": 5,
+      "v31": {
+        "decapFixed": 2,
+        "capFixed": 0,
+        "fieldsChanged": 2,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": -2,
+      "deltaCap": 0,
+      "tokenChanges": [
+        {
+          "path": "passages[0].text",
+          "before": "Online→online",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[3].question",
+          "before": "Junge→junge",
+          "after": "(none)"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-046.json",
+      "pool": "ready",
+      "teil": 5,
+      "v31": {
+        "decapFixed": 1,
+        "capFixed": 0,
+        "fieldsChanged": 1,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 6,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 4
+      },
+      "deltaDecap": 5,
+      "deltaCap": 0,
+      "tokenChanges": [
+        {
+          "path": "passages[0].text",
+          "before": "Online→online",
+          "after": "(none)"
+        },
+        {
+          "path": "passages[0].text",
+          "before": "(none)",
+          "after": "Zwei→zwei"
+        },
+        {
+          "path": "passages[0].text",
+          "before": "(none)",
+          "after": "Zwei→zwei"
+        },
+        {
+          "path": "questions[1].explanation",
+          "before": "(none)",
+          "after": "Zwei→zwei"
+        },
+        {
+          "path": "questions[1].explanation",
+          "before": "(none)",
+          "after": "Zwei→zwei"
+        },
+        {
+          "path": "questions[3].explanation",
+          "before": "(none)",
+          "after": "Zwei→zwei"
+        },
+        {
+          "path": "questions[3].options[0]",
+          "before": "(none)",
+          "after": "Zwei→zwei"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-049.json",
+      "pool": "ready",
+      "teil": 5,
+      "v31": {
+        "decapFixed": 1,
+        "capFixed": 0,
+        "fieldsChanged": 1,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 2,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 2
+      },
+      "deltaDecap": 1,
+      "deltaCap": 0,
+      "tokenChanges": [
+        {
+          "path": "passages[0].text",
+          "before": "Online→online",
+          "after": "(none)"
+        },
+        {
+          "path": "passages[0].text",
+          "before": "(none)",
+          "after": "Zwei→zwei"
+        },
+        {
+          "path": "questions[3].options[1]",
+          "before": "(none)",
+          "after": "Zwei→zwei"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-052.json",
+      "pool": "ready",
+      "teil": 5,
+      "v31": {
+        "decapFixed": 1,
+        "capFixed": 0,
+        "fieldsChanged": 1,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": -1,
+      "deltaCap": 0,
+      "tokenChanges": [
+        {
+          "path": "passages[0].text",
+          "before": "Verantwortlich→verantwortlich",
+          "after": "(none)"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-054.json",
+      "pool": "ready",
+      "teil": 5,
+      "v31": {
+        "decapFixed": 3,
+        "capFixed": 1,
+        "fieldsChanged": 4,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 1,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 1
+      },
+      "deltaDecap": -2,
+      "deltaCap": -1,
+      "tokenChanges": [
+        {
+          "path": "questions[1].explanation",
+          "before": "Online→online",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[1].options[1]",
+          "before": "Online→online",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[1].options[2]",
+          "before": "Online→online",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[3].question",
+          "before": "bedingungen→Bedingungen",
+          "after": "(none)"
+        },
+        {
+          "path": "passages[0].text",
+          "before": "(none)",
+          "after": "Waschen→waschen"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-055.json",
+      "pool": "ready",
+      "teil": 5,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 1,
+        "fieldsChanged": 1,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": -1,
+      "tokenChanges": [
+        {
+          "path": "passages[0].text",
+          "before": "vielen→Vielen",
+          "after": "(none)"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-056.json",
+      "pool": "ready",
+      "teil": 5,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 1,
+        "fieldsChanged": 1,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 1,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 1
+      },
+      "deltaDecap": 1,
+      "deltaCap": -1,
+      "tokenChanges": [
+        {
+          "path": "passages[0].text",
+          "before": "größeren→Größeren",
+          "after": "Größeren→größeren"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-060.json",
+      "pool": "ready",
+      "teil": 5,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    },
+    {
+      "file": "lesen-t5-gemini-061.json",
+      "pool": "ready",
+      "teil": 5,
+      "v31": {
+        "decapFixed": 3,
+        "capFixed": 0,
+        "fieldsChanged": 6,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 1,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 1
+      },
+      "deltaDecap": -2,
+      "deltaCap": 0,
+      "tokenChanges": [
+        {
+          "path": "questions[2].options[2]",
+          "before": "Ganzen→ganzen",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[3].question",
+          "before": "Spät→spät",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[3].explanation",
+          "before": "Spät→spät",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[3].options[0]",
+          "before": "zehn→Zehn",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[3].options[1]",
+          "before": "fünfzig→Fünfzig",
+          "after": "(none)"
+        },
+        {
+          "path": "questions[3].options[2]",
+          "before": "zehn→Zehn",
+          "after": "(none)"
+        },
+        {
+          "path": "passages[0].text",
+          "before": "(none)",
+          "after": "Zahlen→zahlen"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-062.json",
+      "pool": "ready",
+      "teil": 5,
+      "v31": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "source": "phase1"
+      },
+      "v32": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "markdownFixed": 0,
+        "fieldsChanged": 0
+      },
+      "deltaDecap": 0,
+      "deltaCap": 0,
+      "tokenChanges": []
+    }
+  ]
+}

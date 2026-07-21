@@ -1,0 +1,374 @@
+{
+  "whyWindow10": {
+    "file": "lesen-t5-gemini-035.json",
+    "qid": "gen-q-5-5d8ee76e-4",
+    "dist": 9,
+    "note": "findet … statt with calendar phrase; digit tokens stripped → von bis uhr; ±8 misses, ±9 catches, ±10 buffer",
+    "tokens": [
+      "findet",
+      "jeden",
+      "ersten",
+      "samstag",
+      "im",
+      "monat",
+      "von",
+      "bis",
+      "uhr",
+      "statt"
+    ]
+  },
+  "negatives": [
+    {
+      "label": "nehmen…mit dem Rad",
+      "ok": true,
+      "tags": [
+        "unterweg",
+        "Bahn",
+        "nehmen"
+      ],
+      "kind": "must_exclude",
+      "forbid": "mitnehmen"
+    },
+    {
+      "label": "kommt mit den Grundlagen…klar",
+      "ok": true,
+      "tags": [
+        "klar",
+        "grundlagen",
+        "kommen",
+        "Studentin"
+      ],
+      "kind": "must_exclude",
+      "forbid": "mitkommen"
+    },
+    {
+      "label": "Urlaub zu machen",
+      "ok": true,
+      "tags": [
+        "Urlaub",
+        "Europäischen",
+        "Stadt",
+        "machen"
+      ],
+      "kind": "must_exclude",
+      "forbid": "zumachen"
+    },
+    {
+      "label": "macht…zu+inf",
+      "ok": true,
+      "tags": [
+        "verbessern",
+        "machen"
+      ],
+      "kind": "must_exclude",
+      "forbid": "zumachen"
+    },
+    {
+      "label": "machen…zu einer",
+      "ok": true,
+      "tags": [
+        "Galerie",
+        "machen"
+      ],
+      "kind": "must_exclude",
+      "forbid": "zumachen"
+    },
+    {
+      "label": "Pausen zu machen",
+      "ok": true,
+      "tags": [
+        "bewusst",
+        "pausen",
+        "machen"
+      ],
+      "kind": "must_exclude",
+      "forbid": "zumachen"
+    },
+    {
+      "label": "prep mit + sehen",
+      "ok": true,
+      "tags": [
+        "finden",
+        "Pflanze",
+        "wichtig",
+        "sehen",
+        "Idee"
+      ],
+      "kind": "must_exclude",
+      "forbid": "mitsehen"
+    },
+    {
+      "label": "sieht…ein article",
+      "ok": true,
+      "tags": [
+        "finden",
+        "Pflanze",
+        "wichtig",
+        "sehen",
+        "Idee"
+      ],
+      "kind": "must_exclude",
+      "forbid": "einsehen"
+    },
+    {
+      "label": "Räumen + auf prep",
+      "ok": true,
+      "tags": [
+        "empfehlen",
+        "Heizung",
+        "bleiben",
+        "räumen",
+        "bezüglich",
+        "genutzt",
+        "niedrig",
+        "sollt"
+      ],
+      "kind": "must_exclude",
+      "forbid": "aufräumen"
+    },
+    {
+      "label": "auf + aufmerksam zu machen",
+      "ok": true,
+      "tags": [
+        "umgangsformen",
+        "unternehmen",
+        "aufmerksam",
+        "digital",
+        "machen"
+      ],
+      "kind": "must_exclude",
+      "forbid": "aufmachen"
+    },
+    {
+      "label": "mit Kindern kommen",
+      "ok": true,
+      "tags": [
+        "familien",
+        "Verein",
+        "Viele",
+        "kindern",
+        "kommen"
+      ],
+      "kind": "must_exclude",
+      "forbid": "mitkommen"
+    },
+    {
+      "label": "true zumachen kept",
+      "ok": true,
+      "tags": [
+        "zumachen"
+      ],
+      "kind": "must_include",
+      "need": "zumachen"
+    },
+    {
+      "label": "true mitmachen kept",
+      "ok": true,
+      "tags": [
+        "mitmachen",
+        "helfen"
+      ],
+      "kind": "must_include",
+      "need": "mitmachen"
+    }
+  ],
+  "vocabSuiteOk": true,
+  "crossSentence": [],
+  "longDist": [
+    {
+      "file": "lesen-t5-gemini-035.json",
+      "qid": "gen-q-5-5d8ee76e-4",
+      "full": "stattfinden",
+      "dist": 9,
+      "span": "findet jeden ersten samstag im monat von bis uhr statt",
+      "tags": [
+        "stattfinden",
+        "Natürlichen",
+        "Verwendung",
+        "Chemischen",
+        "produkten",
+        "mitteln"
+      ]
+    },
+    {
+      "file": "horen-t2-gemini-011.json",
+      "qid": "gen-q-h2-5b8f9f1e-fzt-q3",
+      "full": "vorschlagen",
+      "dist": 8,
+      "span": "schlägt der sprecher als alternative zu übermäßiger bildschirmzeit vor",
+      "tags": [
+        "vorschlagen",
+        "Bildschirm",
+        "verbringen",
+        "draußen",
+        "Abwechslung",
+        "empfehlen"
+      ]
+    },
+    {
+      "file": "lesen-t1-gemini-084.json",
+      "qid": "gen-q-1-2248-2",
+      "full": "teilnehmen",
+      "dist": 8,
+      "span": "nimmt nur einmal im jahr an dem training teil",
+      "tags": [
+        "teilnehmen",
+        "Training",
+        "dreimal",
+        "einmal",
+        "Woche"
+      ]
+    },
+    {
+      "file": "lesen-t1-gemini-092.json",
+      "qid": "gen-q-1-5544-2",
+      "full": "teilnehmen",
+      "dist": 8,
+      "span": "nimmt nur einmal im jahr an dem training teil",
+      "tags": [
+        "teilnehmen",
+        "Training",
+        "dreimal",
+        "einmal",
+        "Woche"
+      ]
+    },
+    {
+      "file": "schreiben-gemini-006.json",
+      "qid": "gen-q-s-t3-4e264c3c-q1",
+      "full": "vorschlagen",
+      "dist": 8,
+      "span": "schlagen sie einen möglichen zeitpunkt für ein treffen vor",
+      "tags": [
+        "vorschlagen",
+        "Vorbereitung",
+        "Wortschatz",
+        "Grammatik",
+        "treffen",
+        "brauchen"
+      ]
+    },
+    {
+      "file": "horen-t2-gemini-010.json",
+      "qid": "gen-q-h2-857be1ea-q4",
+      "full": "vorschlagen",
+      "dist": 7,
+      "span": "schlägt initiativen wie gemeinsame feste oder projekte vor",
+      "tags": [
+        "vorschlagen",
+        "städten",
+        "treffen",
+        "Projekte",
+        "Zugehörigkeit",
+        "verbessern"
+      ]
+    },
+    {
+      "file": "horen-t4-gemini-007.json",
+      "qid": "gen-q-h4-w9k2-7",
+      "full": "vorschlagen",
+      "dist": 7,
+      "span": "schlägt e-mobilität als bessere alternative zum verzicht vor",
+      "tags": [
+        "vorschlagen",
+        "Verzicht",
+        "sinnvoll",
+        "Kompromisslösung",
+        "E-mobilität",
+        "betrieben"
+      ]
+    },
+    {
+      "file": "lesen-t1-gemini-075.json",
+      "qid": "gen-q-1-2294-6",
+      "full": "teilnehmen",
+      "dist": 7,
+      "span": "nimmt regelmäßig an einem programm mit veranstaltungen teil",
+      "tags": [
+        "teilnehmen",
+        "Hobby",
+        "Veranstaltungen",
+        "Programm",
+        "jeglich",
+        "meidet"
+      ]
+    },
+    {
+      "file": "lesen-t3-auto-zspq8n.json",
+      "qid": "gen-q-3-ocbbzs-1",
+      "full": "mitkommen",
+      "dist": 7,
+      "span": "kommt in der grundschule beim schreiben nicht mit",
+      "tags": [
+        "mitkommen",
+        "brauchen",
+        "schreiben",
+        "Förderung",
+        "gruppen",
+        "deutsch-nachhilf"
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-037.json",
+      "qid": "gen-q-5-c30f2ab4-1",
+      "full": "stattfinden",
+      "dist": 7,
+      "span": "findet die abholung für plastik jeden dienstag statt",
+      "tags": [
+        "stattfinden",
+        "kunststoffabfällen",
+        "Entsorgung",
+        "müllarten",
+        "Abholung",
+        "Kunststoffabfälle"
+      ]
+    },
+    {
+      "file": "schreiben-gemini-010.json",
+      "qid": "gen-q-s-t3-9231-q1",
+      "full": "vorschlagen",
+      "dist": 7,
+      "span": "schlagen sie einen transport zu seinem haus vor",
+      "tags": [
+        "vorschlagen",
+        "unterstützen",
+        "Wortschatz",
+        "Grammatik",
+        "Gespräch",
+        "Hilfe"
+      ]
+    }
+  ],
+  "suspects": [
+    {
+      "reason": "tag_without_solid_or_split_in_blob",
+      "file": "horen-t3-gemini-001.json",
+      "qid": "gen-q-h3-6f78252f-6",
+      "full": "anfangen",
+      "tags": [
+        "anfangen",
+        "Berufserfahrung",
+        "Ähnlichen",
+        "studieren",
+        "arbeiten",
+        "gesammelt"
+      ],
+      "blob": "Lukas hat vor Beginn seines Studiums keine ähnliche Berufserfahrung gesammelt. Er hat 'schon mal in einem ähnlichen Bereich gearbeitet, ehe ich angefangen habe zu studieren'."
+    },
+    {
+      "reason": "tag_without_solid_or_split_in_blob",
+      "file": "schreiben-gemini-006.json",
+      "qid": "gen-q-s-t1-4e264c3c-q1",
+      "full": "vorschlagen",
+      "tags": [
+        "vorschlagen",
+        "unterstützen",
+        "Wortschatz",
+        "entdecken",
+        "Grammatik",
+        "treffen"
+      ],
+      "blob": "Du hast gerade eine neue Stadt entdeckt und möchtest deinem Freund/deiner Freundin davon erzählen. Er/Sie hat dich bei der Reiseplanung unterstützt.\nSchreibe eine E-Mail (circa 80 "
+    }
+  ]
+}

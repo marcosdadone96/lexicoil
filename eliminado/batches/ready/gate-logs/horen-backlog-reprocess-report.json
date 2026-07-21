@@ -1,0 +1,148 @@
+{
+  "generatedAt": "2026-07-10T07:31:57.313Z",
+  "note": "Final state after decapOnly+markdown reprocess (full cap pass aborted due to FPs). Literal field diffs from the successful decapOnly pass are in the prior report snapshot; see HOREN-BACKLOG-REPROCESS.md section 3 from first decapOnly run + FP corrections listed below.",
+  "inventory": {
+    "total": 53,
+    "byTeil": {
+      "1": {
+        "total": 16,
+        "files": [
+          "horen-t1-gemini-001.json",
+          "horen-t1-gemini-002.json",
+          "horen-t1-gemini-003.json",
+          "horen-t1-gemini-004.json",
+          "horen-t1-gemini-006.json",
+          "horen-t1-gemini-007.json",
+          "horen-t1-gemini-008.json",
+          "horen-t1-gemini-009.json",
+          "horen-t1-gemini-010.json",
+          "horen-t1-gemini-011.json",
+          "horen-t1-gemini-012.json",
+          "horen-t1-gemini-013.json",
+          "horen-t1-gemini-014.json",
+          "horen-t1-gemini-015.json",
+          "horen-t1-gemini-016.json",
+          "horen-t1-gemini-017.json"
+        ]
+      },
+      "2": {
+        "total": 23,
+        "files": [
+          "horen-t2-gemini-001.json",
+          "horen-t2-gemini-002.json",
+          "horen-t2-gemini-003.json",
+          "horen-t2-gemini-004.json",
+          "horen-t2-gemini-005.json",
+          "horen-t2-gemini-006.json",
+          "horen-t2-gemini-007.json",
+          "horen-t2-gemini-008.json",
+          "horen-t2-gemini-009.json",
+          "horen-t2-gemini-010.json",
+          "horen-t2-gemini-011.json",
+          "horen-t2-gemini-012.json",
+          "horen-t2-gemini-013.json",
+          "horen-t2-gemini-014.json",
+          "horen-t2-gemini-015.json",
+          "horen-t2-gemini-016.json",
+          "horen-t2-gemini-017.json",
+          "horen-t2-gemini-018.json",
+          "horen-t2-gemini-019.json",
+          "horen-t2-gemini-020.json",
+          "horen-t2-gemini-021.json",
+          "horen-t2-gemini-022.json",
+          "horen-t2-gemini-023.json"
+        ]
+      },
+      "3": {
+        "total": 7,
+        "files": [
+          "horen-t3-gemini-001.json",
+          "horen-t3-gemini-002.json",
+          "horen-t3-gemini-003.json",
+          "horen-t3-gemini-004.json",
+          "horen-t3-gemini-005.json",
+          "horen-t3-gemini-006.json",
+          "horen-t3-gemini-007.json"
+        ]
+      },
+      "4": {
+        "total": 7,
+        "files": [
+          "horen-t4-gemini-003.json",
+          "horen-t4-gemini-005.json",
+          "horen-t4-gemini-006.json",
+          "horen-t4-gemini-007.json",
+          "horen-t4-gemini-008.json",
+          "horen-t4-gemini-009.json",
+          "horen-t4-gemini-010.json"
+        ]
+      }
+    }
+  },
+  "final": {
+    "capsClean": 53,
+    "capsDirty": [],
+    "knownTopicMismatchHits": 5,
+    "newTopicMismatches": [
+      {
+        "file": "horen-t1-gemini-008.json",
+        "span": "Arbeit",
+        "detail": "passage:gen-p-h1-40543102-s1 topicTag «Arbeit» no encaja con contenido (detectado «Bildung» score=1 vs tag score=0; hits={\"Bildung\":1})"
+      },
+      {
+        "file": "horen-t1-gemini-008.json",
+        "span": "Familie",
+        "detail": "passage:gen-p-h1-40543102-s3 topicTag «Familie» no encaja con contenido (detectado «Freizeit» score=2 vs tag score=0; hits={\"Medien\":1,\"Freizeit\":2})"
+      },
+      {
+        "file": "horen-t1-gemini-008.json",
+        "span": "Ernährung",
+        "detail": "passage:gen-p-h1-40543102-s4 topicTag «Ernährung» no encaja con contenido (detectado «Verkehr» score=1 vs tag score=0; hits={\"Verkehr\":1})"
+      },
+      {
+        "file": "horen-t1-gemini-009.json",
+        "span": "Wohnen",
+        "detail": "passage:gen-p-h1-008a6e44-s4 topicTag «Wohnen» no encaja con contenido (detectado «Medien» score=1 vs tag score=0; hits={\"Medien\":1,\"Bildung\":1,\"Freizeit\":1})"
+      },
+      {
+        "file": "horen-t1-gemini-010.json",
+        "span": "Wohnen",
+        "detail": "passage:gen-p-h1-4b99c7e9-s2 topicTag «Wohnen» no encaja con contenido (detectado «Familie» score=2 vs tag score=0; hits={\"Medien\":1,\"Familie\":2,\"Freizeit\":1})"
+      },
+      {
+        "file": "horen-t1-gemini-011.json",
+        "span": "Arbeit",
+        "detail": "passage:gen-p-h1-e4b71873-s3 topicTag «Arbeit» no encaja con contenido (detectado «Wohnen» score=2 vs tag score=1; hits={\"Arbeit\":1,\"Medien\":1,\"Wohnen\":2,\"Stadtleben\":1})"
+      },
+      {
+        "file": "horen-t1-gemini-012.json",
+        "span": "Arbeit",
+        "detail": "passage:gen-p-h1-403eea43-s5 topicTag «Arbeit» no encaja con contenido (detectado «Medien» score=1 vs tag score=0; hits={\"Medien\":1,\"Bildung\":1})"
+      },
+      {
+        "file": "horen-t1-gemini-014.json",
+        "span": "Familie",
+        "detail": "passage:gen-p-h1-2b4f91be-s3 topicTag «Familie» no encaja con contenido (detectado «Freizeit» score=2 vs tag score=0; hits={\"Kultur\":1,\"Freizeit\":2})"
+      },
+      {
+        "file": "horen-t1-gemini-016.json",
+        "span": "Sport",
+        "detail": "passage:gen-p-h1-8e7e4170-s2 topicTag «Sport» no encaja con contenido (detectado «Medien» score=1 vs tag score=0; hits={\"Medien\":1,\"Stadtleben\":1})"
+      },
+      {
+        "file": "horen-t1-gemini-016.json",
+        "span": "Gesundheit",
+        "detail": "passage:gen-p-h1-8e7e4170-s3 topicTag «Gesundheit» no encaja con contenido (detectado «Konsum» score=2 vs tag score=0; hits={\"Konsum\":2,\"Sport\":1})"
+      },
+      {
+        "file": "horen-t2-gemini-008.json",
+        "span": "Technik",
+        "detail": "passage:gen-p-h2-2583c630-s1 topicTag «Technik» no encaja con contenido (detectado «Arbeit» score=2 vs tag score=1; hits={\"Arbeit\":2,\"Technik\":1,\"Bildung\":2,\"Freizeit\":2})"
+      }
+    ],
+    "schemaBlockOnlyNoMismatch": 22,
+    "q3Blocks": 0,
+    "contentCleanNoTopicMismatch": 44,
+    "pendingContentReview": 9
+  }
+}

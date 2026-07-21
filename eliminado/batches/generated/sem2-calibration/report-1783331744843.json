@@ -1,0 +1,317 @@
+{
+  "ts": "2026-07-06T09:55:44.844Z",
+  "mode": "advise-only",
+  "casesRun": 15,
+  "partLevel": {
+    "cleanTotal": 7,
+    "cleanFalsePositives": 0,
+    "dirtyTotal": 8,
+    "dirtyTruePositives": 0,
+    "selfContradictions": 0
+  },
+  "axisStats": [
+    {
+      "axis": "correctness",
+      "tp": 0,
+      "fp": 0,
+      "fn": 2,
+      "tn": 13,
+      "applicable": 15,
+      "precision": null,
+      "recall": 0,
+      "v1Recommendation": "advise-only"
+    },
+    {
+      "axis": "ambiguity",
+      "tp": 0,
+      "fp": 0,
+      "fn": 3,
+      "tn": 12,
+      "applicable": 15,
+      "precision": null,
+      "recall": 0,
+      "v1Recommendation": "advise-only"
+    },
+    {
+      "axis": "distractor",
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "tn": 15,
+      "applicable": 15,
+      "precision": null,
+      "recall": null,
+      "v1Recommendation": "no data"
+    },
+    {
+      "axis": "explanation",
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "tn": 15,
+      "applicable": 15,
+      "precision": null,
+      "recall": null,
+      "v1Recommendation": "no data"
+    },
+    {
+      "axis": "paraphrase",
+      "tp": 0,
+      "fp": 0,
+      "fn": 1,
+      "tn": 14,
+      "applicable": 15,
+      "precision": null,
+      "recall": 0,
+      "v1Recommendation": "advise-only"
+    },
+    {
+      "axis": "persona",
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "tn": 3,
+      "applicable": 3,
+      "precision": null,
+      "recall": null,
+      "v1Recommendation": "no data"
+    },
+    {
+      "axis": "absolute",
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "tn": 3,
+      "applicable": 3,
+      "precision": null,
+      "recall": null,
+      "v1Recommendation": "no data"
+    },
+    {
+      "axis": "mcq_distinct",
+      "tp": 0,
+      "fp": 0,
+      "fn": 1,
+      "tn": 5,
+      "applicable": 6,
+      "precision": null,
+      "recall": 0,
+      "v1Recommendation": "advise-only"
+    },
+    {
+      "axis": "vocab_level",
+      "tp": 0,
+      "fp": 0,
+      "fn": 1,
+      "tn": 14,
+      "applicable": 15,
+      "precision": null,
+      "recall": 0,
+      "v1Recommendation": "advise-only"
+    },
+    {
+      "axis": "topic_fit",
+      "tp": 0,
+      "fp": 0,
+      "fn": 4,
+      "tn": 11,
+      "applicable": 15,
+      "precision": null,
+      "recall": 0,
+      "v1Recommendation": "advise-only"
+    },
+    {
+      "axis": "template",
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "tn": 15,
+      "applicable": 15,
+      "precision": null,
+      "recall": null,
+      "v1Recommendation": "no data"
+    }
+  ],
+  "parts": [
+    {
+      "id": "anchor-l2-071-fp",
+      "group": "anchors",
+      "verdict": "clean",
+      "note": "SEM-1 autocontradicción conocida — debe pasar",
+      "expectedAxes": [],
+      "wouldBlock": 0,
+      "hitAxes": [],
+      "findings": [],
+      "partVerdict": "pass"
+    },
+    {
+      "id": "anchor-l2-073-dup",
+      "group": "anchors",
+      "verdict": "dirty",
+      "note": "Opciones b/c duplicadas reales Q3/Q6",
+      "expectedAxes": [
+        "mcq_distinct",
+        "ambiguity"
+      ],
+      "wouldBlock": 0,
+      "hitAxes": [],
+      "findings": [],
+      "partVerdict": "pass"
+    },
+    {
+      "id": "anchor-l1-157-vocab",
+      "group": "anchors",
+      "verdict": "dirty",
+      "note": "modifizieren, Gelassenheit, Angehörige; topicTag contradictorio",
+      "expectedAxes": [
+        "vocab_level",
+        "topic_fit"
+      ],
+      "wouldBlock": 0,
+      "hitAxes": [],
+      "findings": [],
+      "partVerdict": "pass"
+    },
+    {
+      "id": "pilot-t1-technik",
+      "group": "clean-pilot",
+      "verdict": "clean",
+      "expectedAxes": [],
+      "wouldBlock": 0,
+      "hitAxes": [],
+      "findings": [],
+      "partVerdict": "pass"
+    },
+    {
+      "id": "pilot-t2-freizeit",
+      "group": "clean-pilot",
+      "verdict": "clean",
+      "expectedAxes": [],
+      "wouldBlock": 0,
+      "hitAxes": [],
+      "findings": [],
+      "partVerdict": "pass"
+    },
+    {
+      "id": "pilot-t4-technik",
+      "group": "clean-pilot",
+      "verdict": "clean",
+      "expectedAxes": [],
+      "wouldBlock": 0,
+      "hitAxes": [],
+      "findings": [],
+      "partVerdict": "pass"
+    },
+    {
+      "id": "l4-028-clean",
+      "group": "clean-pilot",
+      "verdict": "clean",
+      "expectedAxes": [],
+      "wouldBlock": 0,
+      "hitAxes": [],
+      "findings": [],
+      "partVerdict": "pass"
+    },
+    {
+      "id": "l4-029-dirty",
+      "group": "dirty-topic",
+      "verdict": "dirty",
+      "note": "Homeoffice debate × Technik",
+      "expectedAxes": [
+        "topic_fit"
+      ],
+      "wouldBlock": 0,
+      "hitAxes": [],
+      "findings": [],
+      "partVerdict": "pass"
+    },
+    {
+      "id": "l4-030-dirty",
+      "group": "dirty-topic",
+      "verdict": "dirty",
+      "expectedAxes": [
+        "topic_fit"
+      ],
+      "wouldBlock": 0,
+      "hitAxes": [],
+      "findings": [],
+      "partVerdict": "pass"
+    },
+    {
+      "id": "l2-075-topic",
+      "group": "dirty-topic",
+      "verdict": "dirty",
+      "note": "CHK-26 dos temas T2",
+      "expectedAxes": [
+        "topic_fit"
+      ],
+      "wouldBlock": 0,
+      "hitAxes": [],
+      "findings": [],
+      "partVerdict": "pass"
+    },
+    {
+      "id": "l1-073-rejected",
+      "group": "dirty-content",
+      "verdict": "dirty",
+      "note": "Rejected batch — word matching",
+      "expectedAxes": [
+        "paraphrase"
+      ],
+      "wouldBlock": 0,
+      "hitAxes": [],
+      "findings": [],
+      "partVerdict": "pass"
+    },
+    {
+      "id": "pool-clean-pub-de-B1-lesen-t2-ec847aa773d4",
+      "group": "clean-pool",
+      "verdict": "clean",
+      "note": "Pool struct SEM-1 clean group L2",
+      "expectedAxes": [],
+      "wouldBlock": 0,
+      "hitAxes": [],
+      "findings": [],
+      "partVerdict": "pass"
+    },
+    {
+      "id": "pool-clean-pub-de-B1-lesen-t2-193c51e71a09",
+      "group": "clean-pool",
+      "verdict": "clean",
+      "note": "Pool struct SEM-1 clean group L2",
+      "expectedAxes": [],
+      "wouldBlock": 0,
+      "hitAxes": [],
+      "findings": [],
+      "partVerdict": "pass"
+    },
+    {
+      "id": "pool-l4-pub-de-B1-lesen-t4-fa7bfe8fa9d9",
+      "group": "dirty-pool-l4",
+      "verdict": "dirty",
+      "note": "Pool L4 known CHK-7 dirty",
+      "expectedAxes": [
+        "correctness",
+        "ambiguity"
+      ],
+      "wouldBlock": 0,
+      "hitAxes": [],
+      "findings": [],
+      "partVerdict": "pass"
+    },
+    {
+      "id": "pool-l4-pub-de-B1-lesen-t4-65216d74dec6",
+      "group": "dirty-pool-l4",
+      "verdict": "dirty",
+      "note": "Pool L4 known CHK-7 dirty",
+      "expectedAxes": [
+        "correctness",
+        "ambiguity"
+      ],
+      "wouldBlock": 0,
+      "hitAxes": [],
+      "findings": [],
+      "partVerdict": "pass"
+    }
+  ]
+}

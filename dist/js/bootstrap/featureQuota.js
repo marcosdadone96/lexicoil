@@ -16,7 +16,7 @@
   S._aiCreditsWarned0 = false;
   S.aiTrialActive = S.aiTrialActive ?? null;
 
-  const PRO_ONLY_ACTIONS = new Set(['personal_exam', 'grammar_coaching']);
+  const PRO_ONLY_ACTIONS = new Set(['personal_exam', 'grammar_coaching', 'speaking_realtime']);
 
   window.resolveAppPlan = function () {
     if (typeof Auth !== 'undefined' && Auth.isGuest && Auth.isGuest()) return 'guest';
@@ -76,6 +76,7 @@
       personal_exam: Number(window.AI_COST_PERSONAL_EXAM || 3),
       vocab_quiz: Number(window.AI_COST_VOCAB_QUIZ || 2),
       speaking: Number(window.AI_COST_SPEAKING || 2),
+      speaking_realtime: Number(window.AI_COST_SPEAKING_REALTIME || 4),
       writing_correction: Number(window.AI_COST_WRITING || 1),
       listening_game: Number(window.AI_COST_LISTENING_GAME || 1),
       grammar_coaching: 1,
@@ -97,7 +98,12 @@
 
   window.requireProOnlyAction = function (action, opts) {
     if (canAccessProOnlyAction()) return true;
-    const label = action === 'grammar_coaching' ? 'Grammar coaching' : 'Personalized exams';
+    const label =
+      action === 'grammar_coaching'
+        ? 'Grammar coaching'
+        : action === 'speaking_realtime'
+          ? 'Live speaking partner'
+          : 'Personalized exams';
     const msg =
       (opts && opts.message) ||
       `${label} requires Pro. Upgrade for full AI practice and unlimited pool access.`;

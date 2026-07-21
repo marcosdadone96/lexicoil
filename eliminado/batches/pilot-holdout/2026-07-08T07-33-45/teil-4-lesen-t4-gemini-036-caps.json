@@ -1,0 +1,87 @@
+{
+  "gateVersion": "v6.1-B-G2 (frozen)",
+  "file": "lesen-t4-gemini-036.json",
+  "teil": 4,
+  "pipeline": {
+    "status": "passed",
+    "gate": null,
+    "reason": null
+  },
+  "textFields": 36,
+  "findings": {
+    "blocking": 2,
+    "observations": 0,
+    "byReason": {
+      "lexicon_override_tag": 1,
+      "adj_before_noun": 1
+    },
+    "byRegime": {
+      "PROSE": 1,
+      "TITLE_HEADING": 1
+    },
+    "list": [
+      {
+        "type": "noun_lowercase",
+        "word": "machen",
+        "pos": "VERB",
+        "tag": "VVINF",
+        "confidence": "high",
+        "reason": "lexicon_override_tag",
+        "context": "und ihn zu voll machen könnten. Seine abschließende",
+        "prevWord": "voll",
+        "prevPos": "ADV",
+        "prevTag": "ADJD",
+        "textIndex": 0,
+        "regime": "PROSE",
+        "field": "questions.explanation",
+        "id": "lesen-t4-gemini-036.json::questions.explanation::3",
+        "file": "lesen-t4-gemini-036.json",
+        "textPreview": "David lehnt den Vorschlag ab, weil er befürchtet, dass die Fitnessgeräte die Ruhe im Park stören und ihn zu voll machen könnten. Seine abschließende Aussage ist"
+      },
+      {
+        "type": "wrong_capitalized",
+        "word": "Wichtiger",
+        "pos": "ADJ",
+        "tag": "ADJA",
+        "confidence": "high",
+        "reason": "adj_before_noun",
+        "context": ". Es ist ein Wichtiger Schritt für mehr Sport",
+        "prevWord": "ein",
+        "prevPos": "DET",
+        "prevTag": "ART",
+        "textIndex": 0,
+        "regime": "TITLE_HEADING",
+        "field": "questions.signText",
+        "id": "lesen-t4-gemini-036.json::questions.signText::32",
+        "file": "lesen-t4-gemini-036.json",
+        "textPreview": "Ich finde es super, wenn die Stadt mehr Möglichkeiten für Bewegung schafft. Das ist gut für die Gesundheit der Bürger und auch für Kinder, die gerne draußen spi"
+      }
+    ]
+  },
+  "observations": [],
+  "expected": {
+    "dominantRegime": "TITLE + PROSE",
+    "telegraphicFpExpected": 0,
+    "notes": "signText TITLE, explanation PROSE."
+  },
+  "comparison": {
+    "calibrationPoolFindingsThisTeil": 14,
+    "calibrationAvgPerFile": 1.4,
+    "pilotFindings": 2,
+    "deltaVsCalAvg": 0.6,
+    "telegraphicFindings": 0,
+    "telegraphicFpExpected": 0,
+    "telegraphicOk": true
+  },
+  "qualityGate": {
+    "errors": [],
+    "warnings": [
+      "Mayúsculas alemanas: noun_lowercase: «machen» (VVINF) [high] en questions.explanation — …und ihn zu voll machen könnten. Seine abschließende…",
+      "Mayúsculas alemanas: wrong_capitalized: «Wichtiger» (ADJA) [high] en questions.signText — …. Es ist ein Wichtiger Schritt für mehr Sport…"
+    ]
+  },
+  "generatorCapsWarnings": [
+    "Mayúsculas alemanas: noun_lowercase: «machen» (VVINF) [high] en questions.explanation — …und ihn zu voll machen könnten. Seine abschließende…",
+    "Mayúsculas alemanas: wrong_capitalized: «Wichtiger» (ADJA) [high] en questions.signText — …. Es ist ein Wichtiger Schritt für mehr Sport…"
+  ]
+}
