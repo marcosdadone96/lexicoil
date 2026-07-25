@@ -1,7 +1,11 @@
 node_modules
+
+# Secrets — every .env variant stays local (.env.bak-* held live keys)
 .env
-.env.local
-.env.*.local
+.env.*
+!.env.example
+
+# Build outputs — Netlify regenerates these (`npm run build:site`)
 dist/
 *.zip
 **/*.dist.zip
@@ -16,3 +20,29 @@ staging/
 staging/_test_backup/
 library/**/questions.backup-*.json
 library/tts-cache/
+
+# Local safety snapshots — kept on disk, never in history
+backups/
+library/reusable-seed/backups/
+
+# Generation logs and run artifacts
+batches/logs/
+last-hybrid-error.json
+publish-rejected.log
+
+# Temp / scratch artifacts
+.tmp-seed-*.json
+_tmp_health.json
+tmp-audit-now.json
+assembled-exam-*.json
+export/
+lesen-t2-review.txt
+repro-chrome-err.txt
+scripts/exam-assembly-output.txt
+scripts/exams-output.txt
+scripts/caps-push-ids.txt
+scripts/_*.txt
+
+# Pre-edit file copies (use git history instead)
+*.bak
+*.bak-*
