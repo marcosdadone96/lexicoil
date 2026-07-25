@@ -3,6 +3,11 @@
 const { checkQuota, incrementQuota, decrementQuota, getQuotaState } = require('./lib/quotaLib.js');
 const { corsHeaders, jsonResponse } = require('./lib/http.js');
 const { validateGeneratedExam, verifyAnswerKeysWithAI, verifyAndSanitizePersonalExam } = require('./lib/examQualityGate.js');
+const {
+  isAllowLiveGenEnabled,
+  liveGenDisabledResponse,
+  verifyUnavailableResponse,
+} = require('./lib/liveGenGate.js');
 const { verifyTopicCoherenceExam } = require('./lib/topicCoherenceGate.js');
 const { resolveBlueprint } = require('../../js/engine/validation/blueprintResolver.js');
 const {
@@ -15,6 +20,7 @@ const {
 } = require('./lib/proAiModes.js');
 const { getAiCredits, checkAiCredits, confirmAiCreditConsumption, releaseAiCreditConsumption } = require('./lib/aiCredits.js');
 const { getStoreForEvent } = require('./lib/blobStore.js');
+const { gatePersonalExamChunk } = require('./lib/webPartGate.js');
 const { casWriteJson } = require('./lib/casBlob.js');
 const { linkTicketQuotaCharge, releaseGenerationQuota, deliverGenerationQuota, renewGenerationTicket } = require('./lib/releaseGeneration.js');
 const { getJwtSecret, emailToUserId } = require('./lib/authLib.js');
@@ -190,6 +196,11 @@ exports.handler = async function handler(event) {
 
   // ── validateExam branch (C-2: quota-gated) ──────────────────────────────
   if (body.validateExam === true && body.exam) {
+    const personalVerifyPath =
+      body.verifyAnswerKeys === true && body.discardFailedItems === true;
+    if (personalVerifyPath && !isAllowLiveGenEnabled()) {
+      return liveGenDisabledResponse(jsonResponse, cors);
+    }
     try {
       const quotaGate = await checkQuota(event).catch(() => null);
       if (!quotaGate || !quotaGate.ok) {
@@ -218,12 +229,18 @@ exports.handler = async function handler(event) {
         });
       }
       if (body.verifyAnswerKeys === true && body.discardFailedItems === true) {
+        if (process.env.EXAM_ANSWER_KEY_VERIFY !== '1') {
+          return verifyUnavailableResponse(jsonResponse, cors, 'verify_disabled');
+        }
         try {
           const sanitizeOpts = { blueprint };
           if (body.partialExam === true || body.partialExam === false) {
             sanitizeOpts.partialExam = body.partialExam;
           }
           const sanitized = await verifyAndSanitizePersonalExam(body.exam, apiKey, sanitizeOpts);
+          if (sanitized.verifySkipped) {
+            return verifyUnavailableResponse(jsonResponse, cors, sanitized.verifySkipReason || 'verify_skipped');
+          }
           if (!sanitized.valid || !sanitized.renderable) {
             console.warn('[claude-chat] personal exam empty after verify discard:', sanitized.errors);
             return jsonResponse(422, cors, {
@@ -245,12 +262,7 @@ exports.handler = async function handler(event) {
           });
         } catch (err) {
           console.warn('[claude-chat] verify sanitize error:', err.message);
-          return jsonResponse(200, cors, {
-            valid: true,
-            exam: body.exam,
-            verifySkipped: true,
-            placeholders: gate.placeholders,
-          });
+          return verifyUnavailableResponse(jsonResponse, cors, err.message || 'verify_error');
         }
       }
       if (body.verifyAnswerKeys === true) {
@@ -274,6 +286,7 @@ exports.handler = async function handler(event) {
           }
         } catch (err) {
           console.warn('[claude-chat] answer-key verify error:', err.message);
+          return verifyUnavailableResponse(jsonResponse, cors, err.message || 'answer_key_verify_error');
         }
       }
       try {
@@ -303,24 +316,25 @@ exports.handler = async function handler(event) {
         }
       } catch (err) {
         console.warn('[claude-chat] topic coherence gate error:', err.message);
+        if (personalVerifyPath) {
+          return verifyUnavailableResponse(jsonResponse, cors, err.message || 'topic_coherence_error');
+        }
       }
       return jsonResponse(200, cors, { valid: true, placeholders: gate.placeholders });
     } catch (err) {
       console.error('[claude-chat] validateExam error:', err.message, err.stack);
+      if (personalVerifyPath) {
+        return verifyUnavailableResponse(jsonResponse, cors, err.message || 'validate_failed');
+      }
       try {
         const gate = validateGeneratedExam(body.exam, { blueprint: resolveBlueprint(body.exam, body.blueprint) });
-        if (gate.valid) {
-          return jsonResponse(200, cors, {
-            valid: true,
-            exam: body.exam,
-            verifySkipped: true,
-            placeholders: gate.placeholders,
+        if (!gate.valid) {
+          return jsonResponse(422, cors, {
+            error: 'exam_invalid',
+            validationErrors: gate.errors,
           });
         }
-        return jsonResponse(422, cors, {
-          error: 'exam_invalid',
-          validationErrors: gate.errors,
-        });
+        return verifyUnavailableResponse(jsonResponse, cors, err.message || 'validate_failed');
       } catch (inner) {
         return jsonResponse(500, cors, { error: 'validate_failed', message: inner.message || err.message });
       }
@@ -472,6 +486,9 @@ exports.handler = async function handler(event) {
     const sub = qState.authenticated ? qState.email : `guest:${qState.ipHash || 'unknown'}`;
 
     if (scope === 'personal_exam') {
+      if (!isAllowLiveGenEnabled()) {
+        return liveGenDisabledResponse(jsonResponse, cors);
+      }
       const access = await requireActionAccess(event, 'personal_exam');
       if (!access.ok) {
         return jsonResponse(access.status || 403, cors, { error: access.error, plan: access.plan });
@@ -1072,6 +1089,9 @@ Rules:
     if (!TICKETED_SCOPES.has(ticketPayload.scope)) {
       return jsonResponse(403, cors, { error: 'ticket_scope_invalid' });
     }
+    if (ticketPayload.scope === 'personal_exam' && !isAllowLiveGenEnabled()) {
+      return liveGenDisabledResponse(jsonResponse, cors);
+    }
 
     // Atomically increment the per-ticket chunk counter (server-controlled)
     const store = getStoreForEvent(event);
@@ -1209,9 +1229,12 @@ Rules:
       return jsonResponse(502, cors, { error: 'Empty response from AI' });
     }
 
+    let examChunkParsed = null;
+    let examResponseText = text;
+
     if (body.examGeneration) {
-      const parsed = extractJsonObject(text);
-      if (!parsed) {
+      examChunkParsed = extractJsonObject(text);
+      if (!examChunkParsed) {
         console.warn('[claude-chat] exam chunk JSON unparseable', {
           teil: Number.isFinite(chunkTeil) ? chunkTeil : null,
           slot: chunkSlot || null,
@@ -1232,13 +1255,53 @@ Rules:
 
     if (body.examGeneration) {
       const placeholderCount = (
-        text.match(/\.\.\.|Option [A-D]"|"Text here"|"Question here"|Ein Text ueber|Ein Text .ber|An article about/gi) || []
+        examResponseText.match(/\.\.\.|Option [A-D]"|"Text here"|"Question here"|Ein Text ueber|Ein Text .ber|An article about/gi) || []
       ).length;
       if (placeholderCount > 5) {
         console.warn('[claude-chat] exam has too many placeholders:', placeholderCount);
         return jsonResponse(422, cors, {
           error: 'exam_low_quality',
           message: 'Generated exam contains placeholder content. Retry recommended.',
+        });
+      }
+    }
+
+    // POOL-2 part gate (personal_exam only) — fail-closed; response text = normalized chunk JSON
+    if (body.examGeneration && genTicketPayload?.scope === 'personal_exam') {
+      try {
+        const gateResult = await gatePersonalExamChunk(getStoreForEvent(event), {
+          parsed: examChunkParsed,
+          lang: body.lang || examChunkParsed?.lang,
+          level: body.level || examChunkParsed?.level,
+          chunkTeil: Number.isFinite(chunkTeil) ? chunkTeil : null,
+          semantic: true,
+        });
+        if (!gateResult.ok) {
+          const blocking = (gateResult.blocking || []).slice(0, 5).map((f) => ({
+            id: f.id,
+            severity: f.severity,
+            message: f.message,
+          }));
+          console.warn('[claude-chat] part gate rejected:', gateResult.gateId, blocking[0]?.message);
+          await refundExamQuota(reservedQuotaCheck, requestId);
+          await logExamGenChunk(event, genTicketPayload, body, { ok: false, model, usage: anthropicUsage });
+          return jsonResponse(422, cors, {
+            error: 'part_gate_rejected',
+            gate: gateResult.gateId,
+            blocking,
+            message: gateResult.message || 'Part failed quality gate',
+            teil: Number.isFinite(chunkTeil) ? chunkTeil : null,
+          });
+        }
+        examChunkParsed = gateResult.chunk;
+        examResponseText = JSON.stringify(gateResult.chunk);
+      } catch (gateErr) {
+        console.error('[claude-chat] part gate unavailable:', gateErr.message, gateErr.stack);
+        await refundExamQuota(reservedQuotaCheck, requestId);
+        await logExamGenChunk(event, genTicketPayload, body, { ok: false, model, usage: anthropicUsage });
+        return jsonResponse(503, cors, {
+          error: 'part_gate_unavailable',
+          message: gateErr.message || 'Part gate could not run',
         });
       }
     }
@@ -1255,9 +1318,10 @@ Rules:
     console.log('[claude-chat] ok', {
       model,
       exam: !!body.examGeneration,
+      partGate: !!(body.examGeneration && genTicketPayload?.scope === 'personal_exam'),
       ms: Date.now() - t0,
       maxTokens,
-      outChars: text.length,
+      outChars: examResponseText.length,
     });
 
     if (body.examGeneration) {
@@ -1265,7 +1329,7 @@ Rules:
     }
 
     return jsonResponse(200, cors, {
-      text,
+      text: examResponseText,
       model,
       usage: data.usage || null,
       used: quotaMeta?.used,

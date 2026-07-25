@@ -33,6 +33,7 @@ import { loadEnvFile } from './lib/loadEnv.mjs';
 loadEnvFile();
 
 import { isPartPoolReady } from './audit-pass-2.mjs';
+import { buildLesenT3SeedRecord } from './lib/buildLesenT3SeedRecord.mjs';
 
 // ─── CLI args ─────────────────────────────────────────────────────────────────
 function parseArgs(argv) {
@@ -68,43 +69,6 @@ const SEED_FILE = path.join(ROOT, 'library', 'reusable-seed', `${ARGS.lang}_${AR
 
 function shortHash(s) {
   return crypto.createHash('sha1').update(s).digest('hex').slice(0, 12);
-}
-
-function buildLesenT3Record(batch, lang, level) {
-  const qs = batch.questions || [];
-  const passage = batch.passages?.[0] || {};
-  const ads = batch.ads || passage.ads || [];
-  const topic = qs[0]?.topicTags?.[0] || 'daily_life';
-  const hash = shortHash(passage.text || qs.map(q => q.id).join(''));
-  return {
-    id         : `pool3-${lang}-${level}-lesen-t3-${hash}`,
-    lang,
-    level,
-    module     : 'lesen',
-    teil       : 3,
-    instruction: '',
-    complete   : true,
-    verified   : true,
-    contributor: `pool3:${topic}`,
-    passage    : {
-      title: passage.title || '',
-      text : passage.text  || '',
-      ads,
-    },
-    ads,
-    questions  : qs.map(q => ({
-      id           : q.id,
-      module       : 'lesen',
-      teil         : 3,
-      type         : q.type || 'multiple_choice',
-      question     : q.question || '',
-      correct      : q.correct      || q.correctAnswer || '',
-      correctAnswer: q.correctAnswer || q.correct      || '',
-      explanation  : q.explanation  || '',
-    })),
-    itemCount  : qs.length,
-    targetCount: qs.length,
-  };
 }
 
 function buildLesenT4Record(batch, lang, level) {
@@ -234,7 +198,7 @@ console.log(`\nSeed before: ${before.length} total records`);
 console.log(`  lesen T3: ${t3Before}  |  lesen T4: ${t4Before}`);
 
 // Run gates
-const r3 = await runGate(t3Path, 'T3', buildLesenT3Record);
+const r3 = await runGate(t3Path, 'T3', (batch) => buildLesenT3SeedRecord(batch, { lang: ARGS.lang, level: ARGS.level }));
 const r4 = await runGate(t4Path, 'T4 ⚡ (Frankenstein guard active)', buildLesenT4Record);
 
 // Summary

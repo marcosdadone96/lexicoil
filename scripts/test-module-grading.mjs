@@ -187,4 +187,37 @@ const delePassSummary = MG.summarizeExam(delePass, { blueprint: deleA1 });
 assert('DELE grupo1 pass at 30/50', delePassSummary.grupo1.passed === true);
 assert('DELE global pass when both groups pass', delePassSummary.globalPassed === true);
 
+// --- Cambridge B1 Preliminary: aggregate Cambridge English Scale grading ---
+const cambridgeB1 = loadBlueprint('cambridge_B1');
+assert('cambridge_B1 scope cambridge-scale', MG.getGradingScope(cambridgeB1, { level: 'B1', lang: 'en' }) === 'cambridge-scale');
+assert('cambridge_B1 not modular', !MG.isModularGoetheExam({ lang: 'en', level: 'B1' }, cambridgeB1));
+assert('scale maps 60% -> 140 (pass boundary)', MG.scorePctToScale(60, cambridgeB1.passRule) === 140);
+assert('scale maps 0% -> 120 floor', MG.scorePctToScale(0, cambridgeB1.passRule) === 120);
+assert('scale maps 100% -> 170 ceil', MG.scorePctToScale(100, cambridgeB1.passRule) === 170);
+
+const csR = (pct) => ({ scorePct: pct, passed: true, evaluated: true });
+const csPass = MG.summarizeExam(
+  { lesen: csR(70), horen: csR(60), schreiben: csR(65), sprechen: csR(65) },
+  { blueprint: cambridgeB1, gradingScope: 'cambridge-scale' },
+);
+assert('cambridge-scale aggregate >=140 passes', csPass.overallScale >= 140 && csPass.globalPassed === true);
+
+const csFail = MG.summarizeExam(
+  { lesen: csR(40), horen: csR(55), schreiben: csR(50), sprechen: csR(50) },
+  { blueprint: cambridgeB1, gradingScope: 'cambridge-scale' },
+);
+assert('cambridge-scale aggregate <140 fails', csFail.overallScale < 140 && csFail.globalPassed === false);
+
+const csCompensate = MG.summarizeExam(
+  { lesen: csR(85), horen: csR(80), schreiben: csR(45), sprechen: csR(70) },
+  { blueprint: cambridgeB1, gradingScope: 'cambridge-scale' },
+);
+assert('cambridge-scale compensates a weak skill when aggregate passes', csCompensate.globalPassed === true);
+
+const csPartial = MG.summarizeExam(
+  { lesen: csR(80), horen: csR(80), schreiben: csR(80), sprechen: MG.unevaluatedModuleResult() },
+  { blueprint: cambridgeB1, gradingScope: 'cambridge-scale' },
+);
+assert('cambridge-scale not passed until all 4 skills evaluated', csPartial.globalPassed === false);
+
 console.log('\nModule grading tests passed.');

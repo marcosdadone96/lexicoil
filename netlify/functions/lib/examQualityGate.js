@@ -8,6 +8,7 @@ const {
   validateLesenT2PassageIntegrity,
   normalizeLesenT2FromPassages,
 } = require('../../../js/engine/validation/lesenPassageIntegrity.js');
+const PF = require('../../../js/engine/personalLesenPoolFallback.js');
 const { cefrGateEnabled } = require('../../../js/engine/validation/cefrGateFlags.js');
 const CefrGate = require('../../../js/engine/validation/CefrGate.js');
 
@@ -26,6 +27,9 @@ function countPlaceholders(exam) {
 function validateGeneratedExam(exam, opts = {}) {
   const strict = opts.strict ?? process.env.VALIDATOR_STRICT === '1';
   const blueprint = opts.blueprint === false ? null : resolveBlueprint(exam, opts.blueprint);
+  if (exam && typeof PF.repairLesenPartsForValidation === 'function') {
+    PF.repairLesenPartsForValidation(exam);
+  }
   const partialExam =
     opts.partialExam === false
       ? false
@@ -475,6 +479,15 @@ async function verifyAndSanitizePersonalExam(exam, apiKey, opts = {}) {
     working = pruneInvalidPersonalLesenParts(working);
   }
   let discarded = 0;
+  let verifySkipped = false;
+  let verifySkipReason = null;
+
+  const noteVerifySkip = (r) => {
+    if (r?.skipped) {
+      verifySkipped = true;
+      verifySkipReason = verifySkipReason || r.reason || 'verify_skipped';
+    }
+  };
 
   for (const [key, mod] of [
     ['lesenParts', 'lesen'],
@@ -490,6 +503,7 @@ async function verifyAndSanitizePersonalExam(exam, apiKey, opts = {}) {
         const arr = part[field];
         if (!Array.isArray(arr) || !arr.length) continue;
         const r = await verifyPartQuestionsWithAI(arr, { passage, module: mod, apiKey });
+        noteVerifySkip(r);
         part[field] = r.verified;
         discarded += (r.failed || []).length;
       }
@@ -500,6 +514,7 @@ async function verifyAndSanitizePersonalExam(exam, apiKey, opts = {}) {
           module: mod,
           apiKey,
         });
+        noteVerifySkip(r);
         seg.questions = r.verified;
         discarded += (r.failed || []).length;
       }
@@ -507,6 +522,10 @@ async function verifyAndSanitizePersonalExam(exam, apiKey, opts = {}) {
   }
 
   const keyVerify = await verifyAnswerKeysWithAI(working, apiKey, { collectOnly: true });
+  if (keyVerify.skipped) {
+    verifySkipped = true;
+    verifySkipReason = verifySkipReason || keyVerify.reason || 'answer_key_verify_skipped';
+  }
   if (keyVerify.discrepancies?.length) {
     stripVerifyFailedItems(
       working,
@@ -532,12 +551,16 @@ async function verifyAndSanitizePersonalExam(exam, apiKey, opts = {}) {
     );
   return {
     exam: working,
-    valid: gate.valid && renderable,
+    valid: !verifySkipped && gate.valid && renderable,
     renderable,
     emptyAfterVerify,
     discarded,
-    errors: gate.errors,
+    errors: verifySkipped
+      ? [`verify_unavailable:${verifySkipReason || 'verify_skipped'}`, ...(gate.errors || [])]
+      : gate.errors,
     blueprint,
+    verifySkipped,
+    verifySkipReason,
   };
 }
 

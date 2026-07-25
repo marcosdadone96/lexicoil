@@ -86,10 +86,25 @@ for (const slot of exams) {
       Number(part.teil) !== 3 ||
       !part._t3HasNoMatch ||
       sb.renderGoetheLesenPart(part, part.teil - 1, false, { lang: 'de', reading: 'L', teil: 'T' }).includes('>0</button>');
-    const status = instrOk && rangeOk && t3Zero ? 'OK' : 'FAIL';
+    let t3PillsOk = true;
+    if (Number(part.teil) === 3) {
+      const l3Html = sb.renderGoetheLesenPart(part, part.teil - 1, false, {
+        lang: 'de',
+        reading: 'Lesen',
+        teil: 'Teil',
+        partial: '',
+        option: 'O',
+        trueL: 'R',
+        falseL: 'F',
+        trueK: 'R',
+      });
+      t3PillsOk =
+        !/onclick="ptSetMatch\("/.test(l3Html) && /onclick='ptSetMatch\("/.test(l3Html);
+    }
+    const status = instrOk && rangeOk && t3Zero && t3PillsOk ? 'OK' : 'FAIL';
     if (status === 'FAIL') failures++;
     console.log(
-      `  T${part.teil}: ${status} instr=${instrOk ? 'yes' : 'EMPTY'} range=${range ? `${range.start}-${range.end}` : 'n/a'} nums=${nums.length ? `${Math.min(...nums)}-${Math.max(...nums)}` : 'none'} t3zero=${t3Zero}`,
+      `  T${part.teil}: ${status} instr=${instrOk ? 'yes' : 'EMPTY'} range=${range ? `${range.start}-${range.end}` : 'n/a'} nums=${nums.length ? `${Math.min(...nums)}-${Math.max(...nums)}` : 'none'} t3zero=${t3Zero} t3pills=${t3PillsOk}`,
     );
   }
 }
