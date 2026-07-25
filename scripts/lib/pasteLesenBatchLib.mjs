@@ -325,7 +325,7 @@ export function publishLesenBatchFile(relFile, args, { label } = {}) {
 export function listGeneratedLesenFiles({ teil, tag = null } = {}) {
   fs.mkdirSync(GENERATED, { recursive: true });
   const re = tag
-    ? new RegExp(`^lesen-t${teil}-${tag}-\\d+\\.json$`, 'i')
+    ? new RegExp(`^lesen-t${teil}-${tag}-[\\w]+\\.json$`, 'i')
     : new RegExp(`^lesen-t${teil}-.+\\.json$`, 'i');
   return fs
     .readdirSync(GENERATED)

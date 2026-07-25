@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { ROOT } from './loadEnv.mjs';
+import { applyVocabPreferenceToTemplate } from './userVocabPrompt.mjs';
 
 const PLACEHOLDER =
   /<<< pon aquí 8-12 palabras alemanas separadas por comas, p\. ej\.: bibliothek, ausleihen, frist, gebühr >>>/;
@@ -59,7 +60,15 @@ const CEFR_VOCAB_HINT =
   'ORTOGRAFÍA OBLIGATORIA: todos los sustantivos en MAYÚSCULA — también tras kein/keine, ' +
   'mit/für/von/ohne, en listas y enumeraciones ' +
   '(«Blumen und Pflanzen», «keine Hypothese», no «blumen», no «keine hypothese»). ' +
-  'Repasa cada sustantivo antes de enviar.';
+  'Repasa cada sustantivo antes de enviar. ' +
+  'LÍMITE INVERSO — NUNCA capitalices a mitad de frase palabras que NO sean sustantivos ni nombres propios: ' +
+  'adjetivos (schwierig, persönlich, zugänglich, einfach, möglich), ' +
+  'cuantificadores (viele, wenige, einige), ' +
+  'adverbios (lange, eher, leider, trotzdem, natürlich) ' +
+  'y verbos conjugados (ich glaube, ich stimme, ich denke) van en MINÚSCULA a mitad de frase. ' +
+  'Solo SUSTANTIVOS y nombres propios llevan mayúscula. ' +
+  'Ejemplos correctos: «viele Menschen» (NO «Viele»), «in der Praxis schwierig» (NO «Schwierig»), ' +
+  '«ich glaube» (NO «Glaube»), «ich stimme zu» (NO «Stimme»), «leicht zugänglich» (NO «Zugänglich»).';
 
 function teilLengthBlock(teil) {
   const r = TEIL_LENGTH_RULES[teil];
@@ -99,18 +108,7 @@ export function stripHumanHeader(markdown) {
 }
 
 export function injectTargetWords(markdown, words) {
-  const list = (words || []).map((w) => String(w).trim()).filter(Boolean);
-  if (!list.length) {
-    throw new Error('Lista de palabras objetivo vacía');
-  }
-  const block = `<<< ${list.join(', ')} >>>`;
-  if (WORDS_BLOCK.test(markdown)) {
-    return markdown.replace(WORDS_BLOCK, block);
-  }
-  if (PLACEHOLDER.test(markdown)) {
-    return markdown.replace(PLACEHOLDER, list.join(', '));
-  }
-  throw new Error('La plantilla no contiene el marcador PALABRAS OBJETIVO (<<< … >>>)');
+  return applyVocabPreferenceToTemplate(markdown, words);
 }
 
 export function buildLesenPrompt(teil, words, { idSuffix } = {}) {
@@ -130,12 +128,13 @@ export function buildLesenPrompt(teil, words, { idSuffix } = {}) {
     `- Anti–word-matching: parafraseo, no emparejar palabras sueltas.\n` +
     `- Longitud: cumple el mínimo CEFR de arriba (cuenta palabras).\n` +
     `- El batch debe pasar check-lesen-batch-quality.mjs y check-lesen-batch-ingest.mjs sin errores.\n` +
-    `- PALABRAS OBJETIVO: 8-12 lemas frecuentes B1 (no 15); pool Lesen only.\n` +
+    `- VOCABULARIO SUGERIDO: integra palabras solo si encajan; omite las que no encajen.\n` +
     `- Anti word-matching: máx. 2 palabras de contenido iguales al pasaje por afirmación/pregunta.\n` +
     `- CEFR: evita Eigenregie, empfand, faszinierend, gebucht, Smartphone — usa léxico simple.\n` +
     (Number(teil) === 1
       ? `- (T1) Misma referencia sie/ihre O er/seine en todas las afirmaciones — nunca mezclar.\n`
       : '') +
+    `- explanation: ≥10 palabras para multiple_choice (CHK-18 rechaza si es más corta). Usa frases completas que justifiquen la respuesta.\n` +
     `- Responde SOLO con el objeto JSON (sin markdown, sin \`\`\`, sin texto antes ni después).`;
   return prompt;
 }

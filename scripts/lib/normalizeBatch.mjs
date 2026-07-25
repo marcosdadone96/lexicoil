@@ -2,7 +2,12 @@
  * Fix common Gemini output mistakes before validate/merge.
  */
 import { capitalizeBatchNouns, decapitalizeBatchMidSentence } from './capitalizeNouns.mjs';
-import { balanceMcqGroup, antiRuns } from './balanceMcq.mjs';
+import {
+  balanceMcqGroup,
+  antiRuns,
+  derivePartShuffleSeed,
+  shuffleKeyedQuestionOrder,
+} from './balanceMcq.mjs';
 import { normalizeT3 } from './normalizeT3.mjs';
 const SKILL_MAP = {
   listening: 'listening',
@@ -132,6 +137,12 @@ function normalizeQuestion(q) {
   if (out.correct == null && out.correctAnswer != null) {
     out.correct = out.correctAnswer;
   }
+  // Canonical key normalization: multiple_choice correct must be lowercase letter (a/b/c/d).
+  // Gemini sometimes returns uppercase "A", "B", "C" — normalize here before POOL-2.
+  if (out.type === 'multiple_choice' && out.correct != null) {
+    const cs = String(out.correct);
+    if (/^[A-Z]$/.test(cs)) out.correct = cs.toLowerCase();
+  }
   if (out.module === 'schreiben' || out.module === 'sprechen') {
     if (
       out.type === 'rubric' ||
@@ -208,35 +219,6 @@ export function enrichBatchMetadata(batch, ctx = {}) {
   });
 
   return { passages, questions };
-}
-
-/**
- * Rotate 3-option MCQ so the correct answer lands in slot (questionIdx % 3).
- * For a 6-question batch this guarantees exactly 2×a, 2×b, 2×c.
- * Accepts 3-option arrays only (T2/T5). Returns { options, correct, correctAnswer }.
- */
-export function shuffleMcqOptions(options, correct, questionIdx = 0) {
-  if (!Array.isArray(options) || options.length !== 3) return { options, correct, correctAnswer: correct };
-  const correctLetter = String(correct || '').toLowerCase().replace(/[^a-c]/g, '');
-  const correctIdx = correctLetter ? correctLetter.charCodeAt(0) - 97 : -1;
-  if (correctIdx < 0 || correctIdx >= options.length) return { options, correct, correctAnswer: correct };
-
-  // Target slot for this question (0→a, 1→b, 2→c)
-  const targetIdx = questionIdx % 3;
-  // How many positions to rotate left so correctIdx lands at targetIdx
-  const shift = ((correctIdx - targetIdx) + 3) % 3;
-  if (shift === 0) return { options, correct, correctAnswer: correct };
-
-  const arr = options.map((o, i) => ({ text: o, originalIdx: i }));
-  const rotated = [...arr.slice(shift), ...arr.slice(0, shift)];
-
-  const newCorrectIdx = rotated.findIndex((x) => x.originalIdx === correctIdx);
-  const newLetter = String.fromCharCode(97 + newCorrectIdx);
-  const newOptions = rotated.map((x, i) => {
-    const letter = String.fromCharCode(97 + i);
-    return String(x.text).replace(/^[a-c]\)\s*/i, `${letter}) `);
-  });
-  return { options: newOptions, correct: newLetter, correctAnswer: newLetter };
 }
 
 /** Remove internal LLM markup backticks: `word` → word */
@@ -331,7 +313,11 @@ export function normalizeBatch(batch, ctx) {
   const rawQuestions = (base.questions || []).map((q) =>
     normalizeQuestion(stripStichworte(stripMarkdownBold(q))),
   );
-  const balancedQuestions = antiRuns(balanceMcqGroup(rawQuestions));
+  const shuffleSeed = derivePartShuffleSeed(rawQuestions);
+  const balancedQuestions = shuffleKeyedQuestionOrder(
+    antiRuns(balanceMcqGroup(rawQuestions, { seed: shuffleSeed })),
+    { seed: shuffleSeed },
+  );
 
   let normalized = {
     passages,
@@ -345,6 +331,15 @@ export function normalizeBatch(batch, ctx) {
   }
 
   // Step N-1: lower-case adjectives/adverbs that Gemini over-capitalises mid-sentence
+  // German-only orthography pass (decapitalize over-capitalized adj/adverbs, then
+  // capitalize nouns via lexicon). Guarded by lang: the noun lexicon includes English
+  // loanwords (Team, Job, Meeting, Computer...) that would corrupt EN/ES text.
+  // See docs/audit/gates-en-applicability.md (riesgo activo #1).
+  const lang = String(ctx?.lang || base?.language || 'de').toLowerCase();
+  if (lang !== 'de') {
+    return normalized;
+  }
+
   const { batch: decapped, totalFixed: nDecap } = decapitalizeBatchMidSentence(normalized);
   if (nDecap > 0) {
     console.log(`  [normalizeNouns] ${nDecap} adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)`);
@@ -365,6 +360,18 @@ const TEIL_QUESTION_TYPE = {
   3: 'matching',
   4: 'ja_nein',
   5: 'multiple_choice',
+};
+
+// Cambridge B1 Preliminary Reading: Teil->questionType (see library/blueprints/cambridge_B1.json)
+// T1 signs/notices MCQ, T2 person-text matching, T3 long-text MCQ, T4 gapped text (matching),
+// T5 4-option cloze MCQ, T6 open cloze (gap_fill).
+const CAMBRIDGE_TEIL_QUESTION_TYPE = {
+  1: 'multiple_choice',
+  2: 'matching',
+  3: 'multiple_choice',
+  4: 'matching',
+  5: 'multiple_choice',
+  6: 'gap_fill',
 };
 
 function normalizeRichtigFalschAnswer(q) {
@@ -400,7 +407,14 @@ export function coerceGeneratedLesenPart(batch, ctx = {}) {
     level,
   });
   const teilNum = Number.isFinite(teil) ? teil : null;
-  const slotType = teilNum != null ? TEIL_QUESTION_TYPE[teilNum] : null;
+  // TEIL_QUESTION_TYPE is the Goethe-B1-Lesen map (T1 richtig_falsch, T3 matching, T4 ja_nein...).
+  // Only force it for German; for other langs (e.g. Cambridge EN) the Teil->type mapping differs,
+  // so leave the generated/blueprint type untouched. Cambridge per-Teil map: Etapa 1.
+  // See docs/audit/gates-en-applicability.md (riesgo activo #2).
+  const slotType = teilNum == null ? null
+    : lang === 'de' ? TEIL_QUESTION_TYPE[teilNum]
+    : lang === 'en' ? CAMBRIDGE_TEIL_QUESTION_TYPE[teilNum] || null
+    : null;
   const passageIds = (normalized.passages || []).map((p) => p.id).filter(Boolean);
   const solePassageId = passageIds.length === 1 ? passageIds[0] : null;
 
@@ -430,13 +444,6 @@ export function coerceGeneratedLesenPart(batch, ctx = {}) {
           out = { ...out, ...normalizeJaNeinAnswer(out) };
         } else if (slotType === 'multiple_choice') {
           out.options = normalizeOptions(out.options, slotType);
-          // Rotate 3-option MCQ (T2/T5) by question index for balanced distribution
-          if (out.options.length === 3) {
-            const shuffled = shuffleMcqOptions(out.options, out.correct, qIdx);
-            out.options = shuffled.options;
-            out.correct = shuffled.correct;
-            out.correctAnswer = shuffled.correctAnswer;
-          }
         }
       }
       if ((out.module === 'lesen' || !out.passageId) && solePassageId && !out.passageId) {

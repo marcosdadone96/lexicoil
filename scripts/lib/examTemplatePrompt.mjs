@@ -71,14 +71,22 @@ const CEFR_VOCAB_HINT =
   'Prefiere léxico B1 frecuente (≤B1 CEFR). Evita meta-texto («Dieser Text hat 280 Wörter…») y términos C1/académicos (kontextualisieren, Polyphonie, Paradigma, Manifestation…). ' +
   'REGLA ANTI-ANGLICISMOS: NUNCA escribas verbos/sustantivos ingleses sin traducir — ' +
   'gardening→Gartenarbeit/Gärtnern, jogging→Joggen, hiking→Wandern, cycling→Radfahren, ' +
-  'shopping→Einkaufen, cooking→Kochen. ' +
+  'shopping→Einkaufen, cooking→Kochen, Workshop→Kurs/Seminar/Werkstatt. ' +
   'Préstamos aceptados en alemán moderno (Deadline, Meeting, Team, Job, Computer, Internet, ' +
   'E-Mail, Video, Blog, Podcast, App, Design, Event, Check-in, Feedback) son válidos ' +
   'SOLO si van capitalizados como sustantivos: «die Deadline», «das Meeting», «das Team». ' +
   'REGLA ORTOGRÁFICA OBLIGATORIA: en alemán TODOS los sustantivos van en MAYÚSCULA — ' +
   'también en enumeraciones y después de «kein/keine» ' +
   '(«Blumen und Pflanzen», «keine Hypothese», no «blumen», no «keine hypothese»). ' +
-  'Repasa cada sustantivo antes de enviar.';
+  'Repasa cada sustantivo antes de enviar. ' +
+  'LÍMITE INVERSO — NUNCA capitalices a mitad de frase palabras que NO sean sustantivos ni nombres propios: ' +
+  'adjetivos (schwierig, persönlich, zugänglich, einfach, möglich), ' +
+  'cuantificadores (viele, wenige, einige), ' +
+  'adverbios (lange, eher, leider, trotzdem, natürlich) ' +
+  'y verbos conjugados (ich glaube, ich stimme, ich denke) van en MINÚSCULA a mitad de frase. ' +
+  'Solo SUSTANTIVOS y nombres propios llevan mayúscula. ' +
+  'Ejemplos correctos: «viele Menschen» (NO «Viele»), «in der Praxis schwierig» (NO «Schwierig»), ' +
+  '«ich glaube» (NO «Glaube»), «ich stimme zu» (NO «Stimme»), «leicht zugänglich» (NO «Zugänglich»).';
 
 export function examTemplatePath(module, teil) {
   const mod = String(module || '').toLowerCase();
@@ -141,10 +149,10 @@ function checklistBlock(module, teil) {
     `- correct === correctAnswer en todas las preguntas.\n` +
     `- module correcto en cada question; lang:"de", level:"B1".\n` +
     `- IDs únicos con el prefijo indicado arriba (no reutilizar el ejemplo).\n` +
-    `- explanation en alemán en cada pregunta (nunca vacía).\n` +
-    `- PALABRAS OBJETIVO: 8–12 lemas B1 integrados en el contenido.\n` +
+    `- explanation en alemán en cada pregunta (nunca vacía; ≥10 palabras para multiple_choice — CHK-18 rechaza si es más corta).\n` +
+    `- VOCABULARIO SUGERIDO: integra palabras solo si encajan; omite las que no encajen.\n` +
     `- MAYÚSCULAS: TODO sustantivo alemán en mayúscula — también tras kein/keine/mit/für/von/ohne, en enumeraciones y listas. ¡Compruébalo antes de enviar!\n` +
-    `- ANTI-ANGLICISMOS: CERO palabras inglesas sin traducir (gardening, jogging, hiking, cycling…). Préstamos aceptados (Deadline, Meeting, Team, Computer, E-Mail, App, Blog, Podcast, Event) SOLO capitalizados.\n`;
+    `- ANTI-ANGLICISMOS: CERO palabras inglesas sin traducir (gardening, jogging, hiking, cycling, Workshop…). Préstamos aceptados (Deadline, Meeting, Team, Computer, E-Mail, App, Blog, Podcast, Event) SOLO capitalizados. Workshop SIEMPRE → Kurs/Seminar/Werkstatt.\n`;
 
   if (module === 'horen' && t === 1) {
     return (

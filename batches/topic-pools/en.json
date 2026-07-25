@@ -1,80 +1,551 @@
 {
   "lang": "en",
   "examType": "cambridge",
-  "levels": ["B1", "B2", "C1"],
+  "levels": [
+    "B1"
+  ],
   "modules": {
-    "use_of_english": {
-      "teile": [1, 2, 3, 4],
+    "lesen": {
+      "teile": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
       "topics": {
         "1": [
-          { "slugBase": "remote-work-cloze", "topic": "Multiple-choice cloze: remote work and office culture", "topicTag": "work" },
-          { "slugBase": "city-cycling-cloze", "topic": "Multiple-choice cloze: cycling in modern cities", "topicTag": "daily_life" },
-          { "slugBase": "healthy-eating-cloze", "topic": "Multiple-choice cloze: healthy eating habits", "topicTag": "health" },
-          { "slugBase": "social-media-cloze", "topic": "Multiple-choice cloze: social media and teenagers", "topicTag": "media" }
+          {
+            "slugBase": "notices-gym",
+            "topic": "Part 1: five short notices and messages in a gym and pool",
+            "topicTag": "sport"
+          },
+          {
+            "slugBase": "notices-school",
+            "topic": "Part 1: signs and notes around a school and library",
+            "topicTag": "education"
+          },
+          {
+            "slugBase": "notices-station",
+            "topic": "Part 1: messages and signs at a train station and airport",
+            "topicTag": "travel"
+          },
+          {
+            "slugBase": "notices-supermarket",
+            "topic": "Part 1: five short notices and labels in a supermarket and shopping centre",
+            "topicTag": "shopping"
+          },
+          {
+            "slugBase": "notices-park",
+            "topic": "Part 1: signs and notices in a city park and sports centre",
+            "topicTag": "free_time"
+          },
+          {
+            "slugBase": "notices-hotel",
+            "topic": "Part 1: messages and notices in a hotel and tourist office",
+            "topicTag": "travel"
+          },
+          {
+            "slugBase": "notices-office",
+            "topic": "Part 1: notes and messages in an office and meeting rooms",
+            "topicTag": "work"
+          },
+          {
+            "slugBase": "notices-hospital",
+            "topic": "Part 1: signs and messages at a health centre and pharmacy",
+            "topicTag": "health"
+          }
         ],
         "2": [
-          { "slugBase": "travel-word-formation", "topic": "Open cloze: sustainable travel trends", "topicTag": "travel" },
-          { "slugBase": "education-word-formation", "topic": "Open cloze: online learning platforms", "topicTag": "education" },
-          { "slugBase": "environment-word-formation", "topic": "Open cloze: plastic waste reduction", "topicTag": "environment" }
+          {
+            "slugBase": "match-weekend-courses",
+            "topic": "Part 2: match five people to eight weekend courses",
+            "topicTag": "education"
+          },
+          {
+            "slugBase": "match-day-trips",
+            "topic": "Part 2: match five people to eight day-trip descriptions",
+            "topicTag": "travel"
+          },
+          {
+            "slugBase": "match-restaurants",
+            "topic": "Part 2: match five people to eight cafes and restaurants",
+            "topicTag": "food"
+          },
+          {
+            "slugBase": "match-books",
+            "topic": "Part 2: match five people to eight books or e-books",
+            "topicTag": "culture"
+          },
+          {
+            "slugBase": "match-holidays",
+            "topic": "Part 2: match five people to eight holiday destinations",
+            "topicTag": "travel"
+          },
+          {
+            "slugBase": "match-courses",
+            "topic": "Part 2: match five people to eight evening courses",
+            "topicTag": "education"
+          },
+          {
+            "slugBase": "match-museums",
+            "topic": "Part 2: match five people to eight museums and exhibitions",
+            "topicTag": "culture"
+          },
+          {
+            "slugBase": "match-sports-clubs",
+            "topic": "Part 2: match five people to eight sports clubs and activities",
+            "topicTag": "sport"
+          }
         ],
         "3": [
-          { "slugBase": "workplace-key-transform", "topic": "Key word transformation: workplace communication", "topicTag": "work" },
-          { "slugBase": "technology-key-transform", "topic": "Key word transformation: artificial intelligence", "topicTag": "technology" },
-          { "slugBase": "sport-key-transform", "topic": "Key word transformation: community sports clubs", "topicTag": "sport" }
+          {
+            "slugBase": "long-young-athlete",
+            "topic": "Part 3: long text - interview with a young athlete",
+            "topicTag": "sport"
+          },
+          {
+            "slugBase": "long-moving-city",
+            "topic": "Part 3: long text - a teenager's opinion on moving to a new city",
+            "topicTag": "daily_life"
+          },
+          {
+            "slugBase": "long-volunteering",
+            "topic": "Part 3: long text - a person's experience of volunteering abroad",
+            "topicTag": "work"
+          },
+          {
+            "slugBase": "long-volunteer-abroad",
+            "topic": "Part 3: long text - a young volunteer working abroad",
+            "topicTag": "travel"
+          },
+          {
+            "slugBase": "long-street-musician",
+            "topic": "Part 3: long text - interview with a street musician",
+            "topicTag": "culture"
+          },
+          {
+            "slugBase": "long-wildlife-photographer",
+            "topic": "Part 3: long text - a wildlife photographer describes her job",
+            "topicTag": "nature"
+          },
+          {
+            "slugBase": "long-app-developer",
+            "topic": "Part 3: long text - a teenager who created a popular app",
+            "topicTag": "technology"
+          },
+          {
+            "slugBase": "long-restaurant-owner",
+            "topic": "Part 3: long text - a family that opened a small restaurant",
+            "topicTag": "food"
+          }
         ],
         "4": [
-          { "slugBase": "error-correction-email", "topic": "Error correction: informal email about a trip", "topicTag": "travel" },
-          { "slugBase": "error-correction-review", "topic": "Error correction: restaurant review", "topicTag": "food" },
-          { "slugBase": "error-correction-notice", "topic": "Error correction: community centre notice", "topicTag": "culture" }
+          {
+            "slugBase": "gapped-online-learning",
+            "topic": "Part 4: gapped text - the rise of online learning",
+            "topicTag": "education"
+          },
+          {
+            "slugBase": "gapped-city-parks",
+            "topic": "Part 4: gapped text - why cities are building more parks",
+            "topicTag": "environment"
+          },
+          {
+            "slugBase": "gapped-food-market",
+            "topic": "Part 4: gapped text - a weekend at a local food market",
+            "topicTag": "food"
+          },
+          {
+            "slugBase": "gapped-learn-language",
+            "topic": "Part 4: gapped text - tips for learning a new language",
+            "topicTag": "education"
+          },
+          {
+            "slugBase": "gapped-sleep-teens",
+            "topic": "Part 4: gapped text - why sleep matters for teenagers",
+            "topicTag": "health"
+          },
+          {
+            "slugBase": "gapped-cycling-holiday",
+            "topic": "Part 4: gapped text - a cycling holiday along the coast",
+            "topicTag": "travel"
+          },
+          {
+            "slugBase": "gapped-community-garden",
+            "topic": "Part 4: gapped text - a community garden project",
+            "topicTag": "nature"
+          },
+          {
+            "slugBase": "gapped-board-games",
+            "topic": "Part 4: gapped text - the return of board game cafes",
+            "topicTag": "free_time"
+          }
+        ],
+        "5": [
+          {
+            "slugBase": "cloze-healthy-eating",
+            "topic": "Part 5: multiple-choice cloze - healthy eating habits",
+            "topicTag": "health"
+          },
+          {
+            "slugBase": "cloze-cycling-city",
+            "topic": "Part 5: multiple-choice cloze - cycling in modern cities",
+            "topicTag": "daily_life"
+          },
+          {
+            "slugBase": "cloze-music-festival",
+            "topic": "Part 5: multiple-choice cloze - a summer music festival",
+            "topicTag": "media"
+          },
+          {
+            "slugBase": "cloze-school-trip",
+            "topic": "Part 5: multiple-choice cloze - a school trip to the mountains",
+            "topicTag": "education"
+          },
+          {
+            "slugBase": "cloze-online-shopping",
+            "topic": "Part 5: multiple-choice cloze - how people shop online",
+            "topicTag": "shopping"
+          },
+          {
+            "slugBase": "cloze-city-marathon",
+            "topic": "Part 5: multiple-choice cloze - running a city marathon",
+            "topicTag": "sport"
+          },
+          {
+            "slugBase": "cloze-cooking-class",
+            "topic": "Part 5: multiple-choice cloze - taking a cooking class",
+            "topicTag": "food"
+          },
+          {
+            "slugBase": "cloze-pet-cafe",
+            "topic": "Part 5: multiple-choice cloze - a cafe where cats live",
+            "topicTag": "animals"
+          }
+        ],
+        "6": [
+          {
+            "slugBase": "open-cloze-new-hobby",
+            "topic": "Part 6: open cloze - starting a new hobby",
+            "topicTag": "daily_life"
+          },
+          {
+            "slugBase": "open-cloze-family-trip",
+            "topic": "Part 6: open cloze - a family trip to the mountains",
+            "topicTag": "travel"
+          },
+          {
+            "slugBase": "open-cloze-part-time-job",
+            "topic": "Part 6: open cloze - a student's part-time job",
+            "topicTag": "work"
+          },
+          {
+            "slugBase": "open-cloze-summer-camp",
+            "topic": "Part 6: open cloze - working at a summer camp",
+            "topicTag": "work"
+          },
+          {
+            "slugBase": "open-cloze-city-move",
+            "topic": "Part 6: open cloze - moving to a big city",
+            "topicTag": "daily_life"
+          },
+          {
+            "slugBase": "open-cloze-birthday-surprise",
+            "topic": "Part 6: open cloze - organising a surprise party",
+            "topicTag": "free_time"
+          },
+          {
+            "slugBase": "open-cloze-music-lessons",
+            "topic": "Part 6: open cloze - learning to play the guitar",
+            "topicTag": "culture"
+          },
+          {
+            "slugBase": "open-cloze-beach-cleanup",
+            "topic": "Part 6: open cloze - a beach clean-up day",
+            "topicTag": "nature"
+          }
         ]
       }
     },
-    "reading": {
-      "teile": [1],
+    "horen": {
+      "teile": [
+        1,
+        2,
+        3,
+        4
+      ],
       "topics": {
         "1": [
-          { "slugBase": "urban-gardening", "topic": "Long text: community gardens in British cities", "topicTag": "environment" },
-          { "slugBase": "volunteering-abroad", "topic": "Long text: volunteering programmes for young adults", "topicTag": "society" },
-          { "slugBase": "digital-detox", "topic": "Long text: digital detox weekends", "topicTag": "technology" },
-          { "slugBase": "local-food-markets", "topic": "Long text: farmers' markets and local food", "topicTag": "food" }
-        ]
-      }
-    },
-    "listening": {
-      "teile": [1, 2, 3, 4],
-      "topics": {
-        "1": [
-          { "slugBase": "train-announcements", "topic": "Short extracts: train station announcements and messages", "topicTag": "travel", "segments": ["Announcement", "Voicemail", "Radio clip", "Conversation", "Interview extract"] },
-          { "slugBase": "hotel-booking", "topic": "Short extracts: hotel and travel bookings", "topicTag": "travel", "segments": ["Phone call", "Advert", "Message", "Dialogue", "News snippet"] }
+          {
+            "slugBase": "pics-daily-choices",
+            "topic": "Part 1: seven short recordings, choose the correct option (times, places, objects)",
+            "topicTag": "daily_life"
+          },
+          {
+            "slugBase": "pics-shopping-plans",
+            "topic": "Part 1: seven short recordings about shopping and plans",
+            "topicTag": "shopping"
+          },
+          {
+            "slugBase": "pics-travel-times",
+            "topic": "Part 1: seven short recordings about journeys, times and platforms",
+            "topicTag": "travel"
+          },
+          {
+            "slugBase": "pics-food-orders",
+            "topic": "Part 1: seven short recordings about food, prices and orders",
+            "topicTag": "food"
+          },
+          {
+            "slugBase": "pics-weather-plans",
+            "topic": "Part 1: seven short recordings about weather and weekend plans",
+            "topicTag": "nature"
+          },
+          {
+            "slugBase": "pics-school-events",
+            "topic": "Part 1: seven short recordings about school events and homework",
+            "topicTag": "education"
+          }
         ],
         "2": [
-          { "slugBase": "podcast-wellbeing", "topic": "Sentence completion: podcast about wellbeing at work", "topicTag": "health" },
-          { "slugBase": "radio-education", "topic": "Sentence completion: radio feature on adult education", "topicTag": "education" }
+          {
+            "slugBase": "gist-short-dialogues",
+            "topic": "Part 2: six short dialogues, understand the gist",
+            "topicTag": "daily_life"
+          },
+          {
+            "slugBase": "gist-free-time",
+            "topic": "Part 2: six short dialogues about free-time activities",
+            "topicTag": "sport"
+          },
+          {
+            "slugBase": "gist-holiday-talk",
+            "topic": "Part 2: six short dialogues about holidays and travel plans",
+            "topicTag": "travel"
+          },
+          {
+            "slugBase": "gist-shopping-town",
+            "topic": "Part 2: six short dialogues about shopping and errands",
+            "topicTag": "shopping"
+          },
+          {
+            "slugBase": "gist-work-study",
+            "topic": "Part 2: six short dialogues about work and study",
+            "topicTag": "work"
+          },
+          {
+            "slugBase": "gist-family-plans",
+            "topic": "Part 2: six short dialogues about family plans and events",
+            "topicTag": "daily_life"
+          }
         ],
         "3": [
-          { "slugBase": "friends-weekend", "topic": "Multiple matching: friends planning a weekend trip", "topicTag": "daily_life" },
-          { "slugBase": "colleagues-project", "topic": "Multiple matching: colleagues discussing a project", "topicTag": "work" }
+          {
+            "slugBase": "gapfill-museum-talk",
+            "topic": "Part 3: monologue gap fill - information about a museum visit",
+            "topicTag": "education"
+          },
+          {
+            "slugBase": "gapfill-club-announcement",
+            "topic": "Part 3: monologue gap fill - a sports club announcement",
+            "topicTag": "sport"
+          },
+          {
+            "slugBase": "gapfill-sports-centre",
+            "topic": "Part 3: monologue - information about a new sports centre",
+            "topicTag": "sport"
+          },
+          {
+            "slugBase": "gapfill-school-trip-info",
+            "topic": "Part 3: monologue - details of a school trip abroad",
+            "topicTag": "education"
+          },
+          {
+            "slugBase": "gapfill-festival-info",
+            "topic": "Part 3: monologue - information about a local food festival",
+            "topicTag": "food"
+          },
+          {
+            "slugBase": "gapfill-library-services",
+            "topic": "Part 3: monologue - a talk about new library services",
+            "topicTag": "culture"
+          }
         ],
         "4": [
-          { "slugBase": "interview-climate", "topic": "Interview: expert on climate action in cities", "topicTag": "environment" },
-          { "slugBase": "interview-careers", "topic": "Interview: career changes after the pandemic", "topicTag": "work" }
+          {
+            "slugBase": "interview-young-chef",
+            "topic": "Part 4: interview - a young chef talks about her career",
+            "topicTag": "food"
+          },
+          {
+            "slugBase": "interview-travel-blogger",
+            "topic": "Part 4: interview - a travel blogger's experiences",
+            "topicTag": "travel"
+          },
+          {
+            "slugBase": "interview-park-ranger",
+            "topic": "Part 4: interview - a park ranger talks about her work",
+            "topicTag": "nature"
+          },
+          {
+            "slugBase": "interview-game-designer",
+            "topic": "Part 4: interview - a video game designer",
+            "topicTag": "technology"
+          },
+          {
+            "slugBase": "interview-swimmer",
+            "topic": "Part 4: interview - a young swimmer preparing for a competition",
+            "topicTag": "sport"
+          }
         ]
       }
     },
-    "writing": {
-      "teile": [1, 2],
+    "schreiben": {
+      "teile": [
+        1,
+        2
+      ],
       "topics": [
-        { "slugBase": "email-friend-trip", "topicT1": "Email to a friend about a recent trip", "topicT2": "Article: Is tourism good for local communities?", "topicTag": "travel" },
-        { "slugBase": "email-colleague-event", "topicT1": "Email to a colleague about a work event", "topicT2": "Essay: Should schools ban mobile phones?", "topicTag": "education" },
-        { "slugBase": "letter-landlord", "topicT1": "Letter to a landlord about a repair", "topicT2": "Review: A film or book you enjoyed recently", "topicTag": "housing" },
-        { "slugBase": "note-boss-meeting", "topicT1": "Note to your boss requesting a meeting", "topicT2": "Article: The benefits of learning a foreign language", "topicTag": "work" }
+        {
+          "slugBase": "email-friend-visit",
+          "topicT1": "Email: reply to a friend who is visiting your town, answering their 4 notes",
+          "topicT2": "Article or story: 'A day out in my town' (article) OR a story beginning 'When I opened the door, my friend was standing there.'",
+          "topicTag": "daily_life"
+        },
+        {
+          "slugBase": "email-new-course",
+          "topicT1": "Email: reply to a friend about a new course you have started, answering their notes",
+          "topicT2": "Article or story: 'Learning something new' (article) OR a story that begins 'It was my first day at the class.'",
+          "topicTag": "education"
+        },
+        {
+          "slugBase": "email-weekend-trip",
+          "topicT1": "Email: reply to a friend about a weekend trip you are planning together, answering their notes",
+          "topicT2": "Article or story: 'My favourite place to visit' (article) OR a story beginning 'The train left exactly on time.'",
+          "topicTag": "travel"
+        },
+        {
+          "slugBase": "email-sports-event",
+          "topicT1": "Email: reply to a friend about a local sports event you both want to attend, answering their notes",
+          "topicT2": "Article or story: 'A sport I love' (article) OR a story that begins 'The crowd went quiet as the match began.'",
+          "topicTag": "sport"
+        },
+        {
+          "slugBase": "email-lost-phone",
+          "topicT1": "Email: reply to a friend who found your lost phone, answering their 4 notes",
+          "topicT2": "Article or story: 'Technology in my life' (article) OR a story beginning 'The phone rang at midnight.'",
+          "topicTag": "technology"
+        },
+        {
+          "slugBase": "email-birthday-plan",
+          "topicT1": "Email: reply to a friend about plans for another friend's birthday, answering their 4 notes",
+          "topicT2": "Article or story: 'A celebration I will never forget' (article) OR a story beginning 'Everyone shouted \\'Surprise!\\' when I walked in.'",
+          "topicTag": "free_time"
+        },
+        {
+          "slugBase": "email-new-flat",
+          "topicT1": "Email: reply to a friend who is moving to your neighbourhood, answering their 4 notes",
+          "topicT2": "Article or story: 'My ideal home' (article) OR a story beginning 'The old house at the end of the street was finally sold.'",
+          "topicTag": "daily_life"
+        },
+        {
+          "slugBase": "email-school-project",
+          "topicT1": "Email: reply to a classmate about a school project you are doing together, answering their 4 notes",
+          "topicT2": "Article or story: 'Something new I learned this year' (article) OR a story beginning 'The teacher smiled and handed me the results.'",
+          "topicTag": "education"
+        }
+      ]
+    },
+    "sprechen": {
+      "teile": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "topics": [
+        {
+          "slugBase": "speaking-free-time",
+          "topicT1": "Interview: personal questions about free time and daily routine",
+          "topicT2": "Photo description: a colour photo of people relaxing in a park",
+          "topicT3": "Collaborative task: decide together how a group of friends could spend a free afternoon",
+          "topicT4": "General conversation: likes, dislikes and habits about free-time activities",
+          "topicTag": "daily_life"
+        },
+        {
+          "slugBase": "speaking-food-cooking",
+          "topicT1": "Interview: personal questions about food and meals",
+          "topicT2": "Photo description: a colour photo of a family sharing a meal",
+          "topicT3": "Collaborative task: plan a celebration meal together",
+          "topicT4": "General conversation: opinions and experiences about cooking and eating out",
+          "topicTag": "food"
+        },
+        {
+          "slugBase": "speaking-travel-holidays",
+          "topicT1": "Interview: personal questions about travel and holidays",
+          "topicT2": "Photo description: a colour photo of a holiday destination",
+          "topicT3": "Collaborative task: organise a short trip together",
+          "topicT4": "General conversation: opinions and experiences about travelling",
+          "topicTag": "travel"
+        },
+        {
+          "slugBase": "speaking-study-work",
+          "topicT1": "Interview: personal questions about study or work",
+          "topicT2": "Photo description: a colour photo of people working together",
+          "topicT3": "Collaborative task: choose a course for a group of students",
+          "topicT4": "General conversation: opinions and experiences about study and work",
+          "topicTag": "work"
+        },
+        {
+          "slugBase": "speaking-travel-transport",
+          "topic": "Interview: personal questions about travel / Photo: people at a train station / Collaborative task: plan a day trip for visitors / General conversation: transport and holidays",
+          "topicTag": "travel"
+        },
+        {
+          "slugBase": "speaking-sport-health",
+          "topic": "Interview: personal questions about sport and exercise / Photo: people doing outdoor sport / Collaborative task: choose activities for a sports day / General conversation: keeping fit and healthy",
+          "topicTag": "sport"
+        },
+        {
+          "slugBase": "speaking-shopping-money",
+          "topic": "Interview: personal questions about shopping / Photo: a busy market / Collaborative task: choose a present for a friend / General conversation: shopping habits and saving money",
+          "topicTag": "shopping"
+        },
+        {
+          "slugBase": "speaking-technology-freetime",
+          "topic": "Interview: personal questions about technology / Photo: people using devices together / Collaborative task: plan a screen-free weekend / General conversation: technology and free time",
+          "topicTag": "technology"
+        }
       ]
     }
   },
   "priority": {
-    "use_of_english": [1, 2, 3, 4],
-    "reading": [1],
-    "listening": [2, 3, 4],
-    "writing": [1, 2]
+    "comment": "Teile con menos contenido - el script favorece estos si no se especifica modulo",
+    "lesen": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "horen": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "schreiben": [
+      1,
+      2
+    ],
+    "sprechen": [
+      1,
+      2,
+      3,
+      4
+    ]
   }
 }

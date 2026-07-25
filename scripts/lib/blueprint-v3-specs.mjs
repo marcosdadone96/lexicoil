@@ -235,16 +235,26 @@ export const BLUEPRINT_V3_SPECS = {
     level: 'B1',
     certificate: 'B1 Preliminary',
     source: 'Cambridge B1 Preliminary handbook 2020 (Reading 5/5/5/5/6/6=32; Listening 7/6/6/6=25; Speaking 4 parts)',
-    modularGrading: true,
-    passPercentPerModule: 60,
+    modularGrading: false,
+    passRule: {
+      scope: 'cambridge-scale',
+      passScale: 140,
+      scaleFloor: 120,
+      scaleCeil: 170,
+      passRawPct: 60,
+      weightPerSkill: 0.25,
+      description:
+        'Cambridge English Scale: nota agregada = media de las 4 destrezas (25% c/u); aprobado B1 desde 140. Mapeo raw->escala anclado en 60% raw = 140 (adaptacion; tablas oficiales por convocatoria no son publicas).',
+    },
     modules: {
       lesen: { time: '45 minutes', parts: [5, 5, 5, 5, 6, 6] },
       schreiben: { time: '45 minutes', parts: [1, 1] },
       horen: { time: '30 minutes', parts: [7, 6, 6, 6] },
-      sprechen: { time: '12–17 minutes', parts: [1, 1, 1, 1] },
+      sprechen: { time: '10–12 minutes per pair', parts: [1, 1, 1, 1] },
     },
     notes: {
       noUseOfEnglishModule: 'Four modules only; reading counts from standalone Reading paper (32 items).',
+      taskFormatsVerified: 'Reading/Listening/Writing/Speaking task formats corrected to official B1 Preliminary 2020 format (verified vs cambridgeenglish.org, 2026-07-09).',
     },
   },
 

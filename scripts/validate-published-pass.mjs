@@ -192,6 +192,8 @@ for (let n = 1; n <= 5; n++) {
   ok(l3Items.every((q) => String(q.signText || q.question || q.prompt || q.situation || '').trim().length > 10), `E${n} L3 situation text`);
   const l3Html = renderLesen(l3, sb);
   if (l3?._t3HasNoMatch) ok(l3Html.includes('>0</button>'), `E${n} L3 zero button`);
+  ok(!/onclick="ptSetMatch\("/.test(l3Html), `E${n} L3 pill onclick not broken (double-quote attr)`);
+  ok(/onclick='ptSetMatch\("/.test(l3Html), `E${n} L3 pill onclick well-formed`);
 
   const l4 = exam.lesenParts.find((p) => p.teil === 4);
   const l4Items = l4?.items?.length ? l4.items : l4?.questions || [];

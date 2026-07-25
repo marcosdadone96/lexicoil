@@ -11,58 +11,15 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
+import { createRequire } from 'node:module';
+import { B1_TOPICS, isValidB1Topic } from './b1Topics.mjs';
 
-export const TOPICS = [
-  'Reisen',
-  'Gesundheit',
-  'Arbeit',
-  'Technik',
-  'Wohnen',
-  'Konsum',
-  'Bildung',
-  'Familie',
-  'Umwelt',
-  'Ernährung',
-  'Kultur',
-  'Sport',
-  'Freizeit',
-  'Verkehr',
-  'Stadtleben',
-];
+const require = createRequire(import.meta.url);
+const { detectTopic } = require('../../js/engine/partTopicDetect.js');
 
-/** Palabras clave → tema (orden importa: más específico primero) */
-const TOPIC_KEYWORDS = {
-  Reisen:     ['Urlaub', 'Reise', 'Flug', 'Koffer', 'Hotel', 'Ausland', 'Ticket', 'Bahnhof', 'Zugfahrt', 'Tourist'],
-  Gesundheit: ['Arzt', 'Krankenhaus', 'krank', 'Medikament', 'Krankheit', 'Therapie', 'Impfung', 'Fitness', 'Ernährungsberater', 'Schmerz'],
-  Arbeit:     ['Beruf', 'Stelle', 'Bewerbung', 'Chef', 'Kollege', 'Gehalt', 'Praktikum', 'Büro', 'Homeoffice', 'Arbeitgeber'],
-  Technik:    ['Smartphone', 'Internet', 'App', 'Computer', 'digitale', 'Gerät', 'Software', 'Handy', 'Bildschirm', 'Technologie'],
-  Wohnen:     ['Wohnung', 'Miete', 'Zimmer', 'Haus', 'Umzug', 'Nachbar', 'Küche', 'Schlafzimmer', 'Vermieter', 'Einzug'],
-  Konsum:     ['kaufen', 'Einkauf', 'Supermarkt', 'Preis', 'Produkt', 'Angebot', 'Marke', 'Rabatt', 'Laden', 'Bestellung'],
-  Bildung:    ['Schule', 'Studium', 'Universität', 'Prüfung', 'Kurs', 'Lehrer', 'Unterricht', 'Lernmaterial', 'Ausbildung', 'Abitur'],
-  Familie:    ['Eltern', 'Kind', 'Schwester', 'Bruder', 'Großeltern', 'Mutter', 'Vater', 'Haushalt', 'Erziehung', 'Geschwister'],
-  Umwelt:     ['Umwelt', 'Klima', 'Recycling', 'Plastik', 'Nachhaltigkeit', 'CO2', 'Energie', 'erneuerbar', 'Naturschutz', 'Müll'],
-  Ernährung:  ['Essen', 'Kochen', 'Rezept', 'vegetarisch', 'vegan', 'Lebensmittel', 'Restaurant', 'Mahlzeit', 'Küche', 'Ernährung'],
-  Kultur:     ['Theater', 'Konzert', 'Museum', 'Ausstellung', 'Film', 'Musik', 'Kunst', 'Kino', 'Festival', 'Veranstaltung'],
-  Sport:      ['Sport', 'Fußball', 'Training', 'Wettkampf', 'Mannschaft', 'Schwimmen', 'Laufen', 'Turnier', 'Spiel', 'Vereinssport'],
-  Freizeit:   ['Hobby', 'Wochenende', 'Freizeit', 'Freund', 'Party', 'Ausflug', 'Spaziergang', 'Garten', 'Lesen', 'Spielen'],
-  Verkehr:    ['Bus', 'Fahrrad', 'Auto', 'Straße', 'Stau', 'ÖPNV', 'Bahn', 'Parkplatz', 'Führerschein', 'Fahrt'],
-  Stadtleben: ['Stadt', 'Stadtmitte', 'Viertel', 'Bürger', 'Marktplatz', 'Innenstadt', 'öffentlich', 'Gemeinschaft', 'Engagement', 'Infrastruktur'],
-};
-
-/**
- * Detecta el tema dominante de un texto de pasaje.
- * Devuelve el topic con más hits, o null si empate vacío.
- */
-export function detectTopic(text) {
-  if (!text || typeof text !== 'string') return null;
-  const lower = text.toLowerCase();
-  const scores = {};
-  for (const [topic, keywords] of Object.entries(TOPIC_KEYWORDS)) {
-    scores[topic] = keywords.filter(kw => lower.includes(kw.toLowerCase())).length;
-  }
-  const best = Object.entries(scores).sort((a, b) => b[1] - a[1])[0];
-  return best && best[1] > 0 ? best[0] : null;
-}
+/** @deprecated alias — use B1_TOPICS from b1Topics.mjs */
+export const TOPICS = B1_TOPICS;
+export { B1_TOPICS, isValidB1Topic, detectTopic };
 
 /**
  * Lee todos los archivos generados y cuenta cuántas veces aparece cada topic.
@@ -128,7 +85,7 @@ export function injectTopicIntoPrompt(prompt, topic) {
  */
 export function tagBatchWithTopic(batch, topic) {
   if (!batch || !topic) return batch;
-  const tagged = { ...batch };
+  const tagged = { ...batch, topicTag: topic };
   tagged.passages = (batch.passages || []).map(p => {
     if (p.topicTag) return p;
     const detected = detectTopic(p.text || p.title || '');

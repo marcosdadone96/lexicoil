@@ -25,6 +25,7 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
 const CANONICAL_TYPES = new Set([
   'multiple_choice', 'richtig_falsch', 'ja_nein', 'matching', 'short_answer',
+  'gap_fill', // Cambridge open cloze / sentence completion (engine-canonical; Goethe no lo usa)
 ]);
 
 /** Blueprint: expected item count per (module, teil). null = variable. */
@@ -40,6 +41,22 @@ const BLUEPRINT = {
   'horen-4':   { count: 8,  types: ['matching'] },
   'schreiben': { count: null, types: ['short_answer'] },
   'sprechen':  { count: null, types: ['short_answer'] },
+};
+
+/** Cambridge B1 Preliminary: expected item count per (module, teil). Used when exam lang is 'en'. */
+const CAMBRIDGE_B1_BLUEPRINT = {
+  'lesen-1':   { count: 5 },
+  'lesen-2':   { count: 5 },
+  'lesen-3':   { count: 5 },
+  'lesen-4':   { count: 5 },
+  'lesen-5':   { count: 6 },
+  'lesen-6':   { count: 6 },
+  'horen-1':   { count: 7 },
+  'horen-2':   { count: 6 },
+  'horen-3':   { count: 6 },
+  'horen-4':   { count: 6 },
+  'schreiben': { count: null },
+  'sprechen':  { count: null },
 };
 
 /** C1/C2 vocabulary blacklist (case-insensitive). Add here to extend. */
@@ -190,7 +207,7 @@ function chk2(batch, file) {
 
 // ─── CHK-3: Item count vs blueprint ───────────────────────────────────────
 
-function chk3(batch, file) {
+function chk3(batch, file, expected = BLUEPRINT) {
   const findings = [];
   // Group by module+teil
   const groups = {};
@@ -199,7 +216,7 @@ function chk3(batch, file) {
     groups[key] = (groups[key] || 0) + 1;
   }
   for (const [key, count] of Object.entries(groups)) {
-    const spec = BLUEPRINT[key];
+    const spec = expected[key];
     if (!spec || spec.count === null) continue;
     if (count !== spec.count) {
       findings.push(finding('CHK-3', 'CRITICAL', file, key,
@@ -213,14 +230,14 @@ function chk3(batch, file) {
 // chk3 ya detecta conteos incorrectos para los Teile PRESENTES.
 // chk3Absent añade: si un Teil esperado tiene 0 ítems → CRITICAL "Teil ausente".
 // Solo se llama desde auditExam — nunca en auditorías de batch/parte suelta.
-function chk3Absent(flat, file) {
+function chk3Absent(flat, file, expected = BLUEPRINT) {
   const findings = [];
   const presentKeys = new Set();
   for (const q of flat.questions || []) {
     const key = bpKey(q);
-    if (BLUEPRINT[key]) presentKeys.add(key);
+    if (expected[key]) presentKeys.add(key);
   }
-  for (const [key, spec] of Object.entries(BLUEPRINT)) {
+  for (const [key, spec] of Object.entries(expected)) {
     if (spec.count === null) continue; // short_answer / sprechen = conteo variable
     if (!presentKeys.has(key)) {
       findings.push(finding('CHK-3', 'CRITICAL', file, key,
@@ -1718,29 +1735,38 @@ export function auditExam(examWrapper, label = 'exam') {
   const exam = examWrapper.exam || examWrapper;
   const flat = flattenExam(exam);
   const globalIds = new Set(); // dedup local al examen
+  // Lang-aware audit (docs/audit/gates-en-applicability.md): CHK-7/11/16/17/20/21
+  // validan formatos de tarea GOETHE en posiciones de Teil que en Cambridge son otras
+  // tareas — se omiten para lang!=='de' hasta escribir sus equivalentes Cambridge.
+  // CHK-3 usa el mapa de conteos del blueprint correspondiente.
+  const examLang = String(
+    exam.lang || exam.language || flat.questions?.[0]?.lang || flat.questions?.[0]?.language || 'de',
+  ).toLowerCase();
+  const isDe = examLang === 'de';
+  const expected = isDe ? BLUEPRINT : CAMBRIDGE_B1_BLUEPRINT;
   const findings = [
     ...chk1(flat, label),
     ...chk2(flat, label),
-    ...chk3(flat, label),
-    ...chk3Absent(flat, label), // solo en examen completo — detecta Teile con 0 ítems
+    ...chk3(flat, label, expected),
+    ...chk3Absent(flat, label, expected), // solo en examen completo — detecta Teile con 0 ítems
     ...chk4(flat, label),
     ...chk5([{ batch: flat, file: label }]),
-    ...chk6(flat, label),
-    ...chk7(flat, label),
+    ...(isDe ? chk6(flat, label) : []), // blacklist de anglicismos: solo aplica a aleman
+    ...(isDe ? chk7(flat, label) : []),
     ...chk8(flat, label, globalIds),
     ...chk10(flat, label),
-    ...chk11(flat, label),
+    ...(isDe ? chk11(flat, label) : []),
     ...chk12(flat, label),
     ...chk13(flat, label),
     ...chk14(flat, label),
     ...chk14b(flat, label),
     ...chk15(flat, label),
-    ...chk16(flat, label),
-    ...chk17(flat, label),
+    ...(isDe ? chk16(flat, label) : []),
+    ...(isDe ? chk17(flat, label) : []),
     ...chk18(flat, label),
     ...chk19(flat, label),
-    ...chk20(flat, label),
-    ...chk21(flat, label),
+    ...(isDe ? chk20(flat, label) : []),
+    ...(isDe ? chk21(flat, label) : []),
     ...chk22(flat, label),
     ...chk24(flat, label),
   ];

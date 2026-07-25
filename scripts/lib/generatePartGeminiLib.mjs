@@ -4,7 +4,7 @@
  */
 import fs from 'node:fs';
 import path from 'node:path';
-import { execSync, spawnSync } from 'node:child_process';
+import { execSync } from 'node:child_process';
 import { randomBytes } from 'node:crypto';
 import { ROOT } from './loadEnv.mjs';
 import { extractJson } from './extractJson.mjs';
@@ -22,10 +22,12 @@ import {
 } from './promptBatchQuality.mjs';
 import { normalizeBatch } from './normalizeBatch.mjs';
 import { nextExamOutputBasename } from './pasteExamBatchLib.mjs';
-import { buildCorpusFromDirSync, checkDuplicate } from './semanticDedup.mjs';
+import { validatePart, buildDedupCorpusFromDir } from './partGate.mjs';
 import { checkLexical, formatLexicalReport } from './lexicalCheck.mjs';
 import { classifyAndRepair } from './repairTriage.mjs';
 import { pickNextTopic, injectTopicIntoPrompt, tagBatchWithTopic } from './topicRotation.mjs';
+import { resolveGenerationVocab, resolveTargetWordsForArgs } from './resolveGenerationInput.mjs';
+import { attachVocabFeedback, formatVocabFeedbackSummary } from './generationFeedback.mjs';
 import { DailyQuotaError } from './geminiClient.mjs';
 import {
   ApiBudgetStopError,
@@ -71,6 +73,7 @@ export function parseExamArgs(argv) {
     provider: null,
     maxApiCalls: 200,
     keepFailed: false,
+    topic: null,
   };
 
   for (let i = 0; i < argv.length; i++) {
@@ -105,6 +108,7 @@ export function parseExamArgs(argv) {
     else if (a === '--model') out.model = String(argv[++i] || '').trim();
     else if (a === '--max-api-calls') out.maxApiCalls = Math.max(1, Number(argv[++i]) || 200);
     else if (a === '--keep-failed') out.keepFailed = true;
+    else if (a === '--topic') out.topic = String(argv[++i] || '').trim();
   }
 
   out.pauseMs = Math.max(MIN_PAUSE_MS, out.pauseMs);
@@ -158,28 +162,7 @@ function refreshCoverageReport(lang, level) {
 }
 
 function resolveTargetWords(args) {
-  const cap = Math.max(1, Number(args.wordCount) || DEFAULT_WORD_COUNT);
-  if (args.words?.length) return args.words.slice(0, cap);
-  if (args.fromBank) {
-    return pickTargetWords({
-      lang: args.lang,
-      level: args.level,
-      count: args.wordCount,
-      source: 'bank',
-    });
-  }
-  if (args.fromCoverage) {
-    const weak = loadWeakLemmas(args.lang, args.level);
-    if (!weak?.length) {
-      throw new Error(
-        `No hay data/coverage/weak-${args.lang}_${args.level}.json — ejecuta vocab-coverage-report.mjs`,
-      );
-    }
-    const picked = pickRandomWords(weak, args.wordCount, args.wordCount);
-    if (!picked.length) throw new Error('No se pudieron elegir palabras del reporte de cobertura');
-    return picked;
-  }
-  throw new Error('Pasa --words a,b,c, --from-bank o --from-coverage');
+  return resolveTargetWordsForArgs(args, { module: args.module, teil: args.teil ?? 1 });
 }
 
 function validateBatchFile(lang, level, relFile) {
@@ -245,7 +228,7 @@ function runModuleQuality(batch, args, teil) {
   };
 }
 
-function runDualGates(args, teil, batch, relFile) {
+async function runDualGates(args, teil, batch, relFile) {
   const absPath = path.join(ROOT, relFile);
   fs.mkdirSync(path.dirname(absPath), { recursive: true });
   // Strip rejection metadata that should never appear in approved files
@@ -253,14 +236,14 @@ function runDualGates(args, teil, batch, relFile) {
   batch = cleanBatch;
   fs.writeFileSync(absPath, `${JSON.stringify(batch, null, 2)}\n`, 'utf8');
 
+  const unlinkTmp = () => {
+    try { fs.unlinkSync(absPath); } catch (_) { /* ignore */ }
+  };
+
   if (!args.skipValidate) {
     const validation = validateBatchFile(args.lang, args.level, relFile);
     if (!validation.ok) {
-      try {
-        fs.unlinkSync(absPath);
-      } catch (_) {
-        /* ignore */
-      }
+      unlinkTmp();
       return {
         ok: false,
         gate: 'formato',
@@ -275,11 +258,7 @@ function runDualGates(args, teil, batch, relFile) {
     const quality = runModuleQuality(batch, args, teil);
     console.log(quality.report);
     if (!quality.ok) {
-      try {
-        fs.unlinkSync(absPath);
-      } catch (_) {
-        /* ignore */
-      }
+      unlinkTmp();
       return {
         ok: false,
         gate: 'calidad',
@@ -295,7 +274,7 @@ function runDualGates(args, teil, batch, relFile) {
     const lex = checkLexical(batch);
     if (!lex.ok) {
       console.log(formatLexicalReport(lex));
-      try { fs.unlinkSync(absPath); } catch (_) { /* ignore */ }
+      unlinkTmp();
       return {
         ok: false,
         gate: 'lexico',
@@ -307,62 +286,48 @@ function runDualGates(args, teil, batch, relFile) {
     if (lex.warnings?.length) console.log(formatLexicalReport(lex));
   }
 
-  // Gate: deduplicación semántica
-  if (!args.skipDedup) {
-    try {
-      const currentIds = new Set((batch.passages || []).map((p) => p.id).filter(Boolean));
-      const corpus = buildCorpusFromDirSync(GENERATED_DIR, fs, path)
-        .filter((e) => !currentIds.has(e.id));
-      const dedup = checkDuplicate(batch, corpus, { threshold: args.dedupThreshold ?? 0.55 });
-      if (!dedup.ok) {
-        console.log(`Deduplicación FAIL: ${dedup.issues[0]}`);
-        try { fs.unlinkSync(absPath); } catch (_) { /* ignore */ }
-        return {
-          ok: false,
-          gate: 'dedup',
-          issue: dedup.issues[0],
-          issues: dedup.issues,
-          detail: dedup.issues.join('\n'),
-        };
-      }
-      if (dedup.warnings?.length) {
-        for (const w of dedup.warnings) console.log(`  ⚠ dedup: ${w}`);
-      }
-    } catch (e) {
-      console.warn(`  ⚠ dedup check omitido: ${e.message}`);
-    }
-  }
-
-  // Gate: audit-pass-2 — bloquea en IMPORTANT (CHK-1..CHK-11 completo)
   if (!args.skipQuality) {
-    try {
-      const auditScript = path.join(ROOT, 'scripts', 'audit-pass-2.mjs');
-      const auditResult = spawnSync(
-        process.execPath,
-        [auditScript, absPath, '--json', '--fail-on=IMPORTANT'],
-        { encoding: 'utf8', maxBuffer: 2 * 1024 * 1024 },
-      );
-      if (auditResult.status !== 0) {
-        let blockingFindings = [];
-        try {
-          const parsed = JSON.parse(auditResult.stdout || '{}');
-          blockingFindings = (parsed.findings || [])
-            .filter(f => f.severity === 'CRITICAL' || f.severity === 'IMPORTANT')
-            .map(f => `[${f.severity}][${f.id}] ${f.message}`);
-        } catch (_) { /* use raw output */ }
-        const issue = blockingFindings[0] || 'audit-pass-2 IMPORTANT';
-        console.log(`Audit-pass-2 BLOQUEADO: ${issue}`);
-        try { fs.unlinkSync(absPath); } catch (_) { /* ignore */ }
-        return {
-          ok: false,
-          gate: 'audit2',
-          issue,
-          issues: blockingFindings.slice(0, 5),
-          detail: auditResult.stdout,
-        };
+    let dedupCorpus = null;
+    if (!args.skipDedup) {
+      try {
+        const currentIds = new Set((batch.passages || []).map((p) => p.id).filter(Boolean));
+        dedupCorpus = buildDedupCorpusFromDir(GENERATED_DIR, fs, path)
+          .filter((e) => !currentIds.has(e.id));
+      } catch (e) {
+        console.warn(`  ⚠ dedup corpus omitido: ${e.message}`);
       }
-    } catch (e) {
-      console.warn(`  ⚠ audit-pass-2 omitido: ${e.message}`);
+    }
+
+    const gate = await validatePart(batch, {
+      semantic: false,
+      skipNormalize: true,
+      skipDedup: args.skipDedup,
+      dedupCorpus,
+      dedupThreshold: args.dedupThreshold ?? 0.55,
+      module: args.module,
+      teil,
+      lang: args.lang,
+      level: args.level,
+    });
+
+    if (gate.dedup?.warnings?.length) {
+      for (const w of gate.dedup.warnings) console.log(`  ⚠ dedup: ${w}`);
+    }
+
+    if (!gate.ok) {
+      const first = gate.blocking[0];
+      const isDedup = first?.id === 'DEDUP';
+      const issue = first?.message || (isDedup ? 'Deduplicación FAIL' : 'audit-pass-2 IMPORTANT');
+      if (isDedup) console.log(`Deduplicación FAIL: ${issue}`);
+      else console.log(`Audit-pass-2 BLOQUEADO: [${first?.severity}][${first?.id}] ${issue}`);
+      unlinkTmp();
+      return {
+        ok: false,
+        gate: isDedup ? 'dedup' : 'audit2',
+        issue,
+        issues: gate.blocking.slice(0, 5).map((f) => `[${f.severity}][${f.id}] ${f.message}`),
+        detail: gate.blocking.map((f) => f.message).join('\n'),
+      };
     }
   }
 
@@ -400,13 +365,13 @@ function finalizeSaved(args, module, teil, batch, relFile) {
 }
 
 async function generateExamPart(args, teil, session) {
+  args.teil = teil;
   const words = resolveTargetWords(args);
   const module = args.module;
   const tag = 'gemini';
 
-  // Seleccionar tema menos usado en el banco para este módulo/teil
-  const chosenTopic = pickNextTopic(GENERATED_DIR, { module, teil });
-  console.log(`Tema rotación: ${chosenTopic}`);
+  const chosenTopic = args._resolvedTopic || pickNextTopic(GENERATED_DIR, { module, teil });
+  console.log(`Tema: ${chosenTopic}${args.topic ? ' (elegido)' : ' (rotación)'}`);
 
   let promptBundle = buildExamPromptBundle(module, teil, words, session);
   // Inyectar tema en el prompt
@@ -571,12 +536,20 @@ async function generateExamPart(args, teil, session) {
       level: args.level,
     });
     batch = tagBatchWithTopic(batch, chosenTopic);
+    if (args._userVocab?.requested?.length) {
+      batch = attachVocabFeedback(batch, args._userVocab.requested, {
+        topic: chosenTopic,
+        prompted: args._userVocab.prompted,
+        excluded: args._userVocab.excluded,
+      });
+      console.log(formatVocabFeedbackSummary(batch.userVocabFeedback));
+    }
     lastBatch = batch;
 
     if (!args.skipValidate) console.log('Validando formato…');
     if (!args.skipQuality && fix === 0) console.log('Comprobando calidad pedagógica…');
 
-    const gates = runDualGates(args, teil, batch, relFile);
+    const gates = await runDualGates(args, teil, batch, relFile);
     if (gates.ok) {
       return { ...finalizeSaved(args, module, teil, batch, relFile), words, attempts: partAttempts };
     }
@@ -605,7 +578,7 @@ async function generateExamPart(args, teil, session) {
         batch = triage.batch;
         lastBatch = batch;
 
-        const reGates = runDualGates(args, teil, batch, relFile);
+        const reGates = await runDualGates(args, teil, batch, relFile);
         if (reGates.ok) {
           console.log(`  Triaje exitoso → guardado sin reintento LLM`);
           return { ...finalizeSaved(args, module, teil, batch, relFile), words, attempts: partAttempts };
@@ -699,6 +672,107 @@ function printFinalSummary(session, args) {
   }
 }
 
+/** Factory session for pool-fill (validated batch written to batches/generated/). */
+export async function createExamFactorySession(opts = {}) {
+  const module = String(opts.module || '').toLowerCase();
+  if (!SUPPORTED_MODULES.has(module)) {
+    throw new Error(`Módulo no soportado: ${module}. Usa horen, schreiben o sprechen.`);
+  }
+  const args = {
+    module,
+    lang: opts.lang || 'de',
+    level: opts.level || 'B1',
+    teil: opts.teil ?? null,
+    provider: 'gemini',
+    model: opts.model || null,
+    maxApiCalls: opts.maxApiCalls ?? 50,
+    pauseMs: Math.max(MIN_PAUSE_MS, opts.pauseMs ?? MIN_PAUSE_MS),
+    fixRetries: opts.fixRetries ?? 2,
+    apiRetries: opts.apiRetries ?? 1,
+    skipValidate: false,
+    skipQuality: false,
+    keepFailed: false,
+    dryRun: false,
+    topic: opts.topic || null,
+    words: opts.words || null,
+    _resolvedTopic: opts.topic || null,
+  };
+  args.provider = await resolveLesenProvider(args.provider);
+  const teile = opts.teil != null ? [opts.teil] : teileToRunExam(args);
+  const runKeys = teile.map((t) => summaryKey(module, t));
+  const session = createSession(args, runKeys);
+  return { session, args };
+}
+
+/**
+ * Generate one exam module part (Hören/Schreiben/Sprechen) with gates; file in batches/generated/.
+ */
+export async function generateExamPartSingle(opts = {}) {
+  const t0 = Date.now();
+  let session;
+  let args;
+
+  if (opts.session?.session && opts.session?.args) {
+    ({ session, args } = opts.session);
+  } else {
+    ({ session, args } = await createExamFactorySession(opts));
+  }
+
+  const teil = opts.teil ?? args.teil ?? null;
+  if (opts.topic) {
+    args.topic = opts.topic;
+    args._resolvedTopic = opts.topic;
+  }
+  if (Array.isArray(opts.words) && opts.words.length) {
+    args.words = [...opts.words];
+  }
+  args.fixRetries = opts.fixRetries ?? args.fixRetries;
+
+  try {
+    const result = await generateExamPart(args, teil, session);
+    const ms = Date.now() - t0;
+    if (!result.ok) {
+      return {
+        ok: false,
+        reason: result.reason || result.issue || 'generation_failed',
+        ms,
+        apiCalls: session.apiCallsUsed,
+        module: args.module,
+        teil,
+        gate: result.gate,
+        issues: result.issues,
+        file: result.file || null,
+      };
+    }
+    return {
+      ok: true,
+      file: result.file,
+      ms,
+      apiCalls: session.apiCallsUsed,
+      module: args.module,
+      teil,
+      words: result.words,
+      session: { session, args },
+    };
+  } catch (err) {
+    if (
+      err instanceof ApiBudgetStopError ||
+      err instanceof RateLimitStopError ||
+      err instanceof DailyQuotaError
+    ) {
+      throw err;
+    }
+    return {
+      ok: false,
+      reason: err.message || 'generation_error',
+      ms: Date.now() - t0,
+      apiCalls: session.apiCallsUsed,
+      module: args.module,
+      teil,
+    };
+  }
+}
+
 export async function runExamGenerator(argv = process.argv.slice(2)) {
   const args = parseExamArgs(argv);
   args.provider = await resolveLesenProvider(args.provider);
@@ -741,6 +815,10 @@ export async function runExamGenerator(argv = process.argv.slice(2)) {
   console.log('Salida: batches/generated/ (solo pasa formato + calidad pedagógica)');
 
   const results = [];
+  // Kill-switch: stop the batch after this many consecutive parts that all
+  // exhausted their 503 retries (= Gemini is down, not just a short spike).
+  const MAX_CONSECUTIVE_503 = 3;
+  let consecutive503Failures = 0;
 
   outer: for (const teil of teile) {
     for (let i = 0; i < args.count; i++) {
@@ -780,6 +858,23 @@ export async function runExamGenerator(argv = process.argv.slice(2)) {
         if (!session.byKey[key]) session.byKey[key] = { generated: 0, discarded: 0, attempts: 0 };
         session.byKey[key].discarded += 1;
         results.push({ ok: false, discarded: true, module: args.module, teil, key, reason: err.message });
+      }
+
+      // After each part, check if the last result was a 503 exhaustion
+      const last = results[results.length - 1];
+      if (last && !last.ok && /503|reintentos agotados/i.test(String(last.reason || ''))) {
+        consecutive503Failures += 1;
+        if (consecutive503Failures >= MAX_CONSECUTIVE_503) {
+          console.error(
+            `\n🛑 ${consecutive503Failures} partes consecutivas agotaron reintentos de 503.` +
+            ` Gemini parece caído — deteniendo lote. Reintenta en unos minutos.`,
+          );
+          session.stopped = true;
+          session.stopReason = '503-exhausted';
+          break outer;
+        }
+      } else if (last && last.ok) {
+        consecutive503Failures = 0;
       }
     }
   }

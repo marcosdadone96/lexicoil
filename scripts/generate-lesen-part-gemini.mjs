@@ -36,10 +36,13 @@ import {
 } from './lib/lesenBatchQuality.mjs';
 import { checkLesenBatchIngest, formatIngestReport, logCefrCoverageThreshold } from './lib/lesenBatchIngestCheck.mjs';
 import { coerceGeneratedLesenPart } from './lib/normalizeBatch.mjs';
-import { buildCorpusFromDirSync, checkDuplicate } from './lib/semanticDedup.mjs';
 import { checkLexical, formatLexicalReport } from './lib/lexicalCheck.mjs';
+import { validatePart, buildDedupCorpusFromDir } from './lib/partGate.mjs';
 import { pickNextTopic, injectTopicIntoPrompt, tagBatchWithTopic } from './lib/topicRotation.mjs';
 import { classifyAndRepair } from './lib/repairTriage.mjs';
+import { resolveGenerationVocab, resolveTargetWordsForArgs } from './lib/resolveGenerationInput.mjs';
+import { attachVocabFeedback, formatVocabFeedbackSummary } from './lib/generationFeedback.mjs';
+import { buildValidatedT3Part } from './make-t3.mjs';
 
 loadEnvFile();
 
@@ -133,6 +136,7 @@ export function parseArgs(argv) {
     provider: null,
     maxApiCalls: 200,
     keepFailed: false,
+    topic: null,
   };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
@@ -166,6 +170,7 @@ export function parseArgs(argv) {
     else if (a === '--model') out.model = String(argv[++i] || '').trim();
     else if (a === '--max-api-calls') out.maxApiCalls = Math.max(1, Number(argv[++i]) || 200);
     else if (a === '--keep-failed') out.keepFailed = true;
+    else if (a === '--topic') out.topic = String(argv[++i] || '').trim();
   }
   out.pauseMs = Math.max(MIN_PAUSE_MS, out.pauseMs);
   return out;
@@ -208,28 +213,7 @@ function refreshCoverageReport(lang, level) {
 }
 
 function resolveTargetWords(args) {
-  const cap = Math.max(1, Number(args.wordCount) || DEFAULT_WORD_COUNT);
-  if (args.words?.length) return args.words.slice(0, cap);
-  if (args.fromBank) {
-    return pickTargetWords({
-      lang: args.lang,
-      level: args.level,
-      count: args.wordCount,
-      source: 'bank',
-    });
-  }
-  if (args.fromCoverage) {
-    const weak = loadWeakLemmas(args.lang, args.level);
-    if (!weak?.length) {
-      throw new Error(
-        `No hay data/coverage/weak-${args.lang}_${args.level}.json — ejecuta vocab-coverage-report.mjs`,
-      );
-    }
-    const picked = pickRandomWords(weak, args.wordCount, args.wordCount);
-    if (!picked.length) throw new Error('No se pudieron elegir palabras del reporte de cobertura');
-    return picked;
-  }
-  throw new Error('Pasa --words a,b,c, --from-bank o --from-coverage');
+  return resolveTargetWordsForArgs(args, { module: 'lesen', teil: args.teil ?? 1 });
 }
 
 function validateBatchFile(lang, level, relFile) {
@@ -346,41 +330,12 @@ function firstValidationIssue(output) {
   return line || 'Validación técnica fallida';
 }
 
-function runDualGates(args, teil, batch, relFile) {
-  const absPath = path.join(ROOT, relFile);
-  fs.mkdirSync(path.dirname(absPath), { recursive: true });
-  // Strip rejection metadata that should never appear in approved files
-  const { _rejectedReason: _r, _scoreEstimate: _s, ...cleanBatch } = batch;
-  batch = cleanBatch;
-  fs.writeFileSync(absPath, `${JSON.stringify(batch, null, 2)}\n`, 'utf8');
-
-  if (!args.skipValidate) {
-    const validation = validateBatchFile(args.lang, args.level, relFile);
-    if (!validation.ok) {
-      try {
-        fs.unlinkSync(absPath);
-      } catch (_) {
-        /* ignore */
-      }
-      return {
-        ok: false,
-        gate: 'formato',
-        issue: validationIssues(validation.output)[0] || 'Validación técnica fallida',
-        issues: validationIssues(validation.output).slice(0, 5),
-        detail: validation.output,
-      };
-    }
-  }
-
+async function runQualityAndStructuralGates(args, teil, batch, { onFail } = {}) {
   if (!args.skipQuality) {
     const quality = checkLesenBatchQuality(batch, teil);
-    console.log(formatQualityReport(quality));
+    if (!args.inMemory) console.log(formatQualityReport(quality));
     if (!quality.ok) {
-      try {
-        fs.unlinkSync(absPath);
-      } catch (_) {
-        /* ignore */
-      }
+      onFail?.();
       return {
         ok: false,
         gate: 'calidad',
@@ -391,12 +346,11 @@ function runDualGates(args, teil, batch, relFile) {
     }
   }
 
-  // Gate: léxico contextual
   if (!args.skipQuality) {
     const lex = checkLexical(batch);
     if (!lex.ok) {
-      console.log(formatLexicalReport(lex));
-      try { fs.unlinkSync(absPath); } catch (_) { /* ignore */ }
+      if (!args.inMemory) console.log(formatLexicalReport(lex));
+      onFail?.();
       return {
         ok: false,
         gate: 'lexico',
@@ -405,69 +359,96 @@ function runDualGates(args, teil, batch, relFile) {
         detail: formatLexicalReport(lex),
       };
     }
-    if (lex.warnings?.length) console.log(formatLexicalReport(lex));
+    if (!args.inMemory && lex.warnings?.length) console.log(formatLexicalReport(lex));
   }
 
-  // Gate: deduplicación semántica (solo si hay corpus previo)
-  if (!args.skipDedup) {
-    try {
-      const currentIds = new Set((batch.passages || []).map((p) => p.id).filter(Boolean));
-      const corpus = buildCorpusFromDirSync(GENERATED_DIR, fs, path)
-        .filter((e) => !currentIds.has(e.id));
-      const dedup = checkDuplicate(batch, corpus, { threshold: args.dedupThreshold ?? 0.55 });
-      if (!dedup.ok) {
-        console.log(`Deduplicación FAIL: ${dedup.issues[0]}`);
-        try { fs.unlinkSync(absPath); } catch (_) { /* ignore */ }
-        return {
-          ok: false,
-          gate: 'dedup',
-          issue: dedup.issues[0],
-          issues: dedup.issues,
-          detail: dedup.issues.join('\n'),
-        };
-      }
-      if (dedup.warnings?.length) {
-        for (const w of dedup.warnings) console.log(`  ⚠ dedup: ${w}`);
-      }
-    } catch (e) {
-      console.warn(`  ⚠ dedup check omitido: ${e.message}`);
-    }
-  }
-
-  // Gate: audit-pass-2 — bloquea en IMPORTANT (CHK-1..CHK-11 completo)
   if (!args.skipQuality) {
-    try {
-      const auditScript = path.join(ROOT, 'scripts', 'audit-pass-2.mjs');
-      const auditResult = spawnSync(
-        process.execPath,
-        [auditScript, absPath, '--json', '--fail-on=IMPORTANT'],
-        { encoding: 'utf8', maxBuffer: 2 * 1024 * 1024 },
-      );
-      if (auditResult.status !== 0) {
-        let blockingFindings = [];
-        try {
-          const parsed = JSON.parse(auditResult.stdout || '{}');
-          blockingFindings = (parsed.findings || [])
-            .filter(f => f.severity === 'CRITICAL' || f.severity === 'IMPORTANT')
-            .map(f => `[${f.severity}][${f.id}] ${f.message}`);
-        } catch (_) { /* use raw output */ }
-        const issue = blockingFindings[0] || 'audit-pass-2 IMPORTANT';
-        console.log(`Audit-pass-2 BLOQUEADO: ${issue}`);
-        try { fs.unlinkSync(absPath); } catch (_) { /* ignore */ }
-        return {
-          ok: false,
-          gate: 'audit2',
-          issue,
-          issues: blockingFindings.slice(0, 5),
-          detail: auditResult.stdout,
-        };
+    let dedupCorpus = args.dedupCorpus ?? null;
+    if (!args.skipDedup && !dedupCorpus) {
+      try {
+        const currentIds = new Set((batch.passages || []).map((p) => p.id).filter(Boolean));
+        dedupCorpus = buildDedupCorpusFromDir(GENERATED_DIR, fs, path)
+          .filter((e) => !currentIds.has(e.id));
+      } catch (e) {
+        if (!args.inMemory) console.warn(`  ⚠ dedup corpus omitido: ${e.message}`);
       }
-    } catch (e) {
-      console.warn(`  ⚠ audit-pass-2 omitido: ${e.message}`);
+    }
+
+    const gate = await validatePart(batch, {
+      semantic: false,
+      skipNormalize: true,
+      skipDedup: args.skipDedup || !dedupCorpus?.length,
+      dedupCorpus,
+      dedupThreshold: args.dedupThreshold ?? 0.55,
+      module: 'lesen',
+      teil,
+      lang: args.lang,
+      level: args.level,
+    });
+
+    if (!args.inMemory && gate.dedup?.warnings?.length) {
+      for (const w of gate.dedup.warnings) console.log(`  ⚠ dedup: ${w}`);
+    }
+
+    if (!gate.ok) {
+      const first = gate.blocking[0];
+      const isDedup = first?.id === 'DEDUP';
+      const issue = first?.message || (isDedup ? 'Deduplicación FAIL' : 'audit-pass-2 IMPORTANT');
+      if (!args.inMemory) {
+        if (isDedup) console.log(`Deduplicación FAIL: ${issue}`);
+        else console.log(`Audit-pass-2 BLOQUEADO: [${first?.severity}][${first?.id}] ${issue}`);
+      }
+      onFail?.();
+      return {
+        ok: false,
+        gate: isDedup ? 'dedup' : 'audit2',
+        issue,
+        issues: gate.blocking.slice(0, 5).map((f) => `[${f.severity}][${f.id}] ${f.message}`),
+        detail: gate.blocking.map((f) => f.message).join('\n'),
+        batch: gate.batch,
+      };
+    }
+    batch = gate.batch;
+  }
+
+  return { ok: true, batch };
+}
+
+async function runDualGates(args, teil, batch, relFile) {
+  const { _rejectedReason: _r, _scoreEstimate: _s, ...cleanBatch } = batch;
+  batch = cleanBatch;
+
+  if (args.inMemory) {
+    const gates = await runQualityAndStructuralGates(args, teil, batch, {});
+    if (!gates.ok) return gates;
+    return { ok: true, batch: gates.batch || batch };
+  }
+
+  const absPath = path.join(ROOT, relFile);
+  fs.mkdirSync(path.dirname(absPath), { recursive: true });
+  fs.writeFileSync(absPath, `${JSON.stringify(batch, null, 2)}\n`, 'utf8');
+
+  const unlinkTmp = () => {
+    try { fs.unlinkSync(absPath); } catch (_) { /* ignore */ }
+  };
+
+  if (!args.skipValidate) {
+    const validation = validateBatchFile(args.lang, args.level, relFile);
+    if (!validation.ok) {
+      unlinkTmp();
+      return {
+        ok: false,
+        gate: 'formato',
+        issue: validationIssues(validation.output)[0] || 'Validación técnica fallida',
+        issues: validationIssues(validation.output).slice(0, 5),
+        detail: validation.output,
+      };
     }
   }
 
-  return { ok: true };
+  const gates = await runQualityAndStructuralGates(args, teil, batch, { onFail: unlinkTmp });
+  if (!gates.ok) return gates;
+  return { ok: true, batch: gates.batch || batch };
 }
 
 async function queuePause(session) {
@@ -507,7 +488,10 @@ async function callGemini(session, args, { prompt, maxTokens }) {
       maxTokens,
       model: session.model,
       jsonMode: true,
-      maxRetries: Math.max(1, args.apiRetries || 1),
+      // max503Retries: retries specifically for transient 5xx/503 errors.
+      // Decoupled from apiRetries (quality/format retries) so 503s are
+      // retried aggressively without consuming quality-retry budget.
+      max503Retries: 8,
     });
   };
 
@@ -575,8 +559,8 @@ function finalizeIngest(args, teil, batch, basename, relFile) {
   return { ok: true, file: relFile, teil };
 }
 
-function finalizeBatch(args, teil, batch, basename, relFile) {
-  const gates = runDualGates(args, teil, batch, relFile);
+async function finalizeBatch(args, teil, batch, basename, relFile) {
+  const gates = await runDualGates(args, teil, batch, relFile);
   if (!gates.ok) {
     return {
       ok: false,
@@ -588,19 +572,57 @@ function finalizeBatch(args, teil, batch, basename, relFile) {
       gate: gates.gate,
       detail: gates.detail,
       file: relFile,
+      batch: gates.batch,
     };
+  }
+  batch = gates.batch || batch;
+  if (args.inMemory && !args.writeFile) {
+    return { ok: true, batch, teil };
+  }
+  if (args.inMemory && args.writeFile) {
+    const absPath = path.join(ROOT, relFile);
+    fs.mkdirSync(path.dirname(absPath), { recursive: true });
+    fs.writeFileSync(absPath, `${JSON.stringify(batch, null, 2)}\n`, 'utf8');
+    console.log(
+      `Guardado: ${relFile} (${batch.questions.length} preguntas, ${(batch.passages || []).length} passages)`,
+    );
+    return { ok: true, batch, file: relFile, teil };
   }
   return finalizeIngest(args, teil, batch, basename, relFile);
 }
 
 async function generateT3Part(args, session) {
   const words = resolveTargetWords(args);
-  console.log(`\n── Lesen T3 · make-t3 (0 llamadas API) ──`);
-  console.log(`Palabras objetivo (${words.length}): ${words.join(', ') || '(ninguna)'}`);
+  if (!args.inMemory) {
+    console.log(`\n── Lesen T3 · make-t3 (0 llamadas API) ──`);
+    console.log(`Palabras objetivo (${words.length}): ${words.join(', ') || '(ninguna)'}`);
+  }
 
   if (args.dryRun) {
     console.log('[dry-run] node scripts/make-t3.mjs --count 1 --out batches/generated');
     return { ok: true, dryRun: true, teil: 3, words, apiCalls: 0 };
+  }
+
+  if (args.inMemory) {
+    try {
+      let batch = buildValidatedT3Part({ words, maxAttempts: 8 });
+      const topic =
+        args._resolvedTopic ||
+        args.topic ||
+        pickNextTopic(GENERATED_DIR, { module: 'lesen', teil: 3 });
+      batch = tagBatchWithTopic(batch, topic);
+      batch.teil = 3;
+      const tag = 'gemini';
+      const basename = nextOutputBasename(3, tag);
+      const relFile = args.writeFile
+        ? path.relative(ROOT, path.join(GENERATED_DIR, basename)).replace(/\\/g, '/')
+        : 'memory-t3.json';
+      const result = await finalizeBatch(args, 3, batch, basename, relFile);
+      if (result.ok) return { ...result, words, apiCalls: 0 };
+      return { ...result, words, apiCalls: 0, discarded: true, teil: 3 };
+    } catch (err) {
+      return { ok: false, discarded: true, teil: 3, reason: err.message, apiCalls: 0 };
+    }
   }
 
   const spawnArgs = [
@@ -629,16 +651,16 @@ async function generateT3Part(args, session) {
     return { ok: false, discarded: true, teil: 3, reason: err.message, apiCalls: 0 };
   }
 
-  return finalizeBatch(args, 3, batch, basename, relFile);
+  return await finalizeBatch(args, 3, batch, basename, relFile);
 }
 
 async function generateLlmPart(args, teil, session) {
+  args.teil = teil;
   const words = resolveTargetWords(args);
   const tag = 'gemini';
 
-  // Seleccionar tema menos usado en el banco para este teil
-  const chosenTopic = pickNextTopic(GENERATED_DIR, { module: 'lesen', teil });
-  console.log(`Tema rotación: ${chosenTopic}`);
+  const chosenTopic = args._resolvedTopic || pickNextTopic(GENERATED_DIR, { module: 'lesen', teil });
+  console.log(`Tema: ${chosenTopic}${args.topic ? ' (elegido)' : ' (rotación)'}`);
 
   let promptBundle = buildLesenPromptBundle(teil, words, session);
   // Inyectar tema en el prompt
@@ -793,14 +815,22 @@ async function generateLlmPart(args, teil, session) {
       level: args.level,
     });
     batch = tagBatchWithTopic(batch, chosenTopic);
+    if (args._userVocab?.requested?.length) {
+      batch = attachVocabFeedback(batch, args._userVocab.requested, {
+        topic: chosenTopic,
+        prompted: args._userVocab.prompted,
+        excluded: args._userVocab.excluded,
+      });
+      console.log(formatVocabFeedbackSummary(batch.userVocabFeedback));
+    }
     lastBatch = batch;
 
     if (!args.skipValidate) console.log('Validando formato…');
     if (!args.skipQuality && fix === 0) console.log('Comprobando calidad pedagógica…');
 
-    let result = finalizeBatch(args, teil, batch, basename, relFile);
+    let result = await finalizeBatch(args, teil, batch, basename, relFile);
     if (result.ok) {
-      return { ...result, words, attempts: partAttempts };
+      return { ...result, words, attempts: partAttempts, batch: result.batch || batch };
     }
 
     lastIssue = result.issue || result.reason || 'checker';
@@ -824,10 +854,10 @@ async function generateLlmPart(args, teil, session) {
         batch = triage.batch;
         lastBatch = batch;
 
-        const reResult = finalizeBatch(args, teil, batch, basename, relFile);
+        const reResult = await finalizeBatch(args, teil, batch, basename, relFile);
         if (reResult.ok) {
           console.log(`  Triaje exitoso → guardado sin reintento LLM`);
-          return { ...reResult, words, attempts: partAttempts };
+          return { ...reResult, words, attempts: partAttempts, batch: reResult.batch || batch };
         }
         result = reResult;
         lastIssue = result.issue || result.reason || 'checker post-triage';
@@ -857,6 +887,116 @@ async function generateLlmPart(args, teil, session) {
 async function generateOnePart(args, teil, session) {
   if (teil === 3) return generateT3Part(args, session);
   return generateLlmPart(args, teil, session);
+}
+
+/** Shared factory session for terminal + web hybrid (in-memory gates, no spawn). */
+export function createLesenFactorySession(opts = {}) {
+  const args = {
+    lang: opts.lang || 'de',
+    level: opts.level || 'B1',
+    provider: 'gemini',
+    model: opts.model || null,
+    maxApiCalls: opts.maxApiCalls ?? 50,
+    pauseMs: Math.max(MIN_PAUSE_MS, opts.pauseMs ?? MIN_PAUSE_MS),
+    fixRetries: opts.fixRetries ?? 2,
+    apiRetries: opts.apiRetries ?? 1,
+    skipValidate: true,
+    skipQuality: false,
+    skipIngest: true,
+    skipDedup: opts.skipDedup ?? true,
+    inMemory: true,
+    writeFile: opts.writeFile ?? false,
+    keepFailed: false,
+    dryRun: false,
+    topic: opts.topic || null,
+    words: opts.words || null,
+    dedupCorpus: opts.dedupCorpus ?? null,
+    dedupThreshold: opts.dedupThreshold ?? 0.55,
+  };
+  args.provider = 'gemini';
+  const session = createSession(args);
+  return { session, args };
+}
+
+/**
+ * Generate one Lesen part via Gemini factory (T3 = make-t3, no API).
+ * @returns {Promise<{ ok: boolean, batch?: object, ms: number, apiCalls?: number, reason?: string }>}
+ */
+export async function generateLesenPart(opts = {}) {
+  const t0 = Date.now();
+  let session;
+  let args;
+
+  if (opts.session?.session && opts.session?.args) {
+    ({ session, args } = opts.session);
+  } else {
+    ({ session, args } = createLesenFactorySession(opts));
+  }
+
+  const teil = Number(opts.teil);
+  if (!Number.isFinite(teil) || teil < 1 || teil > 5) {
+    return { ok: false, reason: 'invalid_teil', ms: Date.now() - t0 };
+  }
+
+  args.teil = teil;
+  args.topic = opts.topic ?? args.topic;
+  args._resolvedTopic = opts.topic ?? args._resolvedTopic ?? args.topic;
+  if (Array.isArray(opts.words) && opts.words.length) {
+    args.words = [...opts.words];
+  }
+  args.fixRetries = opts.fixRetries ?? args.fixRetries;
+  args.inMemory = true;
+  args.writeFile = opts.writeFile ?? args.writeFile ?? false;
+  args.skipDedup = opts.skipDedup ?? args.skipDedup;
+  if (opts.dedupCorpus != null) {
+    args.dedupCorpus = opts.dedupCorpus;
+    args.skipDedup = opts.skipDedup ?? !opts.dedupCorpus?.length;
+  }
+
+  try {
+    const result = await generateOnePart(args, teil, session);
+    const ms = Date.now() - t0;
+    if (!result.ok) {
+      return {
+        ok: false,
+        reason: result.reason || result.issue || 'generation_failed',
+        ms,
+        apiCalls: session.apiCallsUsed,
+        teil,
+        gate: result.gate,
+        issues: result.issues,
+      };
+    }
+    let batch = result.batch;
+    if (!batch && result.file) {
+      batch = JSON.parse(fs.readFileSync(path.join(ROOT, result.file), 'utf8'));
+    }
+    return {
+      ok: true,
+      batch,
+      ms,
+      apiCalls: session.apiCallsUsed,
+      teil,
+      file: result.file || null,
+      words: result.words,
+      session: { session, args },
+    };
+  } catch (err) {
+    if (
+      err instanceof ApiBudgetStopError ||
+      err instanceof RateLimitStopError ||
+      err instanceof DailyQuotaError
+    ) {
+      throw err;
+    }
+    return {
+      ok: false,
+      reason: err.message || 'generation_error',
+      ms: Date.now() - t0,
+      apiCalls: session.apiCallsUsed,
+      teil,
+    };
+  }
 }
 
 function recordResult(session, result) {
@@ -937,6 +1077,10 @@ export async function runLesenGenerator(argv = process.argv.slice(2)) {
   console.log(`Salida: batches/generated/`);
 
   const results = [];
+  // Kill-switch: stop the batch after this many consecutive parts that all
+  // exhausted their 503 retries (= Gemini is down, not just a short spike).
+  const MAX_CONSECUTIVE_503 = 3;
+  let consecutive503Failures = 0;
 
   outer: for (const teil of teile) {
     for (let i = 0; i < args.count; i++) {
@@ -960,6 +1104,12 @@ export async function runLesenGenerator(argv = process.argv.slice(2)) {
         const result = await generateOnePart(args, teil, session);
         recordResult(session, result);
         results.push(result);
+        // Reset 503 counter on any successful or quality-failed (non-503) result
+        if (!result.reason || !/503|reintentos agotados/i.test(String(result.reason))) {
+          consecutive503Failures = 0;
+        } else {
+          consecutive503Failures += 1;
+        }
         if (session.stopped) break outer;
       } catch (err) {
         if (err instanceof ApiBudgetStopError) {
@@ -980,6 +1130,23 @@ export async function runLesenGenerator(argv = process.argv.slice(2)) {
         console.error(err.message || err);
         session.byTeil[teil].discarded += 1;
         results.push({ ok: false, discarded: true, teil, reason: err.message });
+      }
+
+      // After each discarded part, check if it was a 503 exhaustion
+      const last = results[results.length - 1];
+      if (last && !last.ok && /503|reintentos agotados/i.test(String(last.reason || ''))) {
+        consecutive503Failures += 1;
+        if (consecutive503Failures >= MAX_CONSECUTIVE_503) {
+          console.error(
+            `\n🛑 ${consecutive503Failures} partes consecutivas agotaron reintentos de 503.` +
+            ` Gemini parece caído — deteniendo lote. Reintenta en unos minutos.`,
+          );
+          session.stopped = true;
+          session.stopReason = '503-exhausted';
+          break outer;
+        }
+      } else if (last && last.ok) {
+        consecutive503Failures = 0;
       }
     }
   }

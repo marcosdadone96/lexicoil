@@ -62,7 +62,12 @@ export function testBlueprintV3(fileId, opts = {}) {
     ok(bp.itemsTotalByModule?.[modId] === exp.total, `${modId} itemsTotalByModule ${exp.total}`);
   }
 
-  if (spec.passRule?.scope === 'whole-exam-total') {
+  if (spec.passRule?.scope === 'cambridge-scale') {
+    ok(bp.passRule?.scope === 'cambridge-scale', 'passRule cambridge-scale');
+    ok(bp.passRule?.passScale === spec.passRule.passScale, 'passScale');
+    ok(bp.modularGrading === false, 'modularGrading false');
+    ok(bp.passPercentPerModule == null, 'no passPercentPerModule');
+  } else if (spec.passRule?.scope === 'whole-exam-total') {
     ok(bp.passRule?.scope === 'whole-exam-total', 'passRule whole-exam-total');
     ok(bp.passRule?.minTotalPoints === spec.passRule.minTotalPoints, 'minTotalPoints');
     ok(bp.modularGrading === false, 'modularGrading false');

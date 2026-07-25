@@ -53,6 +53,7 @@ Regla: *«**Ruhe** abends spät bis morgens früh…»*
 - ¿Pregunta + opción correcta comparten ≤2 palabras de contenido con el pasaje?
 - ¿Distractores plausibles con cifras/horarios cercanos?
 - ¿Sin tono moralizante?
+- ¿Cada explanation tiene ≥10 palabras? Cuenta: si tiene 9 o menos, añade una frase explicativa. (CHK-18 rechaza automáticamente)
 - ¿Solo JSON, sin markdown?
 
 ## Formato de salida

@@ -39,6 +39,11 @@ export function normalizeQuestionFields(q) {
   }
   // `correct` is canonical; backfill from correctAnswer only when correct is absent.
   if (q.correct == null && q.correctAnswer != null) q.correct = q.correctAnswer;
+  // Canonical key normalization: multiple_choice correct must be lowercase (a/b/c/d).
+  if ((q.type === 'multiple' || q.type === 'multiple_choice') && q.correct != null) {
+    const cs = String(q.correct);
+    if (/^[A-Z]$/.test(cs)) q.correct = cs.toLowerCase();
+  }
   if (q.correct != null) q.correctAnswer = q.correct;
   return q;
 }

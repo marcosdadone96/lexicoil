@@ -127,9 +127,29 @@ function batchHasNewContent(file, lang, level) {
   }
 }
 
+/**
+ * batches/merged/ is shared across languages. A batch belongs to opts.lang if its
+ * questions/passages declare that lang; entries without a lang field are legacy
+ * German content (engine default), so they only match lang 'de'.
+ */
+function batchLangMatches(file, lang) {
+  try {
+    const j = JSON.parse(fs.readFileSync(path.join(MERGED, file), 'utf8'));
+    const langs = new Set(
+      [...(j.questions || []), ...(j.passages || [])]
+        .map((x) => String(x.lang || x.language || 'de').toLowerCase()),
+    );
+    if (!langs.size) return false;
+    return langs.has(String(lang).toLowerCase());
+  } catch {
+    return false;
+  }
+}
+
 function ingestNewBatches(opts, audit) {
   if (!fs.existsSync(MERGED)) return;
   for (const file of fs.readdirSync(MERGED).filter((f) => f.endsWith('.json')).sort()) {
+    if (!batchLangMatches(file, opts.lang)) continue;
     if (!batchHasNewContent(file, opts.lang, opts.level)) continue;
     const full = path.join(MERGED, file);
     const r = run(

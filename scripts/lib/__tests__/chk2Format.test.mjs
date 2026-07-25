@@ -98,7 +98,54 @@ assertNoChk2Critical(
   ]), makeQ('q2','A'), makeQ('q3','B'), makeQ('q4','C'), makeQ('q5','A'), makeQ('q6','B')],
 );
 
-// ── Block 2: invalid values must still CRITICAL ───────────────────────────────
+// ── Block 2: Lesen T2 — exactly 3 MCQ options (Goethe B1 blueprint) ───────────
+console.log('\n── CHK-2: Lesen T2 option count ──');
+
+{
+  const fourOpts = [
+    { key: 'A', text: 'Option A' }, { key: 'B', text: 'Option B' },
+    { key: 'C', text: 'Option C' }, { key: 'D', text: 'Option D' },
+  ];
+  const makeL2Q = (id, correct, type = 'multiple') => ({
+    id,
+    module: 'lesen',
+    teil: 2,
+    type,
+    question: `Testfrage ${id}`,
+    correct,
+    correctAnswer: correct,
+    explanation: 'Das steht im Text.',
+    options: fourOpts,
+  });
+  const exam = {
+    exam: {
+      lesenParts: [{
+        teil: 2,
+        passages: [
+          { id: 'pA', text: 'Erster Lesetext über Stadtfeste und lokale Wirtschaft in deutschen Städten.' },
+          { id: 'pB', text: 'Zweiter Lesetext über Stadtfeste und lokale Wirtschaft in deutschen Städten.' },
+        ],
+        questions: Array.from({ length: 6 }, (_, i) =>
+          makeL2Q(`q${i + 1}`, ['A', 'B', 'C', 'D', 'A', 'B'][i], i % 2 ? 'multiple' : 'multiple_choice'),
+        ),
+      }],
+    },
+  };
+  const audit = auditExam(exam, 'test-l2-4opt');
+  const chk2c = audit.findings.filter((f) => f.id === 'CHK-2' && f.severity === 'CRITICAL');
+  assert('Lesen T2 with 4 options (type multiple/multiple_choice) → CHK-2 CRITICAL', chk2c.length >= 6, true);
+  assert('Lesen T2 4-option message mentions lesen-2', chk2c.some((f) => String(f.message).includes('lesen-2')), true);
+}
+
+assertNoChk2Critical(
+  'Lesen T2 with 3 options passes',
+  Array.from({ length: 6 }, (_, i) => ({
+    ...makeQ(`q${i + 1}`, ['a', 'b', 'c', 'a', 'b', 'c'][i], 'multiple_choice'),
+    teil: 2,
+  })),
+);
+
+// ── Block 3: invalid values must still CRITICAL ───────────────────────────────
 console.log('\n── CHK-2: invalid correct values still blocked ──');
 
 {

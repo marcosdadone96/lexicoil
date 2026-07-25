@@ -12,7 +12,7 @@
  * ─── Cubos ───────────────────────────────────────────────────────────────────
  *
  *  A — "reparable en código" (gratis):
- *      CHK-14 (noun caps)  → capitalizeBatchNouns
+ *      CHK-14 (noun caps / over-caps)  → decapitalizeBatchMidSentence + capitalizeBatchNouns
  *      CHK-13 / CHK-19     → balanceMcqGroup + antiRuns
  *      CHK-17 (L3 format)  → normalizeT3
  *      CHK-8 dup IDs       → regenerate unique suffixes
@@ -29,8 +29,8 @@
  *      cubos distintos sin que A/B lo pueda resolver solo.
  */
 
-import { capitalizeBatchNouns } from './capitalizeNouns.mjs';
-import { balanceMcqGroup, antiRuns } from './balanceMcq.mjs';
+import { capitalizeBatchNouns, decapitalizeBatchMidSentence } from './capitalizeNouns.mjs';
+import { balanceMcqGroup, antiRuns, derivePartShuffleSeed, shuffleKeyedQuestionOrder } from './balanceMcq.mjs';
 import { normalizeT3 } from './normalizeT3.mjs';
 
 // ─── Constants ──────────────────────────────────────────────────────────────
@@ -174,11 +174,19 @@ export function classifyAndRepair(batch, gates) {
       let fixed = batch;
 
       if (codes.has('CHK-14')) {
-        const { batch: b } = capitalizeBatchNouns(fixed);
-        fixed = b;
+        // CHK-14b (over-capitalized non-nouns) fires under the id 'CHK-14'.
+        // Run decapitalize FIRST so it clears "Viele"/"Lange"/etc. before
+        // capitalizeBatchNouns re-capitalizes genuine nouns.
+        const { batch: b1 } = decapitalizeBatchMidSentence(fixed);
+        const { batch: b2 } = capitalizeBatchNouns(b1);
+        fixed = b2;
       }
       if (codes.has('CHK-13') || codes.has('CHK-19')) {
-        const qs = antiRuns(balanceMcqGroup(fixed.questions || []));
+        const seed = derivePartShuffleSeed(fixed.questions || []);
+        const qs = shuffleKeyedQuestionOrder(
+          antiRuns(balanceMcqGroup(fixed.questions || [], { seed })),
+          { seed },
+        );
         fixed = { ...fixed, questions: qs };
       }
       if (codes.has('CHK-17')) {

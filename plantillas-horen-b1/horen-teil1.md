@@ -22,6 +22,13 @@ Eres examinador del Goethe-Zertifikat B1. Genera **UNA** parte de **Hören Teil 
 - Telefonat: turnos cortos, preguntas directas.
 - **PROHIBIDO:** tono de ensayo, «Im folgenden Text…», listas numeradas formales.
 
+## VOCABULARIO B1 (OBLIGATORIO — el sistema rechaza C1/C2 automáticamente)
+- Usa léxico hablado frecuente: Kurs, Termin, Anmeldung, Gebühr, Veranstaltung, Öffnungszeiten, Angebot, Auskunft, Treffpunkt, Unterricht, Abmeldung.
+- **PROHIBIDO usar «Workshop»** — el checker lo rechaza. Usa siempre: **Kurs**, **Seminar** o **Werkstatt**.
+- Evita anglicismos: gardening→Gartenarbeit, jogging→Joggen, hiking→Wandern, cycling→Radfahren, Workshop→Kurs/Seminar.
+- Evita C1/académico: implementieren, evaluieren, optimieren, Infrastruktur, systemisch.
+- Préstamos válidos (capitalizados como sustantivos alemanes): Team, E-Mail, Computer, Internet, App, Event, Podcast.
+
 ## REGLAS DE CALIDAD (rechazo si fallas)
 1. Segmentos **temáticamente distintos** (no 5 veces el mismo tipo de anuncio).
 2. RF: mezcla ~5 Richtig / ~5 Falsch; al menos **2 Falsch** con trampa (nur/alle/immer/nie).
@@ -50,6 +57,8 @@ Las preguntas (RF y MCQ) y las opciones correctas **no deben copiar ≥4 palabra
 - ¿Orden sN-q1=RF, sN-q2=MCQ en los 5 segmentos?
 - ¿Cada transcript 50–85 palabras contadas?
 - ¿Ninguna pregunta ni opción correcta copia ≥4 palabras seguidas del transcript? (verificar segmento por segmento)
+- ¿La palabra «Workshop» aparece en algún transcript o pregunta? → Si sí, REEMPLAZAR por «Kurs» o «Seminar» antes de enviar.
+- ¿Cada explanation tiene ≥10 palabras? (CHK-18 rechaza si hay MCQ con explanation más corta)
 - ¿module:"horen", teil:1, lang:"de", level:"B1"?
 - ¿Solo JSON?
 

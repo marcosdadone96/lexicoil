@@ -5,7 +5,11 @@
  * Exit: 0 if all pass, 1 on first failure.
  */
 
-import { capitalizeNounsInText, capitalizeBatchNouns } from '../capitalizeNouns.mjs';
+import {
+  capitalizeNounsInText,
+  capitalizeBatchNouns,
+  decapitalizeMidSentence,
+} from '../capitalizeNouns.mjs';
 
 let passed = 0;
 let failed = 0;
@@ -134,6 +138,88 @@ console.log('\n── capitalizeBatchNouns ──');
   const { batch: fixed, totalFixed } = capitalizeBatchNouns(batch);
   assert('no-op batch: question unchanged', fixed.questions[0].question, 'Was ist das?');
   assert('no-op batch: totalFixed = 0', totalFixed, 0);
+}
+
+console.log('\n── decapitalizeMidSentence (Nivel 1) ──');
+
+// E4/E5 real phrases — safe auto-fixes
+{
+  const { result, count } = decapitalizeMidSentence(
+    'Sie müssen sich Persönlich in unserem Büro anmelden.',
+  );
+  assertContains('E5: Persönlich → persönlich', result, 'persönlich');
+  assertNotContains('E5: no capital Persönlich', result, 'Persönlich');
+  assert('E5: persönlich fix counted', count >= 1, true);
+}
+
+{
+  const { result } = decapitalizeMidSentence(
+    'Werden Sie jetzt Mitglied und trainieren Sie die ersten Drei Monate gratis!',
+  );
+  assertContains('E5: Drei Monate → drei', result, 'drei Monate');
+  assertNotContains('E5: no capital Drei before Monate', result, 'Drei Monate');
+}
+
+{
+  const { result } = decapitalizeMidSentence(
+    'Die Arbeiten dauern voraussichtlich Vier Wochen.',
+  );
+  assertContains('E5: Vier Wochen → vier', result, 'vier Wochen');
+  assertNotContains('E5: no capital Vier before Wochen', result, 'Vier Wochen');
+}
+
+{
+  const { result, count } = decapitalizeMidSentence(
+    'Das Wohlbefinden Deutlich steigern kann viele Familien helfen.',
+  );
+  assertContains('E4: Deutlich → deutlich', result, 'deutlich steigern');
+  assert('E4: deutlich fix counted', count, 1);
+}
+
+// Article guard — substantivised cardinals stay capital
+{
+  const { result, count } = decapitalizeMidSentence(
+    'Im Kartenspiel gewinnt oft die Vier.',
+  );
+  assert('article guard: die Vier unchanged', result, 'Im Kartenspiel gewinnt oft die Vier.');
+  assert('article guard: die Vier not fixed', count, 0);
+}
+
+{
+  const { result, count } = decapitalizeMidSentence(
+    'Man respektiert das Mögliche und das Wichtige.',
+  );
+  assertContains('article guard: das Mögliche', result, 'Mögliche');
+  assertContains('article guard: das Wichtige', result, 'Wichtige');
+  assert('article guard: substantivised adjectives not fixed', count, 0);
+}
+
+// Ambiguous homographs — Nivel 2, must NOT be touched
+{
+  const { result, count } = decapitalizeMidSentence(
+    'Ich respektiere den Glaube sehr und mag das Essen.',
+  );
+  assertContains('ambiguous: Glaube stays', result, 'Glaube');
+  assertContains('ambiguous: Essen stays', result, 'Essen');
+  assert('ambiguous: Glaube/Essen not fixed', count, 0);
+}
+
+{
+  const { result, count } = decapitalizeMidSentence(
+    'Ich Glaube, diese Erfahrungen stärken uns. Dem Stimme ich zu.',
+  );
+  assertContains('ambiguous: Ich Glaube stays', result, 'Ich Glaube');
+  assertContains('ambiguous: Stimme stays', result, 'Stimme');
+  assert('ambiguous: Glaube/Stimme not fixed', count, 0);
+}
+
+{
+  const { result, count } = decapitalizeMidSentence(
+    'Besonders Junge Erwachsene und frisch Kochen sind Themen.',
+  );
+  assertContains('ambiguous: Junge stays', result, 'Junge Erwachsene');
+  assertContains('ambiguous: Kochen stays', result, 'Kochen');
+  assert('ambiguous: Junge/Kochen not fixed', count, 0);
 }
 
 // ─── Summary ──────────────────────────────────────────────────────────────────

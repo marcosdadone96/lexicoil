@@ -121,6 +121,7 @@ export function lesenPartToCandidate(part, { lang, level, blueprint, batchId, so
     questions,
     ads: part.ads || undefined,
     opinions: part.opinions || undefined,
+    topicTag: part.topicTag || null,
     validation: null,
     review: { notes: '', editedAt: null, reviewedAt: null },
     provenance: {
@@ -198,6 +199,7 @@ export function horenPartToCandidate(part, { lang, level, blueprint, batchId, so
     passage,
     questions,
     plays: part.plays,
+    topicTag: part.topicTag || null,
     validation: null,
     review: { notes: '', editedAt: null, reviewedAt: null },
     provenance: {
@@ -246,6 +248,7 @@ export function schreibenPartToCandidate(part, { lang, level, blueprint, batchId
     label: bpPart?.label || `Schreiben Teil ${teil}`,
     passage: null,
     questions,
+    topicTag: part.topicTag || null,
     validation: null,
     review: { notes: '', editedAt: null, reviewedAt: null },
     provenance: {
@@ -295,6 +298,7 @@ export function sprechenPartToCandidate(part, { lang, level, blueprint, batchId,
     label: bpPart?.label || `Sprechen Teil ${teil}`,
     passage: null,
     questions,
+    topicTag: part.topicTag || null,
     validation: null,
     review: { notes: '', editedAt: null, reviewedAt: null },
     provenance: {
@@ -353,6 +357,20 @@ export function batchToCandidates(batch, { lang, level, blueprint, batchId, sour
         title: p.title || '',
         text: p.text,
       }));
+    // Multiple matching (Cambridge Reading P2): the set has 8 texts but only 5 are
+    // answers — the 3 distractor texts are NOT referenced by any question.passageId.
+    // Without them the task is unrenderable, so include every batch passage of this
+    // module/teil. Scoped to person_text_matching: other slots keep linked-only.
+    if (bpPart?.slotType === 'person_text_matching') {
+      const seen = new Set(linkedPassages.map((p) => p.id));
+      for (const p of batch.passages || []) {
+        if (!p?.id || seen.has(p.id)) continue;
+        if (String(p.module || g.module) !== String(g.module)) continue;
+        if (p.teil != null && Number(p.teil) !== Number(g.teil)) continue;
+        linkedPassages.push({ id: p.id, module: p.module || g.module, title: p.title || '', text: p.text });
+        seen.add(p.id);
+      }
+    }
 
     const candidate = {
       id: newCandidateId(lang, level, g.module, g.teil, batchId?.slice(-8) || ''),
@@ -366,6 +384,7 @@ export function batchToCandidates(batch, { lang, level, blueprint, batchId, sour
       passage: linkedPassages[0] || null,
       passages: linkedPassages.length > 1 ? linkedPassages : undefined,
       questions: g.questions,
+      topicTag: batch.topicTag || linkedPassages[0]?.topicTag || null,
       validation: null,
       review: { notes: '', editedAt: null, reviewedAt: null },
       provenance: {
