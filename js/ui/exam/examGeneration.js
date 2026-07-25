@@ -669,9 +669,10 @@ function _recordSeenPart(lang, level, module, partId) {
 /**
  * Ensambla un módulo completo desde el pool, escogiendo por vocabulario (greedy),
  * sin repetir partes ya vistas por el usuario y variando tema.
- * Devuelve { exam, coverage:{covered,requested}, missingTeile:[...] } o null.
+ * Devuelve { exam, coverage, missingTeile, relaxedTeile, topicTag } o null si 0 partes.
  */
-async function assembleModuleFromPool(module, words, lang, level) {
+async function assembleModuleFromPool(module, words, lang, level, opts = {}) {
+  const { topicTag = null } = opts;
   const PF = getPoolFallbackHelpers();
   if (!PF || typeof fetchExamPartVocab !== 'function') return null;
   const H = _modulePoolHelpers(PF, module);
@@ -682,13 +683,25 @@ async function assembleModuleFromPool(module, words, lang, level) {
   const teils = (H.teils ? H.teils(blueprint) : null) || [];
   if (!teils.length) return null;
 
-  const exam = { lang, level, goetheFormat: true, vocabPersonal: true, [H.key]: [] };
+  const exam = {
+    lang,
+    level,
+    goetheFormat: true,
+    vocabPersonal: true,
+    poolSource: true,
+    [H.key]: [],
+  };
+  if (topicTag) {
+    exam.topic = topicTag;
+    exam.topicTag = topicTag;
+  }
 
   const requested = (words || []).map((w) => String(w).toLowerCase()).filter(Boolean);
   let remaining = null;
   const coveredLemmas = new Set();
   const usedTopics = new Set();
   const missingTeile = [];
+  const relaxedTeile = [];
 
   for (const teil of teils) {
     const exclude = seenPartIds(lang, level, module);
@@ -697,13 +710,20 @@ async function assembleModuleFromPool(module, words, lang, level) {
       teil,
       words: remaining != null ? [...remaining] : requested,
       excludeTopics: [...usedTopics],
+      topicTag,
     });
     if (!data || !data.part) { missingTeile.push(teil); continue; }
+
+    const servedTopic = resolveCanonicalB1Topic(data.topicTag || data.topic) || null;
+    const isRelaxed = !!data.topicRelaxed;
+    if (isRelaxed) relaxedTeile.push({ teil, actualTopic: servedTopic });
 
     if (remaining == null) remaining = new Set(data.requestedLemmas || requested);
 
     let part = H.toPart(data.part, blueprint);
     if (!part) { missingTeile.push(teil); continue; }
+    part._poolTopicTag = servedTopic;
+    part._topicRelaxed = isRelaxed;
     const shell = { lang, level, goetheFormat: true, vocabPersonal: true, [H.key]: [part] };
     if (typeof repairPersonalExamAnswerability === 'function') repairPersonalExamAnswerability(shell);
     part = shell[H.key][0];
@@ -734,6 +754,8 @@ async function assembleModuleFromPool(module, words, lang, level) {
     coverage: { covered: coveredLemmas.size, requested: requestedCount },
     coveredWords: [...coveredLemmas],
     missingTeile,
+    relaxedTeile,
+    topicTag,
   };
 }
 
@@ -743,6 +765,107 @@ const _MODULE_PART_KEY={
   reading:'lesenParts',listening:'horenParts',
   writing:'schreibenParts',speaking:'sprechenParts'
 };
+
+// ── Coverage repair (Fase 1): sustituye Teile sin palabras del usuario por
+// matches del pool que sí las contienen (vía exam-part?words=…). ──────────
+const COVERAGE_SWAP_MAX = 3;          // máx. Teile sustituidos por examen
+const COVERAGE_SWAP_AI_RATIO = 0.5;   // solo tocar partes IA si cobertura < 50%
+
+/**
+ * Tras montar un examen personal (IA/híbrido), busca en el pool partes que
+ * contengan las palabras ausentes y sustituye Teile de cobertura 0.
+ * Política: los Teile que ya vinieron del pool genérico se sustituyen siempre
+ * (pura ganancia); los generados por IA solo si la cobertura global es <50%.
+ * No lanza: ante cualquier fallo devuelve el examen sin tocar.
+ */
+async function improvePersonalCoverageFromPool(exam, words, configSkills, blueprint, opts = {}) {
+  if (!exam || !words?.length) return exam;
+  const Cov = typeof PersonalExamCoverage !== 'undefined' ? PersonalExamCoverage : null;
+  const PF = getPoolFallbackHelpers();
+  if (!Cov?.computePersonalExamCoverage || !PF || typeof fetchExamPartVocab !== 'function') return exam;
+
+  let cov;
+  try { cov = Cov.computePersonalExamCoverage(exam, words); } catch (_) { return exam; }
+  const missingOrig = (cov.overall?.missing || []).map(String);
+  if (!missingOrig.length) return exam;
+
+  const ratio = cov.overall?.ratio || 0;
+  // aggressive: petición explícita del usuario (botón) → también partes IA.
+  const aiSwapAllowed = !!opts.aggressive || ratio < COVERAGE_SWAP_AI_RATIO;
+  const lang = exam.lang || S.subject;
+  const level = exam.level || S.level;
+
+  // Candidatos: partes sin ninguna palabra del usuario. Pool-fallback primero.
+  const candidates = (cov.byPart || [])
+    .filter((p) => p.count === 0 && (p.fromPool || aiSwapAllowed))
+    .sort((a, b) => Number(b.fromPool) - Number(a.fromPool));
+  if (!candidates.length) return exam;
+
+  let missing = [...missingOrig];
+  const report = [];
+
+  for (const cand of candidates) {
+    if (report.length >= COVERAGE_SWAP_MAX || !missing.length) break;
+    const H = _modulePoolHelpers(PF, cand.module);
+    if (!H) continue;
+
+    let data = null;
+    try {
+      data = await fetchExamPartVocab(lang, level, cand.module, {
+        excludeIds: seenPartIds(lang, level, cand.module),
+        teil: cand.teil,
+        words: missing,
+      });
+    } catch (_) { continue; }
+    if (!data?.part || !(data.coveredWords || []).length) continue;
+
+    // Mapear lemas cubiertos → palabra original (requestedLemmas ∥ missing).
+    const lemmaToOrig = new Map();
+    (data.requestedLemmas || []).forEach((lemma, i) => {
+      if (missing[i]) lemmaToOrig.set(String(lemma).toLowerCase(), missing[i]);
+    });
+    const gained = [];
+    for (const cw of data.coveredWords) {
+      const orig = lemmaToOrig.get(String(cw).toLowerCase());
+      if (orig && !gained.includes(orig)) gained.push(orig);
+    }
+    if (!gained.length) continue;
+
+    let part = null;
+    try {
+      part = H.toPart(data.part, blueprint);
+      if (!part) continue;
+      const shell = { lang, level, goetheFormat: true, vocabPersonal: true, [H.key]: [part] };
+      if (typeof repairPersonalExamAnswerability === 'function') repairPersonalExamAnswerability(shell);
+      part = shell[H.key][0];
+      if (!H.valid({ [H.key]: [part] }, cand.teil, blueprint)) continue;
+    } catch (_) { continue; }
+
+    part._fromPool = true;
+    part._coverageSwap = true;
+    part._vocabMatch = gained;
+    H.insert(exam, part, cand.teil);
+    _recordSeenPart(lang, level, cand.module, data.id);
+    exam._teilFromPool = Array.isArray(exam._teilFromPool) ? exam._teilFromPool : [];
+    if (!exam._teilFromPool.includes(cand.teil)) exam._teilFromPool.push(cand.teil);
+    missing = missing.filter((w) => !gained.includes(w));
+    report.push({ module: cand.module, teil: cand.teil, gained });
+  }
+
+  if (report.length) {
+    exam._coverageSwaps = report;
+    lcDebug.log('[personal] coverage swaps:', report);
+    try {
+      if (typeof ExamRenumber !== 'undefined' && ExamRenumber.renumberExam) {
+        ExamRenumber.renumberExam(exam, blueprint || null);
+      }
+      if (typeof normalizeExam === 'function') {
+        exam = normalizeExam(exam, { skipPostprocess: !!exam._skipAnswerBalance }) || exam;
+      }
+    } catch (_) {}
+  }
+  return exam;
+}
 
 async function fillMissingLesenTeileFromPool(exam,lang,level,blueprint,configSkills){
   if(!orderedPersonalSkills(configSkills||exam?.vocabSkills||[]).includes('lesen'))return exam;
@@ -1009,7 +1132,16 @@ function showPersonalCoverageToast(exam,words){
   const Cov=typeof PersonalExamCoverage!=='undefined'?PersonalExamCoverage:null;
   if(!Cov?.formatPersonalCoverageMessage)return;
   const cov=exam._coverageOverall||Cov.computePersonalExamCoverage(exam,words).overall;
-  lcToast(Cov.formatPersonalCoverageMessage(exam,{overall:cov}),'info',9000);
+  const lang=exam?.lang||S?.subject||'de';
+  let msg=Cov.formatPersonalCoverageMessage(exam,{overall:cov},lang);
+  const swaps=Array.isArray(exam?._coverageSwaps)?exam._coverageSwaps.length:0;
+  if(swaps){
+    const isDE=String(lang).toLowerCase()==='de';
+    msg+=isDE
+      ?` ${swaps} Teil${swaps===1?'':'e'} wurde${swaps===1?'':'n'} passend zu deinen Wörtern ausgewählt.`
+      :` ${swaps} part${swaps===1?' was':'s were'} selected to match your words.`;
+  }
+  lcToast(msg,'info',9000);
 }
 function examCopyForPoolIngest(exam,topic){
   const copy=buildPoolExamCopy(exam,topic||genericPoolTopic(S.subject,S.level));
@@ -1559,6 +1691,9 @@ function sanitizeGoetheParts(d){
     part.teil=part.teil??pi+1;
     coalesceLesenForumOpinions(part);
     coalesceLesenAdsMatching(part);
+    const PF=getPoolFallbackHelpers();
+    if(PF?.coalesceLesenAdsMatchingPart)PF.coalesceLesenAdsMatchingPart(part);
+    else if(PF?.ensureLesenT3Example)PF.ensureLesenT3Example(part);
     ensureLesenPartInstruction(part,d.lang||'de');
     if(part.ads)part.ads.forEach((a,i)=>{a.key=ADS[i]||String(i+1);if(!a.title)a.title='';if(!a.text)a.text='';a.title=fixT(a.title);a.text=fixT(a.text);});
     coalesceLesenPartQuestions(part);
@@ -2178,6 +2313,9 @@ function storePersonalGenRetry(words,skills,goalId,exam,report){
   };
 }
 async function generatePersonalExamAiSerial(configWords,configSkills,configGoalId,personalGenOpts,tier){
+  if(!isAllowLiveGenEnabled()){
+    throw Object.assign(new Error(liveAiGenerationBlockedMessage()),{code:'live_gen_disabled'});
+  }
   let skills=orderedPersonalSkills(configSkills);
   if(skills.length>1){
     lcDebug.warn('[personal] multiple modules requested — using first only:',skills);
@@ -2277,15 +2415,21 @@ async function retryFailedPersonalParts(){
   if(!skills.length){lcToast('All parts already generated.','info');return;}
   hideAll();show('loadingScreen');
   document.getElementById('loaderTitle').textContent='Retrying failed parts…';
-  document.getElementById('loaderSub').textContent='This may take ~1–2 min per module.';
+  const useHybrid=isPersonalLesenHybridEnabled(skills,S.subject,S.level);
+  document.getElementById('loaderSub').textContent=useHybrid
+    ?'Hybrid retry: pool + Gemini factory…'
+    :'This may take ~1–2 min per module.';
   try{
     const personalGenOpts={
       teilFilter:failedTeilNums.length?failedTeilNums:(S.lastPersonalConfig?.teilFilter??_examConfig.teilChoice??'all'),
+      topic:st.partialExam?.topicTag||st.partialExam?.topic,
     };
     if(typeof ExamBlueprint!=='undefined'){
       try{const bp=await ExamBlueprint.load(S.subject,S.level);if(bp)personalGenOpts.blueprint=bp;}catch(_){}
     }
-    const built=await generatePersonalExamAiSerial(st.words,skills,st.goalId,personalGenOpts,'pro');
+    const built=useHybrid
+      ?await generatePersonalLesenHybrid(st.words,personalGenOpts,'pro')
+      :await generatePersonalExamAiSerial(st.words,skills,st.goalId,personalGenOpts,'pro');
     let exam=built.exam;
     if(st.partialExam){
       exam=mergeExamParts(st.partialExam,built.exam,st.partialExam.topic||built.exam.topic);
@@ -2413,6 +2557,14 @@ function pruneEmptyGoetheParts(exam,skills){
 }
 async function lcValidateExamOnServer(exam,opts){
   const isPartialFidelityCountIssue=(msg)=>/^(passages_per_part_mismatch:|items_total_mismatch:)/.test(String(msg||''));
+  const isPartialPersonalValidationIssue=(msg)=>isPartialFidelityCountIssue(msg)||/^ads_example_missing:/.test(String(msg||''));
+  const failUnavailable=(reason,extra={})=>({
+    valid:false,
+    skipped:true,
+    errors:[reason||'validation_unavailable'],
+    exam:undefined,
+    ...extra,
+  });
   try{
     const partialExam=!!(
       opts?.partialExam ||
@@ -2435,7 +2587,15 @@ async function lcValidateExamOnServer(exam,opts){
       })
     });
     const data=await res.json().catch(()=>({}));
+    if(res.status===503&&(data.error==='live_gen_disabled'||data.error==='verify_unavailable')){
+      lcDebug.warn('[exam] server validation unavailable:',data.error,data.reason||data.message);
+      return failUnavailable(data.error==='verify_unavailable'?'verify_unavailable':'live_gen_disabled');
+    }
     if(res.ok&&data.valid){
+      if(data.verifySkipped){
+        lcDebug.warn('[exam] server validation skipped verification');
+        return failUnavailable('verify_skipped');
+      }
       return{
         valid:true,
         exam:data.exam||exam,
@@ -2444,7 +2604,7 @@ async function lcValidateExamOnServer(exam,opts){
       };
     }
     if(res.status===422&&(data.error==='exam_invalid'||data.error==='exam_empty_after_verify')){
-      const softOnly=partialExam&&Array.isArray(data.validationErrors)&&data.validationErrors.every(isPartialFidelityCountIssue);
+      const softOnly=partialExam&&Array.isArray(data.validationErrors)&&data.validationErrors.every(isPartialPersonalValidationIssue);
       if(!softOnly)lcDebug.warn('[exam] server validation rejected:',data.validationErrors||data.message);
       else lcDebug.log('[exam] partial fidelity warnings (non-blocking):',data.validationErrors);
       return{
@@ -2453,10 +2613,15 @@ async function lcValidateExamOnServer(exam,opts){
         discarded:Number(data.discarded)||0,
         emptyAfterVerify:data.error==='exam_empty_after_verify',
         exam:softOnly?exam:undefined,
+        skipped:false,
       };
     }
-  }catch(e){lcDebug.warn('[exam] server validation unavailable:',e.message);}
-  return {valid:true,skipped:true,exam};
+    lcDebug.warn('[exam] server validation unexpected response:',res.status,data.error||data.message);
+    return failUnavailable(data.error||`http_${res.status}`);
+  }catch(e){
+    lcDebug.warn('[exam] server validation unavailable:',e.message);
+    return failUnavailable(e.message||'validation_unavailable');
+  }
 }
 function lcExamPassesQualityGate(exam,words,minCoverage){
   if(!exam||(typeof isExamRenderable==='function'&&!isExamRenderable(exam)))return false;
@@ -2646,6 +2811,13 @@ async function tryPersonalPoolOrLibrary(configWords,configSkills,configGoalId,go
   return null;
 }
 async function finalizePersonalExam(configWords,configSkills,configGoalId,goalRef,exam,source){
+  const hybridMeta=exam&&source==='ai'?{
+    _hybridSource:exam._hybridSource,
+    _hybridPlan:exam._hybridPlan,
+    _hybridTrace:exam._hybridTrace,
+    _hybridValidated:exam._hybridValidated,
+    _hybridFallbacks:exam._hybridFallbacks,
+  }:null;
   if(typeof ManualVocab!=='undefined'&&ManualVocab.canonicalizeForGeneration){
     try{
       const canon=await ManualVocab.canonicalizeForGeneration(configWords,S.subject,S.level||'B1');
@@ -2667,7 +2839,10 @@ async function finalizePersonalExam(configWords,configSkills,configGoalId,goalRe
   S.examData.vocabWords=configWords;
   S.examData.vocabSkills=configSkills;
   if(configGoalId||S.activeGoalId)S.examData.goalId=configGoalId||S.activeGoalId;
-  if(!S.examData.topic||S.examData.topic==='Personal vocabulary review')S.examData.topic='Personal: '+configWords.slice(0,3).join(', ')+(configWords.length>3?'…':'');
+  if(!S.examData.topic||S.examData.topic==='Personal vocabulary review'){
+    if(S.examData._displayTopic)S.examData.topic=S.examData._displayTopic;
+    else S.examData.topic='Personal: '+configWords.slice(0,3).join(', ')+(configWords.length>3?'…':'');
+  }
   applyPersonalTargetUsage(S.examData,configWords);
   let personalBlueprint=null;
   if(typeof ExamBlueprint!=='undefined'){
@@ -2679,8 +2854,15 @@ async function finalizePersonalExam(configWords,configSkills,configGoalId,goalRe
   const skipAnswerBalance=S.examSource==='ai';
   if(skipAnswerBalance)S.examData._skipAnswerBalance=true;
   if(typeof normalizeExam==='function')S.examData=normalizeExam(S.examData,{skipPostprocess:skipAnswerBalance});
+  if(hybridMeta){
+    Object.assign(S.examData,hybridMeta);
+    if(hybridMeta._hybridTrace&&Object.keys(hybridMeta._hybridTrace).length){
+      S.examData._hybridTrace=hybridMeta._hybridTrace;
+    }
+  }
   S.examData=repairPersonalExamAnswerability(S.examData);
-  if(S.examSource==='ai'){
+  const hybridFactory=S.examData?._hybridSource==='factory';
+  if(S.examSource==='ai'&&!hybridFactory){
     S.examData=await retryMissingPartsBeforePrune(S.examData,configWords,configSkills,{
       source:'ai',blueprint:personalBlueprint,
     });
@@ -2707,8 +2889,11 @@ async function finalizePersonalExam(configWords,configSkills,configGoalId,goalRe
     }
   }
   if(typeof lcValidateExamOnServer==='function'&&S.examSource==='ai'){
-    const srv=await lcValidateExamOnServer(S.examData,{
-      verifyAnswerKeys:true,
+    const skipHybridRevalidation=!!hybridFactory;
+    const srv=skipHybridRevalidation
+      ?{valid:true,skipped:false,exam:S.examData}
+      :await lcValidateExamOnServer(S.examData,{
+      verifyAnswerKeys:!hybridFactory,
       discardFailedItems:true,
       partialExam:!!(
         S.examData?._sectionPart||
@@ -2775,7 +2960,27 @@ async function finalizePersonalExam(configWords,configSkills,configGoalId,goalRe
         7000
       );
     }
-    if(!srv.valid&&!srv.skipped){
+    if(srv.skipped){
+      S.examData=null;
+      throw Object.assign(
+        new Error('Could not verify the generated exam. Please try again.'),
+        {code:'validation_unavailable',quotaRefund:true}
+      );
+    }
+    if(!srv.valid&&!srv.exam){
+      const hybridDeliver=hybridFactory&&isExamRenderable(S.examData);
+      if(!hybridDeliver){
+        S.examData=null;
+        throw Object.assign(
+          new Error(srv.emptyAfterVerify
+            ? 'No verifiable exam content remained after answer-key checks.'
+            : 'Generated exam failed verification.'),
+          {code:'exam_invalid',answerKeyVerify:!!srv.emptyAfterVerify,quotaRefund:true}
+        );
+      }
+      lcDebug.warn('[personal] hybrid server validation notes (continuing):',srv.errors);
+    }
+    if(!srv.valid){
       const partialDeliver=!!(
         S.examData?._sectionPart||
         S.examData?._partialGen||
@@ -2801,11 +3006,22 @@ async function finalizePersonalExam(configWords,configSkills,configGoalId,goalRe
     delete S.examData._skipAnswerBalance;
     S.examData=applyPersonalExamPostprocess(S.examData);
   }
+  // Fase 1: si el examen usa pocas palabras del usuario, intenta sustituir
+  // Teile de cobertura 0 por matches del pool (el ensamblado 'pool' ya es
+  // vocab-greedy, no necesita este paso).
+  if(configWords?.length&&source!=='pool'){
+    try{
+      S.examData=await improvePersonalCoverageFromPool(S.examData,configWords,configSkills,personalBlueprint);
+    }catch(covErr){lcDebug.warn('[personal] coverage swap failed:',covErr);}
+  }
   const preservePoolCov=(source==='pool'&&exam._coverageOverall)?{...exam._coverageOverall}:null;
   if(configWords?.length){
     attachPersonalCoverage(S.examData,configWords);
     if(preservePoolCov)S.examData._coverageOverall=preservePoolCov;
     showPersonalCoverageToast(S.examData,configWords);
+  }
+  if(Array.isArray(S.examData?._hybridFallbacks)&&S.examData._hybridFallbacks.length){
+    lcDebug.warn('[personal] hybrid fallbacks (internal):',S.examData._hybridFallbacks);
   }
   const coverage=S.examData._coverageOverall||lcVocabCoverage(S.examData,configWords);
   if(S.examSource==='ai'&&personalModuleTeilsComplete(S.examData,configSkills,personalBlueprint)){
@@ -2873,15 +3089,464 @@ async function finalizePersonalExam(configWords,configSkills,configGoalId,goalRe
   }
 }
 // Exámenes 100% desde pool (sin IA en runtime). La IA se conserva para juegos.
+function isAllowLiveGenEnabled(){
+  if(typeof window==='undefined')return false;
+  const v=window.ALLOW_LIVE_GEN;
+  return v==='1'||v===1||v===true;
+}
+function liveAiGenerationBlockedMessage(){
+  return 'Live AI exam generation is temporarily unavailable. Practice exams use curated pool content only.';
+}
 function isExamPoolOnly(){
   if(typeof window!=='undefined'){
     if(window.EXAM_POOL_ONLY===undefined)window.EXAM_POOL_ONLY=true;
-    return !!(window.EXAM_POOL_ONLY??true);
+    const requested=!!(window.EXAM_POOL_ONLY??true);
+    if(!requested&&!isAllowLiveGenEnabled())return true;
+    return requested;
   }
   return true;
 }
+/** Personal B1 DE — single-module practice always pool-first (no live exam AI). */
+const PERSONAL_POOL_FIRST_SKILLS=new Set(['lesen','reading','horen','listening','schreiben','writing']);
+function isPersonalModulePoolFirst(skills,lang,level){
+  if(String(lang||'').toLowerCase()!=='de')return false;
+  if(String(level||'').toUpperCase()!=='B1')return false;
+  const ordered=orderedPersonalSkills(skills||['lesen']);
+  if(ordered.length!==1)return false;
+  return PERSONAL_POOL_FIRST_SKILLS.has(ordered[0]);
+}
+function isPersonalLesenPoolFirst(skills,lang,level){
+  const ordered=orderedPersonalSkills(skills||['lesen']);
+  if(ordered.length!==1)return false;
+  const s=ordered[0];
+  return isPersonalModulePoolFirst(skills,lang,level)&&(s==='lesen'||s==='reading');
+}
+function isPersonalHorenPoolFirst(skills,lang,level){
+  const ordered=orderedPersonalSkills(skills||['lesen']);
+  if(ordered.length!==1)return false;
+  const s=ordered[0];
+  return isPersonalModulePoolFirst(skills,lang,level)&&(s==='horen'||s==='listening');
+}
+function isPersonalSchreibenPoolFirst(skills,lang,level){
+  const ordered=orderedPersonalSkills(skills||['lesen']);
+  if(ordered.length!==1)return false;
+  const s=ordered[0];
+  return isPersonalModulePoolFirst(skills,lang,level)&&(s==='schreiben'||s==='writing');
+}
+/** Lesen B1 DE hybrid when live gen is on. Disabled for pool-first Lesen B1 DE. */
+function isPersonalLesenHybridEnabled(skills,lang,level){
+  if(isPersonalLesenPoolFirst(skills,lang,level))return false;
+  if(isExamPoolOnly()||!isAllowLiveGenEnabled())return false;
+  if(typeof window!=='undefined'&&window.EXAM_HYBRID===false)return false;
+  if(String(lang||'').toLowerCase()!=='de')return false;
+  if(String(level||'').toUpperCase()!=='B1')return false;
+  if(typeof fetchHybridExamPlan!=='function'||typeof executeHybridLesenExam!=='function')return false;
+  const ordered=orderedPersonalSkills(skills||['lesen']);
+  if(ordered.length!==1)return false;
+  const s=ordered[0];
+  return s==='lesen'||s==='reading';
+}
+function personalPoolEmptyMessage(topic, lang, module) {
+  const isDE = String(lang || '').toLowerCase() === 'de';
+  const mod = String(module || 'lesen').toLowerCase();
+  if (mod === 'horen' || mod === 'listening') {
+    if (isDE) return 'Im Pool ist noch kein Hören-Inhalt verfügbar. Probiere es später erneut.';
+    return 'No listening content in the pool yet. Try again later.';
+  }
+  if (mod === 'schreiben' || mod === 'writing') {
+    if (isDE) return 'Im Pool ist noch kein Schreiben-Inhalt verfügbar. Probiere es später erneut.';
+    return 'No writing content in the pool yet. Try again later.';
+  }
+  if (isDE) {
+    return `Für „${topic}“ ist im Pool noch kein Lesen-Inhalt verfügbar. Probiere ein anderes Thema (z. B. Bildung oder Technik).`;
+  }
+  return `No reading content in the pool for "${topic}" yet. Try another topic (e.g. Bildung or Technik).`;
+}
+function personalPoolMissingTeileMessage(missingTeile, topic, lang) {
+  const isDE = String(lang || '').toLowerCase() === 'de';
+  const labels = (missingTeile || []).map((t) => `Teil ${t}`).join(', ');
+  if (isDE) {
+    return labels
+      ? `Für „${topic}“ fehlen noch ${labels}. Du übst mit den Teilen, die verfügbar sind.`
+      : `Einige Teile fehlen noch für „${topic}“. Du übst mit dem, was verfügbar ist.`;
+  }
+  return labels
+    ? `Missing for "${topic}": ${labels}. Practice with the parts that are available.`
+    : `Some parts are missing for "${topic}". Practice with what's available.`;
+}
+function personalPoolTopicRelaxedMessage(topic, lang) {
+  const isDE = String(lang || '').toLowerCase() === 'de';
+  if (isDE) {
+    return `Für „${topic}“ gibt es noch nicht genug Aufgaben in allen Teilen — wir zeigen passende Alternativen aus dem Pool.`;
+  }
+  return `Not enough "${topic}" tasks in every part yet — showing suitable alternatives from the pool.`;
+}
+function resolvePersonalLesenTeils(teilFilter){
+  const defaultTeils=[1,2,3,4,5];
+  if(teilFilter==null||teilFilter===''||teilFilter==='all')return defaultTeils;
+  if(Array.isArray(teilFilter)){
+    const picked=[...new Set(teilFilter.map((t)=>Number(t)).filter(Number.isFinite))].sort((a,b)=>a-b);
+    return picked.length?picked:defaultTeils;
+  }
+  const t=Number(teilFilter);
+  return Number.isFinite(t)?[t]:defaultTeils;
+}
+function resolveCanonicalB1Topic(raw){
+  if(typeof B1Topics!=='undefined'&&typeof B1Topics.normalizeB1Topic==='function'){
+    const canon=B1Topics.normalizeB1Topic(raw);
+    if(canon)return canon;
+  }
+  if(typeof B1Topics!=='undefined'&&B1Topics.isValidB1Topic?.(raw))return String(raw).trim();
+  return null;
+}
+async function pickPersonalHybridTopic(personalGenOpts){
+  const fromOpts=resolveCanonicalB1Topic(personalGenOpts?.topic);
+  if(fromOpts)return fromOpts;
+  if(typeof LexiCoilEngine!=='undefined'&&typeof LexiCoilEngine.pickTopic==='function'){
+    try{
+      const picked=await LexiCoilEngine.pickTopic(S.subject,S.level);
+      const canon=resolveCanonicalB1Topic(picked);
+      if(canon)return canon;
+    }catch(_){/* fallback below */}
+  }
+  if(typeof B1Topics!=='undefined'&&B1Topics.B1_TOPICS?.length){
+    return B1Topics.B1_TOPICS[Math.floor(Math.random()*B1Topics.B1_TOPICS.length)];
+  }
+  return 'Umwelt';
+}
+function hybridPersonalUiMessages(lang){
+  const isDE=String(lang||'').toLowerCase()==='de';
+  if(isDE){
+    return{
+      loaderTitle:'Dein personalisiertes Examen wird erstellt…',
+      loaderSub:'Wir integrieren dein Vokabular — das kann etwa eine Minute dauern.',
+      banner:'Dein Examen wird personalisiert…',
+      pendingSection:'Wird personalisiert…',
+    };
+  }
+  return{
+    loaderTitle:'Generating your personalized exam…',
+    loaderSub:'Integrating your vocabulary — this may take about a minute.',
+    banner:'Personalizing your exam…',
+    pendingSection:'Personalizing…',
+  };
+}
+/** Reveal pacing: slower when Gemini runs (credibility + headroom), faster when pool-only. */
+const HYBRID_REVEAL_MS_WITH_LIVE=6500;
+const HYBRID_REVEAL_MS_POOL_ONLY=2500;
+function hybridRevealIntervalMs(liveTeilCount){
+  return Number(liveTeilCount)>0?HYBRID_REVEAL_MS_WITH_LIVE:HYBRID_REVEAL_MS_POOL_ONLY;
+}
+function hybridSleep(ms){
+  return new Promise((resolve)=>setTimeout(resolve,ms));
+}
+function hybridLesenPartReady(exam,teil){
+  const part=(exam?.lesenParts||[]).find((p)=>Number(p.teil)===Number(teil));
+  return!!(part&&!part._hybridPending&&goethePartHasContent(part,'lesen'));
+}
+/** Keep hybrid progressive content instead of silently swapping to library/pool. */
+function recoverHybridProgressiveExam(configWords,configSkills,aiErr){
+  const raw=aiErr?.hybridExam||S.examData;
+  if(!raw)return null;
+  const exam=JSON.parse(JSON.stringify(raw));
+  exam.lesenParts=(exam.lesenParts||[]).filter(
+    (p)=>p&&!p._hybridPending&&goethePartHasContent(p,'lesen')
+  );
+  if(!exam.lesenParts.length)return null;
+  exam.lang=exam.lang||S.subject;
+  exam.level=exam.level||S.level;
+  exam.goetheFormat=true;
+  exam.vocabPersonal=true;
+  exam.vocabWords=configWords;
+  exam.vocabSkills=configSkills||['lesen'];
+  exam._hybridSource='factory';
+  exam._hybridValidated=false;
+  delete exam._hybridLoading;
+  delete exam._hybridPendingTeils;
+  const missing=[1,2,3,4,5].filter(
+    (t)=>!exam.lesenParts.some((p)=>Number(p.teil)===t)
+  );
+  if(missing.length){
+    exam._partialGen=true;
+    exam._failedTeile=missing.map((t)=>`Teil ${t}`);
+  }
+  if(aiErr?.validation?.errors?.length)exam._hybridValidationNotes=aiErr.validation.errors;
+  if(aiErr?.genReport?.failedTeile?.length){
+    exam._failedTeile=[...new Set([...(exam._failedTeile||[]),...aiErr.genReport.failedTeile])];
+    exam._partialGen=true;
+  }
+  return exam;
+}
+function buildHybridProgressiveExamView(readyExam,allTeils,revealedTeils,configWords,configSkills){
+  const shell=JSON.parse(JSON.stringify(readyExam||{}));
+  shell.lang=shell.lang||S.subject;
+  shell.level=shell.level||S.level;
+  shell.goetheFormat=true;
+  shell.vocabPersonal=true;
+  shell.vocabWords=configWords;
+  shell.vocabSkills=configSkills;
+  const teilList=[...allTeils].map(Number).filter(Number.isFinite).sort((a,b)=>a-b);
+  const revealed=new Set([...(revealedTeils||[])].map(Number));
+  shell._hybridLoading=revealed.size<teilList.length;
+  shell._hybridPendingTeils=teilList.filter((t)=>!revealed.has(t));
+  shell._skipAnswerBalance=true;
+  shell.lesenParts=[];
+  for(const teil of teilList){
+    const part=(readyExam?.lesenParts||[]).find((p)=>Number(p.teil)===teil);
+    if(revealed.has(teil)&&part&&goethePartHasContent(part,'lesen')){
+      shell.lesenParts.push(JSON.parse(JSON.stringify(part)));
+    }else{
+      shell.lesenParts.push({teil,_hybridPending:true,instruction:''});
+    }
+  }
+  return shell;
+}
+function refreshHybridProgressiveExam(readyExam,allTeils,revealedTeils,configWords,configSkills,lang){
+  S.examData=buildHybridProgressiveExamView(readyExam,allTeils,revealedTeils,configWords,configSkills);
+  if(typeof normalizeExam==='function'){
+    S.examData=normalizeExam(S.examData,{skipPostprocess:true})||S.examData;
+  }
+  if(typeof PersonalExamCoverage!=='undefined'&&PersonalExamCoverage.attachPersonalExamCoverage&&readyExam&&revealedTeils?.size){
+    PersonalExamCoverage.attachPersonalExamCoverage(S.examData,configWords);
+  }
+  hideAll();
+  if(typeof renderExam==='function')renderExam();
+}
+async function runHybridUniformReveal({
+  allTeils,lang,configWords,configSkills,generateFn,revealIntervalMs,
+}){
+  const teilList=[...allTeils].map(Number).filter(Number.isFinite).sort((a,b)=>a-b);
+  const intervalMs=Math.max(800,Number(revealIntervalMs)||HYBRID_REVEAL_MS_WITH_LIVE);
+  const revealed=new Set();
+  let readyExam=null;
+  let genError=null;
+  let genDone=false;
+  const startMs=Date.now();
+  const refresh=()=>refreshHybridProgressiveExam(readyExam,teilList,revealed,configWords,configSkills,lang);
+  refresh();
+  const genPromise=(async()=>{
+    try{
+      return await generateFn((exam)=>{readyExam=exam;});
+    }catch(err){
+      genError=err;
+      throw err;
+    }finally{
+      genDone=true;
+    }
+  })();
+  const revealPromise=(async()=>{
+    for(let i=0;i<teilList.length;i++){
+      const teil=teilList[i];
+      const slotAt=startMs+(i+1)*intervalMs;
+      await hybridSleep(Math.max(0,slotAt-Date.now()));
+      for(;;){
+        if(genError)throw genError;
+        if(hybridLesenPartReady(readyExam,teil))break;
+        if(genDone)break;
+        await hybridSleep(200);
+      }
+      if(hybridLesenPartReady(readyExam,teil)){
+        revealed.add(teil);
+        refresh();
+      }
+    }
+  })();
+  try{
+    const execResult=await genPromise;
+    await revealPromise;
+    return execResult;
+  }catch(err){
+    throw err;
+  }
+}
+function showHybridProgressiveExam(exam,configWords,configSkills,pendingTeils,lang){
+  const allTeils=(exam?.lesenParts||[]).map((p)=>Number(p.teil)).concat(pendingTeils||[]);
+  const unique=[...new Set(allTeils.map(Number))].sort((a,b)=>a-b);
+  const revealed=new Set(unique.filter((t)=>!(pendingTeils||[]).includes(t)));
+  refreshHybridProgressiveExam(exam,unique,revealed,configWords,configSkills,lang);
+}
+function hybridExecuteTimeoutMs(){
+  if(typeof ChunkRunner!=='undefined'&&ChunkRunner.EXAM_CHUNK_TIMEOUT_MS){
+    return ChunkRunner.EXAM_CHUNK_TIMEOUT_MS;
+  }
+  return 55000;
+}
+async function generatePersonalLesenHybrid(configWords,personalGenOpts,tier){
+  if(!isAllowLiveGenEnabled()){
+    throw Object.assign(new Error(liveAiGenerationBlockedMessage()),{code:'live_gen_disabled'});
+  }
+  if(typeof fetchHybridExamPlan!=='function'||typeof executeHybridLesenExam!=='function'){
+    throw new Error('Hybrid exam client not loaded');
+  }
+  if(typeof startExamGeneration!=='function')throw new Error('startExamGeneration unavailable');
+  const lang=S.subject;
+  const level=S.level;
+  const callTimeoutMs=hybridExecuteTimeoutMs();
+  const uiMsg=hybridPersonalUiMessages(lang);
+  const report=initPersonalGenReport(['lesen']);
+  updatePersonalLoader(1,1,personalModuleLabel('lesen',lang),report);
+  const titleEl=document.getElementById('loaderTitle');
+  const subEl=document.getElementById('loaderSub');
+  if(titleEl)titleEl.textContent=uiMsg.loaderTitle;
+  if(subEl)subEl.textContent=uiMsg.loaderSub;
+  const topic=await pickPersonalHybridTopic(personalGenOpts);
+  lcDebug.log('[personal] hybrid chunked generation',{topic,lang,level,callTimeoutMs});
+  const teils=resolvePersonalLesenTeils(personalGenOpts?.teilFilter);
+  let plan;
+  let meta;
+  try{
+    ({plan,meta}=await fetchHybridExamPlan({
+      module:'lesen',
+      teils,
+      topic,
+      vocab:configWords,
+      lang,
+      level,
+    }));
+  }catch(planErr){
+    throw Object.assign(planErr instanceof Error?planErr:new Error(String(planErr)),{code:planErr.code||'exam_plan_failed'});
+  }
+  const liveCells=plan.toGenerate||[];
+  const liveCount=Math.max(1,liveCells.length);
+  const revealIntervalMs=hybridRevealIntervalMs(liveCells.length);
+  lcDebug.log('[personal] hybrid reveal pacing',{liveCells:liveCells.length,revealIntervalMs});
+  let genTicket;
+  try{
+    genTicket=await startExamGeneration('personal_exam',liveCount);
+    if(typeof S!=='undefined')S._activeGenTicket=genTicket;
+  }catch(ticketErr){
+    if(ticketErr.code==='ai_credits_exhausted')throw ticketErr;
+    throw ticketErr;
+  }
+  let execResult;
+  let partialExam=null;
+  let partialTrace=null;
+  const hybridCallOpts={
+    genTicket,
+    topic,
+    vocab:configWords,
+    lang,
+    level,
+    module:'lesen',
+    plan,
+    planMeta:meta,
+    timeoutMs:callTimeoutMs,
+  };
+  const allPlanTeils=[...new Set([
+    ...(plan.fromPool||[]).map((c)=>Number(c.teil)),
+    ...(plan.toGenerate||[]).map((c)=>Number(c.teil)),
+    ...teils,
+  ])].filter(Number.isFinite).sort((a,b)=>a-b);
+  try{
+    execResult=await runHybridUniformReveal({
+      allTeils:allPlanTeils,
+      lang,
+      configWords,
+      configSkills:['lesen'],
+      revealIntervalMs,
+      generateFn:async(onProgress)=>{
+        execResult=await executeHybridLesenExam({
+          ...hybridCallOpts,
+          skipLive:true,
+          validateExam:!liveCells.length,
+        });
+        partialExam=execResult.exam;
+        partialTrace=execResult.trace;
+        onProgress(partialExam);
+        for(const cell of plan.fromPool||[]){
+          const poolHit=(partialTrace.pool||[]).find((p)=>Number(p.teil)===Number(cell.teil));
+          recordPersonalChunkResult(report,'lesen',{
+            label:`Lesen Teil ${cell.teil}`,
+            status:poolHit?.ok?'ok':'fail',
+          });
+        }
+        for(let i=0;i<liveCells.length;i++){
+          const cell=liveCells[i];
+          const isLast=i===liveCells.length-1;
+          execResult=await executeHybridLesenExam({
+            ...hybridCallOpts,
+            onlyLiveTeil:cell.teil,
+            includePool:false,
+            partialExam,
+            partialTrace,
+            validateExam:isLast,
+          });
+          partialExam=execResult.exam;
+          partialTrace=execResult.trace;
+          onProgress(partialExam);
+        }
+        return execResult;
+      },
+    });
+  }catch(execErr){
+    const rel=await refundActiveGenTicket();
+    if(rel?.released)execErr.quotaReleased=true;
+    throw execErr;
+  }
+  if(S.examData){
+    delete S.examData._hybridLoading;
+    delete S.examData._hybridPendingTeils;
+  }
+  const exam=execResult.exam;
+  const trace=execResult.trace||execResult.exam?._hybridTrace||{};
+  exam._genTicket=execResult.genTicket||genTicket;
+  exam._hybridPlan=execResult.plan||plan;
+  exam._hybridTrace=trace;
+  exam._hybridSource='factory';
+  exam._hybridValidated=!!execResult.validation?.valid;
+  exam.topic=exam.topic||topic;
+  exam.topicTag=exam.topicTag||topic;
+  for(const cell of plan.toGenerate||[]){
+    const live=(trace.live||[]).find((l)=>Number(l.teil)===Number(cell.teil));
+    recordPersonalChunkResult(report,'lesen',{
+      label:`Lesen Teil ${cell.teil}`,
+      status:live?.ok?'ok':'fail',
+    });
+    if(!live?.ok)report.failedTeile.push(`Lesen Teil ${cell.teil}`);
+  }
+  const hybridOk=!!execResult.validation?.valid;
+  const validationErrors=execResult.validation?.errors||[];
+  report.modules.push({skill:'lesen',ok:hybridOk,hybrid:true});
+  renderPersonalGenProgress(report);
+  if(!hybridOk)lcDebug.warn('[personal] hybrid validation notes:',validationErrors);
+  const teilCount=(exam.lesenParts||[]).filter((p)=>goethePartHasContent(p,'lesen')).length;
+  if(typeof isExamRenderable!=='function'||!isExamRenderable(exam)||teilCount<1){
+    const rel=await refundActiveGenTicket();
+    throw Object.assign(new Error('Hybrid exam failed validation.'),{
+      code:'exam_invalid',
+      validation:execResult.validation,
+      hybridExam:exam,
+      quotaReleased:!!rel?.released,
+      genReport:report,
+    });
+  }
+  exam._hybridValidated=hybridOk;
+  if(!hybridOk){
+    exam._hybridValidationNotes=validationErrors;
+    const missing=[1,2,3,4,5].filter(
+      (t)=>!(exam.lesenParts||[]).some((p)=>Number(p.teil)===t&&goethePartHasContent(p,'lesen'))
+    );
+    if(missing.length){
+      exam._partialGen=true;
+      exam._failedTeile=missing.map((t)=>`Teil ${t}`);
+    }
+  }
+  const fallbacks=(trace.live||[]).filter((l)=>l.fallback);
+  if(fallbacks.length){
+    exam._hybridFallbacks=fallbacks.map((f)=>f.teil);
+    lcDebug.warn('[personal] hybrid section fallbacks:',exam._hybridFallbacks);
+  }
+  exam.vocabSkills=['lesen'];
+  return{exam,source:'ai',genReport:report,hybrid:true};
+}
 if(typeof window!=='undefined'){
+  window.isAllowLiveGenEnabled=isAllowLiveGenEnabled;
   window.isExamPoolOnly=isExamPoolOnly;
+  window.isPersonalLesenPoolFirst=isPersonalLesenPoolFirst;
+  window.isPersonalHorenPoolFirst=isPersonalHorenPoolFirst;
+  window.isPersonalSchreibenPoolFirst=isPersonalSchreibenPoolFirst;
+  window.isPersonalModulePoolFirst=isPersonalModulePoolFirst;
+  window.isPersonalLesenHybridEnabled=isPersonalLesenHybridEnabled;
   if(window.EXAM_POOL_ONLY===undefined)window.EXAM_POOL_ONLY=true;
 }
 async function generatePersonalExam(words,skills,goalId,opts){
@@ -2918,7 +3583,22 @@ async function generatePersonalExam(words,skills,goalId,opts){
   configSkills=orderedPersonalSkills(configSkills||['lesen']);
   const tier=typeof canUsePersonalizedTier==='function'?canUsePersonalizedTier():'free';
   const poolOnly=isExamPoolOnly();
-  if(!poolOnly && !canGenerate()){showUpgrade();return;}
+  const poolFirstModule=isPersonalModulePoolFirst(configSkills,S.subject,S.level);
+  const usePoolAssembly=poolOnly||poolFirstModule;
+  const hybridEnabled=isPersonalLesenHybridEnabled(configSkills,S.subject,S.level);
+  lcDebug.log('[personal] generation mode',{
+    poolOnly,
+    poolFirstModule,
+    usePoolAssembly,
+    hybridEnabled,
+    allowLive:isAllowLiveGenEnabled(),
+    EXAM_POOL_ONLY:typeof window!=='undefined'?window.EXAM_POOL_ONLY:undefined,
+    ALLOW_LIVE_GEN:typeof window!=='undefined'?window.ALLOW_LIVE_GEN:undefined,
+    lang:S.subject,
+    level:S.level,
+    skills:configSkills,
+  });
+  if(!usePoolAssembly&&!canGenerate()){showUpgrade();return;}
   let libraryMatchCount;
   if(typeof VocabBatching!=='undefined'&&!skipBatching){
     if(typeof QuestionLibrary!=='undefined'&&QuestionLibrary.hasLibrary(S.subject,S.level)){
@@ -2938,7 +3618,7 @@ async function generatePersonalExam(words,skills,goalId,opts){
   }
   S.mode='practice';S.isDemo=false;S.answers={};S.gapAnswers={};S.quickMod=null;
   initExamSession('practice');
-  S.lastPersonalConfig={words:configWords,skills:configSkills,goalId:configGoalId||S.activeGoalId,teilFilter:opts?.teilFilter??_examConfig.teilChoice??'all'};
+  S.lastPersonalConfig={words:configWords,skills:configSkills,goalId:configGoalId||S.activeGoalId,teilFilter:opts?.teilFilter??_examConfig.teilChoice??'all',topic:opts?.topic??_examConfig.topicChoice??null};
   if(typeof VocabBatching!=='undefined'&&typeof HorenGame!=='undefined'&&VocabBatching.shouldUseGame(configWords,configSkills,libraryMatchCount)){
     launchHorenGame(configWords,S.subject,S.level);return;
   }
@@ -2947,57 +3627,120 @@ async function generatePersonalExam(words,skills,goalId,opts){
   document.getElementById('loaderTitle').textContent=moduleCount>1
     ?`Generating ${personalModuleLabel(configSkills[0],S.subject)}… (1/${moduleCount})`
     :'Building your personal mock exam…';
-  document.getElementById('loaderSub').textContent=poolOnly
-    ?'Ensamblando desde el pool…'
-    :'This may take ~1–2 min per module.';
+  document.getElementById('loaderSub').textContent=usePoolAssembly
+    ?(S.subject==='de'
+      ?'Dein personalisiertes Examen wird aus dem Pool zusammengestellt…'
+      :'Assembling your personalized exam from the pool…')
+    :isPersonalLesenHybridEnabled(configSkills,S.subject,S.level)
+      ?(S.subject==='de'
+        ?'Wir integrieren dein Vokabular — das kann etwa eine Minute dauern.'
+        :'Integrating your vocabulary — this may take about a minute.')
+      :'This may take ~1–2 min per module.';
   renderPersonalGenProgress(initPersonalGenReport(configSkills));
   try{
     let built=null;
 
-    // ── Pool-only: ensamblar exámenes desde el pool, sin IA ni créditos ──
-    if (poolOnly) {
-      console.log('[personal] EXAM_POOL_ONLY branch', { words: configWords, skills: configSkills, lang: S.subject, level: S.level });
-      document.getElementById('loaderSub').textContent = 'Ensamblando desde el pool…';
-      const combined = { lang: S.subject, level: S.level, goetheFormat: true, vocabPersonal: true, poolSource: true };
+    // ── Pool assembly: instant serve from reusable parts (no live AI) ──
+    if (usePoolAssembly) {
+      const personalTopic = await pickPersonalHybridTopic({
+        topic: opts?.topic || goalRef?.topic || S.lastPersonalConfig?.topic,
+      });
+      console.log('[personal] pool assembly', {
+        poolFirstModule,
+        poolOnly,
+        topic: personalTopic,
+        words: configWords,
+        skills: configSkills,
+        lang: S.subject,
+        level: S.level,
+      });
+      const combined = {
+        lang: S.subject,
+        level: S.level,
+        goetheFormat: true,
+        vocabPersonal: true,
+        poolSource: true,
+        topic: personalTopic,
+        topicTag: personalTopic,
+      };
       const coveredAll = new Set();
       let requestedTotal = configWords.length;
       const missingAll = [];
+      const relaxedAll = [];
+      let anyParts = false;
 
       for (const module of configSkills) {
-        console.log('[personal] assembleModuleFromPool', { module, words: configWords });
-        const res = await assembleModuleFromPool(module, configWords, S.subject, S.level);
+        const res = await assembleModuleFromPool(module, configWords, S.subject, S.level, {
+          topicTag: personalTopic,
+        });
         const key = _MODULE_PART_KEY[module] || `${module}Parts`;
-        if (!res || !res.exam || !Array.isArray(res.exam[key]) || !res.exam[key].length) {
-          hideAll();
-          lcToast('Todavía no hay contenido en el pool para esas palabras.', 'warn', 7000);
-          goHome();
-          return;
-        }
+        if (!res?.exam?.[key]?.length) continue;
+        anyParts = true;
         combined[key] = res.exam[key];
         (res.coveredWords || []).forEach((w) => coveredAll.add(String(w).toLowerCase()));
         if (res.coverage) requestedTotal = Math.max(requestedTotal, res.coverage.requested || configWords.length);
-        (res.missingTeile || []).forEach((t) => missingAll.push(`${module} T${t}`));
+        (res.missingTeile || []).forEach((t) => missingAll.push({ module, teil: t }));
+        (res.relaxedTeile || []).forEach((r) => {
+          const teil = typeof r === 'object' ? r.teil : r;
+          const actualTopic = typeof r === 'object' ? r.actualTopic : null;
+          relaxedAll.push({ module, teil, actualTopic });
+        });
       }
 
-      combined._coverageOverall={
+      if (!anyParts) {
+        hideAll();
+        const emptyMod = configSkills[0] || 'lesen';
+        lcToast(personalPoolEmptyMessage(personalTopic, S.subject, emptyMod), 'warn', 8000);
+        if (_examConfig.goalId) {
+          show('examConfigScreen');
+          showExamConfigFootbar(true);
+          renderExamConfigurator();
+        } else show('flashcardScreen');
+        return;
+      }
+
+      combined._coverageOverall = {
         found: coveredAll.size,
         total: configWords.length,
         words: [...coveredAll],
         missing: configWords.filter((w) => !coveredAll.has(String(w).toLowerCase())),
         ratio: configWords.length ? coveredAll.size / configWords.length : 0,
       };
+      if (missingAll.length) {
+        combined._partialGen = true;
+        combined._missingTeile = missingAll.map((m) => `${m.module} T${m.teil}`);
+        combined._poolMissingTeile = missingAll;
+      }
+      if (relaxedAll.length) {
+        combined._poolTopicRelaxed = true;
+        combined._poolRelaxedTeile = relaxedAll;
+      }
+      combined._poolRequestedTopic = personalTopic;
+      combined.topicTag = personalTopic;
+      if (typeof PersonalLesenTopicStock !== 'undefined' && PersonalLesenTopicStock.formatPersonalExamDisplayTitle) {
+        combined._displayTopic = PersonalLesenTopicStock.formatPersonalExamDisplayTitle(combined, S.subject);
+      } else {
+        combined._displayTopic = personalTopic;
+      }
+      combined.topic = combined._displayTopic;
 
       await finalizePersonalExam(configWords, configSkills, configGoalId, goalRef, combined, 'pool');
 
-      if (typeof lcToast === 'function' && configWords.length > 0) {
-        lcToast(`Generado con ${coveredAll.size} de ${configWords.length} palabras`, 'success', 6000);
-      }
       if (missingAll.length && typeof lcToast === 'function') {
-        lcToast(`Aviso: faltó contenido en ${missingAll.length} parte(s)`, 'warn', 6000);
+        lcToast(
+          personalPoolMissingTeileMessage(missingAll.map((m) => m.teil), personalTopic, S.subject),
+          'warn',
+          7000,
+        );
+      } else if (relaxedAll.length && typeof lcToast === 'function') {
+        const honest = typeof PersonalLesenTopicStock !== 'undefined' && PersonalLesenTopicStock.topicHonestyBanner
+          ? PersonalLesenTopicStock.topicHonestyBanner(combined, S.subject)
+          : personalPoolTopicRelaxedMessage(personalTopic, S.subject);
+        lcToast(honest, 'warn', 8000);
       }
       return;
     }
-    // ── fin pool-only ──
+    // ── fin pool assembly ──
 
     const tierAi=tier==='pro'||tier==='trial';
     if(tierAi){
@@ -3012,7 +3755,11 @@ async function generatePersonalExam(words,skills,goalId,opts){
             if(bp)personalGenOpts.blueprint=bp;
           }catch(bpErr){lcDebug.warn('[personal] blueprint preload failed:',bpErr);}
         }
-        built=await generatePersonalExamAiSerial(configWords,configSkills,configGoalId,personalGenOpts,tier);
+        if(isPersonalLesenHybridEnabled(configSkills,S.subject,S.level)){
+          built=await generatePersonalLesenHybrid(configWords,personalGenOpts,tier);
+        }else{
+          built=await generatePersonalExamAiSerial(configWords,configSkills,configGoalId,personalGenOpts,tier);
+        }
       }catch(aiErr){
         const canFallbackLibrary=
           aiErr.code==='ai_credits_exhausted'||
@@ -3029,9 +3776,15 @@ async function generatePersonalExam(words,skills,goalId,opts){
           if(aiErr.code==='ai_credits_exhausted'&&typeof showAiCreditsExhausted==='function'){
             showAiCreditsExhausted(aiErr.autoRechargeFailed?{autoRechargeFailed:true,reason:aiErr.reason}:undefined);
           }else if(aiErr.code==='exam_invalid'){
-            lcDebug.warn('[personal] AI exam invalid, trying library fallback:',aiErr.message);
+            const recovered=recoverHybridProgressiveExam(configWords,configSkills,aiErr);
+            if(recovered){
+              built={exam:recovered,source:'ai',hybrid:true};
+              lcDebug.warn('[personal] keeping hybrid exam after validation failure');
+            }else{
+              lcDebug.warn('[personal] AI exam invalid, trying library fallback:',aiErr.message);
+            }
           }
-          built=await tryPersonalPoolOrLibrary(configWords,configSkills,configGoalId,goalRef);
+          if(!built)built=await tryPersonalPoolOrLibrary(configWords,configSkills,configGoalId,goalRef);
           if(!built){
             if(aiErr.code==='ai_credits_exhausted'){
               hideAll();
@@ -3041,8 +3794,12 @@ async function generatePersonalExam(words,skills,goalId,opts){
             }
             throw aiErr;
           }
-          if(aiErr.code==='exam_invalid'){
+          if(aiErr.code==='exam_invalid'&&!built?.hybrid){
             lcToast('AI exam could not be validated; assembled from the question library instead.','warn',7000);
+          }else if(built?.hybrid&&built.exam?._partialGen){
+            lcToast(S.subject==='de'
+              ? 'Einige Teile konnten nicht validiert werden — dein personalisiertes Examen bleibt erhalten.'
+              : 'Some parts could not be validated — your personalized exam is kept.','warn',8000);
           }
         }else throw aiErr;
       }
@@ -3079,12 +3836,44 @@ async function generatePersonalExam(words,skills,goalId,opts){
       return;
     }
     if(e.code==='exam_invalid'&&(e.answerKeyVerify||e.quotaRefund)){
+      const renderableHybrid=S.examData&&S.examData.vocabPersonal
+        &&Array.isArray(S.examData.lesenParts)
+        &&S.examData.lesenParts.some(p=>p&&!p._hybridPending)
+        &&typeof isExamRenderable==='function'&&isExamRenderable(S.examData);
+      if(renderableHybrid){
+        delete S.examData._hybridLoading;
+        delete S.examData._hybridPendingTeils;
+        hideAll();
+        if(typeof renderExam==='function')renderExam();
+        lcToast(S.subject==='de'
+          ? 'Einige Teile konnten nicht verifiziert werden — du kannst mit dem vorhandenen Examen weitermachen.'
+          : 'Some parts could not be verified — you can continue with the exam you have.','warn',8000);
+        return;
+      }
       S.examData=null;
       hideAll();
       goHome();
       lcToast(e.quotaReleased
         ? 'Could not deliver the exam. Your credit has been refunded — it does not count as a generated exam.'
         : 'Answer-key verification removed all questions. Try generating again.','error',8000);
+      return;
+    }
+    if(e.code==='validation_unavailable'||e.code==='live_gen_disabled'){
+      S.examData=null;
+      hideAll();
+      goHome();
+      lcToast(e.quotaReleased
+        ? 'Could not verify the generated exam. Your credit has been refunded — please try again.'
+        : (e.message||'Could not verify the generated exam. Please try again.'),'error',8000);
+      return;
+    }
+    if(e.code==='timeout'){
+      S.examData=null;
+      hideAll();
+      goHome();
+      lcToast(e.quotaReleased
+        ? 'Hybrid generation timed out (~55s per Teil). Your credit has been refunded — try again with fewer words.'
+        : 'Hybrid generation timed out (~55s per Teil). Try again with fewer words or later.','error',8000);
       return;
     }
     if(!isExamPoolOnly()&&e.code==='exam_invalid'&&(tier==='pro'||tier==='trial')){
@@ -3313,7 +4102,7 @@ async function generateSectionExam(module,goalId){
   const canAi=typeof canUseAiGeneration==='function'?canUseAiGeneration():
               (typeof canGenerate==='function'?canGenerate():false);
 
-  if(canAi){
+  if(canAi&&isAllowLiveGenEnabled()){
     document.getElementById('loaderSub').textContent=`No cached section found — generating with AI (3 AI credits)…`;
     try{
       const personalGenOpts={
@@ -3353,3 +4142,45 @@ window.fillMissingHorenTeileFromPool=fillMissingHorenTeileFromPool;
 window.fillMissingSchreibenTeileFromPool=fillMissingSchreibenTeileFromPool;
 window.seenPartIds        =seenPartIds;
 window.assembleModuleFromPool=assembleModuleFromPool;
+window.improvePersonalCoverageFromPool=improvePersonalCoverageFromPool;
+
+/**
+ * Acción del banner de cobertura: el usuario pide incorporar más de sus
+ * palabras. Busca matches en el pool (modo aggressive), sustituye Teile sin
+ * palabras y re-renderiza preservando las respuestas ya dadas.
+ */
+async function lcRetryCoverageSwap(){
+  const exam=S.examData;
+  const words=exam?.vocabWords||[];
+  if(!exam||!words.length)return;
+  const isDE=(exam.lang||S.subject)==='de';
+  const btn=document.getElementById('covSwapBtn');
+  if(btn){btn.disabled=true;btn.textContent=isDE?'Suche im Pool…':'Searching the pool…';}
+  let bp=null;
+  if(typeof ExamBlueprint!=='undefined'){
+    try{bp=await ExamBlueprint.load(S.subject,S.level);}catch(_){}
+  }
+  const before=Array.isArray(exam._coverageSwaps)?exam._coverageSwaps.length:0;
+  let out=exam;
+  try{
+    out=await improvePersonalCoverageFromPool(exam,words,exam.vocabSkills||[],bp,{aggressive:true});
+  }catch(err){lcDebug.warn('[personal] manual coverage swap failed:',err);}
+  const after=Array.isArray(out?._coverageSwaps)?out._coverageSwaps.length:0;
+  if(after>before){
+    S.examData=out;
+    attachPersonalCoverage(S.examData,words);
+    if(typeof collectExamFieldValues==='function')S._resumeFieldValues=collectExamFieldValues();
+    S._resumeScrollY=window.scrollY;
+    if(typeof renderExam==='function')renderExam();
+    showPersonalCoverageToast(S.examData,words);
+  }else{
+    if(btn){btn.textContent=isDE?'Gerade kein passender Teil im Pool':'No matching part in the pool right now';}
+    lcToast(
+      isDE
+        ?'Im Pool gibt es gerade keinen Teil mit deinen fehlenden Wörtern. Neue Inhalte kommen laufend dazu.'
+        :'The pool has no part with your missing words right now. New content is added continuously.',
+      'info',6000
+    );
+  }
+}
+window.lcRetryCoverageSwap=lcRetryCoverageSwap;

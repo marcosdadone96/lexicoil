@@ -375,10 +375,21 @@ function validateLesenT3AdsStructure(part, bpPart, partLabel) {
   }
 
   const items = collectPartQuestions(part);
-  for (const it of items) {
-    const opts = (it.options || []).map((o) => String(typeof o === 'object' ? o.key : o).toUpperCase());
-    if (!opts.includes('0')) {
-      errors.push(`matching_missing_zero_option:${partLabel},id=${it.id || it.number || '?'}`);
+  const usesSideAds = adKeys.length === GOETHE_B1_AD_KEYS.length;
+  if (usesSideAds) {
+    const hasNoMatch = items.some((it) => {
+      const c = String(it.correct ?? it.correctAnswer ?? '').trim().toUpperCase();
+      return c === '0';
+    });
+    if (!hasNoMatch) {
+      errors.push(`matching_missing_no_match_situation:${partLabel}`);
+    }
+  } else {
+    for (const it of items) {
+      const opts = (it.options || []).map((o) => String(typeof o === 'object' ? o.key : o).toUpperCase());
+      if (!opts.includes('0')) {
+        errors.push(`matching_missing_zero_option:${partLabel},id=${it.id || it.number || '?'}`);
+      }
     }
   }
 

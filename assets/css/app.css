@@ -1040,6 +1040,40 @@ button.ws-exam-card:disabled:hover{border-color:var(--border);transform:none}
 .ws-act-card.soon{opacity:.55;cursor:default;pointer-events:none}
 .exam-config-hint{font-size:11px;font-weight:500;color:var(--text-muted);margin-top:8px;line-height:1.5}
 .exam-config-teil-select{display:block;width:100%;max-width:100%;margin:0 0 10px;padding:11px 14px;border:1px solid var(--border);border-radius:var(--radius-lg);background:var(--surface,var(--bg2));color:var(--text);font-size:14px;font-weight:600;font-family:var(--lc-font);cursor:pointer;box-shadow:var(--shadow-card,0 1px 3px rgba(15,23,42,.06))}
+.exam-config-meta{font-size:12.5px;color:var(--text-muted);margin:0 0 22px;line-height:1.5}
+.ec-step-label{font-size:11.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--text-muted);font-weight:700;margin:24px 0 10px;display:flex;align-items:center;gap:8px}
+.ec-step-num{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:var(--brand);color:#fff;font-size:11px;font-weight:700;flex:none}
+.ec-skills-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:4px}
+@media(max-width:520px){.ec-skills-grid{grid-template-columns:1fr}}
+.ec-skill-card{position:relative;background:var(--surface,var(--bg2));border:1.5px solid var(--border);border-radius:var(--radius-lg);padding:14px 16px;cursor:pointer;display:flex;align-items:flex-start;gap:10px;transition:border-color .15s,background .15s;box-shadow:var(--shadow-card,0 1px 3px rgba(15,23,42,.06))}
+.ec-skill-card:hover{border-color:var(--border-strong,var(--border2))}
+.ec-skill-card.on{border-color:var(--brand);background:var(--brand-light)}
+.ec-skill-dot{width:9px;height:9px;border-radius:50%;border:2px solid var(--text-muted);flex-shrink:0;margin-top:5px;transition:.15s}
+.ec-skill-card.soon{opacity:.55;cursor:default}
+.ec-skill-card.soon.on{opacity:.65}
+.ec-skill-body{flex:1;min-width:0;padding-right:52px}
+.ec-skill-name{font-weight:650;font-size:15px;color:var(--text)}
+.ec-skill-desc{font-size:12.5px;color:var(--text-secondary);margin-top:3px;line-height:1.4}
+.ec-skill-card .exam-config-badge{position:absolute;top:14px;right:14px}
+.exam-config-topic-select{display:block;width:100%;max-width:100%;margin:0 0 8px;padding:13px 15px;border:1.5px solid var(--border);border-radius:var(--radius-lg);background:var(--surface,var(--bg2));color:var(--text);font-size:15px;font-weight:600;font-family:var(--lc-font);cursor:pointer;box-shadow:var(--shadow-card,0 1px 3px rgba(15,23,42,.06));appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%235A6478' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 15px center}
+.exam-config-topic-select:focus{outline:2px solid var(--brand-light);border-color:var(--brand)}
+.exam-config-topic-hint{display:flex;align-items:flex-start;gap:7px;margin:0 0 14px;font-size:12.5px;color:var(--text-secondary);line-height:1.45}
+.exam-config-topic-hint--ok{color:var(--green);font-weight:600}
+.ec-hint-dot{width:6px;height:6px;border-radius:50%;background:var(--green);flex-shrink:0;margin-top:6px}
+.ec-vocab-card{background:var(--surface,var(--bg2));border:1.5px solid var(--border);border-radius:var(--radius-lg);padding:16px;box-shadow:var(--shadow-card,0 1px 3px rgba(15,23,42,.06));margin-bottom:8px}
+.ec-vocab-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:4px}
+.ec-vocab-title{font-weight:650;font-size:14px;color:var(--text)}
+.ec-vocab-count{font-size:12.5px;color:var(--brand);font-weight:700;background:var(--brand-light);padding:3px 9px;border-radius:20px;white-space:nowrap}
+.ec-vocab-sub{font-size:12px;color:var(--text-muted);margin:0 0 12px;line-height:1.45}
+.ec-vocab-actions{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:14px}
+.ec-vocab-actions button{background:none;border:none;color:var(--brand);font-size:12.5px;font-weight:600;cursor:pointer;padding:0;font-family:var(--lc-font)}
+.ec-vocab-cols{margin-top:0}
+.ec-vocab-col{min-height:100px}
+.ec-vocab-row .due-dot{width:6px;height:6px;border-radius:50%;background:var(--orange);flex-shrink:0;margin-left:2px}
+.ec-vocab-legend{display:flex;align-items:center;gap:6px;margin:12px 0 0;font-size:11px;color:var(--text-muted)}
+.ec-foot-note{display:block;margin-top:4px;font-size:11px;font-weight:500;color:var(--text-muted)}
+.exam-config-footbar .summary b{font-weight:700}
+.personal-teil-alt-note{margin:-4px 0 10px;padding:8px 12px;border-radius:var(--radius-md);background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.35);font-size:12px;font-weight:600;color:var(--orange)}
 .exam-config-teil-select:focus{outline:2px solid var(--brand-light);border-color:var(--brand)}
 .exam-config-cta{display:inline-flex;align-items:center;gap:6px;min-height:36px;font-size:13px;font-weight:700;color:var(--brand);background:none;border:none;cursor:pointer;font-family:var(--lc-font);padding:0}
 .exam-config-footbar{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--bg2);border-top:1px solid var(--border);padding:12px 16px calc(12px + env(safe-area-inset-bottom));display:none;align-items:center;gap:12px}

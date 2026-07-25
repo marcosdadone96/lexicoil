@@ -38,7 +38,7 @@ gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personali
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/css/lexicoil-design-system.css?v=4">
-<link rel="stylesheet" href="/assets/css/app.css?v=24">
+<link rel="stylesheet" href="/assets/css/app.css?v=26">
 <link rel="stylesheet" href="/assets/css/app-utilities.css?v=3">
 <link rel="stylesheet" href="/assets/css/feedback-modal.css?v=1">
 </head>
@@ -450,7 +450,7 @@ gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personali
 <script src="js/data/activityTrack.js?v=2"></script>
 <script src="js/services/syncMerge.js?v=6"></script>
 <script src="js/services/authClient.js?v=18"></script>
-<script src="js/services/claudeClient.js?v=25"></script>
+<script src="js/services/claudeClient.js?v=30"></script>
 <script src="js/engine/domain/lexicoilDomain.js?v=1"></script>
 <script src="js/engine/knowledge/KnowledgeLoader.js?v=1"></script>
 <script src="js/engine/providers/baseProviderAdapter.js?v=1"></script>
@@ -512,6 +512,9 @@ gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personali
 <script src="js/library/BurnedRegistry.js?v=1"></script>
 <script src="js/library/VocabBatching.js?v=1"></script>
 <script src="js/library/ItemCalibration.js?v=1"></script>
+<script src="js/engine/partTopicDetect.js?v=1"></script>
+<script src="js/data/b1Topics.js?v=2"></script>
+<script src="js/data/personalLesenTopicStock.js?v=1"></script>
 <script src="js/library/adsMatching.js?v=1"></script>
 <script src="js/library/ExamBlueprint.js?v=3"></script>
 <script src="js/engine/targetUsage.js?v=2"></script>
@@ -546,7 +549,7 @@ gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personali
 <script src="js/bootstrap/auth.js?v=5"></script>
 <script src="js/bootstrap/theme.js?v=2"></script>
 <script src="js/ui/workspace/vocabHub.js?v=14"></script>
-<script src="js/ui/exam/examConfig.js?v=8"></script>
+<script src="js/ui/exam/examConfig.js?v=12"></script>
 <script src="js/ui/exam/mistakeReview.js?v=1"></script>
 <script src="js/config/speakingModes.js?v=1"></script>
 <script src="js/ui/exam/speakingMic.js?v=1"></script>
@@ -559,18 +562,22 @@ gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personali
 <script src="js/bootstrap/nav.js?v=6"></script>
 <script src="js/ui/exam/examValidation.js?v=2"></script>
 <script>window.LC_DIRECT_POOL='1';window.DEBUG_LEXICOIL='1';/* staging: window.LEXICOIL_SHOW_BETA_LEVELS=true */
+/* Personal exams: pool-only (no live AI assembly). Oral speaking is separate when pool exists. */
+(function(){
+  window.EXAM_POOL_ONLY=true;
+})();
 /* Official B1 content: 'published' = library/published-exams/ | 'legacy' = data/exams/de_B1.json */
 window.LEXICOIL_EXAM_SOURCE='published';</script>
 <script src="js/engine/strategyBFlags.js?v=3"></script>
 <script src="js/ui/exam/examSources.js?v=3"></script>
 <script src="js/engine/prompts/partPostprocess.js?v=1"></script>
 <script src="js/engine/personalLesenPoolFallback.js?v=5"></script>
-<script src="js/engine/personalExamCoverage.js?v=2"></script>
+<script src="js/engine/personalExamCoverage.js?v=3"></script>
 <script src="js/engine/validation/lesenPassageIntegrity.js?v=1"></script>
-<script src="js/ui/exam/examGeneration.js?v=33"></script>
+<script src="js/ui/exam/examGeneration.js?v=52"></script>
 <script src="js/ui/exam/results.js?v=15"></script>
 <script src="js/ui/exam/examKeyboard.js?v=1"></script>
-<script src="js/ui/exam/examRunner.js?v=18"></script>
+<script src="js/ui/exam/examRunner.js?v=23"></script>
 <script src="js/ui/exam/saveExams.js?v=3"></script>
 <script src="js/ui/vocabulary/tooltip.js?v=15"></script>
 <script src="js/bootstrap/audio.js?v=4"></script>

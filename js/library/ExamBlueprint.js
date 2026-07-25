@@ -320,10 +320,31 @@ const ExamBlueprint = (() => {
       // If still empty: leave as [] → coverage.complete = false → exam rejected
     }
 
+    // ── Coherent multiple-matching set (Cambridge Reading P2) ────────────────
+    // INVARIANT: the 5 people and the 8 texts must come from ONE source batch;
+    // mixing sets breaks the A-H option mapping. Group by question-id prefix
+    // (…-qN) and pick a complete group only.
+    if (!picked?.length && partSpec.slotType === 'person_text_matching') {
+      const bySet = new Map();
+      for (const q of candidates) {
+        const m = String(q.id || '').match(/^(.*?)-q\d+$/i);
+        if (!m) continue;
+        if (!bySet.has(m[1])) bySet.set(m[1], []);
+        bySet.get(m[1]).push(q);
+      }
+      const complete = [...bySet.values()].filter((qs) => qs.length >= target);
+      if (complete.length) picked = shuffle(complete)[0].slice(0, target);
+    }
+
     if (!picked?.length) {
       if (modId === 'lesen' && (teil === 3 || teil === 4)) {
         // Never fall through to individual-item shuffle for T3/T4 — coherence cannot be
         // guaranteed. Leave picked empty so coverage.complete = false signals the gap.
+        picked = [];
+      } else if (['mcq_gap_fill', 'open_cloze', 'person_text_matching', 'sentence_completion', 'interview_mcq'].includes(partSpec.slotType || '')) {
+        // Cambridge set-coherent slots: a cloze must come whole from one passage and
+        // a multiple-matching set from one batch. Random shuffle would Frankenstein
+        // them — leave empty so coverage fails loudly instead.
         picked = [];
       } else if (modId === 'horen' && teil === 1) {
         // H1 requires segment-aligned picking (5 passages × 1RF+1MC each).

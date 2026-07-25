@@ -323,7 +323,12 @@ function renderLesenAdsBlock(part,pi,isPrac,ui){
     return `<div class="pt-ad-item"><span class="pt-ad-key">${k})</span><span class="pt-ad-body">${body}</span></div>`;
   }).join('')}</div>`;
 }
+function renderHybridPendingLesenSection(part,ui){
+  const msg=ui.lang==='de'?'Wird personalisiert…':'Personalizing…';
+  return `<section class="module-wrap hybrid-pending-section" data-teil="${esc(String(part.teil||''))}"><div class="module-tag tag-lesen">${ui.reading} — ${ui.teil} ${part.teil||''}</div><div class="hybrid-pending-body" style="padding:36px 16px;text-align:center;color:var(--text-muted)"><div class="hybrid-pending-pulse" style="font-size:22px;line-height:1;margin-bottom:10px;opacity:.55">⋯</div><p style="font-size:13px;font-style:italic;margin:0">${esc(msg)}</p></div></section><hr class="section-div">`;
+}
 function renderGoetheLesenPart(part,pi,isPrac,ui){
+  if(part._hybridPending)return renderHybridPendingLesenSection(part,ui);
   const hasContent=part.items?.length||part.text||part.ads?.length||part.questions?.length||part.opinions?.length||part.textWithGaps?.length||part.persons?.length;
   if(!hasContent){
     lcDebug.warn('[render] lesenPart',pi,'has no renderable content:',part);
@@ -331,7 +336,9 @@ function renderGoetheLesenPart(part,pi,isPrac,ui){
   }
   const modLabel=ui.reading;
   const teilLabel=ui.teil;
-  let h=`<section class="module-wrap"><div class="module-tag tag-lesen">${modLabel} — ${teilLabel} ${part.teil}${part.arbeitszeit?' · '+part.arbeitszeit:''}</div><div class="off-instr">${esc(part.instruction)}</div>`;
+  const altNote=part._topicRelaxed&&typeof PersonalLesenTopicStock!=='undefined'&&PersonalLesenTopicStock.formatRelaxedTeilNote
+    ?`<div class="personal-teil-alt-note">${esc(PersonalLesenTopicStock.formatRelaxedTeilNote(part,ui.lang))}</div>`:'';
+  let h=`<section class="module-wrap"><div class="module-tag tag-lesen">${modLabel} — ${teilLabel} ${part.teil}${part.arbeitszeit?' · '+part.arbeitszeit:''}</div>${altNote}<div class="off-instr">${esc(part.instruction)}</div>`;
   const mod='lesen_'+pi;
   const adsMatching=isLesenAdsMatchingRender(part);
   if(adsMatching){
@@ -358,7 +365,7 @@ function renderGoetheLesenPart(part,pi,isPrac,ui){
       h+=`<div class="pt-match-pills">`;
       adLetters.forEach(letter=>{
         const sel=saved===letter;
-        h+=`<button type="button" class="pt-letter-pill${sel?' selected':''}" onclick="ptSetMatch(${jsLit(ak)},${jsLit(letter)},this)">${letter}</button>`;
+        h+=`<button type="button" class="pt-letter-pill${sel?' selected':''}" onclick='ptSetMatch(${jsLit(ak)},${jsLit(letter)},this)'>${letter}</button>`;
       });
       h+=`</div></div>`;
     });
@@ -743,6 +750,8 @@ function renderExam(){
   const timerH=(isOffMode&&!isQ)?`<div class="timer-wrap"><span class="timer-val" id="timerVal">--:--</span></div>`:'';
   const practH=isPrac?`<div class="exam-prac-banner exam-mode-banner"><b>${isDE?'Übungsmodus':'Practice mode'}:</b> ${isDE?'Tippe auf Wörter für Übersetzung und Speichern. Gespeicherte Wörter sind farbcodiert —':'Tap words to translate and save. Saved words are color-coded —'} <span class="vocab-legend vocab-pos-noun">${isDE?'Nomen':'noun'}</span> <span class="vocab-legend vocab-pos-verb">${isDE?'Verb':'verb'}</span> <span class="vocab-legend vocab-pos-adjective">${isDE?'Adj':'adj'}</span> <span class="vocab-legend vocab-pos-adverb">${isDE?'Adv':'adv'}</span>.</div>`:'';
   const partialGenH=d._partialGen?`<div class="personal-gen-banner"><b>Partial generation</b> — some Teile were skipped.${d._failedTeile?.length?` Missing: ${esc(d._failedTeile.slice(0,4).join(', '))}${d._failedTeile.length>4?'…':''}.`:''} <button type="button" class="btn-sm accent" onclick="retryFailedPersonalParts()">Retry failed parts</button></div>`:'';
+  const hybridBannerMsg=isDE?'Dein Examen wird personalisiert…':'Personalizing your exam…';
+  const hybridLoadingH=d._hybridLoading?`<div class="personal-gen-banner hybrid-loading-banner"><b>${hybridBannerMsg}</b></div>`:'';
   const officialH=isOffMode?`<div class="exam-official-banner exam-mode-banner"><b>${isDE?'Official-Modus':'Official mode'}:</b> ${isDE?'Tippe auf ein Wort, um es zu markieren (nochmal tippen = entfernen). Keine Übersetzungen während des Exams — markierte Wörter siehst du danach in den Ergebnissen.':'Tap a word to mark it (tap again to unmark). No translations during the exam — review marked words on the results screen.'}</div>`:'';
   const demoH=d.guidedDemo?`<div class="demo-banner"><b>5-minute product demo</b> — Experience every module at reduced volume. Click words you miss to see vocabulary detection.</div>`:'';
   const langH=isPrac&&!isQ?`<div class="exam-lang-toolbar"><span class="exam-lang-label">${isDE?'Übersetzen:':'Translate to:'}</span>${LANGS.map(l=>`<button class="vt-lb ex-lb${S.vocabLang===l.code?' active':''}" onclick="setVL('${l.code}',this)">${l.l}</button>`).join('')}</div>`:'';
@@ -792,17 +801,20 @@ function renderExam(){
   const isPool=fromQuestionLibrary||fromPool;
   const isPersonal=!!d.vocabPersonal;
   const bc=isDemo?'demo':isPool?'pool':isPersonal?'vocab':isQ?'quick':isPrac?'practice':'official',bl=isDemo?'Demo Exam':fromQuestionLibrary?'From library':fromPool?'From pool':isPersonal?'Personal Mock':isQ?('Quick: '+S.quickMod):isPrac?'Practice':'Official Exam';
-  const titleTxt=esc(isOff?(d.official?.certificate||d.topic):(isPersonal?('Personal · '+d.topic):(isDE?'Deutsch':'English')+' — '+d.topic));
+  const titleTxt=esc(isOff?(d.official?.certificate||d.topic):(isPersonal?(d._displayTopic||('Personal · '+d.topic)):(isDE?'Deutsch':'English')+' — '+d.topic));
   const personalVerified=(d._coverageOverall?.found??d.targetUsageVerified?.length??0);
   const personalTotal=(d._coverageOverall?.total??d.vocabWords?.length)||0;
-  const personalWordsUsed=(d._coverageOverall?.words||d.targetUsageVerified?.map(u=>u.word)||[]);
-  const personalWordsPreview=esc(personalWordsUsed.slice(0,8).join(', '))+(personalWordsUsed.length>8?'…':'');
-  const covHeader=typeof PersonalExamCoverage!=='undefined'&&d._coverageOverall
-    ?`<span style="display:block;margin-top:4px;font-size:12px">${esc(PersonalExamCoverage.formatCoverageHeader(d._coverageOverall))}</span>`:'';
-  const personalBanner=isPersonal?`<div class="card note-card personal-exam-banner" style="margin-bottom:16px"><b>Personalized exam</b> — <strong>${personalVerified} of ${personalTotal}</strong> of your words appear here${personalVerified>0?' — highlighted below':''}. Deck: ${personalWordsPreview}.${covHeader}${personalVerified<personalTotal&&personalTotal>0?`<span style="display:block;margin-top:6px;font-size:12px;color:var(--text-secondary)">Regenerate from the configurator for better coverage.</span>`:''}${(d._teilFromPool||[]).length?`<span style="display:block;margin-top:6px;font-size:12px;color:var(--text-secondary)">Some sections use standard bank material (e.g. listening) and do not include your vocabulary.</span>`:''}</div>`:'';
+  const examLang=resolveExamLang(d,S.subject);
+  const topicHonest=typeof PersonalLesenTopicStock!=='undefined'&&d._poolTopicRelaxed&&PersonalLesenTopicStock.topicHonestyBanner
+    ?PersonalLesenTopicStock.topicHonestyBanner(d,examLang):'';
+  const covSummary=typeof PersonalExamCoverage!=='undefined'&&PersonalExamCoverage.formatPersonalCoverageSummary&&personalTotal
+    ?PersonalExamCoverage.formatPersonalCoverageSummary(d._coverageOverall||{found:personalVerified,total:personalTotal},examLang)
+    :(isDE?`Dein personalisiertes Examen${personalTotal?` — ${personalVerified} von ${personalTotal} Wörtern`:''}`:`Your personalized exam${personalTotal?` — ${personalVerified} of ${personalTotal} words`:''}`);
+  const personalBanner=isPersonal&&!d._hybridLoading?`<div class="card note-card personal-exam-banner" style="margin-bottom:16px"><b>${esc(covSummary)}</b>${topicHonest?`<span style="display:block;margin-top:6px;font-size:12px;color:var(--orange)">${esc(topicHonest)}</span>`:''}${personalVerified>0?`<span style="display:block;margin-top:6px;font-size:12px;color:var(--text-secondary)">${isDE?'Deine Wörter sind im Text hervorgehoben.':'Your words are highlighted in the text.'}</span>`:''}${personalVerified<personalTotal&&personalTotal>0?`<span style="display:block;margin-top:8px"><button class="btn-sm blue" id="covSwapBtn" onclick="lcRetryCoverageSwap()">${isDE?'Mehr meiner Wörter einbauen':'Bring in more of my words'}</button><span style="display:block;margin-top:4px;font-size:11px;color:var(--text-muted)">${isDE?'Sucht im Pool nach Teilen mit deinen fehlenden Wörtern (kostenlos, ohne Credits).':'Searches the pool for parts containing your missing words (free, no credits).'}</span></span>`:''}</div>`:'';
   const poolBanner=isPool?`<div style="background:var(--blue-bg);border:.5px solid rgba(93,184,232,.3);border-radius:var(--radius-lg);padding:10px 16px;margin-bottom:16px;font-size:12px;color:var(--text-secondary)">📚 Curated exam (counts toward monthly quota). Retake saved exams anytime without quota.</div>`:'';
   const saveExitH=!isQ?`<button class="btn-sm accent" onclick="saveAndExitExam()">Save &amp; exit</button>`:'';
-  scr.innerHTML=`${renderOfficialHeader(d,isDE)}${personalBanner}${partialGenH}${poolBanner}<div class="exam-topbar"><div class="exam-meta"><span class="exam-badge ${bc}">${bl}</span><span class="exam-badge">${d.level}</span><span class="exam-title">${titleTxt}</span>${timerH}</div><div class="exam-actions"><button class="btn-sm" onclick="goHome()">Home</button>${isPrac?`<button class="btn-sm purple" onclick="goFlashcards()">Deck (<span id="dkCnt">${getProfileFlashcards().length}</span>)</button>`:''}${saveExitH}<button class="btn-sm" onclick="saveCurrentExam()">Save</button></div></div><div class="progress-wrap"><div class="progress-row"><span>Progress</span><span id="pctTxt">0%</span></div><div class="progress-track"><div class="progress-fill" id="progFill" style="width:0%"></div></div></div>${demoH}${officialH}${practH}${langH}${secs}<div class="submit-bar"><button class="btn-sm" onclick="goHome()">Home</button><div style="display:flex;gap:7px;flex-wrap:wrap">${saveExitH}<button class="btn-sm" onclick="saveCurrentExam()">Save Exam</button><button class="btn-sm accent" id="submitBtn" onclick="submitExam()">Submit and Get Results →</button></div></div>`;
+  const submitDisabled=d._hybridLoading?' disabled aria-disabled="true" title="'+(isDE?'Bitte warten, das Examen wird noch erstellt.':'Please wait — your exam is still being built.')+'"':'';
+  scr.innerHTML=`${renderOfficialHeader(d,isDE)}${personalBanner}${partialGenH}${hybridLoadingH}${poolBanner}<div class="exam-topbar"><div class="exam-meta"><span class="exam-badge ${bc}">${bl}</span><span class="exam-badge">${d.level}</span><span class="exam-title">${titleTxt}</span>${timerH}</div><div class="exam-actions"><button class="btn-sm" onclick="goHome()">Home</button>${isPrac?`<button class="btn-sm purple" onclick="goFlashcards()">Deck (<span id="dkCnt">${getProfileFlashcards().length}</span>)</button>`:''}${saveExitH}<button class="btn-sm" onclick="saveCurrentExam()">Save</button></div></div><div class="progress-wrap"><div class="progress-row"><span>Progress</span><span id="pctTxt">0%</span></div><div class="progress-track"><div class="progress-fill" id="progFill" style="width:0%"></div></div></div>${demoH}${officialH}${practH}${langH}${secs}<div class="submit-bar"><button class="btn-sm" onclick="goHome()">Home</button><div style="display:flex;gap:7px;flex-wrap:wrap">${saveExitH}<button class="btn-sm" onclick="saveCurrentExam()">Save Exam</button><button class="btn-sm accent" id="submitBtn" onclick="submitExam()"${submitDisabled}>Submit and Get Results →</button></div></div>`;
   scr.querySelectorAll('input[type=radio]').forEach(r=>r.addEventListener('change',updProg));
   if(S._resumeFieldValues){restoreExamFieldValues(S._resumeFieldValues);S._resumeFieldValues=null;}
   restoreExamAnswers();

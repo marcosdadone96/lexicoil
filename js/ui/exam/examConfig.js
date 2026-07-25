@@ -1,4 +1,4 @@
-const _examConfig={goalId:null,selectedIds:new Set(),skills:new Set(['lesen']),seedCount:0,teilChoice:'all',blueprintParts:null};
+const _examConfig={goalId:null,selectedIds:new Set(),skills:new Set(['lesen']),seedCount:0,teilChoice:'all',topicChoice:null,topicTouched:false,blueprintParts:null};
 function showExamConfigFootbar(visible){
   const fb=document.getElementById('examConfigFootbar');
   if(fb)fb.style.display=visible?'flex':'none';
@@ -32,6 +32,8 @@ function openExamConfigurator(goalId,preselectedIds){
   _examConfig.selectedIds=new Set();
   _examConfig.seedCount=0;
   _examConfig.teilChoice='all';
+  _examConfig.topicChoice=null;
+  _examConfig.topicTouched=false;
   _examConfig.blueprintParts=null;
   const deck=deckForGoal(goal);
   if(preselectedIds&&preselectedIds.length){
@@ -41,6 +43,11 @@ function openExamConfigurator(goalId,preselectedIds){
   if(_examConfig.selectedIds.size<4){
     deck.forEach(f=>{if(isDue(f))_examConfig.selectedIds.add(fcId(f));});
     if(_examConfig.selectedIds.size<4)deck.forEach(f=>_examConfig.selectedIds.add(fcId(f)));
+  }
+  if(goal.subject==='de'&&goal.level==='B1'&&typeof PersonalLesenTopicStock!=='undefined'){
+    const words=deck.filter(f=>_examConfig.selectedIds.has(fcId(f))).map(f=>f.word);
+    _examConfig.topicChoice=PersonalLesenTopicStock.pickDefaultTopicForWords(words);
+    _examConfig.topicTouched=false;
   }
   hideAll();
   show('examConfigScreen');
@@ -59,6 +66,13 @@ function examConfigFootAction(){submitExamConfig();}
 function toggleConfigWord(id){
   if(_examConfig.selectedIds.has(id))_examConfig.selectedIds.delete(id);
   else _examConfig.selectedIds.add(id);
+  if(!_examConfig.topicTouched){
+    const goal=S.goals.find(g=>g.id===_examConfig.goalId);
+    if(goal&&goal.subject==='de'&&goal.level==='B1'&&typeof PersonalLesenTopicStock!=='undefined'){
+      const words=deckForGoal(goal).filter(f=>_examConfig.selectedIds.has(fcId(f))).map(f=>f.word);
+      if(words.length)_examConfig.topicChoice=PersonalLesenTopicStock.pickDefaultTopicForWords(words);
+    }
+  }
   renderExamConfigurator();
 }
 function selectAllDueConfig(){
@@ -67,16 +81,19 @@ function selectAllDueConfig(){
   deckForGoal(goal).forEach(f=>{if(isDue(f))_examConfig.selectedIds.add(fcId(f));});
   renderExamConfigurator();
 }
-function toggleConfigSkill(skill){
-  _examConfig.skills=new Set([skill]);
+function setConfigTeilChoice(value){
   _examConfig.teilChoice='all';
   renderExamConfigurator();
 }
-function setConfigTeilChoice(value){
-  _examConfig.teilChoice=value==null||value===''?'all':String(value);
+function setConfigTopicChoice(value){
+  const Stock=typeof PersonalLesenTopicStock!=='undefined'?PersonalLesenTopicStock:null;
+  const canon=typeof B1Topics!=='undefined'&&B1Topics.normalizeB1Topic?B1Topics.normalizeB1Topic(value):String(value||'').trim();
+  _examConfig.topicChoice=canon||value||null;
+  _examConfig.topicTouched=true;
   renderExamConfigurator();
 }
 window.setConfigTeilChoice=setConfigTeilChoice;
+window.setConfigTopicChoice=setConfigTopicChoice;
 function configPartBadge(status){
   if(status==='soon')return'<span class="exam-config-badge exam-config-badge--soon">Soon</span>';
   return'<span class="exam-config-badge exam-config-badge--ready">Ready</span>';
@@ -106,33 +123,165 @@ function configActiveSkillKey(skills){
   if(skills.has('sprechen'))return'sprechen';
   return'lesen';
 }
-function configTeilSelectHtml(skill,subject){
-  const parts=_examConfig.blueprintParts?.[skill];
-  if(!parts?.length)return'';
-  const skillLbl=configActiveSkillLabel(_examConfig.skills,subject);
-  const opts=parts.map(p=>{
-    const val=String(p.teil);
-    const sel=_examConfig.teilChoice===val?' selected':'';
-    const short=p.label?p.label.replace(/^Teil\s*\d+\s*[—–-]\s*/i,''):`Teil ${p.teil}`;
-    return`<option value="${esc(val)}"${sel}>Teil ${p.teil} — ${esc(short)}</option>`;
-  }).join('');
-  const allSel=_examConfig.teilChoice==='all'?' selected':'';
-  return`<p class="exam-config-seclbl">Official parts</p>
-    <select class="exam-config-teil-select" aria-label="Official Teil to generate" onchange="setConfigTeilChoice(this.value)">
-      <option value="all"${allSel}>All Teile — full ${esc(skillLbl)} (${parts.length} parts)</option>
-      ${opts}
-    </select>`;
+function toggleConfigSkill(skill){
+  const goal=S.goals.find(g=>g.id===_examConfig.goalId);
+  if(goal&&!examConfigSkillPoolReady(skill,goal)){
+    examConfigSkillSoon(skill);
+    return;
+  }
+  _examConfig.skills=new Set([skill]);
+  _examConfig.teilChoice='all';
+  renderExamConfigurator();
 }
-function configGenerationHint(skill){
+function selectAllConfigWords(){
+  const goal=S.goals.find(g=>g.id===_examConfig.goalId);
+  if(!goal)return;
+  deckForGoal(goal).forEach(f=>_examConfig.selectedIds.add(fcId(f)));
+  renderExamConfigurator();
+}
+function deselectAllConfigWords(){
+  _examConfig.selectedIds.clear();
+  renderExamConfigurator();
+}
+function examConfigSelectSection(type){
+  const goal=S.goals.find(g=>g.id===_examConfig.goalId);
+  if(!goal)return;
+  examConfigGroupDeck(goal)[type].forEach(f=>_examConfig.selectedIds.add(fcId(f)));
+  renderExamConfigurator();
+}
+window.selectAllConfigWords=selectAllConfigWords;
+window.deselectAllConfigWords=deselectAllConfigWords;
+window.examConfigSelectSection=examConfigSelectSection;
+const EC_POS_ORDER=['noun','verb','adjective','adverb','other'];
+function examConfigResolveType(fc,subject){
+  if(typeof vocabHubResolveType==='function')return vocabHubResolveType(fc,subject);
+  return'other';
+}
+function examConfigGroupDeck(goal){
+  const groups={noun:[],verb:[],adjective:[],adverb:[],other:[]};
+  deckForGoal(goal).forEach(f=>{
+    const t=examConfigResolveType(f,goal.subject);
+    const key=EC_POS_ORDER.includes(t)?t:'other';
+    groups[key].push(f);
+  });
+  return groups;
+}
+function examConfigStepLabel(num,text){
+  return`<p class="ec-step-label"><span class="ec-step-num">${num}</span> ${esc(text)}</p>`;
+}
+function examConfigSkillPoolReady(skill,goal){
+  if(goal.subject!=='de'||goal.level!=='B1')return skill!=='sprechen';
+  return skill!=='sprechen';
+}
+function examConfigSkillGridHtml(ui,goal){
+  const isDE=goal.subject==='de';
+  const items=[
+    {key:'lesen',title:ui.reading,sub:isDE?'Leseverstehen mit deinem Wortschatz':'Reading with your vocabulary'},
+    {key:'horen',title:ui.listening,sub:isDE?'Hörverstehen mit deinem Wortschatz':'Listening with your vocabulary'},
+    {key:'schreiben',title:ui.writing,sub:isDE?'Schreibaufgaben aus dem Pool':'Writing tasks from the pool'},
+    {key:'sprechen',title:ui.speaking,sub:isDE?'Noch nicht im Pool verfügbar':'Not available from pool yet'},
+  ];
+  return`<div class="ec-skills-grid">${items.map(s=>{
+    const on=_examConfig.skills.has(s.key);
+    const ready=examConfigSkillPoolReady(s.key,goal);
+    const badge=ready?configPartBadge('ready'):configPartBadge('soon');
+    const click=ready?`toggleConfigSkill('${s.key}')`:`examConfigSkillSoon('${s.key}')`;
+    return`<div class="ec-skill-card${on?' on':''}${ready?'':' soon'}" onclick="${click}" role="radio" aria-checked="${on}" aria-disabled="${ready?'false':'true'}"><span class="ec-skill-dot" aria-hidden="true"></span><div class="ec-skill-body"><div class="ec-skill-name">${esc(s.title)}</div><div class="ec-skill-desc">${esc(s.sub)}</div></div>${badge}</div>`;
+  }).join('')}</div>`;
+}
+function examConfigSkillSoon(skill){
+  const goal=S.goals.find(g=>g.id===_examConfig.goalId);
+  const isDE=goal?.subject==='de';
+  if(skill==='sprechen'){
+    lcToast(isDE?'Sprechen kommt bald — noch kein Pool-Inhalt.':'Speaking coming soon — no pool content yet.','warn',6000);
+  }
+}
+window.examConfigSkillSoon=examConfigSkillSoon;
+function examConfigRowHtml(f,goal){
+  const id=fcId(f);
+  const on=_examConfig.selectedIds.has(id);
+  const due=isDue(f);
+  if(typeof ManualVocab!=='undefined'&&ManualVocab.enrichFlashcard)ManualVocab.enrichFlashcard(f,goal.subject);
+  const art=typeof fcGenderArticle==='function'?fcGenderArticle(f,goal.subject):null;
+  const word=typeof vocabHubDisplayWord==='function'?vocabHubDisplayWord(f,goal.subject):f.word;
+  const artHtml=art?`<span class="vv-art ${art.cls}">${esc(art.article)}</span>`:'<span class="vv-art vv-art--empty"></span>';
+  const dueHtml=due?'<span class="due-dot" title="Due today"></span>':'';
+  return`<div class="vv-row ec-vocab-row"><label class="vv-row-main"><input type="checkbox"${on?' checked':''} onchange="toggleConfigWord('${esc(id)}')" aria-label="${esc(word)}"><span class="vv-word-cell">${artHtml}<span class="vv-row-word">${esc(word)}</span></span>${dueHtml}</label></div>`;
+}
+function examConfigVocabSectionHtml(type,items,goal){
+  if(!items.length)return'';
+  const isDE=goal.subject==='de';
+  const lbl=typeof fcTypeSectionLabel==='function'?fcTypeSectionLabel(type):type;
+  const rows=items.map(f=>examConfigRowHtml(f,goal)).join('');
+  return`<div class="vv-grp ec-vocab-col"><div class="vv-ghead"><span class="vv-gh">${esc(lbl)} · ${items.length}</span><button type="button" class="vv-selall" onclick="examConfigSelectSection('${type}')">${isDE?'Alle':'All'}</button></div><div class="vv-rows">${rows}</div></div>`;
+}
+function examConfigVocabPanelHtml(goal){
+  const isDE=goal.subject==='de';
+  const deck=deckForGoal(goal);
+  const selN=_examConfig.selectedIds.size;
+  const dueN=dueForGoal(goal).length;
+  if(!deck.length){
+    return`<div class="ec-vocab-card"><p class="exam-config-hint">${isDE?'Noch keine Wörter in diesem Deck. Speichere Wörter während einer Übung.':'No words in this deck yet. Save words during a practice exam.'}</p></div>`;
+  }
+  const groups=examConfigGroupDeck(goal);
+  const cols=EC_POS_ORDER.map(t=>examConfigVocabSectionHtml(t,groups[t],goal)).filter(Boolean).join('');
+  return`<div class="ec-vocab-card">
+    <div class="ec-vocab-head"><span class="ec-vocab-title">${isDE?'Deine Wörter':'Your words'}</span><span class="ec-vocab-count">${selN} ${isDE?'ausgewählt':'selected'}</span></div>
+    <p class="ec-vocab-sub">${isDE?'Aus deinem Deck. Tippe an, um ein Wort ein- oder auszuschließen.':'From your deck. Tap to include or exclude a word.'}</p>
+    <div class="ec-vocab-actions">
+      <button type="button" onclick="selectAllConfigWords()">${isDE?'Alle auswählen':'Select all'}</button>
+      <button type="button" onclick="deselectAllConfigWords()">${isDE?'Alle abwählen':'Deselect all'}</button>
+      ${dueN>0?`<button type="button" onclick="selectAllDueConfig()">${isDE?`Nur fällige (${dueN})`:`Due only (${dueN})`}</button>`:''}
+    </div>
+    <div class="vv-cols ec-vocab-cols">${cols}</div>
+    ${dueN>0?`<p class="ec-vocab-legend"><span class="due-dot"></span> ${isDE?'heute fällig':'due today'}</p>`:''}
+  </div>`;
+}
+function configTopicSelectHtml(goal){
+  if(goal.subject!=='de'||goal.level!=='B1')return'';
+  if(!_examConfig.skills.has('lesen'))return'';
+  const Stock=typeof PersonalLesenTopicStock!=='undefined'?PersonalLesenTopicStock:null;
+  if(!Stock)return'';
+  const isDE=goal.subject==='de';
+  const rows=Stock.sortTopicsForSelect();
+  const full=rows.filter(r=>r.full);
+  const partial=rows.filter(r=>!r.full);
+  if(!_examConfig.topicChoice){
+    const deck=deckForGoal(goal);
+    const words=deck.filter(f=>_examConfig.selectedIds.has(fcId(f))).map(f=>f.word);
+    _examConfig.topicChoice=Stock.pickDefaultTopicForWords(words);
+  }
+  const cur=_examConfig.topicChoice||Stock.pickDefaultTopicForWords([]);
+  const fullTopic=Stock.isTopicFull(cur);
+  const opt=(row)=>{
+    const badge=Stock.badgeLabel(row.topic,isDE?'de':'en');
+    const sel=cur===row.topic?' selected':'';
+    return`<option value="${esc(row.topic)}"${sel} title="${esc(Stock.badgeHint(row.topic,isDE?'de':'en'))}">${esc(row.topic)} ${esc(badge)}</option>`;
+  };
+  return`${examConfigStepLabel(2,isDE?'Thema wählen':'Choose topic')}
+    <select class="exam-config-topic-select" aria-label="${isDE?'B1-Thema wählen':'Choose B1 topic'}" onchange="setConfigTopicChoice(this.value)">
+      <optgroup label="${isDE?'✓ Alle 5 Teile verfügbar':'✓ All 5 parts available'}">${full.map(opt).join('')}</optgroup>
+      <optgroup label="${isDE?'Mit wenig Inhalt':'Limited content'}">${partial.map(opt).join('')}</optgroup>
+    </select>
+    <p class="exam-config-topic-hint${fullTopic?' exam-config-topic-hint--ok':''}">${fullTopic?'<span class="ec-hint-dot"></span> ':''}${esc(Stock.badgeHint(cur,isDE?'de':'en'))}</p>`;
+}
+function configSectionMeta(skill,goal){
   const parts=_examConfig.blueprintParts?.[skill];
-  const n=parts?.length||0;
-  if(_examConfig.teilChoice==='all'&&n>1){
-    return `~${n}–${n*2} min · 3 AI credits · generates all ${n} official Teile (failed parts are skipped; successful parts are saved for reuse).`;
+  const n=parts?.length||(skill==='lesen'?5:skill==='horen'?4:3);
+  const isDE=goal.subject==='de';
+  const mins=Math.max(5,Math.round(n*4));
+  if(isDE)return`Alle ${n} Aufgaben · ~${mins} Min.`;
+  return`All ${n} parts · ~${mins} min`;
+}
+function configFootNote(skill,goal){
+  const isDE=goal.subject==='de';
+  const poolModule=typeof isPersonalModulePoolFirst==='function'&&isPersonalModulePoolFirst([skill],goal.subject,goal.level);
+  const poolOnly=typeof isExamPoolOnly==='function'?isExamPoolOnly():true;
+  if((poolModule||poolOnly)&&skill!=='sprechen'){
+    return isDE?'Aus dem Pool · sofort verfügbar':'From pool · instant';
   }
-  if(_examConfig.teilChoice!=='all'){
-    return '~1–2 min · 3 AI credits · one official Teil (saved for full exams and section practice).';
-  }
-  return '~1–2 min · 3 AI credits · generates official Teile for this section.';
+  if(skill==='sprechen')return isDE?'Bald verfügbar · noch kein Pool':'Coming soon · no pool yet';
+  return configSectionMeta(skill,goal);
 }
 function estimateConfigQuestions(nWords,skillsSet){
   const skills=skillsSet instanceof Set?[...skillsSet]:(Array.isArray(skillsSet)?skillsSet:['lesen']);
@@ -148,69 +297,45 @@ function renderExamConfigurator(){
   const isDE=goal.subject==='de';
   const isES=goal.subject==='es';
   const ui=typeof examUiStrings==='function'?examUiStrings(isDE?'de':isES?'es':'en'):{reading:'Reading',listening:'Listening',writing:'Writing',speaking:'Speaking'};
-  const deck=deckForGoal(goal);
-  const dueN=dueForGoal(goal).length;
   const selN=_examConfig.selectedIds.size;
   const activeSkill=configActiveSkillKey(_examConfig.skills);
-  const seedHtml=_examConfig.seedCount>=4
-    ?`<div class="card note-card exam-config-seed"><b>Built from your ${_examConfig.seedCount} selected words</b> — tap to add or remove.</div>`
-    :`<div class="card note-card exam-config-seed"><b>Uses words from your deck</b> — we pre-selected due words where possible.</div>`;
-  const quotaBar=(()=>{
-    const parts=[];
-    if(typeof examsRemainingLabel==='function')parts.push(examsRemainingLabel());
-    if(typeof aiCreditsSummaryLabel==='function'&&aiCreditsSummaryLabel())parts.push(aiCreditsSummaryLabel());
-    else if(S.plan==='free')parts.push(`${Number(window.AI_CREDITS_FREE||6)} AI credits this month`);
-    return parts.length?`<p class="exam-config-hint exam-config-quota-bar">${esc(parts.join(' · '))}</p>`:'';
-  })();
-  const partCard=(key,title,sub,status)=>{
-    const isSoon=status==='soon';
-    const on=!isSoon&&_examConfig.skills.has(key);
-    const click=isSoon?'':' onclick="toggleConfigSkill(\''+key+'\')"';
-    const radio=isSoon?'':'<span class="exam-config-radio-dot" aria-hidden="true">'+(on?'●':'○')+'</span>';
-    return`<div class="exam-config-part-card${on?' on':''}${isSoon?' soon':''}"${click} role="radio" aria-checked="${on}">${radio}<span class="n">${esc(title)}<small>${esc(sub)}</small></span><span class="exam-config-part-meta">${configPartBadge(status)}</span></div>`;
-  };
-  const chips=deck.map(f=>{
-    const id=fcId(f);
-    const on=_examConfig.selectedIds.has(id);
-    const due=isDue(f);
-    const art=typeof fcGenderArticle==='function'?fcGenderArticle(f,goal.subject):null;
-    const word=typeof vocabHubDisplayWord==='function'?vocabHubDisplayWord(f,goal.subject):f.word;
-    const artHtml=art?'<span class="vv-art '+art.cls+'">'+esc(art.article)+'</span> ':'';
-    return'<span class="exam-config-chip'+(on?' on':'')+'" onclick="toggleConfigWord(\''+esc(id)+'\')"><span class="tk">'+(on?'✓':'')+'</span>'+(due?'<span class="due-dot"></span>':'')+artHtml+esc(word)+'</span>';
-  }).join('');
-  const chipsHtml=deck.length?'<div class="exam-config-chips">'+chips+'</div><p class="exam-config-hint">● amber dot = due for review today</p>':'<p class="exam-config-hint">No words in this deck yet. Save words during a practice exam first.</p>';
   const skillLbl=configActiveSkillLabel(_examConfig.skills,goal.subject);
   const oralOnly=_examConfig.skills.size===1&&_examConfig.skills.has('sprechen');
-  const teilHtml=oralOnly?'':configTeilSelectHtml(activeSkill,goal.subject);
-  const genHint=configGenerationHint(activeSkill);
+  const topicHtml=oralOnly||activeSkill!=='lesen'?'':configTopicSelectHtml(goal);
+  const stepVocab=topicHtml?4:(goal.subject==='de'&&goal.level==='B1'&&activeSkill==='lesen'?4:3);
+  const h1=isDE?'Übungssatz erstellen':'Section practice';
+  const lede=isDE
+    ?`Übe einen <b>${esc(goal.level)}</b>-Prüfungsteil mit deinem eigenen Wortschatz.`
+    :`Practice one <b>${esc(goalLabel(goal))}</b> section using your vocabulary.`;
+  const metaLine=isDE
+    ?'Wir wählen passende Wörter aus deinem Deck aus, wo möglich.'
+    :'We pre-select suitable words from your deck where possible.';
   el.innerHTML=`
-    <h1 class="exam-config-h1">Section practice</h1>
-    <p class="exam-config-lede">Practice one <b>${esc(goalLabel(goal))}</b> section using your vocabulary. Generate all official Teile or pick one.</p>
-    ${quotaBar}
-    ${seedHtml}
-    <p class="exam-config-seclbl">Choose a section</p>
-    ${partCard('lesen',ui.reading,'Reading comprehension with your vocabulary','ready')}
-    ${partCard('horen',ui.listening,'Listening tasks with your vocabulary','ready')}
-    ${partCard('sprechen',ui.speaking,'Speaking task with microphone + AI evaluation','ready')}
-    ${partCard('schreiben',ui.writing,'Writing prompts from your vocabulary','ready')}
-    ${teilHtml}
-    <p class="exam-config-hint">${esc(genHint)}</p>
-    <p class="exam-config-seclbl"><span>Words to include · ${selN} selected</span>${dueN>0?'<button type="button" class="exam-config-cta" onclick="selectAllDueConfig()">Select all due ('+dueN+') →</button>':''}</p>
-    <div class="exam-config-panel">${chipsHtml}</div>`;
+    <h1 class="exam-config-h1">${h1}</h1>
+    <p class="exam-config-lede">${lede}</p>
+    <p class="exam-config-meta">${metaLine}</p>
+    ${examConfigStepLabel(1,isDE?'Prüfungsteil wählen':'Choose section')}
+    ${examConfigSkillGridHtml(ui,goal)}
+    ${topicHtml}
+    ${examConfigStepLabel(stepVocab,isDE?'Wortschatz':'Vocabulary')}
+    ${examConfigVocabPanelHtml(goal)}`;
   const summary=document.getElementById('examConfigSummary');
   const genBtn=document.getElementById('examConfigGenerateBtn');
   const qEst=estimateConfigQuestions(selN,_examConfig.skills);
   const remAi=typeof getAiCreditsRemaining==='function'?getAiCreditsRemaining():null;
-  const teilLbl=_examConfig.teilChoice==='all'?'all Teile':`Teil ${_examConfig.teilChoice}`;
+  const topicLbl=_examConfig.topicChoice&&_examConfig.skills.has('lesen')?esc(_examConfig.topicChoice):null;
+  const footNote=configFootNote(activeSkill,goal);
   if(summary){
-    let txt='<b>'+selN+' word'+(selN===1?'':'s')+'</b> · '+esc(skillLbl)+' · '+esc(teilLbl);
-    if(oralOnly)txt+=' · oral practice';
-    else txt+=' · ~'+qEst+' questions · 3 AI credits';
-    if(typeof getAiCreditsRemaining==='function'&&remAi===3)txt+=' · <span class="exam-config-quota-warn">Last 3 credits</span>';
-    else if(typeof aiCreditsMeterLabel==='function'&&(typeof isPro==='function'&&isPro()||typeof isFreeAiTrial==='function'&&isFreeAiTrial())){
+    let txt='<b>'+esc(skillLbl);
+    if(topicLbl)txt+=' · '+topicLbl;
+    txt+='</b> · '+selN+' '+(isDE?'Wörter':'words');
+    if(oralOnly)txt+=' · '+(isDE?'Mündlich':'oral');
+    else if(!footNote.includes('Pool')&&!footNote.includes('pool'))txt+=' · ~'+qEst+' Q';
+    if(typeof getAiCreditsRemaining==='function'&&remAi===3&&!footNote.includes('Pool'))txt+=' · <span class="exam-config-quota-warn">'+(isDE?'Letzte 3 Credits':'Last 3 credits')+'</span>';
+    else if(typeof aiCreditsMeterLabel==='function'&&(typeof isPro==='function'&&isPro()||typeof isFreeAiTrial==='function'&&isFreeAiTrial())&&!footNote.includes('Pool')){
       txt+=' · '+esc(aiCreditsMeterLabel());
     }
-    summary.innerHTML=txt;
+    summary.innerHTML=txt+'<span class="ec-foot-note">'+esc(footNote)+'</span>';
   }
   const aiCreditsEl=document.getElementById('examConfigAiCredits');
   if(aiCreditsEl){
@@ -223,16 +348,16 @@ function renderExamConfigurator(){
     }
   }
   if(genBtn){
-    const poolOnly=(typeof window!=='undefined'&&(window.EXAM_POOL_ONLY??true));
-    const aiOk=poolOnly||(typeof canUseAiGeneration!=='function'||canUseAiGeneration());
-    genBtn.disabled=selN<2||_examConfig.skills.size<1||!aiOk;
+    const poolOnly=typeof isExamPoolOnly==='function'?isExamPoolOnly():(typeof window!=='undefined'&&(window.EXAM_POOL_ONLY??true));
+    const poolModule=typeof isPersonalModulePoolFirst==='function'&&isPersonalModulePoolFirst([activeSkill],goal.subject,goal.level);
+    const aiOk=poolOnly||poolModule||(typeof canUseAiGeneration!=='function'||canUseAiGeneration());
+    genBtn.disabled=selN<2||_examConfig.skills.size<1||!aiOk||oralOnly;
     if(!aiOk){
-      if(typeof getAiCreditsRemaining==='function'&&getAiCreditsRemaining()===0)genBtn.textContent='No credits left — upgrade to Pro';
-      else if(typeof isPaidPlan==='function'&&!isPaidPlan())genBtn.textContent='Personalized exams require Pro';
-      else genBtn.textContent='No AI credits — buy pack';
-    }else if(oralOnly)genBtn.textContent='Practice speaking →';
-    else if(_examConfig.teilChoice==='all')genBtn.textContent='Practice '+esc(skillLbl)+' (all Teile) →';
-    else genBtn.textContent='Practice '+esc(skillLbl)+' Teil '+esc(_examConfig.teilChoice)+' →';
+      if(typeof getAiCreditsRemaining==='function'&&getAiCreditsRemaining()===0)genBtn.textContent=isDE?'Keine Credits — Pro upgraden':'No credits left — upgrade to Pro';
+      else if(typeof isPaidPlan==='function'&&!isPaidPlan())genBtn.textContent=isDE?'Personalisiert nur mit Pro':'Personalized exams require Pro';
+      else genBtn.textContent=isDE?'Keine KI-Credits':'No AI credits — buy pack';
+    }else if(oralOnly)genBtn.textContent=isDE?'Sprechen — bald verfügbar':'Speaking — coming soon';
+    else genBtn.textContent=isDE?`${skillLbl} üben →`:`Practice ${skillLbl} →`;
   }
   if(typeof updQuotaUI==='function')updQuotaUI();
 }
@@ -247,7 +372,7 @@ function submitExamConfig(){
   const skills=[..._examConfig.skills].slice(0,1);
   if(words.length<2){lcToast('Select at least 2 words.','warn');return;}
   if(skills.length<1){lcToast('Select one exam part.','warn');return;}
-  const poolOnly=(typeof window!=='undefined'&&(window.EXAM_POOL_ONLY??true));
+  const poolOnly=typeof isExamPoolOnly==='function'?isExamPoolOnly():(typeof window!=='undefined'&&(window.EXAM_POOL_ONLY??true));
   if(!poolOnly&&typeof requirePersonalized==='function'&&!requirePersonalized())return;
   if(!poolOnly&&typeof canUseAiGeneration==='function'&&!canUseAiGeneration()){
     if(typeof isPro==='function'&&isPro()){
@@ -258,9 +383,13 @@ function submitExamConfig(){
   }
   showExamConfigFootbar(false);
   const gid=_examConfig.goalId;
-  const oralOnly=skills.length===1&&skills[0]==='sprechen';
-  if(oralOnly)confirmQuotaUse(()=>startOralPractice(goal,words));
-  else generatePersonalExam(words,skills,gid,{teilFilter:_examConfig.teilChoice});
+  const oralOnly=_examConfig.skills.size===1&&_examConfig.skills.has('sprechen');
+  if(oralOnly){
+    showExamConfigFootbar(true);
+    lcToast(goal.subject==='de'?'Sprechen kommt bald — noch kein Pool-Inhalt.':'Speaking coming soon — no pool content yet.','warn',6000);
+    return;
+  }
+  generatePersonalExam(words,skills,gid,{teilFilter:'all',topic:_examConfig.topicChoice});
 }
 function openDeckHub(goalId,options){
   const goal=S.goals.find(g=>g.id===goalId);
