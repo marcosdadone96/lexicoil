@@ -8,7 +8,7 @@
 
 [functions."claude-chat"]
   timeout = 60  # client ChunkRunner uses 55s; see docs/personal-exam-generation.md
-  included_files = ["js/engine/**", "library/blueprints/**", "knowledge/**"]
+  included_files = ["js/engine/**", "js/data/**", "js/library/**", "library/blueprints/**", "library/reusable-seed/**", "library/vocab/**", "knowledge/**", "scripts/lib/**", "scripts/audit-pass-2.mjs", "scripts/blacklist.mjs", "data/lexicon/**"]
 
 [functions."exam-pool"]
   included_files = ["library/blueprints/**", "library/banks/**", "library/curated/**", "library/pool-seed/**", "library/schemas/**", "library/catalogThresholds.json", "js/engine/**", "knowledge/**"]
@@ -25,7 +25,17 @@
   environment = { NODE_VERSION = "20" }
 
 [functions."exam-part"]
-  included_files = ["library/reusable-seed/**", "library/vocab/**", "js/engine/**"]
+  # pool index: partIndex → partTopicDetect, b1Topics, lemmatizer, lexicon sets
+  included_files = ["library/reusable-seed/**", "library/vocab/**", "library/blueprints/**", "js/engine/**", "js/data/**", "js/library/**", "data/lexicon/**", "netlify/functions/lib/partIndex.js", "netlify/functions/lib/projectRoot.js", "netlify/functions/lib/passageVocab.js", "netlify/functions/lib/poolSearchCache.js"]
+
+[functions."exam-plan"]
+  # hybrid decision: external hybridExamPlan.mjs + pool index CJS bridge
+  included_files = ["library/reusable-seed/**", "library/vocab/**", "library/blueprints/**", "scripts/lib/**", "scripts/generate-lesen-part-gemini.mjs", "scripts/make-t3.mjs", "scripts/t3-blueprints/**", "scripts/audit-pass-2.mjs", "scripts/blacklist.mjs", "plantillas-lesen-b1/**", "js/engine/**", "js/data/**", "js/library/**", "knowledge/**", "data/lexicon/**", "netlify/functions/lib/partIndex.js", "netlify/functions/lib/projectRoot.js", "netlify/functions/lib/passageVocab.js", "netlify/functions/lib/poolSearchCache.js"]
+
+[functions."exam-hybrid-execute"]
+  timeout = 60  # prod sync cap ~60s; client uses 55s per teil call
+  # hybrid execution: exam-plan deps + Gemini factory + delivery gate + t3 blueprints
+  included_files = ["library/reusable-seed/**", "library/vocab/**", "library/blueprints/**", "scripts/lib/**", "scripts/generate-lesen-part-gemini.mjs", "scripts/make-t3.mjs", "scripts/t3-blueprints/**", "scripts/audit-pass-2.mjs", "scripts/blacklist.mjs", "plantillas-lesen-b1/**", "js/engine/**", "js/data/**", "js/library/**", "knowledge/**", "data/lexicon/**", "netlify/functions/lib/partIndex.js", "netlify/functions/lib/projectRoot.js", "netlify/functions/lib/passageVocab.js", "netlify/functions/lib/poolSearchCache.js"]
 
 [functions."vocab-cache"]
   timeout = 26
@@ -35,10 +45,9 @@
   framework = "#static"
   functions = "netlify/functions"
   # netlify dev defaults to 30s function timeout unless the linked site has functions_timeout ≥60.
-  # Link the production site (`netlify link`) so local claude-chat matches production (60s).
+  # Hybrid Gemini factory needs much longer — use: npm run dev:hybrid (patches CLI to 300s locally).
+  # Link the production site (`netlify link`) so claude-chat matches production timeout when possible.
   # Do NOT use [dev.functions."name"] here — it makes dev.functions an object and crashes netlify dev.
-  # Or set in Netlify UI: Site → Build & deploy → Functions → Function timeout = 60.
-  # Personal Lesen T2/T4 use split sub-calls (~26s each) so generation stays under 30s in dev.
 
 # Primary domain in Netlify UI is lexicoil.com (apex). Do NOT add JS redirects to www.
 
