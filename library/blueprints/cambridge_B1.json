@@ -29,7 +29,7 @@
       "id": "lesen",
       "title": "Reading",
       "time": "45 minutes",
-      "maxPoints": 100,
+      "maxPoints": 25,
       "parts": [
         {
           "teil": 1,
@@ -39,12 +39,13 @@
             "min": 150,
             "max": 800
           },
-          "slotType": "mcq_gap_fill",
-          "taskFormat": "multiple_choice_cloze",
-          "layout": "questions",
+          "slotType": "signs_notices_mcq",
+          "taskFormat": "short_text_mcq",
+          "layout": "items",
           "questionTypes": [
             "multiple_choice"
           ],
+          "passageLengthExempt": true,
           "itemsTotal": 5,
           "questionsTotal": {
             "min": 5,
@@ -59,13 +60,13 @@
             "min": 150,
             "max": 800
           },
-          "slotType": "open_cloze",
-          "taskFormat": "open_cloze",
-          "layout": "questions",
+          "slotType": "person_text_matching",
+          "taskFormat": "multiple_matching",
+          "layout": "items",
           "questionTypes": [
-            "gap_fill",
-            "open_cloze"
+            "matching"
           ],
+          "passageLengthExempt": true,
           "itemsTotal": 5,
           "questionsTotal": {
             "min": 5,
@@ -80,12 +81,11 @@
             "min": 150,
             "max": 800
           },
-          "slotType": "word_formation",
-          "taskFormat": "word_formation",
-          "layout": "questions",
+          "slotType": "long_text",
+          "taskFormat": "long_text_mcq",
+          "layout": "passage_questions",
           "questionTypes": [
-            "gap_fill",
-            "word_formation"
+            "multiple_choice"
           ],
           "itemsTotal": 5,
           "questionsTotal": {
@@ -101,12 +101,11 @@
             "min": 150,
             "max": 800
           },
-          "slotType": "sentence_transformation",
-          "taskFormat": "key_word_transformation",
-          "layout": "questions",
+          "slotType": "gapped_text",
+          "taskFormat": "gapped_text",
+          "layout": "passage_questions",
           "questionTypes": [
-            "gap_fill",
-            "sentence_transformation"
+            "matching"
           ],
           "itemsTotal": 5,
           "questionsTotal": {
@@ -122,8 +121,8 @@
             "min": 150,
             "max": 800
           },
-          "slotType": "long_text",
-          "taskFormat": "long_text_mcq",
+          "slotType": "mcq_gap_fill",
+          "taskFormat": "multiple_choice_cloze",
           "layout": "passage_questions",
           "questionTypes": [
             "multiple_choice"
@@ -142,11 +141,12 @@
             "min": 150,
             "max": 800
           },
-          "slotType": "gapped_text",
-          "taskFormat": "gapped_text",
+          "slotType": "open_cloze",
+          "taskFormat": "open_cloze",
           "layout": "passage_questions",
           "questionTypes": [
-            "matching"
+            "gap_fill",
+            "open_cloze"
           ],
           "itemsTotal": 6,
           "questionsTotal": {
@@ -160,16 +160,17 @@
       "id": "horen",
       "title": "Listening",
       "time": "30 minutes",
-      "maxPoints": 100,
+      "maxPoints": 25,
       "parts": [
         {
           "teil": 1,
           "label": "Part 1 — Listening",
           "instruction": "Listen and answer the questions in Part 1.",
           "plays": 2,
-          "slotType": "dialogue_extracts",
-          "taskFormat": "dialogue_extracts",
+          "slotType": "picture_mcq",
+          "taskFormat": "picture_multiple_choice",
           "layout": "segments",
+          "segmentsTotal": 7,
           "questionTypes": [
             "multiple_choice"
           ],
@@ -184,11 +185,12 @@
           "label": "Part 2 — Listening",
           "instruction": "Listen and answer the questions in Part 2.",
           "plays": 2,
-          "slotType": "sentence_completion",
-          "taskFormat": "sentence_completion",
+          "slotType": "short_dialogue_mcq",
+          "taskFormat": "short_dialogue_mcq",
           "layout": "segments",
+          "segmentsTotal": 6,
           "questionTypes": [
-            "gap_fill"
+            "multiple_choice"
           ],
           "itemsTotal": 6,
           "questionsTotal": {
@@ -201,11 +203,12 @@
           "label": "Part 3 — Listening",
           "instruction": "Listen and answer the questions in Part 3.",
           "plays": 2,
-          "slotType": "monologue",
-          "taskFormat": "monologue_mcq",
+          "slotType": "sentence_completion",
+          "taskFormat": "sentence_completion",
           "layout": "segments",
+          "segmentsTotal": 1,
           "questionTypes": [
-            "multiple_choice"
+            "gap_fill"
           ],
           "itemsTotal": 6,
           "questionsTotal": {
@@ -218,11 +221,11 @@
           "label": "Part 4 — Listening",
           "instruction": "Listen and answer the questions in Part 4.",
           "plays": 2,
-          "slotType": "dialogue_speakers",
-          "taskFormat": "dialogue_speakers",
+          "slotType": "interview_mcq",
+          "taskFormat": "interview_mcq",
           "layout": "segments",
+          "segmentsTotal": 1,
           "questionTypes": [
-            "matching",
             "multiple_choice"
           ],
           "itemsTotal": 6,
@@ -237,12 +240,12 @@
       "id": "schreiben",
       "title": "Writing",
       "time": "45 minutes",
-      "maxPoints": 100,
+      "maxPoints": 25,
       "parts": [
         {
           "teil": 1,
-          "slotType": "essay",
-          "taskFormat": "essay",
+          "slotType": "email",
+          "taskFormat": "email",
           "label": "Part 1 — Writing",
           "instruction": "Write the compulsory task.",
           "layout": "writing",
@@ -264,7 +267,7 @@
             "max": 120
           },
           "taskTypes": [
-            "essay"
+            "email"
           ],
           "mandatory": true
         },
@@ -293,9 +296,8 @@
             "max": 120
           },
           "taskTypes": [
-            "email",
-            "review",
-            "article"
+            "article",
+            "story"
           ],
           "mandatory": false
         }
@@ -304,15 +306,15 @@
     {
       "id": "sprechen",
       "title": "Speaking",
-      "time": "12–17 minutes",
-      "maxPoints": 100,
+      "time": "10–12 minutes per pair",
+      "maxPoints": 25,
       "parts": [
         {
           "teil": 1,
           "slotType": "speaking_task",
           "taskFormat": "speaking_prompt",
           "label": "Part 1 — Speaking",
-          "instruction": "Take part in the speaking test as instructed by the examiner.",
+          "instruction": "Part 1 (Interview): answer the examiner questions, giving factual or personal information.",
           "layout": "speaking",
           "taskCount": 1,
           "itemsTotal": 1,
@@ -324,8 +326,7 @@
             "short_answer"
           ],
           "taskTypes": [
-            "interaction",
-            "discussion"
+            "interview"
           ]
         },
         {
@@ -333,7 +334,7 @@
           "slotType": "speaking_task",
           "taskFormat": "speaking_prompt",
           "label": "Part 2 — Speaking",
-          "instruction": "Take part in the speaking test as instructed by the examiner.",
+          "instruction": "Part 2 (Extended turn): describe one colour photograph, talking for about 1 minute.",
           "layout": "speaking",
           "taskCount": 1,
           "itemsTotal": 1,
@@ -345,8 +346,7 @@
             "short_answer"
           ],
           "taskTypes": [
-            "interaction",
-            "discussion"
+            "photo_description"
           ]
         },
         {
@@ -354,7 +354,7 @@
           "slotType": "speaking_task",
           "taskFormat": "speaking_prompt",
           "label": "Part 3 — Speaking",
-          "instruction": "Take part in the speaking test as instructed by the examiner.",
+          "instruction": "Part 3 (Discussion): make and respond to suggestions, discuss alternatives and negotiate agreement.",
           "layout": "speaking",
           "taskCount": 1,
           "itemsTotal": 1,
@@ -366,8 +366,7 @@
             "short_answer"
           ],
           "taskTypes": [
-            "interaction",
-            "discussion"
+            "collaborative_task"
           ]
         },
         {
@@ -375,7 +374,7 @@
           "slotType": "speaking_task",
           "taskFormat": "speaking_prompt",
           "label": "Part 4 — Speaking",
-          "instruction": "Take part in the speaking test as instructed by the examiner.",
+          "instruction": "Part 4 (General conversation): discuss likes, dislikes, experiences, opinions and habits.",
           "layout": "speaking",
           "taskCount": 1,
           "itemsTotal": 1,
@@ -387,8 +386,7 @@
             "short_answer"
           ],
           "taskTypes": [
-            "interaction",
-            "discussion"
+            "general_conversation"
           ]
         }
       ]
@@ -401,8 +399,17 @@
     "sprechen": 4
   },
   "notes": {
-    "noUseOfEnglishModule": "Four modules only; reading counts from standalone Reading paper (32 items)."
+    "noUseOfEnglishModule": "Four modules only; reading counts from standalone Reading paper (32 items).",
+    "taskFormatsVerified": "Reading/Listening/Writing/Speaking task formats corrected to official B1 Preliminary 2020 format (verified vs cambridgeenglish.org, 2026-07-09)."
   },
-  "modularGrading": true,
-  "passPercentPerModule": 60
+  "modularGrading": false,
+  "passRule": {
+    "scope": "cambridge-scale",
+    "passScale": 140,
+    "scaleFloor": 120,
+    "scaleCeil": 170,
+    "passRawPct": 60,
+    "weightPerSkill": 0.25,
+    "description": "Cambridge English Scale: nota agregada = media de las 4 destrezas (25% c/u); aprobado B1 desde 140. Mapeo raw->escala anclado en 60% raw = 140 (adaptacion; tablas oficiales por convocatoria no son publicas)."
+  }
 }
