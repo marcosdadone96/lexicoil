@@ -14,7 +14,8 @@
 
 const crypto = require('crypto');
 
-const TICKET_TTL_SEC = 300;     // 5 min — personal Lesen runs ~5 parallel chunks
+const TICKET_TTL_SEC = 300;     // 5 min default
+const PERSONAL_EXAM_TICKET_TTL_SEC = 600; // factory hybrid (~2–5 min)
 const MAX_CHUNKS_ALLOWED = 20;  // hard upper bound the server will ever grant
 
 // Scopes that are issued via startGeneration and require a ticket on chunk calls
@@ -68,13 +69,14 @@ function verifyGenTicket(token, secret) {
 function createGenTicket(sub, scope, maxChunks, secret) {
   const now = Math.floor(Date.now() / 1000);
   const nonce = crypto.randomBytes(16).toString('hex');
+  const ttl = scope === 'personal_exam' ? PERSONAL_EXAM_TICKET_TTL_SEC : TICKET_TTL_SEC;
   const payload = {
     sub,
     scope,
     maxChunks: Math.max(1, Math.min(Number(maxChunks) || 1, MAX_CHUNKS_ALLOWED)),
     nonce,
     iat: now,
-    exp: now + TICKET_TTL_SEC,
+    exp: now + ttl,
   };
   return { token: signGenTicket(payload, secret), payload };
 }
