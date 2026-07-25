@@ -50,6 +50,10 @@ function loadSeedRecords(lang, level) {
 
 function clearLocalSeedCache() {
   CACHE.clear();
+  try {
+    const { clearPoolSearchCache } = require('./poolSearchCache.js');
+    clearPoolSearchCache();
+  } catch (_) { /* optional in tests */ }
 }
 
 function pickFromLocalSeed(lang, level, module, {
@@ -80,15 +84,21 @@ function pickFromLocalSeed(lang, level, module, {
   if (wantLemmas.length) {
     const wantSet = new Set(wantLemmas);
     const topicsToAvoid = new Set((excludeTopics || []).map((t) => String(t).toLowerCase()));
+    const { getPartVocabIndex, vocabEntryKey } = require('./partIndex.js');
     const scored = available.map((rec) => {
-      const vocab = Array.isArray(rec.vocab) ? rec.vocab : [];
-      const covered = vocab.filter((v) => wantSet.has(String(v).toLowerCase()));
+      const vocabIndex = getPartVocabIndex(rec);
+      const covered = [];
+      for (const entry of vocabIndex) {
+        const key = vocabEntryKey(entry);
+        if (key && wantSet.has(key)) covered.push(entry.word || entry.lemma || key);
+      }
+      const topicSlug = String(rec.topicSlug || rec.topic || '').toLowerCase();
       return {
         id: rec.id,
         part: rec,
         covered,
         score: covered.length,
-        topicPenalty: topicsToAvoid.has(String(rec.topic || '').toLowerCase()) ? 1 : 0,
+        topicPenalty: topicsToAvoid.has(topicSlug) ? 1 : 0,
         served: rec.servedCount || 0,
       };
     });
@@ -113,6 +123,26 @@ function pickFromLocalSeed(lang, level, module, {
   return { id: chosen.id, part: chosen, source: 'local-seed' };
 }
 
+function getFromLocalSeedById(lang, level, module, id) {
+  const normLang = String(lang).toLowerCase();
+  const normLevel = String(level).toUpperCase();
+  const normModule = String(module).toLowerCase();
+  const wantId = String(id || '').trim();
+  if (!wantId) return null;
+  const rec = loadSeedRecords(normLang, normLevel).find(
+    (r) =>
+      r.id === wantId &&
+      String(r.lang || '').toLowerCase() === normLang &&
+      String(r.level || '').toUpperCase() === normLevel &&
+      String(r.module || '').toLowerCase() === normModule &&
+      r.complete === true &&
+      r.verified === true &&
+      r.disabled !== true,
+  );
+  if (!rec) return null;
+  return { id: rec.id, part: rec, source: 'local-seed' };
+}
+
 function countLocalSeedByTeil(lang, level, module) {
   const normLang = String(lang).toLowerCase();
   const normLevel = String(level).toUpperCase();
@@ -131,6 +161,7 @@ function countLocalSeedByTeil(lang, level, module) {
 module.exports = {
   loadSeedRecords,
   pickFromLocalSeed,
+  getFromLocalSeedById,
   countLocalSeedByTeil,
   clearLocalSeedCache,
 };

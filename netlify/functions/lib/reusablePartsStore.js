@@ -16,12 +16,23 @@
 const { randomUUID } = require('crypto');
 const { casWriteJson } = require('./casBlob.js');
 const { partPassesPassageDedupe } = require('./passageDedupe.js');
+const { applyPartIndex } = require('./partIndex.js');
+const { normalizeB1Topic } = require('../../../js/data/b1Topics.js');
+const {
+  loadModuleSearchRows,
+  filterRows,
+  filterRowsByTopicTag,
+  scoreRowsForVocab,
+  resolveRowPart,
+  vocabKeysFromPart,
+  clearPoolSearchCache,
+} = require('./poolSearchCache.js');
 
 const MAX_PER_TEIL = 50;   // max stored parts per (lang, level, module, teil)
 const MAX_PER_SLOT = MAX_PER_TEIL; // legacy export name
 const PART_SAMPLE   = 20;  // how many to consider when picking
 const BURN_THRESHOLD = 50; // servedCount above which a part is treated as "well-used"
-const CURRENT_SCHEMA_VERSION = 1;
+const CURRENT_SCHEMA_VERSION = 2;
 
 // ─── Key helpers ─────────────────────────────────────────────────────────────
 
@@ -121,7 +132,8 @@ async function rotatePartsByTimestamp(store, lang, level, module, entries) {
  *
  * Expected shape of `part`:
  *   { lang, level, module, teil, passage, questions, complete, verified,
- *     schemaVersion?, itemCount?, targetCount?, contributor?, createdAt?, id? }
+ *     schemaVersion?, itemCount?, targetCount?, contributor?, createdAt?, id?,
+ *     topicTag?, vocabIndex?, topicSlug? }
  */
 async function addReusablePart(store, part, options = {}) {
   const deferRotate = options.deferRotate === true;
@@ -160,6 +172,13 @@ async function addReusablePart(store, part, options = {}) {
   if (part.fieldId != null) payload.fieldId = part.fieldId;
   if (part.taskFormat != null) payload.taskFormat = part.taskFormat;
   if (Array.isArray(part.criteria)) payload.criteria = part.criteria;
+  if (part.topicTag != null) payload.topicTag = part.topicTag;
+
+  applyPartIndex(payload, {
+    lang,
+    level,
+    topicTag: part.topicTag || null,
+  });
 
   const pKey = partPayloadKey(lang, level, module, id);
   const iKey = partIndexKey(lang, level, module, id);
@@ -176,6 +195,9 @@ async function addReusablePart(store, part, options = {}) {
     contributor: payload.contributor,
     disabled:    false,
     servedCount: 0,
+    topicTag:    payload.topicTag || null,
+    topicSlug:   payload.topicSlug || payload.topic || null,
+    vocabKeys:   vocabKeysFromPart(payload),
   };
   const idxRes = await store.setJSON(iKey, idxPayload, { onlyIfNew: true });
   if (idxRes && idxRes.modified === false) {
@@ -187,6 +209,7 @@ async function addReusablePart(store, part, options = {}) {
     await rotatePartsByTimestamp(store, lang, level, module, entries);
   }
 
+  clearPoolSearchCache(lang, level, module);
   return { partKey: pKey, idxKey: iKey, id };
 }
 
@@ -346,45 +369,33 @@ async function pickReusablePart(store, lang, level, module, { excludeIds = [], u
   const normLevel  = String(level).toUpperCase();
   const normModule = String(module).toLowerCase();
 
-  const entries = await listPartsIndex(store, normLang, normLevel, normModule);
-  if (!entries.length) return null;
-
-  const exclude    = new Set(excludeIds);
-  let available  = entries.filter(
-    (e) => !e.disabled && e.complete === true && e.verified === true,
-  );
-  if (teil != null && Number.isFinite(Number(teil))) {
-    const want = Number(teil);
-    available = available.filter((e) => Number(e.teil) === want);
-  }
+  const { rows } = await loadModuleSearchRows(store, normLang, normLevel, normModule);
+  const available = filterRows(rows, { teil });
   if (!available.length) return null;
 
-  const recent     = available.slice(-PART_SAMPLE);
-  const candidates = pickRandom(recent, Math.min(recent.length, PART_SAMPLE)).filter(
-    (row) => !exclude.has(row.id),
-  );
-  if (!candidates.length) {
-    // All candidates were excluded — retry without exclude (dedup retry)
-    const fallback = pickRandom(recent, Math.min(recent.length, PART_SAMPLE));
-    if (!fallback.length) return null;
-    candidates.push(...fallback);
-  }
+  const exclude = new Set(excludeIds);
+  const recent = available.length > PART_SAMPLE ? available.slice(-PART_SAMPLE) : available;
+  let sampled = pickRandom(recent, Math.min(recent.length, PART_SAMPLE));
+  let candidates = sampled.filter((row) => !exclude.has(row.id));
+  if (!candidates.length) candidates = sampled;
 
-  // Load payloads, prefer low servedCount
   const loaded = [];
   for (const row of candidates) {
-    try {
-      const part = await store.get(row.partKey, { type: 'json' });
-      if (
-        part &&
-        !part.disabled &&
-        part.complete === true &&
-        part.verified === true &&
-        partPassesPassageDedupe(part, usedPassages)
-      ) {
-        loaded.push({ key: row.partKey, part, id: row.id });
-      }
-    } catch (_) { /* skip */ }
+    const part = await resolveRowPart(store, row);
+    if (
+      part &&
+      !part.disabled &&
+      part.complete === true &&
+      part.verified === true &&
+      partPassesPassageDedupe(part, usedPassages)
+    ) {
+      loaded.push({
+        key: row.partKey || partPayloadKey(normLang, normLevel, normModule, row.id),
+        part,
+        id: row.id,
+        row,
+      });
+    }
   }
   if (!loaded.length) return null;
 
@@ -392,7 +403,10 @@ async function pickReusablePart(store, lang, level, module, { excludeIds = [], u
   const pool  = fresh.length ? fresh : loaded;
   const chosen = pool[Math.floor(Math.random() * pool.length)];
 
-  // CAS-increment servedCount
+  if (!store || !chosen.key || chosen.row.source === 'seed') {
+    return { id: chosen.id, part: chosen.part };
+  }
+
   try {
     return await casWriteJson(
       store,
@@ -412,7 +426,6 @@ async function pickReusablePart(store, lang, level, module, { excludeIds = [], u
       { logTag: '[parts-serve]' },
     );
   } catch (_) {
-    // non-CAS fallback
     const part = {
       ...chosen.part,
       servedCount:  (chosen.part.servedCount  || 0) + 1,
@@ -424,86 +437,136 @@ async function pickReusablePart(store, lang, level, module, { excludeIds = [], u
 }
 
 /**
+ * Pick a verified part for (topicTag × teil), lowest servedCount first.
+ */
+async function pickReusablePartByTopic(store, lang, level, module, opts = {}) {
+  const { excludeIds = [], teil = null, topicTag = null } = opts;
+  const want = normalizeB1Topic(topicTag);
+  if (!want) return null;
+
+  const normLang = String(lang).toLowerCase();
+  const normLevel = String(level).toUpperCase();
+  const normModule = String(module).toLowerCase();
+
+  const { rows } = await loadModuleSearchRows(store, normLang, normLevel, normModule);
+  let available = filterRows(rows, { teil, excludeIds });
+  available = filterRowsByTopicTag(available, want, { normalizeB1Topic });
+  if (!available.length) return null;
+
+  available.sort(
+    (a, b) => (a.servedCount || 0) - (b.servedCount || 0) || Math.random() - 0.5,
+  );
+  const row = available[0];
+  const part = await resolveRowPart(store, row);
+  if (!part || part.disabled || part.complete !== true || part.verified !== true) return null;
+
+  const result = {
+    id: row.id,
+    part,
+    coveredWords: [],
+    coverage: null,
+    topic: row.topicSlug || part.topic || null,
+    topicTag: row.topicTag || part.topicTag || want,
+    source: row.source === 'seed' ? 'local-seed' : 'blob',
+  };
+
+  if (!store || !row.partKey || row.source === 'seed') return result;
+
+  try {
+    return await casWriteJson(
+      store,
+      row.partKey,
+      (current) => {
+        const base = current || part;
+        const payload = { ...base, servedCount: (base.servedCount || 0) + 1, lastServedAt: Date.now() };
+        return { payload, result: { ...result, part: payload } };
+      },
+      { logTag: '[parts-serve-topic]' },
+    );
+  } catch (_) {
+    const payload = { ...part, servedCount: (part.servedCount || 0) + 1, lastServedAt: Date.now() };
+    if (row.partKey) await store.setJSON(row.partKey, payload);
+    return { ...result, part: payload };
+  }
+}
+
+/**
  * Igual que pickReusablePart pero elige la parte que MÁS lemas pedidos cubre.
  * words: lemas ya normalizados (passageVocab.lemmatizeWords).
  * excludeTopics: temas a evitar para diversidad intra-módulo (desempate).
  * Devuelve { id, part, coveredWords, coverage:{covered,requested}, topic }.
  */
 async function pickReusablePartByVocab(store, lang, level, module, opts = {}) {
-  const { excludeIds = [], teil = null, words = [], excludeTopics = [] } = opts;
+  const { excludeIds = [], teil = null, words = [], excludeTopics = [], topicTag = null } = opts;
   const normLang   = String(lang).toLowerCase();
   const normLevel  = String(level).toUpperCase();
   const normModule = String(module).toLowerCase();
+  const wantTopic = topicTag ? normalizeB1Topic(topicTag) : null;
 
-  const entries = await listPartsIndex(store, normLang, normLevel, normModule);
-  if (!entries.length) return null;
-
-  const exclude = new Set(excludeIds);
-  let available = entries.filter(
-    (e) => !e.disabled && e.complete === true && e.verified === true && !exclude.has(e.id),
-  );
-  if (teil != null && Number.isFinite(Number(teil))) {
-    const want = Number(teil);
-    available = available.filter((e) => Number(e.teil) === want);
+  const { rows } = await loadModuleSearchRows(store, normLang, normLevel, normModule);
+  let available = filterRows(rows, { teil, excludeIds });
+  let topicRelaxed = false;
+  if (wantTopic && available.length) {
+    const strict = available.filter((r) => normalizeB1Topic(r.topicTag) === wantTopic);
+    if (strict.length) available = strict;
+    else topicRelaxed = true;
   }
   if (!available.length) return null;
 
-  const wantLemmas    = new Set((words || []).map((w) => String(w).toLowerCase()));
-  const topicsToAvoid = new Set((excludeTopics || []).map((t) => String(t).toLowerCase()));
-
-  // ≤12 partes por Teil hoy → cargar payloads para puntuar es barato.
-  const scored = [];
-  for (const row of available) {
-    let part;
-    try { part = await store.get(row.partKey, { type: 'json' }); } catch (_) { continue; }
-    if (!part || part.disabled || part.complete !== true || part.verified !== true) continue;
-    const vocab   = Array.isArray(part.vocab) ? part.vocab : [];
-    const covered = vocab.filter((v) => wantLemmas.has(String(v).toLowerCase()));
-    scored.push({
-      key: row.partKey,
-      id: row.id,
-      part,
-      covered,
-      score: covered.length,
-      topicPenalty: topicsToAvoid.has(String(part.topic || '').toLowerCase()) ? 1 : 0,
-      served: part.servedCount || 0,
-    });
+  const wantLemmas = (words || []).map((w) => String(w).toLowerCase()).filter(Boolean);
+  if (!wantLemmas.length) {
+    if (wantTopic) {
+      const byTopic = await pickReusablePartByTopic(store, lang, level, module, {
+        excludeIds, teil, topicTag,
+      });
+      if (byTopic) return byTopic;
+    }
+    const fallback = await pickReusablePart(store, lang, level, module, { excludeIds, teil });
+    if (fallback && wantTopic) fallback.topicRelaxed = true;
+    return fallback;
   }
+
+  const scored = scoreRowsForVocab(available, { words: wantLemmas, excludeTopics });
   if (!scored.length) return null;
 
-  // Más cobertura → menos repetición de tema → menos servida → azar.
-  scored.sort((a, b) =>
-    b.score - a.score ||
-    a.topicPenalty - b.topicPenalty ||
-    a.served - b.served ||
-    Math.random() - 0.5,
-  );
   const chosen = scored[0];
+  const row = chosen.row;
+  const part = await resolveRowPart(store, row);
+  if (!part || part.disabled || part.complete !== true || part.verified !== true) return null;
+
+  const servedTopic = normalizeB1Topic(row.topicTag || part.topicTag);
+  if (wantTopic && servedTopic && servedTopic !== wantTopic) topicRelaxed = true;
 
   const result = {
-    id: chosen.id,
-    part: chosen.part,
+    id: row.id,
+    part,
     coveredWords: chosen.covered,
-    coverage: { covered: chosen.covered.length, requested: wantLemmas.size },
-    topic: chosen.part.topic || null,
+    coverage: { covered: chosen.covered.length, requested: new Set(wantLemmas).size },
+    topic: row.topicSlug || part.topic || null,
+    topicTag: row.topicTag || part.topicTag || null,
+    topicRelaxed,
+    source: row.source === 'seed' ? 'local-seed' : 'blob',
   };
 
-  // CAS-incrementa servedCount, igual que pickReusablePart.
+  if (!store || !row.partKey || row.source === 'seed') {
+    return result;
+  }
+
   try {
     return await casWriteJson(
       store,
-      chosen.key,
+      row.partKey,
       (current) => {
-        const base = current || chosen.part;
+        const base = current || part;
         const payload = { ...base, servedCount: (base.servedCount || 0) + 1, lastServedAt: Date.now() };
         return { payload, result: { ...result, part: payload } };
       },
       { logTag: '[parts-serve-vocab]' },
     );
   } catch (_) {
-    const part = { ...chosen.part, servedCount: (chosen.part.servedCount || 0) + 1, lastServedAt: Date.now() };
-    await store.setJSON(chosen.key, part);
-    return { ...result, part };
+    const payload = { ...part, servedCount: (part.servedCount || 0) + 1, lastServedAt: Date.now() };
+    await store.setJSON(row.partKey, payload);
+    return { ...result, part: payload };
   }
 }
 
@@ -522,5 +585,6 @@ module.exports = {
   setReusablePartDisabled,
   removeReusablePart,
   pickReusablePart,
+  pickReusablePartByTopic,
   pickReusablePartByVocab,
 };

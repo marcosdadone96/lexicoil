@@ -31,7 +31,15 @@ const PersonalExamCoverage = (() => {
   }
 
   function scanPartWords(part, module, words) {
-    if (!part || part._fromPool) return [];
+    if (!part) return [];
+    if (part._fromPool) {
+      // Los Teile de pool cuentan 0… salvo que fueran elegidos expresamente
+      // por contener palabras del usuario (coverage swap → _vocabMatch).
+      const matched = Array.isArray(part._vocabMatch) ? part._vocabMatch.map(String) : [];
+      if (!matched.length) return [];
+      const wanted = new Set((words || []).map(String));
+      return matched.filter((w) => wanted.has(w));
+    }
     const TU = getTargetUsage();
     if (TU?.deriveTargetUsage) {
       const key =
@@ -121,38 +129,47 @@ const PersonalExamCoverage = (() => {
     return exam;
   }
 
-  function formatPersonalCoverageMessage(exam, cov) {
-    const overall = cov?.overall || exam?._coverageOverall || { found: 0, total: 0, words: [], missing: [] };
-    const { found, total, words = [], missing = [] } = overall;
-    let msg;
-    if (total > 0 && found === total) {
-      msg = `Exam generated with all ${total} of your words: ${words.join(', ')}.`;
-    } else if (total > 0) {
-      msg = `Exam generated with ${found} of ${total} words: ${words.join(', ') || '—'}.`;
-      if (missing.length) {
-        msg += ` Not included: ${missing.join(', ')}. Regenerate to try covering all of them.`;
-      }
-    } else {
-      msg = 'Exam generated.';
+  function formatPersonalCoverageSummary(overall, lang) {
+    const found = overall?.found ?? 0;
+    const total = overall?.total ?? 0;
+    const isDE = String(lang || '').toLowerCase() === 'de';
+    if (!total) {
+      return isDE ? 'Dein personalisiertes Examen' : 'Your personalized exam';
     }
-    const poolTeils = exam?._teilFromPool || [];
-    if (poolTeils.length) {
-      msg +=
-        ' Some sections (e.g. listening) use standard bank material and do not include your vocabulary.';
+    if (isDE) {
+      return `Dein Examen nutzt ${found} deiner ${total} Wörter.`;
+    }
+    return `Your exam uses ${found} of your ${total} words.`;
+  }
+
+  function formatPersonalCoverageMessage(exam, cov, lang) {
+    const overall = cov?.overall || exam?._coverageOverall || { found: 0, total: 0, words: [], missing: [] };
+    const { found, total, missing = [] } = overall;
+    const isDE = String(lang || exam?.lang || '').toLowerCase() === 'de';
+    let msg = formatPersonalCoverageSummary(overall, isDE ? 'de' : 'en');
+    if (total > 0 && missing.length && found < total) {
+      msg += isDE
+        ? ` Nicht eingebaut: ${missing.join(', ')}.`
+        : ` Not included: ${missing.join(', ')}.`;
     }
     return msg;
   }
 
-  function formatCoverageHeader(overall) {
+  function formatCoverageHeader(overall, lang) {
     const found = overall?.found ?? 0;
     const total = overall?.total ?? 0;
-    return `Vocabulary: ${found}/${total} words integrated`;
+    const isDE = String(lang || '').toLowerCase() === 'de';
+    if (isDE) {
+      return `${found} von ${total} Wörtern im Examen`;
+    }
+    return `${found} of ${total} words in your exam`;
   }
 
   return Object.freeze({
     computePersonalExamCoverage,
     attachPersonalExamCoverage,
     formatPersonalCoverageMessage,
+    formatPersonalCoverageSummary,
     formatCoverageHeader,
     scanPartWords,
   });

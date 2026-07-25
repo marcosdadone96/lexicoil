@@ -6,13 +6,19 @@ const path = require('path');
 /** Resolve repo root for Netlify dev (cwd) and bundled functions. */
 function findProjectRoot() {
   const candidates = [
+    __dirname,
     process.cwd(),
-    path.join(__dirname, '..', '..', '..'),
+    path.join(__dirname, '..'),
     path.join(__dirname, '..', '..'),
+    path.join(__dirname, '..', '..', '..'),
   ];
+  const seen = new Set();
   for (const root of candidates) {
-    if (fs.existsSync(path.join(root, 'js', 'engine', 'validation', 'ExamValidator.js'))) {
-      return root;
+    const norm = path.resolve(root);
+    if (seen.has(norm)) continue;
+    seen.add(norm);
+    if (fs.existsSync(path.join(norm, 'js', 'engine', 'validation', 'ExamValidator.js'))) {
+      return norm;
     }
   }
   return process.cwd();

@@ -432,6 +432,115 @@ function splitTranscriptChunks(text, count) {
 
 
 
+function ensureLesenT3Example(part) {
+  if (!part || Number(part.teil) !== 3) return part;
+  const slot = String(part.slotType || part.blueprintSlot || '').toLowerCase();
+  const adsLike = slot.includes('ads_matching') || slot.includes('matching_ads') || (part.ads?.length >= 10);
+  if (!adsLike) return part;
+  const ex = part.example || part.solvedExample;
+  if (ex && String(ex.situation || ex.question || ex.text || '').trim()) return part;
+  let template;
+  if (typeof require !== 'undefined') {
+    try {
+      ({ GOETHE_B1_LESEN_T3_EXAMPLE: template } = require('../library/goetheB1Constants.js'));
+    } catch (_) {
+      /* optional */
+    }
+  }
+  if (!template && typeof window !== 'undefined' && window.GoetheB1Constants) {
+    template = window.GoetheB1Constants.GOETHE_B1_LESEN_T3_EXAMPLE;
+  }
+  if (template) part.example = { ...template };
+  return part;
+}
+
+/** Build part.ads[] from embedded A–J option lines (make-t3 / bank format). Idempotent. */
+function coalesceLesenAdsMatchingPart(part) {
+  if (!part || typeof part !== 'object') return part;
+  const teil = Number(part.teil ?? 0);
+  const slot = String(part.slotType || part.blueprintSlot || '').toLowerCase();
+  const matchingLike =
+    teil === 3 ||
+    slot.includes('ads_matching') ||
+    slot.includes('matching_ads') ||
+    (part.ads?.length >= 3) ||
+    (part.items || []).some((it) => String(it.type || '').toLowerCase() === 'matching') ||
+    (part.questions || []).some((q) => String(q.type || '').toLowerCase() === 'matching');
+  if (!matchingLike) return part;
+
+  part.blueprintSlot = part.blueprintSlot || 'ads_matching';
+  part.slotType = part.slotType || 'ads_matching';
+
+  let AdsMatching;
+  if (typeof require !== 'undefined') {
+    try {
+      AdsMatching = require('../library/adsMatching.js');
+    } catch (_) {
+      /* optional */
+    }
+  }
+  if (!AdsMatching && typeof window !== 'undefined') AdsMatching = window.AdsMatching;
+
+  if (!part.items?.length && part.questions?.length) {
+    part.items = part.questions
+      .map((q) => ({
+        id: q.id,
+        signText: q.signText || q.statement || q.question || q.text,
+        type: q.type || 'matching',
+        correct: q.correct ?? q.correctAnswer,
+        options: q.options,
+      }))
+      .filter((it) => (it.signText && String(it.signText).trim()) || it.correct != null);
+  }
+
+  if (!part.ads?.length && AdsMatching?.buildAdsFromBankQuestions) {
+    const pool = [...(part.questions || []), ...(part.items || [])];
+    const built = AdsMatching.buildAdsFromBankQuestions(pool);
+    if (built.length >= 3) part.ads = built;
+  }
+
+  const ADS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  if (part.ads?.length) {
+    part.ads = part.ads
+      .map((a, i) => ({
+        key: String(a.key || ADS[i] || i + 1).toUpperCase(),
+        title: a.title || '',
+        text: a.text || a.title || '',
+      }))
+      .filter((a) => a.text || a.title)
+      .map((a, i) => ({ ...a, key: ADS[i] || String(i + 1) }));
+  }
+
+  const startNum = teil === 3 ? 13 : 1;
+  (part.items || []).forEach((item, i) => {
+    if (!item.signText && item.text) item.signText = item.text;
+    if (!item.signText && item.question) item.signText = item.question;
+    if (!item.id || /^l\d/i.test(String(item.id)) || teil === 3) item.id = String(startNum + i);
+    if (!item.type || item.type === 'multiple' || item.type === 'multiple_choice') item.type = 'matching';
+    if (part.ads?.length) delete item.options;
+  });
+
+  if (part.items?.length) {
+    part.questions = (part.questions || []).filter((q) => {
+      const t = String(q?.type || '').toLowerCase();
+      return !['matching', 'match', 'abcd'].includes(t);
+    });
+  }
+
+  if ((part.items || []).some((it) => String(it.correct ?? it.correctAnswer ?? '').trim().toUpperCase() === '0')) {
+    part._t3HasNoMatch = true;
+  }
+
+  if (teil === 3) ensureLesenT3Example(part);
+  return part;
+}
+
+function repairLesenPartsForValidation(exam) {
+  if (!exam || !Array.isArray(exam.lesenParts)) return exam;
+  for (const part of exam.lesenParts) coalesceLesenAdsMatchingPart(part);
+  return exam;
+}
+
 function reusablePartToLesenPart(poolPart) {
 
   if (!poolPart) return null;
@@ -503,6 +612,7 @@ function reusablePartToLesenPart(poolPart) {
       .filter((it) => (it.signText && String(it.signText).trim()) || it.correct != null);
 
     if (poolPart.example) part.example = poolPart.example;
+    else if (poolPart.solvedExample) part.example = poolPart.solvedExample;
 
   } else if (
 
@@ -574,7 +684,7 @@ function reusablePartToLesenPart(poolPart) {
 
   }
 
-  return part;
+  return ensureLesenT3Example(coalesceLesenAdsMatchingPart(part));
 
 }
 
@@ -905,6 +1015,12 @@ const PersonalLesenPoolFallback = Object.freeze({
   isLesenPoolFirstTeil,
 
   filterPersonalAiChunks,
+
+  ensureLesenT3Example,
+
+  coalesceLesenAdsMatchingPart,
+
+  repairLesenPartsForValidation,
 
   reusablePartToLesenPart,
 
