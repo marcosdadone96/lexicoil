@@ -756,7 +756,13 @@ function renderExam(){
   const demoH=d.guidedDemo?`<div class="demo-banner"><b>5-minute product demo</b> — Experience every module at reduced volume. Click words you miss to see vocabulary detection.</div>`:'';
   const langH=isPrac&&!isQ?`<div class="exam-lang-toolbar"><span class="exam-lang-label">${isDE?'Übersetzen:':'Translate to:'}</span>${LANGS.map(l=>`<button class="vt-lb ex-lb${S.vocabLang===l.code?' active':''}" onclick="setVL('${l.code}',this)">${l.l}</button>`).join('')}</div>`:'';
   let secs='';
-  if(d.goetheFormat&&(!isQ)){
+  // Quick modules run through here too: the branches below only understand the legacy
+  // singular shapes (d.lesen/d.horen/…), which library-built exams do not have — they carry
+  // lesenParts/horenParts/… instead. Gating this on !isQ left those exams with no renderer
+  // at all and produced a silent blank body. stripExamToSkills() has already emptied the
+  // parts of the modules not requested, and renderGoetheExam skips empty ones, so the quick
+  // module still renders exactly one module.
+  if(d.goetheFormat){
     secs=renderGoetheExam(d,isPrac,isQ);
     if(!secs.trim()&&!isExamRenderable(d)){
       backToWorkspace('exams');
