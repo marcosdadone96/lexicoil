@@ -1257,6 +1257,13 @@ function isLesenAdsMatchingPart(part){
   }
   const slot=String(part.blueprintSlot||part.slotType||'').toLowerCase();
   if(slot.includes('ads')||(slot.includes('matching')&&Number(part.teil)===3))return true;
+  // The blueprint knows the task; trust it over the shape heuristic below. Cambridge marks
+  // every answer with a letter, so `correct:"A"` on an item that carries a sign or a passage
+  // is NOT evidence of a matching task the way it is in Goethe Lesen T3 — without this,
+  // Reading P1 (signs MCQ), P3 (long text MCQ) and P5 (MCQ cloze) all classify as ads
+  // matching, get a shared ad pool built from one item, and lose their own options. Slots
+  // that really are matching (person_text_matching, gapped_text) keep the letter route.
+  if(/mcq|multiple_choice|long_text|open_cloze/.test(slot)&&!/matching|ads/.test(slot))return false;
   if(part.ads?.length)return true;
   const items=part.items||[];
   if(!items.length)return false;

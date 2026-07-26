@@ -283,6 +283,13 @@ function normalizeLesenT3Part(part){
   const firstOpts=part.items[0]?.options;
   if(!Array.isArray(firstOpts)||firstOpts.length<2||typeof firstOpts[0]!=='string')return;
   if(!/^[A-Z]\)/i.test(firstOpts[0]))return;
+  // A matching task draws every item from ONE shared pool (Goethe Lesen T3 ads, Cambridge
+  // Reading P2 texts / P4 sentences). Plain multiple choice gives each item its own options
+  // and is structurally identical at this point — "A) …" strings with a letter answer — so
+  // without this check the pool is built from item[0] alone and every other item silently
+  // loses its own options. Cambridge P1/P3/P5 are exactly that shape.
+  const pool=JSON.stringify(firstOpts);
+  if(!part.items.every(it=>JSON.stringify(it.options||[])===pool))return;
   const hasCorrect=part.items.some(it=>String(it.type||'').toLowerCase()==='matching'||(it.correct!=null&&typeof it.correct==='string'&&/^[A-Za-z0]/i.test(it.correct)));
   if(!hasCorrect)return;
   const ads=[];
@@ -302,6 +309,12 @@ function normalizeLesenT3Part(part){
 }
 function isLesenAdsMatchingRender(part){
   if(isLesenForumOpinionsPart(part))return false;
+  // Mirror of the blueprint guard in examGeneration.isLesenAdsMatchingPart: a part whose slot
+  // is declared multiple choice or cloze is never an ads/matching layout, however its ads
+  // array got populated upstream. Without this, Cambridge Reading P3 (long_text) still
+  // rendered as "match the situation to a letter" because it arrived carrying stale ads.
+  const slot=String(part?.blueprintSlot||part?.slotType||'').toLowerCase();
+  if(/mcq|multiple_choice|long_text|open_cloze/.test(slot)&&!/matching|ads/.test(slot))return false;
   normalizeLesenT3Part(part);
   if(!(part?.ads?.length>=2))return false;
   // Items format (pool): items array with matching situations
@@ -344,6 +357,16 @@ function renderGoetheLesenPart(part,pi,isPrac,ui){
   if(adsMatching){
     const sitHdr=ui.lang==='de'?'Situationen':'Situations';
     h+=`<div class="pt-t3-layout"><div class="pt-t3-main">`;
+    // Gapped-text matching (Cambridge Reading P4) carries the passage the gaps belong to in
+    // part.text. This branch returns before the generic part.text block below, so without
+    // this the candidate matches sentences to gaps they cannot see. Only rendered when the
+    // text actually has gap markers: in P2 part.text is a copy of the lettered pool itself,
+    // and Goethe T3 has no passage, so neither renders it twice.
+    if(part.text&&/\(\d+\)|_{3,}/.test(part.text)){
+      const gapBlockId='lesen_'+pi+'_gapped';
+      stashPassageMeta(gapBlockId,part.text,part.translations);
+      h+=`<div class="text-display"><h3>${esc(part.textTitle||'')}</h3><div class="readable-text">${wrapW(part.text,gapBlockId,isPrac)}</div>${passageToolbarHtml(gapBlockId,isPrac,ui)}</div>`;
+    }
     const ex=part.example||part.solvedExample;
     if(ex&&(ex.situation||ex.question||ex.text)){
       const exLbl=ex.label||(ui.lang==='de'?'Beispiel':'Example');
@@ -1002,7 +1025,15 @@ function togglePersonMatch(key,val,el){
 function renderGapFillQ(q,num,mod,part,isDE){
   const opts=part.options||[];
   const head=isDE?`Lücke ${q.gap||num}`:`Gap ${q.gap||num}`;
-  return `<div class="question-block"><div class="q-number">${head}</div><div class="q-text">${isDE?'Wählen Sie die passende Option:':'Choose the matching option:'}</div><select class="gap-select" onchange='S.answers[${jsLit(mod+'_'+q.id)}]=this.value;updProg()'><option value="">${isDE?'— wählen —':'— select —'}</option>${opts.map(o=>`<option value="${esc(o.key)}">${esc(o.key)}) ${esc(o.text)}</option>`).join('')}</select></div>`;
+  const ak=mod+'_'+q.id;
+  // Open cloze (Cambridge Reading P6): the candidate writes one word, there is no option
+  // pool. Rendering the usual <select> here produced a dropdown whose only entry was the
+  // "— select —" placeholder, so the gap simply could not be answered.
+  if(!opts.length){
+    const saved=esc(S.answers?.[ak]||'');
+    return `<div class="question-block"><div class="q-number">${head}</div><div class="q-text">${isDE?'Schreiben Sie EIN Wort:':'Write ONE word:'}</div><input type="text" class="gap-input" autocomplete="off" spellcheck="false" value="${saved}" oninput='S.answers[${jsLit(ak)}]=this.value.trim();updProg()'></div>`;
+  }
+  return `<div class="question-block"><div class="q-number">${head}</div><div class="q-text">${isDE?'Wählen Sie die passende Option:':'Choose the matching option:'}</div><select class="gap-select" onchange='S.answers[${jsLit(ak)}]=this.value;updProg()'><option value="">${isDE?'— wählen —':'— select —'}</option>${opts.map(o=>`<option value="${esc(o.key)}"${(S.answers?.[ak]===o.key)?' selected':''}>${esc(o.key)}) ${esc(o.text)}</option>`).join('')}</select></div>`;
 }
 function renderQ(q,num,mod,rfT,rfF,trK,isOff){
   const ak=`${mod}_${q.id}`;
