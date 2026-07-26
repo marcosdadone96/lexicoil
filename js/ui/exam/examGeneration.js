@@ -342,7 +342,7 @@ function repairPersonalExamAnswerability(exam){
   (exam.lesenParts||[]).forEach(part=>{
     normalizeLesenT2Part(part);
     coalesceLesenForumOpinions(part);
-    coalesceLesenAdsMatching(part);
+    coalesceLesenAdsMatching(part,exam.lang);
     coalesceLesenPartQuestions(part);
     part.questions=(part.questions||[]).filter(q=>keepQ(q,part));
     part.items=(part.items||[]).filter(it=>{
@@ -1320,16 +1320,26 @@ function ensureLesenPartInstruction(part,lang){
   const synth=synthesizeLesenInstruction(part,lang);
   if(synth)part.instruction=synth;
 }
-function rebuildLesenAdsMatchingInstruction(part){
+function rebuildLesenAdsMatchingInstruction(part,lang){
   if(!part?.items?.length||!part.ads?.length)return;
+  const de=lang!=='en'&&lang!=='es';
+  // Outside German, only FILL a missing instruction — never replace an authored one.
+  // The Goethe wording ("eine Anzeige passt nicht", "schreiben Sie 0") describes Lesen T3
+  // specifically: Cambridge Part 2 leaves three texts unused and offers no "0" option. On
+  // top of that, isLesenAdsMatchingPart() also matches Cambridge parts that are not
+  // matching tasks at all (signs/notices, long text, gapped text), so overwriting their
+  // blueprint instruction told the candidate to do a task that was not on screen.
+  if(!de&&String(part.instruction||'').trim())return;
   const start=part.items[0].id;
   const end=part.items[part.items.length-1].id;
   const adLo=String(part.ads[0].key).toLowerCase();
   const adHi=String(part.ads[part.ads.length-1].key).toLowerCase();
-  part.instruction=
-    `Lesen Sie die Situationen ${start} bis ${end} und die Anzeigen ${adLo} bis ${adHi}. `+
-    'Welche Anzeige passt zu welcher Situation? Eine Anzeige passt nicht. '+
-    'Wenn es keine passende Anzeige gibt, schreiben Sie 0.';
+  part.instruction=de
+    ?`Lesen Sie die Situationen ${start} bis ${end} und die Anzeigen ${adLo} bis ${adHi}. `+
+     'Welche Anzeige passt zu welcher Situation? Eine Anzeige passt nicht. '+
+     'Wenn es keine passende Anzeige gibt, schreiben Sie 0.'
+    :`Read questions ${start} to ${end} and texts ${adLo.toUpperCase()} to ${adHi.toUpperCase()}. `+
+     'Decide which text is the most suitable for each person.';
 }
 function promoteLesenAdsMatchingQuestions(part){
   if(part.items?.length||!part.ads?.length||!part.questions?.length)return false;
@@ -1356,7 +1366,7 @@ function inferLesenT3HasNoMatchPart(part){
   const pool=[...(part.items||[]),...(part.questions||[])];
   if(pool.some(it=>String(it?.correct??it?.correctAnswer??'').trim()==='0'))part._t3HasNoMatch=true;
 }
-function coalesceLesenAdsMatching(part){
+function coalesceLesenAdsMatching(part,lang){
   if(!isLesenAdsMatchingPart(part))return;
   const ADS='ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   part.blueprintSlot=part.blueprintSlot||'ads_matching';
@@ -1406,7 +1416,7 @@ function coalesceLesenAdsMatching(part){
     });
   }
   if(part.items?.length&&part.ads?.length){
-    rebuildLesenAdsMatchingInstruction(part);
+    rebuildLesenAdsMatchingInstruction(part,lang);
   }
   inferLesenT3HasNoMatchPart(part);
   (part.items||[]).forEach(item=>normalizeGoetheQuestion(item,part));
@@ -1690,7 +1700,7 @@ function sanitizeGoetheParts(d){
     if(part.textWithGaps)part.textWithGaps=part.textWithGaps.map(fixT);
     part.teil=part.teil??pi+1;
     coalesceLesenForumOpinions(part);
-    coalesceLesenAdsMatching(part);
+    coalesceLesenAdsMatching(part,d.lang||'de');
     const PF=getPoolFallbackHelpers();
     if(PF?.coalesceLesenAdsMatchingPart)PF.coalesceLesenAdsMatchingPart(part);
     else if(PF?.ensureLesenT3Example)PF.ensureLesenT3Example(part);
