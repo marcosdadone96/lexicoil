@@ -3,28 +3,18 @@
  */
 import fs from 'node:fs';
 import path from 'node:path';
-import { createRequire } from 'node:module';
 import { ROOT } from './loadEnv.mjs';
 import { loadWeakLemmas } from './lesenTemplatePrompt.mjs';
-
-const require = createRequire(import.meta.url);
-const { B1_TOPICS, normalizeB1Topic } = require(path.join(ROOT, 'js/data/b1Topics.js'));
-
-const SEED_FILES = [
-  'library/reusable-seed/de_B1.json',
-  'library/reusable-seed/de_B1.bank.json',
-];
-
-const MODULE_TEILS = {
-  lesen: [1, 2, 3, 4, 5],
-  horen: [1, 2, 3, 4],
-  schreiben: [1, 2, 3],
-  sprechen: [1, 2, 3],
-};
+import {
+  moduleTeilsForLevel,
+  normalizeTopicForLevel,
+  seedPathsForLevel,
+  topicsForLevel,
+} from './levelPlanner.mjs';
 
 export function loadPoolRecords(lang = 'de', level = 'B1') {
   const records = [];
-  for (const rel of SEED_FILES) {
+  for (const rel of seedPathsForLevel(lang, level)) {
     const abs = path.join(ROOT, rel);
     if (!fs.existsSync(abs)) continue;
     const data = JSON.parse(fs.readFileSync(abs, 'utf8'));
@@ -40,23 +30,24 @@ export function loadPoolRecords(lang = 'de', level = 'B1') {
   return records;
 }
 
-export function moduleTeils(module, blueprintTeils) {
+export function moduleTeils(module, blueprintTeils, level = 'B1') {
   const m = String(module).toLowerCase();
   if (blueprintTeils?.length) return blueprintTeils;
-  return MODULE_TEILS[m] || [];
+  return moduleTeilsForLevel(m, level);
 }
 
-/** Count verified parts per canonical B1 topic for one module+teil cell. */
-export function countTopicStock(records, module, teil) {
+/** Count verified parts per canonical topic for one module+teil cell. */
+export function countTopicStock(records, module, teil, level = 'B1') {
   const mod = String(module).toLowerCase();
   const tN = Number(teil);
-  const counts = Object.fromEntries(B1_TOPICS.map((t) => [t, 0]));
+  const topicList = topicsForLevel(level);
+  const counts = Object.fromEntries(topicList.map((t) => [t, 0]));
   let untagged = 0;
 
   for (const r of records) {
     if (String(r.module).toLowerCase() !== mod) continue;
     if (Number(r.teil) !== tN) continue;
-    const topic = normalizeB1Topic(r.topicTag);
+    const topic = normalizeTopicForLevel(level, r.topicTag);
     if (topic && counts[topic] !== undefined) counts[topic]++;
     else untagged++;
   }
@@ -65,9 +56,10 @@ export function countTopicStock(records, module, teil) {
 }
 
 /** Rank topics for a cell: highest deficit first, then lowest count. */
-export function rankTopicGaps(records, module, teil, targetPerCell = 3) {
-  const { counts } = countTopicStock(records, module, teil);
-  return B1_TOPICS.map((topic) => {
+export function rankTopicGaps(records, module, teil, targetPerCell = 3, level = 'B1') {
+  const { counts } = countTopicStock(records, module, teil, level);
+  const topicList = topicsForLevel(level);
+  return topicList.map((topic) => {
     const count = counts[topic] || 0;
     const deficit = Math.max(0, targetPerCell - count);
     return { topic, count, deficit };
@@ -79,9 +71,13 @@ export function pickScarcestTopic(records, module, teil, opts = {}) {
     targetPerCell = 3,
     excludeTopics = [],
     excludeSet = null,
+    level = 'B1',
   } = opts;
-  const exclude = excludeSet || new Set((excludeTopics || []).map((t) => normalizeB1Topic(t)).filter(Boolean));
-  const ranked = rankTopicGaps(records, module, teil, targetPerCell);
+  const topicList = topicsForLevel(level);
+  const exclude = excludeSet || new Set(
+    (excludeTopics || []).map((t) => normalizeTopicForLevel(level, t)).filter(Boolean),
+  );
+  const ranked = rankTopicGaps(records, module, teil, targetPerCell, level);
   const candidates = ranked.filter((r) => !exclude.has(r.topic));
   if (!candidates.length) {
     if (opts.noFallback) return null;
@@ -93,7 +89,7 @@ export function pickScarcestTopic(records, module, teil, opts = {}) {
     );
     const ties = pool.filter((r) => r.deficit === bestDeficit && r.count === bestCount);
     const pick = ties[Math.floor(Math.random() * ties.length)] || pool[0];
-    return pick?.topic || B1_TOPICS[Math.floor(Math.random() * B1_TOPICS.length)];
+    return pick?.topic || topicList[Math.floor(Math.random() * topicList.length)];
   }
   const pool = candidates;
   const bestDeficit = pool[0]?.deficit ?? 0;
@@ -103,7 +99,7 @@ export function pickScarcestTopic(records, module, teil, opts = {}) {
   );
   const ties = pool.filter((r) => r.deficit === bestDeficit && r.count === bestCount);
   const pick = ties[Math.floor(Math.random() * ties.length)] || pool[0];
-  return pick?.topic || B1_TOPICS[Math.floor(Math.random() * B1_TOPICS.length)];
+  return pick?.topic || topicList[Math.floor(Math.random() * topicList.length)];
 }
 
 export function loadWeakDetail(lang, level) {
@@ -145,8 +141,8 @@ export function pickRotatingWords(lang, level, opts = {}) {
 
 export function buildCellGapReport(lang, level, module, teil, targetPerCell = 3) {
   const records = loadPoolRecords(lang, level);
-  const ranked = rankTopicGaps(records, module, teil, targetPerCell);
-  const { untagged, total } = countTopicStock(records, module, teil);
+  const ranked = rankTopicGaps(records, module, teil, targetPerCell, level);
+  const { untagged, total } = countTopicStock(records, module, teil, level);
   const missing = ranked.filter((r) => r.deficit > 0);
   return { module, teil, targetPerCell, ranked, untagged, total, missing };
 }

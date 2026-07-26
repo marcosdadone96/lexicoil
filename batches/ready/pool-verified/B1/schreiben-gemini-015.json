@@ -61,7 +61,7 @@
         "Vorteile",
         "Aufgabe",
         "brauchen",
-        "Viele"
+        "viele"
       ],
       "grammarTags": [
         "g-de-b1-adjektivdeklination",
@@ -103,8 +103,8 @@
       ]
     }
   ],
-  "_germanCapsNormalizeVersion": "v3.15-was-subst-adj-2026-07-12",
-  "_germanCapsNormalizedAt": "2026-07-13T14:07:11.298Z",
+  "_germanCapsNormalizeVersion": "v3.17-mcq-dedupe-universal-2026-07-14",
+  "_germanCapsNormalizedAt": "2026-07-25T07:51:43.487Z",
   "_balanceMcqVersion": "v1.2-no-rf-chrono-shuffle-2026-07-11",
   "_balanceMcqNormalizedAt": "2026-07-13T13:32:29.390Z",
   "topicTag": "Stadtleben",
@@ -188,9 +188,9 @@
     "feedbackMode": "off",
     "feedbackVersion": "v1"
   },
-  "_metadataEnrichedAt": "2026-07-13T13:32:31.347Z",
-  "_metadataEnrichNote": "deterministic: detectTopic + per-question lemma vocab + grammar heuristics",
-  "_vocabTagsNormalizeVersion": "v2.3.12-beispielfragen-stem-2026-07-12",
+  "_metadataEnrichedAt": "2026-07-25T07:51:43.487Z",
+  "_metadataEnrichNote": "vocabRepairOnly: repairQuestionVocabularyTags (pool artifact repair)",
+  "_vocabTagsNormalizeVersion": "v2.3.16-b1-validated-verb-adj-lemma-2026-07-24",
   "_grammarTagsNormalizeVersion": "v2.0-focus-flexible-2026-07-10",
   "_schreibenT3NamePatch": {
     "at": "2026-07-13T14:07:11.297Z",
@@ -668,5 +668,7 @@
       "quality": "validated"
     }
   ],
-  "vocabIndexVersion": "v3-quality"
+  "vocabIndexVersion": "v3-quality",
+  "_poolArtifactRepairAt": "2026-07-25T07:51:43.487Z",
+  "_poolArtifactRepairNote": "repair-pool-vocab-caps-artifacts.mjs (germanCapsNormalize + enrich vocab)"
 }

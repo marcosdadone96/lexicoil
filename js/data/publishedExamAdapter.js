@@ -84,10 +84,19 @@
     if (Array.isArray(record.prompts) && record.prompts.length) return record.prompts;
     const text = String((q0 && q0.question) || record.task || record.instruction || '');
     const teil = Number(record.teil ?? q0?.teil ?? 1);
+    const level = String(record.level || q0?.level || '').toUpperCase();
+    const type = String(q0?.type || '').toLowerCase();
+    if (
+      typeof SprechenBriefing !== 'undefined' &&
+      SprechenBriefing.isA2GoetheSprechen(text, teil, { level, type })
+    ) {
+      return [];
+    }
     if (typeof require !== 'undefined') {
       try {
-        const { parseSprechenBriefing } = require('../engine/sprechenBriefing.js');
-        return parseSprechenBriefing(text, teil).bullets;
+        const { parseSprechenBriefing, isA2GoetheSprechen } = require('../engine/sprechenBriefing.js');
+        if (isA2GoetheSprechen(text, teil, { level, type })) return [];
+        return parseSprechenBriefing(text, teil, { level, type }).bullets;
       } catch (_) {
         /* fallback below */
       }
@@ -103,31 +112,23 @@
   }
 
   function applySprechenSnapshot(part, record, teil) {
-    const q0 = (record.questions || [])[0];
-    const situation =
-      record.situation ||
-      (q0 && q0.question) ||
-      record.task ||
-      record.instruction ||
-      '';
-    part.situation = situation;
-    part.title = record.title || record.taskFormat || 'Teil ' + teil;
-    part.fieldId = record.fieldId || 'speak_bp_' + teil;
-    const briefing =
-      typeof SprechenBriefing !== 'undefined'
-        ? SprechenBriefing.parseSprechenBriefing(situation, teil)
-        : { bullets: parseSprechenPoints(record, q0) };
-    part.points =
-      briefing.bullets && briefing.bullets.length
-        ? briefing.bullets
-        : parseSprechenPoints(record, q0);
-    part.prompts = part.points;
-    part.minExchanges = record.minExchanges != null ? record.minExchanges : teil === 3 ? 3 : 4;
-    part.dauer = record.dauer || record.time || record.arbeitszeit || '';
-    part.cardText = record.cardText || '';
-    part.photoDescriptions = record.photoDescriptions || [];
-    if (Number(teil) === 2 && Array.isArray(record.slides) && record.slides.length) {
-      part.slides = record.slides;
+    if (typeof SprechenBriefing !== 'undefined' && SprechenBriefing.enrichSprechenExamPart) {
+      SprechenBriefing.enrichSprechenExamPart(part, record);
+    } else {
+      const q0 = (record.questions || [])[0];
+      const situation =
+        record.situation ||
+        (q0 && q0.question) ||
+        record.task ||
+        record.instruction ||
+        '';
+      part.situation = situation;
+      part.title = record.title || record.taskFormat || 'Teil ' + teil;
+      part.fieldId = record.fieldId || 'speak_bp_' + teil;
+      part.instruction = situation;
+      part.task = situation;
+      part.points = [];
+      part.prompts = [];
     }
     part.questions = (record.questions || []).map(function (q) {
       return normPartQuestion(q, 'sprechen', teil);

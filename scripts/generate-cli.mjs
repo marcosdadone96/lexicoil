@@ -30,7 +30,11 @@ import {
   runPoolFillCycle,
   shouldSkipLesenT3Topic,
   preflightLesenT3Topic,
+  shouldSkipLesenT4Topic,
+  preflightLesenT4Topic,
+  lesenForcedTopicPreflightAction,
 } from './lib/poolFillTeilLib.mjs';
+import { isTopicMoldSessionBlockReason } from './lib/topicMoldCircuitBreaker.mjs';
 import { printCoverageSummary, refreshCoverageRegistry } from './lib/coverageRegistry.mjs';
 import { DailyQuotaError } from './lib/geminiClient.mjs';
 import {
@@ -39,6 +43,7 @@ import {
   sumCellCostSince,
 } from './lib/generationCostLog.mjs';
 import { setupConsoleUtf8, boxTop, boxLine, boxBottom, hrDouble } from './lib/consoleSafe.mjs';
+import { smokeCellsForLevel } from './lib/levelPlanner.mjs';
 
 loadEnvFile();
 setupConsoleUtf8();
@@ -50,12 +55,7 @@ const MODULE_TEILS = {
   sprechen: [1, 2, 3],
 };
 
-const SMOKE_CELLS = [
-  ...MODULE_TEILS.lesen.map((t) => ({ module: 'lesen', teil: t })),
-  ...MODULE_TEILS.horen.map((t) => ({ module: 'horen', teil: t })),
-  ...MODULE_TEILS.schreiben.map((t) => ({ module: 'schreiben', teil: t })),
-  ...MODULE_TEILS.sprechen.map((t) => ({ module: 'sprechen', teil: t })),
-];
+const SMOKE_CELLS = smokeCellsForLevel('B1');
 
 function parseCell(raw) {
   const s = String(raw || '').trim().toLowerCase();
@@ -65,6 +65,16 @@ function parseCell(raw) {
   const teil = Number(m[2]);
   if (!MODULE_TEILS[module]?.includes(teil)) return null;
   return { module, teil };
+}
+
+function resolveCells(args) {
+  if (args.smoke) {
+    return smokeCellsForLevel(args.level).map((c) => ({ ...c, target: 1 }));
+  }
+  if (!args.module || !Number.isFinite(args.teil)) {
+    throw new Error('Indica --smoke, --cell lesen-t1, o --module + --teil');
+  }
+  return [{ module: args.module, teil: args.teil, target: args.count }];
 }
 
 function parseArgs(argv) {
@@ -178,16 +188,6 @@ Opciones:
 `);
 }
 
-function resolveCells(args) {
-  if (args.smoke) {
-    return SMOKE_CELLS.map((c) => ({ ...c, target: 1 }));
-  }
-  if (!args.module || !Number.isFinite(args.teil)) {
-    throw new Error('Indica --smoke, --cell lesen-t1, o --module + --teil');
-  }
-  return [{ module: args.module, teil: args.teil, target: args.count }];
-}
-
 async function fillOneCell(args, cell) {
   const key = checkpointKey(args.lang, args.level, cell.module, cell.teil);
   if (args.reset) clearPoolFillCheckpoint();
@@ -265,11 +265,15 @@ async function fillOneCell(args, cell) {
       wordCount: args.wordCount,
       vocabCursor,
       recentTopics,
+      forcedTopic: args.topic || null,
+      exhaustedTopics,
     });
     console.log('\n[dry-run] Plan de rotación:');
     console.log(JSON.stringify(plan, null, 2));
     return { saved, target, dryRun: true, cellCostUsd: 0 };
   }
+
+  let forcedTopicAborted = false;
 
   while (saved < target && attempts < args.maxAttempts) {
     if (!currentTopic || partsSinceRotate >= args.rotateEvery) {
@@ -290,10 +294,23 @@ async function fillOneCell(args, cell) {
         exhaustedTopics,
       });
       if (plan.exhausted || !plan.topic) {
-        console.warn(
-          `\n⛔ Sin temas con stock disponible para ${cell.module} T${cell.teil}. ` +
-            `Saltados (${exhaustedTopics.length}): ${exhaustedTopics.join(', ') || '(ninguno)'}`,
-        );
+        if (plan.forcedTopicExhausted) {
+          console.error(
+            `\n⛔ Tema forzado «${plan.forcedTopicExhausted}» agotado — no se puede generar.` +
+              (plan.vocabPlanError ? ` (${plan.vocabPlanError})` : ''),
+          );
+          forcedTopicAborted = true;
+        } else if (plan.vocabTopicsExhausted?.length) {
+          console.warn(
+            `\n⛔ Sin vocab planificable para ${cell.module} T${cell.teil}. ` +
+              `Temas probados sin palabras: ${plan.vocabTopicsExhausted.join(', ')}`,
+          );
+        } else {
+          console.warn(
+            `\n⛔ Sin temas con stock disponible para ${cell.module} T${cell.teil}. ` +
+              `Saltados (${exhaustedTopics.length}): ${exhaustedTopics.join(', ') || '(ninguno)'}`,
+          );
+        }
         break;
       }
       currentTopic = plan.topic;
@@ -305,12 +322,40 @@ async function fillOneCell(args, cell) {
 
     if (cell.module === 'lesen' && cell.teil === 3 && currentTopic) {
       const stock = preflightLesenT3Topic(currentTopic, sessionLesen);
-      if (!stock.generatable) {
+      const pf = lesenForcedTopicPreflightAction(args.topic, currentTopic, stock, 3);
+      if (pf.action === 'abort') {
+        console.error(`\n${pf.message}`);
+        forcedTopicAborted = true;
+        break;
+      }
+      if (pf.action === 'skip') {
         if (!exhaustedTopics.includes(currentTopic)) {
           exhaustedTopics.push(currentTopic);
           console.warn(
             `\n⏭ Lesen T3 · «${currentTopic}» sin stock de blueprint ` +
               `(${stock.compatibleTotal} compatibles, 0 disponibles tras dedup/exclusión) — saltando tema`,
+          );
+        }
+        partsSinceRotate = args.rotateEvery;
+        continue;
+      }
+    }
+
+    if (cell.module === 'lesen' && cell.teil === 4 && currentTopic) {
+      const stock = preflightLesenT4Topic(currentTopic, sessionLesen);
+      const pf = lesenForcedTopicPreflightAction(args.topic, currentTopic, stock, 4);
+      if (pf.action === 'abort') {
+        console.error(`\n${pf.message}`);
+        forcedTopicAborted = true;
+        break;
+      }
+      if (pf.action === 'skip') {
+        if (!exhaustedTopics.includes(currentTopic)) {
+          exhaustedTopics.push(currentTopic);
+          console.warn(
+            `\n⏭ Lesen T4 · «${currentTopic}» sin semillas frescas ` +
+              `(${stock.preflightOkCount} preflight-OK, ${stock.freshCount} frescas, ` +
+              `tier=${stock.pickTier}) — saltando tema`,
           );
         }
         partsSinceRotate = args.rotateEvery;
@@ -365,17 +410,17 @@ async function fillOneCell(args, cell) {
     });
 
     if (!cycle.ok) {
-      const skipTopic = shouldSkipLesenT3Topic(
-        cell.module,
-        cell.teil,
-        currentTopic,
-        cycle.reason,
-        sessionLesen,
-      );
+      const moldBlock = isTopicMoldSessionBlockReason({ reason: cycle.reason, gate: cycle.gate });
+      const skipTopic =
+        moldBlock ||
+        shouldSkipLesenT3Topic(cell.module, cell.teil, currentTopic, cycle.reason, sessionLesen) ||
+        shouldSkipLesenT4Topic(cell.module, cell.teil, currentTopic, cycle.reason, sessionLesen);
       if (skipTopic && currentTopic && !exhaustedTopics.includes(currentTopic)) {
         exhaustedTopics.push(currentTopic);
+        const label = cell.teil === 3 ? 'Lesen T3' : cell.teil === 4 ? 'Lesen T4' : cell.module;
+        const why = moldBlock ? 'circuit breaker / topic×molde' : cycle.reason || 'unknown';
         console.warn(
-          `\n⏭ Lesen T3 · «${currentTopic}» marcado sin stock (${cycle.reason || 'unknown'}) — rotando tema`,
+          `\n⏭ ${label} · «${currentTopic}» excluido en esta sesión (${why}) — rotando tema`,
         );
         partsSinceRotate = args.rotateEvery;
       }
@@ -432,6 +477,7 @@ async function fillOneCell(args, cell) {
     sessionAttempts: attempts - attemptsAtStart,
     publishedFiles,
     cellCostUsd,
+    forcedTopicAborted,
   };
 }
 
@@ -492,6 +538,8 @@ async function main() {
       result =
         `SKIP checkpoint ${r.saved}/${r.target} ` +
         `(${r.attempts ?? '?'} heredados)`;
+    } else if (r.forcedTopicAborted) {
+      result = `${r.saved}/${r.target} ABORT (tema forzado agotado)`;
     } else if (r.saved >= r.target) {
       const ses = r.sessionAttempts ?? r.attempts;
       result = `${r.saved}/${r.target} OK (${ses} intentos)`;
@@ -511,6 +559,9 @@ async function main() {
 
   const skipped = results.filter((r) => r.skipped);
   if (skipped.length) process.exit(3);
+
+  const aborted = results.filter((r) => r.forcedTopicAborted);
+  if (aborted.length) process.exit(4);
 
   const failed = results.filter((r) => !r.dryRun && r.saved < r.target);
   if (failed.length) process.exit(1);

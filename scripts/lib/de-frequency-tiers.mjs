@@ -193,7 +193,7 @@ export const B1_CORE = [
   'besonderheit', 'besonderheiten', 'merkmal', 'merkmale', 'eigenschaft', 'eigenschaften', 'kriterium',
   'stadtbewohner', 'stadtbewohnerin', 'brachfläche', 'brachflächen', 'lokal', 'lokal', 'regional', 'regional',
   'global', 'global', 'international', 'international', 'national', 'national', 'europäisch', 'europäisch',
-  'arbeitsnehmer', 'arbeitnehmer', 'arbeitgeber', 'arbeitgeberin',
+  'arbeitnehmer', 'arbeitgeber', 'arbeitgeberin',
   // 2026-07-12 CEFR bank gap-fill (everyday B1; cross-checked vs pool unknowns + Goethe exam use)
   'bitten', 'beachten', 'aktuell', 'angenehm', 'bieten', 'pflegen', 'achten', 'schaffen', 'diskutieren',
   'vermitteln', 'positiv', 'speziell', 'genießen', 'zentral', 'verlassen', 'nutzung', 'heizung', 'bedeutung',

@@ -16,7 +16,25 @@ export const ASSEMBLE_LAYOUT = Object.freeze({
     schreibenTeils: [1, 2],
     sprechenTeils: [1, 2, 3],
   }),
+  B2: Object.freeze({
+    lesen: [1, 2, 3, 4, 5],
+    horen: [1, 2, 3, 4],
+    schreibenTeils: [1, 2],
+    sprechenTeils: [1, 2],
+  }),
+  C1: Object.freeze({
+    lesen: [1, 2, 3, 4],
+    horen: [1, 2, 3, 4],
+    schreibenTeils: [1, 2],
+    sprechenTeils: [1, 2],
+  }),
 });
+
+/** True when level has its own entry (not the B1 fallback in layoutForLevel). */
+export function hasExplicitAssembleLayout(level = 'B1') {
+  const lv = normalizeLevel(level);
+  return Object.prototype.hasOwnProperty.call(ASSEMBLE_LAYOUT, lv);
+}
 
 export function layoutForLevel(level = 'B1') {
   const lv = normalizeLevel(level);

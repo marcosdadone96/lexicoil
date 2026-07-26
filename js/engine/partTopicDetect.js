@@ -23,7 +23,7 @@ const TOPIC_KEYWORDS = Object.freeze({
     'Läufer', 'Läuferin', 'Läuferinnen', 'Sportler', 'Sportlerin', 'Sportlerinnen',
     'Strecke', 'Teilnehmer', 'Teilnehmerin', 'Teilnehmerinnen', 'Stadtlauf', 'Yoga', 'Fitness',
   ],
-  Freizeit:   ['Hobby', 'Wochenende', 'Freizeit', 'Freund', 'Party', 'Ausflug', 'Spaziergang', 'Garten', 'Lesen', 'Spielen'],
+  Freizeit:   ['Hobby', 'Wochenende', 'Freizeit', 'Freund', 'Party', 'Ausflug', 'Spaziergang', 'Garten', 'Lesen', 'Spielen', 'Freizeitzentrum', 'Klavier', 'Basteln', 'Schnupperkurs', 'Spielzimmer'],
   Verkehr:    ['Bus', 'Fahrrad', 'Auto', 'Straße', 'Stau', 'ÖPNV', 'Bahn', 'Parkplatz', 'Führerschein', 'Fahrt'],
   Stadtleben: ['Stadt', 'Stadtmitte', 'Viertel', 'Bürger', 'Marktplatz', 'Innenstadt', 'öffentlich', 'Gemeinschaft', 'Engagement', 'Infrastruktur'],
 });

@@ -8,7 +8,7 @@ const SPANISH_EXCLUSIVE_CHARS = /[¿¡]/;
 
 /** Palabras españolas que casi nunca aparecen en alemán B1 de examen. */
 const SPANISH_EXCLUSIVE_RE =
-  /\b(qué|cuál|cuáles|cómo|dónde|cuándo|porqué|porque|también|además|emplear|aconseja|sugerencia|traslada|celebra|parada|trayecto|beneficios|bicicleta|caminar|recomienda|consumir|diariamente|verduras|frutas|autobús|autobus)\b/i;
+  /\b(qué|cuál|cuáles|cómo|dónde|cuándo|porqué|porque|también|además|emplear|aconseja|sugerencia|traslada|celebra|parada|trayecto|beneficios|bicicleta|caminar|recomienda|consumir|diariamente|verduras|frutas|autobús|autobus|prefiere|prefieren|viajar|viaja|motivo|motivos|ecológico|ecologico|ecológicos|ecologicos)\b/i;
 
 const SPANISH_PHRASE_PATTERNS = [
   /\b(la|el|los|las|un|una)\s+[a-záéíóúñ]{3,}/i,
@@ -35,6 +35,7 @@ const SPANISH_MARKERS = new Set([
   'está', 'están', 'semana', 'evento', 'parada', 'coche',
   'bicicleta', 'caminar', 'beneficios', 'sugerencia', 'aconseja', 'traslada', 'celebra',
   'trayecto', 'corto', 'cortos', 'autobús', 'autobus', 'recomienda', 'consumir',
+  'prefiere', 'prefieren', 'viajar', 'viaja', 'motivo', 'motivos', 'ecológico', 'ecologico',
   // NOTE: omitimos «es», «se», «que», «un», «una», «al», «fin» — aparecen en alemán legítimo.
 ]);
 
@@ -113,6 +114,8 @@ export function runGermanContentLanguageGate(batch, opts = {}) {
     const fields = [
       ['question', q.question],
       ['explanation', q.explanation],
+      ['signText', q.signText],
+      ['statement', q.statement],
       ...(q.options || []).map((opt, i) => [`option[${i}]`, stripOptionPrefix(opt)]),
     ];
 
@@ -141,6 +144,20 @@ export function runGermanContentLanguageGate(batch, opts = {}) {
         severity: 'block',
         detail: `${p.id || 'passage'}: texto no está en alemán (${check.reason})`,
         span: p.id,
+      });
+    }
+  }
+
+  for (const seg of batch.segments || []) {
+    const text = seg.text || seg.transcript || '';
+    if (!String(text).trim()) continue;
+    const check = assessGermanExamText(text, { minTokens: 8, mode: 'passage' });
+    if (!check.ok) {
+      pushFinding(findings, {
+        rule: 'non_german_segment_text',
+        severity: 'block',
+        detail: `${seg.passageId || seg.label || 'segment'}: transcript no está en alemán (${check.reason})`,
+        span: seg.passageId || seg.label,
       });
     }
   }

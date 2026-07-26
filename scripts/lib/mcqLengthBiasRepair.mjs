@@ -52,7 +52,7 @@ export function parseMcqLengthBiasItemIds(issues) {
 
     if (!LENGTH_BIAS_RE.test(String(issue))) continue;
 
-    const m = String(issue).match(/^(gen-q-[^\s:]+):/);
+    const m = String(issue).match(/^([^:]+): sesgo de longitud MCQ/i);
 
     if (m) out.push(m[1]);
 

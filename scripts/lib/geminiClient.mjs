@@ -1,5 +1,6 @@
 const DEFAULT_MODEL = 'gemini-2.5-flash';
 
+import './ensureSystemCa.mjs';
 import { acquire, DailyQuotaError, isDailyQuotaMessage } from './geminiRateLimit.mjs';
 import { rethrowIfTlsIntercept } from './tlsFetchHint.mjs';
 

@@ -62,7 +62,7 @@
         "diskutieren",
         "kündigen",
         "Räume",
-        "Viele",
+        "viele",
         "Flexibilität",
         "wohlfühlen"
       ],
@@ -108,11 +108,11 @@
   ],
   "topicTag": "Arbeit",
   "_requestedTopic": "Arbeit",
-  "_metadataEnrichedAt": "2026-07-10T13:55:58.996Z",
-  "_metadataEnrichNote": "deterministic: detectTopic + per-question lemma vocab + grammar heuristics",
-  "_germanCapsNormalizeVersion": "v3.15-was-subst-adj-2026-07-12",
-  "_germanCapsNormalizedAt": "2026-07-13T14:34:23.659Z",
-  "_vocabTagsNormalizeVersion": "v2.3.12-beispielfragen-stem-2026-07-12",
+  "_metadataEnrichedAt": "2026-07-25T07:51:42.817Z",
+  "_metadataEnrichNote": "vocabRepairOnly: repairQuestionVocabularyTags (pool artifact repair)",
+  "_germanCapsNormalizeVersion": "v3.17-mcq-dedupe-universal-2026-07-14",
+  "_germanCapsNormalizedAt": "2026-07-25T07:51:42.817Z",
+  "_vocabTagsNormalizeVersion": "v2.3.16-b1-validated-verb-adj-lemma-2026-07-24",
   "_grammarTagsNormalizeVersion": "v2.0-focus-flexible-2026-07-10",
   "_schreibenRubricVersion": "v1.0-goethe-official",
   "lang": "de",
@@ -594,5 +594,7 @@
     "fromSurname": "Schmidt",
     "toSurname": "Hartmann",
     "note": "remediate-scope-2026-07-13 Schreiben T3 surname"
-  }
+  },
+  "_poolArtifactRepairAt": "2026-07-25T07:51:42.817Z",
+  "_poolArtifactRepairNote": "repair-pool-vocab-caps-artifacts.mjs (germanCapsNormalize + enrich vocab)"
 }

@@ -87,7 +87,11 @@ function checkHorenMcqTeil(batch, teil, issues, { monologue = false, level = 'B1
     }
   }
 
-  if (Number(teil) === 2 || (level === 'A2' && (Number(teil) === 1 || Number(teil) === 3))) {
+  if (
+    Number(teil) === 2
+    || (level === 'B1' && Number(teil) === 1)
+    || (level === 'A2' && (Number(teil) === 1 || Number(teil) === 3))
+  ) {
     issues.push(...collectMcqLengthBiasIssues(batch, { level }));
   }
 
@@ -157,7 +161,7 @@ function checkHorenTeil2PictureMatching(batch, issues, warnings = []) {
   }
 }
 
-function checkHorenTeil2(batch, issues, warnings = []) {
+function checkHorenTeil2(batch, issues, warnings = [], { level = 'B1' } = {}) {
   const passages = batch.passages || [];
   if (passages.length !== 1) {
     issues.push(`Hören T2: se espera exactamente 1 passage (monólogo), hay ${passages.length}`);
@@ -377,7 +381,7 @@ export function checkHorenBatchQuality(batch, teil, opts = {}) {
   if (t === 1) checkHorenTeil1(batch, issues, warnings, { level });
   else if (t === 2) {
     if (level === 'A2') checkHorenTeil2PictureMatching(batch, issues, warnings);
-    else checkHorenTeil2(batch, issues, warnings);
+    else checkHorenTeil2(batch, issues, warnings, { level });
   }
   else if (t === 3) {
     if (level === 'A2') checkHorenA2Teil3(batch, issues, warnings);

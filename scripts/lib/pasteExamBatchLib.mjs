@@ -12,6 +12,13 @@ import {
 import { normalizeBatch } from './normalizeBatch.mjs';
 import { tagBatchWithTopic } from './topicRotation.mjs';
 import { finalizePoolReady } from './finalizePoolReady.mjs';
+import { isSprechenA2PerTeil } from './examTemplatePrompt.mjs';
+import { inferTeilFromBatch } from './extractJson.mjs';
+import {
+  parseValidateBatchErrors,
+  parseSweepBlacklistErrors,
+  parseAuditPass2Errors,
+} from './gateReportFormat.mjs';
 
 const GENERATED = GENERATED_DIR;
 
@@ -113,8 +120,12 @@ export function resolveExamContext(args, batch, teilHint) {
     return { ok: false, errors: [`Módulo inválido o no detectado: ${module || '?'}`] };
   }
 
+  const level = normalizeLevel(args.level || batch?.level || 'B1');
+  const wantsMultiTeilBatch =
+    limits.multiTeilBatch && !isSprechenA2PerTeil(module, level);
+
   let teil = args.teil ?? teilHint ?? args.defaultTeil ?? inferTeilFromBatch(batch);
-  if (limits.multiTeilBatch) {
+  if (wantsMultiTeilBatch) {
     const teils = [...new Set((batch?.questions || []).map((q) => Number(q?.teil)).filter(Number.isFinite))];
     if (teils.length !== 3 || !teils.includes(1) || !teils.includes(2) || !teils.includes(3)) {
       return { ok: false, module, errors: [`${module}: se esperan 3 questions (teil 1, 2, 3)`] };
@@ -182,7 +193,13 @@ export function validateExamBatch(batch, args, { teil: teilHint, label } = {}) {
     const v = validateBatchFile(args.lang, args.level, relTmp, { allowBankDup: args.allowBankDup });
     console.log(v.output || (v.ok ? 'OK' : 'FAIL'));
     if (!v.ok) {
-      return { ok: false, label, module: resolved.module, teil: resolved.teil, errors: ['Validación técnica falló'] };
+      return {
+        ok: false,
+        label,
+        module: resolved.module,
+        teil: resolved.teil,
+        errors: parseValidateBatchErrors(v.output),
+      };
     }
 
     console.log(`${header}── Léxico C1/C2 (sweep-blacklist) ──`);
@@ -191,22 +208,45 @@ export function validateExamBatch(batch, args, { teil: teilHint, label } = {}) {
       [path.join(ROOT, 'scripts', 'sweep-blacklist.mjs'), relTmp],
       { cwd: ROOT, encoding: 'utf8' },
     );
+    const blOut = `${blResult.stdout || ''}${blResult.stderr || ''}`.trim();
     if (blResult.status !== 0) {
-      const blOut = `${blResult.stdout || ''}${blResult.stderr || ''}`.trim();
       console.log(blOut || 'FAIL léxico');
-      return { ok: false, label, module: resolved.module, teil: resolved.teil, errors: ['Vocabulario C1/C2 encontrado — revisa el JSON'] };
+      return {
+        ok: false,
+        label,
+        module: resolved.module,
+        teil: resolved.teil,
+        errors: parseSweepBlacklistErrors(blOut),
+      };
     }
 
     console.log(`${header}── Auditoría pedagógica (audit-pass-2 --fail-on=IMPORTANT) ──`);
     const auditResult = spawnSync(
       process.execPath,
-      [path.join(ROOT, 'scripts', 'audit-pass-2.mjs'), relTmp, '--fail-on=IMPORTANT', '--summary-only'],
+      [path.join(ROOT, 'scripts', 'audit-pass-2.mjs'), relTmp, '--fail-on=IMPORTANT', '--json'],
       { cwd: ROOT, encoding: 'utf8' },
     );
     const auditOut = `${auditResult.stdout || ''}${auditResult.stderr || ''}`.trim();
-    if (auditOut) console.log(auditOut);
+    if (auditOut && auditResult.status === 0) {
+      try {
+        const summary = JSON.parse(auditOut);
+        if (summary.summary?.important || summary.summary?.critical) {
+          console.log(`  CRÍTICOS: ${summary.summary.critical} · IMPORTANTES: ${summary.summary.important}`);
+        }
+      } catch (_) {
+        console.log(auditOut.slice(0, 500));
+      }
+    } else if (auditOut) {
+      console.log(auditOut.slice(0, 800));
+    }
     if (auditResult.status !== 0) {
-      return { ok: false, label, module: resolved.module, teil: resolved.teil, errors: ['Auditoría pedagógica IMPORTANT — revisa el JSON'] };
+      return {
+        ok: false,
+        label,
+        module: resolved.module,
+        teil: resolved.teil,
+        errors: parseAuditPass2Errors(auditOut, 'IMPORTANT'),
+      };
     }
 
     return { ok: true, label, module: resolved.module, teil: resolved.teil, batch: normalized, errors: [] };

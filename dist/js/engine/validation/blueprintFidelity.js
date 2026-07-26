@@ -298,6 +298,8 @@ function bpPartRequiresUniqueNonZeroKeys(bpPart) {
   if (bpPart.uniqueAnswerKeys === true) return true;
   const slot = String(bpPart.slotType || bpPart.taskFormat || '').toLowerCase();
   if (slot.includes('ads_matching') || slot.includes('matching_ads')) return true;
+  if (slot.includes('picture_matching') || slot.includes('picture_schedule')) return true;
+  if (bpPart.pictureOptions != null && Number(bpPart.pictureOptions) > 0) return true;
   if (bpPart.adsTotal != null && Number(bpPart.adsTotal) > 0) return true;
   return false;
 }
@@ -375,10 +377,21 @@ function validateLesenT3AdsStructure(part, bpPart, partLabel) {
   }
 
   const items = collectPartQuestions(part);
-  for (const it of items) {
-    const opts = (it.options || []).map((o) => String(typeof o === 'object' ? o.key : o).toUpperCase());
-    if (!opts.includes('0')) {
-      errors.push(`matching_missing_zero_option:${partLabel},id=${it.id || it.number || '?'}`);
+  const usesSideAds = adKeys.length === GOETHE_B1_AD_KEYS.length;
+  if (usesSideAds) {
+    const hasNoMatch = items.some((it) => {
+      const c = String(it.correct ?? it.correctAnswer ?? '').trim().toUpperCase();
+      return c === '0';
+    });
+    if (!hasNoMatch) {
+      errors.push(`matching_missing_no_match_situation:${partLabel}`);
+    }
+  } else {
+    for (const it of items) {
+      const opts = (it.options || []).map((o) => String(typeof o === 'object' ? o.key : o).toUpperCase());
+      if (!opts.includes('0')) {
+        errors.push(`matching_missing_zero_option:${partLabel},id=${it.id || it.number || '?'}`);
+      }
     }
   }
 
@@ -526,6 +539,36 @@ function validateSprechenTaskContent(part, bpPart, partLabel) {
   return errors;
 }
 
+/** Goethe A2 Hören Teil 2 — 9 pictures (a–i), 5 weekday matching, unique keys. */
+function validateHorenPictureMatchingStructure(part, bpPart, partLabel) {
+  const errors = [];
+  if (!bpPart || !String(bpPart.slotType || '').includes('picture_matching')) return errors;
+  const segs = part?.segments || [];
+  const seg = segs[0] || part;
+  const pictures = seg?.pictures || part?.pictures || [];
+  if (pictures.length !== 9) {
+    errors.push(`picture_count_mismatch:${partLabel},expected=9,received=${pictures.length}`);
+  }
+  const keys = pictures.map((p) => String(p.key || '').toLowerCase()).filter(Boolean);
+  const expected = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i'];
+  for (let i = 0; i < expected.length; i++) {
+    if (keys[i] !== expected[i]) {
+      errors.push(`picture_keys_mismatch:${partLabel},expected=${expected.join('')},received=${keys.join('')}`);
+      break;
+    }
+  }
+  const items = collectPartQuestions(part);
+  if (items.length !== 5) {
+    errors.push(`picture_matching_items:${partLabel},expected=5,received=${items.length}`);
+  }
+  for (const it of items) {
+    if ((it.options || []).length) {
+      errors.push(`picture_matching_has_options:${partLabel},id=${it.id || '?'}`);
+    }
+  }
+  return errors;
+}
+
 function validatePartSemanticRules(part, bpPart, modId, teil, blueprintLevel) {
   const partLabel = `${String(modId).toLowerCase()}:teil=${Number(teil)}`;
   const items = collectPartQuestions(part);
@@ -547,6 +590,9 @@ function validatePartSemanticRules(part, bpPart, modId, teil, blueprintLevel) {
   }
   if (String(modId).toLowerCase() === 'schreiben') {
     errors.push(...validateSchreibenWordTargets(part, bpPart, partLabel, blueprintLevel));
+  }
+  if (String(modId).toLowerCase() === 'horen' && Number(teil) === 2 && bpPart?.slotType === 'picture_matching') {
+    errors.push(...validateHorenPictureMatchingStructure(part, bpPart, partLabel));
   }
   if (String(modId).toLowerCase() === 'horen' && Number(teil) === 2 && bpPart?.questionTypes?.includes('multiple_choice')) {
     errors.push(...validateHorenMcqThreeOptions(items, partLabel));

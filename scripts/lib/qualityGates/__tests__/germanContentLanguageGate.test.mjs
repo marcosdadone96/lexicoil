@@ -19,6 +19,8 @@ function testSpanishQuestionBlocked() {
   assert.equal(bad.ok, false);
   const mcq = assessGermanExamText('¿Qué beneficios tiene usar la bicicleta o caminar?');
   assert.equal(mcq.ok, false);
+  const leak = assessGermanExamText('Sophie prefiere viajar en tren por motivos ecológicos.');
+  assert.equal(leak.ok, false);
 }
 
 function testGermanQuestionPasses() {

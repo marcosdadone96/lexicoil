@@ -25,3 +25,64 @@ Eres examinador Goethe **A2**. Genera **Hören Teil 3** — **NO** es B1 (sin 7 
 - ¿segmentLabel en cada question?
 - ¿level:"A2", module:"horen", teil:3?
 - ¿Solo JSON?
+
+## EJEMPLO VERIFICADO (100% checker A2 — imita estructura y registro, NO copies contenido)
+
+```json
+{
+  "passages": [
+    {
+      "id": "gen-p-h3-a2ex01-s1",
+      "module": "horen", "teil": 3, "lang": "de", "level": "A2",
+      "text": "Anna: Hast du heute Zeit für einen Kaffee?\nTom: Ja, Anna. Ich treffe dich um drei Uhr im Café.",
+      "audio": [
+        { "speaker": "Anna", "voiceId": "de-DE-KatjaNeural", "text": "Hast du heute Zeit für einen Kaffee?" },
+        { "speaker": "Tom", "voiceId": "de-DE-ConradNeural", "text": "Ja, Anna. Ich treffe dich um drei Uhr im Café." }
+      ]
+    },
+    {
+      "id": "gen-p-h3-a2ex01-s2",
+      "module": "horen", "teil": 3, "lang": "de", "level": "A2",
+      "text": "Lisa: Wann beginnt der Deutschkurs?\nPaul: Er beginnt am Montag um neun Uhr im Kulturzentrum.",
+      "audio": [
+        { "speaker": "Lisa", "voiceId": "de-DE-KatjaNeural", "text": "Wann beginnt der Deutschkurs?" },
+        { "speaker": "Paul", "voiceId": "de-DE-ConradNeural", "text": "Er beginnt am Montag um neun Uhr im Kulturzentrum." }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "id": "gen-q-h3-a2ex01-q1",
+      "module": "horen", "teil": 3, "lang": "de", "level": "A2",
+      "type": "multiple_choice",
+      "passageId": "gen-p-h3-a2ex01-s1",
+      "segmentLabel": "Text 1",
+      "question": "Wann treffen sich Anna und Tom?",
+      "options": [
+        "a) Um drei Uhr.",
+        "b) Am Morgen.",
+        "c) Am Abend."
+      ],
+      "correct": "a",
+      "correctAnswer": "a",
+      "explanation": "Tom sagt, er trifft Anna um drei Uhr im Café."
+    },
+    {
+      "id": "gen-q-h3-a2ex01-q2",
+      "module": "horen", "teil": 3, "lang": "de", "level": "A2",
+      "type": "multiple_choice",
+      "passageId": "gen-p-h3-a2ex01-s2",
+      "segmentLabel": "Text 2",
+      "question": "Wo findet der Deutschkurs statt?",
+      "options": [
+        "a) Im Kulturzentrum.",
+        "b) In der Schule.",
+        "c) Zu Hause."
+      ],
+      "correct": "a",
+      "correctAnswer": "a",
+      "explanation": "Paul erklärt, der Kurs beginnt im Kulturzentrum."
+    }
+  ]
+}
+```

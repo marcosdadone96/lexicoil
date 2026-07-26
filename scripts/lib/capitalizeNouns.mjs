@@ -60,7 +60,7 @@ export const ADJ_NEEDS_ARTICLE_GUARD = new Set([
   'langweilig', 'langweilige', 'langweiligen',
   'spannende', 'spannenden', 'spannendes',
   'hässliche', 'hässlichen',
-  'lange', 'lang', 'kurze', 'kurz',
+  'lange', 'lang', 'langen', 'langer', 'langem', 'langes', 'kurze', 'kurz',
   'wichtig', 'persönlich', 'persönliche', 'persönlichen', 'persönliches', 'persönlichem', 'persönlicher',
   'deutlich', 'deutliche', 'deutlichen', 'deutliches', 'deutlichem', 'deutlicher',
   'nachhaltig', 'nachhaltige', 'nachhaltigen', 'nachhaltiges', 'nachhaltigem', 'nachhaltiger',
@@ -77,6 +77,7 @@ export const ADJ_NEEDS_ARTICLE_GUARD = new Set([
   'öffentlich', 'öffentliche', 'öffentlichen', 'öffentliches', 'öffentlichem', 'öffentlicher',
   'schwer', 'schwere', 'schweren', 'schweres', 'schwerem', 'schwerer',
   'wichtigere', 'wichtigeres', 'wichtigerem',
+  'teuer', 'teure', 'teuren', 'teures', 'teurem', 'teurer', 'teurere', 'teureres', 'teurerem',
   'gesellschaftlich', 'gesellschaftliche', 'gesellschaftlichen', 'gesellschaftliches', 'gesellschaftlichem', 'gesellschaftlicher',
   'beruflich', 'berufliche', 'beruflichen', 'beruflichem', 'beruflicher', 'berufliches',
   'zukünftig', 'zukünftige', 'zukünftigen', 'zukünftigem', 'zukünftiger', 'zukünftiges',
@@ -103,7 +104,29 @@ export const ADJ_NEEDS_ARTICLE_GUARD = new Set([
   // «in der Frischen Luft» — frisch* was only in V2_ADV_VERB_TRIGGERS (verb after adv),
   // not in this adj-after-article guard; that gap left Frischen untouched.
   'frisch', 'frische', 'frischen', 'frisches', 'frischem', 'frischer',
+  // audit 2026-07-24: attributive after article («die Technischen Fragen»)
+  'technisch', 'technische', 'technischen', 'technisches', 'technischem', 'technischer',
 ]);
+
+/** Predicative comparatives after «das/es/etwas» («wird das teurer») — not substantivized nouns. */
+const PREDICATE_ADJ_AFTER_DAS_DENY = new Set([
+  'teurer', 'teurere', 'teureres', 'teurerem',
+  'wichtiger', 'wichtigere', 'wichtigeres', 'wichtigerem',
+  'schwerer', 'schwerere', 'billiger', 'billigere', 'günstiger', 'günstigere',
+  'schöner', 'schönere', 'schöneres', 'schönerem',
+]);
+
+const PREDICATE_COMPARATIVE_TRIGGERS = new Set(['das', 'es', 'etwas', 'nichts', 'die', 'der', 'den', 'dem']);
+const PREDICATE_COMPARATIVE_NEXT = new Set(['als', 'wie']);
+
+/** «das teurer», «die Schöner als ein Flug» — comparative, not «die Kleinen». */
+function isPredicativeComparativeNotSubstantivized(prevLc, lc, nextWord) {
+  if (!PREDICATE_ADJ_AFTER_DAS_DENY.has(lc)) return false;
+  if (!PREDICATE_COMPARATIVE_TRIGGERS.has(prevLc)) return false;
+  const nextLc = tokenLemma(stripTokenPunct(nextWord || ''));
+  if (!nextLc) return ['das', 'es', 'etwas', 'nichts'].includes(prevLc);
+  return PREDICATE_COMPARATIVE_NEXT.has(nextLc);
+}
 
 /** Infinitives G2 mis-tags as nouns (lexicon_override_tag) — never capitalize mid-clause. */
 export const LEXICON_OVERRIDE_VERB_INFINITIVES = new Set([
@@ -266,6 +289,13 @@ export const MODAL_NOUN_OBJECT_PREPS = new Set([
 
 /** Genuine pair objects where «ein Paar» means a couple of items, not the quantifier. */
 export const EIN_PAAR_PAIR_OBJECTS = new Set(['schuhe', 'handschuhe', 'socken', 'ohrringe']);
+
+/** «Ein Paar möchte …» — couple as subject, not quantifier. */
+const EIN_PAAR_COUPLE_NEXT = new Set([
+  'möchte', 'moechte', 'will', 'wollen', 'wollte', 'wollten', 'mochte', 'mochten',
+  'sucht', 'suchen', 'hat', 'haben', 'ist', 'sind', 'war', 'waren', 'kam', 'kommt', 'kommen',
+  'lebt', 'leben', 'tanzt', 'tanzen', 'lernt', 'lernen', 'wohnt', 'wohnen', 'fährt', 'fahren',
+]);
 
 export const SENTENCE_END_RE =
   // After .!?: optional trailing quote (open or close). Standalone quote-as-boundary:
@@ -560,7 +590,15 @@ function shouldCapitalizeSubstantivizedAdjNoNounHead(token, prevWord, nextWord) 
   if (shouldCapitalizeSubstantivizedAdjAfterDefArticle(token, prevWord, nextWord)) return true;
 
   const nextTok = stripTokenPunct(nextWord || '');
-  if (!nextTok) return true; // «die kleinen.» (caller must pass same-sentence next)
+  if (!nextTok) {
+    if (isPredicativeComparativeNotSubstantivized(prevLc, lc, nextWord)) {
+      return false;
+    }
+    return true; // «die kleinen.» (caller must pass same-sentence next)
+  }
+  if (isPredicativeComparativeNotSubstantivized(prevLc, lc, nextWord)) {
+    return false;
+  }
   // In-sentence capital follower = noun head / proper name («das nächste Fest», «die kleine Emma»)
   if (isCapitalizedWord(nextTok)) return false;
   const nextLc = tokenLemma(nextTok);
@@ -850,6 +888,12 @@ function shouldCapitalizeLowerNoun(token, prevWord, nextWord, atClauseStart) {
     if (V2_SUBJECT_PRONOUNS.has(prevLc0)) return false;
   }
   const prevLc = tokenLemma(prevWord);
+  // Quantifier «ein paar» — decap leaves lowercase; block re-cap (not genuine pair / couple).
+  if (prevLc === 'ein' && lc === 'paar') {
+    const nextLc = tokenLemma(stripTokenPunct(nextWord || ''));
+    if (EIN_PAAR_PAIR_OBJECTS.has(nextLc) || EIN_PAAR_COUPLE_NEXT.has(nextLc)) return true;
+    return false;
+  }
   // Prep «zu» + noun/infinitive — before HOMOGRAPH early-exit (kunden/medien are
   // homographs but whitelist nouns after zu must still capitalize).
   if (prevLc === 'zu' && isInfinitiveShape(lc)) {
@@ -988,10 +1032,11 @@ export function capitalizeNounsInText(text) {
  */
 function shouldDecapitalizeEinPaarQuantifier(token, lastWord, nextWord) {
   if (!isCapitalizedWord(token) || tokenLemma(token) !== 'paar') return null;
-  if (lastWord !== 'ein') return null;
+  if (tokenLemma(lastWord) !== 'ein') return null;
   const nextLc = tokenLemma(nextWord);
   if (!nextLc) return null;
   if (EIN_PAAR_PAIR_OBJECTS.has(nextLc)) return null;
+  if (EIN_PAAR_COUPLE_NEXT.has(nextLc)) return null;
   return 'paar';
 }
 
@@ -1112,6 +1157,8 @@ export function decapitalizeMidSentence(text) {
           // Otherwise keep capital: noun («der Zentrale»), substantivized («die Kleinen», «das Richtige»).
           if (nextIsAttrHead) {
             fix = token.toLowerCase();
+          } else if (isPredicativeComparativeNotSubstantivized(tokenLemma(lastWord), tokenLemma(token), nextWord)) {
+            fix = token.toLowerCase();
           } else {
             fix = null;
           }
@@ -1224,6 +1271,7 @@ export function isHeuristicAdjAdvOvercapitalized(word, prevWord = '', nextWord =
     }
     // «das ganz anders» — intensifier adverb after demonstrative, not a noun phrase
     if (PURE_ADVERBS.has(lc) && prevLc === 'das') return true;
+    if (isPredicativeComparativeNotSubstantivized(prevLc, lc, nextWord)) return true;
     return false;
   }
   // Mid-sentence cardinal after ordinal/adj/adverb («die ersten drei», «voraussichtlich vier»)

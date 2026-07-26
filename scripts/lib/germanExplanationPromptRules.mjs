@@ -44,3 +44,33 @@ export function germanExplanationRulesInline() {
     `"ha sido acortada", "Según el pasaje"); begründe nur die korrekte Option — keine Reparatur-Narration.\n`
   );
 }
+
+const FORBIDDEN_SPANISH_ALL_FIELDS = FORBIDDEN_SPANISH_EXPLANATION_PHRASES.concat([
+  'La respuesta correcta',
+  'El audio indica',
+  'Según el audio',
+  'Corrección',
+  'Reescribe',
+]);
+
+/**
+ * Block for ALL surgical repair prompts (MCQ, RF, lexico, passage trim, etc.).
+ * Meta-instructions to the model may stay in Spanish; OUTPUT fields must be German only.
+ */
+export function germanExamRepairOutputRulesBlock() {
+  const forbidden = FORBIDDEN_SPANISH_ALL_FIELDS.map((p) => `"${p}"`).join(', ');
+  return (
+    `## Ausgabesprache (PFLICHT — alle JSON-Felder)\n` +
+    `- NUR Deutsch B1 in question, options, explanation, signText, passage.text, transcript und allen sichtbaren Prüfungstexten.\n` +
+    `- KEIN Spanisch in der Ausgabe, KEINE Meta-Kommentare zur Reparatur, KEINE Übersetzungen.\n` +
+    `- VERBOTEN (wörtlich oder sinngemäß): ${forbidden}.\n` +
+    `- Schreibe wie ein Goethe-Prüfer: sachlich, auf Deutsch, ohne Prozess-Kommentare.\n`
+  );
+}
+
+/** Append language rules to any repair prompt body. */
+export function finalizeRepairPrompt(body, { explanationInline = false } = {}) {
+  let out = String(body || '');
+  if (explanationInline) out += `\n${germanExplanationRulesInline()}`;
+  return `${out}\n\n${germanExamRepairOutputRulesBlock()}`;
+}

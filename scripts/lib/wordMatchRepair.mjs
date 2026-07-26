@@ -3,6 +3,7 @@
  */
 import { randomBytes } from 'node:crypto';
 import { buildT1QuestionsRepairPrompt, buildMcqWordCopyRepairPrompt, buildT2McqWordCopyBatchRepairPrompt } from './lesenTemplatePrompt.mjs';
+import { finalizeRepairPrompt } from './germanExplanationPromptRules.mjs';
 import { extractJson } from './extractJson.mjs';
 import { coerceGeneratedLesenPart } from './normalizeBatch.mjs';
 import {
@@ -10,6 +11,36 @@ import {
   hasLongLiteralOverlap,
   sharedContentTokens,
 } from './lesenBatchQuality.mjs';
+
+/** @returns {string[]} sliding n-grams (lowercase) of n words */
+export function extractForbiddenNgramsFromText(text, nWords = 4, maxOut = 45) {
+  const words = String(text || '')
+    .toLowerCase()
+    .replace(/[^\p{L}\p{N}\s-]/gu, ' ')
+    .split(/\s+/)
+    .filter((w) => w.length >= 2);
+  const seen = new Set();
+  const out = [];
+  for (let i = 0; i <= words.length - nWords; i++) {
+    const ng = words.slice(i, i + nWords).join(' ');
+    if (!seen.has(ng)) {
+      seen.add(ng);
+      out.push(ng);
+      if (out.length >= maxOut) break;
+    }
+  }
+  return out;
+}
+
+/** Literals from checker + frequent 4-grams from source text (repair prompt). */
+export function buildForbiddenNgramList(sourceText, literalSnippets = [], maxOut = 45) {
+  const priority = [];
+  for (const snip of literalSnippets || []) {
+    priority.push(...extractForbiddenNgramsFromText(snip, 4, 12));
+  }
+  const base = extractForbiddenNgramsFromText(sourceText, 4, maxOut);
+  return [...new Set([...priority, ...base])].slice(0, maxOut);
+}
 
 const WORD_MATCH_RE =
   /palabras idénticas|copia literal|copia ≥|comparten demasiadas palabras|word-matching|pregunta copia|opción correcta copia|afirmación copia/i;
@@ -207,13 +238,20 @@ export async function repairT2McqWordCopyBatch(batch, findings, callLlm, opts = 
   const forbiddenTokens = [
     ...new Set(passages.flatMap((p) => passageForbiddenTokens(p.text))),
   ].slice(0, 30);
+  const literalSnippets = extractLiteralSnippetsFromIssues(findings.map((f) => f.detail));
+  const forbiddenNgrams = buildForbiddenNgramList(
+    passages.map((p) => p.text).join('\n'),
+    literalSnippets,
+  );
 
   const prompt = buildT2McqWordCopyBatchRepairPrompt({
     passages,
     items,
     minWords,
     forbiddenTokens,
-    literalSnippets: extractLiteralSnippetsFromIssues(findings.map((f) => f.detail)),
+    literalSnippets,
+    forbiddenNgrams,
+    examLabel: opts.examLabel,
   });
 
   console.log(
@@ -241,11 +279,13 @@ export async function repairT2McqWordCopyBatch(batch, findings, callLlm, opts = 
   let questions = [...batch.questions];
   let repairedAny = false;
 
+  const teilForCheck = Number(opts.teil) || 2;
+
   for (const { question, passage } of items) {
     const patch = patchById.get(question.id);
     if (!patch?.options?.length) continue;
     const patched = mergeMcqPatch(question, patch);
-    if (!mcqWordCopyStillBad(patched, passage, 2)) {
+    if (!mcqWordCopyStillBad(patched, passage, teilForCheck)) {
       const qIdx = questions.findIndex((q) => q.id === question.id);
       if (qIdx >= 0) {
         questions[qIdx] = patched;
@@ -291,6 +331,7 @@ export async function repairMcqWordCopyBatch(batch, teil, findings, callLlm, opt
     if (!passage?.text) continue;
 
     for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+      const literals = extractLiteralSnippetsFromIssues(itemFindings.map((f) => f.detail));
       const prompt = buildMcqWordCopyRepairPrompt({
         passage,
         question,
@@ -298,6 +339,7 @@ export async function repairMcqWordCopyBatch(batch, teil, findings, callLlm, opt
         minWords,
         findings: itemFindings,
         forbiddenTokens: passageForbiddenTokens(passage.text),
+        forbiddenNgrams: buildForbiddenNgramList(passage.text, literals),
       });
 
       console.log(`T${t}: reparando pregunta ${itemId} (word-copy, pasaje fijo, intento ${attempt}/${maxAttempts})…`);
@@ -344,7 +386,7 @@ export async function repairWordMatchBatch(batch, teil, issues, callLlm, opts = 
     if (t === 2) {
       return repairMcqWordCopyBatch(batch, 2, findings, callLlm, opts);
     }
-    return repairHorenRfWordCopyBatch(batch, findings, callLlm, opts);
+    return repairHorenWordCopyBatch(batch, findings, callLlm, { ...opts, teil: t });
   }
   if (t === 1) {
     return repairT1WordMatchBatch(batch, issues, callLlm, opts);
@@ -356,33 +398,91 @@ export async function repairWordMatchBatch(batch, teil, issues, callLlm, opts = 
   return null;
 }
 
-/** Hören T1/T3/T4 — parafrasear pregunta/afirmación sin tocar transcripción. */
-async function repairHorenRfWordCopyBatch(batch, findings, callLlm, opts = {}) {
+/** Hören T1/T3/T4 — MCQ (opción correcta) + RF (enunciado); transcripción fija. */
+async function repairHorenWordCopyBatch(batch, findings, callLlm, opts = {}) {
   if (!findings?.length) return null;
-  const transcript = (batch.passages || []).map((p) => p.text).filter(Boolean).join('\n');
-  if (!transcript) return null;
+
+  const mcqFindings = [];
+  const rfFindings = [];
+  for (const f of findings) {
+    const q = batch.questions?.find((x) => x.id === f.itemId);
+    const mcqOptIssue = /opción correcta copia/i.test(f.detail);
+    const isMcq = q?.type === 'multiple_choice' && (q.options?.length || 0) >= 3;
+    if (mcqOptIssue || (isMcq && /pregunta copia|comparten demasiadas/i.test(f.detail))) {
+      mcqFindings.push(f);
+    } else {
+      rfFindings.push(f);
+    }
+  }
+
+  let current = batch;
+  let any = false;
+
+  if (mcqFindings.length) {
+    const teil = Number(opts.teil) || 1;
+    const mcqFixed = await repairT2McqWordCopyBatch(current, mcqFindings, callLlm, {
+      ...opts,
+      teil,
+      examLabel: `Goethe B1 Hören Teil ${teil}`,
+    });
+    if (mcqFixed) {
+      current = mcqFixed;
+      any = true;
+    }
+  }
+
+  if (rfFindings.length) {
+    const rfFixed = await repairHorenQuestionWordCopyBatch(current, rfFindings, callLlm, opts);
+    if (rfFixed) {
+      current = rfFixed;
+      any = true;
+    }
+  }
+
+  return any ? current : null;
+}
+
+/** Hören — parafrasear solo enunciado RF / pregunta (sin tocar transcripción). */
+async function repairHorenQuestionWordCopyBatch(batch, findings, callLlm, opts = {}) {
+  if (!findings?.length) return null;
 
   const items = findings
     .map((f) => {
       const question = batch.questions?.find((q) => q.id === f.itemId);
-      return question ? { question, findings: [f] } : null;
+      if (!question) return null;
+      const passage = passageForQuestion(batch, question);
+      return passage?.text ? { question, passage, findings: [f] } : null;
     })
     .filter(Boolean);
   if (!items.length) return null;
 
-  const prompt =
-    `Eres examinador Goethe B1 Hören. La TRANSCRIPCIÓN está aprobada — NO la modifiques.\n` +
-    `Parafrasea SOLO el enunciado/pregunta de ${items.length} ítem(s) para que NO copie ≥4 palabras seguidas del audio.\n\n` +
-    `## Transcripción (NO cambiar)\n${transcript.slice(0, 6000)}\n\n` +
+  const literalSnippets = extractLiteralSnippetsFromIssues(findings.map((f) => f.detail));
+  const forbiddenNgrams = buildForbiddenNgramList(
+    items.map((i) => i.passage.text).join('\n'),
+    literalSnippets,
+  );
+
+  const prompt = finalizeRepairPrompt(
+    `Eres examinador Goethe B1 Hören. La TRANSCRIPCIÓN por segmento está aprobada — NO la modifiques.\n` +
+    `Parafrasea SOLO el enunciado/pregunta de ${items.length} ítem(s) para que NO copie ≥4 palabras seguidas del audio de SU segmento.\n\n` +
     items
       .map(
-        ({ question, findings: fs }) =>
-          `## [${question.id}]\nPregunta actual: ${question.question || ''}\nErrores:\n${fs.map((x) => `- ${x.detail}`).join('\n')}`,
+        ({ question, passage, findings: fs }) =>
+          `## [${question.id}] · passageId ${passage.id || question.passageId || '?'}\n` +
+          `### Transcripción del segmento (NO cambiar)\n${String(passage.text || '').trim().slice(0, 1200)}\n\n` +
+          `Pregunta actual: ${question.question || ''}\nErrores:\n${fs.map((x) => `- ${x.detail}`).join('\n')}`,
       )
       .join('\n\n') +
-    `\n\nDevuelve SOLO JSON: { "questions": [ { "id": "...", "question": "..." }, ... ] }`;
+    (literalSnippets.length
+      ? `\n\n## Frases literales detectadas (NO repetir)\n${literalSnippets.map((s) => `  · «${s}»`).join('\n')}\n`
+      : '') +
+    (forbiddenNgrams.length
+      ? `\n## N-gramas prohibidos (≥4 palabras del audio)\n${forbiddenNgrams.slice(0, 35).map((g) => `  · «${g}»`).join('\n')}\n`
+      : '') +
+    `\n\nDevuelve SOLO JSON: { "questions": [ { "id": "...", "question": "..." }, ... ] }`,
+  );
 
-  console.log(`Hören: reparando ${items.length} pregunta(s) word-copy (1 llamada, audio fijo)…`);
+  console.log(`Hören: reparando ${items.length} enunciado(s) word-copy (1 llamada, audio fijo)…`);
 
   let raw;
   try {
@@ -404,14 +504,21 @@ async function repairHorenRfWordCopyBatch(batch, findings, callLlm, opts = {}) {
   const patchById = new Map(patches.map((p) => [p.id, p]));
   let questions = [...batch.questions];
   let repairedAny = false;
-  for (const { question } of items) {
+  for (const { question, passage } of items) {
     const patch = patchById.get(question.id);
     if (!patch?.question) continue;
+    const newQ = String(patch.question).trim();
+    if (!newQ || hasLongLiteralOverlap(newQ, passage.text, 4)) continue;
     const idx = questions.findIndex((q) => q.id === question.id);
     if (idx >= 0) {
-      questions[idx] = { ...questions[idx], question: patch.question };
+      questions[idx] = { ...questions[idx], question: newQ };
       repairedAny = true;
     }
   }
   return repairedAny ? { ...batch, questions } : null;
+}
+
+/** @deprecated use repairHorenWordCopyBatch */
+async function repairHorenRfWordCopyBatch(batch, findings, callLlm, opts = {}) {
+  return repairHorenWordCopyBatch(batch, findings, callLlm, opts);
 }

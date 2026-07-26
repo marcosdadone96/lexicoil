@@ -1,0 +1,163 @@
+# Hören A2 T3 · intento 4/6
+# started: 2026-07-23T08:22:47.925Z
+# exit: 1
+
+
+Generador horen (de/A2) · gemini · gemini-2.5-flash · T3 × 1
+Palabras objetivo por parte: 5 (--word-count)
+Cuota Gemini: max 45 llamadas · pausa ≥6000ms · fix-retries=3 · api-retries=1
+Salida: batches/generated/ (solo pasa formato + calidad pedagógica)
+Tema: Freizeit (elegido)
+
+── horen T3 · horen-t3-gemini-043.json ──
+Proveedor: gemini · Palabras (5): zentrum, anfang, t-shirt, bogen, bestehen
+Modelo: gemini-2.5-flash · max_output_tokens=16384
+Llamada API 1/45 · $0.000 acumulado · gemini-2.5-flash
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+Validando formato…
+Comprobando calidad pedagógica…
+  [Q4 audit-only] 4 topic_mismatch (no block):
+    · passage:gen-p-h3-fa10d483-s2 topicTag «Freizeit» no encaja con contenido (detectado «Bildung» score=2 vs tag score=0; hits={"Bildung":2,"Ernährung":1})
+    · passage:gen-p-h3-fa10d483-s3 topicTag «Freizeit» no encaja con contenido (detectado «Sport» score=1 vs tag score=0; hits={"Sport":1,"Stadtleben":1})
+    · passage:gen-p-h3-fa10d483-s4 topicTag «Freizeit» sin soporte léxico en el contenido (tag score=0, ningún tema alternativo con hits; hits={})
+    · passage:gen-p-h3-fa10d483-s5 topicTag «Freizeit» sin soporte léxico en el contenido (tag score=0, ningún tema alternativo con hits; hits={})
+  [LT advisory] skipped (LT down: fetch failed)
+Calidad Hören T3: FAIL (5 problemas, estimación ~60%)
+  - gen-q-h3-fa10d483-q1: sesgo de longitud MCQ (A2) — opción correcta «b» es la más larga (29 vs 18/20; Δ +10 chars, +53% vs media distractores; umbral 20%/8ch). Parafrasea o alarga los distractores hasta longitud comparable.
+  - gen-q-h3-fa10d483-q2: sesgo de longitud MCQ (A2) — opción correcta «a» es la más larga (24 vs 12/14; Δ +11 chars, +85% vs media distractores; umbral 20%/8ch). Parafrasea o alarga los distractores hasta longitud comparable.
+  - gen-q-h3-fa10d483-q3: sesgo de longitud MCQ (A2) — opción correcta «a» es la más larga (31 vs 14/7; Δ +21 chars, +195% vs media distractores; umbral 20%/8ch). Parafrasea o alarga los distractores hasta longitud comparable.
+  - gen-q-h3-fa10d483-q4: sesgo de longitud MCQ (A2) — opción correcta «c» es la más larga (44 vs 23/20; Δ +23 chars, +105% vs media distractores; umbral 20%/8ch). Parafrasea o alarga los distractores hasta longitud comparable.
+  - gen-q-h3-fa10d483-q5: sesgo de longitud MCQ (A2) — opción correcta «c» es la más larga (28 vs 20/12; Δ +12 chars, +75% vs media distractores; umbral 20%/8ch). Parafrasea o alarga los distractores hasta longitud comparable.
+  Triaje CUBO C (MCQ length bias (A2)) → reparación localizada (1 llamada LLM)…
+horen T3: reparando sesgo longitud MCQ en 5 pregunta(s) (1 llamada LLM, fuente fija)…
+Llamada API 2/45 · $0.014 acumulado · gemini-2.5-flash
+  length-bias: patch idéntico en gen-q-h3-fa10d483-q1 — escala a regen
+  length-bias: regenerando pregunta completa gen-q-h3-fa10d483-q1 (+53% → regen, pasaje fijo)…
+Cola API: pausa 1.8s…
+Llamada API 3/45 · $0.015 acumulado · gemini-2.5-flash
+  length-bias: regen gen-q-h3-fa10d483-q1 rechazada (+53%→+58%) — no mejor que original
+  length-bias: gen-q-h3-fa10d483-q2 mejoró (+85%→+62%) — patch aplicado, re-validar
+  length-bias: gen-q-h3-fa10d483-q3 mejoró (+195%→+148%) — patch aplicado, re-validar
+  length-bias: gen-q-h3-fa10d483-q4 mejoró (+105%→+91%) — patch aplicado, re-validar
+  length-bias: patch idéntico en gen-q-h3-fa10d483-q5 — escala a regen
+  length-bias: regenerando pregunta completa gen-q-h3-fa10d483-q5 (+75% → regen, pasaje fijo)…
+Cola API: pausa 3.2s…
+Llamada API 4/45 · $0.016 acumulado · gemini-2.5-flash
+  length-bias: regen gen-q-h3-fa10d483-q5 OK (+75%→+0%)
+  Re-validando tras mcq_length_bias…
+  [Q4 audit-only] 4 topic_mismatch (no block):
+    · passage:gen-p-h3-fa10d483-s2 topicTag «Freizeit» no encaja con contenido (detectado «Bildung» score=2 vs tag score=0; hits={"Bildung":2,"Ernährung":1})
+    · passage:gen-p-h3-fa10d483-s3 topicTag «Freizeit» no encaja con contenido (detectado «Sport» score=1 vs tag score=0; hits={"Sport":1,"Stadtleben":1})
+    · passage:gen-p-h3-fa10d483-s4 topicTag «Freizeit» sin soporte léxico en el contenido (tag score=0, ningún tema alternativo con hits; hits={})
+    · passage:gen-p-h3-fa10d483-s5 topicTag «Freizeit» sin soporte léxico en el contenido (tag score=0, ningún tema alternativo con hits; hits={})
+  [LT advisory] skipped (LT down: fetch failed)
+Calidad Hören T3: FAIL (4 problemas, estimación ~68%)
+  - gen-q-h3-fa10d483-q1: sesgo de longitud MCQ (A2) — opción correcta «b» es la más larga (29 vs 18/20; Δ +10 chars, +53% vs media distractores; umbral 20%/8ch). Parafrasea o alarga los distractores hasta longitud comparable.
+  - gen-q-h3-fa10d483-q2: sesgo de longitud MCQ (A2) — opción correcta «a» es la más larga (21 vs 12/14; Δ +8 chars, +62% vs media distractores; umbral 20%/8ch). Parafrasea o alarga los distractores hasta longitud comparable.
+  - gen-q-h3-fa10d483-q3: sesgo de longitud MCQ (A2) — opción correcta «a» es la más larga (26 vs 14/7; Δ +16 chars, +148% vs media distractores; umbral 20%/8ch). Parafrasea o alarga los distractores hasta longitud comparable.
+  - gen-q-h3-fa10d483-q4: sesgo de longitud MCQ (A2) — opción correcta «c» es la más larga (41 vs 23/20; Δ +20 chars, +91% vs media distractores; umbral 20%/8ch). Parafrasea o alarga los distractores hasta longitud comparable.
+  Reparación mcq_length_bias parcial → fallos residuales (calidad), continúa con LLM
+Calidad FAIL → regeneración limpia en siguiente intento si persiste…
+  [fix-note] Hören T3 retry 1/3: dual hint (anti-B2+ + anti-copia)
+
+Reintento 1/3 · gen-q-h3-fa10d483-q1: sesgo de longitud MCQ (A2) — opción correcta «b» es la más larga (29 vs 18/20; Δ +10 chars, +53% vs media distractores; umbral 20%/8ch). Parafrasea o alarga los distractores hasta longitud comparable.…
+  Temperatura reducida a 0.3 (reintento de calidad)
+Cola API: pausa 1.6s…
+Llamada API 5/45 · $0.016 acumulado · gemini-2.5-flash
+Validando formato…
+  [Q4 audit-only] 2 topic_mismatch (no block):
+    · passage:gen-p-h3-fa10d483-s2 topicTag «Freizeit» no encaja con contenido (detectado «Sport» score=1 vs tag score=0; hits={"Sport":1})
+    · passage:gen-p-h3-fa10d483-s4 topicTag «Freizeit» no encaja con contenido (detectado «Ernährung» score=3 vs tag score=0; hits={"Konsum":1,"Ernährung":3})
+  [LT advisory] skipped (LT down: fetch failed)
+Calidad Hören T3: FAIL (2 problemas, estimación ~84%)
+  - Hören A2 T3: segmento «gen-p-h3-fa10d483-s1» fuera de rango (15–50 palabras, tiene 59)
+  - Hören A2 T3: segmento «gen-p-h3-fa10d483-s4» fuera de rango (15–50 palabras, tiene 58)
+  [fix-note] Hören T3 retry 2/3: dual hint (anti-B2+ + anti-copia)
+
+Reintento 2/3 · Hören A2 T3: segmento «gen-p-h3-fa10d483-s1» fuera de rango (15–50 palabras, tiene 59)…
+  Temperatura reducida a 0.3 (reintento de calidad)
+Llamada API 6/45 · $0.031 acumulado · gemini-2.5-flash
+  [normalizeNouns] 2 sustantivo(s) capitalizados automáticamente
+Validando formato…
+  [germanCapsNormalize] markdown=0 decap=2 cap=0 dedupe=0 fields=2
+  [Q4 audit-only] 3 topic_mismatch (no block):
+    · passage:gen-p-h3-fa10d483-s2 topicTag «Freizeit» no encaja con contenido (detectado «Bildung» score=2 vs tag score=0; hits={"Bildung":2})
+    · passage:gen-p-h3-fa10d483-s3 topicTag «Freizeit» sin soporte léxico en el contenido (tag score=0, ningún tema alternativo con hits; hits={})
+    · passage:gen-p-h3-fa10d483-s4 topicTag «Freizeit» no encaja con contenido (detectado «Bildung» score=1 vs tag score=0; hits={"Bildung":1})
+  [LT advisory] skipped (LT down: fetch failed)
+Calidad Hören T3: FAIL (4 problemas, estimación ~68%)
+  - Hören A2 T3: segmento «gen-p-h3-fa10d483-s1» fuera de rango (15–50 palabras, tiene 57)
+  - Hören A2 T3: segmento «gen-p-h3-fa10d483-s5» fuera de rango (15–50 palabras, tiene 60)
+  - gen-q-h3-fa10d483-q1: sesgo de longitud MCQ (A2) — opción correcta «b» es la más larga (17 vs 15/13; Δ +3 chars, +21% vs media distractores; umbral 20%/8ch). Parafrasea o alarga los distractores hasta longitud comparable.
+  - gen-q-h3-fa10d483-q2: sesgo de longitud MCQ (A2) — opción correcta «a» es la más larga (17 vs 14/9; Δ +6 chars, +48% vs media distractores; umbral 20%/8ch). Parafrasea o alarga los distractores hasta longitud comparable.
+  Triaje CUBO C (MCQ length bias (A2)) → reparación localizada (1 llamada LLM)…
+horen T3: reparando sesgo longitud MCQ en 2 pregunta(s) (1 llamada LLM, fuente fija)…
+Llamada API 7/45 · $0.045 acumulado · gemini-2.5-flash
+  length-bias: gen-q-h3-fa10d483-q1 OK (+21%→+0%)
+  length-bias: gen-q-h3-fa10d483-q2 OK (+48%→+0%)
+  Re-validando tras mcq_length_bias…
+  [germanCapsNormalize] markdown=0 decap=2 cap=0 dedupe=0 fields=2
+  [Q4 audit-only] 3 topic_mismatch (no block):
+    · passage:gen-p-h3-fa10d483-s2 topicTag «Freizeit» no encaja con contenido (detectado «Bildung» score=2 vs tag score=0; hits={"Bildung":2})
+    · passage:gen-p-h3-fa10d483-s3 topicTag «Freizeit» sin soporte léxico en el contenido (tag score=0, ningún tema alternativo con hits; hits={})
+    · passage:gen-p-h3-fa10d483-s4 topicTag «Freizeit» no encaja con contenido (detectado «Bildung» score=1 vs tag score=0; hits={"Bildung":1})
+  [LT advisory] skipped (LT down: fetch failed)
+Calidad Hören T3: FAIL (2 problemas, estimación ~84%)
+  - Hören A2 T3: segmento «gen-p-h3-fa10d483-s1» fuera de rango (15–50 palabras, tiene 57)
+  - Hören A2 T3: segmento «gen-p-h3-fa10d483-s5» fuera de rango (15–50 palabras, tiene 60)
+  Reparación mcq_length_bias parcial → fallos residuales (calidad), continúa con LLM
+  [fix-note] Hören T3 retry 3/3: dual hint (anti-B2+ + anti-copia)
+
+Reintento 3/3 · Hören A2 T3: segmento «gen-p-h3-fa10d483-s1» fuera de rango (15–50 palabras, tiene 57)…
+  Temperatura reducida a 0.3 (reintento de calidad)
+Cola API: pausa 0.9s…
+Llamada API 8/45 · $0.046 acumulado · gemini-2.5-flash
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 4 sustantivo(s) capitalizados automáticamente
+Validando formato…
+  [germanCapsNormalize] markdown=0 decap=1 cap=0 dedupe=0 fields=1
+  [Q4 audit-only] 3 topic_mismatch (no block):
+    · passage:gen-p-h3-fa10d483-s2 topicTag «Freizeit» sin soporte léxico en el contenido (tag score=0, ningún tema alternativo con hits; hits={})
+    · passage:gen-p-h3-fa10d483-s3 topicTag «Freizeit» no encaja con contenido (detectado «Sport» score=1 vs tag score=0; hits={"Sport":1})
+    · passage:gen-p-h3-fa10d483-s5 topicTag «Freizeit» no encaja con contenido (detectado «Bildung» score=1 vs tag score=0; hits={"Bildung":1})
+  [LT advisory] skipped (LT down: fetch failed)
+Calidad Hören T3: FAIL (3 problemas, estimación ~76%)
+  - gen-q-h3-fa10d483-q2: sesgo de longitud MCQ (A2) — opción correcta «a» es la más larga (14 vs 13/8; Δ +4 chars, +33% vs media distractores; umbral 20%/8ch). Parafrasea o alarga los distractores hasta longitud comparable.
+  - gen-q-h3-fa10d483-q3: sesgo de longitud MCQ (A2) — opción correcta «c» es la más larga (22 vs 12/15; Δ +9 chars, +63% vs media distractores; umbral 20%/8ch). Parafrasea o alarga los distractores hasta longitud comparable.
+  - gen-q-h3-fa10d483-q4: sesgo de longitud MCQ (A2) — opción correcta «a» es la más larga (22 vs 14/13; Δ +9 chars, +63% vs media distractores; umbral 20%/8ch). Parafrasea o alarga los distractores hasta longitud comparable.
+  Triaje CUBO C (MCQ length bias (A2)) → reparación localizada (1 llamada LLM)…
+horen T3: reparando sesgo longitud MCQ en 3 pregunta(s) (1 llamada LLM, fuente fija)…
+Llamada API 9/45 · $0.061 acumulado · gemini-2.5-flash
+  length-bias: patch idéntico en gen-q-h3-fa10d483-q2 — escala a regen
+  length-bias: regenerando pregunta completa gen-q-h3-fa10d483-q2 (+33% → regen, pasaje fijo)…
+Cola API: pausa 2.7s…
+Llamada API 10/45 · $0.062 acumulado · gemini-2.5-flash
+  length-bias: regen gen-q-h3-fa10d483-q2 — LLM no modificó opciones
+  length-bias: gen-q-h3-fa10d483-q3 mejoró (+63%→+56%) — patch aplicado, re-validar
+  length-bias: gen-q-h3-fa10d483-q4 OK (+63%→+19%)
+  Re-validando tras mcq_length_bias…
+  [germanCapsNormalize] markdown=0 decap=1 cap=0 dedupe=0 fields=1
+  [Q4 audit-only] 3 topic_mismatch (no block):
+    · passage:gen-p-h3-fa10d483-s2 topicTag «Freizeit» sin soporte léxico en el contenido (tag score=0, ningún tema alternativo con hits; hits={})
+    · passage:gen-p-h3-fa10d483-s3 topicTag «Freizeit» no encaja con contenido (detectado «Sport» score=1 vs tag score=0; hits={"Sport":1})
+    · passage:gen-p-h3-fa10d483-s5 topicTag «Freizeit» no encaja con contenido (detectado «Bildung» score=1 vs tag score=0; hits={"Bildung":1})
+  [LT advisory] skipped (LT down: fetch failed)
+Calidad Hören T3: FAIL (2 problemas, estimación ~84%)
+  - gen-q-h3-fa10d483-q2: sesgo de longitud MCQ (A2) — opción correcta «a» es la más larga (14 vs 13/8; Δ +4 chars, +33% vs media distractores; umbral 20%/8ch). Parafrasea o alarga los distractores hasta longitud comparable.
+  - gen-q-h3-fa10d483-q3: sesgo de longitud MCQ (A2) — opción correcta «c» es la más larga (21 vs 12/15; Δ +8 chars, +56% vs media distractores; umbral 20%/8ch). Parafrasea o alarga los distractores hasta longitud comparable.
+  Reparación mcq_length_bias parcial → fallos residuales (calidad), continúa con LLM
+Rechazado guardado en: batches/generated/.rejected/horen-t3-gemini-043-2026-07-23T08-25-11-168Z.json
+
+── batches/generated/A2/horen-t3-gemini-043.json · DESCARTADO · 10 llamadas · $0.062 total ──
+
+══ Resumen generador horen ══
+Proveedor: gemini · Modelo: gemini-2.5-flash
+Intentos totales: 10
+Partes guardadas (formato + calidad OK): 0
+Partes descartadas: 1
+Llamadas API Gemini: 10/45
+Por parte (guardadas / descartadas · intentos):
+  T3: 0 guardadas, 1 descartadas, 4 intentos
+Calidad Hören T3: FAIL (2 problemas, estimación ~84%)
+  - gen-q-h3-fa10d483-q2: sesgo de longitud MCQ (A2) — opción correcta «a» es la más larga (14 vs 13/8; Δ +4 chars, +33% vs media distractores; umbral 20%/8ch). Parafrasea o alarga los distractores hasta longitud comparable.
+  - gen-q-h3-fa10d483-q3: sesgo de longitud MCQ (A2) — opción correcta «c» es la más larga (21 vs 12/15; Δ +8 chars, +56% vs media distractores; umbral 20%/8ch). Parafrasea o alarga los distractores hasta longitud comparable.

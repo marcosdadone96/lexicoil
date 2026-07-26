@@ -470,8 +470,8 @@ export function classifyAndRepair(batch, gates) {
     return { repaired: 'targeted', cube: 'C', targetedCodes: unknownCodes, reason: `unknown codes: ${unknownCodes.join(',')}` };
   }
 
-  // ── Cubo B: gate='lexico' with unambiguous 1:1 substitution ──────────────
-  if (gate === 'lexico') {
+  // ── Cubo B: gate='lexico' (o Hören T4 calidad+lexico) con sustitución 1:1 ─
+  if (gate === 'lexico' || gate === 'calidad+lexico') {
     const lexItems = parseLexicalIssues(issues);
     const safe = lexItems.filter(({ suggestion }) => isSingleSuggestion(suggestion));
     const unsafe = lexItems.filter(({ suggestion }) => !isSingleSuggestion(suggestion));
@@ -523,7 +523,7 @@ export function classifyAndRepair(batch, gates) {
   }
 
   // ── Cubo A: T4 clave Ja/Nein invertida (determinista) ────────────────────
-  if (gate === 'calidad' && hasT4InvertedKeySignal(issues)) {
+  if ((gate === 'calidad' || gate === 'calidad+lexico') && hasT4InvertedKeySignal(issues)) {
     return {
       repaired: true,
       batch: fixT4InvertedKeys(batch),

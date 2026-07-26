@@ -1,0 +1,103 @@
+{
+  "_rejectedReason": "gen-q-1-75cc9aeb-1: options_missing\n\ngen-q-1-75cc9aeb-1: options_missing\ngen-q-1-75cc9aeb-2: options_missing\ngen-q-1-75cc9aeb-3: options_missing\ngen-q-1-75cc9aeb-4: options_missing\ngen-q-1-75cc9aeb-5: options_missing\ngen-q-1-75cc9aeb-6: options_missing\n\n== Validación de lesen-t1-gemini-201.json (de_A2) ==\nPreguntas: 6 | Pasajes: 1\nEsquema: OK\nConformidad blueprint: FAIL (6 ítems)\nColocación (Teile que mejora): Pool válido (Teil ya cubierto en 1 examen — OK para exámenes disjuntos)\nProblemas:\n  - gen-q-1-75cc9aeb-1: options_missing\n  - gen-q-1-75cc9aeb-2: options_missing\n  - gen-q-1-75cc9aeb-3: options_missing\n  - gen-q-1-75cc9aeb-4: options_missing\n  - gen-q-1-75cc9aeb-5: options_missing\n  - gen-q-1-75cc9aeb-6: options_missing",
+  "_rejectedGate": "formato",
+  "_rejectedAt": "2026-07-23T08:17:10.546Z",
+  "passages": [
+    {
+      "id": "gen-l1-ab997a98",
+      "module": "lesen",
+      "teil": 1,
+      "level": "A2",
+      "title": "Gesunde Ernährung in der Mittagspause",
+      "text": "Immer mehr Menschen in Deutschland achten auf eine gesunde Ernährung, besonders während der Arbeitszeit. Eine aktuelle Umfrage zeigt, dass viele Angestellte in der Mittagspause nicht nur schnell essen wollen, sondern auch gesund. Oft gibt es in Kantinen oder Restaurants aber nicht genug Auswahl. Deshalb bringen viele ihr essen von zu Hause mit. Das spart Geld und man weiß genau, was drin ist. Eine neue Initiative in der Stadt München hilft dabei. Sie bietet kostenlose Kochkurse für Berufstätige an. Der Kurs 'Mittagspause lecker und leicht' zeigt einfache Rezepte, die man schnell zubereiten kann. Die Teilnehmer lernen, wie man frisches Gemüse und Obst in den Alltag integriert. Der Anfang ist oft schwer, aber mit kleinen Schritten kann jeder seine Gewohnheiten ändern. Die Kurse finden jeden Dienstagabend in der Volkshochschule statt. Die Anmeldung ist online möglich. Schon über 150 Personen haben sich angemeldet. Ein Experte sagt: 'Gesunde Ernährung ist keine Kunst, sondern eine Entscheidung für mehr Energie im Alltag.' Viele Teilnehmer berichten, dass sie sich nach dem Kurs viel besser fühlen und weniger müde sind. Das Programm ist ein großer Erfolg.",
+      "topicTag": "Ernährung",
+      "lang": "de"
+    }
+  ],
+  "questions": [
+    {
+      "id": "gen-q-1-75cc9aeb-1",
+      "module": "lesen",
+      "teil": 1,
+      "lang": "de",
+      "level": "B1",
+      "type": "multiple_choice",
+      "passageId": "gen-l1-ab997a98",
+      "question": "Einige Leute bringen ihr essen von zu Hause mit zur Arbeit, weil sie Geld sparen möchten.",
+      "correct": true,
+      "correctAnswer": true,
+      "explanation": "Der Text sagt, dass das Mitbringen von Essen von zu Hause Geld spart.",
+      "options": []
+    },
+    {
+      "id": "gen-q-1-75cc9aeb-2",
+      "module": "lesen",
+      "teil": 1,
+      "lang": "de",
+      "level": "B1",
+      "type": "multiple_choice",
+      "passageId": "gen-l1-ab997a98",
+      "question": "Alle Berufstätigen in München nehmen an den neuen Kochkursen teil.",
+      "correct": false,
+      "correctAnswer": false,
+      "explanation": "Der Text erwähnt, dass 'schon über 150 Personen sich angemeldet haben', was nicht alle Berufstätigen in München sind.",
+      "options": []
+    },
+    {
+      "id": "gen-q-1-75cc9aeb-3",
+      "module": "lesen",
+      "teil": 1,
+      "lang": "de",
+      "level": "B1",
+      "type": "multiple_choice",
+      "passageId": "gen-l1-ab997a98",
+      "question": "Die Kochkurse finden ausschließlich am Wochenende statt.",
+      "correct": false,
+      "correctAnswer": false,
+      "explanation": "Im Text steht, dass die Kurse 'jeden Dienstagabend' stattfinden, nicht am Wochenende.",
+      "options": []
+    },
+    {
+      "id": "gen-q-1-75cc9aeb-4",
+      "module": "lesen",
+      "teil": 1,
+      "lang": "de",
+      "level": "B1",
+      "type": "multiple_choice",
+      "passageId": "gen-l1-ab997a98",
+      "question": "Die Initiative in München bietet kostenlose Kochkurse für Berufstätige an.",
+      "correct": true,
+      "correctAnswer": true,
+      "explanation": "Der Text besagt, dass die Initiative 'kostenlose Kochkurse für Berufstätige anbietet'.",
+      "options": []
+    },
+    {
+      "id": "gen-q-1-75cc9aeb-5",
+      "module": "lesen",
+      "teil": 1,
+      "lang": "de",
+      "level": "B1",
+      "type": "multiple_choice",
+      "passageId": "gen-l1-ab997a98",
+      "question": "Die Anmeldung für die Kochkurse ist nur persönlich in der Volkshochschule möglich.",
+      "correct": false,
+      "correctAnswer": false,
+      "explanation": "Der Text erklärt, dass 'Die Anmeldung ist online möglich', nicht nur persönlich.",
+      "options": []
+    },
+    {
+      "id": "gen-q-1-75cc9aeb-6",
+      "module": "lesen",
+      "teil": 1,
+      "lang": "de",
+      "level": "B1",
+      "type": "multiple_choice",
+      "passageId": "gen-l1-ab997a98",
+      "question": "Nach den Kursen fühlen sich die Leute oft besser und weniger müde.",
+      "correct": true,
+      "correctAnswer": true,
+      "explanation": "Der Text berichtet, dass 'Viele Teilnehmer berichten, dass sie sich nach dem Kurs viel besser fühlen und weniger müde sind'.",
+      "options": []
+    }
+  ]
+}

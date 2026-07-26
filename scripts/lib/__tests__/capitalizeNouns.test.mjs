@@ -28,6 +28,10 @@ function fullNorm(text) {
   return normalizeGermanCapsInText(text).result;
 }
 
+function decap(text) {
+  return decapitalizeMidSentence(text).result;
+}
+
 function assertChanges(desc, text, expectSubstring) {
   const { result } = decapitalizeMidSentence(text);
   if (result.includes(expectSubstring)) {
@@ -882,6 +886,43 @@ assertEq(
   'Herrn Lang preserved',
   decapitalizeMidSentence('Schreiben Sie an Herrn Lang.').result,
   'Schreiben Sie an Herrn Lang.',
+);
+
+// audit 2026-07-24: quantifier + attributive adj family
+assertEq(
+  'ein Paar quantifier (mid-sentence)',
+  decap('Wir brauchen ein Paar Wochen für das Projekt.'),
+  'Wir brauchen ein paar Wochen für das Projekt.',
+);
+assertEq(
+  'den langen Weg',
+  decap('Sie gehen den Langen Weg durch die Stadt.'),
+  'Sie gehen den langen Weg durch die Stadt.',
+);
+assertEq(
+  'für die vielen Menschen',
+  decap('Das hilft für die Vielen Menschen in der Stadt.'),
+  'Das hilft für die vielen Menschen in der Stadt.',
+);
+assertEq(
+  'täglichen Aufgaben',
+  decap('Er erledigt seine Täglichen Aufgaben schnell.'),
+  'Er erledigt seine täglichen Aufgaben schnell.',
+);
+assertEq(
+  'technischen Fragen',
+  decap('Bei den Technischen Fragen helfen wir gern.'),
+  'Bei den technischen Fragen helfen wir gern.',
+);
+assertEq(
+  'mit ein Paar (Ein capitalized)',
+  decap('Er kauft mit ein Paar Euro nur Brot.'),
+  'Er kauft mit ein paar Euro nur Brot.',
+);
+assertEq(
+  'fullNorm ein paar quantifier stable',
+  fullNorm('mit ein Paar Tipps kann die Suche einfacher werden.'),
+  'mit ein paar Tipps kann die Suche einfacher werden.',
 );
 
 console.log(`\n── Result: ${passed} passed, ${failed} failed ──`);

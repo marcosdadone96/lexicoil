@@ -1,0 +1,32 @@
+{
+  "scannedAt": "2026-07-23T20:45:00.000Z",
+  "dryRun": false,
+  "poolVerifiedScanned": 498,
+  "mismatchesFound": 0,
+  "mismatches": [],
+  "moved": [],
+  "needsRegenerationMismatches": [],
+  "officialExamFindings": [],
+  "summary": {
+    "b1FolderWithA2Content": 0,
+    "a2FolderWithB1Content": 0,
+    "flatLegacy": 0,
+    "mixed": 0,
+    "officialExamsCrossLevel": 0,
+    "b1PoolJsonLevelB1": 432,
+    "b1PoolJsonMissingLevel": 2,
+    "a2PoolJsonLevelA2": 64
+  },
+  "notes": {
+    "jsonFieldScan": "0 archivos con level JSON ≠ carpeta (criterio explícito del operador).",
+    "silentRoutingBug": "El bug de finalizePoolReady dejó JSON level=B1 en pool B1 (coherente en metadatos). 4 publicaciones del smoke A2 de hoy (horen-t2-090, sprechen-t1-006, t2-004, t3-004) están en pool-verified/B1/ con level=B1 — no son contaminación cruzada detectable por JSON, pero no alimentaron pool A2.",
+    "officialExams": "14 exámenes B1 + 1 A2 (official-de-A2-e1): 0 partes con level cruzado en snapshots.",
+    "additionalFix": "poolFillTeilLib.mjs: faltaba await createExamFactorySession + level en generateExamPartSingle → generación A2 caía a B1 por defecto (corregido 2026-07-23)."
+  },
+  "a2SmokeWrongPoolPublish": [
+    "batches/ready/pool-verified/B1/horen-t2-gemini-090.json",
+    "batches/ready/pool-verified/B1/sprechen-t1-gemini-006.json",
+    "batches/ready/pool-verified/B1/sprechen-t2-gemini-004.json",
+    "batches/ready/pool-verified/B1/sprechen-t3-gemini-004.json"
+  ]
+}

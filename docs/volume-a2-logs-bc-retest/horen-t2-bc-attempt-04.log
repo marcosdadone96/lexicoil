@@ -1,0 +1,67 @@
+
+Generador horen (de/A2) · gemini · gemini-2.5-flash · T2 × 1
+Palabras objetivo por parte: 5 (--word-count)
+Cuota Gemini: max 45 llamadas · pausa ≥6000ms · fix-retries=3 · api-retries=1
+Salida: batches/generated/ (solo pasa formato + calidad pedagógica)
+Tema: Freizeit (elegido)
+Hören T2 apertura rotada: «In der heutigen Sendung spreche ich über…»
+Hören T2 plan semanal: sch-d-b-f-h-g [d,b,f,h,g]
+Hören T2 nombres: Noah/Lea
+
+── horen T2 · horen-t2-gemini-081.json ──
+Proveedor: gemini · Palabras (5): nett, wurst, autobahn, mittel, aussprechen
+Modelo: gemini-2.5-flash · max_output_tokens=16384
+Llamada API 1/45 · $0.000 acumulado · gemini-2.5-flash
+Validando formato…
+Comprobando calidad pedagógica…
+  [Q4 audit-only] 1 topic_mismatch (no block):
+    · passage:gen-p-h2-d5157600-s1 topicTag «Freizeit» no encaja con contenido (detectado «Bildung» score=2 vs tag score=1; hits={"Bildung":2,"Kultur":2,"Sport":2,"Freizeit":1})
+  [LT advisory] skipped (LT down: fetch failed)
+Calidad Hören T2: FAIL (2 problemas, estimación ~84%)
+  - gen-q-h2-d5157600-q3: Noah no menciona actividad el Mittwoch en el diálogo
+  - gen-q-h2-d5157600-q4: clave «h» no coincide con diálogo (esperada «f»: Kino ist immer eine gute Idee! Am Donnerstag muss ich noch einkaufen. )
+Calidad FAIL → regeneración limpia en siguiente intento si persiste…
+
+Reintento 1/3 · gen-q-h2-d5157600-q3: Noah no menciona actividad el Mittwoch en el diálogo…
+  Temperatura reducida a 0.3 (reintento de calidad)
+Llamada API 2/45 · $0.009 acumulado · gemini-2.5-flash
+Validando formato…
+  [LT advisory] skipped (LT down: fetch failed)
+Calidad Hören T2: FAIL (3 problemas, estimación ~76%)
+  - Hören A2 T2: longitud fuera de rango (70–160 palabras, tiene 196)
+  - gen-q-h2-d5157600-q3: Noah no menciona actividad el Mittwoch en el diálogo
+  - gen-q-h2-d5157600-q4: clave «h» no coincide con diálogo (esperada «f»: Ja, Kino mag ich auch sehr! Am Donnerstag muss ich leider noch einkauf)
+
+Reintento 2/3 · Hören A2 T2: longitud fuera de rango (70–160 palabras, tiene 196)…
+  Temperatura reducida a 0.3 (reintento de calidad)
+Llamada API 3/45 · $0.023 acumulado · gemini-2.5-flash
+Validando formato…
+  [Q4 audit-only] 1 topic_mismatch (no block):
+    · passage:gen-p-h2-d5157600-s1 topicTag «Freizeit» no encaja con contenido (detectado «Bildung» score=2 vs tag score=1; hits={"Bildung":2,"Kultur":2,"Sport":1,"Freizeit":1})
+  [LT advisory] skipped (LT down: fetch failed)
+Calidad Hören T2: FAIL (1 problemas, estimación ~92%)
+  - gen-q-h2-d5157600-q3: Noah no menciona actividad el Mittwoch en el diálogo
+
+Reintento 3/3 · gen-q-h2-d5157600-q3: Noah no menciona actividad el Mittwoch en el diálogo…
+  Temperatura reducida a 0.3 (reintento de calidad)
+Llamada API 4/45 · $0.029 acumulado · gemini-2.5-flash
+  [normalizeNouns] 2 sustantivo(s) capitalizados automáticamente
+Validando formato…
+  [germanCapsNormalize] markdown=0 decap=2 cap=0 dedupe=0 fields=2
+  [LT advisory] skipped (LT down: fetch failed)
+Calidad Hören T2: OK ✅ (estimación ~100%)
+  [poolReady] READY → pool-verified/A2/horen-t2-gemini-081.json
+Guardado: batches/ready/pool-verified/A2/horen-t2-gemini-081.json (5 preguntas, 1 passages) · horen Teil 2
+Validación técnica OK ✅
+Calidad pedagógica OK ✅
+
+── batches/generated/A2/horen-t2-gemini-081.json · OK · 4 llamadas · $0.037 total ──
+
+══ Resumen generador horen ══
+Proveedor: gemini · Modelo: gemini-2.5-flash
+Intentos totales: 4
+Partes guardadas (formato + calidad OK): 1
+Partes descartadas: 0
+Llamadas API Gemini: 4/45
+Por parte (guardadas / descartadas · intentos):
+  T2: 1 guardadas, 0 descartadas, 4 intentos

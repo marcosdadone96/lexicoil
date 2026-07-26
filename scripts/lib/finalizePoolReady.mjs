@@ -67,7 +67,13 @@ export async function finalizePoolReady(absPath, batch, opts = {}) {
   const lv = resolveLevel(batch, opts);
   ensureLevelStagingDirs(lv);
   const file = path.basename(absPath);
-  const enriched = enrichBatchMetadata(batch).batch;
+  const mod = String(batch.module || batch.questions?.[0]?.module || batch.passages?.[0]?.module || '').toLowerCase();
+  const teilN = Number(batch.teil ?? batch.questions?.[0]?.teil ?? batch.passages?.[0]?.teil);
+  const isHorenPictureMatching = mod === 'horen' && teilN === 2;
+  const enriched = enrichBatchMetadata(batch, {
+    fillGrammarDefaults: false,
+    forceGrammar: isHorenPictureMatching,
+  }).batch;
   const result = await poolReadyCheckWithRepair(enriched, {
     file,
     level: lv,

@@ -1,0 +1,141 @@
+{
+  "at": "2026-07-21T10:56:57.039Z",
+  "exam": "official-de-A2-e1",
+  "productionFix": {
+    "rootCause": "batchToRecord(horen) no propagaba pictures[]/segments; Lesen T4 snapshot sin ads[]; Hören T2 respuestas desalineadas con diálogo Julia/Paul",
+    "fixes": [
+      "verifiedExamPublishLib batchToRecord usa buildExamSeedRecordFromBatch",
+      "buildHorenSegments copia pictures",
+      "pool horen T2 + lesen T4 normalizados",
+      "republish slot 1 + sync served"
+    ],
+    "servedRenderCheck": {
+      "horenT2Pictures": 9,
+      "lesenT4Ads": 6,
+      "blueprintSlot": "picture_matching",
+      "allLevels": true
+    }
+  },
+  "poolAudit": {
+    "filesScanned": 41,
+    "critical": 53,
+    "important": 47,
+    "filesWithCritical": [
+      {
+        "file": "horen-t1-cur-education.json",
+        "critical": 1,
+        "samples": [
+          "Balance MC: \"b\"=100% supera el máximo 65% (≥75% con n≥5 = adivinable). Dist: {\"b\":5}"
+        ]
+      },
+      {
+        "file": "horen-t3-cur-health.json",
+        "critical": 1,
+        "samples": [
+          "Balance MC: \"b\"=80% supera el máximo 65% (≥75% con n≥5 = adivinable). Dist: {\"b\":4,\"c\":1}"
+        ]
+      },
+      {
+        "file": "horen-t3-cur-society.json",
+        "critical": 1,
+        "samples": [
+          "Balance MC: \"b\"=80% supera el máximo 65% (≥75% con n≥5 = adivinable). Dist: {\"b\":4,\"a\":1}"
+        ]
+      },
+      {
+        "file": "lesen-t1-cur-education.json",
+        "critical": 1,
+        "samples": [
+          "Balance MC: \"b\"=80% supera el máximo 65% (≥75% con n≥5 = adivinable). Dist: {\"b\":4,\"c\":1}"
+        ]
+      },
+      {
+        "file": "lesen-t1-cur-health.json",
+        "critical": 5,
+        "samples": [
+          "ID duplicado globalmente: 1",
+          "ID duplicado globalmente: 2"
+        ]
+      },
+      {
+        "file": "lesen-t1-cur-society.json",
+        "critical": 5,
+        "samples": [
+          "ID duplicado globalmente: 1",
+          "ID duplicado globalmente: 2"
+        ]
+      },
+      {
+        "file": "lesen-t1-cur-work.json",
+        "critical": 6,
+        "samples": [
+          "Balance MC: \"b\"=100% supera el máximo 65% (≥75% con n≥5 = adivinable). Dist: {\"b\":5}",
+          "ID duplicado globalmente: 1"
+        ]
+      },
+      {
+        "file": "lesen-t2-cur-society.json",
+        "critical": 6,
+        "samples": [
+          "ID duplicado globalmente: 7",
+          "ID duplicado globalmente: 8"
+        ]
+      },
+      {
+        "file": "lesen-t3-cur-education.json",
+        "critical": 2,
+        "samples": [
+          "Balance MC: \"b\"=80% supera el máximo 65% (≥75% con n≥5 = adivinable). Dist: {\"c\":1,\"b\":4}",
+          "ID duplicado globalmente: 13-a44cd584"
+        ]
+      },
+      {
+        "file": "lesen-t3-cur-health.json",
+        "critical": 1,
+        "samples": [
+          "Balance MC: \"b\"=100% supera el máximo 65% (≥75% con n≥5 = adivinable). Dist: {\"b\":5}"
+        ]
+      },
+      {
+        "file": "lesen-t3-cur-society.json",
+        "critical": 5,
+        "samples": [
+          "Balance MC: \"b\"=100% supera el máximo 65% (≥75% con n≥5 = adivinable). Dist: {\"b\":5}",
+          "ID duplicado globalmente: 11-58213406"
+        ]
+      },
+      {
+        "file": "lesen-t3-cur-work.json",
+        "critical": 4,
+        "samples": [
+          "ID duplicado globalmente: 11-3bd63911",
+          "ID duplicado globalmente: 13-3bd63911"
+        ]
+      },
+      {
+        "file": "lesen-t4-cur-health.json",
+        "critical": 5,
+        "samples": [
+          "ID duplicado globalmente: 16",
+          "ID duplicado globalmente: 17"
+        ]
+      },
+      {
+        "file": "lesen-t4-cur-society.json",
+        "critical": 5,
+        "samples": [
+          "ID duplicado globalmente: 16",
+          "ID duplicado globalmente: 17"
+        ]
+      },
+      {
+        "file": "lesen-t4-cur-work.json",
+        "critical": 5,
+        "samples": [
+          "ID duplicado globalmente: 16",
+          "ID duplicado globalmente: 17"
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,33 @@
+
+Generador horen (de/A2) · gemini · gemini-2.5-flash · T3 × 1
+Palabras objetivo por parte: 5 (--word-count)
+Cuota Gemini: max 45 llamadas · pausa ≥6000ms · fix-retries=3 · api-retries=1
+Salida: batches/generated/ (solo pasa formato + calidad pedagógica)
+Tema: Freizeit (elegido)
+Hören T3 elenco (5 pares): Finn+Paula · Omar+Yasmin · Felix+Mia · Lukas+Sarah · Noah+Lea
+
+── horen T3 · horen-t3-gemini-047.json ──
+Proveedor: gemini · Palabras (5): vorgestern, sammeln, also, chatten, hals
+Modelo: gemini-2.5-flash · max_output_tokens=16384
+Llamada API 1/45 · $0.000 acumulado · gemini-2.5-flash
+Validando formato…
+Comprobando calidad pedagógica…
+  [Q4 audit-only] 1 topic_mismatch (no block):
+    · passage:gen-p-h3-dbcdf771-s3 topicTag «Freizeit» no encaja con contenido (detectado «Sport» score=2 vs tag score=1; hits={"Kultur":1,"Sport":2,"Freizeit":1})
+  [LT advisory] skipped (LT down: fetch failed)
+Calidad Hören T3: OK ✅ (estimación ~100%)
+  [poolReady] READY → pool-verified/A2/horen-t3-gemini-047.json
+Guardado: batches/ready/pool-verified/A2/horen-t3-gemini-047.json (5 preguntas, 5 passages) · horen Teil 3
+Validación técnica OK ✅
+Calidad pedagógica OK ✅
+
+── batches/generated/A2/horen-t3-gemini-047.json · OK · 1 llamadas · $0.012 total ──
+
+══ Resumen generador horen ══
+Proveedor: gemini · Modelo: gemini-2.5-flash
+Intentos totales: 1
+Partes guardadas (formato + calidad OK): 1
+Partes descartadas: 0
+Llamadas API Gemini: 1/45
+Por parte (guardadas / descartadas · intentos):
+  T3: 1 guardadas, 0 descartadas, 1 intentos

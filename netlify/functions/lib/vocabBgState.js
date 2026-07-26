@@ -9,9 +9,9 @@
 const fs = require('fs');
 const path = require('path');
 const PersonalPoolQuota = require('../../../js/library/personalPoolQuota.js');
-const BATCH_TRIGGER = 8;
+const BATCH_TRIGGER = 4;
+/** Min pending to enqueue vocab-bg-sweep (cron safety net). Not a separate gen trigger when BATCH_TRIGGER >= this. */
 const BATCH_DAILY_MIN = 4;
-const DAILY_MIN_HOURS = 20;
 const FREQ_HOURS = 12;
 const FREE_BG_GEN_MAX = 2;
 /** Users with <4 eligible pending words ONLY trigger bg via this stale fallback. */
@@ -375,34 +375,27 @@ function evaluateBgEligibility(rec, plan) {
     }
   }
   const batchReady = pendingCount >= BATCH_TRIGGER;
-  const dailyReady =
-    pendingCount >= BATCH_DAILY_MIN &&
-    hours >= DAILY_MIN_HOURS &&
-    String(rec.lastBgGenDayKey || '') !== dayKey;
   /*
-   * Stale fallback (Case 1): users with <4 eligible pending words ONLY activate
-   * background generation through this 30-day path â€” not via batch (8) or daily (4+20h).
+   * Stale fallback (Case 1): users with < BATCH_TRIGGER eligible pending words ONLY
+   * activate background generation through this 30-day path — not via batch threshold.
+   * (Legacy daily_fallback trigger removed: unreachable when BATCH_TRIGGER === BATCH_DAILY_MIN.)
    */
   const staleReady =
     pendingCount >= 1 &&
     oldestPendingAgeDays(rec) >= STALE_FALLBACK_DAYS &&
     hours >= FREQ_HOURS;
-  if (!batchReady && !dailyReady && !staleReady) {
+  if (!batchReady && !staleReady) {
     return {
       eligible: false,
       reason: 'pending_insufficient',
       pendingCount,
       batchReady,
-      dailyReady,
       staleReady,
     };
   }
   let trigger = 'batch';
   let reason = 'batch_threshold';
-  if (!batchReady && dailyReady) {
-    trigger = 'daily';
-    reason = 'daily_fallback';
-  } else if (!batchReady && !dailyReady && staleReady) {
+  if (!batchReady && staleReady) {
     trigger = 'stale';
     reason = 'stale_fallback';
   }
@@ -561,10 +554,24 @@ function payloadFields(rec) {
     bgGenPending: bg.bgGenPending,
   };
 }
+
+const KNOWN_BG_LEVELS = new Set(['A1', 'A2', 'B1', 'B2', 'C1', 'C2']);
+
+/** Resolve generation level from pending flashcard entries (majority sourceLevel). */
+function resolveBgLevelFromPending(pendingWords, fallback = 'B1') {
+  const counts = new Map();
+  for (const p of pendingWords || []) {
+    const lv = String(p?.level || p?.sourceLevel || '').trim().toUpperCase();
+    if (!lv || !KNOWN_BG_LEVELS.has(lv)) continue;
+    counts.set(lv, (counts.get(lv) || 0) + 1);
+  }
+  if (!counts.size) return String(fallback || 'B1').trim().toUpperCase();
+  return [...counts.entries()].sort((a, b) => b[1] - a[1])[0][0];
+}
+
 module.exports = {
   BATCH_TRIGGER,
   BATCH_DAILY_MIN,
-  DAILY_MIN_HOURS,
   FREQ_HOURS,
   FREE_BG_GEN_MAX,
   STALE_FALLBACK_DAYS,
@@ -587,6 +594,7 @@ module.exports = {
   evaluateBgEligibility,
   effectivePendingCount,
   getEligiblePendingEntries,
+  resolveBgLevelFromPending,
   afterBgGenSuccessPatch,
   markBgGenPending,
   markBgGenFailed,

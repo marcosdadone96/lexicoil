@@ -6,7 +6,7 @@
  *   audit / dry-run — solo log (wouldBlock / wouldWarn)
  *   block — confidence=high + mismatch → severity block (futuro)
  *
- * Modelo por defecto: claude-haiku-4-5 (Anthropic; equivalente barato al Haiku del diseño).
+ * Modelo por defecto: gemini-2.5-flash (pipeline; override Q2_ANSWER_KEY_MODEL).
  */
 import { inferJsonResponse, DEFAULT_HAIKU_MODEL } from '../llmJsonClient.mjs';
 import { findKeyExplanationMismatches } from '../keyExplanationGate.mjs';
@@ -14,9 +14,9 @@ import { buildVerdict, inferTeil } from './qualityGateCommon.mjs';
 
 export const GATE_NAME = 'Q2-answerKeyCoherence';
 
-/** Modelo LLM — override con Q2_ANSWER_KEY_MODEL o CLAUDE_GEN_MODEL. */
+/** Modelo LLM — override con Q2_ANSWER_KEY_MODEL (default gemini-2.5-flash vía loadEnv). */
 export const Q2_DEFAULT_MODEL = () =>
-  (process.env.Q2_ANSWER_KEY_MODEL || process.env.CLAUDE_GEN_MODEL || DEFAULT_HAIKU_MODEL).trim();
+  (process.env.Q2_ANSWER_KEY_MODEL || DEFAULT_HAIKU_MODEL).trim();
 
 /**
  * Prompt exacto enviado al LLM (cabecera fija; los items se añaden como JSON al final).

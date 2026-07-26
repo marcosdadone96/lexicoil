@@ -1,0 +1,36 @@
+{
+  "generatedAt": "2026-07-24T13:50:00.000Z",
+  "part1_spanish_leak": {
+    "file": "B1/horen-t3-gemini-023.json",
+    "action": "moved to batches/needs-regeneration/B1/horen-t3-gemini-023.json",
+    "seedJubilated": true,
+    "inAssembledOfficialExam": false,
+    "q5AfterGateFix": "gen-q-h3-0c5cc786-5: Sophie prefiere viajar en tren por motivos ecológicos."
+  },
+  "part2_v2314_regression": {
+    "verdict": "confirmed_regression_not_lemmatizer_t_rule",
+    "rootCause": "repairQuestionVocabularyTags (v2.3.14) re-ran lemmaOf/toAdjectiveBase on every existing tag, truncating valid lemmas (Sophie→sophi, Berlin→berli, Pläne→plän, Wetter→wett). Spanish tags in 023 were pre-existing in git HEAD, not introduced by repair.",
+    "beforeAfterGitHead": {
+      "B1/horen-t3-gemini-018.json": { "badTruncTagsBeforeRepairToday": 3, "afterV2315Remediate": 0 },
+      "B1/horen-t3-gemini-028.json": { "badTruncTagsBeforeRepairToday": 7, "afterV2315Remediate": 0 },
+      "B1/horen-t3-gemini-023.json": { "note": "Spanish viajar/motivo/prefi in HEAD; trunc sophi/berli introduced by v2.3.14 repair pass" }
+    },
+    "fix": "v2.3.15-vocab-tag-repair-artifacts-only — repairQuestionVocabularyTags only re-lemmatizes LEMMA_GROUND_TRUTH + VOCAB_TAG_KNOWN_ARTIFACT_RE",
+    "remediationLog": "batches/ready/gate-logs/remediate-v2314-vocab-tags-2026-07-24T13-46-44.json",
+    "filesTouched": 83,
+    "truncTagsFixedToZero": 18,
+    "truncTagsRemaining": 16
+  },
+  "part3_process": {
+    "repairScriptQ5": "repair-pool-vocab-caps-artifacts.mjs detectIssues includes language_leak; repair blocked if present",
+    "fullPoolQ5Scan": "batches/ready/gate-logs/pool-german-exam-content-scan.json",
+    "filesScanned": 528,
+    "languageHits": 0
+  },
+  "part4_name_rotation": {
+    "B1/horen-t3-gemini-018.json": { "generated": "2026-07-20", "pair": "Hannah+Erik", "conclusion": "pre-rotation legacy content" },
+    "B1/horen-t3-gemini-028.json": { "generated": "2026-07-20", "pair": "Tim+Sophie", "conclusion": "pre-rotation legacy content" },
+    "B1/horen-t3-gemini-023.json": { "generated": "2026-07-20", "conclusion": "pre-rotation legacy; quarantined" },
+    "B1/horen-t3-gemini-060.json": { "generated": "2026-07-24", "pair": "Erik+Hannah", "conclusion": "new pool file today; name pair still concentrated — rotation fix does not retroactively change existing Hören T3 batches" }
+  }
+}

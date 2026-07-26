@@ -1,0 +1,239 @@
+{
+  "at": "2026-07-25T08:46:00.993Z",
+  "mode": "preview",
+  "sample": 8,
+  "affected": 152,
+  "processed": 8,
+  "totalCostUsd": 0.008265400000000001,
+  "blocked": [],
+  "previewRows": [
+    {
+      "file": "A2/horen-t1-cur-education.json",
+      "diffs": [
+        {
+          "id": "de-a2-horen-t1-gesundheit-arzt-03-q2",
+          "scoreBefore": 11,
+          "scoreAfter": 0,
+          "optionsBefore": [
+            "Mittwoch um 14 Uhr",
+            "Dienstag um 10 Uhr",
+            "Donnerstag um 14 Uhr"
+          ],
+          "optionsAfter": [
+            "Donnerstag 14 Uhr",
+            "Mittwoch um 14 Uhr",
+            "Dienstag um 10 Uhr"
+          ]
+        }
+      ],
+      "remaining": 0,
+      "balanceVersion": "v1.2-no-rf-chrono-shuffle-2026-07-11",
+      "ok": true
+    },
+    {
+      "file": "A2/horen-t3-cur-education.json",
+      "diffs": [
+        {
+          "id": "de-a2-h-t3-umzug-familie-03-q5",
+          "scoreBefore": 67,
+          "scoreAfter": 38,
+          "optionsBefore": [
+            "Ein großes Umzugsfest",
+            "Ein Einzugsfest mit Familie und Freunden",
+            "Einen Besuch bei Verwandten"
+          ],
+          "optionsAfter": [
+            "Ein großes Umzugsfest",
+            "Ein Fest mit Familie und Freunden",
+            "Einen Besuch bei Verwandten"
+          ]
+        },
+        {
+          "id": "13-a44cd584",
+          "scoreBefore": 21,
+          "scoreAfter": 20,
+          "optionsBefore": [
+            "Bei einer Bank in Berlin",
+            "Bei einer IT-Firma in München",
+            "Bei einer Schule in Wien"
+          ],
+          "optionsAfter": [
+            "Bei einer Bank in Berlin.",
+            "Bei einer IT-Firma in München.",
+            "Bei einer Schule in Wien."
+          ]
+        },
+        {
+          "id": "de-a2-h-t3-urlaubsplanung-freunde-03-q3",
+          "scoreBefore": 41,
+          "scoreAfter": 0,
+          "optionsBefore": [
+            "Das Schloss und das Museum",
+            "Nur das Museum",
+            "Das Schloss und den Zoo"
+          ],
+          "optionsAfter": [
+            "Nur das Museum",
+            "Das Schloss und den Zoo",
+            "Das Schloss und Museum"
+          ]
+        }
+      ],
+      "remaining": 2,
+      "balanceVersion": "v1.2-no-rf-chrono-shuffle-2026-07-11",
+      "ok": false
+    },
+    {
+      "file": "A2/lesen-t1-cur-education.json",
+      "diffs": [
+        {
+          "id": "5",
+          "scoreBefore": 34,
+          "scoreAfter": 0,
+          "optionsBefore": [
+            "Weil es für ihren neuen Job wichtig ist",
+            "Weil es kostenlos ist",
+            "Weil sie es an die Wand hängen möchte"
+          ],
+          "optionsAfter": [
+            "Weil es nichts kostet.",
+            "Weil sie es zu Hause aufhängen will.",
+            "Weil es für ihre neue Arbeit zählt."
+          ]
+        }
+      ],
+      "remaining": 0,
+      "balanceVersion": "v1.2-no-rf-chrono-shuffle-2026-07-11",
+      "ok": true
+    },
+    {
+      "file": "A2/lesen-t2-cur-education.json",
+      "diffs": [],
+      "remaining": 0,
+      "balanceVersion": "v1.2-no-rf-chrono-shuffle-2026-07-11",
+      "ok": true
+    },
+    {
+      "file": "A2/lesen-t3-cur-education.json",
+      "diffs": [
+        {
+          "id": "de-a2-cur-lesen-t3-cur-education-q13",
+          "scoreBefore": 38,
+          "scoreAfter": 38,
+          "optionsBefore": [
+            "Ingenieur",
+            "Student",
+            "Lehrer"
+          ],
+          "optionsAfter": [
+            "Student",
+            "Lehrer",
+            "Ingenieur"
+          ]
+        }
+      ],
+      "remaining": 1,
+      "balanceVersion": "v1.2-no-rf-chrono-shuffle-2026-07-11",
+      "ok": false
+    },
+    {
+      "file": "B1/horen-t1-claude-test.json",
+      "diffs": [
+        {
+          "id": "gen-q-h1-claudetest01-s3-q2",
+          "scoreBefore": 36,
+          "scoreAfter": 0,
+          "optionsBefore": [
+            "Die Online-Termine.",
+            "Den Postweg.",
+            "Ein anderes Amt."
+          ],
+          "optionsAfter": [
+            "Den Postweg.",
+            "Ein anderes Amt.",
+            "Online-Termine."
+          ]
+        }
+      ],
+      "remaining": 0,
+      "balanceVersion": "v1.2-no-rf-chrono-shuffle-2026-07-11",
+      "ok": true
+    },
+    {
+      "file": "B1/horen-t2-gemini-001.json",
+      "diffs": [
+        {
+          "id": "gen-q-h2-d5028372-q1",
+          "scoreBefore": 29,
+          "scoreAfter": 28,
+          "optionsBefore": [
+            "Neue Technologien für Studierende.",
+            "Die Vorteile von Multitasking im Beruf.",
+            "Strategien für effizientes Lernen und Arbeiten."
+          ],
+          "optionsAfter": [
+            "Die Vorteile von Multitasking.",
+            "Tipps für effektives Lernen und Arbeiten.",
+            "Neue Technologien für Studierende."
+          ]
+        },
+        {
+          "id": "gen-q-h2-d5028372-q3",
+          "scoreBefore": 3,
+          "scoreAfter": 0,
+          "optionsBefore": [
+            "Es ist wichtig, gleichzeitig mehrere Dinge zu bearbeiten.",
+            "Man sollte sich auf nur eine Aufgabe zur Zeit konzentrieren.",
+            "Man sollte viele Benachrichtigungen auf dem Handy zulassen."
+          ],
+          "optionsAfter": [
+            "Man sollte sich auf nur eine Aufgabe konzentrieren.",
+            "Man sollte viele Benachrichtigungen auf dem Handy zulassen.",
+            "Es ist wichtig, gleichzeitig mehrere Dinge zu bearbeiten."
+          ]
+        },
+        {
+          "id": "gen-q-h2-d5028372-q4",
+          "scoreBefore": 4,
+          "scoreAfter": 4,
+          "optionsBefore": [
+            "Ein festes Protokoll, um zielgerichtet zu bleiben.",
+            "Eine offene Diskussion ohne feste Tagesordnung.",
+            "Die Möglichkeit, jederzeit das Thema zu wechseln."
+          ],
+          "optionsAfter": [
+            "Eine offene Diskussion ohne feste Tagesordnung.",
+            "Die Möglichkeit, jederzeit das Thema zu wechseln.",
+            "Ein festes Protokoll, um zielgerichtet zu bleiben."
+          ]
+        }
+      ],
+      "remaining": 2,
+      "balanceVersion": "v1.2-no-rf-chrono-shuffle-2026-07-11",
+      "ok": false
+    },
+    {
+      "file": "B1/lesen-t2-claude-test.json",
+      "diffs": [
+        {
+          "id": "gen-q-2-claudetest01a-2",
+          "scoreBefore": 23,
+          "scoreAfter": 15,
+          "optionsBefore": [
+            "Das Handy vor dem Zubettgehen beiseitezulegen.",
+            "Nie mehr ein Smartphone zu benutzen.",
+            "Das Handy erst am Morgen einzuschalten."
+          ],
+          "optionsAfter": [
+            "Nie mehr ein Smartphone zu benutzen.",
+            "Das Handy erst am Morgen einzuschalten.",
+            "Das Handy vor dem Schlafengehen wegzulegen."
+          ]
+        }
+      ],
+      "remaining": 1,
+      "balanceVersion": "v1.2-no-rf-chrono-shuffle-2026-07-11",
+      "ok": false
+    }
+  ]
+}

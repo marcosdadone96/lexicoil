@@ -1,0 +1,37 @@
+
+Generador horen (de/A2) · gemini · gemini-2.5-flash · T2 × 1
+Palabras objetivo por parte: 5 (--word-count)
+Cuota Gemini: max 45 llamadas · pausa ≥6000ms · fix-retries=3 · api-retries=1
+Salida: batches/generated/ (solo pasa formato + calidad pedagógica)
+Tema: Freizeit (elegido)
+Hören T2 apertura rotada: «Guten Abend und herzlich willkommen — heute dreht sich alles um…»
+Hören T2 plan semanal: sch-c-a-e-d-i [c,a,e,d,i]
+Hören T2 nombres: David/Julia
+
+── horen T2 · horen-t2-gemini-088.json ──
+Proveedor: gemini · Palabras (5): spazieren, haushalt, ausland, nachfrage, sterben
+Modelo: gemini-2.5-flash · max_output_tokens=16384
+Llamada API 1/45 · $0.000 acumulado · gemini-2.5-flash
+  [normalizeNouns] 2 sustantivo(s) capitalizados automáticamente
+Validando formato…
+Comprobando calidad pedagógica…
+  [germanCapsNormalize] markdown=0 decap=2 cap=0 dedupe=0 fields=2
+  [Q4 audit-only] 1 topic_mismatch (no block):
+    · passage:gen-p-h2-ab3d9f6c-s1 topicTag «Freizeit» no encaja con contenido (detectado «Sport» score=2 vs tag score=0; hits={"Familie":1,"Kultur":1,"Sport":2})
+  [LT advisory] skipped (LT down: fetch failed)
+Calidad Hören T2: OK ✅ (estimación ~100%)
+  [poolReady] READY → pool-verified/A2/horen-t2-gemini-088.json
+Guardado: batches/ready/pool-verified/A2/horen-t2-gemini-088.json (5 preguntas, 1 passages) · horen Teil 2
+Validación técnica OK ✅
+Calidad pedagógica OK ✅
+
+── batches/generated/A2/horen-t2-gemini-088.json · OK · 1 llamadas · $0.016 total ──
+
+══ Resumen generador horen ══
+Proveedor: gemini · Modelo: gemini-2.5-flash
+Intentos totales: 1
+Partes guardadas (formato + calidad OK): 1
+Partes descartadas: 0
+Llamadas API Gemini: 1/45
+Por parte (guardadas / descartadas · intentos):
+  T2: 1 guardadas, 0 descartadas, 1 intentos

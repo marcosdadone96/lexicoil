@@ -5,7 +5,7 @@ import path from 'node:path';
 import { createRequire } from 'node:module';
 import { ROOT } from './loadEnv.mjs';
 import { foldLemma, loadVocabBankLemmaSet } from './vocabBank.mjs';
-import { normalizeB1Topic } from './b1Topics.mjs';
+import { bgModulesForLevel, moduleTeilsForLevel, normalizeTopicForLevel } from './levelPlanner.mjs';
 import { pickScarcestTopic, loadPoolRecords, rankTopicGaps } from './poolGapPlanner.mjs';
 import {
   pickTopicAlignedWeakWords,
@@ -15,11 +15,6 @@ import {
 
 const require = createRequire(import.meta.url);
 const { TOPIC_KEYWORDS } = require(path.join(ROOT, 'js/engine/partTopicDetect.js'));
-
-const MODULE_TEILS = {
-  lesen: [1, 2, 3, 4, 5],
-  horen: [1, 2, 3, 4],
-};
 
 function topicOverlapScore(userLemmas, topic) {
   const pool = new Set((TOPIC_KEYWORDS[topic] || []).map((w) => foldLemma(w)));
@@ -85,8 +80,8 @@ function weakBonus(registry, lemma) {
   return parts < 3 ? 3 : 0;
 }
 
-function scoreCell({ module, teil, topic, userLemmas, registry, records, targetPerCell = 3 }) {
-  const gaps = rankTopicGaps(records, module, teil, targetPerCell);
+function scoreCell({ module, teil, topic, userLemmas, registry, records, targetPerCell = 3, level = 'B1' }) {
+  const gaps = rankTopicGaps(records, module, teil, targetPerCell, level);
   const row = gaps.find((g) => g.topic === topic);
   const deficit = row?.deficit ?? 0;
   const overlap = topicOverlapScore(userLemmas, topic);
@@ -118,13 +113,14 @@ export function planVocabBgGeneration(ctx = {}) {
   }
   const records = loadPoolRecords(lang, level);
 
+  const bgModules = bgModulesForLevel(level);
   const modules = ctx.preferredModule
     ? [ctx.preferredModule]
-    : ['lesen', 'horen'];
+    : Object.keys(bgModules);
 
   let best = null;
   for (const module of modules) {
-    const teils = MODULE_TEILS[module] || [];
+    const teils = moduleTeilsForLevel(module, level);
     for (const teil of teils) {
       for (const topic of topics.slice(0, 12)) {
         const score = scoreCell({
@@ -134,6 +130,7 @@ export function planVocabBgGeneration(ctx = {}) {
           userLemmas,
           registry,
           records,
+          level,
         });
         if (!best || score > best.score) {
           best = { module, teil, topic, score };
@@ -148,12 +145,12 @@ export function planVocabBgGeneration(ctx = {}) {
     best = {
       module,
       teil,
-      topic: pickScarcestTopic(records, module, teil, { targetPerCell: 3 }),
+      topic: pickScarcestTopic(records, module, teil, { targetPerCell: 3, level }),
       score: 0,
     };
   }
 
-  const topic = normalizeB1Topic(best.topic);
+  const topic = normalizeTopicForLevel(level, best.topic);
   const userSlice = wordsInTopic(userLemmas, topic, lang, level, 5);
   const goal = 8;
   const gapCount = Math.max(0, goal - userSlice.length);
@@ -192,6 +189,7 @@ export function planVocabBgGeneration(ctx = {}) {
       module: best.module,
       teil: best.teil,
       topic,
+      level,
       words: final,
       userAnchor: anchor,
       score: best.score,
@@ -204,6 +202,7 @@ export function planVocabBgGeneration(ctx = {}) {
     module: best.module,
     teil: best.teil,
     topic,
+    level,
     words: merged.slice(0, goal),
     userAnchor: anchorFromSlice.length >= 2 ? anchorFromSlice : userSlice,
     score: best.score,

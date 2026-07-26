@@ -107,8 +107,8 @@
       ]
     }
   ],
-  "_germanCapsNormalizeVersion": "v3.15-was-subst-adj-2026-07-12",
-  "_germanCapsNormalizedAt": "2026-07-12T22:34:57.780Z",
+  "_germanCapsNormalizeVersion": "v3.17-mcq-dedupe-universal-2026-07-14",
+  "_germanCapsNormalizedAt": "2026-07-24T13:28:03.956Z",
   "_balanceMcqVersion": "v1.2-no-rf-chrono-shuffle-2026-07-11",
   "_balanceMcqNormalizedAt": "2026-07-12T22:34:57.780Z",
   "topicTag": "Wohnen",
@@ -121,9 +121,9 @@
     "feedbackMode": "off",
     "feedbackVersion": "v1"
   },
-  "_metadataEnrichedAt": "2026-07-12T22:35:01.918Z",
+  "_metadataEnrichedAt": "2026-07-24T13:46:41.026Z",
   "_metadataEnrichNote": "deterministic: detectTopic + per-question lemma vocab + grammar heuristics",
-  "_vocabTagsNormalizeVersion": "v2.3.12-beispielfragen-stem-2026-07-12",
+  "_vocabTagsNormalizeVersion": "v2.3.15-vocab-tag-repair-artifacts-only-2026-07-24",
   "_grammarTagsNormalizeVersion": "v2.0-focus-flexible-2026-07-10",
   "lang": "de",
   "level": "B1",
@@ -485,8 +485,8 @@
     },
     {
       "word": "verändert",
-      "lemma": "veränderen",
-      "concept": "veränderen",
+      "lemma": "verändern",
+      "concept": "verändern",
       "aliases": [],
       "sources": [
         "text"
@@ -594,5 +594,7 @@
       "quality": "validated"
     }
   ],
-  "vocabIndexVersion": "v3-quality"
+  "vocabIndexVersion": "v3-quality",
+  "_poolArtifactRepairAt": "2026-07-24T13:28:03.956Z",
+  "_poolArtifactRepairNote": "repair-pool-vocab-caps-artifacts.mjs (germanCapsNormalize + enrich vocab)"
 }

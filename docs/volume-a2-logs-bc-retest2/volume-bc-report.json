@@ -1,0 +1,150 @@
+{
+  "startedAt": "2026-07-23T09:25:46.924Z",
+  "attempts": 6,
+  "cellsFilter": [
+    "horen-t2"
+  ],
+  "cells": {
+    "horen-t2": {
+      "results": [
+        {
+          "attempt": 1,
+          "status": "pool-verified",
+          "file": "horen-t2-gemini-084.json",
+          "exitCode": 0,
+          "log": "horen-t2-bc-attempt-01.log"
+        },
+        {
+          "attempt": 2,
+          "status": "pool-verified",
+          "file": "horen-t2-gemini-085.json",
+          "exitCode": 0,
+          "log": "horen-t2-bc-attempt-02.log"
+        },
+        {
+          "attempt": 3,
+          "status": "discarded",
+          "exitCode": 1,
+          "log": "horen-t2-bc-attempt-03.log"
+        },
+        {
+          "attempt": 4,
+          "status": "pool-verified",
+          "file": "horen-t2-gemini-086.json",
+          "exitCode": 0,
+          "log": "horen-t2-bc-attempt-04.log"
+        },
+        {
+          "attempt": 5,
+          "status": "pool-verified",
+          "file": "horen-t2-gemini-087.json",
+          "exitCode": 0,
+          "log": "horen-t2-bc-attempt-05.log"
+        },
+        {
+          "attempt": 6,
+          "status": "pool-verified",
+          "file": "horen-t2-gemini-088.json",
+          "exitCode": 0,
+          "log": "horen-t2-bc-attempt-06.log"
+        }
+      ],
+      "successRate": "5/6",
+      "poolRejectMissingGrammar": 0,
+      "analysis": {
+        "pairs": [
+          {
+            "a": "horen-t2-gemini-084.json",
+            "b": "horen-t2-gemini-085.json",
+            "sharedFiveGrams": 9,
+            "keySigA": "g-h-c-i-a",
+            "keySigB": "i-e-h-d-c",
+            "sameKeys": false
+          },
+          {
+            "a": "horen-t2-gemini-084.json",
+            "b": "horen-t2-gemini-086.json",
+            "sharedFiveGrams": 9,
+            "keySigA": "g-h-c-i-a",
+            "keySigB": "a-b-c-e-i",
+            "sameKeys": false
+          },
+          {
+            "a": "horen-t2-gemini-084.json",
+            "b": "horen-t2-gemini-087.json",
+            "sharedFiveGrams": 4,
+            "keySigA": "g-h-c-i-a",
+            "keySigB": "c-a-e-d-i",
+            "sameKeys": false
+          },
+          {
+            "a": "horen-t2-gemini-084.json",
+            "b": "horen-t2-gemini-088.json",
+            "sharedFiveGrams": 4,
+            "keySigA": "g-h-c-i-a",
+            "keySigB": "c-a-e-d-i",
+            "sameKeys": false
+          },
+          {
+            "a": "horen-t2-gemini-085.json",
+            "b": "horen-t2-gemini-086.json",
+            "sharedFiveGrams": 1,
+            "keySigA": "i-e-h-d-c",
+            "keySigB": "a-b-c-e-i",
+            "sameKeys": false
+          },
+          {
+            "a": "horen-t2-gemini-085.json",
+            "b": "horen-t2-gemini-087.json",
+            "sharedFiveGrams": 6,
+            "keySigA": "i-e-h-d-c",
+            "keySigB": "c-a-e-d-i",
+            "sameKeys": false
+          },
+          {
+            "a": "horen-t2-gemini-085.json",
+            "b": "horen-t2-gemini-088.json",
+            "sharedFiveGrams": 1,
+            "keySigA": "i-e-h-d-c",
+            "keySigB": "c-a-e-d-i",
+            "sameKeys": false
+          },
+          {
+            "a": "horen-t2-gemini-086.json",
+            "b": "horen-t2-gemini-087.json",
+            "sharedFiveGrams": 0,
+            "keySigA": "a-b-c-e-i",
+            "keySigB": "c-a-e-d-i",
+            "sameKeys": false
+          },
+          {
+            "a": "horen-t2-gemini-086.json",
+            "b": "horen-t2-gemini-088.json",
+            "sharedFiveGrams": 1,
+            "keySigA": "a-b-c-e-i",
+            "keySigB": "c-a-e-d-i",
+            "sameKeys": false
+          },
+          {
+            "a": "horen-t2-gemini-087.json",
+            "b": "horen-t2-gemini-088.json",
+            "sharedFiveGrams": 6,
+            "keySigA": "c-a-e-d-i",
+            "keySigB": "c-a-e-d-i",
+            "sameKeys": true
+          }
+        ],
+        "uniqueKeySchedules": 4,
+        "namePairs": [
+          "Jonas+Emma",
+          "Omar+Yasmin",
+          "Niklas+Laura",
+          "Tobias+Clara",
+          "David+Julia"
+        ],
+        "uniqueNames": 5
+      }
+    }
+  },
+  "finishedAt": "2026-07-23T09:30:12.268Z"
+}

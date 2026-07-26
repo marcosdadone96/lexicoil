@@ -1,0 +1,91 @@
+{
+  "startedAt": "2026-07-23T09:19:21.210Z",
+  "attempts": 6,
+  "cellsFilter": [
+    "horen-t2"
+  ],
+  "cells": {
+    "horen-t2": {
+      "results": [
+        {
+          "attempt": 1,
+          "status": "discarded",
+          "exitCode": 1,
+          "log": "horen-t2-bc-attempt-01.log"
+        },
+        {
+          "attempt": 2,
+          "status": "discarded",
+          "exitCode": 1,
+          "log": "horen-t2-bc-attempt-02.log"
+        },
+        {
+          "attempt": 3,
+          "status": "pool-verified",
+          "file": "horen-t2-gemini-080.json",
+          "exitCode": 0,
+          "log": "horen-t2-bc-attempt-03.log"
+        },
+        {
+          "attempt": 4,
+          "status": "pool-verified",
+          "file": "horen-t2-gemini-081.json",
+          "exitCode": 0,
+          "log": "horen-t2-bc-attempt-04.log"
+        },
+        {
+          "attempt": 5,
+          "status": "pool-verified",
+          "file": "horen-t2-gemini-082.json",
+          "exitCode": 0,
+          "log": "horen-t2-bc-attempt-05.log"
+        },
+        {
+          "attempt": 6,
+          "status": "pool-reject",
+          "file": "horen-t2-gemini-083.json",
+          "exitCode": 0,
+          "log": "horen-t2-bc-attempt-06.log"
+        }
+      ],
+      "successRate": "3/6",
+      "poolRejectMissingGrammar": 1,
+      "analysis": {
+        "pairs": [
+          {
+            "a": "horen-t2-gemini-080.json",
+            "b": "horen-t2-gemini-081.json",
+            "sharedFiveGrams": 2,
+            "keySigA": "e-c-d-b-f",
+            "keySigB": "d-b-f-h-g",
+            "sameKeys": false
+          },
+          {
+            "a": "horen-t2-gemini-080.json",
+            "b": "horen-t2-gemini-082.json",
+            "sharedFiveGrams": 5,
+            "keySigA": "e-c-d-b-f",
+            "keySigB": "f-g-b-h-c",
+            "sameKeys": false
+          },
+          {
+            "a": "horen-t2-gemini-081.json",
+            "b": "horen-t2-gemini-082.json",
+            "sharedFiveGrams": 5,
+            "keySigA": "d-b-f-h-g",
+            "keySigB": "f-g-b-h-c",
+            "sameKeys": false
+          }
+        ],
+        "uniqueKeySchedules": 3,
+        "namePairs": [
+          "Paula+Finn",
+          "Lea+Noah",
+          "Mia+Felix"
+        ],
+        "uniqueNames": 3
+      }
+    }
+  },
+  "finishedAt": "2026-07-23T09:24:50.089Z"
+}

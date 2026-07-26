@@ -10,7 +10,7 @@ import { detectT4DebateTopic, detectT5Subtype } from './lesenSubtypeRotation.mjs
 const require = createRequire(import.meta.url);
 const { normalizeB1Topic } = require(path.join(ROOT, 'js/data/b1Topics.js'));
 
-function normTitle(t) {
+export function normTitle(t) {
   return String(t || '')
     .toLowerCase()
     .normalize('NFD')

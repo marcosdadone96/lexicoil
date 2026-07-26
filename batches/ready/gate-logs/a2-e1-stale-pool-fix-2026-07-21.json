@@ -1,0 +1,57 @@
+{
+  "at": "2026-07-21T11:24:15.323Z",
+  "diagnosis": {
+    "q20": "STALE IN POOL SOURCE lesen-t4-cur-education.json (not cache-only)",
+    "schreibenT2": "STALE IN POOL SOURCE schreiben-cur-education.json (bank had fix, pool never updated)",
+    "schreibenWords": "STALE IN POOL SOURCE schreiben-cur-education.json (B1 template \"80 Wörter\" never adapted)",
+    "assembledExam": "assembled-exam-a2-verified-e1.json mirrored stale pool at assemble time"
+  },
+  "fixes": [
+    {
+      "file": "lesen-t4-cur-education.json",
+      "before": "X",
+      "after": "f",
+      "location": "C:\\Users\\marco\\Desktop\\MDR\\lexiloop\\batches\\ready\\pool-verified\\A2\\lesen-t4-cur-education.json"
+    },
+    {
+      "file": "schreiben-cur-education.json",
+      "before": {
+        "t1Words": "80",
+        "t2Topic": "forum-lärm",
+        "t2Words": "80"
+      },
+      "after": {
+        "t1Words": "20–30",
+        "t2Topic": "chef-email",
+        "t2Words": "30–40"
+      },
+      "location": "C:\\Users\\marco\\Desktop\\MDR\\lexiloop\\batches\\ready\\pool-verified\\A2\\schreiben-cur-education.json"
+    }
+  ],
+  "verify": {
+    "q20Correct": "f",
+    "schreibenT2HasForum": false,
+    "schreibenT2HasChef": true,
+    "schreibenT1Words": {
+      "instruction": "Dein Freund/Deine Freundin sucht eine neue Wohnung. Du hast einen tollen Wohnungstipp für ihn/sie. Schreib eine kurze E-Mail (20–30 Wörter) mit 3 Informationen: Wo ist die Wohnung? Wie viele Zimmer? Warum ist sie gut?",
+      "minWords": 20,
+      "maxWords": 30
+    },
+    "schreibenT2Words": {
+      "instruction": "Ihr Chef lädt Sie zu einer Informationsveranstaltung ein. Schreiben Sie eine E-Mail (30–40 Wörter) an Ihren Chef. Schreiben Sie zu drei Punkten:\n• Bedanken Sie sich für die Einladung\n• Sagen Sie, dass Sie kommen und eine Kollegin mitbringen\n• Fragen Sie nach der genauen Adresse",
+      "minWords": 30,
+      "maxWords": 40
+    },
+    "gate1Ok": true
+  },
+  "publish": {
+    "published": [
+      1
+    ],
+    "overlay": "C:\\Users\\marco\\Desktop\\MDR\\lexiloop\\batches\\ready\\gate-logs\\verified-publish-overlay-1784633055709.json",
+    "liveCount": 1,
+    "liveExams": [
+      "official-de-A2-e1 (slot 1)"
+    ]
+  }
+}

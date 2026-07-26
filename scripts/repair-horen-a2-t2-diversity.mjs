@@ -58,7 +58,7 @@ const THEMES = {
       'Sara: Donnerstag gehe ich mit Kollegen ins Café.\n' +
       'Felix: Freitag mache ich Überstunden und bleibe länger.\n' +
       'Sara: Am Freitag kaufe ich Geschenke für meine Familie.',
-    answers: { Montag: 'g', Dienstag: 'b', Mittwoch: 'c', Donnerstag: 'c', Freitag: 'h' },
+    answers: { Montag: 'g', Dienstag: 'b', Mittwoch: 'c', Donnerstag: 'h', Freitag: 'd' },
   },
   society: {
     passageId: 'de-a2-p-horen-t2-society-pic01',
@@ -76,7 +76,7 @@ const THEMES = {
       'Julia: Donnerstag lerne ich neue Leute im Sprachcafé kennen.\n' +
       'Paul: Freitag gehe ich auf ein Konzert in der Stadt.\n' +
       'Julia: Am Freitagabend schaue ich einen Film zu Hause.',
-    answers: { Montag: 'g', Dienstag: 'c', Mittwoch: 'f', Donnerstag: 'a', Freitag: 'f' },
+    answers: { Montag: 'g', Dienstag: 'c', Mittwoch: 'i', Donnerstag: 'a', Freitag: 'f' },
   },
   education: {
     passageId: 'de-a2-p-horen-t2-education-pic01',
@@ -94,7 +94,7 @@ const THEMES = {
       'Nina: Donnerstag kaufe ich Bücher für den Kurs.\n' +
       'Lukas: Freitag mache ich eine Präsentation in der Klasse.\n' +
       'Nina: Am Freitagabend lese ich ein Buch auf Deutsch.',
-    answers: { Montag: 'b', Dienstag: 'g', Mittwoch: 'e', Donnerstag: 'g', Freitag: 'g' },
+    answers: { Montag: 'b', Dienstag: 'c', Mittwoch: 'e', Donnerstag: 'h', Freitag: 'g' },
   },
 };
 

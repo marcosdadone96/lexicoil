@@ -53,12 +53,22 @@
   }
 
   async function applyCascadeHit(hit) {
-    const curatedLibrary =
-      hit.source === 'library' &&
-      typeof LevelAvailability !== 'undefined' &&
-      typeof LevelAvailability.isCuratedOnlyLevel === 'function' &&
-      LevelAvailability.isCuratedOnlyLevel(S.subject, S.level);
-    if (!curatedLibrary && typeof commitExamQuota === 'function') await commitExamQuota();
+    const chargeQuota =
+      (typeof window.commitExamQuota === 'function' || typeof commitExamQuota === 'function') &&
+      (typeof shouldChargeStandardExamQuota === 'function'
+        ? shouldChargeStandardExamQuota(hit)
+        : false);
+    if (chargeQuota) {
+      const commit = window.commitExamQuota || commitExamQuota;
+      await commit();
+      if (typeof refreshQuotaFromServer === 'function') {
+        try {
+          await refreshQuotaFromServer();
+        } catch (_) {
+          /* non-fatal */
+        }
+      }
+    }
     S.examData = hit.examData;
     if (hit.topic) S.examData.topic = hit.topic;
     if (hit.poolSource) {
@@ -67,6 +77,7 @@
       if (hit.provenance) S.examData.provenance = hit.provenance;
     }
     S.examSource = hit.source;
+    if (typeof assignSavedExamIdentity === 'function') assignSavedExamIdentity(S.examData);
   }
 
   async function runAiExamPath() {

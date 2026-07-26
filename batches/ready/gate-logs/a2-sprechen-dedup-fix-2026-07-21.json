@@ -1,0 +1,36 @@
+{
+  "at": "2026-07-21T12:25:00.000Z",
+  "issue": "Sprechen A2 consigna duplicated in UI (off-instr + Punkte zum Besprechen)",
+  "rootCause": {
+    "renderPath": "published mode (LEXICOIL_EXAM_SOURCE=published) → PublishedExamAdapter.applySprechenSnapshot",
+    "mechanism": "parseSprechenBriefing returned bullets:[] for A2 (no B1 split markers), then parseSprechenPoints fallback split every line into part.points; briefingForPart then rendered intro=full + bullets=explicit (line-split duplicate)",
+    "dataNote": "instruction/task/question identical in snapshots — not root cause alone; B1 fix in sprechenBriefing.js was never extended to A2 formats (Karten/Karte/agendas)"
+  },
+  "fix": {
+    "files": [
+      "js/engine/sprechenBriefing.js — isA2GoetheSprechen, A2-aware parse/briefing, enrichSprechenExamPart",
+      "js/data/publishedExamAdapter.js — applySprechenSnapshot uses enrichSprechenExamPart, no line-split points for A2",
+      "scripts/audit-pass-2.mjs — partRecordToExamPart sprechen uses enrichSprechenExamPart",
+      "index.html — sprechenBriefing.js?v=3 cache bust"
+    ],
+    "tests": "scripts/lib/__tests__/sprechenBriefingA2Render.test.mjs — 12/12 pass"
+  },
+  "renderVerify": {
+    "publishedDoc": "official-de-A2-e1.json",
+    "T1": { "offInstr": 1, "punkteList": false },
+    "T2": { "offInstr": 1, "punkteList": false },
+    "T3": { "offInstr": 1, "punkteList": false }
+  },
+  "schreibenScan": {
+    "files": 4,
+    "pattern": "instruction===task===question in pool snapshots (latent triple)",
+    "visualRisk": "none — renderGoetheSchreibenPart shows part.task only once",
+    "teile": 8
+  },
+  "sprechenScan": {
+    "files": 4,
+    "teile": 12,
+    "pointsAfterEnrich": 0,
+    "situationSet": true
+  }
+}

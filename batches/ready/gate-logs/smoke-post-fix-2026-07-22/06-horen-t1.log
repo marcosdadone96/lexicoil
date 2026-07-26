@@ -1,0 +1,39 @@
+
+Generador horen (de/B1) · gemini · gemini-2.5-flash · T1 × 1
+Palabras objetivo por parte: 5 (--word-count)
+Cuota Gemini: max 45 llamadas · pausa ≥6000ms · fix-retries=0 · api-retries=1
+Salida: batches/generated/ (solo pasa formato + calidad pedagógica)
+Tema: Umwelt (rotación)
+
+── horen T1 · horen-t1-gemini-049.json ──
+Proveedor: gemini · Palabras (5): nachhaltigkeit, aufgabe, situation, aktuell, direkt
+Modelo: gemini-2.5-flash · max_output_tokens=16384
+Llamada API 1/45 · $0.000 acumulado · gemini-2.5-flash
+Validando formato…
+Comprobando calidad pedagógica…
+  [Q4 audit-only] 2 topic_mismatch (no block):
+    · passage:gen-p-h1-09ebbfd4-s2 topicTag «Umwelt» sin soporte léxico en el contenido (tag score=0, ningún tema alternativo con hits; hits={})
+    · passage:gen-p-h1-09ebbfd4-s4 topicTag «Umwelt» no encaja con contenido (detectado «Verkehr» score=3 vs tag score=0; hits={"Verkehr":3})
+  [Q3 audit-only] date_weekday_mismatch ×4:
+    · passages[gen-p-h1-09ebbfd4-s1].text: «am kommenden Samstag, den 18. Mai» — Samstag no coincide con 18. Mai 2026 (cae en Montag)
+    · passages[gen-p-h1-09ebbfd4-s2].text: «am Donnerstag, dem 23. Mai» — Donnerstag no coincide con 23. Mai 2026 (cae en Samstag)
+    · passages[gen-p-h1-09ebbfd4-s4].text: «Montag, dem 20. Mai» — Montag no coincide con 20. Mai 2026 (cae en Mittwoch)
+    · questions[0].explanation: «am kommenden Samstag, dem 18. Mai» — Samstag no coincide con 18. Mai 2026 (cae en Montag)
+  [LT advisory] skipped (LT down: fetch failed)
+Calidad Hören T1: OK ✅ (estimación ~100%)
+Audit-pass-2 BLOQUEADO: [IMPORTANT][CHK-4] Balance: todos los ítems tienen la misma respuesta. Dist: {"falsch":5}
+
+── batches/generated/B1/horen-t1-gemini-049.json · DESCARTADO · 1 llamadas · $0.022 total ──
+
+══ Resumen generador horen ══
+Proveedor: gemini · Modelo: gemini-2.5-flash
+Intentos totales: 1
+Partes guardadas (formato + calidad OK): 0
+Partes descartadas: 1
+Llamadas API Gemini: 1/45
+Por parte (guardadas / descartadas · intentos):
+  T1: 0 guardadas, 1 descartadas, 1 intentos
+
+Balance: todos los ítems tienen la misma respuesta. Dist: {"falsch":5}
+Balance R/F o Ja/Nein: "falsch"=100% fuera de rango 15–85%. Dist: {"falsch":5}
+horen-1: bloque R/F desbalanceado (0R/5F = 100% una respuesta). Máx 70%.

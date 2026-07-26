@@ -8,6 +8,8 @@ import {
 import { reinforceVocabOptionalBlock } from './userVocabPrompt.mjs';
 import { buildExcludedPremisesPromptBlock } from './excludedPremises.mjs';
 import { buildHorenT2OpeningsPromptBlock } from './horenOpeningsBank.mjs';
+import { buildHorenT2ActivitySchedulePromptBlock } from './horenT2ActivityScheduleBank.mjs';
+import { buildDialogueNamesPromptBlock } from './dialogueNamesBank.mjs';
 import { buildHorenT1OpeningsPromptBlock } from './horenT1OpeningsBank.mjs';
 import { buildHorenT1NamesPromptBlock } from './horenT1NamesBank.mjs';
 import { buildHorenPremiseExcludePromptBlock } from './horenPremiseDedup.mjs';
@@ -325,10 +327,10 @@ function checklistBlock(module, teil, level = 'B1') {
   if (module === 'horen' && t === 2 && lv === 'A2') {
     return (
       common +
-      `- 1 passage diálogo (2 hablantes «Name:») + pictures[9] en el passage (banco a–i con icon+label).\n` +
-      `- 5 preguntas matching: enunciado = Montag, Dienstag, Mittwoch, Donnerstag, Freitag.\n` +
-      `- SIN options en preguntas; correct = letra a–i minúscula; 5 letras distintas.\n` +
-      `- PROHIBIDO monólogo (eso es B1 T2, no A2).\n`
+      `- 1 passage diálogo (2 hablantes «Name:») + pictures[9] en el passage (banco estándar a–i: Fahrrad, Deutschkurs, Freunde, Sport, Museum, Kino, Lernen, Einkaufen, Kochen).\n` +
+      `- 5 preguntas matching: enunciado = «Was macht {Name} am {Montag|Dienstag|Mittwoch|Donnerstag|Freitag}?» (hablante + día obligatorios).\n` +
+      `- correct = letra a–i de la actividad que ESE hablante dice hacer ESE día; 5 letras distintas.\n` +
+      `- SIN options en preguntas; PROHIBIDO monólogo (eso es B1 T2).\n`
     );
   }
   if (module === 'horen' && t === 2) {
@@ -504,16 +506,40 @@ export function buildExamVariableSuffix(module, teil, words, options = {}) {
     suffix += vocab;
     if (Number(teil) === 1) {
       suffix += buildHorenT1OpeningsPromptBlock();
-      suffix += buildHorenT1NamesPromptBlock();
+      if (options.dialogueNamePairs?.length) {
+        suffix += buildDialogueNamesPromptBlock({
+          pairs: options.dialogueNamePairs,
+          count: options.dialogueNamePairs.length,
+        });
+      } else {
+        suffix += buildHorenT1NamesPromptBlock();
+      }
       suffix += buildHorenPremiseExcludePromptBlock(1);
     }
     if (Number(teil) === 2) {
-      suffix += buildHorenT2OpeningsPromptBlock();
+      suffix += buildHorenT2OpeningsPromptBlock({
+        mandatedOpening: options.horenT2Opening || null,
+      });
+      if (options.horenT2ActivitySchedule) {
+        suffix += buildHorenT2ActivitySchedulePromptBlock({
+          mandatedSchedule: options.horenT2ActivitySchedule,
+        });
+      }
+      if (options.dialogueNamePairs?.length === 1) {
+        suffix += buildDialogueNamesPromptBlock({ pairs: options.dialogueNamePairs, count: 1 });
+      }
       suffix += buildHorenPremiseExcludePromptBlock(2);
     }
     if (Number(teil) === 3) {
       suffix += buildHorenT3OpeningsPromptBlock();
-      suffix += buildHorenT3NamesPromptBlock();
+      if (options.dialogueNamePairs?.length) {
+        suffix += buildDialogueNamesPromptBlock({
+          pairs: options.dialogueNamePairs,
+          count: options.dialogueNamePairs.length,
+        });
+      } else {
+        suffix += buildHorenT3NamesPromptBlock();
+      }
     }
     if (Number(teil) === 4) suffix += buildHorenT4OpeningsPromptBlock();
   } else {

@@ -520,6 +520,18 @@ async function submitExam(){
   const d=S.examData;if(!d)return;
   const isDE=d.lang==='de';
   const isDemo=!!d.demo||!!S.isDemo;
+  let serverTimerResult=null;
+  if(isOfficialMode()&&!isDemo&&typeof finishOfficialExamTimer==='function'&&S.officialTimerSession?.timerSessionId){
+    const examSavedId=d._savedId||d._flightId;
+    if(examSavedId){
+      try{
+        serverTimerResult=await finishOfficialExamTimer({
+          examSavedId,
+          timerSessionId:S.officialTimerSession.timerSessionId,
+        });
+      }catch(_){}
+    }
+  }
   const writeAns=document.getElementById('writeAns')?.value.trim()||'';
   const speakAns=document.getElementById('speakAns')?.value.trim()||'';
   const MG=typeof ModuleGrading!=='undefined'?ModuleGrading:null;
@@ -654,14 +666,15 @@ async function submitExam(){
   }
   const summary=MG?MG.summarizeExam(moduleResults,{modular,passPercent,legacyCorrect,legacyTotal,blueprint,gradingScope,exam:d}):{legacyScore:legacyTotal?Math.round(legacyCorrect/legacyTotal*100):0,modulesPassed:0,modulesEvaluated:0,totalModules:0,globalPassed:false,informativeScorePct:null,passPercent,gradingScope:'legacy'};
   const score=MG?MG.computeDisplayScore(summary,moduleResults):(wholeExam?(summary.legacyScore??0):modular?(summary.informativeScorePct??summary.legacyScore):summary.legacyScore);
+  const displayScore=Number.isFinite(Number(score))?Math.round(Number(score)):0;
   if(typeof LcAnalytics!=='undefined'&&!isDemo&&!S.quickMod){
-    LcAnalytics.trackExamCompleted(d.lang||S.subject,d.level||S.level,score);
+    LcAnalytics.trackExamCompleted(d.lang||S.subject,d.level||S.level,displayScore);
   }
   const moduleScores=MG?MG.legacyFlatScores(moduleResults):{};
   const correction=buildCorrection(d,isDE,writeAns,speakAns,passPercent);
   let savedWords=[...(S.examSavedWords||[])];
   S.lastMarkedWords=S.activeSession?.markedWords?[...S.activeSession.markedWords]:[];
-  const entry={id:Date.now(),date:new Date().toLocaleDateString(),topic:d.topic,level:d.level,lang:d.lang,score,moduleScores,moduleResults,passPercentPerModule:passPercent,modulesPassed:summary.modulesPassed,modulesEvaluated:summary.modulesEvaluated,totalModules:summary.totalModules,globalPassed:summary.globalPassed,modularGrading:modular,gradingScope:summary.gradingScope||gradingScope,wholeExamGrading:wholeExam?{writtenPoints:summary.writtenPoints,writtenMax:summary.writtenMax,writtenMin:summary.writtenMin,speakingPoints:summary.speakingPoints,speakingMax:summary.speakingMax,speakingMin:summary.speakingMin}:null,mode:normalizeMode(S.mode),demo:!!d.demo,guidedDemo:!!d.guidedDemo,correction,savedWords,markedWords:S.lastMarkedWords.map(m=>m.word),examSource:S.examSource||null,poolId:S.examData?.poolId||null,invalidItems:d._invalidItems||[],writingEvals:d._writingEvals||null,speakingEvals:speakingEvals||null,productionEvalFromCache:!!d._productionEvalFromCache};
+  const entry={id:Date.now(),date:new Date().toLocaleDateString(),topic:d.topic,level:d.level,lang:d.lang,score:displayScore,moduleScores,moduleResults,passPercentPerModule:passPercent,modulesPassed:summary.modulesPassed,modulesEvaluated:summary.modulesEvaluated,totalModules:summary.totalModules,globalPassed:summary.globalPassed,modularGrading:modular,gradingScope:summary.gradingScope||gradingScope,wholeExamGrading:wholeExam?{writtenPoints:summary.writtenPoints,writtenMax:summary.writtenMax,writtenMin:summary.writtenMin,speakingPoints:summary.speakingPoints,speakingMax:summary.speakingMax,speakingMin:summary.speakingMin}:null,mode:normalizeMode(S.mode),demo:!!d.demo,guidedDemo:!!d.guidedDemo,correction,savedWords,markedWords:S.lastMarkedWords.map(m=>m.word),examSource:S.examSource||null,poolId:S.examData?.poolId||null,invalidItems:d._invalidItems||[],writingEvals:d._writingEvals||null,speakingEvals:speakingEvals||null,productionEvalFromCache:!!d._productionEvalFromCache,serverTimeExceeded:!!serverTimerResult?.serverTimeExceeded,serverTimerValidated:!!serverTimerResult?.validated,serverElapsedSec:serverTimerResult?.serverElapsedSec??null,serverLimitSec:serverTimerResult?.serverLimitSec??null};
   if(typeof AnalyticsStore!=='undefined'){
     const goal=getActiveGoal()||S.goals.find(g=>g.id===d.goalId);
     entry.tagStats=AnalyticsStore.recordExamResult(goal,entry,d,S.answers);
@@ -685,7 +698,7 @@ async function submitExam(){
   const goal=getActiveGoal();
   const modeLbl=normalizeMode(S.mode)==='practice'?'Practice':'Official';
   const qm=S.quickMod;
-  flushOpenStudySession({type:qm?'quick':'exam',goalId:goal?.id||S.activeGoalId,label:(qm?'Quick '+qm+' · ':modeLbl+' exam · ')+(d.topic||d.level||''),score});
+  flushOpenStudySession({type:qm?'quick':'exam',goalId:goal?.id||S.activeGoalId,label:(qm?'Quick '+qm+' · ':modeLbl+' exam · ')+(d.topic||d.level||''),score:displayScore});
   const savedId=d._savedId||d._flightId;
   if(savedId){
     const si=S.savedExams.findIndex(e=>e.id===savedId);
@@ -696,7 +709,7 @@ async function submitExam(){
   }
   S._officialInProgress=null;
   clearActiveSession();
-  renderResults(score,moduleResults,d,isDE,writeAns,speakAns,entry.id,correction,speakingEvals,savedWords,S.lastMarkedWords,entry,summary);
+  renderResults(displayScore,moduleResults,d,isDE,writeAns,speakAns,entry.id,correction,speakingEvals,savedWords,S.lastMarkedWords,entry,summary);
 }
 
 function getResultsWeakModules(moduleResults,passPercent,isDE){
@@ -826,9 +839,11 @@ function renderResults(score,moduleResults,d,isDE,writeAns,speakAns,entryId,corr
     :`Official exam complete. Next time, tap words you struggle with during the exam to review them here.`;
   const invalidItems=histEntry?.invalidItems||d._invalidItems||[];
   const invalidBanner=invalidItems.length?`<div class="card" style="margin-bottom:14px;border:.5px solid rgba(255,120,80,.35);background:rgba(255,120,80,.08);padding:12px 16px"><b>${isDE?`${invalidItems.length} Frage(n) wegen Datenfehler ausgeschlossen`:`${invalidItems.length} question(s) excluded due to data error`}</b><p style="font-size:12px;color:var(--text-secondary);margin:8px 0 0;line-height:1.55">${isDE?'Diese Aufgaben wurden nicht gewertet, weil der Antwortschlüssel nicht zu den angezeigten Optionen passt.':'These items were not scored because the answer key does not match the options shown.'}</p></div>`:'';
+  const serverTimeBanner=histEntry?.serverTimeExceeded?`<div class="card" style="margin-bottom:14px;border:.5px solid rgba(255,180,60,.4);background:rgba(255,180,60,.1);padding:12px 16px"><b>⏱ ${isDE?'Offizielle Zeit überschritten':'Official time limit exceeded'}</b><p style="font-size:12px;color:var(--text-secondary);margin:8px 0 0;line-height:1.55">${isDE?'Die Server-Uhr hat die Prüfungszeit (inkl. Toleranz) überschritten. Ergebnis wird angezeigt, ist aber als außerhalb der Zeit markiert.':'Server clock exceeded the exam time limit (including grace). Your result is shown but marked as over time.'}${histEntry.serverElapsedSec!=null&&histEntry.serverLimitSec!=null?` <span style="color:var(--text-muted)">(${histEntry.serverElapsedSec}s / ${histEntry.serverLimitSec}s + grace)</span>`:''}</p></div>`:'';
   scr.innerHTML=`
     ${renderNavBackBtn('Exams')}
     ${invalidBanner}
+    ${serverTimeBanner}
     <div class="card results-hero">
       <div class="res-score ${cls}">${heroScore}</div>
       <div class="res-label">${label} — ${d.level} ${d.lang==='de'?'🇩🇪':'🇬🇧'} ${esc(d.topic)}</div>
@@ -858,7 +873,7 @@ function renderResults(score,moduleResults,d,isDE,writeAns,speakAns,entryId,corr
       <button class="btn-sm accent" onclick="saveCurrentExam()">Save exam</button>
       <button class="btn-sm" onclick="shareExamUrl()">Copy exam link</button>
       ${isPracticeMode()&&savedWords.length?`<button class="btn-sm" onclick="goFlashcards()">Review ${savedWords.length} session words</button>`:''}
-      <button class="btn-sm" onclick="downloadCorrectionPdf(S.lastResults.score,S.lastResults.mods,S.lastResults.d,S.lastResults.isDE,S.lastResults.correction,S.lastResults.speakingEvals)">Download PDF${typeof isPro==='function'&&!isPro()?' (Pro)':''}</button>
+      <button class="btn-sm" onclick="downloadCorrectionPdf(S.lastResults.score,S.lastResults.mods,S.lastResults.d,S.lastResults.isDE,S.lastResults.correction,S.lastResults.speakingEvals)">Download PDF${typeof isPro==='function'&&!isPro()?' (Pro)':(typeof isPro==='function'&&isPro()&&typeof aiCreditCostSuffix==='function'&&!S.lastResults?.correction?.grammarCoaching?aiCreditCostSuffix('grammar_coaching'):'')}</button>
       <button class="btn-sm" onclick="goHistory()">View progress</button>
       <button class="btn-sm" onclick="goHome()">Dashboard</button>
     </div>`;

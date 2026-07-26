@@ -12,6 +12,8 @@ import { fileURLToPath } from 'node:url';
 import { detectTopic, tagBatchWithTopic } from './topicRotation.mjs';
 import { LEGACY_TOPIC_SLUGS } from './qualityGates/topicFamilies.mjs';
 import { normalizeB1Topic, isValidB1Topic } from './b1Topics.mjs';
+import { checkPassageContentTopic } from './qualityGates/contentTopicCheck.mjs';
+import { NEVER_NOUN_WORDS } from './capitalizeNouns.mjs';
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const require = createRequire(import.meta.url);
@@ -55,12 +57,42 @@ const STOP = new Set([
 ]);
 
 /** Finite / participle → infinitive (extends weak lemmatizer for search tags). */
+/** Broken/truncated lemmas → canonical form (ground truth cluster F). */
+const LEMMA_GROUND_TRUTH = {
+  interessanen: 'interessieren',
+  kaputen: 'kaputt',
+  direken: 'direkt',
+  hingegangen: 'hingehen',
+  handelen: 'handeln',
+  behandelen: 'behandeln',
+  weiterhi: 'weiterhin',
+  anstaten: 'anstatt',
+  änderen: 'ändern',
+  prägnanen: 'prägnant',
+  sophi: 'Sophie',
+  podcaen: 'podcast',
+  kunen: 'Kunst',
+  zukunfen: 'Zukunft',
+  zeitschrifen: 'Zeitschrift',
+  informationsflün: 'Informationsflut',
+};
+
+const VALID_GRAMMAR_TAG_RE = /^g-de-b1-[a-z]+$/;
+
+export function isValidGrammarTag(tag) {
+  return VALID_GRAMMAR_TAG_RE.test(String(tag || '').trim());
+}
+
+export function sanitizeGrammarTags(tags) {
+  return (tags || []).filter(isValidGrammarTag);
+}
+
 const FINITE_TO_INF = {
   findet: 'finden', findest: 'finden', finde: 'finden', fand: 'finden', fanden: 'finden', gefunden: 'finden',
   braucht: 'brauchen', brauchst: 'brauchen', brauche: 'brauchen', gebraucht: 'brauchen',
   hilft: 'helfen', hilfst: 'helfen', helfe: 'helfen', half: 'helfen', geholfen: 'helfen',
   macht: 'machen', machst: 'machen', mache: 'machen', gemacht: 'machen',
-  geht: 'gehen', gehst: 'gehen', gehe: 'gehen', ging: 'gehen', gingen: 'gehen', gegangen: 'gehen',
+  geht: 'gehen', gehst: 'gehen', gehe: 'gehen', ging: 'gehen', gingen: 'gehen', gegangen: 'gehen', hingegangen: 'hingehen',
   kommt: 'kommen', kommst: 'kommen', komme: 'kommen', kam: 'kommen', kamen: 'kommen', gekommen: 'kommen',
   nimmt: 'nehmen', nimmst: 'nehmen', nehme: 'nehmen', nahm: 'nehmen', genommen: 'nehmen',
   gibt: 'geben', gibst: 'geben', gebe: 'geben', gab: 'geben', gegeben: 'geben',
@@ -122,6 +154,9 @@ const FINITE_TO_INF = {
   angefangen: 'anfangen',
   gegessen: 'essen', getrunken: 'trinken',
   abgestellt: 'abstellen',
+  fördert: 'fördern', foerdert: 'fördern', gefördert: 'fördern',
+  erweitert: 'erweitern', erweiterst: 'erweitern',
+  verhindert: 'verhindern', verhinderst: 'verhindern',
 };
 
 /** Comparatives → base (then often STOP-filtered as too generic). */
@@ -182,6 +217,9 @@ const KNOWN_ADVERB_LEMMAS = new Set([
   'frühestens',
   'fruehestens',
   'bestens',
+  'weiterhin',
+  'anstatt',
+  'direkt',
 ]);
 
 const ADVERB_CANON = new Map([
@@ -190,7 +228,20 @@ const ADVERB_CANON = new Map([
   ['fruehestens', 'frühestens'],
 ]);
 
-export const VOCAB_TAGS_NORMALIZE_VERSION = 'v2.3.12-beispielfragen-stem-2026-07-12';
+export const VOCAB_TAGS_NORMALIZE_VERSION = 'v2.3.16-b1-validated-verb-adj-lemma-2026-07-24';
+
+/** Spurious «-eren» / «-chen» style artifacts from blind -t→-en heuristics. */
+export function isVocabLemmaCorruption(original, lemma, b1Set) {
+  const o = String(original || '').toLowerCase();
+  const l = String(lemma || '').toLowerCase();
+  if (!l || l === o) return false;
+  if (b1Set?.has(o) && !b1Set.has(l)) return true;
+  if (/eren$/.test(l) && b1Set?.has(`${l.slice(0, -1)}n`)) return true;
+  if (o.endsWith('t') && l === `${o.slice(0, -1)}en` && !b1Set?.has(l)) return true;
+  if (o.endsWith('t') && l === `${o.slice(0, -1)}en` && !b1Set?.has(l) && looksLikeUninflectedAdjective(o)) return true;
+  if (/een$/.test(l) && !b1Set?.has(l)) return true;
+  return false;
+}
 
 /**
  * High-frequency light / support verbs — demoted in ranking.
@@ -461,6 +512,34 @@ export const GRAMMAR_TAG_MIN_COUNT = {
   'g-de-b1-adjektivdeklination': 3, // single article+adj is noise
 };
 
+/** Hören A2 T2 matching — single-sentence explanations (Cause E gap). */
+export const GRAMMAR_TAG_MIN_COUNT_A2_MATCHING = {
+  'g-de-b1-nebensatz': 1,
+  'g-de-b1-relativ': 1,
+  'g-de-b1-modalverben': 1,
+  'g-de-b1-dativ': 1,
+  'g-de-b1-adjektivdeklination': 2,
+};
+
+export function isA2MatchingQuestion(q, batchLevel = 'B1') {
+  const level = String(q?.level || batchLevel || 'B1').toUpperCase();
+  if (level !== 'A2') return false;
+  const type = String(q?.type || '').toLowerCase();
+  const letter = String(q?.correctAnswer ?? q?.correct ?? '').trim();
+  return (
+    type === 'matching' ||
+    q?._keyOnlyMatch === true ||
+    (!(q?.options || []).length && /^[a-i]$/i.test(letter))
+  );
+}
+
+function grammarMinCount(tagId, opts = {}) {
+  if (opts.a2Matching && GRAMMAR_TAG_MIN_COUNT_A2_MATCHING[tagId] != null) {
+    return GRAMMAR_TAG_MIN_COUNT_A2_MATCHING[tagId];
+  }
+  return GRAMMAR_TAG_MIN_COUNT[tagId] ?? 1;
+}
+
 let _b1Set = null;
 function loadB1LemmaSet() {
   if (_b1Set) return _b1Set;
@@ -554,77 +633,71 @@ function looksLikeNounMorphology(w) {
   return false;
 }
 
+function looksLikeUninflectedAdjective(w) {
+  const low = String(w || '').toLowerCase();
+  if (!low || low.length < 4) return false;
+  if (KNOWN_ADJECTIVE_LEMMAS.has(low) || KNOWN_ADVERB_LEMMAS.has(low)) return true;
+  if (matchKnownAdjective(low)) return true;
+  if (looksLikeInfinitive(low)) return false;
+  if (looksLikeNounMorphology(low)) return false;
+  // Predicative / base adjectives and participles used adjectivally (schlecht, bekannt, …)
+  if (/(?:lich|ig|sam|bar|ant|ent|isch|los|frei|voll|leer|fertig|kaputt|schlecht|recht|falsch|schnell|wichtig|möglich|bekannt|entspannt|interessant|echt|icht|angt|ucht|cht|igt|rot|blau|grün|weiß|schwarz|gelb|hart|weich|neu|alt|groß|klein|lang|kurz|hoch|tief|gut|besser|best|direkt|robust|bewusst)t$/i.test(low)) {
+    return true;
+  }
+  if (/^(?:schlecht|schlecht|direkt|wichtig|möglich|falsch|richtig|bekannt|kaputt)$/i.test(low)) return true;
+  return false;
+}
+
 /**
- * Finite verb / weak stem → infinitive when possible.
- * Prefer explicit map, then B1-backed heuristics; never emit raw 3sg -t forms.
+ * Map 3sg/2sg finite surface → infinitive ONLY when validated against B1 lemma list.
  */
+function resolveFiniteVerbToInfinitive(w, b1Set) {
+  const low = String(w || '').toLowerCase();
+  if (!low || looksLikeInfinitive(low)) return looksLikeInfinitive(low) ? low : null;
+  if (FINITE_TO_INF[low]) return FINITE_TO_INF[low];
+  if (looksLikeUninflectedAdjective(low)) return null;
+
+  if (low.endsWith('st') && !low.endsWith('est') && !low.endsWith('ist') && low.length >= 5) {
+    const isSstOrSzt = low.endsWith('ßt') || (low.length >= 6 && low[low.length - 3] === 's');
+    const cand = isSstOrSzt ? `${low.slice(0, -1)}en` : `${low.slice(0, -2)}en`;
+    return b1Set.has(cand) ? cand : null;
+  }
+
+  if (!low.endsWith('t') || low.length < 5) return null;
+  if (looksLikeNounMorphology(low)) return null;
+  if (/[nlr]t$/i.test(low) && looksLikeUninflectedAdjective(low)) return null;
+
+  if (low.startsWith('ge') && low.length >= 6) {
+    const lexical = matchLexicalGeVerb(low);
+    if (lexical) return lexical;
+    let stem = low.slice(2, -1);
+    if (stem.endsWith('e') && stem.length >= 4) stem = stem.slice(0, -1);
+    const cand = `${stem}en`;
+    return b1Set.has(cand) ? cand : null;
+  }
+
+  const stem = low.slice(0, -1);
+  const candErn = `${stem}n`;
+  const candEn = `${stem}en`;
+  if (b1Set.has(candErn)) return candErn;
+  if (b1Set.has(candEn)) return candEn;
+  const lexical = matchLexicalGeVerb(low);
+  if (lexical) return lexical;
+  return null;
+}
+
 function toVerbInfinitive(raw, b1Set) {
   const w = String(raw || '').toLowerCase();
   if (!w) return null;
-  if (FINITE_TO_INF[w]) return FINITE_TO_INF[w];
-  if (looksLikeInfinitive(w)) return w;
-
-  // *lässt → *lassen before -sst heuristic (hinterlässt↛hinterlässen)
-  if (w.endsWith('lässt') && w.length >= 5) return `${w.slice(0, -5)}lassen`;
-  if (w.endsWith('laesst') && w.length >= 6) return `${w.slice(0, -6)}lassen`;
-
-  // Known non-verbs: never invent infinitives (robust→robuen)
-  if (KNOWN_ADJECTIVE_LEMMAS.has(w) || KNOWN_ADVERB_LEMMAS.has(w)) return null;
-
-  // 2sg -st → -en (brauchst → brauchen)
-  // Exception: …sst / …ßt — final "st" is stem-s + 3sg -t, not 2sg -st
-  //   vermisst → vermissen (NOT vermisen); genießt → genießen
-  if (w.length >= 5 && w.endsWith('st') && !w.endsWith('est') && !w.endsWith('ist')) {
-    const isSstOrSzt = w.endsWith('ßt') || (w.length >= 6 && w[w.length - 3] === 's');
-    if (isSstOrSzt) {
-      const cand = `${w.slice(0, -1)}en`; // strip only final -t
-      if (b1Set.has(cand) || FINITE_TO_INF[w] || looksLikeInfinitive(cand)) return cand;
-    } else {
-      const cand = `${w.slice(0, -2)}en`;
-      if (b1Set.has(cand) || FINITE_TO_INF[w] || looksLikeInfinitive(cand)) return cand;
-    }
+  if (w.endsWith('lässt') && w.length >= 5) {
+    const cand = `${w.slice(0, -5)}lassen`;
+    return b1Set.has(cand) ? cand : (FINITE_TO_INF[w] || null);
   }
-  // 3sg/participle-ish -t (findet → finden), skip noun-like and adj-participle -nt/-lt/-rt
-  if (
-    w.length >= 5 &&
-    w.endsWith('t') &&
-    !w.endsWith('eit') &&
-    !w.endsWith('keit') &&
-    !w.endsWith('schaft') &&
-    !w.endsWith('ung') &&
-    !w.endsWith('aft') &&
-    !w.endsWith('icht') &&
-    !w.endsWith('acht') &&
-    !/[nlr]t$/i.test(w) && // entspannt, bekannt, ...
-    !looksLikeNounMorphology(w)
-  ) {
-    // Past participle ge-…t FIRST (before blind -t→-en → gezeigen).
-    // Lexical ge- stems stay intact via matchLexicalGeVerb.
-    if (w.startsWith('ge') && w.length >= 6) {
-      const lexical = matchLexicalGeVerb(w);
-      if (lexical) return lexical;
-      // gestartet → starten (NOT starteen): strip ge- + final -t, drop trailing -e on stem
-      let stem = w.slice(2, -1); // gestartet → starte; gezeigt → zeig
-      if (stem.endsWith('e') && stem.length >= 4) stem = stem.slice(0, -1); // start
-      const cand2 = `${stem}en`;
-      // Accept zeigen even when older looksLikeInfinitive false-negatived /igen$/
-      if (
-        b1Set.has(cand2) ||
-        looksLikeInfinitive(cand2) ||
-        FINITE_TO_INF[w] ||
-        (cand2.length >= 5 && /(?:en|eln|ern)$/.test(cand2) && !cand2.startsWith('ge'))
-      ) {
-        return cand2;
-      }
-    }
-    const cand = `${w.slice(0, -1)}en`;
-    if (b1Set.has(cand) || Object.values(FINITE_TO_INF).includes(cand)) return cand;
-    // Lexical ge- stem (gewährleistet→gewährleisten, not währleisten)
-    const lexical = matchLexicalGeVerb(w);
-    if (lexical) return lexical;
-    if (cand.startsWith('ge') && LEXICAL_GE_VERBS.has(cand)) return cand;
+  if (w.endsWith('laesst') && w.length >= 6) {
+    const cand = `${w.slice(0, -6)}lassen`;
+    return b1Set.has(cand) ? cand : null;
   }
-  return null;
+  return resolveFiniteVerbToInfinitive(w, b1Set);
 }
 
 /**
@@ -698,15 +771,24 @@ function lemmaOf(token, b1Set, nounHints) {
   let low = String(token || '').toLowerCase();
   if (!low || STOP.has(low)) return null;
   if (low.length < 3) return null;
+  if (LEMMA_GROUND_TRUTH[low]) {
+    const canon = LEMMA_GROUND_TRUTH[low];
+    return STOP.has(canon) ? null : canon;
+  }
+
+  // Finite forms listed in B1 must still map to infinitive for vocab tags (findet→finden).
+  if (FINITE_TO_INF[low]) {
+    const inf = FINITE_TO_INF[low];
+    if (!STOP.has(inf)) return inf;
+  }
+
+  if (b1Set.has(low)) {
+    return low;
+  }
 
   // zu-separable before anything else (auszuschalten → ausschalten)
   if (isZuSeparableInfinitive(low)) {
     low = normalizeZuSeparable(low);
-  }
-
-  if (FINITE_TO_INF[low]) {
-    const inf = FINITE_TO_INF[low];
-    return STOP.has(inf) ? null : inf;
   }
   if (COMPARATIVE_TO_BASE[low]) {
     const base = COMPARATIVE_TO_BASE[low];
@@ -719,9 +801,13 @@ function lemmaOf(token, b1Set, nounHints) {
     if (hyphenLem && !STOP.has(hyphenLem)) return hyphenLem;
   }
 
-  // Known adjectives BEFORE verb heuristics (bewusst↛bewusen / robust↛robuen)
+  // Known adjectives BEFORE verb heuristics (bewusst↛bewusen / schlecht↛schlechen)
   const knownAdj = matchKnownAdjective(low);
   if (knownAdj && !STOP.has(knownAdj)) return knownAdj;
+  if (looksLikeUninflectedAdjective(low)) {
+    const base = toAdjectiveBase(low) || low;
+    if (!STOP.has(base) && !isVocabLemmaCorruption(low, base, b1Set)) return base;
+  }
 
   // Known adverbs BEFORE Lemmatizer strip (mindestens↛mindesten)
   const knownAdv = matchKnownAdverb(low);
@@ -746,18 +832,10 @@ function lemmaOf(token, b1Set, nounHints) {
     return STOP.has(low) ? null : low;
   }
 
-  // Finite verb → infinitive
+  // Finite verb → infinitive (B1-validated only)
   const asVerb = toVerbInfinitive(low, b1Set);
-  if (asVerb && asVerb !== low && !STOP.has(asVerb)) {
-    if (FINITE_TO_INF[low] || b1Set.has(asVerb) || Object.values(FINITE_TO_INF).includes(asVerb)) {
-      return asVerb;
-    }
-    // Accept heuristic infinitive when original looks finite (…t / …st)
-    if (/(?:st|t)$/.test(low) && looksLikeInfinitive(asVerb) && asVerb.length >= 5) {
-      // Reject tokenization artifacts (starteen)
-      if (/een$/.test(asVerb) && !b1Set.has(asVerb)) return null;
-      return asVerb;
-    }
+  if (asVerb && asVerb !== low && !STOP.has(asVerb) && b1Set.has(asVerb)) {
+    if (!isVocabLemmaCorruption(low, asVerb, b1Set)) return asVerb;
   }
 
   // Adjective base from surface form first (vorgesehenen → vorgesehen → STOP)
@@ -768,24 +846,54 @@ function lemmaOf(token, b1Set, nounHints) {
     return adj;
   }
 
-  // Lemmatizer as last resort — reject over-stripped results
+  // Lemmatizer as last resort — never trust output unless whitelisted (B1 list / finite map / separable)
   let lem = Lemmatizer.normalizeLemma(low, 'de');
-  if (!lem || STOP.has(lem)) return null;
+  if (!lem || STOP.has(lem)) {
+    if (FINITE_TO_INF[low]) return FINITE_TO_INF[low];
+    if (looksLikeUninflectedAdjective(low)) return toAdjectiveBase(low) || low;
+    if (looksLikeInfinitive(low)) return low;
+    return null;
+  }
   if (looksLikeInfinitive(low) && lem !== low) return low;
+
+  const lemTrusted =
+    b1Set.has(lem) ||
+    SEPARABLE_INFINITIVES.has(lem) ||
+    LEXICAL_GE_VERBS.has(lem) ||
+    Object.values(FINITE_TO_INF).includes(lem) ||
+    FINITE_TO_INF[low] === lem;
+
+  if (!lemTrusted) {
+    if (isVocabLemmaCorruption(low, lem, b1Set) || /(?:eren|chen|anen|elen)$/.test(lem)) {
+      if (FINITE_TO_INF[low]) return FINITE_TO_INF[low];
+      if (looksLikeUninflectedAdjective(low)) return toAdjectiveBase(low) || low;
+      return null;
+    }
+    // Unknown lemmatizer guess — keep safe surface forms only
+    if (looksLikeUninflectedAdjective(low)) return toAdjectiveBase(low) || low;
+    if (looksLikeInfinitive(low)) return low;
+    if (low.length >= 4 && !/(?:st|t)$/.test(low)) return low;
+    return null;
+  }
+
   // Reject catastrophic strips (lösung→loes, familie→famili)
   if (lem.length + 2 < low.length && !FINITE_TO_INF[low]) {
     if (adj && adj.length >= 4 && !STOP.has(adj)) return adj;
     if (low.length >= 4 && !/(?:st|t)$/.test(low)) return low;
   }
 
-  // Post-lemmatizer verb fix
   const again = toVerbInfinitive(lem, b1Set);
-  if (again && again !== lem && (b1Set.has(again) || Object.values(FINITE_TO_INF).includes(again))) {
+  if (again && again !== lem && b1Set.has(again)) {
     lem = again;
   }
 
   if (STOP.has(lem)) return null;
-  if (/een$/.test(lem) && !b1Set.has(lem)) return null; // starteen-class artifacts
+  if (/een$/.test(lem) && !b1Set.has(lem)) return null;
+  if (isVocabLemmaCorruption(low, lem, b1Set)) {
+    if (FINITE_TO_INF[low]) return FINITE_TO_INF[low];
+    if (looksLikeUninflectedAdjective(low)) return toAdjectiveBase(low) || low;
+    return null;
+  }
   return lem;
 }
 
@@ -831,6 +939,8 @@ export function formatVocabTag(lemma, nounHints = null) {
   if (!w) return w;
   // Collocation phrases keep mixed case from VOCAB_COLLOCATIONS
   if (w.includes(' ')) return lemma;
+  // Quantifiers / attributive adjectives — never noun-case in tags (Viele→viele)
+  if (NEVER_NOUN_WORDS.has(w) || w === 'paar') return w;
   // Verbs / separables before noun heuristic (…en nouns like Gartenpflanzen handled via hints)
   if (SEPARABLE_INFINITIVES.has(w) || looksLikeInfinitive(w)) return w;
   const hintHit =
@@ -1097,6 +1207,58 @@ export function extractVocabularyFromText(text, max = 6) {
   return out.slice(0, max);
 }
 
+/** Repair tags that are known corrupt lemma outputs (förderen→fördern, schlechen→schlecht). */
+function repairCorruptVocabTagSurface(tag) {
+  const low = String(tag || '').toLowerCase();
+  if (LEMMA_GROUND_TRUTH[low]) return LEMMA_GROUND_TRUTH[low];
+  if (low === 'schlechen') return 'schlecht';
+  if (low === 'leut') return 'Leute';
+  if (low === 'täglicht' || low === 'täglichen') return 'täglich';
+  if (low === 'beruflicht' || low === 'beruflichen') return 'beruflich';
+  if (low === 'alltäglicht' || low === 'alltäglichen') return 'alltäglich';
+  if (low === 'technischen') return 'technisch';
+  if (low === 'langen') return 'lang';
+  if (low.endsWith('ieren') && looksLikeInfinitive(low)) return low;
+  // Adjective inflection in tags (täglichen→täglich) — before bogus -chen strip (→täglicht)
+  if (low.endsWith('lichen') && low.length >= 7) {
+    const base = low.slice(0, -2);
+    if (looksLikeUninflectedAdjective(base) || looksLikeUninflectedAdjective(`${base}t`)) return base;
+  }
+  if (/eren$/.test(low) && low.length >= 6 && !low.endsWith('ieren')) {
+    const cand = `${low.slice(0, -2)}n`;
+    if (looksLikeInfinitive(cand)) return cand;
+  }
+  if (/chen$/.test(low) && !/lichen$/.test(low) && low.length >= 6) {
+    const cand = `${low.slice(0, -2)}t`;
+    if (looksLikeUninflectedAdjective(cand)) return cand;
+    const cand2 = `${low.slice(0, -4)}t`;
+    if (looksLikeUninflectedAdjective(cand2)) return cand2;
+  }
+  return null;
+}
+
+/** Re-canonicalize existing vocabularyTags — ground truth + corrupt-surface repair only. */
+function repairQuestionVocabularyTags(q, b1Set, nounHints) {
+  if (!Array.isArray(q.vocabularyTags) || !q.vocabularyTags.length) return false;
+  const next = [];
+  let changed = false;
+  for (const tag of q.vocabularyTags) {
+    const low = String(tag || '').toLowerCase();
+    const repaired = repairCorruptVocabTagSurface(tag) || (LEMMA_GROUND_TRUTH[low] ? LEMMA_GROUND_TRUTH[low] : null);
+    const out = repaired || tag;
+    const formatted = formatVocabTag(out, nounHints);
+    if (formatted.toLowerCase() !== low) changed = true;
+    if (!next.some((t) => t.toLowerCase() === formatted.toLowerCase())) next.push(formatted);
+  }
+  if (!next.length) return false;
+  if (!changed && next.length === q.vocabularyTags.length) {
+    const same = next.every((t, i) => t.toLowerCase() === String(q.vocabularyTags[i]).toLowerCase());
+    if (same) return false;
+  }
+  q.vocabularyTags = next.slice(0, 6);
+  return true;
+}
+
 /**
  * Count regex matches (always global).
  */
@@ -1223,7 +1385,7 @@ export function inferGrammarTagsFromText(primaryText, teil = 1, opts = {}) {
   const eligible = [];
   for (const id of B1_GRAMMAR_IDS) {
     const p = primaryCounts[id] || 0;
-    const min = GRAMMAR_TAG_MIN_COUNT[id] ?? 1;
+    const min = grammarMinCount(id, opts);
     // Passage-only signals never qualify
     if (p < min) continue;
     const s = secondaryCounts ? secondaryCounts[id] || 0 : 0;
@@ -1251,6 +1413,30 @@ export function inferGrammarTagsFromText(primaryText, teil = 1, opts = {}) {
   return out;
 }
 
+/**
+ * Retrieval gate safety net: Hören A2 T2 matching batches where every explanation
+ * is a bare factual sentence (no dass/muss/…). Assigns passage-derived tags to
+ * Q1 only — never blind-clones to all 5 (Cause E gap, batch 083).
+ */
+export function ensureBatchGrammarRetrievalMinimum(batch) {
+  const qs = batch.questions || [];
+  if (!qs.length) return batch;
+  if (qs.some((q) => (q.grammarTags || []).length > 0)) return batch;
+  const level = String(batch.level || qs[0]?.level || 'B1').toUpperCase();
+  if (level !== 'A2') return batch;
+  if (!qs.every((q) => isA2MatchingQuestion(q, level))) return batch;
+
+  const passage = batch.passages?.[0];
+  const passageTags = inferGrammarTagsFromText(passageGrammarBlob(passage), 2, {
+    a2Matching: true,
+  });
+  if (passageTags.length) {
+    qs[0].grammarTags = passageTags.slice(0, GRAMMAR_TAG_SOFT_MAX);
+    batch._grammarRetrievalFallback = 'a2-t2-passage-q1';
+  }
+  return batch;
+}
+
 function questionBlob(q, passage) {
   // Legacy blob (grammar / topic) — may include shared passage
   return [
@@ -1267,46 +1453,44 @@ function questionBlob(q, passage) {
     .join(' ');
 }
 
-/** Resolve matching-option text for letter key (A–J), or null. */
-function matchingOptionText(q) {
+/** Resolve correct MCQ/matching option text for letter key (a–j), or null. */
+export function matchingOptionText(q, passage = null) {
   const letter = String(q.correctAnswer ?? q.correct ?? '')
     .trim()
-    .toUpperCase();
-  if (!letter || letter === '0' || letter === 'X' || letter === '-' || letter === 'NONE') {
+    .toLowerCase();
+  if (!letter || letter === '0' || letter === 'x' || letter === '-' || letter === 'none') {
     return null;
   }
   const opts = q.options || [];
   const re = new RegExp(`^${letter}[).:\\s]`, 'i');
   const hit = opts.find((o) => re.test(String(o).trim()));
-  return hit ? String(hit) : null;
+  if (hit) return String(hit);
+  const pics = passage?.pictures || [];
+  const pic = pics.find((p) => String(p.key || '').toLowerCase() === letter);
+  if (pic?.label) return String(pic.label);
+  return null;
 }
 
 /**
  * Text used for vocabularyTags — content fields only (R7).
- * Includes: question, signText, transcript, statement, options (or matched
- * option for shared banks), plus passage.text/title only as thin-item fallback.
- * Excludes: explanation (meta-language: zeigt/bedeutet/widerspricht/entspricht…).
- * Grammar tagging still uses explanation via questionSpecificGrammarBlob.
+ * MCQ: question stem + correct option + explanation (never full passage or distractors).
+ * Matching/picture bank: question + explanation + matched picture label (never shared dialogue).
  */
 export function questionSpecificVocabBlob(q, passage, opts = {}) {
-  const parts = [q.question, q.signText, q.transcript, q.statement];
   const type = String(q.type || '').toLowerCase();
   const optsArr = q.options || [];
-  const sharedBank = optsArr.length >= 8 || type === 'matching';
+  const isMatching =
+    type === 'matching' ||
+    (optsArr.length === 0 && /^[a-i]$/i.test(String(q.correctAnswer ?? q.correct ?? '').trim()));
 
-  if (sharedBank) {
-    const matched = matchingOptionText(q);
-    if (matched) parts.push(matched);
-    // never dump the full shared option bank into vocab
-  } else if (optsArr.length) {
-    parts.push(...optsArr.map(String));
-  }
+  const parts = [q.question, q.signText, q.transcript, q.statement];
+  if (isMatching) parts.push(q.explanation);
 
+  const matched = matchingOptionText(q, passage);
+  if (matched) parts.push(matched);
+
+  // Never push full passage — shared dialogue/passage caused cross-question tag recycling (A2 audit D).
   let blob = parts.filter(Boolean).join(' ');
-  // Shared passage only as fallback when the item itself is too thin
-  if (blob.replace(/\s+/g, ' ').trim().length < 48 && passage?.text) {
-    blob = `${blob} ${passage.text}`.trim();
-  }
   if (opts.includePassageTitle && passage?.title) {
     blob = `${passage.title} ${blob}`.trim();
   }
@@ -1341,14 +1525,7 @@ export function ensureDistinctQuestionVocabTags(questions, getLocalBlob) {
 
     // Collision — rebuild from local blob with more candidates, prefer unused lemmas
     const local = getLocalBlob(q);
-    const candidates = extractVocabularyFromText(local, 16);
-    const qOnly = extractVocabularyFromText(
-      [q.question, q.signText, q.transcript, q.statement, ...(q.options || [])]
-        .filter(Boolean)
-        .join(' '),
-      12,
-    );
-    const pool = [...qOnly, ...candidates];
+    const pool = extractVocabularyFromText(local, 16);
     const firstTags = qs[sigToFirst.get(sig)].vocabularyTags || [];
     const firstSet = new Set(firstTags.map((t) => String(t).toLowerCase()));
 
@@ -1386,7 +1563,8 @@ export function ensureDistinctQuestionVocabTags(questions, getLocalBlob) {
         q.vocabularyTags = [...(q.vocabularyTags || []).slice(0, 5), extra];
       } else {
         // Extremely rare: differentiate with option / signText token (never explanation)
-        const surface = [q.signText, ...(q.options || [])]
+        const surface = [q.signText, matchingOptionText(q)]
+          .filter(Boolean)
           .filter(Boolean)
           .join(' ')
           .split(/[^a-zA-ZäöüÄÖÜß\-]+/)
@@ -1430,7 +1608,8 @@ function collectBatchContentText(batch) {
     if (q.signText) chunks.push(q.signText);
     if (q.transcript) chunks.push(q.transcript);
     if (q.statement) chunks.push(q.statement);
-    for (const opt of q.options || []) chunks.push(String(opt));
+    const matched = matchingOptionText(q);
+    if (matched) chunks.push(matched);
   }
   return chunks.join('\n');
 }
@@ -1483,6 +1662,27 @@ export function enrichBatchMetadata(batch, opts = {}) {
   }
 
   const passagesById = new Map((current.passages || []).map((p) => [p.id, p]));
+  const b1Set = loadB1LemmaSet();
+  const nounHints = null;
+
+  /** Pool artifact repair: fix tags in place — no re-extract / ensureDistinct (avoids new lemma stubs). */
+  if (opts.vocabRepairOnly) {
+    for (const q of current.questions || []) {
+      if (opts.vocab !== false && Array.isArray(q.vocabularyTags) && q.vocabularyTags.length) {
+        if (repairQuestionVocabularyTags(q, b1Set, nounHints)) stats.vocab++;
+      }
+    }
+    current._metadataEnrichedAt = new Date().toISOString();
+    current._metadataEnrichNote = 'vocabRepairOnly: repairQuestionVocabularyTags (pool artifact repair)';
+    current._vocabTagsNormalizeVersion = VOCAB_TAGS_NORMALIZE_VERSION;
+    return { batch: current, stats };
+  }
+
+  for (const q of current.questions || []) {
+    if (opts.vocab !== false && Array.isArray(q.vocabularyTags) && q.vocabularyTags.length) {
+      if (repairQuestionVocabularyTags(q, b1Set, nounHints)) stats.vocab++;
+    }
+  }
 
   for (const q of current.questions || []) {
     const passage = passagesById.get(q.passageId);
@@ -1512,13 +1712,26 @@ export function enrichBatchMetadata(batch, opts = {}) {
       }
     }
 
+    const existingGrammar = sanitizeGrammarTags(q.grammarTags);
+    const batchLevel = String(q.level || current.level || passage?.level || 'A2').toUpperCase();
+    const a2Matching = isA2MatchingQuestion(q, batchLevel);
+    const grammarInferOpts = {
+      secondaryText: passageGrammarBlob(passage),
+      a2Matching,
+    };
     if (
       opts.grammar !== false &&
-      (opts.forceGrammar || !(Array.isArray(q.grammarTags) && q.grammarTags.length >= 1))
+      (opts.forceGrammar || !existingGrammar.length)
     ) {
       const primary = questionSpecificGrammarBlob(q);
-      const secondary = passageGrammarBlob(passage);
-      q.grammarTags = inferGrammarTagsFromText(primary, teil, { secondaryText: secondary });
+      q.grammarTags = inferGrammarTagsFromText(primary, teil, grammarInferOpts);
+      stats.grammar++;
+    } else if (existingGrammar.length) {
+      q.grammarTags = existingGrammar;
+    } else if ((q.grammarTags || []).length) {
+      // topicTag leaked into grammarTags (e.g. «Arbeit») — strip and re-infer
+      const primary = questionSpecificGrammarBlob(q);
+      q.grammarTags = inferGrammarTagsFromText(primary, teil, grammarInferOpts);
       stats.grammar++;
     }
   }
@@ -1557,6 +1770,28 @@ export function enrichBatchMetadata(batch, opts = {}) {
     ensureDistinctQuestionVocabTags(current.questions || [], (q) =>
       questionSpecificVocabBlob(q, passagesById.get(q.passageId)),
     );
+  }
+
+  // Hören A2 T2: requested topic may not match week-plan content (Sport/Freizeit mix) — prefer detected topic
+  const mod = String(
+    current.module || current.questions?.[0]?.module || current.passages?.[0]?.module || '',
+  ).toLowerCase();
+  const teilN = Number(current.teil ?? current.questions?.[0]?.teil ?? current.passages?.[0]?.teil);
+  if (mod === 'horen' && teilN === 2 && current.passages?.[0]) {
+    const p = current.passages[0];
+    const ct = checkPassageContentTopic({ ...p, topicTag: current.topicTag || p.topicTag });
+    if (ct.mismatch && ct.detected) {
+      const detected = normalizeB1Topic(ct.detected);
+      if (detected && isValidB1Topic(detected)) {
+        current = tagBatchWithTopic(current, detected);
+        current._requestedTopic = detected;
+        stats.topic = true;
+      }
+    }
+  }
+
+  if (mod === 'horen' && teilN === 2) {
+    ensureBatchGrammarRetrievalMinimum(current);
   }
 
   current._metadataEnrichedAt = new Date().toISOString();

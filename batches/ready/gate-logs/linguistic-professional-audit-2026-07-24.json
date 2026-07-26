@@ -1,0 +1,272 @@
+{
+  "reportId": "linguistic-professional-audit-pool-verified-2026-07-24",
+  "generatedAt": "2026-07-24T14:00:00.000Z",
+  "methodology": {
+    "approach": "Control de calidad lingüístico (alemán B1/A2), no solo grep de bugs del día.",
+    "sampleSize": 60,
+    "samplePath": "batches/ready/gate-logs/linguistic-audit-sample-2026-07-24.json",
+    "coverage": "27 celdas (B1/A2 × lesen/horen/schreiben/sprechen × Teile 1–5); todos los Teile representados.",
+    "techniques": [
+      "Lectura manual de pasajes, enunciados, signText, opciones y explicaciones en muestra completa.",
+      "Heurísticas ampliadas (caso, calcos, meta inglés, truncados) → linguistic-audit-heuristics-2026-07-24.json.",
+      "Contraste texto↔explicación donde el ítem es comprensión lectora.",
+      "LanguageTool: no disponible en este entorno (Docker LT caído); recomendado como capa obligatoria en plan permanente."
+    ],
+    "filesReviewedList": "Ver campo reviewedFiles en sample JSON (60 rutas B1/A2)."
+  },
+  "executiveSummary": {
+    "overallRegister": "La mayoría del contenido generado reciente (Lesen B1 T2/T3/T5, Hören T1/T4, Schreiben prompts) suena a alemán de examen plausible para B1/A2: sintaxis ordenada, conectores esperables, léxico de tema. No se detectó nueva fuga de español en la muestra (post-retiro horen-t3-023).",
+    "mainRisks": [
+      "Errores puntuales de concordancia/ortografía que los gates actuales no cubren.",
+      "Explicaciones genéricas o factualmente inconsistentes con el pasaje (integridad didáctica, no solo idioma).",
+      "Residuos de truncado en vocabularyTags y meta-vocabulario de prompts (folgenden, leut).",
+      "Anglicismos de rubrica Sprechen (Feedback) — aceptables en instrucción, pero invisible para Q5 actual si se filtra mal."
+    ],
+    "countsBySeverity": {
+      "critical": 2,
+      "major": 5,
+      "minor": 8,
+      "observation_clean": 45
+    },
+    "noteOnCounts": "critical/major/minor son hallazgos distintos (algunos archivos comparten varios). ~45/60 archivos sin defecto lingüístico relevante tras revisión."
+  },
+  "findings": [
+    {
+      "id": "F-CRIT-01",
+      "severity": "critical",
+      "category": "integridad_texto_explicación",
+      "knownPatternToday": false,
+      "file": "B1/lesen-t5-gemini-033.json",
+      "location": "gen-q-5-21c7dc2c-1 explanation",
+      "issue": "La explicación afirma «viermal im Jahr»; el pasaje dice «einmal pro Quartal» (equivalente semántico, pero la opción correcta cita «einmal pro Quartal» — la explicación introduce formulación distinta y numéricamente ambigua para el candidato). Riesgo de confusión pedagógica / corrección inconsistente.",
+      "nativeJudgment": "Alemán gramatical en ambos fragmentos, pero incoherencia entre prueba y retroalimentación."
+    },
+    {
+      "id": "F-CRIT-02",
+      "severity": "critical",
+      "category": "concordancia_gramatical",
+      "knownPatternToday": false,
+      "file": "B1/horen-t4-gemini-019.json",
+      "location": "passage/audio Leon turn",
+      "issue": "«die öffentliche Verkehrsmittel» — concordancia adjetivo–sustantivo incorrecta (debe ser «die öffentlichen Verkehrsmittel»). Error genuino de producción LLM, no cubierto por gates de idioma extranjero.",
+      "nativeJudgment": "Un hablante nativo lo marcaría como error claro en material de examen."
+    },
+    {
+      "id": "F-MAJ-01",
+      "severity": "major",
+      "category": "ortografía",
+      "knownPatternToday": false,
+      "file": "A2/lesen-t3-cur-education.json",
+      "location": "passage email Carlos",
+      "issue": "«Ist das Möglich?» — adjetivo/adverbio debe ir minúscula: «Ist das möglich?»",
+      "nativeJudgment": "Error ortográfico estándar Duden; especialmente visible en texto supuestamente escrito por learner."
+    },
+    {
+      "id": "F-MAJ-02",
+      "severity": "major",
+      "category": "vocabularyTags_truncado",
+      "knownPatternToday": true,
+      "file": "B1/lesen-t2-gemini-146.json",
+      "location": "vocabularyTags",
+      "issue": "Tag «leut» (debe ser «Leute»/«Menschen»). Familia truncado/lemmatizer; persiste tras remediate parcial.",
+      "nativeJudgment": "No es alemán válido como lemma."
+    },
+    {
+      "id": "F-MAJ-03",
+      "severity": "major",
+      "category": "vocabularyTags_meta",
+      "knownPatternToday": false,
+      "file": "A2/schreiben-cur-society.json (patrón en curated A2 Schreiben)",
+      "location": "vocabularyTags",
+      "issue": "Tags «folgenden», «punkten» extraídos del enunciado instruccional, sin valor léxico.",
+      "nativeJudgment": "Alemán válido pero pedagógicamente erróneo; contamina índice de vocabulario."
+    },
+    {
+      "id": "F-MAJ-04",
+      "severity": "major",
+      "category": "naturalidad_baja",
+      "knownPatternToday": false,
+      "file": "A2/lesen-t*-cur-*.json (15 archivos pool)",
+      "location": "explanations",
+      "issue": "Plantilla repetida «Die richtige Antwort steht im Text. Lesen Sie den Text noch einmal genau.» sin anclaje al enunciado — registro de manual genérico, no retroalimentación de examen.",
+      "nativeJudgment": "Alemán correcto pero no auténtico como feedback de certificación."
+    },
+    {
+      "id": "F-MAJ-05",
+      "severity": "major",
+      "category": "truncado_residual",
+      "knownPatternToday": true,
+      "file": "16 archivos post v2.3.15 (ver remediate-v2314 log)",
+      "location": "vocabularyTags",
+      "issue": "Truncados residuales (p. ej. wanderen, demnächen) en subset del pool; no en toda la muestra pero riesgo sistémico en meta.",
+      "nativeJudgment": "Formas no canónicas."
+    },
+    {
+      "id": "F-MIN-01",
+      "severity": "minor",
+      "category": "anglicismo_rubrica",
+      "knownPatternToday": false,
+      "file": "B1/sprechen-*.json (8+ en muestra)",
+      "location": "Sprechen Teil 2/3 prompts",
+      "issue": "«konstruktives Feedback» — anglicismo establecido en rubricas Goethe; Q5 inglés no lo marca si solo busca «feedback» en aislamiento parcial.",
+      "nativeJudgment": "Aceptable en instrucción de examen real; no debe confundirse con fuga de enunciado."
+    },
+    {
+      "id": "F-MIN-02",
+      "severity": "minor",
+      "category": "naturalidad_dialogo",
+      "knownPatternToday": "partial",
+      "file": "B1/A2 horen-t3-gemini-* (018, 028, 043, 060 en muestra)",
+      "location": "passages",
+      "issue": "Diálogos comprensibles pero formulaicos (pares de nombres recurrentes, turnos simétricos). No error gramatical; registra como traducción didáctica.",
+      "nativeJudgment": "Passable A2/B1; no premium nativo."
+    },
+    {
+      "id": "F-MIN-03",
+      "severity": "minor",
+      "category": "meta_metadata",
+      "knownPatternToday": false,
+      "file": "A2/lesen-t3-cur-education.json",
+      "location": "grammarTags",
+      "issue": "Etiquetas g-de-b1-* en ítem A2 — desajuste de nivel (meta, no texto de examen).",
+      "nativeJudgment": "N/A al candidato; afecta analytics."
+    },
+    {
+      "id": "F-MIN-04",
+      "severity": "minor",
+      "category": "estilo",
+      "knownPatternToday": false,
+      "file": "B1/lesen-t4-gemini-068.json",
+      "location": "passage intro",
+      "issue": "«ein Preiswertes Gericht» — mayúscula en adjetivo dentro de sintagma nominal coloquial (borderline; estilo editorial).",
+      "nativeJudgment": "Comprensible; ligera irregularidad tipográfica."
+    },
+    {
+      "id": "F-MIN-05",
+      "severity": "minor",
+      "category": "process",
+      "knownPatternToday": false,
+      "file": "B1/lesen-t4-gemini-068.json",
+      "location": "_rejectedReason",
+      "issue": "Archivo con marca de rechazo aún en pool-verified — riesgo operativo, no lingüístico directo.",
+      "nativeJudgment": "N/A"
+    },
+    {
+      "id": "F-MIN-06",
+      "severity": "minor",
+      "category": "calco_aceptable",
+      "knownPatternToday": false,
+      "file": "B1/lesen-t3-gemini-006.json",
+      "location": "matching items",
+      "issue": "Marcas inventadas (TechHilfe, RadProfi) — estilo anuncio; alemán natural en género publicitario Lesen T3.",
+      "nativeJudgment": "Auténtico para el formato."
+    },
+    {
+      "id": "F-MIN-07",
+      "severity": "minor",
+      "category": "explicación_corta",
+      "knownPatternToday": false,
+      "file": "B1/lesen-t3-gemini-006.json",
+      "location": "explanations",
+      "issue": "Explicaciones telegráficas («Gerätehilfe repariert…») — gramaticalmente OK, estilo muy escueto.",
+      "nativeJudgment": "Válido B1; mejorable."
+    },
+    {
+      "id": "F-MIN-08",
+      "severity": "minor",
+      "category": "falso_positivo_heuristica",
+      "knownPatternToday": false,
+      "file": "varios Sprechen",
+      "location": "heuristic double_article",
+      "issue": "Regex «der/die + der/die» dispara en construcciones válidas («Ihrer Partnerin oder Ihrem Partner»). No usar como gate automático sin parser.",
+      "nativeJudgment": "N/A"
+    }
+  ],
+  "sampleVerdictByFile": {
+    "comment": "Resumen por archivo de la muestra (60). OK = sin hallazgo lingüístico relevante en revisión manual.",
+    "withIssues": [
+      "A2/lesen-t3-cur-education.json",
+      "A2/schreiben-cur-society.json",
+      "B1/horen-t4-gemini-019.json",
+      "B1/lesen-t2-gemini-146.json",
+      "B1/lesen-t5-gemini-033.json",
+      "B1/sprechen-gemini-011.json",
+      "B1/sprechen-b1-batch-08-reisen.json",
+      "B1/sprechen-claude-gesundheit-01.json",
+      "B1/sprechen-t1-gemini-017.json",
+      "B1/sprechen-t1-gemini-018.json",
+      "B1/sprechen-t2-gemini-002.json",
+      "B1/sprechen-t3-gemini-012.json",
+      "B1/sprechen-t3-gemini-002.json",
+      "B1/lesen-t4-gemini-068.json"
+    ],
+    "okCount": 46
+  },
+  "permanentClosurePlan": {
+    "title": "De auditoría reactiva a control lingüístico continuo",
+    "layers": [
+      {
+        "name": "Q5b — Idioma extranjero ampliado",
+        "description": "Extender germanContentLanguageGate con listas EN/ES para campos exam-facing (question, signText, options, passage.text), con allowlist explícita Sprechen/Schreiben (Feedback, Rubric-Kriterien). Bloqueo hard en pool-ready y en repair scripts.",
+        "owner": "deterministic gate"
+      },
+      {
+        "name": "Q-LT — LanguageTool obligatorio pre-pool",
+        "description": "Integrar LT (de-DE) como gate bloqueante en poolReadyCheck para passage + questions; reglas MUST_CATCH para concordancia, Groß-/Kleinschreibung (möglich), agreement. CI con contenedor LT; fallo = no publish.",
+        "owner": "infra + pipelineIntegration"
+      },
+      {
+        "name": "Q-SEM — Coherencia explicación ↔ pasaje ↔ clave",
+        "description": "Gate semántico: toda explanation de MCQ/RF debe citar o implicar solo hechos del pasaje; detectar contradicciones numéricas/temporales (caso Quartal/viermal). Implementación: reglas deterministas para números + LLM-judge acotado en shadow mode → hard block.",
+        "owner": "new quality gate module"
+      },
+      {
+        "name": "Q-VOCAB-TAG — Calidad de lemmas",
+        "description": "Rechazar tags <4 graphemes, no-dictionary ( Hunspell/de-dict), truncados por regex ampliada; prohibir stopwords de enunciado (folgenden, punkten, einmal como tag único). Solo enrich en tags nuevos, nunca re-moler tags sanos (v2.3.15).",
+        "owner": "enrichBatchMetadata + poolReadyCheck"
+      },
+      {
+        "name": "Q-CONCORD — Patrones morfosintácticos alemanes",
+        "description": "Lista viva de regex/dependency-lite: «die öffentliche Verkehrsmittel», wegen+trotz+Dativ coloquial flags, etc. Alimentada por auditorías; unit tests por incidente.",
+        "owner": "germanGrammarPatterns.mjs"
+      },
+      {
+        "name": "Muestreo lingüístico humano programado",
+        "description": "Semanal: 5% estratificado del pool (script linguisticAuditSample.mjs) → informe + sign-off; no reemplaza LT sino calibra naturalidad y falsos negativos.",
+        "owner": "operational process"
+      },
+      {
+        "name": "Separación curated vs generated",
+        "description": "Migrar A2 curated con plantillas de explanation a generated con gate completo; bloquear «Die richtige Antwort steht im Text» como template en CHK de explanation.",
+        "owner": "content migration"
+      },
+      {
+        "name": "Repair script policy",
+        "description": "Todo script de metadata (caps, vocab) debe pasar Q5 + Q-LT advisory mínimo; language_leak = quarantine automática, no write.",
+        "owner": "already started 2026-07-24 — formalizar en poolReadyCheck docs"
+      }
+    ],
+    "implementationOrder": [
+      "Q-LT bloqueante en poolReadyCheck",
+      "Q-SEM contradicción explanation/pasaje",
+      "Q-VOCAB-TAG dictionary + stem rules",
+      "Q5b inglés + allowlists Sprechen",
+      "Q-CONCORD incident-driven patterns",
+      "Muestreo humano + migración curated"
+    ],
+    "successMetrics": [
+      "0 items pool-verified con LT error severity>=important",
+      "0 explanation contradictoria en audit semanal",
+      "0 tags fuera de diccionario alemán",
+      "<1% muestra humana con defecto critical/major"
+    ]
+  },
+  "evidenceArtifacts": [
+    "batches/ready/gate-logs/linguistic-audit-sample-2026-07-24.json",
+    "batches/ready/gate-logs/linguistic-audit-heuristics-2026-07-24.json",
+    "batches/ready/gate-logs/pool-german-exam-content-scan.json",
+    "scripts/lib/linguisticAuditSample.mjs",
+    "scripts/linguistic-audit-heuristics.mjs",
+    "scripts/scan-pool-german-exam-content.mjs"
+  ]
+}

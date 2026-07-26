@@ -32,6 +32,10 @@ export const T5_SUBTYPE_VOCAB_POOL = Object.freeze({
   park: ['hund', 'grillen', 'spielplatz', 'öffnungszeit', 'müll', 'regel', 'fahrrad', 'besucher'],
   markthalle: ['stand', 'markt', 'gebühr', 'regel', 'probe', 'pfand', 'verkäufer', 'hygiene', 'anmeldung'],
   einkaufszentrum: ['center', 'parkhaus', 'regel', 'öffnungszeit', 'besucher', 'geschäft', 'gebühr', 'kinderwagen', 'rauchen'],
+  coworking: ['wlan', 'app', 'smartphone', 'handy', 'digital', 'meetingraum', 'buchung', 'regel', 'gerät', 'aktuell'],
+  leihgeraete: ['tablet', 'laptop', 'smartphone', 'handy', 'ausleihe', 'leihfrist', 'gebühr', 'anmeldung', 'gerät', 'daten'],
+  computerraum: ['computer', 'smartphone', 'handy', 'software', 'internet', 'digital', 'drucker', 'anmeldung', 'app', 'aktuell'],
+  fitness_app: ['app', 'smartphone', 'handy', 'check-in', 'training', 'digital', 'gerät', 'buchung', 'daten', 'direkt'],
 });
 
 /** Minimum integrated user/target words for Lesen T5 when vocab was requested. */

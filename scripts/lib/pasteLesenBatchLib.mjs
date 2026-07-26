@@ -10,11 +10,18 @@ import {
   checkPromptBatchQuality,
   formatPromptQualityReport,
 } from './promptBatchQuality.mjs';
-import { checkLesenBatchIngest, formatIngestReport } from './lesenBatchIngestCheck.mjs';
 import {
   maybeNormalizeManualLesenBatch,
   assertManualPublishPositionGates,
 } from './manualPublishNormalize.mjs';
+import {
+  parseValidateBatchErrors,
+} from './gateReportFormat.mjs';
+import {
+  checkLesenBatchIngest,
+  formatIngestReport,
+  ingestErrorsForSummary,
+} from './lesenBatchIngestCheck.mjs';
 
 import {
   GENERATED_DIR,
@@ -183,7 +190,7 @@ export function validateLesenBatch(batch, args, { teil: teilHint, label } = {}) 
     });
     console.log(v.output || (v.ok ? 'OK' : 'FAIL'));
     if (!v.ok) {
-      errors.push('Validación técnica falló');
+      errors.push(...parseValidateBatchErrors(v.output));
       return { ok: false, label, teil, errors };
     }
 
@@ -192,7 +199,8 @@ export function validateLesenBatch(batch, args, { teil: teilHint, label } = {}) 
       const { quality, report } = runModuleQualityCheck(batch, module, teil, args);
       console.log(report);
       if (!quality.ok) {
-        errors.push('Calidad pedagógica falló');
+        errors.push(...(quality.issues || []));
+        if (!errors.length) errors.push('Calidad pedagógica falló (sin issues detallados)');
         return { ok: false, label, teil, module, errors };
       }
     }
@@ -204,9 +212,9 @@ export function validateLesenBatch(batch, args, { teil: teilHint, label } = {}) 
         level: args.level,
         batchId: 'validate-tmp',
       });
-      console.log(formatIngestReport(ingest));
+      console.log(formatIngestReport(ingest, { level: args.level }));
       if (!ingest.ok) {
-        errors.push('Pre-ingest CEFR falló');
+        errors.push(...ingestErrorsForSummary(ingest, args.level));
         return { ok: false, label, teil, errors };
       }
     }

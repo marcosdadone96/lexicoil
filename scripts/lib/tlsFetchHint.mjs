@@ -1,10 +1,11 @@
 /**
  * Detect TLS interception (AV/corporate proxy) that breaks Node's default CA store.
- * Node 22+: prefer `node --use-system-ca` (wired into npm generate/judge scripts).
+ * geminiClient.mjs merges the OS trust store on import (see ensureSystemCa.mjs).
  */
 
 const TLS_HINT =
-  'TLS interceptado por antivirus/proxy: ejecuta con NODE_OPTIONS=--use-system-ca o define NODE_EXTRA_CA_CERTS. Ver README.';
+  'TLS interceptado por antivirus/proxy: el cliente Gemini ya fusiona certificados del sistema; ' +
+  'si persiste, define NODE_EXTRA_CA_CERTS con el CA raíz del proxy. Ver README.';
 
 export function isTlsLeafVerifyError(err) {
   const code = err?.cause?.code || err?.code;

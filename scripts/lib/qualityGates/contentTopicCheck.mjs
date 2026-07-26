@@ -40,7 +40,7 @@ export const HOREN_TOPIC_EXTRAS = Object.freeze({
   ],
   Ernährung: ['Rezepte', 'Lebensmittel', 'vegane', 'vegan', 'saisonal', 'regional'],
   Technik: ['Handy', 'Handys', 'Smartphone', 'App', 'Computer', 'Software'],
-  Freizeit: ['Freizeit', 'Hobby', 'Wochenende', 'Garten'],
+  Freizeit: ['Freizeit', 'Hobby', 'Wochenende', 'Garten', 'Freizeitzentrum', 'Klavier', 'Basteln', 'Schnupperkurs'],
   Konsum: ['Supermarkt', 'Einkauf', 'Angebot', 'Rabatt', 'kaufen'],
   Wohnen: ['Wohnung', 'Vermieter', 'Umzug', 'Nachbar'],
   // «Miete» solo en base — idiom «halbe Miete» se filtra aparte

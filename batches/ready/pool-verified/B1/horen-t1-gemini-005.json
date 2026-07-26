@@ -477,5 +477,11 @@
       "passage:gen-p-h1-c0c5c593-s4 topicTag «Familie» no encaja con contenido (detectado «Freizeit» score=2 vs tag score=0; hits={\"Medien\":1,\"Freizeit\":2})",
       "passage:gen-p-h1-c0c5c593-s5 topicTag «Familie» no encaja con contenido (detectado «Bildung» score=2 vs tag score=1; hits={\"Bildung\":2,\"Familie\":1})"
     ]
+  },
+  "_mcqLengthBiasRepairBlocked": {
+    "at": "2026-07-25T08:54:18.467Z",
+    "script": "repair-pool-mcq-length-bias.mjs",
+    "normalizeError": "[balanceMcqGroup:contract:c] q[9] explanation letter desync (want a): Option c",
+    "action": "needs_full_regeneration"
   }
 }

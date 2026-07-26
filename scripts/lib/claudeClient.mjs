@@ -19,7 +19,27 @@ export function genModel() {
   return (process.env.CLAUDE_GEN_MODEL || DEFAULT_MODEL).trim();
 }
 
-export async function generateContent({ prompt, apiKey, model, maxRetries = 4, maxTokens }) {
+export async function generateContent({ prompt, apiKey, model, maxRetries = 4, maxTokens, jsonMode }) {
+  const allowAnthropic =
+    String(process.env.SEMANTIC_USE_CLAUDE || '').trim() === '1' ||
+    String(process.env.ALLOW_CLAUDE_PIPELINE || '').trim() === '1';
+
+  if (!allowAnthropic) {
+    const { generateContent: geminiGenerate } = await import('./geminiClient.mjs');
+    const modelId =
+      model && /^gemini/i.test(String(model))
+        ? model
+        : process.env.GEMINI_MODEL || 'gemini-2.5-flash';
+    return geminiGenerate({
+      prompt,
+      model: modelId,
+      jsonMode: jsonMode !== false,
+      maxRetries,
+      maxTokens,
+      temperature: 0.1,
+    });
+  }
+
   const key = apiKey || process.env.ANTHROPIC_API_KEY;
   if (!key) {
     throw new Error('Falta ANTHROPIC_API_KEY en .env');

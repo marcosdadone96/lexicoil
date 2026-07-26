@@ -1,0 +1,102 @@
+{
+  "args": {
+    "apply": false,
+    "dryRun": true,
+    "syncSeed": false,
+    "listOnly": false,
+    "preview": false,
+    "confirm": false,
+    "lemmaClusterOnly": false
+  },
+  "affected": [
+    "B1/horen-t1-gemini-001.json",
+    "B1/horen-t1-gemini-048.json",
+    "A2/horen-t3-gemini-039.json",
+    "A2/horen-t3-gemini-040.json",
+    "B1/horen-t3-gemini-058.json",
+    "B1/horen-t4-gemini-026.json"
+  ],
+  "report": {
+    "repaired": [],
+    "verifyFailed": [
+      {
+        "file": "B1/horen-t1-gemini-001.json",
+        "remaining": [
+          "vocab_corruption"
+        ]
+      },
+      {
+        "file": "B1/horen-t1-gemini-048.json",
+        "remaining": [
+          "vocab_corruption"
+        ]
+      },
+      {
+        "file": "A2/horen-t3-gemini-039.json",
+        "remaining": [
+          "vocab_corruption"
+        ]
+      },
+      {
+        "file": "A2/horen-t3-gemini-040.json",
+        "remaining": [
+          "vocab_corruption"
+        ]
+      },
+      {
+        "file": "B1/horen-t3-gemini-058.json",
+        "remaining": [
+          "vocab_corruption"
+        ]
+      },
+      {
+        "file": "B1/horen-t4-gemini-026.json",
+        "remaining": [
+          "vocab_corruption"
+        ]
+      }
+    ],
+    "sync": [],
+    "at": "2026-07-25T07:52:31.814Z"
+  },
+  "finalHits": [
+    {
+      "file": "B1/horen-t1-gemini-001.json",
+      "issues": [
+        "bad_vocab_tag_cap"
+      ]
+    },
+    {
+      "file": "B1/horen-t1-gemini-048.json",
+      "issues": [
+        "vocab_corruption"
+      ]
+    },
+    {
+      "file": "A2/horen-t3-gemini-039.json",
+      "issues": [
+        "lemma_artifact",
+        "vocab_corruption"
+      ]
+    },
+    {
+      "file": "A2/horen-t3-gemini-040.json",
+      "issues": [
+        "lemma_artifact",
+        "vocab_corruption"
+      ]
+    },
+    {
+      "file": "B1/horen-t3-gemini-058.json",
+      "issues": [
+        "vocab_corruption"
+      ]
+    },
+    {
+      "file": "B1/horen-t4-gemini-026.json",
+      "issues": [
+        "vocab_corruption"
+      ]
+    }
+  ]
+}

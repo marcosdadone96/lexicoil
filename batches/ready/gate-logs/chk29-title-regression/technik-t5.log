@@ -1,0 +1,118 @@
+
+Generador Lesen (de/B1) · gemini · gemini-2.5-flash · Teile: 5 × 1
+Palabras objetivo por parte: 5 (--word-count)
+Umbral cobertura CEFR (cefr_gate): 55% (default 0.55)
+Cuota Gemini: max 45 llamadas · pausa ≥6000ms · fix-retries=2 · api-retries=1
+Salida: batches/generated/
+Tema: Technik (elegido)
+T5 subtipo: Computerraum / Medienzentrum Ordnung (preferred) · perfil standard · celda Technik×T5: 22 persistidos · título «Richtlinien der Medienzentrum Technikcampus» · moldes usados: schule, bibliothek, freizeitzentrum, sportverein, coworking:standard, bibliothek:standard, freizeitzentrum:veranstaltungen, leihgeraete:standard, schule:standard, freizeitzentrum:fitness
+
+── Lesen T5 · lesen-t5-gemini-103.json ──
+Proveedor: gemini · Palabras (5): smartphone, aufgabe, situation, aktuell, direkt
+Modelo: gemini-2.5-flash · max_output_tokens=8192
+Molde preflight T5×Technik: 7 compatible(s), 4 restante(s)
+Llamada API 1/45 · $0.000 acumulado · gemini-2.5-flash
+Vocabulario: 2 de 5 palabras usadas (tema: Technik). Integradas: smartphone, direkt. No encajaron de forma natural: aufgabe, situation, aktuell.
+Validando formato…
+Comprobando calidad pedagógica…
+Calidad pedagógica FAIL (5 problemas, estimación ~58%)
+  - gen-q-5-6b9607e0-4: pregunta y opción correcta comparten demasiadas palabras (kostet, scannen, kostet)
+  - gen-q-5-6b9607e0-1: sesgo de longitud MCQ (B1) — opción correcta «a» es la más larga (63 vs 33/48; Δ +23 chars, +56% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable.
+  - gen-q-5-6b9607e0-2: sesgo de longitud MCQ (B1) — opción correcta «b» es la más larga (64 vs 38/33; Δ +29 chars, +80% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable.
+  - gen-q-5-6b9607e0-3: sesgo de longitud MCQ (B1) — opción correcta «c» es la más larga (135 vs 74/67; Δ +65 chars, +91% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable.
+  - gen-q-5-6b9607e0-4: sesgo de longitud MCQ (B1) — opción correcta «b» es la más larga (109 vs 79/50; Δ +45 chars, +69% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable.
+Avisos (1):
+  · Mayúsculas alemanas: wrong_capitalized: «Technikcampus» (NE) [high] en passages.text — …Willkommen im Medienzentrum Technikcampus! Um eine effiziente…
+  Triaje CUBO C (word-matching) → reparación localizada (1 llamada LLM)…
+T5: reparando pregunta gen-q-5-6b9607e0-4 (word-copy, pasaje fijo, intento 1/2)…
+Llamada API 2/45 · $0.013 acumulado · gemini-2.5-flash
+T5: reparando pregunta gen-q-5-6b9607e0-4 (word-copy, pasaje fijo, intento 2/2)…
+Cola API: pausa 1.8s…
+Llamada API 3/45 · $0.014 acumulado · gemini-2.5-flash
+  Reparación word_match: sin cambios en batch — re-validando estado actual…
+  Re-validando tras word_match…
+Calidad pedagógica FAIL (5 problemas, estimación ~58%)
+  - gen-q-5-6b9607e0-4: pregunta y opción correcta comparten demasiadas palabras (kostet, scannen, kostet)
+  - gen-q-5-6b9607e0-1: sesgo de longitud MCQ (B1) — opción correcta «a» es la más larga (63 vs 33/48; Δ +23 chars, +56% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable.
+  - gen-q-5-6b9607e0-2: sesgo de longitud MCQ (B1) — opción correcta «b» es la más larga (64 vs 38/33; Δ +29 chars, +80% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable.
+  - gen-q-5-6b9607e0-3: sesgo de longitud MCQ (B1) — opción correcta «c» es la más larga (135 vs 74/67; Δ +65 chars, +91% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable.
+  - gen-q-5-6b9607e0-4: sesgo de longitud MCQ (B1) — opción correcta «b» es la más larga (109 vs 79/50; Δ +45 chars, +69% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable.
+Avisos (1):
+  · Mayúsculas alemanas: wrong_capitalized: «Technikcampus» (NE) [high] en passages.text — …Willkommen im Medienzentrum Technikcampus! Um eine effiziente…
+
+Reintento 1/2 · gen-q-5-6b9607e0-4: pregunta y opción correcta comparten demasiadas palabras (kostet, scannen, kostet)…
+Llamada API 4/45 · $0.015 acumulado · gemini-2.5-flash
+Vocabulario: 1 de 5 palabras usadas (tema: Technik). Integradas: smartphone. No encajaron de forma natural: aufgabe, situation, aktuell, direkt.
+Validando formato…
+Calidad pedagógica FAIL (3 problemas, estimación ~74%)
+  - gen-q-5-6b9607e0-1: sesgo de longitud MCQ (B1) — opción correcta «a» es la más larga (106 vs 77/85; Δ +25 chars, +31% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable.
+  - gen-q-5-6b9607e0-3: sesgo de longitud MCQ (B1) — opción correcta «b» es la más larga (139 vs 103/100; Δ +38 chars, +37% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable.
+  - Teil 5: vocabulario integrado 1/5 (mínimo 2) — palabras no usadas: aufgabe, situation, aktuell, direkt
+Avisos (1):
+  · Mayúsculas alemanas: wrong_capitalized: «Technikcampus» (NE) [high] en passages.text — …Willkommen im Medienzentrum Technikcampus! Um eine effiziente…
+  Triaje CUBO C (MCQ length bias (B1)) → reparación localizada (1 llamada LLM)…
+lesen T5: reparando sesgo longitud MCQ en 2 pregunta(s) (1 llamada LLM, fuente fija)…
+Llamada API 5/45 · $0.032 acumulado · gemini-2.5-flash
+  length-bias: gen-q-5-6b9607e0-1 OK (+31%→+7%)
+  length-bias: gen-q-5-6b9607e0-3 OK (+37%→+0%)
+  Re-validando tras mcq_length_bias…
+Calidad pedagógica FAIL (1 problemas, estimación ~90%)
+  - Teil 5: vocabulario integrado 1/5 (mínimo 2) — palabras no usadas: aufgabe, situation, aktuell, direkt
+Avisos (1):
+  · Mayúsculas alemanas: wrong_capitalized: «Technikcampus» (NE) [high] en passages.text — …Willkommen im Medienzentrum Technikcampus! Um eine effiziente…
+
+Reintento 2/2 · Teil 5: vocabulario integrado 1/5 (mínimo 2) — palabras no usadas: aufgabe, situation, aktuell, direkt…
+Llamada API 6/45 · $0.033 acumulado · gemini-2.5-flash
+Vocabulario: 2 de 5 palabras usadas (tema: Technik). Integradas: smartphone, aktuell. No encajaron de forma natural: aufgabe, situation, direkt.
+Validando formato…
+Calidad pedagógica FAIL (1 problemas, estimación ~90%)
+  - gen-q-5-6b9607e0-1: sesgo de longitud MCQ (B1) — opción correcta «c» es la más larga (125 vs 77/85; Δ +44 chars, +54% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable.
+Avisos (1):
+  · Mayúsculas alemanas: wrong_capitalized: «Technikcampus» (NE) [high] en passages.text — …Willkommen im Medienzentrum Technikcampus! Für eine effiziente…
+  Triaje CUBO C (MCQ length bias (B1)) → reparación localizada (1 llamada LLM)…
+lesen T5: reparando sesgo longitud MCQ en 1 pregunta(s) (1 llamada LLM, fuente fija)…
+Llamada API 7/45 · $0.052 acumulado · gemini-2.5-flash
+  length-bias: gen-q-5-6b9607e0-1 mejoró (+54%→+21%) — patch aplicado, re-validar
+  Re-validando tras mcq_length_bias…
+Calidad pedagógica OK ✅ (estimación ~98%)
+Avisos (1):
+  · Mayúsculas alemanas: wrong_capitalized: «Technikcampus» (NE) [high] en passages.text — …Willkommen im Medienzentrum Technikcampus! Für eine effiziente…
+Audit-pass-2 BLOQUEADO: [IMPORTANT][CHK-29] CHK-29: molde estructural «computerraum:standard» ya usado en Technik×T5 (similar a lesen-t5-gemini-103). Elige otro subtipo/perfil de variante.
+  CHK-29 → excluir molde y regenerar T5 con subtipo/debate distinto…
+T5 subtipo: Fitnessstudio mit App-Anmeldesystem (preferred) · perfil standard · celda Technik×T5: 22 persistidos · título «App-Nutzungsbedingungen Digital Fitness Innovati…» · moldes usados: schule, bibliothek, freizeitzentrum, sportverein, coworking:standard, bibliothek:standard, freizeitzentrum:veranstaltungen, leihgeraete:standard, schule:standard, freizeitzentrum:fitness, computerraum, computerraum:standard
+
+Reintento 2/2 · CHK-29: molde estructural «computerraum:standard» ya usado en Technik×T5 (similar a lesen-t5-gemini-103). Elige otro subtipo/perfil de variante.…
+Llamada API 8/45 · $0.052 acumulado · gemini-2.5-flash
+Vocabulario: 3 de 5 palabras usadas (tema: Technik). Integradas: smartphone, aufgabe, direkt. No encajaron de forma natural: situation, aktuell.
+Validando formato…
+Calidad pedagógica FAIL (1 problemas, estimación ~90%)
+  - gen-q-5-80949092-3: sesgo de longitud MCQ (B1) — opción correcta «a» es la más larga (83 vs 70/49; Δ +24 chars, +39% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable.
+Avisos (1):
+  · Mayúsculas alemanas: wrong_capitalized: «Fitness» (NE) [high] en passages.text — …Willkommen im Digital Fitness Innovationspark! Um allen…
+  Triaje CUBO C (MCQ length bias (B1)) → reparación localizada (1 llamada LLM)…
+lesen T5: reparando sesgo longitud MCQ en 1 pregunta(s) (1 llamada LLM, fuente fija)…
+Llamada API 9/45 · $0.063 acumulado · gemini-2.5-flash
+  length-bias: gen-q-5-80949092-3 mejoró (+39%→+28%) — patch aplicado, re-validar
+  Re-validando tras mcq_length_bias…
+Calidad pedagógica OK ✅ (estimación ~98%)
+Avisos (1):
+  · Mayúsculas alemanas: wrong_capitalized: «Fitness» (NE) [high] en passages.text — …Willkommen im Digital Fitness Innovationspark! Um allen…
+Léxico FAIL (2 errores)
+  ✗ question gen-q-5-80949092-2 option: vocabulario B2+ en pregunta «Konsequenzen» → usa «Folge / Ergebnis» (B1)
+  ✗ question gen-q-5-80949092-3 option: vocabulario B2+ en pregunta «zugänglich» → usa «einfach / offen» (B1)
+Rechazado guardado en: batches/generated/.rejected/lesen-t5-gemini-103-2026-07-22T11-09-14-675Z.json
+
+── batches/generated/B1/lesen-t5-gemini-103.json · DESCARTADO · 9 llamadas · $0.064 total ──
+
+══ Resumen generador Lesen ══
+Proveedor: gemini · Modelo: gemini-2.5-flash
+Intentos totales: 9
+Partes guardadas (formato + calidad OK): 0
+Partes descartadas: 1
+Llamadas API Gemini: 9/45
+Por Teil (guardadas / descartadas · intentos):
+  T5: 0 guardadas, 1 descartadas, 4 intentos
+
+Léxico FAIL (2 errores)
+  ✗ question gen-q-5-80949092-2 option: vocabulario B2+ en pregunta «Konsequenzen» → usa «Folge / Ergebnis» (B1)
+  ✗ question gen-q-5-80949092-3 option: vocabulario B2+ en pregunta «zugänglich» → usa «einfach / offen» (B1)

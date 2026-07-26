@@ -385,6 +385,40 @@ Detalle vocab v2.2 (P0 gap cerrado): [`gate-logs/VOCAB-P0-RECONCILE-2026-07-10.m
 
 ---
 
+## A2 Hören T2 — alineación diálogo↔clave (recurrente, no hallazgo nuevo)
+
+**ID:** `A2-HOREN-T2-DIALOGUE-KEY-ALIGN`
+
+**Veredicto 2026-07-23:** el 1/6 restante del retest post-fix grammarTags es el **mismo tipo de fallo** ya reportado antes de los fixes de esta sesión — no un patrón nuevo aislado.
+
+| Fase | Documento | Evidencia |
+|------|-----------|-----------|
+| **Diagnóstico original** (pre-fix sesión) | [`docs/A2-CALIBRATION-CLOSURE-FIRETEST-2026-07-22.md`](../docs/A2-CALIBRATION-CLOSURE-FIRETEST-2026-07-22.md) §4B | 4/4 intentos FAIL calidad; «respuestas no alineadas con días/actividades»; `clave «X» no coincide con diálogo` |
+| **Análisis diseño/checker** | [`docs/A2-HOREN-T3-T2-DIAGNOSIS-2026-07-22.md`](../docs/A2-HOREN-T3-T2-DIAGNOSIS-2026-07-22.md) §PASO 3 | Mismo checker `horenPictureMatching.js` → `validatePictureMatchingAlign`; sub-patrón enunciado «Montag» sin hablante (plantilla vs checker) |
+| **Volumen 3 celdas** (post-fix plantilla) | [`docs/A2-VOLUME-TEST-3CELLS-2026-07-23.md`](../docs/A2-VOLUME-TEST-3CELLS-2026-07-23.md) §2 | 6/6 pool-verified pero intentos 4–5 con retries `clave «X» no coincide`; enunciado «Montag» sin hablante **ya no aparece** |
+| **Ronda A–F B+C** | [`docs/A2-MISSING-GRAMMAR-TAGS-CLOSE.md`](../docs/A2-MISSING-GRAMMAR-TAGS-CLOSE.md) §4 + `docs/volume-a2-logs-bc-retest2/` | Retest #2: 5/6; 1 descartado por R1–R3 (Mittwoch sin actividad, clave≠inferida, ficha a–i) |
+
+**Checker (sin cambios):** `js/engine/horenPictureMatching.js` → `validatePictureMatchingAlign` vía `scripts/lib/horenBatchQuality.mjs`. Bloqueo binario: `issues.length > 0`. Score informativo: `100 − issues×8`.
+
+| Regla | Mensaje |
+|-------|---------|
+| R1 | `{Name} no menciona actividad el {Wochentag} en el diálogo` |
+| R2 | `actividad de {Name} el {Wochentag} no mapea a ficha a–i` |
+| R3 | `clave «X» no coincide con diálogo (esperada «Y»: …)` |
+
+**Sub-patrones:**
+
+| Sub-patrón | Estado | Notas |
+|------------|--------|-------|
+| Enunciado solo «Montag» (plantilla ≠ checker) | **Cerrado** | Plantilla `plantillas-horen-a2/horen-teil2.md` alineada a `Was macht {Name} am {Wochentag}?` |
+| Gemini no ejecuta plan semanal / claves en diálogo | **Recurrente** | Causa B rota schedules en prompt (`horenT2ActivityScheduleBank.mjs`) pero no garantiza cumplimiento en texto generado; `ACTIVITY_HINTS` solo valida |
+
+**Relación con ronda A–F:** Causa B cerró **convergencia de stock** (rotación forward); este ítem es **deuda de cumplimiento generativo** — distinto de metadata (`missing_grammarTags`, Causa E, ya cerrada).
+
+**Acción futura (no bloquea volumen A2 3 celdas):** reforzar prompt/fix-retries acotados a qN con schedule explícito, ampliar `ACTIVITY_HINTS`, o post-proceso determinista de claves (evaluar coste/beneficio). No mezclar con backlog grammarTags.
+
+---
+
 ## Referencia rápida
 
 | Área | Índice |

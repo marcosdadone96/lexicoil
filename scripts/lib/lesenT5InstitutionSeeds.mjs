@@ -98,6 +98,46 @@ const SEED_PARTS = Object.freeze({
       'Rauchen ist im gesamten Center einschließlich der Tiefgarage verboten.',
     ],
   },
+  coworking: {
+    prefixes: ['Coworking-Space', 'Shared Office', 'WorkHub', 'DeskLab'],
+    suffixes: ['Mitte', 'Innovationspark', 'Digital Quarter', 'Startup Hub', 'Tech Loft', 'Campus West'],
+    ruleTemplates: [
+      'Meetingräume müssen mindestens 24 Stunden im Voraus über die App gebucht werden.',
+      'WLAN-Zugang ist nur mit persönlichem Zugangscode für registrierte Mitglieder verfügbar.',
+      'Eigene Geräte dürfen nur an den markierten Steckdosen geladen werden.',
+      'In Ruhezonen ist Telefonieren mit Lautsprecher nicht gestattet.',
+    ],
+  },
+  leihgeraete: {
+    prefixes: ['Medienzentrum', 'Stadtbibliothek', 'Geräteausleihe', 'Digital-Bibliothek'],
+    suffixes: ['Mitte', 'Campus', 'Neustadt', 'Technikpark', 'Rathausviertel'],
+    ruleTemplates: [
+      'Tablets und Laptops können maximal 14 Tage ausgeliehen werden.',
+      'Vor der Rückgabe müssen persönliche Daten auf Leihgeräten gelöscht werden.',
+      'Bei Verspätung wird eine Gebühr von {N} Euro pro Tag berechnet.',
+      'Eine Anmeldung mit Ausweis ist für die erste Ausleihe erforderlich.',
+    ],
+  },
+  computerraum: {
+    prefixes: ['Computerraum', 'PC-Labor', 'Medienzentrum', 'Digital-Lernraum'],
+    suffixes: ['Berufsschule', 'VHS', 'Campus Nord', 'Stadtteilzentrum', 'Technikcampus'],
+    ruleTemplates: [
+      'Jeder Arbeitsplatz ist maximal 90 Minuten pro Tag reservierbar.',
+      'USB-Sticks dürfen nur nach Virenscan am Support-Schalter verwendet werden.',
+      'Das Installieren eigener Software ist ohne Genehmigung nicht erlaubt.',
+      'Smartphones müssen im Computerraum auf lautlos gestellt werden.',
+    ],
+  },
+  fitness_app: {
+    prefixes: ['TechFit', 'ActiveApp Studio', 'SmartGym', 'Digital Fitness'],
+    suffixes: ['Mitte', 'West', 'Am Park', 'Innovationspark', 'City-Oase'],
+    ruleTemplates: [
+      'Der Check-in erfolgt ausschließlich über die Studio-App oder den QR-Code am Eingang.',
+      'Kurse müssen mindestens 12 Stunden vor Beginn in der App storniert werden.',
+      'Smart-Geräte sind nach Gebrauch mit Desinfektionsspray zu reinigen.',
+      'Persönliche Fitnessdaten werden nur mit ausdrücklicher Zustimmung gespeichert.',
+    ],
+  },
 });
 
 /**
@@ -218,6 +258,37 @@ export const T5_VARIANT_PROFILES = Object.freeze({
       topicAffinity: ['Konsum', 'Stadtleben'],
     },
   ],
+  coworking: [
+    {
+      id: 'standard',
+      label: 'Coworking allgemein',
+      ruleFocus: 'Meetingräume, WLAN, Ruhezonen, Steckdosen',
+    },
+    {
+      id: 'hotdesk',
+      label: 'Hotdesk / Tagespass',
+      ruleFocus: 'Tagespässe, Schließfächer, Drucker, Küche',
+      ruleTemplates: [
+        'Tagespässe sind nur gültig, wenn der Ausweis an der Rezeption hinterlegt wird.',
+        'Persönliche Gegenstände dürfen nicht über Nacht am Schreibtisch liegen bleiben.',
+        'Der Drucker darf maximal {N} Seiten pro Tag pro Mitglied ausdrucken.',
+        'In der Gemeinschaftsküche sind eigene Lebensmittel klar zu kennzeichnen.',
+      ],
+      topicAffinity: ['Arbeit', 'Technik', 'Medien'],
+    },
+    {
+      id: 'networking',
+      label: 'Networking & Events',
+      ruleFocus: 'After-Work-Events, Gäste, Lautstärke nach 20 Uhr',
+      ruleTemplates: [
+        'Gäste sind bei Networking-Events nur mit vorheriger Anmeldung willkommen.',
+        'After-Work-Veranstaltungen enden spätestens um {N}:00 Uhr.',
+        'Präsentationen in offenen Bereichen sind nur mit Headset erlaubt.',
+        'Fotos von anderen Mitgliedern dürfen nur mit deren Zustimmung gemacht werden.',
+      ],
+      topicAffinity: ['Arbeit', 'Stadtleben', 'Medien'],
+    },
+  ],
 });
 
 export function listT5VariantProfiles(textSubtype) {
@@ -308,7 +379,7 @@ export function buildT5InstitutionSeedPromptBlock(seed) {
     `  1. ${seed.rule1}\n` +
     `  2. ${seed.rule2}\n` +
     `- Añade 3–5 reglas adicionales propias de ${seed.institutionName}, acorde al enfoque de arriba.\n` +
-    `- El título del pasaje debe contener «${seed.institutionName}» o una variante clara del nombre.\n`
+    `- Usa el **título obligatorio** indicado abajo (no inventes otro).\n`
   );
 }
 

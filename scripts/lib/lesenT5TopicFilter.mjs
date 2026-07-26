@@ -10,6 +10,10 @@ import { checkPassageContentTopic } from './qualityGates/contentTopicCheck.mjs';
 export const TOPIC_SUBTYPE_ONLY = Object.freeze({
   markthalle: ['Konsum'],
   einkaufszentrum: ['Konsum'],
+  coworking: ['Technik', 'Arbeit', 'Medien'],
+  leihgeraete: ['Technik', 'Bildung', 'Medien'],
+  computerraum: ['Technik', 'Bildung', 'Medien'],
+  fitness_app: ['Technik', 'Sport', 'Gesundheit'],
 });
 
 export const TOPIC_SUBTYPE_HARD_EXCLUDE = Object.freeze({
@@ -47,7 +51,7 @@ export const TOPIC_SUBTYPE_PREFERENCE = Object.freeze({
   Freizeit: ['freizeitzentrum', 'sportverein', 'park'],
   Kultur: ['bibliothek', 'freizeitzentrum', 'park'],
   Reisen: ['bibliothek', 'freizeitzentrum', 'park'],
-  Technik: ['bibliothek', 'schule'],
+  Technik: ['coworking', 'leihgeraete', 'computerraum', 'fitness_app', 'bibliothek', 'schule'],
   Stadtleben: ['park', 'freizeitzentrum', 'bibliothek'],
 });
 

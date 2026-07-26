@@ -17,6 +17,16 @@ import {
 } from './promptAssembly.mjs';
 import { GENERATED_DIR, nextNumberedBatchBasename } from './batchPaths.mjs';
 import { buildLengthBiasRepairSpec, mcqCorrectLetter, mcqOptionBody } from './mcqLengthBias.mjs';
+import { finalizeRepairPrompt } from './germanExplanationPromptRules.mjs';
+
+function formatForbiddenNgramsBlock(ngrams) {
+  const list = (ngrams || []).filter(Boolean).slice(0, 40);
+  if (!list.length) return '';
+  return (
+    `- N-GRAMAS PROHIBIDOS del pasaje/audio (≥4 palabras seguidas — NO repetir en opción correcta ni enunciado):\n` +
+    `${list.map((g) => `  · «${g}»`).join('\n')}\n`
+  );
+}
 
 const PLACEHOLDER =
   /<<< pon aquí 8-12 palabras alemanas separadas por comas, p\. ej\.: bibliothek, ausleihen, frist, gebühr >>>/;
@@ -73,6 +83,38 @@ const TEIL_LENGTH_RULES = {
   },
 };
 
+/** Goethe A2 Lesen — alineado a library/blueprints/goethe_A2.json */
+const A2_TEIL_LENGTH_RULES = {
+  1: {
+    target: '120-200',
+    min: 120,
+    max: 200,
+    scope: 'passages[0].text',
+    note: 'Medientext / Zeitungsnotiz, 5 MCQ a/b/c.',
+  },
+  2: {
+    target: '80-150',
+    min: 80,
+    max: 150,
+    scope: 'passages[0].text (Informationstafel / Plan)',
+    note: 'Plano de edificio o tablero informativo, 5 MCQ situacionales Stock/Etage.',
+  },
+  3: {
+    target: '100-180',
+    min: 100,
+    max: 180,
+    scope: 'passages[0].text (E-Mail)',
+    note: 'Correo con Anrede + Gruß, 5 MCQ a/b/c.',
+  },
+  4: {
+    target: '20-60 por anuncio',
+    min: 20,
+    max: 60,
+    scope: 'cada passages[i].text (6 Anzeigen a–f)',
+    note: '6 anuncios + 5 matching; opciones ["a"…"f","X"].',
+  },
+};
+
 const CEFR_VOCAB_HINT =
   'Prefiere léxico B1 frecuente: Bewohner, Nachbarn, Stadt, Programm, Organisation, Erfahrungen, ' +
   'Familie, Kinder, Schule, Arbeit, Transport, Kurs, Projekt, Freizeit, Bericht, Termin. ' +
@@ -105,15 +147,26 @@ const STYLE_ANTI_PATTERNS =
   '«verändert mein Leben für immer», «magische Erfahrung», hipérboles sentimentales. ' +
   'Prefiere registro neutro/informativo típico Goethe B1 (hechos, reglas, opiniones mesuradas).';
 
-function teilLengthBlock(teil) {
-  const r = TEIL_LENGTH_RULES[teil];
+const CEFR_A2_VOCAB_HINT =
+  'Prefiere léxico A2 frecuente (Familie, Wohnung, Arbeit, Freizeit, Einkaufen, Termin, Stadt, Kurs). ' +
+  'Evita términos B1+ (Herausforderung, Weiterbildung, Investition…) salvo en PALABRAS OBJETIVO.';
+
+function teilLengthBlock(teil, level = 'B1') {
+  const lv = String(level || 'B1').trim().toUpperCase();
+  const rules = lv === 'A2' ? A2_TEIL_LENGTH_RULES : TEIL_LENGTH_RULES;
+  const r = rules[teil];
   if (!r) return '';
   const t2Extra =
-    Number(teil) === 2
+    Number(teil) === 2 && lv !== 'A2'
       ? '\n- **CRÍTICO T2:** suma passages[0].text + passages[1].text ≤ **400 palabras** (gate CEFR). ' +
         'Objetivo **330-390 total** (~165-195 por texto). Si cada texto tiene ~220 palabras, FALLARÁS el ingest.\n' +
         '- Cuenta ambos textos antes de enviar; recorta relleno si la suma supera 390.\n'
       : '';
+  const vocabHint = lv === 'A2' ? CEFR_A2_VOCAB_HINT : CEFR_VOCAB_HINT;
+  const coverageNote =
+    lv === 'A2'
+      ? '- Cobertura léxica A2 objetivo: **≥55%** (texto demasiado complejo penaliza).\n'
+      : '- Cobertura léxica B1 objetivo: **≥75%** (palabras fuera de lista B1 frecuente penalizan).\n';
   return (
     `\n\n## LONGITUD CEFR (OBLIGATORIO — ingest RECHAZA si fallas)\n` +
     `- Ámbito: **${r.scope}** (${r.note})\n` +
@@ -122,9 +175,9 @@ function teilLengthBlock(teil) {
     t2Extra +
     `- **CUENTA las palabras antes de responder.** Si estás por debajo, añade 2-4 frases nuevas con contenido (no relleno con adjetivos).\n` +
     `- El ejemplo JSON puede ser más corto por legibilidad; **tu salida NO puede ser más corta que el mínimo**.\n` +
-    `- ${CEFR_VOCAB_HINT}\n` +
+    `- ${vocabHint}\n` +
     `- ${STYLE_ANTI_PATTERNS}\n` +
-    `- Cobertura léxica B1 objetivo: **≥75%** (palabras fuera de lista B1 frecuente penalizan).`
+    coverageNote
   );
 }
 
@@ -160,8 +213,9 @@ export function injectTargetWords(markdown, words) {
   return applyVocabPreferenceToTemplate(markdown, words);
 }
 
-export function buildFewShotLesenBlock(teil, examples = []) {
+export function buildFewShotLesenBlock(teil, examples = [], level = 'B1') {
   if (!examples?.length) return '';
+  const lv = String(level || 'B1').trim().toUpperCase();
   const blocks = examples.map((ex, i) => {
     const slim = {
       passages: (ex.passages || []).map((p) => ({
@@ -175,17 +229,61 @@ export function buildFewShotLesenBlock(teil, examples = []) {
         explanation: q.explanation,
       })),
     };
-    return `### Ejemplo verificado ${i + 1} (T${teil}, tema ${ex.topicTag || ex._requestedTopic || 'B1'})\n\`\`\`json\n${JSON.stringify(slim, null, 2)}\n\`\`\``;
+    return `### Ejemplo verificado ${i + 1} (T${teil}, tema ${ex.topicTag || ex._requestedTopic || lv})\n\`\`\`json\n${JSON.stringify(slim, null, 2)}\n\`\`\``;
   });
   return (
-    `\n\n## EJEMPLOS VERIFICADOS (imita nivel B1, parafraseo, estilo — NO copies contenido ni IDs)\n` +
+    `\n\n## EJEMPLOS VERIFICADOS (imita nivel ${lv}, parafraseo, estilo — NO copies contenido ni IDs)\n` +
     `Genera UNA parte **nueva** con el mismo nivel de calidad que estos ejemplos del pool:\n\n` +
     blocks.join('\n\n') +
     `\n\n`
   );
 }
 
+function buildLesenChecklistBlockA2(teil, options = {}) {
+  const { minimalRules } = options;
+  if (minimalRules) {
+    return (
+      `\n\nCHECKLIST FINAL (mínima — calidad vía plantilla A2):\n` +
+      `- JSON válido único; IDs con el prefijo de esta generación.\n` +
+      `- level:"A2" en passage y questions.\n` +
+      (Number(teil) === 1
+        ? `- (T1 A2) Medientext 3ª persona/reportaje; **5 MCQ** a/b/c; PROHIBIDO ich-Blog y richtig_falsch.\n`
+        : '') +
+      (Number(teil) === 2
+        ? `- (T2 A2) Informationstafel + 5 MCQ a/b/c.\n`
+        : '') +
+      (Number(teil) === 3
+        ? `- (T3 A2) E-Mail/Korrespondenz + 5 MCQ a/b/c.\n`
+        : '') +
+      `- Vocabulario preguntas/explicaciones ≤ A2; sin jerga B1+.\n` +
+      `- Responde SOLO con el objeto JSON.\n`
+    );
+  }
+  return (
+    `\n\nCHECKLIST FINAL (Goethe A2 + CEFR):\n` +
+    `- Cumple la plantilla A2 de esta parte (formato oficial Goethe A2).\n` +
+    `- Anti–word-matching: parafraseo, no emparejar palabras sueltas.\n` +
+    `- Longitud: cumple el mínimo CEFR de arriba (cuenta palabras).\n` +
+    `- El batch debe pasar validate-batch + calidad pedagógica + ingest sin errores.\n` +
+    `- VOCABULARIO SUGERIDO: integra palabras solo si encajan; omite las que no encajen.\n` +
+    (Number(teil) === 1
+      ? `- (T1 A2) **Medientext** informativo en 3ª persona; título de prensa; **5× multiple_choice** a/b/c.\n` +
+        `- (T1 A2) PROHIBIDO: blog en «ich», richtig_falsch, registro B1 (Organisation, Gemeinschaft, Investition…).\n` +
+        `- (T1 A2) explanation ≥6 palabras en alemán.\n`
+      : '') +
+    (Number(teil) === 2
+      ? `- (T2 A2) Texto de informationstafel + 5 MCQ a/b/c; topicTag coherente.\n`
+      : '') +
+    (Number(teil) === 3
+      ? `- (T3 A2) E-Mail/Korrespondenz + 5 MCQ a/b/c.\n`
+      : '') +
+    `- Responde SOLO con el objeto JSON (sin markdown, sin \`\`\`, sin texto antes ni después).`
+  );
+}
+
 function buildLesenChecklistBlock(teil, options = {}) {
+  const level = String(options.level || 'B1').trim().toUpperCase();
+  if (level === 'A2') return buildLesenChecklistBlockA2(teil, options);
   const { minimalRules, debateSeed, debateDef } = options;
   if (minimalRules) {
     return (
@@ -318,7 +416,7 @@ export function buildLesenStaticCore(teil, options = {}) {
   body = stripAutorrevisionSection(body);
   return (
     body.trim() +
-    teilLengthBlock(Number(teil)) +
+    teilLengthBlock(Number(teil), level) +
     buildLesenChecklistBlock(Number(teil), options)
   );
 }
@@ -340,6 +438,7 @@ export function buildLesenVariableSuffix(teil, words, options = {}) {
     forumNamesBlock,
     institutionSeed,
     bankEscalation,
+    mandatedTitle,
   } = options;
   const raw = stripHumanHeader(loadLesenTemplate(teil, options.level || 'B1'));
   let suffix = '';
@@ -352,6 +451,7 @@ export function buildLesenVariableSuffix(teil, words, options = {}) {
       excludeMolds,
       institutionSeed,
       bankEscalation,
+      mandatedTitle,
     });
   }
   if (Number(teil) === 4 && (debateSeed || debateDef)) {
@@ -361,6 +461,7 @@ export function buildLesenVariableSuffix(teil, words, options = {}) {
       debateSeed,
       excludeMolds,
       topicTag,
+      mandatedTitle,
     });
   }
   suffix += variantScaffold.replace(/^## AUTORREVISIÓN\n/, '');
@@ -373,7 +474,7 @@ export function buildLesenVariableSuffix(teil, words, options = {}) {
   suffix += vocabBlock;
 
   if (fewShotExamples?.length) {
-    suffix += buildFewShotLesenBlock(Number(teil), fewShotExamples);
+    suffix += buildFewShotLesenBlock(Number(teil), fewShotExamples, options.level || 'B1');
   } else {
     const autorrevision = extractAutorrevisionSection(raw);
     if (autorrevision) suffix += `\n${autorrevision}`;
@@ -433,8 +534,9 @@ export function buildMcqWordCopyRepairPrompt(ctx) {
   const opts = (q.options || []).map((o, i) => `${String.fromCharCode(97 + i)}) ${o}`).join('\n');
   const issues = (ctx.findings || []).map((f) => `- ${f.detail || 'word-copy'}`).join('\n');
   const forbidden = (ctx.forbiddenTokens || []).slice(0, 20).join(', ');
+  const ngramBlock = formatForbiddenNgramsBlock(ctx.forbiddenNgrams);
 
-  return (
+  return finalizeRepairPrompt(
     `Eres examinador Goethe B1 Lesen Teil ${ctx.teil || 2}. El PASAJE está aprobado — NO lo modifiques.\n` +
     `Reescribe SOLO esta pregunta MCQ: parafrasea la opción CORRECTA para que NO copie ≥${minWords} palabras seguidas del pasaje.\n\n` +
     `## Pasaje (NO cambiar)\n` +
@@ -452,6 +554,7 @@ export function buildMcqWordCopyRepairPrompt(ctx) {
     (forbidden
       ? `- EVITA estas palabras frecuentes del pasaje en la opción correcta (usa sinónimos B1): ${forbidden}\n`
       : '') +
+    ngramBlock +
     `- Distractores: datos distintos del pasaje, no sinónimos de la correcta.\n` +
     `- explanation ≥10 palabras.\n\n` +
     `Devuelve SOLO JSON:\n` +
@@ -496,9 +599,11 @@ export function buildT2McqWordCopyBatchRepairPrompt(ctx) {
     .map((s) => `  · «${s}»`)
     .join('\n');
   const forbidden = (ctx.forbiddenTokens || []).slice(0, 25).join(', ');
+  const ngramBlock = formatForbiddenNgramsBlock(ctx.forbiddenNgrams);
+  const examLabel = ctx.examLabel || 'Goethe B1 Lesen Teil 2';
 
-  return (
-    `Eres examinador Goethe B1 Lesen Teil 2. Los PASAJES están aprobados — NO los modifiques.\n` +
+  return finalizeRepairPrompt(
+    `Eres examinador ${examLabel}. Los PASAJES están aprobados — NO los modifiques.\n` +
     `Reescribe ${items.length} pregunta(s) MCQ en UNA respuesta: parafrasea cada opción CORRECTA para que NO copie ≥${minWords} palabras seguidas del pasaje.\n\n` +
     `## Pasajes (NO cambiar)\n${passageBlocks}\n\n` +
     `## Preguntas a reparar\n${questionBlocks}\n` +
@@ -511,6 +616,7 @@ export function buildT2McqWordCopyBatchRepairPrompt(ctx) {
     (forbidden
       ? `- EVITA estas palabras frecuentes del pasaje en opciones correctas: ${forbidden}\n`
       : '') +
+    ngramBlock +
     `- Distractores: datos distintos del pasaje, no sinónimos de la correcta.\n` +
     `- explanation ≥10 palabras por pregunta.\n\n` +
     `Ejemplo:\n` +
@@ -556,7 +662,7 @@ export function buildT2PassageLengthRepairPrompt(ctx) {
   const targetMax = ctx.targetMax ?? 395;
   const maxAllowed = ctx.maxAllowed ?? 400;
 
-  return (
+  return finalizeRepairPrompt(
     `Eres examinador Goethe B1 Lesen Teil 2. Las PREGUNTAS MCQ están aprobadas — NO las modifiques.\n` +
     `Acorta AMBOS pasajes de prensa para que la SUMA sea ≤${targetMax} palabras (máx absoluto ${maxAllowed}).\n` +
     `Ahora: ${combinedBefore} palabras en total — debes recortar ~${Math.max(0, combinedBefore - targetMax)}.\n\n` +
@@ -622,7 +728,7 @@ export function buildMcqLengthBiasBatchRepairPrompt(ctx) {
     })
     .join('\n\n');
 
-  return (
+  return finalizeRepairPrompt(
     `Eres examinador Goethe B1 ${module === 'horen' ? 'Hören' : 'Lesen'} Teil ${teil}.\n` +
     `El ${sourceLabel} está aprobado — NO lo modifiques.\n` +
     `Corrige ${items.length} pregunta(s) MCQ: la opción CORRECTA NO puede ser la más larga (sesgo de longitud).\n` +
@@ -655,7 +761,7 @@ export function buildMcqLengthBiasRegenPrompt(ctx) {
     .map((o, i) => `${String.fromCharCode(97 + i)}) ${mcqOptionBody(o)}`)
     .join('\n');
 
-  return (
+  return finalizeRepairPrompt(
     `Eres examinador Goethe B1 ${module === 'horen' ? 'Hören' : 'Lesen'} Teil ${teil}.\n` +
     `El ${sourceLabel} está aprobado — NO lo modifiques.\n` +
     `Reescribe COMPLETA esta pregunta MCQ: elimina el sesgo de longitud (la correcta no puede ser la más larga).\n\n` +
@@ -707,7 +813,7 @@ export function buildLexicoBatchRepairPrompt(ctx) {
     })
     .join('\n\n');
 
-  return (
+  return finalizeRepairPrompt(
     `Eres corrector Goethe ${level} (${module}). Los pasajes/transcripciones están aprobados — NO los modifiques.\n` +
     `Sustituye SOLO los términos marcados por alternativas de nivel ${targetLevel} (evita léxico ${ceilingLabel}).\n\n` +
     `## Hallazgos léxicos\n${findingBlock}\n\n` +
@@ -729,7 +835,7 @@ export function buildL2McqDistinctRepairPrompt(ctx) {
   const opts = (q.options || []).map((o, i) => `${String.fromCharCode(97 + i)}) ${o}`).join('\n');
   const issues = (ctx.findings || []).map((f) => `- ${f.detail || f.message || 'opciones duplicadas'}`).join('\n');
 
-  return (
+  return finalizeRepairPrompt(
     `Eres examinador Goethe B1 Lesen Teil 2. El PASAJE está aprobado — NO lo modifiques.\n` +
     `Reescribe SOLO las 3 opciones a/b/c y la explanation de esta pregunta MCQ.\n\n` +
     `## Pasaje (NO cambiar)\n` +
@@ -857,7 +963,7 @@ export function buildT1QuestionsRepairPrompt(ctx) {
   const forbidden = (ctx.forbiddenTokens || []).slice(0, 30).join(', ');
   const issues = (ctx.qualityIssues || []).slice(0, 6).map((i) => `- ${i}`).join('\n');
   const pid = passage.id || `gen-l1-${ctx.idSuffix || 'repair'}`;
-  return (
+  return finalizeRepairPrompt(
     `Eres examinador Goethe B1 Lesen Teil 1. El PASAJE ya está aprobado — NO lo modifiques.\n` +
     `Reescribe SOLO las 6 afirmaciones Richtig/Falsch (type "richtig_falsch").\n\n` +
     `## Pasaje (NO cambiar)\n` +

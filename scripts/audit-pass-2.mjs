@@ -8,6 +8,8 @@
  *   node scripts/audit-pass-2.mjs <ruta> --fail-on=CRITICAL|IMPORTANT|none
  *   node scripts/audit-pass-2.mjs <ruta> --fix-types      # reescribe type:"multiple" in-place
  *   node scripts/audit-pass-2.mjs <ruta> --summary-only   # solo el bloque RESUMEN
+ *   node scripts/audit-pass-2.mjs <ruta> --action-table    # tabla archivo|check|severidad|acción
+ *   node scripts/audit-pass-2.mjs <ruta> --action-report=<path.json>
  *
  * Flags combinables. Código de salida 1 si hay findings ≥ --fail-on (default: CRITICAL).
  */
@@ -34,11 +36,21 @@ import {
   isLesenT3TopicCompatible,
 } from './lib/lesenT3TopicFilter.mjs';
 import { verifyHorenT4MatchingChrono } from './lib/horenT4ChronoEvidence.mjs';
+import { verifyRfChronoByCharPos } from './lib/horenRfChronoEvidence.mjs';
+import { runGermanContentLanguageGate } from './lib/qualityGates/germanContentLanguageGate.mjs';
+import { collectMcqLengthBiasIssues } from './lib/mcqLengthBias.mjs';
+import {
+  isVocabLemmaCorruption,
+  isValidGrammarTag,
+} from './lib/enrichBatchMetadata.mjs';
+import { loadVocabBankLemmaSet } from './lib/vocabBank.mjs';
 import { createRequire } from 'node:module';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const require = createRequire(import.meta.url);
 const { detectTopic } = require(path.join(ROOT, 'js/engine/partTopicDetect.js'));
+const HorenPictureMatching = require(path.join(ROOT, 'js/engine/horenPictureMatching.js'));
+const SprechenBriefing = require(path.join(ROOT, 'js/engine/sprechenBriefing.js'));
 
 // ─── Editable constants ────────────────────────────────────────────────────
 
@@ -168,7 +180,7 @@ function chk1(batch, file) {
 const VALID_CORRECT = {
   richtig_falsch:  v => ['Richtig','Falsch','R','F'].includes(v) || /^(richtig|falsch|true|false|r|f)$/i.test(v),
   ja_nein:         v => ['Ja','Nein','J','N'].includes(v)        || /^(ja|nein|j|n|yes|no)$/i.test(v),
-  matching:        v => /^[a-jA-J0]$/.test(v),
+  matching:        v => /^[a-jA-J0Xx]$/.test(v),
   // Renderer stores the user's click as optKey() → a single letter (any case).
   // Grading uses normalizeGradingToken() which calls .toLowerCase().
   // Both "A" and "a" grade correctly.  Accept a–d (case-insensitive) to cover
@@ -779,6 +791,7 @@ const KNOWN_NOT_NOUNS_14 = new Set([
   'verständliche','verständlich','vielen','viele','ledige','ledig',
   // Adjectives in lexicon — not nouns after und/oder/mit
   'teuer','teure','teures','teuren','teurer','teurem',
+  'preiswert','preiswerte','preiswerten','preiswertes','preiswerter','preiswertem',
   'positive','positiven','positives','positiver','positivem',
   'politische','politischen','politisches','politischem','politischer',
   'sogenannte','sogenannten','sogenannter','sogenanntes',
@@ -835,6 +848,12 @@ function looksLikeNeuterAdjectiveEs(word) {
 function isEinPaarIdiom(articleLemma, word) {
   return String(articleLemma || '').toLowerCase() === 'ein'
     && String(word || '').toLowerCase() === 'paar';
+}
+
+/** Locution «ein bisschen» (= a little); not the noun «das Bisschen». */
+function isEinBisschenIdiom(articleLemma, word) {
+  return String(articleLemma || '').toLowerCase() === 'ein'
+    && String(word || '').toLowerCase() === 'bisschen';
 }
 
 function chk14NextToken(text, matchEnd) {
@@ -929,6 +948,7 @@ function chk14(batch, file) {
       const nextTok = chk14NextToken(text, m.index + m[0].length);
       // «ein paar Ideen» — fixed quantifier, not noun «Paar»
       if (isEinPaarIdiom(articleLemma, word)) continue;
+      if (isEinBisschenIdiom(articleLemma, word)) continue;
       if (KNOWN_NOT_NOUNS_14.has(word.toLowerCase())) continue; // common adj/verb false positives
       if (isChk14FiniteVerbFp(word, articleLemma, nextTok)) continue;
       if (ADJ_NEEDS_ARTICLE_GUARD.has(word.toLowerCase())) continue; // substantivised adj forms in lexicon
@@ -1201,6 +1221,29 @@ function chk16(batch, file) {
   return findings;
 }
 
+// ─── CHK-H2-ALIGN: Hören A2 T2 picture_matching — hablante + actividad ↔ clave ─
+function chkH2Align(batch, file) {
+  const findings = [];
+  const level = String(batch.level || batch.questions?.[0]?.level || '').toUpperCase();
+  const mod = String(batch.module || batch.questions?.[0]?.module || batch.passages?.[0]?.module || '').toLowerCase();
+  const teil = Number(batch.teil || batch.questions?.[0]?.teil || batch.passages?.[0]?.teil);
+  const isH2A2 =
+    (mod === 'horen' && teil === 2 && level === 'A2') ||
+    (batch.passages?.[0]?.pictures?.length >= 9 && batch.questions?.every((q) => q.type === 'matching'));
+  if (!isH2A2) return findings;
+
+  const issues = HorenPictureMatching.validatePictureMatchingAlign(batch, {
+    module: 'horen',
+    teil: 2,
+    level: 'A2',
+  });
+  for (const msg of issues) {
+    const scope = msg.match(/^([^:]+):/)?.[1] || 'horen-t2';
+    findings.push(finding('CHK-H2-ALIGN', 'CRITICAL', file, scope, msg));
+  }
+  return findings;
+}
+
 // ─── CHK-17: Lesen T3 — estructura y coherencia de la clave ──────────────
 //
 // El formato canónico de almacenamiento (oficial Goethe / runtime LexiLoop) es:
@@ -1402,7 +1445,7 @@ function chk17(batch, file) {
 // Toda pregunta debe tener una explanation substantiva, en alemán, no circular.
 
 // German function words — presence of any 1 confirms text is German.
-const GERMAN_MARKER_RE = /\b(der|die|das|den|dem|ein|eine|und|ist|sind|war|haben|wird|nicht|auch|aber|weil|wenn|dass|für|von|zu|auf|aus|mit|an|kein|keine|dieser|welche|bietet|lehrt|hilft|repariert|zeigt|erklärt|sagt|nennt|gibt|wechselt|verkauft|vermietet|organisiert|vermittelt|reinigt|begleitet|unterrichtet|pflegt)\b/i;
+const GERMAN_MARKER_RE = /\b(der|die|das|den|dem|ein|eine|und|ist|sind|war|haben|wird|nicht|auch|aber|weil|wenn|dass|für|von|zu|auf|aus|mit|an|im|am|ins|zum|zur|kein|keine|dieser|welche|geht|macht|hat|trifft|fahrt|fährt|kocht|lernt|einkaufen|bietet|lehrt|hilft|repariert|zeigt|erklärt|sagt|nennt|gibt|wechselt|verkauft|vermietet|organisiert|vermittelt|reinigt|begleitet|unterrichtet|pflegt)\b/i;
 const TRIVIAL_EXPL_RE = /^(richtig|falsch|ja|nein|korrekt|genau|das stimmt|das ist richtig|das ist korrekt|das ist falsch)\.?$/i;
 
 function chk18(batch, file) {
@@ -1931,6 +1974,14 @@ function partKeySequenceGroups(batch) {
   const teil = Number(batch.teil ?? qs[0]?.teil);
   if (!mod || !Number.isFinite(teil)) return [];
 
+  // Schreiben/Sprechen rubric-only: no MCQ key sequence — CHK-25 N/A (not exploitable).
+  if (
+    (mod === 'schreiben' || mod === 'sprechen') &&
+    qs.every((q) => /^rubric$/i.test(String(q.correctAnswer ?? q.correct ?? '')))
+  ) {
+    return [];
+  }
+
   const types = [...new Set(qs.map((q) => String(q.type || '').toLowerCase()).filter(Boolean))];
   return types
     .map((type) => ({
@@ -2083,10 +2134,12 @@ function chk11(batch, file) {
 
 function chk29(batch, file) {
   const findings = [];
+  const lv = inferAuditLevel(batch);
   const t4qs = (batch.questions || []).filter(
     (q) => q.module === 'horen' && Number(q.teil) === 4 && q.type === 'matching',
   );
-  if (t4qs.length !== 8) return findings;
+  const expected = blueprintForLevel(lv)['horen-4']?.count;
+  if (!t4qs.length || expected == null || t4qs.length !== expected) return findings;
 
   const chrono = verifyHorenT4MatchingChrono(batch);
   for (const msg of chrono.blockingIssues || []) {
@@ -2096,6 +2149,402 @@ function chk29(batch, file) {
     findings.push(finding('CHK-29', 'MINOR', file, 'T4-chrono', msg));
   }
   return findings;
+}
+
+// ─── CHK-30: Metadatos de pool — integridad básica ─────────────────────────
+
+function chk30PoolMeta(batch, file) {
+  const findings = [];
+  if (batch._rejectedReason) {
+    findings.push(finding(
+      'CHK-30',
+      'CRITICAL',
+      file,
+      'meta',
+      `_rejectedReason=${JSON.stringify(batch._rejectedReason)} — registro rechazado no debe estar en pool-verified`,
+    ));
+  }
+  return findings;
+}
+
+// ─── CHK-30b: Lesen T4 — título truncado / desalineado con _debateSeed ─────
+
+const VALID_TITLE_END_RE = /[.!?»"\u201d)\]:]\s*$/u;
+
+function stripStadtforumPrefix(title) {
+  return String(title || '').trim().replace(/^Stadtforum:\s*/i, '').trim();
+}
+
+function normalizeTitleCompare(s) {
+  return String(s || '').replace(/\s+/g, ' ').trim();
+}
+
+function titleAlignedWithDebateSeed(titleNorm, seedNorm) {
+  if (!titleNorm || !seedNorm) return true;
+  const t = titleNorm.toLowerCase();
+  const s = seedNorm.toLowerCase();
+  if (s.startsWith(t)) return true;
+  const prefixLen = Math.min(48, t.length);
+  if (prefixLen >= 12 && s.startsWith(t.slice(0, prefixLen))) return true;
+  return false;
+}
+
+function chk30bLesenT4Title(batch, file) {
+  const findings = [];
+  const qs = batch.questions || [];
+  const isL4 = qs.some((q) => String(q.module || '').toLowerCase() === 'lesen' && Number(q.teil) === 4);
+  if (!isL4) return findings;
+
+  const seed = batch._debateSeed || batch.debateSeed;
+  const seedNorm = seed ? normalizeTitleCompare(seed) : '';
+
+  for (const p of batch.passages || []) {
+    const rawTitle = p.title || p.textTitle || '';
+    if (!rawTitle) continue;
+    const stripped = stripStadtforumPrefix(rawTitle);
+    const titleNorm = normalizeTitleCompare(stripped);
+    const endsOk = VALID_TITLE_END_RE.test(titleNorm);
+
+    if (seedNorm) {
+      if (!titleAlignedWithDebateSeed(titleNorm, seedNorm)) {
+        findings.push(finding(
+          'CHK-30b',
+          'IMPORTANT',
+          file,
+          'lesen-4/title',
+          `Título del foro no coincide con _debateSeed: «${titleNorm.slice(0, 72)}…» vs seed «${seedNorm.slice(0, 72)}…»`,
+        ));
+      }
+      if (!endsOk && titleNorm.length < seedNorm.length - 2) {
+        findings.push(finding(
+          'CHK-30b',
+          'CRITICAL',
+          file,
+          'lesen-4/title',
+          `Título truncado (sin puntuación final y más corto que _debateSeed): «${rawTitle.slice(0, 96)}»`,
+        ));
+      }
+    } else if (!endsOk && titleNorm.length > 28) {
+      findings.push(finding(
+        'CHK-30b',
+        'IMPORTANT',
+        file,
+        'lesen-4/title',
+        `Título posiblemente truncado (no termina en .!?): «${rawTitle.slice(0, 96)}»`,
+      ));
+    }
+  }
+  return findings;
+}
+
+// ─── CHK-Q5: Idioma alemán (germanContentLanguageGate) ───────────────────────
+
+function chkQ5GermanContent(batch, file) {
+  const findings = [];
+  const verdict = runGermanContentLanguageGate(batch, { file: path.basename(file) });
+  for (const f of verdict.findings || []) {
+    const sev = f.severity === 'block' ? 'CRITICAL' : 'IMPORTANT';
+    findings.push(finding('CHK-Q5', sev, file, f.span || 'lang', f.detail || f.rule || 'non_german'));
+  }
+  return findings;
+}
+
+// ─── CHK-31: Corrupción de lematizador (v2.3.16 + red de seguridad) ─────────
+
+const LEMMA_SAFETY_NET = new Set([
+  'interessanen', 'kaputen', 'direken', 'hingegangen', 'förderen', 'schlechen',
+]);
+
+function vocabularyTagLooksCorrupted(tag, b1Set) {
+  const t = String(tag || '').toLowerCase().trim();
+  if (!t) return false;
+  if (LEMMA_SAFETY_NET.has(t)) return true;
+  if (b1Set?.has(t)) return false;
+  if (!/eren$/.test(t) || /ieren$/.test(t)) return false;
+  if (b1Set?.has(`${t.slice(0, -1)}n`)) return true;
+  const fromT = `${t.slice(0, -2)}t`;
+  return isVocabLemmaCorruption(fromT, t, b1Set);
+}
+
+function chk31VocabLemma(batch, file) {
+  const findings = [];
+  const lv = inferAuditLevel(batch);
+  const b1Set = loadVocabBankLemmaSet('de', lv);
+  for (const q of batch.questions || []) {
+    for (const tag of q.vocabularyTags || []) {
+      if (vocabularyTagLooksCorrupted(tag, b1Set)) {
+        findings.push(finding(
+          'CHK-31',
+          'IMPORTANT',
+          file,
+          q.id,
+          `vocabularyTag «${tag}» parece corrupción de lematizador (isVocabLemmaCorruption / banco ${lv})`,
+        ));
+      }
+    }
+    for (const gt of q.grammarTags || []) {
+      if (!isValidGrammarTag(gt)) {
+        findings.push(finding(
+          'CHK-31',
+          'IMPORTANT',
+          file,
+          q.id,
+          `grammarTag inválido «${gt}» (categoría gramatical no reconocida)`,
+        ));
+      }
+    }
+  }
+  return findings;
+}
+
+// ─── CHK-32: Nombres propios — frecuencia global por celda (≥5%) ───────────
+
+const NAME_SPEAKER_SKIP = new Set([
+  'Moderator', 'Moderatorin', 'Sprecher', 'Sprecherin',
+]);
+
+function extractProperNamesFromBatch(batch) {
+  const names = [];
+  const blobs = [
+    ...(batch.passages || []).map((p) => p.text || p.transcript || ''),
+    ...(batch.segments || []).map((s) => s.text || s.transcript || ''),
+  ];
+  for (const blob of blobs) {
+    for (const m of String(blob).matchAll(/\b([A-ZÄÖÜ][a-zäöüß]{2,18}):/gu)) {
+      const n = m[1];
+      if (!NAME_SPEAKER_SKIP.has(n)) names.push(n);
+    }
+  }
+  for (const q of batch.questions || []) {
+    const a = extractT4Author(q);
+    if (a && !NAME_SPEAKER_SKIP.has(a)) names.push(a);
+  }
+  return names;
+}
+
+function cellKeyForBatch(batch) {
+  const qs = batch.questions || [];
+  const lv = inferAuditLevel(batch);
+  const mod = String(batch.module || qs[0]?.module || '').toLowerCase();
+  const teil = Number(batch.teil ?? qs[0]?.teil);
+  if (!mod || !Number.isFinite(teil)) return null;
+  return `${lv}|${mod}|${teil}`;
+}
+
+function chk32GlobalNameFrequency(allBatches) {
+  const findings = [];
+  const filesPerCell = new Map();
+  const nameFiles = new Map();
+
+  for (const { batch, file } of allBatches) {
+    const ck = cellKeyForBatch(batch);
+    if (!ck) continue;
+    if (!filesPerCell.has(ck)) filesPerCell.set(ck, new Set());
+    filesPerCell.get(ck).add(file);
+
+    const uniqueInFile = new Set(extractProperNamesFromBatch(batch));
+    for (const name of uniqueInFile) {
+      const nk = `${ck}\0${name}`;
+      if (!nameFiles.has(nk)) nameFiles.set(nk, new Set());
+      nameFiles.get(nk).add(file);
+    }
+  }
+
+  const hotNames = new Map();
+  for (const [nk, fileSet] of nameFiles) {
+    const sep = nk.indexOf('\0');
+    const ck = nk.slice(0, sep);
+    const name = nk.slice(sep + 1);
+    const total = filesPerCell.get(ck)?.size || 0;
+    if (total < 8) continue;
+    const freq = fileSet.size / total;
+    if (freq > 0.05) hotNames.set(nk, { ck, name, freq, count: fileSet.size, total });
+  }
+
+  for (const { batch, file } of allBatches) {
+    const ck = cellKeyForBatch(batch);
+    if (!ck) continue;
+    for (const name of new Set(extractProperNamesFromBatch(batch))) {
+      const meta = hotNames.get(`${ck}\0${name}`);
+      if (!meta) continue;
+      findings.push(finding(
+        'CHK-32',
+        'MINOR',
+        file,
+        `${ck}/${name}`,
+        `Nombre «${name}» en ${meta.count}/${meta.total} archivos de la celda (${(meta.freq * 100).toFixed(1)}%) — posible sesgo de pool`,
+      ));
+    }
+  }
+
+  for (const meta of hotNames.values()) {
+    findings.push(finding(
+      'CHK-32',
+      'INFO',
+      '',
+      `global/${meta.ck}/${meta.name}`,
+      `[global] «${meta.name}» ${meta.count}/${meta.total} (${(meta.freq * 100).toFixed(1)}%) en ${meta.ck}`,
+    ));
+  }
+  return findings;
+}
+
+// ─── CHK-33: Sesgo longitud MCQ + sello balanceMcq ─────────────────────────
+
+function chk33McqLengthBias(batch, file) {
+  const findings = [];
+  const lv = inferAuditLevel(batch);
+  // Mismo criterio que generación (gate: true — umbral 20%/12ch + batch ≥2 significativas).
+  const msgs = collectMcqLengthBiasIssues(batch, { gate: true, level: lv });
+  for (const msg of msgs) {
+    findings.push(finding('CHK-33', 'IMPORTANT', file, 'mcq-length', msg));
+  }
+  const hasMcq = (batch.questions || []).some((q) => {
+    const t = String(q.type || '').toLowerCase();
+    return t === 'multiple_choice' || t === 'multiple' || t === 'mcq';
+  });
+  if (hasMcq && !batch._balanceMcqVersion) {
+    findings.push(finding(
+      'CHK-33',
+      'MINOR',
+      file,
+      'mcq-balance',
+      'MCQ presente pero falta _balanceMcqVersion — mcqLengthBias/balanceMcq no aplicado retroactivamente',
+    ));
+  }
+  return findings;
+}
+
+// ─── CHK-35: Hören T3 — cronología R/F por char-pos ────────────────────────
+
+function chk35HorenT3RfChrono(batch, file) {
+  const findings = [];
+  const lv = inferAuditLevel(batch);
+  const expected = blueprintForLevel(lv)['horen-3']?.count;
+  const t3rf = (batch.questions || []).filter(
+    (q) => String(q.module || '').toLowerCase() === 'horen'
+      && Number(q.teil) === 3
+      && String(q.type || '').toLowerCase() === 'richtig_falsch',
+  );
+  if (!t3rf.length) return findings;
+  if (expected != null && t3rf.length !== expected) return findings;
+
+  const v = verifyRfChronoByCharPos(batch);
+  if (v.ok) return findings;
+
+  const badPairs = [];
+  for (let i = 1; i < v.details.length; i++) {
+    const a = v.details[i - 1];
+    const b = v.details[i];
+    if (a.pos >= 0 && b.pos >= 0 && b.pos < a.pos) {
+      badPairs.push(`${a.id}@${a.pos}→${b.id}@${b.pos}`);
+    }
+  }
+  const detail = badPairs.length
+    ? `Orden no monótono en transcript: ${badPairs.slice(0, 4).join('; ')}`
+    : `Evidencia char-pos no monótona (${v.metric}, ${v.details.filter((d) => d.pos < 0).length} ítem(s) sin ancla)`;
+
+  findings.push(finding('CHK-35', 'IMPORTANT', file, 'T3-chrono', detail));
+
+  const text = String(batch.passages?.[0]?.text || '');
+  if (/\bModerator(?:in)?:/i.test(text) && badPairs.length) {
+    findings.push(finding(
+      'CHK-35',
+      'IMPORTANT',
+      file,
+      'T3-chrono/moderator',
+      'Diálogo con Moderator: revisar si intervenciones del moderador desordenan la secuencia R/F',
+    ));
+  }
+  return findings;
+}
+
+// ─── Reporte accionable (Fase 2) ───────────────────────────────────────────
+
+const CHK_SUGGESTED_ACTION = {
+  'CHK-Q5': 'retirar',
+  'CHK-30': 'retirar',
+  'CHK-30b': 'corregir',
+  'CHK-22': 'retirar',
+  'CHK-23': 'retirar',
+  'CHK-31': 'corregir',
+  'CHK-32': 'ignorar',
+  'CHK-33': 'corregir',
+  'CHK-35': 'corregir',
+  'CHK-29': 'corregir',
+};
+
+function suggestedActionForFinding(f) {
+  if (CHK_SUGGESTED_ACTION[f.id]) return CHK_SUGGESTED_ACTION[f.id];
+  if (f.severity === 'CRITICAL') return 'retirar';
+  if (f.severity === 'INFO') return 'ignorar';
+  if (f.severity === 'MINOR') return 'ignorar';
+  return 'corregir';
+}
+
+function severityLabelEs(f) {
+  if (f.severity === 'CRITICAL') return 'crítico';
+  if (f.severity === 'IMPORTANT') return 'menor';
+  if (f.severity === 'MINOR') return 'cosmético';
+  return 'info';
+}
+
+function buildActionTableRows(findings) {
+  const priority = { crítico: 0, menor: 1, cosmético: 2, info: 3 };
+  return findings
+    .filter((f) => f.severity !== 'INFO')
+    .map((f) => ({
+      archivo: f.file,
+      check: f.id,
+      severidad: severityLabelEs(f),
+      accion: suggestedActionForFinding(f),
+      scope: f.scope,
+      message: f.message,
+      sortKey: priority[severityLabelEs(f)] ?? 9,
+    }))
+    .sort((a, b) => a.sortKey - b.sortKey || a.archivo.localeCompare(b.archivo) || a.check.localeCompare(b.check));
+}
+
+function classifyFilesByFindings(allFindings, files) {
+  const byFile = new Map(files.map((f) => [path.basename(f), []]));
+  for (const f of allFindings) {
+    if (!f.file) continue;
+    if (!byFile.has(f.file)) byFile.set(f.file, []);
+    byFile.get(f.file).push(f);
+  }
+
+  const clean = [];
+  const cosmeticOnly = [];
+  const important = [];
+  const critical = [];
+
+  for (const [base, list] of byFile) {
+    const actionable = list.filter((x) => x.severity !== 'INFO');
+    if (!actionable.length) {
+      clean.push(base);
+      continue;
+    }
+    if (actionable.some((x) => x.severity === 'CRITICAL')) {
+      critical.push(base);
+    } else if (actionable.some((x) => x.severity === 'IMPORTANT')) {
+      important.push(base);
+    } else {
+      cosmeticOnly.push(base);
+    }
+  }
+
+  return { clean, cosmeticOnly, important, critical, byFile };
+}
+
+function printActionTable(rows) {
+  console.log(C.bold('\n── Tabla accionable (archivo | check | severidad | acción) ──'));
+  const col = (s, w) => String(s || '').slice(0, w).padEnd(w);
+  console.log(col('archivo', 42) + col('check', 10) + col('severidad', 12) + col('acción', 10) + 'detalle');
+  for (const r of rows) {
+    const line = col(r.archivo, 42) + col(r.check, 10) + col(r.severidad, 12) + col(r.accion, 10)
+      + String(r.message || '').slice(0, 80);
+    console.log(r.severidad === 'crítico' ? C.red(line) : line);
+  }
 }
 
 // ─── Load batches ──────────────────────────────────────────────────────────
@@ -2222,6 +2671,12 @@ export function auditExam(examWrapper, label = 'exam') {
     ...chk10(flat, label),
     ...chk11(flat, label),
     ...chk29(flat, label),
+    ...chk35HorenT3RfChrono(flat, label),
+    ...chk30PoolMeta(flat, label),
+    ...chk30bLesenT4Title(flat, label),
+    ...chkQ5GermanContent(flat, label),
+    ...chk31VocabLemma(flat, label),
+    ...chk33McqLengthBias(flat, label),
     ...chk12(flat, label),
     ...chk13(flat, label),
     ...chk14(flat, label),
@@ -2229,6 +2684,7 @@ export function auditExam(examWrapper, label = 'exam') {
     ...chk14c(flat, label),
     ...chk15(flat, label),
     ...chk16(flat, label),
+    ...chkH2Align(flat, label),
     ...chk17(flat, label),
     ...chk18(flat, label),
     ...chk18b(flat, label),
@@ -2293,9 +2749,10 @@ function buildHorenSegments(batch, module, teil) {
     const p = passageMap.get(pid);
     return {
       id: `seg_${i}`,
-      label: qs[0]?.segmentLabel || `Aufnahme ${i + 1}`,
+      label: qs[0]?.segmentLabel || p?.title || `Aufnahme ${i + 1}`,
       transcript: p?.text || p?.transcript || '',
       passageId: pid === '_' ? undefined : pid,
+      ...(Array.isArray(p?.pictures) && p.pictures.length ? { pictures: p.pictures } : {}),
       questions: qs,
     };
   });
@@ -2461,7 +2918,7 @@ function partRecordToExamPart(record) {
       const firstPid = (record.questions || []).find((q) => q.passageId)?.passageId;
       if (firstPid) part.passageId = firstPid;
     }
-  } else if (module === 'schreiben' || module === 'sprechen') {
+  } else if (module === 'schreiben') {
     const q0 = (record.questions || [])[0];
     const passage = record.passage || {};
     part.task =
@@ -2470,7 +2927,7 @@ function partRecordToExamPart(record) {
       passage.text ||
       (q0 && q0.question) ||
       '';
-    part.minWords = record.minWords ?? (module === 'schreiben' && Number(teil) === 3 ? 40 : module === 'schreiben' ? 80 : undefined);
+    part.minWords = record.minWords ?? (Number(teil) === 3 ? 40 : 80);
     part.maxWords = record.maxWords ?? part.minWords;
     part.fieldId = record.fieldId;
     part.taskFormat = record.taskFormat || passage.title || record.taskFormat;
@@ -2482,6 +2939,10 @@ function partRecordToExamPart(record) {
         correct: 'rubric', module, teil,
         ...(defaultLevel ? { level: defaultLevel } : {}),
       }];
+  } else if (module === 'sprechen') {
+    part.level = defaultLevel || record.level;
+    part.questions = (record.questions || []).map((q) => normPartQuestion(q, module, teil, defaultLevel));
+    SprechenBriefing.enrichSprechenExamPart(part, record);
   } else {
     return null;
   }
@@ -2925,10 +3386,20 @@ function loadBatchFile(filePath) {
   }
 
   // Pool plano {meta, passages, questions} o batch {passages, questions}
-  return [{
+  const POOL_META_KEYS = [
+    'id', 'level', 'module', 'teil', 'lang', 'topicTag', '_requestedTopic',
+    '_debateSeed', 'debateSeed', '_debateTopic', 'debateTopic',
+    '_rejectedReason', '_balanceMcqVersion', '_lengthBiasQuarantine',
+    'segments', 'ads', 'instruction',
+  ];
+  const batch = {
     passages: raw.passages || [],
     questions: raw.questions || [],
-  }];
+  };
+  for (const k of POOL_META_KEYS) {
+    if (raw[k] != null) batch[k] = raw[k];
+  }
+  return [batch];
 }
 
 function collectFiles(target) {
@@ -3006,11 +3477,21 @@ function printFindings(findings, summaryOnly) {
 // ─── Main ──────────────────────────────────────────────────────────────────
 
 function parseArgs(argv) {
-  const args = { target: null, json: false, failOn: 'CRITICAL', fixTypes: false, summaryOnly: false };
+  const args = {
+    target: null,
+    json: false,
+    failOn: 'CRITICAL',
+    fixTypes: false,
+    summaryOnly: false,
+    actionTable: false,
+    actionReport: null,
+  };
   for (const a of argv.slice(2)) {
     if (a === '--json') args.json = true;
     else if (a === '--fix-types') args.fixTypes = true;
     else if (a === '--summary-only') args.summaryOnly = true;
+    else if (a === '--action-table') args.actionTable = true;
+    else if (a.startsWith('--action-report=')) args.actionReport = a.split('=').slice(1).join('=');
     else if (a.startsWith('--fail-on=')) args.failOn = a.split('=')[1].toUpperCase();
     else if (!a.startsWith('--')) args.target = a;
   }
@@ -3021,7 +3502,7 @@ async function main() {
   const args = parseArgs(process.argv);
 
   if (!args.target) {
-    console.error('Uso: node scripts/audit-pass-2.mjs <ruta> [--json] [--fail-on=CRITICAL] [--fix-types] [--summary-only]');
+    console.error('Uso: node scripts/audit-pass-2.mjs <ruta> [--json] [--fail-on=CRITICAL] [--fix-types] [--summary-only] [--action-table] [--action-report=path.json]');
     process.exit(2);
   }
 
@@ -3082,6 +3563,12 @@ async function main() {
     allFindings.push(...chk10(batch, file));
     allFindings.push(...chk11(batch, file));
     allFindings.push(...chk29(batch, file));
+    allFindings.push(...chk35HorenT3RfChrono(batch, file));
+    allFindings.push(...chk30PoolMeta(batch, file));
+    allFindings.push(...chk30bLesenT4Title(batch, file));
+    allFindings.push(...chkQ5GermanContent(batch, file));
+    allFindings.push(...chk31VocabLemma(batch, file));
+    allFindings.push(...chk33McqLengthBias(batch, file));
     allFindings.push(...chk12(batch, file));
     allFindings.push(...chk13(batch, file));
     allFindings.push(...chk14(batch, file));
@@ -3089,6 +3576,7 @@ async function main() {
     allFindings.push(...chk14c(batch, file));
     allFindings.push(...chk15(batch, file));
     allFindings.push(...chk16(batch, file));
+    allFindings.push(...chkH2Align(batch, file));
     allFindings.push(...chk17(batch, file));
     allFindings.push(...chk18(batch, file));
     allFindings.push(...chk18b(batch, file));
@@ -3097,11 +3585,13 @@ async function main() {
     allFindings.push(...chk21(batch, file));
     allFindings.push(...chk22(batch, file));
     allFindings.push(...chk24(batch, file));
+    allFindings.push(...chk28(batch, file));
   }
 
   // Global checks
   allFindings.push(...chk5(allBatches));
   allFindings.push(...chk25(allBatches));
+  allFindings.push(...chk32GlobalNameFrequency(allBatches));
 
   // Output
   const counts = { critical: 0, important: 0, minor: 0 };
@@ -3112,15 +3602,47 @@ async function main() {
     // INFO is intentionally excluded from counts and summary
   }
 
+  const actionRows = buildActionTableRows(allFindings);
+  const fileGroups = classifyFilesByFindings(allFindings, files);
+
   if (args.json) {
     console.log(JSON.stringify({
       summary: { ...counts, filesScanned: files.length, questionsScanned },
+      fileGroups: {
+        clean: fileGroups.clean,
+        cosmeticOnly: fileGroups.cosmeticOnly,
+        important: fileGroups.important,
+        critical: fileGroups.critical,
+      },
+      actionTable: actionRows,
       findings: allFindings,
     }, null, 2));
   } else {
     printFindings(allFindings, args.summaryOnly);
+    if (args.actionTable) printActionTable(actionRows);
     if (!args.summaryOnly) {
       console.log(`\n  Archivos escaneados: ${files.length} | Preguntas: ${questionsScanned}`);
+      console.log(C.bold('\n── Clasificación pool ──'));
+      console.log(`  Limpios: ${fileGroups.clean.length}`);
+      console.log(`  Solo cosmético (MINOR): ${fileGroups.cosmeticOnly.length}`);
+      console.log(`  Hallazgos menores (IMPORTANT): ${fileGroups.important.length}`);
+      console.log(`  Críticos (CRITICAL): ${fileGroups.critical.length}`);
+    }
+  }
+
+  if (args.actionReport) {
+    const reportPath = path.resolve(args.actionReport);
+    fs.mkdirSync(path.dirname(reportPath), { recursive: true });
+    fs.writeFileSync(reportPath, `${JSON.stringify({
+      generatedAt: new Date().toISOString(),
+      target,
+      summary: { ...counts, filesScanned: files.length, questionsScanned },
+      fileGroups: fileGroups,
+      actionTable: actionRows,
+      findings: allFindings,
+    }, null, 2)}\n`, 'utf8');
+    if (!args.json && !args.summaryOnly) {
+      console.log(C.green(`\n  Reporte accionable: ${reportPath}`));
     }
   }
 

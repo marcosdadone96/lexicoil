@@ -41,8 +41,12 @@ const fps = [
   ['leises', 'Im Erdgeschoss, wo Gespräche und leises Spielen erlaubt sind.'],
   ['kleineren', 'Manchmal hat man Glück bei kleineren Wohnungsgesellschaften, nicht wahr?'],
   ['teurere', 'dann könntest du dir eine teurere Wohnung leisten? Markus: Haha.'],
+  ['preiswert', 'Das ist super praktisch und preiswert, wenn man nicht jeden Tag ein Auto braucht.'],
   ['paar Ideas', 'Mein Vater hat da schon ein paar Ideen für Wanderungen in der Nähe.'],
   ['paar Rezepte', 'Ich habe da ein paar tolle Rezepte in meinem alten Buch.'],
+  ['bisschen Planung', 'Mit ein bisschen Planung und Geduld kann jeder gute Ergebnisse erzielen.'],
+  ['langen Woche', 'Und nach einer langen Woche möchte ich mein Wochenende genießen.'],
+  ['langen Haaren', 'Bei langen Haaren oder wenn man an einem heißen Tag unterwegs ist.'],
 ];
 for (const [label, text] of fps) {
   test(`FP ${label} → 0 findings`, () => {

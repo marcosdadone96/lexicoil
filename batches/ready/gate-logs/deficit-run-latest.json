@@ -1,0 +1,566 @@
+﻿{
+  "generatedAt": "2026-07-25T10:21:21.681Z",
+  "summaryGeneratedAt": "2026-07-25T10:21:19.053Z",
+  "seedGate": "verified + sem1VerifiedAt (reusable-seed/de_B1.json)",
+  "criteria": {
+    "launchMinPerCell": 3,
+    "tierATopics": 16,
+    "scenario": "3ÔÇô5 Pro users, ~10 sessions/user/month, 3ÔÇô4 topics rotated",
+    "lesenCells": 80,
+    "horenCells": 64
+  },
+  "stockTotals": {
+    "lesen": {
+      "total": 297,
+      "byTeil": {
+        "1": 75,
+        "2": 49,
+        "3": 76,
+        "4": 37,
+        "5": 60
+      }
+    },
+    "horen": {
+      "total": 155,
+      "byTeil": {
+        "1": 37,
+        "2": 48,
+        "3": 38,
+        "4": 32
+      }
+    }
+  },
+  "deficit": {
+    "zeroCells": 1,
+    "belowLaunchMinCells": 59,
+    "totalPartsToLaunchMin": 74,
+    "lesen": {
+      "zeroCells": 1,
+      "belowMinCells": 21,
+      "partsNeeded": 30,
+      "cellsTotal": 80,
+      "cellsAtOrAboveMin": 58
+    },
+    "horen": {
+      "zeroCells": 0,
+      "belowMinCells": 38,
+      "partsNeeded": 44,
+      "cellsTotal": 64,
+      "cellsAtOrAboveMin": 26
+    }
+  },
+  "byTeil": {
+    "lesen": {
+      "T1": {
+        "zeroCells": 0,
+        "belowMinCells": 3,
+        "partsNeeded": 3,
+        "cellsAtOrAboveMin": 13
+      },
+      "T2": {
+        "zeroCells": 0,
+        "belowMinCells": 3,
+        "partsNeeded": 4,
+        "cellsAtOrAboveMin": 13
+      },
+      "T3": {
+        "zeroCells": 0,
+        "belowMinCells": 2,
+        "partsNeeded": 2,
+        "cellsAtOrAboveMin": 14
+      },
+      "T4": {
+        "zeroCells": 1,
+        "belowMinCells": 9,
+        "partsNeeded": 17,
+        "cellsAtOrAboveMin": 6
+      },
+      "T5": {
+        "zeroCells": 0,
+        "belowMinCells": 4,
+        "partsNeeded": 4,
+        "cellsAtOrAboveMin": 12
+      }
+    },
+    "horen": {
+      "T1": {
+        "zeroCells": 0,
+        "belowMinCells": 11,
+        "partsNeeded": 11,
+        "cellsAtOrAboveMin": 5
+      },
+      "T2": {
+        "zeroCells": 0,
+        "belowMinCells": 6,
+        "partsNeeded": 7,
+        "cellsAtOrAboveMin": 10
+      },
+      "T3": {
+        "zeroCells": 0,
+        "belowMinCells": 8,
+        "partsNeeded": 10,
+        "cellsAtOrAboveMin": 8
+      },
+      "T4": {
+        "zeroCells": 0,
+        "belowMinCells": 13,
+        "partsNeeded": 16,
+        "cellsAtOrAboveMin": 3
+      }
+    }
+  },
+  "priorAuditCells": [
+    {
+      "topic": "Bildung",
+      "module": "lesen",
+      "teil": 1,
+      "stock": 2,
+      "status": "PARTIAL (2/3)"
+    },
+    {
+      "topic": "Bildung",
+      "module": "lesen",
+      "teil": 4,
+      "stock": 0,
+      "status": "STILL_ZERO"
+    },
+    {
+      "topic": "Kultur",
+      "module": "lesen",
+      "teil": 2,
+      "stock": 2,
+      "status": "PARTIAL (2/3)"
+    },
+    {
+      "topic": "Verkehr",
+      "module": "lesen",
+      "teil": 3,
+      "stock": 2,
+      "status": "PARTIAL (2/3)"
+    }
+  ],
+  "zeroCells": [
+    {
+      "topic": "Bildung",
+      "module": "lesen",
+      "teil": 4,
+      "stock": 0,
+      "need": 3
+    }
+  ],
+  "belowLaunchMin": [
+    {
+      "topic": "Reisen",
+      "module": "horen",
+      "teil": 2,
+      "stock": 1,
+      "need": 2
+    },
+    {
+      "topic": "Gesundheit",
+      "module": "horen",
+      "teil": 3,
+      "stock": 1,
+      "need": 2
+    },
+    {
+      "topic": "Reisen",
+      "module": "horen",
+      "teil": 3,
+      "stock": 1,
+      "need": 2
+    },
+    {
+      "topic": "Kultur",
+      "module": "horen",
+      "teil": 4,
+      "stock": 1,
+      "need": 2
+    },
+    {
+      "topic": "Familie",
+      "module": "horen",
+      "teil": 4,
+      "stock": 1,
+      "need": 2
+    },
+    {
+      "topic": "Bildung",
+      "module": "horen",
+      "teil": 4,
+      "stock": 1,
+      "need": 2
+    },
+    {
+      "topic": "Reisen",
+      "module": "lesen",
+      "teil": 2,
+      "stock": 1,
+      "need": 2
+    },
+    {
+      "topic": "Gesundheit",
+      "module": "lesen",
+      "teil": 4,
+      "stock": 1,
+      "need": 2
+    },
+    {
+      "topic": "Wohnen",
+      "module": "lesen",
+      "teil": 4,
+      "stock": 1,
+      "need": 2
+    },
+    {
+      "topic": "Medien",
+      "module": "lesen",
+      "teil": 4,
+      "stock": 1,
+      "need": 2
+    },
+    {
+      "topic": "Ern├ñhrung",
+      "module": "lesen",
+      "teil": 4,
+      "stock": 1,
+      "need": 2
+    },
+    {
+      "topic": "Technik",
+      "module": "lesen",
+      "teil": 4,
+      "stock": 1,
+      "need": 2
+    },
+    {
+      "topic": "Gesundheit",
+      "module": "horen",
+      "teil": 1,
+      "stock": 2,
+      "need": 1
+    },
+    {
+      "topic": "Reisen",
+      "module": "horen",
+      "teil": 1,
+      "stock": 2,
+      "need": 1
+    },
+    {
+      "topic": "Arbeit",
+      "module": "horen",
+      "teil": 1,
+      "stock": 2,
+      "need": 1
+    },
+    {
+      "topic": "Medien",
+      "module": "horen",
+      "teil": 1,
+      "stock": 2,
+      "need": 1
+    },
+    {
+      "topic": "Ern├ñhrung",
+      "module": "horen",
+      "teil": 1,
+      "stock": 2,
+      "need": 1
+    },
+    {
+      "topic": "Freizeit",
+      "module": "horen",
+      "teil": 1,
+      "stock": 2,
+      "need": 1
+    },
+    {
+      "topic": "Sport",
+      "module": "horen",
+      "teil": 1,
+      "stock": 2,
+      "need": 1
+    },
+    {
+      "topic": "Kultur",
+      "module": "horen",
+      "teil": 1,
+      "stock": 2,
+      "need": 1
+    },
+    {
+      "topic": "Familie",
+      "module": "horen",
+      "teil": 1,
+      "stock": 2,
+      "need": 1
+    },
+    {
+      "topic": "Konsum",
+      "module": "horen",
+      "teil": 1,
+      "stock": 2,
+      "need": 1
+    },
+    {
+      "topic": "Bildung",
+      "module": "horen",
+      "teil": 1,
+      "stock": 2,
+      "need": 1
+    },
+    {
+      "topic": "Gesundheit",
+      "module": "horen",
+      "teil": 2,
+      "stock": 2,
+      "need": 1
+    },
+    {
+      "topic": "Arbeit",
+      "module": "horen",
+      "teil": 2,
+      "stock": 2,
+      "need": 1
+    },
+    {
+      "topic": "Medien",
+      "module": "horen",
+      "teil": 2,
+      "stock": 2,
+      "need": 1
+    },
+    {
+      "topic": "Konsum",
+      "module": "horen",
+      "teil": 2,
+      "stock": 2,
+      "need": 1
+    },
+    {
+      "topic": "Bildung",
+      "module": "horen",
+      "teil": 2,
+      "stock": 2,
+      "need": 1
+    },
+    {
+      "topic": "Umwelt",
+      "module": "horen",
+      "teil": 3,
+      "stock": 2,
+      "need": 1
+    },
+    {
+      "topic": "Arbeit",
+      "module": "horen",
+      "teil": 3,
+      "stock": 2,
+      "need": 1
+    },
+    {
+      "topic": "Wohnen",
+      "module": "horen",
+      "teil": 3,
+      "stock": 2,
+      "need": 1
+    },
+    {
+      "topic": "Verkehr",
+      "module": "horen",
+      "teil": 3,
+      "stock": 2,
+      "need": 1
+    },
+    {
+      "topic": "Stadtleben",
+      "module": "horen",
+      "teil": 3,
+      "stock": 2,
+      "need": 1
+    },
+    {
+      "topic": "Konsum",
+      "module": "horen",
+      "teil": 3,
+      "stock": 2,
+      "need": 1
+    },
+    {
+      "topic": "Umwelt",
+      "module": "horen",
+      "teil": 4,
+      "stock": 2,
+      "need": 1
+    },
+    {
+      "topic": "Gesundheit",
+      "module": "horen",
+      "teil": 4,
+      "stock": 2,
+      "need": 1
+    },
+    {
+      "topic": "Reisen",
+      "module": "horen",
+      "teil": 4,
+      "stock": 2,
+      "need": 1
+    },
+    {
+      "topic": "Arbeit",
+      "module": "horen",
+      "teil": 4,
+      "stock": 2,
+      "need": 1
+    },
+    {
+      "topic": "Wohnen",
+      "module": "horen",
+      "teil": 4,
+      "stock": 2,
+      "need": 1
+    },
+    {
+      "topic": "Stadtleben",
+      "module": "horen",
+      "teil": 4,
+      "stock": 2,
+      "need": 1
+    },
+    {
+      "topic": "Freizeit",
+      "module": "horen",
+      "teil": 4,
+      "stock": 2,
+      "need": 1
+    },
+    {
+      "topic": "Sport",
+      "module": "horen",
+      "teil": 4,
+      "stock": 2,
+      "need": 1
+    },
+    {
+      "topic": "Konsum",
+      "module": "horen",
+      "teil": 4,
+      "stock": 2,
+      "need": 1
+    },
+    {
+      "topic": "Technik",
+      "module": "horen",
+      "teil": 4,
+      "stock": 2,
+      "need": 1
+    },
+    {
+      "topic": "Arbeit",
+      "module": "lesen",
+      "teil": 1,
+      "stock": 2,
+      "need": 1
+    },
+    {
+      "topic": "Konsum",
+      "module": "lesen",
+      "teil": 1,
+      "stock": 2,
+      "need": 1
+    },
+    {
+      "topic": "Bildung",
+      "module": "lesen",
+      "teil": 1,
+      "stock": 2,
+      "need": 1
+    },
+    {
+      "topic": "Umwelt",
+      "module": "lesen",
+      "teil": 2,
+      "stock": 2,
+      "need": 1
+    },
+    {
+      "topic": "Kultur",
+      "module": "lesen",
+      "teil": 2,
+      "stock": 2,
+      "need": 1
+    },
+    {
+      "topic": "Verkehr",
+      "module": "lesen",
+      "teil": 3,
+      "stock": 2,
+      "need": 1
+    },
+    {
+      "topic": "Konsum",
+      "module": "lesen",
+      "teil": 3,
+      "stock": 2,
+      "need": 1
+    },
+    {
+      "topic": "Arbeit",
+      "module": "lesen",
+      "teil": 4,
+      "stock": 2,
+      "need": 1
+    },
+    {
+      "topic": "Verkehr",
+      "module": "lesen",
+      "teil": 4,
+      "stock": 2,
+      "need": 1
+    },
+    {
+      "topic": "Kultur",
+      "module": "lesen",
+      "teil": 4,
+      "stock": 2,
+      "need": 1
+    },
+    {
+      "topic": "Konsum",
+      "module": "lesen",
+      "teil": 4,
+      "stock": 2,
+      "need": 1
+    },
+    {
+      "topic": "Arbeit",
+      "module": "lesen",
+      "teil": 5,
+      "stock": 2,
+      "need": 1
+    },
+    {
+      "topic": "Wohnen",
+      "module": "lesen",
+      "teil": 5,
+      "stock": 2,
+      "need": 1
+    },
+    {
+      "topic": "Verkehr",
+      "module": "lesen",
+      "teil": 5,
+      "stock": 2,
+      "need": 1
+    },
+    {
+      "topic": "Freizeit",
+      "module": "lesen",
+      "teil": 5,
+      "stock": 2,
+      "need": 1
+    }
+  ]
+}

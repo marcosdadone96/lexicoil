@@ -1,0 +1,48 @@
+# Hören A2 T3 · intento 2/6
+# started: 2026-07-23T08:21:04.468Z
+# exit: 0
+
+
+Generador horen (de/A2) · gemini · gemini-2.5-flash · T3 × 1
+Palabras objetivo por parte: 5 (--word-count)
+Cuota Gemini: max 45 llamadas · pausa ≥6000ms · fix-retries=3 · api-retries=1
+Salida: batches/generated/ (solo pasa formato + calidad pedagógica)
+Tema: Freizeit (elegido)
+
+── horen T3 · horen-t3-gemini-041.json ──
+Proveedor: gemini · Palabras (5): laptop, kühl, dorther, planen, kündigen
+Modelo: gemini-2.5-flash · max_output_tokens=16384
+Llamada API 1/45 · $0.000 acumulado · gemini-2.5-flash
+Validando formato…
+Comprobando calidad pedagógica…
+  [LT advisory] skipped (LT down: fetch failed)
+Calidad Hören T3: FAIL (2 problemas, estimación ~84%)
+  - gen-q-h3-7f943df2-q2: sesgo de longitud MCQ (A2) — opción correcta «c» es la más larga (23 vs 20/12; Δ +7 chars, +44% vs media distractores; umbral 20%/8ch). Parafrasea o alarga los distractores hasta longitud comparable.
+  - gen-q-h3-7f943df2-q4: sesgo de longitud MCQ (A2) — opción correcta «a» es la más larga (18 vs 17/13; Δ +3 chars, +20% vs media distractores; umbral 20%/8ch). Parafrasea o alarga los distractores hasta longitud comparable.
+  Triaje CUBO C (MCQ length bias (A2)) → reparación localizada (1 llamada LLM)…
+horen T3: reparando sesgo longitud MCQ en 2 pregunta(s) (1 llamada LLM, fuente fija)…
+Llamada API 2/45 · $0.014 acumulado · gemini-2.5-flash
+  length-bias: gen-q-h3-7f943df2-q2 OK (+44%→+0%)
+  length-bias: gen-q-h3-7f943df2-q4 OK (+20%→+0%)
+  Re-validando tras mcq_length_bias…
+  [LT advisory] skipped (LT down: fetch failed)
+Calidad Hören T3: OK ✅ (estimación ~100%)
+  Reparación mcq_length_bias OK → guardado sin regenerar parte
+  [poolReady] READY → pool-verified/A2/horen-t3-gemini-041.json
+Guardado: batches/ready/pool-verified/A2/horen-t3-gemini-041.json (5 preguntas, 5 passages) · horen Teil 3
+Validación técnica OK ✅
+Calidad pedagógica OK ✅
+
+── batches/generated/A2/horen-t3-gemini-041.json · OK · 2 llamadas · $0.014 total ──
+
+══ Resumen generador horen ══
+Proveedor: gemini · Modelo: gemini-2.5-flash
+Intentos totales: 2
+Partes guardadas (formato + calidad OK): 1
+Partes descartadas: 0
+Llamadas API Gemini: 2/45
+Por parte (guardadas / descartadas · intentos):
+  T3: 1 guardadas, 0 descartadas, 1 intentos
+
+⏳ Gemini Alta demanda (503) — reintento en 15s (1/8)…
+      reintento 2/8 — 5s restantes…

@@ -1,0 +1,496 @@
+{
+  "generatedAt": "2026-07-22T10:15:55.624Z",
+  "results": [
+    {
+      "id": "01-lesen-t1",
+      "label": "Lesen T1 · tema libre",
+      "logPath": "C:\\Users\\marco\\Desktop\\MDR\\lexiloop\\batches\\ready\\gate-logs\\smoke-post-fix-2026-07-22\\01-lesen-t1.log",
+      "exitCode": 1,
+      "durationSec": 77,
+      "exitHint": null,
+      "wordsLine": "objetivo por parte: 5 (--word-count)",
+      "vocabRatioLine": "Vocabulario: 3 de 5 palabras usadas (tema: Bildung). Integradas: situation, aktuell, zukunft. No encajaron de forma natural: aufgabe, direkt.",
+      "vocabRatio": {
+        "used": 3,
+        "total": 5,
+        "ratio": 0.6
+      },
+      "topicLine": "Bildung",
+      "subtypeLine": null,
+      "savedFile": null,
+      "discarded": true,
+      "ok": false,
+      "apiCalls": "3",
+      "cost": "0.027",
+      "retries": [
+        "gen-q-1-27ba53bc-2: ≥3 palabras idénticas con el pasaje (anfang, lehrerin, motiviert)…"
+      ],
+      "gateFails": [
+        "Calidad pedagógica FAIL (2 problemas, estimación ~84%)\n  - gen-q-1-6b0c2b20-1: ≥3 palabras idénticas con el pasaje (wollte, nutzen, ihre, kurs)\n  - gen-q-1-6b0c2b20-4: ≥3 palabras idénticas con el pasaje (entscheidung, ihre, familie)\n  Triaje CUBO C (word-matching) → reparación localizada (1 llamada LLM)…\nT1: reparando solo afirmaciones (pasaje fijo)…\nLlamada API 2/45 · $0.013 acumulado · gemini-2.5-flash\n  Re-validando tras word_match…\nCalidad pedagógica FAIL (3 problemas, estimación ~76%)\n  - gen-q-1-27ba53bc-2: ≥3 palabras idénticas con el pasaje (anfang, lehrerin, motiviert)\n  - gen-q-1-27ba53bc-5: ≥3 palabras idénticas con el pasaje (diesem, kurs, computerkurs)\n  - gen-q-1-27ba53bc-6: ≥3 palabras idénticas con el pasaje (unterstützung, gemeinschaft, kurs)"
+      ],
+      "auditBlocked": "Audit-pass-2 BLOQUEADO: [IMPORTANT][CHK-18] Explanation demasiado corta (9 palabras): \"Der Kurs findet zweimal pro Woche statt, nicht dreimal.\". Mínimo: 10 para tipo richtig_falsch.",
+      "circuitBreaker": null,
+      "horenOpening": null,
+      "requestedTopic": "Bildung",
+      "vocabAlignment": {
+        "words": [
+          "objetivo por parte: 5 (--word-count)"
+        ],
+        "bankHits": 0,
+        "kwHits": 0,
+        "total": 1
+      },
+      "batchPath": null,
+      "batchMeta": null
+    },
+    {
+      "id": "02-lesen-t2",
+      "label": "Lesen T2 · tema libre",
+      "logPath": "C:\\Users\\marco\\Desktop\\MDR\\lexiloop\\batches\\ready\\gate-logs\\smoke-post-fix-2026-07-22\\02-lesen-t2.log",
+      "exitCode": 1,
+      "durationSec": 110,
+      "exitHint": null,
+      "wordsLine": "objetivo por parte: 5 (--word-count)",
+      "vocabRatioLine": "Vocabulario: 4 de 5 palabras usadas (tema: Wohnen). Integradas: küche, miete, schlafzimmer, zimmer. No encajaron de forma natural: vermieter.",
+      "vocabRatio": {
+        "used": 4,
+        "total": 5,
+        "ratio": 0.8
+      },
+      "topicLine": "Wohnen",
+      "subtypeLine": null,
+      "savedFile": null,
+      "discarded": true,
+      "ok": false,
+      "apiCalls": "4",
+      "cost": "0.037",
+      "retries": [
+        "gen-q-2-8433610e-2: opción correcta copia ≥4 palabras del pasaje («die küche das wohnzimmer»)…"
+      ],
+      "gateFails": [
+        "Calidad pedagógica FAIL (7 problemas, estimación ~42%)\n  - gen-q-2-8433610e-1: opción correcta copia ≥4 palabras del pasaje («nicht allein zu sein»)\n  - gen-q-2-8433610e-2: opción correcta copia ≥4 palabras del pasaje («die küche das wohnzimmer»)\n  - gen-q-2-8433610e-4: opción correcta copia ≥4 palabras del pasaje («in den letzten jahren»)\n  - gen-q-2-8433610e-6: opción correcta copia ≥4 palabras del pasaje («dass jeder bürger ein»)\n  - gen-q-2-8433610e-3: sesgo de longitud MCQ (B1) — opción correcta «c» es la más larga (49 vs 30/36; Δ +16 chars, +48% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable.\n  - gen-q-2-8433610e-4: sesgo de longitud MCQ (B1) — opción correcta «b» es la más larga (54 vs 47/33; Δ +14 chars, +35% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable.\n  - gen-q-2-8433610e-5: sesgo de longitud MCQ (B1) — opción correcta «a» es la más larga (74 vs 40/51; Δ +29 chars, +63% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable.",
+        "Calidad pedagógica FAIL (6 problemas, estimación ~50%)\n  - gen-q-2-8433610e-2: opción correcta copia ≥4 palabras del pasaje («die küche das wohnzimmer»)\n  - gen-q-2-8433610e-4: opción correcta copia ≥4 palabras del pasaje («in den letzten jahren»)\n  - gen-q-2-8433610e-6: opción correcta copia ≥4 palabras del pasaje («dass jeder bürger ein»)\n  - gen-q-2-8433610e-3: sesgo de longitud MCQ (B1) — opción correcta «c» es la más larga (49 vs 30/36; Δ +16 chars, +48% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable.\n  - gen-q-2-8433610e-4: sesgo de longitud MCQ (B1) — opción correcta «b» es la más larga (54 vs 47/33; Δ +14 chars, +35% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable.\n  - gen-q-2-8433610e-5: sesgo de longitud MCQ (B1) — opción correcta «a» es la más larga (74 vs 40/51; Δ +29 chars, +63% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable.",
+        "Calidad pedagógica FAIL (3 problemas, estimación ~74%)\n  - gen-q-2-8433610e-2: opción correcta copia ≥4 palabras del pasaje («das wohnzimmer und manchmal»)\n  - gen-q-2-8433610e-2: sesgo de longitud MCQ (B1) — opción correcta «c» es la más larga (53 vs 40/43; Δ +12 chars, +28% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable.\n  - gen-q-2-8433610e-4: sesgo de longitud MCQ (B1) — opción correcta «a» es la más larga (57 vs 33/47; Δ +17 chars, +43% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable.",
+        "Calidad pedagógica FAIL (2 problemas, estimación ~82%)\n  - gen-q-2-8433610e-2: sesgo de longitud MCQ (B1) — opción correcta «c» es la más larga (59 vs 40/45; Δ +17 chars, +39% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable.\n  - gen-q-2-8433610e-4: sesgo de longitud MCQ (B1) — opción correcta «a» es la más larga (57 vs 33/47; Δ +17 chars, +43% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable.",
+        "Calidad pedagógica FAIL (2 problemas, estimación ~82%)\n  - gen-q-2-8433610e-2: sesgo de longitud MCQ (B1) — opción correcta «c» es la más larga (59 vs 40/45; Δ +17 chars, +39% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable.\n  - gen-q-2-8433610e-4: sesgo de longitud MCQ (B1) — opción correcta «a» es la más larga (57 vs 33/47; Δ +17 chars, +43% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable."
+      ],
+      "auditBlocked": null,
+      "circuitBreaker": null,
+      "horenOpening": null,
+      "requestedTopic": "Wohnen",
+      "vocabAlignment": {
+        "words": [
+          "objetivo por parte: 5 (--word-count)"
+        ],
+        "bankHits": 0,
+        "kwHits": 0,
+        "total": 1
+      },
+      "batchPath": null,
+      "batchMeta": null
+    },
+    {
+      "id": "03-lesen-t4-umwelt",
+      "label": "Lesen T4 · Umwelt (control)",
+      "logPath": "C:\\Users\\marco\\Desktop\\MDR\\lexiloop\\batches\\ready\\gate-logs\\smoke-post-fix-2026-07-22\\03-lesen-t4-umwelt.log",
+      "exitCode": 1,
+      "durationSec": 366,
+      "exitHint": null,
+      "wordsLine": "objetivo por parte: 5 (--word-count)",
+      "vocabRatioLine": "Vocabulario: 4 de 5 palabras usadas (tema: Umwelt). Integradas: nachhaltigkeit, aufgabe, situation, aktuell. No encajaron de forma natural: direkt.",
+      "vocabRatio": {
+        "used": 4,
+        "total": 5,
+        "ratio": 0.8
+      },
+      "topicLine": "Umwelt",
+      "subtypeLine": "subtipo/debate distinto…",
+      "savedFile": null,
+      "discarded": true,
+      "ok": false,
+      "apiCalls": "6",
+      "cost": "0.089",
+      "retries": [
+        "Teil 4: sesgo grave — Nein=71% (máx 62%). Cambia 1 Nein→Ja reescribiendo el signText correspondiente.…",
+        "Teil 4: sesgo grave — Nein=71% (máx 62%). Cambia 1 Nein→Ja reescribiendo el signText correspondiente.…"
+      ],
+      "gateFails": [
+        "Calidad pedagógica FAIL (1 problemas, estimación ~92%)\n  - gen-q-4-fca4292c-4: T4 — clave invertida. signText indica «Nein» pero correct=\"Ja\". Ajusta correct/correctAnswer para que coincida con la postura del signText.\n  Triaje CUBO A: reparado (T4-inverted-key) — re-validando sin LLM…\nCalidad pedagógica FAIL (1 problemas, estimación ~92%)\n  - Teil 4: sesgo grave — Nein=71% (máx 62%). Cambia 1 Nein→Ja reescribiendo el signText correspondiente.",
+        "Calidad pedagógica FAIL (1 problemas, estimación ~92%)\n  - gen-q-4-fca4292c-4: T4 — clave invertida. signText indica «Nein» pero correct=\"Ja\". Ajusta correct/correctAnswer para que coincida con la postura del signText.\n  Triaje CUBO A: reparado (T4-inverted-key) — re-validando sin LLM…\nCalidad pedagógica FAIL (1 problemas, estimación ~92%)\n  - Teil 4: sesgo grave — Nein=71% (máx 62%). Cambia 1 Nein→Ja reescribiendo el signText correspondiente.",
+        "Calidad pedagógica FAIL (1 problemas, estimación ~92%)\n  - gen-q-4-fca4292c-4: T4 — clave invertida. signText indica «Nein» pero correct=\"Ja\". Ajusta correct/correctAnswer para que coincida con la postura del signText.\n  Triaje CUBO A: reparado (T4-inverted-key) — re-validando sin LLM…\nCalidad pedagógica FAIL (1 problemas, estimación ~92%)\n  - Teil 4: sesgo grave — Nein=71% (máx 62%). Cambia 1 Nein→Ja reescribiendo el signText correspondiente.\nRechazado guardado en: batches/generated/.rejected/lesen-t4-gemini-069-2026-07-22T09-56-18-627Z.json",
+        "Calidad pedagógica FAIL (1 problemas, estimación ~92%)\n  - Teil 4: sesgo grave — Nein=71% (máx 62%). Cambia 1 Nein→Ja reescribiendo el signText correspondiente."
+      ],
+      "auditBlocked": "Audit-pass-2 BLOQUEADO: [IMPORTANT][CHK-29] CHK-29: título idéntico «Forum: Weniger CO2 in der Stadt – eine gute Idee?» en celda Umwelt×T4.",
+      "circuitBreaker": null,
+      "horenOpening": null,
+      "requestedTopic": "Umwelt",
+      "vocabAlignment": {
+        "words": [
+          "objetivo por parte: 5 (--word-count)"
+        ],
+        "bankHits": 0,
+        "kwHits": 0,
+        "total": 1
+      },
+      "batchPath": null,
+      "batchMeta": null
+    },
+    {
+      "id": "04-lesen-t5-umwelt",
+      "label": "Lesen T5 · Umwelt (control)",
+      "logPath": "C:\\Users\\marco\\Desktop\\MDR\\lexiloop\\batches\\ready\\gate-logs\\smoke-post-fix-2026-07-22\\04-lesen-t5-umwelt.log",
+      "exitCode": 1,
+      "durationSec": 416,
+      "exitHint": null,
+      "wordsLine": "objetivo por parte: 5 (--word-count)",
+      "vocabRatioLine": "Vocabulario: 4 de 5 palabras usadas (tema: Umwelt). Integradas: nachhaltigkeit, aufgabe, aktuell, direkt. No encajaron de forma natural: situation.",
+      "vocabRatio": {
+        "used": 4,
+        "total": 5,
+        "ratio": 0.8
+      },
+      "topicLine": "Umwelt",
+      "subtypeLine": "T5 subtipo: Freizeitzentrum / Hallenbad (other) · perfil hallenbad · celda Umwelt×T5: 14 en pool · moldes usados: wohnanlage, bibliothek, sportverein, park",
+      "savedFile": null,
+      "discarded": true,
+      "ok": false,
+      "apiCalls": "10",
+      "cost": "0.063",
+      "retries": [
+        "gen-q-5-676fa2c8-3: opción correcta copia ≥5 palabras del pasaje («in den fahrradständern vor dem»)…",
+        "gen-q-5-676fa2c8-3: opción correcta copia ≥5 palabras del pasaje («den fahrradständern vor dem gebäude»)…"
+      ],
+      "gateFails": [
+        "Calidad pedagógica FAIL (3 problemas, estimación ~76%)\n  - gen-q-5-676fa2c8-1: sesgo de longitud MCQ (B1) — opción correcta «b» es la más larga (64 vs 48/47; Δ +17 chars, +35% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable.\n  - gen-q-5-676fa2c8-3: sesgo de longitud MCQ (B1) — opción correcta «c» es la más larga (62 vs 46/41; Δ +19 chars, +43% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable.\n  - gen-q-5-676fa2c8-4: sesgo de longitud MCQ (B1) — opción correcta «a» es la más larga (83 vs 78/55; Δ +17 chars, +25% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable.\n  Triaje CUBO C (MCQ length bias (B1)) → reparación localizada (1 llamada LLM)…\nlesen T5: reparando sesgo longitud MCQ en 3 pregunta(s) (1 llamada LLM, fuente fija)…\nLlamada API 6/45 · $0.040 acumulado · gemini-2.5-flash\n  length-bias: gen-q-5-676fa2c8-1 OK (+35%→+0%)\n  length-bias: gen-q-5-676fa2c8-3 OK (+43%→+0%)\n  length-bias: gen-q-5-676fa2c8-4 OK (+25%→+0%)\n  Re-validando tras mcq_length_bias…\nCalidad pedagógica FAIL (1 problemas, estimación ~92%)\n  - gen-q-5-676fa2c8-3: opción correcta copia ≥5 palabras del pasaje («in den fahrradständern vor dem»)",
+        "Calidad pedagógica FAIL (1 problemas, estimación ~92%)\n  - gen-q-5-676fa2c8-3: sesgo de longitud MCQ (B1) — opción correcta «c» es la más larga (65 vs 46/41; Δ +22 chars, +49% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable.\n  Triaje CUBO C (MCQ length bias (B1)) → reparación localizada (1 llamada LLM)…\nlesen T5: reparando sesgo longitud MCQ en 1 pregunta(s) (1 llamada LLM, fuente fija)…\nLlamada API 8/45 · $0.051 acumulado · gemini-2.5-flash\n  length-bias: gen-q-5-676fa2c8-3 OK (+49%→+0%)\n  Re-validando tras mcq_length_bias…\nCalidad pedagógica FAIL (1 problemas, estimación ~92%)\n  - gen-q-5-676fa2c8-3: opción correcta copia ≥5 palabras del pasaje («den fahrradständern vor dem gebäude»)",
+        "Calidad pedagógica FAIL (1 problemas, estimación ~92%)\n  - gen-q-5-676fa2c8-3: sesgo de longitud MCQ (B1) — opción correcta «c» es la más larga (75 vs 46/41; Δ +32 chars, +72% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable.\n  Triaje CUBO C (MCQ length bias (B1)) → reparación localizada (1 llamada LLM)…\nlesen T5: reparando sesgo longitud MCQ en 1 pregunta(s) (1 llamada LLM, fuente fija)…\nLlamada API 10/45 · $0.062 acumulado · gemini-2.5-flash\n  length-bias: gen-q-5-676fa2c8-3 OK (+72%→+0%)\n  Re-validando tras mcq_length_bias…\nCalidad pedagógica FAIL (1 problemas, estimación ~92%)\n  - gen-q-5-676fa2c8-3: opción correcta copia ≥5 palabras del pasaje («in den fahrradständern vor dem»)\nRechazado guardado en: batches/generated/.rejected/lesen-t5-gemini-103-2026-07-22T10-03-14-726Z.json",
+        "Calidad pedagógica FAIL (1 problemas, estimación ~92%)\n  - gen-q-5-676fa2c8-3: opción correcta copia ≥5 palabras del pasaje («in den fahrradständern vor dem»)"
+      ],
+      "auditBlocked": "Audit-pass-2 BLOQUEADO: [IMPORTANT][CHK-29] CHK-29: título idéntico «Nutzungsordnung der Stadthalle Aktivpark – Bereich Schwimmbad» en celda Umwelt×T5.",
+      "circuitBreaker": null,
+      "horenOpening": null,
+      "requestedTopic": "Umwelt",
+      "vocabAlignment": {
+        "words": [
+          "objetivo por parte: 5 (--word-count)"
+        ],
+        "bankHits": 0,
+        "kwHits": 0,
+        "total": 1
+      },
+      "batchPath": null,
+      "batchMeta": null
+    },
+    {
+      "id": "05-lesen-t5-technik",
+      "label": "Lesen T5 · Technik (estrés from-coverage)",
+      "logPath": "C:\\Users\\marco\\Desktop\\MDR\\lexiloop\\batches\\ready\\gate-logs\\smoke-post-fix-2026-07-22\\05-lesen-t5-technik.log",
+      "exitCode": 1,
+      "durationSec": 344,
+      "exitHint": null,
+      "wordsLine": "objetivo por parte: 5 (--word-count)",
+      "vocabRatioLine": "Vocabulario: 0 de 5 palabras usadas (tema: Technik). No encajaron de forma natural: smartphone, aufgabe, situation, aktuell, direkt.",
+      "vocabRatio": {
+        "used": 0,
+        "total": 5,
+        "ratio": 0
+      },
+      "topicLine": "Technik",
+      "subtypeLine": "T5 subtipo: Coworking-Space Nutzungsordnung (preferred) · perfil standard · celda Technik×T5: 9 en pool · moldes usados: schule, bibliothek, freizeitzentrum, sportverein",
+      "savedFile": null,
+      "discarded": true,
+      "ok": false,
+      "apiCalls": "8",
+      "cost": null,
+      "retries": [
+        "gen-q-5-357d7475-3: sesgo de longitud MCQ (B1) — opción correcta «b» es la más larga (86 vs 62/66; Δ +22 chars, +34% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable.…",
+        "CHK-29: título idéntico «Nutzungsordnung für den Shared Office Startup Hub \"InnovativRaum\"» en celda Technik×T5.…",
+        "gen-q-5-e1b5fcff-3: opción correcta copia ≥5 palabras del pasaje («eine verlängerung ist online möglich»)…"
+      ],
+      "gateFails": [
+        "Calidad pedagógica FAIL (4 problemas, estimación ~62%)\n  - gen-q-5-357d7475-2: sesgo de longitud MCQ (B1) — opción correcta «c» es la más larga (125 vs 70/64; Δ +58 chars, +87% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable.\n  - gen-q-5-357d7475-3: sesgo de longitud MCQ (B1) — opción correcta «b» es la más larga (90 vs 62/66; Δ +26 chars, +41% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable.\n  - gen-q-5-357d7475-4: sesgo de longitud MCQ (B1) — opción correcta «a» es la más larga (100 vs 78/68; Δ +27 chars, +37% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable.\n  - Teil 5: vocabulario integrado 0/5 (mínimo 2) — palabras no usadas: smartphone, aufgabe, situation, aktuell, direkt",
+        "Calidad pedagógica FAIL (2 problemas, estimación ~80%)\n  - gen-q-5-357d7475-3: sesgo de longitud MCQ (B1) — opción correcta «b» es la más larga (86 vs 62/66; Δ +22 chars, +34% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable.\n  - Teil 5: vocabulario integrado 0/5 (mínimo 2) — palabras no usadas: smartphone, aufgabe, situation, aktuell, direkt",
+        "Calidad pedagógica FAIL (3 problemas, estimación ~76%)\n  - gen-q-5-e1b5fcff-3: opción correcta copia ≥5 palabras del pasaje («eine verlängerung ist online möglich»)\n  - gen-q-5-e1b5fcff-3: sesgo de longitud MCQ (B1) — opción correcta «a» es la más larga (112 vs 94/62; Δ +34 chars, +44% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable.\n  - Teil 5: vocabulario integrado 1/5 (mínimo 2) — palabras no usadas: smartphone, situation, aktuell, direkt\n  Triaje CUBO C (word-matching) → reparación localizada (1 llamada LLM)…\nT5: reparando pregunta gen-q-5-e1b5fcff-3 (word-copy, pasaje fijo, intento 1/2)…\nLlamada API 6/45 · $0.041 acumulado · gemini-2.5-flash\nT5: reparando pregunta gen-q-5-e1b5fcff-3 (word-copy, pasaje fijo, intento 2/2)…\nCola API: pausa 1.8s…\nLlamada API 7/45 · $0.042 acumulado · gemini-2.5-flash\n  Reparación word_match: sin cambios en batch — re-validando estado actual…\n  Re-validando tras word_match…\nCalidad pedagógica FAIL (3 problemas, estimación ~76%)\n  - gen-q-5-e1b5fcff-3: opción correcta copia ≥5 palabras del pasaje («eine verlängerung ist online möglich»)\n  - gen-q-5-e1b5fcff-3: sesgo de longitud MCQ (B1) — opción correcta «a» es la más larga (112 vs 94/62; Δ +34 chars, +44% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable.\n  - Teil 5: vocabulario integrado 1/5 (mínimo 2) — palabras no usadas: smartphone, situation, aktuell, direkt"
+      ],
+      "auditBlocked": "Audit-pass-2 BLOQUEADO: [IMPORTANT][CHK-18b] gen-q-5-357d7475-1: clave «c» pero la explicación encaja mejor con otra opción (overlap correct=1, wrong=2, opción incorrecta b)).",
+      "circuitBreaker": null,
+      "horenOpening": null,
+      "requestedTopic": "Technik",
+      "vocabAlignment": {
+        "words": [
+          "objetivo por parte: 5 (--word-count)"
+        ],
+        "bankHits": 0,
+        "kwHits": 0,
+        "total": 1
+      },
+      "batchPath": null,
+      "batchMeta": null
+    },
+    {
+      "id": "06-horen-t1",
+      "label": "Hören T1 · tema libre",
+      "logPath": "C:\\Users\\marco\\Desktop\\MDR\\lexiloop\\batches\\ready\\gate-logs\\smoke-post-fix-2026-07-22\\06-horen-t1.log",
+      "exitCode": 1,
+      "durationSec": 41,
+      "exitHint": null,
+      "wordsLine": "objetivo por parte: 5 (--word-count)",
+      "vocabRatioLine": null,
+      "vocabRatio": null,
+      "topicLine": "Umwelt",
+      "subtypeLine": null,
+      "savedFile": null,
+      "discarded": true,
+      "ok": false,
+      "apiCalls": "1",
+      "cost": "0.022",
+      "retries": [],
+      "gateFails": [],
+      "auditBlocked": "Audit-pass-2 BLOQUEADO: [IMPORTANT][CHK-4] Balance: todos los ítems tienen la misma respuesta. Dist: {\"falsch\":5}",
+      "circuitBreaker": null,
+      "horenOpening": null,
+      "requestedTopic": "Umwelt",
+      "vocabAlignment": {
+        "words": [
+          "objetivo por parte: 5 (--word-count)"
+        ],
+        "bankHits": 0,
+        "kwHits": 0,
+        "total": 1
+      },
+      "batchPath": null,
+      "batchMeta": null
+    },
+    {
+      "id": "07-horen-t2-freizeit",
+      "label": "Hören T2 · Freizeit",
+      "logPath": "C:\\Users\\marco\\Desktop\\MDR\\lexiloop\\batches\\ready\\gate-logs\\smoke-post-fix-2026-07-22\\07-horen-t2-freizeit.log",
+      "exitCode": 1,
+      "durationSec": 143,
+      "exitHint": null,
+      "wordsLine": "objetivo por parte: 5 (--word-count)",
+      "vocabRatioLine": null,
+      "vocabRatio": null,
+      "topicLine": "Freizeit",
+      "subtypeLine": null,
+      "savedFile": null,
+      "discarded": true,
+      "ok": false,
+      "apiCalls": "7",
+      "cost": "0.067",
+      "retries": [
+        "gen-q-h2-ce2b9e9c-q3: sesgo de longitud MCQ (B1) — opción correcta «b» es la más larga (71 vs 37/55; Δ +25 chars, +54% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable.…",
+        "question gen-q-h2-ce2b9e9c-q1 explanation: vocabulario B2+ en pregunta «Herausforderungen» → usa «Problem / Schwierigkeit» (B1)…"
+      ],
+      "gateFails": [],
+      "auditBlocked": null,
+      "circuitBreaker": null,
+      "horenOpening": null,
+      "requestedTopic": "Freizeit",
+      "vocabAlignment": {
+        "words": [
+          "objetivo por parte: 5 (--word-count)"
+        ],
+        "bankHits": 0,
+        "kwHits": 0,
+        "total": 1
+      },
+      "batchPath": null,
+      "batchMeta": null
+    },
+    {
+      "id": "08-horen-t2-sport",
+      "label": "Hören T2 · Sport",
+      "logPath": "C:\\Users\\marco\\Desktop\\MDR\\lexiloop\\batches\\ready\\gate-logs\\smoke-post-fix-2026-07-22\\08-horen-t2-sport.log",
+      "exitCode": 0,
+      "durationSec": 76,
+      "exitHint": null,
+      "wordsLine": "objetivo por parte: 5 (--word-count)",
+      "vocabRatioLine": null,
+      "vocabRatio": null,
+      "topicLine": "Sport",
+      "subtypeLine": null,
+      "savedFile": "batches/ready/pool-verified/B1/horen-t2-gemini-066.json (5 preguntas, 1 passages) · horen Teil 2",
+      "discarded": false,
+      "ok": true,
+      "apiCalls": "3",
+      "cost": "0.036",
+      "retries": [
+        "gen-q-h2-e30ae534-q2: pregunta copia ≥4 palabras seguidas de la transcripción («in den alltag zu»)…"
+      ],
+      "gateFails": [],
+      "auditBlocked": null,
+      "circuitBreaker": null,
+      "horenOpening": {
+        "opening": "Schön, dass Sie zuhören: In diesem Vortrag erkläre ich, warum regelmäßige Bewegung so wichtig für unser Wohlbefinden ist",
+        "bannedHit": false,
+        "banned": []
+      },
+      "requestedTopic": "Sport",
+      "vocabAlignment": {
+        "words": [
+          "objetivo por parte: 5 (--word-count)"
+        ],
+        "bankHits": 0,
+        "kwHits": 0,
+        "total": 1
+      },
+      "batchPath": "C:\\Users\\marco\\Desktop\\MDR\\lexiloop\\batches\\ready\\pool-verified\\B1\\horen-t2-gemini-066.json",
+      "batchMeta": {
+        "path": "C:\\Users\\marco\\Desktop\\MDR\\lexiloop\\batches\\ready\\pool-verified\\B1\\horen-t2-gemini-066.json",
+        "topicTag": "Sport",
+        "title": "Vortrag über Sport im Alltag"
+      }
+    },
+    {
+      "id": "09-horen-t3",
+      "label": "Hören T3 · tema libre",
+      "logPath": "C:\\Users\\marco\\Desktop\\MDR\\lexiloop\\batches\\ready\\gate-logs\\smoke-post-fix-2026-07-22\\09-horen-t3.log",
+      "exitCode": 0,
+      "durationSec": 48,
+      "exitHint": null,
+      "wordsLine": "objetivo por parte: 5 (--word-count)",
+      "vocabRatioLine": null,
+      "vocabRatio": null,
+      "topicLine": "Sport",
+      "subtypeLine": null,
+      "savedFile": "batches/ready/pool-verified/B1/horen-t3-gemini-037.json (7 preguntas, 1 passages) · horen Teil 3",
+      "discarded": false,
+      "ok": true,
+      "apiCalls": "2",
+      "cost": "0.023",
+      "retries": [],
+      "gateFails": [],
+      "auditBlocked": null,
+      "circuitBreaker": null,
+      "horenOpening": null,
+      "requestedTopic": "Sport",
+      "vocabAlignment": {
+        "words": [
+          "objetivo por parte: 5 (--word-count)"
+        ],
+        "bankHits": 0,
+        "kwHits": 0,
+        "total": 1
+      },
+      "batchPath": "C:\\Users\\marco\\Desktop\\MDR\\lexiloop\\batches\\ready\\pool-verified\\B1\\horen-t3-gemini-037.json",
+      "batchMeta": {
+        "path": "C:\\Users\\marco\\Desktop\\MDR\\lexiloop\\batches\\ready\\pool-verified\\B1\\horen-t3-gemini-037.json",
+        "topicTag": "Sport",
+        "title": "Gespräch über Sport und Motivation"
+      }
+    },
+    {
+      "id": "10-horen-t4",
+      "label": "Hören T4 · tema libre",
+      "logPath": "C:\\Users\\marco\\Desktop\\MDR\\lexiloop\\batches\\ready\\gate-logs\\smoke-post-fix-2026-07-22\\10-horen-t4.log",
+      "exitCode": 1,
+      "durationSec": 54,
+      "exitHint": null,
+      "wordsLine": "objetivo por parte: 5 (--word-count)",
+      "vocabRatioLine": null,
+      "vocabRatio": null,
+      "topicLine": "Konsum",
+      "subtypeLine": null,
+      "savedFile": null,
+      "discarded": true,
+      "ok": false,
+      "apiCalls": "2",
+      "cost": "0.026",
+      "retries": [],
+      "gateFails": [],
+      "auditBlocked": null,
+      "circuitBreaker": null,
+      "horenOpening": null,
+      "requestedTopic": "Konsum",
+      "vocabAlignment": {
+        "words": [
+          "objetivo por parte: 5 (--word-count)"
+        ],
+        "bankHits": 0,
+        "kwHits": 0,
+        "total": 1
+      },
+      "batchPath": "C:\\Users\\marco\\Desktop\\MDR\\lexiloop\\batches\\ready\\pool-verified\\B1\\horen-t3-gemini-037.json",
+      "batchMeta": {
+        "path": "C:\\Users\\marco\\Desktop\\MDR\\lexiloop\\batches\\ready\\pool-verified\\B1\\horen-t3-gemini-037.json",
+        "topicTag": "Sport",
+        "title": "Gespräch über Sport und Motivation"
+      }
+    },
+    {
+      "id": "11-schreiben-set",
+      "label": "Schreiben T1–T3 · tema libre",
+      "logPath": "C:\\Users\\marco\\Desktop\\MDR\\lexiloop\\batches\\ready\\gate-logs\\smoke-post-fix-2026-07-22\\11-schreiben-set.log",
+      "exitCode": 0,
+      "durationSec": 28,
+      "exitHint": null,
+      "wordsLine": "objetivo por parte: 5 (--word-count)",
+      "vocabRatioLine": null,
+      "vocabRatio": null,
+      "topicLine": "Technik",
+      "subtypeLine": null,
+      "savedFile": "batches/ready/pool-verified/B1/schreiben-gemini-040.json (3 preguntas, 0 passages) · schreiben Teile 1–3",
+      "discarded": false,
+      "ok": true,
+      "apiCalls": "1",
+      "cost": "0.012",
+      "retries": [],
+      "gateFails": [],
+      "auditBlocked": null,
+      "circuitBreaker": null,
+      "horenOpening": null,
+      "requestedTopic": "Technik",
+      "vocabAlignment": {
+        "words": [
+          "objetivo por parte: 5 (--word-count)"
+        ],
+        "bankHits": 0,
+        "kwHits": 0,
+        "total": 1
+      },
+      "batchPath": "C:\\Users\\marco\\Desktop\\MDR\\lexiloop\\batches\\ready\\pool-verified\\B1\\schreiben-gemini-040.json",
+      "batchMeta": {
+        "path": "C:\\Users\\marco\\Desktop\\MDR\\lexiloop\\batches\\ready\\pool-verified\\B1\\schreiben-gemini-040.json",
+        "topicTag": "Technik"
+      }
+    },
+    {
+      "id": "12-sprechen-set",
+      "label": "Sprechen T1–T3 · tema libre",
+      "logPath": "C:\\Users\\marco\\Desktop\\MDR\\lexiloop\\batches\\ready\\gate-logs\\smoke-post-fix-2026-07-22\\12-sprechen-set.log",
+      "exitCode": 0,
+      "durationSec": 26,
+      "exitHint": null,
+      "wordsLine": "objetivo por parte: 5 (--word-count)",
+      "vocabRatioLine": null,
+      "vocabRatio": null,
+      "topicLine": "Technik",
+      "subtypeLine": null,
+      "savedFile": "batches/ready/pool-verified/B1/sprechen-gemini-019.json (3 preguntas, 0 passages) · sprechen Teile 1–3",
+      "discarded": false,
+      "ok": true,
+      "apiCalls": "1",
+      "cost": "0.010",
+      "retries": [],
+      "gateFails": [],
+      "auditBlocked": null,
+      "circuitBreaker": null,
+      "horenOpening": null,
+      "requestedTopic": "Technik",
+      "vocabAlignment": {
+        "words": [
+          "objetivo por parte: 5 (--word-count)"
+        ],
+        "bankHits": 0,
+        "kwHits": 0,
+        "total": 1
+      },
+      "batchPath": "C:\\Users\\marco\\Desktop\\MDR\\lexiloop\\batches\\ready\\pool-verified\\B1\\sprechen-gemini-019.json",
+      "batchMeta": {
+        "path": "C:\\Users\\marco\\Desktop\\MDR\\lexiloop\\batches\\ready\\pool-verified\\B1\\sprechen-gemini-019.json",
+        "topicTag": "Technik"
+      }
+    }
+  ]
+}

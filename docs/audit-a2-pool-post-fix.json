@@ -1,0 +1,433 @@
+﻿{
+  "scannedAt": "2026-07-23T08:40:45.197Z",
+  "poolDir": "C:\\Users\\marco\\Desktop\\MDR\\lexiloop\\batches\\ready\\pool-verified\\A2",
+  "totalFiles": 50,
+  "A_vocabForced": {
+    "totalLesenWithVocab": 1,
+    "affectedFiles": 1,
+    "affected": [
+      {
+        "file": "lesen-t1-gemini-200.json",
+        "flags": [
+          {
+            "word": "landschaft",
+            "sentence": "Eine besondere Attraktion ist ein Fahrradparcours durch die sch├Âne Landschaft um den Park.",
+            "shared": 0,
+            "jaccard": 0
+          }
+        ]
+      }
+    ]
+  },
+  "B_t2Convergence": {
+    "totalT2": 9,
+    "convergentPairs": 6,
+    "pairs": [
+      {
+        "fileA": "horen-t2-gemini-040.json",
+        "fileB": "horen-t2-gemini-068.json",
+        "sharedFiveGrams": 9,
+        "keySigA": "a-d-c-e-h",
+        "keySigB": "a-d-c-e-h",
+        "sameKeySequence": true
+      },
+      {
+        "fileA": "horen-t2-gemini-067.json",
+        "fileB": "horen-t2-gemini-068.json",
+        "sharedFiveGrams": 8,
+        "keySigA": "a-b-c-d-h",
+        "keySigB": "a-d-c-e-h",
+        "sameKeySequence": false
+      },
+      {
+        "fileA": "horen-t2-gemini-067.json",
+        "fileB": "horen-t2-gemini-069.json",
+        "sharedFiveGrams": 13,
+        "keySigA": "a-b-c-d-h",
+        "keySigB": "a-b-c-e-i",
+        "sameKeySequence": false
+      },
+      {
+        "fileA": "horen-t2-gemini-067.json",
+        "fileB": "horen-t2-gemini-072.json",
+        "sharedFiveGrams": 10,
+        "keySigA": "a-b-c-d-h",
+        "keySigB": "b-a-c-d-i",
+        "sameKeySequence": false
+      },
+      {
+        "fileA": "horen-t2-gemini-068.json",
+        "fileB": "horen-t2-gemini-069.json",
+        "sharedFiveGrams": 15,
+        "keySigA": "a-d-c-e-h",
+        "keySigB": "a-b-c-e-i",
+        "sameKeySequence": false
+      },
+      {
+        "fileA": "horen-t2-gemini-069.json",
+        "fileB": "horen-t2-gemini-072.json",
+        "sharedFiveGrams": 9,
+        "keySigA": "a-b-c-e-i",
+        "keySigB": "b-a-c-d-i",
+        "sameKeySequence": false
+      }
+    ]
+  },
+  "C_nameRotation": {
+    "a2FilesWithDialogue": 21,
+    "duplicateCastGroups": 3,
+    "duplicateCasts": [
+      {
+        "cast": "Anna+Tom",
+        "files": [
+          "horen-t2-cur-health.json",
+          "horen-t2-gemini-072.json"
+        ],
+        "count": 2
+      },
+      {
+        "cast": "Lena+Max",
+        "files": [
+          "horen-t2-gemini-040.json",
+          "horen-t2-gemini-068.json",
+          "horen-t2-gemini-069.json"
+        ],
+        "count": 3
+      },
+      {
+        "cast": "Clara+Tobias|Emma+Jonas|Laura+Niklas|Nina+Paul|Sophie+Tim",
+        "files": [
+          "horen-t3-gemini-039.json",
+          "horen-t3-gemini-040.json"
+        ],
+        "count": 2
+      }
+    ],
+    "topNames": [
+      {
+        "name": "Jonas",
+        "count": 7
+      },
+      {
+        "name": "Emma",
+        "count": 7
+      },
+      {
+        "name": "Nina",
+        "count": 3
+      },
+      {
+        "name": "Anna",
+        "count": 3
+      },
+      {
+        "name": "Paul",
+        "count": 3
+      },
+      {
+        "name": "Lena",
+        "count": 3
+      },
+      {
+        "name": "Max",
+        "count": 3
+      },
+      {
+        "name": "Tobias",
+        "count": 3
+      },
+      {
+        "name": "Clara",
+        "count": 3
+      },
+      {
+        "name": "Tom",
+        "count": 2
+      },
+      {
+        "name": "Julia",
+        "count": 2
+      },
+      {
+        "name": "Tim",
+        "count": 2
+      }
+    ],
+    "topPairs": [
+      {
+        "pair": "Emma+Jonas",
+        "count": 7
+      },
+      {
+        "pair": "Lena+Max",
+        "count": 3
+      },
+      {
+        "pair": "Clara+Tobias",
+        "count": 3
+      },
+      {
+        "pair": "Anna+Tom",
+        "count": 2
+      },
+      {
+        "pair": "Sophie+Tim",
+        "count": 2
+      },
+      {
+        "pair": "Laura+Niklas",
+        "count": 2
+      },
+      {
+        "pair": "Nina+Paul",
+        "count": 2
+      },
+      {
+        "pair": "Lukas+Nina",
+        "count": 1
+      },
+      {
+        "pair": "Julia+Paul",
+        "count": 1
+      },
+      {
+        "pair": "Felix+Sara",
+        "count": 1
+      }
+    ],
+    "b1TopPairs": [
+      {
+        "pair": "Sophie+Tim",
+        "count": 9
+      },
+      {
+        "pair": "Emma+Jonas",
+        "count": 7
+      },
+      {
+        "pair": "Erik+Hannah",
+        "count": 6
+      },
+      {
+        "pair": "Anna+Ben",
+        "count": 4
+      },
+      {
+        "pair": "Lena+Markus",
+        "count": 2
+      },
+      {
+        "pair": "Mara+Tim",
+        "count": 1
+      },
+      {
+        "pair": "Anna+Lukas",
+        "count": 1
+      },
+      {
+        "pair": "Felix+Sarah",
+        "count": 1
+      }
+    ]
+  },
+  "D_vocabTagsContamination": {
+    "totalQuestions": 210,
+    "contaminatedQuestions": 206,
+    "affectedFiles": 42,
+    "pctQuestions": 98.1,
+    "pctFiles": 84,
+    "samples": [
+      {
+        "file": "horen-t1-cur-education.json",
+        "qId": "de-a2-horen-t1-gesundheit-arzt-03-q2",
+        "badTags": [
+          "best├ñtigen",
+          "sagen"
+        ],
+        "blobPreview": "Welchen Termin nimmt Herr Schmidt? c) Donnerstag um 14 Uhr"
+      },
+      {
+        "file": "horen-t1-cur-education.json",
+        "qId": "2-a44cd584",
+        "badTags": [
+          "Telefongespr├ñch",
+          "sagen"
+        ],
+        "blobPreview": "Was m├Âchte die Person beantragen? b) Einen Pass"
+      },
+      {
+        "file": "horen-t1-cur-education.json",
+        "qId": "de-a2-horen-t1-gesundheit-arzt-03-q3",
+        "badTags": [
+          "zeichen",
+          "trinken",
+          "helfen"
+        ],
+        "blobPreview": "Was ist oft die Ursache f├╝r Kopfschmerzen nach dem Radio? a) Durst"
+      },
+      {
+        "file": "horen-t1-cur-education.json",
+        "qId": "de-a2-horen-t1-gesundheit-arzt-03-q5",
+        "badTags": [
+          "Erk├ñltung",
+          "helfen",
+          "sagen"
+        ],
+        "blobPreview": "Was hat die Person aus der Apotheke genommen? b) Tabletten"
+      },
+      {
+        "file": "horen-t1-cur-education.json",
+        "qId": "5-a44cd584",
+        "badTags": [
+          "brauchen",
+          "sagen"
+        ],
+        "blobPreview": "Was muss Thomas machen? a) Ein Attest vom Arzt schicken"
+      },
+      {
+        "file": "horen-t1-cur-health.json",
+        "qId": "1-138d74d1",
+        "badTags": [
+          "angeben",
+          "├Âffnungszeiten",
+          "Radionachricht"
+        ],
+        "blobPreview": "Wann kann man das Rathaus besuchen? b) Montag bis Freitag 9 bis 16 Uhr"
+      },
+      {
+        "file": "horen-t1-cur-health.json",
+        "qId": "2-138d74d1",
+        "badTags": [
+          "Ansage"
+        ],
+        "blobPreview": "Wie lange dauert die Zugfahrt nach Berlin? c) Zwei Stunden und f├╝nfzehn Minuten"
+      },
+      {
+        "file": "horen-t1-cur-health.json",
+        "qId": "3-138d74d1",
+        "badTags": [
+          "sagen"
+        ],
+        "blobPreview": "Warum kann Anna nicht zur Arbeit kommen? b) Sie ist krank und hat Fieber und Hus"
+      }
+    ]
+  },
+  "E_grammarTags": {
+    "topicAsGrammarFiles": 0,
+    "topicAsGrammar": [],
+    "identicalGrammarAllQuestionsFiles": 16,
+    "identicalAllQ": [
+      {
+        "file": "horen-t2-cur-education.json",
+        "grammarTags": [],
+        "questionCount": 5,
+        "allValidGrammar": false
+      },
+      {
+        "file": "horen-t2-cur-health.json",
+        "grammarTags": [],
+        "questionCount": 5,
+        "allValidGrammar": false
+      },
+      {
+        "file": "horen-t2-cur-society.json",
+        "grammarTags": [],
+        "questionCount": 5,
+        "allValidGrammar": false
+      },
+      {
+        "file": "horen-t2-cur-work.json",
+        "grammarTags": [],
+        "questionCount": 5,
+        "allValidGrammar": false
+      },
+      {
+        "file": "horen-t2-gemini-040.json",
+        "grammarTags": [],
+        "questionCount": 5,
+        "allValidGrammar": false
+      },
+      {
+        "file": "horen-t2-gemini-067.json",
+        "grammarTags": [],
+        "questionCount": 5,
+        "allValidGrammar": false
+      },
+      {
+        "file": "horen-t2-gemini-068.json",
+        "grammarTags": [],
+        "questionCount": 5,
+        "allValidGrammar": false
+      },
+      {
+        "file": "horen-t2-gemini-069.json",
+        "grammarTags": [],
+        "questionCount": 5,
+        "allValidGrammar": false
+      },
+      {
+        "file": "horen-t2-gemini-072.json",
+        "grammarTags": [],
+        "questionCount": 5,
+        "allValidGrammar": false
+      },
+      {
+        "file": "lesen-t2-cur-education.json",
+        "grammarTags": [],
+        "questionCount": 5,
+        "allValidGrammar": false
+      },
+      {
+        "file": "lesen-t3-cur-society.json",
+        "grammarTags": [],
+        "questionCount": 5,
+        "allValidGrammar": false
+      },
+      {
+        "file": "lesen-t4-cur-health.json",
+        "grammarTags": [],
+        "questionCount": 5,
+        "allValidGrammar": false
+      },
+      {
+        "file": "sprechen-cur-education.json",
+        "grammarTags": [],
+        "questionCount": 3,
+        "allValidGrammar": false
+      },
+      {
+        "file": "sprechen-cur-health.json",
+        "grammarTags": [],
+        "questionCount": 3,
+        "allValidGrammar": false
+      },
+      {
+        "file": "sprechen-cur-society.json",
+        "grammarTags": [],
+        "questionCount": 3,
+        "allValidGrammar": false
+      },
+      {
+        "file": "sprechen-cur-work.json",
+        "grammarTags": [],
+        "questionCount": 3,
+        "allValidGrammar": false
+      }
+    ]
+  },
+  "F_brokenLemmas": {
+    "brokenLemmaHits": 2,
+    "hits": [
+      {
+        "file": "horen-t3-cur-education.json",
+        "qId": "de-a2-h-t3-urlaubsplanung-freunde-03-q3",
+        "lemma": "interessanen"
+      },
+      {
+        "file": "horen-t3-gemini-040.json",
+        "qId": "gen-q-h3-76dbf03d-q4",
+        "lemma": "kaputen"
+      }
+    ]
+  }
+}

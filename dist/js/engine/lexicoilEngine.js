@@ -86,11 +86,21 @@ const LexiCoilEngine = (() => {
     }
 
     let topic = 'Personal vocabulary review';
-    if (options.topic && typeof B1Topics !== 'undefined' && B1Topics.isValidB1Topic?.(options.topic)) {
-      topic = options.topic;
-    } else if (options.topic) {
-      if (typeof lcDebug !== 'undefined') lcDebug.warn('[personal] invalid B1 topic ignored:', options.topic);
+    if (options.topic) {
+      const canon =
+        typeof B1Topics !== 'undefined' && B1Topics.normalizeB1Topic
+          ? B1Topics.normalizeB1Topic(options.topic)
+          : null;
+      if (canon) topic = canon;
+      else if (typeof lcDebug !== 'undefined') {
+        lcDebug.warn('[personal] invalid B1 topic ignored:', options.topic);
+      }
     }
+
+    const skillList = skills || ['lesen'];
+    const isGenSuggestionModule = skillList.some((s) =>
+      ['schreiben', 'writing', 'sprechen', 'speaking'].includes(String(s).toLowerCase()),
+    );
 
     const spec = await KE.buildSpec({
       language: Domain.languageFromSubjectCode(subject),
@@ -99,12 +109,12 @@ const LexiCoilEngine = (() => {
       contentType: 'VocabularyExercise',
       targetWords,
       topic,
-      skills: skills || ['lesen'],
+      skills: skillList,
       vocabPolicy: {
         targetWords,
-        preferCoverage: true,
+        preferCoverage: !isGenSuggestionModule,
         maximizeCoverage: false,
-        ensureDensePart: false,
+        suggestionOnly: isGenSuggestionModule,
       },
       metadata: {
         userVocabRequested,

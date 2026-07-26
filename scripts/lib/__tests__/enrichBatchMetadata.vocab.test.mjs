@@ -10,6 +10,7 @@ import {
   separableRootsFromAllowlist,
   questionSpecificVocabBlob,
   enrichBatchMetadata,
+  formatVocabTag,
 } from '../enrichBatchMetadata.mjs';
 
 let passed = 0;
@@ -40,10 +41,10 @@ function assertExcludes(desc, tags, needle) {
 
 console.log(`\n── vocab extractor ${VOCAB_TAGS_NORMALIZE_VERSION} ──`);
 
-assert(
-  'stamp is v2.3.12+',
-  String(VOCAB_TAGS_NORMALIZE_VERSION).startsWith('v2.3.12') ||
-    String(VOCAB_TAGS_NORMALIZE_VERSION).startsWith('v2.3.11'),
+  assert(
+  'stamp is v2.3.16+',
+  String(VOCAB_TAGS_NORMALIZE_VERSION).startsWith('v2.3.16') ||
+    String(VOCAB_TAGS_NORMALIZE_VERSION).startsWith('v2.3.15'),
 );
 
 assert('zu-separable auszuschalten→ausschalten', normalizeZuSeparable('auszuschalten') === 'ausschalten');
@@ -537,6 +538,120 @@ console.log('\n── v2.3.11 ge-participle (gezeigt→zeigen) ──');
 {
   const t = extractVocabularyFromText('Sie genießt den Urlaub.', 6);
   assertIncludes('genießt→genießen', t, 'genießen');
+}
+
+// ── v2.3.13: MCQ blob = question + correct option (no passage) ─────────────
+console.log('\n── MCQ vocab blob excludes distractors ──');
+{
+  const passage = {
+    text:
+      'Schön, dass Sie zuhören: In diesem Vortrag erkläre ich, warum regelmäßige Bewegung wichtig ist und wie man Sport in den Alltag integrieren kann.',
+  };
+  const q1 = {
+    type: 'multiple_choice',
+    question: 'Was ist das Hauptthema des Vortrags?',
+    options: [
+      'a) Die neuesten Trends im Fitnessstudio und ihre Effekte auf die Gesundheit.',
+      'b) Die Bedeutung von Wettkämpfen im Amateursportbereich.',
+      'c) Wie man Sport in den Alltag integriert.',
+    ],
+    correct: 'c',
+  };
+  const blob1 = questionSpecificVocabBlob(q1, passage);
+  assert('q1 blob omits wettkämpfen distractor', !/wettkämpfen/i.test(blob1));
+  assert('q1 blob omits neuesten distractor', !/neuesten/i.test(blob1));
+  assert('q1 blob omits passage (v2.3.13)', !/integrieren kann/i.test(blob1));
+  assert('q1 blob includes correct option', /Alltag integriert/i.test(blob1));
+  const tags1 = extractVocabularyFromText(blob1, 8).map((t) => String(t).toLowerCase());
+  assertExcludes('q1 tags no wettkämpfen', tags1, 'wettkämpfen');
+  assertExcludes('q1 tags no neuesten', tags1, 'neuesten');
+
+  const q2 = {
+    type: 'multiple_choice',
+    question: "Was versteht der Referent unter 'regelmäßiger Bewegung'?",
+    options: [
+      'a) Schon kleine, alltägliche Aktivitäten, die man leicht umsetzen kann.',
+      'b) Nur Sportarten, die man in einem organisierten Verein ausübt.',
+      'c) Tägliches intensives Training im Fitnessstudio oder die Teilnahme an Marathons.',
+    ],
+    correct: 'a',
+  };
+  const blob2 = questionSpecificVocabBlob(q2, passage);
+  assert('q2 blob omits organisierten distractor', !/organisierten/i.test(blob2));
+  assert('q2 blob omits intensiv distractor', !/intensiv/i.test(blob2));
+  const tags2 = extractVocabularyFromText(blob2, 8).map((t) => String(t).toLowerCase());
+  assertExcludes('q2 tags no organisierten', tags2, 'organisierten');
+  assertExcludes('q2 tags no intensiv', tags2, 'intensiv');
+}
+{
+  const { batch: out } = enrichBatchMetadata(
+    {
+      passages: [
+        {
+          id: 'p1',
+          text: 'Meetingräume müssen über die App gebucht werden. Smartphones bitte lautlos stellen.',
+        },
+      ],
+      questions: [
+        {
+          id: 'q1',
+          type: 'multiple_choice',
+          teil: 5,
+          passageId: 'p1',
+          question: 'Wie werden Meetingräume gebucht?',
+          options: [
+            'a) Man ruft die Rezeption an und reserviert telefonisch.',
+            'b) Man bucht mindestens 24 Stunden im Voraus über die App.',
+            'c) Man erscheint spontan am Schalter ohne Anmeldung.',
+          ],
+          correct: 'b',
+        },
+      ],
+    },
+    { topic: false, grammar: false, vocab: true, forceVocab: true },
+  );
+  const tags = (out.questions[0].vocabularyTags || []).map((t) => String(t).toLowerCase());
+  assertExcludes('T5 MCQ no telefonisch distractor', tags, 'telefonisch');
+  assertExcludes('T5 MCQ no spontan distractor', tags, 'spontan');
+  assertIncludes('T5 MCQ from passage or correct', tags, 'meetingräume');
+}
+
+console.log('\n── Lemma -t artifact regression (2026-07-24) ──');
+{
+  const bad = [
+    'direken',
+    'interessanen',
+    'handelen',
+    'behandelen',
+    'weiterhi',
+    'anstaten',
+  ];
+  for (const b of bad) {
+    assertExcludes(`extract must not emit ${b}`, extractVocabularyFromText(`Text mit ${b} und Kultur.`, 8), b);
+  }
+  assertIncludes('direkt from direkt adverb', extractVocabularyFromText('Wir fahren direkt zum Zentrum.', 6), 'direkt');
+  assertIncludes('interessieren from sich interessieren', extractVocabularyFromText('Viele interessieren sich für Kunst.', 6), 'interessieren');
+  assert('formatVocabTag viele lowercase', formatVocabTag('viele') === 'viele');
+  assert('formatVocabTag vielen lowercase', formatVocabTag('vielen') === 'vielen');
+}
+
+{
+  const batch = {
+    lang: 'de',
+    questions: [
+      {
+        id: 'q1',
+        question: 'Sophie fährt nach Berlin.',
+        vocabularyTags: ['Sophie', 'Berlin', 'Wetter', 'Pläne'],
+      },
+    ],
+  };
+  enrichBatchMetadata(batch, { vocab: true, grammar: false, topic: false });
+  const tags = batch.questions[0].vocabularyTags.map((t) => t.toLowerCase());
+  assert('repair tags preserves Sophie (not sophi)', tags.includes('sophie'));
+  assert('repair tags preserves Berlin (not berli)', tags.includes('berlin'));
+  assertExcludes('repair tags no sophi', tags, 'sophi');
+  assertExcludes('repair tags no berli', tags, 'berli');
 }
 
 console.log(`\n── Result: ${passed} passed, ${failed} failed ──`);

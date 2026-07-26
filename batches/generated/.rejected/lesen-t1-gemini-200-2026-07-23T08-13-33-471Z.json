@@ -1,0 +1,103 @@
+{
+  "_rejectedReason": "gen-q-1-22742e80-1: options_missing\n\ngen-q-1-22742e80-1: options_missing\ngen-q-1-22742e80-2: options_missing\ngen-q-1-22742e80-3: options_missing\ngen-q-1-22742e80-4: options_missing\ngen-q-1-22742e80-5: options_missing\ngen-q-1-22742e80-6: options_missing\n\n== Validación de lesen-t1-gemini-200.json (de_A2) ==\nPreguntas: 6 | Pasajes: 1\nEsquema: OK\nConformidad blueprint: FAIL (6 ítems)\nColocación (Teile que mejora): Pool válido (Teil ya cubierto en 1 examen — OK para exámenes disjuntos)\nProblemas:\n  - gen-q-1-22742e80-1: options_missing\n  - gen-q-1-22742e80-2: options_missing\n  - gen-q-1-22742e80-3: options_missing\n  - gen-q-1-22742e80-4: options_missing\n  - gen-q-1-22742e80-5: options_missing\n  - gen-q-1-22742e80-6: options_missing",
+  "_rejectedGate": "formato",
+  "_rejectedAt": "2026-07-23T08:13:33.471Z",
+  "passages": [
+    {
+      "id": "gen-l1-e33f2001",
+      "module": "lesen",
+      "teil": 1,
+      "level": "A2",
+      "title": "Neue App für Nachrichten in der Stadt",
+      "text": "Die Stadtzeitung „Unser Berlin“ hat eine neue Handy-App gestartet. Mit dieser App können die Bürger alle wichtigen Nachrichten direkt auf ihr Smartphone bekommen. Die App ist kostenlos und einfach zu nutzen. Man findet dort aktuelle Informationen über Veranstaltungen, lokale Politik und Sport. Auch kleine Geschichten aus den Stadtteilen sind dabei. Viele junge Leute lesen heute lieber Nachrichten auf dem Handy als in der gedruckten Zeitung. Deshalb war es notwendig, eine moderne Lösung anzubieten. Die Qualität der Informationen ist sehr wichtig für die Redaktion. Die App zeigt auch Fotos und kurze Videos. Man kann seine Lieblingsartikel speichern oder mit Freunden teilen. Die Redaktion hofft, dass mehr Menschen die lokalen Nachrichten lesen. So bleiben alle gut informiert über das, was in der Stadt passiert. Die App ist ab sofort im App Store und bei Google Play verfügbar. Man muss nur dorthin gehen und die App herunterladen. Es gibt auch eine Funktion, die an wichtige Termine erinnert.",
+      "topicTag": "Medien",
+      "lang": "de"
+    }
+  ],
+  "questions": [
+    {
+      "id": "gen-q-1-22742e80-1",
+      "module": "lesen",
+      "teil": 1,
+      "lang": "de",
+      "level": "B1",
+      "type": "multiple_choice",
+      "passageId": "gen-l1-e33f2001",
+      "question": "Die Anwendung ist für alle Nutzer gebührenfrei.",
+      "correct": true,
+      "correctAnswer": true,
+      "explanation": "Die App ist kostenlos, also gebührenfrei.",
+      "options": []
+    },
+    {
+      "id": "gen-q-1-22742e80-2",
+      "module": "lesen",
+      "teil": 1,
+      "lang": "de",
+      "level": "B1",
+      "type": "multiple_choice",
+      "passageId": "gen-l1-e33f2001",
+      "question": "Die App bietet ausschließlich Meldungen aus der Stadt.",
+      "correct": false,
+      "correctAnswer": false,
+      "explanation": "Die App bietet nicht nur Meldungen aus der Stadt, sondern auch kleine Geschichten aus den Stadtteilen.",
+      "options": []
+    },
+    {
+      "id": "gen-q-1-22742e80-3",
+      "module": "lesen",
+      "teil": 1,
+      "lang": "de",
+      "level": "B1",
+      "type": "multiple_choice",
+      "passageId": "gen-l1-e33f2001",
+      "question": "Die Güte der Inhalte ist für die Macher sehr wichtig.",
+      "correct": true,
+      "correctAnswer": true,
+      "explanation": "Die Qualität der Informationen ist sehr wichtig für die Redaktion (Macher).",
+      "options": []
+    },
+    {
+      "id": "gen-q-1-22742e80-4",
+      "module": "lesen",
+      "teil": 1,
+      "lang": "de",
+      "level": "B1",
+      "type": "multiple_choice",
+      "passageId": "gen-l1-e33f2001",
+      "question": "Die Anwendung zeigt immer nur Bilder, aber keine Filme.",
+      "correct": false,
+      "correctAnswer": false,
+      "explanation": "Die App zeigt auch Fotos und kurze Videos, nicht nur Bilder.",
+      "options": []
+    },
+    {
+      "id": "gen-q-1-22742e80-5",
+      "module": "lesen",
+      "teil": 1,
+      "lang": "de",
+      "level": "B1",
+      "type": "multiple_choice",
+      "passageId": "gen-l1-e33f2001",
+      "question": "Man kann die Anwendung nur über Google Play herunterladen.",
+      "correct": false,
+      "correctAnswer": false,
+      "explanation": "Die App ist ab sofort im App Store und bei Google Play verfügbar, nicht nur bei Google Play.",
+      "options": []
+    },
+    {
+      "id": "gen-q-1-22742e80-6",
+      "module": "lesen",
+      "teil": 1,
+      "lang": "de",
+      "level": "B1",
+      "type": "multiple_choice",
+      "passageId": "gen-l1-e33f2001",
+      "question": "Die Anwendung kann an wichtige Termine erinnern.",
+      "correct": true,
+      "correctAnswer": true,
+      "explanation": "Es gibt auch eine Funktion, die an wichtige Termine erinnert.",
+      "options": []
+    }
+  ]
+}

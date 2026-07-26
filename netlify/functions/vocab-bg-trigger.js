@@ -104,10 +104,12 @@ exports.handler = async (event) => {
 
   const pendingRaw = Array.isArray(rec.bgVocabPending) ? rec.bgVocabPending : [];
   const pending = VocabBgState.getEligiblePendingEntries({ bgVocabPending: pendingRaw });
+  const level = VocabBgState.resolveBgLevelFromPending(pending, 'B1');
   const invoke = await invokeBackground(event, {
     email,
     requestId,
     plan,
+    level,
     preferredModule: elig.module,
     pendingWords: pending,
     trigger: elig.trigger,

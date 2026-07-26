@@ -187,6 +187,19 @@ const CefrGate = (() => {
     return { min: 0, max: Infinity, minExempt: true };
   }
 
+  /** Lesen/Hören-style per-Teil prose bounds from blueprint (wordsPerPassage). */
+  function readingBoundsFromPart(bpPart) {
+    const wpp = bpPart?.wordsPerPassage;
+    if (wpp && typeof wpp === 'object') {
+      return {
+        min: wpp.min != null ? Number(wpp.min) : 0,
+        max: wpp.max != null ? Number(wpp.max) : Infinity,
+        minExempt: wpp.min == null,
+      };
+    }
+    return { min: 0, max: Infinity, minExempt: true };
+  }
+
   function resolveLengthBounds(opts, level) {
     if (opts.lengthBounds && typeof opts.lengthBounds === 'object') {
       const minExempt = opts.lengthMinExempt === true;
@@ -274,6 +287,53 @@ const CefrGate = (() => {
     return chunks.join(' ').trim();
   }
 
+  function partAdTexts(part) {
+    return (part?.ads || [])
+      .map((ad) => (typeof ad === 'string' ? ad : ad?.text || ''))
+      .map((t) => String(t).trim())
+      .filter(Boolean);
+  }
+
+  function partForumIntroText(part) {
+    if (!part || typeof part !== 'object') return '';
+    const fromPassages = (part.passages || [])
+      .map((p) => (typeof p === 'string' ? p : p?.text || ''))
+      .map((t) => String(t).trim())
+      .filter(Boolean);
+    if (fromPassages.length === 1) return fromPassages[0];
+    return String(part.text || part.passage || '').trim();
+  }
+
+  function partForumSignTexts(part) {
+    const out = [];
+    (part?.items || []).forEach((it) => pushText(out, it?.signText));
+    (part?.opinions || []).forEach((op) => {
+      pushText(out, typeof op === 'string' ? op : op?.text);
+    });
+    return out;
+  }
+
+  function blueprintLengthBounds(bpPart, bounds) {
+    if (!bpPart?.wordsPerPassage || typeof bpPart.wordsPerPassage !== 'object') return null;
+    return {
+      min: bounds.minExempt ? 0 : bounds.min,
+      max: bounds.max,
+    };
+  }
+
+  function pushLengthOnlyCheck(checks, text, bpPart, bounds, lengthBounds, source) {
+    const trimmed = String(text || '').trim();
+    if (!trimmed) return;
+    checks.push({
+      text: trimmed,
+      passageLengthExempt: bpPart?.passageLengthExempt === true,
+      lengthOnly: true,
+      lengthBounds: lengthBounds || undefined,
+      lengthMinExempt: bounds.minExempt,
+      source,
+    });
+  }
+
   function extractReadingPassageChecks(exam, blueprint) {
     const checks = [];
     const pairs = [
@@ -282,21 +342,96 @@ const CefrGate = (() => {
     ];
     pairs.forEach(([examKey, moduleId]) => {
       (exam[examKey] || []).forEach((part) => {
+        const bpPart = blueprint ? blueprintPart(blueprint, moduleId, part.teil) : null;
+        const bounds = readingBoundsFromPart(bpPart);
+        const lengthBounds = blueprintLengthBounds(bpPart, bounds);
+        const slotType = bpPart?.slotType;
+        const taskFormat = bpPart?.taskFormat;
+        const teilLabel = part.teil ?? '?';
+
+        // Lesen T3 — wordsPerPassage (20–60) applies to each Anzeige A–J, not the whole Teil.
+        if (slotType === 'ads_matching' || taskFormat === 'matching_ads') {
+          const ads = partAdTexts(part);
+          if (ads.length) {
+            ads.forEach((ad, i) => {
+              pushLengthOnlyCheck(
+                checks,
+                ad,
+                bpPart,
+                bounds,
+                lengthBounds,
+                `${examKey}:teil=${teilLabel}:ad=${i}`,
+              );
+            });
+            return;
+          }
+        }
+
+        // Lesen T4 — intro forum (60–90) + short signText posts (~25–40 w); never sum all snippets.
+        if (slotType === 'forum_opinions' || taskFormat === 'opinion_yes_no') {
+          const intro = partForumIntroText(part);
+          const signs = partForumSignTexts(part);
+          if (intro || signs.length) {
+            if (intro) {
+              pushLengthOnlyCheck(
+                checks,
+                intro,
+                bpPart,
+                bounds,
+                lengthBounds,
+                `${examKey}:teil=${teilLabel}:intro`,
+              );
+            }
+            signs.forEach((sign, i) => {
+              pushLengthOnlyCheck(
+                checks,
+                sign,
+                bpPart,
+                { min: 0, max: Infinity, minExempt: true },
+                null,
+                `${examKey}:teil=${teilLabel}:sign=${i}`,
+              );
+            });
+            return;
+          }
+        }
+
+        // Multi-passage Teile (e.g. Lesen T2 press_mcq) — wordsPerPassage applies per Text, not summed.
+        const proseExempt =
+          slotType === 'ads_matching' ||
+          taskFormat === 'matching_ads' ||
+          bpPart?.proseExempt === true;
+
+        const multiPassageItemize =
+          Array.isArray(part.passages) &&
+          part.passages.length > 1 &&
+          bpPart?.wordsPerPassage &&
+          (bpPart.passagesPerPart > 1 || proseExempt);
+
+        if (multiPassageItemize) {
+          part.passages.forEach((p, i) => {
+            const text = typeof p === 'string' ? p : p?.text || '';
+            pushLengthOnlyCheck(
+              checks,
+              text,
+              bpPart,
+              bounds,
+              lengthBounds,
+              `${examKey}:teil=${teilLabel}:passage=${i}`,
+            );
+          });
+          return;
+        }
+
         const text = partReadingText(part);
         if (!text) return;
-        const bpPart = blueprint ? blueprintPart(blueprint, moduleId, part.teil) : null;
-        // Ads-matching parts (Lesen Teil 3) are lists of classified ads, not prose
-        // passages — short telegram-style sentences with many proper nouns. Prose
-        // complexity/coverage thresholds don't apply; validate length only.
-        const proseExempt =
-          bpPart?.slotType === 'ads_matching' ||
-          bpPart?.taskFormat === 'matching_ads' ||
-          bpPart?.proseExempt === true;
         checks.push({
           text,
           passageLengthExempt: bpPart?.passageLengthExempt === true,
           lengthOnly: proseExempt,
-          source: `${examKey}:teil=${part.teil ?? '?'}`,
+          lengthBounds: lengthBounds || undefined,
+          lengthMinExempt: bounds.minExempt,
+          source: `${examKey}:teil=${teilLabel}`,
         });
       });
     });
@@ -548,6 +683,8 @@ const CefrGate = (() => {
           lang,
           passageLengthExempt: check.passageLengthExempt,
           lengthOnly: check.lengthOnly,
+          lengthBounds: check.lengthBounds,
+          lengthMinExempt: check.lengthMinExempt,
         }),
       ),
       ...listeningChecks.map((check) =>

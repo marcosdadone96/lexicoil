@@ -27,6 +27,8 @@ import {
   listT5VariantProfiles,
 } from './lesenT5InstitutionSeeds.mjs';
 import { structuralMoldKey, extractStructuralMold } from './structuralMoldDedup.mjs';
+import { loadPersistedCellMolds } from './persistedCellPool.mjs';
+import { pickMandatedTitle, buildMandatedTitlePromptBlock } from './titleVariantBank.mjs';
 
 const require = createRequire(import.meta.url);
 const { normalizeB1Topic } = require(path.join(ROOT, 'js/data/b1Topics.js'));
@@ -105,6 +107,38 @@ export const LESEN_T5_SUBTYPES = Object.freeze([
     ruleFocus: 'Parkhaus, Öffnungszeiten, Kinderwagen, Fotografieren, Rauchen',
     keywords: /einkaufszentrum|shopping|center|geschäft|kaufhaus|parkhaus|galerie/i,
   },
+  {
+    id: 'coworking',
+    label: 'Coworking-Space Nutzungsordnung',
+    setting: 'Regeln eines Coworking-Space / Shared Office mit WLAN und App-Buchung',
+    titleExample: 'Nutzungsordnung Coworking-Space …',
+    ruleFocus: 'WLAN, Geräte, Buchung per App, Meetingräume, Zugangskarten, Ruhezonen, Drucker',
+    keywords: /coworking|shared.?office|hot.?desk|meetingraum|zugangskarte|wlan/i,
+  },
+  {
+    id: 'leihgeraete',
+    label: 'Ausleihordnung für Leihgeräte',
+    setting: 'Ausleihe von Tablets, Laptops und E-Readern in Bibliothek oder Medienzentrum',
+    titleExample: 'Ausleihordnung für Leihgeräte …',
+    ruleFocus: 'Tablets, Laptops, Leihfrist, Gebühren, Datensicherung, Anmeldung, Handy',
+    keywords: /leihgerät|tablet|laptop|e-reader|medienausleihe|geräteausleihe/i,
+  },
+  {
+    id: 'computerraum',
+    label: 'Computerraum / Medienzentrum Ordnung',
+    setting: 'Regeln eines Schul- oder öffentlichen Computerraums / Medienzentrums',
+    titleExample: 'Ordnung im Computerraum …',
+    ruleFocus: 'PC-Nutzung, Software, USB-Sticks, Drucker, Anmeldung, Internet, Smartphone',
+    keywords: /computerraum|medienzentrum|pc.?raum|drucker|software|internet|digital/i,
+  },
+  {
+    id: 'fitness_app',
+    label: 'Fitnessstudio mit App-Anmeldesystem',
+    setting: 'Nutzungsordnung eines Fitnessstudios mit digitaler Buchung und Check-in',
+    titleExample: 'Nutzungsordnung TechFit / App-Check-in …',
+    ruleFocus: 'App-Buchung, Check-in digital, Smart-Geräte, Chipkarte, Datenschutz, Handy',
+    keywords: /fitness.*app|app.?anmeld|check.?in|smart.?gerät|chipkarte|techfit|smartphone/i,
+  },
 ]);
 
 export function defaultPoolFile(lang, level) {
@@ -171,7 +205,7 @@ export const T5_GENERIC_LAST_RESORT = Object.freeze(['wohnanlage', 'schule']);
 /** @deprecated prefer TOPIC_SUBTYPE_PREFERENCE in lesenT5TopicFilter.mjs — kept in sync for exports */
 export const T5_TOPIC_SUBTYPE_PREFERENCE = Object.freeze({
   Freizeit: ['freizeitzentrum', 'sportverein', 'park'],
-  Technik: ['bibliothek', 'schule'],
+  Technik: ['coworking', 'leihgeraete', 'computerraum', 'fitness_app', 'bibliothek', 'schule'],
   Wohnen: ['wohnanlage', 'park', 'freizeitzentrum'],
   Bildung: ['schule', 'bibliothek'],
   Ernährung: ['kantine', 'park'],
@@ -310,16 +344,22 @@ export function resolveT5GenerationMolds(opts = {}) {
   const lang = opts.lang || 'de';
   const level = opts.level || 'B1';
   const topicTag = opts.topicTag;
-  const records = loadPoolRecords({ lang, level, poolFile: opts.poolFile });
-  const cell = filterCellRecords(records, { lang, level, teil: 5, topicTag });
-  const { moldKeys, titles } = collectCellMolds(cell, { teil: 5 });
   const sessionMoldKeys = (opts.extraExcludeSubtypes || []).flatMap((id) => [id]);
-  const usedMoldKeys = [
-    ...new Set([...moldKeys, ...sessionMoldKeys, ...(opts.extraUsedMoldKeys || [])]),
-  ];
-  const excludeTitles = [...new Set([...titles, ...(opts.extraExcludeTitles || [])])];
+  const persisted = loadPersistedCellMolds({
+    lang,
+    level,
+    topicTag,
+    teil: 5,
+    poolFile: opts.poolFile,
+    extraExcludeTitles: opts.extraExcludeTitles || [],
+    extraMoldKeys: [...sessionMoldKeys, ...(opts.extraUsedMoldKeys || [])],
+    extraSubtypes: opts.extraExcludeSubtypes || [],
+  });
+  const { moldKeys, titles } = persisted;
+  const usedMoldKeys = [...new Set(moldKeys)];
+  const excludeTitles = [...new Set(titles)];
   const publishedPassages = loadGlobalT5BlocklistEntries({ lang, level });
-  const pick = pickNextT5Subtype(opts.extraExcludeSubtypes || [], cell.length, topicTag, usedMoldKeys);
+  const pick = pickNextT5Subtype(opts.extraExcludeSubtypes || [], persisted.cellCount, topicTag, usedMoldKeys);
   const textSubtype = pick.id;
   const subtypeDef = getSubtypeById(textSubtype);
   const seedEntropy = `${topicTag || 'any'}:${textSubtype}:${opts.seedEntropy || Date.now()}`;
@@ -333,12 +373,22 @@ export function resolveT5GenerationMolds(opts = {}) {
     topicTag: topicTag ? normalizeB1Topic(topicTag) : null,
     excludeProfiles: [...new Set(excludeProfiles)],
   });
+  const mandatedTitle = pickMandatedTitle({
+    teil: 5,
+    textSubtype,
+    institutionName: institutionSeed.institutionName,
+    variantProfile: institutionSeed.variantProfile,
+    excludeNormalized: persisted.normalizedTitles,
+    entropy: seedEntropy,
+  });
+  institutionSeed.mandatedTitle = mandatedTitle;
 
   return {
     textSubtype,
     variantProfile: institutionSeed.variantProfile,
     subtypeDef,
     institutionSeed,
+    mandatedTitle,
     pickTier: pick.tier,
     topicTag: topicTag ? normalizeB1Topic(topicTag) : null,
     excludeMolds: {
@@ -347,7 +397,8 @@ export function resolveT5GenerationMolds(opts = {}) {
       titles: excludeTitles,
       publishedPassages,
     },
-    cellCount: cell.length,
+    cellCount: persisted.cellCount,
+    persistedBatchCount: persisted.persistedBatchCount,
   };
 }
 
@@ -396,10 +447,12 @@ function injectBeforeMarker(prompt, block, markers) {
   return prompt + block;
 }
 
-export function injectT5PromptVariants(prompt, { subtypeDef, excludeMolds, institutionSeed, bankEscalation }) {
+export function injectT5PromptVariants(prompt, { subtypeDef, excludeMolds, institutionSeed, bankEscalation, mandatedTitle }) {
+  const title = mandatedTitle || institutionSeed?.mandatedTitle;
   const block =
     buildT5SubtypePromptBlock(subtypeDef)
     + buildT5InstitutionSeedPromptBlock(institutionSeed)
+    + buildMandatedTitlePromptBlock(title)
     + (bankEscalation || '')
     + buildExcludeMoldsPromptBlock(excludeMolds, 5, getSubtypeById);
   return injectBeforeMarker(prompt, block, ['## PALABRAS OBJETIVO', '## AUTORREVISIÓN']);
@@ -686,17 +739,24 @@ export function resolveT4GenerationMolds(opts = {}) {
   const level = opts.level || 'B1';
   const topicTag = opts.topicTag;
   const topic = topicTag ? normalizeB1Topic(topicTag) : null;
-  const records = loadPoolRecords({ lang, level, poolFile: opts.poolFile });
-  const cell = filterCellRecords(records, { lang, level, teil: 4, topicTag });
-  const { subtypes: usedSeeds, titles } = collectCellMolds(cell, { teil: 4 });
+  const persisted = loadPersistedCellMolds({
+    lang,
+    level,
+    topicTag,
+    teil: 4,
+    poolFile: opts.poolFile,
+    extraExcludeTitles: opts.extraExcludeTitles || [],
+    extraSubtypes: opts.extraExcludeSubtypes || [],
+  });
+  const { subtypes: usedSeeds, titles } = persisted;
   const blocked = topic ? T4_TOPIC_DEBATE_BLOCKED[topic] || [] : [];
 
   const excludeSeeds = [...new Set([...usedSeeds, ...blocked, ...(opts.extraExcludeSubtypes || [])])];
-  const excludeTitles = [...new Set([...titles, ...(opts.extraExcludeTitles || [])])];
+  const excludeTitles = [...new Set(titles)];
   const forcedSeed = opts.forceDebateSeed || null;
   const pick = forcedSeed
     ? { seed: forcedSeed, tier: 'forced', index: 0, topic }
-    : pickNextT4DebateSeed(excludeSeeds, cell.length, topicTag);
+    : pickNextT4DebateSeed(excludeSeeds, persisted.cellCount, topicTag);
   if (pick.preflightSkipped?.length) {
     for (const row of pick.preflightSkipped) {
       console.log(
@@ -708,17 +768,26 @@ export function resolveT4GenerationMolds(opts = {}) {
   if (!pick.seed) {
     console.warn(`T4 ${topic || '?'}: sin semilla usable (tier=${pick.tier})`);
   }
-  const debatePick = pickNextT4DebateTopic(excludeSeeds, cell.length, topicTag);
+  const debatePick = pickNextT4DebateTopic(excludeSeeds, persisted.cellCount, topicTag);
   const debateDef = getDebateById(debatePick.id);
+  const seedEntropy = `${topic || 'any'}:t4:${pick.seed || debatePick.id}:${opts.seedEntropy || opts._t4SeedEntropy || Date.now()}`;
+  const mandatedTitle = pickMandatedTitle({
+    teil: 4,
+    debateSeed: pick.seed,
+    excludeNormalized: persisted.normalizedTitles,
+    entropy: seedEntropy,
+  });
 
   return {
     debateSeed: pick.seed,
     debateTopic: debatePick.id,
     debateDef,
+    mandatedTitle,
     pickTier: pick.tier,
     topicTag: topic,
     excludeMolds: { subtypes: excludeSeeds, titles: excludeTitles },
-    cellCount: cell.length,
+    cellCount: persisted.cellCount,
+    persistedBatchCount: persisted.persistedBatchCount,
   };
 }
 
@@ -812,7 +881,7 @@ export function buildT4ExcludeMoldsPromptBlock(excludeMolds, { seedMode = false 
   return lines.join('');
 }
 
-export function injectT4PromptVariants(prompt, { debateDef, debateSeed, excludeMolds, topicTag }) {
+export function injectT4PromptVariants(prompt, { debateDef, debateSeed, excludeMolds, topicTag, mandatedTitle }) {
   const seedMode = Boolean(debateSeed);
   const debateBlock = seedMode
     ? buildT4FixedSeedPromptBlock(debateSeed, topicTag)
@@ -820,6 +889,7 @@ export function injectT4PromptVariants(prompt, { debateDef, debateSeed, excludeM
   const block =
     buildT4TopicAlignmentPromptBlock(topicTag)
     + debateBlock
+    + buildMandatedTitlePromptBlock(mandatedTitle)
     + buildT4ExcludeMoldsPromptBlock(excludeMolds, { seedMode });
   return injectBeforeMarker(prompt, block, ['## PALABRAS OBJETIVO', '## AUTORREVISIÓN']);
 }

@@ -1,0 +1,54 @@
+{
+  "generatedAt": "2026-07-25T11:42:17.067Z",
+  "dryRun": false,
+  "totalVerified": 559,
+  "withRejectMeta": 6,
+  "keptStripped": [
+    {
+      "file": "lesen-t4-gemini-037.json",
+      "was": "content_topic_mismatch",
+      "note": "stale reject meta; gates pass now"
+    },
+    {
+      "file": "lesen-t4-gemini-062.json",
+      "was": "content_topic_mismatch",
+      "note": "stale reject meta; gates pass now"
+    },
+    {
+      "file": "lesen-t4-gemini-064.json",
+      "was": "content_topic_mismatch",
+      "note": "stale reject meta; gates pass now"
+    }
+  ],
+  "keptT3Rep": [],
+  "movedOkLesen": [],
+  "movedNeedsRegen": [
+    {
+      "file": "lesen-t4-gemini-054.json",
+      "reasons": [
+        "content_topic_mismatch"
+      ]
+    },
+    {
+      "file": "lesen-t4-gemini-061.json",
+      "reasons": [
+        "content_topic_mismatch"
+      ]
+    },
+    {
+      "file": "lesen-t4-gemini-063.json",
+      "reasons": [
+        "content_topic_mismatch"
+      ]
+    }
+  ],
+  "cleanAlready": 553,
+  "after": {
+    "verifiedCount": 556,
+    "leftoverRejectMetaForcedStrip": 0,
+    "keptStripped": 3,
+    "keptT3Rep": 0,
+    "movedOkLesen": 0,
+    "movedNeedsRegen": 3
+  }
+}

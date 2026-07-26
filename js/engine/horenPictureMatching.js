@@ -154,6 +154,130 @@ const HorenPictureMatching = (() => {
     return out;
   }
 
+  const DAY_ALIASES = Object.freeze({
+    montag: 'Montag',
+    dienstag: 'Dienstag',
+    mittwoch: 'Mittwoch',
+    donnerstag: 'Donnerstag',
+    freitag: 'Freitag',
+  });
+
+  const ACTIVITY_HINTS = Object.freeze({
+    a: [/fahrrad/i, /rad fahr/i, /mit dem rad/i],
+    b: [/deutschkurs/i, /sprachkurs/i, /vokabeln/i],
+    c: [/freund/i, /kolleg/i, /treffen/i, /café/i, /cafe/i],
+    d: [/sport/i, /fitness/i, /fußball/i, /fussball/i, /yoga/i, /schwimm/i, /turnen/i],
+    e: [/museum/i, /ausstellung/i],
+    f: [/kino/i, /film schauen/i, /ins kino/i],
+    g: [/lern/i, /bibliothek/i, /hausaufgab/i, /lese.*buch/i, /prüfung/i, /vorbereit/i],
+    h: [/einkauf/i, /markt/i, /geschäft/i, /kauf.*bücher/i, /kauf.*gemüse/i],
+    i: [/koch/i, /suppe/i, /essen koch/i],
+  });
+
+  function parseDialogueTurns(text) {
+    const turns = [];
+    for (const rawLine of String(text || '').split(/\n/)) {
+      const line = rawLine.trim();
+      if (!line) continue;
+      const m = line.match(/^([A-ZÄÖÜ][a-zäöüß]{1,20}):\s*(.+)$/);
+      if (m) turns.push({ speaker: m[1], text: m[2].trim() });
+    }
+    return turns;
+  }
+
+  function normalizeDayToken(raw) {
+    const key = String(raw || '').trim().toLowerCase();
+    return DAY_ALIASES[key] || null;
+  }
+
+  const DAY_STEM_FORMS = Object.freeze({
+    Montag: ['montag', 'montags', 'montagabend'],
+    Dienstag: ['dienstag', 'dienstags', 'dienstagabend'],
+    Mittwoch: ['mittwoch', 'mittwochs', 'mittwochnachmittag'],
+    Donnerstag: ['donnerstag', 'donnerstags', 'donnerstagabend'],
+    Freitag: ['freitag', 'freitags', 'freitagabend'],
+  });
+
+  function dayMentionedInText(text, dayLabel) {
+    const t = String(text || '').toLowerCase();
+    const day = normalizeDayToken(dayLabel);
+    if (!day) return false;
+    const forms = DAY_STEM_FORMS[day] || [String(dayLabel || '').toLowerCase()];
+    return forms.some((form) => new RegExp(`\\b${form}\\b`, 'i').test(t));
+  }
+
+  function inferActivityKey(lineText, pictures) {
+    const t = String(lineText || '').toLowerCase();
+    for (const [key, patterns] of Object.entries(ACTIVITY_HINTS)) {
+      if (patterns.some((re) => re.test(t))) return key;
+    }
+    const bank = normalizePicturesBank(pictures);
+    for (const pic of bank) {
+      const label = String(pic.label || '').toLowerCase();
+      if (!label) continue;
+      if (t.includes(label)) return pic.key;
+      const stems = label.split(/\s+/).filter((w) => w.length >= 5);
+      if (stems.some((w) => t.includes(w))) return pic.key;
+    }
+    return null;
+  }
+
+  function parseSpeakerDayQuestion(question) {
+    const q = String(question || '').trim();
+    const m = q.match(/^Was macht\s+([A-ZÄÖÜ][a-zäöüß]{1,20})\s+am\s+(Montag|Dienstag|Mittwoch|Donnerstag|Freitag)\??$/i);
+    if (!m) return null;
+    return { speaker: m[1], day: normalizeDayToken(m[2]) };
+  }
+
+  function findSpeakerDayTurn(turns, speaker, day) {
+    const sp = String(speaker || '').trim();
+    return turns.find((turn) => turn.speaker === sp && dayMentionedInText(turn.text, day)) || null;
+  }
+
+  function validatePictureMatchingAlign(batch, ctx = {}) {
+    if (!isPictureMatchingCtx(ctx)) return [];
+    const issues = [];
+    const passage = batch?.passages?.[0];
+    const text = passage?.text || passage?.transcript || '';
+    const turns = parseDialogueTurns(text);
+    const speakers = [...new Set(turns.map((t) => t.speaker))];
+    if (speakers.length < 2) {
+      issues.push('Hören A2 T2: el diálogo necesita ≥2 hablantes con turnos «Nombre:»');
+    }
+    for (const q of batch?.questions || []) {
+      const parsed = parseSpeakerDayQuestion(q.question);
+      if (!parsed) {
+        issues.push(
+          `${q.id}: enunciado debe ser «Was macht {Name} am {Wochentag}?» (hablante explícito)`,
+        );
+        continue;
+      }
+      if (!speakers.includes(parsed.speaker)) {
+        issues.push(`${q.id}: hablante «${parsed.speaker}» no aparece en el diálogo`);
+        continue;
+      }
+      const turn = findSpeakerDayTurn(turns, parsed.speaker, parsed.day);
+      if (!turn) {
+        issues.push(`${q.id}: ${parsed.speaker} no menciona actividad el ${parsed.day} en el diálogo`);
+        continue;
+      }
+      const inferred = inferActivityKey(turn.text, passage?.pictures);
+      if (!inferred) {
+        issues.push(
+          `${q.id}: actividad de ${parsed.speaker} el ${parsed.day} no mapea a ficha a–i («${turn.text.slice(0, 60)}…»)`,
+        );
+        continue;
+      }
+      const correct = extractCorrectKey(q);
+      if (correct !== inferred) {
+        issues.push(
+          `${q.id}: clave «${correct}» no coincide con diálogo (esperada «${inferred}»: ${turn.text.slice(0, 70)})`,
+        );
+      }
+    }
+    return issues;
+  }
+
   function validatePictureMatchingBatch(batch, ctx = {}) {
     if (!isPictureMatchingCtx(ctx)) return [];
     const issues = [];
@@ -179,11 +303,15 @@ const HorenPictureMatching = (() => {
       }
     }
     issues.push(...validateUniquePictureKeys(qs));
-    const weekdays = qs.map((q) => String(q.question || '').trim());
+    const weekdays = qs.map((q) => {
+      const parsed = parseSpeakerDayQuestion(q.question);
+      return parsed?.day || '';
+    });
     const missingDay = WEEKDAY_LABELS_DE.filter((d) => !weekdays.includes(d));
     if (missingDay.length) {
-      issues.push(`preguntas deben ser días: faltan ${missingDay.join(', ')}`);
+      issues.push(`preguntas deben cubrir los 5 días con hablante explícito: faltan ${missingDay.join(', ')}`);
     }
+    issues.push(...validatePictureMatchingAlign(batch, ctx));
     return issues;
   }
 
@@ -208,6 +336,10 @@ const HorenPictureMatching = (() => {
     normalizePictureMatchingQuestion,
     normalizePictureMatchingBatch,
     validatePictureMatchingBatch,
+    validatePictureMatchingAlign,
+    parseDialogueTurns,
+    parseSpeakerDayQuestion,
+    inferActivityKey,
     applyPicturesToHorenSegment,
   };
 })();

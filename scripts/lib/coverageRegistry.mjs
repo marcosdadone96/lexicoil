@@ -73,7 +73,7 @@ export function crossTopicStrictLemmas(excludeTopic, lang = 'de', level = 'B1') 
 }
 
 /** Debate-generic B1 fill — never includes another topic's strict lemmas. */
-const NEUTRAL_DEBATE_FILL = [
+export const NEUTRAL_DEBATE_FILL = [
   'meinung', 'problem', 'vorteil', 'diskussion', 'diskutieren', 'entscheidung', 'plan', 'regel',
   'erfahrung', 'positiv', 'speziell', 'bieten', 'bedeuten', 'achten', 'schritt', 'betreffen',
   'erwachsen', 'aktuell', 'angenehm', 'beachten', 'situation', 'vorschlag', 'argument',
@@ -99,6 +99,51 @@ export function topicLemmaPool(topicTag, lang = 'de', level = 'B1') {
     );
   const merged = [...new Set([...strict, ...neutral])];
   return merged.filter((w) => bank.has(w) && !isBlacklistedLemma(w) && w.length >= 4);
+}
+
+/** Weak lemmas whose surface matches a TOPIC_KEYWORDS stem (narrative T1/T2 fill). */
+function narrativeStemWeakLemmas(topic, weakOrdered, neutralExclude, crossExclude) {
+  const keywords = TOPIC_KEYWORDS[normalizeB1Topic(topic)] || [];
+  const stems = [
+    ...new Set(
+      keywords
+        .map((k) => foldLemma(k).toLowerCase())
+        .filter((s) => s.length >= 4),
+    ),
+  ];
+  return (weakOrdered || []).filter((w) => {
+    const l = String(w.lemma).toLowerCase();
+    if (l.length < 5 || neutralExclude.has(l) || crossExclude.has(l) || isBlacklistedLemma(l)) {
+      return false;
+    }
+    return stems.some((stem) => l.includes(stem.slice(0, 4)) || stem.includes(l));
+  });
+}
+
+/** Ordered lemma rows for narrative Lesen T1/T2 — strict topic + stem-weak, sin NEUTRAL_DEBATE_FILL. */
+function narrativeTopicOrderedLemmas(topic, registry, lang, level, neutralExclude, crossExclude) {
+  const topicPool = new Set(topicKeywordPool(topic, lang, level));
+  const fromLemmaPool = topicLemmaPool(topic, lang, level).filter((l) => {
+    const low = String(l).toLowerCase();
+    return !neutralExclude.has(low) && !crossExclude.has(low);
+  });
+  const weakOrdered = registry.weakDetail || [];
+  const topicFirst = weakOrdered.filter((w) => topicPool.has(w.lemma));
+  const stemWeak = narrativeStemWeakLemmas(topic, weakOrdered, neutralExclude, crossExclude);
+
+  const ordered = [];
+  const used = new Set();
+  const push = (lemma, parts) => {
+    const low = String(lemma).toLowerCase();
+    if (low.length < 4 || used.has(low) || neutralExclude.has(low) || crossExclude.has(low)) return;
+    used.add(low);
+    ordered.push({ lemma: low, parts: parts ?? registry.globalCounts?.[low] ?? 0 });
+  };
+  for (const w of topicFirst) push(w.lemma, w.parts);
+  for (const l of fromLemmaPool) push(l);
+  for (const w of stemWeak) push(w.lemma, w.parts);
+  for (const l of topicPool) push(l);
+  return ordered;
 }
 
 function lemmasFromRecord(rec) {
@@ -286,11 +331,15 @@ export function recordGenerationOutcome(ctx) {
 
 /**
  * Elige 5–8 lemas menos cubiertos, priorizando alineación temática.
+ * @param {object} opts
+ * @param {'narrative'|'debate'} [opts.context='debate'] — narrative (Lesen T1/T2): solo keywords
+ *   estrictos del tema; debate (T4/T5 y resto): incluye NEUTRAL_DEBATE_FILL vía topicLemmaPool.
  */
 export function pickTopicAlignedWeakWords(opts = {}) {
   const lang = opts.lang || 'de';
   const level = opts.level || 'B1';
   const topic = normalizeB1Topic(opts.topic);
+  const context = opts.context === 'narrative' ? 'narrative' : 'debate';
   const count = Math.min(
     MAX_WORD_COUNT,
     Math.max(MIN_WORD_COUNT, Number(opts.count) || DEFAULT_WORD_COUNT),
@@ -303,34 +352,39 @@ export function pickTopicAlignedWeakWords(opts = {}) {
   }
 
   const topicPool = new Set(topicKeywordPool(topic, lang, level));
-  const topicFillPool = new Set(topicLemmaPool(topic, lang, level));
+  const neutralExclude = new Set(NEUTRAL_DEBATE_FILL.map((w) => String(w).toLowerCase()));
   const crossExclude = crossTopicStrictLemmas(topic, lang, level);
   const weakOrdered = registry.weakDetail || [];
 
-  const topicFirst = weakOrdered.filter((w) => topicPool.has(w.lemma));
-
-  const topicSafeFill = [...topicFillPool]
-    .map((lemma) => ({
-      lemma,
-      parts: registry.globalCounts?.[lemma] ?? 0,
-    }))
-    .filter((w) => !isBlacklistedLemma(w.lemma))
-    .sort((a, b) => a.parts - b.parts || a.lemma.localeCompare(b.lemma));
-
-  const ordered = [];
-  const used = new Set();
-  for (const w of topicFirst) {
-    if (!used.has(w.lemma)) {
-      ordered.push(w);
-      used.add(w.lemma);
-    }
-  }
-  for (const w of topicSafeFill) {
-    if (!used.has(w.lemma)) {
-      ordered.push(w);
-      used.add(w.lemma);
-    }
-  }
+  const ordered =
+    context === 'narrative'
+      ? narrativeTopicOrderedLemmas(topic, registry, lang, level, neutralExclude, crossExclude)
+      : (() => {
+          const topicFillPool = new Set(topicLemmaPool(topic, lang, level));
+          const topicFirst = weakOrdered.filter((w) => topicPool.has(w.lemma));
+          const topicSafeFill = [...topicFillPool]
+            .map((lemma) => ({
+              lemma,
+              parts: registry.globalCounts?.[lemma] ?? 0,
+            }))
+            .filter((w) => !isBlacklistedLemma(w.lemma))
+            .sort((a, b) => a.parts - b.parts || a.lemma.localeCompare(b.lemma));
+          const rows = [];
+          const used = new Set();
+          for (const w of topicFirst) {
+            if (!used.has(w.lemma)) {
+              rows.push(w);
+              used.add(w.lemma);
+            }
+          }
+          for (const w of topicSafeFill) {
+            if (!used.has(w.lemma)) {
+              rows.push(w);
+              used.add(w.lemma);
+            }
+          }
+          return rows;
+        })();
 
   if (!ordered.length) {
     throw new Error(
@@ -355,7 +409,11 @@ export function pickTopicAlignedWeakWords(opts = {}) {
     for (const w of weakOrdered) {
       if (raw.length >= count) break;
       const lemma = String(w.lemma).toLowerCase();
-      if (picked.has(lemma) || crossExclude.has(lemma)) continue;
+      if (picked.has(lemma) || crossExclude.has(lemma) || neutralExclude.has(lemma)) continue;
+      if (context === 'narrative' && !topicPool.has(lemma)) {
+        const stemHit = narrativeStemWeakLemmas(topic, [w], neutralExclude, crossExclude).length;
+        if (!stemHit) continue;
+      }
       picked.add(lemma);
       raw.push(lemma);
     }
@@ -372,9 +430,18 @@ export function pickTopicAlignedWeakWords(opts = {}) {
     words: words.slice(0, count),
     nextCursor: cursor + count,
     topic,
+    context,
     topicPoolSize: topicPool.size,
-    topicAlignedCount: topicFirst.length,
+    topicAlignedCount: ordered.filter((w) => topicPool.has(w.lemma)).length,
   };
+}
+
+/** Vocab pick context: Lesen T1/T2 narrative; T4/T5 and rest keep debate fill. */
+export function vocabPickContext(module, teil) {
+  const mod = String(module || '').toLowerCase();
+  const t = Number(teil);
+  if (mod === 'lesen' && (t === 1 || t === 2)) return 'narrative';
+  return 'debate';
 }
 
 export function printCoverageSummary(lang = 'de', level = 'B1') {

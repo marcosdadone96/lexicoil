@@ -47,11 +47,16 @@ async function processPendingUser(store, qKey) {
   const runnerPath = path.join(__dirname, '..', 'scripts', 'lib', 'vocabBgRunner.mjs');
   const { runVocabBgGeneration } = await import(`file://${runnerPath.replace(/\\/g, '/')}`);
 
+  const pendingWords = VocabBgState.getEligiblePendingEntries(merged);
+  const level = VocabBgState.resolveBgLevelFromPending(pendingWords, 'B1');
+
   const result = await runVocabBgGeneration({
     store,
-    pendingWords: VocabBgState.getEligiblePendingEntries(merged),
+    pendingWords,
     preferredModule: elig.module,
     requestId,
+    lang: 'de',
+    level,
   });
 
   if (!result.ok) {
@@ -101,14 +106,16 @@ exports.handler = async () => {
   try {
     const queuePath = path.join(__dirname, '..', 'scripts', 'lib', 'poolPublishQueue.mjs');
     const { drainQueuedPoolPublishes } = await import(`file://${queuePath.replace(/\\/g, '/')}`);
-    const drained = await drainQueuedPoolPublishes(store, 'de', 'B1');
-    stats.queueDrained = drained.processed;
-    stats.queueDeadLettered = drained.deadLettered || 0;
-    stats.queueRemaining = drained.remaining || 0;
-    if (drained.deadLettered > 0) {
-      console.error(
-        `[vocab-bg-sweep] pool_publish_queue dead-lettered=${drained.deadLettered} remaining=${drained.remaining}`,
-      );
+    for (const lv of ['B1', 'A2']) {
+      const drained = await drainQueuedPoolPublishes(store, 'de', lv);
+      stats.queueDrained += drained.processed;
+      stats.queueDeadLettered += drained.deadLettered || 0;
+      stats.queueRemaining += drained.remaining || 0;
+      if (drained.deadLettered > 0) {
+        console.error(
+          `[vocab-bg-sweep] pool_publish_queue dead-lettered=${drained.deadLettered} level=${lv} remaining=${drained.remaining}`,
+        );
+      }
     }
   } catch (err) {
     console.error('[vocab-bg-sweep] queue drain FAILED:', err.message);

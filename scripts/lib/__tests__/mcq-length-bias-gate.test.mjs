@@ -10,7 +10,7 @@ import {
   measureMcqQuestionLengthBias,
 } from '../mcqLengthBias.mjs';
 
-const POOL = path.join(ROOT, 'batches/ready/pool-verified');
+const POOL = path.join(ROOT, 'batches/ready/pool-verified/B1');
 
 // ── Severe real bias (must fail gate) ──
 const qBad = {
@@ -98,6 +98,28 @@ assert.ok(flagged005.length >= 1, 'horen-t2-005 should still fail (historical se
 
 const auditOnly = collectMcqLengthBiasIssues(severe005, { gate: false });
 assert.ok(auditOnly.length > flagged005.length || auditOnly.length >= 4, 'audit mode flags more than gate');
+
+// Lesen T2 publish incident (+6 chars, +6%): gate passes, legacy audit-only flagged
+const lesenT2Marginal = {
+  questions: [
+    {
+      id: 'gen-q-2-marginal-pub',
+      type: 'multiple_choice',
+      correct: 'a',
+      options: [`a) ${'x'.repeat(99)}`, `b) ${'y'.repeat(97)}`, `c) ${'z'.repeat(89)}`],
+    },
+  ],
+};
+assert.equal(
+  collectMcqLengthBiasIssues(lesenT2Marginal, { gate: true }).length,
+  0,
+  'marginal +6% passes generation gate',
+);
+assert.equal(
+  collectMcqLengthBiasIssues(lesenT2Marginal, { gate: false }).length,
+  1,
+  'legacy audit-only would still flag',
+);
 
 console.log('PASS: mcq length bias gate (calibrated threshold)');
 console.log(`  lesen-t2-107 gate issues: ${collectMcqLengthBiasIssues(clean107).length}`);

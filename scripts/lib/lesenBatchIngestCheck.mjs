@@ -7,6 +7,11 @@ import { fileURLToPath } from 'node:url';
 import { loadEnvFile } from './loadEnv.mjs';
 import { batchToCandidates } from '../pipeline/lib/candidateBuilder.mjs';
 import { validateCandidate, resolveBlueprint } from '../pipeline/lib/validateCandidate.mjs';
+import {
+  extractIngestErrors,
+  formatCefrGateError,
+  formatCefrMetricsSummary,
+} from './gateReportFormat.mjs';
 
 loadEnvFile();
 
@@ -57,7 +62,7 @@ export function checkLesenBatchIngest(batch, { lang = 'de', level = 'B1', batchI
   };
 }
 
-export function formatIngestReport(report) {
+export function formatIngestReport(report, { level = 'B1' } = {}) {
   const lines = [];
   if (report.ok) {
     lines.push('Ingest pre-check OK ✅');
@@ -67,9 +72,19 @@ export function formatIngestReport(report) {
   for (const r of report.results) {
     if (r.valid) {
       lines.push(`  T${r.teil}: OK`);
-    } else {
-      lines.push(`  T${r.teil}: ${r.errors.join('; ')}`);
+      continue;
     }
+    const detailed = extractIngestErrors({ results: [r] }, level);
+    lines.push(`  T${r.teil}: ${detailed.join('; ')}`);
+    const metricLines = formatCefrMetricsSummary(r.cefr, level);
+    for (const ml of metricLines) lines.push(ml);
   }
   return lines.join('\n');
 }
+
+/** Errores detallados para resúmenes de pipeline (analyze-inbox, paste-lesen). */
+export function ingestErrorsForSummary(report, level = 'B1') {
+  return extractIngestErrors(report, level);
+}
+
+export { formatCefrGateError, extractIngestErrors, formatCefrMetricsSummary };

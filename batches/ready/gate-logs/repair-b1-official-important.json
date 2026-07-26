@@ -1,0 +1,122 @@
+{
+  "generatedAt": "2026-07-23T09:33:40.042Z",
+  "apply": true,
+  "results": [
+    {
+      "file": "horen-t1-claude-test.json",
+      "status": "applied",
+      "actions": [
+        "CHK-25 key-seq break"
+      ]
+    },
+    {
+      "file": "horen-t3-claude-test.json",
+      "status": "applied",
+      "actions": [
+        "CHK-25 key-seq break"
+      ]
+    },
+    {
+      "file": "horen-t4-gemini-006.json",
+      "status": "applied",
+      "actions": [
+        "CHK-25 key-seq break"
+      ]
+    },
+    {
+      "file": "lesen-t2-claude-test.json",
+      "status": "applied",
+      "actions": [
+        "CHK-18b x1"
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-057.json",
+      "status": "applied",
+      "actions": [
+        "CHK-18b x1"
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-058.json",
+      "status": "applied",
+      "actions": [
+        "CHK-6 det austauschen→sprechen"
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-070.json",
+      "status": "applied",
+      "actions": [
+        "CHK-18b x1"
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-001.json",
+      "status": "applied",
+      "actions": [
+        "CHK-5 passage uniq",
+        "CHK-25 key-seq break"
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-027.json",
+      "status": "applied",
+      "actions": [
+        "CHK-18b x1"
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-053.json",
+      "status": "applied",
+      "actions": [
+        "CHK-18b x1"
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-079.json",
+      "status": "applied",
+      "actions": [
+        "CHK-18b x1"
+      ]
+    }
+  ],
+  "remainingImportant": 5,
+  "findings": [
+    {
+      "id": "CHK-4",
+      "severity": "IMPORTANT",
+      "file": "horen-t4-gemini-006.json",
+      "scope": "horen-4:matching",
+      "message": "Balance MC: letra \"a\" no aparece ninguna vez. Dist: {\"b\":4,\"c\":4}"
+    },
+    {
+      "id": "CHK-11",
+      "severity": "IMPORTANT",
+      "file": "horen-t4-gemini-006.json",
+      "scope": "T4-hablantes",
+      "message": "Hören T4: el hablante \"a\" nunca es la respuesta correcta — posible desequilibrio de postura."
+    },
+    {
+      "id": "CHK-18b",
+      "severity": "IMPORTANT",
+      "file": "lesen-t2-claude-test.json",
+      "scope": "gen-q-2-claudetest01a-1",
+      "message": "gen-q-2-claudetest01a-1: clave «c» pero la explicación encaja mejor con otra opción (overlap correct=1, wrong=2, opción incorrecta b))."
+    },
+    {
+      "id": "CHK-25",
+      "severity": "IMPORTANT",
+      "file": "horen-t1-claude-test.json",
+      "scope": "horen-1",
+      "message": "4 partes en horen-1 (richtig_falsch) comparten la misma secuencia posicional de claves: [falsch,richtig,falsch,falsch,richtig]. Ejemplos: horen-t1-claude-test.json, horen-t1-gemini-016.json, horen-t1-gemini-035.json, horen-t1-gemini-044.json"
+    },
+    {
+      "id": "CHK-25",
+      "severity": "IMPORTANT",
+      "file": "horen-t3-gemini-014.json",
+      "scope": "horen-3",
+      "message": "4 partes en horen-3 (richtig_falsch) comparten la misma secuencia posicional de claves: [richtig,falsch,richtig,falsch,falsch,richtig,richtig]. Ejemplos: horen-t3-gemini-014.json, horen-t3-gemini-017.json, horen-t3-gemini-021.json, horen-t3-gemini-029.json"
+    }
+  ]
+}

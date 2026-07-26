@@ -1,0 +1,33 @@
+
+Generador horen (de/A2) · gemini · gemini-2.5-flash · T2 × 1
+Palabras objetivo por parte: 5 (--word-count)
+Cuota Gemini: max 45 llamadas · pausa ≥6000ms · fix-retries=3 · api-retries=1
+Salida: batches/generated/ (solo pasa formato + calidad pedagógica)
+Tema: Freizeit (elegido)
+Hören T2 apertura rotada: «Liebe Hörerinnen und Hörer, ich möchte Ihnen heute etwas über…»
+Hören T2 plan semanal: sch-a-d-c-e-h [a,b,c,e,i]
+Hören T2 nombres: Paul/Nina
+
+── horen T2 · horen-t2-gemini-083.json ──
+Proveedor: gemini · Palabras (5): ausland, nass, beliebt, brille, erfahrung
+Modelo: gemini-2.5-flash · max_output_tokens=16384
+Llamada API 1/45 · $0.000 acumulado · gemini-2.5-flash
+Validando formato…
+Comprobando calidad pedagógica…
+  [LT advisory] skipped (LT down: fetch failed)
+Calidad Hören T2: OK ✅ (estimación ~100%)
+  [poolReady] REJECT → needs-regeneration/A2/horen-t2-gemini-083.json (missing_grammarTags)
+Guardado: batches/needs-regeneration/A2/horen-t2-gemini-083.json (5 preguntas, 1 passages) · horen Teil 2
+Validación técnica OK ✅
+Calidad pedagógica OK ✅
+
+── batches/generated/A2/horen-t2-gemini-083.json · OK · 1 llamadas · $0.017 total ──
+
+══ Resumen generador horen ══
+Proveedor: gemini · Modelo: gemini-2.5-flash
+Intentos totales: 1
+Partes guardadas (formato + calidad OK): 1
+Partes descartadas: 0
+Llamadas API Gemini: 1/45
+Por parte (guardadas / descartadas · intentos):
+  T2: 1 guardadas, 0 descartadas, 1 intentos

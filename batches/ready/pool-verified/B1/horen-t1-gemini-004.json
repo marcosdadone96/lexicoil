@@ -119,13 +119,13 @@
       "type": "multiple_choice",
       "question": "Was sollen die Bewohner tun?",
       "options": [
-        "a) Wasser für den Bedarf sammeln.",
+        "a) Wasser sammeln.",
         "b) Den Keller nicht betreten.",
         "c) Die Hausverwaltung anrufen."
       ],
       "correct": "a",
       "correctAnswer": "a",
-      "explanation": "Die Hausverwaltung bittet die Bewohner, Wasser abzufüllen und entsprechend zu planen, da die Wasserversorgung unterbrochen wird.",
+      "explanation": "Das Hauptwasserrohr wird repariert, daher wird das Wasser abgestellt. Die Bewohner sollen Wasser abfüllen, um es zu haben.",
       "segmentLabel": "Aufnahme 1",
       "passageId": "gen-p-h1-620c6bfe-s1",
       "lang": "de",
@@ -265,12 +265,12 @@
       "type": "multiple_choice",
       "question": "Was hilft, die Nebenkosten zu senken?",
       "options": [
-        "a) Alte Fenster behalten.",
-        "b) Eine bessere Dämmung.",
-        "c) Die Heizung immer voll aufdrehen."
+        "a) Die Heizung immer voll aufdrehen.",
+        "b) Alte Fenster behalten.",
+        "c) Eine bessere Dämmung."
       ],
-      "correct": "b",
-      "correctAnswer": "b",
+      "correct": "c",
+      "correctAnswer": "c",
       "explanation": "Der Radiotipp erwähnt, dass eine gute Dämmung sehr wertvoll für die Nebenkostenabrechnung ist, da sie hilft, Wärme zu halten.",
       "segmentLabel": "Aufnahme 3",
       "passageId": "gen-p-h1-620c6bfe-s3",
@@ -441,39 +441,8 @@
       "grammarTags": []
     }
   ],
-  "_balanceMcqVersion": "v1.1-seed-remainder-rotate-2026-07-11",
-  "_balanceMcqNormalizedAt": "2026-07-11T15:11:36.135Z",
-  "topicTag": "Wohnen",
-  "_requestedTopic": "Wohnen",
-  "generationMetadata": {
-    "usedFeedback": false,
-    "feedbackRules": [],
-    "feedbackCount": 0,
-    "feedbackCategories": [],
-    "feedbackMode": "off",
-    "feedbackVersion": "v1"
-  },
-  "_horenT1NamesVariedAt": "2026-07-11T15:28:24.585Z",
-  "_horenT1ContentSpotFixedAt": "2026-07-11T15:52:19.330Z",
-  "_metadataEnrichedAt": "2026-07-17T08:44:35.729Z",
-  "_metadataEnrichNote": "deterministic: detectTopic + per-question lemma vocab + grammar heuristics",
-  "_vocabTagsNormalizeVersion": "v2.3.12-beispielfragen-stem-2026-07-12",
-  "_grammarTagsNormalizeVersion": "v2.0-focus-flexible-2026-07-10",
   "_germanCapsNormalizeVersion": "v3.17-mcq-dedupe-universal-2026-07-14",
-  "_germanCapsNormalizedAt": "2026-07-17T08:44:35.795Z",
-  "_poolPromotedAt": "2026-07-11T15:55:36.599Z",
-  "_poolPromoteNote": "Human-approved 2026-07-11: content_topic_mismatch treated as audit for Hören T1 multi-segment umbrella topic (same policy as generation Q4).",
-  "_poolContentTopicOverride": {
-    "at": "2026-07-11T15:55:36.599Z",
-    "reasons": [
-      "topic_mismatch",
-      "content_topic_mismatch"
-    ],
-    "details": [
-      "passage:gen-p-h1-620c6bfe-s1 topicTag «Wohnen» sin soporte léxico en el contenido (tag score=0, ningún tema alternativo con hits; hits={})",
-      "passage:gen-p-h1-620c6bfe-s3 topicTag «Wohnen» no encaja con contenido (detectado «Medien» score=1 vs tag score=0; hits={\"Medien\":1,\"Umwelt\":1})",
-      "passage:gen-p-h1-620c6bfe-s1 topicTag «Wohnen» sin soporte léxico en el contenido (tag score=0, ningún tema alternativo con hits; hits={})",
-      "passage:gen-p-h1-620c6bfe-s3 topicTag «Wohnen» no encaja con contenido (detectado «Medien» score=1 vs tag score=0; hits={\"Medien\":1,\"Umwelt\":1})"
-    ]
-  }
+  "_germanCapsNormalizedAt": "2026-07-25T08:54:13.158Z",
+  "_balanceMcqVersion": "v1.2-no-rf-chrono-shuffle-2026-07-11",
+  "_balanceMcqNormalizedAt": "2026-07-25T08:54:13.158Z"
 }

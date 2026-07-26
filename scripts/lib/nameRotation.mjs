@@ -15,7 +15,10 @@ import path from 'node:path';
 export const GERMAN_FIRST_NAMES = [
   'Lena', 'Jonas', 'Mira', 'Felix', 'Sofia', 'Tim', 'Nele', 'Lukas', 'Aylin', 'Emil',
   'Hannah', 'Max', 'Zara', 'Paul', 'Marie', 'Leon', 'Amina', 'Noah', 'Laura', 'Erik',
-  'Jana', 'Omar', 'Pia', 'Jan', 'Ruth',
+  'Jana', 'Omar', 'Pia', 'Jan', 'Ruth', 'Klara', 'Theo', 'Maja', 'Anton', 'Lina',
+  'Samuel', 'Nora', 'Elisa', 'Vincent', 'Helena', 'Julian', 'Milan', 'Amelie', 'Elias',
+  'Charlotte', 'Matteo', 'Leonie', 'Fabian', 'Johanna', 'Kilian', 'Sophie', 'Moritz',
+  'Valentina', 'Sebastian', 'Alina', 'Tobias', 'Melina', 'Dominik', 'Carla', 'Niklas',
 ];
 
 /** Nombres que Gemini copia de la plantilla — excluir por defecto en nuevas generaciones. */
@@ -27,6 +30,11 @@ export const NAME_GENDER = Object.freeze({
   Nele: 'f', Lukas: 'm', Aylin: 'f', Emil: 'm', Hannah: 'f', Max: 'm',
   Zara: 'f', Paul: 'm', Marie: 'f', Leon: 'm', Amina: 'f', Noah: 'm',
   Laura: 'f', Erik: 'm', Jana: 'f', Omar: 'm', Pia: 'f', Jan: 'm', Ruth: 'f',
+  Klara: 'f', Theo: 'm', Maja: 'f', Anton: 'm', Lina: 'f', Samuel: 'm', Nora: 'f',
+  Elisa: 'f', Vincent: 'm', Helena: 'f', Julian: 'm', Milan: 'm', Amelie: 'f', Elias: 'm',
+  Charlotte: 'f', Matteo: 'm', Leonie: 'f', Fabian: 'm', Johanna: 'f', Kilian: 'm', Sophie: 'f',
+  Moritz: 'm', Valentina: 'f', Sebastian: 'm', Alina: 'f', Tobias: 'm', Melina: 'f',
+  Dominik: 'm', Carla: 'f', Niklas: 'm',
   Dana: 'f', Florian: 'm', Clara: 'f', Anna: 'f', David: 'm', Finn: 'm',
   Greta: 'f', Ben: 'm',
 });
@@ -110,29 +118,104 @@ function batchTextBlob(batch) {
 }
 
 /**
+ * Extract forum first names from Lesen T4 questions («Ist Klara für …?»).
+ * @returns {string[]}
+ */
+export function extractLesenT4ForumNames(batch) {
+  const out = [];
+  const re = /\bIst\s+([A-ZÄÖÜ][a-zäöüß]+)\s+für\b/g;
+  for (const q of batch?.questions || []) {
+    const m = re.exec(String(q.question || ''));
+    re.lastIndex = 0;
+    if (m?.[1]) out.push(m[1]);
+  }
+  return [...new Set(out.filter(Boolean))];
+}
+
+/**
+ * Names used in the most recent Lesen T4 JSON files (cross-file rotation).
+ * @param {string[]} dirs
+ * @param {number} maxFiles
+ */
+export function getRecentLesenT4ForumNames(dirs, maxFiles = 12) {
+  const files = [];
+  for (const dir of dirs || []) {
+    if (!dir || !fs.existsSync(dir)) continue;
+    for (const name of fs.readdirSync(dir)) {
+      if (!/^lesen-t4.*\.json$/i.test(name) || name.startsWith('.')) continue;
+      const abs = path.join(dir, name);
+      try {
+        const st = fs.statSync(abs);
+        files.push({ abs, mtime: st.mtimeMs });
+      } catch {
+        /* skip */
+      }
+    }
+  }
+  files.sort((a, b) => b.mtime - a.mtime);
+  const seen = new Set();
+  const names = [];
+  for (const f of files.slice(0, maxFiles)) {
+    try {
+      const batch = JSON.parse(fs.readFileSync(f.abs, 'utf8'));
+      for (const n of extractLesenT4ForumNames(batch)) {
+        if (!seen.has(n)) {
+          seen.add(n);
+          names.push(n);
+        }
+      }
+    } catch {
+      /* skip */
+    }
+  }
+  return names;
+}
+
+/**
+ * Lesen T4 — pick 7 forum names avoiding session + recent pool files.
+ */
+export function pickLesenT4ForumNames(generatedDir, opts = {}) {
+  const extraDirs = opts.extraDirs || [];
+  const recent = getRecentLesenT4ForumNames([generatedDir, ...extraDirs], opts.recentMaxFiles ?? 12);
+  const sessionExclude = [
+    ...(opts.sessionExclude || []),
+    ...recent,
+  ];
+  return pickNextNames(generatedDir, 7, {
+    module: 'lesen',
+    teil: 4,
+    sessionExclude,
+    avoidTemplateDefaults: opts.avoidTemplateDefaults !== false,
+    extraDirs,
+  });
+}
+
+/**
  * Cuenta apariciones de nombres del pool (+ template defaults) en archivos generados.
  * @param {string} generatedDir
  * @param {{ module?: string, teil?: number }} [opts]
  */
-export function getNameStats(generatedDir, { module = null, teil = null } = {}) {
+export function getNameStats(generatedDir, { module = null, teil = null, extraDirs = [] } = {}) {
   const track = [...new Set([...GERMAN_FIRST_NAMES, ...TEMPLATE_DEFAULT_NAMES])];
   const counts = Object.fromEntries(track.map((n) => [n, 0]));
-  if (!fs.existsSync(generatedDir)) return counts;
+  const dirs = [generatedDir, ...(extraDirs || [])].filter(Boolean);
 
-  for (const filename of fs.readdirSync(generatedDir)) {
-    if (!filename.endsWith('.json') || filename.startsWith('.')) continue;
-    if (module && !filename.toLowerCase().startsWith(module.toLowerCase())) continue;
-    if (teil != null && !new RegExp(`-t${teil}-`).test(filename)) continue;
-    try {
-      const batch = JSON.parse(fs.readFileSync(path.join(generatedDir, filename), 'utf8'));
-      const hay = batchTextBlob(batch);
-      for (const name of track) {
-        const re = new RegExp(`\\b${name}\\b`, 'g');
-        const n = (hay.match(re) || []).length;
-        if (n) counts[name] += 1; // count files, not raw mentions
+  for (const dir of dirs) {
+    if (!fs.existsSync(dir)) continue;
+    for (const filename of fs.readdirSync(dir)) {
+      if (!filename.endsWith('.json') || filename.startsWith('.')) continue;
+      if (module && !filename.toLowerCase().startsWith(module.toLowerCase())) continue;
+      if (teil != null && !new RegExp(`-t${teil}-`).test(filename)) continue;
+      try {
+        const batch = JSON.parse(fs.readFileSync(path.join(dir, filename), 'utf8'));
+        const hay = batchTextBlob(batch);
+        for (const name of track) {
+          const re = new RegExp(`\\b${name}\\b`, 'g');
+          if (re.test(hay)) counts[name] += 1; // once per file if present
+        }
+      } catch {
+        /* skip corrupt */
       }
-    } catch {
-      /* skip corrupt */
     }
   }
   return counts;
@@ -153,9 +236,10 @@ export function pickNextNames(
     sessionExclude = [],
     avoidTemplateDefaults = true,
     genders = null,
+    extraDirs = [],
   } = {},
 ) {
-  const stats = getNameStats(generatedDir, { module, teil });
+  const stats = getNameStats(generatedDir, { module, teil, extraDirs });
   const exclude = new Set([
     ...(sessionExclude || []),
     ...(avoidTemplateDefaults ? TEMPLATE_DEFAULT_NAMES : []),

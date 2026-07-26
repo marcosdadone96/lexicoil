@@ -39,6 +39,9 @@ const Lemmatizer = (() => {
     'frühestens',
     'fruehestens',
     'bestens',
+    'weiterhin',
+    'anstatt',
+    'direkt',
   ]);
 
   /** Prefer umlaut spelling for known adverbs. */
@@ -492,6 +495,18 @@ const Lemmatizer = (() => {
   }
 
   /**
+   * Adjective/adverb on -t — must not become fake infinitives (interessant→interessanen, direkt→direken).
+   */
+  function looksLikeDeAdjectiveOrAdverbT(low) {
+    if (!low || !low.endsWith('t')) return false;
+    if (KNOWN_ADVERB_LEMMAS.has(low)) return true;
+    if (/(?:ant|ent|isch|lich|ig|bar|sam|los|frei|ell|iv|al|är|aeer|os|ös|uell|onal|ekt|ikt|ativ|itiv|uet|rot|blau|grün|gruen|weiß|weiss|schwarz|gelb|hart|weich|schnell|spät|spaet|früh|frueh|nah|fern|gern|bald|laut|leis|stark|schwach|groß|gross|klein|lang|kurz|neu|alt|gut|schlecht|schlech|klar|voll|leer|fertig|kaputt|direkt|weit|breit|hoch|tief|falsch|richtig)t$/i.test(low)) {
+      return true;
+    }
+    return false;
+  }
+
+  /**
    * (b4) Finite 3sg/2pl -t → infinitive (bleibt→bleiben, denkt→denken, ruft→rufen).
    * Runs after -st and -et. Skip -et (handled by tryDeFiniteEt), nouns ending -t.
    */
@@ -500,6 +515,7 @@ const Lemmatizer = (() => {
     if (low.length < 4 || !low.endsWith('t')) return null;
     if (low.endsWith('st') || low.endsWith('zt') || low.endsWith('ßt') || low.endsWith('et')) return null;
     if (matchKnownAdjective(low) || matchKnownAdverb(low)) return null;
+    if (looksLikeDeAdjectiveOrAdverbT(low)) return null;
     if (DE_NOUN_ENDING_T.has(low)) return null;
     // Nouns: check FULL form (Gesundheit — stripping -t yields gesundhei and would miss -heit)
     if (/(?:heit|keit|ung|schaft|tum|nis)$/.test(low)) return null;
@@ -521,7 +537,13 @@ const Lemmatizer = (() => {
     const stem = low.slice(0, -1);
     if (stem.length < 3) return null;
     if (/(?:heit|keit|ung|schaft|tum|nis)$/.test(stem)) return null;
-    const cand = `${stem}en`;
+    const candErn = `${stem}n`;
+    if (/ern$/.test(candErn) && candErn.length >= 6) return candErn;
+    let cand = `${stem}en`;
+    if (cand.endsWith('elen') && stem.endsWith('el')) {
+      const eln = `${stem}n`;
+      if (eln.endsWith('eln') || eln.endsWith('ern')) cand = eln;
+    }
     if (cand.length >= 5 && /(?:en|eln|ern)$/.test(cand)) return cand;
     return null;
   }

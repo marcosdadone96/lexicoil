@@ -167,7 +167,7 @@
       "vocabularyTags": [
         "familien",
         "Verein",
-        "Viele",
+        "viele",
         "erwachsenen",
         "arbeiten",
         "kindern"
@@ -213,11 +213,11 @@
   "_requestedTopic": "Stadtleben",
   "_topicTagInferred": true,
   "_topicTagInferredAt": "2026-07-10T10:55:44.931Z",
-  "_metadataEnrichedAt": "2026-07-10T13:55:58.852Z",
-  "_metadataEnrichNote": "deterministic: detectTopic + per-question lemma vocab + grammar heuristics",
-  "_germanCapsNormalizeVersion": "v3.11-zu-prep-noun-2026-07-12",
-  "_germanCapsNormalizedAt": "2026-07-12T09:23:14.249Z",
-  "_vocabTagsNormalizeVersion": "v2.3.9-adj-adv-laesst-lemma-2026-07-11",
+  "_metadataEnrichedAt": "2026-07-25T07:51:39.246Z",
+  "_metadataEnrichNote": "vocabRepairOnly: repairQuestionVocabularyTags (pool artifact repair)",
+  "_germanCapsNormalizeVersion": "v3.17-mcq-dedupe-universal-2026-07-14",
+  "_germanCapsNormalizedAt": "2026-07-25T07:51:39.246Z",
+  "_vocabTagsNormalizeVersion": "v2.3.16-b1-validated-verb-adj-lemma-2026-07-24",
   "_grammarTagsNormalizeVersion": "v2.0-focus-flexible-2026-07-10",
   "lang": "de",
   "level": "B1",
@@ -704,5 +704,7 @@
   "_balanceMcqNormalizedAt": "2026-07-11T13:38:47.879Z",
   "_vocabTagsNormalizedAt": "2026-07-11T19:53:40.251Z",
   "_etFiniteLemmaReprocessAt": "2026-07-12T09:11:48.767Z",
-  "_etFiniteLemmaReprocessCount": 1
+  "_etFiniteLemmaReprocessCount": 1,
+  "_poolArtifactRepairAt": "2026-07-25T07:51:39.246Z",
+  "_poolArtifactRepairNote": "repair-pool-vocab-caps-artifacts.mjs (germanCapsNormalize + enrich vocab)"
 }

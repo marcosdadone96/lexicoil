@@ -7,6 +7,7 @@ import { checkGermanCapsBatch, formatGermanCapsFinding } from './germanCapsGate.
 import { checkT5VocabIntegration } from './lesenT5SubtypeVocab.mjs';
 import { appendG2FindingsLog } from './g2FindingsLog.mjs';
 import { collectMcqLengthBiasIssues } from './mcqLengthBias.mjs';
+import { checkT4TitleSeedAlignment } from './titleVariantBank.mjs';
 
 const STOP = new Set([
   'eine', 'einer', 'eines', 'einem', 'einen', 'ein', 'der', 'die', 'das', 'den', 'dem', 'des',
@@ -382,6 +383,38 @@ const JA_SIGNALS = [
 // Negation patterns that must NOT appear in T4 question text
 const NEGATION_IN_QUESTION = /\b(nicht|kein|lehnt|gegen|ablehnen|widerspricht|abgelehnt)\b/i;
 
+/** T4 forum titles must not end on a dangling prep/article (truncated LLM output). */
+const T4_TITLE_DANGLING_TAIL =
+  /^(?:im|am|zum|zur|vom|für|mit|und|oder|zu|an|auf|in|von|bei|nach|vor|über|unter|durch|als|die|der|das|den|dem|des|ein|eine|einen|einem|einer|eines|pro|sehr|mehr|nur|schon|noch|beim)$/i;
+
+export function checkLesenT4TitleComplete(title, debateSeed = null) {
+  const t = String(title || '').trim();
+  if (!t) return { ok: false, reason: 'título vacío' };
+
+  const beforeJaNein = t.replace(/\s*[—–-]\s*ja oder nein\?$/i, '').trim();
+  const core = beforeJaNein.replace(/[.!?:…]+$/u, '').trim();
+  const last = (core.split(/\s+/).pop() || '').replace(/[^\p{L}\p{N}-]/gu, '');
+  if (T4_TITLE_DANGLING_TAIL.test(last)) {
+    return {
+      ok: false,
+      reason: /ja oder nein\?$/i.test(t)
+        ? `sufijo «ja oder nein?» sobre frase incompleta (termina en «${last}»)`
+        : `título truncado (termina en «${last}»)`,
+    };
+  }
+  if (core.length < 24) {
+    return { ok: false, reason: 'título demasiado corto para Meinungsforum' };
+  }
+
+  if (debateSeed) {
+    const align = checkT4TitleSeedAlignment(t, debateSeed);
+    if (!align.ok) {
+      return { ok: false, reason: align.issue || 'título no alineado con _debateSeed' };
+    }
+  }
+  return { ok: true };
+}
+
 export function signTextStance(signText) {
   const t = signText || '';
   if (NEIN_SIGNALS.some((r) => r.test(t))) return 'Nein';
@@ -391,6 +424,17 @@ export function signTextStance(signText) {
 
 function checkTeil4(batch, issues, warnings) {
   const qs = batch.questions || [];
+  for (const p of batch.passages || []) {
+    const titleCheck = checkLesenT4TitleComplete(
+      p.title,
+      batch._debateSeed || batch.debateSeed || null,
+    );
+    if (!titleCheck.ok) {
+      issues.push(
+        `${p.id || 'passage'}: T4 — ${titleCheck.reason}. «${String(p.title || '').slice(0, 80)}»`,
+      );
+    }
+  }
   for (const q of qs) {
     const passage = passageById(batch, q.passageId);
     if (!passage) continue;

@@ -1,13 +1,14 @@
 #!/usr/bin/env node
 /**
- * Audit pool-verified/B1 usage: official catalog vs personal (seed/blobs) vs orphan.
+ * Audit pool-verified usage: official catalog vs personal (seed/blobs) vs orphan.
  *   node scripts/audit-pool-verified-usage.mjs
+ *   node scripts/audit-pool-verified-usage.mjs --level A2
  */
 import fs from 'node:fs';
 import path from 'node:path';
 import { createRequire } from 'node:module';
 import { ROOT } from './lib/loadEnv.mjs';
-import { listPoolVerifiedJson } from './lib/batchPaths.mjs';
+import { poolVerifiedDir, normalizeLevel } from './lib/batchPaths.mjs';
 
 const require = createRequire(import.meta.url);
 const { partPassesAssembleMode, batchHasOfficialQuarantine } = require(
@@ -15,10 +16,37 @@ const { partPassesAssembleMode, batchHasOfficialQuarantine } = require(
 );
 const { partPassesPublishGate } = require(path.join(ROOT, 'netlify/functions/lib/partPublishGate.js'));
 
-const PV_DIR = path.join(ROOT, 'batches/ready/pool-verified/B1');
-const CATALOG_DIR = path.join(ROOT, 'library/published-exams/de/B1');
-const SEED_FILE = path.join(ROOT, 'library/reusable-seed/de_B1.json');
-const OUT = path.join(ROOT, 'batches/ready/gate-logs/pool-verified-usage-audit-2026-07-16.json');
+function parseArgs(argv) {
+  let level = 'B1';
+  for (let i = 0; i < argv.length; i++) {
+    if (argv[i] === '--level') level = String(argv[++i] || 'B1').toUpperCase();
+    else if (argv[i] === '--help' || argv[i] === '-h') {
+      console.log('Usage: node scripts/audit-pool-verified-usage.mjs [--level B1|A2]');
+      process.exit(0);
+    }
+  }
+  return { level: normalizeLevel(level) };
+}
+
+const args = parseArgs(process.argv.slice(2));
+const LEVEL = args.level;
+const PV_DIR = path.join(ROOT, 'batches/ready/pool-verified', LEVEL);
+const CATALOG_DIR = path.join(ROOT, 'library/published-exams/de', LEVEL);
+const SEED_FILE = path.join(ROOT, 'library/reusable-seed', `de_${LEVEL}.json`);
+const OUT = path.join(
+  ROOT,
+  'batches/ready/gate-logs',
+  `pool-verified-usage-audit-${LEVEL.toLowerCase()}-${new Date().toISOString().slice(0, 10)}.json`,
+);
+
+function listLevelPoolVerified(level) {
+  const dir = poolVerifiedDir(level);
+  if (!fs.existsSync(dir)) return [];
+  return fs
+    .readdirSync(dir)
+    .filter((f) => f.endsWith('.json'))
+    .map((f) => path.join(dir, f));
+}
 
 function partIdToPvFile(partId) {
   const m = String(partId).match(/^(schreiben|sprechen)-gemini-(\d+)-t\d+$/i);
@@ -35,11 +63,22 @@ function teilKeyFromFile(file) {
   return 'other';
 }
 
+function loadOfficialExamIds() {
+  const catalogPath = path.join(CATALOG_DIR, '_catalog.json');
+  if (!fs.existsSync(catalogPath)) return [];
+  const catalog = JSON.parse(fs.readFileSync(catalogPath, 'utf8'));
+  return (catalog.exams || [])
+    .map((e) => e.examId)
+    .filter(Boolean);
+}
+
 function loadOfficialPvFiles() {
-  const exams = ['official-de-B1-e1', 'official-de-B1-e2', 'official-de-B1-e3', 'official-de-B1-e4'];
-  const files = new Map(); // file -> { partIds[], exams[] }
+  const exams = loadOfficialExamIds();
+  const files = new Map();
   for (const examId of exams) {
-    const j = JSON.parse(fs.readFileSync(path.join(CATALOG_DIR, `${examId}.json`), 'utf8'));
+    const examPath = path.join(CATALOG_DIR, `${examId}.json`);
+    if (!fs.existsSync(examPath)) continue;
+    const j = JSON.parse(fs.readFileSync(examPath, 'utf8'));
     for (const p of j.parts || []) {
       const f = partIdToPvFile(p.partId);
       const row = files.get(f) || { partIds: [], exams: new Set(), cells: [] };
@@ -53,8 +92,9 @@ function loadOfficialPvFiles() {
 }
 
 function loadPersonalPvFiles(pvSet) {
+  if (!fs.existsSync(SEED_FILE)) return new Map();
   const seed = JSON.parse(fs.readFileSync(SEED_FILE, 'utf8'));
-  const linked = new Map(); // pvFile -> { seedIds[], via }
+  const linked = new Map();
 
   function link(pvFile, seedId, via) {
     if (!pvSet.has(pvFile)) return;
@@ -76,13 +116,8 @@ function loadPersonalPvFiles(pvSet) {
     }
 
     const sf = String(r.sourceFile || '').replace(/\\/g, '/');
-    const m = sf.match(/pool-verified\/(?:B1\/)?([^/]+\.json)/i);
+    const m = sf.match(new RegExp(`pool-verified/(?:${LEVEL}/)?([^/]+\\.json)`, 'i'));
     if (m) link(m[1], id, 'seed-sourceFile');
-
-    const m2 = sf.match(/assembled-from-verified\/([^/]+\.json)/i);
-    if (m2) {
-      /* assembled exams reference parts inside — not direct pv link */
-    }
   }
 
   return linked;
@@ -115,7 +150,7 @@ function classifyOrphanReason(batch, file, inOfficial, inPersonal) {
   return reasons;
 }
 
-const pvPaths = listPoolVerifiedJson('B1');
+const pvPaths = listLevelPoolVerified(LEVEL);
 const pvFiles = pvPaths.map((abs) => path.basename(abs));
 const pvSet = new Set(pvFiles);
 
@@ -186,11 +221,13 @@ for (const [file, meta] of officialMap) {
 
 const report = {
   generatedAt: new Date().toISOString(),
-  poolVerifiedDir: 'batches/ready/pool-verified/B1',
-  totalFiles: totals.total,
+  level: LEVEL,
+  poolVerifiedDir: `batches/ready/pool-verified/${LEVEL}`,
   personalPathNote:
-    'exam-part.js → pickReusablePartByVocab reads Netlify Blobs (reusable_part_idx) + local seed de_B1.json in dev; NEVER reads pool-verified/ directly.',
-  seedRecords: JSON.parse(fs.readFileSync(SEED_FILE, 'utf8')).records?.length ?? 0,
+    `exam-part.js → pickReusablePartByVocab reads Netlify Blobs (reusable_part_idx) + local seed de_${LEVEL}.json in dev; NEVER reads pool-verified/ directly.`,
+  seedRecords: fs.existsSync(SEED_FILE)
+    ? JSON.parse(fs.readFileSync(SEED_FILE, 'utf8')).records?.length ?? 0
+    : 0,
   seedLinkedToPv: personalMap.size,
   officialCatalogFiles: officialMap.size,
   officialPartRefs: [...officialMap.values()].reduce((s, v) => s + v.partIds.length, 0),
@@ -200,9 +237,11 @@ const report = {
   rows,
 };
 
+fs.mkdirSync(path.dirname(OUT), { recursive: true });
 fs.writeFileSync(OUT, `${JSON.stringify(report, null, 2)}\n`);
 
 console.log(JSON.stringify({
+  level: LEVEL,
   total: totals.total,
   usedAny: totals.usedAny,
   orphan: totals.orphan,

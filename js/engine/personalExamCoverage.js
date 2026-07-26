@@ -124,14 +124,17 @@ const PersonalExamCoverage = (() => {
   function formatPersonalCoverageSummary(overall, lang) {
     const found = overall?.found ?? 0;
     const total = overall?.total ?? 0;
+    const words = overall?.words || [];
     const isDE = String(lang || '').toLowerCase() === 'de';
     if (!total) {
       return isDE ? 'Dein personalisiertes Examen' : 'Your personalized exam';
     }
+    const wordList = words.slice(0, 8).join(', ');
+    const more = words.length > 8 ? (isDE ? ` (+${words.length - 8} weitere)` : ` (+${words.length - 8} more)`) : '';
     if (isDE) {
-      return `Dein Examen nutzt ${found} deiner ${total} Wörter.`;
+      return `${found} von ${total} Wörtern in diesem Text${wordList ? `: ${wordList}${more}` : ''}.`;
     }
-    return `Your exam uses ${found} of your ${total} words.`;
+    return `${found} of ${total} words in this text${wordList ? `: ${wordList}${more}` : ''}.`;
   }
 
   function formatPersonalCoverageMessage(exam, cov, lang) {

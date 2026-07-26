@@ -55,6 +55,10 @@ exports.handler = async (event) => {
   const pendingWords = VocabBgState.getEligiblePendingEntries({
     bgVocabPending: body.pendingWords || [],
   });
+  const level = String(
+    body.level || VocabBgState.resolveBgLevelFromPending(pendingWords, 'B1'),
+  ).trim().toUpperCase();
+  const lang = String(body.lang || 'de').trim().toLowerCase();
   let planResult = null;
   try {
     const runnerPath = path.join(__dirname, '..', 'scripts', 'lib', 'vocabBgRunner.mjs');
@@ -64,8 +68,8 @@ exports.handler = async (event) => {
       pendingWords,
       preferredModule: body.preferredModule,
       requestId,
-      lang: 'de',
-      level: 'B1',
+      lang,
+      level,
     });
     planResult = result.plan;
     if (!result.ok) {

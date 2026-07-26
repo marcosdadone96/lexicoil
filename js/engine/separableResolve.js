@@ -136,7 +136,8 @@ const SeparableResolve = (() => {
     kündigt: 'kündigen', kuendigt: 'kündigen', kündige: 'kündigen',
     // bieten (anbieten, …)
     bietet: 'bieten', bietest: 'bieten', biete: 'bieten', geboten: 'bieten',
-    hört: 'hören', hörst: 'hören', höre: 'hören', gehoert: 'hören', gehört: 'hören',
+    hört: 'hören', hörst: 'hören', höre: 'hören', hoer: 'hören', hör: 'hören',
+    nimm: 'nehmen',
     passt: 'passen', passe: 'passen',
     fällt: 'fallen', faellt: 'fallen', fällst: 'fallen',
     wählt: 'wählen', waehlt: 'wählen', wähle: 'wählen',
@@ -178,7 +179,7 @@ const SeparableResolve = (() => {
     greift: 'greifen', greife: 'greifen',
     hält: 'halten', haelt: 'halten', halte: 'halten', hältst: 'halten',
     läuft: 'laufen', laeuft: 'laufen', laufe: 'laufen',
-    steigt: 'steigen', steige: 'steigen',
+    steigt: 'steigen', steige: 'steigen', stehst: 'stehen', steht: 'stehen', stehe: 'stehen',
     zieht: 'ziehen', ziehe: 'ziehen', ziehst: 'ziehen',
     fällt: 'fallen', faellt: 'fallen',
     fährt: 'fahren', faehrt: 'fahren',
@@ -248,13 +249,28 @@ const SeparableResolve = (() => {
     return false;
   }
 
+  /** Lazy Lemmatizer — browser global or Node require (finite steht→stehen, etc.). */
+  let _lemmaMod = null;
+  function lemmatizer() {
+    if (typeof Lemmatizer !== 'undefined' && Lemmatizer.normalizeLemma) return Lemmatizer;
+    if (_lemmaMod) return _lemmaMod;
+    if (typeof require !== 'undefined') {
+      try {
+        _lemmaMod = require('./validation/lemmatizer.js');
+      } catch (_) {
+        _lemmaMod = null;
+      }
+    }
+    return _lemmaMod;
+  }
+
   function rootOfToken(t) {
     const low = String(t || '').toLowerCase();
     if (FINITE_TO_INF[low]) return FINITE_TO_INF[low];
     if (/(?:en|eln|ern)$/.test(low) && low.length >= 4) return low;
-    // Browser / tests with Lemmatizer: bietet → bieten, etc.
-    if (typeof Lemmatizer !== 'undefined' && Lemmatizer.normalizeLemma) {
-      const lem = String(Lemmatizer.normalizeLemma(low, 'de') || '').toLowerCase();
+    const L = lemmatizer();
+    if (L?.normalizeLemma) {
+      const lem = String(L.normalizeLemma(low, 'de') || '').toLowerCase();
       if (lem && /(?:en|eln|ern)$/.test(lem) && lem.length >= 4) return lem;
     }
     return null;

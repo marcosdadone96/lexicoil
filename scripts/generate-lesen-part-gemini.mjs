@@ -52,12 +52,18 @@ import {
 import { checkLesenBatchIngest, formatIngestReport, logCefrCoverageThreshold } from './lib/lesenBatchIngestCheck.mjs';
 import { coerceGeneratedLesenPart } from './lib/normalizeBatch.mjs';
 import { checkLexical, formatLexicalReport } from './lib/lexicalCheck.mjs';
+import {
+  collectCalidadLexicoIssues,
+  combinedCalidadLexicoGateResult,
+  COMBINED_CALIDAD_LEXICO_ISSUE_LIMIT,
+} from './lib/calidadLexicoCombinedGate.mjs';
 import { validatePart, buildDedupCorpusFromDir } from './lib/partGate.mjs';
 import { pickNextTopic, tagBatchWithTopic } from './lib/topicRotation.mjs';
 import { finalizePoolReady } from './lib/finalizePoolReady.mjs';
 import { relPathAfterPoolReady } from './lib/resolvePublishFile.mjs';
 import { resolveLesenGenerationMolds } from './lib/lesenSubtypeRotation.mjs';
 import { extractStructuralMold, structuralMoldKey } from './lib/structuralMoldDedup.mjs';
+import { buildPersistedStructuralCorpus } from './lib/persistedCellPool.mjs';
 import { checkLesenT5BatchTopic } from './lib/lesenT5TopicFilter.mjs';
 import { assessT4TopicAlignment, formatT4TopicAlignmentFailure } from './lib/t4TopicAlign.mjs';
 import { checkPassageContentTopic } from './lib/qualityGates/contentTopicCheck.mjs';
@@ -73,9 +79,12 @@ import {
   runLanguageToolPipelineAdvisory,
 } from './lib/qualityGates/pipelineIntegration.mjs';
 import { buildWordCopyFixHint, hasWordMatchSignal } from './lib/wordMatchRepair.mjs';
+import { germanExamRepairOutputRulesBlock } from './lib/germanExplanationPromptRules.mjs';
 import {
   pickNextNames,
+  pickLesenT4ForumNames,
   pushSessionNameExclude,
+  extractLesenT4ForumNames,
   injectLesenT4ForumNames,
   TEMPLATE_DEFAULT_NAMES,
 } from './lib/nameRotation.mjs';
@@ -84,9 +93,22 @@ import {
   combinedPassageWordCount,
 } from './lib/passageLengthRepair.mjs';
 import { runSurgicalRepair, surgicalRepairLabel } from './lib/surgicalRepairRouter.mjs';
-import { pushSessionMoldExclude } from './lib/poolFillSessionExclude.mjs';
+import { pushSessionMoldExclude, pushSessionStructuralCorpus } from './lib/poolFillSessionExclude.mjs';
 import { resolveGenerationVocab, resolveTargetWordsForArgs } from './lib/resolveGenerationInput.mjs';
 import { attachVocabFeedback, formatVocabFeedbackSummary } from './lib/generationFeedback.mjs';
+import { vocabNarrativeCoherenceGate } from './lib/vocabNarrativeCoherence.mjs';
+import {
+  preflightTopicMoldGeneration,
+  countRemainingMolds,
+  TopicMoldIncompatibleError,
+} from './lib/topicMoldCompatibility.mjs';
+import {
+  assertTopicMoldCircuitClosed,
+  recordTopicMoldAttempt,
+  vocabRatioFromBatch,
+  TopicMoldCircuitBreakerError,
+  excludeTopicMoldForSession,
+} from './lib/topicMoldCircuitBreaker.mjs';
 import { buildValidatedT3Part } from './make-t3.mjs';
 import { isT3BlueprintExhaustedError, listT3BlueprintStockForTopic } from './lib/lesenT3BlueprintStock.mjs';
 import {
@@ -327,16 +349,36 @@ function validateBatchFile(lang, level, relFile) {
   return { ok: res.status === 0, output };
 }
 
+const LESEN_COMBINED_CALIDAD_LEXICO_TEILE = new Set([3, 4]);
+
+function isLesenCombinedCalidadLexicoTeil(teil) {
+  return LESEN_COMBINED_CALIDAD_LEXICO_TEILE.has(Number(teil));
+}
+
 function buildFixNote(issues, gate = 'checker', opts = {}) {
-  const list = (Array.isArray(issues) ? issues : [issues]).filter(Boolean).slice(0, 5);
+  const teilN = Number(opts.teil);
+  const combinedTeil = isLesenCombinedCalidadLexicoTeil(teilN);
+  const limit = combinedTeil ? COMBINED_CALIDAD_LEXICO_ISSUE_LIMIT : 5;
+  const list = (Array.isArray(issues) ? issues : [issues]).filter(Boolean).slice(0, limit);
+  const level = String(opts.level || 'B1').trim().toUpperCase();
   let extra = '';
   if (list.some((i) => /slot_not_in_blueprint/i.test(String(i)))) {
     extra =
       '\nCada pregunta y pasaje DEBE incluir `"module":"lesen"` y `"teil":N (número).';
   }
   if (list.some((i) => /type_not_allowed/i.test(String(i)))) {
-    extra +=
-      '\nT1→type "richtig_falsch" · T2/T5→"multiple_choice" con options a/b/c · T4→"ja_nein".';
+    if (level === 'A2' && Number(opts.teil) === 1) {
+      extra +=
+        '\nT1 A2→type "multiple_choice" con options a/b/c (exactamente 5 preguntas). ' +
+        'Pasaje: Medientext en 3ª persona (NO ich-Blog B1). PROHIBIDO richtig_falsch. level:"A2".';
+    } else if (level === 'A2') {
+      extra +=
+        '\nA2 Lesen→types según plantilla: T1/T2/T3 MCQ a/b/c · T4 matching · T5 según subtipo. ' +
+        'PROHIBIDO richtig_falsch salvo que el blueprint lo permita (A2 no).';
+    } else {
+      extra +=
+        '\nT1→type "richtig_falsch" · T2/T5→"multiple_choice" con options a/b/c · T4→"ja_nein".';
+    }
   }
   if (hasWordMatchSignal(list)) {
     if (opts.wordCopyDetail) {
@@ -359,8 +401,12 @@ function buildFixNote(issues, gate = 'checker', opts = {}) {
   // ningún requisito de absolute-word aquí para evitar el patrón "absoluta→Falsch".
   return (
     `\n\n--- CORRECCIÓN REQUERIDA ---\n` +
-    `El checker de ${gate} detectó:\n${list.map((i) => `- ${i}`).join('\n')}${extra}\n` +
-    `Corrige SOLO esos problemas. Devuelve el JSON completo corregido, sin markdown ni comentarios.`
+    `El checker de ${gate} detectó (${list.length} problema(s)):\n${list.map((i) => `- ${i}`).join('\n')}${extra}\n` +
+    (combinedTeil
+      ? `Corrige TODOS los problemas listados en una sola respuesta (calidad pedagógica y vocabulario B1).\n`
+      : '') +
+    `Corrige SOLO esos problemas. Devuelve el JSON completo corregido, sin markdown ni comentarios.` +
+    `\n\n${germanExamRepairOutputRulesBlock()}`
   );
 }
 
@@ -438,6 +484,17 @@ function serializeBatchForFixPrompt(batch, issues, maxChars = 12000) {
 
 function buildFixRetryPrompt(baseUserPrompt, issues, gate, batch, fixOpts = {}) {
   const note = buildFixNote(issues, gate, fixOpts);
+  const list = (Array.isArray(issues) ? issues : [issues]).filter(Boolean);
+  const level = String(fixOpts.level || 'B1').trim().toUpperCase();
+  const teil = Number(fixOpts.teil);
+  const typeMismatch = list.some((i) => /type_not_allowed/i.test(String(i)));
+  if (typeMismatch && level === 'A2' && teil === 1) {
+    return (
+      `${baseUserPrompt}\n\n--- REGENERACIÓN LIMPIA (formato A2 incorrecto) ---\n` +
+      `Ignora cualquier JSON anterior. Genera desde cero: 5× type "multiple_choice" con options a/b/c. ` +
+      `PROHIBIDO richtig_falsch.${note}`
+    );
+  }
   if (!batch) return baseUserPrompt + note;
   const json = serializeBatchForFixPrompt(batch, issues);
   return (
@@ -558,6 +615,7 @@ async function buildLesenPromptBundle(teil, words, session, moldCtx = null, args
   const promptOpts = {
     idSuffix,
     topic,
+    level: args?.level || 'B1',
     ...(moldCtx?.promptOpts || {}),
     fewShotExamples: args?.fewShotExamples || null,
     minimalRules: args?.minimalPromptRules === true,
@@ -598,6 +656,51 @@ async function buildLesenPromptBundle(teil, words, session, moldCtx = null, args
   };
 }
 
+function topicMoldOptsFromArgs(args, teil) {
+  const sessionMoldKeys = (args.structuralCorpus || [])
+    .map((b) => {
+      const mold = extractStructuralMold(b, teil);
+      return structuralMoldKey(mold) || mold.key;
+    })
+    .filter(Boolean);
+  return {
+    lang: args.lang,
+    level: args.level,
+    usedMoldKeys: sessionMoldKeys,
+    extraExcludeSubtypes: args._excludeSubtypes || [],
+    exclude: args._t3ExcludeSlugs instanceof Set ? args._t3ExcludeSlugs : new Set(args._t3ExcludeSlugs || []),
+  };
+}
+
+function recordLesenMoldAttempt(session, args, teil, topic, batch, { ok, moldGateFailure = false } = {}) {
+  const opts = topicMoldOptsFromArgs(args, teil);
+  recordTopicMoldAttempt(session, {
+    topic,
+    teil,
+    vocabRatio: batch ? vocabRatioFromBatch(batch) : null,
+    remainingMolds: countRemainingMolds(teil, topic, opts),
+    moldGateFailure,
+    ok,
+  });
+}
+
+function handleTopicMoldBlock(err, settleCostFail, finishPart, teil, partAttempts, session, topicFallback) {
+  console.warn(`\n⛔ ${err.message}`);
+  console.warn('   → Celda marcada para revisión manual; no se gastan más llamadas API en esta incompatibilidad.');
+  const t = err?.topic || topicFallback;
+  if (session && t) excludeTopicMoldForSession(session, t, teil);
+  settleCostFail(err.message, 'topic-mold-block');
+  return finishPart({
+    ok: false,
+    discarded: true,
+    braked: true,
+    teil,
+    reason: err.message,
+    attempts: partAttempts,
+    gate: 'topic-mold-block',
+  });
+}
+
 function resolveMoldContext(args, teil, topicTag) {
   const sessionMoldKeys = (args.structuralCorpus || [])
     .map((b) => {
@@ -614,7 +717,7 @@ function resolveMoldContext(args, teil, topicTag) {
     extraExcludeTitles: args._excludeTitles || [],
     extraUsedMoldKeys: sessionMoldKeys,
     forceDebateTopic: args._forceDebateTopic || null,
-    seedEntropy: args._t5SeedEntropy || `${topicTag}:${Date.now()}`,
+    seedEntropy: args._t5SeedEntropy || args._t4SeedEntropy || `${topicTag}:${Date.now()}`,
   });
   if (!molds) return null;
 
@@ -624,7 +727,8 @@ function resolveMoldContext(args, teil, topicTag) {
     console.log(
       `T5 subtipo: ${molds.subtypeDef.label} (${molds.pickTier || '?'})` +
         (molds.variantProfile ? ` · perfil ${molds.variantProfile}` : '') +
-        ` · celda ${cellLabel}: ${molds.cellCount} en pool` +
+        ` · celda ${cellLabel}: ${molds.cellCount} persistidos` +
+        (molds.mandatedTitle ? ` · título «${molds.mandatedTitle.slice(0, 48)}${molds.mandatedTitle.length > 48 ? '…' : ''}»` : '') +
         (molds.excludeMolds.moldKeys?.length
           ? ` · moldes usados: ${molds.excludeMolds.moldKeys.join(', ')}`
           : molds.excludeMolds.subtypes.length
@@ -635,11 +739,13 @@ function resolveMoldContext(args, teil, topicTag) {
       textSubtype: molds.textSubtype,
       variantProfile: molds.variantProfile,
       institutionSeed: molds.institutionSeed,
+      mandatedTitle: molds.mandatedTitle,
       promptOpts: {
         textSubtype: molds.textSubtype,
         subtypeDef: molds.subtypeDef,
         excludeMolds: molds.excludeMolds,
         institutionSeed: molds.institutionSeed,
+        mandatedTitle: molds.mandatedTitle,
         bankEscalation: args._t5BankEscalation || '',
       },
       molds,
@@ -651,16 +757,19 @@ function resolveMoldContext(args, teil, topicTag) {
       ? `${molds.debateSeed.slice(0, 72)}…`
       : molds.debateSeed;
     console.log(
-      `T4 seed: ${seedPreview} (${molds.pickTier || '?'}) · celda ${cellLabel}: ${molds.cellCount} en pool` +
+      `T4 seed: ${seedPreview} (${molds.pickTier || '?'}) · celda ${cellLabel}: ${molds.cellCount} persistidos` +
+        (molds.mandatedTitle ? ` · título «${molds.mandatedTitle.slice(0, 48)}${molds.mandatedTitle.length > 48 ? '…' : ''}»` : '') +
         (molds.excludeMolds.subtypes.length
           ? ` · excluye seeds: ${molds.excludeMolds.subtypes.length}`
           : ''),
     );
     return {
       debateSeed: molds.debateSeed,
+      mandatedTitle: molds.mandatedTitle,
       promptOpts: {
         debateSeed: molds.debateSeed,
         excludeMolds: molds.excludeMolds,
+        mandatedTitle: molds.mandatedTitle,
         topicTag: topicTag ?? molds.topicTag ?? args._resolvedTopic ?? args.topic,
       },
       molds,
@@ -729,7 +838,41 @@ async function runQualityAndStructuralGates(args, teil, batch, { onFail, relFile
   if (!args.skipQuality) {
     const quality = checkLesenBatchQuality(batch, teil, { file: gateFile, level: args.level });
     if (!args.inMemory) console.log(formatQualityReport(quality));
-    if (!quality.ok) {
+    const teilN = Number(teil);
+
+    if (isLesenCombinedCalidadLexicoTeil(teilN)) {
+      const combined = collectCalidadLexicoIssues(
+        batch,
+        {
+          ok: quality.ok,
+          issues: quality.issues || [],
+          report: formatQualityReport(quality),
+        },
+        { level: args.level },
+      );
+      if (!combined.ok) {
+        if (combined.lexIssues.length && !args.inMemory) {
+          console.log(formatLexicalReport(combined.lex));
+        }
+        console.log(
+          `  [Lesen T${teil} combined] ${combined.issues.length} issue(s) ` +
+            `(calidad ${combined.calidadIssues.length}, léxico ${combined.lexIssues.length})`,
+        );
+        for (const line of combined.issues.slice(0, COMBINED_CALIDAD_LEXICO_ISSUE_LIMIT)) {
+          console.log(`    · ${line}`);
+        }
+        onFail?.();
+        const mcqHits = checkMcqDistinctIssues(batch, teil).findings;
+        return {
+          ...combinedCalidadLexicoGateResult(combined, { label: `lesen-t${teil}` }),
+          detail: combined.report,
+          sem2Findings: mcqHits.map((f) => ({ itemId: f.itemId, detail: f.detail })),
+        };
+      }
+      if (!args.inMemory && combined.lex.warnings?.length) {
+        console.log(formatLexicalReport(combined.lex));
+      }
+    } else if (!quality.ok) {
       onFail?.();
       const mcqHits = checkMcqDistinctIssues(batch, teil).findings;
       return {
@@ -743,7 +886,7 @@ async function runQualityAndStructuralGates(args, teil, batch, { onFail, relFile
     }
   }
 
-  if (!args.skipQuality) {
+  if (!args.skipQuality && !isLesenCombinedCalidadLexicoTeil(Number(teil))) {
     const lex = checkLexical(batch, { level: args.level });
     if (!lex.ok) {
       if (!args.inMemory) console.log(formatLexicalReport(lex));
@@ -771,14 +914,30 @@ async function runQualityAndStructuralGates(args, teil, batch, { onFail, relFile
       }
     }
 
+    const topicForCorpus =
+      batch._requestedTopic || batch.topicTag || args._resolvedTopic || args.topic;
+    const persistedCorpus =
+      topicForCorpus && [4, 5].includes(Number(teil))
+        ? buildPersistedStructuralCorpus({
+            lang: args.lang,
+            level: args.level,
+            topicTag: topicForCorpus,
+            teil,
+          })
+        : [];
+    const structuralCorpus = [
+      ...(Array.isArray(args.structuralCorpus) ? args.structuralCorpus : []),
+      ...persistedCorpus,
+    ];
+
     const gate = await validatePart(batch, {
       semantic: args.semantic === true,
       skipSem2: args.skipSem2 === true,
       skipNormalize: true,
       skipDedup: args.skipDedup || !dedupCorpus?.length,
       dedupCorpus,
-      structuralCorpus: args.structuralCorpus ?? null,
-      structuralCorpusDir: args.structuralCorpusDir ?? genDirFor(args),
+      structuralCorpus: structuralCorpus.length ? structuralCorpus : null,
+      structuralCorpusDir: structuralCorpus.length ? null : (args.structuralCorpusDir ?? genDirFor(args)),
       dedupThreshold: args.dedupThreshold ?? 0.55,
       module: 'lesen',
       teil,
@@ -1089,7 +1248,7 @@ async function finalizeBatch(args, teil, batch, basename, relFile) {
 
   if (!args.dryRun && !args.skipPoolReady) {
     try {
-      const promo = await finalizePoolReady(absPath, batch);
+      const promo = await finalizePoolReady(absPath, batch, { level: args.level });
       relFile = relPathAfterPoolReady(relFile, promo.poolPath);
       const contentOkLesen =
         promo.q1OnlyReject ||
@@ -1134,8 +1293,11 @@ async function generateT3Part(args, session) {
   }
 
   try {
-    const exclude = args._t3ExcludeSlugs instanceof Set ? args._t3ExcludeSlugs : new Set(args._t3ExcludeSlugs || []);
     const requestedTopic = args._resolvedTopic || args.topic || null;
+    if (requestedTopic) {
+      preflightTopicMoldGeneration(3, requestedTopic, topicMoldOptsFromArgs(args, 3));
+    }
+    const exclude = args._t3ExcludeSlugs instanceof Set ? args._t3ExcludeSlugs : new Set(args._t3ExcludeSlugs || []);
     let batch = buildValidatedT3Part({
       words,
       maxAttempts: 8,
@@ -1165,6 +1327,17 @@ async function generateT3Part(args, session) {
     if (result.ok) return { ...result, words, apiCalls: 0 };
     return { ...result, words, apiCalls: 0, discarded: true, teil: 3, reason: result.reason || result.issue };
   } catch (err) {
+    if (err instanceof TopicMoldIncompatibleError) {
+      return {
+        ok: false,
+        discarded: true,
+        teil: 3,
+        reason: err.message,
+        apiCalls: 0,
+        t3BlueprintExhausted: true,
+        gate: 'topic-mold-block',
+      };
+    }
     if (!(args._t3ExcludeSlugs instanceof Set)) args._t3ExcludeSlugs = new Set();
     for (const slug of err.failedSlugs || []) {
       if (slug) args._t3ExcludeSlugs.add(slug);
@@ -1220,33 +1393,45 @@ async function generateLlmPart(args, teil, session) {
 
   let moldCtx = resolveMoldContext(args, teil, chosenTopic);
   let promptBundle = await buildLesenPromptBundle(teil, words, session, moldCtx, args);
+  let applyT4ForumNames = null;
   if (Number(teil) === 4) {
-    const forumNames = pickNextNames(gDir, 7, {
-      module: 'lesen',
-      teil: 4,
-      sessionExclude: args._excludeNames || [],
-      avoidTemplateDefaults: true,
-    });
-    pushSessionNameExclude(args, forumNames);
-    console.log(`Nombres foro T4: ${forumNames.join(', ')} (rotación AUD-5)`);
-    const nameOpts = { useNames: forumNames, avoidNames: TEMPLATE_DEFAULT_NAMES };
-    promptBundle = {
-      ...promptBundle,
-      userPrompt: injectLesenT4ForumNames(promptBundle.userPrompt, nameOpts),
-      fullPrompt: promptBundle.fullPrompt
-        ? injectLesenT4ForumNames(promptBundle.fullPrompt, nameOpts)
-        : promptBundle.fullPrompt,
+    const levelDir = String(args?.level || 'B1').toUpperCase();
+    const nameExtraDirs = [
+      path.join(ROOT, 'batches/ready/pool-verified', levelDir),
+      path.join(ROOT, 'batches/needs-regeneration', levelDir),
+    ].filter((d) => fs.existsSync(d));
+    applyT4ForumNames = (bundle) => {
+      const forumNames = pickLesenT4ForumNames(gDir, {
+        sessionExclude: args._excludeNames || [],
+        avoidTemplateDefaults: true,
+        extraDirs: nameExtraDirs,
+      });
+      pushSessionNameExclude(args, forumNames);
+      console.log(`Nombres foro T4: ${forumNames.join(', ')} (rotación AUD-5)`);
+      const nameOpts = { useNames: forumNames, avoidNames: TEMPLATE_DEFAULT_NAMES };
+      return {
+        ...bundle,
+        userPrompt: injectLesenT4ForumNames(bundle.userPrompt, nameOpts),
+        fullPrompt: bundle.fullPrompt
+          ? injectLesenT4ForumNames(bundle.fullPrompt, nameOpts)
+          : bundle.fullPrompt,
+      };
     };
+    promptBundle = applyT4ForumNames(promptBundle);
   }
   let prompt = promptBundle.userPrompt;
   let baseUserPrompt = prompt;
 
   const resetPromptFresh = async (hint) => {
+    const entropyBump = `${Date.now()}:${Math.random().toString(36).slice(2, 8)}`;
     if (Number(teil) === 5) {
-      args._t5SeedEntropy = `${chosenTopic}:${Date.now()}:${Math.random().toString(36).slice(2, 8)}`;
+      args._t5SeedEntropy = `${chosenTopic}:${entropyBump}`;
+    } else if (Number(teil) === 4) {
+      args._t4SeedEntropy = `${chosenTopic}:t4:${entropyBump}`;
     }
     moldCtx = resolveMoldContext(args, teil, chosenTopic);
     promptBundle = await buildLesenPromptBundle(teil, words, session, moldCtx, args);
+    if (applyT4ForumNames) promptBundle = applyT4ForumNames(promptBundle);
     const base = promptBundle.userPrompt;
     prompt = hint
       ? `${base}\n\nNota: intento anterior rechazado por calidad (${hint}). Genera contenido NUEVO desde cero con el subtipo obligatorio.`
@@ -1311,12 +1496,28 @@ async function generateLlmPart(args, teil, session) {
     });
   };
 
+  try {
+    if ([3, 4, 5].includes(Number(teil))) {
+      const preflight = preflightTopicMoldGeneration(teil, chosenTopic, topicMoldOptsFromArgs(args, teil));
+      console.log(
+        `Molde preflight T${teil}×${chosenTopic}: ${preflight.compatible} compatible(s), ${preflight.remaining} restante(s)`,
+      );
+      assertTopicMoldCircuitClosed(session, chosenTopic, teil, topicMoldOptsFromArgs(args, teil));
+    }
+  } catch (err) {
+    if (err instanceof TopicMoldIncompatibleError || err instanceof TopicMoldCircuitBreakerError) {
+      return handleTopicMoldBlock(err, settleCostFail, finishPart, teil, partAttempts, session, chosenTopic);
+    }
+    throw err;
+  }
+
   const resetPromptWithFix = (issues, gate, batch = lastBatch) => {
     const issueList = (Array.isArray(issues) ? issues : [issues]).filter(Boolean);
     const useWordCopyDetail = !wordCopyFixHintUsed && hasWordMatchSignal(issueList);
     if (useWordCopyDetail) wordCopyFixHintUsed = true;
     prompt = buildFixRetryPrompt(baseUserPrompt, issues, gate, batch, {
       teil,
+      level: args?.level,
       wordCopyDetail: useWordCopyDetail,
       combinedWc: Number(teil) === 2 && batch ? combinedPassageWordCount(batch) : null,
     });
@@ -1450,6 +1651,15 @@ async function generateLlmPart(args, teil, session) {
     if (moldCtx?.institutionSeed?.variantProfile || moldCtx?.variantProfile) {
       batch._t5VariantProfile = moldCtx.institutionSeed?.variantProfile || moldCtx.variantProfile;
     }
+    const mandatedTitle = moldCtx?.mandatedTitle || moldCtx?.molds?.mandatedTitle;
+    if (mandatedTitle && batch.passages?.[0]) {
+      batch._mandatedTitle = mandatedTitle;
+      const got = String(batch.passages[0].title || '').trim();
+      if (got !== mandatedTitle) {
+        console.log(`  Título corregido: «${got.slice(0, 40)}…» → «${mandatedTitle.slice(0, 48)}…»`);
+        batch.passages[0].title = mandatedTitle;
+      }
+    }
 
     if (Number(teil) === 5 && !args.skipDedup) {
       const bankCheck = assertLesenT5NotBankDuplicate(batch, {
@@ -1498,6 +1708,25 @@ async function generateLlmPart(args, teil, session) {
         excluded: args._userVocab?.excluded,
       });
       console.log(formatVocabFeedbackSummary(batch.userVocabFeedback));
+      if (teil === 1 && batch.userVocabFeedback?.used?.length) {
+        const coherence = vocabNarrativeCoherenceGate(batch);
+        if (!coherence.ok) {
+          console.log(`  Gate vocab coherencia: ${coherence.reason}`);
+          maybeArchiveRejectedBatch(args, teil, batch, basename, {
+            reason: coherence.reason,
+            gate: 'vocab-narrative-coherence',
+          });
+          settleCostFail(coherence.reason, 'vocab-narrative-coherence');
+          return finishPart({
+            ok: false,
+            discarded: true,
+            teil,
+            reason: coherence.reason,
+            attempts: partAttempts,
+            gate: 'vocab-narrative-coherence',
+          });
+        }
+      }
     }
     if (promptBundle?.generationMetadata) {
       batch.generationMetadata = { ...promptBundle.generationMetadata };
@@ -1509,8 +1738,30 @@ async function generateLlmPart(args, teil, session) {
 
     let result = await finalizeBatch(args, teil, batch, basename, relFile);
     if (result.ok) {
+      recordLesenMoldAttempt(session, args, teil, chosenTopic, batch, { ok: true });
+      if (Number(teil) === 4) {
+        pushSessionNameExclude(args, extractLesenT4ForumNames(result.batch || batch));
+      }
       settleCostOk(result.file || relFile);
       return finishPart({ ...result, words, attempts: partAttempts, batch: result.batch || batch });
+    }
+
+    recordLesenMoldAttempt(session, args, teil, chosenTopic, batch, {
+      ok: false,
+      moldGateFailure: isStructuralMoldFailure(result, teil),
+    });
+
+    try {
+      assertTopicMoldCircuitClosed(session, chosenTopic, teil, topicMoldOptsFromArgs(args, teil));
+    } catch (err) {
+      if (err instanceof TopicMoldCircuitBreakerError) {
+        maybeArchiveRejectedBatch(args, teil, lastBatch, basename, {
+          reason: err.message,
+          gate: 'topic-mold-circuit',
+        });
+        return handleTopicMoldBlock(err, settleCostFail, finishPart, teil, partAttempts, session, chosenTopic);
+      }
+      throw err;
     }
 
     lastIssue = result.issue || result.reason || 'checker';
@@ -1596,7 +1847,16 @@ async function generateLlmPart(args, teil, session) {
       const label = isChk29Failure(result) ? 'CHK-29' : 'CHK-27';
       console.log(`  ${label} → excluir molde y regenerar T${teil} con subtipo/debate distinto…`);
       pushSessionMoldExclude(args, batch);
+      pushSessionStructuralCorpus(args, batch);
       settleCostFail(result.issue || label, result.gate || 'audit2');
+      try {
+        assertTopicMoldCircuitClosed(session, chosenTopic, teil, topicMoldOptsFromArgs(args, teil));
+      } catch (err) {
+        if (err instanceof TopicMoldCircuitBreakerError) {
+          return handleTopicMoldBlock(err, settleCostFail, finishPart, teil, partAttempts, session, chosenTopic);
+        }
+        throw err;
+      }
       await resetPromptFresh(`${label} molde estructural / tema`);
       lastIssue = result.issue || label;
       lastGate = result.gate || 'audit2';
@@ -1693,6 +1953,9 @@ export async function generateLesenPart(opts = {}) {
   args._resolvedTopic = opts.topic ?? args._resolvedTopic ?? args.topic;
   if (Array.isArray(opts.words) && opts.words.length) {
     args.words = [...opts.words];
+  }
+  if (opts.vocabContext) {
+    args.vocabContext = opts.vocabContext;
   }
   if (opts.vocabBgStrictAnchor?.length) {
     args.vocabBgStrictAnchor = [...opts.vocabBgStrictAnchor];
@@ -1810,7 +2073,7 @@ export async function runLesenGenerator(argv = process.argv.slice(2)) {
   args.provider = await resolveLesenProvider(args.provider);
   const teile = teileToRun(args);
   if (args.fixRetries == null) {
-    args.fixRetries = teile.some((t) => t === 4 || t === 5) ? 2 : 1;
+    args.fixRetries = 2;
   }
   const session = createSession(args);
 

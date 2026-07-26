@@ -7,7 +7,7 @@ import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { ROOT } from './loadEnv.mjs';
-import { buildLesenSeedRecordFromBatch } from './publishToPool.mjs';
+import { buildExamSeedRecordFromBatch, buildLesenSeedRecordFromBatch } from './publishToPool.mjs';
 import { normalizeBatch } from './normalizeBatch.mjs';
 import { localCatalogPath, readPublishedCatalog } from './publishedExamLib.mjs';
 import { poolVerifiedDir, POOL_VERIFIED_DIR, normalizeLevel } from './batchPaths.mjs';
@@ -51,9 +51,24 @@ function batchToRecord(batch, file, module, teil, level = 'B1') {
       idPrefix: 'pv',
     });
     rec.id = file.replace(/\.json$/i, '');
+    rec.complete = true;
+    rec.verified = true;
     return rec;
   }
-  const passages = batch.passages || [];
+  if (mod === 'horen') {
+    const rec = buildExamSeedRecordFromBatch(batch, {
+      lang: 'de',
+      level: lv,
+      module: 'horen',
+      teil: t,
+      idPrefix: 'pv',
+      topicTag: extractTopic(batch),
+    });
+    rec.id = file.replace(/\.json$/i, '');
+    rec.complete = true;
+    rec.verified = true;
+    return rec;
+  }
   const rec = {
     id: file.replace(/\.json$/i, ''),
     module: mod,
@@ -65,25 +80,6 @@ function batchToRecord(batch, file, module, teil, level = 'B1') {
     complete: true,
     verified: true,
   };
-  if (mod === 'horen') {
-    if (passages.length > 1) {
-      rec.segments = passages.map((p, i) => ({
-        passageId: p.id,
-        label: p.title || `Aufnahme ${i + 1}`,
-        text: p.text || p.transcript || '',
-        transcript: p.transcript || p.text || '',
-        questions: (batch.questions || []).filter((q) => q.passageId === p.id),
-      }));
-    }
-    rec.passage = passages[0]
-      ? {
-          title: passages[0].title,
-          text: passages[0].text,
-          transcript: passages[0].transcript || passages[0].text,
-          topicTag: passages[0].topicTag,
-        }
-      : null;
-  }
   return rec;
 }
 

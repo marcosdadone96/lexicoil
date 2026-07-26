@@ -19,13 +19,13 @@
       "type": "multiple_choice",
       "question": "Bis wann muss die Standgebühr bezahlt werden?",
       "options": [
-        "a) Erst nach dem Abbau des Standes am Abend.",
-        "b) Eine Woche vor dem ersten Markttag im Monat.",
-        "c) Vor Marktbeginn, spätestens um sieben Uhr morgens."
+        "a) Eine Woche vor dem ersten Markttag im Monat.",
+        "b) Am Markttag bis 7:00 Uhr.",
+        "c) Erst nach dem Abbau des Standes am Abend."
       ],
-      "correct": "c",
-      "correctAnswer": "c",
-      "explanation": "Die Standgebühr muss spätestens um sieben Uhr morgens vor Marktbeginn entrichtet werden.",
+      "correct": "b",
+      "correctAnswer": "b",
+      "explanation": "Laut den Regeln muss jeder Verkäufer seine Standgebühr spätestens um 7:00 Uhr am Markttag entrichten.",
       "passageId": "gen-l5-konsum-mh01",
       "lang": "de",
       "level": "B1",
@@ -48,12 +48,12 @@
       "type": "multiple_choice",
       "question": "Wo dürfen Besucher Proben kostenlos erhalten?",
       "options": [
-        "a) Nur an gekennzeichneten Verkaufsständen.",
-        "b) Nur nach vorheriger Online-Anmeldung beim Marktamt.",
-        "c) An jedem Stand ohne besondere Kennzeichnung."
+        "a) Nur nach vorheriger Online-Anmeldung beim Marktamt.",
+        "b) An jedem Stand ohne besondere Kennzeichnung.",
+        "c) Nur an gekennzeichneten Verkaufsständen."
       ],
-      "correct": "a",
-      "correctAnswer": "a",
+      "correct": "c",
+      "correctAnswer": "c",
       "explanation": "Proben sind nur an Ständen mit grünem Schild erlaubt.",
       "passageId": "gen-l5-konsum-mh01",
       "lang": "de",
@@ -75,12 +75,12 @@
       "type": "multiple_choice",
       "question": "Was gilt für Pfandflaschen am Marktausgang?",
       "options": [
-        "a) Sie können dort zurückgegeben werden.",
-        "b) Sie müssen zu Hause entsorgt werden.",
-        "c) Es gibt keine Pfandrückgabe auf dem Markt."
+        "a) Sie müssen zu Hause entsorgt werden.",
+        "b) Es gibt keine Pfandrückgabe auf dem Markt.",
+        "c) Sie können dort zurückgegeben werden."
       ],
-      "correct": "a",
-      "correctAnswer": "a",
+      "correct": "c",
+      "correctAnswer": "c",
       "explanation": "Pfandflaschen und Leergut können am Marktausgang zurückgegeben werden.",
       "passageId": "gen-l5-konsum-mh01",
       "lang": "de",
@@ -105,12 +105,12 @@
       "type": "multiple_choice",
       "question": "Wie lange dürfen Verkäuferfahrzeuge zum Be- und Entladen halten?",
       "options": [
-        "a) Nur werktags zwischen acht und zehn Uhr am Vormittag.",
-        "b) Maximal eine halbe Stunde, danach den Platz freimachen.",
-        "c) Den gesamten Markttag über ohne jede zeitliche Begrenzung."
+        "a) Maximal eine halbe Stunde, danach den Platz freimachen.",
+        "b) Den gesamten Markttag über ohne jede zeitliche Begrenzung.",
+        "c) Nur werktags zwischen acht und zehn Uhr am Vormittag."
       ],
-      "correct": "b",
-      "correctAnswer": "b",
+      "correct": "a",
+      "correctAnswer": "a",
       "explanation": "Fahrzeuge dürfen höchstens 30 Minuten halten; danach muss der Parkplatz frei sein.",
       "passageId": "gen-l5-konsum-mh01",
       "lang": "de",
@@ -129,53 +129,7 @@
     }
   ],
   "_germanCapsNormalizeVersion": "v3.17-mcq-dedupe-universal-2026-07-14",
-  "_germanCapsNormalizedAt": "2026-07-20T09:55:21.879Z",
+  "_germanCapsNormalizedAt": "2026-07-25T09:04:27.430Z",
   "_balanceMcqVersion": "v1.2-no-rf-chrono-shuffle-2026-07-11",
-  "_balanceMcqNormalizedAt": "2026-07-20T09:55:21.879Z",
-  "topicTag": "Konsum",
-  "_requestedTopic": "Konsum",
-  "_textSubtype": "markthalle",
-  "_t5InstitutionSeed": "Wochenmarkt Am Ring",
-  "_t5VariantProfile": "standard",
-  "userVocabFeedback": {
-    "topic": "Konsum",
-    "requested": [
-      "stand",
-      "gebühr",
-      "pfand",
-      "verkäufer",
-      "probe",
-      "anmeldung"
-    ],
-    "prompted": [
-      "stand",
-      "gebühr",
-      "pfand",
-      "verkäufer",
-      "probe",
-      "anmeldung"
-    ],
-    "used": [
-      "gebühr",
-      "pfand",
-      "verkäufer",
-      "probe",
-      "anmeldung"
-    ],
-    "notUsed": [
-      "stand"
-    ],
-    "originalRequested": [
-      "marke",
-      "supermarkt"
-    ],
-    "subtypeAdaptation": [
-      "marke→stand",
-      "supermarkt→gebühr"
-    ]
-  },
-  "_metadataEnrichedAt": "2026-07-20T09:55:24.022Z",
-  "_metadataEnrichNote": "deterministic: detectTopic + per-question lemma vocab + grammar heuristics",
-  "_vocabTagsNormalizeVersion": "v2.3.12-beispielfragen-stem-2026-07-12",
-  "_grammarTagsNormalizeVersion": "v2.0-focus-flexible-2026-07-10"
+  "_balanceMcqNormalizedAt": "2026-07-25T09:04:27.430Z"
 }

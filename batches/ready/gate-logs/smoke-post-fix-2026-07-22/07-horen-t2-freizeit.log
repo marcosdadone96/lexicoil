@@ -1,0 +1,104 @@
+
+Generador horen (de/B1) · gemini · gemini-2.5-flash · T2 × 1
+Palabras objetivo por parte: 5 (--word-count)
+Cuota Gemini: max 45 llamadas · pausa ≥6000ms · fix-retries=2 · api-retries=1
+Salida: batches/generated/ (solo pasa formato + calidad pedagógica)
+Tema: Freizeit (elegido)
+Hören T2 apertura rotada: «In der heutigen Sendung spreche ich über…»
+
+── horen T2 · horen-t2-gemini-066.json ──
+Proveedor: gemini · Palabras (5): wochenende, aufgabe, situation, aktuell, direkt
+Modelo: gemini-2.5-flash · max_output_tokens=16384
+Llamada API 1/45 · $0.000 acumulado · gemini-2.5-flash
+Validando formato…
+Comprobando calidad pedagógica…
+  [LT advisory] skipped (LT down: fetch failed)
+Calidad Hören T2: FAIL (5 problemas, estimación ~60%)
+  - gen-q-h2-ce2b9e9c-q1: sesgo de longitud MCQ (B1) — opción correcta «a» es la más larga (47 vs 35/43; Δ +8 chars, +21% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable.
+  - gen-q-h2-ce2b9e9c-q2: sesgo de longitud MCQ (B1) — opción correcta «a» es la más larga (55 vs 48/33; Δ +15 chars, +36% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable.
+  - gen-q-h2-ce2b9e9c-q3: sesgo de longitud MCQ (B1) — opción correcta «b» es la más larga (73 vs 37/55; Δ +27 chars, +59% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable.
+  - gen-q-h2-ce2b9e9c-q4: sesgo de longitud MCQ (B1) — opción correcta «b» es la más larga (58 vs 44/51; Δ +11 chars, +22% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable.
+  - gen-q-h2-ce2b9e9c-q5: sesgo de longitud MCQ (B1) — opción correcta «c» es la más larga (75 vs 56/64; Δ +15 chars, +25% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable.
+  Triaje CUBO C (MCQ length bias (B1)) → reparación localizada (1 llamada LLM)…
+horen T2: reparando sesgo longitud MCQ en 5 pregunta(s) (1 llamada LLM, fuente fija)…
+Llamada API 2/45 · $0.015 acumulado · gemini-2.5-flash
+  length-bias: gen-q-h2-ce2b9e9c-q1 OK (+21%→+0%)
+  length-bias: patch RECHAZADO en gen-q-h2-ce2b9e9c-q2 (+36%→+36%) — escala a regen
+  length-bias: regenerando pregunta completa gen-q-h2-ce2b9e9c-q2 (+36% → regen, pasaje fijo)…
+Llamada API 3/45 · $0.017 acumulado · gemini-2.5-flash
+  length-bias: regen gen-q-h2-ce2b9e9c-q2 OK (+36%→+18%)
+  length-bias: gen-q-h2-ce2b9e9c-q3 mejoró (+59%→+54%) — patch aplicado, re-validar
+  length-bias: gen-q-h2-ce2b9e9c-q4 OK (+22%→+12%)
+  length-bias: gen-q-h2-ce2b9e9c-q5 OK (+25%→+0%)
+  Re-validando tras mcq_length_bias…
+  [LT advisory] skipped (LT down: fetch failed)
+Calidad Hören T2: FAIL (1 problemas, estimación ~92%)
+  - gen-q-h2-ce2b9e9c-q3: sesgo de longitud MCQ (B1) — opción correcta «b» es la más larga (71 vs 37/55; Δ +25 chars, +54% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable.
+  Reparación mcq_length_bias parcial → fallos residuales (calidad), continúa con LLM
+Calidad FAIL → regeneración limpia en siguiente intento si persiste…
+  [fix-note] Hören T2 retry 1/2: dual hint (anti-B2+ + anti-copia)
+
+Reintento 1/2 · gen-q-h2-ce2b9e9c-q3: sesgo de longitud MCQ (B1) — opción correcta «b» es la más larga (71 vs 37/55; Δ +25 chars, +54% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable.…
+  Temperatura reducida a 0.3 (reintento de calidad)
+Cola API: pausa 0.9s…
+Llamada API 4/45 · $0.018 acumulado · gemini-2.5-flash
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+Validando formato…
+  [LT advisory] skipped (LT down: fetch failed)
+Calidad Hören T2: OK ✅ (estimación ~100%)
+Léxico FAIL (2 errores)
+  ✗ question gen-q-h2-ce2b9e9c-q1 explanation: vocabulario B2+ en pregunta «Herausforderungen» → usa «Problem / Schwierigkeit» (B1)
+  ✗ question gen-q-h2-ce2b9e9c-q1 option: vocabulario B2+ en pregunta «Herausforderungen» → usa «Problem / Schwierigkeit» (B1)
+  Triaje CUBO C (léxico B2+) → reparación localizada (1 llamada LLM)…
+horen: reparando 2 hallazgo(s) léxicos (1 llamada LLM, solo campos marcados)…
+Llamada API 5/45 · $0.039 acumulado · gemini-2.5-flash
+  Reparación lexico: sin cambios en batch — re-validando estado actual…
+  Re-validando tras lexico…
+  [LT advisory] skipped (LT down: fetch failed)
+Calidad Hören T2: OK ✅ (estimación ~100%)
+Léxico FAIL (2 errores)
+  ✗ question gen-q-h2-ce2b9e9c-q1 explanation: vocabulario B2+ en pregunta «Herausforderungen» → usa «Problem / Schwierigkeit» (B1)
+  ✗ question gen-q-h2-ce2b9e9c-q1 option: vocabulario B2+ en pregunta «Herausforderungen» → usa «Problem / Schwierigkeit» (B1)
+  Reparación lexico parcial → fallos residuales (lexico), continúa con LLM
+  [fix-note] Hören T2 retry 2/2: dual hint (anti-B2+ + anti-copia)
+
+Reintento 2/2 · question gen-q-h2-ce2b9e9c-q1 explanation: vocabulario B2+ en pregunta «Herausforderungen» → usa «Problem / Schwierigkeit» (B1)…
+  Temperatura reducida a 0.3 (reintento de calidad)
+Cola API: pausa 0.9s…
+Llamada API 6/45 · $0.040 acumulado · gemini-2.5-flash
+  [normalizeNouns] 2 sustantivo(s) capitalizados automáticamente
+Validando formato…
+  [LT advisory] skipped (LT down: fetch failed)
+Calidad Hören T2: FAIL (5 problemas, estimación ~60%)
+  - gen-q-h2-ce2b9e9c-q1: pregunta copia ≥4 palabras seguidas de la transcripción («in der heutigen sendung»)
+  - gen-q-h2-ce2b9e9c-q1: opción correcta copia ≥4 palabras del audio («balance zwischen arbeit und»)
+  - gen-q-h2-ce2b9e9c-q2: opción correcta copia ≥4 palabras del audio («zeit bewusst zu planen»)
+  - gen-q-h2-ce2b9e9c-q1: sesgo de longitud MCQ (B1) — opción correcta «b» es la más larga (68 vs 50/50; Δ +18 chars, +36% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable.
+  - gen-q-h2-ce2b9e9c-q4: sesgo de longitud MCQ (B1) — opción correcta «c» es la más larga (64 vs 49/54; Δ +13 chars, +24% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable.
+  Triaje CUBO C (word-matching) → reparación localizada (1 llamada LLM)…
+T2: reparando 2 pregunta(s) word-copy en 1 llamada LLM (pasaje(s) fijo(s))…
+Llamada API 7/45 · $0.066 acumulado · gemini-2.5-flash
+  word-copy aún detectado en gen-q-h2-ce2b9e9c-q2 tras reparación batch
+  Re-validando tras word_match…
+  [LT advisory] skipped (LT down: fetch failed)
+Calidad Hören T2: FAIL (3 problemas, estimación ~76%)
+  - gen-q-h2-ce2b9e9c-q2: opción correcta copia ≥4 palabras del audio («zeit bewusst zu planen»)
+  - gen-q-h2-ce2b9e9c-q1: sesgo de longitud MCQ (B1) — opción correcta «b» es la más larga (76 vs 50/50; Δ +26 chars, +52% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable.
+  - gen-q-h2-ce2b9e9c-q4: sesgo de longitud MCQ (B1) — opción correcta «c» es la más larga (64 vs 49/54; Δ +13 chars, +24% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable.
+  Reparación word_match parcial → fallos residuales (calidad), continúa con LLM
+
+── batches/generated/B1/horen-t2-gemini-066.json · DESCARTADO · 7 llamadas · $0.067 total ──
+
+══ Resumen generador horen ══
+Proveedor: gemini · Modelo: gemini-2.5-flash
+Intentos totales: 7
+Partes guardadas (formato + calidad OK): 0
+Partes descartadas: 1
+Llamadas API Gemini: 7/45
+Por parte (guardadas / descartadas · intentos):
+  T2: 0 guardadas, 1 descartadas, 3 intentos
+
+Calidad Hören T2: FAIL (3 problemas, estimación ~76%)
+  - gen-q-h2-ce2b9e9c-q2: opción correcta copia ≥4 palabras del audio («zeit bewusst zu planen»)
+  - gen-q-h2-ce2b9e9c-q1: sesgo de longitud MCQ (B1) — opción correcta «b» es la más larga (76 vs 50/50; Δ +26 chars, +52% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable.
+  - gen-q-h2-ce2b9e9c-q4: sesgo de longitud MCQ (B1) — opción correcta «c» es la más larga (64 vs 49/54; Δ +13 chars, +24% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable.

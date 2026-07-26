@@ -17,6 +17,17 @@ import {
 import { extractJson } from './extractJson.mjs';
 import { resolveMaxOutputTokens, isLikelyTruncated } from './genOutputTokens.mjs';
 import { buildExamPrompt, isSprechenA2PerTeil } from './examTemplatePrompt.mjs';
+import { pickNextHorenT2Opening } from './horenOpeningsBank.mjs';
+import {
+  pickNextHorenT2ActivitySchedule,
+  loadPersistedHorenT2KeySignatures,
+} from './horenT2ActivityScheduleBank.mjs';
+import {
+  pickDialogueNameCast,
+  recordDialogueCastUsage,
+  extractDialogueCastSignature,
+  loadPersistedDialogueCasts,
+} from './dialogueNamesBank.mjs';
 import { resolveGenerationFeedbackRules } from './resolveGenerationFeedback.mjs';
 import {
   loadWeakLemmas,
@@ -41,6 +52,11 @@ import { assertSprechenPerspectiveClean } from './sprechenPerspectiveGate.mjs';
 import { checkLexical, formatLexicalReport } from './lexicalCheck.mjs';
 import { classifyAndRepair } from './repairTriage.mjs';
 import {
+  collectCalidadLexicoIssues,
+  combinedCalidadLexicoGateResult,
+  COMBINED_CALIDAD_LEXICO_ISSUE_LIMIT,
+} from './calidadLexicoCombinedGate.mjs';
+import {
   incrementPartFileFixIteration,
   initPartFileTracker,
   logPartFileOutcome,
@@ -61,6 +77,7 @@ import { attachVocabFeedback, formatVocabFeedbackSummary } from './generationFee
 import { buildVocabBgMandatoryAnchorBlock } from './userVocabPrompt.mjs';
 import { runQ4PipelineGate, runQ3PipelineGate, runLanguageToolPipelineAdvisory } from './qualityGates/pipelineIntegration.mjs';
 import { runGermanContentLanguageGate } from './qualityGates/germanContentLanguageGate.mjs';
+import { germanExamRepairOutputRulesBlock } from './germanExplanationPromptRules.mjs';
 import { DailyQuotaError } from './geminiClient.mjs';
 import {
   ApiBudgetStopError,
@@ -247,12 +264,18 @@ function validationIssues(output) {
 
 const HOREN_MCQ_TEILE_B1 = new Set([1, 2]);
 const HOREN_T4_TEILE = new Set([4]);
+/** Hören B1: calidad + léxico en una pasada (evita fail-fast secuencial). */
+const HOREN_COMBINED_CALIDAD_LEXICO_TEILE = new Set([1, 3, 4]);
+
+function isHorenCombinedCalidadLexicoTeil(teil) {
+  return HOREN_COMBINED_CALIDAD_LEXICO_TEILE.has(Number(teil));
+}
 
 function isHorenMcqTeil(module, teil, level) {
   if (String(module || '').toLowerCase() !== 'horen') return false;
   const t = Number(teil);
   const lv = String(level || 'B1').toUpperCase();
-  if (lv === 'A2') return t === 1;
+  if (lv === 'A2') return t === 1 || t === 3;
   return HOREN_MCQ_TEILE_B1.has(t);
 }
 
@@ -284,17 +307,37 @@ function buildHorenT4TopicAnchor(topicTag) {
 }
 
 export function buildExamFixNote(issues, gate, module, teil, topicTag = null, level = 'B1') {
-  const list = (Array.isArray(issues) ? issues : [issues]).filter(Boolean).slice(0, 6);
-  let extra = '';
   const mod = String(module || '').toLowerCase();
   const t = Number(teil);
-  const horenMcqTeil = isHorenMcqTeil(mod, t, level);
+  const horenCombinedTeil = mod === 'horen' && isHorenCombinedCalidadLexicoTeil(t);
   const horenT4Teil = mod === 'horen' && HOREN_T4_TEILE.has(t);
+  const issueLimit = horenCombinedTeil ? COMBINED_CALIDAD_LEXICO_ISSUE_LIMIT : 6;
+  const list = (Array.isArray(issues) ? issues : [issues]).filter(Boolean).slice(0, issueLimit);
+  let extra = '';
+  const horenMcqTeil = isHorenMcqTeil(mod, t, level);
 
   if (horenT4Teil) {
     extra = HOREN_T4_ANTI_LENGTH + HOREN_T4_ANTI_COPY + buildHorenT4TopicAnchor(topicTag);
+    if (
+      list.some((i) => /vocabulario B2|B2\+|C1\/C2|zugänglich|Perspektiven/i.test(String(i))) ||
+      gate === 'lexico' ||
+      gate === 'calidad+lexico'
+    ) {
+      extra += HOREN_T12_ANTI_B2;
+    }
+    if (list.some((i) => /chrono|slot order|precedes|Wer sagt/i.test(String(i)))) {
+      extra +=
+        '\nCRONOLOGIA T4: el orden de turnos «Nombre:» en passages[0].text DEBE coincidir con el orden ' +
+        'de aparición en el audio (slot 1→8). No reordenes respuestas: cada pregunta Zuordnung referencia ' +
+        'la afirmación en la posición temporal correcta del diálogo.';
+    }
   } else if (horenMcqTeil) {
     extra = HOREN_T12_ANTI_B2 + HOREN_T12_ANTI_COPY;
+  } else if (horenCombinedTeil) {
+    extra = HOREN_T12_ANTI_B2;
+    if (list.some((i) => /copia|literal|word-matching|comparten/i.test(String(i)))) {
+      extra += HOREN_T12_ANTI_COPY;
+    }
   } else if (list.some((i) => /copia|literal|word-matching|comparten/i.test(String(i)))) {
     extra =
       '\nANTI WORD-MATCHING: parafrasea preguntas/opciones; no copies >=4 palabras seguidas del audio.';
@@ -303,6 +346,42 @@ export function buildExamFixNote(issues, gate, module, teil, topicTag = null, le
     extra +=
       '\nANTI-ATAJO LONGITUD: la opción correcta NO puede ser la más larga. ' +
       'Acorta la correcta o alarga distractores hasta longitud comparable (mismo detalle B1).';
+  }
+  if (
+    mod === 'lesen' &&
+    t === 4 &&
+    list.some((i) => /demasiado corto|mín 25|signText/i.test(String(i)))
+  ) {
+    extra +=
+      '\nLesen T4 signText: cada opinión del foro ≥25 palabras (ideal 30–45), postura clara Ja/Nein al inicio, ' +
+      'sin copiar literalmente la pregunta del foro.';
+  }
+  const lv = String(level || 'B1').trim().toUpperCase();
+  if (
+    mod === 'horen' &&
+    t === 2 &&
+    lv === 'A2' &&
+    list.some((i) =>
+      /Was macht|enunciado debe|clave.*no coincide|actividad.*no mapea|hablante.*no aparece|faltan Montag|picture/i.test(
+        String(i),
+      ),
+    )
+  ) {
+    extra +=
+      '\nHören A2 T2 picture-matching: enunciado «Was macht {Name} am {Montag|…|Freitag}?»; ' +
+      'banco estándar a–i (Fahrrad, Deutschkurs, Freunde treffen, Sport, Museum, Kino, Lernen, Einkaufen, Kochen); ' +
+      'correct = actividad que ESE hablante dice hacer ESE día en el diálogo; 5 letras distintas; sin options.';
+  }
+  if (
+    mod === 'horen' &&
+    t === 3 &&
+    lv === 'A2' &&
+    list.some((i) => /options_missing|type_not_allowed|richtig_falsch|ja_nein/i.test(String(i)))
+  ) {
+    extra +=
+      '\nHören A2 T3→5 segmentos cortos (s1–s5, 15–50 Wörter c/u) + 5× multiple_choice a/b/c. ' +
+      'Cada question: segmentLabel «Text 1»…«Text 5», options con 3 strings «a) …», «b) …», «c) …». ' +
+      'PROHIBIDO: 1 diálogo largo + 7 Richtig/Falsch (formato B1) u options: []. level:"A2".';
   }
 
   if (mod === 'horen' && list.some((i) => /dialogo|turnos|Person A/i.test(String(i)))) {
@@ -328,8 +407,14 @@ export function buildExamFixNote(issues, gate, module, teil, topicTag = null, le
   }
   return (
     `\n\n--- CORRECCION REQUERIDA ---\n` +
-    `El checker de ${gate} detecto:\n${list.map((i) => `- ${i}`).join('\n')}${extra}\n` +
-    `Corrige SOLO esos problemas. Devuelve el JSON completo corregido, sin markdown ni comentarios.`
+    `El checker de ${gate} detecto (${list.length} problema(s)):\n${list.map((i) => `- ${i}`).join('\n')}${extra}\n` +
+    (horenCombinedTeil
+      ? horenT4Teil
+        ? `Corrige TODOS los problemas listados en una sola respuesta (cronología, longitud, copia y vocabulario B1).\n`
+        : `Corrige TODOS los problemas listados en una sola respuesta (copia, calidad MCQ y vocabulario B1).\n`
+      : '') +
+    `Corrige SOLO esos problemas. Devuelve el JSON completo corregido, sin markdown ni comentarios.` +
+    `\n\n${germanExamRepairOutputRulesBlock()}`
   );
 }
 
@@ -445,35 +530,54 @@ async function runDualGates(args, teil, batch, relFile) {
   }
 
   if (!args.skipQuality) {
+    const isHorenCombined =
+      args.module === 'horen' && isHorenCombinedCalidadLexicoTeil(teil);
     const quality = runModuleQuality(batch, args, teil);
     console.log(quality.report);
-    if (!quality.ok) {
-      unlinkTmp();
-      return {
-        ok: false,
-        gate: 'calidad',
-        issue: quality.issues?.[0] || 'Calidad pedagógica FAIL',
-        issues: (quality.issues || []).slice(0, 5),
-        detail: quality.report,
-      };
-    }
-  }
 
-  // Gate: léxico contextual
-  if (!args.skipQuality) {
-    const lex = checkLexical(batch, { level: args.level });
-    if (!lex.ok) {
-      console.log(formatLexicalReport(lex));
-      unlinkTmp();
-      return {
-        ok: false,
-        gate: 'lexico',
-        issue: lex.issues[0] || 'Error léxico',
-        issues: lex.issues.slice(0, 5),
-        detail: formatLexicalReport(lex),
-      };
+    if (isHorenCombined) {
+      const combined = collectCalidadLexicoIssues(batch, quality, {
+        level: args.level,
+      });
+      if (!combined.ok) {
+        if (combined.lexIssues.length) console.log(formatLexicalReport(combined.lex));
+        console.log(
+          `  [Hören T${teil} combined] ${combined.issues.length} issue(s) ` +
+            `(calidad ${combined.calidadIssues.length}, léxico ${combined.lexIssues.length})`,
+        );
+        for (const line of combined.issues.slice(0, COMBINED_CALIDAD_LEXICO_ISSUE_LIMIT)) {
+          console.log(`    · ${line}`);
+        }
+        unlinkTmp();
+        return combinedCalidadLexicoGateResult(combined, { label: `horen-t${teil}` });
+      }
+      if (combined.lex.warnings?.length) console.log(formatLexicalReport(combined.lex));
+    } else {
+      if (!quality.ok) {
+        unlinkTmp();
+        return {
+          ok: false,
+          gate: 'calidad',
+          issue: quality.issues?.[0] || 'Calidad pedagógica FAIL',
+          issues: (quality.issues || []).slice(0, 5),
+          detail: quality.report,
+        };
+      }
+
+      const lex = checkLexical(batch, { level: args.level });
+      if (!lex.ok) {
+        console.log(formatLexicalReport(lex));
+        unlinkTmp();
+        return {
+          ok: false,
+          gate: 'lexico',
+          issue: lex.issues[0] || 'Error léxico',
+          issues: lex.issues.slice(0, 5),
+          detail: formatLexicalReport(lex),
+        };
+      }
+      if (lex.warnings?.length) console.log(formatLexicalReport(lex));
     }
-    if (lex.warnings?.length) console.log(formatLexicalReport(lex));
   }
 
   // Hören premise dedup — always on (independent of skipQuality); selftest must not bypass this.
@@ -627,6 +731,59 @@ async function buildExamPromptBundle(module, teil, words, session, args = null) 
   const promptTeil =
     module === 'horen' || isSprechenA2PerTeil(module, level) ? teil : 1;
   const topic = args?._resolvedTopic || args?.topic || null;
+  let horenT2Opening = null;
+  let horenT2ActivitySchedule = null;
+  let dialogueNamePairs = null;
+  const lv = String(level).toUpperCase();
+
+  if (module === 'horen' && Number(teil) === 2) {
+    if (!args._horenT2UsedOpenings) args._horenT2UsedOpenings = new Set();
+    const pick = pickNextHorenT2Opening(args._horenT2UsedOpenings, `${topic}:${Date.now()}`);
+    horenT2Opening = pick.opening;
+    if (horenT2Opening) args._horenT2UsedOpenings.add(horenT2Opening);
+    console.log(`Hören T2 apertura rotada: «${horenT2Opening}…»`);
+
+    if (lv === 'A2') {
+      if (!args._horenT2UsedSchedules) args._horenT2UsedSchedules = new Set();
+      const exclude = loadPersistedHorenT2KeySignatures(lv);
+      for (const s of args._horenT2UsedSchedules) exclude.add(s);
+      const schPick = pickNextHorenT2ActivitySchedule(exclude, `${topic}:sched:${Date.now()}`);
+      horenT2ActivitySchedule = schPick.schedule;
+      if (horenT2ActivitySchedule) {
+        args._horenT2UsedSchedules.add(horenT2ActivitySchedule.id);
+        args._horenT2UsedSchedules.add(horenT2ActivitySchedule.correctKeys.join('-'));
+        console.log(`Hören T2 plan semanal: ${horenT2ActivitySchedule.id} [${horenT2ActivitySchedule.correctKeys.join(',')}]`);
+      }
+      const namePick = pickDialogueNameCast(1, {
+        level: lv,
+        module: 'horen',
+        teil: 2,
+        entropy: `${topic}:t2names:${Date.now()}`,
+        excludeCasts: loadPersistedDialogueCasts({ level: lv, module: 'horen', teil: 2 }).casts,
+        sessionExcludeCasts: args._dialogueCastSessionExclude || (args._dialogueCastSessionExclude = new Set()),
+      });
+      dialogueNamePairs = namePick.pairs;
+      args._dialogueCastSignature = namePick.castSignature;
+      console.log(`Hören T2 nombres: ${dialogueNamePairs.map((p) => p.join('/')).join(', ')}`);
+    }
+  }
+
+  if (module === 'horen' && (Number(teil) === 3 || Number(teil) === 1) && lv === 'A2') {
+    const count = Number(teil) === 3 ? 5 : 5;
+    if (!args._dialogueCastSessionExclude) args._dialogueCastSessionExclude = new Set();
+    const namePick = pickDialogueNameCast(count, {
+      level: lv,
+      module: 'horen',
+      teil: Number(teil),
+      entropy: `${topic}:t${teil}names:${Date.now()}`,
+      excludeCasts: loadPersistedDialogueCasts({ level: lv, module: 'horen', teil: Number(teil) }).casts,
+      sessionExcludeCasts: args._dialogueCastSessionExclude,
+    });
+    dialogueNamePairs = namePick.pairs;
+    args._dialogueCastSignature = namePick.castSignature;
+    args._dialogueCastSessionExclude.add(namePick.castSignature);
+    console.log(`Hören T${teil} elenco (${count} pares): ${dialogueNamePairs.map((p) => p.join('+')).join(' · ')}`);
+  }
   const feedbackMetaOut = {};
   let feedbackRules = [];
   try {
@@ -651,6 +808,9 @@ async function buildExamPromptBundle(module, teil, words, session, args = null) 
     topic,
     level: args?.level || 'B1',
     schreibenT3Surname: args?._schreibenT3Surname || null,
+    horenT2Opening,
+    horenT2ActivitySchedule,
+    dialogueNamePairs,
     feedbackRules,
     generationFeedbackEnabled: args?.generationFeedbackEnabled,
     feedbackMode: args?.feedbackMode,
@@ -991,7 +1151,7 @@ async function generateExamPart(args, teil, session) {
       let publishRel = relFile;
       if (!args.dryRun && !args.skipPoolReady) {
         try {
-          const promo = await finalizePoolReady(absPath, finalBatch);
+          const promo = await finalizePoolReady(absPath, finalBatch, { level: args.level });
           publishRel = relPathAfterPoolReady(relFile, promo.poolPath);
           finalBatch = promo.verdict === 'READY' && promo.poolPath
             ? JSON.parse(fs.readFileSync(promo.poolPath, 'utf8'))
@@ -1046,7 +1206,7 @@ async function generateExamPart(args, teil, session) {
           if (!args.dryRun && !args.skipPoolReady) {
             try {
               const absPath = path.join(ROOT, relFile);
-              const promo = await finalizePoolReady(absPath, batch);
+              const promo = await finalizePoolReady(absPath, batch, { level: args.level });
               publishRel = relPathAfterPoolReady(relFile, promo.poolPath);
             } catch (err) {
               console.warn(`  [poolReady] aviso: ${err.message}`);
@@ -1100,7 +1260,7 @@ async function generateExamPart(args, teil, session) {
           let publishRel = relFile;
           if (!args.dryRun && !args.skipPoolReady) {
             try {
-              const promo = await finalizePoolReady(absPath, finalBatch);
+              const promo = await finalizePoolReady(absPath, finalBatch, { level: args.level });
               publishRel = relPathAfterPoolReady(relFile, promo.poolPath);
               finalBatch = promo.verdict === 'READY' && promo.poolPath
                 ? JSON.parse(fs.readFileSync(promo.poolPath, 'utf8'))
@@ -1147,7 +1307,7 @@ async function generateExamPart(args, teil, session) {
       });
     }
 
-    const isQualityGate = /^(calidad|audit2|lexico)$/.test(gates.gate || '');
+    const isQualityGate = /^(calidad|audit2|lexico|calidad\+lexico)$/.test(gates.gate || '');
     if (isQualityGate) {
       if (fix === 0 && args.fixRetries > 1) {
         console.log('Calidad FAIL → regeneración limpia en siguiente intento si persiste…');
@@ -1164,9 +1324,13 @@ async function generateExamPart(args, teil, session) {
         `  [fix-note] Hören T${teil} retry ${fix + 1}/${args.fixRetries}: dual hint (anti-B2+ + anti-copia)`,
       );
     }
-    if (module === 'horen' && HOREN_T4_TEILE.has(Number(teil))) {
+    if (module === 'horen' && isHorenCombinedCalidadLexicoTeil(teil)) {
+      const n = Array.isArray(gates.issues) ? gates.issues.length : 1;
+      const t4Extra = HOREN_T4_TEILE.has(Number(teil))
+        ? `longitud + copia + ancla ${chosenTopic}`
+        : 'anti-B2+ + anti-copia';
       console.log(
-        `  [fix-note] Hören T4 retry ${fix + 1}/${args.fixRetries}: triple hint (longitud + copia + ancla ${chosenTopic})`,
+        `  [fix-note] Hören T${teil} retry ${fix + 1}/${args.fixRetries}: combined (${n} issue(s); ${t4Extra}${gates.gate === 'calidad+lexico' ? ' + léxico' : ''})`,
       );
     }
   }
@@ -1331,11 +1495,17 @@ export async function generateExamPartSingle(opts = {}) {
   }
 }
 
-export async function runExamGenerator(argv = process.argv.slice(2)) {
+export async function runExamGenerator(argv = process.argv.slice(2), seedArgs = null) {
   const args = parseExamArgs(argv);
+  if (seedArgs && typeof seedArgs === 'object') {
+    for (const [k, v] of Object.entries(seedArgs)) {
+      if (v !== undefined) args[k] = v;
+    }
+  }
   args.provider = await resolveLesenProvider(args.provider);
+  // Mismo default que pool-fill / generate-cli (antes 0 = descuido: sin reintentos LLM en CLI directo).
   if (args.fixRetries == null) {
-    args.fixRetries = 0;
+    args.fixRetries = 2;
   }
 
   const teile = teileToRunExam(args);

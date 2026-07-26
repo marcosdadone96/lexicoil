@@ -40,7 +40,10 @@ import {
   detectTopicFromT3Situations,
   filterBlueprintsForTopic,
   isLesenT3TopicCompatible,
+  isBlueprintPreferredForTopic,
+  TOPIC_BLUEPRINT_PREFERENCE,
 } from './lib/lesenT3TopicFilter.mjs';
+import { normalizeB1Topic } from './lib/b1Topics.mjs';
 import { checkT3PoolDedup } from './lib/t3PoolDedupGate.mjs';
 import {
   T3BlueprintExhaustedError,
@@ -226,7 +229,16 @@ export function buildValidatedT3Part({
     .sort((a, b) => {
       const ca = readyStats.byBlueprintSlug[a.slug] || 0;
       const cb = readyStats.byBlueprintSlug[b.slug] || 0;
-      return ca - cb || String(a.slug).localeCompare(String(b.slug));
+      if (ca !== cb) return ca - cb;
+      if (requestedTopic) {
+        const pref = TOPIC_BLUEPRINT_PREFERENCE[normalizeB1Topic(requestedTopic)] || [];
+        const ia = pref.indexOf(a.slug);
+        const ib = pref.indexOf(b.slug);
+        const ra = ia === -1 ? 999 : ia;
+        const rb = ib === -1 ? 999 : ib;
+        if (ra !== rb) return ra - rb;
+      }
+      return String(a.slug).localeCompare(String(b.slug));
     });
 
   if (!pool.length) {
@@ -237,8 +249,9 @@ export function buildValidatedT3Part({
   const slugFailCounts = new Map();
   let lastSlug = null;
 
-  function passesTopicGate(questions) {
+  function passesTopicGate(questions, slug) {
     if (!requestedTopic) return true;
+    if (isBlueprintPreferredForTopic(requestedTopic, slug)) return true;
     const detected = detectTopicFromT3Situations(questions);
     return isLesenT3TopicCompatible(requestedTopic, detected);
   }
@@ -268,7 +281,7 @@ export function buildValidatedT3Part({
     const res = checkLesenBatchQuality(cand, 3, { skipG2Log: true });
     const okFmt = cand.questions.length === 7 && cand.questions[0].options.length === 10;
     const ageOk = validateT3AgeRules(cand.questions).length === 0;
-    const topicOk = passesTopicGate(cand.questions);
+    const topicOk = passesTopicGate(cand.questions, slug);
     const poolDedup = checkT3PoolDedup({ ...cand, _blueprintSlug: slug }, { reload: true });
     if (res.ok && okFmt && ageOk && topicOk && poolDedup.ok) {
       const out = normalizeBatch(cand, { module: 'lesen', teil: 3, lang: 'de', level: 'B1' });
@@ -287,6 +300,14 @@ export function buildValidatedT3Part({
       console.log(
         `  T3 blueprint «${slug}» — tema CHK-26: situaciones≈${detected} ≠ «${requestedTopic}»` +
           ` (fallo ${slugFailCounts.get(slug)}/${SLUG_STRIKE_LIMIT})`,
+      );
+    } else if (!res.ok || !okFmt || !ageOk) {
+      const bits = [];
+      if (!okFmt) bits.push('formato');
+      if (!ageOk) bits.push(`edad:${validateT3AgeRules(cand.questions).join('; ')}`);
+      if (!res.ok) bits.push(`calidad:${(res.issues || []).slice(0, 2).join(' | ')}`);
+      console.log(
+        `  T3 blueprint «${slug}» — fallo ${slugFailCounts.get(slug)}/${SLUG_STRIKE_LIMIT}: ${bits.join(' · ') || 'unknown'}`,
       );
     }
     if (slugFailCounts.get(slug) >= SLUG_STRIKE_LIMIT && activePool.length > 1) {

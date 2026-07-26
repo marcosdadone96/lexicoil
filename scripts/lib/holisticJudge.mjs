@@ -57,17 +57,16 @@ let _llmFn = null;
 async function callJudgeLlm(prompt) {
   if (_llmFn) return _llmFn(prompt);
 
-  const useGemini =
-    !!process.env.SEMANTIC_USE_GEMINI &&
-    !!(process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY);
-
-  if (useGemini) {
-    const { generateContent } = await import('./geminiClient.mjs');
-    return generateContent({ prompt, jsonMode: true, maxRetries: 2, maxTokens: 8192, temperature: 0.1 });
+  const useClaude =
+    String(process.env.SEMANTIC_USE_CLAUDE || '').trim() === '1' &&
+    !!process.env.ANTHROPIC_API_KEY;
+  if (useClaude) {
+    const { generateContent } = await import('./claudeClient.mjs');
+    return generateContent({ prompt, maxRetries: 2, maxTokens: 4096 });
   }
 
-  const { generateContent } = await import('./claudeClient.mjs');
-  return generateContent({ prompt, maxRetries: 2, maxTokens: 4096 });
+  const { generateContent } = await import('./geminiClient.mjs');
+  return generateContent({ prompt, jsonMode: true, maxRetries: 2, maxTokens: 8192, temperature: 0.1 });
 }
 
 export function _setHolisticJudgeLlmFn(fn) {

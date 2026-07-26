@@ -27,6 +27,7 @@ const Auth = (() => {
       plan: 'free',
       pro: false,
       guest: true,
+      isAdmin: false,
     });
   }
 
@@ -116,14 +117,27 @@ const Auth = (() => {
       applyUserFromServer(user);
       return;
     }
-    const plan = user.guest ? 'guest' : (user.pro || user.plan === 'pro') ? 'pro' : user.plan || 'free';
+    const plan = user.guest
+      ? 'guest'
+      : user.plan === 'pro_max'
+        ? 'pro_max'
+        : user.pro || user.plan === 'pro'
+          ? 'pro'
+          : user.plan || 'free';
     const avatar = (user.name || user.email || '?')[0].toUpperCase();
+    const prevAdmin = !!(typeof S !== 'undefined' && S.user && S.user.isAdmin);
+    const isAdmin = user.guest
+      ? false
+      : user.isAdmin === undefined || user.isAdmin === null
+        ? prevAdmin
+        : user.isAdmin === true || user.isAdmin === 'true' || user.isAdmin === 1;
     saveUser({
       name: user.name || 'User',
       email: user.email,
       avatar,
       plan: user.guest ? 'free' : plan,
       memberSince: user.memberSince || null,
+      isAdmin,
     });
     if (typeof S !== 'undefined') S.plan = plan;
     if (typeof applyServerQuota === 'function') {
@@ -275,9 +289,12 @@ const Auth = (() => {
     const serverPrefs = server.preferences;
     if (serverPrefs) {
       const xlat = Array.isArray(serverPrefs.translationLangs) && serverPrefs.translationLangs[0];
-      if (xlat && typeof S !== 'undefined') {
-        S.fcLang = xlat;
-        try { localStorage.setItem('lc_pref_xlat', xlat); } catch (_) {}
+      if (xlat && typeof setVocabUiLang === 'function') {
+        setVocabUiLang(xlat);
+      } else if (xlat && typeof S !== 'undefined') {
+        if (typeof syncUiLangMirrors === 'function') syncUiLangMirrors(xlat);
+        else S.fcLang = xlat;
+        try { localStorage.setItem('lc_pref_xlat', xlat); localStorage.setItem('lc_ui_lang', xlat); } catch (_) {}
       }
       if (serverPrefs.ttsVoices && typeof setTtsVoicePref === 'function') {
         Object.entries(serverPrefs.ttsVoices || {}).forEach(([lang, voice]) => {
@@ -345,7 +362,7 @@ const Auth = (() => {
       activeGoalId: S.activeGoalId || null,
       notebook: S.notebook && typeof S.notebook === 'object' ? S.notebook : { tabs: [] },
       preferences: {
-        translationLangs: [S.fcLang || 'en'],
+        translationLangs: [typeof translationLang === 'function' ? translationLang() : S.fcLang || 'en'],
         ttsVoices: (typeof getTtsVoicePref === 'function' && S.subject)
           ? { [S.subject]: getTtsVoicePref(S.subject) }
           : {},
@@ -559,6 +576,10 @@ const Auth = (() => {
       }),
     });
     if (!res.ok) throw new Error(mapAuthError(data.error));
+    if (data.pendingConfirmation) {
+      return { pendingConfirmation: true, email: data.email || em };
+    }
+    if (!data.user) throw new Error('Registration failed.');
     clearGuest();
     clearLegacyToken();
     applyUser(data.user);
@@ -624,7 +645,13 @@ const Auth = (() => {
     const em = String(email || '').trim().toLowerCase();
     if (!em) throw new Error('Enter your email address.');
     if (!supabaseEnabled) {
-      throw new Error('Email confirmation is not configured on the server.');
+      const { res, data } = await api('auth-resend-confirm', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: em }),
+      });
+      if (!res.ok) throw new Error(mapAuthError(data.error));
+      return { ok: true };
     }
     if (!(await ensureSupabaseReady())) {
       throw new Error('Supabase auth is unavailable. Refresh the page and try again.');
@@ -722,14 +749,15 @@ const Auth = (() => {
     }
 
     if (isGuest()) {
-      applyUser({
-        name: 'Guest',
-        email: 'guest@lexicoil.com',
-        avatar: 'G',
-        plan: 'free',
-        pro: false,
-        guest: true,
-      });
+    applyUser({
+      name: 'Guest',
+      email: 'guest@lexicoil.com',
+      avatar: 'G',
+      plan: 'free',
+      pro: false,
+      guest: true,
+      isAdmin: false,
+    });
       return true;
     }
 
@@ -738,6 +766,52 @@ const Auth = (() => {
     S.user = null;
     localStorage.removeItem('lc_user');
     return false;
+  }
+
+  function clearLocalUserData() {
+    const keys = [
+      'lc_user', 'lc_token', 'lc_fc', 'lc_fc_del', 'lc_hist', 'lc_saved', 'lc_saved_del',
+      'lc_saved_quizzes', 'lc_saved_quizzes_del', 'lc_activity', 'lc_time', 'lc_mastery',
+      'lc_burned', 'lc_goals', 'lc_active_goal', 'lc_notes', 'lc_quota', 'lc_guest', 'lc_demo',
+      'lc_pref_xlat', 'lc_ui_lang', 'lc_active_sessions', 'lc_exam_progress_active',
+    ];
+    keys.forEach((k) => {
+      try {
+        localStorage.removeItem(k);
+      } catch (_) {}
+    });
+    if (typeof S !== 'undefined') {
+      S.user = null;
+      S.plan = 'guest';
+      S.flashcards = [];
+      S.history = [];
+      S.savedExams = [];
+      S.goals = [];
+      S.notebook = { tabs: [] };
+      S.activeSessionsByGoal = {};
+    }
+  }
+
+  async function deleteAccount(confirmPhrase) {
+    if (localMode || isGuest()) throw new Error('Sign in to delete your account.');
+    const { res, data } = await api('account-delete', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ confirmPhrase }),
+    });
+    if (!res.ok) {
+      const err = new Error(
+        data.error === 'confirm_phrase_required'
+          ? 'Type ELIMINAR exactly to confirm.'
+          : data.error === 'admin_account_protected'
+            ? 'Admin accounts cannot be self-deleted.'
+            : data.error || 'delete_failed',
+      );
+      throw err;
+    }
+    clearLocalUserData();
+    await api('auth-logout', { method: 'POST' }).catch(() => {});
+    return data;
   }
 
   async function logout() {
@@ -769,6 +843,9 @@ const Auth = (() => {
     const map = {
       email_taken: 'Email already registered.',
       bad_credentials: 'Invalid email or password.',
+      email_not_confirmed: 'Please confirm your email before signing in.',
+      too_many_registrations: 'Too many accounts created from this network. Try again tomorrow.',
+      too_many_attempts: 'Too many attempts — wait 15 minutes.',
       invalid_fields: 'Fill all fields correctly.',
       auth_not_configured: 'Accounts are not configured on the server yet.',
       supabase_not_configured: 'Supabase is not configured on the server yet.',
@@ -796,7 +873,7 @@ const Auth = (() => {
     if (u[em]) throw new Error('Email already registered.');
     u[em] = { nm: name, pw: password, plan: 'free' };
     localStorage.setItem('lc_users', JSON.stringify(u));
-    applyUser({ name, email: em, plan: 'free', pro: false, freeCombo: readRegisterComboFromForm?.() });
+    applyUser({ name, email: em, plan: 'free', pro: false, isAdmin: false, freeCombo: readRegisterComboFromForm?.() });
     if (typeof LcAnalytics !== 'undefined') LcAnalytics.trackSignUp();
   }
 
@@ -808,7 +885,8 @@ const Auth = (() => {
       name: u[em].nm,
       email: em,
       plan: u[em].plan || 'free',
-      pro: u[em].plan === 'pro',
+      pro: u[em].plan === 'pro' || u[em].plan === 'pro_max',
+      isAdmin: false,
     });
   }
 
@@ -822,6 +900,7 @@ const Auth = (() => {
     forgotPassword,
     bootstrap,
     logout,
+    deleteAccount,
     handleTokenRevoked,
     pushSync,
     continueAsGuest,
@@ -829,6 +908,13 @@ const Auth = (() => {
     isGuest,
     hasSession,
     hasToken: () => hasSession() || Boolean(getToken()),
+    /** UI-only; admin mutations must still be authorized server-side. */
+    isAdmin: () => {
+      if (isGuest()) return false;
+      if (typeof S === 'undefined' || !S.user) return false;
+      const v = S.user.isAdmin;
+      return v === true || v === 'true' || v === 1;
+    },
     authHeaders,
     apiFetch,
     isLocalMode: () => localMode,

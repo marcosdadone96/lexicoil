@@ -28,10 +28,12 @@ import {
   runPoolFillCycle,
   shouldSkipLesenT3Topic,
   preflightLesenT3Topic,
+  shouldSkipLesenT4Topic,
+  preflightLesenT4Topic,
+  lesenForcedTopicPreflightAction,
 } from './lib/poolFillTeilLib.mjs';
+import { isTopicMoldSessionBlockReason } from './lib/topicMoldCircuitBreaker.mjs';
 import { DailyQuotaError } from './lib/geminiClient.mjs';
-
-loadEnvFile();
 
 const MODULE_TEILS = {
   lesen: [1, 2, 3, 4, 5],
@@ -229,12 +231,30 @@ async function main() {
 
     if (args.module === 'lesen' && args.teil === 3 && currentTopic) {
       const stock = preflightLesenT3Topic(currentTopic, sessionLesen);
-      if (!stock.generatable) {
+      const pf = lesenForcedTopicPreflightAction(null, currentTopic, stock, 3);
+      if (pf.action === 'skip') {
         if (!exhaustedTopics.includes(currentTopic)) {
           exhaustedTopics.push(currentTopic);
           console.warn(
             `\n⏭ Lesen T3 · «${currentTopic}» sin stock de blueprint ` +
               `(${stock.compatibleTotal} compatibles, 0 disponibles) — saltando tema`,
+          );
+        }
+        partsSinceRotate = args.rotateEvery;
+        continue;
+      }
+    }
+
+    if (args.module === 'lesen' && args.teil === 4 && currentTopic) {
+      const stock = preflightLesenT4Topic(currentTopic, sessionLesen);
+      const pf = lesenForcedTopicPreflightAction(null, currentTopic, stock, 4);
+      if (pf.action === 'skip') {
+        if (!exhaustedTopics.includes(currentTopic)) {
+          exhaustedTopics.push(currentTopic);
+          console.warn(
+            `\n⏭ Lesen T4 · «${currentTopic}» sin semillas frescas ` +
+              `(${stock.preflightOkCount} preflight-OK, ${stock.freshCount} frescas, ` +
+              `tier=${stock.pickTier}) — saltando tema`,
           );
         }
         partsSinceRotate = args.rotateEvery;
@@ -287,17 +307,17 @@ async function main() {
     });
 
     if (!cycle.ok) {
-      const skipTopic = shouldSkipLesenT3Topic(
-        args.module,
-        args.teil,
-        currentTopic,
-        cycle.reason,
-        sessionLesen,
-      );
+      const moldBlock = isTopicMoldSessionBlockReason({ reason: cycle.reason, gate: cycle.gate });
+      const skipTopic =
+        moldBlock ||
+        shouldSkipLesenT3Topic(args.module, args.teil, currentTopic, cycle.reason, sessionLesen) ||
+        shouldSkipLesenT4Topic(args.module, args.teil, currentTopic, cycle.reason, sessionLesen);
       if (skipTopic && currentTopic && !exhaustedTopics.includes(currentTopic)) {
         exhaustedTopics.push(currentTopic);
+        const label = args.teil === 3 ? 'Lesen T3' : args.teil === 4 ? 'Lesen T4' : args.module;
+        const why = moldBlock ? 'circuit breaker / topic×molde' : cycle.reason || 'unknown';
         console.warn(
-          `\n⏭ Lesen T3 · «${currentTopic}» marcado sin stock (${cycle.reason || 'unknown'}) — rotando tema`,
+          `\n⏭ ${label} · «${currentTopic}» excluido en esta sesión (${why}) — rotando tema`,
         );
         partsSinceRotate = args.rotateEvery;
       }

@@ -1,0 +1,193 @@
+{
+  "lesen": {
+    "T1": {
+      "partsNeeded": 3,
+      "costPerPublishedPartUsd": 0.0154,
+      "estimatedUsd": 0.05,
+      "measuredFromLog": {
+        "cell": "lesen-t1",
+        "calls": 324,
+        "okCalls": 23,
+        "successRate": 7.1,
+        "costPerPublishedPart": 0.0154,
+        "avgCallUsd": 0.0115
+      }
+    },
+    "T2": {
+      "partsNeeded": 4,
+      "costPerPublishedPartUsd": 0.0222,
+      "estimatedUsd": 0.09,
+      "measuredFromLog": {
+        "cell": "lesen-t2",
+        "calls": 698,
+        "okCalls": 68,
+        "successRate": 9.7,
+        "costPerPublishedPart": 0.0222,
+        "avgCallUsd": 0.0098
+      }
+    },
+    "T3": {
+      "partsNeeded": 2,
+      "costPerPublishedPartUsd": 0.0193,
+      "estimatedUsd": 0.04,
+      "measuredFromLog": {
+        "cell": "lesen-t3",
+        "calls": 0,
+        "okCalls": 0,
+        "successRate": 0,
+        "costPerPublishedPart": null,
+        "avgCallUsd": null
+      }
+    },
+    "T4": {
+      "partsNeeded": 17,
+      "costPerPublishedPartUsd": 0.0178,
+      "estimatedUsd": 0.3,
+      "measuredFromLog": {
+        "cell": "lesen-t4",
+        "calls": 281,
+        "okCalls": 42,
+        "successRate": 14.9,
+        "costPerPublishedPart": 0.0178,
+        "avgCallUsd": 0.0128
+      }
+    },
+    "T5": {
+      "partsNeeded": 4,
+      "costPerPublishedPartUsd": 0.0188,
+      "estimatedUsd": 0.08,
+      "measuredFromLog": {
+        "cell": "lesen-t5",
+        "calls": 679,
+        "okCalls": 56,
+        "successRate": 8.2,
+        "costPerPublishedPart": 0.0188,
+        "avgCallUsd": 0.0077
+      }
+    },
+    "subtotalUsd": 0.55,
+    "partsNeeded": 30
+  },
+  "horen": {
+    "T1": {
+      "partsNeeded": 11,
+      "costPerPublishedPartUsd": 0.025,
+      "estimatedUsd": 0.28,
+      "measuredFromLog": {
+        "cell": "horen-t1",
+        "calls": 474,
+        "okCalls": 59,
+        "successRate": 12.4,
+        "costPerPublishedPart": 0.025,
+        "avgCallUsd": 0.013
+      }
+    },
+    "T2": {
+      "partsNeeded": 7,
+      "costPerPublishedPartUsd": 0.0156,
+      "estimatedUsd": 0.11,
+      "measuredFromLog": {
+        "cell": "horen-t2",
+        "calls": 546,
+        "okCalls": 62,
+        "successRate": 11.4,
+        "costPerPublishedPart": 0.0156,
+        "avgCallUsd": 0.0153
+      }
+    },
+    "T3": {
+      "partsNeeded": 10,
+      "costPerPublishedPartUsd": 0.0298,
+      "estimatedUsd": 0.3,
+      "measuredFromLog": {
+        "cell": "horen-t3",
+        "calls": 273,
+        "okCalls": 96,
+        "successRate": 35.2,
+        "costPerPublishedPart": 0.0298,
+        "avgCallUsd": 0.0155
+      }
+    },
+    "T4": {
+      "partsNeeded": 16,
+      "costPerPublishedPartUsd": 0.0279,
+      "estimatedUsd": 0.45,
+      "measuredFromLog": {
+        "cell": "horen-t4",
+        "calls": 449,
+        "okCalls": 34,
+        "successRate": 7.6,
+        "costPerPublishedPart": 0.0279,
+        "avgCallUsd": 0.0162
+      }
+    },
+    "subtotalUsd": 1.13,
+    "partsNeeded": 44
+  },
+  "cells": [
+    {
+      "cell": "lesen-t1",
+      "partsNeeded": 3,
+      "estimatedUsd": 0.05,
+      "unitUsd": 0.0154
+    },
+    {
+      "cell": "lesen-t2",
+      "partsNeeded": 4,
+      "estimatedUsd": 0.09,
+      "unitUsd": 0.0222
+    },
+    {
+      "cell": "lesen-t3",
+      "partsNeeded": 2,
+      "estimatedUsd": 0.04,
+      "unitUsd": 0.0193
+    },
+    {
+      "cell": "lesen-t4",
+      "partsNeeded": 17,
+      "estimatedUsd": 0.3,
+      "unitUsd": 0.0178
+    },
+    {
+      "cell": "lesen-t5",
+      "partsNeeded": 4,
+      "estimatedUsd": 0.08,
+      "unitUsd": 0.0188
+    },
+    {
+      "cell": "horen-t1",
+      "partsNeeded": 11,
+      "estimatedUsd": 0.28,
+      "unitUsd": 0.025
+    },
+    {
+      "cell": "horen-t2",
+      "partsNeeded": 7,
+      "estimatedUsd": 0.11,
+      "unitUsd": 0.0156
+    },
+    {
+      "cell": "horen-t3",
+      "partsNeeded": 10,
+      "estimatedUsd": 0.3,
+      "unitUsd": 0.0298
+    },
+    {
+      "cell": "horen-t4",
+      "partsNeeded": 16,
+      "estimatedUsd": 0.45,
+      "unitUsd": 0.0279
+    }
+  ],
+  "generatedAt": "2026-07-25T10:21:40.946Z",
+  "logEntries": 4008,
+  "defaultCostPerPublishedPartUsd": 0.0193,
+  "totalParts": 126,
+  "totalEstimatedUsd": 1.68,
+  "totalEstimatedUsdRange": {
+    "low": 1.43,
+    "high": 2.1,
+    "note": "±15–25% for harder cells (Hören T4, Lesen T3/T4) rejection spikes"
+  }
+}

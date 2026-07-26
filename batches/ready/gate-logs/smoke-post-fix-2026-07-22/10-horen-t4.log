@@ -1,0 +1,43 @@
+
+Generador horen (de/B1) · gemini · gemini-2.5-flash · T4 × 1
+Palabras objetivo por parte: 5 (--word-count)
+Cuota Gemini: max 45 llamadas · pausa ≥6000ms · fix-retries=0 · api-retries=1
+Salida: batches/generated/ (solo pasa formato + calidad pedagógica)
+Tema: Konsum (rotación)
+Nombres invitados: Sofia / Marie (rotación AUD-5)
+
+── horen T4 · horen-t4-gemini-024.json ──
+Proveedor: gemini · Palabras (5): marke, supermarkt, aufgabe, situation, aktuell
+Modelo: gemini-2.5-flash · max_output_tokens=16384
+Llamada API 1/45 · $0.000 acumulado · gemini-2.5-flash
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+Validando formato…
+Comprobando calidad pedagógica…
+  [LT advisory] skipped (LT down: fetch failed)
+Calidad Hören T4: OK ✅ (estimación ~100%)
+Léxico FAIL (1 errores)
+  ✗ question gen-q-h4-260c121b-6 explanation: vocabulario B2+ en pregunta «Ressourcen» → usa «Mittel / Möglichkeiten» (B1)
+  Triaje CUBO C (léxico B2+) → reparación localizada (1 llamada LLM)…
+horen: reparando 1 hallazgo(s) léxicos (1 llamada LLM, solo campos marcados)…
+Llamada API 2/45 · $0.025 acumulado · gemini-2.5-flash
+  Reparación lexico: sin cambios en batch — re-validando estado actual…
+  Re-validando tras lexico…
+  [LT advisory] skipped (LT down: fetch failed)
+Calidad Hören T4: OK ✅ (estimación ~100%)
+Léxico FAIL (1 errores)
+  ✗ question gen-q-h4-260c121b-6 explanation: vocabulario B2+ en pregunta «Ressourcen» → usa «Mittel / Möglichkeiten» (B1)
+  Reparación lexico parcial → fallos residuales (lexico), continúa con LLM
+
+── batches/generated/B1/horen-t4-gemini-024.json · DESCARTADO · 2 llamadas · $0.026 total ──
+
+══ Resumen generador horen ══
+Proveedor: gemini · Modelo: gemini-2.5-flash
+Intentos totales: 2
+Partes guardadas (formato + calidad OK): 0
+Partes descartadas: 1
+Llamadas API Gemini: 2/45
+Por parte (guardadas / descartadas · intentos):
+  T4: 0 guardadas, 1 descartadas, 1 intentos
+
+Léxico FAIL (1 errores)
+  ✗ question gen-q-h4-260c121b-6 explanation: vocabulario B2+ en pregunta «Ressourcen» → usa «Mittel / Möglichkeiten» (B1)

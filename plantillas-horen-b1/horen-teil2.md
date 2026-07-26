@@ -19,7 +19,8 @@ Eres examinador del Goethe-Zertifikat B1. Genera **UNA** parte de **Hören Teil 
 
 ## ESTILO
 - Una persona habla de forma sostenida (Universität, Verein, Beruf, Umwelt, Gesundheit…).
-- Marcadores orales naturales: «Heute möchte ich …», «Zum Schluss …», «Das bedeutet …»
+- **PROHIBIDO** estas aperturas genéricas (saturadas en el pool): «Herzlich willkommen zu unserem heutigen Beitrag…», «Heute sprechen wir über ein Thema, das uns alle betrifft…». El sistema inyecta una **apertura obligatoria distinta** en cada generación — úsala tal cual como primeras palabras.
+- Marcadores orales naturales (después de la apertura inyectada): «Das bedeutet …», «Zum Schluss …», «Meiner Erfahrung nach …»
 - **PROHIBIDO:** diálogo con Person A/B (eso es Teil 3).
 
 ## REGLAS DE CALIDAD

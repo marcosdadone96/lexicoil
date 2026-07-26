@@ -346,9 +346,11 @@ export async function poolReadyCheck(batch, opts = {}) {
 
   // ——— 4 topic / contentTopicCheck ———
   const mod = String(batch.module || module || '').toLowerCase() || 'lesen';
-  // Hören T1: multi-segment umbrella topicTag — content_topic is audit-only
-  // (same policy as generation Q4). T2–T4 Hören + Lesen stay blocking.
-  const horenT1ContentTopicAuditOnly = mod === 'horen' && teil === 1;
+  // Hören T1 + A2 T3: multi-segment umbrella topicTag — content_topic is audit-only
+  // (same policy as generation Q4 hardBlock=false). T2–T4 otherwise blocking.
+  const batchLevelForTopic = normalizeLevel(opts.level || inferBatchLevel(batch));
+  const horenMultiSegmentContentTopicAuditOnly =
+    mod === 'horen' && (teil === 1 || (teil === 3 && batchLevelForTopic === 'A2'));
   if (mod === 'lesen' || mod === 'horen') {
     const q4 = runMetadataSchemaGate(batch, {
       file,
@@ -362,7 +364,7 @@ export async function poolReadyCheck(batch, opts = {}) {
         const isContentTopicFinding =
           f.rule === 'content_topic_mismatch' ||
           (typeof f.detail === 'string' && /^passage:/i.test(f.detail));
-        if (horenT1ContentTopicAuditOnly && isContentTopicFinding) {
+        if (horenMultiSegmentContentTopicAuditOnly && isContentTopicFinding) {
           // Direct loop below audits once with root topicTag (avoid double details).
           continue;
         }
@@ -376,7 +378,7 @@ export async function poolReadyCheck(batch, opts = {}) {
       const tagged = { ...p, topicTag: batch.topicTag || p.topicTag };
       const ct = checkPassageContentTopic(tagged);
       if (ct.mismatch) {
-        if (horenT1ContentTopicAuditOnly) {
+        if (horenMultiSegmentContentTopicAuditOnly) {
           details.push({
             rule: 'content_topic_mismatch',
             severity: 'audit',

@@ -52,6 +52,7 @@ import {
   expectedOralPartCount,
   oralTeilsForLevel,
   layoutForLevel,
+  hasExplicitAssembleLayout,
 } from './lib/examLevelCells.mjs';
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -178,21 +179,27 @@ function batchToRecord(batch, file, module, teil, level = 'B1') {
     verified: true,
   };
   if (mod === 'horen') {
-    if (passages.length > 1) {
+    const p0 = passages[0];
+    const pictures = p0?.pictures || batch.pictures;
+    const isPictureT2 =
+      lv === 'A2' && t === 2 && Array.isArray(pictures) && pictures.length >= 9;
+    if (passages.length > 1 || isPictureT2) {
       rec.segments = passages.map((p, i) => ({
         passageId: p.id,
         label: p.title || `Aufnahme ${i + 1}`,
         text: p.text || p.transcript || '',
         transcript: p.transcript || p.text || '',
+        ...(Array.isArray(p.pictures) && p.pictures.length ? { pictures: p.pictures } : {}),
         questions: (batch.questions || []).filter((q) => q.passageId === p.id),
       }));
     }
-    rec.passage = passages[0]
+    rec.passage = p0
       ? {
-          title: passages[0].title,
-          text: passages[0].text,
-          transcript: passages[0].transcript || passages[0].text,
-          topicTag: passages[0].topicTag,
+          title: p0.title,
+          text: p0.text,
+          transcript: p0.transcript || p0.text,
+          topicTag: p0.topicTag,
+          ...(Array.isArray(p0.pictures) ? { pictures: p0.pictures } : {}),
         }
       : null;
   }
@@ -384,6 +391,24 @@ async function main() {
   const layout = layoutForLevel(lv);
   const poolIndex = poolVerifiedIndex(args.level);
   if (!poolIndex.size) {
+    if (args.dryRun) {
+      const keys = allAssembleCellKeys(lv);
+      console.log(`\n══ Layout ${lv} (pool vacío — dry-run estructura) ══`);
+      console.log(
+        `  explicit layout: ${hasExplicitAssembleLayout(lv) ? 'yes' : 'no (fallback B1)'}`,
+      );
+      console.log(`  celdas totales: ${keys.length}`);
+      console.log(
+        `  lesen [${layout.lesen.join(', ')}] · horen [${layout.horen.join(', ')}] · ` +
+          `schreiben [${layout.schreibenTeils.join(', ')}] · sprechen [${layout.sprechenTeils.join(', ')}]`,
+      );
+      console.log(`  keys: ${keys.join(', ')}`);
+      for (const key of CELL_KEYS) console.log(`  ${key.padEnd(12)} 0`);
+      console.log('  schreiben sets 0');
+      console.log('  sprechen sets  0');
+      console.log('\n--dry-run: no se escriben archivos.');
+      return;
+    }
     console.error(`FATAL: no hay archivos en pool-verified/${args.level} (ni legacy plano)`);
     process.exit(1);
   }

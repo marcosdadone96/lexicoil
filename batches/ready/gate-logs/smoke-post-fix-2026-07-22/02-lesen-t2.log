@@ -1,0 +1,78 @@
+
+Generador Lesen (de/B1) · gemini · gemini-2.5-flash · Teile: 2 × 1
+Palabras objetivo por parte: 5 (--word-count)
+Umbral cobertura CEFR (cefr_gate): 55% (default 0.55)
+Cuota Gemini: max 45 llamadas · pausa ≥6000ms · fix-retries=1 · api-retries=1
+Salida: batches/generated/
+Tema: Wohnen (rotación)
+
+── Lesen T2 · lesen-t2-gemini-133.json ──
+Proveedor: gemini · Palabras (5): küche, miete, schlafzimmer, vermieter, zimmer
+Modelo: gemini-2.5-flash · max_output_tokens=16384
+Llamada API 1/45 · $0.000 acumulado · gemini-2.5-flash
+Vocabulario: 4 de 5 palabras usadas (tema: Wohnen). Integradas: küche, miete, schlafzimmer, zimmer. No encajaron de forma natural: vermieter.
+Validando formato…
+Comprobando calidad pedagógica…
+Calidad pedagógica FAIL (7 problemas, estimación ~42%)
+  - gen-q-2-8433610e-1: opción correcta copia ≥4 palabras del pasaje («nicht allein zu sein»)
+  - gen-q-2-8433610e-2: opción correcta copia ≥4 palabras del pasaje («die küche das wohnzimmer»)
+  - gen-q-2-8433610e-4: opción correcta copia ≥4 palabras del pasaje («in den letzten jahren»)
+  - gen-q-2-8433610e-6: opción correcta copia ≥4 palabras del pasaje («dass jeder bürger ein»)
+  - gen-q-2-8433610e-3: sesgo de longitud MCQ (B1) — opción correcta «c» es la más larga (49 vs 30/36; Δ +16 chars, +48% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable.
+  - gen-q-2-8433610e-4: sesgo de longitud MCQ (B1) — opción correcta «b» es la más larga (54 vs 47/33; Δ +14 chars, +35% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable.
+  - gen-q-2-8433610e-5: sesgo de longitud MCQ (B1) — opción correcta «a» es la más larga (74 vs 40/51; Δ +29 chars, +63% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable.
+Avisos (1):
+  · Mayúsculas alemanas: noun_lowercase: «kochen» (VVINF) [high] en passages.text — …Beispiel können sie zusammen kochen oder sich bei Einkäufen…
+  Triaje CUBO C (word-matching) → reparación localizada (1 llamada LLM)…
+T2: reparando 4 pregunta(s) word-copy en 1 llamada LLM (pasaje(s) fijo(s))…
+Llamada API 2/45 · $0.015 acumulado · gemini-2.5-flash
+  word-copy aún detectado en gen-q-2-8433610e-2 tras reparación batch
+  word-copy aún detectado en gen-q-2-8433610e-4 tras reparación batch
+  word-copy aún detectado en gen-q-2-8433610e-6 tras reparación batch
+  Re-validando tras word_match…
+Calidad pedagógica FAIL (6 problemas, estimación ~50%)
+  - gen-q-2-8433610e-2: opción correcta copia ≥4 palabras del pasaje («die küche das wohnzimmer»)
+  - gen-q-2-8433610e-4: opción correcta copia ≥4 palabras del pasaje («in den letzten jahren»)
+  - gen-q-2-8433610e-6: opción correcta copia ≥4 palabras del pasaje («dass jeder bürger ein»)
+  - gen-q-2-8433610e-3: sesgo de longitud MCQ (B1) — opción correcta «c» es la más larga (49 vs 30/36; Δ +16 chars, +48% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable.
+  - gen-q-2-8433610e-4: sesgo de longitud MCQ (B1) — opción correcta «b» es la más larga (54 vs 47/33; Δ +14 chars, +35% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable.
+  - gen-q-2-8433610e-5: sesgo de longitud MCQ (B1) — opción correcta «a» es la más larga (74 vs 40/51; Δ +29 chars, +63% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable.
+Avisos (1):
+  · Mayúsculas alemanas: noun_lowercase: «kochen» (VVINF) [high] en passages.text — …Beispiel können sie zusammen kochen oder sich bei Einkäufen…
+
+Reintento 1/1 · gen-q-2-8433610e-2: opción correcta copia ≥4 palabras del pasaje («die küche das wohnzimmer»)…
+Llamada API 3/45 · $0.018 acumulado · gemini-2.5-flash
+Vocabulario: 4 de 5 palabras usadas (tema: Wohnen). Integradas: küche, miete, schlafzimmer, zimmer. No encajaron de forma natural: vermieter.
+Validando formato…
+Calidad pedagógica FAIL (3 problemas, estimación ~74%)
+  - gen-q-2-8433610e-2: opción correcta copia ≥4 palabras del pasaje («das wohnzimmer und manchmal»)
+  - gen-q-2-8433610e-2: sesgo de longitud MCQ (B1) — opción correcta «c» es la más larga (53 vs 40/43; Δ +12 chars, +28% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable.
+  - gen-q-2-8433610e-4: sesgo de longitud MCQ (B1) — opción correcta «a» es la más larga (57 vs 33/47; Δ +17 chars, +43% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable.
+Avisos (1):
+  · Mayúsculas alemanas: noun_lowercase: «kochen» (VVINF) [high] en passages.text — …Beispiel können sie zusammen kochen oder sich bei Einkäufen…
+  Triaje CUBO C (word-matching) → reparación localizada (1 llamada LLM)…
+T2: reparando 1 pregunta(s) word-copy en 1 llamada LLM (pasaje(s) fijo(s))…
+Llamada API 4/45 · $0.036 acumulado · gemini-2.5-flash
+  Re-validando tras word_match…
+Calidad pedagógica FAIL (2 problemas, estimación ~82%)
+  - gen-q-2-8433610e-2: sesgo de longitud MCQ (B1) — opción correcta «c» es la más larga (59 vs 40/45; Δ +17 chars, +39% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable.
+  - gen-q-2-8433610e-4: sesgo de longitud MCQ (B1) — opción correcta «a» es la más larga (57 vs 33/47; Δ +17 chars, +43% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable.
+Avisos (1):
+  · Mayúsculas alemanas: noun_lowercase: «kochen» (VVINF) [high] en passages.text — …Beispiel können sie zusammen kochen oder sich bei Einkäufen…
+
+── batches/generated/B1/lesen-t2-gemini-133.json · DESCARTADO · 4 llamadas · $0.037 total ──
+
+══ Resumen generador Lesen ══
+Proveedor: gemini · Modelo: gemini-2.5-flash
+Intentos totales: 4
+Partes guardadas (formato + calidad OK): 0
+Partes descartadas: 1
+Llamadas API Gemini: 4/45
+Por Teil (guardadas / descartadas · intentos):
+  T2: 0 guardadas, 1 descartadas, 2 intentos
+
+Calidad pedagógica FAIL (2 problemas, estimación ~82%)
+  - gen-q-2-8433610e-2: sesgo de longitud MCQ (B1) — opción correcta «c» es la más larga (59 vs 40/45; Δ +17 chars, +39% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable.
+  - gen-q-2-8433610e-4: sesgo de longitud MCQ (B1) — opción correcta «a» es la más larga (57 vs 33/47; Δ +17 chars, +43% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable.
+Avisos (1):
+  · Mayúsculas alemanas: noun_lowercase: «kochen» (VVINF) [high] en passages.text — …Beispiel können sie zusammen kochen oder sich bei Einkäufen…

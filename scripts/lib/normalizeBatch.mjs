@@ -603,14 +603,31 @@ export function normalizeBatch(batch, ctx) {
   };
 }
 
-/** Tras generación LLM: fuerza module/teil/lang/type del slot objetivo. */
-const TEIL_QUESTION_TYPE = {
+/** Tras generación LLM: fuerza module/teil/lang/type del slot objetivo (B1). */
+const TEIL_QUESTION_TYPE_B1 = {
   1: 'richtig_falsch',
   2: 'multiple_choice',
   3: 'matching',
   4: 'ja_nein',
   5: 'multiple_choice',
 };
+
+/** Goethe A2 Lesen — alineado a library/blueprints/goethe_A2.json (sin T5). */
+const TEIL_QUESTION_TYPE_A2 = {
+  1: 'multiple_choice',
+  2: 'multiple_choice',
+  3: 'multiple_choice',
+  4: 'matching',
+};
+
+/** @returns {string|null} canonical question type for post-gen coerce */
+export function lesenSlotQuestionType(teil, level = 'B1') {
+  const t = Number(teil);
+  if (!Number.isFinite(t)) return null;
+  const lv = String(level || 'B1').trim().toUpperCase();
+  const map = lv === 'A2' ? TEIL_QUESTION_TYPE_A2 : TEIL_QUESTION_TYPE_B1;
+  return map[t] ?? null;
+}
 
 function normalizeRichtigFalschAnswer(q) {
   const raw = String(q.correctAnswer ?? q.correct ?? '').trim().toLowerCase();
@@ -647,7 +664,7 @@ export function coerceGeneratedLesenPart(batch, ctx = {}) {
     stripPoolLegacy: ctx.stripPoolLegacy !== false,
   });
   const teilNum = Number.isFinite(teil) ? teil : null;
-  const slotType = teilNum != null ? TEIL_QUESTION_TYPE[teilNum] : null;
+  const slotType = teilNum != null ? lesenSlotQuestionType(teilNum, level) : null;
   const passageIds = (normalized.passages || []).map((p) => p.id).filter(Boolean);
   const solePassageId = passageIds.length === 1 ? passageIds[0] : null;
 

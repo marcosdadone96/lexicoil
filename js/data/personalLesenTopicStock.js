@@ -20,13 +20,13 @@ const PersonalLesenTopicStock = (() => {
         {
             "topic": "Reisen",
             "counts": {
-                "1": 2,
+                "1": 4,
                 "2": 1,
-                "3": 1,
-                "4": 3,
-                "5": 2
+                "3": 5,
+                "4": 4,
+                "5": 3
             },
-            "total": 9,
+            "total": 17,
             "filled": 5,
             "missing": [],
             "full": true,
@@ -35,45 +35,43 @@ const PersonalLesenTopicStock = (() => {
         {
             "topic": "Gesundheit",
             "counts": {
-                "1": 1,
-                "2": 2,
-                "3": 0,
+                "1": 3,
+                "2": 3,
+                "3": 5,
                 "4": 1,
                 "5": 4
             },
-            "total": 8,
-            "filled": 4,
-            "missing": [
-                3
-            ],
-            "full": false,
-            "status": "partial"
+            "total": 16,
+            "filled": 5,
+            "missing": [],
+            "full": true,
+            "status": "full"
         },
         {
             "topic": "Arbeit",
             "counts": {
-                "1": 2,
-                "2": 1,
-                "3": 2,
-                "4": 1,
+                "1": 3,
+                "2": 4,
+                "3": 4,
+                "4": 3,
                 "5": 2
             },
-            "total": 8,
+            "total": 16,
             "filled": 5,
             "missing": [],
             "full": true,
-            "status": "partial"
+            "status": "full"
         },
         {
             "topic": "Technik",
             "counts": {
-                "1": 2,
-                "2": 2,
-                "3": 11,
+                "1": 3,
+                "2": 3,
+                "3": 12,
                 "4": 1,
-                "5": 2
+                "5": 6
             },
-            "total": 18,
+            "total": 25,
             "filled": 5,
             "missing": [],
             "full": true,
@@ -82,30 +80,28 @@ const PersonalLesenTopicStock = (() => {
         {
             "topic": "Medien",
             "counts": {
-                "1": 2,
-                "2": 2,
-                "3": 0,
+                "1": 4,
+                "2": 3,
+                "3": 5,
                 "4": 1,
                 "5": 4
             },
-            "total": 9,
-            "filled": 4,
-            "missing": [
-                3
-            ],
-            "full": false,
-            "status": "partial"
+            "total": 17,
+            "filled": 5,
+            "missing": [],
+            "full": true,
+            "status": "full"
         },
         {
             "topic": "Wohnen",
             "counts": {
                 "1": 3,
                 "2": 3,
-                "3": 11,
+                "3": 7,
                 "4": 2,
-                "5": 2
+                "5": 3
             },
-            "total": 21,
+            "total": 18,
             "filled": 5,
             "missing": [],
             "full": true,
@@ -115,12 +111,12 @@ const PersonalLesenTopicStock = (() => {
             "topic": "Konsum",
             "counts": {
                 "1": 2,
-                "2": 1,
+                "2": 6,
                 "3": 2,
-                "4": 2,
+                "4": 3,
                 "5": 3
             },
-            "total": 10,
+            "total": 16,
             "filled": 5,
             "missing": [],
             "full": true,
@@ -129,17 +125,15 @@ const PersonalLesenTopicStock = (() => {
         {
             "topic": "Bildung",
             "counts": {
-                "1": 0,
+                "1": 2,
                 "2": 3,
-                "3": 0,
+                "3": 3,
                 "4": 0,
-                "5": 2
+                "5": 3
             },
-            "total": 5,
-            "filled": 2,
+            "total": 11,
+            "filled": 4,
             "missing": [
-                1,
-                3,
                 4
             ],
             "full": false,
@@ -148,30 +142,28 @@ const PersonalLesenTopicStock = (() => {
         {
             "topic": "Familie",
             "counts": {
-                "1": 3,
+                "1": 6,
                 "2": 3,
-                "3": 0,
-                "4": 2,
+                "3": 3,
+                "4": 6,
                 "5": 3
             },
-            "total": 11,
-            "filled": 4,
-            "missing": [
-                3
-            ],
-            "full": false,
-            "status": "partial"
+            "total": 21,
+            "filled": 5,
+            "missing": [],
+            "full": true,
+            "status": "full"
         },
         {
             "topic": "Umwelt",
             "counts": {
-                "1": 2,
+                "1": 3,
                 "2": 2,
-                "3": 1,
-                "4": 4,
+                "3": 3,
+                "4": 8,
                 "5": 13
             },
-            "total": 22,
+            "total": 29,
             "filled": 5,
             "missing": [],
             "full": true,
@@ -180,42 +172,10 @@ const PersonalLesenTopicStock = (() => {
         {
             "topic": "Ernährung",
             "counts": {
-                "1": 4,
-                "2": 2,
-                "3": 1,
-                "4": 1,
-                "5": 3
-            },
-            "total": 11,
-            "filled": 5,
-            "missing": [],
-            "full": true,
-            "status": "full"
-        },
-        {
-            "topic": "Kultur",
-            "counts": {
-                "1": 2,
-                "2": 0,
-                "3": 1,
-                "4": 1,
-                "5": 3
-            },
-            "total": 7,
-            "filled": 4,
-            "missing": [
-                2
-            ],
-            "full": false,
-            "status": "partial"
-        },
-        {
-            "topic": "Sport",
-            "counts": {
-                "1": 4,
+                "1": 5,
                 "2": 3,
-                "3": 2,
-                "4": 3,
+                "3": 3,
+                "4": 1,
                 "5": 3
             },
             "total": 15,
@@ -225,15 +185,45 @@ const PersonalLesenTopicStock = (() => {
             "status": "full"
         },
         {
+            "topic": "Kultur",
+            "counts": {
+                "1": 3,
+                "2": 2,
+                "3": 3,
+                "4": 2,
+                "5": 3
+            },
+            "total": 13,
+            "filled": 5,
+            "missing": [],
+            "full": true,
+            "status": "full"
+        },
+        {
+            "topic": "Sport",
+            "counts": {
+                "1": 4,
+                "2": 3,
+                "3": 7,
+                "4": 6,
+                "5": 4
+            },
+            "total": 24,
+            "filled": 5,
+            "missing": [],
+            "full": true,
+            "status": "full"
+        },
+        {
             "topic": "Freizeit",
             "counts": {
-                "1": 14,
-                "2": 2,
-                "3": 4,
+                "1": 15,
+                "2": 4,
+                "3": 7,
                 "4": 3,
                 "5": 2
             },
-            "total": 25,
+            "total": 31,
             "filled": 5,
             "missing": [],
             "full": true,
@@ -242,13 +232,13 @@ const PersonalLesenTopicStock = (() => {
         {
             "topic": "Verkehr",
             "counts": {
-                "1": 3,
-                "2": 1,
-                "3": 2,
-                "4": 2,
+                "1": 4,
+                "2": 4,
+                "3": 4,
+                "4": 3,
                 "5": 2
             },
-            "total": 10,
+            "total": 17,
             "filled": 5,
             "missing": [],
             "full": true,
@@ -257,19 +247,17 @@ const PersonalLesenTopicStock = (() => {
         {
             "topic": "Stadtleben",
             "counts": {
-                "1": 11,
-                "2": 2,
-                "3": 0,
-                "4": 2,
+                "1": 12,
+                "2": 5,
+                "3": 5,
+                "4": 4,
                 "5": 3
             },
-            "total": 18,
-            "filled": 4,
-            "missing": [
-                3
-            ],
-            "full": false,
-            "status": "partial"
+            "total": 29,
+            "filled": 5,
+            "missing": [],
+            "full": true,
+            "status": "full"
         }
     ]
 };

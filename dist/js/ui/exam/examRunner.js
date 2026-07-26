@@ -65,6 +65,23 @@ function bindExamAutosaveLifecycle() {
   window.addEventListener('pagehide', flushExamAutosave);
 }
 
+async function registerOfficialExamTimer(limitMin) {
+  if (typeof startOfficialExamTimer !== 'function') return;
+  if (typeof Auth !== 'undefined' && typeof Auth.hasSession === 'function' && !Auth.hasSession()) return;
+  const examSavedId = S.examData?._savedId || S.examData?._flightId;
+  if (!examSavedId) return;
+  try {
+    const data = await startOfficialExamTimer({
+      examSavedId,
+      limitMinutes: limitMin,
+      goalId: S.activeGoalId || S.examData?.goalId || null,
+    });
+    if (data?.timerSessionId) S.officialTimerSession = data;
+  } catch (_) {
+    /* server timer is advisory — exam continues */
+  }
+}
+
 // ═══════════════════════════════════════════
 // TIMER
 // ═══════════════════════════════════════════
@@ -139,12 +156,20 @@ function passageToolbarHtml(blockId, isPrac, ui) {
   const label = ui?.translatePassage || 'Translate passage';
   return `<div class="passage-translate-row" style="margin:10px 0 0"><button type="button" class="btn-sm" id="passBtn_${blockId}" onclick="translatePassage('${blockId}')">${esc(label)}</button></div><div class="passage-translation" id="passTrans_${blockId}" style="display:none;margin-top:10px;padding:12px;background:var(--surface2,rgba(127,127,127,.08));border-radius:8px;font-size:14px;line-height:1.65"></div>`;
 }
+function adminPassageReviewHtml(part, passageObj) {
+  if (typeof AdminContentReview === 'undefined' || !AdminContentReview.passageBtnHtml) return '';
+  return AdminContentReview.passageBtnHtml(part, passageObj);
+}
+function adminQuestionReviewHtml(q, part) {
+  if (typeof AdminContentReview === 'undefined' || !AdminContentReview.questionBtnHtml) return '';
+  return AdminContentReview.questionBtnHtml(q, part);
+}
 async function translatePassage(blockId) {
   const meta = S._passageMeta?.[blockId];
   const panel = document.getElementById('passTrans_' + blockId);
   const btn = document.getElementById('passBtn_' + blockId);
   if (!meta || !panel) return;
-  const lang = S.vocabLang;
+  const lang = typeof translationLang === 'function' ? translationLang() : S.vocabLang;
   const from = S.subject;
   const ui = typeof examUiStrings === 'function' ? examUiStrings(resolveExamLang(S.examData, S.subject)) : { translatingPassage: 'Translating…', translateFail: 'Could not translate this passage.' };
   const showTranslation = (text) => {
@@ -153,22 +178,53 @@ async function translatePassage(blockId) {
     panel.style.display = 'block';
   };
   if (meta.translations?.[lang]) {
-    showTranslation(meta.translations[lang]);
-    return;
+    const cached = meta.translations[lang];
+    if (
+      typeof PassageTranslate === 'undefined' ||
+      !PassageTranslate.isPassageText(meta.text) ||
+      PassageTranslate.isCompletePassageTranslation(meta.text, cached)
+    ) {
+      showTranslation(cached);
+      return;
+    }
   }
   panel.style.display = 'block';
   panel.textContent = ui.translatingPassage;
   if (btn) btn.disabled = true;
   try {
     let translation = null;
-    if (typeof fetchVocabCache === 'function') {
+    const isPassage = typeof PassageTranslate !== 'undefined' && PassageTranslate.isPassageText(meta.text);
+    if (!isPassage && typeof fetchVocabCache === 'function') {
       const hit = await fetchVocabCache(from, lang, meta.text);
       if (hit?.translation) translation = hit.translation;
+    } else if (isPassage && typeof fetchVocabCache === 'function') {
+      const hit = await fetchVocabCache(from, lang, meta.text);
+      if (
+        hit?.translation &&
+        PassageTranslate.isCompletePassageTranslation(meta.text, hit.translation)
+      ) {
+        translation = hit.translation;
+      }
     }
     if (!translation && typeof callAI === 'function') {
-      const prompt = `Translate the following ${from} exam passage to ${lang}. Return ONLY the translation, preserving paragraph and speaker line breaks. No notes.\n\n${meta.text}`;
-      translation = await callAI(prompt, 2500, { consumeQuota: true, aiAction: 'translation', timeoutMs: 45000 });
-      if (translation && typeof putVocabCache === 'function') {
+      const maxTok =
+        typeof PassageTranslate !== 'undefined'
+          ? PassageTranslate.passageOutputMaxTokens(meta.text.length)
+          : 2500;
+      const prompt =
+        typeof PassageTranslate !== 'undefined'
+          ? PassageTranslate.buildPassagePrompt(meta.text, from, lang)
+          : `Translate the following ${from} exam passage to ${lang}. Return ONLY the translation, preserving paragraph and speaker line breaks. No notes.\n\n${meta.text}`;
+      translation = await callAI(prompt, maxTok, {
+        consumeQuota: true,
+        aiAction: 'translation',
+        timeoutMs: 60000,
+      });
+      if (
+        translation &&
+        typeof putVocabCache === 'function' &&
+        (!isPassage || PassageTranslate.isCompletePassageTranslation(meta.text, translation))
+      ) {
         await putVocabCache(from, lang, meta.text, translation, 'ai');
       }
     }
@@ -268,7 +324,7 @@ function lesenItemToAnswerQ(item,part,ui,idx){
   let question=item.question||item.statement||'';
   if(type==='yn'&&isLesenForumOpinionsPart(part)&&item.signText&&!question)question='';
   else if(type==='yn'&&!question)question=ui?.lang==='de'?'Stimmt die Person dem Thema zu?':'Does the person agree?';
-  const q={id:item.id,type,question,options:item.options,correct,explanation:item.explanation,grammarTags:item.grammarTags};
+  const q={id:item.id,type,question,options:item.options,correct,explanation:item.explanation,grammarTags:item.grammarTags,vocabularyTags:item.vocabularyTags,difficulty:item.difficulty,passageId:item.passageId,_contentProvenance:item._contentProvenance};
   if(type==='matching'&&part?.ads?.length>=2&&(!q.options||!q.options.length)){
     q.options=part.ads.map((a,i)=>({key:String(a.key||String.fromCharCode(65+i)).toUpperCase(),text:a.title||a.text||''}));
     if(!q.options.some(o=>String(o.key)==='0'))q.options.push({key:'0',text:'0'});
@@ -323,7 +379,47 @@ function renderLesenAdsBlock(part,pi,isPrac,ui){
     return `<div class="pt-ad-item"><span class="pt-ad-key">${k})</span><span class="pt-ad-body">${body}</span></div>`;
   }).join('')}</div>`;
 }
+function renderHybridPendingLesenSection(part,ui){
+  const msg=ui.lang==='de'?'Wird personalisiert…':'Personalizing…';
+  return `<section class="module-wrap hybrid-pending-section" data-teil="${esc(String(part.teil||''))}"><div class="module-tag tag-lesen">${ui.reading} — ${ui.teil} ${part.teil||''}</div><div class="hybrid-pending-body" style="padding:36px 16px;text-align:center;color:var(--text-muted)"><div class="hybrid-pending-pulse" style="font-size:22px;line-height:1;margin-bottom:10px;opacity:.55">⋯</div><p style="font-size:13px;font-style:italic;margin:0">${esc(msg)}</p></div></section><hr class="section-div">`;
+}
+function isHorenPictureMatchingPart(part){
+  if(typeof HorenPictureMatching!=='undefined'&&HorenPictureMatching.isPictureMatchingPart)return HorenPictureMatching.isPictureMatchingPart(part);
+  const slot=String(part?.blueprintSlot||part?.slotType||'').toLowerCase();
+  return slot.includes('picture_matching')||slot.includes('picture_schedule');
+}
+function horenSegmentPictures(seg,part){
+  return seg?.pictures||part?.pictures||(part?.segments||[]).find(s=>s.pictures?.length)?.pictures||[];
+}
+function renderHorenPictureBank(pictures,pi,isPrac,ui){
+  const pics=typeof HorenPictureMatching!=='undefined'?HorenPictureMatching.normalizePicturesBank(pictures):pictures;
+  const hdr=ui.lang==='de'?'Aktivitäten a bis i':'Activities a to i';
+  let h=`<aside class="horen-picture-bank" aria-label="${esc(hdr)}"><div class="horen-picture-header">${esc(hdr)}</div><div class="horen-picture-grid">`;
+  pics.forEach(p=>{
+    const key=String(p.key||'').toLowerCase();
+    h+=`<div class="horen-picture-item"><span class="pt-letter-pill horen-picture-key">${esc(key)}</span>`;
+    if(p.icon)h+=`<span class="horen-picture-icon">${esc(p.icon)}</span>`;
+    if(p.label)h+=`<span class="horen-picture-label">${wrapW(p.label,'horen_'+pi+'_pic_'+key,isPrac)}</span>`;
+    h+=`</div>`;
+  });
+  return h+`</div></aside>`;
+}
+function renderHorenPictureMatchQuestion(q,num,mod,part,ui,isPrac,pictureKeys){
+  const ak=`${mod}_${q.id}`;
+  const saved=S.answers?.[ak]||'';
+  const keys=pictureKeys||((typeof HorenPictureMatching!=='undefined')?HorenPictureMatching.PICTURE_KEYS_A2:['a','b','c','d','e','f','g','h','i']);
+  let h=`<div class="pt-match-question horen-picture-match" data-ak="${esc(ak)}">`;
+  h+=`<div class="pt-match-situation"><span class="pt-match-num">${esc(num)}.</span> ${esc(q.question)}</div>`;
+  h+=`<div class="pt-match-pills">`;
+  keys.forEach(letter=>{
+    const sel=saved===letter;
+    h+=`<button type="button" class="pt-letter-pill${sel?' selected':''}" onclick='ptSetMatch(${jsLit(ak)},${jsLit(letter)},this)'>${letter}</button>`;
+  });
+  h+=`</div>${adminQuestionReviewHtml(q,part)}</div>`;
+  return h;
+}
 function renderGoetheLesenPart(part,pi,isPrac,ui){
+  if(part._hybridPending)return renderHybridPendingLesenSection(part,ui);
   const hasContent=part.items?.length||part.text||part.ads?.length||part.questions?.length||part.opinions?.length||part.textWithGaps?.length||part.persons?.length;
   if(!hasContent){
     lcDebug.warn('[render] lesenPart',pi,'has no renderable content:',part);
@@ -331,7 +427,9 @@ function renderGoetheLesenPart(part,pi,isPrac,ui){
   }
   const modLabel=ui.reading;
   const teilLabel=ui.teil;
-  let h=`<section class="module-wrap"><div class="module-tag tag-lesen">${modLabel} — ${teilLabel} ${part.teil}${part.arbeitszeit?' · '+part.arbeitszeit:''}</div><div class="off-instr">${esc(part.instruction)}</div>`;
+  const altNote=part._topicRelaxed&&typeof PersonalLesenTopicStock!=='undefined'&&PersonalLesenTopicStock.formatRelaxedTeilNote
+    ?`<div class="personal-teil-alt-note">${esc(PersonalLesenTopicStock.formatRelaxedTeilNote(part,ui.lang))}</div>`:'';
+  let h=`<section class="module-wrap"><div class="module-tag tag-lesen">${modLabel} — ${teilLabel} ${part.teil}${part.arbeitszeit?' · '+part.arbeitszeit:''}</div>${altNote}<div class="off-instr">${esc(part.instruction)}</div>`;
   const mod='lesen_'+pi;
   const adsMatching=isLesenAdsMatchingRender(part);
   if(adsMatching){
@@ -360,7 +458,7 @@ function renderGoetheLesenPart(part,pi,isPrac,ui){
         const sel=saved===letter;
         h+=`<button type="button" class="pt-letter-pill${sel?' selected':''}" onclick='ptSetMatch(${jsLit(ak)},${jsLit(letter)},this)'>${letter}</button>`;
       });
-      h+=`</div></div>`;
+      h+=`</div>${adminQuestionReviewHtml(item,part)}</div>`;
     });
     h+=`</div><aside class="pt-t3-ads" aria-label="${esc(ui.lang==='de'?'Anzeigen':'Advertisements')}">`;
     h+=renderLesenAdsBlock(part,pi,isPrac,ui);
@@ -372,11 +470,17 @@ function renderGoetheLesenPart(part,pi,isPrac,ui){
     const forumItems=part.items?.length
       ?part.items
       :(part.questions||[]).filter(q=>q&&(q.signText||q.text)).map((q,i)=>({
-        id:String(20+i),
+        id:q.id!=null?q.id:String(20+i),
         signText:q.signText||q.text||'',
         question:q.question||'',
         type:'ja_nein',
         correct:q.correct??q.correctAnswer,
+        explanation:q.explanation,
+        vocabularyTags:q.vocabularyTags,
+        grammarTags:q.grammarTags,
+        difficulty:q.difficulty,
+        passageId:q.passageId,
+        _contentProvenance:q._contentProvenance,
       }));
     forumItems.forEach((item,idx)=>{
       const num=lesenForumDisplayNum(item,idx,part);
@@ -386,7 +490,7 @@ function renderGoetheLesenPart(part,pi,isPrac,ui){
       if(lesenItemIsAnswerable(item,part)){
         const q=lesenItemToAnswerQ(item,part,ui,idx);
         if(q.type==='yn'&&(item.signText||item.text)&&lesenForumYnShouldHideQuestion(q.question))q.question='';
-        h+=renderQ(q,num,mod,ui.trueL,ui.falseL,ui.trueK,true);
+        h+=renderQ(q,num,mod,ui.trueL,ui.falseL,ui.trueK,true,part);
       }
     });
     return h+'</section><hr class="section-div">';
@@ -419,15 +523,15 @@ function renderGoetheLesenPart(part,pi,isPrac,ui){
       const pid=pp.passageId||pp.id||String.fromCharCode(65+pi2);
       const blockId='lesen_'+pi+'_'+pid;
       stashPassageMeta(blockId,txt,pp.translations);
-      h+=`<div class="text-display"><h3>${esc(pp.textTitle||pp.title||('Text '+pid))}</h3><div class="readable-text">${wrapW(txt,blockId,isPrac)}</div>${passageToolbarHtml(blockId,isPrac,ui)}</div>`;
+      h+=`<div class="text-display"><h3>${esc(pp.textTitle||pp.title||('Text '+pid))}</h3><div class="readable-text">${wrapW(txt,blockId,isPrac)}</div>${passageToolbarHtml(blockId,isPrac,ui)}${adminPassageReviewHtml(part,pp)}</div>`;
     });
   }else if(part.text){
     const blockId='lesen_'+pi;
     stashPassageMeta(blockId,part.text,part.translations);
-    h+=`<div class="text-display"><h3>${esc(part.textTitle||'')}</h3><div class="readable-text">${wrapW(part.text,'lesen_'+pi,isPrac)}</div>${passageToolbarHtml(blockId,isPrac,ui)}</div>`;
+    h+=`<div class="text-display"><h3>${esc(part.textTitle||'')}</h3><div class="readable-text">${wrapW(part.text,'lesen_'+pi,isPrac)}</div>${passageToolbarHtml(blockId,isPrac,ui)}${adminPassageReviewHtml(part,part)}</div>`;
   }
   if(part.textWithGaps?.length){
-    h+=`<div class="text-display"><h3>${esc(part.textTitle||'')}</h3>${part.textWithGaps.map((para,gi)=>`<div class="readable-text" style="margin-bottom:12px">${wrapW(para,'lesen_'+pi+'_gap_'+gi,isPrac)}</div>`).join('')}</div>`;
+    h+=`<div class="text-display"><h3>${esc(part.textTitle||'')}</h3>${part.textWithGaps.map((para,gi)=>`<div class="readable-text" style="margin-bottom:12px">${wrapW(para,'lesen_'+pi+'_gap_'+gi,isPrac)}</div>`).join('')}${adminPassageReviewHtml(part,part)}</div>`;
     if(part.options?.length){
       h+=`<div class="off-ads">${part.options.map(o=>`<div class="off-ad"><b>${esc(o.key)})</b> ${wrapW(o.text,'lesen_'+pi+'_opt_'+o.key,isPrac)}</div>`).join('')}</div>`;
     }
@@ -442,7 +546,7 @@ function renderGoetheLesenPart(part,pi,isPrac,ui){
   if(part.opinions){
     h+=`<div class="off-opinions">${part.opinions.map((o,i)=>`<div class="off-ad"><b>${esc(o.name)}:</b> ${wrapW(o.text,'lesen_'+pi+'_op_'+i,isPrac)}</div>`).join('')}</div>`;
   }
-  if(part.questions)h+=part.questions.map((q,i)=>q.type==='gap_fill'?renderGapFillQ(q,scorableDisplayNum(q,i,part),mod,part,ui.lang==='de'):renderQ(q,scorableDisplayNum(q,i,part),mod,ui.trueL,ui.falseL,ui.trueK,true)).join('');
+  if(part.questions)h+=part.questions.map((q,i)=>q.type==='gap_fill'?renderGapFillQ(q,scorableDisplayNum(q,i,part),mod,part,ui.lang==='de'):renderQ(q,scorableDisplayNum(q,i,part),mod,ui.trueL,ui.falseL,ui.trueK,true,part)).join('');
   return h+'</section><hr class="section-div">';
 }
 function renderGoetheHorenPart(part,pi,isPrac,ui){
@@ -466,11 +570,14 @@ function renderGoetheHorenPart(part,pi,isPrac,ui){
   const noPlays=rem<=0;
     return `<div class="listen-box" id="listenBox_${id}"><div class="listen-info" id="listenInfo_${id}">${esc(label)}. ${playTxt}</div><div class="wave" id="listenWave_${id}">${'<div class="wb paused"></div>'.repeat(9)}</div><button class="btn-sm blue" id="listenBtn_${id}" onclick="playHorenPart('${id}')" style="margin:0 auto"${noPlays?' disabled':''}>${noPlays?ui.noPlays:btnTxt}</button>${!isPrac?`<div style="font-size:11px;color:var(--text-muted);margin-top:10px;font-style:italic">${ui.audioOnly}</div>`:''}</div>`;
   };
-  const renderTranscript=(text,sec,translations,blockId)=>{
+  const renderTranscript=(text,sec,translations,blockId,passageObj)=>{
     if(!text)return'';
     stashPassageMeta(blockId,text,translations);
     const summary=ui.showTranscript||(ui.lang==='de'?'Transkript anzeigen':'Show transcript');
-    return `<details class="horen-transcript-details"><summary>${esc(summary)}<span class="tr-arrow">▼</span></summary><div class="transcript-body">${wrapW(text,sec,isPrac)}${passageToolbarHtml(blockId,isPrac,ui)}</div></details>`;
+    const reviewTarget=passageObj&&typeof passageObj==='object'
+      ?passageObj
+      :{text,title:part.textTitle||part.title||'',topicTag:part.topicTag,passageId:part.passageId,id:part.passageId};
+    return `<details class="horen-transcript-details"><summary>${esc(summary)}<span class="tr-arrow">▼</span></summary><div class="transcript-body">${wrapW(text,sec,isPrac)}${passageToolbarHtml(blockId,isPrac,ui)}${adminPassageReviewHtml(part,reviewTarget)}</div></details>`;
   };
   if(part.segments){
     part.segments.forEach((seg,si)=>{
@@ -480,12 +587,22 @@ function renderGoetheHorenPart(part,pi,isPrac,ui){
         const spLbl=ui.lang==='de'?'Sprecher':'Speakers';
         h+=`<p class="module-desc" style="font-size:12px;margin:8px 0 12px"><b>${spLbl}:</b> ${esc(seg.speakerLegend.join(' · '))}</p>`;
       }
-      h+=renderTranscript(seg.transcript,'horen_'+pi+'_'+si,seg.translations,'horen_'+pi+'_'+si);
-      segToQ(seg).forEach((q,i)=>{h+=renderQ(q,scorableDisplayNum(q,i,part),mod+'_'+si,ui.trueL,ui.falseL,ui.trueK,true);});
+      h+=renderTranscript(seg.transcript,'horen_'+pi+'_'+si,seg.translations,'horen_'+pi+'_'+si,seg);
+      const picMatch=isHorenPictureMatchingPart(part)||horenSegmentPictures(seg,part).length>=9;
+      if(picMatch){
+        const pics=horenSegmentPictures(seg,part);
+        h+=`<div class="horen-picture-layout">${renderHorenPictureBank(pics,pi+'_'+si,isPrac,ui)}<div class="horen-picture-questions">`;
+        segToQ(seg).forEach((q,i)=>{
+          h+=renderHorenPictureMatchQuestion(q,scorableDisplayNum(q,i,part),mod+'_'+si,part,ui,isPrac);
+        });
+        h+=`</div></div>`;
+      }else{
+        segToQ(seg).forEach((q,i)=>{h+=renderQ(q,scorableDisplayNum(q,i,part),mod+'_'+si,ui.trueL,ui.falseL,ui.trueK,true,part);});
+      }
     });
   }else if(part.noteFields){
     h+=renderListen(String(pi),part.context||ui.recording);
-    h+=renderTranscript(part.transcript,'horen_'+pi,part.translations,'horen_'+pi);
+    h+=renderTranscript(part.transcript,'horen_'+pi,part.translations,'horen_'+pi,part);
     h+=`<div class="off-notes" style="margin:14px 0"><h3 style="font-size:14px;margin-bottom:10px">${esc(part.notesTitle||'Notes')}</h3>`;
     part.noteFields.forEach(f=>{
       h+=`<div class="form-row"><label for="note_${f.id}">${esc(f.label)}</label><input class="form-input" id="note_${f.id}" placeholder="..." oninput="updProg()"></div>`;
@@ -493,8 +610,8 @@ function renderGoetheHorenPart(part,pi,isPrac,ui){
     h+=`</div>`;
   }else{
     h+=renderListen(String(pi),part.context||ui.recording);
-    h+=renderTranscript(part.transcript,'horen_'+pi,part.translations,'horen_'+pi);
-    if(part.questions)h+=part.questions.map((q,i)=>renderQ(q,scorableDisplayNum(q,i,part),mod,ui.trueL,ui.falseL,ui.trueK,true)).join('');
+    h+=renderTranscript(part.transcript,'horen_'+pi,part.translations,'horen_'+pi,part);
+    if(part.questions)h+=part.questions.map((q,i)=>renderQ(q,scorableDisplayNum(q,i,part),mod,ui.trueL,ui.falseL,ui.trueK,true,part)).join('');
   }
   return h+'</section><hr class="section-div">';
 }
@@ -512,18 +629,24 @@ function renderGoetheSchreibenPart(part,ui){
 }
 function renderGoetheSprechenPart(part,ui){
   if(typeof SpeakingFlow!=='undefined')return SpeakingFlow.renderGoetheSprechenPart(part,ui);
-  const pts=part.points||part.prompts||[];
-  const slides=part.slides||[];
+  const briefing=typeof SprechenBriefing!=='undefined'?SprechenBriefing.briefingForPart(part):{intro:part.situation||'',bullets:part.points||part.prompts||[],slides:part.slides||[]};
+  const displayIntro=briefing.intro||part.situation||'';
+  const bullets=briefing.bullets||[];
+  const slides=briefing.slides?.length?briefing.slides:part.slides||[];
   const modLabel=ui.speaking;
   const teilLabel=ui.teil;
-  let h=`<section class="module-wrap"><div class="module-tag tag-sprechen">${modLabel} — ${teilLabel} ${part.teil}: ${part.title}${part.dauer?' · '+part.dauer:''}</div><div class="off-instr">${esc(part.situation)}</div>`;
+  const de=ui?.lang==='de';
+  let h=`<section class="module-wrap"><div class="module-tag tag-sprechen">${modLabel} — ${teilLabel} ${part.teil}: ${part.title}${part.dauer?' · '+part.dauer:''}</div><div class="off-instr">${esc(displayIntro)}</div>`;
   if(part.cardText)h+=`<div class="off-card-scene"><b>${ui.card}</b> ${esc(part.cardText)}</div>`;
   if(part.photoDescriptions?.length){
     h+=`<div class="off-photos">${part.photoDescriptions.map(p=>`<div class="off-ad">${esc(p)}</div>`).join('')}</div>`;
   }
   if(slides.length){
     h+=`<div class="speak-points speak-slides">${slides.map(s=>`<div class="speak-point"><b>${esc(String(s.n??''))}.</b> ${esc(s.title||s.text||'')}</div>`).join('')}</div>`;
-  }else if(pts.length)h+=`<div class="speak-points">${pts.map(p=>`<div class="speak-point">${esc(p)}</div>`).join('')}</div>`;
+  }else if(bullets.length){
+    const ptsLabel=de?'Punkte zum Besprechen':'Points to cover';
+    h+=`<div class="speak-points-label">${esc(ptsLabel)}</div><ul class="speak-points speak-points-list">${bullets.map(p=>`<li class="speak-point">${esc(p)}</li>`).join('')}</ul>`;
+  }
   h+=`<div style="font-size:12px;color:var(--text-muted);margin-bottom:7px">${ui.speakFmt}</div>${typeof renderSpeakingMicHtml==='function'?renderSpeakingMicHtml(part.fieldId,S.subject):`<textarea class="write-field" id="${part.fieldId}" style="min-height:160px" placeholder="${ui.me}" oninput="updProg()"></textarea>`}</section><hr class="section-div">`;
   return h;
 }
@@ -573,6 +696,7 @@ function resolveListeningContext(id){
   return{key,text,ttsVoice,examLang:d?.lang||S.subject||'en'};
 }
 async function playListeningPassage(id,ui,opts={}){
+  if(typeof unlockWebAudio==='function')unlockWebAudio();
   const d=S.examData;if(!d)return;
   const ctx=resolveListeningContext(id);
   const{key,ttsVoice,examLang}=ctx;
@@ -703,6 +827,8 @@ function forEachGoetheNotes(d,fn){
   });
 }
 function renderExam(){
+  if(typeof AdminContentReview!=='undefined'&&AdminContentReview.resetTargets)AdminContentReview.resetTargets();
+
   if(S.examData&&typeof normalizeExam==='function'){
     S.examData=normalizeExam(S.examData);
   }
@@ -715,6 +841,7 @@ function renderExam(){
     }
   }
   if(typeof BurnedRegistry!=='undefined'&&S.examData&&!S.isDemo&&S.examSource&&S.examSource!=='demo'&&!S.examData._fromSaved){try{BurnedRegistry.burnExam(S.examData);}catch(_){}}
+  if(typeof _recordSeenPartsFromExam==='function'&&S.examData&&!S.isDemo&&S.examSource&&S.examSource!=='demo'&&!S.examData._fromSaved&&!S.examData._sectionPart){try{_recordSeenPartsFromExam(S.examData);}catch(_){}}
   hideAll();
   const goal=getActiveGoal();
   if(typeof ActivityTrack!=='undefined'){
@@ -743,9 +870,12 @@ function renderExam(){
   const timerH=(isOffMode&&!isQ)?`<div class="timer-wrap"><span class="timer-val" id="timerVal">--:--</span></div>`:'';
   const practH=isPrac?`<div class="exam-prac-banner exam-mode-banner"><b>${isDE?'Übungsmodus':'Practice mode'}:</b> ${isDE?'Tippe auf Wörter für Übersetzung und Speichern. Gespeicherte Wörter sind farbcodiert —':'Tap words to translate and save. Saved words are color-coded —'} <span class="vocab-legend vocab-pos-noun">${isDE?'Nomen':'noun'}</span> <span class="vocab-legend vocab-pos-verb">${isDE?'Verb':'verb'}</span> <span class="vocab-legend vocab-pos-adjective">${isDE?'Adj':'adj'}</span> <span class="vocab-legend vocab-pos-adverb">${isDE?'Adv':'adv'}</span>.</div>`:'';
   const partialGenH=d._partialGen?`<div class="personal-gen-banner"><b>Partial generation</b> — some Teile were skipped.${d._failedTeile?.length?` Missing: ${esc(d._failedTeile.slice(0,4).join(', '))}${d._failedTeile.length>4?'…':''}.`:''} <button type="button" class="btn-sm accent" onclick="retryFailedPersonalParts()">Retry failed parts</button></div>`:'';
+  const hybridBannerMsg=isDE?'Dein Examen wird personalisiert…':'Personalizing your exam…';
+  const hybridLoadingH=d._hybridLoading?`<div class="personal-gen-banner hybrid-loading-banner"><b>${hybridBannerMsg}</b></div>`:'';
   const officialH=isOffMode?`<div class="exam-official-banner exam-mode-banner"><b>${isDE?'Official-Modus':'Official mode'}:</b> ${isDE?'Tippe auf ein Wort, um es zu markieren (nochmal tippen = entfernen). Keine Übersetzungen während des Exams — markierte Wörter siehst du danach in den Ergebnissen.':'Tap a word to mark it (tap again to unmark). No translations during the exam — review marked words on the results screen.'}</div>`:'';
   const demoH=d.guidedDemo?`<div class="demo-banner"><b>5-minute product demo</b> — Experience every module at reduced volume. Click words you miss to see vocabulary detection.</div>`:'';
-  const langH=isPrac&&!isQ?`<div class="exam-lang-toolbar"><span class="exam-lang-label">${isDE?'Übersetzen:':'Translate to:'}</span>${LANGS.map(l=>`<button class="vt-lb ex-lb${S.vocabLang===l.code?' active':''}" onclick="setVL('${l.code}',this)">${l.l}</button>`).join('')}</div>`:'';
+  const uiLang=typeof resolveVocabUiLang==='function'?resolveVocabUiLang():'en';
+  const langH=isPrac&&!isQ?`<div class="exam-lang-toolbar"><span class="exam-lang-label">${isDE?'Übersetzen:':'Translate to:'}</span>${vocabUiLangs().map(l=>`<button type="button" class="vt-lb ex-lb${uiLang===l.code?' active':''}" data-lang="${l.code}" onclick="setVocabUiLang('${l.code}',this)">${l.l}</button>`).join('')}</div>`:'';
   let secs='';
   if(d.goetheFormat&&(!isQ)){
     secs=renderGoetheExam(d,isPrac,isQ);
@@ -792,17 +922,25 @@ function renderExam(){
   const isPool=fromQuestionLibrary||fromPool;
   const isPersonal=!!d.vocabPersonal;
   const bc=isDemo?'demo':isPool?'pool':isPersonal?'vocab':isQ?'quick':isPrac?'practice':'official',bl=isDemo?'Demo Exam':fromQuestionLibrary?'From library':fromPool?'From pool':isPersonal?'Personal Mock':isQ?('Quick: '+S.quickMod):isPrac?'Practice':'Official Exam';
-  const titleTxt=esc(isOff?(d.official?.certificate||d.topic):(isPersonal?('Personal · '+d.topic):(isDE?'Deutsch':'English')+' — '+d.topic));
+  const titleTxt=esc(isOff?(d.official?.certificate||d.topic):(isPersonal?(d._displayTopic||('Personal · '+d.topic)):(isDE?'Deutsch':'English')+' — '+d.topic));
   const personalVerified=(d._coverageOverall?.found??d.targetUsageVerified?.length??0);
   const personalTotal=(d._coverageOverall?.total??d.vocabWords?.length)||0;
-  const personalWordsUsed=(d._coverageOverall?.words||d.targetUsageVerified?.map(u=>u.word)||[]);
-  const personalWordsPreview=esc(personalWordsUsed.slice(0,8).join(', '))+(personalWordsUsed.length>8?'…':'');
-  const covHeader=typeof PersonalExamCoverage!=='undefined'&&d._coverageOverall
-    ?`<span style="display:block;margin-top:4px;font-size:12px">${esc(PersonalExamCoverage.formatCoverageHeader(d._coverageOverall))}</span>`:'';
-  const personalBanner=isPersonal?`<div class="card note-card personal-exam-banner" style="margin-bottom:16px"><b>Personalized exam</b> — <strong>${personalVerified} of ${personalTotal}</strong> of your words appear here${personalVerified>0?' — highlighted below':''}. Deck: ${personalWordsPreview}.${covHeader}${personalVerified<personalTotal&&personalTotal>0?`<span style="display:block;margin-top:6px;font-size:12px;color:var(--text-secondary)">Regenerate from the configurator for better coverage.</span>`:''}${(d._teilFromPool||[]).length?`<span style="display:block;margin-top:6px;font-size:12px;color:var(--text-secondary)">Some sections use standard bank material (e.g. listening) and do not include your vocabulary.</span>`:''}</div>`:'';
+  const examLang=resolveExamLang(d,S.subject);
+  const topicHonest=typeof PersonalLesenTopicStock!=='undefined'&&d._poolTopicRelaxed&&PersonalLesenTopicStock.topicHonestyBanner
+    ?PersonalLesenTopicStock.topicHonestyBanner(d,examLang):'';
+  const covSummary=typeof PersonalExamCoverage!=='undefined'&&PersonalExamCoverage.formatPersonalCoverageSummary&&personalTotal
+    ?PersonalExamCoverage.formatPersonalCoverageSummary(d._coverageOverall||{found:personalVerified,total:personalTotal},examLang)
+    :(isDE?`Dein personalisiertes Examen${personalTotal?` — ${personalVerified} von ${personalTotal} Wörtern`:''}`:`Your personalized exam${personalTotal?` — ${personalVerified} of ${personalTotal} words`:''}`);
+  const personalBanner=isPersonal&&!d._hybridLoading?`<div class="card note-card personal-exam-banner" style="margin-bottom:16px"><b>${esc(covSummary)}</b>${topicHonest?`<span style="display:block;margin-top:6px;font-size:12px;color:var(--orange)">${esc(topicHonest)}</span>`:''}${personalVerified>0?`<span style="display:block;margin-top:6px;font-size:12px;color:var(--text-secondary)">${isDE?'Deine Wörter sind im Text hervorgehoben.':'Your words are highlighted in the text.'}</span>`:''}${personalVerified<personalTotal&&personalTotal>0?`<span style="display:block;margin-top:6px;font-size:12px;color:var(--text-secondary)">${isDE?'Erneut generieren, um mehr Wörter einzubauen.':'Generate again to integrate more words.'}</span>`:''}</div>`:'';
   const poolBanner=isPool?`<div style="background:var(--blue-bg);border:.5px solid rgba(93,184,232,.3);border-radius:var(--radius-lg);padding:10px 16px;margin-bottom:16px;font-size:12px;color:var(--text-secondary)">📚 Curated exam (counts toward monthly quota). Retake saved exams anytime without quota.</div>`:'';
+  const bgVocabBanner=(()=>{if(!isPersonal||d._hybridLoading)return'';const parts=[...(d.lesenParts||[]),...(d.horenParts||[])];const bg=parts.filter(p=>p.bgGenerated&&p._fromPool);if(!bg.length)return'';const vocabSet=new Set((d.vocabWords||[]).map(w=>String(w).toLowerCase()));const words=[];bg.forEach(p=>(p.bgVocabLemmas||[]).forEach(w=>{if(vocabSet.has(String(w).toLowerCase())&&!words.some(x=>String(x).toLowerCase()===String(w).toLowerCase()))words.push(w);}));if(!words.length)return'';const shown=words.slice(0,3).map(w=>esc(w)).join(', ');const more=words.length>3?` (+${words.length-3} more)`:'';const lead=isDE?'✨ Automatisch aus deinem kürzlichen Vokabular generiert · auch im Pool':'✨ Auto-generated from your recent vocabulary · also in pool';const wl=isDE?`Wörter: ${shown}${more}`:`Words used: ${shown}${more}`;return`<div style="background:var(--blue-bg);border:.5px solid rgba(93,184,232,.3);border-radius:var(--radius-lg);padding:10px 16px;margin-bottom:16px;font-size:12px;color:var(--text-secondary)">${lead} — ${wl}</div>`;})();
   const saveExitH=!isQ?`<button class="btn-sm accent" onclick="saveAndExitExam()">Save &amp; exit</button>`:'';
-  scr.innerHTML=`${renderOfficialHeader(d,isDE)}${personalBanner}${partialGenH}${poolBanner}<div class="exam-topbar"><div class="exam-meta"><span class="exam-badge ${bc}">${bl}</span><span class="exam-badge">${d.level}</span><span class="exam-title">${titleTxt}</span>${timerH}</div><div class="exam-actions"><button class="btn-sm" onclick="goHome()">Home</button>${isPrac?`<button class="btn-sm purple" onclick="goFlashcards()">Deck (<span id="dkCnt">${getProfileFlashcards().length}</span>)</button>`:''}${saveExitH}<button class="btn-sm" onclick="saveCurrentExam()">Save</button></div></div><div class="progress-wrap"><div class="progress-row"><span>Progress</span><span id="pctTxt">0%</span></div><div class="progress-track"><div class="progress-fill" id="progFill" style="width:0%"></div></div></div>${demoH}${officialH}${practH}${langH}${secs}<div class="submit-bar"><button class="btn-sm" onclick="goHome()">Home</button><div style="display:flex;gap:7px;flex-wrap:wrap">${saveExitH}<button class="btn-sm" onclick="saveCurrentExam()">Save Exam</button><button class="btn-sm accent" id="submitBtn" onclick="submitExam()">Submit and Get Results →</button></div></div>`;
+  const submitCreditHint=typeof submitExamAiCreditHint==='function'?submitExamAiCreditHint(d):'';
+  const submitLabel=submitCreditHint
+    ?(isDE?`Abgeben und Ergebnisse (${submitCreditHint}) →`:`Submit and Get Results (${submitCreditHint}) →`)
+    :(isDE?'Abgeben und Ergebnisse →':'Submit and Get Results →');
+  const submitDisabled=d._hybridLoading?' disabled aria-disabled="true" title="'+(isDE?'Bitte warten, das Examen wird noch erstellt.':'Please wait — your exam is still being built.')+'"':'';
+  scr.innerHTML=`${renderOfficialHeader(d,isDE)}${personalBanner}${partialGenH}${hybridLoadingH}${poolBanner}${bgVocabBanner}<div class="exam-topbar"><div class="exam-meta"><span class="exam-badge ${bc}">${bl}</span><span class="exam-badge">${d.level}</span><span class="exam-title">${titleTxt}</span>${timerH}</div><div class="exam-actions"><button class="btn-sm" onclick="goHome()">Home</button>${isPrac?`<button class="btn-sm purple" onclick="goFlashcards()">Deck (<span id="dkCnt">${getProfileFlashcards().length}</span>)</button>`:''}${saveExitH}<button class="btn-sm" onclick="saveCurrentExam()">Save</button></div></div><div class="progress-wrap"><div class="progress-row"><span>Progress</span><span id="pctTxt">0%</span></div><div class="progress-track"><div class="progress-fill" id="progFill" style="width:0%"></div></div></div>${demoH}${officialH}${practH}${langH}${secs}<div class="submit-bar"><button class="btn-sm" onclick="goHome()">Home</button><div style="display:flex;gap:7px;flex-wrap:wrap;align-items:center">${saveExitH}<button class="btn-sm" onclick="saveCurrentExam()">Save Exam</button><button class="btn-sm accent" id="submitBtn" onclick="submitExam()"${submitDisabled}>${submitLabel}</button></div></div>`;
   scr.querySelectorAll('input[type=radio]').forEach(r=>r.addEventListener('change',updProg));
   if(S._resumeFieldValues){restoreExamFieldValues(S._resumeFieldValues);S._resumeFieldValues=null;}
   restoreExamAnswers();
@@ -813,16 +951,19 @@ function renderExam(){
   if(isOffMode&&!isQ){
     const resumeEnds=S._resumeTimerEndsAt;
     S._resumeTimerEndsAt=null;
+    const ld=LEVELS[S.subject||'de'].find(l=>l.code===S.level)||{time:90};
     if(resumeEnds)resumeTimerFromEndsAt(resumeEnds);
-    else{const ld=LEVELS[S.subject||'de'].find(l=>l.code===S.level)||{time:90};startTimer(ld.time);}
+    else startTimer(ld.time);
+    void registerOfficialExamTimer(ld.time);
   }
   const sy=S._resumeScrollY;
   S._resumeScrollY=null;
   if(sy!=null)requestAnimationFrame(()=>window.scrollTo(0,sy));
   else window.scrollTo({top:0,behavior:'smooth'});
   bindExamScrollTop();
+  if (typeof assignSavedExamIdentity === 'function') assignSavedExamIdentity(S.examData);
+  else if (!S.examData._savedId && !S.examData._flightId) S.examData._flightId = Date.now();
   autosaveSession();
-  if(!S.examData._savedId&&!S.examData._flightId)S.examData._flightId=Date.now();
   if(typeof syncExamRouteUrl==='function')syncExamRouteUrl();
   if(typeof bindExamKeyboard==='function')bindExamKeyboard();
   if(typeof LcA11y!=='undefined')LcA11y.onScreenShown('examScreen');
@@ -984,20 +1125,21 @@ function togglePersonMatch(key,val,el){
 function renderGapFillQ(q,num,mod,part,isDE){
   const opts=part.options||[];
   const head=isDE?`Lücke ${q.gap||num}`:`Gap ${q.gap||num}`;
-  return `<div class="question-block"><div class="q-number">${head}</div><div class="q-text">${isDE?'Wählen Sie die passende Option:':'Choose the matching option:'}</div><select class="gap-select" onchange='S.answers[${jsLit(mod+'_'+q.id)}]=this.value;updProg()'><option value="">${isDE?'— wählen —':'— select —'}</option>${opts.map(o=>`<option value="${esc(o.key)}">${esc(o.key)}) ${esc(o.text)}</option>`).join('')}</select></div>`;
+  return `<div class="question-block"><div class="q-number">${head}</div><div class="q-text">${isDE?'Wählen Sie die passende Option:':'Choose the matching option:'}</div><select class="gap-select" onchange='S.answers[${jsLit(mod+'_'+q.id)}]=this.value;updProg()'><option value="">${isDE?'— wählen —':'— select —'}</option>${opts.map(o=>`<option value="${esc(o.key)}">${esc(o.key)}) ${esc(o.text)}</option>`).join('')}</select>${adminQuestionReviewHtml(q,part)}</div>`;
 }
-function renderQ(q,num,mod,rfT,rfF,trK,isOff){
+function renderQ(q,num,mod,rfT,rfF,trK,isOff,part){
   const ak=`${mod}_${q.id}`;
   const head=`${num}. ${esc(q.question)}`;
   const sub='';
+  const review=adminQuestionReviewHtml(q,part);
   if(q.type==='yn'||q.type==='ja_nein'){
-    return `<div class="question-block"><div class="q-number">${head}</div>${sub}<div class="rf-row"><button type="button" class="rf-btn" onclick='setRF(${jsLit(ak)},${jsLit('J')},this,${jsLit('sel-r')})'>Ja</button><button type="button" class="rf-btn" onclick='setRF(${jsLit(ak)},${jsLit('N')},this,${jsLit('sel-f')})'>Nein</button></div></div>`;
+    return `<div class="question-block"><div class="q-number">${head}</div>${sub}<div class="rf-row"><button type="button" class="rf-btn" onclick='setRF(${jsLit(ak)},${jsLit('J')},this,${jsLit('sel-r')})'>Ja</button><button type="button" class="rf-btn" onclick='setRF(${jsLit(ak)},${jsLit('N')},this,${jsLit('sel-f')})'>Nein</button></div>${review}</div>`;
   }
   if(q.type==='rfn'||q.type==='r_f_n'){
-    return `<div class="question-block"><div class="q-number">${head}</div>${sub}<div class="rf-row" style="flex-wrap:wrap"><button type="button" class="rf-btn" onclick='setRFN(${jsLit(ak)},${jsLit('R')},this)'>R</button><button type="button" class="rf-btn" onclick='setRFN(${jsLit(ak)},${jsLit('F')},this)'>F</button><button type="button" class="rf-btn" onclick='setRFN(${jsLit(ak)},${jsLit('N')},this)'>N</button></div></div>`;
+    return `<div class="question-block"><div class="q-number">${head}</div>${sub}<div class="rf-row" style="flex-wrap:wrap"><button type="button" class="rf-btn" onclick='setRFN(${jsLit(ak)},${jsLit('R')},this)'>R</button><button type="button" class="rf-btn" onclick='setRFN(${jsLit(ak)},${jsLit('F')},this)'>F</button><button type="button" class="rf-btn" onclick='setRFN(${jsLit(ak)},${jsLit('N')},this)'>N</button></div>${review}</div>`;
   }
   if(q.type==='rf'||q.type==='tf'||q.type==='richtig_falsch'||q.type==='true_false'){
-    return `<div class="question-block"><div class="q-number">${head}</div>${sub}<div class="rf-row"><button type="button" class="rf-btn" onclick='setRF(${jsLit(ak)},${jsLit(trK)},this,${jsLit('sel-r')})'>${esc(rfT)}</button><button type="button" class="rf-btn" onclick='setRF(${jsLit(ak)},${jsLit('F')},this,${jsLit('sel-f')})'>${esc(rfF)}</button></div></div>`;
+    return `<div class="question-block"><div class="q-number">${head}</div>${sub}<div class="rf-row"><button type="button" class="rf-btn" onclick='setRF(${jsLit(ak)},${jsLit(trK)},this,${jsLit('sel-r')})'>${esc(rfT)}</button><button type="button" class="rf-btn" onclick='setRF(${jsLit(ak)},${jsLit('F')},this,${jsLit('sel-f')})'>${esc(rfF)}</button></div>${review}</div>`;
   }
   if(q.type==='person_multi'){
     let sel=[];
@@ -1010,20 +1152,20 @@ function renderQ(q,num,mod,rfT,rfF,trK,isOff){
         return `<label class="opt${on?' selected':''}"><input type="checkbox"${on?' checked':''} onchange='togglePersonMatch(${jsLit(ak)},${jsLit(val)},this)'><span>${esc(opt)}</span></label>`;
       }
       return `<label class="opt"><input type="radio" name="${esc(ak)}" value="${esc(val)}" onchange='S.answers[${jsLit(ak)}]=this.value;this.closest(".options").querySelectorAll(".opt").forEach(o=>o.classList.remove("selected"));this.closest(".opt").classList.add("selected");updProg()'><span>${esc(opt)}</span></label>`;
-    }).join('')}</div></div>`;
+    }).join('')}</div>${review}</div>`;
   }
   if(q.type==='matching'){
     const opts=q.options||[];
     if(q._keyOnlyMatch){
       const keys=opts.map(o=>typeof o==='string'?o.trim():optKey(o));
       if(keys.length){
-        return `<div class="question-block"><div class="q-number">${head}</div>${sub}<div class="options options-matching-keys">${keys.map(val=>`<label class="opt opt-key"><input type="radio" name="${esc(ak)}" value="${esc(val)}" onchange='S.answers[${jsLit(ak)}]=this.value;this.closest(".options").querySelectorAll(".opt").forEach(o=>o.classList.remove("selected"));this.closest(".opt").classList.add("selected");updProg()'><span>${esc(val)}</span></label>`).join('')}</div></div>`;
+        return `<div class="question-block"><div class="q-number">${head}</div>${sub}<div class="options options-matching-keys">${keys.map(val=>`<label class="opt opt-key"><input type="radio" name="${esc(ak)}" value="${esc(val)}" onchange='S.answers[${jsLit(ak)}]=this.value;this.closest(".options").querySelectorAll(".opt").forEach(o=>o.classList.remove("selected"));this.closest(".opt").classList.add("selected");updProg()'><span>${esc(val)}</span></label>`).join('')}</div>${review}</div>`;
       }
     }
   }
   const opts=q.options||[];
-  if(!opts.length)return `<div class="question-block"><div class="q-number">${head}</div>${sub}<div style="color:var(--text-muted);font-size:12px">${isOff?'Keine Optionen':'No options'}</div></div>`;
-  return `<div class="question-block"><div class="q-number">${head}</div>${sub}<div class="options">${opts.map(opt=>{const val=optKey(opt);const label=optLabel(opt);return `<label class="opt"><input type="radio" name="${esc(ak)}" value="${esc(val)}" onchange='S.answers[${jsLit(ak)}]=this.value;this.closest(".options").querySelectorAll(".opt").forEach(o=>o.classList.remove("selected"));this.closest(".opt").classList.add("selected");updProg()'><span>${esc(label)}</span></label>`;}).join('')}</div></div>`;
+  if(!opts.length)return `<div class="question-block"><div class="q-number">${head}</div>${sub}<div style="color:var(--text-muted);font-size:12px">${isOff?'Keine Optionen':'No options'}</div>${review}</div>`;
+  return `<div class="question-block"><div class="q-number">${head}</div>${sub}<div class="options">${opts.map(opt=>{const val=optKey(opt);const label=optLabel(opt);return `<label class="opt"><input type="radio" name="${esc(ak)}" value="${esc(val)}" onchange='S.answers[${jsLit(ak)}]=this.value;this.closest(".options").querySelectorAll(".opt").forEach(o=>o.classList.remove("selected"));this.closest(".opt").classList.add("selected");updProg()'><span>${esc(label)}</span></label>`;}).join('')}</div>${review}</div>`;
 }
 function ptSetMatch(k,v,btn){S.answers[k]=v;btn.closest('.pt-match-pills').querySelectorAll('.pt-letter-pill').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected');updProg();}
 function setRF(k,v,btn,cls){S.answers[k]=v;btn.parentElement.querySelectorAll('.rf-btn').forEach(b=>b.classList.remove('sel-r','sel-f','sel-n'));btn.classList.add(cls);updProg();}

@@ -53,11 +53,25 @@ pass('T4 calidad retry includes ANTI-COPIA', noteT4Lex.includes('ANTI-COPIA'));
 pass('T4 calidad retry includes ANCLA TEMATICA Wohnen', noteT4Lex.includes('ANCLA TEMATICA') && noteT4Lex.includes('Wohnen'));
 pass('T4 length retry keeps all three hints', noteT4Len.includes('ANTI-LONGITUD') && noteT4Len.includes('ANTI-COPIA') && noteT4Len.includes('Freizeit'));
 
+const noteT4Mixed = buildExamFixNote(
+  [COPY_ISSUE, '515 palabras en transcripcion', B2_ISSUE],
+  'calidad+lexico',
+  'horen',
+  4,
+  'Freizeit',
+);
+pass('T4 calidad+lexico lists multiple issues', noteT4Mixed.includes(COPY_ISSUE.slice(0, 20)));
+pass('T4 calidad+lexico single-pass instruction', noteT4Mixed.includes('TODOS los problemas'));
+pass('T4 calidad+lexico includes ANTI-B2+', noteT4Mixed.includes('ANTI-B2+'));
+
 const extraLen = (noteLexico.match(/ANTI-B2\+[\s\S]*ANTI WORD-MATCHING/) || [''])[0].length;
 pass('combined hints ~2 lines (~120-280 chars)', extraLen >= 100 && extraLen <= 320);
 
 // Simulated retry sequence on Freizeit fixture (024): no regression of the other axis in fix note
-const fixturePath = path.join(ROOT, 'batches/ready/pool-verified/horen-t2-gemini-024.json');
+const fixturePath = path.join(
+  ROOT,
+  'batches/needs-regeneration/_premise-dedupe-archive/horen-t2-gemini-024.json',
+);
 let batch = JSON.parse(fs.readFileSync(fixturePath, 'utf8'));
 
 function injectB2(batch) {

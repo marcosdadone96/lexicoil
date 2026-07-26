@@ -1,0 +1,53 @@
+# Hören A2 T3 · intento 3/6
+# started: 2026-07-23T08:22:14.076Z
+# exit: 0
+
+
+Generador horen (de/A2) · gemini · gemini-2.5-flash · T3 × 1
+Palabras objetivo por parte: 5 (--word-count)
+Cuota Gemini: max 45 llamadas · pausa ≥6000ms · fix-retries=3 · api-retries=1
+Salida: batches/generated/ (solo pasa formato + calidad pedagógica)
+Tema: Freizeit (elegido)
+
+── horen T3 · horen-t3-gemini-042.json ──
+Proveedor: gemini · Palabras (5): rathaus, bald, dauern, angebot, krankenhaus
+Modelo: gemini-2.5-flash · max_output_tokens=16384
+Llamada API 1/45 · $0.000 acumulado · gemini-2.5-flash
+Validando formato…
+Comprobando calidad pedagógica…
+  [Q4 audit-only] 3 topic_mismatch (no block):
+    · passage:gen-p-h3-4e69f1fd-s1 topicTag «Freizeit» no encaja con contenido (detectado «Sport» score=2 vs tag score=0; hits={"Sport":2})
+    · passage:gen-p-h3-4e69f1fd-s4 topicTag «Freizeit» no encaja con contenido (detectado «Bildung» score=2 vs tag score=0; hits={"Bildung":2,"Ernährung":1})
+    · passage:gen-p-h3-4e69f1fd-s5 topicTag «Freizeit» sin soporte léxico en el contenido (tag score=0, ningún tema alternativo con hits; hits={})
+  [LT advisory] skipped (LT down: fetch failed)
+Calidad Hören T3: FAIL (2 problemas, estimación ~84%)
+  - gen-q-h3-4e69f1fd-q1: sesgo de longitud MCQ (A2) — opción correcta «b» es la más larga (26 vs 20/20; Δ +6 chars, +30% vs media distractores; umbral 20%/8ch). Parafrasea o alarga los distractores hasta longitud comparable.
+  - gen-q-h3-4e69f1fd-q5: sesgo de longitud MCQ (A2) — opción correcta «a» es la más larga (18 vs 12/9; Δ +8 chars, +71% vs media distractores; umbral 20%/8ch). Parafrasea o alarga los distractores hasta longitud comparable.
+  Triaje CUBO C (MCQ length bias (A2)) → reparación localizada (1 llamada LLM)…
+horen T3: reparando sesgo longitud MCQ en 2 pregunta(s) (1 llamada LLM, fuente fija)…
+Llamada API 2/45 · $0.014 acumulado · gemini-2.5-flash
+  length-bias: gen-q-h3-4e69f1fd-q1 OK (+30%→+0%)
+  length-bias: gen-q-h3-4e69f1fd-q5 OK (+71%→+0%)
+  Re-validando tras mcq_length_bias…
+  [Q4 audit-only] 3 topic_mismatch (no block):
+    · passage:gen-p-h3-4e69f1fd-s1 topicTag «Freizeit» no encaja con contenido (detectado «Sport» score=2 vs tag score=0; hits={"Sport":2})
+    · passage:gen-p-h3-4e69f1fd-s4 topicTag «Freizeit» no encaja con contenido (detectado «Bildung» score=2 vs tag score=0; hits={"Bildung":2,"Ernährung":1})
+    · passage:gen-p-h3-4e69f1fd-s5 topicTag «Freizeit» sin soporte léxico en el contenido (tag score=0, ningún tema alternativo con hits; hits={})
+  [LT advisory] skipped (LT down: fetch failed)
+Calidad Hören T3: OK ✅ (estimación ~100%)
+  Reparación mcq_length_bias OK → guardado sin regenerar parte
+  [poolReady] READY → pool-verified/A2/horen-t3-gemini-042.json
+Guardado: batches/ready/pool-verified/A2/horen-t3-gemini-042.json (5 preguntas, 5 passages) · horen Teil 3
+Validación técnica OK ✅
+Calidad pedagógica OK ✅
+
+── batches/generated/A2/horen-t3-gemini-042.json · OK · 2 llamadas · $0.015 total ──
+
+══ Resumen generador horen ══
+Proveedor: gemini · Modelo: gemini-2.5-flash
+Intentos totales: 2
+Partes guardadas (formato + calidad OK): 1
+Partes descartadas: 0
+Llamadas API Gemini: 2/45
+Por parte (guardadas / descartadas · intentos):
+  T3: 1 guardadas, 0 descartadas, 1 intentos

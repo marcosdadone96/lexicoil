@@ -104,16 +104,18 @@
         },
         {
           "teil": 2,
-          "slotType": "conversation_mcq",
-          "taskFormat": "short_dialogue_mcq",
-          "label": "Teil 2 — Gespräch, Multiple Choice",
-          "instruction": "Sie hören ein Gespräch. Sie hören den Text einmal.\nWählen Sie für die Aufgaben 6 bis 10 die richtige Lösung a, b oder c.",
+          "slotType": "picture_matching",
+          "taskFormat": "picture_schedule_matching",
+          "label": "Teil 2 — Bild/Text zuordnen",
+          "instruction": "Sie hören ein Gespräch. Sie hören den Text einmal.\nWählen Sie für die Aufgaben 6 bis 10 ein passendes Bild aus a bis i.",
           "layout": "segments",
           "plays": 1,
           "segmentsTotal": 1,
           "itemsTotal": 5,
           "questionsTotal": { "min": 5, "max": 5 },
-          "questionTypes": ["multiple_choice"],
+          "questionTypes": ["matching"],
+          "pictureOptions": 9,
+          "uniqueAnswerKeys": true,
           "wordsPerTranscript": { "min": 80, "max": 150 }
         },
         {
@@ -202,7 +204,7 @@
           "itemsTotal": 1,
           "interaction": "paired",
           "taskTypes": ["personal_questions"],
-          "questionTypes": ["short_answer"],
+          "questionTypes": ["short_answer", "personal_questions"],
           "questionsTotal": { "min": 1, "max": 1 },
           "layout": "speaking"
         },
@@ -216,7 +218,7 @@
           "itemsTotal": 1,
           "interaction": "monologue",
           "taskTypes": ["about_self"],
-          "questionTypes": ["short_answer"],
+          "questionTypes": ["short_answer", "about_self"],
           "questionsTotal": { "min": 1, "max": 1 },
           "layout": "speaking"
         },
@@ -230,7 +232,7 @@
           "itemsTotal": 1,
           "interaction": "paired",
           "taskTypes": ["plan_together"],
-          "questionTypes": ["short_answer"],
+          "questionTypes": ["short_answer", "plan_together"],
           "questionsTotal": { "min": 1, "max": 1 },
           "layout": "speaking"
         }

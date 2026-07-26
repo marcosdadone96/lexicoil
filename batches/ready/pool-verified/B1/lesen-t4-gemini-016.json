@@ -179,8 +179,8 @@
       ],
       "correct": "Nein",
       "correctAnswer": "Nein",
-      "explanation": "Omar findet den Vorschlag zu Teuer für kleine Geschäfte und sieht ihn nicht als guten Plan für alle.",
-      "signText": "Recycling ist wichtig, aber der Vorschlag ist zu Teuer für kleine Geschäfte. Viele Nachbarn haben schon Probleme mit den Kosten. Ich denke, die Organisation sollte zuerst bessere finanzielle Hilfen anbieten. So ist es kein guter Plan für alle.",
+      "explanation": "Omar findet den Vorschlag zu teuer für kleine Geschäfte und sieht ihn nicht als guten Plan für alle.",
+      "signText": "Recycling ist wichtig, aber der Vorschlag ist zu teuer für kleine Geschäfte. Viele Nachbarn haben schon Probleme mit den Kosten. Ich denke, die Organisation sollte zuerst bessere finanzielle Hilfen anbieten. So ist es kein guter Plan für alle.",
       "passageId": "gen-l4-ffc10493",
       "lang": "de",
       "level": "B1",
@@ -195,7 +195,7 @@
       ],
       "vocabularyTags": [
         "anbieten",
-        "Viele",
+        "viele",
         "Organisation",
         "Recycling",
         "Problem",
@@ -377,14 +377,14 @@
       ]
     }
   ],
-  "_metadataEnrichedAt": "2026-07-10T13:55:58.943Z",
-  "_metadataEnrichNote": "deterministic: detectTopic + per-question lemma vocab + grammar heuristics",
+  "_metadataEnrichedAt": "2026-07-25T07:51:40.598Z",
+  "_metadataEnrichNote": "vocabRepairOnly: repairQuestionVocabularyTags (pool artifact repair)",
   "_requestedTopic": "Umwelt",
   "_topicTagInferred": true,
   "_topicTagInferredAt": "2026-07-10T10:57:51.418Z",
-  "_germanCapsNormalizeVersion": "v3.15-was-subst-adj-2026-07-12",
-  "_germanCapsNormalizedAt": "2026-07-13T14:33:49.608Z",
-  "_vocabTagsNormalizeVersion": "v2.3.9-adj-adv-laesst-lemma-2026-07-11",
+  "_germanCapsNormalizeVersion": "v3.17-mcq-dedupe-universal-2026-07-14",
+  "_germanCapsNormalizedAt": "2026-07-25T07:51:40.598Z",
+  "_vocabTagsNormalizeVersion": "v2.3.16-b1-validated-verb-adj-lemma-2026-07-24",
   "_grammarTagsNormalizeVersion": "v2.0-focus-flexible-2026-07-10",
   "lang": "de",
   "level": "B1",
@@ -885,5 +885,7 @@
     ],
     "replacements": 12,
     "note": "remediate-scope-2026-07-13 Lesen T4 forum cast"
-  }
+  },
+  "_poolArtifactRepairAt": "2026-07-25T07:51:40.598Z",
+  "_poolArtifactRepairNote": "repair-pool-vocab-caps-artifacts.mjs (germanCapsNormalize + enrich vocab)"
 }

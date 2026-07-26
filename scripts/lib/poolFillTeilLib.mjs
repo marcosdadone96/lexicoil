@@ -17,11 +17,13 @@ import {
   loadPoolRecords,
   rankTopicGaps,
 } from './poolGapPlanner.mjs';
+import { topicsForLevel } from './levelPlanner.mjs';
 import {
   pickTopicAlignedWeakWords,
   refreshCoverageRegistry,
   recordGenerationOutcome,
   printCoverageSummary,
+  vocabPickContext,
 } from './coverageRegistry.mjs';
 import { pushSessionMoldExclude, pushSessionStructuralCorpus } from './poolFillSessionExclude.mjs';
 import { setupConsoleUtf8, hrDouble, MARK_OK, MARK_FAIL } from './consoleSafe.mjs';
@@ -30,6 +32,14 @@ import {
   isT3BlueprintExhaustedReason,
   listT3BlueprintStockForTopic,
 } from './lesenT3BlueprintStock.mjs';
+import {
+  isT4SeedExhaustedReason,
+  listT4SeedStockForTopic,
+  preflightLesenT4Topic,
+  shouldSkipLesenT4Topic,
+} from './lesenT4SeedStock.mjs';
+
+export { preflightLesenT4Topic, shouldSkipLesenT4Topic };
 
 const require = createRequire(import.meta.url);
 const { normalizeB1Topic } = require(path.join(ROOT, 'js/data/b1Topics.js'));
@@ -57,40 +67,96 @@ export function planRotation(ctx) {
       .map((t) => normalizeB1Topic(t))
       .filter(Boolean),
   );
-  const topic =
-    ctx.forcedTopic ||
-    pickScarcestTopic(records, ctx.module, ctx.teil, {
-      targetPerCell: ctx.targetPerCell,
-      excludeTopics: [
-        ...recent.slice(-Math.max(1, ctx.rotateEvery - 1)),
-        ...hardSkip,
-      ],
-      noFallback: hardSkip.size > 0,
-    });
-  if (!topic) {
+  const forced = ctx.forcedTopic ? normalizeB1Topic(ctx.forcedTopic) : null;
+  if (forced && hardSkip.has(forced)) {
     return {
       topic: null,
       words: [],
       nextCursor: ctx.vocabCursor || 0,
       recentTopics: recent,
       exhausted: true,
+      forcedTopicExhausted: forced,
     };
   }
+
   const wordCount = Math.min(8, Math.max(5, Number(ctx.wordCount) || 6));
-  const { words, nextCursor } = pickTopicAlignedWeakWords({
-    lang: ctx.lang,
-    level: ctx.level,
-    topic,
-    count: wordCount,
-    cursor: ctx.vocabCursor,
-  });
-  const gaps = rankTopicGaps(records, ctx.module, ctx.teil, ctx.targetPerCell);
-  const row = gaps.find((g) => g.topic === topic);
-  console.log(
-    `\n[plan] Celda ${ctx.module} T${ctx.teil} · tema «${topic}» (stock ${row?.count ?? 0}, objetivo ${ctx.targetPerCell})`,
+  const vocabSkip = new Set(hardSkip);
+  const maxTopicTries = topicsForLevel(ctx.level).length + 2;
+
+  for (let tryN = 0; tryN < maxTopicTries; tryN++) {
+    const topic =
+      forced ||
+      pickScarcestTopic(records, ctx.module, ctx.teil, {
+        targetPerCell: ctx.targetPerCell,
+        level: ctx.level,
+        excludeTopics: [
+          ...recent.slice(-Math.max(1, ctx.rotateEvery - 1)),
+          ...vocabSkip,
+        ],
+        noFallback: vocabSkip.size > 0,
+      });
+    if (!topic) {
+      return {
+        topic: null,
+        words: [],
+        nextCursor: ctx.vocabCursor || 0,
+        recentTopics: recent,
+        exhausted: true,
+      };
+    }
+    const normTopic = normalizeB1Topic(topic);
+
+    try {
+      const { words, nextCursor } = pickTopicAlignedWeakWords({
+        lang: ctx.lang,
+        level: ctx.level,
+        topic,
+        count: wordCount,
+        cursor: ctx.vocabCursor,
+        context: ctx.vocabContext || vocabPickContext(ctx.module, ctx.teil),
+      });
+      const gaps = rankTopicGaps(records, ctx.module, ctx.teil, ctx.targetPerCell, ctx.level);
+      const row = gaps.find((g) => g.topic === normTopic);
+      console.log(
+        `\n[plan] Celda ${ctx.module} T${ctx.teil} · tema «${topic}» (stock ${row?.count ?? 0}, objetivo ${ctx.targetPerCell})`,
+      );
+      console.log(`   Palabras (${words.length}): ${words.join(', ')}`);
+      return { topic, words, nextCursor, recentTopics: [...recent, topic].slice(-8) };
+    } catch (err) {
+      const msg = err?.message || String(err);
+      if (forced) {
+        console.error(
+          `\n⛔ Tema forzado «${topic}» sin vocab planificable (${msg}) — no se puede generar.`,
+        );
+        return {
+          topic: null,
+          words: [],
+          nextCursor: ctx.vocabCursor || 0,
+          recentTopics: recent,
+          exhausted: true,
+          forcedTopicExhausted: normTopic,
+          vocabPlanError: msg,
+        };
+      }
+      console.warn(
+        `\n⏭ Tema «${topic}» sin vocab planificable (${msg}) — rotando a otro tema`,
+      );
+      vocabSkip.add(normTopic);
+    }
+  }
+
+  console.warn(
+    `\n⛔ Sin temas con vocab planificable para ${ctx.module} T${ctx.teil} ` +
+      `(probados ${vocabSkip.size} tema(s) excluido(s)).`,
   );
-  console.log(`   Palabras (${words.length}): ${words.join(', ')}`);
-  return { topic, words, nextCursor, recentTopics: [...recent, topic].slice(-8) };
+  return {
+    topic: null,
+    words: [],
+    nextCursor: ctx.vocabCursor || 0,
+    recentTopics: recent,
+    exhausted: true,
+    vocabTopicsExhausted: [...vocabSkip],
+  };
 }
 
 /** Lesen T3: ¿saltar tema por catálogo agotado (sin stock tras dedup/exclusión)? */
@@ -108,6 +174,28 @@ export function preflightLesenT3Topic(topic, sessionLesen) {
     topic,
     exclude instanceof Set ? exclude : new Set(exclude || []),
   );
+}
+
+/**
+ * Lesen T3/T4 preflight cuando `--topic` fuerza un tema: abortar si agotado; si no, saltar y rotar.
+ * @returns {'proceed'|'skip'|'abort'} action
+ * @returns {string} [message] when abort
+ */
+export function lesenForcedTopicPreflightAction(forcedTopic, currentTopic, stock, teil) {
+  if (stock.generatable) return { action: 'proceed' };
+  const forced = forcedTopic ? normalizeB1Topic(forcedTopic) : null;
+  const current = normalizeB1Topic(currentTopic);
+  if (!forced || forced !== current) return { action: 'skip' };
+
+  const detail =
+    Number(teil) === 3
+      ? `${stock.compatibleTotal} compatibles, 0 disponibles tras dedup/exclusión`
+      : `${stock.preflightOkCount} preflight-OK, ${stock.freshCount} frescas, tier=${stock.pickTier}`;
+  return {
+    action: 'abort',
+    message:
+      `⛔ Tema forzado «${current}» agotado — no se puede generar (Lesen T${teil}). ${detail}`,
+  };
 }
 
 function moveToRejected(relFile, reason) {
@@ -153,6 +241,7 @@ export async function generatePoolPart(ctx) {
       maxCostPerFileUsd: ctx.maxCostPerFileUsd,
       semantic: true,
       skipSem2: true,
+      vocabContext: ctx.vocabContext || vocabPickContext(module, teil),
       vocabBgStrictAnchor: ctx.vocabBgStrictAnchor || null,
       skipQuality: ctx.skipQuality === true,
       testMode: ctx.testMode === true,
@@ -166,7 +255,7 @@ export async function generatePoolPart(ctx) {
 
   let session = sessionExam;
   if (!session) {
-    session = createExamFactorySession({
+    session = await createExamFactorySession({
       module,
       teil,
       lang,
@@ -179,6 +268,8 @@ export async function generatePoolPart(ctx) {
     teil,
     topic,
     words,
+    lang,
+    level,
     session,
     fixRetries: ctx.fixRetries ?? 2,
     maxAttemptsPerFile: ctx.maxAttemptsPerFile,
@@ -187,7 +278,7 @@ export async function generatePoolPart(ctx) {
     skipQuality: ctx.skipQuality === true,
     testMode: ctx.testMode === true,
   });
-  return { ...result, sessionExam: session };
+  return { ...result, sessionExam: result.session || session };
 }
 
 export function publishPoolPart(ctx) {
@@ -263,6 +354,7 @@ export async function runPoolFillCycle(ctx) {
       stage: 'generate',
       reason: gen.reason,
       braked: gen.braked,
+      gate: gen.gate,
       sessionLesen: gen.sessionLesen,
       sessionExam: gen.sessionExam,
     };
