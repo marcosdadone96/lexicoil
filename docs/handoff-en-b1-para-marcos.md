@@ -13,6 +13,27 @@
 > Todas las mediciones son del **26 de julio, con `main` en `a50a89a`** (el push de esa mañana).
 > Si `main` avanza, hay que rehacerlas: el comando está en la sección 5.
 
+> ### v2 — qué cambió respecto a la versión que ya revisasteis (`32da28c`)
+>
+> Vuestra revisión encontró dos errores reales. Los he verificado y **teníais razón en los dos**;
+> están corregidos en el sitio donde estaban, marcados como "Corregido en la v2" para que se vea
+> qué decía antes:
+>
+> 1. **§2.2 — "solo `de/A2` está `live`"**: cierto en mi rama, falso en tu `main`, donde `de/B1`
+>    está `live` con 16 exámenes y `en/B1` está `hidden`. Medí en mi rama y lo escribí como hecho
+>    global. Consecuencia: el bug del gate beta **no afecta** a `de/A2` ni `de/B1`.
+> 2. **§4.3 — "`eliminado/` se llevó la documentación del inglés"**: falso y además injusto. Esos
+>    seis ficheros son míos y nunca estuvieron en tu árbol; aparecen bajo `eliminado/` por la
+>    detección de renombrado de directorio de git al mergear.
+>
+> Y **§5(C) está reformulada**, porque se apoyaba en la premisa falsa del punto 1.
+>
+> Cifras menores ajustadas a vuestra medición: add/add **22** (decía 21), ficheros compartidos
+> **101** (decía ~103), y aclarado el 17 vs 18 commits (la diferencia son los commits de este
+> documento).
+>
+> No he cambiado nada más: el resto de secciones son las que verificasteis y quedan igual.
+
 ---
 
 ## 1. Para qué es esta rama
@@ -57,8 +78,23 @@ Arreglo: quitar el gate `!isQ`. `stripExamToSkills()` ya vacía los módulos no 
 ponía está comentada como "staging only". Sin ese flag, `getLevelUiStatus` convierte `beta` en
 `soon` y el workspace responde con el modal "Coming soon".
 
-Hoy **solo `de/A2` está `live`**. Todo lo demás (de A1/B1/B2/C1/C2 y en B1) es `beta` o `hidden`.
 Es decir: poner un nivel en `beta` en `availability.json` **no basta** para que se pueda usar.
+
+> **Corregido en la v2 — aquí me equivoqué.** La v1 decía "hoy solo `de/A2` está `live`". Eso es
+> cierto **en mi rama**, y lo escribí como si fuera un hecho global sin comprobarlo contra tu
+> `main`. No lo es:
+>
+> | Nivel | tu `main` (`a50a89a`) | mi `feat/en-b1` |
+> |---|---|---|
+> | `de/A2` | `live` | `live` |
+> | `de/B1` | **`live` (16 exámenes)** | `beta` (2) |
+> | `en/B1` | **`hidden`** | `beta` (3) |
+> | resto `de/*` | `beta` | `beta` |
+>
+> Lo que cambia: **el bug de arriba es real, pero no toca tu contenido principal.** Afecta a los
+> niveles `beta` — `de/A1`, `de/B2`, `de/C1`, `de/C2` y mi `en/B1` — y no a `de/A2` ni a `de/B1`,
+> que al estar `live` no pasan por ese gate. La frase "ningún visitante puede abrirlos" que había
+> en la v1 era falsa para `de/B1`. Perdón por el susto.
 
 Añadí un opt-in por navegador, además del global existente:
 
@@ -142,9 +178,10 @@ Dos avisos si corres esto en Windows:
 
 ## 4. La rama trae más que inglés
 
-Sinceridad sobre el tamaño: `feat/en-b1` son **17 commits sobre `4e5efac`**. Siete son el inglés B1
-(los de arriba). Los otros diez están en mi `main` local y tampoco los has visto — son el trabajo
-híbrido:
+Sinceridad sobre el tamaño: `feat/en-b1` son **17 commits de trabajo sobre `4e5efac`**, más los de
+este documento (por eso tu agente cuenta 18 y ahora 19 — la diferencia soy yo escribiendo esto).
+Siete son el inglés B1 (los de arriba). Los otros diez están en mi `main` local y tampoco los has
+visto — son el trabajo híbrido:
 
 ```
 34fbc01 hybrid-exam: pool-first exam planning and on-demand part generation
@@ -164,8 +201,8 @@ Si prefieres revisar por partes, el corte natural es: **`e270f94` (higiene de gi
 
 El diff total es de 1197 ficheros, pero eso engaña: unos 794 son el **borrado** del output de
 build que ya estaba en `.gitignore` (528 de `dist/`, 250 de `landing/.next|out`, 16 `.bak` — ver
-sección 5A). El código compartido de verdad son ~103 ficheros entre `js/`, `scripts/lib/` y
-`netlify/functions/`.
+sección 5A). El código compartido de verdad son **101** ficheros entre `js/`, `scripts/lib/` y
+`netlify/functions/` (cifra de tu agente; yo había dicho ~103 a ojo).
 
 **Lo que aprendí y creo que nos afecta a los dos:** el reparto "Danilo = inglés / Marcos = alemán"
 **no se sostiene en el repo**. El contenido sí se separa por idioma, pero el pipeline generador no:
@@ -202,7 +239,7 @@ referencia buena en esos ficheros.
 
 ### 4.2 Los ficheros del híbrido son "add/add": mismo código, cero ancestro común
 
-21 de los 46 conflictos de código son de este tipo — el fichero **no existe en la base `4e5efac`
+22 de los conflictos son de este tipo — el fichero **no existe en la base `4e5efac`
 pero sí en los dos lados**. Git no tiene ancestro con el que comparar, así que marca conflicto
 aunque el contenido sea casi idéntico:
 
@@ -215,32 +252,38 @@ aunque el contenido sea casi idéntico:
 | `scripts/lib/partGate.mjs` (269 L tuyo, 165 mío) | +1 / **−105** ← este sí diverge |
 
 O sea: **el código híbrido ya lo tienes tú, prácticamente igual que yo** (llegó fuera de git en
-algún momento). Son 21 conflictos que asustan en el listado y se resuelven eligiendo un lado. La
+algún momento). Son 22 conflictos que asustan en el listado y se resuelven eligiendo un lado. La
 excepción es `partGate.mjs`, donde tu versión tiene 105 líneas que la mía no — ahí me quedo con la
 tuya y le vuelvo a pasar el `lang:'en'` que necesita el inglés.
 
 **Lo que esto significa de verdad:** duplicamos esfuerzo sin darnos cuenta porque el código viajó
 por fuera del repositorio. Merece la pena arreglar el flujo, no solo este merge.
 
-### 4.3 `eliminado/` se llevó la documentación del inglés
+### 4.3 `eliminado/` y dónde acaban los docs del inglés
 
-En `52b670e` moviste 2675 ficheros a `eliminado/` (1854 de `batches/`, 348 de `_archive/`, 127 de
-`scripts/`…). Entre ellos, **`docs/audit/` entero — los 50 ficheros**, incluida la documentación de
-las etapas del inglés:
+> **Corregido en la v2 — este apartado estaba mal, y era el más injusto del documento.** La v1
+> decía que `eliminado/` "se llevó la documentación del inglés" y listaba seis ficheros como si tú
+> los hubieras archivado. **No los tocaste nunca: son míos, no existen en la base común ni en tu
+> árbol.** Lo comprobé mal y lo escribí en tono de reproche. Tu agente lo cazó y tiene razón:
+>
+> ```bash
+> git ls-tree -r --name-only main -- eliminado/docs/audit | grep -i en_b1   # vacío
+> git ls-tree -r --name-only 4e5efac -- docs/audit | grep -i en_b1          # vacío
+> git ls-tree -r --name-only danilo/feat/en-b1 -- docs/audit | grep -i en_b1  # los 6
+> ```
+>
+> Lo que pasó de verdad: tú renombraste `docs/audit/` → `eliminado/docs/audit/`, y al mergear, la
+> **detección de renombrado de directorio** de git coloca mis ficheros nuevos en la ruta nueva. Por
+> eso aparecen como `eliminado/docs/audit/*.md` en la lista de conflictos. Su estado es `AU`
+> (*added by us*), que ya decía justo esto y yo leí mal.
 
-```
-eliminado/docs/audit/etapa1-cierre-en-b1.md
-eliminado/docs/audit/gates-en-applicability.md
-eliminado/docs/audit/cambridge-b1-blueprint-verification.md
-eliminado/docs/audit/build-en_B1.json
-eliminado/docs/audit/residual-gaps.en_B1.json
-eliminado/docs/audit/validate-exam-fidelity.en_B1.json
-```
+Lo que sí es cierto: en `52b670e` moviste 2675 ficheros a `eliminado/` (1854 de `batches/`, 348 de
+`_archive/`, 127 de `scripts/`, 50 de `docs/`). Eso afecta a mis seis docs solo de rebote — al
+resolver el merge acabarían archivados sin que nadie lo haya decidido.
 
-Doy por hecho que fue una limpieza y no una decisión sobre esos ficheros concretos. Solo dime si
-`eliminado/` es un archivo muerto (y entonces recupero los seis de arriba a `docs/audit/`) o si es
-la nueva ubicación buena. Ahora mismo el plan del inglés apunta a rutas que en tu `main` ya no
-existen.
+**La pregunta, ya sin acusación:** ¿`eliminado/` es cuarentena o ubicación canónica? Si es
+cuarentena, resuelvo el conflicto dejando mis seis en `docs/audit/`. Tu propuesta de tratarlo como
+archivo muerto me vale.
 
 ---
 
@@ -327,10 +370,21 @@ asumo el coste de haber divergido tres semanas, que es justo.
 
 ### (C) ¿Qué niveles pasan a `live`?
 
-Hoy solo `de/A2`. en/B1 está en `beta` con 3 exámenes válidos, y de/B1 lleva tiempo en beta. Con
-el gate de la sección 2.2 tal como está, **ningún visitante puede abrirlos**. Hay que decidir qué
-se expone y cuándo — y si la respuesta es "todavía no", entonces la línea comentada de `index.html`
-se queda como está y esto no bloquea nada.
+**Reformulada en la v2**, porque la v1 partía de que solo `de/A2` estaba live y eso era falso (ver
+la corrección en 2.2). El catálogo bueno es el tuyo: `de/A2` y `de/B1` live, el resto beta, `en/*`
+hidden.
+
+Así que la pregunta ya no es "qué exponemos", sino solo **qué hacemos con `en/B1`**: en tu `main`
+está `hidden` y en mi rama `beta` con 3 exámenes que pasan fidelity 3/3 y auditoría limpia.
+
+Tu propuesta conservadora — mantener producción como está e integrar solo los fixes de código,
+decidiendo `en/B1` después del PR y con QA explícito — me parece la correcta, y es la que asumo
+salvo que digas lo contrario. No descomento `LEXICOIL_SHOW_BETA_LEVELS`.
+
+**Ojo al resolver el merge:** `data/exams/availability.json` sale como conflicto `UU` y **no vale
+tomar un lado entero**. Si tomas el mío pierdes `de/B1` live y tus 16 exámenes; si tomo el tuyo
+pierdo `en/B1`. Hay que fusionarlo a mano: tus valores de `de/*` tal cual, más la entrada de
+`en/B1` con el estado que decidamos aquí. Lo haré yo en el paso 2 y lo dejaré señalado en el PR.
 
 ---
 
@@ -338,7 +392,7 @@ se queda como está y esto no bloquea nada.
 
 El inglés B1 está listo y verificado en el navegador. De los 236 conflictos que hay ahora mismo
 entre tu `main` y mi rama, **162 son output de build que los dos ya damos por ignorable** y
-desaparecen con un `git rm --cached` tuyo; de los 46 de código, 21 son ficheros del híbrido que ya
+desaparecen con un `git rm --cached` tuyo; de los de código, 22 son ficheros del híbrido que ya
 tienes casi idénticos. Lo que queda para revisar entre los dos es pequeño, y el merge lo hago yo
 partiendo de tu versión.
 
