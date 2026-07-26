@@ -23,8 +23,23 @@ const ExamLibrary = (() => {
     );
   }
 
+  /**
+   * Opt-in preview of levels still marked `beta` in availability.json.
+   * localStorage lets a developer keep it on across reloads without touching index.html,
+   * which would flip beta levels on for every visitor of the deployed site.
+   *   localStorage.setItem('lc_show_beta', '1')
+   */
+  function betaLevelsOptIn() {
+    try {
+      return typeof localStorage !== 'undefined' && localStorage.getItem('lc_show_beta') === '1';
+    } catch (_) {
+      return false; // private mode / storage disabled
+    }
+  }
+
   function showBetaLevels() {
     if (typeof window !== 'undefined' && window.LEXICOIL_SHOW_BETA_LEVELS === true) return true;
+    if (betaLevelsOptIn()) return true;
     if (typeof process !== 'undefined' && process.env && process.env.LEXICOIL_SHOW_BETA_LEVELS === '1') {
       return true;
     }
