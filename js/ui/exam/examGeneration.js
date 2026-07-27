@@ -1207,6 +1207,13 @@ function coalesceLesenForumOpinions(part){
 function coalesceLesenPartQuestions(part){
   if(!part)return;
   const slot=String(part.blueprintSlot||part.slotType||'').toLowerCase();
+  // Same blueprint guard as isLesenAdsMatchingPart. This function promotes items[] into
+  // questions[] and, for anything with a passage, types them rf — the Goethe Lesen T1 shape.
+  // Cambridge Reading P1 (signs_notices_mcq) has neither R/F nor Ja/Nein keys, so its items
+  // fell through to that last `part.text||part.textTitle` branch and were appended as True/
+  // False copies while items[] stayed put: the part rendered twice, once correctly as 3-option
+  // MCQ and once as ten phantom True/False questions.
+  if(/mcq|multiple_choice|long_text|open_cloze/.test(slot)&&!/matching|ads/.test(slot))return;
   const existing=part.questions||[];
   const promoted=[];
   (part.items||[]).forEach((item,i)=>{

@@ -363,8 +363,38 @@ const ExamBlueprint = (() => {
         picked = shuffle(candidates).slice(0, target);
       }
     }
+    picked = orderGapQuestions(picked, partSpec);
     picked.forEach((q) => used.add(q.id));
     return picked;
+  }
+
+  /**
+   * Gap-bound tasks must follow the passage, not the pick order. The picker shuffles, which
+   * is right for independent items but not for "choose the option for gap N": Cambridge
+   * Reading P4/P5/P6 were arriving as gaps 3,5,1,2,4 while the text numbered them 1..5, so
+   * the candidate had to hunt for each gap. Goethe B2/C1/C2 and DELE have gap slots too and
+   * want the same order.
+   *
+   * Deliberately a no-op unless the intent is unambiguous: every question must yield a gap
+   * number and they must all be distinct, otherwise the original order is kept.
+   */
+  function gapNumberOf(q) {
+    const text = String(q?.question || q?.statement || q?.text || '');
+    const m = text.match(/\bgap\s*(\d+)/i) || text.match(/\((\d+)\)/) || text.match(/\bhueco\s*(\d+)/i)
+      || text.match(/\bL(?:ü|ue)cke\s*(\d+)/i);
+    if (m) return Number(m[1]);
+    const byId = String(q?.id || '').match(/-q(\d+)$/i);
+    return byId ? Number(byId[1]) : null;
+  }
+
+  function orderGapQuestions(questions, partSpec) {
+    if (!Array.isArray(questions) || questions.length < 2) return questions;
+    const slot = `${partSpec?.slotType || ''} ${partSpec?.taskFormat || ''}`.toLowerCase();
+    if (!/gap|cloze/.test(slot)) return questions;
+    const numbered = questions.map((q) => ({ q, n: gapNumberOf(q) }));
+    if (numbered.some((x) => x.n == null)) return questions;
+    if (new Set(numbered.map((x) => x.n)).size !== numbered.length) return questions;
+    return numbered.sort((a, b) => a.n - b.n).map((x) => x.q);
   }
 
   function inferModuleFromPool(pool) {

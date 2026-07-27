@@ -101,6 +101,40 @@ assert(
   'Cambridge P3 questions stay multiple choice',
 );
 
+// Cambridge Reading Part 1: five signs, each with its own 3-option MCQ. The Goethe Lesen T1
+// shape is True/False over one shared passage, and coalesceLesenPartQuestions used to promote
+// these items into rf questions without clearing items[], so the part rendered twice.
+const cambridgeP1 = normalizeExam({
+  level: 'B1',
+  lang: 'en',
+  lesenParts: [
+    {
+      teil: 1,
+      blueprintSlot: 'signs_notices_mcq',
+      instruction: 'Read the signs and answer the questions.',
+      textTitle: 'Airport Sign',
+      items: Array.from({ length: 5 }, (_, i) => ({
+        id: `s${i + 1}`,
+        signText: `NOTICE ${i + 1}: Please keep your belongings with you at all times.`,
+        question: `What does notice ${i + 1} tell you?`,
+        options: ['a) first', 'b) second', 'c) third'],
+        correct: 'a',
+      })),
+    },
+  ],
+}).lesenParts[0];
+
+assert(cambridgeP1.items?.length === 5, 'Cambridge P1 keeps its 5 sign items');
+assert(!cambridgeP1.questions?.length, 'Cambridge P1 grows no duplicate question set');
+assert(
+  cambridgeP1.items.every((it) => (it.options || []).length === 3),
+  'Cambridge P1 items keep their three options',
+);
+assert(
+  cambridgeP1.items.every((it) => String(it.type || '').toLowerCase() !== 'rf'),
+  'Cambridge P1 items are not retyped as True/False',
+);
+
 // The German side of the same guard: no slot declared, so Teil 3 still coalesces.
 const goetheT3 = normalizeExam({
   level: 'B1',
