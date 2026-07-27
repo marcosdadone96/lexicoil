@@ -459,6 +459,13 @@ function coalesceLesenAdsMatchingPart(part) {
   if (!part || typeof part !== 'object') return part;
   const teil = Number(part.teil ?? 0);
   const slot = String(part.slotType || part.blueprintSlot || '').toLowerCase();
+  // Mirror of the blueprint guard in examGeneration.isLesenAdsMatchingPart. Teil 3 is the
+  // ads-matching task in Goethe but not in Cambridge, where Reading Part 3 is a long text
+  // with multiple choice. Without this, `teil === 3` alone was enough: the five questions
+  // were copied into items, retyped as matching and stripped of their options, while the
+  // originals stayed in part.questions because the cleanup below only drops matching-typed
+  // ones. The part then rendered twice — once as stemless A–D/0 radios, once correctly.
+  if (/mcq|multiple_choice|long_text|open_cloze/.test(slot) && !/matching|ads/.test(slot)) return part;
   const matchingLike =
     teil === 3 ||
     slot.includes('ads_matching') ||
