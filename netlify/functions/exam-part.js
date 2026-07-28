@@ -35,8 +35,11 @@ const { runPartQualityGate, partMinTargetFromBlueprint, applyPartPostprocess } =
 const { verifyTopicCoherence } = require('./lib/topicCoherenceGate.js');
 const { releaseGenerationQuota }     = require('./lib/releaseGeneration.js');
 const { checkExamPartVocabRateLimit } = require('./lib/examPartVocabRateLimit.js');
+const { checkPersonalModuleIntentRateLimit } = require('./lib/personalModuleIntentRateLimit.js');
 const { gatePersonalExamPartGet } = require('./lib/examPartPersonalQuota.js');
 const { normalizeAssembleMode, partPassesAssembleMode } = require('./lib/officialQuarantine.js');
+const { planPersonalModuleAssembly } = require('./lib/personalModuleVocabPlan.js');
+const { requireAuth: requireAuthUser } = require('./lib/authLib.js');
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -168,6 +171,91 @@ exports.handler = async (event) => {
       const excludeTopics = String(params.excludeTopics || '')
         .split(',').map((s) => s.trim()).filter(Boolean).slice(0, 20);
 
+      let wantLemmas = [];
+      if (wordsRaw.length) {
+        try {
+          const { canonicalizeVocabQuery } = require('./lib/vocabIndexQuality.js');
+          const canon = canonicalizeVocabQuery(wordsRaw, { lang });
+          wantLemmas = canon.words.length
+            ? canon.words
+            : (() => {
+                const { lemmatizeWords } = require('./lib/passageVocab.js');
+                return lemmatizeWords(wordsRaw, lang);
+              })();
+        } catch (lemErr) {
+          console.warn('[exam-part] canonicalizeVocabQuery failed:', lemErr.message);
+          try {
+            const { lemmatizeWords } = require('./lib/passageVocab.js');
+            wantLemmas = lemmatizeWords(wordsRaw, lang);
+          } catch (_) {
+            wantLemmas = wordsRaw.map((w) => String(w).toLowerCase());
+          }
+        }
+      }
+
+      const topicRaw = String(params.topicTag || params.topic || '').trim();
+      const topicTag = topicRaw ? normalizeB1Topic(topicRaw) : null;
+      const assembleMode = normalizeAssembleMode(params.assembleMode || params.mode);
+
+      const planModule = params.planModule === '1' || params.planModule === 'true';
+      if (planModule) {
+        const auth = await requireAuthUser(event, store);
+        if (!auth.ok) {
+          return jsonResponse(auth.status || 401, noCache, {
+            error: auth.error === 'unauthorized' ? 'login_required' : (auth.error || 'login_required'),
+          });
+        }
+        const rlIntent = await checkPersonalModuleIntentRateLimit(store, event);
+        if (!rlIntent.ok) {
+          return jsonResponse(429, {
+            ...noCache,
+            'Retry-After': String(Math.max(1, Math.ceil((rlIntent.resetAt - Date.now()) / 1000))),
+          }, {
+            error: 'personal_module_intent_rate_limited',
+            limit: rlIntent.limit,
+            remaining: 0,
+            resetAt: rlIntent.resetAt,
+          });
+        }
+        const rlPlan = await checkExamPartVocabRateLimit(store, event);
+        if (!rlPlan.ok) {
+          return jsonResponse(429, {
+            ...noCache,
+            'Retry-After': String(Math.max(1, Math.ceil((rlPlan.resetAt - Date.now()) / 1000))),
+          }, {
+            error: 'rate_limited',
+            limit: rlPlan.limit,
+            remaining: 0,
+            resetAt: rlPlan.resetAt,
+          });
+        }
+        if (!wantLemmas.length) {
+          return jsonResponse(400, noCache, { error: 'words_required', ok: false, reason: 'vocab_no_match' });
+        }
+        const verifyText = params.verifyText !== '0' && params.verifyText !== 'false';
+        const blueprint = loadBlueprint(lang, level);
+        const plan = await planPersonalModuleAssembly(store, lang, level, module, {
+          words: wantLemmas,
+          userWords: wordsRaw.length ? wordsRaw : wantLemmas,
+          topicTag,
+          excludeIds,
+          assembleMode,
+          blueprint,
+          verifyText,
+        });
+        console.info('[exam-part] planModule', {
+          ok: plan.ok,
+          reason: plan.reason,
+          coveredCount: plan.coveredCount,
+          textCoveredCount: plan.textCoveredCount,
+          decision: plan.decision,
+          module,
+          level,
+          topic: plan.requestedTopic,
+        });
+        return jsonResponse(200, noCache, plan);
+      }
+
       let quotaGate = null;
 
       // Via A abuse guard: rate-limit only vocab picks (?words=), not classic pool pick.
@@ -202,32 +290,6 @@ exports.handler = async (event) => {
           });
         }
       }
-
-      let wantLemmas = [];
-      if (wordsRaw.length) {
-        try {
-          const { canonicalizeVocabQuery } = require('./lib/vocabIndexQuality.js');
-          const canon = canonicalizeVocabQuery(wordsRaw, { lang });
-          wantLemmas = canon.words.length
-            ? canon.words
-            : (() => {
-                const { lemmatizeWords } = require('./lib/passageVocab.js');
-                return lemmatizeWords(wordsRaw, lang);
-              })();
-        } catch (lemErr) {
-          console.warn('[exam-part] canonicalizeVocabQuery failed:', lemErr.message);
-          try {
-            const { lemmatizeWords } = require('./lib/passageVocab.js');
-            wantLemmas = lemmatizeWords(wordsRaw, lang);
-          } catch (_) {
-            wantLemmas = wordsRaw.map((w) => String(w).toLowerCase());
-          }
-        }
-      }
-
-      const topicRaw = String(params.topicTag || params.topic || '').trim();
-      const topicTag = topicRaw ? normalizeB1Topic(topicRaw) : null;
-      const assembleMode = normalizeAssembleMode(params.assembleMode || params.mode);
 
       let result = null;
       let poolRelaxed = false;

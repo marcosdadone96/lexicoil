@@ -35,7 +35,7 @@
 
 [functions."exam-part"]
   # pool index: partIndex → partTopicDetect, b1Topics, lemmatizer, lexicon sets
-  included_files = ["library/vocab/**", "library/blueprints/**", "js/engine/**", "js/data/**", "js/library/**", "data/lexicon/**", "netlify/functions/lib/partIndex.js", "netlify/functions/lib/projectRoot.js", "netlify/functions/lib/passageVocab.js", "netlify/functions/lib/poolSearchCache.js", "netlify/functions/lib/poolSourceMode.js"]
+  included_files = ["library/vocab/**", "library/blueprints/**", "js/engine/**", "js/data/**", "js/library/**", "data/lexicon/**", "netlify/functions/lib/partIndex.js", "netlify/functions/lib/projectRoot.js", "netlify/functions/lib/passageVocab.js", "netlify/functions/lib/poolSearchCache.js", "netlify/functions/lib/poolSourceMode.js", "netlify/functions/lib/personalModuleVocabPlan.js", "netlify/functions/lib/personalPartTextMatches.js", "netlify/functions/lib/personalModuleIntentRateLimit.js"]
 
 [functions."exam-plan"]
   # hybrid decision: external hybridExamPlan.mjs + pool index CJS bridge

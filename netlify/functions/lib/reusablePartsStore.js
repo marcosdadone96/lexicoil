@@ -175,6 +175,14 @@ async function addReusablePart(store, part, options = {}) {
   if (part.taskFormat != null) payload.taskFormat = part.taskFormat;
   if (Array.isArray(part.criteria)) payload.criteria = part.criteria;
   if (part.topicTag != null) payload.topicTag = part.topicTag;
+  if (part.topicSlug != null) payload.topicSlug = part.topicSlug;
+  if (part.topic != null) payload.topic = part.topic;
+  if (part.sem1VerifiedAt != null) payload.sem1VerifiedAt = part.sem1VerifiedAt;
+  if (part.sem1Skipped != null) payload.sem1Skipped = part.sem1Skipped;
+  if (Array.isArray(part.vocabIndex) && part.vocabIndex.length) {
+    payload.vocabIndex = part.vocabIndex;
+    if (part.vocabIndexVersion != null) payload.vocabIndexVersion = part.vocabIndexVersion;
+  }
 
   applyPartIndex(payload, {
     lang,
