@@ -8,6 +8,7 @@
   const SPLIT_MARKERS = [
     /Hier\s+sind\s+(?:fünf\s+)?Punkte[^:\n]*:\s*\n/i,
     /Diskutieren\s+Sie\s+folgende\s+Punkte[^:\n]*:\s*\n/i,
+    /(?:Besprechen|Sprechen)\s+Sie\s+(?:über\s+)?(?:die\s+)?folgende(?:n)?\s+Punkte\s*:?\s*\n/i,
     /(?:Besprechen|Sprechen)\s+Sie\s+(?:über\s+)?(?:die\s+)?folgenden\s+Punkte\s*:?\s*\n/i,
     /Ihre\s+Präsentation\s+sollte\s+folgende\s+Punkte\s+enthalten\s*:\s*\n/i,
     /Folgende\s+Struktur\s+wird\s+erwartet\s*:\s*\n/i,
@@ -33,6 +34,102 @@
   function sprechenQuestionType(part, record) {
     const q0 = (record?.questions || part?.questions || [])[0];
     return String(q0?.type || part?.type || '').toLowerCase();
+  }
+
+  function parseAgendaLines(block) {
+    return String(block || '')
+      .split('\n')
+      .map((line) => line.trim())
+      .filter((line) => line.length > 1);
+  }
+
+  /**
+   * A2 Goethe: intro + typed blocks (Karten grid, single Karte, Wochenpläne).
+   * @returns {{ intro: string, outro: string, layout: string, sectionLabel: string, items: {label:string,text:string}[], agendas: {title:string,lines:string[]}[] }}
+   */
+  function parseA2StructuredBriefing(text, teil) {
+    const raw = String(text || '').trim();
+    const empty = {
+      intro: raw,
+      outro: '',
+      layout: 'none',
+      sectionLabel: '',
+      items: [],
+      agendas: [],
+    };
+    if (!raw) return empty;
+
+    const cardsM = raw.match(/\bIhre Karten:\s*\n/i);
+    if (cardsM && cardsM.index != null) {
+      const intro = raw.slice(0, cardsM.index).trim();
+      let rest = raw.slice(cardsM.index + cardsM[0].length);
+      const outroM = rest.match(/\n\n(?=Stellen Sie|Antworten Sie|Sprechen Sie)/i);
+      const cardsBlock = outroM ? rest.slice(0, outroM.index) : rest;
+      const outro = outroM ? rest.slice(outroM.index).trim() : '';
+      const items = [];
+      const cardRe = /^\s*(\d+)\.\s*([^—\n]+)\s*—\s*(.+)$/gm;
+      let cm;
+      while ((cm = cardRe.exec(cardsBlock)) !== null) {
+        items.push({ label: cm[2].trim(), text: cm[3].trim() });
+      }
+      if (items.length) {
+        return {
+          intro,
+          outro,
+          layout: 'cards',
+          sectionLabel: 'Ihre Karten',
+          items,
+          agendas: [],
+        };
+      }
+    }
+
+    const oneCardM = raw.match(/\bIhre Karte:\s*\n/i);
+    if (oneCardM && oneCardM.index != null) {
+      const intro = raw.slice(0, oneCardM.index).trim();
+      let rest = raw.slice(oneCardM.index + oneCardM[0].length).trim();
+      const outroM = rest.match(/\n\n(?=Erzählen Sie|Sprechen Sie)/i);
+      const cardBlock = outroM ? rest.slice(0, outroM.index).trim() : rest.split('\n\n')[0]?.trim() || rest;
+      const outro = outroM ? rest.slice(outroM.index).trim() : rest.slice(cardBlock.length).trim();
+      const quote = cardBlock.replace(/^«|»$/g, '').replace(/^"|"$/g, '').trim();
+      if (quote) {
+        return {
+          intro,
+          outro,
+          layout: 'cards',
+          sectionLabel: 'Ihre Karte',
+          items: [{ label: '', text: quote }],
+          agendas: [],
+        };
+      }
+    }
+
+    const weekM = raw.match(/\bIhre Woche:\s*\n/i);
+    const partnerM = raw.match(/\bWoche Ihres Partners(?:\/Ihrer Partnerin)?:\s*\n/i);
+    if (weekM && partnerM && weekM.index != null && partnerM.index != null && partnerM.index > weekM.index) {
+      const intro = raw.slice(0, weekM.index).trim();
+      const weekBlock = raw.slice(weekM.index + weekM[0].length, partnerM.index).trim();
+      const afterPartner = raw.slice(partnerM.index + partnerM[0].length);
+      const outroM = afterPartner.match(/\n\n(?=[a-zäöü])/i);
+      const partnerBlock = outroM ? afterPartner.slice(0, outroM.index).trim() : afterPartner.trim();
+      const outro = outroM ? afterPartner.slice(outroM.index).trim() : '';
+      return {
+        intro,
+        outro,
+        layout: 'agenda',
+        sectionLabel: '',
+        items: [],
+        agendas: [
+          { title: 'Ihre Woche', lines: parseAgendaLines(weekBlock) },
+          {
+            title: 'Woche Ihres Partners / Ihrer Partnerin',
+            lines: parseAgendaLines(partnerBlock),
+          },
+        ],
+      };
+    }
+
+    return empty;
   }
 
   /** Goethe A2 Sprechen — full consigna is one block (Karten / Karte / agendas), not B1 bullet lists. */
@@ -130,8 +227,17 @@
     const ctx = { level, type: qType };
 
     if (isA2GoetheSprechen(full, teil, ctx)) {
+      const structured = parseA2StructuredBriefing(full, teil);
+      const hasStructure =
+        structured.layout !== 'none' &&
+        (structured.items.length > 0 || structured.agendas.length > 0);
       return {
-        intro: full,
+        intro: hasStructure ? structured.intro : full,
+        outro: structured.outro || '',
+        layout: hasStructure ? structured.layout : 'none',
+        sectionLabel: structured.sectionLabel || '',
+        items: structured.items,
+        agendas: structured.agendas,
         bullets: [],
         slides: Array.isArray(part?.slides) ? part.slides : [],
         full,
@@ -149,12 +255,27 @@
         intro: parsed.bullets.length ? parsed.intro : full,
         bullets: [],
         slides,
+        layout: 'slides',
+        sectionLabel: '',
+        items: [],
+        agendas: [],
+        outro: '',
         full,
       };
     }
 
     if (parsed.bullets.length) {
-      return { intro: parsed.intro, bullets: parsed.bullets, slides: [], full };
+      return {
+        intro: parsed.intro,
+        bullets: parsed.bullets,
+        slides: [],
+        layout: 'bullets',
+        sectionLabel: '',
+        items: [],
+        agendas: [],
+        outro: '',
+        full,
+      };
     }
 
     if (explicit.length) {
@@ -162,12 +283,42 @@
         explicit.length >= 2 &&
         explicit.join('\n').length >= full.length * 0.85;
       if (looksLikeLineSplit) {
-        return { intro: full, bullets: [], slides: [], full };
+        return {
+          intro: full,
+          bullets: [],
+          slides: [],
+          layout: 'none',
+          sectionLabel: '',
+          items: [],
+          agendas: [],
+          outro: '',
+          full,
+        };
       }
-      return { intro: full, bullets: explicit, slides: [], full };
+      return {
+        intro: full,
+        bullets: explicit,
+        slides: [],
+        layout: 'bullets',
+        sectionLabel: '',
+        items: [],
+        agendas: [],
+        outro: '',
+        full,
+      };
     }
 
-    return { intro: full, bullets: [], slides: [], full };
+    return {
+      intro: full,
+      bullets: [],
+      slides: [],
+      layout: 'none',
+      sectionLabel: '',
+      items: [],
+      agendas: [],
+      outro: '',
+      full,
+    };
   }
 
   /**
@@ -210,6 +361,7 @@
 
   const api = {
     parseSprechenBriefing,
+    parseA2StructuredBriefing,
     briefingForPart,
     enrichSprechenExamPart,
     isA2GoetheSprechen,

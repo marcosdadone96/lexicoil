@@ -125,6 +125,7 @@ const AnalyticsStore = (() => {
       vocabularyGaps: {},
       modules: {},
       itemStats: {},
+      productionGrammar: {},
       examsTaken: 0,
       lastUpdated: null,
     };
@@ -279,6 +280,116 @@ const AnalyticsStore = (() => {
     });
   }
 
+  function ingestProductionGrammar(profile, entry, goal) {
+    if (!profile.productionGrammar) profile.productionGrammar = {};
+    const lang = goal?.subject || entry?.lang || 'de';
+    const level = goal?.level || entry?.level || 'B1';
+    const addEval = (evals) => {
+      (evals || []).forEach((ev) => {
+        const errors =
+          typeof GrammarCategories !== 'undefined' && GrammarCategories.normalizeGrammarErrors
+            ? GrammarCategories.normalizeGrammarErrors(ev?.errors)
+            : ev?.errors || [];
+        errors.forEach((e) => {
+          if (String(e?.type || '').toLowerCase() !== 'grammar') return;
+          const cat =
+            typeof GrammarCategories !== 'undefined'
+              ? GrammarCategories.normalizeCategory(e.grammarCategory)
+              : String(e.grammarCategory || 'other');
+          if (!profile.productionGrammar[cat]) {
+            profile.productionGrammar[cat] = { errors: 0, examples: [], lastDrillScore: null, lastDrillAt: 0 };
+          }
+          const bucket = profile.productionGrammar[cat];
+          bucket.errors = (bucket.errors || 0) + 1;
+          if (!Array.isArray(bucket.examples)) bucket.examples = [];
+          if (bucket.examples.length < 4 && (e.original || e.correction)) {
+            bucket.examples.push({
+              original: String(e.original || '').trim(),
+              correction: String(e.correction || '').trim(),
+              explanation: String(e.explanation || '').trim(),
+              at: Date.now(),
+            });
+          }
+        });
+        const summary =
+          typeof GrammarCategories !== 'undefined'
+            ? GrammarCategories.normalizeGrammarErrorSummary(ev?.grammarErrorSummary, ev?.errors)
+            : [];
+        summary.forEach((row) => {
+          const cat =
+            typeof GrammarCategories !== 'undefined'
+              ? GrammarCategories.normalizeCategory(row.category)
+              : 'other';
+          if (!profile.productionGrammar[cat]) {
+            profile.productionGrammar[cat] = { errors: 0, examples: [], lastDrillScore: null, lastDrillAt: 0 };
+          }
+        });
+      });
+    };
+    addEval(entry?.writingEvals);
+    addEval(entry?.speakingEvals);
+    void lang;
+    void level;
+  }
+
+  function recordGrammarDrillResult(goal, category, score) {
+    if (!goal) return;
+    const data = load();
+    const key = profileKey(goal);
+    const profile = data.profiles[key] || emptyProfile();
+    applyTemporalDecay(profile);
+    const cat =
+      typeof GrammarCategories !== 'undefined'
+        ? GrammarCategories.normalizeCategory(category)
+        : String(category || 'other');
+    if (!profile.productionGrammar) profile.productionGrammar = {};
+    if (!profile.productionGrammar[cat]) {
+      profile.productionGrammar[cat] = { errors: 0, examples: [], lastDrillScore: null, lastDrillAt: 0 };
+    }
+    const bucket = profile.productionGrammar[cat];
+    bucket.lastDrillScore = Math.max(0, Math.min(100, Math.round(Number(score) || 0)));
+    bucket.lastDrillAt = Date.now();
+    const tag =
+      typeof GrammarCategories !== 'undefined'
+        ? GrammarCategories.categoryToGrammarTag(cat, goal.subject, goal.level)
+        : `g-${goal.subject || 'de'}-${String(goal.level || 'b1').toLowerCase()}-${cat}`;
+    if (!profile.grammarTags[tag]) profile.grammarTags[tag] = { correct: 0, total: 0, streak: 0 };
+    profile.grammarTags[tag].total += 1;
+    if (bucket.lastDrillScore >= 70) {
+      profile.grammarTags[tag].correct += 1;
+      profile.grammarTags[tag].streak = (profile.grammarTags[tag].streak || 0) + 1;
+    } else profile.grammarTags[tag].streak = 0;
+    profile.lastUpdated = Date.now();
+    data.profiles[key] = profile;
+    save(data);
+  }
+
+  function getProductionGrammarOverview(goal, limit = 6) {
+    const p = getProfile(goal);
+    const pg = p.productionGrammar || {};
+    const labelFn =
+      typeof GrammarCategories !== 'undefined' && GrammarCategories.categoryLabel
+        ? GrammarCategories.categoryLabel
+        : (c) => String(c);
+    return Object.entries(pg)
+      .map(([category, stat]) => {
+        const errors = Math.max(0, Number(stat?.errors) || 0);
+        const lastDrillScore = stat?.lastDrillScore != null ? Number(stat.lastDrillScore) : null;
+        const weak = errors >= 2 && (lastDrillScore == null || lastDrillScore < 70);
+        return {
+          category,
+          label: labelFn(category),
+          errors,
+          lastDrillScore,
+          weak,
+          examples: stat?.examples || [],
+        };
+      })
+      .filter((r) => r.errors > 0)
+      .sort((a, b) => b.errors - a.errors || (a.lastDrillScore ?? 0) - (b.lastDrillScore ?? 0))
+      .slice(0, limit);
+  }
+
   function recordWordResults(goal, detail) {
     if (!goal || !Array.isArray(detail)) return;
     const data = load();
@@ -311,6 +422,8 @@ const AnalyticsStore = (() => {
     mergeTagMaps(profile.topicTags, tagStats.topicTags);
     mergeModuleMaps(profile.modules, tagStats.modules);
     mergeItemMaps(profile.itemStats, tagStats.itemStats);
+
+    ingestProductionGrammar(profile, entry, goal);
 
     (entry?.savedWords || []).forEach((w) => {
       if (!profile.vocabularyGaps[w]) profile.vocabularyGaps[w] = 0;
@@ -425,6 +538,8 @@ const AnalyticsStore = (() => {
     const weakGrammar = rankedWeakTags(p.grammarTags, 5, minAttempts);
     const weakTopics = rankedWeakTags(p.topicTags, 5, minAttempts);
     const grammarOverview = rankedTagsByMastery(p.grammarTags, 8, minAttempts);
+    const productionGrammar =
+      typeof getProductionGrammarOverview === 'function' ? getProductionGrammarOverview(goal, 6) : [];
     return {
       examsTaken: p.examsTaken,
       lastUpdated: p.lastUpdated,
@@ -433,6 +548,7 @@ const AnalyticsStore = (() => {
       weakTopics,
       weakModules: getWeakModules(goal, 5),
       grammarOverview,
+      productionGrammar,
       modulePerformance: getModulePerformance(goal),
       vocabularyGaps: getVocabularyGaps(goal, 5),
       hasData: p.examsTaken > 0,
@@ -528,6 +644,8 @@ const AnalyticsStore = (() => {
     computeTagStats,
     recordExamResult,
     recordWordResults,
+    recordGrammarDrillResult,
+    getProductionGrammarOverview,
     getWeakGrammarTags,
     getWeakTopicTags,
     getWeakModules,

@@ -24,9 +24,21 @@ function vpLemmaTranslation(targetWord, pool) {
   return tr && tr !== '—' ? tr : '';
 }
 
-function vpFeedbackTrLine(targetWord, pool) {
-  const tr = vpLemmaTranslation(targetWord, pool);
+function vpPhraseTranslation(p, pool) {
+  const ai = String(p?.translation || '').trim();
+  if (ai) return ai;
+  return vpLemmaTranslation(p?.targetWord, pool);
+}
+
+function vpFeedbackTrLine(targetWord, pool, phrase) {
+  const tr = vpPhraseTranslation(phrase || { targetWord }, pool);
   return tr ? '<div class="ve-feedback-tr">' + esc(tr) + '</div>' : '';
+}
+
+function vpToggleMeaning(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.style.display = el.style.display === 'none' ? 'block' : 'none';
 }
 
 async function startVocabPhrases(opts = {}) {
@@ -40,8 +52,21 @@ async function startVocabPhrases(opts = {}) {
   }
   const words = pool.map((f) => String(f.word || '').trim()).filter(Boolean);
   const goal = typeof getActiveGoal === 'function' ? getActiveGoal() : null;
+  let sessionWords = words;
+  if (typeof VocabBatching !== 'undefined' && VocabBatching.selectForActivity) {
+    const sel = VocabBatching.selectForActivity(words, 'vocab_phrases', goal);
+    sessionWords = sel.words;
+    S.vpActivityWords = sessionWords.slice();
+    if (goal && typeof saveGoals === 'function') saveGoals();
+  }
   const subject = goal?.subject || S.deckGoalFilter || S.subject || 'de';
   const level = goal?.level || S.level || 'B1';
+  const uiLang =
+    typeof resolveActiveVocabUiLang === 'function'
+      ? resolveActiveVocabUiLang()
+      : typeof translationLang === 'function'
+        ? translationLang()
+        : 'en';
   hideAll();
   show('loadingScreen');
   const lt = document.getElementById('loaderTitle');
@@ -51,7 +76,12 @@ async function startVocabPhrases(opts = {}) {
   let phrases = [];
   try {
     if (typeof generateVocabPhrasesWithAI !== 'function') throw new Error('Phrases unavailable');
-    phrases = await generateVocabPhrasesWithAI(words, { lang: subject, level, count: Math.min(5, words.length) });
+    phrases = await generateVocabPhrasesWithAI(sessionWords, {
+      lang: subject,
+      level,
+      count: Math.min(5, sessionWords.length),
+      uiLang,
+    });
   } catch (e) {
     hideAll();
     vpBackFromPhrases();
@@ -70,6 +100,17 @@ async function startVocabPhrases(opts = {}) {
   S.vpGapScore = 0;
   S.vpOrderScore = 0;
   S.vpFromVocab = !!opts.fromVocab;
+  S.vpRetakePhraseId = null;
+  if (typeof SavedVocabPhrases !== 'undefined' && SavedVocabPhrases.persistAfterGeneration) {
+    S.vpSavedPhraseSetId = SavedVocabPhrases.persistAfterGeneration({
+      goal,
+      subject,
+      level,
+      uiLang,
+      phrases,
+      pool,
+    });
+  } else S.vpSavedPhraseSetId = null;
   hide('loadingScreen');
   if (typeof ActivityTrack !== 'undefined') ActivityTrack.beginSession('vocab_phrases', goal?.id, 'Phrase practice');
   show('vocabPhrasesScreen');
@@ -119,6 +160,18 @@ function renderVpPhrase() {
     const total = phrases.length * 2;
     const pct = total ? Math.round((S.vpScore / total) * 100) : 0;
     flushOpenStudySession({ type: 'vocab_phrases', score: pct, label: 'Phrases · ' + pct + '%' });
+    const savedId = S.vpRetakePhraseId || S.vpSavedPhraseSetId;
+    if (savedId && typeof SavedVocabPhrases !== 'undefined' && SavedVocabPhrases.recordResult) {
+      SavedVocabPhrases.recordResult(savedId, pct);
+    }
+    S.vpRetakePhraseId = null;
+    S.vpSavedPhraseSetId = null;
+    const rot = S.vpActivityWords || [];
+    const g = typeof getActiveGoal === 'function' ? getActiveGoal() : null;
+    if (g && rot.length && typeof VocabBatching !== 'undefined' && VocabBatching.recordActivityUsage) {
+      VocabBatching.recordActivityUsage(g, 'vocab_phrases', rot);
+      S.vpActivityWords = null;
+    }
     vc.innerHTML =
       '<div class="ws-panel ve-results-panel"><div class="ve-big ' +
       (pct >= 70 ? 'pass' : pct >= 50 ? 'mid' : 'fail') +
@@ -148,6 +201,19 @@ function renderVpPhrase() {
 function renderVpGap(vc, p, subject) {
   const vt = typeof vocabT === 'function' ? vocabT() : null;
   const pool = S.vpPool || [];
+  const meaning = vpPhraseTranslation(p, pool);
+  const meaningId = 'vpMean_' + (S.vpIndex || 0);
+  const meaningBtn = meaning
+    ? '<button type="button" class="btn-sm vp-mean-btn" onclick="vpToggleMeaning(\'' +
+      meaningId +
+      '\')">' +
+      (vt ? vt.showMeaning || 'Show meaning' : 'Show meaning') +
+      '</button><div class="vp-phrase-mean" id="' +
+      meaningId +
+      '" style="display:none;margin-top:10px;font-size:14px;color:var(--text-secondary);font-style:italic">' +
+      esc(meaning) +
+      '</div>'
+    : '';
   const distractors = vpPickGapOptions(p, pool);
   const optHtml = distractors
     .map((o) => {
@@ -160,7 +226,9 @@ function renderVpGap(vc, p, subject) {
     (vt ? vt.completePhrase : 'Complete the phrase') +
     '</p><div class="ve-word vp-phrase">' +
     esc(p.display) +
-    '</div><p class="ve-meta">' +
+    '</div>' +
+    meaningBtn +
+    '<p class="ve-meta">' +
     (vt ? vt.whichFits : 'Which word fits the blank?') +
     '</p></div><div class="ve-opts options" id="vpGapOpts" data-correct="' +
     esc(p.blankToken) +
@@ -217,7 +285,7 @@ function vpAnsGap(ev) {
   }
   S.vpAnswered = true;
   optsEl?.removeEventListener('click', vpAnsGap);
-  const trLine = vpFeedbackTrLine(targetWord, pool);
+  const trLine = vpFeedbackTrLine(targetWord, pool, p);
   const vt = typeof vocabT === 'function' ? vocabT() : null;
   const fb =
     '<div class="ve-feedback ' +
@@ -305,7 +373,7 @@ function vpCheckOrder() {
     S.vpScore++;
   }
   const vc = document.getElementById('vpContent');
-  const trLine = vpFeedbackTrLine(p.targetWord, S.vpPool || []);
+  const trLine = vpFeedbackTrLine(p.targetWord, S.vpPool || [], p);
   const vt = typeof vocabT === 'function' ? vocabT() : null;
   const fb =
     '<div class="ve-feedback ' +
@@ -331,6 +399,7 @@ function vpNextPhrase() {
   renderVpPhrase();
 }
 
+window.vpToggleMeaning = vpToggleMeaning;
 window.startVocabPhrases = startVocabPhrases;
 window.launchVocabHubPhrases = launchVocabHubPhrases;
 window.exitVocabPhrases = exitVocabPhrases;

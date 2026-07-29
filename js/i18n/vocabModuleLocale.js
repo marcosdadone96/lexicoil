@@ -94,6 +94,14 @@ function vocabModuleStrings(lang) {
       clear: 'Clear',
       checkOrder: 'Check order',
       yourDeck: 'Your deck',
+      showMeaning: 'Show meaning',
+      savedPracticeTitle: 'Saved practice',
+      savedPracticeLede:
+        'AI sessions you generated are saved here — replay anytime without spending credits.',
+      savedQuizzesLbl: 'Quiz',
+      savedPhrasesLbl: 'Phrases',
+      savedListeningLbl: 'Listening',
+      savedFlashcardsLbl: 'Flashcards',
     },
     es: {
       interfaceLang: 'Interfaz',
@@ -174,6 +182,14 @@ function vocabModuleStrings(lang) {
       clear: 'Borrar',
       checkOrder: 'Comprobar orden',
       yourDeck: 'Tu mazo',
+      showMeaning: 'Ver significado',
+      savedPracticeTitle: 'Práctica guardada',
+      savedPracticeLede:
+        'Las sesiones con IA que generaste quedan aquí — repítelas cuando quieras sin gastar créditos.',
+      savedQuizzesLbl: 'Quiz',
+      savedPhrasesLbl: 'Frases',
+      savedListeningLbl: 'Listening',
+      savedFlashcardsLbl: 'Tarjetas',
     },
     fr: {
       interfaceLang: 'Interface',
@@ -254,6 +270,14 @@ function vocabModuleStrings(lang) {
       clear: 'Effacer',
       checkOrder: 'Vérifier l’ordre',
       yourDeck: 'Votre paquet',
+      showMeaning: 'Voir le sens',
+      savedPracticeTitle: 'Pratique enregistrée',
+      savedPracticeLede:
+        'Les sessions IA générées sont ici — rejouez sans dépenser de crédits.',
+      savedQuizzesLbl: 'Quiz',
+      savedPhrasesLbl: 'Phrases',
+      savedListeningLbl: 'Écoute',
+      savedFlashcardsLbl: 'Cartes',
     },
     it: {
       interfaceLang: 'Interfaccia',
@@ -334,6 +358,14 @@ function vocabModuleStrings(lang) {
       clear: 'Cancella',
       checkOrder: 'Verifica ordine',
       yourDeck: 'Il tuo mazzo',
+      showMeaning: 'Mostra significato',
+      savedPracticeTitle: 'Pratica salvata',
+      savedPracticeLede:
+        'Le sessioni IA che hai generato restano qui — riproduci senza spendere crediti.',
+      savedQuizzesLbl: 'Quiz',
+      savedPhrasesLbl: 'Frasi',
+      savedListeningLbl: 'Ascolto',
+      savedFlashcardsLbl: 'Flashcard',
     },
   };
   return L[lang] || L.en;
@@ -355,8 +387,28 @@ function resolveVocabUiLang() {
   return 'en';
 }
 
-/** Single read path for word translations, flashcard backs, exam hover — always lc_ui_lang. */
+/** Prefer the visible Interface chip in vocab UI (avoids stale lc_ui_lang vs what user sees). */
+function resolveActiveVocabUiLang() {
+  const codes =
+    typeof VOCAB_UI_LANG_CODES !== 'undefined'
+      ? VOCAB_UI_LANG_CODES
+      : ['en', 'es', 'fr', 'it'];
+  if (typeof document !== 'undefined') {
+    const active = document.querySelector(
+      '[data-vocab-ui-lang] .vt-lb.active, #vvUiLangBtns .vt-lb.active, #vvFcLangBtns .vt-lb.active, #fcLangBtns .vt-lb.active, #veUiLangMount .vt-lb.active',
+    );
+    const fromBtn = vocabUIButtonLang(active);
+    if (fromBtn && codes.includes(fromBtn)) {
+      syncUiLangMirrors(fromBtn);
+      return fromBtn;
+    }
+  }
+  return resolveVocabUiLang();
+}
+
+/** Single read path for word translations, flashcard backs, exam hover — active Interface chip wins. */
 function translationLang() {
+  if (typeof resolveActiveVocabUiLang === 'function') return resolveActiveVocabUiLang();
   return resolveVocabUiLang();
 }
 
@@ -434,6 +486,7 @@ function setVocabUiLang(code, btn) {
   } catch (_) {}
   refreshTranslationLangChrome();
   refreshActiveVocabModuleUi();
+  if (typeof mountFcDirectionBar === 'function') mountFcDirectionBar();
   if (typeof Auth !== 'undefined' && typeof Auth.pushSync === 'function') Auth.pushSync();
 }
 
@@ -461,12 +514,27 @@ function refreshActiveVocabModuleUi() {
   }
   if (typeof _vocabHub !== 'undefined' && _vocabHub.activity === 'flashcards' && typeof refreshVocabHubPanel === 'function') {
     refreshVocabHubPanel();
+    if (typeof refreshFlashcardTranslationsForUiLang === 'function') {
+      void refreshFlashcardTranslationsForUiLang();
+    }
+  }
+  const wsVocab = document.getElementById('wsPanelVocabulary');
+  const wsOn =
+    document.getElementById('goalWorkspaceScreen')?.style.display !== 'none' && wsVocab;
+  if (wsOn && typeof refreshVocabHubPanel === 'function') {
+    refreshVocabHubPanel();
+    if (typeof refreshFlashcardTranslationsForUiLang === 'function') {
+      void refreshFlashcardTranslationsForUiLang();
+    }
   }
   if (typeof renderFC === 'function' && document.getElementById('flashcardScreen')?.style.display !== 'none') {
     const t = vocabT();
     const trLbl = document.querySelector('#flashcardScreen .fc-lang-label');
-    if (trLbl) trLbl.textContent = t.translation + ':';
-    if (typeof renderFcSingleView === 'function' && (S.deckGoalFilter || _vocabHub?.activity === 'flashcards')) renderFcSingleView();
+    if (trLbl) trLbl.textContent = t.interfaceLang + ':';
+    renderFC(false);
+    if (typeof refreshFlashcardTranslationsForUiLang === 'function') {
+      void refreshFlashcardTranslationsForUiLang();
+    }
   }
 }
 
@@ -533,6 +601,7 @@ function initVocabUiLang() {
 if (typeof window !== 'undefined') {
   window.vocabModuleStrings = vocabModuleStrings;
   window.resolveVocabUiLang = resolveVocabUiLang;
+  window.resolveActiveVocabUiLang = resolveActiveVocabUiLang;
   window.translationLang = translationLang;
   window.syncUiLangMirrors = syncUiLangMirrors;
   window.refreshTranslationLangChrome = refreshTranslationLangChrome;

@@ -18,6 +18,11 @@
   var MSG_HOT_PATCHED = 'Corregido — ya se actualizó en pantalla.';
   var MSG_NEXT_PART =
     'Corregido — se aplicará a partir de la próxima parte/examen (no afecta esta pregunta ya mostrada).';
+  var MSG_PUBLISHED_CONFIRM =
+    'Esta parte ya está en el catálogo oficial (PUBLICADO).\n\n' +
+    'La corrección se aplicará al pool, seed y al examen publicado para cargas futuras.\n' +
+    'No se reescriben intentos ni resultados de exámenes ya completados.\n\n' +
+    '¿Continuar?';
   var MODULE_PART_KEYS = [
     'lesenParts',
     'horenParts',
@@ -28,6 +33,16 @@
     'writingParts',
     'speakingParts',
   ];
+
+  function canEditContent() {
+    if (typeof Auth !== 'undefined' && typeof Auth.canEditContent === 'function') {
+      return Auth.canEditContent();
+    }
+    if (typeof AdminAccess !== 'undefined' && AdminAccess.canEditContentFromUser) {
+      return AdminAccess.canEditContentFromUser(typeof S !== 'undefined' ? S.user : null);
+    }
+    return !!(typeof S !== 'undefined' && S.user && (S.user.canEditContent || S.user.isAdmin));
+  }
 
   function isAdmin() {
     if (typeof Auth !== 'undefined' && typeof Auth.isAdmin === 'function') return Auth.isAdmin();
@@ -51,6 +66,43 @@
       correctionId: correctionId || null,
       message: message || 'Ya existe una corrección pendiente',
     };
+  }
+
+  function publishedBadgeHtml(provenance) {
+    if (!provenance || !provenance.publishedOfficial) return '';
+    return (
+      '<span class="admin-review-published" title="Contenido en catálogo oficial">PUBLICADO</span>'
+    );
+  }
+
+  function examContext() {
+    return typeof S !== 'undefined' && S.examData ? S.examData : null;
+  }
+
+  function enrichProvenance(prov) {
+    prov = prov || {};
+    var exam = examContext();
+    var level = prov.level || (exam && exam.level) || '';
+    var sf = String(prov.sourceFile || '').trim();
+    if (sf && sf.indexOf('/') === -1 && sf.indexOf('pool-verified') === -1 && level) {
+      sf = 'batches/ready/pool-verified/' + String(level).toUpperCase() + '/' + sf.replace(/\.json$/i, '');
+    }
+    if (!prov.publishedOfficial && exam && exam.publishedExam === true) {
+      prov = Object.assign({}, prov, { publishedOfficial: true });
+    }
+    if (!prov.examId && exam && exam.examId) {
+      prov = Object.assign({}, prov, { examId: exam.examId });
+    }
+    return Object.assign({}, prov, { sourceFile: sf || prov.sourceFile, level: level || prov.level });
+  }
+
+  function isLocalDevHost() {
+    try {
+      var h = window.location && window.location.hostname;
+      return h === 'localhost' || h === '127.0.0.1';
+    } catch (_) {
+      return false;
+    }
   }
 
   function pendingBadgeHtml(kind, provenance) {
@@ -310,9 +362,9 @@
   }
 
   function passageBtnHtml(part, passageObj) {
-    if (!isAdmin()) return '';
+    if (!canEditContent()) return '';
     var id = 'pass_' + ++SEQ;
-    var prov = resolvePassageProvenance(part, passageObj);
+    var prov = enrichProvenance(resolvePassageProvenance(part, passageObj));
     var title =
       (passageObj && typeof passageObj === 'object' && (passageObj.title || passageObj.textTitle)) ||
       (part && (part.textTitle || part.title)) ||
@@ -342,16 +394,17 @@
       '">' +
       '<button type="button" class="btn-sm admin-review-btn" data-admin-review-id="' +
       escAttr(id) +
-      '">✏️ Revisar texto</button>' +
+      '">✏️ Corregir texto</button>' +
       pendingBadgeHtml('passage', prov) +
+      publishedBadgeHtml(prov) +
       '</div>'
     );
   }
 
   function questionBtnHtml(q, part) {
-    if (!isAdmin() || !q || q.id == null) return '';
+    if (!canEditContent() || !q || q.id == null) return '';
     var id = 'q_' + ++SEQ;
-    var prov = resolveQuestionProvenance(q, part);
+    var prov = enrichProvenance(resolveQuestionProvenance(q, part));
     TARGETS[id] = {
       kind: 'question',
       provenance: prov,
@@ -371,8 +424,9 @@
       '">' +
       '<button type="button" class="btn-sm admin-review-btn" data-admin-review-id="' +
       escAttr(id) +
-      '">✏️ Revisar pregunta</button>' +
+      '">✏️ Corregir texto</button>' +
       pendingBadgeHtml('question', prov) +
+      publishedBadgeHtml(prov) +
       '</div>'
     );
   }
@@ -388,6 +442,7 @@
       '<div class="admin-review-dialog" role="dialog" aria-modal="true" aria-labelledby="adminReviewTitle">' +
       '<button type="button" class="admin-review-close" aria-label="Close" onclick="AdminContentReview.close()">×</button>' +
       '<h3 id="adminReviewTitle">Revisión de contenido</h3>' +
+      '<p class="admin-review-published-warn" id="adminReviewPublishedWarn" style="display:none"></p>' +
       '<p class="admin-review-meta" id="adminReviewMeta"></p>' +
       '<div id="adminReviewFields"></div>' +
       '<label class="admin-review-label">Motivo <span class="req">*</span></label>' +
@@ -413,35 +468,37 @@
     else if (typeof console !== 'undefined') console.warn('[AdminContentReview]', msg);
   }
 
-  async function refreshAdminFlag() {
+  async function refreshEditAccess() {
     try {
-      if (typeof Auth === 'undefined' || typeof Auth.apiFetch !== 'function') return isAdmin();
+      if (typeof Auth === 'undefined' || typeof Auth.apiFetch !== 'function') return canEditContent();
       const res = await Auth.apiFetch('/.netlify/functions/auth-me');
-      if (!res.ok) return isAdmin();
+      if (!res.ok) return canEditContent();
       const data = await res.json();
       if (data && data.user && typeof applyUserFromServer === 'function') {
         applyUserFromServer(data.user);
       } else if (data && data.user && typeof S !== 'undefined' && S.user) {
         S.user.isAdmin = data.user.isAdmin === true;
+        S.user.canEditContent = data.user.canEditContent === true;
+        S.user.adminRole = data.user.adminRole || null;
       }
     } catch (_) {
       /* keep current */
     }
-    return isAdmin();
+    return canEditContent();
   }
 
   function open(targetId) {
-    openAsync(targetId);
+    void openAsync(targetId);
   }
 
   async function openAsync(targetId) {
-    var adminOk = isAdmin();
-    if (!adminOk) {
+    var editOk = canEditContent();
+    if (!editOk) {
       notify('Comprobando permisos…', 'ok');
-      adminOk = await refreshAdminFlag();
+      editOk = await refreshEditAccess();
     }
-    if (!adminOk) {
-      notify('No tienes permisos de administrador para editar.');
+    if (!editOk) {
+      notify('No tienes permiso para corregir contenido.');
       return;
     }
     var target = TARGETS[targetId];
@@ -449,9 +506,23 @@
       notify('No se encontró el contenido a revisar. Recarga el examen e inténtalo de nuevo.');
       return;
     }
+    target.provenance = enrichProvenance(target.provenance);
     var modal = ensureModal();
     modal.dataset.targetId = targetId;
     var prov = target.provenance || {};
+    var pubWarn = document.getElementById('adminReviewPublishedWarn');
+    if (pubWarn) {
+      if (prov.publishedOfficial) {
+        pubWarn.style.display = 'block';
+        pubWarn.textContent =
+          'PUBLICADO — Esta parte está en el catálogo oficial' +
+          (prov.examId ? ' (' + prov.examId + ')' : '') +
+          '. Los cambios aplican a partir de ahora; no reescriben intentos ya guardados.';
+      } else {
+        pubWarn.style.display = 'none';
+        pubWarn.textContent = '';
+      }
+    }
     var meta = document.getElementById('adminReviewMeta');
     if (meta) {
       meta.textContent =
@@ -615,17 +686,40 @@
     return data;
   }
 
-  /** Apply via Admin API (syncEnabled defaults true on that path). */
-  async function postApplyCorrection(correctionId) {
+  /** Apply via content-corrections (content_corrector + admin); sync on by default. */
+  async function postApplyCorrection(correctionId, opts) {
+    opts = opts || {};
     var fetchFn = apiFetch();
     if (!fetchFn) throw new Error('auth_api_unavailable');
-    var res = await fetchFn('/.netlify/functions/admin-api', {
+    var exam = examContext();
+    var baseBody = {
+      action: 'apply_correction',
+      id: correctionId,
+      syncEnabled: opts.syncEnabled !== false,
+      confirmPublish: opts.confirmPublish === true,
+      localOnly: opts.localOnly === true,
+      lang: (exam && exam.lang) || opts.lang || 'de',
+      level: (exam && exam.level) || opts.level,
+    };
+    var dryRes = await fetchFn('/.netlify/functions/content-corrections', {
       method: 'POST',
-      body: JSON.stringify({
-        action: 'apply_content_correction',
-        id: correctionId,
-        confirm: true,
-      }),
+      body: JSON.stringify(Object.assign({}, baseBody, { confirm: false })),
+    });
+    var dryData = {};
+    try {
+      dryData = await dryRes.json();
+    } catch (_) {
+      /* empty */
+    }
+    if (!dryRes.ok && !dryData.wouldApply) {
+      var dryErr = new Error(dryData.message || dryData.error || 'dry_run_failed');
+      dryErr.status = dryRes.status;
+      dryErr.data = dryData;
+      throw dryErr;
+    }
+    var res = await fetchFn('/.netlify/functions/content-corrections', {
+      method: 'POST',
+      body: JSON.stringify(Object.assign({}, baseBody, { confirm: true })),
     });
     var data = {};
     try {
@@ -643,7 +737,7 @@
   }
 
   async function save() {
-    if (!isAdmin()) return;
+    if (!canEditContent()) return;
     var modal = document.getElementById(MODAL_ID);
     var targetId = modal && modal.dataset.targetId;
     var target = targetId && TARGETS[targetId];
@@ -658,7 +752,8 @@
       return;
     }
 
-    var prov = target.provenance || {};
+    var prov = enrichProvenance(target.provenance || {});
+    target.provenance = prov;
     if (!prov.sourceFile) {
       if (status) status.textContent = 'Falta sourceFile en provenance — no se puede crear la corrección.';
       return;
@@ -759,6 +854,14 @@
       return;
     }
 
+    var provSave = prov;
+    if (provSave.publishedOfficial) {
+      if (!window.confirm(MSG_PUBLISHED_CONFIRM)) {
+        if (status) status.textContent = 'Cancelado — no se guardó la corrección.';
+        return;
+      }
+    }
+
     if (saveBtn) saveBtn.disabled = true;
     if (status) status.textContent = 'Guardando ' + patches.length + ' corrección(es)…';
 
@@ -770,14 +873,21 @@
     var anyHotPatched = false;
     var anyNextPart = false;
 
+    var applyOpts = {
+      confirmPublish: !!provSave.publishedOfficial,
+      localOnly: isLocalDevHost(),
+    };
+    var examCtx = examContext();
+
     try {
       for (var i = 0; i < patches.length; i++) {
         var p = patches[i];
         try {
           var data = await postCorrection({
-            sourceFile: prov.sourceFile,
-            module: prov.module,
-            teil: prov.teil,
+            sourceFile: provSave.sourceFile,
+            module: provSave.module,
+            teil: provSave.teil,
+            level: provSave.level || (examCtx && examCtx.level),
             targetType: p.targetType || targetTypeForField(target.kind, p.fieldPath),
             targetId: String(targetIdVal),
             fieldPath: p.fieldPath,
@@ -796,8 +906,8 @@
             data.correctionId ||
             (corr && corr.id) ||
             null;
-          rememberPending(target.kind, prov, cid, data.message);
-          paintPendingBadge(target.kind, prov);
+          rememberPending(target.kind, provSave, cid, data.message);
+          paintPendingBadge(target.kind, provSave);
           if (data.reused) reused.push(cid);
           else created.push(cid);
 
@@ -805,8 +915,15 @@
           var appliedOk = false;
           if (cid && statusNow === 'approved') {
             try {
-              var applyRes = await postApplyCorrection(cid);
+              var applyRes = await postApplyCorrection(cid, applyOpts);
               appliedOk = !!(applyRes && applyRes.applied === true);
+              var syncSt =
+                (applyRes.sync && applyRes.sync.syncStatus) ||
+                (applyRes.correction && applyRes.correction.syncStatus) ||
+                null;
+              if (syncSt && status) {
+                status.textContent = (status.textContent || '') + ' · sync: ' + syncSt;
+              }
               if (!appliedOk && applyRes && applyRes.ok === false) {
                 errors.push(applyRes.error || 'apply_failed');
               }

@@ -216,7 +216,13 @@ function refreshUserDropdown(){
   nameEl.textContent=S.user?.name||'Account';
   emailEl.textContent=S.user?.email||'';
   const planLbl=pro?(plan==='pro_max'?'Pro Max':'Pro'):(guest?'Guest':'Free');
-  const adminLbl=S.user?.isAdmin?' · Admin':'';
+  let adminLbl='';
+  if(typeof AdminAccess!=='undefined'&&AdminAccess.roleLabel){
+    adminLbl=AdminAccess.roleLabel(S.user);
+    if(adminLbl)adminLbl=' · '+adminLbl;
+  }else if(S.user?.isAdmin){
+    adminLbl=' · Admin';
+  }
   planEl.textContent=planLbl+adminLbl;
   planEl.className='user-dropdown__plan '+(pro?'user-dropdown__plan--pro':guest?'user-dropdown__plan--guest':'user-dropdown__plan--free');
   if(typeof accountPanelHtml==='function'){

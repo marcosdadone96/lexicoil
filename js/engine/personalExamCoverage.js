@@ -121,6 +121,17 @@ const PersonalExamCoverage = (() => {
     return exam;
   }
 
+  function formatPersonalPartialWarning(overall, minVisible, lang) {
+    const found = overall?.found ?? 0;
+    const minV = Number(minVisible) || 3;
+    const isDE = String(lang || '').toLowerCase() === 'de';
+    const words = (overall?.words || []).slice(0, 6).join(', ');
+    if (isDE) {
+      return `Wir konnten nicht alle ${minV} Wörter einbauen; im Text sind ${found}${words ? `: ${words}` : ''}.`;
+    }
+    return `We could not integrate all ${minV} words; ${found} appear in the text${words ? `: ${words}` : ''}.`;
+  }
+
   function formatPersonalCoverageSummary(overall, lang) {
     const found = overall?.found ?? 0;
     const total = overall?.total ?? 0;
@@ -165,6 +176,7 @@ const PersonalExamCoverage = (() => {
     attachPersonalExamCoverage,
     formatPersonalCoverageMessage,
     formatPersonalCoverageSummary,
+    formatPersonalPartialWarning,
     formatCoverageHeader,
     scanPartWords,
   });

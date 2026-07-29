@@ -307,15 +307,19 @@
     (doc.parts || []).forEach(function (p) {
       var part = snapshotToExamPart(p.snapshot);
       if (!part) return;
-      var sourceFile = String(p.partId || (p.snapshot && p.snapshot.id) || '')
-        .trim()
-        .replace(/\.json$/i, '')
-        .replace(/-t[1-5]$/i, '');
+      var level = String(doc.level || (p.snapshot && p.snapshot.level) || '').toUpperCase();
+      var partId = p.partId ? String(p.partId) : null;
+      var sourceFile = partId && level
+        ? 'batches/ready/pool-verified/' + level + '/' + partId
+        : null;
       var provenance = {
-        sourceFile: sourceFile || null,
+        sourceFile: sourceFile,
         module: String(p.module || '').toLowerCase(),
         teil: Number(p.teil),
-        partId: p.partId ? String(p.partId) : null,
+        partId: partId,
+        level: level || null,
+        examId: doc.examId || null,
+        publishedOfficial: true,
         passageId: part.passageId != null ? String(part.passageId) : null,
       };
       part._contentProvenance = provenance;

@@ -7,7 +7,7 @@ const S={
   user:null,flashcards:[],deletedFlashcards:[],fcLang:'en',fcTab:'all',fcSelected:new Set(),fcReverse:false, /* Set of flashcard ids */
   veQuestions:[],veIndex:0,veScore:0,veAudio:false,
   timerInt:null,timerSec:0,history:[],quickMod:null,studyIdx:0,
-  savedExams:[],deletedSavedExams:[],savedQuizzes:[],deletedSavedQuizzes:[],listenPlays:2,isDemo:false,examSavedWords:[],
+  savedExams:[],deletedSavedExams:[],savedQuizzes:[],deletedSavedQuizzes:[],savedPhrases:[],deletedSavedPhrases:[],savedListening:[],savedFlashcardSets:[],listenPlays:2,isDemo:false,examSavedWords:[],
   profileCert:null,profileLevel:null,
   goals:[],activeGoalId:null,deckGoalFilter:null,fcTypeFilter:'all',wsTab:'exams',
   activityLog:[],studyTime:null,dashboardLayout:null,notebook:{tabs:[]},
@@ -130,6 +130,12 @@ function loadLS(){
   if(!Array.isArray(S.deletedSavedExams))S.deletedSavedExams=[];
   try{const sq=localStorage.getItem('lc_saved_quizzes');if(sq)S.savedQuizzes=JSON.parse(sq);}catch(e){}
   if(!Array.isArray(S.savedQuizzes))S.savedQuizzes=[];
+  try{const sp=localStorage.getItem('lc_saved_phrases');if(sp)S.savedPhrases=JSON.parse(sp);}catch(e){}
+  if(!Array.isArray(S.savedPhrases))S.savedPhrases=[];
+  try{const sl=localStorage.getItem('lc_saved_listening');if(sl)S.savedListening=JSON.parse(sl);}catch(e){}
+  if(!Array.isArray(S.savedListening))S.savedListening=[];
+  try{const sf=localStorage.getItem('lc_saved_flashcard_sets');if(sf)S.savedFlashcardSets=JSON.parse(sf);}catch(e){}
+  if(!Array.isArray(S.savedFlashcardSets))S.savedFlashcardSets=[];
   try{const sqd=localStorage.getItem('lc_saved_quizzes_del');if(sqd)S.deletedSavedQuizzes=JSON.parse(sqd);}catch(e){}
   if(!Array.isArray(S.deletedSavedQuizzes))S.deletedSavedQuizzes=[];
   try{const gr=localStorage.getItem('lc_goals');if(gr)S.goals=JSON.parse(gr);}catch(e){}

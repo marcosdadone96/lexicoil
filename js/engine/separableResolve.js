@@ -10,6 +10,7 @@ const SeparableResolve = (() => {
   const SEPARABLE_PREFIXES = [
     'mit', 'auf', 'an', 'aus', 'ein', 'zu', 'vor', 'nach', 'bei', 'los', 'weg',
     'zurück', 'weiter', 'fest', 'teil', 'statt', 'heran', 'herum', 'hin', 'her',
+    'herunter', 'fort',
     'ab', 'durch', 'über', 'um', 'unter', 'zusammen',
   ];
 
@@ -45,7 +46,7 @@ const SeparableResolve = (() => {
     'aushelfen', 'auskennen', 'ausladen', 'auslaufen', 'auslegen', 'ausleihen',
     'auslösen', 'ausmachen', 'ausnutzen', 'auspacken', 'ausprobieren', 'ausreden',
     'ausreichen', 'ausruhen', 'ausschalten', 'ausschließen', 'ausschneiden', 'aussehen',
-    'aussprechen', 'aussteigen', 'aussuchen', 'austauschen', 'austreten', 'ausüben',
+    'aussprechen', 'aussteigen', 'aussuchen', 'austauschen', 'austragen', 'austreten', 'ausüben',
     'auswählen', 'auswandern', 'ausweichen', 'ausziehen',
     // ein-
     'einatmen', 'einbauen', 'einbilden', 'einbrechen', 'einbringen', 'einchecken',
@@ -67,10 +68,12 @@ const SeparableResolve = (() => {
     'beibringen', 'beitragen',
     // los-
     'losfahren', 'losgehen',
+    // fort-
+    'fortsetzen',
     // weg-
     'wegfahren', 'weggehen',
     // zurück-
-    'zurückgeben', 'zurückkommen', 'zurückrufen',
+    'zurückfahren', 'zurückgeben', 'zurückgehen', 'zurückkommen', 'zurücklaufen', 'zurückrufen',
     // weiter-
     'weitergeben', 'weitergehen', 'weitermachen',
     // fest-
@@ -85,9 +88,9 @@ const SeparableResolve = (() => {
     'abhängen', 'abheben', 'abholen', 'abkühlen', 'ablegen', 'ablehnen',
     'abmelden', 'abnehmen', 'abraten', 'abreisen', 'abrufen', 'absagen',
     'abschließen', 'abschneiden', 'absehen', 'absteigen', 'abstellen', 'abstimmen',
-    'abwenden', 'abziehen',
+    'abwarten', 'abwickeln', 'abwenden', 'abziehen',
     // her-
-    'herkommen', 'herstellen',
+    'herkommen', 'herunterladen', 'herstellen',
     // um-
     'umsetzen', 'umsteigen', 'umziehen',
     // durch-
@@ -97,7 +100,7 @@ const SeparableResolve = (() => {
     // unter-
     'untergehen', 'unterschreiben',
     // zusammen-
-    'zusammenfassen',
+    'zusammenarbeiten', 'zusammenfassen',
     // aner-
     'anerkennen',
     // other-
@@ -187,6 +190,8 @@ const SeparableResolve = (() => {
     tritt: 'treten', trete: 'treten',
     wächst: 'wachsen', waechst: 'wachsen',
     löst: 'lösen', loest: 'lösen',
+    wickelt: 'wickeln', wickelst: 'wickeln', wickle: 'wickeln',
+    wartet: 'warten', wartest: 'warten', warte: 'warten',
     lädt: 'laden', laedt: 'laden',
     leiht: 'leihen',
     nutzt: 'nutzen',

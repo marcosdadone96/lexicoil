@@ -122,5 +122,136 @@ const VocabQuizUtils = (function () {
     return opts.sort(() => Math.random() - 0.5).slice(0, 4);
   }
 
-  return { weaknessScore, sortCardsByWeakness, buildWordMeta, weightedPickQuizTargets, normPos, pickPhraseGapOptions };
+  function metaByWord(allMeta) {
+    const map = new Map();
+    (allMeta || []).forEach((m) => {
+      const w = String(m.word || '').trim().toLowerCase();
+      if (w) map.set(w, m);
+    });
+    return map;
+  }
+
+  function shuffleInPlace(arr, rng = Math.random) {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(rng() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
+
+  function pickBalancedDistractors(targetWord, allMeta, needCount, excludeWords = [], rng = Math.random) {
+    const target = String(targetWord || '').trim().toLowerCase();
+    const byWord = metaByWord(allMeta);
+    const targetMeta = byWord.get(target);
+    const targetTr = String(targetMeta?.translation || '').trim().toLowerCase();
+    const targetPos = normPos(targetMeta?.type);
+    const exclude = new Set(excludeWords.map((w) => String(w || '').trim().toLowerCase()));
+    exclude.add(target);
+    let candidates = (allMeta || []).filter((m) => {
+      const w = String(m.word || '').trim().toLowerCase();
+      if (!w || exclude.has(w)) return false;
+      const tr = String(m.translation || '').trim().toLowerCase();
+      if (targetTr && tr && tr === targetTr) return false;
+      return true;
+    });
+    const samePos = candidates.filter((m) => normPos(m.type) === targetPos && targetPos !== 'other');
+    const pool = samePos.length >= needCount ? samePos : candidates;
+    return shuffleInPlace([...pool], rng).slice(0, needCount).map((m) => m.word);
+  }
+
+  function repairQuizOptions(targetWord, options, allMeta, rng = Math.random) {
+    const target = String(targetWord || '').trim();
+    const wordSet = new Set((allMeta || []).map((m) => String(m.word || '').trim().toLowerCase()));
+    let opts = [...new Set((options || []).map((o) => String(o || '').trim()).filter(Boolean))];
+    opts = opts.filter((o) => wordSet.has(o.toLowerCase()));
+    if (!opts.some((o) => o.toLowerCase() === target.toLowerCase())) opts.unshift(target);
+    opts = [...new Set(opts)];
+    while (opts.length < 4) {
+      const fillers = pickBalancedDistractors(target, allMeta, 4 - opts.length, opts, rng);
+      for (const f of fillers) {
+        if (!opts.some((o) => o.toLowerCase() === f.toLowerCase())) opts.push(f);
+      }
+      if (opts.length < 4) break;
+    }
+    shuffleInPlace(opts, rng);
+    return opts.slice(0, 4);
+  }
+
+  function buildFallbackVocabQuiz(words, opts = {}) {
+    const list = [...new Set((words || []).map((w) => String(w || '').trim()).filter(Boolean))];
+    const count = Math.min(Math.max(Number(opts.count) || 10, 1), 10, list.length);
+    const allMeta =
+      opts.wordMeta && opts.wordMeta.length
+        ? opts.wordMeta
+        : list.map((w) => ({ word: w, type: 'other', translation: '' }));
+    const prefer = (opts.preferTargets || []).filter((w) => list.some((x) => x.toLowerCase() === w.toLowerCase()));
+    const targets = [];
+    const used = new Set();
+    for (const w of prefer) {
+      if (targets.length >= count) break;
+      const k = w.toLowerCase();
+      if (used.has(k)) continue;
+      used.add(k);
+      targets.push(w);
+    }
+    for (const w of list) {
+      if (targets.length >= count) break;
+      const k = w.toLowerCase();
+      if (used.has(k)) continue;
+      used.add(k);
+      targets.push(w);
+    }
+    const hintLang = String(opts.hintLang || 'en').slice(0, 2);
+    const lang = String(opts.lang || 'de').slice(0, 2);
+    const hintMode = opts.hintLanguageMode === 'immersion' ? 'immersion' : 'interface';
+    const byWord = metaByWord(allMeta);
+    const questions = [];
+    for (const word of targets) {
+      const meta = byWord.get(word.toLowerCase());
+      let tr = String(meta?.translation || '').trim();
+      if (!tr || tr === '—') tr = '';
+      let hint;
+      if (tr) {
+        hint =
+          hintLang === 'es'
+            ? `Significa: ${tr}`
+            : hintLang === 'de'
+              ? `Bedeutung: ${tr}`
+              : hintLang === 'fr'
+                ? `Signifie : ${tr}`
+                : hintLang === 'it'
+                  ? `Significa: ${tr}`
+                  : `Means: ${tr}`;
+      } else {
+        const src = lang === 'de' ? 'German' : lang === 'es' ? 'Spanish' : 'English';
+        hint =
+          hintLang === 'es'
+            ? `Una palabra en ${src} de tu lista.`
+            : `A ${src} word from your vocabulary list.`;
+      }
+      const options = repairQuizOptions(word, [], allMeta);
+      if (options.length < 4) continue;
+      questions.push({
+        word,
+        hintType: tr ? 'explanation' : 'explanation',
+        hint,
+        hintLanguage: hintMode === 'immersion' ? lang : hintLang,
+        options,
+        fallback: true,
+      });
+    }
+    return questions;
+  }
+
+  return {
+    weaknessScore,
+    sortCardsByWeakness,
+    buildWordMeta,
+    weightedPickQuizTargets,
+    normPos,
+    pickPhraseGapOptions,
+    repairQuizOptions,
+    buildFallbackVocabQuiz,
+  };
 })();
+if (typeof globalThis !== 'undefined') globalThis.VocabQuizUtils = VocabQuizUtils;

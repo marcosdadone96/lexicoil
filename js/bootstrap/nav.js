@@ -10,9 +10,11 @@ function getActiveScreenId(){
   return null;
 }
 function _navExitVocabFlashcards(){
+  if(typeof commitVocabHubFlashcardSession==='function')commitVocabHubFlashcardSession();
   if(typeof _vocabHub!=='undefined'){
     _vocabHub.activity=null;
     _vocabHub.flashcardMode=false;
+    _vocabHub._fcSessionCommitted=false;
   }
   if(typeof refreshVocabHubPanel==='function')refreshVocabHubPanel();
   window.scrollTo({top:0,behavior:'smooth'});

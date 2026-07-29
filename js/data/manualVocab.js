@@ -125,6 +125,12 @@ const ManualVocab = (() => {
         const gender = art === 'der' ? 'm' : art === 'die' ? 'f' : 'n';
         return { word: m[2].trim(), article: art, gender, pos: 'noun' };
       }
+      const glued = raw.match(/^(der|die|das)([A-ZÄÖÜ][\wäöüßÄÖÜ-]+)$/i);
+      if (glued) {
+        const art = glued[1].toLowerCase();
+        const gender = art === 'der' ? 'm' : art === 'die' ? 'f' : 'n';
+        return { word: glued[2].trim(), article: art, gender, pos: 'noun' };
+      }
     }
     if (subject === 'es') {
       const m = raw.match(/^(el|la|los|las)\s+(.+)$/i);

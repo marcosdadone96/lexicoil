@@ -370,6 +370,42 @@ const MasteryView = (() => {
     }
 
     let grammarHtml = '';
+    if (summary.productionGrammar?.length) {
+      grammarHtml +=
+        '<p class="mastery-seclbl">Writing &amp; speaking grammar</p>' +
+        summary.productionGrammar
+          .map((r) => {
+            const drillCost =
+              typeof aiActionCost === 'function' ? aiActionCost('grammar_drill') : 2;
+            const scoreLbl =
+              r.lastDrillScore != null ? ' · last drill ' + r.lastDrillScore + '%' : '';
+            const drillBtn = r.weak
+              ? ' <button type="button" class="btn-sm accent" onclick="startGrammarDrill(\'' +
+                esc(r.category) +
+                "','" +
+                gid +
+                '\')">Practice (' +
+                drillCost +
+                ' credits)</button>'
+              : '';
+            return (
+              '<div class="mastery-prod-row" style="margin-bottom:10px">' +
+              '<div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px">' +
+              '<span style="font-size:13px;font-weight:600">' +
+              esc(r.label) +
+              '</span>' +
+              '<span style="font-size:12px;color:var(--text-muted)">' +
+              r.errors +
+              ' error' +
+              (r.errors === 1 ? '' : 's') +
+              scoreLbl +
+              '</span>' +
+              drillBtn +
+              '</div></div>'
+            );
+          })
+          .join('');
+    }
     if (summary.grammarOverview?.length) {
       grammarHtml =
         '<p class="mastery-seclbl">Grammar tags</p>' +

@@ -42,3 +42,6 @@ function detectTopic(text) {
 if (typeof module !== 'undefined') {
   module.exports = { TOPIC_KEYWORDS, detectTopic };
 }
+if (typeof window !== 'undefined') {
+  window.PartTopicDetect = Object.freeze({ TOPIC_KEYWORDS, detectTopic });
+}

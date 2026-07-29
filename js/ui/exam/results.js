@@ -825,7 +825,10 @@ function renderResults(score,moduleResults,d,isDE,writeAns,speakAns,entryId,corr
   const vocabHtml=savedWords.length?`<div class="results-detail"><h4>Vocabulary detected</h4><ul class="results-vocab-list">${savedWords.slice(0,12).map(w=>`<li>${esc(w)}</li>`).join('')}${savedWords.length>12?`<li>+${savedWords.length-12} more</li>`:''}</ul></div>`:(isPracticeMode()?`<div class="results-detail"><h4>Vocabulary detected</h4><p class="u-text-xs u-text-secondary">Words you saved during practice appear in your deck.</p></div>`:'');
   const vocabGameHtml=renderVocabGameSection(histEntry,isDE);
   const goalForBatch=getActiveGoal();
-  const batchPlan=typeof VocabBatching!=='undefined'?goalForBatch?.vocabPlan:null;
+  const batchPlan=
+    typeof VocabBatching!=='undefined'&&goalForBatch
+      ?VocabBatching.getActivityPlan(goalForBatch,'personal',S.lastPersonalConfig?.skills||['lesen'])||goalForBatch?.vocabPlan
+      :null;
   const batchCov=batchPlan?VocabBatching.coverage(batchPlan):null;
   const nextBatchHtml=batchPlan&&batchCov&&!batchCov.finished?`<div class="results-detail"><h4>Vocabulary batches</h4><p class="u-text-xs u-text-secondary">${esc(VocabBatching.summary(batchPlan,S.subject||goalForBatch?.subject))}</p><button type="button" class="btn-sm accent" onclick="generateNextVocabBatch('${goalForBatch.id}')">Next batch →</button></div>`:'';
   const act=getResultsRecommendedAction(displayScore,summary,mods,deckN,isPracticeMode(),passPercent);

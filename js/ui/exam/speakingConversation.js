@@ -68,45 +68,54 @@ const SpeakingConversation = (() => {
     const level = typeof S !== 'undefined' && S.level ? S.level : ui?.level || 'B1';
     const persona = SpeakingModes?.personalityById(st.personaId, level);
     const personaDesc = persona ? (de ? persona.descDe : persona.desc) : '';
+    const creditSuffix =
+      typeof aiCreditCostSuffix === 'function' ? aiCreditCostSuffix('speaking_realtime') : ' (4 credits)';
+
+    const aiPath = `
+      <div class="speak-path speak-path--ai">
+        <div class="speak-path-head">${de ? 'Mit KI-Partner' : 'With AI partner'}</div>
+        <p class="speak-path-lead">${de ? 'Kim, Alex oder Leo — Gespräch Zug um Zug (Mikrofon → Text → Antwort).' : 'Kim, Alex or Leo — turn-based chat (mic → text → reply).'}</p>
+        <div class="speak-persona-picker" role="group" aria-label="${de ? 'Gesprächspartner' : 'Conversation partner'}">${pills}</div>
+        <p class="speak-persona-desc" id="speakPersonaDesc_${esc(k)}">${esc(personaDesc)}</p>
+        <div class="speak-mode-tabs" id="speakModeTabs_${esc(k)}" hidden>
+          <button type="button" class="speak-mode-tab active" data-mode="text" onclick="SpeakingConversation.setUiMode('${esc(k)}','text')">${de ? 'Text-Chat' : 'Text chat'}</button>
+          <button type="button" class="speak-mode-tab" data-mode="voice" onclick="SpeakingConversation.setUiMode('${esc(k)}','voice')">${de ? 'Stimme' : 'Voice'}</button>
+        </div>
+        <div id="speakTextMode_${esc(k)}">
+        <label class="speak-consent" id="speakConsentWrap_${esc(k)}">
+          <input type="checkbox" id="speakConsent_${esc(k)}" onchange="SpeakingConversation.setConsent('${esc(k)}', this.checked)">
+          ${de ? 'Ich stimme zu, dass mein Gesprächstext für diese Übungssitzung gespeichert wird (löschbar).' : 'I agree that my conversation text is stored for this practice session (deletable).'}
+        </label>
+        <div class="speak-conv-panel" id="speakConv_${esc(k)}">
+          <div class="speak-conv-status" id="speakConvStatus_${esc(k)}">${de ? 'Partner wählen, zustimmen und starten.' : 'Pick a partner, consent, then start.'}</div>
+          <div class="speak-conv-transcript-live" id="speakConvLive_${esc(k)}"></div>
+          <div class="speak-conv-actions">
+            <button type="button" class="btn-sm accent" id="speakConvStart_${esc(k)}" onclick="SpeakingConversation.startSession('${esc(k)}')">${de ? 'Gespräch starten' : 'Start conversation'}${creditSuffix}</button>
+            <button type="button" class="btn-sm" id="speakConvDelete_${esc(k)}" style="display:none" onclick="SpeakingConversation.deleteSession('${esc(k)}')">${de ? 'Sitzung löschen' : 'Delete session'}</button>
+          </div>
+          <div class="speak-turn-compose" id="speakTurnCompose_${esc(k)}" hidden>
+            <div class="speak-path-hint">${de ? 'Sprich oder tippe, prüfe den Text, dann senden.' : 'Speak or type, check the text, then send.'}</div>
+            ${typeof renderSpeakingMicHtml === 'function' ? renderSpeakingMicHtml(k + '_turn', typeof S !== 'undefined' ? S.subject : ui?.lang || 'de') : `<textarea class="write-field" id="${esc(k)}_turn" style="min-height:100px"></textarea>`}
+            <button type="button" class="btn-sm accent" id="speakConvSend_${esc(k)}" onclick="SpeakingConversation.sendTurn('${esc(k)}')">${de ? 'Zug senden' : 'Send turn'}</button>
+          </div>
+        </div>
+        </div>
+        ${typeof SpeakingLiveVoice !== 'undefined' ? SpeakingLiveVoice.renderPanel(k, ui) : ''}
+      </div>`;
+
+    const soloPath = `
+      <div class="speak-path speak-path--solo" id="speakSoloPath_${esc(k)}">
+        <div class="speak-path-head">${de ? 'Nur Aufnahme' : 'Record only'}</div>
+        <p class="speak-path-hint">${esc(ui.speakFmt || (de ? 'Sprich ins Mikrofon — dein Text erscheint unten.' : 'Speak into the mic — your words appear below.'))}</p>
+        ${typeof renderSpeakingMicHtml === 'function' ? renderSpeakingMicHtml(k, typeof S !== 'undefined' ? S.subject : ui?.lang || 'de') : `<textarea class="write-field" id="${esc(k)}" style="min-height:160px"></textarea>`}
+      </div>`;
 
     return `
-      <div class="speak-mode-banner speak-mode-banner--pro">
-        <b>${de ? 'Sprechen (Pro)' : 'Speaking (Pro)'}:</b>
-        ${de ? 'Wähle Kim, Alex oder Leo — Gespräch Zug um Zug (Mikrofon → Text → Antwort).' : 'Pick Kim, Alex or Leo — turn-based chat (mic → text → reply).'}
+      <div class="speak-path-stack">
+        ${aiPath}
+        ${soloPath}
       </div>
-      <div class="speak-persona-picker" role="group" aria-label="${de ? 'Gesprächspartner' : 'Conversation partner'}">${pills}</div>
-      <p class="speak-persona-desc" id="speakPersonaDesc_${esc(k)}">${esc(personaDesc)}</p>
-      <div class="speak-mode-tabs" id="speakModeTabs_${esc(k)}" hidden>
-        <button type="button" class="speak-mode-tab active" data-mode="text" onclick="SpeakingConversation.setUiMode('${esc(k)}','text')">${de ? 'Text-Chat' : 'Text chat'}</button>
-        <button type="button" class="speak-mode-tab" data-mode="voice" onclick="SpeakingConversation.setUiMode('${esc(k)}','voice')">${de ? 'Stimme' : 'Voice'}</button>
-      </div>
-      <div id="speakTextMode_${esc(k)}">
-      <label class="speak-consent" id="speakConsentWrap_${esc(k)}">
-        <input type="checkbox" id="speakConsent_${esc(k)}" onchange="SpeakingConversation.setConsent('${esc(k)}', this.checked)">
-        ${de ? 'Ich stimme zu, dass mein Gesprächstext für diese Übungssitzung gespeichert wird (löschbar).' : 'I agree that my conversation text is stored for this practice session (deletable).'}
-      </label>
-      <div class="speak-conv-panel" id="speakConv_${esc(k)}">
-        <div class="speak-conv-status" id="speakConvStatus_${esc(k)}">${de ? 'Partner wählen, zustimmen und starten.' : 'Pick a partner, consent, then start.'}</div>
-        <div class="speak-conv-transcript-live" id="speakConvLive_${esc(k)}"></div>
-        <div class="speak-conv-actions">
-          <button type="button" class="btn-sm accent" id="speakConvStart_${esc(k)}" onclick="SpeakingConversation.startSession('${esc(k)}')">${de ? 'Gespräch starten' : 'Start conversation'}${typeof aiCreditCostSuffix==='function'?aiCreditCostSuffix('speaking_realtime'):' (4 credits)'}</button>
-          <button type="button" class="btn-sm" id="speakConvDelete_${esc(k)}" style="display:none" onclick="SpeakingConversation.deleteSession('${esc(k)}')">${de ? 'Sitzung löschen' : 'Delete session'}</button>
-          <button type="button" class="btn-sm" onclick="SpeakingConversation.showTranscriptFallback('${esc(k)}')">${de ? 'Nur aufnehmen (ohne Partner)' : 'Record only (no partner)'}</button>
-        </div>
-        <div class="speak-turn-compose" id="speakTurnCompose_${esc(k)}" hidden>
-          <div style="font-size:12px;color:var(--text-muted);margin:10px 0 7px">${de ? 'Sprich oder tippe, prüfe den Text, dann senden.' : 'Speak or type, check the text, then send.'}</div>
-          ${typeof renderSpeakingMicHtml === 'function' ? renderSpeakingMicHtml(k + '_turn', typeof S !== 'undefined' ? S.subject : ui?.lang || 'de') : `<textarea class="write-field" id="${esc(k)}_turn" style="min-height:100px"></textarea>`}
-          <button type="button" class="btn-sm accent" id="speakConvSend_${esc(k)}" onclick="SpeakingConversation.sendTurn('${esc(k)}')">${de ? 'Zug senden' : 'Send turn'}</button>
-        </div>
-      </div>
-      <div class="speak-conv-fallback" id="speakConvFallback_${esc(k)}" hidden>
-        <div style="font-size:12px;color:var(--text-muted);margin:10px 0 7px">${ui.speakFmt}</div>
-        ${typeof renderSpeakingMicHtml === 'function' ? renderSpeakingMicHtml(k, typeof S !== 'undefined' ? S.subject : ui?.lang || 'de') : ''}
-      </div>
-      </div>
-      ${typeof SpeakingLiveVoice !== 'undefined' ? SpeakingLiveVoice.renderPanel(k, ui) : ''}
       <textarea class="speak-conv-meta" id="${esc(k)}_meta" aria-hidden="true" tabindex="-1"></textarea>
-      <textarea class="write-field" id="${esc(k)}" style="display:none" aria-hidden="true"></textarea>
     `;
   }
 
@@ -187,7 +196,13 @@ const SpeakingConversation = (() => {
       .join('\n');
     st.transcript = fullTranscript;
     const hidden = document.getElementById(fieldId);
-    if (hidden) hidden.value = fullTranscript;
+    if (
+      hidden &&
+      hidden !== document.querySelector(`#speakSoloPath_${fieldId} textarea`) &&
+      (hidden.offsetParent === null || hidden.getAttribute('aria-hidden') === 'true')
+    ) {
+      hidden.value = fullTranscript;
+    }
     meta.value = JSON.stringify({
       inputMode: st.inputMode,
       uiMode: st.uiMode,
@@ -210,13 +225,9 @@ const SpeakingConversation = (() => {
   function showTranscriptFallback(fieldId) {
     const st = _state[fieldId];
     if (st) st.inputMode = SpeakingModes?.INPUT_MODES?.TRANSCRIPT || 'transcript';
-    const fb = document.getElementById('speakConvFallback_' + fieldId);
-    if (fb) {
-      fb.hidden = false;
-      if (typeof initSpeakingMic === 'function') initSpeakingMic(fieldId, S?.subject);
-    }
-    const compose = document.getElementById('speakTurnCompose_' + fieldId);
-    if (compose) compose.hidden = true;
+    const solo = document.getElementById('speakSoloPath_' + fieldId);
+    solo?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    if (typeof initSpeakingMic === 'function') initSpeakingMic(fieldId, S?.subject);
     syncMeta(fieldId);
   }
 
@@ -390,6 +401,7 @@ const SpeakingConversation = (() => {
     stateFor(part);
     syncMeta(k);
     upgradePilotUi(k, part);
+    if (typeof initSpeakingMic === 'function') initSpeakingMic(k, subject);
   }
 
   function collectPartAnswer(part) {
@@ -406,16 +418,26 @@ const SpeakingConversation = (() => {
         turns: st.turns,
       };
     }
-    const fb = document.getElementById('speakConvFallback_' + k);
-    const useFallback = fb && !fb.hidden;
-    if (useFallback || st?.inputMode === (SpeakingModes?.INPUT_MODES?.TRANSCRIPT || 'transcript')) {
-      const ta = document.getElementById(k);
+    const soloTa = document.querySelector(`#speakSoloPath_${k} textarea, #speakSoloPath_${k} .write-field`);
+    const soloText = soloTa?.value?.trim() || '';
+    if (soloText && !st?.sessionId) {
       return {
         fieldId: k,
         inputMode: SpeakingModes?.INPUT_MODES?.TRANSCRIPT || 'transcript',
         personaId: st?.personaId,
-        transcript: ta?.value?.trim() || '',
+        transcript: soloText,
       };
+    }
+    if (st?.inputMode === (SpeakingModes?.INPUT_MODES?.TRANSCRIPT || 'transcript')) {
+      const ta = document.getElementById(k);
+      if (ta?.value?.trim()) {
+        return {
+          fieldId: k,
+          inputMode: SpeakingModes?.INPUT_MODES?.TRANSCRIPT || 'transcript',
+          personaId: st?.personaId,
+          transcript: ta.value.trim(),
+        };
+      }
     }
     syncMeta(k);
     return {

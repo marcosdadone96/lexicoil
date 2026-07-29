@@ -123,6 +123,15 @@ const GrammarCategories = (() => {
     });
   }
 
+  function categoryLabel(category) {
+    const cat = normalizeCategory(category);
+    if (cat === 'konjunktiv_ii') return 'Konjunktiv II';
+    if (cat === 'adjektivdeklination') return 'Adjektivdeklination';
+    if (cat === 'trennbare_verben') return 'Trennbare Verben';
+    if (cat === 'relativsatz') return 'Relativsatz';
+    return cat.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+  }
+
   /** Merge production grammarErrorSummary into mastery grammarTags (errors = incorrect). */
   function mergeSummaryIntoTags(summary, grammarTags, { lang = 'de', level = 'b1' } = {}) {
     if (!grammarTags || typeof grammarTags !== 'object') return;
@@ -153,6 +162,7 @@ const GrammarCategories = (() => {
     CATEGORIES,
     PROMPT_LIST,
     normalizeCategory,
+    categoryLabel,
     categoryToGrammarTag,
     promptInstruction,
     normalizeSeverity,

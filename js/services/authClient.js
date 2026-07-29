@@ -126,11 +126,23 @@ const Auth = (() => {
           : user.plan || 'free';
     const avatar = (user.name || user.email || '?')[0].toUpperCase();
     const prevAdmin = !!(typeof S !== 'undefined' && S.user && S.user.isAdmin);
+    const prevCanEdit =
+      typeof S !== 'undefined' && S.user && S.user.canEditContent === true;
+    const prevRole = typeof S !== 'undefined' && S.user ? S.user.adminRole : null;
     const isAdmin = user.guest
       ? false
       : user.isAdmin === undefined || user.isAdmin === null
         ? prevAdmin
         : user.isAdmin === true || user.isAdmin === 'true' || user.isAdmin === 1;
+    const canEditContent = user.guest
+      ? false
+      : user.canEditContent === undefined || user.canEditContent === null
+        ? prevCanEdit || isAdmin
+        : user.canEditContent === true || user.canEditContent === 'true' || user.canEditContent === 1;
+    const adminRole =
+      user.adminRole !== undefined && user.adminRole !== null
+        ? user.adminRole
+        : prevRole || (isAdmin ? 'admin' : null);
     saveUser({
       name: user.name || 'User',
       email: user.email,
@@ -138,6 +150,8 @@ const Auth = (() => {
       plan: user.guest ? 'free' : plan,
       memberSince: user.memberSince || null,
       isAdmin,
+      adminRole,
+      canEditContent,
     });
     if (typeof S !== 'undefined') S.plan = plan;
     if (typeof applyServerQuota === 'function') {
@@ -914,6 +928,25 @@ const Auth = (() => {
       if (typeof S === 'undefined' || !S.user) return false;
       const v = S.user.isAdmin;
       return v === true || v === 'true' || v === 1;
+    },
+    canEditContent: () => {
+      if (typeof AdminAccess !== 'undefined' && AdminAccess.canEditContentFromUser) {
+        return AdminAccess.canEditContentFromUser(typeof S !== 'undefined' ? S.user : null);
+      }
+      if (isGuest()) return false;
+      if (typeof S === 'undefined' || !S.user) return false;
+      if (S.user.canEditContent === true) return true;
+      return Auth.isAdmin();
+    },
+    isFullAdmin: () => {
+      if (typeof AdminAccess !== 'undefined' && AdminAccess.isFullAdminFromUser) {
+        return AdminAccess.isFullAdminFromUser(typeof S !== 'undefined' ? S.user : null);
+      }
+      return Auth.isAdmin();
+    },
+    adminRole: () => {
+      if (typeof S === 'undefined' || !S.user) return null;
+      return S.user.adminRole || null;
     },
     authHeaders,
     apiFetch,

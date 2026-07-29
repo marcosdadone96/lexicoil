@@ -8,9 +8,23 @@ const SpeakingFlow = (() => {
     return ui?.lang === 'de';
   }
 
-  /** Partner personalities (Kim/Alex/Leo) on Goethe Sprechen Teil 1 and Teil 3. */
+  function examLevel(part) {
+    return String(
+      part?.level || (typeof S !== 'undefined' && S.level ? S.level : '') || '',
+    ).toUpperCase();
+  }
+
+  /** B1 (and legacy) T2 = solo Präsentation; B2 T2 = Diskussion with partner. */
+  function isSoloPresentationTeil(part) {
+    const teil = Number(part?.teil);
+    if (teil !== 2) return false;
+    return examLevel(part) !== 'B2';
+  }
+
+  /** Partner personalities (Kim/Alex/Leo) on Goethe Sprechen paired Teile. */
   function isPartnerTeil(part) {
     const teil = Number(part?.teil);
+    if (examLevel(part) === 'B2') return teil === 1 || teil === 2;
     return teil === 1 || teil === 3;
   }
 
@@ -43,7 +57,7 @@ const SpeakingFlow = (() => {
     const de = isDe(ui);
     const teil = Number(part?.teil);
     if (canUseRealtimeConversation()) {
-      if (teil === 2) {
+      if (isSoloPresentationTeil(part)) {
         return `<div class="speak-mode-banner"><b>${de ? 'Sprechen Teil 2' : 'Speaking Part 2'}:</b> ${de ? 'Einzelpräsentation — sprich oder tippe dein Transkript (kein Partner-Chat; der Partner hört nur zu).' : 'Individual presentation — speak or type your transcript (no partner chat; your partner only listens).'}</div>`;
       }
     }
@@ -59,6 +73,109 @@ const SpeakingFlow = (() => {
     return `<textarea class="write-field" id="${fid}" style="min-height:160px" placeholder="${ph}" oninput="typeof updProg==='function'&&updProg()"></textarea>`;
   }
 
+  /** Shared Aufgabe chrome for all Sprechen Teile / levels (A2 cards, B1 bullets, T2 slides, A2 T3 agendas). */
+  function renderSprechenBriefing(briefing, part, ui) {
+    const de = isDe(ui);
+    const layout = briefing.layout || 'none';
+    const bullets = briefing.bullets || [];
+    const slides = briefing.slides?.length ? briefing.slides : part.slides || [];
+    const items = briefing.items || [];
+    const agendas = briefing.agendas || [];
+
+    let h = '<div class="sprechen-briefing">';
+    const intro = briefing.intro || part.situation || '';
+    if (intro) {
+      h += `<div class="sprechen-briefing-intro">${esc(intro)}</div>`;
+    }
+
+    if (part.cardText) {
+      h += `<div class="off-card-scene speak-brief-item"><b>${ui.card}</b> ${esc(part.cardText)}</div>`;
+    }
+    if (part.photoDescriptions?.length) {
+      h += `<div class="off-photos">${part.photoDescriptions.map((p) => `<div class="off-ad">${esc(p)}</div>`).join('')}</div>`;
+    }
+
+    if (layout === 'cards' && items.length) {
+      const lbl = briefing.sectionLabel || (de ? 'Karten' : 'Cards');
+      h += `<div class="speak-brief-section-label">${esc(lbl)}</div>`;
+      h += `<div class="speak-brief-cards">${items
+        .map((it) => {
+          const title = it.label
+            ? `<b class="speak-brief-card-title">${esc(it.label)}</b> `
+            : '';
+          return `<div class="speak-brief-item speak-point">${title}${esc(it.text || '')}</div>`;
+        })
+        .join('')}</div>`;
+    } else if (layout === 'agenda' && agendas.length) {
+      h += `<div class="speak-brief-agendas">${agendas
+        .map(
+          (ag) =>
+            `<div class="speak-brief-agenda"><div class="speak-brief-agenda-title">${esc(ag.title || '')}</div><ul class="speak-brief-agenda-lines">${(ag.lines || [])
+              .map((line) => `<li>${esc(line)}</li>`)
+              .join('')}</ul></div>`,
+        )
+        .join('')}</div>`;
+    } else if (slides.length) {
+      const ptsLabel = de ? 'Punkte zum Besprechen' : 'Points to cover';
+      h += `<div class="speak-points-label">${esc(ptsLabel)}</div>`;
+      h += `<div class="speak-points speak-slides speak-brief-slides">${slides
+        .map(
+          (s) =>
+            `<div class="speak-brief-item speak-point"><b>${esc(String(s.n ?? ''))}.</b> ${esc(s.title || s.text || '')}</div>`,
+        )
+        .join('')}</div>`;
+    } else if (bullets.length) {
+      const ptsLabel = de ? 'Punkte zum Besprechen' : 'Points to cover';
+      h += `<div class="speak-points-label">${esc(ptsLabel)}</div><div class="speak-points speak-brief-slides speak-brief-bullets">${bullets.map((p) => `<div class="speak-brief-item speak-point">${esc(p)}</div>`).join('')}</div>`;
+    }
+
+    if (briefing.outro) {
+      h += `<div class="sprechen-briefing-outro">${esc(briefing.outro)}</div>`;
+    }
+    h += '</div>';
+    return h;
+  }
+
+  function renderSoloSpeakPath(part, ui) {
+    const de = isDe(ui);
+    const teil = Number(part?.teil);
+    let hint = ui.speakFmt || '';
+    if (isSoloPresentationTeil(part)) {
+      hint = de
+        ? 'Einzelpräsentation — sprich ins Mikrofon oder tippe dein Transkript (kein KI-Partner).'
+        : 'Individual presentation — speak or type your transcript (no AI partner).';
+    } else if (de && examLevel(part) === 'B2' && Number(part?.teil) === 2) {
+      hint = 'Diskussion — sprich ins Mikrofon oder tippe dein Transkript (Free). Pro: Gespräch mit Partner/in.';
+    }
+    return `
+      <div class="speak-path speak-path--solo speak-path--only">
+        <div class="speak-path-head">${de ? 'Nur Aufnahme' : 'Record only'}</div>
+        <p class="speak-path-hint">${esc(hint)}</p>
+        ${renderTranscriptInput(part, ui)}
+      </div>`;
+  }
+
+  function isRedundantSprechenPartTitle(title, teilNum) {
+    const t = String(title || '').trim();
+    const n = String(teilNum ?? '').trim();
+    if (!t || !n) return false;
+    return new RegExp(`^(teil|sprechen|speaking|part)\\s*${n}\\s*$`, 'i').test(t);
+  }
+
+  /** Shared module-tag line for all Sprechen Teile / levels (A2, B1, B2, …). */
+  function sprechenPartModuleTag(part, ui) {
+    const modLabel = ui?.speaking || 'Sprechen';
+    const teilLabel = ui?.teil || 'Teil';
+    const teilNum = part?.teil ?? '';
+    let line = `${modLabel} — ${teilLabel} ${teilNum}`;
+    const title = String(part?.title || '').trim();
+    if (title && !isRedundantSprechenPartTitle(title, teilNum)) {
+      line += `: ${title}`;
+    }
+    if (part?.dauer) line += ` · ${part.dauer}`;
+    return line;
+  }
+
   function renderGoetheSprechenPart(part, ui) {
     const briefing =
       typeof SprechenBriefing !== 'undefined'
@@ -67,39 +184,24 @@ const SpeakingFlow = (() => {
             intro: part.situation || '',
             bullets: part.points || part.prompts || [],
             slides: part.slides || [],
+            layout: 'none',
+            items: [],
+            agendas: [],
+            outro: '',
           };
-    const displayIntro = briefing.intro || part.situation || '';
-    const bullets = briefing.bullets || [];
-    const slides = briefing.slides?.length ? briefing.slides : part.slides || [];
-    const modLabel = ui.speaking;
-    const teilLabel = ui.teil;
-    const de = isDe(ui);
+    const tagLine = sprechenPartModuleTag(part, ui);
     const usePartner = shouldRenderPartnerShell(part);
     const mode = usePartner
       ? SpeakingModes?.INPUT_MODES?.PARTNER || 'partner'
       : SpeakingModes?.INPUT_MODES?.TRANSCRIPT || 'transcript';
 
-    let h = `<section class="module-wrap speak-part" data-speak-mode="${mode}" data-field-id="${esc(part.fieldId || '')}" data-teil="${esc(String(part.teil ?? ''))}"><div class="module-tag tag-sprechen">${modLabel} — ${teilLabel} ${part.teil}: ${esc(part.title || '')}${part.dauer ? ' · ' + esc(part.dauer) : ''}</div><div class="off-instr">${esc(displayIntro)}</div>`;
-
-    if (part.cardText) {
-      h += `<div class="off-card-scene"><b>${ui.card}</b> ${esc(part.cardText)}</div>`;
-    }
-    if (part.photoDescriptions?.length) {
-      h += `<div class="off-photos">${part.photoDescriptions.map((p) => `<div class="off-ad">${esc(p)}</div>`).join('')}</div>`;
-    }
-    if (slides.length) {
-      h += `<div class="speak-points speak-slides">${slides.map((s) => `<div class="speak-point"><b>${esc(String(s.n ?? ''))}.</b> ${esc(s.title || s.text || '')}</div>`).join('')}</div>`;
-    } else if (bullets.length) {
-      const ptsLabel = de ? 'Punkte zum Besprechen' : 'Points to cover';
-      h += `<div class="speak-points-label">${esc(ptsLabel)}</div><ul class="speak-points speak-points-list">${bullets.map((p) => `<li class="speak-point">${esc(p)}</li>`).join('')}</ul>`;
-    }
+    let h = `<section class="module-wrap speak-part" data-speak-mode="${mode}" data-field-id="${esc(part.fieldId || '')}" data-teil="${esc(String(part.teil ?? ''))}"><div class="module-tag tag-sprechen">${esc(tagLine)}</div>`;
+    h += renderSprechenBriefing(briefing, part, ui);
 
     if (usePartner) {
       h += SpeakingConversation.renderPartShell(part, ui);
     } else {
-      h += transcriptBannerHtml(ui, part);
-      h += `<div style="font-size:12px;color:var(--text-muted);margin-bottom:7px">${ui.speakFmt}</div>`;
-      h += renderTranscriptInput(part, ui);
+      h += renderSoloSpeakPath(part, ui);
     }
 
     h += '</section><hr class="section-div">';
@@ -142,6 +244,10 @@ const SpeakingFlow = (() => {
     getInputMode,
     isPartnerTeil,
     shouldRenderPartnerShell,
+    isRedundantSprechenPartTitle,
+    sprechenPartModuleTag,
+    renderSprechenBriefing,
+    renderSoloSpeakPath,
     renderGoetheSprechenPart,
     initForExam,
     collectPartAnswer,

@@ -288,12 +288,12 @@
     beginRetakeSession(saved, fromVocab);
   }
 
-  function renderSavedQuizzesHtml(goal, fromVocab) {
+  function renderCardsHtml(goal, fromVocab) {
     if (!goal) return '';
     const list = quizzesForGoal(goal);
     if (!list.length) return '';
     const retakeFrom = fromVocab !== false;
-    const cards = list
+    return list
       .map((q) => {
         const pct =
           q.bestScore != null && q.questionCount
@@ -318,6 +318,11 @@
         );
       })
       .join('');
+  }
+
+  function renderSavedQuizzesHtml(goal, fromVocab) {
+    const cards = renderCardsHtml(goal, fromVocab);
+    if (!cards) return '';
     return (
       `<div class="ws-panel vv-saved-quizzes-panel">` +
       `<p class="ws-seclbl">Saved quizzes</p>` +
@@ -328,6 +333,10 @@
   }
 
   function refreshSavedQuizzesDom(goal) {
+    if (typeof SavedVocabPractice !== 'undefined' && SavedVocabPractice.refreshDom) {
+      SavedVocabPractice.refreshDom(goal);
+      return;
+    }
     if (typeof document === 'undefined') return;
     const g =
       goal ||
@@ -386,6 +395,7 @@
     deleteSavedQuiz,
     retakeSavedQuiz,
     renderSavedQuizzesHtml,
+    renderCardsHtml,
     refreshSavedQuizzesDom,
     mergeSavedQuizzes,
     isSavedQuizTombstoned,

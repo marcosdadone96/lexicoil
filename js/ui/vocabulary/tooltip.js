@@ -19,9 +19,12 @@ function isJunkVocabTranslation(raw){
 }
 function vocabTranslationOf(data,lang){
   if(!data)return'';
-  const isEnDef=S.subject==='en'&&lang==='en';
-  const tk=isEnDef?'definition_en':'translation_'+lang;
-  return String(data[tk]||data.translation_en||data.translation_es||data.definition_en||data.translation||'').trim();
+  const code=String(lang||'en').toLowerCase().slice(0,2);
+  const isEnDef=S.subject==='en'&&code==='en';
+  const tk=isEnDef?'definition_en':'translation_'+code;
+  let v=String(data[tk]||'').trim();
+  if(!v&&code==='en')v=String(data.translation_en||data.definition_en||data.translation||'').trim();
+  return v;
 }
 function purgeJunkVocabCacheEntry(ck){
   const data=S.vocabCache?.[ck];
