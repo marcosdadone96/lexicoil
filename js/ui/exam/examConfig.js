@@ -100,7 +100,13 @@ function setConfigTeilChoice(value){
 function setConfigTopicChoice(value){
   const goal=S.goals.find(g=>g.id===_examConfig.goalId);
   const Stock=typeof PersonalTopicStock!=='undefined'?PersonalTopicStock.stockForConfig(goal,configActiveSkillKey(_examConfig.skills)):null;
-  const canon=typeof B1Topics!=='undefined'&&B1Topics.normalizeB1Topic?B1Topics.normalizeB1Topic(value):String(value||'').trim();
+  const lv=String(goal?.level||'B1').toUpperCase();
+  let canon=String(value||'').trim();
+  if(lv==='A2'&&typeof A2Topics!=='undefined'&&A2Topics.normalizeA2Topic){
+    canon=A2Topics.normalizeA2Topic(value)||canon;
+  }else if(typeof B1Topics!=='undefined'&&B1Topics.normalizeB1Topic){
+    canon=B1Topics.normalizeB1Topic(value)||canon;
+  }
   _examConfig.topicChoice=canon||value||null;
   _examConfig.topicTouched=true;
   renderExamConfigurator();
