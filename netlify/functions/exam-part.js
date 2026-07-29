@@ -234,26 +234,36 @@ exports.handler = async (event) => {
         }
         const verifyText = params.verifyText !== '0' && params.verifyText !== 'false';
         const blueprint = loadBlueprint(lang, level);
-        const plan = await planPersonalModuleAssembly(store, lang, level, module, {
-          words: wantLemmas,
-          userWords: wordsRaw.length ? wordsRaw : wantLemmas,
-          topicTag,
-          excludeIds,
-          assembleMode,
-          blueprint,
-          verifyText,
-        });
-        console.info('[exam-part] planModule', {
-          ok: plan.ok,
-          reason: plan.reason,
-          coveredCount: plan.coveredCount,
-          textCoveredCount: plan.textCoveredCount,
-          decision: plan.decision,
-          module,
-          level,
-          topic: plan.requestedTopic,
-        });
-        return jsonResponse(200, noCache, plan);
+        try {
+          const plan = await planPersonalModuleAssembly(store, lang, level, module, {
+            words: wantLemmas,
+            userWords: wordsRaw.length ? wordsRaw : wantLemmas,
+            topicTag,
+            excludeIds,
+            assembleMode,
+            blueprint,
+            verifyText,
+          });
+          console.info('[exam-part] planModule', {
+            ok: plan.ok,
+            reason: plan.reason,
+            coveredCount: plan.coveredCount,
+            textCoveredCount: plan.textCoveredCount,
+            decision: plan.decision,
+            module,
+            level,
+            topic: plan.requestedTopic,
+          });
+          return jsonResponse(200, noCache, plan);
+        } catch (planErr) {
+          console.error('[exam-part] planModule error:', planErr.message, planErr.stack);
+          return jsonResponse(200, noCache, {
+            ok: false,
+            reason: 'plan_internal_error',
+            error: 'plan_internal_error',
+            message: planErr.message,
+          });
+        }
       }
 
       let quotaGate = null;
@@ -338,8 +348,12 @@ exports.handler = async (event) => {
       }
       return jsonResponse(200, noCache, payload);
     } catch (err) {
-      console.error('[exam-part] GET error:', err.message);
-      return jsonResponse(200, noCache, { part: null });
+      console.error('[exam-part] GET error:', err.message, err.stack);
+      return jsonResponse(500, noCache, {
+        error: 'internal_error',
+        reason: 'exam_part_get_exception',
+        message: err.message,
+      });
     }
   }
 

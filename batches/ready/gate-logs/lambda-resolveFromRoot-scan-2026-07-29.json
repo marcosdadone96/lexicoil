@@ -1,0 +1,42 @@
+{
+  "generatedAt": "2026-07-29T08:15:00.000Z",
+  "scan": "require(path.join(__dirname, '../../../js|library|scripts' in netlify/functions",
+  "fixedInThisCommit": [
+    {
+      "file": "netlify/functions/lib/vocabPhrasesUtils.js",
+      "paths": ["js/engine/separableResolve.js", "js/engine/validation/lemmatizer.js", "js/data/verbConjugation.js"],
+      "fix": "resolveFromRoot"
+    },
+    {
+      "file": "netlify/functions/lib/listeningGameUtils.js",
+      "paths": ["js/engine/separableResolve.js", "js/engine/lemmatizer.js", "js/data/verbConjugation.js"],
+      "fix": "resolveFromRoot"
+    },
+    {
+      "file": "netlify/functions/lib/vocabQuizUtils.js",
+      "paths": ["js/engine/validation/lemmatizer.js", "js/data/verbConjugation.js"],
+      "fix": "resolveFromRoot (finiteVerbStem lazy load)"
+    }
+  ],
+  "alreadySafeOrFallback": [
+    {
+      "file": "netlify/functions/lib/passageVocab.js",
+      "note": "resolveFromRoot first, __dirname paths only as fs.existsSync fallbacks"
+    }
+  ],
+  "deferredNotOnExamPartHotPath": [
+    {
+      "file": "netlify/functions/lib/vocabBgState.js",
+      "paths": ["library/vocab/...", "js/data/manualVocab.js static require"]
+    },
+    {
+      "file": "netlify/functions/lib/qualityGatePolicy.js",
+      "paths": ["scripts/lib/qualityGates/qualityGatePolicy.json"]
+    },
+    {
+      "file": "netlify/functions/lib/qualityGateRunner.js",
+      "paths": ["scripts/lib/qualityGates/qualityGateRunner.mjs dynamic import"]
+    }
+  ],
+  "staticRequiresBundledByEsbuild": "Top-level require('../../../js/...') in examQualityGate, partQualityGate, personalModuleVocabPlan, etc. — bundled at build; not the /var/js __dirname bug class"
+}

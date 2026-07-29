@@ -1,5 +1,6 @@
 'use strict';
 
+const { resolveFromRoot } = require('./projectRoot.js');
 const {
   isSeparableTarget,
   separablePresentRoot,
@@ -153,11 +154,10 @@ function finiteVerbStem(lemma) {
   const sepStem = separablePresentRoot(w);
   if (sepStem) return sepStem;
   try {
-    const path = require('path');
     if (!global.Lemmatizer) {
-      global.Lemmatizer = require(path.join(__dirname, '../../../js/engine/validation/lemmatizer.js'));
+      global.Lemmatizer = require(resolveFromRoot('js', 'engine', 'validation', 'lemmatizer.js'));
     }
-    const VC = require(path.join(__dirname, '../../../js/data/verbConjugation.js'));
+    const VC = require(resolveFromRoot('js', 'data', 'verbConjugation.js'));
     const c = VC.getPresent ? VC.getPresent(w, 'de') : null;
     if (c?.forms?.er) {
       const er = String(c.forms.er).trim();

@@ -1,14 +1,13 @@
 'use strict';
 
-const path = require('path');
+const { resolveFromRoot } = require('./projectRoot.js');
 
 let SeparableResolve;
 let VerbConjugation;
 
 function loadSeparableResolve() {
   if (!SeparableResolve) {
-    const sepPath = path.join(__dirname, '../../../js/engine/separableResolve.js');
-    SeparableResolve = require(sepPath);
+    SeparableResolve = require(resolveFromRoot('js', 'engine', 'separableResolve.js'));
     if (typeof global !== 'undefined') global.SeparableResolve = SeparableResolve;
   }
   return SeparableResolve;
@@ -17,11 +16,11 @@ function loadSeparableResolve() {
 function loadVerbConjugation() {
   if (!VerbConjugation) {
     try {
-      const lemPath = path.join(__dirname, '../../../js/engine/validation/lemmatizer.js');
+      const lemPath = resolveFromRoot('js', 'engine', 'validation', 'lemmatizer.js');
       if (!global.Lemmatizer) global.Lemmatizer = require(lemPath);
     } catch (_) {}
     loadSeparableResolve();
-    VerbConjugation = require(path.join(__dirname, '../../../js/data/verbConjugation.js'));
+    VerbConjugation = require(resolveFromRoot('js', 'data', 'verbConjugation.js'));
   }
   return VerbConjugation;
 }
