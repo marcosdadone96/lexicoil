@@ -25,7 +25,7 @@ const { randomUUID } = require('crypto');
 const { getStoreForEvent }           = require('./lib/blobStore.js');
 const { requireAuth }                = require('./lib/authLib.js');
 const { corsHeaders, parseJsonBody, jsonResponse } = require('./lib/http.js');
-const { readAnthropicKey }           = require('./lib/anthropicKey.js');
+const { geminiApiKey } = require('./lib/freeTranslate.js');
 const { resolveFromRoot } = require('./lib/projectRoot.js');
 const { normalizeB1Topic } = require(resolveFromRoot('js', 'data', 'b1Topics.js'));
 const { addReusablePart, pickReusablePart, pickReusablePartByTopic, pickReusablePartByVocab } = require('./lib/reusablePartsStore.js');
@@ -383,7 +383,7 @@ exports.handler = async (event) => {
 
     // ── Quality gate ────────────────────────────────────────────────────────
     const blueprint = loadBlueprint(lang, level);
-    const apiKey    = readAnthropicKey();
+    const apiKey    = geminiApiKey();
 
     const partInput = {
       id:          body.id || randomUUID(),
