@@ -34,6 +34,8 @@
   environment = { NODE_VERSION = "20" }
 
 [functions."exam-part"]
+  # planModule + Lesen text verify can exceed platform default (~10–30s); Hören often ~12–15s
+  timeout = 60
   # pool index: partIndex → partTopicDetect, b1Topics, lemmatizer, lexicon sets
   included_files = ["library/vocab/**", "library/blueprints/**", "js/engine/**", "js/data/**", "js/library/**", "data/lexicon/**", "netlify/functions/lib/partIndex.js", "netlify/functions/lib/projectRoot.js", "netlify/functions/lib/passageVocab.js", "netlify/functions/lib/poolSearchCache.js", "netlify/functions/lib/poolSourceMode.js", "netlify/functions/lib/personalModuleVocabPlan.js", "netlify/functions/lib/personalPartTextMatches.js", "netlify/functions/lib/personalModuleIntentRateLimit.js"]
 
