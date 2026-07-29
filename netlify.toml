@@ -23,8 +23,9 @@
   included_files = ["library/blueprints/**", "library/banks/**", "library/curated/**", "library/pool-seed/**", "library/schemas/**", "library/catalogThresholds.json", "js/engine/**", "knowledge/**"]
 
 [functions."admin-api"]
-  # Top-level requires (reusablePartsStore → b1Topics); pool_gap_probe → scripts/lib + reusable-seed
-  included_files = ["library/blueprints/**", "library/banks/**", "library/curated/**", "library/schemas/**", "library/reusable-seed/**", "js/engine/**", "js/data/**", "js/library/**", "data/lexicon/**", "knowledge/**", "scripts/lib/**", "netlify/functions/lib/projectRoot.js", "netlify/functions/lib/partIndex.js", "netlify/functions/lib/passageVocab.js", "netlify/functions/lib/poolSearchCache.js", "netlify/functions/lib/poolSourceMode.js"]
+  # Runtime FS deps: resolveFromRoot (js/*, library/*) + dynamic import scripts/lib/*.mjs
+  # (pool_gap_probe → poolGapPlanner/lesenTemplatePrompt/lexicalCheck → blacklist.mjs; personal_plan_probe; qualityGateRunner)
+  included_files = ["library/blueprints/**", "library/banks/**", "library/curated/**", "library/schemas/**", "library/reusable-seed/**", "library/vocab/**", "js/engine/**", "js/data/**", "js/library/**", "data/lexicon/**", "data/excluded-premises.json", "data/lesen-t2-openings-bank.json", "data/lesen-t3-names-bank.json", "knowledge/**", "scripts/lib/**", "scripts/blacklist.mjs", "scripts/audit-pass-2.mjs", "plantillas-lesen-b1/**", "plantillas-horen-b1/**"]
 
 [functions."tts"]
   included_files = ["library/tts-cache/**"]
@@ -37,8 +38,8 @@
 [functions."exam-part"]
   # planModule + Lesen text verify can exceed platform default (~10–30s); Hören often ~12–15s
   timeout = 60
-  # pool index: partIndex → partTopicDetect, b1Topics, lemmatizer, lexicon sets
-  included_files = ["library/vocab/**", "library/blueprints/**", "js/engine/**", "js/data/**", "js/library/**", "data/lexicon/**", "netlify/functions/lib/partIndex.js", "netlify/functions/lib/projectRoot.js", "netlify/functions/lib/passageVocab.js", "netlify/functions/lib/poolSearchCache.js", "netlify/functions/lib/poolSourceMode.js", "netlify/functions/lib/personalModuleVocabPlan.js", "netlify/functions/lib/personalPartTextMatches.js", "netlify/functions/lib/personalModuleIntentRateLimit.js"]
+  # Same runtime FS bundle as admin-api plan/pick paths (+ POST quality gate via js/engine; local seed)
+  included_files = ["library/vocab/**", "library/blueprints/**", "library/reusable-seed/**", "js/engine/**", "js/data/**", "js/library/**", "data/lexicon/**", "data/excluded-premises.json", "data/lesen-t2-openings-bank.json", "data/lesen-t3-names-bank.json", "knowledge/**", "scripts/lib/**", "scripts/blacklist.mjs", "scripts/audit-pass-2.mjs", "plantillas-lesen-b1/**", "plantillas-horen-b1/**"]
 
 [functions."exam-plan"]
   # hybrid decision: external hybridExamPlan.mjs + pool index CJS bridge
