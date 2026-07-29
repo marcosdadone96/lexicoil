@@ -23,7 +23,8 @@
   included_files = ["library/blueprints/**", "library/banks/**", "library/curated/**", "library/pool-seed/**", "library/schemas/**", "library/catalogThresholds.json", "js/engine/**", "knowledge/**"]
 
 [functions."admin-api"]
-  included_files = ["library/blueprints/**", "library/banks/**", "library/curated/**", "library/schemas/**", "js/engine/**", "knowledge/**"]
+  # Top-level requires (reusablePartsStore → b1Topics); pool_gap_probe → scripts/lib + reusable-seed
+  included_files = ["library/blueprints/**", "library/banks/**", "library/curated/**", "library/schemas/**", "library/reusable-seed/**", "js/engine/**", "js/data/**", "js/library/**", "data/lexicon/**", "knowledge/**", "scripts/lib/**", "netlify/functions/lib/projectRoot.js", "netlify/functions/lib/partIndex.js", "netlify/functions/lib/passageVocab.js", "netlify/functions/lib/poolSearchCache.js", "netlify/functions/lib/poolSourceMode.js"]
 
 [functions."tts"]
   included_files = ["library/tts-cache/**"]
