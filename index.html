@@ -38,7 +38,7 @@ gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personali
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/css/lexicoil-design-system.css?v=4">
-<link rel="stylesheet" href="/assets/css/app.css?v=29">
+<link rel="stylesheet" href="/assets/css/app.css?v=31">
 <link rel="stylesheet" href="/assets/css/app-utilities.css?v=3">
 <link rel="stylesheet" href="/assets/css/feedback-modal.css?v=1">
 </head>
@@ -480,7 +480,8 @@ gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personali
 <script src="js/services/supabaseClient.js?v=9"></script>
 <script src="js/data/activityTrack.js?v=2"></script>
 <script src="js/services/syncMerge.js?v=6"></script>
-<script src="js/services/authClient.js?v=20"></script>
+<script src="js/services/authClient.js?v=21"></script>
+<script src="js/library/adminAccess.js?v=1"></script>
 <script src="js/services/claudeClient.js?v=33"></script>
 <script src="js/engine/domain/lexicoilDomain.js?v=1"></script>
 <script src="js/engine/knowledge/KnowledgeLoader.js?v=1"></script>
@@ -545,10 +546,14 @@ gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personali
 <script src="js/library/HorenGame.js?v=2"></script>
 <script src="js/library/ContentKey.js?v=1"></script>
 <script src="js/library/BurnedRegistry.js?v=1"></script>
-<script src="js/library/VocabBatching.js?v=1"></script>
+<script src="js/library/VocabBatching.js?v=2"></script>
 <script src="js/library/ItemCalibration.js?v=1"></script>
 <script src="js/engine/partTopicDetect.js?v=1"></script>
 <script src="js/data/b1Topics.js?v=2"></script>
+<script src="js/data/examLevelLayout.js?v=1"></script>
+<script src="js/data/personalTopicStockFactory.js?v=1"></script>
+<script src="js/data/personalHorenTopicStock.js?v=1"></script>
+<script src="js/data/personalTopicStock.js?v=1"></script>
 <script src="js/data/personalLesenTopicStock.js?v=4"></script>
 <script src="js/library/adsMatching.js?v=1"></script>
 <script src="js/library/ExamBlueprint.js?v=3"></script>
@@ -567,11 +572,16 @@ gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personali
 <script src="js/data/verbConjugation.js?v=6"></script>
 <script src="js/data/goalStore.js?v=8"></script>
 <script src="js/data/savedVocabQuizzes.js?v=1"></script>
+<script src="js/data/savedVocabPhrases.js?v=1"></script>
+<script src="js/data/savedListeningGames.js?v=1"></script>
+<script src="js/data/savedFlashcardSets.js?v=1"></script>
+<script src="js/data/savedVocabPractice.js?v=1"></script>
 <script src="js/ui/mastery/masteryView.js?v=2"></script>
 <script src="js/ui/dashboard/dashboardLayout.js?v=2"></script>
 <script src="js/ui/dashboard/dashboardUi.js?v=12"></script>
 <script src="js/ui/workspace/workspaceUi.js?v=8"></script>
 <script src="js/ui/grammar/grammarView.js?v=2"></script>
+<script src="js/ui/grammar/grammarDrill.js?v=1"></script>
 <script src="js/library/QuestionLibrary.js?v=1"></script>
 <script src="js/content/goetheDemoExams.js"></script>
 <script src="js/content/demoExams.js"></script>
@@ -585,7 +595,7 @@ gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personali
 <script src="js/bootstrap/auth.js?v=5"></script>
 <script src="js/bootstrap/theme.js?v=2"></script>
 <script src="js/ui/workspace/vocabHub.js?v=15"></script>
-<script src="js/ui/exam/examConfig.js?v=13"></script>
+<script src="js/ui/exam/examConfig.js?v=14"></script>
 <script src="js/ui/exam/mistakeReview.js?v=1"></script>
 <script src="js/config/speakingModes.js?v=3"></script>
 <script src="js/ui/exam/speakingVoicePilot.js?v=1"></script>
@@ -616,12 +626,12 @@ window.LEXICOIL_EXAM_SOURCE='published';</script>
 <script src="js/engine/personalExamCoverage.js?v=3"></script>
 <script src="js/engine/validation/lesenPassageIntegrity.js?v=1"></script>
 <script src="js/engine/horenPictureMatching.js?v=1"></script>
+<script src="js/library/personalPoolVocabGate.js?v=1"></script>
 <script src="js/ui/exam/examGeneration.js?v=54"></script>
 <script src="js/ui/exam/results.js?v=15"></script>
 <script src="js/ui/exam/examKeyboard.js?v=1"></script>
-<script src="js/ui/exam/adminContentReview.js?v=5"></script>
+<script src="js/ui/exam/adminContentReview.js?v=6"></script>
 <script src="js/engine/passageTranslate.js?v=1"></script>
-<script src="js/engine/horenPictureMatching.js?v=1"></script>
 <script src="js/ui/exam/examRunner.js?v=27"></script>
 <script src="js/ui/exam/saveExams.js?v=4"></script>
 <script src="js/ui/vocabulary/tooltip.js?v=20"></script>

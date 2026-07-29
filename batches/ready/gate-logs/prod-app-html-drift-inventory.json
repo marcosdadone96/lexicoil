@@ -1,0 +1,779 @@
+{
+  "generatedAt": "2026-07-29T07:54:30.290Z",
+  "prodHtml": "C:\\Users\\marco\\Desktop\\MDR\\lexiloop\\batches\\ready\\gate-logs\\prod-app-html-www.html",
+  "referencedCount": 179,
+  "untrackedReferenced": [
+    "js/data/examLevelLayout.js",
+    "js/data/personalHorenTopicStock.js",
+    "js/data/personalTopicStock.js",
+    "js/data/personalTopicStockFactory.js",
+    "js/data/savedFlashcardSets.js",
+    "js/data/savedListeningGames.js",
+    "js/data/savedVocabPhrases.js",
+    "js/data/savedVocabPractice.js",
+    "js/library/adminAccess.js",
+    "js/ui/grammar/grammarDrill.js"
+  ],
+  "missingReferenced": [
+    "#",
+    "demo",
+    "privacy",
+    "terms"
+  ],
+  "trackedModifiedReferenced": [
+    "assets/css/app.css",
+    "js/bootstrap/auth.js",
+    "js/bootstrap/featureQuota.js",
+    "js/bootstrap/nav.js",
+    "js/bootstrap/state.js",
+    "js/data/manualVocab.js",
+    "js/data/personalLesenTopicStock.js",
+    "js/data/publishedExamAdapter.js",
+    "js/data/savedVocabQuizzes.js",
+    "js/data/vocabQuizUtils.js",
+    "js/engine/examRenumber.js",
+    "js/engine/partTopicDetect.js",
+    "js/engine/personalExamCoverage.js",
+    "js/engine/separableResolve.js",
+    "js/engine/sprechenBriefing.js",
+    "js/engine/validation/CefrGate.js",
+    "js/i18n/vocabModuleLocale.js",
+    "js/library/AnalyticsStore.js",
+    "js/library/HorenGame.js",
+    "js/library/PracticeDictionary.js",
+    "js/library/VocabBatching.js",
+    "js/library/grammarCategories.js",
+    "js/services/authClient.js",
+    "js/services/claudeClient.js",
+    "js/ui/exam/adminContentReview.js",
+    "js/ui/exam/examConfig.js",
+    "js/ui/exam/examGeneration.js",
+    "js/ui/exam/examRunner.js",
+    "js/ui/exam/results.js",
+    "js/ui/exam/speakingConversation.js",
+    "js/ui/exam/speakingFlow.js",
+    "js/ui/mastery/masteryView.js",
+    "js/ui/vocabulary/flashcards.js",
+    "js/ui/vocabulary/tooltip.js",
+    "js/ui/vocabulary/vocabPhrases.js",
+    "js/ui/workspace/vocabHub.js"
+  ],
+  "allReferenced": [
+    {
+      "path": "#",
+      "status": "missing_everywhere"
+    },
+    {
+      "path": "assets/brand/favicon.png",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "assets/brand/favicon.svg",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "assets/brand/icon.png",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "assets/css/app-utilities.css",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "assets/css/app.css",
+      "status": "tracked_modified"
+    },
+    {
+      "path": "assets/css/feedback-modal.css",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "assets/css/lexicoil-design-system.css",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "demo",
+      "status": "missing_everywhere"
+    },
+    {
+      "path": "js/analytics/lcAnalytics.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/analytics/types.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/bootstrap/appFeatures.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/bootstrap/audio.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/bootstrap/auth.js",
+      "status": "tracked_modified"
+    },
+    {
+      "path": "js/bootstrap/featureFlashcards.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/bootstrap/featureNotebook.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/bootstrap/featurePayments.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/bootstrap/featurePdf.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/bootstrap/featureProductionEval.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/bootstrap/featureQuota.js",
+      "status": "tracked_modified"
+    },
+    {
+      "path": "js/bootstrap/featureSpeaking.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/bootstrap/freePlan.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/bootstrap/init.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/bootstrap/listeningScript.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/bootstrap/nav.js",
+      "status": "tracked_modified"
+    },
+    {
+      "path": "js/bootstrap/quota.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/bootstrap/router.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/bootstrap/state.js",
+      "status": "tracked_modified"
+    },
+    {
+      "path": "js/bootstrap/theme.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/config/examSource.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/config/speakingModes.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/content/demoExams.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/content/goetheDemoExams.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/core/metadataResolver.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/core/schemaValidator.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/data/activityTrack.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/data/articleLexicon.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/data/b1Topics.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/data/examLevelLayout.js",
+      "status": "untracked_on_disk"
+    },
+    {
+      "path": "js/data/examLibrary.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/data/examProfile.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/data/goalStore.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/data/listeningGameUtils.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/data/manualVocab.js",
+      "status": "tracked_modified"
+    },
+    {
+      "path": "js/data/personalHorenTopicStock.js",
+      "status": "untracked_on_disk"
+    },
+    {
+      "path": "js/data/personalLesenTopicStock.js",
+      "status": "tracked_modified"
+    },
+    {
+      "path": "js/data/personalTopicStock.js",
+      "status": "untracked_on_disk"
+    },
+    {
+      "path": "js/data/personalTopicStockFactory.js",
+      "status": "untracked_on_disk"
+    },
+    {
+      "path": "js/data/publishedExamAdapter.js",
+      "status": "tracked_modified"
+    },
+    {
+      "path": "js/data/savedFlashcardSets.js",
+      "status": "untracked_on_disk"
+    },
+    {
+      "path": "js/data/savedListeningGames.js",
+      "status": "untracked_on_disk"
+    },
+    {
+      "path": "js/data/savedVocabPhrases.js",
+      "status": "untracked_on_disk"
+    },
+    {
+      "path": "js/data/savedVocabPractice.js",
+      "status": "untracked_on_disk"
+    },
+    {
+      "path": "js/data/savedVocabQuizzes.js",
+      "status": "tracked_modified"
+    },
+    {
+      "path": "js/data/verbConjugation.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/data/vocabQuizUtils.js",
+      "status": "tracked_modified"
+    },
+    {
+      "path": "js/engine/domain/lexicoilDomain.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/engine/examRefill.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/engine/examRenumber.js",
+      "status": "tracked_modified"
+    },
+    {
+      "path": "js/engine/generators/ContentGenerator.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/engine/generators/DialogueGenerator.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/engine/generators/ExamGenerator.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/engine/generators/ExerciseGenerator.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/engine/generators/FlashcardGenerator.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/engine/generators/StoryGenerator.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/engine/generators/chunkRunner.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/engine/generators/lesenTeil2Split.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/engine/generators/lesenTeil4Split.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/engine/horenPictureMatching.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/engine/knowledge/KnowledgeEngine.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/engine/knowledge/KnowledgeLoader.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/engine/lexicoilEngine.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/engine/partTopicDetect.js",
+      "status": "tracked_modified"
+    },
+    {
+      "path": "js/engine/passageTranslate.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/engine/personalExamCoverage.js",
+      "status": "tracked_modified"
+    },
+    {
+      "path": "js/engine/personalLesenPoolFallback.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/engine/prompts/PromptBuilder.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/engine/prompts/blueprintPromptBinding.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/engine/prompts/explanationOptionResync.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/engine/prompts/moduleInstructions.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/engine/prompts/partPostprocess.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/engine/prompts/promptShell.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/engine/providers/baseProviderAdapter.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/engine/providers/cambridgeAdapter.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/engine/providers/deleAdapter.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/engine/providers/goetheAdapter.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/engine/providers/providerRegistry.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/engine/separableResolve.js",
+      "status": "tracked_modified"
+    },
+    {
+      "path": "js/engine/sprechenBriefing.js",
+      "status": "tracked_modified"
+    },
+    {
+      "path": "js/engine/strategyBFlags.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/engine/targetUsage.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/engine/validation/CefrGate.js",
+      "status": "tracked_modified"
+    },
+    {
+      "path": "js/engine/validation/CefrVocabLoader.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/engine/validation/ExamValidator.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/engine/validation/blueprintResolver.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/engine/validation/difficultyScorer.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/engine/validation/isAnswerKeyRenderable.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/engine/validation/lemmatizer.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/engine/validation/lesenPassageIntegrity.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/i18n/consentLocale.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/i18n/examSpanishNormalize.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/i18n/examUiLocale.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/i18n/pdfReportLocale.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/i18n/subjectMeta.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/i18n/vocabModuleLocale.js",
+      "status": "tracked_modified"
+    },
+    {
+      "path": "js/lib/planPricing.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/library/AnalyticsStore.js",
+      "status": "tracked_modified"
+    },
+    {
+      "path": "js/library/BurnedRegistry.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/library/ContentKey.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/library/ExamBlueprint.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/library/ExamBuilder.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/library/HorenGame.js",
+      "status": "tracked_modified"
+    },
+    {
+      "path": "js/library/ItemCalibration.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/library/LibraryLoader.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/library/PassageResolver.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/library/PracticeDictionary.js",
+      "status": "tracked_modified"
+    },
+    {
+      "path": "js/library/QuestionLibrary.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/library/TaggingGate.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/library/VocabBatching.js",
+      "status": "tracked_modified"
+    },
+    {
+      "path": "js/library/WeaknessEngine.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/library/adminAccess.js",
+      "status": "untracked_on_disk"
+    },
+    {
+      "path": "js/library/adsMatching.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/library/contentLoader.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/library/contentServable.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/library/grammarCategories.js",
+      "status": "tracked_modified"
+    },
+    {
+      "path": "js/library/grammarLoader.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/library/levelAvailability.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/library/libraryCatalog.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/library/personalPoolQuota.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/library/personalPoolVocabGate.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/library/phrasesLoader.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/library/vocabularyLoader.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/services/authClient.js",
+      "status": "tracked_modified"
+    },
+    {
+      "path": "js/services/claudeClient.js",
+      "status": "tracked_modified"
+    },
+    {
+      "path": "js/services/supabaseClient.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/services/syncMerge.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/ui/app/coach.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/ui/components/a11y.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/ui/components/debugLog.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/ui/components/feedbackModal.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/ui/components/levelNotify.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/ui/components/notify.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/ui/components/uiToast.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/ui/consent/analyticsConfig.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/ui/consent/cookieConsent.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/ui/consent/googleAnalytics.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/ui/dashboard/dashboardLayout.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/ui/dashboard/dashboardUi.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/ui/exam/adminContentReview.js",
+      "status": "tracked_modified"
+    },
+    {
+      "path": "js/ui/exam/examConfig.js",
+      "status": "tracked_modified"
+    },
+    {
+      "path": "js/ui/exam/examGeneration.js",
+      "status": "tracked_modified"
+    },
+    {
+      "path": "js/ui/exam/examKeyboard.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/ui/exam/examRunner.js",
+      "status": "tracked_modified"
+    },
+    {
+      "path": "js/ui/exam/examSources.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/ui/exam/examValidation.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/ui/exam/mistakeReview.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/ui/exam/moduleGrading.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/ui/exam/oralPractice.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/ui/exam/productionEvalCore.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/ui/exam/results.js",
+      "status": "tracked_modified"
+    },
+    {
+      "path": "js/ui/exam/saveExams.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/ui/exam/speakingConversation.js",
+      "status": "tracked_modified"
+    },
+    {
+      "path": "js/ui/exam/speakingFlow.js",
+      "status": "tracked_modified"
+    },
+    {
+      "path": "js/ui/exam/speakingLiveClient.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/ui/exam/speakingLiveVoice.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/ui/exam/speakingMic.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/ui/exam/speakingVoiceConsent.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/ui/exam/speakingVoicePilot.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/ui/grammar/grammarDrill.js",
+      "status": "untracked_on_disk"
+    },
+    {
+      "path": "js/ui/grammar/grammarView.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/ui/mastery/masteryView.js",
+      "status": "tracked_modified"
+    },
+    {
+      "path": "js/ui/vocabulary/fcKeyboard.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "js/ui/vocabulary/flashcards.js",
+      "status": "tracked_modified"
+    },
+    {
+      "path": "js/ui/vocabulary/tooltip.js",
+      "status": "tracked_modified"
+    },
+    {
+      "path": "js/ui/vocabulary/vocabPhrases.js",
+      "status": "tracked_modified"
+    },
+    {
+      "path": "js/ui/workspace/vocabHub.js",
+      "status": "tracked_modified"
+    },
+    {
+      "path": "js/ui/workspace/workspaceUi.js",
+      "status": "tracked_ok"
+    },
+    {
+      "path": "privacy",
+      "status": "missing_everywhere"
+    },
+    {
+      "path": "terms",
+      "status": "missing_everywhere"
+    }
+  ]
+}
