@@ -80,9 +80,21 @@ export function isSchreibenPerTeil(module, level) {
 }
 
 /** Goethe length + batch rules injected into every prompt. */
+/** CHK-34 — MCQ explanations must not quote the correct option literally. */
+const MCQ_CHK34_EXPLANATION_RULE =
+  `- explanation (MCQ, CHK-34): alemán ≥10 Wörter; explica **por qué** encaja con el audio/texto; ` +
+  `**PROHIBIDO** citar entre comillas el texto literal de la opción correcta ni «Option a/b/c)» — el orden puede reordenarse.\n`;
+
 const EXAM_LENGTH_RULES = {
   horen: {
     A2: {
+      1: {
+        target: '20–70',
+        min: 15,
+        max: 80,
+        scope: 'cada passages[i].text (5 monólogos s1–s5)',
+        note: '5 segmentos × 1 MCQ a/b/c; escucha 2×; PROHIBIDO Richtig/Falsch (no es B1).',
+      },
       2: {
         target: '80–150',
         min: 70,
@@ -399,6 +411,19 @@ function checklistBlock(module, teil, level = 'B1') {
         `- explanation MCQ: prosa CHK-34 (sin «Option a/b/c)»).\n`
       );
     }
+    if (lv === 'A2') {
+      return (
+        common +
+        `- 5 passages (s1–s5), cada uno **20–70 palabras** (monólogo A2 hablado).\n` +
+        `- **5 preguntas** exactas — **1 MCQ a/b/c por segmento** (PROHIBIDO richtig_falsch — no es B1).\n` +
+        `- segmentLabel «Text 1»…«Text 5» en cada question; passageId al segmento correcto.\n` +
+        `- Cada passage: **audio[]** con 1 turno monólogo para TTS.\n` +
+        `- SOLO MONÓLOGO — PROHIBIDO diálogo, Gespräch o turnos «Name: …».\n` +
+        `- MCQ: options a)/b)/c); correct solo letra; varía a/b/c; anti word-matching (≥4 palabras seguidas del transcript = FAIL).\n` +
+        `- LONGITUD MCQ: opción correcta y distractores de longitud comparable.\n` +
+        MCQ_CHK34_EXPLANATION_RULE
+      );
+    }
     return (
       common +
       `- 5 passages (s1–s5) + 10 questions (sN-q1 RF, sN-q2 MCQ).\n` +
@@ -490,7 +515,9 @@ function checklistBlock(module, teil, level = 'B1') {
         common +
         `- 5 passages (s1–s5), cada uno diálogo corto 15–50 palabras, 2 hablantes «Name:».\n` +
         `- 5× multiple_choice a/b/c; cada question con segmentLabel «Text 1»…«Text 5» y passageId.\n` +
-        `- PROHIBIDO: 1 diálogo largo + 7 Richtig/Falsch (eso es B1).\n`
+        `- Cada passage: **audio[]** con turnos de diálogo (2 voiceId) para TTS.\n` +
+        `- PROHIBIDO: 1 diálogo largo + 7 Richtig/Falsch (eso es B1).\n` +
+        MCQ_CHK34_EXPLANATION_RULE
       );
     }
     return (
@@ -598,6 +625,25 @@ function checklistBlock(module, teil, level = 'B1') {
       `- OBLIGATORIO: situación concreta + **zwei Wochenpläne/Agenden** + Termin finden.\n` +
       `- PROHIBIDO Feedback/Rückmeldung sobre Präsentation (eso es B1 T3).\n` +
       `- Partner/Partnerin; PROHIBIDO Kandidat* / Prüfer / 1ª persona examinador.\n`
+    );
+  }
+  if (module === 'sprechen' && lv === 'B2' && t === 1) {
+    return (
+      common +
+      `- passages: [] · exactamente **1** question con "teil":1.\n` +
+      `- type canónico: **short_answer** · correct:"rubric" · difficulty:5.\n` +
+      `- OBLIGATORIO: frase oficial Modellsatz Vortrag («Halten Sie einen kurzen Vortrag zu einem Thema Ihrer Wahl…»).\n` +
+      `- Tema B2 concreto + guía Gliederung + interacción Partner/in tras el Vortrag.\n` +
+      `- PROHIBIDO batch B1 (3 Teile) / 4 Karten A2 / Planungsaufgabe B1.\n`
+    );
+  }
+  if (module === 'sprechen' && lv === 'B2' && t === 2) {
+    return (
+      common +
+      `- passages: [] · exactamente **1** question con "teil":2.\n` +
+      `- type canónico: **short_answer** · correct:"rubric" · difficulty:5.\n` +
+      `- OBLIGATORIO: Diskussion/Standpunkte sobre tema controvertido B2 + interacción Partner/in.\n` +
+      `- PROHIBIDO batch B1 (3 Teile) / Feedback T3 B1 / Präsentation monólogo A2.\n`
     );
   }
   if (module === 'sprechen') {

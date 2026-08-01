@@ -34,6 +34,10 @@ const b1Head = fs.readFileSync(b1Mono, 'utf8').slice(0, 120);
 assert.ok(t1Core.includes(GOETHE_B2_INSTRUCTIONS.sprechen[0]), 'T1 official Vortrag line');
 assert.ok(t2Core.includes(GOETHE_B2_INSTRUCTIONS.sprechen[1]), 'T2 official Diskussion line');
 assert.ok(!t1Core.includes(b1Head.slice(0, 60)), 'T1 must not be B1 monolith');
+assert.ok(!/exactamente 3 questions/.test(t1Core), 'T1 checklist must not be B1 3-teil batch');
+assert.ok(!/exactamente 3 questions/.test(t2Core), 'T2 checklist must not be B1 3-teil batch');
+assert.ok(/exactamente \*\*1\*\* question/.test(t1Core), 'T1 checklist: 1 question per teil');
+assert.ok(/exactamente \*\*1\*\* question/.test(t2Core), 'T2 checklist: 1 question per teil');
 
 const bp = JSON.parse(fs.readFileSync(path.join(ROOT, 'library/blueprints/goethe_B2.json'), 'utf8'));
 const sp = assertSprechenInstructionsMatch(bp);

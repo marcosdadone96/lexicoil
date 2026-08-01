@@ -13,6 +13,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { createRequire } from 'node:module';
 import { B1_TOPICS, isValidB1Topic, normalizeB1Topic } from './b1Topics.mjs';
+import { topicsForLevel, normalizeTopicForLevel } from './levelPlanner.mjs';
 
 const require = createRequire(import.meta.url);
 const { detectTopic } = require('../../js/engine/partTopicDetect.js');
@@ -21,12 +22,19 @@ const { detectTopic } = require('../../js/engine/partTopicDetect.js');
 export const TOPICS = B1_TOPICS;
 export { B1_TOPICS, isValidB1Topic, detectTopic };
 
+function topicListForLevel(level = 'B1') {
+  const lv = String(level || 'B1').trim().toUpperCase();
+  return topicsForLevel(lv, { scope: lv === 'A2' ? 'gap' : 'pool' });
+}
+
 /**
  * Lee todos los archivos generados y cuenta cuántas veces aparece cada topic.
  * Filtra por module y teil si se proporcionan.
  */
-export function getTopicStats(generatedDir, { module = null, teil = null } = {}) {
-  const counts = Object.fromEntries(TOPICS.map(t => [t, 0]));
+export function getTopicStats(generatedDir, { module = null, teil = null, level = 'B1' } = {}) {
+  const lv = String(level || 'B1').trim().toUpperCase();
+  const topicList = topicListForLevel(lv);
+  const counts = Object.fromEntries(topicList.map((t) => [t, 0]));
   if (!fs.existsSync(generatedDir)) return counts;
 
   for (const filename of fs.readdirSync(generatedDir)) {
@@ -43,7 +51,8 @@ export function getTopicStats(generatedDir, { module = null, teil = null } = {})
       const batch = JSON.parse(fs.readFileSync(path.join(generatedDir, filename), 'utf8'));
       let counted = false;
       for (const p of batch.passages || []) {
-        const tag = p.topicTag || detectTopic(p.text || p.title || '');
+        const raw = p.topicTag || detectTopic(p.text || p.title || '');
+        const tag = normalizeTopicForLevel(lv, raw);
         if (tag && counts[tag] !== undefined) {
           counts[tag]++;
           counted = true;
@@ -53,7 +62,7 @@ export function getTopicStats(generatedDir, { module = null, teil = null } = {})
       if (!counted) {
         const root = batch.topicTag || batch._requestedTopic;
         const qTag = batch.questions?.[0]?.topicTags?.[0] || batch.questions?.[0]?.topicTag;
-        const tag = root || qTag;
+        const tag = normalizeTopicForLevel(lv, root || qTag);
         if (tag && counts[tag] !== undefined) counts[tag]++;
       }
     } catch (_) { /* skip corrupt files */ }
@@ -65,10 +74,12 @@ export function getTopicStats(generatedDir, { module = null, teil = null } = {})
  * Devuelve el tema menos usado en el banco para el módulo/teil dado.
  * En caso de empate, escoge aleatoriamente entre los menos usados.
  */
-export function pickNextTopic(generatedDir, { module = null, teil = null } = {}) {
-  const stats = getTopicStats(generatedDir, { module, teil });
+export function pickNextTopic(generatedDir, { module = null, teil = null, level = 'B1' } = {}) {
+  const lv = String(level || 'B1').trim().toUpperCase();
+  const topicList = topicListForLevel(lv);
+  const stats = getTopicStats(generatedDir, { module, teil, level: lv });
   const minCount = Math.min(...Object.values(stats));
-  const candidates = TOPICS.filter(t => stats[t] === minCount);
+  const candidates = topicList.filter((t) => stats[t] === minCount);
   return candidates[Math.floor(Math.random() * candidates.length)];
 }
 

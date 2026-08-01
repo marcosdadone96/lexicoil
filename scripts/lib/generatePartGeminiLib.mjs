@@ -67,14 +67,14 @@ import {
   DEFAULT_MAX_COST_PER_FILE_USD,
 } from './partFileBrake.mjs';
 import { runSurgicalRepair, surgicalRepairLabel } from './surgicalRepairRouter.mjs';
-import { pickNextTopic, tagBatchWithTopic, alignQuestionTopicTagsToRequestedTopic } from './topicRotation.mjs';
+import { tagBatchWithTopic, alignQuestionTopicTagsToRequestedTopic } from './topicRotation.mjs';
 import {
   pickNextNames,
   injectNamesIntoPrompt,
   pushSessionNameExclude,
   TEMPLATE_DEFAULT_NAMES,
 } from './nameRotation.mjs';
-import { resolveGenerationVocab, resolveTargetWordsForArgs } from './resolveGenerationInput.mjs';
+import { resolveGenerationVocab, resolveTargetWordsForArgs, resolveGenerationTopic } from './resolveGenerationInput.mjs';
 import { attachVocabFeedback, formatVocabFeedbackSummary } from './generationFeedback.mjs';
 import { buildVocabBgMandatoryAnchorBlock } from './userVocabPrompt.mjs';
 import { runQ4PipelineGate, runQ3PipelineGate, runLanguageToolPipelineAdvisory } from './qualityGates/pipelineIntegration.mjs';
@@ -931,7 +931,7 @@ async function generateExamPart(args, teil, session) {
   const gDir = genDirFor(args);
   ensureLevelStagingDirs(args?.level || 'B1');
 
-  const chosenTopic = args._resolvedTopic || pickNextTopic(gDir, { module, teil });
+  const chosenTopic = args._resolvedTopic || resolveGenerationTopic(args, { module, teil });
   console.log(`Tema: ${chosenTopic}${args.topic ? ' (elegido)' : ' (rotación)'}`);
   args._resolvedTopic = chosenTopic;
 

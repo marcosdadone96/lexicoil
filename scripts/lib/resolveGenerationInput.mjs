@@ -95,7 +95,7 @@ export function resolveGenerationTopic(args, { module = 'lesen', teil = 1 } = {}
     }
     return t;
   }
-  return pickNextTopic(GENERATED_DIR, { module, teil });
+  return pickNextTopic(GENERATED_DIR, { module, teil, level });
 }
 
 /**

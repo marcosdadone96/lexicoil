@@ -1,0 +1,67 @@
+{
+  "at": "2026-08-01T11:47:51.468Z",
+  "allOk": false,
+  "grandCostUsd": 0.050472,
+  "grandApiCallsLogged": 8,
+  "officialTopics": [
+    "Reisen",
+    "Gesundheit",
+    "Stadtleben",
+    "Medien",
+    "Umwelt"
+  ],
+  "results": [
+    {
+      "cell": "lesen T1",
+      "exitCode": 1,
+      "temaLog": "Medien",
+      "topicTag": null,
+      "_requestedTopic": null,
+      "topicResolved": "Medien",
+      "officialAxis": true,
+      "file": null,
+      "costUsd": 0.025856,
+      "apiCallsLogged": 4,
+      "ok": false
+    },
+    {
+      "cell": "horen T1",
+      "exitCode": 0,
+      "temaLog": "Reisen",
+      "topicTag": "Reisen",
+      "_requestedTopic": "Reisen",
+      "topicResolved": "Reisen",
+      "officialAxis": true,
+      "file": "batches/generated/A2/horen-t1-gemini-071.json",
+      "costUsd": 0.014608,
+      "apiCallsLogged": 2,
+      "ok": true
+    },
+    {
+      "cell": "schreiben T1",
+      "exitCode": 0,
+      "temaLog": "Reisen",
+      "topicTag": null,
+      "_requestedTopic": null,
+      "topicResolved": "Reisen",
+      "officialAxis": true,
+      "file": null,
+      "costUsd": 0.003099,
+      "apiCallsLogged": 1,
+      "ok": true
+    },
+    {
+      "cell": "sprechen T1",
+      "exitCode": 0,
+      "temaLog": "Gesundheit",
+      "topicTag": "Gesundheit",
+      "_requestedTopic": "Gesundheit",
+      "topicResolved": "Gesundheit",
+      "officialAxis": true,
+      "file": "batches/generated/A2/sprechen-t1-gemini-021.json",
+      "costUsd": 0.006909,
+      "apiCallsLogged": 1,
+      "ok": true
+    }
+  ]
+}

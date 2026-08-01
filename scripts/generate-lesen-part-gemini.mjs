@@ -62,7 +62,7 @@ import {
   COMBINED_CALIDAD_LEXICO_ISSUE_LIMIT,
 } from './lib/calidadLexicoCombinedGate.mjs';
 import { validatePart, buildDedupCorpusFromDir } from './lib/partGate.mjs';
-import { pickNextTopic, tagBatchWithTopic, alignQuestionTopicTagsToRequestedTopic } from './lib/topicRotation.mjs';
+import { tagBatchWithTopic, alignQuestionTopicTagsToRequestedTopic } from './lib/topicRotation.mjs';
 import { finalizePoolReady } from './lib/finalizePoolReady.mjs';
 import { relPathAfterPoolReady } from './lib/resolvePublishFile.mjs';
 import { resolveLesenGenerationMolds } from './lib/lesenSubtypeRotation.mjs';
@@ -104,7 +104,7 @@ import {
 } from './lib/passageLengthRepair.mjs';
 import { runSurgicalRepair, surgicalRepairLabel } from './lib/surgicalRepairRouter.mjs';
 import { pushSessionMoldExclude, pushSessionStructuralCorpus } from './lib/poolFillSessionExclude.mjs';
-import { resolveGenerationVocab, resolveTargetWordsForArgs } from './lib/resolveGenerationInput.mjs';
+import { resolveGenerationVocab, resolveTargetWordsForArgs, resolveGenerationTopic } from './lib/resolveGenerationInput.mjs';
 import {
   loadB2ForumTextBank,
   mergeB2ForumQuestions,
@@ -1381,7 +1381,7 @@ async function generateT3Part(args, session) {
     const topic =
       args._resolvedTopic ||
       args.topic ||
-      pickNextTopic(genDirFor(args), { module: 'lesen', teil: 3 });
+      resolveGenerationTopic(args, { module: 'lesen', teil: 3 });
     batch = tagBatchWithTopic(batch, topic);
     if (args._resolvedTopic || args.topic) {
       batch._requestedTopic = args._resolvedTopic || args.topic;
@@ -1473,7 +1473,7 @@ async function generateLlmPart(args, teil, session) {
   const gDir = genDirFor(args);
   ensureLevelStagingDirs(args?.level || 'B1');
 
-  const chosenTopic = args._resolvedTopic || pickNextTopic(gDir, { module: 'lesen', teil });
+  const chosenTopic = args._resolvedTopic || resolveGenerationTopic(args, { module: 'lesen', teil });
   console.log(`Tema: ${chosenTopic}${args.topic ? ' (elegido)' : ' (rotación)'}`);
   args._resolvedTopic = chosenTopic;
 

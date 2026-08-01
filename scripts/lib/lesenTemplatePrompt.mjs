@@ -338,6 +338,13 @@ function buildLesenQuestionJsonKeyRule() {
   );
 }
 
+function buildLesenMcqChk34Rule(minWords = 6) {
+  return (
+    `- explanation (MCQ, CHK-34): alemán ≥${minWords} Wörter; explica por qué encaja con el texto; ` +
+    `**PROHIBIDO** citar entre comillas el texto literal de la opción correcta ni «Option a/b/c)» — el orden puede reordenarse.\n`
+  );
+}
+
 function buildLesenChecklistBlockA2(teil, options = {}) {
   const { minimalRules } = options;
   if (minimalRules) {
@@ -347,19 +354,22 @@ function buildLesenChecklistBlockA2(teil, options = {}) {
       `- level:"A2" en passage y questions.\n` +
       buildLesenQuestionJsonKeyRule() +
       (Number(teil) === 1
-        ? `- (T1 A2) Medientext 3ª persona/reportaje; **5 MCQ** a/b/c; PROHIBIDO ich-Blog y richtig_falsch.\n`
+        ? `- (T1 A2) Medientext 3ª persona/reportaje; **5 MCQ** a/b/c; PROHIBIDO ich-Blog y richtig_falsch.\n` +
+          buildLesenMcqChk34Rule(6)
         : '') +
       (Number(teil) === 2
         ? `- (T2 A2) Informationstafel + 5 MCQ a/b/c.\n` +
           `- (T2 A2) **Pasaje en prosa:** apertura + «Nombre: oración A2.» por local (NO listado telegráfico).\n` +
           `- (T2 A2) **GATE 4/5:** enunciado "question" con «Stock» o «Etage» en ≥4 preguntas.\n` +
           `- (T2 A2) **GATE 4/5:** opción «in einem anderen Stock» / «anderer Stock» en ≥4 preguntas.\n` +
-          `- (T2 A2) **mcq_distinct:** 3 pisos mutuamente excluyentes; formato corto «im N. Stock»; **PROHIBIDO repetir el mismo piso en dos opciones** (ni parafrasear: im Erdgeschoss ≠ Erdgeschoss).\n`
+          `- (T2 A2) **mcq_distinct:** 3 pisos mutuamente excluyentes; formato corto «im N. Stock»; **PROHIBIDO repetir el mismo piso en dos opciones** (ni parafrasear: im Erdgeschoss ≠ Erdgeschoss).\n` +
+          buildLesenMcqChk34Rule(6)
         : '') +
       (Number(teil) === 3
         ? `- (T3 A2) E-Mail/Korrespondenz + 5 MCQ a/b/c.\n` +
           `- (T3 A2) CEFR ingest: **≤12% Nebensätze** (Hauptsätze kurz; max. 1–2 «weil/dass/wenn»).\n` +
-          `- (T3 A2) MCQ: options «a) …» «b) …» «c) …»; **correct === correctAnswer** (letra a/b/c).\n`
+          `- (T3 A2) MCQ: options «a) …» «b) …» «c) …»; **correct === correctAnswer** (letra a/b/c).\n` +
+          buildLesenMcqChk34Rule(6)
         : '') +
       (Number(teil) === 4
         ? `- (T4 A2) 6 Anzeigen (passages a–f) + 5 matching; opciones ["a"…"f","X"]; exactamente 1 correct:"X".\n` +
@@ -382,7 +392,7 @@ function buildLesenChecklistBlockA2(teil, options = {}) {
     (Number(teil) === 1
       ? `- (T1 A2) **Medientext** informativo en 3ª persona; título de prensa; **5× multiple_choice** a/b/c.\n` +
         `- (T1 A2) PROHIBIDO: blog en «ich», richtig_falsch, registro B1 (Organisation, Gemeinschaft, Investition…).\n` +
-        `- (T1 A2) explanation ≥6 palabras en alemán.\n`
+        buildLesenMcqChk34Rule(6)
       : '') +
     (Number(teil) === 2
       ? `- (T2 A2) Texto de informationstafel + 5 MCQ a/b/c; topicTag coherente.\n` +
@@ -390,12 +400,14 @@ function buildLesenChecklistBlockA2(teil, options = {}) {
         `- (T2 A2) **GATE 4/5 Stock/Etage:** ≥4 enunciados con «In welchem Stock…» / «Auf welcher Etage…» (palabra Stock o Etage en "question").\n` +
         `- (T2 A2) **GATE 4/5 anderer Stock:** ≥4 preguntas con c) «in einem anderen Stock» (o «anderes Stockwerk»).\n` +
         `- (T2 A2) **mcq_distinct (CHK-28):** a) im X. Stock, b) im Y. Stock (X≠Y), c) in einem anderen Stock — **PROHIBIDO repetir el mismo piso en dos opciones**.\n` +
-        `- (T2 A2) PROHIBIDO: 3 pisos concretos sin «anderer Stock»; preguntas solo de horario/entrada sin Stock/Etage.\n`
+        `- (T2 A2) PROHIBIDO: 3 pisos concretos sin «anderer Stock»; preguntas solo de horario/entrada sin Stock/Etage.\n` +
+        buildLesenMcqChk34Rule(6)
       : '') +
     (Number(teil) === 3
       ? `- (T3 A2) E-Mail/Korrespondenz + 5 MCQ a/b/c.\n` +
         `- (T3 A2) CEFR ingest: **≤12% Nebensätze** (Hauptsätze kurz; max. 1–2 «weil/dass/wenn»).\n` +
-        `- (T3 A2) MCQ: options «a) …» «b) …» «c) …»; **correct === correctAnswer** (letra a/b/c).\n`
+        `- (T3 A2) MCQ: options «a) …» «b) …» «c) …»; **correct === correctAnswer** (letra a/b/c).\n` +
+        buildLesenMcqChk34Rule(6)
       : '') +
     (Number(teil) === 4
       ? `- (T4 A2) 6 Anzeigen + 5 matching; opciones ["a"…"f","X"]; 1× correct:"X"; enunciados con persona en "question".\n` +
@@ -414,6 +426,7 @@ function buildLesenChecklistBlock(teil, options = {}) {
     return (
       `\n\nCHECKLIST FINAL (Goethe B2 Lesen T1 — ${phase === 'questions' || phase === 'b' ? 'Fase B' : 'Fase A'}):\n` +
       `- JSON válido; level:"B2"; instrucción oficial del foro respetada en espíritu.\n` +
+      buildLesenQuestionJsonKeyRule() +
       (phase === 'questions' || phase === 'b'
         ? `- Exactamente **9** matching; options ["A","B","C","D"]; repetición de personas permitida.\n` +
           `- passageId coherente con la persona correcta; sin hechos inventados.\n`
@@ -425,6 +438,7 @@ function buildLesenChecklistBlock(teil, options = {}) {
   if (level === 'B2' && Number(teil) === 2) {
     return (
       `\n\nCHECKLIST FINAL (Goethe B2 Lesen T2 — Sätze einfügen):\n` +
+      buildLesenQuestionJsonKeyRule() +
       `- 1 passage 250–400 Wörter; marcadores (21)…(26); 6 questions matching.\n` +
       `- 8 options A–H idénticas en cada pregunta; 6 letras correctas distintas; 2 sobrantes.\n` +
       `- Instrucción oficial en question[0]; sin ambigüedad entre Lücken.\n` +
@@ -435,6 +449,7 @@ function buildLesenChecklistBlock(teil, options = {}) {
   if (level === 'B2' && Number(teil) === 3) {
     return (
       `\n\nCHECKLIST FINAL (Goethe B2 Lesen T3 — Zeitungsartikel MCQ):\n` +
+      buildLesenQuestionJsonKeyRule() +
       `- 1 passage 350–500 Wörter; 6× multiple_choice a/b/c; NO anuncios B1 A–J.\n` +
       `- Instrucción oficial en question[0]; passageId en cada pregunta.\n` +
       `- Anti word-matching; MCQ longitud comparable; explanation CHK-34 (sin citar opción literal).\n` +
@@ -445,6 +460,7 @@ function buildLesenChecklistBlock(teil, options = {}) {
   if (level === 'B2' && Number(teil) === 4) {
     return (
       `\n\nCHECKLIST FINAL (Goethe B2 Lesen T4 — Meinung ↔ Überschrift):\n` +
+      buildLesenQuestionJsonKeyRule() +
       `- 6 passages (Meinungsäußerungen 40–100 Wörter); 6 matching; NO ja_nein/foro B1.\n` +
       `- 8 Überschriften A–H idénticas en cada pregunta; 6 letras correctas distintas; 2 sobrantes.\n` +
       `- Instrucción oficial en question[0]; passageId por Meinung; sin ambigüedad entre titulares.\n` +
@@ -455,6 +471,7 @@ function buildLesenChecklistBlock(teil, options = {}) {
   if (level === 'B2' && Number(teil) === 5) {
     return (
       `\n\nCHECKLIST FINAL (Goethe B2 Lesen T5 — Studienordnung ↔ Überschriften):\n` +
+      buildLesenQuestionJsonKeyRule() +
       `- 1 Studienordnung 200–350 Wörter; marcadores (31)(32)(33); 3 matching; NO MCQ B1.\n` +
       `- 7 Überschriften A–G idénticas; 3 letras correctas distintas; 4 sobrantes.\n` +
       `- Instrucción oficial en question[0]; sin ambigüedad entre encabezados.\n` +
