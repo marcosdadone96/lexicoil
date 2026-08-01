@@ -10,6 +10,9 @@ const require = createRequire(import.meta.url);
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
 
+// Unit tests use an in-memory store — exclude reusable-seed so picks are deterministic.
+process.env.POOL_SOURCE = 'blobs';
+
 const { poolValidateExam } = require(path.join(ROOT, 'netlify/functions/exam-pool.js'));
 const { loadBlueprintFileSync } = require(path.join(ROOT, 'js/engine/validation/blueprintResolver.js'));
 const {
@@ -24,6 +27,7 @@ const { addReusablePart, pickReusablePart } = require(path.join(
   ROOT,
   'netlify/functions/lib/reusablePartsStore.js',
 ));
+const { clearPoolSearchCache } = require(path.join(ROOT, 'netlify/functions/lib/poolSearchCache.js'));
 
 function assert(label, cond) {
   if (!cond) {
@@ -61,6 +65,14 @@ function tfQuestion(i) {
     question: `Aussage ${i} zum Text.`,
     correct: i % 2 ? 'Richtig' : 'Falsch',
   };
+}
+
+async function stampSem1Skipped(store, lang, level, module, id) {
+  const key = `reusable_part:${lang}:${level}:${module}:${id}`;
+  const payload = await store.get(key);
+  if (!payload) return;
+  await store.setJSON(key, { ...payload, sem1Skipped: true });
+  clearPoolSearchCache(lang, level, module);
 }
 
 // ── (a) Short Teil exam rejected by exam-pool gate ───────────────────────────
@@ -143,6 +155,7 @@ const fullRecord = {
   validation: { valid: true, complete: true },
 };
 await approvePartToReusable(store, fullRecord, { blueprint: goetheBp, verified: true });
+await stampSem1Skipped(store, 'de', 'B1', 'lesen', 'full-lesen-t1');
 
 const picked = await pickReusablePart(store, 'de', 'B1', 'lesen', { excludeIds: [] });
 assert('(b) pickReusablePart returns a part', !!picked?.part);
@@ -194,6 +207,7 @@ await addReusablePart(teilStore, {
   complete: true,
   verified: true,
 });
+await stampSem1Skipped(teilStore, 'de', 'B1', 'lesen', 'lesen-t1-only');
 await addReusablePart(teilStore, {
   id: 'lesen-t3-only',
   lang: 'de',
@@ -211,6 +225,7 @@ await addReusablePart(teilStore, {
   complete: true,
   verified: true,
 });
+await stampSem1Skipped(teilStore, 'de', 'B1', 'lesen', 'lesen-t3-only');
 const pickT3 = await pickReusablePart(teilStore, 'de', 'B1', 'lesen', { teil: 3 });
 assert('(d) teil filter returns T3 part', pickT3?.id === 'lesen-t3-only' && Number(pickT3.part.teil) === 3);
 const pickT1 = await pickReusablePart(teilStore, 'de', 'B1', 'lesen', { teil: 1 });
