@@ -9,17 +9,27 @@ import { layoutForLevel } from './examLevelCells.mjs';
 
 const require = createRequire(import.meta.url);
 const { B1_TOPICS, normalizeB1Topic } = require(path.join(ROOT, 'js/data/b1Topics.js'));
+const { A2_OFFICIAL_TOPICS, normalizeA2Topic } = require(path.join(ROOT, 'js/data/a2Topics.js'));
 
-/** Canonical topic slugs per level (A2 seed uses same German labels as B1). */
-export function topicsForLevel(level = 'B1') {
+/**
+ * Topic slugs per level.
+ * @param {string} level
+ * @param {{ scope?: 'pool'|'gap'|'ui'|'official' }} [opts]
+ * - pool (default): full B1 slug list (A2 seed tags, manifest, normalization)
+ * - gap | ui | official: A2 → 5 Goethe axes only; B1/B2 → B1_TOPICS
+ */
+export function topicsForLevel(level = 'B1', opts = {}) {
   const lv = normalizeLevel(level);
-  if (lv === 'A2') {
-    return B1_TOPICS;
+  const scope = opts.scope || 'pool';
+  if (lv === 'A2' && (scope === 'gap' || scope === 'ui' || scope === 'official')) {
+    return [...A2_OFFICIAL_TOPICS];
   }
   return B1_TOPICS;
 }
 
 export function normalizeTopicForLevel(level, topic) {
+  const lv = normalizeLevel(level);
+  if (lv === 'A2') return normalizeA2Topic(topic);
   return normalizeB1Topic(topic);
 }
 

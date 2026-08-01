@@ -10,10 +10,12 @@ import {
   filterCellRecords,
   collectCellMolds,
   buildT5SubtypeCandidateOrder,
+  countAvailableT5Subtypes,
 } from './lesenSubtypeRotation.mjs';
 import { filterT5SubtypeOrder } from './lesenT5TopicFilter.mjs';
 import { isT4DebateMoldCompatible } from './t4TopicAlign.mjs';
 import { listT3BlueprintStockForTopic } from './lesenT3BlueprintStock.mjs';
+import { isA2Level } from './a2LesenGeneration.mjs';
 
 export const MOLD_FORMATS = Object.freeze([
   { module: 'lesen', teil: 3, label: 'Lesen T3', gate: 'CHK-26 / t3_shared_mold_*' },
@@ -47,6 +49,9 @@ export function countCompatibleMolds(teil, topicTag, opts = {}) {
   const topic = normalizeB1Topic(topicTag);
   if (!topic) return 0;
   const t = Number(teil);
+  const lv = String(opts.level || 'B1').toUpperCase();
+  if (isA2Level(lv) && (t === 3 || t === 4)) return 1;
+  if (lv === 'B2' && (t === 3 || t === 4 || t === 5)) return 1;
   if (t === 5) return listCompatibleT5Subtypes(topic).length;
   if (t === 4) return listCompatibleT4Debates(topic).length;
   if (t === 3) {
@@ -63,19 +68,22 @@ export function countCompatibleMolds(teil, topicTag, opts = {}) {
 export function countRemainingMolds(teil, topicTag, opts = {}) {
   const topic = normalizeB1Topic(topicTag);
   const t = Number(teil);
+  const lv = String(opts.level || 'B1').toUpperCase();
+  if (isA2Level(lv) && (t === 3 || t === 4)) return Number.POSITIVE_INFINITY;
+  if (lv === 'B2' && (t === 3 || t === 4 || t === 5)) return Number.POSITIVE_INFINITY;
   // T1/T2 (y módulos sin matriz de moldes) — no aplicar "pool agotado" al circuit breaker.
   if (!topic || ![3, 4, 5].includes(t)) return Number.POSITIVE_INFINITY;
 
   if (t === 5) {
-    const compatible = listCompatibleT5Subtypes(topic);
     const records = loadPoolRecords({ lang: opts.lang || 'de', level: opts.level || 'B1' });
     const cell = filterCellRecords(records, { lang: opts.lang, level: opts.level, teil: 5, topicTag: topic });
     const { moldKeys } = collectCellMolds(cell, { teil: 5 });
-    const used = new Set([...moldKeys, ...(opts.usedMoldKeys || []), ...(opts.extraExcludeSubtypes || [])]);
-    return compatible.filter((id) => {
-      if (used.has(id)) return false;
-      return !Array.from(used).some((k) => k === id || k.startsWith(`${id}:`));
-    }).length;
+    const usedKeys = [...moldKeys, ...(opts.usedMoldKeys || [])];
+    return countAvailableT5Subtypes(
+      topic,
+      usedKeys,
+      opts.extraExcludeSubtypes || [],
+    );
   }
 
   if (t === 4) {

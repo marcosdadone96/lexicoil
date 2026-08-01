@@ -12,7 +12,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { createRequire } from 'node:module';
-import { B1_TOPICS, isValidB1Topic } from './b1Topics.mjs';
+import { B1_TOPICS, isValidB1Topic, normalizeB1Topic } from './b1Topics.mjs';
 
 const require = createRequire(import.meta.url);
 const { detectTopic } = require('../../js/engine/partTopicDetect.js');
@@ -103,23 +103,102 @@ export function injectTopicIntoPrompt(prompt, topic) {
 }
 
 /**
- * Añade topicTag al batch, a cada passage y a questions[].topicTags.
- * Fuerza el tema pedido (ignora topicTag del LLM / detectTopic).
- * Crítico para Sprechen/Schreiben (passages: []): sin esto las questions
- * quedan con fallback daily_life / sin tema.
+ * Tema de stock por pregunta (Schreiben/Sprechen sin passage).
+ * No usar solo el tema del batch: cada Aufgabe puede ser distinta (p. ej. T2 «Ihr Chef…» → Arbeit).
  */
-export function tagBatchWithTopic(batch, topic) {
+export function detectQuestionTopicTag(q, batchFallbackTopic = null) {
+  if (!q) return batchFallbackTopic || 'Freizeit';
+  const mod = String(q.module || '').toLowerCase();
+  const teil = Number(q.teil);
+  const level = String(q.level || 'B1').trim().toUpperCase();
+  if (mod === 'sprechen' && teil === 1 && q.type === 'personal_questions' && level === 'A2') {
+    return 'Freizeit';
+  }
+  const text = [q.question, q.signText, q.transcript, q.statement].filter(Boolean).join(' ');
+  const fromText = text ? detectTopic(text) : null;
+  if (fromText && isValidB1Topic(fromText)) return fromText;
+  const existing = q.topicTags?.[0] || q.topicTag;
+  if (existing && isValidB1Topic(String(existing))) return String(existing);
+  if (batchFallbackTopic && isValidB1Topic(batchFallbackTopic)) return batchFallbackTopic;
+  return 'Freizeit';
+}
+
+export function inferLesenT5DominantTopic(batch, fallbackTopic) {
+  const seed = String(batch._t5InstitutionSeed || batch.passages?.[0]?.title || '');
+  const seedLc = seed.toLowerCase();
+  const subtype = String(batch._t5TextSubtype || batch._t5Subtype || '').toLowerCase();
+  if (subtype === 'wohnanlage' || /wohnanlage|mehrfamilienhaus|wohnhaus|mietshaus|wohnheim|siedlung/i.test(seedLc)) {
+    return 'Wohnen';
+  }
+  if (/fitnessstudio|sportverein|schwimmbad|turnhalle|vitalpark/i.test(seedLc)) return 'Sport';
+  if (/bibliothek|bücherei|schule|gymnasium|berufsschule/i.test(seedLc)) return 'Bildung';
+  if (/kantine|mensa|markthalle|cafeteria|betriebskantine/i.test(seedLc)) return 'Ernährung';
+  if (/einkaufszentrum|shopping|markthalle|wochenmarkt/i.test(seedLc)) return 'Einkaufen';
+  if (/bürgerzentrum|freizeitzentrum|jugendtreff|stadthalle|computerraum|workhub/i.test(seedLc)) {
+    return 'Freizeit';
+  }
+  const p = batch.passages?.[0];
+  const blob = [p?.title, p?.text].filter(Boolean).join('\n');
+  const fromPassage = blob ? detectTopic(blob) : null;
+  if (fromPassage && isValidB1Topic(fromPassage)) return fromPassage;
+  if (fallbackTopic && isValidB1Topic(fallbackTopic)) return fallbackTopic;
+  return 'Freizeit';
+}
+
+/**
+ * Root/batch topic = tema pedido; cada question usa detectQuestionTopicTag (contenido real)
+ * salvo Lesen T5 / forceUniformTopic / _requestedTopic explícito (celda de generación).
+ */
+export function alignQuestionTopicTagsToRequestedTopic(batch) {
+  if (!batch) return batch;
+  const mod = String(
+    batch.module || batch.questions?.[0]?.module || batch.passages?.[0]?.module || '',
+  ).toLowerCase();
+  const teil = Number(batch.teil ?? batch.questions?.[0]?.teil ?? batch.passages?.[0]?.teil);
+  const isLesenT5 = mod === 'lesen' && teil === 5;
+  const root = normalizeB1Topic(
+    isLesenT5 ? batch.topicTag : batch._requestedTopic || batch.topicTag,
+  );
+  if (!root || !isValidB1Topic(root)) return batch;
+  batch.topicTag = root;
+  if (batch.passages) {
+    batch.passages = batch.passages.map((p) => ({ ...p, topicTag: root }));
+  }
+  if (batch.questions) {
+    batch.questions = batch.questions.map((q) => ({
+      ...q,
+      topicTags: [root],
+      ...(q.topicTag != null ? { topicTag: root } : {}),
+    }));
+  }
+  return batch;
+}
+
+export function tagBatchWithTopic(batch, topic, opts = {}) {
   if (!batch || !topic) return batch;
+  const teil = Number(batch.teil ?? batch.questions?.[0]?.teil ?? batch.passages?.[0]?.teil);
+  const mod = String(batch.module || batch.questions?.[0]?.module || batch.passages?.[0]?.module || '')
+    .toLowerCase();
+  const isLesenT5 = mod === 'lesen' && teil === 5;
+  const effectiveTopic = isLesenT5 ? inferLesenT5DominantTopic(batch, topic) : topic;
+  const requestedRoot = normalizeB1Topic(batch._requestedTopic);
+  const forceUniform =
+    opts.forceUniformTopic === true ||
+    isLesenT5 ||
+    (requestedRoot && isValidB1Topic(requestedRoot));
   const tagged = {
     ...batch,
-    topicTag: topic,
+    topicTag: effectiveTopic,
     _requestedTopic: batch._requestedTopic || topic,
   };
-  tagged.passages = (batch.passages || []).map((p) => ({ ...p, topicTag: topic }));
-  tagged.questions = (batch.questions || []).map((q) => ({
-    ...q,
-    topicTags: [topic],
-    ...(q.topicTag != null ? { topicTag: topic } : {}),
-  }));
+  tagged.passages = (batch.passages || []).map((p) => ({ ...p, topicTag: effectiveTopic }));
+  tagged.questions = (batch.questions || []).map((q) => {
+    const perQ = forceUniform ? effectiveTopic : detectQuestionTopicTag(q, effectiveTopic);
+    return {
+      ...q,
+      topicTags: [perQ],
+      ...(q.topicTag != null ? { topicTag: perQ } : {}),
+    };
+  });
   return tagged;
 }
