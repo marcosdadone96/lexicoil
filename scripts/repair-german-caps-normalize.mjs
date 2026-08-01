@@ -19,9 +19,10 @@ loadEnvFile();
 const GATE_VERSION = 'v6.1-B-G2 (frozen)';
 
 function parseArgs(argv) {
-  const args = { dryRun: true, apply: false, dir: null, files: [], out: null, decapOnly: false };
+  const args = { dryRun: true, apply: false, dir: null, files: [], fileList: null, out: null, decapOnly: false };
   for (let i = 0; i < argv.length; i++) {
     if (argv[i] === '--dir') args.dir = argv[++i];
+    else if (argv[i] === '--filelist') args.fileList = argv[++i];
     else if (argv[i] === '--files') {
       while (argv[i + 1] && !argv[i + 1].startsWith('--')) args.files.push(argv[++i]);
     } else if (argv[i] === '--dry-run') args.dryRun = true;
@@ -39,8 +40,13 @@ function listJsonFiles(dir) {
 }
 
 function resolveFiles(args) {
+  if (args.fileList) {
+    const absList = path.resolve(args.fileList);
+    const lines = fs.readFileSync(absList, 'utf8').split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
+    return lines.map((f) => path.resolve(f));
+  }
   if (args.files.length) return args.files.map((f) => path.resolve(f));
-  if (!args.dir) throw new Error('Indica --dir o --files');
+  if (!args.dir) throw new Error('Indica --dir, --files o --filelist');
   const abs = path.resolve(args.dir);
   if (!fs.existsSync(abs)) throw new Error(`No existe: ${abs}`);
   if (fs.statSync(abs).isFile()) return [abs];
