@@ -20,6 +20,13 @@ const INTRO_EXPL_RE =
 
 const HIGH_CONFIDENCE_VIA = new Set(['quote', 'quote-ci', 'substr', 'manual']);
 
+/** Late matching slots often false-anchor on intro boilerplate via substr/density. */
+function isWeakLateSlotEarlyAnchor(d, textLen) {
+  if (!d || d.slot < 6 || d.pos < 0) return false;
+  if (d.pos > textLen * 0.15) return false;
+  return d.via === 'substr' || d.via === 'density';
+}
+
 function passageText(batch) {
   return String(batch?.passages?.[0]?.text || '');
 }
@@ -178,6 +185,12 @@ export function verifyHorenT4MatchingChrono(batch) {
       if (maxDelta < 2 && posGap < 200) {
         warnings.push(
           `${cur.id}: posible micro-inversión de ancla (${cur.pos} < ${prev.pos}, gap ${posGap}) — revisar si es FP del locator`,
+        );
+        continue;
+      }
+      if (isWeakLateSlotEarlyAnchor(cur, text.length) || isWeakLateSlotEarlyAnchor(prev, text.length)) {
+        warnings.push(
+          `${cur.id}: ancla temprana débil en slot tardío (${cur.pos} via ${cur.via}) — no bloquea chrono`,
         );
         continue;
       }
