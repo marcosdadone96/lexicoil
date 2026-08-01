@@ -333,7 +333,49 @@ async function screenCell(cell, blockedIds, assembleMode = 'official', level = '
   return out;
 }
 
+async function screenOralSingleTeilFiles(module, teil, blockedIds, level = 'B1') {
+  const lv = normalizeLevel(level);
+  const index = poolVerifiedIndex(level);
+  const re =
+    module === 'schreiben'
+      ? new RegExp(`^schreiben(?:-t${teil}-|-).*\\.json$`, 'i')
+      : new RegExp(`^sprechen-t${teil}-.*\\.json$`, 'i');
+  const files = [...index.keys()].filter((f) => re.test(f)).sort();
+  const out = [];
+  for (const file of files) {
+    if (isAssembleBlocked(file, blockedIds)) continue;
+    const batch = JSON.parse(fs.readFileSync(index.get(file), 'utf8'));
+    const rawLevel = inferBatchLevel(batch);
+    if (rawLevel === 'MIXED' || !batchDeclaresUniformLevel(batch, level)) continue;
+    if (rawLevel !== lv) continue;
+    const parts = oralBundleToParts(batch, file, module, level);
+    const part = parts.find((p) => p.cell === `${module}_${teil}`);
+    if (!part) continue;
+    const gate = await isPartPoolReady(part.record, { semantic: false, skipSem2: true });
+    if (!gate.ok) {
+      console.log(`  skip ${file} ${part.cell}: ${gate.issue || 'gate fail'}`);
+      continue;
+    }
+    out.push(part);
+  }
+  return out;
+}
+
+async function screenOralSplitBundles(module, blockedIds, level = 'B1') {
+  const lv = normalizeLevel(level);
+  const teils = oralTeilsForLevel(module, lv);
+  const byTeil = {};
+  for (const teil of teils) {
+    byTeil[teil] = await screenOralSingleTeilFiles(module, teil, blockedIds, level);
+    if (!byTeil[teil].length) return [];
+  }
+  const parts = teils.map((t) => byTeil[t][0]);
+  const fileKey = parts.map((p) => p.file).join('+');
+  return [{ file: fileKey, topic: parts[0].topic, parts, module, splitBundle: true }];
+}
+
 async function screenOralBundles(module, blockedIds, level = 'B1') {
+  const lv = normalizeLevel(level);
   const re = module === 'schreiben' ? /^schreiben-.*\.json$/i : /^sprechen-.*\.json$/i;
   const index = poolVerifiedIndex(level);
   const expected = expectedOralPartCount(module, level);
@@ -361,6 +403,9 @@ async function screenOralBundles(module, blockedIds, level = 'B1') {
       }
     }
     if (allOk) bundles.push({ file, topic: parts[0].topic, parts, module });
+  }
+  if (!bundles.length && (lv === 'B2' || lv === 'C1')) {
+    return screenOralSplitBundles(module, blockedIds, level);
   }
   return bundles;
 }
@@ -616,7 +661,7 @@ async function main() {
     exams: summaryRows,
     nextSteps: [
       'Cuando haya más Hören T1 (u otra celda cuello de botella) en pool-verified, re-ejecutar: node scripts/assemble-from-pool-verified.mjs',
-      'Publicar: scripts/publish-exam.mjs sobre el JSON ensamblado (cuando GATE-1 PASS y revisión humana OK)',
+      'Publicar: node scripts/publish-verified-exams-local.mjs --slots N --level A2|B1 (GATE-1 + frescura + overlay)',
     ],
   };
   fs.writeFileSync(path.join(OUT_DIR, 'capacity-report.json'), `${JSON.stringify(report, null, 2)}\n`);

@@ -25,13 +25,15 @@ const OUT = path.join(ROOT, 'data/exams/availability.json');
 const LEVEL_OVERRIDES = {
   de: {
     A2: {
-      personalized: false,
+      personalized: true,
       quickModules: false,
       aiFeatures: false,
-      curatedOnly: true,
       poolPreview: 4,
     },
     B1: {
+      personalized: true,
+    },
+    B2: {
       personalized: true,
     },
   },

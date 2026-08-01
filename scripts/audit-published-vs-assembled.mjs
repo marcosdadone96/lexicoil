@@ -5,21 +5,25 @@
  *   node scripts/audit-published-vs-assembled.mjs
  *   node scripts/audit-published-vs-assembled.mjs --lang de --level B1 --json
  *   node scripts/audit-published-vs-assembled.mjs --fail-on-desync
+ *   node scripts/audit-published-vs-assembled.mjs --level A2 --check-freshness --fail-on-stale
  */
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { auditAssembledFreshness } from './lib/assembledExamFreshness.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
 function parseArgs(argv) {
-  const out = { lang: 'de', level: 'B1', json: false, failOnDesync: false, slots: null };
+  const out = { lang: 'de', level: 'B1', json: false, failOnDesync: false, failOnStale: false, checkFreshness: false, slots: null };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     if (a === '--lang') out.lang = String(argv[++i] || 'de').toLowerCase();
     else if (a === '--level') out.level = String(argv[++i] || 'B1').toUpperCase();
     else if (a === '--json') out.json = true;
     else if (a === '--fail-on-desync') out.failOnDesync = true;
+    else if (a === '--fail-on-stale') out.failOnStale = true;
+    else if (a === '--check-freshness') out.checkFreshness = true;
     else if (a === '--slots') {
       out.slots = String(argv[++i] || '')
         .split(',')
@@ -89,6 +93,13 @@ function main() {
   const rows = slots.map((slot) => auditSlot(args.lang, args.level, slot));
   const desync = rows.filter((r) => !r.sync);
   const quarantineSlots = rows.filter((r) => r.quarantine > 0);
+  const freshnessRows = args.checkFreshness
+    ? slots.map((slot) => {
+        const asmPath = path.join(ROOT, 'batches/ready/assembled-from-verified', `assembled-exam-${args.level.toLowerCase()}-verified-e${slot}.json`);
+        return auditAssembledFreshness(asmPath, args.level);
+      })
+    : [];
+  const staleCount = freshnessRows.filter((r) => r.stale).length;
   const report = {
     scannedAt: new Date().toISOString(),
     lang: args.lang,
@@ -99,6 +110,10 @@ function main() {
     quarantineTotal: rows.reduce((n, r) => n + r.quarantine, 0),
     desyncSlots: desync.map((r) => r.slot),
     quarantineSlots: quarantineSlots.map((r) => ({ slot: r.slot, flags: r.quarantine })),
+    freshnessChecked: args.checkFreshness,
+    staleAssembledCount: staleCount,
+    staleAssembledSlots: freshnessRows.filter((r) => r.stale).map((r) => r.slot),
+    freshnessRows,
     rows,
   };
 
@@ -116,12 +131,20 @@ function main() {
       const tag = r.sync ? 'SYNC' : 'DESYNC';
       console.log(`  e${r.slot} ${tag} quarantine=${r.quarantine}${r.diffs.length ? ` diffs=${r.diffs.length}` : ''}`);
     }
-    if (!report.desyncCount && !report.quarantineTotal) {
+    if (report.freshnessChecked && report.staleAssembledCount) {
+      console.log(
+        `\n⛔ ${report.staleAssembledCount} STALE assembled exam(s) — reassemble: node scripts/reassemble-verified-from-pool.mjs --level ${args.level} --slots ${report.staleAssembledSlots.join(',')}`,
+      );
+    }
+    if (!report.desyncCount && !report.quarantineTotal && (!report.freshnessChecked || !report.staleAssembledCount)) {
       console.log('\nOK — catalog matches assembled, no quarantine flags.');
     }
   }
 
   if (args.failOnDesync && (report.desyncCount || report.quarantineTotal)) {
+    process.exit(1);
+  }
+  if (args.failOnStale && report.staleAssembledCount > 0) {
     process.exit(1);
   }
 }
