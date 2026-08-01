@@ -20,6 +20,7 @@ import {
 } from './publishToPool.mjs';
 import { inferTeilFromBatch } from './extractJson.mjs';
 import { oralTeilsForLevel } from './examLevelCells.mjs';
+import { isSchreibenPerTeil, isSprechenPerTeil } from './examTemplatePrompt.mjs';
 
 const require = createRequire(import.meta.url);
 const LOG_DIR = path.join(ROOT, 'batches/ready/gate-logs');
@@ -34,6 +35,15 @@ export function parsePoolVerifiedMeta(filename) {
   const lt = base.match(/^(lesen|horen)-t(\d+)/i);
   if (lt) {
     return { module: lt[1].toLowerCase(), teil: Number(lt[2]), recordId: base, bundle: false };
+  }
+  const oralTeil = base.match(/^(schreiben|sprechen)-t(\d+)/i);
+  if (oralTeil) {
+    return {
+      module: oralTeil[1].toLowerCase(),
+      teil: Number(oralTeil[2]),
+      recordId: base,
+      bundle: false,
+    };
   }
   const bundle = base.match(/^(schreiben|sprechen)-gemini-(\d+)/i);
   if (bundle) {
@@ -51,6 +61,32 @@ function teilsForBundle(module, level = 'B1') {
   if (module === 'schreiben') return oralTeilsForLevel('schreiben', lv);
   if (module === 'sprechen') return oralTeilsForLevel('sprechen', lv);
   return [1];
+}
+
+/** Teils to sync — bundle filename may hold a single per-Teil oral part (A2/B2 Schreiben/Sprechen). */
+export function resolveSyncTeils({ meta, batch, mod, lv }) {
+  const batchTeils = [
+    ...new Set((batch?.questions || []).map((q) => Number(q?.teil)).filter(Number.isFinite)),
+  ];
+  const fallbackTeil = Number(
+    meta.teil ?? inferTeilFromBatch(batch) ?? batch?.questions?.[0]?.teil ?? 1,
+  );
+  const teilsInBatch = batchTeils.length ? batchTeils : [fallbackTeil];
+
+  if (!meta.bundle) {
+    return [Number(meta.teil ?? fallbackTeil ?? 1)];
+  }
+
+  const fullBundleTeils = teilsForBundle(mod, lv);
+  const oralPerTeilLevel =
+    (mod === 'schreiben' && isSchreibenPerTeil(mod, lv)) ||
+    (mod === 'sprechen' && isSprechenPerTeil(mod, lv));
+
+  if (oralPerTeilLevel && teilsInBatch.length < fullBundleTeils.length) {
+    return teilsInBatch;
+  }
+
+  return fullBundleTeils;
 }
 
 function writeSyncLog(entry) {
@@ -95,9 +131,7 @@ export async function syncPoolVerifiedBatch({ file, batch, level = 'B1', opts = 
     }
   }
 
-  const teils = meta.bundle
-    ? teilsForBundle(mod, lv)
-    : [Number(opts.teil ?? meta.teil ?? inferTeilFromBatch(batch) ?? batch.questions?.[0]?.teil ?? 1)];
+  const teils = resolveSyncTeils({ meta, batch, mod, lv });
 
   const results = [];
   for (const teil of teils) {
@@ -158,6 +192,12 @@ export async function syncPoolVerifiedBatch({ file, batch, level = 'B1', opts = 
     })),
   };
   writeSyncLog(entry);
+  try {
+    const { logAssembledStaleAfterPoolTouch } = await import('./assembledExamFreshness.mjs');
+    logAssembledStaleAfterPoolTouch({ level: lv, file: path.basename(file), trigger: opts.trigger || 'sync' });
+  } catch {
+    /* optional */
+  }
   return { ok, file: path.basename(file), results, duplicate: results.every((r) => r.duplicate) };
 }
 
