@@ -24,6 +24,12 @@ Incluir en `passages[0].text`:
 - Enunciados en alemán claro A2
 - **PROHIBIDO** vocabulario B2/C1 en preguntas, opciones y explanations
 - `explanation`: ≥6 palabras en alemán
+- **MCQ contract (obligatorio):** cada pregunta `type:"multiple_choice"` con `options` = `["a) …", "b) …", "c) …"]`; **`correct` y `correctAnswer` = misma letra** (`"a"`, `"b"` o `"c"` — nunca `"1"` ni texto libre)
+
+## CEFR A2 — E-MAIL (pre-ingest publish)
+- **≤12% oraciones subordinadas** (Nebensätze con weil/dass/wenn/ob…): usa **Hauptsätze cortos**
+- Máximo 1–2 subordinadas en todo el texto; evita cadenas «…, weil …, dass …»
+- Longitud 100–180 palabras se mantiene con frases simples
 
 ## PALABRAS OBJETIVO
 <<< email, termin, kurs, familie, urlaub, ticket, frage, antwort, danke, bitte >>>
@@ -31,6 +37,7 @@ Incluir en `passages[0].text`:
 ## AUTORREVISIÓN
 - ¿Formato E-Mail completo (Anrede + Gruß)?
 - ¿100–180 palabras?
-- ¿5 MCQ a/b/c?
+- ¿5 MCQ a/b/c con correct === correctAnswer?
+- ¿≤12% Nebensätze (CEFR publish)?
 - ¿level:"A2"?
 - ¿Solo JSON?
