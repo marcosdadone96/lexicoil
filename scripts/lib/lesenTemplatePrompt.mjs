@@ -7,6 +7,7 @@ import { filterPromptTargetWords, isBlacklistedLemma } from './lexicalCheck.mjs'
 import { buildExcludedPremisesPromptBlock } from './excludedPremises.mjs';
 import { appendGenerationFeedback } from './resolveGenerationFeedback.mjs';
 import { buildLesenT3NamesPromptBlock } from './lesenT3NamesBank.mjs';
+import { buildLesenT2OpeningsPromptBlock } from './lesenT2OpeningsBank.mjs';
 import { buildTopicPromptBlock } from './topicRotation.mjs';
 import {
   assemblePrompt,
@@ -35,6 +36,7 @@ const WORDS_BLOCK = /<<<[^>]+>>>/;
 const LESEN_TEMPLATE_DIRS = {
   A2: 'plantillas-lesen-a2',
   B1: 'plantillas-lesen-b1',
+  B2: 'plantillas-lesen-b2',
 };
 
 function resolveLesenTemplateDir(level = 'B1') {
@@ -115,6 +117,82 @@ const A2_TEIL_LENGTH_RULES = {
   },
 };
 
+/** Goethe B2 Lesen — alineado a library/blueprints/goethe_B2.json */
+const B2_TEIL_LENGTH_RULES = {
+  1: {
+    target: '80-180',
+    min: 80,
+    max: 180,
+    scope: 'cada passages[i].text (4 Personen A–D)',
+    note: 'Forum-Beiträge; Fase A solo pasajes; Fase B 9 matching.',
+  },
+  2: {
+    target: '280-360',
+    min: 250,
+    max: 400,
+    scope: 'passages[0].text (1 Zeitschrift-Artikel)',
+    note: 'Sätze einfügen: 6 Lücken (21)–(26), 8 Sätze A–H, 6 matching.',
+  },
+  3: {
+    target: '400-450',
+    min: 350,
+    max: 500,
+    scope: 'passages[0].text (1 Zeitungsartikel)',
+    note: '6× MCQ a/b/c; instrucción oficial en Q1.',
+  },
+  4: {
+    target: '55-85',
+    min: 40,
+    max: 100,
+    scope: 'cada passages[i].text (Meinungsäußerung Zeitschrift)',
+    note: '6 opiniones + 8 Überschriften A–H; 6 matching; 2 titulares sobrantes.',
+  },
+  5: {
+    target: '260-320',
+    min: 200,
+    max: 350,
+    scope: 'passages[0].text (Studienordnung)',
+    note: '3 Paragrafen (31)–(33) + 7 Überschriften A–G; 3 matching; 4 sobrantes.',
+  },
+};
+
+const B2_CEFR_VOCAB_HINT =
+  'Nivel B2: léxico abstracto moderado permitido en pasajes (Digitalisierung, Regulierung, Nachhaltigkeit). ' +
+  'Preguntas/explicaciones: claras B2, sin C1 académico. grammarTags solo vía post-proceso (6 categorías oficiales).';
+
+function loadLesenTemplateB2ForumPhase(phase) {
+  const raw = fs.readFileSync(lesenTemplatePath(1, 'B2'), 'utf8');
+  const dash = raw.indexOf('\n---\n');
+  const body = dash >= 0 ? raw.slice(dash + 5) : raw;
+  const markerA = '---FASE-A---';
+  const markerB = '---FASE-B---';
+  const iA = body.indexOf(markerA);
+  const iB = body.indexOf(markerB);
+  if (iA < 0 || iB < 0) throw new Error('plantillas-lesen-b2/lesen-teil1.md: faltan marcadores FASE-A / FASE-B');
+  const p = String(phase || '').toLowerCase();
+  if (p === 'passage' || p === 'a') {
+    return body.slice(iA + markerA.length, iB).trim();
+  }
+  if (p === 'questions' || p === 'b') {
+    return body.slice(iB + markerB.length).trim();
+  }
+  throw new Error(`forumPhase inválida: ${phase} (usa passage|questions)`);
+}
+
+export function buildLesenB2ForumFixedPassagesBlock(passages) {
+  const slim = (passages || []).map((p) => ({
+    id: p.id,
+    personKey: p.personKey,
+    title: p.title,
+    text: p.text,
+  }));
+  return (
+    `\n\n## FORO FIJO (NO modificar — genera solo questions)\n` +
+    `Usa exactamente estos 4 Beiträge; no reescribas passages en la salida (devuelve "passages": []).\n` +
+    `\`\`\`json\n${JSON.stringify(slim, null, 2)}\n\`\`\`\n`
+  );
+}
+
 const CEFR_VOCAB_HINT =
   'Prefiere léxico B1 frecuente: Bewohner, Nachbarn, Stadt, Programm, Organisation, Erfahrungen, ' +
   'Familie, Kinder, Schule, Arbeit, Transport, Kurs, Projekt, Freizeit, Bericht, Termin. ' +
@@ -149,24 +227,38 @@ const STYLE_ANTI_PATTERNS =
 
 const CEFR_A2_VOCAB_HINT =
   'Prefiere léxico A2 frecuente (Familie, Wohnung, Arbeit, Freizeit, Einkaufen, Termin, Stadt, Kurs). ' +
-  'Evita términos B1+ (Herausforderung, Weiterbildung, Investition…) salvo en PALABRAS OBJETIVO.';
+  'Evita términos B1+ (Herausforderung, Weiterbildung, Investition…) salvo en PALABRAS OBJETIVO. ' +
+  'ANTI-ANGLICISMOS A2: PROHIBIDO inglés crudo sin traducir — gardening→Gartenarbeit, jogging→Joggen, ' +
+  'hiking→Wandern, cycling→Radfahren, **Workshop→Kurs/Seminar/Werkstatt** (nunca «Workshop» ni «Kreativ-Workshop»). ' +
+  'Préstamos aceptados (Computer, E-Mail, App, Blog, Podcast) capitalizados como sustantivo alemán.';
 
 function teilLengthBlock(teil, level = 'B1') {
   const lv = String(level || 'B1').trim().toUpperCase();
-  const rules = lv === 'A2' ? A2_TEIL_LENGTH_RULES : TEIL_LENGTH_RULES;
+  const rules =
+    lv === 'A2' ? A2_TEIL_LENGTH_RULES : lv === 'B2' ? B2_TEIL_LENGTH_RULES : TEIL_LENGTH_RULES;
   const r = rules[teil];
   if (!r) return '';
   const t2Extra =
-    Number(teil) === 2 && lv !== 'A2'
-      ? '\n- **CRÍTICO T2:** suma passages[0].text + passages[1].text ≤ **400 palabras** (gate CEFR). ' +
-        'Objetivo **330-390 total** (~165-195 por texto). Si cada texto tiene ~220 palabras, FALLARÁS el ingest.\n' +
-        '- Cuenta ambos textos antes de enviar; recorta relleno si la suma supera 390.\n'
-      : '';
-  const vocabHint = lv === 'A2' ? CEFR_A2_VOCAB_HINT : CEFR_VOCAB_HINT;
+    Number(teil) === 2 && lv === 'A2'
+      ? '\n- **CRÍTICO T2 A2 Informationstafel (CEFR):** prosa con oraciones completas — NO solo rótulos telegráficos.\n' +
+        '  · Apertura: «Willkommen im…! Hier finden Sie…» (≥2 oraciones).\n' +
+        '  · Por local: **«Nombre: oración completa A2.»** (ej. «Bäckerei Müller: Frisches Brot und Kuchen.»).\n' +
+        '  · PROHIBIDO: «Erdgeschoss: Bäckerei, Café» / líneas sueltas sin verbo ni punto.\n' +
+        '  · Integra PALABRAS OBJETIVO en las descripciones (cobertura CEFR ≥55%).\n' +
+        '  · Objetivo: 12–18 oraciones cortas A2 en 80–150 palabras.\n'
+      : Number(teil) === 2 && lv !== 'A2' && lv !== 'B2'
+        ? '\n- **CRÍTICO T2:** suma passages[0].text + passages[1].text ≤ **400 palabras** (gate CEFR). ' +
+          'Objetivo **330-390 total** (~165-195 por texto). Si cada texto tiene ~220 palabras, FALLARÁS el ingest.\n' +
+          '- Cuenta ambos textos antes de enviar; recorta relleno si la suma supera 390.\n'
+        : '';
+  const vocabHint =
+    lv === 'A2' ? CEFR_A2_VOCAB_HINT : lv === 'B2' ? B2_CEFR_VOCAB_HINT : CEFR_VOCAB_HINT;
   const coverageNote =
     lv === 'A2'
       ? '- Cobertura léxica A2 objetivo: **≥55%** (texto demasiado complejo penaliza).\n'
-      : '- Cobertura léxica B1 objetivo: **≥75%** (palabras fuera de lista B1 frecuente penalizan).\n';
+      : lv === 'B2'
+        ? '- Cobertura léxica B2: usa bank B2; evita C1 en preguntas.\n'
+        : '- Cobertura léxica B1 objetivo: **≥75%** (palabras fuera de lista B1 frecuente penalizan).\n';
   return (
     `\n\n## LONGITUD CEFR (OBLIGATORIO — ingest RECHAZA si fallas)\n` +
     `- Ámbito: **${r.scope}** (${r.note})\n` +
@@ -239,6 +331,13 @@ export function buildFewShotLesenBlock(teil, examples = [], level = 'B1') {
   );
 }
 
+function buildLesenQuestionJsonKeyRule() {
+  return (
+    `- En questions[] el enunciado va SIEMPRE en la clave JSON "question" ` +
+    `(PROHIBIDO text, questionText, statement u otros alias).\n`
+  );
+}
+
 function buildLesenChecklistBlockA2(teil, options = {}) {
   const { minimalRules } = options;
   if (minimalRules) {
@@ -246,14 +345,27 @@ function buildLesenChecklistBlockA2(teil, options = {}) {
       `\n\nCHECKLIST FINAL (mínima — calidad vía plantilla A2):\n` +
       `- JSON válido único; IDs con el prefijo de esta generación.\n` +
       `- level:"A2" en passage y questions.\n` +
+      buildLesenQuestionJsonKeyRule() +
       (Number(teil) === 1
         ? `- (T1 A2) Medientext 3ª persona/reportaje; **5 MCQ** a/b/c; PROHIBIDO ich-Blog y richtig_falsch.\n`
         : '') +
       (Number(teil) === 2
-        ? `- (T2 A2) Informationstafel + 5 MCQ a/b/c.\n`
+        ? `- (T2 A2) Informationstafel + 5 MCQ a/b/c.\n` +
+          `- (T2 A2) **Pasaje en prosa:** apertura + «Nombre: oración A2.» por local (NO listado telegráfico).\n` +
+          `- (T2 A2) **GATE 4/5:** enunciado "question" con «Stock» o «Etage» en ≥4 preguntas.\n` +
+          `- (T2 A2) **GATE 4/5:** opción «in einem anderen Stock» / «anderer Stock» en ≥4 preguntas.\n` +
+          `- (T2 A2) **mcq_distinct:** 3 pisos mutuamente excluyentes; formato corto «im N. Stock»; **PROHIBIDO repetir el mismo piso en dos opciones** (ni parafrasear: im Erdgeschoss ≠ Erdgeschoss).\n`
         : '') +
       (Number(teil) === 3
-        ? `- (T3 A2) E-Mail/Korrespondenz + 5 MCQ a/b/c.\n`
+        ? `- (T3 A2) E-Mail/Korrespondenz + 5 MCQ a/b/c.\n` +
+          `- (T3 A2) CEFR ingest: **≤12% Nebensätze** (Hauptsätze kurz; max. 1–2 «weil/dass/wenn»).\n` +
+          `- (T3 A2) MCQ: options «a) …» «b) …» «c) …»; **correct === correctAnswer** (letra a/b/c).\n`
+        : '') +
+      (Number(teil) === 4
+        ? `- (T4 A2) 6 Anzeigen (passages a–f) + 5 matching; opciones ["a"…"f","X"]; exactamente 1 correct:"X".\n` +
+          `- (T4 A2) Cada passage: **title** (titular) + **text** (20–60 Wörter) — CHK-29 exige 6 títulos.\n` +
+          `- (T4 A2) Mini-situación con persona concreta en "question" (no genérico «Welche Anzeige passt?» solo).\n` +
+          `- (T4 A2) PROHIBIDO «Workshop» en títulos/textos — usa Kurs, Seminar o Werkstatt.\n`
         : '') +
       `- Vocabulario preguntas/explicaciones ≤ A2; sin jerga B1+.\n` +
       `- Responde SOLO con el objeto JSON.\n`
@@ -266,16 +378,29 @@ function buildLesenChecklistBlockA2(teil, options = {}) {
     `- Longitud: cumple el mínimo CEFR de arriba (cuenta palabras).\n` +
     `- El batch debe pasar validate-batch + calidad pedagógica + ingest sin errores.\n` +
     `- VOCABULARIO SUGERIDO: integra palabras solo si encajan; omite las que no encajen.\n` +
+    buildLesenQuestionJsonKeyRule() +
     (Number(teil) === 1
       ? `- (T1 A2) **Medientext** informativo en 3ª persona; título de prensa; **5× multiple_choice** a/b/c.\n` +
         `- (T1 A2) PROHIBIDO: blog en «ich», richtig_falsch, registro B1 (Organisation, Gemeinschaft, Investition…).\n` +
         `- (T1 A2) explanation ≥6 palabras en alemán.\n`
       : '') +
     (Number(teil) === 2
-      ? `- (T2 A2) Texto de informationstafel + 5 MCQ a/b/c; topicTag coherente.\n`
+      ? `- (T2 A2) Texto de informationstafel + 5 MCQ a/b/c; topicTag coherente.\n` +
+        `- (T2 A2) **CEFR pasaje:** Willkommen + descripciones «Nombre: oración completa.» por piso; integrar vocab objetivo (≥55% cobertura).\n` +
+        `- (T2 A2) **GATE 4/5 Stock/Etage:** ≥4 enunciados con «In welchem Stock…» / «Auf welcher Etage…» (palabra Stock o Etage en "question").\n` +
+        `- (T2 A2) **GATE 4/5 anderer Stock:** ≥4 preguntas con c) «in einem anderen Stock» (o «anderes Stockwerk»).\n` +
+        `- (T2 A2) **mcq_distinct (CHK-28):** a) im X. Stock, b) im Y. Stock (X≠Y), c) in einem anderen Stock — **PROHIBIDO repetir el mismo piso en dos opciones**.\n` +
+        `- (T2 A2) PROHIBIDO: 3 pisos concretos sin «anderer Stock»; preguntas solo de horario/entrada sin Stock/Etage.\n`
       : '') +
     (Number(teil) === 3
-      ? `- (T3 A2) E-Mail/Korrespondenz + 5 MCQ a/b/c.\n`
+      ? `- (T3 A2) E-Mail/Korrespondenz + 5 MCQ a/b/c.\n` +
+        `- (T3 A2) CEFR ingest: **≤12% Nebensätze** (Hauptsätze kurz; max. 1–2 «weil/dass/wenn»).\n` +
+        `- (T3 A2) MCQ: options «a) …» «b) …» «c) …»; **correct === correctAnswer** (letra a/b/c).\n`
+      : '') +
+    (Number(teil) === 4
+      ? `- (T4 A2) 6 Anzeigen + 5 matching; opciones ["a"…"f","X"]; 1× correct:"X"; enunciados con persona en "question".\n` +
+        `- (T4 A2) Cada passage con **title** + **text** (6 titulares distintos).\n` +
+        `- (T4 A2) PROHIBIDO «Workshop» — usa Kurs, Seminar o Werkstatt en anuncios.\n`
       : '') +
     `- Responde SOLO con el objeto JSON (sin markdown, sin \`\`\`, sin texto antes ni después).`
   );
@@ -284,11 +409,65 @@ function buildLesenChecklistBlockA2(teil, options = {}) {
 function buildLesenChecklistBlock(teil, options = {}) {
   const level = String(options.level || 'B1').trim().toUpperCase();
   if (level === 'A2') return buildLesenChecklistBlockA2(teil, options);
+  if (level === 'B2' && Number(teil) === 1) {
+    const phase = String(options.forumPhase || '').toLowerCase();
+    return (
+      `\n\nCHECKLIST FINAL (Goethe B2 Lesen T1 — ${phase === 'questions' || phase === 'b' ? 'Fase B' : 'Fase A'}):\n` +
+      `- JSON válido; level:"B2"; instrucción oficial del foro respetada en espíritu.\n` +
+      (phase === 'questions' || phase === 'b'
+        ? `- Exactamente **9** matching; options ["A","B","C","D"]; repetición de personas permitida.\n` +
+          `- passageId coherente con la persona correcta; sin hechos inventados.\n`
+        : `- Exactamente **4** passages (Personen A–D); **questions: []**.\n`) +
+      `- grammarTags omitidos o [].\n` +
+      `- Responde SOLO con el objeto JSON.\n`
+    );
+  }
+  if (level === 'B2' && Number(teil) === 2) {
+    return (
+      `\n\nCHECKLIST FINAL (Goethe B2 Lesen T2 — Sätze einfügen):\n` +
+      `- 1 passage 250–400 Wörter; marcadores (21)…(26); 6 questions matching.\n` +
+      `- 8 options A–H idénticas en cada pregunta; 6 letras correctas distintas; 2 sobrantes.\n` +
+      `- Instrucción oficial en question[0]; sin ambigüedad entre Lücken.\n` +
+      `- grammarTags omitidos o [].\n` +
+      `- Responde SOLO con el objeto JSON.\n`
+    );
+  }
+  if (level === 'B2' && Number(teil) === 3) {
+    return (
+      `\n\nCHECKLIST FINAL (Goethe B2 Lesen T3 — Zeitungsartikel MCQ):\n` +
+      `- 1 passage 350–500 Wörter; 6× multiple_choice a/b/c; NO anuncios B1 A–J.\n` +
+      `- Instrucción oficial en question[0]; passageId en cada pregunta.\n` +
+      `- Anti word-matching; MCQ longitud comparable; explanation CHK-34 (sin citar opción literal).\n` +
+      `- grammarTags omitidos o [].\n` +
+      `- Responde SOLO con el objeto JSON.\n`
+    );
+  }
+  if (level === 'B2' && Number(teil) === 4) {
+    return (
+      `\n\nCHECKLIST FINAL (Goethe B2 Lesen T4 — Meinung ↔ Überschrift):\n` +
+      `- 6 passages (Meinungsäußerungen 40–100 Wörter); 6 matching; NO ja_nein/foro B1.\n` +
+      `- 8 Überschriften A–H idénticas en cada pregunta; 6 letras correctas distintas; 2 sobrantes.\n` +
+      `- Instrucción oficial en question[0]; passageId por Meinung; sin ambigüedad entre titulares.\n` +
+      `- grammarTags omitidos o [].\n` +
+      `- Responde SOLO con el objeto JSON.\n`
+    );
+  }
+  if (level === 'B2' && Number(teil) === 5) {
+    return (
+      `\n\nCHECKLIST FINAL (Goethe B2 Lesen T5 — Studienordnung ↔ Überschriften):\n` +
+      `- 1 Studienordnung 200–350 Wörter; marcadores (31)(32)(33); 3 matching; NO MCQ B1.\n` +
+      `- 7 Überschriften A–G idénticas; 3 letras correctas distintas; 4 sobrantes.\n` +
+      `- Instrucción oficial en question[0]; sin ambigüedad entre encabezados.\n` +
+      `- grammarTags omitidos o [].\n` +
+      `- Responde SOLO con el objeto JSON.\n`
+    );
+  }
   const { minimalRules, debateSeed, debateDef } = options;
   if (minimalRules) {
     return (
       `\n\nCHECKLIST FINAL (mínima — calidad vía ejemplos verificados arriba):\n` +
       `- JSON válido único; IDs con el prefijo de esta generación.\n` +
+      buildLesenQuestionJsonKeyRule() +
       `- Tema B1 pedido; parafraseo B1 (máx. 2 palabras de contenido iguales al pasaje por afirmación).\n` +
       `- Vocabulario preguntas/explications ≤ B1; sin jerga B2/C1.\n` +
       (Number(teil) === 1 ? `- (T1) Blog en ich; 6 RF; misma persona (sie O er) en todas las afirmaciones.\n` : '') +
@@ -296,7 +475,8 @@ function buildLesenChecklistBlock(teil, options = {}) {
         ? `- (T2) ANTI-ATAJO MCQ: opciones a/b/c con longitud y especificidad comparable; la correcta NO debe ser la más larga ni la única detallada.\n`
         : '') +
       (Number(teil) === 5
-        ? `- (T5) ANTI-ATAJO MCQ: opciones a/b/c con longitud y especificidad comparable; la correcta NO debe ser la más larga ni la única detallada.\n`
+        ? `- (T5) ANTI-ATAJO MCQ: opciones a/b/c con longitud y especificidad comparable; la correcta NO debe ser la más larga ni la única detallada.\n` +
+          `- (T5) Umformulierung: korrekte Option darf keine ≥5 Wörter am Stück aus dem Regeltext übernehmen.\n`
         : '') +
       `- Imita **estilo y dificultad** de los ejemplos verificados; contenido **nuevo**.\n` +
       `- Responde SOLO con el objeto JSON.\n`
@@ -309,6 +489,7 @@ function buildLesenChecklistBlock(teil, options = {}) {
     `- Longitud: cumple el mínimo CEFR de arriba (cuenta palabras).\n` +
     `- El batch debe pasar check-lesen-batch-quality.mjs y check-lesen-batch-ingest.mjs sin errores.\n` +
     `- VOCABULARIO SUGERIDO: integra palabras solo si encajan; omite las que no encajen.\n` +
+    buildLesenQuestionJsonKeyRule() +
     `- Anti word-matching: máx. 2 palabras de contenido iguales al pasaje por afirmación/pregunta.\n` +
     `- Parafraseo B1 (T1/T2): vocabulario de preguntas/opciones/explanations ≤ B1 — sinónimo NO más difícil que el pasaje. ` +
     `PROHIBIDO modifizieren, Gelassenheit, Angehörige, elektronische Mitteilungen, sich austauschen, jerga B2.\n` +
@@ -411,14 +592,23 @@ function buildLesenChecklistBlock(teil, options = {}) {
 /** Cacheable prefix — identical for every generation of the same Teil. */
 export function buildLesenStaticCore(teil, options = {}) {
   const level = options.level || 'B1';
-  const raw = stripHumanHeader(loadLesenTemplate(teil, level));
+  const lv = String(level).trim().toUpperCase();
+  let raw;
+  if (lv === 'B2' && Number(teil) === 1 && options.forumPhase) {
+    raw = loadLesenTemplateB2ForumPhase(options.forumPhase);
+  } else {
+    raw = stripHumanHeader(loadLesenTemplate(teil, level));
+  }
   let body = stripVocabSectionFromTemplate(raw);
   body = stripAutorrevisionSection(body);
-  return (
+  let core =
     body.trim() +
     teilLengthBlock(Number(teil), level) +
-    buildLesenChecklistBlock(Number(teil), options)
-  );
+    buildLesenChecklistBlock(Number(teil), options);
+  if (lv === 'B2' && Number(teil) === 1 && options.fixedForumPassages?.length) {
+    core += buildLesenB2ForumFixedPassagesBlock(options.fixedForumPassages);
+  }
+  return core;
 }
 
 /** Per-request tail — topic, vocab, IDs, few-shot, etc. */
@@ -444,7 +634,7 @@ export function buildLesenVariableSuffix(teil, words, options = {}) {
   let suffix = '';
 
   let variantScaffold = '## AUTORREVISIÓN\n';
-  if (Number(teil) === 5 && subtypeDef) {
+  if (Number(teil) === 5 && subtypeDef && String(options.level || 'B1').toUpperCase() !== 'B2') {
     variantScaffold = injectT5PromptVariants(variantScaffold, {
       textSubtype,
       subtypeDef,
@@ -454,7 +644,7 @@ export function buildLesenVariableSuffix(teil, words, options = {}) {
       mandatedTitle,
     });
   }
-  if (Number(teil) === 4 && (debateSeed || debateDef)) {
+  if (Number(teil) === 4 && (debateSeed || debateDef) && String(options.level || 'B1').toUpperCase() !== 'B2') {
     variantScaffold = injectT4PromptVariants(variantScaffold, {
       debateTopic,
       debateDef,
@@ -490,6 +680,12 @@ export function buildLesenVariableSuffix(teil, words, options = {}) {
 
   if (Number(teil) === 1 || Number(teil) === 2) {
     suffix += buildExcludedPremisesPromptBlock();
+  }
+  if (Number(teil) === 2 && String(options.level || 'B1').toUpperCase() === 'B1') {
+    suffix += buildLesenT2OpeningsPromptBlock({
+      mandatedOpening: options.mandatedLesenT2Opening,
+      topic: resolvedTopic,
+    });
   }
   if (Number(teil) === 3) {
     suffix += buildLesenT3NamesPromptBlock();
@@ -793,9 +989,15 @@ export function buildLexicoBatchRepairPrompt(ctx) {
   const level = String(ctx.level || ctx.batch?.level || ctx.batch?.questions?.[0]?.level || 'B1').toUpperCase();
   const targetLevel = level === 'A2' ? 'A2' : 'B1';
   const ceilingLabel = level === 'A2' ? 'B1+' : 'B2+';
+  const passageFindings = findings.filter((f) => f.field === 'passageText' || f.field === 'passageTitle');
+  const questionFindings = findings.filter((f) => f.field !== 'passageText' && f.field !== 'passageTitle');
   const questions = (ctx.batch?.questions || []).filter((q) =>
-    findings.some((f) => f.itemId === q.id),
+    questionFindings.some((f) => f.itemId === q.id),
   );
+  const passages = (ctx.batch?.passages || []).filter((p) =>
+    passageFindings.some((f) => f.itemId === p.id),
+  );
+  const passagesOnly = passageFindings.length > 0 && questionFindings.length === 0;
 
   const findingBlock = findings
     .map((f) => `- [${f.itemId || '?'}] ${f.field}: «${f.term}» → «${f.suggestion}»`)
@@ -813,13 +1015,36 @@ export function buildLexicoBatchRepairPrompt(ctx) {
     })
     .join('\n\n');
 
+  const pBlock = passages
+    .map((p) => {
+      const flags = passageFindings.filter((f) => f.itemId === p.id);
+      const fields = flags.map((f) => f.field).join(', ');
+      return (
+        `## passageId [${p.id}] (corrige: ${fields})\n` +
+        `title: ${p.title || ''}\n` +
+        `text: ${p.text || ''}`
+      );
+    })
+    .join('\n\n');
+
+  const scopeIntro = passagesOnly
+    ? `Corrige SOLO los campos de anuncio/passage marcados (title/text). Las preguntas matching NO las modifiques.\n`
+    : `Los pasajes/transcripciones no marcados están aprobados — NO los modifiques.\n` +
+      `Sustituye SOLO los términos marcados por alternativas de nivel ${targetLevel} (evita léxico ${ceilingLabel}).\n`;
+
+  const jsonShape = passagesOnly
+    ? `{ "passages": [ { "passageId": "...", "title": "...", "text": "..." } ] }`
+    : `{ "questions": [ { "id": "...", "question": "...", "options": [...], "explanation": "..." } ]` +
+      (passageFindings.length ? `, "passages": [ { "passageId": "...", "title": "...", "text": "..." } ]` : '') +
+      ` }`;
+
   return finalizeRepairPrompt(
-    `Eres corrector Goethe ${level} (${module}). Los pasajes/transcripciones están aprobados — NO los modifiques.\n` +
-    `Sustituye SOLO los términos marcados por alternativas de nivel ${targetLevel} (evita léxico ${ceilingLabel}).\n\n` +
-    `## Hallazgos léxicos\n${findingBlock}\n\n` +
-    `## Preguntas a corregir\n${qBlock}\n\n` +
-    `Devuelve SOLO JSON:\n` +
-    `{ "questions": [ { "id": "...", "question": "...", "options": [...], "explanation": "..." } ] }`
+    `Eres corrector Goethe ${level} (${module}).\n` +
+    scopeIntro +
+    `\n## Hallazgos léxicos\n${findingBlock}\n\n` +
+    (qBlock ? `## Preguntas a corregir\n${qBlock}\n\n` : '') +
+    (pBlock ? `## Anuncios/passages a corregir\n${pBlock}\n\n` : '') +
+    `Devuelve SOLO JSON:\n${jsonShape}`
   );
 }
 
@@ -829,14 +1054,23 @@ export function buildLexicoBatchRepairPrompt(ctx) {
 export function buildL2McqDistinctRepairPrompt(ctx) {
   const passage = ctx.passage || {};
   const q = ctx.question || {};
+  const level = String(ctx.level || 'B1').toUpperCase();
   const body = String(passage.text || '').trim();
   if (!body) throw new Error('L2 mcq repair: pasaje sin texto');
 
   const opts = (q.options || []).map((o, i) => `${String.fromCharCode(97 + i)}) ${o}`).join('\n');
   const issues = (ctx.findings || []).map((f) => `- ${f.detail || f.message || 'opciones duplicadas'}`).join('\n');
+  const a2Rules =
+    level === 'A2'
+      ? `- **A2 Informationstafel:** usa formato corto obligatorio:\n` +
+        `  a) im {X}. Stock\n  b) im {Y}. Stock (X≠Y, pisos del plano)\n` +
+        `  c) in einem anderen Stock\n` +
+        `- PROHIBIDO descripciones largas «im Stock wo…»; PROHIBIDO duplicar el mismo piso.\n` +
+        `- **PROHIBIDO repetir el mismo piso en dos opciones** (p. ej. «im Erdgeschoss» + «Erdgeschoss»).\n`
+      : '';
 
   return finalizeRepairPrompt(
-    `Eres examinador Goethe B1 Lesen Teil 2. El PASAJE está aprobado — NO lo modifiques.\n` +
+    `Eres examinador Goethe ${level} Lesen Teil 2. El PASAJE está aprobado — NO lo modifiques.\n` +
     `Reescribe SOLO las 3 opciones a/b/c y la explanation de esta pregunta MCQ.\n\n` +
     `## Pasaje (NO cambiar)\n` +
     `passageId: "${passage.id || '?'}"\n${body}\n\n` +
@@ -850,7 +1084,8 @@ export function buildL2McqDistinctRepairPrompt(ctx) {
     `- Las 3 opciones deben ser mutuamente excluyentes.\n` +
     `- PROHIBIDO que dos opciones parafraseen el mismo hecho (sinónimos).\n` +
     `- Distractores incorrectos: otro dato del pasaje mal aplicado o incompleto.\n` +
-    `- Vocabulario B1; NO cambies la clave correcta salvo que esté objetivamente mal (raro).\n` +
+    a2Rules +
+    `- Vocabulario ${level}; NO cambies la clave correcta salvo que esté objetivamente mal (raro).\n` +
     `- explanation ≥10 palabras, justifica la clave.\n\n` +
     `Devuelve SOLO JSON:\n` +
     `{ "id": "${q.id || 'gen-q-2-repair'}", "options": ["texto a", "texto b", "texto c"], ` +
