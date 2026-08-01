@@ -190,6 +190,17 @@ const spNorm = normalizeSprechenItem(
 assertEq('sprechen wortstellung', spNorm?.errors?.[0]?.grammarCategory, 'wortstellung');
 assertEq('sprechen summary category', spNorm?.grammarErrorSummary?.[0]?.category, 'wortstellung');
 
+console.log('\n── P7: productionGrammar profile + drill re-eval ──');
+AnalyticsStore.recordExamResult(goal, entry, examData, answers);
+const prod = AnalyticsStore.getProductionGrammarOverview(goal, 6);
+assertOk('production passiv row', prod.some((r) => r.category === 'passiv' && r.errors >= 1));
+assertOk('production weak passiv', prod.some((r) => r.category === 'passiv' && r.weak));
+AnalyticsStore.recordGrammarDrillResult(goal, 'passiv', 85);
+const prod2 = AnalyticsStore.getProductionGrammarOverview(goal, 6);
+const passivRow = prod2.find((r) => r.category === 'passiv');
+assertOk('drill score stored', passivRow && passivRow.lastDrillScore === 85);
+assertOk('passiv no longer weak after drill', passivRow && !passivRow.weak);
+
 console.log('\n── P6: Personalizado Via B — design hook (not implemented) ──');
 console.log(`  📋  In PromptBuilder.buildPersonalExamChunkPrompt(), after weak-tag lookup:
       const weakCat = AnalyticsStore.getWeakGrammarTags(spec.goal, 1)[0];
