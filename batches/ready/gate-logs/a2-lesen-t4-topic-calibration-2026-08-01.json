@@ -1,0 +1,126 @@
+{
+  "at": "2026-08-01T11:07:48.145Z",
+  "uniqueBatches": 52,
+  "currentPerPassageFail": 47,
+  "proposedBatchPassOfCurrentFails": 38,
+  "proposedBatchStillFail": 9,
+  "flipRate": "0.809",
+  "newlyWouldFail": 0,
+  "samplesFlip": [
+    {
+      "file": "lesen-t4-gemini-071-2026-07-23T16-35-51-443Z.json",
+      "topic": "Freizeit",
+      "rule": "batch_tag_wins",
+      "fails": 3
+    },
+    {
+      "file": "lesen-t4-gemini-071-2026-07-23T16-37-20-512Z.json",
+      "topic": "Freizeit",
+      "rule": "batch_tag_wins",
+      "fails": 3
+    },
+    {
+      "file": "lesen-t4-gemini-071-2026-07-23T16-38-57-730Z.json",
+      "topic": "Freizeit",
+      "rule": "borderline_pass",
+      "fails": 4
+    },
+    {
+      "file": "lesen-t4-gemini-071-2026-07-23T16-40-32-353Z.json",
+      "topic": "Freizeit",
+      "rule": "batch_tag_wins",
+      "fails": 3
+    },
+    {
+      "file": "lesen-t4-gemini-071-2026-07-23T16-42-14-226Z.json",
+      "topic": "Sport",
+      "rule": "batch_tag_wins",
+      "fails": 2
+    },
+    {
+      "file": "lesen-t4-gemini-072-2026-07-23T16-44-03-030Z.json",
+      "topic": "Sport",
+      "rule": "batch_tag_wins",
+      "fails": 1
+    },
+    {
+      "file": "lesen-t4-gemini-072-2026-07-23T16-45-38-254Z.json",
+      "topic": "Sport",
+      "rule": "batch_tag_wins",
+      "fails": 1
+    },
+    {
+      "file": "lesen-t4-gemini-072-2026-07-23T16-47-11-474Z.json",
+      "topic": "Sport",
+      "rule": "batch_tag_wins",
+      "fails": 2
+    }
+  ],
+  "samplesStillFail": [
+    {
+      "file": "lesen-t4-gemini-098-2026-07-29T10-47-55-007Z.json",
+      "topic": "Gesundheit",
+      "rule": "incompatible_dominates_batch",
+      "fails": 6
+    },
+    {
+      "file": "lesen-t4-gemini-098-2026-07-29T10-51-25-029Z.json",
+      "topic": "Gesundheit",
+      "rule": "incompatible_dominates_batch",
+      "fails": 6
+    },
+    {
+      "file": "lesen-t4-gemini-098-2026-07-29T10-53-53-596Z.json",
+      "topic": "Gesundheit",
+      "rule": "incompatible_dominates_batch",
+      "fails": 5
+    },
+    {
+      "file": "lesen-t4-gemini-098-2026-07-29T10-55-40-416Z.json",
+      "topic": "Gesundheit",
+      "rule": "incompatible_dominates_batch",
+      "fails": 5
+    },
+    {
+      "file": "lesen-t4-gemini-098-2026-07-29T10-58-48-065Z.json",
+      "topic": "Gesundheit",
+      "rule": "incompatible_dominates_batch",
+      "fails": 5
+    },
+    {
+      "file": "lesen-t4-gemini-098-2026-07-29T11-03-20-534Z.json",
+      "topic": "Gesundheit",
+      "rule": "incompatible_dominates_batch",
+      "fails": 4
+    },
+    {
+      "file": "lesen-t4-gemini-098-2026-07-29T12-11-26-293Z.json",
+      "topic": "Gesundheit",
+      "rule": "incompatible_dominates_batch",
+      "fails": 4
+    },
+    {
+      "file": "lesen-t4-gemini-099-2026-07-31T19-15-14-879Z.json",
+      "topic": "Gesundheit",
+      "rule": "incompatible_dominates_batch",
+      "fails": 4
+    }
+  ],
+  "thresholdSweep": [
+    {
+      "majorityThreshold": 3,
+      "flipsOfCurrentFails": 38,
+      "rate": "0.809"
+    },
+    {
+      "majorityThreshold": 4,
+      "flipsOfCurrentFails": 38,
+      "rate": "0.809"
+    },
+    {
+      "majorityThreshold": 5,
+      "flipsOfCurrentFails": 38,
+      "rate": "0.809"
+    }
+  ]
+}
