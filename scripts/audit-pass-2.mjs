@@ -31,6 +31,7 @@ import {
 } from './lib/capitalizeNouns.mjs';
 import { isKnownGermanNoun } from './lib/germanNounLexicon.mjs';
 import { findKeyExplanationMismatches } from './lib/keyExplanationGate.mjs';
+import { findExplanationOptionTextAlignFindings } from './lib/explanationOptionTextAlign.mjs';
 import {
   detectTopicFromT3Situations,
   isLesenT3TopicCompatible,
@@ -91,8 +92,26 @@ const BLUEPRINT_A2 = {
   'sprechen':  { count: null, types: ['personal_questions', 'about_self', 'plan_together', 'short_answer'] },
 };
 
+/** Goethe B2 Modellsatz Erwachsene — Lesen/Hören item counts. */
+const BLUEPRINT_B2 = {
+  'lesen-1':   { count: 9, types: ['matching'] },
+  'lesen-2':   { count: 6, types: ['matching'] },
+  'lesen-3':   { count: 6, types: ['multiple_choice'] },
+  'lesen-4':   { count: 6, types: ['matching'] },
+  'lesen-5':   { count: 3, types: ['matching'] },
+  'horen-1':   { count: 10, types: ['richtig_falsch', 'multiple_choice'] },
+  'horen-2':   { count: 6, types: ['multiple_choice'] },
+  'horen-3':   { count: 6, types: ['matching'] },
+  'horen-4':   { count: 8, types: ['multiple_choice'] },
+  'schreiben': { count: null, types: ['short_answer'] },
+  'sprechen':  { count: null, types: ['short_answer'] },
+};
+
 function blueprintForLevel(level) {
-  return String(level || 'B1').toUpperCase() === 'A2' ? BLUEPRINT_A2 : BLUEPRINT;
+  const lv = String(level || 'B1').toUpperCase();
+  if (lv === 'A2') return BLUEPRINT_A2;
+  if (lv === 'B2') return BLUEPRINT_B2;
+  return BLUEPRINT;
 }
 
 function inferAuditLevel(batch) {
@@ -515,6 +534,8 @@ function chk7(batch, file) {
     if (mod === 'horen' && teil === 4 && level === 'A2') return false;
     // A2 Lesen T4 = matching Anzeigen a–f (no foro B1).
     if (mod === 'lesen' && teil === 4 && level === 'A2') return false;
+    // B2 Lesen T4 = Meinung↔Überschrift matching A–H (no foro Ja/Nein).
+    if (mod === 'lesen' && teil === 4 && level === 'B2') return false;
     return q.type === 'ja_nein' || (mod === 'lesen' && teil === 4);
   });
   if (!t4qs.length) return findings;
@@ -791,6 +812,7 @@ const KNOWN_NOT_NOUNS_14 = new Set([
   'verständliche','verständlich','vielen','viele','ledige','ledig',
   // Adjectives in lexicon — not nouns after und/oder/mit
   'teuer','teure','teures','teuren','teurer','teurem',
+  'billig','billige','billiges','billigen','billiger','billigem',
   'preiswert','preiswerte','preiswerten','preiswertes','preiswerter','preiswertem',
   'positive','positiven','positives','positiver','positivem',
   'politische','politischen','politisches','politischem','politischer',
@@ -1088,9 +1110,26 @@ const WORD_COUNT_SPEC_A2 = {
   'horen-4':  { min: 120, max: 280, scope: 'A2 interview transcript' },
 };
 
+/** Goethe B2 — forum posts per person (Lesen T1). */
+const WORD_COUNT_SPEC_B2 = {
+  'lesen-1':  { min: 80, max: 180, scope: 'B2 forum Personen-Beitrag (je Person)' },
+  'lesen-2':  { min: 250, max: 400, scope: 'B2 Zeitschrift-Artikel (Sätze einfügen)' },
+  'lesen-3':  { min: 350, max: 500, scope: 'B2 Zeitungsartikel (passages[0].text)' },
+  'lesen-4':  { min: 40, max: 100, scope: 'B2 Meinungsäußerung (je passage)' },
+  'lesen-5':  { min: 200, max: 350, scope: 'B2 Studienordnung (passages[0].text)' },
+  'horen-1':  { min: 30, max: 90, scope: 'B2 Hören segment (je passage)' },
+  'horen-2':  { min: 280, max: 400, scope: 'B2 Radiointerview (passages[0].text)' },
+  'horen-3':  { min: 250, max: 380, scope: 'B2 Radiogespräch Panel (passages[0].text)' },
+  'horen-4':  { min: 300, max: 450, scope: 'B2 Vortrag (passages[0].text)' },
+};
+
 function resolveWordCountSpec(key, level) {
-  if (String(level || '').toUpperCase() === 'A2' && WORD_COUNT_SPEC_A2[key]) {
+  const lv = String(level || '').toUpperCase();
+  if (lv === 'A2' && WORD_COUNT_SPEC_A2[key]) {
     return WORD_COUNT_SPEC_A2[key];
+  }
+  if (lv === 'B2' && WORD_COUNT_SPEC_B2[key]) {
+    return WORD_COUNT_SPEC_B2[key];
   }
   return WORD_COUNT_SPEC[key];
 }
@@ -1352,7 +1391,10 @@ function chk17(batch, file) {
 
   if (allShortOptions) {
     // A2 Modellsatz: email + 5× MCQ a/b/c is the official format.
-    if (inferAuditLevel(batch) === 'A2') return findings;
+    const lv = inferAuditLevel(batch);
+    if (lv === 'A2') return findings;
+    // B2 Modellsatz: 1 Zeitungsartikel + 6× MCQ a/b/c (integrado, no B1 matching).
+    if (lv === 'B2') return findings;
     // Caso C: MCQ A2 en pool B1 — routing finding.
     findings.push(finding('CHK-17', 'IMPORTANT', file, 'lesen-3',
       `L3 parece MCQ A2 (opciones a/b/c por ítem, no lista A-J). No es matching B1. ` +
@@ -1518,6 +1560,15 @@ function chk18b(batch, file) {
   const findings = [];
   for (const hit of findKeyExplanationMismatches(batch)) {
     findings.push(finding('CHK-18b', 'IMPORTANT', file, hit.itemId, hit.message));
+  }
+  return findings;
+}
+
+// ─── CHK-34: explanation ↔ quoted option text (matching / post-manual edit) ─
+function chk34(batch, file) {
+  const findings = [];
+  for (const hit of findExplanationOptionTextAlignFindings(batch)) {
+    findings.push(finding('CHK-34', hit.severity, file, hit.itemId, hit.message));
   }
   return findings;
 }
@@ -1754,10 +1805,17 @@ export function chk23(batch, file) {
 
 function chk22(batch, file) {
   const findings = [];
+  const level = inferAuditLevel(batch);
   const t4qs = (batch.questions || []).filter(q =>
     String(q.module || '').toLowerCase() === 'lesen' && Number(q.teil) === 4,
   );
   if (t4qs.length < 2) return findings;
+
+  // B2: una Meinung por passage (6 passageIds distintos es lo esperado).
+  if (level === 'B2' && (batch.passages || []).length >= 6) {
+    const matching = t4qs.every((q) => String(q.type || '').toLowerCase() === 'matching');
+    if (matching) return findings;
+  }
 
   const pids = t4qs.map(q => q.passageId).filter(Boolean);
   const uniquePids = new Set(pids);
@@ -1916,6 +1974,8 @@ function chk26(batch, file) {
 
 function chk27(batch, file) {
   const findings = [];
+  const level = inferAuditLevel(batch);
+  if (level === 'B2') return findings;
   const assessment = assessT4TopicAlignment(batch);
   if (assessment.skip || assessment.ok) return findings;
   const msg = formatT4TopicAlignmentFailure(assessment);
@@ -2260,7 +2320,9 @@ function vocabularyTagLooksCorrupted(tag, b1Set) {
   if (!t) return false;
   if (LEMMA_SAFETY_NET.has(t)) return true;
   if (b1Set?.has(t)) return false;
-  if (!/eren$/.test(t) || /ieren$/.test(t)) return false;
+  if (t.endsWith('ieren')) return false;
+  if (t.endsWith('deren') || t.endsWith('teren') || t.endsWith('genen')) return false;
+  if (!t.endsWith('eren')) return false;
   if (b1Set?.has(`${t.slice(0, -1)}n`)) return true;
   const fromT = `${t.slice(0, -2)}t`;
   return isVocabLemmaCorruption(fromT, t, b1Set);
@@ -2470,6 +2532,7 @@ const CHK_SUGGESTED_ACTION = {
   'CHK-31': 'corregir',
   'CHK-32': 'ignorar',
   'CHK-33': 'corregir',
+  'CHK-34': 'corregir',
   'CHK-35': 'corregir',
   'CHK-29': 'corregir',
 };
@@ -2688,6 +2751,7 @@ export function auditExam(examWrapper, label = 'exam') {
     ...chk17(flat, label),
     ...chk18(flat, label),
     ...chk18b(flat, label),
+    ...chk34(flat, label),
     ...chk19(flat, label),
     ...chk20(flat, label),
     ...chk21(flat, label),
@@ -2874,6 +2938,19 @@ function partRecordToExamPart(record) {
         }
       }
       if (Array.isArray(record.ads)) part.ads = record.ads;
+    } else if (teil === 1 && Array.isArray(record.passages) && record.passages.length > 1) {
+      // B2 Lesen T1: vier Forumpersonen — alle IDs für CHK-8 / flattenExam
+      part.passages = record.passages.map((p) => ({
+        id: p.id || p.passageId,
+        passageId: p.id || p.passageId,
+        title: p.title || p.textTitle || '',
+        textTitle: p.title || p.textTitle || '',
+        text: p.text || '',
+        personKey: p.personKey,
+      }));
+      const p0 = record.passages[0] || {};
+      part.text = p0.text || '';
+      part.textTitle = p0.title || '';
     } else {
       part.text = passage.text || '';
       part.textTitle = passage.title || '';
@@ -3228,6 +3305,9 @@ export const GATE_BLOCK_PENDING = new Set([
   // Impacto actual: 53/160 registros (33%). Mover a GATE_BLOCK_CHECKS en POOL-5,
   // cuando pool-health-report muestre 0 registros con CHK-18 en celdas activas.
   'CHK-18',
+  // CHK-34 (missing correct quote, MINOR): promover a GATE_BLOCK_CHECKS tras
+  // EXPL_OPTION_TEXT_ALIGN_WARN_ONLY_UNTIL (2026-08-10) si 0 FP en pool-verified.
+  // CHK-34 CRITICAL (cita = opción incorrecta / texto desalineado) bloquea siempre.
 ]);
 
 /**
@@ -3580,6 +3660,7 @@ async function main() {
     allFindings.push(...chk17(batch, file));
     allFindings.push(...chk18(batch, file));
     allFindings.push(...chk18b(batch, file));
+    allFindings.push(...chk34(batch, file));
     allFindings.push(...chk19(batch, file));
     allFindings.push(...chk20(batch, file));
     allFindings.push(...chk21(batch, file));
