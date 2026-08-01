@@ -18,6 +18,11 @@ import {
 } from './normalizeSchreibenRubric.mjs';
 import { canonicalSchreibenExplanation } from './schreibenDisplayRubric.mjs';
 import { canonicalSprechenExplanation } from './sprechenDisplayRubric.mjs';
+import { backfillCanonicalQuestion } from './questionStemAliases.mjs';
+import {
+  backfillLesenA2T4PassageTitles,
+  isLesenA2T4PassageContext,
+} from './lesenA2T4Passages.mjs';
 import {
   canonicalSprechenType,
   normalizeSprechenTopicTags,
@@ -199,6 +204,7 @@ function normalizeQuestion(q, ctx = {}) {
   }
   if (out.type) out.type = normalizeQuestionType(out.type);
   if (out.questionType) out.questionType = normalizeQuestionType(out.questionType);
+  backfillCanonicalQuestion(out);
   // `correct` is canonical. Backfill from correctAnswer only when correct is absent.
   if (out.correct == null && out.correctAnswer != null) {
     out.correct = out.correctAnswer;
@@ -236,7 +242,7 @@ function normalizeQuestion(q, ctx = {}) {
       if (normalizedRubric) out.rubric = normalizedRubric;
       else delete out.rubric;
     }
-    const canonExpl = canonicalSchreibenExplanation(out.teil);
+    const canonExpl = canonicalSchreibenExplanation(out.teil, ctx.level || out.level || 'B1');
     if (canonExpl) out.explanation = canonExpl;
   }
   if (poolLesen) {
@@ -332,7 +338,10 @@ export function enrichBatchMetadata(batch, ctx = {}) {
   const teilNum = ctx.teil != null && Number.isFinite(Number(ctx.teil)) ? Number(ctx.teil) : null;
   const lang = ctx.lang || 'de';
   const level = ctx.level || 'B1';
-  const multiTeilSet = mod === 'schreiben' || (mod === 'sprechen' && level !== 'A2');
+  const lv = String(level).trim().toUpperCase();
+  const multiTeilSet =
+    (mod === 'schreiben' && lv !== 'A2' && lv !== 'B2') ||
+    (mod === 'sprechen' && lv !== 'A2');
 
   const passages = (batch.passages || []).map((p) => {
     const out = { ...p };
@@ -539,6 +548,10 @@ export function normalizeBatch(batch, ctx) {
     return out;
   });
 
+  if (isLesenA2T4PassageContext({ module: mod, level: batchLevel, teil })) {
+    passages = backfillLesenA2T4PassageTitles(passages);
+  }
+
   // Balance MCQ letter distribution and break consecutive runs (all MCQ teils:
   // lesen T2/T5, horen T1/T2).  richtig_falsch, ja_nein and matching untouched.
   const rawQuestions = (base.questions || []).map((q) =>
@@ -620,12 +633,22 @@ const TEIL_QUESTION_TYPE_A2 = {
   4: 'matching',
 };
 
+/** Goethe B2 Lesen — alineado a library/blueprints/goethe_B2.json */
+const TEIL_QUESTION_TYPE_B2 = {
+  1: 'matching',
+  2: 'matching',
+  3: 'multiple_choice',
+  4: 'matching',
+  5: 'matching',
+};
+
 /** @returns {string|null} canonical question type for post-gen coerce */
 export function lesenSlotQuestionType(teil, level = 'B1') {
   const t = Number(teil);
   if (!Number.isFinite(t)) return null;
   const lv = String(level || 'B1').trim().toUpperCase();
-  const map = lv === 'A2' ? TEIL_QUESTION_TYPE_A2 : TEIL_QUESTION_TYPE_B1;
+  const map =
+    lv === 'A2' ? TEIL_QUESTION_TYPE_A2 : lv === 'B2' ? TEIL_QUESTION_TYPE_B2 : TEIL_QUESTION_TYPE_B1;
   return map[t] ?? null;
 }
 
@@ -668,15 +691,15 @@ export function coerceGeneratedLesenPart(batch, ctx = {}) {
   const passageIds = (normalized.passages || []).map((p) => p.id).filter(Boolean);
   const solePassageId = passageIds.length === 1 ? passageIds[0] : null;
 
-  return {
-    passages: (normalized.passages || []).map((p) => ({
+  const passages = (normalized.passages || []).map((p) => ({
       ...p,
       module: 'lesen',
       ...(teilNum != null ? { teil: teilNum } : {}),
       lang: p.lang || lang,
       level: p.level || level,
-    })),
-    questions: (normalized.questions || []).map((q, qIdx) => {
+    }));
+
+  const questions = (normalized.questions || []).map((q, qIdx) => {
       let out = {
         ...q,
         module: 'lesen',
@@ -694,12 +717,79 @@ export function coerceGeneratedLesenPart(batch, ctx = {}) {
           out = { ...out, ...normalizeJaNeinAnswer(out) };
         } else if (slotType === 'multiple_choice') {
           out.options = normalizeOptions(out.options, slotType);
+        } else if (slotType === 'matching' && String(level).toUpperCase() === 'B2' && teilNum === 1) {
+          const ans = String(out.correctAnswer ?? out.correct ?? '')
+            .trim()
+            .replace(/^([abcd])[).:\s].*$/i, '$1')
+            .toUpperCase();
+          if (/^[ABCD]$/.test(ans)) {
+            out.correct = ans;
+            out.correctAnswer = ans;
+          }
+          out.options = ['A', 'B', 'C', 'D'];
+        } else if (slotType === 'matching' && String(level).toUpperCase() === 'B2' && teilNum === 2) {
+          const ans = String(out.correctAnswer ?? out.correct ?? '')
+            .trim()
+            .replace(/^([a-h])[).:\s].*$/i, '$1')
+            .toUpperCase();
+          if (/^[A-H]$/.test(ans)) {
+            out.correct = ans;
+            out.correctAnswer = ans;
+          }
+          if (Array.isArray(out.options) && out.options.length >= 8) {
+            out.options = out.options.slice(0, 8).map((o, i) => {
+              const letter = String.fromCharCode(65 + i);
+              const s = String(o || '').trim();
+              if (/^[A-H][).:\s]/i.test(s)) return s.replace(/^[A-H]/i, letter);
+              return `${letter}) ${s.replace(/^[a-h][).:\s]\s*/i, '')}`;
+            });
+          }
+        } else if (slotType === 'matching' && String(level).toUpperCase() === 'B2' && teilNum === 4) {
+          const ans = String(out.correctAnswer ?? out.correct ?? '')
+            .trim()
+            .replace(/^([a-h])[).:\s].*$/i, '$1')
+            .toUpperCase();
+          if (/^[A-H]$/.test(ans)) {
+            out.correct = ans;
+            out.correctAnswer = ans;
+          }
+          if (Array.isArray(out.options) && out.options.length >= 8) {
+            out.options = out.options.slice(0, 8).map((o, i) => {
+              const letter = String.fromCharCode(65 + i);
+              const s = String(o || '').trim();
+              if (/^[A-H][).:\s]/i.test(s)) return s.replace(/^[A-H]/i, letter);
+              return `${letter}) ${s.replace(/^[a-h][).:\s]\s*/i, '')}`;
+            });
+          }
+        } else if (slotType === 'matching' && String(level).toUpperCase() === 'B2' && teilNum === 5) {
+          const ans = String(out.correctAnswer ?? out.correct ?? '')
+            .trim()
+            .replace(/^([a-g])[).:\s].*$/i, '$1')
+            .toUpperCase();
+          if (/^[A-G]$/.test(ans)) {
+            out.correct = ans;
+            out.correctAnswer = ans;
+          }
+          if (Array.isArray(out.options) && out.options.length >= 7) {
+            out.options = out.options.slice(0, 7).map((o, i) => {
+              const letter = String.fromCharCode(65 + i);
+              const s = String(o || '').trim();
+              if (/^[A-G][).:\s]/i.test(s)) return s.replace(/^[A-G]/i, letter);
+              return `${letter}) ${s.replace(/^[a-g][).:\s]\s*/i, '')}`;
+            });
+          }
         }
       }
       if ((out.module === 'lesen' || !out.passageId) && solePassageId && !out.passageId) {
         out.passageId = solePassageId;
       }
       return out;
-    }),
+    });
+
+  // Preserve normalizeBatch stamps/metadata (_balanceMcqVersion, caps, enrich, …).
+  return {
+    ...normalized,
+    passages,
+    questions,
   };
 }
