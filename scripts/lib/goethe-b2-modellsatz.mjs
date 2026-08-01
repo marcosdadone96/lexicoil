@@ -27,7 +27,86 @@ export const GOETHE_B2_INSTRUCTIONS = Object.freeze({
     'Sie hören im Radio ein Gespräch mit mehreren Personen.\nSie hören den Text einmal. Wählen Sie bei jeder Aufgabe: Wer sagt das?',
     'Sie hören einen kurzen Vortrag.\nSie hören den Text zweimal. Wählen Sie bei jeder Aufgabe die richtige Lösung a, b oder c.',
   ],
+  schreiben: [
+    'Schreiben Sie einen Forumsbeitrag zu einem Thema.\nÄußern Sie Ihre Meinung, nennen Sie Gründe, Vorschläge und Vor- und Nachteile.\nSchreiben Sie mindestens 150 Wörter.',
+    'Schreiben Sie eine Nachricht an Ihren Vorgesetzten.\nBeschreiben Sie Ihre Situation, bitten Sie um Verständnis, machen Sie einen Vorschlag und zeigen Sie Verständnis.\nSchreiben Sie mindestens 100 Wörter. Vergessen Sie Anrede und Gruß nicht.',
+  ],
+  sprechen: [
+    'Halten Sie einen kurzen Vortrag zu einem Thema Ihrer Wahl und sprechen Sie mit Ihrer Partnerin/Ihrem Partner darüber.',
+    'Tauschen Sie in einer Diskussion Standpunkte zu einem kontroversen Thema aus.',
+  ],
 });
+
+/** Compare blueprint Schreiben instructions to canonical Modellsatz strings. */
+export function assertSchreibenInstructionsMatch(blueprint) {
+  const issues = [];
+  const sch = blueprint?.modules?.find((m) => m.id === 'schreiben');
+  if (!sch?.parts?.length) {
+    issues.push('schreiben_missing');
+    return { ok: false, issues };
+  }
+  for (let i = 0; i < GOETHE_B2_INSTRUCTIONS.schreiben.length; i++) {
+    const expected = GOETHE_B2_INSTRUCTIONS.schreiben[i];
+    const got = String(sch.parts[i]?.instruction || '').trim();
+    if (got !== expected) {
+      issues.push(`schreiben_teil${i + 1}_instruction_mismatch`);
+    }
+  }
+  return { ok: issues.length === 0, issues };
+}
+
+export function assertLesenInstructionsMatch(blueprint) {
+  const issues = [];
+  const les = blueprint?.modules?.find((m) => m.id === 'lesen');
+  if (!les?.parts?.length) {
+    issues.push('lesen_missing');
+    return { ok: false, issues };
+  }
+  for (let i = 0; i < GOETHE_B2_INSTRUCTIONS.lesen.length; i++) {
+    const expected = GOETHE_B2_INSTRUCTIONS.lesen[i];
+    const got = String(les.parts[i]?.instruction || '').trim();
+    if (got !== expected) {
+      issues.push(`lesen_teil${i + 1}_instruction_mismatch`);
+    }
+  }
+  return { ok: issues.length === 0, issues };
+}
+
+/** Compare blueprint Hören instructions to canonical Modellsatz strings. */
+export function assertHorenInstructionsMatch(blueprint) {
+  const issues = [];
+  const ho = blueprint?.modules?.find((m) => m.id === 'horen');
+  if (!ho?.parts?.length) {
+    issues.push('horen_missing');
+    return { ok: false, issues };
+  }
+  for (let i = 0; i < GOETHE_B2_INSTRUCTIONS.horen.length; i++) {
+    const expected = GOETHE_B2_INSTRUCTIONS.horen[i];
+    const got = String(ho.parts[i]?.instruction || '').trim();
+    if (got !== expected) {
+      issues.push(`horen_teil${i + 1}_instruction_mismatch`);
+    }
+  }
+  return { ok: issues.length === 0, issues };
+}
+
+/** Compare blueprint Sprechen instructions to canonical Modellsatz strings. */
+export function assertSprechenInstructionsMatch(blueprint) {
+  const issues = [];
+  const sp = blueprint?.modules?.find((m) => m.id === 'sprechen');
+  if (!sp?.parts?.length) {
+    issues.push('sprechen_missing');
+    return { ok: false, issues };
+  }
+  for (let i = 0; i < GOETHE_B2_INSTRUCTIONS.sprechen.length; i++) {
+    const expected = GOETHE_B2_INSTRUCTIONS.sprechen[i];
+    const got = String(sp.parts[i]?.instruction || '').trim();
+    if (got !== expected) {
+      issues.push(`sprechen_teil${i + 1}_instruction_mismatch`);
+    }
+  }
+  return { ok: issues.length === 0, issues };
+}
 
 export function assertModellsatzCounts(blueprint) {
   const issues = [];
