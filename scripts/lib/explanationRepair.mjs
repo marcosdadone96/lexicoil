@@ -6,6 +6,7 @@ import {
   analyzeExplanationMismatch,
   findKeyExplanationMismatches,
   filterForbiddenOverlapTokens,
+  applyDeterministicExplanationFixes,
 } from './keyExplanationGate.mjs';
 import { hasLongLiteralOverlap } from './lesenBatchQuality.mjs';
 import { assessGermanExamText } from './qualityGates/germanContentLanguageGate.mjs';
@@ -259,6 +260,21 @@ function explanationStillBad(question, passage, teil, opts = {}) {
 export async function repairExplanationBatch(batch, findings, callLlm, opts = {}) {
   if (!batch?.questions?.length || !findings?.length) return null;
 
+  const det = applyDeterministicExplanationFixes(batch);
+  if (det.fixed > 0) {
+    const still = findKeyExplanationMismatches(det.batch);
+    const targetIds = new Set(
+      (findings || []).map((f) => f.itemId).filter(Boolean),
+    );
+    const remaining = still.filter((h) => !targetIds.size || targetIds.has(h.itemId));
+    if (!remaining.length) {
+      console.log(`  CHK-18b: ${det.fixed} explanation(s) corregida(s) sin LLM`);
+      return det.batch;
+    }
+    batch = det.batch;
+    findings = remaining;
+  }
+
   const byItem = new Map();
   for (const f of findings) {
     if (!f.itemId) continue;
@@ -268,7 +284,10 @@ export async function repairExplanationBatch(batch, findings, callLlm, opts = {}
   if (!byItem.size) return null;
 
   const teil = Number(opts.teil ?? batch.questions?.[0]?.teil ?? batch.teil ?? 2);
-  const maxAttempts = Math.max(1, Number(opts.maxAttempts) || 2);
+  const maxAttempts = Math.max(
+    1,
+    Number(opts.maxAttempts) || (teil === 5 ? 3 : 2),
+  );
 
   let questions = [...batch.questions];
   let repairedAny = false;
