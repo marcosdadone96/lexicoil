@@ -16,14 +16,12 @@ import {
 } from './lesenSubtypeRotation.mjs';
 import { extractStructuralMold, structuralMoldKey, normTitle } from './structuralMoldDedup.mjs';
 
+/** Solo partes publicables / en vuelo OK — no .rejected ni needs-regeneration (CHK-29 / picker). */
 export const PERSISTED_POOL_SCAN_DIRS = Object.freeze([
   path.join(ROOT, 'batches/ready/pool-verified/B1'),
   path.join(ROOT, 'batches/ready/pool-content-ok-lesen/B1'),
   path.join(ROOT, 'batches/ready/lesen/B1'),
-  path.join(ROOT, 'batches/generated'),
-  path.join(ROOT, 'batches/generated/.rejected'),
-  path.join(ROOT, 'batches/rejected'),
-  path.join(ROOT, 'batches/needs-regeneration/B1'),
+  path.join(ROOT, 'batches/generated/B1'),
 ]);
 
 function walkJsonFiles(dir, out = []) {

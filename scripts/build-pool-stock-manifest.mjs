@@ -70,6 +70,20 @@ function buildModuleManifest(module, teils, records) {
   };
 }
 
+function replaceEmbeddedManifest(src, manifestJson) {
+  const start = src.indexOf('const MANIFEST =');
+  if (start < 0) {
+    throw new Error('Could not find const MANIFEST in topic stock JS');
+  }
+  const factoryIdx = src.indexOf('return PersonalTopicStockFactory', start);
+  if (factoryIdx < 0) {
+    throw new Error('Could not find PersonalTopicStockFactory.create after MANIFEST');
+  }
+  const before = src.slice(0, start);
+  const after = src.slice(factoryIdx);
+  return `${before}const MANIFEST = ${manifestJson};\n\n  ${after}`;
+}
+
 function syncLesenTopicStockJs(lesenManifest) {
   const jsPath = path.join(ROOT, 'js/data/personalLesenTopicStock.js');
   let src = fs.readFileSync(jsPath, 'utf8');
@@ -85,11 +99,27 @@ function syncLesenTopicStockJs(lesenManifest) {
     null,
     4,
   );
-  const re = /const MANIFEST = \{[\s\S]*?\n\};/;
-  if (!re.test(src)) {
-    throw new Error('Could not find MANIFEST block in personalLesenTopicStock.js');
-  }
-  src = src.replace(re, `const MANIFEST = ${manifestJson};`);
+  src = replaceEmbeddedManifest(src, manifestJson);
+  fs.writeFileSync(jsPath, src, 'utf8');
+  console.log('Updated', path.relative(ROOT, jsPath));
+}
+
+function syncHorenTopicStockJs(horenManifest) {
+  const jsPath = path.join(ROOT, 'js/data/personalHorenTopicStock.js');
+  let src = fs.readFileSync(jsPath, 'utf8');
+  const manifestJson = JSON.stringify(
+    {
+      v: horenManifest.v,
+      lang: horenManifest.lang,
+      level: horenManifest.level,
+      module: horenManifest.module,
+      teils: horenManifest.teils,
+      topics: horenManifest.topics,
+    },
+    null,
+    4,
+  );
+  src = replaceEmbeddedManifest(src, manifestJson);
   fs.writeFileSync(jsPath, src, 'utf8');
   console.log('Updated', path.relative(ROOT, jsPath));
 }
@@ -114,6 +144,7 @@ fs.writeFileSync(horenOut, `${JSON.stringify(horenManifest, null, 2)}\n`);
 console.log('Wrote', path.relative(ROOT, horenOut));
 
 syncLesenTopicStockJs(lesenManifest);
+syncHorenTopicStockJs(horenManifest);
 
 // Summary grid for all modules
 const summary = { generatedAt: new Date().toISOString(), modules: {}, byTopic: {} };

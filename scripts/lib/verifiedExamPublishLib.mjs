@@ -12,6 +12,8 @@ import { normalizeBatch } from './normalizeBatch.mjs';
 import { localCatalogPath, readPublishedCatalog } from './publishedExamLib.mjs';
 import { poolVerifiedDir, POOL_VERIFIED_DIR, normalizeLevel } from './batchPaths.mjs';
 import { isExamPublishable } from '../audit-pass-2.mjs';
+import { assertAssembledFreshBeforePublish } from './assembledExamFreshness.mjs';
+import { applyPublishExamFromAssembled } from './applyPublishExamFromAssembled.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 export const POOL_VERIFIED = path.join(ROOT, 'batches/ready/pool-verified');
@@ -130,6 +132,29 @@ export function resolvePoolFile(partId, level = 'B1') {
   };
 }
 
+/** Seed-shaped record from pool-verified (same shape as publish overlay). */
+export function recordFromPoolVerifiedPart(partId, cell, level = 'B1') {
+  const resolved = resolvePoolFile(partId, level);
+  if (!resolved) return null;
+  let batch = JSON.parse(fs.readFileSync(resolved.abs, 'utf8'));
+  let rec;
+  if (resolved.oral) {
+    rec = oralPartRecord(batch, resolved.file, resolved.module, resolved.teil, level);
+    if (rec.id !== partId) rec.id = partId;
+  } else {
+    const [mod, teilStr] = cell.split('_');
+    batch = normalizeBatch(batch, {
+      module: mod,
+      teil: Number(teilStr),
+      lang: 'de',
+      level: normalizeLevel(level),
+    });
+    rec = batchToRecord(batch, resolved.file, mod, Number(teilStr), level);
+    if (rec.id !== partId) rec.id = partId;
+  }
+  return rec;
+}
+
 export function buildOverlayForAssembledFiles(assembledPaths, level = 'B1') {
   const byId = new Map();
   const missing = [];
@@ -137,26 +162,10 @@ export function buildOverlayForAssembledFiles(assembledPaths, level = 'B1') {
     const raw = JSON.parse(fs.readFileSync(examPath, 'utf8'));
     for (const [cell, partId] of Object.entries(raw._meta?.partIds || {})) {
       if (byId.has(partId)) continue;
-      const resolved = resolvePoolFile(partId, level);
-      if (!resolved) {
+      const rec = recordFromPoolVerifiedPart(partId, cell, level);
+      if (!rec) {
         missing.push(`${path.basename(examPath)}:${cell}:${partId}`);
         continue;
-      }
-      let batch = JSON.parse(fs.readFileSync(resolved.abs, 'utf8'));
-      let rec;
-      if (resolved.oral) {
-        rec = oralPartRecord(batch, resolved.file, resolved.module, resolved.teil, level);
-        if (rec.id !== partId) rec.id = partId;
-      } else {
-        const [mod, teilStr] = cell.split('_');
-        batch = normalizeBatch(batch, {
-          module: mod,
-          teil: Number(teilStr),
-          lang: 'de',
-          level: normalizeLevel(level),
-        });
-        rec = batchToRecord(batch, resolved.file, mod, Number(teilStr), level);
-        if (rec.id !== partId) rec.id = partId;
       }
       byId.set(partId, rec);
     }
@@ -248,7 +257,7 @@ export function ensureAssembledExams(maxSlots, level = 'B1', mode = 'official') 
 /**
  * Publish one or more assembled verified exam slots to local catalog.
  */
-export function publishVerifiedExamSlots({
+export async function publishVerifiedExamSlots({
   slots,
   lang = 'de',
   level = 'B1',
@@ -257,6 +266,7 @@ export function publishVerifiedExamSlots({
   overlayPath = null,
 }) {
   const assembledPaths = slots.map((n) => assembledExamPath(n, level));
+  assertAssembledFreshBeforePublish({ slots, level });
   for (const p of assembledPaths) {
     if (!fs.existsSync(p)) {
       throw new Error(`assembled exam missing: ${path.relative(ROOT, p)}`);
@@ -305,21 +315,18 @@ export function publishVerifiedExamSlots({
   const publish = path.join(ROOT, 'scripts/publish-exam.mjs');
   for (const slot of slots) {
     const from = assembledExamPath(slot, level);
-    runNode(path.relative(ROOT, publish), [
-      '--from',
-      path.relative(ROOT, from),
-      '--exam-id',
-      officialExamId(lang, level, slot),
-      '--slot',
-      String(slot),
-      '--title',
-      `Official ${level} Exam ${slot}`,
-      '--seed-overlay',
-      path.relative(ROOT, overlay),
-      '--local-only',
-      '--apply',
-      '--yes',
-    ]);
+    await applyPublishExamFromAssembled({
+      from,
+      examId: officialExamId(lang, level, slot),
+      slot,
+      title: `Official ${level} Exam ${slot}`,
+      lang,
+      level,
+      dryRun: false,
+      yes: true,
+      localOnly: true,
+      seedOverlay: overlay,
+    });
   }
 
   if (syncServed) {

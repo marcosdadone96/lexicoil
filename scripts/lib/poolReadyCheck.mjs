@@ -17,6 +17,7 @@ import {
 import { stripMarkdownLeakInBatch } from './stripMarkdownLeak.mjs';
 import { collapseIdenticalPassages } from './normalizeBatch.mjs';
 import { checkPassageContentTopic } from './qualityGates/contentTopicCheck.mjs';
+import { checkLesenT5BatchTopic } from './lesenT5TopicFilter.mjs';
 import { runMetadataSchemaGate } from './qualityGates/metadataSchemaGate.mjs';
 import { runDuplicateContentGate } from './qualityGates/duplicateContentGate.mjs';
 import { buildDedupCorpus, corpusExcludingSource } from './qualityGates/dedupCorpus.mjs';
@@ -40,6 +41,9 @@ import {
 import { assertSchreibenNoPlaceholders } from './schreibenPlaceholderGate.mjs';
 import { runGermanContentLanguageGate } from './qualityGates/germanContentLanguageGate.mjs';
 import { checkT3PoolDedup } from './t3PoolDedupGate.mjs';
+import { checkT4PoolDedup } from './lesenT4PoolDedupGate.mjs';
+import { stripCorruptedVocabularyTags } from './chk31VocabLemma.mjs';
+import { enrichBatchMetadata } from './enrichBatchMetadata.mjs';
 
 export { GERMAN_CAPS_NORMALIZE_VERSION };
 
@@ -54,6 +58,8 @@ const REPAIRABLE_RULES = new Set([
   CAPS_VERSION_STALE,
   'markdown_leak',
   'identical_passages',
+  'missing_grammarTags',
+  'missing_vocabularyTags',
 ]);
 
 /** @type {{ blockedIds: Set<string>, sources: Map<string, string[]> } | null} */
@@ -240,6 +246,29 @@ export function applyPoolRepairs(batch) {
     applied.push(`caps:version=${GERMAN_CAPS_NORMALIZE_VERSION}`);
   }
 
+  const chk31 = stripCorruptedVocabularyTags(current);
+  if (chk31.stripped) {
+    current = chk31.batch;
+    applied.push(`chk31:strip=${chk31.stripped}`);
+    ({ batch: current } = enrichBatchMetadata(clone(current), {
+      vocab: true,
+      grammar: false,
+      topic: false,
+    }));
+    applied.push('chk31:re-enrich-vocab');
+  }
+
+  const metaGap = checkRetrievalMetadata(current);
+  if (metaGap.includes('missing_grammarTags') || metaGap.includes('missing_vocabularyTags')) {
+    ({ batch: current } = enrichBatchMetadata(clone(current), {
+      vocab: true,
+      grammar: true,
+      topic: true,
+      fillGrammarDefaults: metaGap.includes('missing_grammarTags'),
+    }));
+    applied.push('meta:enrich-retrieval-tags');
+  }
+
   return { batch: current, applied };
 }
 
@@ -336,6 +365,19 @@ export async function poolReadyCheck(batch, opts = {}) {
     }
   }
 
+  const isLesenT4 =
+    (modEarly === 'lesen' || String(batch.module || '').toLowerCase() === 'lesen') &&
+    (teil === 4 || Number(batch.passages?.[0]?.teil) === 4 || Number(batch.questions?.[0]?.teil) === 4);
+  if (isLesenT4) {
+    const t4dedup = checkT4PoolDedup(batch, { file, level: opts.level });
+    for (const r of t4dedup.reasons || []) {
+      reasons.push(r);
+    }
+    for (const d of t4dedup.details || []) {
+      details.push({ ...d, severity: 'reject' });
+    }
+  }
+
   // ——— 5 discard lists ———
   const discard = opts.discard || getDiscardCache();
   if (isAssembleBlocked(file, discard.blockedIds) || isAssembleBlocked(batch.id, discard.blockedIds)) {
@@ -372,28 +414,40 @@ export async function poolReadyCheck(batch, opts = {}) {
         details.push({ rule: f.rule, severity: 'reject', detail: f.detail });
       }
     }
-    // Prefer root topicTag (enrichment source of truth) over a stale passage tag
-    for (const p of batch.passages || []) {
-      if (!p?.topicTag && !batch.topicTag) continue;
-      const tagged = { ...p, topicTag: batch.topicTag || p.topicTag };
-      const ct = checkPassageContentTopic(tagged);
-      if (ct.mismatch) {
-        if (horenMultiSegmentContentTopicAuditOnly) {
+    const isLesenT5 =
+      mod === 'lesen' &&
+      (teil === 5 || Number(batch.questions?.[0]?.teil) === 5 || Number(batch.teil) === 5);
+    if (isLesenT5) {
+      const t5Topic = checkLesenT5BatchTopic(batch);
+      if (!t5Topic.ok) {
+        const rule = t5Topic.rule || 'content_topic_mismatch';
+        if (!reasons.includes(rule)) reasons.push(rule);
+        details.push({ rule, severity: 'reject', detail: t5Topic.issue });
+      }
+    } else {
+      // Prefer root topicTag (enrichment source of truth) over a stale passage tag
+      for (const p of batch.passages || []) {
+        if (!p?.topicTag && !batch.topicTag) continue;
+        const tagged = { ...p, topicTag: batch.topicTag || p.topicTag };
+        const ct = checkPassageContentTopic(tagged);
+        if (ct.mismatch) {
+          if (horenMultiSegmentContentTopicAuditOnly) {
+            details.push({
+              rule: 'content_topic_mismatch',
+              severity: 'audit',
+              detail: ct.detail || ct.reason,
+              passageId: p.id,
+            });
+            continue;
+          }
+          if (!reasons.includes('content_topic_mismatch')) reasons.push('content_topic_mismatch');
           details.push({
             rule: 'content_topic_mismatch',
-            severity: 'audit',
+            severity: 'reject',
             detail: ct.detail || ct.reason,
             passageId: p.id,
           });
-          continue;
         }
-        if (!reasons.includes('content_topic_mismatch')) reasons.push('content_topic_mismatch');
-        details.push({
-          rule: 'content_topic_mismatch',
-          severity: 'reject',
-          detail: ct.detail || ct.reason,
-          passageId: p.id,
-        });
       }
     }
   }
