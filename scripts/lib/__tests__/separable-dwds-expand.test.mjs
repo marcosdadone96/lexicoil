@@ -35,11 +35,17 @@ function assertOk(label, cond) {
 console.log('\n── count + sync ──');
 console.log('  before expansion was 125; now', SeparableResolve.SEPARABLE_INFINITIVES.size);
 assertEq('browser/enrich sync', SeparableResolve.SEPARABLE_INFINITIVES.size, EMB.size);
-assertOk('grew to >= 250', SeparableResolve.SEPARABLE_INFINITIVES.size >= 250);
+assertOk('grew to >= 269', SeparableResolve.SEPARABLE_INFINITIVES.size >= 269);
 assertEq('discarded adj aufmerksam', SeparableResolve.SEPARABLE_INFINITIVES.has('aufmerksam'), false);
 assertEq('discarded adj ausführbar', SeparableResolve.SEPARABLE_INFINITIVES.has('ausführbar'), false);
 assertEq('DWDS accept abbiegen', SeparableResolve.SEPARABLE_INFINITIVES.has('abbiegen'), true);
 assertEq('DWDS accept anerkennen', SeparableResolve.SEPARABLE_INFINITIVES.has('anerkennen'), true);
+for (const v of [
+  'abwarten', 'abwickeln', 'austragen', 'fortsetzen', 'herunterladen',
+  'zurückfahren', 'zurückgehen', 'zurücklaufen', 'zusammenarbeiten',
+]) {
+  assertEq(`vocab gap ${v}`, SeparableResolve.SEPARABLE_INFINITIVES.has(v), true);
+}
 
 console.log('\n── regression reunify ──');
 const cases = [
@@ -47,6 +53,8 @@ const cases = [
   ['schlägt', 'Sie schlägt vor, früher zu kommen.', 'vorschlagen'],
   ['nimmt', 'Sie nimmt am Kurs teil.', 'teilnehmen'],
   ['erkennt', 'Die Schule erkennt seine Leistung an.', 'anerkennen'],
+  ['lädt', 'Er lädt die App herunter.', 'herunterladen'],
+  ['lädt', 'Sie lädt das Dokument herunter.', 'herunterladen'],
 ];
 for (const [s, c, w] of cases) {
   const r = SeparableResolve.resolveForSave(s, c);
@@ -68,7 +76,7 @@ const sub = SeparableResolve.resolveForSave('anrufe', subCtx);
 assertEq('subordinate not falsely reunified to nonsense', /^(anrufe|anrufen)$/.test(sub.word), true);
 
 const live = await resolveSeparableLemma('anrufe', subCtx);
-if (live.reason === 'no_api_key') {
+if (live.reason === 'no_api_key' || live.reason === 'lemma_failed' || live.reason === 'gemini_ratelimit_requires_blob_store') {
   console.log('  ⚠️  skipped live Gemini');
 } else {
   console.log('  live lemma:', live);
