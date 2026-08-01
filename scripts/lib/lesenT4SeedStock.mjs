@@ -8,6 +8,10 @@ import {
   pickNextT4DebateSeed,
 } from './t4DebateSeeds.mjs';
 import { loadPersistedCellMolds } from './persistedCellPool.mjs';
+import {
+  a2LesenGeminiStockStub,
+  skipB1LesenT4SeedStock,
+} from './a2LesenGeneration.mjs';
 
 /**
  * @param {string} topicTag
@@ -80,8 +84,10 @@ function sessionT4ExcludeSeeds(sessionLesen) {
  * @param {string|null|undefined} reason
  * @param {object|null|undefined} sessionLesen
  */
-export function shouldSkipLesenT4Topic(module, teil, topic, reason, sessionLesen) {
+export function shouldSkipLesenT4Topic(module, teil, topic, reason, sessionLesen, levelFallback = null) {
   if (String(module).toLowerCase() !== 'lesen' || Number(teil) !== 4 || !topic) return false;
+  const level = sessionLesen?.args?.level || levelFallback || 'B1';
+  if (skipB1LesenT4SeedStock(level, teil)) return false;
   if (isT4SeedExhaustedReason(reason)) return true;
 
   const stock = listT4SeedStockForTopic(topic, {
@@ -93,7 +99,9 @@ export function shouldSkipLesenT4Topic(module, teil, topic, reason, sessionLesen
   return false;
 }
 
-export function preflightLesenT4Topic(topic, sessionLesen) {
+export function preflightLesenT4Topic(topic, sessionLesen, levelFallback = null) {
+  const level = sessionLesen?.args?.level || levelFallback || 'B1';
+  if (skipB1LesenT4SeedStock(level, 4)) return a2LesenGeminiStockStub();
   return listT4SeedStockForTopic(topic, {
     lang: sessionLesen?.args?.lang || 'de',
     level: sessionLesen?.args?.level || 'B1',
