@@ -104,7 +104,7 @@ export function applyVocabPreferenceToTemplate(markdown, words, opts = {}) {
   return `${markdown}\n\n${block}\n`;
 }
 
-export const MIN_BG_ANCHOR_INTEGRATED = 2;
+export const MIN_BG_ANCHOR_INTEGRATED = 3;
 
 export function buildVocabBgMandatoryAnchorBlock(anchorWords, topic, opts = {}) {
   const anchors = (anchorWords || []).map((w) => String(w).trim()).filter(Boolean);

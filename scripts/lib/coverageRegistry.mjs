@@ -420,9 +420,11 @@ export function pickTopicAlignedWeakWords(opts = {}) {
   }
 
   const words = filterPromptTargetWords(raw, { lang, level, requireBank: true, log: false });
-  if (words.length < MIN_WORD_COUNT) {
+  const minRequired =
+    context === 'narrative' && words.length >= 4 ? 4 : MIN_WORD_COUNT;
+  if (words.length < minRequired) {
     throw new Error(
-      `Tras whitelist quedan ${words.length} palabras para tema «${topic}» (<${MIN_WORD_COUNT}).`,
+      `Tras whitelist quedan ${words.length} palabras para tema «${topic}» (<${minRequired}).`,
     );
   }
 

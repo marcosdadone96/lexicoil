@@ -187,7 +187,9 @@ async function gateBatch(batch, opts = {}) {
     semantic: opts.semantic !== false,
     skipNormalize: false,
   });
-  const poolReady = gate.ok ? isPartPoolReady(batch, { semantic: opts.semantic !== false }) : false;
+  const poolReady = gate.ok
+    ? (await isPartPoolReady(batch, { semantic: opts.semantic !== false })).ok
+    : false;
   return { gate, poolReady };
 }
 

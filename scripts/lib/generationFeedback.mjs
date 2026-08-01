@@ -9,12 +9,29 @@ const TargetUsage = require(path.join(ROOT, 'js', 'engine', 'targetUsage.js'));
 function examShellFromBatch(batch) {
   const module = String(batch.module || batch.passages?.[0]?.module || 'lesen').toLowerCase();
   const key = module === 'horen' ? 'horenParts' : 'lesenParts';
+  const teil = batch.teil ?? batch.passages?.[0]?.teil;
+  const passages = batch.passages || [];
+  const questions = batch.questions || [];
+
+  if (module === 'horen' && passages.length > 1) {
+    const part = {
+      transcript: passages.map((p) => p.text || p.transcript || '').filter(Boolean).join('\n\n'),
+      questions,
+      teil,
+      segments: passages.map((p) => ({
+        transcript: p.text || p.transcript || '',
+        text: p.text || '',
+      })),
+    };
+    return { [key]: [part] };
+  }
+
   const part = {
-    text: batch.passages?.[0]?.text || '',
-    textTitle: batch.passages?.[0]?.title || '',
-    transcript: batch.passages?.[0]?.transcript || batch.passages?.[0]?.text || '',
-    questions: batch.questions || [],
-    teil: batch.teil ?? batch.passages?.[0]?.teil,
+    text: passages[0]?.text || '',
+    textTitle: passages[0]?.title || '',
+    transcript: passages[0]?.transcript || passages[0]?.text || '',
+    questions,
+    teil,
   };
   return { [key]: [part] };
 }

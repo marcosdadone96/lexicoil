@@ -3,6 +3,8 @@
  * Pool questions often store plain strings with correct:"b" but no letter prefix.
  */
 
+import { backfillCanonicalQuestion } from './questionStemAliases.mjs';
+
 const LETTERS = 'abcdefghijklmnopqrstuvwxyz';
 const OPTION_PREFIX_RE = /^([a-d]\)\s+)([\s\S]*)$/i;
 /** Model echoes pipeline label + body label: «a) A) …» or «b) b) …». */
@@ -186,8 +188,7 @@ export function normalizeMcqOptions(options) {
 
 export function normalizeQuestionFields(q) {
   if (!q || typeof q !== 'object') return q;
-  if (q.questionText && !q.question) q.question = q.questionText;
-  if (q.statement && !q.question) q.question = q.statement;
+  backfillCanonicalQuestion(q);
   if (q.questionType && !q.type) {
     q.type = q.questionType === 'multiple_choice' ? 'multiple' : q.questionType;
   }

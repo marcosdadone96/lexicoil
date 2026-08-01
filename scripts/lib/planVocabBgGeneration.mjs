@@ -7,6 +7,7 @@ import { ROOT } from './loadEnv.mjs';
 import { foldLemma, loadVocabBankLemmaSet } from './vocabBank.mjs';
 import { bgModulesForLevel, moduleTeilsForLevel, normalizeTopicForLevel } from './levelPlanner.mjs';
 import { pickScarcestTopic, loadPoolRecords, rankTopicGaps } from './poolGapPlanner.mjs';
+import { priorityBoostForCell } from './personalPoolCoverageTelemetry.mjs';
 import {
   pickTopicAlignedWeakWords,
   loadCoverageRegistry,
@@ -53,8 +54,8 @@ function candidateTopics(userLemmas) {
   return Object.keys(TOPIC_KEYWORDS);
 }
 
-/** Pick ≥2 user anchor lemmas; topic-aligned pending words first. */
-function pickUserAnchors(pendingLemmas, userSlice, topic, lang, level, min = 2) {
+/** Pick ≥3 user anchor lemmas when possible; topic-aligned pending words first. */
+function pickUserAnchors(pendingLemmas, userSlice, topic, lang, level, min = 3) {
   const topicFromPending = wordsInTopic(
     pendingLemmas.map((w) => ({ word: w })),
     topic,
@@ -87,6 +88,7 @@ function scoreCell({ module, teil, topic, userLemmas, registry, records, targetP
   const overlap = topicOverlapScore(userLemmas, topic);
   let bonus = 0;
   for (const l of userLemmas) bonus += weakBonus(registry, l);
+  bonus += priorityBoostForCell(topic, module, teil);
   return deficit * 10 + overlap * 5 + bonus;
 }
 
@@ -181,8 +183,8 @@ export function planVocabBgGeneration(ctx = {}) {
     }
   }
 
-  if (userSlice.length < 3 && pendingLemmas.length >= 2) {
-    const anchor = pickUserAnchors(pendingLemmas, userSlice, topic, lang, level, 2);
+  if (userSlice.length < 3 && pendingLemmas.length >= 3) {
+    const anchor = pickUserAnchors(pendingLemmas, userSlice, topic, lang, level, 3);
     const rest = merged.filter((w) => !anchor.includes(w));
     const final = [...anchor, ...rest].slice(0, goal);
     return {
@@ -197,14 +199,14 @@ export function planVocabBgGeneration(ctx = {}) {
     };
   }
 
-  const anchorFromSlice = pickUserAnchors(pendingLemmas, userSlice, topic, lang, level, 2);
+  const anchorFromSlice = pickUserAnchors(pendingLemmas, userSlice, topic, lang, level, 3);
   return {
     module: best.module,
     teil: best.teil,
     topic,
     level,
     words: merged.slice(0, goal),
-    userAnchor: anchorFromSlice.length >= 2 ? anchorFromSlice : userSlice,
+    userAnchor: anchorFromSlice.length >= 3 ? anchorFromSlice : userSlice,
     score: best.score,
     vocabCursor: (ctx.vocabCursor || 0) + gapWords.length,
   };

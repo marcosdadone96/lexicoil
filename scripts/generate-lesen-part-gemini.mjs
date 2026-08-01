@@ -45,6 +45,10 @@ import {
 } from './lib/lesenTemplatePrompt.mjs';
 import { resolveGenerationFeedbackRules } from './lib/resolveGenerationFeedback.mjs';
 import {
+  usesB1LesenT3MakeT3,
+  usesB1LesenT4DebateSeeds,
+} from './lib/a2LesenGeneration.mjs';
+import {
   checkLesenBatchQuality,
   formatQualityReport,
   tokenize,
@@ -58,13 +62,14 @@ import {
   COMBINED_CALIDAD_LEXICO_ISSUE_LIMIT,
 } from './lib/calidadLexicoCombinedGate.mjs';
 import { validatePart, buildDedupCorpusFromDir } from './lib/partGate.mjs';
-import { pickNextTopic, tagBatchWithTopic } from './lib/topicRotation.mjs';
+import { pickNextTopic, tagBatchWithTopic, alignQuestionTopicTagsToRequestedTopic } from './lib/topicRotation.mjs';
 import { finalizePoolReady } from './lib/finalizePoolReady.mjs';
 import { relPathAfterPoolReady } from './lib/resolvePublishFile.mjs';
 import { resolveLesenGenerationMolds } from './lib/lesenSubtypeRotation.mjs';
 import { extractStructuralMold, structuralMoldKey } from './lib/structuralMoldDedup.mjs';
 import { buildPersistedStructuralCorpus } from './lib/persistedCellPool.mjs';
 import { checkLesenT5BatchTopic } from './lib/lesenT5TopicFilter.mjs';
+import { applyDeterministicExplanationFixes } from './lib/keyExplanationGate.mjs';
 import { assessT4TopicAlignment, formatT4TopicAlignmentFailure } from './lib/t4TopicAlign.mjs';
 import { checkPassageContentTopic } from './lib/qualityGates/contentTopicCheck.mjs';
 import { assertLesenT5NotBankDuplicate } from './lib/lesenT5BankBlocklist.mjs';
@@ -82,12 +87,17 @@ import { buildWordCopyFixHint, hasWordMatchSignal } from './lib/wordMatchRepair.
 import { germanExamRepairOutputRulesBlock } from './lib/germanExplanationPromptRules.mjs';
 import {
   pickNextNames,
-  pickLesenT4ForumNames,
   pushSessionNameExclude,
   extractLesenT4ForumNames,
   injectLesenT4ForumNames,
   TEMPLATE_DEFAULT_NAMES,
 } from './lib/nameRotation.mjs';
+import {
+  pickLesenT4ForumCast,
+  recordLesenT4ForumCastFromGeneration,
+  enforceLesenT4PlannedForumNames,
+} from './lib/dialogueNamesBank.mjs';
+import { pickNextLesenT2Opening } from './lib/lesenT2OpeningsBank.mjs';
 import {
   buildLesenT2LengthFixHint,
   combinedPassageWordCount,
@@ -95,6 +105,12 @@ import {
 import { runSurgicalRepair, surgicalRepairLabel } from './lib/surgicalRepairRouter.mjs';
 import { pushSessionMoldExclude, pushSessionStructuralCorpus } from './lib/poolFillSessionExclude.mjs';
 import { resolveGenerationVocab, resolveTargetWordsForArgs } from './lib/resolveGenerationInput.mjs';
+import {
+  loadB2ForumTextBank,
+  mergeB2ForumQuestions,
+  saveB2ForumTextBank,
+  validateB2ForumPassageBank,
+} from './lib/lesenB2ForumBank.mjs';
 import { attachVocabFeedback, formatVocabFeedbackSummary } from './lib/generationFeedback.mjs';
 import { vocabNarrativeCoherenceGate } from './lib/vocabNarrativeCoherence.mjs';
 import {
@@ -223,6 +239,8 @@ export function parseArgs(argv) {
     topic: null,
     semantic: false,
     skipPoolReady: false,
+    forumPhase: null,
+    textBankFile: null,
   };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
@@ -264,6 +282,8 @@ export function parseArgs(argv) {
     else if (a === '--save-raw') out.saveRaw = true;
     else if (a === '--topic') out.topic = String(argv[++i] || '').trim();
     else if (a === '--semantic') out.semantic = true;
+    else if (a === '--forum-phase') out.forumPhase = String(argv[++i] || '').toLowerCase();
+    else if (a === '--text-bank') out.textBankFile = String(argv[++i] || '').trim();
   }
   out.pauseMs = Math.max(MIN_PAUSE_MS, out.pauseMs);
   return out;
@@ -564,7 +584,7 @@ async function buildLesenPromptBundle(teil, words, session, moldCtx = null, args
   let promptWords = words;
   let vocabSubtypeAdaptation = null;
   const topicNorm = topic ? String(topic).trim() : null;
-  if (Number(teil) === 4 && topicNorm) {
+  if (Number(teil) === 4 && topicNorm && usesB1LesenT4DebateSeeds(args?.level, teil)) {
     const { adaptT4WordsForDebate } = await import('./lib/lesenT4TopicVocab.mjs');
     const adapted = adaptT4WordsForDebate(words, topicNorm);
     promptWords = adapted.words;
@@ -573,24 +593,43 @@ async function buildLesenPromptBundle(teil, words, session, moldCtx = null, args
       console.log(`T4 vocab×debate (${topicNorm}): ${adapted.swapped.join(', ')}`);
     }
   }
-  if (Number(teil) === 5 && moldCtx?.textSubtype) {
-    const { adaptT5WordsForSubtype, resolveKonsumT5PromptWords } = await import('./lib/lesenT5SubtypeVocab.mjs');
-    if (topicNorm === 'Konsum') {
-      promptWords = resolveKonsumT5PromptWords(moldCtx.textSubtype, words?.length || 6);
-      vocabSubtypeAdaptation = { swapped: [`Konsum×T5→${moldCtx.textSubtype}: ${promptWords.join(', ')}`], kept: [] };
-      console.log(`T5 Konsum×${moldCtx.textSubtype}: vocab reglas [${promptWords.join(', ')}] (sin retail del coverage)`);
-    } else {
-      const adapted = adaptT5WordsForSubtype(words, topic, moldCtx.textSubtype);
-      promptWords = adapted.words;
-      vocabSubtypeAdaptation = adapted.swapped.length ? adapted : null;
-      if (adapted.swapped.length) {
-        console.log(`T5 vocab×subtipo (${moldCtx.textSubtype}): ${adapted.swapped.join(', ')}`);
-      }
-    }
+  if (
+    Number(teil) === 5 &&
+    moldCtx?.textSubtype &&
+    String(args?.level || 'B1').toUpperCase() !== 'B2'
+  ) {
+    const { resolveT5PromptWords, T5_PROMPT_WORD_CAP } = await import('./lib/lesenT5SubtypeVocab.mjs');
+    const cap = Math.min(T5_PROMPT_WORD_CAP, words?.length || T5_PROMPT_WORD_CAP);
+    const cursor = String(args?._t5SeedEntropy || topicNorm || '').length;
+    promptWords = resolveT5PromptWords(moldCtx.textSubtype, {
+      count: cap,
+      userWords: words,
+      topic: topicNorm,
+      cursor,
+    });
+    vocabSubtypeAdaptation = {
+      swapped: [`T5×${moldCtx.textSubtype}: ${promptWords.join(', ')}`],
+      kept: [],
+    };
+    console.log(`T5 vocab×subtipo (${moldCtx.textSubtype}): [${promptWords.join(', ')}]`);
   }
   if (args) {
     args._promptWords = promptWords;
     args._vocabSubtypeAdaptation = vocabSubtypeAdaptation;
+  }
+
+  if (Number(teil) === 2 && String(args?.level || 'B1').toUpperCase() === 'B1') {
+    if (!args._lesenT2UsedOpenings) args._lesenT2UsedOpenings = new Set();
+    const pick = pickNextLesenT2Opening(
+      args._lesenT2UsedOpenings,
+      `${topic || 't2'}:${Date.now()}`,
+      topic,
+    );
+    if (pick.opening) {
+      args._lesenT2UsedOpenings.add(pick.opening);
+      args._mandatedLesenT2Opening = pick.opening;
+      console.log(`Lesen T2 apertura rotada: «${pick.opening}…»`);
+    }
   }
 
   const feedbackMetaOut = {};
@@ -625,6 +664,9 @@ async function buildLesenPromptBundle(teil, words, session, moldCtx = null, args
     feedbackMode: args?.feedbackMode,
     maxFeedbackRules: args?.maxFeedbackRules,
     feedbackMetaOut,
+    forumPhase: args?.forumPhase || null,
+    fixedForumPassages: args?._b2TextBank?.passages || null,
+    mandatedLesenT2Opening: args?._mandatedLesenT2Opening || null,
   };
   let fullPrompt = buildLesenPrompt(teil, promptWords, promptOpts);
   if (args?.vocabBgStrictAnchor?.length) {
@@ -677,7 +719,7 @@ function recordLesenMoldAttempt(session, args, teil, topic, batch, { ok, moldGat
   recordTopicMoldAttempt(session, {
     topic,
     teil,
-    vocabRatio: batch ? vocabRatioFromBatch(batch) : null,
+    vocabRatio: batch ? vocabRatioFromBatch(batch, { teil }) : null,
     remainingMolds: countRemainingMolds(teil, topic, opts),
     moldGateFailure,
     ok,
@@ -810,14 +852,29 @@ function isStructuralMoldFailure(result, teil) {
   return Number(teil) === 4 && isChk27Failure(result);
 }
 
+function tryCalidadExplanationAutoFix(batch, teil, { log = true } = {}) {
+  const t = Number(teil);
+  if (![2, 5].includes(t)) return { batch, fixed: 0 };
+  const out = applyDeterministicExplanationFixes(batch);
+  if (out.fixed > 0 && log) {
+    console.log(`  CHK-18b: ${out.fixed} explanation(s) auto-corregida(s) (determinista)`);
+  }
+  return out;
+}
+
 async function runQualityAndStructuralGates(args, teil, batch, { onFail, relFile } = {}) {
   // Pre-audit: re-apply decap only (full normalize already ran in coerceGeneratedLesenPart)
   batch = applyGermanCapsNormalize(batch, { decapOnly: true, log: !args.inMemory }).batch;
+
+  if (Number(teil) === 4 && args?._lesenT4ForumNames?.length) {
+    batch = enforceLesenT4PlannedForumNames(batch, args._lesenT4ForumNames);
+  }
 
   const gateFile = relFile ? relFile.replace(/\\/g, '/') : '';
   const runNewGates = !args.skipQualityGates && !args.dryRun;
 
   if (runNewGates) {
+    alignQuestionTopicTagsToRequestedTopic(batch);
     const q4 = runQ4PipelineGate(batch, { file: gateFile, profile: 'generated' });
     if (q4.blocked) {
       onFail?.();
@@ -836,9 +893,16 @@ async function runQualityAndStructuralGates(args, teil, batch, { onFail, relFile
   }
 
   if (!args.skipQuality) {
-    const quality = checkLesenBatchQuality(batch, teil, { file: gateFile, level: args.level });
-    if (!args.inMemory) console.log(formatQualityReport(quality));
+    let quality = checkLesenBatchQuality(batch, teil, { file: gateFile, level: args.level });
     const teilN = Number(teil);
+    if (!quality.ok && [2, 5].includes(teilN)) {
+      const auto = tryCalidadExplanationAutoFix(batch, teilN, { log: !args.inMemory });
+      if (auto.fixed > 0) {
+        batch = auto.batch;
+        quality = checkLesenBatchQuality(batch, teil, { file: gateFile, level: args.level });
+      }
+    }
+    if (!args.inMemory) console.log(formatQualityReport(quality));
 
     if (isLesenCombinedCalidadLexicoTeil(teilN)) {
       const combined = collectCalidadLexicoIssues(
@@ -976,7 +1040,7 @@ async function runQualityAndStructuralGates(args, teil, batch, { onFail, relFile
     batch = gate.batch;
   }
 
-  if (!args.skipQuality && teil === 5) {
+  if (!args.skipQuality && teil === 5 && String(args.level || 'B1').toUpperCase() !== 'B2') {
     const t5Topic = checkLesenT5BatchTopic(batch);
     if (!t5Topic.ok) {
       onFail?.();
@@ -1010,7 +1074,9 @@ async function runQualityAndStructuralGates(args, teil, batch, { onFail, relFile
       }
     }
     const t4Topic = assessT4TopicAlignment(batch);
-    if (!t4Topic.ok && !t4Topic.skip) {
+    const isA2T4 = String(args.level || batch.level || '').toUpperCase() === 'A2';
+    const isB2T4 = String(args.level || batch.level || '').toUpperCase() === 'B2';
+    if (!isA2T4 && !isB2T4 && !t4Topic.ok && !t4Topic.skip) {
       const issue = formatT4TopicAlignmentFailure(t4Topic) || 'T4 topic mismatch';
       onFail?.();
       return {
@@ -1248,7 +1314,10 @@ async function finalizeBatch(args, teil, batch, basename, relFile) {
 
   if (!args.dryRun && !args.skipPoolReady) {
     try {
-      const promo = await finalizePoolReady(absPath, batch, { level: args.level });
+      const promo = await finalizePoolReady(absPath, batch, {
+        level: args.level,
+        skipQ1: args.skipQ1 === true,
+      });
       relFile = relPathAfterPoolReady(relFile, promo.poolPath);
       const contentOkLesen =
         promo.q1OnlyReject ||
@@ -1381,6 +1450,23 @@ async function generateLlmPart(args, teil, session) {
       topic: args._resolvedTopic || args.topic || null,
     });
   args.teil = teil;
+  const levelUpper = String(args?.level || 'B1').toUpperCase();
+  if (levelUpper === 'B2' && Number(teil) === 1) {
+    const fp = args.forumPhase;
+    if (!fp || !['passage', 'questions', 'a', 'b'].includes(fp)) {
+      throw new Error('B2 Lesen T1: indica --forum-phase passage|questions');
+    }
+    args.forumPhase = fp === 'a' ? 'passage' : fp === 'b' ? 'questions' : fp;
+    if (args.forumPhase === 'questions') {
+      if (!args.textBankFile) {
+        throw new Error('B2 Lesen T1 Fase B: indica --text-bank <archivo.json del banco>');
+      }
+      args._b2TextBank = loadB2ForumTextBank(args.textBankFile);
+      console.log(`Text bank: ${path.relative(ROOT, args._b2TextBank._textBankPath).replace(/\\/g, '/')}`);
+    } else {
+      args.skipPoolReady = true;
+    }
+  }
   const words = resolveTargetWords(args);
   const tag = 'gemini';
 
@@ -1391,23 +1477,49 @@ async function generateLlmPart(args, teil, session) {
   console.log(`Tema: ${chosenTopic}${args.topic ? ' (elegido)' : ' (rotación)'}`);
   args._resolvedTopic = chosenTopic;
 
-  let moldCtx = resolveMoldContext(args, teil, chosenTopic);
+  let moldCtx;
+  try {
+    moldCtx = resolveMoldContext(args, teil, chosenTopic);
+  } catch (err) {
+    if (err?.name === 'TopicMoldExhaustedError') {
+      settleCostFail(err.message, 'topic-mold-block');
+      return {
+        ok: false,
+        discarded: true,
+        braked: true,
+        teil: Number(teil),
+        reason: err.message,
+        attempts: 0,
+        gate: 'topic-mold-block',
+      };
+    }
+    throw err;
+  }
   let promptBundle = await buildLesenPromptBundle(teil, words, session, moldCtx, args);
   let applyT4ForumNames = null;
-  if (Number(teil) === 4) {
-    const levelDir = String(args?.level || 'B1').toUpperCase();
+  if (Number(teil) === 4 && usesB1LesenT4DebateSeeds(args?.level, teil)) {
+    const levelDir = levelUpper;
     const nameExtraDirs = [
       path.join(ROOT, 'batches/ready/pool-verified', levelDir),
       path.join(ROOT, 'batches/needs-regeneration', levelDir),
     ].filter((d) => fs.existsSync(d));
     applyT4ForumNames = (bundle) => {
-      const forumNames = pickLesenT4ForumNames(gDir, {
+      if (!args._lesenT4ForumCastSessionExclude) args._lesenT4ForumCastSessionExclude = new Set();
+      const pick = pickLesenT4ForumCast({
+        level: levelDir,
+        teil: 4,
         sessionExclude: args._excludeNames || [],
-        avoidTemplateDefaults: true,
+        sessionExcludeCasts: args._lesenT4ForumCastSessionExclude,
+        entropy: `${chosenTopic || 't4'}:${args._t4SeedEntropy || Date.now()}`,
         extraDirs: nameExtraDirs,
       });
+      const forumNames = pick.names;
+      args._lesenT4ForumNames = forumNames;
+      args._lesenT4ForumCastSignature = pick.castSignature;
       pushSessionNameExclude(args, forumNames);
-      console.log(`Nombres foro T4: ${forumNames.join(', ')} (rotación AUD-5)`);
+      console.log(
+        `Nombres foro T4: ${forumNames.join(', ')} (cast ${pick.castSignature.slice(0, 48)}… · dialogueNamesBank)`,
+      );
       const nameOpts = { useNames: forumNames, avoidNames: TEMPLATE_DEFAULT_NAMES };
       return {
         ...bundle,
@@ -1497,11 +1609,21 @@ async function generateLlmPart(args, teil, session) {
   };
 
   try {
-    if ([3, 4, 5].includes(Number(teil))) {
+    const isB2LesenIntegrated = String(args.level || '').toUpperCase() === 'B2' && [3, 4, 5].includes(Number(teil));
+    if ([3, 4, 5].includes(Number(teil)) && !isB2LesenIntegrated) {
       const preflight = preflightTopicMoldGeneration(teil, chosenTopic, topicMoldOptsFromArgs(args, teil));
       console.log(
         `Molde preflight T${teil}×${chosenTopic}: ${preflight.compatible} compatible(s), ${preflight.remaining} restante(s)`,
       );
+      if (Number(teil) === 5 && preflight.remaining <= 0) {
+        throw new TopicMoldIncompatibleError({
+          topic: chosenTopic,
+          teil: Number(teil),
+          compatible: preflight.compatible,
+          message:
+            `Lesen T5×${chosenTopic}: 0 moldes restantes en celda (preflight) — ampliar perfiles/subtipos o revisión manual.`,
+        });
+      }
       assertTopicMoldCircuitClosed(session, chosenTopic, teil, topicMoldOptsFromArgs(args, teil));
     }
   } catch (err) {
@@ -1728,6 +1850,57 @@ async function generateLlmPart(args, teil, session) {
         }
       }
     }
+    if (levelUpper === 'B2' && Number(teil) === 1 && args.forumPhase === 'passage') {
+      const labels = ['A', 'B', 'C', 'D'];
+      batch.passages = (batch.passages || []).map((p, i) => ({
+        ...p,
+        module: 'lesen',
+        teil: 1,
+        level: 'B2',
+        personKey: String(p.personKey || labels[i] || '').toUpperCase() || labels[i],
+      }));
+      batch.questions = [];
+      const bankVal = validateB2ForumPassageBank(batch);
+      if (!bankVal.ok) {
+        lastIssue = bankVal.issues.join('; ');
+        if (fix < args.fixRetries) {
+          resetPromptWithFix(lastIssue, 'calidad-forum-passage');
+          continue;
+        }
+        return finishPart({
+          ok: false,
+          discarded: true,
+          teil,
+          reason: lastIssue,
+          attempts: partAttempts,
+        });
+      }
+      batch.topicTag = chosenTopic;
+      const bankPath = saveB2ForumTextBank(batch, {
+        topic: chosenTopic,
+        basename: basename.replace(/\.json$/i, '-text-bank.json'),
+      });
+      const bankRel = path.relative(ROOT, bankPath).replace(/\\/g, '/');
+      console.log(`[text-bank] Fase A OK → ${bankRel}`);
+      console.log('Siguiente: --forum-phase questions --text-bank', bankRel);
+      settleCostOk(bankRel);
+      return finishPart({
+        ok: true,
+        file: bankRel,
+        teil,
+        phase: 'passage',
+        textBank: bankPath,
+        batch,
+        words,
+        attempts: partAttempts,
+      });
+    }
+
+    if (levelUpper === 'B2' && Number(teil) === 1 && args.forumPhase === 'questions') {
+      batch = mergeB2ForumQuestions(args._b2TextBank, batch);
+      batch._examInstructionIncluded = true;
+    }
+
     if (promptBundle?.generationMetadata) {
       batch.generationMetadata = { ...promptBundle.generationMetadata };
     }
@@ -1741,6 +1914,15 @@ async function generateLlmPart(args, teil, session) {
       recordLesenMoldAttempt(session, args, teil, chosenTopic, batch, { ok: true });
       if (Number(teil) === 4) {
         pushSessionNameExclude(args, extractLesenT4ForumNames(result.batch || batch));
+        if (args._lesenT4ForumCastSignature) {
+          args._lesenT4ForumCastSessionExclude?.add(args._lesenT4ForumCastSignature);
+        }
+        recordLesenT4ForumCastFromGeneration({
+          level: args.level || 'B1',
+          teil: 4,
+          batch: result.batch || batch,
+          plannedSignature: args._lesenT4ForumCastSignature || null,
+        });
       }
       settleCostOk(result.file || relFile);
       return finishPart({ ...result, words, attempts: partAttempts, batch: result.batch || batch });
@@ -1767,40 +1949,46 @@ async function generateLlmPart(args, teil, session) {
     lastIssue = result.issue || result.reason || 'checker';
     lastGate = result.gate || lastGate;
 
-    // ── P2d: triaje de reparación (gratis, sin LLM) ──────────────────────────
-    // Intentar antes de gastar un fixRetry pagado.
+    // ── P2d: triaje de reparación (gratis / quirúrgico antes de reintento LLM completo) ──
     {
-      const triage = classifyAndRepair(batch, result);
+      const maxSurgicalRounds = 5;
+      for (let surgicalRound = 0; surgicalRound < maxSurgicalRounds; surgicalRound++) {
+        const triage = classifyAndRepair(batch, result);
 
-      if (triage.discard) {
-        const discardReason = triage.reason || lastIssue || 'triaje: descartar';
-        console.log(`  Triaje CUBO D → DESCARTAR: ${discardReason}`);
-        maybeArchiveRejectedBatch(args, teil, lastBatch, basename, {
-          reason: discardReason,
-          gate: lastGate || 'triage',
-        });
-        settleCostFail(discardReason, lastGate || 'triage');
-        return finishPart({ ok: false, discarded: true, teil, reason: discardReason, attempts: partAttempts });
-      }
-
-      if (triage.repaired === true) {
-        const cubeLabel = triage.cube || '?';
-        const fixedLabel = (triage.fixed || []).join(', ') || 'campos';
-        console.log(`  Triaje CUBO ${cubeLabel}: reparado (${fixedLabel}) — re-validando sin LLM…`);
-        batch = triage.batch;
-        batch = applyGermanCapsNormalize(batch, { decapOnly: true }).batch;
-        lastBatch = batch;
-
-        const reResult = await finalizeBatch(args, teil, batch, basename, relFile);
-        if (reResult.ok) {
-          console.log(`  Triaje exitoso → guardado sin reintento LLM`);
-          settleCostOk(reResult.file || relFile);
-          return finishPart({ ...reResult, words, attempts: partAttempts, batch: reResult.batch || batch });
+        if (triage.discard) {
+          const discardReason = triage.reason || lastIssue || 'triaje: descartar';
+          console.log(`  Triaje CUBO D → DESCARTAR: ${discardReason}`);
+          maybeArchiveRejectedBatch(args, teil, lastBatch, basename, {
+            reason: discardReason,
+            gate: lastGate || 'triage',
+          });
+          settleCostFail(discardReason, lastGate || 'triage');
+          return finishPart({ ok: false, discarded: true, teil, reason: discardReason, attempts: partAttempts });
         }
-        result = reResult;
-        lastIssue = result.issue || result.reason || 'checker post-triage';
-        lastGate = result.gate || lastGate;
-      } else if (triage.repaired === 'targeted' && triage.repairKind) {
+
+        if (triage.repaired === true) {
+          const cubeLabel = triage.cube || '?';
+          const fixedLabel = (triage.fixed || []).join(', ') || 'campos';
+          console.log(`  Triaje CUBO ${cubeLabel}: reparado (${fixedLabel}) — re-validando sin LLM…`);
+          batch = triage.batch;
+          const capsFixed = (triage.fixed || []).some((c) => c === 'CHK-14');
+          batch = applyGermanCapsNormalize(batch, { decapOnly: !capsFixed }).batch;
+          lastBatch = batch;
+
+          const reResult = await finalizeBatch(args, teil, batch, basename, relFile);
+          if (reResult.ok) {
+            console.log(`  Triaje exitoso → guardado sin reintento LLM`);
+            settleCostOk(reResult.file || relFile);
+            return finishPart({ ...reResult, words, attempts: partAttempts, batch: reResult.batch || batch });
+          }
+          result = reResult;
+          lastIssue = result.issue || result.reason || 'checker post-triage';
+          lastGate = result.gate || lastGate;
+          continue;
+        }
+
+        if (triage.repaired !== 'targeted' || !triage.repairKind) break;
+
         const label = surgicalRepairLabel(triage.repairKind, args.level);
         console.log(`  Triaje CUBO C (${label}) → reparación localizada (1 llamada LLM)…`);
         let repaired;
@@ -1889,7 +2077,9 @@ async function generateLlmPart(args, teil, session) {
 }
 
 async function generateOnePart(args, teil, session) {
-  if (teil === 3) return generateT3Part(args, session);
+  if (Number(teil) === 3 && usesB1LesenT3MakeT3(args.level, teil)) {
+    return generateT3Part(args, session);
+  }
   return generateLlmPart(args, teil, session);
 }
 
@@ -1951,6 +2141,8 @@ export async function generateLesenPart(opts = {}) {
   args.teil = teil;
   args.topic = opts.topic ?? args.topic;
   args._resolvedTopic = opts.topic ?? args._resolvedTopic ?? args.topic;
+  if (opts.wordCount != null) args.wordCount = opts.wordCount;
+  else if (Number(teil) === 5 && args.wordCount == null) args.wordCount = 6;
   if (Array.isArray(opts.words) && opts.words.length) {
     args.words = [...opts.words];
   }
@@ -1961,6 +2153,7 @@ export async function generateLesenPart(opts = {}) {
     args.vocabBgStrictAnchor = [...opts.vocabBgStrictAnchor];
   }
   if (opts.skipQuality === true) args.skipQuality = true;
+  if (opts.skipQ1 === true) args.skipQ1 = true;
   if (opts.testMode === true) {
     args.testMode = true;
     args.skipPoolReady = true;

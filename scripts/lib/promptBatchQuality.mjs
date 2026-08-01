@@ -59,6 +59,12 @@ function hasWordTarget(text, target) {
   if (target === 40) {
     return /\b(circa|ca\.?)\s*40\b|40\s*w[öo]rter/i.test(t);
   }
+  if (target === 150) {
+    return /\b150\b|mindestens\s+150\s*w[öo]rter/i.test(t);
+  }
+  if (target === 100) {
+    return /\b100\b|mindestens\s+100\s*w[öo]rter/i.test(t);
+  }
   return false;
 }
 
@@ -134,6 +140,59 @@ function checkSchreibenA2Teil2(text, issues) {
   }
   if (!hasFormalSie(text)) {
     issues.push('Schreiben A2 T2: registro semiformal con Sie ausente');
+  }
+}
+
+function checkSchreibenB2Teil1(text, issues) {
+  checkSchreibenPlaceholders(text, 1, issues);
+  if (!hasWordTarget(text, 150)) {
+    issues.push('Schreiben B2 T1: falta mindestens 150 Wörter');
+  }
+  if (!/\bforumsbeitrag\b/i.test(text)) {
+    issues.push('Schreiben B2 T1: debe pedir Forumsbeitrag (formato oficial)');
+  }
+  const hasOfficialBullets =
+    /\bmeinung\b/i.test(text) &&
+    /\bgr[üu]nd/i.test(text) &&
+    /\bvorschl[aä]?g/i.test(text) &&
+    /\bnachteil/i.test(text);
+  if (!hasOfficialBullets) {
+    issues.push(
+      'Schreiben B2 T1: faltan elementos oficiales (Meinung, Gründe, Vorschläge, Vor- und Nachteile)',
+    );
+  }
+  if (/\bSMS\b/i.test(text) && /\b20\b/.test(text)) {
+    issues.push('Schreiben B2 T1: formato SMS A2 detectado');
+  }
+  if (/\b80\b\s*w[öo]rter/i.test(text) && !/\b150\b/.test(text)) {
+    issues.push('Schreiben B2 T1: longitud B1 (~80) detectada');
+  }
+}
+
+function checkSchreibenB2Teil2(text, issues) {
+  checkSchreibenPlaceholders(text, 2, issues);
+  if (!hasWordTarget(text, 100)) {
+    issues.push('Schreiben B2 T2: falta mindestens 100 Wörter');
+  }
+  if (!/\bvorgesetzten\b/i.test(text)) {
+    issues.push('Schreiben B2 T2: falta destinatario «Vorgesetzten» (formato oficial)');
+  }
+  const hasOfficialBullets =
+    /\bsituation\b/i.test(text) &&
+    /\bverständnis\b/i.test(text) &&
+    /\bvorschl[aä]?g/i.test(text) &&
+    /\bzeigen\s+sie\s+verständnis/i.test(text);
+  if (!hasOfficialBullets) {
+    issues.push('Schreiben B2 T2: faltan Situation, Verständnis, Vorschlag o «Verständnis zeigen» (instrucción oficial)');
+  }
+  if (!/\banrede\b/i.test(text) && !/\bgru[ßs]\b/i.test(text)) {
+    issues.push('Schreiben B2 T2: falta recordatorio Anrede/Gruß');
+  }
+  if (/\bforumsbeitrag\b/i.test(text)) {
+    issues.push('Schreiben B2 T2: formato Forum (T1) detectado');
+  }
+  if (!hasFormalSie(text)) {
+    issues.push('Schreiben B2 T2: registro semiformal con Sie ausente');
   }
 }
 
@@ -276,6 +335,56 @@ function checkSprechenA2Teil3(text, issues) {
   }
 }
 
+function checkSprechenB2Teil1(text, issues, q) {
+  const official =
+    'Halten Sie einen kurzen Vortrag zu einem Thema Ihrer Wahl und sprechen Sie mit Ihrer Partnerin/Ihrem Partner darüber.';
+  if (!text.includes(official)) {
+    issues.push('Sprechen B2 T1: falta instrucción oficial Modellsatz (Vortrag + Partner/in)');
+  }
+  if (!/\bvortrag\b/i.test(text) && !/\bthema\b/i.test(text)) {
+    issues.push('Sprechen B2 T1: falta Vortrag/Thema');
+  }
+  if (!/\bpartner(in)?\b/i.test(text)) {
+    issues.push('Sprechen B2 T1: falta interacción con Partner/in');
+  }
+  if (/\bIhre Karten\b|\bplanen\s+sie\s+gemeinsam\b|\b4\s+karten\b/i.test(text)) {
+    issues.push('Sprechen B2 T1: formato A2/B1 Planung detectado');
+  }
+  const structure =
+    countBulletPoints(text) +
+    (text.match(/\d+\./g) || []).length +
+    (/\beinleitung\b/i.test(text) ? 1 : 0) +
+    (/\bmeinung\b/i.test(text) ? 1 : 0);
+  if (structure < 2) {
+    issues.push('Sprechen B2 T1: falta guía de Gliederung (≥2 puntos/Einleitung/Meinung)');
+  }
+  const expl = String(q?.explanation || '');
+  if (expl && /planen\s+sie\s+gemeinsam|gemeinsam\s+zu\s+planen|aufgabenbewältigung.*plan/i.test(expl)) {
+    issues.push('Sprechen B2 T1: explanation B1/A2 Planung detectada');
+  }
+}
+
+function checkSprechenB2Teil2(text, issues, q) {
+  const official =
+    'Tauschen Sie in einer Diskussion Standpunkte zu einem kontroversen Thema aus.';
+  if (!text.includes(official)) {
+    issues.push('Sprechen B2 T2: falta instrucción oficial Modellsatz (Diskussion kontrovers)');
+  }
+  if (!/\bdiskussion\b/i.test(text)) {
+    issues.push('Sprechen B2 T2: falta Diskussion');
+  }
+  if (!/\bstandpunkt\b/i.test(text) && !/\bkontrovers/i.test(text)) {
+    issues.push('Sprechen B2 T2: falta Standpunkte o tema kontrovers');
+  }
+  if (/\bfeedback\b|\br[üu]ckmeldung\b|\bpr[äa]sentation\b.*teil\s*2\b/i.test(text)) {
+    issues.push('Sprechen B2 T2: formato B1 Feedback/Präsentation detectado');
+  }
+  const expl2 = String(q?.explanation || '');
+  if (/\bstrukturiert\s+zu\s+pr[äa]sentieren\b|\beinzelpr[äa]sentation\b/i.test(expl2)) {
+    issues.push('Sprechen B2 T2: explanation B1 Präsentation detectada');
+  }
+}
+
 function checkSprechenTeil1(text, issues) {
   // T1 = Planungsaufgabe: plan something together.
   // Require ≥4 bullet points OR ≥4 aspect keywords OR both an interactive verb + bullet points.
@@ -412,6 +521,10 @@ export function checkPromptBatchQuality(batch, module, teil, opts = {}) {
       if (t === 1) checkSchreibenA2Teil1(text, issues);
       else if (t === 2) checkSchreibenA2Teil2(text, issues);
       else issues.push(`Schreiben A2: Teil ${t} no soportado (usa 1–2)`);
+    } else if (lv === 'B2') {
+      if (t === 1) checkSchreibenB2Teil1(text, issues);
+      else if (t === 2) checkSchreibenB2Teil2(text, issues);
+      else issues.push(`Schreiben B2: Teil ${t} no soportado (usa 1–2)`);
     } else if (t === 1) checkSchreibenTeil1(text, issues);
     else if (t === 2) checkSchreibenTeil2(text, issues);
     else if (t === 3) {
@@ -437,6 +550,10 @@ export function checkPromptBatchQuality(batch, module, teil, opts = {}) {
       else if (t === 2) checkSprechenA2Teil2(text, issues);
       else if (t === 3) checkSprechenA2Teil3(text, issues);
       else issues.push(`Sprechen A2: Teil ${t} no soportado (usa 1–3)`);
+    } else if (lv === 'B2') {
+      if (t === 1) checkSprechenB2Teil1(text, issues, q);
+      else if (t === 2) checkSprechenB2Teil2(text, issues, q);
+      else issues.push(`Sprechen B2: Teil ${t} no soportado (usa 1–2)`);
     } else if (t === 1) checkSprechenTeil1(text, issues);
     else if (t === 2) checkSprechenTeil2(text, issues);
     else if (t === 3) checkSprechenTeil3(text, issues);

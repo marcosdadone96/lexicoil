@@ -16,7 +16,7 @@ import {
 } from './generationCostLog.mjs';
 import { extractJson } from './extractJson.mjs';
 import { resolveMaxOutputTokens, isLikelyTruncated } from './genOutputTokens.mjs';
-import { buildExamPrompt, isSprechenA2PerTeil } from './examTemplatePrompt.mjs';
+import { buildExamPrompt, isSprechenPerTeil, isSchreibenPerTeil } from './examTemplatePrompt.mjs';
 import { pickNextHorenT2Opening } from './horenOpeningsBank.mjs';
 import {
   pickNextHorenT2ActivitySchedule,
@@ -24,9 +24,10 @@ import {
 } from './horenT2ActivityScheduleBank.mjs';
 import {
   pickDialogueNameCast,
-  recordDialogueCastUsage,
+  recordDialogueCastsFromGeneration,
   extractDialogueCastSignature,
   loadPersistedDialogueCasts,
+  validateA2HorenDialogueNames,
 } from './dialogueNamesBank.mjs';
 import { resolveGenerationFeedbackRules } from './resolveGenerationFeedback.mjs';
 import {
@@ -56,6 +57,7 @@ import {
   combinedCalidadLexicoGateResult,
   COMBINED_CALIDAD_LEXICO_ISSUE_LIMIT,
 } from './calidadLexicoCombinedGate.mjs';
+import { isHorenCombinedCalidadLexicoTeil } from './horenCombinedCalidadLexico.mjs';
 import {
   incrementPartFileFixIteration,
   initPartFileTracker,
@@ -65,7 +67,7 @@ import {
   DEFAULT_MAX_COST_PER_FILE_USD,
 } from './partFileBrake.mjs';
 import { runSurgicalRepair, surgicalRepairLabel } from './surgicalRepairRouter.mjs';
-import { pickNextTopic, tagBatchWithTopic } from './topicRotation.mjs';
+import { pickNextTopic, tagBatchWithTopic, alignQuestionTopicTagsToRequestedTopic } from './topicRotation.mjs';
 import {
   pickNextNames,
   injectNamesIntoPrompt,
@@ -192,7 +194,7 @@ export function parseExamArgs(argv) {
 }
 
 export function summaryKey(module, teil, level = 'B1') {
-  if (isSprechenA2PerTeil(module, level)) return `T${teil}`;
+  if (isSprechenPerTeil(module, level) || isSchreibenPerTeil(module, level)) return `T${teil}`;
   if (module === 'schreiben' || module === 'sprechen') return module;
   return `T${teil}`;
 }
@@ -206,11 +208,18 @@ export function teileToRunExam(args) {
     if (Number.isFinite(args.teil) && args.teil >= 1 && args.teil <= 4) return [args.teil];
     throw new Error('Hören: indica --teil 1..4, --teile 1,2,3 o --all-teile');
   }
-  if (mod === 'sprechen' && lv === 'A2') {
+  if (mod === 'sprechen' && (lv === 'A2' || lv === 'B2')) {
+    const max = lv === 'B2' ? 2 : 3;
     if (args.teileList?.length) return [...new Set(args.teileList)].sort((a, b) => a - b);
-    if (args.allTeile) return [1, 2, 3];
-    if (Number.isFinite(args.teil) && args.teil >= 1 && args.teil <= 3) return [args.teil];
-    throw new Error('Sprechen A2: indica --teil 1..3, --teile 1,2,3 o --all-teile');
+    if (args.allTeile) return lv === 'B2' ? [1, 2] : [1, 2, 3];
+    if (Number.isFinite(args.teil) && args.teil >= 1 && args.teil <= max) return [args.teil];
+    throw new Error(`Sprechen ${lv}: indica --teil 1..${max}, --teile o --all-teile`);
+  }
+  if (mod === 'schreiben' && (lv === 'A2' || lv === 'B2')) {
+    if (args.teileList?.length) return [...new Set(args.teileList)].sort((a, b) => a - b);
+    if (args.allTeile) return [1, 2];
+    if (Number.isFinite(args.teil) && args.teil >= 1 && args.teil <= 2) return [args.teil];
+    throw new Error(`Schreiben ${lv}: indica --teil 1..2, --teile 1,2 o --all-teile`);
   }
   return [null];
 }
@@ -264,12 +273,6 @@ function validationIssues(output) {
 
 const HOREN_MCQ_TEILE_B1 = new Set([1, 2]);
 const HOREN_T4_TEILE = new Set([4]);
-/** Hören B1: calidad + léxico en una pasada (evita fail-fast secuencial). */
-const HOREN_COMBINED_CALIDAD_LEXICO_TEILE = new Set([1, 3, 4]);
-
-function isHorenCombinedCalidadLexicoTeil(teil) {
-  return HOREN_COMBINED_CALIDAD_LEXICO_TEILE.has(Number(teil));
-}
 
 function isHorenMcqTeil(module, teil, level) {
   if (String(module || '').toLowerCase() !== 'horen') return false;
@@ -281,6 +284,15 @@ function isHorenMcqTeil(module, teil, level) {
 
 const HOREN_T12_ANTI_B2 =
   '\nANTI-B2+: vocabulario B1 en preguntas, opciones y explicaciones; sin terminos B2+ (usa sinonimos mas simples).';
+
+const HOREN_A2_MCQ_ANTI_LEVEL =
+  '\nANTI-NIVEL: vocabulario A2 en preguntas y opciones; sin términos B1+/B2+ (usa palabras más simples).';
+
+const HOREN_A2_T4_ANTI_LENGTH =
+  '\nANTI-LONGITUD A2: entrevista radio 150–250 palabras, tono hablado sencillo (no debate largo).';
+
+const HOREN_A2_T4_ANTI_COPY =
+  '\nANTI-COPIA: parafrasea afirmaciones Ja/Nein; no copies >=4 palabras seguidas del audio.';
 
 const HOREN_T12_ANTI_COPY =
   '\nANTI WORD-MATCHING: parafrasea preguntas/opciones; no copies >=4 palabras seguidas del audio.';
@@ -309,32 +321,45 @@ function buildHorenT4TopicAnchor(topicTag) {
 export function buildExamFixNote(issues, gate, module, teil, topicTag = null, level = 'B1') {
   const mod = String(module || '').toLowerCase();
   const t = Number(teil);
-  const horenCombinedTeil = mod === 'horen' && isHorenCombinedCalidadLexicoTeil(t);
+  const lv = String(level || 'B1').trim().toUpperCase();
+  const horenCombinedTeil = mod === 'horen' && isHorenCombinedCalidadLexicoTeil(t, lv);
   const horenT4Teil = mod === 'horen' && HOREN_T4_TEILE.has(t);
   const issueLimit = horenCombinedTeil ? COMBINED_CALIDAD_LEXICO_ISSUE_LIMIT : 6;
   const list = (Array.isArray(issues) ? issues : [issues]).filter(Boolean).slice(0, issueLimit);
   let extra = '';
-  const horenMcqTeil = isHorenMcqTeil(mod, t, level);
+  const horenMcqTeil = isHorenMcqTeil(mod, t, lv);
 
   if (horenT4Teil) {
-    extra = HOREN_T4_ANTI_LENGTH + HOREN_T4_ANTI_COPY + buildHorenT4TopicAnchor(topicTag);
-    if (
-      list.some((i) => /vocabulario B2|B2\+|C1\/C2|zugänglich|Perspektiven/i.test(String(i))) ||
-      gate === 'lexico' ||
-      gate === 'calidad+lexico'
-    ) {
-      extra += HOREN_T12_ANTI_B2;
-    }
-    if (list.some((i) => /chrono|slot order|precedes|Wer sagt/i.test(String(i)))) {
-      extra +=
-        '\nCRONOLOGIA T4: el orden de turnos «Nombre:» en passages[0].text DEBE coincidir con el orden ' +
-        'de aparición en el audio (slot 1→8). No reordenes respuestas: cada pregunta Zuordnung referencia ' +
-        'la afirmación en la posición temporal correcta del diálogo.';
+    if (lv === 'A2') {
+      extra = HOREN_A2_T4_ANTI_LENGTH + HOREN_A2_T4_ANTI_COPY;
+      if (
+        list.some((i) => /vocabulario B2|B2\+|C1\/C2|B1\+/i.test(String(i))) ||
+        gate === 'lexico' ||
+        gate === 'calidad+lexico'
+      ) {
+        extra += HOREN_A2_MCQ_ANTI_LEVEL;
+      }
+    } else {
+      extra = HOREN_T4_ANTI_LENGTH + HOREN_T4_ANTI_COPY + buildHorenT4TopicAnchor(topicTag);
+      if (
+        list.some((i) => /vocabulario B2|B2\+|C1\/C2|zugänglich|Perspektiven/i.test(String(i))) ||
+        gate === 'lexico' ||
+        gate === 'calidad+lexico'
+      ) {
+        extra += HOREN_T12_ANTI_B2;
+      }
+      if (list.some((i) => /chrono|slot order|precedes|Wer sagt/i.test(String(i)))) {
+        extra +=
+          '\nCRONOLOGIA T4: el orden de turnos «Nombre:» en passages[0].text DEBE coincidir con el orden ' +
+          'de aparición en el audio (slot 1→8). No reordenes respuestas: cada pregunta Zuordnung referencia ' +
+          'la afirmación en la posición temporal correcta del diálogo.';
+      }
     }
   } else if (horenMcqTeil) {
-    extra = HOREN_T12_ANTI_B2 + HOREN_T12_ANTI_COPY;
+    extra =
+      lv === 'A2' ? HOREN_A2_MCQ_ANTI_LEVEL + HOREN_T12_ANTI_COPY : HOREN_T12_ANTI_B2 + HOREN_T12_ANTI_COPY;
   } else if (horenCombinedTeil) {
-    extra = HOREN_T12_ANTI_B2;
+    extra = lv === 'A2' ? HOREN_A2_MCQ_ANTI_LEVEL : HOREN_T12_ANTI_B2;
     if (list.some((i) => /copia|literal|word-matching|comparten/i.test(String(i)))) {
       extra += HOREN_T12_ANTI_COPY;
     }
@@ -356,7 +381,6 @@ export function buildExamFixNote(issues, gate, module, teil, topicTag = null, le
       '\nLesen T4 signText: cada opinión del foro ≥25 palabras (ideal 30–45), postura clara Ja/Nein al inicio, ' +
       'sin copiar literalmente la pregunta del foro.';
   }
-  const lv = String(level || 'B1').trim().toUpperCase();
   if (
     mod === 'horen' &&
     t === 2 &&
@@ -431,7 +455,9 @@ function runModuleQuality(batch, args, teil) {
   const issues = [];
   const reports = [];
   const teile =
-    isSprechenA2PerTeil(mod, args.level) && teil != null ? [Number(teil)] : [1, 2, 3];
+    (isSprechenPerTeil(mod, args.level) || isSchreibenPerTeil(mod, args.level)) && teil != null
+      ? [Number(teil)]
+      : [1, 2, 3];
   for (const t of teile) {
     const quality = checkPromptBatchQuality(batch, mod, t, {
       lang: args.lang,
@@ -479,6 +505,27 @@ async function runDualGates(args, teil, batch, relFile) {
 
   // Q4 metadataSchema — Hören en audit-only (hardBlock=false); no rechaza todavía.
   if (args.module === 'horen' && !args.skipQualityGates && !args.dryRun) {
+    const lv = String(args.level || batch.level || 'B1').toUpperCase();
+    const t = Number(teil ?? batch.teil ?? batch.passages?.[0]?.teil);
+    if (lv === 'A2' && [1, 2, 3].includes(t)) {
+      const dn = validateA2HorenDialogueNames(batch, {
+        teil: t,
+        plannedPairs: args._dialogueNamePairs || [],
+      });
+      if (!dn.ok) {
+        const issue = dn.issues[0] || 'dialogue_names_mismatch';
+        console.log(`  [dialogue-names block] ${dn.issues.length} issue(s):`);
+        for (const line of dn.issues.slice(0, 6)) console.log(`    · ${line}`);
+        return {
+          ok: false,
+          gate: 'dialogue-names',
+          issue,
+          issues: dn.issues.slice(0, 6),
+        };
+      }
+    }
+
+    alignQuestionTopicTagsToRequestedTopic(batch);
     const q4 = runQ4PipelineGate(batch, {
       file: relFile.replace(/\\/g, '/'),
       profile: 'generated',
@@ -531,7 +578,7 @@ async function runDualGates(args, teil, batch, relFile) {
 
   if (!args.skipQuality) {
     const isHorenCombined =
-      args.module === 'horen' && isHorenCombinedCalidadLexicoTeil(teil);
+      args.module === 'horen' && isHorenCombinedCalidadLexicoTeil(teil, args.level);
     const quality = runModuleQuality(batch, args, teil);
     console.log(quality.report);
 
@@ -729,7 +776,9 @@ async function buildExamPromptBundle(module, teil, words, session, args = null) 
   const idSuffix = randomBytes(4).toString('hex');
   const level = args?.level || 'B1';
   const promptTeil =
-    module === 'horen' || isSprechenA2PerTeil(module, level) ? teil : 1;
+    module === 'horen' || isSprechenPerTeil(module, level) || isSchreibenPerTeil(module, level)
+      ? teil
+      : 1;
   const topic = args?._resolvedTopic || args?.topic || null;
   let horenT2Opening = null;
   let horenT2ActivitySchedule = null;
@@ -738,7 +787,7 @@ async function buildExamPromptBundle(module, teil, words, session, args = null) 
 
   if (module === 'horen' && Number(teil) === 2) {
     if (!args._horenT2UsedOpenings) args._horenT2UsedOpenings = new Set();
-    const pick = pickNextHorenT2Opening(args._horenT2UsedOpenings, `${topic}:${Date.now()}`);
+    const pick = pickNextHorenT2Opening(args._horenT2UsedOpenings, `${topic}:${Date.now()}`, topic);
     horenT2Opening = pick.opening;
     if (horenT2Opening) args._horenT2UsedOpenings.add(horenT2Opening);
     console.log(`Hören T2 apertura rotada: «${horenT2Opening}…»`);
@@ -764,6 +813,7 @@ async function buildExamPromptBundle(module, teil, words, session, args = null) 
       });
       dialogueNamePairs = namePick.pairs;
       args._dialogueCastSignature = namePick.castSignature;
+      args._dialogueNamePairs = namePick.pairs;
       console.log(`Hören T2 nombres: ${dialogueNamePairs.map((p) => p.join('/')).join(', ')}`);
     }
   }
@@ -781,7 +831,13 @@ async function buildExamPromptBundle(module, teil, words, session, args = null) 
     });
     dialogueNamePairs = namePick.pairs;
     args._dialogueCastSignature = namePick.castSignature;
+    args._dialogueNamePairs = namePick.pairs;
     args._dialogueCastSessionExclude.add(namePick.castSignature);
+    if (dialogueNamePairs.length < count) {
+      throw new Error(
+        `Hören T${teil}: solo ${dialogueNamePairs.length}/${count} pares en banco (sin Emma+Jonas/Clara+Tobias).`,
+      );
+    }
     console.log(`Hören T${teil} elenco (${count} pares): ${dialogueNamePairs.map((p) => p.join('+')).join(' · ')}`);
   }
   const feedbackMetaOut = {};
@@ -791,7 +847,10 @@ async function buildExamPromptBundle(module, teil, words, session, args = null) 
       module,
       level: args?.level || 'B1',
       topic: topic || undefined,
-      teil: module === 'horen' || isSprechenA2PerTeil(module, args?.level) ? Number(teil) : undefined,
+      teil:
+        module === 'horen' || isSprechenPerTeil(module, args?.level) || isSchreibenPerTeil(module, args?.level)
+          ? Number(teil)
+          : undefined,
       lang: args?.lang || 'de',
       enabled: args?.generationFeedbackEnabled,
       feedbackMode: args?.feedbackMode,
@@ -846,6 +905,16 @@ async function buildExamPromptBundle(module, teil, words, session, args = null) 
 
 function finalizeSaved(args, module, teil, batch, relFile) {
   const teilLabel = teil != null ? `Teil ${teil}` : 'Teile 1–3';
+  const lv = String(args?.level || batch?.level || 'B1').toUpperCase();
+  if (module === 'horen' && lv === 'A2' && [1, 2, 3].includes(Number(teil))) {
+    recordDialogueCastsFromGeneration({
+      level: lv,
+      module,
+      teil: Number(teil),
+      batch,
+      plannedSignature: args?._dialogueCastSignature || null,
+    });
+  }
   console.log(
     `Guardado: ${relFile} (${batch.questions.length} preguntas, ${(batch.passages || []).length} passages) · ${module} ${teilLabel}`,
   );
@@ -897,7 +966,7 @@ async function generateExamPart(args, teil, session) {
     console.log(`Nombres invitados: ${chosenNames.join(' / ')} (rotación AUD-5)`);
   }
 
-  if (module === 'schreiben') {
+  if (module === 'schreiben' && String(args.level || 'B1').trim().toUpperCase() === 'B1') {
     args._schreibenT3Surname = pickNextSchreibenT3Surname(gDir);
     console.log(`Nachbar Schreiben T3: Herr/Frau ${args._schreibenT3Surname} (rotación apellidos)`);
   }
@@ -1324,11 +1393,17 @@ async function generateExamPart(args, teil, session) {
         `  [fix-note] Hören T${teil} retry ${fix + 1}/${args.fixRetries}: dual hint (anti-B2+ + anti-copia)`,
       );
     }
-    if (module === 'horen' && isHorenCombinedCalidadLexicoTeil(teil)) {
+    if (module === 'horen' && isHorenCombinedCalidadLexicoTeil(teil, args.level)) {
       const n = Array.isArray(gates.issues) ? gates.issues.length : 1;
-      const t4Extra = HOREN_T4_TEILE.has(Number(teil))
-        ? `longitud + copia + ancla ${chosenTopic}`
-        : 'anti-B2+ + anti-copia';
+      const lv = String(args.level || 'B1').trim().toUpperCase();
+      const t4Extra =
+        HOREN_T4_TEILE.has(Number(teil)) && lv === 'A2'
+          ? 'entrevista A2 + copia'
+          : HOREN_T4_TEILE.has(Number(teil))
+            ? `longitud + copia + ancla ${chosenTopic}`
+            : lv === 'A2'
+              ? 'anti-A2 + anti-copia'
+              : 'anti-B2+ + anti-copia';
       console.log(
         `  [fix-note] Hören T${teil} retry ${fix + 1}/${args.fixRetries}: combined (${n} issue(s); ${t4Extra}${gates.gate === 'calidad+lexico' ? ' + léxico' : ''})`,
       );
@@ -1528,7 +1603,9 @@ export async function runExamGenerator(argv = process.argv.slice(2), seedArgs = 
   if (args.refreshCoverage) refreshCoverageReport(args.lang, args.level);
 
   const teilLabel =
-    args.module === 'horen' || isSprechenA2PerTeil(args.module, args.level)
+    args.module === 'horen' ||
+    isSprechenPerTeil(args.module, args.level) ||
+    isSchreibenPerTeil(args.module, args.level)
       ? teile.map((t) => `T${t}`).join(', ')
       : 'Teile 1–3';
   console.log(

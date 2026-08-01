@@ -12,7 +12,7 @@ import {
 import { normalizeBatch } from './normalizeBatch.mjs';
 import { tagBatchWithTopic } from './topicRotation.mjs';
 import { finalizePoolReady } from './finalizePoolReady.mjs';
-import { isSprechenA2PerTeil } from './examTemplatePrompt.mjs';
+import { isSchreibenPerTeil, isSprechenA2PerTeil } from './examTemplatePrompt.mjs';
 import { inferTeilFromBatch } from './extractJson.mjs';
 import {
   parseValidateBatchErrors,
@@ -122,7 +122,9 @@ export function resolveExamContext(args, batch, teilHint) {
 
   const level = normalizeLevel(args.level || batch?.level || 'B1');
   const wantsMultiTeilBatch =
-    limits.multiTeilBatch && !isSprechenA2PerTeil(module, level);
+    limits.multiTeilBatch &&
+    !isSprechenA2PerTeil(module, level) &&
+    !isSchreibenPerTeil(module, level);
 
   let teil = args.teil ?? teilHint ?? args.defaultTeil ?? inferTeilFromBatch(batch);
   if (wantsMultiTeilBatch) {

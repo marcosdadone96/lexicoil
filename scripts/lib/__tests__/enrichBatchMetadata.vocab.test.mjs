@@ -43,7 +43,8 @@ console.log(`\n── vocab extractor ${VOCAB_TAGS_NORMALIZE_VERSION} ──`);
 
   assert(
   'stamp is v2.3.16+',
-  String(VOCAB_TAGS_NORMALIZE_VERSION).startsWith('v2.3.16') ||
+  String(VOCAB_TAGS_NORMALIZE_VERSION).startsWith('v2.3.17') ||
+    String(VOCAB_TAGS_NORMALIZE_VERSION).startsWith('v2.3.16') ||
     String(VOCAB_TAGS_NORMALIZE_VERSION).startsWith('v2.3.15'),
 );
 
@@ -633,6 +634,13 @@ console.log('\n── Lemma -t artifact regression (2026-07-24) ──');
   assertIncludes('interessieren from sich interessieren', extractVocabularyFromText('Viele interessieren sich für Kunst.', 6), 'interessieren');
   assert('formatVocabTag viele lowercase', formatVocabTag('viele') === 'viele');
   assert('formatVocabTag vielen lowercase', formatVocabTag('vielen') === 'vielen');
+  assert('formatVocabTag Maßnahmen plural noun', formatVocabTag('maßnahmen') === 'Maßnahmen');
+  assert('formatVocabTag Vorschriften plural noun', formatVocabTag('vorschriften') === 'Vorschriften');
+  assert('formatVocabTag Übergangsfristen plural noun', formatVocabTag('übergangsfristen') === 'Übergangsfristen');
+  assert(
+    'formatVocabTag Unternehmen with hint',
+    formatVocabTag('unternehmen', new Set(['unternehmen'])) === 'Unternehmen',
+  );
 }
 
 {
