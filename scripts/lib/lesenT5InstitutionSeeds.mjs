@@ -175,6 +175,49 @@ export const T5_VARIANT_PROFILES = Object.freeze({
       ],
       topicAffinity: ['Umwelt', 'Familie', 'Wohnen'],
     },
+    {
+      id: 'radweg',
+      label: 'Radwege & Fahrradverkehr',
+      ruleFocus: 'Radwege, Fahrradabstellplätze, Helmpflicht, E-Scooter, Fußgänger',
+      ruleTemplates: [
+        'Auf den markierten Radwegen gilt Schrittgeschwindigkeit, wenn Fußgänger unterwegs sind.',
+        'Fahrräder dürfen nur an den dafür vorgesehenen Bügeln abgestellt werden.',
+        'E-Scooter sind auf den Hauptwegen nur mit freiwilliger Geschwindigkeitsbegrenzung erlaubt.',
+        'Hunde müssen auf den Wegen an der Leine geführt werden.',
+      ],
+      topicAffinity: ['Verkehr', 'Sport', 'Umwelt'],
+    },
+    {
+      id: 'parken',
+      label: 'Parkplatz / Parkregeln',
+      ruleFocus: 'Parkscheibe, Gebühren, Anwohnerparken, Lieferzonen, Öffnungszeiten',
+      ruleTemplates: [
+        'Das Parkhaus ist werktags von 6:00 bis 23:00 Uhr geöffnet.',
+        'Anwohnerparkausweise gelten nur in den markierten blauen Zonen.',
+        'Lieferfahrzeuge dürfen höchstens {N} Minuten in der Zone B halten.',
+        'Ohne gültige Parkscheibe wird eine Gebühr von {N} Euro berechnet.',
+      ],
+      topicAffinity: ['Verkehr', 'Stadtleben', 'Wohnen'],
+    },
+  ],
+  wohnanlage: [
+    {
+      id: 'standard',
+      label: 'Hausordnung allgemein',
+      ruleFocus: 'Ruhezeiten, Müll, Fahrradkeller, Gäste',
+    },
+    {
+      id: 'gaesteparken',
+      label: 'Gäste- & Anlieferparkplätze',
+      ruleFocus: 'Besucherparkplätze, Parkscheibe, Anmeldung, Gebühr, Lieferzeiten',
+      ruleTemplates: [
+        'Gästeparkplätze dürfen maximal {N} Stunden genutzt werden.',
+        'Besucher müssen ihr Kennzeichen an der Pförtnerloge melden.',
+        'Anlieferfahrzeuge sind nur werktags von 8:00 bis 11:00 Uhr zugelassen.',
+        'Ohne Anmeldung kann ein Abschleppen veranlasst werden.',
+      ],
+      topicAffinity: ['Verkehr', 'Wohnen', 'Familie'],
+    },
   ],
   freizeitzentrum: [
     {
@@ -211,6 +254,68 @@ export const T5_VARIANT_PROFILES = Object.freeze({
         'Technische Geräte dürfen nur vom Hausmeister angeschlossen werden.',
       ],
       topicAffinity: ['Kultur', 'Freizeit', 'Stadtleben'],
+    },
+    {
+      id: 'jugend',
+      label: 'Jugendtreff / Offene Treffs',
+      ruleFocus: 'Altersgruppe, Aufsicht, Snacks, Spiele, Ruhezeiten',
+      ruleTemplates: [
+        'Der Treff ist für Jugendliche zwischen 12 und 18 Jahren geöffnet.',
+        'Ausser Haus darf niemand ohne schriftliche Erlaubnis der Erziehungsberechtigten gehen.',
+        'Eigene Snacks sind erlaubt, alkoholische Getränke sind verboten.',
+        'Nach 20:00 Uhr wird der Gemeinschaftsraum aufgeräumt und leise Musik abgestellt.',
+      ],
+      topicAffinity: ['Freizeit', 'Familie', 'Sport'],
+    },
+  ],
+  sportverein: [
+    {
+      id: 'standard',
+      label: 'Verein / Studio allgemein',
+      ruleFocus: 'Mitgliedschaft, Hallennutzung, Schließfächer, Sauna/Dusche, Kursanmeldung',
+    },
+    {
+      id: 'kurse',
+      label: 'Gruppenkurse & Anmeldung',
+      ruleFocus: 'Kursplätze, Warteliste, Probestunde, Stornofrist, Material',
+      ruleTemplates: [
+        'Kursplätze müssen mindestens 48 Stunden vor Beginn online reserviert werden.',
+        'Bei Absagen weniger als 24 Stunden vor Kursbeginn fällt eine Ausfallgebühr an.',
+        'Eine kostenlose Probestunde ist nur einmal pro Kursart möglich.',
+        'Trainingsmatten und Hanteln sind nach dem Kurs wieder an den Platz zurückzulegen.',
+      ],
+      topicAffinity: ['Freizeit', 'Sport', 'Gesundheit'],
+    },
+    {
+      id: 'outdoor',
+      label: 'Platz & Außenanlage',
+      ruleFocus: 'Platzbelegung, Schuhe, Ballspiele, Abendlicht, Zugang',
+      ruleTemplates: [
+        'Der Sportplatz darf nur mit flachen Hallenschuhen betreten werden.',
+        'Ballspiele sind nur auf dem markierten Rasenfeld erlaubt.',
+        'Nach 21:00 Uhr ist die Außenanlage ohne Sondergenehmigung gesperrt.',
+        'Reservierte Trainingszeiten sind am schwarzen Brett am Eingang eingetragen.',
+      ],
+      topicAffinity: ['Freizeit', 'Sport'],
+    },
+  ],
+  bibliothek: [
+    {
+      id: 'standard',
+      label: 'Bibliothek allgemein',
+      ruleFocus: 'Ausleihe, Leihfrist, Ruhe, Medien, Gebühren bei Verspätung',
+    },
+    {
+      id: 'mediathek',
+      label: 'Apps, E-Books & Medienstationen',
+      ruleFocus: 'WLAN-Gastzugang, Download-Limits, Kopierstation, Kopfhörer',
+      ruleTemplates: [
+        'E-Books können maximal 14 Tage über die Stadtbibliotheks-App ausgeliehen werden.',
+        'An den Medienstationen sind Kopfhörer Pflicht, wenn Ton abgespielt wird.',
+        'Der Gast-WLAN-Zugang ist auf 60 Minuten pro Besuch begrenzt.',
+        'Ausdrucke an der Kopierstation kosten {N} Cent pro Seite.',
+      ],
+      topicAffinity: ['Freizeit', 'Medien', 'Bildung', 'Technik'],
     },
   ],
   kantine: [
