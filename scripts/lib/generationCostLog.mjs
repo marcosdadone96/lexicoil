@@ -188,6 +188,16 @@ export function formatCostUsd(usd) {
   return `$${n.toFixed(2)}`;
 }
 
+/** Entries at or after sinceIso (session window for generate-cli). */
+export function filterGenerationCostSince(entries, sinceIso) {
+  const since = Date.parse(sinceIso);
+  if (!Number.isFinite(since)) return entries || [];
+  return (entries || []).filter((e) => {
+    const ts = Date.parse(e.flushedAt || e.ts || 0);
+    return Number.isFinite(ts) && ts >= since;
+  });
+}
+
 /**
  * Sum API cost for one cell run (module+teil) since an ISO timestamp.
  * @param {object[]} entries — from readGenerationCostLog()

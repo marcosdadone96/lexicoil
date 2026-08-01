@@ -100,5 +100,5 @@ export function oralTeilsForLevel(module, level = 'B1') {
 export function isAutoPublishLevelSupported(lang, level) {
   const l = String(lang || 'de').toLowerCase();
   const lv = normalizeLevel(level);
-  return l === 'de' && (lv === 'B1' || lv === 'A2');
+  return l === 'de' && (lv === 'B1' || lv === 'A2' || lv === 'B2');
 }

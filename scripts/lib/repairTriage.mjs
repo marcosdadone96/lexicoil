@@ -470,6 +470,39 @@ export function classifyAndRepair(batch, gates) {
     return { repaired: 'targeted', cube: 'C', targetedCodes: unknownCodes, reason: `unknown codes: ${unknownCodes.join(',')}` };
   }
 
+  // Calidad combinada / léxico: priorizar reparaciones pedagógicas antes que léxico B2+
+  if (gate === 'lexico' || gate === 'calidad+lexico' || gate === 'calidad') {
+    if (hasExplanationMismatchSignal(issues)) {
+      const explanationFindings = findKeyExplanationMismatches(batch);
+      return {
+        repaired: 'targeted',
+        cube: 'C',
+        repairKind: 'explanation',
+        reason: issue || 'CHK-18b',
+        explanationFindings: explanationFindings.length
+          ? explanationFindings
+          : parseExplanationFindingsFromIssues(issues),
+      };
+    }
+    if (hasWordMatchSignal(issues)) {
+      return {
+        repaired: 'targeted',
+        cube: 'C',
+        repairKind: 'word_match',
+        reason: issue || 'word_match',
+        wordMatchFindings: parseWordMatchFromIssues(issues),
+      };
+    }
+    if (hasMcqLengthBiasSignal(issues) && !hasWordMatchSignal(issues)) {
+      return {
+        repaired: 'targeted',
+        cube: 'C',
+        repairKind: 'mcq_length_bias',
+        reason: issue || 'mcq_length_bias',
+      };
+    }
+  }
+
   // ── Cubo B: gate='lexico' (o Hören T4 calidad+lexico) con sustitución 1:1 ─
   if (gate === 'lexico' || gate === 'calidad+lexico') {
     const lexItems = parseLexicalIssues(issues);

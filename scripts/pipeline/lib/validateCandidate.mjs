@@ -59,9 +59,21 @@ export function validateCandidate(candidate, blueprint) {
     const lesenTeil = candidate.module === 'lesen' ? Number(candidate.teil) : null;
     const isLesenT5 = lesenTeil === 5;
     const isLesenT4 = lesenTeil === 4;
+    const isSentenceInsertion =
+      bpPart?.taskFormat === 'sentence_insertion' || bpPart?.slotType === 'sentence_gap_fill';
+    const isB2OpinionHeadline =
+      bpPart?.taskFormat === 'opinion_headline_matching' || bpPart?.slotType === 'opinion_headline_matching';
+    const isB2RulesMatching =
+      bpPart?.taskFormat === 'paragraph_heading_matching' || bpPart?.slotType === 'rules_matching';
     cefr.reasons.forEach((r) => {
       if ((isLesenT5 || isLesenT4) && (r.startsWith('complexity_too_simple') || r.startsWith('subordinate_too_few'))) {
         warnings.push(`cefr_gate:${r} [exento ${isLesenT4 ? 'T4-Leserbriefe' : 'T5-Anzeigen'}]`);
+      } else if (isSentenceInsertion && r.startsWith('inference_below_min')) {
+        warnings.push(`cefr_gate:${r} [exento T2-Sätze einfügen]`);
+      } else if (isB2OpinionHeadline && r.startsWith('inference_below_min')) {
+        warnings.push(`cefr_gate:${r} [exento B2-T4-Meinung↔Überschrift]`);
+      } else if (isB2RulesMatching && r.startsWith('inference_below_min')) {
+        warnings.push(`cefr_gate:${r} [exento B2-T5-Studienordnung↔Überschriften]`);
       } else {
         errors.push(`cefr_gate:${r}`);
       }

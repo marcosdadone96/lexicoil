@@ -217,7 +217,7 @@ export const T5_TOPIC_SUBTYPE_PREFERENCE = Object.freeze({
   Umwelt: ['park'],
   Familie: ['wohnanlage', 'freizeitzentrum', 'park'],
   Reisen: ['bibliothek', 'freizeitzentrum', 'park'],
-  Verkehr: ['park'],
+  Verkehr: ['park', 'wohnanlage'],
   Konsum: ['kantine', 'park'],
   Stadtleben: ['park', 'freizeitzentrum', 'bibliothek'],
 });
@@ -301,10 +301,35 @@ export function collectCellMolds(records, { teil = 5 } = {}) {
   return { subtypes: [...subtypes], moldKeys: [...moldKeys], titles };
 }
 
+function subtypeExcludedInSession(subtypeId, excluded) {
+  if (excluded.has(subtypeId)) return true;
+  for (const x of excluded) {
+    const s = String(x);
+    if (s.startsWith(`${subtypeId}:`)) return true;
+  }
+  return false;
+}
+
 function subtypeFullySaturated(subtypeId, usedMoldKeys = []) {
-  if (usedMoldKeys.includes(subtypeId)) return true;
   const profiles = listT5VariantProfiles(subtypeId);
-  return profiles.every((p) => usedMoldKeys.includes(`${subtypeId}:${p.id}`));
+  const used = new Set(usedMoldKeys || []);
+  if (!profiles.length) return used.has(subtypeId);
+  if (used.has(subtypeId)) {
+    // Legacy part sin _t5VariantProfile: bloquea solo perfil «standard», no hermanos.
+    return profiles.every((p) => {
+      if (p.id === 'standard') return true;
+      return used.has(`${subtypeId}:${p.id}`);
+    });
+  }
+  return profiles.every((p) => used.has(`${subtypeId}:${p.id}`));
+}
+
+function isSubtypeAllowedForPick(id, topicTag, excluded) {
+  if (subtypeExcludedInSession(id, excluded)) return false;
+  if (isSubtypeHardExcludedForTopic(topicTag, id)) return false;
+  const def = getSubtypeById(id);
+  if (subtypeMatchesExcludedPremise(def)) return false;
+  return true;
 }
 
 /**
@@ -319,22 +344,37 @@ export function pickNextT5Subtype(excludeIds = [], slotIndex = 0, topicTag = nul
   }
   const order = buildT5SubtypeCandidateOrder(topicTag);
   for (const id of order) {
-    if (excluded.has(id)) continue;
-    if (isSubtypeHardExcludedForTopic(topicTag, id)) continue;
+    if (!isSubtypeAllowedForPick(id, topicTag, excluded)) continue;
     if (subtypeFullySaturated(id, usedMoldKeys)) continue;
     const def = getSubtypeById(id);
     if (subtypeMatchesExcludedPremise(def)) continue;
     return { id, tier: classifyT5PickTier(id, topicTag), order };
   }
   for (const id of order) {
-    if (excluded.has(id)) continue;
-    if (isSubtypeHardExcludedForTopic(topicTag, id)) continue;
+    if (!isSubtypeAllowedForPick(id, topicTag, excluded)) continue;
     const def = getSubtypeById(id);
     if (subtypeMatchesExcludedPremise(def)) continue;
     return { id, tier: 'saturated', order };
   }
-  const fallback = order[slotIndex % order.length] || ALL_T5_IDS[0];
-  return { id: fallback, tier: 'saturated', order };
+  const allowed = order.filter((id) => isSubtypeAllowedForPick(id, topicTag, excluded));
+  if (allowed.length) {
+    const id = allowed[slotIndex % allowed.length];
+    return { id, tier: 'saturated', order };
+  }
+  return { id: null, tier: 'exhausted', order };
+}
+
+/** Subtipos T5 aún elegibles (misma lógica que pickNextT5Subtype, sin slot fallback). */
+export function countAvailableT5Subtypes(topicTag, usedMoldKeys = [], excludeIds = []) {
+  const excluded = new Set((excludeIds || []).filter(Boolean));
+  const order = buildT5SubtypeCandidateOrder(topicTag);
+  let n = 0;
+  for (const id of order) {
+    if (!isSubtypeAllowedForPick(id, topicTag, excluded)) continue;
+    if (subtypeFullySaturated(id, usedMoldKeys)) continue;
+    n += 1;
+  }
+  return n;
 }
 
 /**
@@ -360,6 +400,16 @@ export function resolveT5GenerationMolds(opts = {}) {
   const excludeTitles = [...new Set(titles)];
   const publishedPassages = loadGlobalT5BlocklistEntries({ lang, level });
   const pick = pickNextT5Subtype(opts.extraExcludeSubtypes || [], persisted.cellCount, topicTag, usedMoldKeys);
+  if (!pick?.id) {
+    const topic = topicTag ? normalizeB1Topic(topicTag) : '?';
+    const err = new Error(
+      `Lesen T5: sin subtipo disponible para «${topic}» (moldes saturados, sesión excluida o premisa vetada).`,
+    );
+    err.name = 'TopicMoldExhaustedError';
+    err.topic = topic;
+    err.teil = 5;
+    throw err;
+  }
   const textSubtype = pick.id;
   const subtypeDef = getSubtypeById(textSubtype);
   const seedEntropy = `${topicTag || 'any'}:${textSubtype}:${opts.seedEntropy || Date.now()}`;
@@ -367,7 +417,7 @@ export function resolveT5GenerationMolds(opts = {}) {
     .filter((k) => k.startsWith(`${textSubtype}:`))
     .map((k) => k.split(':')[1])
     .filter(Boolean);
-  if (usedMoldKeys.includes(textSubtype)) excludeProfiles.push(...listT5VariantProfiles(textSubtype).map((p) => p.id));
+  if (usedMoldKeys.includes(textSubtype)) excludeProfiles.push('standard');
   const institutionSeed = pickT5InstitutionSeed(textSubtype, {
     entropy: seedEntropy,
     topicTag: topicTag ? normalizeB1Topic(topicTag) : null,
@@ -737,6 +787,7 @@ export function pickNextT4DebateTopic(excludeIds = [], slotIndex = 0, topicTag =
 export function resolveT4GenerationMolds(opts = {}) {
   const lang = opts.lang || 'de';
   const level = opts.level || 'B1';
+  if (String(level).toUpperCase() === 'A2') return null;
   const topicTag = opts.topicTag;
   const topic = topicTag ? normalizeB1Topic(topicTag) : null;
   const persisted = loadPersistedCellMolds({
@@ -909,7 +960,13 @@ export function resolveLesenGenerationMolds(teil, opts = {}) {
     forceDebateTopic: opts.forceDebateTopic,
     seedEntropy: opts.seedEntropy,
   };
-  if (Number(teil) === 5) return resolveT5GenerationMolds(base);
-  if (Number(teil) === 4) return resolveT4GenerationMolds(base);
+  if (Number(teil) === 5) {
+    if (String(base.level || 'B1').toUpperCase() === 'B2') return null;
+    return resolveT5GenerationMolds(base);
+  }
+  if (Number(teil) === 4) {
+    if (String(base.level || 'B1').toUpperCase() === 'B2') return null;
+    return resolveT4GenerationMolds(base);
+  }
   return null;
 }
