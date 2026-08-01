@@ -16,7 +16,7 @@ const { parseSprechenBriefing, briefingForPart } = require(
 );
 
 const batch = JSON.parse(
-  fs.readFileSync(path.join(ROOT, 'batches/ready/pool-verified/sprechen-gemini-010.json'), 'utf8'),
+  fs.readFileSync(path.join(ROOT, 'batches/ready/pool-verified/B1/sprechen-gemini-010.json'), 'utf8'),
 );
 
 let passed = 0;
@@ -67,6 +67,20 @@ test('T3 has example questions only (no Beispielfragen label)', () => {
   const b = parseSprechenBriefing(q.question, 3);
   assert.equal(b.bullets.length, 3);
   assert.ok(!b.bullets.some((x) => /^beispielfragen/i.test(x)));
+});
+
+const REGIONAL_MARKT_T1 =
+  'Sie möchten zusammen mit Ihrer Partnerin/Ihrem Partner einen regionalen Markt für lokale Produkte in Ihrer Stadt organisieren. Sprechen Sie darüber und planen Sie gemeinsam. Machen Sie Vorschläge, reagieren Sie auf die Vorschläge Ihrer Partnerin/Ihres Partners und einigen Sie sich. Sie haben circa 2 Minuten Zeit.\n\nBesprechen Sie folgende Punkte:\nTermin und Ort des Marktes\nWelche Art von Produkten und regionalen Spezialitäten sollen angeboten werden?\nWie viele Stände müssen wir reservieren und wie gehen wir dabei vor?\nWie machen wir Werbung für unseren Markt, um viele Besucher anzuziehen?\nAufgabenverteilung und wie wir eine kleine Geldreserve für unvorhergesehene Ausgaben einplanen.';
+
+test('T1 “folgende Punkte” (not folgenden) splits intro + plain-line bullets', () => {
+  const b = parseSprechenBriefing(REGIONAL_MARKT_T1, 1);
+  assert.ok(b.intro.includes('circa 2 Minuten'), 'intro should end before bullet list');
+  assert.ok(!b.intro.includes('Termin und Ort'), 'bullet lines must not stay in intro');
+  assert.equal(b.bullets.length, 5);
+  assert.match(b.bullets[0], /Termin und Ort/i);
+  const view = briefingForPart({ teil: 1, situation: REGIONAL_MARKT_T1, level: 'B1' });
+  assert.equal(view.bullets.length, 5);
+  assert.equal(view.layout, 'bullets');
 });
 
 console.log('\n── briefingForPart display shape ──');

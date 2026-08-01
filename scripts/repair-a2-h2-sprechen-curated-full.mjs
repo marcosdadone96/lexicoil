@@ -635,7 +635,7 @@ async function main() {
       'sprechen-cur-work.json',
       ...Object.keys(SCHREIBEN_FIXES),
     ]);
-    report.publish = publishVerifiedExamSlots({
+    report.publish = await publishVerifiedExamSlots({
       slots: [SLOT],
       lang: 'de',
       level: LEVEL,
