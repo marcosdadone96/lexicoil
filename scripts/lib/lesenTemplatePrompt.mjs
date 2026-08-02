@@ -355,6 +355,7 @@ function buildLesenChecklistBlockA2(teil, options = {}) {
       buildLesenQuestionJsonKeyRule() +
       (Number(teil) === 1
         ? `- (T1 A2) Medientext 3ª persona/reportaje; **5 MCQ** a/b/c; PROHIBIDO ich-Blog y richtig_falsch.\n` +
+          `- (T1 A2) PROHIBIDO correct:"true"/"false"/"Richtig"/"Falsch" — correct solo letra a/b/c; options[] obligatorio (3 strings).\n` +
           buildLesenMcqChk34Rule(6)
         : '') +
       (Number(teil) === 2
@@ -392,6 +393,7 @@ function buildLesenChecklistBlockA2(teil, options = {}) {
     (Number(teil) === 1
       ? `- (T1 A2) **Medientext** informativo en 3ª persona; título de prensa; **5× multiple_choice** a/b/c.\n` +
         `- (T1 A2) PROHIBIDO: blog en «ich», richtig_falsch, registro B1 (Organisation, Gemeinschaft, Investition…).\n` +
+        `- (T1 A2) PROHIBIDO correct:"true"/"false"/"Richtig"/"Falsch" — correct solo letra a/b/c; **options[] obligatorio** (3 strings «a) …» «b) …» «c) …»).\n` +
         buildLesenMcqChk34Rule(6)
       : '') +
     (Number(teil) === 2

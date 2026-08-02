@@ -22,6 +22,8 @@ Eres examinador Goethe **A2**. Genera **Lesen Teil 1**: 1 texto de prensa/medio 
 - Enunciados cortos en alemán estándar
 - **PROHIBIDO** vocabulario B2/C1 en preguntas, opciones y explanations
 - `explanation`: ≥6 palabras, en alemán, justifica la respuesta correcta
+- **PROHIBIDO** `correct:"true"` / `"false"` / `"Richtig"` / `"Falsch"` — eso es richtig_falsch (B1), no A2 T1
+- **OBLIGATORIO** en cada question: `"options": ["a) …", "b) …", "c) …"]` (exactamente 3 strings) y `"correct"`/`"correctAnswer"` = letra `"a"`|`"b"`|`"c"`
 
 ## PALABRAS OBJETIVO
 <<< zeitung, programm, stadt, familie, kurs, termin, sport, garten, wochenende, arbeit >>>

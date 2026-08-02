@@ -508,11 +508,17 @@ function buildFixRetryPrompt(baseUserPrompt, issues, gate, batch, fixOpts = {}) 
   const level = String(fixOpts.level || 'B1').trim().toUpperCase();
   const teil = Number(fixOpts.teil);
   const typeMismatch = list.some((i) => /type_not_allowed/i.test(String(i)));
-  if (typeMismatch && level === 'A2' && teil === 1) {
+  const mcqFormatBreak = list.some((i) =>
+    /correct=["']true["']|correct=["']false["']|options_missing|MCQ requiere exactamente 3 options|no válido para type=["']multiple_choice["']/i.test(
+      String(i),
+    ),
+  );
+  if ((typeMismatch || mcqFormatBreak) && level === 'A2' && teil === 1) {
     return (
       `${baseUserPrompt}\n\n--- REGENERACIÓN LIMPIA (formato A2 incorrecto) ---\n` +
-      `Ignora cualquier JSON anterior. Genera desde cero: 5× type "multiple_choice" con options a/b/c. ` +
-      `PROHIBIDO richtig_falsch.${note}`
+      `Ignora cualquier JSON anterior. Genera desde cero: exactamente 5× type "multiple_choice". ` +
+      `Cada question con options: ["a) …", "b) …", "c) …"] y correct/correctAnswer = "a"|"b"|"c". ` +
+      `PROHIBIDO richtig_falsch, correct "true"/"false", options vacío.${note}`
     );
   }
   if (!batch) return baseUserPrompt + note;

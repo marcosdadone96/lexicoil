@@ -75,4 +75,8 @@ const hA2T3 = buildExamStaticCore('horen', 3, 'A2');
 assert.ok(/CHK-34/.test(hA2T3), 'A2 H T3: CHK-34 in checklist');
 assert.ok(/CHK-34/.test(hA2T1), 'A2 H T1: CHK-34 in checklist');
 
+// ─── Lesen T1 A2: forbid RF-style correct true/false ───
+const lA2T1 = buildLesenStaticCore(1, { level: 'A2' });
+assert.ok(/correct:"true"/.test(lA2T1), 'A2 L T1: forbids correct true/false in checklist');
+
 console.log('PASS: exam-prompt P0+P1 regression (checklist + A2 topic rotation)');
