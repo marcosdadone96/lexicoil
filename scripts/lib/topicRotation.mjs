@@ -114,6 +114,21 @@ export function injectTopicIntoPrompt(prompt, topic) {
 }
 
 /**
+ * Goethe Sprechen T1 A2: fixed personal intro cards (Geburtstag/Wohnort/Beruf/Hobby).
+ * _requestedTopic is pool-fill axis only — content never paints the assigned theme.
+ * Same policy as Hören T1 content_topic: audit-only, not a publish blocker.
+ */
+export function isSprechenT1PersonalFixedFormat(batch) {
+  if (!batch) return false;
+  const mod = String(
+    batch.module || batch.questions?.[0]?.module || batch.passages?.[0]?.module || '',
+  ).toLowerCase();
+  const teil = Number(batch.teil ?? batch.questions?.[0]?.teil ?? batch.passages?.[0]?.teil);
+  if (mod !== 'sprechen' || teil !== 1) return false;
+  return (batch.questions || []).some((q) => q?.type === 'personal_questions');
+}
+
+/**
  * Tema de stock por pregunta (Schreiben/Sprechen sin passage).
  * No usar solo el tema del batch: cada Aufgabe puede ser distinta (p. ej. T2 «Ihr Chef…» → Arbeit).
  */
@@ -121,8 +136,7 @@ export function detectQuestionTopicTag(q, batchFallbackTopic = null) {
   if (!q) return batchFallbackTopic || 'Freizeit';
   const mod = String(q.module || '').toLowerCase();
   const teil = Number(q.teil);
-  const level = String(q.level || 'B1').trim().toUpperCase();
-  if (mod === 'sprechen' && teil === 1 && q.type === 'personal_questions' && level === 'A2') {
+  if (mod === 'sprechen' && teil === 1 && q.type === 'personal_questions') {
     return 'Freizeit';
   }
   const text = [q.question, q.signText, q.transcript, q.statement].filter(Boolean).join(' ');
@@ -157,8 +171,9 @@ export function inferLesenT5DominantTopic(batch, fallbackTopic) {
 }
 
 /**
- * Root/batch topic = tema pedido; cada question usa detectQuestionTopicTag (contenido real)
+ * Root/batch topic = tema pedido (pool-fill); cada question usa detectQuestionTopicTag (contenido real)
  * salvo Lesen T5 / forceUniformTopic / _requestedTopic explícito (celda de generación).
+ * Sprechen T1 personal_questions: batch.topicTag = _requestedTopic; question tags = Freizeit (formato fijo).
  */
 export function alignQuestionTopicTagsToRequestedTopic(batch) {
   if (!batch) return batch;
@@ -167,20 +182,28 @@ export function alignQuestionTopicTagsToRequestedTopic(batch) {
   ).toLowerCase();
   const teil = Number(batch.teil ?? batch.questions?.[0]?.teil ?? batch.passages?.[0]?.teil);
   const isLesenT5 = mod === 'lesen' && teil === 5;
+  const sprechenT1Personal = isSprechenT1PersonalFixedFormat(batch);
+  // Prefer batch.topicTag over stale _requestedTopic (pool retags update topicTag first).
   const root = normalizeB1Topic(
-    isLesenT5 ? batch.topicTag : batch._requestedTopic || batch.topicTag,
+    isLesenT5 ? batch.topicTag : batch.topicTag || batch._requestedTopic,
   );
   if (!root || !isValidB1Topic(root)) return batch;
   batch.topicTag = root;
+  if (batch._requestedTopic != null && normalizeB1Topic(batch._requestedTopic) !== root) {
+    batch._requestedTopic = root;
+  }
   if (batch.passages) {
     batch.passages = batch.passages.map((p) => ({ ...p, topicTag: root }));
   }
   if (batch.questions) {
-    batch.questions = batch.questions.map((q) => ({
-      ...q,
-      topicTags: [root],
-      ...(q.topicTag != null ? { topicTag: root } : {}),
-    }));
+    batch.questions = batch.questions.map((q) => {
+      const perQ = sprechenT1Personal ? detectQuestionTopicTag(q, root) : root;
+      return {
+        ...q,
+        topicTags: [perQ],
+        ...(q.topicTag != null ? { topicTag: perQ } : {}),
+      };
+    });
   }
   return batch;
 }
@@ -191,12 +214,13 @@ export function tagBatchWithTopic(batch, topic, opts = {}) {
   const mod = String(batch.module || batch.questions?.[0]?.module || batch.passages?.[0]?.module || '')
     .toLowerCase();
   const isLesenT5 = mod === 'lesen' && teil === 5;
+  const sprechenT1Personal = isSprechenT1PersonalFixedFormat(batch);
   const effectiveTopic = isLesenT5 ? inferLesenT5DominantTopic(batch, topic) : topic;
   const requestedRoot = normalizeB1Topic(batch._requestedTopic);
   const forceUniform =
     opts.forceUniformTopic === true ||
     isLesenT5 ||
-    (requestedRoot && isValidB1Topic(requestedRoot));
+    (requestedRoot && isValidB1Topic(requestedRoot) && !sprechenT1Personal);
   const tagged = {
     ...batch,
     topicTag: effectiveTopic,

@@ -1,21 +1,21 @@
 {
   "passages": [
     {
-      "id": "de-a2-p-horen-t1-alltag-behoerden-01-s2",
+      "id": "de-a2-p-horen-t1-gesundheit-arzt-01-s1",
       "module": "horen",
       "teil": 1,
       "level": "A2",
-      "title": "Text 2",
-      "text": "Guten Morgen! Das Rathaus ist ab Montag geschlossen. Die Öffnungszeiten ändern sich. Besucher können Montag bis Freitag von 9 bis 16 Uhr vorbeikommen.",
+      "title": "Praxisansage",
+      "text": "Guten Tag, Sie haben die Zahnarztpraxis Dr. Schmidt angerufen. Die Praxis ist montags bis freitags von 8 bis 18 Uhr geöffnet. Für einen Termin drücken Sie bitte die Taste 1.",
       "topicTag": "Gesundheit"
     },
     {
-      "id": "de-a2-p-horen-t1-freizeit-kino-01-s2",
+      "id": "de-a2-p-horen-t1-gesundheit-arzt-02-s4",
       "module": "horen",
       "teil": 1,
       "level": "A2",
-      "title": "Text 2",
-      "text": "Achtung! Der Zug nach Berlin fährt in fünf Minuten von Gleis 7 ab. Alle Fahrgäste bitte einsteigen. Die Fahrt dauert zwei Stunden und fünfzehn Minuten. Nächster Halt ist Leipzig.",
+      "title": "Nachricht vom Arzt",
+      "text": "Hallo Frau Weber, hier ist die Zahnarztpraxis. Ihr Termin am Freitag um 14 Uhr ist bestätigt. Bitte kommen Sie 10 Minuten früher. Wenn Sie absagen möchten, rufen Sie bitte an unter 030-123456.",
       "topicTag": "Gesundheit"
     },
     {
@@ -23,7 +23,7 @@
       "module": "horen",
       "teil": 1,
       "level": "A2",
-      "title": "Text 4",
+      "title": "Nachricht",
       "text": "Hallo Martin, hier ist Anna. Ich bin heute krank und kann nicht zur Arbeit kommen. Ich habe Fieber und Husten. Ich gehe zum Arzt und bringe eine Krankmeldung. Bis bald! Auf Wiedersehen!",
       "topicTag": "Gesundheit"
     },
@@ -32,7 +32,7 @@
       "module": "horen",
       "teil": 1,
       "level": "A2",
-      "title": "Text 2",
+      "title": "Telefonat",
       "text": "Hallo, ich bin krank. Ich habe Kopfschmerzen und Fieber. Kann ich heute zum Arzt kommen? Ja, natürlich. Kommen Sie um 14 Uhr in die Praxis.",
       "topicTag": "Gesundheit"
     },
@@ -41,217 +41,218 @@
       "module": "horen",
       "teil": 1,
       "level": "A2",
-      "title": "Text 2",
+      "title": "Telefonat Arztpraxis",
       "text": "Hallo, ich möchte einen Termin machen. Ich habe starke Kopfschmerzen seit drei Tagen. Können Sie mir morgen einen Termin geben? Tut mir leid, morgen ist Freitag komplett ausgebucht. Wie ist es mit Montag um 10 Uhr? Das passt mir gut.",
       "topicTag": "Gesundheit"
     }
   ],
   "questions": [
     {
-      "id": "1-138d74d1",
+      "id": "de-a2-horen-t1-gesundheit-arzt-01-q1",
+      "module": "horen",
+      "teil": 1,
       "type": "multiple_choice",
-      "question": "Wann kann man das Rathaus besuchen?",
-      "correct": "b",
-      "correctAnswer": "b",
-      "explanation": "Die Radionachricht gibt die neuen Öffnungszeiten an: 'Montag bis Freitag von 9 bis 16 Uhr'.",
+      "question": "Welche Nummer drücken Sie für einen Termin?",
+      "passageId": "de-a2-p-horen-t1-gesundheit-arzt-01-s1",
+      "segmentLabel": "Aufnahme 1",
+      "options": [
+        "a) die Taste 1",
+        "b) die Taste 2",
+        "c) die Taste 3"
+      ],
+      "correct": "a",
+      "correctAnswer": "a",
+      "explanation": "In der Praxisansage heißt es: 'Für einen Termin drücken Sie bitte die Taste 1.'",
       "grammarTags": [
-        "g-de-b1-relativ"
+        "g-de-a2-trennbar",
+        "g-de-a2-dat-akk"
       ],
       "topicTags": [
         "Gesundheit"
       ],
       "vocabularyTags": [
-        "angeben",
-        "besuchen",
-        "öffnungszeiten",
-        "Radionachricht",
-        "Rathaus",
+        "Praxis",
+        "Termin"
+      ],
+      "difficulty": 2,
+      "skills": [
+        "listening",
+        "listening"
+      ],
+      "language": "de",
+      "level": "A2",
+      "examType": "goethe"
+    },
+    {
+      "id": "de-a2-horen-t1-gesundheit-arzt-02-q4",
+      "module": "horen",
+      "teil": 1,
+      "type": "multiple_choice",
+      "question": "Wann ist der Termin von Frau Weber?",
+      "options": [
+        "a) Freitag um 13 Uhr",
+        "b) Freitag um 14 Uhr",
+        "c) Samstag um 14 Uhr"
+      ],
+      "correct": "b",
+      "correctAnswer": "b",
+      "explanation": "Die Nachricht bestätigt: 'Ihr Termin am Freitag um 14 Uhr.'",
+      "passageId": "de-a2-p-horen-t1-gesundheit-arzt-02-s4",
+      "segmentLabel": "Aufnahme 2",
+      "grammarTags": [
+        "g-de-a2-trennbar",
+        "g-de-a2-dat-akk"
+      ],
+      "topicTags": [
+        "Gesundheit"
+      ],
+      "vocabularyTags": [
+        "Termin",
+        "bestätigt",
         "Freitag"
       ],
       "difficulty": 2,
-      "options": [
-        "a) Montag bis Freitag 8 bis 15 Uhr",
-        "b) Montag bis Freitag 9 bis 16 Uhr",
-        "c) Samstag bis Sonntag 9 bis 16 Uhr"
-      ],
-      "passageId": "de-a2-p-horen-t1-alltag-behoerden-01-s2",
-      "number": 1,
-      "nr": 1,
-      "nummer": 1,
-      "module": "horen",
-      "teil": 1,
-      "level": "A2",
-      "language": "de",
-      "examType": "goethe",
-      "segmentLabel": "Aufnahme 1",
       "skills": [
+        "listening",
         "listening"
-      ]
+      ],
+      "language": "de",
+      "level": "A2",
+      "examType": "goethe"
     },
     {
-      "id": "2-138d74d1",
-      "type": "multiple_choice",
-      "question": "Wie lange dauert die Zugfahrt nach Berlin?",
-      "correct": "c",
-      "correctAnswer": "c",
-      "explanation": "Der Zug fährt nach Berlin. Die Fahrt dauert zwei Stunden und fünfzehn Minuten, wie im Audio klar gesagt wird.",
-      "grammarTags": [
-        "g-de-b1-relativ"
-      ],
-      "topicTags": [
-        "Gesundheit"
-      ],
-      "vocabularyTags": [
-        "Berlin",
-        "stunden",
-        "minuten",
-        "Zugfahrt",
-        "fünfzeh",
-        "Ansage"
-      ],
-      "difficulty": 2,
-      "options": [
-        "a) Eine Stunde",
-        "b) Anderthalb Stunden",
-        "c) Zwei Stunden 15 Minuten"
-      ],
-      "passageId": "de-a2-p-horen-t1-freizeit-kino-01-s2",
-      "number": 2,
-      "nr": 2,
-      "nummer": 2,
+      "id": "de-a2-horen-t1-gesundheit-arzt-03-q4",
       "module": "horen",
       "teil": 1,
-      "level": "A2",
-      "language": "de",
-      "examType": "goethe",
-      "segmentLabel": "Aufnahme 2",
-      "skills": [
-        "listening"
-      ]
-    },
-    {
-      "id": "3-138d74d1",
       "type": "multiple_choice",
+      "segmentLabel": "Aufnahme 3",
+      "passageId": "de-a2-p-horen-t1-gesundheit-arzt-03-s4",
       "question": "Warum kann Anna nicht zur Arbeit kommen?",
-      "correct": "a",
-      "correctAnswer": "a",
+      "options": [
+        "a) Sie hat einen Zahnarzttermin",
+        "b) Sie ist krank und hat Fieber und Husten",
+        "c) Sie muss zum Arzt eine Krankmeldung holen"
+      ],
+      "correct": "b",
+      "correctAnswer": "b",
       "explanation": "Anna sagt: 'Ich bin heute krank und kann nicht zur Arbeit kommen. Ich habe Fieber und Husten.'",
       "grammarTags": [
-        "g-de-b1-modalverben"
+        "g-de-a2-modal",
+        "g-de-a2-trennbar",
+        "g-de-a2-praesens"
       ],
       "topicTags": [
         "Gesundheit"
       ],
       "vocabularyTags": [
-        "Arbeit",
-        "kommen",
-        "husten",
         "Fieber",
-        "sagen",
+        "Husten",
+        "Krankmeldung",
         "krank"
       ],
       "difficulty": 2,
-      "options": [
-        "a) Sie ist krank und hat Fieber und Husten",
-        "b) Sie muss zum Arzt eine Krankmeldung holen",
-        "c) Sie hat einen Zahnarzttermin"
-      ],
-      "passageId": "de-a2-p-horen-t1-gesundheit-arzt-03-s4",
-      "number": 3,
-      "nr": 3,
-      "nummer": 3,
-      "module": "horen",
-      "teil": 1,
-      "level": "A2",
-      "language": "de",
-      "examType": "goethe",
-      "segmentLabel": "Aufnahme 3",
       "skills": [
+        "listening",
         "listening"
-      ]
+      ],
+      "language": "de",
+      "level": "A2",
+      "examType": "goethe"
     },
     {
-      "id": "4-138d74d1",
+      "id": "de-a2-horen-t1-gesundheit-arzt-01-q2",
+      "module": "horen",
+      "teil": 1,
       "type": "multiple_choice",
       "question": "Wann kann die Person zum Arzt kommen?",
-      "correct": "c",
-      "correctAnswer": "c",
+      "passageId": "de-a2-p-horen-t1-gesundheit-arzt-01-s2",
+      "segmentLabel": "Aufnahme 4",
+      "options": [
+        "a) um 13 Uhr",
+        "b) um 14 Uhr",
+        "c) um 15 Uhr"
+      ],
+      "correct": "b",
+      "correctAnswer": "b",
       "explanation": "Der Arzt sagt: 'Kommen Sie um 14 Uhr in die Praxis.'",
-      "grammarTags": [],
+      "grammarTags": [
+        "g-de-a2-modal",
+        "g-de-a2-trennbar",
+        "g-de-a2-dat-akk"
+      ],
       "topicTags": [
         "Gesundheit"
       ],
       "vocabularyTags": [
+        "Arzt",
         "kommen",
-        "Person",
-        "Praxis",
-        "sagen",
-        "Arzt"
+        "Termin"
       ],
       "difficulty": 2,
-      "options": [
-        "a) Um 15 Uhr",
-        "b) Um 13 Uhr",
-        "c) Um 14 Uhr"
-      ],
-      "passageId": "de-a2-p-horen-t1-gesundheit-arzt-01-s2",
-      "number": 4,
-      "nr": 4,
-      "nummer": 4,
-      "module": "horen",
-      "teil": 1,
-      "level": "A2",
-      "language": "de",
-      "examType": "goethe",
-      "segmentLabel": "Aufnahme 4",
       "skills": [
+        "listening",
         "listening"
-      ]
+      ],
+      "language": "de",
+      "level": "A2",
+      "examType": "goethe"
     },
     {
-      "id": "5-138d74d1",
+      "id": "de-a2-horen-t1-gesundheit-arzt-04-q2",
+      "module": "horen",
+      "teil": 1,
       "type": "multiple_choice",
+      "passageId": "de-a2-p-horen-t1-gesundheit-arzt-04-s2",
+      "segmentLabel": "Aufnahme 5",
       "question": "Warum kann die Person keinen Termin am Freitag bekommen?",
       "correct": "a",
       "correctAnswer": "a",
-      "explanation": "Die Person kann keinen Termin am Freitag bekommen, weil die Praxis an diesem Tag komplett ausgebucht ist. Das wird im Gespräch deutlich.",
+      "options": [
+        "a) Die Praxis ist komplett ausgebucht",
+        "b) Der Arzt ist krank",
+        "c) Der Arzt hat Urlaub"
+      ],
+      "explanation": "Der Zahnarzt sagt: ‚Morgen ist Freitag komplett ausgebucht.'",
       "grammarTags": [
-        "g-de-b1-relativ"
+        "g-de-a2-modal",
+        "g-de-a2-trennbar",
+        "g-de-a2-dat-akk"
       ],
       "topicTags": [
         "Gesundheit"
       ],
       "vocabularyTags": [
-        "ausgebuchen",
-        "kompleten",
-        "bekommen",
-        "keinen",
         "Termin",
-        "Zahnarzt"
+        "ausgebucht",
+        "Kopfschmerzen"
       ],
       "difficulty": 2,
-      "options": [
-        "a) Die Praxis ist ausgebucht",
-        "b) Der Arzt ist krank",
-        "c) Der Arzt hat Urlaub"
-      ],
-      "passageId": "de-a2-p-horen-t1-gesundheit-arzt-04-s2",
-      "number": 5,
-      "nr": 5,
-      "nummer": 5,
-      "module": "horen",
-      "teil": 1,
-      "level": "A2",
-      "language": "de",
-      "examType": "goethe",
-      "segmentLabel": "Aufnahme 5",
       "skills": [
+        "listening",
         "listening"
-      ]
+      ],
+      "language": "de",
+      "level": "A2",
+      "examType": "goethe"
     }
   ],
   "_germanCapsNormalizeVersion": "v3.17-mcq-dedupe-universal-2026-07-14",
-  "_germanCapsNormalizedAt": "2026-07-25T08:53:47.588Z",
+  "_germanCapsNormalizedAt": "2026-07-26T21:07:39.904Z",
   "_balanceMcqVersion": "v1.2-no-rf-chrono-shuffle-2026-07-11",
-  "_balanceMcqNormalizedAt": "2026-07-25T08:53:47.588Z"
+  "_balanceMcqNormalizedAt": "2026-07-26T21:07:39.904Z",
+  "_a2ImportantCloseAt": "2026-07-26T21:07:39.904Z",
+  "_a2ImportantCloseSteps": [
+    "CHK-33: balanceMcq + LLM length bias"
+  ],
+  "topicTag": "Gesundheit",
+  "_requestedTopic": "Gesundheit",
+  "_horenT1SegmentRepairAt": "2026-07-27T06:17:44.199Z",
+  "_horenT1SegmentRepairNote": "bank swap: segments align with declared topicTag",
+  "_metadataEnrichedAt": "2026-07-27T06:41:16.318Z",
+  "_metadataEnrichNote": "deterministic: detectTopic + per-question lemma vocab + grammar heuristics",
+  "_grammarTagsNormalizeVersion": "v2.2-a2-b2-level-tags-2026-07-27",
+  "_a2GrammarRetagAt": "2026-07-27T06:41:16.318Z",
+  "_a2GrammarRetagNote": "re-enrich-a2-pool-grammar.mjs",
+  "_a2TopicTriageFixAt": "2026-08-02T14:40:03.832Z",
+  "_a2TopicTriageFixNote": "A:text"
 }

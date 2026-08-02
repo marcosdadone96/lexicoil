@@ -9,6 +9,7 @@
  */
 import fs from 'node:fs';
 import path from 'node:path';
+import { createRequire } from 'node:module';
 import { ROOT } from './loadEnv.mjs';
 import {
   applyGermanCapsNormalize,
@@ -43,7 +44,11 @@ import { runGermanContentLanguageGate } from './qualityGates/germanContentLangua
 import { checkT3PoolDedup } from './t3PoolDedupGate.mjs';
 import { checkT4PoolDedup } from './lesenT4PoolDedupGate.mjs';
 import { stripCorruptedVocabularyTags } from './chk31VocabLemma.mjs';
+import { isSprechenT1PersonalFixedFormat } from './topicRotation.mjs';
 import { enrichBatchMetadata } from './enrichBatchMetadata.mjs';
+
+const require = createRequire(import.meta.url);
+const { isOfficialA2Topic } = require(path.join(ROOT, 'js/data/a2Topics.js'));
 
 export { GERMAN_CAPS_NORMALIZE_VERSION };
 
@@ -393,6 +398,12 @@ export async function poolReadyCheck(batch, opts = {}) {
   const batchLevelForTopic = normalizeLevel(opts.level || inferBatchLevel(batch));
   const horenMultiSegmentContentTopicAuditOnly =
     mod === 'horen' && (teil === 1 || (teil === 3 && batchLevelForTopic === 'A2'));
+  // A2 pool batches with an official axis tag: passage-level content_topic is audit-only
+  // (Lesen T4 multi-anzeige, Hören segments, keyword-sparse texts — batch tag is source of truth).
+  const a2OfficialBatchTopicPassageAuditOnly =
+    batchLevelForTopic === 'A2' && isOfficialA2Topic(batch.topicTag || batch._requestedTopic);
+  const passageContentTopicAuditOnly =
+    horenMultiSegmentContentTopicAuditOnly || a2OfficialBatchTopicPassageAuditOnly;
   if (mod === 'lesen' || mod === 'horen') {
     const q4 = runMetadataSchemaGate(batch, {
       file,
@@ -406,7 +417,7 @@ export async function poolReadyCheck(batch, opts = {}) {
         const isContentTopicFinding =
           f.rule === 'content_topic_mismatch' ||
           (typeof f.detail === 'string' && /^passage:/i.test(f.detail));
-        if (horenMultiSegmentContentTopicAuditOnly && isContentTopicFinding) {
+        if (passageContentTopicAuditOnly && isContentTopicFinding) {
           // Direct loop below audits once with root topicTag (avoid double details).
           continue;
         }
@@ -435,7 +446,7 @@ export async function poolReadyCheck(batch, opts = {}) {
           module: mod,
         });
         if (ct.mismatch) {
-          if (horenMultiSegmentContentTopicAuditOnly) {
+          if (passageContentTopicAuditOnly) {
             details.push({
               rule: 'content_topic_mismatch',
               severity: 'audit',
@@ -453,6 +464,20 @@ export async function poolReadyCheck(batch, opts = {}) {
           });
         }
       }
+    }
+  }
+
+  // Sprechen T1 personal_questions (A2): _requestedTopic is pool-fill only — topic_mismatch audit-only
+  // (same policy as Hören T1 content_topic; fixed Goethe intro cards never paint the assigned theme).
+  if (mod === 'sprechen' && teil === 1 && isSprechenT1PersonalFixedFormat(batch)) {
+    const q4sp = runMetadataSchemaGate(batch, {
+      file,
+      profile: 'generated',
+      module: 'sprechen',
+    });
+    for (const f of q4sp.findings || []) {
+      if (f.rule !== 'topic_mismatch') continue;
+      details.push({ rule: f.rule, severity: 'audit', detail: f.detail });
     }
   }
 
