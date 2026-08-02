@@ -7,6 +7,10 @@ import {
   checkHorenBatchIngest,
   checkHorenA2Register,
   A2_HOREN_B1_REGISTER_RE,
+  findZuInfinitiv,
+  countRelativeClauses,
+  analyzeRelativeClauses,
+  checkRelativeClausesForPassage,
 } from '../horenBatchIngestCheck.mjs';
 import { normalizeBatch } from '../normalizeBatch.mjs';
 
@@ -57,5 +61,68 @@ const normGen = normalizeBatch(
   { module: 'horen', teil: 1, lang: 'de', level: 'A2', stripPoolLegacy: false },
 );
 assert.equal(normGen.questions[0].difficulty, 3, 'A2 horen default difficulty is 3');
+
+// Retired 047 — Relativsatz + zu-Infinitiv B1 register (gate hole closed 2026-08-02)
+const bad047Path = path.join(ROOT, 'batches/needs-regeneration/A2/horen-t4-gemini-047.json');
+assert.ok(fs.existsSync(bad047Path), 'horen-t4-gemini-047.json in needs-regeneration');
+const bad047 = JSON.parse(fs.readFileSync(bad047Path, 'utf8'));
+const text047 = bad047.passages[0].text;
+assert.ok(countRelativeClauses(text047) >= 2, '047 fixture has multiple Relativsätze');
+assert.ok(findZuInfinitiv(text047).length >= 2, '047 fixture has zu-Infinitiv');
+assert.ok(!findZuInfinitiv(text047).some((h) => /zu Hause/i.test(h)), 'zu Hause must not count');
+const bad047Report = checkHorenBatchIngest(bad047, { lang: 'de', level: 'A2', teil: 4, batchId: 'test-047' });
+assert.equal(bad047Report.ok, false, '047 must fail ingest with tightened register gate');
+assert.ok(
+  bad047Report.results.some((r) =>
+    r.errors.some((e) =>
+      /register_gate:(relative_clause|zu_infinitiv|es_ist_zu_verb)/.test(e),
+    ),
+  ),
+  `047 register errors: ${JSON.stringify(bad047Report.results[0]?.errors)}`,
+);
+
+// Synthetic A2 T4 interview — no Relativsatz / zu-Infinitiv
+const goodT4 = {
+  passages: [
+    {
+      id: 'p4-good',
+      module: 'horen',
+      teil: 4,
+      text:
+        'Moderator: Guten Tag. Heute sprechen wir über Autofahren in der Stadt. ' +
+        'Frau Hansen: In vielen Städten ist die Luft sehr schlecht. Der Verkehr verursacht viel Abgas und Lärm. ' +
+        'Moderator: Was ist Ihre Meinung? ' +
+        'Frau Hansen: Wir brauchen mehr Busse und Bahnen. Auch Fahrradwege sind wichtig. Das ist besser für alle.',
+    },
+  ],
+  questions: [{ module: 'horen', teil: 4, type: 'ja_nein' }],
+};
+const goodT4Reg = checkHorenA2Register(goodT4, 4);
+assert.equal(goodT4Reg.ok, true, `synthetic T4 register: ${goodT4Reg.errors}`);
+
+// cur-health pattern — one simple subject relative (der/die/das + ≤4 words before final verb)
+const curHealthRel = 'Und was ist mit den Menschen, die arbeiten müssen?';
+const relAnalysis = analyzeRelativeClauses(curHealthRel);
+assert.equal(relAnalysis.length, 1, 'cur-health sentence has one relative');
+assert.equal(relAnalysis[0].kind, 'simple_subject', relAnalysis[0].reason);
+assert.equal(checkRelativeClausesForPassage(curHealthRel).ok, true);
+
+const goodT4SimpleRel = {
+  passages: [
+    {
+      id: 'p4-simple-rel',
+      module: 'horen',
+      teil: 4,
+      text:
+        'Moderator: Guten Tag. Heute sprechen wir über Verkehr in der Stadt. ' +
+        'Frau Hansen: In vielen Städten ist die Luft schlecht. Der Verkehr macht viel Lärm. ' +
+        `Moderator: ${curHealthRel} ` +
+        'Frau Hansen: Man muss den Nahverkehr besser machen. Dann fahren mehr Leute mit Bus und Bahn.',
+    },
+  ],
+  questions: [{ module: 'horen', teil: 4, type: 'ja_nein' }],
+};
+const goodT4SimpleRelReg = checkHorenA2Register(goodT4SimpleRel, 4);
+assert.equal(goodT4SimpleRelReg.ok, true, `T4 with simple subject relative: ${goodT4SimpleRelReg.errors}`);
 
 console.log('PASS: horen-a2-ingest-check');

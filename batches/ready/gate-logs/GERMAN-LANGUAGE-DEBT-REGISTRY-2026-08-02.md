@@ -42,6 +42,10 @@
 | **SKIP-ANG** | *Angeboten* skip en normalización | `horen-t3-081` log | Sesión 2026-08-02 | Individual |
 | **SEP-GLOSS-FR** | Glosario verbos separables FR vacío (0/125); EN/ES/IT curados | `separableResolve.js` `SEPARABLE_GLOSS` · test `separable-ui-langs-fr-it.test.mjs` espera `fr=0` | Auditoría B1 2026-08-02 | **Pendiente — prioridad media** — replicar patrón IT: `scripts/lib/separableGlossFr.mjs` + `patch-separable-gloss-fr.mjs` (ver `separableGlossIt.mjs` / `patch-separable-gloss-it.mjs`) |
 | **JS-FOLD-TOPIC-KEY** | Redeclaración global aborta `a2Topics.js` → A2 UI usa fallback B1 (16 temas) | `verify-a2topics-browser-collision.mjs` post-fix 2026-08-02 | Auditoría B1 2026-08-02 | **Resuelto en código** — alias `b1Helpers` / `b1FoldTopicKey` en `a2Topics.js`; deploy pendiente cuota Netlify |
+| **HOREN-A2-REGISTER-GAP** | `checkHorenBatchIngest` PASS con Relativsatz + zu-Infinitiv B1 (047) | `horen-a2-ingest-check.test.mjs` + 047 FAIL aislado | Revisor externo 2026-08-02 | **Resuelto en código** — max 1 relativa simple de sujeto T4, 0 complejas/densas; zu-Inf max 1; `Es ist…zu VERB`; 047/048 retirados; deploy pendiente |
+| **TOPIC-CONTENT-MISMATCH-SCH** | Schreiben tema vs contenido desalineado | `schreiben-gemini-064` (fiesta empresa / Umwelt) | Revisor externo 2026-08-02 | Pendiente — baja |
+| **TERM-INCONSIST-L2** | Terminología mixta en opciones MCQ | `lesen-t2-gemini-178` Stock/Obergeschoss | Revisor externo 2026-08-02 | Pendiente — baja |
+| **CAPS-ADJ-S2** | Adj. en mayúscula en pregunta Sprechen | `sprechen-t2-gemini-022` «Wichtig» | Revisor externo 2026-08-02 | Pendiente — baja |
 
 ### JS-FOLD-TOPIC-KEY — redeclusión global aborta A2 en browser
 
