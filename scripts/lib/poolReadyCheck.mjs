@@ -429,7 +429,11 @@ export async function poolReadyCheck(batch, opts = {}) {
       for (const p of batch.passages || []) {
         if (!p?.topicTag && !batch.topicTag) continue;
         const tagged = { ...p, topicTag: batch.topicTag || p.topicTag };
-        const ct = checkPassageContentTopic(tagged);
+        const ct = checkPassageContentTopic(tagged, {
+          level: batchLevelForTopic,
+          teil,
+          module: mod,
+        });
         if (ct.mismatch) {
           if (horenMultiSegmentContentTopicAuditOnly) {
             details.push({

@@ -1061,6 +1061,30 @@ async function runQualityAndStructuralGates(args, teil, batch, { onFail, relFile
     }
   }
 
+  if (!args.skipQuality && teil === 3 && String(args.level || batch.level || 'B1').toUpperCase() === 'A2') {
+    const batchTag = batch.topicTag || batch._requestedTopic;
+    for (const p of batch.passages || []) {
+      const introTag = batchTag || p?.topicTag;
+      if (!introTag) continue;
+      const ct = checkPassageContentTopic(
+        { ...p, topicTag: introTag },
+        { level: 'A2', teil: 3, module: 'lesen' },
+      );
+      if (ct.mismatch) {
+        onFail?.();
+        const issue = ct.detail || `T3 A2 topic «${introTag}» ≠ contenido`;
+        return {
+          ok: false,
+          gate: 'content_topic',
+          issue,
+          issues: [issue],
+          detail: issue,
+          rule: 'content_topic_mismatch',
+        };
+      }
+    }
+  }
+
   if (!args.skipQuality && teil === 4) {
     const p0 = batch.passages?.[0] || batch.passage;
     const introTag = batch.topicTag || batch._requestedTopic || p0?.topicTag;

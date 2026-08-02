@@ -51,10 +51,17 @@ export const HOREN_TOPIC_EXTRAS = Object.freeze({
     'Medaille', 'Startgebühr', 'Laufveranstaltung', 'Wanderfreunde', 'Wandergruppe',
   ],
   Gesundheit: [
+    'Gesundheit', 'gesund', 'Gesundheitskurs', 'Gesundheitskurse', 'Gesundheitskursen',
+    'Bewegung', 'spazieren', 'Gymnastik', 'Rücken', 'Fitness',
     'Stress', 'Belastung', 'Belastungen', 'Prävention', 'Präventionskurs',
     'achtsam', 'atmen', 'Immunsystem', 'Sprechstunde', 'Hustenmittel',
     'Gesundheits', 'gesünder', 'Rückenproblemen', 'Gelenkschmerzen',
   ],
+});
+
+/** Prefix stems — word-boundary extras miss compounds (e.g. Gesundheits + kurse). */
+const TOPIC_PREFIX_KEYWORDS = Object.freeze({
+  Gesundheit: ['Gesundheits'],
 });
 
 /**
@@ -128,6 +135,26 @@ function keywordsForTopic(topic) {
   return out;
 }
 
+function prefixKeywordHit(text, prefix) {
+  const re = new RegExp(`(?:^|[^A-Za-zÄÖÜäöüß])${escapeRe(prefix)}[A-Za-zÄÖÜäöüß]+`, 'i');
+  return re.test(text);
+}
+
+/**
+ * A2 Lesen T3 email: Sportkurs/Bewegung bajo eje Gesundheit es válido pedagógicamente.
+ * Solo aplica cuando el gate detectaría Sport incompatible con Gesundheit.
+ */
+export function isLesenA2T3GesundheitSportEmailCompat(passage, tag, detected, opts = {}) {
+  if (String(opts.level || passage?.level || '').toUpperCase() !== 'A2') return false;
+  if (Number(opts.teil ?? passage?.teil) !== 3) return false;
+  if (String(opts.module || 'lesen').toLowerCase() !== 'lesen') return false;
+  if (tag !== 'Gesundheit' || detected !== 'Sport') return false;
+  const ptype = String(passage?.type || 'email').toLowerCase();
+  if (ptype !== 'email') return false;
+  const blob = [passage?.title, passage?.text].filter(Boolean).join('\n');
+  return /\b(Sportkurs|Sportverein|Gymnastik|Fitness|Bewegung|spazieren|Gesundheit|gesund)\b/i.test(blob);
+}
+
 /**
  * Score topics for a passage (title + text). Word-boundary + Hören extras.
  * @returns {{ scores: Record<string, number>, best: string|null, bestScore: number, tagScore: number }}
@@ -145,6 +172,9 @@ export function scorePassageTopics(passage, topicTag = null) {
       if (keywordOnlyInIdiom(blob, kw)) continue;
       n++;
     }
+    for (const prefix of TOPIC_PREFIX_KEYWORDS[topic] || []) {
+      if (prefixKeywordHit(blob, prefix)) n++;
+    }
     if (n) scores[topic] = n;
   }
 
@@ -157,9 +187,10 @@ export function scorePassageTopics(passage, topicTag = null) {
 
 /**
  * @param {object} passage
+ * @param {{ level?: string, teil?: number, module?: string }} [opts]
  * @returns {{ mismatch: boolean, detected: string|null, tag: string|null, reason?: string, detail?: string }}
  */
-export function checkPassageContentTopic(passage) {
+export function checkPassageContentTopic(passage, opts = {}) {
   const tag = passage?.topicTag ? String(passage.topicTag) : null;
   if (!tag) return { mismatch: false, detected: null, tag: null };
 
@@ -184,6 +215,9 @@ export function checkPassageContentTopic(passage) {
   if (best !== tag && bestScore > tagScore) {
     const compat = topicsAreCompatible(tag, best);
     if (!compat.match && compat.reason === 'topic_mismatch') {
+      if (isLesenA2T3GesundheitSportEmailCompat(passage, tag, best, opts)) {
+        return { mismatch: false, detected: best, tag, reason: 'a2_t3_gesundheit_sport_compat' };
+      }
       return {
         mismatch: true,
         detected: best,
