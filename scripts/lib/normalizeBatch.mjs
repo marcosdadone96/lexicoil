@@ -72,15 +72,26 @@ function moduleDefaultSkill(module) {
   return 'reading';
 }
 
-function normalizeDifficulty(value, module) {
-  if (typeof value === 'number' && value >= 1 && value <= 10) return value;
+function normalizeDifficulty(value, module, level = 'B1') {
+  const lv = String(level || 'B1').trim().toUpperCase();
+  if (typeof value === 'number' && value >= 1 && value <= 10) {
+    if (module === 'horen' && lv === 'A2' && value >= 2 && value <= 4) return value;
+    if (!(module === 'horen' && lv === 'A2')) return value;
+  }
   if (typeof value === 'string') {
     const lower = value.toLowerCase().trim();
-    if (DIFFICULTY_WORDS[lower] != null) return DIFFICULTY_WORDS[lower];
+    if (DIFFICULTY_WORDS[lower] != null) {
+      const w = DIFFICULTY_WORDS[lower];
+      if (module === 'horen' && lv === 'A2') return Math.min(4, Math.max(2, w <= 4 ? w : 3));
+      return w;
+    }
     const n = parseInt(value, 10);
-    if (!Number.isNaN(n) && n >= 1 && n <= 10) return n;
+    if (!Number.isNaN(n) && n >= 1 && n <= 10) {
+      if (module === 'horen' && lv === 'A2') return n >= 2 && n <= 4 ? n : 3;
+      return n;
+    }
   }
-  if (module === 'horen') return 5;
+  if (module === 'horen') return lv === 'A2' ? 3 : 5;
   if (module === 'sprechen') return 5; // SP-2: fixed B1 Sprechen difficulty
   if (module === 'schreiben') return 6;
   return 4;
@@ -145,8 +156,16 @@ export function stripPoolLegacyQuestionFields(q, ctx = {}) {
   return out;
 }
 
+function isPoolStripLegacyQuestionFields(ctx) {
+  if (ctx?.stripPoolLegacy === false) return false;
+  const mod = String(ctx?.module || '').toLowerCase();
+  const lv = String(ctx?.level || 'B1').trim().toUpperCase();
+  return mod === 'lesen' || (mod === 'horen' && lv === 'A2');
+}
+
+/** @deprecated use isPoolStripLegacyQuestionFields */
 function isLesenPoolNormalize(ctx) {
-  return String(ctx?.module || '').toLowerCase() === 'lesen' && ctx?.stripPoolLegacy !== false;
+  return isPoolStripLegacyQuestionFields(ctx);
 }
 
 function defaultExplanation(q) {
@@ -192,7 +211,7 @@ function normalizeQuestionType(raw) {
 
 function normalizeQuestion(q, ctx = {}) {
   const out = { ...q };
-  const poolLesen = isLesenPoolNormalize(ctx);
+  const poolStripLegacy = isPoolStripLegacyQuestionFields(ctx);
   const rootTopicTag = ctx.rootTopicTag || ctx.topicTag || null;
   const lang = ctx.lang || 'de';
   if (typeof out.teil === 'string') out.teil = Number(out.teil);
@@ -245,7 +264,7 @@ function normalizeQuestion(q, ctx = {}) {
     const canonExpl = canonicalSchreibenExplanation(out.teil, ctx.level || out.level || 'B1');
     if (canonExpl) out.explanation = canonExpl;
   }
-  if (poolLesen) {
+  if (poolStripLegacy) {
     // Opción B (2026-07-10): no persistir difficulty — ver stripPoolLegacyQuestionFields.
     delete out.difficulty;
     delete out.skills;
@@ -254,12 +273,13 @@ function normalizeQuestion(q, ctx = {}) {
     if (out.language === lang || !out.language) delete out.language;
     if (out.topicTag && rootTopicTag && out.topicTag === rootTopicTag) delete out.topicTag;
   } else {
+    const qLevel = ctx.level || out.level || 'B1';
     out.difficulty =
       out.module === 'sprechen'
-        ? String(ctx.level || out.level || 'B1').trim().toUpperCase() === 'A2'
+        ? String(qLevel).trim().toUpperCase() === 'A2'
           ? 3
           : 5
-        : normalizeDifficulty(out.difficulty, out.module);
+        : normalizeDifficulty(out.difficulty, out.module, qLevel);
     out.skills = normalizeSkills(out.skills, out.module);
     if (out.module === 'sprechen') {
       const mapped = normalizeSprechenTopicTags(out.topicTags, rootTopicTag);
@@ -603,7 +623,7 @@ export function normalizeBatch(batch, ctx) {
     console.log(`  [normalizeNouns] ${capsStats.capFixed} sustantivo(s) capitalizados automáticamente`);
   }
 
-  if (isLesenPoolNormalize(ctx)) {
+  if (isPoolStripLegacyQuestionFields(ctx)) {
     withMcqCaps = {
       ...withMcqCaps,
       questions: (withMcqCaps.questions || []).map((q) => stripPoolLegacyQuestionFields(q, ctx)),

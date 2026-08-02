@@ -37,6 +37,11 @@ import {
 } from './lesenTemplatePrompt.mjs';
 import { checkHorenBatchQuality, formatHorenQualityReport } from './horenBatchQuality.mjs';
 import {
+  checkHorenBatchIngest,
+  formatHorenIngestReport,
+  logCefrCoverageThreshold,
+} from './horenBatchIngestCheck.mjs';
+import {
   checkPromptBatchQuality,
   formatPromptQualityReport,
 } from './promptBatchQuality.mjs';
@@ -131,6 +136,7 @@ export function parseExamArgs(argv) {
     dryRun: false,
     skipValidate: false,
     skipQuality: false,
+    skipIngest: false,
     apiRetries: 1,
     fixRetries: null,
     pauseMs: Math.max(MIN_PAUSE_MS, Number(process.env.GEMINI_BATCH_PAUSE_MS || MIN_PAUSE_MS)),
@@ -169,6 +175,7 @@ export function parseExamArgs(argv) {
     else if (a === '--refresh-coverage') out.refreshCoverage = true;
     else if (a === '--dry-run') out.dryRun = true;
     else if (a === '--no-validate') out.skipValidate = true;
+    else if (a === '--skip-ingest') out.skipIngest = true;
     else if (a === '--skip-quality') out.skipQuality = true;
     else if (a === '--skip-pool-ready') out.skipPoolReady = true;
     else if (a === '--api-retries') out.apiRetries = Math.max(1, Number(argv[++i]) || 1);
@@ -756,6 +763,34 @@ async function runDualGates(args, teil, batch, relFile) {
     }
   }
 
+  const horenLv = String(args.level || batch.level || 'B1').toUpperCase();
+  if (
+    args.module === 'horen' &&
+    horenLv === 'A2' &&
+    !args.skipIngest &&
+    !args.dryRun
+  ) {
+    console.log('Comprobando pre-ingest Hören A2 (CEFR + registro)…');
+    const ingest = checkHorenBatchIngest(batch, {
+      lang: args.lang,
+      level: horenLv,
+      batchId: path.basename(relFile),
+      teil,
+    });
+    console.log(formatHorenIngestReport(ingest, { level: horenLv }));
+    if (!ingest.ok) {
+      const errors = ingest.results.flatMap((r) => r.errors || []);
+      unlinkTmp();
+      return {
+        ok: false,
+        gate: 'cefr',
+        issue: errors[0] || 'pre-ingest',
+        issues: errors.slice(0, 8),
+        detail: formatHorenIngestReport(ingest, { level: horenLv }),
+      };
+    }
+  }
+
   return { ok: true };
 }
 
@@ -934,6 +969,9 @@ async function generateExamPart(args, teil, session) {
   const chosenTopic = args._resolvedTopic || resolveGenerationTopic(args, { module, teil });
   console.log(`Tema: ${chosenTopic}${args.topic ? ' (elegido)' : ' (rotación)'}`);
   args._resolvedTopic = chosenTopic;
+  if (module === 'horen' && String(args.level || 'B1').toUpperCase() === 'A2' && !args.skipIngest) {
+    logCefrCoverageThreshold();
+  }
 
   const settleCostOk = (file) =>
     flushCostForPart(session, args, {

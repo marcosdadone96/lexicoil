@@ -27,6 +27,9 @@ Eres examinador del Goethe-Zertifikat **A2**. Genera **UNA** parte de **Hören T
 - Telefonat / Anrufbeantworter: **una sola voz** (mensaje corto), frases simples.
 - Durchsage Bahnhof / Geschäft / Arztpraxis: información concreta y breve.
 - **PROHIBIDO:** tono de ensayo, listas formales, diálogo entre dos personas, vocabulario B1+ (Präsentation, Feedback, Workshop, Konferenz…).
+- **PROHIBIDO registro B1** en monólogos A2 (el gate rechaza): *Beratungsgespräche*, *Vorstellungsgespräch*, *Personalabteilung*, *Arbeitssuchende*, *Herausforderung*, *Experte für …*, *herzlich willkommen zu unserer Sendung*.
+- **PROHIBIDO** más de **1** construcción *… zu …* por segmento (p. ej. *versuchen zu vereinbaren*, *wichtig zu sein*). Usa frases cortas en Präsens/Perfekt.
+- `difficulty`: entero **2–4** por pregunta (nunca 5).
 
 ## VOCABULARIO A2 (OBLIGATORIO)
 - Usa léxico cotidiano A2: Termin, Arzt, Zug, Gleis, Öffnungszeiten, Einkaufen, Familie, Wohnung, Freizeit, Kurs, Ticket, Preis, Uhr, Montag…

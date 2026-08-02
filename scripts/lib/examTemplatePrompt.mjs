@@ -421,6 +421,8 @@ function checklistBlock(module, teil, level = 'B1') {
         `- SOLO MONÓLOGO — PROHIBIDO diálogo, Gespräch o turnos «Name: …».\n` +
         `- MCQ: options a)/b)/c); correct solo letra; varía a/b/c; anti word-matching (≥4 palabras seguidas del transcript = FAIL).\n` +
         `- LONGITUD MCQ: opción correcta y distractores de longitud comparable.\n` +
+        `- REGISTRO A2 T1: PROHIBIDO Beratungsgespräche/Vorstellungsgespräch/Personalabteilung/Herausforderung/Experte; max 1 «… zu …» por segmento.\n` +
+        `- difficulty: entero 2–4 en cada question (nunca 5).\n` +
         MCQ_CHK34_EXPLANATION_RULE
       );
     }
@@ -544,7 +546,9 @@ function checklistBlock(module, teil, level = 'B1') {
         `- 1 Radiointerview 150–250 palabras; presentador + invitado/a.\n` +
         `- 5× ja_nein; correct "Ja"/"Nein"; options: [].\n` +
         `- passages[0].audio[] obligatorio (2 voiceId: Moderator + invitado/a) para TTS.\n` +
-        `- PROHIBIDO: 8 matching M/A/B (eso es B1 T4).\n`
+        `- PROHIBIDO: 8 matching M/A/B (eso es B1 T4).\n` +
+        `- REGISTRO A2 T4: entrevista sencilla; PROHIBIDO Experte/Herausforderung/herzlich willkommen zu unserer Sendung/kritisch zu sein; max 3 «… zu …» en el transcript.\n` +
+        `- difficulty: entero 2–4 en cada question (nunca 5).\n`
       );
     }
     return (
