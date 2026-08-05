@@ -1,0 +1,2045 @@
+{
+  "generatedAt": "2026-08-05T18:44:36.251Z",
+  "base": "http://127.0.0.1:8010",
+  "language": "de-DE",
+  "delayMs": 80,
+  "concurrency": 1,
+  "scope": "full",
+  "poolDir": "batches/ready/pool-verified/B2",
+  "ping": {
+    "ok": true,
+    "languageCount": 60,
+    "deCodes": [
+      "de",
+      "de",
+      "de",
+      "de",
+      "de-DE-x-simple-language",
+      "de-DE-x-simple-language",
+      "de"
+    ]
+  },
+  "summary": {
+    "filesScanned": 13,
+    "filesWithAuditableContent": 13,
+    "filesSkippedNoText": 0,
+    "filesZeroMatches": 5,
+    "filesWithMatches": 8,
+    "filesErrored": 0,
+    "segmentErrors": 0,
+    "totalSegmentsChecked": 106,
+    "totalPassagesChecked": 21,
+    "totalQuestionSegmentsChecked": 64,
+    "totalMatches": 32,
+    "uniqueRuleIds": 7
+  },
+  "byRuleId": [
+    {
+      "ruleId": "DE_CASE",
+      "count": 17
+    },
+    {
+      "ruleId": "GERMAN_SPELLER_RULE",
+      "count": 5
+    },
+    {
+      "ruleId": "WHITESPACE_RULE",
+      "count": 4
+    },
+    {
+      "ruleId": "H2O",
+      "count": 3
+    },
+    {
+      "ruleId": "DE_AGREEMENT",
+      "count": 1
+    },
+    {
+      "ruleId": "DE_COMPOUNDS",
+      "count": 1
+    },
+    {
+      "ruleId": "EMPFOHLENE_GROSS_KLEINSCHREIBUNG",
+      "count": 1
+    }
+  ],
+  "byField": [
+    {
+      "field": "questions.content",
+      "count": 21
+    },
+    {
+      "field": "passages.content",
+      "count": 7
+    },
+    {
+      "field": "passages.title",
+      "count": 4
+    }
+  ],
+  "files": [
+    {
+      "file": "horen-t1-gemini-070.json",
+      "matchCount": 0,
+      "segments": [
+        {
+          "segmentType": "passage",
+          "field": "passages.content",
+          "passageIndex": 0,
+          "questionIndex": null,
+          "textLength": 542,
+          "text": "Anna: Hallo Max, hast du schon über die Prüfungsvorbereitung für nächste Woche nachgedacht? Ich wollte eine Lerngruppe vorschlagen.\nMax: Gute Idee, Anna! Ich bin noch unsicher, welche Lernmethode am besten ist. Alleine lernen fällt mir schwer.\nAnna: Wir könnten uns montags treffen, um den Lehrplan gemeinsam durchzugehen. Das hilft oft, schwierige Themen zu verstehen.\nMax: Montags passt mir gut. Vielleicht sollten wir auch die Studienberatung fragen, ob sie Tipps für uns hat.\nAnna: Ja, das ist eine gute Ergänzung. Dann machen wir das so.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "passage",
+          "field": "passages.title",
+          "passageIndex": 0,
+          "questionIndex": null,
+          "textLength": 38,
+          "text": "Prüfungsvorbereitung in der Lerngruppe",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "passage",
+          "field": "passages.content",
+          "passageIndex": 1,
+          "questionIndex": null,
+          "textLength": 456,
+          "text": "Sprecherin: Willkommen zu unserem Bildungstipp des Tages! Viele fragen sich, wie man effektiv lernt. Ein wichtiger Aspekt ist die Lernmethode. Versuchen Sie, nicht nur passiv zuzuhören, sondern aktiv mitzuarbeiten. Diskutieren Sie den Stoff, erstellen Sie Mindmaps oder fassen Sie Gelerntes in eigenen Worten zusammen. Regelmäßige Pausen sind ebenfalls entscheidend für eine erfolgreiche Prüfungsvorbereitung. So bleibt das Gehirn frisch und aufnahmefähig.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "passage",
+          "field": "passages.title",
+          "passageIndex": 1,
+          "questionIndex": null,
+          "textLength": 34,
+          "text": "Bildungstipp für effektives Lernen",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "passage",
+          "field": "passages.content",
+          "passageIndex": 2,
+          "questionIndex": null,
+          "textLength": 575,
+          "text": "Frau Keller: Guten Tag, Frau Braun. Ich wollte mich erkundigen, wie es mit dem Lehrplan für meinen Sohn Lukas aussieht. Er hat manchmal Schwierigkeiten, dem Unterricht zu folgen.\nFrau Braun: Guten Tag, Frau Keller. Lukas macht gute Fortschritte, aber ja, einige Themen im Lehrplan sind anspruchsvoll. Wir bieten zusätzliche Förderstunden an, die ihm helfen könnten.\nFrau Keller: Das wäre eine große Hilfe. Gibt es auch Empfehlungen für die Prüfungsvorbereitung zu Hause?\nFrau Braun: Ja, ich kann Ihnen einige Materialien mitgeben. Eine gute Lernmethode ist hier entscheidend.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "passage",
+          "field": "passages.title",
+          "passageIndex": 2,
+          "questionIndex": null,
+          "textLength": 36,
+          "text": "Elterngespräch über Lernfortschritte",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "passage",
+          "field": "passages.content",
+          "passageIndex": 3,
+          "questionIndex": null,
+          "textLength": 425,
+          "text": "Sprecher: Guten Tag, hier ist die Volkshochschule. Wir rufen bezüglich des Seminars \"Effektive Lernmethoden\" an, das nächste Woche stattfinden sollte. Aufgrund einer kurzfristigen Erkrankung des Dozenten muss die Weiterbildung leider verschoben werden. Wir bitten um Ihr Verständnis. Ein neuer Termin wird Ihnen per E-Mail mitgeteilt. Für Fragen zur Studienberatung oder zum Lehrplan erreichen Sie uns während der Bürozeiten.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "passage",
+          "field": "passages.title",
+          "passageIndex": 3,
+          "questionIndex": null,
+          "textLength": 29,
+          "text": "Nachricht der Volkshochschule",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "passage",
+          "field": "passages.content",
+          "passageIndex": 4,
+          "questionIndex": null,
+          "textLength": 567,
+          "text": "Herr Neumann: Hallo Frau Richter, ich überlege, eine Weiterbildung zu machen. Besonders interessiert mich ein Kurs über digitale Lernmethoden.\nFrau Richter: Das ist eine gute Idee, Herr Neumann! Ich habe letztes Jahr selbst eine Weiterbildung abgeschlossen. Die Prüfungsvorbereitung war intensiv, aber es hat sich gelohnt.\nHerr Neumann: Ich bin noch unsicher wegen des Zeitaufwands. Wie haben Sie das mit dem Berufsalltag vereinbart?\nFrau Richter: Man muss gut planen. Vielleicht kann Ihnen die Studienberatung der Akademie helfen, einen passenden Lehrplan zu finden.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "passage",
+          "field": "passages.title",
+          "passageIndex": 4,
+          "questionIndex": null,
+          "textLength": 36,
+          "text": "Kollegen sprechen über Weiterbildung",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "question",
+          "field": "questions.content",
+          "passageIndex": null,
+          "questionIndex": 0,
+          "textLength": 305,
+          "text": "Sie hören fünf Gespräche und Äußerungen. Sie hören jeden Text einmal.\nZu jedem Text lösen Sie zwei Aufgaben: Richtig/Falsch und Multiple Choice.\n\nAufnahme 1: Anna schlägt vor, eine Lerngruppe zu bilden.\nAnna initiiert das Gespräch mit dem Vorschlag, eine Lerngruppe für die Prüfungsvorbereitung zu bilden.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "question",
+          "field": "questions.content",
+          "passageIndex": null,
+          "questionIndex": 1,
+          "textLength": 378,
+          "text": "Aufnahme 1: Was vereinbaren Anna und Max zusätzlich zur Lerngruppe?\nNach Annas Vorschlag zur Lerngruppe einigen sich beide darauf, auch die Studienberatung für zusätzliche Ratschläge zu kontaktieren.\na) Die Kontaktaufnahme mit der Studienberatung für weitere Tipps.\nb) Eine sofortige Änderung ihrer Lernmethoden.\nc) Eine individuelle Besprechung mit der Studienberatung für Max.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "question",
+          "field": "questions.content",
+          "passageIndex": null,
+          "questionIndex": 2,
+          "textLength": 184,
+          "text": "Aufnahme 2: Der Tipp empfiehlt, nur passiv zuzuhören, um effektiv zu lernen.\nDer Sprecher rät ausdrücklich davon ab, nur passiv zuzuhören, und betont die Wichtigkeit aktiver Mitarbeit.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "question",
+          "field": "questions.content",
+          "passageIndex": null,
+          "questionIndex": 3,
+          "textLength": 328,
+          "text": "Aufnahme 2: Was wird als entscheidend für eine erfolgreiche Prüfungsvorbereitung genannt?\nIm Tipp wird betont, dass regelmäßige Pausen für eine erfolgreiche Prüfungsvorbereitung unerlässlich sind.\na) Regelmäßige Pausen während des Lernens.\nb) Das ausschließliche Lernen in Gruppen.\nc) Das Erstellen von detaillierten Zeitplänen.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "question",
+          "field": "questions.content",
+          "passageIndex": null,
+          "questionIndex": 4,
+          "textLength": 206,
+          "text": "Aufnahme 3: Die Lehrerin bietet zusätzliche Förderstunden für Lukas an.\nDie Lehrerin schlägt vor, Lukas durch zusätzliche Förderstunden zu unterstützen, um seine Schwierigkeiten im Unterricht zu überwinden.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "question",
+          "field": "questions.content",
+          "passageIndex": null,
+          "questionIndex": 5,
+          "textLength": 343,
+          "text": "Aufnahme 3: Wofür bittet Frau Keller um Empfehlungen?\nFrau Keller erkundigt sich bei der Lehrerin nach Empfehlungen und Materialien für die Prüfungsvorbereitung, die Lukas zu Hause nutzen kann.\na) Für eine neue Schule mit einem einfacheren Lehrplan.\nb) Für die Prüfungsvorbereitung zu Hause.\nc) Für eine individuelle Studienberatung für Lukas.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "question",
+          "field": "questions.content",
+          "passageIndex": null,
+          "questionIndex": 6,
+          "textLength": 189,
+          "text": "Aufnahme 4: Das Seminar \"Effektive Lernmethoden\" findet wie geplant nächste Woche statt.\nDas Seminar wird aufgrund der Erkrankung des Dozenten verschoben und findet nicht wie geplant statt.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "question",
+          "field": "questions.content",
+          "passageIndex": null,
+          "questionIndex": 7,
+          "textLength": 246,
+          "text": "Aufnahme 4: Wie erhalten die Teilnehmer Informationen über den neuen Termin?\nDie Volkshochschule informiert die Teilnehmer über den neuen Termin per E-Mail.\na) Über die Studienberatung.\nb) Durch einen Anruf bei der Volkshochschule.\nc) Per E-Mail.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "question",
+          "field": "questions.content",
+          "passageIndex": null,
+          "questionIndex": 8,
+          "textLength": 207,
+          "text": "Aufnahme 5: Herr Neumann interessiert sich für einen Kurs über digitale Lernmethoden.\nHerr Neumann äußert sein spezifisches Interesse an einem Weiterbildungskurs, der sich mit digitalen Lernmethoden befasst.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "question",
+          "field": "questions.content",
+          "passageIndex": null,
+          "questionIndex": 9,
+          "textLength": 446,
+          "text": "Aufnahme 5: Was empfiehlt Frau Richter Herrn Neumann bezüglich der Planung seiner Weiterbildung?\nFrau Richter empfiehlt Herrn Neumann, die Studienberatung der Akademie zu kontaktieren, um Hilfe bei der Planung seiner Weiterbildung zu erhalten und einen passenden Lehrplan zu finden.\na) Er sollte sich direkt für den Kurs anmelden.\nb) Er sollte die Studienberatung der Akademie kontaktieren.\nc) Er sollte nur Kurse mit geringem Zeitaufwand wählen.",
+          "matchCount": 0,
+          "matches": []
+        }
+      ],
+      "passages": [
+        {
+          "segmentType": "passage",
+          "field": "passages.content",
+          "passageIndex": 0,
+          "questionIndex": null,
+          "textLength": 542,
+          "text": "Anna: Hallo Max, hast du schon über die Prüfungsvorbereitung für nächste Woche nachgedacht? Ich wollte eine Lerngruppe vorschlagen.\nMax: Gute Idee, Anna! Ich bin noch unsicher, welche Lernmethode am besten ist. Alleine lernen fällt mir schwer.\nAnna: Wir könnten uns montags treffen, um den Lehrplan gemeinsam durchzugehen. Das hilft oft, schwierige Themen zu verstehen.\nMax: Montags passt mir gut. Vielleicht sollten wir auch die Studienberatung fragen, ob sie Tipps für uns hat.\nAnna: Ja, das ist eine gute Ergänzung. Dann machen wir das so.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "passage",
+          "field": "passages.content",
+          "passageIndex": 1,
+          "questionIndex": null,
+          "textLength": 456,
+          "text": "Sprecherin: Willkommen zu unserem Bildungstipp des Tages! Viele fragen sich, wie man effektiv lernt. Ein wichtiger Aspekt ist die Lernmethode. Versuchen Sie, nicht nur passiv zuzuhören, sondern aktiv mitzuarbeiten. Diskutieren Sie den Stoff, erstellen Sie Mindmaps oder fassen Sie Gelerntes in eigenen Worten zusammen. Regelmäßige Pausen sind ebenfalls entscheidend für eine erfolgreiche Prüfungsvorbereitung. So bleibt das Gehirn frisch und aufnahmefähig.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "passage",
+          "field": "passages.content",
+          "passageIndex": 2,
+          "questionIndex": null,
+          "textLength": 575,
+          "text": "Frau Keller: Guten Tag, Frau Braun. Ich wollte mich erkundigen, wie es mit dem Lehrplan für meinen Sohn Lukas aussieht. Er hat manchmal Schwierigkeiten, dem Unterricht zu folgen.\nFrau Braun: Guten Tag, Frau Keller. Lukas macht gute Fortschritte, aber ja, einige Themen im Lehrplan sind anspruchsvoll. Wir bieten zusätzliche Förderstunden an, die ihm helfen könnten.\nFrau Keller: Das wäre eine große Hilfe. Gibt es auch Empfehlungen für die Prüfungsvorbereitung zu Hause?\nFrau Braun: Ja, ich kann Ihnen einige Materialien mitgeben. Eine gute Lernmethode ist hier entscheidend.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "passage",
+          "field": "passages.content",
+          "passageIndex": 3,
+          "questionIndex": null,
+          "textLength": 425,
+          "text": "Sprecher: Guten Tag, hier ist die Volkshochschule. Wir rufen bezüglich des Seminars \"Effektive Lernmethoden\" an, das nächste Woche stattfinden sollte. Aufgrund einer kurzfristigen Erkrankung des Dozenten muss die Weiterbildung leider verschoben werden. Wir bitten um Ihr Verständnis. Ein neuer Termin wird Ihnen per E-Mail mitgeteilt. Für Fragen zur Studienberatung oder zum Lehrplan erreichen Sie uns während der Bürozeiten.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "passage",
+          "field": "passages.content",
+          "passageIndex": 4,
+          "questionIndex": null,
+          "textLength": 567,
+          "text": "Herr Neumann: Hallo Frau Richter, ich überlege, eine Weiterbildung zu machen. Besonders interessiert mich ein Kurs über digitale Lernmethoden.\nFrau Richter: Das ist eine gute Idee, Herr Neumann! Ich habe letztes Jahr selbst eine Weiterbildung abgeschlossen. Die Prüfungsvorbereitung war intensiv, aber es hat sich gelohnt.\nHerr Neumann: Ich bin noch unsicher wegen des Zeitaufwands. Wie haben Sie das mit dem Berufsalltag vereinbart?\nFrau Richter: Man muss gut planen. Vielleicht kann Ihnen die Studienberatung der Akademie helfen, einen passenden Lehrplan zu finden.",
+          "matchCount": 0,
+          "matches": []
+        }
+      ]
+    },
+    {
+      "file": "horen-t2-gemini-113.json",
+      "matchCount": 2,
+      "segments": [
+        {
+          "segmentType": "passage",
+          "field": "passages.content",
+          "passageIndex": 0,
+          "questionIndex": null,
+          "textLength": 3000,
+          "text": "Moderator: Herzlich willkommen zu \"Wissenschaft im Gespräch\"! Heute sprechen wir mit Frau Professor Dr. Lena Keller, einer Expertin für Medienwissenschaft, über die Rolle der Medien in unserer Gesellschaft. Frau Professor Keller, die digitale Transformation hat die Medienlandschaft grundlegend verändert. Welche Herausforderungen sehen Sie dabei?\nProf. Keller: Guten Tag. Die Veränderungen sind enorm. Eine der größten Herausforderungen ist sicherlich die schiere Nachrichtenflut, die täglich auf uns einströmt. Es wird immer schwieriger, relevante Informationen von irrelevanten zu trennen. Dazu kommt das Problem der Desinformation, die sich besonders in sozialen Netzwerken rasend schnell verbreiten kann. Das stellt unsere Fähigkeit zur kritischen Meinungsbildung auf eine harte Probe.\nModerator: Das klingt nach einer großen Belastung für den Einzelnen. Wie können wir damit umgehen?\nProf. Keller: Absolut. Hier kommt die Medienkompetenz ins Spiel. Es ist entscheidend, dass wir lernen, Medieninhalte kritisch zu hinterfragen, Quellen zu prüfen und die Absichten hinter Informationen zu erkennen. Das betrifft nicht nur junge Menschen, sondern alle Altersgruppen. Schulen, aber auch Erwachsenenbildung und die Medien selbst, haben hier eine wichtige Aufgabe.\nModerator: Sie sprechen die Verantwortung der Medien an. Welche Rolle spielen sie bei der Bekämpfung von Desinformation?\nProf. Keller: Eine sehr wichtige. Qualitätsjournalismus ist das Fundament einer informierten Gesellschaft. Medienhäuser müssen in investigative Recherche investieren und transparent machen, wie sie arbeiten. Gleichzeitig müssen sie Wege finden, ihre Inhalte so zu präsentieren, dass sie in der Nachrichtenflut nicht untergehen und von einem breiten Publikum wahrgenommen werden.\nModerator: Ein weiteres Thema, das oft diskutiert wird, ist die sogenannte \"digitale Spaltung\". Was bedeutet das genau und wie wirkt sie sich aus?\nProf. Keller: Die digitale Spaltung beschreibt die Ungleichheit beim Zugang zu digitalen Technologien und der Fähigkeit, diese effektiv zu nutzen. Das kann bedeuten, dass Menschen ohne Internetzugang oder ohne die nötigen Fähigkeiten von wichtigen Informationen und gesellschaftlichen Diskursen ausgeschlossen werden. Das verstärkt bestehende soziale Ungleichheiten und erschwert die Teilhabe an der digitalen Gesellschaft.\nModerator: Welche Lösungsansätze gibt es, um diese Spaltung zu überwinden?\nProf. Keller: Es braucht Investitionen in die Einrichtungen, um allen Zugang zu ermöglichen. Aber genauso wichtig ist die Förderung der Medienkompetenz für alle. Programme, die älteren Menschen oder sozial benachteiligten Gruppen den Umgang mit digitalen Medien beibringen, sind unerlässlich. Nur so können wir sicherstellen, dass niemand zurückgelassen wird und jeder die Chance hat, sich eine fundierte Meinung zu bilden und aktiv am gesellschaftlichen Leben teilzunehmen.\nModerator: Frau Professor Keller, vielen Dank für diese Aufschlussreichen Einblicke.\nProf. Keller: Gern geschehen.",
+          "matchCount": 1,
+          "matches": [
+            {
+              "ruleId": "DE_CASE",
+              "category": "CASING",
+              "issueType": "uncategorized",
+              "message": "Außer am Satzanfang werden nur Nomen und Eigennamen großgeschrieben.",
+              "shortMessage": null,
+              "offset": 2942,
+              "length": 17,
+              "context": "...Professor Keller, vielen Dank für diese Aufschlussreichen Einblicke. Prof. Keller: Gern geschehen...",
+              "contextOffset": 43,
+              "replacements": [
+                "aufschlussreichen"
+              ]
+            }
+          ]
+        },
+        {
+          "segmentType": "passage",
+          "field": "passages.title",
+          "passageIndex": 0,
+          "questionIndex": null,
+          "textLength": 47,
+          "text": "Interview: Medien in der digitalen Gesellschaft",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "question",
+          "field": "questions.content",
+          "passageIndex": null,
+          "questionIndex": 0,
+          "textLength": 579,
+          "text": "Sie hören im Radio ein Interview mit einer Persönlichkeit aus der Wissenschaft.\nSie hören den Text zweimal. Wählen Sie bei jeder Aufgabe die richtige Lösung a, b oder c.\n\nWorauf weist Frau Professor Keller im ersten Abschnitt hin?\nFrau Professor Keller spricht von einer \"schiere Nachrichtenflut\", was die enorme Menge an Informationen beschreibt, die auf uns einströmt.\na) Auf die Schwierigkeit, verlässliche Nachrichten zu finden.\nb) Auf die Notwendigkeit, die Verbreitung von Falschinformationen zu stoppen.\nc) Auf die immense Menge an Informationen, die uns täglich erreicht.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "question",
+          "field": "questions.content",
+          "passageIndex": null,
+          "questionIndex": 1,
+          "textLength": 437,
+          "text": "Was ist laut Frau Professor Keller entscheidend, um mit der Informationsflut umzugehen?\nSie betont, dass es entscheidend ist, Medieninhalte kritisch zu hinterfragen, Quellen zu prüfen und Absichten zu erkennen, was einer kritischen Haltung entspricht.\na) Die Fähigkeit, schnell zwischen verschiedenen Quellen zu wechseln.\nb) Eine kritische Haltung gegenüber allen Medieninhalten.\nc) Das Wissen über die technischen Teil digitaler Medien.",
+          "matchCount": 1,
+          "matches": [
+            {
+              "ruleId": "DE_AGREEMENT",
+              "category": "GRAMMAR",
+              "issueType": "uncategorized",
+              "message": "Möglicherweise passen das Nomen und die Wörter, die das Nomen beschreiben, grammatisch nicht zusammen.",
+              "shortMessage": "Evtl. passen Wörter grammatisch nicht zusammen.",
+              "offset": 399,
+              "length": 20,
+              "context": "...llen Medieninhalten. c) Das Wissen über die technischen Teil digitaler Medien.",
+              "contextOffset": 43,
+              "replacements": [
+                "die technischen Teile",
+                "den technischen Teil",
+                "dem technischen Teil"
+              ]
+            }
+          ]
+        },
+        {
+          "segmentType": "question",
+          "field": "questions.content",
+          "passageIndex": null,
+          "questionIndex": 2,
+          "textLength": 526,
+          "text": "Welche Rolle spielt Qualitätsjournalismus im Kampf gegen Desinformation?\nQualitätsjournalismus wird als Fundament einer informierten Gesellschaft bezeichnet, der in Recherche investieren und transparent arbeiten muss.\na) Er ist die Grundlage für eine informierte Gesellschaft und sollte seine Arbeitsweise transparent machen.\nb) Er sollte sich auf die Berichterstattung über lokale Ereignisse konzentrieren, um das Vertrauen der Leser zu stärken.\nc) Er muss die Desinformation direkt widerlegen und die Hintergründe aufklären.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "question",
+          "field": "questions.content",
+          "passageIndex": null,
+          "questionIndex": 3,
+          "textLength": 428,
+          "text": "Was ist laut Professor Keller eine Folge der digitalen Spaltung?\nDie digitale Spaltung verstärkt bestehende soziale Ungleichheiten, da Menschen von wichtigen Informationen und Diskursen ausgeschlossen werden können.\na) Die Verstärkung bestehender sozialer Ungleichheiten in der Gesellschaft.\nb) Eine Abnahme der allgemeinen Medienkompetenz in der Bevölkerung.\nc) Eine geringere Nutzung von sozialen Medien durch ältere Menschen.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "question",
+          "field": "questions.content",
+          "passageIndex": null,
+          "questionIndex": 4,
+          "textLength": 428,
+          "text": "Welche Maßnahmen schlägt Frau Professor Keller vor, um die digitale Spaltung zu überwinden?\nSie nennt Investitionen in die Einrichtungen und die Förderung der Medienkompetenz durch Programme als unerlässlich.\na) Die Entwicklung neuer digitaler Technologien für alle Altersgruppen.\nb) Eine stärkere Regulierung der Inhalte in sozialen Netzwerken.\nc) Investitionen in Einrichtungen und Programme zur Förderung der Medienkompetenz.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "question",
+          "field": "questions.content",
+          "passageIndex": null,
+          "questionIndex": 5,
+          "textLength": 556,
+          "text": "Welches übergeordnete Ziel verfolgt Frau Professor Keller mit ihren Vorschlägen?\nDas Ziel ist, sicherzustellen, dass jeder die Chance hat, sich eine fundierte Meinung zu bilden und aktiv am gesellschaftlichen Leben teilzunehmen.\na) Eine umfassende Modernisierung der Medienlandschaft für zukünftige Generationen und deren Bedürfnisse.\nb) Die gleichberechtigte Teilhabe aller an der Gesellschaft und die Möglichkeit zur fundierten Meinungsbildung.\nc) Die Kontrolle der Nachrichtenverbreitung in sozialen Medien, um Falschinformationen effektiv zu bekämpfen.",
+          "matchCount": 0,
+          "matches": []
+        }
+      ],
+      "passages": [
+        {
+          "segmentType": "passage",
+          "field": "passages.content",
+          "passageIndex": 0,
+          "questionIndex": null,
+          "textLength": 3000,
+          "text": "Moderator: Herzlich willkommen zu \"Wissenschaft im Gespräch\"! Heute sprechen wir mit Frau Professor Dr. Lena Keller, einer Expertin für Medienwissenschaft, über die Rolle der Medien in unserer Gesellschaft. Frau Professor Keller, die digitale Transformation hat die Medienlandschaft grundlegend verändert. Welche Herausforderungen sehen Sie dabei?\nProf. Keller: Guten Tag. Die Veränderungen sind enorm. Eine der größten Herausforderungen ist sicherlich die schiere Nachrichtenflut, die täglich auf uns einströmt. Es wird immer schwieriger, relevante Informationen von irrelevanten zu trennen. Dazu kommt das Problem der Desinformation, die sich besonders in sozialen Netzwerken rasend schnell verbreiten kann. Das stellt unsere Fähigkeit zur kritischen Meinungsbildung auf eine harte Probe.\nModerator: Das klingt nach einer großen Belastung für den Einzelnen. Wie können wir damit umgehen?\nProf. Keller: Absolut. Hier kommt die Medienkompetenz ins Spiel. Es ist entscheidend, dass wir lernen, Medieninhalte kritisch zu hinterfragen, Quellen zu prüfen und die Absichten hinter Informationen zu erkennen. Das betrifft nicht nur junge Menschen, sondern alle Altersgruppen. Schulen, aber auch Erwachsenenbildung und die Medien selbst, haben hier eine wichtige Aufgabe.\nModerator: Sie sprechen die Verantwortung der Medien an. Welche Rolle spielen sie bei der Bekämpfung von Desinformation?\nProf. Keller: Eine sehr wichtige. Qualitätsjournalismus ist das Fundament einer informierten Gesellschaft. Medienhäuser müssen in investigative Recherche investieren und transparent machen, wie sie arbeiten. Gleichzeitig müssen sie Wege finden, ihre Inhalte so zu präsentieren, dass sie in der Nachrichtenflut nicht untergehen und von einem breiten Publikum wahrgenommen werden.\nModerator: Ein weiteres Thema, das oft diskutiert wird, ist die sogenannte \"digitale Spaltung\". Was bedeutet das genau und wie wirkt sie sich aus?\nProf. Keller: Die digitale Spaltung beschreibt die Ungleichheit beim Zugang zu digitalen Technologien und der Fähigkeit, diese effektiv zu nutzen. Das kann bedeuten, dass Menschen ohne Internetzugang oder ohne die nötigen Fähigkeiten von wichtigen Informationen und gesellschaftlichen Diskursen ausgeschlossen werden. Das verstärkt bestehende soziale Ungleichheiten und erschwert die Teilhabe an der digitalen Gesellschaft.\nModerator: Welche Lösungsansätze gibt es, um diese Spaltung zu überwinden?\nProf. Keller: Es braucht Investitionen in die Einrichtungen, um allen Zugang zu ermöglichen. Aber genauso wichtig ist die Förderung der Medienkompetenz für alle. Programme, die älteren Menschen oder sozial benachteiligten Gruppen den Umgang mit digitalen Medien beibringen, sind unerlässlich. Nur so können wir sicherstellen, dass niemand zurückgelassen wird und jeder die Chance hat, sich eine fundierte Meinung zu bilden und aktiv am gesellschaftlichen Leben teilzunehmen.\nModerator: Frau Professor Keller, vielen Dank für diese Aufschlussreichen Einblicke.\nProf. Keller: Gern geschehen.",
+          "matchCount": 1,
+          "matches": [
+            {
+              "ruleId": "DE_CASE",
+              "category": "CASING",
+              "issueType": "uncategorized",
+              "message": "Außer am Satzanfang werden nur Nomen und Eigennamen großgeschrieben.",
+              "shortMessage": null,
+              "offset": 2942,
+              "length": 17,
+              "context": "...Professor Keller, vielen Dank für diese Aufschlussreichen Einblicke. Prof. Keller: Gern geschehen...",
+              "contextOffset": 43,
+              "replacements": [
+                "aufschlussreichen"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "horen-t3-gemini-087.json",
+      "matchCount": 1,
+      "segments": [
+        {
+          "segmentType": "passage",
+          "field": "passages.content",
+          "passageIndex": 0,
+          "questionIndex": null,
+          "textLength": 2122,
+          "text": "Moderator: Herzlich willkommen zu \"Umwelt im Fokus\". Heute diskutieren wir über Umweltschutz. Bei mir sind Dr. Lena Schmidt, Umweltwissenschaftlerin, Markus Weber vom Wirtschaftsverband und Sarah Müller, Aktivistin. Frau Dr. Schmidt, wie ist die Lage?\nDr. Lena Schmidt: Guten Abend. Die Lage ist ernst. Wir sehen weltweit Extremwetter, Artenverlust und Umweltverschmutzung. Dringendes Handeln ist nötig, um irreversible Schäden zu vermeiden. Die Wissenschaft liefert uns die Daten und die Dringlichkeit.\nMarkus Weber: Umweltschutz ist wichtig, aber wir müssen die Wirtschaft berücksichtigen. Viele Unternehmen investieren bereits in nachhaltige Technologien. Wir brauchen Anreize, keine Verbote, um Innovationen zu fördern und Arbeitsplätze zu sichern. Zu strenge Regulierung könnte unsere Wettbewerbsfähigkeit gefährden.\nSarah Müller: Herr Weber, die freiwilligen Initiativen der Wirtschaft reichen nicht aus. Wir reden von einer globalen Krise. Unternehmen müssen ihre volle Verantwortung übernehmen, nicht nur minimale Investitionen tätigen. Es geht um unsere Zukunft. Die Politik muss hier klare Grenzen setzen.\nDr. Lena Schmidt: Sarah hat Recht. Freiwilligkeit ist oft zu langsam. Wir brauchen einen Mix aus Anreizen und verbindlichen Rahmenbedingungen. Die Politik muss eine klare Richtung vorgeben, damit Unternehmen Planungssicherheit haben und wissen, welche Standards sie erfüllen müssen. Das schafft fairen Wettbewerb.\nMarkus Weber: Aber diese Standards müssen realistisch sein. Kleine und mittlere Unternehmen können nicht sofort umstellen. Wir brauchen Übergangsfristen und finanzielle Unterstützung, damit der Wandel sozialverträglich ist. Sonst verlieren wir Akzeptanz bei Bevölkerung und Betrieben.\nSarah Müller: Akzeptanz ist wichtig, aber die Dringlichkeit höher. Wir können nicht ewig warten. Innovative Lösungen existieren. Die Politik muss mutiger sein und unbequeme Entscheidungen treffen. Wir müssen weg von fossilen Energien hin zur Kreislaufwirtschaft.\nModerator: Vielen Dank für diese spannende Diskussion. Es gibt viele Perspektiven und Herausforderungen, aber auch den Willen, etwas zu bewegen.",
+          "matchCount": 1,
+          "matches": [
+            {
+              "ruleId": "EMPFOHLENE_GROSS_KLEINSCHREIBUNG",
+              "category": "EMPFOHLENE_RECHTSCHREIBUNG",
+              "issueType": "style",
+              "message": "Empfehlung: Schreiben Sie das Wort „Recht“ im Zusammenhang mit „recht haben“ oder „recht geben“ klein.",
+              "shortMessage": null,
+              "offset": 1144,
+              "length": 5,
+              "context": "...zen setzen. Dr. Lena Schmidt: Sarah hat Recht. Freiwilligkeit ist oft zu langsam. Wir...",
+              "contextOffset": 43,
+              "replacements": [
+                "recht"
+              ]
+            }
+          ]
+        },
+        {
+          "segmentType": "passage",
+          "field": "passages.title",
+          "passageIndex": 0,
+          "questionIndex": null,
+          "textLength": 66,
+          "text": "Radiogespräch: Umweltschutz – Herausforderungen und Lösungsansätze",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "question",
+          "field": "questions.content",
+          "passageIndex": null,
+          "questionIndex": 0,
+          "textLength": 558,
+          "text": "Sie hören im Radio ein Gespräch mit mehreren Personen.\nSie hören den Text einmal. Wählen Sie bei jeder Aufgabe: Wer sagt das?\n\nTrotz unterschiedlicher Ansichten ist ein gemeinsamer Wille zur Veränderung im Umweltschutz erkennbar.\nDer Moderator beendet die Diskussion mit der Feststellung, dass trotz der verschiedenen Ansichten ein gemeinsamer Wunsch nach Fortschritt im Umweltschutz erkennbar ist.\nA) Der Moderator\nB) Dr. Lena Schmidt, die Umweltwissenschaftlerin\nC) Markus Weber, der Vertreter des Wirtschaftsverbandes\nD) Sarah Müller, die Umweltaktivistin",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "question",
+          "field": "questions.content",
+          "passageIndex": null,
+          "questionIndex": 1,
+          "textLength": 403,
+          "text": "Die Wirtschaft braucht staatliche Anreize und keine strengen Vorschriften, um nachhaltiger zu werden.\nMarkus Weber argumentiert, dass Anreize statt Verbote die Wirtschaft zu mehr Nachhaltigkeit motivieren und die Wettbewerbsfähigkeit erhalten.\nA) Der Moderator\nB) Dr. Lena Schmidt, die Umweltwissenschaftlerin\nC) Markus Weber, der Vertreter des Wirtschaftsverbandes\nD) Sarah Müller, die Umweltaktivistin",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "question",
+          "field": "questions.content",
+          "passageIndex": null,
+          "questionIndex": 2,
+          "textLength": 384,
+          "text": "Die aktuelle Umweltlage erfordert dringendes Handeln, um irreparable Schäden zu verhindern.\nDr. Lena Schmidt beschreibt die ernste Umweltsituation und die Notwendigkeit sofortiger Maßnahmen, um dauerhafte Schäden abzuwenden.\nA) Der Moderator\nB) Dr. Lena Schmidt, die Umweltwissenschaftlerin\nC) Markus Weber, der Vertreter des Wirtschaftsverbandes\nD) Sarah Müller, die Umweltaktivistin",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "question",
+          "field": "questions.content",
+          "passageIndex": null,
+          "questionIndex": 3,
+          "textLength": 451,
+          "text": "Bei der Einführung von Umweltstandards müssen die Belange kleinerer Betriebe berücksichtigt werden, um soziale Härten zu vermeiden.\nMarkus Weber weist darauf hin, dass kleine und mittlere Unternehmen Unterstützung und Übergangsfristen benötigen, um den Wandel sozialverträglich zu gestalten.\nA) Der Moderator\nB) Dr. Lena Schmidt, die Umweltwissenschaftlerin\nC) Markus Weber, der Vertreter des Wirtschaftsverbandes\nD) Sarah Müller, die Umweltaktivistin",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "question",
+          "field": "questions.content",
+          "passageIndex": null,
+          "questionIndex": 4,
+          "textLength": 390,
+          "text": "Freiwillige Maßnahmen der Unternehmen sind unzureichend, um die globale Umweltkrise zu bewältigen.\nSarah Müller kritisiert, dass die Eigeninitiative der Wirtschaft nicht ausreicht, um die globale Umweltkrise effektiv zu bekämpfen.\nA) Der Moderator\nB) Dr. Lena Schmidt, die Umweltwissenschaftlerin\nC) Markus Weber, der Vertreter des Wirtschaftsverbandes\nD) Sarah Müller, die Umweltaktivistin",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "question",
+          "field": "questions.content",
+          "passageIndex": null,
+          "questionIndex": 5,
+          "textLength": 430,
+          "text": "Eine Kombination aus staatlichen Anreizen und verbindlichen Vorgaben ist der effektivste Weg für den Umweltschutz.\nDr. Lena Schmidt plädiert für eine Mischung aus Anreizen und festen Regeln, um Unternehmen Planungssicherheit zu geben und den Umweltschutz voranzubringen.\nA) Der Moderator\nB) Dr. Lena Schmidt, die Umweltwissenschaftlerin\nC) Markus Weber, der Vertreter des Wirtschaftsverbandes\nD) Sarah Müller, die Umweltaktivistin",
+          "matchCount": 0,
+          "matches": []
+        }
+      ],
+      "passages": [
+        {
+          "segmentType": "passage",
+          "field": "passages.content",
+          "passageIndex": 0,
+          "questionIndex": null,
+          "textLength": 2122,
+          "text": "Moderator: Herzlich willkommen zu \"Umwelt im Fokus\". Heute diskutieren wir über Umweltschutz. Bei mir sind Dr. Lena Schmidt, Umweltwissenschaftlerin, Markus Weber vom Wirtschaftsverband und Sarah Müller, Aktivistin. Frau Dr. Schmidt, wie ist die Lage?\nDr. Lena Schmidt: Guten Abend. Die Lage ist ernst. Wir sehen weltweit Extremwetter, Artenverlust und Umweltverschmutzung. Dringendes Handeln ist nötig, um irreversible Schäden zu vermeiden. Die Wissenschaft liefert uns die Daten und die Dringlichkeit.\nMarkus Weber: Umweltschutz ist wichtig, aber wir müssen die Wirtschaft berücksichtigen. Viele Unternehmen investieren bereits in nachhaltige Technologien. Wir brauchen Anreize, keine Verbote, um Innovationen zu fördern und Arbeitsplätze zu sichern. Zu strenge Regulierung könnte unsere Wettbewerbsfähigkeit gefährden.\nSarah Müller: Herr Weber, die freiwilligen Initiativen der Wirtschaft reichen nicht aus. Wir reden von einer globalen Krise. Unternehmen müssen ihre volle Verantwortung übernehmen, nicht nur minimale Investitionen tätigen. Es geht um unsere Zukunft. Die Politik muss hier klare Grenzen setzen.\nDr. Lena Schmidt: Sarah hat Recht. Freiwilligkeit ist oft zu langsam. Wir brauchen einen Mix aus Anreizen und verbindlichen Rahmenbedingungen. Die Politik muss eine klare Richtung vorgeben, damit Unternehmen Planungssicherheit haben und wissen, welche Standards sie erfüllen müssen. Das schafft fairen Wettbewerb.\nMarkus Weber: Aber diese Standards müssen realistisch sein. Kleine und mittlere Unternehmen können nicht sofort umstellen. Wir brauchen Übergangsfristen und finanzielle Unterstützung, damit der Wandel sozialverträglich ist. Sonst verlieren wir Akzeptanz bei Bevölkerung und Betrieben.\nSarah Müller: Akzeptanz ist wichtig, aber die Dringlichkeit höher. Wir können nicht ewig warten. Innovative Lösungen existieren. Die Politik muss mutiger sein und unbequeme Entscheidungen treffen. Wir müssen weg von fossilen Energien hin zur Kreislaufwirtschaft.\nModerator: Vielen Dank für diese spannende Diskussion. Es gibt viele Perspektiven und Herausforderungen, aber auch den Willen, etwas zu bewegen.",
+          "matchCount": 1,
+          "matches": [
+            {
+              "ruleId": "EMPFOHLENE_GROSS_KLEINSCHREIBUNG",
+              "category": "EMPFOHLENE_RECHTSCHREIBUNG",
+              "issueType": "style",
+              "message": "Empfehlung: Schreiben Sie das Wort „Recht“ im Zusammenhang mit „recht haben“ oder „recht geben“ klein.",
+              "shortMessage": null,
+              "offset": 1144,
+              "length": 5,
+              "context": "...zen setzen. Dr. Lena Schmidt: Sarah hat Recht. Freiwilligkeit ist oft zu langsam. Wir...",
+              "contextOffset": 43,
+              "replacements": [
+                "recht"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "horen-t4-gemini-040.json",
+      "matchCount": 1,
+      "segments": [
+        {
+          "segmentType": "passage",
+          "field": "passages.content",
+          "passageIndex": 0,
+          "questionIndex": null,
+          "textLength": 2652,
+          "text": "Sehr geehrte Damen und Herren, liebe Zuhörerinnen und Zuhörer,\n\nherzlich willkommen zu meinem heutigen Vortrag über ein Thema, das uns alle angeht: den Umweltschutz und unsere persönliche Verantwortung. Oft fühlen wir uns angesichts der globalen Umweltprobleme wie Klimawandel, Artensterben und Plastikmüll in den Ozeanen machtlos. Doch ich möchte heute die These vertreten, dass jeder Einzelne von uns einen entscheidenden Beitrag leisten kann und muss.\n\nBeginnen wir mit unseren täglichen Gewohnheiten. Viele kleine Entscheidungen summieren sich zu einer großen Wirkung. Denken Sie an die Mülltrennung, die Reduzierung von Plastikverpackungen, den bewussten Umgang mit Wasser und Energie zu Hause. Es geht nicht darum, von heute auf morgen perfekt zu sein, sondern darum, schrittweise nachhaltigere Entscheidungen zu treffen. Zum Beispiel können wir beim Einkaufen auf regionale und saisonale Produkte achten, die weniger Transportwege benötigen und somit CO2 einsparen. Oder wir nutzen öfter das Fahrrad oder öffentliche Verkehrsmittel statt des Autos. Diese einfachen Schritte sind oft leichter umzusetzen, als man denkt.\n\nNatürlich gibt es auch Schwierigkeiten. Manche Menschen denken, ihr Beitrag sei zu gering, um wirklich etwas zu verändern. Andere sehen die Kosten für umweltfreundliche Produkte als zu hoch an. Doch diese Argumente halten einer genaueren Betrachtung nicht stand. Wenn Millionen von Menschen kleine Veränderungen vornehmen, entsteht eine enorme kollektive Kraft. Und viele nachhaltige Optionen sind langfristig sogar kostengünstiger, etwa energiesparende Geräte oder der Verzicht auf Einwegprodukte. Die Entwicklung hin zu mehr Nachhaltigkeit wird auch durch politische Maßnahmen und technologische Fortschritte unterstützt, aber der individuelle Wille ist der Motor.\n\nEin weiterer wichtiger Punkt ist die Bildung und Aufklärung. Je mehr wir über die Zusammenhänge wissen, desto motivierter sind wir, aktiv zu werden. Sprechen Sie mit Freunden und Familie über Umweltthemen, tauschen Sie sich über Erfahrungen aus. Engagieren Sie sich vielleicht in lokalen Initiativen oder Projekten, die sich für den Schutz unserer Natur einsetzen. Das Gefühl, Teil einer Gemeinschaft zu sein, die sich für ein gemeinsames Ziel einsetzt, kann sehr inspirierend wirken.\n\nZusammenfassend lässt sich sagen, dass Umweltschutz keine abstrakte Aufgabe für Regierungen und große Konzerne allein ist. Er beginnt bei jedem von uns, in unserem Alltag. Jeder bewusste Schritt, jede kleine Veränderung zählt. Lassen Sie uns gemeinsam Verantwortung übernehmen für unseren Planeten, denn er ist unser einziges Zuhause. Vielen Dank für Ihre Aufmerksamkeit.",
+          "matchCount": 1,
+          "matches": [
+            {
+              "ruleId": "H2O",
+              "category": "STYLE",
+              "issueType": "style",
+              "message": "Möchten Sie die typografisch schönere Schreibweise „CO₂“, das als Treibhausgas bekannte „Kohlendioxid“, verwenden?",
+              "shortMessage": "Typografie",
+              "offset": 958,
+              "length": 3,
+              "context": "...niger Transportwege benötigen und somit CO2 einsparen. Oder wir nutzen öfter das Fa...",
+              "contextOffset": 43,
+              "replacements": [
+                "CO₂",
+                "Kohlendioxid"
+              ]
+            }
+          ]
+        },
+        {
+          "segmentType": "passage",
+          "field": "passages.title",
+          "passageIndex": 0,
+          "questionIndex": null,
+          "textLength": 62,
+          "text": "Vortrag: Unsere persönliche Verantwortung für den Umweltschutz",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "question",
+          "field": "questions.content",
+          "passageIndex": null,
+          "questionIndex": 0,
+          "textLength": 476,
+          "text": "Sie hören einen kurzen Vortrag.\nSie hören den Text zweimal. Wählen Sie bei jeder Aufgabe die richtige Lösung a, b oder c.\n\nWas ist ein häufiges Gefühl vieler Menschen angesichts globaler Umweltprobleme?\nDie Referentin erwähnt, dass sich viele Menschen angesichts der globalen Umweltprobleme oft machtlos fühlen.\na) Sie erwarten, dass die Politik alle Probleme löst.\nb) Sie fühlen sich oft machtlos und überfordert.\nc) Sie sind überzeugt, dass ihre kleinen Schritte ausreichen.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "question",
+          "field": "questions.content",
+          "passageIndex": null,
+          "questionIndex": 1,
+          "textLength": 405,
+          "text": "Welche alltägliche Handlung nennt die Referentin als Beispiel für Umweltschutz?\nSie nennt Mülltrennung, die Reduzierung von Plastikverpackungen und den bewussten Umgang mit Wasser und Energie als Beispiele für tägliche Gewohnheiten.\na) Müll trennen und weniger Plastikverpackungen verwenden.\nb) Immer das Auto nutzen, um schnell ans Ziel zu kommen.\nc) Nur noch Bio-Produkte kaufen und teure Geräte nutzen.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "question",
+          "field": "questions.content",
+          "passageIndex": null,
+          "questionIndex": 2,
+          "textLength": 418,
+          "text": "Was ist ein Grund, warum Menschen laut Referentin zögern, sich für die Umwelt zu engagieren?\nDie Referentin erwähnt, dass manche Menschen die Kosten für umweltfreundliche Produkte als zu hoch ansehen, was sie vom Engagement abhält.\na) Sie haben keine Zeit, sich mit dem Thema zu beschäftigen.\nb) Sie halten umweltfreundliche Produkte oft für zu kostspielig.\nc) Sie denken, dass die Regierung allein verantwortlich ist.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "question",
+          "field": "questions.content",
+          "passageIndex": null,
+          "questionIndex": 3,
+          "textLength": 416,
+          "text": "Welches Argument nutzt die Referentin gegen die Behauptung, nachhaltige Produkte seien zu teuer?\nSie erklärt, dass viele nachhaltige Optionen langfristig kostengünstiger sein können, zum Beispiel durch energiesparende Geräte.\na) Man kann einfach weniger kaufen und so Geld sparen.\nb) Viele nachhaltige Optionen sind auf lange Sicht oft günstiger.\nc) Der Staat übernimmt die Mehrkosten für umweltfreundliche Produkte.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "question",
+          "field": "questions.content",
+          "passageIndex": null,
+          "questionIndex": 4,
+          "textLength": 353,
+          "text": "Welche Rolle spielt Bildung beim Umweltschutz laut der Referentin?\nDie Referentin sagt, je mehr man über Zusammenhänge weiß, desto motivierter ist man, aktiv zu werden.\na) Nur Fachleute müssen sich mit Umweltthemen auskennen.\nb) Bildung ist unwichtig, da nur praktische Taten zählen.\nc) Wissen motiviert Menschen, aktiv zu werden und sich zu engagieren.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "question",
+          "field": "questions.content",
+          "passageIndex": null,
+          "questionIndex": 5,
+          "textLength": 456,
+          "text": "Wie können Einzelpersonen laut Vortrag Motivation für Umweltengagement finden?\nSie schlägt vor, mit Freunden und Familie über Umweltthemen zu sprechen und sich in lokalen Initiativen zu engagieren, da dies inspirierend wirken kann.\na) Durch den Austausch mit anderen und die Teilnahme an Gemeinschaftsprojekten.\nb) Durch das Lesen von komplexen wissenschaftlichen Studien zum Klimawandel.\nc) Indem man sich von anderen Menschen isoliert und allein handelt.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "question",
+          "field": "questions.content",
+          "passageIndex": null,
+          "questionIndex": 6,
+          "textLength": 403,
+          "text": "Was ist die abschließende Botschaft der Referentin zum Umweltschutz?\nDie Referentin fasst zusammen, dass Umweltschutz im Alltag jedes Einzelnen beginnt und nicht nur eine Aufgabe für Regierungen und Konzerne ist.\na) Jeder Einzelne muss im Alltag Verantwortung übernehmen.\nb) Es ist ein Problem, das man nicht vollständig lösen kann.\nc) Es ist hauptsächlich eine Aufgabe für große Firmen und Regierungen.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "question",
+          "field": "questions.content",
+          "passageIndex": null,
+          "questionIndex": 7,
+          "textLength": 405,
+          "text": "Was versteht die Referentin unter 'kollektiver Kraft'?\nDie Referentin erklärt, dass eine enorme kollektive Kraft entsteht, wenn Millionen von Menschen kleine Veränderungen vornehmen.\na) Die Macht der Regierungen, Umweltgesetze zu erlassen und durchzusetzen.\nb) Die Stärke der Natur, sich selbst zu regenerieren und zu erholen.\nc) Die Wirkung, die entsteht, wenn viele Menschen kleine Veränderungen machen.",
+          "matchCount": 0,
+          "matches": []
+        }
+      ],
+      "passages": [
+        {
+          "segmentType": "passage",
+          "field": "passages.content",
+          "passageIndex": 0,
+          "questionIndex": null,
+          "textLength": 2652,
+          "text": "Sehr geehrte Damen und Herren, liebe Zuhörerinnen und Zuhörer,\n\nherzlich willkommen zu meinem heutigen Vortrag über ein Thema, das uns alle angeht: den Umweltschutz und unsere persönliche Verantwortung. Oft fühlen wir uns angesichts der globalen Umweltprobleme wie Klimawandel, Artensterben und Plastikmüll in den Ozeanen machtlos. Doch ich möchte heute die These vertreten, dass jeder Einzelne von uns einen entscheidenden Beitrag leisten kann und muss.\n\nBeginnen wir mit unseren täglichen Gewohnheiten. Viele kleine Entscheidungen summieren sich zu einer großen Wirkung. Denken Sie an die Mülltrennung, die Reduzierung von Plastikverpackungen, den bewussten Umgang mit Wasser und Energie zu Hause. Es geht nicht darum, von heute auf morgen perfekt zu sein, sondern darum, schrittweise nachhaltigere Entscheidungen zu treffen. Zum Beispiel können wir beim Einkaufen auf regionale und saisonale Produkte achten, die weniger Transportwege benötigen und somit CO2 einsparen. Oder wir nutzen öfter das Fahrrad oder öffentliche Verkehrsmittel statt des Autos. Diese einfachen Schritte sind oft leichter umzusetzen, als man denkt.\n\nNatürlich gibt es auch Schwierigkeiten. Manche Menschen denken, ihr Beitrag sei zu gering, um wirklich etwas zu verändern. Andere sehen die Kosten für umweltfreundliche Produkte als zu hoch an. Doch diese Argumente halten einer genaueren Betrachtung nicht stand. Wenn Millionen von Menschen kleine Veränderungen vornehmen, entsteht eine enorme kollektive Kraft. Und viele nachhaltige Optionen sind langfristig sogar kostengünstiger, etwa energiesparende Geräte oder der Verzicht auf Einwegprodukte. Die Entwicklung hin zu mehr Nachhaltigkeit wird auch durch politische Maßnahmen und technologische Fortschritte unterstützt, aber der individuelle Wille ist der Motor.\n\nEin weiterer wichtiger Punkt ist die Bildung und Aufklärung. Je mehr wir über die Zusammenhänge wissen, desto motivierter sind wir, aktiv zu werden. Sprechen Sie mit Freunden und Familie über Umweltthemen, tauschen Sie sich über Erfahrungen aus. Engagieren Sie sich vielleicht in lokalen Initiativen oder Projekten, die sich für den Schutz unserer Natur einsetzen. Das Gefühl, Teil einer Gemeinschaft zu sein, die sich für ein gemeinsames Ziel einsetzt, kann sehr inspirierend wirken.\n\nZusammenfassend lässt sich sagen, dass Umweltschutz keine abstrakte Aufgabe für Regierungen und große Konzerne allein ist. Er beginnt bei jedem von uns, in unserem Alltag. Jeder bewusste Schritt, jede kleine Veränderung zählt. Lassen Sie uns gemeinsam Verantwortung übernehmen für unseren Planeten, denn er ist unser einziges Zuhause. Vielen Dank für Ihre Aufmerksamkeit.",
+          "matchCount": 1,
+          "matches": [
+            {
+              "ruleId": "H2O",
+              "category": "STYLE",
+              "issueType": "style",
+              "message": "Möchten Sie die typografisch schönere Schreibweise „CO₂“, das als Treibhausgas bekannte „Kohlendioxid“, verwenden?",
+              "shortMessage": "Typografie",
+              "offset": 958,
+              "length": 3,
+              "context": "...niger Transportwege benötigen und somit CO2 einsparen. Oder wir nutzen öfter das Fa...",
+              "contextOffset": 43,
+              "replacements": [
+                "CO₂",
+                "Kohlendioxid"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "lesen-t1-gemini-208.json",
+      "matchCount": 5,
+      "segments": [
+        {
+          "segmentType": "passage",
+          "field": "passages.content",
+          "passageIndex": 0,
+          "questionIndex": null,
+          "textLength": 789,
+          "text": "Ich sehe soziale Medien hauptsächlich als eine große Bereicherung für unsere Gesellschaft. Die Digitalisierung hat uns die Möglichkeit gegeben, mit Freunden und Familie weltweit in Kontakt zu bleiben, was früher undenkbar war. Außerdem bieten Plattformen wie Twitter oder Instagram einen schnellen Zugang zu aktuellen Nachrichten und verschiedenen Perspektiven. Man kann sich über aktuelle Ereignisse informieren und sogar an Diskussionen teilnehmen, die sonst nur in geschlossenen Kreisen stattfinden würden. Neulich habe ich durch eine Online-Gruppe viel über lokale Umweltprojekte erfahren. Das ist eine fantastische Möglichkeit, sich zu engagieren und neue Impulse zu bekommen. Natürlich gibt es auch Schattenseiten, aber der positive Aspekt der Vernetzung überwiegt für mich deutlich.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "passage",
+          "field": "passages.title",
+          "passageIndex": 0,
+          "questionIndex": null,
+          "textLength": 36,
+          "text": "Person A — Soziale Medien als Chance",
+          "matchCount": 1,
+          "matches": [
+            {
+              "ruleId": "DE_CASE",
+              "category": "CASING",
+              "issueType": "uncategorized",
+              "message": "Außer am Satzanfang werden nur Nomen und Eigennamen großgeschrieben.",
+              "shortMessage": null,
+              "offset": 11,
+              "length": 7,
+              "context": "Person A — Soziale Medien als Chance",
+              "contextOffset": 11,
+              "replacements": [
+                "soziale"
+              ]
+            }
+          ]
+        },
+        {
+          "segmentType": "passage",
+          "field": "passages.content",
+          "passageIndex": 1,
+          "questionIndex": null,
+          "textLength": 769,
+          "text": "Für mich überwiegen die negativen Aspekte der sozialen Medien. Ich finde, sie sind oft eine große Zeitfalle und führen zu einer ständigen Ablenkung. Viele meiner Freunde verbringen Stunden damit, durch Feeds zu scrollen, anstatt sich im echten Leben zu treffen. Die größte Herausforderung ist aber die Verbreitung von Falschinformationen. Es ist unglaublich schwierig geworden, zwischen Fakten und Meinungen zu unterscheiden, besonders wenn Algorithmen uns immer nur das zeigen, was unsere eigene Meinung bestätigt. Das schafft eine Blase, aus der man kaum noch herauskommt. Ich habe das Gefühl, dass die Qualität der Debatten leidet und die mentale Gesundheit vieler Menschen unter dem ständigen Vergleichsdruck leidet. Man muss wirklich aufpassen, was man konsumiert.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "passage",
+          "field": "passages.title",
+          "passageIndex": 1,
+          "questionIndex": null,
+          "textLength": 45,
+          "text": "Person B — Die Schattenseiten der Online-Welt",
+          "matchCount": 1,
+          "matches": [
+            {
+              "ruleId": "DE_CASE",
+              "category": "CASING",
+              "issueType": "uncategorized",
+              "message": "Außer am Satzanfang werden nur Nomen und Eigennamen großgeschrieben.",
+              "shortMessage": null,
+              "offset": 11,
+              "length": 3,
+              "context": "Person B — Die Schattenseiten der Online-Welt",
+              "contextOffset": 11,
+              "replacements": [
+                "die"
+              ]
+            }
+          ]
+        },
+        {
+          "segmentType": "passage",
+          "field": "passages.content",
+          "passageIndex": 2,
+          "questionIndex": null,
+          "textLength": 800,
+          "text": "Soziale Medien sind ein zweischneidiges Schwert. Einerseits ermöglichen sie es, dass sich Menschen für wichtige Anliegen engagieren und schnell Informationen verbreiten können. Ich denke da an Bewegungen, die durch Hashtags global sichtbar wurden. Das ist eine enorme Stärke. Andererseits sehe ich die Gefahr von Filterblasen und Echokammern. Wenn man nicht aktiv versucht, verschiedene Quellen zu konsultieren, landet man schnell in einer Welt, in der nur die eigene Meinung bestätigt wird. Die Verantwortung liegt hier nicht nur bei den Plattformen, sondern auch bei jedem Einzelnen, kritisch zu bleiben und Medienkompetenz zu entwickeln. Wir müssen lernen, Informationen zu hinterfragen und nicht alles ungeprüft zu übernehmen. Das ist eine wichtige Fähigkeit in der heutigen digitalisierten Welt.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "passage",
+          "field": "passages.title",
+          "passageIndex": 2,
+          "questionIndex": null,
+          "textLength": 46,
+          "text": "Person C — Zwischen Filterblase und Engagement",
+          "matchCount": 1,
+          "matches": [
+            {
+              "ruleId": "DE_CASE",
+              "category": "CASING",
+              "issueType": "uncategorized",
+              "message": "Außer am Satzanfang werden nur Nomen und Eigennamen großgeschrieben.",
+              "shortMessage": null,
+              "offset": 11,
+              "length": 8,
+              "context": "Person C — Zwischen Filterblase und Engagement",
+              "contextOffset": 11,
+              "replacements": [
+                "zwischen"
+              ]
+            }
+          ]
+        },
+        {
+          "segmentType": "passage",
+          "field": "passages.content",
+          "passageIndex": 3,
+          "questionIndex": null,
+          "textLength": 785,
+          "text": "Meiner Meinung nach brauchen wir dringend mehr Regulierung im Bereich der sozialen Medien. Die großen Plattformen haben zu viel Macht und Einfluss auf unsere Gesellschaft, ohne dass es ausreichende Kontrollmechanismen gibt. Es geht nicht nur um den Schutz persönlicher Daten, sondern auch um die Bekämpfung von Hassrede und Manipulation. Die Unternehmen sollten eine größere Verantwortung für die Inhalte übernehmen, die auf ihren Seiten verbreitet werden. Es kann nicht sein, dass sie sich aus der Affäre ziehen und alles den Nutzern überlassen. Eine strengere Gesetzgebung könnte dazu beitragen, dass die Online-Welt sicherer und fairer wird. Wir müssen eine Art Nachhaltigkeit in der Informationsverbreitung anstreben, um langfristig eine gesunde digitale Umgebung zu gewährleisten.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "passage",
+          "field": "passages.title",
+          "passageIndex": 3,
+          "questionIndex": null,
+          "textLength": 42,
+          "text": "Person D — Mehr Kontrolle und klare Regeln",
+          "matchCount": 1,
+          "matches": [
+            {
+              "ruleId": "DE_CASE",
+              "category": "CASING",
+              "issueType": "uncategorized",
+              "message": "Außer am Satzanfang werden nur Nomen und Eigennamen großgeschrieben.",
+              "shortMessage": null,
+              "offset": 11,
+              "length": 4,
+              "context": "Person D — Mehr Kontrolle und klare Regeln",
+              "contextOffset": 11,
+              "replacements": [
+                "mehr"
+              ]
+            }
+          ]
+        },
+        {
+          "segmentType": "question",
+          "field": "questions.content",
+          "passageIndex": null,
+          "questionIndex": 0,
+          "textLength": 412,
+          "text": "Lesen Sie in einem Forum, wie Menschen über ein Thema denken.\nAuf welche der vier Personen treffen die einzelnen Aussagen zu? Die Personen können mehrmals gewählt werden.\n\nDie Person genießt die Möglichkeit, international mit Personen verbunden zu sein.\nPerson A erwähnt, dass die Digitalisierung es ermöglicht hat, weltweit mit Freunden und Familie in Kontakt zu bleiben, was sie als Bereicherung sieht.\nA\nB\nC\nD",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "question",
+          "field": "questions.content",
+          "passageIndex": null,
+          "questionIndex": 1,
+          "textLength": 226,
+          "text": "Die Person empfindet Online-Plattformen als große Zeitverschwendung und ständige Störung.\nPerson B beschreibt soziale Medien als eine große Zeitfalle und Quelle ständiger Ablenkung, die viele Stunden in Anspruch nimmt.\nA\nB\nC\nD",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "question",
+          "field": "questions.content",
+          "passageIndex": null,
+          "questionIndex": 2,
+          "textLength": 248,
+          "text": "Die Person meint, man solle Inhalte kritisch beurteilen und Medienwissen erwerben.\nPerson C betont die Notwendigkeit, kritisch zu bleiben und Medienkompetenz zu entwickeln, um Informationen zu hinterfragen und nicht ungeprüft zu übernehmen.\nA\nB\nC\nD",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "question",
+          "field": "questions.content",
+          "passageIndex": null,
+          "questionIndex": 3,
+          "textLength": 210,
+          "text": "Die Person verlangt schärfere Regeln für eine geschütztere digitale Welt.\nPerson D argumentiert, dass eine strengere Gesetzgebung dazu beitragen könnte, die Online-Welt sicherer und fairer zu gestalten.\nA\nB\nC\nD",
+          "matchCount": 1,
+          "matches": [
+            {
+              "ruleId": "GERMAN_SPELLER_RULE",
+              "category": "TYPOS",
+              "issueType": "misspelling",
+              "message": "Möglicher Tippfehler gefunden.",
+              "shortMessage": "Rechtschreibfehler",
+              "offset": 46,
+              "length": 12,
+              "context": "...rson verlangt schärfere Regeln für eine geschütztere digitale Welt. Person D argumentiert, d...",
+              "contextOffset": 43,
+              "replacements": [
+                "geschützter",
+                "geschützten",
+                "geschützte",
+                "geschätzter",
+                "geschütztes"
+              ]
+            }
+          ]
+        },
+        {
+          "segmentType": "question",
+          "field": "questions.content",
+          "passageIndex": null,
+          "questionIndex": 4,
+          "textLength": 246,
+          "text": "Die Person findet, dass man über digitale Plattformen rasch Informationen und diverse Meinungen erhält.\nPerson A erwähnt, dass Plattformen einen schnellen Zugang zu Nachrichten und verschiedenen Sichtweisen bieten, um sich zu informieren.\nA\nB\nC\nD",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "question",
+          "field": "questions.content",
+          "passageIndex": null,
+          "questionIndex": 5,
+          "textLength": 457,
+          "text": "Die Person macht die Empfehlungs-Algorithmen dafür verantwortlich, dass man in einer bestätigenden Informationsblase stecken bleibt.\nPerson B kritisiert ausdrücklich, dass Algorithmen nur Inhalte zeigen, die die eigene Meinung bestätigen, und dass man aus dieser Blase kaum noch herauskommt. Person C warnt zwar vor Filterblasen, betont aber vor allem die Pflicht der Nutzer, aktiv verschiedene Quellen zu nutzen — nicht die Algorithmen als Ursache.\nA\nB\nC\nD",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "question",
+          "field": "questions.content",
+          "passageIndex": null,
+          "questionIndex": 6,
+          "textLength": 250,
+          "text": "Die Person bemerkt, dass digitale Kanäle wichtige Anliegen weltweit bekannt machen.\nPerson C nennt als Stärke sozialer Medien, dass sie es ermöglichen, dass sich Menschen für wichtige Anliegen engagieren und Bewegungen global sichtbar werden.\nA\nB\nC\nD",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "question",
+          "field": "questions.content",
+          "passageIndex": null,
+          "questionIndex": 7,
+          "textLength": 241,
+          "text": "Die Person wünscht, dass die Betreiber mehr für online gestellte Inhalte einstehen.\nPerson D ist der Meinung, dass die Unternehmen eine größere Verantwortung für die Inhalte übernehmen sollten, die auf ihren Seiten verbreitet werden.\nA\nB\nC\nD",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "question",
+          "field": "questions.content",
+          "passageIndex": null,
+          "questionIndex": 8,
+          "textLength": 237,
+          "text": "Die Person kritisiert die übermäßige Macht der Online-Anbieter bei mangelnden Kontrollmöglichkeiten.\nPerson D bemängelt, dass große Plattformen zu viel Macht und Einfluss haben, ohne dass es ausreichende Kontrollmechanismen gibt.\nA\nB\nC\nD",
+          "matchCount": 0,
+          "matches": []
+        }
+      ],
+      "passages": [
+        {
+          "segmentType": "passage",
+          "field": "passages.content",
+          "passageIndex": 0,
+          "questionIndex": null,
+          "textLength": 789,
+          "text": "Ich sehe soziale Medien hauptsächlich als eine große Bereicherung für unsere Gesellschaft. Die Digitalisierung hat uns die Möglichkeit gegeben, mit Freunden und Familie weltweit in Kontakt zu bleiben, was früher undenkbar war. Außerdem bieten Plattformen wie Twitter oder Instagram einen schnellen Zugang zu aktuellen Nachrichten und verschiedenen Perspektiven. Man kann sich über aktuelle Ereignisse informieren und sogar an Diskussionen teilnehmen, die sonst nur in geschlossenen Kreisen stattfinden würden. Neulich habe ich durch eine Online-Gruppe viel über lokale Umweltprojekte erfahren. Das ist eine fantastische Möglichkeit, sich zu engagieren und neue Impulse zu bekommen. Natürlich gibt es auch Schattenseiten, aber der positive Aspekt der Vernetzung überwiegt für mich deutlich.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "passage",
+          "field": "passages.content",
+          "passageIndex": 1,
+          "questionIndex": null,
+          "textLength": 769,
+          "text": "Für mich überwiegen die negativen Aspekte der sozialen Medien. Ich finde, sie sind oft eine große Zeitfalle und führen zu einer ständigen Ablenkung. Viele meiner Freunde verbringen Stunden damit, durch Feeds zu scrollen, anstatt sich im echten Leben zu treffen. Die größte Herausforderung ist aber die Verbreitung von Falschinformationen. Es ist unglaublich schwierig geworden, zwischen Fakten und Meinungen zu unterscheiden, besonders wenn Algorithmen uns immer nur das zeigen, was unsere eigene Meinung bestätigt. Das schafft eine Blase, aus der man kaum noch herauskommt. Ich habe das Gefühl, dass die Qualität der Debatten leidet und die mentale Gesundheit vieler Menschen unter dem ständigen Vergleichsdruck leidet. Man muss wirklich aufpassen, was man konsumiert.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "passage",
+          "field": "passages.content",
+          "passageIndex": 2,
+          "questionIndex": null,
+          "textLength": 800,
+          "text": "Soziale Medien sind ein zweischneidiges Schwert. Einerseits ermöglichen sie es, dass sich Menschen für wichtige Anliegen engagieren und schnell Informationen verbreiten können. Ich denke da an Bewegungen, die durch Hashtags global sichtbar wurden. Das ist eine enorme Stärke. Andererseits sehe ich die Gefahr von Filterblasen und Echokammern. Wenn man nicht aktiv versucht, verschiedene Quellen zu konsultieren, landet man schnell in einer Welt, in der nur die eigene Meinung bestätigt wird. Die Verantwortung liegt hier nicht nur bei den Plattformen, sondern auch bei jedem Einzelnen, kritisch zu bleiben und Medienkompetenz zu entwickeln. Wir müssen lernen, Informationen zu hinterfragen und nicht alles ungeprüft zu übernehmen. Das ist eine wichtige Fähigkeit in der heutigen digitalisierten Welt.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "passage",
+          "field": "passages.content",
+          "passageIndex": 3,
+          "questionIndex": null,
+          "textLength": 785,
+          "text": "Meiner Meinung nach brauchen wir dringend mehr Regulierung im Bereich der sozialen Medien. Die großen Plattformen haben zu viel Macht und Einfluss auf unsere Gesellschaft, ohne dass es ausreichende Kontrollmechanismen gibt. Es geht nicht nur um den Schutz persönlicher Daten, sondern auch um die Bekämpfung von Hassrede und Manipulation. Die Unternehmen sollten eine größere Verantwortung für die Inhalte übernehmen, die auf ihren Seiten verbreitet werden. Es kann nicht sein, dass sie sich aus der Affäre ziehen und alles den Nutzern überlassen. Eine strengere Gesetzgebung könnte dazu beitragen, dass die Online-Welt sicherer und fairer wird. Wir müssen eine Art Nachhaltigkeit in der Informationsverbreitung anstreben, um langfristig eine gesunde digitale Umgebung zu gewährleisten.",
+          "matchCount": 0,
+          "matches": []
+        }
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-167.json",
+      "matchCount": 0,
+      "segments": [
+        {
+          "segmentType": "passage",
+          "field": "passages.content",
+          "passageIndex": 0,
+          "questionIndex": null,
+          "textLength": 2126,
+          "text": "In unserer schnelllebigen Zeit ist Freizeit oft ein rares Gut, obwohl viele Menschen sich unter Druck gesetzt fühlen, ständig produktiv zu sein, und dabei die Bedeutung von Erholung und Ausgleich vergessen. Eine bewusste Gestaltung der Freizeit ist jedoch entscheidend für unser Wohlbefinden, weil es nicht nur darum geht, keine Arbeit zu haben, sondern aktiv etwas zu tun, das uns Freude bereitet und neue Energie schenkt. (21) Es ist wichtig, die eigenen Bedürfnisse zu erkennen und Aktivitäten zu wählen, die wirklich entspannen und bereichern.\n\nEinige bevorzugen aktive Freizeitaktivitäten. Dazu gehören Sport, kreative Hobbys oder ehrenamtliche Tätigkeiten. Solche Beschäftigungen fördern nicht nur die körperliche Fitness, sondern auch die geistige Agilität. (22) Sie bieten eine willkommene Abwechslung zum Berufsalltag und helfen, Stress abzubauen. Andere wiederum suchen eher passive Erholung, indem sie gerne ein Buch lesen, Musik hören oder Zeit in der Natur verbringen. (23) Diese ruhigeren Momente sind ebenso wertvoll, um neue Kraft zu sammeln und den Kopf freizubekommen.\n\nEine besondere Rolle spielen heute digitale Medien in unserer Freizeit. Sie bieten unzählige Möglichkeiten zur Unterhaltung und Kommunikation. Von Streaming-Diensten bis zu sozialen Netzwerken – die Auswahl ist riesig. (24) Es ist entscheidend, hier ein gesundes Maß zu finden, um nicht in eine passive Konsumhaltung zu verfallen, die am Ende mehr ermüdet als entspannt.\n\nAuch die soziale Komponente der Freizeit sollte nicht unterschätzt werden. Gemeinsame Unternehmungen mit Freunden oder Familie stärken die Gemeinschaft und schaffen unvergessliche Erinnerungen. Ob ein gemeinsames Essen oder ein Ausflug – diese Momente sind oft die schönsten. (25) Sie tragen maßgeblich dazu bei, dass wir uns verbunden fühlen und unser Leben als erfüllter empfinden.\n\nLetztendlich ist die Freizeitgestaltung eine sehr persönliche Angelegenheit. Was für den einen entspannend ist, kann für den Anderen anstrengend sein. (26) Nur so kann sie ihre volle positive Wirkung entfalten und uns helfen, ein ausgeglicheneres und glücklicheres Leben zu führen.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "passage",
+          "field": "passages.title",
+          "passageIndex": 0,
+          "questionIndex": null,
+          "textLength": 52,
+          "text": "Die Kunst der Freizeitgestaltung: Mehr als nur Pause",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "question",
+          "field": "questions.content",
+          "passageIndex": null,
+          "questionIndex": 0,
+          "textLength": 1333,
+          "text": "Lesen Sie in einer Zeitschrift einen Artikel.\nWelche Sätze passen in die Lücken? Zwei Sätze passen nicht.\n\nLücke (21): Welcher Satz passt hier?\nSatz B schließt thematisch an die Einleitung an, die die Bedeutung einer bewussten Freizeitgestaltung betont. Die 'bewusste Entscheidung für bestimmte Aktivitäten' passt perfekt zu der Notwendigkeit, 'eigene Bedürfnisse zu erkennen und Aktivitäten zu wählen, die wirklich entspannen und bereichern'.\nA) Viele Menschen nutzen diese Zeit jedoch nur, um sich von der Arbeit zu erholen, ohne aktiv etwas Neues zu erleben.\nB) Diese bewusste Entscheidung für bestimmte Aktivitäten hilft, den Alltag zu strukturieren und eine neue Sicht zu bekommen.\nC) Ein Übermaß an Bildschirmzeit kann die Kreativität hemmen und das Gefühl der Isolation verstärken.\nD) Solche Aktivitäten stärken nicht nur die Bindung, sondern fördern auch das gegenseitige Verständnis.\nE) Es ist wichtig, dass jeder für sich selbst herausfindet, welche Art der Freizeitgestaltung am besten zu ihm passt.\nF) Sie ermöglichen es, neue Fähigkeiten zu erlernen, bestehende Talente zu vertiefen und neue Kontakte zu knüpfen.\nG) Oftmals sind es die kleinen Dinge im Leben, die uns die größte Freude bereiten und uns wirklich entspannen lassen.\nH) Sie bieten die Möglichkeit, dem Alltagsstress zu entfliehen und innere Ruhe zu finden.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "question",
+          "field": "questions.content",
+          "passageIndex": null,
+          "questionIndex": 1,
+          "textLength": 1190,
+          "text": "Lücke (22): Welcher Satz passt hier?\nSatz F bezieht sich auf die zuvor genannten 'aktiven Freizeitaktivitäten' wie Sport und kreative Hobbys. Die genannten Vorteile wie das Erlernen neuer Fähigkeiten und Knüpfen von Kontakten passen gut zu den beschriebenen positiven Effekten dieser Beschäftigungen.\nA) Viele Menschen nutzen diese Zeit jedoch nur, um sich von der Arbeit zu erholen, ohne aktiv etwas Neues zu erleben.\nB) Diese bewusste Entscheidung für bestimmte Aktivitäten hilft, den Alltag zu strukturieren und eine neue Sicht zu bekommen.\nC) Ein Übermaß an Bildschirmzeit kann die Kreativität hemmen und das Gefühl der Isolation verstärken.\nD) Solche Aktivitäten stärken nicht nur die Bindung, sondern fördern auch das gegenseitige Verständnis.\nE) Es ist wichtig, dass jeder für sich selbst herausfindet, welche Art der Freizeitgestaltung am besten zu ihm passt.\nF) Sie ermöglichen es, neue Fähigkeiten zu erlernen, bestehende Talente zu vertiefen und neue Kontakte zu knüpfen.\nG) Oftmals sind es die kleinen Dinge im Leben, die uns die größte Freude bereiten und uns wirklich entspannen lassen.\nH) Sie bieten die Möglichkeit, dem Alltagsstress zu entfliehen und innere Ruhe zu finden.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "question",
+          "field": "questions.content",
+          "passageIndex": null,
+          "questionIndex": 2,
+          "textLength": 1143,
+          "text": "Lücke (23): Welcher Satz passt hier?\nSatz H passt perfekt zum Kontext der 'passiven Erholung' (Lesen, Musik hören, Natur). Die Möglichkeit, 'dem Alltagsstress zu entfliehen und innere Ruhe zu finden', beschreibt genau den Zweck dieser ruhigeren Momente.\nA) Viele Menschen nutzen diese Zeit jedoch nur, um sich von der Arbeit zu erholen, ohne aktiv etwas Neues zu erleben.\nB) Diese bewusste Entscheidung für bestimmte Aktivitäten hilft, den Alltag zu strukturieren und eine neue Sicht zu bekommen.\nC) Ein Übermaß an Bildschirmzeit kann die Kreativität hemmen und das Gefühl der Isolation verstärken.\nD) Solche Aktivitäten stärken nicht nur die Bindung, sondern fördern auch das gegenseitige Verständnis.\nE) Es ist wichtig, dass jeder für sich selbst herausfindet, welche Art der Freizeitgestaltung am besten zu ihm passt.\nF) Sie ermöglichen es, neue Fähigkeiten zu erlernen, bestehende Talente zu vertiefen und neue Kontakte zu knüpfen.\nG) Oftmals sind es die kleinen Dinge im Leben, die uns die größte Freude bereiten und uns wirklich entspannen lassen.\nH) Sie bieten die Möglichkeit, dem Alltagsstress zu entfliehen und innere Ruhe zu finden.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "question",
+          "field": "questions.content",
+          "passageIndex": null,
+          "questionIndex": 3,
+          "textLength": 1151,
+          "text": "Lücke (24): Welcher Satz passt hier?\nSatz C thematisiert die negativen Auswirkungen von 'Bildschirmzeit' und passt somit ideal zum Absatz über 'digitale Medien' und die Notwendigkeit eines 'gesunden Maßes', um 'nicht in eine passive Konsumhaltung zu verfallen'.\nA) Viele Menschen nutzen diese Zeit jedoch nur, um sich von der Arbeit zu erholen, ohne aktiv etwas Neues zu erleben.\nB) Diese bewusste Entscheidung für bestimmte Aktivitäten hilft, den Alltag zu strukturieren und eine neue Sicht zu bekommen.\nC) Ein Übermaß an Bildschirmzeit kann die Kreativität hemmen und das Gefühl der Isolation verstärken.\nD) Solche Aktivitäten stärken nicht nur die Bindung, sondern fördern auch das gegenseitige Verständnis.\nE) Es ist wichtig, dass jeder für sich selbst herausfindet, welche Art der Freizeitgestaltung am besten zu ihm passt.\nF) Sie ermöglichen es, neue Fähigkeiten zu erlernen, bestehende Talente zu vertiefen und neue Kontakte zu knüpfen.\nG) Oftmals sind es die kleinen Dinge im Leben, die uns die größte Freude bereiten und uns wirklich entspannen lassen.\nH) Sie bieten die Möglichkeit, dem Alltagsstress zu entfliehen und innere Ruhe zu finden.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "question",
+          "field": "questions.content",
+          "passageIndex": null,
+          "questionIndex": 4,
+          "textLength": 1179,
+          "text": "Lücke (25): Welcher Satz passt hier?\nSatz D bezieht sich auf 'Gemeinsame Unternehmungen mit Freunden oder Familie' und ergänzt die Idee, dass diese 'die Gemeinschaft stärken'. Die Stärkung der Bindung und des gegenseitigen Verständnisses sind direkte Vorteile solcher sozialen Aktivitäten.\nA) Viele Menschen nutzen diese Zeit jedoch nur, um sich von der Arbeit zu erholen, ohne aktiv etwas Neues zu erleben.\nB) Diese bewusste Entscheidung für bestimmte Aktivitäten hilft, den Alltag zu strukturieren und eine neue Sicht zu bekommen.\nC) Ein Übermaß an Bildschirmzeit kann die Kreativität hemmen und das Gefühl der Isolation verstärken.\nD) Solche Aktivitäten stärken nicht nur die Bindung, sondern fördern auch das gegenseitige Verständnis.\nE) Es ist wichtig, dass jeder für sich selbst herausfindet, welche Art der Freizeitgestaltung am besten zu ihm passt.\nF) Sie ermöglichen es, neue Fähigkeiten zu erlernen, bestehende Talente zu vertiefen und neue Kontakte zu knüpfen.\nG) Oftmals sind es die kleinen Dinge im Leben, die uns die größte Freude bereiten und uns wirklich entspannen lassen.\nH) Sie bieten die Möglichkeit, dem Alltagsstress zu entfliehen und innere Ruhe zu finden.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "question",
+          "field": "questions.content",
+          "passageIndex": null,
+          "questionIndex": 5,
+          "textLength": 1237,
+          "text": "Lücke (26): Welcher Satz passt hier?\nSatz E fasst die vorherige Aussage zusammen, dass Freizeitgestaltung eine 'sehr persönliche Angelegenheit' ist. Die Notwendigkeit, 'für sich selbst herauszufinden, welche Art der Freizeitgestaltung am besten passt', führt logisch zu der Schlussfolgerung 'Nur so kann sie ihre volle positive Wirkung entfalten'.\nA) Viele Menschen nutzen diese Zeit jedoch nur, um sich von der Arbeit zu erholen, ohne aktiv etwas Neues zu erleben.\nB) Diese bewusste Entscheidung für bestimmte Aktivitäten hilft, den Alltag zu strukturieren und eine neue Sicht zu bekommen.\nC) Ein Übermaß an Bildschirmzeit kann die Kreativität hemmen und das Gefühl der Isolation verstärken.\nD) Solche Aktivitäten stärken nicht nur die Bindung, sondern fördern auch das gegenseitige Verständnis.\nE) Es ist wichtig, dass jeder für sich selbst herausfindet, welche Art der Freizeitgestaltung am besten zu ihm passt.\nF) Sie ermöglichen es, neue Fähigkeiten zu erlernen, bestehende Talente zu vertiefen und neue Kontakte zu knüpfen.\nG) Oftmals sind es die kleinen Dinge im Leben, die uns die größte Freude bereiten und uns wirklich entspannen lassen.\nH) Sie bieten die Möglichkeit, dem Alltagsstress zu entfliehen und innere Ruhe zu finden.",
+          "matchCount": 0,
+          "matches": []
+        }
+      ],
+      "passages": [
+        {
+          "segmentType": "passage",
+          "field": "passages.content",
+          "passageIndex": 0,
+          "questionIndex": null,
+          "textLength": 2126,
+          "text": "In unserer schnelllebigen Zeit ist Freizeit oft ein rares Gut, obwohl viele Menschen sich unter Druck gesetzt fühlen, ständig produktiv zu sein, und dabei die Bedeutung von Erholung und Ausgleich vergessen. Eine bewusste Gestaltung der Freizeit ist jedoch entscheidend für unser Wohlbefinden, weil es nicht nur darum geht, keine Arbeit zu haben, sondern aktiv etwas zu tun, das uns Freude bereitet und neue Energie schenkt. (21) Es ist wichtig, die eigenen Bedürfnisse zu erkennen und Aktivitäten zu wählen, die wirklich entspannen und bereichern.\n\nEinige bevorzugen aktive Freizeitaktivitäten. Dazu gehören Sport, kreative Hobbys oder ehrenamtliche Tätigkeiten. Solche Beschäftigungen fördern nicht nur die körperliche Fitness, sondern auch die geistige Agilität. (22) Sie bieten eine willkommene Abwechslung zum Berufsalltag und helfen, Stress abzubauen. Andere wiederum suchen eher passive Erholung, indem sie gerne ein Buch lesen, Musik hören oder Zeit in der Natur verbringen. (23) Diese ruhigeren Momente sind ebenso wertvoll, um neue Kraft zu sammeln und den Kopf freizubekommen.\n\nEine besondere Rolle spielen heute digitale Medien in unserer Freizeit. Sie bieten unzählige Möglichkeiten zur Unterhaltung und Kommunikation. Von Streaming-Diensten bis zu sozialen Netzwerken – die Auswahl ist riesig. (24) Es ist entscheidend, hier ein gesundes Maß zu finden, um nicht in eine passive Konsumhaltung zu verfallen, die am Ende mehr ermüdet als entspannt.\n\nAuch die soziale Komponente der Freizeit sollte nicht unterschätzt werden. Gemeinsame Unternehmungen mit Freunden oder Familie stärken die Gemeinschaft und schaffen unvergessliche Erinnerungen. Ob ein gemeinsames Essen oder ein Ausflug – diese Momente sind oft die schönsten. (25) Sie tragen maßgeblich dazu bei, dass wir uns verbunden fühlen und unser Leben als erfüllter empfinden.\n\nLetztendlich ist die Freizeitgestaltung eine sehr persönliche Angelegenheit. Was für den einen entspannend ist, kann für den Anderen anstrengend sein. (26) Nur so kann sie ihre volle positive Wirkung entfalten und uns helfen, ein ausgeglicheneres und glücklicheres Leben zu führen.",
+          "matchCount": 0,
+          "matches": []
+        }
+      ]
+    },
+    {
+      "file": "lesen-t3-gemini-050.json",
+      "matchCount": 5,
+      "segments": [
+        {
+          "segmentType": "passage",
+          "field": "passages.content",
+          "passageIndex": 0,
+          "questionIndex": null,
+          "textLength": 3277,
+          "text": "Der Schutz unserer Umwelt ist eine der größten Herausforderungen unserer Zeit. Immer mehr Städte in Deutschland erkennen die Notwendigkeit, aktiv zu werden und nachhaltige Lösungen zu fördern. Ein gutes Beispiel hierfür ist die Stadt Freiburg, die seit Jahren als Vorreiter im Umweltschutz gilt. Doch auch kleinere Gemeinden zeigen beeindruckendes Engagement.\n\nIn vielen Kommunen entstehen derzeit zahlreiche Initiativen, die den lokalen Umweltschutz stärken. Bürgergruppen organisieren Müllsammelaktionen in Parks und an Flussufern, fördern den Anbau von Stadtgärten und setzen sich für mehr Grünflächen ein. Diese Projekte tragen nicht nur zur Verschönerung des Stadtbildes bei, sondern schaffen auch ein stärkeres Bewusstsein für die Bedeutung von Natur und Artenvielfalt.\n\nEin zentrales Thema ist der Klimawandel und seine Auswirkungen. Viele Städte investieren in erneuerbare Energien und verbessern die Energieeffizienz öffentlicher Gebäude. Der Ausbau des öffentlichen Nahverkehrs und die Förderung des Fahrradfahrens sind wichtige Schritte, um den CO2-Ausstoß zu reduzieren. Eine Studie der Universität Potsdam zeigt, dass solche Investitionen die Luftqualität deutlich verbessern können.\n\nDie Reduzierung des Ressourcenverbrauchs ist ebenfalls ein wichtiger Aspekt. Programme zur Abfallvermeidung und zum Recycling werden kontinuierlich erweitert. Supermärkte bieten vermehrt unverpackte Produkte an, und Repair-Cafés erfreuen sich großer Beliebtheit. Hier können defekte Geräte repariert werden, anstatt sie wegzuwerfen, was den Verbrauch neuer Produkte reduziert. Diese Maßnahmen tragen zur Kreislaufwirtschaft bei und schonen wertvolle Ressourcen.\n\nEin weiteres Feld ist die Bildung. Schulen und Kindergärten integrieren Umweltthemen in ihren Lehrplan, um schon den Jüngsten ein Verständnis für Nachhaltigkeit zu vermitteln. Exkursionen in die Natur, Projekte zum Energiesparen und die Pflege von Schulgärten sind feste Bestandteile des Unterrichts. So lernen Kinder frühzeitig, wie ihr eigenes Handeln die Umwelt beeinflusst.\n\nDoch nicht nur Einzelpersonen und lokale Gruppen sind gefragt. Die Kommunalpolitik spielt eine entscheidende Rolle bei der Schaffung der notwendigen Rahmenbedingungen. Durch Förderprogramme, klare Richtlinien für Bauvorhaben und die Unterstützung von Forschungsprojekten können Städte eine Vorreiterrolle einnehmen. Zudem setzen viele Kommunen auf innovative 'Smart City'-Konzepte, die digitale Technologien nutzen, um Energieverbrauch und Abfallmanagement zu verbessern. Grüne Infrastrukturprojekte, wie die Begrünung von Dächern und Fassaden, verbessern das Mikroklima und fördern die Biodiversität im urbanen Raum. Frau Keller, eine Umweltexpertin aus München, betont: \"Ohne starke politische Unterstützung und die aktive Beteiligung der Bürger können wir die Herausforderungen des Klimawandels nicht meistern. Es braucht ein gemeinsames Engagement auf allen Ebenen.\" Diese vielfältigen Ansätze zeigen, dass ein umfassender Umweltschutz nur durch das Zusammenspiel von Politik, Wirtschaft und Zivilgesellschaft gelingen kann. Es ist ein langfristiger Prozess, der ständige Anpassung und neue Ideen erfordert, um eine lebenswerte Zukunft für alle zu sichern. Die Zukunft unserer Umwelt hängt maßgeblich von unserem heutigen Handeln ab.",
+          "matchCount": 2,
+          "matches": [
+            {
+              "ruleId": "H2O",
+              "category": "STYLE",
+              "issueType": "style",
+              "message": "Möchten Sie die typografisch schönere Schreibweise „CO₂“ verwenden?",
+              "shortMessage": null,
+              "offset": 1056,
+              "length": 11,
+              "context": "...dfahrens sind wichtige Schritte, um den CO2-Ausstoß zu reduzieren. Eine Studie der Universi...",
+              "contextOffset": 43,
+              "replacements": [
+                "CO₂-Ausstoß"
+              ]
+            },
+            {
+              "ruleId": "GERMAN_SPELLER_RULE",
+              "category": "TYPOS",
+              "issueType": "misspelling",
+              "message": "Möglicher Tippfehler gefunden.",
+              "shortMessage": "Rechtschreibfehler",
+              "offset": 1414,
+              "length": 12,
+              "context": "...n vermehrt unverpackte Produkte an, und Repair-Cafés erfreuen sich großer Beliebtheit. Hier ...",
+              "contextOffset": 43,
+              "replacements": [
+                "Gebar-Cafés",
+                "Relais-Cafés",
+                "Zephyr-Cafés",
+                "Renoir-Cafés",
+                "Gebein-Cafés"
+              ]
+            }
+          ]
+        },
+        {
+          "segmentType": "passage",
+          "field": "passages.title",
+          "passageIndex": 0,
+          "questionIndex": null,
+          "textLength": 85,
+          "text": "Grüne Initiativen in der Stadt: Wie Bürger und Kommunen den Umweltschutz vorantreiben",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "question",
+          "field": "questions.content",
+          "passageIndex": null,
+          "questionIndex": 0,
+          "textLength": 650,
+          "text": "Lesen Sie in einer Zeitung einen Artikel.\nWählen Sie bei jeder Aufgabe die richtige Lösung a, b oder c.\n\nWas ist die Hauptaussage des ersten Absatzes?\nDer Artikel beginnt damit, dass der Umweltschutz eine große Aufgabe ist und immer mehr Städte in Deutschland, von Freiburg bis zu kleineren Gemeinden, aktiv werden und nachhaltige Lösungen fördern.\na) Ausschließlich größere Städte wie Freiburg engagieren sich aktiv im Bereich des Umweltschutzes.\nb) Die Umwelt zu schützen ist eine wichtige Aufgabe, der sich immer mehr Kommunen in Deutschland widmen.\nc) Kleinere Gemeinden zeigen keine Bereitschaft, sich für nachhaltige Umweltlösungen einzusetzen.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "question",
+          "field": "questions.content",
+          "passageIndex": null,
+          "questionIndex": 1,
+          "textLength": 562,
+          "text": "Welche Aussage trifft auf bürgerschaftliche Initiativen zu?\nDer Text erwähnt, dass Bürgergruppen Müll sammeln, Stadtgärten fördern und sich für Grünflächen einsetzen, was das Stadtbild verschönert und das Bewusstsein für Natur und Artenvielfalt stärkt.\na) Sie sind lediglich in sehr großen Städten wie Freiburg erfolgreich und finden dort Anwendung.\nb) Sie tragen dazu bei, das Stadtbild attraktiver zu machen und das Bewusstsein für die Natur zu stärken.\nc) Sie konzentrieren sich hauptsächlich auf die Verbesserung der Luftqualität in den städtischen Gebieten.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "question",
+          "field": "questions.content",
+          "passageIndex": null,
+          "questionIndex": 2,
+          "textLength": 578,
+          "text": "Was ist ein wichtiger Ansatz vieler Städte im Kampf gegen den Klimawandel?\nDer Artikel betont, dass Städte in erneuerbare Energien investieren, die Energieeffizienz verbessern und den öffentlichen Nahverkehr sowie das Fahrradfahren fördern, um den CO2-Ausstoß zu senken.\na) Städte setzen auf erneuerbare Energiequellen und unterstützen umweltfreundliche Verkehrsmittel.\nb) Die ausschließliche Nutzung von fossilen Brennstoffen für alle öffentlichen Gebäude wird angestrebt.\nc) Die Reduzierung des öffentlichen Nahverkehrs zugunsten des individuellen Autoverkehrs wird bevorzugt.",
+          "matchCount": 1,
+          "matches": [
+            {
+              "ruleId": "H2O",
+              "category": "STYLE",
+              "issueType": "style",
+              "message": "Möchten Sie die typografisch schönere Schreibweise „CO₂“ verwenden?",
+              "shortMessage": null,
+              "offset": 248,
+              "length": 11,
+              "context": "...sowie das Fahrradfahren fördern, um den CO2-Ausstoß zu senken. a) Städte setzen auf erneuer...",
+              "contextOffset": 43,
+              "replacements": [
+                "CO₂-Ausstoß"
+              ]
+            }
+          ]
+        },
+        {
+          "segmentType": "question",
+          "field": "questions.content",
+          "passageIndex": null,
+          "questionIndex": 3,
+          "textLength": 514,
+          "text": "Was ist die Hauptfunktion von Repair-Cafés, wie im Artikel beschrieben?\nDer Text erklärt, dass Repair-Cafés sehr beliebt sind, weil dort defekte Geräte repariert werden können, anstatt sie wegzuwerfen, was den Verbrauch neuer Produkte reduziert.\na) Dort können kaputte Geräte instand gesetzt werden, was den Kauf neuer Waren reduziert.\nb) Sie sind Orte, an denen man frische, unverpackte Produkte für den täglichen Bedarf kaufen kann.\nc) Sie organisieren regelmäßig Müllsammelaktionen in verschiedenen Stadtteilen.",
+          "matchCount": 2,
+          "matches": [
+            {
+              "ruleId": "GERMAN_SPELLER_RULE",
+              "category": "TYPOS",
+              "issueType": "misspelling",
+              "message": "Möglicher Tippfehler gefunden.",
+              "shortMessage": "Rechtschreibfehler",
+              "offset": 30,
+              "length": 12,
+              "context": "Was ist die Hauptfunktion von Repair-Cafés, wie im Artikel beschrieben? Der Text e...",
+              "contextOffset": 30,
+              "replacements": [
+                "Gebar-Cafés",
+                "Relais-Cafés",
+                "Zephyr-Cafés",
+                "Renoir-Cafés",
+                "Gebein-Cafés"
+              ]
+            },
+            {
+              "ruleId": "GERMAN_SPELLER_RULE",
+              "category": "TYPOS",
+              "issueType": "misspelling",
+              "message": "Möglicher Tippfehler gefunden.",
+              "shortMessage": "Rechtschreibfehler",
+              "offset": 95,
+              "length": 12,
+              "context": "...kel beschrieben? Der Text erklärt, dass Repair-Cafés sehr beliebt sind, weil dort defekte Ge...",
+              "contextOffset": 43,
+              "replacements": [
+                "Gebar-Cafés",
+                "Relais-Cafés",
+                "Zephyr-Cafés",
+                "Renoir-Cafés",
+                "Gebein-Cafés"
+              ]
+            }
+          ]
+        },
+        {
+          "segmentType": "question",
+          "field": "questions.content",
+          "passageIndex": null,
+          "questionIndex": 4,
+          "textLength": 624,
+          "text": "Welche Methode wird in Schulen und Kindergärten angewendet, um Umweltbewusstsein zu fördern?\nDer Artikel erklärt, dass Schulen und Kindergärten Umweltthemen in ihren Lehrplan integrieren und praktische Projekte wie Exkursionen oder Schulgärten nutzen, um den Jüngsten ein Verständnis für Nachhaltigkeit zu vermitteln.\na) Sie konzentrieren sich ausschließlich auf den theoretischen Unterricht über die Ursachen des Klimawandels.\nb) Sie beschränken sich auf die Organisation von jährlichen Umwelttagen, ohne weitere Integration.\nc) Ökologische Inhalte werden in den Unterricht aufgenommen und durch praktische Übungen ergänzt.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "question",
+          "field": "questions.content",
+          "passageIndex": null,
+          "questionIndex": 5,
+          "textLength": 593,
+          "text": "Was ist laut Frau Keller unerlässlich, um die Probleme des Klimawandels zu bewältigen?\nFrau Keller betont, dass die Bewältigung der Klimaprobleme eine starke politische Unterstützung sowie die aktive Beteiligung der Bürgerinnen und Bürger erfordert, also ein gemeinsames Engagement.\na) Die alleinige Konzentration auf wissenschaftliche Forschung und neue Technologien ist ausreichend.\nb) Ausschließlich individuelle Verhaltensänderungen der Bürgerinnen und Bürger sind entscheidend.\nc) Eine erfolgreiche Bewältigung erfordert sowohl staatliche Förderung als auch das Mitwirken der Bevölkerung.",
+          "matchCount": 0,
+          "matches": []
+        }
+      ],
+      "passages": [
+        {
+          "segmentType": "passage",
+          "field": "passages.content",
+          "passageIndex": 0,
+          "questionIndex": null,
+          "textLength": 3277,
+          "text": "Der Schutz unserer Umwelt ist eine der größten Herausforderungen unserer Zeit. Immer mehr Städte in Deutschland erkennen die Notwendigkeit, aktiv zu werden und nachhaltige Lösungen zu fördern. Ein gutes Beispiel hierfür ist die Stadt Freiburg, die seit Jahren als Vorreiter im Umweltschutz gilt. Doch auch kleinere Gemeinden zeigen beeindruckendes Engagement.\n\nIn vielen Kommunen entstehen derzeit zahlreiche Initiativen, die den lokalen Umweltschutz stärken. Bürgergruppen organisieren Müllsammelaktionen in Parks und an Flussufern, fördern den Anbau von Stadtgärten und setzen sich für mehr Grünflächen ein. Diese Projekte tragen nicht nur zur Verschönerung des Stadtbildes bei, sondern schaffen auch ein stärkeres Bewusstsein für die Bedeutung von Natur und Artenvielfalt.\n\nEin zentrales Thema ist der Klimawandel und seine Auswirkungen. Viele Städte investieren in erneuerbare Energien und verbessern die Energieeffizienz öffentlicher Gebäude. Der Ausbau des öffentlichen Nahverkehrs und die Förderung des Fahrradfahrens sind wichtige Schritte, um den CO2-Ausstoß zu reduzieren. Eine Studie der Universität Potsdam zeigt, dass solche Investitionen die Luftqualität deutlich verbessern können.\n\nDie Reduzierung des Ressourcenverbrauchs ist ebenfalls ein wichtiger Aspekt. Programme zur Abfallvermeidung und zum Recycling werden kontinuierlich erweitert. Supermärkte bieten vermehrt unverpackte Produkte an, und Repair-Cafés erfreuen sich großer Beliebtheit. Hier können defekte Geräte repariert werden, anstatt sie wegzuwerfen, was den Verbrauch neuer Produkte reduziert. Diese Maßnahmen tragen zur Kreislaufwirtschaft bei und schonen wertvolle Ressourcen.\n\nEin weiteres Feld ist die Bildung. Schulen und Kindergärten integrieren Umweltthemen in ihren Lehrplan, um schon den Jüngsten ein Verständnis für Nachhaltigkeit zu vermitteln. Exkursionen in die Natur, Projekte zum Energiesparen und die Pflege von Schulgärten sind feste Bestandteile des Unterrichts. So lernen Kinder frühzeitig, wie ihr eigenes Handeln die Umwelt beeinflusst.\n\nDoch nicht nur Einzelpersonen und lokale Gruppen sind gefragt. Die Kommunalpolitik spielt eine entscheidende Rolle bei der Schaffung der notwendigen Rahmenbedingungen. Durch Förderprogramme, klare Richtlinien für Bauvorhaben und die Unterstützung von Forschungsprojekten können Städte eine Vorreiterrolle einnehmen. Zudem setzen viele Kommunen auf innovative 'Smart City'-Konzepte, die digitale Technologien nutzen, um Energieverbrauch und Abfallmanagement zu verbessern. Grüne Infrastrukturprojekte, wie die Begrünung von Dächern und Fassaden, verbessern das Mikroklima und fördern die Biodiversität im urbanen Raum. Frau Keller, eine Umweltexpertin aus München, betont: \"Ohne starke politische Unterstützung und die aktive Beteiligung der Bürger können wir die Herausforderungen des Klimawandels nicht meistern. Es braucht ein gemeinsames Engagement auf allen Ebenen.\" Diese vielfältigen Ansätze zeigen, dass ein umfassender Umweltschutz nur durch das Zusammenspiel von Politik, Wirtschaft und Zivilgesellschaft gelingen kann. Es ist ein langfristiger Prozess, der ständige Anpassung und neue Ideen erfordert, um eine lebenswerte Zukunft für alle zu sichern. Die Zukunft unserer Umwelt hängt maßgeblich von unserem heutigen Handeln ab.",
+          "matchCount": 2,
+          "matches": [
+            {
+              "ruleId": "H2O",
+              "category": "STYLE",
+              "issueType": "style",
+              "message": "Möchten Sie die typografisch schönere Schreibweise „CO₂“ verwenden?",
+              "shortMessage": null,
+              "offset": 1056,
+              "length": 11,
+              "context": "...dfahrens sind wichtige Schritte, um den CO2-Ausstoß zu reduzieren. Eine Studie der Universi...",
+              "contextOffset": 43,
+              "replacements": [
+                "CO₂-Ausstoß"
+              ]
+            },
+            {
+              "ruleId": "GERMAN_SPELLER_RULE",
+              "category": "TYPOS",
+              "issueType": "misspelling",
+              "message": "Möglicher Tippfehler gefunden.",
+              "shortMessage": "Rechtschreibfehler",
+              "offset": 1414,
+              "length": 12,
+              "context": "...n vermehrt unverpackte Produkte an, und Repair-Cafés erfreuen sich großer Beliebtheit. Hier ...",
+              "contextOffset": 43,
+              "replacements": [
+                "Gebar-Cafés",
+                "Relais-Cafés",
+                "Zephyr-Cafés",
+                "Renoir-Cafés",
+                "Gebein-Cafés"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "lesen-t4-gemini-086.json",
+      "matchCount": 13,
+      "segments": [
+        {
+          "segmentType": "passage",
+          "field": "passages.content",
+          "passageIndex": 0,
+          "questionIndex": null,
+          "textLength": 520,
+          "text": "Social Media Plattformen bieten eine unvergleichliche Möglichkeit, Menschen weltweit zu verbinden und Informationen in Echtzeit zu teilen. Sie ermöglichen es, unterschiedliche Perspektiven kennenzulernen und sich an globalen Diskussionen zu beteiligen. Viele Nutzer schätzen die einfache Kommunikation mit Freunden und Familie, die über große Entfernungen leben. Auch für Aktivismus und die Verbreitung wichtiger Botschaften sind diese Kanäle unerlässlich geworden. Die Vielfalt der Inhalte bereichert den Alltag vieler.",
+          "matchCount": 1,
+          "matches": [
+            {
+              "ruleId": "DE_COMPOUNDS",
+              "category": "COMPOUNDING",
+              "issueType": "misspelling",
+              "message": "Dieses Wort wird mit Bindestrich geschrieben.",
+              "shortMessage": "Zusammenschreibung von Wörtern",
+              "offset": 0,
+              "length": 24,
+              "context": "Social Media Plattformen bieten eine unvergleichliche Möglichkei...",
+              "contextOffset": 0,
+              "replacements": [
+                "Social-Media-Plattformen"
+              ]
+            }
+          ]
+        },
+        {
+          "segmentType": "passage",
+          "field": "passages.title",
+          "passageIndex": 0,
+          "questionIndex": null,
+          "textLength": 9,
+          "text": "Meinung 1",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "passage",
+          "field": "passages.content",
+          "passageIndex": 1,
+          "questionIndex": null,
+          "textLength": 493,
+          "text": "Der klassische Journalismus steht vor enormen Herausforderungen. Die Digitalisierung hat zwar den Zugang zu Nachrichten demokratisiert, aber gleichzeitig das Geschäftsmodell traditioneller Verlage untergraben. Kostenlose Online-Inhalte erschweren die Finanzierung investigativer Recherchen. Viele Medienhäuser kämpfen ums Überleben, was die Qualität und Tiefe der Berichterstattung gefährdet. Es ist entscheidend, Wege zu finden, hochwertigen Journalismus auch in der digitalen Ära zu sichern.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "passage",
+          "field": "passages.title",
+          "passageIndex": 1,
+          "questionIndex": null,
+          "textLength": 9,
+          "text": "Meinung 2",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "passage",
+          "field": "passages.content",
+          "passageIndex": 2,
+          "questionIndex": null,
+          "textLength": 458,
+          "text": "In Zeiten der Informationsflut ist Medienkompetenz wichtiger denn je. Es reicht nicht mehr aus, Nachrichten einfach zu konsumieren; man muss lernen, Quellen kritisch zu hinterfragen und Falschinformationen zu erkennen. Schulen und Bildungseinrichtungen tragen eine große Verantwortung, junge Menschen auf diese Herausforderung vorzubereiten. Nur wer die Mechanismen der Medien versteht, kann sich eine fundierte Meinung bilden und Manipulationen widerstehen.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "passage",
+          "field": "passages.title",
+          "passageIndex": 2,
+          "questionIndex": null,
+          "textLength": 9,
+          "text": "Meinung 3",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "passage",
+          "field": "passages.content",
+          "passageIndex": 3,
+          "questionIndex": null,
+          "textLength": 457,
+          "text": "Die Forderung nach einer stärkeren Regulierung digitaler Plattformen wird lauter. Angesichts der Verbreitung von Hassrede und illegalen Inhalten sehen viele die Notwendigkeit, klare Regeln für Betreiber zu schaffen. Es geht darum, eine Balance zwischen Meinungsfreiheit und dem Schutz der Nutzer zu finden. Eine effektive Regulierung könnte dazu beitragen, die Verantwortung der Plattformen zu erhöhen und die Qualität der Online-Diskussionen zu verbessern.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "passage",
+          "field": "passages.title",
+          "passageIndex": 3,
+          "questionIndex": null,
+          "textLength": 9,
+          "text": "Meinung 4",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "passage",
+          "field": "passages.content",
+          "passageIndex": 4,
+          "questionIndex": null,
+          "textLength": 442,
+          "text": "Der ständige Konsum von Medien, insbesondere sozialen Netzwerken, kann negative Auswirkungen auf die psychische Gesundheit haben. Der Druck, ein perfektes Bild von sich selbst zu präsentieren, und die Konfrontation mit idealisierten Darstellungen können zu Minderwertigkeitsgefühlen und Angstzuständen führen. Es ist wichtig, bewusster mit der eigenen Mediennutzung umzugehen und digitale Auszeiten zu nehmen, um das Wohlbefinden zu schützen.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "passage",
+          "field": "passages.title",
+          "passageIndex": 4,
+          "questionIndex": null,
+          "textLength": 9,
+          "text": "Meinung 5",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "passage",
+          "field": "passages.content",
+          "passageIndex": 5,
+          "questionIndex": null,
+          "textLength": 441,
+          "text": "Viele prophezeien das Ende der gedruckten Medien, doch das ist zu kurz gedacht. Zwar sinken die Auflagenzahlen, aber es gibt immer noch eine treue Leserschaft, die das haptische Erlebnis einer Zeitung oder Zeitschrift schätzt. Nischenprodukte und hochwertige Magazine finden weiterhin ihre Abnehmer. Die Zukunft liegt möglicherweise in einer Kombination aus digitalen Angeboten und exklusiven Printausgaben, die einen besonderen Wert bieten.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "passage",
+          "field": "passages.title",
+          "passageIndex": 5,
+          "questionIndex": null,
+          "textLength": 9,
+          "text": "Meinung 6",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "question",
+          "field": "questions.content",
+          "passageIndex": null,
+          "questionIndex": 0,
+          "textLength": 695,
+          "text": "Lesen Sie in einer Zeitschrift Meinungsäußerungen.\nWelche Äußerung passt zu welcher Überschrift? Eine Äußerung passt nicht.\n\nMeinung (1): Welche Überschrift passt zu dieser Äußerung?\nDie Äußerung betont die positiven Seiten von Social Media, wie das Verbinden von Menschen und das Teilen von Informationen, was gut zur Überschrift 'Social Media als Brücke zur Welt' passt.\nA) Digitale Medien: Gefahr für die Psyche?\nB) Social Media als Brücke zur Welt\nC) Qualitätsjournalismus in der Krise\nD) Die Macht der Bilder in der Werbung\nE) Printmedien: Ende oder Neuanfang?\nF) Medienkompetenz: Schlüssel zur Wahrheit\nG) Mehr Kontrolle für Online-Giganten\nH) Algorithmen statt Redaktion: Journalismus 4.0",
+          "matchCount": 2,
+          "matches": [
+            {
+              "ruleId": "DE_CASE",
+              "category": "CASING",
+              "issueType": "uncategorized",
+              "message": "Außer am Satzanfang werden nur Nomen und Eigennamen großgeschrieben.",
+              "shortMessage": null,
+              "offset": 493,
+              "length": 3,
+              "context": "...) Qualitätsjournalismus in der Krise D) Die Macht der Bilder in der Werbung E) Prin...",
+              "contextOffset": 43,
+              "replacements": [
+                "die"
+              ]
+            },
+            {
+              "ruleId": "DE_CASE",
+              "category": "CASING",
+              "issueType": "uncategorized",
+              "message": "Außer am Satzanfang werden nur Nomen und Eigennamen großgeschrieben.",
+              "shortMessage": null,
+              "offset": 612,
+              "length": 4,
+              "context": "...ienkompetenz: Schlüssel zur Wahrheit G) Mehr Kontrolle für Online-Giganten H) Algori...",
+              "contextOffset": 43,
+              "replacements": [
+                "mehr"
+              ]
+            }
+          ]
+        },
+        {
+          "segmentType": "question",
+          "field": "questions.content",
+          "passageIndex": null,
+          "questionIndex": 1,
+          "textLength": 607,
+          "text": "Meinung (2): Welche Überschrift passt zu dieser Äußerung?\nDer Text beschreibt die Schwierigkeiten und Gefahren für den traditionellen Journalismus durch die Digitalisierung und die Finanzierungsprobleme, was die Überschrift 'Qualitätsjournalismus in der Krise' treffend zusammenfasst.\nA) Digitale Medien: Gefahr für die Psyche?\nB) Social Media als Brücke zur Welt\nC) Qualitätsjournalismus in der Krise\nD) Die Macht der Bilder in der Werbung\nE) Printmedien: Ende oder Neuanfang?\nF) Medienkompetenz: Schlüssel zur Wahrheit\nG) Mehr Kontrolle für Online-Giganten\nH) Algorithmen statt Redaktion: Journalismus 4.0",
+          "matchCount": 2,
+          "matches": [
+            {
+              "ruleId": "DE_CASE",
+              "category": "CASING",
+              "issueType": "uncategorized",
+              "message": "Außer am Satzanfang werden nur Nomen und Eigennamen großgeschrieben.",
+              "shortMessage": null,
+              "offset": 405,
+              "length": 3,
+              "context": "...) Qualitätsjournalismus in der Krise D) Die Macht der Bilder in der Werbung E) Prin...",
+              "contextOffset": 43,
+              "replacements": [
+                "die"
+              ]
+            },
+            {
+              "ruleId": "DE_CASE",
+              "category": "CASING",
+              "issueType": "uncategorized",
+              "message": "Außer am Satzanfang werden nur Nomen und Eigennamen großgeschrieben.",
+              "shortMessage": null,
+              "offset": 524,
+              "length": 4,
+              "context": "...ienkompetenz: Schlüssel zur Wahrheit G) Mehr Kontrolle für Online-Giganten H) Algori...",
+              "contextOffset": 43,
+              "replacements": [
+                "mehr"
+              ]
+            }
+          ]
+        },
+        {
+          "segmentType": "question",
+          "field": "questions.content",
+          "passageIndex": null,
+          "questionIndex": 2,
+          "textLength": 581,
+          "text": "Meinung (3): Welche Überschrift passt zu dieser Äußerung?\nDie Äußerung betont die Notwendigkeit, Quellen kritisch zu hinterfragen und Falschinformationen zu erkennen, was direkt mit dem Konzept der Medienkompetenz als 'Schlüssel zur Wahrheit' korrespondiert.\nA) Digitale Medien: Gefahr für die Psyche?\nB) Social Media als Brücke zur Welt\nC) Qualitätsjournalismus in der Krise\nD) Die Macht der Bilder in der Werbung\nE) Printmedien: Ende oder Neuanfang?\nF) Medienkompetenz: Schlüssel zur Wahrheit\nG) Mehr Kontrolle für Online-Giganten\nH) Algorithmen statt Redaktion: Journalismus 4.0",
+          "matchCount": 2,
+          "matches": [
+            {
+              "ruleId": "DE_CASE",
+              "category": "CASING",
+              "issueType": "uncategorized",
+              "message": "Außer am Satzanfang werden nur Nomen und Eigennamen großgeschrieben.",
+              "shortMessage": null,
+              "offset": 379,
+              "length": 3,
+              "context": "...) Qualitätsjournalismus in der Krise D) Die Macht der Bilder in der Werbung E) Prin...",
+              "contextOffset": 43,
+              "replacements": [
+                "die"
+              ]
+            },
+            {
+              "ruleId": "DE_CASE",
+              "category": "CASING",
+              "issueType": "uncategorized",
+              "message": "Außer am Satzanfang werden nur Nomen und Eigennamen großgeschrieben.",
+              "shortMessage": null,
+              "offset": 498,
+              "length": 4,
+              "context": "...ienkompetenz: Schlüssel zur Wahrheit G) Mehr Kontrolle für Online-Giganten H) Algori...",
+              "contextOffset": 43,
+              "replacements": [
+                "mehr"
+              ]
+            }
+          ]
+        },
+        {
+          "segmentType": "question",
+          "field": "questions.content",
+          "passageIndex": null,
+          "questionIndex": 3,
+          "textLength": 586,
+          "text": "Meinung (4): Welche Überschrift passt zu dieser Äußerung?\nDer Text spricht über die Notwendigkeit, klare Regeln für Betreiber digitaler Plattformen zu schaffen und deren Verantwortung zu erhöhen, was gut zur Überschrift 'Mehr Kontrolle für Online-Giganten' passt.\nA) Digitale Medien: Gefahr für die Psyche?\nB) Social Media als Brücke zur Welt\nC) Qualitätsjournalismus in der Krise\nD) Die Macht der Bilder in der Werbung\nE) Printmedien: Ende oder Neuanfang?\nF) Medienkompetenz: Schlüssel zur Wahrheit\nG) Mehr Kontrolle für Online-Giganten\nH) Algorithmen statt Redaktion: Journalismus 4.0",
+          "matchCount": 2,
+          "matches": [
+            {
+              "ruleId": "DE_CASE",
+              "category": "CASING",
+              "issueType": "uncategorized",
+              "message": "Außer am Satzanfang werden nur Nomen und Eigennamen großgeschrieben.",
+              "shortMessage": null,
+              "offset": 384,
+              "length": 3,
+              "context": "...) Qualitätsjournalismus in der Krise D) Die Macht der Bilder in der Werbung E) Prin...",
+              "contextOffset": 43,
+              "replacements": [
+                "die"
+              ]
+            },
+            {
+              "ruleId": "DE_CASE",
+              "category": "CASING",
+              "issueType": "uncategorized",
+              "message": "Außer am Satzanfang werden nur Nomen und Eigennamen großgeschrieben.",
+              "shortMessage": null,
+              "offset": 503,
+              "length": 4,
+              "context": "...ienkompetenz: Schlüssel zur Wahrheit G) Mehr Kontrolle für Online-Giganten H) Algori...",
+              "contextOffset": 43,
+              "replacements": [
+                "mehr"
+              ]
+            }
+          ]
+        },
+        {
+          "segmentType": "question",
+          "field": "questions.content",
+          "passageIndex": null,
+          "questionIndex": 4,
+          "textLength": 601,
+          "text": "Meinung (5): Welche Überschrift passt zu dieser Äußerung?\nDie Äußerung thematisiert die negativen Auswirkungen von Medienkonsum, insbesondere sozialen Netzwerken, auf die psychische Gesundheit, was die Überschrift 'Digitale Medien: Gefahr für die Psyche?' perfekt widerspiegelt.\nA) Digitale Medien: Gefahr für die Psyche?\nB) Social Media als Brücke zur Welt\nC) Qualitätsjournalismus in der Krise\nD) Die Macht der Bilder in der Werbung\nE) Printmedien: Ende oder Neuanfang?\nF) Medienkompetenz: Schlüssel zur Wahrheit\nG) Mehr Kontrolle für Online-Giganten\nH) Algorithmen statt Redaktion: Journalismus 4.0",
+          "matchCount": 2,
+          "matches": [
+            {
+              "ruleId": "DE_CASE",
+              "category": "CASING",
+              "issueType": "uncategorized",
+              "message": "Außer am Satzanfang werden nur Nomen und Eigennamen großgeschrieben.",
+              "shortMessage": null,
+              "offset": 399,
+              "length": 3,
+              "context": "...) Qualitätsjournalismus in der Krise D) Die Macht der Bilder in der Werbung E) Prin...",
+              "contextOffset": 43,
+              "replacements": [
+                "die"
+              ]
+            },
+            {
+              "ruleId": "DE_CASE",
+              "category": "CASING",
+              "issueType": "uncategorized",
+              "message": "Außer am Satzanfang werden nur Nomen und Eigennamen großgeschrieben.",
+              "shortMessage": null,
+              "offset": 518,
+              "length": 4,
+              "context": "...ienkompetenz: Schlüssel zur Wahrheit G) Mehr Kontrolle für Online-Giganten H) Algori...",
+              "contextOffset": 43,
+              "replacements": [
+                "mehr"
+              ]
+            }
+          ]
+        },
+        {
+          "segmentType": "question",
+          "field": "questions.content",
+          "passageIndex": null,
+          "questionIndex": 5,
+          "textLength": 584,
+          "text": "Meinung (6): Welche Überschrift passt zu dieser Äußerung?\nDer Text diskutiert die Zukunft der gedruckten Medien, ob sie trotz sinkender Auflagen noch eine Relevanz haben oder sich neu erfinden müssen, was die Frage 'Printmedien: Ende oder Neuanfang?' aufgreift.\nA) Digitale Medien: Gefahr für die Psyche?\nB) Social Media als Brücke zur Welt\nC) Qualitätsjournalismus in der Krise\nD) Die Macht der Bilder in der Werbung\nE) Printmedien: Ende oder Neuanfang?\nF) Medienkompetenz: Schlüssel zur Wahrheit\nG) Mehr Kontrolle für Online-Giganten\nH) Algorithmen statt Redaktion: Journalismus 4.0",
+          "matchCount": 2,
+          "matches": [
+            {
+              "ruleId": "DE_CASE",
+              "category": "CASING",
+              "issueType": "uncategorized",
+              "message": "Außer am Satzanfang werden nur Nomen und Eigennamen großgeschrieben.",
+              "shortMessage": null,
+              "offset": 382,
+              "length": 3,
+              "context": "...) Qualitätsjournalismus in der Krise D) Die Macht der Bilder in der Werbung E) Prin...",
+              "contextOffset": 43,
+              "replacements": [
+                "die"
+              ]
+            },
+            {
+              "ruleId": "DE_CASE",
+              "category": "CASING",
+              "issueType": "uncategorized",
+              "message": "Außer am Satzanfang werden nur Nomen und Eigennamen großgeschrieben.",
+              "shortMessage": null,
+              "offset": 501,
+              "length": 4,
+              "context": "...ienkompetenz: Schlüssel zur Wahrheit G) Mehr Kontrolle für Online-Giganten H) Algori...",
+              "contextOffset": 43,
+              "replacements": [
+                "mehr"
+              ]
+            }
+          ]
+        }
+      ],
+      "passages": [
+        {
+          "segmentType": "passage",
+          "field": "passages.content",
+          "passageIndex": 0,
+          "questionIndex": null,
+          "textLength": 520,
+          "text": "Social Media Plattformen bieten eine unvergleichliche Möglichkeit, Menschen weltweit zu verbinden und Informationen in Echtzeit zu teilen. Sie ermöglichen es, unterschiedliche Perspektiven kennenzulernen und sich an globalen Diskussionen zu beteiligen. Viele Nutzer schätzen die einfache Kommunikation mit Freunden und Familie, die über große Entfernungen leben. Auch für Aktivismus und die Verbreitung wichtiger Botschaften sind diese Kanäle unerlässlich geworden. Die Vielfalt der Inhalte bereichert den Alltag vieler.",
+          "matchCount": 1,
+          "matches": [
+            {
+              "ruleId": "DE_COMPOUNDS",
+              "category": "COMPOUNDING",
+              "issueType": "misspelling",
+              "message": "Dieses Wort wird mit Bindestrich geschrieben.",
+              "shortMessage": "Zusammenschreibung von Wörtern",
+              "offset": 0,
+              "length": 24,
+              "context": "Social Media Plattformen bieten eine unvergleichliche Möglichkei...",
+              "contextOffset": 0,
+              "replacements": [
+                "Social-Media-Plattformen"
+              ]
+            }
+          ]
+        },
+        {
+          "segmentType": "passage",
+          "field": "passages.content",
+          "passageIndex": 1,
+          "questionIndex": null,
+          "textLength": 493,
+          "text": "Der klassische Journalismus steht vor enormen Herausforderungen. Die Digitalisierung hat zwar den Zugang zu Nachrichten demokratisiert, aber gleichzeitig das Geschäftsmodell traditioneller Verlage untergraben. Kostenlose Online-Inhalte erschweren die Finanzierung investigativer Recherchen. Viele Medienhäuser kämpfen ums Überleben, was die Qualität und Tiefe der Berichterstattung gefährdet. Es ist entscheidend, Wege zu finden, hochwertigen Journalismus auch in der digitalen Ära zu sichern.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "passage",
+          "field": "passages.content",
+          "passageIndex": 2,
+          "questionIndex": null,
+          "textLength": 458,
+          "text": "In Zeiten der Informationsflut ist Medienkompetenz wichtiger denn je. Es reicht nicht mehr aus, Nachrichten einfach zu konsumieren; man muss lernen, Quellen kritisch zu hinterfragen und Falschinformationen zu erkennen. Schulen und Bildungseinrichtungen tragen eine große Verantwortung, junge Menschen auf diese Herausforderung vorzubereiten. Nur wer die Mechanismen der Medien versteht, kann sich eine fundierte Meinung bilden und Manipulationen widerstehen.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "passage",
+          "field": "passages.content",
+          "passageIndex": 3,
+          "questionIndex": null,
+          "textLength": 457,
+          "text": "Die Forderung nach einer stärkeren Regulierung digitaler Plattformen wird lauter. Angesichts der Verbreitung von Hassrede und illegalen Inhalten sehen viele die Notwendigkeit, klare Regeln für Betreiber zu schaffen. Es geht darum, eine Balance zwischen Meinungsfreiheit und dem Schutz der Nutzer zu finden. Eine effektive Regulierung könnte dazu beitragen, die Verantwortung der Plattformen zu erhöhen und die Qualität der Online-Diskussionen zu verbessern.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "passage",
+          "field": "passages.content",
+          "passageIndex": 4,
+          "questionIndex": null,
+          "textLength": 442,
+          "text": "Der ständige Konsum von Medien, insbesondere sozialen Netzwerken, kann negative Auswirkungen auf die psychische Gesundheit haben. Der Druck, ein perfektes Bild von sich selbst zu präsentieren, und die Konfrontation mit idealisierten Darstellungen können zu Minderwertigkeitsgefühlen und Angstzuständen führen. Es ist wichtig, bewusster mit der eigenen Mediennutzung umzugehen und digitale Auszeiten zu nehmen, um das Wohlbefinden zu schützen.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "passage",
+          "field": "passages.content",
+          "passageIndex": 5,
+          "questionIndex": null,
+          "textLength": 441,
+          "text": "Viele prophezeien das Ende der gedruckten Medien, doch das ist zu kurz gedacht. Zwar sinken die Auflagenzahlen, aber es gibt immer noch eine treue Leserschaft, die das haptische Erlebnis einer Zeitung oder Zeitschrift schätzt. Nischenprodukte und hochwertige Magazine finden weiterhin ihre Abnehmer. Die Zukunft liegt möglicherweise in einer Kombination aus digitalen Angeboten und exklusiven Printausgaben, die einen besonderen Wert bieten.",
+          "matchCount": 0,
+          "matches": []
+        }
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-109.json",
+      "matchCount": 1,
+      "segments": [
+        {
+          "segmentType": "passage",
+          "field": "passages.content",
+          "passageIndex": 0,
+          "questionIndex": null,
+          "textLength": 2264,
+          "text": "Diese Studienordnung regelt auf der Grundlage der Prüfungsordnung die Ziele, Inhalte und den Aufbau des Bachelorstudiengangs \"Digitale Bildung\" an der Universität [Name]. Sie dient der Sicherstellung eines geordneten Studienablaufs und der Qualitätssicherung der Lehre.\n\n(31) Der Bachelorstudiengang \"Digitale Bildung\" umfasst 180 ECTS-Punkte und ist in sechs Semester gegliedert. Er setzt sich aus Pflichtmodulen, Wahlpflichtmodulen und einem Praxismodul zusammen. Jedes Modul schließt mit einer Modulprüfung ab. Der Studienplan sieht eine bestimmte Abfolge der Module vor, um eine optimale Lernerfahrung zu gewährleisten und den Erwerb relevanter Kompetenzen zu fördern. Studierende müssen sich für jedes Modul fristgerecht anmelden, um an den Lehrveranstaltungen teilnehmen und Prüfungsleistungen erbringen zu können. Die erfolgreiche Absolvierung der Module ist Voraussetzung für den Fortschritt im Studium und den Erhalt des Bachelorgrades.\n\n(32) Die Prüfungsleistungen werden semesterbegleitend oder am Ende eines Semesters erbracht. Dazu gehören Klausuren, Hausarbeiten, Präsentationen oder mündliche Prüfungen. Die genauen Anforderungen für jede Prüfungsleistung sind im Modulhandbuch beschrieben. Eine nicht bestandene Prüfungsleistung kann zweimal wiederholt werden. Die Fristen für die Anmeldung für Prüfungen und für die Abgabe von Arbeiten sind strikt einzuhalten. Bei Versäumnis ohne triftigen Grund gilt die Leistung als nicht bestanden und führt zu einem Fehlversuch.\n\n(33) Studierende sind verpflichtet, sich aktiv am Studienprozess zu beteiligen. Dies beinhaltet die regelmäßige Teilnahme an Lehrveranstaltungen, sofern diese als teilnahmepflichtig ausgewiesen sind, sowie die eigenverantwortliche Vor- und Nachbereitung des Lehrstoffs. Eine sorgfältige Planung des eigenen Studienverlaufs ist dabei unerlässlich. Änderungen der persönlichen Daten, insbesondere der Adresse und Kontaktdaten, müssen dem Studierendensekretariat unverzüglich mitgeteilt werden. Es wird erwartet, dass Studierende sich eigenverantwortlich über aktuelle Regelungen und wichtige Bekanntmachungen informieren, beispielsweise durch den Aushang am schwarzen Brett oder über das Online-Campus-Portal. Die Einhaltung dieser Pflichten trägt maßgeblich zum Studienerfolg bei.",
+          "matchCount": 1,
+          "matches": [
+            {
+              "ruleId": "GERMAN_SPELLER_RULE",
+              "category": "TYPOS",
+              "issueType": "misspelling",
+              "message": "Möglicher Tippfehler gefunden.",
+              "shortMessage": "Rechtschreibfehler",
+              "offset": 1648,
+              "length": 18,
+              "context": "...n Lehrveranstaltungen, sofern diese als teilnahmepflichtig ausgewiesen sind, sowie die eigenverant...",
+              "contextOffset": 43,
+              "replacements": []
+            }
+          ]
+        },
+        {
+          "segmentType": "passage",
+          "field": "passages.title",
+          "passageIndex": 0,
+          "questionIndex": null,
+          "textLength": 61,
+          "text": "Studienordnung für den Bachelorstudiengang \"Digitale Bildung\"",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "question",
+          "field": "questions.content",
+          "passageIndex": null,
+          "questionIndex": 0,
+          "textLength": 726,
+          "text": "Lesen Sie die Studienordnung.\nWelche Überschriften aus dem Inhaltsverzeichnis passen zu den Paragrafen? Vier Überschriften werden nicht gebraucht.\n\nParagraf (31): Welche Überschrift passt zu diesem Paragrafen?\nParagraf (31) beschreibt die Gliederung des Studiums in Semester, ECTS-Punkte und die Zusammensetzung aus verschiedenen Modulen sowie die Notwendigkeit der Modulanmeldung. Dies passt am besten zur Überschrift 'Aufbau des Studiums und Modulstruktur'.\nA) Aufbau des Studiums und Modulstruktur\nB) Klausuren, Hausarbeiten und Anmeldefristen\nC) Pflichten der Studierenden\nD) Beurlaubung und Rückmeldung zum Semester\nE) Anerkennung externer Leistungen\nF) Studienberatung und Mentoring\nG) Exmatrikulation und Studienabbruch",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "question",
+          "field": "questions.content",
+          "passageIndex": null,
+          "questionIndex": 1,
+          "textLength": 588,
+          "text": "Paragraf (32): Welche Überschrift passt zu diesem Paragrafen?\nParagraf (32) erläutert die Art der Prüfungsleistungen, die Wiederholungsmöglichkeiten bei Nichtbestehen und die einzuhaltenden Fristen für Prüfungsanmeldung und Abgabe. Die Überschrift 'Klausuren, Hausarbeiten und Anmeldefristen' fasst dies präzise zusammen.\nA) Aufbau des Studiums und Modulstruktur\nB) Klausuren, Hausarbeiten und Anmeldefristen\nC) Pflichten der Studierenden\nD) Beurlaubung und Rückmeldung zum Semester\nE) Anerkennung externer Leistungen\nF) Studienberatung und Mentoring\nG) Exmatrikulation und Studienabbruch",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "segmentType": "question",
+          "field": "questions.content",
+          "passageIndex": null,
+          "questionIndex": 2,
+          "textLength": 627,
+          "text": "Paragraf (33): Welche Überschrift passt zu diesem Paragrafen?\nParagraf (33) listet verschiedene Verpflichtungen der Studierenden auf, wie die aktive Teilnahme, die eigenverantwortliche Vorbereitung, die Meldung von Datenänderungen und die selbstständige Informationsbeschaffung. Dies wird durch die Überschrift 'Pflichten der Studierenden' am besten abgedeckt.\nA) Aufbau des Studiums und Modulstruktur\nB) Klausuren, Hausarbeiten und Anmeldefristen\nC) Pflichten der Studierenden\nD) Beurlaubung und Rückmeldung zum Semester\nE) Anerkennung externer Leistungen\nF) Studienberatung und Mentoring\nG) Exmatrikulation und Studienabbruch",
+          "matchCount": 0,
+          "matches": []
+        }
+      ],
+      "passages": [
+        {
+          "segmentType": "passage",
+          "field": "passages.content",
+          "passageIndex": 0,
+          "questionIndex": null,
+          "textLength": 2264,
+          "text": "Diese Studienordnung regelt auf der Grundlage der Prüfungsordnung die Ziele, Inhalte und den Aufbau des Bachelorstudiengangs \"Digitale Bildung\" an der Universität [Name]. Sie dient der Sicherstellung eines geordneten Studienablaufs und der Qualitätssicherung der Lehre.\n\n(31) Der Bachelorstudiengang \"Digitale Bildung\" umfasst 180 ECTS-Punkte und ist in sechs Semester gegliedert. Er setzt sich aus Pflichtmodulen, Wahlpflichtmodulen und einem Praxismodul zusammen. Jedes Modul schließt mit einer Modulprüfung ab. Der Studienplan sieht eine bestimmte Abfolge der Module vor, um eine optimale Lernerfahrung zu gewährleisten und den Erwerb relevanter Kompetenzen zu fördern. Studierende müssen sich für jedes Modul fristgerecht anmelden, um an den Lehrveranstaltungen teilnehmen und Prüfungsleistungen erbringen zu können. Die erfolgreiche Absolvierung der Module ist Voraussetzung für den Fortschritt im Studium und den Erhalt des Bachelorgrades.\n\n(32) Die Prüfungsleistungen werden semesterbegleitend oder am Ende eines Semesters erbracht. Dazu gehören Klausuren, Hausarbeiten, Präsentationen oder mündliche Prüfungen. Die genauen Anforderungen für jede Prüfungsleistung sind im Modulhandbuch beschrieben. Eine nicht bestandene Prüfungsleistung kann zweimal wiederholt werden. Die Fristen für die Anmeldung für Prüfungen und für die Abgabe von Arbeiten sind strikt einzuhalten. Bei Versäumnis ohne triftigen Grund gilt die Leistung als nicht bestanden und führt zu einem Fehlversuch.\n\n(33) Studierende sind verpflichtet, sich aktiv am Studienprozess zu beteiligen. Dies beinhaltet die regelmäßige Teilnahme an Lehrveranstaltungen, sofern diese als teilnahmepflichtig ausgewiesen sind, sowie die eigenverantwortliche Vor- und Nachbereitung des Lehrstoffs. Eine sorgfältige Planung des eigenen Studienverlaufs ist dabei unerlässlich. Änderungen der persönlichen Daten, insbesondere der Adresse und Kontaktdaten, müssen dem Studierendensekretariat unverzüglich mitgeteilt werden. Es wird erwartet, dass Studierende sich eigenverantwortlich über aktuelle Regelungen und wichtige Bekanntmachungen informieren, beispielsweise durch den Aushang am schwarzen Brett oder über das Online-Campus-Portal. Die Einhaltung dieser Pflichten trägt maßgeblich zum Studienerfolg bei.",
+          "matchCount": 1,
+          "matches": [
+            {
+              "ruleId": "GERMAN_SPELLER_RULE",
+              "category": "TYPOS",
+              "issueType": "misspelling",
+              "message": "Möglicher Tippfehler gefunden.",
+              "shortMessage": "Rechtschreibfehler",
+              "offset": 1648,
+              "length": 18,
+              "context": "...n Lehrveranstaltungen, sofern diese als teilnahmepflichtig ausgewiesen sind, sowie die eigenverant...",
+              "contextOffset": 43,
+              "replacements": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "schreiben-gemini-052.json",
+      "matchCount": 0,
+      "segments": [
+        {
+          "segmentType": "question",
+          "field": "questions.content",
+          "passageIndex": null,
+          "questionIndex": 0,
+          "textLength": 491,
+          "text": "In einem Internetforum diskutieren Menschen über den Einfluss sozialer Medien auf unser tägliches Leben und die Gesellschaft.\nSchreiben Sie einen Forumsbeitrag zu einem Thema.\nÄußern Sie Ihre Meinung, nennen Sie Gründe, Vorschläge und Vor- und Nachteile.\nSchreiben Sie mindestens 150 Wörter.\nBewertung (Goethe-offiziell B2): Erfüllung – Meinung, Gründe, Vorschläge, Vor- und Nachteile; Kohärenz; Wortschatz B2; Strukturen B2. Mindestens 150 Wörter (unter 50 % → Erfüllung 0). Forumsregister.",
+          "matchCount": 0,
+          "matches": []
+        }
+      ],
+      "passages": []
+    },
+    {
+      "file": "schreiben-gemini-053.json",
+      "matchCount": 0,
+      "segments": [
+        {
+          "segmentType": "question",
+          "field": "questions.content",
+          "passageIndex": null,
+          "questionIndex": 0,
+          "textLength": 765,
+          "text": "Sie arbeiten an einem wichtigen Projekt mit einer engen Deadline. Unerwartet müssen Sie für drei Tage verreisen, um eine dringende private Angelegenheit zu klären, die Ihre persönliche Anwesenheit erfordert. Dies kollidiert mit der finalen Phase des Projekts und einer geplanten Präsentation.\nSchreiben Sie eine Nachricht an Ihren Vorgesetzten.\nBeschreiben Sie Ihre Situation, bitten Sie um Verständnis, machen Sie einen Vorschlag und zeigen Sie Verständnis.\nSchreiben Sie mindestens 100 Wörter. Vergessen Sie Anrede und Gruß nicht.\nBewertung (Goethe-offiziell B2): Erfüllung – Situation, Bitte um Verständnis, Vorschlag, Verständnis zeigen; Kohärenz; Wortschatz B2; Strukturen B2. Mindestens 100 Wörter (unter 50 % → Erfüllung 0). Anrede und Gruß zum Vorgesetzten.",
+          "matchCount": 0,
+          "matches": []
+        }
+      ],
+      "passages": []
+    },
+    {
+      "file": "sprechen-t1-gemini-019.json",
+      "matchCount": 4,
+      "segments": [
+        {
+          "segmentType": "question",
+          "field": "questions.content",
+          "passageIndex": null,
+          "questionIndex": 0,
+          "textLength": 938,
+          "text": "Thema: Sport und Gesundheit.\nHalten Sie einen kurzen Vortrag zu einem Thema Ihrer Wahl und sprechen Sie mit Ihrer Partnerin/Ihrem Partner darüber.\nWählen Sie einen spezifischen Teilbereich zum Thema Sport und Gesundheit aus, der Sie besonders interessiert.\nGliedern Sie Ihren Vortrag wie folgt:\n1.  Einleitung: Was bedeutet Sport und Bewegung für Sie persönlich?\n2.  Ein konkretes Beispiel: Stellen Sie eine Sportart vor, die Sie selbst ausüben oder die in Ihrem Heimatland beliebt ist.\n3.  Vorteile und mögliche Probleme von regelmäßigem Sport (z.B. für die körperliche und geistige Gesundheit, soziale Kontakte, Zeitmanagement).\n4.  Schlussfolgerung: Ihre persönliche Meinung zur Rolle des Sports in der Gesellschaft und im Alltag.\nBeantworten Sie danach Fragen Ihrer Partnerin/Ihres Partners und stellen Sie auch selbst Fragen.\nBewertung B2: Vortrag strukturiert, verständlich, Interaktion mit Partner/in; Wortschatz und Strukturen B2.",
+          "matchCount": 4,
+          "matches": [
+            {
+              "ruleId": "WHITESPACE_RULE",
+              "category": "TYPOGRAPHY",
+              "issueType": "whitespace",
+              "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+              "shortMessage": null,
+              "offset": 297,
+              "length": 2,
+              "context": "...Gliedern Sie Ihren Vortrag wie folgt: 1.  Einleitung: Was bedeutet Sport und Beweg...",
+              "contextOffset": 43,
+              "replacements": [
+                " "
+              ]
+            },
+            {
+              "ruleId": "WHITESPACE_RULE",
+              "category": "TYPOGRAPHY",
+              "issueType": "whitespace",
+              "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+              "shortMessage": null,
+              "offset": 365,
+              "length": 2,
+              "context": "...port und Bewegung für Sie persönlich? 2.  Ein konkretes Beispiel: Stellen Sie eine...",
+              "contextOffset": 43,
+              "replacements": [
+                " "
+              ]
+            },
+            {
+              "ruleId": "WHITESPACE_RULE",
+              "category": "TYPOGRAPHY",
+              "issueType": "whitespace",
+              "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+              "shortMessage": null,
+              "offset": 489,
+              "length": 2,
+              "context": "... die in Ihrem Heimatland beliebt ist. 3.  Vorteile und mögliche Probleme von regel...",
+              "contextOffset": 43,
+              "replacements": [
+                " "
+              ]
+            },
+            {
+              "ruleId": "WHITESPACE_RULE",
+              "category": "TYPOGRAPHY",
+              "issueType": "whitespace",
+              "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+              "shortMessage": null,
+              "offset": 633,
+              "length": 2,
+              "context": "...t, soziale Kontakte, Zeitmanagement). 4.  Schlussfolgerung: Ihre persönliche Meinu...",
+              "contextOffset": 43,
+              "replacements": [
+                " "
+              ]
+            }
+          ]
+        }
+      ],
+      "passages": []
+    },
+    {
+      "file": "sprechen-t2-gemini-019.json",
+      "matchCount": 0,
+      "segments": [
+        {
+          "segmentType": "question",
+          "field": "questions.content",
+          "passageIndex": null,
+          "questionIndex": 0,
+          "textLength": 651,
+          "text": "Thema: Sollte der Einsatz von künstlicher Intelligenz (KI) am Arbeitsplatz gesetzlich stärker reguliert werden?\nTauschen Sie in einer Diskussion Standpunkte zu einem kontroversen Thema aus.\nSammeln Sie Argumente für und gegen eine stärkere Regulierung dieser Technologie am Arbeitsplatz. Reagieren Sie auf die Beiträge Ihrer Partnerin/Ihres Partners, bringen Sie eigene Beispiele ein und versuchen Sie, am Ende eine gemeinsame Lösung oder einen Kompromiss zu finden, der die Digitalisierung und Innovation berücksichtigt, aber auch Probleme adressiert.\nBewertung B2: Argumentation, Reaktion auf Partner/in, Register; kontroverses Thema klar erkennbar.",
+          "matchCount": 0,
+          "matches": []
+        }
+      ],
+      "passages": []
+    }
+  ]
+}
