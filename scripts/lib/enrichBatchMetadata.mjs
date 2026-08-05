@@ -49,6 +49,8 @@ const STOP = new Set([
   'vorgesehen', 'vorgesehene', 'vorgesehenen', 'vorgesehenes', 'vorgesehener',
   'darauf', 'dafür', 'davon', 'dazu', 'dabei', 'darum', 'worauf', 'wofür',
   'bitte', 'mal', 'gar',
+  // Exam rubric imperatives / possessives (Schreiben «Schreib zu drei Punkten», «deinen Chef»)
+  'schreiben', 'schreibt', 'deinen', 'deinem', 'deiner', 'deines',
   // v2.3.1 — ranking leaks (light-verb demote fillers)
   'vielleicht',
   'musst', 'musste', 'mussten', 'müssten', // müssen already STOP; finite/past/subj. forms
@@ -75,6 +77,9 @@ const LEMMA_GROUND_TRUTH = {
   zukunfen: 'Zukunft',
   zeitschrifen: 'Zeitschrift',
   informationsflün: 'Informationsflut',
+  möcht: 'möchten',
+  moecht: 'möchten',
+  unternehm: 'unternehmen',
 };
 
 const VALID_GRAMMAR_TAG_RE = /^g-de-(b1|b2|a2)-[a-z0-9-]+$/;
@@ -177,12 +182,16 @@ const COMPARATIVE_TO_BASE = {
   größer: 'groß', groesser: 'groß', größte: 'groß', groesste: 'groß',
   kleiner: 'klein', kleinste: 'klein',
   mehr: 'viel', weniger: 'wenig',
+  hohen: 'hoch', hohe: 'hoch', hohem: 'hoch', hohes: 'hoch',
+  besonderen: 'besonders', besondere: 'besonders', besonderem: 'besonders', besonderes: 'besonders',
+  persönlichen: 'persönlich', persönliche: 'persönlich', persönlichem: 'persönlich', persönliches: 'persönlich',
 };
 
 /** Lemmas that are nouns for display/search (capitalize). */
 const NOUN_LEMMAS = new Set([
   'alltag', 'urlaub', 'umzug', 'arbeit', 'familie', 'freund', 'schule', 'stadt', 'land', 'haus',
   'auto', 'zug', 'bus', 'bahn', 'geld', 'zeit', 'mensch', 'kind', 'frau', 'mann', 'problem',
+  'punkt', 'thema', 'firma', 'eltern', 'frage',
   'angebot', 'termin', 'arzt', 'krankenhaus', 'umwelt', 'verkehr', 'freizeit', 'gesundheit',
   'bildung', 'wohnen', 'lebensstil', 'engagement', 'organisation', 'nachbar', 'erfahrung',
   'entscheidung', 'umstellung', 'bewegung', 'luft', 'lärm', 'laerm', 'radweg', 'innenstadt',
@@ -240,7 +249,7 @@ const ADVERB_CANON = new Map([
   ['fruehestens', 'frühestens'],
 ]);
 
-export const VOCAB_TAGS_NORMALIZE_VERSION = 'v2.3.17b-plural-noun-vocab-cap-fix-2026-07-27';
+export const VOCAB_TAGS_NORMALIZE_VERSION = 'v2.3.18-paso3-vocab-plural-rubric-strip-2026-08-02';
 
 /** Spurious «-eren» / «-chen» style artifacts from blind -t→-en heuristics. */
 export function isVocabLemmaCorruption(original, lemma, b1Set) {
@@ -296,11 +305,23 @@ export const VOCAB_COLLOCATIONS = [
  */
 export const EXAM_STEM_STRIP = [
   /\bworum\s+geht(?:[''\u2019]s|\s+es)\b[^?]{0,160}\?/gi,
+  // Schreiben rubric boilerplate (Punkten / Schreiben imperative — never learning tags)
+  /\bschreib(?:en|t)\s+(?:sie\s+)?zu\s+drei\s+punkten\s*:?\b/gi,
   // Sprechen T3 boilerplate header (never a learning tag)
   /\bbeispielfragen\s*:/gi,
   // Examiner feedback checklist embedded in Sprechen T3 prompts
   /\b(?:nicht\s+nur\s+auf\s+den\s+inhalt,?\s+sondern\s+auch\s+auf\s+)?die\s+struktur,?\s+die\s+grammatik,?\s+den\s+wortschatz(?:\s+und\s+die\s+prosodie)?\b/gi,
 ];
+
+/** Keep in sync with js/engine/separableResolve.js */
+export const INSEPARABLE_INFINITIVES = new Set([
+  // Prefix looks separable but verb is consistently untrennbar (exam/register B1–B2).
+  'durchführen', 'unterschreiben', 'übernehmen', 'überweisen',
+  // Other common false positives (morph scan / DWDS heuristic noise).
+  'übersetzen', 'unterhalten', 'unternehmen', 'unterstützen', 'untersuchen', 'beistehen',
+  'übersteigen', 'überleben', 'überzeugen', 'verstehen', 'bekommen', 'besuchen', 'verreisen',
+  'versuchen', 'beschweren', 'erreichen', 'erklären', 'erzählen', 'empfehlen', 'entdecken',
+]);
 
 /** Known separable infinitives (keep full form). Keep in sync with js/engine/separableResolve.js. */
 export const SEPARABLE_INFINITIVES = new Set([
@@ -377,12 +398,8 @@ export const SEPARABLE_INFINITIVES = new Set([
   'herkommen', 'herunterladen', 'herstellen',
   // um-
   'umsetzen', 'umsteigen', 'umziehen',
-  // durch-
-  'durchführen',
-  // über-
-  'übernehmen', 'überweisen',
   // unter-
-  'untergehen', 'unterschreiben',
+  'untergehen',
   // zusammen-
   'zusammenarbeiten', 'zusammenfassen',
   // aner-
@@ -683,10 +700,27 @@ function tokenize(text) {
     .filter(Boolean);
 }
 
+/** Weak plural / dative -en (Punkten, Kindern, Themen…) → singular for tag repair. */
+const PLURAL_TO_SINGULAR = {
+  punkten: 'punkt',
+  themen: 'thema',
+  kindern: 'kind',
+  firmen: 'firma',
+};
+
+function resolvePluralNounLemma(w) {
+  const low = String(w || '').toLowerCase();
+  if (PLURAL_TO_SINGULAR[low]) return PLURAL_TO_SINGULAR[low];
+  const sing = lightSingularizeNoun(low);
+  if (sing !== low && (NOUN_LEMMAS.has(sing) || STOP.has(sing))) return sing;
+  return null;
+}
+
 function looksLikePluralNounLemma(w) {
   const low = String(w || '').toLowerCase();
   return (
-    /(?:ungen|heiten|keiten|schaften|ionen|täten|schriften|nahmen|fristen|werte|stellen|leute|firmen|mittel|stunden|methoden)$/i.test(
+    Boolean(PLURAL_TO_SINGULAR[low]) ||
+    /(?:ungen|heiten|keiten|schaften|ionen|täten|schriften|nahmen|fristen|werte|stellen|leute|firmen|mittel|stunden|methoden|punkten|themen|kindern|eltern)$/i.test(
       low,
     ) ||
     (low.length >= 9 && /(?:unternehmen|entscheidungen)$/i.test(low))
@@ -701,12 +735,13 @@ function looksLikeInfinitive(w) {
   if (w.length >= 9 && /igen$/i.test(w)) return false; // wichtigen, bisherigen, …
   // Common plural nouns (incl. -en plurals mistaken for infinitives: Maßnahmen, Vorschriften, …)
   if (
-    /(?:ungen|heiten|keiten|schaften|ionen|täten|schriften|nahmen|fristen|werte|stellen|leute|firmen|mittel|stunden|methoden)$/i.test(
+    /(?:ungen|heiten|keiten|schaften|ionen|täten|schriften|nahmen|fristen|werte|stellen|leute|firmen|mittel|stunden|methoden|punkten|themen|kindern|eltern)$/i.test(
       w,
     )
   ) {
     return false;
   }
+  if (PLURAL_TO_SINGULAR[w]) return false;
   // Nominal -en (Unternehmen, Ereignissen…) — not separable infinitives
   if (w.length >= 9 && /(?:men|nen|den|gen|ten|sen|len|ren)$/i.test(w) && !SEPARABLE_INFINITIVES.has(w)) {
     if (/(?:unternehmen|ereignissen|entscheidungen)$/i.test(w)) return false;
@@ -743,6 +778,7 @@ export function normalizeZuSeparable(w) {
 /** Light plural → singular for common compound heads. */
 function lightSingularizeNoun(n) {
   let w = n;
+  if (PLURAL_TO_SINGULAR[w]) return PLURAL_TO_SINGULAR[w];
   const rules = [
     [/pflanzen$/, 'pflanze'],
     [/ständer(?:n)?$/, 'ständer'],
@@ -913,6 +949,9 @@ function lemmaOf(token, b1Set, nounHints) {
     const canon = LEMMA_GROUND_TRUTH[low];
     return STOP.has(canon) ? null : canon;
   }
+
+  const pluralSing = resolvePluralNounLemma(low);
+  if (pluralSing) return STOP.has(pluralSing) ? null : pluralSing;
 
   // Finite forms listed in B1 must still map to infinitive for vocab tags (findet→finden).
   if (FINITE_TO_INF[low]) {
@@ -1193,6 +1232,11 @@ function particleLooksFinal(tokens, j) {
  * Window ±8 (was ±6): catches «schlägt … vor» / «findet … statt» with short
  * mid-field arguments while article/zu/clause guards still block prep FPs.
  */
+/** @param {string} text */
+export function findSplitSeparablesInText(text) {
+  return [...findSplitSeparables(tokenizeKeepingSentenceBreaks(text))];
+}
+
 function findSplitSeparables(tokens) {
   const found = new Set();
   const roots = separableRootsFromAllowlist();
@@ -1385,9 +1429,28 @@ function repairQuestionVocabularyTags(q, b1Set, nounHints) {
   let changed = false;
   for (const tag of q.vocabularyTags) {
     const low = String(tag || '').toLowerCase();
-    const repaired = repairCorruptVocabTagSurface(tag) || (LEMMA_GROUND_TRUTH[low] ? LEMMA_GROUND_TRUTH[low] : null);
-    const out = repaired || tag;
+    const repaired =
+      repairCorruptVocabTagSurface(tag) ||
+      (LEMMA_GROUND_TRUTH[low] ? LEMMA_GROUND_TRUTH[low] : null);
+    const reLemma = lemmaOf(low, b1Set, nounHints);
+    let out = repaired || reLemma;
+    if (!out) {
+      const pluralSing = resolvePluralNounLemma(low);
+      if (pluralSing && STOP.has(pluralSing)) {
+        changed = true;
+        continue;
+      }
+      out = tag;
+    }
+    if (!out || STOP.has(String(out).toLowerCase())) {
+      changed = true;
+      continue;
+    }
     const formatted = formatVocabTag(out, nounHints);
+    if (!formatted || STOP.has(formatted.toLowerCase())) {
+      changed = true;
+      continue;
+    }
     if (formatted !== String(tag || '').trim()) changed = true;
     if (!next.some((t) => t.toLowerCase() === formatted.toLowerCase())) next.push(formatted);
   }
