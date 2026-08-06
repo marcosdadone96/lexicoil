@@ -20,12 +20,25 @@ const A2_TOPIC_ALIASES = Object.freeze({
   'natur und klima': 'Umwelt',
 });
 
-const { foldTopicKey, B1_TOPICS, normalizeB1Topic } = (() => {
+// The bindings are prefixed on purpose. index.html loads b1Topics.js as a classic script
+// immediately before this file, so its top-level `function foldTopicKey` / `const B1_TOPICS`
+// / `function normalizeB1Topic` are already globals. Destructuring into those same names
+// redeclared them in the same scope, which is a SyntaxError — and it is thrown at parse
+// time, so the whole of a2Topics.js never ran and A2_OFFICIAL_TOPICS / normalizeA2Topic
+// were undefined for examConfig.js and personalTopicStockFactory.js.
+const { foldTopicKey: a2FoldTopicKey, B1_TOPICS: A2_B1_TOPICS, normalizeB1Topic: a2NormalizeB1Topic } = (() => {
   try {
     // eslint-disable-next-line global-require
     return require('./b1Topics.js');
   } catch {
-    return { foldTopicKey: (s) => String(s || '').trim().toLowerCase(), B1_TOPICS: [], normalizeB1Topic: (t) => t };
+    // Browser: reuse b1Topics' globals when present, fall back only if it did not load.
+    return {
+      foldTopicKey: typeof foldTopicKey === 'function'
+        ? foldTopicKey
+        : (s) => String(s || '').trim().toLowerCase(),
+      B1_TOPICS: typeof B1_TOPICS !== 'undefined' ? B1_TOPICS : [],
+      normalizeB1Topic: typeof normalizeB1Topic === 'function' ? normalizeB1Topic : (t) => t,
+    };
   }
 })();
 
@@ -42,14 +55,14 @@ function normalizeA2Topic(topic) {
   if (!t) return null;
   if (isOfficialA2Topic(t)) return t;
 
-  const key = foldTopicKey(t);
+  const key = a2FoldTopicKey(t);
   if (A2_TOPIC_ALIASES[key]) return A2_TOPIC_ALIASES[key];
 
-  const fromB1 = normalizeB1Topic(t);
+  const fromB1 = a2NormalizeB1Topic(t);
   if (fromB1 && isOfficialA2Topic(fromB1)) return fromB1;
 
   for (const canonical of A2_OFFICIAL_TOPICS) {
-    const cKey = foldTopicKey(canonical);
+    const cKey = a2FoldTopicKey(canonical);
     if (key === cKey || key.startsWith(`${cKey} und `)) return canonical;
   }
 
@@ -81,6 +94,6 @@ if (typeof module !== 'undefined') {
     A2_OFFICIAL_AXIS_TO_SLUG,
     isOfficialA2Topic,
     normalizeA2Topic,
-    B1_TOPICS,
+    B1_TOPICS: A2_B1_TOPICS,
   });
 }
