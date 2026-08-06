@@ -74,7 +74,7 @@ function parsePublishArgs(argv) {
 
   if (out.allowAuditFailures) {
 
-    process.stderr.write('\n\x1b[31mâš   --allow-audit-failures activo: POOL-2 no bloquearÃ¡ ingestiÃ³n al banco.\x1b[0m\n\n');
+    process.stderr.write('\n\x1b[31m[WARN] --allow-audit-failures activo: POOL-2 no bloqueara ingestion al banco.\x1b[0m\n\n');
 
   }
 
@@ -100,7 +100,7 @@ function runNode(script, scriptArgs, { inherit = false } = {}) {
 
     const msg = `${res.stdout || ''}${res.stderr || ''}`.trim();
 
-    throw new Error(msg || `FallÃ³: node ${script}`);
+    throw new Error(msg || `Fallo: node ${script}`);
 
   }
 
@@ -112,7 +112,7 @@ function runNode(script, scriptArgs, { inherit = false } = {}) {
 
 function ingestAndPromote(args, relFile) {
 
-  console.log('â”€â”€ Ingest + auto-approve â”€â”€');
+  console.log('-- Ingest + auto-approve --');
 
   runNode('scripts/ingest-to-staging.mjs', [
 
@@ -128,7 +128,7 @@ function ingestAndPromote(args, relFile) {
 
   if (args.publish) {
 
-    console.log('â”€â”€ Promote approved â†’ banco â”€â”€');
+    console.log('-- Promote approved -> banco --');
 
     runNode('scripts/promote-approved.mjs', [
 
@@ -166,7 +166,7 @@ function logPoolGateFindings(blocking, header) {
 
     }
 
-    if (list.length > 3) console.error(`${header}    â€¦ +${list.length - 3} mÃ¡s`);
+    if (list.length > 3) console.error(`${header}    ... +${list.length - 3} mas`);
 
   }
 
@@ -174,15 +174,21 @@ function logPoolGateFindings(blocking, header) {
 
 
 
-async function applyPoolGate(batch, args, header) {
+async function applyPoolGate(batch, args, header, relFile) {
+  const norm = String(relFile || '').replace(/\\/g, '/');
+  const fromPoolVerified = norm.includes('pool-verified/');
+  const semantic = fromPoolVerified ? false : true;
+  const skipSem2 = fromPoolVerified;
 
-  console.log(`${header}â”€â”€ POOL-2 gate (isPartPoolReady â€” 0 CRITICAL + 0 IMPORTANT) â”€â”€`);
-
-  const gate = await isPartPoolReady(batch, { allowFailures: args.allowAuditFailures, semantic: true });
+  console.log(`${header}-- POOL-2 gate (isPartPoolReady -- 0 CRITICAL + 0 IMPORTANT) --`);
+  if (fromPoolVerified) {
+    console.log(`${header}(pool-verified: omitiendo SEM-LLM repetido)`);
+  }
+  const gate = await isPartPoolReady(batch, { allowFailures: args.allowAuditFailures, semantic, skipSem2 });
 
   if (!gate.ok) {
 
-    console.error(`${header}âŒ Rechazada â€” no entra al banco (${gate.blocking.length} blocking)`);
+    console.error(`${header}[FAIL] Rechazada -- no entra al banco (${gate.blocking.length} blocking)`);
 
     logPoolGateFindings(gate.blocking, header);
 
@@ -190,7 +196,7 @@ async function applyPoolGate(batch, args, header) {
 
   }
 
-  console.log(`${header}âœ… POOL-2: parte limpia (0/0)`);
+  console.log(`${header}[OK] POOL-2: parte limpia (0/0)`);
 
   return { ok: true, rejected: false, gate };
 
@@ -203,9 +209,8 @@ async function publishOneFile(relFile, args, { label } = {}) {
   const abs = path.isAbsolute(relFile) ? relFile : path.join(ROOT, relFile);
 
   if (!fs.existsSync(abs)) {
-
+    console.error(`${label ? `[${label}] ` : ''}[FAIL] No existe: ${relFile}`);
     return { ok: false, label, relFile, errors: [`No existe: ${relFile}`], rejected: false };
-
   }
 
   const norm = path.relative(ROOT, abs).replace(/\\/g, '/');
@@ -218,7 +223,7 @@ async function publishOneFile(relFile, args, { label } = {}) {
 
   } catch (err) {
 
-    return { ok: false, label, relFile: norm, errors: [`JSON invÃ¡lido: ${err.message}`], rejected: false };
+    return { ok: false, label, relFile: norm, errors: [`JSON invalido: ${err.message}`], rejected: false };
 
   }
 
@@ -234,7 +239,7 @@ async function publishOneFile(relFile, args, { label } = {}) {
 
   if (!check.ok) {
 
-    console.log(`${label ? `[${label}] ` : ''}âŒ No publicado (fallÃ³ validaciÃ³n)`);
+    console.log(`${label ? `[${label}] ` : ''}[FAIL] No publicado (fallo validacion)`);
 
     return { ok: false, label, module: check.module, teil: check.teil, relFile: norm, errors: check.errors, rejected: false };
 
@@ -244,15 +249,15 @@ async function publishOneFile(relFile, args, { label } = {}) {
 
   const header = label ? `[${label}] ` : '';
 
-  const teilLabel = check.teil != null ? `Teil ${check.teil}` : 'Teile 1â€“3';
+  const teilLabel = check.teil != null ? `Teil ${check.teil}` : 'Teile 1-3';
 
-  console.log(`${header}âœ… VÃ¡lido: ${norm} (${check.module} ${teilLabel})`);
+  console.log(`${header}[OK] Valido: ${norm} (${check.module} ${teilLabel})`);
 
 
 
   if (args.publish || args.ingest) {
 
-    const pool = await applyPoolGate(batch, args, header);
+    const pool = await applyPoolGate(batch, args, header, norm);
 
     if (!pool.ok) {
 
@@ -320,7 +325,7 @@ async function main() {
 
 
 
-POOL-2: isPartPoolReady bloquea partes con â‰¥1 IMPORTANT/CRITICAL (salvo --allow-audit-failures).`);
+POOL-2: isPartPoolReady bloquea partes con >=1 IMPORTANT/CRITICAL (salvo --allow-audit-failures).`);
 
     process.exit(1);
 
@@ -348,7 +353,7 @@ POOL-2: isPartPoolReady bloquea partes con â‰¥1 IMPORTANT/CRITICAL (salvo --
 
 
 
-  console.log(`Publicar ${targets.length} archivo(s)â€¦`);
+  console.log(`Publicar ${targets.length} archivo(s)...`);
 
 
 
@@ -362,11 +367,9 @@ POOL-2: isPartPoolReady bloquea partes con â‰¥1 IMPORTANT/CRITICAL (salvo --
 
     const label = `#${i + 1}/${targets.length}`;
 
-    console.log(`\n${'â•'.repeat(60)}`);
-
+    console.log(`\n${'='.repeat(60)}`);
     console.log(`Procesando ${label}: ${rel}`);
-
-    console.log('â•'.repeat(60));
+    console.log('='.repeat(60));
 
     const res = await publishOneFile(rel, args, { label });
 
@@ -386,9 +389,14 @@ POOL-2: isPartPoolReady bloquea partes con â‰¥1 IMPORTANT/CRITICAL (salvo --
 
 
 
-  console.log(`\n${'â•'.repeat(60)}`);
-
+  console.log(`\n${'='.repeat(60)}`);
   console.log(`RESUMEN: ${ok.length} OK, ${fail.length} fallidos (${rejected} rechazadas POOL-2)`);
+  for (const f of fail) {
+    const hdr = f.label ? `[${f.label}] ` : '';
+    for (const err of f.errors || []) {
+      console.error(`${hdr}[FAIL] ${err}`);
+    }
+  }
 
 
 
@@ -400,7 +408,7 @@ POOL-2: isPartPoolReady bloquea partes con â‰¥1 IMPORTANT/CRITICAL (salvo --
 
     } catch (err) {
 
-      console.error(`\nSync pool fallÃ³: ${err.message}`);
+      console.error(`\nSync pool fallo: ${err.message}`);
 
       process.exit(1);
 

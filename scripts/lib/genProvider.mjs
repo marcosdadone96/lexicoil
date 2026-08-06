@@ -3,14 +3,14 @@
  * Does NOT touch netlify/functions/claude-chat.js (production proxy).
  */
 export async function getProvider(name) {
-  const provider = (name || process.env.GEN_PROVIDER || 'claude').trim().toLowerCase();
-  if (provider === 'gemini') {
-    return import('./geminiClient.mjs');
+  const provider = (name || process.env.GEN_PROVIDER || 'gemini').trim().toLowerCase();
+  if (provider === 'claude') {
+    return import('./claudeClient.mjs');
   }
-  return import('./claudeClient.mjs');
+  return import('./geminiClient.mjs');
 }
 
 export function providerLabel(name) {
-  const provider = (name || process.env.GEN_PROVIDER || 'claude').trim().toLowerCase();
-  return provider === 'gemini' ? 'gemini' : 'claude';
+  const provider = (name || process.env.GEN_PROVIDER || 'gemini').trim().toLowerCase();
+  return provider === 'claude' ? 'claude' : 'gemini';
 }

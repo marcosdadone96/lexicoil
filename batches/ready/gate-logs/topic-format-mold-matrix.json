@@ -1,0 +1,3233 @@
+{
+  "generatedAt": "2026-07-22T13:55:14.583Z",
+  "colorLegend": {
+    "green": "≥2 muestras vocab Y ratio ≥60% Y chk29=0",
+    "yellow": "datos medidos pero ratio 50–59% o chk29≥1",
+    "red": "ratio <40% con fallos repetidos, o 0 moldes",
+    "unverified": "vocabSamples < 2 (sin historial suficiente — nunca verde)",
+    "external": "Lesen T3: gestión manual externa (otra IA, fuera de este pipeline). La columna T3 no indica urgencia operativa de este sistema mientras dure ese flujo."
+  },
+  "formatsConfirmed": [
+    {
+      "id": "lesen-t3",
+      "label": "Lesen T3",
+      "module": "lesen",
+      "teil": 3,
+      "gate": "CHK-26 / t3_shared_mold_*"
+    },
+    {
+      "id": "lesen-t4",
+      "label": "Lesen T4",
+      "module": "lesen",
+      "teil": 4,
+      "gate": "CHK-27 / CHK-29"
+    },
+    {
+      "id": "lesen-t5",
+      "label": "Lesen T5",
+      "module": "lesen",
+      "teil": 5,
+      "gate": "CHK-29 / content_topic"
+    }
+  ],
+  "formatsExcluded": [
+    {
+      "id": "horen-t2",
+      "reason": "sin rotación de moldes/subtipos en scripts/ — solo topicTag + prompt template"
+    },
+    {
+      "id": "horen-t4",
+      "reason": "sin rotación de moldes — cronología fija por plantilla"
+    },
+    {
+      "id": "sprechen",
+      "reason": "conformidad blueprint de examen (library/blueprints), no pool de moldes temáticos"
+    },
+    {
+      "id": "lesen-t1/t2",
+      "reason": "generación libre por tema, sin catálogo de subtipos"
+    }
+  ],
+  "matrix": [
+    {
+      "topic": "Reisen",
+      "cells": {
+        "lesen-t3": {
+          "compatibleMolds": 3,
+          "availableMolds": 0,
+          "avgVocabPct": null,
+          "vocabSamples": 0,
+          "chk29OrEquiv": 0,
+          "gateDetail": {
+            "chk29": 0,
+            "t3_mold": 0,
+            "chk27": 0,
+            "chk26": 0,
+            "totalFails": 0,
+            "calls": 0
+          },
+          "status": "external",
+          "titleHeadroom": null,
+          "cellLabel": "ext. · 3 moldes ref. · sin datos · 0×"
+        },
+        "lesen-t4": {
+          "compatibleMolds": 3,
+          "availableMolds": 3,
+          "avgVocabPct": 49,
+          "vocabSamples": 5,
+          "chk29OrEquiv": 0,
+          "gateDetail": {
+            "chk29": 0,
+            "t3_mold": 0,
+            "chk27": 0,
+            "chk26": 0,
+            "totalFails": 8,
+            "calls": 11
+          },
+          "status": "yellow",
+          "titleHeadroom": {
+            "teil": 4,
+            "topic": "Reisen",
+            "moldCapacity": 4,
+            "usedMoldKeys": 3,
+            "moldUtilization": 0.75,
+            "freshSlots": 1,
+            "compatibleSlots": 3,
+            "uniqueTitles": 9,
+            "institutionNamespaceEstimate": 24,
+            "titleToNamespaceRatio": 0.375,
+            "persistedBatchCount": 8,
+            "generatable": true,
+            "status": "critical"
+          },
+          "cellLabel": "3 | 49% (n=5) | 0× · headroom critical"
+        },
+        "lesen-t5": {
+          "compatibleMolds": 3,
+          "availableMolds": 3,
+          "avgVocabPct": 44,
+          "vocabSamples": 3,
+          "chk29OrEquiv": 1,
+          "gateDetail": {
+            "chk29": 1,
+            "t3_mold": 0,
+            "chk27": 0,
+            "chk26": 0,
+            "totalFails": 16,
+            "calls": 18
+          },
+          "status": "yellow",
+          "titleHeadroom": {
+            "teil": 5,
+            "topic": "Reisen",
+            "moldCapacity": 7,
+            "usedMoldKeys": 2,
+            "moldUtilization": 0.286,
+            "freshSlots": 2,
+            "compatibleSlots": 3,
+            "uniqueTitles": 5,
+            "institutionNamespaceEstimate": 300,
+            "titleToNamespaceRatio": 0.017,
+            "persistedBatchCount": 5,
+            "status": "healthy"
+          },
+          "cellLabel": "3 | 44% (n=3) | 1× · headroom ok"
+        }
+      }
+    },
+    {
+      "topic": "Gesundheit",
+      "cells": {
+        "lesen-t3": {
+          "compatibleMolds": 4,
+          "availableMolds": 3,
+          "avgVocabPct": null,
+          "vocabSamples": 0,
+          "chk29OrEquiv": 0,
+          "gateDetail": {
+            "chk29": 0,
+            "t3_mold": 0,
+            "chk27": 0,
+            "chk26": 0,
+            "totalFails": 0,
+            "calls": 0
+          },
+          "status": "external",
+          "titleHeadroom": null,
+          "cellLabel": "ext. · 4 moldes ref. · sin datos · 0×"
+        },
+        "lesen-t4": {
+          "compatibleMolds": 4,
+          "availableMolds": 4,
+          "avgVocabPct": 67,
+          "vocabSamples": 1,
+          "chk29OrEquiv": 4,
+          "gateDetail": {
+            "chk29": 0,
+            "t3_mold": 0,
+            "chk27": 4,
+            "chk26": 0,
+            "totalFails": 6,
+            "calls": 7
+          },
+          "status": "unverified",
+          "titleHeadroom": {
+            "teil": 4,
+            "topic": "Gesundheit",
+            "moldCapacity": 4,
+            "usedMoldKeys": 2,
+            "moldUtilization": 0.5,
+            "freshSlots": 2,
+            "compatibleSlots": 3,
+            "uniqueTitles": 3,
+            "institutionNamespaceEstimate": 24,
+            "titleToNamespaceRatio": 0.125,
+            "persistedBatchCount": 3,
+            "generatable": true,
+            "status": "warning"
+          },
+          "cellLabel": "4 | 67% (n=1, insuf.) | 4× · headroom warning"
+        },
+        "lesen-t5": {
+          "compatibleMolds": 4,
+          "availableMolds": 4,
+          "avgVocabPct": null,
+          "vocabSamples": 0,
+          "chk29OrEquiv": 0,
+          "gateDetail": {
+            "chk29": 0,
+            "t3_mold": 0,
+            "chk27": 0,
+            "chk26": 0,
+            "totalFails": 0,
+            "calls": 0
+          },
+          "status": "unverified",
+          "titleHeadroom": {
+            "teil": 5,
+            "topic": "Gesundheit",
+            "moldCapacity": 7,
+            "usedMoldKeys": 3,
+            "moldUtilization": 0.429,
+            "freshSlots": 3,
+            "compatibleSlots": 4,
+            "uniqueTitles": 5,
+            "institutionNamespaceEstimate": 300,
+            "titleToNamespaceRatio": 0.017,
+            "persistedBatchCount": 5,
+            "status": "healthy"
+          },
+          "cellLabel": "4 | sin datos | 0× · headroom ok"
+        }
+      }
+    },
+    {
+      "topic": "Arbeit",
+      "cells": {
+        "lesen-t3": {
+          "compatibleMolds": 1,
+          "availableMolds": 0,
+          "avgVocabPct": null,
+          "vocabSamples": 0,
+          "chk29OrEquiv": 0,
+          "gateDetail": {
+            "chk29": 0,
+            "t3_mold": 0,
+            "chk27": 0,
+            "chk26": 0,
+            "totalFails": 0,
+            "calls": 0
+          },
+          "status": "external",
+          "titleHeadroom": null,
+          "cellLabel": "ext. · 1 moldes ref. · sin datos · 0×"
+        },
+        "lesen-t4": {
+          "compatibleMolds": 3,
+          "availableMolds": 3,
+          "avgVocabPct": null,
+          "vocabSamples": 0,
+          "chk29OrEquiv": 0,
+          "gateDetail": {
+            "chk29": 0,
+            "t3_mold": 0,
+            "chk27": 0,
+            "chk26": 0,
+            "totalFails": 0,
+            "calls": 1
+          },
+          "status": "unverified",
+          "titleHeadroom": {
+            "teil": 4,
+            "topic": "Arbeit",
+            "moldCapacity": 4,
+            "usedMoldKeys": 1,
+            "moldUtilization": 0.25,
+            "freshSlots": 3,
+            "compatibleSlots": 4,
+            "uniqueTitles": 1,
+            "institutionNamespaceEstimate": 24,
+            "titleToNamespaceRatio": 0.042,
+            "persistedBatchCount": 2,
+            "generatable": true,
+            "status": "healthy"
+          },
+          "cellLabel": "3 | sin datos | 0× · headroom ok"
+        },
+        "lesen-t5": {
+          "compatibleMolds": 5,
+          "availableMolds": 5,
+          "avgVocabPct": 33,
+          "vocabSamples": 1,
+          "chk29OrEquiv": 0,
+          "gateDetail": {
+            "chk29": 0,
+            "t3_mold": 0,
+            "chk27": 0,
+            "chk26": 0,
+            "totalFails": 4,
+            "calls": 7
+          },
+          "status": "unverified",
+          "titleHeadroom": {
+            "teil": 5,
+            "topic": "Arbeit",
+            "moldCapacity": 6,
+            "usedMoldKeys": 5,
+            "moldUtilization": 0.833,
+            "freshSlots": 3,
+            "compatibleSlots": 5,
+            "uniqueTitles": 7,
+            "institutionNamespaceEstimate": 230,
+            "titleToNamespaceRatio": 0.03,
+            "persistedBatchCount": 7,
+            "status": "critical"
+          },
+          "cellLabel": "5 | 33% (n=1, insuf.) | 0× · headroom critical"
+        }
+      }
+    },
+    {
+      "topic": "Technik",
+      "cells": {
+        "lesen-t3": {
+          "compatibleMolds": 4,
+          "availableMolds": 0,
+          "avgVocabPct": null,
+          "vocabSamples": 0,
+          "chk29OrEquiv": 0,
+          "gateDetail": {
+            "chk29": 0,
+            "t3_mold": 0,
+            "chk27": 0,
+            "chk26": 0,
+            "totalFails": 0,
+            "calls": 0
+          },
+          "status": "external",
+          "titleHeadroom": null,
+          "cellLabel": "ext. · 4 moldes ref. · sin datos · 0×"
+        },
+        "lesen-t4": {
+          "compatibleMolds": 9,
+          "availableMolds": 9,
+          "avgVocabPct": 40,
+          "vocabSamples": 1,
+          "chk29OrEquiv": 0,
+          "gateDetail": {
+            "chk29": 0,
+            "t3_mold": 0,
+            "chk27": 0,
+            "chk26": 0,
+            "totalFails": 1,
+            "calls": 2
+          },
+          "status": "unverified",
+          "titleHeadroom": {
+            "teil": 4,
+            "topic": "Technik",
+            "moldCapacity": 4,
+            "usedMoldKeys": 3,
+            "moldUtilization": 0.75,
+            "freshSlots": 1,
+            "compatibleSlots": 2,
+            "uniqueTitles": 7,
+            "institutionNamespaceEstimate": 24,
+            "titleToNamespaceRatio": 0.292,
+            "persistedBatchCount": 5,
+            "generatable": true,
+            "status": "critical"
+          },
+          "cellLabel": "9 | 40% (n=1, insuf.) | 0× · headroom critical"
+        },
+        "lesen-t5": {
+          "compatibleMolds": 7,
+          "availableMolds": 7,
+          "avgVocabPct": 34,
+          "vocabSamples": 10,
+          "chk29OrEquiv": 22,
+          "gateDetail": {
+            "chk29": 22,
+            "t3_mold": 0,
+            "chk27": 0,
+            "chk26": 0,
+            "totalFails": 85,
+            "calls": 91
+          },
+          "status": "red",
+          "titleHeadroom": {
+            "teil": 5,
+            "topic": "Technik",
+            "moldCapacity": 9,
+            "usedMoldKeys": 11,
+            "moldUtilization": 1.222,
+            "freshSlots": 1,
+            "compatibleSlots": 7,
+            "uniqueTitles": 17,
+            "institutionNamespaceEstimate": 365,
+            "titleToNamespaceRatio": 0.047,
+            "persistedBatchCount": 14,
+            "status": "critical"
+          },
+          "cellLabel": "7 | 34% (n=10) | 22× · headroom critical"
+        }
+      }
+    },
+    {
+      "topic": "Medien",
+      "cells": {
+        "lesen-t3": {
+          "compatibleMolds": 5,
+          "availableMolds": 0,
+          "avgVocabPct": null,
+          "vocabSamples": 0,
+          "chk29OrEquiv": 0,
+          "gateDetail": {
+            "chk29": 0,
+            "t3_mold": 0,
+            "chk27": 0,
+            "chk26": 0,
+            "totalFails": 0,
+            "calls": 0
+          },
+          "status": "external",
+          "titleHeadroom": null,
+          "cellLabel": "ext. · 5 moldes ref. · sin datos · 0×"
+        },
+        "lesen-t4": {
+          "compatibleMolds": 10,
+          "availableMolds": 10,
+          "avgVocabPct": 42,
+          "vocabSamples": 7,
+          "chk29OrEquiv": 0,
+          "gateDetail": {
+            "chk29": 0,
+            "t3_mold": 0,
+            "chk27": 0,
+            "chk26": 0,
+            "totalFails": 9,
+            "calls": 13
+          },
+          "status": "yellow",
+          "titleHeadroom": {
+            "teil": 4,
+            "topic": "Medien",
+            "moldCapacity": 4,
+            "usedMoldKeys": 4,
+            "moldUtilization": 1,
+            "freshSlots": 0,
+            "compatibleSlots": 4,
+            "uniqueTitles": 9,
+            "institutionNamespaceEstimate": 24,
+            "titleToNamespaceRatio": 0.375,
+            "persistedBatchCount": 10,
+            "generatable": false,
+            "status": "critical"
+          },
+          "cellLabel": "10 | 42% (n=7) | 0× · headroom critical"
+        },
+        "lesen-t5": {
+          "compatibleMolds": 6,
+          "availableMolds": 6,
+          "avgVocabPct": null,
+          "vocabSamples": 0,
+          "chk29OrEquiv": 0,
+          "gateDetail": {
+            "chk29": 0,
+            "t3_mold": 0,
+            "chk27": 0,
+            "chk26": 0,
+            "totalFails": 0,
+            "calls": 0
+          },
+          "status": "unverified",
+          "titleHeadroom": {
+            "teil": 5,
+            "topic": "Medien",
+            "moldCapacity": 8,
+            "usedMoldKeys": 3,
+            "moldUtilization": 0.375,
+            "freshSlots": 4,
+            "compatibleSlots": 6,
+            "uniqueTitles": 5,
+            "institutionNamespaceEstimate": 325,
+            "titleToNamespaceRatio": 0.015,
+            "persistedBatchCount": 3,
+            "status": "healthy"
+          },
+          "cellLabel": "6 | sin datos | 0× · headroom ok"
+        }
+      }
+    },
+    {
+      "topic": "Wohnen",
+      "cells": {
+        "lesen-t3": {
+          "compatibleMolds": 1,
+          "availableMolds": 0,
+          "avgVocabPct": null,
+          "vocabSamples": 0,
+          "chk29OrEquiv": 0,
+          "gateDetail": {
+            "chk29": 0,
+            "t3_mold": 0,
+            "chk27": 0,
+            "chk26": 0,
+            "totalFails": 0,
+            "calls": 0
+          },
+          "status": "external",
+          "titleHeadroom": null,
+          "cellLabel": "ext. · 1 moldes ref. · sin datos · 0×"
+        },
+        "lesen-t4": {
+          "compatibleMolds": 6,
+          "availableMolds": 6,
+          "avgVocabPct": 45,
+          "vocabSamples": 4,
+          "chk29OrEquiv": 0,
+          "gateDetail": {
+            "chk29": 0,
+            "t3_mold": 0,
+            "chk27": 0,
+            "chk26": 0,
+            "totalFails": 9,
+            "calls": 11
+          },
+          "status": "yellow",
+          "titleHeadroom": {
+            "teil": 4,
+            "topic": "Wohnen",
+            "moldCapacity": 4,
+            "usedMoldKeys": 2,
+            "moldUtilization": 0.5,
+            "freshSlots": 2,
+            "compatibleSlots": 4,
+            "uniqueTitles": 5,
+            "institutionNamespaceEstimate": 24,
+            "titleToNamespaceRatio": 0.208,
+            "persistedBatchCount": 5,
+            "generatable": true,
+            "status": "warning"
+          },
+          "cellLabel": "6 | 45% (n=4) | 0× · headroom warning"
+        },
+        "lesen-t5": {
+          "compatibleMolds": 4,
+          "availableMolds": 4,
+          "avgVocabPct": null,
+          "vocabSamples": 0,
+          "chk29OrEquiv": 0,
+          "gateDetail": {
+            "chk29": 0,
+            "t3_mold": 0,
+            "chk27": 0,
+            "chk26": 0,
+            "totalFails": 0,
+            "calls": 3
+          },
+          "status": "unverified",
+          "titleHeadroom": {
+            "teil": 5,
+            "topic": "Wohnen",
+            "moldCapacity": 8,
+            "usedMoldKeys": 4,
+            "moldUtilization": 0.5,
+            "freshSlots": 3,
+            "compatibleSlots": 4,
+            "uniqueTitles": 6,
+            "institutionNamespaceEstimate": 335,
+            "titleToNamespaceRatio": 0.018,
+            "persistedBatchCount": 4,
+            "status": "warning"
+          },
+          "cellLabel": "4 | sin datos | 0× · headroom warning"
+        }
+      }
+    },
+    {
+      "topic": "Konsum",
+      "cells": {
+        "lesen-t3": {
+          "compatibleMolds": 1,
+          "availableMolds": 0,
+          "avgVocabPct": null,
+          "vocabSamples": 0,
+          "chk29OrEquiv": 0,
+          "gateDetail": {
+            "chk29": 0,
+            "t3_mold": 0,
+            "chk27": 0,
+            "chk26": 0,
+            "totalFails": 0,
+            "calls": 0
+          },
+          "status": "external",
+          "titleHeadroom": null,
+          "cellLabel": "ext. · 1 moldes ref. · sin datos · 0×"
+        },
+        "lesen-t4": {
+          "compatibleMolds": 1,
+          "availableMolds": 1,
+          "avgVocabPct": 42,
+          "vocabSamples": 2,
+          "chk29OrEquiv": 0,
+          "gateDetail": {
+            "chk29": 0,
+            "t3_mold": 0,
+            "chk27": 0,
+            "chk26": 0,
+            "totalFails": 3,
+            "calls": 5
+          },
+          "status": "yellow",
+          "titleHeadroom": {
+            "teil": 4,
+            "topic": "Konsum",
+            "moldCapacity": 4,
+            "usedMoldKeys": 2,
+            "moldUtilization": 0.5,
+            "freshSlots": 2,
+            "compatibleSlots": 4,
+            "uniqueTitles": 5,
+            "institutionNamespaceEstimate": 24,
+            "titleToNamespaceRatio": 0.208,
+            "persistedBatchCount": 4,
+            "generatable": true,
+            "status": "warning"
+          },
+          "cellLabel": "1 | 42% (n=2) | 0× · headroom warning"
+        },
+        "lesen-t5": {
+          "compatibleMolds": 5,
+          "availableMolds": 5,
+          "avgVocabPct": 45,
+          "vocabSamples": 21,
+          "chk29OrEquiv": 12,
+          "gateDetail": {
+            "chk29": 12,
+            "t3_mold": 0,
+            "chk27": 0,
+            "chk26": 0,
+            "totalFails": 121,
+            "calls": 124
+          },
+          "status": "yellow",
+          "titleHeadroom": {
+            "teil": 5,
+            "topic": "Konsum",
+            "moldCapacity": 11,
+            "usedMoldKeys": 8,
+            "moldUtilization": 0.727,
+            "freshSlots": 3,
+            "compatibleSlots": 5,
+            "uniqueTitles": 17,
+            "institutionNamespaceEstimate": 475,
+            "titleToNamespaceRatio": 0.036,
+            "persistedBatchCount": 21,
+            "status": "warning"
+          },
+          "cellLabel": "5 | 45% (n=21) | 12× · headroom warning"
+        }
+      }
+    },
+    {
+      "topic": "Bildung",
+      "cells": {
+        "lesen-t3": {
+          "compatibleMolds": 3,
+          "availableMolds": 0,
+          "avgVocabPct": null,
+          "vocabSamples": 0,
+          "chk29OrEquiv": 0,
+          "gateDetail": {
+            "chk29": 0,
+            "t3_mold": 0,
+            "chk27": 0,
+            "chk26": 0,
+            "totalFails": 0,
+            "calls": 0
+          },
+          "status": "external",
+          "titleHeadroom": null,
+          "cellLabel": "ext. · 3 moldes ref. · sin datos · 0×"
+        },
+        "lesen-t4": {
+          "compatibleMolds": 9,
+          "availableMolds": 9,
+          "avgVocabPct": null,
+          "vocabSamples": 0,
+          "chk29OrEquiv": 0,
+          "gateDetail": {
+            "chk29": 0,
+            "t3_mold": 0,
+            "chk27": 0,
+            "chk26": 0,
+            "totalFails": 0,
+            "calls": 0
+          },
+          "status": "unverified",
+          "titleHeadroom": {
+            "teil": 4,
+            "topic": "Bildung",
+            "moldCapacity": 4,
+            "usedMoldKeys": 0,
+            "moldUtilization": 0,
+            "freshSlots": 4,
+            "compatibleSlots": 4,
+            "uniqueTitles": 7,
+            "institutionNamespaceEstimate": 24,
+            "titleToNamespaceRatio": 0.292,
+            "persistedBatchCount": 6,
+            "generatable": true,
+            "status": "healthy"
+          },
+          "cellLabel": "9 | sin datos | 0× · headroom ok"
+        },
+        "lesen-t5": {
+          "compatibleMolds": 5,
+          "availableMolds": 5,
+          "avgVocabPct": 37,
+          "vocabSamples": 3,
+          "chk29OrEquiv": 6,
+          "gateDetail": {
+            "chk29": 6,
+            "t3_mold": 0,
+            "chk27": 0,
+            "chk26": 0,
+            "totalFails": 49,
+            "calls": 53
+          },
+          "status": "red",
+          "titleHeadroom": {
+            "teil": 5,
+            "topic": "Bildung",
+            "moldCapacity": 7,
+            "usedMoldKeys": 6,
+            "moldUtilization": 0.857,
+            "freshSlots": 3,
+            "compatibleSlots": 5,
+            "uniqueTitles": 9,
+            "institutionNamespaceEstimate": 285,
+            "titleToNamespaceRatio": 0.032,
+            "persistedBatchCount": 9,
+            "status": "critical"
+          },
+          "cellLabel": "5 | 37% (n=3) | 6× · headroom critical"
+        }
+      }
+    },
+    {
+      "topic": "Familie",
+      "cells": {
+        "lesen-t3": {
+          "compatibleMolds": 2,
+          "availableMolds": 1,
+          "avgVocabPct": null,
+          "vocabSamples": 0,
+          "chk29OrEquiv": 0,
+          "gateDetail": {
+            "chk29": 0,
+            "t3_mold": 0,
+            "chk27": 0,
+            "chk26": 0,
+            "totalFails": 0,
+            "calls": 0
+          },
+          "status": "external",
+          "titleHeadroom": null,
+          "cellLabel": "ext. · 2 moldes ref. · sin datos · 0×"
+        },
+        "lesen-t4": {
+          "compatibleMolds": 8,
+          "availableMolds": 8,
+          "avgVocabPct": 33,
+          "vocabSamples": 1,
+          "chk29OrEquiv": 8,
+          "gateDetail": {
+            "chk29": 0,
+            "t3_mold": 0,
+            "chk27": 8,
+            "chk26": 0,
+            "totalFails": 10,
+            "calls": 11
+          },
+          "status": "unverified",
+          "titleHeadroom": {
+            "teil": 4,
+            "topic": "Familie",
+            "moldCapacity": 4,
+            "usedMoldKeys": 1,
+            "moldUtilization": 0.25,
+            "freshSlots": 3,
+            "compatibleSlots": 4,
+            "uniqueTitles": 3,
+            "institutionNamespaceEstimate": 24,
+            "titleToNamespaceRatio": 0.125,
+            "persistedBatchCount": 1,
+            "generatable": true,
+            "status": "healthy"
+          },
+          "cellLabel": "8 | 33% (n=1, insuf.) | 8× · headroom ok"
+        },
+        "lesen-t5": {
+          "compatibleMolds": 4,
+          "availableMolds": 4,
+          "avgVocabPct": 50,
+          "vocabSamples": 6,
+          "chk29OrEquiv": 0,
+          "gateDetail": {
+            "chk29": 0,
+            "t3_mold": 0,
+            "chk27": 0,
+            "chk26": 0,
+            "totalFails": 43,
+            "calls": 53
+          },
+          "status": "yellow",
+          "titleHeadroom": {
+            "teil": 5,
+            "topic": "Familie",
+            "moldCapacity": 8,
+            "usedMoldKeys": 6,
+            "moldUtilization": 0.75,
+            "freshSlots": 2,
+            "compatibleSlots": 4,
+            "uniqueTitles": 9,
+            "institutionNamespaceEstimate": 335,
+            "titleToNamespaceRatio": 0.027,
+            "persistedBatchCount": 9,
+            "status": "critical"
+          },
+          "cellLabel": "4 | 50% (n=6) | 0× · headroom critical"
+        }
+      }
+    },
+    {
+      "topic": "Umwelt",
+      "cells": {
+        "lesen-t3": {
+          "compatibleMolds": 1,
+          "availableMolds": 0,
+          "avgVocabPct": null,
+          "vocabSamples": 0,
+          "chk29OrEquiv": 0,
+          "gateDetail": {
+            "chk29": 0,
+            "t3_mold": 0,
+            "chk27": 0,
+            "chk26": 0,
+            "totalFails": 0,
+            "calls": 0
+          },
+          "status": "external",
+          "titleHeadroom": null,
+          "cellLabel": "ext. · 1 moldes ref. · sin datos · 0×"
+        },
+        "lesen-t4": {
+          "compatibleMolds": 4,
+          "availableMolds": 4,
+          "avgVocabPct": 69,
+          "vocabSamples": 14,
+          "chk29OrEquiv": 14,
+          "gateDetail": {
+            "chk29": 14,
+            "t3_mold": 0,
+            "chk27": 0,
+            "chk26": 0,
+            "totalFails": 26,
+            "calls": 27
+          },
+          "status": "yellow",
+          "titleHeadroom": {
+            "teil": 4,
+            "topic": "Umwelt",
+            "moldCapacity": 4,
+            "usedMoldKeys": 1,
+            "moldUtilization": 0.25,
+            "freshSlots": 3,
+            "compatibleSlots": 4,
+            "uniqueTitles": 15,
+            "institutionNamespaceEstimate": 24,
+            "titleToNamespaceRatio": 0.625,
+            "persistedBatchCount": 18,
+            "generatable": true,
+            "status": "critical"
+          },
+          "cellLabel": "4 | 69% (n=14) | 14× · headroom critical"
+        },
+        "lesen-t5": {
+          "compatibleMolds": 3,
+          "availableMolds": 3,
+          "avgVocabPct": 67,
+          "vocabSamples": 22,
+          "chk29OrEquiv": 8,
+          "gateDetail": {
+            "chk29": 8,
+            "t3_mold": 0,
+            "chk27": 0,
+            "chk26": 0,
+            "totalFails": 38,
+            "calls": 41
+          },
+          "status": "yellow",
+          "titleHeadroom": {
+            "teil": 5,
+            "topic": "Umwelt",
+            "moldCapacity": 7,
+            "usedMoldKeys": 6,
+            "moldUtilization": 0.857,
+            "freshSlots": 2,
+            "compatibleSlots": 3,
+            "uniqueTitles": 22,
+            "institutionNamespaceEstimate": 300,
+            "titleToNamespaceRatio": 0.073,
+            "persistedBatchCount": 24,
+            "status": "critical"
+          },
+          "cellLabel": "3 | 67% (n=22) | 8× · headroom critical"
+        }
+      }
+    },
+    {
+      "topic": "Ernährung",
+      "cells": {
+        "lesen-t3": {
+          "compatibleMolds": 1,
+          "availableMolds": 0,
+          "avgVocabPct": null,
+          "vocabSamples": 0,
+          "chk29OrEquiv": 0,
+          "gateDetail": {
+            "chk29": 0,
+            "t3_mold": 0,
+            "chk27": 0,
+            "chk26": 0,
+            "totalFails": 0,
+            "calls": 0
+          },
+          "status": "external",
+          "titleHeadroom": null,
+          "cellLabel": "ext. · 1 moldes ref. · sin datos · 0×"
+        },
+        "lesen-t4": {
+          "compatibleMolds": 3,
+          "availableMolds": 3,
+          "avgVocabPct": 34,
+          "vocabSamples": 5,
+          "chk29OrEquiv": 34,
+          "gateDetail": {
+            "chk29": 34,
+            "t3_mold": 0,
+            "chk27": 0,
+            "chk26": 0,
+            "totalFails": 63,
+            "calls": 66
+          },
+          "status": "red",
+          "titleHeadroom": {
+            "teil": 4,
+            "topic": "Ernährung",
+            "moldCapacity": 4,
+            "usedMoldKeys": 4,
+            "moldUtilization": 1,
+            "freshSlots": 0,
+            "compatibleSlots": 2,
+            "uniqueTitles": 8,
+            "institutionNamespaceEstimate": 24,
+            "titleToNamespaceRatio": 0.333,
+            "persistedBatchCount": 7,
+            "generatable": false,
+            "status": "critical"
+          },
+          "cellLabel": "3 | 34% (n=5) | 34× · headroom critical"
+        },
+        "lesen-t5": {
+          "compatibleMolds": 3,
+          "availableMolds": 3,
+          "avgVocabPct": 50,
+          "vocabSamples": 1,
+          "chk29OrEquiv": 0,
+          "gateDetail": {
+            "chk29": 0,
+            "t3_mold": 0,
+            "chk27": 0,
+            "chk26": 0,
+            "totalFails": 18,
+            "calls": 21
+          },
+          "status": "unverified",
+          "titleHeadroom": {
+            "teil": 5,
+            "topic": "Ernährung",
+            "moldCapacity": 8,
+            "usedMoldKeys": 4,
+            "moldUtilization": 0.5,
+            "freshSlots": 3,
+            "compatibleSlots": 3,
+            "uniqueTitles": 8,
+            "institutionNamespaceEstimate": 350,
+            "titleToNamespaceRatio": 0.023,
+            "persistedBatchCount": 6,
+            "status": "warning"
+          },
+          "cellLabel": "3 | 50% (n=1, insuf.) | 0× · headroom warning"
+        }
+      }
+    },
+    {
+      "topic": "Kultur",
+      "cells": {
+        "lesen-t3": {
+          "compatibleMolds": 1,
+          "availableMolds": 0,
+          "avgVocabPct": null,
+          "vocabSamples": 0,
+          "chk29OrEquiv": 0,
+          "gateDetail": {
+            "chk29": 0,
+            "t3_mold": 0,
+            "chk27": 0,
+            "chk26": 0,
+            "totalFails": 0,
+            "calls": 0
+          },
+          "status": "external",
+          "titleHeadroom": null,
+          "cellLabel": "ext. · 1 moldes ref. · sin datos · 0×"
+        },
+        "lesen-t4": {
+          "compatibleMolds": 4,
+          "availableMolds": 4,
+          "avgVocabPct": 50,
+          "vocabSamples": 1,
+          "chk29OrEquiv": 0,
+          "gateDetail": {
+            "chk29": 0,
+            "t3_mold": 0,
+            "chk27": 0,
+            "chk26": 0,
+            "totalFails": 0,
+            "calls": 2
+          },
+          "status": "unverified",
+          "titleHeadroom": {
+            "teil": 4,
+            "topic": "Kultur",
+            "moldCapacity": 4,
+            "usedMoldKeys": 3,
+            "moldUtilization": 0.75,
+            "freshSlots": 1,
+            "compatibleSlots": 3,
+            "uniqueTitles": 3,
+            "institutionNamespaceEstimate": 24,
+            "titleToNamespaceRatio": 0.125,
+            "persistedBatchCount": 4,
+            "generatable": true,
+            "status": "critical"
+          },
+          "cellLabel": "4 | 50% (n=1, insuf.) | 0× · headroom critical"
+        },
+        "lesen-t5": {
+          "compatibleMolds": 4,
+          "availableMolds": 4,
+          "avgVocabPct": 34,
+          "vocabSamples": 7,
+          "chk29OrEquiv": 0,
+          "gateDetail": {
+            "chk29": 0,
+            "t3_mold": 0,
+            "chk27": 0,
+            "chk26": 0,
+            "totalFails": 42,
+            "calls": 49
+          },
+          "status": "red",
+          "titleHeadroom": {
+            "teil": 5,
+            "topic": "Kultur",
+            "moldCapacity": 8,
+            "usedMoldKeys": 6,
+            "moldUtilization": 0.75,
+            "freshSlots": 2,
+            "compatibleSlots": 4,
+            "uniqueTitles": 10,
+            "institutionNamespaceEstimate": 340,
+            "titleToNamespaceRatio": 0.029,
+            "persistedBatchCount": 9,
+            "status": "critical"
+          },
+          "cellLabel": "4 | 34% (n=7) | 0× · headroom critical"
+        }
+      }
+    },
+    {
+      "topic": "Sport",
+      "cells": {
+        "lesen-t3": {
+          "compatibleMolds": 1,
+          "availableMolds": 0,
+          "avgVocabPct": null,
+          "vocabSamples": 0,
+          "chk29OrEquiv": 0,
+          "gateDetail": {
+            "chk29": 0,
+            "t3_mold": 0,
+            "chk27": 0,
+            "chk26": 0,
+            "totalFails": 0,
+            "calls": 0
+          },
+          "status": "external",
+          "titleHeadroom": null,
+          "cellLabel": "ext. · 1 moldes ref. · sin datos · 0×"
+        },
+        "lesen-t4": {
+          "compatibleMolds": 4,
+          "availableMolds": 4,
+          "avgVocabPct": 41,
+          "vocabSamples": 9,
+          "chk29OrEquiv": 0,
+          "gateDetail": {
+            "chk29": 0,
+            "t3_mold": 0,
+            "chk27": 0,
+            "chk26": 0,
+            "totalFails": 14,
+            "calls": 17
+          },
+          "status": "yellow",
+          "titleHeadroom": {
+            "teil": 4,
+            "topic": "Sport",
+            "moldCapacity": 4,
+            "usedMoldKeys": 3,
+            "moldUtilization": 0.75,
+            "freshSlots": 1,
+            "compatibleSlots": 4,
+            "uniqueTitles": 8,
+            "institutionNamespaceEstimate": 24,
+            "titleToNamespaceRatio": 0.333,
+            "persistedBatchCount": 15,
+            "generatable": true,
+            "status": "critical"
+          },
+          "cellLabel": "4 | 41% (n=9) | 0× · headroom critical"
+        },
+        "lesen-t5": {
+          "compatibleMolds": 4,
+          "availableMolds": 4,
+          "avgVocabPct": 47,
+          "vocabSamples": 2,
+          "chk29OrEquiv": 0,
+          "gateDetail": {
+            "chk29": 0,
+            "t3_mold": 0,
+            "chk27": 0,
+            "chk26": 0,
+            "totalFails": 6,
+            "calls": 9
+          },
+          "status": "yellow",
+          "titleHeadroom": {
+            "teil": 5,
+            "topic": "Sport",
+            "moldCapacity": 8,
+            "usedMoldKeys": 3,
+            "moldUtilization": 0.375,
+            "freshSlots": 3,
+            "compatibleSlots": 4,
+            "uniqueTitles": 4,
+            "institutionNamespaceEstimate": 345,
+            "titleToNamespaceRatio": 0.012,
+            "persistedBatchCount": 5,
+            "status": "healthy"
+          },
+          "cellLabel": "4 | 47% (n=2) | 0× · headroom ok"
+        }
+      }
+    },
+    {
+      "topic": "Freizeit",
+      "cells": {
+        "lesen-t3": {
+          "compatibleMolds": 2,
+          "availableMolds": 0,
+          "avgVocabPct": null,
+          "vocabSamples": 0,
+          "chk29OrEquiv": 0,
+          "gateDetail": {
+            "chk29": 0,
+            "t3_mold": 0,
+            "chk27": 0,
+            "chk26": 0,
+            "totalFails": 0,
+            "calls": 0
+          },
+          "status": "external",
+          "titleHeadroom": null,
+          "cellLabel": "ext. · 2 moldes ref. · sin datos · 0×"
+        },
+        "lesen-t4": {
+          "compatibleMolds": 5,
+          "availableMolds": 5,
+          "avgVocabPct": null,
+          "vocabSamples": 0,
+          "chk29OrEquiv": 0,
+          "gateDetail": {
+            "chk29": 0,
+            "t3_mold": 0,
+            "chk27": 0,
+            "chk26": 0,
+            "totalFails": 1,
+            "calls": 2
+          },
+          "status": "unverified",
+          "titleHeadroom": {
+            "teil": 4,
+            "topic": "Freizeit",
+            "moldCapacity": 4,
+            "usedMoldKeys": 1,
+            "moldUtilization": 0.25,
+            "freshSlots": 3,
+            "compatibleSlots": 4,
+            "uniqueTitles": 9,
+            "institutionNamespaceEstimate": 24,
+            "titleToNamespaceRatio": 0.375,
+            "persistedBatchCount": 8,
+            "generatable": true,
+            "status": "warning"
+          },
+          "cellLabel": "5 | sin datos | 0× · headroom warning"
+        },
+        "lesen-t5": {
+          "compatibleMolds": 4,
+          "availableMolds": 4,
+          "avgVocabPct": null,
+          "vocabSamples": 0,
+          "chk29OrEquiv": 0,
+          "gateDetail": {
+            "chk29": 0,
+            "t3_mold": 0,
+            "chk27": 0,
+            "chk26": 0,
+            "totalFails": 0,
+            "calls": 0
+          },
+          "status": "unverified",
+          "titleHeadroom": {
+            "teil": 5,
+            "topic": "Freizeit",
+            "moldCapacity": 8,
+            "usedMoldKeys": 5,
+            "moldUtilization": 0.625,
+            "freshSlots": 2,
+            "compatibleSlots": 4,
+            "uniqueTitles": 9,
+            "institutionNamespaceEstimate": 340,
+            "titleToNamespaceRatio": 0.026,
+            "persistedBatchCount": 7,
+            "status": "warning"
+          },
+          "cellLabel": "4 | sin datos | 0× · headroom warning"
+        }
+      }
+    },
+    {
+      "topic": "Verkehr",
+      "cells": {
+        "lesen-t3": {
+          "compatibleMolds": 3,
+          "availableMolds": 0,
+          "avgVocabPct": null,
+          "vocabSamples": 0,
+          "chk29OrEquiv": 0,
+          "gateDetail": {
+            "chk29": 0,
+            "t3_mold": 0,
+            "chk27": 0,
+            "chk26": 0,
+            "totalFails": 0,
+            "calls": 0
+          },
+          "status": "external",
+          "titleHeadroom": null,
+          "cellLabel": "ext. · 3 moldes ref. · sin datos · 0×"
+        },
+        "lesen-t4": {
+          "compatibleMolds": 3,
+          "availableMolds": 3,
+          "avgVocabPct": 25,
+          "vocabSamples": 4,
+          "chk29OrEquiv": 0,
+          "gateDetail": {
+            "chk29": 0,
+            "t3_mold": 0,
+            "chk27": 0,
+            "chk26": 0,
+            "totalFails": 6,
+            "calls": 8
+          },
+          "status": "red",
+          "titleHeadroom": {
+            "teil": 4,
+            "topic": "Verkehr",
+            "moldCapacity": 4,
+            "usedMoldKeys": 2,
+            "moldUtilization": 0.5,
+            "freshSlots": 2,
+            "compatibleSlots": 4,
+            "uniqueTitles": 7,
+            "institutionNamespaceEstimate": 24,
+            "titleToNamespaceRatio": 0.292,
+            "persistedBatchCount": 8,
+            "generatable": true,
+            "status": "warning"
+          },
+          "cellLabel": "3 | 25% (n=4) | 0× · headroom warning"
+        },
+        "lesen-t5": {
+          "compatibleMolds": 2,
+          "availableMolds": 2,
+          "avgVocabPct": 18,
+          "vocabSamples": 11,
+          "chk29OrEquiv": 11,
+          "gateDetail": {
+            "chk29": 11,
+            "t3_mold": 0,
+            "chk27": 0,
+            "chk26": 0,
+            "totalFails": 76,
+            "calls": 80
+          },
+          "status": "red",
+          "titleHeadroom": {
+            "teil": 5,
+            "topic": "Verkehr",
+            "moldCapacity": 4,
+            "usedMoldKeys": 6,
+            "moldUtilization": 1.5,
+            "freshSlots": 1,
+            "compatibleSlots": 2,
+            "uniqueTitles": 15,
+            "institutionNamespaceEstimate": 165,
+            "titleToNamespaceRatio": 0.091,
+            "persistedBatchCount": 13,
+            "status": "critical"
+          },
+          "cellLabel": "2 | 18% (n=11) | 11× · headroom critical"
+        }
+      }
+    },
+    {
+      "topic": "Stadtleben",
+      "cells": {
+        "lesen-t3": {
+          "compatibleMolds": 1,
+          "availableMolds": 0,
+          "avgVocabPct": null,
+          "vocabSamples": 0,
+          "chk29OrEquiv": 0,
+          "gateDetail": {
+            "chk29": 0,
+            "t3_mold": 0,
+            "chk27": 0,
+            "chk26": 0,
+            "totalFails": 0,
+            "calls": 0
+          },
+          "status": "external",
+          "titleHeadroom": null,
+          "cellLabel": "ext. · 1 moldes ref. · sin datos · 0×"
+        },
+        "lesen-t4": {
+          "compatibleMolds": 7,
+          "availableMolds": 7,
+          "avgVocabPct": null,
+          "vocabSamples": 0,
+          "chk29OrEquiv": 0,
+          "gateDetail": {
+            "chk29": 0,
+            "t3_mold": 0,
+            "chk27": 0,
+            "chk26": 0,
+            "totalFails": 0,
+            "calls": 0
+          },
+          "status": "unverified",
+          "titleHeadroom": {
+            "teil": 4,
+            "topic": "Stadtleben",
+            "moldCapacity": 4,
+            "usedMoldKeys": 0,
+            "moldUtilization": 0,
+            "freshSlots": 4,
+            "compatibleSlots": 4,
+            "uniqueTitles": 4,
+            "institutionNamespaceEstimate": 24,
+            "titleToNamespaceRatio": 0.167,
+            "persistedBatchCount": 3,
+            "generatable": true,
+            "status": "healthy"
+          },
+          "cellLabel": "7 | sin datos | 0× · headroom ok"
+        },
+        "lesen-t5": {
+          "compatibleMolds": 4,
+          "availableMolds": 4,
+          "avgVocabPct": 11,
+          "vocabSamples": 3,
+          "chk29OrEquiv": 0,
+          "gateDetail": {
+            "chk29": 0,
+            "t3_mold": 0,
+            "chk27": 0,
+            "chk26": 0,
+            "totalFails": 23,
+            "calls": 26
+          },
+          "status": "red",
+          "titleHeadroom": {
+            "teil": 5,
+            "topic": "Stadtleben",
+            "moldCapacity": 8,
+            "usedMoldKeys": 4,
+            "moldUtilization": 0.5,
+            "freshSlots": 2,
+            "compatibleSlots": 4,
+            "uniqueTitles": 5,
+            "institutionNamespaceEstimate": 335,
+            "titleToNamespaceRatio": 0.015,
+            "persistedBatchCount": 4,
+            "status": "warning"
+          },
+          "cellLabel": "4 | 11% (n=3) | 0× · headroom warning"
+        }
+      }
+    }
+  ],
+  "redCells": [
+    {
+      "topic": "Technik",
+      "format": "lesen-t5",
+      "compatibleMolds": 7,
+      "availableMolds": 7,
+      "avgVocabPct": 34,
+      "vocabSamples": 10,
+      "chk29OrEquiv": 22,
+      "gateDetail": {
+        "chk29": 22,
+        "t3_mold": 0,
+        "chk27": 0,
+        "chk26": 0,
+        "totalFails": 85,
+        "calls": 91
+      },
+      "status": "red",
+      "titleHeadroom": {
+        "teil": 5,
+        "topic": "Technik",
+        "moldCapacity": 9,
+        "usedMoldKeys": 11,
+        "moldUtilization": 1.222,
+        "freshSlots": 1,
+        "compatibleSlots": 7,
+        "uniqueTitles": 17,
+        "institutionNamespaceEstimate": 365,
+        "titleToNamespaceRatio": 0.047,
+        "persistedBatchCount": 14,
+        "status": "critical"
+      },
+      "cellLabel": "7 | 34% (n=10) | 22× · headroom critical"
+    },
+    {
+      "topic": "Bildung",
+      "format": "lesen-t5",
+      "compatibleMolds": 5,
+      "availableMolds": 5,
+      "avgVocabPct": 37,
+      "vocabSamples": 3,
+      "chk29OrEquiv": 6,
+      "gateDetail": {
+        "chk29": 6,
+        "t3_mold": 0,
+        "chk27": 0,
+        "chk26": 0,
+        "totalFails": 49,
+        "calls": 53
+      },
+      "status": "red",
+      "titleHeadroom": {
+        "teil": 5,
+        "topic": "Bildung",
+        "moldCapacity": 7,
+        "usedMoldKeys": 6,
+        "moldUtilization": 0.857,
+        "freshSlots": 3,
+        "compatibleSlots": 5,
+        "uniqueTitles": 9,
+        "institutionNamespaceEstimate": 285,
+        "titleToNamespaceRatio": 0.032,
+        "persistedBatchCount": 9,
+        "status": "critical"
+      },
+      "cellLabel": "5 | 37% (n=3) | 6× · headroom critical"
+    },
+    {
+      "topic": "Ernährung",
+      "format": "lesen-t4",
+      "compatibleMolds": 3,
+      "availableMolds": 3,
+      "avgVocabPct": 34,
+      "vocabSamples": 5,
+      "chk29OrEquiv": 34,
+      "gateDetail": {
+        "chk29": 34,
+        "t3_mold": 0,
+        "chk27": 0,
+        "chk26": 0,
+        "totalFails": 63,
+        "calls": 66
+      },
+      "status": "red",
+      "titleHeadroom": {
+        "teil": 4,
+        "topic": "Ernährung",
+        "moldCapacity": 4,
+        "usedMoldKeys": 4,
+        "moldUtilization": 1,
+        "freshSlots": 0,
+        "compatibleSlots": 2,
+        "uniqueTitles": 8,
+        "institutionNamespaceEstimate": 24,
+        "titleToNamespaceRatio": 0.333,
+        "persistedBatchCount": 7,
+        "generatable": false,
+        "status": "critical"
+      },
+      "cellLabel": "3 | 34% (n=5) | 34× · headroom critical"
+    },
+    {
+      "topic": "Kultur",
+      "format": "lesen-t5",
+      "compatibleMolds": 4,
+      "availableMolds": 4,
+      "avgVocabPct": 34,
+      "vocabSamples": 7,
+      "chk29OrEquiv": 0,
+      "gateDetail": {
+        "chk29": 0,
+        "t3_mold": 0,
+        "chk27": 0,
+        "chk26": 0,
+        "totalFails": 42,
+        "calls": 49
+      },
+      "status": "red",
+      "titleHeadroom": {
+        "teil": 5,
+        "topic": "Kultur",
+        "moldCapacity": 8,
+        "usedMoldKeys": 6,
+        "moldUtilization": 0.75,
+        "freshSlots": 2,
+        "compatibleSlots": 4,
+        "uniqueTitles": 10,
+        "institutionNamespaceEstimate": 340,
+        "titleToNamespaceRatio": 0.029,
+        "persistedBatchCount": 9,
+        "status": "critical"
+      },
+      "cellLabel": "4 | 34% (n=7) | 0× · headroom critical"
+    },
+    {
+      "topic": "Verkehr",
+      "format": "lesen-t4",
+      "compatibleMolds": 3,
+      "availableMolds": 3,
+      "avgVocabPct": 25,
+      "vocabSamples": 4,
+      "chk29OrEquiv": 0,
+      "gateDetail": {
+        "chk29": 0,
+        "t3_mold": 0,
+        "chk27": 0,
+        "chk26": 0,
+        "totalFails": 6,
+        "calls": 8
+      },
+      "status": "red",
+      "titleHeadroom": {
+        "teil": 4,
+        "topic": "Verkehr",
+        "moldCapacity": 4,
+        "usedMoldKeys": 2,
+        "moldUtilization": 0.5,
+        "freshSlots": 2,
+        "compatibleSlots": 4,
+        "uniqueTitles": 7,
+        "institutionNamespaceEstimate": 24,
+        "titleToNamespaceRatio": 0.292,
+        "persistedBatchCount": 8,
+        "generatable": true,
+        "status": "warning"
+      },
+      "cellLabel": "3 | 25% (n=4) | 0× · headroom warning"
+    },
+    {
+      "topic": "Verkehr",
+      "format": "lesen-t5",
+      "compatibleMolds": 2,
+      "availableMolds": 2,
+      "avgVocabPct": 18,
+      "vocabSamples": 11,
+      "chk29OrEquiv": 11,
+      "gateDetail": {
+        "chk29": 11,
+        "t3_mold": 0,
+        "chk27": 0,
+        "chk26": 0,
+        "totalFails": 76,
+        "calls": 80
+      },
+      "status": "red",
+      "titleHeadroom": {
+        "teil": 5,
+        "topic": "Verkehr",
+        "moldCapacity": 4,
+        "usedMoldKeys": 6,
+        "moldUtilization": 1.5,
+        "freshSlots": 1,
+        "compatibleSlots": 2,
+        "uniqueTitles": 15,
+        "institutionNamespaceEstimate": 165,
+        "titleToNamespaceRatio": 0.091,
+        "persistedBatchCount": 13,
+        "status": "critical"
+      },
+      "cellLabel": "2 | 18% (n=11) | 11× · headroom critical"
+    },
+    {
+      "topic": "Stadtleben",
+      "format": "lesen-t5",
+      "compatibleMolds": 4,
+      "availableMolds": 4,
+      "avgVocabPct": 11,
+      "vocabSamples": 3,
+      "chk29OrEquiv": 0,
+      "gateDetail": {
+        "chk29": 0,
+        "t3_mold": 0,
+        "chk27": 0,
+        "chk26": 0,
+        "totalFails": 23,
+        "calls": 26
+      },
+      "status": "red",
+      "titleHeadroom": {
+        "teil": 5,
+        "topic": "Stadtleben",
+        "moldCapacity": 8,
+        "usedMoldKeys": 4,
+        "moldUtilization": 0.5,
+        "freshSlots": 2,
+        "compatibleSlots": 4,
+        "uniqueTitles": 5,
+        "institutionNamespaceEstimate": 335,
+        "titleToNamespaceRatio": 0.015,
+        "persistedBatchCount": 4,
+        "status": "warning"
+      },
+      "cellLabel": "4 | 11% (n=3) | 0× · headroom warning"
+    }
+  ],
+  "yellowCells": [
+    {
+      "topic": "Reisen",
+      "format": "lesen-t4",
+      "compatibleMolds": 3,
+      "availableMolds": 3,
+      "avgVocabPct": 49,
+      "vocabSamples": 5,
+      "chk29OrEquiv": 0,
+      "gateDetail": {
+        "chk29": 0,
+        "t3_mold": 0,
+        "chk27": 0,
+        "chk26": 0,
+        "totalFails": 8,
+        "calls": 11
+      },
+      "status": "yellow",
+      "titleHeadroom": {
+        "teil": 4,
+        "topic": "Reisen",
+        "moldCapacity": 4,
+        "usedMoldKeys": 3,
+        "moldUtilization": 0.75,
+        "freshSlots": 1,
+        "compatibleSlots": 3,
+        "uniqueTitles": 9,
+        "institutionNamespaceEstimate": 24,
+        "titleToNamespaceRatio": 0.375,
+        "persistedBatchCount": 8,
+        "generatable": true,
+        "status": "critical"
+      },
+      "cellLabel": "3 | 49% (n=5) | 0× · headroom critical"
+    },
+    {
+      "topic": "Reisen",
+      "format": "lesen-t5",
+      "compatibleMolds": 3,
+      "availableMolds": 3,
+      "avgVocabPct": 44,
+      "vocabSamples": 3,
+      "chk29OrEquiv": 1,
+      "gateDetail": {
+        "chk29": 1,
+        "t3_mold": 0,
+        "chk27": 0,
+        "chk26": 0,
+        "totalFails": 16,
+        "calls": 18
+      },
+      "status": "yellow",
+      "titleHeadroom": {
+        "teil": 5,
+        "topic": "Reisen",
+        "moldCapacity": 7,
+        "usedMoldKeys": 2,
+        "moldUtilization": 0.286,
+        "freshSlots": 2,
+        "compatibleSlots": 3,
+        "uniqueTitles": 5,
+        "institutionNamespaceEstimate": 300,
+        "titleToNamespaceRatio": 0.017,
+        "persistedBatchCount": 5,
+        "status": "healthy"
+      },
+      "cellLabel": "3 | 44% (n=3) | 1× · headroom ok"
+    },
+    {
+      "topic": "Medien",
+      "format": "lesen-t4",
+      "compatibleMolds": 10,
+      "availableMolds": 10,
+      "avgVocabPct": 42,
+      "vocabSamples": 7,
+      "chk29OrEquiv": 0,
+      "gateDetail": {
+        "chk29": 0,
+        "t3_mold": 0,
+        "chk27": 0,
+        "chk26": 0,
+        "totalFails": 9,
+        "calls": 13
+      },
+      "status": "yellow",
+      "titleHeadroom": {
+        "teil": 4,
+        "topic": "Medien",
+        "moldCapacity": 4,
+        "usedMoldKeys": 4,
+        "moldUtilization": 1,
+        "freshSlots": 0,
+        "compatibleSlots": 4,
+        "uniqueTitles": 9,
+        "institutionNamespaceEstimate": 24,
+        "titleToNamespaceRatio": 0.375,
+        "persistedBatchCount": 10,
+        "generatable": false,
+        "status": "critical"
+      },
+      "cellLabel": "10 | 42% (n=7) | 0× · headroom critical"
+    },
+    {
+      "topic": "Wohnen",
+      "format": "lesen-t4",
+      "compatibleMolds": 6,
+      "availableMolds": 6,
+      "avgVocabPct": 45,
+      "vocabSamples": 4,
+      "chk29OrEquiv": 0,
+      "gateDetail": {
+        "chk29": 0,
+        "t3_mold": 0,
+        "chk27": 0,
+        "chk26": 0,
+        "totalFails": 9,
+        "calls": 11
+      },
+      "status": "yellow",
+      "titleHeadroom": {
+        "teil": 4,
+        "topic": "Wohnen",
+        "moldCapacity": 4,
+        "usedMoldKeys": 2,
+        "moldUtilization": 0.5,
+        "freshSlots": 2,
+        "compatibleSlots": 4,
+        "uniqueTitles": 5,
+        "institutionNamespaceEstimate": 24,
+        "titleToNamespaceRatio": 0.208,
+        "persistedBatchCount": 5,
+        "generatable": true,
+        "status": "warning"
+      },
+      "cellLabel": "6 | 45% (n=4) | 0× · headroom warning"
+    },
+    {
+      "topic": "Konsum",
+      "format": "lesen-t4",
+      "compatibleMolds": 1,
+      "availableMolds": 1,
+      "avgVocabPct": 42,
+      "vocabSamples": 2,
+      "chk29OrEquiv": 0,
+      "gateDetail": {
+        "chk29": 0,
+        "t3_mold": 0,
+        "chk27": 0,
+        "chk26": 0,
+        "totalFails": 3,
+        "calls": 5
+      },
+      "status": "yellow",
+      "titleHeadroom": {
+        "teil": 4,
+        "topic": "Konsum",
+        "moldCapacity": 4,
+        "usedMoldKeys": 2,
+        "moldUtilization": 0.5,
+        "freshSlots": 2,
+        "compatibleSlots": 4,
+        "uniqueTitles": 5,
+        "institutionNamespaceEstimate": 24,
+        "titleToNamespaceRatio": 0.208,
+        "persistedBatchCount": 4,
+        "generatable": true,
+        "status": "warning"
+      },
+      "cellLabel": "1 | 42% (n=2) | 0× · headroom warning"
+    },
+    {
+      "topic": "Konsum",
+      "format": "lesen-t5",
+      "compatibleMolds": 5,
+      "availableMolds": 5,
+      "avgVocabPct": 45,
+      "vocabSamples": 21,
+      "chk29OrEquiv": 12,
+      "gateDetail": {
+        "chk29": 12,
+        "t3_mold": 0,
+        "chk27": 0,
+        "chk26": 0,
+        "totalFails": 121,
+        "calls": 124
+      },
+      "status": "yellow",
+      "titleHeadroom": {
+        "teil": 5,
+        "topic": "Konsum",
+        "moldCapacity": 11,
+        "usedMoldKeys": 8,
+        "moldUtilization": 0.727,
+        "freshSlots": 3,
+        "compatibleSlots": 5,
+        "uniqueTitles": 17,
+        "institutionNamespaceEstimate": 475,
+        "titleToNamespaceRatio": 0.036,
+        "persistedBatchCount": 21,
+        "status": "warning"
+      },
+      "cellLabel": "5 | 45% (n=21) | 12× · headroom warning"
+    },
+    {
+      "topic": "Familie",
+      "format": "lesen-t5",
+      "compatibleMolds": 4,
+      "availableMolds": 4,
+      "avgVocabPct": 50,
+      "vocabSamples": 6,
+      "chk29OrEquiv": 0,
+      "gateDetail": {
+        "chk29": 0,
+        "t3_mold": 0,
+        "chk27": 0,
+        "chk26": 0,
+        "totalFails": 43,
+        "calls": 53
+      },
+      "status": "yellow",
+      "titleHeadroom": {
+        "teil": 5,
+        "topic": "Familie",
+        "moldCapacity": 8,
+        "usedMoldKeys": 6,
+        "moldUtilization": 0.75,
+        "freshSlots": 2,
+        "compatibleSlots": 4,
+        "uniqueTitles": 9,
+        "institutionNamespaceEstimate": 335,
+        "titleToNamespaceRatio": 0.027,
+        "persistedBatchCount": 9,
+        "status": "critical"
+      },
+      "cellLabel": "4 | 50% (n=6) | 0× · headroom critical"
+    },
+    {
+      "topic": "Umwelt",
+      "format": "lesen-t4",
+      "compatibleMolds": 4,
+      "availableMolds": 4,
+      "avgVocabPct": 69,
+      "vocabSamples": 14,
+      "chk29OrEquiv": 14,
+      "gateDetail": {
+        "chk29": 14,
+        "t3_mold": 0,
+        "chk27": 0,
+        "chk26": 0,
+        "totalFails": 26,
+        "calls": 27
+      },
+      "status": "yellow",
+      "titleHeadroom": {
+        "teil": 4,
+        "topic": "Umwelt",
+        "moldCapacity": 4,
+        "usedMoldKeys": 1,
+        "moldUtilization": 0.25,
+        "freshSlots": 3,
+        "compatibleSlots": 4,
+        "uniqueTitles": 15,
+        "institutionNamespaceEstimate": 24,
+        "titleToNamespaceRatio": 0.625,
+        "persistedBatchCount": 18,
+        "generatable": true,
+        "status": "critical"
+      },
+      "cellLabel": "4 | 69% (n=14) | 14× · headroom critical"
+    },
+    {
+      "topic": "Umwelt",
+      "format": "lesen-t5",
+      "compatibleMolds": 3,
+      "availableMolds": 3,
+      "avgVocabPct": 67,
+      "vocabSamples": 22,
+      "chk29OrEquiv": 8,
+      "gateDetail": {
+        "chk29": 8,
+        "t3_mold": 0,
+        "chk27": 0,
+        "chk26": 0,
+        "totalFails": 38,
+        "calls": 41
+      },
+      "status": "yellow",
+      "titleHeadroom": {
+        "teil": 5,
+        "topic": "Umwelt",
+        "moldCapacity": 7,
+        "usedMoldKeys": 6,
+        "moldUtilization": 0.857,
+        "freshSlots": 2,
+        "compatibleSlots": 3,
+        "uniqueTitles": 22,
+        "institutionNamespaceEstimate": 300,
+        "titleToNamespaceRatio": 0.073,
+        "persistedBatchCount": 24,
+        "status": "critical"
+      },
+      "cellLabel": "3 | 67% (n=22) | 8× · headroom critical"
+    },
+    {
+      "topic": "Sport",
+      "format": "lesen-t4",
+      "compatibleMolds": 4,
+      "availableMolds": 4,
+      "avgVocabPct": 41,
+      "vocabSamples": 9,
+      "chk29OrEquiv": 0,
+      "gateDetail": {
+        "chk29": 0,
+        "t3_mold": 0,
+        "chk27": 0,
+        "chk26": 0,
+        "totalFails": 14,
+        "calls": 17
+      },
+      "status": "yellow",
+      "titleHeadroom": {
+        "teil": 4,
+        "topic": "Sport",
+        "moldCapacity": 4,
+        "usedMoldKeys": 3,
+        "moldUtilization": 0.75,
+        "freshSlots": 1,
+        "compatibleSlots": 4,
+        "uniqueTitles": 8,
+        "institutionNamespaceEstimate": 24,
+        "titleToNamespaceRatio": 0.333,
+        "persistedBatchCount": 15,
+        "generatable": true,
+        "status": "critical"
+      },
+      "cellLabel": "4 | 41% (n=9) | 0× · headroom critical"
+    },
+    {
+      "topic": "Sport",
+      "format": "lesen-t5",
+      "compatibleMolds": 4,
+      "availableMolds": 4,
+      "avgVocabPct": 47,
+      "vocabSamples": 2,
+      "chk29OrEquiv": 0,
+      "gateDetail": {
+        "chk29": 0,
+        "t3_mold": 0,
+        "chk27": 0,
+        "chk26": 0,
+        "totalFails": 6,
+        "calls": 9
+      },
+      "status": "yellow",
+      "titleHeadroom": {
+        "teil": 5,
+        "topic": "Sport",
+        "moldCapacity": 8,
+        "usedMoldKeys": 3,
+        "moldUtilization": 0.375,
+        "freshSlots": 3,
+        "compatibleSlots": 4,
+        "uniqueTitles": 4,
+        "institutionNamespaceEstimate": 345,
+        "titleToNamespaceRatio": 0.012,
+        "persistedBatchCount": 5,
+        "status": "healthy"
+      },
+      "cellLabel": "4 | 47% (n=2) | 0× · headroom ok"
+    }
+  ],
+  "unverifiedCells": [
+    {
+      "topic": "Gesundheit",
+      "format": "lesen-t4",
+      "compatibleMolds": 4,
+      "availableMolds": 4,
+      "avgVocabPct": 67,
+      "vocabSamples": 1,
+      "chk29OrEquiv": 4,
+      "gateDetail": {
+        "chk29": 0,
+        "t3_mold": 0,
+        "chk27": 4,
+        "chk26": 0,
+        "totalFails": 6,
+        "calls": 7
+      },
+      "status": "unverified",
+      "titleHeadroom": {
+        "teil": 4,
+        "topic": "Gesundheit",
+        "moldCapacity": 4,
+        "usedMoldKeys": 2,
+        "moldUtilization": 0.5,
+        "freshSlots": 2,
+        "compatibleSlots": 3,
+        "uniqueTitles": 3,
+        "institutionNamespaceEstimate": 24,
+        "titleToNamespaceRatio": 0.125,
+        "persistedBatchCount": 3,
+        "generatable": true,
+        "status": "warning"
+      },
+      "cellLabel": "4 | 67% (n=1, insuf.) | 4× · headroom warning"
+    },
+    {
+      "topic": "Gesundheit",
+      "format": "lesen-t5",
+      "compatibleMolds": 4,
+      "availableMolds": 4,
+      "avgVocabPct": null,
+      "vocabSamples": 0,
+      "chk29OrEquiv": 0,
+      "gateDetail": {
+        "chk29": 0,
+        "t3_mold": 0,
+        "chk27": 0,
+        "chk26": 0,
+        "totalFails": 0,
+        "calls": 0
+      },
+      "status": "unverified",
+      "titleHeadroom": {
+        "teil": 5,
+        "topic": "Gesundheit",
+        "moldCapacity": 7,
+        "usedMoldKeys": 3,
+        "moldUtilization": 0.429,
+        "freshSlots": 3,
+        "compatibleSlots": 4,
+        "uniqueTitles": 5,
+        "institutionNamespaceEstimate": 300,
+        "titleToNamespaceRatio": 0.017,
+        "persistedBatchCount": 5,
+        "status": "healthy"
+      },
+      "cellLabel": "4 | sin datos | 0× · headroom ok"
+    },
+    {
+      "topic": "Arbeit",
+      "format": "lesen-t4",
+      "compatibleMolds": 3,
+      "availableMolds": 3,
+      "avgVocabPct": null,
+      "vocabSamples": 0,
+      "chk29OrEquiv": 0,
+      "gateDetail": {
+        "chk29": 0,
+        "t3_mold": 0,
+        "chk27": 0,
+        "chk26": 0,
+        "totalFails": 0,
+        "calls": 1
+      },
+      "status": "unverified",
+      "titleHeadroom": {
+        "teil": 4,
+        "topic": "Arbeit",
+        "moldCapacity": 4,
+        "usedMoldKeys": 1,
+        "moldUtilization": 0.25,
+        "freshSlots": 3,
+        "compatibleSlots": 4,
+        "uniqueTitles": 1,
+        "institutionNamespaceEstimate": 24,
+        "titleToNamespaceRatio": 0.042,
+        "persistedBatchCount": 2,
+        "generatable": true,
+        "status": "healthy"
+      },
+      "cellLabel": "3 | sin datos | 0× · headroom ok"
+    },
+    {
+      "topic": "Arbeit",
+      "format": "lesen-t5",
+      "compatibleMolds": 5,
+      "availableMolds": 5,
+      "avgVocabPct": 33,
+      "vocabSamples": 1,
+      "chk29OrEquiv": 0,
+      "gateDetail": {
+        "chk29": 0,
+        "t3_mold": 0,
+        "chk27": 0,
+        "chk26": 0,
+        "totalFails": 4,
+        "calls": 7
+      },
+      "status": "unverified",
+      "titleHeadroom": {
+        "teil": 5,
+        "topic": "Arbeit",
+        "moldCapacity": 6,
+        "usedMoldKeys": 5,
+        "moldUtilization": 0.833,
+        "freshSlots": 3,
+        "compatibleSlots": 5,
+        "uniqueTitles": 7,
+        "institutionNamespaceEstimate": 230,
+        "titleToNamespaceRatio": 0.03,
+        "persistedBatchCount": 7,
+        "status": "critical"
+      },
+      "cellLabel": "5 | 33% (n=1, insuf.) | 0× · headroom critical"
+    },
+    {
+      "topic": "Technik",
+      "format": "lesen-t4",
+      "compatibleMolds": 9,
+      "availableMolds": 9,
+      "avgVocabPct": 40,
+      "vocabSamples": 1,
+      "chk29OrEquiv": 0,
+      "gateDetail": {
+        "chk29": 0,
+        "t3_mold": 0,
+        "chk27": 0,
+        "chk26": 0,
+        "totalFails": 1,
+        "calls": 2
+      },
+      "status": "unverified",
+      "titleHeadroom": {
+        "teil": 4,
+        "topic": "Technik",
+        "moldCapacity": 4,
+        "usedMoldKeys": 3,
+        "moldUtilization": 0.75,
+        "freshSlots": 1,
+        "compatibleSlots": 2,
+        "uniqueTitles": 7,
+        "institutionNamespaceEstimate": 24,
+        "titleToNamespaceRatio": 0.292,
+        "persistedBatchCount": 5,
+        "generatable": true,
+        "status": "critical"
+      },
+      "cellLabel": "9 | 40% (n=1, insuf.) | 0× · headroom critical"
+    },
+    {
+      "topic": "Medien",
+      "format": "lesen-t5",
+      "compatibleMolds": 6,
+      "availableMolds": 6,
+      "avgVocabPct": null,
+      "vocabSamples": 0,
+      "chk29OrEquiv": 0,
+      "gateDetail": {
+        "chk29": 0,
+        "t3_mold": 0,
+        "chk27": 0,
+        "chk26": 0,
+        "totalFails": 0,
+        "calls": 0
+      },
+      "status": "unverified",
+      "titleHeadroom": {
+        "teil": 5,
+        "topic": "Medien",
+        "moldCapacity": 8,
+        "usedMoldKeys": 3,
+        "moldUtilization": 0.375,
+        "freshSlots": 4,
+        "compatibleSlots": 6,
+        "uniqueTitles": 5,
+        "institutionNamespaceEstimate": 325,
+        "titleToNamespaceRatio": 0.015,
+        "persistedBatchCount": 3,
+        "status": "healthy"
+      },
+      "cellLabel": "6 | sin datos | 0× · headroom ok"
+    },
+    {
+      "topic": "Wohnen",
+      "format": "lesen-t5",
+      "compatibleMolds": 4,
+      "availableMolds": 4,
+      "avgVocabPct": null,
+      "vocabSamples": 0,
+      "chk29OrEquiv": 0,
+      "gateDetail": {
+        "chk29": 0,
+        "t3_mold": 0,
+        "chk27": 0,
+        "chk26": 0,
+        "totalFails": 0,
+        "calls": 3
+      },
+      "status": "unverified",
+      "titleHeadroom": {
+        "teil": 5,
+        "topic": "Wohnen",
+        "moldCapacity": 8,
+        "usedMoldKeys": 4,
+        "moldUtilization": 0.5,
+        "freshSlots": 3,
+        "compatibleSlots": 4,
+        "uniqueTitles": 6,
+        "institutionNamespaceEstimate": 335,
+        "titleToNamespaceRatio": 0.018,
+        "persistedBatchCount": 4,
+        "status": "warning"
+      },
+      "cellLabel": "4 | sin datos | 0× · headroom warning"
+    },
+    {
+      "topic": "Bildung",
+      "format": "lesen-t4",
+      "compatibleMolds": 9,
+      "availableMolds": 9,
+      "avgVocabPct": null,
+      "vocabSamples": 0,
+      "chk29OrEquiv": 0,
+      "gateDetail": {
+        "chk29": 0,
+        "t3_mold": 0,
+        "chk27": 0,
+        "chk26": 0,
+        "totalFails": 0,
+        "calls": 0
+      },
+      "status": "unverified",
+      "titleHeadroom": {
+        "teil": 4,
+        "topic": "Bildung",
+        "moldCapacity": 4,
+        "usedMoldKeys": 0,
+        "moldUtilization": 0,
+        "freshSlots": 4,
+        "compatibleSlots": 4,
+        "uniqueTitles": 7,
+        "institutionNamespaceEstimate": 24,
+        "titleToNamespaceRatio": 0.292,
+        "persistedBatchCount": 6,
+        "generatable": true,
+        "status": "healthy"
+      },
+      "cellLabel": "9 | sin datos | 0× · headroom ok"
+    },
+    {
+      "topic": "Familie",
+      "format": "lesen-t4",
+      "compatibleMolds": 8,
+      "availableMolds": 8,
+      "avgVocabPct": 33,
+      "vocabSamples": 1,
+      "chk29OrEquiv": 8,
+      "gateDetail": {
+        "chk29": 0,
+        "t3_mold": 0,
+        "chk27": 8,
+        "chk26": 0,
+        "totalFails": 10,
+        "calls": 11
+      },
+      "status": "unverified",
+      "titleHeadroom": {
+        "teil": 4,
+        "topic": "Familie",
+        "moldCapacity": 4,
+        "usedMoldKeys": 1,
+        "moldUtilization": 0.25,
+        "freshSlots": 3,
+        "compatibleSlots": 4,
+        "uniqueTitles": 3,
+        "institutionNamespaceEstimate": 24,
+        "titleToNamespaceRatio": 0.125,
+        "persistedBatchCount": 1,
+        "generatable": true,
+        "status": "healthy"
+      },
+      "cellLabel": "8 | 33% (n=1, insuf.) | 8× · headroom ok"
+    },
+    {
+      "topic": "Ernährung",
+      "format": "lesen-t5",
+      "compatibleMolds": 3,
+      "availableMolds": 3,
+      "avgVocabPct": 50,
+      "vocabSamples": 1,
+      "chk29OrEquiv": 0,
+      "gateDetail": {
+        "chk29": 0,
+        "t3_mold": 0,
+        "chk27": 0,
+        "chk26": 0,
+        "totalFails": 18,
+        "calls": 21
+      },
+      "status": "unverified",
+      "titleHeadroom": {
+        "teil": 5,
+        "topic": "Ernährung",
+        "moldCapacity": 8,
+        "usedMoldKeys": 4,
+        "moldUtilization": 0.5,
+        "freshSlots": 3,
+        "compatibleSlots": 3,
+        "uniqueTitles": 8,
+        "institutionNamespaceEstimate": 350,
+        "titleToNamespaceRatio": 0.023,
+        "persistedBatchCount": 6,
+        "status": "warning"
+      },
+      "cellLabel": "3 | 50% (n=1, insuf.) | 0× · headroom warning"
+    },
+    {
+      "topic": "Kultur",
+      "format": "lesen-t4",
+      "compatibleMolds": 4,
+      "availableMolds": 4,
+      "avgVocabPct": 50,
+      "vocabSamples": 1,
+      "chk29OrEquiv": 0,
+      "gateDetail": {
+        "chk29": 0,
+        "t3_mold": 0,
+        "chk27": 0,
+        "chk26": 0,
+        "totalFails": 0,
+        "calls": 2
+      },
+      "status": "unverified",
+      "titleHeadroom": {
+        "teil": 4,
+        "topic": "Kultur",
+        "moldCapacity": 4,
+        "usedMoldKeys": 3,
+        "moldUtilization": 0.75,
+        "freshSlots": 1,
+        "compatibleSlots": 3,
+        "uniqueTitles": 3,
+        "institutionNamespaceEstimate": 24,
+        "titleToNamespaceRatio": 0.125,
+        "persistedBatchCount": 4,
+        "generatable": true,
+        "status": "critical"
+      },
+      "cellLabel": "4 | 50% (n=1, insuf.) | 0× · headroom critical"
+    },
+    {
+      "topic": "Freizeit",
+      "format": "lesen-t4",
+      "compatibleMolds": 5,
+      "availableMolds": 5,
+      "avgVocabPct": null,
+      "vocabSamples": 0,
+      "chk29OrEquiv": 0,
+      "gateDetail": {
+        "chk29": 0,
+        "t3_mold": 0,
+        "chk27": 0,
+        "chk26": 0,
+        "totalFails": 1,
+        "calls": 2
+      },
+      "status": "unverified",
+      "titleHeadroom": {
+        "teil": 4,
+        "topic": "Freizeit",
+        "moldCapacity": 4,
+        "usedMoldKeys": 1,
+        "moldUtilization": 0.25,
+        "freshSlots": 3,
+        "compatibleSlots": 4,
+        "uniqueTitles": 9,
+        "institutionNamespaceEstimate": 24,
+        "titleToNamespaceRatio": 0.375,
+        "persistedBatchCount": 8,
+        "generatable": true,
+        "status": "warning"
+      },
+      "cellLabel": "5 | sin datos | 0× · headroom warning"
+    },
+    {
+      "topic": "Freizeit",
+      "format": "lesen-t5",
+      "compatibleMolds": 4,
+      "availableMolds": 4,
+      "avgVocabPct": null,
+      "vocabSamples": 0,
+      "chk29OrEquiv": 0,
+      "gateDetail": {
+        "chk29": 0,
+        "t3_mold": 0,
+        "chk27": 0,
+        "chk26": 0,
+        "totalFails": 0,
+        "calls": 0
+      },
+      "status": "unverified",
+      "titleHeadroom": {
+        "teil": 5,
+        "topic": "Freizeit",
+        "moldCapacity": 8,
+        "usedMoldKeys": 5,
+        "moldUtilization": 0.625,
+        "freshSlots": 2,
+        "compatibleSlots": 4,
+        "uniqueTitles": 9,
+        "institutionNamespaceEstimate": 340,
+        "titleToNamespaceRatio": 0.026,
+        "persistedBatchCount": 7,
+        "status": "warning"
+      },
+      "cellLabel": "4 | sin datos | 0× · headroom warning"
+    },
+    {
+      "topic": "Stadtleben",
+      "format": "lesen-t4",
+      "compatibleMolds": 7,
+      "availableMolds": 7,
+      "avgVocabPct": null,
+      "vocabSamples": 0,
+      "chk29OrEquiv": 0,
+      "gateDetail": {
+        "chk29": 0,
+        "t3_mold": 0,
+        "chk27": 0,
+        "chk26": 0,
+        "totalFails": 0,
+        "calls": 0
+      },
+      "status": "unverified",
+      "titleHeadroom": {
+        "teil": 4,
+        "topic": "Stadtleben",
+        "moldCapacity": 4,
+        "usedMoldKeys": 0,
+        "moldUtilization": 0,
+        "freshSlots": 4,
+        "compatibleSlots": 4,
+        "uniqueTitles": 4,
+        "institutionNamespaceEstimate": 24,
+        "titleToNamespaceRatio": 0.167,
+        "persistedBatchCount": 3,
+        "generatable": true,
+        "status": "healthy"
+      },
+      "cellLabel": "7 | sin datos | 0× · headroom ok"
+    }
+  ],
+  "titleHeadroomAlerts": [
+    {
+      "topic": "Reisen",
+      "format": "lesen-t4",
+      "teil": 4,
+      "moldCapacity": 4,
+      "usedMoldKeys": 3,
+      "moldUtilization": 0.75,
+      "freshSlots": 1,
+      "compatibleSlots": 3,
+      "uniqueTitles": 9,
+      "institutionNamespaceEstimate": 24,
+      "titleToNamespaceRatio": 0.375,
+      "persistedBatchCount": 8,
+      "generatable": true,
+      "status": "critical",
+      "cellStatus": "yellow"
+    },
+    {
+      "topic": "Gesundheit",
+      "format": "lesen-t4",
+      "teil": 4,
+      "moldCapacity": 4,
+      "usedMoldKeys": 2,
+      "moldUtilization": 0.5,
+      "freshSlots": 2,
+      "compatibleSlots": 3,
+      "uniqueTitles": 3,
+      "institutionNamespaceEstimate": 24,
+      "titleToNamespaceRatio": 0.125,
+      "persistedBatchCount": 3,
+      "generatable": true,
+      "status": "warning",
+      "cellStatus": "unverified"
+    },
+    {
+      "topic": "Arbeit",
+      "format": "lesen-t5",
+      "teil": 5,
+      "moldCapacity": 6,
+      "usedMoldKeys": 5,
+      "moldUtilization": 0.833,
+      "freshSlots": 3,
+      "compatibleSlots": 5,
+      "uniqueTitles": 7,
+      "institutionNamespaceEstimate": 230,
+      "titleToNamespaceRatio": 0.03,
+      "persistedBatchCount": 7,
+      "status": "critical",
+      "cellStatus": "unverified"
+    },
+    {
+      "topic": "Technik",
+      "format": "lesen-t4",
+      "teil": 4,
+      "moldCapacity": 4,
+      "usedMoldKeys": 3,
+      "moldUtilization": 0.75,
+      "freshSlots": 1,
+      "compatibleSlots": 2,
+      "uniqueTitles": 7,
+      "institutionNamespaceEstimate": 24,
+      "titleToNamespaceRatio": 0.292,
+      "persistedBatchCount": 5,
+      "generatable": true,
+      "status": "critical",
+      "cellStatus": "unverified"
+    },
+    {
+      "topic": "Technik",
+      "format": "lesen-t5",
+      "teil": 5,
+      "moldCapacity": 9,
+      "usedMoldKeys": 11,
+      "moldUtilization": 1.222,
+      "freshSlots": 1,
+      "compatibleSlots": 7,
+      "uniqueTitles": 17,
+      "institutionNamespaceEstimate": 365,
+      "titleToNamespaceRatio": 0.047,
+      "persistedBatchCount": 14,
+      "status": "critical",
+      "cellStatus": "red"
+    },
+    {
+      "topic": "Medien",
+      "format": "lesen-t4",
+      "teil": 4,
+      "moldCapacity": 4,
+      "usedMoldKeys": 4,
+      "moldUtilization": 1,
+      "freshSlots": 0,
+      "compatibleSlots": 4,
+      "uniqueTitles": 9,
+      "institutionNamespaceEstimate": 24,
+      "titleToNamespaceRatio": 0.375,
+      "persistedBatchCount": 10,
+      "generatable": false,
+      "status": "critical",
+      "cellStatus": "yellow"
+    },
+    {
+      "topic": "Wohnen",
+      "format": "lesen-t4",
+      "teil": 4,
+      "moldCapacity": 4,
+      "usedMoldKeys": 2,
+      "moldUtilization": 0.5,
+      "freshSlots": 2,
+      "compatibleSlots": 4,
+      "uniqueTitles": 5,
+      "institutionNamespaceEstimate": 24,
+      "titleToNamespaceRatio": 0.208,
+      "persistedBatchCount": 5,
+      "generatable": true,
+      "status": "warning",
+      "cellStatus": "yellow"
+    },
+    {
+      "topic": "Wohnen",
+      "format": "lesen-t5",
+      "teil": 5,
+      "moldCapacity": 8,
+      "usedMoldKeys": 4,
+      "moldUtilization": 0.5,
+      "freshSlots": 3,
+      "compatibleSlots": 4,
+      "uniqueTitles": 6,
+      "institutionNamespaceEstimate": 335,
+      "titleToNamespaceRatio": 0.018,
+      "persistedBatchCount": 4,
+      "status": "warning",
+      "cellStatus": "unverified"
+    },
+    {
+      "topic": "Konsum",
+      "format": "lesen-t4",
+      "teil": 4,
+      "moldCapacity": 4,
+      "usedMoldKeys": 2,
+      "moldUtilization": 0.5,
+      "freshSlots": 2,
+      "compatibleSlots": 4,
+      "uniqueTitles": 5,
+      "institutionNamespaceEstimate": 24,
+      "titleToNamespaceRatio": 0.208,
+      "persistedBatchCount": 4,
+      "generatable": true,
+      "status": "warning",
+      "cellStatus": "yellow"
+    },
+    {
+      "topic": "Konsum",
+      "format": "lesen-t5",
+      "teil": 5,
+      "moldCapacity": 11,
+      "usedMoldKeys": 8,
+      "moldUtilization": 0.727,
+      "freshSlots": 3,
+      "compatibleSlots": 5,
+      "uniqueTitles": 17,
+      "institutionNamespaceEstimate": 475,
+      "titleToNamespaceRatio": 0.036,
+      "persistedBatchCount": 21,
+      "status": "warning",
+      "cellStatus": "yellow"
+    },
+    {
+      "topic": "Bildung",
+      "format": "lesen-t5",
+      "teil": 5,
+      "moldCapacity": 7,
+      "usedMoldKeys": 6,
+      "moldUtilization": 0.857,
+      "freshSlots": 3,
+      "compatibleSlots": 5,
+      "uniqueTitles": 9,
+      "institutionNamespaceEstimate": 285,
+      "titleToNamespaceRatio": 0.032,
+      "persistedBatchCount": 9,
+      "status": "critical",
+      "cellStatus": "red"
+    },
+    {
+      "topic": "Familie",
+      "format": "lesen-t5",
+      "teil": 5,
+      "moldCapacity": 8,
+      "usedMoldKeys": 6,
+      "moldUtilization": 0.75,
+      "freshSlots": 2,
+      "compatibleSlots": 4,
+      "uniqueTitles": 9,
+      "institutionNamespaceEstimate": 335,
+      "titleToNamespaceRatio": 0.027,
+      "persistedBatchCount": 9,
+      "status": "critical",
+      "cellStatus": "yellow"
+    },
+    {
+      "topic": "Umwelt",
+      "format": "lesen-t4",
+      "teil": 4,
+      "moldCapacity": 4,
+      "usedMoldKeys": 1,
+      "moldUtilization": 0.25,
+      "freshSlots": 3,
+      "compatibleSlots": 4,
+      "uniqueTitles": 15,
+      "institutionNamespaceEstimate": 24,
+      "titleToNamespaceRatio": 0.625,
+      "persistedBatchCount": 18,
+      "generatable": true,
+      "status": "critical",
+      "cellStatus": "yellow"
+    },
+    {
+      "topic": "Umwelt",
+      "format": "lesen-t5",
+      "teil": 5,
+      "moldCapacity": 7,
+      "usedMoldKeys": 6,
+      "moldUtilization": 0.857,
+      "freshSlots": 2,
+      "compatibleSlots": 3,
+      "uniqueTitles": 22,
+      "institutionNamespaceEstimate": 300,
+      "titleToNamespaceRatio": 0.073,
+      "persistedBatchCount": 24,
+      "status": "critical",
+      "cellStatus": "yellow"
+    },
+    {
+      "topic": "Ernährung",
+      "format": "lesen-t4",
+      "teil": 4,
+      "moldCapacity": 4,
+      "usedMoldKeys": 4,
+      "moldUtilization": 1,
+      "freshSlots": 0,
+      "compatibleSlots": 2,
+      "uniqueTitles": 8,
+      "institutionNamespaceEstimate": 24,
+      "titleToNamespaceRatio": 0.333,
+      "persistedBatchCount": 7,
+      "generatable": false,
+      "status": "critical",
+      "cellStatus": "red"
+    },
+    {
+      "topic": "Ernährung",
+      "format": "lesen-t5",
+      "teil": 5,
+      "moldCapacity": 8,
+      "usedMoldKeys": 4,
+      "moldUtilization": 0.5,
+      "freshSlots": 3,
+      "compatibleSlots": 3,
+      "uniqueTitles": 8,
+      "institutionNamespaceEstimate": 350,
+      "titleToNamespaceRatio": 0.023,
+      "persistedBatchCount": 6,
+      "status": "warning",
+      "cellStatus": "unverified"
+    },
+    {
+      "topic": "Kultur",
+      "format": "lesen-t4",
+      "teil": 4,
+      "moldCapacity": 4,
+      "usedMoldKeys": 3,
+      "moldUtilization": 0.75,
+      "freshSlots": 1,
+      "compatibleSlots": 3,
+      "uniqueTitles": 3,
+      "institutionNamespaceEstimate": 24,
+      "titleToNamespaceRatio": 0.125,
+      "persistedBatchCount": 4,
+      "generatable": true,
+      "status": "critical",
+      "cellStatus": "unverified"
+    },
+    {
+      "topic": "Kultur",
+      "format": "lesen-t5",
+      "teil": 5,
+      "moldCapacity": 8,
+      "usedMoldKeys": 6,
+      "moldUtilization": 0.75,
+      "freshSlots": 2,
+      "compatibleSlots": 4,
+      "uniqueTitles": 10,
+      "institutionNamespaceEstimate": 340,
+      "titleToNamespaceRatio": 0.029,
+      "persistedBatchCount": 9,
+      "status": "critical",
+      "cellStatus": "red"
+    },
+    {
+      "topic": "Sport",
+      "format": "lesen-t4",
+      "teil": 4,
+      "moldCapacity": 4,
+      "usedMoldKeys": 3,
+      "moldUtilization": 0.75,
+      "freshSlots": 1,
+      "compatibleSlots": 4,
+      "uniqueTitles": 8,
+      "institutionNamespaceEstimate": 24,
+      "titleToNamespaceRatio": 0.333,
+      "persistedBatchCount": 15,
+      "generatable": true,
+      "status": "critical",
+      "cellStatus": "yellow"
+    },
+    {
+      "topic": "Freizeit",
+      "format": "lesen-t4",
+      "teil": 4,
+      "moldCapacity": 4,
+      "usedMoldKeys": 1,
+      "moldUtilization": 0.25,
+      "freshSlots": 3,
+      "compatibleSlots": 4,
+      "uniqueTitles": 9,
+      "institutionNamespaceEstimate": 24,
+      "titleToNamespaceRatio": 0.375,
+      "persistedBatchCount": 8,
+      "generatable": true,
+      "status": "warning",
+      "cellStatus": "unverified"
+    },
+    {
+      "topic": "Freizeit",
+      "format": "lesen-t5",
+      "teil": 5,
+      "moldCapacity": 8,
+      "usedMoldKeys": 5,
+      "moldUtilization": 0.625,
+      "freshSlots": 2,
+      "compatibleSlots": 4,
+      "uniqueTitles": 9,
+      "institutionNamespaceEstimate": 340,
+      "titleToNamespaceRatio": 0.026,
+      "persistedBatchCount": 7,
+      "status": "warning",
+      "cellStatus": "unverified"
+    },
+    {
+      "topic": "Verkehr",
+      "format": "lesen-t4",
+      "teil": 4,
+      "moldCapacity": 4,
+      "usedMoldKeys": 2,
+      "moldUtilization": 0.5,
+      "freshSlots": 2,
+      "compatibleSlots": 4,
+      "uniqueTitles": 7,
+      "institutionNamespaceEstimate": 24,
+      "titleToNamespaceRatio": 0.292,
+      "persistedBatchCount": 8,
+      "generatable": true,
+      "status": "warning",
+      "cellStatus": "red"
+    },
+    {
+      "topic": "Verkehr",
+      "format": "lesen-t5",
+      "teil": 5,
+      "moldCapacity": 4,
+      "usedMoldKeys": 6,
+      "moldUtilization": 1.5,
+      "freshSlots": 1,
+      "compatibleSlots": 2,
+      "uniqueTitles": 15,
+      "institutionNamespaceEstimate": 165,
+      "titleToNamespaceRatio": 0.091,
+      "persistedBatchCount": 13,
+      "status": "critical",
+      "cellStatus": "red"
+    },
+    {
+      "topic": "Stadtleben",
+      "format": "lesen-t5",
+      "teil": 5,
+      "moldCapacity": 8,
+      "usedMoldKeys": 4,
+      "moldUtilization": 0.5,
+      "freshSlots": 2,
+      "compatibleSlots": 4,
+      "uniqueTitles": 5,
+      "institutionNamespaceEstimate": 335,
+      "titleToNamespaceRatio": 0.015,
+      "persistedBatchCount": 4,
+      "status": "warning",
+      "cellStatus": "red"
+    }
+  ],
+  "externalCells": [
+    {
+      "topic": "Reisen",
+      "format": "lesen-t3",
+      "compatibleMolds": 3,
+      "availableMolds": 0,
+      "avgVocabPct": null,
+      "vocabSamples": 0,
+      "chk29OrEquiv": 0,
+      "gateDetail": {
+        "chk29": 0,
+        "t3_mold": 0,
+        "chk27": 0,
+        "chk26": 0,
+        "totalFails": 0,
+        "calls": 0
+      },
+      "status": "external",
+      "titleHeadroom": null,
+      "cellLabel": "ext. · 3 moldes ref. · sin datos · 0×"
+    },
+    {
+      "topic": "Gesundheit",
+      "format": "lesen-t3",
+      "compatibleMolds": 4,
+      "availableMolds": 3,
+      "avgVocabPct": null,
+      "vocabSamples": 0,
+      "chk29OrEquiv": 0,
+      "gateDetail": {
+        "chk29": 0,
+        "t3_mold": 0,
+        "chk27": 0,
+        "chk26": 0,
+        "totalFails": 0,
+        "calls": 0
+      },
+      "status": "external",
+      "titleHeadroom": null,
+      "cellLabel": "ext. · 4 moldes ref. · sin datos · 0×"
+    },
+    {
+      "topic": "Arbeit",
+      "format": "lesen-t3",
+      "compatibleMolds": 1,
+      "availableMolds": 0,
+      "avgVocabPct": null,
+      "vocabSamples": 0,
+      "chk29OrEquiv": 0,
+      "gateDetail": {
+        "chk29": 0,
+        "t3_mold": 0,
+        "chk27": 0,
+        "chk26": 0,
+        "totalFails": 0,
+        "calls": 0
+      },
+      "status": "external",
+      "titleHeadroom": null,
+      "cellLabel": "ext. · 1 moldes ref. · sin datos · 0×"
+    },
+    {
+      "topic": "Technik",
+      "format": "lesen-t3",
+      "compatibleMolds": 4,
+      "availableMolds": 0,
+      "avgVocabPct": null,
+      "vocabSamples": 0,
+      "chk29OrEquiv": 0,
+      "gateDetail": {
+        "chk29": 0,
+        "t3_mold": 0,
+        "chk27": 0,
+        "chk26": 0,
+        "totalFails": 0,
+        "calls": 0
+      },
+      "status": "external",
+      "titleHeadroom": null,
+      "cellLabel": "ext. · 4 moldes ref. · sin datos · 0×"
+    },
+    {
+      "topic": "Medien",
+      "format": "lesen-t3",
+      "compatibleMolds": 5,
+      "availableMolds": 0,
+      "avgVocabPct": null,
+      "vocabSamples": 0,
+      "chk29OrEquiv": 0,
+      "gateDetail": {
+        "chk29": 0,
+        "t3_mold": 0,
+        "chk27": 0,
+        "chk26": 0,
+        "totalFails": 0,
+        "calls": 0
+      },
+      "status": "external",
+      "titleHeadroom": null,
+      "cellLabel": "ext. · 5 moldes ref. · sin datos · 0×"
+    },
+    {
+      "topic": "Wohnen",
+      "format": "lesen-t3",
+      "compatibleMolds": 1,
+      "availableMolds": 0,
+      "avgVocabPct": null,
+      "vocabSamples": 0,
+      "chk29OrEquiv": 0,
+      "gateDetail": {
+        "chk29": 0,
+        "t3_mold": 0,
+        "chk27": 0,
+        "chk26": 0,
+        "totalFails": 0,
+        "calls": 0
+      },
+      "status": "external",
+      "titleHeadroom": null,
+      "cellLabel": "ext. · 1 moldes ref. · sin datos · 0×"
+    },
+    {
+      "topic": "Konsum",
+      "format": "lesen-t3",
+      "compatibleMolds": 1,
+      "availableMolds": 0,
+      "avgVocabPct": null,
+      "vocabSamples": 0,
+      "chk29OrEquiv": 0,
+      "gateDetail": {
+        "chk29": 0,
+        "t3_mold": 0,
+        "chk27": 0,
+        "chk26": 0,
+        "totalFails": 0,
+        "calls": 0
+      },
+      "status": "external",
+      "titleHeadroom": null,
+      "cellLabel": "ext. · 1 moldes ref. · sin datos · 0×"
+    },
+    {
+      "topic": "Bildung",
+      "format": "lesen-t3",
+      "compatibleMolds": 3,
+      "availableMolds": 0,
+      "avgVocabPct": null,
+      "vocabSamples": 0,
+      "chk29OrEquiv": 0,
+      "gateDetail": {
+        "chk29": 0,
+        "t3_mold": 0,
+        "chk27": 0,
+        "chk26": 0,
+        "totalFails": 0,
+        "calls": 0
+      },
+      "status": "external",
+      "titleHeadroom": null,
+      "cellLabel": "ext. · 3 moldes ref. · sin datos · 0×"
+    },
+    {
+      "topic": "Familie",
+      "format": "lesen-t3",
+      "compatibleMolds": 2,
+      "availableMolds": 1,
+      "avgVocabPct": null,
+      "vocabSamples": 0,
+      "chk29OrEquiv": 0,
+      "gateDetail": {
+        "chk29": 0,
+        "t3_mold": 0,
+        "chk27": 0,
+        "chk26": 0,
+        "totalFails": 0,
+        "calls": 0
+      },
+      "status": "external",
+      "titleHeadroom": null,
+      "cellLabel": "ext. · 2 moldes ref. · sin datos · 0×"
+    },
+    {
+      "topic": "Umwelt",
+      "format": "lesen-t3",
+      "compatibleMolds": 1,
+      "availableMolds": 0,
+      "avgVocabPct": null,
+      "vocabSamples": 0,
+      "chk29OrEquiv": 0,
+      "gateDetail": {
+        "chk29": 0,
+        "t3_mold": 0,
+        "chk27": 0,
+        "chk26": 0,
+        "totalFails": 0,
+        "calls": 0
+      },
+      "status": "external",
+      "titleHeadroom": null,
+      "cellLabel": "ext. · 1 moldes ref. · sin datos · 0×"
+    },
+    {
+      "topic": "Ernährung",
+      "format": "lesen-t3",
+      "compatibleMolds": 1,
+      "availableMolds": 0,
+      "avgVocabPct": null,
+      "vocabSamples": 0,
+      "chk29OrEquiv": 0,
+      "gateDetail": {
+        "chk29": 0,
+        "t3_mold": 0,
+        "chk27": 0,
+        "chk26": 0,
+        "totalFails": 0,
+        "calls": 0
+      },
+      "status": "external",
+      "titleHeadroom": null,
+      "cellLabel": "ext. · 1 moldes ref. · sin datos · 0×"
+    },
+    {
+      "topic": "Kultur",
+      "format": "lesen-t3",
+      "compatibleMolds": 1,
+      "availableMolds": 0,
+      "avgVocabPct": null,
+      "vocabSamples": 0,
+      "chk29OrEquiv": 0,
+      "gateDetail": {
+        "chk29": 0,
+        "t3_mold": 0,
+        "chk27": 0,
+        "chk26": 0,
+        "totalFails": 0,
+        "calls": 0
+      },
+      "status": "external",
+      "titleHeadroom": null,
+      "cellLabel": "ext. · 1 moldes ref. · sin datos · 0×"
+    },
+    {
+      "topic": "Sport",
+      "format": "lesen-t3",
+      "compatibleMolds": 1,
+      "availableMolds": 0,
+      "avgVocabPct": null,
+      "vocabSamples": 0,
+      "chk29OrEquiv": 0,
+      "gateDetail": {
+        "chk29": 0,
+        "t3_mold": 0,
+        "chk27": 0,
+        "chk26": 0,
+        "totalFails": 0,
+        "calls": 0
+      },
+      "status": "external",
+      "titleHeadroom": null,
+      "cellLabel": "ext. · 1 moldes ref. · sin datos · 0×"
+    },
+    {
+      "topic": "Freizeit",
+      "format": "lesen-t3",
+      "compatibleMolds": 2,
+      "availableMolds": 0,
+      "avgVocabPct": null,
+      "vocabSamples": 0,
+      "chk29OrEquiv": 0,
+      "gateDetail": {
+        "chk29": 0,
+        "t3_mold": 0,
+        "chk27": 0,
+        "chk26": 0,
+        "totalFails": 0,
+        "calls": 0
+      },
+      "status": "external",
+      "titleHeadroom": null,
+      "cellLabel": "ext. · 2 moldes ref. · sin datos · 0×"
+    },
+    {
+      "topic": "Verkehr",
+      "format": "lesen-t3",
+      "compatibleMolds": 3,
+      "availableMolds": 0,
+      "avgVocabPct": null,
+      "vocabSamples": 0,
+      "chk29OrEquiv": 0,
+      "gateDetail": {
+        "chk29": 0,
+        "t3_mold": 0,
+        "chk27": 0,
+        "chk26": 0,
+        "totalFails": 0,
+        "calls": 0
+      },
+      "status": "external",
+      "titleHeadroom": null,
+      "cellLabel": "ext. · 3 moldes ref. · sin datos · 0×"
+    },
+    {
+      "topic": "Stadtleben",
+      "format": "lesen-t3",
+      "compatibleMolds": 1,
+      "availableMolds": 0,
+      "avgVocabPct": null,
+      "vocabSamples": 0,
+      "chk29OrEquiv": 0,
+      "gateDetail": {
+        "chk29": 0,
+        "t3_mold": 0,
+        "chk27": 0,
+        "chk26": 0,
+        "totalFails": 0,
+        "calls": 0
+      },
+      "status": "external",
+      "titleHeadroom": null,
+      "cellLabel": "ext. · 1 moldes ref. · sin datos · 0×"
+    }
+  ],
+  "colorMigration": {
+    "previousGreenCount": 0,
+    "newGreenCount": 0,
+    "demotedFromGreenCount": 0,
+    "demotedFromGreen": []
+  }
+}

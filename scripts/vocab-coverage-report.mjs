@@ -184,18 +184,27 @@ async function loadPartsFromBlobs(lang, level) {
   }
 
   // Escribe la lista de lemas flojos (objetivo de generación).
+  // Defensa: no incluir lemas que fallen blacklist C1/C2 (por si el banco se recontamina).
+  const { isBlacklistedLemma } = await import('./lib/lexicalCheck.mjs');
+  const weakClean = weak.filter((w) => !isBlacklistedLemma(w.lemma));
+  if (weakClean.length < weak.length) {
+    console.log(
+      `  (filtro blacklist: ${weak.length - weakClean.length} lemas flojos excluidos del weak pool)`,
+    );
+  }
+
   const outDir = path.join(ROOT, 'data', 'coverage');
   fs.mkdirSync(outDir, { recursive: true });
   const outFile = path.join(outDir, `weak-${opts.lang}_${opts.level}.json`);
   fs.writeFileSync(outFile, JSON.stringify({
     lang: opts.lang, level: opts.level, threshold: T,
     generatedAt: new Date().toISOString(),
-    totalLemmas: lemmas.length, weakCount: weak.length,
-    weakLemmas: weak.map((w) => w.lemma),
-    detail: weak,
+    totalLemmas: lemmas.length, weakCount: weakClean.length,
+    weakLemmas: weakClean.map((w) => w.lemma),
+    detail: weakClean,
   }, null, 2));
-  console.log(`\nLemas flojos (en <${T} partes): ${weak.length} → escritos en ${path.relative(ROOT, outFile)}`);
-  console.log(`Top 20 más flojos: ${weak.slice(0, 20).map((w) => w.lemma).join(', ')}\n`);
+  console.log(`\nLemas flojos (en <${T} partes): ${weakClean.length} → escritos en ${path.relative(ROOT, outFile)}`);
+  console.log(`Top 20 más flojos: ${weakClean.slice(0, 20).map((w) => w.lemma).join(', ')}\n`);
 
   const metrics = {
     lang: opts.lang,
@@ -208,7 +217,7 @@ async function loadPartsFromBlobs(lang, level) {
     cov0,
     cov12,
     covT,
-    weakCount: weak.length,
+    weakCount: weakClean.length,
   };
 
   if (opts.jsonOut) {

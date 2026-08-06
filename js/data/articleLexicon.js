@@ -19,6 +19,8 @@ const ArticleLexicon = (() => {
     mädchen: 'n', junge: 'm', mensch: 'm', person: 'f', computer: 'm', internet: 'n',
     gemüse: 'n', auflauf: 'm', ernährung: 'f', mischung: 'f', süßigkeit: 'f',
     salat: 'm', kuchen: 'm', teig: 'm', zutat: 'f', rezept: 'n', gericht: 'n',
+    gerät: 'n', unterschied: 'm', vorschlag: 'm', wochenende: 'n', pizza: 'f',
+    küche: 'f', museum: 'n', waschen: 'n',
   };
 
   let _compoundSuffixes = null;
@@ -93,6 +95,8 @@ const ArticleLexicon = (() => {
       if (lookupLemma(stem, 'de') || lookupLemma(stem + 'e', 'de')) return 'p';
     }
     if (low.endsWith('er') && low.length > 4) {
+      // Singular lexicon lemma (Schüler, Lehrer) must not be treated as plural -er
+      if (lookupLemma(low, 'de')) return null;
       const stem = low.slice(0, -2);
       const plain = deUmlautToAscii(stem);
       if (lookupLemma(stem, 'de') || lookupLemma(stem + 'e', 'de')) return 'p';
@@ -111,6 +115,42 @@ const ArticleLexicon = (() => {
     return null;
   }
 
+  /**
+   * Unknown noun surface with plural morphology but no lexicon confirmation.
+   * Used to route AI gender fallback through plural-aware prompt (article always die).
+   */
+  function likelyPluralUnknownDe(word, lang) {
+    const sub = String(lang || 'de').toLowerCase();
+    if (sub !== 'de') return false;
+    const low = norm(word);
+    if (!low || low.length < 4) return false;
+    if (lookupGender(low, sub)) return false;
+    const direct = lookupLemma(low, sub);
+    if (direct && direct !== 'p') return false;
+
+    if (low.endsWith('innen') && low.length > 6) return true;
+    if (/(?:ungen|tionen|heiten|keiten|schaften|linge)$/i.test(low)) return true;
+    if (low.endsWith('s') && !/(nis|us|os|as)$/i.test(low) && low.length > 4) {
+      const stem = low.slice(0, -1);
+      if (!lookupLemma(stem, sub) && !lookupLemma(`${stem}e`, sub)) return true;
+    }
+    if (low.endsWith('er') && low.length > 4 && !lookupLemma(low, sub)) {
+      const stem = low.slice(0, -2);
+      if (stem.length >= 3) return true;
+    }
+    if (low.endsWith('en') && low.length > 5) {
+      if (/ion|ierung|schaft|heit|keit|tät|ität|ung/i.test(low)) return true;
+      // Diminutives (Mädchen, Brötchen) — not -flaschen / -taschen compounds
+      if ((low.endsWith('chen') || low.endsWith('ken')) && low.length <= 9) return false;
+      if (low.length >= 10) return true;
+      const stem1 = low.slice(0, -1);
+      const stem2 = low.slice(0, -2);
+      if (!lookupLemma(stem1, sub) && !lookupLemma(stem2, sub) && low.length >= 8) return true;
+    }
+    if (low.endsWith('e') && low.length > 5 && /[äöü]/i.test(low)) return true;
+    return false;
+  }
+
   function singularCandidatesDe(low) {
     const out = [];
     if (low.endsWith('ungen')) out.push(low.slice(0, -3) + 'ung');
@@ -118,6 +158,8 @@ const ArticleLexicon = (() => {
     if (low.endsWith('heiten')) out.push(low.slice(0, -2) + 'heit');
     if (low.endsWith('keiten')) out.push(low.slice(0, -2) + 'keit');
     if (low.endsWith('schaften')) out.push(low.slice(0, -2) + 'schaft');
+    // Feminine plural -innen → singular -in (Schülerinnen → Schülerin)
+    if (low.endsWith('innen') && low.length > 6) out.push(low.slice(0, -3));
     if (low.endsWith('en')) {
       out.push(low.slice(0, -1), low.slice(0, -2));
     }
@@ -131,20 +173,28 @@ const ArticleLexicon = (() => {
     const low = norm(word);
     if (!low) return null;
 
+    // 1. Direct lexicon lemma (singular entry beats plural heuristics — e.g. Schüler → m not p)
+    let g = lookupLemma(low, sub);
+    if (g && g !== 'p') return g;
+
+    // 2. Inflected / plural surface → singular lemma (e.g. Geräten → Gerät)
     if (sub === 'de') {
+      for (const cand of singularCandidatesDe(low)) {
+        g = lookupLemma(cand, sub);
+        if (g && g !== 'p') break;
+      }
+    }
+
+    // 3. Compound last-component gender
+    if (!g && sub === 'de') g = compoundGenderDe(low);
+
+    // 4. Plural-only heuristic — last resort when no singular lemma exists
+    if (!g && sub === 'de') {
       const pl = pluralGenderDe(low);
       if (pl) return pl;
     }
 
-    let g = lookupLemma(low, sub);
-    if (!g && sub === 'de') {
-      for (const cand of singularCandidatesDe(low)) {
-        g = lookupLemma(cand, sub);
-        if (g) break;
-      }
-    }
-    if (!g && sub === 'de') g = compoundGenderDe(low);
-    return g;
+    return g || null;
   }
 
   function lookupArticle(word, lang) {
@@ -193,15 +243,24 @@ const ArticleLexicon = (() => {
     return !!cache[String(lang || 'de').toLowerCase()];
   }
 
+  /** Node/tests: seed full lexicon without fetch (mirrors preload merge). */
+  function loadSync(extra) {
+    cache.de = { ...DE_CORE, ...(extra || {}) };
+    _compoundSuffixes = null;
+    return cache.de;
+  }
+
   return {
     preload,
     ready,
+    loadSync,
     lookupGender,
     lookupArticle,
     lookupLemma,
     applyToFlashcard,
     genderToArticle,
     pluralGenderDe,
+    likelyPluralUnknownDe,
     compoundGenderDe,
   };
 })();

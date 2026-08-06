@@ -1,0 +1,46 @@
+{
+  "log": "batches/ready/gate-logs/generation-cost.jsonl",
+  "markerSince": "2026-07-12T11:08:06.178Z",
+  "summary": {
+    "calls": 28,
+    "okCalls": 3,
+    "failCalls": 25,
+    "successRate": 0.10714285714285714,
+    "totalCostUsd": 0.225141,
+    "okCostUsd": 0.0342354,
+    "failCostUsd": 0.1909056,
+    "promptTokens": 97820,
+    "candidatesTokens": 28325,
+    "thoughtsTokens": 49993,
+    "byModuleTeil": {
+      "lesen-t2": {
+        "calls": 28,
+        "ok": 3,
+        "fail": 25,
+        "costUsd": 0.225141,
+        "promptTokens": 97820,
+        "outputTokensBilled": 78318
+      }
+    },
+    "files": [
+      {
+        "file": "batches/generated/lesen-t2-gemini-099.json",
+        "ok": true,
+        "costUsd": 0.0089755,
+        "calls": 1
+      },
+      {
+        "file": "batches/generated/lesen-t2-gemini-100.json",
+        "ok": true,
+        "costUsd": 0.014752,
+        "calls": 1
+      },
+      {
+        "file": "batches/generated/lesen-t2-gemini-101.json",
+        "ok": true,
+        "costUsd": 0.0105079,
+        "calls": 1
+      }
+    ]
+  }
+}

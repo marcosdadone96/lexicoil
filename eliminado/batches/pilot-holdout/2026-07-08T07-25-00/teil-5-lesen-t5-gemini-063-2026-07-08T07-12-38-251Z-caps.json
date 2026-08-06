@@ -1,0 +1,53 @@
+{
+  "gateVersion": "v6.1-B-G2 (frozen)",
+  "file": "lesen-t5-gemini-063-2026-07-08T07-12-38-251Z.json",
+  "teil": 5,
+  "textFields": 21,
+  "findings": {
+    "blocking": 0,
+    "observations": 0,
+    "byReason": {},
+    "byRegime": {},
+    "byField": {},
+    "list": []
+  },
+  "observations": [],
+  "expected": {
+    "dominantRegime": "PROSE",
+    "telegraphicFpExpected": 0,
+    "notes": "Reglamentos/instrucciones; listas y horarios."
+  },
+  "comparison": {
+    "calibrationPoolFindingsThisTeil": 27,
+    "calibrationAvgPerFile": 3,
+    "pilotFindings": 0,
+    "deltaVsCalAvg": -3,
+    "telegraphicFindings": 0,
+    "telegraphicFpExpected": 0,
+    "telegraphicOk": true
+  },
+  "qualityGate": {
+    "errors": [],
+    "warnings": []
+  },
+  "qualitative": {
+    "textFieldCount": 21,
+    "gateFindings": 0,
+    "gateObservations": 0,
+    "issues": {
+      "educationalPhrases": [],
+      "suspiciousCapsInText": [
+        {
+          "kind": "option",
+          "snippet": "a) Fahrräder dürfen auf Fußwegen fahren, wenn sie langsam sind."
+        }
+      ],
+      "veryLongSentences": [],
+      "b1Notes": [
+        "Longitud media coherente con B1"
+      ],
+      "newPatterns": []
+    },
+    "samplePassage": "Diese Hausordnung regelt den Verkehr auf dem gesamten Gelände des Berufsbildungszentrums „Zukunftsweg“, um Sicherheit und Ordnung für alle zu gewährleisten.\n\n1.  **Parken von Fahrzeugen:**\n    *   Autos dürfen nur auf den gekennzeichneten Parkplätzen abgestellt werden. Die Nutzung ist kostenpflichtig: 20 Euro pro Monat für Schüler und Mitarbeiter. Besucherparkplätze sind für maximal zwei Stunden k"
+  }
+}

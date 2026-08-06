@@ -1,0 +1,25 @@
+{
+  "generatedAt": "2026-07-24T15:10:00.000Z",
+  "part1_live_generation": {
+    "rootCause": "enrichBatchMetadata runs on EVERY finalizePoolReady (generatePartGeminiLib → finalizePoolReady line 73), not only repair script. Corruption came from lemmaOf → Lemmatizer.normalizeLemma blind -t→-en (fördert→förderen, schlecht→schlechen) plus unvalidated lemmatizer output.",
+    "fixVersion": "v2.3.16-b1-validated-verb-adj-lemma-2026-07-24",
+    "callSites": [
+      "scripts/lib/finalizePoolReady.mjs (live generation)",
+      "scripts/repair-pool-vocab-caps-artifacts.mjs (bulk repair)",
+      "scripts/lib/normalizeBatch.mjs (legacy duplicate enrich)",
+      "scripts/backfill-pool-metadata.mjs, rescue-*, curate-*"
+    ],
+    "repairQuestionVocabularyTags": "Only LEMMA_GROUND_TRUTH + repairCorruptVocabTagSurface (no full re-lemmatize)",
+    "livePathTest": {
+      "script": "scripts/test-vocab-enrich-live-path.mjs",
+      "horenT4PoolFile": "B1/horen-t4-gemini-027.json",
+      "corruptTagsAfterEnrich": 0,
+      "sampleOutput": "[verhindern, Verkehr, fördern] / [Bewohner, Planung]"
+    }
+  },
+  "part2_preventive": {
+    "bulkRepairPreview": "repair-pool-vocab-caps-artifacts.mjs requires --preview then --apply --confirm (blocks naked --apply)",
+    "regressionSuite": "scripts/lib/__tests__/pipelineRegressionKnownBugs.test.mjs (12 cases)",
+    "vocabCorruptionTests": "scripts/lib/__tests__/enrichBatchMetadata.vocab-corruption.test.mjs (30+ assertions)"
+  }
+}

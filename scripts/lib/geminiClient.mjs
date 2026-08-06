@@ -1,6 +1,8 @@
 const DEFAULT_MODEL = 'gemini-2.5-flash';
 
+import './ensureSystemCa.mjs';
 import { acquire, DailyQuotaError, isDailyQuotaMessage } from './geminiRateLimit.mjs';
+import { rethrowIfTlsIntercept } from './tlsFetchHint.mjs';
 
 export { DailyQuotaError };
 
@@ -34,7 +36,17 @@ export function geminiModel() {
   return (process.env.GEMINI_MODEL || DEFAULT_MODEL).trim();
 }
 
-export async function generateContent({ prompt, apiKey, model, jsonMode = true, maxRetries = 3, max503Retries, maxTokens, temperature }) {
+export async function generateContent({
+  prompt,
+  apiKey,
+  model,
+  jsonMode = true,
+  maxRetries = 3,
+  max503Retries,
+  maxTokens,
+  temperature,
+  thinkingConfig,
+}) {
   const key = apiKey || process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
   if (!key) {
     throw new Error('Falta GEMINI_API_KEY (o GOOGLE_API_KEY) en .env');
@@ -54,6 +66,7 @@ export async function generateContent({ prompt, apiKey, model, jsonMode = true, 
       temperature: resolvedTemp,
       maxOutputTokens: maxTokens ?? Number(process.env.GEMINI_MAX_OUTPUT_TOKENS || 8192),
       ...(jsonMode ? { responseMimeType: 'application/json' } : {}),
+      ...(thinkingConfig ? { thinkingConfig } : {}),
     },
   };
 
@@ -67,11 +80,16 @@ export async function generateContent({ prompt, apiKey, model, jsonMode = true, 
   for (let attempt = 1; attempt <= effective503Retries; attempt++) {
     await acquire();
 
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
-    });
+    let res;
+    try {
+      res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+    } catch (err) {
+      rethrowIfTlsIntercept(err);
+    }
 
     const data = await res.json().catch(() => ({}));
 

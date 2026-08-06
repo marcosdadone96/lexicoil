@@ -1,0 +1,220 @@
+# Plantilla de generación — Hören B1 · Teil 3
+
+Pega TODO este texto en Gemini/ChatGPT. Devuelve **SOLO JSON**.
+Formato oficial: **1 diálogo informal entre dos hablantes nativos + 7 ítems Richtig/Falsch**.
+
+---
+
+Eres examinador del Goethe-Zertifikat B1. Genera **UNA** parte de **Hören Teil 3**
+(Gespräch entre dos hablantes nativos), alemán hablado informal, nivel B1.
+
+## Reglas estrictas
+- **1 passage** (diálogo entre 2 personas), **220–320 palabras** de transcripción.
+- Cada turno con formato `Nombre: texto` (SIN comillas tipográficas «»): `Lena: Ich finde das toll.`
+- **Mínimo 8 turnos** de diálogo (4 por persona).
+- **7 preguntas** `type: "richtig_falsch"` — `correct` = `"Richtig"` o `"Falsch"`.
+- `options`: array vacío `[]`.
+- Todas las preguntas con el mismo `passageId`.
+
+## ESTILO
+- Conversación natural y cotidiana: dos amigos/colegas hablando de un evento, viaje, trabajo, afición, etc.
+- Registro coloquial B1: frases cortas, interrupciones, marcadores de habla («Also…», «Weißt du…», «Na ja…»).
+- **PROHIBIDO:** narrador en tercera persona (eso es T1); solo voces directas.
+
+## DISTRIBUCIÓN DE RESPUESTAS (OBLIGATORIO)
+- Exactamente **3–4 Richtig** y **4–3 Falsch** — cuenta antes de terminar.
+- Mezcla: ~4 preguntas sobre información explícita + ~3 sobre inferencia/paráfrasis.
+
+## ANTI WORD-MATCHING — OBLIGATORIO
+Las afirmaciones (preguntas) no deben copiar ≥4 palabras seguidas del diálogo. Parafrasea siempre.
+
+Diálogo: *«Lena: Ich finde Fahrrad fahren in der Stadt viel besser als mit dem Bus.»*
+
+❌ **MALO:** «Lena findet Fahrrad fahren in der Stadt besser als mit dem Bus.»
+✅ **BUENO:** «Lena bevorzugt das Rad gegenüber öffentlichen Verkehrsmitteln.»
+
+## CAMPO AUDIO (obligatorio para TTS)
+Incluye en cada passage un campo `"audio"`: array de turnos en orden de aparición:
+```json
+"audio": [
+  { "speaker": "Lena", "voiceId": "de-DE-KatjaNeural", "text": "Ich finde das wirklich toll." },
+  { "speaker": "Markus", "voiceId": "de-DE-ConradNeural", "text": "Ja, ich auch. Wann fahren wir?" }
+]
+```
+- Una `voiceId` **distinta** por hablante (usa `de-DE-KatjaNeural` / `de-DE-ConradNeural`).
+- El `text` del turno **no** incluye el prefijo `Nombre:`.
+
+
+## VOCABULARIO SUGERIDO (preferencia — no obligación)
+- Usa de forma NATURAL estas palabras si encajan: Stadt, Freizeit, Arbeit, Familie, Kurs. Prioriza naturalidad y nivel B1 — si una palabra no encaja, OMÍTELA, no la fuerces. Mejor un texto natural con algunas de estas palabras que uno forzado con todas.
+- **Estas palabras son OPCIONALES.** Intégralas solo si suenan 100% naturales en alemán **hablado** B1 (Ansage, Telefonat, Radio-Tipp). **PROHIBIDO** insertar una palabra objetivo si no encaja de forma natural. Ejemplo INCORRECTO: «die Ontologie des Stresses» en un consejo de salud coloquial; o meter «Klimawandel» en una Durchsage de farmacia sobre un Hustenmittel; o un comentario meta-gramatical («So ein Konjunktiv hilft…») solo para colar la palabra. Ejemplo CORRECTO: si no encaja, **OMÍTELA** — menos palabras objetivo es mejor que forzar una que rompa la coherencia. REGLA DISTRACTORES (Hören MCQ a/b/c — T1 y T2): las opciones incorrectas (distractores) deben ser semánticamente coherentes con el tema del pasaje/segmento, aunque sean falsas — NUNCA insertes una palabra objetivo en un distractor si el resultado no tiene relación con el tema. Ejemplo INCORRECTO: en un pasaje sobre gestión del estrés, la opción «Die Notwendigkeit, einen Dolmetscher zu konsultieren» (necesidad de un intérprete) es un non-sequitur — no tiene nada que ver con el tema, aunque la palabra en sí exista en alemán correcto. Ejemplo CORRECTO: si la palabra objetivo no encaja de forma natural en un distractor temáticamente coherente, OMÍTELA del distractor — usa vocabulario del propio campo semántico del pasaje en su lugar.
+- Intégralas sobre todo en el **pasaje/transcript**, no en las preguntas literalmente.
+- Si una palabra no encaja en el tema elegido, **omítela** sin forzar.
+
+
+
+## AUTORREVISIÓN (obligatoria)
+- [ ] ¿1 passage de diálogo, 220–320 palabras?
+- [ ] ¿≥8 turnos con formato `Nombre: texto` (sin guillemets)?
+- [ ] ¿Passage incluye campo `"audio"` con voiceId distinta por hablante?
+- [ ] ¿Exactamente 7 preguntas richtig_falsch?
+- [ ] ¿3–4 Richtig / 4–3 Falsch?
+- [ ] ¿Ninguna afirmación copia ≥4 palabras seguidas del diálogo?
+- [ ] ¿`options: []` en todas las preguntas?
+- [ ] ¿Solo JSON, sin markdown?
+
+## Formato de salida
+Devuelve SOLO `{ "passages": [...], "questions": [...] }` — sin ```, sin texto extra.
+- IDs únicos: `gen-h3-XXXX` / `gen-q-h3-XXXX-N` (XXXX = 4 chars aleatorios).
+- `module`:"horen", `teil`:3 (número), `lang`:"de", `level`:"B1".
+- `correct` = `correctAnswer` = `"Richtig"` o `"Falsch"`.
+
+## EJEMPLO VERIFICADO
+
+```json
+{
+  "passages": [
+    {
+      "id": "gen-h3-k4p9",
+      "module": "horen",
+      "teil": 3,
+      "title": "Gespräch: Pläne für das Wochenende",
+      "text": "Jonas: Hast du schon Pläne für das Wochenende?\nLena: Ja, ich fahre mit meiner Schwester nach Hamburg. Wir wollen ein Konzert besuchen.\nJonas: Oh, das klingt toll! Welche Band spielt denn?\nLena: Eine Jazzband aus Berlin. Ich finde Jazzmusik einfach wunderschön, weißt du?\nJonas: Ich war noch nie bei einem Jazzkonzert. Kostet das viel?\nLena: Die Karten waren gar nicht so teuer. Wir haben je zwanzig Euro bezahlt.\nJonas: Das ist wirklich günstig. Übernachtet ihr dann auch in Hamburg?\nLena: Nein, wir fahren am gleichen Abend zurück. Der letzte Zug geht um Mitternacht.\nJonas: Und wie lange dauert die Fahrt?\nLena: Ungefähr zwei Stunden. Also kommen wir gegen zwei Uhr nachts zu Hause an.\nJonas: Das ist aber spät! Hast du dann am Sonntag frei?\nLena: Leider nicht. Ich muss am Sonntag früh arbeiten. Aber das ist mir egal, das Konzert ist es wert.\nJonas: Ich bewundere deine Energie. Ich würde am nächsten Tag total müde sein.\nLena: Ach, das schaffe ich schon. Man muss das Leben genießen!\nJonas: Da hast du recht. Viel Spaß beim Konzert!\nLena: Danke! Ich erzähle dir dann alles."
+    }
+  ],
+  "questions": [
+    {
+      "id": "gen-q-h3-k4p9-1",
+      "module": "horen",
+      "teil": 3,
+      "type": "richtig_falsch",
+      "question": "Lena fährt am Wochenende mit ihrer Schwester in eine andere Stadt.",
+      "options": [],
+      "correct": "Richtig",
+      "correctAnswer": "Richtig",
+      "explanation": "Lena sagt im Dialog, dass sie das Wochenende mit ihrer Schwester in Hamburg verbringen will.",
+      "passageId": "gen-h3-k4p9",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-h3-k4p9-2",
+      "module": "horen",
+      "teil": 3,
+      "type": "richtig_falsch",
+      "question": "Das Konzert findet in Berlin statt.",
+      "options": [],
+      "correct": "Falsch",
+      "correctAnswer": "Falsch",
+      "explanation": "Das Konzert ist in Hamburg, nicht in Berlin. Die Band kommt aus Berlin.",
+      "passageId": "gen-h3-k4p9",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-h3-k4p9-3",
+      "module": "horen",
+      "teil": 3,
+      "type": "richtig_falsch",
+      "question": "Lena findet die Konzertkarten sehr preiswert.",
+      "options": [],
+      "correct": "Richtig",
+      "correctAnswer": "Richtig",
+      "explanation": "Sie sagt, die Karten waren nicht teuer — zwanzig Euro pro Person.",
+      "passageId": "gen-h3-k4p9",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-h3-k4p9-4",
+      "module": "horen",
+      "teil": 3,
+      "type": "richtig_falsch",
+      "question": "Die beiden Frauen schlafen in Hamburg in einem Hotel.",
+      "options": [],
+      "correct": "Falsch",
+      "correctAnswer": "Falsch",
+      "explanation": "Lena sagt, sie fahren am gleichen Abend zurück und übernachten nicht.",
+      "passageId": "gen-h3-k4p9",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-h3-k4p9-5",
+      "module": "horen",
+      "teil": 3,
+      "type": "richtig_falsch",
+      "question": "Nach dem Konzert muss Lena früh aufstehen, um zu arbeiten.",
+      "options": [],
+      "correct": "Richtig",
+      "correctAnswer": "Richtig",
+      "explanation": "Lena erklärt, dass sie trotz des späten Heimkommens vom Konzert am Sonntag früh arbeiten muss.",
+      "passageId": "gen-h3-k4p9",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-h3-k4p9-6",
+      "module": "horen",
+      "teil": 3,
+      "type": "richtig_falsch",
+      "question": "Jonas findet die Veranstaltung nicht interessant.",
+      "options": [],
+      "correct": "Falsch",
+      "correctAnswer": "Falsch",
+      "explanation": "Jonas äußert Begeisterung — er sagt, das klingt toll — und bewundert Lenas Energie für den Ausflug.",
+      "passageId": "gen-h3-k4p9",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-h3-k4p9-7",
+      "module": "horen",
+      "teil": 3,
+      "type": "richtig_falsch",
+      "question": "Die Reise nach Hamburg dauert mehr als eine Stunde.",
+      "options": [],
+      "correct": "Richtig",
+      "correctAnswer": "Richtig",
+      "explanation": "Lena gibt im Gespräch an, dass die Zugfahrt nach Hamburg rund zwei Stunden dauert.",
+      "passageId": "gen-h3-k4p9",
+      "lang": "de",
+      "level": "B1"
+    }
+  ]
+}
+```
+
+Genera UNA parte **NUEVA** (tema distinto al ejemplo), mismas reglas, integrando PALABRAS OBJETIVO. Devuelve solo el JSON.
+- APERTURA DEL DIÁLOGO (Hören T3): la primera réplica NO debe ser siempre «Hallo/Hey [Name], wie geht's…» ni «Wie war dein Wochenende?» (estereotipo del pool). Variá el arranque: pregunta concreta, contexto breve o petición de consejo. Orientación (o equivalente natural propio): Sag mal, hast du einen Moment? Ich wollte dich was fragen. · Du, ich bin mir unsicher wegen einer Sache — kannst du mir kurz helfen? · Ich wollte dir eigentlich schon gestern schreiben, aber jetzt passe ich dich ab. · Hast du die Mail von heute Morgen gesehen? · Weißt du zufällig, ob das noch gilt, was wir letzte Woche besprochen haben? · Ich komme gerade von unterwegs und wollte kurz nachfragen. · Kannst du mir einen Tipp geben? Ich stecke bei etwas fest. · Bevor ich das falsch mache: wie würdest du das angehen? · Ich habe eben etwas gehört und bin nicht sicher, ob ich es richtig verstanden habe. · Passt es kurz? Es geht um eine praktische Frage. · Ich brauche deine Meinung zu etwas, bevor ich antworte. · Hast du schon Zeit gehabt, dir das genauer anzuschauen?. Seguí en registro informal B1 entre conocidos; no repitas la misma apertura de un batch a otro.
+
+- NOMBRES DEL DIÁLOGO (Hören T3): exactamente 2 hablantes con nombres de pila reales en el formato «Name: …» (NO uses «Person A:» / «Person B:»). PROHIBIDO reutilizar nombres ya sobrerrepresentados: Anna, Ben, Lena, Markus. Elegí UN par distinto del banco (o un par equivalente propio no excluido): Jonas+Emma, Tim+Sophie, Niklas+Laura, Paul+Nina, Tobias+Clara, David+Julia, Simon+Lisa, Jan+Marie, Erik+Hannah, Leon+Greta, Finn+Paula, Omar+Yasmin. No repitas el mismo par de un batch a otro dentro de la misma sesión; alterná género y combinación.
+
+
+IMPORTANTE — IDs de esta generación:
+- Passages T3: gen-p-h3-parity-sN (N=1…5 solo T1)
+- Preguntas: gen-q-h3-parity-…
+No reutilices IDs del ejemplo ni del banco existente.
+
+## LONGITUD CEFR (OBLIGATORIO — ingest RECHAZA si fallas)
+- Ámbito: **passages[0].text (diálogo Name:/Name: — 2 hablantes)** (7 preguntas richtig_falsch, escucha 1×.)
+- Objetivo: **270–330 palabras**.
+- Mínimo absoluto: **250** · máximo: **350**.
+- **CUENTA las palabras antes de responder.** Transcript = lenguaje **hablado**, no ensayo escrito.
+- Prefiere léxico B1 frecuente (≤B1 CEFR). Evita meta-texto («Dieser Text hat 280 Wörter…») y términos C1/académicos (kontextualisieren, Polyphonie, Paradigma, Manifestation…). REGLA ANTI-ANGLICISMOS: NUNCA escribas verbos/sustantivos ingleses sin traducir — gardening→Gartenarbeit/Gärtnern, jogging→Joggen, hiking→Wandern, cycling→Radfahren, shopping→Einkaufen, cooking→Kochen, Workshop→Kurs/Seminar/Werkstatt. Préstamos aceptados en alemán moderno (Deadline, Meeting, Team, Job, Computer, Internet, E-Mail, Video, Blog, Podcast, App, Design, Event, Check-in, Feedback) son válidos SOLO si van capitalizados como sustantivos: «die Deadline», «das Meeting», «das Team». REGLA ORTOGRÁFICA OBLIGATORIA: en alemán TODOS los sustantivos van en MAYÚSCULA — también en enumeraciones y después de «kein/keine» («Blumen und Pflanzen», «keine Hypothese», no «blumen», no «keine hypothese»). Repasa cada sustantivo antes de enviar. LÍMITE INVERSO — NUNCA capitalices a mitad de frase palabras que NO sean sustantivos ni nombres propios: adjetivos (schwierig, persönlich, zugänglich, einfach, möglich), cuantificadores (viele, wenige, einige), adverbios (lange, eher, leider, trotzdem, natürlich) y verbos conjugados (ich glaube, ich stimme, ich denke) van en MINÚSCULA a mitad de frase. Solo SUSTANTIVOS y nombres propios llevan mayúscula. Ejemplos correctos: «viele Menschen» (NO «Viele»), «in der Praxis schwierig» (NO «Schwierig»), «ich glaube» (NO «Glaube»), «ich stimme zu» (NO «Stimme»), «leicht zugänglich» (NO «Zugänglich»).
+- VOCABULARIO SUGERIDO: OPCIONAL — solo si suena natural en el transcript; si no encaja, OMÍTELA (nunca fuerces términos académicos/meta-gramaticales).
+
+CHECKLIST FINAL (Goethe B1 — debe pasar validate-batch.mjs):
+- Responde SOLO JSON: { "passages": [...], "questions": [...] } — sin markdown, sin ```.
+- correct === correctAnswer en todas las preguntas.
+- module correcto en cada question; lang:"de", level:"B1".
+- IDs únicos con el prefijo indicado arriba (no reutilizar el ejemplo).
+- explanation en alemán en cada pregunta (nunca vacía; ≥10 palabras para multiple_choice — CHK-18 rechaza si es más corta).
+- VOCABULARIO SUGERIDO: integra palabras solo si encajan; omite las que no encajen.
+- MAYÚSCULAS: TODO sustantivo alemán en mayúscula — también tras kein/keine/mit/für/von/ohne, en enumeraciones y listas. ¡Compruébalo antes de enviar!
+- ANTI-ANGLICISMOS: CERO palabras inglesas sin traducir (gardening, jogging, hiking, cycling, Workshop…). Préstamos aceptados (Deadline, Meeting, Team, Computer, E-Mail, App, Blog, Podcast, Event) SOLO capitalizados. Workshop SIEMPRE → Kurs/Seminar/Werkstatt.
+- Cada passage: "module":"horen". Cada question: "module":"horen","teil":3,"lang":"de","level":"B1","correctAnswer" (= correct).
+- Diálogo informal B1 con exactamente 2 hablantes; formato «Name: …» alternando (nombres de pila reales, NO «Person A:/Person B:»).
+- NOMBRES: ver bloque de pares sugeridos / excluidos en el prompt (variedad; no Anna+Ben ni Lena/Markus).
+- APERTURA: ver bloque de aperturas sugeridas — evitar el estereotipo «Hallo/Hey [Name], wie geht's / Wochenende».
+- 7× richtig_falsch; mezcla Richtig/Falsch; al menos 2 inferencia/paráfrasis.

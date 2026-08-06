@@ -1,0 +1,665 @@
+{
+  "scannedAt": "2026-07-21T09:22:32.337Z",
+  "topics": {
+    "Reisen": {
+      "count": 4,
+      "seeds": [
+        {
+          "seed": "Reisende sollen am Bahnhof kostenlose Schließfächer für ihr Gepäck bekommen.",
+          "ok": true,
+          "reason": null,
+          "detected": null,
+          "tagHits": 2,
+          "detail": null
+        },
+        {
+          "seed": "Hotels dürfen Touristen keinen Mindestaufenthalt von drei Nächten mehr verlangen.",
+          "ok": false,
+          "reason": "intro_topic_mismatch",
+          "detected": "Freizeit",
+          "tagHits": 2,
+          "detail": "passage:t4-seed-preflight topicTag «Reisen» no encaja con contenido (detectado «Freizeit» score=1 vs tag score=0; hits={\"Freizeit\":1,\"Stadtleben\":1})"
+        },
+        {
+          "seed": "Jeder Erwachsene soll einmal pro Jahr ein vergünstigtes Ticket für eine Zugfahrt ins Ausland bekommen.",
+          "ok": true,
+          "reason": null,
+          "detected": null,
+          "tagHits": 3,
+          "detail": null
+        },
+        {
+          "seed": "Am Flughafen sollen Reisende vor dem Flug kostenlose Wasserflaschen bekommen.",
+          "ok": true,
+          "reason": null,
+          "detected": null,
+          "tagHits": 2,
+          "detail": null
+        }
+      ]
+    },
+    "Gesundheit": {
+      "count": 4,
+      "seeds": [
+        {
+          "seed": "Alle Erwachsenen sollen einmal pro Jahr kostenlose Vorsorge beim Arzt und eine Impfung bekommen.",
+          "ok": true,
+          "reason": null,
+          "detected": null,
+          "tagHits": 2,
+          "detail": null
+        },
+        {
+          "seed": "Apotheken sollen einfache Medikamente gegen Schmerzen ohne Rezept verkaufen dürfen.",
+          "ok": true,
+          "reason": null,
+          "detected": null,
+          "tagHits": 2,
+          "detail": null
+        },
+        {
+          "seed": "Krankenkassen sollen Fitnesskurse und Therapie für Versicherte bezahlen.",
+          "ok": true,
+          "reason": null,
+          "detected": null,
+          "tagHits": 3,
+          "detail": null
+        },
+        {
+          "seed": "Besuchszeiten im Krankenhaus sollen am Wochenende verlängert werden.",
+          "ok": false,
+          "reason": "intro_topic_mismatch",
+          "detected": "Freizeit",
+          "tagHits": 2,
+          "detail": "passage:t4-seed-preflight topicTag «Gesundheit» no encaja con contenido (detectado «Freizeit» score=2 vs tag score=1; hits={\"Gesundheit\":1,\"Freizeit\":2,\"Stadtleben\":1})"
+        }
+      ]
+    },
+    "Arbeit": {
+      "count": 4,
+      "seeds": [
+        {
+          "seed": "Alle Kollegen sollen nur vier Tage pro Woche im Büro arbeiten müssen.",
+          "ok": true,
+          "reason": null,
+          "detected": null,
+          "tagHits": 2,
+          "detail": null
+        },
+        {
+          "seed": "Firmen sollen mindestens zwei Tage Homeoffice pro Woche für alle Bürojobs verpflichtend ermöglichen.",
+          "ok": true,
+          "reason": null,
+          "detected": null,
+          "tagHits": 2,
+          "detail": null
+        },
+        {
+          "seed": "Praktikanten sollen vom Arbeitgeber immer ein faires Gehalt bekommen.",
+          "ok": true,
+          "reason": null,
+          "detected": null,
+          "tagHits": 2,
+          "detail": null
+        },
+        {
+          "seed": "Neue Kollegen sollen in den ersten drei Monaten einen festen Mentor im Beruf bekommen.",
+          "ok": true,
+          "reason": null,
+          "detected": null,
+          "tagHits": 2,
+          "detail": null
+        }
+      ]
+    },
+    "Technik": {
+      "count": 4,
+      "seeds": [
+        {
+          "seed": "Smartphones sollen nach zwei Stunden Bildschirmzeit pro Tag Apps automatisch sperren.",
+          "ok": false,
+          "reason": "intro_topic_mismatch",
+          "detected": "Freizeit",
+          "tagHits": 3,
+          "detail": "passage:t4-seed-preflight topicTag «Technik» no encaja con contenido (detectado «Freizeit» score=1 vs tag score=0; hits={\"Freizeit\":1,\"Stadtleben\":1})"
+        },
+        {
+          "seed": "Alle Haushalte sollen ein digitales Gerät für Behördengänge über das Internet bekommen.",
+          "ok": true,
+          "reason": null,
+          "detected": null,
+          "tagHits": 3,
+          "detail": null
+        },
+        {
+          "seed": "Private Handys sollen in der Schule jede Stunde am Bildschirm gesperrt werden.",
+          "ok": false,
+          "reason": "intro_topic_mismatch",
+          "detected": "Bildung",
+          "tagHits": 2,
+          "detail": "passage:t4-seed-preflight topicTag «Technik» no encaja con contenido (detectado «Bildung» score=3 vs tag score=2; hits={\"Technik\":2,\"Bildung\":3,\"Familie\":2,\"Freizeit\":1,\"Stadtleben\":1})"
+        },
+        {
+          "seed": "Apps sollen für Nutzer unter 18 weniger persönliche Daten über das Internet sammeln dürfen.",
+          "ok": true,
+          "reason": null,
+          "detected": null,
+          "tagHits": 2,
+          "detail": null
+        }
+      ]
+    },
+    "Medien": {
+      "count": 4,
+      "seeds": [
+        {
+          "seed": "Die lokale Zeitung soll kostenlos online für alle Bürger verfügbar sein.",
+          "ok": true,
+          "reason": null,
+          "detected": null,
+          "tagHits": 2,
+          "detail": null
+        },
+        {
+          "seed": "Nachrichten im Radio sollen jeden Abend stärker über lokale Themen berichten.",
+          "ok": true,
+          "reason": null,
+          "detected": null,
+          "tagHits": 2,
+          "detail": null
+        },
+        {
+          "seed": "Jugendliche unter 16 sollen Social-Media-Apps und Online-Plattformen nur mit Erlaubnis der Eltern nutzen.",
+          "ok": true,
+          "reason": null,
+          "detected": null,
+          "tagHits": 2,
+          "detail": null
+        },
+        {
+          "seed": "Jeder Bürger soll jeden Morgen einen kostenlosen Nachrichten-Podcast der Stadt hören können.",
+          "ok": true,
+          "reason": null,
+          "detected": null,
+          "tagHits": 2,
+          "detail": null
+        }
+      ]
+    },
+    "Wohnen": {
+      "count": 4,
+      "seeds": [
+        {
+          "seed": "Vermieter sollen Mieterhöhungen in der Wohnung nur einmal pro Jahr machen dürfen.",
+          "ok": true,
+          "reason": null,
+          "detected": null,
+          "tagHits": 3,
+          "detail": null
+        },
+        {
+          "seed": "Neue Wohnungen sollen mindestens drei Zimmer für Familien haben.",
+          "ok": true,
+          "reason": null,
+          "detected": null,
+          "tagHits": 2,
+          "detail": null
+        },
+        {
+          "seed": "Beim Umzug in eine neue Wohnung soll die Stadt kostenlose Transporter anbieten.",
+          "ok": true,
+          "reason": null,
+          "detected": null,
+          "tagHits": 2,
+          "detail": null
+        },
+        {
+          "seed": "In Wohngebieten sollen Nachbarn in der Wohnung über laute Musik nach 22 Uhr klagen können.",
+          "ok": true,
+          "reason": null,
+          "detected": null,
+          "tagHits": 2,
+          "detail": null
+        }
+      ]
+    },
+    "Konsum": {
+      "count": 4,
+      "seeds": [
+        {
+          "seed": "Der Supermarkt soll am Sonntag für den Einkauf geöffnet sein.",
+          "ok": true,
+          "reason": null,
+          "detected": null,
+          "tagHits": 2,
+          "detail": null
+        },
+        {
+          "seed": "Online-Bestellungen sollen ohne extra Preis kostenlose Rücksendung haben.",
+          "ok": true,
+          "reason": null,
+          "detected": null,
+          "tagHits": 2,
+          "detail": null
+        },
+        {
+          "seed": "Preise in Geschäften sollen auf dem Produkt in großer Schrift stehen.",
+          "ok": true,
+          "reason": null,
+          "detected": null,
+          "tagHits": 2,
+          "detail": null
+        },
+        {
+          "seed": "Rabatt-Aktionen im Laden sollen klar erkennbar und fair sein.",
+          "ok": true,
+          "reason": null,
+          "detected": null,
+          "tagHits": 2,
+          "detail": null
+        }
+      ]
+    },
+    "Bildung": {
+      "count": 4,
+      "seeds": [
+        {
+          "seed": "Alle Schüler sollen vor dem Abitur kostenlose Lernmaterialien vom Lehrer bekommen.",
+          "ok": true,
+          "reason": null,
+          "detected": null,
+          "tagHits": 3,
+          "detail": null
+        },
+        {
+          "seed": "Die Universität soll mehr Plätze für ein Studium ohne Numerus clausus anbieten.",
+          "ok": true,
+          "reason": null,
+          "detected": null,
+          "tagHits": 2,
+          "detail": null
+        },
+        {
+          "seed": "Kurse in der Volkshochschule sollen für alle Erwachsenen günstiger werden.",
+          "ok": true,
+          "reason": null,
+          "detected": null,
+          "tagHits": 2,
+          "detail": null
+        },
+        {
+          "seed": "An Schulen soll es mehr Zeit für Prüfungsvorbereitung im Unterricht geben.",
+          "ok": true,
+          "reason": null,
+          "detected": null,
+          "tagHits": 3,
+          "detail": null
+        }
+      ]
+    },
+    "Familie": {
+      "count": 4,
+      "seeds": [
+        {
+          "seed": "Eltern sollen zwei Monate bezahlte Elternzeit extra bekommen, wenn sie ein zweites Kind bekommen.",
+          "ok": true,
+          "reason": null,
+          "detected": null,
+          "tagHits": 2,
+          "detail": null
+        },
+        {
+          "seed": "Großeltern sollen kostenlose Fahrtkarten bekommen, wenn sie ihre Enkel regelmäßig betreuen.",
+          "ok": true,
+          "reason": null,
+          "detected": null,
+          "tagHits": 3,
+          "detail": null
+        },
+        {
+          "seed": "Alle Familien mit Kindern sollen einen festen Erziehungsberater von der Stadt bekommen.",
+          "ok": true,
+          "reason": null,
+          "detected": null,
+          "tagHits": 5,
+          "detail": null
+        },
+        {
+          "seed": "Geschwister sollen getrennt werden, damit jedes Kind in der Schule fair startet.",
+          "ok": true,
+          "reason": null,
+          "detected": null,
+          "tagHits": 2,
+          "detail": null
+        }
+      ]
+    },
+    "Umwelt": {
+      "count": 4,
+      "seeds": [
+        {
+          "seed": "Haushalte müssen Plastik und Restmüll noch genauer trennen; bei Fehlern drohen Bußgelder.",
+          "ok": true,
+          "reason": null,
+          "detected": null,
+          "tagHits": 2,
+          "detail": null
+        },
+        {
+          "seed": "In der Stadt sollen nur Autos fahren, die wenig CO2 ausstoßen und die Umwelt schützen.",
+          "ok": true,
+          "reason": null,
+          "detected": null,
+          "tagHits": 2,
+          "detail": null
+        },
+        {
+          "seed": "Alle Gebäude sollen bis 2030 nur noch erneuerbare Energie zum Heizen nutzen.",
+          "ok": true,
+          "reason": null,
+          "detected": null,
+          "tagHits": 2,
+          "detail": null
+        },
+        {
+          "seed": "Jeder Bürger soll Pfandflaschen aus Plastik und Recycling-Material beim Einkauf bekommen.",
+          "ok": true,
+          "reason": null,
+          "detected": null,
+          "tagHits": 2,
+          "detail": null
+        }
+      ]
+    },
+    "Ernährung": {
+      "count": 4,
+      "seeds": [
+        {
+          "seed": "In Kantinen soll es nur noch vegetarisches Mittagessen geben.",
+          "ok": false,
+          "reason": "intro_topic_mismatch",
+          "detected": "Freizeit",
+          "tagHits": 2,
+          "detail": "passage:t4-seed-preflight topicTag «Ernährung» no encaja con contenido (detectado «Freizeit» score=1 vs tag score=0; hits={\"Freizeit\":1,\"Stadtleben\":1})"
+        },
+        {
+          "seed": "Schulen sollen kostenlose vegane Mahlzeiten für alle Schüler anbieten.",
+          "ok": false,
+          "reason": "intro_topic_mismatch",
+          "detected": "Bildung",
+          "tagHits": 2,
+          "detail": "passage:t4-seed-preflight topicTag «Ernährung» no encaja con contenido (detectado «Bildung» score=2 vs tag score=1; hits={\"Bildung\":2,\"Familie\":2,\"Ernährung\":1,\"Freizeit\":1,\"Stadtleben\":1})"
+        },
+        {
+          "seed": "Alle Kitas sollen täglich frisches Essen aus regionalen Lebensmitteln kochen.",
+          "ok": true,
+          "reason": null,
+          "detected": null,
+          "tagHits": 3,
+          "detail": null
+        },
+        {
+          "seed": "Restaurants sollen täglich ein günstiges Essen als Mahlzeit anbieten.",
+          "ok": true,
+          "reason": null,
+          "detected": null,
+          "tagHits": 3,
+          "detail": null
+        }
+      ]
+    },
+    "Kultur": {
+      "count": 4,
+      "seeds": [
+        {
+          "seed": "Das Museum soll am Sonntag eine Gratis-Ausstellung für alle Besucher anbieten.",
+          "ok": true,
+          "reason": null,
+          "detected": null,
+          "tagHits": 2,
+          "detail": null
+        },
+        {
+          "seed": "Die Stadt soll ein neues Festival für Musik und Kunst im Sommer organisieren.",
+          "ok": true,
+          "reason": null,
+          "detected": null,
+          "tagHits": 3,
+          "detail": null
+        },
+        {
+          "seed": "Kino-Tickets für Filme sollen für Schüler halb so teuer sein.",
+          "ok": false,
+          "reason": "intro_topic_mismatch",
+          "detected": "Bildung",
+          "tagHits": 2,
+          "detail": "passage:t4-seed-preflight topicTag «Kultur» no encaja con contenido (detectado «Bildung» score=2 vs tag score=1; hits={\"Bildung\":2,\"Familie\":2,\"Kultur\":1,\"Freizeit\":1,\"Stadtleben\":1})"
+        },
+        {
+          "seed": "Jeder Bürger soll einmal pro Jahr ein Konzert im Theater günstiger besuchen können.",
+          "ok": true,
+          "reason": null,
+          "detected": null,
+          "tagHits": 2,
+          "detail": null
+        }
+      ]
+    },
+    "Sport": {
+      "count": 4,
+      "seeds": [
+        {
+          "seed": "In Stadtparks sollen kostenlose Fitnessgeräte für Training und Sport aufgestellt werden.",
+          "ok": true,
+          "reason": null,
+          "detected": null,
+          "tagHits": 3,
+          "detail": null
+        },
+        {
+          "seed": "Sportvereine sollen mehr Trainingseinheiten für Mannschaftssport wie Fußball anbieten.",
+          "ok": true,
+          "reason": null,
+          "detected": null,
+          "tagHits": 4,
+          "detail": null
+        },
+        {
+          "seed": "Kinder sollen gratis Schwimmen und anderen Sport im Hallenbad machen dürfen.",
+          "ok": true,
+          "reason": null,
+          "detected": null,
+          "tagHits": 2,
+          "detail": null
+        },
+        {
+          "seed": "Die Stadt soll jedes Jahr ein großes Turnier für Vereinssport organisieren.",
+          "ok": true,
+          "reason": null,
+          "detected": null,
+          "tagHits": 3,
+          "detail": null
+        }
+      ]
+    },
+    "Freizeit": {
+      "count": 4,
+      "seeds": [
+        {
+          "seed": "Die Stadt soll mehr kostenlose Hobby-Kurse am Wochenende anbieten.",
+          "ok": true,
+          "reason": null,
+          "detected": null,
+          "tagHits": 2,
+          "detail": null
+        },
+        {
+          "seed": "Bibliotheken sollen auch sonntags geöffnet sein für Lesen in der Freizeit.",
+          "ok": true,
+          "reason": null,
+          "detected": null,
+          "tagHits": 2,
+          "detail": null
+        },
+        {
+          "seed": "Jeder Bürger soll pro Jahr einen Gutschein für Ausflug und Spaziergang bekommen.",
+          "ok": true,
+          "reason": null,
+          "detected": null,
+          "tagHits": 2,
+          "detail": null
+        },
+        {
+          "seed": "In Parks sollen Plätze zum Spielen und Treffen mit Freunden eingerichtet werden.",
+          "ok": true,
+          "reason": null,
+          "detected": null,
+          "tagHits": 2,
+          "detail": null
+        }
+      ]
+    },
+    "Verkehr": {
+      "count": 4,
+      "seeds": [
+        {
+          "seed": "Bus und Bahn in der Stadt sollen für alle kostenlos sein.",
+          "ok": true,
+          "reason": null,
+          "detected": null,
+          "tagHits": 2,
+          "detail": null
+        },
+        {
+          "seed": "Für jeden Erwachsenen soll es einen sicheren Fahrradweg ohne Stau geben.",
+          "ok": true,
+          "reason": null,
+          "detected": null,
+          "tagHits": 2,
+          "detail": null
+        },
+        {
+          "seed": "Parkplätze in der Straße sollen teurer werden, damit weniger Stau entsteht.",
+          "ok": true,
+          "reason": null,
+          "detected": null,
+          "tagHits": 2,
+          "detail": null
+        },
+        {
+          "seed": "Alle Jugendlichen sollen den Führerschein schon mit 17 Jahren für die Fahrt machen dürfen.",
+          "ok": true,
+          "reason": null,
+          "detected": null,
+          "tagHits": 2,
+          "detail": null
+        }
+      ]
+    },
+    "Stadtleben": {
+      "count": 4,
+      "seeds": [
+        {
+          "seed": "In jedem Viertel soll es einen Treffpunkt für Engagement in der Gemeinschaft geben.",
+          "ok": true,
+          "reason": null,
+          "detected": null,
+          "tagHits": 3,
+          "detail": null
+        },
+        {
+          "seed": "Die Innenstadt soll an Samstagen autofrei für Fußgänger sein.",
+          "ok": true,
+          "reason": null,
+          "detected": null,
+          "tagHits": 2,
+          "detail": null
+        },
+        {
+          "seed": "Die Stadtmitte soll mehr öffentliche Bänke und Trinkwasser für alle Bürger bekommen.",
+          "ok": true,
+          "reason": null,
+          "detected": null,
+          "tagHits": 4,
+          "detail": null
+        },
+        {
+          "seed": "Der Marktplatz soll am Abend für Veranstaltung und Treffen in der Stadt geöffnet bleiben.",
+          "ok": true,
+          "reason": null,
+          "detected": null,
+          "tagHits": 2,
+          "detail": null
+        }
+      ]
+    }
+  },
+  "failing": [
+    {
+      "topic": "Reisen",
+      "seed": "Hotels dürfen Touristen keinen Mindestaufenthalt von drei Nächten mehr verlangen.",
+      "ok": false,
+      "reason": "intro_topic_mismatch",
+      "detected": "Freizeit",
+      "tagHits": 2,
+      "detail": "passage:t4-seed-preflight topicTag «Reisen» no encaja con contenido (detectado «Freizeit» score=1 vs tag score=0; hits={\"Freizeit\":1,\"Stadtleben\":1})"
+    },
+    {
+      "topic": "Gesundheit",
+      "seed": "Besuchszeiten im Krankenhaus sollen am Wochenende verlängert werden.",
+      "ok": false,
+      "reason": "intro_topic_mismatch",
+      "detected": "Freizeit",
+      "tagHits": 2,
+      "detail": "passage:t4-seed-preflight topicTag «Gesundheit» no encaja con contenido (detectado «Freizeit» score=2 vs tag score=1; hits={\"Gesundheit\":1,\"Freizeit\":2,\"Stadtleben\":1})"
+    },
+    {
+      "topic": "Technik",
+      "seed": "Smartphones sollen nach zwei Stunden Bildschirmzeit pro Tag Apps automatisch sperren.",
+      "ok": false,
+      "reason": "intro_topic_mismatch",
+      "detected": "Freizeit",
+      "tagHits": 3,
+      "detail": "passage:t4-seed-preflight topicTag «Technik» no encaja con contenido (detectado «Freizeit» score=1 vs tag score=0; hits={\"Freizeit\":1,\"Stadtleben\":1})"
+    },
+    {
+      "topic": "Technik",
+      "seed": "Private Handys sollen in der Schule jede Stunde am Bildschirm gesperrt werden.",
+      "ok": false,
+      "reason": "intro_topic_mismatch",
+      "detected": "Bildung",
+      "tagHits": 2,
+      "detail": "passage:t4-seed-preflight topicTag «Technik» no encaja con contenido (detectado «Bildung» score=3 vs tag score=2; hits={\"Technik\":2,\"Bildung\":3,\"Familie\":2,\"Freizeit\":1,\"Stadtleben\":1})"
+    },
+    {
+      "topic": "Ernährung",
+      "seed": "In Kantinen soll es nur noch vegetarisches Mittagessen geben.",
+      "ok": false,
+      "reason": "intro_topic_mismatch",
+      "detected": "Freizeit",
+      "tagHits": 2,
+      "detail": "passage:t4-seed-preflight topicTag «Ernährung» no encaja con contenido (detectado «Freizeit» score=1 vs tag score=0; hits={\"Freizeit\":1,\"Stadtleben\":1})"
+    },
+    {
+      "topic": "Ernährung",
+      "seed": "Schulen sollen kostenlose vegane Mahlzeiten für alle Schüler anbieten.",
+      "ok": false,
+      "reason": "intro_topic_mismatch",
+      "detected": "Bildung",
+      "tagHits": 2,
+      "detail": "passage:t4-seed-preflight topicTag «Ernährung» no encaja con contenido (detectado «Bildung» score=2 vs tag score=1; hits={\"Bildung\":2,\"Familie\":2,\"Ernährung\":1,\"Freizeit\":1,\"Stadtleben\":1})"
+    },
+    {
+      "topic": "Kultur",
+      "seed": "Kino-Tickets für Filme sollen für Schüler halb so teuer sein.",
+      "ok": false,
+      "reason": "intro_topic_mismatch",
+      "detected": "Bildung",
+      "tagHits": 2,
+      "detail": "passage:t4-seed-preflight topicTag «Kultur» no encaja con contenido (detectado «Bildung» score=2 vs tag score=1; hits={\"Bildung\":2,\"Familie\":2,\"Kultur\":1,\"Freizeit\":1,\"Stadtleben\":1})"
+    }
+  ],
+  "warnings": [],
+  "okCount": 57,
+  "totalSeeds": 64
+}

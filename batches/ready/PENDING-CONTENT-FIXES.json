@@ -1,0 +1,28 @@
+{
+  "schema": "pending-content-fixes/v1",
+  "updatedAt": "2026-07-10T09:40:00.000Z",
+  "note": "PartIds flagged in manual unit review that must NOT enter assembled exams until fixed. Consumed by scripts/lib/assembleDiscardLists.mjs.",
+  "items": [
+    {
+      "partId": "schreiben-gemini-003",
+      "status": "pending",
+      "module": "schreiben",
+      "issue": "Registro mixto Sie/du en la misma instrucción (Erzählen Sie… / Schlag… / Frag…)",
+      "source": "unit-review-2026-07-10 e2",
+      "blocksAssembly": true
+    },
+    {
+      "partId": "lesen-t3-auto-toixf8",
+      "status": "pending",
+      "module": "lesen",
+      "teil": 3,
+      "issue": "Lena/Schneidern: correct=H (NähKurs) debería ser SchnittKurs; también en Q2-LENA-CLUSTER-DISCARD",
+      "source": "unit-review-2026-07-10 e2 + Q2-LENA-CLUSTER-DISCARD",
+      "blocksAssembly": true,
+      "note": "Ben (q6) OK — blueprint fuente ya corregido; este batch nunca se regeneró"
+    }
+  ],
+  "notes": [
+    "Concordancia de género (einen günstigen Unterkunft → eine günstige Unterkunft) vista en e4 L3 / lesen-t3-auto-1i5jz6: fix puntual aplicado en fuente. Candidato a checker determinista simple o a Q3-B lexicon/grammar — no gate propio en esta ronda."
+  ]
+}

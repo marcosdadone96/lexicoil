@@ -1,0 +1,2057 @@
+{
+  "at": "2026-07-14T13:36:24.207Z",
+  "topics": 16,
+  "cells": 240,
+  "existingExcludes": {
+    "T3": {
+      "Konsum": [
+        "bp-koffer-brille"
+      ],
+      "Arbeit": [
+        "bp-schuhe-mode"
+      ]
+    },
+    "T3_PREFERENCE": {
+      "Gesundheit": [
+        "bp-sport"
+      ],
+      "Ernährung": [
+        "bp-sport",
+        "bp-garten"
+      ],
+      "Familie": [
+        "bp-familie",
+        "bp-freizeit-garten"
+      ],
+      "Umwelt": [
+        "bp-garten",
+        "bp-freizeit-garten"
+      ],
+      "Kultur": [
+        "bp-musik",
+        "bp-klima-tanz"
+      ],
+      "Freizeit": [
+        "bp-freizeit-garten",
+        "bp-sport",
+        "bp-reparatur-kurse"
+      ]
+    },
+    "T4": {
+      "Gesundheit": [
+        "autofrei"
+      ],
+      "Familie": [
+        "vereinsfoerderung"
+      ],
+      "Konsum": [
+        "mensa_vegetarisch",
+        "oepnv_kostenlos"
+      ]
+    },
+    "T5": {
+      "Bildung": [
+        "schule",
+        "bibliothek"
+      ],
+      "Reisen": [
+        "bibliothek"
+      ]
+    }
+  },
+  "newExcludesProposed": {
+    "T3": {},
+    "T4": {
+      "Gesundheit": [
+        "oepnv_kostenlos"
+      ],
+      "Arbeit": [
+        "mensa_vegetarisch"
+      ],
+      "Technik": [
+        "online_unterricht",
+        "video_ueberwachung",
+        "smart_home"
+      ],
+      "Bildung": [
+        "mensa_vegetarisch"
+      ],
+      "Kultur": [
+        "hobby_kurse",
+        "oepnv_kostenlos"
+      ]
+    },
+    "T5": {}
+  },
+  "t3FalsePositives": [],
+  "t4FailingPreferred": [
+    {
+      "topic": "Gesundheit",
+      "debateId": "oepnv_kostenlos",
+      "reason": "intro_topic"
+    },
+    {
+      "topic": "Arbeit",
+      "debateId": "mensa_vegetarisch",
+      "reason": "intro_topic"
+    },
+    {
+      "topic": "Technik",
+      "debateId": "online_unterricht",
+      "reason": "intro_topic"
+    },
+    {
+      "topic": "Technik",
+      "debateId": "video_ueberwachung",
+      "reason": "intro_topic"
+    },
+    {
+      "topic": "Technik",
+      "debateId": "smart_home",
+      "reason": "intro_topic"
+    },
+    {
+      "topic": "Kultur",
+      "debateId": "hobby_kurse",
+      "reason": "intro_topic"
+    },
+    {
+      "topic": "Kultur",
+      "debateId": "oepnv_kostenlos",
+      "reason": "intro_topic"
+    }
+  ],
+  "problems": [],
+  "warns": [
+    {
+      "topic": "Bildung",
+      "module": "lesen",
+      "teil": 4,
+      "status": "WARN",
+      "note": "pick=handy_schule tier=preferred chk27=OK; saturado→mensa_vegetarisch CHK-27 FAIL",
+      "mechanism": "debate_mold"
+    }
+  ],
+  "matrix": [
+    {
+      "topic": "Reisen",
+      "module": "lesen",
+      "teil": 1,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Reisen",
+      "module": "lesen",
+      "teil": 2,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Reisen",
+      "module": "lesen",
+      "teil": 3,
+      "status": "OK",
+      "note": "4 bp: bp-fahrzeugteile, bp-koffer-brille, bp-mobilitaet-reisen, bp-musik",
+      "mechanism": "blueprint"
+    },
+    {
+      "topic": "Reisen",
+      "module": "lesen",
+      "teil": 4,
+      "status": "OK",
+      "note": "pick=oepnv_kostenlos tier=preferred chk27=OK",
+      "mechanism": "debate_mold"
+    },
+    {
+      "topic": "Reisen",
+      "module": "lesen",
+      "teil": 5,
+      "status": "OK",
+      "note": "pick=bibliothek tier=preferred",
+      "mechanism": "subtype_mold"
+    },
+    {
+      "topic": "Reisen",
+      "module": "horen",
+      "teil": 1,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "premise_dedup_global"
+    },
+    {
+      "topic": "Reisen",
+      "module": "horen",
+      "teil": 2,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "premise_dedup_global"
+    },
+    {
+      "topic": "Reisen",
+      "module": "horen",
+      "teil": 3,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Reisen",
+      "module": "horen",
+      "teil": 4,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Reisen",
+      "module": "schreiben",
+      "teil": 1,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Reisen",
+      "module": "schreiben",
+      "teil": 2,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Reisen",
+      "module": "schreiben",
+      "teil": 3,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "premise_dedup_global"
+    },
+    {
+      "topic": "Reisen",
+      "module": "sprechen",
+      "teil": 1,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "fingerprint_dedup"
+    },
+    {
+      "topic": "Reisen",
+      "module": "sprechen",
+      "teil": 2,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "fingerprint_dedup"
+    },
+    {
+      "topic": "Reisen",
+      "module": "sprechen",
+      "teil": 3,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "fingerprint_dedup"
+    },
+    {
+      "topic": "Gesundheit",
+      "module": "lesen",
+      "teil": 1,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Gesundheit",
+      "module": "lesen",
+      "teil": 2,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Gesundheit",
+      "module": "lesen",
+      "teil": 3,
+      "status": "OK",
+      "note": "1 bp: bp-sport",
+      "mechanism": "blueprint"
+    },
+    {
+      "topic": "Gesundheit",
+      "module": "lesen",
+      "teil": 4,
+      "status": "OK",
+      "note": "pick=schwimmbad_gratis tier=preferred chk27=OK",
+      "mechanism": "debate_mold"
+    },
+    {
+      "topic": "Gesundheit",
+      "module": "lesen",
+      "teil": 5,
+      "status": "OK",
+      "note": "pick=sportverein tier=preferred; celda saturada→wohnanlage",
+      "mechanism": "subtype_mold"
+    },
+    {
+      "topic": "Gesundheit",
+      "module": "horen",
+      "teil": 1,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "premise_dedup_global"
+    },
+    {
+      "topic": "Gesundheit",
+      "module": "horen",
+      "teil": 2,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "premise_dedup_global"
+    },
+    {
+      "topic": "Gesundheit",
+      "module": "horen",
+      "teil": 3,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Gesundheit",
+      "module": "horen",
+      "teil": 4,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Gesundheit",
+      "module": "schreiben",
+      "teil": 1,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Gesundheit",
+      "module": "schreiben",
+      "teil": 2,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Gesundheit",
+      "module": "schreiben",
+      "teil": 3,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "premise_dedup_global"
+    },
+    {
+      "topic": "Gesundheit",
+      "module": "sprechen",
+      "teil": 1,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "fingerprint_dedup"
+    },
+    {
+      "topic": "Gesundheit",
+      "module": "sprechen",
+      "teil": 2,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "fingerprint_dedup"
+    },
+    {
+      "topic": "Gesundheit",
+      "module": "sprechen",
+      "teil": 3,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "fingerprint_dedup"
+    },
+    {
+      "topic": "Arbeit",
+      "module": "lesen",
+      "teil": 1,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Arbeit",
+      "module": "lesen",
+      "teil": 2,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Arbeit",
+      "module": "lesen",
+      "teil": 3,
+      "status": "OK",
+      "note": "1 bp: bp-klima-tanz",
+      "mechanism": "blueprint"
+    },
+    {
+      "topic": "Arbeit",
+      "module": "lesen",
+      "teil": 4,
+      "status": "OK",
+      "note": "pick=vier_tage_woche tier=preferred chk27=OK",
+      "mechanism": "debate_mold"
+    },
+    {
+      "topic": "Arbeit",
+      "module": "lesen",
+      "teil": 5,
+      "status": "OK",
+      "note": "pick=kantine tier=preferred",
+      "mechanism": "subtype_mold"
+    },
+    {
+      "topic": "Arbeit",
+      "module": "horen",
+      "teil": 1,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "premise_dedup_global"
+    },
+    {
+      "topic": "Arbeit",
+      "module": "horen",
+      "teil": 2,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "premise_dedup_global"
+    },
+    {
+      "topic": "Arbeit",
+      "module": "horen",
+      "teil": 3,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Arbeit",
+      "module": "horen",
+      "teil": 4,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Arbeit",
+      "module": "schreiben",
+      "teil": 1,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Arbeit",
+      "module": "schreiben",
+      "teil": 2,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Arbeit",
+      "module": "schreiben",
+      "teil": 3,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "premise_dedup_global"
+    },
+    {
+      "topic": "Arbeit",
+      "module": "sprechen",
+      "teil": 1,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "fingerprint_dedup"
+    },
+    {
+      "topic": "Arbeit",
+      "module": "sprechen",
+      "teil": 2,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "fingerprint_dedup"
+    },
+    {
+      "topic": "Arbeit",
+      "module": "sprechen",
+      "teil": 3,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "fingerprint_dedup"
+    },
+    {
+      "topic": "Technik",
+      "module": "lesen",
+      "teil": 1,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Technik",
+      "module": "lesen",
+      "teil": 2,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Technik",
+      "module": "lesen",
+      "teil": 3,
+      "status": "OK",
+      "note": "6 bp: bp-audio-foto, bp-buero, bp-elektronik, bp-haushalt-technik, bp-moebel-it, bp-sprachen2",
+      "mechanism": "blueprint"
+    },
+    {
+      "topic": "Technik",
+      "module": "lesen",
+      "teil": 4,
+      "status": "OK",
+      "note": "pick=handy_schule tier=preferred chk27=OK",
+      "mechanism": "debate_mold"
+    },
+    {
+      "topic": "Technik",
+      "module": "lesen",
+      "teil": 5,
+      "status": "OK",
+      "note": "pick=bibliothek tier=preferred; celda saturada→wohnanlage",
+      "mechanism": "subtype_mold"
+    },
+    {
+      "topic": "Technik",
+      "module": "horen",
+      "teil": 1,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "premise_dedup_global"
+    },
+    {
+      "topic": "Technik",
+      "module": "horen",
+      "teil": 2,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "premise_dedup_global"
+    },
+    {
+      "topic": "Technik",
+      "module": "horen",
+      "teil": 3,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Technik",
+      "module": "horen",
+      "teil": 4,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Technik",
+      "module": "schreiben",
+      "teil": 1,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Technik",
+      "module": "schreiben",
+      "teil": 2,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Technik",
+      "module": "schreiben",
+      "teil": 3,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "premise_dedup_global"
+    },
+    {
+      "topic": "Technik",
+      "module": "sprechen",
+      "teil": 1,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "fingerprint_dedup"
+    },
+    {
+      "topic": "Technik",
+      "module": "sprechen",
+      "teil": 2,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "fingerprint_dedup"
+    },
+    {
+      "topic": "Technik",
+      "module": "sprechen",
+      "teil": 3,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "fingerprint_dedup"
+    },
+    {
+      "topic": "Medien",
+      "module": "lesen",
+      "teil": 1,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Medien",
+      "module": "lesen",
+      "teil": 2,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Medien",
+      "module": "lesen",
+      "teil": 3,
+      "status": "OK",
+      "note": "6 bp: bp-audio-foto, bp-buero, bp-elektronik, bp-haushalt-technik, bp-moebel-it, bp-sprachen2",
+      "mechanism": "blueprint"
+    },
+    {
+      "topic": "Medien",
+      "module": "lesen",
+      "teil": 4,
+      "status": "OK",
+      "note": "pick=handy_schule tier=preferred chk27=OK",
+      "mechanism": "debate_mold"
+    },
+    {
+      "topic": "Medien",
+      "module": "lesen",
+      "teil": 5,
+      "status": "OK",
+      "note": "pick=bibliothek tier=preferred",
+      "mechanism": "subtype_mold"
+    },
+    {
+      "topic": "Medien",
+      "module": "horen",
+      "teil": 1,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "premise_dedup_global"
+    },
+    {
+      "topic": "Medien",
+      "module": "horen",
+      "teil": 2,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "premise_dedup_global"
+    },
+    {
+      "topic": "Medien",
+      "module": "horen",
+      "teil": 3,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Medien",
+      "module": "horen",
+      "teil": 4,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Medien",
+      "module": "schreiben",
+      "teil": 1,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Medien",
+      "module": "schreiben",
+      "teil": 2,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Medien",
+      "module": "schreiben",
+      "teil": 3,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "premise_dedup_global"
+    },
+    {
+      "topic": "Medien",
+      "module": "sprechen",
+      "teil": 1,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "fingerprint_dedup"
+    },
+    {
+      "topic": "Medien",
+      "module": "sprechen",
+      "teil": 2,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "fingerprint_dedup"
+    },
+    {
+      "topic": "Medien",
+      "module": "sprechen",
+      "teil": 3,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "fingerprint_dedup"
+    },
+    {
+      "topic": "Wohnen",
+      "module": "lesen",
+      "teil": 1,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Wohnen",
+      "module": "lesen",
+      "teil": 2,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Wohnen",
+      "module": "lesen",
+      "teil": 3,
+      "status": "OK",
+      "note": "2 bp: bp-dienstleistungen, bp-freizeit-garten",
+      "mechanism": "blueprint"
+    },
+    {
+      "topic": "Wohnen",
+      "module": "lesen",
+      "teil": 4,
+      "status": "OK",
+      "note": "pick=nachtruhe tier=preferred chk27=OK",
+      "mechanism": "debate_mold"
+    },
+    {
+      "topic": "Wohnen",
+      "module": "lesen",
+      "teil": 5,
+      "status": "OK",
+      "note": "pick=wohnanlage tier=preferred",
+      "mechanism": "subtype_mold"
+    },
+    {
+      "topic": "Wohnen",
+      "module": "horen",
+      "teil": 1,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "premise_dedup_global"
+    },
+    {
+      "topic": "Wohnen",
+      "module": "horen",
+      "teil": 2,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "premise_dedup_global"
+    },
+    {
+      "topic": "Wohnen",
+      "module": "horen",
+      "teil": 3,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Wohnen",
+      "module": "horen",
+      "teil": 4,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Wohnen",
+      "module": "schreiben",
+      "teil": 1,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Wohnen",
+      "module": "schreiben",
+      "teil": 2,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Wohnen",
+      "module": "schreiben",
+      "teil": 3,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "premise_dedup_global"
+    },
+    {
+      "topic": "Wohnen",
+      "module": "sprechen",
+      "teil": 1,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "fingerprint_dedup"
+    },
+    {
+      "topic": "Wohnen",
+      "module": "sprechen",
+      "teil": 2,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "fingerprint_dedup"
+    },
+    {
+      "topic": "Wohnen",
+      "module": "sprechen",
+      "teil": 3,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "fingerprint_dedup"
+    },
+    {
+      "topic": "Konsum",
+      "module": "lesen",
+      "teil": 1,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Konsum",
+      "module": "lesen",
+      "teil": 2,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Konsum",
+      "module": "lesen",
+      "teil": 3,
+      "status": "OK",
+      "note": "2 bp: bp-dienstleistungen, bp-freizeit-garten",
+      "mechanism": "blueprint"
+    },
+    {
+      "topic": "Konsum",
+      "module": "lesen",
+      "teil": 4,
+      "status": "OK",
+      "note": "pick=muelltrennung tier=preferred chk27=OK",
+      "mechanism": "debate_mold"
+    },
+    {
+      "topic": "Konsum",
+      "module": "lesen",
+      "teil": 5,
+      "status": "OK",
+      "note": "pick=kantine tier=preferred",
+      "mechanism": "subtype_mold"
+    },
+    {
+      "topic": "Konsum",
+      "module": "horen",
+      "teil": 1,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "premise_dedup_global"
+    },
+    {
+      "topic": "Konsum",
+      "module": "horen",
+      "teil": 2,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "premise_dedup_global"
+    },
+    {
+      "topic": "Konsum",
+      "module": "horen",
+      "teil": 3,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Konsum",
+      "module": "horen",
+      "teil": 4,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Konsum",
+      "module": "schreiben",
+      "teil": 1,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Konsum",
+      "module": "schreiben",
+      "teil": 2,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Konsum",
+      "module": "schreiben",
+      "teil": 3,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "premise_dedup_global"
+    },
+    {
+      "topic": "Konsum",
+      "module": "sprechen",
+      "teil": 1,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "fingerprint_dedup"
+    },
+    {
+      "topic": "Konsum",
+      "module": "sprechen",
+      "teil": 2,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "fingerprint_dedup"
+    },
+    {
+      "topic": "Konsum",
+      "module": "sprechen",
+      "teil": 3,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "fingerprint_dedup"
+    },
+    {
+      "topic": "Bildung",
+      "module": "lesen",
+      "teil": 1,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Bildung",
+      "module": "lesen",
+      "teil": 2,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Bildung",
+      "module": "lesen",
+      "teil": 3,
+      "status": "OK",
+      "note": "1 bp: bp-familie",
+      "mechanism": "blueprint"
+    },
+    {
+      "topic": "Bildung",
+      "module": "lesen",
+      "teil": 4,
+      "status": "WARN",
+      "note": "pick=handy_schule tier=preferred chk27=OK; saturado→mensa_vegetarisch CHK-27 FAIL",
+      "mechanism": "debate_mold"
+    },
+    {
+      "topic": "Bildung",
+      "module": "lesen",
+      "teil": 5,
+      "status": "OK",
+      "note": "pick=schule tier=preferred; celda saturada→wohnanlage (Bildung: wohnanlage/kantine/… tras schule+bibliothek bloqueados — esperado)",
+      "mechanism": "subtype_mold"
+    },
+    {
+      "topic": "Bildung",
+      "module": "horen",
+      "teil": 1,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "premise_dedup_global"
+    },
+    {
+      "topic": "Bildung",
+      "module": "horen",
+      "teil": 2,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "premise_dedup_global"
+    },
+    {
+      "topic": "Bildung",
+      "module": "horen",
+      "teil": 3,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Bildung",
+      "module": "horen",
+      "teil": 4,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Bildung",
+      "module": "schreiben",
+      "teil": 1,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Bildung",
+      "module": "schreiben",
+      "teil": 2,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Bildung",
+      "module": "schreiben",
+      "teil": 3,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "premise_dedup_global"
+    },
+    {
+      "topic": "Bildung",
+      "module": "sprechen",
+      "teil": 1,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "fingerprint_dedup"
+    },
+    {
+      "topic": "Bildung",
+      "module": "sprechen",
+      "teil": 2,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "fingerprint_dedup"
+    },
+    {
+      "topic": "Bildung",
+      "module": "sprechen",
+      "teil": 3,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "fingerprint_dedup"
+    },
+    {
+      "topic": "Familie",
+      "module": "lesen",
+      "teil": 1,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Familie",
+      "module": "lesen",
+      "teil": 2,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Familie",
+      "module": "lesen",
+      "teil": 3,
+      "status": "OK",
+      "note": "2 bp: bp-familie, bp-freizeit-garten",
+      "mechanism": "blueprint"
+    },
+    {
+      "topic": "Familie",
+      "module": "lesen",
+      "teil": 4,
+      "status": "OK",
+      "note": "pick=handy_schule tier=preferred chk27=OK",
+      "mechanism": "debate_mold"
+    },
+    {
+      "topic": "Familie",
+      "module": "lesen",
+      "teil": 5,
+      "status": "OK",
+      "note": "pick=bibliothek tier=preferred; celda saturada→wohnanlage",
+      "mechanism": "subtype_mold"
+    },
+    {
+      "topic": "Familie",
+      "module": "horen",
+      "teil": 1,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "premise_dedup_global"
+    },
+    {
+      "topic": "Familie",
+      "module": "horen",
+      "teil": 2,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "premise_dedup_global"
+    },
+    {
+      "topic": "Familie",
+      "module": "horen",
+      "teil": 3,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Familie",
+      "module": "horen",
+      "teil": 4,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Familie",
+      "module": "schreiben",
+      "teil": 1,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Familie",
+      "module": "schreiben",
+      "teil": 2,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Familie",
+      "module": "schreiben",
+      "teil": 3,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "premise_dedup_global"
+    },
+    {
+      "topic": "Familie",
+      "module": "sprechen",
+      "teil": 1,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "fingerprint_dedup"
+    },
+    {
+      "topic": "Familie",
+      "module": "sprechen",
+      "teil": 2,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "fingerprint_dedup"
+    },
+    {
+      "topic": "Familie",
+      "module": "sprechen",
+      "teil": 3,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "fingerprint_dedup"
+    },
+    {
+      "topic": "Umwelt",
+      "module": "lesen",
+      "teil": 1,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Umwelt",
+      "module": "lesen",
+      "teil": 2,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Umwelt",
+      "module": "lesen",
+      "teil": 3,
+      "status": "OK",
+      "note": "1 bp: bp-freizeit-garten",
+      "mechanism": "blueprint"
+    },
+    {
+      "topic": "Umwelt",
+      "module": "lesen",
+      "teil": 4,
+      "status": "OK",
+      "note": "pick=muelltrennung tier=preferred chk27=OK",
+      "mechanism": "debate_mold"
+    },
+    {
+      "topic": "Umwelt",
+      "module": "lesen",
+      "teil": 5,
+      "status": "OK",
+      "note": "pick=bibliothek tier=preferred",
+      "mechanism": "subtype_mold"
+    },
+    {
+      "topic": "Umwelt",
+      "module": "horen",
+      "teil": 1,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "premise_dedup_global"
+    },
+    {
+      "topic": "Umwelt",
+      "module": "horen",
+      "teil": 2,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "premise_dedup_global"
+    },
+    {
+      "topic": "Umwelt",
+      "module": "horen",
+      "teil": 3,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Umwelt",
+      "module": "horen",
+      "teil": 4,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Umwelt",
+      "module": "schreiben",
+      "teil": 1,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Umwelt",
+      "module": "schreiben",
+      "teil": 2,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Umwelt",
+      "module": "schreiben",
+      "teil": 3,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "premise_dedup_global"
+    },
+    {
+      "topic": "Umwelt",
+      "module": "sprechen",
+      "teil": 1,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "fingerprint_dedup"
+    },
+    {
+      "topic": "Umwelt",
+      "module": "sprechen",
+      "teil": 2,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "fingerprint_dedup"
+    },
+    {
+      "topic": "Umwelt",
+      "module": "sprechen",
+      "teil": 3,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "fingerprint_dedup"
+    },
+    {
+      "topic": "Ernährung",
+      "module": "lesen",
+      "teil": 1,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Ernährung",
+      "module": "lesen",
+      "teil": 2,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Ernährung",
+      "module": "lesen",
+      "teil": 3,
+      "status": "OK",
+      "note": "1 bp: bp-sport",
+      "mechanism": "blueprint"
+    },
+    {
+      "topic": "Ernährung",
+      "module": "lesen",
+      "teil": 4,
+      "status": "OK",
+      "note": "pick=mensa_vegetarisch tier=preferred chk27=OK",
+      "mechanism": "debate_mold"
+    },
+    {
+      "topic": "Ernährung",
+      "module": "lesen",
+      "teil": 5,
+      "status": "OK",
+      "note": "pick=kantine tier=preferred",
+      "mechanism": "subtype_mold"
+    },
+    {
+      "topic": "Ernährung",
+      "module": "horen",
+      "teil": 1,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "premise_dedup_global"
+    },
+    {
+      "topic": "Ernährung",
+      "module": "horen",
+      "teil": 2,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "premise_dedup_global"
+    },
+    {
+      "topic": "Ernährung",
+      "module": "horen",
+      "teil": 3,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Ernährung",
+      "module": "horen",
+      "teil": 4,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Ernährung",
+      "module": "schreiben",
+      "teil": 1,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Ernährung",
+      "module": "schreiben",
+      "teil": 2,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Ernährung",
+      "module": "schreiben",
+      "teil": 3,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "premise_dedup_global"
+    },
+    {
+      "topic": "Ernährung",
+      "module": "sprechen",
+      "teil": 1,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "fingerprint_dedup"
+    },
+    {
+      "topic": "Ernährung",
+      "module": "sprechen",
+      "teil": 2,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "fingerprint_dedup"
+    },
+    {
+      "topic": "Ernährung",
+      "module": "sprechen",
+      "teil": 3,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "fingerprint_dedup"
+    },
+    {
+      "topic": "Kultur",
+      "module": "lesen",
+      "teil": 1,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Kultur",
+      "module": "lesen",
+      "teil": 2,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Kultur",
+      "module": "lesen",
+      "teil": 3,
+      "status": "OK",
+      "note": "2 bp: bp-klima-tanz, bp-musik",
+      "mechanism": "blueprint"
+    },
+    {
+      "topic": "Kultur",
+      "module": "lesen",
+      "teil": 4,
+      "status": "OK",
+      "note": "pick=vereinsfoerderung tier=preferred chk27=OK",
+      "mechanism": "debate_mold"
+    },
+    {
+      "topic": "Kultur",
+      "module": "lesen",
+      "teil": 5,
+      "status": "OK",
+      "note": "pick=bibliothek tier=preferred; celda saturada→wohnanlage",
+      "mechanism": "subtype_mold"
+    },
+    {
+      "topic": "Kultur",
+      "module": "horen",
+      "teil": 1,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "premise_dedup_global"
+    },
+    {
+      "topic": "Kultur",
+      "module": "horen",
+      "teil": 2,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "premise_dedup_global"
+    },
+    {
+      "topic": "Kultur",
+      "module": "horen",
+      "teil": 3,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Kultur",
+      "module": "horen",
+      "teil": 4,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Kultur",
+      "module": "schreiben",
+      "teil": 1,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Kultur",
+      "module": "schreiben",
+      "teil": 2,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Kultur",
+      "module": "schreiben",
+      "teil": 3,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "premise_dedup_global"
+    },
+    {
+      "topic": "Kultur",
+      "module": "sprechen",
+      "teil": 1,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "fingerprint_dedup"
+    },
+    {
+      "topic": "Kultur",
+      "module": "sprechen",
+      "teil": 2,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "fingerprint_dedup"
+    },
+    {
+      "topic": "Kultur",
+      "module": "sprechen",
+      "teil": 3,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "fingerprint_dedup"
+    },
+    {
+      "topic": "Sport",
+      "module": "lesen",
+      "teil": 1,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Sport",
+      "module": "lesen",
+      "teil": 2,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Sport",
+      "module": "lesen",
+      "teil": 3,
+      "status": "OK",
+      "note": "1 bp: bp-sport",
+      "mechanism": "blueprint"
+    },
+    {
+      "topic": "Sport",
+      "module": "lesen",
+      "teil": 4,
+      "status": "OK",
+      "note": "pick=sport_in_parks tier=preferred chk27=OK",
+      "mechanism": "debate_mold"
+    },
+    {
+      "topic": "Sport",
+      "module": "lesen",
+      "teil": 5,
+      "status": "OK",
+      "note": "pick=sportverein tier=preferred; celda saturada→wohnanlage",
+      "mechanism": "subtype_mold"
+    },
+    {
+      "topic": "Sport",
+      "module": "horen",
+      "teil": 1,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "premise_dedup_global"
+    },
+    {
+      "topic": "Sport",
+      "module": "horen",
+      "teil": 2,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "premise_dedup_global"
+    },
+    {
+      "topic": "Sport",
+      "module": "horen",
+      "teil": 3,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Sport",
+      "module": "horen",
+      "teil": 4,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Sport",
+      "module": "schreiben",
+      "teil": 1,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Sport",
+      "module": "schreiben",
+      "teil": 2,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Sport",
+      "module": "schreiben",
+      "teil": 3,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "premise_dedup_global"
+    },
+    {
+      "topic": "Sport",
+      "module": "sprechen",
+      "teil": 1,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "fingerprint_dedup"
+    },
+    {
+      "topic": "Sport",
+      "module": "sprechen",
+      "teil": 2,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "fingerprint_dedup"
+    },
+    {
+      "topic": "Sport",
+      "module": "sprechen",
+      "teil": 3,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "fingerprint_dedup"
+    },
+    {
+      "topic": "Freizeit",
+      "module": "lesen",
+      "teil": 1,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Freizeit",
+      "module": "lesen",
+      "teil": 2,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Freizeit",
+      "module": "lesen",
+      "teil": 3,
+      "status": "OK",
+      "note": "2 bp: bp-freizeit-garten, bp-sport",
+      "mechanism": "blueprint"
+    },
+    {
+      "topic": "Freizeit",
+      "module": "lesen",
+      "teil": 4,
+      "status": "OK",
+      "note": "pick=vereinsfoerderung tier=preferred chk27=OK",
+      "mechanism": "debate_mold"
+    },
+    {
+      "topic": "Freizeit",
+      "module": "lesen",
+      "teil": 5,
+      "status": "OK",
+      "note": "pick=sportverein tier=preferred; celda saturada→wohnanlage",
+      "mechanism": "subtype_mold"
+    },
+    {
+      "topic": "Freizeit",
+      "module": "horen",
+      "teil": 1,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "premise_dedup_global"
+    },
+    {
+      "topic": "Freizeit",
+      "module": "horen",
+      "teil": 2,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "premise_dedup_global"
+    },
+    {
+      "topic": "Freizeit",
+      "module": "horen",
+      "teil": 3,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Freizeit",
+      "module": "horen",
+      "teil": 4,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Freizeit",
+      "module": "schreiben",
+      "teil": 1,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Freizeit",
+      "module": "schreiben",
+      "teil": 2,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Freizeit",
+      "module": "schreiben",
+      "teil": 3,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "premise_dedup_global"
+    },
+    {
+      "topic": "Freizeit",
+      "module": "sprechen",
+      "teil": 1,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "fingerprint_dedup"
+    },
+    {
+      "topic": "Freizeit",
+      "module": "sprechen",
+      "teil": 2,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "fingerprint_dedup"
+    },
+    {
+      "topic": "Freizeit",
+      "module": "sprechen",
+      "teil": 3,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "fingerprint_dedup"
+    },
+    {
+      "topic": "Verkehr",
+      "module": "lesen",
+      "teil": 1,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Verkehr",
+      "module": "lesen",
+      "teil": 2,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Verkehr",
+      "module": "lesen",
+      "teil": 3,
+      "status": "OK",
+      "note": "4 bp: bp-fahrzeugteile, bp-koffer-brille, bp-mobilitaet-reisen, bp-musik",
+      "mechanism": "blueprint"
+    },
+    {
+      "topic": "Verkehr",
+      "module": "lesen",
+      "teil": 4,
+      "status": "OK",
+      "note": "pick=autofrei tier=preferred chk27=OK",
+      "mechanism": "debate_mold"
+    },
+    {
+      "topic": "Verkehr",
+      "module": "lesen",
+      "teil": 5,
+      "status": "OK",
+      "note": "pick=schule tier=preferred",
+      "mechanism": "subtype_mold"
+    },
+    {
+      "topic": "Verkehr",
+      "module": "horen",
+      "teil": 1,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "premise_dedup_global"
+    },
+    {
+      "topic": "Verkehr",
+      "module": "horen",
+      "teil": 2,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "premise_dedup_global"
+    },
+    {
+      "topic": "Verkehr",
+      "module": "horen",
+      "teil": 3,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Verkehr",
+      "module": "horen",
+      "teil": 4,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Verkehr",
+      "module": "schreiben",
+      "teil": 1,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Verkehr",
+      "module": "schreiben",
+      "teil": 2,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Verkehr",
+      "module": "schreiben",
+      "teil": 3,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "premise_dedup_global"
+    },
+    {
+      "topic": "Verkehr",
+      "module": "sprechen",
+      "teil": 1,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "fingerprint_dedup"
+    },
+    {
+      "topic": "Verkehr",
+      "module": "sprechen",
+      "teil": 2,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "fingerprint_dedup"
+    },
+    {
+      "topic": "Verkehr",
+      "module": "sprechen",
+      "teil": 3,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "fingerprint_dedup"
+    },
+    {
+      "topic": "Stadtleben",
+      "module": "lesen",
+      "teil": 1,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Stadtleben",
+      "module": "lesen",
+      "teil": 2,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Stadtleben",
+      "module": "lesen",
+      "teil": 3,
+      "status": "OK",
+      "note": "2 bp: bp-dienstleistungen, bp-freizeit-garten",
+      "mechanism": "blueprint"
+    },
+    {
+      "topic": "Stadtleben",
+      "module": "lesen",
+      "teil": 4,
+      "status": "OK",
+      "note": "pick=autofrei tier=preferred chk27=OK",
+      "mechanism": "debate_mold"
+    },
+    {
+      "topic": "Stadtleben",
+      "module": "lesen",
+      "teil": 5,
+      "status": "OK",
+      "note": "pick=bibliothek tier=preferred; celda saturada→wohnanlage",
+      "mechanism": "subtype_mold"
+    },
+    {
+      "topic": "Stadtleben",
+      "module": "horen",
+      "teil": 1,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "premise_dedup_global"
+    },
+    {
+      "topic": "Stadtleben",
+      "module": "horen",
+      "teil": 2,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "premise_dedup_global"
+    },
+    {
+      "topic": "Stadtleben",
+      "module": "horen",
+      "teil": 3,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Stadtleben",
+      "module": "horen",
+      "teil": 4,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Stadtleben",
+      "module": "schreiben",
+      "teil": 1,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Stadtleben",
+      "module": "schreiben",
+      "teil": 2,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "prompt_only"
+    },
+    {
+      "topic": "Stadtleben",
+      "module": "schreiben",
+      "teil": 3,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "premise_dedup_global"
+    },
+    {
+      "topic": "Stadtleben",
+      "module": "sprechen",
+      "teil": 1,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "fingerprint_dedup"
+    },
+    {
+      "topic": "Stadtleben",
+      "module": "sprechen",
+      "teil": 2,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "fingerprint_dedup"
+    },
+    {
+      "topic": "Stadtleben",
+      "module": "sprechen",
+      "teil": 3,
+      "status": "OK",
+      "note": "sin selector estructural tema×molde",
+      "mechanism": "fingerprint_dedup"
+    }
+  ]
+}

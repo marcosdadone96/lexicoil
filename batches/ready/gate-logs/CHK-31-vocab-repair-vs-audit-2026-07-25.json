@@ -1,0 +1,26 @@
+{
+  "at": "2026-07-25T09:20:00.000Z",
+  "question": "Did repair-pool-vocab-caps-artifacts close CHK-31?",
+  "answer": "No — different scope. Vocab repair cleared lemma_artifact / caps / VOCAB_CORRUPT_RE for its detectIssues(); CHK-31 uses vocabularyTagLooksCorrupted (-eren heuristic + isVocabLemmaCorruption).",
+  "counts": {
+    "CHK-31_mass_audit_morning": 76,
+    "CHK-31_post_chk33_reaudit": 72,
+    "CHK-31_unique_files": 65,
+    "vocab_repair_finalHits_latest": 0
+  },
+  "topFlaggedTags": ["anderen", "verbesseren", "unseren", "weiteren", "besseren"],
+  "simulation": {
+    "fullEnrichBatchMetadata_vocab_on_65_files": "clears all CHK-31 flags in dry simulation",
+    "note": "Not applied — requires preview + confirm; distinct from vocab-caps repair (vocabRepairOnly, regex lemmas)"
+  },
+  "nextStep": "Optional pool script: re-enrich vocabularyTags only on 65 files — preview before apply",
+  "previewSample": [
+    {
+      "file": "A2/horen-t3-cur-society.json",
+      "questionId": "13-58213406",
+      "vocabularyTagsBefore": ["vorschlagen", "trainieren", "zusammen", "sollten", "unseren", "teilen"],
+      "vocabularyTagsAfterEnrich": ["vorschlagen", "trainieren", "zusammen", "sollten", "unsern", "teilen"],
+      "note": "CHK-31 flag «unseren» cleared by enrichBatchMetadata (inflection → lemma unsern)"
+    }
+  ]
+}

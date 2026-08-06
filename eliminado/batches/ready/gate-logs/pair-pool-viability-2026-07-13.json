@@ -1,0 +1,531 @@
+{
+  "generatedAt": "2026-07-13T20:57:53.090Z",
+  "bankLemmas": 664,
+  "bankPairs": 220116,
+  "integrationRates": {
+    "poolVerified_req6_ge2": 0.9310344827586207,
+    "poolVerified_avgUsedWhenReq6": 3.41,
+    "independentEstimate_req2_both": 0.3230027777777778,
+    "coverageLog_actualTags_avg": 0.222,
+    "note": "Probe 2-word rate merged when available"
+  },
+  "costParams": {
+    "COST_PER_OK": 0.1508,
+    "CALLS_PER_OK": 9.6,
+    "CALLS_PER_MIN": 0.92
+  },
+  "topicPairCounts": {
+    "lesen::Umwelt": 105,
+    "lesen::Arbeit": 190,
+    "lesen::Technik": 66,
+    "lesen::Gesundheit": 105,
+    "horen::Arbeit": 105,
+    "horen::Reisen": 45,
+    "horen::Bildung": 10,
+    "lesen::Bildung": 300,
+    "horen::Umwelt": 153,
+    "lesen::Reisen": 15,
+    "horen::Technik": 231
+  },
+  "totalTopicPairs": 1325,
+  "scenarios": [
+    {
+      "name": "bank_random_k10",
+      "pPairPerPart": 0.00020443766014283378,
+      "partsPerTeil": 7872,
+      "partsPerModule": 23616,
+      "costUsd": 7122.585599999999,
+      "hours": 8214.260869565218
+    },
+    {
+      "name": "bank_random_k12",
+      "pPairPerPart": 0.0002998419015428229,
+      "partsPerTeil": 5367,
+      "partsPerModule": 16101,
+      "costUsd": 4856.0616,
+      "hours": 5600.347826086957
+    },
+    {
+      "name": "bank_random_k15",
+      "pPairPerPart": 0.0004770212069999455,
+      "partsPerTeil": 3374,
+      "partsPerModule": 10122,
+      "costUsd": 3052.7951999999996,
+      "hours": 3520.6956521739125
+    },
+    {
+      "name": "topic_all_case_pairs_per_teil",
+      "topicPairCounts": {
+        "lesen::Umwelt": 105,
+        "lesen::Arbeit": 190,
+        "lesen::Technik": 66,
+        "lesen::Gesundheit": 105,
+        "horen::Arbeit": 105,
+        "horen::Reisen": 45,
+        "horen::Bildung": 10,
+        "lesen::Bildung": 300,
+        "horen::Umwelt": 153,
+        "lesen::Reisen": 15,
+        "horen::Technik": 231
+      },
+      "totalUniquePairs": 1325,
+      "partsPerTeil": 1325,
+      "partsPerModuleLesen": 781,
+      "partsPerModuleHoren": 544,
+      "costUsdOneModule": 199.80999999999997,
+      "costUsdBothModules": 399.61999999999995,
+      "hoursBoth": 460.86956521739125
+    },
+    {
+      "name": "scoped_30_pairs_per_topic_module_cell",
+      "cells": 11,
+      "pairsPerCell": 30,
+      "partsPerTeil": 330,
+      "costUsdPerModule": 49.763999999999996,
+      "costUsdBoth": 99.52799999999999,
+      "hoursBoth": 114.78260869565217
+    }
+  ],
+  "simulation": {
+    "allPairsFromEachCaseDeck": {
+      "rate": 1,
+      "hit": 15,
+      "total": 15,
+      "detail": [
+        {
+          "id": 1,
+          "module": "lesen",
+          "topic": "Umwelt",
+          "deck": 5,
+          "user": 5,
+          "hit": true,
+          "best": 2
+        },
+        {
+          "id": 2,
+          "module": "lesen",
+          "topic": "Umwelt",
+          "deck": 15,
+          "user": 12,
+          "hit": true,
+          "best": 2
+        },
+        {
+          "id": 3,
+          "module": "lesen",
+          "topic": "Arbeit",
+          "deck": 5,
+          "user": 5,
+          "hit": true,
+          "best": 2
+        },
+        {
+          "id": 4,
+          "module": "lesen",
+          "topic": "Arbeit",
+          "deck": 20,
+          "user": 12,
+          "hit": true,
+          "best": 2
+        },
+        {
+          "id": 5,
+          "module": "lesen",
+          "topic": "Technik",
+          "deck": 12,
+          "user": 12,
+          "hit": true,
+          "best": 2
+        },
+        {
+          "id": 6,
+          "module": "lesen",
+          "topic": "Gesundheit",
+          "deck": 8,
+          "user": 8,
+          "hit": true,
+          "best": 2
+        },
+        {
+          "id": 7,
+          "module": "horen",
+          "topic": "Arbeit",
+          "deck": 5,
+          "user": 5,
+          "hit": true,
+          "best": 2
+        },
+        {
+          "id": 8,
+          "module": "horen",
+          "topic": "Arbeit",
+          "deck": 15,
+          "user": 12,
+          "hit": true,
+          "best": 2
+        },
+        {
+          "id": 9,
+          "module": "horen",
+          "topic": "Reisen",
+          "deck": 10,
+          "user": 10,
+          "hit": true,
+          "best": 2
+        },
+        {
+          "id": 10,
+          "module": "horen",
+          "topic": "Bildung",
+          "deck": 5,
+          "user": 5,
+          "hit": true,
+          "best": 2
+        },
+        {
+          "id": 11,
+          "module": "lesen",
+          "topic": "Bildung",
+          "deck": 25,
+          "user": 12,
+          "hit": true,
+          "best": 2
+        },
+        {
+          "id": 12,
+          "module": "horen",
+          "topic": "Umwelt",
+          "deck": 18,
+          "user": 12,
+          "hit": true,
+          "best": 2
+        },
+        {
+          "id": 13,
+          "module": "lesen",
+          "topic": "Reisen",
+          "deck": 6,
+          "user": 6,
+          "hit": true,
+          "best": 2
+        },
+        {
+          "id": 14,
+          "module": "horen",
+          "topic": "Technik",
+          "deck": 22,
+          "user": 12,
+          "hit": true,
+          "best": 2
+        },
+        {
+          "id": 15,
+          "module": "lesen",
+          "topic": "Gesundheit",
+          "deck": 15,
+          "user": 12,
+          "hit": true,
+          "best": 2
+        }
+      ]
+    },
+    "cap15PairsPerCase": {
+      "rate": 1,
+      "hit": 15,
+      "total": 15,
+      "detail": [
+        {
+          "id": 1,
+          "module": "lesen",
+          "topic": "Umwelt",
+          "deck": 5,
+          "user": 5,
+          "hit": true,
+          "best": 2
+        },
+        {
+          "id": 2,
+          "module": "lesen",
+          "topic": "Umwelt",
+          "deck": 15,
+          "user": 12,
+          "hit": true,
+          "best": 2
+        },
+        {
+          "id": 3,
+          "module": "lesen",
+          "topic": "Arbeit",
+          "deck": 5,
+          "user": 5,
+          "hit": true,
+          "best": 2
+        },
+        {
+          "id": 4,
+          "module": "lesen",
+          "topic": "Arbeit",
+          "deck": 20,
+          "user": 12,
+          "hit": true,
+          "best": 2
+        },
+        {
+          "id": 5,
+          "module": "lesen",
+          "topic": "Technik",
+          "deck": 12,
+          "user": 12,
+          "hit": true,
+          "best": 2
+        },
+        {
+          "id": 6,
+          "module": "lesen",
+          "topic": "Gesundheit",
+          "deck": 8,
+          "user": 8,
+          "hit": true,
+          "best": 2
+        },
+        {
+          "id": 7,
+          "module": "horen",
+          "topic": "Arbeit",
+          "deck": 5,
+          "user": 5,
+          "hit": true,
+          "best": 2
+        },
+        {
+          "id": 8,
+          "module": "horen",
+          "topic": "Arbeit",
+          "deck": 15,
+          "user": 12,
+          "hit": true,
+          "best": 2
+        },
+        {
+          "id": 9,
+          "module": "horen",
+          "topic": "Reisen",
+          "deck": 10,
+          "user": 10,
+          "hit": true,
+          "best": 2
+        },
+        {
+          "id": 10,
+          "module": "horen",
+          "topic": "Bildung",
+          "deck": 5,
+          "user": 5,
+          "hit": true,
+          "best": 2
+        },
+        {
+          "id": 11,
+          "module": "lesen",
+          "topic": "Bildung",
+          "deck": 25,
+          "user": 12,
+          "hit": true,
+          "best": 2
+        },
+        {
+          "id": 12,
+          "module": "horen",
+          "topic": "Umwelt",
+          "deck": 18,
+          "user": 12,
+          "hit": true,
+          "best": 2
+        },
+        {
+          "id": 13,
+          "module": "lesen",
+          "topic": "Reisen",
+          "deck": 6,
+          "user": 6,
+          "hit": true,
+          "best": 2
+        },
+        {
+          "id": 14,
+          "module": "horen",
+          "topic": "Technik",
+          "deck": 22,
+          "user": 12,
+          "hit": true,
+          "best": 2
+        },
+        {
+          "id": 15,
+          "module": "lesen",
+          "topic": "Gesundheit",
+          "deck": 15,
+          "user": 12,
+          "hit": true,
+          "best": 2
+        }
+      ]
+    },
+    "cap30PairsPerCase": {
+      "rate": 1,
+      "hit": 15,
+      "total": 15,
+      "detail": [
+        {
+          "id": 1,
+          "module": "lesen",
+          "topic": "Umwelt",
+          "deck": 5,
+          "user": 5,
+          "hit": true,
+          "best": 2
+        },
+        {
+          "id": 2,
+          "module": "lesen",
+          "topic": "Umwelt",
+          "deck": 15,
+          "user": 12,
+          "hit": true,
+          "best": 2
+        },
+        {
+          "id": 3,
+          "module": "lesen",
+          "topic": "Arbeit",
+          "deck": 5,
+          "user": 5,
+          "hit": true,
+          "best": 2
+        },
+        {
+          "id": 4,
+          "module": "lesen",
+          "topic": "Arbeit",
+          "deck": 20,
+          "user": 12,
+          "hit": true,
+          "best": 2
+        },
+        {
+          "id": 5,
+          "module": "lesen",
+          "topic": "Technik",
+          "deck": 12,
+          "user": 12,
+          "hit": true,
+          "best": 2
+        },
+        {
+          "id": 6,
+          "module": "lesen",
+          "topic": "Gesundheit",
+          "deck": 8,
+          "user": 8,
+          "hit": true,
+          "best": 2
+        },
+        {
+          "id": 7,
+          "module": "horen",
+          "topic": "Arbeit",
+          "deck": 5,
+          "user": 5,
+          "hit": true,
+          "best": 2
+        },
+        {
+          "id": 8,
+          "module": "horen",
+          "topic": "Arbeit",
+          "deck": 15,
+          "user": 12,
+          "hit": true,
+          "best": 2
+        },
+        {
+          "id": 9,
+          "module": "horen",
+          "topic": "Reisen",
+          "deck": 10,
+          "user": 10,
+          "hit": true,
+          "best": 2
+        },
+        {
+          "id": 10,
+          "module": "horen",
+          "topic": "Bildung",
+          "deck": 5,
+          "user": 5,
+          "hit": true,
+          "best": 2
+        },
+        {
+          "id": 11,
+          "module": "lesen",
+          "topic": "Bildung",
+          "deck": 25,
+          "user": 12,
+          "hit": true,
+          "best": 2
+        },
+        {
+          "id": 12,
+          "module": "horen",
+          "topic": "Umwelt",
+          "deck": 18,
+          "user": 12,
+          "hit": true,
+          "best": 2
+        },
+        {
+          "id": 13,
+          "module": "lesen",
+          "topic": "Reisen",
+          "deck": 6,
+          "user": 6,
+          "hit": true,
+          "best": 2
+        },
+        {
+          "id": 14,
+          "module": "horen",
+          "topic": "Technik",
+          "deck": 22,
+          "user": 12,
+          "hit": true,
+          "best": 2
+        },
+        {
+          "id": 15,
+          "module": "lesen",
+          "topic": "Gesundheit",
+          "deck": 15,
+          "user": 12,
+          "hit": true,
+          "best": 2
+        }
+      ]
+    }
+  },
+  "bankCoverage80": {
+    "k10": {
+      "pPair": 0.8000119746010687,
+      "parts": 7872
+    },
+    "k12": {
+      "pPair": 0.0002998419015428229,
+      "parts": 5367
+    },
+    "k15": {
+      "pPair": 0.0004770212069999455,
+      "parts": 3374
+    }
+  }
+}

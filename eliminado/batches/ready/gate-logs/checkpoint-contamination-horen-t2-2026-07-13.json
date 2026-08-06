@@ -1,0 +1,56 @@
+{
+  "at": "2026-07-13T19:15:00.000Z",
+  "issue": "Contaminated threshold test — checkpoint inherited from interrupted --count 4 run",
+  "meaningOf3over1": {
+    "display": "Objetivo: 3/1",
+    "saved": 3,
+    "savedSource": "checkpoint from prior run (target was 4, saved 3 before operator stop)",
+    "target": 1,
+    "targetSource": "--count 1 on today's test invocation",
+    "attempts": 50,
+    "attemptsSource": "accumulated from afternoon incident (763187/763188 logs), not from today's run"
+  },
+  "checkpointBeforeContaminatedRun": {
+    "note": "File read during dedupe session ~16:50; no longer on disk after contaminated run cleared it (saved>=target)",
+    "reconstructed": {
+      "key": "de_B1:horen:T2",
+      "module": "horen",
+      "teil": 2,
+      "saved": 3,
+      "target": 4,
+      "attempts": 50,
+      "publishedFiles": [
+        "horen-t2-gemini-028.json",
+        "horen-t2-gemini-029.json",
+        "horen-t2-gemini-030.json"
+      ]
+    },
+    "evidence": [
+      "batches/ready/gate-logs/horen-premise-dedupe-2026-07-13.json (checkpointSaved: 3)",
+      "scripts/generate-cli.mjs L198: Objetivo: ${saved}/${target}",
+      "scripts/generate-cli.mjs L221: while (saved < target) — with saved=3, target=1 loop never runs"
+    ]
+  },
+  "checkpointAfterContaminatedRun": {
+    "path": "batches/.pool-fill-checkpoint.json",
+    "exists": false,
+    "reason": "clearPoolFillCheckpoint() when saved(3) >= target(1) — false success"
+  },
+  "contaminatedRunApiCalls": {
+    "conclusion": "ZERO generate cycles in contaminated --count 1 run",
+    "reason": "saved(3) >= target(1) before loop; no '── intento N ──' lines would appear"
+  },
+  "cleanRunWithReset": {
+    "command": "node scripts/generate-cli.mjs --cell horen-t2 --count 1 --publish --reset --max-attempts 25",
+    "startDisplay": "Objetivo: 0/1",
+    "result": "1/1 OK",
+    "sessionAttempts": 3,
+    "published": "horen-t2-gemini-031.json",
+    "checkpointAfter": "deleted (success 1/1)",
+    "note": "Attempt 1 failed (copy+length); attempt 2 failed (lexico+length); attempt 3 published with calibrated gate (marginal +21%/+8 chars pass; severe still reject)"
+  },
+  "fixApplied": {
+    "file": "scripts/generate-cli.mjs",
+    "behavior": "If checkpoint saved >= new --count without --reset: warn, SKIP (exit 3), 0 API calls. Summary shows inherited vs session attempts."
+  }
+}

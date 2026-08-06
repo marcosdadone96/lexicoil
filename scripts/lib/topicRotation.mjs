@@ -41,8 +41,19 @@ export function getTopicStats(generatedDir, { module = null, teil = null } = {})
     }
     try {
       const batch = JSON.parse(fs.readFileSync(path.join(generatedDir, filename), 'utf8'));
+      let counted = false;
       for (const p of batch.passages || []) {
         const tag = p.topicTag || detectTopic(p.text || p.title || '');
+        if (tag && counts[tag] !== undefined) {
+          counts[tag]++;
+          counted = true;
+        }
+      }
+      // Sprechen/Schreiben: passages vacíos — contar topicTags de questions / root
+      if (!counted) {
+        const root = batch.topicTag || batch._requestedTopic;
+        const qTag = batch.questions?.[0]?.topicTags?.[0] || batch.questions?.[0]?.topicTag;
+        const tag = root || qTag;
         if (tag && counts[tag] !== undefined) counts[tag]++;
       }
     } catch (_) { /* skip corrupt files */ }
@@ -62,34 +73,53 @@ export function pickNextTopic(generatedDir, { module = null, teil = null } = {})
 }
 
 /**
- * Inyecta la línea de tema obligatorio en un prompt ya construido.
- * Busca la sección PALABRAS OBJETIVO y añade TEMA antes de ella.
+ * Bloque de tema obligatorio (sufijo variable — va después del STATIC_CORE cacheable).
+ * @param {string} topic
+ * @returns {string}
  */
-export function injectTopicIntoPrompt(prompt, topic) {
-  if (!topic) return prompt;
-  const topicLine = `\n## TEMA OBLIGATORIO\nDesarrolla el contenido EXCLUSIVAMENTE en torno a: **${topic}**\nEl pasaje, los personajes y las preguntas deben girar en torno a este tema.\n`;
-
-  // Insertar antes de PALABRAS OBJETIVO si existe, o al principio de AUTORREVISIÓN, o al final
-  const marker = prompt.indexOf('## PALABRAS OBJETIVO');
-  if (marker >= 0) return prompt.slice(0, marker) + topicLine + prompt.slice(marker);
-
-  const marker2 = prompt.indexOf('## AUTORREVISIÓN');
-  if (marker2 >= 0) return prompt.slice(0, marker2) + topicLine + prompt.slice(marker2);
-
-  return prompt + topicLine;
+export function buildTopicPromptBlock(topic) {
+  if (!topic) return '';
+  return (
+    `\n## TEMA OBLIGATORIO\nDesarrolla el contenido EXCLUSIVAMENTE en torno a: **${topic}**\n` +
+    `El pasaje, los personajes y las preguntas deben girar en torno a este tema.\n` +
+    `- En **Lesen T2**: los **DOS** textos de prensa deben tratar **${topic}** (no mezclar Bildung/Reisen/Ernährung en el segundo texto).\n` +
+    `- El campo \`topicTag\` de **cada** passage debe ser exactamente «${topic}».\n`
+  );
 }
 
 /**
- * Añade topicTag a cada passage de un batch.
- * Si el pasaje ya tiene topicTag, lo respeta.
+ * @deprecated Prefer passing `topic` into buildLesenPrompt / buildExamPrompt options.
+ * Appends topic block to the variable suffix (end of prompt).
+ */
+export function injectTopicIntoPrompt(prompt, topic) {
+  const block = buildTopicPromptBlock(topic);
+  if (!block) return prompt;
+  const marker = prompt.indexOf('## CONTEXTO DE ESTA GENERACIÓN');
+  if (marker >= 0) {
+    const insertAt = prompt.indexOf('\n', marker) + 1;
+    return prompt.slice(0, insertAt) + block + prompt.slice(insertAt);
+  }
+  return prompt + block;
+}
+
+/**
+ * Añade topicTag al batch, a cada passage y a questions[].topicTags.
+ * Fuerza el tema pedido (ignora topicTag del LLM / detectTopic).
+ * Crítico para Sprechen/Schreiben (passages: []): sin esto las questions
+ * quedan con fallback daily_life / sin tema.
  */
 export function tagBatchWithTopic(batch, topic) {
   if (!batch || !topic) return batch;
-  const tagged = { ...batch, topicTag: topic };
-  tagged.passages = (batch.passages || []).map(p => {
-    if (p.topicTag) return p;
-    const detected = detectTopic(p.text || p.title || '');
-    return { ...p, topicTag: detected || topic };
-  });
+  const tagged = {
+    ...batch,
+    topicTag: topic,
+    _requestedTopic: batch._requestedTopic || topic,
+  };
+  tagged.passages = (batch.passages || []).map((p) => ({ ...p, topicTag: topic }));
+  tagged.questions = (batch.questions || []).map((q) => ({
+    ...q,
+    topicTags: [topic],
+    ...(q.topicTag != null ? { topicTag: topic } : {}),
+  }));
   return tagged;
 }

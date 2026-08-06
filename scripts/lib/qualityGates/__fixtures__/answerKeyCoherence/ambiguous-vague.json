@@ -1,0 +1,30 @@
+{
+  "meta": { "case": "ambiguous_vague", "expected": "warn_or_pass", "note": "explanation vaga — no debe bloquear con confidence high" },
+  "passages": [
+    {
+      "id": "fixture-passage-vague",
+      "module": "lesen",
+      "teil": 2,
+      "title": "Stadtpark",
+      "text": "Der Stadtpark bietet Spielplätze, einen Teich und ein Café. Familien, Sportler und Rentner nutzen die Anlage regelmäßig."
+    }
+  ],
+  "questions": [
+    {
+      "id": "fixture-q2-ambiguous",
+      "module": "lesen",
+      "teil": 2,
+      "type": "multiple_choice",
+      "question": "Für wen ist der Stadtpark laut Text interessant?",
+      "options": [
+        "a) Nur für Kinder mit Spielplatzbedarf.",
+        "b) Nur für Sportler und Jogger.",
+        "c) Für verschiedene Gruppen wie Familien, Sportler und Rentner."
+      ],
+      "correct": "c",
+      "correctAnswer": "c",
+      "explanation": "Der Text erwähnt dieses Thema im Zusammenhang mit dem Park.",
+      "passageId": "fixture-passage-vague"
+    }
+  ]
+}

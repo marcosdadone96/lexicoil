@@ -1,0 +1,169 @@
+{
+  "generatedAt": "2026-07-10T13:55:59.011Z",
+  "version": "v2.0-focus-flexible-2026-07-10",
+  "softMax": 4,
+  "qTotal": 749,
+  "coverage": {
+    "g-de-b1-relativ": {
+      "audit_q": 649,
+      "audit_pct": 86.6,
+      "v101_q": 2,
+      "v101_pct": 0.3,
+      "v20_q": 114,
+      "v20_pct": 15.2
+    },
+    "g-de-b1-nebensatz": {
+      "audit_q": 537,
+      "audit_pct": 71.7,
+      "v101_q": 2,
+      "v101_pct": 0.3,
+      "v20_q": 32,
+      "v20_pct": 4.3
+    },
+    "g-de-b1-modalverben": {
+      "audit_q": 92,
+      "audit_pct": 12.3,
+      "v101_q": 390,
+      "v101_pct": 52.1,
+      "v20_q": 49,
+      "v20_pct": 6.5
+    },
+    "g-de-b1-passiv": {
+      "audit_q": 89,
+      "audit_pct": 11.9,
+      "v101_q": 122,
+      "v101_pct": 16.3,
+      "v20_q": 45,
+      "v20_pct": 6
+    },
+    "g-de-b1-konjunktiv": {
+      "audit_q": 26,
+      "audit_pct": 3.5,
+      "v101_q": 253,
+      "v101_pct": 33.8,
+      "v20_q": 56,
+      "v20_pct": 7.5
+    },
+    "g-de-b1-dativ": {
+      "audit_q": 25,
+      "audit_pct": 3.3,
+      "v101_q": 179,
+      "v101_pct": 23.9,
+      "v20_q": 12,
+      "v20_pct": 1.6
+    },
+    "g-de-b1-perfekt": {
+      "audit_q": 20,
+      "audit_pct": 2.7,
+      "v101_q": 76,
+      "v101_pct": 10.1,
+      "v20_q": 103,
+      "v20_pct": 13.8
+    },
+    "g-de-b1-adjektivdeklination": {
+      "audit_q": 14,
+      "audit_pct": 1.9,
+      "v101_q": 304,
+      "v101_pct": 40.6,
+      "v20_q": 17,
+      "v20_pct": 2.3
+    },
+    "g-de-b1-komparativ": {
+      "audit_q": 10,
+      "audit_pct": 1.3,
+      "v101_q": 116,
+      "v101_pct": 15.5,
+      "v20_q": 102,
+      "v20_pct": 13.6
+    },
+    "g-de-b1-futur": {
+      "audit_q": 1,
+      "audit_pct": 0.1,
+      "v101_q": 7,
+      "v101_pct": 0.9,
+      "v20_q": 44,
+      "v20_pct": 5.9
+    },
+    "g-de-b1-genitiv": {
+      "audit_q": 0,
+      "audit_pct": 0,
+      "v101_q": 15,
+      "v101_pct": 2,
+      "v20_q": 74,
+      "v20_pct": 9.9
+    }
+  },
+  "lenDist": {
+    "0": 316,
+    "1": 279,
+    "2": 110,
+    "3": 27,
+    "4+": 17
+  },
+  "over35": [],
+  "over40": [],
+  "examples": [
+    {
+      "file": "horen-t1-gemini-016.json",
+      "id": "gen-q-h1-8e7e4170-s1-q2",
+      "before": [
+        "g-de-b1-perfekt"
+      ],
+      "after": []
+    },
+    {
+      "file": "horen-t1-gemini-016.json",
+      "id": "gen-q-h1-8e7e4170-s2-q1",
+      "before": [
+        "g-de-b1-perfekt"
+      ],
+      "after": []
+    },
+    {
+      "file": "horen-t2-gemini-005.json",
+      "id": "gen-q-h2-e0b897d8-q2",
+      "before": [
+        "g-de-b1-modalverben",
+        "g-de-b1-perfekt",
+        "g-de-b1-relativ"
+      ],
+      "after": [
+        "g-de-b1-modalverben",
+        "g-de-b1-relativ"
+      ]
+    },
+    {
+      "file": "horen-t2-gemini-006.json",
+      "id": "gen-q-h2-34538a4d-q2",
+      "before": [
+        "g-de-b1-konjunktiv",
+        "g-de-b1-perfekt"
+      ],
+      "after": [
+        "g-de-b1-konjunktiv"
+      ]
+    },
+    {
+      "file": "horen-t2-gemini-007.json",
+      "id": "gen-q-h2-41c1f630-q3",
+      "before": [
+        "g-de-b1-genitiv",
+        "g-de-b1-perfekt"
+      ],
+      "after": [
+        "g-de-b1-genitiv"
+      ]
+    },
+    {
+      "file": "horen-t2-gemini-008.json",
+      "id": "gen-q-h2-45959318-q3",
+      "before": [
+        "g-de-b1-genitiv",
+        "g-de-b1-perfekt"
+      ],
+      "after": [
+        "g-de-b1-genitiv"
+      ]
+    }
+  ]
+}

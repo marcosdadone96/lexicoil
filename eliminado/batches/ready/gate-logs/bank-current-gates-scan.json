@@ -1,0 +1,778 @@
+{
+  "generatedAt": "2026-07-10T09:11:52.871Z",
+  "bank": {
+    "passages": 109,
+    "questions": 1056,
+    "aud4_passages": 0,
+    "aud4b_passages": 0,
+    "aud4": [],
+    "aud4b": [],
+    "topic_mismatch": [
+      {
+        "id": "p-lesen-1",
+        "teil": 1,
+        "tag": "Umwelt",
+        "detected": "Bildung",
+        "reason": "topic_mismatch",
+        "scores": {
+          "Bildung": 1,
+          "Ernährung": 1,
+          "Freizeit": 1,
+          "Stadtleben": 1
+        },
+        "detail": "passage:p-lesen-1 topicTag «Umwelt» no encaja con contenido (detectado «Bildung» score=1 vs tag score=0; hits={\"Bildung\":1,\"Ernährung\":1,\"Freizeit\":1,\"Stadtleben\":1})"
+      },
+      {
+        "id": "p-horen-1",
+        "teil": 1,
+        "tag": "Technik",
+        "detected": "Reisen",
+        "reason": "topic_mismatch",
+        "scores": {
+          "Reisen": 1,
+          "Verkehr": 1,
+          "Stadtleben": 1
+        },
+        "detail": "passage:p-horen-1 topicTag «Technik» no encaja con contenido (detectado «Reisen» score=1 vs tag score=0; hits={\"Reisen\":1,\"Verkehr\":1,\"Stadtleben\":1})"
+      },
+      {
+        "id": "gen-l1-4492",
+        "teil": 1,
+        "tag": "Wohnen",
+        "detected": "Freizeit",
+        "reason": "topic_mismatch",
+        "scores": {
+          "Wohnen": 1,
+          "Bildung": 1,
+          "Umwelt": 1,
+          "Freizeit": 2,
+          "Stadtleben": 2
+        },
+        "detail": "passage:gen-l1-4492 topicTag «Wohnen» no encaja con contenido (detectado «Freizeit» score=2 vs tag score=1; hits={\"Wohnen\":1,\"Bildung\":1,\"Umwelt\":1,\"Freizeit\":2,\"Stadtleben\":2})"
+      },
+      {
+        "id": "gen-l1-2094",
+        "teil": 1,
+        "tag": "Freizeit",
+        "detected": "Stadtleben",
+        "reason": "topic_mismatch",
+        "scores": {
+          "Wohnen": 1,
+          "Bildung": 1,
+          "Freizeit": 1,
+          "Stadtleben": 2
+        },
+        "detail": "passage:gen-l1-2094 topicTag «Freizeit» no encaja con contenido (detectado «Stadtleben» score=2 vs tag score=1; hits={\"Wohnen\":1,\"Bildung\":1,\"Freizeit\":1,\"Stadtleben\":2})"
+      },
+      {
+        "id": "gen-l2-7291a",
+        "teil": 2,
+        "tag": "Sport",
+        "detected": "Stadtleben",
+        "reason": "topic_mismatch",
+        "scores": {
+          "Arbeit": 1,
+          "Technik": 2,
+          "Familie": 1,
+          "Umwelt": 1,
+          "Sport": 2,
+          "Freizeit": 2,
+          "Stadtleben": 3
+        },
+        "detail": "passage:gen-l2-7291a topicTag «Sport» no encaja con contenido (detectado «Stadtleben» score=3 vs tag score=2; hits={\"Arbeit\":1,\"Technik\":2,\"Familie\":1,\"Umwelt\":1,\"Sport\":2,\"Freizeit\":2,\"Stadtleben\":3})"
+      },
+      {
+        "id": "gen-l2-8dfdafc7b",
+        "teil": 2,
+        "tag": "Wohnen",
+        "detected": "Arbeit",
+        "reason": "topic_mismatch",
+        "scores": {
+          "Arbeit": 2,
+          "Wohnen": 1,
+          "Bildung": 1,
+          "Familie": 1,
+          "Ernährung": 1
+        },
+        "detail": "passage:gen-l2-8dfdafc7b topicTag «Wohnen» no encaja con contenido (detectado «Arbeit» score=2 vs tag score=1; hits={\"Arbeit\":2,\"Wohnen\":1,\"Bildung\":1,\"Familie\":1,\"Ernährung\":1})"
+      },
+      {
+        "id": "gen-p-h2-2583c630-s1",
+        "teil": 2,
+        "tag": "Technik",
+        "detected": "Arbeit",
+        "reason": "topic_mismatch",
+        "scores": {
+          "Arbeit": 2,
+          "Technik": 1,
+          "Bildung": 2,
+          "Freizeit": 2
+        },
+        "detail": "passage:gen-p-h2-2583c630-s1 topicTag «Technik» no encaja con contenido (detectado «Arbeit» score=2 vs tag score=1; hits={\"Arbeit\":2,\"Technik\":1,\"Bildung\":2,\"Freizeit\":2})"
+      },
+      {
+        "id": "gen-l4-26c87b36",
+        "teil": 4,
+        "tag": "Freizeit",
+        "detected": "Stadtleben",
+        "reason": "topic_mismatch",
+        "scores": {
+          "Freizeit": 1,
+          "Stadtleben": 2
+        },
+        "detail": "passage:gen-l4-26c87b36 topicTag «Freizeit» no encaja con contenido (detectado «Stadtleben» score=2 vs tag score=1; hits={\"Freizeit\":1,\"Stadtleben\":2})"
+      },
+      {
+        "id": "gen-l4-1316d4d6",
+        "teil": 4,
+        "tag": "Bildung",
+        "detected": "Sport",
+        "reason": "topic_mismatch",
+        "scores": {
+          "Sport": 1,
+          "Freizeit": 1,
+          "Stadtleben": 1
+        },
+        "detail": "passage:gen-l4-1316d4d6 topicTag «Bildung» no encaja con contenido (detectado «Sport» score=1 vs tag score=0; hits={\"Sport\":1,\"Freizeit\":1,\"Stadtleben\":1})"
+      },
+      {
+        "id": "gen-p-h1-eac46715-s2",
+        "teil": 1,
+        "tag": "Umwelt",
+        "detected": null,
+        "reason": "tag_unsupported",
+        "scores": {},
+        "detail": "passage:gen-p-h1-eac46715-s2 topicTag «Umwelt» sin soporte léxico en el contenido (tag score=0, ningún tema alternativo con hits; hits={})"
+      },
+      {
+        "id": "gen-p-h1-eac46715-s3",
+        "teil": 1,
+        "tag": "Wohnen",
+        "detected": "Umwelt",
+        "reason": "topic_mismatch",
+        "scores": {
+          "Wohnen": 1,
+          "Umwelt": 2
+        },
+        "detail": "passage:gen-p-h1-eac46715-s3 topicTag «Wohnen» no encaja con contenido (detectado «Umwelt» score=2 vs tag score=1; hits={\"Wohnen\":1,\"Umwelt\":2})"
+      },
+      {
+        "id": "gen-p-h1-eac46715-s4",
+        "teil": 1,
+        "tag": "Verkehr",
+        "detected": "Medien",
+        "reason": "topic_mismatch",
+        "scores": {
+          "Medien": 1,
+          "Freizeit": 1,
+          "Stadtleben": 1
+        },
+        "detail": "passage:gen-p-h1-eac46715-s4 topicTag «Verkehr» no encaja con contenido (detectado «Medien» score=1 vs tag score=0; hits={\"Medien\":1,\"Freizeit\":1,\"Stadtleben\":1})"
+      },
+      {
+        "id": "gen-l2-f5dd2b2c-1",
+        "teil": 2,
+        "tag": "Gesundheit",
+        "detected": "Freizeit",
+        "reason": "topic_mismatch",
+        "scores": {
+          "Gesundheit": 1,
+          "Sport": 2,
+          "Freizeit": 3
+        },
+        "detail": "passage:gen-l2-f5dd2b2c-1 topicTag «Gesundheit» no encaja con contenido (detectado «Freizeit» score=3 vs tag score=1; hits={\"Gesundheit\":1,\"Sport\":2,\"Freizeit\":3})"
+      },
+      {
+        "id": "gen-l2-358dc234a",
+        "teil": 2,
+        "tag": "Reisen",
+        "detected": "Umwelt",
+        "reason": "topic_mismatch",
+        "scores": {
+          "Medien": 1,
+          "Umwelt": 4
+        },
+        "detail": "passage:gen-l2-358dc234a topicTag «Reisen» no encaja con contenido (detectado «Umwelt» score=4 vs tag score=0; hits={\"Medien\":1,\"Umwelt\":4})"
+      },
+      {
+        "id": "gen-l5-b43aec48",
+        "teil": 5,
+        "tag": "Arbeit",
+        "detected": "Freizeit",
+        "reason": "topic_mismatch",
+        "scores": {
+          "Freizeit": 1
+        },
+        "detail": "passage:gen-l5-b43aec48 topicTag «Arbeit» no encaja con contenido (detectado «Freizeit» score=1 vs tag score=0; hits={\"Freizeit\":1})"
+      },
+      {
+        "id": "gen-l4-64419a8e",
+        "teil": 4,
+        "tag": "Sport",
+        "detected": "Freizeit",
+        "reason": "topic_mismatch",
+        "scores": {
+          "Sport": 1,
+          "Freizeit": 2
+        },
+        "detail": "passage:gen-l4-64419a8e topicTag «Sport» no encaja con contenido (detectado «Freizeit» score=2 vs tag score=1; hits={\"Sport\":1,\"Freizeit\":2})"
+      },
+      {
+        "id": "gen-l2-d2f73cdf-1",
+        "teil": 2,
+        "tag": "Konsum",
+        "detected": "Freizeit",
+        "reason": "topic_mismatch",
+        "scores": {
+          "Bildung": 1,
+          "Umwelt": 1,
+          "Freizeit": 2,
+          "Stadtleben": 2
+        },
+        "detail": "passage:gen-l2-d2f73cdf-1 topicTag «Konsum» no encaja con contenido (detectado «Freizeit» score=2 vs tag score=0; hits={\"Bildung\":1,\"Umwelt\":1,\"Freizeit\":2,\"Stadtleben\":2})"
+      },
+      {
+        "id": "gen-l2-35e3f56a-1",
+        "teil": 2,
+        "tag": "Verkehr",
+        "detected": "Umwelt",
+        "reason": "topic_mismatch",
+        "scores": {
+          "Technik": 1,
+          "Umwelt": 2,
+          "Verkehr": 1,
+          "Stadtleben": 1
+        },
+        "detail": "passage:gen-l2-35e3f56a-1 topicTag «Verkehr» no encaja con contenido (detectado «Umwelt» score=2 vs tag score=1; hits={\"Technik\":1,\"Umwelt\":2,\"Verkehr\":1,\"Stadtleben\":1})"
+      },
+      {
+        "id": "gen-l2-35e3f56a-2",
+        "teil": 2,
+        "tag": "Technik",
+        "detected": "Bildung",
+        "reason": "topic_mismatch",
+        "scores": {
+          "Technik": 1,
+          "Bildung": 4,
+          "Familie": 1,
+          "Stadtleben": 1
+        },
+        "detail": "passage:gen-l2-35e3f56a-2 topicTag «Technik» no encaja con contenido (detectado «Bildung» score=4 vs tag score=1; hits={\"Technik\":1,\"Bildung\":4,\"Familie\":1,\"Stadtleben\":1})"
+      },
+      {
+        "id": "gen-l2-262dcd74b",
+        "teil": 2,
+        "tag": "Technik",
+        "detected": "Umwelt",
+        "reason": "topic_mismatch",
+        "scores": {
+          "Arbeit": 1,
+          "Technik": 1,
+          "Umwelt": 2,
+          "Stadtleben": 1
+        },
+        "detail": "passage:gen-l2-262dcd74b topicTag «Technik» no encaja con contenido (detectado «Umwelt» score=2 vs tag score=1; hits={\"Arbeit\":1,\"Technik\":1,\"Umwelt\":2,\"Stadtleben\":1})"
+      },
+      {
+        "id": "gen-l2-6192adf1a",
+        "teil": 2,
+        "tag": "Technik",
+        "detected": "Umwelt",
+        "reason": "topic_mismatch",
+        "scores": {
+          "Arbeit": 1,
+          "Technik": 1,
+          "Familie": 1,
+          "Umwelt": 2,
+          "Stadtleben": 1
+        },
+        "detail": "passage:gen-l2-6192adf1a topicTag «Technik» no encaja con contenido (detectado «Umwelt» score=2 vs tag score=1; hits={\"Arbeit\":1,\"Technik\":1,\"Familie\":1,\"Umwelt\":2,\"Stadtleben\":1})"
+      },
+      {
+        "id": "gen-l2-a26eaeea-b",
+        "teil": 2,
+        "tag": "Technik",
+        "detected": "Umwelt",
+        "reason": "topic_mismatch",
+        "scores": {
+          "Technik": 2,
+          "Umwelt": 4
+        },
+        "detail": "passage:gen-l2-a26eaeea-b topicTag «Technik» no encaja con contenido (detectado «Umwelt» score=4 vs tag score=2; hits={\"Technik\":2,\"Umwelt\":4})"
+      },
+      {
+        "id": "gen-l2-831ec385a",
+        "teil": 2,
+        "tag": "Wohnen",
+        "detected": "Umwelt",
+        "reason": "topic_mismatch",
+        "scores": {
+          "Wohnen": 1,
+          "Konsum": 1,
+          "Umwelt": 2
+        },
+        "detail": "passage:gen-l2-831ec385a topicTag «Wohnen» no encaja con contenido (detectado «Umwelt» score=2 vs tag score=1; hits={\"Wohnen\":1,\"Konsum\":1,\"Umwelt\":2})"
+      },
+      {
+        "id": "gen-l2-5616fb02a",
+        "teil": 2,
+        "tag": "Technik",
+        "detected": "Bildung",
+        "reason": "topic_mismatch",
+        "scores": {
+          "Technik": 2,
+          "Bildung": 3,
+          "Familie": 1,
+          "Freizeit": 1,
+          "Verkehr": 1
+        },
+        "detail": "passage:gen-l2-5616fb02a topicTag «Technik» no encaja con contenido (detectado «Bildung» score=3 vs tag score=2; hits={\"Technik\":2,\"Bildung\":3,\"Familie\":1,\"Freizeit\":1,\"Verkehr\":1})"
+      },
+      {
+        "id": "gen-l1-8da9927a",
+        "teil": 1,
+        "tag": "Arbeit",
+        "detected": "Freizeit",
+        "reason": "topic_mismatch",
+        "scores": {
+          "Arbeit": 1,
+          "Bildung": 1,
+          "Umwelt": 1,
+          "Freizeit": 2,
+          "Stadtleben": 2
+        },
+        "detail": "passage:gen-l1-8da9927a topicTag «Arbeit» no encaja con contenido (detectado «Freizeit» score=2 vs tag score=1; hits={\"Arbeit\":1,\"Bildung\":1,\"Umwelt\":1,\"Freizeit\":2,\"Stadtleben\":2})"
+      }
+    ],
+    "topic_missing_tag": [],
+    "copy_literal": [
+      {
+        "passageId": "p-lesen-1",
+        "questionId": "lb-de-b1-l3",
+        "teil": 1,
+        "kind": "statement",
+        "overlap": "viele menschen möchten wissen",
+        "text": "Viele Menschen möchten wissen, woher ihr Essen kommt."
+      },
+      {
+        "passageId": "p-lesen-1",
+        "questionId": "lb-de-b1-l5",
+        "teil": 2,
+        "kind": "correct_option",
+        "overlap": "sie verbessern das stadtklima",
+        "text": "Sie verbessern das Stadtklima."
+      },
+      {
+        "passageId": "p-horen-1",
+        "questionId": "lb-de-b1-h1",
+        "teil": 1,
+        "kind": "correct_option",
+        "overlap": "weil immer mehr menschen",
+        "text": "Weil immer mehr Menschen das Fahrrad nutzen."
+      },
+      {
+        "passageId": "p-horen-1",
+        "questionId": "lb-de-b1-h4",
+        "teil": 2,
+        "kind": "correct_option",
+        "overlap": "fahrradwege in der stadt",
+        "text": "Um Fahrradwege in der Stadt"
+      },
+      {
+        "passageId": "gen-l2-8dfdafc7b",
+        "questionId": "gen-q-2-8dfdafc7-6",
+        "teil": 2,
+        "kind": "question",
+        "overlap": "ist für viele familien",
+        "text": "Was ist für Viele Familien am Abend ein wichtiger Brauch?"
+      },
+      {
+        "passageId": "gen-l5-0f9283ea",
+        "questionId": "gen-q-5-0f9283ea-4",
+        "teil": 5,
+        "kind": "correct_option",
+        "overlap": "personen muss ein termin",
+        "text": "Ab fünf Personen muss ein Termin mit dem Vorstand vorher abgesprochen und festgehalten werden."
+      },
+      {
+        "passageId": "gen-l5-502c139f",
+        "questionId": "gen-q-5-502c139f-4",
+        "teil": 5,
+        "kind": "question",
+        "overlap": "am ende des arbeitstages",
+        "text": "Was müssen Nutzer am Ende des Arbeitstages tun?"
+      },
+      {
+        "passageId": "gen-l5-3ded8185",
+        "questionId": "gen-q-5-3ded8185-1",
+        "teil": 5,
+        "kind": "correct_option",
+        "overlap": "drei stunden pro tag",
+        "text": "Höchstens Drei Stunden pro Tag, mit einer Voranmeldung von mindestens einem Tag."
+      },
+      {
+        "passageId": "gen-l5-3ded8185",
+        "questionId": "gen-q-5-3ded8185-4",
+        "teil": 5,
+        "kind": "correct_option",
+        "overlap": "samstags von bis uhr",
+        "text": "Samstags von 10:00 bis 16:00 Uhr, sonntags ist er geschlossen."
+      },
+      {
+        "passageId": "gen-l2-918879ec-a",
+        "questionId": "gen-q-2-918879ec-2",
+        "teil": 2,
+        "kind": "question",
+        "overlap": "interesse an smart home",
+        "text": "Wer zeigt laut einer Untersuchung besonderes Interesse an Smart-Home-Produkten?"
+      },
+      {
+        "passageId": "gen-l5-770f7b8d",
+        "questionId": "gen-q-5-770f7b8d-3",
+        "teil": 5,
+        "kind": "question",
+        "overlap": "daten auf den computern",
+        "text": "Was ist bezüglich der persönlichen Daten auf den Computern zu beachten?"
+      },
+      {
+        "passageId": "gen-l2-a26eaeea-b",
+        "questionId": "gen-q-2-a26eaeea-5",
+        "teil": 2,
+        "kind": "question",
+        "overlap": "immer noch zu viele",
+        "text": "Wo landen laut Studie immer noch zu viele alte Geräte?"
+      },
+      {
+        "passageId": "gen-l2-a26eaeea-b",
+        "questionId": "gen-q-2-a26eaeea-6",
+        "teil": 2,
+        "kind": "question",
+        "overlap": "eine priorität für viele",
+        "text": "Was ist laut Text eine Priorität für viele Firmen im Bereich Recycling?"
+      },
+      {
+        "passageId": "gen-l2-831ec385b",
+        "questionId": "gen-q-2-831ec385-5",
+        "teil": 2,
+        "kind": "question",
+        "overlap": "für eltern an die",
+        "text": "Was bieten Organisationen für Eltern an, die mehr über diese Technik Wissen wollen?"
+      },
+      {
+        "passageId": "gen-l2-ea8290ef-1",
+        "questionId": "gen-q-2-ea8290ef-1",
+        "teil": 2,
+        "kind": "question",
+        "overlap": "viele menschen in deutschland",
+        "text": "Wofür nutzen viele Menschen in Deutschland die Weiterbildungsangebote?"
+      },
+      {
+        "passageId": "gen-l2-ea8290ef-2",
+        "questionId": "gen-q-2-ea8290ef-4",
+        "teil": 2,
+        "kind": "question",
+        "overlap": "projekt lern app selbst",
+        "text": "Worum geht es im Projekt „Lern-App selbst gemacht“ an der Albert-Einstein-Schule?"
+      }
+    ],
+    "verb_census_v2": [
+      {
+        "id": "p-lesen-1",
+        "field": "passage.text",
+        "teil": 1,
+        "from": "Essen",
+        "to": "essen",
+        "snippet": "hen möchten wissen, woher ihr Essen kommt. Stadtgärten bieten die"
+      },
+      {
+        "id": "lb-de-b1-l3",
+        "field": "question",
+        "teil": 1,
+        "passageId": "p-lesen-1",
+        "from": "Essen",
+        "to": "essen",
+        "snippet": "hen möchten wissen, woher ihr Essen kommt."
+      },
+      {
+        "id": "gen-l4-e2d0b882",
+        "field": "passage.text",
+        "teil": 4,
+        "from": "Wissen",
+        "to": "wissen",
+        "snippet": "nken. Die Organisation möchte Wissen, was die Nachbarn denken. Les"
+      },
+      {
+        "id": "gen-l2-8dfdafc7a",
+        "field": "passage.text",
+        "teil": 2,
+        "from": "Kochen",
+        "to": "kochen",
+        "snippet": "e Stress mit ihren Kindern zu Kochen. Solche Angebote sind wichtig"
+      },
+      {
+        "id": "gen-q-2-8dfdafc7-2",
+        "field": "options[1]",
+        "teil": 2,
+        "passageId": "gen-l2-8dfdafc7a",
+        "from": "Kochen",
+        "to": "kochen",
+        "snippet": "b) Ein Kurs, um gemeinsam zu Kochen."
+      },
+      {
+        "id": "gen-q-2-8dfdafc7-6",
+        "field": "options[1]",
+        "teil": 2,
+        "passageId": "gen-l2-8dfdafc7b",
+        "from": "Essen",
+        "to": "essen",
+        "snippet": "b) Nur die Kinder Essen allein."
+      },
+      {
+        "id": "gen-q-2-8dfdafc7-6",
+        "field": "options[2]",
+        "teil": 2,
+        "passageId": "gen-l2-8dfdafc7b",
+        "from": "Essen",
+        "to": "essen",
+        "snippet": "c) Zusammen Essen und sich austauschen."
+      },
+      {
+        "id": "gen-l2-42c0c14e-b",
+        "field": "passage.text",
+        "teil": 2,
+        "from": "Wissen",
+        "to": "wissen",
+        "snippet": "es, allen Bewohnern Zugang zu Wissen und Kultur zu ermöglichen."
+      },
+      {
+        "id": "gen-q-2-42c0c14e-6",
+        "field": "explanation",
+        "teil": 2,
+        "passageId": "gen-l2-42c0c14e-b",
+        "from": "Wissen",
+        "to": "wissen",
+        "snippet": "es, allen Bewohnern Zugang zu Wissen und Kultur zu ermöglichen."
+      },
+      {
+        "id": "gen-l1-61b004a3",
+        "field": "passage.text",
+        "teil": 1,
+        "from": "Unternehmen",
+        "to": "unternehmen",
+        "snippet": "r es geschafft. Am Wochenende Unternehmen wir oft Ausflüge in die Natur"
+      },
+      {
+        "id": "gen-l1-61b004a3",
+        "field": "passage.text",
+        "teil": 1,
+        "from": "Kochen",
+        "to": "kochen",
+        "snippet": "er Woche, an dem wir zusammen Kochen oder Spiele spielen. Diese Ri"
+      },
+      {
+        "id": "gen-l1-61b004a3",
+        "field": "passage.text",
+        "teil": 1,
+        "from": "Glaube",
+        "to": "glaube",
+        "snippet": "re Familien sehr wichtig. Ich Glaube, diese gemeinsamen Erfahrunge"
+      },
+      {
+        "id": "gen-l2-e5a1-b",
+        "field": "passage.text",
+        "teil": 2,
+        "from": "Wissen",
+        "to": "wissen",
+        "snippet": "Viertel, bei dem Bewohner ihr Wissen teilen. Ein Hauptpunkt ist da"
+      },
+      {
+        "id": "gen-q-h2-d99a3b12-q5",
+        "field": "options[0]",
+        "teil": 2,
+        "passageId": "gen-p-h2-d99a3b12",
+        "from": "Essen",
+        "to": "essen",
+        "snippet": "a) Mahlzeiten schnell zu Essen, um Zeit zu sparen."
+      },
+      {
+        "id": "gen-l2-69492eda-b",
+        "field": "passage.text",
+        "teil": 2,
+        "from": "Kochen",
+        "to": "kochen",
+        "snippet": " Erfahrungen, wenn sie frisch Kochen. Die Situation in vielen Supe"
+      },
+      {
+        "id": "gen-l2-69492eda-b",
+        "field": "passage.text",
+        "teil": 2,
+        "from": "Essen",
+        "to": "essen",
+        "snippet": " der Menschen in das, was sie Essen. Ein Bericht einer Verbrauche"
+      },
+      {
+        "id": "gen-q-2-f5dd2b2c-3",
+        "field": "explanation",
+        "teil": 2,
+        "passageId": "gen-l2-f5dd2b2c-1",
+        "from": "Besuchen",
+        "to": "besuchen",
+        "snippet": "en, ohne ein Fitnessstudio zu Besuchen."
+      },
+      {
+        "id": "gen-q-2-f5dd2b2c-4",
+        "field": "explanation",
+        "teil": 2,
+        "passageId": "gen-l2-f5dd2b2c-2",
+        "from": "Kochen",
+        "to": "kochen",
+        "snippet": "en haben, jeden Tag gesund zu Kochen."
+      },
+      {
+        "id": "gen-q-2-358dc234-2",
+        "field": "question",
+        "teil": 2,
+        "passageId": "gen-l2-358dc234a",
+        "from": "Besuchen",
+        "to": "besuchen",
+        "snippet": "le nicht in der Hochsaison zu Besuchen?"
+      },
+      {
+        "id": "gen-p-h2-cb37a553",
+        "field": "passage.text",
+        "teil": 2,
+        "from": "Glaube",
+        "to": "glaube",
+        "snippet": " wir miteinander umgehen.\\nIch Glaube, dass Kultur eine wichtige Ro"
+      },
+      {
+        "id": "gen-l2-d2f73cdf-2",
+        "field": "passage.text",
+        "teil": 2,
+        "from": "Besuchen",
+        "to": "besuchen",
+        "snippet": "en Städtereisen, um Museen zu Besuchen und neue Küchen zu probieren."
+      },
+      {
+        "id": "gen-l1-fdadd3ab",
+        "field": "passage.text",
+        "teil": 1,
+        "from": "Wissen",
+        "to": "wissen",
+        "snippet": "nfacher machen, aber man muss Wissen, wie man damit umgeht. Ich ha"
+      },
+      {
+        "id": "gen-l1-fdadd3ab",
+        "field": "passage.text",
+        "teil": 1,
+        "from": "Glaube",
+        "to": "glaube",
+        "snippet": "ne Erfahrungen zu teilen. Ich Glaube, es ist wichtig, dass alle Me"
+      },
+      {
+        "id": "gen-q-1-fdadd3ab-5",
+        "field": "question",
+        "teil": 1,
+        "passageId": "gen-l1-fdadd3ab",
+        "from": "Wissen",
+        "to": "wissen",
+        "snippet": "renamtlich engagieren, um ihr Wissen weiterzugeben."
+      },
+      {
+        "id": "gen-l1-5f45a5d7",
+        "field": "passage.text",
+        "teil": 1,
+        "from": "Besuchen",
+        "to": "besuchen",
+        "snippet": "Ich plane auch, einen Kurs zu Besuchen, um meine alten Hobbys wieder"
+      },
+      {
+        "id": "gen-q-1-5f45a5d7-6",
+        "field": "explanation",
+        "teil": 1,
+        "passageId": "gen-l1-5f45a5d7",
+        "from": "Besuchen",
+        "to": "besuchen",
+        "snippet": "Sie plant, einen Kurs zu Besuchen, um alte Hobbys wiederzuentde"
+      },
+      {
+        "id": "gen-l4-41578898",
+        "field": "passage.text",
+        "teil": 4,
+        "from": "Unternehmen",
+        "to": "unternehmen",
+        "snippet": " einer Homeoffice-Pflicht für Unternehmen: Sie sollen ihren Mitarbeiter"
+      },
+      {
+        "id": "gen-l2-a26eaeea-b",
+        "field": "passage.text",
+        "teil": 2,
+        "from": "Wissen",
+        "to": "wissen",
+        "snippet": "funktionieren? Viele Menschen Wissen nicht genau, wohin mit diesem"
+      },
+      {
+        "id": "gen-q-2-831ec385-5",
+        "field": "question",
+        "teil": 2,
+        "passageId": "gen-l2-831ec385b",
+        "from": "Wissen",
+        "to": "wissen",
+        "snippet": ", die mehr über diese Technik Wissen wollen?"
+      },
+      {
+        "id": "gen-l1-8da9927a",
+        "field": "passage.text",
+        "teil": 1,
+        "from": "Wissen",
+        "to": "wissen",
+        "snippet": "r, die mehr über Gartenarbeit Wissen wollen. Diese neue Arbeit gib"
+      }
+    ]
+  },
+  "served": {
+    "topic_mismatch": [
+      {
+        "examId": "official-de-B1-e1",
+        "teil": 2,
+        "passageId": "served-t2",
+        "tag": "Gesundheit",
+        "detected": null,
+        "reason": "tag_unsupported",
+        "detail": "passage:served-t2 topicTag «Gesundheit» sin soporte léxico en el contenido (tag score=0, ningún tema alternativo con hits; hits={})"
+      }
+    ],
+    "copy_literal": [],
+    "verb_census_v2": [
+      {
+        "examId": "official-de-B1-e1",
+        "id": "gen-l1-61b004a3",
+        "field": "text",
+        "teil": 1,
+        "from": "Unternehmen",
+        "to": "unternehmen",
+        "snippet": "r es geschafft. Am Wochenende Unternehmen wir oft Ausflüge in die Natur"
+      },
+      {
+        "examId": "official-de-B1-e1",
+        "id": "gen-l1-61b004a3",
+        "field": "text",
+        "teil": 1,
+        "from": "Kochen",
+        "to": "kochen",
+        "snippet": "er Woche, an dem wir zusammen Kochen oder Spiele spielen. Diese Ri"
+      },
+      {
+        "examId": "official-de-B1-e1",
+        "id": "gen-l1-61b004a3",
+        "field": "text",
+        "teil": 1,
+        "from": "Glaube",
+        "to": "glaube",
+        "snippet": "re Familien sehr wichtig. Ich Glaube, diese gemeinsamen Erfahrunge"
+      }
+    ],
+    "aud4": [],
+    "aud4b": []
+  }
+}

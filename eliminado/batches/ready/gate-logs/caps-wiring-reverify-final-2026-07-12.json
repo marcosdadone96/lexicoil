@@ -1,0 +1,97 @@
+{
+  "generatedAt": "2026-07-12T12:00:00.000Z",
+  "versionNow": "v3.14-zu-degree-adj-2026-07-12",
+  "wiringBug": {
+    "scope": "GENERAL to Lesen generation (`scripts/generate-lesen-part-gemini.mjs` → `runDualGates`): early disk write for `validateBatchFile`, then gates apply `decapOnly` in memory; without post-gate rewrite, `--skip-pool-ready` leaves pre-decap JSON on disk.",
+    "notT2Specific": true,
+    "horenPathDifferent": "`scripts/lib/generatePartGeminiLib.mjs` applies `decapOnly` BEFORE the first write — Hören/Schreiben are NOT hit by this Lesen wiring bug.",
+    "rewriteFix": "Present in working tree at `runDualGates` (post-gate `writeFileSync` of `finalBatch`); was uncommitted at audit time.",
+    "evidenceFlags": {
+      "canary": "--from-coverage --skip-pool-ready --fix-retries 3 (`batches/ready/gate-logs/canary-report-2026-07-11.md`)",
+      "lesenT2batch": "--teil 2 --from-coverage --skip-pool-ready --fix-retries 3 (`batches/ready/gate-logs/lesen-t2-batch-report-2026-07-12.json`)"
+    },
+    "mitigationBeforePromote": "v3.11 pool+staging reprocess `2026-07-12T09:23` (`zu-prep-noun-v311-reprocess-2026-07-12.json`) restamped canary staging before promote to 043–045 / 076–078."
+  },
+  "lesenT4T5Promoted": {
+    "files": [
+      "lesen-t4-gemini-043.json",
+      "lesen-t4-gemini-044.json",
+      "lesen-t4-gemini-045.json",
+      "lesen-t5-gemini-076.json",
+      "lesen-t5-gemini-077.json",
+      "lesen-t5-gemini-078.json"
+    ],
+    "wiringResidueDecapOnlyWouldHaveFixed": false,
+    "detail": "Against current normalizer: full net content change was 0 on the six after v3.11 restamp (classic decapOnly false-positives Kunden/Unternehmen re-capped by full). No skip-pool-ready pre-decap residue remained.",
+    "separateContentBugs": [
+      {
+        "file": "lesen-t4-gemini-044.json",
+        "bug": "nicht zu Teuer",
+        "cause": "v3.11 reprocess capitalized teuer→Teuer (lexicon FP + shouldCapitalizeNounAfterZu). NOT wiring residue — decapOnly also failed to fix under v3.13.",
+        "fixed": "surgical + v3.14 degree-adj rule; restamped v3.14"
+      }
+    ],
+    "cleanAfterAudit": true
+  },
+  "horenT3": {
+    "chrono002_004_007": {
+      "generatedWithSkipPoolReadyToday": false,
+      "note": "Pre-existing pool files; chrono reorder today. Current: no suspect zu+Cap; stamp v3.14.",
+      "wiringBugApplies": false
+    },
+    "canary008_009_010": {
+      "generatedWithSkipPoolReady": true,
+      "wiringBugApplies": false,
+      "reason": "Hören path decaps before write",
+      "contentBug": {
+        "file": "horen-t3-gemini-009.json",
+        "bug": "zu Klein",
+        "cause": "v3.11 reprocess klein→Klein",
+        "fixed": "surgical + vocab tag + v3.14"
+      },
+      "cleanAfterAudit": true
+    }
+  },
+  "lesenT2_099_101": {
+    "099": {
+      "status": "CLEAN",
+      "stamp": "v3.14-zu-degree-adj-2026-07-12",
+      "priorOvercaps": "zu Teilen / zu Vereinfachen — gone",
+      "suspectZuCaps": []
+    },
+    "100": {
+      "status": "CLEAN_AFTER_FIX",
+      "stamp": "v3.14-zu-degree-adj-2026-07-12",
+      "had": "zu Unterrichten (blocked by old -ten infinitive heuristic)",
+      "fixed": true,
+      "benignZuCaps": ["zu Themen"]
+    },
+    "101": {
+      "status": "CLEAN",
+      "stamp": "v3.14-zu-degree-adj-2026-07-12",
+      "priorOvercaps": "zu Decken — gone",
+      "suspectZuCaps": []
+    },
+    "102": {
+      "status": "CLEAN",
+      "stamp": "v3.14-zu-degree-adj-2026-07-12",
+      "benignZuCaps": ["zu Hause"]
+    }
+  },
+  "normalizerFollowUpShipped": {
+    "version": "v3.14-zu-degree-adj-2026-07-12",
+    "why": "Full normalize under v3.13 actively re-introduced zu Teuer / zu Klein; surgical fixes alone were fragile.",
+    "tests": "capitalizeNouns.test.mjs — 206 passed"
+  },
+  "promotionReopen": {
+    "reopenAll15ForWiring": false,
+    "reopenWiringOnSixT4T5": false,
+    "partialContentReopen": {
+      "yes": true,
+      "files": ["lesen-t4-gemini-044.json", "horen-t3-gemini-009.json"],
+      "severity": "Dirty at promote time via v3.11 mis-cap (degree adj), not via --skip-pool-ready wiring. Now fixed + restamped v3.14. Other canary promotes (043/045/076/077/078/008/010) had no suspect overcap residue.",
+      "actionTaken": "fixed in pool-verified; do not un-promote"
+    },
+    "directVerdict": "NO: do not reopen the full promotion set for the wiring bug. YES: Objetivo 1 had two dirty promoted files (044, H3-009) from a different cause; they are fixed now."
+  }
+}

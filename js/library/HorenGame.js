@@ -110,6 +110,11 @@ const HorenGame = (() => {
     return new Promise((resolve) => {
       try {
         const audio = new Audio(`data:${mime || 'audio/mpeg'};base64,${audioBase64}`);
+        if (typeof configureAudioElement === 'function') configureAudioElement(audio);
+        else {
+          audio.setAttribute('playsinline', '');
+          audio.setAttribute('webkit-playsinline', '');
+        }
         audio.onended = () => resolve(true);
         audio.onerror = () => resolve(false);
         audio.play().catch(() => resolve(false));
@@ -193,6 +198,7 @@ const HorenGame = (() => {
   };
 
   function t(lang) {
+    if (typeof listeningGameStrings === 'function') return listeningGameStrings(lang);
     return String(lang || '').startsWith('es') ? STR.es : STR.en;
   }
 
@@ -206,10 +212,187 @@ const HorenGame = (() => {
    * @param config { words: string[], lang: 'de'|'en'|'es', level?, uiLang?: 'es'|'en' }
    * @param handlers { onComplete?(result, round), onExit?() }
    */
-  function mount(container, config = {}, handlers = {}) {
+  /**
+   * Monologue listening game — AI passage + morphological word spotting.
+   */
+  function mountMonologue(container, config = {}, handlers = {}) {
     if (!container || typeof document === 'undefined') return null;
     const lang = config.lang || 'de';
-    const ui = t(config.uiLang || (lang === 'es' ? 'es' : 'en'));
+    const ui = t(config.uiLang || (typeof resolveVocabUiLang === 'function' ? resolveVocabUiLang() : lang === 'es' ? 'es' : 'en'));
+    const round = config.round || {
+      passage: config.passage,
+      displayWords: config.displayWords || [],
+      appeared: config.appeared || [],
+      absent: config.absent || [],
+      topic: config.topic || null,
+      audioBase64: config.audioBase64 || null,
+      audioMime: config.audioMime || 'audio/mpeg',
+    };
+    const selected = new Set();
+    let playsLeft = 2;
+    let busy = false;
+    let token = 0;
+
+    const scoreFn =
+      typeof ListeningGameUtils !== 'undefined' && ListeningGameUtils.scoreListeningRound
+        ? ListeningGameUtils.scoreListeningRound
+        : scoreRound;
+
+    if (!round.displayWords || round.displayWords.length < 2) {
+      container.innerHTML = `<div class="hg-wrap"><h3>${esc(ui.title)}</h3><p class="hg-muted">${esc(ui.tooFew)}</p></div>`;
+      return { destroy() { token++; } };
+    }
+
+    async function playPassage() {
+      if (busy || playsLeft <= 0) return;
+      busy = true;
+      const myToken = ++token;
+      render('play');
+      const played = await playPassageAudio(round, lang);
+      if (myToken !== token) return;
+      if (played) playsLeft--;
+      busy = false;
+      render('play');
+    }
+
+    function render(phase, result) {
+      const chips = round.displayWords
+        .map((w) => {
+          const on = selected.has(w);
+          let cls = 'hg-chip';
+          if (phase === 'result') {
+            const d = result.detail.find((x) => x.word === w);
+            cls += d.wasPlayed ? ' hg-was-played' : ' hg-was-absent';
+            if (!d.correct) cls += ' hg-wrong';
+          } else if (on) cls += ' hg-on';
+          const label =
+            typeof fcWordDisplayHtml === 'function' && config.pool
+              ? (() => {
+                  const fc = config.pool.find((f) => String(f.word || '').trim() === w);
+                  return fc ? fcWordDisplayHtml(fc, lang) : esc(w);
+                })()
+              : esc(w);
+          return `<button type="button" class="${cls}" data-w="${esc(w)}"${phase === 'result' ? ' disabled' : ''}>${label}</button>`;
+        })
+        .join('');
+
+      let actions;
+      if (phase === 'play') {
+        const label = playsLeft === 2 ? ui.play : ui.replay;
+        actions = `<button type="button" class="hg-btn hg-primary" data-act="play"${busy || playsLeft <= 0 ? ' disabled' : ''}>${busy ? esc(ui.playing) : esc(label)}</button>
+          <button type="button" class="hg-btn" data-act="check"${selected.size ? '' : ' disabled'}>${esc(ui.check)}</button>`;
+      } else {
+        const exitLbl =
+          typeof config.onSessionAdvance === 'function'
+            ? config.sessionAdvanceLabel || 'Next round →'
+            : ui.again;
+        actions = `<button type="button" class="hg-btn hg-primary" data-act="exit">${esc(exitLbl)}</button>`;
+      }
+
+      const topicHtml = round.topic
+        ? `<p class="hg-topic">${esc(round.topic)}</p>`
+        : '';
+      const passageHtml =
+        phase === 'result' && round.passage
+          ? `<details class="hg-passage-details"><summary>${esc(ui.transcript || 'Transcript')}</summary><p class="hg-passage">${esc(round.passage)}</p></details>`
+          : '';
+
+      let resultHtml = '';
+      if (phase === 'result') {
+        const heard = result.heard.map((w) => `<span class="hg-pill hg-pill-yes">${esc(w)}</span>`).join('') || '—';
+        const missing = result.missing.map((w) => `<span class="hg-pill hg-pill-no">${esc(w)}</span>`).join('') || '—';
+        resultHtml = `<div class="hg-result">
+            <p class="hg-score">${esc(ui.score(result.correct, result.total))}</p>
+            <p class="hg-lbl">${esc(ui.heard)}</p><div class="hg-pills">${heard}</div>
+            <p class="hg-lbl">${esc(ui.missing)}</p><div class="hg-pills">${missing}</div>
+          </div>`;
+      }
+
+      const intro = ui.intro || (lang === 'es'
+          ? 'Escucha un monólogo corto (dos veces). Marca las palabras de tu lista que oigas — pueden aparecer en otra forma.'
+          : "Listen to a short monologue (twice). Tick the words from your list you hear — they may appear in a different form.");
+
+      container.innerHTML = `
+        <div class="hg-wrap hg-wrap--mono">
+          <h3>${esc(ui.title)}</h3>
+          ${config.sessionLabel ? `<p class="hg-round-lbl">${esc(config.sessionLabel)}</p>` : ''}
+          <p class="hg-muted">${esc(intro)}</p>
+          ${topicHtml}
+          <p class="hg-prompt">${esc(ui.pickPrompt)}</p>
+          <div class="hg-chips">${chips}</div>
+          <div class="hg-actions">${actions}</div>
+          ${resultHtml}
+          ${passageHtml}
+        </div>`;
+      injectStylesOnce();
+      wire(phase, result);
+    }
+
+    function wire(phase) {
+      container.querySelectorAll('.hg-chip').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          if (phase !== 'play') return;
+          const w = btn.getAttribute('data-w');
+          if (selected.has(w)) selected.delete(w);
+          else selected.add(w);
+          render('play');
+        });
+      });
+      container.querySelector('[data-act="play"]')?.addEventListener('click', () => playPassage());
+      container.querySelector('[data-act="check"]')?.addEventListener('click', () => {
+        const result = scoreFn(round, [...selected]);
+        render('result', result);
+        if (typeof handlers.onComplete === 'function') {
+          try {
+            handlers.onComplete(result, round);
+          } catch (_) {}
+        }
+      });
+      container.querySelector('[data-act="exit"]')?.addEventListener('click', () => {
+        if (typeof config.onSessionAdvance === 'function') {
+          config.onSessionAdvance();
+        } else if (typeof handlers.onExit === 'function') handlers.onExit();
+      });
+    }
+
+    render('play');
+    return {
+      destroy() {
+        token++;
+        if (typeof window !== 'undefined' && window.speechSynthesis) window.speechSynthesis.cancel();
+      },
+    };
+  }
+
+  async function playPassageAudio(round, lang) {
+    if (round.audioBase64) {
+      const ok = await playBase64(round.audioBase64, round.audioMime || 'audio/mpeg');
+      if (ok) return true;
+    }
+    const passage = String(round.passage || '').trim();
+    if (!passage) return false;
+    const voice = voiceFor(lang);
+    const fetchTts = g('fetchTtsAudio');
+    if (fetchTts) {
+      try {
+        const cached = await fetchTts(passage, voice, lang);
+        if (cached && cached.audioBase64) return playBase64(cached.audioBase64, cached.mime);
+      } catch (_) {}
+    }
+    const genTts = g('generateTtsAudio');
+    if (genTts) {
+      try {
+        const gen = await genTts(passage, voice, lang);
+        if (gen && gen.audioBase64) return playBase64(gen.audioBase64, gen.mime);
+      } catch (_) {}
+    }
+    return speak(passage, lang);
+  }
+
+  function mountWordList(container, config = {}, handlers = {}) {
+    if (!container || typeof document === 'undefined') return null;
+    const lang = config.lang || 'de';
+    const ui = t(config.uiLang || (typeof resolveVocabUiLang === 'function' ? resolveVocabUiLang() : lang === 'es' ? 'es' : 'en'));
     const selected = new Set();
     let round = buildRound(config.words, { lang });
     let playsLeft = 2;
@@ -241,7 +424,11 @@ const HorenGame = (() => {
         actions = `<button type="button" class="hg-btn hg-primary" data-act="play"${busy ? ' disabled' : ''}>${busy ? esc(ui.playing) : esc(label)}</button>
           <button type="button" class="hg-btn" data-act="check"${selected.size ? '' : ' disabled'}>${esc(ui.check)}</button>`;
       } else {
-        actions = `<button type="button" class="hg-btn hg-primary" data-act="again">${esc(ui.again)}</button>`;
+        const againLbl =
+          typeof config.onSessionAdvance === 'function'
+            ? config.sessionAdvanceLabel || 'Next round →'
+            : ui.again;
+        actions = `<button type="button" class="hg-btn hg-primary" data-act="again">${esc(againLbl)}</button>`;
       }
 
       let resultHtml = '';
@@ -258,6 +445,7 @@ const HorenGame = (() => {
       container.innerHTML = `
         <div class="hg-wrap">
           <h3>${esc(ui.title)}</h3>
+          ${config.sessionLabel ? `<p class="hg-round-lbl">${esc(config.sessionLabel)}</p>` : ''}
           <p class="hg-muted">${esc(ui.intro)}</p>
           <p class="hg-prompt">${esc(ui.pickPrompt)}</p>
           <div class="hg-chips">${chips}</div>
@@ -313,6 +501,10 @@ const HorenGame = (() => {
     }
 
     function onAgain() {
+      if (typeof config.onSessionAdvance === 'function') {
+        config.onSessionAdvance();
+        return;
+      }
       selected.clear();
       playsLeft = 2;
       busy = false;
@@ -329,6 +521,142 @@ const HorenGame = (() => {
       destroy() {
         token++;
         if (typeof window !== 'undefined' && window.speechSynthesis) window.speechSynthesis.cancel();
+      },
+    };
+  }
+
+  /** Several word-list rounds (TTS clips per word) — no AI monologue required. */
+  function mountSession(container, config = {}, handlers = {}) {
+    if (!container || typeof document === 'undefined') return null;
+    const total = Math.min(3, Math.max(1, Number(config.sessionRounds) || 3));
+    let roundIdx = 0;
+    let aggCorrect = 0;
+    let aggTotal = 0;
+    let inner = null;
+    let destroyed = false;
+
+    function teardown() {
+      if (inner?.destroy) inner.destroy();
+      inner = null;
+    }
+
+    function mountNext() {
+      if (destroyed) return;
+      teardown();
+      if (roundIdx >= total) {
+        const ui = t(
+          config.uiLang ||
+            (typeof resolveVocabUiLang === 'function' ? resolveVocabUiLang() : 'en'),
+        );
+        container.innerHTML = `<div class="hg-wrap"><p class="hg-score">${esc(ui.score(aggCorrect, aggTotal))} · ${total} rounds</p><button type="button" class="hg-btn hg-primary" data-act="done">${esc(ui.again)}</button></div>`;
+        injectStylesOnce();
+        container.querySelector('[data-act="done"]')?.addEventListener('click', () => {
+          if (typeof handlers.onExit === 'function') handlers.onExit();
+        });
+        return;
+      }
+      roundIdx += 1;
+      inner = mountWordList(
+        container,
+        {
+          ...config,
+          sessionLabel: `Round ${roundIdx}/${total}`,
+          sessionAdvanceLabel: roundIdx >= total ? 'See summary →' : `Next round (${roundIdx + 1}/${total}) →`,
+          onSessionAdvance: () => mountNext(),
+        },
+        {
+          onComplete(result) {
+            aggCorrect += result.correct;
+            aggTotal += result.total;
+            if (typeof handlers.onComplete === 'function') {
+              try {
+                handlers.onComplete(result, { sessionRound: roundIdx, sessionTotal: total });
+              } catch (_) {}
+            }
+          },
+          onExit: handlers.onExit,
+        },
+      );
+    }
+
+    mountNext();
+    return {
+      destroy() {
+        destroyed = true;
+        teardown();
+      },
+    };
+  }
+
+  /** AI multi-round session — each round is a short synthesized passage clip. */
+  function mountAiSession(container, config = {}, handlers = {}) {
+    if (!container || typeof document === 'undefined') return null;
+    const rounds = Array.isArray(config.rounds) ? config.rounds : [];
+    if (!rounds.length) {
+      return mountSession(container, config, handlers);
+    }
+    let idx = 0;
+    let inner = null;
+    let destroyed = false;
+
+    function teardown() {
+      if (inner?.destroy) inner.destroy();
+      inner = null;
+    }
+
+    function mountOne() {
+      if (destroyed) return;
+      teardown();
+      if (idx >= rounds.length) {
+        const ui = t(
+          config.uiLang ||
+            (typeof resolveVocabUiLang === 'function' ? resolveVocabUiLang() : 'en'),
+        );
+        container.innerHTML = `<div class="hg-wrap"><p class="hg-score">Session complete</p><p class="hg-muted">${rounds.length} AI listening round${rounds.length === 1 ? '' : 's'} finished.</p><button type="button" class="hg-btn hg-primary" data-act="done">${esc(ui.again)}</button></div>`;
+        injectStylesOnce();
+        container.querySelector('[data-act="done"]')?.addEventListener('click', () => {
+          if (typeof handlers.onExit === 'function') handlers.onExit();
+        });
+        return;
+      }
+      const r = rounds[idx];
+      const roundNum = idx + 1;
+      idx += 1;
+      const isLast = idx >= rounds.length;
+      inner = mountMonologue(
+        container,
+        {
+          ...config,
+          passage: r.passage,
+          displayWords: r.displayWords,
+          appeared: r.appeared,
+          absent: r.absent,
+          audioBase64: r.audioBase64,
+          audioMime: r.audioMime,
+          sessionLabel: `AI round ${roundNum}/${rounds.length}`,
+          sessionAdvanceLabel: isLast ? 'Finish session →' : `Next AI round (${roundNum + 1}/${rounds.length}) →`,
+          onSessionAdvance: isLast
+            ? () => mountOne()
+            : () => mountOne(),
+        },
+        {
+          onComplete(result, round) {
+            if (typeof handlers.onComplete === 'function') {
+              try {
+                handlers.onComplete(result, round);
+              } catch (_) {}
+            }
+          },
+          onExit: handlers.onExit,
+        },
+      );
+    }
+
+    mountOne();
+    return {
+      destroy() {
+        destroyed = true;
+        teardown();
       },
     };
   }
@@ -354,14 +682,31 @@ const HorenGame = (() => {
       .hg-lbl{font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--text-muted,#888);margin:.75rem 0 .25rem}
       .hg-pill{padding:5px 12px;border-radius:999px;font-size:13px}
       .hg-pill-yes{background:rgba(80,200,120,.18);color:#50c878}
-      .hg-pill-no{background:rgba(226,104,93,.16);color:#e2685d}`;
+      .hg-pill-no{background:rgba(226,104,93,.16);color:#e2685d}
+      .hg-topic{font-size:12px;font-weight:700;color:var(--brand,var(--purple));margin:0 0 8px}
+      .hg-round-lbl{font-size:12px;font-weight:700;color:var(--brand,var(--purple));margin:0 0 6px}
+      .hg-passage-details{margin-top:1rem;text-align:left;font-size:13px}
+      .hg-passage{color:var(--text-secondary);line-height:1.5;margin:.5rem 0 0}`;
     const el = document.createElement('style');
     el.id = 'hg-styles';
     el.textContent = css;
     document.head.appendChild(el);
   }
 
-  return { buildRound, scoreRound, playWord, mount };
+  function mount(container, config = {}, handlers = {}) {
+    if (config.rounds && config.rounds.length && (config.aiSession || config.mode === 'ai')) {
+      return mountAiSession(container, config, handlers);
+    }
+    if (config.sessionMode || config.sessionRounds) {
+      return mountSession(container, config, handlers);
+    }
+    if (config.passage || config.round || (config.displayWords && config.displayWords.length)) {
+      return mountMonologue(container, config, handlers);
+    }
+    return mountWordList(container, config, handlers);
+  }
+
+  return { buildRound, scoreRound, playWord, mount, mountMonologue, mountWordList, mountSession, mountAiSession };
 })();
 
 if (typeof window !== 'undefined') window.HorenGame = HorenGame;

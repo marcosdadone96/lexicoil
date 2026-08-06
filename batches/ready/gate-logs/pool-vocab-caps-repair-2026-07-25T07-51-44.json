@@ -1,0 +1,290 @@
+{
+  "args": {
+    "apply": true,
+    "dryRun": false,
+    "syncSeed": true,
+    "listOnly": false,
+    "preview": false,
+    "confirm": true,
+    "lemmaClusterOnly": false
+  },
+  "affected": [
+    "B1/horen-t1-gemini-001.json",
+    "B1/horen-t1-gemini-033.json",
+    "B1/horen-t1-gemini-048.json",
+    "B1/horen-t1-gemini-053.json",
+    "B1/horen-t2-gemini-006.json",
+    "B1/horen-t2-gemini-016.json",
+    "B1/horen-t2-gemini-034.json",
+    "B1/horen-t2-gemini-080.json",
+    "B1/horen-t3-gemini-004.json",
+    "A2/horen-t3-gemini-039.json",
+    "A2/horen-t3-gemini-040.json",
+    "B1/horen-t3-gemini-058.json",
+    "A2/horen-t4-cur-health.json",
+    "B1/horen-t4-gemini-009.json",
+    "B1/horen-t4-gemini-017.json",
+    "B1/horen-t4-gemini-023.json",
+    "B1/horen-t4-gemini-026.json",
+    "B1/horen-t4-gemini-027.json",
+    "B1/lesen-t1-gemini-108.json",
+    "B1/lesen-t1-gemini-193.json",
+    "B1/lesen-t2-gemini-126.json",
+    "B1/lesen-t3-auto-vcbc6g.json",
+    "B1/lesen-t3-auto-ys03r9.json",
+    "A2/lesen-t4-cur-society.json",
+    "B1/lesen-t4-gemini-016.json",
+    "B1/lesen-t4-gemini-044.json",
+    "B1/lesen-t4-gemini-045.json",
+    "B1/lesen-t4-gemini-051.json",
+    "B1/lesen-t4-gemini-053.json",
+    "B1/lesen-t4-gemini-055.json",
+    "B1/lesen-t4-gemini-057.json",
+    "B1/lesen-t4-gemini-059.json",
+    "B1/lesen-t4-gemini-066.json",
+    "B1/lesen-t4-gemini-067.json",
+    "B1/schreiben-gemini-005.json",
+    "B1/schreiben-gemini-015.json",
+    "A2/sprechen-t3-gemini-011.json"
+  ],
+  "report": {
+    "repaired": [
+      "B1/horen-t1-gemini-033.json",
+      "B1/horen-t1-gemini-053.json",
+      "B1/horen-t2-gemini-006.json",
+      "B1/horen-t2-gemini-016.json",
+      "B1/horen-t2-gemini-034.json",
+      "B1/horen-t2-gemini-080.json",
+      "B1/horen-t3-gemini-004.json",
+      "A2/horen-t4-cur-health.json",
+      "B1/horen-t4-gemini-009.json",
+      "B1/horen-t4-gemini-017.json",
+      "B1/horen-t4-gemini-023.json",
+      "B1/horen-t4-gemini-027.json",
+      "B1/lesen-t1-gemini-108.json",
+      "B1/lesen-t1-gemini-193.json",
+      "B1/lesen-t2-gemini-126.json",
+      "B1/lesen-t3-auto-vcbc6g.json",
+      "B1/lesen-t3-auto-ys03r9.json",
+      "A2/lesen-t4-cur-society.json",
+      "B1/lesen-t4-gemini-016.json",
+      "B1/lesen-t4-gemini-044.json",
+      "B1/lesen-t4-gemini-045.json",
+      "B1/lesen-t4-gemini-051.json",
+      "B1/lesen-t4-gemini-053.json",
+      "B1/lesen-t4-gemini-055.json",
+      "B1/lesen-t4-gemini-057.json",
+      "B1/lesen-t4-gemini-059.json",
+      "B1/lesen-t4-gemini-066.json",
+      "B1/lesen-t4-gemini-067.json",
+      "B1/schreiben-gemini-005.json",
+      "B1/schreiben-gemini-015.json",
+      "A2/sprechen-t3-gemini-011.json"
+    ],
+    "verifyFailed": [
+      {
+        "file": "B1/horen-t1-gemini-001.json",
+        "remaining": [
+          "vocab_corruption"
+        ]
+      },
+      {
+        "file": "B1/horen-t1-gemini-048.json",
+        "remaining": [
+          "vocab_corruption"
+        ]
+      },
+      {
+        "file": "A2/horen-t3-gemini-039.json",
+        "remaining": [
+          "vocab_corruption"
+        ]
+      },
+      {
+        "file": "A2/horen-t3-gemini-040.json",
+        "remaining": [
+          "vocab_corruption"
+        ]
+      },
+      {
+        "file": "B1/horen-t3-gemini-058.json",
+        "remaining": [
+          "vocab_corruption"
+        ]
+      },
+      {
+        "file": "B1/horen-t4-gemini-026.json",
+        "remaining": [
+          "vocab_corruption"
+        ]
+      }
+    ],
+    "sync": [
+      {
+        "file": "horen-t1-gemini-033.json",
+        "ok": true
+      },
+      {
+        "file": "horen-t1-gemini-053.json",
+        "ok": true
+      },
+      {
+        "file": "horen-t2-gemini-006.json",
+        "ok": false
+      },
+      {
+        "file": "horen-t2-gemini-016.json",
+        "ok": true
+      },
+      {
+        "file": "horen-t2-gemini-034.json",
+        "ok": false
+      },
+      {
+        "file": "horen-t2-gemini-080.json",
+        "ok": true
+      },
+      {
+        "file": "horen-t3-gemini-004.json",
+        "ok": false
+      },
+      {
+        "file": "horen-t4-cur-health.json",
+        "ok": true
+      },
+      {
+        "file": "horen-t4-gemini-009.json",
+        "ok": false
+      },
+      {
+        "file": "horen-t4-gemini-017.json",
+        "ok": false
+      },
+      {
+        "file": "horen-t4-gemini-023.json",
+        "ok": true
+      },
+      {
+        "file": "horen-t4-gemini-027.json",
+        "ok": true
+      },
+      {
+        "file": "lesen-t1-gemini-108.json",
+        "ok": true
+      },
+      {
+        "file": "lesen-t1-gemini-193.json",
+        "ok": false
+      },
+      {
+        "file": "lesen-t2-gemini-126.json",
+        "ok": false
+      },
+      {
+        "file": "lesen-t3-auto-vcbc6g.json",
+        "ok": true
+      },
+      {
+        "file": "lesen-t3-auto-ys03r9.json",
+        "ok": true
+      },
+      {
+        "file": "lesen-t4-cur-society.json",
+        "ok": true
+      },
+      {
+        "file": "lesen-t4-gemini-016.json",
+        "ok": false
+      },
+      {
+        "file": "lesen-t4-gemini-044.json",
+        "ok": false
+      },
+      {
+        "file": "lesen-t4-gemini-045.json",
+        "ok": false
+      },
+      {
+        "file": "lesen-t4-gemini-051.json",
+        "ok": false
+      },
+      {
+        "file": "lesen-t4-gemini-053.json",
+        "ok": false
+      },
+      {
+        "file": "lesen-t4-gemini-055.json",
+        "ok": false
+      },
+      {
+        "file": "lesen-t4-gemini-057.json",
+        "ok": false
+      },
+      {
+        "file": "lesen-t4-gemini-059.json",
+        "ok": false
+      },
+      {
+        "file": "lesen-t4-gemini-066.json",
+        "ok": false
+      },
+      {
+        "file": "lesen-t4-gemini-067.json",
+        "ok": false
+      },
+      {
+        "file": "schreiben-gemini-005.json",
+        "ok": true
+      },
+      {
+        "file": "schreiben-gemini-015.json",
+        "ok": true
+      },
+      {
+        "file": "sprechen-t3-gemini-011.json",
+        "ok": true
+      }
+    ],
+    "at": "2026-07-25T07:51:36.471Z"
+  },
+  "finalHits": [
+    {
+      "file": "B1/horen-t1-gemini-001.json",
+      "issues": [
+        "bad_vocab_tag_cap"
+      ]
+    },
+    {
+      "file": "B1/horen-t1-gemini-048.json",
+      "issues": [
+        "vocab_corruption"
+      ]
+    },
+    {
+      "file": "A2/horen-t3-gemini-039.json",
+      "issues": [
+        "lemma_artifact",
+        "vocab_corruption"
+      ]
+    },
+    {
+      "file": "A2/horen-t3-gemini-040.json",
+      "issues": [
+        "lemma_artifact",
+        "vocab_corruption"
+      ]
+    },
+    {
+      "file": "B1/horen-t3-gemini-058.json",
+      "issues": [
+        "vocab_corruption"
+      ]
+    },
+    {
+      "file": "B1/horen-t4-gemini-026.json",
+      "issues": [
+        "vocab_corruption"
+      ]
+    }
+  ]
+}

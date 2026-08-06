@@ -1,0 +1,502 @@
+{
+  "generatedAt": "2026-07-11T20:00:31.618Z",
+  "dryRun": false,
+  "versions": {
+    "caps": "v3.10-und-verb-kunde-2026-07-11",
+    "balanceMcq": "v1.2-no-rf-chrono-shuffle-2026-07-11"
+  },
+  "files": {
+    "lesen-t4-staging-2026-07-11-canary/lesen-t4-gemini-001.json": {
+      "chrono": {
+        "changed": false,
+        "before": [],
+        "after": []
+      },
+      "manual": [],
+      "capsFixed": 0,
+      "contentChanged": true
+    },
+    "lesen-t4-staging-2026-07-11-canary/lesen-t4-gemini-002.json": {
+      "chrono": {
+        "changed": false,
+        "before": [],
+        "after": []
+      },
+      "manual": [],
+      "capsFixed": 2,
+      "contentChanged": true
+    },
+    "lesen-t4-staging-2026-07-11-canary/lesen-t4-gemini-003.json": {
+      "chrono": {
+        "changed": false,
+        "before": [],
+        "after": []
+      },
+      "manual": [],
+      "capsFixed": 0,
+      "contentChanged": true
+    },
+    "lesen-t5-staging-2026-07-11-canary/lesen-t5-gemini-001.json": {
+      "chrono": {
+        "changed": false,
+        "before": [],
+        "after": []
+      },
+      "manual": [],
+      "capsFixed": 2,
+      "contentChanged": true
+    },
+    "lesen-t5-staging-2026-07-11-canary/lesen-t5-gemini-002.json": {
+      "chrono": {
+        "changed": false,
+        "before": [],
+        "after": []
+      },
+      "manual": [
+        {
+          "kind": "_textSubtype",
+          "from": "kantine",
+          "to": "hausordnung"
+        }
+      ],
+      "capsFixed": 0,
+      "contentChanged": true
+    },
+    "lesen-t5-staging-2026-07-11-canary/lesen-t5-gemini-003.json": {
+      "chrono": {
+        "changed": false,
+        "before": [],
+        "after": []
+      },
+      "manual": [],
+      "capsFixed": 0,
+      "contentChanged": true
+    },
+    "horen-t3-staging-2026-07-11-canary/horen-t3-gemini-001.json": {
+      "chrono": {
+        "changed": true,
+        "before": [
+          "gen-q-h3-6bda70e0-3",
+          "gen-q-h3-6bda70e0-5",
+          "gen-q-h3-6bda70e0-7",
+          "gen-q-h3-6bda70e0-6",
+          "gen-q-h3-6bda70e0-2",
+          "gen-q-h3-6bda70e0-4",
+          "gen-q-h3-6bda70e0-1"
+        ],
+        "after": [
+          "gen-q-h3-6bda70e0-1",
+          "gen-q-h3-6bda70e0-2",
+          "gen-q-h3-6bda70e0-3",
+          "gen-q-h3-6bda70e0-4",
+          "gen-q-h3-6bda70e0-5",
+          "gen-q-h3-6bda70e0-6",
+          "gen-q-h3-6bda70e0-7"
+        ]
+      },
+      "manual": [
+        {
+          "kind": "misattributed-quote",
+          "qid": "gen-q-h3-6bda70e0-5"
+        }
+      ],
+      "capsFixed": 0,
+      "contentChanged": true
+    },
+    "horen-t3-staging-2026-07-11-canary/horen-t3-gemini-002.json": {
+      "chrono": {
+        "changed": true,
+        "before": [
+          "gen-q-h3-f31303bd-2",
+          "gen-q-h3-f31303bd-7",
+          "gen-q-h3-f31303bd-6",
+          "gen-q-h3-f31303bd-5",
+          "gen-q-h3-f31303bd-4",
+          "gen-q-h3-f31303bd-3",
+          "gen-q-h3-f31303bd-1"
+        ],
+        "after": [
+          "gen-q-h3-f31303bd-1",
+          "gen-q-h3-f31303bd-2",
+          "gen-q-h3-f31303bd-3",
+          "gen-q-h3-f31303bd-4",
+          "gen-q-h3-f31303bd-5",
+          "gen-q-h3-f31303bd-6",
+          "gen-q-h3-f31303bd-7"
+        ]
+      },
+      "manual": [
+        {
+          "kind": "agenda→plan",
+          "hits": 2
+        },
+        {
+          "kind": "circular-inference-rewrite",
+          "qid": "gen-q-h3-f31303bd-1",
+          "beforeQ": "Ben hat am Wochenende ein Familientreffen organisiert.",
+          "afterQ": "Ben hat das Familientreffen bei sich zu Hause ausgerichtet."
+        }
+      ],
+      "capsFixed": 0,
+      "contentChanged": true
+    },
+    "horen-t3-staging-2026-07-11-canary/horen-t3-gemini-004.json": {
+      "chrono": {
+        "changed": true,
+        "before": [
+          "gen-q-h3-650de91f-6",
+          "gen-q-h3-650de91f-1",
+          "gen-q-h3-650de91f-3",
+          "gen-q-h3-650de91f-7",
+          "gen-q-h3-650de91f-4",
+          "gen-q-h3-650de91f-5",
+          "gen-q-h3-650de91f-2"
+        ],
+        "after": [
+          "gen-q-h3-650de91f-1",
+          "gen-q-h3-650de91f-2",
+          "gen-q-h3-650de91f-3",
+          "gen-q-h3-650de91f-4",
+          "gen-q-h3-650de91f-5",
+          "gen-q-h3-650de91f-6",
+          "gen-q-h3-650de91f-7"
+        ]
+      },
+      "manual": [
+        {
+          "kind": "bestaende-rewrite",
+          "hits": 2
+        }
+      ],
+      "capsFixed": 0,
+      "contentChanged": true
+    },
+    "canary-all-staging-2026-07-11/lesen-t4-gemini-001.json": {
+      "chrono": {
+        "changed": false,
+        "before": [],
+        "after": []
+      },
+      "manual": [],
+      "capsFixed": 0,
+      "contentChanged": true
+    },
+    "canary-all-staging-2026-07-11/lesen-t4-gemini-002.json": {
+      "chrono": {
+        "changed": false,
+        "before": [],
+        "after": []
+      },
+      "manual": [],
+      "capsFixed": 2,
+      "contentChanged": true
+    },
+    "canary-all-staging-2026-07-11/lesen-t4-gemini-003.json": {
+      "chrono": {
+        "changed": false,
+        "before": [],
+        "after": []
+      },
+      "manual": [],
+      "capsFixed": 0,
+      "contentChanged": true
+    },
+    "canary-all-staging-2026-07-11/lesen-t5-gemini-001.json": {
+      "chrono": {
+        "changed": false,
+        "before": [],
+        "after": []
+      },
+      "manual": [],
+      "capsFixed": 2,
+      "contentChanged": true
+    },
+    "canary-all-staging-2026-07-11/lesen-t5-gemini-002.json": {
+      "chrono": {
+        "changed": false,
+        "before": [],
+        "after": []
+      },
+      "manual": [
+        {
+          "kind": "_textSubtype",
+          "from": "kantine",
+          "to": "hausordnung"
+        }
+      ],
+      "capsFixed": 0,
+      "contentChanged": true
+    },
+    "canary-all-staging-2026-07-11/lesen-t5-gemini-003.json": {
+      "chrono": {
+        "changed": false,
+        "before": [],
+        "after": []
+      },
+      "manual": [],
+      "capsFixed": 0,
+      "contentChanged": true
+    },
+    "canary-all-staging-2026-07-11/horen-t3-gemini-001.json": {
+      "chrono": {
+        "changed": true,
+        "before": [
+          "gen-q-h3-6bda70e0-3",
+          "gen-q-h3-6bda70e0-5",
+          "gen-q-h3-6bda70e0-7",
+          "gen-q-h3-6bda70e0-6",
+          "gen-q-h3-6bda70e0-2",
+          "gen-q-h3-6bda70e0-4",
+          "gen-q-h3-6bda70e0-1"
+        ],
+        "after": [
+          "gen-q-h3-6bda70e0-1",
+          "gen-q-h3-6bda70e0-2",
+          "gen-q-h3-6bda70e0-3",
+          "gen-q-h3-6bda70e0-4",
+          "gen-q-h3-6bda70e0-5",
+          "gen-q-h3-6bda70e0-6",
+          "gen-q-h3-6bda70e0-7"
+        ]
+      },
+      "manual": [
+        {
+          "kind": "misattributed-quote",
+          "qid": "gen-q-h3-6bda70e0-5"
+        }
+      ],
+      "capsFixed": 0,
+      "contentChanged": true
+    },
+    "canary-all-staging-2026-07-11/horen-t3-gemini-002.json": {
+      "chrono": {
+        "changed": true,
+        "before": [
+          "gen-q-h3-f31303bd-2",
+          "gen-q-h3-f31303bd-7",
+          "gen-q-h3-f31303bd-6",
+          "gen-q-h3-f31303bd-5",
+          "gen-q-h3-f31303bd-4",
+          "gen-q-h3-f31303bd-3",
+          "gen-q-h3-f31303bd-1"
+        ],
+        "after": [
+          "gen-q-h3-f31303bd-1",
+          "gen-q-h3-f31303bd-2",
+          "gen-q-h3-f31303bd-3",
+          "gen-q-h3-f31303bd-4",
+          "gen-q-h3-f31303bd-5",
+          "gen-q-h3-f31303bd-6",
+          "gen-q-h3-f31303bd-7"
+        ]
+      },
+      "manual": [
+        {
+          "kind": "agenda→plan",
+          "hits": 2
+        },
+        {
+          "kind": "circular-inference-rewrite",
+          "qid": "gen-q-h3-f31303bd-1",
+          "beforeQ": "Ben hat am Wochenende ein Familientreffen organisiert.",
+          "afterQ": "Ben hat das Familientreffen bei sich zu Hause ausgerichtet."
+        }
+      ],
+      "capsFixed": 0,
+      "contentChanged": true
+    },
+    "canary-all-staging-2026-07-11/horen-t3-gemini-004.json": {
+      "chrono": {
+        "changed": true,
+        "before": [
+          "gen-q-h3-650de91f-6",
+          "gen-q-h3-650de91f-1",
+          "gen-q-h3-650de91f-3",
+          "gen-q-h3-650de91f-7",
+          "gen-q-h3-650de91f-4",
+          "gen-q-h3-650de91f-5",
+          "gen-q-h3-650de91f-2"
+        ],
+        "after": [
+          "gen-q-h3-650de91f-1",
+          "gen-q-h3-650de91f-2",
+          "gen-q-h3-650de91f-3",
+          "gen-q-h3-650de91f-4",
+          "gen-q-h3-650de91f-5",
+          "gen-q-h3-650de91f-6",
+          "gen-q-h3-650de91f-7"
+        ]
+      },
+      "manual": [
+        {
+          "kind": "bestaende-rewrite",
+          "hits": 2
+        }
+      ],
+      "capsFixed": 0,
+      "contentChanged": true
+    },
+    "pool-verified/horen-t3-gemini-001.json": {
+      "chrono": {
+        "changed": true,
+        "before": [
+          "gen-q-h3-6f78252f-1",
+          "gen-q-h3-6f78252f-2",
+          "gen-q-h3-6f78252f-7",
+          "gen-q-h3-6f78252f-3",
+          "gen-q-h3-6f78252f-6",
+          "gen-q-h3-6f78252f-4",
+          "gen-q-h3-6f78252f-5"
+        ],
+        "after": [
+          "gen-q-h3-6f78252f-1",
+          "gen-q-h3-6f78252f-2",
+          "gen-q-h3-6f78252f-3",
+          "gen-q-h3-6f78252f-4",
+          "gen-q-h3-6f78252f-5",
+          "gen-q-h3-6f78252f-6",
+          "gen-q-h3-6f78252f-7"
+        ]
+      },
+      "manual": [
+        {
+          "kind": "misattributed-quote",
+          "qid": "gen-q-h3-6f78252f-5"
+        }
+      ],
+      "capsFixed": 0,
+      "contentChanged": true
+    },
+    "pool-verified/horen-t3-gemini-002.json": {
+      "chrono": {
+        "changed": true,
+        "before": [
+          "gen-q-h3-fa55fa95-6",
+          "gen-q-h3-fa55fa95-2",
+          "gen-q-h3-fa55fa95-7",
+          "gen-q-h3-fa55fa95-3",
+          "gen-q-h3-fa55fa95-4",
+          "gen-q-h3-fa55fa95-1",
+          "gen-q-h3-fa55fa95-5"
+        ],
+        "after": [
+          "gen-q-h3-fa55fa95-1",
+          "gen-q-h3-fa55fa95-2",
+          "gen-q-h3-fa55fa95-3",
+          "gen-q-h3-fa55fa95-4",
+          "gen-q-h3-fa55fa95-5",
+          "gen-q-h3-fa55fa95-6",
+          "gen-q-h3-fa55fa95-7"
+        ]
+      },
+      "manual": [],
+      "capsFixed": 0,
+      "contentChanged": true
+    },
+    "pool-verified/horen-t3-gemini-003.json": {
+      "chrono": {
+        "changed": true,
+        "before": [
+          "gen-q-h3-28eec3b4-2",
+          "gen-q-h3-28eec3b4-7",
+          "gen-q-h3-28eec3b4-1",
+          "gen-q-h3-28eec3b4-4",
+          "gen-q-h3-28eec3b4-3",
+          "gen-q-h3-28eec3b4-5",
+          "gen-q-h3-28eec3b4-6"
+        ],
+        "after": [
+          "gen-q-h3-28eec3b4-1",
+          "gen-q-h3-28eec3b4-2",
+          "gen-q-h3-28eec3b4-3",
+          "gen-q-h3-28eec3b4-4",
+          "gen-q-h3-28eec3b4-5",
+          "gen-q-h3-28eec3b4-6",
+          "gen-q-h3-28eec3b4-7"
+        ]
+      },
+      "manual": [],
+      "capsFixed": 0,
+      "contentChanged": true
+    },
+    "pool-verified/horen-t3-gemini-004.json": {
+      "chrono": {
+        "changed": true,
+        "before": [
+          "gen-q-h3-4904adbb-7",
+          "gen-q-h3-4904adbb-6",
+          "gen-q-h3-4904adbb-5",
+          "gen-q-h3-4904adbb-4",
+          "gen-q-h3-4904adbb-2",
+          "gen-q-h3-4904adbb-3",
+          "gen-q-h3-4904adbb-1"
+        ],
+        "after": [
+          "gen-q-h3-4904adbb-1",
+          "gen-q-h3-4904adbb-2",
+          "gen-q-h3-4904adbb-3",
+          "gen-q-h3-4904adbb-4",
+          "gen-q-h3-4904adbb-5",
+          "gen-q-h3-4904adbb-6",
+          "gen-q-h3-4904adbb-7"
+        ]
+      },
+      "manual": [],
+      "capsFixed": 0,
+      "contentChanged": true
+    },
+    "horen-t1-staging-2026-07-11/horen-t1-gemini-001.json": {
+      "chrono": {
+        "changed": false,
+        "before": [],
+        "after": []
+      },
+      "manual": [],
+      "capsFixed": 0,
+      "contentChanged": true
+    },
+    "horen-t1-staging-2026-07-11/horen-t1-gemini-002.json": {
+      "chrono": {
+        "changed": false,
+        "before": [],
+        "after": []
+      },
+      "manual": [],
+      "capsFixed": 1,
+      "contentChanged": true
+    },
+    "horen-t1-staging-2026-07-11/horen-t1-gemini-003.json": {
+      "chrono": {
+        "changed": false,
+        "before": [],
+        "after": []
+      },
+      "manual": [],
+      "capsFixed": 0,
+      "contentChanged": true
+    },
+    "horen-t1-staging-2026-07-11/horen-t1-gemini-004.json": {
+      "chrono": {
+        "changed": false,
+        "before": [],
+        "after": []
+      },
+      "manual": [],
+      "capsFixed": 0,
+      "contentChanged": true
+    },
+    "horen-t1-staging-2026-07-11/horen-t1-gemini-005.json": {
+      "chrono": {
+        "changed": false,
+        "before": [],
+        "after": []
+      },
+      "manual": [],
+      "capsFixed": 0,
+      "contentChanged": true
+    },
+    "horen-t1-staging-2026-07-11/horen-t1-gemini-016.json": {
+      "skipped": "missing"
+    }
+  }
+}

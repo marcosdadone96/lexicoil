@@ -73,7 +73,7 @@ function renderOralPracticeTask(goal){
     </div>
     ${renderSpeakingMicHtml('oralTranscript',goal.subject)}
     <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:18px">
-      <button type="button" class="btn btn-primary" id="oralEvalBtn" onclick="evaluateOralPractice()" disabled>Submit for evaluation →</button>
+      <button type="button" class="btn btn-primary" id="oralEvalBtn" onclick="evaluateOralPractice()" disabled>Submit for evaluation${typeof aiCreditCostSuffix==='function'?aiCreditCostSuffix('speaking'):' (2 credits)'} →</button>
       <button type="button" class="btn-sm" onclick="navBack()">Cancel</button>
     </div>`;
   hideAll();

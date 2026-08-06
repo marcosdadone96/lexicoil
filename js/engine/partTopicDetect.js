@@ -7,18 +7,23 @@
 const TOPIC_KEYWORDS = Object.freeze({
   Reisen:     ['Urlaub', 'Reise', 'Flug', 'Koffer', 'Hotel', 'Ausland', 'Ticket', 'Bahnhof', 'Zugfahrt', 'Tourist'],
   Gesundheit: ['Arzt', 'Krankenhaus', 'krank', 'Medikament', 'Krankheit', 'Therapie', 'Impfung', 'Fitness', 'Ernährungsberater', 'Schmerz'],
-  Arbeit:     ['Beruf', 'Stelle', 'Bewerbung', 'Chef', 'Kollege', 'Gehalt', 'Praktikum', 'Büro', 'Homeoffice', 'Arbeitgeber'],
+  Arbeit:     ['Beruf', 'Stelle', 'Bewerbung', 'Chef', 'Kollege', 'Gehalt', 'Praktikum', 'Büro', 'Homeoffice', 'Arbeitgeber', 'Weiterbildung', 'Arbeitnehmer'],
   Technik:    ['Smartphone', 'Internet', 'App', 'Computer', 'digitale', 'Gerät', 'Software', 'Handy', 'Bildschirm', 'Technologie'],
   Medien:     ['Medien', 'Nachrichten', 'Zeitung', 'Fernsehen', 'Radio', 'Social', 'Online', 'Blog', 'Podcast', 'Kommunikation'],
   Wohnen:     ['Wohnung', 'Miete', 'Zimmer', 'Haus', 'Umzug', 'Nachbar', 'Küche', 'Schlafzimmer', 'Vermieter', 'Einzug'],
   Konsum:     ['kaufen', 'Einkauf', 'Supermarkt', 'Preis', 'Produkt', 'Angebot', 'Marke', 'Rabatt', 'Laden', 'Bestellung'],
   Bildung:    ['Schule', 'Studium', 'Universität', 'Prüfung', 'Kurs', 'Lehrer', 'Unterricht', 'Lernmaterial', 'Ausbildung', 'Abitur'],
-  Familie:    ['Eltern', 'Kind', 'Schwester', 'Bruder', 'Großeltern', 'Mutter', 'Vater', 'Haushalt', 'Erziehung', 'Geschwister'],
+  Familie:    ['Familie', 'Familien', 'Eltern', 'Kind', 'Kinder', 'Tochter', 'Sohn', 'Schwester', 'Bruder', 'Großeltern', 'Großmutter', 'Großvater', 'Mutter', 'Vater', 'Haushalt', 'Erziehung', 'Geschwister', 'Enkel', 'Enkelin', 'Oma', 'Opa', 'Baby'],
   Umwelt:     ['Umwelt', 'Klima', 'Recycling', 'Plastik', 'Nachhaltigkeit', 'CO2', 'Energie', 'erneuerbar', 'Naturschutz', 'Müll'],
   Ernährung:  ['Essen', 'Kochen', 'Rezept', 'vegetarisch', 'vegan', 'Lebensmittel', 'Restaurant', 'Mahlzeit', 'Küche', 'Ernährung'],
   Kultur:     ['Theater', 'Konzert', 'Museum', 'Ausstellung', 'Film', 'Musik', 'Kunst', 'Kino', 'Festival', 'Veranstaltung'],
-  Sport:      ['Sport', 'Fußball', 'Training', 'Wettkampf', 'Mannschaft', 'Schwimmen', 'Laufen', 'Turnier', 'Spiel', 'Vereinssport'],
-  Freizeit:   ['Hobby', 'Wochenende', 'Freizeit', 'Freund', 'Party', 'Ausflug', 'Spaziergang', 'Garten', 'Lesen', 'Spielen'],
+  Sport:      [
+    'Sport', 'Fußball', 'Training', 'Wettkampf', 'Mannschaft', 'Schwimmen', 'Laufen', 'Turnier', 'Spiel', 'Vereinssport',
+    // Plurals / agents / race vocabulary (word-boundary scoring misses these via stem «Sport»/«Laufen»)
+    'Läufer', 'Läuferin', 'Läuferinnen', 'Sportler', 'Sportlerin', 'Sportlerinnen',
+    'Strecke', 'Teilnehmer', 'Teilnehmerin', 'Teilnehmerinnen', 'Stadtlauf', 'Yoga', 'Fitness',
+  ],
+  Freizeit:   ['Hobby', 'Wochenende', 'Freizeit', 'Freund', 'Party', 'Ausflug', 'Spaziergang', 'Garten', 'Lesen', 'Spielen', 'Freizeitzentrum', 'Klavier', 'Basteln', 'Schnupperkurs', 'Spielzimmer'],
   Verkehr:    ['Bus', 'Fahrrad', 'Auto', 'Straße', 'Stau', 'ÖPNV', 'Bahn', 'Parkplatz', 'Führerschein', 'Fahrt'],
   Stadtleben: ['Stadt', 'Stadtmitte', 'Viertel', 'Bürger', 'Marktplatz', 'Innenstadt', 'öffentlich', 'Gemeinschaft', 'Engagement', 'Infrastruktur'],
 });
@@ -36,4 +41,7 @@ function detectTopic(text) {
 
 if (typeof module !== 'undefined') {
   module.exports = { TOPIC_KEYWORDS, detectTopic };
+}
+if (typeof window !== 'undefined') {
+  window.PartTopicDetect = Object.freeze({ TOPIC_KEYWORDS, detectTopic });
 }

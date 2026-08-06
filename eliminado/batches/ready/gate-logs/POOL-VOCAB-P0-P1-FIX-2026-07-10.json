@@ -1,0 +1,377 @@
+{
+  "generatedAt": "2026-07-10T12:04:59.995Z",
+  "dryRun": false,
+  "version": "v2.1-per-question-2026-07-10",
+  "p0": {
+    "targeted": 138,
+    "reprocessed": 138,
+    "stillIdentical": [],
+    "examples": [
+      {
+        "file": "horen-t2-gemini-003.json",
+        "pool": "pool-verified",
+        "before": [
+          [
+            "Höflichkeit",
+            "empfinden",
+            "Konsument",
+            "kampagnen",
+            "Abschnitt",
+            "Beispiel"
+          ],
+          [
+            "Höflichkeit",
+            "empfinden",
+            "Konsument",
+            "kampagnen",
+            "Abschnitt",
+            "Beispiel"
+          ],
+          [
+            "Höflichkeit",
+            "kampagnen",
+            "empfinden",
+            "Konsument",
+            "Abschnitt",
+            "Beispiel"
+          ]
+        ],
+        "after": [
+          [
+            "Konsument",
+            "Alltag",
+            "Smartphone",
+            "bewussten",
+            "Bedeutung",
+            "modernen"
+          ],
+          [
+            "Beispiel",
+            "Zusammenhang",
+            "ständig",
+            "Handy",
+            "Smartphone-nutzung",
+            "Öffentlichkeit"
+          ],
+          [
+            "kampagnen",
+            "höflich",
+            "machen",
+            "aufklärungskampagnen",
+            "umgangsformen",
+            "Kommunikation"
+          ]
+        ],
+        "stillIdentical": false
+      },
+      {
+        "file": "horen-t2-gemini-006.json",
+        "pool": "pool-verified",
+        "before": [
+          [
+            "Entscheidung",
+            "wohlbefinden",
+            "Einstellung",
+            "verbringen",
+            "familien",
+            "Beispiel"
+          ],
+          [
+            "Entscheidung",
+            "wohlbefinden",
+            "Einstellung",
+            "verbringen",
+            "familien",
+            "Beispiel"
+          ],
+          [
+            "Unterstützung",
+            "Entscheidung",
+            "wohlbefinden",
+            "Einstellung",
+            "verbringen",
+            "Beispiel"
+          ]
+        ],
+        "after": [
+          [
+            "Familienplanung",
+            "Wertschätzung",
+            "steigenden",
+            "Bedeutung",
+            "modernen",
+            "Familie"
+          ],
+          [
+            "Einstellung",
+            "Arbeitnehmer",
+            "beruflich",
+            "suchen",
+            "Kauf",
+            "erfordern"
+          ],
+          [
+            "Unterstützung",
+            "Beispiel",
+            "backen",
+            "familienfeiern",
+            "stärken",
+            "planen"
+          ]
+        ],
+        "stillIdentical": false
+      },
+      {
+        "file": "horen-t2-gemini-009.json",
+        "pool": "pool-verified",
+        "before": [
+          [
+            "unterstützen",
+            "Wortschatz",
+            "Engagement",
+            "entdecken",
+            "Beispiel",
+            "Alltag"
+          ],
+          [
+            "unterstützen",
+            "Wortschatz",
+            "Engagement",
+            "entdecken",
+            "Beispiel",
+            "Alltag"
+          ],
+          [
+            "unterstützen",
+            "Engagement",
+            "Wortschatz",
+            "entdecken",
+            "Beispiel",
+            "erwarten"
+          ]
+        ],
+        "after": [
+          [
+            "Aspekt",
+            "vielfältig",
+            "sprechen",
+            "verschiedenen",
+            "Verbesserung",
+            "Bedeutung"
+          ],
+          [
+            "Wortschatz",
+            "produktiv",
+            "welchen",
+            "kennenzulernen",
+            "lebensweisen",
+            "nachrichten"
+          ],
+          [
+            "Engagement",
+            "Wortschatz",
+            "erwarten",
+            "Verein",
+            "kulturell",
+            "produktiv"
+          ]
+        ],
+        "stillIdentical": false
+      },
+      {
+        "file": "horen-t2-gemini-010.json",
+        "pool": "pool-verified",
+        "before": [
+          [
+            "wohlbefinden",
+            "kennenlernen",
+            "entgangen",
+            "besitzen",
+            "Erholung",
+            "Beispiel"
+          ],
+          [
+            "wohlbefinden",
+            "kennenlernen",
+            "entgangen",
+            "besitzen",
+            "Erholung",
+            "Beispiel"
+          ],
+          [
+            "wohlbefinden",
+            "kennenlernen",
+            "Entspannung",
+            "entgangen",
+            "Erholung",
+            "besitzen"
+          ]
+        ],
+        "after": [
+          [
+            "Aspekt",
+            "Vorteile",
+            "gehen",
+            "Stadtentwicklung",
+            "großstädten",
+            "Arbeit"
+          ],
+          [
+            "wohlbefinden",
+            "kulturell",
+            "Mangel",
+            "arbeitsplätzen",
+            "Kriminalität",
+            "angeboten"
+          ],
+          [
+            "wohlbefinden",
+            "Entspannung",
+            "Erholung",
+            "Stadtbewohner",
+            "Luft",
+            "Luftqualität"
+          ]
+        ],
+        "stillIdentical": false
+      }
+    ]
+  },
+  "p1": {
+    "file": "lesen-t4-gemini-026.json",
+    "fixed": true,
+    "lexicon": "verein added to NOUN_LEMMAS",
+    "hasVerein": true,
+    "changed": true,
+    "pool": "pool-content-ok-lesen"
+  },
+  "verify100": {
+    "scanned": 289,
+    "identicalFiles": [
+      "horen-t1-gemini-016.json",
+      "horen-t2-gemini-001.json",
+      "horen-t2-gemini-005.json",
+      "horen-t2-gemini-007.json",
+      "horen-t2-gemini-008.json",
+      "horen-t2-gemini-011.json",
+      "horen-t2-gemini-015.json",
+      "horen-t2-gemini-018.json",
+      "horen-t2-gemini-019.json",
+      "horen-t2-gemini-023.json",
+      "horen-t4-gemini-007.json",
+      "horen-t4-gemini-009.json",
+      "lesen-t1-gemini-075.json",
+      "lesen-t1-gemini-082.json",
+      "lesen-t1-gemini-086.json",
+      "lesen-t1-gemini-090.json",
+      "lesen-t1-gemini-095.json",
+      "lesen-t1-gemini-099.json",
+      "lesen-t1-gemini-139.json",
+      "lesen-t1-gemini-155.json",
+      "lesen-t1-gemini-177.json",
+      "lesen-t2-gemini-055.json",
+      "lesen-t2-gemini-057.json",
+      "lesen-t2-gemini-093.json",
+      "lesen-t2-gemini-094.json",
+      "lesen-t2-gemini-096.json",
+      "lesen-t2-gemini-097.json",
+      "lesen-t3-auto-5bw5c5.json",
+      "lesen-t3-auto-ma7vt8.json",
+      "lesen-t3-auto-t725x5.json",
+      "lesen-t3-auto-vqxy1z.json",
+      "lesen-t3-auto-w8hk4n.json",
+      "lesen-t3-auto-wyw6fo.json",
+      "lesen-t3-auto-xqens7.json",
+      "lesen-t3-auto-yii0su.json",
+      "lesen-t3-auto-yu9vyl.json",
+      "lesen-t4-gemini-002.json",
+      "lesen-t4-gemini-019.json",
+      "lesen-t5-gemini-022.json",
+      "lesen-t5-gemini-023.json",
+      "lesen-t5-gemini-028.json",
+      "lesen-t5-gemini-029.json",
+      "lesen-t5-gemini-050.json",
+      "lesen-t5-gemini-070.json",
+      "lesen-t5-gemini-073.json",
+      "lesen-t1-gemini-062.json",
+      "lesen-t1-gemini-156.json",
+      "lesen-t2-gemini-022.json",
+      "lesen-t2-gemini-081.json",
+      "lesen-t3-auto-00p7ob.json",
+      "lesen-t3-auto-1fxv1z.json",
+      "lesen-t3-auto-1i5jz6.json",
+      "lesen-t3-auto-1whwj1.json",
+      "lesen-t3-auto-2u81ll.json",
+      "lesen-t3-auto-35h32e.json",
+      "lesen-t3-auto-37guha.json",
+      "lesen-t3-auto-3idjqv.json",
+      "lesen-t3-auto-3sstsr.json",
+      "lesen-t3-auto-43ish1.json",
+      "lesen-t3-auto-4glsk1.json",
+      "lesen-t3-auto-4s5b8d.json",
+      "lesen-t3-auto-4ssln2.json",
+      "lesen-t3-auto-4v8o7g.json",
+      "lesen-t3-auto-64r4mz.json",
+      "lesen-t3-auto-79m50o.json",
+      "lesen-t3-auto-7oo5uc.json",
+      "lesen-t3-auto-804p4z.json",
+      "lesen-t3-auto-849ti3.json",
+      "lesen-t3-auto-8ek28v.json",
+      "lesen-t3-auto-8hnwqj.json",
+      "lesen-t3-auto-8lyjij.json",
+      "lesen-t3-auto-a5r3ae.json",
+      "lesen-t3-auto-ajbtlw.json",
+      "lesen-t3-auto-atgrgy.json",
+      "lesen-t3-auto-bdtcak.json",
+      "lesen-t3-auto-cirs5p.json",
+      "lesen-t3-auto-cqusw5.json",
+      "lesen-t3-auto-d4do0m.json",
+      "lesen-t3-auto-dfn273.json",
+      "lesen-t3-auto-e966lc.json",
+      "lesen-t3-auto-euvmz3.json",
+      "lesen-t3-auto-ewzpfc.json",
+      "lesen-t3-auto-f5rcvq.json",
+      "lesen-t3-auto-f9tngh.json",
+      "lesen-t3-auto-g1t144.json",
+      "lesen-t3-auto-g9ybtb.json",
+      "lesen-t3-auto-het8vr.json",
+      "lesen-t3-auto-i4khxb.json",
+      "lesen-t3-auto-j4hyhw.json",
+      "lesen-t3-auto-jb884w.json",
+      "lesen-t3-auto-jhnc6c.json",
+      "lesen-t3-auto-jzhmvx.json",
+      "lesen-t3-auto-kiuwxq.json",
+      "lesen-t3-auto-l0d6ta.json",
+      "lesen-t3-auto-mfeoo5.json",
+      "lesen-t3-auto-mpi1u6.json",
+      "lesen-t3-auto-mvakl9.json",
+      "lesen-t3-auto-ndqlz8.json",
+      "lesen-t3-auto-old6kl.json",
+      "lesen-t3-auto-onfx6s.json",
+      "lesen-t3-auto-op44sg.json",
+      "lesen-t3-auto-oxbri5.json",
+      "lesen-t3-auto-prht26.json",
+      "lesen-t3-auto-q1unt1.json",
+      "lesen-t3-auto-qhep9j.json",
+      "lesen-t3-auto-qk6x1k.json",
+      "lesen-t3-auto-r2r9yo.json",
+      "lesen-t3-auto-raz5os.json",
+      "lesen-t3-auto-rs38ft.json",
+      "lesen-t3-auto-s00gj6.json",
+      "lesen-t3-auto-sds0gv.json",
+      "lesen-t3-auto-sgs5gs.json",
+      "lesen-t3-auto-t9x4g4.json",
+      "lesen-t3-auto-u8hdcy.json",
+      "lesen-t3-auto-vidyha.json",
+      "lesen-t3-auto-wx17z5.json",
+      "lesen-t3-auto-wxebbk.json",
+      "lesen-t3-auto-yjbtu1.json",
+      "lesen-t3-auto-zkyxpl.json",
+      "lesen-t4-gemini-013.json",
+      "lesen-t4-gemini-015.json",
+      "lesen-t4-gemini-036.json",
+      "lesen-t4-gemini-039.json",
+      "lesen-t5-gemini-019.json"
+    ]
+  }
+}

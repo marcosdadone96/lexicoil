@@ -3,11 +3,13 @@
  * Seed reusable-parts store from library bank — excludes content already in curated exams.
  *
  *   node scripts/seed-reusable-from-bank.mjs --dry-run --verify
- *   node scripts/seed-reusable-from-bank.mjs --apply --verify
  *   node scripts/seed-reusable-from-bank.mjs --out-json library/reusable-seed/de_B1.bank.json
  *
+ * BLOCKED (2026-07): --apply without full publish gate allowed legacy unvalidated bank parts
+ * into the personal pool. Use pool-fill-teil --publish instead.
+ * Escape hatch: --unsafe-legacy-bank-seed (explicit, logged).
+ *
  * Requires Netlify Blobs for --apply: NETLIFY_SITE_ID, NETLIFY_API_TOKEN
- * Optional structural gate: validates blueprint fidelity + partQualityGate (AI verify if ANTHROPIC_API_KEY set)
  */
 import fs from 'node:fs';
 import path from 'node:path';
@@ -73,10 +75,12 @@ function parseArgs(argv) {
     maxPerTeil: 20,
     qualityGate: true,
     allowUnchecked: false,
+    unsafeLegacyBankSeed: false,
   };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     if (a === '--apply') o.apply = true;
+    else if (a === '--unsafe-legacy-bank-seed') o.unsafeLegacyBankSeed = true;
     else if (a === '--dry-run') o.apply = false;
     else if (a === '--verify') o.verify = true;
     else if (a === '--verbose') o.verbose = true;
@@ -300,8 +304,29 @@ async function main() {
   --quality-gate   calidad pedagógica antes de subir (default ON; lesen/horen/schreiben/sprechen)
   --no-quality-gate  desactiva checkLesenBatchQuality y checkers de otros módulos
   --allow-unchecked  sin --quality-gate: subir horen/schreiben/sprechen sin checker
-  --max-per-teil N   cap parts per module/teil before apply (default 20)`);
+  --max-per-teil N   cap parts per module/teil before apply (default 20)
+  --unsafe-legacy-bank-seed  bypass block (NOT for production pool)`);
     process.exit(0);
+  }
+
+  if (opts.apply && !opts.unsafeLegacyBankSeed) {
+    console.error(`
+⛔ BLOCKED: seed-reusable-from-bank --apply is disabled.
+
+Personal pool parts must enter via the publish pipeline only:
+  node scripts/pool-fill-teil.mjs --module lesen --teil N --publish [--sync-pool]
+
+This runs POOL-2 (isPartPoolReady) + SEM-1 before the part is servable.
+The old bank-seed path bypassed SEM-1 and let ~66% broken parts into the pool.
+
+Dry-run / --out-json still work for inspection.
+To override (NOT recommended): add --unsafe-legacy-bank-seed
+`);
+    process.exit(1);
+  }
+
+  if (opts.apply && opts.unsafeLegacyBankSeed) {
+    console.warn('\n⚠  UNSAFE: --unsafe-legacy-bank-seed — bypassing publish gate. NOT for production.\n');
   }
 
   const blueprint = loadBlueprintFileSync(`${examTypeForLang(opts.lang)}_${opts.level}`);

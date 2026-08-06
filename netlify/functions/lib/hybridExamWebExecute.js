@@ -10,6 +10,8 @@
 const path = require('path');
 const { getReusablePart } = require('./reusablePartsStore.js');
 const { getFromLocalSeedById, pickFromLocalSeed } = require('./reusablePartsLocalSeed.js');
+const { useLocalSeedInRuntime } = require('./poolSourceMode.js');
+const { partPassesPublishGate } = require('./partPublishGate.js');
 const { loadPoolIndex } = require('./loadPoolIndex.js');
 const { loadBlueprintFile } = require('./hybridExamChunkPrompt.js');
 const { buildPlanFromParams } = require('../exam-plan.js');
@@ -52,10 +54,11 @@ async function fetchPoolPartById(store, lang, level, module, partId) {
   const normModule = String(module).toLowerCase();
   if (store) {
     const fromStore = await getReusablePart(store, lang, level, normModule, partId);
-    if (fromStore && fromStore.complete && fromStore.verified && fromStore.disabled !== true) {
+    if (fromStore && partPassesPublishGate(fromStore)) {
       return { id: partId, part: fromStore, source: 'store' };
     }
   }
+  if (!useLocalSeedInRuntime()) return null;
   return getFromLocalSeedById(lang, level, normModule, partId);
 }
 
@@ -98,6 +101,12 @@ async function startPersonalExamTicket(handler, event, maxChunks = 1) {
 }
 
 async function fallbackPoolPart(store, lang, level, module, teil, topicTag) {
+  if (store) {
+    const { pickReusablePart } = require('./reusablePartsStore.js');
+    const fromBlob = await pickReusablePart(store, lang, level, module, { teil, excludeIds: [] });
+    if (fromBlob?.part) return { ...fromBlob, fallback: true, topicTag };
+  }
+  if (!useLocalSeedInRuntime()) return null;
   const hit =
     pickFromLocalSeed(lang, level, module, { teil, excludeIds: [] }) ||
     pickFromLocalSeed(lang, level, module, { teil, excludeIds: [], excludeTopics: [] });

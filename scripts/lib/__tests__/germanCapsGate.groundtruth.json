@@ -1,0 +1,105 @@
+{
+  "MUST_CATCH": [
+    { "id": "t2-089-spielen", "file": "lesen-t2-gemini-089.json", "pool": "ready", "field": "passages.text", "passageIndex": 0, "token": "Spielen", "type": "wrong_capitalized" },
+    { "id": "t2-089-berichten", "file": "lesen-t2-gemini-089.json", "pool": "ready", "field": "passages.text", "passageIndex": 0, "token": "Berichten", "type": "wrong_capitalized" },
+    { "id": "t2-089-vielen-staedten", "file": "lesen-t2-gemini-089.json", "pool": "ready", "field": "passages.text", "passageIndex": 0, "token": "Vielen", "type": "wrong_capitalized" },
+    { "id": "t2-089-arbeiten", "file": "lesen-t2-gemini-089.json", "pool": "ready", "field": "passages.text", "passageIndex": 0, "token": "Arbeiten", "type": "wrong_capitalized" },
+    { "id": "t2-089-folgen", "file": "lesen-t2-gemini-089.json", "pool": "ready", "field": "passages.text", "passageIndex": 1, "token": "Folgen", "type": "wrong_capitalized" },
+    { "id": "t2-089-glauben", "file": "lesen-t2-gemini-089.json", "pool": "ready", "field": "passages.text", "passageIndex": 1, "token": "Glauben", "type": "wrong_capitalized" },
+    { "id": "t2-089-stellen", "file": "lesen-t2-gemini-089.json", "pool": "ready", "field": "questions.options", "token": "Stellen", "type": "wrong_capitalized" },
+    { "id": "t2-089-staerken", "file": "lesen-t2-gemini-089.json", "pool": "ready", "field": "questions.explanation", "token": "Stärken", "type": "wrong_capitalized" },
+
+    { "id": "t2-060-viele-effekte", "file": "lesen-t2-gemini-060.json", "pool": "ready", "field": "passages.text", "passageIndex": 0, "token": "Viele", "type": "wrong_capitalized" },
+    { "id": "t2-060-wissen", "file": "lesen-t2-gemini-060.json", "pool": "ready", "field": "passages.text", "passageIndex": 1, "token": "Wissen", "type": "wrong_capitalized" },
+    { "id": "t2-060-viele-kinder", "file": "lesen-t2-gemini-060.json", "pool": "ready", "field": "passages.text", "passageIndex": 1, "token": "Viele", "type": "wrong_capitalized" },
+    { "id": "t2-060-essen", "file": "lesen-t2-gemini-060.json", "pool": "ready", "field": "passages.text", "passageIndex": 1, "token": "Essen", "type": "wrong_capitalized" },
+
+    { "id": "t2-062-essen", "file": "lesen-t2-gemini-062.json", "pool": "ready", "field": "passages.text", "passageIndex": 1, "token": "Essen", "type": "wrong_capitalized" },
+
+    { "id": "t1-172-essen", "file": "lesen-t1-gemini-172.json", "pool": "ready", "field": "passages.text", "token": "Essen", "type": "wrong_capitalized" },
+
+    { "id": "t1-174-vielen", "file": "lesen-t1-gemini-174.json", "pool": "ready", "field": "questions.question", "token": "Vielen", "type": "wrong_capitalized" },
+    { "id": "t1-174-morgens", "file": "lesen-t1-gemini-174.json", "pool": "ready", "field": "questions.explanation", "token": "Morgens", "type": "wrong_capitalized" },
+    { "id": "t1-174-geraete", "file": "lesen-t1-gemini-174.json", "pool": "ready", "field": "questions.question", "token": "geräten", "type": "noun_lowercase" },
+
+    { "id": "t5-061-zahlen", "file": "lesen-t5-gemini-061.json", "pool": "ready", "field": "passages.text", "token": "Zahlen", "type": "wrong_capitalized" },
+    { "id": "t5-061-ganzen", "file": "lesen-t5-gemini-061.json", "pool": "ready", "field": "questions.options", "token": "Ganzen", "type": "wrong_capitalized" },
+    { "id": "t5-061-arbeiten", "file": "lesen-t5-gemini-061.json", "pool": "ready", "field": "questions.options", "token": "Arbeiten", "type": "wrong_capitalized" },
+    { "id": "t5-061-spaet-q", "file": "lesen-t5-gemini-061.json", "pool": "ready", "field": "questions.question", "token": "Spät", "type": "wrong_capitalized" },
+    { "id": "t5-061-spaet-e", "file": "lesen-t5-gemini-061.json", "pool": "ready", "field": "questions.explanation", "token": "Spät", "type": "wrong_capitalized" },
+    { "id": "t5-061-erfolgen", "file": "lesen-t5-gemini-061.json", "pool": "ready", "field": "questions.explanation", "token": "Erfolgen", "type": "wrong_capitalized", "note": "text only in t5-062; see t5-062-erfolgen" },
+
+    { "id": "t5-062-schulaktivitaeten", "file": "lesen-t5-gemini-062.json", "pool": "generated", "field": "passages.text", "token": "schulaktivitäten", "type": "noun_lowercase" },
+    { "id": "t5-062-geraeteschaeden", "file": "lesen-t5-gemini-062.json", "pool": "generated", "field": "passages.text", "token": "geräteschäden", "type": "noun_lowercase" },
+    { "id": "t5-062-kosten", "file": "lesen-t5-gemini-062.json", "pool": "generated", "field": "passages.text", "token": "kosten", "type": "noun_lowercase" },
+    { "id": "t5-062-verursachen", "file": "lesen-t5-gemini-062.json", "pool": "generated", "field": "passages.text", "token": "Verursachen", "type": "wrong_capitalized" },
+    { "id": "t5-062-erfolgen", "file": "lesen-t5-gemini-062.json", "pool": "generated", "field": "questions.explanation", "token": "Erfolgen", "type": "wrong_capitalized" },
+    { "id": "t5-062-posten", "file": "lesen-t5-gemini-062.json", "pool": "generated", "field": "questions.options", "token": "Posten", "type": "wrong_capitalized" },
+
+    { "id": "t4-035-bessere", "file": "lesen-t4-gemini-035.json", "pool": "ready", "field": "questions.signText", "token": "Bessere", "type": "wrong_capitalized" },
+    { "id": "t4-035-oeffentlicher", "file": "lesen-t4-gemini-035.json", "pool": "ready", "field": "questions.explanation", "token": "Öffentlicher", "type": "wrong_capitalized" }
+  ],
+  "MUST_NOT_FLAG": [
+    { "id": "ok-zahlen-kosten", "text": "Die Zahlen sind gut und die Kosten sind niedrig.", "field": "questions.explanation" },
+    { "id": "ok-wissen-kochen", "text": "Das Wissen ist wichtig und gesundes Kochen macht Spaß.", "field": "questions.explanation" },
+    { "id": "ok-theoretisches-wissen", "text": "Theoretisches Wissen hilft bei der Prüfung.", "field": "questions.explanation" },
+    { "id": "ok-persoenliche-treffen", "text": "Persönliche Treffen sind nach dem Kurs möglich.", "field": "questions.explanation" },
+    { "id": "ok-sorgen-machen", "text": "Viele Menschen machen sich Sorgen um die Zukunft.", "field": "passages.text" },
+    { "id": "ok-bei-fragen", "text": "Bei Fragen können Sie sich an das Büro wenden.", "field": "passages.text" },
+    { "id": "ok-ganzes-leben", "text": "Das ganze Leben verändert sich manchmal schnell.", "field": "passages.text" },
+    { "id": "ok-beim-essen", "text": "Beim Essen spricht man oft über den Tag.", "field": "passages.text" },
+    { "id": "ok-draussen", "text": "Im Sommer sitzen wir oft draußen im Garten.", "field": "passages.text" },
+    { "id": "ok-morgens-comma", "text": "Morgens, vor der Arbeit, trinkt sie immer Kaffee.", "field": "passages.text" },
+    { "id": "ok-ausser-wasser", "text": "In den Räumen ist Essen verboten, außer Wasser in Flaschen.", "field": "passages.text" },
+    { "id": "ok-muss", "text": "Jeder Schüler muss pünktlich zum Unterricht kommen.", "field": "passages.text" },
+    { "id": "ok-kann", "text": "Man kann dort kostenlos lernen und arbeiten.", "field": "questions.options" },
+    { "id": "ok-digitale-reisen-q", "text": "Was gilt für den Bereich 'Digitale Reisen'?", "field": "questions.question" },
+    { "id": "ok-digitale-reisen-e", "text": "Die Nutzung des Bereichs 'Digitale Reisen' ist kostenlos.", "field": "questions.explanation" },
+    { "id": "ok-gruene-oase", "text": "Willkommen in der Stadtbibliothek „Grüne Oase“!", "field": "passages.text" },
+    { "id": "ok-sentence-start", "text": "Spielen ist für Kinder wichtig.", "field": "passages.text" },
+    { "id": "ok-after-colon", "text": "Bitte beachten: Kosten für die Familie werden nur bei Schäden erhoben.", "field": "passages.text" },
+
+    { "id": "ok-glaube-erfahrungen", "text": "Das ist sehr wichtig. Ich glaube, diese gemeinsamen Erfahrungen stärken die Gemeinschaft.", "field": "passages.text" },
+    { "id": "ok-regeln-fuer", "text": "Der Text erwähnt, dass es Regeln für die Bildschirmzeit der Kinder gibt.", "field": "questions.explanation" },
+    { "id": "ok-kosten-anmeldung", "text": "Für die Anmeldung fallen Kosten von zehn Euro an, wenn man sich registriert.", "field": "passages.text" },
+    { "id": "ok-kosten-miete", "text": "Man kann Kosten für Miete oder Instandhaltung sparen, wenn man früh plant.", "field": "passages.text" },
+    { "id": "ok-iter3-alter-zum", "text": "Ein Bericht betont, dass die Inhalte zum Alter der Kinder passen.", "field": "passages.text", "note": "v3.0-stable decap must not change" },
+    { "id": "ok-iter3-alter-diesem", "text": "Kinder und Jugendliche bis zu diesem Alter zahlen keine Gebühr.", "field": "questions.explanation", "note": "v3.0-stable" },
+    { "id": "ok-iter3-sorgen-gibt-es", "text": "Trotz der Vorteile gibt es auch Sorgen, zum Beispiel wegen der Kosten.", "field": "passages.text", "note": "v3.0-stable supplement" },
+    { "id": "ok-iter3-kosten-modal-fuer", "text": "Man kann Kosten für Miete oder Instandhaltung teilen und spart so Geld.", "field": "passages.text", "note": "v3.0-stable modal+prep guard" },
+    { "id": "ok-zahlen-teilnehmer", "text": "Die Zahlen der Teilnehmer sind positiv und die Kosten bleiben niedrig.", "field": "questions.explanation" },
+    { "id": "ok-essen-trinken-erlaubt", "text": "Essen und Trinken sind in den Lesesälen nur teilweise erlaubt.", "field": "questions.options" },
+    { "id": "ok-essen-trinken-mensa", "text": "In der Mensa sind Essen und Trinken nach den Regeln erlaubt.", "field": "passages.text" },
+    { "id": "ok-wissen-moechte", "text": "Wer sich um Regeln kümmert, möchte Wissen, was Familien brauchen.", "field": "passages.text" },
+    { "id": "ok-unternehmen-ausflug", "text": "Am Wochenende unternehmen wir oft Ausflüge in die Natur.", "field": "passages.text" },
+    { "id": "ok-gemeinschaftsgaerten", "text": "In vielen Städten gibt es Gemeinschaftsgärten für Familien.", "field": "passages.text" },
+    { "id": "ok-tipps-geben", "text": "Die Sporttrainer geben den Kindern Tipps und zeigen neue Übungen.", "field": "passages.text" },
+    { "id": "ok-reisen-hoerbuecher", "text": "Hörbücher zum Thema Reisen sind in der Bibliothek beliebt.", "field": "passages.text" },
+    { "id": "ok-nachrichten-berichten", "text": "Die lokalen Nachrichten berichten über Politik im Rathaus.", "field": "passages.text" },
+    { "id": "ok-kindern-helfen", "text": "Das Projekt soll Kindern helfen, gesünder zu leben.", "field": "passages.text" },
+    { "id": "ok-anmeldung-kosten-euro", "text": "Die Anmeldung kostet zehn Euro und weitere Kosten entstehen erst später.", "field": "questions.explanation" },
+    { "id": "ok-medien-reisen-thema", "text": "Es gibt viele Medien zum Thema Reisen in der Stadtbibliothek.", "field": "passages.text" },
+    { "id": "ok-jahre-zahlen-gebuehr", "text": "Kinder bis 18 Jahre zahlen keine Gebühr für die Ausleihe.", "field": "passages.text" },
+
+    { "id": "ok-t3-anfaengerkurs-ballett", "text": "C) SpitzenTanz — Anfängerkurs Ballett für Erwachsene, Di 18 Uhr", "field": "questions.options", "file": "lesen-t3-auto-001.json" },
+    { "id": "ok-t3-horizont-reisen", "text": "F) Horizont Reisen — Pauschalreisen, Beratung Mo–Fr", "field": "questions.options", "file": "lesen-t3-auto-004.json" },
+    { "id": "ok-t3-tastenwelt-klavier", "text": "E) TastenWelt — Unterricht am Klavier, Probestunde gratis", "field": "questions.options", "file": "lesen-t3-auto-001.json" },
+    { "id": "ok-t3-online-daheim", "text": "5 bis 10, online oder daheim, Di 17–19 Uhr", "field": "questions.options", "file": "lesen-t3-auto-013.json" },
+    { "id": "ok-t3-probestunde-nachmittag", "text": "A) FlexDrive — Probestunde Nachmittag, Mo 15 Uhr", "field": "questions.options", "file": "lesen-t3-auto-002.json" },
+    { "id": "ok-t3-erste-hilfe", "text": "D) LebensRetter — Erste Hilfe Kurs, Sa 10 Uhr", "field": "questions.options", "file": "lesen-t3-auto-005.json" },
+    { "id": "ok-t3-letter-prefix-kurs", "text": "B) LichtWerk — Anfängerkurs Fotografie für Jugendliche", "field": "questions.options", "file": "lesen-t3-auto-003.json" },
+
+    { "id": "ok-t3-schrift-auch", "text": "in Arabisch, auch Schrift, Mo 18–19 Uhr", "field": "questions.options", "file": "lesen-t3-auto-008.json" },
+    { "id": "ok-t3-treff-brand", "text": "J) NachbarSchatz Treff — Gemeinsame Aktionen und Treffpunkt", "field": "questions.options", "file": "lesen-t3-gemini-053.json" },
+    { "id": "ok-t3-ton-explanation", "text": "Professioneller Ton in Korrespondenz — Schreibcoaching", "field": "questions.explanation", "file": "lesen-t3-gemini-001.json" },
+    { "id": "ok-t3-nachhilfe-explanation", "text": "PC-Hilfe oder kostenlose Probestunde Nachhilfe.", "field": "questions.explanation", "file": "lesen-t3-gemini-001.json" },
+    { "id": "ok-t3-tagesmiete-explanation", "text": "ohne Kauf — FlexDrive Tagesmiete, nicht Gebrauchtwagen West", "field": "questions.explanation", "file": "lesen-t3-gemini-001.json" }
+  ],
+  "MUST_PROSE": [
+    { "id": "prose-opt-stellen-sentence", "text": "Sie Stellen neue Mitarbeiter ein.", "field": "questions.options", "file": "lesen-t2-gemini-089.json" },
+    { "id": "prose-opt-essen-sentence", "text": "Wir Essen gemeinsam.", "field": "questions.options", "file": "lesen-t5-gemini-061.json" }
+  ],
+  "KNOWN_FN": [
+    { "id": "t5-061-erfolgen", "note": "Erfolgen/Zonen appears in t5-062 explanation, not t5-061; covered by t5-062-erfolgen" }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "generatedAt": "2026-07-12T14:21:52.902Z",
+  "quarantineIdsInPool": 196,
+  "stampLogCount": 196,
+  "originalAudit2026_07_11": 168,
+  "officialDryRun": {
+    "status": 1,
+    "quarantineSkips": 56,
+    "stock": {
+      "lesen_2": 0,
+      "lesen_5": 0,
+      "horen_2": 0
+    }
+  },
+  "practiceDryRun": {
+    "status": 0,
+    "quarantineSkips": 0,
+    "stock": {
+      "lesen_2": 9,
+      "lesen_5": 19,
+      "horen_2": 4
+    }
+  },
+  "practiceAssemble": {
+    "ok": true,
+    "mode": "practice",
+    "quarantineQuestionHits": 11,
+    "hitIdsSample": [
+      "gen-q-2-0a946252-1",
+      "gen-q-2-0a946252-2",
+      "gen-q-2-0a946252-3",
+      "gen-q-2-0a946252-4",
+      "gen-q-2-0a946252-5",
+      "gen-q-2-0a946252-6",
+      "gen-q-5-3f265ed6-1",
+      "gen-q-5-3f265ed6-2"
+    ]
+  },
+  "officialAssemble": {
+    "attempted": true,
+    "ok": false,
+    "quarantineQuestionHits": null,
+    "note": "capacity 0 expected when all lesen_2/horen_2 files carry ≥1 quarantined MCQ"
+  },
+  "pass": {
+    "stampNonZero": true,
+    "officialSkipsQuarantine": true,
+    "practiceDoesNotSkipQuarantine": true,
+    "practiceStockGtOfficial": true,
+    "practiceAssembled": true,
+    "practiceCanIncludeQuarantine": true,
+    "officialCleanOrBlocked": true
+  }
+}

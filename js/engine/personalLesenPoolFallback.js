@@ -548,6 +548,50 @@ function repairLesenPartsForValidation(exam) {
   return exam;
 }
 
+/**
+ * Resolve stable passage/transcript locator for assembled exam parts.
+ * Prefer explicit passage.id / passage.passageId; else first question.passageId.
+ * Does not invent IDs — returns null if none exist.
+ */
+function resolvePassageIdFromPool(poolPart, passage, questions) {
+  const p = passage && typeof passage === 'object' ? passage : {};
+  if (p.id != null && String(p.id).trim() !== '') return String(p.id);
+  if (p.passageId != null && String(p.passageId).trim() !== '') return String(p.passageId);
+  const qs = Array.isArray(questions) ? questions : [];
+  for (const q of qs) {
+    if (q && q.passageId != null && String(q.passageId).trim() !== '') return String(q.passageId);
+  }
+  if (Array.isArray(poolPart?.passages)) {
+    for (const pp of poolPart.passages) {
+      if (!pp || typeof pp !== 'object') continue;
+      if (pp.id != null && String(pp.id).trim() !== '') return String(pp.id);
+      if (pp.passageId != null && String(pp.passageId).trim() !== '') return String(pp.passageId);
+    }
+  }
+  return null;
+}
+
+/**
+ * Lesen/Hören pool only: force DifficultyScorer recompute (ignore persisted 4/5).
+ * Schreiben/Sprechen converters must NOT call this.
+ */
+function applyRuntimeDifficultyToLesenHorenPoolPart(part, poolPart) {
+  if (!part) return part;
+  let Scorer = typeof DifficultyScorer !== 'undefined' ? DifficultyScorer : null;
+  if (!Scorer) {
+    try {
+      Scorer = require('./validation/difficultyScorer.js');
+    } catch (_) {
+      Scorer = null;
+    }
+  }
+  if (!Scorer || typeof Scorer.applyRuntimeDifficultyToPoolPart !== 'function') return part;
+  return Scorer.applyRuntimeDifficultyToPoolPart(part, {
+    lang: poolPart?.lang || poolPart?.language || 'de',
+    level: poolPart?.level || 'B1',
+  });
+}
+
 function reusablePartToLesenPart(poolPart) {
 
   if (!poolPart) return null;
@@ -557,6 +601,8 @@ function reusablePartToLesenPart(poolPart) {
   const passage = poolPart.passage || {};
 
   const questions = Array.isArray(poolPart.questions) ? poolPart.questions : [];
+
+  const passageId = resolvePassageIdFromPool(poolPart, passage, questions);
 
   const part = {
 
@@ -569,6 +615,19 @@ function reusablePartToLesenPart(poolPart) {
     _poolPartId: poolPart.id || null,
 
   };
+
+  if (poolPart.bgGenerated) {
+    part.bgGenerated = true;
+    part.bgVocabLemmas = Array.isArray(poolPart.bgVocabLemmas) ? poolPart.bgVocabLemmas : [];
+  }
+
+  if (passageId) {
+
+    part.passageId = passageId;
+
+    part.id = passageId;
+
+  }
 
 
 
@@ -691,7 +750,8 @@ function reusablePartToLesenPart(poolPart) {
 
   }
 
-  return ensureLesenT3Example(coalesceLesenAdsMatchingPart(part));
+  const lesenOut = ensureLesenT3Example(coalesceLesenAdsMatchingPart(part));
+  return applyRuntimeDifficultyToLesenHorenPoolPart(lesenOut, poolPart);
 
 }
 
@@ -709,7 +769,7 @@ function reusablePartToHorenPart(poolPart, blueprint) {
 
   const storedSegments = poolPart.segments || passage.segments;
 
-
+  const passageId = resolvePassageIdFromPool(poolPart, passage, questions);
 
   const part = {
 
@@ -725,9 +785,27 @@ function reusablePartToHorenPart(poolPart, blueprint) {
 
   };
 
+  if (poolPart.bgGenerated) {
+    part.bgGenerated = true;
+    part.bgVocabLemmas = Array.isArray(poolPart.bgVocabLemmas) ? poolPart.bgVocabLemmas : [];
+  }
+
+  if (passageId) {
+
+    part.passageId = passageId;
+
+    part.id = passageId;
+
+  }
+
 
 
   if (teil === 1) part.blueprintSlot = 'short_texts_twice';
+
+  if (teil === 2 && String(poolPart.level || blueprint?.level || '').toUpperCase() === 'A2') {
+    part.blueprintSlot = 'picture_matching';
+    part.plays = 1;
+  }
 
   if (teil === 4) part.blueprintSlot = 'discussion_twice';
 
@@ -743,13 +821,15 @@ function reusablePartToHorenPart(poolPart, blueprint) {
 
       transcript: seg.transcript || seg.text || '',
 
-      passageId: seg.passageId || seg.id,
+      passageId: seg.passageId || seg.id || passageId || null,
+
+      pictures: seg.pictures || passage.pictures || poolPart.pictures || undefined,
 
       questions: (seg.questions || []).map((q) => ({ ...q })),
 
     }));
 
-    return part;
+    return applyRuntimeDifficultyToLesenHorenPoolPart(part, poolPart);
 
   }
 
@@ -765,17 +845,31 @@ function reusablePartToHorenPart(poolPart, blueprint) {
 
     const transcripts = splitTranscriptChunks(transcriptText, Math.max(5, groups.length));
 
-    part.segments = groups.slice(0, 5).map((qs, i) => ({
+    part.segments = groups.slice(0, 5).map((qs, i) => {
 
-      id: `seg_pool_${i}`,
+      const segPassageId =
 
-      label: `Aufnahme ${i + 1}`,
+        (qs || []).map((q) => q && q.passageId).find((pid) => pid != null && String(pid).trim() !== '') ||
 
-      transcript: transcripts[i] || transcripts[0] || 'Kurzer Hörtext.',
+        (groups.length === 1 ? passageId : null) ||
 
-      questions: qs,
+        null;
 
-    }));
+      return {
+
+        id: segPassageId ? String(segPassageId) : `seg_pool_${i}`,
+
+        label: `Aufnahme ${i + 1}`,
+
+        transcript: transcripts[i] || transcripts[0] || 'Kurzer Hörtext.',
+
+        passageId: segPassageId ? String(segPassageId) : passageId || null,
+
+        questions: qs,
+
+      };
+
+    });
 
     while (part.segments.length < 5) {
 
@@ -786,6 +880,8 @@ function reusablePartToHorenPart(poolPart, blueprint) {
         label: `Aufnahme ${part.segments.length + 1}`,
 
         transcript: 'Kurzer Hörtext.',
+
+        passageId: null,
 
         questions: [],
 
@@ -799,11 +895,13 @@ function reusablePartToHorenPart(poolPart, blueprint) {
 
       {
 
-        id: 'seg_pool_0',
+        id: passageId || 'seg_pool_0',
 
         label: 'Aufnahme 1',
 
         transcript: transcriptText,
+
+        passageId: passageId || null,
 
         questions,
 
@@ -815,7 +913,7 @@ function reusablePartToHorenPart(poolPart, blueprint) {
 
 
 
-  return part;
+  return applyRuntimeDifficultyToLesenHorenPoolPart(part, poolPart);
 
 }
 
@@ -963,6 +1061,11 @@ function reusablePartToSchreibenPart(poolPart, blueprint) {
 
   };
 
+  if (poolPart.bgGenerated) {
+    part.bgGenerated = true;
+    part.bgVocabLemmas = Array.isArray(poolPart.bgVocabLemmas) ? poolPart.bgVocabLemmas : [];
+  }
+
 }
 
 
@@ -986,6 +1089,123 @@ function insertSchreibenTeil(exam, schreibenPart, teil) {
     (a, b) => Number(a.teil ?? a.aufgabe) - Number(b.teil ?? b.aufgabe),
 
   );
+
+  return exam;
+
+}
+
+
+
+function sprechenBlueprintTeils(blueprint) {
+
+  return blueprintModuleTeils(blueprint, 'sprechen', [1, 2, 3]);
+
+}
+
+
+
+function sprechenTeilIsValid(part, teil, blueprint) {
+
+  if (!part) return false;
+
+  const situation = String(
+
+    part.situation || part.task || part.instruction || part.prompt || '',
+
+  ).trim();
+
+  return situation.length >= 40;
+
+}
+
+
+
+function reusablePartToSprechenPart(poolPart, blueprint) {
+
+  if (!poolPart) return null;
+
+  const teil = Number(poolPart.teil ?? 1);
+
+  const situation = String(
+
+    poolPart.task ||
+
+      poolPart.situation ||
+
+      poolPart.passage?.text ||
+
+      poolPart.questions?.[0]?.question ||
+
+      '',
+
+  ).trim();
+
+  const q0 = poolPart.questions?.[0] || {};
+
+  const part = {
+
+    teil,
+
+    title: poolPart.title || q0.type || `Teil ${teil}`,
+
+    fieldId: poolPart.fieldId || `speak_bp_${teil}`,
+
+    situation,
+
+    points: Array.isArray(poolPart.points) ? [...poolPart.points] : [],
+
+    prompts: Array.isArray(poolPart.prompts) ? [...poolPart.prompts] : [],
+
+    grammarTags: Array.isArray(q0.grammarTags) ? [...q0.grammarTags] : [],
+
+    topicTags: Array.isArray(poolPart.topicTags || q0.topicTags)
+
+      ? [...(poolPart.topicTags || q0.topicTags)]
+
+      : [],
+
+    _fromPool: true,
+
+    _poolPartId: poolPart.id || null,
+
+  };
+
+  if (poolPart.bgGenerated) {
+    part.bgGenerated = true;
+    part.bgVocabLemmas = Array.isArray(poolPart.bgVocabLemmas) ? poolPart.bgVocabLemmas : [];
+  }
+
+  if (Number(teil) === 2 && Array.isArray(poolPart.slides) && poolPart.slides.length) {
+
+    part.slides = poolPart.slides.map((s) => ({ ...s }));
+
+  }
+
+  if (!part.points.length && typeof SprechenBriefing !== 'undefined') {
+    const bullets = SprechenBriefing.parseSprechenBriefing(situation, teil).bullets;
+    if (bullets.length) {
+      part.points = bullets;
+      part.prompts = bullets;
+    }
+  }
+
+  return part;
+
+}
+
+
+
+function insertSprechenTeil(exam, sprechenPart, teil) {
+
+  if (!exam || !sprechenPart) return exam;
+
+  const t = Number(teil);
+
+  exam.sprechenParts = (exam.sprechenParts || []).filter((p) => Number(p.teil) !== t);
+
+  exam.sprechenParts.push({ ...sprechenPart, teil: t });
+
+  exam.sprechenParts.sort((a, b) => Number(a.teil) - Number(b.teil));
 
   return exam;
 
@@ -1050,6 +1270,14 @@ const PersonalLesenPoolFallback = Object.freeze({
   reusablePartToSchreibenPart,
 
   insertSchreibenTeil,
+
+  sprechenBlueprintTeils,
+
+  sprechenTeilIsValid,
+
+  reusablePartToSprechenPart,
+
+  insertSprechenTeil,
 
 });
 

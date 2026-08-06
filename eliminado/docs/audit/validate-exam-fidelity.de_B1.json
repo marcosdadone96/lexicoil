@@ -1,0 +1,140 @@
+{
+  "lang": "de",
+  "level": "B1",
+  "source": "data\\exams\\de_B1.json",
+  "blueprintId": "goethe-b1",
+  "availabilityStatus": "live",
+  "exams": [
+    {
+      "examLabel": "data\\exams\\de_B1.json :: official-de-B1-e1",
+      "id": "official-de-B1-e1",
+      "topic": "Official B1 Exam 1",
+      "ok": true,
+      "errorCount": 0,
+      "warningCount": 5,
+      "errors": [],
+      "warnings": [
+        "passages_per_part_mismatch:lesen:teil=4,expected=7,received=0",
+        "items_total_mismatch:horen:teil=1,expected=10,received=20",
+        "passages_per_part_mismatch:horen:teil=2,expected=1,received=0",
+        "passages_per_part_mismatch:horen:teil=3,expected=1,received=0",
+        "passages_per_part_mismatch:horen:teil=4,expected=1,received=0"
+      ],
+      "details": [
+        {
+          "module": "lesen",
+          "teil": 1,
+          "slotType": "blog_richtig_falsch",
+          "issues": []
+        },
+        {
+          "module": "lesen",
+          "teil": 2,
+          "slotType": "press_mcq",
+          "issues": []
+        },
+        {
+          "module": "lesen",
+          "teil": 3,
+          "slotType": "ads_matching",
+          "issues": []
+        },
+        {
+          "module": "lesen",
+          "teil": 4,
+          "slotType": "forum_opinions",
+          "issues": [],
+          "warnings": [
+            "passages_per_part_mismatch:lesen:teil=4,expected=7,received=0"
+          ],
+          "passagesPerPart": {
+            "expected": 7,
+            "received": 0
+          }
+        },
+        {
+          "module": "lesen",
+          "teil": 5,
+          "slotType": "rules_mcq",
+          "issues": []
+        },
+        {
+          "module": "horen",
+          "teil": 1,
+          "slotType": "short_texts_twice",
+          "issues": [],
+          "warnings": [
+            "items_total_mismatch:horen:teil=1,expected=10,received=20"
+          ],
+          "itemsTotal": {
+            "expected": 10,
+            "received": 20
+          }
+        },
+        {
+          "module": "horen",
+          "teil": 2,
+          "slotType": "monologue_once",
+          "issues": [],
+          "warnings": [
+            "passages_per_part_mismatch:horen:teil=2,expected=1,received=0"
+          ],
+          "passagesPerPart": {
+            "expected": 1,
+            "received": 0
+          }
+        },
+        {
+          "module": "horen",
+          "teil": 3,
+          "slotType": "conversation_once",
+          "issues": [],
+          "warnings": [
+            "passages_per_part_mismatch:horen:teil=3,expected=1,received=0"
+          ],
+          "passagesPerPart": {
+            "expected": 1,
+            "received": 0
+          }
+        },
+        {
+          "module": "horen",
+          "teil": 4,
+          "slotType": "discussion_twice",
+          "issues": [],
+          "warnings": [
+            "passages_per_part_mismatch:horen:teil=4,expected=1,received=0"
+          ],
+          "passagesPerPart": {
+            "expected": 1,
+            "received": 0
+          }
+        },
+        {
+          "module": "schreiben",
+          "teil": 1,
+          "slotType": "writing_task",
+          "issues": []
+        },
+        {
+          "module": "schreiben",
+          "teil": 2,
+          "slotType": "writing_task",
+          "issues": []
+        },
+        {
+          "module": "schreiben",
+          "teil": 3,
+          "slotType": "writing_task",
+          "issues": []
+        }
+      ]
+    }
+  ],
+  "passageDedupe": {
+    "ok": true,
+    "threshold": 0.85,
+    "passageCount": 24,
+    "violations": []
+  }
+}

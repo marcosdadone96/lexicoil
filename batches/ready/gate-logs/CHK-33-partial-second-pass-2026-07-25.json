@@ -1,0 +1,19 @@
+{
+  "at": "2026-07-25T09:04:29.985Z",
+  "sourceLog": "batches/ready/gate-logs/pool-mcq-length-bias-apply-2026-07-25T09-04-29.json",
+  "note": "Segunda pasada opcional: archivos con sesgo residual gate:false tras apply. No forzados en la primera pasada.",
+  "counts": {
+    "appliedClean": 62,
+    "partialImprovedNotZero": 66,
+    "partialNoImprovement": 23,
+    "blockedFullRegen": 1
+  },
+  "fullRegenerationRequired": [
+    {
+      "file": "B1/horen-t1-gemini-005.json",
+      "reason": "normalizeBatch balanceMcq contract: explanation letter desync q[9]",
+      "poolMeta": "_mcqLengthBiasRepairBlocked on file — content unchanged by repair path"
+    }
+  ],
+  "secondPassCandidates": "See partialsAfterApply in sourceLog (89 files with remaining length messages; 66 improved, 23 unchanged)"
+}

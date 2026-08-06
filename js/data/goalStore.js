@@ -181,11 +181,23 @@ const GoalStore = (() => {
     return (S.history || []).filter((h) => h.lang === goal.subject && h.level === goal.level);
   }
 
+  function examHistoryFor(goal) {
+    const MG = typeof ModuleGrading !== 'undefined' ? ModuleGrading : null;
+    return historyFor(goal).filter((h) =>
+      MG ? MG.isExamResultHistoryEntry(h) : h.source !== 'part' && Number.isFinite(Number(h.score)),
+    );
+  }
+
   function readinessPct(goal) {
-    const hist = historyFor(goal);
+    const hist = examHistoryFor(goal);
     if (!hist.length) return 0;
+    const MG = typeof ModuleGrading !== 'undefined' ? ModuleGrading : null;
     const recent = hist.slice(0, 5);
-    const avg = recent.reduce((s, h) => s + h.score, 0) / recent.length;
+    const scores = recent
+      .map((h) => (MG ? MG.resolveHistoryScore(h) : Number(h.score)))
+      .filter((n) => Number.isFinite(n));
+    if (!scores.length) return 0;
+    const avg = scores.reduce((s, n) => s + n, 0) / scores.length;
     const mastered = deckFor(goal).filter((f) => f.interval && f.interval > 7).length;
     const bonus = Math.min(15, mastered * 2);
     return Math.min(100, Math.round(avg * 0.85 + bonus));
@@ -199,8 +211,9 @@ const GoalStore = (() => {
       const topics = summary.weakTopics.map((x) => x.tag);
       if (topics.length) return topics;
     }
+    const MG = typeof ModuleGrading !== 'undefined' ? ModuleGrading : null;
     const topicScores = {};
-    historyFor(goal).forEach((h) => {
+    examHistoryFor(goal).forEach((h) => {
       if (h.tagStats?.grammarTags) {
         Object.entries(h.tagStats.grammarTags).forEach(([tag, s]) => {
           if (s.total >= 1) (topicScores[tag] = topicScores[tag] || []).push(Math.round((s.correct / s.total) * 100));
@@ -208,7 +221,9 @@ const GoalStore = (() => {
         return;
       }
       if (!h.topic) return;
-      (topicScores[h.topic] = topicScores[h.topic] || []).push(h.score);
+      const sc = MG ? MG.resolveHistoryScore(h) : Number(h.score);
+      if (!Number.isFinite(sc)) return;
+      (topicScores[h.topic] = topicScores[h.topic] || []).push(sc);
     });
     const weak = Object.entries(topicScores)
       .map(([topic, scores]) => ({ topic, avg: scores.reduce((a, b) => a + b, 0) / scores.length }))
@@ -267,6 +282,7 @@ const GoalStore = (() => {
     deckFor,
     dueFor,
     historyFor,
+    examHistoryFor,
     readinessPct,
     weakAreas,
     masterySummary,
@@ -365,6 +381,9 @@ function dueForGoal(goal) {
 }
 function historyForGoal(goal) {
   return GoalStore.historyFor(goal);
+}
+function examHistoryForGoal(goal) {
+  return GoalStore.examHistoryFor(goal);
 }
 function getReadinessPctForGoal(goal) {
   return GoalStore.readinessPct(goal);

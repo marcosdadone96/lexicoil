@@ -1,0 +1,212 @@
+{
+  "at": "2026-07-13T16:55:14.327Z",
+  "originalGateLogic": {
+    "rule": "correctLen === max (incl. empates) → bad=true, sin umbral de % ni chars",
+    "zeroTolerance": true,
+    "note": "Causó 689 flags en logs hoy; muchos +1–15% eran ruido de reintentos"
+  },
+  "currentFileState": {
+    "note": "mcqLengthBias.mjs ya tenía borrador tolerante (20%/10chars); esta calibración lo confirma/ajusta"
+  },
+  "poolScope": {
+    "parts": [
+      "lesen-t2",
+      "lesen-t5",
+      "horen-t2"
+    ],
+    "totalMcq": 292,
+    "biasedLongest": 190,
+    "notLongest": 102
+  },
+  "distribution": {
+    "biasedDiffPct": {
+      "n": 190,
+      "min": 3,
+      "p25": 22,
+      "p50": 38,
+      "p75": 54,
+      "p90": 83,
+      "max": 173,
+      "mean": 42.7
+    },
+    "biasedDiffChars": {
+      "n": 190,
+      "min": 2,
+      "p25": 11,
+      "p50": 17,
+      "p75": 26,
+      "p90": 36,
+      "max": 64,
+      "mean": 19.9
+    },
+    "biasedBucketsPct": {
+      "0-9": 12,
+      "10-14": 9,
+      "15-19": 19,
+      "20-29": 29,
+      "30-39": 35,
+      "40+": 86
+    },
+    "logTodayDiffPct": {
+      "n": 689,
+      "min": 1,
+      "p25": 11,
+      "p50": 21,
+      "p75": 35,
+      "p90": 61,
+      "max": 233,
+      "mean": 27.8
+    },
+    "logTodayBucketsPct": {
+      "0-9": 142,
+      "10-14": 107,
+      "15-19": 82,
+      "20-29": 140,
+      "30-39": 68,
+      "40+": 150
+    },
+    "quarantineStamped2026_07_12": 196
+  },
+  "thresholdAnalysis": {
+    "interpretation": "Entre ítems con correcta estrictamente más larga, p25 pool=22% y p50=38%. Logs hoy: 48% de flags <20% (ruido). Corte natural ≈20%: bajo p25 histórico, encima del cluster 0–15% del operador.",
+    "proposed": {
+      "minPct": 20,
+      "minChars": 12,
+      "severePct": 30,
+      "severeChars": 18,
+      "batchFailCount": 2
+    },
+    "proposedRule": "Significativo si isLongest estricto Y (diffPct≥20 OR diff≥12); severo si diffPct≥30 OR diff≥18; batch falla con ≥1 severo OR ≥2 significativos.",
+    "sweepMinPct": [
+      {
+        "minPct": 10,
+        "poolBiasedFlagged": 178,
+        "poolBiasedPct": 94,
+        "logFlagsFlagged": 0,
+        "logFlagsPct": 0
+      },
+      {
+        "minPct": 15,
+        "poolBiasedFlagged": 169,
+        "poolBiasedPct": 89,
+        "logFlagsFlagged": 0,
+        "logFlagsPct": 0
+      },
+      {
+        "minPct": 18,
+        "poolBiasedFlagged": 159,
+        "poolBiasedPct": 84,
+        "logFlagsFlagged": 0,
+        "logFlagsPct": 0
+      },
+      {
+        "minPct": 20,
+        "poolBiasedFlagged": 154,
+        "poolBiasedPct": 81,
+        "logFlagsFlagged": 0,
+        "logFlagsPct": 0
+      },
+      {
+        "minPct": 22,
+        "poolBiasedFlagged": 151,
+        "poolBiasedPct": 79,
+        "logFlagsFlagged": 0,
+        "logFlagsPct": 0
+      },
+      {
+        "minPct": 25,
+        "poolBiasedFlagged": 148,
+        "poolBiasedPct": 78,
+        "logFlagsFlagged": 0,
+        "logFlagsPct": 0
+      },
+      {
+        "minPct": 30,
+        "poolBiasedFlagged": 144,
+        "poolBiasedPct": 76,
+        "logFlagsFlagged": 0,
+        "logFlagsPct": 0
+      }
+    ],
+    "oldVsProposedOnLog": {
+      "oldWouldFlag": 689,
+      "proposedWouldFlagSignificant": 378,
+      "reductionPct": 45
+    }
+  },
+  "operatorCaseValidation": [
+    {
+      "label": "ruido +2%",
+      "diffPct": 2,
+      "diff": 2,
+      "expectFail": false,
+      "oldGate": true,
+      "proposedSignificant": false,
+      "ok": true
+    },
+    {
+      "label": "ruido +6%",
+      "diffPct": 6,
+      "diff": 4,
+      "expectFail": false,
+      "oldGate": true,
+      "proposedSignificant": false,
+      "ok": true
+    },
+    {
+      "label": "ruido +9%",
+      "diffPct": 9,
+      "diff": 5,
+      "expectFail": false,
+      "oldGate": true,
+      "proposedSignificant": false,
+      "ok": true
+    },
+    {
+      "label": "ruido +15%",
+      "diffPct": 15,
+      "diff": 8,
+      "expectFail": false,
+      "oldGate": true,
+      "proposedSignificant": false,
+      "ok": true
+    },
+    {
+      "label": "sesgo +22%",
+      "diffPct": 22,
+      "diff": 12,
+      "expectFail": true,
+      "oldGate": true,
+      "proposedSignificant": true,
+      "ok": true
+    },
+    {
+      "label": "sesgo +35%",
+      "diffPct": 35,
+      "diff": 20,
+      "expectFail": true,
+      "oldGate": true,
+      "proposedSignificant": true,
+      "ok": true
+    },
+    {
+      "label": "sesgo +41%",
+      "diffPct": 41,
+      "diff": 25,
+      "expectFail": true,
+      "oldGate": true,
+      "proposedSignificant": true,
+      "ok": true
+    },
+    {
+      "label": "sesgo +98%",
+      "diffPct": 98,
+      "diff": 62,
+      "expectFail": true,
+      "oldGate": true,
+      "proposedSignificant": true,
+      "ok": true
+    }
+  ],
+  "allOperatorCasesPass": true
+}

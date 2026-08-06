@@ -19,7 +19,8 @@ Eres examinador del Goethe-Zertifikat B1. Genera **UNA** parte de **Hören Teil 
 
 ## ESTILO
 - Una persona habla de forma sostenida (Universität, Verein, Beruf, Umwelt, Gesundheit…).
-- Marcadores orales naturales: «Heute möchte ich …», «Zum Schluss …», «Das bedeutet …»
+- **PROHIBIDO** estas aperturas genéricas (saturadas en el pool): «Herzlich willkommen zu unserem heutigen Beitrag…», «Heute sprechen wir über ein Thema, das uns alle betrifft…». El sistema inyecta una **apertura obligatoria distinta** en cada generación — úsala tal cual como primeras palabras.
+- Marcadores orales naturales (después de la apertura inyectada): «Das bedeutet …», «Zum Schluss …», «Meiner Erfahrung nach …»
 - **PROHIBIDO:** diálogo con Person A/B (eso es Teil 3).
 
 ## REGLAS DE CALIDAD
@@ -43,15 +44,18 @@ Incluye en el passage un campo `"audio"` con los turnos del monólogo:
 <<< vortrag, erfahrung, organisation, stadt, familie, kurs, beratung, transport, anmeldung, gebühr >>>
 
 ## ANTI WORD-MATCHING — OBLIGATORIO
-El monólogo contiene: *«…die Erfahrung zeigt, dass regelmäßige Pausen die Produktivität steigern…»*
+El monólogo puede contener ideas como: *«…estudios demuestran que descansar con frecuencia mejora el rendimiento…»*
+(usa SIEMPRE una paráfrasis distinta; **PROHIBIDO** copiar literalmente frases de ejemplo del prompt).
 
-❌ **MALO (rechazado):** «Laut dem Sprecher zeigt die Erfahrung, dass Pausen die Produktivität steigern?»
-→ Copia «zeigt» «Erfahrung» «Pausen» «Produktivität» del monólogo.
+❌ **MALO (rechazado):** «Laut dem Sprecher zeigen Studien, dass Pausen den Leistung verbessern?»
+→ Copia «Studien» «Pausen» «Leistung» del monólogo.
 
 ✅ **BUENO:** «Was empfiehlt der Referent für effizienteres Arbeiten?»
 → La pregunta es nueva, las opciones parafrasean la idea sin copiar.
 
 **Proceso obligatorio:** tras escribir el monólogo, lista sus 20 palabras clave. Las preguntas NO deben contener 4+ palabras consecutivas del monólogo. Para el enunciado usa: «Was sagt der Sprecher über…?», «Welchen Rat gibt der Referent bezüglich…?», «Was erfährt man über…?»
+
+**PROHIBIDO anclarse a frases fijas del prompt:** no copies ni parafrasees de cerca ningún ejemplo de esta plantilla. Cada monólogo debe formular ideas equivalentes con vocabulario y estructura propios (evita openers clichés tipo «Die Erfahrung zeigt…» / «Studien zeigen…» repetidos entre batches).
 
 ## AUTORREVISIÓN
 - ¿1 passage 240–300 palabras contadas?

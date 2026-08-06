@@ -11,6 +11,7 @@ import { classifyUserVocab } from './vocabPrefilter.mjs';
 
 const require = createRequire(import.meta.url);
 const { normalizeB1Topic } = require('../../js/data/b1Topics.js');
+const { partPassesPublishGate } = require('../../netlify/functions/lib/partPublishGate.js');
 
 export const DEFAULT_TEIL_LIST = [1, 2, 3, 4, 5];
 export const SLOW_TEILS = Object.freeze([1, 2]);
@@ -35,9 +36,7 @@ function isVerifiedPart(r, { lang, level, module }) {
     String(r.lang || '').toLowerCase() === lang &&
     String(r.level || '').toUpperCase() === level &&
     String(r.module || '').toLowerCase() === module &&
-    r.disabled !== true &&
-    r.complete === true &&
-    r.verified === true
+    partPassesPublishGate(r)
   );
 }
 

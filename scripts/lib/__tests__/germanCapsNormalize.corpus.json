@@ -1,0 +1,104 @@
+{
+  "version": "v3.0-stable",
+  "validatedOn": "2026-07-08",
+  "pool": "batches/ready/lesen",
+  "gateFrozen": "v6.1-B-G2",
+  "decapMustNotChange": [
+    {
+      "id": "iter3-alter-zum",
+      "source": "lesen-t2-gemini-079.json",
+      "field": "passages.text",
+      "text": "Ein aktueller Bericht betont, wie wichtig es ist, dass die Inhalte zum Alter der Kinder passen und pädagogisch wertvoll sind.",
+      "note": "Alter (S.) tras zum — no confundir con adjetivo alter"
+    },
+    {
+      "id": "iter3-alter-diesem",
+      "source": "lesen-t5-gemini-046.json",
+      "field": "questions.explanation",
+      "text": "Die Jahresgebühr ist nur für Erwachsene ab 18 Jahren vorgesehen, während Kinder und Jugendliche bis zu diesem Alter keine Kosten haben.",
+      "note": "Alter (S.) tras diesem"
+    },
+    {
+      "id": "iter3-alter-vom",
+      "source": "lesen-t5-gemini-046.json",
+      "field": "questions.options",
+      "text": "c) Jeder Besucher, unabhängig vom Alter.",
+      "note": "Alter (S.) tras vom"
+    },
+    {
+      "id": "iter3-sorgen-es-gibt-1",
+      "source": "lesen-t2-gemini-076.json",
+      "field": "passages.text",
+      "text": "Trotz der Vorteile gibt es auch Sorgen, zum Beispiel wegen der höheren Kosten für die Anschaffung.",
+      "note": "Sorgen (S. pl.) — supplement + homograph guard"
+    },
+    {
+      "id": "iter3-sorgen-es-gibt-2",
+      "source": "lesen-t2-gemini-076.json",
+      "field": "passages.text",
+      "text": "Allerdings gibt es auch Sorgen. Viele Menschen machen sich Gedanken über den Datenschutz.",
+      "note": "Sorgen (S.) tras es gibt auch"
+    },
+    {
+      "id": "iter3-kosten-modal-fuer",
+      "source": "lesen-t2-gemini-086.json",
+      "field": "passages.text",
+      "text": "Solche Projekte bieten oft Vorteile: Man kann Kosten für Miete oder Instandhaltung teilen und hat immer jemanden in der Nähe.",
+      "note": "Kosten (S.) tras modal + für — MODAL_NOUN_OBJECT_PREPS guard"
+    },
+    {
+      "id": "iter3-kosten-modal-lowercase",
+      "source": "lesen-t5-gemini-062.json",
+      "field": "passages.text",
+      "text": "Vorsätzliche Beschädigung kann kosten für die Familie verursachen.",
+      "note": "kosten ya en minúscula — no tocar"
+    }
+  ],
+  "decapMustChange": [
+    {
+      "id": "iter3-ganzen-tag",
+      "source": "lesen-t5-gemini-061.json",
+      "field": "questions.options",
+      "text": "c) Man kann dort den Ganzen Tag kostenlos Arbeiten.",
+      "expectSubstring": "den ganzen Tag",
+      "note": "Ganzen (ADJ) tras den — fix conservado"
+    },
+    {
+      "id": "iter3-bessere-fahrradwege",
+      "source": "lesen-t4-gemini-035.json",
+      "field": "questions.signText",
+      "text": "Die Stadt sollte lieber in Bessere Fahrradwege investieren.",
+      "expectSubstring": "in bessere Fahrradwege",
+      "note": "Bessere (ADJ) tras in"
+    },
+    {
+      "id": "iter3-junge-menschen",
+      "source": "lesen-t2-gemini-072.json",
+      "field": "passages.text",
+      "text": "Eine aktuelle Umfrage zeigt, dass besonders Junge Menschen Interesse an Smart-Home-Lösungen haben.",
+      "expectSubstring": "junge Menschen",
+      "note": "Junge (ADJ) — fix conservado"
+    },
+    {
+      "id": "iter3-spaet-zurueck",
+      "source": "lesen-t5-gemini-061.json",
+      "field": "questions.question",
+      "text": "Wie hoch ist die maximale Gebühr, wenn man ein Medium zu Spät zurückgibt?",
+      "expectSubstring": "zu spät zurück",
+      "note": "Spät (ADV) tras zu — fixZuInfinitiveCapitals / heuristic"
+    },
+    {
+      "id": "iter3-wissen-wollen",
+      "source": "lesen-t1-gemini-167.json",
+      "field": "passages.text",
+      "text": "Manchmal organisiere ich auch kleine Kurse für Bewohner, die mehr über Gartenarbeit Wissen wollen.",
+      "expectSubstring": "wissen wollen",
+      "note": "Wissen (V.) antes de modal — guard prep no debe bloquear"
+    }
+  ],
+  "lexiconMustKnow": [
+    { "word": "Sorgen", "lemma": "sorgen", "via": "german-noun-supplement.json" },
+    { "word": "Alter", "lemma": "alter", "via": "de-gender / CEFR" },
+    { "word": "Kosten", "lemma": "kosten", "via": "de-gender / CEFR" }
+  ]
+}

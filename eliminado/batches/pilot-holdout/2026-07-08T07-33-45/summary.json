@@ -1,0 +1,618 @@
+{
+  "runId": "2026-07-08T07-33-45",
+  "pilot": 2,
+  "gateVersion": "v6.1-B-G2 (frozen)",
+  "generatedAt": "2026-07-08T08:43:01.098Z",
+  "requestedPerTeil": 5,
+  "comparePilot": "2026-07-08T07-25-00",
+  "calibration": {
+    "totalFiles": 193,
+    "totalFindings": 88,
+    "avgPerFile": 0.45595854922279794,
+    "byTeil": {
+      "1": 9,
+      "2": 36,
+      "3": 2,
+      "4": 14,
+      "5": 27
+    }
+  },
+  "pilot1": {
+    "runId": "2026-07-08T07-25-00",
+    "totalFiles": 5,
+    "totalFindings": 2,
+    "avgFindings": 0.4,
+    "byTeil": {
+      "1": {
+        "files": 1,
+        "totalFindings": 1,
+        "avgFindings": 1
+      },
+      "2": {
+        "files": 1,
+        "totalFindings": 1,
+        "avgFindings": 1
+      },
+      "3": {
+        "files": 1,
+        "totalFindings": 0,
+        "avgFindings": 0
+      },
+      "4": {
+        "files": 1,
+        "totalFindings": 0,
+        "avgFindings": 0
+      },
+      "5": {
+        "files": 1,
+        "totalFindings": 0,
+        "avgFindings": 0
+      }
+    }
+  },
+  "pilot2": {
+    "totalFiles": 18,
+    "totalFindings": 12,
+    "avgFindings": 0.67,
+    "byTeil": {
+      "1": {
+        "files": 2,
+        "passed": 2,
+        "auditRejected": 0,
+        "totalFindings": 0,
+        "avgFindings": 0
+      },
+      "2": {
+        "files": 3,
+        "passed": 3,
+        "auditRejected": 0,
+        "totalFindings": 2,
+        "avgFindings": 0.67
+      },
+      "3": {
+        "files": 3,
+        "passed": 3,
+        "auditRejected": 0,
+        "totalFindings": 0,
+        "avgFindings": 0
+      },
+      "4": {
+        "files": 5,
+        "passed": 2,
+        "auditRejected": 3,
+        "totalFindings": 9,
+        "avgFindings": 1.8
+      },
+      "5": {
+        "files": 5,
+        "passed": 5,
+        "auditRejected": 0,
+        "totalFindings": 1,
+        "avgFindings": 0.2
+      }
+    }
+  },
+  "teilAggregates": [
+    {
+      "teil": 1,
+      "gateVersion": "v6.1-B-G2 (frozen)",
+      "filesAnalyzed": 2,
+      "pipeline": {
+        "passed": 2,
+        "auditRejected": 0,
+        "rejectReasons": {}
+      },
+      "capsGate": {
+        "totalFindings": 0,
+        "avgFindingsPerFile": 0,
+        "totalObservations": 0,
+        "byReason": {},
+        "byRegime": {},
+        "telegraphicFindings": 0,
+        "telegraphicOk": true,
+        "novelReasons": [],
+        "findings": []
+      },
+      "generatorAuditor": {
+        "qualityErrors": 0,
+        "qualityWarnings": 0,
+        "capsWarningsDuringGen": 0
+      },
+      "calibration": {
+        "poolFindings": 9,
+        "poolFiles": 5,
+        "avgPerFile": 1.8,
+        "deltaVsPilotAvg": -1.8
+      },
+      "files": [
+        {
+          "file": "lesen-t1-gemini-176.json",
+          "pipelineStatus": "passed",
+          "findings": 0,
+          "observations": 0
+        },
+        {
+          "file": "lesen-t1-gemini-177.json",
+          "pipelineStatus": "passed",
+          "findings": 0,
+          "observations": 0
+        }
+      ]
+    },
+    {
+      "teil": 2,
+      "gateVersion": "v6.1-B-G2 (frozen)",
+      "filesAnalyzed": 3,
+      "pipeline": {
+        "passed": 3,
+        "auditRejected": 0,
+        "rejectReasons": {}
+      },
+      "capsGate": {
+        "totalFindings": 2,
+        "avgFindingsPerFile": 0.67,
+        "totalObservations": 0,
+        "byReason": {
+          "adj_before_noun": 1,
+          "verb_census_no_finite": 1
+        },
+        "byRegime": {
+          "PROSE": 2
+        },
+        "telegraphicFindings": 0,
+        "telegraphicOk": true,
+        "novelReasons": [],
+        "findings": [
+          {
+            "type": "wrong_capitalized",
+            "word": "Täglichen",
+            "pos": "ADJ",
+            "tag": "NN",
+            "confidence": "high",
+            "reason": "adj_before_noun",
+            "context": "das Fahrrad für den Täglichen Weg zur Arbeit oder",
+            "prevWord": "den",
+            "prevPos": "DET",
+            "prevTag": "ART",
+            "textIndex": 0,
+            "regime": "PROSE",
+            "field": "passages.text",
+            "id": "lesen-t2-gemini-093.json::passages.text::1",
+            "file": "lesen-t2-gemini-093.json",
+            "textPreview": "Immer mehr Menschen in großen Städten nutzen das Fahrrad für den Täglichen Weg zur Arbeit oder zur Schule. Das ist gut für die Gesundheit und auch für die Umwel"
+          },
+          {
+            "type": "wrong_capitalized",
+            "word": "Wettkämpfe",
+            "pos": "NOUN",
+            "tag": "NN",
+            "confidence": "high",
+            "reason": "verb_census_no_finite",
+            "context": "b) Nur Wettkämpfe für Profis.",
+            "prevWord": "Nur",
+            "prevPos": "ADV",
+            "prevTag": "ADV",
+            "textIndex": 0,
+            "regime": "PROSE",
+            "field": "questions.options",
+            "id": "lesen-t2-gemini-093.json::questions.options::10",
+            "file": "lesen-t2-gemini-093.json",
+            "textPreview": "b) Nur Wettkämpfe für Profis."
+          }
+        ]
+      },
+      "generatorAuditor": {
+        "qualityErrors": 0,
+        "qualityWarnings": 2,
+        "capsWarningsDuringGen": 2
+      },
+      "calibration": {
+        "poolFindings": 36,
+        "poolFiles": 11,
+        "avgPerFile": 3.3,
+        "deltaVsPilotAvg": -2.6
+      },
+      "files": [
+        {
+          "file": "lesen-t2-gemini-091.json",
+          "pipelineStatus": "passed",
+          "findings": 0,
+          "observations": 0
+        },
+        {
+          "file": "lesen-t2-gemini-092.json",
+          "pipelineStatus": "passed",
+          "findings": 0,
+          "observations": 0
+        },
+        {
+          "file": "lesen-t2-gemini-093.json",
+          "pipelineStatus": "passed",
+          "findings": 2,
+          "observations": 0
+        }
+      ]
+    },
+    {
+      "teil": 3,
+      "gateVersion": "v6.1-B-G2 (frozen)",
+      "filesAnalyzed": 3,
+      "pipeline": {
+        "passed": 3,
+        "auditRejected": 0,
+        "rejectReasons": {}
+      },
+      "capsGate": {
+        "totalFindings": 0,
+        "avgFindingsPerFile": 0,
+        "totalObservations": 0,
+        "byReason": {},
+        "byRegime": {},
+        "telegraphicFindings": 0,
+        "telegraphicOk": true,
+        "novelReasons": [],
+        "findings": []
+      },
+      "generatorAuditor": {
+        "qualityErrors": 0,
+        "qualityWarnings": 7,
+        "capsWarningsDuringGen": 7
+      },
+      "calibration": {
+        "poolFindings": 2,
+        "poolFiles": 2,
+        "avgPerFile": 1,
+        "deltaVsPilotAvg": -1
+      },
+      "files": [
+        {
+          "file": "lesen-t3-auto-omsq86.json",
+          "pipelineStatus": "passed",
+          "findings": 0,
+          "observations": 0
+        },
+        {
+          "file": "lesen-t3-auto-qeh7ew.json",
+          "pipelineStatus": "passed",
+          "findings": 0,
+          "observations": 0
+        },
+        {
+          "file": "lesen-t3-auto-tz7n7y.json",
+          "pipelineStatus": "passed",
+          "findings": 0,
+          "observations": 0
+        }
+      ]
+    },
+    {
+      "teil": 4,
+      "gateVersion": "v6.1-B-G2 (frozen)",
+      "filesAnalyzed": 5,
+      "pipeline": {
+        "passed": 2,
+        "auditRejected": 3,
+        "rejectReasons": {
+          "Sustantivo en minúscula: \"vielfältig\" (tras artículo/conjunción). En alemán los ": 1,
+          "Sustantivo en minúscula: \"schweres\" (tras artículo/conjunción). En alemán los su": 1,
+          "Lesen T4: debate «Autofreie Innenstadt» no encaja con tema pedido «Gesundheit» (": 1
+        }
+      },
+      "capsGate": {
+        "totalFindings": 9,
+        "avgFindingsPerFile": 1.8,
+        "totalObservations": 1,
+        "byReason": {
+          "lexicon_override_tag": 3,
+          "adj_before_noun": 5,
+          "lexicon_after_adj": 1
+        },
+        "byRegime": {
+          "PROSE": 5,
+          "TITLE_HEADING": 4
+        },
+        "telegraphicFindings": 0,
+        "telegraphicOk": true,
+        "novelReasons": [
+          "lexicon_after_adj"
+        ],
+        "findings": [
+          {
+            "type": "noun_lowercase",
+            "word": "machen",
+            "pos": "VERB",
+            "tag": "VVINF",
+            "confidence": "high",
+            "reason": "lexicon_override_tag",
+            "context": "und ihn zu voll machen könnten. Seine abschließende",
+            "prevWord": "voll",
+            "prevPos": "ADV",
+            "prevTag": "ADJD",
+            "textIndex": 0,
+            "regime": "PROSE",
+            "field": "questions.explanation",
+            "id": "lesen-t4-gemini-036.json::questions.explanation::3",
+            "file": "lesen-t4-gemini-036.json",
+            "textPreview": "David lehnt den Vorschlag ab, weil er befürchtet, dass die Fitnessgeräte die Ruhe im Park stören und ihn zu voll machen könnten. Seine abschließende Aussage ist"
+          },
+          {
+            "type": "wrong_capitalized",
+            "word": "Wichtiger",
+            "pos": "ADJ",
+            "tag": "ADJA",
+            "confidence": "high",
+            "reason": "adj_before_noun",
+            "context": ". Es ist ein Wichtiger Schritt für mehr Sport",
+            "prevWord": "ein",
+            "prevPos": "DET",
+            "prevTag": "ART",
+            "textIndex": 0,
+            "regime": "TITLE_HEADING",
+            "field": "questions.signText",
+            "id": "lesen-t4-gemini-036.json::questions.signText::32",
+            "file": "lesen-t4-gemini-036.json",
+            "textPreview": "Ich finde es super, wenn die Stadt mehr Möglichkeiten für Bewegung schafft. Das ist gut für die Gesundheit der Bürger und auch für Kinder, die gerne draußen spi"
+          },
+          {
+            "type": "wrong_capitalized",
+            "word": "Wichtiger",
+            "pos": "ADJ",
+            "tag": "ADJA",
+            "confidence": "high",
+            "reason": "adj_before_noun",
+            "context": ". Das ist ein Wichtiger Schritt für unsere Nachhaltigkeit",
+            "prevWord": "ein",
+            "prevPos": "DET",
+            "prevTag": "ART",
+            "textIndex": 0,
+            "regime": "TITLE_HEADING",
+            "field": "questions.signText",
+            "id": "lesen-t4-gemini-037-2026-07-08T08-14-49-601Z.json::questions.signText::27",
+            "file": "lesen-t4-gemini-037-2026-07-08T08-14-49-601Z.json",
+            "textPreview": "Vegetarisches Essen ist lecker und vielfältig. Es gibt viele gute Rezepte, die man in Kantinen anbieten kann. Das ist ein Wichtiger Schritt für unsere Nachhalti"
+          },
+          {
+            "type": "wrong_capitalized",
+            "word": "Wichtigen",
+            "pos": "ADJ",
+            "tag": "NN",
+            "confidence": "high",
+            "reason": "adj_before_noun",
+            "context": "und sieht es als Wichtigen Schritt für Nachhaltigkeit und",
+            "prevWord": "als",
+            "prevPos": "ADP",
+            "prevTag": "APPR",
+            "textIndex": 0,
+            "regime": "PROSE",
+            "field": "questions.explanation",
+            "id": "lesen-t4-gemini-037-2026-07-08T08-14-49-601Z.json::questions.explanation::28",
+            "file": "lesen-t4-gemini-037-2026-07-08T08-14-49-601Z.json",
+            "textPreview": "Clara findet vegetarisches Essen lecker und vielfältig und sieht es als Wichtigen Schritt für Nachhaltigkeit und Gesundheit. Sie findet den Vorschlag gut."
+          },
+          {
+            "type": "noun_lowercase",
+            "word": "essen",
+            "pos": "VERB",
+            "tag": "VVINF",
+            "confidence": "high",
+            "reason": "lexicon_after_adj",
+            "context": "nicht jeden Tag vegetarisch essen. Er lehnt den",
+            "prevWord": "vegetarisch",
+            "prevPos": "ADV",
+            "prevTag": "ADJD",
+            "textIndex": 0,
+            "regime": "PROSE",
+            "field": "questions.explanation",
+            "id": "lesen-t4-gemini-037-2026-07-08T08-14-49-601Z.json::questions.explanation::33",
+            "file": "lesen-t4-gemini-037-2026-07-08T08-14-49-601Z.json",
+            "textPreview": "David isst gern Fleisch und braucht das für seine Energie bei der Arbeit. Er möchte nicht jeden Tag vegetarisch essen. Er lehnt den Vorschlag ab."
+          },
+          {
+            "type": "wrong_capitalized",
+            "word": "Kleinen",
+            "pos": "ADJ",
+            "tag": "ADJA",
+            "confidence": "high",
+            "reason": "adj_before_noun",
+            "context": "Ich finde, die Kleinen Läden in der Stadt",
+            "prevWord": "die",
+            "prevPos": "DET",
+            "prevTag": "ART",
+            "textIndex": 0,
+            "regime": "TITLE_HEADING",
+            "field": "questions.signText",
+            "id": "lesen-t4-gemini-037.json::questions.signText::32",
+            "file": "lesen-t4-gemini-037.json",
+            "textPreview": "Ich finde, die Kleinen Läden in der Stadt hätten ein Problem, wenn die großen Supermärkte sonntags öffnen. Das ist nicht fair für sie. Wir sollten die Kleinen G"
+          },
+          {
+            "type": "wrong_capitalized",
+            "word": "Kleinen",
+            "pos": "ADJ",
+            "tag": "ADJA",
+            "confidence": "high",
+            "reason": "adj_before_noun",
+            "context": ". Wir sollten die Kleinen Geschäfte unterstützen. Für",
+            "prevWord": "die",
+            "prevPos": "DET",
+            "prevTag": "ART",
+            "textIndex": 0,
+            "regime": "TITLE_HEADING",
+            "field": "questions.signText",
+            "id": "lesen-t4-gemini-037.json::questions.signText::32",
+            "file": "lesen-t4-gemini-037.json",
+            "textPreview": "Ich finde, die Kleinen Läden in der Stadt hätten ein Problem, wenn die großen Supermärkte sonntags öffnen. Das ist nicht fair für sie. Wir sollten die Kleinen G"
+          },
+          {
+            "type": "noun_lowercase",
+            "word": "machen",
+            "pos": "VERB",
+            "tag": "VVINF",
+            "confidence": "high",
+            "reason": "lexicon_override_tag",
+            "context": "Besuchern das Reisen einfacher machen. Lesen Sie die",
+            "prevWord": "einfacher",
+            "prevPos": "ADV",
+            "prevTag": "ADJD",
+            "textIndex": 0,
+            "regime": "PROSE",
+            "field": "passages.text",
+            "id": "lesen-t4-gemini-038-2026-07-08T08-21-19-882Z.json::passages.text::0",
+            "file": "lesen-t4-gemini-038-2026-07-08T08-21-19-882Z.json",
+            "textPreview": "Im Internet-Forum diskutieren Reisende über einen neuen Vorschlag: Kostenlose Schließfächer für Gepäck am Bahnhof. Viele Menschen reisen oft und haben Erfahrung"
+          },
+          {
+            "type": "noun_lowercase",
+            "word": "machen",
+            "pos": "VERB",
+            "tag": "VVINF",
+            "confidence": "high",
+            "reason": "lexicon_override_tag",
+            "context": "Schließfächer das Reisen entspannter machen, besonders bei kurzen",
+            "prevWord": "entspannter",
+            "prevPos": "ADV",
+            "prevTag": "ADJD",
+            "textIndex": 0,
+            "regime": "PROSE",
+            "field": "questions.explanation",
+            "id": "lesen-t4-gemini-038-2026-07-08T08-21-19-882Z.json::questions.explanation::3",
+            "file": "lesen-t4-gemini-038-2026-07-08T08-21-19-882Z.json",
+            "textPreview": "Lena reist oft mit dem Zug und findet, dass die Schließfächer das Reisen entspannter machen, besonders bei kurzen Aufenthalten in der Stadt."
+          }
+        ]
+      },
+      "generatorAuditor": {
+        "qualityErrors": 0,
+        "qualityWarnings": 9,
+        "capsWarningsDuringGen": 9
+      },
+      "calibration": {
+        "poolFindings": 14,
+        "poolFiles": 10,
+        "avgPerFile": 1.4,
+        "deltaVsPilotAvg": 0.4
+      },
+      "files": [
+        {
+          "file": "lesen-t4-gemini-036.json",
+          "pipelineStatus": "passed",
+          "findings": 2,
+          "observations": 0
+        },
+        {
+          "file": "lesen-t4-gemini-037-2026-07-08T08-14-49-601Z.json",
+          "pipelineStatus": "audit_rejected",
+          "findings": 3,
+          "observations": 0
+        },
+        {
+          "file": "lesen-t4-gemini-037.json",
+          "pipelineStatus": "passed",
+          "findings": 2,
+          "observations": 0
+        },
+        {
+          "file": "lesen-t4-gemini-038-2026-07-08T08-21-19-882Z.json",
+          "pipelineStatus": "audit_rejected",
+          "findings": 2,
+          "observations": 1
+        },
+        {
+          "file": "lesen-t4-gemini-038-2026-07-08T08-25-21-026Z.json",
+          "pipelineStatus": "audit_rejected",
+          "findings": 0,
+          "observations": 0
+        }
+      ]
+    },
+    {
+      "teil": 5,
+      "gateVersion": "v6.1-B-G2 (frozen)",
+      "filesAnalyzed": 5,
+      "pipeline": {
+        "passed": 5,
+        "auditRejected": 0,
+        "rejectReasons": {}
+      },
+      "capsGate": {
+        "totalFindings": 1,
+        "avgFindingsPerFile": 0.2,
+        "totalObservations": 0,
+        "byReason": {
+          "lexicon_nn": 1
+        },
+        "byRegime": {
+          "PROSE": 1
+        },
+        "telegraphicFindings": 0,
+        "telegraphicOk": true,
+        "novelReasons": [],
+        "findings": [
+          {
+            "type": "noun_lowercase",
+            "word": "online",
+            "pos": "NOUN",
+            "tag": "NN",
+            "confidence": "high",
+            "reason": "lexicon_nn",
+            "context": "an der Information und online.\n3.  ",
+            "prevWord": "und",
+            "prevPos": "CCONJ",
+            "prevTag": "KON",
+            "textIndex": 0,
+            "regime": "PROSE",
+            "field": "passages.text",
+            "id": "lesen-t5-gemini-063.json::passages.text::0",
+            "file": "lesen-t5-gemini-063.json",
+            "textPreview": "Liebe Mitglieder,\num ein angenehmes Training für alle zu gewährleisten, bitten wir Sie, folgende Regeln zu beachten:\n\n1.  **Mitgliedschaft und Zugang:** Der Zut"
+          }
+        ]
+      },
+      "generatorAuditor": {
+        "qualityErrors": 0,
+        "qualityWarnings": 1,
+        "capsWarningsDuringGen": 1
+      },
+      "calibration": {
+        "poolFindings": 27,
+        "poolFiles": 9,
+        "avgPerFile": 3,
+        "deltaVsPilotAvg": -2.8
+      },
+      "files": [
+        {
+          "file": "lesen-t5-gemini-063.json",
+          "pipelineStatus": "passed",
+          "findings": 1,
+          "observations": 0
+        },
+        {
+          "file": "lesen-t5-gemini-064.json",
+          "pipelineStatus": "passed",
+          "findings": 0,
+          "observations": 0
+        },
+        {
+          "file": "lesen-t5-gemini-065.json",
+          "pipelineStatus": "passed",
+          "findings": 0,
+          "observations": 0
+        },
+        {
+          "file": "lesen-t5-gemini-066.json",
+          "pipelineStatus": "passed",
+          "findings": 0,
+          "observations": 0
+        },
+        {
+          "file": "lesen-t5-gemini-067.json",
+          "pipelineStatus": "passed",
+          "findings": 0,
+          "observations": 0
+        }
+      ]
+    }
+  ],
+  "totalFindings": 12,
+  "totalObservations": 1
+}

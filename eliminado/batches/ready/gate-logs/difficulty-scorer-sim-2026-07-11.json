@@ -1,0 +1,278 @@
+{
+  "generatedAt": "2026-07-11T14:16:36.467Z",
+  "scorerSignals": "scoreMetrics(B1 mid=4): avgSentenceLen, coverageVsLevel (<85 penalty), subordinatePct (>20 penalty), wordCount (>300 penalty); +1 if inferenceLevel inference/global",
+  "invocation": {
+    "libraryExamBuilder": "ExamBuilder.applyExamDifficulty → applyToQuestions on all parts (buildExam path)",
+    "poolPersonalPath": "assembleModuleFromPool does NOT call DifficultyScorer; copies q.difficulty from pool JSON",
+    "shortCircuit": "scoreQuestion L67-70: if q.difficulty != null && >=1 && <=10 return q.difficulty"
+  },
+  "point2": "Deleting difficulty alone is NOT enough for pool-verified serve path: assembleModuleFromPool never invokes the scorer. Library QuestionLibrary.buildExam WOULD recalculate via applyExamDifficulty. So Option A requires wiring applyExamDifficulty (or equivalent) into the pool assembly path too.",
+  "samples": [
+    {
+      "file": "lesen-t1-gemini-149.json",
+      "module": "lesen",
+      "teil": 1,
+      "qId": "gen-q-1-38b2a944-5",
+      "persisted": 4,
+      "shortCircuitReturnsPersisted": 4,
+      "scoredStemOnly_noPassageResolver": 5,
+      "scoredWithPassage_realistic": 4,
+      "deltaVsPersisted": 0,
+      "metrics": {
+        "wordCount": 198,
+        "avgSentenceLen": 13.2,
+        "subordinatePct": 0,
+        "coverageVsLevel": 82.3,
+        "vocabListSize": 1798
+      },
+      "passageChars": 1177,
+      "questionPreview": "Für sie sind die persönlichen Kontakte und die direkte Hilfe bei dieser Tätigkei"
+    },
+    {
+      "file": "lesen-t2-gemini-055.json",
+      "module": "lesen",
+      "teil": 2,
+      "qId": "gen-q-2-759e7c8f-1",
+      "persisted": 4,
+      "shortCircuitReturnsPersisted": 4,
+      "scoredStemOnly_noPassageResolver": 4,
+      "scoredWithPassage_realistic": 4,
+      "deltaVsPersisted": 0,
+      "metrics": {
+        "wordCount": 176,
+        "avgSentenceLen": 10.4,
+        "subordinatePct": 11.8,
+        "coverageVsLevel": 82.4,
+        "vocabListSize": 1798
+      },
+      "passageChars": 1103,
+      "questionPreview": "Worum geht es in den neuen Stadtgartenprojekten?"
+    },
+    {
+      "file": "lesen-t4-gemini-006.json",
+      "module": "lesen",
+      "teil": 4,
+      "qId": "gen-q-4-92df3345-7",
+      "persisted": 4,
+      "shortCircuitReturnsPersisted": 4,
+      "scoredStemOnly_noPassageResolver": 3,
+      "scoredWithPassage_realistic": 6,
+      "deltaVsPersisted": 2,
+      "metrics": {
+        "wordCount": 65,
+        "avgSentenceLen": 10.8,
+        "subordinatePct": 50,
+        "coverageVsLevel": 84.6,
+        "vocabListSize": 1798
+      },
+      "passageChars": 396,
+      "questionPreview": "Ist Anna für den Vorschlag?"
+    },
+    {
+      "file": "lesen-t5-gemini-050.json",
+      "module": "lesen",
+      "teil": 5,
+      "qId": "gen-q-5-15c4718e-2",
+      "persisted": 4,
+      "shortCircuitReturnsPersisted": 4,
+      "scoredStemOnly_noPassageResolver": 4,
+      "scoredWithPassage_realistic": 5,
+      "deltaVsPersisted": 1,
+      "metrics": {
+        "wordCount": 244,
+        "avgSentenceLen": 12.2,
+        "subordinatePct": 5,
+        "coverageVsLevel": 59,
+        "vocabListSize": 1798
+      },
+      "passageChars": 1665,
+      "questionPreview": "Was ist für Kinder unter zehn Jahren im Schwimmbad vorgeschrieben?"
+    },
+    {
+      "file": "horen-t1-gemini-016.json",
+      "module": "horen",
+      "teil": 1,
+      "qId": "gen-q-h1-8e7e4170-s1-q1",
+      "persisted": 5,
+      "shortCircuitReturnsPersisted": 5,
+      "scoredStemOnly_noPassageResolver": 4,
+      "scoredWithPassage_realistic": 4,
+      "deltaVsPersisted": -1,
+      "metrics": {
+        "wordCount": 71,
+        "avgSentenceLen": 7.9,
+        "subordinatePct": 0,
+        "coverageVsLevel": 76.1,
+        "vocabListSize": 1798
+      },
+      "passageChars": 403,
+      "questionPreview": "Man kann sich online für die neuen Kurse anmelden."
+    },
+    {
+      "file": "horen-t2-gemini-001.json",
+      "module": "horen",
+      "teil": 2,
+      "qId": "gen-q-h2-d5028372-q1",
+      "persisted": 5,
+      "shortCircuitReturnsPersisted": 5,
+      "scoredStemOnly_noPassageResolver": 5,
+      "scoredWithPassage_realistic": 4,
+      "deltaVsPersisted": -1,
+      "metrics": {
+        "wordCount": 223,
+        "avgSentenceLen": 8.9,
+        "subordinatePct": 8,
+        "coverageVsLevel": 72.2,
+        "vocabListSize": 1798
+      },
+      "passageChars": 1543,
+      "questionPreview": "Worum geht es hauptsächlich in diesem Vortrag?"
+    },
+    {
+      "file": "horen-t3-gemini-004.json",
+      "module": "horen",
+      "teil": 3,
+      "qId": "gen-q-h3-4904adbb-7",
+      "persisted": 5,
+      "shortCircuitReturnsPersisted": 5,
+      "scoredStemOnly_noPassageResolver": 4,
+      "scoredWithPassage_realistic": 4,
+      "deltaVsPersisted": -1,
+      "metrics": {
+        "wordCount": 271,
+        "avgSentenceLen": 7.1,
+        "subordinatePct": 0,
+        "coverageVsLevel": 71.6,
+        "vocabListSize": 1798
+      },
+      "passageChars": 1717,
+      "questionPreview": "Mia und Ben wollen die Ausstellung am Wochenende besuchen."
+    },
+    {
+      "file": "horen-t4-gemini-008.json",
+      "module": "horen",
+      "teil": 4,
+      "qId": "gen-q-h4-7b0d3ffb-1",
+      "persisted": 5,
+      "shortCircuitReturnsPersisted": 5,
+      "scoredStemOnly_noPassageResolver": 3,
+      "scoredWithPassage_realistic": 5,
+      "deltaVsPersisted": 0,
+      "metrics": {
+        "wordCount": 377,
+        "avgSentenceLen": 9.4,
+        "subordinatePct": 10,
+        "coverageVsLevel": 73.5,
+        "vocabListSize": 1798
+      },
+      "passageChars": 2587,
+      "questionPreview": "Die Anforderungen an moderne Familien sind sehr vielfältig."
+    },
+    {
+      "file": "schreiben-gemini-005.json",
+      "module": "schreiben",
+      "teil": 3,
+      "qId": "gen-q-s-t3-d252d1e4-q1",
+      "persisted": 6,
+      "shortCircuitReturnsPersisted": 6,
+      "scoredStemOnly_noPassageResolver": 4,
+      "scoredWithPassage_realistic": 4,
+      "deltaVsPersisted": -2,
+      "metrics": {
+        "wordCount": 59,
+        "avgSentenceLen": 7.4,
+        "subordinatePct": 12.5,
+        "coverageVsLevel": 74.6,
+        "vocabListSize": 1798
+      },
+      "passageChars": 0,
+      "questionPreview": "Sie haben sich mit Ihrer Nachbarin, Frau Schmidt, zu einem Kaffee verabredet. Le"
+    },
+    {
+      "file": "sprechen-gemini-001.json",
+      "module": "sprechen",
+      "teil": 2,
+      "qId": "gen-q-sp-t2-21ad5163-q1",
+      "persisted": 5,
+      "shortCircuitReturnsPersisted": 5,
+      "scoredStemOnly_noPassageResolver": 4,
+      "scoredWithPassage_realistic": 4,
+      "deltaVsPersisted": -1,
+      "metrics": {
+        "wordCount": 98,
+        "avgSentenceLen": 7,
+        "subordinatePct": 0,
+        "coverageVsLevel": 71.4,
+        "vocabListSize": 1798
+      },
+      "passageChars": 0,
+      "questionPreview": "Halten Sie eine kurze Präsentation zum Thema: „Die Bedeutung von Kulturfesten in"
+    }
+  ],
+  "summary": {
+    "n": 10,
+    "avgAbsDelta": 0.9,
+    "deltas": [
+      {
+        "file": "lesen-t1-gemini-149.json",
+        "persisted": 4,
+        "scored": 4,
+        "delta": 0
+      },
+      {
+        "file": "lesen-t2-gemini-055.json",
+        "persisted": 4,
+        "scored": 4,
+        "delta": 0
+      },
+      {
+        "file": "lesen-t4-gemini-006.json",
+        "persisted": 4,
+        "scored": 6,
+        "delta": 2
+      },
+      {
+        "file": "lesen-t5-gemini-050.json",
+        "persisted": 4,
+        "scored": 5,
+        "delta": 1
+      },
+      {
+        "file": "horen-t1-gemini-016.json",
+        "persisted": 5,
+        "scored": 4,
+        "delta": -1
+      },
+      {
+        "file": "horen-t2-gemini-001.json",
+        "persisted": 5,
+        "scored": 4,
+        "delta": -1
+      },
+      {
+        "file": "horen-t3-gemini-004.json",
+        "persisted": 5,
+        "scored": 4,
+        "delta": -1
+      },
+      {
+        "file": "horen-t4-gemini-008.json",
+        "persisted": 5,
+        "scored": 5,
+        "delta": 0
+      },
+      {
+        "file": "schreiben-gemini-005.json",
+        "persisted": 6,
+        "scored": 4,
+        "delta": -2
+      },
+      {
+        "file": "sprechen-gemini-001.json",
+        "persisted": 5,
+        "scored": 4,
+        "delta": -1
+      }
+    ]
+  }
+}

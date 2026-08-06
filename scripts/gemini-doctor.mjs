@@ -48,7 +48,7 @@ console.log(`API key:     ${hasKey ? '✓ configurada' : '✗ falta GEMINI_API_K
 
 const rpd = rpdLimit();
 const rpm = rpmLimit();
-const left = remainingToday();
+const left = await remainingToday();
 const used = rpd - left;
 console.log(`Modelo:      ${process.env.GEMINI_MODEL || 'gemini-2.5-flash'}`);
 console.log(`Límites:     ${rpm} req/min · ${rpd} req/día (PT)`);

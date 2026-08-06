@@ -28,11 +28,15 @@ Usa léxico **simple y frecuente** de prensa B1:
 
 ## REGLAS DE CALIDAD (rechazo automático si fallas)
 1. **Sin tono moralizante:** NO «Abschließend lässt sich sagen», «Experten raten», «Es ist wichtig zu», «man sollte wissen».
-2. **3 preguntas por pasaje** — cada `passageId` apunta al texto correcto.
-3. **Anti word-matching:** pregunta y opción correcta — **máximo 2 palabras de contenido (≥4 letras) iguales al pasaje** cada una.
-4. Las **3 opciones** plausibles; las incorrectas = datos del texto **mal aplicados** o **incompletos**.
-5. La opción correcta **NO copia 4+ palabras seguidas** del pasaje.
-6. **Distribución equilibrada de claves:** en las 6 preguntas, máximo 2 con la misma letra correcta. Distribuye: 2× a, 2× b, 2× c.
+2. **Sin muletilla de fuente ficticia:** NO repetir «Ein Bericht zeigt…», «Eine Studie zeigt…», «Eine Umfrage ergab/zeigt…» en ambos textos. Máximo una fuente nombrada por pasaje; varía o di el hecho sin inventar estudio.
+3. **Sin tono emocional/IA:** NO «könnte ein kleines Wunder sein», «verändert mein Leben», hipérboles sentimentales — registro de prensa B1 neutro.
+4. **3 preguntas por pasaje** — cada `passageId` apunta al texto correcto.
+5. **Anti word-matching:** pregunta y opción correcta — **máximo 2 palabras de contenido (≥4 letras) iguales al pasaje** cada una.
+6. **Parafraseo B1 en preguntas/opciones/explanations (OBLIGATORIO):** vocabulario **≤ B1** — el sinónimo **NO puede ser más difícil** que el pasaje. **PROHIBIDO** en preguntas: *modifizieren*, *Gelassenheit*, *Angehörige*, *elektronische Mitteilungen*, *sich austauschen*, jerga corporativa (*Marke stärken*, *Priorität*, *Potenzial*…).
+7. Las **3 opciones** plausibles; las incorrectas = datos del texto **mal aplicados** o **incompletos**.
+8. La opción correcta **NO copia 4+ palabras seguidas** del pasaje.
+9. **Distribución equilibrada de claves:** en las 6 preguntas, máximo 2 con la misma letra correcta. Distribuye: 2× a, 2× b, 2× c.
+10. **Tema único:** si el prompt fija un tema (p. ej. Technik), **los DOS textos** deben tratar ese tema; `topicTag` de **cada** passage = ese tema.
 
 ## ANTI WORD-MATCHING — MALO vs BUENO (léelo antes de escribir preguntas)
 
@@ -59,7 +63,7 @@ Pasaje: *«…gedruckte Seiten bleiben besser im **Gedächtnis**…»*
 - ¿Pregunta + opción correcta comparten ≤2 palabras de contenido con su pasaje?
 - ¿Opciones a/b/c (exactamente 3) plausibles y la correcta parafraseada?
 - ¿Sin tono moralizante?
-- ¿Solo JSON, sin markdown?
+- PROHIBIDO usar **negrita** (asteriscos dobles) en el campo `text` del pasaje. Ejemplo INCORRECTO: '**Öffnungszeiten:** Das Zentrum öffnet...'. Ejemplo CORRECTO: 'Öffnungszeiten: Das Zentrum öffnet...' (dos puntos, sin asteriscos).
 
 ## Formato de salida
 Devuelve SOLO `{ "passages": [...], "questions": [...] }` — sin ```, sin texto extra.

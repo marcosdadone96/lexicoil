@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Hören T1-004 listen preview</title>
+<style>
+body{font-family:Georgia,serif;max-width:720px;margin:24px auto;padding:0 16px;line-height:1.45;color:#1a1a1a;background:#f7f4ef}
+h1{font-size:1.4rem;margin-bottom:4px}
+.banner{background:#e8f5e9;border:1px solid #a5d6a7;padding:12px 14px;border-radius:8px;margin:12px 0 20px;font-size:0.95rem}
+.seg{border-top:1px solid #ddd;padding:16px 0}
+h2{font-size:1.1rem;margin:0 0 6px}
+.meta{font-size:0.8rem;color:#666;margin:0 0 8px}
+.txt{background:#fff;border:1px solid #e0dcd4;padding:12px;border-radius:6px}
+button{margin:8px 8px 0 0;padding:8px 14px;font-size:0.95rem;cursor:pointer}
+.playing{outline:2px solid #2e7d32}
+code{font-family:Consolas,monospace;font-size:0.9em}
+</style>
+</head>
+<body>
+<h1>Hören T1 · gemini-004 — listen preview</h1>
+<p>Misma fuente que el runtime: <code>passages[].text</code> → <code>segment.transcript</code> → TTS. No usa <code>audio[]</code>.</p>
+<div class="banner"><b>Diagnóstico:</b> falso bloqueador de auditoría. T1 es monólogo; T3 guarda <code>audio[]</code> como metadata de turnos multi-voz en el batch, y el runner tampoco lo lee (parsea el transcript).</div>
+
+<section class="seg">
+  <h2>Aufnahme 1: Hausverwaltung Durchsage</h2>
+  <p class="meta">62 Wörter · id=gen-p-h1-620c6bfe-s1 · fuente: passages[].text</p>
+  <p class="txt">Achtung, liebe Bewohner! Die Hausverwaltung informiert über eine wichtige Reparatur. Das Hauptwasserrohr im Keller muss dringend instand gesetzt werden. Deshalb wird am kommenden Dienstag, dem 12. Mai, von 8 bis 12 Uhr das Wasser im gesamten Gebäude abgestellt. Bitte planen Sie entsprechend und füllen Sie eventuell Wasser ab. Wir bitten um Ihr Verständnis für diese notwendige Maßnahme. Vielen Dank für Ihre Kooperation.</p>
+  <button type="button" onclick="speak(this,0)">Play (browser TTS)</button>
+  <button type="button" onclick="stop()">Stop</button>
+</section>
+
+<section class="seg">
+  <h2>Aufnahme 2: Telefonat Wohnungsbesichtigung</h2>
+  <p class="meta">64 Wörter · id=gen-p-h1-620c6bfe-s2 · fuente: passages[].text</p>
+  <p class="txt">Guten Tag, Frau Meier. Hier ist Herr Schmidt von der Immobilienagentur. Ich rufe wegen der Wohnung in der Schillerstraße 12 an. Sie hatten sich dafür interessiert. Wir haben am Donnerstag, dem 18. Juni, um 16 Uhr einen Besichtigungstermin. Passt Ihnen diese Zeit? Es gibt noch zwei andere Interessenten, die auch kommen. Bitte geben Sie mir kurz Bescheid, ob Sie dabei sein können. Vielen Dank.</p>
+  <button type="button" onclick="speak(this,1)">Play (browser TTS)</button>
+  <button type="button" onclick="stop()">Stop</button>
+</section>
+
+<section class="seg">
+  <h2>Aufnahme 3: Radio-Tipp Energiesparen</h2>
+  <p class="meta">70 Wörter · id=gen-p-h1-620c6bfe-s3 · fuente: passages[].text</p>
+  <p class="txt">Herzlich willkommen zu unserem heutigen Tipp rund ums Wohnen! Wussten Sie, dass Sie viel Energie sparen können, indem Sie Ihre Heizung richtig einstellen? Schon ein Grad weniger Raumtemperatur spart bis zu sechs Prozent Heizkosten. Lüften Sie kurz und kräftig, statt die Fenster lange gekippt zu lassen. Und denken Sie daran: Alte Fenster können viel Wärme entweichen lassen. Eine gute Dämmung ist Gold wert für Ihre Nebenkostenabrechnung. Probieren Sie es aus!</p>
+  <button type="button" onclick="speak(this,2)">Play (browser TTS)</button>
+  <button type="button" onclick="stop()">Stop</button>
+</section>
+
+<section class="seg">
+  <h2>Aufnahme 4: Durchsage Baumarkt</h2>
+  <p class="meta">71 Wörter · id=gen-p-h1-620c6bfe-s4 · fuente: passages[].text</p>
+  <p class="txt">Liebe Kundinnen und Kunden, aufgepasst! In unserer Gartenabteilung finden Sie diese Woche ein unschlagbares Angebot. Alle Gartenmöbel sind um 20 Prozent reduziert. Egal ob Stühle, Tische oder Liegen – jetzt ist die perfekte Zeit, Ihre Terrasse oder Ihren Balkon neu zu gestalten. Auch unsere Auswahl an Pflanzen für den Außenbereich ist frisch eingetroffen. Besuchen Sie uns im Erdgeschoss und lassen Sie sich von unseren Experten beraten. Das Angebot gilt bis Samstag.</p>
+  <button type="button" onclick="speak(this,3)">Play (browser TTS)</button>
+  <button type="button" onclick="stop()">Stop</button>
+</section>
+
+<section class="seg">
+  <h2>Aufnahme 5: Kurzgespräch Nachbarn</h2>
+  <p class="meta">56 Wörter · id=gen-p-h1-620c6bfe-s5 · fuente: passages[].text</p>
+  <p class="txt">Hallo Herr Lehmann, ich wollte Sie kurz ansprechen. Gestern Abend war es bei Ihnen ziemlich laut. Ich konnte kaum schlafen. Ist alles in Ordnung? Wir haben ja dünne Wände hier im Haus. Vielleicht könnten Sie etwas Rücksicht nehmen, besonders nach zehn Uhr. Ich weiß, manchmal feiert man, aber es war wirklich extrem. Danke für Ihr Verständnis.</p>
+  <button type="button" onclick="speak(this,4)">Play (browser TTS)</button>
+  <button type="button" onclick="stop()">Stop</button>
+</section>
+<script>
+const TEXTS=["Achtung, liebe Bewohner! Die Hausverwaltung informiert über eine wichtige Reparatur. Das Hauptwasserrohr im Keller muss dringend instand gesetzt werden. Deshalb wird am kommenden Dienstag, dem 12. Mai, von 8 bis 12 Uhr das Wasser im gesamten Gebäude abgestellt. Bitte planen Sie entsprechend und füllen Sie eventuell Wasser ab. Wir bitten um Ihr Verständnis für diese notwendige Maßnahme. Vielen Dank für Ihre Kooperation.","Guten Tag, Frau Meier. Hier ist Herr Schmidt von der Immobilienagentur. Ich rufe wegen der Wohnung in der Schillerstraße 12 an. Sie hatten sich dafür interessiert. Wir haben am Donnerstag, dem 18. Juni, um 16 Uhr einen Besichtigungstermin. Passt Ihnen diese Zeit? Es gibt noch zwei andere Interessenten, die auch kommen. Bitte geben Sie mir kurz Bescheid, ob Sie dabei sein können. Vielen Dank.","Herzlich willkommen zu unserem heutigen Tipp rund ums Wohnen! Wussten Sie, dass Sie viel Energie sparen können, indem Sie Ihre Heizung richtig einstellen? Schon ein Grad weniger Raumtemperatur spart bis zu sechs Prozent Heizkosten. Lüften Sie kurz und kräftig, statt die Fenster lange gekippt zu lassen. Und denken Sie daran: Alte Fenster können viel Wärme entweichen lassen. Eine gute Dämmung ist Gold wert für Ihre Nebenkostenabrechnung. Probieren Sie es aus!","Liebe Kundinnen und Kunden, aufgepasst! In unserer Gartenabteilung finden Sie diese Woche ein unschlagbares Angebot. Alle Gartenmöbel sind um 20 Prozent reduziert. Egal ob Stühle, Tische oder Liegen – jetzt ist die perfekte Zeit, Ihre Terrasse oder Ihren Balkon neu zu gestalten. Auch unsere Auswahl an Pflanzen für den Außenbereich ist frisch eingetroffen. Besuchen Sie uns im Erdgeschoss und lassen Sie sich von unseren Experten beraten. Das Angebot gilt bis Samstag.","Hallo Herr Lehmann, ich wollte Sie kurz ansprechen. Gestern Abend war es bei Ihnen ziemlich laut. Ich konnte kaum schlafen. Ist alles in Ordnung? Wir haben ja dünne Wände hier im Haus. Vielleicht könnten Sie etwas Rücksicht nehmen, besonders nach zehn Uhr. Ich weiß, manchmal feiert man, aber es war wirklich extrem. Danke für Ihr Verständnis."];
+function stop(){
+  if(window.speechSynthesis) speechSynthesis.cancel();
+  document.querySelectorAll('.seg').forEach((el)=>el.classList.remove('playing'));
+}
+function speak(btn,i){
+  stop();
+  const text=TEXTS[i];
+  if(!window.speechSynthesis){ alert('speechSynthesis no disponible'); return; }
+  btn.closest('.seg').classList.add('playing');
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang='de-DE';
+  const voices=speechSynthesis.getVoices();
+  const de=voices.find((v)=>/de(-|_|$)/i.test(v.lang));
+  if(de) u.voice=de;
+  u.onend=()=>btn.closest('.seg').classList.remove('playing');
+  speechSynthesis.speak(u);
+}
+speechSynthesis.getVoices();
+</script>
+</body>
+</html>

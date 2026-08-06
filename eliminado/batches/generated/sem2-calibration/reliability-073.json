@@ -1,0 +1,229 @@
+{
+  "ts": "2026-07-06T10:26:13.165Z",
+  "batch": "batches/generated/lesen-t2-gemini-073.json",
+  "runs": 10,
+  "sem1Recall": 0,
+  "sem2Recall": 0.4,
+  "unionRecall": 0.4,
+  "combinedIndependent": 0.4,
+  "sem1Runs": [
+    {
+      "run": 1,
+      "caught": false,
+      "issues": []
+    },
+    {
+      "run": 2,
+      "caught": false,
+      "issues": []
+    },
+    {
+      "run": 3,
+      "caught": false,
+      "issues": []
+    },
+    {
+      "run": 4,
+      "caught": false,
+      "issues": []
+    },
+    {
+      "run": 5,
+      "caught": false,
+      "issues": []
+    },
+    {
+      "run": 6,
+      "caught": false,
+      "issues": []
+    },
+    {
+      "run": 7,
+      "caught": false,
+      "issues": []
+    },
+    {
+      "run": 8,
+      "caught": false,
+      "issues": []
+    },
+    {
+      "run": 9,
+      "caught": false,
+      "issues": []
+    },
+    {
+      "run": 10,
+      "caught": false,
+      "issues": []
+    }
+  ],
+  "sem2Runs": [
+    {
+      "run": 1,
+      "caught": false,
+      "blocking": 0,
+      "findings": []
+    },
+    {
+      "run": 2,
+      "caught": false,
+      "blocking": 0,
+      "findings": []
+    },
+    {
+      "run": 3,
+      "caught": true,
+      "blocking": 2,
+      "findings": [
+        {
+          "conf": 1,
+          "itemId": "gen-q-2-0232c450-3",
+          "detail": "Option b ('Man kann die Funktionen der Geräte damit verbessern.') and option c ("
+        },
+        {
+          "conf": 1,
+          "itemId": "gen-q-2-0232c450-6",
+          "detail": "Option b ('Die Schulen müssen gute Unterstützung und Schulungen für Lehrer anbie"
+        }
+      ]
+    },
+    {
+      "run": 4,
+      "caught": false,
+      "blocking": 0,
+      "findings": []
+    },
+    {
+      "run": 5,
+      "caught": true,
+      "blocking": 2,
+      "findings": [
+        {
+          "conf": 1,
+          "itemId": "gen-q-2-0232c450-3",
+          "detail": "Option b (\"Man kann die Funktionen der Geräte damit verbessern\") and option c (\""
+        },
+        {
+          "conf": 1,
+          "itemId": "gen-q-2-0232c450-6",
+          "detail": "Option b (\"Die Schulen müssen gute Unterstützung und Schulungen für Lehrer anbie"
+        }
+      ]
+    },
+    {
+      "run": 6,
+      "caught": false,
+      "blocking": 0,
+      "findings": []
+    },
+    {
+      "run": 7,
+      "caught": true,
+      "blocking": 2,
+      "findings": [
+        {
+          "conf": 1,
+          "itemId": "gen-q-2-0232c450-3",
+          "detail": "Option 'c' parafrasea el mismo hecho que la opción correcta 'b' utilizando un si"
+        },
+        {
+          "conf": 1,
+          "itemId": "gen-q-2-0232c450-6",
+          "detail": "La opción 'c' parafrasea el mismo hecho que la opción correcta 'b' utilizando si"
+        }
+      ]
+    },
+    {
+      "run": 8,
+      "caught": false,
+      "blocking": 0,
+      "findings": []
+    },
+    {
+      "run": 9,
+      "caught": true,
+      "blocking": 2,
+      "findings": [
+        {
+          "conf": 1,
+          "itemId": "gen-q-2-0232c450-3",
+          "detail": "Option c ('besser machen') is a direct synonym of 'verbessern' used in option b "
+        },
+        {
+          "conf": 1,
+          "itemId": "gen-q-2-0232c450-6",
+          "detail": "Option b ('gute Unterstützung und Schulungen für Lehrer anbieten') is a very clo"
+        }
+      ]
+    },
+    {
+      "run": 10,
+      "caught": false,
+      "blocking": 0,
+      "findings": []
+    }
+  ],
+  "combinedRuns": [
+    {
+      "run": 1,
+      "sem1": false,
+      "sem2": false,
+      "combined": false
+    },
+    {
+      "run": 2,
+      "sem1": false,
+      "sem2": false,
+      "combined": false
+    },
+    {
+      "run": 3,
+      "sem1": false,
+      "sem2": true,
+      "combined": true
+    },
+    {
+      "run": 4,
+      "sem1": false,
+      "sem2": false,
+      "combined": false
+    },
+    {
+      "run": 5,
+      "sem1": false,
+      "sem2": true,
+      "combined": true
+    },
+    {
+      "run": 6,
+      "sem1": false,
+      "sem2": false,
+      "combined": false
+    },
+    {
+      "run": 7,
+      "sem1": false,
+      "sem2": true,
+      "combined": true
+    },
+    {
+      "run": 8,
+      "sem1": false,
+      "sem2": false,
+      "combined": false
+    },
+    {
+      "run": 9,
+      "sem1": false,
+      "sem2": true,
+      "combined": true
+    },
+    {
+      "run": 10,
+      "sem1": false,
+      "sem2": false,
+      "combined": false
+    }
+  ]
+}

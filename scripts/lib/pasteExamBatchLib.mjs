@@ -2,11 +2,31 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { ROOT } from './loadEnv.mjs';
-import { inferTeilFromBatch } from './extractJson.mjs';
+import {
+  GENERATED_DIR,
+  generatedDir,
+  nextNumberedBatchBasename,
+  listJsonInStagingRoot,
+  normalizeLevel,
+} from './batchPaths.mjs';
 import { normalizeBatch } from './normalizeBatch.mjs';
 import { tagBatchWithTopic } from './topicRotation.mjs';
+import { finalizePoolReady } from './finalizePoolReady.mjs';
+import { isSprechenA2PerTeil } from './examTemplatePrompt.mjs';
+import { inferTeilFromBatch } from './extractJson.mjs';
+import {
+  parseValidateBatchErrors,
+  parseSweepBlacklistErrors,
+  parseAuditPass2Errors,
+} from './gateReportFormat.mjs';
 
-const GENERATED = path.join(ROOT, 'batches', 'generated');
+const GENERATED = GENERATED_DIR;
+
+function generatedOutDir(level = 'B1') {
+  const dir = generatedDir(level);
+  fs.mkdirSync(dir, { recursive: true });
+  return dir;
+}
 
 const MODULE_LIMITS = {
   horen: { minTeil: 1, maxTeil: 4 },
@@ -100,8 +120,12 @@ export function resolveExamContext(args, batch, teilHint) {
     return { ok: false, errors: [`Módulo inválido o no detectado: ${module || '?'}`] };
   }
 
+  const level = normalizeLevel(args.level || batch?.level || 'B1');
+  const wantsMultiTeilBatch =
+    limits.multiTeilBatch && !isSprechenA2PerTeil(module, level);
+
   let teil = args.teil ?? teilHint ?? args.defaultTeil ?? inferTeilFromBatch(batch);
-  if (limits.multiTeilBatch) {
+  if (wantsMultiTeilBatch) {
     const teils = [...new Set((batch?.questions || []).map((q) => Number(q?.teil)).filter(Number.isFinite))];
     if (teils.length !== 3 || !teils.includes(1) || !teils.includes(2) || !teils.includes(3)) {
       return { ok: false, module, errors: [`${module}: se esperan 3 questions (teil 1, 2, 3)`] };
@@ -119,19 +143,19 @@ export function resolveExamContext(args, batch, teilHint) {
   return { ok: true, module, teil, errors: [] };
 }
 
-export function nextExamOutputBasename(module, teil, tag = 'gemini') {
+export function nextExamOutputBasename(module, teil, tag = 'gemini', level = 'B1') {
   fs.mkdirSync(GENERATED, { recursive: true });
+  const lv = String(level || 'B1').trim().toUpperCase();
   const base =
-    module === 'schreiben' || module === 'sprechen'
+    module === 'schreiben'
       ? `${module}-${tag}`
-      : `${module}-t${teil}-${tag}`;
-  const re = new RegExp(`^${base.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}-(\\d+)\\.json$`, 'i');
-  let max = 0;
-  for (const name of fs.readdirSync(GENERATED)) {
-    const m = name.match(re);
-    if (m) max = Math.max(max, Number(m[1]) || 0);
-  }
-  return `${base}-${String(max + 1).padStart(3, '0')}.json`;
+      : module === 'sprechen' && (lv === 'A2' || teil != null)
+        ? `${module}-t${teil ?? 1}-${tag}`
+        : module === 'sprechen'
+          ? `${module}-${tag}`
+          : `${module}-t${teil}-${tag}`;
+  // Scans generated + pool-verified + ready staging/siblings (not only generated/).
+  return nextNumberedBatchBasename(base);
 }
 
 export function validateExamBatch(batch, args, { teil: teilHint, label } = {}) {
@@ -169,7 +193,13 @@ export function validateExamBatch(batch, args, { teil: teilHint, label } = {}) {
     const v = validateBatchFile(args.lang, args.level, relTmp, { allowBankDup: args.allowBankDup });
     console.log(v.output || (v.ok ? 'OK' : 'FAIL'));
     if (!v.ok) {
-      return { ok: false, label, module: resolved.module, teil: resolved.teil, errors: ['Validación técnica falló'] };
+      return {
+        ok: false,
+        label,
+        module: resolved.module,
+        teil: resolved.teil,
+        errors: parseValidateBatchErrors(v.output),
+      };
     }
 
     console.log(`${header}── Léxico C1/C2 (sweep-blacklist) ──`);
@@ -178,22 +208,45 @@ export function validateExamBatch(batch, args, { teil: teilHint, label } = {}) {
       [path.join(ROOT, 'scripts', 'sweep-blacklist.mjs'), relTmp],
       { cwd: ROOT, encoding: 'utf8' },
     );
+    const blOut = `${blResult.stdout || ''}${blResult.stderr || ''}`.trim();
     if (blResult.status !== 0) {
-      const blOut = `${blResult.stdout || ''}${blResult.stderr || ''}`.trim();
       console.log(blOut || 'FAIL léxico');
-      return { ok: false, label, module: resolved.module, teil: resolved.teil, errors: ['Vocabulario C1/C2 encontrado — revisa el JSON'] };
+      return {
+        ok: false,
+        label,
+        module: resolved.module,
+        teil: resolved.teil,
+        errors: parseSweepBlacklistErrors(blOut),
+      };
     }
 
     console.log(`${header}── Auditoría pedagógica (audit-pass-2 --fail-on=IMPORTANT) ──`);
     const auditResult = spawnSync(
       process.execPath,
-      [path.join(ROOT, 'scripts', 'audit-pass-2.mjs'), relTmp, '--fail-on=IMPORTANT', '--summary-only'],
+      [path.join(ROOT, 'scripts', 'audit-pass-2.mjs'), relTmp, '--fail-on=IMPORTANT', '--json'],
       { cwd: ROOT, encoding: 'utf8' },
     );
     const auditOut = `${auditResult.stdout || ''}${auditResult.stderr || ''}`.trim();
-    if (auditOut) console.log(auditOut);
+    if (auditOut && auditResult.status === 0) {
+      try {
+        const summary = JSON.parse(auditOut);
+        if (summary.summary?.important || summary.summary?.critical) {
+          console.log(`  CRÍTICOS: ${summary.summary.critical} · IMPORTANTES: ${summary.summary.important}`);
+        }
+      } catch (_) {
+        console.log(auditOut.slice(0, 500));
+      }
+    } else if (auditOut) {
+      console.log(auditOut.slice(0, 800));
+    }
     if (auditResult.status !== 0) {
-      return { ok: false, label, module: resolved.module, teil: resolved.teil, errors: ['Auditoría pedagógica IMPORTANT — revisa el JSON'] };
+      return {
+        ok: false,
+        label,
+        module: resolved.module,
+        teil: resolved.teil,
+        errors: parseAuditPass2Errors(auditOut, 'IMPORTANT'),
+      };
     }
 
     return { ok: true, label, module: resolved.module, teil: resolved.teil, batch: normalized, errors: [] };
@@ -209,8 +262,8 @@ export function validateExamBatch(batch, args, { teil: teilHint, label } = {}) {
 function saveBatch(batch, args, { module, teil, tag, outName } = {}) {
   const basename = outName
     ? `${outName.replace(/\.json$/i, '')}.json`
-    : nextExamOutputBasename(module, teil, tag || args.tag);
-  const outPath = path.join(GENERATED, basename);
+    : nextExamOutputBasename(module, teil, tag || args.tag, args.level);
+  const outPath = path.join(generatedOutDir(args.level), basename);
   fs.writeFileSync(outPath, `${JSON.stringify(batch, null, 2)}\n`, 'utf8');
   return {
     basename,
@@ -251,7 +304,7 @@ export function syncExamPool(args) {
   ], { inherit: true });
 }
 
-export function processExamBatch(batch, args, { teil: teilHint, tag, outName, label } = {}) {
+export async function processExamBatch(batch, args, { teil: teilHint, tag, outName, label } = {}) {
   const check = validateExamBatch(batch, args, { teil: teilHint, label });
   if (!check.ok) {
     console.log(`${label ? `[${label}] ` : ''}❌ No guardado (falló validación)`);
@@ -268,6 +321,15 @@ export function processExamBatch(batch, args, { teil: teilHint, tag, outName, la
   const header = label ? `[${label}] ` : '';
   const teilLabel = check.teil != null ? `Teil ${check.teil}` : 'Teile 1–3';
   console.log(`${header}✅ Guardado: ${relFile} (${check.module} ${teilLabel})`);
+
+  if (!args.skipPoolReady) {
+    try {
+      const abs = path.join(ROOT, relFile);
+      await finalizePoolReady(abs, toSave);
+    } catch (err) {
+      console.warn(`${header}[poolReady] aviso: ${err.message}`);
+    }
+  }
 
   if (args.merge) {
     runNode('scripts/merge-bank-batch.mjs', [
@@ -324,20 +386,26 @@ export function publishExamBatchFile(relFile, args, { label } = {}) {
   };
 }
 
-export function listGeneratedExamFiles({ module, teil, tag = 'gemini' } = {}) {
-  fs.mkdirSync(GENERATED, { recursive: true });
+export function listGeneratedExamFiles({ module, teil, tag = 'gemini', level = 'B1' } = {}) {
+  const lv = normalizeLevel(level);
   const base =
     module === 'schreiben' || module === 'sprechen'
       ? `${module}-${tag}`
       : `${module}-t${teil}-${tag}`;
   const re = new RegExp(`^${base.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}-\\d+\\.json$`, 'i');
-  return fs
-    .readdirSync(GENERATED)
-    .filter((name) => re.test(name))
+  const dirs = [generatedDir(lv), GENERATED_DIR];
+  const names = new Set();
+  for (const dir of dirs) {
+    for (const abs of listJsonInStagingRoot(dir)) {
+      const name = path.basename(abs);
+      if (re.test(name)) names.add(name);
+    }
+  }
+  return [...names]
     .sort((a, b) => {
       const na = Number(a.match(/-(\d+)\.json$/i)?.[1] || 0);
       const nb = Number(b.match(/-(\d+)\.json$/i)?.[1] || 0);
       return na - nb;
     })
-    .map((name) => path.join('batches', 'generated', name).replace(/\\/g, '/'));
+    .map((name) => path.join('batches', 'generated', lv, name).replace(/\\/g, '/'));
 }

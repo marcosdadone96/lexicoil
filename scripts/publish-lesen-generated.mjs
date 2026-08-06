@@ -41,8 +41,8 @@ import {
 } from './lib/pasteLesenBatchLib.mjs';
 
 import { inferTeilFromBatch } from './lib/extractJson.mjs';
-
-
+import { publishLesenBatchToPool } from './lib/publishToPool.mjs';
+import { normalizeManualLesenBatch, assertManualPublishGates, formatMcqPositionLine } from './lib/manualPublishNormalize.mjs';
 
 loadEnvFile();
 
@@ -230,11 +230,17 @@ async function publishOneFile(relFile, args, { label } = {}) {
 
   }
 
+  const teilHint = args.teil ?? inferTeilFromBatch(batch);
+  batch = normalizeManualLesenBatch(batch, { teil: teilHint, lang: args.lang, level: args.level });
+  console.log(`${label ? `[${label}] ` : ''}${formatMcqPositionLine(
+    (await assertManualPublishGates(batch, { teil: teilHint, lang: args.lang, level: args.level })).dist,
+  )}`);
+
 
 
   const check = validateLesenBatch(batch, args, {
 
-    teil: args.teil ?? inferTeilFromBatch(batch),
+    teil: teilHint,
 
     label,
 
@@ -255,6 +261,8 @@ async function publishOneFile(relFile, args, { label } = {}) {
   console.log(`${header}âœ… VÃ¡lido: ${norm} (Teil ${check.teil})`);
 
 
+
+  let poolWrite = null;
 
   if (args.publish || args.ingest) {
 
@@ -282,11 +290,31 @@ async function publishOneFile(relFile, args, { label } = {}) {
 
     ingestAndPromote(args, norm);
 
+    poolWrite = await publishLesenBatchToPool(batch, {
+      lang: args.lang,
+      level: args.level,
+      teil: check.teil,
+      topicTag: batch.passages?.[0]?.topicTag || batch.topicTag,
+      forceTopicTag: batch._requestedTopic || batch._resolvedTopic || null,
+      sourceFile: norm,
+    });
+    if (!poolWrite.ok) {
+      const isDedup = poolWrite.reason === 'pool_dedup';
+      return {
+        ok: false,
+        label,
+        teil: check.teil,
+        relFile: norm,
+        errors: [poolWrite.error || poolWrite.message || 'pool_write_failed'],
+        rejected: isDedup,
+        poolDedup: isDedup,
+        similarTo: poolWrite.similarTo,
+        regenerate: poolWrite.regenerate === true,
+      };
+    }
   }
 
-
-
-  return { ok: true, label, teil: check.teil, relFile: norm, errors: [], rejected: false };
+  return { ok: true, label, teil: check.teil, relFile: norm, errors: [], rejected: false, poolId: poolWrite?.id };
 
 }
 

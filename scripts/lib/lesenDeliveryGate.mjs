@@ -1,7 +1,7 @@
 /**
  * Lesen delivery gate — shared terminal + web hybrid (post-factory generation).
  *
- * T3: semantic false (CHK-7/8 structural). T4/T5: semantic true (SEM-1).
+ * T3 incluido en SEM-1 (matching keys). SEM-2 sigue en publish/delivery (skipSem2:false).
  */
 import { validatePart } from './partGate.mjs';
 import { isPartPoolReady } from '../audit-pass-2.mjs';
@@ -9,7 +9,8 @@ import { isPartPoolReady } from '../audit-pass-2.mjs';
 export function lesenDeliveryGateOpts(teil) {
   const t = Number(teil);
   return {
-    semantic: t !== 3,
+    semantic: true,
+    skipSem2: false,
     skipNormalize: false,
     module: 'lesen',
     teil: t,
@@ -43,7 +44,7 @@ export async function validateLesenDelivery(batch, opts = {}) {
   });
 
   const poolReady = gate.ok
-    ? isPartPoolReady(gate.batch, { semantic: teil !== 3 })
+    ? isPartPoolReady(gate.batch, { semantic: true, skipSem2: false })
     : false;
 
   return { gate, poolReady, batch: gate.batch };

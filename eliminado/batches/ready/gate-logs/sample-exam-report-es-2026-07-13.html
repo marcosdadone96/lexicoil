@@ -1,0 +1,67 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><style>
+body{margin:0;background:#fff}
+#pdf-export-container{display:block;position:static;width:210mm;margin:0 auto}
+.pdf-doc{color:#111}
+.pdf-header{border-bottom:2px solid #1a1a1a;padding-bottom:10px;margin-bottom:14px}
+.pdf-brand{font-size:9pt;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#555}
+.pdf-meta{font-size:9pt;color:#444;margin:4px 0 8px}
+.pdf-candidate{font-size:16pt;font-weight:700;margin:0 0 4px;color:#111}
+.pdf-scoreline{font-size:11pt;margin:0;color:#222}
+.pdf-section{margin-bottom:16px;page-break-inside:avoid}
+.pdf-section h2{font-size:11pt;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#333;margin:0 0 8px;border-bottom:1px solid #ddd;padding-bottom:4px}
+.pdf-section h3{font-size:10pt;font-weight:700;margin:8px 0 4px;color:#222}
+.pdf-table{width:100%;border-collapse:collapse;margin:6px 0 10px;font-size:9.5pt}
+.pdf-table td{border:1px solid #ccc;padding:5px 8px;color:#222}
+.pdf-table .pdf-num{text-align:right;font-weight:700;width:56px}
+.pdf-grammar-group{margin-bottom:10px;page-break-inside:avoid}
+.pdf-badge{font-size:8pt;font-weight:600;color:#666}
+.pdf-explain{font-size:9.5pt;color:#333;margin:0 0 6px;padding-left:8px;border-left:2px solid #ccc}
+.pdf-coach-topic{margin-bottom:10px;page-break-inside:avoid}
+.pdf-examples{margin:4px 0 8px;padding-left:18px;font-size:9.5pt}
+.pdf-tip{font-size:9pt;color:#444}
+.pdf-writing-block{margin-bottom:12px;page-break-inside:avoid}
+.pdf-corrected{white-space:pre-wrap;font-size:9.5pt;background:#f8f8f8;padding:8px;border-radius:4px;border:1px solid #e5e5e5}
+.pdf-errors{margin:6px 0;padding-left:16px;font-size:9pt}
+.pdf-muted{font-size:9pt;color:#555}
+.pdf-detail-block{margin-bottom:10px;page-break-inside:avoid}
+.pdf-fail-row{font-size:9pt;margin:0 0 6px;page-break-inside:avoid}
+.pdf-x{color:#c0392b;font-weight:700}
+.pdf-footer{margin-top:20px;padding-top:8px;border-top:1px solid #ddd;font-size:8pt;color:#888;text-align:center}
+.pdf-print-hint-overlay{position:fixed;inset:0;z-index:2000;background:rgba(15,23,42,.55);display:flex;align-items:center;justify-content:center;padding:20px}
+.pdf-print-hint-box{max-width:420px;background:var(--bg,#fff);color:var(--text,#111);border:1px solid var(--border,#ddd);border-radius:var(--radius-lg,12px);padding:22px 24px;box-shadow:0 12px 40px rgba(0,0,0,.2)}
+.pdf-print-hint-box h2{font-size:15px;font-weight:700;margin:0 0 10px}
+.pdf-print-hint-box p{font-size:13px;line-height:1.55;color:var(--text-secondary,#444);margin:0 0 10px}
+.pdf-print-hint-note{font-size:12px;color:var(--text-muted,#666)!important}
+.pdf-print-hint-btn{margin-top:8px}
+.nb-fab{position:fixed;right:18px;bottom:72px;z-index:1200;touch-action:none}
+.nb-fab-main{width:52px;height:52px;border-radius:50%;border:none;background:var(--purple,#7c6cff);color:#fff;font-size:22px;box-shadow:0 4px 18px rgba(0,0,0,.22);cursor:pointer}
+.nb-panel{position:fixed;right:12px;bottom:132px;width:min(360px,calc(100vw - 24px));max-height:min(420px,55vh);background:var(--bg2,#fff);border:1px solid var(--border,#ddd);border-radius:14px;box-shadow:0 8px 32px rgba(0,0,0,.18);z-index:1199;display:none;flex-direction:column;overflow:hidden}
+.nb-panel.open{display:flex}
+.nb-head{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-bottom:1px solid var(--border,#eee);background:var(--surface,#fafafa)}
+.nb-head-title{font-size:12px;font-weight:700}
+.nb-toolbar{display:flex;gap:6px;flex-wrap:wrap;padding:8px 10px;border-bottom:1px solid var(--border,#eee)}
+.nb-hl{width:22px;height:22px;border-radius:50%;border:1px solid rgba(0,0,0,.08);cursor:pointer}
+.nb-tabs{display:flex;gap:4px;overflow-x:auto;padding:6px 8px;border-bottom:1px solid var(--border,#eee)}
+.nb-tab{font-size:11px;padding:4px 8px;border-radius:999px;border:1px solid var(--border,#ddd);background:transparent;cursor:pointer;white-space:nowrap}
+.nb-tab.active{background:var(--purple-bg,rgba(124,108,255,.15));border-color:var(--purple,#7c6cff)}
+.nb-editor{flex:1;overflow:auto;padding:12px 14px;line-height:1.7;font-size:14px;background:linear-gradient(var(--bg,#fff),var(--bg,#fff)),repeating-linear-gradient(transparent,transparent 27px,#eee 28px);min-height:160px;outline:none}
+.ai-credits-indicator{margin-left:8px}
+@media print{@page{size:A4;margin:14mm 12mm 20mm 12mm}
+body>*:not(#pdf-export-container){display:none!important}
+#pdf-export-container{display:block!important;position:static;left:0;width:100%;padding:0}
+.pdf-page-break{page-break-before:auto}}
+</style></head><body><div id="pdf-export-container"><div class="pdf-doc">
+      <header class="pdf-header">
+        <div class="pdf-brand">LexiCoil</div>
+        <div class="pdf-meta">13/07/2026 · Goethe-Zertifikat B1 · B1 · Stadt &amp; Mobilität</div>
+        <h1 class="pdf-candidate">Maria Schmidt</h1>
+        <p class="pdf-scoreline"><strong>68%</strong> — NO APROBADO</p>
+      </header>
+      <section class="pdf-section">
+        <h2>Módulos</h2>
+        <table class="pdf-table"><tbody><tr><td>Lectura</td><td class="pdf-num">55%</td></tr><tr><td>Comprensión auditiva</td><td class="pdf-num">62%</td></tr><tr><td>Escritura</td><td class="pdf-num">72%</td></tr><tr><td>Expresión oral</td><td class="pdf-num">70%</td></tr></tbody></table></section><section class="pdf-section"><h2>Resumen de fallos por gramática</h2><div class="pdf-grammar-group"><h3>B1 Relativ <span class="pdf-badge">1 error</span></h3><p class="pdf-explain">Relativsatz: „die geöffnet hat“ bezieht sich auf „Bibliothek“.</p></div><div class="pdf-grammar-group"><h3>B1 Passiv <span class="pdf-badge">1 error</span></h3><p class="pdf-explain">Passiv Präsens: „wird renoviert“.</p></div><div class="pdf-grammar-group"><h3>B1 Listening Detail <span class="pdf-badge">1 error</span></h3><p class="pdf-explain">Detailverständnis — Gegenteil im zweiten Satz.</p></div><div class="pdf-grammar-group"><h3>general <span class="pdf-badge">1 error</span></h3><p class="pdf-explain">Antwort zu kurz für die Aufgabenstellung.</p></div></section><section class="pdf-section"><h2>Explicación gramatical (IA)</h2><div class="pdf-coach-topic"><h3>Passiv im Präsens</h3><p>Subjekt erleidet die Handlung; „werden“ + Partizip II.</p><ul class="pdf-examples"><li>Das Haus wird renoviert.</li><li>Die Tür wird geöffnet.</li></ul><p class="pdf-tip"><em>Achte auf die Wortstellung: werden steht an Position 2.</em></p></div></section><section class="pdf-section"><h2>Escritura — tu texto corregido</h2><div class="pdf-writing-block"><h3>Tarea 1</h3><p class="pdf-corrected">Liebe Anna,
+
+vielen Dank für deine Einladung zum Sommerfest. Ich komme gerne am Samstag gegen 18 Uhr. Soll ich etwas mitbringen?
+
+Viele Grüße
+Maria</p><p class="pdf-muted">Gute Anrede und Schlussformel; einige Wortstellungs- und Artikelfehler.</p><ul class="pdf-errors"><li><strong>danke für die Einladung</strong> → vielen Dank für deine Einladung — Formellere Wendung + Possessiv.</li><li><strong>komme am Samstag gerne</strong> → komme gerne am Samstag — Te-Klammer: „gerne“ als Mittelfeld.</li></ul></div></section><section class="pdf-section"><h2>Detalle por módulo</h2><div class="pdf-detail-block"><h3>Lesen — Teil 1</h3><p class="pdf-fail-row"><span class="pdf-x">✗</span> Was steht im Text über die Öffnungszeiten?<br><span class="pdf-muted">Tuyo: B · Correcto: C</span></p><p class="pdf-fail-row"><span class="pdf-x">✗</span> Welche Aussage ist richtig?<br><span class="pdf-muted">Tuyo: Richtig · Correcto: Falsch</span></p></div><div class="pdf-detail-block"><h3>Hörverstehen — Teil 2</h3><p class="pdf-fail-row"><span class="pdf-x">✗</span> Der Sprecher empfiehlt…<br><span class="pdf-muted">Tuyo: Frühstück im Hotel · Correcto: Frühstück zu Hause</span></p></div><div class="pdf-detail-block"><h3>Schreiben — Teil 1 (Länge)</h3><p class="pdf-fail-row"><span class="pdf-x">✗</span> Mindestwortzahl<br><span class="pdf-muted">Tuyo: 78 Wörter · Correcto: ≥ 80 Wörter</span></p></div></section><section class="pdf-section"><h2>Expresión oral</h2><p><strong>Tu respuesta:</strong> Ich finde, dass man mehr Fahrradwege braucht. In meiner Stadt ist oft Stau und die Luft ist nicht gut.</p><p>Aufgabenerfüllung: 4/5 — Punkte angesprochen, etwas kurz.</p><p>Wortschatz: 3/5 — Einfach aber passend.</p><p>Grammatik: 3/5 — Relativsätze teils holprig.</p><p>Kohärenz &amp; Flüssigkeit: 4/5 — Logischer Aufbau.</p><p><strong>Corregido:</strong> Ich finde, dass man mehr Fahrradwege braucht, weil in meiner Stadt oft Stau ist und die Luftverschmutzung hoch ist.</p><p class="pdf-muted">Verständlich und strukturiert; erweitere Argumente und Nebensätze.</p></section><footer class="pdf-footer">LexiCoil · lexicoil.com</footer></div></div></body></html>

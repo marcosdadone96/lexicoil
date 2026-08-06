@@ -1,0 +1,659 @@
+{
+  "at": "2026-07-15T12:32:03.066Z",
+  "level": "A2",
+  "topics": 4,
+  "cells": 52,
+  "summary": {
+    "ok": 26,
+    "warn": 22,
+    "problem": 4
+  },
+  "instructions": {
+    "lesen": [
+      "Lesen Sie in einer Zeitung diesen Text.\nWählen Sie für die Aufgaben 1 bis 5 die richtige Lösung a, b oder c.",
+      "Lesen Sie die Informationstafel und die Aufgaben 6 bis 10.\nIn welchem Stock gehen Sie? Wählen Sie die richtige Lösung a, b oder c.",
+      "Lesen Sie die E-Mail und die Aufgaben 11 bis 15.\nWählen Sie für jede Aufgabe die richtige Lösung a, b oder c.",
+      "Lesen Sie die Aufgaben 16 bis 20 und die Anzeigen a bis f.\nWelche Anzeige passt zu welcher Person? Für eine Aufgabe gibt es keine Lösung. Markieren Sie X."
+    ],
+    "horen": [
+      "Sie hören fünf kurze Texte. Sie hören jeden Text zweimal.\nWählen Sie für die Aufgaben 1 bis 5 die richtige Lösung a, b oder c.",
+      "Sie hören ein Gespräch. Sie hören den Text einmal.\nWählen Sie für die Aufgaben 6 bis 10 ein passendes Bild aus a bis i.",
+      "Sie hören fünf kurze Gespräche. Sie hören jeden Text einmal.\nWählen Sie für die Aufgaben 11 bis 15 die richtige Lösung a, b oder c.",
+      "Sie hören ein Interview. Sie hören den Text zweimal.\nWählen Sie für die Aufgaben 16 bis 20 Ja oder Nein."
+    ]
+  },
+  "passageLengthGate": {
+    "applies": false,
+    "reason": "Goethe A2 Lesen usa 1 pasaje por Teil (T4 = 6 anuncios cortos exempt); no hay Lesen T2 doble pasaje B1 (CEFR 400)."
+  },
+  "problems": [
+    {
+      "topic": "health",
+      "module": "schreiben",
+      "teil": 2,
+      "mechanism": "email_chef",
+      "status": "PROBLEM",
+      "note": "pool vacío para tema×teil; served: served: sin Chef en T2"
+    },
+    {
+      "topic": "work",
+      "module": "schreiben",
+      "teil": 2,
+      "mechanism": "email_chef",
+      "status": "PROBLEM",
+      "note": "pool: 0p + 5q; served: served: sin Chef en T2; Schreiben T2: falta referencia a Chef en Schreiben T2"
+    },
+    {
+      "topic": "society",
+      "module": "schreiben",
+      "teil": 2,
+      "mechanism": "email_chef",
+      "status": "PROBLEM",
+      "note": "pool: 0p + 1q; served: served: sin Chef en T2; Schreiben T2: falta referencia a Chef en Schreiben T2"
+    },
+    {
+      "topic": "education",
+      "module": "schreiben",
+      "teil": 2,
+      "mechanism": "email_chef",
+      "status": "PROBLEM",
+      "note": "pool: 0p + 1q; served: served: sin Chef en T2; Schreiben T2: falta referencia a Chef en Schreiben T2"
+    }
+  ],
+  "warns": [
+    {
+      "topic": "health",
+      "module": "horen",
+      "teil": 3,
+      "mechanism": "short_dialogues_mcq",
+      "status": "WARN",
+      "note": "pool vacío para tema×teil; parte servida presente"
+    },
+    {
+      "topic": "health",
+      "module": "horen",
+      "teil": 4,
+      "mechanism": "interview_ja_nein",
+      "status": "WARN",
+      "note": "pool vacío para tema×teil; parte servida presente"
+    },
+    {
+      "topic": "health",
+      "module": "schreiben",
+      "teil": 1,
+      "mechanism": "sms_task",
+      "status": "WARN",
+      "note": "pool vacío para tema×teil; parte servida presente"
+    },
+    {
+      "topic": "health",
+      "module": "sprechen",
+      "teil": 1,
+      "mechanism": "personal_questions",
+      "status": "WARN",
+      "note": "pool vacío para tema×teil; parte servida presente"
+    },
+    {
+      "topic": "health",
+      "module": "sprechen",
+      "teil": 2,
+      "mechanism": "about_self",
+      "status": "WARN",
+      "note": "pool vacío para tema×teil; parte servida presente"
+    },
+    {
+      "topic": "health",
+      "module": "sprechen",
+      "teil": 3,
+      "mechanism": "plan_together",
+      "status": "WARN",
+      "note": "pool vacío para tema×teil; parte servida presente"
+    },
+    {
+      "topic": "work",
+      "module": "lesen",
+      "teil": 2,
+      "mechanism": "floor_plan_mcq",
+      "status": "WARN",
+      "note": "pool: 0p + 6q; parte servida presente; Lesen T2: ninguna pregunta con fórmula de plano (Stock/Etage)"
+    },
+    {
+      "topic": "work",
+      "module": "horen",
+      "teil": 1,
+      "mechanism": "short_texts_mcq",
+      "status": "WARN",
+      "note": "pool vacío para tema×teil; parte servida presente"
+    },
+    {
+      "topic": "work",
+      "module": "sprechen",
+      "teil": 2,
+      "mechanism": "about_self",
+      "status": "WARN",
+      "note": "pool vacío para tema×teil; parte servida presente"
+    },
+    {
+      "topic": "work",
+      "module": "sprechen",
+      "teil": 3,
+      "mechanism": "plan_together",
+      "status": "WARN",
+      "note": "pool vacío para tema×teil; parte servida presente"
+    },
+    {
+      "topic": "society",
+      "module": "lesen",
+      "teil": 2,
+      "mechanism": "floor_plan_mcq",
+      "status": "WARN",
+      "note": "pool: 0p + 1q; parte servida presente; Lesen T2: ninguna pregunta con fórmula de plano (Stock/Etage)"
+    },
+    {
+      "topic": "society",
+      "module": "lesen",
+      "teil": 3,
+      "mechanism": "email_mcq",
+      "status": "WARN",
+      "note": "pool vacío para tema×teil; parte servida presente"
+    },
+    {
+      "topic": "society",
+      "module": "horen",
+      "teil": 1,
+      "mechanism": "short_texts_mcq",
+      "status": "WARN",
+      "note": "pool vacío para tema×teil; parte servida presente"
+    },
+    {
+      "topic": "society",
+      "module": "horen",
+      "teil": 3,
+      "mechanism": "short_dialogues_mcq",
+      "status": "WARN",
+      "note": "pool vacío para tema×teil; parte servida presente"
+    },
+    {
+      "topic": "society",
+      "module": "schreiben",
+      "teil": 1,
+      "mechanism": "sms_task",
+      "status": "WARN",
+      "note": "pool vacío para tema×teil; parte servida presente"
+    },
+    {
+      "topic": "society",
+      "module": "sprechen",
+      "teil": 2,
+      "mechanism": "about_self",
+      "status": "WARN",
+      "note": "pool vacío para tema×teil; parte servida presente"
+    },
+    {
+      "topic": "society",
+      "module": "sprechen",
+      "teil": 3,
+      "mechanism": "plan_together",
+      "status": "WARN",
+      "note": "pool vacío para tema×teil; parte servida presente"
+    },
+    {
+      "topic": "education",
+      "module": "lesen",
+      "teil": 2,
+      "mechanism": "floor_plan_mcq",
+      "status": "WARN",
+      "note": "pool: 0p + 7q; parte servida presente; Lesen T2: ninguna pregunta con fórmula de plano (Stock/Etage)"
+    },
+    {
+      "topic": "education",
+      "module": "horen",
+      "teil": 1,
+      "mechanism": "short_texts_mcq",
+      "status": "WARN",
+      "note": "pool vacío para tema×teil; parte servida presente"
+    },
+    {
+      "topic": "education",
+      "module": "sprechen",
+      "teil": 1,
+      "mechanism": "personal_questions",
+      "status": "WARN",
+      "note": "pool vacío para tema×teil; parte servida presente"
+    },
+    {
+      "topic": "education",
+      "module": "sprechen",
+      "teil": 2,
+      "mechanism": "about_self",
+      "status": "WARN",
+      "note": "pool vacío para tema×teil; parte servida presente"
+    },
+    {
+      "topic": "education",
+      "module": "sprechen",
+      "teil": 3,
+      "mechanism": "plan_together",
+      "status": "WARN",
+      "note": "pool vacío para tema×teil; parte servida presente"
+    }
+  ],
+  "matrix": [
+    {
+      "topic": "health",
+      "module": "lesen",
+      "teil": 1,
+      "mechanism": "press_mcq",
+      "status": "OK",
+      "note": "pool: 0p + 6q; parte servida presente"
+    },
+    {
+      "topic": "health",
+      "module": "lesen",
+      "teil": 2,
+      "mechanism": "floor_plan_mcq",
+      "status": "OK",
+      "note": "pool: 0p + 5q; parte servida presente; Lesen T2: 1/5 preguntas con fórmula Stock/Etage"
+    },
+    {
+      "topic": "health",
+      "module": "lesen",
+      "teil": 3,
+      "mechanism": "email_mcq",
+      "status": "OK",
+      "note": "pool: 0p + 10q; parte servida presente"
+    },
+    {
+      "topic": "health",
+      "module": "lesen",
+      "teil": 4,
+      "mechanism": "ads_matching",
+      "status": "OK",
+      "note": "pool: 0p + 1q; parte servida presente"
+    },
+    {
+      "topic": "health",
+      "module": "horen",
+      "teil": 1,
+      "mechanism": "short_texts_mcq",
+      "status": "OK",
+      "note": "pool: 0p + 20q; parte servida presente"
+    },
+    {
+      "topic": "health",
+      "module": "horen",
+      "teil": 2,
+      "mechanism": "picture_matching",
+      "status": "OK",
+      "note": "pool: 1p + 5q; served slot=picture_matching, pictures=9; Hören T2: picture passages=1, matching=5, días OK"
+    },
+    {
+      "topic": "health",
+      "module": "horen",
+      "teil": 3,
+      "mechanism": "short_dialogues_mcq",
+      "status": "WARN",
+      "note": "pool vacío para tema×teil; parte servida presente"
+    },
+    {
+      "topic": "health",
+      "module": "horen",
+      "teil": 4,
+      "mechanism": "interview_ja_nein",
+      "status": "WARN",
+      "note": "pool vacío para tema×teil; parte servida presente"
+    },
+    {
+      "topic": "health",
+      "module": "schreiben",
+      "teil": 1,
+      "mechanism": "sms_task",
+      "status": "WARN",
+      "note": "pool vacío para tema×teil; parte servida presente"
+    },
+    {
+      "topic": "health",
+      "module": "schreiben",
+      "teil": 2,
+      "mechanism": "email_chef",
+      "status": "PROBLEM",
+      "note": "pool vacío para tema×teil; served: served: sin Chef en T2"
+    },
+    {
+      "topic": "health",
+      "module": "sprechen",
+      "teil": 1,
+      "mechanism": "personal_questions",
+      "status": "WARN",
+      "note": "pool vacío para tema×teil; parte servida presente"
+    },
+    {
+      "topic": "health",
+      "module": "sprechen",
+      "teil": 2,
+      "mechanism": "about_self",
+      "status": "WARN",
+      "note": "pool vacío para tema×teil; parte servida presente"
+    },
+    {
+      "topic": "health",
+      "module": "sprechen",
+      "teil": 3,
+      "mechanism": "plan_together",
+      "status": "WARN",
+      "note": "pool vacío para tema×teil; parte servida presente"
+    },
+    {
+      "topic": "work",
+      "module": "lesen",
+      "teil": 1,
+      "mechanism": "press_mcq",
+      "status": "OK",
+      "note": "pool: 0p + 6q; parte servida presente"
+    },
+    {
+      "topic": "work",
+      "module": "lesen",
+      "teil": 2,
+      "mechanism": "floor_plan_mcq",
+      "status": "WARN",
+      "note": "pool: 0p + 6q; parte servida presente; Lesen T2: ninguna pregunta con fórmula de plano (Stock/Etage)"
+    },
+    {
+      "topic": "work",
+      "module": "lesen",
+      "teil": 3,
+      "mechanism": "email_mcq",
+      "status": "OK",
+      "note": "pool: 0p + 1q; parte servida presente"
+    },
+    {
+      "topic": "work",
+      "module": "lesen",
+      "teil": 4,
+      "mechanism": "ads_matching",
+      "status": "OK",
+      "note": "pool: 0p + 7q; parte servida presente"
+    },
+    {
+      "topic": "work",
+      "module": "horen",
+      "teil": 1,
+      "mechanism": "short_texts_mcq",
+      "status": "WARN",
+      "note": "pool vacío para tema×teil; parte servida presente"
+    },
+    {
+      "topic": "work",
+      "module": "horen",
+      "teil": 2,
+      "mechanism": "picture_matching",
+      "status": "OK",
+      "note": "pool: 1p + 5q; served slot=picture_matching, pictures=9; Hören T2: picture passages=1, matching=5, días OK"
+    },
+    {
+      "topic": "work",
+      "module": "horen",
+      "teil": 3,
+      "mechanism": "short_dialogues_mcq",
+      "status": "OK",
+      "note": "pool: 0p + 20q; parte servida presente"
+    },
+    {
+      "topic": "work",
+      "module": "horen",
+      "teil": 4,
+      "mechanism": "interview_ja_nein",
+      "status": "OK",
+      "note": "pool: 0p + 5q; parte servida presente"
+    },
+    {
+      "topic": "work",
+      "module": "schreiben",
+      "teil": 1,
+      "mechanism": "sms_task",
+      "status": "OK",
+      "note": "pool: 0p + 5q; parte servida presente"
+    },
+    {
+      "topic": "work",
+      "module": "schreiben",
+      "teil": 2,
+      "mechanism": "email_chef",
+      "status": "PROBLEM",
+      "note": "pool: 0p + 5q; served: served: sin Chef en T2; Schreiben T2: falta referencia a Chef en Schreiben T2"
+    },
+    {
+      "topic": "work",
+      "module": "sprechen",
+      "teil": 1,
+      "mechanism": "personal_questions",
+      "status": "OK",
+      "note": "pool: 0p + 1q; parte servida presente"
+    },
+    {
+      "topic": "work",
+      "module": "sprechen",
+      "teil": 2,
+      "mechanism": "about_self",
+      "status": "WARN",
+      "note": "pool vacío para tema×teil; parte servida presente"
+    },
+    {
+      "topic": "work",
+      "module": "sprechen",
+      "teil": 3,
+      "mechanism": "plan_together",
+      "status": "WARN",
+      "note": "pool vacío para tema×teil; parte servida presente"
+    },
+    {
+      "topic": "society",
+      "module": "lesen",
+      "teil": 1,
+      "mechanism": "press_mcq",
+      "status": "OK",
+      "note": "pool: 0p + 5q; parte servida presente"
+    },
+    {
+      "topic": "society",
+      "module": "lesen",
+      "teil": 2,
+      "mechanism": "floor_plan_mcq",
+      "status": "WARN",
+      "note": "pool: 0p + 1q; parte servida presente; Lesen T2: ninguna pregunta con fórmula de plano (Stock/Etage)"
+    },
+    {
+      "topic": "society",
+      "module": "lesen",
+      "teil": 3,
+      "mechanism": "email_mcq",
+      "status": "WARN",
+      "note": "pool vacío para tema×teil; parte servida presente"
+    },
+    {
+      "topic": "society",
+      "module": "lesen",
+      "teil": 4,
+      "mechanism": "ads_matching",
+      "status": "OK",
+      "note": "pool: 0p + 13q; parte servida presente"
+    },
+    {
+      "topic": "society",
+      "module": "horen",
+      "teil": 1,
+      "mechanism": "short_texts_mcq",
+      "status": "WARN",
+      "note": "pool vacío para tema×teil; parte servida presente"
+    },
+    {
+      "topic": "society",
+      "module": "horen",
+      "teil": 2,
+      "mechanism": "picture_matching",
+      "status": "OK",
+      "note": "pool: 1p + 5q; served slot=picture_matching, pictures=9; Hören T2: picture passages=1, matching=5, días OK"
+    },
+    {
+      "topic": "society",
+      "module": "horen",
+      "teil": 3,
+      "mechanism": "short_dialogues_mcq",
+      "status": "WARN",
+      "note": "pool vacío para tema×teil; parte servida presente"
+    },
+    {
+      "topic": "society",
+      "module": "horen",
+      "teil": 4,
+      "mechanism": "interview_ja_nein",
+      "status": "OK",
+      "note": "pool: 0p + 9q; parte servida presente"
+    },
+    {
+      "topic": "society",
+      "module": "schreiben",
+      "teil": 1,
+      "mechanism": "sms_task",
+      "status": "WARN",
+      "note": "pool vacío para tema×teil; parte servida presente"
+    },
+    {
+      "topic": "society",
+      "module": "schreiben",
+      "teil": 2,
+      "mechanism": "email_chef",
+      "status": "PROBLEM",
+      "note": "pool: 0p + 1q; served: served: sin Chef en T2; Schreiben T2: falta referencia a Chef en Schreiben T2"
+    },
+    {
+      "topic": "society",
+      "module": "sprechen",
+      "teil": 1,
+      "mechanism": "personal_questions",
+      "status": "OK",
+      "note": "pool: 0p + 2q; parte servida presente"
+    },
+    {
+      "topic": "society",
+      "module": "sprechen",
+      "teil": 2,
+      "mechanism": "about_self",
+      "status": "WARN",
+      "note": "pool vacío para tema×teil; parte servida presente"
+    },
+    {
+      "topic": "society",
+      "module": "sprechen",
+      "teil": 3,
+      "mechanism": "plan_together",
+      "status": "WARN",
+      "note": "pool vacío para tema×teil; parte servida presente"
+    },
+    {
+      "topic": "education",
+      "module": "lesen",
+      "teil": 1,
+      "mechanism": "press_mcq",
+      "status": "OK",
+      "note": "pool: 0p + 6q; parte servida presente"
+    },
+    {
+      "topic": "education",
+      "module": "lesen",
+      "teil": 2,
+      "mechanism": "floor_plan_mcq",
+      "status": "WARN",
+      "note": "pool: 0p + 7q; parte servida presente; Lesen T2: ninguna pregunta con fórmula de plano (Stock/Etage)"
+    },
+    {
+      "topic": "education",
+      "module": "lesen",
+      "teil": 3,
+      "mechanism": "email_mcq",
+      "status": "OK",
+      "note": "pool: 0p + 3q; parte servida presente"
+    },
+    {
+      "topic": "education",
+      "module": "lesen",
+      "teil": 4,
+      "mechanism": "ads_matching",
+      "status": "OK",
+      "note": "pool: 0p + 3q; parte servida presente"
+    },
+    {
+      "topic": "education",
+      "module": "horen",
+      "teil": 1,
+      "mechanism": "short_texts_mcq",
+      "status": "WARN",
+      "note": "pool vacío para tema×teil; parte servida presente"
+    },
+    {
+      "topic": "education",
+      "module": "horen",
+      "teil": 2,
+      "mechanism": "picture_matching",
+      "status": "OK",
+      "note": "pool: 1p + 5q; served slot=picture_matching, pictures=9; Hören T2: picture passages=1, matching=5, días OK"
+    },
+    {
+      "topic": "education",
+      "module": "horen",
+      "teil": 3,
+      "mechanism": "short_dialogues_mcq",
+      "status": "OK",
+      "note": "pool: 0p + 1q; parte servida presente"
+    },
+    {
+      "topic": "education",
+      "module": "horen",
+      "teil": 4,
+      "mechanism": "interview_ja_nein",
+      "status": "OK",
+      "note": "pool: 0p + 25q; parte servida presente"
+    },
+    {
+      "topic": "education",
+      "module": "schreiben",
+      "teil": 1,
+      "mechanism": "sms_task",
+      "status": "OK",
+      "note": "pool: 0p + 1q; parte servida presente"
+    },
+    {
+      "topic": "education",
+      "module": "schreiben",
+      "teil": 2,
+      "mechanism": "email_chef",
+      "status": "PROBLEM",
+      "note": "pool: 0p + 1q; served: served: sin Chef en T2; Schreiben T2: falta referencia a Chef en Schreiben T2"
+    },
+    {
+      "topic": "education",
+      "module": "sprechen",
+      "teil": 1,
+      "mechanism": "personal_questions",
+      "status": "WARN",
+      "note": "pool vacío para tema×teil; parte servida presente"
+    },
+    {
+      "topic": "education",
+      "module": "sprechen",
+      "teil": 2,
+      "mechanism": "about_self",
+      "status": "WARN",
+      "note": "pool vacío para tema×teil; parte servida presente"
+    },
+    {
+      "topic": "education",
+      "module": "sprechen",
+      "teil": 3,
+      "mechanism": "plan_together",
+      "status": "WARN",
+      "note": "pool vacío para tema×teil; parte servida presente"
+    }
+  ]
+}

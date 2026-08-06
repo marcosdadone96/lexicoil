@@ -33,7 +33,7 @@ function getSkillPerformance(goal){
       return perf.map(m=>({key:m.module,label:labels[m.module]||m.module,icon:icons[m.module]||'📊',pct:m.accuracy,mastery:m.mastery}));
     }
   }
-  const hist=historyForGoal(goal);
+  const hist=examHistoryForGoal(goal);
   const sums={listening:[],reading:[],writing:[],speaking:[]};
   const isDE=goal.subject==='de';
   hist.forEach(h=>{
@@ -62,7 +62,7 @@ function getKpiDelta(metric,goal){
     return n>0?'+'+n+' this week':'';
   }
   if(metric==='practice'){
-    const n=historyForGoal(goal).filter(h=>{
+    const n=examHistoryForGoal(goal).filter(h=>{
       if(h.mode!=='practice')return false;
       const d=new Date(h.date);
       return !isNaN(d.getTime())&&d.getTime()>=weekAgo;
@@ -77,7 +77,12 @@ function normalizeWsTab(tab){
   return'exams';
 }
 function getScoreSeries(goal){
-  return historyForGoal(goal).slice(0,12).reverse().map(h=>({date:h.date,score:h.score,topic:h.topic||''}));
+  const MG=typeof ModuleGrading!=='undefined'?ModuleGrading:null;
+  return examHistoryForGoal(goal).slice(0,12).reverse().map(h=>{
+    const score=MG?MG.resolveHistoryScore(h):Number(h.score);
+    const date=MG?MG.formatHistoryDate(h):(h.date||'');
+    return{date,score:Number.isFinite(score)?score:null,topic:h.topic||''};
+  }).filter(h=>Number.isFinite(h.score));
 }
 function countNewWords(goal){
   return deckForGoal(goal).filter(f=>!f.nextReview&&(f.interval==null||f.interval<=1)).length;
@@ -104,11 +109,15 @@ function renderWsRecentActivityHtml(goal){
       return'<div class="ws-recent-item" style="cursor:default">'+scoreH+'<span class="ws-recent-info"><b>'+esc(a.label||'Study session')+'</b><span>'+esc(when)+(dur?' · '+esc(dur):'')+'</span></span></div>';
     });
   }else{
-    const hist=historyForGoal(goal).slice(0,3);
+    const hist=examHistoryForGoal(goal).slice(0,3);
+    const MG=typeof ModuleGrading!=='undefined'?ModuleGrading:null;
     items=hist.map(h=>{
-      const sc=h.score>=70?'pass':h.score>=50?'mid':'fail';
+      const scNum=MG?MG.resolveHistoryScore(h):Number(h.score);
+      const sc=Number.isFinite(scNum)?(scNum>=70?'pass':scNum>=50?'mid':'fail'):'';
+      const scoreH=Number.isFinite(scNum)?'<span class="ws-recent-score '+sc+'">'+scNum+'%</span>':'<span class="ws-recent-score">📖</span>';
       const mode=normalizeMode(h.mode)==='practice'?'Practice':'Official';
-      return'<button type="button" class="ws-recent-item" onclick="openMistakeReview('+h.id+')"><span class="ws-recent-score '+sc+'">'+h.score+'%</span><span class="ws-recent-info"><b>'+esc(h.topic)+'</b><span>'+esc(h.date)+' · '+mode+'</span></span><span class="ws-recent-cta">Review →</span></button>';
+      const dateLbl=MG?MG.formatHistoryDate(h):(h.date||'');
+      return'<button type="button" class="ws-recent-item" onclick="openMistakeReview('+h.id+')">'+scoreH+'<span class="ws-recent-info"><b>'+esc(h.topic||h.level||'Exam')+'</b><span>'+esc(dateLbl)+' · '+mode+'</span></span><span class="ws-recent-cta">Review →</span></button>';
     });
   }
   if(!items.length)return'<p class="ws-recent-empty">No activity yet — start with a practice exam above.</p>';
@@ -225,7 +234,10 @@ function renderScoreTrendHtml(series){
   return'<div class="chart-wrap" style="display:block;margin-bottom:16px"><h3>Score trend <span style="font-size:11px;color:var(--text-muted);font-weight:400">Last '+series.length+' exams</span></h3><div class="chart-bars" style="display:flex;align-items:flex-end;gap:6px;height:120px;border-bottom:1px solid var(--border);padding-bottom:4px">'+bars+'</div></div>';
 }
 function renderGoalHistoryHtml(goal){
-  const hist=historyForGoal(goal);
+  const hist=examHistoryForGoal(goal);
+  const MG=typeof ModuleGrading!=='undefined'?ModuleGrading:null;
+  const histScore=(h)=>{const s=MG?MG.resolveHistoryScore(h):Number(h.score);return Number.isFinite(s)?s:null;};
+  const histDate=(h)=>MG?MG.formatHistoryDate(h):(h.date||'');
   const pct=getReadinessPctForGoal(goal);
   const weak=getWeakAreasForGoal(goal);
   const series=getScoreSeries(goal);
@@ -240,10 +252,18 @@ function renderGoalHistoryHtml(goal){
     weakHtml='<p style="font-size:13px;font-weight:600;color:var(--text-muted);margin:0">Complete a practice exam to identify weak areas.</p>';
   }
   let chartHtml=renderScoreTrendHtml(series);
-  const listHtml=hist.length?hist.map(h=>'<div class="hist-card" onclick="openMistakeReview('+h.id+')"><div class="hist-score '+(h.score>=70?'pass':h.score>=50?'mid':'fail')+'">'+h.score+'%</div><div class="hist-info"><div class="hist-title">'+(h.lang==='de'?'🇩🇪':'🇬🇧')+' '+esc(h.topic)+' — '+h.level+'</div><div class="hist-meta">'+h.date+' · '+(h.guidedDemo?'Demo':normalizeMode(h.mode)==='practice'?'Practice':'Official')+'</div></div><span style="font-size:11px;color:var(--brand);font-weight:700">Review →</span></div>').join('')
+  const listHtml=hist.length?hist.map(h=>{
+    const sc=histScore(h);
+    const scoreCls=sc!=null?(sc>=70?'pass':sc>=50?'mid':'fail'):'mid';
+    const scoreTxt=sc!=null?sc+'%':'—';
+    const modeLbl=h.guidedDemo?'Demo':normalizeMode(h.mode)==='practice'?'Practice':'Official';
+    const titleTopic=h.topic||(h.level?goalLabel(goal):'Exam');
+    return'<div class="hist-card" onclick="openMistakeReview('+h.id+')"><div class="hist-score '+scoreCls+'">'+scoreTxt+'</div><div class="hist-info"><div class="hist-title">'+(h.lang==='de'?'🇩🇪':'🇬🇧')+' '+esc(titleTopic)+' — '+h.level+'</div><div class="hist-meta">'+esc(histDate(h))+' · '+modeLbl+'</div></div><span style="font-size:11px;color:var(--brand);font-weight:700">Review →</span></div>';
+  }).join('')
     :'<div class="hist-empty"><span>📊</span>No exams yet. Start in the Exams tab.</div>';
   const deck=deckForGoal(goal).length;
-  const avg=hist.length?Math.round(hist.reduce((s,h)=>s+h.score,0)/hist.length):null;
+  const scored=hist.map(histScore).filter(n=>Number.isFinite(n));
+  const avg=scored.length?Math.round(scored.reduce((s,n)=>s+n,0)/scored.length):null;
   const wordsDelta=getKpiDelta('words',goal);
   const practiceDelta=getKpiDelta('practice',goal);
   const ring=readinessRingSvg(pct,hist.length>0,hist.length);
@@ -276,41 +296,58 @@ function renderGoalHistoryHtml(goal){
 function renderWsSavedExams(goal){
   const grid=document.getElementById('wsSavedGrid');
   if(!grid)return;
-  const list=S.savedExams.filter(e=>{
+  const list=typeof getSavedExamsForGoal==='function'?getSavedExamsForGoal(goal):S.savedExams.filter(e=>{
     if(e.lang!==goal.subject||e.level!==goal.level)return false;
     if(e.goalId&&e.goalId!==goal.id)return false;
     return true;
   });
-  if(!list.length){grid.innerHTML='<div class="hist-empty" style="grid-column:1/-1"><span>📁</span>No saved exams for this goal yet.</div>';return;}
-  const auto=list.filter(e=>e.status==='auto');
-  const pinned=list.filter(e=>e.status!=='auto');
+  if(!list.length){
+    grid.innerHTML='<div class="hist-empty" style="grid-column:1/-1"><span>📁</span>No saved exams for this goal yet.</div>';
+    return;
+  }
+  const active=list.filter(e=>!e.archived);
+  const archived=list.filter(e=>e.archived);
   const cardHtml=(e)=>{
     const i=S.savedExams.indexOf(e);
+    const sel=typeof isSavedExamSelected==='function'&&isSavedExamSelected(e.id);
     const src=e.source||(e.data?.demo?'demo':e.data?.poolSource?'pool':'ai');
     const srcLbl=src==='demo'?'Demo':(src==='pool'||src==='library')?'From library':'AI Generated';
     const st=e.status||'in_progress';
     const stLbl=st==='completed'?'Completed':st==='aborted'?'Aborted':st==='auto'?'Auto':'In progress';
     const modeLbl=normalizeMode(e.mode)==='practice'?'Practice':'Official';
     const scoreH=e.score!=null?`<div class="saved-card-score ${e.score>=70?'pass':e.score>=50?'mid':'fail'}">${e.score}%</div>`:'';
-    const pinBtn=st==='auto'?`<button class="btn-sm accent" onclick="pinSavedExam(${i})">Save</button>`:'';
-    const resumeBtn=st==='in_progress'?`<button class="btn-sm accent" onclick="retakeExam(${i},true)">Resume</button>`:'';
+    const pinBtn=st==='auto'?`<button type="button" class="btn-sm accent" onclick="pinSavedExam(${i})">Save</button>`:'';
+    const resumeBtn=st==='in_progress'?`<button type="button" class="btn-sm accent" onclick="retakeExam(${i},true)">Resume</button>`:'';
     const retakeLbl=st==='in_progress'?'Start over':'↺ Retake';
-    return `<div class="saved-card${st==='auto'?' saved-card--auto':''}"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px"><div class="saved-card-title">${examFlag(e.lang)} ${esc(e.topic)}</div><span class="saved-src-badge">${srcLbl}</span></div><div class="saved-card-meta">${e.level} · ${modeLbl} · ${st==='auto'?'Generated':'Saved'} ${e.savedAt}</div><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap"><span class="saved-status ${st}">${stLbl}</span>${scoreH}</div><div style="display:flex;gap:6px;flex-wrap:wrap">${pinBtn}${resumeBtn}<button class="btn-sm" onclick="reviewSavedExam(${i})">Review</button><button class="btn-sm blue" onclick="retakeExam(${i})">${retakeLbl}</button><button class="btn-sm red" onclick="deleteSaved(${i})">✕</button></div></div>`;
+    const archiveBtn=e.archived
+      ?`<button type="button" class="btn-sm" onclick="unarchiveSavedExamAt(${i});renderWsSavedExams(getActiveGoal())">Unarchive</button>`
+      :`<button type="button" class="btn-sm" onclick="archiveSavedExamAt(${i})">Archive</button>`;
+    return `<div class="saved-card${st==='auto'?' saved-card--auto':''}${sel?' saved-card--selected':''}"><label class="saved-card-check"><input type="checkbox" ${sel?'checked':''} onchange="toggleSavedExamSelectAt(${i},this.checked);renderWsSavedExams(getActiveGoal())" aria-label="Select exam"></label><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px"><div class="saved-card-title">${examFlag(e.lang)} ${esc(e.topic)}</div><span class="saved-src-badge">${srcLbl}</span></div><div class="saved-card-meta">${e.level} · ${modeLbl} · ${st==='auto'?'Generated':'Saved'} ${e.savedAt}</div><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap"><span class="saved-status ${st}">${stLbl}</span>${scoreH}</div><div style="display:flex;gap:6px;flex-wrap:wrap">${pinBtn}${resumeBtn}<button type="button" class="btn-sm" onclick="reviewSavedExam(${i})">Review</button><button type="button" class="btn-sm blue" onclick="retakeExam(${i})">${retakeLbl}</button>${archiveBtn}<button type="button" class="btn-sm red" onclick="deleteSaved(${i})">✕</button></div></div>`;
   };
+  const byTopic={};
+  active.forEach(e=>{
+    const t=e.topic||'Other';
+    if(!byTopic[t])byTopic[t]=[];
+    byTopic[t].push(e);
+  });
+  const topics=Object.keys(byTopic).sort((a,b)=>a.localeCompare(b,'es',{sensitivity:'base'}));
   let html='';
-  if(auto.length){
-    html+=`<p class="ws-seclbl" style="grid-column:1/-1;margin:0 0 8px">Recientes (auto)</p>`;
-    html+=auto.map(cardHtml).join('');
+  if(active.length){
+    html+=`<div class="saved-toolbar"><label class="saved-toolbar-check"><input type="checkbox" onchange="selectAllVisibleSavedExams('${esc(goal.id)}',this.checked)"> Select all</label><button type="button" class="btn-sm red" onclick="deleteSelectedSavedExams('${esc(goal.id)}')">Delete selected</button><button type="button" class="btn-sm" onclick="archiveSelectedSavedExams('${esc(goal.id)}')">Archive selected</button></div>`;
+    topics.forEach(topic=>{
+      const cards=byTopic[topic];
+      html+=`<p class="ws-seclbl saved-topic-hdr" style="grid-column:1/-1;margin:12px 0 8px">${examFlag(goal.subject)} ${esc(topic)} <span class="saved-topic-count">${cards.length}</span></p>`;
+      html+=cards.map(cardHtml).join('');
+    });
   }
-  if(pinned.length){
-    if(auto.length)html+=`<p class="ws-seclbl" style="grid-column:1/-1;margin:16px 0 8px">Saved exams</p>`;
-    html+=pinned.map(cardHtml).join('');
+  if(archived.length){
+    html+=`<details class="saved-archived" style="grid-column:1/-1;margin-top:16px"><summary class="ws-seclbl saved-archived-summary">Archived (${archived.length})</summary><div class="saved-archived-grid">${archived.map(cardHtml).join('')}</div></details>`;
   }
   grid.innerHTML=html;
 }
 function renderWsCoachBannerHtml(goal,act,compact){
   const weak=getWeakAreasForGoal(goal);
-  const histLen=historyForGoal(goal).length;
+  const histLen=examHistoryForGoal(goal).length;
   const pct=getReadinessPctForGoal(goal);
   let leadHtml='';
   if(weak.length){
@@ -439,6 +476,5 @@ function startQuickForGoal(goalId,mod){
   syncGoalToProfile(goal);
   S.subject=goal.subject;
   S.level=goal.level;
-  if(S.mode==='practice')S.vocabLang=vocabLangFor(goal.subject);
   startQuick(mod);
 }

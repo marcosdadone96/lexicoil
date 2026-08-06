@@ -1,0 +1,90 @@
+token	type	pattern	prevWord	prevPos	reason	count	example1	example2
+Stimme	wrong_capitalized	Ich+PRON	Ich	PRON	prose_strict_homograph	4	lesen-t4-gemini-021.json: die Lebensqualität. Ich Stimme dem Plan zu.	lesen-t4-gemini-023.json: weniger Klimawandel. Ich Stimme dem Vorschlag voll zu
+Junge	wrong_capitalized	besonders+ADV	besonders	ADV	adj_before_noun	3	lesen-t2-gemini-066.json: zeigt, dass besonders Junge Erwachsene viel Zeit vor	lesen-t2-gemini-066.json: zeigt, dass besonders Junge Erwachsene viel Zeit vor
+machen	noun_lowercase	einfacher+ADV	einfacher	ADV	lexicon_override_tag	2	lesen-t1-gemini-164.json: Programm soll es einfacher machen, gemeinsame Aktivitäten zu	lesen-t2-gemini-087.json: Beruf für Zugewanderte einfacher machen.
+Essen	wrong_capitalized	Gemüse+NOUN	Gemüse	NOUN	verb_census_no_finite	2	lesen-t2-gemini-060.json: mehr Obst und Gemüse Essen und lieber draußen spielen	lesen-t2-gemini-060.json: mehr Obst und Gemüse Essen und lieber draußen spielen
+Deutschen	wrong_capitalized	in+ADP	in	ADP	adj_before_noun	2	lesen-t2-gemini-079.json: dass viele Bewohner in Deutschen Städten solche Systeme interessant	lesen-t2-gemini-088.json: Immer mehr Bewohner in Deutschen Großstädten entdecken ihre Dächer
+Wissen	wrong_capitalized	nur+ADV	nur	ADV	verb_census_no_finite	2	lesen-t2-gemini-083.json: Kinder dabei nicht nur Wissen sammeln, sondern auch	lesen-t2-gemini-083.json: dass Kinder nicht nur Wissen sammeln, sondern auch
+Stärken	wrong_capitalized	Gemeinschaft+NOUN	Gemeinschaft	NOUN	verb_census_no_finite	2	lesen-t2-gemini-089.json: das Gefühl der Gemeinschaft Stärken. Die Zeitungen sind	lesen-t2-gemini-089.json: das Gefühl der Gemeinschaft Stärken.
+Nachrichten	wrong_capitalized	Erwachsene+NOUN	Erwachsene	NOUN	verb_census_no_finite	2	lesen-t2-gemini-089.json: Jugendliche und junge Erwachsene Nachrichten oft über Instagram,	lesen-t2-gemini-089.json: Jugendliche und junge Erwachsene Nachrichten oft über soziale Medien
+laufen	noun_lowercase	wieder+ADV	wieder	ADV	lexicon_override_tag	2	lesen-t3-auto-urnm92.json: ausgefallen, die wieder laufen soll.	lesen-t3-auto-wskehx.json: ausgefallen, die wieder laufen soll.
+Glaube	wrong_capitalized	Ich+PRON	Ich	PRON	prose_strict_homograph	2	lesen-t4-gemini-024.json: nur Plastik. Ich Glaube nicht, dass dieser	lesen-t4-gemini-025.json: Kontrolle fehlt. Ich Glaube nicht, dass es
+buchen	noun_lowercase	vorher+ADV	vorher	ADV	lexicon_override_tag	2	lesen-t5-gemini-041.json: muss eine Woche vorher buchen und zahlt 15 Euro	lesen-t5-gemini-041.json: mindestens einen Tag vorher buchen und zahlt 30 Euro
+Spät	wrong_capitalized	zu+ADP	zu	ADP	zu_adv_capitalized	2	lesen-t5-gemini-061.json: man ein Medium zu Spät zurückgibt?	lesen-t5-gemini-061.json: die für ein zu Spät zurückgegebenes Medium erhoben wird
+Unternehmen	wrong_capitalized	Wochenende+NOUN	Wochenende	NOUN	verb_census_no_finite	1	lesen-t1-gemini-154.json: geschafft. Am Wochenende Unternehmen wir oft Ausflüge in	
+Ausflüge	wrong_capitalized	oft+ADV	oft	ADV	verb_census_no_finite	1	lesen-t1-gemini-154.json: Wochenende Unternehmen wir oft Ausflüge in die Natur.	
+Kochen	wrong_capitalized	zusammen+ADV	zusammen	ADV	adv_before_verb	1	lesen-t1-gemini-154.json: an dem wir zusammen Kochen oder Spiele spielen.	
+Besuchen	wrong_capitalized	Kurs+NOUN	Kurs	NOUN	modal_final_infinitive	1	lesen-t1-gemini-171.json: und einen neuen Kurs Besuchen. Meine Familie hat	
+Essen	wrong_capitalized	Wir+PRON	Wir	PRON	verb_census_no_finite	1	lesen-t1-gemini-172.json: für mich. Wir Essen oft zusammen Mittag und	
+Yogalehrer	wrong_capitalized	ihrem+DET	ihrem	DET	adj_before_noun	1	lesen-t1-gemini-173.json: nicht nur von ihrem Yogalehrer Unterstützung, sondern auch	
+Freie	wrong_capitalized	ihre+DET	ihre	DET	adj_before_noun	1	lesen-t1-gemini-173.json: Sie verbringt ihre Freie Zeit gerne draußen in	
+Vielen	wrong_capitalized	Die+DET	Die	DET	adj_before_noun	1	lesen-t1-gemini-174.json: Die Vielen Medieninhalte empfindet sie manchmal	
+Morgens	wrong_capitalized	sie+PRON	sie	PRON	adv_after_pronoun	1	lesen-t1-gemini-174.json: erwähnt, dass sie Morgens online Nachrichten liest,	
+geräten	noun_lowercase	digitalen+NOUN	digitalen	NOUN	lexicon_override_tag	1	lesen-t1-gemini-174.json: viel Zeit mit digitalen geräten.	
+Viele	wrong_capitalized	Gärtnern+NOUN	Gärtnern	NOUN	quantifier_capitalized	1	lesen-t2-gemini-060.json: , dass regelmäßiges Gärtnern Viele positive Effekte auf die	
+Wissen	wrong_capitalized	Familien+NOUN	Familien	NOUN	verb_census_no_finite	1	lesen-t2-gemini-060.json: Bewegung. Viele Familien Wissen, dass gesunde Gewohnheiten	
+Viele	wrong_capitalized	dass+SCONJ	dass	SCONJ	adj_before_noun	1	lesen-t2-gemini-060.json: Bericht zeigt, dass Viele Kinder zu wenig aktiv	
+Junge	wrong_capitalized	Viele+DET	Viele	DET	adj_before_noun	1	lesen-t2-gemini-061.json: Viele Junge Leute träumen davon,	
+Junge	wrong_capitalized	die+DET	die	DET	adj_before_noun	1	lesen-t2-gemini-061.json: und Organisationen, die Junge Leute bei der Planung	
+Junge	wrong_capitalized	der+DET	der	DET	adj_before_noun	1	lesen-t2-gemini-061.json: Wie reist der Junge Angestellte aus Berlin oft	
+Besuchen	wrong_capitalized	zu+ADP	zu	ADP	verb_census_no_finite	1	lesen-t2-gemini-061.json: Viele neue Supermärkte zu Besuchen.	
+Kochen	wrong_capitalized	frisch+ADV	frisch	ADV	verb_census_no_finite	1	lesen-t2-gemini-062.json: , wenn sie frisch Kochen. Die Situation in	
+Essen	wrong_capitalized	sie+PRON	sie	PRON	verb_census_no_finite	1	lesen-t2-gemini-062.json: das, was sie Essen. Ein Bericht einer	
+Konsumenten	wrong_capitalized	Initiativen+NOUN	Initiativen	NOUN	verb_census_no_finite	1	lesen-t2-gemini-062.json: , dass regionale Initiativen Konsumenten direkt mit lokalen Produzenten	
+Besuchen	wrong_capitalized	Einige+PRON	Einige	PRON	adj_before_noun	1	lesen-t2-gemini-066.json: Hobbys. Einige Besuchen Kurse, um Handwerk	
+suchen	noun_lowercase	Jetzt+ADV	Jetzt	ADV	lexicon_override_tag	1	lesen-t2-gemini-066.json: zu sein. Jetzt suchen sie wieder mehr den	
+Interesse	wrong_capitalized	Menschen+NOUN	Menschen	NOUN	verb_census_no_finite	1	lesen-t2-gemini-072.json: dass besonders Junge Menschen Interesse an Smart-Home-Lösungen haben.	
+machen	noun_lowercase	smarter+ADV	smarter	ADV	lexicon_override_tag	1	lesen-t2-gemini-072.json: das Zuhause noch smarter machen sollen. Die Erfahrungen	
+Junge	wrong_capitalized	allem+PRON	allem	PRON	adj_before_noun	1	lesen-t2-gemini-072.json: , dass vor allem Junge Menschen diese Technik praktisch	
+Sicherheitssysteme	wrong_capitalized	oder+CCONJ	oder	CCONJ	modal_final_infinitive	1	lesen-t2-gemini-076.json: Licht, Heizung oder Sicherheitssysteme. Eine neue Studie	
+Kurse	wrong_capitalized	Ausschließlich+ADV	Ausschließlich	ADV	verb_census_no_finite	1	lesen-t2-gemini-083.json: a) Ausschließlich Kurse für das Kochen.	
+Kurse	wrong_capitalized	Nur+ADV	Nur	ADV	verb_census_no_finite	1	lesen-t2-gemini-083.json: c) Nur Kurse für Sport und Fitness	
+Besuchen	wrong_capitalized	Kurse+NOUN	Kurse	NOUN	modal_final_infinitive	1	lesen-t2-gemini-085.json: müssen gesetzlich vorgeschriebene Kurse Besuchen.	
+treffen	noun_lowercase	regelmäßig+ADV	regelmäßig	ADV	lexicon_after_adj	1	lesen-t2-gemini-086.json: Bewohner sollten sich regelmäßig treffen und klare Vereinbarungen treffen	
+Kosten	wrong_capitalized	man+PRON	man	PRON	verb_census_no_finite	1	lesen-t2-gemini-086.json: ist, dass man Kosten für Miete oder Instandhaltung	
+Deutschen	wrong_capitalized	vielen+DET	vielen	DET	adj_before_noun	1	lesen-t2-gemini-087.json: In vielen Deutschen Städten werden alte Kreidetafeln	
+machen	noun_lowercase	interaktiver+ADV	interaktiver	ADV	lexicon_override_tag	1	lesen-t2-gemini-087.json: soll den Unterricht interaktiver machen. Schüler können direkt	
+Bewerbungsgespräche	wrong_capitalized	Beispiel+NOUN	Beispiel	NOUN	verb_census_no_finite	1	lesen-t2-gemini-087.json: Arbeitsplatz, zum Beispiel Bewerbungsgespräche, in Rollenspielen geübt	
+Hamburger	wrong_capitalized	der+DET	der	DET	adj_before_noun	1	lesen-t2-gemini-088.json: neues Wohnprojekt in der Hamburger Innenstadt bringt verschiedene Generationen	
+Spielen	wrong_capitalized	Zeitungen+NOUN	Zeitungen	NOUN	verb_census_no_finite	1	lesen-t2-gemini-089.json: Lokale Zeitungen Spielen weiterhin eine wichtige Rolle	
+Vielen	wrong_capitalized	in+ADP	in	ADP	adj_before_noun	1	lesen-t2-gemini-089.json: eine wichtige Rolle in Vielen Städten. Sie Berichten	
+Berichten	wrong_capitalized	Sie+PRON	Sie	PRON	verb_census_no_finite	1	lesen-t2-gemini-089.json: Vielen Städten. Sie Berichten über Ereignisse in der	
+Arbeiten	wrong_capitalized	Redaktionen+NOUN	Redaktionen	NOUN	verb_census_no_finite	1	lesen-t2-gemini-089.json: Medien. Die Redaktionen Arbeiten daran, beide Formate	
+Folgen	wrong_capitalized	Sie+PRON	Sie	PRON	verb_census_no_finite	1	lesen-t2-gemini-089.json: YouTube erhalten. Sie Folgen dort ihren Lieblingskanälen oder	
+Glauben	wrong_capitalized	Experten+NOUN	Experten	NOUN	verb_census_no_finite	1	lesen-t2-gemini-089.json: Welt. Einige Experten Glauben, dass diese Entwicklung	
+Vielen	wrong_capitalized	die+DET	die	DET	adj_before_noun	1	lesen-t2-gemini-089.json: ) Sie finden die Vielen Kommentare im Internet gut	
+Stellen	wrong_capitalized	Sie+PRON	Sie	PRON	verb_census_no_finite	1	lesen-t2-gemini-089.json: b) Sie Stellen die gedruckten Ausgaben komplett	
+Raten	wrong_capitalized	Was+PRON	Was	PRON	verb_census_no_finite	1	lesen-t2-gemini-089.json: Was Raten einige Spezialisten für den	
+Teamarbeit	wrong_capitalized	sie+PRON	sie	PRON	verb_census_no_finite	1	lesen-t4-gemini-004.json: Plan, weil sie Teamarbeit und die Organisation im	
+wissen	noun_lowercase	möchte+AUX	möchte	AUX	modal_noun_object	1	lesen-t4-gemini-009.json: . Die Organisation möchte wissen, wer die Idee	
+Mitmachen	wrong_capitalized	Nachbarn+NOUN	Nachbarn	NOUN	prose_strict_homograph	1	lesen-t4-gemini-018.json: , dass alle Nachbarn Mitmachen. Das ist wichtig	
+Alternativen	wrong_capitalized	erst+ADV	erst	ADV	prose_strict_homograph	1	lesen-t4-gemini-023.json: Die Organisation muss erst Alternativen finden. Ich bin	
+Ruhe	wrong_capitalized	Endlich+ADV	Endlich	ADV	prose_strict_homograph	1	lesen-t4-gemini-031.json: Endlich Ruhe im Unterricht! Weniger	
+Stimme	wrong_capitalized	Trotzdem+ADV	Trotzdem	ADV	prose_strict_homograph	1	lesen-t4-gemini-034.json: Ausnahme geben. Trotzdem Stimme ich dem Vorschlag grundsätzlich	
+Bessere	wrong_capitalized	in+ADP	in	ADP	adj_before_noun	1	lesen-t4-gemini-035.json: Stadt sollte lieber in Bessere Fahrradwege investieren. Das	
+Öffentlicher	wrong_capitalized	Nutzung+NOUN	Nutzung	NOUN	adj_before_noun	1	lesen-t4-gemini-035.json: Umwelt und die Nutzung Öffentlicher Verkehrsmittel, auch wenn	
+zwischen	noun_lowercase	nur+ADV	nur	ADV	lexicon_override_tag	1	lesen-t5-gemini-016.json: Sie dürfen sie nur zwischen sieben und einundzwanzig Uhr	
+Laufen	wrong_capitalized	nicht+PART	nicht	PART	modal_final_infinitive	1	lesen-t5-gemini-038.json: bei geöffneten Fenstern nicht Laufen. Kleine Maßnahmen helfen	
+Besuchen	wrong_capitalized	Uhr+NOUN	Uhr	NOUN	modal_final_infinitive	1	lesen-t5-gemini-041.json: 10:00 bis 18:00 Uhr Besuchen. 2. 	
+buchen	noun_lowercase	sofort+ADV	sofort	ADV	lexicon_override_tag	1	lesen-t5-gemini-041.json: ) Er kann sofort buchen und zahlt 10 Euro	
+Junge	wrong_capitalized	für+ADP	für	ADP	adj_before_noun	1	lesen-t5-gemini-045.json: Welche Altersregelungen gelten für Junge Mitglieder im Studio?	
+Besuchen	wrong_capitalized	Erwachsenen+NOUN	Erwachsenen	NOUN	modal_final_infinitive	1	lesen-t5-gemini-052.json: in Begleitung eines Erwachsenen Besuchen. Für die Sicherheit	
+Besuchen	wrong_capitalized	Freizeitzentrum+NOUN	Freizeitzentrum	NOUN	modal_final_infinitive	1	lesen-t5-gemini-052.json: kleinen Kindern das Freizeitzentrum Besuchen?	
+Waschen	wrong_capitalized	Bitte+PART	Bitte	PART	verb_census_no_finite	1	lesen-t5-gemini-054.json: Sauberkeit:** Bitte Waschen Sie Ihre Hände vor	
+Rasenflächen	wrong_capitalized	auf+ADP	auf	ADP	adj_before_noun	1	lesen-t5-gemini-056.json: ) Man darf auf Rasenflächen Rad fahren, aber	
+Erfolgen	wrong_capitalized	persönlich+ADV	persönlich	ADV	modal_final_infinitive	1	lesen-t5-gemini-060.json: kann online oder persönlich Erfolgen. 3. 	
+Niedrigen	wrong_capitalized	einen+DET	einen	DET	adj_before_noun	1	lesen-t5-gemini-060.json: achten Sie auf einen Niedrigen Lärmpegel in allen Bereichen	
+medien	noun_lowercase	von+ADP	von	ADP	lexicon_nn	1	lesen-t5-gemini-060.json: Verlust oder Beschädigung von medien muss der Wiederbeschaffungswert bezahlt	
+Kosten	wrong_capitalized	Euro+NOUN	Euro	NOUN	verb_census_no_finite	1	lesen-t5-gemini-060.json: andere Anmeldungen 10 Euro Kosten.	
+medien	noun_lowercase	Alle+DET	Alle	DET	lexicon_nn	1	lesen-t5-gemini-060.json: c) Alle medien können für drei Wochen	
+Zahlen	wrong_capitalized	Jahre+NOUN	Jahre	NOUN	verb_census_no_finite	1	lesen-t5-gemini-061.json: Jugendliche bis 18 Jahre Zahlen keine Gebühr. Die	
+Ganzen	wrong_capitalized	den+DET	den	DET	adj_before_noun	1	lesen-t5-gemini-061.json: Man kann dort den Ganzen Tag kostenlos Arbeiten.	
+Arbeiten	wrong_capitalized	kostenlos+ADV	kostenlos	ADV	modal_final_infinitive	1	lesen-t5-gemini-061.json: den Ganzen Tag kostenlos Arbeiten.	
+Verspätung	wrong_capitalized	Tagen+NOUN	Tagen	NOUN	verb_census_no_finite	1	lesen-t5-gemini-061.json: Euro nach zehn Tagen Verspätung.	
+schulaktivitäten	noun_lowercase	oder+CCONJ	oder	CCONJ	lexicon_nn	1	lesen-t5-gemini-062.json: Mitschüler, Lehrer oder schulaktivitäten dürfen nur mit schriftlicher	
+geräteschäden	noun_lowercase	oder+CCONJ	oder	CCONJ	lexicon_nn	1	lesen-t5-gemini-062.json: * Technische Probleme oder geräteschäden müssen innerhalb von 24	
+kosten	noun_lowercase	kann+AUX	kann	AUX	modal_noun_object	1	lesen-t5-gemini-062.json: . Vorsätzliche Beschädigung kann kosten für die Familie Verursachen	
+Verursachen	wrong_capitalized	Familie+NOUN	Familie	NOUN	modal_final_infinitive	1	lesen-t5-gemini-062.json: kosten für die Familie Verursachen. 7. 	
+Erfolgen	wrong_capitalized	Zonen+NOUN	Zonen	NOUN	modal_final_infinitive	1	lesen-t5-gemini-062.json: Unterrichtsstunden in speziellen Zonen Erfolgen.	
+schulaktivitäten	noun_lowercase	über+ADP	über	ADP	lexicon_nn	1	lesen-t5-gemini-062.json: b) Informationen über schulaktivitäten dürfen immer geteilt werden	
+Posten	wrong_capitalized	Mitschülern+NOUN	Mitschülern	NOUN	modal_final_infinitive	1	lesen-t5-gemini-062.json: darf Fotos von Mitschülern Posten, wenn man sie	

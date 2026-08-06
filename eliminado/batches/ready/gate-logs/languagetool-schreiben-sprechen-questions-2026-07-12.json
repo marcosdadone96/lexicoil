@@ -1,0 +1,1008 @@
+{
+  "generatedAt": "2026-07-12T11:34:30.538Z",
+  "note": "One-off LT over questions[].question/explanation for Schreiben+Sprechen. audit-languagetool-de.mjs only scans passages[].text; these 11 files were skipped today with reason=no_passage_text.",
+  "dir": "batches/ready/pool-verified",
+  "fileCount": 11,
+  "totalFieldsChecked": 66,
+  "totalMatches": 28,
+  "byRuleId": {
+    "WHITESPACE_RULE": 23,
+    "DE_CASE": 3,
+    "GERMAN_SPELLER_RULE": 2
+  },
+  "files": [
+    {
+      "file": "schreiben-gemini-004.json",
+      "module": "schreiben",
+      "fieldCount": 6,
+      "matchCount": 1,
+      "fields": [
+        {
+          "field": "questions[0].question",
+          "teil": 1,
+          "textLength": 500,
+          "text": "Schreiben Sie eine E-Mail an eine Freundin/einen Freund. Schreiben Sie etwas zu allen drei Punkten. Achten Sie auf Anrede und Schluss. Schreiben Sie circa 80 Wörter.\n\n• Sie haben vor, in einer europäischen Stadt Urlaub zu machen und möchten eine Freundin/einen Freund einladen, mitzukommen, um die Stadt kennenzulernen.\n• Beschreiben Sie, was Sie dort unternehmen möchten (z.B. Sehenswürdigkeiten, Essen, bei heißem Wetter).\n• Bitten Sie Ihre Freundin/Ihren Freund um Hilfe bei der Buchung der Reise.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "field": "questions[0].explanation",
+          "teil": 1,
+          "textLength": 280,
+          "text": "Bewertung (Goethe-offiziell): Erfüllung (0–10) – alle 3 Punkte behandelt; Kohärenz (0–10) – Textaufbau und Verknüpfung; Wortschatz (0–10) – B1-Niveau; Strukturen (0–10) – Grammatik B1. Ca. 80 Wörter (unter 50 % oder Thema verfehlt → Erfüllung 0). Anrede/Gruß: informell – du-Form.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "field": "questions[1].question",
+          "teil": 2,
+          "textLength": 582,
+          "text": "Sie lesen in einem Online-Forum eine Diskussion über Konsumverhalten und Umweltschutz. Eine Teilnehmerin schreibt:\n\n«Ich finde, wir Konsumentinnen und Konsumenten sollten mehr Verantwortung für die Umwelt übernehmen. Die Vielen Marketing-Kampagnen verführen uns nur zu unnötigen Käufen. Ich habe Bedenken, dass wir die Erde zu sehr belasten.»\n\nNehmen Sie Stellung zu diesem Beitrag. Äußern Sie Ihre Meinung und begründen Sie diese. Diskutieren Sie außerdem die Vor- und Nachteile eines bewussteren Konsums. Schreiben Sie circa 80 Wörter. Denken Sie an einen passenden Forumsbeitrag.",
+          "matchCount": 1,
+          "matches": [
+            {
+              "ruleId": "DE_CASE",
+              "category": "CASING",
+              "issueType": "uncategorized",
+              "message": "Außer am Satzanfang werden nur Nomen und Eigennamen großgeschrieben.",
+              "shortMessage": null,
+              "offset": 221,
+              "length": 6,
+              "context": "...twortung für die Umwelt übernehmen. Die Vielen Marketing-Kampagnen verführen uns nur z...",
+              "replacements": [
+                "vielen"
+              ]
+            }
+          ]
+        },
+        {
+          "field": "questions[1].explanation",
+          "teil": 2,
+          "textLength": 327,
+          "text": "Bewertung (Goethe-offiziell): Erfüllung (0–10) – Meinung, Begründung, Vor- und Nachteile behandelt; Kohärenz (0–10) – Textaufbau und Verknüpfung; Wortschatz (0–10) – B1-Niveau; Strukturen (0–10) – Grammatik B1. Ca. 80 Wörter (unter 50 % oder Thema verfehlt → Erfüllung 0). Anrede/Gruß: Forumsbeitrag – kein Briefregister nötig.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "field": "questions[2].question",
+          "teil": 3,
+          "textLength": 321,
+          "text": "Schreiben Sie eine kurze Mitteilung an Ihre Sprachlehrerin, Frau Schmidt. Achten Sie auf Anrede und Schluss (Sie-Form). Schreiben Sie circa 40 Wörter.\n\n• Ihr Termin zur Übung der Aussprache muss leider abgesagt werden.\n• Erklären Sie kurz, warum Sie den Termin absagen müssen.\n• Bitten Sie um einen neuen Terminvorschlag.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "field": "questions[2].explanation",
+          "teil": 3,
+          "textLength": 356,
+          "text": "Bewertung (Goethe-offiziell): Erfüllung (0–4) – Mitteilung vollständig (Absage, Grund, neuer Terminvorschlag); Kohärenz (0–4) – Textaufbau; Wortschatz (0–6) – B1-Niveau; Strukturen (0–6) – Grammatik B1. Ca. 40 Wörter (unter 50 % oder Thema verfehlt → Erfüllung 0). Anrede/Gruß passend zum Empfänger im Aufgabentext: \"Liebe Frau Schmidt\" / korrekt Sie-Form.",
+          "matchCount": 0,
+          "matches": []
+        }
+      ]
+    },
+    {
+      "file": "schreiben-gemini-005.json",
+      "module": "schreiben",
+      "fieldCount": 6,
+      "matchCount": 0,
+      "fields": [
+        {
+          "field": "questions[0].question",
+          "teil": 1,
+          "textLength": 529,
+          "text": "Sie haben vor Kurzem ein schönes Wochenende erlebt und möchten einer/einem Freund/in davon erzählen, die/der leider nicht dabei sein konnte. Schreiben Sie eine E-Mail (circa 80 Wörter). Schreiben Sie etwas zu allen drei Punkten. Achten Sie auf Anrede und Gruß.\n\n• Erzählen Sie, was Sie am Wochenende schönes unternommen haben. Sind Sie zum Beispiel spazieren gegangen?\n• Beschreiben Sie, was Ihnen am besten gefallen hat und warum.\n• Machen Sie einen Vorschlag, wann Sie sich bald treffen können, um davon persönlich zu erzählen.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "field": "questions[0].explanation",
+          "teil": 1,
+          "textLength": 280,
+          "text": "Bewertung (Goethe-offiziell): Erfüllung (0–10) – alle 3 Punkte behandelt; Kohärenz (0–10) – Textaufbau und Verknüpfung; Wortschatz (0–10) – B1-Niveau; Strukturen (0–10) – Grammatik B1. Ca. 80 Wörter (unter 50 % oder Thema verfehlt → Erfüllung 0). Anrede/Gruß: informell – du-Form.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "field": "questions[1].question",
+          "teil": 2,
+          "textLength": 667,
+          "text": "Im Internetforum „Arbeit und Leben heute“ diskutieren die Mitglieder über flexible Arbeitsmodelle und Homeoffice. Lesen Sie den folgenden Kommentar:\n\n«Ich finde, dass starre Bürozeiten und feste Räume nicht mehr zeitgemäß sind. Viele meiner Kollegen überlegen sogar zu kündigen, weil sie sich im Büro nicht wohlfühlen und nicht konzentrierter arbeiten können. Flexibilität ist der Schlüssel!»\n\nSchreiben Sie nun Ihre Meinung (circa 80 Wörter) und äußern Sie sich zu dem Kommentar. Schreiben Sie etwas zu allen drei Punkten.\n\n• Sagen Sie Ihre Meinung zu der Aussage im Forum.\n• Begründen Sie Ihre Meinung.\n• Nennen Sie Vor- und Nachteile von flexiblen Arbeitsmodellen.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "field": "questions[1].explanation",
+          "teil": 2,
+          "textLength": 327,
+          "text": "Bewertung (Goethe-offiziell): Erfüllung (0–10) – Meinung, Begründung, Vor- und Nachteile behandelt; Kohärenz (0–10) – Textaufbau und Verknüpfung; Wortschatz (0–10) – B1-Niveau; Strukturen (0–10) – Grammatik B1. Ca. 80 Wörter (unter 50 % oder Thema verfehlt → Erfüllung 0). Anrede/Gruß: Forumsbeitrag – kein Briefregister nötig.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "field": "questions[2].question",
+          "teil": 3,
+          "textLength": 387,
+          "text": "Sie haben sich mit Ihrer Nachbarin, Frau Schmidt, zu einem Kaffee verabredet. Leider können Sie den Termin nicht wahrnehmen, weil Sie unerwartet wegfahren müssen.\nSchreiben Sie an Frau Schmidt. Schreiben Sie eine E-Mail (circa 40 Wörter). Vergessen Sie nicht Anrede und Gruß.\n\n• Entschuldigen Sie sich für die Absage.\n• Erklären Sie kurz den Grund.\n• Schlagen Sie einen neuen Termin vor.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "field": "questions[2].explanation",
+          "teil": 3,
+          "textLength": 358,
+          "text": "Bewertung (Goethe-offiziell): Erfüllung (0–4) – Mitteilung vollständig (Entschuldigung, Grund, neuer Vorschlag); Kohärenz (0–4) – Textaufbau; Wortschatz (0–6) – B1-Niveau; Strukturen (0–6) – Grammatik B1. Ca. 40 Wörter (unter 50 % oder Thema verfehlt → Erfüllung 0). Anrede/Gruß passend zum Empfänger im Aufgabentext: \"Liebe Frau Schmidt\" / korrekt Sie-Form.",
+          "matchCount": 0,
+          "matches": []
+        }
+      ]
+    },
+    {
+      "file": "schreiben-gemini-006.json",
+      "module": "schreiben",
+      "fieldCount": 6,
+      "matchCount": 1,
+      "fields": [
+        {
+          "field": "questions[0].question",
+          "teil": 1,
+          "textLength": 453,
+          "text": "Du hast gerade eine neue Stadt entdeckt und möchtest deinem Freund/deiner Freundin davon erzählen. Er/Sie hat dich bei der Reiseplanung unterstützt.\nSchreibe eine E-Mail (circa 80 Wörter). Schreibe etwas zu allen drei Punkten. Achte auf Anrede und Gruß.\n\n• Beschreibe kurz deine Reise: Was hast du dort gemacht?\n• Erkläre, was dir besonders gut gefallen hat und warum.\n• Schlage vor, wie ihr euch bald treffen könnt, um zusammen ein neues Hobby zu üben.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "field": "questions[0].explanation",
+          "teil": 1,
+          "textLength": 280,
+          "text": "Bewertung (Goethe-offiziell): Erfüllung (0–10) – alle 3 Punkte behandelt; Kohärenz (0–10) – Textaufbau und Verknüpfung; Wortschatz (0–10) – B1-Niveau; Strukturen (0–10) – Grammatik B1. Ca. 80 Wörter (unter 50 % oder Thema verfehlt → Erfüllung 0). Anrede/Gruß: informell – du-Form.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "field": "questions[1].question",
+          "teil": 2,
+          "textLength": 631,
+          "text": "Im Internetforum „Arbeitswelt heute“ diskutieren die Nutzer über das Thema Home-Office. Sie lesen folgenden Beitrag:\n«Home-Office ist die Zukunft! Man ist flexibler und hat mehr Zeit für sich selbst.»\nSchreiben Sie Ihre Meinung (circa 80 Wörter) und begründen Sie diese. Gehen Sie auf Vor- und Nachteile ein.\n\n• Nehmen Sie Stellung zu der Aussage im Forum und erklären Sie, ob Home-Office ausschließlich Vorteile hat.\n• Nennen Sie die wichtigsten Vor- und Nachteile des Home-Office.\n• Beschreiben Sie, welche Erfahrungen Sie selbst mit Home-Office gemacht haben und wie der Arbeitgeber Mitarbeiter im Home-Office unterstützen kann.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "field": "questions[1].explanation",
+          "teil": 2,
+          "textLength": 327,
+          "text": "Bewertung (Goethe-offiziell): Erfüllung (0–10) – Meinung, Begründung, Vor- und Nachteile behandelt; Kohärenz (0–10) – Textaufbau und Verknüpfung; Wortschatz (0–10) – B1-Niveau; Strukturen (0–10) – Grammatik B1. Ca. 80 Wörter (unter 50 % oder Thema verfehlt → Erfüllung 0). Anrede/Gruß: Forumsbeitrag – kein Briefregister nötig.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "field": "questions[2].question",
+          "teil": 3,
+          "textLength": 344,
+          "text": "Sie haben nächste Woche eine wichtige Präsentation und brauchen Hilfe bei der Vorbereitung. Schreiben Sie an Ihre Kollegin, Frau Weber.\nSchreiben Sie eine E-Mail (circa 40 Wörter). Vergessen Sie nicht Anrede und Gruß.\n\n• Erklären Sie kurz, worum es geht.\n• Bitten Sie um ihre Hilfe.\n• Schlagen Sie einen möglichen Zeitpunkt für ein Treffen vor.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "field": "questions[2].explanation",
+          "teil": 3,
+          "textLength": 361,
+          "text": "Bewertung (Goethe-offiziell): Erfüllung (0–4) – Mitteilung vollständig (Anliegen, Bitte um Hilfe, Treffensvorschlag); Kohärenz (0–4) – Textaufbau; Wortschatz (0–6) – B1-Niveau; Strukturen (0–6) – Grammatik B1. Ca. 40 Wörter (unter 50 % oder Thema verfehlt → Erfüllung 0). Anrede/Gruß passend zum Empfänger im Aufgabentext: \"Liebe Frau Weber\" / korrekt Sie-Form.",
+          "matchCount": 1,
+          "matches": [
+            {
+              "ruleId": "GERMAN_SPELLER_RULE",
+              "category": "TYPOS",
+              "issueType": "misspelling",
+              "message": "Möglicher Tippfehler gefunden.",
+              "shortMessage": "Rechtschreibfehler",
+              "offset": 98,
+              "length": 17,
+              "context": "... vollständig (Anliegen, Bitte um Hilfe, Treffensvorschlag); Kohärenz (0–4) – Textaufbau; Wortscha...",
+              "replacements": [
+                "Treffens-verschlag"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "schreiben-gemini-007.json",
+      "module": "schreiben",
+      "fieldCount": 6,
+      "matchCount": 0,
+      "fields": [
+        {
+          "field": "questions[0].question",
+          "teil": 1,
+          "textLength": 496,
+          "text": "Sie haben gehört, dass Ihr Freund/Ihre Freundin sich einen Kurzurlaub wünscht. Sie möchten ihn/sie dazu einladen, gemeinsam etwas zu planen.\nSchreiben Sie eine E-Mail (circa 80 Wörter). Schreiben Sie etwas zu allen drei Punkten. Achten Sie auf Anrede und Gruß.\n\n• Fragen Sie, wohin Ihr Freund/Ihre Freundin gerne reisen wünscht und welches Bedürfnis er/sie hat.\n• Schlagen Sie eine konkrete Aktivität vor, die Sie dort machen könnten.\n• machen Sie einen Vorschlag für einen möglichen Reisetermin.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "field": "questions[0].explanation",
+          "teil": 1,
+          "textLength": 280,
+          "text": "Bewertung (Goethe-offiziell): Erfüllung (0–10) – alle 3 Punkte behandelt; Kohärenz (0–10) – Textaufbau und Verknüpfung; Wortschatz (0–10) – B1-Niveau; Strukturen (0–10) – Grammatik B1. Ca. 80 Wörter (unter 50 % oder Thema verfehlt → Erfüllung 0). Anrede/Gruß: informell – du-Form.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "field": "questions[1].question",
+          "teil": 2,
+          "textLength": 442,
+          "text": "Im Online-Forum „Sprachen lernen“ diskutieren die Mitglieder über die Bedeutung von Fremdsprachen für Kinder. Sie lesen folgenden Beitrag:\n«Ich finde es wichtig, dass Kinder schon früh eine Zweitsprache lernen. Das erweitert nicht nur den Wortschatz, sondern öffnet auch Türen zu anderen Kulturen.»\nSchreiben Sie nun Ihre Meinung (circa 80 Wörter). Begründen Sie Ihre Meinung und nennen Sie Vor- und Nachteile des frühen Fremdsprachenlernens.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "field": "questions[1].explanation",
+          "teil": 2,
+          "textLength": 327,
+          "text": "Bewertung (Goethe-offiziell): Erfüllung (0–10) – Meinung, Begründung, Vor- und Nachteile behandelt; Kohärenz (0–10) – Textaufbau und Verknüpfung; Wortschatz (0–10) – B1-Niveau; Strukturen (0–10) – Grammatik B1. Ca. 80 Wörter (unter 50 % oder Thema verfehlt → Erfüllung 0). Anrede/Gruß: Forumsbeitrag – kein Briefregister nötig.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "field": "questions[2].question",
+          "teil": 3,
+          "textLength": 403,
+          "text": "Ihr Nachbar, Herr Weber, spielt oft laut Musik und Sie möchten ihn bitten, abends etwas leiser zu sein, da Sie Ruhe brauchen.\nSchreiben Sie an Herrn Weber (circa 40 Wörter). Vergessen Sie nicht Anrede und Gruß.\n\n• Erklären Sie, dass Sie abends mehr Stille brauchen.\n• Bitten Sie ihn freundlich, die Musik leiser zu stellen.\n• Schlagen Sie eine Uhrzeit vor, ab der die Lautstärke reduziert werden sollte.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "field": "questions[2].explanation",
+          "teil": 3,
+          "textLength": 371,
+          "text": "Bewertung (Goethe-offiziell): Erfüllung (0–4) – Mitteilung vollständig (Ruhebedarf, Bitte um leisere Musik, Uhrzeitvorschlag); Kohärenz (0–4) – Textaufbau; Wortschatz (0–6) – B1-Niveau; Strukturen (0–6) – Grammatik B1. Ca. 40 Wörter (unter 50 % oder Thema verfehlt → Erfüllung 0). Anrede/Gruß passend zum Empfänger im Aufgabentext: \"Lieber Herr Weber\" / korrekt Sie-Form.",
+          "matchCount": 0,
+          "matches": []
+        }
+      ]
+    },
+    {
+      "file": "schreiben-gemini-009.json",
+      "module": "schreiben",
+      "fieldCount": 6,
+      "matchCount": 0,
+      "fields": [
+        {
+          "field": "questions[0].question",
+          "teil": 1,
+          "textLength": 557,
+          "text": "Ein/e Freund/in von Ihnen hat Ihnen angeboten, beim Umzug in Ihre neue Wohnung zu helfen. Sie freuen sich über die Unterstützung und möchten ihm/ihr schreiben.\nSchreiben Sie eine E-Mail (circa 80 Wörter). Schreiben Sie etwas zu allen drei Punkten. Achten Sie auf Anrede und Gruß.\n\n• Bedanken Sie sich für die Hilfe und beschreiben Sie, was Ihr größter Wunsch für die neue Wohnung ist.\n• Erklären Sie, welche Dinge Ihnen noch fehlen und wobei Sie konkret Hilfe wünschen.\n• Machen Sie einen Vorschlag, wann Ihr/e Freund/in Sie beim Packen unterstützen könnte.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "field": "questions[0].explanation",
+          "teil": 1,
+          "textLength": 280,
+          "text": "Bewertung (Goethe-offiziell): Erfüllung (0–10) – alle 3 Punkte behandelt; Kohärenz (0–10) – Textaufbau und Verknüpfung; Wortschatz (0–10) – B1-Niveau; Strukturen (0–10) – Grammatik B1. Ca. 80 Wörter (unter 50 % oder Thema verfehlt → Erfüllung 0). Anrede/Gruß: informell – du-Form.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "field": "questions[1].question",
+          "teil": 2,
+          "textLength": 836,
+          "text": "Sie haben in einem Online-Forum einen Beitrag zum Thema \"Lebensmittelverschwendung\" gelesen. Die Diskussion ist sehr lebhaft.\n\nLesen Sie den folgenden Kommentar:\n«Ich finde es schwierig, im Alltag immer auf Nachhaltigkeit zu achten. Besonders beim Essen gibt es oft einen Überschuss, und es ist fast unmöglich, alles zu vermeiden. Manchmal denke ich, das Problem ist zu groß für den Einzelnen.»\n\nSchreiben Sie nun Ihre Meinung (circa 80 Wörter). Äußern Sie sich zu dem Kommentar und nennen Sie Vor- und Nachteile. Vergessen Sie nicht Einleitung und Schluss.\n\n• Nehmen Sie Stellung zu der Aussage im Kommentar.\n• Nennen Sie mindestens zwei Vorteile, wie man Initiativen gegen Lebensmittelverschwendung unterstützen kann.\n• Nennen Sie mindestens zwei Nachteile, die beim Versuch, Lebensmittelverschwendung zu reduzieren, entstehen können.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "field": "questions[1].explanation",
+          "teil": 2,
+          "textLength": 327,
+          "text": "Bewertung (Goethe-offiziell): Erfüllung (0–10) – Meinung, Begründung, Vor- und Nachteile behandelt; Kohärenz (0–10) – Textaufbau und Verknüpfung; Wortschatz (0–10) – B1-Niveau; Strukturen (0–10) – Grammatik B1. Ca. 80 Wörter (unter 50 % oder Thema verfehlt → Erfüllung 0). Anrede/Gruß: Forumsbeitrag – kein Briefregister nötig.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "field": "questions[2].question",
+          "teil": 3,
+          "textLength": 434,
+          "text": "Sie hatten sich mit Ihrem Kollegen Tom zum Mittagessen verabredet. Leider können Sie heute nicht kommen, weil Ihnen noch wichtige Unterlagen für eine Präsentation fehlen.\nSchreiben Sie eine kurze Nachricht an Tom (circa 40 Wörter). Vergessen Sie nicht Anrede und Gruß.\n\n• Entschuldigen Sie sich bei Tom.\n• Erklären Sie kurz den Grund für die Absage.\n• Äußern Sie den Wunsch nach einem neuen Termin und schlagen Sie einen Zeitraum vor.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "field": "questions[2].explanation",
+          "teil": 3,
+          "textLength": 352,
+          "text": "Bewertung (Goethe-offiziell): Erfüllung (0–4) – Mitteilung vollständig (Entschuldigung, Grund, neuer Vorschlag); Kohärenz (0–4) – Textaufbau; Wortschatz (0–6) – B1-Niveau; Strukturen (0–6) – Grammatik B1. Ca. 40 Wörter (unter 50 % oder Thema verfehlt → Erfüllung 0). Anrede/Gruß passend zum Empfänger im Aufgabentext: \"Hallo Tom\" / informell – du-Form.",
+          "matchCount": 0,
+          "matches": []
+        }
+      ]
+    },
+    {
+      "file": "schreiben-gemini-010.json",
+      "module": "schreiben",
+      "fieldCount": 6,
+      "matchCount": 0,
+      "fields": [
+        {
+          "field": "questions[0].question",
+          "teil": 1,
+          "textLength": 465,
+          "text": "Sie haben sich vor Kurzem für einen interessanten Kurs in der Stadt angemeldet. Ein guter Freund von Ihnen möchte auch teilnehmen und hat Sie nach Details gefragt.\nSchreiben Sie eine E-Mail (circa 80 Wörter). Schreiben Sie etwas zu allen drei Punkten. Achten Sie auf Anrede und Gruß.\n\n• Erklären Sie, warum Sie diese Anmeldung gemacht haben.\n• Beschreiben Sie, wie die Organisation des Unterrichts funktioniert.\n• Geben Sie Informationen über die monatliche Gebühr.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "field": "questions[0].explanation",
+          "teil": 1,
+          "textLength": 280,
+          "text": "Bewertung (Goethe-offiziell): Erfüllung (0–10) – alle 3 Punkte behandelt; Kohärenz (0–10) – Textaufbau und Verknüpfung; Wortschatz (0–10) – B1-Niveau; Strukturen (0–10) – Grammatik B1. Ca. 80 Wörter (unter 50 % oder Thema verfehlt → Erfüllung 0). Anrede/Gruß: informell – du-Form.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "field": "questions[1].question",
+          "teil": 2,
+          "textLength": 491,
+          "text": "Sie haben im Internet einen Beitrag zum Thema Freizeitgestaltung gelesen.\n\nEin Nutzer schreibt: \"Ich finde, dass man in der modernen Welt viel zu wenig Zeit mit der eigenen Familie verbringt, weil alle nur noch beschäftigt sind.\"\n\nSchreiben Sie Ihre Meinung zu diesem Thema (circa 80 Wörter). Gehen Sie auf folgende Punkte ein:\n\n• Nennen Sie Ihre eigene Meinung zu diesem Thema.\n• Nennen Sie Vorteile und Nachteile von gemeinsamer Familienzeit.\n• Geben Sie eine Begründung für Ihre Position.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "field": "questions[1].explanation",
+          "teil": 2,
+          "textLength": 327,
+          "text": "Bewertung (Goethe-offiziell): Erfüllung (0–10) – Meinung, Begründung, Vor- und Nachteile behandelt; Kohärenz (0–10) – Textaufbau und Verknüpfung; Wortschatz (0–10) – B1-Niveau; Strukturen (0–10) – Grammatik B1. Ca. 80 Wörter (unter 50 % oder Thema verfehlt → Erfüllung 0). Anrede/Gruß: Forumsbeitrag – kein Briefregister nötig.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "field": "questions[2].question",
+          "teil": 3,
+          "textLength": 491,
+          "text": "Ihr Nachbar Herr Klein hat Ihnen angeboten, Sie bei der nächsten Beratung zur städtischen Abfalltrennung zu unterstützen, da Sie den ersten Termin verpasst haben. Sie möchten dieses Angebot annehmen.\nSchreiben Sie an Herrn Klein. Schreiben Sie circa 40 Wörter. Vergessen Sie nicht Anrede und Gruß.\n\n• Bedanken Sie sich für das freundliche Angebot.\n• Bestätigen Sie, dass Sie das Gespräch gerne wahrnehmen möchten.\n• Schlagen Sie einen Transport zu seinem Haus vor, falls Sie Hilfe benötigen.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "field": "questions[2].explanation",
+          "teil": 3,
+          "textLength": 359,
+          "text": "Bewertung (Goethe-offiziell): Erfüllung (0–4) – Mitteilung vollständig (Dank, Annahme des Angebots, Terminwunsch); Kohärenz (0–4) – Textaufbau; Wortschatz (0–6) – B1-Niveau; Strukturen (0–6) – Grammatik B1. Ca. 40 Wörter (unter 50 % oder Thema verfehlt → Erfüllung 0). Anrede/Gruß passend zum Empfänger im Aufgabentext: \"Lieber Herr Klein\" / korrekt Sie-Form.",
+          "matchCount": 0,
+          "matches": []
+        }
+      ]
+    },
+    {
+      "file": "sprechen-gemini-001.json",
+      "module": "sprechen",
+      "fieldCount": 6,
+      "matchCount": 5,
+      "fields": [
+        {
+          "field": "questions[0].question",
+          "teil": 1,
+          "textLength": 598,
+          "text": "Sie möchten zusammen mit Ihrem Partner/Ihrer Partnerin ein kleines Kulturfest in Ihrer Stadt organisieren. Planen Sie das Fest gemeinsam. Sprechen Sie über die folgenden Punkte:\n\nDatum und geeigneter Ort für das Fest\nIdeen für das Programm (Musik, Essen, Aktivitäten)\nBudgetplanung: Was darf das Fest kosten?\nWerbung und wie Sie die Leute informieren können\nmögliche Herausforderungen, wie zum Beispiel Umgang mit Beschwerden von Anwohnern oder unerwarteten Problemen bei der Organisation\n\nMachen Sie Vorschläge, reagieren Sie auf die Vorschläge Ihres Partners/Ihrer Partnerin und einigen Sie sich.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "field": "questions[0].explanation",
+          "teil": 1,
+          "textLength": 312,
+          "text": "Der Kandidat/Die Kandidatin soll zeigen, dass er/sie aktiv an der Planung teilnehmen, Vorschläge machen, auf diese reagieren und zu einer Einigung kommen kann. Wichtige Kriterien sind Flüssigkeit, Kohärenz, Aufgabenbewältigung und die Nutzung angemessenen Wortschatzes und grammatischer Strukturen auf B1-Niveau.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "field": "questions[1].question",
+          "teil": 2,
+          "textLength": 697,
+          "text": "Halten Sie eine kurze Präsentation zum Thema: „Die Bedeutung von Kulturfesten in meiner Heimatstadt“.\n\nIhre Präsentation sollte folgende Punkte enthalten:\n\n1.  Einleitung: Nennen Sie das Thema Ihrer Präsentation.\n2.  Situation/Erfahrung im Heimatland: Welche Kulturfeste gibt es in Ihrer Heimatstadt? Wie wichtig sind sie für die Menschen?\n3.  Details / Beispiele: Geben Sie konkrete Beispiele für Feste und beschreiben Sie, was dort typischerweise gemacht wird.\n4.  Vor- und Nachteile: Welche Positiven und negativen Aspekte haben solche Feste für die Stadt und ihre Bewohner?\n5.  Persönliche Meinung + Schluss: Was ist Ihre persönliche Meinung zu Kulturfesten? Fassen Sie Ihre Gedanken zusammen.",
+          "matchCount": 5,
+          "matches": [
+            {
+              "ruleId": "WHITESPACE_RULE",
+              "category": "TYPOGRAPHY",
+              "issueType": "whitespace",
+              "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+              "shortMessage": null,
+              "offset": 158,
+              "length": 2,
+              "context": "...on sollte folgende Punkte enthalten:  1.  Einleitung: Nennen Sie das Thema Ihrer P...",
+              "replacements": [
+                " "
+              ]
+            },
+            {
+              "ruleId": "WHITESPACE_RULE",
+              "category": "TYPOGRAPHY",
+              "issueType": "whitespace",
+              "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+              "shortMessage": null,
+              "offset": 215,
+              "length": 2,
+              "context": "...nen Sie das Thema Ihrer Präsentation. 2.  Situation/Erfahrung im Heimatland: Welch...",
+              "replacements": [
+                " "
+              ]
+            },
+            {
+              "ruleId": "WHITESPACE_RULE",
+              "category": "TYPOGRAPHY",
+              "issueType": "whitespace",
+              "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+              "shortMessage": null,
+              "offset": 342,
+              "length": 2,
+              "context": "...ie wichtig sind sie für die Menschen? 3.  Details / Beispiele: Geben Sie konkrete ...",
+              "replacements": [
+                " "
+              ]
+            },
+            {
+              "ruleId": "WHITESPACE_RULE",
+              "category": "TYPOGRAPHY",
+              "issueType": "whitespace",
+              "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+              "shortMessage": null,
+              "offset": 465,
+              "length": 2,
+              "context": "...was dort typischerweise gemacht wird. 4.  Vor- und Nachteile: Welche Positiven und...",
+              "replacements": [
+                " "
+              ]
+            },
+            {
+              "ruleId": "WHITESPACE_RULE",
+              "category": "TYPOGRAPHY",
+              "issueType": "whitespace",
+              "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+              "shortMessage": null,
+              "offset": 580,
+              "length": 2,
+              "context": "...este für die Stadt und ihre Bewohner? 5.  Persönliche Meinung + Schluss: Was ist I...",
+              "replacements": [
+                " "
+              ]
+            }
+          ]
+        },
+        {
+          "field": "questions[1].explanation",
+          "teil": 2,
+          "textLength": 295,
+          "text": "Der Kandidat/Die Kandidatin soll eine strukturierte Präsentation halten, die alle vorgegebenen Punkte abdeckt. Bewertet werden die sprachliche Ausdrucksfähigkeit, die Kohärenz der Argumente, der Wortschatz, die Grammatik und die Fähigkeit, das Thema verständlich und interessant zu präsentieren.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "field": "questions[2].question",
+          "teil": 3,
+          "textLength": 504,
+          "text": "Geben Sie Ihrem Partner/Ihrer Partnerin konstruktives Feedback zu seiner/ihrer Präsentation in Teil 2 über „Die Bedeutung von Kulturfesten in meiner Heimatstadt“. Sagen Sie, was Ihnen gut gefallen hat und geben Sie vielleicht einen kleinen Verbesserungsvorschlag. Beantworten Sie anschließend 2-3 Fragen zum Thema.\n\nBeispielfragen:\nWelche Kulturfeste in Ihrer Heimatstadt besuchen Sie am liebsten?\nWas ist bei einem Kulturfest für Sie besonders wichtig?\nSollten Kulturfeste kostenlos sein? Warum (nicht)?",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "field": "questions[2].explanation",
+          "teil": 3,
+          "textLength": 263,
+          "text": "Der Kandidat/Die Kandidatin soll zeigen, dass er/sie konstruktives Feedback geben und auf Rückfragen präzise und begründet antworten kann. Bewertet werden die Fähigkeit zur Interaktion, die Argumentationsfähigkeit, der Wortschatz und die grammatische Korrektheit.",
+          "matchCount": 0,
+          "matches": []
+        }
+      ]
+    },
+    {
+      "file": "sprechen-gemini-005.json",
+      "module": "sprechen",
+      "fieldCount": 6,
+      "matchCount": 9,
+      "fields": [
+        {
+          "field": "questions[0].question",
+          "teil": 1,
+          "textLength": 698,
+          "text": "Sie haben gehört, dass das Jugendzentrum in Ihrer Stadt dringend neue Sportgeräte benötigt. Sie möchten eine Spendenaktion organisieren, um Geld dafür zu sammeln. Sprechen Sie darüber, wie Sie diese Aktion gemeinsam planen können. Machen Sie Vorschläge, reagieren Sie darauf und einigen Sie sich auf die wichtigsten Punkte.\n\nDiskutieren Sie folgende Punkte:\nWas für eine Art von Spendenaktion wollen wir organisieren? (z.B. Kuchenverkauf, Flohmarkt, Spendenlauf)\nWer soll die Aktion unterstützen und wie können wir Helfer finden?\nWo und wann soll die Aktion stattfinden? Sollen wir Räume anfragen?\nWie können wir die Aktion bekannt machen, damit viele Leute kommen?\nWie teilen wir die Aufgaben auf?",
+          "matchCount": 1,
+          "matches": [
+            {
+              "ruleId": "DE_CASE",
+              "category": "CASING",
+              "issueType": "uncategorized",
+              "message": "Außer am Satzanfang werden nur Nomen und Eigennamen großgeschrieben.",
+              "shortMessage": null,
+              "offset": 463,
+              "length": 3,
+              "context": "... Kuchenverkauf, Flohmarkt, Spendenlauf) Wer soll die Aktion unterstützen und wie kö...",
+              "replacements": [
+                "wer"
+              ]
+            }
+          ]
+        },
+        {
+          "field": "questions[0].explanation",
+          "teil": 1,
+          "textLength": 167,
+          "text": "Bewertet werden die Fähigkeit zur Interaktion, das Einbringen und Reagieren auf Vorschläge, die Fähigkeit, sich zu einigen, sowie Grammatik, Wortschatz und Aussprache.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "field": "questions[1].question",
+          "teil": 2,
+          "textLength": 785,
+          "text": "Halten Sie eine kurze Präsentation zum Thema „Die Rolle von sozialen Medien im Alltag“.\n\nIhre Präsentation soll folgende Punkte enthalten:\n1.  Einleitung: Nennen Sie das Thema Ihrer Präsentation.\n2.  Situation in Ihrem Heimatland: Wie verbreitet sind soziale Medien dort? Welche Rolle spielen sie?\n3.  Details / Beispiele: Nennen Sie konkrete Beispiele für die Nutzung (z.B. Kommunikation, Information, Unterhaltung, Arbeitssuche).\n4.  Vor- und Nachteile: Welche Positiven und negativen Aspekte haben soziale Medien für Einzelpersonen und die Gesellschaft? Wie beeinflussen sie das Bild, das Andere von uns haben?\n5.  Persönliche Meinung + Schluss: Fassen Sie Ihre Meinung zusammen und geben Sie einen Ausblick. Wie sollte man mit sozialen Medien umgehen, um ein gutes Leben zu führen?",
+          "matchCount": 5,
+          "matches": [
+            {
+              "ruleId": "WHITESPACE_RULE",
+              "category": "TYPOGRAPHY",
+              "issueType": "whitespace",
+              "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+              "shortMessage": null,
+              "offset": 141,
+              "length": 2,
+              "context": "...ation soll folgende Punkte enthalten: 1.  Einleitung: Nennen Sie das Thema Ihrer P...",
+              "replacements": [
+                " "
+              ]
+            },
+            {
+              "ruleId": "WHITESPACE_RULE",
+              "category": "TYPOGRAPHY",
+              "issueType": "whitespace",
+              "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+              "shortMessage": null,
+              "offset": 198,
+              "length": 2,
+              "context": "...nen Sie das Thema Ihrer Präsentation. 2.  Situation in Ihrem Heimatland: Wie verbr...",
+              "replacements": [
+                " "
+              ]
+            },
+            {
+              "ruleId": "WHITESPACE_RULE",
+              "category": "TYPOGRAPHY",
+              "issueType": "whitespace",
+              "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+              "shortMessage": null,
+              "offset": 300,
+              "length": 2,
+              "context": "...edien dort? Welche Rolle spielen sie? 3.  Details / Beispiele: Nennen Sie konkrete...",
+              "replacements": [
+                " "
+              ]
+            },
+            {
+              "ruleId": "WHITESPACE_RULE",
+              "category": "TYPOGRAPHY",
+              "issueType": "whitespace",
+              "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+              "shortMessage": null,
+              "offset": 434,
+              "length": 2,
+              "context": "...rmation, Unterhaltung, Arbeitssuche). 4.  Vor- und Nachteile: Welche Positiven und...",
+              "replacements": [
+                " "
+              ]
+            },
+            {
+              "ruleId": "WHITESPACE_RULE",
+              "category": "TYPOGRAPHY",
+              "issueType": "whitespace",
+              "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+              "shortMessage": null,
+              "offset": 616,
+              "length": 2,
+              "context": "...e das Bild, das Andere von uns haben? 5.  Persönliche Meinung + Schluss: Fassen Si...",
+              "replacements": [
+                " "
+              ]
+            }
+          ]
+        },
+        {
+          "field": "questions[1].explanation",
+          "teil": 2,
+          "textLength": 217,
+          "text": "Bewertet werden die Struktur der Präsentation, die Klarheit der Aussagen, die sprachliche Korrektheit (Grammatik, Wortschatz) und die Flüssigkeit des Vortrags. Es ist wichtig, alle fünf Punkte des Themas zu behandeln.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "field": "questions[2].question",
+          "teil": 3,
+          "textLength": 704,
+          "text": "Geben Sie Ihrem Partner/Ihrer Partnerin konstruktives Feedback zur Präsentation in Teil 2. Was war gut, was könnte verbessert werden? Stellen Sie anschließend 2-3 Fragen zum Thema der Präsentation.\n\nBeispielfragen:\n1.  Sie haben über die Vor- und Nachteile von sozialen Medien gesprochen. Glauben Sie, dass die Gesetze die Nutzer gut genug vor Problemen wie Cybermobbing schützen? Warum (nicht)?\n2.  Wie unterscheidet sich die Nutzung sozialer Medien bei jungen Menschen im Vergleich zu älteren Generationen in Ihrem Heimatland?\n3.  Wenn Sie die Möglichkeit hätten, eine neue soziale Medien-Plattform zu gestalten, welche Funktionen würde sie haben, um die Nachteile zu minimieren, die Sie genannt haben?",
+          "matchCount": 3,
+          "matches": [
+            {
+              "ruleId": "WHITESPACE_RULE",
+              "category": "TYPOGRAPHY",
+              "issueType": "whitespace",
+              "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+              "shortMessage": null,
+              "offset": 217,
+              "length": 2,
+              "context": "...ma der Präsentation.  Beispielfragen: 1.  Sie haben über die Vor- und Nachteile vo...",
+              "replacements": [
+                " "
+              ]
+            },
+            {
+              "ruleId": "WHITESPACE_RULE",
+              "category": "TYPOGRAPHY",
+              "issueType": "whitespace",
+              "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+              "shortMessage": null,
+              "offset": 398,
+              "length": 2,
+              "context": "...Cybermobbing schützen? Warum (nicht)? 2.  Wie unterscheidet sich die Nutzung sozia...",
+              "replacements": [
+                " "
+              ]
+            },
+            {
+              "ruleId": "WHITESPACE_RULE",
+              "category": "TYPOGRAPHY",
+              "issueType": "whitespace",
+              "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+              "shortMessage": null,
+              "offset": 531,
+              "length": 2,
+              "context": "...ren Generationen in Ihrem Heimatland? 3.  Wenn Sie die Möglichkeit hätten, eine ne...",
+              "replacements": [
+                " "
+              ]
+            }
+          ]
+        },
+        {
+          "field": "questions[2].explanation",
+          "teil": 3,
+          "textLength": 224,
+          "text": "Bewertet werden die Fähigkeit zur Interaktion, das Geben von konstruktivem Feedback und die Fähigkeit, auf Rückfragen zu Antworten und Meinungen zu begründen. Auch hier sind Grammatik, Wortschatz und Aussprache entscheidend.",
+          "matchCount": 0,
+          "matches": []
+        }
+      ]
+    },
+    {
+      "file": "sprechen-gemini-006.json",
+      "module": "sprechen",
+      "fieldCount": 6,
+      "matchCount": 7,
+      "fields": [
+        {
+          "field": "questions[0].question",
+          "teil": 1,
+          "textLength": 735,
+          "text": "Sie möchten zusammen mit Ihrer Partnerin/Ihrem Partner einen regionalen Markt für lokale Produkte in Ihrer Stadt organisieren. Sprechen Sie darüber und planen Sie gemeinsam. Machen Sie Vorschläge, reagieren Sie auf die Vorschläge Ihrer Partnerin/Ihres Partners und einigen Sie sich. Sie haben circa 2 Minuten Zeit.\n\nBesprechen Sie folgende Punkte:\nTermin und Ort des Marktes\nWelche Art von Produkten und regionalen Spezialitäten sollen angeboten werden? Welche Art von Sortiment wünschen Sie sich?\nWie viele Stände müssen wir reservieren und wie gehen wir dabei vor?\nWie machen wir Werbung für unseren Markt, um viele Besucher anzuziechen?\nAufgabenverteilung und wie wir eine kleine Geldreserve für unvorhergesehene Ausgaben einplanen.",
+          "matchCount": 2,
+          "matches": [
+            {
+              "ruleId": "DE_CASE",
+              "category": "CASING",
+              "issueType": "uncategorized",
+              "message": "Außer am Satzanfang werden nur Nomen und Eigennamen großgeschrieben.",
+              "shortMessage": null,
+              "offset": 375,
+              "length": 6,
+              "context": "...ende Punkte: Termin und Ort des Marktes Welche Art von Produkten und regionalen Spezia...",
+              "replacements": [
+                "welche"
+              ]
+            },
+            {
+              "ruleId": "GERMAN_SPELLER_RULE",
+              "category": "TYPOS",
+              "issueType": "misspelling",
+              "message": "Möglicher Tippfehler gefunden.",
+              "shortMessage": "Rechtschreibfehler",
+              "offset": 627,
+              "length": 11,
+              "context": "...ng für unseren Markt, um viele Besucher anzuziechen? Aufgabenverteilung und wie wir eine kl...",
+              "replacements": [
+                "anzuzeigen",
+                "anzuziehen",
+                "anzuliegen",
+                "anzusingen",
+                "anzustechen"
+              ]
+            }
+          ]
+        },
+        {
+          "field": "questions[0].explanation",
+          "teil": 1,
+          "textLength": 77,
+          "text": "Kriterien: Aufgabenbewältigung, Flüssigkeit, Struktur, Grammatik, Wortschatz.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "field": "questions[1].question",
+          "teil": 2,
+          "textLength": 836,
+          "text": "Halten Sie eine kurze Präsentation zum Thema „Die Bedeutung regionaler Produkte“. Ihre Präsentation sollte circa 2-3 Minuten dauern.\n\nSprechen Sie über folgende Punkte:\n1.  Einleitung: Nennen Sie das Thema Ihrer Präsentation.\n2.  Situation/Erfahrung im Heimatland: Wo kaufen die Menschen in Ihrem Heimatland regionale Produkte? Welche Erfahrungen haben Sie damit gemacht?\n3.  Details / Beispiele: Nennen Sie konkrete Beispiele für regionale Spezialitäten in Ihrer Region oder Ihrem Land und erklären Sie, warum diese wichtig sind.\n4.  Vor- und Nachteile: Welche Vorteile haben regionale Produkte im Vergleich zu global angebotenen Produkten? Gibt es auch Nachteile?\n5.  Persönliche Meinung + Schluss: Was denken Sie über die Zukunft regionaler Produkte? Welche Fortschritte sehen Sie in diesem Bereich? Fassen Sie Ihre Meinung zusammen.",
+          "matchCount": 5,
+          "matches": [
+            {
+              "ruleId": "WHITESPACE_RULE",
+              "category": "TYPOGRAPHY",
+              "issueType": "whitespace",
+              "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+              "shortMessage": null,
+              "offset": 171,
+              "length": 2,
+              "context": "....  Sprechen Sie über folgende Punkte: 1.  Einleitung: Nennen Sie das Thema Ihrer P...",
+              "replacements": [
+                " "
+              ]
+            },
+            {
+              "ruleId": "WHITESPACE_RULE",
+              "category": "TYPOGRAPHY",
+              "issueType": "whitespace",
+              "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+              "shortMessage": null,
+              "offset": 228,
+              "length": 2,
+              "context": "...nen Sie das Thema Ihrer Präsentation. 2.  Situation/Erfahrung im Heimatland: Wo ka...",
+              "replacements": [
+                " "
+              ]
+            },
+            {
+              "ruleId": "WHITESPACE_RULE",
+              "category": "TYPOGRAPHY",
+              "issueType": "whitespace",
+              "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+              "shortMessage": null,
+              "offset": 374,
+              "length": 2,
+              "context": "... Erfahrungen haben Sie damit gemacht? 3.  Details / Beispiele: Nennen Sie konkrete...",
+              "replacements": [
+                " "
+              ]
+            },
+            {
+              "ruleId": "WHITESPACE_RULE",
+              "category": "TYPOGRAPHY",
+              "issueType": "whitespace",
+              "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+              "shortMessage": null,
+              "offset": 533,
+              "length": 2,
+              "context": "...klären Sie, warum diese wichtig sind. 4.  Vor- und Nachteile: Welche Vorteile habe...",
+              "replacements": [
+                " "
+              ]
+            },
+            {
+              "ruleId": "WHITESPACE_RULE",
+              "category": "TYPOGRAPHY",
+              "issueType": "whitespace",
+              "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+              "shortMessage": null,
+              "offset": 668,
+              "length": 2,
+              "context": "...en Produkten? Gibt es auch Nachteile? 5.  Persönliche Meinung + Schluss: Was denke...",
+              "replacements": [
+                " "
+              ]
+            }
+          ]
+        },
+        {
+          "field": "questions[1].explanation",
+          "teil": 2,
+          "textLength": 77,
+          "text": "Kriterien: Aufgabenbewältigung, Flüssigkeit, Struktur, Grammatik, Wortschatz.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "field": "questions[2].question",
+          "teil": 3,
+          "textLength": 747,
+          "text": "Geben Sie Ihrer Partnerin/Ihrem Partner konstruktives Feedback zu ihrer/seiner Präsentation über „Die Bedeutung regionaler Produkte“ aus Teil 2. Beantworten Sie anschließend 2-3 Fragen zum Thema. Sie haben circa 1-1,5 Minuten Zeit.\n\nBeispielfragen:\nSie haben über die Vorteile regionaler Produkte gesprochen. Sehen Sie auch Nachteile im Vergleich zu einem eher global ausgerichteten Sortiment in großen Supermärkten?\nWelche Fortschritte sehen Sie persönlich in den letzten Jahren bei der Vermarktung und dem Angebot regionaler Spezialitäten in Ihrem Heimatland?\nWenn Sie einen eigenen Laden für regionale Produkte eröffnen würden, welche Aspekte wären Ihnen besonders wichtig, um Kunden anzuziehen und eine gute Reserve für die Zukunft aufzubauen?",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "field": "questions[2].explanation",
+          "teil": 3,
+          "textLength": 77,
+          "text": "Kriterien: Aufgabenbewältigung, Flüssigkeit, Struktur, Grammatik, Wortschatz.",
+          "matchCount": 0,
+          "matches": []
+        }
+      ]
+    },
+    {
+      "file": "sprechen-gemini-007.json",
+      "module": "sprechen",
+      "fieldCount": 6,
+      "matchCount": 5,
+      "fields": [
+        {
+          "field": "questions[0].question",
+          "teil": 1,
+          "textLength": 660,
+          "text": "Sie und Ihr Partner möchten ein kleines Gemeinschaftsgartenprojekt in Ihrer Nachbarschaft starten. Planen Sie gemeinsam die ersten Schritte. Diskutieren Sie Ihre Ideen, machen Sie Vorschläge und einigen Sie sich auf eine Vorgehensweise. Legen Sie zuerst eine gemeinsame Agenda für Ihre Diskussion fest. Berücksichtigen Sie dabei die folgenden Punkte:\nWo soll der Garten entstehen?\nWelche Pflanzen sollen angepflanzt werden?\nWie können Nachbarn und Freunde zur Mithilfe motiviert werden?\nWelche Kosten könnten entstehen und wie könnten diese finanziert werden?\nLegen Sie fest, wer welche Aufgaben übernimmt und bis wann die ersten Schritte erledigt sein sollen.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "field": "questions[0].explanation",
+          "teil": 1,
+          "textLength": 112,
+          "text": "Die Bewertung erfolgt anhand der Kriterien Flüssigkeit, Struktur, Grammatik, Wortschatz und Aufgabenbewältigung.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "field": "questions[1].question",
+          "teil": 2,
+          "textLength": 861,
+          "text": "Halten Sie eine kurze Präsentation zum Thema 'Die Bedeutung von Weiterbildung im Berufsleben'. Strukturieren Sie Ihre Präsentation nach den folgenden Punkten:\n1.  Einleitung: Nennen Sie das Thema Ihrer Präsentation.\n2.  Situation/Erfahrung im Heimatland: Beschreiben Sie, wie Weiterbildung in Ihrem Heimatland gesehen wird oder welche persönlichen Erfahrungen Sie damit gemacht haben.\n3.  Details / Beispiele: Geben Sie konkrete Beispiele für Weiterbildungsmöglichkeiten oder Situationen, in denen Weiterbildung wichtig war. Sprechen Sie dabei nicht ausschließlich über die theoretischen Vorteile, sondern nennen Sie konkrete Beispiele.\n4.  Vor- und Nachteile: Nennen Sie Vorteile und mögliche Nachteile von Weiterbildung für Arbeitnehmer und Arbeitgeber.\n5.  Persönliche Meinung + Schluss: Fassen Sie Ihre persönliche Meinung zusammen und ziehen Sie ein Fazit.",
+          "matchCount": 5,
+          "matches": [
+            {
+              "ruleId": "WHITESPACE_RULE",
+              "category": "TYPOGRAPHY",
+              "issueType": "whitespace",
+              "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+              "shortMessage": null,
+              "offset": 161,
+              "length": 2,
+              "context": "...sentation nach den folgenden Punkten: 1.  Einleitung: Nennen Sie das Thema Ihrer P...",
+              "replacements": [
+                " "
+              ]
+            },
+            {
+              "ruleId": "WHITESPACE_RULE",
+              "category": "TYPOGRAPHY",
+              "issueType": "whitespace",
+              "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+              "shortMessage": null,
+              "offset": 218,
+              "length": 2,
+              "context": "...nen Sie das Thema Ihrer Präsentation. 2.  Situation/Erfahrung im Heimatland: Besch...",
+              "replacements": [
+                " "
+              ]
+            },
+            {
+              "ruleId": "WHITESPACE_RULE",
+              "category": "TYPOGRAPHY",
+              "issueType": "whitespace",
+              "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+              "shortMessage": null,
+              "offset": 387,
+              "length": 2,
+              "context": "... Erfahrungen Sie damit gemacht haben. 3.  Details / Beispiele: Geben Sie konkrete ...",
+              "replacements": [
+                " "
+              ]
+            },
+            {
+              "ruleId": "WHITESPACE_RULE",
+              "category": "TYPOGRAPHY",
+              "issueType": "whitespace",
+              "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+              "shortMessage": null,
+              "offset": 639,
+              "length": 2,
+              "context": "...ondern nennen Sie konkrete Beispiele. 4.  Vor- und Nachteile: Nennen Sie Vorteile ...",
+              "replacements": [
+                " "
+              ]
+            },
+            {
+              "ruleId": "WHITESPACE_RULE",
+              "category": "TYPOGRAPHY",
+              "issueType": "whitespace",
+              "message": "Möglicher Tippfehler: mehr als ein Leerzeichen hintereinander",
+              "shortMessage": null,
+              "offset": 758,
+              "length": 2,
+              "context": "...ung für Arbeitnehmer und Arbeitgeber. 5.  Persönliche Meinung + Schluss: Fassen Si...",
+              "replacements": [
+                " "
+              ]
+            }
+          ]
+        },
+        {
+          "field": "questions[1].explanation",
+          "teil": 2,
+          "textLength": 112,
+          "text": "Die Bewertung erfolgt anhand der Kriterien Flüssigkeit, Struktur, Grammatik, Wortschatz und Aufgabenbewältigung.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "field": "questions[2].question",
+          "teil": 3,
+          "textLength": 727,
+          "text": "Geben Sie Ihrem Partner konstruktives Feedback zu seiner Präsentation über 'Die Bedeutung von Weiterbildung im Berufsleben' aus Teil 2. Achten Sie dabei nicht nur auf den Inhalt, sondern auch auf die Struktur, die Grammatik, den Wortschatz und die Prosodie. Stellen Sie anschließend zwei bis drei Fragen, die Ihren Partner dazu anregen, seine Aussagen zu begründen oder zu vertiefen.\nBeispielfragen:\nWarum ist Ihrer Meinung nach die Motivation für Weiterbildung in einigen Berufen höher als in anderen?\nWie unterscheidet sich die Anerkennung von Weiterbildungszertifikaten in Ihrem Heimatland im Vergleich zu Deutschland?\nGlauben Sie, dass digitale Weiterbildungsformate die traditionellen Kurse ausschließlich ersetzen können?",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "field": "questions[2].explanation",
+          "teil": 3,
+          "textLength": 112,
+          "text": "Die Bewertung erfolgt anhand der Kriterien Flüssigkeit, Struktur, Grammatik, Wortschatz und Aufgabenbewältigung.",
+          "matchCount": 0,
+          "matches": []
+        }
+      ]
+    },
+    {
+      "file": "sprechen-gemini-008.json",
+      "module": "sprechen",
+      "fieldCount": 6,
+      "matchCount": 0,
+      "fields": [
+        {
+          "field": "questions[0].question",
+          "teil": 1,
+          "textLength": 355,
+          "text": "Sie und Ihr Partner möchten für die nächste Woche einen gemeinsamen Kochkurs in der Stadt planen. Besprechen Sie die folgenden Punkte:\n\n• Welchen Kurs wählen wir aus?\n• Wann ist der beste Termin für beide?\n• Welche Organisation ist für die Vorbereitung nötig?\n• Welche Hilfe brauchen wir aus unserer Familie?\n• Wie ist der Transport zum Kursort am besten?",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "field": "questions[0].explanation",
+          "teil": 1,
+          "textLength": 163,
+          "text": "Bewertung: Interaktion (Vorschläge machen, zustimmen/ablehnen), Strukturierung der Planung, Wortschatz zur Organisation, grammatikalische Korrektheit, Flüssigkeit.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "field": "questions[1].question",
+          "teil": 2,
+          "textLength": 481,
+          "text": "Halten Sie eine kurze Präsentation zum Thema „Ein beliebter Freizeitkurs in meinem Heimatland“ (z.B. Sportkurs, Kochkurs, Tanzkurs). Nutzen Sie folgende Gliederung:\n\n1. Einleitung: Thema nennen (Warum habe ich das Thema gewählt?)\n2. Situation: Gibt es diese Freizeitaktivität in Ihrem Heimatland?\n3. Details: Wie sieht ein typischer Kurs oder Ablauf aus?\n4. Vor- und Nachteile: Was ist positiv, was ist eher schwierig?\n5. Persönliche Meinung und Schluss: Was ist Ihre Meinung dazu?",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "field": "questions[1].explanation",
+          "teil": 2,
+          "textLength": 145,
+          "text": "Bewertung: Struktur der Präsentation, freies Sprechen, Verwendung von Redemitteln zur Meinungsäußerung, B1-Wortschatz, Aussprache und Intonation.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "field": "questions[2].question",
+          "teil": 3,
+          "textLength": 390,
+          "text": "Nach der Präsentation in Teil 2 geben Sie Feedback zu der Darstellung Ihres Partners. Stellen Sie anschließend zwei Fragen zu seinem/ihrem Vortrag. Beispielfragen:\n\n• Wie hat sich Ihre Erfahrung mit diesem Thema im Laufe der Zeit verändert?\n• Welche Rolle spielt diese Aktivität für die Gesellschaft in Ihrem Heimatland?\n• Würden Sie diesen Kurs auch in Deutschland besuchen? Warum (nicht)?",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "field": "questions[2].explanation",
+          "teil": 3,
+          "textLength": 132,
+          "text": "Bewertung: Konstruktives Feedback geben, auf Fragen des Prüfers eingehend antworten, grammatikalische Präzision, Wortschatzreichtum.",
+          "matchCount": 0,
+          "matches": []
+        }
+      ]
+    }
+  ]
+}

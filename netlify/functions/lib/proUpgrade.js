@@ -36,7 +36,33 @@ async function revokeProForEmail(store, rawEmail, { reason = null } = {}) {
   await store.setJSON(key, updatedUser);
   await syncPlanToSupabase(email, 'free', updatedUser);
 
-  return { ok: true, email, user: updatedUser };
+  let bgCancel = null;
+  let quotaClamp = null;
+  try {
+    const { cancelBgGenOnDowngrade } = require('./vocabBgQuota.js');
+    const { clampPersonalPoolCounters } = require('./downgradeQuota.js');
+    const { aiMaxForPlan } = require('./freeTrialLib.js');
+    const month = getMonthKey();
+    const qKey = `quota:${email}`;
+    bgCancel = await cancelBgGenOnDowngrade(store, email, month, aiMaxForPlan('free', updatedUser, month));
+
+    let qRec = null;
+    try {
+      qRec = await store.get(qKey, { type: 'json' });
+    } catch (_) {
+      qRec = null;
+    }
+    const clamped = clampPersonalPoolCounters(qRec, 'free', month);
+    await store.setJSON(qKey, clamped);
+    quotaClamp = {
+      personalLesenUsed: clamped.personalLesenUsed,
+      personalHorenUsed: clamped.personalHorenUsed,
+    };
+  } catch (err) {
+    console.warn('[proUpgrade] bg/quota downgrade cleanup failed:', err.message);
+  }
+
+  return { ok: true, email, user: updatedUser, bgCancel, quotaClamp };
 }
 
 async function markPaymentPastDue(store, rawEmail, opts = {}) {
@@ -99,7 +125,7 @@ async function clearPaymentPastDue(store, rawEmail) {
   return { ok: true, email, user: updatedUser };
 }
 
-async function activatePlanForEmail(store, rawEmail, plan, { sendEmail = true, stripeCustomerId = null } = {}) {
+async function activatePlanForEmail(store, rawEmail, plan, { sendEmail = true, stripeCustomerId = null, manualActivation = false } = {}) {
   const targetPlan = plan === 'pro_max' ? 'pro_max' : 'pro';
   const email = normalizeEmail(rawEmail);
   if (!email) return { ok: false, error: 'invalid_email' };
@@ -126,7 +152,12 @@ async function activatePlanForEmail(store, rawEmail, plan, { sendEmail = true, s
     paymentWarningInvoiceId: null,
     paymentWarningStatus: null,
   };
-  if (stripeCustomerId) updatedUser.stripeCustomerId = stripeCustomerId;
+  if (stripeCustomerId) {
+    updatedUser.stripeCustomerId = stripeCustomerId;
+    updatedUser.billingSource = 'stripe';
+  } else if (manualActivation) {
+    updatedUser.billingSource = 'manual';
+  }
   await store.setJSON(key, updatedUser);
 
   const month = getMonthKey();

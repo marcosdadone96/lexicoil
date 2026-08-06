@@ -1,0 +1,53 @@
+{
+  "gateVersion": "v6.1-B-G2 (frozen)",
+  "file": "lesen-t4-gemini-036-2026-07-08T07-19-15-100Z.json",
+  "teil": 4,
+  "textFields": 36,
+  "findings": {
+    "blocking": 0,
+    "observations": 0,
+    "byReason": {},
+    "byRegime": {},
+    "byField": {},
+    "list": []
+  },
+  "observations": [],
+  "expected": {
+    "dominantRegime": "TITLE_HEADING (signText) + PROSE",
+    "telegraphicFpExpected": 0,
+    "notes": "Carteles breves; signText en TITLE, explanation en PROSE."
+  },
+  "comparison": {
+    "calibrationPoolFindingsThisTeil": 14,
+    "calibrationAvgPerFile": 1.4,
+    "pilotFindings": 0,
+    "deltaVsCalAvg": -1.4,
+    "telegraphicFindings": 0,
+    "telegraphicFpExpected": 0,
+    "telegraphicOk": true
+  },
+  "qualityGate": {
+    "errors": [],
+    "warnings": []
+  },
+  "qualitative": {
+    "textFieldCount": 36,
+    "gateFindings": 0,
+    "gateObservations": 0,
+    "issues": {
+      "educationalPhrases": [],
+      "suspiciousCapsInText": [
+        {
+          "kind": "passage",
+          "snippet": "In unserer Stadt wird über einen Wichtigen Vorschlag zur Gesundheit diskutiert. Die Organisation 'Gesundheit für Alle' m"
+        }
+      ],
+      "veryLongSentences": [],
+      "b1Notes": [
+        "Longitud media coherente con B1"
+      ],
+      "newPatterns": []
+    },
+    "samplePassage": "In unserer Stadt wird über einen Wichtigen Vorschlag zur Gesundheit diskutiert. Die Organisation 'Gesundheit für Alle' möchte, dass alle Erwachsenen einmal pro Jahr kostenlose Vorsorge beim Arzt und eine Impfung bekommen. Viele Bürger haben dazu ihre Meinung im Online-Forum geteilt. Lesen Sie die Beiträge und entscheiden Sie, ob die Personen den Vorschlag unterstützen."
+  }
+}

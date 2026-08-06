@@ -19,16 +19,21 @@ import {
   loadPoolFillCheckpoint,
   savePoolFillCheckpoint,
 } from './lib/poolGapPlanner.mjs';
+import { restoreSessionMoldExclude, snapshotSessionMoldExclude } from './lib/poolFillSessionExclude.mjs';
 import {
   planRotation,
   printGapStatus,
   rebuildPoolManifest,
   refreshVocabCoverage,
   runPoolFillCycle,
+  shouldSkipLesenT3Topic,
+  preflightLesenT3Topic,
+  shouldSkipLesenT4Topic,
+  preflightLesenT4Topic,
+  lesenForcedTopicPreflightAction,
 } from './lib/poolFillTeilLib.mjs';
+import { isTopicMoldSessionBlockReason } from './lib/topicMoldCircuitBreaker.mjs';
 import { DailyQuotaError } from './lib/geminiClient.mjs';
-
-loadEnvFile();
 
 const MODULE_TEILS = {
   lesen: [1, 2, 3, 4, 5],
@@ -159,6 +164,13 @@ async function main() {
   let sessionLesen = cp?.sessionLesen || null;
   let sessionExam = cp?.sessionExam || null;
   const publishedFiles = cp?.publishedFiles ? [...cp.publishedFiles] : [];
+  let excludeSubtypes = cp?.excludeSubtypes || [];
+  let excludeTitles = cp?.excludeTitles || [];
+  let exhaustedTopics = cp?.exhaustedTopics ? [...cp.exhaustedTopics] : [];
+
+  if (sessionLesen?.args) {
+    restoreSessionMoldExclude(sessionLesen.args, { excludeSubtypes, excludeTitles });
+  }
 
   console.log(`\n╔══════════════════════════════════════════════════════╗`);
   console.log(`║ Pool fill · ${args.module} T${args.teil}`.padEnd(53) + '║');
@@ -201,12 +213,53 @@ async function main() {
         wordCount: args.wordCount,
         vocabCursor,
         recentTopics,
+        exhaustedTopics,
       });
+      if (plan.exhausted || !plan.topic) {
+        console.warn(
+          `\n⛔ Sin temas con stock disponible para ${args.module} T${args.teil}. ` +
+            `Saltados (${exhaustedTopics.length}): ${exhaustedTopics.join(', ') || '(ninguno)'}`,
+        );
+        break;
+      }
       currentTopic = plan.topic;
       currentWords = plan.words;
       vocabCursor = plan.nextCursor;
       recentTopics = plan.recentTopics;
       partsSinceRotate = 0;
+    }
+
+    if (args.module === 'lesen' && args.teil === 3 && currentTopic) {
+      const stock = preflightLesenT3Topic(currentTopic, sessionLesen);
+      const pf = lesenForcedTopicPreflightAction(null, currentTopic, stock, 3);
+      if (pf.action === 'skip') {
+        if (!exhaustedTopics.includes(currentTopic)) {
+          exhaustedTopics.push(currentTopic);
+          console.warn(
+            `\n⏭ Lesen T3 · «${currentTopic}» sin stock de blueprint ` +
+              `(${stock.compatibleTotal} compatibles, 0 disponibles) — saltando tema`,
+          );
+        }
+        partsSinceRotate = args.rotateEvery;
+        continue;
+      }
+    }
+
+    if (args.module === 'lesen' && args.teil === 4 && currentTopic) {
+      const stock = preflightLesenT4Topic(currentTopic, sessionLesen);
+      const pf = lesenForcedTopicPreflightAction(null, currentTopic, stock, 4);
+      if (pf.action === 'skip') {
+        if (!exhaustedTopics.includes(currentTopic)) {
+          exhaustedTopics.push(currentTopic);
+          console.warn(
+            `\n⏭ Lesen T4 · «${currentTopic}» sin semillas frescas ` +
+              `(${stock.preflightOkCount} preflight-OK, ${stock.freshCount} frescas, ` +
+              `tier=${stock.pickTier}) — saltando tema`,
+          );
+        }
+        partsSinceRotate = args.rotateEvery;
+        continue;
+      }
     }
 
     attempts++;
@@ -230,6 +283,9 @@ async function main() {
 
     sessionLesen = cycle.sessionLesen || sessionLesen;
     sessionExam = cycle.sessionExam || sessionExam;
+    if (sessionLesen?.args) {
+      ({ excludeSubtypes, excludeTitles } = snapshotSessionMoldExclude(sessionLesen.args));
+    }
 
     savePoolFillCheckpoint({
       key,
@@ -244,12 +300,35 @@ async function main() {
       vocabCursor,
       recentTopics,
       publishedFiles,
+      excludeSubtypes,
+      excludeTitles,
+      exhaustedTopics,
       updatedAt: new Date().toISOString(),
     });
 
     if (!cycle.ok) {
+      const moldBlock = isTopicMoldSessionBlockReason({ reason: cycle.reason, gate: cycle.gate });
+      const skipTopic =
+        moldBlock ||
+        shouldSkipLesenT3Topic(args.module, args.teil, currentTopic, cycle.reason, sessionLesen) ||
+        shouldSkipLesenT4Topic(args.module, args.teil, currentTopic, cycle.reason, sessionLesen);
+      if (skipTopic && currentTopic && !exhaustedTopics.includes(currentTopic)) {
+        exhaustedTopics.push(currentTopic);
+        const label = args.teil === 3 ? 'Lesen T3' : args.teil === 4 ? 'Lesen T4' : args.module;
+        const why = moldBlock ? 'circuit breaker / topic×molde' : cycle.reason || 'unknown';
+        console.warn(
+          `\n⏭ ${label} · «${currentTopic}» excluido en esta sesión (${why}) — rotando tema`,
+        );
+        partsSinceRotate = args.rotateEvery;
+      }
       console.warn(`⚠ Falló (${cycle.stage}): ${cycle.reason || 'unknown'}`);
-      if (args.pauseMs > 0) await new Promise((r) => setTimeout(r, args.pauseMs));
+      if (args.pauseMs > 0 && !skipTopic) await new Promise((r) => setTimeout(r, args.pauseMs));
+      if (args.module === 'lesen' && args.teil === 5 && currentTopic === 'Konsum') {
+        console.log(
+          'Konsum×T5: 1 subtipo por corrida — fin de sesión (siguiente subtipo en la próxima ejecución).',
+        );
+        break;
+      }
       continue;
     }
 
@@ -258,6 +337,29 @@ async function main() {
     if (cycle.file) publishedFiles.push(cycle.file);
     rebuildPoolManifest();
 
+    if (args.module === 'lesen' && args.teil === 5 && currentTopic === 'Konsum') {
+      console.log('Konsum×T5: parte OK — fin de sesión (1 subtipo/corrida).');
+      savePoolFillCheckpoint({
+        key,
+        module: args.module,
+        teil: args.teil,
+        saved,
+        target: args.target,
+        attempts,
+        partsSinceRotate,
+        currentTopic,
+        currentWords,
+        vocabCursor,
+        recentTopics,
+        publishedFiles,
+        excludeSubtypes,
+        excludeTitles,
+        exhaustedTopics,
+        updatedAt: new Date().toISOString(),
+      });
+      break;
+    }
+
     savePoolFillCheckpoint({
       key,
       module: args.module,
@@ -271,6 +373,9 @@ async function main() {
       vocabCursor,
       recentTopics,
       publishedFiles,
+      excludeSubtypes,
+      excludeTitles,
+      exhaustedTopics,
       updatedAt: new Date().toISOString(),
     });
 

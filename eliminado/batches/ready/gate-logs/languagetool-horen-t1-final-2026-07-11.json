@@ -1,0 +1,392 @@
+{
+  "generatedAt": "2026-07-11T19:25:31.054Z",
+  "base": "http://127.0.0.1:8010",
+  "language": "de-DE",
+  "delayMs": 100,
+  "poolDir": "batches/ready/gate-logs/_lt-t1-final-tmp",
+  "ping": {
+    "ok": true,
+    "languageCount": 60,
+    "deCodes": [
+      "de",
+      "de",
+      "de",
+      "de",
+      "de-DE-x-simple-language",
+      "de-DE-x-simple-language",
+      "de"
+    ]
+  },
+  "summary": {
+    "filesScanned": 6,
+    "filesWithPassageText": 6,
+    "filesSkippedNoText": 0,
+    "filesZeroMatches": 2,
+    "filesWithMatches": 4,
+    "filesErrored": 0,
+    "totalPassagesChecked": 30,
+    "totalMatches": 6,
+    "uniqueRuleIds": 5
+  },
+  "byRuleId": [
+    {
+      "ruleId": "DE_CASE",
+      "count": 2
+    },
+    {
+      "ruleId": "DEN_DEM",
+      "count": 1
+    },
+    {
+      "ruleId": "GERMAN_SPELLER_RULE",
+      "count": 1
+    },
+    {
+      "ruleId": "GERMAN_WORD_REPEAT_BEGINNING_RULE",
+      "count": 1
+    },
+    {
+      "ruleId": "NOMEN_KLEIN",
+      "count": 1
+    }
+  ],
+  "files": [
+    {
+      "file": "horen-t1-gemini-001.json",
+      "matchCount": 0,
+      "passages": [
+        {
+          "passageIndex": 0,
+          "textLength": 448,
+          "text": "Guten Tag, liebe Jobsuchende. Wir haben eine interessante neue Stelle in unserem Team für die Kundenbetreuung. Wenn Sie Erfahrung im Umgang mit Kunden haben und gerne im Team arbeiten, ist das vielleicht Ihre Chance. Die Bewerbungsfrist endet am 15. Mai. Bitte senden Sie Ihre Unterlagen per E-Mail an unsere Personalabteilung. Weitere Informationen finden Sie auf unserer Webseite. Wir freuen uns auf Ihre Bewerbung und darauf, Sie kennenzulernen.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "passageIndex": 1,
+          "textLength": 344,
+          "text": "Hallo Herr Müller, hier ist Frau Braun. Ich rufe wegen unseres Meetings am Donnerstag an. Leider muss ich es verschieben, da ich dringend zu einem externen Termin muss. Wäre es Ihnen möglich, die Besprechung auf nächsten Dienstag um 10 Uhr zu verlegen? Bitte geben Sie mir kurz Bescheid, ob dieser neue Termin für Sie passt. Danke und bis bald.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "passageIndex": 2,
+          "textLength": 426,
+          "text": "Willkommen zu unserem kurzen Alltagstipp! Heute ein Tipp für Ihre berufliche Zukunft. Überlegen Sie, einen Kurs zur Weiterbildung zu besuchen? Viele Arbeitnehmer sorgen sich um ihre Karriere. Es gibt zahlreiche Angebote, um neue Fähigkeiten zu lernen oder bestehende zu vertiefen. Informieren Sie sich bei Ihrer Arbeitsagentur oder online über passende Seminare. Eine gute Planung ist der Schlüssel zum Erfolg im Arbeitsleben.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "passageIndex": 3,
+          "textLength": 385,
+          "text": "Achtung, liebe Mitarbeiterinnen und Mitarbeiter! Eine kurze Durchsage für die Kasse 3. Frau Vogel, bitte kommen Sie sofort zur Kasse 3. Dort gibt es ein Problem mit dem Scanner. Herr Neumann vom Technik-Team ist bereits unterwegs, um Ihnen beizustehen. Bitte bleiben Sie ruhig. Alle anderen Kassen sind normal geöffnet. Wir bitten um Ihr Verständnis für die kurze Störung. Danke schön.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "passageIndex": 4,
+          "textLength": 398,
+          "text": "Hallo Anna, hier ist Markus aus dem Projektteam. Hast du schon die neuen Zahlen für unser Projekt gesehen? Die Deadline rückt näher, und wir müssen noch einiges erledigen. Ich habe gestern Abend die Präsentation vorbereitet. Könntest du bitte die letzten Daten überprüfen? Danach können wir das im Team-Meeting besprechen. Ich hoffe, wir schaffen das bis Freitag. Ruf mich bitte kurz zurück, danke!",
+          "matchCount": 0,
+          "matches": []
+        }
+      ]
+    },
+    {
+      "file": "horen-t1-gemini-002.json",
+      "matchCount": 1,
+      "passages": [
+        {
+          "passageIndex": 0,
+          "textLength": 418,
+          "text": "Guten Morgen, liebe Hörerinnen und Hörer! Heute haben wir einen tollen Tipp für Ihre Freizeit. Wie wäre es mit einem Spaziergang im Stadtpark? Dort gibt es neue Wege und auch einen kleinen See. Für Familien mit Kindern ist das ideal. Man kann die Natur genießen und frische Luft schnappen. Packen Sie ein Picknick ein und verbringen Sie einen schönen Nachmittag draußen. Der Park ist täglich von 8 bis 20 Uhr geöffnet.",
+          "matchCount": 1,
+          "matches": [
+            {
+              "ruleId": "NOMEN_KLEIN",
+              "category": "CASING",
+              "issueType": "uncategorized",
+              "message": "Bitte prüfen Sie, ob „Ideal“ hier als Nomen gebraucht wird und daher großgeschrieben werden muss.",
+              "shortMessage": "Bitte überprüfen Sie die Groß-/Kleinschreibung.",
+              "offset": 227,
+              "length": 5,
+              "context": "...n See. Für Familien mit Kindern ist das ideal. Man kann die Natur genießen und frisch...",
+              "contextOffset": 43,
+              "replacements": [
+                "Ideal"
+              ]
+            }
+          ]
+        },
+        {
+          "passageIndex": 1,
+          "textLength": 395,
+          "text": "Guten Tag, hier ist das Sportzentrum. Sie rufen wegen des neuen Yoga-Kurses am Dienstag an, richtig? Ja, der Kurs beginnt nächste Woche, am 15. Mai um 18 Uhr. Die Anmeldung ist noch bis Freitag möglich. Die Gebühr beträgt 60 Euro für zehn Termine. Bitte beachten Sie, dass die Teilnehmerzahl begrenzt ist. Sie können sich online anmelden oder persönlich an der Rezeption. Wir freuen uns auf Sie!",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "passageIndex": 2,
+          "textLength": 402,
+          "text": "Achtung, liebe Besucher des Stadtfestes! Wegen des starken Regens muss das Konzert auf der Hauptbühne leider verschoben werden. Es findet stattdessen morgen Abend um 19 Uhr statt. Die Kinder-Werkstatt im Zelt ist aber weiterhin geöffnet und bietet viele Aktivitäten für die Kleinen. Auch die Essensstände bleiben bis 22 Uhr geöffnet. Wir bitten um Ihr Verständnis und wünschen Ihnen trotzdem viel Spaß!",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "passageIndex": 3,
+          "textLength": 405,
+          "text": "Hallo Filmfreunde! Für Ihren gemütlichen Freizeitabend empfehlen wir heute das Kino 'Traumwelt'. Dort läuft um 20:30 Uhr der neue deutsche Film 'Sommerliebe'. Tickets können Sie online reservieren oder direkt an der Abendkasse kaufen. Achtung: Am Montag ist Kinotag, da sind alle Karten günstiger! Ein perfekter Plan für einen entspannten Abend mit Freunden oder der Familie. Genießen Sie die Vorstellung!",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "passageIndex": 4,
+          "textLength": 421,
+          "text": "Guten Tag, Sie sind mit dem Stadtmuseum verbunden. Ja, wir haben am Wochenende spezielle Führungen zum Thema 'Alte Handwerke'. Die erste Führung beginnt Samstag um 11 Uhr, die zweite Sonntag um 14 Uhr. Eine Anmeldung ist nicht nötig, aber wir empfehlen, pünktlich zu sein. Der Eintritt kostet 8 Euro pro Person. Kinder unter 12 Jahren haben freien Eintritt. Wir freuen uns auf Ihren Besuch und wünschen Ihnen viel Freude!",
+          "matchCount": 0,
+          "matches": []
+        }
+      ]
+    },
+    {
+      "file": "horen-t1-gemini-003.json",
+      "matchCount": 2,
+      "passages": [
+        {
+          "passageIndex": 0,
+          "textLength": 437,
+          "text": "Guten Tag, Sie sind verbunden mit der Praxis Dr. Lorenz. Unsere Sprechzeiten sind Montag bis Freitag von 8 bis 12 Uhr und zusätzlich Dienstag und Donnerstag von 14 bis 17 Uhr. Für Termine rufen Sie bitte während dieser Zeiten an. Bei Notfällen außerhalb der Sprechzeiten wählen Sie bitte die 112. Bitte beachten Sie, dass wir aktuell längere Wartezeiten für Routineuntersuchungen haben. Wir bitten um Ihr Verständnis. Bleiben Sie gesund!",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "passageIndex": 1,
+          "textLength": 448,
+          "text": "Hallo Hörerinnen und Hörer! Heute ein kurzer Tipp für Ihre Gesundheit: Essen Sie täglich ausreichend Obst und Gemüse. Fünf Portionen sind ideal, zum Beispiel drei Portionen Gemüse und zwei Portionen Obst. Das stärkt Ihr Immunsystem und gibt Ihnen Energie für den Tag. Versuchen Sie, verschiedene Farben zu wählen, denn jede Farbe enthält andere wichtige Vitamine. Eine gesunde Ernährung ist der beste Schutz vor vielen Krankheiten. Bleiben Sie fit!",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "passageIndex": 2,
+          "textLength": 475,
+          "text": "Achtung, liebe Mitglieder! Wir haben eine wichtige Information zu unserem neuen Rückenkurs. Dieser Kurs startet nächste Woche am Montag um 18 Uhr. Die Teilnehmerzahl ist begrenzt, daher ist eine schnelle Anmeldung erforderlich. Sie können sich ab sofort an der Rezeption oder online über unsere App anmelden. Die Gebühr für den zehnteiligen Kurs beträgt 80 Euro für Mitglieder. Gäste zahlen 100 Euro. Sichern Sie sich Ihren Platz für eine starke und gesunde Rückenmuskulatur!",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "passageIndex": 3,
+          "textLength": 290,
+          "text": "Guten Tag, Apotheke am Markt, hier ist Frau Schneider. Ich rufe wegen eines Hustenmittels an. Ich brauche bitte das Mittel 'Broncho-Fit'. Ich weiß, dass Sie es vorrätig haben. Eine Beratung brauche ich nicht, ich kenne das Produkt schon. Ich komme gleich vorbei. Vielen Dank und bis gleich!",
+          "matchCount": 2,
+          "matches": [
+            {
+              "ruleId": "GERMAN_SPELLER_RULE",
+              "category": "TYPOS",
+              "issueType": "misspelling",
+              "message": "Möglicher Tippfehler gefunden.",
+              "shortMessage": "Rechtschreibfehler",
+              "offset": 124,
+              "length": 11,
+              "context": "...ttels an. Ich brauche bitte das Mittel 'Broncho-Fit'. Ich weiß, dass Sie es vorrätig haben....",
+              "contextOffset": 43,
+              "replacements": [
+                "Erongo-Fit",
+                "Bronze-Fit",
+                "Bringt-Fit",
+                "Branche-Fit",
+                "Bringe-Fit"
+              ]
+            },
+            {
+              "ruleId": "GERMAN_WORD_REPEAT_BEGINNING_RULE",
+              "category": "REPETITIONS_STYLE",
+              "issueType": "style",
+              "message": "Drei aufeinanderfolgende Sätze beginnen mit dem gleichen Wort. Evtl. können Sie den Satz umformulieren, zum Beispiel, indem Sie ein Synonym nutzen.",
+              "shortMessage": "Drei aufeinanderfolgende Sätze beginnen mit dem gleichen Wort.",
+              "offset": 138,
+              "length": 3,
+              "context": "...brauche bitte das Mittel 'Broncho-Fit'. Ich weiß, dass Sie es vorrätig haben. Eine ...",
+              "contextOffset": 43,
+              "replacements": []
+            }
+          ]
+        },
+        {
+          "passageIndex": 4,
+          "textLength": 473,
+          "text": "Liebe Patienten, zu Ihrem Schutz und dem Schutz anderer bitten wir Sie, einige Hygieneregeln zu beachten. Bitte desinfizieren Sie Ihre Hände beim Betreten und Verlassen der Praxis. Halten Sie mindestens 1,5 Meter Abstand zu anderen Personen. Husten und Niesen Sie bitte in die Armbeuge. Bei Fieber oder starken Erkältungssymptomen melden Sie sich bitte telefonisch, bevor Sie die Praxis betreten. Vielen Dank für Ihr Verständnis und Ihre Mithilfe für eine gesunde Umgebung.",
+          "matchCount": 0,
+          "matches": []
+        }
+      ]
+    },
+    {
+      "file": "horen-t1-gemini-004.json",
+      "matchCount": 0,
+      "passages": [
+        {
+          "passageIndex": 0,
+          "textLength": 422,
+          "text": "Achtung, liebe Bewohner! Die Hausverwaltung informiert über eine wichtige Reparatur. Das Hauptwasserrohr im Keller muss dringend instand gesetzt werden. Deshalb wird am kommenden Dienstag, dem 12. Mai, von 8 bis 12 Uhr das Wasser im gesamten Gebäude abgestellt. Bitte planen Sie entsprechend und füllen Sie eventuell Wasser ab. Wir bitten um Ihr Verständnis für diese notwendige Maßnahme. Vielen Dank für Ihre Kooperation.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "passageIndex": 1,
+          "textLength": 394,
+          "text": "Guten Tag, Frau Meier. Hier ist Herr Schmidt von der Immobilienagentur. Ich rufe wegen der Wohnung in der Schillerstraße 12 an. Sie hatten sich dafür interessiert. Wir haben am Donnerstag, dem 18. Juni, um 16 Uhr einen Besichtigungstermin. Passt Ihnen diese Zeit? Es gibt noch zwei andere Interessenten, die auch kommen. Bitte geben Sie mir kurz Bescheid, ob Sie dabei sein können. Vielen Dank.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "passageIndex": 2,
+          "textLength": 461,
+          "text": "Herzlich willkommen zu unserem heutigen Tipp rund ums Wohnen! Wussten Sie, dass Sie viel Energie sparen können, indem Sie Ihre Heizung richtig einstellen? Schon ein Grad weniger Raumtemperatur spart bis zu sechs Prozent Heizkosten. Lüften Sie kurz und kräftig, statt die Fenster lange gekippt zu lassen. Und denken Sie daran: Alte Fenster können viel Wärme entweichen lassen. Eine gute Dämmung ist Gold wert für Ihre Nebenkostenabrechnung. Probieren Sie es aus!",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "passageIndex": 3,
+          "textLength": 469,
+          "text": "Liebe Kundinnen und Kunden, aufgepasst! In unserer Gartenabteilung finden Sie diese Woche ein unschlagbares Angebot. Alle Gartenmöbel sind um 20 Prozent reduziert. Egal ob Stühle, Tische oder Liegen – jetzt ist die perfekte Zeit, Ihre Terrasse oder Ihren Balkon neu zu gestalten. Auch unsere Auswahl an Pflanzen für den Außenbereich ist frisch eingetroffen. Besuchen Sie uns im Erdgeschoss und lassen Sie sich von unseren Experten beraten. Das Angebot gilt bis Samstag.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "passageIndex": 4,
+          "textLength": 343,
+          "text": "Hallo Herr Lehmann, ich wollte Sie kurz ansprechen. Gestern Abend war es bei Ihnen ziemlich laut. Ich konnte kaum schlafen. Ist alles in Ordnung? Wir haben ja dünne Wände hier im Haus. Vielleicht könnten Sie etwas Rücksicht nehmen, besonders nach zehn Uhr. Ich weiß, manchmal feiert man, aber es war wirklich extrem. Danke für Ihr Verständnis.",
+          "matchCount": 0,
+          "matches": []
+        }
+      ]
+    },
+    {
+      "file": "horen-t1-gemini-005.json",
+      "matchCount": 1,
+      "passages": [
+        {
+          "passageIndex": 0,
+          "textLength": 417,
+          "text": "Guten Tag, liebe Familien! Wir laden Sie herzlich zu unserem jährlichen Familienfest im Stadtpark ein. Es findet am kommenden Samstag, den 13. Juni, von 14 bis 18 Uhr statt. Es gibt viele Aktivitäten für Kinder und Erwachsene: Spiele, Musik und ein kleines Picknick. Die Teilnahme ist kostenlos. Bitte bringen Sie eine Decke und gute Laune mit. Wir freuen uns auf einen schönen Nachmittag mit Ihnen und Ihrer Familie!",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "passageIndex": 1,
+          "textLength": 403,
+          "text": "Hallo Frau Müller, hier ist die Kita 'Sonnenschein'. Ich rufe wegen des Termins für die Eingewöhnung Ihres Sohnes an. Der ursprünglich geplante Termin am Dienstag muss leider verschoben werden. Wir haben noch einen freien Platz am Donnerstag um neun Uhr oder am Freitag um halb zehn. Welcher Tag passt Ihnen besser? Bitte rufen Sie uns bis morgen Mittag zurück, damit wir das klären können. Vielen Dank!",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "passageIndex": 2,
+          "textLength": 468,
+          "text": "Herzlich willkommen bei der Familienberatungsstelle! Wir bieten Unterstützung für alle Fragen rund um das Familienleben. Ob es um Erziehung, finanzielle Schwierigkeiten oder Partnerschaftsprobleme geht – unser erfahrenes Team hilft Ihnen gerne. Unsere Beratungen sind vertraulich und kostenlos. Sie können telefonisch einen Termin vereinbaren oder einfach während unserer Öffnungszeiten vorbeikommen. Wir sind montags bis freitags von neun bis siebzehn Uhr für Sie da.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "passageIndex": 3,
+          "textLength": 455,
+          "text": "Liebe Hörerinnen und Hörer, hier ist Ihr Radio-Tipp für das Wochenende! Wie wäre es mit einem Ausflug zum Abenteuerpark 'Waldgeister'? Dort gibt es Kletterparcours für jedes Alter, einen großen Spielplatz und sogar einen kleinen Streichelzoo. Perfekt für die ganze Familie! Der Park ist täglich von zehn bis achtzehn Uhr geöffnet. Die Eintrittspreise finden Sie auf unserer Webseite. Ein tolles Erlebnis für Groß und Klein, das man nicht verpassen sollte!",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "passageIndex": 4,
+          "textLength": 485,
+          "text": "Achtung, liebe Eltern! Die Anmeldung für unseren neuen Kurs 'Starke Familien – Glückliche Kinder' beginnt nächste Woche. In diesem Seminar lernen Sie, wie Sie den Familienalltag entspannter gestalten und Konflikte besser lösen können. Der Kurs umfasst fünf Abende und findet immer dienstags von 18 bis 20 Uhr statt. Die Gebühr beträgt fünfzig Euro pro Person. Sichern Sie sich schnell einen Platz, die Teilnehmerzahl ist begrenzt. Weitere Informationen erhalten Sie im Familienzentrum.",
+          "matchCount": 1,
+          "matches": [
+            {
+              "ruleId": "DE_CASE",
+              "category": "CASING",
+              "issueType": "uncategorized",
+              "message": "Außer am Satzanfang werden nur Nomen und Eigennamen großgeschrieben.",
+              "shortMessage": null,
+              "offset": 79,
+              "length": 10,
+              "context": "...r unseren neuen Kurs 'Starke Familien – Glückliche Kinder' beginnt nächste Woche. In diese...",
+              "contextOffset": 43,
+              "replacements": [
+                "glückliche"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "horen-t1-gemini-016.json",
+      "matchCount": 2,
+      "passages": [
+        {
+          "passageIndex": 0,
+          "textLength": 404,
+          "text": "Guten Tag, liebe Sportfreunde! Der Sportverein 'Aktiver Körper' informiert über die neuen Kurse. Die Anmeldung für unser beliebtes Schwimmseminar und den Yogakurs beginnt nächste Woche, am Freitag, den 15. Mai. Sie müssen sich persönlich in unserem Büro anmelden. Die Gebühr ist direkt bei der Anmeldung zu bezahlen. Für weitere Auskünfte rufen Sie uns bitte an. Wir freuen uns auf viele neue Mitglieder!",
+          "matchCount": 1,
+          "matches": [
+            {
+              "ruleId": "DEN_DEM",
+              "category": "GRAMMAR",
+              "issueType": "uncategorized",
+              "message": "Standardsprachlich wird in diesem Fall empfohlen, „dem“ zu schreiben.",
+              "shortMessage": null,
+              "offset": 198,
+              "length": 3,
+              "context": "...kurs beginnt nächste Woche, am Freitag, den 15. Mai. Sie müssen sich persönlich in ...",
+              "contextOffset": 43,
+              "replacements": [
+                "dem"
+              ]
+            }
+          ]
+        },
+        {
+          "passageIndex": 1,
+          "textLength": 451,
+          "text": "Achtung, Läuferinnen und Läufer! Der diesjährige 'Stadtlauf am Fluss' findet am 10. Juni statt. Es ist ein großes nationales Event, das viele Sportler anzieht. Die Strecke ist zehn Kilometer lang und führt durch die schönsten Teile unserer Stadt. Die Startgebühr beträgt 25 Euro. Sie können sich bis zum 3. Juni online registrieren. Alle Teilnehmer erhalten ein T-Shirt und eine Medaille. Wir hoffen, Sie empfinden die Herausforderung als motivierend!",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "passageIndex": 2,
+          "textLength": 430,
+          "text": "Hallo Sportbegeisterte! Das Fitnessstudio 'Fit & Gesund' hat ein tolles Angebot für Sie. Werden Sie jetzt Mitglied und trainieren Sie die ersten drei Monate gratis! Danach zahlen Sie nur 29 Euro pro Monat. Dieses Angebot gilt nur für Neukunden und ist bis Ende des Monats gültig. Kommen Sie vorbei und überzeugen Sie sich selbst. Unser Team berät Sie gerne. Wir freuen uns, wenn Sie sich bei uns wohlfühlen und den Sport genießen.",
+          "matchCount": 1,
+          "matches": [
+            {
+              "ruleId": "DE_CASE",
+              "category": "CASING",
+              "issueType": "uncategorized",
+              "message": "Außer am Satzanfang werden nur Nomen und Eigennamen großgeschrieben.",
+              "shortMessage": null,
+              "offset": 49,
+              "length": 6,
+              "context": "...rtbegeisterte! Das Fitnessstudio 'Fit & Gesund' hat ein tolles Angebot für Sie. Werden...",
+              "contextOffset": 43,
+              "replacements": [
+                "gesund"
+              ]
+            }
+          ]
+        },
+        {
+          "passageIndex": 3,
+          "textLength": 462,
+          "text": "Liebe Eltern, aufgepasst! Die Anmeldung für unsere beliebten Kinderschwimmkurse beginnt am 1. September. Die Kurse sind für Kinder ab fünf Jahren geeignet. Wir bieten Anfänger- und Fortgeschrittenenkurse an. Die Plätze sind begrenzt, daher ist eine schnelle Anmeldung wichtig. Für internationale Familien steht bei der Informationsveranstaltung ein Übersetzer zur Verfügung, der alle Fragen beantworten kann. Der Unterricht findet im städtischen Hallenbad statt.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "passageIndex": 4,
+          "textLength": 437,
+          "text": "Achtung, Sportler! Der Fußballplatz am Park muss wegen dringender Renovierungsarbeiten geschlossen werden. Die Arbeiten beginnen am 20. Juli und dauern voraussichtlich vier Wochen. In dieser Zeit ist der Platz nicht nutzbar. Wir bitten um Ihr Verständnis. Die Renovierung ist notwendig, da in der Nähe ein neues Wohnungsbauprojekt startet und der Platz modernisiert werden muss. Wir informieren Sie, sobald der Platz wieder geöffnet ist.",
+          "matchCount": 0,
+          "matches": []
+        }
+      ]
+    }
+  ]
+}

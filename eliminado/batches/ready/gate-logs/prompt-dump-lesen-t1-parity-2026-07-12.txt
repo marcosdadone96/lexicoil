@@ -1,0 +1,216 @@
+Eres examinador del Goethe-Zertifikat B1. Genera **UNA** parte de **Lesen Teil 1**
+(blog/e-mail, Richtig/Falsch), alemán estándar, nivel B1.
+
+## Reglas estrictas
+- Formato: **blog_richtig_falsch** — 1 pasaje en **1ª persona (ich)**, 6 afirmaciones Richtig/Falsch.
+- **6 preguntas** exactas, tipo **richtig_falsch**.
+- Pasaje: **165–200 palabras** (mínimo ingest **150** — cuenta antes de responder).
+
+## LONGITUD CEFR (OBLIGATORIO)
+Si el pasaje tiene menos de 165 palabras, **añade 2–4 frases** con detalles concretos (ich/mir/meine).
+El ejemplo JSON es estructural; **tu pasaje debe ser más largo que el ejemplo**.
+
+## VOCABULARIO B1 (cobertura ≥75% — OBLIGATORIO)
+Usa léxico **simple y frecuente** (están en el wordlist B1):
+
+> Bewohner, Nachbar, Stadt, Programm, Organisation, Erfahrungen, Familie, Kinder, Schule, Arbeit, Transport, Kurs, Freizeit, Wochenende, Verein, Garten, Hobby, Entscheidung, Unterstützung, Gemeinschaft
+
+**PROHIBIDO en el pasaje** (bajan cobertura CEFR): Eigenregie, empfand, faszinierend, authentisch, Verfasser, gebucht, Smartphone, nachhaltiger, inhabergeführt, herkömmlich, pauschal, Therapie literaria.
+
+**Sustituye por:** reserviert/planen, fand, toll/interessant, Handy, umweltfreundlich, normal/früher, selbst/allein.
+
+## REGLAS DE CALIDAD (rechazo automático si fallas)
+1. **Sin tono moralizante:** NO «Abschließend lässt sich sagen», «Experten raten», «Es ist wichtig zu», «man sollte wissen».
+2. **Sin tono emocional/IA:** NO «könnte/wäre ein kleines Wunder…», «verändert mein Leben für immer», hipérboles sentimentales — preferir hechos y opiniones mesuradas (Goethe B1).
+3. **Sin muletilla de fuente ficticia:** evita anclar el blog en «Eine Studie zeigt…» / «Ein Bericht zeigt…» salvo que sea un dato concreto y único.
+4. Pasaje en **ich** (ich/mir/meine/mich).
+5. **Anti word-matching:** en cada afirmación, **máximo 2 palabras de contenido (≥4 letras) iguales al pasaje**. Parafrasea con vocabulario **≤ B1** — el sinónimo **NO puede ser más difícil** que la palabra del pasaje.
+6. **Parafraseo B1 en preguntas (OBLIGATORIO):** las 6 afirmaciones y sus `explanation` deben usar solo vocabulario B1 frecuente. **PROHIBIDO** subir el registro léxico al parafrasear:
+   - ❌ *modifizieren* (usa **ändern** / **anpassen**)
+   - ❌ *Gelassenheit* (usa **Ruhe** / **Entspannung** / **entspannt**)
+   - ❌ *Angehörige* (usa **Familie** / **Verwandte**)
+   - ❌ *elektronische Mitteilungen* (usa **Nachrichten** / **SMS**)
+   - ❌ *sich austauschen*, *Umstellung*, jerga B2/C1 en preguntas
+7. Al menos **2 Richtig** y **2 Falsch**.
+8. **Los ítems Falsch lo son por CONTRADICCIÓN DE CONTENIDO** (el pasaje dice X, la afirmación dice lo contrario o algo no implicado), NUNCA por una palabra-señal.
+7. **REGLA ANTI-CORRELACIÓN (la más importante):** una palabra de alcance (alle/jede/jeder/immer/nie/nur/ausschließlich/komplett/stets) NO puede predecir la respuesta. Por tanto:
+   - **Máximo 2 de los 6 enunciados** pueden contener una palabra de alcance.
+   - Si usas alguna, **NO pueden estar todas en ítems Falsch**: reparte (p. ej. 1 en un enunciado Richtig auténtico y 1 en un Falsch), de modo que ver "immer/alle/nur" NO diga si es Richtig o Falsch.
+   - Igualmente, **al menos 1 ítem Falsch debe NO contener** ninguna palabra de alcance (Falsch por contenido).
+   - **PROHIBIDO** "ausschließlich täglich" y cualquier combinación forzada. "täglich" no es cuantificador de alcance.
+   - Antes de terminar, **autocomprueba:** ¿podría un alumno acertar los Falsch marcando "tiene palabra absoluta → Falsch"? Si la respuesta es sí, REESCRIBE.
+8. **Pronombres coherentes:** todas las afirmaciones sobre la autora/el autor con solo **sie/ihre** O solo **er/seine** — nunca mezclar.
+
+## ANTI WORD-MATCHING — MALO vs BUENO (léelo antes de escribir preguntas)
+
+Pasaje contiene: *«…Die Stille der **Natur** ist ein Kontrast… Die Zeit in der **Natur** **unterstützt** mich…»*
+
+❌ **MALO (rechazado):** «Die Zeit in der **Natur** **unterstützt** sie bei der mentalen Erholung.»
+→ Repite Natur, Zeit, unterstützt → el alumno acierta emparejando, no leyendo.
+
+✅ **BUENO:** «Der Aufenthalt im Wald hilft ihr, beruflich abzuschalten.»
+→ Misma idea, **cero** palabras clave del pasaje.
+
+❌ **MALO:** «Sie kauft **ausschließlich** fertige **Möbel**.» (si el pasaje dice Möbel selbst planen)
+✅ **BUENO:** «Sie bezieht ihre Einrichtung nur aus dem Handel.» (sin repetir Möbel/planen)
+
+**Proceso obligatorio:** tras escribir el pasaje, lista mentalmente sus 15 sustantivos/verbos clave y **NO los uses** en las 6 afirmaciones.
+
+## VOCABULARIO SUGERIDO (preferencia — no obligación)
+- Usa de forma NATURAL estas palabras si encajan: Stadt, Freizeit, Arbeit, Familie, Kurs. Prioriza naturalidad y nivel B1 — si una palabra no encaja, OMÍTELA, no la fuerces. Mejor un texto natural con algunas de estas palabras que uno forzado con todas.
+- **Estas palabras son OPCIONALES.** Integra solo las que suenen 100% naturales en un foro/reglamento B1. Forzar una palabra que no encaja es motivo de rechazo.
+- Intégralas sobre todo en el **pasaje/transcript**, no en las preguntas literalmente.
+- Si una palabra no encaja en el tema elegido, **omítela** sin forzar.
+
+
+## AUTORREVISIÓN (obligatoria)
+- ¿Pasaje ≥165 palabras?
+- ¿Cada afirmación comparte ≤2 palabras de contenido con el pasaje?
+- ¿Los ítems Falsch se sostienen por contradicción de contenido (no por palabra absoluta)?
+- ¿≤2 enunciados con palabra de alcance, repartidos entre Richtig y Falsch (no todos en Falsch)?
+- ¿≥1 ítem Falsch SIN palabra de alcance? ¿El atajo "absoluta→Falsch" ya NO funciona?
+- ¿NINGUNO con "ausschließlich täglich"?
+- ¿Misma referencia sie O er en todas las preguntas?
+- ¿Sin tono moralizante?
+- PROHIBIDO usar **negrita** (asteriscos dobles) en el campo `text` del pasaje. Ejemplo INCORRECTO: '**Öffnungszeiten:** Das Zentrum öffnet...'. Ejemplo CORRECTO: 'Öffnungszeiten: Das Zentrum öffnet...' (dos puntos, sin asteriscos).
+
+## Formato de salida
+Devuelve SOLO `{ "passages": [...], "questions": [...] }` — sin ```, sin texto extra.
+- IDs únicos: `gen-l1-XXXX` / `gen-q-1-XXXX-N` (XXXX aleatorio, no reutilizar ejemplo).
+- `module`:"lesen", `teil`:1 (número), `lang`:"de", `level`:"B1".
+- `correct` = `correctAnswer`. Cada pregunta con `passageId` válido.
+
+## EJEMPLO VERIFICADO (100% checker — imita estructura, estilo y parafraseo)
+
+```json
+{
+  "passages": [
+    {
+      "id": "gen-l1-8842",
+      "module": "lesen",
+      "teil": 1,
+      "title": "Mein neues Hobby im Gemeinschaftsgarten",
+      "text": "Ich habe keinen eigenen Garten, deshalb habe ich mir vor einiger Zeit ein Hochbeet in einem Gemeinschaftsgarten in der Stadt gemietet. Das war eine der besten Entscheidungen meines Lebens. Wenn ich am Wochenende in der Erde arbeite, vergesse ich völlig meinen Job. Früher hatte ich immer das Gefühl, dass ich in der Freizeit produktiv sein muss, aber das Gärtnern hat meinen Blick darauf verändert. Man muss manchmal einfach abwarten, bis etwas wächst. Ich baue hauptsächlich Gemüse an. Es schmeckt einfach viel besser, wenn man es selbst gepflanzt hat. Die Arbeit im Garten ist körperlich fordernd, aber genau das genieße ich nach einer Woche vor dem Bildschirm. Meine Nachbarn besuchen mich oft und wir tauschen Tipps über Bewässerung oder Dünger aus. Es ist ein toller Austausch zwischen den Generationen. Manchmal sitzen wir abends zusammen und essen die ersten Tomaten der Saison. Ich bin viel ruhiger geworden und genieße die kleinen Dinge des Lebens jetzt mehr. Der Gemeinschaftsgarten ist für mich ein Ort des Friedens und eine wichtige Erfahrung in meinem Alltag."
+    }
+  ],
+  "questions": [
+    {
+      "id": "gen-q-1-8842-1",
+      "module": "lesen",
+      "teil": 1,
+      "type": "richtig_falsch",
+      "question": "Die Autorin begann das Gärtnern, um in der Freizeit produktiver zu sein.",
+      "options": [],
+      "correct": "Falsch",
+      "correctAnswer": "Falsch",
+      "explanation": "Das Gegenteil stimmt: Das Gärtnern hat ihr geholfen, den Druck zur Produktivität in der Freizeit loszulassen.",
+      "passageId": "gen-l1-8842",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-1-8842-2",
+      "module": "lesen",
+      "teil": 1,
+      "type": "richtig_falsch",
+      "question": "Beim Gärtnern hat sie gelernt, auf Ergebnisse zu warten.",
+      "options": [],
+      "correct": "Richtig",
+      "correctAnswer": "Richtig",
+      "explanation": "Sie beschreibt im Text, dass man beim Gärtnern einfach abwarten muss, bis etwas wächst.",
+      "passageId": "gen-l1-8842",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-1-8842-3",
+      "module": "lesen",
+      "teil": 1,
+      "type": "richtig_falsch",
+      "question": "Das selbst angebaute Gemüse schätzt sie geschmacklich sehr.",
+      "options": [],
+      "correct": "Richtig",
+      "correctAnswer": "Richtig",
+      "explanation": "Sie schreibt, selbst gepflanztes Gemüse schmecke viel besser als fertig gekauftes aus dem Handel.",
+      "passageId": "gen-l1-8842",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-1-8842-4",
+      "module": "lesen",
+      "teil": 1,
+      "type": "richtig_falsch",
+      "question": "Die Arbeit im Freien ist körperlich zu anstrengend für die Autorin.",
+      "options": [],
+      "correct": "Falsch",
+      "correctAnswer": "Falsch",
+      "explanation": "Das Gegenteil: Sie genießt die körperliche Arbeit im Garten besonders nach einem langen Bürotag.",
+      "passageId": "gen-l1-8842",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-1-8842-5",
+      "module": "lesen",
+      "teil": 1,
+      "type": "richtig_falsch",
+      "question": "Der Garten bietet eine gute Gelegenheit für den sozialen Kontakt.",
+      "options": [],
+      "correct": "Richtig",
+      "correctAnswer": "Richtig",
+      "explanation": "Nachbarn besuchen sie regelmäßig im Garten und sie tauschen Tipps aus — auch abends gemeinsam.",
+      "passageId": "gen-l1-8842",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-1-8842-6",
+      "module": "lesen",
+      "teil": 1,
+      "type": "richtig_falsch",
+      "question": "Die meisten Nutzer des Gemeinschaftsgartens gehören derselben Generation an.",
+      "options": [],
+      "correct": "Falsch",
+      "correctAnswer": "Falsch",
+      "explanation": "Der Text erwähnt einen Austausch zwischen den Generationen — verschiedene Altersgruppen kommen dort zusammen.",
+      "passageId": "gen-l1-8842",
+      "lang": "de",
+      "level": "B1"
+    }
+  ]
+}
+```
+
+Genera UNA parte **NUEVA** (tema distinto al ejemplo), mismas reglas, integrando PALABRAS OBJETIVO. Devuelve solo el JSON.
+
+IMPORTANTE — IDs de esta generación:
+- Prefijo de passages: gen-l1-parity
+- Prefijo de preguntas: gen-q-1-parity-
+No reutilices IDs del ejemplo ni del banco existente.
+- PROHIBIDO como tema central: Huertos/jardines comunitarios (sobrerrepresentado en el banco).
+
+
+## LONGITUD CEFR (OBLIGATORIO — ingest RECHAZA si fallas)
+- Ámbito: **passages[0].text** (1 blog/e-mail en 1ª persona (ich).)
+- Objetivo: **165-200 palabras**.
+- Mínimo absoluto del gate: **150** · máximo blueprint: **220**.
+- **CUENTA las palabras antes de responder.** Si estás por debajo, añade 2-4 frases nuevas con contenido (no relleno con adjetivos).
+- El ejemplo JSON puede ser más corto por legibilidad; **tu salida NO puede ser más corta que el mínimo**.
+- Prefiere léxico B1 frecuente: Bewohner, Nachbarn, Stadt, Programm, Organisation, Erfahrungen, Familie, Kinder, Schule, Arbeit, Transport, Kurs, Projekt, Freizeit, Bericht, Termin. Evita rarezas (Begabung, künstlerisch, Denkmuster…) salvo en PALABRAS OBJETIVO. Evita términos C1/académicos (kontextualisieren, Polyphonie, Paradigma, Manifestation, Epistemologie…). ANTI-ANGLICISMOS: NUNCA escribas verbos/sustantivos ingleses sin traducir — gardening→Gartenarbeit/Gärtnern, jogging→Joggen, hiking→Wandern, cycling→Radfahren. Préstamos aceptados (Deadline, Meeting, Team, Computer, E-Mail, App, Blog, Event) SOLO si van capitalizados como sustantivos alemanes: «die Deadline», «das Meeting». ORTOGRAFÍA OBLIGATORIA: todos los sustantivos en MAYÚSCULA — también tras kein/keine, mit/für/von/ohne, en listas y enumeraciones («Blumen und Pflanzen», «keine Hypothese», no «blumen», no «keine hypothese»). Repasa cada sustantivo antes de enviar. LÍMITE INVERSO — NUNCA capitalices a mitad de frase palabras que NO sean sustantivos ni nombres propios: adjetivos (schwierig, persönlich, zugänglich, einfach, möglich), cuantificadores (viele, wenige, einige), adverbios (lange, eher, leider, trotzdem, natürlich) y verbos conjugados (ich glaube, ich stimme, ich denke) van en MINÚSCULA a mitad de frase. Solo SUSTANTIVOS y nombres propios llevan mayúscula. Ejemplos correctos: «viele Menschen» (NO «Viele»), «in der Praxis schwierig» (NO «Schwierig»), «ich glaube» (NO «Glaube»), «ich stimme zu» (NO «Stimme»), «leicht zugänglich» (NO «Zugänglich»).
+- ANTI-MULETILLAS DE FUENTE FICTICIA: no abuses de «Ein Bericht zeigt…», «Eine Studie zeigt…», «Eine Umfrage ergab/zeigt…», «Experten erklären…», «Ein Artikel lobt…» como muleta repetida. Como máximo UNA mención de fuente por pasaje, y varía (Zeitung, Nachbar, eigene Erfahrung, Zahlen der Stadt). Si no hay dato concreto, escribe el hecho directamente sin inventar estudio/informe. ANTI-TONO EMOCIONAL/IA: PROHIBIDO fórmulas como «könnte/wäre ein kleines Wunder…», «verändert mein Leben für immer», «magische Erfahrung», hipérboles sentimentales. Prefiere registro neutro/informativo típico Goethe B1 (hechos, reglas, opiniones mesuradas).
+- Cobertura léxica B1 objetivo: **≥75%** (palabras fuera de lista B1 frecuente penalizan).
+
+CHECKLIST FINAL (Goethe Hard Mode + CEFR):
+- Cumple la sección «Goethe Hard Mode» de esta plantilla.
+- Anti–word-matching: parafraseo, no emparejar palabras sueltas.
+- Longitud: cumple el mínimo CEFR de arriba (cuenta palabras).
+- El batch debe pasar check-lesen-batch-quality.mjs y check-lesen-batch-ingest.mjs sin errores.
+- VOCABULARIO SUGERIDO: integra palabras solo si encajan; omite las que no encajen.
+- Anti word-matching: máx. 2 palabras de contenido iguales al pasaje por afirmación/pregunta.
+- Parafraseo B1 (T1/T2): vocabulario de preguntas/opciones/explanations ≤ B1 — sinónimo NO más difícil que el pasaje. PROHIBIDO modifizieren, Gelassenheit, Angehörige, elektronische Mitteilungen, sich austauschen, jerga B2.
+- CEFR: evita Eigenregie, empfand, faszinierend, gebucht, Smartphone — usa léxico simple.
+- (T1) Misma referencia sie/ihre O er/seine en todas las afirmaciones — nunca mezclar.
+- (T1) APERTURA ESTRUCTURAL (blog/e-mail 1ª persona): NO abras siempre con «Ich habe…» / «Ich wollte…» / «Ich lebe seit…». Variá el primer movimiento: situación concreta ya en curso, motivo reciente, contraste pasado/presente, o decisión ya tomada + consecuencia. Seguí en ich-Form B1; el resto del texto no debe ser una lista de «Ich…» en cada frase.
+- explanation: ≥10 palabras para multiple_choice (CHK-18 rechaza si es más corta). Usa frases completas que justifiquen la respuesta.
+- Responde SOLO con el objeto JSON (sin markdown, sin ```, sin texto antes ni después).

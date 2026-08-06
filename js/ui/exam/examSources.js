@@ -169,6 +169,22 @@
 
   async function runExamSourceCascade(ctx, deps) {
     deps = deps || defaultDeps();
+
+    // Published official exams (e.g. de B1): single immutable catalog — skip pool/QL shuffle.
+    if (
+      deps.ExamLibrary &&
+      typeof deps.ExamLibrary.usesPublishedExams === 'function' &&
+      deps.ExamLibrary.usesPublishedExams(ctx.subject, ctx.level)
+    ) {
+      var publishedHit = await fromExamLibrary(ctx, deps);
+      if (publishedHit) return { status: 'hit', result: publishedHit };
+      return {
+        status: 'blocked',
+        message:
+          'No official published exam is available for this level yet. Try again later or use personalized practice.',
+      };
+    }
+
     if (!isCuratedOnly(ctx)) {
       var poolHit = await fromPool(ctx, deps);
       if (poolHit) return { status: 'hit', result: poolHit };

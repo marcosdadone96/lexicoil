@@ -1,7 +1,7 @@
 // ═══════════════════════════════════════════
 // QUOTA / PLAN
 // ═══════════════════════════════════════════
-function getMonthKey(){const d=new Date();return `${d.getFullYear()}-${d.getMonth()}`;}
+function getMonthKey(){const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;}
 function getQuotaUsed(){
   try{const raw=localStorage.getItem('lc_quota');if(!raw)return 0;const q=JSON.parse(raw);return q.month===getMonthKey()?q.used:0;}catch(e){return 0;}
 }

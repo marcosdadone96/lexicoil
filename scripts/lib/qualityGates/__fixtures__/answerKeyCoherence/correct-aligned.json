@@ -1,0 +1,30 @@
+{
+  "meta": { "case": "correct_aligned", "expected": "pass", "note": "correct=c coincide con explanation" },
+  "passages": [
+    {
+      "id": "fixture-passage-ok",
+      "module": "lesen",
+      "teil": 2,
+      "title": "Familienzeit",
+      "text": "Viele Familien nutzen das Wochenende für Aktivitäten im Freien wie Spaziergänge und Fahrradtouren."
+    }
+  ],
+  "questions": [
+    {
+      "id": "fixture-q2-correct",
+      "module": "lesen",
+      "teil": 2,
+      "type": "multiple_choice",
+      "question": "Was machen viele Familien am Wochenende am liebsten?",
+      "options": [
+        "a) Sie gehen meistens ins Kino.",
+        "b) Sie arbeiten an Schulprojekten.",
+        "c) Sie sind oft draußen in der Natur."
+      ],
+      "correct": "c",
+      "correctAnswer": "c",
+      "explanation": "Laut dem Text sind Aktivitäten im Freien wie Spaziergänge und Fahrradtouren sehr beliebt.",
+      "passageId": "fixture-passage-ok"
+    }
+  ]
+}

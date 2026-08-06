@@ -1,0 +1,149 @@
+{
+  "generatedAt": "2026-07-05T20:06:03.235Z",
+  "topic": "Freizeit",
+  "teil": 5,
+  "target": 3,
+  "success": 3,
+  "freizeitL5Before": 4,
+  "freizeitL5After": 7,
+  "publishAttempts": 5,
+  "firstTryRate": "3/3",
+  "parts": [
+    {
+      "index": 1,
+      "poolId": "pub-de-B1-lesen-t5-7faa5b5b0a2e",
+      "sourceFile": "batches/generated/lesen-t5-gemini-045.json",
+      "genAttempts": 3,
+      "publishAttempts": 1,
+      "firstTryPublish": true,
+      "servable": true,
+      "sem1VerifiedAt": "2026-07-05T20:04:45.704Z",
+      "topicTag": "Freizeit",
+      "title": "Nutzungsordnung des Sport- und Fitnessstudios „AktivLeben“",
+      "textPreview": "Willkommen bei AktivLeben! Um allen Mitgliedern ein angenehmes Training zu ermöglichen, bitten wir Sie, folgende Regeln zu beachten:\n\n*   **Mitgliedschaft und Zugang:** Der Zugang zum Studio ist nur mit einer gültigen Mitgliedskarte möglich. Diese ist persönlich und nicht übertra",
+      "questions": [
+        {
+          "question": "Bis wann können Mitglieder die Sauna an einem Wochentag nutzen?",
+          "correct": "c"
+        },
+        {
+          "question": "Was passiert, wenn man sich nicht rechtzeitig von einem Kurs abmeldet und nicht teilnimmt?",
+          "correct": "b"
+        },
+        {
+          "question": "Was ist zu tun, wenn die Mitgliedskarte verloren geht?",
+          "correct": "a"
+        },
+        {
+          "question": "Welche Altersregelungen gelten für Junge Mitglieder im Studio?",
+          "correct": "a"
+        }
+      ],
+      "linguistics": {
+        "fillers": [],
+        "freizeitHits": [
+          "sport"
+        ],
+        "detectedTopic": "Technik",
+        "textLen": 2305
+      },
+      "audit": {
+        "pool2Ok": true,
+        "pool2Blocking": 0,
+        "sem1Ok": false,
+        "sem1Blocking": 1
+      }
+    },
+    {
+      "index": 2,
+      "poolId": "pub-de-B1-lesen-t5-cc3a44a2aaef",
+      "sourceFile": "batches/generated/lesen-t5-gemini-046.json",
+      "genAttempts": 1,
+      "publishAttempts": 1,
+      "firstTryPublish": true,
+      "servable": true,
+      "sem1VerifiedAt": "2026-07-05T20:05:20.440Z",
+      "topicTag": "Freizeit",
+      "title": "Bibliotheksordnung der Stadtbibliothek „Wissensquelle“",
+      "textPreview": "Die Stadtbibliothek „Wissensquelle“ ist ein Ort für Bildung und Freizeit. Wir bitten alle Besucher, unsere Regeln zu beachten, damit sich jeder wohlfühlt.\n\n*   **Anmeldung und Ausleihe:** Für die Ausleihe von Büchern, Filmen und anderen Medien ist eine gültige Mitgliedskarte notw",
+      "questions": [
+        {
+          "question": "Wer muss für die Mitgliedschaft in der Bibliothek bezahlen?",
+          "correct": "a"
+        },
+        {
+          "question": "Wie lange kann man eine DVD maximal ausleihen, wenn niemand sie vorbestellt hat?",
+          "correct": "b"
+        },
+        {
+          "question": "Welche Kosten entstehen, wenn man ein Buch vier Wochen zu spät zurückgibt?",
+          "correct": "c"
+        },
+        {
+          "question": "Ein Besucher ohne Mitgliedschaft möchte den Computer nutzen. Was ist richtig?",
+          "correct": "a"
+        }
+      ],
+      "linguistics": {
+        "fillers": [],
+        "freizeitHits": [
+          "freizeit"
+        ],
+        "detectedTopic": "Technik",
+        "textLen": 2555
+      },
+      "audit": {
+        "pool2Ok": true,
+        "pool2Blocking": 0,
+        "sem1Ok": false,
+        "sem1Blocking": 1
+      }
+    },
+    {
+      "index": 3,
+      "poolId": "pub-de-B1-lesen-t5-570d3289e727",
+      "sourceFile": "batches/generated/lesen-t5-gemini-047.json",
+      "genAttempts": 1,
+      "publishAttempts": 1,
+      "firstTryPublish": true,
+      "servable": true,
+      "sem1VerifiedAt": "2026-07-05T20:06:00.756Z",
+      "topicTag": "Freizeit",
+      "title": "Mensaordnung im Freizeitpark 'Erlebniswelt'",
+      "textPreview": "Willkommen in der Mensa des Freizeitparks 'Erlebniswelt'! Wir bitten alle Besucher, die folgenden Regeln zu beachten, damit der Aufenthalt für alle angenehm ist.\n\n*   **Öffnungszeiten und Essenszeiten:** Die Mensa ist täglich von 11:30 Uhr bis 15:00 Uhr für das Mittagessen geöffn",
+      "questions": [
+        {
+          "question": "Bis wann können Besucher an einem Feiertag abends in der Mensa Essen?",
+          "correct": "a"
+        },
+        {
+          "question": "Welche Regel gilt für eine Gruppe von mehr als zehn Personen, die in der Mensa speisen möchte?",
+          "correct": "a"
+        },
+        {
+          "question": "Wie viel kostet ein Kindermenü für ein Kind von neun Jahren?",
+          "correct": "b"
+        },
+        {
+          "question": "Was muss man bedenken, wenn man einen eigenen Raum für eine Feier reservieren möchte?",
+          "correct": "c"
+        }
+      ],
+      "linguistics": {
+        "fillers": [],
+        "freizeitHits": [
+          "freizeit",
+          "freizeitpark"
+        ],
+        "detectedTopic": "Konsum",
+        "textLen": 2720
+      },
+      "audit": {
+        "pool2Ok": true,
+        "pool2Blocking": 0,
+        "sem1Ok": true,
+        "sem1Blocking": 0
+      }
+    }
+  ]
+}

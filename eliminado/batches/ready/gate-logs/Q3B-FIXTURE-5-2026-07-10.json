@@ -1,0 +1,102 @@
+{
+  "at": "2026-07-10T12:46:33.299Z",
+  "promptVersion": "v1.2-grammar-collocation-2026-07-10",
+  "casesHit": 5,
+  "casesTotal": 5,
+  "allDetected": true,
+  "costUsd": 0.0142,
+  "tokens": {
+    "in": 9006,
+    "out": 1034
+  },
+  "results": [
+    {
+      "file": "lesen-t2-gemini-055.json",
+      "findings": [
+        {
+          "axis": "naturalness",
+          "reason": "non_sequitur",
+          "severity": "block",
+          "quote": "Ein neues Programm ist in Berlin eingetreten.",
+          "detail": "El verbo 'eintreten' (entrar, ocurrir) es incorrecto para lanzar/iniciar un programa. Debe ser 'eingeführt' o 'gestartet'."
+        },
+        {
+          "axis": "naturalness",
+          "reason": "non_sequitur",
+          "severity": "block",
+          "quote": "das Gärtnern im freien Stress reduziert",
+          "detail": "Orden de palabras roto/confuso. Debe ser 'dass das Gärtnern im Freien Stress reduziert' o 'das Gärtnern an der frischen Luft Stress reduziert'."
+        },
+        {
+          "axis": "naturalness",
+          "reason": "register_break",
+          "severity": "warn",
+          "quote": "ihre Umgebung zu verbessern",
+          "detail": "Typo/ortografía: 'verbessern' debe ser 'verbessern' (aunque aquí parece intención de 'verbessern' = mejorar, pero está mal escrito como 'verbessern')."
+        }
+      ],
+      "cases": [
+        {
+          "id": 1,
+          "label": "Programm … eingetreten (wrong verb)",
+          "hit": true
+        },
+        {
+          "id": 2,
+          "label": "Gärtnern im freien Stress (broken syntax)",
+          "hit": true
+        }
+      ]
+    },
+    {
+      "file": "horen-t2-gemini-013.json",
+      "findings": [
+        {
+          "axis": "lexicon",
+          "reason": "wrong_lexeme",
+          "severity": "warn",
+          "quote": "der Konsum von Mobilität",
+          "detail": "Colocación antinatural en alemán B1. 'Konsum von Mobilität' es forzado; lo natural sería 'Nutzung von Mobilität' o simplemente 'Mobilität' en este contexto."
+        },
+        {
+          "axis": "lexicon",
+          "reason": "wrong_lexeme",
+          "severity": "warn",
+          "quote": "das Auto komplett zu verzichten",
+          "detail": "Falta la preposición correcta de la colocación. Debe ser 'auf das Auto komplett zu verzichten' (verzichten auf + Akk.), no solo 'verzichten' + Akk. directo."
+        }
+      ],
+      "cases": [
+        {
+          "id": 3,
+          "label": "zu verzichten (missing auf)",
+          "hit": true
+        },
+        {
+          "id": 4,
+          "label": "Konsum von Mobilität (bad collocation)",
+          "hit": true
+        }
+      ]
+    },
+    {
+      "file": "horen-t2-gemini-017.json",
+      "findings": [
+        {
+          "axis": "naturalness",
+          "reason": "non_sequitur",
+          "severity": "block",
+          "quote": "Es ist uns wichtig, dass der Zugang zu Bildung für alle leicht und indirekte Hürden minimiert werden.",
+          "detail": "Oración agramatical: predicado roto. Debería ser «...dass der Zugang zu Bildung für alle leicht ist und indirekte Hürden minimiert werden» o «...dass der Zugang zu Bildung für alle leicht gemacht wird und indirekte Hürden minimiert werden»."
+        }
+      ],
+      "cases": [
+        {
+          "id": 5,
+          "label": "Zugang… Hürden minimiert werden (broken syntax)",
+          "hit": true
+        }
+      ]
+    }
+  ]
+}

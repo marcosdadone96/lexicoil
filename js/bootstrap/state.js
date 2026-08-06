@@ -4,10 +4,10 @@
 const S={
   ui:'en',subject:null,level:null,mode:'official',examData:null,activeSession:null,lastMarkedWords:[],
   answers:{},gapAnswers:{},vocabLang:'en',vocabCache:{},
-  user:null,flashcards:[],deletedFlashcards:[],fcLang:'es',fcTab:'all',fcSelected:new Set(), /* Set of flashcard ids */
+  user:null,flashcards:[],deletedFlashcards:[],fcLang:'en',fcTab:'all',fcSelected:new Set(),fcReverse:false, /* Set of flashcard ids */
   veQuestions:[],veIndex:0,veScore:0,veAudio:false,
   timerInt:null,timerSec:0,history:[],quickMod:null,studyIdx:0,
-  savedExams:[],deletedSavedExams:[],savedQuizzes:[],deletedSavedQuizzes:[],listenPlays:2,isDemo:false,examSavedWords:[],
+  savedExams:[],deletedSavedExams:[],savedQuizzes:[],deletedSavedQuizzes:[],savedPhrases:[],deletedSavedPhrases:[],savedListening:[],savedFlashcardSets:[],listenPlays:2,isDemo:false,examSavedWords:[],
   profileCert:null,profileLevel:null,
   goals:[],activeGoalId:null,deckGoalFilter:null,fcTypeFilter:'all',wsTab:'exams',
   activityLog:[],studyTime:null,dashboardLayout:null,notebook:{tabs:[]},
@@ -22,9 +22,19 @@ const LEVELS={
   es:[{code:'A1',name:'DELE A1',desc:'Instituto Cervantes',time:90},{code:'A2',name:'DELE A2',desc:'Instituto Cervantes',time:105},{code:'B1',name:'DELE B1',desc:'Instituto Cervantes',time:150},{code:'B2',name:'DELE B2',desc:'Instituto Cervantes',time:175},{code:'C1',name:'DELE C1',desc:'Instituto Cervantes',time:210},{code:'C2',name:'DELE C2',desc:'Instituto Cervantes',time:225}]
 };
 const LANGS=[{code:'en',l:'EN',n:'English'},{code:'es',l:'ES',n:'Spanish'},{code:'fr',l:'FR',n:'French'},{code:'pt',l:'PT',n:'Portuguese'},{code:'it',l:'IT',n:'Italian'},{code:'nl',l:'NL',n:'Dutch'},{code:'pl',l:'PL',n:'Polish'},{code:'ru',l:'RU',n:'Russian'},{code:'zh',l:'ZH',n:'Chinese'},{code:'ja',l:'JA',n:'Japanese'},{code:'ar',l:'AR',n:'Arabic'},{code:'tr',l:'TR',n:'Turkish'},{code:'uk',l:'UK',n:'Ukrainian'}];
+// Product scope (temporary): translation UI shows only these targets.
+// Backend/LANGS still support more (e.g. pt); this is a product restriction, not a technical limit.
+const VOCAB_UI_LANG_CODES=Object.freeze(['en','es','fr','it']);
+function vocabUiLangs(){
+  return VOCAB_UI_LANG_CODES.map(code=>LANGS.find(l=>l.code===code)).filter(Boolean);
+}
+function clampVocabUiLang(code,fallback='en'){
+  const c=String(code||'').toLowerCase();
+  return VOCAB_UI_LANG_CODES.includes(c)?c:fallback;
+}
 const GUEST_QUOTA=2, FREE_QUOTA=5, PRO_QUOTA=12;
 const AI_CREDITS_FREE=6, AI_CREDITS_PRO=40, AI_CREDITS_PRO_MAX=150, AI_CREDITS_PRO_ROLLOVER_MAX=50, FREE_POOL_PREVIEW=2;
-const AI_COST_PERSONAL_EXAM=3, AI_COST_VOCAB_QUIZ=2, AI_COST_SPEAKING=2, AI_COST_LISTENING_GAME=1, AI_COST_WRITING=1;
+const AI_COST_PERSONAL_EXAM=4, AI_COST_PERSONAL_LESEN=0, AI_COST_PERSONAL_HOREN=0, AI_COST_PERSONAL_SCHREIBEN=2, AI_COST_PERSONAL_SPRECHEN_GEN=2, AI_COST_VOCAB_QUIZ=2, AI_COST_SPEAKING=2, AI_COST_SPEAKING_REALTIME=4, AI_COST_LISTENING_GAME=2, AI_COST_WRITING=1, AI_COST_VOCAB_PHRASES=1, AI_COST_GRAMMAR_COACHING=1;
 const PRO_SUBSCRIPTION_EUR=13, PRO_MAX_SUBSCRIPTION_EUR=24;
 const CREDIT_PACK_OFFERS=[
   {pack:15,label:'S',credits:15,priceEur:6,pricePerCredit:0.4},
@@ -40,10 +50,17 @@ if(typeof window!=='undefined'){
   window.PRO_QUOTA=PRO_QUOTA;
   window.FREE_POOL_PREVIEW=FREE_POOL_PREVIEW;
   window.AI_COST_PERSONAL_EXAM=AI_COST_PERSONAL_EXAM;
+  window.AI_COST_PERSONAL_LESEN=AI_COST_PERSONAL_LESEN;
+  window.AI_COST_PERSONAL_HOREN=AI_COST_PERSONAL_HOREN;
+  window.AI_COST_PERSONAL_SCHREIBEN=AI_COST_PERSONAL_SCHREIBEN;
+  window.AI_COST_PERSONAL_SPRECHEN_GEN=AI_COST_PERSONAL_SPRECHEN_GEN;
   window.AI_COST_VOCAB_QUIZ=AI_COST_VOCAB_QUIZ;
   window.AI_COST_SPEAKING=AI_COST_SPEAKING;
+  window.AI_COST_SPEAKING_REALTIME=AI_COST_SPEAKING_REALTIME;
   window.AI_COST_LISTENING_GAME=AI_COST_LISTENING_GAME;
   window.AI_COST_WRITING=AI_COST_WRITING;
+  window.AI_COST_VOCAB_PHRASES=AI_COST_VOCAB_PHRASES;
+  window.AI_COST_GRAMMAR_COACHING=AI_COST_GRAMMAR_COACHING;
   window.PRO_SUBSCRIPTION_EUR=PRO_SUBSCRIPTION_EUR;
   window.PRO_MAX_SUBSCRIPTION_EUR=PRO_MAX_SUBSCRIPTION_EUR;
   window.CREDIT_PACK_OFFERS=CREDIT_PACK_OFFERS;
@@ -63,7 +80,11 @@ function certLbl(s,l){return typeof SubjectMeta!=='undefined'?SubjectMeta.certLa
 function examFlag(lang){return lang==='de'?'🇩🇪':lang==='es'?'🇪🇸':'🇬🇧';}
 function goalPill(s){return typeof SubjectMeta!=='undefined'?SubjectMeta.pill(s):(s==='de'?'DE':s==='es'?'ES':'EN');}
 function provSlug(s){return typeof SubjectMeta!=='undefined'?SubjectMeta.providerSlug(s):(s==='de'?'goethe':s==='es'?'dele':'cambridge');}
-function vocabLangFor(s){return typeof SubjectMeta!=='undefined'?SubjectMeta.vocabLang(s):(s==='de'?'en':'es');}
+function vocabLangFor(s){
+  // Legacy default when lc_ui_lang unset; product UI lang is always lc_ui_lang (see translationLang()).
+  const raw=typeof SubjectMeta!=='undefined'?SubjectMeta.vocabLang(s):(s==='de'?'en':'es');
+  return clampVocabUiLang(raw,'en');
+}
 async function pickTopicForSubject(){
   if(typeof pickExamTopic==='function')return pickExamTopic(S.subject,S.level);
   if(typeof LexiCoilEngine!=='undefined'&&LexiCoilEngine.pickTopic)return LexiCoilEngine.pickTopic(S.subject,S.level);
@@ -109,6 +130,12 @@ function loadLS(){
   if(!Array.isArray(S.deletedSavedExams))S.deletedSavedExams=[];
   try{const sq=localStorage.getItem('lc_saved_quizzes');if(sq)S.savedQuizzes=JSON.parse(sq);}catch(e){}
   if(!Array.isArray(S.savedQuizzes))S.savedQuizzes=[];
+  try{const sp=localStorage.getItem('lc_saved_phrases');if(sp)S.savedPhrases=JSON.parse(sp);}catch(e){}
+  if(!Array.isArray(S.savedPhrases))S.savedPhrases=[];
+  try{const sl=localStorage.getItem('lc_saved_listening');if(sl)S.savedListening=JSON.parse(sl);}catch(e){}
+  if(!Array.isArray(S.savedListening))S.savedListening=[];
+  try{const sf=localStorage.getItem('lc_saved_flashcard_sets');if(sf)S.savedFlashcardSets=JSON.parse(sf);}catch(e){}
+  if(!Array.isArray(S.savedFlashcardSets))S.savedFlashcardSets=[];
   try{const sqd=localStorage.getItem('lc_saved_quizzes_del');if(sqd)S.deletedSavedQuizzes=JSON.parse(sqd);}catch(e){}
   if(!Array.isArray(S.deletedSavedQuizzes))S.deletedSavedQuizzes=[];
   try{const gr=localStorage.getItem('lc_goals');if(gr)S.goals=JSON.parse(gr);}catch(e){}
@@ -132,7 +159,8 @@ function loadLS(){
   S.dashboardLayout=loadDashboardLayout();
   let migrated=GoalStore.migrateFromLegacy();
   if(migrated)GoalStore.save();
-  try{const xl=localStorage.getItem('lc_pref_xlat');if(xl)S.fcLang=xl;}catch(e){}
+  try{const xl=localStorage.getItem('lc_pref_xlat');if(xl&&!localStorage.getItem('lc_ui_lang'))localStorage.setItem('lc_ui_lang',clampVocabUiLang(xl,'en'));}catch(e){}
+  try{const fr=localStorage.getItem('lc_fc_reverse');if(fr==='1')S.fcReverse=true;}catch(e){}
   S.activeSessionsByGoal=readActiveSessionsMap();
   S.activeSession=null;
   S._officialInProgress=null;
@@ -313,7 +341,12 @@ function migrateSavedExams(){
     if(!e||typeof e!=='object')return;
     if(!e.status)e.status=e.score!=null?'completed':'in_progress';
     e.mode=normalizeMode(e.mode||'official');
+    if(!e.contentKey&&e.data&&typeof getExamContentKey==='function'){
+      const key=getExamContentKey(e.data,e.goalId,e.mode);
+      if(key)e.contentKey=key;
+    }
   });
+  if(typeof dedupeSavedExamsByContentKey==='function')dedupeSavedExamsByContentKey();
 }
 function paintDashboard(){
   hideAll();
@@ -551,7 +584,8 @@ function resumeExamSession(){
   S.mode=normalizeMode(s.mode);
   S.subject=s.subject||s.examData.lang;
   S.level=s.level||s.examData.level;
-  S.vocabLang=s.vocabLang||vocabLangFor(S.subject||'de');
+  if(typeof initVocabUiLang==='function')initVocabUiLang();
+  else if(typeof syncUiLangMirrors==='function')syncUiLangMirrors(resolveVocabUiLang());
   if(s.goalId){S.activeGoalId=s.goalId;const g=S.goals.find(x=>x.id===s.goalId);if(g)syncGoalToProfile(g);}
   S.activeSession=s;
   if(S.mode==='official'){

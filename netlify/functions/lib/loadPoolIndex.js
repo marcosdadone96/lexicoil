@@ -5,10 +5,10 @@
  * Uses poolSearchCache — seed + blob metadata cached per container; payloads lazy-loaded.
  */
 const { loadModuleSearchRows, resolveRowPart } = require('./poolSearchCache.js');
+const { partPassesPublishGate } = require('./partPublishGate.js');
 
 function isPoolReadyRecord(rec, module) {
-  if (!rec || rec.disabled === true) return false;
-  if (rec.complete !== true || rec.verified !== true) return false;
+  if (!partPassesPublishGate(rec)) return false;
   if (module && String(rec.module || '').toLowerCase() !== String(module).toLowerCase()) return false;
   return true;
 }

@@ -14,24 +14,41 @@ import {
 } from './generatePartGeminiLib.mjs';
 import {
   pickScarcestTopic,
-  pickRotatingWords,
   loadPoolRecords,
   rankTopicGaps,
 } from './poolGapPlanner.mjs';
+import { topicsForLevel } from './levelPlanner.mjs';
+import {
+  pickTopicAlignedWeakWords,
+  refreshCoverageRegistry,
+  recordGenerationOutcome,
+  printCoverageSummary,
+  vocabPickContext,
+} from './coverageRegistry.mjs';
+import { pushSessionMoldExclude, pushSessionStructuralCorpus } from './poolFillSessionExclude.mjs';
+import { setupConsoleUtf8, hrDouble, MARK_OK, MARK_FAIL } from './consoleSafe.mjs';
+import { resolvePublishFile } from './resolvePublishFile.mjs';
+import {
+  isT3BlueprintExhaustedReason,
+  listT3BlueprintStockForTopic,
+} from './lesenT3BlueprintStock.mjs';
+import {
+  isT4SeedExhaustedReason,
+  listT4SeedStockForTopic,
+  preflightLesenT4Topic,
+  shouldSkipLesenT4Topic,
+} from './lesenT4SeedStock.mjs';
+
+export { preflightLesenT4Topic, shouldSkipLesenT4Topic };
 
 const require = createRequire(import.meta.url);
 const { normalizeB1Topic } = require(path.join(ROOT, 'js/data/b1Topics.js'));
 
-const GENERATED_DIR = path.join(ROOT, 'batches', 'generated');
-
 export function refreshVocabCoverage(lang, level) {
-  console.log('\n🔄 Actualizando cobertura de vocabulario…');
-  const res = spawnSync(
-    process.execPath,
-    ['scripts/vocab-coverage-report.mjs', '--lang', lang, '--level', level],
-    { cwd: ROOT, stdio: 'inherit' },
-  );
-  if (res.status !== 0) console.warn('vocab-coverage-report terminó con código', res.status);
+  setupConsoleUtf8();
+  console.log('\n[sync] Actualizando registro de cobertura…');
+  refreshCoverageRegistry(lang, level);
+  printCoverageSummary(lang, level);
 }
 
 export function rebuildPoolManifest() {
@@ -45,21 +62,140 @@ export function rebuildPoolManifest() {
 export function planRotation(ctx) {
   const records = loadPoolRecords(ctx.lang, ctx.level);
   const recent = ctx.recentTopics || [];
-  const topic = pickScarcestTopic(records, ctx.module, ctx.teil, {
-    targetPerCell: ctx.targetPerCell,
-    excludeTopics: recent.slice(-Math.max(1, ctx.rotateEvery - 1)),
-  });
-  const { words, nextCursor } = pickRotatingWords(ctx.lang, ctx.level, {
-    count: ctx.wordCount,
-    cursor: ctx.vocabCursor,
-  });
-  const gaps = rankTopicGaps(records, ctx.module, ctx.teil, ctx.targetPerCell);
-  const row = gaps.find((g) => g.topic === topic);
-  console.log(
-    `\n📌 Celda ${ctx.module} T${ctx.teil} · tema «${topic}» (stock ${row?.count ?? 0}, objetivo ${ctx.targetPerCell})`,
+  const hardSkip = new Set(
+    [...(ctx.skipTopics || []), ...(ctx.exhaustedTopics || [])]
+      .map((t) => normalizeB1Topic(t))
+      .filter(Boolean),
   );
-  console.log(`   Palabras (${words.length}): ${words.join(', ')}`);
-  return { topic, words, nextCursor, recentTopics: [...recent, topic].slice(-8) };
+  const forced = ctx.forcedTopic ? normalizeB1Topic(ctx.forcedTopic) : null;
+  if (forced && hardSkip.has(forced)) {
+    return {
+      topic: null,
+      words: [],
+      nextCursor: ctx.vocabCursor || 0,
+      recentTopics: recent,
+      exhausted: true,
+      forcedTopicExhausted: forced,
+    };
+  }
+
+  const wordCount = Math.min(8, Math.max(5, Number(ctx.wordCount) || 6));
+  const vocabSkip = new Set(hardSkip);
+  const maxTopicTries = topicsForLevel(ctx.level).length + 2;
+
+  for (let tryN = 0; tryN < maxTopicTries; tryN++) {
+    const topic =
+      forced ||
+      pickScarcestTopic(records, ctx.module, ctx.teil, {
+        targetPerCell: ctx.targetPerCell,
+        level: ctx.level,
+        excludeTopics: [
+          ...recent.slice(-Math.max(1, ctx.rotateEvery - 1)),
+          ...vocabSkip,
+        ],
+        noFallback: vocabSkip.size > 0,
+      });
+    if (!topic) {
+      return {
+        topic: null,
+        words: [],
+        nextCursor: ctx.vocabCursor || 0,
+        recentTopics: recent,
+        exhausted: true,
+      };
+    }
+    const normTopic = normalizeB1Topic(topic);
+
+    try {
+      const { words, nextCursor } = pickTopicAlignedWeakWords({
+        lang: ctx.lang,
+        level: ctx.level,
+        topic,
+        count: wordCount,
+        cursor: ctx.vocabCursor,
+        context: ctx.vocabContext || vocabPickContext(ctx.module, ctx.teil),
+      });
+      const gaps = rankTopicGaps(records, ctx.module, ctx.teil, ctx.targetPerCell, ctx.level);
+      const row = gaps.find((g) => g.topic === normTopic);
+      console.log(
+        `\n[plan] Celda ${ctx.module} T${ctx.teil} · tema «${topic}» (stock ${row?.count ?? 0}, objetivo ${ctx.targetPerCell})`,
+      );
+      console.log(`   Palabras (${words.length}): ${words.join(', ')}`);
+      return { topic, words, nextCursor, recentTopics: [...recent, topic].slice(-8) };
+    } catch (err) {
+      const msg = err?.message || String(err);
+      if (forced) {
+        console.error(
+          `\n⛔ Tema forzado «${topic}» sin vocab planificable (${msg}) — no se puede generar.`,
+        );
+        return {
+          topic: null,
+          words: [],
+          nextCursor: ctx.vocabCursor || 0,
+          recentTopics: recent,
+          exhausted: true,
+          forcedTopicExhausted: normTopic,
+          vocabPlanError: msg,
+        };
+      }
+      console.warn(
+        `\n⏭ Tema «${topic}» sin vocab planificable (${msg}) — rotando a otro tema`,
+      );
+      vocabSkip.add(normTopic);
+    }
+  }
+
+  console.warn(
+    `\n⛔ Sin temas con vocab planificable para ${ctx.module} T${ctx.teil} ` +
+      `(probados ${vocabSkip.size} tema(s) excluido(s)).`,
+  );
+  return {
+    topic: null,
+    words: [],
+    nextCursor: ctx.vocabCursor || 0,
+    recentTopics: recent,
+    exhausted: true,
+    vocabTopicsExhausted: [...vocabSkip],
+  };
+}
+
+/** Lesen T3: ¿saltar tema por catálogo agotado (sin stock tras dedup/exclusión)? */
+export function shouldSkipLesenT3Topic(module, teil, topic, reason, sessionLesen) {
+  if (String(module).toLowerCase() !== 'lesen' || Number(teil) !== 3 || !topic) return false;
+  if (isT3BlueprintExhaustedReason(reason)) return true;
+  const exclude = sessionLesen?.args?._t3ExcludeSlugs;
+  const stock = listT3BlueprintStockForTopic(topic, exclude instanceof Set ? exclude : new Set(exclude || []));
+  return !stock.generatable;
+}
+
+export function preflightLesenT3Topic(topic, sessionLesen) {
+  const exclude = sessionLesen?.args?._t3ExcludeSlugs;
+  return listT3BlueprintStockForTopic(
+    topic,
+    exclude instanceof Set ? exclude : new Set(exclude || []),
+  );
+}
+
+/**
+ * Lesen T3/T4 preflight cuando `--topic` fuerza un tema: abortar si agotado; si no, saltar y rotar.
+ * @returns {'proceed'|'skip'|'abort'} action
+ * @returns {string} [message] when abort
+ */
+export function lesenForcedTopicPreflightAction(forcedTopic, currentTopic, stock, teil) {
+  if (stock.generatable) return { action: 'proceed' };
+  const forced = forcedTopic ? normalizeB1Topic(forcedTopic) : null;
+  const current = normalizeB1Topic(currentTopic);
+  if (!forced || forced !== current) return { action: 'skip' };
+
+  const detail =
+    Number(teil) === 3
+      ? `${stock.compatibleTotal} compatibles, 0 disponibles tras dedup/exclusión`
+      : `${stock.preflightOkCount} preflight-OK, ${stock.freshCount} frescas, tier=${stock.pickTier}`;
+  return {
+    action: 'abort',
+    message:
+      `⛔ Tema forzado «${current}» agotado — no se puede generar (Lesen T${teil}). ${detail}`,
+  };
 }
 
 function moveToRejected(relFile, reason) {
@@ -90,6 +226,8 @@ export async function generatePoolPart(ctx) {
         level,
         writeFile: true,
         maxApiCalls: ctx.maxApiCalls,
+        semantic: true,
+        skipSem2: true,
       });
     }
     const result = await generateLesenPart({
@@ -99,13 +237,25 @@ export async function generatePoolPart(ctx) {
       writeFile: true,
       session,
       fixRetries: ctx.fixRetries ?? 2,
+      maxAttemptsPerFile: ctx.maxAttemptsPerFile,
+      maxCostPerFileUsd: ctx.maxCostPerFileUsd,
+      semantic: true,
+      skipSem2: true,
+      vocabContext: ctx.vocabContext || vocabPickContext(module, teil),
+      vocabBgStrictAnchor: ctx.vocabBgStrictAnchor || null,
+      skipQuality: ctx.skipQuality === true,
+      testMode: ctx.testMode === true,
     });
+    if (result.ok && result.batch) {
+      pushSessionMoldExclude(session.args, result.batch);
+      pushSessionStructuralCorpus(session.args, result.batch);
+    }
     return { ...result, sessionLesen: session };
   }
 
   let session = sessionExam;
   if (!session) {
-    session = createExamFactorySession({
+    session = await createExamFactorySession({
       module,
       teil,
       lang,
@@ -118,14 +268,31 @@ export async function generatePoolPart(ctx) {
     teil,
     topic,
     words,
+    lang,
+    level,
     session,
     fixRetries: ctx.fixRetries ?? 2,
+    maxAttemptsPerFile: ctx.maxAttemptsPerFile,
+    maxCostPerFileUsd: ctx.maxCostPerFileUsd,
+    vocabBgStrictAnchor: ctx.vocabBgStrictAnchor || null,
+    skipQuality: ctx.skipQuality === true,
+    testMode: ctx.testMode === true,
   });
-  return { ...result, sessionExam: session };
+  return { ...result, sessionExam: result.session || session };
 }
 
 export function publishPoolPart(ctx) {
   const { module, teil, relFile, lang, level, tag, syncPool } = ctx;
+  const resolved = resolvePublishFile(relFile, level);
+  if (!resolved) {
+    const msg = `Archivo no encontrado para publicar: ${relFile} (buscado tambien en pool-verified/)`;
+    console.error(`\n${MARK_FAIL} ${msg}`);
+    return { ok: false, status: 1, error: msg };
+  }
+  if (resolved.source !== 'given' && resolved.source !== 'generated') {
+    console.log(`[publish] Resuelto desde ${resolved.source}: ${resolved.relFile}`);
+  }
+
   const script =
     module === 'lesen'
       ? 'scripts/publish-lesen-generated.mjs'
@@ -134,7 +301,7 @@ export function publishPoolPart(ctx) {
   const args = [
     script,
     '--file',
-    relFile,
+    resolved.relFile,
     '--continue',
     '--publish',
     '--allow-bank-dup',
@@ -152,9 +319,30 @@ export function publishPoolPart(ctx) {
   }
   if (syncPool) args.push('--sync-pool');
 
-  console.log(`\n══ Publicando ${relFile} (POOL-2 + banco) ══`);
-  const res = spawnSync(process.execPath, args, { cwd: ROOT, encoding: 'utf8', stdio: 'inherit' });
-  return { ok: res.status === 0, status: res.status ?? 1 };
+  console.log(`\n${hrDouble()}`);
+  console.log(`Publicando ${resolved.relFile} (POOL-2 + banco)`);
+  console.log(hrDouble());
+  const res = spawnSync(process.execPath, args, {
+    cwd: ROOT,
+    encoding: 'utf8',
+    stdio: ['inherit', 'pipe', 'pipe'],
+  });
+  if (res.status === 0) {
+    return { ok: true, status: 0, file: resolved.relFile };
+  }
+  const detail = `${res.stdout || ''}${res.stderr || ''}`.trim();
+  console.error(`\n${MARK_FAIL} Publicacion fallida (exit ${res.status ?? 1})`);
+  if (detail) {
+    console.error(detail.slice(0, 8000));
+  } else {
+    console.error('Sin salida del subproceso publish-exam-generated / publish-lesen-generated.');
+  }
+  return {
+    ok: false,
+    status: res.status ?? 1,
+    error: detail || `publish subprocess exit ${res.status ?? 1}`,
+    file: resolved.relFile,
+  };
 }
 
 export async function runPoolFillCycle(ctx) {
@@ -165,6 +353,8 @@ export async function runPoolFillCycle(ctx) {
       ok: false,
       stage: 'generate',
       reason: gen.reason,
+      braked: gen.braked,
+      gate: gen.gate,
       sessionLesen: gen.sessionLesen,
       sessionExam: gen.sessionExam,
     };
@@ -175,25 +365,51 @@ export async function runPoolFillCycle(ctx) {
     return { ok: false, stage: 'generate', reason: 'no_file', sessionLesen: gen.sessionLesen, sessionExam: gen.sessionExam };
   }
 
+  const batch = gen.batch || loadBatchFromRelFile(relFile);
+
   if (!ctx.publish) {
-    console.log(`✅ Validada en ${relFile} (sin --publish)`);
+    console.log(`${MARK_OK} Validada en ${relFile} (sin --publish)`);
+    if (batch) {
+      recordGenerationOutcome({
+        lang: ctx.lang,
+        level: ctx.level,
+        module: ctx.module,
+        teil: ctx.teil,
+        topic: ctx.topic,
+        requestedWords: ctx.words,
+        batch,
+        published: false,
+      });
+    }
     return { ok: true, file: relFile, published: false, sessionLesen: gen.sessionLesen, sessionExam: gen.sessionExam };
   }
 
   const pub = publishPoolPart({ ...ctx, relFile });
   if (!pub.ok) {
-    moveToRejected(relFile, 'publish_or_pool2_failed');
+    moveToRejected(pub.file || relFile, 'publish_or_pool2_failed');
     return {
       ok: false,
       stage: 'publish',
-      reason: 'publish_failed',
-      file: relFile,
+      reason: pub.error || 'publish_failed',
+      file: pub.file || relFile,
       sessionLesen: gen.sessionLesen,
       sessionExam: gen.sessionExam,
     };
   }
 
-  console.log(`✅ Publicada: ${relFile}`);
+  console.log(`${MARK_OK} Publicada: ${pub.file || relFile}`);
+  if (batch) {
+    recordGenerationOutcome({
+      lang: ctx.lang,
+      level: ctx.level,
+      module: ctx.module,
+      teil: ctx.teil,
+      topic: ctx.topic,
+      requestedWords: ctx.words,
+      batch,
+      published: true,
+    });
+  }
   return {
     ok: true,
     file: relFile,
@@ -201,6 +417,16 @@ export async function runPoolFillCycle(ctx) {
     sessionLesen: gen.sessionLesen,
     sessionExam: gen.sessionExam,
   };
+}
+
+function loadBatchFromRelFile(relFile) {
+  const abs = path.isAbsolute(relFile) ? relFile : path.join(ROOT, relFile);
+  if (!fs.existsSync(abs)) return null;
+  try {
+    return JSON.parse(fs.readFileSync(abs, 'utf8'));
+  } catch {
+    return null;
+  }
 }
 
 export function printGapStatus(lang, level, module, teil, targetPerCell) {

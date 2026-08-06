@@ -1,0 +1,57 @@
+{
+  "generatedAt": "2026-07-20T12:31:26.337Z",
+  "dryRun": false,
+  "cells": [
+    "lesen_2"
+  ],
+  "results": [
+    {
+      "file": "lesen-t2-gemini-096.json",
+      "cell": "lesen_2",
+      "phase": "stamp-only",
+      "outcome": "reclassified_to_llm",
+      "stillBad": [
+        {
+          "id": "gen-q-2-632a83e2-1",
+          "detail": "gen-q-2-632a83e2-1: sesgo de longitud MCQ (B1) — opción correcta «a» es la más larga (70 vs 67/63; Δ +5 chars, +8% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable."
+        }
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-057.json",
+      "cell": "lesen_2",
+      "phase": "llm",
+      "outcome": "official-ready",
+      "costUsd": 0.0014844,
+      "officialReady": true,
+      "partGate": {
+        "ok": true
+      }
+    },
+    {
+      "file": "lesen-t2-gemini-093.json",
+      "cell": "lesen_2",
+      "phase": "llm",
+      "outcome": "partial-still-quarantined",
+      "costUsd": 0.0005497,
+      "officialReady": false,
+      "partGate": {
+        "ok": true
+      }
+    },
+    {
+      "file": "lesen-t2-gemini-105.json",
+      "cell": "lesen_2",
+      "phase": "llm",
+      "outcome": "partial-still-quarantined",
+      "costUsd": 0.0017735,
+      "officialReady": false,
+      "partGate": {
+        "ok": false,
+        "issue": "Explanation demasiado corta (9 palabras): \"Viele berichten, dass sie danach ruhiger und konzentrierter \". Mínimo: 10 para tipo multiple_choice."
+      }
+    }
+  ],
+  "totalCostUsd": 0.0038076,
+  "officialReadyCount": 1
+}

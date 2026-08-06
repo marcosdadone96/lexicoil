@@ -1,11 +1,83 @@
 import path from 'node:path';
+import { createRequire } from 'node:module';
 import { ROOT } from './loadEnv.mjs';
 import { isValidB1Topic, normalizeB1Topic, B1_TOPICS } from './b1Topics.mjs';
 import { classifyUserVocab } from './vocabPrefilter.mjs';
-import { pickTargetWords, loadWeakLemmas, pickRandomWords } from './lesenTemplatePrompt.mjs';
+import { pickTargetWords } from './lesenTemplatePrompt.mjs';
 import { pickNextTopic } from './topicRotation.mjs';
+import { filterPromptTargetWords, isBlacklistedLemma } from './lexicalCheck.mjs';
+import { loadVocabBankLemmaSet, foldLemma } from './vocabBank.mjs';
+import { pickTopicAlignedWeakWords, vocabPickContext } from './coverageRegistry.mjs';
 
 const GENERATED_DIR = path.join(ROOT, 'batches', 'generated');
+
+/** Léxico B1 seguro — derivado de plantillas lesen-teil*.md y TOPIC_KEYWORDS. */
+const TEMPLATE_SAFE_B1_WORDS = Object.freeze([
+  'stadt', 'transport', 'auto', 'nachhaltigkeit', 'kinder', 'besucher', 'organisation',
+  'nachbar', 'familie', 'erfahrung', 'meinung', 'problem', 'vorteil', 'plan', 'regel',
+  'bewohner', 'termin', 'kurs', 'projekt', 'freizeit', 'bericht', 'arbeit', 'firma',
+  'kollege', 'programm', 'anmeldung', 'gebühr', 'ruhe', 'raum', 'parkplatz', 'müll',
+  'reparieren', 'hausbesuch', 'wohnung', 'schule', 'unterricht', 'urlaub', 'reise',
+  'gesundheit', 'sport', 'hobby', 'wochenende', 'freund', 'bus', 'bahn', 'fahrrad',
+]);
+
+const require = createRequire(import.meta.url);
+const { TOPIC_KEYWORDS } = require(path.join(ROOT, 'js/engine/partTopicDetect.js'));
+
+function safePoolForTopic(topicTag, lang = 'de', level = 'B1') {
+  const bank = loadVocabBankLemmaSet(lang, level);
+  const topic = normalizeB1Topic(topicTag);
+  const topicWords = (topic && TOPIC_KEYWORDS[topic] ? TOPIC_KEYWORDS[topic] : []).map((w) =>
+    foldLemma(w),
+  );
+  const merged = [...new Set([...topicWords, ...TEMPLATE_SAFE_B1_WORDS.map(foldLemma)])];
+  return merged.filter((w) => bank.has(w) && !isBlacklistedLemma(w) && w.length >= 4);
+}
+
+/**
+ * Filtra por whitelist banco B1 (+ blacklist C1/C2) y rellena desde pool seguro si quedan <goal.
+ * @param {string[]} words
+ * @param {string|null} topicTag
+ * @param {number} [targetCount]
+ * @param {{ lang?: string, level?: string }} [opts]
+ */
+export function sanitizePromptTargetWords(words, topicTag, targetCount = 8, opts = {}) {
+  const lang = opts.lang || 'de';
+  const level = opts.level || 'B1';
+  const context = opts.context === 'narrative' ? 'narrative' : 'debate';
+  const goal = Math.max(3, Number(targetCount) || 8);
+  let filtered = filterPromptTargetWords(words, { lang, level, requireBank: true });
+  if (filtered.length >= goal) return filtered.slice(0, goal);
+
+  const pool =
+    context === 'narrative'
+      ? pickTopicAlignedWeakWords({
+          lang,
+          level,
+          topic: topicTag,
+          count: Math.max(goal, 12),
+          cursor: opts.coverageCursor ?? 0,
+          context: 'narrative',
+        }).words
+      : safePoolForTopic(topicTag, lang, level);
+  const used = new Set(filtered.map((w) => w.toLowerCase()));
+  const candidates = pool.filter((w) => !used.has(w.toLowerCase()));
+
+  while (filtered.length < goal && candidates.length) {
+    const i = Math.floor(Math.random() * candidates.length);
+    const pick = candidates.splice(i, 1)[0];
+    filtered.push(pick);
+    used.add(pick.toLowerCase());
+  }
+
+  if (filtered.length < 3) {
+    throw new Error(
+      `Tras filtro whitelist banco ${level} (+ blacklist) quedan ${filtered.length} palabras objetivo (<3). ` +
+        `Revisa library/vocab/${lang}/${level}.json o el topicTag «${normalizeB1Topic(topicTag) || '—'}».`,
+    );
+  }
+  return filtered;
+}
 
 /**
  * Resolve closed B1 topic: explicit --topic or rotation fallback.
@@ -57,13 +129,16 @@ export function resolveGenerationVocab(args, topicCtx = {}) {
       source: 'bank',
     });
   } else if (args.fromCoverage) {
-    const weak = loadWeakLemmas(args.lang, args.level);
-    if (!weak?.length) {
-      throw new Error(
-        `No hay data/coverage/weak-${args.lang}_${args.level}.json — ejecuta vocab-coverage-report.mjs`,
-      );
-    }
-    words = pickRandomWords(weak, args.wordCount, args.wordCount);
+    const pick = pickTopicAlignedWeakWords({
+      lang: args.lang,
+      level: args.level,
+      topic,
+      count: args.wordCount,
+      cursor: args.coverageCursor ?? 0,
+    });
+    words = pick.words;
+    args._coverageCursor = pick.nextCursor;
+    args._coverageTopicAlignedCount = pick.topicAlignedCount;
     if (!words.length) throw new Error('No se pudieron elegir palabras del reporte de cobertura');
   } else {
     throw new Error('Pasa --words a,b,c, --from-bank o --from-coverage');
@@ -79,7 +154,16 @@ export function resolveTargetWordsForArgs(args, topicCtx = {}) {
   const resolved = resolveGenerationVocab(args, topicCtx);
   args._resolvedTopic = resolved.topic;
   args._userVocab = resolved.userVocab;
-  return resolved.words;
+  const targetCount = Math.max(1, Number(args.wordCount) || 10);
+  const context =
+    args.vocabContext ||
+    vocabPickContext(topicCtx.module || args.module || 'lesen', topicCtx.teil ?? args.teil ?? 1);
+  return sanitizePromptTargetWords(resolved.words, resolved.topic, targetCount, {
+    lang: args.lang || 'de',
+    level: args.level || 'B1',
+    context,
+    coverageCursor: args.coverageCursor ?? 0,
+  });
 }
 
 export { isValidB1Topic, B1_TOPICS };

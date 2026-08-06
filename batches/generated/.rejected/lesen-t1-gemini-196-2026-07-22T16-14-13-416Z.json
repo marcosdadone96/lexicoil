@@ -1,0 +1,184 @@
+{
+  "_rejectedReason": "gen-q-1-36aaa699-1: type_not_allowed:richtig_falsch:allowed=multiple_choice\n\ngen-q-1-36aaa699-1: type_not_allowed:richtig_falsch:allowed=multiple_choice\ngen-q-1-36aaa699-2: type_not_allowed:richtig_falsch:allowed=multiple_choice\ngen-q-1-36aaa699-3: type_not_allowed:richtig_falsch:allowed=multiple_choice\ngen-q-1-36aaa699-4: type_not_allowed:richtig_falsch:allowed=multiple_choice\ngen-q-1-36aaa699-5: type_not_allowed:richtig_falsch:allowed=multiple_choice\n\n== Validación de lesen-t1-gemini-196.json (de_A2) ==\nPreguntas: 5 | Pasajes: 1\nEsquema: OK\nConformidad blueprint: FAIL (5 ítems)\nColocación (Teile que mejora): Pool válido (Teil ya cubierto en 1 examen — OK para exámenes disjuntos)\nProblemas:\n  - gen-q-1-36aaa699-1: type_not_allowed:richtig_falsch:allowed=multiple_choice\n  - gen-q-1-36aaa699-2: type_not_allowed:richtig_falsch:allowed=multiple_choice\n  - gen-q-1-36aaa699-3: type_not_allowed:richtig_falsch:allowed=multiple_choice\n  - gen-q-1-36aaa699-4: type_not_allowed:richtig_falsch:allowed=multiple_choice\n  - gen-q-1-36aaa699-5: type_not_allowed:richtig_falsch:allowed=multiple_choice",
+  "_rejectedGate": "formato",
+  "_rejectedAt": "2026-07-22T16:14:13.416Z",
+  "passages": [
+    {
+      "id": "gen-l1-36aaa699",
+      "module": "lesen",
+      "teil": 1,
+      "level": "A2",
+      "title": "Neues Freizeitangebot: Tanzkurse für alle Altersgruppen",
+      "text": "Die Stadt Musterstadt startet diesen Herbst ein neues Freizeitangebot. Ab dem 1. Oktober können Bürgerinnen und Bürger an verschiedenen Tanzkursen teilnehmen. Es gibt Kurse für Kinder, Jugendliche und Erwachsene. Auch Senioren sind herzlich willkommen. Die Kurse finden im Kulturzentrum am Marktplatz statt, jeden Dienstag und Donnerstagabend. Für Kinder gibt es Hip-Hop, für Jugendliche modernen Tanz und für Erwachsene Standardtänze wie Walzer und Tango. Ein Anfängerkurs für Paare beginnt am 5. Oktober. Man muss sich vorher anmelden. Die Anmeldung ist online auf der Webseite der Stadt oder direkt im Kulturzentrum möglich. Die Kosten betragen 30 Euro pro Monat für Erwachsene und 20 Euro für Kinder und Jugendliche. Für Senioren gibt es einen speziellen Vormittagskurs, der nur 15 Euro kostet. Alle Kurse dauern 60 Minuten. Die Stadt hofft, dass viele Menschen dieses neue Angebot nutzen und ihre Freizeit aktiv gestalten. Es ist eine gute Möglichkeit, neue Leute kennenzulernen und Spaß zu haben. Beide Tanzlehrer haben viel Erfahrung. Man kann sich auch für eine kostenlose Probestunde anmelden, um reinzuschnuppern. Weitere Auskunft gibt es am Informationsschalter.",
+      "topicTag": "Freizeit",
+      "lang": "de"
+    }
+  ],
+  "questions": [
+    {
+      "id": "gen-q-1-36aaa699-1",
+      "module": "lesen",
+      "teil": 1,
+      "type": "richtig_falsch",
+      "question": "Wann beginnen die neuen Tanzkurse?",
+      "options": [],
+      "correct": "c",
+      "correctAnswer": "c",
+      "explanation": "Im Text steht, dass die Kurse ab dem 1. Oktober beginnen.",
+      "passageId": "gen-l1-36aaa699",
+      "lang": "de",
+      "level": "A2",
+      "topicTags": [
+        "Freizeit"
+      ]
+    },
+    {
+      "id": "gen-q-1-36aaa699-2",
+      "module": "lesen",
+      "teil": 1,
+      "type": "richtig_falsch",
+      "question": "Wo finden die Tanzkurse statt?",
+      "options": [],
+      "correct": "a",
+      "correctAnswer": "a",
+      "explanation": "Die Kurse finden im Kulturzentrum am Marktplatz statt.",
+      "passageId": "gen-l1-36aaa699",
+      "lang": "de",
+      "level": "A2",
+      "topicTags": [
+        "Freizeit"
+      ]
+    },
+    {
+      "id": "gen-q-1-36aaa699-3",
+      "module": "lesen",
+      "teil": 1,
+      "type": "richtig_falsch",
+      "question": "Welche Tanzart gibt es für Erwachsene?",
+      "options": [],
+      "correct": "b",
+      "correctAnswer": "b",
+      "explanation": "Für Erwachsene werden Standardtänze wie Walzer und Tango angeboten.",
+      "passageId": "gen-l1-36aaa699",
+      "lang": "de",
+      "level": "A2",
+      "topicTags": [
+        "Freizeit"
+      ]
+    },
+    {
+      "id": "gen-q-1-36aaa699-4",
+      "module": "lesen",
+      "teil": 1,
+      "type": "richtig_falsch",
+      "question": "Was kostet ein Kurs für Senioren?",
+      "options": [],
+      "correct": "c",
+      "correctAnswer": "c",
+      "explanation": "Ein spezieller Vormittagskurs für Senioren kostet nur 15 Euro.",
+      "passageId": "gen-l1-36aaa699",
+      "lang": "de",
+      "level": "A2",
+      "topicTags": [
+        "Freizeit"
+      ]
+    },
+    {
+      "id": "gen-q-1-36aaa699-5",
+      "module": "lesen",
+      "teil": 1,
+      "type": "richtig_falsch",
+      "question": "Was kann man vor der Anmeldung machen?",
+      "options": [],
+      "correct": "a",
+      "correctAnswer": "a",
+      "explanation": "Man kann sich für eine kostenlose Probestunde anmelden, um reinzuschnuppern.",
+      "passageId": "gen-l1-36aaa699",
+      "lang": "de",
+      "level": "A2",
+      "topicTags": [
+        "Freizeit"
+      ]
+    }
+  ],
+  "topicTag": "Freizeit",
+  "_requestedTopic": "Freizeit",
+  "userVocabFeedback": {
+    "topic": "Freizeit",
+    "requested": [
+      "beide",
+      "rein",
+      "automat",
+      "melden",
+      "auskunft"
+    ],
+    "prompted": [
+      "beide",
+      "rein",
+      "automat",
+      "melden",
+      "auskunft"
+    ],
+    "originalRequested": null,
+    "subtypeAdaptation": null,
+    "used": [
+      "beide",
+      "melden",
+      "auskunft"
+    ],
+    "notUsed": [
+      "rein",
+      "automat"
+    ],
+    "excluded": [],
+    "ratio": 0.6,
+    "targetUsage": [
+      {
+        "word": "beide",
+        "surfaces": [
+          "Beide"
+        ]
+      },
+      {
+        "word": "melden",
+        "surfaces": [
+          "anmelden"
+        ]
+      },
+      {
+        "word": "auskunft",
+        "surfaces": [
+          "Auskunft"
+        ]
+      }
+    ]
+  },
+  "targetUsage": [
+    {
+      "word": "beide",
+      "surfaces": [
+        "Beide"
+      ]
+    },
+    {
+      "word": "melden",
+      "surfaces": [
+        "anmelden"
+      ]
+    },
+    {
+      "word": "auskunft",
+      "surfaces": [
+        "Auskunft"
+      ]
+    }
+  ],
+  "generationMetadata": {
+    "usedFeedback": false,
+    "feedbackRules": [],
+    "feedbackCount": 0,
+    "feedbackCategories": [],
+    "feedbackMode": "off",
+    "feedbackVersion": "v1"
+  }
+}

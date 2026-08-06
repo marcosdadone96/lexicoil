@@ -41,6 +41,7 @@ const record = { module: 'sprechen', teil: 1, instruction: 'Teil 1', questions: 
 const g = { console, window: null, document: { getElementById: () => null }, localStorage: { getItem: () => null } };
 g.window = g;
 vm.createContext(g);
+vm.runInContext(fs.readFileSync(path.join(ROOT, 'js/engine/sprechenBriefing.js'), 'utf8'), g);
 vm.runInContext(fs.readFileSync(path.join(ROOT, 'js/data/publishedExamAdapter.js'), 'utf8'), g);
 const adapted = g.PublishedExamAdapter.publishedDocToServedExam({
   examId: 'test',
@@ -55,6 +56,7 @@ const sp = adapted.sprechenParts[0];
 ok(sp?.fieldId === 'speak_bp_1', 'sprechen fieldId speak_bp_1');
 ok(String(sp?.situation || '').includes('Stadtfest'), 'sprechen situation from question');
 ok((sp?.points || []).length >= 3, 'sprechen bullet points parsed');
+ok(!(sp?.points || []).some((p) => String(p).startsWith('Sie möchten')), 'intro not in points array');
 
 if (failed) process.exit(1);
 console.log('\nSpeaking scaffold tests passed.');

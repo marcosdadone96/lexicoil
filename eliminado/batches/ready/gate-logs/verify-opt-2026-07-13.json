@@ -1,0 +1,67 @@
+{
+  "generatedAt": "2026-07-13T20:33:46.802Z",
+  "surgicalThinkingConfig": {
+    "thinkingBudget": 0
+  },
+  "wrapSurgicalCallLlmWorks": true,
+  "repairResults": [
+    {
+      "kind": "word_match",
+      "qualityPass": true,
+      "thoughtsTokens": 0,
+      "costUsd": 0.0005525
+    },
+    {
+      "kind": "mcq_length_bias",
+      "qualityPass": false,
+      "thoughtsTokens": 0,
+      "costUsd": 0.0005509
+    }
+  ],
+  "allRepairsThoughtsZero": true,
+  "exclusionChecks": [
+    {
+      "label": "Gesundheit×autofrei blocked",
+      "pass": true
+    },
+    {
+      "label": "Familie×vereinsfoerderung blocked",
+      "pass": true
+    },
+    {
+      "label": "Bildung×schule saturated skip",
+      "pass": true
+    },
+    {
+      "label": "Bildung×bibliothek saturated skip",
+      "pass": true
+    },
+    {
+      "label": "Reisen×bibliothek saturated skip",
+      "pass": true
+    },
+    {
+      "label": "resolveT4 Gesundheit excludes autofrei in molds",
+      "pass": true
+    }
+  ],
+  "blockedMaps": {
+    "T4_TOPIC_DEBATE_BLOCKED": {
+      "Gesundheit": [
+        "autofrei"
+      ],
+      "Familie": [
+        "vereinsfoerderung"
+      ]
+    },
+    "T5_TOPIC_SUBTYPE_SATURATED_BLOCK": {
+      "Bildung": [
+        "schule",
+        "bibliothek"
+      ],
+      "Reisen": [
+        "bibliothek"
+      ]
+    }
+  }
+}

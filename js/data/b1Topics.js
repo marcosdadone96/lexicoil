@@ -42,6 +42,23 @@ const B1_TOPIC_ALIASES = Object.freeze({
   'konsum und einkaufen': 'Konsum',
   'stadt und stadtleben': 'Stadtleben',
   technologie: 'Technik',
+  // Legacy English / slug tags from older seed/bank rows
+  work: 'Arbeit',
+  job: 'Arbeit',
+  career: 'Arbeit',
+  housing: 'Wohnen',
+  travel: 'Reisen',
+  health: 'Gesundheit',
+  food: 'Ernährung',
+  environment: 'Umwelt',
+  media: 'Medien',
+  family: 'Familie',
+  sport: 'Sport',
+  leisure: 'Freizeit',
+  education: 'Bildung',
+  traffic: 'Verkehr',
+  technology: 'Technik',
+  tech: 'Technik',
 });
 
 function foldTopicKey(raw) {

@@ -38,6 +38,8 @@ export function computeVocabFeedback(batch, requestedWords, meta = {}) {
     topic: meta.topic || batch.topicTag || batch.topic || null,
     requested,
     prompted: meta.prompted || requested,
+    originalRequested: meta.originalRequested || null,
+    subtypeAdaptation: meta.subtypeAdaptation || null,
     used,
     notUsed,
     excluded: excluded.map((e) => ({

@@ -623,6 +623,60 @@ function migrateLegacyModuleScores(moduleScores, passPercent = DEFAULT_PASS_PERC
   return out;
 }
 
+/** Pool section tracking rows — not scored exam results (no Progress UI). */
+function isPartTrackingHistoryEntry(entry) {
+  if (!entry || typeof entry !== 'object') return false;
+  if (entry.source === 'part') return true;
+  if (entry.partId && !entry.correction && !entry.moduleResults && !entry.moduleScores) return true;
+  return false;
+}
+
+/** Completed exam rows eligible for Progress / readiness / score trend. */
+function isExamResultHistoryEntry(entry) {
+  if (!entry || typeof entry !== 'object') return false;
+  if (isPartTrackingHistoryEntry(entry)) return false;
+  if (entry.correction || entry.moduleResults || entry.moduleScores) return true;
+  if (Number.isFinite(Number(entry.score))) return true;
+  return false;
+}
+
+function formatHistoryDate(entry) {
+  const raw = entry?.date;
+  if (raw == null || raw === '') return '';
+  if (typeof raw === 'number' && Number.isFinite(raw)) {
+    return new Date(raw).toLocaleDateString();
+  }
+  const asNum = Number(raw);
+  if (Number.isFinite(asNum) && String(raw).trim().length >= 10) {
+    return new Date(asNum).toLocaleDateString();
+  }
+  const parsed = Date.parse(String(raw));
+  if (!Number.isNaN(parsed)) return String(raw);
+  return String(raw);
+}
+
+/** Resolve display score for history — backfills modular rows saved with score undefined. */
+function resolveHistoryScore(entry) {
+  if (!entry || typeof entry !== 'object') return null;
+  const direct = Number(entry.score);
+  if (Number.isFinite(direct)) return Math.round(Math.max(0, Math.min(100, direct)));
+
+  const passPercent = getPassPercent(null, entry);
+  const moduleResults = normalizeModuleResults(entry, passPercent);
+  if (!Object.keys(moduleResults).length) return null;
+
+  const gradingScope =
+    entry.gradingScope || (entry.modularGrading ? 'modular' : null) || 'legacy';
+  const summary = summarizeExam(moduleResults, {
+    modular: gradingScope === 'modular' || !!entry.modularGrading,
+    passPercent,
+    gradingScope,
+    exam: entry,
+  });
+  const score = computeDisplayScore(summary, moduleResults);
+  return Number.isFinite(score) ? Math.round(Math.max(0, Math.min(100, score))) : null;
+}
+
 function migrateHistoryEntry(entry) {
   if (!entry || typeof entry !== 'object') return entry;
   const passPercent = getPassPercent(null, entry);
@@ -634,6 +688,13 @@ function migrateHistoryEntry(entry) {
   }
   if (entry.moduleResults && !entry.moduleScores) {
     entry.moduleScores = legacyFlatScores(entry.moduleResults);
+  }
+  if (typeof entry.date === 'number' && Number.isFinite(entry.date)) {
+    entry.date = formatHistoryDate(entry);
+  }
+  if (!Number.isFinite(Number(entry.score)) && isExamResultHistoryEntry(entry)) {
+    const resolved = resolveHistoryScore(entry);
+    if (resolved != null) entry.score = resolved;
   }
   return entry;
 }
@@ -906,6 +967,10 @@ const moduleGradingExports = {
   legacyFlatScores,
   normalizeModuleResults,
   migrateLegacyModuleScores,
+  isPartTrackingHistoryEntry,
+  isExamResultHistoryEntry,
+  formatHistoryDate,
+  resolveHistoryScore,
   migrateHistoryEntry,
   summarizeExam,
   weakModules,

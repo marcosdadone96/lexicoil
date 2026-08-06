@@ -1,0 +1,2820 @@
+{
+  "_meta": {
+    "examNumber": 7,
+    "examId": "verified-de-B1-e7",
+    "generatedAt": "2026-07-24T12:30:35.203Z",
+    "purpose": "assembled from pool-verified only (official mode: B1 official parts)",
+    "assembleMode": "official",
+    "sourceRoot": "batches/ready/pool-verified/B1",
+    "capacityAtAssemble": 16,
+    "bottleneck": [
+      "lesen_1",
+      16
+    ],
+    "gate1": {
+      "ok": true,
+      "blocking": []
+    },
+    "partIds": {
+      "lesen_1": "lesen-t1-gemini-180",
+      "lesen_2": "lesen-t2-gemini-064",
+      "lesen_3": "lesen-t3-auto-w8hk4n",
+      "lesen_4": "lesen-t4-gemini-049",
+      "lesen_5": "lesen-t5-gemini-082",
+      "horen_1": "horen-t1-gemini-026",
+      "horen_2": "horen-t2-gemini-035",
+      "horen_3": "horen-t3-gemini-003",
+      "horen_4": "horen-t4-gemini-019",
+      "schreiben_1": "schreiben-b1-batch-08-arbeit-t1",
+      "schreiben_2": "schreiben-b1-batch-08-arbeit-t2",
+      "schreiben_3": "schreiben-b1-batch-08-arbeit-t3",
+      "sprechen_1": "sprechen-b1-batch-08-reisen-t1",
+      "sprechen_2": "sprechen-b1-batch-08-reisen-t2",
+      "sprechen_3": "sprechen-b1-batch-08-reisen-t3"
+    },
+    "topics": {
+      "lesen_1": "Familie",
+      "lesen_2": "Gesundheit",
+      "lesen_3": null,
+      "lesen_4": "Umwelt",
+      "lesen_5": "Ernährung",
+      "horen_1": "Kultur",
+      "horen_2": "Wohnen",
+      "horen_3": "Medien",
+      "horen_4": "Verkehr",
+      "schreiben_1": "Arbeit",
+      "schreiben_2": "Arbeit",
+      "schreiben_3": "Arbeit",
+      "sprechen_1": "Reisen",
+      "sprechen_2": "Reisen",
+      "sprechen_3": "Reisen"
+    },
+    "sources": {
+      "lesen_1": "lesen-t1-gemini-180.json",
+      "lesen_2": "lesen-t2-gemini-064.json",
+      "lesen_3": "lesen-t3-auto-w8hk4n.json",
+      "lesen_4": "lesen-t4-gemini-049.json",
+      "lesen_5": "lesen-t5-gemini-082.json",
+      "horen_1": "horen-t1-gemini-026.json",
+      "horen_2": "horen-t2-gemini-035.json",
+      "horen_3": "horen-t3-gemini-003.json",
+      "horen_4": "horen-t4-gemini-019.json",
+      "schreiben_1": "schreiben-b1-batch-08-arbeit.json",
+      "schreiben_2": "schreiben-b1-batch-08-arbeit.json",
+      "schreiben_3": "schreiben-b1-batch-08-arbeit.json",
+      "sprechen_1": "sprechen-b1-batch-08-reisen.json",
+      "sprechen_2": "sprechen-b1-batch-08-reisen.json",
+      "sprechen_3": "sprechen-b1-batch-08-reisen.json"
+    },
+    "poolCells": {
+      "lesen_1": {
+        "poolLevel": "B1",
+        "poolFile": "batches/ready/pool-verified/B1/lesen-t1-gemini-180.json",
+        "partId": "lesen-t1-gemini-180",
+        "declaredLevel": "B1"
+      },
+      "lesen_2": {
+        "poolLevel": "B1",
+        "poolFile": "batches/ready/pool-verified/B1/lesen-t2-gemini-064.json",
+        "partId": "lesen-t2-gemini-064",
+        "declaredLevel": "B1"
+      },
+      "lesen_3": {
+        "poolLevel": "B1",
+        "poolFile": "batches/ready/pool-verified/B1/lesen-t3-auto-w8hk4n.json",
+        "partId": "lesen-t3-auto-w8hk4n",
+        "declaredLevel": "B1"
+      },
+      "lesen_4": {
+        "poolLevel": "B1",
+        "poolFile": "batches/ready/pool-verified/B1/lesen-t4-gemini-049.json",
+        "partId": "lesen-t4-gemini-049",
+        "declaredLevel": "B1"
+      },
+      "lesen_5": {
+        "poolLevel": "B1",
+        "poolFile": "batches/ready/pool-verified/B1/lesen-t5-gemini-082.json",
+        "partId": "lesen-t5-gemini-082",
+        "declaredLevel": "B1"
+      },
+      "horen_1": {
+        "poolLevel": "B1",
+        "poolFile": "batches/ready/pool-verified/B1/horen-t1-gemini-026.json",
+        "partId": "horen-t1-gemini-026",
+        "declaredLevel": "B1"
+      },
+      "horen_2": {
+        "poolLevel": "B1",
+        "poolFile": "batches/ready/pool-verified/B1/horen-t2-gemini-035.json",
+        "partId": "horen-t2-gemini-035",
+        "declaredLevel": "B1"
+      },
+      "horen_3": {
+        "poolLevel": "B1",
+        "poolFile": "batches/ready/pool-verified/B1/horen-t3-gemini-003.json",
+        "partId": "horen-t3-gemini-003",
+        "declaredLevel": "B1"
+      },
+      "horen_4": {
+        "poolLevel": "B1",
+        "poolFile": "batches/ready/pool-verified/B1/horen-t4-gemini-019.json",
+        "partId": "horen-t4-gemini-019",
+        "declaredLevel": "B1"
+      },
+      "schreiben_1": {
+        "poolLevel": "B1",
+        "poolFile": "batches/ready/pool-verified/B1/schreiben-b1-batch-08-arbeit.json",
+        "partId": "schreiben-b1-batch-08-arbeit-t1",
+        "declaredLevel": "B1"
+      },
+      "schreiben_2": {
+        "poolLevel": "B1",
+        "poolFile": "batches/ready/pool-verified/B1/schreiben-b1-batch-08-arbeit.json",
+        "partId": "schreiben-b1-batch-08-arbeit-t2",
+        "declaredLevel": "B1"
+      },
+      "schreiben_3": {
+        "poolLevel": "B1",
+        "poolFile": "batches/ready/pool-verified/B1/schreiben-b1-batch-08-arbeit.json",
+        "partId": "schreiben-b1-batch-08-arbeit-t3",
+        "declaredLevel": "B1"
+      },
+      "sprechen_1": {
+        "poolLevel": "B1",
+        "poolFile": "batches/ready/pool-verified/B1/sprechen-b1-batch-08-reisen.json",
+        "partId": "sprechen-b1-batch-08-reisen-t1",
+        "declaredLevel": "B1"
+      },
+      "sprechen_2": {
+        "poolLevel": "B1",
+        "poolFile": "batches/ready/pool-verified/B1/sprechen-b1-batch-08-reisen.json",
+        "partId": "sprechen-b1-batch-08-reisen-t2",
+        "declaredLevel": "B1"
+      },
+      "sprechen_3": {
+        "poolLevel": "B1",
+        "poolFile": "batches/ready/pool-verified/B1/sprechen-b1-batch-08-reisen.json",
+        "partId": "sprechen-b1-batch-08-reisen-t3",
+        "declaredLevel": "B1"
+      }
+    }
+  },
+  "lang": "de",
+  "level": "B1",
+  "goetheFormat": true,
+  "exam": {
+    "lesenParts": [
+      {
+        "teil": 1,
+        "instruction": "",
+        "topicTag": "Familie",
+        "text": "Ich möchte heute über meine Familie schreiben. Meine Familie ist mir sehr wichtig. Ich habe zwei Kinder, einen Jungen und ein Mädchen, die noch zur Schule gehen. Mein Mann und ich arbeiten beide Vollzeit, da ist der Alltag manchmal eine echte Herausforderung. Am Morgen ist es oft hektisch, wenn alle gleichzeitig aus dem Haus müssen. Trotzdem versuchen wir, jeden Abend zusammen zu essen. Das ist unsere gemeinsame Zeit, in der wir über den Tag sprechen. Meine Kinder erzählen dann von der Schule und ihren Freunden. Ich finde es wichtig, dass wir diese Routine haben. Am Wochenende planen wir oft Ausflüge. Letztes Wochenende waren wir im Park und haben ein Picknick gemacht. Solche Erlebnisse stärken unsere Gemeinschaft. Manchmal besuchen wir auch meine Eltern. Sie wohnen in einer anderen Stadt, aber wir sehen uns regelmäßig. Meine Schwester hat auch zwei Kinder, und wenn wir uns treffen, ist das Haus voller Leben. Die Kinder spielen zusammen und wir Erwachsenen können uns über unsere Erfahrungen austauschen. Ich bin froh, so eine große und unterstützende Familie zu haben. Es gibt immer jemanden, der hilft, wenn man Unterstützung braucht. Diese Verbindungen geben mir viel Kraft für die Arbeit und den Alltag. Ich kann mir ein Leben ohne meine Familie nicht vorstellen.",
+        "textTitle": "Mein Familienleben",
+        "passageId": "gen-l1-e9de5626",
+        "questions": [
+          {
+            "id": "gen-q-1-e9de5626-2",
+            "module": "lesen",
+            "teil": 1,
+            "level": "B1",
+            "type": "richtig_falsch",
+            "question": "Die Familie der Autorin nimmt die Abendmahlzeiten getrennt ein.",
+            "correct": "Falsch",
+            "correctAnswer": "Falsch",
+            "explanation": "Sie erwähnt, dass sie jeden Abend gemeinsam am Tisch sitzen.",
+            "passageId": "gen-l1-e9de5626"
+          },
+          {
+            "id": "gen-q-1-e9de5626-6",
+            "module": "lesen",
+            "teil": 1,
+            "level": "B1",
+            "type": "richtig_falsch",
+            "question": "Sie fühlt sich allein und bekommt nie Hilfe von ihrer Familie.",
+            "correct": "Falsch",
+            "correctAnswer": "Falsch",
+            "explanation": "Die Autorin ist glücklich über ihre Familie, die ihr stets zur Seite steht.",
+            "passageId": "gen-l1-e9de5626"
+          },
+          {
+            "id": "gen-q-1-e9de5626-4",
+            "module": "lesen",
+            "teil": 1,
+            "level": "B1",
+            "type": "richtig_falsch",
+            "question": "Die Mutter und der Vater der Autorin leben in derselben Ortschaft wie sie.",
+            "correct": "Falsch",
+            "correctAnswer": "Falsch",
+            "explanation": "Sie erwähnt, dass ihre Eltern nicht in derselben Ortschaft sind.",
+            "passageId": "gen-l1-e9de5626"
+          },
+          {
+            "id": "gen-q-1-e9de5626-5",
+            "module": "lesen",
+            "teil": 1,
+            "level": "B1",
+            "type": "richtig_falsch",
+            "question": "Sie kann sich immer auf die Hilfe ihrer Familie verlassen.",
+            "correct": "Richtig",
+            "correctAnswer": "Richtig",
+            "explanation": "Sie beschreibt, dass sie sich auf ihre Verwandten verlassen kann, da diese stets Unterstützung bieten.",
+            "passageId": "gen-l1-e9de5626"
+          },
+          {
+            "id": "gen-q-1-e9de5626-1",
+            "module": "lesen",
+            "teil": 1,
+            "level": "B1",
+            "type": "richtig_falsch",
+            "question": "Für die Autorin ist der tägliche Ablauf mit Beruf und Nachwuchs anspruchsvoll.",
+            "correct": "Richtig",
+            "correctAnswer": "Richtig",
+            "explanation": "Sie beschreibt, dass der Alltag mit Vollzeitarbeit und Kindern manchmal eine echte Schwierigkeit ist.",
+            "passageId": "gen-l1-e9de5626"
+          },
+          {
+            "id": "gen-q-1-e9de5626-3",
+            "module": "lesen",
+            "teil": 1,
+            "level": "B1",
+            "type": "richtig_falsch",
+            "question": "Gemeinsame Aktivitäten am Wochenende festigen die familiären Bande.",
+            "correct": "Richtig",
+            "correctAnswer": "Richtig",
+            "explanation": "Sie beschreibt, dass gemeinsame Unternehmungen am Wochenende den Zusammenhalt der Familie fördern.",
+            "passageId": "gen-l1-e9de5626"
+          }
+        ]
+      },
+      {
+        "teil": 2,
+        "instruction": "",
+        "topicTag": "Gesundheit",
+        "passages": [
+          {
+            "passageId": "gen-l2-f5dd2b2c-1",
+            "textTitle": "Bewegung für ein gesundes Leben",
+            "text": "Viele Menschen wissen, dass Bewegung gut für die Gesundheit ist. Schon ein kurzer Spaziergang am Tag kann viel helfen. Ärzte sagen, dass regelmäßige Bewegung das Herz stärkt und den Körper fit hält. Es ist auch gut für die Stimmung. Wenn man sich bewegt, ist man eher glücklich und weniger gestresst. Viele Städte starten Kampagnen, um Bewohner zu mehr Sport zu motivieren. Zum Beispiel gibt es Programme für gemeinsame Spaziergänge im Park. Eine neue Studie zeigte, dass Menschen, die täglich 30 Minuten gehen, weniger oft krank sind. Das Immunsystem braucht diese Aktivität. Auch die Arbeit in einer Bibliothek kann manchmal Bewegung erfordern, wenn man Bücher holt oder Regale einräumt. Es muss nicht immer ein Fitnessstudio sein. Treppen steigen statt Aufzug fahren ist auch eine gute Idee. Der öffentliche Diskurs über die Wichtigkeit von Bewegung wird immer lauter. Viele Familien machen am Wochenende Ausflüge in die Natur. Das ist gut für alle. Eine Umfrage unter älteren Menschen zeigte, dass sie sich durch tägliche Spaziergänge viel besser fühlen. Sie haben weniger Schmerzen und schlafen besser. Auch für Kinder ist es wichtig, draußen zu spielen und sich zu bewegen."
+          },
+          {
+            "passageId": "gen-l2-f5dd2b2c-2",
+            "textTitle": "Die Bedeutung gesunder Ernährung",
+            "text": "Eine ausgewogene Ernährung ist sehr wichtig für ein Langes und gesundes Leben. Viele Menschen essen zu viel Zucker und zu wenig Gemüse. Das kann zu Problemen mit dem Körper führen. Experten empfehlen, viel Obst und Gemüse zu essen. Auch Vollkornprodukte und mageres Fleisch sind gut. Wasser Trinken ist besser als süße Getränke. Eine aktuelle Umfrage zeigt, dass viele Familien Schwierigkeiten haben, jeden Tag gesund zu kochen. Oft fehlt die Zeit oder das Wissen. Doch es gibt viele einfache Rezepte, die schnell gehen. Supermärkte bieten eher mehr gesunde Produkte an als früher. Es gibt auch viele Kampagnen, die über gesunde Ernährung informieren. Manche Städte haben Kochkurse in der Volkshochschule oder in der Bibliothek. Dort lernen die Teilnehmer, wie man frische Zutaten zubereitet. Der öffentliche Diskurs über die Herkunft von Lebensmitteln und deren Qualität braucht mehr Aufmerksamkeit. Eine gesunde Ernährung hilft, Krankheiten vorzubeugen und gibt Energie für den Alltag. Es ist eine Investition in die eigene Gesundheit. Viele Schulen bieten auch gesündere Mittagsmenüs an, um Kinder früh an gute Gewohnheiten zu gewöhnen. Ein Bericht der Gesundheitsorganisation betont, dass eine gute Ernährung die Lebensqualität deutlich verbessert."
+          }
+        ],
+        "textTitle": "Bewegung für ein gesundes Leben",
+        "questions": [
+          {
+            "id": "gen-q-2-f5dd2b2c-1",
+            "module": "lesen",
+            "teil": 2,
+            "level": "B1",
+            "type": "multiple_choice",
+            "question": "Was ist laut dem Text ein wichtiger Vorteil von regelmäßiger körperlicher Aktivität?",
+            "options": [
+              {
+                "key": "A",
+                "text": "Sie ermöglicht es, weniger Bücher in der Bücherei zu tragen."
+              },
+              {
+                "key": "B",
+                "text": "Sie kräftigt das Organ, das Blut pumpt, und macht den Organismus leistungsfähiger."
+              },
+              {
+                "key": "C",
+                "text": "Sie sorgt dafür, dass man immer im Fitnessstudio trainiert."
+              }
+            ],
+            "correct": "b",
+            "correctAnswer": "b",
+            "explanation": "Der Text erklärt, dass regelmäßige Bewegung das Herz stärkt und den Körper fit hält, was bedeutet, dass sie das Herz kräftigt und den Organismus leistungsfähiger macht.",
+            "passageId": "gen-l2-f5dd2b2c-1"
+          },
+          {
+            "id": "gen-q-2-f5dd2b2c-2",
+            "module": "lesen",
+            "teil": 2,
+            "level": "B1",
+            "type": "multiple_choice",
+            "question": "Was ist eine Wirkung von Bewegung auf die Gefühlslage der Menschen?",
+            "options": [
+              {
+                "key": "A",
+                "text": "Man vermeidet den Kontakt mit anderen Personen."
+              },
+              {
+                "key": "B",
+                "text": "Man fühlt sich tendenziell froher und weniger belastet."
+              },
+              {
+                "key": "C",
+                "text": "Man wird eher gestresst und unglücklich."
+              }
+            ],
+            "correct": "b",
+            "correctAnswer": "b",
+            "explanation": "Im Text steht, dass man sich durch Bewegung eher glücklich und weniger gestresst fühlt, was bedeutet, dass die Gefühlslage froher und weniger belastet ist.",
+            "passageId": "gen-l2-f5dd2b2c-1"
+          },
+          {
+            "id": "gen-q-2-f5dd2b2c-3",
+            "module": "lesen",
+            "teil": 2,
+            "level": "B1",
+            "type": "multiple_choice",
+            "question": "Was schlagen die Autoren als einfache Alternative zum Fitnessstudio vor?",
+            "options": [
+              {
+                "key": "A",
+                "text": "Man muss jeden Tag 30 Minuten im Park Spazieren gehen."
+              },
+              {
+                "key": "B",
+                "text": "Man sollte nur noch in der Bibliothek arbeiten."
+              },
+              {
+                "key": "C",
+                "text": "Man kann Stufen benutzen, anstatt den Aufzug zu nehmen."
+              }
+            ],
+            "correct": "c",
+            "correctAnswer": "c",
+            "explanation": "Der Text nennt das Treppensteigen statt Aufzugfahren als eine gute und einfache Idee, um sich zu bewegen, ohne ein Fitnessstudio zu besuchen.",
+            "passageId": "gen-l2-f5dd2b2c-1"
+          },
+          {
+            "id": "gen-q-2-f5dd2b2c-4",
+            "module": "lesen",
+            "teil": 2,
+            "level": "B1",
+            "type": "multiple_choice",
+            "question": "Was ist laut dem Artikel ein häufiges Problem bei der gesunden Essenszubereitung in Familien?",
+            "options": [
+              {
+                "key": "A",
+                "text": "Es gibt keine gesunden Produkte in den Geschäften."
+              },
+              {
+                "key": "B",
+                "text": "Die Kinder mögen keine gesunden Mittagsmenüs."
+              },
+              {
+                "key": "C",
+                "text": "Es mangelt oft an ausreichend Zeit oder dem nötigen Fachwissen für die Zubereitung."
+              }
+            ],
+            "correct": "c",
+            "correctAnswer": "c",
+            "explanation": "Der Text nennt fehlende Zeit oder mangelndes Wissen als Gründe, warum Familien Schwierigkeiten haben, jeden Tag gesund zu kochen.",
+            "passageId": "gen-l2-f5dd2b2c-2"
+          },
+          {
+            "id": "gen-q-2-f5dd2b2c-5",
+            "module": "lesen",
+            "teil": 2,
+            "level": "B1",
+            "type": "multiple_choice",
+            "question": "Wo kann man laut dem Text Fähigkeiten für die Zubereitung von Speisen erwerben?",
+            "options": [
+              {
+                "key": "A",
+                "text": "In Kursen, die von Städten oder Bildungseinrichtungen angeboten werden."
+              },
+              {
+                "key": "B",
+                "text": "Nur in großen Supermärkten."
+              },
+              {
+                "key": "C",
+                "text": "Durch den öffentlichen Diskurs über Lebensmittel."
+              }
+            ],
+            "correct": "a",
+            "correctAnswer": "a",
+            "explanation": "Der Text erwähnt, dass Städte Kochkurse in der Volkshochschule oder in der Bibliothek anbieten, wo man die Zubereitung frischer Zutaten lernen kann.",
+            "passageId": "gen-l2-f5dd2b2c-2"
+          },
+          {
+            "id": "gen-q-2-f5dd2b2c-6",
+            "module": "lesen",
+            "teil": 2,
+            "level": "B1",
+            "type": "multiple_choice",
+            "question": "Was ist ein positiver Effekt einer ausgewogenen Ernährung für den Körper?",
+            "options": [
+              {
+                "key": "A",
+                "text": "Sie hilft, Krankheiten zu vermeiden und liefert Kraft für den Alltag."
+              },
+              {
+                "key": "B",
+                "text": "Sie macht das Kochen komplizierter und zeitaufwendiger."
+              },
+              {
+                "key": "C",
+                "text": "Sie führt zu einem höheren Zuckerkonsum."
+              }
+            ],
+            "correct": "a",
+            "correctAnswer": "a",
+            "explanation": "Eine gesunde Ernährung hilft laut Text, Krankheiten vorzubeugen und gibt dem Körper Energie für die täglichen Aufgaben.",
+            "passageId": "gen-l2-f5dd2b2c-2"
+          }
+        ]
+      },
+      {
+        "teil": 3,
+        "instruction": "",
+        "text": "",
+        "textTitle": "",
+        "ads": [
+          {
+            "key": "A",
+            "title": "Physik & Co.",
+            "text": "Nachhilfe Kl. 9–13, online oder vor Ort. Erste 30 Min. zum Testen kostenlos."
+          },
+          {
+            "key": "B",
+            "title": "TechDeal24",
+            "text": "Laptops & Tablets, Versand 2–5 Werktage, Abholung im Shop sofort."
+          },
+          {
+            "key": "C",
+            "title": "Horizont Reisen",
+            "text": "Pauschalreisen, Beratung Mi–Fr 10–18 Uhr im Büro."
+          },
+          {
+            "key": "D",
+            "title": "PC-Hilfe Zuhause",
+            "text": "Router, E-Mail, Drucker. Hausbesuch, ab 35 €/Std. Kein Handy-Support."
+          },
+          {
+            "key": "E",
+            "title": "Schreibcoaching abends",
+            "text": "Business-Korrespondenz üben, Di+Do 18–20 Uhr, max. 8 Plätze. Anmeldung online."
+          },
+          {
+            "key": "F",
+            "title": "Repair-Café Nord",
+            "text": "Kleingeräte, Textilien. Sa 10–14 Uhr. Material gegen Spende, keine Teile vorrätig."
+          },
+          {
+            "key": "G",
+            "title": "Sommerküche",
+            "text": "6 Abende Di 19 Uhr, 89 €, Anmeldung bis Fr."
+          },
+          {
+            "key": "H",
+            "title": "Gebrauchtwagen West",
+            "text": "PKW & Transporter, Kauf oder Kurzzeitmiete, HU, 6 Mon. Garantie schriftlich. Bar/Überweisung. Probefahrt Di–Sa."
+          },
+          {
+            "key": "I",
+            "title": "FlexDrive",
+            "text": "PKW leihen für Tage & Wochenenden, FS min. 2 Jahre. Abholung Bahnhofsviertel."
+          },
+          {
+            "key": "J",
+            "title": "Glanz & Grün",
+            "text": "Auto innen/außen, nur mit Termin, Mo–Fr. Stempelkarte: 10. Wäsche gratis."
+          }
+        ],
+        "questions": [
+          {
+            "id": "gen-q-3-hquph6-1",
+            "module": "lesen",
+            "teil": 3,
+            "level": "B1",
+            "type": "matching",
+            "question": "Seit dem Umzug spinnt zu Hause der Drucker, und das WLAN ist unzuverlässig. Jemand soll vor Ort nach dem Rechten sehen.",
+            "options": [
+              {
+                "key": "A",
+                "text": "A"
+              },
+              {
+                "key": "B",
+                "text": "B"
+              },
+              {
+                "key": "C",
+                "text": "C"
+              },
+              {
+                "key": "D",
+                "text": "D"
+              },
+              {
+                "key": "E",
+                "text": "E"
+              },
+              {
+                "key": "F",
+                "text": "F"
+              },
+              {
+                "key": "G",
+                "text": "G"
+              },
+              {
+                "key": "H",
+                "text": "H"
+              },
+              {
+                "key": "I",
+                "text": "I"
+              },
+              {
+                "key": "J",
+                "text": "J"
+              },
+              {
+                "key": "K",
+                "text": "0"
+              }
+            ],
+            "correct": "D",
+            "correctAnswer": "D",
+            "explanation": "Router/Drucker vor Ort — PC-Hilfe mit Hausbesuch, nicht Geräteverkauf."
+          },
+          {
+            "id": "gen-q-3-hquph6-2",
+            "module": "lesen",
+            "teil": 3,
+            "level": "B1",
+            "type": "matching",
+            "question": "Sie hat genug gespart und möchte beim Erwerb nicht nur mündliche Zusagen, sondern klare Regeln auf Papier für ein halbes Jahr.",
+            "options": [
+              {
+                "key": "A",
+                "text": "A"
+              },
+              {
+                "key": "B",
+                "text": "B"
+              },
+              {
+                "key": "C",
+                "text": "C"
+              },
+              {
+                "key": "D",
+                "text": "D"
+              },
+              {
+                "key": "E",
+                "text": "E"
+              },
+              {
+                "key": "F",
+                "text": "F"
+              },
+              {
+                "key": "G",
+                "text": "G"
+              },
+              {
+                "key": "H",
+                "text": "H"
+              },
+              {
+                "key": "I",
+                "text": "I"
+              },
+              {
+                "key": "J",
+                "text": "J"
+              },
+              {
+                "key": "K",
+                "text": "0"
+              }
+            ],
+            "correct": "H",
+            "correctAnswer": "H",
+            "explanation": "Kauf mit 6 Monaten Garantie schriftlich — Gebrauchtwagen West, nicht Miete."
+          },
+          {
+            "id": "gen-q-3-hquph6-3",
+            "module": "lesen",
+            "teil": 3,
+            "level": "B1",
+            "type": "matching",
+            "question": "Im Job muss sie oft Kunden antworten und ist unsicher, ob der Ton professionell genug wirkt.",
+            "options": [
+              {
+                "key": "A",
+                "text": "A"
+              },
+              {
+                "key": "B",
+                "text": "B"
+              },
+              {
+                "key": "C",
+                "text": "C"
+              },
+              {
+                "key": "D",
+                "text": "D"
+              },
+              {
+                "key": "E",
+                "text": "E"
+              },
+              {
+                "key": "F",
+                "text": "F"
+              },
+              {
+                "key": "G",
+                "text": "G"
+              },
+              {
+                "key": "H",
+                "text": "H"
+              },
+              {
+                "key": "I",
+                "text": "I"
+              },
+              {
+                "key": "J",
+                "text": "J"
+              },
+              {
+                "key": "K",
+                "text": "0"
+              }
+            ],
+            "correct": "E",
+            "correctAnswer": "E",
+            "explanation": "Professioneller Ton in Korrespondenz — Schreibcoaching, nicht PC-Hilfe oder kostenlose Probestunde Nachhilfe."
+          },
+          {
+            "id": "gen-q-3-hquph6-4",
+            "module": "lesen",
+            "teil": 3,
+            "level": "B1",
+            "type": "matching",
+            "question": "Sie sucht einen Kurs samstags vormittags, der sich an Mütter mit Kleinkindern richtet.",
+            "options": [
+              {
+                "key": "A",
+                "text": "A"
+              },
+              {
+                "key": "B",
+                "text": "B"
+              },
+              {
+                "key": "C",
+                "text": "C"
+              },
+              {
+                "key": "D",
+                "text": "D"
+              },
+              {
+                "key": "E",
+                "text": "E"
+              },
+              {
+                "key": "F",
+                "text": "F"
+              },
+              {
+                "key": "G",
+                "text": "G"
+              },
+              {
+                "key": "H",
+                "text": "H"
+              },
+              {
+                "key": "I",
+                "text": "I"
+              },
+              {
+                "key": "J",
+                "text": "J"
+              },
+              {
+                "key": "K",
+                "text": "0"
+              }
+            ],
+            "correct": "0",
+            "correctAnswer": "0",
+            "explanation": "Kein Angebot passt: kein Samstagvormittag-Kurs für Mütter mit Kleinkindern."
+          },
+          {
+            "id": "gen-q-3-hquph6-5",
+            "module": "lesen",
+            "teil": 3,
+            "level": "B1",
+            "type": "matching",
+            "question": "Der Laptop ist ausgefallen. Ersatz soll her, am liebsten heute noch im Laden abholbar.",
+            "options": [
+              {
+                "key": "A",
+                "text": "A"
+              },
+              {
+                "key": "B",
+                "text": "B"
+              },
+              {
+                "key": "C",
+                "text": "C"
+              },
+              {
+                "key": "D",
+                "text": "D"
+              },
+              {
+                "key": "E",
+                "text": "E"
+              },
+              {
+                "key": "F",
+                "text": "F"
+              },
+              {
+                "key": "G",
+                "text": "G"
+              },
+              {
+                "key": "H",
+                "text": "H"
+              },
+              {
+                "key": "I",
+                "text": "I"
+              },
+              {
+                "key": "J",
+                "text": "J"
+              },
+              {
+                "key": "K",
+                "text": "0"
+              }
+            ],
+            "correct": "B",
+            "correctAnswer": "B",
+            "explanation": "Sofort im Shop abholen — TechDeal24, nicht Repair-Café (nur Sa, keine Teile) oder PC-Hilfe (Reparatur)."
+          },
+          {
+            "id": "gen-q-3-hquph6-6",
+            "module": "lesen",
+            "teil": 3,
+            "level": "B1",
+            "type": "matching",
+            "question": "Der Wasserkocher tropft. Eine neue Maschine möchte sie erst einmal vermeiden.",
+            "options": [
+              {
+                "key": "A",
+                "text": "A"
+              },
+              {
+                "key": "B",
+                "text": "B"
+              },
+              {
+                "key": "C",
+                "text": "C"
+              },
+              {
+                "key": "D",
+                "text": "D"
+              },
+              {
+                "key": "E",
+                "text": "E"
+              },
+              {
+                "key": "F",
+                "text": "F"
+              },
+              {
+                "key": "G",
+                "text": "G"
+              },
+              {
+                "key": "H",
+                "text": "H"
+              },
+              {
+                "key": "I",
+                "text": "I"
+              },
+              {
+                "key": "J",
+                "text": "J"
+              },
+              {
+                "key": "K",
+                "text": "0"
+              }
+            ],
+            "correct": "F",
+            "correctAnswer": "F",
+            "explanation": "Kleingerät reparieren statt neu kaufen — Repair-Café, nicht TechDeal24."
+          },
+          {
+            "id": "gen-q-3-hquph6-7",
+            "module": "lesen",
+            "teil": 3,
+            "level": "B1",
+            "type": "matching",
+            "question": "Ihr eigenes Auto ist in der Werkstatt. Für drei Tage braucht sie kurzfristig ein Ersatzfahrzeug — Führerschein seit fünf Jahren.",
+            "options": [
+              {
+                "key": "A",
+                "text": "A"
+              },
+              {
+                "key": "B",
+                "text": "B"
+              },
+              {
+                "key": "C",
+                "text": "C"
+              },
+              {
+                "key": "D",
+                "text": "D"
+              },
+              {
+                "key": "E",
+                "text": "E"
+              },
+              {
+                "key": "F",
+                "text": "F"
+              },
+              {
+                "key": "G",
+                "text": "G"
+              },
+              {
+                "key": "H",
+                "text": "H"
+              },
+              {
+                "key": "I",
+                "text": "I"
+              },
+              {
+                "key": "J",
+                "text": "J"
+              },
+              {
+                "key": "K",
+                "text": "0"
+              }
+            ],
+            "correct": "I",
+            "correctAnswer": "I",
+            "explanation": "Kurzfristig fahren ohne Kauf — FlexDrive Tagesmiete, nicht Gebrauchtwagen West."
+          }
+        ],
+        "example": {
+          "number": 0,
+          "label": "Beispiel",
+          "situation": "Sie sucht einen Kurs samstags vormittags, der sich an Mütter mit Kleinkindern richtet.",
+          "question": "Sie sucht einen Kurs samstags vormittags, der sich an Mütter mit Kleinkindern richtet.",
+          "correct": "0",
+          "correctAnswer": "0"
+        },
+        "_t3HasNoMatch": true
+      },
+      {
+        "teil": 4,
+        "instruction": "",
+        "topicTag": "Umwelt",
+        "text": "In unserer Stadt gibt es einen neuen Vorschlag, der alle Haushalte betrifft. Es geht darum, Plastik und Restmüll noch genauer zu trennen. Bei Fehlern drohen in Zukunft Bußgelder. Viele Nachbarn und Organisationen diskutieren diese neue Regel für den Umweltschutz. Lesen Sie die Meinungen im Forum. Stimmt die Person dem Vorschlag insgesamt zu?",
+        "textTitle": "Forum: Neue Regeln zur Mülltrennung",
+        "questions": [
+          {
+            "id": "gen-q-4-5b6da186-1",
+            "module": "lesen",
+            "teil": 4,
+            "level": "B1",
+            "type": "ja_nein",
+            "question": "Ist Felix für den Vorschlag?",
+            "signText": "Mülltrennung ist wichtig für die Umwelt, das ist klar. Die Bußgelder sind streng, aber vielleicht hilft es, dass alle mitmachen. Wir müssen unsere Gewohnheiten ändern. Ich unterstütze den Vorschlag.",
+            "correct": "Ja",
+            "correctAnswer": "Ja",
+            "explanation": "Felix findet die Bußgelder streng, aber er denkt, sie helfen, und unterstützt den Vorschlag insgesamt.",
+            "options": [
+              "a) Ja",
+              "b) Nein"
+            ]
+          },
+          {
+            "id": "gen-q-4-5b6da186-5",
+            "module": "lesen",
+            "teil": 4,
+            "level": "B1",
+            "type": "ja_nein",
+            "question": "Ist Jonas für den Vorschlag?",
+            "signText": "Ich wohne in einem großen Haus mit vielen Nachbarn. Oft ist es schwierig, genau zu wissen, wer den Müll falsch trennt. Das System ist nicht klar und führt nur zu Problemen. Deshalb lehne ich den Vorschlag ab.",
+            "correct": "Nein",
+            "correctAnswer": "Nein",
+            "explanation": "Jonas sieht Probleme bei der Umsetzung in großen Häusern und findet das System unklar.",
+            "options": [
+              "a) Ja",
+              "b) Nein"
+            ]
+          },
+          {
+            "id": "gen-q-4-5b6da186-6",
+            "module": "lesen",
+            "teil": 4,
+            "level": "B1",
+            "type": "ja_nein",
+            "question": "Ist Pia für den Vorschlag?",
+            "signText": "Am Anfang wird es sicher etwas schwierig, alles perfekt zu machen. Aber mit der Zeit lernen wir alle dazu. Es ist eine wichtige Regel für eine bessere Zukunft und die Nachhaltigkeit unserer Stadt. Ich bin dafür.",
+            "correct": "Ja",
+            "correctAnswer": "Ja",
+            "explanation": "Pia erkennt anfängliche Schwierigkeiten an, sieht es aber als wichtige Regel für Nachhaltigkeit und eine bessere Zukunft.",
+            "options": [
+              "a) Ja",
+              "b) Nein"
+            ]
+          },
+          {
+            "id": "gen-q-4-5b6da186-2",
+            "module": "lesen",
+            "teil": 4,
+            "level": "B1",
+            "type": "ja_nein",
+            "question": "Ist Paul für den Vorschlag?",
+            "signText": "Ich trenne meinen Müll schon sehr genau. Dieser neue Plan macht nur mehr Arbeit und ist nicht fair für Leute, die schon alles richtig machen. Ich sehe keinen Vorteil für mich. Deshalb sage ich Nein.",
+            "correct": "Nein",
+            "correctAnswer": "Nein",
+            "explanation": "Paul trennt seinen Müll schon genau und sieht den neuen Plan als zusätzliche Arbeit ohne Vorteil für sich.",
+            "options": [
+              "a) Ja",
+              "b) Nein"
+            ]
+          },
+          {
+            "id": "gen-q-4-5b6da186-3",
+            "module": "lesen",
+            "teil": 4,
+            "level": "B1",
+            "type": "ja_nein",
+            "question": "Ist Mira für den Vorschlag?",
+            "signText": "Es ist eine gute Aufgabe für alle, die Umwelt zu schützen. Wenn wir den Müll besser trennen, sparen wir Materialien und helfen der Natur. Das ist ein wichtiger Schritt für unsere Stadt. Ich bin dafür.",
+            "correct": "Ja",
+            "correctAnswer": "Ja",
+            "explanation": "Mira sieht die Mülltrennung als wichtige Aufgabe für den Umweltschutz und einen guten Schritt für die Stadt.",
+            "options": [
+              "a) Ja",
+              "b) Nein"
+            ]
+          },
+          {
+            "id": "gen-q-4-5b6da186-4",
+            "module": "lesen",
+            "teil": 4,
+            "level": "B1",
+            "type": "ja_nein",
+            "question": "Ist Hannah für den Vorschlag?",
+            "signText": "Ich verstehe, dass die Situation aktuell nicht gut ist und wir etwas tun müssen. Aber die Strafen sind zu hoch und treffen Familien. Es muss andere Wege geben. Für mich ist der Vorschlag nicht gut.",
+            "correct": "Nein",
+            "correctAnswer": "Nein",
+            "explanation": "Hannah versteht die Notwendigkeit, findet aber die Strafen zu hoch und fordert andere Wege der Motivation.",
+            "options": [
+              "a) Ja",
+              "b) Nein"
+            ]
+          },
+          {
+            "id": "gen-q-4-5b6da186-7",
+            "module": "lesen",
+            "teil": 4,
+            "level": "B1",
+            "type": "ja_nein",
+            "question": "Ist Max für den Vorschlag?",
+            "signText": "Ich arbeite viel und habe nicht immer Zeit, jede kleine Sache beim Müll zu beachten. Das ist eine zusätzliche Belastung für viele Leute. Die Stadt sollte lieber andere Probleme lösen. Deshalb sage ich Nein.",
+            "correct": "Nein",
+            "correctAnswer": "Nein",
+            "explanation": "Max hat wenig Zeit für genaue Mülltrennung und sieht es als zusätzliche Belastung, die die Stadt nicht lösen sollte.",
+            "options": [
+              "a) Ja",
+              "b) Nein"
+            ]
+          }
+        ]
+      },
+      {
+        "teil": 5,
+        "instruction": "",
+        "topicTag": "Ernährung",
+        "text": "Benutzungsordnung der Stadtbibliothek 'Gesundes Wissen'\n\n1.  Öffnungszeiten: Die Bibliothek ist montags bis freitags von 9:00 bis 19:00 Uhr und samstags von 10:00 bis 15:00 Uhr geöffnet. Sonntags ist geschlossen.\n2.  Ausleihe und Leihfrist: Maximal 12 Medien können gleichzeitig ausgeliehen werden. Die normale Leihfrist für Bücher und Zeitschriften beträgt vier Wochen. DVDs und CDs haben eine Leihfrist von zwei Wochen. Eine Verlängerung ist zweimal möglich, falls das Medium nicht von einem anderen Nutzer vorbestellt ist.\n3.  Gebühren bei Verspätung: Bei Überschreitung der Leihfrist fällt eine Gebühr von 0,50 Euro pro Medium und angefangener Woche an. Für DVDs und CDs beträgt diese Gebühr 1,00 Euro pro Medium und Woche.\n4.  Ruhezonen: Im Lesesaal und in den Lernräumen ist absolute Ruhe erforderlich. Gespräche sind nur im Eingangsbereich und in der Cafeteria erlaubt. Dies betrifft alle Besucher.\n5.  Essen und Trinken: Kleine Snacks und Getränke in verschließbaren Flaschen sind ausschließlich im Eingangsbereich und in der Cafeteria erlaubt. Im Lesesaal, an den Computern und in den Regalgängen ist der Verzehr von Speisen und offenen Getränken verboten.\n6.  Veranstaltungen und Kurse: Regelmäßige Kochkurse und Vorträge zum Thema gesunde Ernährung finden in unserer Lehrküche im Erdgeschoss statt. Eine vorherige Anmeldung ist für diese Kurse notwendig. Aktuelle Termine und Details finden Sie auf unserer Webseite.\n7.  Parkplatz: Für Besucher stehen kostenlose Parkplätze für maximal drei Stunden zur Verfügung. Eine längere Parkdauer muss direkt bei der Bibliotheksleitung beantragt werden.\n8.  Mülltrennung: Bitte entsorgen Sie Ihren Abfall korrekt in die dafür vorgesehenen Behälter.",
+        "textTitle": "Benutzungsordnung der Stadtbibliothek 'Gesundes Wissen'",
+        "passageId": "gen-l5-f1f7ad45",
+        "questions": [
+          {
+            "id": "gen-q-5-f1f7ad45-1",
+            "module": "lesen",
+            "teil": 5,
+            "level": "B1",
+            "type": "multiple_choice",
+            "question": "Wann können Besucher die Bibliothek am Wochenende besuchen?",
+            "options": [
+              {
+                "key": "A",
+                "text": "Am Samstag bis zum Nachmittag."
+              },
+              {
+                "key": "B",
+                "text": "Am Samstag und Sonntag bis 19:00 Uhr."
+              },
+              {
+                "key": "C",
+                "text": "Am Sonntag den ganzen Tag."
+              }
+            ],
+            "correct": "a",
+            "correctAnswer": "a",
+            "explanation": "Laut Punkt 1 ist die Bibliothek am Samstag von 10:00 bis 15:00 Uhr offen. Das bedeutet, man kann sie am Samstag bis zum frühen Nachmittag besuchen. An anderen Tagen des Wochenendes ist sie geschlossen.",
+            "passageId": "gen-l5-f1f7ad45"
+          },
+          {
+            "id": "gen-q-5-f1f7ad45-2",
+            "module": "lesen",
+            "teil": 5,
+            "level": "B1",
+            "type": "multiple_choice",
+            "question": "Welche Kosten entstehen bei einer verspäteten Rückgabe von Medien?",
+            "options": [
+              {
+                "key": "A",
+                "text": "Für alle Medien ist eine einmalige Gebühr von 0,50 Euro fällig."
+              },
+              {
+                "key": "B",
+                "text": "Die Gebühr beträgt 0,50 Euro pro Woche für Bücher und 1,00 Euro für DVDs."
+              },
+              {
+                "key": "C",
+                "text": "Es fallen immer 1,00 Euro pro Medium und Woche an, unabhängig vom Typ."
+              }
+            ],
+            "correct": "b",
+            "correctAnswer": "b",
+            "explanation": "Laut Punkt 3 der Benutzungsordnung kostet es 0,50 Euro pro Woche, wenn man Bücher oder Zeitschriften zu spät zurückgibt. Für DVDs und CDs muss man 1,00 Euro pro Woche bezahlen.",
+            "passageId": "gen-l5-f1f7ad45"
+          },
+          {
+            "id": "gen-q-5-f1f7ad45-3",
+            "module": "lesen",
+            "teil": 5,
+            "level": "B1",
+            "type": "multiple_choice",
+            "question": "Wo ist der Verzehr von Speisen und Getränken in der Bibliothek erlaubt?",
+            "options": [
+              {
+                "key": "A",
+                "text": "Nur in den dafür vorgesehenen Zonen wie dem Foyer, und nur mit geschlossenen Flaschen."
+              },
+              {
+                "key": "B",
+                "text": "Überall in den Räumen, solange die Speisen klein sind und nicht stören."
+              },
+              {
+                "key": "C",
+                "text": "Im Lesesaal und an den Computern, wenn man keine offenen Getränke hat."
+              }
+            ],
+            "correct": "a",
+            "correctAnswer": "a",
+            "explanation": "Kleine Snacks und Getränke in verschließbaren Flaschen dürfen ausschließlich im Eingangsbereich und in der Cafeteria konsumiert werden.",
+            "passageId": "gen-l5-f1f7ad45"
+          },
+          {
+            "id": "gen-q-5-f1f7ad45-4",
+            "module": "lesen",
+            "teil": 5,
+            "level": "B1",
+            "type": "multiple_choice",
+            "question": "Was ist richtig bezüglich der Kochkurse und der Parkmöglichkeiten?",
+            "options": [
+              {
+                "key": "A",
+                "text": "Kochkurse sind ohne Anmeldung offen, aber das Parken ist immer kostenpflichtig."
+              },
+              {
+                "key": "B",
+                "text": "Man kann unbegrenzt kostenlos parken, wenn man an einem Kochkurs teilnimmt."
+              },
+              {
+                "key": "C",
+                "text": "Für Kochkurse ist eine Anmeldung nötig, und man kann drei Stunden kostenlos parken."
+              }
+            ],
+            "correct": "c",
+            "correctAnswer": "c",
+            "explanation": "Eine vorherige Anmeldung ist für die Kochkurse erforderlich, und die kostenlosen Parkplätze können maximal drei Stunden genutzt werden.",
+            "passageId": "gen-l5-f1f7ad45"
+          }
+        ]
+      }
+    ],
+    "horenParts": [
+      {
+        "teil": 1,
+        "instruction": "",
+        "topicTag": "Kultur",
+        "segments": [
+          {
+            "passageId": "gen-p-h1-47dc57fd-s1",
+            "label": "Durchsage Stadtmuseum",
+            "text": "Achtung, liebe Besucherinnen und Besucher des Stadtmuseums! Wir möchten Sie auf unsere neue Sonderausstellung 'Kultur der Welt' aufmerksam machen. Sie zeigt Kunstwerke und Alltagsgegenstände aus verschiedenen Ländern. Die Ausstellung ist ab heute geöffnet und läuft bis Ende des Monats. Führungen finden täglich um 11 Uhr und 15 Uhr statt. Für Familien gibt es am Wochenende spezielle Angebote. Der Eintritt kostet 8 Euro, ermäßigt 5 Euro. Wir freuen uns auf Ihren Besuch!",
+            "transcript": "Achtung, liebe Besucherinnen und Besucher des Stadtmuseums! Wir möchten Sie auf unsere neue Sonderausstellung 'Kultur der Welt' aufmerksam machen. Sie zeigt Kunstwerke und Alltagsgegenstände aus verschiedenen Ländern. Die Ausstellung ist ab heute geöffnet und läuft bis Ende des Monats. Führungen finden täglich um 11 Uhr und 15 Uhr statt. Für Familien gibt es am Wochenende spezielle Angebote. Der Eintritt kostet 8 Euro, ermäßigt 5 Euro. Wir freuen uns auf Ihren Besuch!",
+            "questions": [
+              {
+                "id": "gen-q-h1-47dc57fd-s1-q1",
+                "module": "horen",
+                "teil": 1,
+                "type": "richtig_falsch",
+                "question": "Die neue Ausstellung ist nur am Wochenende geöffnet.",
+                "options": [],
+                "correct": "Falsch",
+                "correctAnswer": "Falsch",
+                "explanation": "Die Ausstellung ist nicht nur am Wochenende geöffnet, sondern ab heute bis zum Monatsende, und es gibt auch tägliche Führungen.",
+                "segmentLabel": "Aufnahme 1",
+                "passageId": "gen-p-h1-47dc57fd-s1",
+                "lang": "de",
+                "level": "B1",
+                "language": "de",
+                "examType": "goethe",
+                "difficulty": 5,
+                "skills": [
+                  "listening"
+                ],
+                "topicTags": [
+                  "Kultur"
+                ],
+                "vocabularyTags": [
+                  "Wochenende",
+                  "Ausstellung",
+                  "öffnen"
+                ],
+                "grammarTags": [
+                  "g-de-b1-perfekt"
+                ]
+              },
+              {
+                "id": "gen-q-h1-47dc57fd-s1-q2",
+                "module": "horen",
+                "teil": 1,
+                "type": "multiple_choice",
+                "question": "Was kostet der normale Eintritt für die Ausstellung?",
+                "options": [
+                  "a) Acht Euro.",
+                  "b) Zehn Euro.",
+                  "c) Fünf Euro."
+                ],
+                "correct": "a",
+                "correctAnswer": "a",
+                "explanation": "Der reguläre Preis für den Eintritt in die Ausstellung beträgt 8 Euro, der ermäßigte Preis ist 5 Euro.",
+                "segmentLabel": "Aufnahme 1",
+                "passageId": "gen-p-h1-47dc57fd-s1",
+                "lang": "de",
+                "level": "B1",
+                "language": "de",
+                "examType": "goethe",
+                "difficulty": 5,
+                "skills": [
+                  "listening"
+                ],
+                "topicTags": [
+                  "Kultur"
+                ],
+                "vocabularyTags": [
+                  "Ausstellung",
+                  "kosten",
+                  "Eintritt",
+                  "normal"
+                ],
+                "grammarTags": []
+              }
+            ]
+          },
+          {
+            "passageId": "gen-p-h1-47dc57fd-s2",
+            "label": "Anrufbeantworter Kulturverein",
+            "text": "Guten Tag, Sie sind verbunden mit dem Kulturverein 'Neue Horizonte'. Leider erreichen Sie uns außerhalb unserer Bürozeiten. Wenn Sie sich für einen unserer Sprachkurse oder Kreativkurse anmelden möchten, besuchen Sie bitte unsere Webseite. Dort finden Sie alle aktuellen Termine und Informationen zur Gebühr. Für eine persönliche Beratung können Sie uns gerne eine E-Mail schicken oder es morgen Vormittag noch einmal versuchen. Wir sind ab 9 Uhr wieder für Sie da. Vielen Dank und auf Wiederhören!",
+            "transcript": "Guten Tag, Sie sind verbunden mit dem Kulturverein 'Neue Horizonte'. Leider erreichen Sie uns außerhalb unserer Bürozeiten. Wenn Sie sich für einen unserer Sprachkurse oder Kreativkurse anmelden möchten, besuchen Sie bitte unsere Webseite. Dort finden Sie alle aktuellen Termine und Informationen zur Gebühr. Für eine persönliche Beratung können Sie uns gerne eine E-Mail schicken oder es morgen Vormittag noch einmal versuchen. Wir sind ab 9 Uhr wieder für Sie da. Vielen Dank und auf Wiederhören!",
+            "questions": [
+              {
+                "id": "gen-q-h1-47dc57fd-s2-q1",
+                "module": "horen",
+                "teil": 1,
+                "type": "richtig_falsch",
+                "question": "Man kann sich für die Kurse nur per E-Mail anmelden.",
+                "options": [],
+                "correct": "Falsch",
+                "correctAnswer": "Falsch",
+                "explanation": "Die Anmeldung für die Kurse erfolgt über die Webseite des Kulturvereins, während eine E-Mail für persönliche Beratungen gedacht ist.",
+                "segmentLabel": "Aufnahme 2",
+                "passageId": "gen-p-h1-47dc57fd-s2",
+                "lang": "de",
+                "level": "B1",
+                "language": "de",
+                "examType": "goethe",
+                "difficulty": 5,
+                "skills": [
+                  "listening"
+                ],
+                "topicTags": [
+                  "Kultur"
+                ],
+                "vocabularyTags": [
+                  "anmelden",
+                  "e-mail",
+                  "Kurse"
+                ],
+                "grammarTags": [
+                  "g-de-b1-genitiv"
+                ]
+              },
+              {
+                "id": "gen-q-h1-47dc57fd-s2-q2",
+                "module": "horen",
+                "teil": 1,
+                "type": "multiple_choice",
+                "question": "Wann ist der Kulturverein wieder telefonisch erreichbar?",
+                "options": [
+                  "a) Am Wochenende.",
+                  "b) Am Nachmittag.",
+                  "c) Am nächsten Vormittag."
+                ],
+                "correct": "c",
+                "correctAnswer": "c",
+                "explanation": "Der Anrufbeantworter teilt mit, dass der Kulturverein am nächsten Vormittag ab 9 Uhr wieder telefonisch erreichbar ist.",
+                "segmentLabel": "Aufnahme 2",
+                "passageId": "gen-p-h1-47dc57fd-s2",
+                "lang": "de",
+                "level": "B1",
+                "language": "de",
+                "examType": "goethe",
+                "difficulty": 5,
+                "skills": [
+                  "listening"
+                ],
+                "topicTags": [
+                  "Kultur"
+                ],
+                "vocabularyTags": [
+                  "erreichbar",
+                  "Wochenende",
+                  "Kulturverein",
+                  "telefonisch",
+                  "Nachmittag",
+                  "Vormittag"
+                ],
+                "grammarTags": []
+              }
+            ]
+          },
+          {
+            "passageId": "gen-p-h1-47dc57fd-s3",
+            "label": "Radio-Tipp Musikfest",
+            "text": "Willkommen zurück zu unserem Alltagstipp! Für das kommende Wochenende haben wir einen besonderen Vorschlag für Sie: Im Stadtpark findet am Samstag und Sonntag ein kleines Musikfest statt. Verschiedene lokale Bands spielen von Jazz bis Pop. Der Eintritt ist frei, und es gibt auch Stände mit Essen und Getränken. Eine tolle Gelegenheit, um mit Freunden oder der Familie Zeit im Freien zu verbringen. Bei schlechtem Wetter fällt die Veranstaltung leider aus. Viel Spaß dabei!",
+            "transcript": "Willkommen zurück zu unserem Alltagstipp! Für das kommende Wochenende haben wir einen besonderen Vorschlag für Sie: Im Stadtpark findet am Samstag und Sonntag ein kleines Musikfest statt. Verschiedene lokale Bands spielen von Jazz bis Pop. Der Eintritt ist frei, und es gibt auch Stände mit Essen und Getränken. Eine tolle Gelegenheit, um mit Freunden oder der Familie Zeit im Freien zu verbringen. Bei schlechtem Wetter fällt die Veranstaltung leider aus. Viel Spaß dabei!",
+            "questions": [
+              {
+                "id": "gen-q-h1-47dc57fd-s3-q1",
+                "module": "horen",
+                "teil": 1,
+                "type": "richtig_falsch",
+                "question": "Das Musikfest kostet keinen Eintritt.",
+                "options": [],
+                "correct": "Richtig",
+                "correctAnswer": "Richtig",
+                "explanation": "Der Radiotipp erwähnt ausdrücklich, dass für das Musikfest im Stadtpark keine Eintrittsgebühr verlangt wird.",
+                "segmentLabel": "Aufnahme 3",
+                "passageId": "gen-p-h1-47dc57fd-s3",
+                "lang": "de",
+                "level": "B1",
+                "language": "de",
+                "examType": "goethe",
+                "difficulty": 5,
+                "skills": [
+                  "listening"
+                ],
+                "topicTags": [
+                  "Kultur"
+                ],
+                "vocabularyTags": [
+                  "stattfinden",
+                  "ausfallen",
+                  "verbringen",
+                  "Wochenende",
+                  "lokal",
+                  "Veranstaltung"
+                ],
+                "grammarTags": []
+              },
+              {
+                "id": "gen-q-h1-47dc57fd-s3-q2",
+                "module": "horen",
+                "teil": 1,
+                "type": "multiple_choice",
+                "question": "Was passiert, wenn es regnet?",
+                "options": [
+                  "a) Nur die Musik wird drinnen gespielt.",
+                  "b) Die Veranstaltung wird abgesagt.",
+                  "c) Das Fest findet in einem Zelt statt."
+                ],
+                "correct": "b",
+                "correctAnswer": "b",
+                "explanation": "Der Tipp informiert darüber, dass das Musikfest bei schlechtem Wetter nicht stattfinden kann und somit abgesagt wird.",
+                "segmentLabel": "Aufnahme 3",
+                "passageId": "gen-p-h1-47dc57fd-s3",
+                "lang": "de",
+                "level": "B1",
+                "language": "de",
+                "examType": "goethe",
+                "difficulty": 5,
+                "skills": [
+                  "listening"
+                ],
+                "topicTags": [
+                  "Kultur"
+                ],
+                "vocabularyTags": [
+                  "stattfinden",
+                  "Veranstaltung",
+                  "passieren",
+                  "abgesagen",
+                  "drinnen",
+                  "spielen"
+                ],
+                "grammarTags": []
+              }
+            ]
+          },
+          {
+            "passageId": "gen-p-h1-47dc57fd-s4",
+            "label": "Hinweis Theater",
+            "text": "Liebe Gäste, bitte beachten Sie folgende Hinweise zu unserer heutigen Aufführung. Die Vorstellung beginnt pünktlich in fünf Minuten. Wir bitten Sie, Ihre Mobiltelefone auszuschalten oder stumm zu schalten. Das Fotografieren und Filmen während der Aufführung ist nicht erlaubt. In der Pause können Sie gerne Getränke an der Bar kaufen. Wir wünschen Ihnen einen unterhaltsamen Abend mit unserem Stück 'Der verlorene Schlüssel'. Vielen Dank für Ihr Verständnis!",
+            "transcript": "Liebe Gäste, bitte beachten Sie folgende Hinweise zu unserer heutigen Aufführung. Die Vorstellung beginnt pünktlich in fünf Minuten. Wir bitten Sie, Ihre Mobiltelefone auszuschalten oder stumm zu schalten. Das Fotografieren und Filmen während der Aufführung ist nicht erlaubt. In der Pause können Sie gerne Getränke an der Bar kaufen. Wir wünschen Ihnen einen unterhaltsamen Abend mit unserem Stück 'Der verlorene Schlüssel'. Vielen Dank für Ihr Verständnis!",
+            "questions": [
+              {
+                "id": "gen-q-h1-47dc57fd-s4-q1",
+                "module": "horen",
+                "teil": 1,
+                "type": "richtig_falsch",
+                "question": "Es ist erlaubt, während des Stücks Fotos zu machen.",
+                "options": [],
+                "correct": "Falsch",
+                "correctAnswer": "Falsch",
+                "explanation": "Der Hinweis im Theater macht deutlich, dass das Fotografieren und Filmen während der gesamten Aufführung strengstens untersagt ist.",
+                "segmentLabel": "Aufnahme 4",
+                "passageId": "gen-p-h1-47dc57fd-s4",
+                "lang": "de",
+                "level": "B1",
+                "language": "de",
+                "examType": "goethe",
+                "difficulty": 5,
+                "skills": [
+                  "listening"
+                ],
+                "topicTags": [
+                  "Kultur"
+                ],
+                "vocabularyTags": [
+                  "erlauben",
+                  "während",
+                  "Stücks",
+                  "Fotos",
+                  "machen"
+                ],
+                "grammarTags": [
+                  "g-de-b1-genitiv",
+                  "g-de-b1-nebensatz"
+                ]
+              },
+              {
+                "id": "gen-q-h1-47dc57fd-s4-q2",
+                "module": "horen",
+                "teil": 1,
+                "type": "multiple_choice",
+                "question": "Wann beginnt die Theateraufführung?",
+                "options": [
+                  "a) Nach einer kurzen Pause.",
+                  "b) In ungefähr zehn Minuten.",
+                  "c) In Kürze."
+                ],
+                "correct": "c",
+                "correctAnswer": "c",
+                "explanation": "Die Ansage informiert die Gäste, dass die Vorstellung pünktlich in nur fünf Minuten beginnen wird, also sehr bald.",
+                "segmentLabel": "Aufnahme 4",
+                "passageId": "gen-p-h1-47dc57fd-s4",
+                "lang": "de",
+                "level": "B1",
+                "language": "de",
+                "examType": "goethe",
+                "difficulty": 5,
+                "skills": [
+                  "listening"
+                ],
+                "topicTags": [
+                  "Kultur"
+                ],
+                "vocabularyTags": [
+                  "Theateraufführung",
+                  "beginnen",
+                  "minuten",
+                  "kurzen",
+                  "ungefähr",
+                  "Kürze"
+                ],
+                "grammarTags": []
+              }
+            ]
+          },
+          {
+            "passageId": "gen-p-h1-47dc57fd-s5",
+            "label": "Ansage Stadtbibliothek",
+            "text": "Guten Tag, liebe Besucherinnen und Besucher der Stadtbibliothek. Wir möchten Sie auf unsere nächste Lesung aufmerksam machen. Am kommenden Dienstag, den 15. Mai, liest die bekannte Autorin Frau Braun aus ihrem neuen Roman 'Die verborgene Stadt'. Die Lesung beginnt um 19 Uhr im Lesesaal. Der Eintritt ist frei, aber wir bitten um eine kurze Anmeldung, da die Plätze begrenzt sind. Sie können sich direkt an der Information anmelden. Wir freuen uns auf einen spannenden Abend!",
+            "transcript": "Guten Tag, liebe Besucherinnen und Besucher der Stadtbibliothek. Wir möchten Sie auf unsere nächste Lesung aufmerksam machen. Am kommenden Dienstag, den 15. Mai, liest die bekannte Autorin Frau Braun aus ihrem neuen Roman 'Die verborgene Stadt'. Die Lesung beginnt um 19 Uhr im Lesesaal. Der Eintritt ist frei, aber wir bitten um eine kurze Anmeldung, da die Plätze begrenzt sind. Sie können sich direkt an der Information anmelden. Wir freuen uns auf einen spannenden Abend!",
+            "questions": [
+              {
+                "id": "gen-q-h1-47dc57fd-s5-q1",
+                "module": "horen",
+                "teil": 1,
+                "type": "richtig_falsch",
+                "question": "Für die Lesung muss man keinen Eintritt bezahlen.",
+                "options": [],
+                "correct": "Richtig",
+                "correctAnswer": "Richtig",
+                "explanation": "Die Ansage in der Bibliothek bestätigt, dass für die Teilnahme an der Lesung keine Eintrittsgebühr erhoben wird.",
+                "segmentLabel": "Aufnahme 5",
+                "passageId": "gen-p-h1-47dc57fd-s5",
+                "lang": "de",
+                "level": "B1",
+                "language": "de",
+                "examType": "goethe",
+                "difficulty": 5,
+                "skills": [
+                  "listening"
+                ],
+                "topicTags": [
+                  "Kultur"
+                ],
+                "vocabularyTags": [
+                  "bezahlen",
+                  "Lesung",
+                  "keinen",
+                  "Eintritt"
+                ],
+                "grammarTags": []
+              },
+              {
+                "id": "gen-q-h1-47dc57fd-s5-q2",
+                "module": "horen",
+                "teil": 1,
+                "type": "multiple_choice",
+                "question": "Warum ist eine Anmeldung für die Lesung nötig?",
+                "options": [
+                  "a) Weil die Autorin nur für angemeldete Personen liest.",
+                  "b) Weil die Anzahl der Sitzplätze begrenzt ist.",
+                  "c) Weil man sonst keinen Roman kaufen kann."
+                ],
+                "correct": "b",
+                "correctAnswer": "b",
+                "explanation": "Eine Anmeldung ist erforderlich, da die Anzahl der verfügbaren Sitzplätze im Lesesaal für die Lesung begrenzt ist.",
+                "segmentLabel": "Aufnahme 5",
+                "passageId": "gen-p-h1-47dc57fd-s5",
+                "lang": "de",
+                "level": "B1",
+                "language": "de",
+                "examType": "goethe",
+                "difficulty": 5,
+                "skills": [
+                  "listening"
+                ],
+                "topicTags": [
+                  "Kultur"
+                ],
+                "vocabularyTags": [
+                  "Anmeldung",
+                  "begrenzt",
+                  "personen",
+                  "Lesung",
+                  "keinen",
+                  "kaufen"
+                ],
+                "grammarTags": []
+              }
+            ]
+          }
+        ],
+        "transcript": "Achtung, liebe Besucherinnen und Besucher des Stadtmuseums! Wir möchten Sie auf unsere neue Sonderausstellung 'Kultur der Welt' aufmerksam machen. Sie zeigt Kunstwerke und Alltagsgegenstände aus verschiedenen Ländern. Die Ausstellung ist ab heute geöffnet und läuft bis Ende des Monats. Führungen finden täglich um 11 Uhr und 15 Uhr statt. Für Familien gibt es am Wochenende spezielle Angebote. Der Eintritt kostet 8 Euro, ermäßigt 5 Euro. Wir freuen uns auf Ihren Besuch!",
+        "questions": [
+          {
+            "id": "gen-q-h1-47dc57fd-s1-q1",
+            "module": "horen",
+            "teil": 1,
+            "type": "richtig_falsch",
+            "question": "Die neue Ausstellung ist nur am Wochenende geöffnet.",
+            "options": [],
+            "correct": "Falsch",
+            "correctAnswer": "Falsch",
+            "explanation": "Die Ausstellung ist nicht nur am Wochenende geöffnet, sondern ab heute bis zum Monatsende, und es gibt auch tägliche Führungen.",
+            "segmentLabel": "Aufnahme 1",
+            "passageId": "gen-p-h1-47dc57fd-s1",
+            "lang": "de",
+            "level": "B1",
+            "language": "de",
+            "examType": "goethe",
+            "difficulty": 5,
+            "skills": [
+              "listening"
+            ],
+            "topicTags": [
+              "Kultur"
+            ],
+            "vocabularyTags": [
+              "Wochenende",
+              "Ausstellung",
+              "öffnen"
+            ],
+            "grammarTags": [
+              "g-de-b1-perfekt"
+            ]
+          },
+          {
+            "id": "gen-q-h1-47dc57fd-s1-q2",
+            "module": "horen",
+            "teil": 1,
+            "type": "multiple_choice",
+            "question": "Was kostet der normale Eintritt für die Ausstellung?",
+            "options": [
+              "a) Acht Euro.",
+              "b) Zehn Euro.",
+              "c) Fünf Euro."
+            ],
+            "correct": "a",
+            "correctAnswer": "a",
+            "explanation": "Der reguläre Preis für den Eintritt in die Ausstellung beträgt 8 Euro, der ermäßigte Preis ist 5 Euro.",
+            "segmentLabel": "Aufnahme 1",
+            "passageId": "gen-p-h1-47dc57fd-s1",
+            "lang": "de",
+            "level": "B1",
+            "language": "de",
+            "examType": "goethe",
+            "difficulty": 5,
+            "skills": [
+              "listening"
+            ],
+            "topicTags": [
+              "Kultur"
+            ],
+            "vocabularyTags": [
+              "Ausstellung",
+              "kosten",
+              "Eintritt",
+              "normal"
+            ],
+            "grammarTags": []
+          },
+          {
+            "id": "gen-q-h1-47dc57fd-s2-q1",
+            "module": "horen",
+            "teil": 1,
+            "type": "richtig_falsch",
+            "question": "Man kann sich für die Kurse nur per E-Mail anmelden.",
+            "options": [],
+            "correct": "Falsch",
+            "correctAnswer": "Falsch",
+            "explanation": "Die Anmeldung für die Kurse erfolgt über die Webseite des Kulturvereins, während eine E-Mail für persönliche Beratungen gedacht ist.",
+            "segmentLabel": "Aufnahme 2",
+            "passageId": "gen-p-h1-47dc57fd-s2",
+            "lang": "de",
+            "level": "B1",
+            "language": "de",
+            "examType": "goethe",
+            "difficulty": 5,
+            "skills": [
+              "listening"
+            ],
+            "topicTags": [
+              "Kultur"
+            ],
+            "vocabularyTags": [
+              "anmelden",
+              "e-mail",
+              "Kurse"
+            ],
+            "grammarTags": [
+              "g-de-b1-genitiv"
+            ]
+          },
+          {
+            "id": "gen-q-h1-47dc57fd-s2-q2",
+            "module": "horen",
+            "teil": 1,
+            "type": "multiple_choice",
+            "question": "Wann ist der Kulturverein wieder telefonisch erreichbar?",
+            "options": [
+              "a) Am Wochenende.",
+              "b) Am Nachmittag.",
+              "c) Am nächsten Vormittag."
+            ],
+            "correct": "c",
+            "correctAnswer": "c",
+            "explanation": "Der Anrufbeantworter teilt mit, dass der Kulturverein am nächsten Vormittag ab 9 Uhr wieder telefonisch erreichbar ist.",
+            "segmentLabel": "Aufnahme 2",
+            "passageId": "gen-p-h1-47dc57fd-s2",
+            "lang": "de",
+            "level": "B1",
+            "language": "de",
+            "examType": "goethe",
+            "difficulty": 5,
+            "skills": [
+              "listening"
+            ],
+            "topicTags": [
+              "Kultur"
+            ],
+            "vocabularyTags": [
+              "erreichbar",
+              "Wochenende",
+              "Kulturverein",
+              "telefonisch",
+              "Nachmittag",
+              "Vormittag"
+            ],
+            "grammarTags": []
+          },
+          {
+            "id": "gen-q-h1-47dc57fd-s3-q1",
+            "module": "horen",
+            "teil": 1,
+            "type": "richtig_falsch",
+            "question": "Das Musikfest kostet keinen Eintritt.",
+            "options": [],
+            "correct": "Richtig",
+            "correctAnswer": "Richtig",
+            "explanation": "Der Radiotipp erwähnt ausdrücklich, dass für das Musikfest im Stadtpark keine Eintrittsgebühr verlangt wird.",
+            "segmentLabel": "Aufnahme 3",
+            "passageId": "gen-p-h1-47dc57fd-s3",
+            "lang": "de",
+            "level": "B1",
+            "language": "de",
+            "examType": "goethe",
+            "difficulty": 5,
+            "skills": [
+              "listening"
+            ],
+            "topicTags": [
+              "Kultur"
+            ],
+            "vocabularyTags": [
+              "stattfinden",
+              "ausfallen",
+              "verbringen",
+              "Wochenende",
+              "lokal",
+              "Veranstaltung"
+            ],
+            "grammarTags": []
+          },
+          {
+            "id": "gen-q-h1-47dc57fd-s3-q2",
+            "module": "horen",
+            "teil": 1,
+            "type": "multiple_choice",
+            "question": "Was passiert, wenn es regnet?",
+            "options": [
+              "a) Nur die Musik wird drinnen gespielt.",
+              "b) Die Veranstaltung wird abgesagt.",
+              "c) Das Fest findet in einem Zelt statt."
+            ],
+            "correct": "b",
+            "correctAnswer": "b",
+            "explanation": "Der Tipp informiert darüber, dass das Musikfest bei schlechtem Wetter nicht stattfinden kann und somit abgesagt wird.",
+            "segmentLabel": "Aufnahme 3",
+            "passageId": "gen-p-h1-47dc57fd-s3",
+            "lang": "de",
+            "level": "B1",
+            "language": "de",
+            "examType": "goethe",
+            "difficulty": 5,
+            "skills": [
+              "listening"
+            ],
+            "topicTags": [
+              "Kultur"
+            ],
+            "vocabularyTags": [
+              "stattfinden",
+              "Veranstaltung",
+              "passieren",
+              "abgesagen",
+              "drinnen",
+              "spielen"
+            ],
+            "grammarTags": []
+          },
+          {
+            "id": "gen-q-h1-47dc57fd-s4-q1",
+            "module": "horen",
+            "teil": 1,
+            "type": "richtig_falsch",
+            "question": "Es ist erlaubt, während des Stücks Fotos zu machen.",
+            "options": [],
+            "correct": "Falsch",
+            "correctAnswer": "Falsch",
+            "explanation": "Der Hinweis im Theater macht deutlich, dass das Fotografieren und Filmen während der gesamten Aufführung strengstens untersagt ist.",
+            "segmentLabel": "Aufnahme 4",
+            "passageId": "gen-p-h1-47dc57fd-s4",
+            "lang": "de",
+            "level": "B1",
+            "language": "de",
+            "examType": "goethe",
+            "difficulty": 5,
+            "skills": [
+              "listening"
+            ],
+            "topicTags": [
+              "Kultur"
+            ],
+            "vocabularyTags": [
+              "erlauben",
+              "während",
+              "Stücks",
+              "Fotos",
+              "machen"
+            ],
+            "grammarTags": [
+              "g-de-b1-genitiv",
+              "g-de-b1-nebensatz"
+            ]
+          },
+          {
+            "id": "gen-q-h1-47dc57fd-s4-q2",
+            "module": "horen",
+            "teil": 1,
+            "type": "multiple_choice",
+            "question": "Wann beginnt die Theateraufführung?",
+            "options": [
+              "a) Nach einer kurzen Pause.",
+              "b) In ungefähr zehn Minuten.",
+              "c) In Kürze."
+            ],
+            "correct": "c",
+            "correctAnswer": "c",
+            "explanation": "Die Ansage informiert die Gäste, dass die Vorstellung pünktlich in nur fünf Minuten beginnen wird, also sehr bald.",
+            "segmentLabel": "Aufnahme 4",
+            "passageId": "gen-p-h1-47dc57fd-s4",
+            "lang": "de",
+            "level": "B1",
+            "language": "de",
+            "examType": "goethe",
+            "difficulty": 5,
+            "skills": [
+              "listening"
+            ],
+            "topicTags": [
+              "Kultur"
+            ],
+            "vocabularyTags": [
+              "Theateraufführung",
+              "beginnen",
+              "minuten",
+              "kurzen",
+              "ungefähr",
+              "Kürze"
+            ],
+            "grammarTags": []
+          },
+          {
+            "id": "gen-q-h1-47dc57fd-s5-q1",
+            "module": "horen",
+            "teil": 1,
+            "type": "richtig_falsch",
+            "question": "Für die Lesung muss man keinen Eintritt bezahlen.",
+            "options": [],
+            "correct": "Richtig",
+            "correctAnswer": "Richtig",
+            "explanation": "Die Ansage in der Bibliothek bestätigt, dass für die Teilnahme an der Lesung keine Eintrittsgebühr erhoben wird.",
+            "segmentLabel": "Aufnahme 5",
+            "passageId": "gen-p-h1-47dc57fd-s5",
+            "lang": "de",
+            "level": "B1",
+            "language": "de",
+            "examType": "goethe",
+            "difficulty": 5,
+            "skills": [
+              "listening"
+            ],
+            "topicTags": [
+              "Kultur"
+            ],
+            "vocabularyTags": [
+              "bezahlen",
+              "Lesung",
+              "keinen",
+              "Eintritt"
+            ],
+            "grammarTags": []
+          },
+          {
+            "id": "gen-q-h1-47dc57fd-s5-q2",
+            "module": "horen",
+            "teil": 1,
+            "type": "multiple_choice",
+            "question": "Warum ist eine Anmeldung für die Lesung nötig?",
+            "options": [
+              "a) Weil die Autorin nur für angemeldete Personen liest.",
+              "b) Weil die Anzahl der Sitzplätze begrenzt ist.",
+              "c) Weil man sonst keinen Roman kaufen kann."
+            ],
+            "correct": "b",
+            "correctAnswer": "b",
+            "explanation": "Eine Anmeldung ist erforderlich, da die Anzahl der verfügbaren Sitzplätze im Lesesaal für die Lesung begrenzt ist.",
+            "segmentLabel": "Aufnahme 5",
+            "passageId": "gen-p-h1-47dc57fd-s5",
+            "lang": "de",
+            "level": "B1",
+            "language": "de",
+            "examType": "goethe",
+            "difficulty": 5,
+            "skills": [
+              "listening"
+            ],
+            "topicTags": [
+              "Kultur"
+            ],
+            "vocabularyTags": [
+              "Anmeldung",
+              "begrenzt",
+              "personen",
+              "Lesung",
+              "keinen",
+              "kaufen"
+            ],
+            "grammarTags": []
+          }
+        ]
+      },
+      {
+        "teil": 2,
+        "instruction": "",
+        "topicTag": "Wohnen",
+        "transcript": "Herzlich willkommen zu unserem heutigen Thema: Wohnen. Für viele Menschen ist die Suche nach einer passenden Wohnung eine große Herausforderung. Besonders in Städten ist der Wohnungsmarkt oft sehr angespannt. Aber keine Sorge, mit ein Paar Tipps kann die Wohnungssuche einfacher werden.\n\nZuerst einmal ist es grundlegend, sich klarzumachen, was man wirklich braucht. Wie viele Zimmer? Welche Lage? Wie hoch darf die Miete sein? Eine genaue Vorstellung hilft Ihnen, gezielter zu suchen. Denken Sie auch darüber nach, ob Sie lieber allein wohnen möchten oder in einer Wohngemeinschaft, einer WG. Jede Option hat ihre Vor- und Nachteile.\n\nEin weiterer wichtiger Punkt ist die Vorbereitung. Sammeln Sie alle notwendigen Unterlagen, bevor Sie Besichtigungstermine haben. Dazu gehören oft ein Einkommensnachweis, eine Schufa-Auskunft und manchmal auch Referenzen vom vorherigen Vermieter. Eine vollständige Bewerbungsmappe macht einen positiven Eindruck und zeigt, dass Sie organisiert sind.\n\nNutzen Sie verschiedene Kanäle für Ihre Suche. Online-Portale sind natürlich sehr beliebt, aber vergessen Sie nicht die lokalen Zeitungen oder Aushänge in Supermärkten. Auch Mundpropaganda ist oft sehr effektiv. Erzählen Sie Freunden, Kollegen und Familie, dass Sie eine Wohnung suchen. Manchmal ergibt sich dadurch eine großartige Gelegenheit.\n\nUnd zum Schluss: Seien Sie geduldig. Es kann eine Weile dauern, bis Sie Ihr Traumzuhause finden. Lassen Sie sich nicht entmutigen, wenn es nicht sofort klappt. Bleiben Sie aktiv und optimistisch. Ich wünsche Ihnen viel Erfolg bei der Wohnungssuche!",
+        "questions": [
+          {
+            "id": "gen-q-h2-59e3af65-q1",
+            "module": "horen",
+            "teil": 2,
+            "type": "multiple_choice",
+            "question": "Was ist laut der Sprecherin die größte Schwierigkeit beim Wohnen?",
+            "options": [
+              "a) Die angespannte Lage auf dem Wohnungsmarkt.",
+              "b) Die hohen Kosten für Möbel.",
+              "c) Die fehlende Unterstützung von Freunden und Familie."
+            ],
+            "correct": "a",
+            "correctAnswer": "a",
+            "explanation": "Die Sprecherin erwähnt, dass der Wohnungsmarkt besonders in Städten sehr angespannt ist, was die größte Schwierigkeit darstellt.",
+            "passageId": "gen-p-h2-59e3af65-s1",
+            "lang": "de",
+            "level": "B1",
+            "skills": [
+              "listening"
+            ],
+            "language": "de",
+            "examType": "goethe",
+            "difficulty": 5,
+            "topicTags": [
+              "Wohnen"
+            ],
+            "vocabularyTags": [
+              "Unterstützung",
+              "wohnen",
+              "Schwierigkeit",
+              "Familie",
+              "kosten",
+              "Freund"
+            ],
+            "grammarTags": []
+          },
+          {
+            "id": "gen-q-h2-59e3af65-q2",
+            "module": "horen",
+            "teil": 2,
+            "type": "multiple_choice",
+            "question": "Was empfiehlt die Sprecherin als ersten grundlegenden Schritt bei der Wohnungssuche?",
+            "options": [
+              "a) Alle notwendigen Unterlagen zu sammeln.",
+              "b) Sofort viele Besichtigungstermine zu vereinbaren.",
+              "c) Die eigenen Bedürfnisse genau zu definieren."
+            ],
+            "correct": "c",
+            "correctAnswer": "c",
+            "explanation": "Die Sprecherin betont, dass es grundlegend ist, sich klarzumachen, was man wirklich braucht, bevor man mit der Suche beginnt.",
+            "passageId": "gen-p-h2-59e3af65-s1",
+            "lang": "de",
+            "level": "B1",
+            "skills": [
+              "listening"
+            ],
+            "language": "de",
+            "examType": "goethe",
+            "difficulty": 5,
+            "topicTags": [
+              "Wohnen"
+            ],
+            "vocabularyTags": [
+              "Bedürfnisse",
+              "notwendig",
+              "Schritt",
+              "grundlegenden",
+              "definieren",
+              "unterlagen"
+            ],
+            "grammarTags": [
+              "g-de-b1-dativ",
+              "g-de-b1-nebensatz",
+              "g-de-b1-relativ"
+            ]
+          },
+          {
+            "id": "gen-q-h2-59e3af65-q3",
+            "module": "horen",
+            "teil": 2,
+            "type": "multiple_choice",
+            "question": "Welche Unterlagen sind wichtig, um einen positiven Eindruck zu hinterlassen?",
+            "options": [
+              "a) Ein Lebenslauf und Zeugnisse von der Schule.",
+              "b) Eine Liste der Hobbys und ein Foto der Familie.",
+              "c) Nachweis des Einkommens und Schufa-Informationen."
+            ],
+            "correct": "c",
+            "correctAnswer": "c",
+            "explanation": "Die Sprecherin nennt explizit einen Einkommensnachweis und eine Schufa-Auskunft als wichtige Unterlagen für einen positiven Eindruck.",
+            "passageId": "gen-p-h2-59e3af65-s1",
+            "lang": "de",
+            "level": "B1",
+            "skills": [
+              "listening"
+            ],
+            "language": "de",
+            "examType": "goethe",
+            "difficulty": 5,
+            "topicTags": [
+              "Wohnen"
+            ],
+            "vocabularyTags": [
+              "positiv",
+              "hinterlassen",
+              "unterlagen",
+              "Familie",
+              "Schule",
+              "schufa-informationen"
+            ],
+            "grammarTags": [
+              "g-de-b1-genitiv"
+            ]
+          },
+          {
+            "id": "gen-q-h2-59e3af65-q4",
+            "module": "horen",
+            "teil": 2,
+            "type": "multiple_choice",
+            "question": "Wie kann die sogenannte \"Mundpropaganda\" bei der Wohnungssuche nützlich sein?",
+            "options": [
+              "a) Durch persönliche Empfehlungen von Freunden und Bekannten.",
+              "b) Indem man in sozialen Medien nach Wohnungen sucht.",
+              "c) Man erhält dadurch Zugang zu exklusiven Online-Portalen."
+            ],
+            "correct": "a",
+            "correctAnswer": "a",
+            "explanation": "Die Sprecherin erklärt, dass Freunde und Bekannte oft von freien Wohnungen wissen und so bei der Suche helfen können.",
+            "passageId": "gen-p-h2-59e3af65-s1",
+            "lang": "de",
+            "level": "B1",
+            "skills": [
+              "listening"
+            ],
+            "language": "de",
+            "examType": "goethe",
+            "difficulty": 5,
+            "topicTags": [
+              "Wohnen"
+            ],
+            "vocabularyTags": [
+              "persönlich",
+              "suchen",
+              "bekannten",
+              "erhälen",
+              "medien",
+              "Freund"
+            ],
+            "grammarTags": [
+              "g-de-b1-dativ"
+            ]
+          },
+          {
+            "id": "gen-q-h2-59e3af65-q5",
+            "module": "horen",
+            "teil": 2,
+            "type": "multiple_choice",
+            "question": "Welchen letzten Ratschlag gibt die Sprecherin den Suchenden?",
+            "options": [
+              "a) Man sollte schnell eine Entscheidung treffen.",
+              "b) Geduld haben und positiv bleiben.",
+              "c) Man sollte nur Online-Portale nutzen."
+            ],
+            "correct": "b",
+            "correctAnswer": "b",
+            "explanation": "Am Ende des Beitrags rät die Sprecherin, geduldig zu sein und sich nicht entmutigen zu lassen, sondern aktiv und optimistisch zu bleiben.",
+            "passageId": "gen-p-h2-59e3af65-s1",
+            "lang": "de",
+            "level": "B1",
+            "skills": [
+              "listening"
+            ],
+            "language": "de",
+            "examType": "goethe",
+            "difficulty": 5,
+            "topicTags": [
+              "Wohnen"
+            ],
+            "vocabularyTags": [
+              "Entscheidung",
+              "treffen",
+              "nutzen",
+              "positiv",
+              "welchen",
+              "suchenden"
+            ],
+            "grammarTags": [
+              "g-de-b1-genitiv"
+            ]
+          }
+        ],
+        "passageId": "gen-p-h2-59e3af65-s1"
+      },
+      {
+        "teil": 3,
+        "instruction": "",
+        "topicTag": "Medien",
+        "transcript": "Anna: Hey Ben, hast du eigentlich die Nachrichten heute Morgen gesehen?\nBen: Moin Anna! Nein, noch nicht. Ich lese die meistens erst später online. Warum, gab's was Besonderes?\nAnna: Na ja, es ging um die neue Studie zum Medienkonsum bei jugendlichen. Ziemlich interessant, finde ich.\nBen: Ah, ja, das habe ich kurz in meinem Feed gesehen. Aber ich hab's nicht detailliert gelesen. Ich bin eher der Typ für Podcasts, wenn ich unterwegs bin.\nAnna: Podcasts sind auch super! Ich höre auch viele. Aber für aktuelle Informationen finde ich klassische Nachrichten immer noch wichtig. Manchmal sind die Social-Media-Feeds ja nicht so zuverlässig, weißt du?\nBen: Das stimmt. Da muss man echt aufpassen, was man da liest. Viele Falschinformationen unterwegs. Ich versuche, nur seriöse Quellen zu nutzen.\nAnna: Genau! Und was schaust du so im Fernsehen? Oder bist du gar kein Fernsehgucker mehr?\nBen: Doch, ab und zu schon. Aber eher Streaming-Dienste. Dokumentationen oder Serien. Klassisches Fernsehen mit Werbung ist nicht so mein Ding.\nAnna: Verstehe. Ich mag ja diese Kochsendungen am Wochenende. Total entspannend. Und manchmal schaue ich auch die Tagesschau.\nBen: Die Tagesschau ist natürlich eine Institution. Meine Eltern schauen die jeden Abend. Ich informiere mich lieber über verschiedene Apps. Das ist für mich praktischer.\nAnna: Ja, jeder hat da seine Vorlieben. Aber Hauptsache, man bleibt informiert, oder?\nBen: Absolut. Und man sollte auch mal eine Pause von den Bildschirmen machen, finde ich. Nicht immer nur Medien konsumieren.\nAnna: Da hast du recht. Ein gutes Buch ist auch mal schön.\nBen: Ja, oder einfach mal raus in die Natur.",
+        "questions": [
+          {
+            "id": "gen-q-h3-95e389e2-3",
+            "module": "horen",
+            "teil": 3,
+            "type": "richtig_falsch",
+            "question": "Anna findet Social-Media-Feeds immer sehr verlässlich für Informationen.",
+            "options": [],
+            "correct": "Falsch",
+            "correctAnswer": "Falsch",
+            "explanation": "Anna äußert Bedenken, indem sie sagt, dass Social-Media-Feeds manchmal nicht so zuverlässig sind und man aufpassen muss.",
+            "passageId": "gen-p-h3-95e389e2-s1",
+            "lang": "de",
+            "level": "B1",
+            "language": "de",
+            "examType": "goethe",
+            "difficulty": 5,
+            "skills": [
+              "listening"
+            ],
+            "topicTags": [
+              "Medien"
+            ],
+            "vocabularyTags": [
+              "finden",
+              "social-media-feeds",
+              "Informationen",
+              "verlässlich"
+            ],
+            "grammarTags": []
+          },
+          {
+            "id": "gen-q-h3-95e389e2-4",
+            "module": "horen",
+            "teil": 3,
+            "type": "richtig_falsch",
+            "question": "Ben nutzt Podcasts vor allem, wenn er sich außerhalb seiner Wohnung befindet.",
+            "options": [],
+            "correct": "Richtig",
+            "correctAnswer": "Richtig",
+            "explanation": "Ben sagt, dass er Podcasts hört, wenn er 'unterwegs' ist, was bedeutet, dass er nicht zu Hause ist.",
+            "passageId": "gen-p-h3-95e389e2-s1",
+            "lang": "de",
+            "level": "B1",
+            "language": "de",
+            "examType": "goethe",
+            "difficulty": 5,
+            "skills": [
+              "listening"
+            ],
+            "topicTags": [
+              "Medien"
+            ],
+            "vocabularyTags": [
+              "Wohnung",
+              "nutzen",
+              "befinden",
+              "außerhalb",
+              "Podcasts",
+              "allem"
+            ],
+            "grammarTags": [
+              "g-de-b1-nebensatz"
+            ]
+          },
+          {
+            "id": "gen-q-h3-95e389e2-2",
+            "module": "horen",
+            "teil": 3,
+            "type": "richtig_falsch",
+            "question": "Ben liest die Nachrichten hauptsächlich in gedruckter Form.",
+            "options": [],
+            "correct": "Falsch",
+            "correctAnswer": "Falsch",
+            "explanation": "Ben erklärt im Gespräch, dass er die Nachrichten meistens online liest, nicht in einer physischen Zeitung oder Zeitschrift.",
+            "passageId": "gen-p-h3-95e389e2-s1",
+            "lang": "de",
+            "level": "B1",
+            "language": "de",
+            "examType": "goethe",
+            "difficulty": 5,
+            "skills": [
+              "listening"
+            ],
+            "topicTags": [
+              "Medien"
+            ],
+            "vocabularyTags": [
+              "nachrichten",
+              "hauptsächlich",
+              "gedruckt",
+              "lesen"
+            ],
+            "grammarTags": []
+          },
+          {
+            "id": "gen-q-h3-95e389e2-5",
+            "module": "horen",
+            "teil": 3,
+            "type": "richtig_falsch",
+            "question": "Ben schaut lieber klassisches Fernsehen als Streaming-Dienste.",
+            "options": [],
+            "correct": "Falsch",
+            "correctAnswer": "Falsch",
+            "explanation": "Ben erklärt, dass klassisches Fernsehen mit Werbung 'nicht so sein Ding' ist und er eher Streaming-Dienste bevorzugt.",
+            "passageId": "gen-p-h3-95e389e2-s1",
+            "lang": "de",
+            "level": "B1",
+            "language": "de",
+            "examType": "goethe",
+            "difficulty": 5,
+            "skills": [
+              "listening"
+            ],
+            "topicTags": [
+              "Medien"
+            ],
+            "vocabularyTags": [
+              "fernsehen",
+              "streaming-dienst",
+              "klassisch"
+            ],
+            "grammarTags": []
+          },
+          {
+            "id": "gen-q-h3-95e389e2-7",
+            "module": "horen",
+            "teil": 3,
+            "type": "richtig_falsch",
+            "question": "Beide Freunde sind sich einig, dass man auch mal eine Medienpause einlegen sollte.",
+            "options": [],
+            "correct": "Richtig",
+            "correctAnswer": "Richtig",
+            "explanation": "Ben schlägt vor, eine Pause von Bildschirmen zu machen, und Anna stimmt ihm mit 'Da hast du recht' zu.",
+            "passageId": "gen-p-h3-95e389e2-s1",
+            "lang": "de",
+            "level": "B1",
+            "language": "de",
+            "examType": "goethe",
+            "difficulty": 5,
+            "skills": [
+              "listening"
+            ],
+            "topicTags": [
+              "Medien"
+            ],
+            "vocabularyTags": [
+              "einlegen",
+              "Freund",
+              "Medienpause",
+              "Beide",
+              "einig",
+              "sollt"
+            ],
+            "grammarTags": [
+              "g-de-b1-konjunktiv"
+            ]
+          },
+          {
+            "id": "gen-q-h3-95e389e2-1",
+            "module": "horen",
+            "teil": 3,
+            "type": "richtig_falsch",
+            "question": "Anna hat sich bereits am Morgen über aktuelle Ereignisse informiert.",
+            "options": [],
+            "correct": "Richtig",
+            "correctAnswer": "Richtig",
+            "explanation": "Anna fragt Ben nach den Nachrichten und erwähnt direkt das Thema einer Studie, was zeigt, dass sie selbst schon davon wusste.",
+            "passageId": "gen-p-h3-95e389e2-s1",
+            "lang": "de",
+            "level": "B1",
+            "language": "de",
+            "examType": "goethe",
+            "difficulty": 5,
+            "skills": [
+              "listening"
+            ],
+            "topicTags": [
+              "Medien"
+            ],
+            "vocabularyTags": [
+              "informieren",
+              "aktuell",
+              "Ereignisse",
+              "bereit"
+            ],
+            "grammarTags": []
+          },
+          {
+            "id": "gen-q-h3-95e389e2-6",
+            "module": "horen",
+            "teil": 3,
+            "type": "richtig_falsch",
+            "question": "Ben's Eltern informieren sich abends über die Tagesschau.",
+            "options": [],
+            "correct": "Richtig",
+            "correctAnswer": "Richtig",
+            "explanation": "Ben erwähnt, dass seine Eltern die Tagesschau jeden Abend schauen, um sich über das aktuelle Geschehen zu informieren.",
+            "passageId": "gen-p-h3-95e389e2-s1",
+            "lang": "de",
+            "level": "B1",
+            "language": "de",
+            "examType": "goethe",
+            "difficulty": 5,
+            "skills": [
+              "listening"
+            ],
+            "topicTags": [
+              "Medien"
+            ],
+            "vocabularyTags": [
+              "informieren",
+              "eltern",
+              "Tagesschau",
+              "abend"
+            ],
+            "grammarTags": [
+              "g-de-b1-relativ"
+            ]
+          }
+        ],
+        "passageId": "gen-p-h3-95e389e2-s1"
+      },
+      {
+        "teil": 4,
+        "instruction": "",
+        "topicTag": "Verkehr",
+        "transcript": "Moderator: Guten Abend und herzlich willkommen zu \"Wege in die Zukunft\". Heute sprechen wir über den Verkehr in unseren Städten. Wie bewegen wir uns in Zukunft fort? Ich begrüße Paul Schneider, Experte für nachhaltige Mobilität, und Leon Fischer, der die Autofahrer vertritt.\nPaul: Danke für die Einladung. Ich bin überzeugt, wir müssen umdenken. Viele Autos in den Städten sind ein Problem. Sie verursachen Lärm, schlechte Luft und nehmen viel Platz weg, den wir anders nutzen könnten.\nLeon: Das stimmt nur teilweise. Für viele erwachsene Menschen, besonders Familien, ist das Auto unverzichtbar. Es bietet Flexibilität und Komfort, die öffentliche Verkehrsmittel oft nicht haben. Man kann Einkäufe erledigen oder am Wochenende Ausflüge machen.\nModerator: Herr Schneider, ist das Auto wirklich so unverzichtbar?\nPaul: Ich glaube, das ist eine Frage der Gewohnheit und der Angebote. Wenn der öffentliche Nahverkehr besser und günstiger wäre, würden mehr Menschen ihn nutzen. Das Fahrrad ist auch eine tolle Alternative für kurze Strecken. Jeder Schritt weg vom Auto ist ein Vorteil für die Umwelt.\nLeon: Aber nicht jeder kann Fahrrad fahren oder hat eine Haltestelle vor der Wohnung. Gerade in ländlichen Gebieten oder für ältere Menschen ist das Auto oft die einzige Möglichkeit. Man muss auch die Bedürfnisse der Nachbarn und der Wirtschaft beachten. Lieferdienste brauchen Autos.\nModerator: Wie können wir diese unterschiedlichen Bedürfnisse unter einen Hut bringen? Herr Fischer, Ihre Lösungen?\nLeon: Wir brauchen bessere Straßen und Parkmöglichkeiten, um den Verkehrsfluss zu verbessern. Intelligente Verkehrsleitsysteme können Staus reduzieren. Das würde die Fahrt für alle angenehmer machen.\nPaul: Ich sehe das anders. Mehr Straßen bedeuten nur mehr Autos. Wir müssen auf Alternativen setzen. Investitionen in Radwege und attraktiven Nahverkehr sind der richtige Schritt. Das macht Städte lebenswerter.\nModerator: Wir kommen zum Ende. Herr Schneider, Ihr Fazit?\nPaul: Weniger Autos in den Städten, mehr Platz für Menschen und Grün. Das ist mein Wunsch.\nLeon: Das Auto wird immer eine Rolle spielen. Wir müssen Wege finden, wie Auto und andere Verkehrsmittel gut zusammen existieren können.\nModerator: Vielen Dank an Paul Schneider und Leon Fischer für diese Diskussion. Und Ihnen, liebe Zuhörer, danke fürs Einschalten.",
+        "questions": [
+          {
+            "id": "gen-q-h4-f7e9-1",
+            "module": "horen",
+            "teil": 4,
+            "type": "matching",
+            "question": "Der Verkehr mit vielen Autos in Städten führt zu Umweltproblemen.",
+            "options": [
+              "a) Moderator",
+              "b) Paul",
+              "c) Leon"
+            ],
+            "correct": "b",
+            "correctAnswer": "b",
+            "explanation": "Paul Schneider ist der Meinung, dass viele Autos in den Städten Lärm und schlechte Luft verursachen und somit ein Problem darstellen.",
+            "passageId": "gen-p-h4-f7e9",
+            "lang": "de",
+            "level": "B1",
+            "language": "de",
+            "examType": "goethe",
+            "difficulty": 5,
+            "skills": [
+              "listening"
+            ],
+            "topicTags": [
+              "Verkehr"
+            ],
+            "vocabularyTags": [
+              "städten",
+              "führen",
+              "umweltproblemen",
+              "Verkehr",
+              "vielen",
+              "Autos"
+            ],
+            "grammarTags": []
+          },
+          {
+            "id": "gen-q-h4-f7e9-2",
+            "module": "horen",
+            "teil": 4,
+            "type": "matching",
+            "question": "Für bestimmte Personengruppen ist ein eigenes Fahrzeug unerlässlich.",
+            "options": [
+              "a) Moderator",
+              "b) Paul",
+              "c) Leon"
+            ],
+            "correct": "c",
+            "correctAnswer": "c",
+            "explanation": "Leon Fischer betont, dass das Auto für erwachsene Menschen, besonders Familien und Pendler, unverzichtbar ist und Flexibilität bietet.",
+            "passageId": "gen-p-h4-f7e9",
+            "lang": "de",
+            "level": "B1",
+            "language": "de",
+            "examType": "goethe",
+            "difficulty": 5,
+            "skills": [
+              "listening"
+            ],
+            "topicTags": [
+              "Verkehr"
+            ],
+            "vocabularyTags": [
+              "personengruppen",
+              "unerlässlich",
+              "Fahrzeug"
+            ],
+            "grammarTags": []
+          },
+          {
+            "id": "gen-q-h4-f7e9-3",
+            "module": "horen",
+            "teil": 4,
+            "type": "matching",
+            "question": "Ein gut ausgebauter und günstiger öffentlicher Nahverkehr ist die Lösung.",
+            "options": [
+              "a) Moderator",
+              "b) Paul",
+              "c) Leon"
+            ],
+            "correct": "b",
+            "correctAnswer": "b",
+            "explanation": "Paul Schneider schlägt vor, dass ein besserer und günstigerer öffentlicher Nahverkehr mehr Menschen dazu bewegen würde, ihn zu nutzen.",
+            "passageId": "gen-p-h4-f7e9",
+            "lang": "de",
+            "level": "B1",
+            "language": "de",
+            "examType": "goethe",
+            "difficulty": 5,
+            "skills": [
+              "listening"
+            ],
+            "topicTags": [
+              "Verkehr"
+            ],
+            "vocabularyTags": [
+              "Lösung",
+              "öffentlich",
+              "Nahverkehr",
+              "ausgebaut",
+              "günstig"
+            ],
+            "grammarTags": [
+              "g-de-b1-konjunktiv",
+              "g-de-b1-komparativ"
+            ]
+          },
+          {
+            "id": "gen-q-h4-f7e9-4",
+            "module": "horen",
+            "teil": 4,
+            "type": "matching",
+            "question": "Das Fahrrad ist nicht für jeden und überall eine praktische Option.",
+            "options": [
+              "a) Moderator",
+              "b) Paul",
+              "c) Leon"
+            ],
+            "correct": "c",
+            "correctAnswer": "c",
+            "explanation": "Leon Fischer weist darauf hin, dass nicht jeder Fahrrad fahren kann oder eine Haltestelle vor der Wohnung hat, besonders in ländlichen Gebieten.",
+            "passageId": "gen-p-h4-f7e9",
+            "lang": "de",
+            "level": "B1",
+            "language": "de",
+            "examType": "goethe",
+            "difficulty": 5,
+            "skills": [
+              "listening"
+            ],
+            "topicTags": [
+              "Verkehr"
+            ],
+            "vocabularyTags": [
+              "überall",
+              "Option",
+              "praktisch",
+              "Fahrrad",
+              "jeden"
+            ],
+            "grammarTags": [
+              "g-de-b1-perfekt",
+              "g-de-b1-relativ"
+            ]
+          },
+          {
+            "id": "gen-q-h4-f7e9-5",
+            "module": "horen",
+            "teil": 4,
+            "type": "matching",
+            "question": "Eine Reduzierung der Autofahrten verbessert die Umweltbedingungen.",
+            "options": [
+              "a) Moderator",
+              "b) Paul",
+              "c) Leon"
+            ],
+            "correct": "b",
+            "correctAnswer": "b",
+            "explanation": "Paul Schneider argumentiert, dass jeder Schritt weg vom Auto einen Vorteil für die Umwelt darstellt und die Lebensqualität steigert.",
+            "passageId": "gen-p-h4-f7e9",
+            "lang": "de",
+            "level": "B1",
+            "language": "de",
+            "examType": "goethe",
+            "difficulty": 5,
+            "skills": [
+              "listening"
+            ],
+            "topicTags": [
+              "Verkehr"
+            ],
+            "vocabularyTags": [
+              "Reduzierung",
+              "autofahrten",
+              "verbesseren",
+              "Umweltbedingungen"
+            ],
+            "grammarTags": [
+              "g-de-b1-relativ"
+            ]
+          },
+          {
+            "id": "gen-q-h4-f7e9-6",
+            "module": "horen",
+            "teil": 4,
+            "type": "matching",
+            "question": "Die Wirtschaft und bestimmte Berufe sind auf Fahrzeuge angewiesen.",
+            "options": [
+              "a) Moderator",
+              "b) Paul",
+              "c) Leon"
+            ],
+            "correct": "c",
+            "correctAnswer": "c",
+            "explanation": "Leon Fischer erwähnt, dass man die Bedürfnisse der Wirtschaft beachten muss und Lieferdienste Autos benötigen.",
+            "passageId": "gen-p-h4-f7e9",
+            "lang": "de",
+            "level": "B1",
+            "language": "de",
+            "examType": "goethe",
+            "difficulty": 5,
+            "skills": [
+              "listening"
+            ],
+            "topicTags": [
+              "Verkehr"
+            ],
+            "vocabularyTags": [
+              "Wirtschaft",
+              "angewiesen",
+              "Fahrzeuge",
+              "Berufe"
+            ],
+            "grammarTags": []
+          },
+          {
+            "id": "gen-q-h4-f7e9-7",
+            "module": "horen",
+            "teil": 4,
+            "type": "matching",
+            "question": "Eine Verbesserung der Straßen und der Verkehrsführung kann Staus verringern.",
+            "options": [
+              "a) Moderator",
+              "b) Paul",
+              "c) Leon"
+            ],
+            "correct": "c",
+            "correctAnswer": "c",
+            "explanation": "Leon Fischer schlägt vor, dass bessere Straßen und intelligente Verkehrsleitsysteme helfen können, den Verkehrsfluss zu verbessern und Staus zu reduzieren.",
+            "passageId": "gen-p-h4-f7e9",
+            "lang": "de",
+            "level": "B1",
+            "language": "de",
+            "examType": "goethe",
+            "difficulty": 5,
+            "skills": [
+              "listening"
+            ],
+            "topicTags": [
+              "Verkehr"
+            ],
+            "vocabularyTags": [
+              "Verkehrsführung",
+              "Verbesserung",
+              "verringern",
+              "straßen",
+              "Staus"
+            ],
+            "grammarTags": [
+              "g-de-b1-modalverben"
+            ]
+          },
+          {
+            "id": "gen-q-h4-f7e9-8",
+            "module": "horen",
+            "teil": 4,
+            "type": "matching",
+            "question": "Die Sendung bedankt sich bei den Gästen und den Zuhörern am Ende.",
+            "options": [
+              "a) Moderator",
+              "b) Paul",
+              "c) Leon"
+            ],
+            "correct": "a",
+            "correctAnswer": "a",
+            "explanation": "Der Moderator beendet die Diskussion, indem er sich bei den beiden Gästen und den Zuhörern für ihre Teilnahme bedankt.",
+            "passageId": "gen-p-h4-f7e9",
+            "lang": "de",
+            "level": "B1",
+            "language": "de",
+            "examType": "goethe",
+            "difficulty": 5,
+            "skills": [
+              "listening"
+            ],
+            "topicTags": [
+              "Verkehr"
+            ],
+            "vocabularyTags": [
+              "bedanken",
+              "zuhörern",
+              "Sendung",
+              "gästen",
+              "Moderator"
+            ],
+            "grammarTags": [
+              "g-de-b1-dativ",
+              "g-de-b1-relativ"
+            ]
+          }
+        ],
+        "passageId": "gen-p-h4-f7e9"
+      }
+    ],
+    "schreibenParts": [
+      {
+        "teil": 1,
+        "instruction": "Sie überlegen, den Beruf zu wechseln. Schreiben Sie eine E-Mail an einen Freund/eine Freundin. Schreiben Sie:\n• Warum Sie über einen Wechsel nachdenken\n• Welchen Beruf Sie sich stattdessen vorstellen können\n• Ob Sie seine/ihre Meinung dazu hören möchten\nVergessen Sie Anrede und Gruß nicht. Ca. 80 Wörter.",
+        "topicTag": "Arbeit",
+        "task": "Sie überlegen, den Beruf zu wechseln. Schreiben Sie eine E-Mail an einen Freund/eine Freundin. Schreiben Sie:\n• Warum Sie über einen Wechsel nachdenken\n• Welchen Beruf Sie sich stattdessen vorstellen können\n• Ob Sie seine/ihre Meinung dazu hören möchten\nVergessen Sie Anrede und Gruß nicht. Ca. 80 Wörter.",
+        "minWords": 80,
+        "maxWords": 120,
+        "questions": [
+          {
+            "id": "gen-q-s-t1-c9d0e1f2-q1",
+            "module": "schreiben",
+            "teil": 1,
+            "type": "short_answer",
+            "question": "Sie überlegen, den Beruf zu wechseln. Schreiben Sie eine E-Mail an einen Freund/eine Freundin. Schreiben Sie:\n• Warum Sie über einen Wechsel nachdenken\n• Welchen Beruf Sie sich stattdessen vorstellen können\n• Ob Sie seine/ihre Meinung dazu hören möchten\nVergessen Sie Anrede und Gruß nicht. Ca. 80 Wörter.",
+            "correct": "rubric",
+            "correctAnswer": "rubric",
+            "options": [],
+            "minWords": 65,
+            "maxWords": 95,
+            "explanation": "Bewertung (Goethe-offiziell): Erfüllung (0–10) – alle 3 Punkte behandelt; Kohärenz (0–10) – logischer Aufbau, passende Konnektoren; Wortschatz (0–10) – thema-passend, variabel; Strukturen (0–10) – korrekte Grammatik, Satzbau. Ca. 80 Wörter.",
+            "topicTags": [
+              "Arbeit"
+            ],
+            "skills": [
+              "writing"
+            ],
+            "difficulty": 5,
+            "examType": "goethe",
+            "level": "B1",
+            "lang": "de"
+          }
+        ]
+      },
+      {
+        "teil": 2,
+        "instruction": "In einem Online-Forum lesen Sie: «Man sollte im Leben mindestens einmal den Beruf komplett wechseln.» Schreiben Sie einen Forumsbeitrag. Schreiben Sie:\n• Ihre Meinung dazu\n• Einen Vorteil eines Berufswechsels\n• Einen Nachteil und wie man ihn lösen könnte\nBegründen Sie Ihre Meinung. Ca. 80 Wörter.",
+        "topicTag": "Arbeit",
+        "task": "In einem Online-Forum lesen Sie: «Man sollte im Leben mindestens einmal den Beruf komplett wechseln.» Schreiben Sie einen Forumsbeitrag. Schreiben Sie:\n• Ihre Meinung dazu\n• Einen Vorteil eines Berufswechsels\n• Einen Nachteil und wie man ihn lösen könnte\nBegründen Sie Ihre Meinung. Ca. 80 Wörter.",
+        "minWords": 80,
+        "maxWords": 120,
+        "questions": [
+          {
+            "id": "gen-q-s-t2-c9d0e1f2-q1",
+            "module": "schreiben",
+            "teil": 2,
+            "type": "short_answer",
+            "question": "In einem Online-Forum lesen Sie: «Man sollte im Leben mindestens einmal den Beruf komplett wechseln.» Schreiben Sie einen Forumsbeitrag. Schreiben Sie:\n• Ihre Meinung dazu\n• Einen Vorteil eines Berufswechsels\n• Einen Nachteil und wie man ihn lösen könnte\nBegründen Sie Ihre Meinung. Ca. 80 Wörter.",
+            "correct": "rubric",
+            "correctAnswer": "rubric",
+            "options": [],
+            "minWords": 65,
+            "maxWords": 95,
+            "explanation": "Bewertung (Goethe-offiziell): Erfüllung (0–10) – alle 3 Punkte behandelt; Kohärenz (0–10) – logischer Aufbau, passende Konnektoren; Wortschatz (0–10) – thema-passend, variabel; Strukturen (0–10) – korrekte Grammatik, Satzbau. Ca. 80 Wörter.",
+            "topicTags": [
+              "Arbeit"
+            ],
+            "skills": [
+              "writing"
+            ],
+            "difficulty": 6,
+            "examType": "goethe",
+            "level": "B1",
+            "lang": "de"
+          }
+        ]
+      },
+      {
+        "teil": 3,
+        "instruction": "Frau Werner aus Ihrer alten Firma hat Ihnen zu Ihrer neuen Stelle gratuliert. Schreiben Sie ihr eine kurze Nachricht. Schreiben Sie:\n• Bedanken Sie sich für die Glückwünsche\n• Erzählen Sie kurz, was Ihre neue Aufgabe ist\n• Laden Sie sie auf einen Kaffee ein\nCa. 40 Wörter.",
+        "topicTag": "Arbeit",
+        "task": "Frau Werner aus Ihrer alten Firma hat Ihnen zu Ihrer neuen Stelle gratuliert. Schreiben Sie ihr eine kurze Nachricht. Schreiben Sie:\n• Bedanken Sie sich für die Glückwünsche\n• Erzählen Sie kurz, was Ihre neue Aufgabe ist\n• Laden Sie sie auf einen Kaffee ein\nCa. 40 Wörter.",
+        "minWords": 40,
+        "maxWords": 60,
+        "questions": [
+          {
+            "id": "gen-q-s-t3-c9d0e1f2-q1",
+            "module": "schreiben",
+            "teil": 3,
+            "type": "short_answer",
+            "question": "Frau Werner aus Ihrer alten Firma hat Ihnen zu Ihrer neuen Stelle gratuliert. Schreiben Sie ihr eine kurze Nachricht. Schreiben Sie:\n• Bedanken Sie sich für die Glückwünsche\n• Erzählen Sie kurz, was Ihre neue Aufgabe ist\n• Laden Sie sie auf einen Kaffee ein\nCa. 40 Wörter.",
+            "correct": "rubric",
+            "correctAnswer": "rubric",
+            "options": [],
+            "minWords": 30,
+            "maxWords": 50,
+            "explanation": "Bewertung (Goethe-offiziell): Erfüllung (0–4) – alle 3 Punkte behandelt; Kohärenz (0–4) – gut verständlicher Text, logischer Aufbau; Wortschatz (0–6) – passend zum Anlass; Strukturen (0–6) – korrekte Grammatik. Ca. 40 Wörter.",
+            "topicTags": [
+              "Arbeit"
+            ],
+            "skills": [
+              "writing"
+            ],
+            "difficulty": 5,
+            "examType": "goethe",
+            "level": "B1",
+            "lang": "de"
+          }
+        ]
+      }
+    ],
+    "sprechenParts": [
+      {
+        "teil": 1,
+        "instruction": "Sie und Ihr Partner/Ihre Partnerin planen eine gemeinsame Gruppenreise mit mehreren Freunden ins Ausland. Planen Sie gemeinsam. Sprechen Sie über:\n1. In welches Land Sie reisen möchten\n2. Wann die beste Reisezeit ist\n3. Wie viele Personen mitkommen sollen\n4. Wer sich um die Buchungen kümmert\n5. Wie Sie sich sprachlich vorbereiten",
+        "topicTag": "Reisen",
+        "level": "B1",
+        "questions": [
+          {
+            "id": "gen-q-sp-t1-c8d8e8f8-q1",
+            "module": "sprechen",
+            "teil": 1,
+            "type": "planungsaufgabe",
+            "question": "Sie und Ihr Partner/Ihre Partnerin planen eine gemeinsame Gruppenreise mit mehreren Freunden ins Ausland. Planen Sie gemeinsam. Sprechen Sie über:\n1. In welches Land Sie reisen möchten\n2. Wann die beste Reisezeit ist\n3. Wie viele Personen mitkommen sollen\n4. Wer sich um die Buchungen kümmert\n5. Wie Sie sich sprachlich vorbereiten",
+            "correct": "rubric",
+            "correctAnswer": "rubric",
+            "options": [],
+            "explanation": "Bewertung: Struktur (Ablauf des Gesprächs), Interaktion (aufeinander eingehen), Wortschatz (thema-passend), Grammatik (korrekte Sätze). Der Text muss für den Partner verständlich sein.",
+            "topicTags": [
+              "Reisen"
+            ],
+            "skills": [
+              "speaking"
+            ],
+            "difficulty": 5,
+            "examType": "goethe",
+            "level": "B1",
+            "lang": "de"
+          }
+        ],
+        "task": "Sie und Ihr Partner/Ihre Partnerin planen eine gemeinsame Gruppenreise mit mehreren Freunden ins Ausland. Planen Sie gemeinsam. Sprechen Sie über:\n1. In welches Land Sie reisen möchten\n2. Wann die beste Reisezeit ist\n3. Wie viele Personen mitkommen sollen\n4. Wer sich um die Buchungen kümmert\n5. Wie Sie sich sprachlich vorbereiten",
+        "situation": "Sie und Ihr Partner/Ihre Partnerin planen eine gemeinsame Gruppenreise mit mehreren Freunden ins Ausland. Planen Sie gemeinsam. Sprechen Sie über:\n1. In welches Land Sie reisen möchten\n2. Wann die beste Reisezeit ist\n3. Wie viele Personen mitkommen sollen\n4. Wer sich um die Buchungen kümmert\n5. Wie Sie sich sprachlich vorbereiten",
+        "fieldId": "speak_bp_1",
+        "title": "Teil 1",
+        "dauer": "",
+        "cardText": "",
+        "photoDescriptions": [],
+        "minExchanges": 4,
+        "points": [],
+        "prompts": []
+      },
+      {
+        "teil": 2,
+        "instruction": "Halten Sie eine kurze Präsentation zum Thema «Reisen mit wenig Geld». Sprechen Sie über:\n1. Wie man günstig reisen kann\n2. Welche Erfahrungen Sie damit gemacht haben\n3. Was man beim Sparen beachten sollte\n4. Ein Beispiel aus Ihrem eigenen Leben\n5. Ob sich Sparen beim Reisen lohnt",
+        "topicTag": "Reisen",
+        "level": "B1",
+        "questions": [
+          {
+            "id": "gen-q-sp-t2-c8d8e8f8-q1",
+            "module": "sprechen",
+            "teil": 2,
+            "type": "praesentation",
+            "question": "Halten Sie eine kurze Präsentation zum Thema «Reisen mit wenig Geld». Sprechen Sie über:\n1. Wie man günstig reisen kann\n2. Welche Erfahrungen Sie damit gemacht haben\n3. Was man beim Sparen beachten sollte\n4. Ein Beispiel aus Ihrem eigenen Leben\n5. Ob sich Sparen beim Reisen lohnt",
+            "correct": "rubric",
+            "correctAnswer": "rubric",
+            "options": [],
+            "explanation": "Bewertung: Struktur (klarer Aufbau der Präsentation), Wortschatz (variabel und thema-passend), Grammatik (korrekte Sätze), Interaktion (verständlicher Vortrag).",
+            "topicTags": [
+              "Reisen"
+            ],
+            "skills": [
+              "speaking"
+            ],
+            "difficulty": 5,
+            "examType": "goethe",
+            "level": "B1",
+            "lang": "de"
+          }
+        ],
+        "task": "Halten Sie eine kurze Präsentation zum Thema «Reisen mit wenig Geld». Sprechen Sie über:\n1. Wie man günstig reisen kann\n2. Welche Erfahrungen Sie damit gemacht haben\n3. Was man beim Sparen beachten sollte\n4. Ein Beispiel aus Ihrem eigenen Leben\n5. Ob sich Sparen beim Reisen lohnt",
+        "situation": "Halten Sie eine kurze Präsentation zum Thema «Reisen mit wenig Geld». Sprechen Sie über:\n1. Wie man günstig reisen kann\n2. Welche Erfahrungen Sie damit gemacht haben\n3. Was man beim Sparen beachten sollte\n4. Ein Beispiel aus Ihrem eigenen Leben\n5. Ob sich Sparen beim Reisen lohnt",
+        "fieldId": "speak_bp_2",
+        "title": "Teil 2",
+        "dauer": "",
+        "cardText": "",
+        "photoDescriptions": [],
+        "minExchanges": 4,
+        "points": [],
+        "prompts": []
+      },
+      {
+        "teil": 3,
+        "instruction": "Geben Sie ein kurzes Feedback zur Präsentation über günstiges Reisen. Stellen Sie anschließend 2-3 Fragen dazu.\nBeispielfragen:\nWelcher Spartipp hat Ihnen am besten gefallen?\nWürden Sie beim Reisen eher am Komfort oder am Geld sparen?\nGibt es Nachteile beim günstigen Reisen?",
+        "topicTag": "Reisen",
+        "level": "B1",
+        "questions": [
+          {
+            "id": "gen-q-sp-t3-c8d8e8f8-q1",
+            "module": "sprechen",
+            "teil": 3,
+            "type": "feedback_diskussion",
+            "question": "Geben Sie ein kurzes Feedback zur Präsentation über günstiges Reisen. Stellen Sie anschließend 2-3 Fragen dazu.\nBeispielfragen:\nWelcher Spartipp hat Ihnen am besten gefallen?\nWürden Sie beim Reisen eher am Komfort oder am Geld sparen?\nGibt es Nachteile beim günstigen Reisen?",
+            "correct": "rubric",
+            "correctAnswer": "rubric",
+            "options": [],
+            "explanation": "Bewertung: Interaktion (passendes Feedback und Fragen), Struktur (logischer Gesprächsverlauf), Wortschatz, Grammatik.",
+            "topicTags": [
+              "Reisen"
+            ],
+            "skills": [
+              "speaking"
+            ],
+            "difficulty": 5,
+            "examType": "goethe",
+            "level": "B1",
+            "lang": "de"
+          }
+        ],
+        "task": "Geben Sie ein kurzes Feedback zur Präsentation über günstiges Reisen. Stellen Sie anschließend 2-3 Fragen dazu.\nBeispielfragen:\nWelcher Spartipp hat Ihnen am besten gefallen?\nWürden Sie beim Reisen eher am Komfort oder am Geld sparen?\nGibt es Nachteile beim günstigen Reisen?",
+        "situation": "Geben Sie ein kurzes Feedback zur Präsentation über günstiges Reisen. Stellen Sie anschließend 2-3 Fragen dazu.\nBeispielfragen:\nWelcher Spartipp hat Ihnen am besten gefallen?\nWürden Sie beim Reisen eher am Komfort oder am Geld sparen?\nGibt es Nachteile beim günstigen Reisen?",
+        "fieldId": "speak_bp_3",
+        "title": "Teil 3",
+        "dauer": "",
+        "cardText": "",
+        "photoDescriptions": [],
+        "minExchanges": 3,
+        "points": [],
+        "prompts": []
+      }
+    ]
+  }
+}

@@ -40,11 +40,18 @@ function createContentLoader(config) {
   }
 
   function userMetaLanguage() {
-    const pref = typeof S !== 'undefined' && S.fcLang ? S.fcLang : null;
+    const pref =
+      typeof resolveVocabUiLang === 'function'
+        ? resolveVocabUiLang()
+        : typeof translationLang === 'function'
+          ? translationLang()
+          : typeof S !== 'undefined' && S.fcLang
+            ? S.fcLang
+            : null;
     try {
-      return pref || localStorage.getItem('lc_pref_xlat') || defaultManifest.defaultMetaLanguage || 'es';
+      return pref || localStorage.getItem('lc_ui_lang') || localStorage.getItem('lc_pref_xlat') || defaultManifest.defaultMetaLanguage || 'en';
     } catch (_) {
-      return pref || defaultManifest.defaultMetaLanguage || 'es';
+      return pref || defaultManifest.defaultMetaLanguage || 'en';
     }
   }
 

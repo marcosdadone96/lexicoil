@@ -1,0 +1,87 @@
+{
+  "teil": 5,
+  "gateVersion": "v6.1-B-G2 (frozen)",
+  "filesAnalyzed": 5,
+  "pipeline": {
+    "passed": 5,
+    "auditRejected": 0,
+    "rejectReasons": {}
+  },
+  "capsGate": {
+    "totalFindings": 1,
+    "avgFindingsPerFile": 0.2,
+    "totalObservations": 0,
+    "byReason": {
+      "lexicon_nn": 1
+    },
+    "byRegime": {
+      "PROSE": 1
+    },
+    "telegraphicFindings": 0,
+    "telegraphicOk": true,
+    "novelReasons": [],
+    "findings": [
+      {
+        "type": "noun_lowercase",
+        "word": "online",
+        "pos": "NOUN",
+        "tag": "NN",
+        "confidence": "high",
+        "reason": "lexicon_nn",
+        "context": "an der Information und online.\n3.  ",
+        "prevWord": "und",
+        "prevPos": "CCONJ",
+        "prevTag": "KON",
+        "textIndex": 0,
+        "regime": "PROSE",
+        "field": "passages.text",
+        "id": "lesen-t5-gemini-063.json::passages.text::0",
+        "file": "lesen-t5-gemini-063.json",
+        "textPreview": "Liebe Mitglieder,\num ein angenehmes Training für alle zu gewährleisten, bitten wir Sie, folgende Regeln zu beachten:\n\n1.  **Mitgliedschaft und Zugang:** Der Zut"
+      }
+    ]
+  },
+  "generatorAuditor": {
+    "qualityErrors": 0,
+    "qualityWarnings": 1,
+    "capsWarningsDuringGen": 1
+  },
+  "calibration": {
+    "poolFindings": 27,
+    "poolFiles": 9,
+    "avgPerFile": 3,
+    "deltaVsPilotAvg": -2.8
+  },
+  "files": [
+    {
+      "file": "lesen-t5-gemini-063.json",
+      "pipelineStatus": "passed",
+      "findings": 1,
+      "observations": 0
+    },
+    {
+      "file": "lesen-t5-gemini-064.json",
+      "pipelineStatus": "passed",
+      "findings": 0,
+      "observations": 0
+    },
+    {
+      "file": "lesen-t5-gemini-065.json",
+      "pipelineStatus": "passed",
+      "findings": 0,
+      "observations": 0
+    },
+    {
+      "file": "lesen-t5-gemini-066.json",
+      "pipelineStatus": "passed",
+      "findings": 0,
+      "observations": 0
+    },
+    {
+      "file": "lesen-t5-gemini-067.json",
+      "pipelineStatus": "passed",
+      "findings": 0,
+      "observations": 0
+    }
+  ]
+}

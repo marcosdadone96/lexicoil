@@ -1,0 +1,144 @@
+{
+  "generatedAt": "2026-07-09T08:08:35.263Z",
+  "sourceLogs": {
+    "q1": "C:\\Users\\marco\\Desktop\\MDR\\lexiloop\\batches\\ready\\gate-logs\\Q1-duplicateContent-2026-07-09T08-00-42.jsonl",
+    "q4": "C:\\Users\\marco\\Desktop\\MDR\\lexiloop\\batches\\ready\\gate-logs\\Q4-metadataSchema-2026-07-09T08-00-42.jsonl"
+  },
+  "q1": {
+    "blockFiles": 197,
+    "blockFindings": 229,
+    "byCategory": {
+      "mirror_pair": 60,
+      "cross_id_match": 136,
+      "bank_match": 33,
+      "unknown": 0
+    },
+    "byRule": {
+      "exact_duplicate": 83,
+      "near_duplicate": 146
+    },
+    "examples": {
+      "mirror_pair": [
+        {
+          "file": "batches/ready/lesen/lesen-t1-gemini-159.json",
+          "detail": "Pasaje idéntico (hash) con «batches/generated/lesen-t1-gemini-159.json»",
+          "rule": "exact_duplicate"
+        },
+        {
+          "file": "batches/ready/lesen/lesen-t1-gemini-160.json",
+          "detail": "Pasaje idéntico (hash) con «batches/generated/lesen-t1-gemini-160.json»",
+          "rule": "exact_duplicate"
+        },
+        {
+          "file": "batches/ready/lesen/lesen-t1-gemini-161.json",
+          "detail": "Pasaje idéntico (hash) con «batches/generated/lesen-t1-gemini-161.json»",
+          "rule": "exact_duplicate"
+        },
+        {
+          "file": "batches/ready/lesen/lesen-t1-gemini-162.json",
+          "detail": "Pasaje idéntico (hash) con «batches/generated/lesen-t1-gemini-162.json»",
+          "rule": "exact_duplicate"
+        },
+        {
+          "file": "batches/ready/lesen/lesen-t1-gemini-163.json",
+          "detail": "Pasaje idéntico (hash) con «batches/generated/lesen-t1-gemini-163.json»",
+          "rule": "exact_duplicate"
+        }
+      ],
+      "cross_id_match": [
+        {
+          "file": "batches/ready/lesen/lesen-t3-auto-001.json",
+          "detail": "T3 matching fingerprint idéntico (84cd531150cf31c1) con «batches/ready/lesen/lesen-t3-gemini-060.json» (invariante a reordenación A–J)",
+          "rule": "near_duplicate"
+        },
+        {
+          "file": "batches/ready/lesen/lesen-t3-auto-002.json",
+          "detail": "T3 matching fingerprint idéntico (a94c9eafbd10616d) con «batches/ready/lesen/lesen-t3-gemini-067.json» (invariante a reordenación A–J)",
+          "rule": "near_duplicate"
+        },
+        {
+          "file": "batches/ready/lesen/lesen-t3-auto-003.json",
+          "detail": "T3 matching fingerprint idéntico (843e116dfef97a63) con «batches/ready/lesen/lesen-t3-gemini-073.json» (invariante a reordenación A–J)",
+          "rule": "near_duplicate"
+        },
+        {
+          "file": "batches/ready/lesen/lesen-t3-auto-004.json",
+          "detail": "T3 matching fingerprint idéntico (67de4e455f41d38a) con «batches/ready/lesen/lesen-t3-gemini-068.json» (invariante a reordenación A–J)",
+          "rule": "near_duplicate"
+        },
+        {
+          "file": "batches/ready/lesen/lesen-t3-auto-007.json",
+          "detail": "T3 matching fingerprint idéntico (843e116dfef97a63) con «batches/ready/lesen/lesen-t3-gemini-073.json» (invariante a reordenación A–J)",
+          "rule": "near_duplicate"
+        }
+      ],
+      "bank_match": [
+        {
+          "file": "batches/ready/lesen/lesen-t1-gemini-147.json",
+          "detail": "Pasaje idéntico (hash) con «library/de/B1/questions.json::gen-l1-3c5ee04c»",
+          "rule": "exact_duplicate"
+        },
+        {
+          "file": "batches/ready/lesen/lesen-t1-gemini-154.json",
+          "detail": "Pasaje idéntico (hash) con «library/de/B1/questions.json::gen-l1-61b004a3»",
+          "rule": "exact_duplicate"
+        },
+        {
+          "file": "batches/ready/lesen/lesen-t1-gemini-166.json",
+          "detail": "Pasaje idéntico (hash) con «library/de/B1/questions.json::gen-l1-8297e7d4»",
+          "rule": "exact_duplicate"
+        },
+        {
+          "file": "batches/ready/lesen/lesen-t1-gemini-167.json",
+          "detail": "Pasaje idéntico (hash) con «library/de/B1/questions.json::gen-l1-8da9927a»",
+          "rule": "exact_duplicate"
+        },
+        {
+          "file": "batches/ready/lesen/lesen-t2-gemini-062.json",
+          "detail": "Pasaje idéntico (hash) con «library/de/B1/questions.json::gen-l2-69492eda-a»",
+          "rule": "exact_duplicate"
+        }
+      ]
+    }
+  },
+  "q4": {
+    "blockFiles": 169,
+    "byTeil": {
+      "1": 16,
+      "2": 11,
+      "3": 123,
+      "4": 9,
+      "5": 10
+    },
+    "byRule": {
+      "missing_field": 3449,
+      "topic_mismatch": 49
+    },
+    "topFields": [
+      [
+        "difficulty",
+        861
+      ],
+      [
+        "skills",
+        861
+      ],
+      [
+        "examType",
+        861
+      ],
+      [
+        "topicTags",
+        861
+      ],
+      [
+        "topic_mismatch",
+        49
+      ],
+      [
+        "topicTag",
+        5
+      ]
+    ]
+  }
+}

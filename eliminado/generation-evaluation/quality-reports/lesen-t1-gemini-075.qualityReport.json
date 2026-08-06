@@ -1,0 +1,91 @@
+{
+  "partId": "gen-q-1-2294-1",
+  "source": "batches/ready/pool-verified/lesen-t1-gemini-075.json",
+  "status": "WARNING",
+  "stagingStatus": "needs_review",
+  "summary": {
+    "errors": 0,
+    "warnings": 11
+  },
+  "gates": [
+    {
+      "name": "json_integrity",
+      "status": "PASS",
+      "errors": [],
+      "details": [
+        "questions:6"
+      ]
+    },
+    {
+      "name": "goethe_structure",
+      "status": "PASS",
+      "errors": [],
+      "details": [
+        "module:lesen",
+        "teil:1"
+      ]
+    },
+    {
+      "name": "language_quality",
+      "status": "PASS",
+      "errors": [],
+      "details": []
+    },
+    {
+      "name": "cefr",
+      "status": "PASS",
+      "errors": [],
+      "details": [
+        "cefr_coverage:gen-l1-2294:4.00"
+      ]
+    },
+    {
+      "name": "metadata_quality",
+      "status": "WARNING",
+      "errors": [
+        "grammar_tags_too_narrow:gen-q-1-2294-1",
+        "missing_difficulty:gen-q-1-2294-1",
+        "missing_grammarTags:gen-q-1-2294-2",
+        "missing_difficulty:gen-q-1-2294-2",
+        "missing_grammarTags:gen-q-1-2294-3",
+        "missing_difficulty:gen-q-1-2294-3",
+        "missing_grammarTags:gen-q-1-2294-4",
+        "missing_difficulty:gen-q-1-2294-4",
+        "missing_difficulty:gen-q-1-2294-5",
+        "missing_grammarTags:gen-q-1-2294-6",
+        "missing_difficulty:gen-q-1-2294-6"
+      ],
+      "details": []
+    }
+  ],
+  "generationMetadata": null,
+  "policyMode": "advisory",
+  "mode": "advisory",
+  "generatedAt": "2026-07-10T18:05:38.755Z",
+  "qualityMetadata": {
+    "status": "WARNING",
+    "checkedAt": "2026-07-10T18:05:38.755Z",
+    "checkedBy": "system",
+    "policyMode": "advisory",
+    "stagingStatus": "needs_review",
+    "summary": {
+      "errors": 0,
+      "warnings": 11
+    },
+    "gates": {
+      "json_integrity": "pass",
+      "goethe_structure": "pass",
+      "language_quality": "pass",
+      "cefr": "pass",
+      "metadata_quality": "warning"
+    }
+  },
+  "promotion": {
+    "allowed": true,
+    "reason": [
+      "advisory_mode"
+    ],
+    "mode": "advisory",
+    "status": "WARNING"
+  }
+}

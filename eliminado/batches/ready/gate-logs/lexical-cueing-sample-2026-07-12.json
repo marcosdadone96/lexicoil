@@ -1,0 +1,639 @@
+{
+  "generatedAt": "2026-07-12T14:29:58.988Z",
+  "note": "15 stratified cases with preliminaryEval. Measurement only — no content fixes.",
+  "n": 15,
+  "cases": [
+    {
+      "sampleIndex": 1,
+      "file": "lesen-t2-gemini-094.json",
+      "part": "lesen-t2",
+      "qid": "gen-q-2-698a2191-3",
+      "correct": "a",
+      "cueWords": [
+        "bereien",
+        "zahlen"
+      ],
+      "cueInStemOnly": [],
+      "cueInCorrectOption": [
+        "bereien",
+        "zahlen"
+      ],
+      "cueInBoth": [],
+      "question": "Was ist laut Text ein Problem für Zeitungen bei ihren Online-Diensten?",
+      "options": {
+        "a": "Die meisten Leser sind nicht bereit, für digitale Nachrichten zu zahlen.",
+        "b": "Die Produktion von guten Artikeln ist zu Teuer für digitale Formate.",
+        "c": "Es gibt zu viele andere Informationsquellen im Internet."
+      },
+      "passage": "In vielen Städten fragen sich die Bewohner, wie sie in Zukunft ihre lokalen Nachrichten erhalten werden. Früher war die gedruckte Zeitung am Morgen der wichtigste Weg, um Informationen über die Stadt zu bekommen. Heute nutzen viele Menschen das Internet und digitale Plattformen. Eine aktuelle Umfrage zeigt, dass besonders junge Leute ihre Nachrichten oft über soziale Medien oder Nachrichten-Apps auf dem Handy lesen. Ältere Generationen bleiben der traditionellen Zeitung treu.\n\nEin Bericht einer Medienorganisation erklärt, dass lokale Informationen sehr wichtig für die Gemeinschaft sind. Die Menschen wollen wissen, was in ihrer Nachbarschaft passiert, welche Programme die Stadt anbietet oder welche Entscheidungen im Rathaus getroffen werden. Viele Zeitungen haben deshalb auch Online-Angebote geschaffen. Sie stellen ihre Artikel ins Internet, oft mit Fotos und Videos. Manchmal gibt es auch spezielle digitale Abonnements.\n\nDie Herausforderung ist, wie diese Angebote finanziert werden können. Viele Nutzer erwarten, dass Nachrichten im Internet gratis sind. Doch die Produktion von guten Berichten kostet Geld. Einige Verlage experimentieren mit neuen Modellen, zum Beispiel mit Spenden oder kleinen monatlichen Beiträgen. Die Zukunft der lokalen Medien hängt davon ab, ob die Menschen bereit sind, für Qualität zu zahlen. Es ist eine wichtige Frage für die Demokratie und die lokale Identität.",
+      "exclusiveOptionTrials": [
+        {
+          "lemma": "guten",
+          "exclusiveLetter": "b",
+          "isCorrect": false
+        },
+        {
+          "lemma": "bereien",
+          "exclusiveLetter": "a",
+          "isCorrect": true
+        },
+        {
+          "lemma": "zahlen",
+          "exclusiveLetter": "a",
+          "isCorrect": true
+        }
+      ],
+      "preliminaryEval": {
+        "verdict": "problematico",
+        "note": "Eco casi literal de «bereit sind, für Qualität zu zahlen». Atajo claro por coincidencia léxica."
+      }
+    },
+    {
+      "sampleIndex": 2,
+      "file": "lesen-t2-gemini-103.json",
+      "part": "lesen-t2",
+      "qid": "gen-q-2-05fc623e-4",
+      "correct": "c",
+      "cueWords": [
+        "begrenzten",
+        "bieten"
+      ],
+      "cueInStemOnly": [],
+      "cueInCorrectOption": [
+        "bieten",
+        "begrenzten"
+      ],
+      "cueInBoth": [],
+      "question": "Was ist ein Merkmal von Tiny Houses?",
+      "options": {
+        "a": "Sie sind nur für Familien mit vielen Kindern gedacht.",
+        "b": "Sie müssen immer auf Rädern stehen und sind mobil.",
+        "c": "Sie bieten eine sehr begrenzte Wohnfläche von wenigen Quadratmetern."
+      },
+      "passage": "Immer mehr Menschen interessieren sich für Tiny Houses, also sehr kleine Häuser. Diese Wohnform kommt ursprünglich aus den USA und wird auch in Deutschland beliebter. Ein Tiny House bietet oft nur 15 bis 45 Quadratmeter Wohnfläche. Die Idee dahinter ist, mit weniger Platz auszukommen und das Leben zu vereinfachen. Viele Besitzer schätzen die geringen Kosten für Miete oder Kauf und die niedrigen Nebenkosten. Auch der Gedanke der Nachhaltigkeit spielt eine große Rolle. Man verbraucht weniger Energie und Ressourcen. Allerdings gibt es auch Herausforderungen. Es ist nicht immer einfach, einen geeigneten Stellplatz für ein Tiny House zu finden, besonders in der Nähe von Städten. Die Bauvorschriften sind oft für größere Häuser gemacht und passen nicht immer zu den kleinen Wohnformen. Trotzdem berichten viele Bewohner von positiven Erfahrungen. Sie fühlen sich freier und verbringen mehr Zeit in der Natur oder mit Hobbys, statt sich um ein großes Haus zu kümmern. Einige Familien leben auch in Tiny Houses und finden kreative Lösungen für den begrenzten Raum. Ein Bericht zeigt, dass die Nachfrage nach solchen kleinen Häusern in den letzten fünf Jahren stark gestiegen ist.",
+      "exclusiveOptionTrials": [
+        {
+          "lemma": "bieten",
+          "exclusiveLetter": "c",
+          "isCorrect": true
+        },
+        {
+          "lemma": "begrenzten",
+          "exclusiveLetter": "c",
+          "isCorrect": true
+        }
+      ],
+      "preliminaryEval": {
+        "verdict": "problematico",
+        "note": "«bieten» + «begrenzte Wohnfläche» repite el léxico del pasaje sobre espacio limitado."
+      }
+    },
+    {
+      "sampleIndex": 3,
+      "file": "lesen-t2-gemini-104.json",
+      "part": "lesen-t2",
+      "qid": "gen-q-2-f76d3112-5",
+      "correct": "a",
+      "cueWords": [
+        "ausserhalb",
+        "ermöglichen"
+      ],
+      "cueInStemOnly": [],
+      "cueInCorrectOption": [
+        "ausserhalb",
+        "ermöglichen"
+      ],
+      "cueInBoth": [],
+      "question": "Was war das Ziel der Lehrer bei der Organisation der Projektwoche?",
+      "options": {
+        "a": "Den Schülern Erlebnisse außerhalb des Unterrichts zu ermöglichen.",
+        "b": "Den normalen Unterricht zu ersetzen.",
+        "c": "Die Kinder nur im Klassenzimmer zu unterrichten."
+      },
+      "passage": "Die Grundschule \"Am Park\" hat eine besondere Projektwoche zum Thema \"Natur und Umwelt\" veranstaltet. Alle Kinder der Schule nahmen daran teil. Statt normalem Unterricht gab es viele praktische Übungen und Ausflüge. Zum Beispiel besuchten die Schüler einen Bauernhof und lernten, woher Milch und Gemüse kommen. Sie pflanzten auch eigene Kräuter im Schulgarten an. Die Lehrer organisierten die Woche sehr gut, um den Kindern Erfahrungen außerhalb des Klassenzimmers zu ermöglichen. Ein Vater sagte in einem Interview, dass sein Kind sehr begeistert war und viel neues gelernt hat. Solche Projekte sind wichtig, weil sie das Interesse der Kinder wecken und Wissen auf eine spannende Art vermitteln. Die Schule plant, solche Projektwochen regelmäßig anzubieten. Die nächste Projektwoche soll sich mit dem Thema \"Unsere Stadt und ihre Geschichte\" beschäftigen. Die Schulleitung betonte, dass Bildung nicht nur in Büchern stattfindet, sondern auch durch direktes Erleben. Ein lokaler Bericht hob hervor, dass die Kinder durch das Projekt ein besseres Verständnis für Nachhaltigkeit und die Umwelt entwickelten. Die Zusammenarbeit mit lokalen Organisationen war sehr erfolgreich.",
+      "exclusiveOptionTrials": [
+        {
+          "lemma": "ausserhalb",
+          "exclusiveLetter": "a",
+          "isCorrect": true
+        },
+        {
+          "lemma": "ermöglichen",
+          "exclusiveLetter": "a",
+          "isCorrect": true
+        }
+      ],
+      "preliminaryEval": {
+        "verdict": "problematico",
+        "note": "Reutiliza «außerhalb…ermöglichen» del objetivo del texto; se puede marcar sin comprender el resto."
+      }
+    },
+    {
+      "sampleIndex": 4,
+      "file": "lesen-t2-gemini-055.json",
+      "part": "lesen-t2",
+      "qid": "gen-q-2-759e7c8f-1",
+      "correct": "b",
+      "cueWords": [
+        "selben"
+      ],
+      "cueInStemOnly": [],
+      "cueInCorrectOption": [
+        "selben"
+      ],
+      "cueInBoth": [],
+      "question": "Worum geht es in den neuen Stadtgartenprojekten?",
+      "options": {
+        "a": "Darum, dass Gärtner für die Stadt arbeiten.",
+        "b": "Darum, dass Anwohner selbst Pflanzen anbauen können.",
+        "c": "Darum, dass die Stadt neue Parks baut."
+      },
+      "passage": "Viele Städte in Deutschland legen Wert auf mehr Grün. Neue Projekte für Stadtgärten sind beliebt. Bewohner können dort selbst Gemüse und Blumen anbauen. Dies fördert die Gemeinschaft und bringt Menschen aus verschiedenen Familien zusammen. Oft müssen Interessenten sich für ein Stück Land bewerben. Eine Organisation in der Stadt hilft bei der Planung und stellt Werkzeuge zur Verfügung. Die Idee ist, dass jeder Zugang zu frischen Lebensmitteln hat und die Stadt schöner wird. Das Projekt ist für alle Nachbarn offen.\n\nEin neues Programm ist in Berlin eingetreten. Es bietet Kurse an, wo man lernen kann, wie man Pflanzen richtig pflegt. Viele Kinder und ihre Familien machen mit. Die Erfahrungen zeigen, dass das Gärtnern im freien Stress reduziert. Auch für ältere Bewohner ist es eine gute Möglichkeit, aktiv zu bleiben und neue Kontakte zu knüpfen. Die Stadt kooperiert oft mit lokalen Schulen, um den Kindern Wissen über Natur und Nachhaltigkeit zu vermitteln. Ein aktueller Bericht lobt die Erfolge dieser Initiativen. Das Projekt hat schon vielen Bewohnern geholfen, ihre Umgebung zu verbessern.",
+      "exclusiveOptionTrials": [
+        {
+          "lemma": "selben",
+          "exclusiveLetter": "b",
+          "isCorrect": true
+        }
+      ],
+      "preliminaryEval": {
+        "verdict": "falso_positivo",
+        "note": "Cue = «selbst» (lemmatizer→selben). Palabra discursiva común; no es atajo real para el estudiante."
+      }
+    },
+    {
+      "sampleIndex": 5,
+      "file": "lesen-t2-gemini-057.json",
+      "part": "lesen-t2",
+      "qid": "gen-q-2-0a946252-3",
+      "correct": "b",
+      "cueWords": [
+        "weiteren"
+      ],
+      "cueInStemOnly": [],
+      "cueInCorrectOption": [
+        "weiteren"
+      ],
+      "cueInBoth": [],
+      "question": "Welche Entwicklung ist für das Sportprogramm vorgesehen?",
+      "options": {
+        "a": "Die Sportzentren werden geschlossen.",
+        "b": "Das Angebot soll vergrößert und um weitere Sportarten ergänzt werden.",
+        "c": "Es wird beendet, weil es zu Teuer ist."
+      },
+      "passage": "Die Stadtverwaltung startet ein neues Projekt, um mehr Menschen zum Sport zu motivieren. Es geht darum, dass jeder Bürger die Möglichkeit hat, aktiv zu sein. Viele Studien zeigen, dass regelmäßige Bewegung wichtig für die Gesundheit ist. Das neue Programm bietet kostenlose Kurse in Parks und Sportzentren an. Es gibt Angebote für Jung und Alt, zum Beispiel Gymnastik für Senioren oder Fußball für Kinder. Die Organisatoren hoffen auf eine große Teilnahme und eine Steigerung der allgemeinen Zufriedenheit der Bewohner.\n\nEin wichtiger Punkt des Projekts ist die Gleichstellung. Es soll keine Rolle spielen, woher man kommt oder wie viel Geld man hat. Alle sollen mitmachen können. Deshalb sind die Kurse gratis. Ein Bericht der lokalen Zeitung zeigte, dass es in der Vergangenheit oft schwierig war, Sportangebote zu finden, die für alle offen sind. Die Stadt möchte das ändern und Barrieren abbauen.\n\nDie ersten Erfahrungen sind sehr positiv. Viele Familien kommen zusammen in die Parks. Auch Menschen, die lange keinen Sport gemacht haben, finden Freude an der Bewegung. Eine Umfrage unter den ersten Teilnehmern ergab, dass die meisten das Angebot sehr gut finden. Sie schätzen die einfache Anmeldung und die freundlichen Trainer. Dieses Projekt könnte ein kleines Wunder für die Gesundheit der Stadtbewohner sein, wenn es langfristig erfolgreich ist. Die Stadt plant, das Programm in Zukunft noch zu erweitern und weitere Sportarten anzubieten.",
+      "exclusiveOptionTrials": [
+        {
+          "lemma": "weiteren",
+          "exclusiveLetter": "b",
+          "isCorrect": true
+        }
+      ],
+      "preliminaryEval": {
+        "verdict": "debil_inevitable",
+        "note": "Solo «weitere» (conectivo frecuente). Eco débil; la clave es el hecho (más deportes), no un término raro."
+      }
+    },
+    {
+      "sampleIndex": 6,
+      "file": "lesen-t5-gemini-023.json",
+      "part": "lesen-t5",
+      "qid": "gen-q-5-7cd9cc8e-4",
+      "correct": "c",
+      "cueWords": [
+        "brachen",
+        "speziellen"
+      ],
+      "cueInStemOnly": [],
+      "cueInCorrectOption": [
+        "speziellen",
+        "brachen"
+      ],
+      "cueInBoth": [],
+      "question": "Was ist die korrekte Entsorgung für Sondermüll wie Batterien oder Elektrogeräte?",
+      "options": {
+        "a": "Sie können einfach in den gelben Sack gegeben werden.",
+        "b": "Sie gehören in die graue Restmülltonne.",
+        "c": "Sie müssen zu speziellen Sammelstellen gebracht werden."
+      },
+      "passage": "Liebe Bewohnerinnen und Bewohner,\nzum Schutz unserer Umwelt und für ein gutes Zusammenleben bitten wir Sie, die folgenden Regeln zu beachten. Ein aktiver Beitrag zum Umweltschutz hilft uns allen, Ressourcen zu schonen und die Kosten für die Müllentsorgung niedrig zu halten.\n\n1.  Mülltrennung:\n    Biomüll: Nur organische Abfälle wie Essensreste und Gartenabfälle gehören in die grüne Biotonne. Diese wird dienstags und freitags geleert. Bitte verwenden Sie kompostierbare Müllbeutel.\n    Plastik und Verpackungen: Alle leeren Plastik-, Metall- und Verbundverpackungen (z.B. Joghurtbecher, Folien) gehören in den gelben Sack. Die Abholung erfolgt jeden zweiten Mittwoch. Achten Sie darauf, dass die Verpackungen sauber und restentleert sind, um das Recycling zu erleichtern.\n    Papier und Karton: Sauberes Papier und Kartonagen müssen flach gefaltet in die blaue Papiertonne. Die Leerung ist einmal im Monat, immer am ersten Montag. Große Kartons bitte zerkleinern.\n    Glas: Glasflaschen und -gläser (ohne Deckel) sind nach Farben getrennt in die öffentlichen Sammelcontainer außerhalb der Wohnanlage zu bringen. Einwurfzeiten sind werktags von 8:00 bis 20:00 Uhr.\n    Restmüll: Alles, was nicht in die anderen Tonnen passt, gehört in die graue Restmülltonne. Diese wird donnerstags wöchentlich geleert.\n    Sondermüll: Batterien, alte Elektrogeräte und Chemikalien müssen zu speziellen Sammelstellen (z.B. Wertstoffhof oder Supermarkt) gebracht werden. Sie dürfen auf keinen Fall im Hausmüll entsorgt werden.\n\n2.  Energie- und Wassersparen:\n    Schalten Sie das Licht aus, wenn Sie einen Raum verlassen.\n    Melden Sie defekte Wasserhähne oder Toilettenspülungen sofort der Hausverwaltung, um unnötigen Wasserverbrauch zu vermeiden. Kurze Duschzeiten helfen ebenfalls beim Wassersparen.\n    Heizen Sie im Winter nicht über 20 Grad Celsius.\n\nVielen Dank für Ihre Mithilfe!",
+      "exclusiveOptionTrials": [
+        {
+          "lemma": "gehören",
+          "exclusiveLetter": "b",
+          "isCorrect": false
+        },
+        {
+          "lemma": "speziellen",
+          "exclusiveLetter": "c",
+          "isCorrect": true
+        },
+        {
+          "lemma": "brachen",
+          "exclusiveLetter": "c",
+          "isCorrect": true
+        }
+      ],
+      "preliminaryEval": {
+        "verdict": "problematico",
+        "note": "Copia «zu speziellen Sammelstellen gebracht» de la norma. Cueing clásico de Hausordnung."
+      }
+    },
+    {
+      "sampleIndex": 7,
+      "file": "lesen-t5-gemini-057.json",
+      "part": "lesen-t5",
+      "qid": "gen-q-5-e415661a-2",
+      "correct": "a",
+      "cueWords": [
+        "erwerben",
+        "speziell"
+      ],
+      "cueInStemOnly": [],
+      "cueInCorrectOption": [
+        "erwerben",
+        "speziell"
+      ],
+      "cueInBoth": [],
+      "question": "Wie können personen, die nicht im Gesundheitszentrum arbeiten, in der Kantine bezahlen?",
+      "options": {
+        "a": "Sie müssen zuerst eine spezielle Karte gegen eine Gebühr erwerben.",
+        "b": "Sie bezahlen jede Mahlzeit direkt an der Kasse für 5 € in bar.",
+        "c": "Sie können ihre persönliche Bankkarte an der Kasse benutzen."
+      },
+      "passage": "Liebe Mitarbeiterinnen und Mitarbeiter, liebe Gäste, für ein angenehmes Miteinander in unserer Kantine bitten wir Sie, die folgenden Regeln zu beachten:\n\nÖffnungszeiten und Angebot:\nUnsere Kantine ist montags bis freitags geöffnet. Warme Mahlzeiten gibt es ausschließlich zwischen 11:30 Uhr und 14:00 Uhr. Kalte Speisen, Salate und Getränke können Sie bis 15:30 Uhr kaufen. Nach dieser Zeit schließt die Kantine.\n\nBezahlung:\nDie Bezahlung erfolgt für Mitarbeiter nur mit der persönlichen Mitarbeiterkarte. Gäste können an der Kasse eine Tageskarte für eine Gebühr von 5 € erwerben. Diese Karte kann dann mit einem Guthaben aufgeladen werden, um damit die Mahlzeiten zu bezahlen.\n\nSpezielle Anforderungen:\nPersonen mit Allergien oder besonderen Diätplänen, zum Beispiel nach einem wichtigen Arztbesuch, müssen ihre Mahlzeit bis spätestens 9:00 Uhr am selben Tag über unsere App vorbestellen. So kann unsere Küche die Wünsche berücksichtigen.\n\nHygiene und Sauberkeit:\nJeder Gast ist dafür verantwortlich, sein Tablett mit Geschirr und Besteck selbst zur Rückgabestation zu bringen. Bitte hinterlassen Sie Ihren Tisch sauber für die nächste Person. Reinigungstücher finden Sie an den Stationen.\n\nMitgebrachte Speisen und Nachhaltigkeit:\nDas Essen von mitgebrachten Mahlzeiten ist in der Kantine nicht gestattet. Dafür steht der Pausenraum im 3. Stock zur Verfügung. Im Sinne der Nachhaltigkeit geben wir keine Einwegbecher für Heißgetränke aus. Bitte nutzen Sie Ihren eigenen Becher oder leihen Sie einen für 3 € Pfand. Bei einer Beschwerde über die Qualität des Essens wenden Sie sich bitte direkt an das Küchenpersonal.",
+      "exclusiveOptionTrials": [
+        {
+          "lemma": "erwerben",
+          "exclusiveLetter": "a",
+          "isCorrect": true
+        },
+        {
+          "lemma": "speziell",
+          "exclusiveLetter": "a",
+          "isCorrect": true
+        },
+        {
+          "lemma": "direken",
+          "exclusiveLetter": "b",
+          "isCorrect": false
+        }
+      ],
+      "preliminaryEval": {
+        "verdict": "problematico",
+        "note": "«Karte…erwerben» es terminología exclusiva de la clave; «speziell» puede ser ruido de otra sección."
+      }
+    },
+    {
+      "sampleIndex": 8,
+      "file": "lesen-t5-gemini-077.json",
+      "part": "lesen-t5",
+      "qid": "gen-q-5-3f265ed6-4",
+      "correct": "c",
+      "cueWords": [
+        "kurzzeitparken",
+        "maximal"
+      ],
+      "cueInStemOnly": [],
+      "cueInCorrectOption": [
+        "maximal",
+        "kurzzeitparken"
+      ],
+      "cueInBoth": [],
+      "question": "Was gilt für Besucherparkplätze in der Wohnanlage?",
+      "options": {
+        "a": "Besucher dürfen nur die öffentlichen Parkplätze an der Straße nutzen, ohne Zeitbegrenzung.",
+        "b": "Besucher können jederzeit kostenlos auf den privaten Parkplätzen parken.",
+        "c": "Kurzzeitparken für Besucher ist nur tagsüber für maximal zwei Stunden erlaubt."
+      },
+      "passage": "Willkommen in der Wohnanlage 'Grüne Oase'. Um ein angenehmes Zusammenleben zu sichern, bitten wir alle Bewohner, folgende Regeln zu beachten:\n\n1. Ruhezeiten: Zwischen 22:00 Uhr abends und 7:00 Uhr morgens sowie an Sonn- und Feiertagen ganztägig ist Zimmerlautstärke einzuhalten. Laute Musik oder Partys sind in dieser Zeit nicht erlaubt.\n2. Mülltrennung: Der Müll muss korrekt getrennt werden (Papier, Plastik, Bio, Restmüll) und in die dafür vorgesehenen Behälter im Hof gebracht werden. Sperrmüll kann nur nach vorheriger Anmeldung bei der Hausverwaltung (Montag bis Freitag, 9:00 bis 12:00 Uhr) entsorgt werden. Die Kosten für Sperrmüll trägt der Verursacher.\n3. Waschküche: Die Waschküche kann von 8:00 Uhr bis 20:00 Uhr genutzt werden. Eine Reservierung ist über die Liste an der Tür des Waschraums möglich. Jeder Haushalt darf maximal drei Termine pro Woche buchen. Nach der Nutzung ist der Raum sauber zu verlassen.\n4. Fahrräder: Fahrräder müssen im Fahrradkeller abgestellt werden. Das Abstellen im Hausflur oder vor den Wohnungstüren ist aus Sicherheitsgründen nicht erlaubt.\n5. Parkplätze: Die privaten Parkplätze sind nur für Bewohner mit gültigem Parkausweis vorgesehen. Besucher können die öffentlichen Parkplätze an der Straße nutzen. Kurzzeitparken für Besucher (maximal 2 Stunden) ist auf ausgewiesenen Flächen erlaubt, aber nur zwischen 8:00 und 18:00 Uhr.\n6. Haustiere: Kleine Haustiere wie Katzen oder Hamster sind erlaubt, müssen aber bei der Hausverwaltung angemeldet werden. Hunde sind nur mit schriftlicher Genehmigung der Verwaltung gestattet und müssen außerhalb der Wohnanlage Gassi geführt werden.",
+      "exclusiveOptionTrials": [
+        {
+          "lemma": "maximal",
+          "exclusiveLetter": "c",
+          "isCorrect": true
+        },
+        {
+          "lemma": "nutzen",
+          "exclusiveLetter": "a",
+          "isCorrect": false
+        },
+        {
+          "lemma": "kurzzeitparken",
+          "exclusiveLetter": "c",
+          "isCorrect": true
+        }
+      ],
+      "preliminaryEval": {
+        "verdict": "problematico",
+        "note": "Compuesto «Kurzzeitparken» + «maximal» solo en la correcta — exploit superficial fuerte."
+      }
+    },
+    {
+      "sampleIndex": 9,
+      "file": "lesen-t5-gemini-009.json",
+      "part": "lesen-t5",
+      "qid": "gen-q-5-64b1360b-3",
+      "correct": "b",
+      "cueWords": [
+        "untersagen"
+      ],
+      "cueInStemOnly": [],
+      "cueInCorrectOption": [
+        "untersagen"
+      ],
+      "cueInBoth": [],
+      "question": "Welche Regelungen gibt es bezüglich der Wassernutzung im Garten?",
+      "options": {
+        "a": "Sprinkler sind tagsüber erlaubt, aber Autowaschen ist verboten.",
+        "b": "Das Bewässern mit Sprinklern ist nur nachts gestattet, und das Reinigen von Fahrzeugen ist untersagt.",
+        "c": "Man darf zu jeder Zeit Sprinkler nutzen, wenn man sein Auto nicht wäscht."
+      },
+      "passage": "Liebe Gartenfreunde,\nfür ein gutes Miteinander in unserer sogenannten Gartenanlage bitten wir um Beachtung dieser Regeln:\n\n1.  Gartenpflege und Anbau: Jeder Garten muss regelmäßig gepflegt werden. Der Anbau von Obst und Gemüse ist erwünscht. Mindestens 60% der Fläche sollen für Anbau genutzt werden. Hohe Bäume, die Nachbargärten beschatten, sind nicht erlaubt.\n\n2.  Ruhezeiten: Die Ruhezeit ist werktags von 13:00 bis 15:00 Uhr und von 20:00 bis 7:00 Uhr. Sonntags und an Feiertagen gilt ganztägig Ruhe. Laute Maschinenarbeiten sind in diesen Zeiten streng untersagt.\n\n3.  Wasserverbrauch: Wasser ist wertvoll. Eine indirekte Bewässerung mit Sprinklern ist nur zwischen 22:00 Uhr und 6:00 Uhr erlaubt. Autos dürfen im Garten nicht gewaschen werden.\n\n4.  Müllentsorgung: Abfälle sind zu trennen und in den Containern zu entsorgen. Gartenabfälle wie Grünschnitt kommen auf den Gemeinschaftskompostplatz. Das Verbrennen von Gartenabfällen ist verboten.\n\n5.  Gemeinschaftsarbeit: Jedes Mitglied muss jährlich mindestens 8 Stunden Gemeinschaftsarbeit leisten. Termine stehen am schwarzen Brett. Wer nicht teilnehmen kann, muss sich 3 Tage vorher beim Vorstand melden. Ohne Abmeldung kostet Nichtteilnahme 15 Euro pro Stunde.\n\n6.  Pachtvertrag: Wer den Pachtvertrag kündigen möchte, muss dies schriftlich bis zum 30. September für das nächste Gartenjahr tun. Eine spätere Kündigung geht nur in Ausnahmefällen. Wir hoffen künftig auf gute Zusammenarbeit.",
+      "exclusiveOptionTrials": [
+        {
+          "lemma": "untersagen",
+          "exclusiveLetter": "b",
+          "isCorrect": true
+        }
+      ],
+      "preliminaryEval": {
+        "verdict": "borderline",
+        "note": "«untersagt» aparece en otra regla del mismo texto (jardín), no en el hecho de agua/auto. Coincidencia dudosa."
+      }
+    },
+    {
+      "sampleIndex": 10,
+      "file": "lesen-t5-gemini-022.json",
+      "part": "lesen-t5",
+      "qid": "gen-q-5-efc96246-1",
+      "correct": "b",
+      "cueWords": [
+        "speziell"
+      ],
+      "cueInStemOnly": [],
+      "cueInCorrectOption": [
+        "speziell"
+      ],
+      "cueInBoth": [],
+      "question": "Was ist für die Abgabe bestimmter Wertstoffe wichtig?",
+      "options": {
+        "a": "Man kann sie täglich bis zum Abend abgeben.",
+        "b": "Es gibt spezielle Orte und feste Zeiten für die Abgabe.",
+        "c": "Sie dürfen jederzeit im Hausmüll entsorgt werden."
+      },
+      "passage": "Liebe Bewohnerinnen und Bewohner,\num unser Grünes Viertel umweltfreundlich zu gestalten und den Klimawandel zu bekämpfen, bitten wir Sie, folgende Regeln zu beachten:\n\n1.  Mülltrennung: Alle Abfälle müssen sorgfältig getrennt werden. Bioabfall kommt in die grüne Tonne, Papier in die Blaue und Plastik sowie Verpackungen in die gelbe Tonne. Restmüll gehört in die graue Tonne. Glas und Altmetall sind zu den Sammelstellen im Stadtteil zu bringen, die Öffnungszeiten sind Montag bis Freitag von 8 bis 18 Uhr und Samstag von 9 bis 14 Uhr.\n\n2.  Energie sparen: Bitte achten Sie auf den Energieverbrauch. Schalten Sie Licht aus, wenn Sie einen Raum verlassen, und ziehen Sie Ladegeräte aus der Steckdose. Die Heizung sollte in ungenutzten Räumen auf maximal 18 Grad Celsius eingestellt werden, um unnötige Kosten zu vermeiden und Naturschutz zu fördern.\n\n3.  Wasserverbrauch: Reduzieren Sie den Wasserverbrauch. Melden Sie tropfende Wasserhähne oder undichte Toiletten sofort der Hausverwaltung. Das Gießen von Pflanzen auf Balkonen ist nur mit Regenwasser oder gesammeltem Brauchwasser erlaubt, nicht mit frischem Trinkwasser.\n\n4.  Fahrradnutzung: Fördern Sie nachhaltigen Transport. Fahrräder sollen in den dafür vorgesehenen Fahrradkellern abgestellt werden, nicht im Hausflur. Für E-Bikes gibt es spezielle Ladestationen im Keller, die von 6 bis 22 Uhr genutzt werden können.\n\n5.  Gartenpflege: Unser Gemeinschaftsgarten wird ökologisch gepflegt. Bitte verwenden Sie keine chemischen Schädlingsbekämpfungsmittel. Kompostierbare Gartenabfälle können auf dem Komposthaufen hinter dem Spielplatz entsorgt werden.\n\n6.  Sonderabfälle: Batterien, Elektrogeräte und andere Sonderabfälle dürfen nicht im Hausmüll entsorgt werden. Bringen Sie diese zu den städtischen Recyclinghöfen. Informationen zu Adressen und Öffnungszeiten finden Sie am schwarzen Brett.",
+      "exclusiveOptionTrials": [
+        {
+          "lemma": "speziell",
+          "exclusiveLetter": "b",
+          "isCorrect": true
+        },
+        {
+          "lemma": "entsorgen",
+          "exclusiveLetter": "c",
+          "isCorrect": false
+        }
+      ],
+      "preliminaryEval": {
+        "verdict": "debil_coincidente",
+        "note": "«speziell» en el pasaje habla de Ladestationen E-Bike, no de Wertstoffe. Cue débil/engañoso."
+      }
+    },
+    {
+      "sampleIndex": 11,
+      "file": "horen-t2-gemini-005.json",
+      "part": "horen-t2",
+      "qid": "gen-q-h2-e0b897d8-q3",
+      "correct": "a",
+      "cueWords": [
+        "realistisch",
+        "setzen"
+      ],
+      "cueInStemOnly": [],
+      "cueInCorrectOption": [
+        "setzen",
+        "realistisch"
+      ],
+      "cueInBoth": [],
+      "question": "Was empfiehlt der Sprecher für den Einstieg in sportliche Aktivitäten?",
+      "options": {
+        "a": "Eine Sportart wählen, die Freude bereitet, und sich realistische Ziele setzen.",
+        "b": "Sofort mit Hochleistungssport beginnen, um schnelle Ergebnisse zu erzielen.",
+        "c": "Teure Ausrüstung kaufen und sich einem exklusiven Verein anschließen."
+      },
+      "passage": "Guten Tag, liebe Sportfreunde und Interessierte. Herzlich willkommen zu meinem Vortrag über die zentrale Rolle von Sport in unserem Leben. Viele Menschen wissen, dass Bewegung wichtig ist, aber oft gibt es Bedenken oder man findet einfach nicht die Zeit. Ich möchte heute erklären, warum Sport so unverzichtbar ist und wie man ihn leicht in den Alltag integrieren kann.\n\nZunächst einmal ist regelmäßige körperliche Aktivität entscheidend für unsere körperliche Gesundheit. Sie stärkt das Herz-Kreislauf-System, verbessert die Muskelkraft und hilft, ein gesundes Gewicht zu halten. Aber Sport ist nicht nur gut für den Körper, sondern auch für den Geist. Er reduziert Stress, verbessert die Stimmung und kann sogar Schlafprobleme lindern. Das ist doch verständlich, oder? Wenn wir uns bewegen, produziert unser Körper Glückshormone.\n\nEs muss nicht immer Hochleistungssport sein. Schon kleine Veränderungen machen einen großen Unterschied. Ein täglicher Spaziergang, Radfahren zur Arbeit oder Treppensteigen statt Aufzug – all das zählt. Wichtig ist, eine Sportart zu finden, die Ihnen Spaß macht. Ob Schwimmen, Tanzen, Wandern oder ein Teamsport im Verein, die Auswahl ist groß. Man sollte sich nicht überfordern, besonders am Anfang. Setzen Sie sich realistische Ziele.\n\nViele haben Vorräte an Ausreden, warum sie keinen Sport machen können. 'Keine Zeit', 'zu Müde', 'zu Teuer'. Aber oft sind das nur Ausreden. Es gibt viele kostenlose Möglichkeiten, aktiv zu sein, zum Beispiel Joggen im Park. Machen Sie Sport zu einem festen Bestandteil Ihres Wochenplans. Das ist wie ein wichtiger Termin, den man nicht absagt.\n\nZum Schluss möchte ich betonen: Sport ist eine Investition in Ihre Zukunft. Er verbessert nicht nur Ihre Lebensqualität heute, sondern hilft Ihnen auch, bis ins hohe Alter fit und gesund zu bleiben. Fangen Sie noch heute an!",
+      "exclusiveOptionTrials": [
+        {
+          "lemma": "setzen",
+          "exclusiveLetter": "a",
+          "isCorrect": true
+        },
+        {
+          "lemma": "realistisch",
+          "exclusiveLetter": "a",
+          "isCorrect": true
+        }
+      ],
+      "preliminaryEval": {
+        "verdict": "problematico",
+        "note": "Casi cita «Setzen Sie sich realistische Ziele»."
+      }
+    },
+    {
+      "sampleIndex": 12,
+      "file": "horen-t2-gemini-009.json",
+      "part": "horen-t2",
+      "qid": "gen-q-h2-cb37a553-q2",
+      "correct": "c",
+      "cueWords": [
+        "eigenen",
+        "erweitern"
+      ],
+      "cueInStemOnly": [],
+      "cueInCorrectOption": [
+        "erweitern",
+        "eigenen"
+      ],
+      "cueInBoth": [],
+      "question": "Welchen Vorteil des Lesens betont der Referent?",
+      "options": {
+        "a": "Es hilft, die Zeit produktiver zu nutzen und neue Freunde zu finden.",
+        "b": "Man kann damit die neuesten Nachrichten aus aller Welt erfahren.",
+        "c": "Es ist eine gute Methode, um den eigenen Sprachschatz zu erweitern und andere Kulturen kennenzulernen."
+      },
+      "passage": "Ich freue mich, dass Sie zuhören. Heute möchte ich mit Ihnen über ein Thema sprechen, das uns alle betrifft: Kultur. Kultur ist so vielseitig und interessant. Sie umfasst nicht nur Kunst und Musik, sondern auch unsere Traditionen, unsere Sprache und sogar die Art, wie wir miteinander umgehen.\nIch glaube, dass Kultur eine wichtige Rolle in unserem Alltag spielt. Sie hilft uns, die Welt besser zu verstehen und unseren Horizont zu erweitern. Denken Sie zum Beispiel an das Lesen. Viele Menschen entdecken neue Kulturen durch Bücher oder Zeitungen. Das ist eine wunderbare Möglichkeit, den eigenen Wortschatz zu verbessern und gleichzeitig etwas über andere Länder und Lebensweisen zu lernen.\nEin weiterer Aspekt der Kultur ist das ehrenamtliche Engagement. Wenn Menschen sich hilfsbereit zeigen und in kulturellen Vereinen mitarbeiten, zum Beispiel in einem Chor oder einer Theatergruppe, dann stärkt das die Gemeinschaft. Solche Aktivitäten machen nicht nur Spaß, sondern können auch sehr produktiver sein, als man denkt. Man lernt neue Fähigkeiten, trifft neue Leute und trägt aktiv zum kulturellen Leben bei.\nEs ist wichtig, dass wir unsere kulturellen Angebote pflegen und unterstützen. Ob es ein Besuch im Museum ist, ein Konzert oder ein Sprachkurs – all das bereichert unser Leben. Kultur ist keine feste Sache, sie entwickelt sich ständig weiter und lebt von unserer Teilnahme. Ich hoffe, dieser kleine Einblick hat Ihnen gezeigt, wie vielfältig und wertvoll Kultur für uns alle ist. Vielen Dank für Ihre Aufmerksamkeit.",
+      "exclusiveOptionTrials": [
+        {
+          "lemma": "hilfen",
+          "exclusiveLetter": "a",
+          "isCorrect": false
+        },
+        {
+          "lemma": "erweitern",
+          "exclusiveLetter": "c",
+          "isCorrect": true
+        },
+        {
+          "lemma": "eigenen",
+          "exclusiveLetter": "c",
+          "isCorrect": true
+        },
+        {
+          "lemma": "produktiv",
+          "exclusiveLetter": "a",
+          "isCorrect": false
+        }
+      ],
+      "preliminaryEval": {
+        "verdict": "problematico",
+        "note": "Eco de «eigenen Wortschatz» / «Horizont erweitern» — varias rarezas solo en la correcta."
+      }
+    },
+    {
+      "sampleIndex": 13,
+      "file": "horen-t2-gemini-015.json",
+      "part": "horen-t2",
+      "qid": "gen-q-h2-3afcaed7-q5",
+      "correct": "c",
+      "cueWords": [
+        "angepassen",
+        "lokal"
+      ],
+      "cueInStemOnly": [],
+      "cueInCorrectOption": [
+        "angepassen",
+        "lokal"
+      ],
+      "cueInBoth": [],
+      "question": "Warum ist der Schutz der einheimischen Pflanzen und Tiere so wichtig?",
+      "options": {
+        "a": "Sie sind einfacher zu pflegen und brauchen weniger Wasser.",
+        "b": "Sie sind schöner als fremde Arten.",
+        "c": "Sie sind an das Klima angepasst und unterstützen die lokale Tierwelt."
+      },
+      "passage": "Herzlich willkommen, liebe Hörerinnen und Hörer. Heute möchte ich mit Ihnen über ein wichtiges Thema sprechen: Grüne Städte und ihre Bedeutung für unsere Umwelt. Immer mehr Menschen leben in städtischen Gebieten, was Herausforderungen mit sich bringt. Wir müssen unsere Städte lebenswerter und nachhaltiger gestalten.\n\nDer Eingang zu einer grüneren Zukunft liegt oft in kleinen, aber wirkungsvollen Veränderungen. Denken Sie an Parks, Gemeinschaftsgärten oder begrünte Dächer. Diese Projekte verbessern die Luftqualität, reduzieren Lärm und bieten wichtige Lebensräume für Tiere und Pflanzen. Sie helfen auch, die Temperatur in den Städten zu senken, besonders im Sommer.\n\nEin weiterer wichtiger Punkt sind die Inhalte unserer täglichen Entscheidungen. Wie wir einkaufen, wie wir uns fortbewegen – all das hat einen Einfluss. Zum Beispiel, wenn wir öffentliche Verkehrsmittel nutzen oder mit dem Fahrrad fahren, statt immer das Auto zu nehmen. Das reduziert Abgase und schont Ressourcen.\n\nManchmal gibt es Kommunikationsfehler zwischen Bürgern und Stadtplanern bei neuen Umweltprojekten. Es ist entscheidend, dass alle Stimmen gehört werden und ein gemeinsames Verständnis für die Notwendigkeit dieser Maßnahmen entsteht. Nur so können wir gemeinsam erfolgreich sein.\n\nWir müssen auch die einheimische Flora und Fauna schützen. Das bedeutet, bei der Gestaltung von Grünflächen auf heimische Pflanzenarten zu setzen, die Besser an unser Klima angepasst sind und Insekten sowie Vögeln Nahrung und Schutz bieten.\n\nZum Schluss möchte ich betonen: Jeder Einzelne kann einen Beitrag leisten. Ob durch die Pflege eines kleinen Balkongartens oder die Unterstützung lokaler Umweltinitiativen. Unsere Städte können zu wahren Oasen werden, wenn wir alle mithelfen.",
+      "exclusiveOptionTrials": [
+        {
+          "lemma": "angepassen",
+          "exclusiveLetter": "c",
+          "isCorrect": true
+        },
+        {
+          "lemma": "lokal",
+          "exclusiveLetter": "c",
+          "isCorrect": true
+        }
+      ],
+      "preliminaryEval": {
+        "verdict": "problematico",
+        "note": "«an das Klima angepasst» + «lokal» repiten el argumento del audio."
+      }
+    },
+    {
+      "sampleIndex": 14,
+      "file": "horen-t2-gemini-016.json",
+      "part": "horen-t2",
+      "qid": "gen-q-h2-1ed9a47a-q5",
+      "correct": "b",
+      "cueWords": [
+        "bewusst",
+        "meisten",
+        "sollten"
+      ],
+      "cueInStemOnly": [
+        "meisten"
+      ],
+      "cueInCorrectOption": [
+        "bewusst",
+        "sollten"
+      ],
+      "cueInBoth": [],
+      "question": "Welche Einstellung zu Medien empfiehlt die Sprecherin den meisten Nutzern?",
+      "options": {
+        "a": "Medien sind hauptsächlich für Unterhaltung da.",
+        "b": "Medien sollten als ein nützliches, bewusst eingesetztes Werkzeug dienen.",
+        "c": "Medien bieten die beste Chance, schnell berühmt zu werden."
+      },
+      "passage": "Guten Tag und willkommen zu unserer Sendung. Heute sprechen wir über ein Thema, das uns alle betrifft: Medien. Sie sind überall in unserem Alltag – vom Radio am Morgen bis zum Smartphone am Abend. Medien informieren, unterhalten und verbinden uns mit der Welt.\n\nFrüher war die Medienlandschaft einfacher: Zeitungen, Radio, Fernsehen. Heute ist die Differenzierung viel größer. Wir haben soziale Medien, Podcasts, Blogs, Streaming-Dienste. Das bedeutet, wir können Informationen und Unterhaltung individuell wählen. Jeder findet etwas, das zu seinen Wünschen passt.\n\nDiese Vielfalt bringt aber auch Herausforderungen. Es ist schwierig, gute von schlechten Informationen zu unterscheiden, oft spricht man von „Fake News“. Deshalb ist es wichtig, kritisch zu bleiben und nicht alles sofort zu glauben. Wir müssen lernen, Quellen zu prüfen.\n\nEin weiterer Aspekt ist die ständige Erreichbarkeit. Viele fühlen sich unter Druck, immer online zu sein, was zu Stress führen kann. Es ist wichtig, Pausen von digitalen Medien zu machen und Zeit offline zu verbringen. Das eigene Home kann ein Ort der Ruhe sein, fernab vom Bildschirm.\n\nManche träumen vielleicht von Berühmtheit durch soziale Medien, doch das ist selten Realität. Für die meisten sind Medien ein Werkzeug, das wir bewusst nutzen sollten. Sie sind ein wichtiger Teil unserer Gesellschaft, aber das echte Leben findet außerhalb des Bildschirms statt.\n\nZum Schluss: Medien sind mächtig. Wir müssen lernen, sie klug zu nutzen. Das ist eine Fähigkeit, die in unserer modernen Welt immer wichtiger wird.",
+      "exclusiveOptionTrials": [
+        {
+          "lemma": "bewusst",
+          "exclusiveLetter": "b",
+          "isCorrect": true
+        },
+        {
+          "lemma": "sollten",
+          "exclusiveLetter": "b",
+          "isCorrect": true
+        }
+      ],
+      "preliminaryEval": {
+        "verdict": "problematico",
+        "note": "Parafrasis cercana de «Medien…bewusst nutzen sollten»; «meisten» en stem es ruido."
+      }
+    },
+    {
+      "sampleIndex": 15,
+      "file": "horen-t2-gemini-021.json",
+      "part": "horen-t2",
+      "qid": "gen-q-h2-88828b35-q3",
+      "correct": "a",
+      "cueWords": [
+        "leis",
+        "stark"
+      ],
+      "cueInStemOnly": [],
+      "cueInCorrectOption": [
+        "leis",
+        "stark"
+      ],
+      "cueInBoth": [],
+      "question": "Welche Aussage über Elektromobilität trifft zu?",
+      "options": {
+        "a": "Sie ist leiser und umweltfreundlicher, aber die Ladeinfrastruktur muss noch stark verbessert werden.",
+        "b": "Städte genehmigen keine speziellen Parkplätze für Elektrofahrzeuge, was die Nutzung erschwert.",
+        "c": "Die Infrastruktur für Ladestationen ist bereits gut ausgebaut."
+      },
+      "passage": "Liebe Hörerinnen und Hörer, herzlich willkommen. Mein Name ist Dr. Lena Schmidt, und heute spreche ich mit Ihnen über die Zukunft des Verkehrs in unseren Städten. Es ist ein Thema, das uns alle betrifft, denn wir alle sind täglich auf irgendeine Weise im Verkehr unterwegs.\n\nDie Herausforderungen sind groß: Staus, Luftverschmutzung und der Lärm, der unsere Lebensqualität beeinträchtigt. Aber es gibt auch viele innovative Lösungen. Eine davon ist die Förderung des öffentlichen Nahverkehrs. Wenn mehr Menschen Bus und Bahn nutzen, entlastet das die Straßen erheblich. Das bedeutet aber auch, dass der öffentliche Nahverkehr attraktiver werden muss – mit häufigeren Verbindungen, Pünktlichkeit und bezahlbaren Preisen.\n\nEin weiterer wichtiger Punkt ist die Elektromobilität. Elektroautos und E-Bikes sind leiser und produzieren keine direkten Abgase. Die Infrastruktur dafür, wie Ladestationen, muss aber noch stark ausgebaut werden. Viele Städte genehmigen bereits spezielle Parkplätze für Elektrofahrzeuge, um Anreize zu schaffen.\n\nAuch das Fahrrad gewinnt immer mehr an Bedeutung. Viele Städte investieren in sichere Radwege, um den Bürgern eine echte Alternative zum Auto zu bieten. Es fehlen oft noch durchgehende Netze, aber die Entwicklung geht in die richtige Richtung.\n\nZum Schluss möchte ich betonen, dass wir alle unseren Beitrag leisten können. Bevor wir ins Auto steigen, sollten wir uns fragen: Kann ich auch zu Fuß gehen, das Fahrrad nehmen oder den Bus? Manchmal wühlen wir uns unnötig durch den Stadtverkehr, obwohl es einfachere Wege gäbe. Eine Veränderung des Denkens ist hier entscheidend. Die Begabung zur Anpassung an neue Mobilitätskonzepte ist eine Fähigkeit, die wir entwickeln müssen, ehe wir nachhaltige Fortschritte erzielen.",
+      "exclusiveOptionTrials": [
+        {
+          "lemma": "leis",
+          "exclusiveLetter": "a",
+          "isCorrect": true
+        },
+        {
+          "lemma": "stark",
+          "exclusiveLetter": "a",
+          "isCorrect": true
+        },
+        {
+          "lemma": "ausgebauen",
+          "exclusiveLetter": "c",
+          "isCorrect": false
+        },
+        {
+          "lemma": "genehmigen",
+          "exclusiveLetter": "b",
+          "isCorrect": false
+        },
+        {
+          "lemma": "bereit",
+          "exclusiveLetter": "c",
+          "isCorrect": false
+        }
+      ],
+      "preliminaryEval": {
+        "verdict": "problematico",
+        "note": "«leiser» + «stark…ausgebaut/verbessert» — eco de dos lemas del pasaje solo en la clave."
+      }
+    }
+  ],
+  "verdictCounts": {
+    "problematico": 11,
+    "falso_positivo": 1,
+    "debil_inevitable": 1,
+    "borderline": 1,
+    "debil_coincidente": 1
+  }
+}

@@ -87,6 +87,9 @@ process.on('SIGTERM', () => {
 });
 
 const args = process.argv.slice(2);
+if (!process.env.NODE_OPTIONS?.includes('use-system-ca')) {
+  process.env.NODE_OPTIONS = [process.env.NODE_OPTIONS, '--use-system-ca'].filter(Boolean).join(' ');
+}
 const child = spawn(process.platform === 'win32' ? 'netlify.cmd' : 'netlify', ['dev', ...args], {
   stdio: 'inherit',
   shell: true,

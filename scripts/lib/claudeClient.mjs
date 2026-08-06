@@ -1,5 +1,7 @@
 const DEFAULT_MODEL = 'claude-haiku-4-5';
 
+import { rethrowIfTlsIntercept } from './tlsFetchHint.mjs';
+
 function sleep(ms) {
   return new Promise((r) => setTimeout(r, ms));
 }
@@ -17,7 +19,27 @@ export function genModel() {
   return (process.env.CLAUDE_GEN_MODEL || DEFAULT_MODEL).trim();
 }
 
-export async function generateContent({ prompt, apiKey, model, maxRetries = 4, maxTokens }) {
+export async function generateContent({ prompt, apiKey, model, maxRetries = 4, maxTokens, jsonMode }) {
+  const allowAnthropic =
+    String(process.env.SEMANTIC_USE_CLAUDE || '').trim() === '1' ||
+    String(process.env.ALLOW_CLAUDE_PIPELINE || '').trim() === '1';
+
+  if (!allowAnthropic) {
+    const { generateContent: geminiGenerate } = await import('./geminiClient.mjs');
+    const modelId =
+      model && /^gemini/i.test(String(model))
+        ? model
+        : process.env.GEMINI_MODEL || 'gemini-2.5-flash';
+    return geminiGenerate({
+      prompt,
+      model: modelId,
+      jsonMode: jsonMode !== false,
+      maxRetries,
+      maxTokens,
+      temperature: 0.1,
+    });
+  }
+
   const key = apiKey || process.env.ANTHROPIC_API_KEY;
   if (!key) {
     throw new Error('Falta ANTHROPIC_API_KEY en .env');
@@ -34,15 +56,20 @@ export async function generateContent({ prompt, apiKey, model, maxRetries = 4, m
 
   let lastError;
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'x-api-key': key,
-        'anthropic-version': '2023-06-01',
-        'content-type': 'application/json',
-      },
-      body: JSON.stringify(body),
-    });
+    let res;
+    try {
+      res = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'x-api-key': key,
+          'anthropic-version': '2023-06-01',
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify(body),
+      });
+    } catch (err) {
+      rethrowIfTlsIntercept(err);
+    }
 
     const data = await res.json().catch(() => ({}));
 

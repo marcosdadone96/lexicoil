@@ -1,60 +1,30 @@
 'use strict';
 
 /**
- * partIndex — minimal extensible pool index (topicTag + vocabIndex).
+ * partIndex — pool index (topicTag + vocabIndex).
  *
- * vocabIndex entries: { word } today; optional lemma, pos, translations later.
- * Matching uses literal word (case-insensitive) unless entry.lemma is set.
+ * PASO 13 P0-3/P0-4: vocabIndex built via vocabIndexQuality
+ * (text + clean vocabularyTags → filter → canonicalize → concept dedupe).
+ *
+ * Entry shape (v3-quality):
+ *   { word, lemma, concept?, aliases?, sources: ['text'|'vocabularyTag'], quality: 'validated' }
+ * Legacy { word } entries still match via vocabEntryKey.
  */
 
-const path = require('path');
 const { resolveFromRoot } = require('./projectRoot.js');
 const { detectTopic } = require(resolveFromRoot('js', 'engine', 'partTopicDetect.js'));
 const { normalizeB1Topic } = require(resolveFromRoot('js', 'data', 'b1Topics.js'));
-const { loadLemmaSet, lemmatizeWords } = require('./passageVocab.js');
+const { lemmatizeWords } = require('./passageVocab.js');
+const { partPassesPublishGate } = require('./partPublishGate.js');
+const {
+  VOCAB_INDEX_VERSION,
+  MAX_VOCAB_INDEX,
+  buildVocabIndex,
+  canonicalizeVocabQuery,
+  vocabEntryKeys,
+  rankPartsByVocab,
+} = require('./vocabIndexQuality.js');
 
-const MAX_VOCAB_INDEX = 30;
-
-const STOP = new Set([
-  'sein', 'haben', 'werden', 'der', 'die', 'das', 'den', 'dem', 'des', 'ein', 'eine', 'einer', 'eines', 'einem',
-  'und', 'oder', 'aber', 'nicht', 'auch', 'sie', 'er', 'es', 'wir', 'ihr', 'ich', 'du', 'man', 'mit', 'von',
-  'zu', 'auf', 'in', 'an', 'für', 'bei', 'nach', 'vor', 'über', 'unter', 'durch', 'als', 'wenn', 'weil', 'dass',
-  'ob', 'so', 'noch', 'nur', 'schon', 'sehr', 'mehr', 'kann', 'können', 'muss', 'müssen', 'soll', 'sollen',
-  'will', 'wollen', 'wird', 'wurde', 'worden', 'hat', 'hatte', 'sind', 'war', 'waren', 'wurden',
-]);
-
-function getLemmatizer() {
-  try {
-    const fs = require('fs');
-    const file = resolveFromRoot('js', 'engine', 'validation', 'lemmatizer.js');
-    if (fs.existsSync(file)) return require(file);
-  } catch (_) { /* ignore */ }
-  return null;
-}
-
-function lemmaOf(token, lang) {
-  const low = String(token || '').toLowerCase();
-  if (!low || STOP.has(low)) return null;
-  const Lemmatizer = getLemmatizer();
-  const lem = Lemmatizer
-    ? Lemmatizer.normalizeLemma(low, lang)
-    : low.replace(/[^a-zäöüß\-]/gi, '');
-  if (!lem || STOP.has(lem)) return null;
-  return lem;
-}
-
-function scoreLemma(lemma, levelSet) {
-  if (!lemma || lemma.length < 3) return -1;
-  if (STOP.has(lemma)) return -1;
-  if (lemma.length < 4 && !['gehen', 'essen', 'lesen', 'hoen', 'fahren', 'stehen'].includes(lemma)) return -1;
-  let score = lemma.length >= 6 ? 2 : 1;
-  if (levelSet.has(lemma)) score += 3;
-  return score;
-}
-
-/**
- * Reúne todo el texto legible de una parte reusable.
- */
 function partText(part) {
   const chunks = [];
   const p = part?.passage;
@@ -66,6 +36,12 @@ function partText(part) {
         if (pp?.text) chunks.push(String(pp.text));
         if (pp?.textTitle) chunks.push(String(pp.textTitle));
       }
+    }
+  }
+  if (Array.isArray(part?.passages)) {
+    for (const pp of part.passages) {
+      if (pp?.text) chunks.push(String(pp.text));
+      if (pp?.title) chunks.push(String(pp.title));
     }
   }
   if (Array.isArray(part?.segments)) {
@@ -94,6 +70,7 @@ function partText(part) {
   }
   if (part?.task) chunks.push(String(part.task));
   if (part?.instruction) chunks.push(String(part.instruction));
+  if (part?.text) chunks.push(String(part.text));
   return chunks.join('\n').trim();
 }
 
@@ -115,37 +92,15 @@ function computeTopicSlug(part, vocabIndex) {
 }
 
 /**
- * Extract content words as extensible objects [{ word }].
- * Preserves surface form from text; filters stopwords via lemma pipeline.
+ * Extract content words — delegates to quality pipeline (text only; tags merged in applyPartIndex).
  */
 function extractVocabIndex(text, lang, level, max = MAX_VOCAB_INDEX) {
-  if (!text) return [];
-  const levelSet = loadLemmaSet(lang, level);
-  const tokens = String(text).match(/[a-zäöüßA-ZÄÖÜß\-]+/g) || [];
-  const scored = new Map();
-
-  for (const tok of tokens) {
-    const lemma = lemmaOf(tok, lang);
-    if (!lemma) continue;
-    const s = scoreLemma(lemma, levelSet);
-    if (s < 0) continue;
-    const low = tok.toLowerCase();
-    const prev = scored.get(low);
-    if (!prev || s > prev.score) {
-      scored.set(low, { word: tok, score: s });
-    }
-  }
-
-  return [...scored.values()]
-    .sort((a, b) => b.score - a.score || b.word.length - a.word.length)
-    .slice(0, max)
-    .map(({ word }) => ({ word }));
+  return buildVocabIndex(
+    { questions: [] },
+    { lang, level, max, text: text || '' },
+  );
 }
 
-/**
- * Resolve B1 topicTag: explicit > existing > keyword detectTopic.
- * Returns null if unclassified (report as unknown in stats).
- */
 function resolveTopicTag(part, explicitTopic = null) {
   const fromExplicit = normalizeB1Topic(explicitTopic);
   if (fromExplicit) return fromExplicit;
@@ -158,11 +113,12 @@ function resolveTopicTag(part, explicitTopic = null) {
   return normalizeB1Topic(detected);
 }
 
-/** Match key for pool search — prefers lemma when present (future LemmaService). */
+/** Match key for pool search — prefers lemma when present. */
 function vocabEntryKey(entry) {
   if (entry == null) return '';
   if (typeof entry === 'string') return String(entry).toLowerCase();
   if (entry.lemma) return String(entry.lemma).toLowerCase();
+  if (entry.concept) return String(entry.concept).toLowerCase();
   if (entry.word) return String(entry.word).toLowerCase();
   return '';
 }
@@ -181,6 +137,10 @@ function normalizeSearchWords(words, lang) {
   const raw = (words || []).map((w) => String(w).trim()).filter(Boolean);
   if (!raw.length) return [];
   try {
+    const canon = canonicalizeVocabQuery(raw, { lang });
+    if (canon.words.length) return canon.words;
+  } catch (_) { /* fall through */ }
+  try {
     return lemmatizeWords(raw, lang);
   } catch (_) {
     return raw.map((w) => w.toLowerCase());
@@ -188,28 +148,46 @@ function normalizeSearchWords(words, lang) {
 }
 
 /**
- * Literal-first match: compares normalized word keys (case-insensitive).
- * When entry.lemma exists, it is preferred over entry.word.
+ * Match user words against vocabIndex (lemma / concept / aliases).
  */
-function scorePartWordCoverage(part, words, { lang = 'de', literal = true } = {}) {
-  const want = literal
-    ? new Set((words || []).map((w) => String(w).toLowerCase()))
-    : new Set(normalizeSearchWords(words, lang));
+function scorePartWordCoverage(part, words, { lang = 'de', literal = false } = {}) {
+  const wantList = literal
+    ? (words || []).map((w) => String(w).toLowerCase())
+    : normalizeSearchWords(words, lang);
+  const want = new Set(wantList);
   const vocabIndex = getPartVocabIndex(part);
   const covered = [];
+  const coveredKeys = new Set();
+
   for (const entry of vocabIndex) {
-    const key = vocabEntryKey(entry);
-    if (key && want.has(key)) covered.push(entry.word || entry.lemma || key);
+    const keys = vocabEntryKeys(entry);
+    for (const key of keys) {
+      if (key && want.has(key) && !coveredKeys.has(key)) {
+        coveredKeys.add(key);
+        covered.push(entry.word || entry.lemma || key);
+        break;
+      }
+    }
   }
+
+  // Also count concept-level hits once
+  const exactConcepts = new Set();
+  for (const entry of vocabIndex) {
+    const keys = vocabEntryKeys(entry);
+    if (keys.some((k) => want.has(k))) {
+      exactConcepts.add(entry.concept || entry.lemma || vocabEntryKey(entry));
+    }
+  }
+
   return {
-    score: covered.length,
+    score: exactConcepts.size || covered.length,
     coveredWords: covered,
-    coverage: { covered: covered.length, requested: want.size },
+    coverage: { covered: exactConcepts.size || covered.length, requested: want.size },
   };
 }
 
 /**
- * Apply topicTag + topicSlug + vocabIndex to a part payload (mutates copy).
+ * Apply topicTag + topicSlug + enriched vocabIndex (mutates copy).
  */
 function applyPartIndex(part, { lang, level, topicTag = null, force = false } = {}) {
   if (!part || typeof part !== 'object') return part;
@@ -217,9 +195,21 @@ function applyPartIndex(part, { lang, level, topicTag = null, force = false } = 
   const normLang = String(lang || part.lang || 'de').toLowerCase();
   const normLevel = String(level || part.level || 'B1').toUpperCase();
 
-  if (force || !Array.isArray(out.vocabIndex) || !out.vocabIndex.length) {
+  const needsRebuild =
+    force ||
+    !Array.isArray(out.vocabIndex) ||
+    !out.vocabIndex.length ||
+    out.vocabIndexVersion !== VOCAB_INDEX_VERSION;
+
+  if (needsRebuild) {
     const text = partText(out);
-    out.vocabIndex = extractVocabIndex(text, normLang, normLevel, MAX_VOCAB_INDEX);
+    out.vocabIndex = buildVocabIndex(out, {
+      lang: normLang,
+      level: normLevel,
+      max: MAX_VOCAB_INDEX,
+      text,
+    });
+    out.vocabIndexVersion = VOCAB_INDEX_VERSION;
   }
 
   if (force || !out.topicTag) {
@@ -230,7 +220,6 @@ function applyPartIndex(part, { lang, level, topicTag = null, force = false } = 
     out.topicSlug = computeTopicSlug(out, out.vocabIndex);
   }
 
-  // Legacy alias for diversity filter (excludeTopics) — same slug, not B1 topicTag.
   out.topic = out.topicSlug;
 
   if (out.schemaVersion == null || out.schemaVersion < 2) {
@@ -242,10 +231,6 @@ function applyPartIndex(part, { lang, level, topicTag = null, force = false } = 
 
 /**
  * buscar — pool search for hybrid reparto (no side effects).
- *
- * @param {object[]} parts  Full part records (seed or loaded payloads)
- * @param {object} opts
- * @returns {object[]} sorted by coverage desc
  */
 function buscar(parts, {
   lang = 'de',
@@ -254,12 +239,15 @@ function buscar(parts, {
   teil = null,
   topicTag = null,
   words = [],
-  literal = true,
+  literal = false,
+  rank = true,
 } = {}) {
   const normLang = String(lang).toLowerCase();
   const normLevel = String(level).toUpperCase();
   const normModule = String(module || '').toLowerCase();
   const wantTopic = normalizeB1Topic(topicTag);
+  const canon = canonicalizeVocabQuery(words, { lang: normLang });
+  const searchWords = canon.words.length ? canon.words : words;
 
   const results = [];
   for (const part of parts || []) {
@@ -267,16 +255,17 @@ function buscar(parts, {
     if (String(part.level || '').toUpperCase() !== normLevel) continue;
     if (String(part.module || '').toLowerCase() !== normModule) continue;
     if (teil != null && Number(part.teil) !== Number(teil)) continue;
-    if (part.disabled === true) continue;
-    if (part.complete !== true || part.verified !== true) continue;
+    if (!partPassesPublishGate(part)) continue;
 
     if (wantTopic) {
       const partTopic = normalizeB1Topic(part.topicTag);
       if (partTopic !== wantTopic) continue;
     }
 
-    const { score, coveredWords, coverage } = scorePartWordCoverage(part, words, { lang: normLang, literal });
-    // Vocab ranks candidates; topicTag match is enough to serve (score may be 0).
+    const { score, coveredWords, coverage } = scorePartWordCoverage(part, searchWords, {
+      lang: normLang,
+      literal,
+    });
 
     results.push({
       id: part.id,
@@ -287,6 +276,15 @@ function buscar(parts, {
       coveredWords,
       coverage,
       part,
+    });
+  }
+
+  if (rank) {
+    return rankPartsByVocab(results, {
+      requestedCount: searchWords.length,
+      level: normLevel,
+      module: normModule,
+      teil,
     });
   }
 
@@ -301,13 +299,18 @@ function buscar(parts, {
 
 module.exports = {
   MAX_VOCAB_INDEX,
+  VOCAB_INDEX_VERSION,
   partText,
   extractVocabIndex,
   resolveTopicTag,
   computeTopicSlug,
   applyPartIndex,
   vocabEntryKey,
+  vocabEntryKeys,
   getPartVocabIndex,
   scorePartWordCoverage,
+  normalizeSearchWords,
+  canonicalizeVocabQuery,
   buscar,
+  rankPartsByVocab,
 };

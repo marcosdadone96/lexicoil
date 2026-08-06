@@ -3,7 +3,7 @@
  * Mirrors scripts/audit-pass-2.mjs partRecordToExamPart for browser use.
  */
 (function (global) {
-  var SUPPORTED = { de: { B1: true } };
+  var SUPPORTED = { de: { B1: true, A2: true } };
 
   function catalogPath(lang, level) {
     return (
@@ -82,7 +82,25 @@
   function parseSprechenPoints(record, q0) {
     if (Array.isArray(record.points) && record.points.length) return record.points;
     if (Array.isArray(record.prompts) && record.prompts.length) return record.prompts;
-    var text = String((q0 && q0.question) || record.task || record.instruction || '');
+    const text = String((q0 && q0.question) || record.task || record.instruction || '');
+    const teil = Number(record.teil ?? q0?.teil ?? 1);
+    const level = String(record.level || q0?.level || '').toUpperCase();
+    const type = String(q0?.type || '').toLowerCase();
+    if (
+      typeof SprechenBriefing !== 'undefined' &&
+      SprechenBriefing.isA2GoetheSprechen(text, teil, { level, type })
+    ) {
+      return [];
+    }
+    if (typeof require !== 'undefined') {
+      try {
+        const { parseSprechenBriefing, isA2GoetheSprechen } = require('../engine/sprechenBriefing.js');
+        if (isA2GoetheSprechen(text, teil, { level, type })) return [];
+        return parseSprechenBriefing(text, teil, { level, type }).bullets;
+      } catch (_) {
+        /* fallback below */
+      }
+    }
     return text
       .split('\n')
       .map(function (line) {
@@ -94,24 +112,23 @@
   }
 
   function applySprechenSnapshot(part, record, teil) {
-    var q0 = (record.questions || [])[0];
-    var situation =
-      record.situation ||
-      (q0 && q0.question) ||
-      record.task ||
-      record.instruction ||
-      '';
-    part.situation = situation;
-    part.title = record.title || record.taskFormat || 'Teil ' + teil;
-    part.fieldId = record.fieldId || 'speak_bp_' + teil;
-    part.points = parseSprechenPoints(record, q0);
-    part.prompts = part.points;
-    part.minExchanges = record.minExchanges != null ? record.minExchanges : teil === 3 ? 3 : 4;
-    part.dauer = record.dauer || record.time || record.arbeitszeit || '';
-    part.cardText = record.cardText || '';
-    part.photoDescriptions = record.photoDescriptions || [];
-    if (Number(teil) === 2 && Array.isArray(record.slides) && record.slides.length) {
-      part.slides = record.slides;
+    if (typeof SprechenBriefing !== 'undefined' && SprechenBriefing.enrichSprechenExamPart) {
+      SprechenBriefing.enrichSprechenExamPart(part, record);
+    } else {
+      const q0 = (record.questions || [])[0];
+      const situation =
+        record.situation ||
+        (q0 && q0.question) ||
+        record.task ||
+        record.instruction ||
+        '';
+      part.situation = situation;
+      part.title = record.title || record.taskFormat || 'Teil ' + teil;
+      part.fieldId = record.fieldId || 'speak_bp_' + teil;
+      part.instruction = situation;
+      part.task = situation;
+      part.points = [];
+      part.prompts = [];
     }
     part.questions = (record.questions || []).map(function (q) {
       return normPartQuestion(q, 'sprechen', teil);
@@ -186,6 +203,35 @@
         });
       }
       if (record.example) part.example = record.example;
+      // Lesen T3: missing example → Goethe Modellsatz constant (same as ensureLesenT3Example).
+      // Do NOT copy a scored correct="0" question into example (that duplicated Situation 0).
+      if (Number(teil) === 3 && !part.example) {
+        var t3Example = null;
+        if (typeof require !== 'undefined') {
+          try {
+            t3Example = require('../library/goetheB1Constants.js').GOETHE_B1_LESEN_T3_EXAMPLE;
+          } catch (_) {
+            /* optional in some runtimes */
+          }
+        }
+        if (!t3Example && typeof globalThis !== 'undefined' && globalThis.GoetheB1Constants) {
+          t3Example = globalThis.GoetheB1Constants.GOETHE_B1_LESEN_T3_EXAMPLE;
+        }
+        if (!t3Example && typeof window !== 'undefined' && window.GoetheB1Constants) {
+          t3Example = window.GoetheB1Constants.GOETHE_B1_LESEN_T3_EXAMPLE;
+        }
+        if (t3Example) part.example = Object.assign({}, t3Example);
+      }
+      if (Number(teil) === 3) {
+        var hasNoMatchQ = (part.questions || []).some(function (q) {
+          return (
+            String(q.correct != null ? q.correct : q.correctAnswer || '')
+              .trim()
+              .toUpperCase() === '0'
+          );
+        });
+        if (hasNoMatchQ) part._t3HasNoMatch = true;
+      }
     } else if (module === 'horen') {
       if (Array.isArray(record.segments) && record.segments.length) {
         part.segments = record.segments.map(function (seg) {
@@ -261,6 +307,67 @@
     (doc.parts || []).forEach(function (p) {
       var part = snapshotToExamPart(p.snapshot);
       if (!part) return;
+      var level = String(doc.level || (p.snapshot && p.snapshot.level) || '').toUpperCase();
+      var partId = p.partId ? String(p.partId) : null;
+      var sourceFile = partId && level
+        ? 'batches/ready/pool-verified/' + level + '/' + partId
+        : null;
+      var provenance = {
+        sourceFile: sourceFile,
+        module: String(p.module || '').toLowerCase(),
+        teil: Number(p.teil),
+        partId: partId,
+        level: level || null,
+        examId: doc.examId || null,
+        publishedOfficial: true,
+        passageId: part.passageId != null ? String(part.passageId) : null,
+      };
+      part._contentProvenance = provenance;
+      part.partId = part.partId || p.partId || null;
+      part.sourceFile = part.sourceFile || sourceFile || null;
+      (part.questions || []).forEach(function (q) {
+        if (!q || typeof q !== 'object') return;
+        q._contentProvenance = {
+          sourceFile: provenance.sourceFile,
+          module: provenance.module,
+          teil: provenance.teil,
+          questionId: q.id != null ? String(q.id) : '',
+          passageId: q.passageId != null ? String(q.passageId) : provenance.passageId,
+        };
+      });
+      (part.items || []).forEach(function (q) {
+        if (!q || typeof q !== 'object') return;
+        q._contentProvenance = {
+          sourceFile: provenance.sourceFile,
+          module: provenance.module,
+          teil: provenance.teil,
+          questionId: q.id != null ? String(q.id) : '',
+          passageId: q.passageId != null ? String(q.passageId) : provenance.passageId,
+        };
+      });
+      (part.passages || []).forEach(function (pp) {
+        if (!pp || typeof pp !== 'object') return;
+        pp._contentProvenance = {
+          sourceFile: provenance.sourceFile,
+          module: provenance.module,
+          teil: provenance.teil,
+          partId: provenance.partId,
+          passageId:
+            pp.passageId != null ? String(pp.passageId) : pp.id != null ? String(pp.id) : null,
+        };
+      });
+      (part.segments || []).forEach(function (seg) {
+        (seg.questions || []).forEach(function (q) {
+          if (!q || typeof q !== 'object') return;
+          q._contentProvenance = {
+            sourceFile: provenance.sourceFile,
+            module: provenance.module,
+            teil: provenance.teil,
+            questionId: q.id != null ? String(q.id) : '',
+            passageId: q.passageId != null ? String(q.passageId) : provenance.passageId,
+          };
+        });
+      });
       if (p.module === 'lesen') lesenParts.push(part);
       else if (p.module === 'horen') horenParts.push(part);
       else if (p.module === 'schreiben') schreibenParts.push(part);

@@ -1,0 +1,398 @@
+{
+  "at": "2026-07-17T08:46:06.795Z",
+  "autoSyncEnabled": true,
+  "autoPublishEnabled": true,
+  "poolVerified": {
+    "total": 266,
+    "official": 42,
+    "personal": 206,
+    "both": 37,
+    "usedAny": 211,
+    "orphan": 55,
+    "quarantine": 48
+  },
+  "byTeil": {
+    "horen_t1": {
+      "total": 18,
+      "official": 4,
+      "personal": 14,
+      "both": 4,
+      "orphan": 4,
+      "quarantine": 0
+    },
+    "horen_t2": {
+      "total": 34,
+      "official": 4,
+      "personal": 27,
+      "both": 4,
+      "orphan": 7,
+      "quarantine": 19
+    },
+    "horen_t3": {
+      "total": 16,
+      "official": 4,
+      "personal": 12,
+      "both": 4,
+      "orphan": 4,
+      "quarantine": 0
+    },
+    "horen_t4": {
+      "total": 20,
+      "official": 4,
+      "personal": 12,
+      "both": 1,
+      "orphan": 5,
+      "quarantine": 0
+    },
+    "lesen_t1": {
+      "total": 46,
+      "official": 4,
+      "personal": 38,
+      "both": 4,
+      "orphan": 8,
+      "quarantine": 0
+    },
+    "lesen_t2": {
+      "total": 22,
+      "official": 4,
+      "personal": 12,
+      "both": 3,
+      "orphan": 9,
+      "quarantine": 8
+    },
+    "lesen_t3": {
+      "total": 27,
+      "official": 3,
+      "personal": 23,
+      "both": 3,
+      "orphan": 4,
+      "quarantine": 0
+    },
+    "lesen_t4": {
+      "total": 15,
+      "official": 4,
+      "personal": 10,
+      "both": 4,
+      "orphan": 5,
+      "quarantine": 0
+    },
+    "lesen_t5": {
+      "total": 28,
+      "official": 4,
+      "personal": 26,
+      "both": 3,
+      "orphan": 1,
+      "quarantine": 21
+    },
+    "schreiben": {
+      "total": 23,
+      "official": 4,
+      "personal": 19,
+      "both": 4,
+      "orphan": 4,
+      "quarantine": 0
+    },
+    "sprechen": {
+      "total": 17,
+      "official": 3,
+      "personal": 13,
+      "both": 3,
+      "orphan": 4,
+      "quarantine": 0
+    }
+  },
+  "orphanSample": [
+    "horen-t1-cur-education.json",
+    "horen-t1-cur-health.json",
+    "horen-t1-cur-society.json",
+    "horen-t1-cur-work.json",
+    "horen-t2-cur-education.json",
+    "horen-t2-cur-health.json",
+    "horen-t2-cur-society.json",
+    "horen-t2-cur-work.json",
+    "horen-t2-gemini-009.json",
+    "horen-t2-gemini-013.json"
+  ],
+  "recentAutoSyncs": [
+    {
+      "at": "2026-07-16T20:08:04.912Z",
+      "trigger": "backfill-orphan",
+      "file": "lesen-t5-gemini-065.json",
+      "ok": true,
+      "results": [
+        {
+          "recordId": "lesen-t5-gemini-065",
+          "ok": true,
+          "duplicate": false
+        }
+      ]
+    },
+    {
+      "at": "2026-07-16T20:08:05.178Z",
+      "trigger": "backfill-orphan",
+      "file": "lesen-t5-gemini-082.json",
+      "ok": false,
+      "results": [
+        {
+          "recordId": "lesen-t5-gemini-082",
+          "ok": false,
+          "error": "POOL-DEDUP: pasaje demasiado similar (100% Jaccard ≥ 55%) a pub-de-B1-lesen-t5-da86c13662bb en celda Ernährung×T5. Regenera con otro tipo de texto."
+        }
+      ]
+    },
+    {
+      "at": "2026-07-16T20:08:05.768Z",
+      "trigger": "backfill-orphan",
+      "file": "lesen-t5-gemini-083.json",
+      "ok": false,
+      "results": [
+        {
+          "recordId": "lesen-t5-gemini-083",
+          "ok": false,
+          "error": "POOL-DEDUP: pasaje demasiado similar (100% Jaccard ≥ 55%) a pub-de-B1-lesen-t5-4cd1dda839fc en celda Sport×T5. Regenera con otro tipo de texto."
+        }
+      ]
+    },
+    {
+      "at": "2026-07-16T20:08:07.808Z",
+      "trigger": "backfill-orphan",
+      "file": "schreiben-gemini-004.json",
+      "ok": true,
+      "results": [
+        {
+          "recordId": "schreiben-gemini-004-t1",
+          "ok": true,
+          "duplicate": false
+        },
+        {
+          "recordId": "schreiben-gemini-004-t2",
+          "ok": true,
+          "duplicate": false
+        },
+        {
+          "recordId": "schreiben-gemini-004-t3",
+          "ok": true,
+          "duplicate": false
+        }
+      ]
+    },
+    {
+      "at": "2026-07-16T20:08:09.547Z",
+      "trigger": "backfill-orphan",
+      "file": "schreiben-gemini-020.json",
+      "ok": true,
+      "results": [
+        {
+          "recordId": "schreiben-gemini-020-t1",
+          "ok": true,
+          "duplicate": false
+        },
+        {
+          "recordId": "schreiben-gemini-020-t2",
+          "ok": true,
+          "duplicate": false
+        },
+        {
+          "recordId": "schreiben-gemini-020-t3",
+          "ok": true,
+          "duplicate": false
+        }
+      ]
+    },
+    {
+      "at": "2026-07-17T08:00:34.888Z",
+      "trigger": "pool-verified:horen-t2-gemini-040.json",
+      "file": "horen-t2-gemini-040.json",
+      "ok": true,
+      "results": [
+        {
+          "recordId": "horen-t2-gemini-040",
+          "ok": true,
+          "duplicate": false
+        }
+      ]
+    },
+    {
+      "at": "2026-07-17T08:44:55.144Z",
+      "trigger": "pool-verified:horen-t1-gemini-001.json",
+      "file": "horen-t1-gemini-001.json",
+      "ok": true,
+      "results": [
+        {
+          "recordId": "horen-t1-gemini-001",
+          "ok": true,
+          "duplicate": true
+        }
+      ]
+    },
+    {
+      "at": "2026-07-17T08:44:58.603Z",
+      "trigger": "pool-verified:horen-t1-gemini-002.json",
+      "file": "horen-t1-gemini-002.json",
+      "ok": true,
+      "results": [
+        {
+          "recordId": "horen-t1-gemini-002",
+          "ok": true,
+          "duplicate": true
+        }
+      ]
+    },
+    {
+      "at": "2026-07-17T08:45:02.049Z",
+      "trigger": "pool-verified:horen-t1-gemini-003.json",
+      "file": "horen-t1-gemini-003.json",
+      "ok": true,
+      "results": [
+        {
+          "recordId": "horen-t1-gemini-003",
+          "ok": true,
+          "duplicate": true
+        }
+      ]
+    },
+    {
+      "at": "2026-07-17T08:45:05.553Z",
+      "trigger": "pool-verified:horen-t1-gemini-004.json",
+      "file": "horen-t1-gemini-004.json",
+      "ok": true,
+      "results": [
+        {
+          "recordId": "horen-t1-gemini-004",
+          "ok": true,
+          "duplicate": true
+        }
+      ]
+    },
+    {
+      "at": "2026-07-17T08:45:08.879Z",
+      "trigger": "pool-verified:horen-t1-gemini-005.json",
+      "file": "horen-t1-gemini-005.json",
+      "ok": true,
+      "results": [
+        {
+          "recordId": "horen-t1-gemini-005",
+          "ok": true,
+          "duplicate": true
+        }
+      ]
+    },
+    {
+      "at": "2026-07-17T08:45:11.933Z",
+      "trigger": "pool-verified:horen-t3-gemini-002.json",
+      "file": "horen-t3-gemini-002.json",
+      "ok": false,
+      "results": [
+        {
+          "recordId": "horen-t3-gemini-002",
+          "ok": false,
+          "error": "POOL-DEDUP: pasaje demasiado similar (100% Jaccard ≥ 55%) a horen-t3-gemini-009 en celda Familie×T3. Regenera con otro tipo de texto."
+        }
+      ]
+    },
+    {
+      "at": "2026-07-17T08:45:15.100Z",
+      "trigger": "pool-verified:horen-t3-gemini-003.json",
+      "file": "horen-t3-gemini-003.json",
+      "ok": true,
+      "results": [
+        {
+          "recordId": "horen-t3-gemini-003",
+          "ok": true,
+          "duplicate": true
+        }
+      ]
+    },
+    {
+      "at": "2026-07-17T08:45:18.358Z",
+      "trigger": "pool-verified:horen-t3-gemini-004.json",
+      "file": "horen-t3-gemini-004.json",
+      "ok": false,
+      "results": [
+        {
+          "recordId": "horen-t3-gemini-004",
+          "ok": false,
+          "error": "POOL-DEDUP: pasaje demasiado similar (100% Jaccard ≥ 55%) a horen-t3-gemini-010 en celda Medien×T3. Regenera con otro tipo de texto."
+        }
+      ]
+    },
+    {
+      "at": "2026-07-17T08:45:21.511Z",
+      "trigger": "pool-verified:lesen-t2-gemini-109.json",
+      "file": "lesen-t2-gemini-109.json",
+      "ok": true,
+      "results": [
+        {
+          "recordId": "lesen-t2-gemini-109",
+          "ok": true,
+          "duplicate": false
+        }
+      ]
+    },
+    {
+      "at": "2026-07-17T08:45:24.678Z",
+      "trigger": "pool-verified:lesen-t2-gemini-113.json",
+      "file": "lesen-t2-gemini-113.json",
+      "ok": true,
+      "results": [
+        {
+          "recordId": "lesen-t2-gemini-113",
+          "ok": true,
+          "duplicate": false
+        }
+      ]
+    },
+    {
+      "at": "2026-07-17T08:45:28.978Z",
+      "trigger": "pool-verified:lesen-t3-gemini-003.json",
+      "file": "lesen-t3-gemini-003.json",
+      "ok": true,
+      "results": [
+        {
+          "recordId": "lesen-t3-gemini-003",
+          "ok": true,
+          "duplicate": false
+        }
+      ]
+    },
+    {
+      "at": "2026-07-17T08:45:33.398Z",
+      "trigger": "pool-verified:lesen-t3-gemini-009.json",
+      "file": "lesen-t3-gemini-009.json",
+      "ok": true,
+      "results": [
+        {
+          "recordId": "lesen-t3-gemini-009",
+          "ok": true,
+          "duplicate": false
+        }
+      ]
+    },
+    {
+      "at": "2026-07-17T08:45:38.368Z",
+      "trigger": "pool-verified:lesen-t5-gemini-095.json",
+      "file": "lesen-t5-gemini-095.json",
+      "ok": true,
+      "results": [
+        {
+          "recordId": "lesen-t5-gemini-095",
+          "ok": true,
+          "duplicate": false
+        }
+      ]
+    },
+    {
+      "at": "2026-07-17T08:45:42.286Z",
+      "trigger": "pool-verified:lesen-t5-gemini-099.json",
+      "file": "lesen-t5-gemini-099.json",
+      "ok": true,
+      "results": [
+        {
+          "recordId": "lesen-t5-gemini-099",
+          "ok": true,
+          "duplicate": false
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,111 @@
+
+Generador Lesen (de/B1) · gemini · gemini-2.5-flash · Teile: 4 × 1
+Palabras objetivo por parte: 5 (--word-count)
+Umbral cobertura CEFR (cefr_gate): 55% (default 0.55)
+Cuota Gemini: max 45 llamadas · pausa ≥6000ms · fix-retries=2 · api-retries=1
+Salida: batches/generated/
+Tema: Umwelt (elegido)
+T4 seed: In der Stadt sollen nur Autos fahren, die wenig CO2 ausstoßen und die Um… (fresh) · celda Umwelt×T4: 23 persistidos · título «Forum zur Frage: In der Stadt sollen nur Autos f…» · excluye seeds: 5
+Nombres foro T4: Jan, Leon, Sofia, Lena, Hannah, Felix, Paul (rotación AUD-5)
+
+── Lesen T4 · lesen-t4-gemini-069.json ──
+Proveedor: gemini · Palabras (5): nachhaltigkeit, aufgabe, situation, aktuell, direkt
+Modelo: gemini-2.5-flash · max_output_tokens=16384
+Molde preflight T4×Umwelt: 4 compatible(s), 3 restante(s)
+Llamada API 1/45 · $0.000 acumulado · gemini-2.5-flash
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 sustantivo(s) capitalizados automáticamente
+Vocabulario: 1 de 5 palabras usadas (tema: Umwelt). Integradas: nachhaltigkeit. No encajaron de forma natural: aufgabe, situation, aktuell, direkt.
+Validando formato…
+Comprobando calidad pedagógica…
+  [germanCapsNormalize] markdown=0 decap=1 cap=0 dedupe=0 fields=1
+Calidad pedagógica OK ✅ (estimación ~98%)
+Avisos (1):
+  · Mayúsculas alemanas: wrong_capitalized: «Kunden» (NN) [high] en questions.signText — …, verlieren unsere Geschäfte Kunden. Das ist ein…
+Audit-pass-2 BLOQUEADO: [IMPORTANT][CHK-29] CHK-29: molde estructural «In der Stadt sollen nur Autos fahren, die wenig CO2 ausstoßen und die Umwelt schützen.» ya usado en Umwelt×T4 (similar a lesen-t4-gemini-069). Elige otro subtipo/perfil de variante.
+  CHK-29 → excluir molde y regenerar T4 con subtipo/debate distinto…
+T4 seed: Alle Gebäude sollen bis 2030 nur noch erneuerbare Energie zum Heizen nut… (fresh) · celda Umwelt×T4: 23 persistidos · título «Diskussion: Alle Gebäude sollen bis 2030 nur noc…» · excluye seeds: 6
+Llamada API 2/45 · $0.017 acumulado · gemini-2.5-flash
+Vocabulario: 4 de 5 palabras usadas (tema: Umwelt). Integradas: nachhaltigkeit, aufgabe, situation, aktuell. No encajaron de forma natural: direkt.
+Validando formato…
+Comprobando calidad pedagógica…
+Calidad pedagógica OK ✅ (estimación ~98%)
+Avisos (1):
+  · Mayúsculas alemanas: noun_lowercase: «machen» (VVINF) [high] en questions.explanation — …die den Plan unbezahlbar machen, und lehnt ihn…
+Audit-pass-2 BLOQUEADO: [IMPORTANT][CHK-29] CHK-29: molde estructural «Alle Gebäude sollen bis 2030 nur noch erneuerbare Energie zum Heizen nutzen.» ya usado en Umwelt×T4 (similar a lesen-t4-gemini-069). Elige otro subtipo/perfil de variante.
+  CHK-29 → excluir molde y regenerar T4 con subtipo/debate distinto…
+T4 seed: Jeder Bürger soll Pfandflaschen aus Plastik und Recycling-Material beim … (fresh) · celda Umwelt×T4: 23 persistidos · título «Forum zur Frage: Jeder Bürger soll Pfandflaschen…» · excluye seeds: 7
+Llamada API 3/45 · $0.031 acumulado · gemini-2.5-flash
+Vocabulario: 5 de 5 palabras usadas (tema: Umwelt). Integradas: nachhaltigkeit, aufgabe, situation, aktuell, direkt.
+Validando formato…
+Comprobando calidad pedagógica…
+Calidad pedagógica OK ✅ (estimación ~100%)
+Audit-pass-2 BLOQUEADO: [IMPORTANT][CHK-29] CHK-29: molde estructural «Jeder Bürger soll Pfandflaschen aus Plastik und Recycling-Material beim Einkauf bekommen.» ya usado en Umwelt×T4 (similar a lesen-t4-gemini-069). Elige otro subtipo/perfil de variante.
+  CHK-29 → excluir molde y regenerar T4 con subtipo/debate distinto…
+T4 seed: Haushalte müssen Plastik und Restmüll noch genauer trennen; bei Fehlern … (saturated) · celda Umwelt×T4: 23 persistidos · título «Stadtforum: Haushalte müssen Plastik und Restmül…» · excluye seeds: 8
+Llamada API 4/45 · $0.044 acumulado · gemini-2.5-flash
+  [normalizeNouns] 1 sustantivo(s) capitalizados automáticamente
+Vocabulario: 2 de 5 palabras usadas (tema: Umwelt). Integradas: nachhaltigkeit, aufgabe. No encajaron de forma natural: situation, aktuell, direkt.
+Validando formato…
+Comprobando calidad pedagógica…
+Calidad pedagógica OK ✅ (estimación ~100%)
+Audit-pass-2 BLOQUEADO: [IMPORTANT][CHK-29] CHK-29: molde estructural «Haushalte müssen Plastik und Restmüll noch genauer trennen; bei Fehlern drohen Bußgelder.» ya usado en Umwelt×T4 (similar a lesen-t4-gemini-049). Elige otro subtipo/perfil de variante.
+  CHK-29 → excluir molde y regenerar T4 con subtipo/debate distinto…
+T4 seed: Haushalte müssen Plastik und Restmüll noch genauer trennen; bei Fehlern … (saturated) · celda Umwelt×T4: 23 persistidos · título «Forum zur Frage: Haushalte müssen Plastik und Re…» · excluye seeds: 8
+Llamada API 5/45 · $0.058 acumulado · gemini-2.5-flash
+Vocabulario: 2 de 5 palabras usadas (tema: Umwelt). Integradas: nachhaltigkeit, aufgabe. No encajaron de forma natural: situation, aktuell, direkt.
+Validando formato…
+Comprobando calidad pedagógica…
+Calidad pedagógica OK ✅ (estimación ~100%)
+Audit-pass-2 BLOQUEADO: [IMPORTANT][CHK-29] CHK-29: molde estructural «Haushalte müssen Plastik und Restmüll noch genauer trennen; bei Fehlern drohen Bußgelder.» ya usado en Umwelt×T4 (similar a stadtforum haushalte mussen plastik und ). Elige otro subtipo/perfil de variante.
+  CHK-29 → excluir molde y regenerar T4 con subtipo/debate distinto…
+T4 seed: Haushalte müssen Plastik und Restmüll noch genauer trennen; bei Fehlern … (saturated) · celda Umwelt×T4: 23 persistidos · título «Debatte: Haushalte müssen Plastik und Restmüll n…» · excluye seeds: 8
+Llamada API 6/45 · $0.073 acumulado · gemini-2.5-flash
+Vocabulario: 5 de 5 palabras usadas (tema: Umwelt). Integradas: nachhaltigkeit, aufgabe, situation, aktuell, direkt.
+Validando formato…
+Comprobando calidad pedagógica…
+Calidad pedagógica FAIL (1 problemas, estimación ~92%)
+  - gen-q-4-0f4ec912-4: T4 — clave invertida. signText indica «Nein» pero correct="Ja". Ajusta correct/correctAnswer para que coincida con la postura del signText.
+  Triaje CUBO A: reparado (T4-inverted-key) — re-validando sin LLM…
+Calidad pedagógica FAIL (1 problemas, estimación ~92%)
+  - Teil 4: sesgo grave — Nein=71% (máx 62%). Cambia 1 Nein→Ja reescribiendo el signText correspondiente.
+
+Reintento 1/2 · Teil 4: sesgo grave — Nein=71% (máx 62%). Cambia 1 Nein→Ja reescribiendo el signText correspondiente.…
+Llamada API 7/45 · $0.087 acumulado · gemini-2.5-flash
+  [normalizeNouns] 1 sustantivo(s) capitalizados automáticamente
+Vocabulario: 4 de 5 palabras usadas (tema: Umwelt). Integradas: nachhaltigkeit, aufgabe, situation, aktuell. No encajaron de forma natural: direkt.
+Validando formato…
+Calidad pedagógica FAIL (1 problemas, estimación ~92%)
+  - gen-q-4-0f4ec912-4: T4 — clave invertida. signText indica «Nein» pero correct="Ja". Ajusta correct/correctAnswer para que coincida con la postura del signText.
+  Triaje CUBO A: reparado (T4-inverted-key) — re-validando sin LLM…
+Calidad pedagógica FAIL (1 problemas, estimación ~92%)
+  - Teil 4: sesgo grave — Nein=71% (máx 62%). Cambia 1 Nein→Ja reescribiendo el signText correspondiente.
+
+Reintento 2/2 · Teil 4: sesgo grave — Nein=71% (máx 62%). Cambia 1 Nein→Ja reescribiendo el signText correspondiente.…
+Llamada API 8/45 · $0.107 acumulado · gemini-2.5-flash
+Vocabulario: 4 de 5 palabras usadas (tema: Umwelt). Integradas: nachhaltigkeit, aufgabe, situation, aktuell. No encajaron de forma natural: direkt.
+Validando formato…
+Calidad pedagógica FAIL (1 problemas, estimación ~92%)
+  - gen-q-4-0f4ec912-4: T4 — clave invertida. signText indica «Nein» pero correct="Ja". Ajusta correct/correctAnswer para que coincida con la postura del signText.
+  Triaje CUBO A: reparado (T4-inverted-key) — re-validando sin LLM…
+Calidad pedagógica OK ✅ (estimación ~100%)
+Léxico FAIL (1 errores)
+  ✗ question gen-q-4-0f4ec912-4 signText: vocabulario B2+ en pregunta «Konsequenzen» → usa «Folge / Ergebnis» (B1)
+Rechazado guardado en: batches/generated/.rejected/lesen-t4-gemini-069-2026-07-22T11-01-50-122Z.json
+
+── batches/generated/B1/lesen-t4-gemini-069.json · DESCARTADO · 8 llamadas · $0.123 total ──
+
+══ Resumen generador Lesen ══
+Proveedor: gemini · Modelo: gemini-2.5-flash
+Intentos totales: 8
+Partes guardadas (formato + calidad OK): 0
+Partes descartadas: 1
+Llamadas API Gemini: 8/45
+Por Teil (guardadas / descartadas · intentos):
+  T4: 0 guardadas, 1 descartadas, 8 intentos
+
+
+⏳ Gemini Alta demanda (503) — reintento en 15s (1/8)…
+      reintento 2/8 — 5s restantes…
+Léxico FAIL (1 errores)
+  ✗ question gen-q-4-0f4ec912-4 signText: vocabulario B2+ en pregunta «Konsequenzen» → usa «Folge / Ergebnis» (B1)

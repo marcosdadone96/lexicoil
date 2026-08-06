@@ -1,0 +1,198 @@
+{
+  "ok": true,
+  "total": 6,
+  "byStatus": {
+    "candidate": 1,
+    "approved": 2,
+    "active": 3,
+    "deprecated": 0,
+    "other": 0
+  },
+  "byCategory": {
+    "grammar": 1,
+    "vocabulary": 2,
+    "naturalness": 2,
+    "CEFR": 0,
+    "exam_quality": 0,
+    "typo": 1,
+    "other": 0
+  },
+  "duplicates": [
+    {
+      "key": "naturalness|konsum von mobilität|nutzung von verkehrsmitteln|",
+      "ids": [
+        "gf-mrf8eo9a-0xlc22",
+        "gf-mrf8eo98-bmw42v"
+      ],
+      "count": 2
+    }
+  ],
+  "tooSpecific": [
+    {
+      "id": "gf-mrf8eo9a-jvb0ke",
+      "status": "active",
+      "category": "vocabulary",
+      "type": "lexical_preference",
+      "reason": "ban Haus",
+      "avoid": "Haus",
+      "prefer": "",
+      "specificity": "too_specific_narrow"
+    }
+  ],
+  "tooGeneral": [
+    {
+      "id": "gf-mrf8eo9a-dd0gw3",
+      "status": "candidate",
+      "category": "grammar",
+      "type": "grammar_rule",
+      "reason": "Evitar siempre Perfekt",
+      "avoid": "Perfekt",
+      "prefer": "",
+      "specificity": "too_general"
+    }
+  ],
+  "balancedCount": 4,
+  "contradictions": [],
+  "qualityGate": {
+    "accepted": 3,
+    "rejected": 3,
+    "acceptedIds": [
+      "gf-mrf8eo9a-7hh518",
+      "gf-mrf8eo9a-0xlc22",
+      "gf-mrf8eo98-bmw42v"
+    ],
+    "rejectedSample": [
+      {
+        "id": "gf-mrf8eo9a-jvb0ke",
+        "status": "active",
+        "category": "vocabulary",
+        "type": "lexical_preference",
+        "reason": "ban Haus",
+        "avoid": "Haus",
+        "prefer": "",
+        "specificity": "too_specific_narrow",
+        "reasons": [
+          "over_narrow_or_generic_avoid"
+        ]
+      },
+      {
+        "id": "gf-mrf8eo9a-dd0gw3",
+        "status": "candidate",
+        "category": "grammar",
+        "type": "grammar_rule",
+        "reason": "Evitar siempre Perfekt",
+        "avoid": "Perfekt",
+        "prefer": "",
+        "specificity": "too_general",
+        "reasons": [
+          "overbroad_prohibition",
+          "overbroad_tense_ban"
+        ]
+      },
+      {
+        "id": "gf-mrf8eo9a-m4mfia",
+        "status": "active",
+        "category": "typo",
+        "type": "typo",
+        "reason": "typo",
+        "avoid": "vergisen",
+        "prefer": "vergessen",
+        "specificity": "balanced",
+        "reasons": [
+          "category_not_allowed:typo",
+          "typo_not_activatable",
+          "description_too_short"
+        ]
+      }
+    ]
+  },
+  "recommendations": {
+    "promoteToActive": [
+      "gf-mrf8eo9a-7hh518",
+      "gf-mrf8eo9a-0xlc22"
+    ],
+    "demoteToCandidate": [
+      "gf-mrf8eo9a-jvb0ke",
+      "gf-mrf8eo9a-m4mfia"
+    ],
+    "reviewDuplicates": [
+      {
+        "key": "naturalness|konsum von mobilität|nutzung von verkehrsmitteln|",
+        "ids": [
+          "gf-mrf8eo9a-0xlc22",
+          "gf-mrf8eo98-bmw42v"
+        ],
+        "count": 2
+      }
+    ],
+    "reviewContradictions": []
+  },
+  "examples": {
+    "bad": [
+      {
+        "id": "gf-mrf8eo9a-jvb0ke",
+        "status": "active",
+        "category": "vocabulary",
+        "type": "lexical_preference",
+        "reason": "ban Haus",
+        "avoid": "Haus",
+        "prefer": "",
+        "specificity": "too_specific_narrow"
+      },
+      {
+        "id": "gf-mrf8eo9a-dd0gw3",
+        "status": "candidate",
+        "category": "grammar",
+        "type": "grammar_rule",
+        "reason": "Evitar siempre Perfekt",
+        "avoid": "Perfekt",
+        "prefer": "",
+        "specificity": "too_general"
+      }
+    ],
+    "good": [
+      {
+        "id": "gf-mrf8eo9a-7hh518",
+        "status": "approved",
+        "category": "vocabulary",
+        "type": "lexical_preference",
+        "reason": "Prefer natural verb-preposition collocations",
+        "avoid": "eingetreten bei einem Programm",
+        "prefer": "eingeführt",
+        "specificity": "balanced"
+      },
+      {
+        "id": "gf-mrf8eo9a-m4mfia",
+        "status": "active",
+        "category": "typo",
+        "type": "typo",
+        "reason": "typo",
+        "avoid": "vergisen",
+        "prefer": "vergessen",
+        "specificity": "balanced"
+      },
+      {
+        "id": "gf-mrf8eo9a-0xlc22",
+        "status": "approved",
+        "category": "naturalness",
+        "type": "naturalness",
+        "reason": "Avoid translating Spanish structures literally",
+        "avoid": "Konsum von Mobilität",
+        "prefer": "Nutzung von Verkehrsmitteln",
+        "specificity": "balanced"
+      },
+      {
+        "id": "gf-mrf8eo98-bmw42v",
+        "status": "active",
+        "category": "naturalness",
+        "type": "naturalness",
+        "reason": "Avoid translating Spanish structures literally",
+        "avoid": "Konsum von Mobilität",
+        "prefer": "Nutzung von Verkehrsmitteln",
+        "specificity": "balanced"
+      }
+    ]
+  },
+  "source": "fixture",
+  "generatedAt": "2026-07-10T17:50:47.408Z"
+}

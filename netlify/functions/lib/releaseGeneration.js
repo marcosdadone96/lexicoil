@@ -91,10 +91,11 @@ async function releaseGenerationQuota(event, { genTicket } = {}) {
     };
   }
 
-  if (ticketPayload.scope === 'personal_exam') {
+  const PERSONAL_CREDIT_SCOPES = new Set(['personal_exam', 'personal_schreiben', 'personal_sprechen_gen']);
+  if (PERSONAL_CREDIT_SCOPES.has(ticketPayload.scope)) {
     let refundMeta;
     try {
-      refundMeta = await releaseAiCreditConsumption(event, 'personal_exam', {
+      refundMeta = await releaseAiCreditConsumption(event, ticketPayload.scope, {
         requestId: ticketPayload.nonce,
       });
     } catch (err) {
@@ -186,7 +187,8 @@ async function deliverGenerationQuota(event, { genTicket } = {}) {
     { logTag: '[gentk-deliver]' },
   ).catch(() => ({ delivered: false, reason: 'cas_error' }));
 
-  if (ticketPayload.scope === 'personal_exam') {
+  const PERSONAL_CREDIT_SCOPES = new Set(['personal_exam', 'personal_schreiben', 'personal_sprechen_gen']);
+  if (PERSONAL_CREDIT_SCOPES.has(ticketPayload.scope)) {
     const aiAfter = await getAiCredits(event).catch(() => ({}));
     return {
       delivered: !!casResult?.delivered,
@@ -247,10 +249,26 @@ async function renewGenerationTicket(event, { genTicket } = {}) {
   return { renewed: true, ticket: token, nonce: renewedPayload.nonce };
 }
 
+async function assertGenerationTicketOwner(event, ticketPayload) {
+  let quotaCheck;
+  try {
+    quotaCheck = await checkQuota(event);
+  } catch (err) {
+    console.error('[releaseGeneration] ticket owner quota check failed:', err.message);
+    return { ok: false, error: 'quota_unavailable' };
+  }
+  const expectedSub = ticketSubForQuotaState(quotaCheck?.state);
+  if (!expectedSub || ticketPayload.sub !== expectedSub) {
+    return { ok: false, error: 'ticket_owner_mismatch' };
+  }
+  return { ok: true };
+}
+
 module.exports = {
   linkTicketQuotaCharge,
   releaseGenerationQuota,
   deliverGenerationQuota,
   renewGenerationTicket,
   ticketSubForQuotaState,
+  assertGenerationTicketOwner,
 };

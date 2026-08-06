@@ -361,32 +361,75 @@ async function restSelectRows(table, filters, select = 'role') {
   return Array.isArray(rows) ? rows : null;
 }
 
-async function isAdmin(userId) {
-  if (!userId) return false;
-  const rows = await restSelectRows('lc_admin_roles', { user_id: `eq.${userId}` });
-  if (rows?.length) return true;
+const {
+  isFullAdminRole,
+  canAccessContentCorrections,
+  normalizeRole,
+} = require('./adminRoles.js');
+
+async function getAdminRoleRow(userId, email) {
+  const normalized = normalizeEmail(email);
+  if (userId) {
+    const rows = await restSelectRows('lc_admin_roles', { user_id: `eq.${userId}` });
+    if (rows?.[0]) return rows[0];
+  }
+  if (normalized) {
+    let rows = await restSelectRows('lc_admin_roles', { email: `eq.${normalized}` });
+    if (rows?.[0]) return rows[0];
+    rows = await restSelectRows('lc_admin_roles', { email: `ilike.${normalized}` });
+    if (rows?.[0]) return rows[0];
+  }
   const sb = getClient();
-  if (!sb) return false;
-  const { data, error } = await sb.from('lc_admin_roles').select('role').eq('user_id', userId).maybeSingle();
-  if (error) console.error('[supabaseAdmin] isAdmin:', error.message);
-  return !!data;
+  if (!sb) return null;
+  if (userId) {
+    const { data, error } = await sb.from('lc_admin_roles').select('role, email').eq('user_id', userId).maybeSingle();
+    if (error) console.error('[supabaseAdmin] getAdminRoleRow:', error.message);
+    if (data) return data;
+  }
+  if (normalized) {
+    let { data, error } = await sb.from('lc_admin_roles').select('role, email').eq('email', normalized).maybeSingle();
+    if (error) console.error('[supabaseAdmin] getAdminRoleRow:', error.message);
+    if (data) return data;
+    ({ data, error } = await sb.from('lc_admin_roles').select('role, email').ilike('email', normalized).maybeSingle());
+    if (error) console.error('[supabaseAdmin] getAdminRoleRow ilike:', error.message);
+    if (data) return data;
+  }
+  return null;
+}
+
+async function getAdminRole(userId, email) {
+  const row = await getAdminRoleRow(userId, email);
+  return row?.role ? normalizeRole(row.role) : null;
+}
+
+async function isAdmin(userId) {
+  const role = await getAdminRole(userId, null);
+  return isFullAdminRole(role);
 }
 
 async function isAdminByEmail(email) {
-  const normalized = normalizeEmail(email);
-  if (!normalized) return false;
-  let rows = await restSelectRows('lc_admin_roles', { email: `eq.${normalized}` });
-  if (rows?.length) return true;
-  rows = await restSelectRows('lc_admin_roles', { email: `ilike.${normalized}` });
-  if (rows?.length) return true;
+  const role = await getAdminRole(null, email);
+  return isFullAdminRole(role);
+}
+
+async function isContentCorrector(userId, email) {
+  const role = await getAdminRole(userId, email);
+  return canAccessContentCorrections(role);
+}
+
+async function insertContentCorrectionAudit(entry) {
   const sb = getClient();
-  if (!sb) return false;
-  let { data, error } = await sb.from('lc_admin_roles').select('role').eq('email', normalized).maybeSingle();
-  if (error) console.error('[supabaseAdmin] isAdminByEmail:', error.message);
-  if (data) return true;
-  ({ data, error } = await sb.from('lc_admin_roles').select('role').ilike('email', normalized).maybeSingle());
-  if (error) console.error('[supabaseAdmin] isAdminByEmail ilike:', error.message);
-  return !!data;
+  if (!sb) return null;
+  const row = {
+    correction_id: entry.correction_id || entry.correctionId,
+    actor_email: entry.actor_email || entry.actorEmail,
+    actor_role: entry.actor_role || entry.actorRole || 'unknown',
+    action: entry.action,
+    detail: entry.detail || {},
+  };
+  const { data, error } = await sb.from('lc_content_correction_audit').insert(row).select('id').maybeSingle();
+  if (error) console.error('[supabaseAdmin] insertContentCorrectionAudit:', error.message);
+  return error ? null : data;
 }
 
 async function listUsers(limit = 100, offset = 0) {
@@ -576,6 +619,9 @@ module.exports = {
   purgeOldGenerations,
   isAdmin,
   isAdminByEmail,
+  getAdminRole,
+  isContentCorrector,
+  insertContentCorrectionAudit,
   listUsers,
   listPoolExams,
   deletePoolExam,

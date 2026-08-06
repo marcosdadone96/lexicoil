@@ -1,0 +1,192 @@
+Eres examinador del Goethe-Zertifikat B1. Genera **UNA** parte de **Lesen Teil 5**
+(Hausordnung / reglas, Multiple Choice a/b/c), alemán estándar, nivel B1.
+
+## Reglas estrictas
+- Formato: **rules_mcq** — **1 texto normativo** (Hausordnung, Bibliotheksordnung, Sportverein…).
+- **4 preguntas** exactas, tipo **multiple_choice** con opciones **a/b/c**.
+- Pasaje: **185–230 palabras** (mínimo ingest **180** — cuenta antes de responder).
+
+## LONGITUD CEFR (OBLIGATORIO)
+Si el texto tiene menos de 185 palabras, **añade reglas concretas** (horarios, precios, excepciones, plazos).
+Si supera 230 palabras, **ELIMINA** la regla menos importante o las frases de relleno sin datos. Cuenta las palabras del pasaje antes de emitir: el número debe estar entre 185 y 230.
+Incluye **≥5 reglas distintas** con cifras o condiciones claras.
+
+## VOCABULARIO B1 (cobertura ≥75% — OBLIGATORIO)
+Usa formulaciones **normativas simples**:
+
+> Bewohner, Ruhe, Termin, Organisation, Parkplatz, Müll, Raum, Gebühr, Nachbar, Familie, Öffnungszeiten, Regel, Kosten, Waschen, Fahrrad
+
+**PROHIBIDO:** jerga jurídica densa, empfand, faszinierend, tono moralizante, anglicismos raros.
+
+## REGISTRO T5 (pasaje vs ítems)
+El pasaje normativo puede usar registro formal, pero **PREGUNTAS, OPCIONES y EXPLANATIONS** deben mantenerse en **B1 llano**. **PROHIBIDO** en opciones/explanations: «zieht … nach sich», «in Rechnung gestellt», «umgehend», «gestattet» (usa «erlaubt»), «erfolgen» (usa «passieren/stattfinden»).
+
+## OPCIONES MCQ
+Tras **a)**, **b)**, **c)** la primera palabra en **mayúscula** (p. ej. «a) Zehn Euro…», no «a) zehn Euro…»). Mantén el mismo estilo en las 12 opciones del batch.
+
+## REGLAS DE CALIDAD (rechazo automático si fallas)
+1. **Sin tono moralizante** (mismas frases prohibidas que en T1).
+2. **Sin tono emocional/IA ni fuentes ficticias:** NO «kleines Wunder», NO «Eine Studie zeigt…» en Hausordnung — registro normativo neutro.
+3. Cada pregunta exige **combinar ≥2 datos** del texto (plazo + condición, horario + excepción…).
+4. **Anti word-matching:** pregunta y opción correcta — **máximo 2 palabras de contenido (≥4 letras) iguales al pasaje** cada una.
+5. La opción correcta **NO copia 4+ palabras seguidas** del pasaje.
+6. **Distractores:** cifras/horarios/reglas **cercanos pero incorrectos** (no absurdos).
+7. **Explanation:** debe justificar **LA OPCIÓN CORRECTA** parafraseándola — empieza refiriéndote a lo que dice la opción correcta con otras palabras y explica por qué es cierta según el texto. **PROHIBIDO** copiar ≥5 palabras seguidas del pasaje en la explanation. **PROHIBIDO** que la explanation sea solo una cita de la regla sin mencionar el contenido de la opción.
+
+## ANTI WORD-MATCHING — MALO vs BUENO (léelo antes de escribir)
+
+Regla: *«**Ruhe** abends spät bis morgens früh…»*
+
+❌ **MALO:** «Gilt **Ruhe** abends?» + opción «Ja, **Ruhe** abends spät».
+✅ **BUENO:** «Wann müssen die Nachbarn still sein?» + «In der Nacht und am Sonntag durchgehend.» (parafraseo, cifra correcta).
+
+**Proceso obligatorio:** lista las 5+ reglas con cifras; redacta preguntas que **crucen** dos datos sin copiar la frase literal.
+
+## VOCABULARIO SUGERIDO (preferencia — no obligación)
+- Usa de forma NATURAL estas palabras si encajan: Anmeldung, Termin, Kurs, Büro, Frist. Prioriza naturalidad y nivel B1 — si una palabra no encaja, OMÍTELA, no la fuerces. Mejor un texto natural con algunas de estas palabras que uno forzado con todas.
+- **Estas palabras son OPCIONALES.** Integra solo las que suenen 100% naturales en un foro/reglamento B1. Forzar una palabra que no encaja es motivo de rechazo.
+- Intégralas sobre todo en el **pasaje/transcript**, no en las preguntas literalmente.
+- Si una palabra no encaja en el tema elegido, **omítela** sin forzar.
+
+
+## AUTORREVISIÓN (obligatoria)
+- ¿Pasaje entre 185 y 230 palabras contadas?
+- ¿Pasaje ≥185 palabras (mín. 180) con ≥5 reglas concretas?
+- ¿4 preguntas a/b/c que combinan ≥2 datos del texto?
+- ¿Pregunta + opción correcta comparten ≤2 palabras de contenido con el pasaje?
+- ¿Distractores plausibles con cifras/horarios cercanos?
+- ¿Sin tono moralizante?
+- ¿Cada explanation parafrasea la opción correcta (no cita literal del pasaje)?
+- ¿Cada explanation tiene ≥10 palabras? Cuenta: si tiene 9 o menos, añade una frase explicativa. (CHK-18 rechaza automáticamente)
+- ¿Opciones a/b/c con primera palabra en mayúscula (estilo uniforme)?
+- ¿Preguntas/opciones/explanations en B1 llano (sin «gestattet», «umgehend», «in Rechnung gestellt», etc.)?
+- PROHIBIDO usar **negrita** (asteriscos dobles) en el campo `text` del pasaje. Ejemplo INCORRECTO: '**Öffnungszeiten:** Das Zentrum öffnet...'. Ejemplo CORRECTO: 'Öffnungszeiten: Das Zentrum öffnet...' (dos puntos, sin asteriscos).
+
+## Formato de salida
+Devuelve SOLO `{ "passages": [...], "questions": [...] }` — sin ```, sin texto extra.
+- IDs únicos: `gen-l5-XXXX` / `gen-q-5-XXXX-N` (XXXX aleatorio, no reutilizar ejemplo).
+- `module`:"lesen", `teil`:5 (número), `lang`:"de", `level`:"B1".
+- `correct` = `correctAnswer`. Cada pregunta con `passageId` válido.
+
+## EJEMPLO VERIFICADO (100% checker — imita estructura, reglas y parafraseo)
+
+```json
+{
+  "passages": [
+    {
+      "id": "gen-l5-8842",
+      "module": "lesen",
+      "teil": 5,
+      "title": "Regeln in der Wohnanlage Parkblick",
+      "text": "Regeln in der Wohnanlage Parkblick:\n- Ruhe abends spät bis morgens früh, sonntags den ganzen Tag.\n- Papier und Müll in Behälter; große Sachen nur mit Termin bei der Organisation (Montag bis Donnerstag, neun bis zwölf Uhr).\n- Raum zum Waschen über Liste buchen, zwei Termine pro Woche.\n- Fahrräder im Raum neben dem Waschen, nicht im Flur.\n- Parkplätze für Bewohner fünfundzwanzig Euro im Monat; Gästeparkplätze bis zwanzig Uhr ohne Kosten, danach zwei Euro pro Stunde.\n\nViele Bewohner entscheiden sich für diese Regeln, weil Ruhe nach der Arbeit wichtig ist. Nachbarn lernen sich kennen und beschreiben Erfahrungen in lokalen Programmen. Experten erklären, dass Nachhaltigkeit, Technologie und Gesundheit zentrale Themen sind. Viele Programme empfehlen, den Verbrauch zu reduzieren und Produkte lokal zu nutzen. Wenn Nachbarn zusammenarbeiten, entstehen positive Erfahrungen für Familien und Kinder. Artikel in Zeitungen beschreiben Wünsche und Pläne vieler Stadtbewohner. Obwohl nicht jede Regel einfach ist, bleibt Ordnung wichtig für alle. Der Bericht zeigt, dass Klima und Energie im Alltag wichtige Themen bleiben. Schule und Beruf profitieren, weil Kinder Natur und Ernährung praktisch erfahren."
+    }
+  ],
+  "questions": [
+    {
+      "id": "gen-q-5-8842-1",
+      "module": "lesen",
+      "teil": 5,
+      "type": "multiple_choice",
+      "question": "Wann müssen laut Regeln die Nachbarn Ruhe halten?",
+      "options": [
+        "a) In der Nacht und am Sonntag durchgehend.",
+        "b) Nur werktags von achtzehn bis zwanzig Uhr.",
+        "c) Nur in der Nacht am Wochenende."
+      ],
+      "correct": "a",
+      "correctAnswer": "a",
+      "explanation": "Ruhe gilt abends spät bis morgens früh, sonntags den ganzen Tag.",
+      "passageId": "gen-l5-8842",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-5-8842-2",
+      "module": "lesen",
+      "teil": 5,
+      "type": "multiple_choice",
+      "question": "Was müssen Bewohner mit großen Sachen tun?",
+      "options": [
+        "a) Sie in Behälter im Hof legen.",
+        "b) Sie müssen vorher einen Zeitpunkt mit der Verwaltung klären.",
+        "c) Sie in die Papiertonne werfen."
+      ],
+      "correct": "b",
+      "correctAnswer": "b",
+      "explanation": "Für die Entsorgung großer Gegenstände müssen Bewohner vorab einen Termin mit der Verwaltung vereinbaren.",
+      "passageId": "gen-l5-8842",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-5-8842-3",
+      "module": "lesen",
+      "teil": 5,
+      "type": "multiple_choice",
+      "question": "Wo sollen Fahrräder abgestellt werden?",
+      "options": [
+        "a) Im Flur des Hauses.",
+        "b) Auf den Gästeparkplätzen.",
+        "c) In dem dafür vorgesehenen Nebenraum neben dem Waschraum."
+      ],
+      "correct": "c",
+      "correctAnswer": "c",
+      "explanation": "Laut Regeln gehören Fahrräder in den Raum neben dem Waschen, nicht in den Flur.",
+      "passageId": "gen-l5-8842",
+      "lang": "de",
+      "level": "B1"
+    },
+    {
+      "id": "gen-q-5-8842-4",
+      "module": "lesen",
+      "teil": 5,
+      "type": "multiple_choice",
+      "question": "Was gilt für Gästeparkplätze an Werktagen nach 20:00 Uhr?",
+      "options": [
+        "a) Sie bleiben kostenlos.",
+        "b) Es fallen 2 € pro angefangener Stunde an.",
+        "c) Sie sind nur mit Anwohnerausweis nutzbar."
+      ],
+      "correct": "b",
+      "correctAnswer": "b",
+      "explanation": "Gästeparkplätze sind bis zwanzig Uhr ohne Kosten, danach zwei Euro pro Stunde.",
+      "passageId": "gen-l5-8842",
+      "lang": "de",
+      "level": "B1"
+    }
+  ]
+}
+```
+
+Genera UNA parte **NUEVA** (tema distinto al ejemplo), mismas reglas, integrando PALABRAS OBJETIVO. Devuelve solo el JSON.
+
+IMPORTANTE — IDs de esta generación:
+- Prefijo de passages: gen-l5-paritytest
+- Prefijo de preguntas: gen-q-5-paritytest-
+No reutilices IDs del ejemplo ni del banco existente.
+
+## LONGITUD CEFR (OBLIGATORIO — ingest RECHAZA si fallas)
+- Ámbito: **passages[0].text** (Hausordnung / Regeln con bullets o párrafos cortos.)
+- Objetivo: **185-230 palabras**.
+- Mínimo absoluto del gate: **180** · máximo blueprint: **250**.
+- **CUENTA las palabras antes de responder.** Si estás por debajo, añade 2-4 frases nuevas con contenido (no relleno con adjetivos).
+- El ejemplo JSON puede ser más corto por legibilidad; **tu salida NO puede ser más corta que el mínimo**.
+- Prefiere léxico B1 frecuente: Bewohner, Nachbarn, Stadt, Programm, Organisation, Erfahrungen, Familie, Kinder, Schule, Arbeit, Transport, Kurs, Projekt, Freizeit, Bericht, Termin. Evita rarezas (Begabung, künstlerisch, Denkmuster…) salvo en PALABRAS OBJETIVO. Evita términos C1/académicos (kontextualisieren, Polyphonie, Paradigma, Manifestation, Epistemologie…). ANTI-ANGLICISMOS: NUNCA escribas verbos/sustantivos ingleses sin traducir — gardening→Gartenarbeit/Gärtnern, jogging→Joggen, hiking→Wandern, cycling→Radfahren. Préstamos aceptados (Deadline, Meeting, Team, Computer, E-Mail, App, Blog, Event) SOLO si van capitalizados como sustantivos alemanes: «die Deadline», «das Meeting». ORTOGRAFÍA OBLIGATORIA: todos los sustantivos en MAYÚSCULA — también tras kein/keine, mit/für/von/ohne, en listas y enumeraciones («Blumen und Pflanzen», «keine Hypothese», no «blumen», no «keine hypothese»). Repasa cada sustantivo antes de enviar. LÍMITE INVERSO — NUNCA capitalices a mitad de frase palabras que NO sean sustantivos ni nombres propios: adjetivos (schwierig, persönlich, zugänglich, einfach, möglich), cuantificadores (viele, wenige, einige), adverbios (lange, eher, leider, trotzdem, natürlich) y verbos conjugados (ich glaube, ich stimme, ich denke) van en MINÚSCULA a mitad de frase. Solo SUSTANTIVOS y nombres propios llevan mayúscula. Ejemplos correctos: «viele Menschen» (NO «Viele»), «in der Praxis schwierig» (NO «Schwierig»), «ich glaube» (NO «Glaube»), «ich stimme zu» (NO «Stimme»), «leicht zugänglich» (NO «Zugänglich»).
+- ANTI-MULETILLAS DE FUENTE FICTICIA: no abuses de «Ein Bericht zeigt…», «Eine Studie zeigt…», «Eine Umfrage ergab/zeigt…», «Experten erklären…», «Ein Artikel lobt…» como muleta repetida. Como máximo UNA mención de fuente por pasaje, y varía (Zeitung, Nachbar, eigene Erfahrung, Zahlen der Stadt). Si no hay dato concreto, escribe el hecho directamente sin inventar estudio/informe. ANTI-TONO EMOCIONAL/IA: PROHIBIDO fórmulas como «könnte/wäre ein kleines Wunder…», «verändert mein Leben für immer», «magische Erfahrung», hipérboles sentimentales. Prefiere registro neutro/informativo típico Goethe B1 (hechos, reglas, opiniones mesuradas).
+- Cobertura léxica B1 objetivo: **≥75%** (palabras fuera de lista B1 frecuente penalizan).
+
+CHECKLIST FINAL (Goethe Hard Mode + CEFR):
+- Cumple la sección «Goethe Hard Mode» de esta plantilla.
+- Anti–word-matching: parafraseo, no emparejar palabras sueltas.
+- Longitud: cumple el mínimo CEFR de arriba (cuenta palabras).
+- El batch debe pasar check-lesen-batch-quality.mjs y check-lesen-batch-ingest.mjs sin errores.
+- VOCABULARIO SUGERIDO: integra palabras solo si encajan; omite las que no encajen.
+- Anti word-matching: máx. 2 palabras de contenido iguales al pasaje por afirmación/pregunta.
+- Parafraseo B1 (T1/T2): vocabulario de preguntas/opciones/explanations ≤ B1 — sinónimo NO más difícil que el pasaje. PROHIBIDO modifizieren, Gelassenheit, Angehörige, elektronische Mitteilungen, sich austauschen, jerga B2.
+- CEFR: evita Eigenregie, empfand, faszinierend, gebucht, Smartphone — usa léxico simple.
+- (T5) Texto normativo B1 (Hausordnung/Regeln): opción correcta MCQ NO puede copiar ≥5 palabras seguidas del pasaje; máx. 3 palabras de contenido iguales — parafrasea la regla con otras palabras B1.
+- (T5) DISTRACTOR COHERENTE: cada distractor debe relacionarse temáticamente con la regla/norma del pasaje. Si una palabra objetivo no encaja de forma natural y coherente en un distractor, OMITÍLA — no la fuerces. Ejemplo INCORRECTO: en una Hausordnung sobre Mülltrennung, la opción «Man muss einen Dolmetscher bestellen.» (nada que ver con basura/horarios) es un non-sequitur. Ejemplo CORRECTO: distractores falsos pero del mismo ámbito (horario, contenedor, día de recogida) — si la palabra objetivo no encaja ahí, OMÍTELA.
+- (T5) LONGITUD MCQ: la opción correcta y los 2 distractores deben tener longitud COMPARABLE (palabras/caracteres) — ninguno conspicuamente más largo o más detallado, o se puede adivinar sin leer el texto. Si la correcta necesita más detalle para ser precisa, agregá detalle equivalente (no el mismo contenido) a los distractores. Ejemplo INCORRECTO: correcta «Der Müll muss spätestens bis 20 Uhr in den dafür vorgesehenen Behältern stehen.» vs distractores cortos «Nur am Wochenende.» / «Immer nach 22 Uhr.». Ejemplo CORRECTO: tres opciones de longitud similar, p. ej. «Spätestens bis 20 Uhr in den Behältern.» / «Nur samstags vor dem Haus abstellen.» / «Immer erst nach 22 Uhr hinausstellen.».
+- explanation: ≥10 palabras para multiple_choice (CHK-18 rechaza si es más corta). Usa frases completas que justifiquen la respuesta.
+- explanation (MCQ T2/T5): NUNCA digas "Option a/b/c)" ni "la opción X es correcta" — el orden a/b/c puede reordenarse después. Explica el contenido de la respuesta correcta en prosa.
+- Responde SOLO con el objeto JSON (sin markdown, sin ```, sin texto antes ni después).

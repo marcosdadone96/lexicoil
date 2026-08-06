@@ -1,0 +1,446 @@
+{
+  "generatedAt": "2026-07-15T09:05:06.784Z",
+  "sources": {
+    "poolVerified": "C:\\Users\\marco\\Desktop\\MDR\\lexiloop\\batches\\ready\\pool-verified",
+    "seed": "library/reusable-seed/de_B1.json",
+    "capacityReport": "batches/ready/assembled-from-verified/capacity-report.json"
+  },
+  "stock": {
+    "poolVerifiedRaw": {
+      "totalFiles": 208,
+      "byTeil": {
+        "horen": {
+          "1": 9,
+          "2": 29,
+          "3": 12,
+          "4": 13
+        },
+        "lesen": {
+          "1": 40,
+          "2": 13,
+          "3": 18,
+          "4": 11,
+          "5": 31
+        },
+        "schreiben": {
+          "1": 19,
+          "2": 19,
+          "3": 19
+        },
+        "sprechen": {
+          "1": 13,
+          "2": 13,
+          "3": 13
+        }
+      }
+    },
+    "seedPractice": {
+      "lesen": {
+        "1": 13,
+        "2": 14,
+        "3": 17,
+        "4": 10,
+        "5": 15
+      },
+      "horen": {
+        "1": 9,
+        "2": 15,
+        "3": 8,
+        "4": 9
+      },
+      "schreiben": {
+        "1": 19,
+        "2": 19,
+        "3": 19
+      },
+      "sprechen": {
+        "1": 25,
+        "2": 25,
+        "3": 25
+      }
+    },
+    "seedOfficial": {
+      "lesen": {
+        "1": 13,
+        "2": 14,
+        "3": 17,
+        "4": 10,
+        "5": 15
+      },
+      "horen": {
+        "1": 9,
+        "2": 15,
+        "3": 8,
+        "4": 9
+      }
+    },
+    "poolVerifiedOfficialCapacity": {
+      "generatedAt": "2026-07-15T07:44:41.105Z",
+      "mode": "official",
+      "stock": {
+        "lesen_1": 8,
+        "lesen_2": 3,
+        "lesen_3": 13,
+        "lesen_4": 5,
+        "lesen_5": 3,
+        "horen_1": 9,
+        "horen_2": 10,
+        "horen_3": 9,
+        "horen_4": 9,
+        "schreiben_sets": 15,
+        "sprechen_sets": 12
+      },
+      "capacity": 3,
+      "bottlenecks": [
+        [
+          "lesen_2",
+          3
+        ],
+        [
+          "lesen_5",
+          3
+        ],
+        [
+          "lesen_4",
+          5
+        ],
+        [
+          "lesen_1",
+          8
+        ],
+        [
+          "horen_1",
+          9
+        ],
+        [
+          "horen_3",
+          9
+        ],
+        [
+          "horen_4",
+          9
+        ],
+        [
+          "horen_2",
+          10
+        ],
+        [
+          "sprechen_sets",
+          12
+        ],
+        [
+          "lesen_3",
+          13
+        ],
+        [
+          "schreiben_sets",
+          15
+        ]
+      ]
+    }
+  },
+  "table": [
+    {
+      "teil": "lesen T1",
+      "stockPoolVerified": 40,
+      "stockSeedPractice": 13,
+      "targetFree": 13,
+      "targetPro": 42,
+      "targetProMax": 72,
+      "alcanzaFreeSeed": true,
+      "alcanzaProSeed": false,
+      "alcanzaProMaxSeed": false
+    },
+    {
+      "teil": "lesen T2",
+      "stockPoolVerified": 13,
+      "stockSeedPractice": 14,
+      "targetFree": 13,
+      "targetPro": 42,
+      "targetProMax": 72,
+      "alcanzaFreeSeed": true,
+      "alcanzaProSeed": false,
+      "alcanzaProMaxSeed": false
+    },
+    {
+      "teil": "lesen T3",
+      "stockPoolVerified": 18,
+      "stockSeedPractice": 17,
+      "targetFree": 13,
+      "targetPro": 42,
+      "targetProMax": 72,
+      "alcanzaFreeSeed": true,
+      "alcanzaProSeed": false,
+      "alcanzaProMaxSeed": false
+    },
+    {
+      "teil": "lesen T4",
+      "stockPoolVerified": 11,
+      "stockSeedPractice": 10,
+      "targetFree": 13,
+      "targetPro": 42,
+      "targetProMax": 72,
+      "alcanzaFreeSeed": false,
+      "alcanzaProSeed": false,
+      "alcanzaProMaxSeed": false
+    },
+    {
+      "teil": "lesen T5",
+      "stockPoolVerified": 31,
+      "stockSeedPractice": 15,
+      "targetFree": 13,
+      "targetPro": 42,
+      "targetProMax": 72,
+      "alcanzaFreeSeed": true,
+      "alcanzaProSeed": false,
+      "alcanzaProMaxSeed": false
+    },
+    {
+      "teil": "horen T1",
+      "stockPoolVerified": 9,
+      "stockSeedPractice": 9,
+      "targetFree": 13,
+      "targetPro": 42,
+      "targetProMax": 72,
+      "alcanzaFreeSeed": false,
+      "alcanzaProSeed": false,
+      "alcanzaProMaxSeed": false
+    },
+    {
+      "teil": "horen T2",
+      "stockPoolVerified": 29,
+      "stockSeedPractice": 15,
+      "targetFree": 13,
+      "targetPro": 42,
+      "targetProMax": 72,
+      "alcanzaFreeSeed": true,
+      "alcanzaProSeed": false,
+      "alcanzaProMaxSeed": false
+    },
+    {
+      "teil": "horen T3",
+      "stockPoolVerified": 12,
+      "stockSeedPractice": 8,
+      "targetFree": 13,
+      "targetPro": 42,
+      "targetProMax": 72,
+      "alcanzaFreeSeed": false,
+      "alcanzaProSeed": false,
+      "alcanzaProMaxSeed": false
+    },
+    {
+      "teil": "horen T4",
+      "stockPoolVerified": 13,
+      "stockSeedPractice": 9,
+      "targetFree": 13,
+      "targetPro": 42,
+      "targetProMax": 72,
+      "alcanzaFreeSeed": false,
+      "alcanzaProSeed": false,
+      "alcanzaProMaxSeed": false
+    },
+    {
+      "teil": "schreiben T1",
+      "stockPoolVerified": 19,
+      "stockSeedPractice": 19,
+      "targetFree": 5,
+      "targetPro": 12,
+      "targetProMax": 12,
+      "alcanzaFreeSeed": true,
+      "alcanzaProSeed": true,
+      "alcanzaProMaxSeed": true
+    },
+    {
+      "teil": "schreiben T2",
+      "stockPoolVerified": 19,
+      "stockSeedPractice": 19,
+      "targetFree": 5,
+      "targetPro": 12,
+      "targetProMax": 12,
+      "alcanzaFreeSeed": true,
+      "alcanzaProSeed": true,
+      "alcanzaProMaxSeed": true
+    },
+    {
+      "teil": "schreiben T3",
+      "stockPoolVerified": 19,
+      "stockSeedPractice": 19,
+      "targetFree": 5,
+      "targetPro": 12,
+      "targetProMax": 12,
+      "alcanzaFreeSeed": true,
+      "alcanzaProSeed": true,
+      "alcanzaProMaxSeed": true
+    },
+    {
+      "teil": "sprechen T1",
+      "stockPoolVerified": 13,
+      "stockSeedPractice": 25,
+      "targetFree": 5,
+      "targetPro": 12,
+      "targetProMax": 12,
+      "alcanzaFreeSeed": true,
+      "alcanzaProSeed": true,
+      "alcanzaProMaxSeed": true
+    },
+    {
+      "teil": "sprechen T2",
+      "stockPoolVerified": 13,
+      "stockSeedPractice": 25,
+      "targetFree": 5,
+      "targetPro": 12,
+      "targetProMax": 12,
+      "alcanzaFreeSeed": true,
+      "alcanzaProSeed": true,
+      "alcanzaProMaxSeed": true
+    },
+    {
+      "teil": "sprechen T3",
+      "stockPoolVerified": 13,
+      "stockSeedPractice": 25,
+      "targetFree": 5,
+      "targetPro": 12,
+      "targetProMax": 12,
+      "alcanzaFreeSeed": true,
+      "alcanzaProSeed": true,
+      "alcanzaProMaxSeed": true
+    }
+  ],
+  "planSimulation": {
+    "free": {
+      "quotas": {
+        "exams": 5,
+        "personalLesen": 8,
+        "personalHoren": 8
+      },
+      "fullExams": {
+        "requested": 5,
+        "assembled": 5,
+        "failures": [],
+        "uniqueParts": 75
+      },
+      "personalLesen": {
+        "requested": 8,
+        "picks": 40,
+        "failures": [],
+        "repeats": 0,
+        "uniqueIds": 40
+      },
+      "personalHoren": {
+        "requested": 8,
+        "picks": 32,
+        "failures": [],
+        "repeats": 0,
+        "uniqueIds": 32
+      },
+      "ok": true
+    },
+    "pro": {
+      "quotas": {
+        "exams": 12,
+        "personalLesen": 30,
+        "personalHoren": 30
+      },
+      "fullExams": {
+        "requested": 12,
+        "assembled": 8,
+        "failures": [
+          {
+            "exam": 9,
+            "cell": "horen_3",
+            "reason": "pool_empty"
+          }
+        ],
+        "uniqueParts": 127
+      },
+      "personalLesen": {
+        "requested": 30,
+        "picks": 150,
+        "failures": [],
+        "repeats": 81,
+        "uniqueIds": 69
+      },
+      "personalHoren": {
+        "requested": 30,
+        "picks": 120,
+        "failures": [],
+        "repeats": 79,
+        "uniqueIds": 41
+      },
+      "ok": false
+    },
+    "pro_max": {
+      "quotas": {
+        "exams": 12,
+        "personalLesen": 60,
+        "personalHoren": 60
+      },
+      "fullExams": {
+        "requested": 12,
+        "assembled": 8,
+        "failures": [
+          {
+            "exam": 9,
+            "cell": "horen_3",
+            "reason": "pool_empty"
+          }
+        ],
+        "uniqueParts": 127
+      },
+      "personalLesen": {
+        "requested": 60,
+        "picks": 300,
+        "failures": [],
+        "repeats": 231,
+        "uniqueIds": 69
+      },
+      "personalHoren": {
+        "requested": 60,
+        "picks": 240,
+        "failures": [],
+        "repeats": 199,
+        "uniqueIds": 41
+      },
+      "ok": false
+    }
+  },
+  "officialMode12ExamsFromSeed": {
+    "requested": 12,
+    "assembled": 8,
+    "failures": [
+      {
+        "exam": 9,
+        "cell": "horen_3",
+        "reason": "pool_empty"
+      }
+    ],
+    "uniqueParts": 127
+  },
+  "crossUserBg": {
+    "ok": true,
+    "donorId": "pub-de-B1-lesen-t2-ec847aa773d4",
+    "donorContributor": "vocab-bg",
+    "donorWords": [
+      "kundendienst",
+      "erreichbar",
+      "beispiel",
+      "beliebt",
+      "alltag",
+      "global"
+    ],
+    "userA_excluded": [
+      "pub-de-B1-lesen-t2-ec847aa773d4"
+    ],
+    "userA_stillSeesDonor": false,
+    "userB_pick": "pub-de-B1-lesen-t2-ec847aa773d4",
+    "userB_vocabOverlap": 6,
+    "userB_getsDonor": true,
+    "mechanism": "publishExamBatchToPool/addReusablePart → pickReusablePartByVocab (exam-part.js)"
+  },
+  "assemblyAutomatic": {
+    "fullExam": "generateExam() → runExamSourceCascade → exam-pool.js pickPoolExam (no manual step)",
+    "personal": "generatePersonalExam() → assembleModuleFromPool → exam-part.js pickReusablePartByVocab",
+    "exclusion": "seenPartIds()/seenPoolIds() → excludeIds on server; _recordSeenPart at serve time",
+    "caveat": "If pool exhausted, pickReusablePart falls back and MAY repeat (documented in reusablePartsStore)"
+  }
+}

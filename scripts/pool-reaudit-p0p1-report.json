@@ -1,0 +1,731 @@
+{
+  "generatedAt": "2026-07-06T07:21:38.402Z",
+  "scope": "Freizeit+Technik-lesen",
+  "candidates": 45,
+  "ok": 17,
+  "failPool2": 28,
+  "failP0P1": 26,
+  "jubilated": 26,
+  "byTopic": {
+    "Freizeit": {
+      "ok": 9,
+      "failP0P1": 13,
+      "jubilated": 13
+    },
+    "Technik": {
+      "ok": 8,
+      "failP0P1": 13,
+      "jubilated": 13
+    }
+  },
+  "byCell": {
+    "Technik×T4": [
+      "bank-de-B1-lesen-t4-a91ac7693d5e06c2",
+      "pub-de-B1-lesen-t4-d0e3c1466175",
+      "pub-de-B1-lesen-t4-10b56cfa3087"
+    ],
+    "Freizeit×T4": [
+      "bank-de-B1-lesen-t4-6717582505af99d3",
+      "bank-de-B1-lesen-t4-68d579cab705311c",
+      "pool3-de-B1-lesen-t4-6ff91063499c",
+      "pub-de-B1-lesen-t4-e591b3380da3"
+    ],
+    "Technik×T5": [
+      "bank-de-B1-lesen-t5-e9a8eb2d8c14246e"
+    ],
+    "Freizeit×T2": [
+      "bank-de-B1-lesen-t2-6e99d4850239d932",
+      "pub-de-B1-lesen-t2-f40fd6c300d9",
+      "pub-de-B1-lesen-t2-e9b91297e847"
+    ],
+    "Freizeit×T5": [
+      "pub-de-B1-lesen-t5-fcbdf7fa8088",
+      "pub-de-B1-lesen-t5-1e54b94fd0f9",
+      "pub-de-B1-lesen-t5-746613e16543",
+      "pub-de-B1-lesen-t5-7faa5b5b0a2e",
+      "pub-de-B1-lesen-t5-cc3a44a2aaef",
+      "pub-de-B1-lesen-t5-570d3289e727"
+    ],
+    "Technik×T1": [
+      "pub-de-B1-lesen-t1-23308def78c9",
+      "pub-de-B1-lesen-t1-0be7aecb875f",
+      "pub-de-B1-lesen-t1-6f309302fb4c"
+    ],
+    "Technik×T2": [
+      "pub-de-B1-lesen-t2-6125664c007d",
+      "pub-de-B1-lesen-t2-3050094a1d7e",
+      "pub-de-B1-lesen-t2-d997d466df3e",
+      "pub-de-B1-lesen-t2-734f7febea14",
+      "pub-de-B1-lesen-t2-ec847aa773d4",
+      "pub-de-B1-lesen-t2-882d8ccd3042",
+      "pub-de-B1-lesen-t2-a0e37f688f1a",
+      "pub-de-B1-lesen-t2-193c51e71a09"
+    ]
+  },
+  "failures": [
+    {
+      "id": "bank-de-B1-lesen-t4-a91ac7693d5e06c2",
+      "topicTag": "Technik",
+      "teil": 4,
+      "sourceFile": null,
+      "p0p1": true,
+      "chk6B2": 1,
+      "chk26": 1,
+      "blocking": [
+        {
+          "id": "CHK-26",
+          "message": "Contenido del pasaje detectado como «Stadtleben» ≠ tema pedido «Technik»."
+        },
+        {
+          "id": "CHK-6",
+          "message": "Vocabulario B2+ en pregunta \"Datensicherheit\" → usa \"Sicherheit der Daten / Privatsphäre\" (B1)"
+        }
+      ]
+    },
+    {
+      "id": "bank-de-B1-lesen-t4-6717582505af99d3",
+      "topicTag": "Freizeit",
+      "teil": 4,
+      "sourceFile": null,
+      "p0p1": true,
+      "chk6B2": 1,
+      "chk26": 0,
+      "blocking": [
+        {
+          "id": "CHK-6",
+          "message": "Vocabulario B2+ en pregunta \"Ressourcen\" → usa \"Mittel / Möglichkeiten\" (B1)"
+        },
+        {
+          "id": "CHK-8",
+          "message": "passageId \"gen-l4-298a9eab\" no encontrado en passages[] del mismo archivo"
+        },
+        {
+          "id": "CHK-8",
+          "message": "passageId \"gen-l4-298a9eab\" no encontrado en passages[] del mismo archivo"
+        },
+        {
+          "id": "CHK-8",
+          "message": "passageId \"gen-l4-298a9eab\" no encontrado en passages[] del mismo archivo"
+        },
+        {
+          "id": "CHK-8",
+          "message": "passageId \"gen-l4-298a9eab\" no encontrado en passages[] del mismo archivo"
+        }
+      ]
+    },
+    {
+      "id": "bank-de-B1-lesen-t4-68d579cab705311c",
+      "topicTag": "Freizeit",
+      "teil": 4,
+      "sourceFile": null,
+      "p0p1": true,
+      "chk6B2": 0,
+      "chk26": 1,
+      "blocking": [
+        {
+          "id": "CHK-26",
+          "message": "Contenido del pasaje detectado como «Wohnen» ≠ tema pedido «Freizeit»."
+        },
+        {
+          "id": "CHK-8",
+          "message": "passageId \"gen-l4-bb4ff14f\" no encontrado en passages[] del mismo archivo"
+        },
+        {
+          "id": "CHK-8",
+          "message": "passageId \"gen-l4-bb4ff14f\" no encontrado en passages[] del mismo archivo"
+        },
+        {
+          "id": "CHK-8",
+          "message": "passageId \"gen-l4-bb4ff14f\" no encontrado en passages[] del mismo archivo"
+        },
+        {
+          "id": "CHK-8",
+          "message": "passageId \"gen-l4-bb4ff14f\" no encontrado en passages[] del mismo archivo"
+        }
+      ]
+    },
+    {
+      "id": "bank-de-B1-lesen-t5-e9a8eb2d8c14246e",
+      "topicTag": "Technik",
+      "teil": 5,
+      "sourceFile": null,
+      "p0p1": true,
+      "chk6B2": 1,
+      "chk26": 0,
+      "blocking": [
+        {
+          "id": "CHK-6",
+          "message": "Vocabulario B2+ en pregunta \"Zugänglich\" → usa \"einfach / offen\" (B1)"
+        }
+      ]
+    },
+    {
+      "id": "pool3-de-B1-lesen-t4-6ff91063499c",
+      "topicTag": "Freizeit",
+      "teil": 4,
+      "sourceFile": null,
+      "p0p1": true,
+      "chk6B2": 1,
+      "chk26": 0,
+      "blocking": [
+        {
+          "id": "CHK-6",
+          "message": "Vocabulario B2+ en pregunta \"Ressourcen\" → usa \"Mittel / Möglichkeiten\" (B1)"
+        }
+      ]
+    },
+    {
+      "id": "bank-de-B1-lesen-t2-6e99d4850239d932",
+      "topicTag": "Freizeit",
+      "teil": 2,
+      "sourceFile": null,
+      "p0p1": true,
+      "chk6B2": 0,
+      "chk26": 2,
+      "blocking": [
+        {
+          "id": "CHK-26",
+          "message": "Contenido del pasaje detectado como «Medien» ≠ tema pedido «Freizeit»."
+        },
+        {
+          "id": "CHK-26",
+          "message": "Los pasajes tienen temas distintos (Freizeit vs Medien). Todos deben ser «Freizeit» (especialmente L"
+        }
+      ]
+    },
+    {
+      "id": "pub-de-B1-lesen-t5-fcbdf7fa8088",
+      "topicTag": "Freizeit",
+      "teil": 5,
+      "sourceFile": "batches/generated/lesen-t5-gemini-039.json",
+      "p0p1": true,
+      "chk6B2": 1,
+      "chk26": 0,
+      "blocking": [
+        {
+          "id": "CHK-6",
+          "message": "Vocabulario B2+ en pregunta \"Zugänglich\" → usa \"einfach / offen\" (B1)"
+        }
+      ]
+    },
+    {
+      "id": "pub-de-B1-lesen-t5-1e54b94fd0f9",
+      "topicTag": "Freizeit",
+      "teil": 5,
+      "sourceFile": "batches/generated/lesen-t5-gemini-040.json",
+      "p0p1": true,
+      "chk6B2": 0,
+      "chk26": 1,
+      "blocking": [
+        {
+          "id": "CHK-26",
+          "message": "topicTag del pasaje «Sport» ≠ tema pedido «Freizeit». Todos los passages deben llevar topicTag «Frei"
+        }
+      ]
+    },
+    {
+      "id": "pub-de-B1-lesen-t5-746613e16543",
+      "topicTag": "Freizeit",
+      "teil": 5,
+      "sourceFile": "batches/generated/lesen-t5-gemini-042.json",
+      "p0p1": true,
+      "chk6B2": 1,
+      "chk26": 0,
+      "blocking": [
+        {
+          "id": "CHK-6",
+          "message": "Vocabulario B2+ en pregunta \"Zugänglich\" → usa \"einfach / offen\" (B1)"
+        }
+      ]
+    },
+    {
+      "id": "pub-de-B1-lesen-t5-7faa5b5b0a2e",
+      "topicTag": "Freizeit",
+      "teil": 5,
+      "sourceFile": "batches/generated/lesen-t5-gemini-045.json",
+      "p0p1": true,
+      "chk6B2": 0,
+      "chk26": 1,
+      "blocking": [
+        {
+          "id": "CHK-26",
+          "message": "topicTag del pasaje «Technik» ≠ tema pedido «Freizeit». Todos los passages deben llevar topicTag «Fr"
+        }
+      ]
+    },
+    {
+      "id": "pub-de-B1-lesen-t5-cc3a44a2aaef",
+      "topicTag": "Freizeit",
+      "teil": 5,
+      "sourceFile": "batches/generated/lesen-t5-gemini-046.json",
+      "p0p1": true,
+      "chk6B2": 0,
+      "chk26": 1,
+      "blocking": [
+        {
+          "id": "CHK-26",
+          "message": "topicTag del pasaje «Technik» ≠ tema pedido «Freizeit». Todos los passages deben llevar topicTag «Fr"
+        }
+      ]
+    },
+    {
+      "id": "pub-de-B1-lesen-t5-570d3289e727",
+      "topicTag": "Freizeit",
+      "teil": 5,
+      "sourceFile": "batches/generated/lesen-t5-gemini-047.json",
+      "p0p1": true,
+      "chk6B2": 0,
+      "chk26": 1,
+      "blocking": [
+        {
+          "id": "CHK-26",
+          "message": "topicTag del pasaje «Konsum» ≠ tema pedido «Freizeit». Todos los passages deben llevar topicTag «Fre"
+        }
+      ]
+    },
+    {
+      "id": "pub-de-B1-lesen-t4-e591b3380da3",
+      "topicTag": "Freizeit",
+      "teil": 4,
+      "sourceFile": "batches/generated/lesen-t4-gemini-026.json",
+      "p0p1": true,
+      "chk6B2": 2,
+      "chk26": 0,
+      "blocking": [
+        {
+          "id": "CHK-6",
+          "message": "Vocabulario B2+ en pregunta \"Bürokratie\" → usa \"viel Papierkram / viele Formulare\" (B1)"
+        },
+        {
+          "id": "CHK-6",
+          "message": "Vocabulario B2+ en pregunta \"Bürokratie\" → usa \"viel Papierkram / viele Formulare\" (B1)"
+        }
+      ]
+    },
+    {
+      "id": "pub-de-B1-lesen-t2-f40fd6c300d9",
+      "topicTag": "Freizeit",
+      "teil": 2,
+      "sourceFile": "batches/generated/lesen-t2-gemini-067.json",
+      "p0p1": true,
+      "chk6B2": 0,
+      "chk26": 3,
+      "blocking": [
+        {
+          "id": "CHK-26",
+          "message": "topicTag del pasaje «Ernährung» ≠ tema pedido «Freizeit». Todos los passages deben llevar topicTag «"
+        },
+        {
+          "id": "CHK-26",
+          "message": "topicTag del pasaje «Technik» ≠ tema pedido «Freizeit». Todos los passages deben llevar topicTag «Fr"
+        },
+        {
+          "id": "CHK-26",
+          "message": "Los pasajes tienen temas distintos (Ernährung vs Technik). Todos deben ser «Freizeit» (especialmente"
+        },
+        {
+          "id": "CHK-8",
+          "message": "passageId \"gen-l2-fff72c06b\" no encontrado en passages[] del mismo archivo"
+        },
+        {
+          "id": "CHK-8",
+          "message": "passageId \"gen-l2-fff72c06b\" no encontrado en passages[] del mismo archivo"
+        }
+      ]
+    },
+    {
+      "id": "pub-de-B1-lesen-t2-e9b91297e847",
+      "topicTag": "Freizeit",
+      "teil": 2,
+      "sourceFile": "batches/generated/lesen-t2-gemini-069.json",
+      "p0p1": true,
+      "chk6B2": 0,
+      "chk26": 3,
+      "blocking": [
+        {
+          "id": "CHK-26",
+          "message": "topicTag del pasaje «Konsum» ≠ tema pedido «Freizeit». Todos los passages deben llevar topicTag «Fre"
+        },
+        {
+          "id": "CHK-26",
+          "message": "topicTag del pasaje «Reisen» ≠ tema pedido «Freizeit». Todos los passages deben llevar topicTag «Fre"
+        },
+        {
+          "id": "CHK-26",
+          "message": "Los pasajes tienen temas distintos (Konsum vs Reisen). Todos deben ser «Freizeit» (especialmente Les"
+        },
+        {
+          "id": "CHK-8",
+          "message": "passageId \"gen-l2-d2f73cdf-2\" no encontrado en passages[] del mismo archivo"
+        },
+        {
+          "id": "CHK-8",
+          "message": "passageId \"gen-l2-d2f73cdf-2\" no encontrado en passages[] del mismo archivo"
+        }
+      ]
+    },
+    {
+      "id": "pub-de-B1-lesen-t1-23308def78c9",
+      "topicTag": "Technik",
+      "teil": 1,
+      "sourceFile": "batches/generated/lesen-t1-gemini-156.json",
+      "p0p1": true,
+      "chk6B2": 1,
+      "chk26": 0,
+      "blocking": [
+        {
+          "id": "CHK-6",
+          "message": "Vocabulario B2+ en pregunta \"Angehörigen\" → usa \"Familie / Verwandte\" (B1)"
+        }
+      ]
+    },
+    {
+      "id": "pub-de-B1-lesen-t1-0be7aecb875f",
+      "topicTag": "Technik",
+      "teil": 1,
+      "sourceFile": "batches/generated/lesen-t1-gemini-157.json",
+      "p0p1": true,
+      "chk6B2": 8,
+      "chk26": 1,
+      "blocking": [
+        {
+          "id": "CHK-26",
+          "message": "topicTag del pasaje «Freizeit» ≠ tema pedido «Technik». Todos los passages deben llevar topicTag «Te"
+        },
+        {
+          "id": "CHK-6",
+          "message": "Vocabulario B2+ en pregunta \"Gelassenheit\" → usa \"Ruhe / Entspannung / entspannt\" (B1)"
+        },
+        {
+          "id": "CHK-6",
+          "message": "Vocabulario B2+ en pregunta \"modifizieren\" → usa \"ändern / anpassen\" (B1)"
+        },
+        {
+          "id": "CHK-6",
+          "message": "Vocabulario B2+ en pregunta \"Umstellung\" → usa \"Änderung / neue Regel\" (B1)"
+        },
+        {
+          "id": "CHK-6",
+          "message": "Vocabulario B2+ en pregunta \"Angehörigen\" → usa \"Familie / Verwandte\" (B1)"
+        }
+      ]
+    },
+    {
+      "id": "pub-de-B1-lesen-t1-6f309302fb4c",
+      "topicTag": "Technik",
+      "teil": 1,
+      "sourceFile": "batches/generated/lesen-t1-gemini-158.json",
+      "p0p1": true,
+      "chk6B2": 1,
+      "chk26": 0,
+      "blocking": [
+        {
+          "id": "CHK-6",
+          "message": "Vocabulario B2+ en pregunta \"Angehörigen\" → usa \"Familie / Verwandte\" (B1)"
+        }
+      ]
+    },
+    {
+      "id": "pub-de-B1-lesen-t2-6125664c007d",
+      "topicTag": "Technik",
+      "teil": 2,
+      "sourceFile": "batches/generated/lesen-t2-gemini-070.json",
+      "p0p1": true,
+      "chk6B2": 0,
+      "chk26": 2,
+      "blocking": [
+        {
+          "id": "CHK-26",
+          "message": "topicTag del pasaje «Verkehr» ≠ tema pedido «Technik». Todos los passages deben llevar topicTag «Tec"
+        },
+        {
+          "id": "CHK-26",
+          "message": "Los pasajes tienen temas distintos (Verkehr vs Technik). Todos deben ser «Technik» (especialmente Le"
+        },
+        {
+          "id": "CHK-8",
+          "message": "passageId \"gen-l2-35e3f56a-2\" no encontrado en passages[] del mismo archivo"
+        },
+        {
+          "id": "CHK-8",
+          "message": "passageId \"gen-l2-35e3f56a-2\" no encontrado en passages[] del mismo archivo"
+        },
+        {
+          "id": "CHK-8",
+          "message": "passageId \"gen-l2-35e3f56a-2\" no encontrado en passages[] del mismo archivo"
+        }
+      ]
+    },
+    {
+      "id": "pub-de-B1-lesen-t2-3050094a1d7e",
+      "topicTag": "Technik",
+      "teil": 2,
+      "sourceFile": "batches/generated/lesen-t2-gemini-072.json",
+      "p0p1": true,
+      "chk6B2": 0,
+      "chk26": 2,
+      "blocking": [
+        {
+          "id": "CHK-26",
+          "message": "topicTag del pasaje «Bildung» ≠ tema pedido «Technik». Todos los passages deben llevar topicTag «Tec"
+        },
+        {
+          "id": "CHK-26",
+          "message": "Los pasajes tienen temas distintos (Technik vs Bildung). Todos deben ser «Technik» (especialmente Le"
+        },
+        {
+          "id": "CHK-8",
+          "message": "passageId \"gen-l2-918879ec-b\" no encontrado en passages[] del mismo archivo"
+        },
+        {
+          "id": "CHK-8",
+          "message": "passageId \"gen-l2-918879ec-b\" no encontrado en passages[] del mismo archivo"
+        },
+        {
+          "id": "CHK-8",
+          "message": "passageId \"gen-l2-918879ec-b\" no encontrado en passages[] del mismo archivo"
+        }
+      ]
+    },
+    {
+      "id": "pub-de-B1-lesen-t2-d997d466df3e",
+      "topicTag": "Technik",
+      "teil": 2,
+      "sourceFile": "batches/generated/lesen-t2-gemini-075.json",
+      "p0p1": true,
+      "chk6B2": 4,
+      "chk26": 2,
+      "blocking": [
+        {
+          "id": "CHK-26",
+          "message": "topicTag del pasaje «Bildung» ≠ tema pedido «Technik». Todos los passages deben llevar topicTag «Tec"
+        },
+        {
+          "id": "CHK-26",
+          "message": "Los pasajes tienen temas distintos (Technik vs Bildung). Todos deben ser «Technik» (especialmente Le"
+        },
+        {
+          "id": "CHK-6",
+          "message": "Vocabulario B2+ en pregunta \"Herausforderung\" → usa \"Problem / Schwierigkeit\" (B1)"
+        },
+        {
+          "id": "CHK-6",
+          "message": "Vocabulario B2+ en pregunta \"Herausforderung\" → usa \"Problem / Schwierigkeit\" (B1)"
+        },
+        {
+          "id": "CHK-6",
+          "message": "Vocabulario B2+ en pregunta \"benutzerfreundliche\" → usa \"einfach zu bedienen\" (B1)"
+        }
+      ]
+    },
+    {
+      "id": "pub-de-B1-lesen-t4-d0e3c1466175",
+      "topicTag": "Technik",
+      "teil": 4,
+      "sourceFile": "batches/generated/lesen-t4-gemini-029.json",
+      "p0p1": true,
+      "chk6B2": 0,
+      "chk26": 1,
+      "blocking": [
+        {
+          "id": "CHK-26",
+          "message": "topicTag del pasaje «Arbeit» ≠ tema pedido «Technik». Todos los passages deben llevar topicTag «Tech"
+        }
+      ]
+    },
+    {
+      "id": "pub-de-B1-lesen-t4-10b56cfa3087",
+      "topicTag": "Technik",
+      "teil": 4,
+      "sourceFile": "batches/generated/lesen-t4-gemini-030.json",
+      "p0p1": true,
+      "chk6B2": 2,
+      "chk26": 1,
+      "blocking": [
+        {
+          "id": "CHK-26",
+          "message": "topicTag del pasaje «Freizeit» ≠ tema pedido «Technik». Todos los passages deben llevar topicTag «Te"
+        },
+        {
+          "id": "CHK-6",
+          "message": "Vocabulario B2+ en pregunta \"Priorität\" → usa \"Wichtigkeit / wichtig\" (B1)"
+        },
+        {
+          "id": "CHK-6",
+          "message": "Vocabulario B2+ en pregunta \"Priorität\" → usa \"Wichtigkeit / wichtig\" (B1)"
+        }
+      ]
+    },
+    {
+      "id": "pub-de-B1-lesen-t2-734f7febea14",
+      "topicTag": "Technik",
+      "teil": 2,
+      "sourceFile": "batches/generated/lesen-t2-gemini-076.json",
+      "p0p1": true,
+      "chk6B2": 0,
+      "chk26": 2,
+      "blocking": [
+        {
+          "id": "CHK-26",
+          "message": "topicTag del pasaje «Umwelt» ≠ tema pedido «Technik». Todos los passages deben llevar topicTag «Tech"
+        },
+        {
+          "id": "CHK-26",
+          "message": "Los pasajes tienen temas distintos (Umwelt vs Technik). Todos deben ser «Technik» (especialmente Les"
+        },
+        {
+          "id": "CHK-8",
+          "message": "passageId \"gen-l2-262dcd74b\" no encontrado en passages[] del mismo archivo"
+        },
+        {
+          "id": "CHK-8",
+          "message": "passageId \"gen-l2-262dcd74b\" no encontrado en passages[] del mismo archivo"
+        },
+        {
+          "id": "CHK-8",
+          "message": "passageId \"gen-l2-262dcd74b\" no encontrado en passages[] del mismo archivo"
+        }
+      ]
+    },
+    {
+      "id": "pub-de-B1-lesen-t2-ec847aa773d4",
+      "topicTag": "Technik",
+      "teil": 2,
+      "sourceFile": "batches/generated/lesen-t2-gemini-077.json",
+      "p0p1": false,
+      "chk6B2": 0,
+      "chk26": 0,
+      "blocking": [
+        {
+          "id": "CHK-8",
+          "message": "passageId \"gen-l2-6192adf1b\" no encontrado en passages[] del mismo archivo"
+        },
+        {
+          "id": "CHK-8",
+          "message": "passageId \"gen-l2-6192adf1b\" no encontrado en passages[] del mismo archivo"
+        },
+        {
+          "id": "CHK-8",
+          "message": "passageId \"gen-l2-6192adf1b\" no encontrado en passages[] del mismo archivo"
+        }
+      ]
+    },
+    {
+      "id": "pub-de-B1-lesen-t2-882d8ccd3042",
+      "topicTag": "Technik",
+      "teil": 2,
+      "sourceFile": "batches/generated/lesen-t2-gemini-078.json",
+      "p0p1": true,
+      "chk6B2": 5,
+      "chk26": 2,
+      "blocking": [
+        {
+          "id": "CHK-26",
+          "message": "topicTag del pasaje «Umwelt» ≠ tema pedido «Technik». Todos los passages deben llevar topicTag «Tech"
+        },
+        {
+          "id": "CHK-26",
+          "message": "Los pasajes tienen temas distintos (Umwelt vs Technik). Todos deben ser «Technik» (especialmente Les"
+        },
+        {
+          "id": "CHK-6",
+          "message": "Vocabulario B2+ en pregunta \"Herausforderung\" → usa \"Problem / Schwierigkeit\" (B1)"
+        },
+        {
+          "id": "CHK-6",
+          "message": "Vocabulario B2+ en pregunta \"Herausforderung\" → usa \"Problem / Schwierigkeit\" (B1)"
+        },
+        {
+          "id": "CHK-6",
+          "message": "Vocabulario B2+ en pregunta \"Ressourcen\" → usa \"Mittel / Möglichkeiten\" (B1)"
+        }
+      ]
+    },
+    {
+      "id": "pub-de-B1-lesen-t2-a0e37f688f1a",
+      "topicTag": "Technik",
+      "teil": 2,
+      "sourceFile": "batches/generated/lesen-t2-gemini-079.json",
+      "p0p1": true,
+      "chk6B2": 0,
+      "chk26": 2,
+      "blocking": [
+        {
+          "id": "CHK-26",
+          "message": "topicTag del pasaje «Wohnen» ≠ tema pedido «Technik». Todos los passages deben llevar topicTag «Tech"
+        },
+        {
+          "id": "CHK-26",
+          "message": "Los pasajes tienen temas distintos (Wohnen vs Technik). Todos deben ser «Technik» (especialmente Les"
+        },
+        {
+          "id": "CHK-8",
+          "message": "passageId \"gen-l2-831ec385b\" no encontrado en passages[] del mismo archivo"
+        },
+        {
+          "id": "CHK-8",
+          "message": "passageId \"gen-l2-831ec385b\" no encontrado en passages[] del mismo archivo"
+        },
+        {
+          "id": "CHK-8",
+          "message": "passageId \"gen-l2-831ec385b\" no encontrado en passages[] del mismo archivo"
+        }
+      ]
+    },
+    {
+      "id": "pub-de-B1-lesen-t2-193c51e71a09",
+      "topicTag": "Technik",
+      "teil": 2,
+      "sourceFile": "batches/generated/lesen-t2-gemini-081.json",
+      "p0p1": false,
+      "chk6B2": 0,
+      "chk26": 0,
+      "blocking": [
+        {
+          "id": "CHK-8",
+          "message": "passageId \"gen-l2-67d1864cb\" no encontrado en passages[] del mismo archivo"
+        },
+        {
+          "id": "CHK-8",
+          "message": "passageId \"gen-l2-67d1864cb\" no encontrado en passages[] del mismo archivo"
+        },
+        {
+          "id": "CHK-8",
+          "message": "passageId \"gen-l2-67d1864cb\" no encontrado en passages[] del mismo archivo"
+        }
+      ]
+    }
+  ],
+  "beforeCounts": {
+    "Freizeit": {
+      "1": 5,
+      "2": 5,
+      "3": 3,
+      "4": 6,
+      "5": 7
+    },
+    "Technik": {
+      "1": 3,
+      "2": 11,
+      "3": 8,
+      "4": 4,
+      "5": 3
+    }
+  },
+  "afterCounts": {
+    "Freizeit": {
+      "1": 5,
+      "2": 2,
+      "3": 3,
+      "4": 2,
+      "5": 1
+    },
+    "Technik": {
+      "1": 0,
+      "2": 5,
+      "3": 8,
+      "4": 1,
+      "5": 2
+    }
+  }
+}

@@ -1,4 +1,4 @@
-/* Present-tense verb conjugations for vocabulary rows (de / es / en). */
+/* Verb conjugations for vocabulary rows (de / es / en). DE: Present, Präteritum, Perfekt, Imperativ. */
 const VerbConjugation = (() => {
   const DE_PRESENT = {
     sein: { ich: 'bin', du: 'bist', er: 'ist', wir: 'sind', ihr: 'seid', sie: 'sind' },
@@ -34,6 +34,203 @@ const VerbConjugation = (() => {
     bleiben: { ich: 'bleibe', du: 'bleibst', er: 'bleibt', wir: 'bleiben', ihr: 'bleibt', sie: 'bleiben' },
     bringen: { ich: 'bringe', du: 'bringst', er: 'bringt', wir: 'bringen', ihr: 'bringt', sie: 'bringen' },
     trinken: { ich: 'trinke', du: 'trinkst', er: 'trinkt', wir: 'trinken', ihr: 'trinkt', sie: 'trinken' },
+    // Roots used under separable prefixes (vorschlagen → schlagen + vor)
+    schlagen: { ich: 'schlage', du: 'schlägst', er: 'schlägt', wir: 'schlagen', ihr: 'schlagt', sie: 'schlagen' },
+    rufen: { ich: 'rufe', du: 'rufst', er: 'ruft', wir: 'rufen', ihr: 'ruft', sie: 'rufen' },
+    bieten: { ich: 'biete', du: 'bietest', er: 'bietet', wir: 'bieten', ihr: 'bietet', sie: 'bieten' },
+    stehen: { ich: 'stehe', du: 'stehst', er: 'steht', wir: 'stehen', ihr: 'steht', sie: 'stehen' },
+    // Mixed verbs: weak present, strong Präteritum/Partizip (DWDS-verified)
+    brennen: { ich: 'brenne', du: 'brennst', er: 'brennt', wir: 'brennen', ihr: 'brennt', sie: 'brennen' },
+    kennen: { ich: 'kenne', du: 'kennst', er: 'kennt', wir: 'kennen', ihr: 'kennt', sie: 'kennen' },
+    nennen: { ich: 'nenne', du: 'nennst', er: 'nennt', wir: 'nennen', ihr: 'nennt', sie: 'nennen' },
+    rennen: { ich: 'renne', du: 'rennst', er: 'rennt', wir: 'rennen', ihr: 'rennt', sie: 'rennen' },
+    senden: { ich: 'sende', du: 'sendest', er: 'sendet', wir: 'senden', ihr: 'sendet', sie: 'senden' },
+    wenden: { ich: 'wende', du: 'wendest', er: 'wendet', wir: 'wenden', ihr: 'wendet', sie: 'wenden' },
+    erkennen: { ich: 'erkenne', du: 'erkennst', er: 'erkennt', wir: 'erkennen', ihr: 'erkennt', sie: 'erkennen' },
+    treffen: { ich: 'treffe', du: 'triffst', er: 'trifft', wir: 'treffen', ihr: 'trefft', sie: 'treffen' },
+  };
+
+  /** Präteritum for irregular/modal verbs (same keys as DE_PRESENT). DWDS-verified roots. */
+  const DE_PRAETERITUM = {
+    sein: { ich: 'war', du: 'warst', er: 'war', wir: 'waren', ihr: 'wart', sie: 'waren' },
+    haben: { ich: 'hatte', du: 'hattest', er: 'hatte', wir: 'hatten', ihr: 'hattet', sie: 'hatten' },
+    werden: { ich: 'wurde', du: 'wurdest', er: 'wurde', wir: 'wurden', ihr: 'wurdet', sie: 'wurden' },
+    gehen: { ich: 'ging', du: 'gingst', er: 'ging', wir: 'gingen', ihr: 'gingt', sie: 'gingen' },
+    kommen: { ich: 'kam', du: 'kamst', er: 'kam', wir: 'kamen', ihr: 'kamt', sie: 'kamen' },
+    machen: { ich: 'machte', du: 'machtest', er: 'machte', wir: 'machten', ihr: 'machtet', sie: 'machten' },
+    sagen: { ich: 'sagte', du: 'sagtest', er: 'sagte', wir: 'sagten', ihr: 'sagtet', sie: 'sagten' },
+    geben: { ich: 'gab', du: 'gabst', er: 'gab', wir: 'gaben', ihr: 'gabt', sie: 'gaben' },
+    nehmen: { ich: 'nahm', du: 'nahmst', er: 'nahm', wir: 'nahmen', ihr: 'nahmt', sie: 'nahmen' },
+    sehen: { ich: 'sah', du: 'sahst', er: 'sah', wir: 'sahen', ihr: 'saht', sie: 'sahen' },
+    wissen: { ich: 'wusste', du: 'wusstest', er: 'wusste', wir: 'wussten', ihr: 'wusstet', sie: 'wussten' },
+    können: { ich: 'konnte', du: 'konntest', er: 'konnte', wir: 'konnten', ihr: 'konntet', sie: 'konnten' },
+    müssen: { ich: 'musste', du: 'musstest', er: 'musste', wir: 'mussten', ihr: 'musstet', sie: 'mussten' },
+    wollen: { ich: 'wollte', du: 'wolltest', er: 'wollte', wir: 'wollten', ihr: 'wolltet', sie: 'wollten' },
+    dürfen: { ich: 'durfte', du: 'durftest', er: 'durfte', wir: 'durften', ihr: 'durftet', sie: 'durften' },
+    sollen: { ich: 'sollte', du: 'solltest', er: 'sollte', wir: 'sollten', ihr: 'solltet', sie: 'sollten' },
+    mögen: { ich: 'mochte', du: 'mochtest', er: 'mochte', wir: 'mochten', ihr: 'mochtet', sie: 'mochten' },
+    essen: { ich: 'aß', du: 'aßest', er: 'aß', wir: 'aßen', ihr: 'aßt', sie: 'aßen' },
+    fahren: { ich: 'fuhr', du: 'fuhrst', er: 'fuhr', wir: 'fuhren', ihr: 'fuhrt', sie: 'fuhren' },
+    sprechen: { ich: 'sprach', du: 'sprachst', er: 'sprach', wir: 'sprachen', ihr: 'spracht', sie: 'sprachen' },
+    lesen: { ich: 'las', du: 'last', er: 'las', wir: 'lasen', ihr: 'last', sie: 'lasen' },
+    schreiben: { ich: 'schrieb', du: 'schriebst', er: 'schrieb', wir: 'schrieben', ihr: 'schriebt', sie: 'schrieben' },
+    arbeiten: { ich: 'arbeitete', du: 'arbeitetest', er: 'arbeitete', wir: 'arbeiteten', ihr: 'arbeitetet', sie: 'arbeiteten' },
+    wohnen: { ich: 'wohnte', du: 'wohntest', er: 'wohnte', wir: 'wohnten', ihr: 'wohntet', sie: 'wohnten' },
+    kaufen: { ich: 'kaufte', du: 'kauftest', er: 'kaufte', wir: 'kauften', ihr: 'kauftet', sie: 'kauften' },
+    nutzen: { ich: 'nutzte', du: 'nutztest', er: 'nutzte', wir: 'nutzten', ihr: 'nutztet', sie: 'nutzten' },
+    verwenden: { ich: 'verwendete', du: 'verwendetest', er: 'verwendete', wir: 'verwendeten', ihr: 'verwendetet', sie: 'verwendeten' },
+    helfen: { ich: 'half', du: 'halfst', er: 'half', wir: 'halfen', ihr: 'halft', sie: 'halfen' },
+    finden: { ich: 'fand', du: 'fandest', er: 'fand', wir: 'fanden', ihr: 'fandet', sie: 'fanden' },
+    denken: { ich: 'dachte', du: 'dachtest', er: 'dachte', wir: 'dachten', ihr: 'dachtet', sie: 'dachten' },
+    bleiben: { ich: 'blieb', du: 'bliebst', er: 'blieb', wir: 'blieben', ihr: 'bliebt', sie: 'blieben' },
+    bringen: { ich: 'brachte', du: 'brachtest', er: 'brachte', wir: 'brachten', ihr: 'brachtet', sie: 'brachten' },
+    trinken: { ich: 'trank', du: 'trankst', er: 'trank', wir: 'tranken', ihr: 'trankt', sie: 'tranken' },
+    schlagen: { ich: 'schlug', du: 'schlugst', er: 'schlug', wir: 'schlugen', ihr: 'schlugt', sie: 'schlugen' },
+    rufen: { ich: 'rief', du: 'riefst', er: 'rief', wir: 'riefen', ihr: 'rieft', sie: 'riefen' },
+    bieten: { ich: 'bot', du: 'botest', er: 'bot', wir: 'boten', ihr: 'botet', sie: 'boten' },
+    stehen: { ich: 'stand', du: 'standest', er: 'stand', wir: 'standen', ihr: 'standet', sie: 'standen' },
+    brennen: { ich: 'brannte', du: 'branntest', er: 'brannte', wir: 'brannten', ihr: 'branntet', sie: 'brannten' },
+    kennen: { ich: 'kannte', du: 'kanntest', er: 'kannte', wir: 'kannten', ihr: 'kanntet', sie: 'kannten' },
+    nennen: { ich: 'nannte', du: 'nanntest', er: 'nannte', wir: 'nannten', ihr: 'nanntet', sie: 'nannten' },
+    rennen: { ich: 'rannte', du: 'ranntest', er: 'rannte', wir: 'rannten', ihr: 'ranntet', sie: 'rannten' },
+    senden: { ich: 'sandte', du: 'sandtest', er: 'sandte', wir: 'sandten', ihr: 'sandtet', sie: 'sandten' },
+    wenden: { ich: 'wandte', du: 'wandtest', er: 'wandte', wir: 'wandten', ihr: 'wandtet', sie: 'wandten' },
+    erkennen: { ich: 'erkannte', du: 'erkanntest', er: 'erkannte', wir: 'erkannten', ihr: 'erkanntet', sie: 'erkannten' },
+    treffen: { ich: 'traf', du: 'trafst', er: 'traf', wir: 'trafen', ihr: 'traft', sie: 'trafen' },
+  };
+
+  /** Partizip II for irregular roots (ge- prefix; separables interleave prefix before ge-). */
+  const DE_PARTIZIP = {
+    sein: 'gewesen',
+    haben: 'gehabt',
+    werden: 'geworden',
+    gehen: 'gegangen',
+    kommen: 'gekommen',
+    machen: 'gemacht',
+    sagen: 'gesagt',
+    geben: 'gegeben',
+    nehmen: 'genommen',
+    sehen: 'gesehen',
+    wissen: 'gewusst',
+    können: 'gekonnt',
+    müssen: 'gemusst',
+    wollen: 'gewollt',
+    dürfen: 'gedurft',
+    sollen: 'gesollt',
+    mögen: 'gemocht',
+    essen: 'gegessen',
+    fahren: 'gefahren',
+    sprechen: 'gesprochen',
+    lesen: 'gelesen',
+    schreiben: 'geschrieben',
+    arbeiten: 'gearbeitet',
+    wohnen: 'gewohnt',
+    kaufen: 'gekauft',
+    nutzen: 'genutzt',
+    verwenden: 'verwendet',
+    helfen: 'geholfen',
+    finden: 'gefunden',
+    denken: 'gedacht',
+    bleiben: 'geblieben',
+    bringen: 'gebracht',
+    trinken: 'getrunken',
+    schlagen: 'geschlagen',
+    rufen: 'gerufen',
+    bieten: 'geboten',
+    stehen: 'gestanden',
+    brennen: 'gebrannt',
+    kennen: 'gekannt',
+    nennen: 'genannt',
+    rennen: 'gerannt',
+    senden: 'gesandt',
+    wenden: 'gewandt',
+    erkennen: 'erkannt',
+    treffen: 'getroffen',
+  };
+
+  /** Perfekt auxiliary per lemma/root (default haben). */
+  const DE_PERFECT_AUX = {
+    sein: 'sein',
+    werden: 'sein',
+    bleiben: 'sein',
+    gehen: 'sein',
+    kommen: 'sein',
+    fahren: 'sein',
+    laufen: 'sein',
+    reisen: 'sein',
+    fliegen: 'sein',
+    sterben: 'sein',
+    geschehen: 'sein',
+    rennen: 'sein',
+  };
+
+  /** Imperativ du / ihr / Sie for irregular roots. */
+  const DE_IMPERATIVE = {
+    sein: { du: 'sei', ihr: 'seid', Sie: 'seien Sie' },
+    haben: { du: 'hab', ihr: 'habt', Sie: 'haben Sie' },
+    werden: { du: 'werde', ihr: 'werdet', Sie: 'werden Sie' },
+    gehen: { du: 'geh', ihr: 'geht', Sie: 'gehen Sie' },
+    kommen: { du: 'komm', ihr: 'kommt', Sie: 'kommen Sie' },
+    machen: { du: 'mach', ihr: 'macht', Sie: 'machen Sie' },
+    sagen: { du: 'sag', ihr: 'sagt', Sie: 'sagen Sie' },
+    geben: { du: 'gib', ihr: 'gebt', Sie: 'geben Sie' },
+    nehmen: { du: 'nimm', ihr: 'nehmt', Sie: 'nehmen Sie' },
+    sehen: { du: 'sieh', ihr: 'seht', Sie: 'sehen Sie' },
+    essen: { du: 'iss', ihr: 'esst', Sie: 'essen Sie' },
+    fahren: { du: 'fahr', ihr: 'fahrt', Sie: 'fahren Sie' },
+    sprechen: { du: 'sprich', ihr: 'sprecht', Sie: 'sprechen Sie' },
+    lesen: { du: 'lies', ihr: 'lest', Sie: 'lesen Sie' },
+    schreiben: { du: 'schreib', ihr: 'schreibt', Sie: 'schreiben Sie' },
+    helfen: { du: 'hilf', ihr: 'helft', Sie: 'helfen Sie' },
+    finden: { du: 'find', ihr: 'findet', Sie: 'finden Sie' },
+    bringen: { du: 'bring', ihr: 'bringt', Sie: 'bringen Sie' },
+    trinken: { du: 'trink', ihr: 'trinkt', Sie: 'trinken Sie' },
+    schlagen: { du: 'schlag', ihr: 'schlagt', Sie: 'schlagen Sie' },
+    rufen: { du: 'ruf', ihr: 'ruft', Sie: 'rufen Sie' },
+    bieten: { du: 'biete', ihr: 'bietet', Sie: 'bieten Sie' },
+    stehen: { du: 'steh', ihr: 'steht', Sie: 'stehen Sie' },
+    bleiben: { du: 'bleib', ihr: 'bleibt', Sie: 'bleiben Sie' },
+    denken: { du: 'denk', ihr: 'denkt', Sie: 'denken Sie' },
+    arbeiten: { du: 'arbeit', ihr: 'arbeitet', Sie: 'arbeiten Sie' },
+    wohnen: { du: 'wohn', ihr: 'wohnt', Sie: 'wohnen Sie' },
+    kaufen: { du: 'kauf', ihr: 'kauft', Sie: 'kaufen Sie' },
+    nutzen: { du: 'nutz', ihr: 'nutzt', Sie: 'nutzen Sie' },
+    verwenden: { du: 'verwende', ihr: 'verwendet', Sie: 'verwenden Sie' },
+    brennen: { du: 'brenn', ihr: 'brennt', Sie: 'brennen Sie' },
+    kennen: { du: 'kenn', ihr: 'kennt', Sie: 'kennen Sie' },
+    nennen: { du: 'nenn', ihr: 'nennt', Sie: 'nennen Sie' },
+    rennen: { du: 'renn', ihr: 'rennt', Sie: 'rennen Sie' },
+    senden: { du: 'sende', ihr: 'sendet', Sie: 'senden Sie' },
+    wenden: { du: 'wende', ihr: 'wendet', Sie: 'wenden Sie' },
+    erkennen: { du: 'erkenn', ihr: 'erkennt', Sie: 'erkennen Sie' },
+    treffen: { du: 'triff', ihr: 'trefft', Sie: 'treffen Sie' },
+  };
+
+  /**
+   * Fused compound verbs (not separable prefix + root). DWDS: lernt kennen → kennengelernt.
+   */
+  const DE_COMPOUND = {
+    kennenlernen: {
+      present: {
+        ich: 'lerne kennen', du: 'lernst kennen', er: 'lernt kennen',
+        wir: 'lernen kennen', ihr: 'lernt kennen', sie: 'lernen kennen',
+      },
+      praeteritum: {
+        ich: 'lernte kennen', du: 'lerntest kennen', er: 'lernte kennen',
+        wir: 'lernten kennen', ihr: 'lerntet kennen', sie: 'lernten kennen',
+      },
+      partizip: 'kennengelernt',
+      imperativ: { du: 'lerne kennen', ihr: 'lernt kennen', Sie: 'lernen Sie kennen' },
+    },
+  };
+
+  const DE_TENSES = ['present', 'praeteritum', 'perfekt', 'imperativ'];
+
+  const DE_TENSE_LABELS = {
+    present: 'Present',
+    praeteritum: 'Präteritum',
+    perfekt: 'Perfekt',
+    imperativ: 'Imperativ',
   };
 
   const ES_PRESENT = {
@@ -168,6 +365,21 @@ const VerbConjugation = (() => {
     ],
   };
 
+  const IMPERATIVE_PRONOUNS = {
+    de: [
+      ['du', 'you'],
+      ['ihr', 'you (pl.)'],
+      ['Sie', 'you (formal)'],
+    ],
+  };
+
+  function deStem(inf) {
+    const low = String(inf || '').toLowerCase();
+    if (low.endsWith('en')) return low.slice(0, -2);
+    if (low.endsWith('n')) return low.slice(0, -1);
+    return low;
+  }
+
   function normLang(lang) {
     const l = String(lang || 'de').toLowerCase();
     if (l === 'de' || l.startsWith('de')) return 'de';
@@ -183,29 +395,217 @@ const VerbConjugation = (() => {
     return /(?:en|eln|ern)$/i.test(low) && low.length > 4;
   }
 
+  /**
+   * Lemma source of truth: ALWAYS call Lemmatizer.normalizeLemma first.
+   * No early return that skips Lemmatizer. After the call, prefer a conjugable
+   * DE infinitive (DE_PRESENT / separable allowlist) when Lemmatizer over-strips
+   * short forms (sein→sei) or when re-attaching -en to a finite stem.
+   */
   function toLemma(word, lang) {
     const raw = String(word || '').trim();
     if (!raw) return '';
     const lg = normLang(lang);
     const low = normWord(raw);
 
-    if (lg === 'de' && isDeInfinitive(low)) {
-      if (DE_PRESENT[low] || presentRegularDe(low)) return low;
+    if (typeof Lemmatizer === 'undefined' || !Lemmatizer.normalizeLemma) {
+      if (lg === 'de' && isDeInfinitive(low)) return low;
+      if (lg === 'es' && /(ar|er|ir)$/.test(low)) return low;
+      return low;
     }
 
-    if (typeof Lemmatizer !== 'undefined' && Lemmatizer.normalizeLemma) {
-      const stem = Lemmatizer.normalizeLemma(raw, lg);
-      if (lg === 'de' && stem && !isDeInfinitive(stem)) {
+    if (lg === 'de') {
+      // Known conjugable infinitive as typed (preserves sein, trinken, vorschlagen)
+      if (DE_PRESENT[low] || splitSeparableInfinitive(low)) return low;
+      // Finite with glued prefix: abnimmt → abnehmen (before naive -t→-en yields abnimmen)
+      if (typeof SeparableResolve !== 'undefined' && SeparableResolve.resolveSeparableFiniteToInfinitive) {
+        const sepFin = SeparableResolve.resolveSeparableFiniteToInfinitive(low);
+        if (sepFin) return sepFin;
+      }
+    }
+
+    const stem = Lemmatizer.normalizeLemma(raw, lg);
+
+    if (lg === 'de') {
+      if (stem && (DE_PRESENT[stem] || splitSeparableInfinitive(stem))) return stem;
+      if (typeof SeparableResolve !== 'undefined' && SeparableResolve.resolveSeparableFiniteToInfinitive) {
+        const sepStem = SeparableResolve.resolveSeparableFiniteToInfinitive(stem);
+        if (sepStem) return sepStem;
+      }
+      if (stem && !isDeInfinitive(stem)) {
         for (const inf of [`${stem}en`, `${stem}n`, `${stem}eln`, `${stem}ern`]) {
-          if (DE_PRESENT[inf] || presentRegularDe(inf)) return inf;
+          if (DE_PRESENT[inf] || splitSeparableInfinitive(inf) || presentRegularDe(inf)) {
+            return inf;
+          }
         }
       }
       if (stem) return stem;
+      if (isDeInfinitive(low)) return low;
+      return low;
     }
 
-    if (lg === 'de' && isDeInfinitive(low)) return low;
-    if (lg === 'es' && /(ar|er|ir)$/.test(low)) return low;
-    return low;
+    if (lg === 'es' && stem) return stem;
+    return stem || low;
+  }
+
+  /**
+   * Split allowlisted separable infinitive → { prefix, root }.
+   * Reuses SeparableResolve.SEPARABLE_INFINITIVES + SEPARABLE_PREFIXES (longest prefix).
+   */
+  function splitSeparableInfinitive(inf) {
+    const low = normWord(inf);
+    if (!low || typeof SeparableResolve === 'undefined') return null;
+    const allow = SeparableResolve.SEPARABLE_INFINITIVES;
+    const prefixes = SeparableResolve.SEPARABLE_PREFIXES;
+    if (!allow || !allow.has(low) || !prefixes || !prefixes.length) return null;
+    const sorted = [...prefixes].sort((a, b) => b.length - a.length);
+    for (const p of sorted) {
+      if (!low.startsWith(p) || low.length <= p.length + 2) continue;
+      const root = low.slice(p.length);
+      if (/(?:en|eln|ern)$/i.test(root) && root.length >= 4) {
+        return { prefix: p, root };
+      }
+    }
+    return null;
+  }
+
+  /** Attach separable particle after each finite form: "schlage" + "vor" → "schlage vor". */
+  function attachSeparablePrefix(forms, prefix) {
+    const out = {};
+    for (const [k, v] of Object.entries(forms || {})) {
+      out[k] = `${v} ${prefix}`;
+    }
+    return out;
+  }
+
+  /** Imperativ separable: prefix at clause end — "Ruf mich an!" not "Anruf mich!". */
+  function attachSeparableImperative(forms, prefix) {
+    const excl = (s) => (String(s || '').endsWith('!') ? s : `${s}!`);
+    return {
+      du: excl(`${forms.du} ${prefix}`),
+      ihr: excl(`${forms.ihr} ${prefix}`),
+      Sie: excl(`${forms.Sie} ${prefix}`),
+    };
+  }
+
+  /**
+   * German weak-verb epenthetic -e- before -t/-et (Partizip II) or imperative -e.
+   * -et: stems ending in -d/-t; clusters -chn/-ffn/-gn/-dn/-tm/-dm; atmen-style -m (not -mm).
+   * NOT: vowel + n (planen→geplant, wohnen→gewohnt, lernen→gelernt).
+   */
+  function deStemNeedsEpentheticE(stem, mode) {
+    const s = String(stem || '').toLowerCase();
+    if (!s || s.length < 2) return false;
+    if (mode === 'partizip') {
+      if (/[dt]$/.test(s)) return true;
+      if (/(?:chn|ffn|gn|dn|tm|dm)$/i.test(s)) return true;
+      if (/[^aeiouäöü]m$/i.test(s) && !/mm$/i.test(s)) return true;
+      return false;
+    }
+    if (mode === 'imperativ') {
+      if (/[dt]$/.test(s)) return true;
+      if (/(?:chn|ffn|gn)$/i.test(s)) return true;
+      return false;
+    }
+    return false;
+  }
+
+  function praeteritumRegularDe(inf) {
+    const low = String(inf || '').toLowerCase();
+    const stem = deStem(low);
+    if (!stem || stem.length < 2) return null;
+    return {
+      ich: stem + 'te',
+      du: stem + 'test',
+      er: stem + 'te',
+      wir: stem + 'ten',
+      ihr: stem + 'tet',
+      sie: stem + 'ten',
+    };
+  }
+
+  function partizipRegularDe(root) {
+    const stem = deStem(root);
+    if (!stem || stem.length < 2) return null;
+    const suffix = deStemNeedsEpentheticE(stem, 'partizip') ? 'et' : 't';
+    return 'ge' + stem + suffix;
+  }
+
+  function partizipIiDe(root) {
+    return DE_PARTIZIP[root] || partizipRegularDe(root);
+  }
+
+  function buildPartizip(lemma, separable) {
+    const root = separable ? separable.root : lemma;
+    const base = partizipIiDe(root);
+    if (!base) return null;
+    if (separable) return separable.prefix + base;
+    return base;
+  }
+
+  function resolvePerfektAux(lemma, root) {
+    if (DE_PERFECT_AUX[lemma]) return DE_PERFECT_AUX[lemma];
+    if (DE_PERFECT_AUX[root]) return DE_PERFECT_AUX[root];
+    return 'haben';
+  }
+
+  function imperativeRegularDe(inf) {
+    const low = String(inf || '').toLowerCase();
+    const stem = deStem(low);
+    if (!stem || stem.length < 2) return null;
+    const du = deStemNeedsEpentheticE(stem, 'imperativ') ? stem + 'e' : stem;
+    return { du, ihr: stem + 't', Sie: `${low} Sie` };
+  }
+
+  function conjugateDeCompound(lemma, tense) {
+    const entry = DE_COMPOUND[lemma];
+    if (!entry) return null;
+    if (tense === 'present') return { lemma, tense, forms: entry.present, lang: 'de', compound: true };
+    if (tense === 'praeteritum') return { lemma, tense, forms: entry.praeteritum, lang: 'de', compound: true };
+    if (tense === 'imperativ') return { lemma, tense, forms: entry.imperativ, lang: 'de', compound: true };
+    if (tense === 'perfekt') {
+      const part = entry.partizip;
+      const auxTable = DE_PRESENT.haben;
+      if (!part || !auxTable) return null;
+      const table = {};
+      for (const [k, v] of Object.entries(auxTable)) table[k] = `${v} ${part}`;
+      return { lemma, tense, forms: table, partizip: part, lang: 'de', compound: true };
+    }
+    return null;
+  }
+
+  function conjugateDeLemma(lemma, tense) {
+    const compound = conjugateDeCompound(lemma, tense);
+    if (compound) return compound;
+    const separable = splitSeparableInfinitive(lemma);
+    const root = separable ? separable.root : lemma;
+    let table = null;
+    if (tense === 'present') {
+      table = DE_PRESENT[root] || presentRegularDe(root);
+      if (table && separable) table = attachSeparablePrefix(table, separable.prefix);
+    } else if (tense === 'praeteritum') {
+      table = DE_PRAETERITUM[root] || praeteritumRegularDe(root);
+      if (table && separable) table = attachSeparablePrefix(table, separable.prefix);
+    } else if (tense === 'perfekt') {
+      const part = buildPartizip(lemma, separable);
+      if (!part) return null;
+      const aux = resolvePerfektAux(lemma, root);
+      const auxTable = DE_PRESENT[aux];
+      if (!auxTable) return null;
+      table = {};
+      for (const [k, v] of Object.entries(auxTable)) table[k] = `${v} ${part}`;
+    } else if (tense === 'imperativ') {
+      table = DE_IMPERATIVE[root] || imperativeRegularDe(root);
+      if (table && separable) table = attachSeparableImperative(table, separable.prefix);
+    }
+    if (!table) return null;
+    const out = { lemma, tense, forms: table, lang: 'de' };
+    if (separable) {
+      out.separable = true;
+      out.prefix = separable.prefix;
+      out.root = separable.root;
+    }
+    if (tense === 'perfekt') out.partizip = buildPartizip(lemma, separable);
+    return out;
   }
 
   function presentRegularDe(inf) {
@@ -254,12 +654,45 @@ const VerbConjugation = (() => {
     const lg = normLang(lang);
     const lemma = toLemma(word, lg);
     if (!lemma) return null;
+    if (lg === 'de') return conjugateDeLemma(lemma, 'present');
     let table = null;
-    if (lg === 'de') table = DE_PRESENT[lemma] || presentRegularDe(lemma);
-    else if (lg === 'es') table = ES_PRESENT[lemma] || presentRegularEs(lemma);
+    if (lg === 'es') table = ES_PRESENT[lemma] || presentRegularEs(lemma);
     else table = EN_PRESENT[lemma] || presentRegularEn(lemma);
     if (!table) return null;
     return { lemma, tense: 'present', forms: table, lang: lg };
+  }
+
+  function getPraeteritum(word, lang) {
+    const lg = normLang(lang);
+    if (lg !== 'de') return null;
+    const lemma = toLemma(word, lg);
+    if (!lemma) return null;
+    return conjugateDeLemma(lemma, 'praeteritum');
+  }
+
+  function getPerfekt(word, lang) {
+    const lg = normLang(lang);
+    if (lg !== 'de') return null;
+    const lemma = toLemma(word, lg);
+    if (!lemma) return null;
+    return conjugateDeLemma(lemma, 'perfekt');
+  }
+
+  function getImperativ(word, lang) {
+    const lg = normLang(lang);
+    if (lg !== 'de') return null;
+    const lemma = toLemma(word, lg);
+    if (!lemma) return null;
+    return conjugateDeLemma(lemma, 'imperativ');
+  }
+
+  function getConjugation(word, lang, tense) {
+    const t = tense || 'present';
+    if (t === 'present') return getPresent(word, lang);
+    if (t === 'praeteritum') return getPraeteritum(word, lang);
+    if (t === 'perfekt') return getPerfekt(word, lang);
+    if (t === 'imperativ') return getImperativ(word, lang);
+    return null;
   }
 
   function enrichFlashcard(fc, lang) {
@@ -271,45 +704,117 @@ const VerbConjugation = (() => {
     if (!conj) return fc;
     fc.verbLemma = conj.lemma;
     fc.conjugation = { present: conj.forms };
+    if (lg === 'de') {
+      const pr = getPraeteritum(fc.word, lg);
+      const pf = getPerfekt(fc.word, lg);
+      const imp = getImperativ(fc.word, lg);
+      if (pr?.forms) fc.conjugation.praeteritum = pr.forms;
+      if (pf?.forms) fc.conjugation.perfekt = pf.forms;
+      if (imp?.forms) fc.conjugation.imperativ = imp.forms;
+    }
     return fc;
   }
 
-  function pronounRows(lang) {
-    return PRONOUNS[normLang(lang)] || PRONOUNS.de;
+  function pronounRows(lang, tense) {
+    const lg = normLang(lang);
+    if (lg === 'de' && tense === 'imperativ') return IMPERATIVE_PRONOUNS.de;
+    return PRONOUNS[lg] || PRONOUNS.de;
+  }
+
+  function conjugationListHtml(conj, lang, tense) {
+    const rows = pronounRows(lang, tense);
+    return rows
+      .map(([pron]) => {
+        const key = pron.includes('/') ? pron.split('/')[0] : pron;
+        const form = conj.forms[pron] || conj.forms[key] || '';
+        if (!form) return '';
+        const pronEsc = typeof esc === 'function' ? esc(pron) : pron;
+        const formEsc = typeof esc === 'function' ? esc(form) : form;
+        return `<li class="vv-conj-item"><span class="vv-conj-pron">${pronEsc}</span><span class="vv-conj-form">${formEsc}</span></li>`;
+      })
+      .filter(Boolean)
+      .join('');
+  }
+
+  function switchConjTense(btn) {
+    const panel = btn?.closest?.('.vv-conj-panel');
+    if (!panel) return;
+    const tense = btn.getAttribute('data-tense');
+    panel.querySelectorAll('.vv-conj-tense-tab').forEach((el) => {
+      el.classList.toggle('vv-conj-tense-tab--active', el === btn);
+    });
+    panel.querySelectorAll('.vv-conj-tense-panel').forEach((el) => {
+      el.classList.toggle('vv-conj-tense-panel--active', el.getAttribute('data-tense') === tense);
+    });
+    const title = panel.querySelector('.vv-conj-panel-title');
+    if (title) {
+      const labels = { present: 'Present', praeteritum: 'Präteritum', perfekt: 'Perfekt', imperativ: 'Imperativ' };
+      title.textContent = labels[tense] || 'Conjugation';
+    }
   }
 
   function conjugationSelectHtml(fc, goal, id) {
     const lg = normLang(goal?.subject || fc.sourceLang);
-    const conj = getPresent(fc.word, lg);
-    if (!conj) return '';
-    const rows = pronounRows(lg);
-    const opts = rows
-      .map(([pron, lbl]) => {
-        const key = pron.includes('/') ? pron.split('/')[0] : pron;
-        const form = conj.forms[pron] || conj.forms[key] || '';
-        if (!form) return '';
-        const label = `${pron}: ${form}`;
-        return `<option value="${typeof esc === 'function' ? esc(key) : key}">${typeof esc === 'function' ? esc(label) : label}</option>`;
-      })
+    const wordEsc = typeof esc === 'function' ? esc(fc.word) : fc.word;
+    const uid = String(id || fc.word || 'conj').replace(/[^a-zA-Z0-9_-]/g, '_');
+
+    if (lg !== 'de') {
+      const conj = getPresent(fc.word, lg);
+      if (!conj) return '';
+      const items = conjugationListHtml(conj, lg, 'present');
+      if (!items) return '';
+      return (
+        `<details class="vv-conj-details" onclick="event.stopPropagation()">` +
+        `<summary class="vv-conj-summary">▾ Conjugations</summary>` +
+        `<div class="vv-conj-panel" aria-label="Present tense forms for ${wordEsc}">` +
+        `<div class="vv-conj-panel-title">Present tense</div>` +
+        `<ul class="vv-conj-list">${items}</ul></div></details>`
+      );
+    }
+
+    const tensePanels = DE_TENSES.map((tense) => {
+      const conj = getConjugation(fc.word, lg, tense);
+      if (!conj) return '';
+      const items = conjugationListHtml(conj, lg, tense);
+      if (!items) return '';
+      const active = tense === 'present' ? ' vv-conj-tense-panel--active' : '';
+      return `<div class="vv-conj-tense-panel${active}" data-tense="${tense}"><ul class="vv-conj-list">${items}</ul></div>`;
+    })
       .filter(Boolean)
       .join('');
-    if (!opts) return '';
-    const wordEsc = typeof esc === 'function' ? esc(fc.word) : fc.word;
+    if (!tensePanels) return '';
+
+    const tabs = DE_TENSES.map((tense) => {
+      const active = tense === 'present' ? ' vv-conj-tense-tab--active' : '';
+      return (
+        `<button type="button" class="vv-conj-tense-tab${active}" data-tense="${tense}" ` +
+        `onclick="event.stopPropagation();VerbConjugation.switchConjTense(this)">${DE_TENSE_LABELS[tense]}</button>`
+      );
+    }).join('');
+
     return (
       `<details class="vv-conj-details" onclick="event.stopPropagation()">` +
       `<summary class="vv-conj-summary">▾ Conjugations</summary>` +
-      `<select class="vv-conj-select" aria-label="Conjugations for ${wordEsc}" ` +
-      `onclick="event.stopPropagation()" onmousedown="event.stopPropagation()">` +
-      `<option value="">Present tense…</option>${opts}</select></details>`
+      `<div class="vv-conj-panel" id="vv-conj-${uid}" aria-label="Conjugation forms for ${wordEsc}">` +
+      `<div class="vv-conj-panel-title">Present</div>` +
+      `<div class="vv-conj-tense-tabs" role="tablist">${tabs}</div>` +
+      `<div class="vv-conj-tense-panels">${tensePanels}</div></div></details>`
     );
   }
 
   return {
     toLemma,
     getPresent,
+    getPraeteritum,
+    getPerfekt,
+    getImperativ,
+    getConjugation,
     enrichFlashcard,
     conjugationSelectHtml,
+    switchConjTense,
     pronounRows,
+    splitSeparableInfinitive,
+    deStemNeedsEpentheticE,
   };
 })();
 

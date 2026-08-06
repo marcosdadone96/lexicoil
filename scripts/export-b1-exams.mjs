@@ -17,6 +17,11 @@ import {
   flattenExam,
 } from './audit-pass-2.mjs';
 import { answerKeySequence } from './lib/balanceMcq.mjs';
+import {
+  t3SituationFingerprintFromPart,
+  validateDistinctT3Fingerprints,
+  loadCatalogT3Entries,
+} from './lib/t3GroupFingerprint.mjs';
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
 const SEED_FILE = path.join(ROOT, 'library/reusable-seed/de_B1.json');
@@ -72,25 +77,57 @@ for (const rec of allRecords) {
 }
 
 const usedIds = new Set();
+const usedT3Fps = new Set();
 const assembledExams = [];
+const catalogT3Entries = loadCatalogT3Entries(ROOT);
+for (const row of catalogT3Entries) {
+  if (row.t3SituationFp) usedT3Fps.add(row.t3SituationFp);
+}
+
+function pickCandidate(key, pool, examIndex) {
+  const preferFresh = (c) => !usedIds.has(c.id);
+  const t3Fp = (c) => t3SituationFingerprintFromPart(c.part);
+  const t3Fresh = (c) => !usedT3Fps.has(t3Fp(c));
+
+  if (key === 'lesen_3') {
+    let chosen = pool.find((c) => preferFresh(c) && t3Fresh(c));
+    if (!chosen) chosen = pool.find((c) => preferFresh(c));
+    if (!chosen && pool.length > 0) chosen = pool.find((c) => t3Fresh(c));
+    if (!chosen && pool.length > 0) {
+      chosen = pool[examIndex % pool.length];
+      return { chosen, reused: true, t3FpWarn: !t3Fresh(chosen) };
+    }
+    if (chosen) {
+      return { chosen, reused: !preferFresh(chosen), t3FpWarn: !t3Fresh(chosen) };
+    }
+    return { chosen: null, reused: false };
+  }
+
+  let chosen = pool.find((c) => preferFresh(c));
+  let reused = false;
+  if (!chosen && pool.length > 0) {
+    chosen = pool[examIndex % pool.length];
+    reused = true;
+  }
+  return { chosen, reused, t3FpWarn: false };
+}
 
 for (let e = 0; e < Math.max(...ARGS.exams); e++) {
   const picked = {};
   const missing = [];
   for (const key of CELL_KEYS) {
     const pool = cleanPool[key];
-    let chosen = pool.find((c) => !usedIds.has(c.id));
-    let reused = false;
-    if (!chosen && pool.length > 0) {
-      chosen = pool[e % pool.length];
-      reused = true;
-    }
+    const { chosen, reused, t3FpWarn } = pickCandidate(key, pool, e);
     if (!chosen) {
       missing.push(key);
       continue;
     }
-    picked[key] = { ...chosen, reused };
+    picked[key] = { ...chosen, reused, t3FpWarn };
     if (!reused) usedIds.add(chosen.id);
+    if (key === 'lesen_3') {
+      const fp = t3SituationFingerprintFromPart(chosen.part);
+      if (fp) usedT3Fps.add(fp);
+    }
   }
   if (missing.length) {
     console.error(`FATAL: examen ${e + 1}: sin partes para ${missing.join(', ')}`);
@@ -117,6 +154,34 @@ function countByCell(examBody) {
   }
   return { total: (flat.questions || []).length, byCell };
 }
+
+const runT3Entries = [];
+for (const examNum of ARGS.exams) {
+  const { picked, examBody, gate } = assembledExams[examNum - 1];
+  const t3Fp = t3SituationFingerprintFromPart(picked.lesen_3.part);
+  runT3Entries.push({
+    examFile: `assembled-exam-b1-e${examNum}.json`,
+    examNumber: examNum,
+    t3SituationFp: t3Fp,
+    partId: picked.lesen_3.record?.id || picked.lesen_3.id,
+  });
+  if (picked.lesen_3.t3FpWarn) {
+    console.warn(
+      `⚠ Examen ${examNum}: T3 comparte grupo situación con otro examen del catálogo (fp ${t3Fp})`,
+    );
+  }
+}
+
+const t3Validation = validateDistinctT3Fingerprints([
+  ...catalogT3Entries.filter((r) => !ARGS.exams.includes(Number(r.examNumber))),
+  ...runT3Entries,
+]);
+if (!t3Validation.ok) {
+  console.error('\nFATAL: catálogo T3 con grupos duplicados:');
+  t3Validation.errors.forEach((e) => console.error(`  ${e}`));
+  process.exit(1);
+}
+console.log(`\nT3 catálogo: ${t3Validation.uniqueCount} grupos situación únicos (validación OK)`);
 
 for (const examNum of ARGS.exams) {
   const { picked, examBody, gate } = assembledExams[examNum - 1];
@@ -146,6 +211,7 @@ for (const examNum of ARGS.exams) {
       ),
       keySequences: keySeqs,
       questionCount: counts,
+      t3SituationFp: t3SituationFingerprintFromPart(picked.lesen_3.part),
     },
     exam: examBody,
   };

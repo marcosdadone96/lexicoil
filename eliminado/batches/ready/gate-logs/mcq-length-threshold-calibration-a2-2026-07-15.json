@@ -1,0 +1,358 @@
+{
+  "at": "2026-07-15T12:31:56.406Z",
+  "level": "A2",
+  "poolScope": {
+    "source": "library\\de\\A2\\questions.json",
+    "cells": [
+      "lesen-t1",
+      "lesen-t2",
+      "lesen-t3",
+      "horen-t1"
+    ],
+    "totalMcq": 216,
+    "biasedLongest": 98,
+    "notLongest": 118,
+    "byCell": {
+      "lesen-t2": {
+        "mcq": 65,
+        "biased": 35
+      },
+      "horen-t1": {
+        "mcq": 46,
+        "biased": 12
+      },
+      "lesen-t1": {
+        "mcq": 55,
+        "biased": 33
+      },
+      "lesen-t3": {
+        "mcq": 50,
+        "biased": 18
+      }
+    }
+  },
+  "distribution": {
+    "biasedDiffPct": {
+      "n": 98,
+      "min": 2,
+      "p25": 24,
+      "p50": 45,
+      "p75": 67,
+      "p90": 128,
+      "max": 330,
+      "mean": 60.8
+    },
+    "biasedDiffChars": {
+      "n": 98,
+      "min": 1,
+      "p25": 6,
+      "p50": 12,
+      "p75": 19,
+      "p90": 26,
+      "max": 42,
+      "mean": 13.6
+    },
+    "biasedBucketsPct": {
+      "0-9": 4,
+      "10-14": 6,
+      "15-19": 8,
+      "20-29": 14,
+      "30-39": 13,
+      "40+": 53
+    }
+  },
+  "thresholdAnalysis": {
+    "interpretation": "A2 opciones MCQ más cortas en chars (p25=6 p50=12 vs B1 p25≈11). Pct similar (p25=24%). Corte A2: 20%/8ch (mismo % que B1, chars más bajos); severo 30%/14ch.",
+    "proposed": {
+      "minPct": 20,
+      "minChars": 8,
+      "severePct": 30,
+      "severeChars": 14,
+      "batchFailCount": 2
+    },
+    "b1Reference": {
+      "minPct": 20,
+      "minChars": 12,
+      "severePct": 30,
+      "severeChars": 18,
+      "batchFailCount": 2
+    },
+    "proposedRule": "Significativo si isLongest estricto Y (diffPct≥20 OR diff≥8); severo si diffPct≥30 OR diff≥14; batch falla con ≥1 severo OR ≥2 significativos.",
+    "sweepMinPctChars": [
+      {
+        "minPct": 8,
+        "minChars": 6,
+        "poolBiasedFlagged": 95,
+        "poolBiasedPct": 97
+      },
+      {
+        "minPct": 8,
+        "minChars": 8,
+        "poolBiasedFlagged": 95,
+        "poolBiasedPct": 97
+      },
+      {
+        "minPct": 8,
+        "minChars": 10,
+        "poolBiasedFlagged": 95,
+        "poolBiasedPct": 97
+      },
+      {
+        "minPct": 8,
+        "minChars": 12,
+        "poolBiasedFlagged": 95,
+        "poolBiasedPct": 97
+      },
+      {
+        "minPct": 10,
+        "minChars": 6,
+        "poolBiasedFlagged": 94,
+        "poolBiasedPct": 96
+      },
+      {
+        "minPct": 10,
+        "minChars": 8,
+        "poolBiasedFlagged": 94,
+        "poolBiasedPct": 96
+      },
+      {
+        "minPct": 10,
+        "minChars": 10,
+        "poolBiasedFlagged": 94,
+        "poolBiasedPct": 96
+      },
+      {
+        "minPct": 10,
+        "minChars": 12,
+        "poolBiasedFlagged": 94,
+        "poolBiasedPct": 96
+      },
+      {
+        "minPct": 12,
+        "minChars": 6,
+        "poolBiasedFlagged": 90,
+        "poolBiasedPct": 92
+      },
+      {
+        "minPct": 12,
+        "minChars": 8,
+        "poolBiasedFlagged": 89,
+        "poolBiasedPct": 91
+      },
+      {
+        "minPct": 12,
+        "minChars": 10,
+        "poolBiasedFlagged": 89,
+        "poolBiasedPct": 91
+      },
+      {
+        "minPct": 12,
+        "minChars": 12,
+        "poolBiasedFlagged": 89,
+        "poolBiasedPct": 91
+      },
+      {
+        "minPct": 15,
+        "minChars": 6,
+        "poolBiasedFlagged": 89,
+        "poolBiasedPct": 91
+      },
+      {
+        "minPct": 15,
+        "minChars": 8,
+        "poolBiasedFlagged": 88,
+        "poolBiasedPct": 90
+      },
+      {
+        "minPct": 15,
+        "minChars": 10,
+        "poolBiasedFlagged": 88,
+        "poolBiasedPct": 90
+      },
+      {
+        "minPct": 15,
+        "minChars": 12,
+        "poolBiasedFlagged": 88,
+        "poolBiasedPct": 90
+      },
+      {
+        "minPct": 18,
+        "minChars": 6,
+        "poolBiasedFlagged": 85,
+        "poolBiasedPct": 87
+      },
+      {
+        "minPct": 18,
+        "minChars": 8,
+        "poolBiasedFlagged": 84,
+        "poolBiasedPct": 86
+      },
+      {
+        "minPct": 18,
+        "minChars": 10,
+        "poolBiasedFlagged": 84,
+        "poolBiasedPct": 86
+      },
+      {
+        "minPct": 18,
+        "minChars": 12,
+        "poolBiasedFlagged": 84,
+        "poolBiasedPct": 86
+      },
+      {
+        "minPct": 20,
+        "minChars": 6,
+        "poolBiasedFlagged": 83,
+        "poolBiasedPct": 85
+      },
+      {
+        "minPct": 20,
+        "minChars": 8,
+        "poolBiasedFlagged": 81,
+        "poolBiasedPct": 83
+      },
+      {
+        "minPct": 20,
+        "minChars": 10,
+        "poolBiasedFlagged": 80,
+        "poolBiasedPct": 82
+      },
+      {
+        "minPct": 20,
+        "minChars": 12,
+        "poolBiasedFlagged": 80,
+        "poolBiasedPct": 82
+      },
+      {
+        "minPct": 22,
+        "minChars": 6,
+        "poolBiasedFlagged": 81,
+        "poolBiasedPct": 83
+      },
+      {
+        "minPct": 22,
+        "minChars": 8,
+        "poolBiasedFlagged": 79,
+        "poolBiasedPct": 81
+      },
+      {
+        "minPct": 22,
+        "minChars": 10,
+        "poolBiasedFlagged": 78,
+        "poolBiasedPct": 80
+      },
+      {
+        "minPct": 22,
+        "minChars": 12,
+        "poolBiasedFlagged": 78,
+        "poolBiasedPct": 80
+      },
+      {
+        "minPct": 25,
+        "minChars": 6,
+        "poolBiasedFlagged": 80,
+        "poolBiasedPct": 82
+      },
+      {
+        "minPct": 25,
+        "minChars": 8,
+        "poolBiasedFlagged": 76,
+        "poolBiasedPct": 78
+      },
+      {
+        "minPct": 25,
+        "minChars": 10,
+        "poolBiasedFlagged": 73,
+        "poolBiasedPct": 74
+      },
+      {
+        "minPct": 25,
+        "minChars": 12,
+        "poolBiasedFlagged": 72,
+        "poolBiasedPct": 73
+      }
+    ],
+    "comparisonOnSamePool": {
+      "b1ThresholdsWouldFlag": 80,
+      "a2ThresholdsWouldFlag": 81,
+      "delta": -1,
+      "b1FlagPct": 82,
+      "a2FlagPct": 83
+    }
+  },
+  "operatorCaseValidation": [
+    {
+      "label": "ruido +2%",
+      "diffPct": 2,
+      "diff": 2,
+      "expectFail": false,
+      "a2Significant": false,
+      "b1Significant": false,
+      "ok": true
+    },
+    {
+      "label": "ruido +6%",
+      "diffPct": 6,
+      "diff": 4,
+      "expectFail": false,
+      "a2Significant": false,
+      "b1Significant": false,
+      "ok": true
+    },
+    {
+      "label": "ruido +9%",
+      "diffPct": 9,
+      "diff": 5,
+      "expectFail": false,
+      "a2Significant": false,
+      "b1Significant": false,
+      "ok": true
+    },
+    {
+      "label": "marginal +12%",
+      "diffPct": 12,
+      "diff": 6,
+      "expectFail": false,
+      "a2Significant": false,
+      "b1Significant": false,
+      "ok": true
+    },
+    {
+      "label": "marginal +18%+7ch",
+      "diffPct": 18,
+      "diff": 7,
+      "expectFail": false,
+      "a2Significant": false,
+      "b1Significant": false,
+      "ok": true
+    },
+    {
+      "label": "sesgo +22%+9ch",
+      "diffPct": 22,
+      "diff": 9,
+      "expectFail": true,
+      "a2Significant": true,
+      "b1Significant": true,
+      "ok": true
+    },
+    {
+      "label": "sesgo +28%",
+      "diffPct": 28,
+      "diff": 15,
+      "expectFail": true,
+      "a2Significant": true,
+      "b1Significant": true,
+      "ok": true
+    },
+    {
+      "label": "sesgo +40%",
+      "diffPct": 40,
+      "diff": 22,
+      "expectFail": true,
+      "a2Significant": true,
+      "b1Significant": true,
+      "ok": true
+    }
+  ],
+  "allOperatorCasesPass": true
+}

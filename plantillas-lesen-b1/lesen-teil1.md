@@ -28,17 +28,25 @@ Usa léxico **simple y frecuente** (están en el wordlist B1):
 
 ## REGLAS DE CALIDAD (rechazo automático si fallas)
 1. **Sin tono moralizante:** NO «Abschließend lässt sich sagen», «Experten raten», «Es ist wichtig zu», «man sollte wissen».
-2. Pasaje en **ich** (ich/mir/meine/mich).
-3. **Anti word-matching:** en cada afirmación, **máximo 2 palabras de contenido (≥4 letras) iguales al pasaje**. Parafrasea con sinónimos que NO estén en el texto.
-4. Al menos **2 Richtig** y **2 Falsch**.
-5. **Los ítems Falsch lo son por CONTRADICCIÓN DE CONTENIDO** (el pasaje dice X, la afirmación dice lo contrario o algo no implicado), NUNCA por una palabra-señal.
-6. **REGLA ANTI-CORRELACIÓN (la más importante):** una palabra de alcance (alle/jede/jeder/immer/nie/nur/ausschließlich/komplett/stets) NO puede predecir la respuesta. Por tanto:
+2. **Sin tono emocional/IA:** NO «könnte/wäre ein kleines Wunder…», «verändert mein Leben für immer», hipérboles sentimentales — preferir hechos y opiniones mesuradas (Goethe B1).
+3. **Sin muletilla de fuente ficticia:** evita anclar el blog en «Eine Studie zeigt…» / «Ein Bericht zeigt…» salvo que sea un dato concreto y único.
+4. Pasaje en **ich** (ich/mir/meine/mich).
+5. **Anti word-matching:** en cada afirmación, **máximo 2 palabras de contenido (≥4 letras) iguales al pasaje**. Parafrasea con vocabulario **≤ B1** — el sinónimo **NO puede ser más difícil** que la palabra del pasaje.
+6. **Parafraseo B1 en preguntas (OBLIGATORIO):** las 6 afirmaciones y sus `explanation` deben usar solo vocabulario B1 frecuente. **PROHIBIDO** subir el registro léxico al parafrasear:
+   - ❌ *modifizieren* (usa **ändern** / **anpassen**)
+   - ❌ *Gelassenheit* (usa **Ruhe** / **Entspannung** / **entspannt**)
+   - ❌ *Angehörige* (usa **Familie** / **Verwandte**)
+   - ❌ *elektronische Mitteilungen* (usa **Nachrichten** / **SMS**)
+   - ❌ *sich austauschen*, *Umstellung*, jerga B2/C1 en preguntas
+7. Al menos **2 Richtig** y **2 Falsch**.
+8. **Los ítems Falsch lo son por CONTRADICCIÓN DE CONTENIDO** (el pasaje dice X, la afirmación dice lo contrario o algo no implicado), NUNCA por una palabra-señal.
+7. **REGLA ANTI-CORRELACIÓN (la más importante):** una palabra de alcance (alle/jede/jeder/immer/nie/nur/ausschließlich/komplett/stets) NO puede predecir la respuesta. Por tanto:
    - **Máximo 2 de los 6 enunciados** pueden contener una palabra de alcance.
    - Si usas alguna, **NO pueden estar todas en ítems Falsch**: reparte (p. ej. 1 en un enunciado Richtig auténtico y 1 en un Falsch), de modo que ver "immer/alle/nur" NO diga si es Richtig o Falsch.
    - Igualmente, **al menos 1 ítem Falsch debe NO contener** ninguna palabra de alcance (Falsch por contenido).
    - **PROHIBIDO** "ausschließlich täglich" y cualquier combinación forzada. "täglich" no es cuantificador de alcance.
    - Antes de terminar, **autocomprueba:** ¿podría un alumno acertar los Falsch marcando "tiene palabra absoluta → Falsch"? Si la respuesta es sí, REESCRIBE.
-7. **Pronombres coherentes:** todas las afirmaciones sobre la autora/el autor con solo **sie/ihre** O solo **er/seine** — nunca mezclar.
+8. **Pronombres coherentes:** todas las afirmaciones sobre la autora/el autor con solo **sie/ihre** O solo **er/seine** — nunca mezclar.
 
 ## ANTI WORD-MATCHING — MALO vs BUENO (léelo antes de escribir preguntas)
 
@@ -72,7 +80,7 @@ Pasaje contiene: *«…Die Stille der **Natur** ist ein Kontrast… Die Zeit in 
 - ¿NINGUNO con "ausschließlich täglich"?
 - ¿Misma referencia sie O er en todas las preguntas?
 - ¿Sin tono moralizante?
-- ¿Solo JSON, sin markdown?
+- PROHIBIDO usar **negrita** (asteriscos dobles) en el campo `text` del pasaje. Ejemplo INCORRECTO: '**Öffnungszeiten:** Das Zentrum öffnet...'. Ejemplo CORRECTO: 'Öffnungszeiten: Das Zentrum öffnet...' (dos puntos, sin asteriscos).
 
 ## Formato de salida
 Devuelve SOLO `{ "passages": [...], "questions": [...] }` — sin ```, sin texto extra.

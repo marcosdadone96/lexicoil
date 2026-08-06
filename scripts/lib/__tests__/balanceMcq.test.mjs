@@ -62,6 +62,58 @@ console.log('\n── buildBalancedLetterTargets ──');
   assertOk('6 targets not fixed abcabc', t6.join(',') !== 'a,b,c,a,b,c');
 }
 
+console.log('\n── v1.1 seed remainder rotate (N=4 / N=5 / N=6) ──');
+{
+  function countLetters(arr) {
+    const c = { a: 0, b: 0, c: 0 };
+    for (const x of arr) c[x]++;
+    return c;
+  }
+  function remainderWinner(counts, n) {
+    const base = Math.floor(n / 3);
+    const winners = [];
+    for (const L of ['a', 'b', 'c']) {
+      if (counts[L] > base) winners.push(L);
+    }
+    return winners.sort().join('');
+  }
+
+  const rem4 = { a: 0, b: 0, c: 0 };
+  for (let i = 0; i < 25; i++) {
+    const c = countLetters(buildBalancedLetterTargets(4, `lesen-t5-sim-${i}`));
+    assertOk(`N=4 seed ${i}: counts sum 4 and max-min≤1`, c.a + c.b + c.c === 4 && Math.max(c.a, c.b, c.c) - Math.min(c.a, c.b, c.c) <= 1);
+    for (const L of remainderWinner(c, 4)) rem4[L]++;
+  }
+  console.log('  N=4×25 remainder hits', rem4);
+  assertOk('N=4×25: remainder not always a', rem4.a < 25);
+  assertOk('N=4×25: each letter gets some remainder', rem4.a > 0 && rem4.b > 0 && rem4.c > 0);
+  assertOk(
+    'N=4×25: remainder fairly even (each 5–12)',
+    rem4.a >= 5 && rem4.a <= 12 && rem4.b >= 5 && rem4.b <= 12 && rem4.c >= 5 && rem4.c <= 12,
+  );
+
+  const rem5 = { a: 0, b: 0, c: 0 };
+  // N=5 → two letters get +1; count each letter's extras
+  const extras5 = { a: 0, b: 0, c: 0 };
+  for (let i = 0; i < 19; i++) {
+    const c = countLetters(buildBalancedLetterTargets(5, `horen-t2-sim-${i}`));
+    assertOk(`N=5 seed ${i}: 2/2/1 shape`, [c.a, c.b, c.c].sort().join(',') === '1,2,2');
+    for (const L of ['a', 'b', 'c']) {
+      if (c[L] === 2) extras5[L]++;
+      if (c[L] === 1) rem5[L]++; // short letter
+    }
+  }
+  console.log('  N=5×19 short-letter hits (should rotate)', rem5);
+  console.log('  N=5×19 double-letter hits', extras5);
+  assertOk('N=5×19: c is not always the short letter', rem5.c < 19);
+  assertOk('N=5×19: each letter is short at least once', rem5.a > 0 && rem5.b > 0 && rem5.c > 0);
+
+  for (const seed of ['t2-a', 't2-b', 't2-c', 'lesen-t2-sim-0']) {
+    const c = countLetters(buildBalancedLetterTargets(6, seed));
+    assertOk(`N=6 seed ${seed}: still 2/2/2`, c.a === 2 && c.b === 2 && c.c === 2);
+  }
+}
+
 console.log('\n── balanceMcqGroup ──');
 {
   const input = Array.from({ length: 6 }, (_, i) =>
@@ -119,8 +171,25 @@ console.log('\n── shuffleKeyedQuestionOrder ──');
   const canonical = input.map((q) => q.correct).join(',');
   const shuffled = shuffleKeyedQuestionOrder(input, { seed: 'l4-test' });
   const seq = shuffled.map((q) => q.correct).join(',');
-  assertOk('L4 shuffle changes positional sequence', seq !== canonical);
-  assertOk('L4 shuffle preserves multiset of answers', seq.split(',').sort().join(','), canonical.split(',').sort().join(','));
+  assertOk('L4 ja_nein shuffle changes positional sequence', seq !== canonical);
+  assert(
+    'L4 shuffle preserves multiset of answers',
+    seq.split(',').sort().join(','),
+    canonical.split(',').sort().join(','),
+  );
+}
+{
+  const input = Array.from({ length: 7 }, (_, i) => ({
+    id: `rf${i + 1}`,
+    type: 'richtig_falsch',
+    passageId: 'dialog-1',
+    correct: ['Richtig', 'Falsch', 'Richtig', 'Falsch', 'Richtig', 'Falsch', 'Richtig'][i],
+    question: `Statement ${i + 1}`,
+  }));
+  const before = input.map((q) => q.id).join(',');
+  const out = shuffleKeyedQuestionOrder(input, { seed: 'horen-t3-chrono' });
+  const after = out.map((q) => q.id).join(',');
+  assert('R/F order preserved (no chrono shuffle)', after, before);
 }
 
 console.log('\n── antiRuns ──');

@@ -1,0 +1,579 @@
+{
+  "canaryInventory": [
+    {
+      "file": "horen-t3-gemini-001.json",
+      "topic": "Gesundheit",
+      "teil": 3,
+      "mod": "horen",
+      "names": [
+        "Anna",
+        "Ben"
+      ],
+      "opening": "Anna: Hallo Ben, wie geht's dir?"
+    },
+    {
+      "file": "horen-t3-gemini-002.json",
+      "topic": "Familie",
+      "teil": 3,
+      "mod": "horen",
+      "names": [
+        "Anna",
+        "Ben"
+      ],
+      "opening": "Anna: Hallo Ben! Wie war dein Wochenende?"
+    },
+    {
+      "file": "horen-t3-gemini-004.json",
+      "topic": "Medien",
+      "teil": 3,
+      "mod": "horen",
+      "names": [
+        "Lena",
+        "Markus"
+      ],
+      "opening": "Lena: Markus, hast du eigentlich die Nachrichten heute Morgen gesehen?"
+    },
+    {
+      "file": "lesen-t4-gemini-001.json",
+      "topic": "Arbeit",
+      "teil": 4,
+      "mod": "lesen",
+      "names": [
+        "Forum"
+      ],
+      "opening": "In vielen Firmen wird über neue Arbeitsmodelle gesprochen."
+    },
+    {
+      "file": "lesen-t4-gemini-002.json",
+      "topic": "Freizeit",
+      "teil": 4,
+      "mod": "lesen",
+      "names": [
+        "Forum",
+        "Vorschlag"
+      ],
+      "opening": "In unserer Stadt gibt es einen neuen Vorschlag: Die Stadt soll mehr kostenlose Hobby-Kurse am Wochenende anbieten."
+    },
+    {
+      "file": "lesen-t4-gemini-003.json",
+      "topic": "Sport",
+      "teil": 4,
+      "mod": "lesen",
+      "names": [
+        "Forum",
+        "Vorschlag"
+      ],
+      "opening": "Die Stadtverwaltung diskutiert einen neuen Vorschlag: In den Stadtparks sollen kostenlose Fitnessgeräte für Training und Sport aufgestellt werden."
+    },
+    {
+      "file": "lesen-t5-gemini-001.json",
+      "topic": "Arbeit",
+      "teil": 5,
+      "mod": "lesen",
+      "names": [
+        "Bezahlung",
+        "Essensausgabe",
+        "Gäste",
+        "Ordnung",
+        "Ruhebereich",
+        "Sonderwünsche",
+        "Vorbestellung",
+        "Öffnungszeiten"
+      ],
+      "opening": "Liebe Mitarbeiterinnen und Mitarbeiter, Um einen angenehmen und reibungslosen Ablauf in unserer Mensa zu gewährleisten,"
+    },
+    {
+      "file": "lesen-t5-gemini-002.json",
+      "topic": "Wohnen",
+      "teil": 5,
+      "mod": "lesen",
+      "names": [
+        "Fahrräder",
+        "Haustiere",
+        "Mülltrennung",
+        "Parkplätze",
+        "Ruhezeiten",
+        "Waschküche"
+      ],
+      "opening": "Willkommen in der Wohnanlage 'Grüne Oase'."
+    },
+    {
+      "file": "lesen-t5-gemini-003.json",
+      "topic": "Bildung",
+      "teil": 5,
+      "mod": "lesen",
+      "names": [
+        "Anfragen",
+        "Bezahlung",
+        "Ruhe",
+        "Sauberkeit"
+      ],
+      "opening": "1. Öffnungszeiten: Die Mensa ist montags bis freitags geöffnet."
+    }
+  ],
+  "nameRepetitionAmongCanary": [
+    {
+      "a": "horen-t3-gemini-001.json",
+      "b": "horen-t3-gemini-002.json",
+      "shared": [
+        "Anna",
+        "Ben"
+      ],
+      "topics": [
+        "Gesundheit",
+        "Familie"
+      ]
+    },
+    {
+      "a": "lesen-t4-gemini-001.json",
+      "b": "lesen-t4-gemini-002.json",
+      "shared": [
+        "Forum"
+      ],
+      "topics": [
+        "Arbeit",
+        "Freizeit"
+      ]
+    },
+    {
+      "a": "lesen-t4-gemini-001.json",
+      "b": "lesen-t4-gemini-003.json",
+      "shared": [
+        "Forum"
+      ],
+      "topics": [
+        "Arbeit",
+        "Sport"
+      ]
+    },
+    {
+      "a": "lesen-t4-gemini-002.json",
+      "b": "lesen-t4-gemini-003.json",
+      "shared": [
+        "Forum",
+        "Vorschlag"
+      ],
+      "topics": [
+        "Freizeit",
+        "Sport"
+      ]
+    },
+    {
+      "a": "lesen-t5-gemini-001.json",
+      "b": "lesen-t5-gemini-003.json",
+      "shared": [
+        "Bezahlung"
+      ],
+      "topics": [
+        "Arbeit",
+        "Bildung"
+      ]
+    }
+  ],
+  "nameRepetitionCanaryVsPoolSameTeil": [
+    {
+      "canary": "horen-t3-gemini-001.json",
+      "pool": "horen-t3-gemini-001.json",
+      "shared": [
+        "Anna"
+      ],
+      "topicCanary": "Gesundheit",
+      "topicPool": "Arbeit"
+    },
+    {
+      "canary": "horen-t3-gemini-001.json",
+      "pool": "horen-t3-gemini-002.json",
+      "shared": [
+        "Anna",
+        "Ben"
+      ],
+      "topicCanary": "Gesundheit",
+      "topicPool": "Arbeit"
+    },
+    {
+      "canary": "horen-t3-gemini-001.json",
+      "pool": "horen-t3-gemini-004.json",
+      "shared": [
+        "Ben"
+      ],
+      "topicCanary": "Gesundheit",
+      "topicPool": "Kultur"
+    },
+    {
+      "canary": "horen-t3-gemini-002.json",
+      "pool": "horen-t3-gemini-001.json",
+      "shared": [
+        "Anna"
+      ],
+      "topicCanary": "Familie",
+      "topicPool": "Arbeit"
+    },
+    {
+      "canary": "horen-t3-gemini-002.json",
+      "pool": "horen-t3-gemini-002.json",
+      "shared": [
+        "Anna",
+        "Ben"
+      ],
+      "topicCanary": "Familie",
+      "topicPool": "Arbeit"
+    },
+    {
+      "canary": "horen-t3-gemini-002.json",
+      "pool": "horen-t3-gemini-004.json",
+      "shared": [
+        "Ben"
+      ],
+      "topicCanary": "Familie",
+      "topicPool": "Kultur"
+    },
+    {
+      "canary": "horen-t3-gemini-004.json",
+      "pool": "horen-t3-gemini-003.json",
+      "shared": [
+        "Lena"
+      ],
+      "topicCanary": "Medien",
+      "topicPool": "Technik"
+    },
+    {
+      "canary": "lesen-t4-gemini-001.json",
+      "pool": "lesen-t4-gemini-002.json",
+      "shared": [
+        "Forum"
+      ],
+      "topicCanary": "Arbeit",
+      "topicPool": "Stadtleben"
+    },
+    {
+      "canary": "lesen-t4-gemini-001.json",
+      "pool": "lesen-t4-gemini-006.json",
+      "shared": [
+        "Forum"
+      ],
+      "topicCanary": "Arbeit",
+      "topicPool": "Stadtleben"
+    },
+    {
+      "canary": "lesen-t4-gemini-001.json",
+      "pool": "lesen-t4-gemini-016.json",
+      "shared": [
+        "Forum"
+      ],
+      "topicCanary": "Arbeit",
+      "topicPool": "Umwelt"
+    },
+    {
+      "canary": "lesen-t4-gemini-001.json",
+      "pool": "lesen-t4-gemini-017.json",
+      "shared": [
+        "Forum"
+      ],
+      "topicCanary": "Arbeit",
+      "topicPool": "Umwelt"
+    },
+    {
+      "canary": "lesen-t4-gemini-001.json",
+      "pool": "lesen-t4-gemini-019.json",
+      "shared": [
+        "Forum"
+      ],
+      "topicCanary": "Arbeit",
+      "topicPool": "Umwelt"
+    },
+    {
+      "canary": "lesen-t4-gemini-002.json",
+      "pool": "lesen-t4-gemini-002.json",
+      "shared": [
+        "Forum"
+      ],
+      "topicCanary": "Freizeit",
+      "topicPool": "Stadtleben"
+    },
+    {
+      "canary": "lesen-t4-gemini-002.json",
+      "pool": "lesen-t4-gemini-006.json",
+      "shared": [
+        "Forum"
+      ],
+      "topicCanary": "Freizeit",
+      "topicPool": "Stadtleben"
+    },
+    {
+      "canary": "lesen-t4-gemini-002.json",
+      "pool": "lesen-t4-gemini-016.json",
+      "shared": [
+        "Forum"
+      ],
+      "topicCanary": "Freizeit",
+      "topicPool": "Umwelt"
+    },
+    {
+      "canary": "lesen-t4-gemini-002.json",
+      "pool": "lesen-t4-gemini-017.json",
+      "shared": [
+        "Forum"
+      ],
+      "topicCanary": "Freizeit",
+      "topicPool": "Umwelt"
+    },
+    {
+      "canary": "lesen-t4-gemini-002.json",
+      "pool": "lesen-t4-gemini-019.json",
+      "shared": [
+        "Forum"
+      ],
+      "topicCanary": "Freizeit",
+      "topicPool": "Umwelt"
+    },
+    {
+      "canary": "lesen-t4-gemini-003.json",
+      "pool": "lesen-t4-gemini-002.json",
+      "shared": [
+        "Forum"
+      ],
+      "topicCanary": "Sport",
+      "topicPool": "Stadtleben"
+    },
+    {
+      "canary": "lesen-t4-gemini-003.json",
+      "pool": "lesen-t4-gemini-006.json",
+      "shared": [
+        "Forum"
+      ],
+      "topicCanary": "Sport",
+      "topicPool": "Stadtleben"
+    },
+    {
+      "canary": "lesen-t4-gemini-003.json",
+      "pool": "lesen-t4-gemini-016.json",
+      "shared": [
+        "Forum"
+      ],
+      "topicCanary": "Sport",
+      "topicPool": "Umwelt"
+    },
+    {
+      "canary": "lesen-t4-gemini-003.json",
+      "pool": "lesen-t4-gemini-017.json",
+      "shared": [
+        "Forum"
+      ],
+      "topicCanary": "Sport",
+      "topicPool": "Umwelt"
+    },
+    {
+      "canary": "lesen-t4-gemini-003.json",
+      "pool": "lesen-t4-gemini-019.json",
+      "shared": [
+        "Forum"
+      ],
+      "topicCanary": "Sport",
+      "topicPool": "Umwelt"
+    },
+    {
+      "canary": "lesen-t5-gemini-001.json",
+      "pool": "lesen-t5-gemini-050.json",
+      "shared": [
+        "Öffnungszeiten"
+      ],
+      "topicCanary": "Arbeit",
+      "topicPool": "Gesundheit"
+    },
+    {
+      "canary": "lesen-t5-gemini-001.json",
+      "pool": "lesen-t5-gemini-057.json",
+      "shared": [
+        "Bezahlung"
+      ],
+      "topicCanary": "Arbeit",
+      "topicPool": "Gesundheit"
+    },
+    {
+      "canary": "lesen-t5-gemini-001.json",
+      "pool": "lesen-t5-gemini-070.json",
+      "shared": [
+        "Bezahlung",
+        "Essensausgabe"
+      ],
+      "topicCanary": "Arbeit",
+      "topicPool": "Ernährung"
+    },
+    {
+      "canary": "lesen-t5-gemini-002.json",
+      "pool": "lesen-t5-gemini-009.json",
+      "shared": [
+        "Ruhezeiten"
+      ],
+      "topicCanary": "Wohnen",
+      "topicPool": "Freizeit"
+    },
+    {
+      "canary": "lesen-t5-gemini-002.json",
+      "pool": "lesen-t5-gemini-014.json",
+      "shared": [
+        "Parkplätze"
+      ],
+      "topicCanary": "Wohnen",
+      "topicPool": "Stadtleben"
+    },
+    {
+      "canary": "lesen-t5-gemini-002.json",
+      "pool": "lesen-t5-gemini-015.json",
+      "shared": [
+        "Mülltrennung",
+        "Ruhezeiten"
+      ],
+      "topicCanary": "Wohnen",
+      "topicPool": "Umwelt"
+    },
+    {
+      "canary": "lesen-t5-gemini-002.json",
+      "pool": "lesen-t5-gemini-022.json",
+      "shared": [
+        "Mülltrennung"
+      ],
+      "topicCanary": "Wohnen",
+      "topicPool": "Umwelt"
+    },
+    {
+      "canary": "lesen-t5-gemini-002.json",
+      "pool": "lesen-t5-gemini-023.json",
+      "shared": [
+        "Mülltrennung"
+      ],
+      "topicCanary": "Wohnen",
+      "topicPool": "Umwelt"
+    },
+    {
+      "canary": "lesen-t5-gemini-002.json",
+      "pool": "lesen-t5-gemini-024.json",
+      "shared": [
+        "Mülltrennung"
+      ],
+      "topicCanary": "Wohnen",
+      "topicPool": "Umwelt"
+    },
+    {
+      "canary": "lesen-t5-gemini-002.json",
+      "pool": "lesen-t5-gemini-027.json",
+      "shared": [
+        "Mülltrennung"
+      ],
+      "topicCanary": "Wohnen",
+      "topicPool": "Umwelt"
+    },
+    {
+      "canary": "lesen-t5-gemini-002.json",
+      "pool": "lesen-t5-gemini-028.json",
+      "shared": [
+        "Mülltrennung"
+      ],
+      "topicCanary": "Wohnen",
+      "topicPool": "Umwelt"
+    },
+    {
+      "canary": "lesen-t5-gemini-002.json",
+      "pool": "lesen-t5-gemini-029.json",
+      "shared": [
+        "Mülltrennung"
+      ],
+      "topicCanary": "Wohnen",
+      "topicPool": "Umwelt"
+    },
+    {
+      "canary": "lesen-t5-gemini-002.json",
+      "pool": "lesen-t5-gemini-030.json",
+      "shared": [
+        "Mülltrennung",
+        "Ruhezeiten"
+      ],
+      "topicCanary": "Wohnen",
+      "topicPool": "Umwelt"
+    },
+    {
+      "canary": "lesen-t5-gemini-002.json",
+      "pool": "lesen-t5-gemini-033.json",
+      "shared": [
+        "Parkplätze"
+      ],
+      "topicCanary": "Wohnen",
+      "topicPool": "Umwelt"
+    },
+    {
+      "canary": "lesen-t5-gemini-002.json",
+      "pool": "lesen-t5-gemini-034.json",
+      "shared": [
+        "Mülltrennung"
+      ],
+      "topicCanary": "Wohnen",
+      "topicPool": "Umwelt"
+    },
+    {
+      "canary": "lesen-t5-gemini-002.json",
+      "pool": "lesen-t5-gemini-035.json",
+      "shared": [
+        "Mülltrennung"
+      ],
+      "topicCanary": "Wohnen",
+      "topicPool": "Umwelt"
+    },
+    {
+      "canary": "lesen-t5-gemini-002.json",
+      "pool": "lesen-t5-gemini-036.json",
+      "shared": [
+        "Mülltrennung"
+      ],
+      "topicCanary": "Wohnen",
+      "topicPool": "Umwelt"
+    },
+    {
+      "canary": "lesen-t5-gemini-002.json",
+      "pool": "lesen-t5-gemini-037.json",
+      "shared": [
+        "Fahrräder",
+        "Mülltrennung"
+      ],
+      "topicCanary": "Wohnen",
+      "topicPool": "Umwelt"
+    },
+    {
+      "canary": "lesen-t5-gemini-002.json",
+      "pool": "lesen-t5-gemini-063.json",
+      "shared": [
+        "Ruhezeiten"
+      ],
+      "topicCanary": "Wohnen",
+      "topicPool": "Sport"
+    },
+    {
+      "canary": "lesen-t5-gemini-003.json",
+      "pool": "lesen-t5-gemini-057.json",
+      "shared": [
+        "Bezahlung",
+        "Sauberkeit"
+      ],
+      "topicCanary": "Bildung",
+      "topicPool": "Gesundheit"
+    },
+    {
+      "canary": "lesen-t5-gemini-003.json",
+      "pool": "lesen-t5-gemini-070.json",
+      "shared": [
+        "Bezahlung",
+        "Sauberkeit"
+      ],
+      "topicCanary": "Bildung",
+      "topicPool": "Ernährung"
+    }
+  ],
+  "openingRepetitionAmongCanary": [],
+  "openingRepetitionCanaryVsPool": [],
+  "summary": {
+    "canaryFiles": 9,
+    "namePairsAmongCanary": 5,
+    "namePairsVsPool": 43,
+    "openingPairsAmongCanary": 0,
+    "openingPairsVsPool": 0
+  }
+}

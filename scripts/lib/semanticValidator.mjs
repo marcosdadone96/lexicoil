@@ -41,19 +41,16 @@ let _llmFn = null; // set by tests; null → use real geminiClient
 async function callSemanticLlm(prompt) {
   if (_llmFn) return _llmFn(prompt);
 
-  // Provider selection: Claude-first (consistent with project convention).
-  // Set SEMANTIC_USE_GEMINI=1 to prefer Gemini instead.
-  const useGemini =
-    !!process.env.SEMANTIC_USE_GEMINI &&
-    !!(process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY);
-
-  if (useGemini) {
-    const { generateContent } = await import('./geminiClient.mjs');
-    return generateContent({ prompt, jsonMode: true, maxRetries: 2, maxTokens: 1024, temperature: 0.1 });
+  const useClaude =
+    String(process.env.SEMANTIC_USE_CLAUDE || '').trim() === '1' &&
+    !!process.env.ANTHROPIC_API_KEY;
+  if (useClaude) {
+    const { generateContent } = await import('./claudeClient.mjs');
+    return generateContent({ prompt, maxRetries: 2, maxTokens: 1024 });
   }
 
-  const { generateContent } = await import('./claudeClient.mjs');
-  return generateContent({ prompt, maxRetries: 2, maxTokens: 1024 });
+  const { generateContent } = await import('./geminiClient.mjs');
+  return generateContent({ prompt, jsonMode: true, maxRetries: 2, maxTokens: 1024, temperature: 0.1 });
 }
 
 export function _setLlmFn(fn) {
@@ -177,6 +174,29 @@ function formatOptions(q) {
   }).join('\n');
 }
 
+/** Goethe T3: "0" = no ad matches; A–J = shared ad list (uppercase). */
+function formatCorrectKeyLine(correctLetter, opts) {
+  const key = String(correctLetter ?? '').trim();
+  if (key === '0') {
+    return (
+      'Clave: 0 → ningún anuncio A–J encaja (respuesta Goethe T3 válida; ' +
+      'NO es error de formato ni clave ausente)'
+    );
+  }
+  const upper = key.toUpperCase();
+  if (/^[A-J]$/.test(upper) && Array.isArray(opts) && opts.length) {
+    const idx = upper.charCodeAt(0) - 65;
+    const text = optionText(opts[idx] || '');
+    return `Clave: ${upper}${text ? ` → "${text}"` : ''}`;
+  }
+  if (/^[A-E]$/.test(upper) && Array.isArray(opts) && opts.length) {
+    const idx = upper.charCodeAt(0) - 65;
+    const text = optionText(opts[idx] || '');
+    return `Clave: ${upper}${text ? ` → "${text}"` : ''}`;
+  }
+  return `Clave: ${key}`;
+}
+
 function buildPrompt(ctx) {
   const { passageText, questions, module, teil } = ctx;
 
@@ -185,10 +205,6 @@ function buildPrompt(ctx) {
     .map((q) => {
       const correctLetter = String(q.correct ?? q.correctAnswer ?? '');
       const opts = q.options || [];
-      const correctText =
-        correctLetter.length === 1
-          ? opts[correctLetter.charCodeAt(0) - 97] || ''
-          : correctLetter;
       const lines = [
         `PREGUNTA [${q.id || '?'}]: ${q.question || ''}`,
       ];
@@ -198,7 +214,7 @@ function buildPrompt(ctx) {
         lines.push(`Texto de la persona:\n${q.signText.trim()}`);
       }
       if (opts.length) lines.push(formatOptions(q));
-      lines.push(`Clave: ${correctLetter}${correctText ? ` → "${correctText}"` : ''}`);
+      lines.push(formatCorrectKeyLine(correctLetter, opts));
       lines.push(q.explanation ? `Explicación: ${q.explanation}` : '(sin explicación)');
       return lines.join('\n');
     })
@@ -208,13 +224,28 @@ function buildPrompt(ctx) {
   // Each question has its own "Texto de la persona" (signText) that must be
   // topically relevant to the question and justify the Ja/Nein answer.
   const isOpinionFormat = questions.some((q) => q.signText);
+  const isT3Matching =
+    Number(teil) === 3 &&
+    questions.some((q) => String(q.type || '').toLowerCase() === 'matching');
+  const isL2Mcq =
+    Number(teil) === 2 &&
+    questions.some((q) => String(q.type || '').toLowerCase() === 'multiple_choice');
 
   return `Eres un evaluador experto de exámenes de alemán nivel Goethe B1.
 Módulo: ${module.toUpperCase()}, Teil ${teil}.${isOpinionFormat ? `
-Formato: OPINIONES (Ja/Nein). Cada pregunta incluye el texto donde la persona expresa su postura.` : ''}
+Formato: OPINIONES (Ja/Nein). Cada pregunta incluye el texto donde la persona expresa su postura.` : ''}${isL2Mcq ? `
+Formato: L2 MCQ (3 opciones a/b/c por pregunta, pasaje de prensa).
+REGLA ANTI-AUTOCONTRADICCIÓN: si la clave marcada está respaldada por el pasaje y NINGUNA otra
+opción tiene cita textual defendible, devuelve issues: [] para esa pregunta — NO generes issue
+cuyo detail diga «Clave correcta» sin opción rival concreta.
+SÍ genera issue si dos opciones parafrasean el mismo hecho (sinónimos) o ambas son defendibles.` : ''}${isT3Matching ? `
+Formato: T3 MATCHING (anuncios A–J). Cada pregunta empareja una situación con la lista de anuncios.
+CONVENCIÓN GOETHE OBLIGATORIA: la clave "0" (string cero) significa «ningún anuncio encaja».
+Es una respuesta CORRECTA y válida — NO la marques como clave inválida, ausente o fuera de A–J.
+Exactamente una pregunta del Teil suele llevar clave "0".` : ''}
 
 TEXTO / TRANSCRIPT:
-${passageText || '(sin texto — validar solo opciones)'}
+${passageText || (isT3Matching ? '(sin pasaje — validar situación vs anuncios A–J de cada pregunta)' : '(sin texto — validar solo opciones)')}
 
 PREGUNTAS:
 ${qBlocks}
@@ -223,12 +254,18 @@ TAREA: Valida CADA pregunta y el pasaje globalmente. Devuelve SOLO JSON (sin mar
 
 REGLA FUNDAMENTAL: No juzgues de memoria ni por sentido común general.
 Todo issue de "correctness" o "ambiguity" DEBE apoyarse en una frase literal
-del texto/transcript. Si no puedes citar evidencia textual, NO generes el issue.
+del texto/transcript${isT3Matching ? ' o del anuncio A–J citado' : ''}. Si no puedes citar evidencia textual, NO generes el issue.
 
 Checks a realizar:
 
 1. "correctness" (CRITICAL) — Evidencia textual obligatoria.
-   ${isOpinionFormat
+   ${isT3Matching
+     ? `PARA T3 MATCHING:
+   - Clave "0": CORRECTA si ningún anuncio A–J satisface la situación. Verifica cada anuncio;
+     si ninguno encaja, NO generes issue de correctness.
+   - Clave A–J: el anuncio elegido debe ser el único que encaja; cita el texto del anuncio.
+   - NUNCA rechaces "0" por no ser letra A–J — es convención oficial Goethe B1.`
+     : isOpinionFormat
      ? `PARA FORMATO OPINIONES (Ja/Nein):
    Paso 1: ¿El "Texto de la persona" menciona explícitamente el mismo tema que la
    pregunta? Si el texto trata de un tema DISTINTO, es error: el texto no puede
@@ -237,6 +274,12 @@ Checks a realizar:
    Paso 2: Si el tema es el mismo, localiza la frase exacta del texto que indica la
    postura. ¿Esa postura coincide con la clave (Ja/Nein)? Si contradice, genera issue
    y cita la frase.`
+     : isL2Mcq
+     ? `PARA L2 MCQ:
+   - Clave correcta respaldada + sin rival textual → NO generes issue (issues: []).
+   - Clave incorrecta o sin evidencia → genera issue correctness con cita.
+   - Dos opciones (p. ej. b y c) con el mismo significado o ambas defendibles → genera issue
+     (correctness o ambiguity) citando el conflicto entre opciones.`
      : `Localiza la frase o fragmento EXACTO del texto/transcript que justifica la clave.
    Copia esa frase en "evidence" (campo interno; no en "detail"). Si no encuentras
    evidencia textual directa, genera issue: la clave no está soportada.`}
@@ -328,6 +371,36 @@ function parseSemanticResponse(raw) {
   return { themeTags, issues };
 }
 
+/**
+ * Drop SEM issues where the LLM affirms the marked key but still emitted CRITICAL
+ * (batch 071 pattern). Keeps real duplicate-option / dual-defensible defects (073).
+ */
+export function isSelfContradictorySemIssue(issue) {
+  const d = String(issue?.detail || '');
+  const dl = d.toLowerCase();
+
+  // Real MCQ defects — never strip
+  if (/opciones?\s+[abc]\)\s*(y|e)\s+[abc]\)/i.test(d)) return false;
+  if (/opción\s+[abc]\)\s+también defendible/i.test(d)) return false;
+  if (/idénticas?\s+en\s+significado|prácticamente\s+lo\s+mismo|expresan\s+prácticamente/i.test(dl)) {
+    return false;
+  }
+  if (/ambas\s+(son\s+)?correctas|no hay distinción|falta diferenciación|sin distinción significativa/i.test(dl)) {
+    return false;
+  }
+  if (/verbessern|besser machen|unterstützung.*schulung|betreuung.*lehrer/i.test(dl) &&
+      /idéntic|mismo|prácticamente|distinción|diferenciación/i.test(dl)) {
+    return false;
+  }
+
+  // Affirms key + cites passage evidence, no rival option → self-contradiction
+  if (/clave correcta/i.test(dl) && /evidencia/i.test(dl)) return true;
+  if (/^clave correcta[.\s]/i.test(d.trim())) return true;
+  if (/evidencia textual directa/i.test(dl) && /clave correcta/i.test(dl)) return true;
+
+  return false;
+}
+
 // ─── Template fingerprint (Jaccard on theme tags) ────────────────────────────
 const JACCARD_THRESHOLD = 0.5; // ≥50% tag overlap = same template
 
@@ -382,15 +455,6 @@ function diskCacheWrite(hash, result) {
   }
 }
 
-// ─── Public API ─────────────────────────────────────────────────────────────
-/**
- * Validate a seed record semantically.
- *
- * @param {object} part - Seed record (same shape as isPartPoolReady input)
- * @param {object} [opts]
- * @param {boolean} [opts.skipTemplate=false] - Skip template check (useful in tests)
- * @returns {Promise<{ ok: boolean, issues: Array<{kind, itemId, detail}> }>}
- */
 export async function validatePartSemantics(part, { skipTemplate = false } = {}) {
   const ctx = extractPartContext(part);
 
@@ -415,8 +479,17 @@ export async function validatePartSemantics(part, { skipTemplate = false } = {})
   try {
     raw = await callSemanticLlm(prompt);
   } catch (err) {
-    // Fail-open: if the LLM call fails, don't block the part
-    const result = { ok: true, issues: [], _llmError: String(err?.message || err) };
+    // Fail-closed: do not publish without a successful SEM-1 call
+    const result = {
+      ok: false,
+      issues: [{
+        kind: 'llm_error',
+        itemId: 'part',
+        detail: `SEM-1 LLM no disponible: ${err?.message || err}`,
+        confidence: 1.0,
+      }],
+      _llmError: String(err?.message || err),
+    };
     _resultCache.set(hash, result);
     return result;
   }
@@ -425,7 +498,9 @@ export async function validatePartSemantics(part, { skipTemplate = false } = {})
 
   // Apply confidence threshold — discard low-confidence noise before acting on issues.
   // Template issues injected in-process always pass (they have no LLM confidence field).
-  const issues = rawIssues.filter((i) => (i.confidence ?? 1.0) >= CONFIDENCE_THRESHOLD);
+  const issues = rawIssues
+    .filter((i) => (i.confidence ?? 1.0) >= CONFIDENCE_THRESHOLD)
+    .filter((i) => !isSelfContradictorySemIssue(i));
 
   // Template check (runs in-process, no extra LLM call)
   if (!skipTemplate && themeTags.length) {
@@ -446,3 +521,11 @@ export async function validatePartSemantics(part, { skipTemplate = false } = {})
   diskCacheWrite(hash, result);
   return result;
 }
+
+/** Build SEM-1 prompt for a part (tests / diagnostics). */
+export function buildPromptForPart(part) {
+  const ctx = extractPartContext(part);
+  return ctx ? buildPrompt(ctx) : null;
+}
+
+export { extractPartContext, contentHash, collectPassageText, collectQuestions };

@@ -1,0 +1,83 @@
+{
+  "args": {
+    "apply": true,
+    "dryRun": false,
+    "syncSeed": true,
+    "listOnly": false,
+    "preview": false,
+    "confirm": true,
+    "lemmaClusterOnly": false
+  },
+  "affected": [
+    "B1/horen-t1-gemini-001.json",
+    "B1/horen-t1-gemini-048.json",
+    "A2/horen-t3-gemini-039.json",
+    "A2/horen-t3-gemini-040.json",
+    "B1/horen-t3-gemini-058.json",
+    "B1/horen-t4-gemini-026.json"
+  ],
+  "report": {
+    "repaired": [
+      "B1/horen-t1-gemini-001.json",
+      "B1/horen-t1-gemini-048.json",
+      "B1/horen-t4-gemini-026.json"
+    ],
+    "verifyFailed": [
+      {
+        "file": "A2/horen-t3-gemini-039.json",
+        "remaining": [
+          "vocab_corruption"
+        ]
+      },
+      {
+        "file": "A2/horen-t3-gemini-040.json",
+        "remaining": [
+          "vocab_corruption"
+        ]
+      },
+      {
+        "file": "B1/horen-t3-gemini-058.json",
+        "remaining": [
+          "vocab_corruption"
+        ]
+      }
+    ],
+    "sync": [
+      {
+        "file": "horen-t1-gemini-001.json",
+        "ok": true
+      },
+      {
+        "file": "horen-t1-gemini-048.json",
+        "ok": true
+      },
+      {
+        "file": "horen-t4-gemini-026.json",
+        "ok": true
+      }
+    ],
+    "at": "2026-07-25T07:53:15.833Z"
+  },
+  "finalHits": [
+    {
+      "file": "A2/horen-t3-gemini-039.json",
+      "issues": [
+        "lemma_artifact",
+        "vocab_corruption"
+      ]
+    },
+    {
+      "file": "A2/horen-t3-gemini-040.json",
+      "issues": [
+        "lemma_artifact",
+        "vocab_corruption"
+      ]
+    },
+    {
+      "file": "B1/horen-t3-gemini-058.json",
+      "issues": [
+        "vocab_corruption"
+      ]
+    }
+  ]
+}

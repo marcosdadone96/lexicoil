@@ -1,0 +1,373 @@
+{
+  "generatedAt": "2026-07-08T15:53:20.988Z",
+  "normalizeVersion": "v3.0-stable",
+  "gateVersion": "v6.1-B-G2 (frozen)",
+  "selectionCriteria": "15 most recent lesen-t*.json in batches/generated with mtime before v3.0-stable consolidation",
+  "v3Cutoff": "2026-07-08T14:00:00.000Z",
+  "sourceDir": "batches/generated",
+  "files": [
+    {
+      "file": "lesen-t5-gemini-067.json",
+      "mtime": "2026-07-08T08:36:41.988Z"
+    },
+    {
+      "file": "lesen-t5-gemini-066.json",
+      "mtime": "2026-07-08T08:33:53.313Z"
+    },
+    {
+      "file": "lesen-t5-gemini-065.json",
+      "mtime": "2026-07-08T08:29:48.791Z"
+    },
+    {
+      "file": "lesen-t5-gemini-064.json",
+      "mtime": "2026-07-08T08:27:32.208Z"
+    },
+    {
+      "file": "lesen-t5-gemini-063.json",
+      "mtime": "2026-07-08T08:26:49.816Z"
+    },
+    {
+      "file": "lesen-t4-gemini-037.json",
+      "mtime": "2026-07-08T08:16:47.937Z"
+    },
+    {
+      "file": "lesen-t4-gemini-036.json",
+      "mtime": "2026-07-08T08:10:55.908Z"
+    },
+    {
+      "file": "lesen-t3-auto-qeh7ew.json",
+      "mtime": "2026-07-08T08:08:51.931Z"
+    },
+    {
+      "file": "lesen-t3-auto-omsq86.json",
+      "mtime": "2026-07-08T08:07:18.930Z"
+    },
+    {
+      "file": "lesen-t3-auto-tz7n7y.json",
+      "mtime": "2026-07-08T08:06:37.321Z"
+    },
+    {
+      "file": "lesen-t2-gemini-093.json",
+      "mtime": "2026-07-08T07:54:50.765Z"
+    },
+    {
+      "file": "lesen-t2-gemini-092.json",
+      "mtime": "2026-07-08T07:52:45.736Z"
+    },
+    {
+      "file": "lesen-t2-gemini-091.json",
+      "mtime": "2026-07-08T07:48:14.214Z"
+    },
+    {
+      "file": "lesen-t1-gemini-177.json",
+      "mtime": "2026-07-08T07:43:31.779Z"
+    },
+    {
+      "file": "lesen-t1-gemini-176.json",
+      "mtime": "2026-07-08T07:34:06.284Z"
+    }
+  ],
+  "summary": {
+    "fileCount": 15,
+    "beforeFindings": 7,
+    "afterFindings": 7,
+    "deltaFindings": 0,
+    "eliminated": 0,
+    "added": 0,
+    "beforeByReason": {
+      "lexicon_nn": 1,
+      "adj_before_noun": 4,
+      "lexicon_override_tag": 1,
+      "verb_census_no_finite": 1
+    },
+    "afterByReason": {
+      "lexicon_nn": 1,
+      "adj_before_noun": 4,
+      "lexicon_override_tag": 1,
+      "verb_census_no_finite": 1
+    },
+    "filesWithChanges": 1,
+    "changesByClassification": {
+      "cambio neutro": 1
+    },
+    "changesByRule": {
+      "decap_adj_after_article": 1
+    }
+  },
+  "findingsEliminated": [],
+  "findingsAdded": [],
+  "findingsPersistent": [
+    { "file": "lesen-t5-gemini-063.json", "word": "online", "reason": "lexicon_nn", "field": "passages.text" },
+    { "file": "lesen-t4-gemini-037.json", "word": "Kleinen", "reason": "adj_before_noun", "field": "questions.signText" },
+    { "file": "lesen-t4-gemini-037.json", "word": "Kleinen", "reason": "adj_before_noun", "field": "questions.signText" },
+    { "file": "lesen-t4-gemini-036.json", "word": "machen", "reason": "lexicon_override_tag", "field": "questions.explanation" },
+    { "file": "lesen-t4-gemini-036.json", "word": "Wichtiger", "reason": "adj_before_noun", "field": "questions.signText" },
+    { "file": "lesen-t2-gemini-093.json", "word": "Täglichen", "reason": "adj_before_noun", "field": "passages.text" },
+    { "file": "lesen-t2-gemini-093.json", "word": "Wettkämpfe", "reason": "verb_census_no_finite", "field": "questions.options" }
+  ],
+  "fileReports": [
+    {
+      "file": "lesen-t5-gemini-067.json",
+      "mtime": "2026-07-08T08:36:41.988Z",
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 1,
+        "capFixed": 0,
+        "fieldsChanged": 1,
+        "tokenChanges": 1
+      },
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": [
+        {
+          "file": "lesen-t5-gemini-067.json",
+          "field": "passages[0].text",
+          "textOriginal": "Die Stadtbibliothek 'Lesewelt' hat folgende Regeln:\n\n1.  **Öffnungszeiten und Zugang:** Die Bibliothek ist montags bis freitags von 9:00 bis 19:00 Uhr und Samstags von 10:00 bis 16:00 Uhr geöffnet. De…",
+          "textCorrected": "Die Stadtbibliothek 'Lesewelt' hat folgende Regeln:\n\n1.  **Öffnungszeiten und Zugang:** Die Bibliothek ist montags bis freitags von 9:00 bis 19:00 Uhr und Samstags von 10:00 bis 16:00 Uhr geöffnet. De…",
+          "tokenFrom": "Freien",
+          "tokenTo": "freien",
+          "ruleApplied": "decap_adj_after_article",
+          "classification": "cambio neutro"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-066.json",
+      "mtime": "2026-07-08T08:33:53.313Z",
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t5-gemini-065.json",
+      "mtime": "2026-07-08T08:29:48.791Z",
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t5-gemini-064.json",
+      "mtime": "2026-07-08T08:27:32.208Z",
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t5-gemini-063.json",
+      "mtime": "2026-07-08T08:26:49.816Z",
+      "beforeFindings": 1,
+      "afterFindings": 1,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t4-gemini-037.json",
+      "mtime": "2026-07-08T08:16:47.937Z",
+      "beforeFindings": 2,
+      "afterFindings": 2,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 2,
+        "capFixed": 2,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t4-gemini-036.json",
+      "mtime": "2026-07-08T08:10:55.908Z",
+      "beforeFindings": 2,
+      "afterFindings": 2,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 1,
+        "capFixed": 1,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-auto-qeh7ew.json",
+      "mtime": "2026-07-08T08:08:51.931Z",
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 1,
+        "capFixed": 1,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-auto-omsq86.json",
+      "mtime": "2026-07-08T08:07:18.930Z",
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t3-auto-tz7n7y.json",
+      "mtime": "2026-07-08T08:06:37.321Z",
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 1,
+        "capFixed": 1,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t2-gemini-093.json",
+      "mtime": "2026-07-08T07:54:50.765Z",
+      "beforeFindings": 2,
+      "afterFindings": 2,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 4,
+        "capFixed": 4,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t2-gemini-092.json",
+      "mtime": "2026-07-08T07:52:45.736Z",
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 2,
+        "capFixed": 2,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t2-gemini-091.json",
+      "mtime": "2026-07-08T07:48:14.214Z",
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 5,
+        "capFixed": 5,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t1-gemini-177.json",
+      "mtime": "2026-07-08T07:43:31.779Z",
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 1,
+        "capFixed": 1,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    },
+    {
+      "file": "lesen-t1-gemini-176.json",
+      "mtime": "2026-07-08T07:34:06.284Z",
+      "beforeFindings": 0,
+      "afterFindings": 0,
+      "delta": 0,
+      "normalize": {
+        "decapFixed": 0,
+        "capFixed": 0,
+        "fieldsChanged": 0,
+        "tokenChanges": 0
+      },
+      "removedFindings": [],
+      "addedFindings": [],
+      "changes": []
+    }
+  ],
+  "simulatedChanges": [
+    {
+      "file": "lesen-t5-gemini-067.json",
+      "field": "passages[0].text",
+      "textOriginal": "Die Stadtbibliothek 'Lesewelt' hat folgende Regeln:\n\n1.  **Öffnungszeiten und Zugang:** Die Bibliothek ist montags bis freitags von 9:00 bis 19:00 Uhr und Samstags von 10:00 bis 16:00 Uhr geöffnet. De…",
+      "textCorrected": "Die Stadtbibliothek 'Lesewelt' hat folgende Regeln:\n\n1.  **Öffnungszeiten und Zugang:** Die Bibliothek ist montags bis freitags von 9:00 bis 19:00 Uhr und Samstags von 10:00 bis 16:00 Uhr geöffnet. De…",
+      "tokenFrom": "Freien",
+      "tokenTo": "freien",
+      "ruleApplied": "decap_adj_after_article",
+      "classification": "cambio neutro"
+    }
+  ]
+}

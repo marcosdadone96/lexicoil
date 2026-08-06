@@ -241,7 +241,10 @@
     S.vePool = poolFromSnapshots(saved);
     S.veRetakeQuizId = saved.id;
     S.veSavedQuizId = null;
-    if (saved.hintLang) S.fcLang = saved.hintLang;
+    if (saved.hintLang) {
+      if (typeof setVocabUiLang === 'function') setVocabUiLang(saved.hintLang);
+      else S.fcLang = saved.hintLang;
+    }
     if (typeof setVeHintLangMode === 'function') {
       setVeHintLangMode(saved.hintLanguageMode || 'interface');
     }
@@ -250,6 +253,7 @@
     }
     if (typeof hideAll === 'function') hideAll();
     if (typeof show === 'function') show('vocabExamScreen');
+    if (typeof applyVocabExamChrome === 'function') applyVocabExamChrome();
     const titleEl = document.getElementById('veTitle');
     if (titleEl) {
       titleEl.textContent =
@@ -284,12 +288,12 @@
     beginRetakeSession(saved, fromVocab);
   }
 
-  function renderSavedQuizzesHtml(goal, fromVocab) {
+  function renderCardsHtml(goal, fromVocab) {
     if (!goal) return '';
     const list = quizzesForGoal(goal);
     if (!list.length) return '';
     const retakeFrom = fromVocab !== false;
-    const cards = list
+    return list
       .map((q) => {
         const pct =
           q.bestScore != null && q.questionCount
@@ -314,6 +318,11 @@
         );
       })
       .join('');
+  }
+
+  function renderSavedQuizzesHtml(goal, fromVocab) {
+    const cards = renderCardsHtml(goal, fromVocab);
+    if (!cards) return '';
     return (
       `<div class="ws-panel vv-saved-quizzes-panel">` +
       `<p class="ws-seclbl">Saved quizzes</p>` +
@@ -324,6 +333,10 @@
   }
 
   function refreshSavedQuizzesDom(goal) {
+    if (typeof SavedVocabPractice !== 'undefined' && SavedVocabPractice.refreshDom) {
+      SavedVocabPractice.refreshDom(goal);
+      return;
+    }
     if (typeof document === 'undefined') return;
     const g =
       goal ||
@@ -382,6 +395,7 @@
     deleteSavedQuiz,
     retakeSavedQuiz,
     renderSavedQuizzesHtml,
+    renderCardsHtml,
     refreshSavedQuizzesDom,
     mergeSavedQuizzes,
     isSavedQuizTombstoned,

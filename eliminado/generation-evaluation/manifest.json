@@ -1,0 +1,475 @@
+{
+  "version": 1,
+  "createdAt": "2026-07-10T17:50:49.755Z",
+  "goal": "Compare Goethe B1 generation with feedbackMode=off vs active (PASO 8)",
+  "targetPairs": 50,
+  "modules": {
+    "lesen": 20,
+    "horen": 12,
+    "schreiben": 9,
+    "sprechen": 9
+  },
+  "modes": {
+    "off": "GENERATION_FEEDBACK_MODE=off (or unset)",
+    "preview": "GENERATION_FEEDBACK_MODE=preview — prompt gets rules, metadata.usedFeedback=false",
+    "active": "GENERATION_FEEDBACK_MODE=active — prompt + generationMetadata application"
+  },
+  "pairs": [
+    {
+      "id": "lesen-001",
+      "module": "lesen",
+      "teil": 1,
+      "status": "planned",
+      "withoutFeedback": "pairs/lesen-001/without-feedback.json",
+      "withFeedback": "pairs/lesen-001/with-feedback.json",
+      "auditReport": "pairs/lesen-001/audit-report.json"
+    },
+    {
+      "id": "lesen-002",
+      "module": "lesen",
+      "teil": 2,
+      "status": "planned",
+      "withoutFeedback": "pairs/lesen-002/without-feedback.json",
+      "withFeedback": "pairs/lesen-002/with-feedback.json",
+      "auditReport": "pairs/lesen-002/audit-report.json"
+    },
+    {
+      "id": "lesen-003",
+      "module": "lesen",
+      "teil": 3,
+      "status": "planned",
+      "withoutFeedback": "pairs/lesen-003/without-feedback.json",
+      "withFeedback": "pairs/lesen-003/with-feedback.json",
+      "auditReport": "pairs/lesen-003/audit-report.json"
+    },
+    {
+      "id": "lesen-004",
+      "module": "lesen",
+      "teil": 4,
+      "status": "planned",
+      "withoutFeedback": "pairs/lesen-004/without-feedback.json",
+      "withFeedback": "pairs/lesen-004/with-feedback.json",
+      "auditReport": "pairs/lesen-004/audit-report.json"
+    },
+    {
+      "id": "lesen-005",
+      "module": "lesen",
+      "teil": 5,
+      "status": "planned",
+      "withoutFeedback": "pairs/lesen-005/without-feedback.json",
+      "withFeedback": "pairs/lesen-005/with-feedback.json",
+      "auditReport": "pairs/lesen-005/audit-report.json"
+    },
+    {
+      "id": "lesen-006",
+      "module": "lesen",
+      "teil": 1,
+      "status": "planned",
+      "withoutFeedback": "pairs/lesen-006/without-feedback.json",
+      "withFeedback": "pairs/lesen-006/with-feedback.json",
+      "auditReport": "pairs/lesen-006/audit-report.json"
+    },
+    {
+      "id": "lesen-007",
+      "module": "lesen",
+      "teil": 2,
+      "status": "planned",
+      "withoutFeedback": "pairs/lesen-007/without-feedback.json",
+      "withFeedback": "pairs/lesen-007/with-feedback.json",
+      "auditReport": "pairs/lesen-007/audit-report.json"
+    },
+    {
+      "id": "lesen-008",
+      "module": "lesen",
+      "teil": 3,
+      "status": "planned",
+      "withoutFeedback": "pairs/lesen-008/without-feedback.json",
+      "withFeedback": "pairs/lesen-008/with-feedback.json",
+      "auditReport": "pairs/lesen-008/audit-report.json"
+    },
+    {
+      "id": "lesen-009",
+      "module": "lesen",
+      "teil": 4,
+      "status": "planned",
+      "withoutFeedback": "pairs/lesen-009/without-feedback.json",
+      "withFeedback": "pairs/lesen-009/with-feedback.json",
+      "auditReport": "pairs/lesen-009/audit-report.json"
+    },
+    {
+      "id": "lesen-010",
+      "module": "lesen",
+      "teil": 5,
+      "status": "planned",
+      "withoutFeedback": "pairs/lesen-010/without-feedback.json",
+      "withFeedback": "pairs/lesen-010/with-feedback.json",
+      "auditReport": "pairs/lesen-010/audit-report.json"
+    },
+    {
+      "id": "lesen-011",
+      "module": "lesen",
+      "teil": 1,
+      "status": "planned",
+      "withoutFeedback": "pairs/lesen-011/without-feedback.json",
+      "withFeedback": "pairs/lesen-011/with-feedback.json",
+      "auditReport": "pairs/lesen-011/audit-report.json"
+    },
+    {
+      "id": "lesen-012",
+      "module": "lesen",
+      "teil": 2,
+      "status": "planned",
+      "withoutFeedback": "pairs/lesen-012/without-feedback.json",
+      "withFeedback": "pairs/lesen-012/with-feedback.json",
+      "auditReport": "pairs/lesen-012/audit-report.json"
+    },
+    {
+      "id": "lesen-013",
+      "module": "lesen",
+      "teil": 3,
+      "status": "planned",
+      "withoutFeedback": "pairs/lesen-013/without-feedback.json",
+      "withFeedback": "pairs/lesen-013/with-feedback.json",
+      "auditReport": "pairs/lesen-013/audit-report.json"
+    },
+    {
+      "id": "lesen-014",
+      "module": "lesen",
+      "teil": 4,
+      "status": "planned",
+      "withoutFeedback": "pairs/lesen-014/without-feedback.json",
+      "withFeedback": "pairs/lesen-014/with-feedback.json",
+      "auditReport": "pairs/lesen-014/audit-report.json"
+    },
+    {
+      "id": "lesen-015",
+      "module": "lesen",
+      "teil": 5,
+      "status": "planned",
+      "withoutFeedback": "pairs/lesen-015/without-feedback.json",
+      "withFeedback": "pairs/lesen-015/with-feedback.json",
+      "auditReport": "pairs/lesen-015/audit-report.json"
+    },
+    {
+      "id": "lesen-016",
+      "module": "lesen",
+      "teil": 1,
+      "status": "planned",
+      "withoutFeedback": "pairs/lesen-016/without-feedback.json",
+      "withFeedback": "pairs/lesen-016/with-feedback.json",
+      "auditReport": "pairs/lesen-016/audit-report.json"
+    },
+    {
+      "id": "lesen-017",
+      "module": "lesen",
+      "teil": 2,
+      "status": "planned",
+      "withoutFeedback": "pairs/lesen-017/without-feedback.json",
+      "withFeedback": "pairs/lesen-017/with-feedback.json",
+      "auditReport": "pairs/lesen-017/audit-report.json"
+    },
+    {
+      "id": "lesen-018",
+      "module": "lesen",
+      "teil": 3,
+      "status": "planned",
+      "withoutFeedback": "pairs/lesen-018/without-feedback.json",
+      "withFeedback": "pairs/lesen-018/with-feedback.json",
+      "auditReport": "pairs/lesen-018/audit-report.json"
+    },
+    {
+      "id": "lesen-019",
+      "module": "lesen",
+      "teil": 4,
+      "status": "planned",
+      "withoutFeedback": "pairs/lesen-019/without-feedback.json",
+      "withFeedback": "pairs/lesen-019/with-feedback.json",
+      "auditReport": "pairs/lesen-019/audit-report.json"
+    },
+    {
+      "id": "lesen-020",
+      "module": "lesen",
+      "teil": 5,
+      "status": "planned",
+      "withoutFeedback": "pairs/lesen-020/without-feedback.json",
+      "withFeedback": "pairs/lesen-020/with-feedback.json",
+      "auditReport": "pairs/lesen-020/audit-report.json"
+    },
+    {
+      "id": "horen-001",
+      "module": "horen",
+      "teil": 1,
+      "status": "planned",
+      "withoutFeedback": "pairs/horen-001/without-feedback.json",
+      "withFeedback": "pairs/horen-001/with-feedback.json",
+      "auditReport": "pairs/horen-001/audit-report.json"
+    },
+    {
+      "id": "horen-002",
+      "module": "horen",
+      "teil": 2,
+      "status": "planned",
+      "withoutFeedback": "pairs/horen-002/without-feedback.json",
+      "withFeedback": "pairs/horen-002/with-feedback.json",
+      "auditReport": "pairs/horen-002/audit-report.json"
+    },
+    {
+      "id": "horen-003",
+      "module": "horen",
+      "teil": 3,
+      "status": "planned",
+      "withoutFeedback": "pairs/horen-003/without-feedback.json",
+      "withFeedback": "pairs/horen-003/with-feedback.json",
+      "auditReport": "pairs/horen-003/audit-report.json"
+    },
+    {
+      "id": "horen-004",
+      "module": "horen",
+      "teil": 4,
+      "status": "planned",
+      "withoutFeedback": "pairs/horen-004/without-feedback.json",
+      "withFeedback": "pairs/horen-004/with-feedback.json",
+      "auditReport": "pairs/horen-004/audit-report.json"
+    },
+    {
+      "id": "horen-005",
+      "module": "horen",
+      "teil": 1,
+      "status": "planned",
+      "withoutFeedback": "pairs/horen-005/without-feedback.json",
+      "withFeedback": "pairs/horen-005/with-feedback.json",
+      "auditReport": "pairs/horen-005/audit-report.json"
+    },
+    {
+      "id": "horen-006",
+      "module": "horen",
+      "teil": 2,
+      "status": "planned",
+      "withoutFeedback": "pairs/horen-006/without-feedback.json",
+      "withFeedback": "pairs/horen-006/with-feedback.json",
+      "auditReport": "pairs/horen-006/audit-report.json"
+    },
+    {
+      "id": "horen-007",
+      "module": "horen",
+      "teil": 3,
+      "status": "planned",
+      "withoutFeedback": "pairs/horen-007/without-feedback.json",
+      "withFeedback": "pairs/horen-007/with-feedback.json",
+      "auditReport": "pairs/horen-007/audit-report.json"
+    },
+    {
+      "id": "horen-008",
+      "module": "horen",
+      "teil": 4,
+      "status": "planned",
+      "withoutFeedback": "pairs/horen-008/without-feedback.json",
+      "withFeedback": "pairs/horen-008/with-feedback.json",
+      "auditReport": "pairs/horen-008/audit-report.json"
+    },
+    {
+      "id": "horen-009",
+      "module": "horen",
+      "teil": 1,
+      "status": "planned",
+      "withoutFeedback": "pairs/horen-009/without-feedback.json",
+      "withFeedback": "pairs/horen-009/with-feedback.json",
+      "auditReport": "pairs/horen-009/audit-report.json"
+    },
+    {
+      "id": "horen-010",
+      "module": "horen",
+      "teil": 2,
+      "status": "planned",
+      "withoutFeedback": "pairs/horen-010/without-feedback.json",
+      "withFeedback": "pairs/horen-010/with-feedback.json",
+      "auditReport": "pairs/horen-010/audit-report.json"
+    },
+    {
+      "id": "horen-011",
+      "module": "horen",
+      "teil": 3,
+      "status": "planned",
+      "withoutFeedback": "pairs/horen-011/without-feedback.json",
+      "withFeedback": "pairs/horen-011/with-feedback.json",
+      "auditReport": "pairs/horen-011/audit-report.json"
+    },
+    {
+      "id": "horen-012",
+      "module": "horen",
+      "teil": 4,
+      "status": "planned",
+      "withoutFeedback": "pairs/horen-012/without-feedback.json",
+      "withFeedback": "pairs/horen-012/with-feedback.json",
+      "auditReport": "pairs/horen-012/audit-report.json"
+    },
+    {
+      "id": "schreiben-001",
+      "module": "schreiben",
+      "teil": null,
+      "status": "planned",
+      "withoutFeedback": "pairs/schreiben-001/without-feedback.json",
+      "withFeedback": "pairs/schreiben-001/with-feedback.json",
+      "auditReport": "pairs/schreiben-001/audit-report.json"
+    },
+    {
+      "id": "schreiben-002",
+      "module": "schreiben",
+      "teil": null,
+      "status": "planned",
+      "withoutFeedback": "pairs/schreiben-002/without-feedback.json",
+      "withFeedback": "pairs/schreiben-002/with-feedback.json",
+      "auditReport": "pairs/schreiben-002/audit-report.json"
+    },
+    {
+      "id": "schreiben-003",
+      "module": "schreiben",
+      "teil": null,
+      "status": "planned",
+      "withoutFeedback": "pairs/schreiben-003/without-feedback.json",
+      "withFeedback": "pairs/schreiben-003/with-feedback.json",
+      "auditReport": "pairs/schreiben-003/audit-report.json"
+    },
+    {
+      "id": "schreiben-004",
+      "module": "schreiben",
+      "teil": null,
+      "status": "planned",
+      "withoutFeedback": "pairs/schreiben-004/without-feedback.json",
+      "withFeedback": "pairs/schreiben-004/with-feedback.json",
+      "auditReport": "pairs/schreiben-004/audit-report.json"
+    },
+    {
+      "id": "schreiben-005",
+      "module": "schreiben",
+      "teil": null,
+      "status": "planned",
+      "withoutFeedback": "pairs/schreiben-005/without-feedback.json",
+      "withFeedback": "pairs/schreiben-005/with-feedback.json",
+      "auditReport": "pairs/schreiben-005/audit-report.json"
+    },
+    {
+      "id": "schreiben-006",
+      "module": "schreiben",
+      "teil": null,
+      "status": "planned",
+      "withoutFeedback": "pairs/schreiben-006/without-feedback.json",
+      "withFeedback": "pairs/schreiben-006/with-feedback.json",
+      "auditReport": "pairs/schreiben-006/audit-report.json"
+    },
+    {
+      "id": "schreiben-007",
+      "module": "schreiben",
+      "teil": null,
+      "status": "planned",
+      "withoutFeedback": "pairs/schreiben-007/without-feedback.json",
+      "withFeedback": "pairs/schreiben-007/with-feedback.json",
+      "auditReport": "pairs/schreiben-007/audit-report.json"
+    },
+    {
+      "id": "schreiben-008",
+      "module": "schreiben",
+      "teil": null,
+      "status": "planned",
+      "withoutFeedback": "pairs/schreiben-008/without-feedback.json",
+      "withFeedback": "pairs/schreiben-008/with-feedback.json",
+      "auditReport": "pairs/schreiben-008/audit-report.json"
+    },
+    {
+      "id": "schreiben-009",
+      "module": "schreiben",
+      "teil": null,
+      "status": "planned",
+      "withoutFeedback": "pairs/schreiben-009/without-feedback.json",
+      "withFeedback": "pairs/schreiben-009/with-feedback.json",
+      "auditReport": "pairs/schreiben-009/audit-report.json"
+    },
+    {
+      "id": "sprechen-001",
+      "module": "sprechen",
+      "teil": null,
+      "status": "planned",
+      "withoutFeedback": "pairs/sprechen-001/without-feedback.json",
+      "withFeedback": "pairs/sprechen-001/with-feedback.json",
+      "auditReport": "pairs/sprechen-001/audit-report.json"
+    },
+    {
+      "id": "sprechen-002",
+      "module": "sprechen",
+      "teil": null,
+      "status": "planned",
+      "withoutFeedback": "pairs/sprechen-002/without-feedback.json",
+      "withFeedback": "pairs/sprechen-002/with-feedback.json",
+      "auditReport": "pairs/sprechen-002/audit-report.json"
+    },
+    {
+      "id": "sprechen-003",
+      "module": "sprechen",
+      "teil": null,
+      "status": "planned",
+      "withoutFeedback": "pairs/sprechen-003/without-feedback.json",
+      "withFeedback": "pairs/sprechen-003/with-feedback.json",
+      "auditReport": "pairs/sprechen-003/audit-report.json"
+    },
+    {
+      "id": "sprechen-004",
+      "module": "sprechen",
+      "teil": null,
+      "status": "planned",
+      "withoutFeedback": "pairs/sprechen-004/without-feedback.json",
+      "withFeedback": "pairs/sprechen-004/with-feedback.json",
+      "auditReport": "pairs/sprechen-004/audit-report.json"
+    },
+    {
+      "id": "sprechen-005",
+      "module": "sprechen",
+      "teil": null,
+      "status": "planned",
+      "withoutFeedback": "pairs/sprechen-005/without-feedback.json",
+      "withFeedback": "pairs/sprechen-005/with-feedback.json",
+      "auditReport": "pairs/sprechen-005/audit-report.json"
+    },
+    {
+      "id": "sprechen-006",
+      "module": "sprechen",
+      "teil": null,
+      "status": "planned",
+      "withoutFeedback": "pairs/sprechen-006/without-feedback.json",
+      "withFeedback": "pairs/sprechen-006/with-feedback.json",
+      "auditReport": "pairs/sprechen-006/audit-report.json"
+    },
+    {
+      "id": "sprechen-007",
+      "module": "sprechen",
+      "teil": null,
+      "status": "planned",
+      "withoutFeedback": "pairs/sprechen-007/without-feedback.json",
+      "withFeedback": "pairs/sprechen-007/with-feedback.json",
+      "auditReport": "pairs/sprechen-007/audit-report.json"
+    },
+    {
+      "id": "sprechen-008",
+      "module": "sprechen",
+      "teil": null,
+      "status": "planned",
+      "withoutFeedback": "pairs/sprechen-008/without-feedback.json",
+      "withFeedback": "pairs/sprechen-008/with-feedback.json",
+      "auditReport": "pairs/sprechen-008/audit-report.json"
+    },
+    {
+      "id": "sprechen-009",
+      "module": "sprechen",
+      "teil": null,
+      "status": "planned",
+      "withoutFeedback": "pairs/sprechen-009/without-feedback.json",
+      "withFeedback": "pairs/sprechen-009/with-feedback.json",
+      "auditReport": "pairs/sprechen-009/audit-report.json"
+    }
+  ],
+  "howToFill": [
+    "1) Generate baseline: GENERATION_FEEDBACK_MODE=off … → copy JSON to pairs/<id>/without-feedback.json",
+    "2) Generate treatment: GENERATION_FEEDBACK_MODE=active … (same topic/teil) → with-feedback.json",
+    "3) node scripts/audit-generated-with-feedback.mjs --pair generation-evaluation/pairs/<id>",
+    "4) node scripts/prepare-generation-evaluation.mjs --summarize"
+  ]
+}

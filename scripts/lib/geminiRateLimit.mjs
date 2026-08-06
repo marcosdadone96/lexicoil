@@ -1,126 +1,47 @@
 /**
- * File-backed Gemini rate limiter (RPM + RPD) for multi-process spawn safety.
+ * Gemini rate limiter for CLI — global blob CAS when NETLIFY_SITE_ID set, else local file.
  */
 import fs from 'node:fs';
 import path from 'node:path';
+import { createRequire } from 'node:module';
 import { ROOT } from './loadEnv.mjs';
+import { resolveGeminiRateLimitStore } from './geminiBlobStore.mjs';
 
-export class DailyQuotaError extends Error {
-  constructor(message) {
-    super(message);
-    this.name = 'DailyQuotaError';
-  }
-}
+const require = createRequire(import.meta.url);
+const core = require('../../netlify/functions/lib/geminiRateLimitCore.js');
 
-const USAGE_FILE = path.join(ROOT, 'batches', '.gemini-usage.json');
+export const DailyQuotaError = core.DailyQuotaError;
+export const USAGE_FILE = path.join(ROOT, 'batches', '.gemini-usage.json');
+export const USAGE_BLOB_KEY = core.USAGE_BLOB_KEY;
 
-function rpmLimit() {
-  // Default 8 RPM ≈ tier gratuito (2.5-flash ~10 RPM; margen de seguridad).
-  // Con facturación activa en Google AI Studio, sube GEMINI_RPM=60+ en .env.
-  return Math.max(1, Number(process.env.GEMINI_RPM) || 8);
-}
-
-function rpdLimit() {
-  const n = Number(process.env.GEMINI_RPD);
-  return Number.isFinite(n) && n >= 0 ? n : 240;
-}
-
-function ptDateKey() {
-  return new Intl.DateTimeFormat('en-CA', {
-    timeZone: 'America/Los_Angeles',
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-  }).format(new Date());
-}
-
-function sleep(ms) {
-  return new Promise((r) => setTimeout(r, ms));
-}
-
-function readUsage() {
-  const day = ptDateKey();
-  try {
-    if (!fs.existsSync(USAGE_FILE)) return { day, count: 0, timestamps: [] };
-    const raw = JSON.parse(fs.readFileSync(USAGE_FILE, 'utf8'));
-    if (raw.day !== day) return { day, count: 0, timestamps: [] };
-    return {
-      day: raw.day,
-      count: Number(raw.count) || 0,
-      timestamps: (Array.isArray(raw.timestamps) ? raw.timestamps : []).map(Number).filter(Boolean),
-    };
-  } catch {
-    return { day, count: 0, timestamps: [] };
-  }
-}
-
-function writeUsage(data) {
-  fs.mkdirSync(path.dirname(USAGE_FILE), { recursive: true });
-  fs.writeFileSync(USAGE_FILE, `${JSON.stringify(data, null, 2)}\n`, 'utf8');
+export function isDailyQuotaMessage(message) {
+  return core.isDailyQuotaMessage(message);
 }
 
 export function remainingToday() {
-  const usage = readUsage();
-  return Math.max(0, rpdLimit() - usage.count);
+  const { store } = resolveGeminiRateLimitStore();
+  if (store) {
+    return core.readUsage(store).then(core.remainingTodayFromUsage);
+  }
+  const usage = core.readUsage(null, { filePath: USAGE_FILE });
+  return Promise.resolve(core.remainingTodayFromUsage(usage));
 }
 
-export function isDailyQuotaMessage(message) {
-  return /per day|PerDay|RPD|free_tier.*day|daily|GenerateRequestsPerDay/i.test(String(message || ''));
-}
-
-/** Wait until RPM/RPD allow one request; then record it. */
+/** Wait until RPM/RPD allow one request; then record it (global when Blobs available). */
 export async function acquire() {
-  const rpm = rpmLimit();
-  const rpd = rpdLimit();
-  const minSpacing = 60000 / rpm;
-
-  if (rpd <= 0) {
-    throw new DailyQuotaError(
-      'Presupuesto diario de Gemini agotado (GEMINI_RPD=0). Reanuda mañana o sube el límite en .env.',
-    );
+  const { store } = resolveGeminiRateLimitStore();
+  if (store) {
+    return core.acquire(store);
   }
-
-  for (let attempt = 0; attempt < 60; attempt++) {
-    const usage = readUsage();
-    if (usage.count >= rpd) {
-      throw new DailyQuotaError(
-        `Presupuesto diario de Gemini agotado (${usage.count}/${rpd} peticiones hoy PT). Reanuda mañana.`,
-      );
-    }
-
-    const now = Date.now();
-    const recent = usage.timestamps.filter((t) => now - t < 60000);
-    let waitMs = 0;
-
-    if (recent.length >= rpm) {
-      waitMs = Math.max(waitMs, 60000 - (now - Math.min(...recent)) + 50);
-    }
-    if (recent.length > 0) {
-      waitMs = Math.max(waitMs, minSpacing - (now - Math.max(...recent)) + 50);
-    }
-
-    if (waitMs > 0) {
-      await sleep(waitMs);
-      continue;
-    }
-
-    const fresh = readUsage();
-    if (fresh.count >= rpd) {
-      throw new DailyQuotaError(
-        `Presupuesto diario de Gemini agotado (${fresh.count}/${rpd} peticiones hoy PT). Reanuda mañana.`,
-      );
-    }
-
-    const ts = Date.now();
-    writeUsage({
-      day: fresh.day,
-      count: fresh.count + 1,
-      timestamps: [...fresh.timestamps.filter((t) => ts - t < 600000), ts].slice(-rpm * 15),
-    });
-    return;
-  }
-
-  throw new Error('No se pudo adquirir slot de rate limit tras varios intentos');
+  return core.acquire(null, { filePath: USAGE_FILE });
 }
 
-export { USAGE_FILE };
+/** Sync read for doctor / diagnostics. */
+export function readUsageSnapshot() {
+  const { store, backend } = resolveGeminiRateLimitStore();
+  if (store) {
+    return core.readUsage(store).then((u) => ({ ...u, backend }));
+  }
+  const usage = core.readUsage(null, { filePath: USAGE_FILE });
+  return Promise.resolve({ ...usage, backend: fs.existsSync(USAGE_FILE) ? 'file' : 'file-new' });
+}

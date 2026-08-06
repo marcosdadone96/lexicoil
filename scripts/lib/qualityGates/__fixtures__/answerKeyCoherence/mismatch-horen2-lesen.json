@@ -1,0 +1,30 @@
+{
+  "meta": { "case": "mismatch_real", "expected": "block", "note": "Hören T2 adaptado — correct=a pero explanation describe opción b (smartphones molestando)" },
+  "passages": [
+    {
+      "id": "fixture-passage",
+      "module": "lesen",
+      "teil": 2,
+      "title": "Handynutzung in der Bahn",
+      "text": "Eine Umfrage unter Fahrgästen zeigt unterschiedliche Meinungen zum Smartphone in Zügen. Viele finden laute Telefonate und abgespielte Videos ohne Kopfhörer besonders störend. Andere bemängeln vor allem teure Datentarife und schlechtes Netz. Die Bahn plant Informationskampagnen für mehr Rücksicht."
+    }
+  ],
+  "questions": [
+    {
+      "id": "fixture-q2-mismatch-horen2",
+      "module": "lesen",
+      "teil": 2,
+      "type": "multiple_choice",
+      "question": "Was ist laut der Umfrage das Hauptproblem beim Handygebrauch in der Bahn?",
+      "options": [
+        "a) Die Datentarife sind für viele Fahrgäste zu teuer.",
+        "b) Laute Gespräche und Videos stören andere Fahrgäste.",
+        "c) Die Internetverbindung in Zügen ist oft zu langsam."
+      ],
+      "correct": "a",
+      "correctAnswer": "a",
+      "explanation": "Die Umfrage zeigt, dass besonders laute Telefonate und abgespielte Videos ohne Kopfhörer andere Fahrgäste stark belästigen. Viele Befragte wünschen sich mehr Rücksicht im Zug.",
+      "passageId": "fixture-passage"
+    }
+  ]
+}

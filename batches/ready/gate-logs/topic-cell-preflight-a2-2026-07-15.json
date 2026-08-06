@@ -1,0 +1,866 @@
+{
+  "at": "2026-07-21T10:52:24.771Z",
+  "level": "A2",
+  "topics": 4,
+  "cells": 52,
+  "summary": {
+    "ok": 0,
+    "warn": 0,
+    "problem": 52
+  },
+  "instructions": {
+    "lesen": [
+      "Lesen Sie in einer Zeitung diesen Text.\nWählen Sie für die Aufgaben 1 bis 5 die richtige Lösung a, b oder c.",
+      "Lesen Sie die Informationstafel und die Aufgaben 6 bis 10.\nIn welchem Stock gehen Sie? Wählen Sie die richtige Lösung a, b oder c.",
+      "Lesen Sie die E-Mail und die Aufgaben 11 bis 15.\nWählen Sie für jede Aufgabe die richtige Lösung a, b oder c.",
+      "Lesen Sie die Aufgaben 16 bis 20 und die Anzeigen a bis f.\nWelche Anzeige passt zu welcher Person? Für eine Aufgabe gibt es keine Lösung. Markieren Sie X."
+    ],
+    "horen": [
+      "Sie hören fünf kurze Texte. Sie hören jeden Text zweimal.\nWählen Sie für die Aufgaben 1 bis 5 die richtige Lösung a, b oder c.",
+      "Sie hören ein Gespräch. Sie hören den Text einmal.\nWählen Sie für die Aufgaben 6 bis 10 ein passendes Bild aus a bis i.",
+      "Sie hören fünf kurze Gespräche. Sie hören jeden Text einmal.\nWählen Sie für die Aufgaben 11 bis 15 die richtige Lösung a, b oder c.",
+      "Sie hören ein Interview. Sie hören den Text zweimal.\nWählen Sie für die Aufgaben 16 bis 20 Ja oder Nein."
+    ]
+  },
+  "passageLengthGate": {
+    "applies": false,
+    "reason": "Goethe A2 Lesen usa 1 pasaje por Teil (T4 = 6 anuncios cortos exempt); no hay Lesen T2 doble pasaje B1 (CEFR 400)."
+  },
+  "problems": [
+    {
+      "topic": "health",
+      "module": "lesen",
+      "teil": 1,
+      "mechanism": "press_mcq",
+      "status": "PROBLEM",
+      "note": "pool: 0p + 6q; served: examen no encontrado en de_A2.json"
+    },
+    {
+      "topic": "health",
+      "module": "lesen",
+      "teil": 2,
+      "mechanism": "floor_plan_mcq",
+      "status": "PROBLEM",
+      "note": "pool: 0p + 5q; served: examen no encontrado en de_A2.json; Lesen T2: 5/5 Stock/Etage + 5/5 «anderer Stock»"
+    },
+    {
+      "topic": "health",
+      "module": "lesen",
+      "teil": 3,
+      "mechanism": "email_mcq",
+      "status": "PROBLEM",
+      "note": "pool: 0p + 10q; served: examen no encontrado en de_A2.json"
+    },
+    {
+      "topic": "health",
+      "module": "lesen",
+      "teil": 4,
+      "mechanism": "ads_matching",
+      "status": "PROBLEM",
+      "note": "pool: 0p + 1q; served: examen no encontrado en de_A2.json; Lesen T4: X=0 (espera 1), g=0, persona=0/5"
+    },
+    {
+      "topic": "health",
+      "module": "horen",
+      "teil": 1,
+      "mechanism": "short_texts_mcq",
+      "status": "PROBLEM",
+      "note": "pool: 0p + 20q; served: examen no encontrado en de_A2.json"
+    },
+    {
+      "topic": "health",
+      "module": "horen",
+      "teil": 2,
+      "mechanism": "picture_matching",
+      "status": "PROBLEM",
+      "note": "pool: 1p + 5q; served: examen no encontrado en de_A2.json; Hören T2: picture passages=1, matching=5, días OK"
+    },
+    {
+      "topic": "health",
+      "module": "horen",
+      "teil": 3,
+      "mechanism": "short_dialogues_mcq",
+      "status": "PROBLEM",
+      "note": "pool vacío para tema×teil; served: examen no encontrado en de_A2.json"
+    },
+    {
+      "topic": "health",
+      "module": "horen",
+      "teil": 4,
+      "mechanism": "interview_ja_nein",
+      "status": "PROBLEM",
+      "note": "pool vacío para tema×teil; served: examen no encontrado en de_A2.json"
+    },
+    {
+      "topic": "health",
+      "module": "schreiben",
+      "teil": 1,
+      "mechanism": "sms_task",
+      "status": "PROBLEM",
+      "note": "pool vacío para tema×teil; served: examen no encontrado en de_A2.json"
+    },
+    {
+      "topic": "health",
+      "module": "schreiben",
+      "teil": 2,
+      "mechanism": "email_chef",
+      "status": "PROBLEM",
+      "note": "pool: 0p + 1q; served: examen no encontrado en de_A2.json; Schreiben T2: consigna E-Mail al Chef presente"
+    },
+    {
+      "topic": "health",
+      "module": "sprechen",
+      "teil": 1,
+      "mechanism": "personal_questions",
+      "status": "PROBLEM",
+      "note": "pool vacío para tema×teil; served: examen no encontrado en de_A2.json"
+    },
+    {
+      "topic": "health",
+      "module": "sprechen",
+      "teil": 2,
+      "mechanism": "about_self",
+      "status": "PROBLEM",
+      "note": "pool vacío para tema×teil; served: examen no encontrado en de_A2.json"
+    },
+    {
+      "topic": "health",
+      "module": "sprechen",
+      "teil": 3,
+      "mechanism": "plan_together",
+      "status": "PROBLEM",
+      "note": "pool vacío para tema×teil; served: examen no encontrado en de_A2.json"
+    },
+    {
+      "topic": "work",
+      "module": "lesen",
+      "teil": 1,
+      "mechanism": "press_mcq",
+      "status": "PROBLEM",
+      "note": "pool: 0p + 6q; served: examen no encontrado en de_A2.json"
+    },
+    {
+      "topic": "work",
+      "module": "lesen",
+      "teil": 2,
+      "mechanism": "floor_plan_mcq",
+      "status": "PROBLEM",
+      "note": "pool: 0p + 6q; served: examen no encontrado en de_A2.json; Lesen T2: 5/5 Stock/Etage + 5/5 «anderer Stock»"
+    },
+    {
+      "topic": "work",
+      "module": "lesen",
+      "teil": 3,
+      "mechanism": "email_mcq",
+      "status": "PROBLEM",
+      "note": "pool: 0p + 1q; served: examen no encontrado en de_A2.json"
+    },
+    {
+      "topic": "work",
+      "module": "lesen",
+      "teil": 4,
+      "mechanism": "ads_matching",
+      "status": "PROBLEM",
+      "note": "pool: 0p + 7q; served: examen no encontrado en de_A2.json; Lesen T4: X=2 (espera 1), g=0, persona=2/5"
+    },
+    {
+      "topic": "work",
+      "module": "horen",
+      "teil": 1,
+      "mechanism": "short_texts_mcq",
+      "status": "PROBLEM",
+      "note": "pool vacío para tema×teil; served: examen no encontrado en de_A2.json"
+    },
+    {
+      "topic": "work",
+      "module": "horen",
+      "teil": 2,
+      "mechanism": "picture_matching",
+      "status": "PROBLEM",
+      "note": "pool: 1p + 5q; served: examen no encontrado en de_A2.json; Hören T2: picture passages=1, matching=5, días OK"
+    },
+    {
+      "topic": "work",
+      "module": "horen",
+      "teil": 3,
+      "mechanism": "short_dialogues_mcq",
+      "status": "PROBLEM",
+      "note": "pool: 0p + 20q; served: examen no encontrado en de_A2.json"
+    },
+    {
+      "topic": "work",
+      "module": "horen",
+      "teil": 4,
+      "mechanism": "interview_ja_nein",
+      "status": "PROBLEM",
+      "note": "pool: 0p + 5q; served: examen no encontrado en de_A2.json"
+    },
+    {
+      "topic": "work",
+      "module": "schreiben",
+      "teil": 1,
+      "mechanism": "sms_task",
+      "status": "PROBLEM",
+      "note": "pool: 0p + 5q; served: examen no encontrado en de_A2.json"
+    },
+    {
+      "topic": "work",
+      "module": "schreiben",
+      "teil": 2,
+      "mechanism": "email_chef",
+      "status": "PROBLEM",
+      "note": "pool: 0p + 1q; served: examen no encontrado en de_A2.json; Schreiben T2: consigna E-Mail al Chef presente"
+    },
+    {
+      "topic": "work",
+      "module": "sprechen",
+      "teil": 1,
+      "mechanism": "personal_questions",
+      "status": "PROBLEM",
+      "note": "pool vacío para tema×teil; served: examen no encontrado en de_A2.json"
+    },
+    {
+      "topic": "work",
+      "module": "sprechen",
+      "teil": 2,
+      "mechanism": "about_self",
+      "status": "PROBLEM",
+      "note": "pool vacío para tema×teil; served: examen no encontrado en de_A2.json"
+    },
+    {
+      "topic": "work",
+      "module": "sprechen",
+      "teil": 3,
+      "mechanism": "plan_together",
+      "status": "PROBLEM",
+      "note": "pool vacío para tema×teil; served: examen no encontrado en de_A2.json"
+    },
+    {
+      "topic": "society",
+      "module": "lesen",
+      "teil": 1,
+      "mechanism": "press_mcq",
+      "status": "PROBLEM",
+      "note": "pool: 0p + 5q; served: examen no encontrado en de_A2.json"
+    },
+    {
+      "topic": "society",
+      "module": "lesen",
+      "teil": 2,
+      "mechanism": "floor_plan_mcq",
+      "status": "PROBLEM",
+      "note": "pool: 0p + 6q; served: examen no encontrado en de_A2.json; Lesen T2: 5/5 Stock/Etage + 5/5 «anderer Stock»"
+    },
+    {
+      "topic": "society",
+      "module": "lesen",
+      "teil": 3,
+      "mechanism": "email_mcq",
+      "status": "PROBLEM",
+      "note": "pool vacío para tema×teil; served: examen no encontrado en de_A2.json"
+    },
+    {
+      "topic": "society",
+      "module": "lesen",
+      "teil": 4,
+      "mechanism": "ads_matching",
+      "status": "PROBLEM",
+      "note": "pool: 0p + 13q; served: examen no encontrado en de_A2.json; Lesen T4: X=3 (espera 1), g=0, persona=1/5"
+    },
+    {
+      "topic": "society",
+      "module": "horen",
+      "teil": 1,
+      "mechanism": "short_texts_mcq",
+      "status": "PROBLEM",
+      "note": "pool vacío para tema×teil; served: examen no encontrado en de_A2.json"
+    },
+    {
+      "topic": "society",
+      "module": "horen",
+      "teil": 2,
+      "mechanism": "picture_matching",
+      "status": "PROBLEM",
+      "note": "pool: 1p + 5q; served: examen no encontrado en de_A2.json; Hören T2: picture passages=1, matching=5, días OK"
+    },
+    {
+      "topic": "society",
+      "module": "horen",
+      "teil": 3,
+      "mechanism": "short_dialogues_mcq",
+      "status": "PROBLEM",
+      "note": "pool vacío para tema×teil; served: examen no encontrado en de_A2.json"
+    },
+    {
+      "topic": "society",
+      "module": "horen",
+      "teil": 4,
+      "mechanism": "interview_ja_nein",
+      "status": "PROBLEM",
+      "note": "pool: 0p + 9q; served: examen no encontrado en de_A2.json"
+    },
+    {
+      "topic": "society",
+      "module": "schreiben",
+      "teil": 1,
+      "mechanism": "sms_task",
+      "status": "PROBLEM",
+      "note": "pool vacío para tema×teil; served: examen no encontrado en de_A2.json"
+    },
+    {
+      "topic": "society",
+      "module": "schreiben",
+      "teil": 2,
+      "mechanism": "email_chef",
+      "status": "PROBLEM",
+      "note": "pool: 0p + 1q; served: examen no encontrado en de_A2.json; Schreiben T2: consigna E-Mail al Chef presente"
+    },
+    {
+      "topic": "society",
+      "module": "sprechen",
+      "teil": 1,
+      "mechanism": "personal_questions",
+      "status": "PROBLEM",
+      "note": "pool vacío para tema×teil; served: examen no encontrado en de_A2.json"
+    },
+    {
+      "topic": "society",
+      "module": "sprechen",
+      "teil": 2,
+      "mechanism": "about_self",
+      "status": "PROBLEM",
+      "note": "pool vacío para tema×teil; served: examen no encontrado en de_A2.json"
+    },
+    {
+      "topic": "society",
+      "module": "sprechen",
+      "teil": 3,
+      "mechanism": "plan_together",
+      "status": "PROBLEM",
+      "note": "pool vacío para tema×teil; served: examen no encontrado en de_A2.json"
+    },
+    {
+      "topic": "education",
+      "module": "lesen",
+      "teil": 1,
+      "mechanism": "press_mcq",
+      "status": "PROBLEM",
+      "note": "pool: 0p + 6q; served: examen no encontrado en de_A2.json"
+    },
+    {
+      "topic": "education",
+      "module": "lesen",
+      "teil": 2,
+      "mechanism": "floor_plan_mcq",
+      "status": "PROBLEM",
+      "note": "pool: 1p + 12q; served: examen no encontrado en de_A2.json; Lesen T2: 5/5 Stock/Etage + 5/5 «anderer Stock»"
+    },
+    {
+      "topic": "education",
+      "module": "lesen",
+      "teil": 3,
+      "mechanism": "email_mcq",
+      "status": "PROBLEM",
+      "note": "pool: 0p + 3q; served: examen no encontrado en de_A2.json"
+    },
+    {
+      "topic": "education",
+      "module": "lesen",
+      "teil": 4,
+      "mechanism": "ads_matching",
+      "status": "PROBLEM",
+      "note": "pool: 0p + 3q; served: examen no encontrado en de_A2.json; Lesen T4: X=0 (espera 1), g=0, persona=1/5"
+    },
+    {
+      "topic": "education",
+      "module": "horen",
+      "teil": 1,
+      "mechanism": "short_texts_mcq",
+      "status": "PROBLEM",
+      "note": "pool vacío para tema×teil; served: examen no encontrado en de_A2.json"
+    },
+    {
+      "topic": "education",
+      "module": "horen",
+      "teil": 2,
+      "mechanism": "picture_matching",
+      "status": "PROBLEM",
+      "note": "pool: 1p + 5q; served: examen no encontrado en de_A2.json; Hören T2: picture passages=1, matching=5, días OK"
+    },
+    {
+      "topic": "education",
+      "module": "horen",
+      "teil": 3,
+      "mechanism": "short_dialogues_mcq",
+      "status": "PROBLEM",
+      "note": "pool: 0p + 1q; served: examen no encontrado en de_A2.json"
+    },
+    {
+      "topic": "education",
+      "module": "horen",
+      "teil": 4,
+      "mechanism": "interview_ja_nein",
+      "status": "PROBLEM",
+      "note": "pool: 0p + 25q; served: examen no encontrado en de_A2.json"
+    },
+    {
+      "topic": "education",
+      "module": "schreiben",
+      "teil": 1,
+      "mechanism": "sms_task",
+      "status": "PROBLEM",
+      "note": "pool: 0p + 1q; served: examen no encontrado en de_A2.json"
+    },
+    {
+      "topic": "education",
+      "module": "schreiben",
+      "teil": 2,
+      "mechanism": "email_chef",
+      "status": "PROBLEM",
+      "note": "pool: 0p + 1q; served: examen no encontrado en de_A2.json; Schreiben T2: consigna E-Mail al Chef presente"
+    },
+    {
+      "topic": "education",
+      "module": "sprechen",
+      "teil": 1,
+      "mechanism": "personal_questions",
+      "status": "PROBLEM",
+      "note": "pool vacío para tema×teil; served: examen no encontrado en de_A2.json"
+    },
+    {
+      "topic": "education",
+      "module": "sprechen",
+      "teil": 2,
+      "mechanism": "about_self",
+      "status": "PROBLEM",
+      "note": "pool vacío para tema×teil; served: examen no encontrado en de_A2.json"
+    },
+    {
+      "topic": "education",
+      "module": "sprechen",
+      "teil": 3,
+      "mechanism": "plan_together",
+      "status": "PROBLEM",
+      "note": "pool vacío para tema×teil; served: examen no encontrado en de_A2.json"
+    }
+  ],
+  "warns": [],
+  "matrix": [
+    {
+      "topic": "health",
+      "module": "lesen",
+      "teil": 1,
+      "mechanism": "press_mcq",
+      "status": "PROBLEM",
+      "note": "pool: 0p + 6q; served: examen no encontrado en de_A2.json"
+    },
+    {
+      "topic": "health",
+      "module": "lesen",
+      "teil": 2,
+      "mechanism": "floor_plan_mcq",
+      "status": "PROBLEM",
+      "note": "pool: 0p + 5q; served: examen no encontrado en de_A2.json; Lesen T2: 5/5 Stock/Etage + 5/5 «anderer Stock»"
+    },
+    {
+      "topic": "health",
+      "module": "lesen",
+      "teil": 3,
+      "mechanism": "email_mcq",
+      "status": "PROBLEM",
+      "note": "pool: 0p + 10q; served: examen no encontrado en de_A2.json"
+    },
+    {
+      "topic": "health",
+      "module": "lesen",
+      "teil": 4,
+      "mechanism": "ads_matching",
+      "status": "PROBLEM",
+      "note": "pool: 0p + 1q; served: examen no encontrado en de_A2.json; Lesen T4: X=0 (espera 1), g=0, persona=0/5"
+    },
+    {
+      "topic": "health",
+      "module": "horen",
+      "teil": 1,
+      "mechanism": "short_texts_mcq",
+      "status": "PROBLEM",
+      "note": "pool: 0p + 20q; served: examen no encontrado en de_A2.json"
+    },
+    {
+      "topic": "health",
+      "module": "horen",
+      "teil": 2,
+      "mechanism": "picture_matching",
+      "status": "PROBLEM",
+      "note": "pool: 1p + 5q; served: examen no encontrado en de_A2.json; Hören T2: picture passages=1, matching=5, días OK"
+    },
+    {
+      "topic": "health",
+      "module": "horen",
+      "teil": 3,
+      "mechanism": "short_dialogues_mcq",
+      "status": "PROBLEM",
+      "note": "pool vacío para tema×teil; served: examen no encontrado en de_A2.json"
+    },
+    {
+      "topic": "health",
+      "module": "horen",
+      "teil": 4,
+      "mechanism": "interview_ja_nein",
+      "status": "PROBLEM",
+      "note": "pool vacío para tema×teil; served: examen no encontrado en de_A2.json"
+    },
+    {
+      "topic": "health",
+      "module": "schreiben",
+      "teil": 1,
+      "mechanism": "sms_task",
+      "status": "PROBLEM",
+      "note": "pool vacío para tema×teil; served: examen no encontrado en de_A2.json"
+    },
+    {
+      "topic": "health",
+      "module": "schreiben",
+      "teil": 2,
+      "mechanism": "email_chef",
+      "status": "PROBLEM",
+      "note": "pool: 0p + 1q; served: examen no encontrado en de_A2.json; Schreiben T2: consigna E-Mail al Chef presente"
+    },
+    {
+      "topic": "health",
+      "module": "sprechen",
+      "teil": 1,
+      "mechanism": "personal_questions",
+      "status": "PROBLEM",
+      "note": "pool vacío para tema×teil; served: examen no encontrado en de_A2.json"
+    },
+    {
+      "topic": "health",
+      "module": "sprechen",
+      "teil": 2,
+      "mechanism": "about_self",
+      "status": "PROBLEM",
+      "note": "pool vacío para tema×teil; served: examen no encontrado en de_A2.json"
+    },
+    {
+      "topic": "health",
+      "module": "sprechen",
+      "teil": 3,
+      "mechanism": "plan_together",
+      "status": "PROBLEM",
+      "note": "pool vacío para tema×teil; served: examen no encontrado en de_A2.json"
+    },
+    {
+      "topic": "work",
+      "module": "lesen",
+      "teil": 1,
+      "mechanism": "press_mcq",
+      "status": "PROBLEM",
+      "note": "pool: 0p + 6q; served: examen no encontrado en de_A2.json"
+    },
+    {
+      "topic": "work",
+      "module": "lesen",
+      "teil": 2,
+      "mechanism": "floor_plan_mcq",
+      "status": "PROBLEM",
+      "note": "pool: 0p + 6q; served: examen no encontrado en de_A2.json; Lesen T2: 5/5 Stock/Etage + 5/5 «anderer Stock»"
+    },
+    {
+      "topic": "work",
+      "module": "lesen",
+      "teil": 3,
+      "mechanism": "email_mcq",
+      "status": "PROBLEM",
+      "note": "pool: 0p + 1q; served: examen no encontrado en de_A2.json"
+    },
+    {
+      "topic": "work",
+      "module": "lesen",
+      "teil": 4,
+      "mechanism": "ads_matching",
+      "status": "PROBLEM",
+      "note": "pool: 0p + 7q; served: examen no encontrado en de_A2.json; Lesen T4: X=2 (espera 1), g=0, persona=2/5"
+    },
+    {
+      "topic": "work",
+      "module": "horen",
+      "teil": 1,
+      "mechanism": "short_texts_mcq",
+      "status": "PROBLEM",
+      "note": "pool vacío para tema×teil; served: examen no encontrado en de_A2.json"
+    },
+    {
+      "topic": "work",
+      "module": "horen",
+      "teil": 2,
+      "mechanism": "picture_matching",
+      "status": "PROBLEM",
+      "note": "pool: 1p + 5q; served: examen no encontrado en de_A2.json; Hören T2: picture passages=1, matching=5, días OK"
+    },
+    {
+      "topic": "work",
+      "module": "horen",
+      "teil": 3,
+      "mechanism": "short_dialogues_mcq",
+      "status": "PROBLEM",
+      "note": "pool: 0p + 20q; served: examen no encontrado en de_A2.json"
+    },
+    {
+      "topic": "work",
+      "module": "horen",
+      "teil": 4,
+      "mechanism": "interview_ja_nein",
+      "status": "PROBLEM",
+      "note": "pool: 0p + 5q; served: examen no encontrado en de_A2.json"
+    },
+    {
+      "topic": "work",
+      "module": "schreiben",
+      "teil": 1,
+      "mechanism": "sms_task",
+      "status": "PROBLEM",
+      "note": "pool: 0p + 5q; served: examen no encontrado en de_A2.json"
+    },
+    {
+      "topic": "work",
+      "module": "schreiben",
+      "teil": 2,
+      "mechanism": "email_chef",
+      "status": "PROBLEM",
+      "note": "pool: 0p + 1q; served: examen no encontrado en de_A2.json; Schreiben T2: consigna E-Mail al Chef presente"
+    },
+    {
+      "topic": "work",
+      "module": "sprechen",
+      "teil": 1,
+      "mechanism": "personal_questions",
+      "status": "PROBLEM",
+      "note": "pool vacío para tema×teil; served: examen no encontrado en de_A2.json"
+    },
+    {
+      "topic": "work",
+      "module": "sprechen",
+      "teil": 2,
+      "mechanism": "about_self",
+      "status": "PROBLEM",
+      "note": "pool vacío para tema×teil; served: examen no encontrado en de_A2.json"
+    },
+    {
+      "topic": "work",
+      "module": "sprechen",
+      "teil": 3,
+      "mechanism": "plan_together",
+      "status": "PROBLEM",
+      "note": "pool vacío para tema×teil; served: examen no encontrado en de_A2.json"
+    },
+    {
+      "topic": "society",
+      "module": "lesen",
+      "teil": 1,
+      "mechanism": "press_mcq",
+      "status": "PROBLEM",
+      "note": "pool: 0p + 5q; served: examen no encontrado en de_A2.json"
+    },
+    {
+      "topic": "society",
+      "module": "lesen",
+      "teil": 2,
+      "mechanism": "floor_plan_mcq",
+      "status": "PROBLEM",
+      "note": "pool: 0p + 6q; served: examen no encontrado en de_A2.json; Lesen T2: 5/5 Stock/Etage + 5/5 «anderer Stock»"
+    },
+    {
+      "topic": "society",
+      "module": "lesen",
+      "teil": 3,
+      "mechanism": "email_mcq",
+      "status": "PROBLEM",
+      "note": "pool vacío para tema×teil; served: examen no encontrado en de_A2.json"
+    },
+    {
+      "topic": "society",
+      "module": "lesen",
+      "teil": 4,
+      "mechanism": "ads_matching",
+      "status": "PROBLEM",
+      "note": "pool: 0p + 13q; served: examen no encontrado en de_A2.json; Lesen T4: X=3 (espera 1), g=0, persona=1/5"
+    },
+    {
+      "topic": "society",
+      "module": "horen",
+      "teil": 1,
+      "mechanism": "short_texts_mcq",
+      "status": "PROBLEM",
+      "note": "pool vacío para tema×teil; served: examen no encontrado en de_A2.json"
+    },
+    {
+      "topic": "society",
+      "module": "horen",
+      "teil": 2,
+      "mechanism": "picture_matching",
+      "status": "PROBLEM",
+      "note": "pool: 1p + 5q; served: examen no encontrado en de_A2.json; Hören T2: picture passages=1, matching=5, días OK"
+    },
+    {
+      "topic": "society",
+      "module": "horen",
+      "teil": 3,
+      "mechanism": "short_dialogues_mcq",
+      "status": "PROBLEM",
+      "note": "pool vacío para tema×teil; served: examen no encontrado en de_A2.json"
+    },
+    {
+      "topic": "society",
+      "module": "horen",
+      "teil": 4,
+      "mechanism": "interview_ja_nein",
+      "status": "PROBLEM",
+      "note": "pool: 0p + 9q; served: examen no encontrado en de_A2.json"
+    },
+    {
+      "topic": "society",
+      "module": "schreiben",
+      "teil": 1,
+      "mechanism": "sms_task",
+      "status": "PROBLEM",
+      "note": "pool vacío para tema×teil; served: examen no encontrado en de_A2.json"
+    },
+    {
+      "topic": "society",
+      "module": "schreiben",
+      "teil": 2,
+      "mechanism": "email_chef",
+      "status": "PROBLEM",
+      "note": "pool: 0p + 1q; served: examen no encontrado en de_A2.json; Schreiben T2: consigna E-Mail al Chef presente"
+    },
+    {
+      "topic": "society",
+      "module": "sprechen",
+      "teil": 1,
+      "mechanism": "personal_questions",
+      "status": "PROBLEM",
+      "note": "pool vacío para tema×teil; served: examen no encontrado en de_A2.json"
+    },
+    {
+      "topic": "society",
+      "module": "sprechen",
+      "teil": 2,
+      "mechanism": "about_self",
+      "status": "PROBLEM",
+      "note": "pool vacío para tema×teil; served: examen no encontrado en de_A2.json"
+    },
+    {
+      "topic": "society",
+      "module": "sprechen",
+      "teil": 3,
+      "mechanism": "plan_together",
+      "status": "PROBLEM",
+      "note": "pool vacío para tema×teil; served: examen no encontrado en de_A2.json"
+    },
+    {
+      "topic": "education",
+      "module": "lesen",
+      "teil": 1,
+      "mechanism": "press_mcq",
+      "status": "PROBLEM",
+      "note": "pool: 0p + 6q; served: examen no encontrado en de_A2.json"
+    },
+    {
+      "topic": "education",
+      "module": "lesen",
+      "teil": 2,
+      "mechanism": "floor_plan_mcq",
+      "status": "PROBLEM",
+      "note": "pool: 1p + 12q; served: examen no encontrado en de_A2.json; Lesen T2: 5/5 Stock/Etage + 5/5 «anderer Stock»"
+    },
+    {
+      "topic": "education",
+      "module": "lesen",
+      "teil": 3,
+      "mechanism": "email_mcq",
+      "status": "PROBLEM",
+      "note": "pool: 0p + 3q; served: examen no encontrado en de_A2.json"
+    },
+    {
+      "topic": "education",
+      "module": "lesen",
+      "teil": 4,
+      "mechanism": "ads_matching",
+      "status": "PROBLEM",
+      "note": "pool: 0p + 3q; served: examen no encontrado en de_A2.json; Lesen T4: X=0 (espera 1), g=0, persona=1/5"
+    },
+    {
+      "topic": "education",
+      "module": "horen",
+      "teil": 1,
+      "mechanism": "short_texts_mcq",
+      "status": "PROBLEM",
+      "note": "pool vacío para tema×teil; served: examen no encontrado en de_A2.json"
+    },
+    {
+      "topic": "education",
+      "module": "horen",
+      "teil": 2,
+      "mechanism": "picture_matching",
+      "status": "PROBLEM",
+      "note": "pool: 1p + 5q; served: examen no encontrado en de_A2.json; Hören T2: picture passages=1, matching=5, días OK"
+    },
+    {
+      "topic": "education",
+      "module": "horen",
+      "teil": 3,
+      "mechanism": "short_dialogues_mcq",
+      "status": "PROBLEM",
+      "note": "pool: 0p + 1q; served: examen no encontrado en de_A2.json"
+    },
+    {
+      "topic": "education",
+      "module": "horen",
+      "teil": 4,
+      "mechanism": "interview_ja_nein",
+      "status": "PROBLEM",
+      "note": "pool: 0p + 25q; served: examen no encontrado en de_A2.json"
+    },
+    {
+      "topic": "education",
+      "module": "schreiben",
+      "teil": 1,
+      "mechanism": "sms_task",
+      "status": "PROBLEM",
+      "note": "pool: 0p + 1q; served: examen no encontrado en de_A2.json"
+    },
+    {
+      "topic": "education",
+      "module": "schreiben",
+      "teil": 2,
+      "mechanism": "email_chef",
+      "status": "PROBLEM",
+      "note": "pool: 0p + 1q; served: examen no encontrado en de_A2.json; Schreiben T2: consigna E-Mail al Chef presente"
+    },
+    {
+      "topic": "education",
+      "module": "sprechen",
+      "teil": 1,
+      "mechanism": "personal_questions",
+      "status": "PROBLEM",
+      "note": "pool vacío para tema×teil; served: examen no encontrado en de_A2.json"
+    },
+    {
+      "topic": "education",
+      "module": "sprechen",
+      "teil": 2,
+      "mechanism": "about_self",
+      "status": "PROBLEM",
+      "note": "pool vacío para tema×teil; served: examen no encontrado en de_A2.json"
+    },
+    {
+      "topic": "education",
+      "module": "sprechen",
+      "teil": 3,
+      "mechanism": "plan_together",
+      "status": "PROBLEM",
+      "note": "pool vacío para tema×teil; served: examen no encontrado en de_A2.json"
+    }
+  ]
+}

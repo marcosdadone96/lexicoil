@@ -17,6 +17,8 @@ const { randomUUID } = require('crypto');
 const { casWriteJson } = require('./casBlob.js');
 const { partPassesPassageDedupe } = require('./passageDedupe.js');
 const { applyPartIndex } = require('./partIndex.js');
+const { partPassesPublishGate } = require('./partPublishGate.js');
+const { partPassesAssembleMode } = require('./officialQuarantine.js');
 const { normalizeB1Topic } = require('../../../js/data/b1Topics.js');
 const {
   loadModuleSearchRows,
@@ -173,6 +175,14 @@ async function addReusablePart(store, part, options = {}) {
   if (part.taskFormat != null) payload.taskFormat = part.taskFormat;
   if (Array.isArray(part.criteria)) payload.criteria = part.criteria;
   if (part.topicTag != null) payload.topicTag = part.topicTag;
+  if (part.topicSlug != null) payload.topicSlug = part.topicSlug;
+  if (part.topic != null) payload.topic = part.topic;
+  if (part.sem1VerifiedAt != null) payload.sem1VerifiedAt = part.sem1VerifiedAt;
+  if (part.sem1Skipped != null) payload.sem1Skipped = part.sem1Skipped;
+  if (Array.isArray(part.vocabIndex) && part.vocabIndex.length) {
+    payload.vocabIndex = part.vocabIndex;
+    if (part.vocabIndexVersion != null) payload.vocabIndexVersion = part.vocabIndexVersion;
+  }
 
   applyPartIndex(payload, {
     lang,
@@ -364,13 +374,15 @@ async function removeReusablePart(store, lang, level, module, id) {
  *   excludeIds     {string[]}  IDs to skip (already seen by the user).
  *   usedPassages   {object[]}  Passages already picked for this exam ({ passageId?, text? }).
  */
-async function pickReusablePart(store, lang, level, module, { excludeIds = [], usedPassages = [], teil = null } = {}) {
+async function pickReusablePart(store, lang, level, module, {
+  excludeIds = [], usedPassages = [], teil = null, assembleMode = 'practice',
+} = {}) {
   const normLang   = String(lang).toLowerCase();
   const normLevel  = String(level).toUpperCase();
   const normModule = String(module).toLowerCase();
 
   const { rows } = await loadModuleSearchRows(store, normLang, normLevel, normModule);
-  const available = filterRows(rows, { teil });
+  const available = filterRows(rows, { teil, assembleMode });
   if (!available.length) return null;
 
   const exclude = new Set(excludeIds);
@@ -384,9 +396,8 @@ async function pickReusablePart(store, lang, level, module, { excludeIds = [], u
     const part = await resolveRowPart(store, row);
     if (
       part &&
-      !part.disabled &&
-      part.complete === true &&
-      part.verified === true &&
+      partPassesPublishGate(part) &&
+      partPassesAssembleMode(part, assembleMode) &&
       partPassesPassageDedupe(part, usedPassages)
     ) {
       loaded.push({
@@ -440,7 +451,7 @@ async function pickReusablePart(store, lang, level, module, { excludeIds = [], u
  * Pick a verified part for (topicTag × teil), lowest servedCount first.
  */
 async function pickReusablePartByTopic(store, lang, level, module, opts = {}) {
-  const { excludeIds = [], teil = null, topicTag = null } = opts;
+  const { excludeIds = [], teil = null, topicTag = null, assembleMode = 'practice' } = opts;
   const want = normalizeB1Topic(topicTag);
   if (!want) return null;
 
@@ -449,7 +460,7 @@ async function pickReusablePartByTopic(store, lang, level, module, opts = {}) {
   const normModule = String(module).toLowerCase();
 
   const { rows } = await loadModuleSearchRows(store, normLang, normLevel, normModule);
-  let available = filterRows(rows, { teil, excludeIds });
+  let available = filterRows(rows, { teil, excludeIds, assembleMode });
   available = filterRowsByTopicTag(available, want, { normalizeB1Topic });
   if (!available.length) return null;
 
@@ -458,7 +469,7 @@ async function pickReusablePartByTopic(store, lang, level, module, opts = {}) {
   );
   const row = available[0];
   const part = await resolveRowPart(store, row);
-  if (!part || part.disabled || part.complete !== true || part.verified !== true) return null;
+  if (!partPassesPublishGate(part) || !partPassesAssembleMode(part, assembleMode)) return null;
 
   const result = {
     id: row.id,
@@ -497,14 +508,17 @@ async function pickReusablePartByTopic(store, lang, level, module, opts = {}) {
  * Devuelve { id, part, coveredWords, coverage:{covered,requested}, topic }.
  */
 async function pickReusablePartByVocab(store, lang, level, module, opts = {}) {
-  const { excludeIds = [], teil = null, words = [], excludeTopics = [], topicTag = null } = opts;
+  const {
+    excludeIds = [], teil = null, words = [], excludeTopics = [], topicTag = null,
+    assembleMode = 'practice',
+  } = opts;
   const normLang   = String(lang).toLowerCase();
   const normLevel  = String(level).toUpperCase();
   const normModule = String(module).toLowerCase();
   const wantTopic = topicTag ? normalizeB1Topic(topicTag) : null;
 
   const { rows } = await loadModuleSearchRows(store, normLang, normLevel, normModule);
-  let available = filterRows(rows, { teil, excludeIds });
+  let available = filterRows(rows, { teil, excludeIds, assembleMode });
   let topicRelaxed = false;
   if (wantTopic && available.length) {
     const strict = available.filter((r) => normalizeB1Topic(r.topicTag) === wantTopic);
@@ -517,11 +531,11 @@ async function pickReusablePartByVocab(store, lang, level, module, opts = {}) {
   if (!wantLemmas.length) {
     if (wantTopic) {
       const byTopic = await pickReusablePartByTopic(store, lang, level, module, {
-        excludeIds, teil, topicTag,
+        excludeIds, teil, topicTag, assembleMode,
       });
       if (byTopic) return byTopic;
     }
-    const fallback = await pickReusablePart(store, lang, level, module, { excludeIds, teil });
+    const fallback = await pickReusablePart(store, lang, level, module, { excludeIds, teil, assembleMode });
     if (fallback && wantTopic) fallback.topicRelaxed = true;
     return fallback;
   }
@@ -532,7 +546,7 @@ async function pickReusablePartByVocab(store, lang, level, module, opts = {}) {
   const chosen = scored[0];
   const row = chosen.row;
   const part = await resolveRowPart(store, row);
-  if (!part || part.disabled || part.complete !== true || part.verified !== true) return null;
+  if (!partPassesPublishGate(part) || !partPassesAssembleMode(part, assembleMode)) return null;
 
   const servedTopic = normalizeB1Topic(row.topicTag || part.topicTag);
   if (wantTopic && servedTopic && servedTopic !== wantTopic) topicRelaxed = true;

@@ -1,0 +1,813 @@
+{
+  "ts": "2026-07-06T10:04:16.806Z",
+  "mode": "advise-only",
+  "casesRun": 15,
+  "partLevel": {
+    "cleanTotal": 7,
+    "cleanFalsePositives": 0,
+    "dirtyTotal": 8,
+    "dirtyTruePositives": 5,
+    "selfContradictions": 0
+  },
+  "axisStats": [
+    {
+      "axis": "correctness",
+      "tp": 0,
+      "fp": 0,
+      "fn": 2,
+      "tn": 13,
+      "applicable": 15,
+      "precision": null,
+      "recall": 0,
+      "v1Recommendation": "advise-only"
+    },
+    {
+      "axis": "ambiguity",
+      "tp": 0,
+      "fp": 0,
+      "fn": 3,
+      "tn": 12,
+      "applicable": 15,
+      "precision": null,
+      "recall": 0,
+      "v1Recommendation": "advise-only"
+    },
+    {
+      "axis": "distractor",
+      "tp": 0,
+      "fp": 1,
+      "fn": 0,
+      "tn": 14,
+      "applicable": 15,
+      "precision": 0,
+      "recall": null,
+      "v1Recommendation": "advise-only"
+    },
+    {
+      "axis": "explanation",
+      "tp": 0,
+      "fp": 1,
+      "fn": 0,
+      "tn": 14,
+      "applicable": 15,
+      "precision": 0,
+      "recall": null,
+      "v1Recommendation": "advise-only"
+    },
+    {
+      "axis": "paraphrase",
+      "tp": 0,
+      "fp": 5,
+      "fn": 1,
+      "tn": 9,
+      "applicable": 15,
+      "precision": 0,
+      "recall": 0,
+      "v1Recommendation": "noisy → advise"
+    },
+    {
+      "axis": "persona",
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "tn": 3,
+      "applicable": 3,
+      "precision": null,
+      "recall": null,
+      "v1Recommendation": "no data"
+    },
+    {
+      "axis": "absolute",
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "tn": 3,
+      "applicable": 3,
+      "precision": null,
+      "recall": null,
+      "v1Recommendation": "no data"
+    },
+    {
+      "axis": "mcq_distinct",
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 5,
+      "applicable": 6,
+      "precision": 1,
+      "recall": 1,
+      "v1Recommendation": "BLOCK"
+    },
+    {
+      "axis": "vocab_level",
+      "tp": 0,
+      "fp": 0,
+      "fn": 1,
+      "tn": 14,
+      "applicable": 15,
+      "precision": null,
+      "recall": 0,
+      "v1Recommendation": "advise-only"
+    },
+    {
+      "axis": "topic_fit",
+      "tp": 1,
+      "fp": 1,
+      "fn": 3,
+      "tn": 10,
+      "applicable": 15,
+      "precision": 0.5,
+      "recall": 0.25,
+      "v1Recommendation": "noisy → advise"
+    },
+    {
+      "axis": "template",
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "tn": 15,
+      "applicable": 15,
+      "precision": null,
+      "recall": null,
+      "v1Recommendation": "no data"
+    }
+  ],
+  "parts": [
+    {
+      "id": "anchor-l2-071-fp",
+      "group": "anchors",
+      "verdict": "clean",
+      "note": "SEM-1 autocontradicción conocida — debe pasar",
+      "expectedAxes": [],
+      "wouldBlock": 0,
+      "hitAxes": [
+        "distractor"
+      ],
+      "findings": [
+        {
+          "axis": "distractor",
+          "itemId": "gen-q-2-1c011fef-5",
+          "field": "option_c",
+          "verdict": "warn",
+          "detail": "La opción generaliza y exagera la información del texto. El texto menciona la necesidad de mejorar las habilidades digitales de los profesores, no que 'a menudo no están bien formados' en un sentido amplio.",
+          "evidence": {
+            "quote": "Andere Programme helfen Lehrern, ihre digitalen Fähigkeiten zu verbessern.",
+            "source": "passage"
+          },
+          "confidence": 0.8,
+          "repairHint": {
+            "scope": "field",
+            "action": "Reemplazar la opción por una que sea una dificultad real y explícitamente mencionada, o que parafrasee con mayor precisión la necesidad de mejorar las habilidades digitales de los profesores.",
+            "constraint": "Mantener el nivel B1 y la relevancia temática."
+          },
+          "severity": "advise"
+        }
+      ],
+      "partVerdict": "advise"
+    },
+    {
+      "id": "anchor-l2-073-dup",
+      "group": "anchors",
+      "verdict": "dirty",
+      "note": "Opciones b/c duplicadas reales Q3/Q6",
+      "expectedAxes": [
+        "mcq_distinct",
+        "ambiguity"
+      ],
+      "wouldBlock": 0,
+      "hitAxes": [
+        "mcq_distinct"
+      ],
+      "findings": [
+        {
+          "axis": "mcq_distinct",
+          "itemId": "gen-q-2-0232c450-3",
+          "field": "option_b",
+          "verdict": "warn",
+          "detail": "Las opciones 'b' y 'c' parafrasean el mismo hecho del texto utilizando sinónimos ('verbessern' vs. 'besser machen'), lo que las hace indistinguibles como respuestas correctas.",
+          "evidence": {
+            "quote": "Man kann die Funktionen der Geräte damit verbessern.",
+            "source": "option_b"
+          },
+          "confidence": 0.9,
+          "repairHint": {
+            "scope": "item",
+            "action": "Reemplazar una de las opciones para que presente un hecho diferente o sea claramente incorrecta.",
+            "constraint": "Mantener el nivel B1 y la relevancia temática."
+          },
+          "severity": "advise"
+        },
+        {
+          "axis": "mcq_distinct",
+          "itemId": "gen-q-2-0232c450-3",
+          "field": "option_c",
+          "verdict": "warn",
+          "detail": "Las opciones 'b' y 'c' parafrasean el mismo hecho del texto utilizando sinónimos ('verbessern' vs. 'besser machen'), lo que las hace indistinguibles como respuestas correctas.",
+          "evidence": {
+            "quote": "Man kann die Gerätefunktionen damit besser machen.",
+            "source": "option_c"
+          },
+          "confidence": 0.9,
+          "repairHint": {
+            "scope": "item",
+            "action": "Reemplazar una de las opciones para que presente un hecho diferente o sea claramente incorrecta.",
+            "constraint": "Mantener el nivel B1 y la relevancia temática."
+          },
+          "severity": "advise"
+        },
+        {
+          "axis": "mcq_distinct",
+          "itemId": "gen-q-2-0232c450-6",
+          "field": "option_b",
+          "verdict": "warn",
+          "detail": "Las opciones 'b' y 'c' parafrasean el mismo hecho del texto utilizando sinónimos ('gute Unterstützung bieten'/'Hilfe für die Schulen' y 'Lehrer in der Nutzung der Programme schulen'/'Betreuung der Lehrer'), lo que las hace indistinguibles como respuestas correctas.",
+          "evidence": {
+            "quote": "Die Schulen müssen gute Unterstützung und Schulungen für Lehrer anbieten.",
+            "source": "option_b"
+          },
+          "confidence": 0.9,
+          "repairHint": {
+            "scope": "item",
+            "action": "Reemplazar una de las opciones para que presente un hecho diferente o sea claramente incorrecta.",
+            "constraint": "Mantener el nivel B1 y la relevancia temática."
+          },
+          "severity": "advise"
+        },
+        {
+          "axis": "mcq_distinct",
+          "itemId": "gen-q-2-0232c450-6",
+          "field": "option_c",
+          "verdict": "warn",
+          "detail": "Las opciones 'b' y 'c' parafrasean el mismo hecho del texto utilizando sinónimos ('gute Unterstützung bieten'/'Hilfe für die Schulen' y 'Lehrer in der Nutzung der Programme schulen'/'Betreuung der Lehrer'), lo que las hace indistinguibles como respuestas correctas.",
+          "evidence": {
+            "quote": "Eine gute Betreuung der Lehrer und Hilfe für die Schulen sind entscheidend.",
+            "source": "option_c"
+          },
+          "confidence": 0.9,
+          "repairHint": {
+            "scope": "item",
+            "action": "Reemplazar una de las opciones para que presente un hecho diferente o sea claramente incorrecta.",
+            "constraint": "Mantener el nivel B1 y la relevancia temática."
+          },
+          "severity": "advise"
+        }
+      ],
+      "partVerdict": "advise"
+    },
+    {
+      "id": "anchor-l1-157-vocab",
+      "group": "anchors",
+      "verdict": "dirty",
+      "note": "modifizieren, Gelassenheit, Angehörige; topicTag contradictorio",
+      "expectedAxes": [
+        "vocab_level",
+        "topic_fit"
+      ],
+      "wouldBlock": 0,
+      "hitAxes": [],
+      "findings": [],
+      "partVerdict": "pass"
+    },
+    {
+      "id": "pilot-t1-technik",
+      "group": "clean-pilot",
+      "verdict": "clean",
+      "expectedAxes": [],
+      "wouldBlock": 0,
+      "hitAxes": [],
+      "findings": [],
+      "partVerdict": "pass"
+    },
+    {
+      "id": "pilot-t2-freizeit",
+      "group": "clean-pilot",
+      "verdict": "clean",
+      "expectedAxes": [],
+      "wouldBlock": 0,
+      "hitAxes": [],
+      "findings": [],
+      "partVerdict": "pass"
+    },
+    {
+      "id": "pilot-t4-technik",
+      "group": "clean-pilot",
+      "verdict": "clean",
+      "expectedAxes": [],
+      "wouldBlock": 0,
+      "hitAxes": [
+        "paraphrase"
+      ],
+      "findings": [
+        {
+          "axis": "paraphrase",
+          "itemId": "gen-q-4-7c2df7be-5",
+          "field": "explanation",
+          "verdict": "warn",
+          "detail": "La explicación reutiliza las palabras 'Technik', 'lehren' y 'verbieten' en una estructura muy similar a la del texto original, lo que indica una paráfrasis insuficiente.",
+          "evidence": {
+            "quote": "Technik lehren sollte, anstatt sie zu verbieten",
+            "source": "explanation"
+          },
+          "confidence": 0.9,
+          "repairHint": {
+            "scope": "field",
+            "action": "Reescribir la explicación utilizando vocabulario y estructuras gramaticales más distantes del texto original.",
+            "constraint": "Mantener el nivel B1 y la claridad."
+          },
+          "severity": "advise"
+        },
+        {
+          "axis": "paraphrase",
+          "itemId": "gen-q-4-7c2df7be-1",
+          "field": "explanation",
+          "verdict": "warn",
+          "detail": "La explicación copia directamente la frase 'Handys auch zum Lernen' del texto original, con un cambio mínimo ('für das' a 'zum').",
+          "evidence": {
+            "quote": "Handys auch zum Lernen nützlich sein können",
+            "source": "explanation"
+          },
+          "confidence": 0.9,
+          "repairHint": {
+            "scope": "field",
+            "action": "Reescribir la explicación utilizando vocabulario y estructuras gramaticales más distantes del texto original.",
+            "constraint": "Mantener el nivel B1 y la claridad."
+          },
+          "severity": "advise"
+        },
+        {
+          "axis": "paraphrase",
+          "itemId": "gen-q-4-7c2df7be-3",
+          "field": "explanation",
+          "verdict": "warn",
+          "detail": "La explicación reutiliza la frase 'die Aufmerksamkeit verbessern' del texto original, lo que indica una paráfrasis insuficiente.",
+          "evidence": {
+            "quote": "die Aufmerksamkeit im Unterricht verbessert",
+            "source": "explanation"
+          },
+          "confidence": 0.9,
+          "repairHint": {
+            "scope": "field",
+            "action": "Reescribir la explicación utilizando vocabulario y estructuras gramaticales más distantes del texto original.",
+            "constraint": "Mantener el nivel B1 y la claridad."
+          },
+          "severity": "advise"
+        },
+        {
+          "axis": "paraphrase",
+          "itemId": "gen-q-4-7c2df7be-6",
+          "field": "explanation",
+          "verdict": "warn",
+          "detail": "La explicación reutiliza la frase 'die Aufmerksamkeit verbessern' del texto original, lo que indica una paráfrasis insuficiente.",
+          "evidence": {
+            "quote": "die Aufmerksamkeit im Unterricht verbessert",
+            "source": "explanation"
+          },
+          "confidence": 0.9,
+          "repairHint": {
+            "scope": "field",
+            "action": "Reescribir la explicación utilizando vocabulario y estructuras gramaticales más distantes del texto original.",
+            "constraint": "Mantener el nivel B1 y la claridad."
+          },
+          "severity": "advise"
+        },
+        {
+          "axis": "paraphrase",
+          "itemId": "gen-q-4-7c2df7be-4",
+          "field": "explanation",
+          "verdict": "warn",
+          "detail": "La explicación reutiliza las frases 'die Konzentration fördern' y 'den Unterricht' del texto original, lo que indica una paráfrasis insuficiente.",
+          "evidence": {
+            "quote": "die Konzentration fördern und den Unterricht effektiver machen",
+            "source": "explanation"
+          },
+          "confidence": 0.9,
+          "repairHint": {
+            "scope": "field",
+            "action": "Reescribir la explicación utilizando vocabulario y estructuras gramaticales más distantes del texto original.",
+            "constraint": "Mantener el nivel B1 y la claridad."
+          },
+          "severity": "advise"
+        }
+      ],
+      "partVerdict": "advise"
+    },
+    {
+      "id": "l4-028-clean",
+      "group": "clean-pilot",
+      "verdict": "clean",
+      "expectedAxes": [],
+      "wouldBlock": 0,
+      "hitAxes": [],
+      "findings": [],
+      "partVerdict": "pass"
+    },
+    {
+      "id": "l4-029-dirty",
+      "group": "dirty-topic",
+      "verdict": "dirty",
+      "note": "Homeoffice debate × Technik",
+      "expectedAxes": [
+        "topic_fit"
+      ],
+      "wouldBlock": 0,
+      "hitAxes": [
+        "paraphrase"
+      ],
+      "findings": [
+        {
+          "axis": "paraphrase",
+          "itemId": "gen-q-4-41578898-6",
+          "field": "explanation",
+          "verdict": "warn",
+          "detail": "La explicación copia literalmente la frase 'lehnt den Vorschlag ab' del texto de Frank.",
+          "evidence": {
+            "quote": "Ich lehne den Vorschlag ab.",
+            "source": "signText"
+          },
+          "confidence": 1,
+          "repairHint": {
+            "scope": "field",
+            "action": "Rephrase the explanation to avoid direct copying of phrases from the signText.",
+            "constraint": "Maintain B1 vocabulary level."
+          },
+          "severity": "advise"
+        },
+        {
+          "axis": "paraphrase",
+          "itemId": "gen-q-4-41578898-5",
+          "field": "explanation",
+          "verdict": "warn",
+          "detail": "La explicación copia literalmente la frase 'gute Technik und Regeln' del texto de Elena, omitiendo solo 'klare'.",
+          "evidence": {
+            "quote": "gute Technik und klare Regeln",
+            "source": "signText"
+          },
+          "confidence": 1,
+          "repairHint": {
+            "scope": "field",
+            "action": "Rephrase the explanation to avoid direct copying of phrases from the signText.",
+            "constraint": "Maintain B1 vocabulary level."
+          },
+          "severity": "advise"
+        },
+        {
+          "axis": "paraphrase",
+          "itemId": "gen-q-4-41578898-7",
+          "field": "explanation",
+          "verdict": "warn",
+          "detail": "La explicación copia literalmente la frase 'Homeoffice-Pflicht als Problem' del texto de Greta.",
+          "evidence": {
+            "quote": "Eine Pflicht für Homeoffice sehe ich als Problem.",
+            "source": "signText"
+          },
+          "confidence": 1,
+          "repairHint": {
+            "scope": "field",
+            "action": "Rephrase the explanation to avoid direct copying of phrases from the signText.",
+            "constraint": "Maintain B1 vocabulary level."
+          },
+          "severity": "advise"
+        }
+      ],
+      "partVerdict": "advise"
+    },
+    {
+      "id": "l4-030-dirty",
+      "group": "dirty-topic",
+      "verdict": "dirty",
+      "expectedAxes": [
+        "topic_fit"
+      ],
+      "wouldBlock": 1,
+      "hitAxes": [
+        "topic_fit"
+      ],
+      "findings": [
+        {
+          "axis": "topic_fit",
+          "itemId": "passage",
+          "field": "passage",
+          "verdict": "fail",
+          "detail": "El contenido del pasaje y las preguntas se centran en la apertura de bibliotecas los domingos, un tema social/cívico, no relacionado con el tema pedido 'Technik'.",
+          "evidence": {
+            "quote": "Die Stadtbibliotheken sollen auch sonntags geöffnet sein.",
+            "source": "passage"
+          },
+          "confidence": 1,
+          "repairHint": {
+            "scope": "all_questions",
+            "action": "change_tag",
+            "constraint": "El tema debería ser 'Öffnungszeiten', 'Soziales', 'Stadtleben' o similar."
+          },
+          "severity": "advise"
+        }
+      ],
+      "partVerdict": "advise"
+    },
+    {
+      "id": "l2-075-topic",
+      "group": "dirty-topic",
+      "verdict": "dirty",
+      "note": "CHK-26 dos temas T2",
+      "expectedAxes": [
+        "topic_fit"
+      ],
+      "wouldBlock": 0,
+      "hitAxes": [
+        "paraphrase"
+      ],
+      "findings": [
+        {
+          "axis": "paraphrase",
+          "itemId": "gen-q-2-83318bd1-2",
+          "field": "option_a",
+          "verdict": "warn",
+          "detail": "La opción A copia tres tokens del pasaje, lo que la hace muy similar a la frase original y podría no requerir una paráfrasis activa por parte del estudiante.",
+          "evidence": {
+            "quote": "Installation am Anfang etwas stressig",
+            "source": "passage"
+          },
+          "confidence": 0.75,
+          "repairHint": {
+            "scope": "field",
+            "action": "Reformular la opción A para usar sinónimos o una estructura diferente que evite copiar tres o más tokens consecutivos del texto.",
+            "constraint": "Mantener el nivel B1 y la claridad semántica."
+          },
+          "severity": "advise"
+        },
+        {
+          "axis": "paraphrase",
+          "itemId": "gen-q-2-83318bd1-3",
+          "field": "option_b",
+          "verdict": "warn",
+          "detail": "La opción B copia tres tokens del pasaje, lo que la hace muy similar a la frase original y podría no requerir una paráfrasis activa por parte del estudiante.",
+          "evidence": {
+            "quote": "mehr einfache Lösungen für den Alltag",
+            "source": "passage"
+          },
+          "confidence": 0.75,
+          "repairHint": {
+            "scope": "field",
+            "action": "Reformular la opción B para usar sinónimos o una estructura diferente que evite copiar tres o más tokens consecutivos del texto.",
+            "constraint": "Mantener el nivel B1 y la claridad semántica."
+          },
+          "severity": "advise"
+        },
+        {
+          "axis": "paraphrase",
+          "itemId": "gen-q-2-83318bd1-5",
+          "field": "option_b",
+          "verdict": "warn",
+          "detail": "La opción B copia tres tokens del pasaje, lo que la hace muy similar a la frase original y podría no requerir una paráfrasis activa por parte del estudiante.",
+          "evidence": {
+            "quote": "besser auf die Zukunft vorbereitet sind",
+            "source": "passage"
+          },
+          "confidence": 0.75,
+          "repairHint": {
+            "scope": "field",
+            "action": "Reformular la opción B para usar sinónimos o una estructura diferente que evite copiar tres o más tokens consecutivos del texto.",
+            "constraint": "Mantener el nivel B1 y la claridad semántica."
+          },
+          "severity": "advise"
+        }
+      ],
+      "partVerdict": "advise"
+    },
+    {
+      "id": "l1-073-rejected",
+      "group": "dirty-content",
+      "verdict": "dirty",
+      "note": "Rejected batch — word matching",
+      "expectedAxes": [
+        "paraphrase"
+      ],
+      "wouldBlock": 1,
+      "hitAxes": [
+        "topic_fit",
+        "explanation"
+      ],
+      "findings": [
+        {
+          "axis": "topic_fit",
+          "itemId": "passage",
+          "field": "passage",
+          "verdict": "fail",
+          "detail": "El contenido del pasaje trata sobre integración social y bienestar personal, no sobre el tema 'Technik' solicitado.",
+          "evidence": {
+            "quote": "Vor einigen Monaten bin ich in eine neue Stadt gezogen. Nach der Arbeit hatte ich oft das Gefühl, dass mir Kontakte fehlen.",
+            "source": "passage"
+          },
+          "confidence": 1,
+          "repairHint": {
+            "scope": "all_questions",
+            "action": "replace",
+            "constraint": "Asegurar que el pasaje y las preguntas se alineen con el tema 'Technik'."
+          },
+          "severity": "advise"
+        },
+        {
+          "axis": "explanation",
+          "itemId": "gen-q-1-7315-1",
+          "field": "explanation",
+          "verdict": "warn",
+          "detail": "La explicación es trivial y no justifica la clave, ya que repite casi literalmente una frase del pasaje.",
+          "evidence": {
+            "quote": "Er lernte neue Leute kennen.",
+            "source": "explanation"
+          },
+          "confidence": 0.9,
+          "repairHint": {
+            "scope": "field",
+            "action": "rephrase",
+            "constraint": "Reformular la explicación usando sinónimos o estructuras diferentes para justificar la clave sin copiar el texto."
+          },
+          "severity": "advise"
+        },
+        {
+          "axis": "explanation",
+          "itemId": "gen-q-1-7315-3",
+          "field": "explanation",
+          "verdict": "warn",
+          "detail": "La explicación es trivial y no justifica la clave, ya que repite casi literalmente una frase del pasaje.",
+          "evidence": {
+            "quote": "Ein Nachbar besucht denselben Kurs.",
+            "source": "explanation"
+          },
+          "confidence": 0.9,
+          "repairHint": {
+            "scope": "field",
+            "action": "rephrase",
+            "constraint": "Reformular la explicación usando sinónimos o estructuras diferentes para justificar la clave sin copiar el texto."
+          },
+          "severity": "advise"
+        },
+        {
+          "axis": "explanation",
+          "itemId": "gen-q-1-7315-5",
+          "field": "explanation",
+          "verdict": "warn",
+          "detail": "La explicación es trivial y no justifica la clave, ya que repite casi literalmente una frase del pasaje.",
+          "evidence": {
+            "quote": "Die Familie freut sich darüber.",
+            "source": "explanation"
+          },
+          "confidence": 0.9,
+          "repairHint": {
+            "scope": "field",
+            "action": "rephrase",
+            "constraint": "Reformular la explicación usando sinónimos o estructuras diferentes para justificar la clave sin copiar el texto."
+          },
+          "severity": "advise"
+        },
+        {
+          "axis": "explanation",
+          "itemId": "gen-q-1-7315-6",
+          "field": "explanation",
+          "verdict": "warn",
+          "detail": "La explicación es trivial y no justifica la clave, ya que repite casi literalmente una frase del pasaje.",
+          "evidence": {
+            "quote": "Der Kurs gehört zu seiner Freizeit.",
+            "source": "explanation"
+          },
+          "confidence": 0.9,
+          "repairHint": {
+            "scope": "field",
+            "action": "rephrase",
+            "constraint": "Reformular la explicación usando sinónimos o estructuras diferentes para justificar la clave sin copiar el texto."
+          },
+          "severity": "advise"
+        }
+      ],
+      "partVerdict": "advise"
+    },
+    {
+      "id": "pool-clean-pub-de-B1-lesen-t2-ec847aa773d4",
+      "group": "clean-pool",
+      "verdict": "clean",
+      "note": "Pool struct SEM-1 clean group L2",
+      "expectedAxes": [],
+      "wouldBlock": 0,
+      "hitAxes": [],
+      "findings": [],
+      "partVerdict": "pass"
+    },
+    {
+      "id": "pool-clean-pub-de-B1-lesen-t2-193c51e71a09",
+      "group": "clean-pool",
+      "verdict": "clean",
+      "note": "Pool struct SEM-1 clean group L2",
+      "expectedAxes": [],
+      "wouldBlock": 0,
+      "hitAxes": [],
+      "findings": [],
+      "partVerdict": "pass"
+    },
+    {
+      "id": "pool-l4-pub-de-B1-lesen-t4-fa7bfe8fa9d9",
+      "group": "dirty-pool-l4",
+      "verdict": "dirty",
+      "note": "Pool L4 known CHK-7 dirty",
+      "expectedAxes": [
+        "correctness",
+        "ambiguity"
+      ],
+      "wouldBlock": 3,
+      "hitAxes": [
+        "paraphrase"
+      ],
+      "findings": [
+        {
+          "axis": "paraphrase",
+          "itemId": "gen-q-4-1c70b4af-5",
+          "field": "explanation",
+          "verdict": "fail",
+          "detail": "La explicación contiene múltiples frases copiadas literalmente del texto original, lo que incumple la regla de paráfrasis.",
+          "evidence": {
+            "quote": "finde diesen Plan hervorragend. Das wäre eine große Erleichterung für unsere Familie und ermöglicht ihnen mehr Sport.",
+            "source": "Texto de la persona"
+          },
+          "confidence": 1,
+          "repairHint": {
+            "scope": "field",
+            "action": "rephrase",
+            "constraint": "avoid literal copying of phrases from the original text"
+          },
+          "severity": "advise"
+        },
+        {
+          "axis": "paraphrase",
+          "itemId": "gen-q-4-1c70b4af-7",
+          "field": "explanation",
+          "verdict": "fail",
+          "detail": "La explicación copia una frase literal del texto original, 'nur zum Abhängen kommen', lo que incumple la regla de paráfrasis.",
+          "evidence": {
+            "quote": "Jugendliche nur zum Abhängen kommen",
+            "source": "Texto de la persona"
+          },
+          "confidence": 1,
+          "repairHint": {
+            "scope": "field",
+            "action": "rephrase",
+            "constraint": "avoid literal copying of phrases from the original text"
+          },
+          "severity": "advise"
+        },
+        {
+          "axis": "paraphrase",
+          "itemId": "gen-q-4-1c70b4af-1",
+          "field": "explanation",
+          "verdict": "fail",
+          "detail": "La explicación copia frases literales del texto original, como 'findet die Idee super' y 'wichtiger Schritt für die Gesundheit'.",
+          "evidence": {
+            "quote": "Ich finde die Idee super! Das ist ein wichtiger Schritt für die Gesundheit.",
+            "source": "Texto de la persona"
+          },
+          "confidence": 1,
+          "repairHint": {
+            "scope": "field",
+            "action": "rephrase",
+            "constraint": "avoid literal copying of phrases from the original text"
+          },
+          "severity": "advise"
+        }
+      ],
+      "partVerdict": "advise"
+    },
+    {
+      "id": "pool-l4-pub-de-B1-lesen-t4-65216d74dec6",
+      "group": "dirty-pool-l4",
+      "verdict": "dirty",
+      "note": "Pool L4 known CHK-7 dirty",
+      "expectedAxes": [
+        "correctness",
+        "ambiguity"
+      ],
+      "wouldBlock": 1,
+      "hitAxes": [
+        "paraphrase"
+      ],
+      "findings": [
+        {
+          "axis": "paraphrase",
+          "itemId": "gen-q-4-64419a8e-3",
+          "field": "explanation",
+          "verdict": "fail",
+          "detail": "La explicación copia frases literales o secuencias de más de 3 tokens del texto original, como 'kostenlose Sportangebote' y 'nicht jeder ins Fitnessstudio gehen kann'.",
+          "evidence": {
+            "quote": "kostenlose Sportangebote die Gesundheit fördern und nicht jeder ein Fitnessstudio Besuchen kann.",
+            "source": "explanation"
+          },
+          "confidence": 1,
+          "repairHint": {
+            "scope": "field",
+            "action": "Reformular la explicación usando sinónimos y estructuras diferentes para evitar la copia literal.",
+            "constraint": "Mantener el nivel B1 de vocabulario."
+          },
+          "severity": "advise"
+        }
+      ],
+      "partVerdict": "advise"
+    }
+  ]
+}

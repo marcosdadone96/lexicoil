@@ -20,11 +20,16 @@ const PracticeDictionary = (() => {
         (f.translation || f.meaning || f.translations),
     );
     if (!fc) return null;
-    const trans =
-      fc.translation ||
-      fc.meaning ||
-      (fc.translations && (fc.translations[targetLang] || Object.values(fc.translations)[0]));
+    let trans = fc.translations && fc.translations[targetLang];
+    if (!trans || !String(trans).trim()) {
+      if (targetLang === 'en') {
+        trans = fc.translation || fc.meaning || fc.translations?.en;
+      }
+    }
     if (!trans) return null;
+    // Never reuse MyMemory spam / URL "translations" saved earlier
+    const t = String(trans).trim();
+    if (/^https?:\/\//i.test(t) || /\bhttps?:\/\//i.test(t)) return null;
     return {
       word: fc.word,
       type: fc.type || fc.pos || '',
@@ -39,9 +44,10 @@ const PracticeDictionary = (() => {
     const entry = LibraryLoader.lookupVocabulary(bank, word);
     if (!entry) return null;
     const isEnDef = subject === 'en' && targetLang === 'en';
-    const trans = isEnDef
-      ? entry.definition || entry.en || entry[targetLang]
-      : entry[targetLang] || entry.en || entry.es || entry.de;
+    let trans = isEnDef
+      ? entry.definition || entry.en
+      : entry[targetLang];
+    if (!trans && targetLang === 'en') trans = entry.en || entry.definition;
     if (!trans) return null;
     const data = {
       word: entry.word,

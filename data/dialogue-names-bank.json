@@ -1,0 +1,27 @@
+{
+  "pairs": [
+    ["Jonas", "Emma"],
+    ["Tim", "Sophie"],
+    ["Niklas", "Laura"],
+    ["Paul", "Nina"],
+    ["Tobias", "Clara"],
+    ["David", "Julia"],
+    ["Simon", "Lisa"],
+    ["Jan", "Marie"],
+    ["Erik", "Hannah"],
+    ["Leon", "Greta"],
+    ["Finn", "Paula"],
+    ["Omar", "Yasmin"],
+    ["Felix", "Mia"],
+    ["Lukas", "Sarah"],
+    ["Noah", "Lea"],
+    ["Ben", "Anna"],
+    ["Max", "Lena"],
+    ["Tom", "Katja"],
+    ["Moritz", "Jana"],
+    ["Philipp", "Sara"]
+  ],
+  "excludeNames": ["Anna", "Ben", "Lena", "Markus"],
+  "promptDeSingle": "NOMBRES OBLIGATORIOS del diálogo: **{{NAME_A}}** y **{{NAME_B}}** (formato «Name: …»). PROHIBIDO usar otros nombres del banco ya saturados: {{EXCLUDE}}.",
+  "promptDeMulti": "NOMBRES OBLIGATORIOS — usa EXACTAMENTE estos pares por segmento (formato «Name: …»): {{PAIRS}}. PROHIBIDO reutilizar elenco idéntico de batches recientes. Excluidos por saturación: {{EXCLUDE}}."
+}

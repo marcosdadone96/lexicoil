@@ -1,62 +1,131 @@
 /**
- * Sprechen input tiers and Pro realtime partner personalities.
+ * Sprechen input tiers and Pro turn-based partner personalities (v1).
  *
  * Free: browser STT → transcript textarea → async AI rubric (existing pipeline).
- * Pro:  realtime multi-turn conversation with selectable examiner persona (scaffolded).
+ * Pro:  turn-based conversation with selectable examiner persona (Kim / Alex / Leo) on Teil 1 + 3.
+ * T2:   always transcript (individual presentation — partner only listens in the real exam).
+ * Level-aware: B1 (default) and A2 calibrations (simpler vocabulary / shorter turns).
  */
 (function (global) {
   const INPUT_MODES = Object.freeze({
     TRANSCRIPT: 'transcript',
-    REALTIME: 'realtime',
+    REALTIME: 'partner',
+    PARTNER: 'partner',
+    VOICE_LIVE: 'voice_live',
   });
 
-  /** @type {ReadonlyArray<{id:string,label:string,labelDe:string,desc:string,descDe:string,verbosity:'low'|'normal'|'high',systemHint:string}>} */
-  const REALTIME_PERSONALITIES = Object.freeze([
+  function normalizeLevel(level) {
+    return String(level || 'B1').trim().toUpperCase() === 'A2' ? 'A2' : 'B1';
+  }
+
+  const REALTIME_PERSONALITIES_B1 = Object.freeze([
     {
       id: 'quiet',
-      label: 'Quiet partner',
-      labelDe: 'Wenig sprechend',
-      desc: 'Short answers, lets you lead the conversation.',
-      descDe: 'Kurze Antworten, du führst das Gespräch.',
+      displayName: 'Kim',
+      label: 'Kim — quiet',
+      labelDe: 'Kim — wenig sprechend',
+      desc: 'Very short answers (≤12 words), lets you lead.',
+      descDe: 'Sehr kurze Antworten (≤12 Wörter), du führst das Gespräch.',
       verbosity: 'low',
-      systemHint:
-        'You are a B1 German oral exam partner. Keep replies very short (1–2 sentences). Ask brief follow-ups. Let the candidate speak most of the time.',
+      maxWordsPerTurn: 12,
+      level: 'B1',
     },
     {
       id: 'balanced',
-      label: 'Balanced partner',
-      labelDe: 'Normal',
-      desc: 'Natural back-and-forth, like a typical exam partner.',
-      descDe: 'Ausgewogenes Gespräch, wie in der Prüfung.',
+      displayName: 'Alex',
+      label: 'Alex — balanced',
+      labelDe: 'Alex — normal',
+      desc: 'Natural back-and-forth (~20–35 words per turn).',
+      descDe: 'Ausgewogenes Gespräch (~20–35 Wörter pro Zug).',
       verbosity: 'normal',
-      systemHint:
-        'You are a B1 German oral exam partner. Reply in natural length (2–4 sentences). Balance questions and reactions fairly.',
+      maxWordsPerTurn: 35,
+      level: 'B1',
     },
     {
       id: 'talkative',
-      label: 'Talkative partner',
-      labelDe: 'Viel sprechend',
-      desc: 'Speaks more, challenges you to interrupt and respond.',
-      descDe: 'Spricht mehr — du musst aktiv einsteigen.',
+      displayName: 'Leo',
+      label: 'Leo — talkative',
+      labelDe: 'Leo — viel sprechend',
+      desc: 'Speaks more (~45–70 words), opinions + examples.',
+      descDe: 'Spricht deutlich mehr (~45–70 Wörter), Meinungen + Beispiele.',
       verbosity: 'high',
-      systemHint:
-        'You are a B1 German oral exam partner. Give fuller replies (3–5 sentences), add opinions and examples, but stay at B1 level.',
+      maxWordsPerTurn: 70,
+      level: 'B1',
     },
   ]);
 
+  const REALTIME_PERSONALITIES_A2 = Object.freeze([
+    {
+      id: 'quiet',
+      displayName: 'Kim',
+      label: 'Kim — quiet',
+      labelDe: 'Kim — wenig sprechend',
+      desc: 'Very short A2 answers (≤8 words), simple everyday words.',
+      descDe: 'Sehr kurze A2-Antworten (≤8 Wörter), einfache Alltagswörter.',
+      verbosity: 'low',
+      maxWordsPerTurn: 8,
+      level: 'A2',
+    },
+    {
+      id: 'balanced',
+      displayName: 'Alex',
+      label: 'Alex — balanced',
+      labelDe: 'Alex — normal',
+      desc: 'Simple back-and-forth (~12–20 words), short A2 sentences.',
+      descDe: 'Einfaches Hin und Her (~12–20 Wörter), kurze A2-Sätze.',
+      verbosity: 'normal',
+      maxWordsPerTurn: 20,
+      level: 'A2',
+    },
+    {
+      id: 'talkative',
+      displayName: 'Leo',
+      label: 'Leo — talkative',
+      labelDe: 'Leo — viel sprechend',
+      desc: 'Talkative but still A2 (~25–35 words), one simple example.',
+      descDe: 'Gesprächig, aber A2 (~25–35 Wörter), ein einfaches Beispiel.',
+      verbosity: 'high',
+      maxWordsPerTurn: 35,
+      level: 'A2',
+    },
+  ]);
+
+  /** @deprecated use personalitiesForLevel(level) — B1 default */
+  const REALTIME_PERSONALITIES = REALTIME_PERSONALITIES_B1;
+
+  function personalitiesForLevel(level) {
+    return normalizeLevel(level) === 'A2' ? REALTIME_PERSONALITIES_A2 : REALTIME_PERSONALITIES_B1;
+  }
+
+  const PARTNER_CHAT = Object.freeze({
+    endpoint: '/.netlify/functions/speaking-chat',
+    maxMinutes: 15,
+    implementationStatus: 'turn_based_v1',
+  });
+
   const REALTIME_SESSION = Object.freeze({
     endpoint: '/.netlify/functions/speaking-realtime-session',
-    maxMinutes: 15,
-    /** Placeholder until OpenAI Realtime / WebRTC is wired. */
-    implementationStatus: 'scaffold',
+    maxMinutes: 8,
+    implementationStatus: 'pilot',
+  });
+
+  const VOICE_PILOT = Object.freeze({
+    endpoint: '/.netlify/functions/speaking-voice-pilot',
   });
 
   global.SpeakingModes = Object.freeze({
     INPUT_MODES,
     REALTIME_PERSONALITIES,
+    REALTIME_PERSONALITIES_B1,
+    REALTIME_PERSONALITIES_A2,
+    personalitiesForLevel,
+    normalizeLevel,
+    PARTNER_CHAT,
     REALTIME_SESSION,
-    personalityById(id) {
-      return REALTIME_PERSONALITIES.find((p) => p.id === id) || null;
+    VOICE_PILOT,
+    personalityById(id, level) {
+      const list = personalitiesForLevel(level);
+      return list.find((p) => p.id === id) || list.find((p) => p.id === 'balanced') || null;
     },
   });
 })(typeof window !== 'undefined' ? window : globalThis);

@@ -70,12 +70,29 @@ Rules:
 - Reply with ONLY the translation, no quotes or explanation.`;
 }
 
+/**
+ * Reject MyMemory spam / ads (e.g. anbieten→en returns a Trustpilot marketing URL)
+ * and other non-gloss payloads that must never be shown as a learner translation.
+ */
+function isJunkTranslation(raw) {
+  const t = String(raw || '').trim();
+  if (!t) return true;
+  if (/MYMEMORY WARNING|QUOTA EXCEEDED|YOU USED ALL/i.test(t)) return true;
+  if (/^https?:\/\//i.test(t)) return true;
+  if (/\bhttps?:\/\//i.test(t)) return true;
+  if (/\b[\w.-]+\.(com|net|org|io|info)\b/i.test(t) && /\/|www\./i.test(t)) return true;
+  if (/<[^>]+>/.test(t)) return true;
+  return false;
+}
+
 function cleanTranslation(raw) {
   let t = String(raw || '').trim();
   t = t.replace(/^["'`]+|["'`]+$/g, '');
   t = t.replace(/^(translation|traducción|übersetzung|traduction):\s*/i, '');
   if (t.includes('\n')) t = t.split('\n').map((l) => l.trim()).find(Boolean) || t;
-  return t.slice(0, 200).trim();
+  t = t.slice(0, 200).trim();
+  if (isJunkTranslation(t)) return '';
+  return t;
 }
 
 function parseRetryMs(message) {
@@ -224,15 +241,18 @@ async function freeTranslate(text, from, to, context) {
   const src = String(text || '').trim();
   if (!src || !from || !to || from === to) return { translation: null, reason: 'empty', source: null };
 
-  const geminiFirst = process.env.VOCAB_GEMINI_FIRST === '1';
-  if (!geminiFirst) {
+  // Default: Gemini first. MyMemory is last-resort only — its top matches are often
+  // spam URLs (reproduced: anbieten|de→en → fivestar-marketing Trustpilot link).
+  // Opt into legacy MyMemory-first with VOCAB_MYMEMORY_FIRST=1.
+  const myMemoryFirst = process.env.VOCAB_MYMEMORY_FIRST === '1';
+  if (myMemoryFirst) {
     const quick = await tryDictFallback(src, from, to);
-    if (quick) return { translation: quick, reason: null, source: 'dict' };
+    if (quick && !isJunkTranslation(quick)) return { translation: quick, reason: null, source: 'dict' };
   }
 
   if (!geminiApiKey()) {
     const fb = await tryDictFallback(src, from, to);
-    if (fb) return { translation: fb, reason: null, source: 'dict' };
+    if (fb && !isJunkTranslation(fb)) return { translation: fb, reason: null, source: 'dict' };
     return { translation: null, reason: 'no_api_key', source: null };
   }
 
@@ -243,8 +263,11 @@ async function freeTranslate(text, from, to, context) {
   for (let attempt = 0; attempt <= MAX_429_RETRIES; attempt++) {
     try {
       const translation = await callGeminiOnce(prompt);
-      if (translation) return { translation, reason: null, source: 'gemini' };
-      geminiReason = 'empty_response';
+      if (translation && !isJunkTranslation(translation)) {
+        return { translation, reason: null, source: 'gemini' };
+      }
+      if (translation && isJunkTranslation(translation)) geminiReason = 'junk_response';
+      else geminiReason = 'empty_response';
       break;
     } catch (err) {
       if (err.code === 'invalid_api_key') {
@@ -276,9 +299,195 @@ async function freeTranslate(text, from, to, context) {
   }
 
   const fb = await tryDictFallback(src, from, to);
-  if (fb) return { translation: fb, reason: null, source: 'dict' };
+  if (fb && !isJunkTranslation(fb)) return { translation: fb, reason: null, source: 'dict' };
 
   return { translation: null, reason: geminiReason, source: null };
 }
 
-module.exports = { freeTranslate, buildPrompt, cleanTranslation, geminiApiKey, tryDictFallback };
+function buildLemmaPrompt(surface, context) {
+  const word = String(surface || '').trim();
+  const ctx = String(context || '').trim().slice(0, 500);
+  return `German vocabulary helper for language learners.
+
+Sentence: "${ctx}"
+Clicked word form: "${word}"
+
+Return the FULL dictionary infinitive for the clicked word in this sentence.
+
+German word order — separable verbs (trennbare Verben):
+- In a MAIN clause the finite verb is typically in 2nd position and the separable particle is typically at the END of that clause ("bietet … an" → anbieten; "schlägt … vor" → vorschlagen; "schlägt … nach" → nachschlagen; "ruft … an" → anrufen).
+- In a SUBORDINATE clause (after weil / dass / wenn / obwohl / als / …) the separable verb is NOT split: the full infinitive-like form stands at the END of the clause ("…, weil ich dich morgen anrufe" → anrufen). Do NOT invent a missing particle and do NOT look for a separated particle outside that subordinate clause.
+- Do NOT return only the bare stem (schlagen, bieten, rufen) when a particle is present in the SAME main clause.
+
+Rules:
+- Reply with ONLY one lowercase German infinitive (or noun/adj lemma if not a verb).
+- No quotes, no explanation, no URL, no punctuation.`;
+}
+
+function cleanLemma(raw) {
+  let t = String(raw || '').trim();
+  if (isJunkTranslation(t)) return '';
+  t = t.replace(/^["'`]+|["'`]+$/g, '');
+  t = t.replace(/^(lemma|infinitive|wort|verb):\s*/i, '');
+  if (t.includes('\n')) t = t.split('\n').map((l) => l.trim()).find(Boolean) || t;
+  t = t.split(/\s+/)[0] || '';
+  if (isJunkTranslation(t)) return '';
+  t = t.replace(/[^a-zäöüß\-]/gi, '').toLowerCase();
+  if (!t || t.length < 2 || t.length > 40) return '';
+  if (isJunkTranslation(t)) return '';
+  return t;
+}
+
+/**
+ * Resolve dictionary lemma for a surface in sentence context (separable-verb safety net).
+ * @returns {Promise<{lemma:string|null, reason:string|null, source:string|null}>}
+ */
+async function resolveSeparableLemma(surface, context) {
+  const word = String(surface || '').trim();
+  const ctx = String(context || '').trim();
+  if (!word || ctx.length < 8) return { lemma: null, reason: 'empty', source: null };
+  if (!geminiApiKey()) return { lemma: null, reason: 'no_api_key', source: null };
+
+  const prompt = buildLemmaPrompt(word, ctx);
+  try {
+    const raw = await callGeminiOnce(prompt);
+    let lemma = cleanLemma(raw);
+    if (!lemma) return { lemma: null, reason: raw ? 'junk_response' : 'empty_response', source: null };
+
+    // If model returned a bare stem, try reuniting a clause-final particle from context
+    lemma = maybeReuniteParticle(lemma, word, ctx) || lemma;
+
+    if (isJunkTranslation(lemma)) return { lemma: null, reason: 'junk_response', source: null };
+    return { lemma, reason: null, source: 'gemini' };
+  } catch (err) {
+    if (err.code === 'invalid_api_key') return { lemma: null, reason: 'invalid_api_key', source: null };
+    if (err instanceof DailyQuotaError || err.daily) return { lemma: null, reason: 'quota', source: null };
+    if (err.name === 'TimeoutError' || err.name === 'AbortError') {
+      return { lemma: null, reason: 'timeout', source: null };
+    }
+    console.error('[resolveSeparableLemma]', err?.status || err?.name, err?.message || err);
+    return { lemma: null, reason: 'lemma_failed', source: null };
+  }
+}
+
+/** Heuristic: «schlägt … nach» + lemma "schlagen" → nachschlagen */
+function maybeReuniteParticle(lemma, surface, context) {
+  const lem = String(lemma || '').toLowerCase();
+  const lowCtx = String(context || '').toLowerCase();
+  if (!lem || !/(?:en|eln|ern)$/.test(lem)) return null;
+  // Already looks reunified
+  if (
+    /^(mit|auf|an|aus|ein|vor|nach|bei|ab|zu|weg|los|zurück|weiter|fest|teil|statt|um|über|unter|durch|zusammen)/.test(lem)
+    && lem.length > 8
+  ) {
+    return null;
+  }
+  const particles = [
+    'zurück', 'zusammen', 'weiter', 'heran', 'herum', 'statt', 'durch', 'über', 'unter',
+    'mit', 'auf', 'an', 'aus', 'ein', 'vor', 'nach', 'bei', 'ab', 'zu', 'weg', 'los', 'fest', 'teil', 'um', 'hin', 'her',
+  ];
+  const surf = String(surface || '').toLowerCase();
+  const idx = lowCtx.indexOf(surf);
+  const after = idx >= 0 ? lowCtx.slice(idx + surf.length) : lowCtx;
+  for (const p of particles) {
+    const re = new RegExp(`(?:^|\\s)${p}(?=\\s|[.,;:!?]|$)`);
+    if (!re.test(after)) continue;
+    const full = `${p}${lem}`;
+    if (full.length >= 6 && /(?:en|eln|ern)$/.test(full)) return full;
+  }
+  return null;
+}
+
+function buildGenderPrompt(word, opts) {
+  const noun = String(word || '').trim();
+  const likelyPlural = !!(opts && opts.likelyPlural);
+  if (likelyPlural) {
+    return `German vocabulary helper for language learners.
+
+Word form: "${noun}"
+
+This may be a plural noun form (not the dictionary singular lemma).
+- If it is a plural noun in standard contemporary German (Standarddeutsch), the definite article is always "die".
+- If it is actually a singular noun, reply with only: der, die, or das.
+- If it is not a German noun, reply: none
+
+Reply with ONLY one line in one of these formats:
+- "die plural" (plural noun)
+- "der" / "die" / "das" (singular noun)
+- "none"`;
+  }
+  return `German vocabulary helper for language learners.
+
+Noun: "${noun}"
+
+What is the correct definite article (der, die, or das) for this German noun in standard contemporary German (Standarddeutsch)?
+
+Rules:
+- Reply with ONLY one word: der, die, or das.
+- No quotes, no explanation, no m/f/n notation.`;
+}
+
+function cleanArticle(raw) {
+  const parsed = cleanGenderResponse(raw);
+  return parsed?.article || null;
+}
+
+/** @returns {{ article: string|null, plural: boolean }} */
+function cleanGenderResponse(raw) {
+  let t = String(raw || '').trim().toLowerCase();
+  if (isJunkTranslation(t)) return { article: null, plural: false };
+  t = t.replace(/^["'`]+|["'`]+$/g, '');
+  if (t.includes('\n')) t = t.split('\n').map((l) => l.trim()).find(Boolean) || t;
+  if (/\bdie\s+plural\b/.test(t) || t === 'plural' || t === 'die (plural)') {
+    return { article: 'die', plural: true };
+  }
+  const m = t.match(/\b(der|die|das)\b/);
+  if (m) return { article: m[1], plural: false };
+  return { article: null, plural: false };
+}
+
+/**
+ * Resolve der/die/das for a German noun (AI safety net when lexicon misses).
+ * @param {string} word
+ * @param {{ likelyPlural?: boolean }} [opts]
+ * @returns {Promise<{article:string|null, plural:boolean, reason:string|null, source:string|null}>}
+ */
+async function resolveGermanGender(word, opts) {
+  const noun = String(word || '').trim();
+  const likelyPlural = !!(opts && opts.likelyPlural);
+  if (!noun || noun.length < 2) return { article: null, plural: false, reason: 'empty', source: null };
+  if (!geminiApiKey()) return { article: null, plural: false, reason: 'no_api_key', source: null };
+
+  const prompt = buildGenderPrompt(noun, { likelyPlural });
+  try {
+    const raw = await callGeminiOnce(prompt);
+    const parsed = cleanGenderResponse(raw);
+    if (!parsed.article) return { article: null, plural: false, reason: raw ? 'junk_response' : 'empty_response', source: null };
+    return { article: parsed.article, plural: parsed.plural, reason: null, source: 'gemini' };
+  } catch (err) {
+    if (err.code === 'invalid_api_key') return { article: null, plural: false, reason: 'invalid_api_key', source: null };
+    if (err instanceof DailyQuotaError || err.daily) return { article: null, plural: false, reason: 'quota', source: null };
+    if (err.name === 'TimeoutError' || err.name === 'AbortError') {
+      return { article: null, plural: false, reason: 'timeout', source: null };
+    }
+    console.error('[resolveGermanGender]', err?.status || err?.name, err?.message || err);
+    return { article: null, plural: false, reason: 'gender_failed', source: null };
+  }
+}
+
+module.exports = {
+  freeTranslate,
+  resolveSeparableLemma,
+  resolveGermanGender,
+  maybeReuniteParticle,
+  buildPrompt,
+  buildLemmaPrompt,
+  buildGenderPrompt,
+  cleanTranslation,
+  cleanLemma,
+  cleanArticle,
+  cleanGenderResponse,
+  isJunkTranslation,
+  geminiApiKey,
+  tryDictFallback,
+};

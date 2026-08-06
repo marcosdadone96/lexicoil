@@ -1,0 +1,68 @@
+{
+  "runAt": "2026-07-13T07:08:01.921Z",
+  "base": "http://127.0.0.1:8888",
+  "cases": [
+    {
+      "id": "1a-separable-reunify",
+      "ok": true,
+      "surface": "bietet",
+      "lemma": "anbieten",
+      "reunified": true,
+      "enLocal": "to offer"
+    },
+    {
+      "id": "1b-translate-en",
+      "ok": true,
+      "translation": "offers",
+      "source": "gemini",
+      "junk": false
+    },
+    {
+      "id": "1b-translate-es",
+      "ok": true,
+      "translation": "ofrece",
+      "source": "gemini",
+      "junk": false
+    },
+    {
+      "id": "1b-translate-fr",
+      "ok": true,
+      "translation": "proposer",
+      "source": "gemini",
+      "junk": false
+    },
+    {
+      "id": "1b-translate-it",
+      "ok": true,
+      "translation": "offre",
+      "source": "gemini",
+      "junk": false
+    },
+    {
+      "id": "1c-article-vorschlag",
+      "ok": true,
+      "word": "Vorschlag",
+      "article": "der",
+      "gender": "m",
+      "lexicon": "m"
+    },
+    {
+      "id": "1c-article-küche",
+      "ok": true,
+      "word": "Küche",
+      "article": "die",
+      "gender": "f",
+      "lexicon": "f"
+    },
+    {
+      "id": "1d-ai-gender-rare",
+      "ok": true,
+      "word": "Glasfaserkabelkanal",
+      "lexiconBefore": null,
+      "needsAiFallback": true,
+      "aiArticle": "der",
+      "aiSource": "gemini",
+      "expected": "der (compuesto; DWDS: der Kabelkanal / der Kanal)"
+    }
+  ]
+}

@@ -209,6 +209,22 @@ exports.handler = async (event) => {
         }
       }
       handled = true;
+    } else if (stripeEvent.type === 'charge.refunded') {
+      const charge = stripeEvent.data?.object;
+      const rawEmail = extractEmail(charge);
+
+      if (rawEmail) {
+        const email = normalizeEmail(rawEmail);
+        const result = await revokeProForEmail(store, email, { reason: 'charge_refunded' });
+        if (result.ok) {
+          console.log('[stripe-webhook] Revoked Pro (charge.refunded):', email, 'refunded:', charge?.amount_refunded);
+        } else {
+          console.warn('[stripe-webhook] charge.refunded — user not found or already free:', email);
+        }
+      } else {
+        console.warn('[stripe-webhook] charge.refunded without email');
+      }
+      handled = true;
     } else if (stripeEvent.type === 'invoice.payment_failed') {
       const invoice = stripeEvent.data?.object;
       const rawEmail = extractEmail(invoice);

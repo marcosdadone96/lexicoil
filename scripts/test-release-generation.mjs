@@ -105,7 +105,7 @@ assert(quotaBeforePersonal.used === 5, 'personal_exam path does not touch exam q
 const aiCharge = await aiCredits.confirmAiCreditConsumption(event, 'personal_exam', {
   requestId: 'personal-nonce-1',
 });
-assert(aiCharge.aiUsed === 3, 'personal_exam charges 3 AI credits at start');
+assert(aiCharge.aiUsed === 4, 'personal_exam charges 4 AI credits at start');
 
 const sub = quotaBeforePersonal.state.email;
 const { token: personalToken, payload: personalPayload } = createGenTicket(
@@ -119,7 +119,7 @@ await aiCredits.releaseAiCreditConsumption(event, 'personal_exam', { requestId: 
 const aiCharge2 = await aiCredits.confirmAiCreditConsumption(event, 'personal_exam', {
   requestId: personalPayload.nonce,
 });
-assert(aiCharge2.aiUsed === 3, 'personal_exam ticket nonce charge ok');
+assert(aiCharge2.aiUsed === 4, 'personal_exam ticket nonce charge ok');
 
 const releasePersonal = await releaseGenerationQuota(event, { genTicket: personalToken });
 assert(releasePersonal.released === true, 'personal_exam release returns released:true');
@@ -133,7 +133,7 @@ assert(afterPersonalRelease.used === 5, 'monthly exam quota unchanged after pers
 const aiCharge3 = await aiCredits.confirmAiCreditConsumption(event, 'personal_exam', {
   requestId: 'personal-nonce-chunks',
 });
-assert(aiCharge3.aiUsed === 3, 're-charge for chunk-failure test');
+assert(aiCharge3.aiUsed === 4, 're-charge for chunk-failure test');
 const { token: token2, payload: payload2 } = createGenTicket(
   sub,
   'personal_exam',
@@ -169,7 +169,7 @@ assert(releaseBlockedPersonal.released === false, 'personal release blocked afte
 assert(releaseBlockedPersonal.reason === 'already_delivered', 'reason is already_delivered');
 
 const stillChargedAi = await store.get(qKey, { type: 'json' });
-assert(stillChargedAi.aiUsed === 3, 'AI credits stay charged after successful personal delivery');
+assert(stillChargedAi.aiUsed === 4, 'AI credits stay charged after successful personal delivery');
 assert(stillChargedAi.used === 5, 'monthly exam quota still unchanged');
 
 // ── exam_generation: monthly quota ──

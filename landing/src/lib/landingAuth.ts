@@ -166,6 +166,8 @@ function mapAuthError(code?: string) {
   const map: Record<string, string> = {
     email_taken: 'Email already registered.',
     bad_credentials: 'Invalid email or password.',
+    email_not_confirmed: 'Please confirm your email before signing in.',
+    too_many_registrations: 'Too many accounts created from this network. Try again tomorrow.',
     invalid_fields: 'Fill all fields correctly.',
     auth_not_configured: 'Accounts are not configured on the server yet.',
     supabase_not_configured: 'Supabase is not configured on the server yet.',
@@ -426,6 +428,9 @@ export async function registerWithEmail(
   });
   const data = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(mapAuthError(data.error));
+  if (data.pendingConfirmation) {
+    return { pendingConfirmation: true, email: data.email || em };
+  }
   if (!data.user) throw new Error('Registration failed.');
   persistSession(null, data.user);
   return {};

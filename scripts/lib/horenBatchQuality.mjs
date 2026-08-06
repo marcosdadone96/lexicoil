@@ -1,6 +1,9 @@
 /**
  * Calidad pedagógica Hören B1 — reutiliza reglas de lesenBatchQuality.mjs.
  */
+import { createRequire } from 'node:module';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import {
   checkLesenBatchQuality,
   formatQualityReport,
@@ -8,6 +11,13 @@ import {
   sharedContentTokens,
   passageById,
 } from './lesenBatchQuality.mjs';
+import { collectMcqLengthBiasIssues } from './mcqLengthBias.mjs';
+import { assessGermanExamText } from './qualityGates/germanContentLanguageGate.mjs';
+import { verifyHorenT4MatchingChrono } from './horenT4ChronoEvidence.mjs';
+
+const require = createRequire(import.meta.url);
+const ROOT_HQ = path.join(path.dirname(fileURLToPath(import.meta.url)), '../..');
+const HorenPictureMatching = require(path.join(ROOT_HQ, 'js/engine/horenPictureMatching.js'));
 
 function wordCount(text) {
   return String(text || '')
@@ -30,7 +40,7 @@ function getCorrectOptionText(q) {
   return opt ? String(opt).replace(/^[a-d]\)\s*/i, '') : '';
 }
 
-function checkHorenMcqTeil(batch, teil, issues, { monologue = false } = {}, warnings = []) {
+function checkHorenMcqTeil(batch, teil, issues, { monologue = false, level = 'B1' } = {}, warnings = []) {
   for (const q of batch.questions || []) {
     const passage = passageById(batch, q.passageId);
     if (!passage) {
@@ -77,6 +87,14 @@ function checkHorenMcqTeil(batch, teil, issues, { monologue = false } = {}, warn
     }
   }
 
+  if (
+    Number(teil) === 2
+    || (level === 'B1' && Number(teil) === 1)
+    || (level === 'A2' && (Number(teil) === 1 || Number(teil) === 3))
+  ) {
+    issues.push(...collectMcqLengthBiasIssues(batch, { level }));
+  }
+
   if (monologue) {
     const main = batch.passages?.[0];
     const wc = wordCount(main?.text);
@@ -86,7 +104,7 @@ function checkHorenMcqTeil(batch, teil, issues, { monologue = false } = {}, warn
   }
 }
 
-function checkHorenTeil1(batch, issues, warnings) {
+function checkHorenTeil1(batch, issues, warnings, { level = 'B1' } = {}) {
   const passages = batch.passages || [];
   if (passages.length < 2) {
     issues.push('Hören T1: se esperan varios textos cortos (≥2 passages)');
@@ -104,12 +122,51 @@ function checkHorenTeil1(batch, issues, warnings) {
     issues.push(...lesen.issues);
     warnings.push(...(lesen.warnings || []));
   } else {
-    checkHorenMcqTeil(batch, 1, issues);
+    checkHorenMcqTeil(batch, 1, issues, { level }, warnings);
   }
 }
 
-function checkHorenTeil2(batch, issues, warnings = []) {
-  checkHorenMcqTeil(batch, 2, issues, { monologue: true }, warnings);
+function checkHorenTeil2PictureMatching(batch, issues, warnings = []) {
+  const passages = batch.passages || [];
+  if (passages.length !== 1) {
+    issues.push(`Hören A2 T2: se espera exactamente 1 passage (diálogo), hay ${passages.length}`);
+  }
+  const passage = passages[0];
+  if (!passage) {
+    issues.push('Hören A2 T2: falta transcripción (passages[0])');
+    return;
+  }
+  const turns = countDialogueTurns(passage.text || passage.transcript || '');
+  if (turns < 4) {
+    issues.push('Hören A2 T2: el diálogo necesita ≥4 turnos «Nombre:»');
+  }
+  const wc = wordCount(passage.text || passage.transcript || '');
+  if (wc < 70 || wc > 160) {
+    issues.push(`Hören A2 T2: longitud fuera de rango (70–160 palabras, tiene ${wc})`);
+  }
+
+  const structIssues = HorenPictureMatching.validatePictureMatchingBatch(batch, {
+    module: 'horen',
+    teil: 2,
+    level: 'A2',
+  });
+  issues.push(...structIssues);
+
+  for (const q of batch.questions || []) {
+    const body = passage.text || passage.transcript || '';
+    const literal = hasLongLiteralOverlap(q.question, body, 4);
+    if (literal) {
+      issues.push(`${q.id}: pregunta copia ≥4 palabras seguidas de la transcripción («${literal}»)`);
+    }
+  }
+}
+
+function checkHorenTeil2(batch, issues, warnings = [], { level = 'B1' } = {}) {
+  const passages = batch.passages || [];
+  if (passages.length !== 1) {
+    issues.push(`Hören T2: se espera exactamente 1 passage (monólogo), hay ${passages.length}`);
+  }
+  checkHorenMcqTeil(batch, 2, issues, { monologue: true, level }, warnings);
 }
 
 /**
@@ -213,24 +270,127 @@ function checkHorenTeil4(batch, issues, warnings) {
       issues.push(`Hören T4: el hablante "${letter}" concentra ${count}/8 respuestas (máx 4 = 50%)`);
     }
   }
+
+  const chrono = verifyHorenT4MatchingChrono(batch);
+  for (const msg of chrono.blockingIssues || []) {
+    issues.push(msg);
+  }
+  for (const msg of chrono.warnings || []) {
+    warnings.push(msg);
+  }
+}
+
+function checkHorenA2Teil3(batch, issues, warnings) {
+  const passages = batch.passages || [];
+  if (passages.length !== 5) {
+    issues.push(`Hören A2 T3: se esperan exactamente 5 segmentos (tiene ${passages.length})`);
+  }
+  for (const p of passages) {
+    const wc = wordCount(p.text || p.transcript || '');
+    if (wc < 12 || wc > 55) {
+      issues.push(`Hören A2 T3: segmento «${p.id || '?'}» fuera de rango (15–50 palabras, tiene ${wc})`);
+    }
+    const turns = countDialogueTurns(p.text || p.transcript || '');
+    if (turns < 2) {
+      issues.push(`Hören A2 T3: segmento «${p.id || '?'}» necesita diálogo con ≥2 turnos`);
+    }
+  }
+  const qs = batch.questions || [];
+  if (qs.length !== 5) {
+    issues.push(`Hören A2 T3: se requieren exactamente 5 preguntas MCQ (tiene ${qs.length})`);
+  }
+  for (const q of qs) {
+    if (q.type !== 'multiple_choice') {
+      issues.push(`${q.id}: A2 T3 debe ser multiple_choice, no ${q.type}`);
+    }
+    if ((q.options || []).length < 3) {
+      issues.push(`${q.id}: A2 T3 MCQ necesita opciones a/b/c`);
+    }
+    if (!q.segmentLabel) {
+      issues.push(`${q.id}: A2 T3 falta segmentLabel (Text 1…5)`);
+    }
+  }
+  issues.push(...collectMcqLengthBiasIssues(batch, { level: 'A2' }));
+}
+
+function checkHorenA2Teil4(batch, issues, warnings) {
+  const passage = batch.passages?.[0];
+  if (!passage) {
+    issues.push('Hören A2 T4: falta transcripción de entrevista (passages[0])');
+    return;
+  }
+  const wc = wordCount(passage.text || passage.transcript || '');
+  if (wc < 140 || wc > 260) {
+    issues.push(`Hören A2 T4: entrevista fuera de rango (150–250 palabras, tiene ${wc})`);
+  }
+  const qs = batch.questions || [];
+  if (qs.length !== 5) {
+    issues.push(`Hören A2 T4: se requieren exactamente 5 preguntas Ja/Nein (tiene ${qs.length})`);
+  }
+  for (const q of qs) {
+    if (q.type !== 'ja_nein') {
+      issues.push(`${q.id}: A2 T4 debe ser ja_nein, no ${q.type}`);
+    }
+    if ((q.options || []).length) {
+      issues.push(`${q.id}: A2 T4 ja_nein debe tener options: []`);
+    }
+    const ans = String(q.correct || q.correctAnswer || '').trim();
+    if (!/^ja$/i.test(ans) && !/^nein$/i.test(ans)) {
+      issues.push(`${q.id}: A2 T4 correct debe ser "Ja" o "Nein", tiene "${ans}"`);
+    }
+  }
 }
 
 /**
  * @returns {{ ok: boolean, issues: string[], warnings: string[], scoreEstimate: number }}
  */
-export function checkHorenBatchQuality(batch, teil) {
+export function checkHorenBatchQuality(batch, teil, opts = {}) {
   const issues = [];
   const warnings = [];
   const t = Number(teil);
+  const level = String(opts.level || batch?.level || batch?.questions?.[0]?.level || 'B1').toUpperCase();
 
   if (!batch?.questions?.length) {
     return { ok: false, issues: ['Batch sin preguntas'], warnings: [], scoreEstimate: 0 };
   }
 
-  if (t === 1) checkHorenTeil1(batch, issues, warnings);
-  else if (t === 2) checkHorenTeil2(batch, issues, warnings);
-  else if (t === 3) checkHorenTeil3(batch, issues, warnings);
-  else if (t === 4) checkHorenTeil4(batch, issues, warnings);
+  const lang = String(batch?.lang || batch?.questions?.[0]?.lang || 'de').toLowerCase();
+  if (lang === 'de') {
+    for (const q of batch.questions) {
+      const texts = [
+        q.question,
+        q.explanation,
+        ...(q.options || []).map((o) => String(o).replace(/^[a-d]\)\s*/i, '')),
+      ].filter(Boolean);
+      for (const text of texts) {
+        const check = assessGermanExamText(text, { mode: 'question' });
+        if (!check.ok) {
+          issues.push(`${q.id}: texto de examen no está en alemán (${check.reason})`);
+          break;
+        }
+      }
+    }
+    for (const p of batch.passages || []) {
+      const check = assessGermanExamText(p.text || p.transcript || '', { minTokens: 8, mode: 'passage' });
+      if (!check.ok) {
+        issues.push(`${p.id || 'passage'}: transcripción no está en alemán (${check.reason})`);
+      }
+    }
+  }
+
+  if (t === 1) checkHorenTeil1(batch, issues, warnings, { level });
+  else if (t === 2) {
+    if (level === 'A2') checkHorenTeil2PictureMatching(batch, issues, warnings);
+    else checkHorenTeil2(batch, issues, warnings, { level });
+  }
+  else if (t === 3) {
+    if (level === 'A2') checkHorenA2Teil3(batch, issues, warnings);
+    else checkHorenTeil3(batch, issues, warnings);
+  }
+  else if (t === 4) {
+    if (level === 'A2') checkHorenA2Teil4(batch, issues, warnings);
+    else checkHorenTeil4(batch, issues, warnings);
+  }
   else issues.push(`Hören: Teil ${t} no soportado (usa 1–4)`);
 
   const penalty = issues.length * 8 + warnings.length * 2;

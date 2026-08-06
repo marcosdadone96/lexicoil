@@ -1,0 +1,586 @@
+{
+  "generatedAt": "2026-07-12T12:32:49.885Z",
+  "scope": "assembled-exams-source-batches-only",
+  "expected": {
+    "caps": "v3.14-zu-degree-adj-2026-07-12",
+    "balanceMcq": "v1.2-no-rf-chrono-shuffle-2026-07-11"
+  },
+  "unitCaps": [],
+  "exams": [
+    {
+      "exam": "verified-de-B1-e1",
+      "file": "assembled-exam-b1-verified-e1.json",
+      "gate1": true,
+      "sources": {
+        "lesen_1": "lesen-t1-gemini-136.json",
+        "lesen_2": "lesen-t2-gemini-057.json",
+        "lesen_3": "lesen-t3-auto-5bw5c5.json",
+        "lesen_4": "lesen-t4-gemini-044.json",
+        "lesen_5": "lesen-t5-gemini-077.json",
+        "horen_1": "horen-t1-gemini-016.json",
+        "horen_2": "horen-t2-gemini-006.json",
+        "horen_3": "horen-t3-gemini-008.json",
+        "horen_4": "horen-t4-gemini-003.json",
+        "schreiben_1": "schreiben-gemini-005.json",
+        "schreiben_2": "schreiben-gemini-005.json",
+        "schreiben_3": "schreiben-gemini-005.json",
+        "sprechen_1": "sprechen-gemini-006.json",
+        "sprechen_2": "sprechen-gemini-006.json",
+        "sprechen_3": "sprechen-gemini-006.json"
+      }
+    },
+    {
+      "exam": "verified-de-B1-e2",
+      "file": "assembled-exam-b1-verified-e2.json",
+      "gate1": true,
+      "sources": {
+        "lesen_1": "lesen-t1-gemini-155.json",
+        "lesen_2": "lesen-t2-gemini-093.json",
+        "lesen_3": "lesen-t3-auto-ma7vt8.json",
+        "lesen_4": "lesen-t4-gemini-016.json",
+        "lesen_5": "lesen-t5-gemini-053.json",
+        "horen_1": "horen-t1-gemini-002.json",
+        "horen_2": "horen-t2-gemini-003.json",
+        "horen_3": "horen-t3-gemini-009.json",
+        "horen_4": "horen-t4-gemini-012.json",
+        "schreiben_1": "schreiben-gemini-006.json",
+        "schreiben_2": "schreiben-gemini-006.json",
+        "schreiben_3": "schreiben-gemini-006.json",
+        "sprechen_1": "sprechen-gemini-007.json",
+        "sprechen_2": "sprechen-gemini-007.json",
+        "sprechen_3": "sprechen-gemini-007.json"
+      }
+    },
+    {
+      "exam": "verified-de-B1-e3",
+      "file": "assembled-exam-b1-verified-e3.json",
+      "gate1": true,
+      "sources": {
+        "lesen_1": "lesen-t1-gemini-175.json",
+        "lesen_2": "lesen-t2-gemini-094.json",
+        "lesen_3": "lesen-t3-auto-t725x5.json",
+        "lesen_4": "lesen-t4-gemini-043.json",
+        "lesen_5": "lesen-t5-gemini-015.json",
+        "horen_1": "horen-t1-gemini-003.json",
+        "horen_2": "horen-t2-gemini-011.json",
+        "horen_3": "horen-t3-gemini-001.json",
+        "horen_4": "horen-t4-gemini-006.json",
+        "schreiben_1": "schreiben-gemini-007.json",
+        "schreiben_2": "schreiben-gemini-007.json",
+        "schreiben_3": "schreiben-gemini-007.json",
+        "sprechen_1": "sprechen-gemini-008.json",
+        "sprechen_2": "sprechen-gemini-008.json",
+        "sprechen_3": "sprechen-gemini-008.json"
+      }
+    }
+  ],
+  "sourceFiles": [
+    "horen-t1-gemini-002.json",
+    "horen-t1-gemini-003.json",
+    "horen-t1-gemini-016.json",
+    "horen-t2-gemini-003.json",
+    "horen-t2-gemini-006.json",
+    "horen-t2-gemini-011.json",
+    "horen-t3-gemini-001.json",
+    "horen-t3-gemini-008.json",
+    "horen-t3-gemini-009.json",
+    "horen-t4-gemini-003.json",
+    "horen-t4-gemini-006.json",
+    "horen-t4-gemini-012.json",
+    "lesen-t1-gemini-136.json",
+    "lesen-t1-gemini-155.json",
+    "lesen-t1-gemini-175.json",
+    "lesen-t2-gemini-057.json",
+    "lesen-t2-gemini-093.json",
+    "lesen-t2-gemini-094.json",
+    "lesen-t3-auto-5bw5c5.json",
+    "lesen-t3-auto-ma7vt8.json",
+    "lesen-t3-auto-t725x5.json",
+    "lesen-t4-gemini-016.json",
+    "lesen-t4-gemini-043.json",
+    "lesen-t4-gemini-044.json",
+    "lesen-t5-gemini-015.json",
+    "lesen-t5-gemini-053.json",
+    "lesen-t5-gemini-077.json",
+    "schreiben-gemini-005.json",
+    "schreiben-gemini-006.json",
+    "schreiben-gemini-007.json",
+    "sprechen-gemini-006.json",
+    "sprechen-gemini-007.json",
+    "sprechen-gemini-008.json"
+  ],
+  "files": [
+    {
+      "file": "horen-t1-gemini-002.json",
+      "fails": [],
+      "warnings": [
+        {
+          "kind": "capsStampLag",
+          "got": "v3.11-zu-prep-noun-2026-07-12",
+          "want": "v3.14-zu-degree-adj-2026-07-12"
+        }
+      ]
+    },
+    {
+      "file": "horen-t1-gemini-003.json",
+      "fails": [],
+      "warnings": [
+        {
+          "kind": "capsStampLag",
+          "got": "v3.11-zu-prep-noun-2026-07-12",
+          "want": "v3.14-zu-degree-adj-2026-07-12"
+        }
+      ]
+    },
+    {
+      "file": "horen-t1-gemini-016.json",
+      "fails": [],
+      "warnings": [
+        {
+          "kind": "capsStampLag",
+          "got": "v3.11-zu-prep-noun-2026-07-12",
+          "want": "v3.14-zu-degree-adj-2026-07-12"
+        }
+      ]
+    },
+    {
+      "file": "horen-t2-gemini-003.json",
+      "fails": [],
+      "warnings": [
+        {
+          "kind": "capsStampLag",
+          "got": "v3.11-zu-prep-noun-2026-07-12",
+          "want": "v3.14-zu-degree-adj-2026-07-12"
+        }
+      ]
+    },
+    {
+      "file": "horen-t2-gemini-006.json",
+      "fails": [],
+      "warnings": [
+        {
+          "kind": "capsStampLag",
+          "got": "v3.11-zu-prep-noun-2026-07-12",
+          "want": "v3.14-zu-degree-adj-2026-07-12"
+        }
+      ]
+    },
+    {
+      "file": "horen-t2-gemini-011.json",
+      "fails": [],
+      "warnings": [
+        {
+          "kind": "capsStampLag",
+          "got": "v3.11-zu-prep-noun-2026-07-12",
+          "want": "v3.14-zu-degree-adj-2026-07-12"
+        }
+      ]
+    },
+    {
+      "file": "horen-t3-gemini-001.json",
+      "fails": [],
+      "warnings": [
+        {
+          "kind": "capsStampLag",
+          "got": "v3.11-zu-prep-noun-2026-07-12",
+          "want": "v3.14-zu-degree-adj-2026-07-12"
+        }
+      ],
+      "rfChronoCharPos": [
+        81,
+        283,
+        305,
+        531,
+        698,
+        831,
+        1236
+      ]
+    },
+    {
+      "file": "horen-t3-gemini-008.json",
+      "fails": [],
+      "warnings": [],
+      "rfChronoCharPos": [
+        79,
+        346,
+        383,
+        700,
+        827,
+        987,
+        1338
+      ]
+    },
+    {
+      "file": "horen-t3-gemini-009.json",
+      "fails": [],
+      "warnings": [],
+      "rfChronoCharPos": [
+        120,
+        393,
+        447,
+        702,
+        872,
+        990,
+        1302
+      ]
+    },
+    {
+      "file": "horen-t4-gemini-003.json",
+      "fails": [],
+      "warnings": [
+        {
+          "kind": "capsStampLag",
+          "got": "v3.11-zu-prep-noun-2026-07-12",
+          "want": "v3.14-zu-degree-adj-2026-07-12"
+        }
+      ]
+    },
+    {
+      "file": "horen-t4-gemini-006.json",
+      "fails": [],
+      "warnings": [
+        {
+          "kind": "capsStampLag",
+          "got": "v3.11-zu-prep-noun-2026-07-12",
+          "want": "v3.14-zu-degree-adj-2026-07-12"
+        }
+      ]
+    },
+    {
+      "file": "horen-t4-gemini-012.json",
+      "fails": [],
+      "warnings": [
+        {
+          "kind": "capsStampLag",
+          "got": "v3.11-zu-prep-noun-2026-07-12",
+          "want": "v3.14-zu-degree-adj-2026-07-12"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t1-gemini-136.json",
+      "fails": [],
+      "warnings": [
+        {
+          "kind": "capsStampLag",
+          "got": "v3.11-zu-prep-noun-2026-07-12",
+          "want": "v3.14-zu-degree-adj-2026-07-12"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t1-gemini-155.json",
+      "fails": [],
+      "warnings": [
+        {
+          "kind": "capsStampLag",
+          "got": "v3.11-zu-prep-noun-2026-07-12",
+          "want": "v3.14-zu-degree-adj-2026-07-12"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t1-gemini-175.json",
+      "fails": [],
+      "warnings": [
+        {
+          "kind": "capsStampLag",
+          "got": "v3.11-zu-prep-noun-2026-07-12",
+          "want": "v3.14-zu-degree-adj-2026-07-12"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-057.json",
+      "fails": [],
+      "warnings": [
+        {
+          "kind": "capsStampLag",
+          "got": "v3.11-zu-prep-noun-2026-07-12",
+          "want": "v3.14-zu-degree-adj-2026-07-12"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-093.json",
+      "fails": [],
+      "warnings": [
+        {
+          "kind": "capsStampLag",
+          "got": "v3.11-zu-prep-noun-2026-07-12",
+          "want": "v3.14-zu-degree-adj-2026-07-12"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-094.json",
+      "fails": [],
+      "warnings": [
+        {
+          "kind": "capsStampLag",
+          "got": "v3.11-zu-prep-noun-2026-07-12",
+          "want": "v3.14-zu-degree-adj-2026-07-12"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t3-auto-5bw5c5.json",
+      "fails": [],
+      "warnings": [
+        {
+          "kind": "capsStampLag",
+          "got": "v3.11-zu-prep-noun-2026-07-12",
+          "want": "v3.14-zu-degree-adj-2026-07-12"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t3-auto-ma7vt8.json",
+      "fails": [],
+      "warnings": [
+        {
+          "kind": "capsStampLag",
+          "got": "v3.11-zu-prep-noun-2026-07-12",
+          "want": "v3.14-zu-degree-adj-2026-07-12"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t3-auto-t725x5.json",
+      "fails": [],
+      "warnings": [
+        {
+          "kind": "capsStampLag",
+          "got": "v3.11-zu-prep-noun-2026-07-12",
+          "want": "v3.14-zu-degree-adj-2026-07-12"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t4-gemini-016.json",
+      "fails": [],
+      "warnings": [
+        {
+          "kind": "capsStampLag",
+          "got": "v3.11-zu-prep-noun-2026-07-12",
+          "want": "v3.14-zu-degree-adj-2026-07-12"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t4-gemini-043.json",
+      "fails": [],
+      "warnings": []
+    },
+    {
+      "file": "lesen-t4-gemini-044.json",
+      "fails": [],
+      "warnings": []
+    },
+    {
+      "file": "lesen-t5-gemini-015.json",
+      "fails": [],
+      "warnings": [
+        {
+          "kind": "capsStampLag",
+          "got": "v3.11-zu-prep-noun-2026-07-12",
+          "want": "v3.14-zu-degree-adj-2026-07-12"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-053.json",
+      "fails": [],
+      "warnings": [
+        {
+          "kind": "capsStampLag",
+          "got": "v3.11-zu-prep-noun-2026-07-12",
+          "want": "v3.14-zu-degree-adj-2026-07-12"
+        }
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-077.json",
+      "fails": [],
+      "warnings": []
+    },
+    {
+      "file": "schreiben-gemini-005.json",
+      "fails": [],
+      "warnings": [
+        {
+          "kind": "capsStampLag",
+          "got": "v3.13-viel-inflections-2026-07-12",
+          "want": "v3.14-zu-degree-adj-2026-07-12"
+        }
+      ]
+    },
+    {
+      "file": "schreiben-gemini-006.json",
+      "fails": [],
+      "warnings": [
+        {
+          "kind": "capsStampLag",
+          "got": "v3.13-viel-inflections-2026-07-12",
+          "want": "v3.14-zu-degree-adj-2026-07-12"
+        }
+      ]
+    },
+    {
+      "file": "schreiben-gemini-007.json",
+      "fails": [],
+      "warnings": [
+        {
+          "kind": "capsStampLag",
+          "got": "v3.13-viel-inflections-2026-07-12",
+          "want": "v3.14-zu-degree-adj-2026-07-12"
+        }
+      ]
+    },
+    {
+      "file": "sprechen-gemini-006.json",
+      "fails": [],
+      "warnings": [
+        {
+          "kind": "capsStampLag",
+          "got": "v3.13-viel-inflections-2026-07-12",
+          "want": "v3.14-zu-degree-adj-2026-07-12"
+        }
+      ]
+    },
+    {
+      "file": "sprechen-gemini-007.json",
+      "fails": [],
+      "warnings": [
+        {
+          "kind": "capsStampLag",
+          "got": "v3.13-viel-inflections-2026-07-12",
+          "want": "v3.14-zu-degree-adj-2026-07-12"
+        }
+      ]
+    },
+    {
+      "file": "sprechen-gemini-008.json",
+      "fails": [],
+      "warnings": [
+        {
+          "kind": "capsStampLag",
+          "got": "v3.13-viel-inflections-2026-07-12",
+          "want": "v3.14-zu-degree-adj-2026-07-12"
+        }
+      ]
+    }
+  ],
+  "failCount": 0,
+  "positionBias": [
+    {
+      "file": "horen-t1-gemini-002.json",
+      "n": 5,
+      "counts": {
+        "a": 2,
+        "b": 2,
+        "c": 1
+      }
+    },
+    {
+      "file": "horen-t1-gemini-003.json",
+      "n": 5,
+      "counts": {
+        "a": 1,
+        "b": 2,
+        "c": 2
+      }
+    },
+    {
+      "file": "horen-t1-gemini-016.json",
+      "n": 5,
+      "counts": {
+        "a": 2,
+        "b": 2,
+        "c": 1
+      }
+    },
+    {
+      "file": "horen-t2-gemini-003.json",
+      "n": 5,
+      "counts": {
+        "a": 1,
+        "b": 2,
+        "c": 2
+      }
+    },
+    {
+      "file": "horen-t2-gemini-006.json",
+      "n": 5,
+      "counts": {
+        "a": 2,
+        "b": 1,
+        "c": 2
+      }
+    },
+    {
+      "file": "horen-t2-gemini-011.json",
+      "n": 5,
+      "counts": {
+        "a": 2,
+        "b": 2,
+        "c": 1
+      }
+    },
+    {
+      "file": "lesen-t2-gemini-057.json",
+      "n": 6,
+      "counts": {
+        "a": 2,
+        "b": 2,
+        "c": 2
+      }
+    },
+    {
+      "file": "lesen-t2-gemini-093.json",
+      "n": 6,
+      "counts": {
+        "a": 2,
+        "b": 2,
+        "c": 2
+      }
+    },
+    {
+      "file": "lesen-t2-gemini-094.json",
+      "n": 6,
+      "counts": {
+        "a": 2,
+        "b": 2,
+        "c": 2
+      }
+    },
+    {
+      "file": "lesen-t5-gemini-015.json",
+      "n": 4,
+      "counts": {
+        "a": 1,
+        "b": 1,
+        "c": 2
+      }
+    },
+    {
+      "file": "lesen-t5-gemini-053.json",
+      "n": 4,
+      "counts": {
+        "a": 2,
+        "b": 1,
+        "c": 1
+      }
+    },
+    {
+      "file": "lesen-t5-gemini-077.json",
+      "n": 4,
+      "counts": {
+        "a": 1,
+        "b": 2,
+        "c": 1
+      }
+    }
+  ],
+  "okCount": 33
+}

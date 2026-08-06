@@ -1,0 +1,65 @@
+{
+  "gateVersion": "v6.1-B-G2 (frozen)",
+  "file": "lesen-t5-gemini-063.json",
+  "teil": 5,
+  "pipeline": {
+    "status": "passed",
+    "gate": null,
+    "reason": null
+  },
+  "textFields": 21,
+  "findings": {
+    "blocking": 1,
+    "observations": 0,
+    "byReason": {
+      "lexicon_nn": 1
+    },
+    "byRegime": {
+      "PROSE": 1
+    },
+    "list": [
+      {
+        "type": "noun_lowercase",
+        "word": "online",
+        "pos": "NOUN",
+        "tag": "NN",
+        "confidence": "high",
+        "reason": "lexicon_nn",
+        "context": "an der Information und online.\n3.  ",
+        "prevWord": "und",
+        "prevPos": "CCONJ",
+        "prevTag": "KON",
+        "textIndex": 0,
+        "regime": "PROSE",
+        "field": "passages.text",
+        "id": "lesen-t5-gemini-063.json::passages.text::0",
+        "file": "lesen-t5-gemini-063.json",
+        "textPreview": "Liebe Mitglieder,\num ein angenehmes Training für alle zu gewährleisten, bitten wir Sie, folgende Regeln zu beachten:\n\n1.  **Mitgliedschaft und Zugang:** Der Zut"
+      }
+    ]
+  },
+  "observations": [],
+  "expected": {
+    "dominantRegime": "PROSE",
+    "telegraphicFpExpected": 0,
+    "notes": "Reglamentos/instrucciones."
+  },
+  "comparison": {
+    "calibrationPoolFindingsThisTeil": 27,
+    "calibrationAvgPerFile": 3,
+    "pilotFindings": 1,
+    "deltaVsCalAvg": -2,
+    "telegraphicFindings": 0,
+    "telegraphicFpExpected": 0,
+    "telegraphicOk": true
+  },
+  "qualityGate": {
+    "errors": [],
+    "warnings": [
+      "Mayúsculas alemanas: noun_lowercase: «online» (NN) [high] en passages.text — …an der Information und online.\n3.  …"
+    ]
+  },
+  "generatorCapsWarnings": [
+    "Mayúsculas alemanas: noun_lowercase: «online» (NN) [high] en passages.text — …an der Information und online.\n3.  …"
+  ]
+}

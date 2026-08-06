@@ -5,7 +5,9 @@
  *
  * GET  ?lang=&level=&module=[&teil=][&exclude=id,id,...]
  *   → { part } or { part: null }
- *   Public (parts are not user-specific content).
+ *   Public when no ?words= (generic pool pick).
+ *   With ?words= (personal pool): requires auth + personal_lesen/horen quota
+ *   (checkPersonalPoolQuota + CAS via poolRequestId) before serving.
  *
  * POST (requireAuth) — submit a part from the approval flow.
  *   Body: { lang, level, module, teil, passage, questions, complete, verified,
@@ -23,14 +25,21 @@ const { randomUUID } = require('crypto');
 const { getStoreForEvent }           = require('./lib/blobStore.js');
 const { requireAuth }                = require('./lib/authLib.js');
 const { corsHeaders, parseJsonBody, jsonResponse } = require('./lib/http.js');
-const { readAnthropicKey }           = require('./lib/anthropicKey.js');
+const { geminiApiKey } = require('./lib/freeTranslate.js');
 const { resolveFromRoot } = require('./lib/projectRoot.js');
 const { normalizeB1Topic } = require(resolveFromRoot('js', 'data', 'b1Topics.js'));
 const { addReusablePart, pickReusablePart, pickReusablePartByTopic, pickReusablePartByVocab } = require('./lib/reusablePartsStore.js');
 const { pickFromLocalSeed } = require('./lib/reusablePartsLocalSeed.js');
+const { useLocalSeedInRuntime } = require('./lib/poolSourceMode.js');
 const { runPartQualityGate, partMinTargetFromBlueprint, applyPartPostprocess } = require('./lib/partQualityGate.js');
 const { verifyTopicCoherence } = require('./lib/topicCoherenceGate.js');
 const { releaseGenerationQuota }     = require('./lib/releaseGeneration.js');
+const { checkExamPartVocabRateLimit } = require('./lib/examPartVocabRateLimit.js');
+const { checkPersonalModuleIntentRateLimit } = require('./lib/personalModuleIntentRateLimit.js');
+const { gatePersonalExamPartGet } = require('./lib/examPartPersonalQuota.js');
+const { normalizeAssembleMode, partPassesAssembleMode } = require('./lib/officialQuarantine.js');
+const { planPersonalModuleAssembly } = require('./lib/personalModuleVocabPlan.js');
+const { requireAuth: requireAuthUser } = require('./lib/authLib.js');
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -127,13 +136,19 @@ exports.handler = async (event) => {
     }
 
     const partId = String(params.id || params.partId || '').trim();
+    const assembleModeById = normalizeAssembleMode(params.assembleMode || params.mode);
     if (partId) {
       try {
         const { getReusablePart } = require('./lib/reusablePartsStore.js');
         const { getFromLocalSeedById } = require('./lib/reusablePartsLocalSeed.js');
         let hit = await getReusablePart(store, lang, level, module, partId);
-        if (!hit) hit = getFromLocalSeedById(lang, level, module, partId)?.part;
+        if (!hit && useLocalSeedInRuntime()) {
+          hit = getFromLocalSeedById(lang, level, module, partId)?.part;
+        }
         if (!hit) return jsonResponse(404, noCache, { part: null, id: partId });
+        if (!partPassesAssembleMode(hit, assembleModeById)) {
+          return jsonResponse(200, noCache, { part: null, id: partId, quarantined: true });
+        }
         if (Array.isArray(hit.questions)) applyPartPostprocess(hit.questions);
         return jsonResponse(200, noCache, { part: hit, id: partId });
       } catch (err) {
@@ -159,23 +174,139 @@ exports.handler = async (event) => {
       let wantLemmas = [];
       if (wordsRaw.length) {
         try {
-          const { lemmatizeWords } = require('./lib/passageVocab.js');
-          wantLemmas = lemmatizeWords(wordsRaw, lang);
+          const { canonicalizeVocabQuery } = require('./lib/vocabIndexQuality.js');
+          const canon = canonicalizeVocabQuery(wordsRaw, { lang });
+          wantLemmas = canon.words.length
+            ? canon.words
+            : (() => {
+                const { lemmatizeWords } = require('./lib/passageVocab.js');
+                return lemmatizeWords(wordsRaw, lang);
+              })();
         } catch (lemErr) {
-          console.warn('[exam-part] lemmatizeWords failed:', lemErr.message);
-          wantLemmas = wordsRaw.map((w) => String(w).toLowerCase());
+          console.warn('[exam-part] canonicalizeVocabQuery failed:', lemErr.message);
+          try {
+            const { lemmatizeWords } = require('./lib/passageVocab.js');
+            wantLemmas = lemmatizeWords(wordsRaw, lang);
+          } catch (_) {
+            wantLemmas = wordsRaw.map((w) => String(w).toLowerCase());
+          }
         }
       }
 
       const topicRaw = String(params.topicTag || params.topic || '').trim();
       const topicTag = topicRaw ? normalizeB1Topic(topicRaw) : null;
+      const assembleMode = normalizeAssembleMode(params.assembleMode || params.mode);
+
+      const planModule = params.planModule === '1' || params.planModule === 'true';
+      if (planModule) {
+        const auth = await requireAuthUser(event, store);
+        if (!auth.ok) {
+          return jsonResponse(auth.status || 401, noCache, {
+            error: auth.error === 'unauthorized' ? 'login_required' : (auth.error || 'login_required'),
+          });
+        }
+        const rlIntent = await checkPersonalModuleIntentRateLimit(store, event);
+        if (!rlIntent.ok) {
+          return jsonResponse(429, {
+            ...noCache,
+            'Retry-After': String(Math.max(1, Math.ceil((rlIntent.resetAt - Date.now()) / 1000))),
+          }, {
+            error: 'personal_module_intent_rate_limited',
+            limit: rlIntent.limit,
+            remaining: 0,
+            resetAt: rlIntent.resetAt,
+          });
+        }
+        const rlPlan = await checkExamPartVocabRateLimit(store, event);
+        if (!rlPlan.ok) {
+          return jsonResponse(429, {
+            ...noCache,
+            'Retry-After': String(Math.max(1, Math.ceil((rlPlan.resetAt - Date.now()) / 1000))),
+          }, {
+            error: 'rate_limited',
+            limit: rlPlan.limit,
+            remaining: 0,
+            resetAt: rlPlan.resetAt,
+          });
+        }
+        if (!wantLemmas.length) {
+          return jsonResponse(400, noCache, { error: 'words_required', ok: false, reason: 'vocab_no_match' });
+        }
+        const verifyText = params.verifyText !== '0' && params.verifyText !== 'false';
+        const blueprint = loadBlueprint(lang, level);
+        try {
+          const plan = await planPersonalModuleAssembly(store, lang, level, module, {
+            words: wantLemmas,
+            userWords: wordsRaw.length ? wordsRaw : wantLemmas,
+            topicTag,
+            excludeIds,
+            assembleMode,
+            blueprint,
+            verifyText,
+          });
+          console.info('[exam-part] planModule', {
+            ok: plan.ok,
+            reason: plan.reason,
+            coveredCount: plan.coveredCount,
+            textCoveredCount: plan.textCoveredCount,
+            decision: plan.decision,
+            module,
+            level,
+            topic: plan.requestedTopic,
+          });
+          return jsonResponse(200, noCache, plan);
+        } catch (planErr) {
+          console.error('[exam-part] planModule error:', planErr.message, planErr.stack);
+          return jsonResponse(200, noCache, {
+            ok: false,
+            reason: 'plan_internal_error',
+            error: 'plan_internal_error',
+            message: planErr.message,
+          });
+        }
+      }
+
+      let quotaGate = null;
+
+      // Via A abuse guard: rate-limit only vocab picks (?words=), not classic pool pick.
+      // Client intentionally skips canGenerate for pool assembly — this is the server backstop.
+      if (wordsRaw.length) {
+        const rl = await checkExamPartVocabRateLimit(store, event);
+        if (!rl.ok) {
+          return jsonResponse(429, {
+            ...noCache,
+            'Retry-After': String(Math.max(1, Math.ceil((rl.resetAt - Date.now()) / 1000))),
+          }, {
+            error: 'rate_limited',
+            limit: rl.limit,
+            remaining: 0,
+            resetAt: rl.resetAt,
+            message: 'Too many vocabulary pool lookups. Wait a moment and try again.',
+          });
+        }
+
+        quotaGate = await gatePersonalExamPartGet(event, store, {
+          module,
+          poolRequestId: params.poolRequestId || params.requestId,
+          wordsPresent: true,
+        });
+        if (!quotaGate.ok) {
+          return jsonResponse(quotaGate.status || 429, noCache, {
+            error: quotaGate.error || 'personal_pool_quota_exceeded',
+            module: quotaGate.module,
+            used: quotaGate.used,
+            max: quotaGate.max,
+            plan: quotaGate.plan,
+          });
+        }
+      }
 
       let result = null;
       let poolRelaxed = false;
 
       if (wantLemmas.length) {
         result = await pickReusablePartByVocab(store, lang, level, module, {
-          excludeIds, teil, words: wantLemmas, excludeTopics, topicTag,
+          excludeIds, teil, words: wantLemmas, excludeTopics, topicTag, assembleMode,
         });
         if (result?.source === 'local-seed') {
           console.info(`[exam-part] local seed vocab ${module} T${teil ?? '?'} → ${result.id}`);
@@ -184,15 +315,15 @@ exports.handler = async (event) => {
       }
       if (!result && topicTag) {
         result = await pickReusablePartByTopic(store, lang, level, module, {
-          excludeIds, teil, topicTag,
+          excludeIds, teil, topicTag, assembleMode,
         });
       }
       if (!result) {
-        result = await pickReusablePart(store, lang, level, module, { excludeIds, teil });
+        result = await pickReusablePart(store, lang, level, module, { excludeIds, teil, assembleMode });
         if (result && topicTag) poolRelaxed = true;
       }
-      if (!result) {
-        result = pickFromLocalSeed(lang, level, module, { excludeIds, teil });
+      if (!result && useLocalSeedInRuntime()) {
+        result = pickFromLocalSeed(lang, level, module, { excludeIds, teil, assembleMode });
         if (result) {
           console.info(`[exam-part] local seed ${module} T${teil ?? '?'} → ${result.id}`);
         }
@@ -201,7 +332,7 @@ exports.handler = async (event) => {
       if (Array.isArray(result.part?.questions)) {
         applyPartPostprocess(result.part.questions);
       }
-      return jsonResponse(200, noCache, {
+      const payload = {
         part: result.part,
         id: result.id,
         coveredWords: result.coveredWords || [],
@@ -210,10 +341,19 @@ exports.handler = async (event) => {
         topicTag: result.topicTag || result.part?.topicTag || null,
         topicRelaxed: poolRelaxed || !!result.topicRelaxed,
         requestedLemmas: wantLemmas,
-      });
+      };
+      if (wordsRaw.length && quotaGate?.quotaMeta && !quotaGate.quotaMeta.error) {
+        payload.personalLesenUsed = quotaGate.quotaMeta.personalLesenUsed;
+        payload.personalHorenUsed = quotaGate.quotaMeta.personalHorenUsed;
+      }
+      return jsonResponse(200, noCache, payload);
     } catch (err) {
-      console.error('[exam-part] GET error:', err.message);
-      return jsonResponse(200, noCache, { part: null });
+      console.error('[exam-part] GET error:', err.message, err.stack);
+      return jsonResponse(500, noCache, {
+        error: 'internal_error',
+        reason: 'exam_part_get_exception',
+        message: err.message,
+      });
     }
   }
 
@@ -243,7 +383,7 @@ exports.handler = async (event) => {
 
     // ── Quality gate ────────────────────────────────────────────────────────
     const blueprint = loadBlueprint(lang, level);
-    const apiKey    = readAnthropicKey();
+    const apiKey    = geminiApiKey();
 
     const partInput = {
       id:          body.id || randomUUID(),

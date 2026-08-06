@@ -1,21 +1,24 @@
 #!/usr/bin/env pwsh
 <#
 .SYNOPSIS
-  Llena el pool de Lesen B1 hasta un objetivo por Teil, rotando vocabulario via cobertura.
+  Llena el pool de un módulo/teil hasta un objetivo, rotando vocabulario via cobertura.
 
 .EXAMPLE
   .\scripts\generar-hasta-50.ps1 -Target 50 -RefreshEvery 10
+  .\scripts\generar-hasta-50.ps1 -Level A2 -Module lesen -Teile 1,2,3,4 -DryRun
   .\scripts\generar-hasta-50.ps1 -Target 50 -DryRun
 #>
 [CmdletBinding()]
 param(
+  [ValidateSet('A2', 'B1', 'B2', 'C1')]
+  [string]$Level = 'B1',
   [ValidateSet('lesen', 'horen', 'schreiben', 'sprechen')]
   [string]$Module = 'lesen',
   [int]$Target = 50,
   [int]$RefreshEvery = 10,
   [string]$Provider = 'gemini',
   [int]$FixRetries = 5,
-  [string]$Teile = '1,2,3,4,5',
+  [string]$Teile = '',
   [int]$WordCount = 5,
   [switch]$DryRun
 )
@@ -27,23 +30,56 @@ $RepoRoot = Split-Path -Parent $PSScriptRoot
 Set-Location $RepoRoot
 
 $Lang = 'de'
-$Level = 'B1'
+$Level = $Level.ToUpperInvariant()
 $WeakFile = Join-Path $RepoRoot "data/coverage/weak-${Lang}_${Level}.json"
 
+function Get-ExamLayout {
+  $raw = node -e @"
+import { layoutForLevel, hasExplicitAssembleLayout } from './scripts/lib/examLevelCells.mjs';
+const lv = '$Level';
+const l = layoutForLevel(lv);
+console.log(JSON.stringify({
+  explicit: hasExplicitAssembleLayout(lv),
+  lesen: l.lesen,
+  horen: l.horen,
+  schreiben: l.schreibenTeils,
+  sprechen: l.sprechenTeils,
+}));
+"@ 2>&1
+  if ($LASTEXITCODE -ne 0) { throw "No se pudo leer layout para $Level : $raw" }
+  return $raw | ConvertFrom-Json
+}
+
+$Layout = Get-ExamLayout
+$MaxLesenTeil = ($Layout.lesen | Measure-Object -Maximum).Maximum
+$MaxHorenTeil = ($Layout.horen | Measure-Object -Maximum).Maximum
+
+if (-not $Teile) {
+  if ($Module -eq 'lesen') {
+    $Teile = ($Layout.lesen -join ',')
+  }
+  elseif ($Module -eq 'horen') {
+    $Teile = ($Layout.horen -join ',')
+  }
+  else {
+    $Teile = ''
+  }
+}
+
 $TeilList = @(
-  $Teile -split ',' | ForEach-Object { [int]$_.Trim() } | Where-Object { $_ -ge 1 }
+  $Teile -split ',' | ForEach-Object { $_.Trim() } | Where-Object { $_ -match '^\d+$' } | ForEach-Object { [int]$_ } | Where-Object { $_ -ge 1 }
 )
 if ($Module -eq 'lesen') {
-  $TeilList = @($TeilList | Where-Object { $_ -le 5 })
+  $TeilList = @($TeilList | Where-Object { $_ -le $MaxLesenTeil })
 }
 elseif ($Module -eq 'horen') {
-  $TeilList = @($TeilList | Where-Object { $_ -le 4 })
+  $TeilList = @($TeilList | Where-Object { $_ -le $MaxHorenTeil })
 }
 else {
   $TeilList = @($null)
 }
 if (-not $TeilList.Count) {
-  Write-Error "Teile invalido para $Module : '$Teile'"
+  Write-Error "Teile invalido para $Module/$Level : '$Teile' (layout lesen max=$MaxLesenTeil horen max=$MaxHorenTeil)"
 }
 
 function Get-StatKey {
@@ -221,6 +257,7 @@ function Publish-ExamModule {
   $args = @(
     'scripts/publish-exam-generated.mjs',
     '--module', $Module,
+    '--level', $Level,
     '--publish',
     '--sync-pool',
     '--allow-bank-dup',
@@ -237,6 +274,7 @@ function Publish-LesenTeil {
   Invoke-NodeCmd @(
     'scripts/publish-lesen-generated.mjs',
     '--teil', "$Teil",
+    '--level', $Level,
     '--publish',
     '--sync-pool',
     '--allow-bank-dup'
@@ -250,6 +288,7 @@ function Invoke-GenerateWave {
     return Invoke-NodeCmd @(
       'scripts/generate-lesen-part-gemini.mjs',
       '--provider', $Provider,
+      '--level', $Level,
       '--teil', "$Teil",
       '--count', "$BatchCount",
       '--from-coverage',
@@ -262,6 +301,7 @@ function Invoke-GenerateWave {
     'scripts/generate-part-gemini.mjs',
     '--module', $Module,
     '--provider', $Provider,
+    '--level', $Level,
     '--count', "$BatchCount",
     '--from-coverage',
     '--fix-retries', "$FixRetries",
@@ -276,8 +316,9 @@ function Invoke-GenerateWave {
 Write-Host ''
 Write-Host '===============================================================' -ForegroundColor Yellow
 Write-Host " generar-hasta-50 | $Module $Lang/$Level | objetivo $Target" -ForegroundColor Yellow
+Write-Host " Layout explicit=$($Layout.explicit) | lesen=$($Layout.lesen -join ',') | schreiben=$($Layout.schreiben -join ',') | sprechen=$($Layout.sprechen -join ',')" -ForegroundColor Yellow
 Write-Host " Provider=$Provider | RefreshEvery=$RefreshEvery | FixRetries=$FixRetries | WordCount=$WordCount" -ForegroundColor Yellow
-Write-Host " Teile: $(if ($Module -eq 'schreiben' -or $Module -eq 'sprechen') { '1-3 (batch)' } else { ($TeilList -join ', ') })" -ForegroundColor Yellow
+Write-Host " Teile: $(if ($Module -eq 'schreiben' -or $Module -eq 'sprechen') { 'batch (1 tanda)' } else { ($TeilList -join ', ') })" -ForegroundColor Yellow
 if ($DryRun) { Write-Host ' MODO DRY-RUN (solo muestra comandos)' -ForegroundColor Magenta }
 Write-Host '===============================================================' -ForegroundColor Yellow
 Write-Host ''
@@ -337,7 +378,7 @@ foreach ($t in $TeilList) {
 
   Write-Host ('-- {0}: generando hasta {1} (faltan {2}) --' -f $label, $Target, $faltan) -ForegroundColor Green
 
-  if ($Module -eq 'lesen' -and ($t -eq 3 -or $t -eq 4)) {
+  if ($Module -eq 'lesen' -and $Level -eq 'B1' -and ($t -eq 3 -or $t -eq 4)) {
     $makeScript = if ($t -eq 3) { 'scripts/make-t3.mjs' } else { 'scripts/make-t4.mjs' }
     try {
       $words = Get-WeakWords -Count 8

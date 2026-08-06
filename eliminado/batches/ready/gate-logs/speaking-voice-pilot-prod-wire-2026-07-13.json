@@ -1,0 +1,27 @@
+{
+  "generatedAt": "2026-07-13T00:00:00.000Z",
+  "feature": "sprechen_voice_gemini_live_pilot",
+  "audioStorage": false,
+  "transcriptOnly": true,
+  "pilotMechanism": {
+    "envAllowlist": "SPEAKING_VOICE_PILOT_EMAILS",
+    "envPercent": "SPEAKING_VOICE_PILOT_PERCENT",
+    "serverGate": "netlify/functions/speaking-realtime-session.js action=start → pilot_not_eligible",
+    "clientGate": "GET /.netlify/functions/speaking-voice-pilot → SpeakingVoicePilot.load()",
+    "defaultOff": "No allowlist and percent=0 → all users blocked"
+  },
+  "tests": {
+    "test-speaking-voice-pilot-e2e.mjs": { "passed": 7, "failed": 0 },
+    "speakingPartnerScope.test.mjs": { "passed": 6, "failed": 0 },
+    "lab-speaking-live-e2e-2026-07-12.mjs": {
+      "ran": true,
+      "ok": false,
+      "reason": "mint fetch failed in CI/local env (network); re-run on Netlify with GEMINI_API_KEY"
+    }
+  },
+  "deployChecklist": [
+    "Set SPEAKING_VOICE_PILOT_EMAILS to operator Pro test emails (comma-separated)",
+    "Confirm GEMINI_API_KEY in Netlify env",
+    "Pilot user: Sprechen T2 → tab Stimme (Pilot) → consent modal → PTT session → submit exam → production eval"
+  ]
+}

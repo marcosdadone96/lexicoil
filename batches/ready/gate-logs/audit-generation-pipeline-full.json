@@ -1,0 +1,1016 @@
+{
+  "generatedAt": "2026-07-23T08:51:28.216Z",
+  "filesScanned": 456,
+  "language": {
+    "q5Blocks": [],
+    "totalFiles": 0,
+    "totalFindings": 0
+  },
+  "horenT1TopicAudit": {
+    "files": 34,
+    "filesWithMismatch": 33,
+    "totalMismatches": 79,
+    "hits": [
+      {
+        "file": "batches/ready/pool-verified/B1/horen-t1-claude-test.json",
+        "level": "B1",
+        "topicTag": "Stadtleben",
+        "mismatches": [
+          {
+            "passageId": "gen-p-h1-claudetest01-s2",
+            "declared": "Stadtleben",
+            "detected": null,
+            "detail": "passage:gen-p-h1-claudetest01-s2 topicTag «Stadtleben» sin soporte léxico en el contenido (tag score=0, ningún tema alternativo con hits; hits={})"
+          },
+          {
+            "passageId": "gen-p-h1-claudetest01-s4",
+            "declared": "Stadtleben",
+            "detected": "Verkehr",
+            "detail": "passage:gen-p-h1-claudetest01-s4 topicTag «Stadtleben» no encaja con contenido (detectado «Verkehr» score=3 vs tag score=0; hits={\"Verkehr\":3})"
+          }
+        ]
+      },
+      {
+        "file": "batches/ready/pool-verified/A2/horen-t1-cur-education.json",
+        "level": "B1",
+        "topicTag": "Gesundheit",
+        "mismatches": [
+          {
+            "passageId": "de-a2-p-horen-t1-gesundheit-arzt-03-s2",
+            "declared": "Gesundheit",
+            "detected": null,
+            "detail": "passage:de-a2-p-horen-t1-gesundheit-arzt-03-s2 topicTag «Gesundheit» sin soporte léxico en el contenido (tag score=0, ningún tema alternativo con hits; hits={})"
+          },
+          {
+            "passageId": "de-a2-p-horen-t1-alltag-behoerden-01-s3",
+            "declared": "Gesundheit",
+            "detected": "Arbeit",
+            "detail": "passage:de-a2-p-horen-t1-alltag-behoerden-01-s3 topicTag «Gesundheit» no encaja con contenido (detectado «Arbeit» score=1 vs tag score=0; hits={\"Arbeit\":1,\"Medien\":1})"
+          },
+          {
+            "passageId": "de-a2-p-horen-t1-gesundheit-arzt-03-s5",
+            "declared": "Gesundheit",
+            "detected": null,
+            "detail": "passage:de-a2-p-horen-t1-gesundheit-arzt-03-s5 topicTag «Gesundheit» sin soporte léxico en el contenido (tag score=0, ningún tema alternativo con hits; hits={})"
+          }
+        ]
+      },
+      {
+        "file": "batches/ready/pool-verified/A2/horen-t1-cur-health.json",
+        "level": "B1",
+        "topicTag": "Gesundheit",
+        "mismatches": [
+          {
+            "passageId": "de-a2-p-horen-t1-alltag-behoerden-01-s2",
+            "declared": "Gesundheit",
+            "detected": null,
+            "detail": "passage:de-a2-p-horen-t1-alltag-behoerden-01-s2 topicTag «Gesundheit» sin soporte léxico en el contenido (tag score=0, ningún tema alternativo con hits; hits={})"
+          },
+          {
+            "passageId": "de-a2-p-horen-t1-freizeit-kino-01-s2",
+            "declared": "Gesundheit",
+            "detected": "Verkehr",
+            "detail": "passage:de-a2-p-horen-t1-freizeit-kino-01-s2 topicTag «Gesundheit» no encaja con contenido (detectado «Verkehr» score=3 vs tag score=0; hits={\"Verkehr\":3})"
+          },
+          {
+            "passageId": "de-a2-p-horen-t1-gesundheit-arzt-04-s2",
+            "declared": "Gesundheit",
+            "detected": null,
+            "detail": "passage:de-a2-p-horen-t1-gesundheit-arzt-04-s2 topicTag «Gesundheit» sin soporte léxico en el contenido (tag score=0, ningún tema alternativo con hits; hits={})"
+          }
+        ]
+      },
+      {
+        "file": "batches/ready/pool-verified/A2/horen-t1-cur-society.json",
+        "level": "B1",
+        "topicTag": "Reisen",
+        "mismatches": [
+          {
+            "passageId": "de-a2-p-horen-t1-gesundheit-arzt-01-s3",
+            "declared": "Reisen",
+            "detected": null,
+            "detail": "passage:de-a2-p-horen-t1-gesundheit-arzt-01-s3 topicTag «Reisen» sin soporte léxico en el contenido (tag score=0, ningún tema alternativo con hits; hits={})"
+          },
+          {
+            "passageId": "de-a2-p-horen-t1-gesundheit-arzt-02-s4",
+            "declared": "Reisen",
+            "detected": null,
+            "detail": "passage:de-a2-p-horen-t1-gesundheit-arzt-02-s4 topicTag «Reisen» sin soporte léxico en el contenido (tag score=0, ningún tema alternativo con hits; hits={})"
+          },
+          {
+            "passageId": "de-a2-p-horen-t1-gesundheit-arzt-03-s1",
+            "declared": "Reisen",
+            "detected": null,
+            "detail": "passage:de-a2-p-horen-t1-gesundheit-arzt-03-s1 topicTag «Reisen» sin soporte léxico en el contenido (tag score=0, ningún tema alternativo con hits; hits={})"
+          },
+          {
+            "passageId": "de-a2-p-horen-t1-transport-stadtverkehr-01-s3",
+            "declared": "Reisen",
+            "detected": "Konsum",
+            "detail": "passage:de-a2-p-horen-t1-transport-stadtverkehr-01-s3 topicTag «Reisen» no encaja con contenido (detectado «Konsum» score=1 vs tag score=0; hits={\"Konsum\":1,\"Freizeit\":1})"
+          }
+        ]
+      },
+      {
+        "file": "batches/ready/pool-verified/A2/horen-t1-cur-work.json",
+        "level": "B1",
+        "topicTag": "Gesundheit",
+        "mismatches": [
+          {
+            "passageId": "de-a2-p-horen-t1-gesundheit-arzt-04-s1",
+            "declared": "Gesundheit",
+            "detected": null,
+            "detail": "passage:de-a2-p-horen-t1-gesundheit-arzt-04-s1 topicTag «Gesundheit» sin soporte léxico en el contenido (tag score=0, ningún tema alternativo con hits; hits={})"
+          },
+          {
+            "passageId": "de-a2-p-horen-t1-gesundheit-arzt-02-s5",
+            "declared": "Gesundheit",
+            "detected": null,
+            "detail": "passage:de-a2-p-horen-t1-gesundheit-arzt-02-s5 topicTag «Gesundheit» sin soporte léxico en el contenido (tag score=0, ningún tema alternativo con hits; hits={})"
+          },
+          {
+            "passageId": "de-a2-p-horen-t1-gesundheit-arzt-04-s5",
+            "declared": "Gesundheit",
+            "detected": null,
+            "detail": "passage:de-a2-p-horen-t1-gesundheit-arzt-04-s5 topicTag «Gesundheit» sin soporte léxico en el contenido (tag score=0, ningún tema alternativo con hits; hits={})"
+          }
+        ]
+      },
+      {
+        "file": "batches/ready/pool-verified/B1/horen-t1-gemini-001.json",
+        "level": "B1",
+        "topicTag": "Arbeit",
+        "mismatches": [
+          {
+            "passageId": "gen-p-h1-5ff54101-s4",
+            "declared": "Arbeit",
+            "detected": "Konsum",
+            "detail": "passage:gen-p-h1-5ff54101-s4 topicTag «Arbeit» no encaja con contenido (detectado «Konsum» score=1 vs tag score=0; hits={\"Konsum\":1})"
+          },
+          {
+            "passageId": "gen-p-h1-5ff54101-s5",
+            "declared": "Arbeit",
+            "detected": null,
+            "detail": "passage:gen-p-h1-5ff54101-s5 topicTag «Arbeit» sin soporte léxico en el contenido (tag score=0, ningún tema alternativo con hits; hits={})"
+          }
+        ]
+      },
+      {
+        "file": "batches/ready/pool-verified/B1/horen-t1-gemini-002.json",
+        "level": "B1",
+        "topicTag": "Freizeit",
+        "mismatches": [
+          {
+            "passageId": "gen-p-h1-a3e4fcdb-s2",
+            "declared": "Freizeit",
+            "detected": "Medien",
+            "detail": "passage:gen-p-h1-a3e4fcdb-s2 topicTag «Freizeit» no encaja con contenido (detectado «Medien» score=1 vs tag score=0; hits={\"Medien\":1,\"Bildung\":1,\"Sport\":1})"
+          },
+          {
+            "passageId": "gen-p-h1-a3e4fcdb-s3",
+            "declared": "Freizeit",
+            "detected": "Familie",
+            "detail": "passage:gen-p-h1-a3e4fcdb-s3 topicTag «Freizeit» no encaja con contenido (detectado «Familie» score=1 vs tag score=0; hits={\"Familie\":1,\"Kultur\":1})"
+          },
+          {
+            "passageId": "gen-p-h1-a3e4fcdb-s4",
+            "declared": "Freizeit",
+            "detected": "Medien",
+            "detail": "passage:gen-p-h1-a3e4fcdb-s4 topicTag «Freizeit» no encaja con contenido (detectado «Medien» score=2 vs tag score=0; hits={\"Medien\":2,\"Konsum\":1,\"Familie\":1,\"Kultur\":2})"
+          }
+        ]
+      },
+      {
+        "file": "batches/ready/pool-verified/B1/horen-t1-gemini-003.json",
+        "level": "B1",
+        "topicTag": "Gesundheit",
+        "mismatches": [
+          {
+            "passageId": "gen-p-h1-0fd35b59-s1",
+            "declared": "Gesundheit",
+            "detected": null,
+            "detail": "passage:gen-p-h1-0fd35b59-s1 topicTag «Gesundheit» sin soporte léxico en el contenido (tag score=0, ningún tema alternativo con hits; hits={})"
+          },
+          {
+            "passageId": "gen-p-h1-0fd35b59-s3",
+            "declared": "Gesundheit",
+            "detected": "Technik",
+            "detail": "passage:gen-p-h1-0fd35b59-s3 topicTag «Gesundheit» no encaja con contenido (detectado «Technik» score=1 vs tag score=0; hits={\"Technik\":1,\"Medien\":1,\"Bildung\":1,\"Sport\":1})"
+          },
+          {
+            "passageId": "gen-p-h1-0fd35b59-s5",
+            "declared": "Gesundheit",
+            "detected": null,
+            "detail": "passage:gen-p-h1-0fd35b59-s5 topicTag «Gesundheit» sin soporte léxico en el contenido (tag score=0, ningún tema alternativo con hits; hits={})"
+          }
+        ]
+      },
+      {
+        "file": "batches/ready/pool-verified/B1/horen-t1-gemini-004.json",
+        "level": "B1",
+        "topicTag": "Wohnen",
+        "mismatches": [
+          {
+            "passageId": "gen-p-h1-620c6bfe-s1",
+            "declared": "Wohnen",
+            "detected": null,
+            "detail": "passage:gen-p-h1-620c6bfe-s1 topicTag «Wohnen» sin soporte léxico en el contenido (tag score=0, ningún tema alternativo con hits; hits={})"
+          },
+          {
+            "passageId": "gen-p-h1-620c6bfe-s3",
+            "declared": "Wohnen",
+            "detected": "Medien",
+            "detail": "passage:gen-p-h1-620c6bfe-s3 topicTag «Wohnen» no encaja con contenido (detectado «Medien» score=1 vs tag score=0; hits={\"Medien\":1,\"Umwelt\":1})"
+          }
+        ]
+      },
+      {
+        "file": "batches/ready/pool-verified/B1/horen-t1-gemini-005.json",
+        "level": "B1",
+        "topicTag": "Familie",
+        "mismatches": [
+          {
+            "passageId": "gen-p-h1-c0c5c593-s2",
+            "declared": "Familie",
+            "detected": null,
+            "detail": "passage:gen-p-h1-c0c5c593-s2 topicTag «Familie» sin soporte léxico en el contenido (tag score=0, ningún tema alternativo con hits; hits={})"
+          },
+          {
+            "passageId": "gen-p-h1-c0c5c593-s4",
+            "declared": "Familie",
+            "detected": "Freizeit",
+            "detail": "passage:gen-p-h1-c0c5c593-s4 topicTag «Familie» no encaja con contenido (detectado «Freizeit» score=2 vs tag score=1; hits={\"Medien\":1,\"Familie\":1,\"Freizeit\":2})"
+          }
+        ]
+      },
+      {
+        "file": "batches/ready/pool-verified/B1/horen-t1-gemini-016.json",
+        "level": "B1",
+        "topicTag": "Sport",
+        "mismatches": [
+          {
+            "passageId": "gen-p-h1-8e7e4170-s4",
+            "declared": "Sport",
+            "detected": "Familie",
+            "detail": "passage:gen-p-h1-8e7e4170-s4 topicTag «Sport» no encaja con contenido (detectado «Familie» score=3 vs tag score=1; hits={\"Bildung\":1,\"Familie\":3,\"Sport\":1})"
+          }
+        ]
+      },
+      {
+        "file": "batches/ready/pool-verified/B1/horen-t1-gemini-024.json",
+        "level": "B1",
+        "topicTag": "Ernährung",
+        "mismatches": [
+          {
+            "passageId": "gen-p-h1-e837d5cb-s1",
+            "declared": "Ernährung",
+            "detected": "Konsum",
+            "detail": "passage:gen-p-h1-e837d5cb-s1 topicTag «Ernährung» no encaja con contenido (detectado «Konsum» score=3 vs tag score=1; hits={\"Konsum\":3,\"Ernährung\":1})"
+          },
+          {
+            "passageId": "gen-p-h1-e837d5cb-s2",
+            "declared": "Ernährung",
+            "detected": null,
+            "detail": "passage:gen-p-h1-e837d5cb-s2 topicTag «Ernährung» sin soporte léxico en el contenido (tag score=0, ningún tema alternativo con hits; hits={})"
+          }
+        ]
+      },
+      {
+        "file": "batches/ready/pool-verified/B1/horen-t1-gemini-026.json",
+        "level": "B1",
+        "topicTag": "Kultur",
+        "mismatches": [
+          {
+            "passageId": "gen-p-h1-47dc57fd-s2",
+            "declared": "Kultur",
+            "detected": null,
+            "detail": "passage:gen-p-h1-47dc57fd-s2 topicTag «Kultur» sin soporte léxico en el contenido (tag score=0, ningún tema alternativo con hits; hits={})"
+          },
+          {
+            "passageId": "gen-p-h1-47dc57fd-s5",
+            "declared": "Kultur",
+            "detected": "Stadtleben",
+            "detail": "passage:gen-p-h1-47dc57fd-s5 topicTag «Kultur» no encaja con contenido (detectado «Stadtleben» score=1 vs tag score=0; hits={\"Stadtleben\":1})"
+          }
+        ]
+      },
+      {
+        "file": "batches/ready/pool-verified/B1/horen-t1-gemini-027.json",
+        "level": "B1",
+        "topicTag": "Verkehr",
+        "mismatches": [
+          {
+            "passageId": "gen-p-h1-adeb389f-s4",
+            "declared": "Verkehr",
+            "detected": "Stadtleben",
+            "detail": "passage:gen-p-h1-adeb389f-s4 topicTag «Verkehr» no encaja con contenido (detectado «Stadtleben» score=1 vs tag score=0; hits={\"Stadtleben\":1})"
+          },
+          {
+            "passageId": "gen-p-h1-adeb389f-s5",
+            "declared": "Verkehr",
+            "detected": "Stadtleben",
+            "detail": "passage:gen-p-h1-adeb389f-s5 topicTag «Verkehr» no encaja con contenido (detectado «Stadtleben» score=1 vs tag score=0; hits={\"Stadtleben\":1})"
+          }
+        ]
+      },
+      {
+        "file": "batches/ready/pool-verified/B1/horen-t1-gemini-028.json",
+        "level": "B1",
+        "topicTag": "Umwelt",
+        "mismatches": [
+          {
+            "passageId": "gen-p-h1-364e58f5-s2",
+            "declared": "Umwelt",
+            "detected": "Kultur",
+            "detail": "passage:gen-p-h1-364e58f5-s2 topicTag «Umwelt» no encaja con contenido (detectado «Kultur» score=1 vs tag score=0; hits={\"Kultur\":1})"
+          },
+          {
+            "passageId": "gen-p-h1-364e58f5-s4",
+            "declared": "Umwelt",
+            "detected": "Stadtleben",
+            "detail": "passage:gen-p-h1-364e58f5-s4 topicTag «Umwelt» no encaja con contenido (detectado «Stadtleben» score=2 vs tag score=0; hits={\"Stadtleben\":2})"
+          },
+          {
+            "passageId": "gen-p-h1-364e58f5-s5",
+            "declared": "Umwelt",
+            "detected": "Verkehr",
+            "detail": "passage:gen-p-h1-364e58f5-s5 topicTag «Umwelt» no encaja con contenido (detectado «Verkehr» score=4 vs tag score=2; hits={\"Umwelt\":2,\"Verkehr\":4,\"Stadtleben\":1})"
+          }
+        ]
+      },
+      {
+        "file": "batches/ready/pool-verified/B1/horen-t1-gemini-031.json",
+        "level": "B1",
+        "topicTag": "Medien",
+        "mismatches": [
+          {
+            "passageId": "gen-p-h1-2aec7813-s1",
+            "declared": "Medien",
+            "detected": "Bildung",
+            "detail": "passage:gen-p-h1-2aec7813-s1 topicTag «Medien» no encaja con contenido (detectado «Bildung» score=2 vs tag score=1; hits={\"Technik\":1,\"Medien\":1,\"Bildung\":2})"
+          }
+        ]
+      },
+      {
+        "file": "batches/ready/pool-verified/B1/horen-t1-gemini-032.json",
+        "level": "B1",
+        "topicTag": "Kultur",
+        "mismatches": [
+          {
+            "passageId": "gen-p-h1-bb6149b6-s2",
+            "declared": "Kultur",
+            "detected": null,
+            "detail": "passage:gen-p-h1-bb6149b6-s2 topicTag «Kultur» sin soporte léxico en el contenido (tag score=0, ningún tema alternativo con hits; hits={})"
+          },
+          {
+            "passageId": "gen-p-h1-bb6149b6-s5",
+            "declared": "Kultur",
+            "detected": null,
+            "detail": "passage:gen-p-h1-bb6149b6-s5 topicTag «Kultur» sin soporte léxico en el contenido (tag score=0, ningún tema alternativo con hits; hits={})"
+          }
+        ]
+      },
+      {
+        "file": "batches/ready/pool-verified/B1/horen-t1-gemini-033.json",
+        "level": "B1",
+        "topicTag": "Technik",
+        "mismatches": [
+          {
+            "passageId": "gen-p-h1-d1f1089a-s4",
+            "declared": "Technik",
+            "detected": "Arbeit",
+            "detail": "passage:gen-p-h1-d1f1089a-s4 topicTag «Technik» no encaja con contenido (detectado «Arbeit» score=1 vs tag score=0; hits={\"Arbeit\":1,\"Medien\":1})"
+          },
+          {
+            "passageId": "gen-p-h1-d1f1089a-s5",
+            "declared": "Technik",
+            "detected": "Umwelt",
+            "detail": "passage:gen-p-h1-d1f1089a-s5 topicTag «Technik» no encaja con contenido (detectado «Umwelt» score=1 vs tag score=0; hits={\"Umwelt\":1,\"Kultur\":1})"
+          }
+        ]
+      },
+      {
+        "file": "batches/ready/pool-verified/B1/horen-t1-gemini-034.json",
+        "level": "B1",
+        "topicTag": "Bildung",
+        "mismatches": [
+          {
+            "passageId": "gen-p-h1-93e184a8-s1",
+            "declared": "Bildung",
+            "detected": null,
+            "detail": "passage:gen-p-h1-93e184a8-s1 topicTag «Bildung» sin soporte léxico en el contenido (tag score=0, ningún tema alternativo con hits; hits={})"
+          },
+          {
+            "passageId": "gen-p-h1-93e184a8-s2",
+            "declared": "Bildung",
+            "detected": "Arbeit",
+            "detail": "passage:gen-p-h1-93e184a8-s2 topicTag «Bildung» no encaja con contenido (detectado «Arbeit» score=1 vs tag score=0; hits={\"Arbeit\":1})"
+          },
+          {
+            "passageId": "gen-p-h1-93e184a8-s4",
+            "declared": "Bildung",
+            "detected": "Medien",
+            "detail": "passage:gen-p-h1-93e184a8-s4 topicTag «Bildung» no encaja con contenido (detectado «Medien» score=2 vs tag score=0; hits={\"Medien\":2})"
+          },
+          {
+            "passageId": "gen-p-h1-93e184a8-s5",
+            "declared": "Bildung",
+            "detected": "Familie",
+            "detail": "passage:gen-p-h1-93e184a8-s5 topicTag «Bildung» no encaja con contenido (detectado «Familie» score=2 vs tag score=0; hits={\"Familie\":2,\"Kultur\":1})"
+          }
+        ]
+      },
+      {
+        "file": "batches/ready/pool-verified/B1/horen-t1-gemini-035.json",
+        "level": "B1",
+        "topicTag": "Stadtleben",
+        "mismatches": [
+          {
+            "passageId": "gen-p-h1-ce36fd5c-s3",
+            "declared": "Stadtleben",
+            "detected": "Medien",
+            "detail": "passage:gen-p-h1-ce36fd5c-s3 topicTag «Stadtleben» no encaja con contenido (detectado «Medien» score=2 vs tag score=1; hits={\"Medien\":2,\"Sport\":1,\"Freizeit\":2,\"Stadtleben\":1})"
+          },
+          {
+            "passageId": "gen-p-h1-ce36fd5c-s4",
+            "declared": "Stadtleben",
+            "detected": "Verkehr",
+            "detail": "passage:gen-p-h1-ce36fd5c-s4 topicTag «Stadtleben» no encaja con contenido (detectado «Verkehr» score=1 vs tag score=0; hits={\"Verkehr\":1})"
+          }
+        ]
+      },
+      {
+        "file": "batches/ready/pool-verified/B1/horen-t1-gemini-036.json",
+        "level": "B1",
+        "topicTag": "Freizeit",
+        "mismatches": [
+          {
+            "passageId": "gen-p-h1-e24741eb-s2",
+            "declared": "Freizeit",
+            "detected": null,
+            "detail": "passage:gen-p-h1-e24741eb-s2 topicTag «Freizeit» sin soporte léxico en el contenido (tag score=0, ningún tema alternativo con hits; hits={})"
+          },
+          {
+            "passageId": "gen-p-h1-e24741eb-s3",
+            "declared": "Freizeit",
+            "detected": "Umwelt",
+            "detail": "passage:gen-p-h1-e24741eb-s3 topicTag «Freizeit» no encaja con contenido (detectado «Umwelt» score=3 vs tag score=1; hits={\"Medien\":1,\"Umwelt\":3,\"Freizeit\":1})"
+          },
+          {
+            "passageId": "gen-p-h1-e24741eb-s5",
+            "declared": "Freizeit",
+            "detected": "Wohnen",
+            "detail": "passage:gen-p-h1-e24741eb-s5 topicTag «Freizeit» no encaja con contenido (detectado «Wohnen» score=1 vs tag score=0; hits={\"Wohnen\":1,\"Kultur\":1,\"Stadtleben\":1})"
+          }
+        ]
+      },
+      {
+        "file": "batches/ready/pool-verified/B1/horen-t1-gemini-037.json",
+        "level": "B1",
+        "topicTag": "Technik",
+        "mismatches": [
+          {
+            "passageId": "gen-p-h1-2f457e3d-s1",
+            "declared": "Technik",
+            "detected": null,
+            "detail": "passage:gen-p-h1-2f457e3d-s1 topicTag «Technik» sin soporte léxico en el contenido (tag score=0, ningún tema alternativo con hits; hits={})"
+          },
+          {
+            "passageId": "gen-p-h1-2f457e3d-s3",
+            "declared": "Technik",
+            "detected": null,
+            "detail": "passage:gen-p-h1-2f457e3d-s3 topicTag «Technik» sin soporte léxico en el contenido (tag score=0, ningún tema alternativo con hits; hits={})"
+          },
+          {
+            "passageId": "gen-p-h1-2f457e3d-s5",
+            "declared": "Technik",
+            "detected": "Freizeit",
+            "detail": "passage:gen-p-h1-2f457e3d-s5 topicTag «Technik» no encaja con contenido (detectado «Freizeit» score=1 vs tag score=0; hits={\"Freizeit\":1})"
+          }
+        ]
+      },
+      {
+        "file": "batches/ready/pool-verified/B1/horen-t1-gemini-038.json",
+        "level": "B1",
+        "topicTag": "Stadtleben",
+        "mismatches": [
+          {
+            "passageId": "gen-p-h1-0212f236-s1",
+            "declared": "Stadtleben",
+            "detected": "Medien",
+            "detail": "passage:gen-p-h1-0212f236-s1 topicTag «Stadtleben» no encaja con contenido (detectado «Medien» score=1 vs tag score=0; hits={\"Medien\":1,\"Wohnen\":1})"
+          },
+          {
+            "passageId": "gen-p-h1-0212f236-s2",
+            "declared": "Stadtleben",
+            "detected": "Sport",
+            "detail": "passage:gen-p-h1-0212f236-s2 topicTag «Stadtleben» no encaja con contenido (detectado «Sport» score=2 vs tag score=0; hits={\"Gesundheit\":1,\"Bildung\":1,\"Sport\":2})"
+          },
+          {
+            "passageId": "gen-p-h1-0212f236-s4",
+            "declared": "Stadtleben",
+            "detected": "Medien",
+            "detail": "passage:gen-p-h1-0212f236-s4 topicTag «Stadtleben» no encaja con contenido (detectado «Medien» score=1 vs tag score=0; hits={\"Medien\":1,\"Wohnen\":1})"
+          }
+        ]
+      },
+      {
+        "file": "batches/ready/pool-verified/B1/horen-t1-gemini-039.json",
+        "level": "B1",
+        "topicTag": "Umwelt",
+        "mismatches": [
+          {
+            "passageId": "gen-p-h1-b8025e7e-s5",
+            "declared": "Umwelt",
+            "detected": "Kultur",
+            "detail": "passage:gen-p-h1-b8025e7e-s5 topicTag «Umwelt» no encaja con contenido (detectado «Kultur» score=2 vs tag score=1; hits={\"Umwelt\":1,\"Kultur\":2,\"Freizeit\":1})"
+          }
+        ]
+      },
+      {
+        "file": "batches/ready/pool-verified/B1/horen-t1-gemini-040.json",
+        "level": "B1",
+        "topicTag": "Verkehr",
+        "mismatches": [
+          {
+            "passageId": "gen-p-h1-f9343e90-s4",
+            "declared": "Verkehr",
+            "detected": "Kultur",
+            "detail": "passage:gen-p-h1-f9343e90-s4 topicTag «Verkehr» no encaja con contenido (detectado «Kultur» score=1 vs tag score=0; hits={\"Kultur\":1,\"Stadtleben\":1})"
+          },
+          {
+            "passageId": "gen-p-h1-f9343e90-s5",
+            "declared": "Verkehr",
+            "detected": "Wohnen",
+            "detail": "passage:gen-p-h1-f9343e90-s5 topicTag «Verkehr» no encaja con contenido (detectado «Wohnen» score=1 vs tag score=0; hits={\"Wohnen\":1})"
+          }
+        ]
+      },
+      {
+        "file": "batches/ready/pool-verified/B1/horen-t1-gemini-041.json",
+        "level": "B1",
+        "topicTag": "Reisen",
+        "mismatches": [
+          {
+            "passageId": "gen-p-h1-383c2847-s2",
+            "declared": "Reisen",
+            "detected": "Medien",
+            "detail": "passage:gen-p-h1-383c2847-s2 topicTag «Reisen» no encaja con contenido (detectado «Medien» score=1 vs tag score=0; hits={\"Medien\":1,\"Freizeit\":1})"
+          }
+        ]
+      },
+      {
+        "file": "batches/ready/pool-verified/B1/horen-t1-gemini-042.json",
+        "level": "B1",
+        "topicTag": "Wohnen",
+        "mismatches": [
+          {
+            "passageId": "gen-p-h1-ff112cd6-s1",
+            "declared": "Wohnen",
+            "detected": null,
+            "detail": "passage:gen-p-h1-ff112cd6-s1 topicTag «Wohnen» sin soporte léxico en el contenido (tag score=0, ningún tema alternativo con hits; hits={})"
+          },
+          {
+            "passageId": "gen-p-h1-ff112cd6-s4",
+            "declared": "Wohnen",
+            "detected": "Umwelt",
+            "detail": "passage:gen-p-h1-ff112cd6-s4 topicTag «Wohnen» no encaja con contenido (detectado «Umwelt» score=1 vs tag score=0; hits={\"Umwelt\":1})"
+          }
+        ]
+      },
+      {
+        "file": "batches/ready/pool-verified/B1/horen-t1-gemini-043.json",
+        "level": "B1",
+        "topicTag": "Medien",
+        "mismatches": [
+          {
+            "passageId": "gen-p-h1-c84e46e4-s1",
+            "declared": "Medien",
+            "detected": null,
+            "detail": "passage:gen-p-h1-c84e46e4-s1 topicTag «Medien» sin soporte léxico en el contenido (tag score=0, ningún tema alternativo con hits; hits={})"
+          },
+          {
+            "passageId": "gen-p-h1-c84e46e4-s2",
+            "declared": "Medien",
+            "detected": "Arbeit",
+            "detail": "passage:gen-p-h1-c84e46e4-s2 topicTag «Medien» no encaja con contenido (detectado «Arbeit» score=1 vs tag score=0; hits={\"Arbeit\":1})"
+          },
+          {
+            "passageId": "gen-p-h1-c84e46e4-s3",
+            "declared": "Medien",
+            "detected": "Familie",
+            "detail": "passage:gen-p-h1-c84e46e4-s3 topicTag «Medien» no encaja con contenido (detectado «Familie» score=3 vs tag score=2; hits={\"Medien\":2,\"Familie\":3})"
+          }
+        ]
+      },
+      {
+        "file": "batches/ready/pool-verified/B1/horen-t1-gemini-044.json",
+        "level": "B1",
+        "topicTag": "Bildung",
+        "mismatches": [
+          {
+            "passageId": "gen-p-h1-151fcdf2-s1",
+            "declared": "Bildung",
+            "detected": "Arbeit",
+            "detail": "passage:gen-p-h1-151fcdf2-s1 topicTag «Bildung» no encaja con contenido (detectado «Arbeit» score=1 vs tag score=0; hits={\"Arbeit\":1,\"Konsum\":1})"
+          },
+          {
+            "passageId": "gen-p-h1-151fcdf2-s4",
+            "declared": "Bildung",
+            "detected": "Freizeit",
+            "detail": "passage:gen-p-h1-151fcdf2-s4 topicTag «Bildung» no encaja con contenido (detectado «Freizeit» score=1 vs tag score=0; hits={\"Freizeit\":1})"
+          },
+          {
+            "passageId": "gen-p-h1-151fcdf2-s5",
+            "declared": "Bildung",
+            "detected": "Kultur",
+            "detail": "passage:gen-p-h1-151fcdf2-s5 topicTag «Bildung» no encaja con contenido (detectado «Kultur» score=1 vs tag score=0; hits={\"Kultur\":1,\"Stadtleben\":1})"
+          }
+        ]
+      },
+      {
+        "file": "batches/ready/pool-verified/B1/horen-t1-gemini-045.json",
+        "level": "B1",
+        "topicTag": "Gesundheit",
+        "mismatches": [
+          {
+            "passageId": "gen-p-h1-4a346f14-s1",
+            "declared": "Gesundheit",
+            "detected": "Medien",
+            "detail": "passage:gen-p-h1-4a346f14-s1 topicTag «Gesundheit» no encaja con contenido (detectado «Medien» score=1 vs tag score=0; hits={\"Medien\":1,\"Bildung\":1,\"Ernährung\":1})"
+          },
+          {
+            "passageId": "gen-p-h1-4a346f14-s2",
+            "declared": "Gesundheit",
+            "detected": null,
+            "detail": "passage:gen-p-h1-4a346f14-s2 topicTag «Gesundheit» sin soporte léxico en el contenido (tag score=0, ningún tema alternativo con hits; hits={})"
+          },
+          {
+            "passageId": "gen-p-h1-4a346f14-s3",
+            "declared": "Gesundheit",
+            "detected": "Medien",
+            "detail": "passage:gen-p-h1-4a346f14-s3 topicTag «Gesundheit» no encaja con contenido (detectado «Medien» score=1 vs tag score=0; hits={\"Medien\":1})"
+          },
+          {
+            "passageId": "gen-p-h1-4a346f14-s4",
+            "declared": "Gesundheit",
+            "detected": "Sport",
+            "detail": "passage:gen-p-h1-4a346f14-s4 topicTag «Gesundheit» no encaja con contenido (detectado «Sport» score=2 vs tag score=0; hits={\"Sport\":2})"
+          },
+          {
+            "passageId": "gen-p-h1-4a346f14-s5",
+            "declared": "Gesundheit",
+            "detected": "Medien",
+            "detail": "passage:gen-p-h1-4a346f14-s5 topicTag «Gesundheit» no encaja con contenido (detectado «Medien» score=1 vs tag score=0; hits={\"Medien\":1,\"Freizeit\":1})"
+          }
+        ]
+      },
+      {
+        "file": "batches/ready/pool-verified/B1/horen-t1-gemini-046.json",
+        "level": "B1",
+        "topicTag": "Ernährung",
+        "mismatches": [
+          {
+            "passageId": "gen-p-h1-0ee086e8-s1",
+            "declared": "Ernährung",
+            "detected": "Konsum",
+            "detail": "passage:gen-p-h1-0ee086e8-s1 topicTag «Ernährung» no encaja con contenido (detectado «Konsum» score=3 vs tag score=1; hits={\"Konsum\":3,\"Ernährung\":1})"
+          }
+        ]
+      },
+      {
+        "file": "batches/ready/pool-verified/B1/horen-t1-gemini-047.json",
+        "level": "B1",
+        "topicTag": "Konsum",
+        "mismatches": [
+          {
+            "passageId": "gen-p-h1-ec9bfa0b-s2",
+            "declared": "Konsum",
+            "detected": "Medien",
+            "detail": "passage:gen-p-h1-ec9bfa0b-s2 topicTag «Konsum» no encaja con contenido (detectado «Medien» score=1 vs tag score=0; hits={\"Medien\":1})"
+          },
+          {
+            "passageId": "gen-p-h1-ec9bfa0b-s3",
+            "declared": "Konsum",
+            "detected": "Medien",
+            "detail": "passage:gen-p-h1-ec9bfa0b-s3 topicTag «Konsum» no encaja con contenido (detectado «Medien» score=1 vs tag score=0; hits={\"Medien\":1})"
+          },
+          {
+            "passageId": "gen-p-h1-ec9bfa0b-s5",
+            "declared": "Konsum",
+            "detected": null,
+            "detail": "passage:gen-p-h1-ec9bfa0b-s5 topicTag «Konsum» sin soporte léxico en el contenido (tag score=0, ningún tema alternativo con hits; hits={})"
+          }
+        ]
+      },
+      {
+        "file": "batches/ready/pool-verified/B1/horen-t1-gemini-048.json",
+        "level": "B1",
+        "topicTag": "Familie",
+        "mismatches": [
+          {
+            "passageId": "gen-p-h1-5965e5ba-s1",
+            "declared": "Familie",
+            "detected": "Medien",
+            "detail": "passage:gen-p-h1-5965e5ba-s1 topicTag «Familie» no encaja con contenido (detectado «Medien» score=2 vs tag score=1; hits={\"Medien\":2,\"Familie\":1})"
+          }
+        ]
+      }
+    ]
+  },
+  "q3DateWeekday": {
+    "filesWithHits": 9,
+    "totalFindings": 15,
+    "hits": [
+      {
+        "file": "batches/ready/pool-verified/B1/horen-t1-gemini-026.json",
+        "level": "B1",
+        "module": "horen",
+        "teil": 1,
+        "findings": [
+          "passages[gen-p-h1-47dc57fd-s5].text: «Am kommenden Dienstag, den 15. Mai» — Dienstag no coincide con 15. Mai 2026 (cae en Freitag)"
+        ]
+      },
+      {
+        "file": "batches/ready/pool-verified/B1/horen-t1-gemini-034.json",
+        "level": "B1",
+        "module": "horen",
+        "teil": 1,
+        "findings": [
+          "passages[gen-p-h1-93e184a8-s4].text: «Montag, dem 15. Mai» — Montag no coincide con 15. Mai 2026 (cae en Freitag)"
+        ]
+      },
+      {
+        "file": "batches/ready/pool-verified/B1/horen-t1-gemini-035.json",
+        "level": "B1",
+        "module": "horen",
+        "teil": 1,
+        "findings": [
+          "passages[gen-p-h1-ce36fd5c-s4].text: «am kommenden Dienstag, den 14. Mai» — Dienstag no coincide con 14. Mai 2026 (cae en Donnerstag)"
+        ]
+      },
+      {
+        "file": "batches/ready/pool-verified/B1/horen-t1-gemini-036.json",
+        "level": "B1",
+        "module": "horen",
+        "teil": 1,
+        "findings": [
+          "passages[gen-p-h1-e24741eb-s1].text: «am kommenden Montag, den 15. Mai» — Montag no coincide con 15. Mai 2026 (cae en Freitag)"
+        ]
+      },
+      {
+        "file": "batches/ready/pool-verified/B1/horen-t1-gemini-038.json",
+        "level": "B1",
+        "module": "horen",
+        "teil": 1,
+        "findings": [
+          "passages[gen-p-h1-0212f236-s1].text: «am Montag, den 15. September» — Montag no coincide con 15. September 2026 (cae en Dienstag)"
+        ]
+      },
+      {
+        "file": "batches/ready/pool-verified/B1/horen-t1-gemini-043.json",
+        "level": "B1",
+        "module": "horen",
+        "teil": 1,
+        "findings": [
+          "passages[gen-p-h1-c84e46e4-s1].text: «Montag, dem 15. Mai» — Montag no coincide con 15. Mai 2026 (cae en Freitag)",
+          "passages[gen-p-h1-c84e46e4-s2].text: «am kommenden Dienstag, dem 23. Mai» — Dienstag no coincide con 23. Mai 2026 (cae en Samstag)",
+          "passages[gen-p-h1-c84e46e4-s5].text: «Donnerstag, den 25. Mai» — Donnerstag no coincide con 25. Mai 2026 (cae en Montag)",
+          "questions[0].explanation: «Montag, dem 15. Mai» — Montag no coincide con 15. Mai 2026 (cae en Freitag)"
+        ]
+      },
+      {
+        "file": "batches/ready/pool-verified/B1/horen-t1-gemini-044.json",
+        "level": "B1",
+        "module": "horen",
+        "teil": 1,
+        "findings": [
+          "passages[gen-p-h1-151fcdf2-s1].text: «am Montag, den 15. Mai» — Montag no coincide con 15. Mai 2026 (cae en Freitag)",
+          "questions[1].explanation: «am Montag, den 15. Mai» — Montag no coincide con 15. Mai 2026 (cae en Freitag)"
+        ]
+      },
+      {
+        "file": "batches/ready/pool-verified/B1/horen-t1-gemini-045.json",
+        "level": "B1",
+        "module": "horen",
+        "teil": 1,
+        "findings": [
+          "passages[gen-p-h1-4a346f14-s1].text: «am Montag, den 15. Mai» — Montag no coincide con 15. Mai 2026 (cae en Freitag)",
+          "passages[gen-p-h1-4a346f14-s5].text: «am kommenden Samstag, den 20. Mai» — Samstag no coincide con 20. Mai 2026 (cae en Mittwoch)",
+          "questions[0].explanation: «am Montag, den 15. Mai» — Montag no coincide con 15. Mai 2026 (cae en Freitag)"
+        ]
+      },
+      {
+        "file": "batches/ready/pool-verified/B1/horen-t1-gemini-048.json",
+        "level": "B1",
+        "module": "horen",
+        "teil": 1,
+        "findings": [
+          "passages[gen-p-h1-5965e5ba-s3].text: «am Samstag, den 15. Juli» — Samstag no coincide con 15. Juli 2026 (cae en Mittwoch)"
+        ]
+      }
+    ]
+  },
+  "chk12RfBalance": {
+    "hits": []
+  },
+  "mcqPositionBias": {
+    "hits": [
+      {
+        "file": "batches/ready/pool-verified/A2/horen-t1-cur-health.json",
+        "level": "B1",
+        "module": "horen",
+        "teil": 1,
+        "seq": [
+          "b",
+          "c",
+          "b",
+          "b",
+          "a"
+        ],
+        "maxPct": 60,
+        "maxLetter": "b"
+      },
+      {
+        "file": "batches/ready/pool-verified/A2/horen-t1-cur-society.json",
+        "level": "B1",
+        "module": "horen",
+        "teil": 1,
+        "seq": [
+          "c",
+          "b",
+          "b",
+          "c",
+          "c"
+        ],
+        "maxPct": 60,
+        "maxLetter": "c"
+      },
+      {
+        "file": "batches/ready/pool-verified/B1/horen-t2-claude-test.json",
+        "level": "B1",
+        "module": "horen",
+        "teil": 2,
+        "seq": [
+          "a",
+          "b",
+          "c",
+          "b",
+          "b"
+        ],
+        "maxPct": 60,
+        "maxLetter": "b"
+      },
+      {
+        "file": "batches/ready/pool-verified/A2/horen-t3-cur-education.json",
+        "level": "B1",
+        "module": "horen",
+        "teil": 3,
+        "seq": [
+          "c",
+          "b",
+          "b",
+          "b",
+          "a"
+        ],
+        "maxPct": 60,
+        "maxLetter": "b"
+      },
+      {
+        "file": "batches/ready/pool-verified/A2/lesen-t1-cur-health.json",
+        "level": "B1",
+        "module": "lesen",
+        "teil": 1,
+        "seq": [
+          "b",
+          "b",
+          "a",
+          "c",
+          "b"
+        ],
+        "maxPct": 60,
+        "maxLetter": "b"
+      },
+      {
+        "file": "batches/ready/pool-verified/A2/lesen-t1-cur-society.json",
+        "level": "B1",
+        "module": "lesen",
+        "teil": 1,
+        "seq": [
+          "c",
+          "b",
+          "c",
+          "b",
+          "b"
+        ],
+        "maxPct": 60,
+        "maxLetter": "b"
+      },
+      {
+        "file": "batches/ready/pool-verified/A2/lesen-t2-cur-education.json",
+        "level": "B1",
+        "module": "lesen",
+        "teil": 2,
+        "seq": [
+          "b",
+          "b",
+          "a",
+          "b",
+          "a"
+        ],
+        "maxPct": 60,
+        "maxLetter": "b"
+      },
+      {
+        "file": "batches/ready/pool-verified/A2/lesen-t2-cur-work.json",
+        "level": "B1",
+        "module": "lesen",
+        "teil": 2,
+        "seq": [
+          "b",
+          "b",
+          "c",
+          "a",
+          "b"
+        ],
+        "maxPct": 60,
+        "maxLetter": "b"
+      },
+      {
+        "file": "batches/ready/pool-verified/A2/lesen-t3-cur-work.json",
+        "level": "B1",
+        "module": "lesen",
+        "teil": 3,
+        "seq": [
+          "b",
+          "c",
+          "c",
+          "b",
+          "b"
+        ],
+        "maxPct": 60,
+        "maxLetter": "b"
+      },
+      {
+        "file": "batches/ready/pool-verified/B1/lesen-t5-claude-test.json",
+        "level": "B1",
+        "module": "lesen",
+        "teil": 5,
+        "seq": [
+          "b",
+          "c",
+          "b",
+          "b"
+        ],
+        "maxPct": 75,
+        "maxLetter": "b"
+      }
+    ]
+  },
+  "jaNeinBias": {
+    "hits": [
+      {
+        "file": "batches/ready/pool-verified/A2/horen-t4-cur-education.json",
+        "level": "B1",
+        "module": "horen",
+        "teil": 4,
+        "n": 5,
+        "ja": 1,
+        "nein": 4,
+        "sharePct": 80
+      },
+      {
+        "file": "batches/ready/pool-verified/A2/horen-t4-cur-work.json",
+        "level": "B1",
+        "module": "horen",
+        "teil": 4,
+        "n": 5,
+        "ja": 4,
+        "nein": 1,
+        "sharePct": 80
+      }
+    ]
+  },
+  "repairPromptLanguageFix": {
+    "note": "All surgical repair prompts now append germanExamRepairOutputRulesBlock()",
+    "fixedKinds": [
+      "word_match",
+      "mcq_length_bias",
+      "explanation",
+      "passage_length",
+      "mcq_distinct",
+      "lexico",
+      "fixRetry Lesen",
+      "fixRetry Exam"
+    ]
+  },
+  "summary": {
+    "filesScanned": 456,
+    "languageBlockedFiles": 0,
+    "horenT1TopicMismatchRate": "33/34 files",
+    "q3DateWeekdayFiles": 9,
+    "chk12RfHits": 0,
+    "mcqPositionHits": 10,
+    "jaNeinHits": 2
+  }
+}

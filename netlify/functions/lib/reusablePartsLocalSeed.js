@@ -7,6 +7,8 @@
 const fs = require('fs');
 const path = require('path');
 const { resolveFromRoot } = require('./projectRoot.js');
+const { partPassesPublishGate } = require('./partPublishGate.js');
+const { partPassesAssembleMode } = require('./officialQuarantine.js');
 
 const CACHE = new Map();
 
@@ -57,7 +59,7 @@ function clearLocalSeedCache() {
 }
 
 function pickFromLocalSeed(lang, level, module, {
-  excludeIds = [], teil = null, words = [], excludeTopics = [],
+  excludeIds = [], teil = null, words = [], excludeTopics = [], assembleMode = 'practice',
 } = {}) {
   const normLang = String(lang).toLowerCase();
   const normLevel = String(level).toUpperCase();
@@ -68,8 +70,8 @@ function pickFromLocalSeed(lang, level, module, {
     if (String(r.lang || '').toLowerCase() !== normLang) return false;
     if (String(r.level || '').toUpperCase() !== normLevel) return false;
     if (String(r.module || '').toLowerCase() !== normModule) return false;
-    if (r.disabled === true) return false;
-    if (r.complete !== true || r.verified !== true) return false;
+    if (!partPassesPublishGate(r)) return false;
+    if (!partPassesAssembleMode(r, assembleMode)) return false;
     if (exclude.has(r.id)) return false;
     return true;
   });
@@ -135,9 +137,7 @@ function getFromLocalSeedById(lang, level, module, id) {
       String(r.lang || '').toLowerCase() === normLang &&
       String(r.level || '').toUpperCase() === normLevel &&
       String(r.module || '').toLowerCase() === normModule &&
-      r.complete === true &&
-      r.verified === true &&
-      r.disabled !== true,
+      partPassesPublishGate(r),
   );
   if (!rec) return null;
   return { id: rec.id, part: rec, source: 'local-seed' };
@@ -150,7 +150,7 @@ function countLocalSeedByTeil(lang, level, module) {
   const counts = {};
   for (const r of loadSeedRecords(normLang, normLevel)) {
     if (String(r.module || '').toLowerCase() !== normModule) continue;
-    if (r.complete !== true || r.verified !== true || r.disabled === true) continue;
+    if (!partPassesPublishGate(r)) continue;
     const t = Number(r.teil);
     if (!Number.isFinite(t)) continue;
     counts[t] = (counts[t] || 0) + 1;

@@ -15,10 +15,15 @@
  *   F8 — isPartPoolReady({semantic:true}) integrates SEM findings into blocking[]
  */
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import {
   validatePartSemantics,
   clearSemanticCache,
   clearTemplateRegistry,
+  buildPromptForPart,
+  isSelfContradictorySemIssue,
   _setLlmFn,
 } from '../semanticValidator.mjs';
 import { isPartPoolReady } from '../../audit-pass-2.mjs';
@@ -259,6 +264,97 @@ function ok(cond, label) {
     const result = await validatePartSemantics(schreiben);
     ok(result.ok, 'Schreiben: ok=true sin LLM');
     ok(!schreibenLlmCalled, 'Schreiben: LLM NO invocado');
+  }
+
+  // F9 — T3 "0" key: prompt documents Goethe convention; uppercase A–J resolves ad text
+  console.log('\nF9: T3 clave "0" → prompt SEM documenta convención Goethe');
+  clearSemanticCache(); clearTemplateRegistry();
+  {
+    const ADS = [
+      'A) Repair — Kleingeräte.',
+      'B) Tech — Laptops.',
+      'C) Flex — PKW leihen.',
+      'D) Glanz — Auto wäschen.',
+      'E) AutoWest — PKW Kauf/Miete.',
+      'F) Reisen — Pauschalreisen.',
+      'G) Physik — Nachhilfe.',
+      'H) PC — Hausbesuch.',
+      'I) Schreib — Korrespondenz.',
+      'J) Kochen — Abendkurs.',
+    ];
+    const makeT3Q = (n, question, correct) => ({
+      id: `t3-q-${n}`, module: 'lesen', teil: 3, type: 'matching',
+      question, options: ADS, correct, correctAnswer: correct,
+      explanation: correct === '0' ? 'Keine Anzeige passt.' : 'Siehe Anzeige.',
+    });
+    const t3Part = {
+      id: 'test-t3-zero',
+      lang: 'de', level: 'B1', module: 'lesen', teil: 3,
+      questions: [
+        makeT3Q(1, 'Drucker kaputt, Hilfe zuhause.', 'H'),
+        makeT3Q(7, 'Steuererklärung Beratung gesucht.', '0'),
+      ],
+    };
+    const prompt = buildPromptForPart(t3Part);
+    ok(prompt.includes('clave "0"'), 'prompt menciona clave "0"');
+    ok(prompt.includes('ningún anuncio encaja'), 'prompt explica significado de "0"');
+    ok(prompt.includes('NO la marques como clave inválida'), 'prompt prohíbe FP en "0"');
+    ok(prompt.includes('Clave: 0 → ningún anuncio'), 'línea clave 0 formateada');
+    ok(prompt.includes('Clave: H →'), 'línea clave A–J incluye texto del anuncio');
+  }
+
+  // F10 — Batch 063-style: mock LLM approves (regression guard for "0" parts)
+  console.log('\nF10: batch 063 con "0" → validatePartSemantics ok=true (mock LLM)');
+  clearSemanticCache(); clearTemplateRegistry();
+  _setLlmFn(makeLlmFn([], ['reparatur', 'auto', 'nachhilfe']));
+  {
+    const batchPath = path.join(
+      path.dirname(fileURLToPath(import.meta.url)),
+      '../../../batches/generated/lesen-t3-gemini-063.json',
+    );
+    if (fs.existsSync(batchPath)) {
+      const batch = JSON.parse(fs.readFileSync(batchPath, 'utf8'));
+      batch.id = 'verify-063';
+      batch.module = 'lesen';
+      batch.teil = 3;
+      batch.lang = 'de';
+      batch.level = 'B1';
+      const result = await validatePartSemantics(batch, { skipTemplate: true });
+      ok(result.ok, '063 mock: ok=true sin issues SEM');
+    } else {
+      console.log('  ⚠ lesen-t3-gemini-063.json no encontrado — F10 skipped');
+    }
+  }
+
+  // F11 — L2 self-contradiction filter (071-style FP vs 073-style real)
+  console.log('\nF11: isSelfContradictorySemIssue — 071 FP vs 073 real');
+  {
+    const fp = { kind: 'correctness', detail: 'Clave correcta. Evidencia: \'von überall aus zu lernen\'.' };
+    const real = {
+      kind: 'correctness',
+      detail: 'Las opciones b) y c) son idénticas en significado. Falta diferenciación clara.',
+    };
+    ok(isSelfContradictorySemIssue(fp), '071-style «Clave correcta» → filtrado');
+    ok(!isSelfContradictorySemIssue(real), '073-style opciones duplicadas → NO filtrado');
+  }
+
+  // F12 — Simulated 071 LLM response → ok after filter
+  console.log('\nF12: respuesta LLM 071 simulada → ok=true tras filtro');
+  clearSemanticCache(); clearTemplateRegistry();
+  _setLlmFn(async () => JSON.stringify({
+    themeTags: ['technik', 'smart home', 'schule'],
+    issues: [
+      { kind: 'correctness', itemId: 'q1', detail: 'Clave correcta. Evidencia: \'Komfort\'.', confidence: 0.95 },
+    ],
+  }));
+  {
+    const part = makeLesenPart('test-l2-fp');
+    part.teil = 2;
+    part.questions[0].type = 'multiple_choice';
+    part.questions[0].options = ['a) eins', 'b) zwei', 'c) drei'];
+    const result = await validatePartSemantics(part, { skipTemplate: true });
+    ok(result.ok, '071 simulado: ok=true (issue filtrado)');
+    ok(result.issues.length === 0, 'sin issues tras filtro');
   }
 
   // ── Summary ────────────────────────────────────────────────────────────────

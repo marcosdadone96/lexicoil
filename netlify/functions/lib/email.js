@@ -139,4 +139,46 @@ async function sendPaymentFailedEmail(to, name) {
   return data;
 }
 
-module.exports = { sendProWelcomeEmail, sendPasswordResetEmail, sendPaymentFailedEmail };
+async function sendSignupConfirmationEmail(to, name, verifyUrl) {
+  const apiKey = String(process.env.RESEND_API_KEY || '').trim();
+  if (!apiKey) {
+    console.log('[email] RESEND_API_KEY not set — skipping signup confirmation email');
+    return { skipped: true };
+  }
+
+  const from = String(process.env.RESEND_FROM || 'LexiCoil <noreply@lexicoil.com>').trim();
+  const displayName = String(name || 'there').trim() || 'there';
+
+  const html = `
+    <div style="font-family:system-ui,sans-serif;max-width:520px;margin:0 auto;color:#111">
+      <h1 style="font-size:22px;margin-bottom:8px">Confirm your LexiCoil account</h1>
+      <p>Hi ${displayName},</p>
+      <p>Thanks for signing up. Confirm your email to activate your account and start using LexiCoil.</p>
+      <p><a href="${verifyUrl}" style="display:inline-block;padding:10px 18px;background:#E8C547;color:#000;text-decoration:none;border-radius:8px;font-weight:700">Confirm email</a></p>
+      <p style="font-size:13px;color:#666">This link expires in 24 hours. If you did not create an account, you can ignore this email.</p>
+      <p style="font-size:12px;color:#999;word-break:break-all">${verifyUrl}</p>
+    </div>
+  `.trim();
+
+  const res = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      from,
+      to: [to],
+      subject: 'Confirm your LexiCoil account',
+      html,
+    }),
+  });
+
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    throw new Error(data.message || data.error || `Resend error ${res.status}`);
+  }
+  return data;
+}
+
+module.exports = { sendProWelcomeEmail, sendPasswordResetEmail, sendPaymentFailedEmail, sendSignupConfirmationEmail };

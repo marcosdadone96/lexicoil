@@ -1,0 +1,37 @@
+{
+  "generatedAt": "2026-07-10T18:05:38.764Z",
+  "policyMode": "advisory",
+  "counts": {
+    "PASS": 0,
+    "WARNING": 1,
+    "FAIL": 0
+  },
+  "files": 1,
+  "reports": [
+    {
+      "partId": "gen-q-1-2294-1",
+      "source": "batches/ready/pool-verified/lesen-t1-gemini-075.json",
+      "status": "WARNING",
+      "stagingStatus": "needs_review",
+      "promoteAllowed": true,
+      "qualityMetadata": {
+        "status": "WARNING",
+        "checkedAt": "2026-07-10T18:05:38.755Z",
+        "checkedBy": "system",
+        "policyMode": "advisory",
+        "stagingStatus": "needs_review",
+        "summary": {
+          "errors": 0,
+          "warnings": 11
+        },
+        "gates": {
+          "json_integrity": "pass",
+          "goethe_structure": "pass",
+          "language_quality": "pass",
+          "cefr": "pass",
+          "metadata_quality": "warning"
+        }
+      }
+    }
+  ]
+}

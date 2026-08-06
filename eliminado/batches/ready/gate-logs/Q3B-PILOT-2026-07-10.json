@@ -1,0 +1,904 @@
+{
+  "generatedAt": "2026-07-10T12:19:04.085Z",
+  "model": "claude-haiku-4-5",
+  "sampleSize": 21,
+  "cost": {
+    "estimateUsd": 0.1043,
+    "realInputTokens": 45248,
+    "realOutputTokens": 4633,
+    "realUsd": 0.0684,
+    "extrapolate289usd": 0.94,
+    "priceAssumed": {
+      "inputPerMTok": 1,
+      "outputPerMTok": 5
+    }
+  },
+  "verdict": {
+    "detectedKnownBad": "3/3",
+    "missedKnownBad": [],
+    "erroredFiles": [],
+    "cleanFilesWithBlockFindings": [
+      "lesen-t3-auto-ma7vt8.json"
+    ],
+    "cleanFilesWithAnyFindings": [
+      {
+        "file": "lesen-t1-gemini-075.json",
+        "n": 2,
+        "reasons": [
+          "register_break",
+          "fabricated_quote"
+        ]
+      },
+      {
+        "file": "lesen-t3-auto-ma7vt8.json",
+        "n": 2,
+        "reasons": [
+          "non_sequitur",
+          "wrong_lexeme"
+        ]
+      }
+    ],
+    "readyToScale": false,
+    "notes": [
+      "Block FP on known_clean — adjust before scale"
+    ]
+  },
+  "sample": [
+    {
+      "file": "horen-t2-gemini-001.json",
+      "cell": "horen-t2",
+      "role": "known_bad",
+      "expect": [
+        "wrong_lexeme"
+      ],
+      "why": "Akzent/Protokoll lexicon issues documented this session (F4-like)"
+    },
+    {
+      "file": "horen-t4-gemini-003.json",
+      "cell": "horen-t4",
+      "role": "known_bad",
+      "expect": [
+        "wrong_lexeme"
+      ],
+      "why": "Reserven→Ressourcen / Protokoll→Bericht (F3 fixture)"
+    },
+    {
+      "file": "horen-t3-gemini-003.json",
+      "cell": "horen-t3",
+      "role": "known_bad",
+      "expect": [
+        "fabricated_quote"
+      ],
+      "why": "Q7 explanation cites «Ich werde es mal probieren.» absent from dialogue (F5)"
+    },
+    {
+      "file": "lesen-t1-gemini-075.json",
+      "cell": "lesen-t1",
+      "role": "known_clean",
+      "expect": [],
+      "why": "Manual review this session (Verkehrsnetz + topic Verkehr OK)"
+    },
+    {
+      "file": "lesen-t3-auto-ma7vt8.json",
+      "cell": "lesen-t3",
+      "role": "known_clean",
+      "expect": [],
+      "why": "Manual-preferred T3 fingerprint representative"
+    },
+    {
+      "file": "horen-t1-gemini-016.json",
+      "cell": "horen-t1",
+      "role": "known_clean",
+      "expect": [],
+      "why": "Only Hören T1 in verified; clean in vocab audit sample"
+    },
+    {
+      "file": "horen-t2-gemini-013.json",
+      "cell": "horen-t2",
+      "role": "known_clean",
+      "expect": [],
+      "why": "Clean vocab sample this session (pair with known_bad t2-001)"
+    },
+    {
+      "file": "schreiben-gemini-006.json",
+      "cell": "schreiben",
+      "role": "known_clean",
+      "expect": [],
+      "why": "Clean vocab sample this session"
+    },
+    {
+      "file": "sprechen-gemini-001.json",
+      "cell": "sprechen",
+      "role": "known_clean",
+      "expect": [],
+      "why": "Clean vocab sample this session"
+    },
+    {
+      "file": "lesen-t1-gemini-081.json",
+      "cell": "lesen-t1",
+      "role": "representative",
+      "expect": null,
+      "why": "Lesen T1 normal stock"
+    },
+    {
+      "file": "lesen-t2-gemini-055.json",
+      "cell": "lesen-t2",
+      "role": "representative",
+      "expect": null,
+      "why": "Lesen T2"
+    },
+    {
+      "file": "lesen-t2-gemini-093.json",
+      "cell": "lesen-t2",
+      "role": "representative",
+      "expect": null,
+      "why": "Lesen T2"
+    },
+    {
+      "file": "lesen-t3-auto-we7l2c.json",
+      "cell": "lesen-t3",
+      "role": "representative",
+      "expect": null,
+      "why": "Lesen T3 fingerprint rep"
+    },
+    {
+      "file": "lesen-t4-gemini-002.json",
+      "cell": "lesen-t4",
+      "role": "representative",
+      "expect": null,
+      "why": "Lesen T4"
+    },
+    {
+      "file": "lesen-t4-gemini-016.json",
+      "cell": "lesen-t4",
+      "role": "representative",
+      "expect": null,
+      "why": "Lesen T4"
+    },
+    {
+      "file": "lesen-t5-gemini-009.json",
+      "cell": "lesen-t5",
+      "role": "representative",
+      "expect": null,
+      "why": "Lesen T5"
+    },
+    {
+      "file": "lesen-t5-gemini-014.json",
+      "cell": "lesen-t5",
+      "role": "representative",
+      "expect": null,
+      "why": "Lesen T5"
+    },
+    {
+      "file": "horen-t3-gemini-001.json",
+      "cell": "horen-t3",
+      "role": "representative",
+      "expect": null,
+      "why": "Hören T3 companion to known_bad"
+    },
+    {
+      "file": "horen-t4-gemini-007.json",
+      "cell": "horen-t4",
+      "role": "representative",
+      "expect": null,
+      "why": "Hören T4 (caps reprocess file)"
+    },
+    {
+      "file": "schreiben-gemini-004.json",
+      "cell": "schreiben",
+      "role": "representative",
+      "expect": null,
+      "why": "Schreiben companion"
+    },
+    {
+      "file": "sprechen-gemini-005.json",
+      "cell": "sprechen",
+      "role": "representative",
+      "expect": null,
+      "why": "Sprechen companion"
+    }
+  ],
+  "results": [
+    {
+      "file": "horen-t2-gemini-001.json",
+      "cell": "horen-t2",
+      "role": "known_bad",
+      "expect": [
+        "wrong_lexeme"
+      ],
+      "why": "Akzent/Protokoll lexicon issues documented this session (F4-like)",
+      "ok": false,
+      "findings": [
+        {
+          "axis": "naturalness",
+          "reason": "register_break",
+          "severity": "warn",
+          "passageId": "gen-p-h2-d5028372",
+          "questionId": null,
+          "field": "passage.text",
+          "quote": "Ein klarer Akzent in der Aussprache und eine präzise Wortwahl erleichtern das Verständnis",
+          "detail": "El término 'Akzent' (acento regional) es semánticamente incorrecto en este contexto; debería ser 'Aussprache' o 'Artikulation' para referirse a claridad en la pronunciación."
+        },
+        {
+          "axis": "lexicon",
+          "reason": "wrong_lexeme",
+          "severity": "warn",
+          "passageId": "gen-p-h2-d5028372",
+          "questionId": null,
+          "field": "passage.text",
+          "quote": "Aber Vorsicht: Gruppentreffen sollten ein klares Protokoll haben",
+          "detail": "'Protokoll' (acta/protocolo formal) es impreciso; el contexto sugiere 'Agenda' o 'Tagesordnung' (orden del día)."
+        },
+        {
+          "axis": "naturalness",
+          "reason": "register_break",
+          "severity": "warn",
+          "passageId": "gen-p-h2-d5028372",
+          "questionId": null,
+          "field": "passage.text",
+          "quote": "Zum Schluss noch ein Tipp zur Kommunikation: Achten Sie auf Ihre Sprache.",
+          "detail": "Transición abrupta desde consejos técnicos de concentración a recomendaciones de comunicación sin conexión temática clara; parece un párrafo insertado."
+        }
+      ],
+      "reasons": [
+        "register_break",
+        "wrong_lexeme"
+      ],
+      "expectHit": true,
+      "cleanBlockFindings": null,
+      "model": "claude-haiku-4-5",
+      "provider": "anthropic",
+      "usage": {
+        "inputTokens": 2004,
+        "outputTokens": 493
+      },
+      "costUsd": 0.004469
+    },
+    {
+      "file": "horen-t4-gemini-003.json",
+      "cell": "horen-t4",
+      "role": "known_bad",
+      "expect": [
+        "wrong_lexeme"
+      ],
+      "why": "Reserven→Ressourcen / Protokoll→Bericht (F3 fixture)",
+      "ok": false,
+      "findings": [
+        {
+          "axis": "lexicon",
+          "reason": "wrong_lexeme",
+          "severity": "warn",
+          "passageId": "gen-p-h4-b2fee41c-s1",
+          "questionId": null,
+          "field": "passage.text",
+          "quote": "Unternehmen sollten ein Protokoll über ihre Nachhaltigkeitsbemühungen veröffentlichen",
+          "detail": "Protokoll es incorrecto en este contexto; debería ser Bericht o Rechenschaftsbericht. Protokoll significa acta de reunión, no informe de sostenibilidad."
+        }
+      ],
+      "reasons": [
+        "wrong_lexeme"
+      ],
+      "expectHit": true,
+      "cleanBlockFindings": null,
+      "model": "claude-haiku-4-5",
+      "provider": "anthropic",
+      "usage": {
+        "inputTokens": 2395,
+        "outputTokens": 188
+      },
+      "costUsd": 0.003335
+    },
+    {
+      "file": "horen-t3-gemini-003.json",
+      "cell": "horen-t3",
+      "role": "known_bad",
+      "expect": [
+        "fabricated_quote"
+      ],
+      "why": "Q7 explanation cites «Ich werde es mal probieren.» absent from dialogue (F5)",
+      "ok": false,
+      "findings": [
+        {
+          "axis": "quote_fidelity",
+          "reason": "fabricated_quote",
+          "severity": "block",
+          "passageId": "gen-p-h3-28eec3b4-s1",
+          "questionId": "gen-q-h3-28eec3b4-7",
+          "field": "explanation",
+          "quote": "Ich werde es mal probieren.",
+          "detail": "Esta cita no aparece en el passage. Max dice 'Vielleicht mache ich das nächstes Wochenende' pero nunca 'Ich werde es mal probieren'."
+        }
+      ],
+      "reasons": [
+        "fabricated_quote"
+      ],
+      "expectHit": true,
+      "cleanBlockFindings": null,
+      "model": "claude-haiku-4-5",
+      "provider": "anthropic",
+      "usage": {
+        "inputTokens": 2053,
+        "outputTokens": 189
+      },
+      "costUsd": 0.002998
+    },
+    {
+      "file": "lesen-t1-gemini-075.json",
+      "cell": "lesen-t1",
+      "role": "known_clean",
+      "expect": [],
+      "why": "Manual review this session (Verkehrsnetz + topic Verkehr OK)",
+      "ok": false,
+      "findings": [
+        {
+          "axis": "naturalness",
+          "reason": "register_break",
+          "severity": "warn",
+          "passageId": "gen-l1-2294",
+          "questionId": null,
+          "field": "passage.text",
+          "quote": "Dieser Kurs in Sachen Mobilität war für mich der beste Schritt",
+          "detail": "El término 'Kurs' (curso/formación) es incongruente; el texto no menciona un curso formal, sino un cambio de estilo de vida personal. Debería ser 'Schritt' o 'Entscheidung' sin 'Kurs'."
+        },
+        {
+          "axis": "quote_fidelity",
+          "reason": "fabricated_quote",
+          "severity": "warn",
+          "passageId": "gen-l1-2294",
+          "questionId": "gen-q-1-2294-3",
+          "field": "explanation",
+          "quote": "Sie engagiert sich bei einer Organisation für Radwege.",
+          "detail": "La explicación parafrasea correctamente, pero la pregunta menciona 'Versorgungseinrichtungen' que NO aparecen en el pasaje. El pasaje solo habla de 'Radwege', no de instalaciones de suministro."
+        }
+      ],
+      "reasons": [
+        "register_break",
+        "fabricated_quote"
+      ],
+      "expectHit": null,
+      "cleanBlockFindings": [],
+      "model": "claude-haiku-4-5",
+      "provider": "anthropic",
+      "usage": {
+        "inputTokens": 1518,
+        "outputTokens": 358
+      },
+      "costUsd": 0.003308
+    },
+    {
+      "file": "lesen-t3-auto-ma7vt8.json",
+      "cell": "lesen-t3",
+      "role": "known_clean",
+      "expect": [],
+      "why": "Manual-preferred T3 fingerprint representative",
+      "ok": false,
+      "findings": [
+        {
+          "axis": "naturalness",
+          "reason": "non_sequitur",
+          "severity": "block",
+          "passageId": null,
+          "questionId": "gen-q-3-zkrjh4-7",
+          "field": "question",
+          "quote": "Herr Ott sucht einen günstigen Flug nach Portugal für den Sommer.",
+          "detail": "La pregunta sobre vuelos a Portugal no encaja con el conjunto de anuncios de servicios locales (reparaciones, clases, mudanzas, cuidado de mascotas). Salto temático sin contexto."
+        },
+        {
+          "axis": "lexicon",
+          "reason": "wrong_lexeme",
+          "severity": "warn",
+          "passageId": null,
+          "questionId": "gen-q-3-zkrjh4-4",
+          "field": "question",
+          "quote": "Der Schüler Jan will sein Spanisch vor einem Test verbessern.",
+          "detail": "El verbo 'verbessern' es incorrecto; debería ser 'verbessern' (mejorar) pero en contexto de examen se usa 'aufbessern' o mejor 'verbessern' está bien, pero 'vor einem Test' sugiere 'vor einem Test verbessern' que es gramaticalmente correcto"
+        }
+      ],
+      "reasons": [
+        "non_sequitur",
+        "wrong_lexeme"
+      ],
+      "expectHit": null,
+      "cleanBlockFindings": [
+        {
+          "axis": "naturalness",
+          "reason": "non_sequitur",
+          "severity": "block",
+          "passageId": null,
+          "questionId": "gen-q-3-zkrjh4-7",
+          "field": "question",
+          "quote": "Herr Ott sucht einen günstigen Flug nach Portugal für den Sommer.",
+          "detail": "La pregunta sobre vuelos a Portugal no encaja con el conjunto de anuncios de servicios locales (reparaciones, clases, mudanzas, cuidado de mascotas). Salto temático sin contexto."
+        }
+      ],
+      "model": "claude-haiku-4-5",
+      "provider": "anthropic",
+      "usage": {
+        "inputTokens": 3887,
+        "outputTokens": 409
+      },
+      "costUsd": 0.005932
+    },
+    {
+      "file": "horen-t1-gemini-016.json",
+      "cell": "horen-t1",
+      "role": "known_clean",
+      "expect": [],
+      "why": "Only Hören T1 in verified; clean in vocab audit sample",
+      "ok": true,
+      "findings": [],
+      "reasons": [],
+      "expectHit": null,
+      "cleanBlockFindings": [],
+      "model": "claude-haiku-4-5",
+      "provider": "anthropic",
+      "usage": {
+        "inputTokens": 2948,
+        "outputTokens": 24
+      },
+      "costUsd": 0.003068
+    },
+    {
+      "file": "horen-t2-gemini-013.json",
+      "cell": "horen-t2",
+      "role": "known_clean",
+      "expect": [],
+      "why": "Clean vocab sample this session (pair with known_bad t2-001)",
+      "ok": true,
+      "findings": [],
+      "reasons": [],
+      "expectHit": null,
+      "cleanBlockFindings": [],
+      "model": "claude-haiku-4-5",
+      "provider": "anthropic",
+      "usage": {
+        "inputTokens": 2064,
+        "outputTokens": 24
+      },
+      "costUsd": 0.002184
+    },
+    {
+      "file": "schreiben-gemini-006.json",
+      "cell": "schreiben",
+      "role": "known_clean",
+      "expect": [],
+      "why": "Clean vocab sample this session",
+      "ok": true,
+      "findings": [],
+      "reasons": [],
+      "expectHit": null,
+      "cleanBlockFindings": [],
+      "model": "claude-haiku-4-5",
+      "provider": "anthropic",
+      "usage": {
+        "inputTokens": 1429,
+        "outputTokens": 24
+      },
+      "costUsd": 0.001549
+    },
+    {
+      "file": "sprechen-gemini-001.json",
+      "cell": "sprechen",
+      "role": "known_clean",
+      "expect": [],
+      "why": "Clean vocab sample this session",
+      "ok": true,
+      "findings": [],
+      "reasons": [],
+      "expectHit": null,
+      "cleanBlockFindings": [],
+      "model": "claude-haiku-4-5",
+      "provider": "anthropic",
+      "usage": {
+        "inputTokens": 1601,
+        "outputTokens": 24
+      },
+      "costUsd": 0.001721
+    },
+    {
+      "file": "lesen-t1-gemini-081.json",
+      "cell": "lesen-t1",
+      "role": "representative",
+      "expect": null,
+      "why": "Lesen T1 normal stock",
+      "ok": false,
+      "findings": [
+        {
+          "axis": "lexicon",
+          "reason": "wrong_lexeme",
+          "severity": "warn",
+          "passageId": "gen-l1-5582",
+          "questionId": null,
+          "field": "passage.text",
+          "quote": "Das Gartenprojekt ist für mich eine wichtige Erfahrung und eine gute Organisation",
+          "detail": "Organisation es semánticamente incorrecto; debería ser Möglichkeit, Gelegenheit o Einrichtung. Una organización no es lo que proporciona el espacio para el jardín."
+        },
+        {
+          "axis": "quote_fidelity",
+          "reason": "fabricated_quote",
+          "severity": "warn",
+          "passageId": "gen-l1-5582",
+          "questionId": "gen-q-1-5582-6",
+          "field": "explanation",
+          "quote": "Es ist ein öffentliches Projekt",
+          "detail": "La explicación afirma que es un proyecto público, pero el pasaje nunca menciona explícitamente que sea público o abierto a todos; solo dice que es un Gartenprojekt en la ciudad."
+        }
+      ],
+      "reasons": [
+        "wrong_lexeme",
+        "fabricated_quote"
+      ],
+      "expectHit": null,
+      "cleanBlockFindings": null,
+      "model": "claude-haiku-4-5",
+      "provider": "anthropic",
+      "usage": {
+        "inputTokens": 1478,
+        "outputTokens": 329
+      },
+      "costUsd": 0.003123
+    },
+    {
+      "file": "lesen-t2-gemini-055.json",
+      "cell": "lesen-t2",
+      "role": "representative",
+      "expect": null,
+      "why": "Lesen T2",
+      "ok": false,
+      "findings": [
+        {
+          "axis": "lexicon",
+          "reason": "wrong_lexeme",
+          "severity": "warn",
+          "passageId": "gen-l2-759e7c8f-1",
+          "questionId": null,
+          "field": "passage.text",
+          "quote": "Das Projekt hat schon vielen Bewohnern geholfen, ihre Umgebung zu verbessern.",
+          "detail": "Forma verbal incorrecta: 'verbessern' debería ser 'verbessern' (infinitivo) o 'verbessert' (participio). El texto usa 'verbessern' en contexto de participio, lo que es agramatical."
+        },
+        {
+          "axis": "naturalness",
+          "reason": "register_break",
+          "severity": "warn",
+          "passageId": "gen-l2-759e7c8f-2",
+          "questionId": null,
+          "field": "passage.text",
+          "quote": "Man kann dort in alten Sachen wühlen und echte Schätze entdecken.",
+          "detail": "El verbo 'wühlen' (hurgar/revolver) es coloquial y contrasta con el registro informativo del resto del pasaje sobre consumo sostenible."
+        },
+        {
+          "axis": "lexicon",
+          "reason": "wrong_lexeme",
+          "severity": "warn",
+          "passageId": "gen-l2-759e7c8f-2",
+          "questionId": null,
+          "field": "passage.text",
+          "quote": "Die Abwicklung des Verkaufs ist meist einfach",
+          "detail": "'Abwicklung' (tramitación/gestión de procesos complejos) es semánticamente inapropiado para describir un simple acto de entrega; 'Ablauf' o 'Prozess' sería más natural."
+        }
+      ],
+      "reasons": [
+        "wrong_lexeme",
+        "register_break"
+      ],
+      "expectHit": null,
+      "cleanBlockFindings": null,
+      "model": "claude-haiku-4-5",
+      "provider": "anthropic",
+      "usage": {
+        "inputTokens": 2367,
+        "outputTokens": 508
+      },
+      "costUsd": 0.004907
+    },
+    {
+      "file": "lesen-t2-gemini-093.json",
+      "cell": "lesen-t2",
+      "role": "representative",
+      "expect": null,
+      "why": "Lesen T2",
+      "ok": true,
+      "findings": [],
+      "reasons": [],
+      "expectHit": null,
+      "cleanBlockFindings": null,
+      "model": "claude-haiku-4-5",
+      "provider": "anthropic",
+      "usage": {
+        "inputTokens": 2529,
+        "outputTokens": 24
+      },
+      "costUsd": 0.002649
+    },
+    {
+      "file": "lesen-t3-auto-we7l2c.json",
+      "cell": "lesen-t3",
+      "role": "representative",
+      "expect": null,
+      "why": "Lesen T3 fingerprint rep",
+      "ok": false,
+      "findings": [
+        {
+          "axis": "naturalness",
+          "reason": "non_sequitur",
+          "severity": "block",
+          "passageId": null,
+          "questionId": "gen-q-3-3ddmeo-7",
+          "field": "question",
+          "quote": "Herr Ott sucht eine kostenlose Beratung zur Krankenversicherung.",
+          "detail": "La pregunta introduce un tema (seguros de salud) completamente desconectado del contexto de anuncios de servicios técnicos, lingüísticos y domésticos. Rompe la coherencia temática del ejercicio."
+        },
+        {
+          "axis": "naturalness",
+          "reason": "register_break",
+          "severity": "warn",
+          "passageId": null,
+          "questionId": "gen-q-3-3ddmeo-1",
+          "field": "question",
+          "quote": "Der Schüler Jan möchte die Sprache Russlands von Grund auf lernen.",
+          "detail": "La expresión 'die Sprache Russlands' es imprecisa; lo correcto sería 'Russisch' o 'die russische Sprache'. 'Sprache Russlands' suena forzado para B1."
+        }
+      ],
+      "reasons": [
+        "non_sequitur",
+        "register_break"
+      ],
+      "expectHit": null,
+      "cleanBlockFindings": null,
+      "model": "claude-haiku-4-5",
+      "provider": "anthropic",
+      "usage": {
+        "inputTokens": 3777,
+        "outputTokens": 351
+      },
+      "costUsd": 0.005532
+    },
+    {
+      "file": "lesen-t4-gemini-002.json",
+      "cell": "lesen-t4",
+      "role": "representative",
+      "expect": null,
+      "why": "Lesen T4",
+      "ok": true,
+      "findings": [],
+      "reasons": [],
+      "expectHit": null,
+      "cleanBlockFindings": null,
+      "model": "claude-haiku-4-5",
+      "provider": "anthropic",
+      "usage": {
+        "inputTokens": 2001,
+        "outputTokens": 24
+      },
+      "costUsd": 0.002121
+    },
+    {
+      "file": "lesen-t4-gemini-016.json",
+      "cell": "lesen-t4",
+      "role": "representative",
+      "expect": null,
+      "why": "Lesen T4",
+      "ok": false,
+      "findings": [
+        {
+          "axis": "quote_fidelity",
+          "reason": "fabricated_quote",
+          "severity": "block",
+          "passageId": "gen-l4-ffc10493",
+          "questionId": "gen-q-4-ffc10493-5",
+          "field": "explanation",
+          "quote": "Clara findet den Plan wichtig und einen guten Schritt für Energie und Nachhaltigkeit",
+          "detail": "La explicación atribuye a Clara la palabra 'Energie' pero el signText solo menciona 'Energie und Nachhaltigkeit' sin que Clara use explícitamente 'Energie' como término central en su argumento."
+        },
+        {
+          "axis": "naturalness",
+          "reason": "non_sequitur",
+          "severity": "warn",
+          "passageId": "gen-l4-ffc10493",
+          "questionId": "gen-q-4-ffc10493-3",
+          "field": "explanation",
+          "quote": "Sofia unterstützt die Idee der Plastikreduzierung, hat aber Bedenken bezüglich der Komplexität der Mülltrennung.",
+          "detail": "La explicación concluye 'correct: Ja' pero el signText de Sofia expresa dudas y esperanza condicional ('Ich hoffe, die Stadt macht es einfacher, sonst wird es ein Problem'), lo que sugiere una posición ambivalente, no claramente afirmativa."
+        },
+        {
+          "axis": "lexicon",
+          "reason": "wrong_lexeme",
+          "severity": "warn",
+          "passageId": "gen-l4-ffc10493",
+          "questionId": "gen-q-4-ffc10493-6",
+          "field": "explanation",
+          "quote": "David ist gegen den Plan, weil er ein Problem für die Haltbarkeit von Produkten",
+          "detail": "La explicación usa 'Haltbarkeit' (durabilidad/conservación) pero el signText de David dice 'werden viele Produkte schnell schlecht' (se echan a perder rápido), lo que se refiere más a deterioro/caducidad que a 'haltbarkeit' técnica."
+        }
+      ],
+      "reasons": [
+        "fabricated_quote",
+        "non_sequitur",
+        "wrong_lexeme"
+      ],
+      "expectHit": null,
+      "cleanBlockFindings": null,
+      "model": "claude-haiku-4-5",
+      "provider": "anthropic",
+      "usage": {
+        "inputTokens": 2049,
+        "outputTokens": 591
+      },
+      "costUsd": 0.005004
+    },
+    {
+      "file": "lesen-t5-gemini-009.json",
+      "cell": "lesen-t5",
+      "role": "representative",
+      "expect": null,
+      "why": "Lesen T5",
+      "ok": true,
+      "findings": [],
+      "reasons": [],
+      "expectHit": null,
+      "cleanBlockFindings": null,
+      "model": "claude-haiku-4-5",
+      "provider": "anthropic",
+      "usage": {
+        "inputTokens": 2003,
+        "outputTokens": 24
+      },
+      "costUsd": 0.002123
+    },
+    {
+      "file": "lesen-t5-gemini-014.json",
+      "cell": "lesen-t5",
+      "role": "representative",
+      "expect": null,
+      "why": "Lesen T5",
+      "ok": true,
+      "findings": [],
+      "reasons": [],
+      "expectHit": null,
+      "cleanBlockFindings": null,
+      "model": "claude-haiku-4-5",
+      "provider": "anthropic",
+      "usage": {
+        "inputTokens": 2045,
+        "outputTokens": 24
+      },
+      "costUsd": 0.002165
+    },
+    {
+      "file": "horen-t3-gemini-001.json",
+      "cell": "horen-t3",
+      "role": "representative",
+      "expect": null,
+      "why": "Hören T3 companion to known_bad",
+      "ok": true,
+      "findings": [
+        {
+          "axis": "lexicon",
+          "reason": "wrong_lexeme",
+          "severity": "warn",
+          "passageId": "gen-p-h3-6f78252f-1",
+          "questionId": "gen-q-h3-6f78252f-5",
+          "field": "question",
+          "quote": "guter Umgang mit Klienten",
+          "detail": "En el pasaje se usa 'Kunden', no 'Klienten'. Aunque ambos pueden significar 'clientes', 'Klienten' tiene connotaciones más específicas (p.ej. abogados, psicólogos) y no es el término usado en el diálogo."
+        }
+      ],
+      "reasons": [
+        "wrong_lexeme"
+      ],
+      "expectHit": null,
+      "cleanBlockFindings": null,
+      "model": "claude-haiku-4-5",
+      "provider": "anthropic",
+      "usage": {
+        "inputTokens": 1953,
+        "outputTokens": 211
+      },
+      "costUsd": 0.003008
+    },
+    {
+      "file": "horen-t4-gemini-007.json",
+      "cell": "horen-t4",
+      "role": "representative",
+      "expect": null,
+      "why": "Hören T4 (caps reprocess file)",
+      "ok": false,
+      "findings": [
+        {
+          "axis": "naturalness",
+          "reason": "register_break",
+          "severity": "warn",
+          "passageId": "gen-h4-w9k2",
+          "questionId": null,
+          "field": "passage.text",
+          "quote": "Für mich ist das Fahrrad die wichtigste Lösung für unsere tägliche Arbeit.",
+          "detail": "El uso de 'tägliche Arbeit' es impreciso; debería ser 'tägliche Mobilität' o 'täglichen Wege'. El Fahrrad no es solución para 'trabajo' sino para desplazamientos cotidianos."
+        },
+        {
+          "axis": "quote_fidelity",
+          "reason": "fabricated_quote",
+          "severity": "block",
+          "passageId": "gen-h4-w9k2",
+          "questionId": "gen-q-h4-w9k2-1",
+          "field": "explanation",
+          "quote": "Lisa erwähnt, dass das Fahrrad gesund ist.",
+          "detail": "La explicación parafrasea correctamente ('gesund'), pero la pregunta afirma 'deutliche Verbesserungen für die persönliche Fitness' que es más específico que lo que Lisa dice. Lisa solo menciona 'ist zudem gesund', no 'Verbesserungen für Fit"
+        },
+        {
+          "axis": "quote_fidelity",
+          "reason": "fabricated_quote",
+          "severity": "warn",
+          "passageId": "gen-h4-w9k2",
+          "questionId": "gen-q-h4-w9k2-4",
+          "field": "explanation",
+          "quote": "Mark kritisiert, dass Busse und Bahnen oft unzuverlässig sind.",
+          "detail": "Mark dice 'oft überfüllt und nicht zuverlässig genug', pero la explicación solo menciona 'unzuverlässig'. Falta la crítica sobre 'überfüllt' que es parte integral de su argumento."
+        }
+      ],
+      "reasons": [
+        "register_break",
+        "fabricated_quote"
+      ],
+      "expectHit": null,
+      "cleanBlockFindings": null,
+      "model": "claude-haiku-4-5",
+      "provider": "anthropic",
+      "usage": {
+        "inputTokens": 2041,
+        "outputTokens": 559
+      },
+      "costUsd": 0.004836
+    },
+    {
+      "file": "schreiben-gemini-004.json",
+      "cell": "schreiben",
+      "role": "representative",
+      "expect": null,
+      "why": "Schreiben companion",
+      "ok": true,
+      "findings": [
+        {
+          "axis": "naturalness",
+          "reason": "register_break",
+          "severity": "warn",
+          "passageId": null,
+          "questionId": "gen-q-s-t2-d3546338-q1",
+          "field": "question",
+          "quote": "«Ich finde, wir Konsumentinnen und Konsumenten sollten mehr Verantwortung für die Umwelt übernehmen. Die Vielen Marketin",
+          "detail": "El término 'verführen' (seducir/tentar) es demasiado dramático y literario para un foro de discusión casual sobre consumo; registra más como ensayo académico que como participación de forum."
+        }
+      ],
+      "reasons": [
+        "register_break"
+      ],
+      "expectHit": null,
+      "cleanBlockFindings": null,
+      "model": "claude-haiku-4-5",
+      "provider": "anthropic",
+      "usage": {
+        "inputTokens": 1423,
+        "outputTokens": 231
+      },
+      "costUsd": 0.002578
+    },
+    {
+      "file": "sprechen-gemini-005.json",
+      "cell": "sprechen",
+      "role": "representative",
+      "expect": null,
+      "why": "Sprechen companion",
+      "ok": true,
+      "findings": [],
+      "reasons": [],
+      "expectHit": null,
+      "cleanBlockFindings": null,
+      "model": "claude-haiku-4-5",
+      "provider": "anthropic",
+      "usage": {
+        "inputTokens": 1683,
+        "outputTokens": 24
+      },
+      "costUsd": 0.001803
+    }
+  ]
+}

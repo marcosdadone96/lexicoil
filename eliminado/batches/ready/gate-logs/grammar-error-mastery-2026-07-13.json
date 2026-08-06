@@ -1,0 +1,26 @@
+{
+  "date": "2026-07-13",
+  "test": "scripts/lib/__tests__/grammar-error-mastery.test.mjs",
+  "passed": 24,
+  "failed": 0,
+  "sampleEval": {
+    "errors": [
+      { "type": "grammar", "grammarCategory": "passiv", "original": "Man hat das Haus gebaut", "correction": "Das Haus wurde gebaut" },
+      { "type": "grammar", "grammarCategory": "wortstellung", "original": "Ich fahre oft mit dem Bus deshalb", "correction": "Deshalb fahre ich oft mit dem Bus" }
+    ],
+    "grammarErrorSummary": [
+      { "category": "passiv", "count": 1, "severity": "major" },
+      { "category": "wortstellung", "count": 1, "severity": "major" }
+    ]
+  },
+  "masteryTagsAfterMerge": ["g-de-b1-passiv", "g-de-b1-wortstellung"],
+  "weakAreaLabels": ["Passiv", "Wortstellung"],
+  "schemaAdditive": true,
+  "filesChanged": [
+    "js/library/grammarCategories.js",
+    "netlify/functions/lib/productionEval.js",
+    "js/bootstrap/featureSpeaking.js",
+    "js/library/AnalyticsStore.js",
+    "index.html"
+  ]
+}

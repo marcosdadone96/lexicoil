@@ -1,0 +1,110 @@
+
+Generador Lesen (de/B1) · gemini · gemini-2.5-flash · Teile: 5 × 1
+Palabras objetivo por parte: 5 (--word-count)
+Umbral cobertura CEFR (cefr_gate): 55% (default 0.55)
+Cuota Gemini: max 45 llamadas · pausa ≥6000ms · fix-retries=2 · api-retries=1
+Salida: batches/generated/
+Tema: Umwelt (elegido)
+T5 subtipo: Freizeitzentrum / Hallenbad (other) · perfil hallenbad · celda Umwelt×T5: 14 en pool · moldes usados: wohnanlage, bibliothek, sportverein, park
+
+── Lesen T5 · lesen-t5-gemini-103.json ──
+Proveedor: gemini · Palabras (5): nachhaltigkeit, aufgabe, situation, aktuell, direkt
+Modelo: gemini-2.5-flash · max_output_tokens=8192
+Molde preflight T5×Umwelt: 3 compatible(s), 1 restante(s)
+Llamada API 1/45 · $0.000 acumulado · gemini-2.5-flash
+Vocabulario: 4 de 5 palabras usadas (tema: Umwelt). Integradas: nachhaltigkeit, aufgabe, aktuell, direkt. No encajaron de forma natural: situation.
+Validando formato…
+Comprobando calidad pedagógica…
+Calidad pedagógica OK ✅ (estimación ~100%)
+Audit-pass-2 BLOQUEADO: [IMPORTANT][CHK-29] CHK-29: título idéntico «Nutzungsordnung der Stadthalle Aktivpark – Bereich Schwimmbad» en celda Umwelt×T5.
+  CHK-29 → excluir molde y regenerar T5 con subtipo/debate distinto…
+T5 subtipo: Bibliotheksordnung (saturated) · perfil standard · celda Umwelt×T5: 14 en pool · moldes usados: wohnanlage, bibliothek, sportverein, park, freizeitzentrum
+Llamada API 2/45 · $0.015 acumulado · gemini-2.5-flash
+Vocabulario: 2 de 5 palabras usadas (tema: Umwelt). Integradas: aufgabe, direkt. No encajaron de forma natural: nachhaltigkeit, situation, aktuell.
+Validando formato…
+Comprobando calidad pedagógica…
+Calidad pedagógica OK ✅ (estimación ~100%)
+Audit-pass-2 BLOQUEADO: [IMPORTANT][CHK-18b] gen-q-5-658d0b21-2: clave «a» pero la explicación encaja mejor con otra opción (overlap correct=1, wrong=2, opción incorrecta b)).
+  Triaje CUBO C (CHK-18b explanation) → reparación localizada (1 llamada LLM)…
+T5: reparando explanation gen-q-5-658d0b21-2 (CHK-18b, pasaje fijo, intento 1/2)…
+Llamada API 3/45 · $0.026 acumulado · gemini-2.5-flash
+  explanation aún inválida en gen-q-5-658d0b21-2 tras intento 1 (literal_overlap)
+T5: reparando explanation gen-q-5-658d0b21-2 (CHK-18b, pasaje fijo, intento 2/2)…
+Cola API: pausa 2.4s…
+Llamada API 4/45 · $0.027 acumulado · gemini-2.5-flash
+  explanation aún inválida en gen-q-5-658d0b21-2 tras intento 2 (literal_overlap)
+  Re-validando tras explanation…
+Calidad pedagógica OK ✅ (estimación ~100%)
+Audit-pass-2 BLOQUEADO: [IMPORTANT][CHK-29] CHK-29: título idéntico «Benutzungsordnung der Stadtbücherei Westend» en celda Umwelt×T5.
+  CHK-29 → excluir molde y regenerar T5 con subtipo/debate distinto…
+T5 subtipo: Freizeitzentrum / Hallenbad (saturated) · perfil veranstaltungen · celda Umwelt×T5: 14 en pool · moldes usados: wohnanlage, bibliothek, sportverein, park, freizeitzentrum
+Llamada API 5/45 · $0.027 acumulado · gemini-2.5-flash
+Vocabulario: 4 de 5 palabras usadas (tema: Umwelt). Integradas: aufgabe, situation, aktuell, direkt. No encajaron de forma natural: nachhaltigkeit.
+Validando formato…
+Comprobando calidad pedagógica…
+Calidad pedagógica FAIL (3 problemas, estimación ~76%)
+  - gen-q-5-676fa2c8-1: sesgo de longitud MCQ (B1) — opción correcta «b» es la más larga (64 vs 48/47; Δ +17 chars, +35% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable.
+  - gen-q-5-676fa2c8-3: sesgo de longitud MCQ (B1) — opción correcta «c» es la más larga (62 vs 46/41; Δ +19 chars, +43% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable.
+  - gen-q-5-676fa2c8-4: sesgo de longitud MCQ (B1) — opción correcta «a» es la más larga (83 vs 78/55; Δ +17 chars, +25% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable.
+  Triaje CUBO C (MCQ length bias (B1)) → reparación localizada (1 llamada LLM)…
+lesen T5: reparando sesgo longitud MCQ en 3 pregunta(s) (1 llamada LLM, fuente fija)…
+Llamada API 6/45 · $0.040 acumulado · gemini-2.5-flash
+  length-bias: gen-q-5-676fa2c8-1 OK (+35%→+0%)
+  length-bias: gen-q-5-676fa2c8-3 OK (+43%→+0%)
+  length-bias: gen-q-5-676fa2c8-4 OK (+25%→+0%)
+  Re-validando tras mcq_length_bias…
+Calidad pedagógica FAIL (1 problemas, estimación ~92%)
+  - gen-q-5-676fa2c8-3: opción correcta copia ≥5 palabras del pasaje («in den fahrradständern vor dem»)
+
+Reintento 1/2 · gen-q-5-676fa2c8-3: opción correcta copia ≥5 palabras del pasaje («in den fahrradständern vor dem»)…
+Llamada API 7/45 · $0.041 acumulado · gemini-2.5-flash
+Vocabulario: 4 de 5 palabras usadas (tema: Umwelt). Integradas: aufgabe, situation, aktuell, direkt. No encajaron de forma natural: nachhaltigkeit.
+Validando formato…
+Calidad pedagógica FAIL (1 problemas, estimación ~92%)
+  - gen-q-5-676fa2c8-3: sesgo de longitud MCQ (B1) — opción correcta «c» es la más larga (65 vs 46/41; Δ +22 chars, +49% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable.
+  Triaje CUBO C (MCQ length bias (B1)) → reparación localizada (1 llamada LLM)…
+lesen T5: reparando sesgo longitud MCQ en 1 pregunta(s) (1 llamada LLM, fuente fija)…
+Llamada API 8/45 · $0.051 acumulado · gemini-2.5-flash
+  length-bias: gen-q-5-676fa2c8-3 OK (+49%→+0%)
+  Re-validando tras mcq_length_bias…
+Calidad pedagógica FAIL (1 problemas, estimación ~92%)
+  - gen-q-5-676fa2c8-3: opción correcta copia ≥5 palabras del pasaje («den fahrradständern vor dem gebäude»)
+
+Reintento 2/2 · gen-q-5-676fa2c8-3: opción correcta copia ≥5 palabras del pasaje («den fahrradständern vor dem gebäude»)…
+Llamada API 9/45 · $0.052 acumulado · gemini-2.5-flash
+Vocabulario: 4 de 5 palabras usadas (tema: Umwelt). Integradas: aufgabe, situation, aktuell, direkt. No encajaron de forma natural: nachhaltigkeit.
+Validando formato…
+Calidad pedagógica FAIL (1 problemas, estimación ~92%)
+  - gen-q-5-676fa2c8-3: sesgo de longitud MCQ (B1) — opción correcta «c» es la más larga (75 vs 46/41; Δ +32 chars, +72% vs media distractores; umbral 20%/12ch). Parafrasea o alarga los distractores hasta longitud comparable.
+  Triaje CUBO C (MCQ length bias (B1)) → reparación localizada (1 llamada LLM)…
+lesen T5: reparando sesgo longitud MCQ en 1 pregunta(s) (1 llamada LLM, fuente fija)…
+Llamada API 10/45 · $0.062 acumulado · gemini-2.5-flash
+  length-bias: gen-q-5-676fa2c8-3 OK (+72%→+0%)
+  Re-validando tras mcq_length_bias…
+Calidad pedagógica FAIL (1 problemas, estimación ~92%)
+  - gen-q-5-676fa2c8-3: opción correcta copia ≥5 palabras del pasaje («in den fahrradständern vor dem»)
+Rechazado guardado en: batches/generated/.rejected/lesen-t5-gemini-103-2026-07-22T10-03-14-726Z.json
+
+── batches/generated/B1/lesen-t5-gemini-103.json · DESCARTADO · 10 llamadas · $0.063 total ──
+
+══ Resumen generador Lesen ══
+Proveedor: gemini · Modelo: gemini-2.5-flash
+Intentos totales: 10
+Partes guardadas (formato + calidad OK): 0
+Partes descartadas: 1
+Llamadas API Gemini: 10/45
+Por Teil (guardadas / descartadas · intentos):
+  T5: 0 guardadas, 1 descartadas, 5 intentos
+
+
+⏳ Gemini Alta demanda (503) — reintento en 15s (1/8)…
+      reintento 2/8 — 5s restantes…
+
+⏳ Gemini Alta demanda (503) — reintento en 15s (1/8)…
+      reintento 2/8 — 5s restantes…
+
+⏳ Gemini Alta demanda (503) — reintento en 30s (2/8)…
+      reintento 3/8 — 20s restantes…
+      reintento 3/8 — 10s restantes…
+Calidad pedagógica FAIL (1 problemas, estimación ~92%)
+  - gen-q-5-676fa2c8-3: opción correcta copia ≥5 palabras del pasaje («in den fahrradständern vor dem»)

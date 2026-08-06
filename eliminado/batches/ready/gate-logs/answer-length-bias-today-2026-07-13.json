@@ -1,0 +1,41 @@
+{
+  "generatedAt": "2026-07-13T13:53:46.202Z",
+  "date": "2026-07-13",
+  "method": "audit-answer-length-bias (correct is longest among a/b/c)",
+  "filesToday": 10,
+  "fileList": [
+    "lesen-t2-gemini-108.json",
+    "lesen-t2-gemini-109.json",
+    "lesen-t2-gemini-110.json",
+    "lesen-t5-gemini-080.json",
+    "horen-t2-gemini-024.json",
+    "horen-t2-gemini-025.json",
+    "horen-t2-gemini-026.json",
+    "horen-t2-gemini-027.json",
+    "lesen-t2-gemini-107.json",
+    "lesen-t5-gemini-079.json"
+  ],
+  "byPart": {
+    "lesen-t2": {
+      "n": 48,
+      "correctLongest": 40,
+      "pctLongest": 83.3,
+      "expectedPct": 33.3,
+      "deviationPp": 50
+    },
+    "lesen-t5": {
+      "n": 16,
+      "correctLongest": 12,
+      "pctLongest": 75,
+      "expectedPct": 33.3,
+      "deviationPp": 41.7
+    },
+    "horen-t2": {
+      "n": 40,
+      "correctLongest": 28,
+      "pctLongest": 70,
+      "expectedPct": 33.3,
+      "deviationPp": 36.7
+    }
+  }
+}

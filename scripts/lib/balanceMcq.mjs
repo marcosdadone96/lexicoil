@@ -6,14 +6,38 @@
  * of any answer option, only their ORDER within the options array.
  *
  * ⚠️  ONLY applies to type === "multiple_choice" with exactly 3 options.
- *     richtig_falsch, ja_nein and matching are intentionally untouched by
- *     balanceMcqGroup — use shuffleKeyedQuestionOrder for per-part key entropy.
+ *     richtig_falsch is never reordered here — chrono = evidence char offset in
+ *     passages[0].text (see horenRfChronoEvidence.mjs). NOT audio-turn overlap.
+ *     ja_nein may be reordered via shuffleKeyedQuestionOrder for key entropy.
+ *     matching is untouched.
  */
 
 import crypto from 'node:crypto';
+import { createRequire } from 'node:module';
+
+/** Shared with js/engine/prompts/partPostprocess.js — do not fork regexes. */
+const require = createRequire(import.meta.url);
+const {
+  resyncExplanationOptionLetter: resyncExplanationOptionLetterShared,
+  alignExplanationOptionLetters,
+  findExplanationOptionLetters,
+} = require('../../js/engine/prompts/explanationOptionResync.js');
+
+export const resyncExplanationOptionLetter = resyncExplanationOptionLetterShared;
+export { alignExplanationOptionLetters, findExplanationOptionLetters };
+
+/** Bump when letter-target / remainder / R-F shuffle policy changes (pool re-stamp). */
+export const BALANCE_MCQ_VERSION = 'v1.2-no-rf-chrono-shuffle-2026-07-11';
 
 const LETTERS = ['a', 'b', 'c'];
-const KEY_SHUFFLE_TYPES = new Set(['richtig_falsch', 'ja_nein']);
+/**
+ * Only ja_nein may be reordered for key entropy (Lesen T4 forum opinions).
+ * richtig_falsch must keep chronological evidence order — Goethe Hören T3
+ * follows dialogue chronology measured by char offset in passages[0].text
+ * (horenRfChronoEvidence.mjs). Audio-turn token overlap is NOT the metric
+ * (false-green risk). shuffleKeyedQuestionOrder used to break that (P0.3).
+ */
+const KEY_SHUFFLE_TYPES = new Set(['ja_nein']);
 
 /** Deterministic seed string from question content (stable across re-normalize). */
 export function derivePartShuffleSeed(questions) {
@@ -57,14 +81,26 @@ export function seededShuffle(items, seed) {
   return out;
 }
 
-/** Build n target letters with balanced a/b/c counts, then shuffle order. */
+/**
+ * Build n target letters with counts as even as possible (⌊n/3⌋ or ⌈n/3⌉),
+ * then shuffle order with `seed`.
+ *
+ * When n % 3 ≠ 0, the remainder letter(s) used to always prefer `a` (then `b`)
+ * because the greedy loop broke ties with LETTERS[0]. That made every N=4 part
+ * → {a:2,b:1,c:1} and every N=5 part → {a:2,b:2,c:1}, biasing the whole pool.
+ *
+ * v1.1: rotate the tie-break order from `seed` so remainder cycles a→b→c across
+ * parts while each individual part stays as balanced as N allows.
+ */
 export function buildBalancedLetterTargets(n, seed) {
   if (n <= 0) return [];
+  const start = seedToInt(`${seed || '0'}:remainder`) % LETTERS.length;
+  const order = [...LETTERS.slice(start), ...LETTERS.slice(0, start)];
   const counts = { a: 0, b: 0, c: 0 };
   const targets = [];
   for (let i = 0; i < n; i++) {
-    let best = LETTERS[0];
-    for (const l of LETTERS) {
+    let best = order[0];
+    for (const l of order) {
       if (counts[l] < counts[best]) best = l;
     }
     targets.push(best);
@@ -100,9 +136,98 @@ export function answerKeySequence(questions, typeFilter) {
 }
 
 /**
+ * Strip leading "a) " / "A) " label from an option string for body comparison.
+ */
+export function stripMcqOptionLabel(text) {
+  return String(text || '').replace(/^[a-cA-C]\)\s*/, '').trim();
+}
+
+function mcqCorrectLetter(q) {
+  const raw = String(q?.correct ?? q?.correctAnswer ?? '').toLowerCase().trim();
+  return raw.replace(/[^a-c]/g, '').slice(0, 1) || '';
+}
+
+function optionBodies(q) {
+  return (q.options || []).map(stripMcqOptionLabel);
+}
+
+function correctOptionBody(q) {
+  const letter = mcqCorrectLetter(q);
+  if (!letter || !Array.isArray(q.options) || q.options.length !== 3) return null;
+  const idx = letter.charCodeAt(0) - 97;
+  return stripMcqOptionLabel(q.options[idx]);
+}
+
+/**
+ * Writer contract for balanceMcq / antiRuns (checked BEFORE the caller persists):
+ *  (a) option body multiset unchanged (labels may move);
+ *  (b) the option body marked correct after rotate is the same body that was correct before;
+ *  (c) every "Option X" reference in explanation matches the post-rotate correct letter.
+ *
+ * @throws {Error} on any violation
+ */
+export function assertBalanceMcqWriterContract(beforeQuestions, afterQuestions, opts = {}) {
+  const label = opts.label || 'balanceMcq';
+  const before = beforeQuestions || [];
+  const after = afterQuestions || [];
+  if (before.length !== after.length) {
+    throw new Error(`[${label}:contract] question count changed ${before.length}→${after.length}`);
+  }
+
+  for (let i = 0; i < before.length; i++) {
+    const b = before[i];
+    const a = after[i];
+    if (b?.type !== 'multiple_choice' || !Array.isArray(b.options) || b.options.length !== 3) {
+      continue;
+    }
+    if (!Array.isArray(a?.options) || a.options.length !== 3) {
+      throw new Error(`[${label}:contract:a] q[${i}] options length changed`);
+    }
+
+    // (a) option bodies — same multiset
+    const beforeBodies = optionBodies(b).slice().sort();
+    const afterBodies = optionBodies(a).slice().sort();
+    if (beforeBodies.join('\u0001') !== afterBodies.join('\u0001')) {
+      throw new Error(
+        `[${label}:contract:a] q[${i}] option texts changed (only order/labels allowed)\n` +
+          `  before: ${JSON.stringify(beforeBodies)}\n` +
+          `  after:  ${JSON.stringify(afterBodies)}`,
+      );
+    }
+
+    // (b) correct body identity
+    const beforeCorrect = correctOptionBody(b);
+    const afterCorrect = correctOptionBody(a);
+    if (beforeCorrect == null || afterCorrect == null) {
+      throw new Error(`[${label}:contract:b] q[${i}] missing correct letter`);
+    }
+    if (beforeCorrect !== afterCorrect) {
+      throw new Error(
+        `[${label}:contract:b] q[${i}] correct option body drifted\n` +
+          `  before(${mcqCorrectLetter(b)}): ${JSON.stringify(beforeCorrect)}\n` +
+          `  after(${mcqCorrectLetter(a)}):  ${JSON.stringify(afterCorrect)}`,
+      );
+    }
+
+    // (c) explanation letter refs match new correct
+    const want = mcqCorrectLetter(a);
+    const hits = findExplanationOptionLetters(String(a.explanation || ''));
+    const desync = hits.filter((h) => h.letter !== want);
+    if (desync.length) {
+      throw new Error(
+        `[${label}:contract:c] q[${i}] explanation letter desync (want ${want}): ` +
+          desync.map((h) => h.match).join(', '),
+      );
+    }
+  }
+  return true;
+}
+
+/**
  * Rotate a single 3-option MCQ question so the correct answer lands at
  * `targetLetter` (one of "a", "b", "c").  Only the order of options[] changes;
  * every text string is preserved verbatim (the "a) " label prefix is updated).
+ * Also resyncs explanation letter refs ("Option a)" / "Option a" / …) when present.
  */
 function rotateToTarget(question, targetLetter) {
   const opts = question.options;
@@ -127,11 +252,18 @@ function rotateToTarget(question, targetLetter) {
     return text.replace(/^[a-cA-C]\)\s*/, `${letter}) `);
   });
 
+  const explanation = resyncExplanationOptionLetter(
+    question.explanation,
+    correctLetter,
+    targetLetter,
+  );
+
   return {
     ...question,
     options: newOptions,
     correct: targetLetter,
     correctAnswer: targetLetter,
+    ...(explanation !== question.explanation ? { explanation } : {}),
   };
 }
 
@@ -141,10 +273,17 @@ function rotateToTarget(question, targetLetter) {
  * Assigns shuffled-but-balanced target letters to 3-option MCQ items so that
  * no letter exceeds ⌈N/3⌉ and (when N ≥ 3) all three letters appear — without
  * a fixed positional pattern like a,b,c,a,b,c across parts.
+ *
+ * Always runs assertBalanceMcqWriterContract before returning (opts.skipContract
+ * only for internal tests that inject violations).
  */
 export function balanceMcqGroup(questions, opts = {}) {
   if (!Array.isArray(questions) || questions.length === 0) return questions;
 
+  const before = questions.map((q) => ({
+    ...q,
+    options: Array.isArray(q.options) ? [...q.options] : q.options,
+  }));
   const result = questions.map((q) => ({ ...q }));
   const mcqIndices = [];
   for (let i = 0; i < result.length; i++) {
@@ -167,12 +306,17 @@ export function balanceMcqGroup(questions, opts = {}) {
     result[qIdx] = rotateToTarget(result[qIdx], targets[rank]);
   });
 
+  if (!opts.skipContract) {
+    assertBalanceMcqWriterContract(before, result, { label: 'balanceMcqGroup' });
+  }
   return result;
 }
 
 /**
- * Shuffle question order within (type, passageId) groups for richtig_falsch /
- * ja_nein so positional key patterns differ per part without changing semantics.
+ * Shuffle question order within (type, passageId) groups for ja_nein only
+ * so positional key patterns differ per part. richtig_falsch is intentionally
+ * NOT shuffled — order must stay chronological by char evidence in
+ * passages[0].text (Hören T3; see horenRfChronoEvidence.mjs).
  */
 export function shuffleKeyedQuestionOrder(questions, opts = {}) {
   if (!Array.isArray(questions) || questions.length < 2) return questions;
@@ -207,9 +351,13 @@ export function shuffleKeyedQuestionOrder(questions, opts = {}) {
  * Detects runs of ≥ `runThreshold` consecutive identical correct answers in the
  * MCQ subsequence and breaks them by rotating the middle item.
  */
-export function antiRuns(questions, runThreshold = 4) {
+export function antiRuns(questions, runThreshold = 4, opts = {}) {
   if (!Array.isArray(questions) || questions.length < runThreshold) return questions;
 
+  const before = questions.map((q) => ({
+    ...q,
+    options: Array.isArray(q.options) ? [...q.options] : q.options,
+  }));
   const result = questions.map((q) => ({ ...q }));
   const mcqIndices = [];
   for (let i = 0; i < result.length; i++) {
@@ -238,5 +386,8 @@ export function antiRuns(questions, runThreshold = 4) {
     start = end + 1;
   }
 
+  if (!opts.skipContract) {
+    assertBalanceMcqWriterContract(before, result, { label: 'antiRuns' });
+  }
   return result;
 }

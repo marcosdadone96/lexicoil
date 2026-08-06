@@ -1,0 +1,519 @@
+{
+  "generatedAt": "2026-07-15T10:35:19.008Z",
+  "rationale": {
+    "whyNotFullQuota": "0 usuarios hoy; pre-aprovisionar 268 LH (Pro 100%) es sobre-inversión. Stock compartido: el límite es el usuario más exigente (burned per-user), no la suma de todos.",
+    "usageAssumption": "Primer mes: Free 3 exámenes + 5/4 personal LH; Pro 4 + 10/8. Cohorte base 5 usuarios (4F+1P).",
+    "cushion": "+25% y +3 partes/teil sobre el mínimo del usuario binding — cubre variación (un examen extra, personal de más) sin escenario teórico 12+30.",
+    "backgroundGeneration": "Generación de fondo sigue sumando mientras hay uso real; este target es piso de lanzamiento, no techo mensual."
+  },
+  "costPerOkUsd": 0.1508,
+  "currentStock": {
+    "lesen": {
+      "1": 21,
+      "2": 14,
+      "3": 19,
+      "4": 11,
+      "5": 20
+    },
+    "horen": {
+      "1": 9,
+      "2": 22,
+      "3": 10,
+      "4": 12
+    },
+    "schreiben": {
+      "1": 27,
+      "2": 19,
+      "3": 19
+    },
+    "sprechen": {
+      "1": 33,
+      "2": 25,
+      "3": 25
+    }
+  },
+  "stagingRescueExpected": {
+    "lesen": {
+      "1": 15,
+      "2": 7.5,
+      "3": 4,
+      "4": 1,
+      "5": 21.75
+    },
+    "horen": {
+      "1": 0,
+      "2": 7,
+      "3": 2,
+      "4": 6
+    },
+    "schreiben": {
+      "1": 2.6666666666666665,
+      "2": 2.6666666666666665,
+      "3": 2.6666666666666665
+    },
+    "sprechen": {
+      "1": 2.6666666666666665,
+      "2": 2.6666666666666665,
+      "3": 2.6666666666666665
+    }
+  },
+  "stockAfterStagingRescue": {
+    "lesen": {
+      "1": 36,
+      "2": 21.5,
+      "3": 23,
+      "4": 12,
+      "5": 41.75
+    },
+    "horen": {
+      "1": 9,
+      "2": 29,
+      "3": 12,
+      "4": 18
+    }
+  },
+  "usageProfiles": {
+    "free_early": {
+      "label": "Free — primer mes típico",
+      "exams": 3,
+      "personalLesen": 5,
+      "personalHoren": 4,
+      "rationale": "Usuario nuevo explora: 2-3 simulacros + pocos personalizados por vocabulario"
+    },
+    "pro_early": {
+      "label": "Pro — primer mes típico",
+      "exams": 4,
+      "personalLesen": 10,
+      "personalHoren": 8,
+      "rationale": "Early adopter más activo: ~1 examen/semana + personal ocasional, no 12+30"
+    }
+  },
+  "cohorts": {
+    "conservative_3": {
+      "cohort": {
+        "label": "3 usuarios (2 Free + 1 Pro)",
+        "users": [
+          {
+            "plan": "free_early",
+            "count": 2
+          },
+          {
+            "plan": "pro_early",
+            "count": 1
+          }
+        ]
+      },
+      "bindingUser": "pro_early",
+      "bindingNeed": {
+        "lesen": {
+          "1": 14,
+          "2": 14,
+          "3": 14,
+          "4": 14,
+          "5": 14
+        },
+        "horen": {
+          "1": 12,
+          "2": 12,
+          "3": 12,
+          "4": 12
+        },
+        "ss": {
+          "schreiben": 4,
+          "sprechen": 4
+        }
+      },
+      "targetWithCushion": {
+        "lesen": {
+          "1": 21,
+          "2": 21,
+          "3": 21,
+          "4": 21,
+          "5": 21
+        },
+        "horen": {
+          "1": 18,
+          "2": 18,
+          "3": 18,
+          "4": 18
+        }
+      },
+      "cushionRule": "max(min×1.25, min+3)",
+      "deficitAfterRescue": {
+        "minimum": {
+          "lesen": {
+            "1": {
+              "have": 21,
+              "haveAfterRescue": 36,
+              "need": 14,
+              "deficit": 0
+            },
+            "2": {
+              "have": 14,
+              "haveAfterRescue": 21.5,
+              "need": 14,
+              "deficit": 0
+            },
+            "3": {
+              "have": 19,
+              "haveAfterRescue": 23,
+              "need": 14,
+              "deficit": 0
+            },
+            "4": {
+              "have": 11,
+              "haveAfterRescue": 12,
+              "need": 14,
+              "deficit": 2
+            },
+            "5": {
+              "have": 20,
+              "haveAfterRescue": 41.75,
+              "need": 14,
+              "deficit": 0
+            }
+          },
+          "horen": {
+            "1": {
+              "have": 9,
+              "haveAfterRescue": 9,
+              "need": 12,
+              "deficit": 3
+            },
+            "2": {
+              "have": 22,
+              "haveAfterRescue": 29,
+              "need": 12,
+              "deficit": 0
+            },
+            "3": {
+              "have": 10,
+              "haveAfterRescue": 12,
+              "need": 12,
+              "deficit": 0
+            },
+            "4": {
+              "have": 12,
+              "haveAfterRescue": 18,
+              "need": 12,
+              "deficit": 0
+            }
+          },
+          "total": 5
+        },
+        "withCushion": {
+          "lesen": {
+            "1": {
+              "have": 21,
+              "haveAfterRescue": 36,
+              "need": 21,
+              "deficit": 0
+            },
+            "2": {
+              "have": 14,
+              "haveAfterRescue": 21.5,
+              "need": 21,
+              "deficit": 0
+            },
+            "3": {
+              "have": 19,
+              "haveAfterRescue": 23,
+              "need": 21,
+              "deficit": 0
+            },
+            "4": {
+              "have": 11,
+              "haveAfterRescue": 12,
+              "need": 21,
+              "deficit": 9
+            },
+            "5": {
+              "have": 20,
+              "haveAfterRescue": 41.75,
+              "need": 21,
+              "deficit": 0
+            }
+          },
+          "horen": {
+            "1": {
+              "have": 9,
+              "haveAfterRescue": 9,
+              "need": 18,
+              "deficit": 9
+            },
+            "2": {
+              "have": 22,
+              "haveAfterRescue": 29,
+              "need": 18,
+              "deficit": 0
+            },
+            "3": {
+              "have": 10,
+              "haveAfterRescue": 12,
+              "need": 18,
+              "deficit": 6
+            },
+            "4": {
+              "have": 12,
+              "haveAfterRescue": 18,
+              "need": 18,
+              "deficit": 0
+            }
+          },
+          "total": 24
+        },
+        "costMinimumUsd": 0.75,
+        "costWithCushionUsd": 3.62
+      },
+      "simulationCurrentStock": {
+        "free_early": {
+          "ok": false,
+          "failures": [
+            {
+              "type": "exam",
+              "exam": 1,
+              "cell": "lesen_1"
+            }
+          ],
+          "uniqueUsed": 0
+        },
+        "pro_early": {
+          "ok": false,
+          "failures": [
+            {
+              "type": "exam",
+              "exam": 1,
+              "cell": "lesen_1"
+            }
+          ],
+          "uniqueUsed": 0
+        }
+      }
+    },
+    "base_5": {
+      "cohort": {
+        "label": "5 usuarios (4 Free + 1 Pro) — base recomendada",
+        "users": [
+          {
+            "plan": "free_early",
+            "count": 4
+          },
+          {
+            "plan": "pro_early",
+            "count": 1
+          }
+        ]
+      },
+      "bindingUser": "pro_early",
+      "bindingNeed": {
+        "lesen": {
+          "1": 14,
+          "2": 14,
+          "3": 14,
+          "4": 14,
+          "5": 14
+        },
+        "horen": {
+          "1": 12,
+          "2": 12,
+          "3": 12,
+          "4": 12
+        },
+        "ss": {
+          "schreiben": 4,
+          "sprechen": 4
+        }
+      },
+      "targetWithCushion": {
+        "lesen": {
+          "1": 21,
+          "2": 21,
+          "3": 21,
+          "4": 21,
+          "5": 21
+        },
+        "horen": {
+          "1": 18,
+          "2": 18,
+          "3": 18,
+          "4": 18
+        }
+      },
+      "cushionRule": "max(min×1.25, min+3)",
+      "deficitAfterRescue": {
+        "minimum": {
+          "lesen": {
+            "1": {
+              "have": 21,
+              "haveAfterRescue": 36,
+              "need": 14,
+              "deficit": 0
+            },
+            "2": {
+              "have": 14,
+              "haveAfterRescue": 21.5,
+              "need": 14,
+              "deficit": 0
+            },
+            "3": {
+              "have": 19,
+              "haveAfterRescue": 23,
+              "need": 14,
+              "deficit": 0
+            },
+            "4": {
+              "have": 11,
+              "haveAfterRescue": 12,
+              "need": 14,
+              "deficit": 2
+            },
+            "5": {
+              "have": 20,
+              "haveAfterRescue": 41.75,
+              "need": 14,
+              "deficit": 0
+            }
+          },
+          "horen": {
+            "1": {
+              "have": 9,
+              "haveAfterRescue": 9,
+              "need": 12,
+              "deficit": 3
+            },
+            "2": {
+              "have": 22,
+              "haveAfterRescue": 29,
+              "need": 12,
+              "deficit": 0
+            },
+            "3": {
+              "have": 10,
+              "haveAfterRescue": 12,
+              "need": 12,
+              "deficit": 0
+            },
+            "4": {
+              "have": 12,
+              "haveAfterRescue": 18,
+              "need": 12,
+              "deficit": 0
+            }
+          },
+          "total": 5
+        },
+        "withCushion": {
+          "lesen": {
+            "1": {
+              "have": 21,
+              "haveAfterRescue": 36,
+              "need": 21,
+              "deficit": 0
+            },
+            "2": {
+              "have": 14,
+              "haveAfterRescue": 21.5,
+              "need": 21,
+              "deficit": 0
+            },
+            "3": {
+              "have": 19,
+              "haveAfterRescue": 23,
+              "need": 21,
+              "deficit": 0
+            },
+            "4": {
+              "have": 11,
+              "haveAfterRescue": 12,
+              "need": 21,
+              "deficit": 9
+            },
+            "5": {
+              "have": 20,
+              "haveAfterRescue": 41.75,
+              "need": 21,
+              "deficit": 0
+            }
+          },
+          "horen": {
+            "1": {
+              "have": 9,
+              "haveAfterRescue": 9,
+              "need": 18,
+              "deficit": 9
+            },
+            "2": {
+              "have": 22,
+              "haveAfterRescue": 29,
+              "need": 18,
+              "deficit": 0
+            },
+            "3": {
+              "have": 10,
+              "haveAfterRescue": 12,
+              "need": 18,
+              "deficit": 6
+            },
+            "4": {
+              "have": 12,
+              "haveAfterRescue": 18,
+              "need": 18,
+              "deficit": 0
+            }
+          },
+          "total": 24
+        },
+        "costMinimumUsd": 0.75,
+        "costWithCushionUsd": 3.62
+      },
+      "simulationCurrentStock": {
+        "free_early": {
+          "ok": false,
+          "failures": [
+            {
+              "type": "exam",
+              "exam": 1,
+              "cell": "lesen_1"
+            }
+          ],
+          "uniqueUsed": 0
+        },
+        "pro_early": {
+          "ok": false,
+          "failures": [
+            {
+              "type": "exam",
+              "exam": 1,
+              "cell": "lesen_1"
+            }
+          ],
+          "uniqueUsed": 0
+        }
+      }
+    }
+  },
+  "horenT3Focus": {
+    "current": 10,
+    "afterRescue": 12,
+    "bindingNeed": 12,
+    "targetWithCushion": 18,
+    "deficitMin": {
+      "have": 10,
+      "haveAfterRescue": 12,
+      "need": 12,
+      "deficit": 0
+    },
+    "deficitCushion": {
+      "have": 10,
+      "haveAfterRescue": 12,
+      "need": 18,
+      "deficit": 6
+    }
+  },
+  "comparisonToFullQuota": {
+    "proFullQuotaLhParts": 268,
+    "proFullQuotaCostUsd": 40.41,
+    "base5WithCushionLhParts": 24,
+    "reductionPct": null
+  }
+}

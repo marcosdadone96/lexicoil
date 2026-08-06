@@ -1,0 +1,181 @@
+{
+  "generatedAt": "2026-07-12T10:01:47.663Z",
+  "dryRun": false,
+  "version": "v2.3.10-no-explanation-2026-07-12",
+  "scope": "surgical-3-files-R7-no-explanation",
+  "backlogNote": "Full pool forceVocab reprocess (148 files) remains BACKLOG — bundle with the next real reason to touch the whole pool; do not run as a standalone pass.",
+  "targetFiles": [
+    "horen-t3-gemini-008.json",
+    "horen-t3-gemini-009.json",
+    "lesen-t1-gemini-177.json"
+  ],
+  "perFile": [
+    {
+      "file": "horen-t3-gemini-008.json",
+      "affectedQuestions": 2,
+      "questionsChanged": 7,
+      "affected": [
+        {
+          "id": "gen-q-h3-6bda70e0-1",
+          "question": "Ben fühlt sich wegen seiner Arbeit und des Studiums überfordert.",
+          "before": [
+            "wegen",
+            "uni-aufgaben",
+            "stressen",
+            "Arbeit",
+            "Studiums",
+            "zeigt"
+          ],
+          "after": [
+            "wegen",
+            "überforderen",
+            "fühlen",
+            "Arbeit",
+            "Studiums"
+          ],
+          "metaBefore": [
+            "zeigt"
+          ],
+          "metaAfter": []
+        },
+        {
+          "id": "gen-q-h3-6bda70e0-7",
+          "question": "Anna empfiehlt Ben, seine Gewohnheiten langsam anzupassen.",
+          "before": [
+            "Schritte",
+            "empfehlen",
+            "anpassen",
+            "Gewohnheiten",
+            "bedeutet",
+            "langsam"
+          ],
+          "after": [
+            "empfehlen",
+            "Gewohnheiten",
+            "langsam"
+          ],
+          "metaBefore": [
+            "bedeutet"
+          ],
+          "metaAfter": []
+        }
+      ],
+      "stamps": {
+        "_vocabTagsNormalizeVersion": "v2.3.10-no-explanation-2026-07-12",
+        "_r7VocabNoExplanationReprocessedAt": "2026-07-12T10:01:47.663Z"
+      }
+    },
+    {
+      "file": "horen-t3-gemini-009.json",
+      "affectedQuestions": 3,
+      "questionsChanged": 7,
+      "affected": [
+        {
+          "id": "gen-q-h3-f31303bd-3",
+          "question": "Das Haus von Bens Eltern ist zu Klein für so viele Besucher.",
+          "before": [
+            "eltern",
+            "ausdrücklich",
+            "widerspricht",
+            "Besucher",
+            "Aussage",
+            "Klein"
+          ],
+          "after": [
+            "eltern",
+            "Besucher",
+            "Klein",
+            "Haus"
+          ],
+          "metaBefore": [
+            "widerspricht"
+          ],
+          "metaAfter": []
+        },
+        {
+          "id": "gen-q-h3-f31303bd-4",
+          "question": "Die Kinder haben beim Familientreffen eine Aufführung gezeigt.",
+          "before": [
+            "familientreffen",
+            "Aufführung",
+            "garten",
+            "Theaterstück",
+            "entspricht",
+            "gezeigt"
+          ],
+          "after": [
+            "familientreffen",
+            "Aufführung",
+            "gezeigen",
+            "Kinder"
+          ],
+          "metaBefore": [
+            "entspricht"
+          ],
+          "metaAfter": []
+        },
+        {
+          "id": "gen-q-h3-f31303bd-5",
+          "question": "Anna ist der Meinung, dass man Familienmomente festhalten sollte.",
+          "before": [
+            "dokumentieren",
+            "festhalten",
+            "Meinung",
+            "finden",
+            "Familienmomente",
+            "bedeutet"
+          ],
+          "after": [
+            "festhalten",
+            "Meinung",
+            "Familienmomente",
+            "sollt"
+          ],
+          "metaBefore": [
+            "bedeutet"
+          ],
+          "metaAfter": []
+        }
+      ],
+      "stamps": {
+        "_vocabTagsNormalizeVersion": "v2.3.10-no-explanation-2026-07-12",
+        "_r7VocabNoExplanationReprocessedAt": "2026-07-12T10:01:47.663Z"
+      }
+    },
+    {
+      "file": "lesen-t1-gemini-177.json",
+      "affectedQuestions": 1,
+      "questionsChanged": 6,
+      "affected": [
+        {
+          "id": "gen-q-1-9e97892d-6",
+          "question": "Ihre Familie ist nicht an den Aufführungen interessiert.",
+          "before": [
+            "Familie",
+            "kommen",
+            "Aufführungen",
+            "interessiert",
+            "stolz",
+            "zeigt"
+          ],
+          "after": [
+            "interessieren",
+            "Familie",
+            "Aufführungen"
+          ],
+          "metaBefore": [
+            "zeigt"
+          ],
+          "metaAfter": []
+        }
+      ],
+      "stamps": {
+        "_vocabTagsNormalizeVersion": "v2.3.10-no-explanation-2026-07-12",
+        "_r7VocabNoExplanationReprocessedAt": "2026-07-12T10:01:47.663Z"
+      }
+    }
+  ],
+  "postScanResidue": [],
+  "residueCount": 0,
+  "ok": true
+}

@@ -12,6 +12,7 @@ import path from 'node:path';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 import { canonicalPartHash, normalizePartSnapshot, shortHash } from './partContentHash.mjs';
+import { allAssembleCellKeys } from './examLevelCells.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const require = createRequire(import.meta.url);
@@ -22,11 +23,12 @@ const { getReusablePart } = require(path.join(
 
 export const PUBLISHED_EXAM_SCHEMA = 'published-exam/v1';
 
-export const OFFICIAL_CELLS = [
-  'lesen_1', 'lesen_2', 'lesen_3', 'lesen_4', 'lesen_5',
-  'horen_1', 'horen_2', 'horen_3', 'horen_4',
-  'schreiben_1', 'schreiben_2', 'schreiben_3',
-];
+export function officialCellsForLevel(level = 'B1') {
+  return allAssembleCellKeys(level);
+}
+
+/** @deprecated use officialCellsForLevel(level) */
+export const OFFICIAL_CELLS = officialCellsForLevel('B1');
 
 export function publishedCatalogBlobKey(lang, level) {
   return `published_catalog:${String(lang).toLowerCase()}:${String(level).toUpperCase()}`;
@@ -71,6 +73,25 @@ export function loadSeedRecords(lang, level) {
   return { records, byId, source: file };
 }
 
+/**
+ * Merge overlay seed records into byId (overlay wins on id collision).
+ * Overlay file shape: { records: [...] } or bare array; each record needs `id`.
+ */
+export function mergeSeedOverlay(byId, overlayPath) {
+  if (!overlayPath) return { merged: 0, source: null };
+  const abs = path.isAbsolute(overlayPath) ? overlayPath : path.join(ROOT, overlayPath);
+  if (!fs.existsSync(abs)) throw new Error(`seed overlay not found: ${abs}`);
+  const raw = JSON.parse(fs.readFileSync(abs, 'utf8'));
+  const records = Array.isArray(raw.records) ? raw.records : Array.isArray(raw) ? raw : [];
+  let merged = 0;
+  for (const r of records) {
+    if (!r?.id) continue;
+    byId.set(r.id, r);
+    merged++;
+  }
+  return { merged, source: abs };
+}
+
 /** Map seed/bank record → blob-compatible snapshot payload. */
 export function seedRecordToSnapshotPayload(record) {
   if (!record?.id) throw new Error('seed record missing id');
@@ -109,12 +130,13 @@ export function parseAssembledExamFile(filePath) {
   }
   const slot = Number(meta.examNumber);
   if (!Number.isFinite(slot)) throw new Error(`${filePath}: missing _meta.examNumber`);
+  const level = String(raw.level || meta.level || 'B1').toUpperCase();
   return {
     slot,
     partIds: meta.partIds,
     gate1: meta.gate1 || null,
-    lang: 'de',
-    level: 'B1',
+    lang: String(raw.lang || 'de').toLowerCase(),
+    level,
   };
 }
 
@@ -158,8 +180,9 @@ export async function capturePublishedParts(store, { lang, level, partIdMap, see
   const parts = [];
   const missing = [];
   const sources = {};
+  const cells = officialCellsForLevel(level);
 
-  for (const cell of OFFICIAL_CELLS) {
+  for (const cell of cells) {
     const partId = partIdMap[cell];
     if (!partId) {
       missing.push(cell);

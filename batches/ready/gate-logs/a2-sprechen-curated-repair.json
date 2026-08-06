@@ -1,0 +1,4217 @@
+{
+  "at": "2026-07-20T13:33:44.961Z",
+  "level": "A2",
+  "bundles": [
+    {
+      "file": "sprechen-cur-health.json",
+      "slug": "health",
+      "topicTag": "Gesundheit",
+      "topicCanonical": "Gesundheit",
+      "pool2": {
+        "ok": true,
+        "blocking": []
+      },
+      "poolReady": {
+        "ok": true,
+        "reasons": [],
+        "gates": {}
+      },
+      "metadata": [
+        {
+          "id": "sp-health-t1",
+          "grammarTags": 2,
+          "vocabularyTags": 6
+        },
+        {
+          "id": "sp-health-t2",
+          "grammarTags": 1,
+          "vocabularyTags": 6
+        },
+        {
+          "id": "sp-health-t3",
+          "grammarTags": 2,
+          "vocabularyTags": 6
+        }
+      ],
+      "sync": {
+        "ok": true,
+        "file": "sprechen-cur-health.json",
+        "results": [
+          {
+            "recordId": "sprechen-cur-health-t1",
+            "teil": 1,
+            "ok": true,
+            "id": "sprechen-cur-health-t1",
+            "record": {
+              "id": "sprechen-cur-health-t1",
+              "module": "sprechen",
+              "teil": 1,
+              "lang": "de",
+              "level": "A2",
+              "questions": [
+                {
+                  "id": "sp-health-t1",
+                  "module": "sprechen",
+                  "teil": 1,
+                  "level": "A2",
+                  "lang": "de",
+                  "type": "personal_questions",
+                  "question": "Sie planen mit Ihrer Klasse ein gesundes Frühstück. Besprechen Sie folgende Punkte:\n\n• Welche Lebensmittel sind gesund?\n• Wer kauft die Lebensmittel ein?\n• Wie viel Budget haben Sie?\n• Wann und wo findet das Frühstück statt?\n• Was machen Sie mit den Resten?",
+                  "correct": "rubric",
+                  "correctAnswer": "rubric",
+                  "topicTags": [
+                    "Ernährung"
+                  ],
+                  "options": [],
+                  "topicTag": "Ernährung",
+                  "vocabularyTags": [
+                    "stattfinden",
+                    "einkaufen",
+                    "Lebensmittel",
+                    "Punkte",
+                    "besprechen",
+                    "planen"
+                  ],
+                  "grammarTags": [
+                    "g-de-b1-nebensatz",
+                    "g-de-b1-perfekt"
+                  ]
+                }
+              ],
+              "instruction": "Sie planen mit Ihrer Klasse ein gesundes Frühstück. Besprechen Sie folgende Punkte:\n\n• Welche Lebensmittel sind gesund?\n• Wer kauft die Lebensmittel ein?\n• Wie viel Budget haben Sie?\n• Wann und wo findet das Frühstück statt?\n• Was machen Sie mit den Resten?",
+              "task": "Sie planen mit Ihrer Klasse ein gesundes Frühstück. Besprechen Sie folgende Punkte:\n\n• Welche Lebensmittel sind gesund?\n• Wer kauft die Lebensmittel ein?\n• Wie viel Budget haben Sie?\n• Wann und wo findet das Frühstück statt?\n• Was machen Sie mit den Resten?",
+              "topicTag": "Gesundheit",
+              "sourceFile": "batches/ready/pool-verified/A2/sprechen-cur-health.json",
+              "contributor": "auto-sync-pool-verified",
+              "complete": true,
+              "verified": true,
+              "disabled": false,
+              "sem1Ok": true,
+              "sem1VerifiedAt": "2026-07-20T13:33:45.115Z",
+              "publishedAt": "2026-07-20T13:33:45.115Z",
+              "createdAt": 1784554425115,
+              "vocabIndex": [
+                {
+                  "word": "stattfinden",
+                  "lemma": "stattfinden",
+                  "concept": "stattfinden",
+                  "aliases": [],
+                  "sources": [
+                    "vocabularyTag"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "planen",
+                  "lemma": "planen",
+                  "concept": "planen",
+                  "aliases": [],
+                  "sources": [
+                    "text",
+                    "vocabularyTag"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Lebensmittel",
+                  "lemma": "lebensmittel",
+                  "concept": "lebensmittel",
+                  "aliases": [],
+                  "sources": [
+                    "text",
+                    "vocabularyTag"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "besprechen",
+                  "lemma": "besprechen",
+                  "concept": "besprechen",
+                  "aliases": [],
+                  "sources": [
+                    "text",
+                    "vocabularyTag"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "einkaufen",
+                  "lemma": "einkaufen",
+                  "concept": "einkaufen",
+                  "aliases": [],
+                  "sources": [
+                    "vocabularyTag"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Punkte",
+                  "lemma": "punkten",
+                  "concept": "punkten",
+                  "aliases": [],
+                  "sources": [
+                    "text",
+                    "vocabularyTag"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Frühstück",
+                  "lemma": "frühstück",
+                  "concept": "frühstück",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "folgende",
+                  "lemma": "folgenden",
+                  "concept": "folgenden",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Welche",
+                  "lemma": "welchen",
+                  "concept": "welchen",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "gesundes",
+                  "lemma": "gesund",
+                  "concept": "gesund",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "kauft",
+                  "lemma": "kaufen",
+                  "concept": "kaufen",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Budget",
+                  "lemma": "budget",
+                  "concept": "budget",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "statt",
+                  "lemma": "staten",
+                  "concept": "staten",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Resten",
+                  "lemma": "resten",
+                  "concept": "resten",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Klasse",
+                  "lemma": "klass",
+                  "concept": "klass",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Wer",
+                  "lemma": "wer",
+                  "concept": "wer",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Wann",
+                  "lemma": "wan",
+                  "concept": "wan",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                }
+              ],
+              "vocabIndexVersion": "v3-quality",
+              "topicSlug": "stattfinden-planen",
+              "topic": "stattfinden-planen",
+              "schemaVersion": 2
+            },
+            "duplicate": false
+          },
+          {
+            "recordId": "sprechen-cur-health-t2",
+            "teil": 2,
+            "ok": true,
+            "id": "sprechen-cur-health-t2",
+            "record": {
+              "id": "sprechen-cur-health-t2",
+              "module": "sprechen",
+              "teil": 2,
+              "lang": "de",
+              "level": "A2",
+              "questions": [
+                {
+                  "id": "sp-health-t2",
+                  "module": "sprechen",
+                  "teil": 2,
+                  "level": "A2",
+                  "lang": "de",
+                  "type": "about_self",
+                  "question": "Halten Sie eine Präsentation über Essgewohnheiten in Ihrem Heimatland. Gehen Sie auf folgende Punkte ein:\n\n• Einleitung: Kurze Vorstellung des Themas\n• Typische Gerichte und Mahlzeiten im Heimatland\n• Essenszeiten und Esskultur (wann und wie man isst)\n• Vorteile und Nachteile dieser Essgewohnheiten für die Gesundheit\n• Ihre persönliche Meinung und Erfahrung",
+                  "correct": "rubric",
+                  "correctAnswer": "rubric",
+                  "topicTags": [
+                    "Ernährung"
+                  ],
+                  "options": [],
+                  "topicTag": "Ernährung",
+                  "vocabularyTags": [
+                    "eingehen",
+                    "halten",
+                    "persönlich",
+                    "Gerichte",
+                    "Vorteile",
+                    "Punkte"
+                  ],
+                  "grammarTags": [
+                    "g-de-b1-genitiv"
+                  ]
+                }
+              ],
+              "instruction": "Halten Sie eine Präsentation über Essgewohnheiten in Ihrem Heimatland. Gehen Sie auf folgende Punkte ein:\n\n• Einleitung: Kurze Vorstellung des Themas\n• Typische Gerichte und Mahlzeiten im Heimatland\n• Essenszeiten und Esskultur (wann und wie man isst)\n• Vorteile und Nachteile dieser Essgewohnheiten für die Gesundheit\n• Ihre persönliche Meinung und Erfahrung",
+              "task": "Halten Sie eine Präsentation über Essgewohnheiten in Ihrem Heimatland. Gehen Sie auf folgende Punkte ein:\n\n• Einleitung: Kurze Vorstellung des Themas\n• Typische Gerichte und Mahlzeiten im Heimatland\n• Essenszeiten und Esskultur (wann und wie man isst)\n• Vorteile und Nachteile dieser Essgewohnheiten für die Gesundheit\n• Ihre persönliche Meinung und Erfahrung",
+              "topicTag": "Gesundheit",
+              "sourceFile": "batches/ready/pool-verified/A2/sprechen-cur-health.json",
+              "contributor": "auto-sync-pool-verified",
+              "complete": true,
+              "verified": true,
+              "disabled": false,
+              "sem1Ok": true,
+              "sem1VerifiedAt": "2026-07-20T13:33:45.154Z",
+              "publishedAt": "2026-07-20T13:33:45.154Z",
+              "createdAt": 1784554425155,
+              "vocabIndex": [
+                {
+                  "word": "Erfahrung",
+                  "lemma": "erfahrung",
+                  "concept": "erfahrung",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Meinung",
+                  "lemma": "meinung",
+                  "concept": "meinung",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Gerichte",
+                  "lemma": "gerichten",
+                  "concept": "gerichten",
+                  "aliases": [],
+                  "sources": [
+                    "text",
+                    "vocabularyTag"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Vorteile",
+                  "lemma": "vorteilen",
+                  "concept": "vorteilen",
+                  "aliases": [],
+                  "sources": [
+                    "text",
+                    "vocabularyTag"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "eingehen",
+                  "lemma": "eingehen",
+                  "concept": "eingehen",
+                  "aliases": [],
+                  "sources": [
+                    "vocabularyTag"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Punkte",
+                  "lemma": "punkten",
+                  "concept": "punkten",
+                  "aliases": [],
+                  "sources": [
+                    "text",
+                    "vocabularyTag"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "halten",
+                  "lemma": "halten",
+                  "concept": "halten",
+                  "aliases": [],
+                  "sources": [
+                    "text",
+                    "vocabularyTag"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "persönlich",
+                  "lemma": "persön",
+                  "concept": "persön",
+                  "aliases": [],
+                  "sources": [
+                    "vocabularyTag"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Essgewohnheiten",
+                  "lemma": "essgewohnheiten",
+                  "concept": "essgewohnheiten",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Essenszeiten",
+                  "lemma": "essenszeiten",
+                  "concept": "essenszeiten",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Präsentation",
+                  "lemma": "präsentatio",
+                  "concept": "präsentatio",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Vorstellung",
+                  "lemma": "vorstellung",
+                  "concept": "vorstellung",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Heimatland",
+                  "lemma": "heimatland",
+                  "concept": "heimatland",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Einleitung",
+                  "lemma": "einleitung",
+                  "concept": "einleitung",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Mahlzeiten",
+                  "lemma": "mahlzeiten",
+                  "concept": "mahlzeiten",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Nachteile",
+                  "lemma": "nachteilen",
+                  "concept": "nachteilen",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "persönliche",
+                  "lemma": "persönlich",
+                  "concept": "persönlich",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "folgende",
+                  "lemma": "folgenden",
+                  "concept": "folgenden",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Esskultur",
+                  "lemma": "esskultur",
+                  "concept": "esskultur",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Typische",
+                  "lemma": "typisch",
+                  "concept": "typisch",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Kurze",
+                  "lemma": "kurzen",
+                  "concept": "kurzen",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Gesundheit",
+                  "lemma": "gesund",
+                  "concept": "gesund",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Themas",
+                  "lemma": "thema",
+                  "concept": "thema",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "isst",
+                  "lemma": "essen",
+                  "concept": "essen",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "wann",
+                  "lemma": "wan",
+                  "concept": "wan",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                }
+              ],
+              "vocabIndexVersion": "v3-quality",
+              "topicSlug": "erfahrung-meinung",
+              "topic": "erfahrung-meinung",
+              "schemaVersion": 2
+            },
+            "duplicate": false
+          },
+          {
+            "recordId": "sprechen-cur-health-t3",
+            "teil": 3,
+            "ok": true,
+            "id": "sprechen-cur-health-t3",
+            "record": {
+              "id": "sprechen-cur-health-t3",
+              "module": "sprechen",
+              "teil": 3,
+              "lang": "de",
+              "level": "A2",
+              "questions": [
+                {
+                  "id": "sp-health-t3",
+                  "module": "sprechen",
+                  "teil": 3,
+                  "level": "A2",
+                  "lang": "de",
+                  "type": "plan_together",
+                  "question": "Geben Sie Feedback zur Präsentation Ihres Partners / Ihrer Partnerin und stellen Sie 2–3 vertiefende Fragen.\n\nBeispiele für Fragen:\n• Was ist Ihr Lieblingsgericht aus Ihrem Heimatland?\n• Wie oft essen Sie traditionelle Gerichte?\n• Welche ausländischen Essgewohnheiten mögen Sie gerne?",
+                  "correct": "rubric",
+                  "correctAnswer": "rubric",
+                  "topicTags": [
+                    "Ernährung"
+                  ],
+                  "options": [],
+                  "topicTag": "Ernährung",
+                  "vocabularyTags": [
+                    "Beispiel",
+                    "Gerichte",
+                    "Ausländischen",
+                    "Präsentation",
+                    "fragen",
+                    "Lieblingsgericht"
+                  ],
+                  "grammarTags": [
+                    "g-de-b1-modalverben",
+                    "g-de-b1-dativ"
+                  ]
+                }
+              ],
+              "instruction": "Geben Sie Feedback zur Präsentation Ihres Partners / Ihrer Partnerin und stellen Sie 2–3 vertiefende Fragen.\n\nBeispiele für Fragen:\n• Was ist Ihr Lieblingsgericht aus Ihrem Heimatland?\n• Wie oft essen Sie traditionelle Gerichte?\n• Welche ausländischen Essgewohnheiten mögen Sie gerne?",
+              "task": "Geben Sie Feedback zur Präsentation Ihres Partners / Ihrer Partnerin und stellen Sie 2–3 vertiefende Fragen.\n\nBeispiele für Fragen:\n• Was ist Ihr Lieblingsgericht aus Ihrem Heimatland?\n• Wie oft essen Sie traditionelle Gerichte?\n• Welche ausländischen Essgewohnheiten mögen Sie gerne?",
+              "topicTag": "Gesundheit",
+              "sourceFile": "batches/ready/pool-verified/A2/sprechen-cur-health.json",
+              "contributor": "auto-sync-pool-verified",
+              "complete": true,
+              "verified": true,
+              "disabled": false,
+              "sem1Ok": true,
+              "sem1VerifiedAt": "2026-07-20T13:33:45.177Z",
+              "publishedAt": "2026-07-20T13:33:45.177Z",
+              "createdAt": 1784554425177,
+              "vocabIndex": [
+                {
+                  "word": "Beispiel",
+                  "lemma": "beispiel",
+                  "concept": "beispiel",
+                  "aliases": [],
+                  "sources": [
+                    "vocabularyTag"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Lieblingsgericht",
+                  "lemma": "lieblingsgerichen",
+                  "concept": "lieblingsgerichen",
+                  "aliases": [],
+                  "sources": [
+                    "text",
+                    "vocabularyTag"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Ausländischen",
+                  "lemma": "ausländischen",
+                  "concept": "ausländischen",
+                  "aliases": [],
+                  "sources": [
+                    "text",
+                    "vocabularyTag"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Präsentation",
+                  "lemma": "präsentatio",
+                  "concept": "präsentatio",
+                  "aliases": [],
+                  "sources": [
+                    "text",
+                    "vocabularyTag"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Gerichte",
+                  "lemma": "gerichten",
+                  "concept": "gerichten",
+                  "aliases": [],
+                  "sources": [
+                    "text",
+                    "vocabularyTag"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "fragen",
+                  "lemma": "fragen",
+                  "concept": "fragen",
+                  "aliases": [],
+                  "sources": [
+                    "text",
+                    "vocabularyTag"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Essgewohnheiten",
+                  "lemma": "essgewohnheiten",
+                  "concept": "essgewohnheiten",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "vertiefende",
+                  "lemma": "vertiefenden",
+                  "concept": "vertiefenden",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "traditionelle",
+                  "lemma": "traditionell",
+                  "concept": "traditionell",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Beispiele",
+                  "lemma": "beispielen",
+                  "concept": "beispielen",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Heimatland",
+                  "lemma": "heimatland",
+                  "concept": "heimatland",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Feedback",
+                  "lemma": "feedback",
+                  "concept": "feedback",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Partnerin",
+                  "lemma": "partneri",
+                  "concept": "partneri",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Partners",
+                  "lemma": "partner",
+                  "concept": "partner",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "stellen",
+                  "lemma": "stellen",
+                  "concept": "stellen",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Welche",
+                  "lemma": "welchen",
+                  "concept": "welchen",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "essen",
+                  "lemma": "essen",
+                  "concept": "essen",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "mögen",
+                  "lemma": "mögen",
+                  "concept": "mögen",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "gerne",
+                  "lemma": "gern",
+                  "concept": "gern",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "zur",
+                  "lemma": "zur",
+                  "concept": "zur",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                }
+              ],
+              "vocabIndexVersion": "v3-quality",
+              "topicSlug": "beispiel-lieblingsgerichen",
+              "topic": "beispiel-lieblingsgerichen",
+              "schemaVersion": 2
+            },
+            "duplicate": false
+          }
+        ],
+        "duplicate": false
+      }
+    },
+    {
+      "file": "sprechen-cur-education.json",
+      "slug": "education",
+      "topicTag": "Sport",
+      "topicCanonical": "Sport",
+      "pool2": {
+        "ok": true,
+        "blocking": []
+      },
+      "poolReady": {
+        "ok": true,
+        "reasons": [],
+        "gates": {}
+      },
+      "metadata": [
+        {
+          "id": "sp-education-t1",
+          "grammarTags": 3,
+          "vocabularyTags": 6
+        },
+        {
+          "id": "sp-education-t2",
+          "grammarTags": 2,
+          "vocabularyTags": 6
+        },
+        {
+          "id": "sp-education-t3",
+          "grammarTags": 2,
+          "vocabularyTags": 6
+        }
+      ],
+      "sync": {
+        "ok": true,
+        "file": "sprechen-cur-education.json",
+        "results": [
+          {
+            "recordId": "sprechen-cur-education-t1",
+            "teil": 1,
+            "ok": true,
+            "id": "sprechen-cur-education-t1",
+            "record": {
+              "id": "sprechen-cur-education-t1",
+              "module": "sprechen",
+              "teil": 1,
+              "lang": "de",
+              "level": "A2",
+              "questions": [
+                {
+                  "id": "sp-education-t1",
+                  "module": "sprechen",
+                  "teil": 1,
+                  "level": "A2",
+                  "lang": "de",
+                  "type": "personal_questions",
+                  "question": "Sie möchten mit Ihrer Partnerin/Ihrem Partner einen Sportkurs für Anfänger planen. Besprechen Sie die folgenden Punkte und einigen Sie sich auf eine gemeinsame Idee:\n\n*   Welche Sportart kommt infrage?\n*   Wo soll der Kurs stattfinden (z.B. Halle, draußen, online)?\n*   Wann und wie oft soll der Kurs stattfinden?\n*   Was brauchen die Teilnehmerinnen und Teilnehmer (Ausrüstung, Vorkenntnisse)?\n*   Wer soll den Kurs leiten oder organisieren?",
+                  "correct": "rubric",
+                  "correctAnswer": "rubric",
+                  "topicTags": [
+                    "Sport"
+                  ],
+                  "options": [],
+                  "topicTag": "Sport",
+                  "vocabularyTags": [
+                    "Partner",
+                    "draußen",
+                    "stattfinden",
+                    "gemeinsam",
+                    "Punkte",
+                    "besprechen"
+                  ],
+                  "grammarTags": [
+                    "g-de-b1-modalverben",
+                    "g-de-b1-genitiv",
+                    "g-de-b1-relativ"
+                  ]
+                }
+              ],
+              "instruction": "Sie möchten mit Ihrer Partnerin/Ihrem Partner einen Sportkurs für Anfänger planen. Besprechen Sie die folgenden Punkte und einigen Sie sich auf eine gemeinsame Idee:\n\n*   Welche Sportart kommt infrage?\n*   Wo soll der Kurs stattfinden (z.B. Halle, draußen, online)?\n*   Wann und wie oft soll der Kurs stattfinden?\n*   Was brauchen die Teilnehmerinnen und Teilnehmer (Ausrüstung, Vorkenntnisse)?\n*   Wer soll den Kurs leiten oder organisieren?",
+              "task": "Sie möchten mit Ihrer Partnerin/Ihrem Partner einen Sportkurs für Anfänger planen. Besprechen Sie die folgenden Punkte und einigen Sie sich auf eine gemeinsame Idee:\n\n*   Welche Sportart kommt infrage?\n*   Wo soll der Kurs stattfinden (z.B. Halle, draußen, online)?\n*   Wann und wie oft soll der Kurs stattfinden?\n*   Was brauchen die Teilnehmerinnen und Teilnehmer (Ausrüstung, Vorkenntnisse)?\n*   Wer soll den Kurs leiten oder organisieren?",
+              "topicTag": "Sport",
+              "sourceFile": "batches/ready/pool-verified/A2/sprechen-cur-education.json",
+              "contributor": "auto-sync-pool-verified",
+              "complete": true,
+              "verified": true,
+              "disabled": false,
+              "sem1Ok": true,
+              "sem1VerifiedAt": "2026-07-20T13:33:45.244Z",
+              "publishedAt": "2026-07-20T13:33:45.244Z",
+              "createdAt": 1784554425244,
+              "vocabIndex": [
+                {
+                  "word": "stattfinden",
+                  "lemma": "stattfinden",
+                  "concept": "stattfinden",
+                  "aliases": [],
+                  "sources": [
+                    "text",
+                    "vocabularyTag"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "gemeinsam",
+                  "lemma": "gemeinsam",
+                  "concept": "gemeinsam",
+                  "aliases": [],
+                  "sources": [
+                    "text",
+                    "vocabularyTag"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "organisieren",
+                  "lemma": "organisieren",
+                  "concept": "organisieren",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "planen",
+                  "lemma": "planen",
+                  "concept": "planen",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "besprechen",
+                  "lemma": "besprechen",
+                  "concept": "besprechen",
+                  "aliases": [],
+                  "sources": [
+                    "text",
+                    "vocabularyTag"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Punkte",
+                  "lemma": "punkten",
+                  "concept": "punkten",
+                  "aliases": [],
+                  "sources": [
+                    "text",
+                    "vocabularyTag"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "draußen",
+                  "lemma": "draußen",
+                  "concept": "draußen",
+                  "aliases": [],
+                  "sources": [
+                    "text",
+                    "vocabularyTag"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Teilnehmerinnen",
+                  "lemma": "teilnehmerinnen",
+                  "concept": "teilnehmerinnen",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Vorkenntnisse",
+                  "lemma": "vorkenntniss",
+                  "concept": "vorkenntniss",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Ausrüstung",
+                  "lemma": "ausrüstung",
+                  "concept": "ausrüstung",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "folgenden",
+                  "lemma": "folgenden",
+                  "concept": "folgenden",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Sportart",
+                  "lemma": "sportaren",
+                  "concept": "sportaren",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Partnerin",
+                  "lemma": "partneri",
+                  "concept": "partneri",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Sportkurs",
+                  "lemma": "sportkur",
+                  "concept": "sportkur",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "infrage",
+                  "lemma": "infragen",
+                  "concept": "infragen",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "brauchen",
+                  "lemma": "brauchen",
+                  "concept": "brauchen",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Teilnehmer",
+                  "lemma": "teilnehm",
+                  "concept": "teilnehm",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "möchten",
+                  "lemma": "möchten",
+                  "concept": "möchten",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "einigen",
+                  "lemma": "einigen",
+                  "concept": "einigen",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Welche",
+                  "lemma": "welchen",
+                  "concept": "welchen",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Anfänger",
+                  "lemma": "anfäng",
+                  "concept": "anfäng",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "kommt",
+                  "lemma": "kommen",
+                  "concept": "kommen",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "soll",
+                  "lemma": "sollen",
+                  "concept": "sollen",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Halle",
+                  "lemma": "hallen",
+                  "concept": "hallen",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "leiten",
+                  "lemma": "leiten",
+                  "concept": "leiten",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Partner",
+                  "lemma": "partn",
+                  "concept": "partn",
+                  "aliases": [],
+                  "sources": [
+                    "text",
+                    "vocabularyTag"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "einen",
+                  "lemma": "einen",
+                  "concept": "einen",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "online",
+                  "lemma": "onlin",
+                  "concept": "onlin",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "sich",
+                  "lemma": "sich",
+                  "concept": "sich",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Idee",
+                  "lemma": "ide",
+                  "concept": "ide",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Kurs",
+                  "lemma": "kur",
+                  "concept": "kur",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Wann",
+                  "lemma": "wan",
+                  "concept": "wan",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Wer",
+                  "lemma": "wer",
+                  "concept": "wer",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                }
+              ],
+              "vocabIndexVersion": "v3-quality",
+              "topicSlug": "stattfinden-gemeinsam",
+              "topic": "stattfinden-gemeinsam",
+              "schemaVersion": 2
+            },
+            "duplicate": false
+          },
+          {
+            "recordId": "sprechen-cur-education-t2",
+            "teil": 2,
+            "ok": true,
+            "id": "sprechen-cur-education-t2",
+            "record": {
+              "id": "sprechen-cur-education-t2",
+              "module": "sprechen",
+              "teil": 2,
+              "lang": "de",
+              "level": "A2",
+              "questions": [
+                {
+                  "id": "sp-education-t2",
+                  "module": "sprechen",
+                  "teil": 2,
+                  "level": "A2",
+                  "lang": "de",
+                  "type": "about_self",
+                  "question": "Sie sollen eine kurze Präsentation zum Thema „Beliebtester Sport in meinem Heimatland“ halten. Gliedern Sie Ihre Präsentation in folgende Punkte:\n\n*   Einleitung: Begrüßen Sie Ihr Publikum und nennen Sie das Thema Ihrer Präsentation.\n*   Hauptteil: Beschreiben Sie den beliebtesten Sport in Ihrem Heimatland (z.B. kurze Regeln, warum er so beliebt ist, wann und wo man ihn spielt).\n*   Nennen Sie zwei Vorteile und zwei Nachteile dieses Sports.\n*   Sagen Sie Ihre persönliche Meinung dazu.\n*   Abschluss: Bedanken Sie sich und geben Sie dem Publikum die Möglichkeit, Fragen zu stellen.",
+                  "correct": "rubric",
+                  "correctAnswer": "rubric",
+                  "topicTags": [
+                    "Sport"
+                  ],
+                  "options": [],
+                  "topicTag": "Sport",
+                  "vocabularyTags": [
+                    "halten",
+                    "persönlich",
+                    "Vorteile",
+                    "Punkte",
+                    "Präsentation",
+                    "beliebtesten"
+                  ],
+                  "grammarTags": [
+                    "g-de-b1-perfekt",
+                    "g-de-b1-nebensatz"
+                  ]
+                }
+              ],
+              "instruction": "Sie sollen eine kurze Präsentation zum Thema „Beliebtester Sport in meinem Heimatland“ halten. Gliedern Sie Ihre Präsentation in folgende Punkte:\n\n*   Einleitung: Begrüßen Sie Ihr Publikum und nennen Sie das Thema Ihrer Präsentation.\n*   Hauptteil: Beschreiben Sie den beliebtesten Sport in Ihrem Heimatland (z.B. kurze Regeln, warum er so beliebt ist, wann und wo man ihn spielt).\n*   Nennen Sie zwei Vorteile und zwei Nachteile dieses Sports.\n*   Sagen Sie Ihre persönliche Meinung dazu.\n*   Abschluss: Bedanken Sie sich und geben Sie dem Publikum die Möglichkeit, Fragen zu stellen.",
+              "task": "Sie sollen eine kurze Präsentation zum Thema „Beliebtester Sport in meinem Heimatland“ halten. Gliedern Sie Ihre Präsentation in folgende Punkte:\n\n*   Einleitung: Begrüßen Sie Ihr Publikum und nennen Sie das Thema Ihrer Präsentation.\n*   Hauptteil: Beschreiben Sie den beliebtesten Sport in Ihrem Heimatland (z.B. kurze Regeln, warum er so beliebt ist, wann und wo man ihn spielt).\n*   Nennen Sie zwei Vorteile und zwei Nachteile dieses Sports.\n*   Sagen Sie Ihre persönliche Meinung dazu.\n*   Abschluss: Bedanken Sie sich und geben Sie dem Publikum die Möglichkeit, Fragen zu stellen.",
+              "topicTag": "Sport",
+              "sourceFile": "batches/ready/pool-verified/A2/sprechen-cur-education.json",
+              "contributor": "auto-sync-pool-verified",
+              "complete": true,
+              "verified": true,
+              "disabled": false,
+              "sem1Ok": true,
+              "sem1VerifiedAt": "2026-07-20T13:33:45.271Z",
+              "publishedAt": "2026-07-20T13:33:45.271Z",
+              "createdAt": 1784554425271,
+              "vocabIndex": [
+                {
+                  "word": "Bedanken",
+                  "lemma": "bedanken",
+                  "concept": "bedanken",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Meinung",
+                  "lemma": "meinung",
+                  "concept": "meinung",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "nennen",
+                  "lemma": "nennen",
+                  "concept": "nennen",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "beliebtesten",
+                  "lemma": "beliebtesten",
+                  "concept": "beliebtesten",
+                  "aliases": [],
+                  "sources": [
+                    "text",
+                    "vocabularyTag"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Präsentation",
+                  "lemma": "präsentatio",
+                  "concept": "präsentatio",
+                  "aliases": [],
+                  "sources": [
+                    "text",
+                    "vocabularyTag"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Vorteile",
+                  "lemma": "vorteilen",
+                  "concept": "vorteilen",
+                  "aliases": [],
+                  "sources": [
+                    "text",
+                    "vocabularyTag"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Punkte",
+                  "lemma": "punkten",
+                  "concept": "punkten",
+                  "aliases": [],
+                  "sources": [
+                    "text",
+                    "vocabularyTag"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "halten",
+                  "lemma": "halten",
+                  "concept": "halten",
+                  "aliases": [],
+                  "sources": [
+                    "text",
+                    "vocabularyTag"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "persönlich",
+                  "lemma": "persön",
+                  "concept": "persön",
+                  "aliases": [],
+                  "sources": [
+                    "vocabularyTag"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Beschreiben",
+                  "lemma": "beschreiben",
+                  "concept": "beschreiben",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Beliebtester",
+                  "lemma": "beliebtest",
+                  "concept": "beliebtest",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Heimatland",
+                  "lemma": "heimatland",
+                  "concept": "heimatland",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Einleitung",
+                  "lemma": "einleitung",
+                  "concept": "einleitung",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Nachteile",
+                  "lemma": "nachteilen",
+                  "concept": "nachteilen",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "persönliche",
+                  "lemma": "persönlich",
+                  "concept": "persönlich",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "folgende",
+                  "lemma": "folgenden",
+                  "concept": "folgenden",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Hauptteil",
+                  "lemma": "hauptteil",
+                  "concept": "hauptteil",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Gliedern",
+                  "lemma": "gliedern",
+                  "concept": "gliedern",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Begrüßen",
+                  "lemma": "begrüßen",
+                  "concept": "begrüßen",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Publikum",
+                  "lemma": "publikum",
+                  "concept": "publikum",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "beliebt",
+                  "lemma": "belieben",
+                  "concept": "belieben",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Abschluss",
+                  "lemma": "abschlus",
+                  "concept": "abschlus",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "spielt",
+                  "lemma": "spielen",
+                  "concept": "spielen",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Möglichkeit",
+                  "lemma": "möglich",
+                  "concept": "möglich",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "stellen",
+                  "lemma": "stellen",
+                  "concept": "stellen",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "sollen",
+                  "lemma": "sollen",
+                  "concept": "sollen",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "kurze",
+                  "lemma": "kurzen",
+                  "concept": "kurzen",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "meinem",
+                  "lemma": "meinem",
+                  "concept": "meinem",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Regeln",
+                  "lemma": "regeln",
+                  "concept": "regeln",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Fragen",
+                  "lemma": "fragen",
+                  "concept": "fragen",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Thema",
+                  "lemma": "thema",
+                  "concept": "thema",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Sport",
+                  "lemma": "sport",
+                  "concept": "sport",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "warum",
+                  "lemma": "warum",
+                  "concept": "warum",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Sagen",
+                  "lemma": "sagen",
+                  "concept": "sagen",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "zwei",
+                  "lemma": "zwei",
+                  "concept": "zwei",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "dazu",
+                  "lemma": "dazu",
+                  "concept": "dazu",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "sich",
+                  "lemma": "sich",
+                  "concept": "sich",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "zum",
+                  "lemma": "zum",
+                  "concept": "zum",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "wann",
+                  "lemma": "wan",
+                  "concept": "wan",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                }
+              ],
+              "vocabIndexVersion": "v3-quality",
+              "topicSlug": "bedanken-meinung",
+              "topic": "bedanken-meinung",
+              "schemaVersion": 2
+            },
+            "duplicate": false
+          },
+          {
+            "recordId": "sprechen-cur-education-t3",
+            "teil": 3,
+            "ok": true,
+            "id": "sprechen-cur-education-t3",
+            "record": {
+              "id": "sprechen-cur-education-t3",
+              "module": "sprechen",
+              "teil": 3,
+              "lang": "de",
+              "level": "A2",
+              "questions": [
+                {
+                  "id": "sp-education-t3",
+                  "module": "sprechen",
+                  "teil": 3,
+                  "level": "A2",
+                  "lang": "de",
+                  "type": "plan_together",
+                  "question": "Ihre Partnerin/Ihr Partner hat gerade eine Präsentation gehalten. Geben Sie Feedback zur Präsentation und stellen Sie zwei bis drei Nachfragen dazu, z.B.:\n\n*   Wie hat Ihnen die Präsentation gefallen?\n*   Was war interessant oder neu für Sie?\n*   Möchten Sie noch etwas zum Thema wissen? (Beispiele: Welche anderen Sportarten sind in Ihrem Land noch populär? Kann jeder diesen Sport machen oder braucht man bestimmte Voraussetzungen?)",
+                  "correct": "rubric",
+                  "correctAnswer": "rubric",
+                  "topicTags": [
+                    "Sport"
+                  ],
+                  "options": [],
+                  "topicTag": "Sport",
+                  "vocabularyTags": [
+                    "Beispiel",
+                    "Partner",
+                    "nachfragen",
+                    "brauchen",
+                    "Präsentation",
+                    "interessanen"
+                  ],
+                  "grammarTags": [
+                    "g-de-b1-modalverben",
+                    "g-de-b1-perfekt"
+                  ]
+                }
+              ],
+              "instruction": "Ihre Partnerin/Ihr Partner hat gerade eine Präsentation gehalten. Geben Sie Feedback zur Präsentation und stellen Sie zwei bis drei Nachfragen dazu, z.B.:\n\n*   Wie hat Ihnen die Präsentation gefallen?\n*   Was war interessant oder neu für Sie?\n*   Möchten Sie noch etwas zum Thema wissen? (Beispiele: Welche anderen Sportarten sind in Ihrem Land noch populär? Kann jeder diesen Sport machen oder braucht man bestimmte Voraussetzungen?)",
+              "task": "Ihre Partnerin/Ihr Partner hat gerade eine Präsentation gehalten. Geben Sie Feedback zur Präsentation und stellen Sie zwei bis drei Nachfragen dazu, z.B.:\n\n*   Wie hat Ihnen die Präsentation gefallen?\n*   Was war interessant oder neu für Sie?\n*   Möchten Sie noch etwas zum Thema wissen? (Beispiele: Welche anderen Sportarten sind in Ihrem Land noch populär? Kann jeder diesen Sport machen oder braucht man bestimmte Voraussetzungen?)",
+              "topicTag": "Sport",
+              "sourceFile": "batches/ready/pool-verified/A2/sprechen-cur-education.json",
+              "contributor": "auto-sync-pool-verified",
+              "complete": true,
+              "verified": true,
+              "disabled": false,
+              "sem1Ok": true,
+              "sem1VerifiedAt": "2026-07-20T13:33:45.311Z",
+              "publishedAt": "2026-07-20T13:33:45.311Z",
+              "createdAt": 1784554425311,
+              "vocabIndex": [
+                {
+                  "word": "Beispiel",
+                  "lemma": "beispiel",
+                  "concept": "beispiel",
+                  "aliases": [],
+                  "sources": [
+                    "vocabularyTag"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "interessanen",
+                  "lemma": "interessanen",
+                  "concept": "interessanen",
+                  "aliases": [],
+                  "sources": [
+                    "text",
+                    "vocabularyTag"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Präsentation",
+                  "lemma": "präsentatio",
+                  "concept": "präsentatio",
+                  "aliases": [],
+                  "sources": [
+                    "text",
+                    "vocabularyTag"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "nachfragen",
+                  "lemma": "nachfragen",
+                  "concept": "nachfragen",
+                  "aliases": [],
+                  "sources": [
+                    "text",
+                    "vocabularyTag"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "brauchen",
+                  "lemma": "brauchen",
+                  "concept": "brauchen",
+                  "aliases": [],
+                  "sources": [
+                    "text",
+                    "vocabularyTag"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Voraussetzungen",
+                  "lemma": "voraussetzung",
+                  "concept": "voraussetzung",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Beispiele",
+                  "lemma": "beispielen",
+                  "concept": "beispielen",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Sportarten",
+                  "lemma": "sportarten",
+                  "concept": "sportarten",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "bestimmte",
+                  "lemma": "bestimmten",
+                  "concept": "bestimmten",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Partnerin",
+                  "lemma": "partneri",
+                  "concept": "partneri",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "gehalten",
+                  "lemma": "gehalten",
+                  "concept": "gehalten",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Feedback",
+                  "lemma": "feedback",
+                  "concept": "feedback",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "gefallen",
+                  "lemma": "gefallen",
+                  "concept": "gefallen",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "gerade",
+                  "lemma": "geraden",
+                  "concept": "geraden",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "stellen",
+                  "lemma": "stellen",
+                  "concept": "stellen",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Möchten",
+                  "lemma": "möchten",
+                  "concept": "möchten",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Welche",
+                  "lemma": "welchen",
+                  "concept": "welchen",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "wissen",
+                  "lemma": "wissen",
+                  "concept": "wissen",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "populär",
+                  "lemma": "popula",
+                  "concept": "popula",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Kann",
+                  "lemma": "können",
+                  "concept": "können",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "diesen",
+                  "lemma": "diesen",
+                  "concept": "diesen",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Partner",
+                  "lemma": "partn",
+                  "concept": "partn",
+                  "aliases": [],
+                  "sources": [
+                    "text",
+                    "vocabularyTag"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Ihnen",
+                  "lemma": "ihnen",
+                  "concept": "ihnen",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Thema",
+                  "lemma": "thema",
+                  "concept": "thema",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Sport",
+                  "lemma": "sport",
+                  "concept": "sport",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "zwei",
+                  "lemma": "zwei",
+                  "concept": "zwei",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "drei",
+                  "lemma": "drei",
+                  "concept": "drei",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "dazu",
+                  "lemma": "dazu",
+                  "concept": "dazu",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Land",
+                  "lemma": "land",
+                  "concept": "land",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "zur",
+                  "lemma": "zur",
+                  "concept": "zur",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "neu",
+                  "lemma": "neu",
+                  "concept": "neu",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "zum",
+                  "lemma": "zum",
+                  "concept": "zum",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                }
+              ],
+              "vocabIndexVersion": "v3-quality",
+              "topicSlug": "beispiel-interessanen",
+              "topic": "beispiel-interessanen",
+              "schemaVersion": 2
+            },
+            "duplicate": false
+          }
+        ],
+        "duplicate": false
+      }
+    },
+    {
+      "file": "sprechen-cur-society.json",
+      "slug": "society",
+      "topicTag": "Freizeit",
+      "topicCanonical": "Freizeit",
+      "pool2": {
+        "ok": true,
+        "blocking": []
+      },
+      "poolReady": {
+        "ok": true,
+        "reasons": [],
+        "gates": {}
+      },
+      "metadata": [
+        {
+          "id": "sp-society-t1",
+          "grammarTags": 4,
+          "vocabularyTags": 6
+        },
+        {
+          "id": "sp-society-t2",
+          "grammarTags": 1,
+          "vocabularyTags": 6
+        },
+        {
+          "id": "sp-society-t3",
+          "grammarTags": 2,
+          "vocabularyTags": 6
+        }
+      ],
+      "sync": {
+        "ok": true,
+        "file": "sprechen-cur-society.json",
+        "results": [
+          {
+            "recordId": "sprechen-cur-society-t1",
+            "teil": 1,
+            "ok": true,
+            "id": "sprechen-cur-society-t1",
+            "record": {
+              "id": "sprechen-cur-society-t1",
+              "module": "sprechen",
+              "teil": 1,
+              "lang": "de",
+              "level": "A2",
+              "questions": [
+                {
+                  "id": "sp-society-t1",
+                  "module": "sprechen",
+                  "teil": 1,
+                  "level": "A2",
+                  "lang": "de",
+                  "type": "personal_questions",
+                  "question": "Sie möchten zusammen mit einer anderen Person ein ehrenamtliches Projekt planen, um älteren Menschen in Ihrer Nachbarschaft zu helfen. Überlegen Sie gemeinsam, wie Sie vorgehen könnten. Sprechen Sie über die folgenden Punkte:\n\n*   Ziel des Projekts\n*   Aufgabenverteilung unter den Helfern\n*   Benötigte Mittel und Materialien\n*   Wie Sie neue Helfer gewinnen können\n*   Einen möglichen Zeitplan für die Umsetzung",
+                  "correct": "rubric",
+                  "correctAnswer": "rubric",
+                  "topicTags": [
+                    "Freizeit"
+                  ],
+                  "options": [],
+                  "topicTag": "Freizeit",
+                  "vocabularyTags": [
+                    "Nachbarschaft",
+                    "zusammen",
+                    "gewinnen",
+                    "gemeinsam",
+                    "Punkte",
+                    "sprechen"
+                  ],
+                  "grammarTags": [
+                    "g-de-b1-konjunktiv",
+                    "g-de-b1-modalverben",
+                    "g-de-b1-adjektivdeklination",
+                    "g-de-b1-genitiv"
+                  ]
+                }
+              ],
+              "instruction": "Sie möchten zusammen mit einer anderen Person ein ehrenamtliches Projekt planen, um älteren Menschen in Ihrer Nachbarschaft zu helfen. Überlegen Sie gemeinsam, wie Sie vorgehen könnten. Sprechen Sie über die folgenden Punkte:\n\n*   Ziel des Projekts\n*   Aufgabenverteilung unter den Helfern\n*   Benötigte Mittel und Materialien\n*   Wie Sie neue Helfer gewinnen können\n*   Einen möglichen Zeitplan für die Umsetzung",
+              "task": "Sie möchten zusammen mit einer anderen Person ein ehrenamtliches Projekt planen, um älteren Menschen in Ihrer Nachbarschaft zu helfen. Überlegen Sie gemeinsam, wie Sie vorgehen könnten. Sprechen Sie über die folgenden Punkte:\n\n*   Ziel des Projekts\n*   Aufgabenverteilung unter den Helfern\n*   Benötigte Mittel und Materialien\n*   Wie Sie neue Helfer gewinnen können\n*   Einen möglichen Zeitplan für die Umsetzung",
+              "topicTag": "Freizeit",
+              "sourceFile": "batches/ready/pool-verified/A2/sprechen-cur-society.json",
+              "contributor": "auto-sync-pool-verified",
+              "complete": true,
+              "verified": true,
+              "disabled": false,
+              "sem1Ok": true,
+              "sem1VerifiedAt": "2026-07-20T13:33:45.365Z",
+              "publishedAt": "2026-07-20T13:33:45.365Z",
+              "createdAt": 1784554425365,
+              "vocabIndex": [
+                {
+                  "word": "gemeinsam",
+                  "lemma": "gemeinsam",
+                  "concept": "gemeinsam",
+                  "aliases": [],
+                  "sources": [
+                    "text",
+                    "vocabularyTag"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Projekt",
+                  "lemma": "projekt",
+                  "concept": "projekt",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "planen",
+                  "lemma": "planen",
+                  "concept": "planen",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Mittel",
+                  "lemma": "mittel",
+                  "concept": "mittel",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Ziel",
+                  "lemma": "ziel",
+                  "concept": "ziel",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Nachbarschaft",
+                  "lemma": "nachbarschaft",
+                  "concept": "nachbarschaft",
+                  "aliases": [],
+                  "sources": [
+                    "text",
+                    "vocabularyTag"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "zusammen",
+                  "lemma": "zusammen",
+                  "concept": "zusammen",
+                  "aliases": [],
+                  "sources": [
+                    "text",
+                    "vocabularyTag"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "sprechen",
+                  "lemma": "sprechen",
+                  "concept": "sprechen",
+                  "aliases": [],
+                  "sources": [
+                    "text",
+                    "vocabularyTag"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "gewinnen",
+                  "lemma": "gewinnen",
+                  "concept": "gewinnen",
+                  "aliases": [],
+                  "sources": [
+                    "text",
+                    "vocabularyTag"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Punkte",
+                  "lemma": "punkten",
+                  "concept": "punkten",
+                  "aliases": [],
+                  "sources": [
+                    "text",
+                    "vocabularyTag"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Aufgabenverteilung",
+                  "lemma": "aufgabenverteilung",
+                  "concept": "aufgabenverteilung",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "ehrenamtliches",
+                  "lemma": "ehrenamtlich",
+                  "concept": "ehrenamtlich",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Materialien",
+                  "lemma": "materialien",
+                  "concept": "materialien",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Benötigte",
+                  "lemma": "benötigten",
+                  "concept": "benötigten",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Überlegen",
+                  "lemma": "überlegen",
+                  "concept": "überlegen",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "folgenden",
+                  "lemma": "folgenden",
+                  "concept": "folgenden",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "möglichen",
+                  "lemma": "möglichen",
+                  "concept": "möglichen",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Umsetzung",
+                  "lemma": "umsetzung",
+                  "concept": "umsetzung",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "vorgehen",
+                  "lemma": "vorgehen",
+                  "concept": "vorgehen",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "möchten",
+                  "lemma": "möchten",
+                  "concept": "möchten",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "älteren",
+                  "lemma": "älteren",
+                  "concept": "älteren",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "könnten",
+                  "lemma": "könnten",
+                  "concept": "könnten",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Helfern",
+                  "lemma": "helfern",
+                  "concept": "helfern",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Zeitplan",
+                  "lemma": "zeitpla",
+                  "concept": "zeitpla",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Menschen",
+                  "lemma": "mensch",
+                  "concept": "mensch",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "helfen",
+                  "lemma": "helfen",
+                  "concept": "helfen",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "können",
+                  "lemma": "können",
+                  "concept": "können",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Person",
+                  "lemma": "perso",
+                  "concept": "perso",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Einen",
+                  "lemma": "einen",
+                  "concept": "einen",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Helfer",
+                  "lemma": "helf",
+                  "concept": "helf",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "neue",
+                  "lemma": "neu",
+                  "concept": "neu",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                }
+              ],
+              "vocabIndexVersion": "v3-quality",
+              "topicSlug": "gemeinsam-projekt",
+              "topic": "gemeinsam-projekt",
+              "schemaVersion": 2
+            },
+            "duplicate": false
+          },
+          {
+            "recordId": "sprechen-cur-society-t2",
+            "teil": 2,
+            "ok": true,
+            "id": "sprechen-cur-society-t2",
+            "record": {
+              "id": "sprechen-cur-society-t2",
+              "module": "sprechen",
+              "teil": 2,
+              "lang": "de",
+              "level": "A2",
+              "questions": [
+                {
+                  "id": "sp-society-t2",
+                  "module": "sprechen",
+                  "teil": 2,
+                  "level": "A2",
+                  "lang": "de",
+                  "type": "about_self",
+                  "question": "Sie sollen eine kurze Präsentation über das Thema „Ehrenamt in der eigenen Kultur“ halten. Die Präsentation sollte etwa 3 Minuten dauern und folgende Punkte enthalten:\n\n*   Einleitung: Stellen Sie Ihr Thema vor.\n*   Ehrenamt in Ihrem Heimatland: Beschreiben Sie, welche Formen von Ehrenamt es gibt und welche Bedeutung es hat.\n*   Vor- und Nachteile von ehrenamtlicher Arbeit.\n*   Ihre persönliche Meinung zum Ehrenamt: Warum ist es wichtig oder nicht so wichtig?",
+                  "correct": "rubric",
+                  "correctAnswer": "rubric",
+                  "topicTags": [
+                    "Kultur"
+                  ],
+                  "options": [],
+                  "topicTag": "Kultur",
+                  "vocabularyTags": [
+                    "vorstellen",
+                    "Bedeutung",
+                    "halten",
+                    "persönlich",
+                    "Ehrenamt",
+                    "Punkte"
+                  ],
+                  "grammarTags": [
+                    "g-de-b1-konjunktiv"
+                  ]
+                }
+              ],
+              "instruction": "Sie sollen eine kurze Präsentation über das Thema „Ehrenamt in der eigenen Kultur“ halten. Die Präsentation sollte etwa 3 Minuten dauern und folgende Punkte enthalten:\n\n*   Einleitung: Stellen Sie Ihr Thema vor.\n*   Ehrenamt in Ihrem Heimatland: Beschreiben Sie, welche Formen von Ehrenamt es gibt und welche Bedeutung es hat.\n*   Vor- und Nachteile von ehrenamtlicher Arbeit.\n*   Ihre persönliche Meinung zum Ehrenamt: Warum ist es wichtig oder nicht so wichtig?",
+              "task": "Sie sollen eine kurze Präsentation über das Thema „Ehrenamt in der eigenen Kultur“ halten. Die Präsentation sollte etwa 3 Minuten dauern und folgende Punkte enthalten:\n\n*   Einleitung: Stellen Sie Ihr Thema vor.\n*   Ehrenamt in Ihrem Heimatland: Beschreiben Sie, welche Formen von Ehrenamt es gibt und welche Bedeutung es hat.\n*   Vor- und Nachteile von ehrenamtlicher Arbeit.\n*   Ihre persönliche Meinung zum Ehrenamt: Warum ist es wichtig oder nicht so wichtig?",
+              "topicTag": "Freizeit",
+              "sourceFile": "batches/ready/pool-verified/A2/sprechen-cur-society.json",
+              "contributor": "auto-sync-pool-verified",
+              "complete": true,
+              "verified": true,
+              "disabled": false,
+              "sem1Ok": true,
+              "sem1VerifiedAt": "2026-07-20T13:33:45.389Z",
+              "publishedAt": "2026-07-20T13:33:45.389Z",
+              "createdAt": 1784554425389,
+              "vocabIndex": [
+                {
+                  "word": "Meinung",
+                  "lemma": "meinung",
+                  "concept": "meinung",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "vorstellen",
+                  "lemma": "vorstellen",
+                  "concept": "vorstellen",
+                  "aliases": [],
+                  "sources": [
+                    "vocabularyTag"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Ehrenamt",
+                  "lemma": "ehrenamen",
+                  "concept": "ehrenamen",
+                  "aliases": [],
+                  "sources": [
+                    "text",
+                    "vocabularyTag"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Bedeutung",
+                  "lemma": "bedeutung",
+                  "concept": "bedeutung",
+                  "aliases": [],
+                  "sources": [
+                    "text",
+                    "vocabularyTag"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Punkte",
+                  "lemma": "punkten",
+                  "concept": "punkten",
+                  "aliases": [],
+                  "sources": [
+                    "text",
+                    "vocabularyTag"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "halten",
+                  "lemma": "halten",
+                  "concept": "halten",
+                  "aliases": [],
+                  "sources": [
+                    "text",
+                    "vocabularyTag"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "persönlich",
+                  "lemma": "persön",
+                  "concept": "persön",
+                  "aliases": [],
+                  "sources": [
+                    "vocabularyTag"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "ehrenamtlicher",
+                  "lemma": "ehrenamtlich",
+                  "concept": "ehrenamtlich",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Präsentation",
+                  "lemma": "präsentatio",
+                  "concept": "präsentatio",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Beschreiben",
+                  "lemma": "beschreiben",
+                  "concept": "beschreiben",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Einleitung",
+                  "lemma": "einleitung",
+                  "concept": "einleitung",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Heimatland",
+                  "lemma": "heimatland",
+                  "concept": "heimatland",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Nachteile",
+                  "lemma": "nachteilen",
+                  "concept": "nachteilen",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "persönliche",
+                  "lemma": "persönlich",
+                  "concept": "persönlich",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "folgende",
+                  "lemma": "folgenden",
+                  "concept": "folgenden",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "enthalten",
+                  "lemma": "enthalten",
+                  "concept": "enthalten",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "eigenen",
+                  "lemma": "eigenen",
+                  "concept": "eigenen",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "sollte",
+                  "lemma": "sollten",
+                  "concept": "sollten",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Minuten",
+                  "lemma": "minuten",
+                  "concept": "minuten",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Stellen",
+                  "lemma": "stellen",
+                  "concept": "stellen",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "welche",
+                  "lemma": "welchen",
+                  "concept": "welchen",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Arbeit",
+                  "lemma": "arbeien",
+                  "concept": "arbeien",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "wichtig",
+                  "lemma": "wichtig",
+                  "concept": "wichtig",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "sollen",
+                  "lemma": "sollen",
+                  "concept": "sollen",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "kurze",
+                  "lemma": "kurzen",
+                  "concept": "kurzen",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Kultur",
+                  "lemma": "kultur",
+                  "concept": "kultur",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Formen",
+                  "lemma": "formen",
+                  "concept": "formen",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Thema",
+                  "lemma": "thema",
+                  "concept": "thema",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "dauern",
+                  "lemma": "daürn",
+                  "concept": "daürn",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Warum",
+                  "lemma": "warum",
+                  "concept": "warum",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "etwa",
+                  "lemma": "etwa",
+                  "concept": "etwa",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Vor-",
+                  "lemma": "vor-",
+                  "concept": "vor-",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "zum",
+                  "lemma": "zum",
+                  "concept": "zum",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                }
+              ],
+              "vocabIndexVersion": "v3-quality",
+              "topicSlug": "meinung-vorstellen",
+              "topic": "meinung-vorstellen",
+              "schemaVersion": 2
+            },
+            "duplicate": false
+          },
+          {
+            "recordId": "sprechen-cur-society-t3",
+            "teil": 3,
+            "ok": true,
+            "id": "sprechen-cur-society-t3",
+            "record": {
+              "id": "sprechen-cur-society-t3",
+              "module": "sprechen",
+              "teil": 3,
+              "lang": "de",
+              "level": "A2",
+              "questions": [
+                {
+                  "id": "sp-society-t3",
+                  "module": "sprechen",
+                  "teil": 3,
+                  "level": "A2",
+                  "lang": "de",
+                  "type": "plan_together",
+                  "question": "Ihr Gesprächspartner/Ihre Gesprächspartnerin hat gerade seine/ihre Präsentation zum Thema „Ehrenamt in der eigenen Kultur“ gehalten. Geben Sie ihm/ihr Feedback zu seiner/ihrer Präsentation. Sagen Sie, was Ihnen gut gefallen hat oder was Sie interessant fanden. Stellen Sie anschließend 2-3 Fragen zum Thema oder zur Präsentation.",
+                  "correct": "rubric",
+                  "correctAnswer": "rubric",
+                  "topicTags": [
+                    "Kultur"
+                  ],
+                  "options": [],
+                  "topicTag": "Kultur",
+                  "vocabularyTags": [
+                    "Ehrenamt",
+                    "Präsentation",
+                    "interessanen",
+                    "gefallen",
+                    "finden",
+                    "fragen"
+                  ],
+                  "grammarTags": [
+                    "g-de-b1-modalverben",
+                    "g-de-b1-dativ"
+                  ]
+                }
+              ],
+              "instruction": "Ihr Gesprächspartner/Ihre Gesprächspartnerin hat gerade seine/ihre Präsentation zum Thema „Ehrenamt in der eigenen Kultur“ gehalten. Geben Sie ihm/ihr Feedback zu seiner/ihrer Präsentation. Sagen Sie, was Ihnen gut gefallen hat oder was Sie interessant fanden. Stellen Sie anschließend 2-3 Fragen zum Thema oder zur Präsentation.",
+              "task": "Ihr Gesprächspartner/Ihre Gesprächspartnerin hat gerade seine/ihre Präsentation zum Thema „Ehrenamt in der eigenen Kultur“ gehalten. Geben Sie ihm/ihr Feedback zu seiner/ihrer Präsentation. Sagen Sie, was Ihnen gut gefallen hat oder was Sie interessant fanden. Stellen Sie anschließend 2-3 Fragen zum Thema oder zur Präsentation.",
+              "topicTag": "Freizeit",
+              "sourceFile": "batches/ready/pool-verified/A2/sprechen-cur-society.json",
+              "contributor": "auto-sync-pool-verified",
+              "complete": true,
+              "verified": true,
+              "disabled": false,
+              "sem1Ok": true,
+              "sem1VerifiedAt": "2026-07-20T13:33:45.419Z",
+              "publishedAt": "2026-07-20T13:33:45.419Z",
+              "createdAt": 1784554425419,
+              "vocabIndex": [
+                {
+                  "word": "interessanen",
+                  "lemma": "interessanen",
+                  "concept": "interessanen",
+                  "aliases": [],
+                  "sources": [
+                    "text",
+                    "vocabularyTag"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Präsentation",
+                  "lemma": "präsentatio",
+                  "concept": "präsentatio",
+                  "aliases": [],
+                  "sources": [
+                    "text",
+                    "vocabularyTag"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Ehrenamt",
+                  "lemma": "ehrenamen",
+                  "concept": "ehrenamen",
+                  "aliases": [],
+                  "sources": [
+                    "text",
+                    "vocabularyTag"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "gefallen",
+                  "lemma": "gefallen",
+                  "concept": "gefallen",
+                  "aliases": [],
+                  "sources": [
+                    "text",
+                    "vocabularyTag"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "fragen",
+                  "lemma": "fragen",
+                  "concept": "fragen",
+                  "aliases": [],
+                  "sources": [
+                    "text",
+                    "vocabularyTag"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Gesprächspartnerin",
+                  "lemma": "gesprächspartneri",
+                  "concept": "gesprächspartneri",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Gesprächspartner",
+                  "lemma": "gesprächspartn",
+                  "concept": "gesprächspartn",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "anschließend",
+                  "lemma": "anschließend",
+                  "concept": "anschließend",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "gehalten",
+                  "lemma": "gehalten",
+                  "concept": "gehalten",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Feedback",
+                  "lemma": "feedback",
+                  "concept": "feedback",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "gerade",
+                  "lemma": "geraden",
+                  "concept": "geraden",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "eigenen",
+                  "lemma": "eigenen",
+                  "concept": "eigenen",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Stellen",
+                  "lemma": "stellen",
+                  "concept": "stellen",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Kultur",
+                  "lemma": "kultur",
+                  "concept": "kultur",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "fanden",
+                  "lemma": "fanden",
+                  "concept": "fanden",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Thema",
+                  "lemma": "thema",
+                  "concept": "thema",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Sagen",
+                  "lemma": "sagen",
+                  "concept": "sagen",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Ihnen",
+                  "lemma": "ihnen",
+                  "concept": "ihnen",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "zum",
+                  "lemma": "zum",
+                  "concept": "zum",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "ihm",
+                  "lemma": "ihm",
+                  "concept": "ihm",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "gut",
+                  "lemma": "gut",
+                  "concept": "gut",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "zur",
+                  "lemma": "zur",
+                  "concept": "zur",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                }
+              ],
+              "vocabIndexVersion": "v3-quality",
+              "topicSlug": "interessanen-präsentatio",
+              "topic": "interessanen-präsentatio",
+              "schemaVersion": 2
+            },
+            "duplicate": false
+          }
+        ],
+        "duplicate": false
+      }
+    },
+    {
+      "file": "sprechen-cur-work.json",
+      "slug": "work",
+      "topicTag": "Reisen",
+      "topicCanonical": "Reisen",
+      "pool2": {
+        "ok": true,
+        "blocking": []
+      },
+      "poolReady": {
+        "ok": true,
+        "reasons": [],
+        "gates": {}
+      },
+      "metadata": [
+        {
+          "id": "sp-work-t1",
+          "grammarTags": 1,
+          "vocabularyTags": 6
+        },
+        {
+          "id": "sp-work-t2",
+          "grammarTags": 2,
+          "vocabularyTags": 6
+        },
+        {
+          "id": "sp-work-t3",
+          "grammarTags": 2,
+          "vocabularyTags": 6
+        }
+      ],
+      "sync": {
+        "ok": true,
+        "file": "sprechen-cur-work.json",
+        "results": [
+          {
+            "recordId": "sprechen-cur-work-t1",
+            "teil": 1,
+            "ok": true,
+            "id": "sprechen-cur-work-t1",
+            "record": {
+              "id": "sprechen-cur-work-t1",
+              "module": "sprechen",
+              "teil": 1,
+              "lang": "de",
+              "level": "A2",
+              "questions": [
+                {
+                  "id": "sp-work-t1",
+                  "module": "sprechen",
+                  "teil": 1,
+                  "level": "A2",
+                  "lang": "de",
+                  "type": "personal_questions",
+                  "question": "Sie möchten mit Freunden einen Tagesausflug planen. Besprechen Sie folgende Punkte:\n\n• Ziel und Dauer des Ausflugs\n• Anreise und Verkehrsmittel\n• Aktivitäten vor Ort\n• Verpflegung und Budget\n• Zeitpunkt und Rückkehr\n\nSprechen Sie etwa 1,5–2 Minuten.",
+                  "correct": "rubric",
+                  "correctAnswer": "rubric",
+                  "topicTags": [
+                    "Reisen"
+                  ],
+                  "options": [],
+                  "topicTag": "Reisen",
+                  "vocabularyTags": [
+                    "Verkehrsmittel",
+                    "Punkte",
+                    "besprechen",
+                    "sprechen",
+                    "Verpflegung",
+                    "möchten"
+                  ],
+                  "grammarTags": [
+                    "g-de-b1-genitiv"
+                  ]
+                }
+              ],
+              "instruction": "Sie möchten mit Freunden einen Tagesausflug planen. Besprechen Sie folgende Punkte:\n\n• Ziel und Dauer des Ausflugs\n• Anreise und Verkehrsmittel\n• Aktivitäten vor Ort\n• Verpflegung und Budget\n• Zeitpunkt und Rückkehr\n\nSprechen Sie etwa 1,5–2 Minuten.",
+              "task": "Sie möchten mit Freunden einen Tagesausflug planen. Besprechen Sie folgende Punkte:\n\n• Ziel und Dauer des Ausflugs\n• Anreise und Verkehrsmittel\n• Aktivitäten vor Ort\n• Verpflegung und Budget\n• Zeitpunkt und Rückkehr\n\nSprechen Sie etwa 1,5–2 Minuten.",
+              "topicTag": "Reisen",
+              "sourceFile": "batches/ready/pool-verified/A2/sprechen-cur-work.json",
+              "contributor": "auto-sync-pool-verified",
+              "complete": true,
+              "verified": true,
+              "disabled": false,
+              "sem1Ok": true,
+              "sem1VerifiedAt": "2026-07-20T13:33:45.461Z",
+              "publishedAt": "2026-07-20T13:33:45.461Z",
+              "createdAt": 1784554425461,
+              "vocabIndex": [
+                {
+                  "word": "Verkehrsmittel",
+                  "lemma": "verkehrsmittel",
+                  "concept": "verkehrsmittel",
+                  "aliases": [],
+                  "sources": [
+                    "text",
+                    "vocabularyTag"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Ausflugs",
+                  "lemma": "ausflug",
+                  "concept": "ausflug",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "planen",
+                  "lemma": "planen",
+                  "concept": "planen",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Ziel",
+                  "lemma": "ziel",
+                  "concept": "ziel",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Verpflegung",
+                  "lemma": "verpflegung",
+                  "concept": "verpflegung",
+                  "aliases": [],
+                  "sources": [
+                    "text",
+                    "vocabularyTag"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "besprechen",
+                  "lemma": "besprechen",
+                  "concept": "besprechen",
+                  "aliases": [],
+                  "sources": [
+                    "text",
+                    "vocabularyTag"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "sprechen",
+                  "lemma": "sprechen",
+                  "concept": "sprechen",
+                  "aliases": [],
+                  "sources": [
+                    "text",
+                    "vocabularyTag"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "möchten",
+                  "lemma": "möchten",
+                  "concept": "möchten",
+                  "aliases": [],
+                  "sources": [
+                    "text",
+                    "vocabularyTag"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Punkte",
+                  "lemma": "punkten",
+                  "concept": "punkten",
+                  "aliases": [],
+                  "sources": [
+                    "text",
+                    "vocabularyTag"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Tagesausflug",
+                  "lemma": "tagesausflug",
+                  "concept": "tagesausflug",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Aktivitäten",
+                  "lemma": "aktivitäten",
+                  "concept": "aktivitäten",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Zeitpunkt",
+                  "lemma": "zeitpunken",
+                  "concept": "zeitpunken",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "folgende",
+                  "lemma": "folgenden",
+                  "concept": "folgenden",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Freunden",
+                  "lemma": "freunden",
+                  "concept": "freunden",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Rückkehr",
+                  "lemma": "rückkehr",
+                  "concept": "rückkehr",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Minuten",
+                  "lemma": "minuten",
+                  "concept": "minuten",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Anreise",
+                  "lemma": "anreis",
+                  "concept": "anreis",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Budget",
+                  "lemma": "budget",
+                  "concept": "budget",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "einen",
+                  "lemma": "einen",
+                  "concept": "einen",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "etwa",
+                  "lemma": "etwa",
+                  "concept": "etwa",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Dauer",
+                  "lemma": "dau",
+                  "concept": "dau",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Ort",
+                  "lemma": "ort",
+                  "concept": "ort",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                }
+              ],
+              "vocabIndexVersion": "v3-quality",
+              "topicSlug": "verkehrsmittel-ausflug",
+              "topic": "verkehrsmittel-ausflug",
+              "schemaVersion": 2
+            },
+            "duplicate": false
+          },
+          {
+            "recordId": "sprechen-cur-work-t2",
+            "teil": 2,
+            "ok": true,
+            "id": "sprechen-cur-work-t2",
+            "record": {
+              "id": "sprechen-cur-work-t2",
+              "module": "sprechen",
+              "teil": 2,
+              "lang": "de",
+              "level": "A2",
+              "questions": [
+                {
+                  "id": "sp-work-t2",
+                  "module": "sprechen",
+                  "teil": 2,
+                  "level": "A2",
+                  "lang": "de",
+                  "type": "about_self",
+                  "question": "Halten Sie eine Präsentation über Reisen und Verkehr in Ihrem Heimatland (2–2,5 Minuten).\n\nStruktur:\n1. Einleitung: Nennen Sie Ihr Heimatland und das Thema\n2. Beliebte Reiseziele und deren Besonderheiten\n3. Hauptverkehrsmittel für Reisen (Zug, Auto, Flugzeug, Bus)\n4. Vor- und Nachteile der Verkehrsmittel\n5. Ihre persönliche Meinung und Empfehlung",
+                  "correct": "rubric",
+                  "correctAnswer": "rubric",
+                  "topicTags": [
+                    "Reisen"
+                  ],
+                  "options": [],
+                  "topicTag": "Reisen",
+                  "vocabularyTags": [
+                    "Verkehrsmittel",
+                    "halten",
+                    "reisen",
+                    "Besonderheiten",
+                    "persönlich",
+                    "Präsentation"
+                  ],
+                  "grammarTags": [
+                    "g-de-b1-perfekt",
+                    "g-de-b1-nebensatz"
+                  ]
+                }
+              ],
+              "instruction": "Halten Sie eine Präsentation über Reisen und Verkehr in Ihrem Heimatland (2–2,5 Minuten).\n\nStruktur:\n1. Einleitung: Nennen Sie Ihr Heimatland und das Thema\n2. Beliebte Reiseziele und deren Besonderheiten\n3. Hauptverkehrsmittel für Reisen (Zug, Auto, Flugzeug, Bus)\n4. Vor- und Nachteile der Verkehrsmittel\n5. Ihre persönliche Meinung und Empfehlung",
+              "task": "Halten Sie eine Präsentation über Reisen und Verkehr in Ihrem Heimatland (2–2,5 Minuten).\n\nStruktur:\n1. Einleitung: Nennen Sie Ihr Heimatland und das Thema\n2. Beliebte Reiseziele und deren Besonderheiten\n3. Hauptverkehrsmittel für Reisen (Zug, Auto, Flugzeug, Bus)\n4. Vor- und Nachteile der Verkehrsmittel\n5. Ihre persönliche Meinung und Empfehlung",
+              "topicTag": "Reisen",
+              "sourceFile": "batches/ready/pool-verified/A2/sprechen-cur-work.json",
+              "contributor": "auto-sync-pool-verified",
+              "complete": true,
+              "verified": true,
+              "disabled": false,
+              "sem1Ok": true,
+              "sem1VerifiedAt": "2026-07-20T13:33:45.479Z",
+              "publishedAt": "2026-07-20T13:33:45.479Z",
+              "createdAt": 1784554425479,
+              "vocabIndex": [
+                {
+                  "word": "Verkehrsmittel",
+                  "lemma": "verkehrsmittel",
+                  "concept": "verkehrsmittel",
+                  "aliases": [],
+                  "sources": [
+                    "text",
+                    "vocabularyTag"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Verkehr",
+                  "lemma": "verkehr",
+                  "concept": "verkehr",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Meinung",
+                  "lemma": "meinung",
+                  "concept": "meinung",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Nennen",
+                  "lemma": "nennen",
+                  "concept": "nennen",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Besonderheiten",
+                  "lemma": "besonderheiten",
+                  "concept": "besonderheiten",
+                  "aliases": [],
+                  "sources": [
+                    "text",
+                    "vocabularyTag"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Präsentation",
+                  "lemma": "präsentatio",
+                  "concept": "präsentatio",
+                  "aliases": [],
+                  "sources": [
+                    "text",
+                    "vocabularyTag"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "halten",
+                  "lemma": "halten",
+                  "concept": "halten",
+                  "aliases": [],
+                  "sources": [
+                    "text",
+                    "vocabularyTag"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "reisen",
+                  "lemma": "reisen",
+                  "concept": "reisen",
+                  "aliases": [],
+                  "sources": [
+                    "text",
+                    "vocabularyTag"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "persönlich",
+                  "lemma": "persön",
+                  "concept": "persön",
+                  "aliases": [],
+                  "sources": [
+                    "vocabularyTag"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Hauptverkehrsmittel",
+                  "lemma": "hauptverkehrsmittel",
+                  "concept": "hauptverkehrsmittel",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Reiseziele",
+                  "lemma": "reisezielen",
+                  "concept": "reisezielen",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Heimatland",
+                  "lemma": "heimatland",
+                  "concept": "heimatland",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Einleitung",
+                  "lemma": "einleitung",
+                  "concept": "einleitung",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Nachteile",
+                  "lemma": "nachteilen",
+                  "concept": "nachteilen",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "persönliche",
+                  "lemma": "persönlich",
+                  "concept": "persönlich",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Empfehlung",
+                  "lemma": "empfehlung",
+                  "concept": "empfehlung",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Beliebte",
+                  "lemma": "beliebten",
+                  "concept": "beliebten",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Struktur",
+                  "lemma": "struktur",
+                  "concept": "struktur",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Flugzeug",
+                  "lemma": "flugzeug",
+                  "concept": "flugzeug",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Minuten",
+                  "lemma": "minuten",
+                  "concept": "minuten",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Thema",
+                  "lemma": "thema",
+                  "concept": "thema",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "deren",
+                  "lemma": "deren",
+                  "concept": "deren",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Auto",
+                  "lemma": "auto",
+                  "concept": "auto",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Vor-",
+                  "lemma": "vor-",
+                  "concept": "vor-",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Zug",
+                  "lemma": "zug",
+                  "concept": "zug",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                }
+              ],
+              "vocabIndexVersion": "v3-quality",
+              "topicSlug": "verkehrsmittel-verkehr",
+              "topic": "verkehrsmittel-verkehr",
+              "schemaVersion": 2
+            },
+            "duplicate": false
+          },
+          {
+            "recordId": "sprechen-cur-work-t3",
+            "teil": 3,
+            "ok": true,
+            "id": "sprechen-cur-work-t3",
+            "record": {
+              "id": "sprechen-cur-work-t3",
+              "module": "sprechen",
+              "teil": 3,
+              "lang": "de",
+              "level": "A2",
+              "questions": [
+                {
+                  "id": "sp-work-t3",
+                  "module": "sprechen",
+                  "teil": 3,
+                  "level": "A2",
+                  "lang": "de",
+                  "type": "plan_together",
+                  "question": "Geben Sie der anderen Person Rückmeldung zu ihrer Präsentation (Teil 2) und stellen Sie 2–3 Verständnis- oder Vertiefungsfragen.\n\nBeispiele für Fragen:\n• Warum ist dieses Verkehrsmittel Ihrer Meinung nach am beliebtesten?\n• Haben Sie persönliche Erfahrungen mit … gemacht?\n• Wie unterscheidet sich … in Ihrem Heimatland vom deutschsprachigen Raum?\n\nSprechen Sie etwa 1–1,5 Minuten.",
+                  "correct": "rubric",
+                  "correctAnswer": "rubric",
+                  "topicTags": [
+                    "Reisen"
+                  ],
+                  "options": [],
+                  "topicTag": "Reisen",
+                  "vocabularyTags": [
+                    "Verkehrsmittel",
+                    "Beispiel",
+                    "persönlich",
+                    "sprechen",
+                    "vertiefungsfragen",
+                    "unterscheiden"
+                  ],
+                  "grammarTags": [
+                    "g-de-b1-komparativ",
+                    "g-de-b1-perfekt"
+                  ]
+                }
+              ],
+              "instruction": "Geben Sie der anderen Person Rückmeldung zu ihrer Präsentation (Teil 2) und stellen Sie 2–3 Verständnis- oder Vertiefungsfragen.\n\nBeispiele für Fragen:\n• Warum ist dieses Verkehrsmittel Ihrer Meinung nach am beliebtesten?\n• Haben Sie persönliche Erfahrungen mit … gemacht?\n• Wie unterscheidet sich … in Ihrem Heimatland vom deutschsprachigen Raum?\n\nSprechen Sie etwa 1–1,5 Minuten.",
+              "task": "Geben Sie der anderen Person Rückmeldung zu ihrer Präsentation (Teil 2) und stellen Sie 2–3 Verständnis- oder Vertiefungsfragen.\n\nBeispiele für Fragen:\n• Warum ist dieses Verkehrsmittel Ihrer Meinung nach am beliebtesten?\n• Haben Sie persönliche Erfahrungen mit … gemacht?\n• Wie unterscheidet sich … in Ihrem Heimatland vom deutschsprachigen Raum?\n\nSprechen Sie etwa 1–1,5 Minuten.",
+              "topicTag": "Reisen",
+              "sourceFile": "batches/ready/pool-verified/A2/sprechen-cur-work.json",
+              "contributor": "auto-sync-pool-verified",
+              "complete": true,
+              "verified": true,
+              "disabled": false,
+              "sem1Ok": true,
+              "sem1VerifiedAt": "2026-07-20T13:33:45.494Z",
+              "publishedAt": "2026-07-20T13:33:45.494Z",
+              "createdAt": 1784554425494,
+              "vocabIndex": [
+                {
+                  "word": "Verkehrsmittel",
+                  "lemma": "verkehrsmittel",
+                  "concept": "verkehrsmittel",
+                  "aliases": [],
+                  "sources": [
+                    "text",
+                    "vocabularyTag"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Beispiel",
+                  "lemma": "beispiel",
+                  "concept": "beispiel",
+                  "aliases": [],
+                  "sources": [
+                    "vocabularyTag"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Erfahrungen",
+                  "lemma": "erfahrung",
+                  "concept": "erfahrung",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Meinung",
+                  "lemma": "meinung",
+                  "concept": "meinung",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "vertiefungsfragen",
+                  "lemma": "vertiefungsfragen",
+                  "concept": "vertiefungsfragen",
+                  "aliases": [],
+                  "sources": [
+                    "text",
+                    "vocabularyTag"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "unterscheiden",
+                  "lemma": "unterscheiden",
+                  "concept": "unterscheiden",
+                  "aliases": [],
+                  "sources": [
+                    "text",
+                    "vocabularyTag"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "sprechen",
+                  "lemma": "sprechen",
+                  "concept": "sprechen",
+                  "aliases": [],
+                  "sources": [
+                    "text",
+                    "vocabularyTag"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "persönlich",
+                  "lemma": "persön",
+                  "concept": "persön",
+                  "aliases": [],
+                  "sources": [
+                    "vocabularyTag"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "deutschsprachigen",
+                  "lemma": "deutschsprachigen",
+                  "concept": "deutschsprachigen",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Verständnis-",
+                  "lemma": "verständnis-",
+                  "concept": "verständnis-",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "beliebtesten",
+                  "lemma": "beliebtesten",
+                  "concept": "beliebtesten",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Rückmeldung",
+                  "lemma": "rückmeldung",
+                  "concept": "rückmeldung",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Präsentation",
+                  "lemma": "präsentatio",
+                  "concept": "präsentatio",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Beispiele",
+                  "lemma": "beispielen",
+                  "concept": "beispielen",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "persönliche",
+                  "lemma": "persönlich",
+                  "concept": "persönlich",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Heimatland",
+                  "lemma": "heimatland",
+                  "concept": "heimatland",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "stellen",
+                  "lemma": "stellen",
+                  "concept": "stellen",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Minuten",
+                  "lemma": "minuten",
+                  "concept": "minuten",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Fragen",
+                  "lemma": "fragen",
+                  "concept": "fragen",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Person",
+                  "lemma": "perso",
+                  "concept": "perso",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Warum",
+                  "lemma": "warum",
+                  "concept": "warum",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Teil",
+                  "lemma": "teil",
+                  "concept": "teil",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "sich",
+                  "lemma": "sich",
+                  "concept": "sich",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "Raum",
+                  "lemma": "raum",
+                  "concept": "raum",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "etwa",
+                  "lemma": "etwa",
+                  "concept": "etwa",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                },
+                {
+                  "word": "vom",
+                  "lemma": "vom",
+                  "concept": "vom",
+                  "aliases": [],
+                  "sources": [
+                    "text"
+                  ],
+                  "quality": "validated"
+                }
+              ],
+              "vocabIndexVersion": "v3-quality",
+              "topicSlug": "verkehrsmittel-beispiel",
+              "topic": "verkehrsmittel-beispiel",
+              "schemaVersion": 2
+            },
+            "duplicate": false
+          }
+        ],
+        "duplicate": false
+      }
+    }
+  ],
+  "llmCostUsd": 0,
+  "allOk": true
+}

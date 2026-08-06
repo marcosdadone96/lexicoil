@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -38,7 +38,7 @@ gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personali
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/css/lexicoil-design-system.css?v=4">
-<link rel="stylesheet" href="/assets/css/app.css?v=26">
+<link rel="stylesheet" href="/assets/css/app.css?v=31">
 <link rel="stylesheet" href="/assets/css/app-utilities.css?v=3">
 <link rel="stylesheet" href="/assets/css/feedback-modal.css?v=1">
 </head>
@@ -162,6 +162,19 @@ gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personali
   </div>
 </div>
 
+<div id="deleteAccountModal" class="modal-overlay" style="display:none" aria-hidden="true">
+  <div class="upgrade-box" role="dialog" aria-labelledby="deleteAccountTitle">
+    <div class="u-icon-hero">⚠️</div>
+    <h2 id="deleteAccountTitle">Delete your account?</h2>
+    <p style="font-size:13px;color:var(--text-secondary);line-height:1.6;margin:12px 0 16px">This permanently deletes your vocabulary, saved exams, history, and cancels any active subscription. This cannot be undone.</p>
+    <p style="font-size:12px;color:var(--text-muted);margin-bottom:8px">Type <b>ELIMINAR</b> to confirm:</p>
+    <input type="text" id="deleteAccountConfirm" class="auth-inp" autocomplete="off" placeholder="ELIMINAR" style="margin-bottom:12px;text-align:center;font-weight:700;letter-spacing:.08em">
+    <p id="deleteAccountMsg" class="auth-msg" style="margin-bottom:10px"></p>
+    <button type="button" class="btn-upgrade user-dropdown__btn--danger" id="btnDeleteAccountConfirm" onclick="doDeleteAccount()">Delete my account permanently</button>
+    <button type="button" class="btn-upgrade-skip" onclick="closeDeleteAccountModal()">Cancel</button>
+  </div>
+</div>
+
 <!-- AUTH OVERLAY (hidden until user opens sign-in) -->
 <div id="authOverlay" style="display:none" aria-hidden="true">
   <div class="auth-box">
@@ -257,6 +270,7 @@ gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personali
         <button type="button" class="user-dropdown__btn" id="udSignIn" onclick="userMenuSignIn()" hidden>Sign in / Register</button>
         <button type="button" class="user-dropdown__btn" id="udFeedback" onclick="openFeedbackModal()">Send feedback</button>
         <a class="user-dropdown__btn" href="mailto:contact@lexicoil.com?subject=LexiCoil%20Inquiry">Contact support</a>
+        <button type="button" class="user-dropdown__btn user-dropdown__btn--danger" id="udDeleteAccount" onclick="openDeleteAccountModal()" hidden>Delete account</button>
         <div class="user-dropdown__sep" id="udLogoutSep"></div>
         <button type="button" class="user-dropdown__btn user-dropdown__btn--danger" id="udLogout" onclick="doLogout()">Sign out</button>
       </div>
@@ -346,6 +360,7 @@ gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personali
 
 <div id="horenGameScreen" style="display:none">
   <button class="nav-back-btn" onclick="exitHorenGame()">← Back</button>
+  <div id="hgUiLangMount" class="vocab-ui-lang-mount"></div>
   <div id="horenGameMount"></div>
 </div>
 
@@ -393,7 +408,8 @@ gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personali
       <button class="btn-sm accent" onclick="addManual()" style="padding:10px 16px">+ Add</button>
     </div>
     <div id="fcAddHint" class="vv-add-hint" style="display:none"></div>
-    <div class="fc-lang-bar"><span class="fc-lang-label">Translation:</span><div class="fc-lang-btns" id="fcLangBtns"></div></div>
+    <div class="fc-lang-bar"><span class="fc-lang-label">Interface:</span><div class="fc-lang-btns" id="fcLangBtns"></div></div>
+    <div id="fcDirBar"></div>
     <div class="fc-select-bar" id="fcSelectBar" style="display:none">
       <span><span class="sel-count" id="fcSelCount">0</span> selected</span>
       <button type="button" class="fc-sel-btn" onclick="selectAllFC()">All</button>
@@ -411,7 +427,7 @@ gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personali
         <select id="fcPersonalLevel" class="fc-add-input" style="flex:0 0 auto;min-width:90px;padding:8px 12px">
           <option value="A1">A1</option><option value="A2">A2</option><option value="B1" selected>B1</option><option value="B2">B2</option><option value="C1">C1</option><option value="C2">C2</option>
         </select>
-        <button class="btn-start" id="btnPersonalExam" onclick="generatePersonalExam()" style="max-width:280px;margin:0">Generate personal mock exam →</button>
+        <button class="btn-start" id="btnPersonalExam" onclick="generatePersonalExam()" style="max-width:280px;margin:0">Generate personal mock exam<span id="btnPersonalExamCredits"></span> →</button>
       </div>
     </div>
     <div class="fc-exam-sec" id="fcExamSec" style="display:none">
@@ -422,7 +438,7 @@ gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personali
         <button type="button" class="btn-sm" id="veHintModeImmersion" onclick="setVeHintLangMode('immersion');document.getElementById('veHintModeImmersion').classList.add('accent');document.getElementById('veHintModeInterface').classList.remove('accent');">German (immersion)</button>
       </p>
       <div class="u-flex-inline">
-        <button class="btn-start" onclick="startVE()" style="max-width:260px">Generate quiz (10 questions) →</button>
+        <button class="btn-start" onclick="startVE()" style="max-width:260px">Generate quiz (10 questions)<span id="btnVocabQuizCredits"></span> →</button>
       </div>
     </div>
     <div id="fcSavedQuizzes" class="fc-saved-quizzes"></div>
@@ -436,11 +452,26 @@ gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personali
     <div class="exam-actions"><button type="button" class="btn-sm" onclick="goHome()">Home</button></div>
   </div>
   <p class="exam-config-lede" id="veLede" style="margin-top:-14px;margin-bottom:18px"></p>
+  <div id="veUiLangMount" class="vocab-ui-lang-mount"></div>
   <div class="progress-wrap">
     <div class="progress-row"><span id="veProg">Question 1 of 10</span><span id="veScore">Score: 0</span></div>
     <div class="progress-track"><div class="progress-fill" id="veBar" style="width:0%"></div></div>
   </div>
   <div id="veContent"></div>
+</div>
+<div id="vocabPhrasesScreen" style="display:none">
+  <button type="button" class="back-btn nav-back-btn" onclick="exitVocabPhrases()">← Vocabulary</button>
+  <div class="exam-topbar">
+    <div class="exam-meta"><span class="exam-badge vocab">Phrases</span><span class="exam-title" id="vpTitle">Phrase practice</span></div>
+    <div class="exam-actions"><button type="button" class="btn-sm" onclick="goHome()">Home</button></div>
+  </div>
+  <p class="exam-config-lede" id="vpLede" style="margin-top:-14px;margin-bottom:18px"></p>
+  <div id="vpUiLangMount" class="vocab-ui-lang-mount"></div>
+  <div class="progress-wrap">
+    <div class="progress-row"><span id="vpProg">Phrase 1 of 4</span><span id="vpPhaseLbl">Gap → Order</span></div>
+    <div class="progress-track"><div class="progress-fill" id="vpBar" style="width:0%"></div></div>
+  </div>
+  <div id="vpContent"></div>
 </div>
 </div><!-- .app -->
 
@@ -449,8 +480,9 @@ gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personali
 <script src="js/services/supabaseClient.js?v=9"></script>
 <script src="js/data/activityTrack.js?v=2"></script>
 <script src="js/services/syncMerge.js?v=6"></script>
-<script src="js/services/authClient.js?v=18"></script>
-<script src="js/services/claudeClient.js?v=30"></script>
+<script src="js/services/authClient.js?v=21"></script>
+<script src="js/library/adminAccess.js?v=1"></script>
+<script src="js/services/claudeClient.js?v=33"></script>
 <script src="js/engine/domain/lexicoilDomain.js?v=1"></script>
 <script src="js/engine/knowledge/KnowledgeLoader.js?v=1"></script>
 <script src="js/engine/providers/baseProviderAdapter.js?v=1"></script>
@@ -464,9 +496,10 @@ gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personali
 <script src="js/engine/prompts/blueprintPromptBinding.js?v=7"></script>
 <script src="js/engine/validation/blueprintResolver.js?v=1"></script>
 <script src="js/engine/validation/CefrVocabLoader.js?v=2"></script>
-<script src="js/engine/validation/lemmatizer.js?v=1"></script>
+<script src="js/engine/validation/lemmatizer.js?v=2"></script>
+<script src="js/engine/separableResolve.js?v=7"></script>
 <script src="js/engine/validation/CefrGate.js?v=2"></script>
-<script src="js/engine/validation/difficultyScorer.js?v=1"></script>
+<script src="js/engine/validation/difficultyScorer.js?v=2"></script>
 <script src="js/engine/prompts/PromptBuilder.js?v=12"></script>
 <script src="js/engine/validation/isAnswerKeyRenderable.js?v=2"></script>
 <script src="js/engine/validation/ExamValidator.js?v=5"></script>
@@ -486,7 +519,8 @@ gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personali
 <script src="js/i18n/examSpanishNormalize.js?v=1"></script>
 <script src="js/i18n/examUiLocale.js?v=1"></script>
 <script src="js/i18n/consentLocale.js?v=1"></script>
-<script src="js/ui/consent/analyticsConfig.js?v=2"></script>
+<script src="js/i18n/pdfReportLocale.js?v=1"></script>
+<script src="js/i18n/vocabModuleLocale.js?v=2"></script><script src="js/ui/consent/analyticsConfig.js?v=2"></script>
 <script src="js/ui/consent/cookieConsent.js?v=1"></script>
 <script src="js/ui/consent/googleAnalytics.js?v=2"></script>
 <script src="js/analytics/lcAnalytics.js?v=1"></script>
@@ -498,7 +532,8 @@ gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personali
 <script src="js/core/metadataResolver.js?v=1"></script>
 <script src="js/core/schemaValidator.js?v=1"></script>
 <script src="js/config/examSource.js?v=1"></script>
-<script src="js/data/publishedExamAdapter.js?v=3"></script>
+<script src="js/engine/sprechenBriefing.js?v=3"></script>
+<script src="js/data/publishedExamAdapter.js?v=5"></script>
 <script src="js/data/examLibrary.js?v=6"></script>
 <script src="js/library/libraryCatalog.js?v=3"></script>
 <script src="js/library/TaggingGate.js?v=1"></script>
@@ -507,35 +542,47 @@ gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personali
 <script src="js/library/LibraryLoader.js?v=3"></script>
 <script src="js/library/levelAvailability.js?v=2"></script>
 <script src="js/library/PassageResolver.js?v=1"></script>
-<script src="js/library/HorenGame.js?v=1"></script>
+<script src="js/data/listeningGameUtils.js?v=1"></script>
+<script src="js/library/HorenGame.js?v=2"></script>
 <script src="js/library/ContentKey.js?v=1"></script>
 <script src="js/library/BurnedRegistry.js?v=1"></script>
-<script src="js/library/VocabBatching.js?v=1"></script>
+<script src="js/library/VocabBatching.js?v=2"></script>
 <script src="js/library/ItemCalibration.js?v=1"></script>
 <script src="js/engine/partTopicDetect.js?v=1"></script>
 <script src="js/data/b1Topics.js?v=2"></script>
-<script src="js/data/personalLesenTopicStock.js?v=1"></script>
+<script src="js/data/a2Topics.js?v=1"></script>
+<script src="js/data/examLevelLayout.js?v=1"></script>
+<script src="js/data/personalTopicStockFactory.js?v=1"></script>
+<script src="js/data/personalHorenTopicStock.js?v=1"></script>
+<script src="js/data/personalTopicStock.js?v=1"></script>
+<script src="js/data/personalLesenTopicStock.js?v=4"></script>
 <script src="js/library/adsMatching.js?v=1"></script>
 <script src="js/library/ExamBlueprint.js?v=3"></script>
 <script src="js/engine/targetUsage.js?v=2"></script>
 <script src="js/library/ExamBuilder.js?v=3"></script>
+<script src="js/library/grammarCategories.js?v=1"></script>
 <script src="js/library/AnalyticsStore.js?v=4"></script>
 <script src="js/library/WeaknessEngine.js?v=3"></script>
-<script src="js/library/PracticeDictionary.js?v=2"></script>
+<script src="js/library/PracticeDictionary.js?v=3"></script>
 <script src="js/library/contentLoader.js?v=1"></script>
 <script src="js/library/grammarLoader.js?v=2"></script>
 <script src="js/library/vocabularyLoader.js?v=1"></script>
 <script src="js/library/phrasesLoader.js?v=1"></script>
 <script src="js/data/articleLexicon.js?v=4"></script>
 <script src="js/data/manualVocab.js?v=11"></script>
-<script src="js/data/verbConjugation.js?v=2"></script>
+<script src="js/data/verbConjugation.js?v=6"></script>
 <script src="js/data/goalStore.js?v=8"></script>
 <script src="js/data/savedVocabQuizzes.js?v=1"></script>
+<script src="js/data/savedVocabPhrases.js?v=1"></script>
+<script src="js/data/savedListeningGames.js?v=1"></script>
+<script src="js/data/savedFlashcardSets.js?v=1"></script>
+<script src="js/data/savedVocabPractice.js?v=1"></script>
 <script src="js/ui/mastery/masteryView.js?v=2"></script>
 <script src="js/ui/dashboard/dashboardLayout.js?v=2"></script>
 <script src="js/ui/dashboard/dashboardUi.js?v=12"></script>
-<script src="js/ui/workspace/workspaceUi.js?v=7"></script>
+<script src="js/ui/workspace/workspaceUi.js?v=8"></script>
 <script src="js/ui/grammar/grammarView.js?v=2"></script>
+<script src="js/ui/grammar/grammarDrill.js?v=1"></script>
 <script src="js/library/QuestionLibrary.js?v=1"></script>
 <script src="js/content/goetheDemoExams.js"></script>
 <script src="js/content/demoExams.js"></script>
@@ -543,18 +590,22 @@ gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personali
 <script src="js/bootstrap/freePlan.js?v=1"></script>
 <script src="js/ui/exam/productionEvalCore.js?v=2"></script>
 <script src="js/ui/exam/moduleGrading.js?v=3"></script>
-<script src="js/bootstrap/state.js?v=15"></script>
+<script src="js/bootstrap/state.js?v=16"></script>
 <script src="js/lib/planPricing.js?v=3"></script>
 <script src="js/bootstrap/quota.js?v=3"></script>
 <script src="js/bootstrap/auth.js?v=5"></script>
 <script src="js/bootstrap/theme.js?v=2"></script>
-<script src="js/ui/workspace/vocabHub.js?v=14"></script>
-<script src="js/ui/exam/examConfig.js?v=12"></script>
+<script src="js/ui/workspace/vocabHub.js?v=15"></script>
+<script src="js/ui/exam/examConfig.js?v=14"></script>
 <script src="js/ui/exam/mistakeReview.js?v=1"></script>
-<script src="js/config/speakingModes.js?v=1"></script>
+<script src="js/config/speakingModes.js?v=3"></script>
+<script src="js/ui/exam/speakingVoicePilot.js?v=1"></script>
+<script src="js/ui/exam/speakingVoiceConsent.js?v=1"></script>
+<script src="js/ui/exam/speakingLiveClient.js?v=2"></script>
+<script src="js/ui/exam/speakingLiveVoice.js?v=4"></script>
 <script src="js/ui/exam/speakingMic.js?v=1"></script>
-<script src="js/ui/exam/speakingConversation.js?v=1"></script>
-<script src="js/ui/exam/speakingFlow.js?v=1"></script>
+<script src="js/ui/exam/speakingConversation.js?v=3"></script>
+<script src="js/ui/exam/speakingFlow.js?v=4"></script>
 <script src="js/ui/exam/oralPractice.js?v=3"></script>
 <script src="js/ui/app/coach.js?v=2"></script>
 <script src="js/ui/components/a11y.js?v=1"></script>
@@ -570,20 +621,28 @@ gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personali
 window.LEXICOIL_EXAM_SOURCE='published';</script>
 <script src="js/engine/strategyBFlags.js?v=3"></script>
 <script src="js/ui/exam/examSources.js?v=3"></script>
+<script src="js/engine/prompts/explanationOptionResync.js?v=1"></script>
 <script src="js/engine/prompts/partPostprocess.js?v=1"></script>
-<script src="js/engine/personalLesenPoolFallback.js?v=5"></script>
+<script src="js/engine/personalLesenPoolFallback.js?v=8"></script>
 <script src="js/engine/personalExamCoverage.js?v=3"></script>
 <script src="js/engine/validation/lesenPassageIntegrity.js?v=1"></script>
-<script src="js/ui/exam/examGeneration.js?v=52"></script>
+<script src="js/engine/horenPictureMatching.js?v=1"></script>
+<script src="js/library/personalPoolVocabGate.js?v=1"></script>
+<script src="js/ui/exam/examGeneration.js?v=55"></script>
 <script src="js/ui/exam/results.js?v=15"></script>
 <script src="js/ui/exam/examKeyboard.js?v=1"></script>
-<script src="js/ui/exam/examRunner.js?v=23"></script>
-<script src="js/ui/exam/saveExams.js?v=3"></script>
-<script src="js/ui/vocabulary/tooltip.js?v=15"></script>
+<script src="js/ui/exam/adminContentReview.js?v=6"></script>
+<script src="js/engine/passageTranslate.js?v=1"></script>
+<script src="js/ui/exam/examRunner.js?v=28"></script>
+<script src="js/ui/exam/saveExams.js?v=4"></script>
+<script src="js/ui/vocabulary/tooltip.js?v=20"></script>
 <script src="js/bootstrap/audio.js?v=4"></script>
 <script src="js/ui/vocabulary/fcKeyboard.js?v=1"></script>
-<script src="js/ui/vocabulary/flashcards.js?v=22"></script>
-<script src="js/bootstrap/featureQuota.js?v=11"></script>
+<script src="js/data/vocabQuizUtils.js?v=2"></script>
+<script src="js/ui/vocabulary/vocabPhrases.js?v=2"></script>
+<script src="js/ui/vocabulary/flashcards.js?v=26"></script>
+<script src="js/library/personalPoolQuota.js?v=1"></script>
+<script src="js/bootstrap/featureQuota.js?v=17"></script>
 <script src="js/bootstrap/init.js?v=5"></script>
 <script src="js/bootstrap/featureNotebook.js?v=1"></script>
 <script src="js/bootstrap/featurePayments.js?v=4"></script>
@@ -591,7 +650,7 @@ window.LEXICOIL_EXAM_SOURCE='published';</script>
 <script src="js/bootstrap/featureProductionEval.js?v=1"></script>
 <script src="js/bootstrap/featureSpeaking.js?v=4"></script>
 <script src="js/bootstrap/featureFlashcards.js?v=1"></script>
-<script src="js/bootstrap/appFeatures.js?v=28"></script>
+<script src="js/bootstrap/appFeatures.js?v=31"></script>
 <div id="pdf-export-container"></div>
 <div id="nbFab" class="nb-fab" style="display:none" aria-label="Libreta"><button type="button" class="nb-fab-main" title="Notas">📝</button></div>
 <div id="nbPanel" class="nb-panel" aria-label="Libreta inteligente"></div>

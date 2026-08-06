@@ -22,6 +22,8 @@ const MAX_CHUNKS_ALLOWED = 20;  // hard upper bound the server will ever grant
 const TICKETED_SCOPES = new Set([
   'exam_generation',
   'personal_exam',
+  'personal_schreiben',
+  'personal_sprechen_gen',
   'quick_exam',
 ]);
 
@@ -69,7 +71,9 @@ function verifyGenTicket(token, secret) {
 function createGenTicket(sub, scope, maxChunks, secret) {
   const now = Math.floor(Date.now() / 1000);
   const nonce = crypto.randomBytes(16).toString('hex');
-  const ttl = scope === 'personal_exam' ? PERSONAL_EXAM_TICKET_TTL_SEC : TICKET_TTL_SEC;
+  const ttl = scope === 'personal_exam' || scope === 'personal_schreiben' || scope === 'personal_sprechen_gen'
+    ? PERSONAL_EXAM_TICKET_TTL_SEC
+    : TICKET_TTL_SEC;
   const payload = {
     sub,
     scope,

@@ -1,0 +1,118 @@
+{
+  "generatedAt": "2026-07-06T11:55:08.389Z",
+  "plan": 10,
+  "ok": 6,
+  "firstPassOk": 3,
+  "firstPassRate": 0.5,
+  "localizedRepairCount": 0,
+  "multiGenCallsDespiteOk": 2,
+  "apiCallsTotal": 34,
+  "rows": [
+    {
+      "n": 1,
+      "teil": 1,
+      "topic": "Wohnen",
+      "ok": true,
+      "genCalls": 1,
+      "attempts": 1,
+      "firstPass": true,
+      "localizedRepair": null,
+      "file": "batches/generated/lesen-t1-gemini-170.json"
+    },
+    {
+      "n": 2,
+      "teil": 1,
+      "topic": "Bildung",
+      "ok": true,
+      "genCalls": 1,
+      "attempts": 1,
+      "firstPass": true,
+      "localizedRepair": null,
+      "file": "batches/generated/lesen-t1-gemini-171.json"
+    },
+    {
+      "n": 3,
+      "teil": 1,
+      "topic": "Arbeit",
+      "ok": false,
+      "genCalls": 5,
+      "firstPass": false,
+      "localizedRepair": null,
+      "reason": "gen-q-1-2cb96a32-5: afirmación copia literal del pasaje («von zu hause aus»)"
+    },
+    {
+      "n": 4,
+      "teil": 2,
+      "topic": "Bildung",
+      "ok": false,
+      "genCalls": 6,
+      "firstPass": false,
+      "localizedRepair": null,
+      "reason": "gen-q-2-1dd2ba85-3: opción correcta copia ≥4 palabras del pasaje («sie finden es gut»)"
+    },
+    {
+      "n": 5,
+      "teil": 2,
+      "topic": "Wohnen",
+      "ok": true,
+      "genCalls": 6,
+      "attempts": 3,
+      "firstPass": false,
+      "localizedRepair": null,
+      "file": "batches/generated/lesen-t2-gemini-086.json"
+    },
+    {
+      "n": 6,
+      "teil": 2,
+      "topic": "Medien",
+      "ok": false,
+      "genCalls": 4,
+      "firstPass": false,
+      "localizedRepair": null,
+      "reason": "question gen-q-2-99915b59-2: vocabulario B2+ en pregunta «Herausforderung» → usa «Problem / Schwierigkeit» (B1)"
+    },
+    {
+      "n": 7,
+      "teil": 5,
+      "topic": "Gesundheit",
+      "ok": true,
+      "genCalls": 3,
+      "attempts": 2,
+      "firstPass": false,
+      "localizedRepair": null,
+      "file": "batches/generated/lesen-t5-gemini-054.json"
+    },
+    {
+      "n": 8,
+      "teil": 5,
+      "topic": "Familie",
+      "ok": true,
+      "genCalls": 1,
+      "attempts": 1,
+      "firstPass": true,
+      "localizedRepair": null,
+      "file": "batches/generated/lesen-t5-gemini-055.json"
+    },
+    {
+      "n": 9,
+      "teil": 5,
+      "topic": "Arbeit",
+      "ok": false,
+      "genCalls": 5,
+      "firstPass": false,
+      "localizedRepair": null,
+      "reason": "gen-q-5-654a5fd2-1: opción correcta copia ≥5 palabras del pasaje («der speisesaal für reinigungsarbeiten geschlossen»)"
+    },
+    {
+      "n": 10,
+      "teil": 5,
+      "topic": "Umwelt",
+      "ok": true,
+      "genCalls": 2,
+      "attempts": 2,
+      "firstPass": false,
+      "localizedRepair": null,
+      "file": "batches/generated/lesen-t5-gemini-056.json"
+    }
+  ]
+}

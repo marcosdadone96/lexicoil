@@ -1,0 +1,576 @@
+{
+  "generatedAt": "2026-07-08T16:09:48.896Z",
+  "normalizeVersion": "v3.0-stable",
+  "gateVersion": "v6.1-B-G2 (frozen)",
+  "files": [
+    "lesen-t5-gemini-067.json",
+    "lesen-t5-gemini-066.json",
+    "lesen-t5-gemini-065.json",
+    "lesen-t5-gemini-064.json",
+    "lesen-t5-gemini-063.json",
+    "lesen-t4-gemini-037.json",
+    "lesen-t4-gemini-036.json",
+    "lesen-t3-auto-qeh7ew.json",
+    "lesen-t3-auto-omsq86.json",
+    "lesen-t3-auto-tz7n7y.json",
+    "lesen-t2-gemini-093.json",
+    "lesen-t2-gemini-092.json",
+    "lesen-t2-gemini-091.json",
+    "lesen-t1-gemini-177.json",
+    "lesen-t1-gemini-176.json"
+  ],
+  "gateSummary": {
+    "before": 7,
+    "after": 7,
+    "delta": 0
+  },
+  "duplicates": [],
+  "humanChecklist": [
+    {
+      "id": "dup-t1-177",
+      "file": "lesen-t1-gemini-177.json",
+      "category": "duplicación",
+      "desc": "Duplicado exacto \"Mein Hobby im Theaterverein\"",
+      "component": "generador/plantilla",
+      "status": "unclear",
+      "postV3": "No cruzada con otros del lote",
+      "fixProposal": "Diversidad en prompt t3-auto / dedup en ingest; rechazar si signature ya existe en pool"
+    },
+    {
+      "id": "dup-t2-091",
+      "file": "lesen-t2-gemini-091.json",
+      "category": "duplicación",
+      "desc": "Duplicado exacto \"Familienzeit am Wochenende\"",
+      "component": "generador/plantilla",
+      "status": "unclear",
+      "postV3": "No cruzada con otros del lote",
+      "fixProposal": "Diversidad en prompt t3-auto / dedup en ingest; rechazar si signature ya existe en pool"
+    },
+    {
+      "id": "dup-t3-pair",
+      "files": [
+        "lesen-t3-auto-qeh7ew.json",
+        "lesen-t3-auto-tz7n7y.json"
+      ],
+      "category": "duplicación",
+      "desc": "Mismo set 7 preguntas Emma/piano plantilla auto",
+      "component": "plantilla t3-auto",
+      "file": "lesen-t3-auto-qeh7ew.json",
+      "status": "unclear",
+      "postV3": "No cruzada con otros del lote",
+      "fixProposal": "Diversidad en prompt t3-auto / dedup en ingest; rechazar si signature ya existe en pool"
+    },
+    {
+      "id": "dup-t3-pair",
+      "files": [
+        "lesen-t3-auto-qeh7ew.json",
+        "lesen-t3-auto-tz7n7y.json"
+      ],
+      "category": "duplicación",
+      "desc": "Mismo set 7 preguntas Emma/piano plantilla auto",
+      "component": "plantilla t3-auto",
+      "file": "lesen-t3-auto-tz7n7y.json",
+      "status": "unclear",
+      "postV3": "No cruzada con otros del lote",
+      "fixProposal": "Diversidad en prompt t3-auto / dedup en ingest; rechazar si signature ya existe en pool"
+    },
+    {
+      "id": "t2-092-wichtiger",
+      "file": "lesen-t2-gemini-092.json",
+      "category": "adj_over_cap",
+      "desc": "ein Wichtiger Schritt",
+      "before": {
+        "field": "passages[0].text",
+        "snippet": "…ig, damit jeder teilnehmen kann. Es ist ein Wichtiger Schritt für die kulturelle Entwicklung. Die Erö…"
+      },
+      "after": {
+        "field": "passages[0].text",
+        "snippet": "…ig, damit jeder teilnehmen kann. Es ist ein Wichtiger Schritt für die kulturelle Entwicklung. Die Erö…"
+      },
+      "status": "persists",
+      "postV3Note": "Persiste tras v3 — fuera de alcance normalizador",
+      "component": "generador (prompt)",
+      "fixProposal": "Ampliar ADJ_NEEDS_ARTICLE_GUARD / heurística adj en capitalizeNouns (evidencia G2)"
+    },
+    {
+      "id": "t2-092-naechste",
+      "file": "lesen-t2-gemini-092.json",
+      "category": "adj_over_cap",
+      "desc": "das Nächste Fest",
+      "before": {
+        "field": "passages[1].text",
+        "snippet": "…ernen. Die Organisatoren planen bereits das Nächste Fest und hoffen auf noch mehr internationale…"
+      },
+      "after": {
+        "field": "passages[1].text",
+        "snippet": "…ernen. Die Organisatoren planen bereits das Nächste Fest und hoffen auf noch mehr internationale…"
+      },
+      "status": "persists",
+      "postV3Note": "Persiste tras v3 — fuera de alcance normalizador",
+      "component": "generador (prompt)",
+      "fixProposal": "Ampliar ADJ_NEEDS_ARTICLE_GUARD / heurística adj en capitalizeNouns (evidencia G2)"
+    },
+    {
+      "id": "t2-092-alter",
+      "file": "lesen-t2-gemini-092.json",
+      "category": "adj_over_cap",
+      "desc": "ein Alter Industriebau",
+      "before": {
+        "field": "questions[1].explanation",
+        "snippet": "… das jetzt das Kulturzentrum ist, zuvor ein Alter Industriebau war.…"
+      },
+      "after": {
+        "field": "questions[1].explanation",
+        "snippet": "… das jetzt das Kulturzentrum ist, zuvor ein Alter Industriebau war.…"
+      },
+      "status": "persists",
+      "postV3Note": "Persiste tras v3 — fuera de alcance normalizador",
+      "component": "generador (prompt)",
+      "fixProposal": "Ampliar ADJ_NEEDS_ARTICLE_GUARD / heurística adj en capitalizeNouns (evidencia G2)"
+    },
+    {
+      "id": "t2-092-breite",
+      "file": "lesen-t2-gemini-092.json",
+      "category": "adj_over_cap",
+      "desc": "eine Breite Teilnahme",
+      "before": {
+        "field": "questions[2].explanation",
+        "snippet": "…Kosten für die Kurse gering sind, damit eine Breite Teilnahme möglich ist.…"
+      },
+      "after": {
+        "field": "questions[2].explanation",
+        "snippet": "…Kosten für die Kurse gering sind, damit eine Breite Teilnahme möglich ist.…"
+      },
+      "status": "persists",
+      "postV3Note": "Persiste tras v3 — fuera de alcance normalizador",
+      "component": "generador (prompt)",
+      "fixProposal": "Ampliar ADJ_NEEDS_ARTICLE_GUARD / heurística adj en capitalizeNouns (evidencia G2)"
+    },
+    {
+      "id": "t2-093-taeglich",
+      "file": "lesen-t2-gemini-093.json",
+      "category": "adj_over_cap",
+      "desc": "den Täglichen Weg",
+      "before": {
+        "field": "passages[1].text",
+        "snippet": "…n großen Städten nutzen das Fahrrad für den Täglichen Weg zur Arbeit oder zur Schule. Das ist gut…"
+      },
+      "after": {
+        "field": "passages[1].text",
+        "snippet": "…n großen Städten nutzen das Fahrrad für den Täglichen Weg zur Arbeit oder zur Schule. Das ist gut…"
+      },
+      "status": "persists",
+      "postV3Note": "Persiste tras v3 — fuera de alcance normalizador",
+      "component": "generador (prompt)",
+      "fixProposal": "Ampliar ADJ_NEEDS_ARTICLE_GUARD / heurística adj en capitalizeNouns (evidencia G2)"
+    },
+    {
+      "id": "t2-093-letzten",
+      "file": "lesen-t2-gemini-093.json",
+      "category": "adj_over_cap",
+      "desc": "in den Letzten fünf Jahren",
+      "before": {
+        "field": "passages[1].text",
+        "snippet": "…hrer. Ein aktueller Bericht zeigt, dass in den Letzten fünf Jahren die Zahl der Radfahrer um 20 Prozent ge…"
+      },
+      "after": {
+        "field": "passages[1].text",
+        "snippet": "…hrer. Ein aktueller Bericht zeigt, dass in den Letzten fünf Jahren die Zahl der Radfahrer um 20 Prozent ge…"
+      },
+      "status": "persists",
+      "postV3Note": "Persiste tras v3 — fuera de alcance normalizador",
+      "component": "generador (prompt)",
+      "fixProposal": "Ampliar ADJ_NEEDS_ARTICLE_GUARD / heurística adj en capitalizeNouns (evidencia G2)"
+    },
+    {
+      "id": "t2-093-naechsten",
+      "file": "lesen-t2-gemini-093.json",
+      "category": "adj_over_cap",
+      "desc": "in den Nächsten drei Jahren",
+      "before": {
+        "field": "passages[1].text",
+        "snippet": "… verbessern. Die Stadtverwaltung plant, in den Nächsten drei Jahren weitere 50 Kilometer Radwege zu bauen u…"
+      },
+      "after": {
+        "field": "passages[1].text",
+        "snippet": "… verbessern. Die Stadtverwaltung plant, in den Nächsten drei Jahren weitere 50 Kilometer Radwege zu bauen u…"
+      },
+      "status": "persists",
+      "postV3Note": "Persiste tras v3 — fuera de alcance normalizador",
+      "component": "generador (prompt)",
+      "fixProposal": "Ampliar ADJ_NEEDS_ARTICLE_GUARD / heurística adj en capitalizeNouns (evidencia G2)"
+    },
+    {
+      "id": "t2-093-sportlich",
+      "file": "lesen-t2-gemini-093.json",
+      "category": "adj_over_cap",
+      "desc": "Sportlichen Aktivitäten",
+      "before": {
+        "field": "passages[0].text",
+        "snippet": "… Gemeinschaft und Gesundheit. Neben den Sportlichen Aktivitäten gibt es auch gemeinsame Ausflüge und Fe…"
+      },
+      "after": {
+        "field": "passages[0].text",
+        "snippet": "… Gemeinschaft und Gesundheit. Neben den Sportlichen Aktivitäten gibt es auch gemeinsame Ausflüge und Fe…"
+      },
+      "status": "persists",
+      "postV3Note": "Persiste tras v3 — fuera de alcance normalizador",
+      "component": "generador (prompt)",
+      "fixProposal": "Ampliar ADJ_NEEDS_ARTICLE_GUARD / heurística adj en capitalizeNouns (evidencia G2)"
+    },
+    {
+      "id": "t2-091-wichtig",
+      "file": "lesen-t2-gemini-091.json",
+      "category": "adj_over_cap",
+      "desc": "Wichtige Rolle / Wichtiger Bestandteil",
+      "before": {
+        "field": "passages[0].text",
+        "snippet": "…Auch gemeinsame Mahlzeiten spielen eine Wichtige Rolle. Viele Eltern kochen am Samstag oder So…"
+      },
+      "after": {
+        "field": "passages[0].text",
+        "snippet": "…Auch gemeinsame Mahlzeiten spielen eine Wichtige Rolle. Viele Eltern kochen am Samstag oder So…"
+      },
+      "status": "persists",
+      "postV3Note": "Persiste tras v3 — fuera de alcance normalizador",
+      "component": "generador (prompt)",
+      "fixProposal": "Ampliar ADJ_NEEDS_ARTICLE_GUARD / heurística adj en capitalizeNouns (evidencia G2)"
+    },
+    {
+      "id": "t3-kleine-emma",
+      "file": "lesen-t3-auto-qeh7ew.json",
+      "category": "adj_over_cap",
+      "desc": "Die Kleine Emma",
+      "before": {
+        "field": "questions[0].question",
+        "snippet": "…Die Kleine Emma soll ein Tasteninstrument erlernen.…"
+      },
+      "after": {
+        "field": "questions[0].question",
+        "snippet": "…Die Kleine Emma soll ein Tasteninstrument erlernen.…"
+      },
+      "status": "persists",
+      "postV3Note": "Persiste tras v3 — fuera de alcance normalizador",
+      "component": "generador (prompt)",
+      "fixProposal": "Ampliar ADJ_NEEDS_ARTICLE_GUARD / heurística adj en capitalizeNouns (evidencia G2)"
+    },
+    {
+      "id": "t3-kleine-emma",
+      "file": "lesen-t3-auto-tz7n7y.json",
+      "category": "adj_over_cap",
+      "desc": "Die Kleine Emma",
+      "before": {
+        "field": "questions[0].question",
+        "snippet": "…Die Kleine Emma soll ein Tasteninstrument erlernen.…"
+      },
+      "after": {
+        "field": "questions[0].question",
+        "snippet": "…Die Kleine Emma soll ein Tasteninstrument erlernen.…"
+      },
+      "status": "persists",
+      "postV3Note": "Persiste tras v3 — fuera de alcance normalizador",
+      "component": "generador (prompt)",
+      "fixProposal": "Ampliar ADJ_NEEDS_ARTICLE_GUARD / heurística adj en capitalizeNouns (evidencia G2)"
+    },
+    {
+      "id": "t4-036-wichtiger",
+      "file": "lesen-t4-gemini-036.json",
+      "category": "adj_over_cap",
+      "desc": "ein Wichtiger Schritt (Clara)",
+      "before": {
+        "field": "questions[6].signText",
+        "snippet": "…nder, die gerne draußen spielen. Es ist ein Wichtiger Schritt für mehr Sport in der Stadt. Ich unters…"
+      },
+      "after": {
+        "field": "questions[6].signText",
+        "snippet": "…nder, die gerne draußen spielen. Es ist ein Wichtiger Schritt für mehr Sport in der Stadt. Ich unters…"
+      },
+      "status": "persists",
+      "postV3Note": "Persiste tras v3 — fuera de alcance normalizador",
+      "component": "generador (prompt)",
+      "fixProposal": "Ampliar ADJ_NEEDS_ARTICLE_GUARD / heurística adj en capitalizeNouns (evidencia G2)"
+    },
+    {
+      "id": "t4-037-missing",
+      "file": "lesen-t4-gemini-037.json",
+      "category": "substantiv_missing_cap",
+      "desc": "etwas wichtiges (falta Wichtiges)",
+      "before": {
+        "field": "questions[1].signText",
+        "snippet": "…Manchmal vergesse ich etwas wichtiges für das Abendessen am Sonntag. Es wäre …"
+      },
+      "after": {
+        "field": "questions[1].signText",
+        "snippet": "…Manchmal vergesse ich etwas wichtiges für das Abendessen am Sonntag. Es wäre …"
+      },
+      "status": "persists",
+      "postV3Note": "Persiste tras v3 — fuera de alcance normalizador",
+      "component": "normalizador (gap)",
+      "fixProposal": "Ampliar sustantivadores (etwas/nichts/viel) en capitalizeNouns + verificar orden decap→cap"
+    },
+    {
+      "id": "t4-037-over",
+      "file": "lesen-t4-gemini-037.json",
+      "category": "adj_over_cap",
+      "desc": "die Kleinen Läden/Geschäfte",
+      "before": {
+        "field": "questions[6].signText",
+        "snippet": "…Ich finde, die Kleinen Läden in der Stadt hätten ein Problem, wenn d…"
+      },
+      "after": {
+        "field": "questions[6].signText",
+        "snippet": "…Ich finde, die Kleinen Läden in der Stadt hätten ein Problem, wenn d…"
+      },
+      "status": "persists",
+      "postV3Note": "Persiste tras v3 — fuera de alcance normalizador",
+      "component": "auditor/gate (ambigüedad sustantivación)",
+      "fixProposal": "Gate pide minúscula pero es sustantivación (Kleine Läden); revisar regla gate vs normalize"
+    },
+    {
+      "id": "t5-063-sentence",
+      "file": "lesen-t5-gemini-063.json",
+      "category": "sentence_start_lowercase",
+      "desc": "Inicio oración minúscula tras encabezado (persönliche Gegenstände)",
+      "before": {
+        "field": "passages[0].text",
+        "snippet": "… Sie an der Information und online.\n3.  **Umkleiden und Schließfächer:** persönliche Gegenstände sind in den Schließfächern aufzubewahre…"
+      },
+      "after": {
+        "field": "passages[0].text",
+        "snippet": "… Sie an der Information und online.\n3.  **Umkleiden und Schließfächer:** persönliche Gegenstände sind in den Schließfächern aufzubewahre…"
+      },
+      "status": "persists",
+      "postV3Note": "Persiste tras v3 — fuera de alcance normalizador",
+      "component": "plantilla t5-reglamento + generador",
+      "fixProposal": "Post-proceso sentence-start tras `**Header:**` en pipeline o regla en prompt t5 plantilla reglamento"
+    },
+    {
+      "id": "t5-065-sentence",
+      "file": "lesen-t5-gemini-065.json",
+      "category": "sentence_start_lowercase",
+      "desc": "Inicio oración minúscula tras encabezado (persönliche Daten)",
+      "before": {
+        "field": "passages[0].text",
+        "snippet": "…ie IT-Abteilung informiert werden.\n\n4.  **Datenschutz und Privatsphäre:** persönliche Daten von Mitschülern oder Lehrkräften dürfen…"
+      },
+      "after": {
+        "field": "passages[0].text",
+        "snippet": "…ie IT-Abteilung informiert werden.\n\n4.  **Datenschutz und Privatsphäre:** persönliche Daten von Mitschülern oder Lehrkräften dürfen…"
+      },
+      "status": "persists",
+      "postV3Note": "Persiste tras v3 — fuera de alcance normalizador",
+      "component": "plantilla t5-reglamento + generador",
+      "fixProposal": "Post-proceso sentence-start tras `**Header:**` en pipeline o regla en prompt t5 plantilla reglamento"
+    },
+    {
+      "id": "t5-067-freien",
+      "file": "lesen-t5-gemini-067.json",
+      "category": "adj_over_cap",
+      "desc": "den Freien Verkehr",
+      "before": {
+        "field": "passages[0].text",
+        "snippet": "…Lesesälen ist strengstens untersagt, um den Freien Verkehr und die Sicherheit zu gewährleisten.\n\n3…"
+      },
+      "after": {
+        "field": "passages[0].text",
+        "snippet": "…Lesesälen ist strengstens untersagt, um den freien Verkehr und die Sicherheit zu gewährleisten.\n\n3…"
+      },
+      "status": "partial_or_reverted",
+      "postV3Note": "Cambio neto: Freien→freien",
+      "component": "generador",
+      "fixProposal": "Revisar prompt generador para consistencia caps"
+    },
+    {
+      "id": "t5-067-aehnlich",
+      "file": "lesen-t5-gemini-067.json",
+      "category": "adj_over_cap",
+      "desc": "Ähnlichen/Ähnliche Fortbewegungsmittel",
+      "before": {
+        "field": "passages[0].text",
+        "snippet": "…Mitführen von Rollern, Skateboards oder Ähnlichen Fortbewegungsmitteln in den Bibliotheksräumen ist nicht gest…"
+      },
+      "after": {
+        "field": "passages[0].text",
+        "snippet": "…Mitführen von Rollern, Skateboards oder Ähnlichen Fortbewegungsmitteln in den Bibliotheksräumen ist nicht gest…"
+      },
+      "status": "persists",
+      "postV3Note": "Persiste tras v3 — fuera de alcance normalizador",
+      "component": "generador (prompt)",
+      "fixProposal": "Añadir ähnlich a heurística adj o lista homograph; o regla comparativo+Artikel"
+    }
+  ],
+  "byStatus": {
+    "persists": 17,
+    "partial_or_reverted": 1
+  },
+  "byTeil": {
+    "1": {
+      "total": 1,
+      "persists": 0,
+      "fixed": 0
+    },
+    "2": {
+      "total": 10,
+      "persists": 9,
+      "fixed": 0
+    },
+    "3": {
+      "total": 4,
+      "persists": 2,
+      "fixed": 0
+    },
+    "4": {
+      "total": 3,
+      "persists": 3,
+      "fixed": 0
+    },
+    "5": {
+      "total": 4,
+      "persists": 4,
+      "fixed": 0
+    }
+  },
+  "perFile": [
+    {
+      "file": "lesen-t5-gemini-067.json",
+      "teil": 5,
+      "normChanges": [
+        {
+          "path": "passages[0].text",
+          "tokenFrom": "Freien",
+          "tokenTo": "freien"
+        }
+      ],
+      "beforeGate": 0,
+      "afterGate": 0,
+      "gateRemoved": [],
+      "gateAdded": []
+    },
+    {
+      "file": "lesen-t5-gemini-066.json",
+      "teil": 5,
+      "normChanges": [],
+      "beforeGate": 0,
+      "afterGate": 0,
+      "gateRemoved": [],
+      "gateAdded": []
+    },
+    {
+      "file": "lesen-t5-gemini-065.json",
+      "teil": 5,
+      "normChanges": [],
+      "beforeGate": 0,
+      "afterGate": 0,
+      "gateRemoved": [],
+      "gateAdded": []
+    },
+    {
+      "file": "lesen-t5-gemini-064.json",
+      "teil": 5,
+      "normChanges": [],
+      "beforeGate": 0,
+      "afterGate": 0,
+      "gateRemoved": [],
+      "gateAdded": []
+    },
+    {
+      "file": "lesen-t5-gemini-063.json",
+      "teil": 5,
+      "normChanges": [],
+      "beforeGate": 1,
+      "afterGate": 1,
+      "gateRemoved": [],
+      "gateAdded": []
+    },
+    {
+      "file": "lesen-t4-gemini-037.json",
+      "teil": 4,
+      "normChanges": [],
+      "beforeGate": 2,
+      "afterGate": 2,
+      "gateRemoved": [],
+      "gateAdded": []
+    },
+    {
+      "file": "lesen-t4-gemini-036.json",
+      "teil": 4,
+      "normChanges": [],
+      "beforeGate": 2,
+      "afterGate": 2,
+      "gateRemoved": [],
+      "gateAdded": []
+    },
+    {
+      "file": "lesen-t3-auto-qeh7ew.json",
+      "teil": 3,
+      "normChanges": [],
+      "beforeGate": 0,
+      "afterGate": 0,
+      "gateRemoved": [],
+      "gateAdded": []
+    },
+    {
+      "file": "lesen-t3-auto-omsq86.json",
+      "teil": 3,
+      "normChanges": [],
+      "beforeGate": 0,
+      "afterGate": 0,
+      "gateRemoved": [],
+      "gateAdded": []
+    },
+    {
+      "file": "lesen-t3-auto-tz7n7y.json",
+      "teil": 3,
+      "normChanges": [],
+      "beforeGate": 0,
+      "afterGate": 0,
+      "gateRemoved": [],
+      "gateAdded": []
+    },
+    {
+      "file": "lesen-t2-gemini-093.json",
+      "teil": 2,
+      "normChanges": [],
+      "beforeGate": 2,
+      "afterGate": 2,
+      "gateRemoved": [],
+      "gateAdded": []
+    },
+    {
+      "file": "lesen-t2-gemini-092.json",
+      "teil": 2,
+      "normChanges": [],
+      "beforeGate": 0,
+      "afterGate": 0,
+      "gateRemoved": [],
+      "gateAdded": []
+    },
+    {
+      "file": "lesen-t2-gemini-091.json",
+      "teil": 2,
+      "normChanges": [],
+      "beforeGate": 0,
+      "afterGate": 0,
+      "gateRemoved": [],
+      "gateAdded": []
+    },
+    {
+      "file": "lesen-t1-gemini-177.json",
+      "teil": 1,
+      "normChanges": [],
+      "beforeGate": 0,
+      "afterGate": 0,
+      "gateRemoved": [],
+      "gateAdded": []
+    },
+    {
+      "file": "lesen-t1-gemini-176.json",
+      "teil": 1,
+      "normChanges": [],
+      "beforeGate": 0,
+      "afterGate": 0,
+      "gateRemoved": [],
+      "gateAdded": []
+    }
+  ]
+}

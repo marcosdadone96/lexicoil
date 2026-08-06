@@ -5,7 +5,9 @@
  * Scoring uses vocabKeys on lightweight rows; full payloads load only for the winner.
  */
 const { loadSeedRecords, clearLocalSeedCache: _clearSeedCache } = require('./reusablePartsLocalSeed.js');
-const { getPartVocabIndex, vocabEntryKey } = require('./partIndex.js');
+const { useLocalSeedInRuntime } = require('./poolSourceMode.js');
+const { partPassesPublishGate } = require('./partPublishGate.js');
+const { partPassesAssembleMode } = require('./officialQuarantine.js');
 
 const MODULE_CACHE = new Map();
 const INDEX_READ_BATCH = 25;
@@ -15,7 +17,12 @@ function cacheKey(lang, level, module) {
 }
 
 function vocabKeysFromPart(part) {
-  return [...new Set(getPartVocabIndex(part).map(vocabEntryKey).filter(Boolean))];
+  const { getPartVocabIndex, vocabEntryKeys } = require('./partIndex.js');
+  const keys = new Set();
+  for (const entry of getPartVocabIndex(part)) {
+    for (const k of vocabEntryKeys(entry)) keys.add(k);
+  }
+  return [...keys];
 }
 
 function rowFromSeedRecord(rec) {
@@ -81,8 +88,7 @@ async function readIndexRows(store, lang, level, module) {
     }));
     for (const idx of chunk) {
       if (!idx) continue;
-      if (idx.disabled === true || idx.complete !== true || idx.verified !== true) continue;
-      if (Array.isArray(idx.vocabKeys) && idx.vocabKeys.length) {
+      if (Array.isArray(idx.vocabKeys) && idx.vocabKeys.length && partPassesPublishGate(idx)) {
         out.push(rowFromIndex(idx, null));
         continue;
       }
@@ -90,9 +96,7 @@ async function readIndexRows(store, lang, level, module) {
       try {
         partMeta = await store.get(idx.partKey, { type: 'json' });
       } catch (_) { /* skip */ }
-      if (!partMeta || partMeta.disabled === true || partMeta.complete !== true || partMeta.verified !== true) {
-        continue;
-      }
+      if (!partPassesPublishGate(partMeta || idx)) continue;
       out.push(rowFromIndex(idx, partMeta));
     }
   }
@@ -110,10 +114,12 @@ async function loadModuleSearchRows(store, lang, level, module) {
   if (MODULE_CACHE.has(key)) return MODULE_CACHE.get(key);
 
   const byId = new Map();
-  for (const rec of loadSeedRecords(normLang, normLevel)) {
-    if (String(rec.module || '').toLowerCase() !== normModule) continue;
-    if (rec.disabled === true || rec.complete !== true || rec.verified !== true) continue;
-    byId.set(rec.id, rowFromSeedRecord(rec));
+  if (useLocalSeedInRuntime()) {
+    for (const rec of loadSeedRecords(normLang, normLevel)) {
+      if (String(rec.module || '').toLowerCase() !== normModule) continue;
+      if (!partPassesPublishGate(rec)) continue;
+      byId.set(rec.id, rowFromSeedRecord(rec));
+    }
   }
 
   for (const row of await readIndexRows(store, normLang, normLevel, normModule)) {
@@ -134,12 +140,15 @@ async function loadModuleSearchRows(store, lang, level, module) {
   return entry;
 }
 
-function filterRows(rows, { teil = null, excludeIds = [] } = {}) {
+function filterRows(rows, { teil = null, excludeIds = [], assembleMode = 'practice' } = {}) {
   const exclude = new Set(excludeIds || []);
   let out = rows.filter((r) => !r.disabled && r.complete && r.verified && !exclude.has(r.id));
   if (teil != null && Number.isFinite(Number(teil))) {
     const want = Number(teil);
     out = out.filter((r) => Number(r.teil) === want);
+  }
+  if (assembleMode === 'official') {
+    out = out.filter((r) => partPassesAssembleMode(r.part, assembleMode));
   }
   return out;
 }

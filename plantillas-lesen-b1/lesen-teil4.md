@@ -35,7 +35,10 @@ Usa léxico **simple y frecuente**:
 1. **Enunciado igual para todos:** las 7 preguntas = "Ist [Nombre] für den Vorschlag?" (solo cambia el nombre). **PROHIBIDA cualquier negación en el enunciado.**
 2. Opciones siempre exactamente **a) Ja** y **b) Nein**.
 3. **Distribución OBLIGATORIA:** exactamente **3 Ja y 4 Nein** (o 4 Ja y 3 Nein) — NUNCA ≥5 del mismo.
-4. **≥2 opiniones con matices:** crítica parcial pero a favor en general (→ Ja) o escepticismo parcial pero en contra (→ Nein). El alumno debe leer con atención.
+4. **≥2 opiniones con matices:** crítica parcial pero a favor en general (→ Ja), o reconocimiento parcial pero en contra (→ Nein). **PERO:** el matiz va **SIEMPRE** en las primeras frases del `signText`, y la **ÚLTIMA frase** de **CADA** `signText` debe ser una declaración de postura inequívoca usando **EXACTAMENTE** una de estas fórmulas (o variación mínima):
+   - **Para Ja:** «Ich bin dafür.» / «Ich unterstütze den Vorschlag.» / «Deshalb finde ich den Vorschlag gut.»
+   - **Para Nein:** «Ich bin dagegen.» / «Ich lehne den Vorschlag ab.» / «Deshalb sage ich Nein.» / «Für mich ist der Vorschlag nicht gut.»
+   **PROHIBIDO** terminar con posturas ambiguas («Ich bin nicht grundsätzlich dagegen…», «Ich bin implizit dagegen», «Ich bin skeptisch» como frase final sin fórmula clara después).
 5. **Anti word-matching:** pregunta ↔ `signText` — el nombre está permitido; el resto ≤2 palabras de contenido comunes.
 6. **Coherencia clave ↔ signText (OBLIGATORIO):**
    - `signText` con «nicht gut», «bin dagegen», «sage ich Nein», «lehne ab» → `correct` = **Nein**
@@ -67,7 +70,8 @@ Opinión: *«Ich finde **Fahrrad**fahren gut…»*
 - ¿3–4 Ja y 4–3 Nein?
 - ¿`correct` coincide con la postura real del `signText`? (una clave invertida = rechazo)
 - ¿Sin tono moralizante?
-- ¿Solo JSON, sin markdown?
+- ¿La ÚLTIMA frase de cada signText es una fórmula de postura de la lista?
+- PROHIBIDO usar **negrita** (asteriscos dobles) en el campo `text` del pasaje. Ejemplo INCORRECTO: '**Öffnungszeiten:** Das Zentrum öffnet...'. Ejemplo CORRECTO: 'Öffnungszeiten: Das Zentrum öffnet...' (dos puntos, sin asteriscos).
 
 ## Formato de salida
 Devuelve SOLO `{ "passages": [...], "questions": [...] }` — sin ```, sin texto extra.
@@ -158,8 +162,8 @@ Devuelve SOLO `{ "passages": [...], "questions": [...] }` — sin ```, sin texto
       "options": ["a) Ja", "b) Nein"],
       "correct": "Nein",
       "correctAnswer": "Nein",
-      "explanation": "Sie nennt die saubere Luft einen Vorteil und plädiert für einen Test.",
-      "signText": "Die Luft wäre sicher besser, da gebe ich zu, weil weniger Autos oft helfen. Trotzdem will ich erst ein halbes Jahr testen, statt gleich alles zu verbieten. Ich bin nicht grundsätzlich dagegen, nur gegen den starren Plan.",
+      "explanation": "Sie erkennt bessere Luft an und will einen Test, lehnt den starren Plan aber ab (Nein).",
+      "signText": "Die Luft wäre sicher besser, da gebe ich zu, weil weniger Autos oft helfen. Trotzdem will ich erst ein halbes Jahr testen, statt gleich alles zu verbieten. Deshalb lehne ich den Vorschlag ab.",
       "passageId": "gen-l4-8842",
       "lang": "de",
       "level": "B1"
@@ -188,8 +192,8 @@ Devuelve SOLO `{ "passages": [...], "questions": [...] }` — sin ```, sin texto
       "options": ["a) Ja", "b) Nein"],
       "correct": "Nein",
       "correctAnswer": "Nein",
-      "explanation": "Sie warnt vor teureren Lieferungen, lehnt das Konzept aber nicht pauschal ab.",
-      "signText": "Lieferwagen brauchen Zufahrt in die Stadt, sonst werden Produkte teurer und Nachbarn zahlen mehr. Ich bin skeptisch, ob das alles klappt, aber grundsätzlich verboten finde ich es nicht, wenn es Ausnahmen gibt.",
+      "explanation": "Sie warnt vor teureren Lieferungen und verlangt Ausnahmen, lehnt den Vorschlag aber insgesamt ab (Nein).",
+      "signText": "Lieferwagen brauchen Zufahrt in die Stadt, sonst werden Produkte teurer und Nachbarn zahlen mehr. Ausnahmen für Lieferungen sind wichtig, aber der starre Plan passt nicht zu unseren Bedürfnissen. Deshalb sage ich Nein.",
       "passageId": "gen-l4-8842",
       "lang": "de",
       "level": "B1"

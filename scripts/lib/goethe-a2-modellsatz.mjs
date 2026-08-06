@@ -30,7 +30,7 @@ export const GOETHE_A2_INSTRUCTIONS = Object.freeze({
   ],
   horen: [
     'Sie hören fünf kurze Texte. Sie hören jeden Text zweimal.\nWählen Sie für die Aufgaben 1 bis 5 die richtige Lösung a, b oder c.',
-    'Sie hören ein Gespräch. Sie hören den Text einmal.\nWählen Sie für die Aufgaben 6 bis 10 die richtige Lösung a, b oder c.',
+    'Sie hören ein Gespräch. Sie hören den Text einmal.\nWählen Sie für die Aufgaben 6 bis 10 ein passendes Bild aus a bis i.',
     'Sie hören fünf kurze Gespräche. Sie hören jeden Text einmal.\nWählen Sie für die Aufgaben 11 bis 15 die richtige Lösung a, b oder c.',
     'Sie hören ein Interview. Sie hören den Text zweimal.\nWählen Sie für die Aufgaben 16 bis 20 Ja oder Nein.',
   ],

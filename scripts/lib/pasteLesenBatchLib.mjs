@@ -10,9 +10,31 @@ import {
   checkPromptBatchQuality,
   formatPromptQualityReport,
 } from './promptBatchQuality.mjs';
-import { checkLesenBatchIngest, formatIngestReport } from './lesenBatchIngestCheck.mjs';
+import {
+  maybeNormalizeManualLesenBatch,
+  assertManualPublishPositionGates,
+} from './manualPublishNormalize.mjs';
+import {
+  parseValidateBatchErrors,
+} from './gateReportFormat.mjs';
+import {
+  checkLesenBatchIngest,
+  formatIngestReport,
+  ingestErrorsForSummary,
+} from './lesenBatchIngestCheck.mjs';
 
-const GENERATED = path.join(ROOT, 'batches', 'generated');
+import {
+  GENERATED_DIR,
+  generatedDir,
+  listJsonInStagingRoot,
+  normalizeLevel,
+} from './batchPaths.mjs';
+
+function generatedOutDir(level = 'B1') {
+  const dir = generatedDir(level);
+  fs.mkdirSync(dir, { recursive: true });
+  return dir;
+}
 
 export function parsePasteArgs(argv) {
   const out = {
@@ -136,8 +158,27 @@ export function validateLesenBatch(batch, args, { teil: teilHint, label } = {}) 
 
   const module = inferModuleFromBatch(batch);
 
-  fs.mkdirSync(GENERATED, { recursive: true });
-  const tmpPath = path.join(GENERATED, `.tmp-validate-${Date.now()}-${Math.random().toString(36).slice(2, 8)}.json`);
+  batch = maybeNormalizeManualLesenBatch(batch, {
+    teil,
+    lang: args.lang,
+    level: args.level,
+    module,
+  });
+  if (module === 'lesen' && [2, 5].includes(teil)) {
+    const pos = assertManualPublishPositionGates(batch, { teil, lang: args.lang, level: args.level });
+    if (!pos.ok) {
+      return {
+        ok: false,
+        label,
+        teil,
+        errors: [`Position gate: ${pos.issues.join('; ')}`],
+      };
+    }
+    batch = pos.batch;
+  }
+
+  const tmpDir = generatedOutDir(args.level);
+  const tmpPath = path.join(tmpDir, `.tmp-validate-${Date.now()}-${Math.random().toString(36).slice(2, 8)}.json`);
   fs.writeFileSync(tmpPath, `${JSON.stringify(batch, null, 2)}\n`, 'utf8');
   const relTmp = path.relative(ROOT, tmpPath).replace(/\\/g, '/');
 
@@ -149,7 +190,7 @@ export function validateLesenBatch(batch, args, { teil: teilHint, label } = {}) 
     });
     console.log(v.output || (v.ok ? 'OK' : 'FAIL'));
     if (!v.ok) {
-      errors.push('Validación técnica falló');
+      errors.push(...parseValidateBatchErrors(v.output));
       return { ok: false, label, teil, errors };
     }
 
@@ -158,7 +199,8 @@ export function validateLesenBatch(batch, args, { teil: teilHint, label } = {}) 
       const { quality, report } = runModuleQualityCheck(batch, module, teil, args);
       console.log(report);
       if (!quality.ok) {
-        errors.push('Calidad pedagógica falló');
+        errors.push(...(quality.issues || []));
+        if (!errors.length) errors.push('Calidad pedagógica falló (sin issues detallados)');
         return { ok: false, label, teil, module, errors };
       }
     }
@@ -170,9 +212,9 @@ export function validateLesenBatch(batch, args, { teil: teilHint, label } = {}) 
         level: args.level,
         batchId: 'validate-tmp',
       });
-      console.log(formatIngestReport(ingest));
+      console.log(formatIngestReport(ingest, { level: args.level }));
       if (!ingest.ok) {
-        errors.push('Pre-ingest CEFR falló');
+        errors.push(...ingestErrorsForSummary(ingest, args.level));
         return { ok: false, label, teil, errors };
       }
     }
@@ -192,7 +234,7 @@ function saveBatch(batch, args, { teil, tag, outName } = {}) {
   const basename = outName
     ? `${outName.replace(/\.json$/i, '')}.json`
     : nextOutputBasename(teil, fileTag);
-  const outPath = path.join(GENERATED, basename);
+  const outPath = path.join(generatedOutDir(args.level), basename);
   fs.writeFileSync(outPath, `${JSON.stringify(batch, null, 2)}\n`, 'utf8');
   return {
     basename,
@@ -220,13 +262,11 @@ function promoteApproved(args) {
 }
 
 export function syncLesenPool(args) {
-  console.log('\n══ Sync pool Netlify (seed + vocab) ══\n');
-  runNode('scripts/seed-reusable-from-bank.mjs', [
-    '--lang', args.lang,
-    '--level', args.level,
-    '--apply',
-    '--quality-gate',
-  ], { inherit: true });
+  console.log('\n══ Sync pool (vocab enrich + optional Blobs) ══\n');
+  console.log(
+    'Note: publish --publish already writes to library/reusable-seed/ with sem1VerifiedAt.\n' +
+    'This step enriches vocab fields on existing seed records.\n',
+  );
   runNode('scripts/enrich-reusable-vocab.mjs', [
     '--lang', args.lang,
     '--level', args.level,
@@ -322,18 +362,24 @@ export function publishLesenBatchFile(relFile, args, { label } = {}) {
   };
 }
 
-export function listGeneratedLesenFiles({ teil, tag = null } = {}) {
-  fs.mkdirSync(GENERATED, { recursive: true });
+export function listGeneratedLesenFiles({ teil, tag = null, level = 'B1' } = {}) {
+  const lv = normalizeLevel(level);
   const re = tag
     ? new RegExp(`^lesen-t${teil}-${tag}-[\\w]+\\.json$`, 'i')
     : new RegExp(`^lesen-t${teil}-.+\\.json$`, 'i');
-  return fs
-    .readdirSync(GENERATED)
-    .filter((name) => re.test(name))
+  const dirs = [generatedDir(lv), GENERATED_DIR];
+  const names = new Set();
+  for (const dir of dirs) {
+    for (const abs of listJsonInStagingRoot(dir)) {
+      const name = path.basename(abs);
+      if (re.test(name)) names.add(name);
+    }
+  }
+  return [...names]
     .sort((a, b) => {
       const na = Number(a.match(/-(\d+)\.json$/i)?.[1] || 0);
       const nb = Number(b.match(/-(\d+)\.json$/i)?.[1] || 0);
       return na - nb;
     })
-    .map((name) => path.join('batches', 'generated', name).replace(/\\/g, '/'));
+    .map((name) => path.join('batches', 'generated', lv, name).replace(/\\/g, '/'));
 }

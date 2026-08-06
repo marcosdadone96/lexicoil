@@ -1,0 +1,71 @@
+{
+  "version": 2,
+  "profiles": {
+    "generated": {
+      "description": "Mínimo post-Gemini en batches/generated — no exige metadata pedagógica completa.",
+      "batch": {
+        "required": ["questions"],
+        "recommended": ["_requestedTopic", "topicTag"]
+      },
+      "passages": {
+        "requiredByTeil": {
+          "1": true,
+          "2": true,
+          "3": false,
+          "4": false,
+          "5": true
+        },
+        "fieldsWhenPresent": ["id", "text", "module", "teil", "lang", "level"]
+      },
+      "question": {
+        "required": ["id", "module", "teil", "type", "question", "lang", "level"],
+        "requiredAny": [["correct"], ["correctAnswer"]]
+      }
+    },
+    "servible": {
+      "description": "Pool ready/publicable. Campos pedagógicos en warn hasta publish (+SEM-1).",
+      "batch": {
+        "required": ["questions"],
+        "recommended": ["_requestedTopic", "topicTag"]
+      },
+      "passages": {
+        "requiredByTeil": {
+          "1": true,
+          "2": true,
+          "3": false,
+          "4": false,
+          "5": true
+        },
+        "fieldsWhenPresent": ["id", "text", "module", "teil", "lang", "level"],
+        "warnWhenPresent": ["topicTag"]
+      },
+      "question": {
+        "required": ["id", "module", "teil", "type", "question", "lang", "level"],
+        "requiredAny": [["correct"], ["correctAnswer"]],
+        "warnFields": ["difficulty", "skills", "examType", "topicTags"],
+        "requiredByTeil": {
+          "3": {
+            "required": ["id", "module", "teil", "type", "question", "lang", "level"],
+            "warnFields": []
+          },
+          "1": {
+            "required": ["id", "module", "teil", "type", "question", "lang", "level"],
+            "warnFields": ["difficulty", "skills", "examType", "topicTags"]
+          },
+          "2": {
+            "required": ["id", "module", "teil", "type", "question", "lang", "level"],
+            "warnFields": ["difficulty", "skills", "examType", "topicTags"]
+          },
+          "4": {
+            "required": ["id", "module", "teil", "type", "question", "lang", "level"],
+            "warnFields": ["difficulty", "skills", "examType", "topicTags"]
+          },
+          "5": {
+            "required": ["id", "module", "teil", "type", "question", "lang", "level"],
+            "warnFields": ["difficulty", "skills", "examType", "topicTags"]
+          }
+        }
+      }
+    }
+  }
+}

@@ -35,8 +35,13 @@ function ok(cond, msg) {
   } else console.log('OK:', msg);
 }
 
-for (let n = 1; n <= 5; n++) {
-  const doc = JSON.parse(fs.readFileSync(path.join(DIR, `official-de-B1-e${n}.json`), 'utf8'));
+const catalog = JSON.parse(fs.readFileSync(path.join(DIR, '_catalog.json'), 'utf8'));
+const live = (catalog.exams || []).filter((e) => e.status === 'live');
+ok(live.length === 1, `catalog has 1 live exam (got ${live.length})`);
+
+for (const row of live) {
+  const n = row.slot || 1;
+  const doc = JSON.parse(fs.readFileSync(path.join(DIR, `${row.examId}.json`), 'utf8'));
   const served = publishedDocToServedExam(doc);
   ok(served.lesenParts.length === 5, `E${n} lesenParts=5`);
   ok(served.horenParts.length === 4, `E${n} horenParts=4`);
@@ -45,18 +50,6 @@ for (let n = 1; n <= 5; n++) {
   ok(l3?.ads?.length === 10, `E${n} L3 ads=10`);
   ok(l3?.questions?.length >= 7, `E${n} L3 questions`);
 }
-
-const e4 = publishedDocToServedExam(
-  JSON.parse(fs.readFileSync(path.join(DIR, 'official-de-B1-e4.json'), 'utf8')),
-);
-const titles = e4.lesenParts.find((p) => p.teil === 3).ads.map((a) => a.title);
-ok(titles.includes('TechDeal24'), 'E4 TechDeal24');
-ok(titles.some((t) => String(t).includes('PC-Hilfe')), 'E4 PC-Hilfe');
-
-const e3 = publishedDocToServedExam(
-  JSON.parse(fs.readFileSync(path.join(DIR, 'official-de-B1-e3.json'), 'utf8')),
-);
-ok(e3.lesenParts.find((p) => p.teil === 3).ads.every((a) => (a.text || '').trim()), 'E3 L3 ads non-empty');
 
 console.log(failed ? `\n${failed} failure(s)` : '\nAll conversion checks passed.');
 process.exit(failed ? 1 : 0);

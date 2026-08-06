@@ -209,36 +209,38 @@ function refreshUserDropdown(){
     setMenuBtn(inBtn,true);
     setMenuBtn(outBtn,false);
     if(outSep)outSep.hidden=true;
+    const delBtn=document.getElementById('udDeleteAccount');
+    setMenuBtn(delBtn,false);
     return;
   }
   nameEl.textContent=S.user?.name||'Account';
   emailEl.textContent=S.user?.email||'';
   const planLbl=pro?(plan==='pro_max'?'Pro Max':'Pro'):(guest?'Guest':'Free');
-  planEl.textContent=planLbl;
+  let adminLbl='';
+  if(typeof AdminAccess!=='undefined'&&AdminAccess.roleLabel){
+    adminLbl=AdminAccess.roleLabel(S.user);
+    if(adminLbl)adminLbl=' · '+adminLbl;
+  }else if(S.user?.isAdmin){
+    adminLbl=' · Admin';
+  }
+  planEl.textContent=planLbl+adminLbl;
   planEl.className='user-dropdown__plan '+(pro?'user-dropdown__plan--pro':guest?'user-dropdown__plan--guest':'user-dropdown__plan--free');
-  const qRem=Math.max(0,qMax-qUsed);
-  let meta=`${qRem}/${qMax} exams left this month`;
-  const aiSummary=typeof aiCreditsSummaryLabel==='function'?aiCreditsSummaryLabel():'';
-  if(aiSummary)meta+=` · ${aiSummary}`;
-  else if(!pro&&plan==='free'){
-    meta+=` · ${Number(window.AI_CREDITS_FREE||6)} AI credits/month (resets monthly)`;
-  }else if(pro){
-    const breakdown=typeof aiCreditsBreakdownLabel==='function'?aiCreditsBreakdownLabel():'';
-    if(breakdown)meta+=` · ${breakdown}`;
-    else meta+=` · renews ${typeof aiCreditsRenewalLabel==='function'?aiCreditsRenewalLabel():'next month'}`;
+  if(typeof accountPanelHtml==='function'){
+    metaEl.innerHTML='<div class="user-dropdown__meta-rows">'+accountPanelHtml()+'</div>';
+  }else{
+    const qRem=Math.max(0,qMax-qUsed);
+    let meta=`${qRem}/${qMax} exams left this month`;
+    const aiSummary=typeof aiCreditsSummaryLabel==='function'?aiCreditsSummaryLabel():'';
+    if(aiSummary)meta+=` · ${aiSummary}`;
+    metaEl.textContent=meta;
   }
-  if(!pro&&typeof freeComboLabel==='function'&&typeof getFreeCombo==='function'&&getFreeCombo()){
-    meta+=` · ${freeComboLabel(getFreeCombo())}`;
-  }
-  if(S.user?.memberSince){
-    const since=typeof formatAppDate==='function'?formatAppDate(S.user.memberSince):new Date(S.user.memberSince).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
-    meta+=` · Member since ${since}`;
-  }
-  metaEl.textContent=meta;
   setMenuBtn(upBtn,!pro);
-  setMenuBtn(subBtn,pro);
+  const canManageBilling=pro&&S.user?.billingSource!=='manual';
+  setMenuBtn(subBtn,canManageBilling);
   setMenuBtn(inBtn,false);
   setMenuBtn(outBtn,true);
+  const delBtn=document.getElementById('udDeleteAccount');
+  setMenuBtn(delBtn,!S.user?.isAdmin);
   if(outSep)outSep.hidden=false;
 }
 function toggleUserMenu(ev){
@@ -278,6 +280,40 @@ async function doLogout(){
   closeUserMenu();
   await Auth.logout();
   window.location.href=marketingUrl();
+}
+function openDeleteAccountModal(){
+  closeUserMenu();
+  const modal=document.getElementById('deleteAccountModal');
+  const inp=document.getElementById('deleteAccountConfirm');
+  const msg=document.getElementById('deleteAccountMsg');
+  if(inp)inp.value='';
+  if(msg){msg.textContent='';msg.className='auth-msg';}
+  if(modal){modal.style.display='flex';modal.setAttribute('aria-hidden','false');}
+  inp?.focus();
+}
+function closeDeleteAccountModal(){
+  const modal=document.getElementById('deleteAccountModal');
+  if(modal){modal.style.display='none';modal.setAttribute('aria-hidden','true');}
+}
+async function doDeleteAccount(){
+  const inp=document.getElementById('deleteAccountConfirm');
+  const msg=document.getElementById('deleteAccountMsg');
+  const btn=document.getElementById('btnDeleteAccountConfirm');
+  const phrase=(inp?.value||'').trim();
+  if(phrase.toUpperCase()!=='ELIMINAR'){
+    if(msg){msg.textContent='Type ELIMINAR exactly to confirm.';msg.className='auth-msg';}
+    return;
+  }
+  if(btn){btn.disabled=true;btn.textContent='Deleting…';}
+  try{
+    await Auth.deleteAccount(phrase);
+    closeDeleteAccountModal();
+    if(typeof lcToast==='function')lcToast('Account deleted.','success',4000);
+    window.location.href=marketingUrl();
+  }catch(e){
+    if(msg){msg.textContent=e.message||'Could not delete account.';msg.className='auth-msg';}
+    if(btn){btn.disabled=false;btn.textContent='Delete my account permanently';}
+  }
 }
 document.addEventListener('click',(ev)=>{
   const wrap=document.getElementById('userMenuWrap');

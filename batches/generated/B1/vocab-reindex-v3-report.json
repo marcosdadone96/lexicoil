@@ -1,0 +1,369 @@
+{
+  "generatedAt": "2026-07-13T21:09:10.107Z",
+  "elapsedMs": 147,
+  "mode": "dry-run",
+  "targetVersion": "v3-quality",
+  "total": 192,
+  "alreadyV3": 189,
+  "updated": 0,
+  "wouldUpdate": 3,
+  "skipped": 0,
+  "errors": [],
+  "oldVersions": {
+    "none": 3
+  },
+  "concepts": 135,
+  "aliases": 0,
+  "noiseRemoved": 0,
+  "typosRemoved": 0,
+  "conceptsMerged": 0,
+  "byLayer": {
+    "pool-verified": {
+      "total": 192,
+      "updated": 3,
+      "alreadyV3": 189,
+      "skipped": 0,
+      "errors": 0
+    },
+    "seed": {
+      "total": 0,
+      "updated": 0,
+      "alreadyV3": 0,
+      "skipped": 0,
+      "errors": 0
+    },
+    "blobs": {
+      "total": 0,
+      "updated": 0,
+      "alreadyV3": 0,
+      "skipped": 0,
+      "errors": 0
+    },
+    "published": {
+      "total": 0,
+      "updated": 0,
+      "alreadyV3": 0,
+      "skipped": 0,
+      "errors": 0,
+      "note": "Published mocks are not rewritten here; refresh via habitual publish/sync after seed+blobs are v3."
+    }
+  },
+  "verification": [
+    {
+      "label": "fixture:verzichten_auf",
+      "id": "fix-verzichten",
+      "version": "v3-quality",
+      "indexSize": 3,
+      "checks": [
+        {
+          "name": "verzichten_family",
+          "ok": true,
+          "detail": "verzichten family present"
+        },
+        {
+          "name": "mitmachen_not_machen",
+          "ok": true,
+          "detail": "no machen family in index"
+        },
+        {
+          "name": "anmelden_concept_dedupe",
+          "ok": true,
+          "detail": "anmelden concepts=0"
+        },
+        {
+          "name": "wochenende_wochentag_distinct",
+          "ok": true,
+          "detail": "we=false wt=false sameCanon=false"
+        },
+        {
+          "name": "no_noise_tags",
+          "ok": true,
+          "detail": "clean"
+        }
+      ],
+      "ok": true
+    },
+    {
+      "label": "fixture:mitmachen",
+      "id": "fix-mitmachen",
+      "version": "v3-quality",
+      "indexSize": 2,
+      "checks": [
+        {
+          "name": "verzichten_family",
+          "ok": true,
+          "detail": "n/a (not required for random sample)"
+        },
+        {
+          "name": "mitmachen_not_machen",
+          "ok": true,
+          "detail": "mitmachen kept, machen absent"
+        },
+        {
+          "name": "anmelden_concept_dedupe",
+          "ok": true,
+          "detail": "anmelden concepts=0"
+        },
+        {
+          "name": "wochenende_wochentag_distinct",
+          "ok": true,
+          "detail": "we=false wt=false sameCanon=false"
+        },
+        {
+          "name": "no_noise_tags",
+          "ok": true,
+          "detail": "clean"
+        }
+      ],
+      "ok": true
+    },
+    {
+      "label": "fixture:anmelden",
+      "id": "fix-anmelden",
+      "version": "v3-quality",
+      "indexSize": 3,
+      "checks": [
+        {
+          "name": "verzichten_family",
+          "ok": true,
+          "detail": "n/a (not required for random sample)"
+        },
+        {
+          "name": "mitmachen_not_machen",
+          "ok": true,
+          "detail": "no machen family in index"
+        },
+        {
+          "name": "anmelden_concept_dedupe",
+          "ok": true,
+          "detail": "anmelden concepts=1"
+        },
+        {
+          "name": "wochenende_wochentag_distinct",
+          "ok": true,
+          "detail": "we=false wt=false sameCanon=false"
+        },
+        {
+          "name": "no_noise_tags",
+          "ok": true,
+          "detail": "clean"
+        },
+        {
+          "name": "anmelden_single_entry",
+          "ok": true,
+          "detail": "entries=1"
+        }
+      ],
+      "ok": true
+    },
+    {
+      "label": "fixture:wochenende_wochentag",
+      "id": "fix-wochen",
+      "version": "v3-quality",
+      "indexSize": 4,
+      "checks": [
+        {
+          "name": "verzichten_family",
+          "ok": true,
+          "detail": "n/a (not required for random sample)"
+        },
+        {
+          "name": "mitmachen_not_machen",
+          "ok": true,
+          "detail": "no machen family in index"
+        },
+        {
+          "name": "anmelden_concept_dedupe",
+          "ok": true,
+          "detail": "anmelden concepts=0"
+        },
+        {
+          "name": "wochenende_wochentag_distinct",
+          "ok": true,
+          "detail": "we=true wt=true sameCanon=false"
+        },
+        {
+          "name": "no_noise_tags",
+          "ok": true,
+          "detail": "clean"
+        },
+        {
+          "name": "wochen_two_concepts",
+          "ok": true,
+          "detail": "concepts=wochenenden,wochentag"
+        }
+      ],
+      "ok": true
+    },
+    {
+      "label": "random:pool-verified:lesen-t2-gemini-112.json",
+      "id": "gen-l2-bbc2b1f9a",
+      "version": "v3-quality",
+      "indexSize": 45,
+      "checks": [
+        {
+          "name": "verzichten_family",
+          "ok": true,
+          "detail": "n/a (not required for random sample)"
+        },
+        {
+          "name": "mitmachen_not_machen",
+          "ok": true,
+          "detail": "no machen family in index"
+        },
+        {
+          "name": "anmelden_concept_dedupe",
+          "ok": true,
+          "detail": "anmelden concepts=0"
+        },
+        {
+          "name": "wochenende_wochentag_distinct",
+          "ok": true,
+          "detail": "we=false wt=false sameCanon=false"
+        },
+        {
+          "name": "no_noise_tags",
+          "ok": true,
+          "detail": "clean"
+        }
+      ],
+      "ok": true
+    },
+    {
+      "label": "random:pool-verified:lesen-t5-gemini-033.json",
+      "id": "gen-l5-21c7dc2c",
+      "version": "v3-quality",
+      "indexSize": 45,
+      "checks": [
+        {
+          "name": "verzichten_family",
+          "ok": true,
+          "detail": "n/a (not required for random sample)"
+        },
+        {
+          "name": "mitmachen_not_machen",
+          "ok": true,
+          "detail": "no machen family in index"
+        },
+        {
+          "name": "anmelden_concept_dedupe",
+          "ok": true,
+          "detail": "anmelden concepts=1"
+        },
+        {
+          "name": "wochenende_wochentag_distinct",
+          "ok": true,
+          "detail": "we=false wt=false sameCanon=false"
+        },
+        {
+          "name": "no_noise_tags",
+          "ok": true,
+          "detail": "clean"
+        }
+      ],
+      "ok": true
+    },
+    {
+      "label": "random:pool-verified:lesen-t1-gemini-089.json",
+      "id": "gen-l1-9921",
+      "version": "v3-quality",
+      "indexSize": 45,
+      "checks": [
+        {
+          "name": "verzichten_family",
+          "ok": true,
+          "detail": "n/a (not required for random sample)"
+        },
+        {
+          "name": "mitmachen_not_machen",
+          "ok": true,
+          "detail": "mitmachen kept, machen absent"
+        },
+        {
+          "name": "anmelden_concept_dedupe",
+          "ok": true,
+          "detail": "anmelden concepts=1"
+        },
+        {
+          "name": "wochenende_wochentag_distinct",
+          "ok": true,
+          "detail": "we=false wt=false sameCanon=false"
+        },
+        {
+          "name": "no_noise_tags",
+          "ok": true,
+          "detail": "clean"
+        }
+      ],
+      "ok": true
+    },
+    {
+      "label": "random:pool-verified:lesen-t1-gemini-183.json",
+      "id": "gen-l1-b47e9222",
+      "version": "v3-quality",
+      "indexSize": 45,
+      "checks": [
+        {
+          "name": "verzichten_family",
+          "ok": true,
+          "detail": "n/a (not required for random sample)"
+        },
+        {
+          "name": "mitmachen_not_machen",
+          "ok": true,
+          "detail": "no machen family in index"
+        },
+        {
+          "name": "anmelden_concept_dedupe",
+          "ok": true,
+          "detail": "anmelden concepts=0"
+        },
+        {
+          "name": "wochenende_wochentag_distinct",
+          "ok": true,
+          "detail": "we=true wt=false sameCanon=false"
+        },
+        {
+          "name": "no_noise_tags",
+          "ok": true,
+          "detail": "clean"
+        }
+      ],
+      "ok": true
+    },
+    {
+      "label": "random:pool-verified:lesen-t5-gemini-014.json",
+      "id": "gen-l5-a994fb06",
+      "version": "v3-quality",
+      "indexSize": 45,
+      "checks": [
+        {
+          "name": "verzichten_family",
+          "ok": true,
+          "detail": "n/a (not required for random sample)"
+        },
+        {
+          "name": "mitmachen_not_machen",
+          "ok": true,
+          "detail": "no machen family in index"
+        },
+        {
+          "name": "anmelden_concept_dedupe",
+          "ok": true,
+          "detail": "anmelden concepts=0"
+        },
+        {
+          "name": "wochenende_wochentag_distinct",
+          "ok": true,
+          "detail": "we=true wt=false sameCanon=false"
+        },
+        {
+          "name": "no_noise_tags",
+          "ok": true,
+          "detail": "clean"
+        }
+      ],
+      "ok": true
+    }
+  ]
+}

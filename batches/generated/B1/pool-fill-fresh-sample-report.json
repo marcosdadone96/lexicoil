@@ -1,0 +1,303 @@
+{
+  "generatedAt": "2026-07-06T11:33:11.086Z",
+  "target": 20,
+  "completed": 20,
+  "ok": 14,
+  "failed": 6,
+  "okRate": 0.7,
+  "factory": {
+    "semantic": true,
+    "skipSem2": true
+  },
+  "apiCallsTotal": 35,
+  "summary": {
+    "calidad_word_matching": 3,
+    "sem1_clave_ambiguedad": 0,
+    "caps_determinista": 3,
+    "lexico": 0,
+    "dedup": 0,
+    "api_errors": 0,
+    "other": 0
+  },
+  "byBucket": {
+    "caps": 3,
+    "audit2_other": 2,
+    "calidad": 1
+  },
+  "byScope": {
+    "single_item": 4,
+    "whole_part": 2
+  },
+  "pctOfFailures": {
+    "calidad": 50,
+    "sem_key": 0,
+    "caps": 50,
+    "lexico": 0
+  },
+  "attempts": [
+    {
+      "n": 1,
+      "teil": 1,
+      "topic": "Arbeit",
+      "ok": true,
+      "file": "batches/generated/lesen-t1-gemini-166.json",
+      "genCalls": 3,
+      "attempts": 3,
+      "ms": 78171,
+      "outcome": "ok"
+    },
+    {
+      "n": 2,
+      "teil": 2,
+      "topic": "Bildung",
+      "ok": true,
+      "file": "batches/generated/lesen-t2-gemini-083.json",
+      "genCalls": 1,
+      "attempts": 1,
+      "ms": 28597,
+      "outcome": "ok"
+    },
+    {
+      "n": 3,
+      "teil": 3,
+      "topic": "Ernährung",
+      "ok": true,
+      "file": "batches/generated/lesen-t3-gemini-073.json",
+      "genCalls": 0,
+      "attempts": 1,
+      "ms": 5125,
+      "outcome": "ok"
+    },
+    {
+      "n": 4,
+      "teil": 4,
+      "topic": "Familie",
+      "ok": true,
+      "file": "batches/generated/lesen-t4-gemini-031.json",
+      "genCalls": 1,
+      "attempts": 1,
+      "ms": 26411,
+      "outcome": "ok"
+    },
+    {
+      "n": 5,
+      "teil": 5,
+      "topic": "Gesundheit",
+      "ok": true,
+      "file": "batches/generated/lesen-t5-gemini-050.json",
+      "genCalls": 2,
+      "attempts": 2,
+      "ms": 59387,
+      "outcome": "ok"
+    },
+    {
+      "n": 6,
+      "teil": 1,
+      "topic": "Arbeit",
+      "ok": true,
+      "file": "batches/generated/lesen-t1-gemini-167.json",
+      "genCalls": 3,
+      "attempts": 3,
+      "ms": 73158,
+      "outcome": "ok"
+    },
+    {
+      "n": 7,
+      "teil": 2,
+      "topic": "Bildung",
+      "ok": true,
+      "file": "batches/generated/lesen-t2-gemini-084.json",
+      "genCalls": 2,
+      "attempts": 1,
+      "ms": 38404,
+      "outcome": "ok"
+    },
+    {
+      "n": 8,
+      "teil": 3,
+      "topic": "Ernährung",
+      "ok": false,
+      "file": null,
+      "genCalls": 0,
+      "ms": 33,
+      "outcome": "fail",
+      "classification": {
+        "bucket": "caps",
+        "scope": "single_item",
+        "gate": "audit2",
+        "reason": "Adjetivo/adverbio/cardinal «Englisch» en mayúscula errónea (debería ser «englisch»). Contexto: \"...F) Wortschatz — Nachhilfe in Englisch, auch zur Vorbereitung auf die Prü...\"",
+        "itemIds": [],
+        "issueCount": 2
+      }
+    },
+    {
+      "n": 9,
+      "teil": 4,
+      "topic": "Familie",
+      "ok": true,
+      "file": "batches/generated/lesen-t4-gemini-032.json",
+      "genCalls": 1,
+      "attempts": 1,
+      "ms": 23992,
+      "outcome": "ok"
+    },
+    {
+      "n": 10,
+      "teil": 5,
+      "topic": "Gesundheit",
+      "ok": true,
+      "file": "batches/generated/lesen-t5-gemini-051.json",
+      "genCalls": 1,
+      "attempts": 1,
+      "ms": 27860,
+      "outcome": "ok"
+    },
+    {
+      "n": 11,
+      "teil": 1,
+      "topic": "Arbeit",
+      "ok": true,
+      "file": "batches/generated/lesen-t1-gemini-168.json",
+      "genCalls": 1,
+      "attempts": 1,
+      "ms": 28247,
+      "outcome": "ok"
+    },
+    {
+      "n": 12,
+      "teil": 2,
+      "topic": "Bildung",
+      "ok": true,
+      "file": "batches/generated/lesen-t2-gemini-085.json",
+      "genCalls": 1,
+      "attempts": 1,
+      "ms": 29797,
+      "outcome": "ok"
+    },
+    {
+      "n": 13,
+      "teil": 3,
+      "topic": "Ernährung",
+      "ok": false,
+      "file": null,
+      "genCalls": 0,
+      "ms": 29,
+      "outcome": "fail",
+      "classification": {
+        "bucket": "caps",
+        "scope": "single_item",
+        "gate": "audit2",
+        "reason": "Adjetivo/adverbio/cardinal «Zwei» en mayúscula errónea (debería ser «zwei»). Contexto: \"...H) WohnVermitt — Wir vermitteln Zwei- und Dreizimmerwohnungen, faire Pr...\"",
+        "itemIds": [],
+        "issueCount": 1
+      }
+    },
+    {
+      "n": 14,
+      "teil": 4,
+      "topic": "Familie",
+      "ok": false,
+      "file": null,
+      "genCalls": 3,
+      "ms": 68222,
+      "outcome": "fail",
+      "classification": {
+        "bucket": "audit2_other",
+        "scope": "whole_part",
+        "gate": "audit2",
+        "reason": "L4: autores repetidos en signText: Meine×2. Cada ítem debe ser de un autor distinto.",
+        "itemIds": [],
+        "issueCount": 1
+      }
+    },
+    {
+      "n": 15,
+      "teil": 5,
+      "topic": "Gesundheit",
+      "ok": true,
+      "file": "batches/generated/lesen-t5-gemini-052.json",
+      "genCalls": 1,
+      "attempts": 1,
+      "ms": 28370,
+      "outcome": "ok"
+    },
+    {
+      "n": 16,
+      "teil": 1,
+      "topic": "Arbeit",
+      "ok": true,
+      "file": "batches/generated/lesen-t1-gemini-169.json",
+      "genCalls": 3,
+      "attempts": 3,
+      "ms": 71634,
+      "outcome": "ok"
+    },
+    {
+      "n": 17,
+      "teil": 2,
+      "topic": "Bildung",
+      "ok": false,
+      "file": null,
+      "genCalls": 7,
+      "ms": 127106,
+      "outcome": "fail",
+      "classification": {
+        "bucket": "calidad",
+        "scope": "single_item",
+        "gate": "calidad",
+        "reason": "gen-q-2-8ad66a7b-6: opción correcta copia ≥4 palabras del pasaje («bietet regelmäßige schulungen an»)",
+        "itemIds": [
+          "gen-q-2-8ad66a7b-6"
+        ],
+        "issueCount": 1
+      }
+    },
+    {
+      "n": 18,
+      "teil": 3,
+      "topic": "Ernährung",
+      "ok": false,
+      "file": null,
+      "genCalls": 0,
+      "ms": 29,
+      "outcome": "fail",
+      "classification": {
+        "bucket": "caps",
+        "scope": "single_item",
+        "gate": "audit2",
+        "reason": "Adjetivo/adverbio/cardinal «Zwei» en mayúscula errónea (debería ser «zwei»). Contexto: \"...A) WohnVermitt — Wir vermitteln Zwei- und Dreizimmerwohnungen, faire Pr...\"",
+        "itemIds": [],
+        "issueCount": 4
+      }
+    },
+    {
+      "n": 19,
+      "teil": 4,
+      "topic": "Familie",
+      "ok": false,
+      "file": null,
+      "genCalls": 3,
+      "ms": 68059,
+      "outcome": "fail",
+      "classification": {
+        "bucket": "audit2_other",
+        "scope": "whole_part",
+        "gate": "audit2",
+        "reason": "L4: autores repetidos en signText: Meine×2. Cada ítem debe ser de un autor distinto.",
+        "itemIds": [],
+        "issueCount": 1
+      }
+    },
+    {
+      "n": 20,
+      "teil": 5,
+      "topic": "Gesundheit",
+      "ok": true,
+      "file": "batches/generated/lesen-t5-gemini-053.json",
+      "genCalls": 2,
+      "attempts": 2,
+      "ms": 156075,
+      "outcome": "ok"
+    }
+  ]
+}

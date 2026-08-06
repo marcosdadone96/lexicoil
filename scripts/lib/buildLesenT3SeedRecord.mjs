@@ -77,6 +77,9 @@ export function buildLesenT3SeedRecord(
       const correct = normalizeMatchingCorrect(q.correct ?? q.correctAnswer ?? '');
       return {
         id: q.id,
+        module: 'lesen',
+        teil: 3,
+        level: q.level || level,
         type: 'matching',
         question: q.question || '',
         options: bareOptions,

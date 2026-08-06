@@ -13,6 +13,10 @@ import {
   partRecordToExamPart,
 } from './audit-pass-2.mjs';
 import { answerKeySequence } from './lib/balanceMcq.mjs';
+import {
+  t3SituationFingerprintFromPart,
+  validateDistinctT3Fingerprints,
+} from './lib/t3GroupFingerprint.mjs';
 
 const OUT_FILE = path.join(path.dirname(fileURLToPath(import.meta.url)), 'exams-output.txt');
 const outLines = [];
@@ -68,6 +72,7 @@ for (const key of CELL_KEYS) {
 console.log('');
 
 const usedIds = new Set();
+const usedT3Fps = new Set();
 const exams = [];
 const overlapReport = {};
 
@@ -76,13 +81,28 @@ for (let e = 0; e < NUM_EXAMS; e++) {
   const missing = [];
   for (const key of CELL_KEYS) {
     const pool = cleanPool[key];
-    let chosen = pool.find((c) => !usedIds.has(c.id));
+    let chosen;
     let reused = false;
-    if (!chosen && pool.length > 0) {
-      chosen = pool[e % pool.length];
-      reused = true;
-      if (!overlapReport[key]) overlapReport[key] = [];
-      overlapReport[key].push(e + 1);
+    if (key === 'lesen_3') {
+      chosen = pool.find((c) => !usedIds.has(c.id) && !usedT3Fps.has(t3SituationFingerprintFromPart(c.part)));
+      if (!chosen) chosen = pool.find((c) => !usedIds.has(c.id));
+      if (!chosen && pool.length > 0) {
+        chosen = pool.find((c) => !usedT3Fps.has(t3SituationFingerprintFromPart(c.part)));
+      }
+      if (!chosen && pool.length > 0) {
+        chosen = pool[e % pool.length];
+        reused = true;
+        if (!overlapReport[key]) overlapReport[key] = [];
+        overlapReport[key].push(e + 1);
+      }
+    } else {
+      chosen = pool.find((c) => !usedIds.has(c.id));
+      if (!chosen && pool.length > 0) {
+        chosen = pool[e % pool.length];
+        reused = true;
+        if (!overlapReport[key]) overlapReport[key] = [];
+        overlapReport[key].push(e + 1);
+      }
     }
     if (!chosen) {
       missing.push(key);
@@ -90,6 +110,10 @@ for (let e = 0; e < NUM_EXAMS; e++) {
     }
     picked[key] = { ...chosen, reused };
     if (!reused) usedIds.add(chosen.id);
+    if (key === 'lesen_3') {
+      const fp = t3SituationFingerprintFromPart(chosen.part);
+      if (fp) usedT3Fps.add(fp);
+    }
   }
   if (missing.length) {
     console.error(`\nFATAL: examen ${e + 1}: sin partes clean para: ${missing.join(', ')}`);
@@ -105,6 +129,19 @@ for (let e = 0; e < NUM_EXAMS; e++) {
   const gate = isExamPublishable(assembled);
   exams.push({ n: e + 1, picked, gate });
 }
+
+const t3RunEntries = exams.map(({ n, picked }) => ({
+  examNumber: n,
+  t3SituationFp: t3SituationFingerprintFromPart(picked.lesen_3.part),
+  partId: picked.lesen_3.id,
+}));
+const t3Val = validateDistinctT3Fingerprints(t3RunEntries);
+if (!t3Val.ok) {
+  console.error('\nFATAL T3 grupos duplicados entre exámenes ensamblados:');
+  t3Val.errors.forEach((e) => console.error(`  ${e}`));
+  process.exit(1);
+}
+console.log(`\nT3 grupos situación: ${t3Val.uniqueCount} únicos / ${NUM_EXAMS} exámenes ✅`);
 
 if (Object.keys(overlapReport).length) {
   console.log('⚠  CELDAS CON PARTES COMPARTIDAS (stock insuficiente):');

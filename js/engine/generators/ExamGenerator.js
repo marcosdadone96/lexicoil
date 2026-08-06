@@ -278,6 +278,18 @@ const ExamGenerator = (() => {
     }
   }
 
+  /** Resolve AI-credit scope for a personal generation session. */
+  function resolvePersonalGenScope(spec) {
+    const raw = spec?.skills || ['lesen'];
+    const skills = Array.isArray(raw) ? raw.map((s) => String(s).toLowerCase()) : [String(raw).toLowerCase()];
+    if (skills.length === 1) {
+      const s = skills[0];
+      if (s === 'schreiben' || s === 'writing') return 'personal_schreiben';
+      if (s === 'sprechen' || s === 'speaking') return 'personal_sprechen_gen';
+    }
+    return 'personal_exam';
+  }
+
   /** Chunked personalized / vocabulary exam — official blueprint Teile when available. */
   async function generatePersonal(spec, hooks, options = {}) {
     const PB = getPromptBuilder();
@@ -308,13 +320,14 @@ const ExamGenerator = (() => {
     const chunks = built.chunks;
     const bpForValidation = built.blueprint || blueprint || null;
     const maxChunks = computeMaxChunks(chunks);
+    const genScope = resolvePersonalGenScope(spec);
     let genTicket = options.genTicket || null;
     if (!genTicket) {
-      genTicket = await startTicket('personal_exam', maxChunks);
+      genTicket = await startTicket(genScope, maxChunks);
     }
     const refreshExamTicket =
       typeof hooks.refreshExamTicket === 'function'
-        ? () => hooks.refreshExamTicket('personal_exam', maxChunks)
+        ? () => hooks.refreshExamTicket(genScope, maxChunks)
         : null;
     const runHooksBase = { ...hooks, genTicket, refreshExamTicket };
 

@@ -1,7 +1,7 @@
 // ═══════════════════════════════════════════
 // NAVIGATION
 // ═══════════════════════════════════════════
-const SCREENS=['homeScreen','goalWorkspaceScreen','examConfigScreen','oralPracticeScreen','profileSetupScreen','loadingScreen','examScreen','resultsScreen','mistakeReviewScreen','flashcardScreen','vocabExamScreen','horenGameScreen','grammarScreen'];
+const SCREENS=['homeScreen','goalWorkspaceScreen','examConfigScreen','oralPracticeScreen','profileSetupScreen','loadingScreen','examScreen','resultsScreen','mistakeReviewScreen','flashcardScreen','vocabExamScreen','vocabPhrasesScreen','horenGameScreen','grammarScreen'];
 function getActiveScreenId(){
   for(const id of SCREENS){
     const el=document.getElementById(id);
@@ -10,9 +10,11 @@ function getActiveScreenId(){
   return null;
 }
 function _navExitVocabFlashcards(){
+  if(typeof commitVocabHubFlashcardSession==='function')commitVocabHubFlashcardSession();
   if(typeof _vocabHub!=='undefined'){
     _vocabHub.activity=null;
     _vocabHub.flashcardMode=false;
+    _vocabHub._fcSessionCommitted=false;
   }
   if(typeof refreshVocabHubPanel==='function')refreshVocabHubPanel();
   window.scrollTo({top:0,behavior:'smooth'});
@@ -131,5 +133,4 @@ function goHistory(){
 }
 function setExamMode(m){
   S.mode=normalizeMode(m);
-  if(S.mode==='practice')S.vocabLang=vocabLangFor(S.subject);
 }

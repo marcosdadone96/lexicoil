@@ -1,0 +1,105 @@
+{
+  "gateVersion": "v6.1-B-G2 (frozen)",
+  "file": "lesen-t4-gemini-038-2026-07-08T08-21-19-882Z.json",
+  "teil": 4,
+  "pipeline": {
+    "status": "audit_rejected",
+    "gate": "audit2",
+    "reason": "Sustantivo en minúscula: \"schweres\" (tras artículo/conjunción). En alemán los sustantivos van en mayúscula. Contexto: \"... weil Besucher die Stadt ohne schweres Gepäck erkunden können und de...\""
+  },
+  "textFields": 36,
+  "findings": {
+    "blocking": 2,
+    "observations": 1,
+    "byReason": {
+      "lexicon_override_tag": 2
+    },
+    "byRegime": {
+      "PROSE": 2
+    },
+    "list": [
+      {
+        "type": "noun_lowercase",
+        "word": "machen",
+        "pos": "VERB",
+        "tag": "VVINF",
+        "confidence": "high",
+        "reason": "lexicon_override_tag",
+        "context": "Besuchern das Reisen einfacher machen. Lesen Sie die",
+        "prevWord": "einfacher",
+        "prevPos": "ADV",
+        "prevTag": "ADJD",
+        "textIndex": 0,
+        "regime": "PROSE",
+        "field": "passages.text",
+        "id": "lesen-t4-gemini-038-2026-07-08T08-21-19-882Z.json::passages.text::0",
+        "file": "lesen-t4-gemini-038-2026-07-08T08-21-19-882Z.json",
+        "textPreview": "Im Internet-Forum diskutieren Reisende über einen neuen Vorschlag: Kostenlose Schließfächer für Gepäck am Bahnhof. Viele Menschen reisen oft und haben Erfahrung"
+      },
+      {
+        "type": "noun_lowercase",
+        "word": "machen",
+        "pos": "VERB",
+        "tag": "VVINF",
+        "confidence": "high",
+        "reason": "lexicon_override_tag",
+        "context": "Schließfächer das Reisen entspannter machen, besonders bei kurzen",
+        "prevWord": "entspannter",
+        "prevPos": "ADV",
+        "prevTag": "ADJD",
+        "textIndex": 0,
+        "regime": "PROSE",
+        "field": "questions.explanation",
+        "id": "lesen-t4-gemini-038-2026-07-08T08-21-19-882Z.json::questions.explanation::3",
+        "file": "lesen-t4-gemini-038-2026-07-08T08-21-19-882Z.json",
+        "textPreview": "Lena reist oft mit dem Zug und findet, dass die Schließfächer das Reisen entspannter machen, besonders bei kurzen Aufenthalten in der Stadt."
+      }
+    ]
+  },
+  "observations": [
+    {
+      "type": "noun_lowercase",
+      "word": "machen",
+      "pos": "VERB",
+      "tag": "VVFIN",
+      "confidence": "high",
+      "reason": "lexicon_override_tag",
+      "context": "und den Besuch angenehmer machen. Das ist ein",
+      "prevWord": "angenehmer",
+      "prevPos": "ADV",
+      "prevTag": "ADJD",
+      "observation": true,
+      "relaxed": true,
+      "regime": "TITLE_HEADING",
+      "textIndex": 0,
+      "field": "questions.signText",
+      "id": "lesen-t4-gemini-038-2026-07-08T08-21-19-882Z.json::questions.signText::27",
+      "file": "lesen-t4-gemini-038-2026-07-08T08-21-19-882Z.json"
+    }
+  ],
+  "expected": {
+    "dominantRegime": "TITLE + PROSE",
+    "telegraphicFpExpected": 0,
+    "notes": "signText TITLE, explanation PROSE."
+  },
+  "comparison": {
+    "calibrationPoolFindingsThisTeil": 14,
+    "calibrationAvgPerFile": 1.4,
+    "pilotFindings": 2,
+    "deltaVsCalAvg": 0.6,
+    "telegraphicFindings": 0,
+    "telegraphicFpExpected": 0,
+    "telegraphicOk": true
+  },
+  "qualityGate": {
+    "errors": [],
+    "warnings": [
+      "Mayúsculas alemanas: noun_lowercase: «machen» (VVINF) [high] en passages.text — …Besuchern das Reisen einfacher machen. Lesen Sie die…",
+      "Mayúsculas alemanas: noun_lowercase: «machen» (VVINF) [high] en questions.explanation — …Schließfächer das Reisen entspannter machen, besonders bei kurzen…"
+    ]
+  },
+  "generatorCapsWarnings": [
+    "Mayúsculas alemanas: noun_lowercase: «machen» (VVINF) [high] en passages.text — …Besuchern das Reisen einfacher machen. Lesen Sie die…",
+    "Mayúsculas alemanas: noun_lowercase: «machen» (VVINF) [high] en questions.explanation — …Schließfächer das Reisen entspannter machen, besonders bei kurzen…"
+  ]
+}

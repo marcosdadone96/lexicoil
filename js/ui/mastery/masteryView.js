@@ -109,7 +109,7 @@ const MasteryView = (() => {
     }
 
     const fc = typeof deckForGoal === 'function' ? deckForGoal(goal) : [];
-    const hist = typeof historyForGoal === 'function' ? historyForGoal(goal) : [];
+    const hist = typeof examHistoryForGoal === 'function' ? examHistoryForGoal(goal) : (typeof historyForGoal === 'function' ? historyForGoal(goal) : []);
     const due = typeof dueForGoal === 'function' ? dueForGoal(goal).length : 0;
 
     if (due >= 3) {
@@ -177,11 +177,12 @@ const MasteryView = (() => {
     }
 
     const last = hist[0];
-    if (last.score < 70) {
+    const lastSc = typeof ModuleGrading !== 'undefined' ? ModuleGrading.resolveHistoryScore(last) : Number(last.score);
+    if (Number.isFinite(lastSc) && lastSc < 70) {
       return {
         kind: 'retry',
         title: 'Practice your weak areas',
-        desc: 'Last score: ' + last.score + '% on ' + (last.topic || 'your last exam') + '.',
+        desc: 'Last score: ' + lastSc + '% on ' + (last.topic || 'your last exam') + '.',
         cta: 'Practice again →',
         badges: [],
         oneClick: true,
@@ -369,6 +370,42 @@ const MasteryView = (() => {
     }
 
     let grammarHtml = '';
+    if (summary.productionGrammar?.length) {
+      grammarHtml +=
+        '<p class="mastery-seclbl">Writing &amp; speaking grammar</p>' +
+        summary.productionGrammar
+          .map((r) => {
+            const drillCost =
+              typeof aiActionCost === 'function' ? aiActionCost('grammar_drill') : 2;
+            const scoreLbl =
+              r.lastDrillScore != null ? ' · last drill ' + r.lastDrillScore + '%' : '';
+            const drillBtn = r.weak
+              ? ' <button type="button" class="btn-sm accent" onclick="startGrammarDrill(\'' +
+                esc(r.category) +
+                "','" +
+                gid +
+                '\')">Practice (' +
+                drillCost +
+                ' credits)</button>'
+              : '';
+            return (
+              '<div class="mastery-prod-row" style="margin-bottom:10px">' +
+              '<div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px">' +
+              '<span style="font-size:13px;font-weight:600">' +
+              esc(r.label) +
+              '</span>' +
+              '<span style="font-size:12px;color:var(--text-muted)">' +
+              r.errors +
+              ' error' +
+              (r.errors === 1 ? '' : 's') +
+              scoreLbl +
+              '</span>' +
+              drillBtn +
+              '</div></div>'
+            );
+          })
+          .join('');
+    }
     if (summary.grammarOverview?.length) {
       grammarHtml =
         '<p class="mastery-seclbl">Grammar tags</p>' +

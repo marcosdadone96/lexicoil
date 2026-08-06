@@ -14,6 +14,17 @@ export function loadEnvFile(envPath = path.join(ROOT, '.env')) {
     const k = t.slice(0, i).trim();
     if (!process.env[k]) process.env[k] = t.slice(i + 1).trim();
   }
+  applyPipelineLlmDefaults();
+}
+
+/** Generation/repair/verification pipeline: Gemini-only unless explicitly overridden. */
+export function applyPipelineLlmDefaults() {
+  if (!process.env.SEMANTIC_USE_GEMINI) process.env.SEMANTIC_USE_GEMINI = '1';
+  if (!process.env.GEN_PROVIDER) process.env.GEN_PROVIDER = 'gemini';
+  const geminiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
+  if (geminiKey && !process.env.Q2_ANSWER_KEY_MODEL) {
+    process.env.Q2_ANSWER_KEY_MODEL = 'gemini-2.5-flash';
+  }
 }
 
 export { ROOT };

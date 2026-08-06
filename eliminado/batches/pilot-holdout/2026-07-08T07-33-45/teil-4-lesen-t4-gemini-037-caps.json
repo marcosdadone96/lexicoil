@@ -1,0 +1,85 @@
+{
+  "gateVersion": "v6.1-B-G2 (frozen)",
+  "file": "lesen-t4-gemini-037.json",
+  "teil": 4,
+  "pipeline": {
+    "status": "passed",
+    "gate": null,
+    "reason": null
+  },
+  "textFields": 36,
+  "findings": {
+    "blocking": 2,
+    "observations": 0,
+    "byReason": {
+      "adj_before_noun": 2
+    },
+    "byRegime": {
+      "TITLE_HEADING": 2
+    },
+    "list": [
+      {
+        "type": "wrong_capitalized",
+        "word": "Kleinen",
+        "pos": "ADJ",
+        "tag": "ADJA",
+        "confidence": "high",
+        "reason": "adj_before_noun",
+        "context": "Ich finde, die Kleinen Läden in der Stadt",
+        "prevWord": "die",
+        "prevPos": "DET",
+        "prevTag": "ART",
+        "textIndex": 0,
+        "regime": "TITLE_HEADING",
+        "field": "questions.signText",
+        "id": "lesen-t4-gemini-037.json::questions.signText::32",
+        "file": "lesen-t4-gemini-037.json",
+        "textPreview": "Ich finde, die Kleinen Läden in der Stadt hätten ein Problem, wenn die großen Supermärkte sonntags öffnen. Das ist nicht fair für sie. Wir sollten die Kleinen G"
+      },
+      {
+        "type": "wrong_capitalized",
+        "word": "Kleinen",
+        "pos": "ADJ",
+        "tag": "ADJA",
+        "confidence": "high",
+        "reason": "adj_before_noun",
+        "context": ". Wir sollten die Kleinen Geschäfte unterstützen. Für",
+        "prevWord": "die",
+        "prevPos": "DET",
+        "prevTag": "ART",
+        "textIndex": 0,
+        "regime": "TITLE_HEADING",
+        "field": "questions.signText",
+        "id": "lesen-t4-gemini-037.json::questions.signText::32",
+        "file": "lesen-t4-gemini-037.json",
+        "textPreview": "Ich finde, die Kleinen Läden in der Stadt hätten ein Problem, wenn die großen Supermärkte sonntags öffnen. Das ist nicht fair für sie. Wir sollten die Kleinen G"
+      }
+    ]
+  },
+  "observations": [],
+  "expected": {
+    "dominantRegime": "TITLE + PROSE",
+    "telegraphicFpExpected": 0,
+    "notes": "signText TITLE, explanation PROSE."
+  },
+  "comparison": {
+    "calibrationPoolFindingsThisTeil": 14,
+    "calibrationAvgPerFile": 1.4,
+    "pilotFindings": 2,
+    "deltaVsCalAvg": 0.6,
+    "telegraphicFindings": 0,
+    "telegraphicFpExpected": 0,
+    "telegraphicOk": true
+  },
+  "qualityGate": {
+    "errors": [],
+    "warnings": [
+      "Mayúsculas alemanas: wrong_capitalized: «Kleinen» (ADJA) [high] en questions.signText — …Ich finde, die Kleinen Läden in der Stadt…",
+      "Mayúsculas alemanas: wrong_capitalized: «Kleinen» (ADJA) [high] en questions.signText — …. Wir sollten die Kleinen Geschäfte unterstützen. Für…"
+    ]
+  },
+  "generatorCapsWarnings": [
+    "Mayúsculas alemanas: wrong_capitalized: «Kleinen» (ADJA) [high] en questions.signText — …Ich finde, die Kleinen Läden in der Stadt…",
+    "Mayúsculas alemanas: wrong_capitalized: «Kleinen» (ADJA) [high] en questions.signText — …. Wir sollten die Kleinen Geschäfte unterstützen. Für…"
+  ]
+}

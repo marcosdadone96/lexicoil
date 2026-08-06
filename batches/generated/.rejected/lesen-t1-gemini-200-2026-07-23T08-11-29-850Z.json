@@ -1,0 +1,103 @@
+{
+  "_rejectedReason": "gen-q-1-d7701203-1: options_missing\n\ngen-q-1-d7701203-1: options_missing\ngen-q-1-d7701203-2: options_missing\ngen-q-1-d7701203-3: options_missing\ngen-q-1-d7701203-4: options_missing\ngen-q-1-d7701203-5: options_missing\ngen-q-1-d7701203-6: options_missing\n\n== Validación de lesen-t1-gemini-200.json (de_A2) ==\nPreguntas: 6 | Pasajes: 1\nEsquema: OK\nConformidad blueprint: FAIL (6 ítems)\nColocación (Teile que mejora): Pool válido (Teil ya cubierto en 1 examen — OK para exámenes disjuntos)\nProblemas:\n  - gen-q-1-d7701203-1: options_missing\n  - gen-q-1-d7701203-2: options_missing\n  - gen-q-1-d7701203-3: options_missing\n  - gen-q-1-d7701203-4: options_missing\n  - gen-q-1-d7701203-5: options_missing\n  - gen-q-1-d7701203-6: options_missing",
+  "_rejectedGate": "formato",
+  "_rejectedAt": "2026-07-23T08:11:29.850Z",
+  "passages": [
+    {
+      "id": "gen-l1-115d54b3",
+      "module": "lesen",
+      "teil": 1,
+      "level": "A2",
+      "title": "Neuer Stadtpark 'Grüne Oase' eröffnet",
+      "text": "Am letzten Samstag hat die Stadt einen neuen Park eröffnet. Sein Name ist 'Grüne Oase'. Der Park liegt im Zentrum der Stadt, neben dem alten Marktplatz. Viele Familien mit Kindern kamen zur Eröffnung. Der Bürgermeister sprach über die Wichtigkeit von Grünflächen in der Stadt. Der Park bietet einen großen Spielplatz für Kinder, viele Bänke zum Ausruhen und schöne Blumen. Es gibt auch einen kleinen Kiosk, wo man Kaffee und Kuchen kaufen kann. Der Park ist täglich von 8 Uhr morgens bis 20 Uhr abends geöffnet. Der Eintritt ist kostenlos. Die Stadt hofft, dass die 'Grüne Oase' ein beliebter Ort für alle Bürger wird. Besonders am Wochenende kommen viele Leute, um spazieren zu gehen oder ein Picknick zu machen. Die Bäume sind noch klein, aber sie werden bald Schatten spenden. Viele Anwohner freuen sich über den neuen, ruhigen Ort mitten im Stadtleben. Man kann hier die Natur genießen und dem Lärm der Stadt entfliehen. Ein Besuch lohnt sich für jeden, der eine Pause braucht.",
+      "topicTag": "Stadtleben",
+      "lang": "de"
+    }
+  ],
+  "questions": [
+    {
+      "id": "gen-q-1-d7701203-1",
+      "module": "lesen",
+      "teil": 1,
+      "lang": "de",
+      "level": "B1",
+      "type": "multiple_choice",
+      "passageId": "gen-l1-115d54b3",
+      "question": "Die Anlage liegt im Herzen der Ortschaft, nahe dem alten Handelsplatz.",
+      "correct": true,
+      "correctAnswer": true,
+      "explanation": "Der Text sagt, dass der Park 'im Zentrum der Stadt, neben dem alten Marktplatz' liegt. 'Anlage' und 'Ortschaft' sind Synonyme für 'Park' und 'Stadt'.",
+      "options": []
+    },
+    {
+      "id": "gen-q-1-d7701203-2",
+      "module": "lesen",
+      "teil": 1,
+      "lang": "de",
+      "level": "B1",
+      "type": "multiple_choice",
+      "passageId": "gen-l1-115d54b3",
+      "question": "Der Eintritt zu dieser Erholungsfläche ist immer kostenpflichtig.",
+      "correct": false,
+      "correctAnswer": false,
+      "explanation": "Im Text steht klar: 'Der Eintritt ist kostenlos.' Daher ist die Aussage falsch.",
+      "options": []
+    },
+    {
+      "id": "gen-q-1-d7701203-3",
+      "module": "lesen",
+      "teil": 1,
+      "lang": "de",
+      "level": "B1",
+      "type": "multiple_choice",
+      "passageId": "gen-l1-115d54b3",
+      "question": "Man kann dort jeden Tag von früh morgens bis spät abends Getränke kaufen.",
+      "correct": true,
+      "correctAnswer": true,
+      "explanation": "Der Park ist 'täglich von 8 Uhr morgens bis 20 Uhr abends geöffnet' und es gibt einen Kiosk, 'wo man Kaffee und Kuchen kaufen kann'.",
+      "options": []
+    },
+    {
+      "id": "gen-q-1-d7701203-4",
+      "module": "lesen",
+      "teil": 1,
+      "lang": "de",
+      "level": "B1",
+      "type": "multiple_choice",
+      "passageId": "gen-l1-115d54b3",
+      "question": "Die Bäume spenden bereits viel Schatten für die Besucher.",
+      "correct": false,
+      "correctAnswer": false,
+      "explanation": "Der Text erwähnt: 'Die Bäume sind noch klein, aber sie werden bald Schatten spenden.' Sie spenden also noch keinen Schatten.",
+      "options": []
+    },
+    {
+      "id": "gen-q-1-d7701203-5",
+      "module": "lesen",
+      "teil": 1,
+      "lang": "de",
+      "level": "B1",
+      "type": "multiple_choice",
+      "passageId": "gen-l1-115d54b3",
+      "question": "Die Bewohner der Umgebung freuen sich über den ruhigen Ort.",
+      "correct": true,
+      "correctAnswer": true,
+      "explanation": "Es steht im Text: 'Viele Anwohner freuen sich über den neuen, ruhigen Ort mitten im Stadtleben'.",
+      "options": []
+    },
+    {
+      "id": "gen-q-1-d7701203-6",
+      "module": "lesen",
+      "teil": 1,
+      "lang": "de",
+      "level": "B1",
+      "type": "multiple_choice",
+      "passageId": "gen-l1-115d54b3",
+      "question": "Nur am Wochenende kommen Menschen, um dort spazieren zu gehen.",
+      "correct": false,
+      "correctAnswer": false,
+      "explanation": "Der Text sagt: 'Besonders am Wochenende kommen viele Leute', aber nicht 'nur' am Wochenende. Der Park ist täglich geöffnet.",
+      "options": []
+    }
+  ]
+}

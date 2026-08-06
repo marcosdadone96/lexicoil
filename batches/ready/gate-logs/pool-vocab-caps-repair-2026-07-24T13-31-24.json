@@ -1,0 +1,193 @@
+{
+  "args": {
+    "apply": true,
+    "dryRun": false,
+    "syncSeed": true,
+    "listOnly": false,
+    "lemmaClusterOnly": false
+  },
+  "affected": [
+    "B1/horen-t1-gemini-033.json",
+    "B1/horen-t1-gemini-035.json",
+    "B1/horen-t1-gemini-044.json",
+    "B1/horen-t2-gemini-016.json",
+    "A2/horen-t3-gemini-039.json",
+    "A2/horen-t3-gemini-040.json",
+    "B1/horen-t4-gemini-014.json",
+    "B1/horen-t4-gemini-018.json",
+    "B1/horen-t4-gemini-023.json",
+    "B1/lesen-t3-auto-vcbc6g.json",
+    "B1/lesen-t3-auto-ys03r9.json",
+    "A2/lesen-t3-cur-education.json",
+    "B1/lesen-t4-gemini-044.json",
+    "A2/sprechen-t3-gemini-011.json"
+  ],
+  "report": {
+    "repaired": [
+      "B1/horen-t1-gemini-035.json",
+      "B1/horen-t1-gemini-044.json"
+    ],
+    "verifyFailed": [
+      {
+        "file": "B1/horen-t1-gemini-033.json",
+        "remaining": [
+          "lemma_artifact",
+          "audit_cap_pattern"
+        ]
+      },
+      {
+        "file": "B1/horen-t2-gemini-016.json",
+        "remaining": [
+          "lemma_artifact"
+        ]
+      },
+      {
+        "file": "A2/horen-t3-gemini-039.json",
+        "remaining": [
+          "lemma_artifact"
+        ]
+      },
+      {
+        "file": "A2/horen-t3-gemini-040.json",
+        "remaining": [
+          "lemma_artifact"
+        ]
+      },
+      {
+        "file": "B1/horen-t4-gemini-014.json",
+        "remaining": [
+          "audit_cap_pattern"
+        ]
+      },
+      {
+        "file": "B1/horen-t4-gemini-018.json",
+        "remaining": [
+          "audit_cap_pattern"
+        ]
+      },
+      {
+        "file": "B1/horen-t4-gemini-023.json",
+        "remaining": [
+          "audit_cap_pattern"
+        ]
+      },
+      {
+        "file": "B1/lesen-t3-auto-vcbc6g.json",
+        "remaining": [
+          "lemma_artifact"
+        ]
+      },
+      {
+        "file": "B1/lesen-t3-auto-ys03r9.json",
+        "remaining": [
+          "lemma_artifact"
+        ]
+      },
+      {
+        "file": "A2/lesen-t3-cur-education.json",
+        "remaining": [
+          "audit_cap_pattern"
+        ]
+      },
+      {
+        "file": "B1/lesen-t4-gemini-044.json",
+        "remaining": [
+          "lemma_artifact"
+        ]
+      },
+      {
+        "file": "A2/sprechen-t3-gemini-011.json",
+        "remaining": [
+          "lemma_artifact"
+        ]
+      }
+    ],
+    "sync": [
+      {
+        "file": "horen-t1-gemini-035.json",
+        "ok": true
+      },
+      {
+        "file": "horen-t1-gemini-044.json",
+        "ok": true
+      }
+    ],
+    "at": "2026-07-24T13:31:23.986Z"
+  },
+  "finalHits": [
+    {
+      "file": "B1/horen-t1-gemini-033.json",
+      "issues": [
+        "lemma_artifact",
+        "audit_cap_pattern"
+      ]
+    },
+    {
+      "file": "B1/horen-t2-gemini-016.json",
+      "issues": [
+        "bad_vocab_tag_cap"
+      ]
+    },
+    {
+      "file": "A2/horen-t3-gemini-039.json",
+      "issues": [
+        "lemma_artifact"
+      ]
+    },
+    {
+      "file": "A2/horen-t3-gemini-040.json",
+      "issues": [
+        "lemma_artifact"
+      ]
+    },
+    {
+      "file": "B1/horen-t4-gemini-014.json",
+      "issues": [
+        "audit_cap_pattern"
+      ]
+    },
+    {
+      "file": "B1/horen-t4-gemini-018.json",
+      "issues": [
+        "audit_cap_pattern"
+      ]
+    },
+    {
+      "file": "B1/horen-t4-gemini-023.json",
+      "issues": [
+        "bad_vocab_tag_cap",
+        "audit_cap_pattern"
+      ]
+    },
+    {
+      "file": "B1/lesen-t3-auto-vcbc6g.json",
+      "issues": [
+        "lemma_artifact"
+      ]
+    },
+    {
+      "file": "B1/lesen-t3-auto-ys03r9.json",
+      "issues": [
+        "lemma_artifact"
+      ]
+    },
+    {
+      "file": "A2/lesen-t3-cur-education.json",
+      "issues": [
+        "audit_cap_pattern"
+      ]
+    },
+    {
+      "file": "B1/lesen-t4-gemini-044.json",
+      "issues": [
+        "bad_vocab_tag_cap"
+      ]
+    },
+    {
+      "file": "A2/sprechen-t3-gemini-011.json",
+      "issues": [
+        "lemma_artifact"
+      ]
+    }
+  ]
+}

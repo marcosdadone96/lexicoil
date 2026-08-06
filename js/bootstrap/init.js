@@ -14,6 +14,7 @@ async function runInit(){
   }catch(_){}
   hideAuthOverlay();
   try{loadLS();}catch(e){lcDebug.warn('[loadLS]',e);}
+  try{if(typeof initVocabUiLang==='function')initVocabUiLang();}catch(e){lcDebug.warn('[vocab ui lang]',e);}
   try{
     if(typeof ManualVocab!=='undefined'&&typeof ManualVocab.reclassifyStoredFlashcards==='function'){
       if(ManualVocab.reclassifyStoredFlashcards()&&typeof saveFC==='function')saveFC();

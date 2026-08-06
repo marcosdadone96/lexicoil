@@ -1,0 +1,636 @@
+{
+  "generatedAt": "2026-07-15T10:13:21.312Z",
+  "mode": "execute",
+  "backup": null,
+  "seedCountBefore": 524,
+  "seedCountAfter": 526,
+  "seedGain": 2,
+  "stockBefore": {
+    "lesen": {
+      "1": 19,
+      "2": 14,
+      "3": 19,
+      "4": 11,
+      "5": 18
+    },
+    "horen": {
+      "1": 9,
+      "2": 22,
+      "3": 10,
+      "4": 12
+    }
+  },
+  "stockAfter": {
+    "lesen": {
+      "1": 19,
+      "2": 14,
+      "3": 19,
+      "4": 11,
+      "5": 20
+    },
+    "horen": {
+      "1": 9,
+      "2": 22,
+      "3": 10,
+      "4": 12
+    }
+  },
+  "published": 2,
+  "duplicates": 0,
+  "failed": 50,
+  "apiCallsUsed": 47,
+  "byBucket": {
+    "free_code:failed": 2,
+    "stamp_only:failed": 3,
+    "surgical:failed": 45,
+    "surgical:published": 2
+  },
+  "cushionDeficit": {
+    "cells": [
+      {
+        "cell": "lesen T1",
+        "module": "lesen",
+        "teil": 1,
+        "stock": 19,
+        "bindingMin": 14,
+        "targetWithCushion": 21,
+        "toGenerate": 2
+      },
+      {
+        "cell": "lesen T2",
+        "module": "lesen",
+        "teil": 2,
+        "stock": 14,
+        "bindingMin": 14,
+        "targetWithCushion": 21,
+        "toGenerate": 7
+      },
+      {
+        "cell": "lesen T3",
+        "module": "lesen",
+        "teil": 3,
+        "stock": 19,
+        "bindingMin": 14,
+        "targetWithCushion": 21,
+        "toGenerate": 2
+      },
+      {
+        "cell": "lesen T4",
+        "module": "lesen",
+        "teil": 4,
+        "stock": 11,
+        "bindingMin": 14,
+        "targetWithCushion": 21,
+        "toGenerate": 10
+      },
+      {
+        "cell": "lesen T5",
+        "module": "lesen",
+        "teil": 5,
+        "stock": 20,
+        "bindingMin": 14,
+        "targetWithCushion": 21,
+        "toGenerate": 1
+      },
+      {
+        "cell": "horen T1",
+        "module": "horen",
+        "teil": 1,
+        "stock": 9,
+        "bindingMin": 12,
+        "targetWithCushion": 18,
+        "toGenerate": 9
+      },
+      {
+        "cell": "horen T2",
+        "module": "horen",
+        "teil": 2,
+        "stock": 22,
+        "bindingMin": 12,
+        "targetWithCushion": 18,
+        "toGenerate": 0
+      },
+      {
+        "cell": "horen T3",
+        "module": "horen",
+        "teil": 3,
+        "stock": 10,
+        "bindingMin": 12,
+        "targetWithCushion": 18,
+        "toGenerate": 8
+      },
+      {
+        "cell": "horen T4",
+        "module": "horen",
+        "teil": 4,
+        "stock": 12,
+        "bindingMin": 12,
+        "targetWithCushion": 18,
+        "toGenerate": 6
+      }
+    ],
+    "total": 45,
+    "bindingMin": {
+      "lesen": {
+        "1": 14,
+        "2": 14,
+        "3": 14,
+        "4": 14,
+        "5": 14
+      },
+      "horen": {
+        "1": 12,
+        "2": 12,
+        "3": 12,
+        "4": 12
+      }
+    },
+    "targetWithCushion": {
+      "lesen": {
+        "1": 21,
+        "2": 21,
+        "3": 21,
+        "4": 21,
+        "5": 21
+      },
+      "horen": {
+        "1": 18,
+        "2": 18,
+        "3": 18,
+        "4": 18
+      }
+    }
+  },
+  "results": [
+    {
+      "relFile": "batches/ready/pool-verified/lesen-t3-auto-x4k027.json",
+      "bucket": "free_code",
+      "subreason": "cube_A",
+      "stage": "free_code_repaired_pool_fail",
+      "published": false,
+      "duplicate": false,
+      "error": "Adjetivo/adverbio/cardinal «Lang» en mayúscula errónea (debería ser «lang»). Contexto: \"...Bei Herrn Lang ist ein Bügel der Sehhilfe abgebro...\""
+    },
+    {
+      "relFile": "batches/ready/pool-verified/lesen-t3-auto-yii0su.json",
+      "bucket": "free_code",
+      "subreason": "cube_A",
+      "stage": "free_code_repaired_pool_fail",
+      "published": false,
+      "duplicate": false,
+      "error": "Adjetivo/adverbio/cardinal «Lang» en mayúscula errónea (debería ser «lang»). Contexto: \"...Bei Herrn Lang ist der Absatz vom Stiefel abgebro...\""
+    },
+    {
+      "relFile": "batches/ready/pool-verified/horen-t4-gemini-003.json",
+      "bucket": "stamp_only",
+      "subreason": "passed_pool2_needs_publish_stamp",
+      "stage": "stamp_only_publish_fail",
+      "published": false,
+      "duplicate": false,
+      "error": "POOL-DEDUP: pasaje demasiado similar (100% Jaccard ≥ 55%) a gen-h4-003 en celda Umwelt×T4. Regenera con otro tipo de texto."
+    },
+    {
+      "relFile": "batches/ready/pool-verified/horen-t4-gemini-006.json",
+      "bucket": "stamp_only",
+      "subreason": "passed_pool2_needs_publish_stamp",
+      "stage": "stamp_only_publish_fail",
+      "published": false,
+      "duplicate": false,
+      "error": "POOL-DEDUP: pasaje demasiado similar (97% Jaccard ≥ 55%) a gen-h4-006 en celda Ernährung×T4. Regenera con otro tipo de texto."
+    },
+    {
+      "relFile": "batches/ready/pool-verified/horen-t4-gemini-010.json",
+      "bucket": "stamp_only",
+      "subreason": "passed_pool2_needs_publish_stamp",
+      "stage": "stamp_only_publish_fail",
+      "published": false,
+      "duplicate": false,
+      "error": "POOL-DEDUP: pasaje demasiado similar (94% Jaccard ≥ 55%) a gen-h4-010 en celda Freizeit×T4. Regenera con otro tipo de texto."
+    },
+    {
+      "relFile": "batches/ready/pool-verified/lesen-t1-gemini-117.json",
+      "bucket": "surgical",
+      "subreason": "surgical:word_match",
+      "stage": "surgical_repaired_validation_fail",
+      "published": false,
+      "duplicate": false,
+      "error": "Calidad pedagógica falló"
+    },
+    {
+      "relFile": "batches/ready/pool-verified/lesen-t1-gemini-119.json",
+      "bucket": "surgical",
+      "subreason": "surgical:word_match",
+      "stage": "surgical_repaired_validation_fail",
+      "published": false,
+      "duplicate": false,
+      "error": "Calidad pedagógica falló"
+    },
+    {
+      "relFile": "batches/ready/pool-verified/lesen-t1-gemini-121.json",
+      "bucket": "surgical",
+      "subreason": "surgical:word_match",
+      "stage": "surgical_repaired_validation_fail",
+      "published": false,
+      "duplicate": false,
+      "error": "Calidad pedagógica falló"
+    },
+    {
+      "relFile": "batches/ready/pool-verified/lesen-t1-gemini-125.json",
+      "bucket": "surgical",
+      "subreason": "surgical:word_match",
+      "stage": "surgical_repaired_validation_fail",
+      "published": false,
+      "duplicate": false,
+      "error": "Calidad pedagógica falló"
+    },
+    {
+      "relFile": "batches/ready/pool-verified/lesen-t1-gemini-127.json",
+      "bucket": "surgical",
+      "subreason": "surgical:word_match",
+      "stage": "surgical_repaired_validation_fail",
+      "published": false,
+      "duplicate": false,
+      "error": "Calidad pedagógica falló"
+    },
+    {
+      "relFile": "batches/ready/pool-verified/lesen-t1-gemini-135.json",
+      "bucket": "surgical",
+      "subreason": "surgical:word_match",
+      "stage": "surgical_repaired_validation_fail",
+      "published": false,
+      "duplicate": false,
+      "error": "Calidad pedagógica falló"
+    },
+    {
+      "relFile": "batches/ready/pool-verified/lesen-t1-gemini-136.json",
+      "bucket": "surgical",
+      "subreason": "surgical:word_match",
+      "stage": "surgical_repaired_validation_fail",
+      "published": false,
+      "duplicate": false,
+      "error": "Calidad pedagógica falló"
+    },
+    {
+      "relFile": "batches/ready/pool-verified/lesen-t1-gemini-137.json",
+      "bucket": "surgical",
+      "subreason": "surgical:word_match",
+      "stage": "surgical_repaired_validation_fail",
+      "published": false,
+      "duplicate": false,
+      "error": "Calidad pedagógica falló"
+    },
+    {
+      "relFile": "batches/ready/pool-verified/lesen-t1-gemini-138.json",
+      "bucket": "surgical",
+      "subreason": "surgical:word_match",
+      "stage": "surgical_repaired_validation_fail",
+      "published": false,
+      "duplicate": false,
+      "error": "Calidad pedagógica falló"
+    },
+    {
+      "relFile": "batches/ready/pool-verified/lesen-t1-gemini-140.json",
+      "bucket": "surgical",
+      "subreason": "surgical:word_match",
+      "stage": "surgical_repaired_validation_fail",
+      "published": false,
+      "duplicate": false,
+      "error": "Calidad pedagógica falló"
+    },
+    {
+      "relFile": "batches/ready/pool-verified/lesen-t1-gemini-143.json",
+      "bucket": "surgical",
+      "subreason": "surgical:word_match",
+      "stage": "surgical_repaired_validation_fail",
+      "published": false,
+      "duplicate": false,
+      "error": "Calidad pedagógica falló"
+    },
+    {
+      "relFile": "batches/ready/pool-verified/lesen-t1-gemini-149.json",
+      "bucket": "surgical",
+      "subreason": "surgical:word_match",
+      "stage": "surgical_repaired_validation_fail",
+      "published": false,
+      "duplicate": false,
+      "error": "Calidad pedagógica falló"
+    },
+    {
+      "relFile": "batches/ready/pool-verified/lesen-t2-gemini-055.json",
+      "bucket": "surgical",
+      "subreason": "surgical:mcq_length_bias",
+      "stage": "surgical_repaired_pool_fail",
+      "published": false,
+      "duplicate": false,
+      "error": "passageId \"gen-l2-759e7c8f-2\" no encontrado en passages[] del mismo archivo; passageId \"gen-l2-759e7c8f-2\" no encontrado en passages[] del mismo archivo; passageId \"gen-l2-759e7c8f-2\" no encontrado en passages[] del mismo archivo"
+    },
+    {
+      "relFile": "batches/ready/pool-verified/lesen-t2-gemini-057.json",
+      "bucket": "surgical",
+      "subreason": "surgical:mcq_length_bias",
+      "stage": "surgical_repaired_validation_fail",
+      "published": false,
+      "duplicate": false,
+      "error": "Calidad pedagógica falló"
+    },
+    {
+      "relFile": "batches/ready/pool-verified/lesen-t2-gemini-093.json",
+      "bucket": "surgical",
+      "subreason": "surgical:mcq_length_bias",
+      "stage": "surgical_repaired_validation_fail",
+      "published": false,
+      "duplicate": false,
+      "error": "Calidad pedagógica falló"
+    },
+    {
+      "relFile": "batches/ready/pool-verified/lesen-t2-gemini-094.json",
+      "bucket": "surgical",
+      "subreason": "surgical:mcq_length_bias",
+      "stage": "surgical_repaired_validation_fail",
+      "published": false,
+      "duplicate": false,
+      "error": "Calidad pedagógica falló"
+    },
+    {
+      "relFile": "batches/ready/pool-verified/lesen-t2-gemini-096.json",
+      "bucket": "surgical",
+      "subreason": "surgical:mcq_length_bias",
+      "stage": "surgical_repaired_validation_fail",
+      "published": false,
+      "duplicate": false,
+      "error": "Calidad pedagógica falló"
+    },
+    {
+      "relFile": "batches/ready/pool-verified/lesen-t2-gemini-097.json",
+      "bucket": "surgical",
+      "subreason": "surgical:mcq_length_bias",
+      "stage": "surgical_repaired_validation_fail",
+      "published": false,
+      "duplicate": false,
+      "error": "Calidad pedagógica falló"
+    },
+    {
+      "relFile": "batches/ready/pool-verified/lesen-t2-gemini-103.json",
+      "bucket": "surgical",
+      "subreason": "surgical:mcq_length_bias",
+      "stage": "surgical_repaired_validation_fail",
+      "published": false,
+      "duplicate": false,
+      "error": "Calidad pedagógica falló"
+    },
+    {
+      "relFile": "batches/ready/pool-verified/lesen-t2-gemini-104.json",
+      "bucket": "surgical",
+      "subreason": "surgical:mcq_length_bias",
+      "stage": "surgical_repaired_validation_fail",
+      "published": false,
+      "duplicate": false,
+      "error": "Calidad pedagógica falló"
+    },
+    {
+      "relFile": "batches/ready/pool-verified/lesen-t2-gemini-105.json",
+      "bucket": "surgical",
+      "subreason": "surgical:mcq_length_bias",
+      "stage": "surgical_repaired_validation_fail",
+      "published": false,
+      "duplicate": false,
+      "error": "Calidad pedagógica falló"
+    },
+    {
+      "relFile": "batches/ready/pool-verified/lesen-t2-gemini-106.json",
+      "bucket": "surgical",
+      "subreason": "surgical:mcq_length_bias",
+      "stage": "surgical_repaired_validation_fail",
+      "published": false,
+      "duplicate": false,
+      "error": "Calidad pedagógica falló"
+    },
+    {
+      "relFile": "batches/ready/pool-verified/lesen-t5-gemini-009.json",
+      "bucket": "surgical",
+      "subreason": "surgical:mcq_length_bias",
+      "stage": "surgical_repaired_validation_fail",
+      "published": false,
+      "duplicate": false,
+      "error": "Calidad pedagógica falló"
+    },
+    {
+      "relFile": "batches/ready/pool-verified/lesen-t5-gemini-014.json",
+      "bucket": "surgical",
+      "subreason": "surgical:mcq_length_bias",
+      "stage": "surgical_repaired_validation_fail",
+      "published": false,
+      "duplicate": false,
+      "error": "Calidad pedagógica falló"
+    },
+    {
+      "relFile": "batches/ready/pool-verified/lesen-t5-gemini-015.json",
+      "bucket": "surgical",
+      "subreason": "surgical:mcq_length_bias",
+      "stage": "surgical_repaired_validation_fail",
+      "published": false,
+      "duplicate": false,
+      "error": "Calidad pedagógica falló"
+    },
+    {
+      "relFile": "batches/ready/pool-verified/lesen-t5-gemini-022.json",
+      "bucket": "surgical",
+      "subreason": "surgical:mcq_length_bias",
+      "stage": "surgical_repaired_validation_fail",
+      "published": false,
+      "duplicate": false,
+      "error": "Calidad pedagógica falló"
+    },
+    {
+      "relFile": "batches/ready/pool-verified/lesen-t5-gemini-023.json",
+      "bucket": "surgical",
+      "subreason": "surgical:mcq_length_bias",
+      "stage": "surgical_repaired_validation_fail",
+      "published": false,
+      "duplicate": false,
+      "error": "Calidad pedagógica falló"
+    },
+    {
+      "relFile": "batches/ready/pool-verified/lesen-t5-gemini-024.json",
+      "bucket": "surgical",
+      "subreason": "surgical:mcq_length_bias",
+      "stage": "surgical_repaired_pool_fail",
+      "published": false,
+      "duplicate": false,
+      "error": "Sustantivo en minúscula: \"richtig\" (tras artículo/conjunción). En alemán los sustantivos van en mayúscula. Contexto: \"...nicht zu hoch einstellen und richtig lüften....\""
+    },
+    {
+      "relFile": "batches/ready/pool-verified/lesen-t5-gemini-026.json",
+      "bucket": "surgical",
+      "subreason": "surgical:mcq_length_bias",
+      "stage": "surgical_repaired_validation_fail",
+      "published": false,
+      "duplicate": false,
+      "error": "Calidad pedagógica falló"
+    },
+    {
+      "relFile": "batches/ready/pool-verified/lesen-t5-gemini-027.json",
+      "bucket": "surgical",
+      "subreason": "surgical:mcq_length_bias",
+      "stage": "surgical_repaired_validation_fail",
+      "published": false,
+      "duplicate": false,
+      "error": "Calidad pedagógica falló"
+    },
+    {
+      "relFile": "batches/ready/pool-verified/lesen-t5-gemini-028.json",
+      "bucket": "surgical",
+      "subreason": "surgical:mcq_length_bias",
+      "stage": "surgical_repaired_validation_fail",
+      "published": false,
+      "duplicate": false,
+      "error": "Calidad pedagógica falló"
+    },
+    {
+      "relFile": "batches/ready/pool-verified/lesen-t5-gemini-029.json",
+      "bucket": "surgical",
+      "subreason": "surgical:mcq_length_bias",
+      "stage": "surgical_repaired_validation_fail",
+      "published": false,
+      "duplicate": false,
+      "error": "Calidad pedagógica falló"
+    },
+    {
+      "relFile": "batches/ready/pool-verified/lesen-t5-gemini-030.json",
+      "bucket": "surgical",
+      "subreason": "surgical:mcq_length_bias",
+      "stage": "surgical_repaired_validation_fail",
+      "published": false,
+      "duplicate": false,
+      "error": "Calidad pedagógica falló"
+    },
+    {
+      "relFile": "batches/ready/pool-verified/lesen-t5-gemini-033.json",
+      "bucket": "surgical",
+      "subreason": "surgical:mcq_length_bias",
+      "stage": "surgical_repaired_validation_fail",
+      "published": false,
+      "duplicate": false,
+      "error": "Calidad pedagógica falló"
+    },
+    {
+      "relFile": "batches/ready/pool-verified/lesen-t5-gemini-034.json",
+      "bucket": "surgical",
+      "subreason": "surgical:mcq_length_bias",
+      "stage": "surgical_repaired_validation_fail",
+      "published": false,
+      "duplicate": false,
+      "error": "Calidad pedagógica falló"
+    },
+    {
+      "relFile": "batches/ready/pool-verified/lesen-t5-gemini-035.json",
+      "bucket": "surgical",
+      "subreason": "surgical:mcq_length_bias",
+      "stage": "surgical_repaired_validation_fail",
+      "published": false,
+      "duplicate": false,
+      "error": "Calidad pedagógica falló"
+    },
+    {
+      "relFile": "batches/ready/pool-verified/lesen-t5-gemini-036.json",
+      "bucket": "surgical",
+      "subreason": "surgical:mcq_length_bias",
+      "stage": "surgical_repaired_validation_fail",
+      "published": false,
+      "duplicate": false,
+      "error": "Calidad pedagógica falló"
+    },
+    {
+      "relFile": "batches/ready/pool-verified/lesen-t5-gemini-037.json",
+      "bucket": "surgical",
+      "subreason": "surgical:mcq_length_bias",
+      "stage": "surgical_repaired_validation_fail",
+      "published": false,
+      "duplicate": false,
+      "error": "Calidad pedagógica falló"
+    },
+    {
+      "relFile": "batches/ready/pool-verified/lesen-t5-gemini-057.json",
+      "bucket": "surgical",
+      "subreason": "surgical:mcq_length_bias",
+      "stage": "surgical_repaired_pool_fail",
+      "published": false,
+      "duplicate": false,
+      "error": "Explanation posiblemente no está en alemán: \"La opción correcta ha sido modificada para acortarla y evitar el sesgo de longit...\""
+    },
+    {
+      "relFile": "batches/ready/pool-verified/lesen-t5-gemini-063.json",
+      "bucket": "surgical",
+      "subreason": "surgical:mcq_length_bias",
+      "stage": "surgical_repaired_validation_fail",
+      "published": false,
+      "duplicate": false,
+      "error": "Calidad pedagógica falló"
+    },
+    {
+      "relFile": "batches/ready/pool-verified/lesen-t5-gemini-065.json",
+      "bucket": "surgical",
+      "subreason": "surgical:mcq_length_bias",
+      "stage": "surgical_repaired_validation_fail",
+      "published": false,
+      "duplicate": false,
+      "error": "Calidad pedagógica falló"
+    },
+    {
+      "relFile": "batches/ready/pool-verified/lesen-t5-gemini-070.json",
+      "bucket": "surgical",
+      "subreason": "surgical:mcq_length_bias",
+      "stage": "surgical_repaired_published",
+      "published": true,
+      "duplicate": false,
+      "error": null,
+      "recordId": "pub-de-B1-lesen-t5-3fad837eb566"
+    },
+    {
+      "relFile": "batches/ready/pool-verified/lesen-t5-gemini-071.json",
+      "bucket": "surgical",
+      "subreason": "surgical:mcq_length_bias",
+      "stage": "surgical_repaired_pool_fail",
+      "published": false,
+      "duplicate": false,
+      "error": "Explanation posiblemente no está en alemán: \"La opción 'c' ha sido acortada para evitar el sesgo de longitud y parafrasea la ...\"; Explanation posiblemente no está en alemán: \"La opción 'c' ha sido acortada para evitar el sesgo de longitud y parafrasea la ...\"; Explanation posiblemente no está en alemán: \"La opción 'b' ha sido acortada para evitar el sesgo de longitud y parafrasea la ...\""
+    },
+    {
+      "relFile": "batches/ready/pool-verified/lesen-t5-gemini-073.json",
+      "bucket": "surgical",
+      "subreason": "surgical:mcq_length_bias",
+      "stage": "surgical_repaired_published",
+      "published": true,
+      "duplicate": false,
+      "error": null,
+      "recordId": "pub-de-B1-lesen-t5-388d063c343c"
+    },
+    {
+      "relFile": "batches/ready/pool-verified/lesen-t5-gemini-076.json",
+      "bucket": "surgical",
+      "subreason": "surgical:mcq_length_bias",
+      "stage": "surgical_repaired_validation_fail",
+      "published": false,
+      "duplicate": false,
+      "error": "Calidad pedagógica falló"
+    },
+    {
+      "relFile": "batches/ready/pool-verified/lesen-t5-gemini-077.json",
+      "bucket": "surgical",
+      "subreason": "surgical:mcq_length_bias",
+      "stage": "surgical_repaired_validation_fail",
+      "published": false,
+      "duplicate": false,
+      "error": "Calidad pedagógica falló"
+    },
+    {
+      "relFile": "batches/ready/pool-verified/lesen-t5-gemini-078.json",
+      "bucket": "surgical",
+      "subreason": "surgical:mcq_length_bias",
+      "stage": "surgical_repaired_validation_fail",
+      "published": false,
+      "duplicate": false,
+      "error": "Calidad pedagógica falló"
+    }
+  ]
+}

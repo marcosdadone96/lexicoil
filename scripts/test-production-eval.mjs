@@ -71,6 +71,70 @@ moduleResults = CORE.applyProductionEvalToModules(moduleResults, normalized, pas
 assert('AI schreiben score feeds module', moduleResults.schreiben.evaluated && moduleResults.schreiben.scorePct === 72);
 assert('AI sprechen score feeds module', moduleResults.sprechen.evaluated && moduleResults.sprechen.scorePct === 68);
 
+// --- Goethe Schreiben 40/40/20 (does NOT affect Sprechen equal average) ---
+function schParts(scoresByTeil) {
+  return Object.entries(scoresByTeil).map(([teil, score]) => ({
+    id: String(teil),
+    score,
+    partMeta: { teil: Number(teil), aufgabe: Number(teil) },
+  }));
+}
+
+const w1 = CORE.weightedSchreibenModuleScore(schParts({ 1: 100, 2: 100, 3: 0 }));
+assert('Schreiben 100/100/0 → 80 (40+40+0), not equal 67', w1 === 80);
+
+const w2 = CORE.weightedSchreibenModuleScore(schParts({ 1: 50, 2: 50, 3: 100 }));
+assert('Schreiben 50/50/100 → 60 (20+20+20)', w2 === 60);
+
+const w3 = CORE.weightedSchreibenModuleScore(schParts({ 1: 80, 2: 70, 3: 60 }));
+// 0.4*80 + 0.4*70 + 0.2*60 = 32+28+12 = 72
+assert('Schreiben 80/70/60 → 72', w3 === 72);
+
+const w4 = CORE.weightedSchreibenModuleScore(schParts({ 1: 90, 2: 60, 3: 30 }));
+// 0.4*90 + 0.4*60 + 0.2*30 = 36+24+6 = 66
+assert('Schreiben 90/60/30 → 66', w4 === 66);
+
+const w5 = CORE.weightedSchreibenModuleScore(schParts({ 1: 40, 2: 100, 3: 100 }));
+// 0.4*40 + 0.4*100 + 0.2*100 = 16+40+20 = 76
+assert('Schreiben 40/100/100 → 76', w5 === 76);
+
+const equalWouldBe = Math.round((100 + 100 + 0) / 3);
+assert('equal avg of 100/100/0 would be 67 (regression marker)', equalWouldBe === 67);
+
+const sprechenEqual = CORE.averageScores([
+  { score: 100 },
+  { score: 100 },
+  { score: 0 },
+]);
+assert('Sprechen still equal-average 100/100/0 → 67', sprechenEqual === 67);
+
+const appliedWeighted = CORE.applyProductionEvalToModules(
+  { lesen: MG.scorableModuleResult(18, 30, passPct) },
+  {
+    ok: true,
+    schreiben: schParts({ 1: 100, 2: 100, 3: 0 }),
+    sprechen: [
+      { id: '1', score: 100 },
+      { id: '2', score: 50 },
+    ],
+  },
+  passPct,
+  MG,
+);
+assert('applyProductionEval schreiben uses 40/40/20 → 80', appliedWeighted.schreiben.scorePct === 80);
+assert('applyProductionEval sprechen still equal → 75', appliedWeighted.sprechen.scorePct === 75);
+assert('lesen untouched', appliedWeighted.lesen.scorePct === 60);
+
+// Lesen/Hören moduleGrading summarizeExam still equal-module average (unchanged)
+const modSum = MG.summarizeExam(
+  {
+    lesen: MG.scorableModuleResult(100, 100, passPct),
+    horen: MG.scorableModuleResult(50, 100, passPct),
+  },
+  { modular: true, passPercent: passPct },
+);
+assert('Lesen/Hören modular avg still equal 75%', modSum.informativeScorePct === 75);
+
 const payload = { lang: 'de', level: 'B1', passPercent: passPct, schreiben: schreibenTasks, sprechen: sprechenTasks };
 const key = CORE.hashProductionSubmission(payload);
 CORE.writeProductionEvalCache(key, normalized);

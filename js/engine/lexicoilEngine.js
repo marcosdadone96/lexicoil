@@ -97,6 +97,11 @@ const LexiCoilEngine = (() => {
       }
     }
 
+    const skillList = skills || ['lesen'];
+    const isGenSuggestionModule = skillList.some((s) =>
+      ['schreiben', 'writing', 'sprechen', 'speaking'].includes(String(s).toLowerCase()),
+    );
+
     const spec = await KE.buildSpec({
       language: Domain.languageFromSubjectCode(subject),
       level,
@@ -104,12 +109,12 @@ const LexiCoilEngine = (() => {
       contentType: 'VocabularyExercise',
       targetWords,
       topic,
-      skills: skills || ['lesen'],
+      skills: skillList,
       vocabPolicy: {
         targetWords,
-        preferCoverage: true,
+        preferCoverage: !isGenSuggestionModule,
         maximizeCoverage: false,
-        ensureDensePart: false,
+        suggestionOnly: isGenSuggestionModule,
       },
       metadata: {
         userVocabRequested,

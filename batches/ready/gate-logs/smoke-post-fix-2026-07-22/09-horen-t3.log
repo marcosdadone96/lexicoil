@@ -1,0 +1,40 @@
+
+Generador horen (de/B1) · gemini · gemini-2.5-flash · T3 × 1
+Palabras objetivo por parte: 5 (--word-count)
+Cuota Gemini: max 45 llamadas · pausa ≥6000ms · fix-retries=0 · api-retries=1
+Salida: batches/generated/ (solo pasa formato + calidad pedagógica)
+Tema: Sport (rotación)
+
+── horen T3 · horen-t3-gemini-037.json ──
+Proveedor: gemini · Palabras (5): fitness, aufgabe, situation, aktuell, direkt
+Modelo: gemini-2.5-flash · max_output_tokens=16384
+Llamada API 1/45 · $0.000 acumulado · gemini-2.5-flash
+Validando formato…
+Comprobando calidad pedagógica…
+  [Q4 audit-only] block: 2 finding(s)
+  [LT advisory] skipped (LT down: fetch failed)
+Calidad Hören T3: FAIL (1 problemas, estimación ~92%)
+  - gen-q-h3-cb223a82-4: pregunta copia ≥4 palabras de la transcripción («kleine ziele zu setzen»)
+  Triaje CUBO C (word-matching) → reparación localizada (1 llamada LLM)…
+Hören: reparando 1 pregunta(s) word-copy (1 llamada, audio fijo)…
+Llamada API 2/45 · $0.023 acumulado · gemini-2.5-flash
+  Re-validando tras word_match…
+  [Q4 audit-only] block: 2 finding(s)
+  [LT advisory] skipped (LT down: fetch failed)
+Calidad Hören T3: OK ✅ (estimación ~100%)
+  Reparación word_match OK → guardado sin regenerar parte
+  [poolReady] READY → pool-verified/B1/horen-t3-gemini-037.json
+Guardado: batches/ready/pool-verified/B1/horen-t3-gemini-037.json (7 preguntas, 1 passages) · horen Teil 3
+Validación técnica OK ✅
+Calidad pedagógica OK ✅
+
+── batches/generated/B1/horen-t3-gemini-037.json · OK · 2 llamadas · $0.023 total ──
+
+══ Resumen generador horen ══
+Proveedor: gemini · Modelo: gemini-2.5-flash
+Intentos totales: 2
+Partes guardadas (formato + calidad OK): 1
+Partes descartadas: 0
+Llamadas API Gemini: 2/45
+Por parte (guardadas / descartadas · intentos):
+  T3: 1 guardadas, 0 descartadas, 1 intentos

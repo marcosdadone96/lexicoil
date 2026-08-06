@@ -1,0 +1,848 @@
+{
+          "generatedAt": "2026-07-13T20:50:35.530Z",
+          "method": "pickReusablePartByVocab (production), greedy union, excludeIds carry across 30 sessions",
+          "partsPerTeilComparison": {
+                    "lesen": {
+                              "onePart": {
+                                        "nSessions": 30,
+                                        "ge3": {
+                                                  "count": 0,
+                                                  "ratePct": 0
+                                        },
+                                        "ge4": {
+                                                  "count": 0,
+                                                  "ratePct": 0
+                                        },
+                                        "avgCovered": 0.33,
+                                        "avgHitsPerPick": 0.2,
+                                        "totalPicks": 50,
+                                        "hitDistPerPick": {
+                                                  "0": 40,
+                                                  "1": 10,
+                                                  "2": 0,
+                                                  "3+": 0
+                                        },
+                                        "pctPicksGe2": 0
+                              },
+                              "twoParts": {
+                                        "nSessions": 30,
+                                        "ge3": {
+                                                  "count": 0,
+                                                  "ratePct": 0
+                                        },
+                                        "ge4": {
+                                                  "count": 0,
+                                                  "ratePct": 0
+                                        },
+                                        "avgCovered": 0.2,
+                                        "avgHitsPerPick": 0.12,
+                                        "totalPicks": 50,
+                                        "hitDistPerPick": {
+                                                  "0": 44,
+                                                  "1": 6,
+                                                  "2": 0,
+                                                  "3+": 0
+                                        },
+                                        "pctPicksGe2": 0
+                              }
+                    },
+                    "horen": {
+                              "onePart": {
+                                        "nSessions": 30,
+                                        "ge3": {
+                                                  "count": 0,
+                                                  "ratePct": 0
+                                        },
+                                        "ge4": {
+                                                  "count": 0,
+                                                  "ratePct": 0
+                                        },
+                                        "avgCovered": 0.1,
+                                        "avgHitsPerPick": 0.17,
+                                        "totalPicks": 18,
+                                        "hitDistPerPick": {
+                                                  "0": 15,
+                                                  "1": 3,
+                                                  "2": 0,
+                                                  "3+": 0
+                                        },
+                                        "pctPicksGe2": 0
+                              },
+                              "twoParts": {
+                                        "nSessions": 30,
+                                        "ge3": {
+                                                  "count": 0,
+                                                  "ratePct": 0
+                                        },
+                                        "ge4": {
+                                                  "count": 0,
+                                                  "ratePct": 0
+                                        },
+                                        "avgCovered": 0.07,
+                                        "avgHitsPerPick": 0.11,
+                                        "totalPicks": 18,
+                                        "hitDistPerPick": {
+                                                  "0": 16,
+                                                  "1": 2,
+                                                  "2": 0,
+                                                  "3+": 0
+                                        },
+                                        "pctPicksGe2": 0
+                              }
+                    }
+          },
+          "full15Cases": {
+                    "onePart": {
+                              "avgPct": 8.8,
+                              "ge4count": 0,
+                              "cases": [
+                                        {
+                                                  "id": 1,
+                                                  "module": "lesen",
+                                                  "topic": "Umwelt",
+                                                  "requested": 5,
+                                                  "covered": 0,
+                                                  "pct": 0,
+                                                  "ge4": false,
+                                                  "perPickHits": [
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0
+                                                  ],
+                                                  "maxPerTeilUnion": [
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0
+                                                  ]
+                                        },
+                                        {
+                                                  "id": 2,
+                                                  "module": "lesen",
+                                                  "topic": "Umwelt",
+                                                  "requested": 15,
+                                                  "covered": 1,
+                                                  "pct": 6.7,
+                                                  "ge4": false,
+                                                  "perPickHits": [
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            1,
+                                                            0
+                                                  ],
+                                                  "maxPerTeilUnion": [
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            1,
+                                                            0
+                                                  ]
+                                        },
+                                        {
+                                                  "id": 3,
+                                                  "module": "lesen",
+                                                  "topic": "Arbeit",
+                                                  "requested": 5,
+                                                  "covered": 1,
+                                                  "pct": 20,
+                                                  "ge4": false,
+                                                  "perPickHits": [
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            1,
+                                                            0
+                                                  ],
+                                                  "maxPerTeilUnion": [
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            1,
+                                                            0
+                                                  ]
+                                        },
+                                        {
+                                                  "id": 4,
+                                                  "module": "lesen",
+                                                  "topic": "Arbeit",
+                                                  "requested": 20,
+                                                  "covered": 1,
+                                                  "pct": 5,
+                                                  "ge4": false,
+                                                  "perPickHits": [
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            1,
+                                                            0
+                                                  ],
+                                                  "maxPerTeilUnion": [
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            1,
+                                                            0
+                                                  ]
+                                        },
+                                        {
+                                                  "id": 5,
+                                                  "module": "lesen",
+                                                  "topic": "Technik",
+                                                  "requested": 12,
+                                                  "covered": 1,
+                                                  "pct": 8.3,
+                                                  "ge4": false,
+                                                  "perPickHits": [
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            1,
+                                                            0
+                                                  ],
+                                                  "maxPerTeilUnion": [
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            1,
+                                                            0
+                                                  ]
+                                        },
+                                        {
+                                                  "id": 6,
+                                                  "module": "lesen",
+                                                  "topic": "Gesundheit",
+                                                  "requested": 8,
+                                                  "covered": 1,
+                                                  "pct": 12.5,
+                                                  "ge4": false,
+                                                  "perPickHits": [
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            1,
+                                                            0
+                                                  ],
+                                                  "maxPerTeilUnion": [
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            1,
+                                                            0
+                                                  ]
+                                        },
+                                        {
+                                                  "id": 7,
+                                                  "module": "horen",
+                                                  "topic": "Arbeit",
+                                                  "requested": 5,
+                                                  "covered": 1,
+                                                  "pct": 20,
+                                                  "ge4": false,
+                                                  "perPickHits": [
+                                                            1,
+                                                            0,
+                                                            0,
+                                                            0
+                                                  ],
+                                                  "maxPerTeilUnion": [
+                                                            1,
+                                                            0,
+                                                            0,
+                                                            0
+                                                  ]
+                                        },
+                                        {
+                                                  "id": 8,
+                                                  "module": "horen",
+                                                  "topic": "Arbeit",
+                                                  "requested": 15,
+                                                  "covered": 1,
+                                                  "pct": 6.7,
+                                                  "ge4": false,
+                                                  "perPickHits": [
+                                                            1,
+                                                            0,
+                                                            0,
+                                                            0
+                                                  ],
+                                                  "maxPerTeilUnion": [
+                                                            1,
+                                                            0,
+                                                            0,
+                                                            0
+                                                  ]
+                                        },
+                                        {
+                                                  "id": 9,
+                                                  "module": "horen",
+                                                  "topic": "Reisen",
+                                                  "requested": 10,
+                                                  "covered": 1,
+                                                  "pct": 10,
+                                                  "ge4": false,
+                                                  "perPickHits": [
+                                                            1,
+                                                            0,
+                                                            0,
+                                                            0
+                                                  ],
+                                                  "maxPerTeilUnion": [
+                                                            1,
+                                                            0,
+                                                            0,
+                                                            0
+                                                  ]
+                                        },
+                                        {
+                                                  "id": 10,
+                                                  "module": "horen",
+                                                  "topic": "Bildung",
+                                                  "requested": 5,
+                                                  "covered": 0,
+                                                  "pct": 0,
+                                                  "ge4": false,
+                                                  "perPickHits": [
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0
+                                                  ],
+                                                  "maxPerTeilUnion": [
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0
+                                                  ]
+                                        },
+                                        {
+                                                  "id": 11,
+                                                  "module": "lesen",
+                                                  "topic": "Bildung",
+                                                  "requested": 25,
+                                                  "covered": 3,
+                                                  "pct": 12,
+                                                  "ge4": false,
+                                                  "perPickHits": [
+                                                            1,
+                                                            0,
+                                                            1,
+                                                            0,
+                                                            1
+                                                  ],
+                                                  "maxPerTeilUnion": [
+                                                            1,
+                                                            0,
+                                                            1,
+                                                            0,
+                                                            1
+                                                  ]
+                                        },
+                                        {
+                                                  "id": 12,
+                                                  "module": "horen",
+                                                  "topic": "Umwelt",
+                                                  "requested": 18,
+                                                  "covered": 2,
+                                                  "pct": 11.1,
+                                                  "ge4": false,
+                                                  "perPickHits": [
+                                                            0,
+                                                            1,
+                                                            1,
+                                                            0
+                                                  ],
+                                                  "maxPerTeilUnion": [
+                                                            0,
+                                                            1,
+                                                            1,
+                                                            0
+                                                  ]
+                                        },
+                                        {
+                                                  "id": 13,
+                                                  "module": "lesen",
+                                                  "topic": "Reisen",
+                                                  "requested": 6,
+                                                  "covered": 0,
+                                                  "pct": 0,
+                                                  "ge4": false,
+                                                  "perPickHits": [
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0
+                                                  ],
+                                                  "maxPerTeilUnion": [
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0
+                                                  ]
+                                        },
+                                        {
+                                                  "id": 14,
+                                                  "module": "horen",
+                                                  "topic": "Technik",
+                                                  "requested": 22,
+                                                  "covered": 3,
+                                                  "pct": 13.6,
+                                                  "ge4": false,
+                                                  "perPickHits": [
+                                                            1,
+                                                            1,
+                                                            1,
+                                                            0
+                                                  ],
+                                                  "maxPerTeilUnion": [
+                                                            1,
+                                                            1,
+                                                            1,
+                                                            0
+                                                  ]
+                                        },
+                                        {
+                                                  "id": 15,
+                                                  "module": "lesen",
+                                                  "topic": "Gesundheit",
+                                                  "requested": 15,
+                                                  "covered": 1,
+                                                  "pct": 6.7,
+                                                  "ge4": false,
+                                                  "perPickHits": [
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            1,
+                                                            0
+                                                  ],
+                                                  "maxPerTeilUnion": [
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            1,
+                                                            0
+                                                  ]
+                                        }
+                              ]
+                    },
+                    "twoParts": {
+                              "avgPct": 9.5,
+                              "ge4count": 0,
+                              "cases": [
+                                        {
+                                                  "id": 1,
+                                                  "module": "lesen",
+                                                  "topic": "Umwelt",
+                                                  "requested": 5,
+                                                  "covered": 0,
+                                                  "pct": 0,
+                                                  "ge4": false,
+                                                  "perPickHits": [
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0
+                                                  ],
+                                                  "maxPerTeilUnion": [
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0
+                                                  ]
+                                        },
+                                        {
+                                                  "id": 2,
+                                                  "module": "lesen",
+                                                  "topic": "Umwelt",
+                                                  "requested": 15,
+                                                  "covered": 1,
+                                                  "pct": 6.7,
+                                                  "ge4": false,
+                                                  "perPickHits": [
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            1,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0
+                                                  ],
+                                                  "maxPerTeilUnion": [
+                                                            0,
+                                                            1,
+                                                            0,
+                                                            0,
+                                                            0
+                                                  ]
+                                        },
+                                        {
+                                                  "id": 3,
+                                                  "module": "lesen",
+                                                  "topic": "Arbeit",
+                                                  "requested": 5,
+                                                  "covered": 1,
+                                                  "pct": 20,
+                                                  "ge4": false,
+                                                  "perPickHits": [
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            1,
+                                                            0,
+                                                            0,
+                                                            0
+                                                  ],
+                                                  "maxPerTeilUnion": [
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            1,
+                                                            0
+                                                  ]
+                                        },
+                                        {
+                                                  "id": 4,
+                                                  "module": "lesen",
+                                                  "topic": "Arbeit",
+                                                  "requested": 20,
+                                                  "covered": 2,
+                                                  "pct": 10,
+                                                  "ge4": false,
+                                                  "perPickHits": [
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            1,
+                                                            0,
+                                                            0,
+                                                            1
+                                                  ],
+                                                  "maxPerTeilUnion": [
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            1,
+                                                            1
+                                                  ]
+                                        },
+                                        {
+                                                  "id": 5,
+                                                  "module": "lesen",
+                                                  "topic": "Technik",
+                                                  "requested": 12,
+                                                  "covered": 1,
+                                                  "pct": 8.3,
+                                                  "ge4": false,
+                                                  "perPickHits": [
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            1,
+                                                            0,
+                                                            0,
+                                                            0
+                                                  ],
+                                                  "maxPerTeilUnion": [
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            1,
+                                                            0
+                                                  ]
+                                        },
+                                        {
+                                                  "id": 6,
+                                                  "module": "lesen",
+                                                  "topic": "Gesundheit",
+                                                  "requested": 8,
+                                                  "covered": 1,
+                                                  "pct": 12.5,
+                                                  "ge4": false,
+                                                  "perPickHits": [
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            1,
+                                                            0,
+                                                            0,
+                                                            0
+                                                  ],
+                                                  "maxPerTeilUnion": [
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            1,
+                                                            0
+                                                  ]
+                                        },
+                                        {
+                                                  "id": 7,
+                                                  "module": "horen",
+                                                  "topic": "Arbeit",
+                                                  "requested": 5,
+                                                  "covered": 1,
+                                                  "pct": 20,
+                                                  "ge4": false,
+                                                  "perPickHits": [
+                                                            1,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0
+                                                  ],
+                                                  "maxPerTeilUnion": [
+                                                            1,
+                                                            0,
+                                                            0,
+                                                            0
+                                                  ]
+                                        },
+                                        {
+                                                  "id": 8,
+                                                  "module": "horen",
+                                                  "topic": "Arbeit",
+                                                  "requested": 15,
+                                                  "covered": 1,
+                                                  "pct": 6.7,
+                                                  "ge4": false,
+                                                  "perPickHits": [
+                                                            1,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0
+                                                  ],
+                                                  "maxPerTeilUnion": [
+                                                            1,
+                                                            0,
+                                                            0,
+                                                            0
+                                                  ]
+                                        },
+                                        {
+                                                  "id": 9,
+                                                  "module": "horen",
+                                                  "topic": "Reisen",
+                                                  "requested": 10,
+                                                  "covered": 1,
+                                                  "pct": 10,
+                                                  "ge4": false,
+                                                  "perPickHits": [
+                                                            1,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0
+                                                  ],
+                                                  "maxPerTeilUnion": [
+                                                            1,
+                                                            0,
+                                                            0,
+                                                            0
+                                                  ]
+                                        },
+                                        {
+                                                  "id": 10,
+                                                  "module": "horen",
+                                                  "topic": "Bildung",
+                                                  "requested": 5,
+                                                  "covered": 0,
+                                                  "pct": 0,
+                                                  "ge4": false,
+                                                  "perPickHits": [
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0
+                                                  ],
+                                                  "maxPerTeilUnion": [
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0
+                                                  ]
+                                        },
+                                        {
+                                                  "id": 11,
+                                                  "module": "lesen",
+                                                  "topic": "Bildung",
+                                                  "requested": 25,
+                                                  "covered": 3,
+                                                  "pct": 12,
+                                                  "ge4": false,
+                                                  "perPickHits": [
+                                                            1,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            1,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            1,
+                                                            0
+                                                  ],
+                                                  "maxPerTeilUnion": [
+                                                            1,
+                                                            0,
+                                                            1,
+                                                            0,
+                                                            1
+                                                  ]
+                                        },
+                                        {
+                                                  "id": 12,
+                                                  "module": "horen",
+                                                  "topic": "Umwelt",
+                                                  "requested": 18,
+                                                  "covered": 3,
+                                                  "pct": 16.7,
+                                                  "ge4": false,
+                                                  "perPickHits": [
+                                                            0,
+                                                            0,
+                                                            1,
+                                                            0,
+                                                            1,
+                                                            0,
+                                                            0,
+                                                            1
+                                                  ],
+                                                  "maxPerTeilUnion": [
+                                                            0,
+                                                            1,
+                                                            1,
+                                                            1
+                                                  ]
+                                        },
+                                        {
+                                                  "id": 13,
+                                                  "module": "lesen",
+                                                  "topic": "Reisen",
+                                                  "requested": 6,
+                                                  "covered": 0,
+                                                  "pct": 0,
+                                                  "ge4": false,
+                                                  "perPickHits": [
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0
+                                                  ],
+                                                  "maxPerTeilUnion": [
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0
+                                                  ]
+                                        },
+                                        {
+                                                  "id": 14,
+                                                  "module": "horen",
+                                                  "topic": "Technik",
+                                                  "requested": 22,
+                                                  "covered": 3,
+                                                  "pct": 13.6,
+                                                  "ge4": false,
+                                                  "perPickHits": [
+                                                            1,
+                                                            0,
+                                                            1,
+                                                            0,
+                                                            1,
+                                                            0,
+                                                            0,
+                                                            0
+                                                  ],
+                                                  "maxPerTeilUnion": [
+                                                            1,
+                                                            1,
+                                                            1,
+                                                            0
+                                                  ]
+                                        },
+                                        {
+                                                  "id": 15,
+                                                  "module": "lesen",
+                                                  "topic": "Gesundheit",
+                                                  "requested": 15,
+                                                  "covered": 1,
+                                                  "pct": 6.7,
+                                                  "ge4": false,
+                                                  "perPickHits": [
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            1,
+                                                            0,
+                                                            0,
+                                                            0
+                                                  ],
+                                                  "maxPerTeilUnion": [
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            1,
+                                                            0
+                                                  ]
+                                        }
+                              ]
+                    }
+          },
+          "designTarget": {
+                    "onePartTargetHitsPerPart": 2,
+                    "twoPartsTargetCombined": 4,
+                    "note": "Measured whether individual picks reach ~2 hits and 2-part union reaches ~4"
+          }
+}

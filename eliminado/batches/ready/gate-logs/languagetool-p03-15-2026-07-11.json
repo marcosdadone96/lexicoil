@@ -1,0 +1,611 @@
+{
+  "generatedAt": "2026-07-11T20:04:18.210Z",
+  "base": "http://127.0.0.1:8010",
+  "language": "de-DE",
+  "delayMs": 80,
+  "poolDir": "batches/ready/gate-logs/_lt-p03-15-tmp",
+  "ping": {
+    "ok": true,
+    "languageCount": 60,
+    "deCodes": [
+      "de",
+      "de",
+      "de",
+      "de",
+      "de-DE-x-simple-language",
+      "de-DE-x-simple-language",
+      "de"
+    ]
+  },
+  "summary": {
+    "filesScanned": 15,
+    "filesWithPassageText": 15,
+    "filesSkippedNoText": 0,
+    "filesZeroMatches": 7,
+    "filesWithMatches": 8,
+    "filesErrored": 0,
+    "totalPassagesChecked": 39,
+    "totalMatches": 12,
+    "uniqueRuleIds": 8
+  },
+  "byRuleId": [
+    {
+      "ruleId": "DE_CASE",
+      "count": 3
+    },
+    {
+      "ruleId": "AUSLASSUNGSPUNKTE_LEERZEICHEN",
+      "count": 2
+    },
+    {
+      "ruleId": "GERMAN_SPELLER_RULE",
+      "count": 2
+    },
+    {
+      "ruleId": "DEN_DEM",
+      "count": 1
+    },
+    {
+      "ruleId": "EINHEIT_LEERZEICHEN",
+      "count": 1
+    },
+    {
+      "ruleId": "FEHLERHAFTES_KOMMA_ALLG",
+      "count": 1
+    },
+    {
+      "ruleId": "MATHE",
+      "count": 1
+    },
+    {
+      "ruleId": "NOMEN_KLEIN",
+      "count": 1
+    }
+  ],
+  "files": [
+    {
+      "file": "horen-t1-gemini-001.json",
+      "matchCount": 0,
+      "passages": [
+        {
+          "passageIndex": 0,
+          "textLength": 448,
+          "text": "Guten Tag, liebe Jobsuchende. Wir haben eine interessante neue Stelle in unserem Team für die Kundenbetreuung. Wenn Sie Erfahrung im Umgang mit Kunden haben und gerne im Team arbeiten, ist das vielleicht Ihre Chance. Die Bewerbungsfrist endet am 15. Mai. Bitte senden Sie Ihre Unterlagen per E-Mail an unsere Personalabteilung. Weitere Informationen finden Sie auf unserer Webseite. Wir freuen uns auf Ihre Bewerbung und darauf, Sie kennenzulernen.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "passageIndex": 1,
+          "textLength": 344,
+          "text": "Hallo Herr Müller, hier ist Frau Braun. Ich rufe wegen unseres Meetings am Donnerstag an. Leider muss ich es verschieben, da ich dringend zu einem externen Termin muss. Wäre es Ihnen möglich, die Besprechung auf nächsten Dienstag um 10 Uhr zu verlegen? Bitte geben Sie mir kurz Bescheid, ob dieser neue Termin für Sie passt. Danke und bis bald.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "passageIndex": 2,
+          "textLength": 426,
+          "text": "Willkommen zu unserem kurzen Alltagstipp! Heute ein Tipp für Ihre berufliche Zukunft. Überlegen Sie, einen Kurs zur Weiterbildung zu besuchen? Viele Arbeitnehmer sorgen sich um ihre Karriere. Es gibt zahlreiche Angebote, um neue Fähigkeiten zu lernen oder bestehende zu vertiefen. Informieren Sie sich bei Ihrer Arbeitsagentur oder online über passende Seminare. Eine gute Planung ist der Schlüssel zum Erfolg im Arbeitsleben.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "passageIndex": 3,
+          "textLength": 385,
+          "text": "Achtung, liebe Mitarbeiterinnen und Mitarbeiter! Eine kurze Durchsage für die Kasse 3. Frau Vogel, bitte kommen Sie sofort zur Kasse 3. Dort gibt es ein Problem mit dem Scanner. Herr Neumann vom Technik-Team ist bereits unterwegs, um Ihnen beizustehen. Bitte bleiben Sie ruhig. Alle anderen Kassen sind normal geöffnet. Wir bitten um Ihr Verständnis für die kurze Störung. Danke schön.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "passageIndex": 4,
+          "textLength": 339,
+          "text": "Guten Morgen, Anna. Hast du schon die neuen Zahlen für unser Projekt gesehen? Die Deadline rückt näher, und wir müssen noch einiges erledigen. Ich habe gestern Abend noch die Präsentation vorbereitet. Könntest du bitte die letzten Daten überprüfen? Danach können wir das im Team-Meeting besprechen. Ich hoffe, wir schaffen das bis Freitag.",
+          "matchCount": 0,
+          "matches": []
+        }
+      ]
+    },
+    {
+      "file": "horen-t1-gemini-002.json",
+      "matchCount": 1,
+      "passages": [
+        {
+          "passageIndex": 0,
+          "textLength": 418,
+          "text": "Guten Morgen, liebe Hörerinnen und Hörer! Heute haben wir einen tollen Tipp für Ihre Freizeit. Wie wäre es mit einem Spaziergang im Stadtpark? Dort gibt es neue Wege und auch einen kleinen See. Für Familien mit Kindern ist das ideal. Man kann die Natur genießen und frische Luft schnappen. Packen Sie ein Picknick ein und verbringen Sie einen schönen Nachmittag draußen. Der Park ist täglich von 8 bis 20 Uhr geöffnet.",
+          "matchCount": 1,
+          "matches": [
+            {
+              "ruleId": "NOMEN_KLEIN",
+              "category": "CASING",
+              "issueType": "uncategorized",
+              "message": "Bitte prüfen Sie, ob „Ideal“ hier als Nomen gebraucht wird und daher großgeschrieben werden muss.",
+              "shortMessage": "Bitte überprüfen Sie die Groß-/Kleinschreibung.",
+              "offset": 227,
+              "length": 5,
+              "context": "...n See. Für Familien mit Kindern ist das ideal. Man kann die Natur genießen und frisch...",
+              "contextOffset": 43,
+              "replacements": [
+                "Ideal"
+              ]
+            }
+          ]
+        },
+        {
+          "passageIndex": 1,
+          "textLength": 395,
+          "text": "Guten Tag, hier ist das Sportzentrum. Sie rufen wegen des neuen Yoga-Kurses am Dienstag an, richtig? Ja, der Kurs beginnt nächste Woche, am 15. Mai um 18 Uhr. Die Anmeldung ist noch bis Freitag möglich. Die Gebühr beträgt 60 Euro für zehn Termine. Bitte beachten Sie, dass die Teilnehmerzahl begrenzt ist. Sie können sich online anmelden oder persönlich an der Rezeption. Wir freuen uns auf Sie!",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "passageIndex": 2,
+          "textLength": 402,
+          "text": "Achtung, liebe Besucher des Stadtfestes! Wegen des starken Regens muss das Konzert auf der Hauptbühne leider verschoben werden. Es findet stattdessen morgen Abend um 19 Uhr statt. Die Kinder-Werkstatt im Zelt ist aber weiterhin geöffnet und bietet viele Aktivitäten für die Kleinen. Auch die Essensstände bleiben bis 22 Uhr geöffnet. Wir bitten um Ihr Verständnis und wünschen Ihnen trotzdem viel Spaß!",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "passageIndex": 3,
+          "textLength": 405,
+          "text": "Hallo Filmfreunde! Für Ihren gemütlichen Freizeitabend empfehlen wir heute das Kino 'Traumwelt'. Dort läuft um 20:30 Uhr der neue deutsche Film 'Sommerliebe'. Tickets können Sie online reservieren oder direkt an der Abendkasse kaufen. Achtung: Am Montag ist Kinotag, da sind alle Karten günstiger! Ein perfekter Plan für einen entspannten Abend mit Freunden oder der Familie. Genießen Sie die Vorstellung!",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "passageIndex": 4,
+          "textLength": 421,
+          "text": "Guten Tag, Sie sind mit dem Stadtmuseum verbunden. Ja, wir haben am Wochenende spezielle Führungen zum Thema 'Alte Handwerke'. Die erste Führung beginnt Samstag um 11 Uhr, die zweite Sonntag um 14 Uhr. Eine Anmeldung ist nicht nötig, aber wir empfehlen, pünktlich zu sein. Der Eintritt kostet 8 Euro pro Person. Kinder unter 12 Jahren haben freien Eintritt. Wir freuen uns auf Ihren Besuch und wünschen Ihnen viel Freude!",
+          "matchCount": 0,
+          "matches": []
+        }
+      ]
+    },
+    {
+      "file": "horen-t1-gemini-003.json",
+      "matchCount": 1,
+      "passages": [
+        {
+          "passageIndex": 0,
+          "textLength": 437,
+          "text": "Guten Tag, Sie sind verbunden mit der Praxis Dr. Lorenz. Unsere Sprechzeiten sind Montag bis Freitag von 8 bis 12 Uhr und zusätzlich Dienstag und Donnerstag von 14 bis 17 Uhr. Für Termine rufen Sie bitte während dieser Zeiten an. Bei Notfällen außerhalb der Sprechzeiten wählen Sie bitte die 112. Bitte beachten Sie, dass wir aktuell längere Wartezeiten für Routineuntersuchungen haben. Wir bitten um Ihr Verständnis. Bleiben Sie gesund!",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "passageIndex": 1,
+          "textLength": 448,
+          "text": "Hallo Hörerinnen und Hörer! Heute ein kurzer Tipp für Ihre Gesundheit: Essen Sie täglich ausreichend Obst und Gemüse. Fünf Portionen sind ideal, zum Beispiel drei Portionen Gemüse und zwei Portionen Obst. Das stärkt Ihr Immunsystem und gibt Ihnen Energie für den Tag. Versuchen Sie, verschiedene Farben zu wählen, denn jede Farbe enthält andere wichtige Vitamine. Eine gesunde Ernährung ist der beste Schutz vor vielen Krankheiten. Bleiben Sie fit!",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "passageIndex": 2,
+          "textLength": 475,
+          "text": "Achtung, liebe Mitglieder! Wir haben eine wichtige Information zu unserem neuen Rückenkurs. Dieser Kurs startet nächste Woche am Montag um 18 Uhr. Die Teilnehmerzahl ist begrenzt, daher ist eine schnelle Anmeldung erforderlich. Sie können sich ab sofort an der Rezeption oder online über unsere App anmelden. Die Gebühr für den zehnteiligen Kurs beträgt 80 Euro für Mitglieder. Gäste zahlen 100 Euro. Sichern Sie sich Ihren Platz für eine starke und gesunde Rückenmuskulatur!",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "passageIndex": 3,
+          "textLength": 370,
+          "text": "Guten Tag, Apotheke am Markt, mein Name ist Meier. Was kann ich für Sie tun? – Ja, guten Tag. Ich bräuchte ein Hustenmittel. Haben Sie das 'Broncho-Fit' vorrätig? – Moment, ich schaue kurz nach. Ja, das haben wir da. Brauchen Sie eine Beratung dazu? Es gibt verschiedene Stärken. – Nein, danke, ich kenne es schon. Ich komme dann gleich vorbei. – Alles klar, bis gleich!",
+          "matchCount": 1,
+          "matches": [
+            {
+              "ruleId": "GERMAN_SPELLER_RULE",
+              "category": "TYPOS",
+              "issueType": "misspelling",
+              "message": "Möglicher Tippfehler gefunden.",
+              "shortMessage": "Rechtschreibfehler",
+              "offset": 140,
+              "length": 11,
+              "context": "...äuchte ein Hustenmittel. Haben Sie das 'Broncho-Fit' vorrätig? – Moment, ich schaue kurz na...",
+              "contextOffset": 43,
+              "replacements": [
+                "Erongo-Fit",
+                "Bronze-Fit",
+                "Bringt-Fit",
+                "Branche-Fit",
+                "Bringe-Fit"
+              ]
+            }
+          ]
+        },
+        {
+          "passageIndex": 4,
+          "textLength": 473,
+          "text": "Liebe Patienten, zu Ihrem Schutz und dem Schutz anderer bitten wir Sie, einige Hygieneregeln zu beachten. Bitte desinfizieren Sie Ihre Hände beim Betreten und Verlassen der Praxis. Halten Sie mindestens 1,5 Meter Abstand zu anderen Personen. Husten und Niesen Sie bitte in die Armbeuge. Bei Fieber oder starken Erkältungssymptomen melden Sie sich bitte telefonisch, bevor Sie die Praxis betreten. Vielen Dank für Ihr Verständnis und Ihre Mithilfe für eine gesunde Umgebung.",
+          "matchCount": 0,
+          "matches": []
+        }
+      ]
+    },
+    {
+      "file": "horen-t1-gemini-004.json",
+      "matchCount": 0,
+      "passages": [
+        {
+          "passageIndex": 0,
+          "textLength": 422,
+          "text": "Achtung, liebe Bewohner! Die Hausverwaltung informiert über eine wichtige Reparatur. Das Hauptwasserrohr im Keller muss dringend instand gesetzt werden. Deshalb wird am kommenden Dienstag, dem 12. Mai, von 8 bis 12 Uhr das Wasser im gesamten Gebäude abgestellt. Bitte planen Sie entsprechend und füllen Sie eventuell Wasser ab. Wir bitten um Ihr Verständnis für diese notwendige Maßnahme. Vielen Dank für Ihre Kooperation.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "passageIndex": 1,
+          "textLength": 394,
+          "text": "Guten Tag, Frau Meier. Hier ist Herr Schmidt von der Immobilienagentur. Ich rufe wegen der Wohnung in der Schillerstraße 12 an. Sie hatten sich dafür interessiert. Wir haben am Donnerstag, dem 18. Juni, um 16 Uhr einen Besichtigungstermin. Passt Ihnen diese Zeit? Es gibt noch zwei andere Interessenten, die auch kommen. Bitte geben Sie mir kurz Bescheid, ob Sie dabei sein können. Vielen Dank.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "passageIndex": 2,
+          "textLength": 461,
+          "text": "Herzlich willkommen zu unserem heutigen Tipp rund ums Wohnen! Wussten Sie, dass Sie viel Energie sparen können, indem Sie Ihre Heizung richtig einstellen? Schon ein Grad weniger Raumtemperatur spart bis zu sechs Prozent Heizkosten. Lüften Sie kurz und kräftig, statt die Fenster lange gekippt zu lassen. Und denken Sie daran: Alte Fenster können viel Wärme entweichen lassen. Eine gute Dämmung ist Gold wert für Ihre Nebenkostenabrechnung. Probieren Sie es aus!",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "passageIndex": 3,
+          "textLength": 469,
+          "text": "Liebe Kundinnen und Kunden, aufgepasst! In unserer Gartenabteilung finden Sie diese Woche ein unschlagbares Angebot. Alle Gartenmöbel sind um 20 Prozent reduziert. Egal ob Stühle, Tische oder Liegen – jetzt ist die perfekte Zeit, Ihre Terrasse oder Ihren Balkon neu zu gestalten. Auch unsere Auswahl an Pflanzen für den Außenbereich ist frisch eingetroffen. Besuchen Sie uns im Erdgeschoss und lassen Sie sich von unseren Experten beraten. Das Angebot gilt bis Samstag.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "passageIndex": 4,
+          "textLength": 343,
+          "text": "Hallo Herr Lehmann, ich wollte Sie kurz ansprechen. Gestern Abend war es bei Ihnen ziemlich laut. Ich konnte kaum schlafen. Ist alles in Ordnung? Wir haben ja dünne Wände hier im Haus. Vielleicht könnten Sie etwas Rücksicht nehmen, besonders nach zehn Uhr. Ich weiß, manchmal feiert man, aber es war wirklich extrem. Danke für Ihr Verständnis.",
+          "matchCount": 0,
+          "matches": []
+        }
+      ]
+    },
+    {
+      "file": "horen-t1-gemini-005.json",
+      "matchCount": 1,
+      "passages": [
+        {
+          "passageIndex": 0,
+          "textLength": 417,
+          "text": "Guten Tag, liebe Familien! Wir laden Sie herzlich zu unserem jährlichen Familienfest im Stadtpark ein. Es findet am kommenden Samstag, den 13. Juni, von 14 bis 18 Uhr statt. Es gibt viele Aktivitäten für Kinder und Erwachsene: Spiele, Musik und ein kleines Picknick. Die Teilnahme ist kostenlos. Bitte bringen Sie eine Decke und gute Laune mit. Wir freuen uns auf einen schönen Nachmittag mit Ihnen und Ihrer Familie!",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "passageIndex": 1,
+          "textLength": 403,
+          "text": "Hallo Frau Müller, hier ist die Kita 'Sonnenschein'. Ich rufe wegen des Termins für die Eingewöhnung Ihres Sohnes an. Der ursprünglich geplante Termin am Dienstag muss leider verschoben werden. Wir haben noch einen freien Platz am Donnerstag um neun Uhr oder am Freitag um halb zehn. Welcher Tag passt Ihnen besser? Bitte rufen Sie uns bis morgen Mittag zurück, damit wir das klären können. Vielen Dank!",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "passageIndex": 2,
+          "textLength": 468,
+          "text": "Herzlich willkommen bei der Familienberatungsstelle! Wir bieten Unterstützung für alle Fragen rund um das Familienleben. Ob es um Erziehung, finanzielle Schwierigkeiten oder Partnerschaftsprobleme geht – unser erfahrenes Team hilft Ihnen gerne. Unsere Beratungen sind vertraulich und kostenlos. Sie können telefonisch einen Termin vereinbaren oder einfach während unserer Öffnungszeiten vorbeikommen. Wir sind montags bis freitags von neun bis siebzehn Uhr für Sie da.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "passageIndex": 3,
+          "textLength": 455,
+          "text": "Liebe Hörerinnen und Hörer, hier ist Ihr Radio-Tipp für das Wochenende! Wie wäre es mit einem Ausflug zum Abenteuerpark 'Waldgeister'? Dort gibt es Kletterparcours für jedes Alter, einen großen Spielplatz und sogar einen kleinen Streichelzoo. Perfekt für die ganze Familie! Der Park ist täglich von zehn bis achtzehn Uhr geöffnet. Die Eintrittspreise finden Sie auf unserer Webseite. Ein tolles Erlebnis für Groß und Klein, das man nicht verpassen sollte!",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "passageIndex": 4,
+          "textLength": 485,
+          "text": "Achtung, liebe Eltern! Die Anmeldung für unseren neuen Kurs 'Starke Familien – Glückliche Kinder' beginnt nächste Woche. In diesem Seminar lernen Sie, wie Sie den Familienalltag entspannter gestalten und Konflikte besser lösen können. Der Kurs umfasst fünf Abende und findet immer dienstags von 18 bis 20 Uhr statt. Die Gebühr beträgt fünfzig Euro pro Person. Sichern Sie sich schnell einen Platz, die Teilnehmerzahl ist begrenzt. Weitere Informationen erhalten Sie im Familienzentrum.",
+          "matchCount": 1,
+          "matches": [
+            {
+              "ruleId": "DE_CASE",
+              "category": "CASING",
+              "issueType": "uncategorized",
+              "message": "Außer am Satzanfang werden nur Nomen und Eigennamen großgeschrieben.",
+              "shortMessage": null,
+              "offset": 79,
+              "length": 10,
+              "context": "...r unseren neuen Kurs 'Starke Familien – Glückliche Kinder' beginnt nächste Woche. In diese...",
+              "contextOffset": 43,
+              "replacements": [
+                "glückliche"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "horen-t1-gemini-016.json",
+      "matchCount": 2,
+      "passages": [
+        {
+          "passageIndex": 0,
+          "textLength": 404,
+          "text": "Guten Tag, liebe Sportfreunde! Der Sportverein 'Aktiver Körper' informiert über die neuen Kurse. Die Anmeldung für unser beliebtes Schwimmseminar und den Yogakurs beginnt nächste Woche, am Freitag, den 15. Mai. Sie müssen sich persönlich in unserem Büro anmelden. Die Gebühr ist direkt bei der Anmeldung zu bezahlen. Für weitere Auskünfte rufen Sie uns bitte an. Wir freuen uns auf viele neue Mitglieder!",
+          "matchCount": 1,
+          "matches": [
+            {
+              "ruleId": "DEN_DEM",
+              "category": "GRAMMAR",
+              "issueType": "uncategorized",
+              "message": "Standardsprachlich wird in diesem Fall empfohlen, „dem“ zu schreiben.",
+              "shortMessage": null,
+              "offset": 198,
+              "length": 3,
+              "context": "...kurs beginnt nächste Woche, am Freitag, den 15. Mai. Sie müssen sich persönlich in ...",
+              "contextOffset": 43,
+              "replacements": [
+                "dem"
+              ]
+            }
+          ]
+        },
+        {
+          "passageIndex": 1,
+          "textLength": 451,
+          "text": "Achtung, Läuferinnen und Läufer! Der diesjährige 'Stadtlauf am Fluss' findet am 10. Juni statt. Es ist ein großes nationales Event, das viele Sportler anzieht. Die Strecke ist zehn Kilometer lang und führt durch die schönsten Teile unserer Stadt. Die Startgebühr beträgt 25 Euro. Sie können sich bis zum 3. Juni online registrieren. Alle Teilnehmer erhalten ein T-Shirt und eine Medaille. Wir hoffen, Sie empfinden die Herausforderung als motivierend!",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "passageIndex": 2,
+          "textLength": 430,
+          "text": "Hallo Sportbegeisterte! Das Fitnessstudio 'Fit & Gesund' hat ein tolles Angebot für Sie. Werden Sie jetzt Mitglied und trainieren Sie die ersten drei Monate gratis! Danach zahlen Sie nur 29 Euro pro Monat. Dieses Angebot gilt nur für Neukunden und ist bis Ende des Monats gültig. Kommen Sie vorbei und überzeugen Sie sich selbst. Unser Team berät Sie gerne. Wir freuen uns, wenn Sie sich bei uns wohlfühlen und den Sport genießen.",
+          "matchCount": 1,
+          "matches": [
+            {
+              "ruleId": "DE_CASE",
+              "category": "CASING",
+              "issueType": "uncategorized",
+              "message": "Außer am Satzanfang werden nur Nomen und Eigennamen großgeschrieben.",
+              "shortMessage": null,
+              "offset": 49,
+              "length": 6,
+              "context": "...rtbegeisterte! Das Fitnessstudio 'Fit & Gesund' hat ein tolles Angebot für Sie. Werden...",
+              "contextOffset": 43,
+              "replacements": [
+                "gesund"
+              ]
+            }
+          ]
+        },
+        {
+          "passageIndex": 3,
+          "textLength": 462,
+          "text": "Liebe Eltern, aufgepasst! Die Anmeldung für unsere beliebten Kinderschwimmkurse beginnt am 1. September. Die Kurse sind für Kinder ab fünf Jahren geeignet. Wir bieten Anfänger- und Fortgeschrittenenkurse an. Die Plätze sind begrenzt, daher ist eine schnelle Anmeldung wichtig. Für internationale Familien steht bei der Informationsveranstaltung ein Übersetzer zur Verfügung, der alle Fragen beantworten kann. Der Unterricht findet im städtischen Hallenbad statt.",
+          "matchCount": 0,
+          "matches": []
+        },
+        {
+          "passageIndex": 4,
+          "textLength": 437,
+          "text": "Achtung, Sportler! Der Fußballplatz am Park muss wegen dringender Renovierungsarbeiten geschlossen werden. Die Arbeiten beginnen am 20. Juli und dauern voraussichtlich vier Wochen. In dieser Zeit ist der Platz nicht nutzbar. Wir bitten um Ihr Verständnis. Die Renovierung ist notwendig, da in der Nähe ein neues Wohnungsbauprojekt startet und der Platz modernisiert werden muss. Wir informieren Sie, sobald der Platz wieder geöffnet ist.",
+          "matchCount": 0,
+          "matches": []
+        }
+      ]
+    },
+    {
+      "file": "horen-t3-gemini-001.json",
+      "matchCount": 1,
+      "passages": [
+        {
+          "passageIndex": 0,
+          "textLength": 1590,
+          "text": "Anna: Hallo Ben, wie geht's dir? Du siehst müde aus.\nBen: Ach, hallo Anna. Ja, ich bin gestresst. Die Arbeit und die Uni-Aufgaben sind zu viel.\nAnna: Das kenne ich. Hast du eine Strategie?\nBen: Nicht wirklich. Ich versuche, alles schnell zu erledigen, aber das macht es schlimmer. Ich konsumiere nur noch Kaffee.\nAnna: Kaffee hilft kurzfristig, aber auf Dauer ist das keine gute Lösung. Ich habe neulich einen Artikel über Achtsamkeit gelesen. Das gab mir gute Gedanken.\nBen: Achtsamkeit? Was bedeutet das? Ist das nicht wie Meditation?\nAnna: Ja, es geht darum, im Hier und Jetzt zu sein und seine Gedanken zu beobachten. Eine Atemübung kann schon helfen.\nBen: Eine Atemübung? Klingt interessant. Ich bin skeptisch, aber wenn es hilft... Ich schlafe auch schlecht.\nAnna: Schlaf ist wichtig für die Gesundheit. Und Bewegung! Machst du Sport?\nBen: Nicht regelmäßig. Ich sollte mehr machen.\nAnna: Ja, das ist eine gute Idee. Ein Spaziergang an der frischen Luft kann Wunder wirken.\nBen: Ich habe mal überlegt, mit Yoga anzufangen. Eine Freundin macht das und ist begeistert. Es hilft ihr auch bei Rückenschmerzen.\nAnna: Yoga ist super! Es ist gut für Körper und Kopf. Man lernt, den Stress loszulassen.\nBen: Das klingt gut. Ich muss wirklich etwas ändern, bevor ich ausgebrannt bin.\nAnna: Ja, tu das. Deine Gesundheit ist das Wichtigste. Du musst nicht gleich alles auf einmal umstellen. Kleine Schritte sind ein Anfang.\nBen: Du hast recht. Danke für die Tipps, Anna. Ich werde nach einem Yoga-Kurs suchen.\nAnna: Gern geschehen! Und denk dran, sich Zeit für sich selbst zu nehmen, ist wichtig.",
+          "matchCount": 1,
+          "matches": [
+            {
+              "ruleId": "AUSLASSUNGSPUNKTE_LEERZEICHEN",
+              "category": "TYPOGRAPHY",
+              "issueType": "typographical",
+              "message": "Vor Auslassungspunkten sollte in der Regel ein geschütztes Leerzeichen stehen, außer wenn es sich um eine Auslassung im Wortinneren handelt.",
+              "shortMessage": "Geschütztes Leerzeichen",
+              "offset": 734,
+              "length": 3,
+              "context": "...t. Ich bin skeptisch, aber wenn es hilft... Ich schlafe auch schlecht. Anna: Schlaf...",
+              "contextOffset": 43,
+              "replacements": [
+                " …"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "horen-t3-gemini-002.json",
+      "matchCount": 2,
+      "passages": [
+        {
+          "passageIndex": 0,
+          "textLength": 1794,
+          "text": "Anna: Hallo Ben! Wie war dein Wochenende? Hast du etwas Besonderes gemacht?\nBen: Hallo Anna! Ja, es war wirklich schön. Wir hatten ein großes Familientreffen bei meinen Eltern. Alle waren da, weißt du? Meine Geschwister mit ihren Kindern, Tanten und Onkel.\nAnna: Oh, das klingt nach viel Trubel! Wie viele Leute wart ihr denn insgesamt?\nBen: Puh, lass mich überlegen… Mit den Kindern waren wir bestimmt zwanzig Personen. Das Haus meiner Eltern ist zum Glück groß genug für alle. Es war eine Herausforderung, aber es hat geklappt.\nAnna: Zwanzig! Wow. Und wie war die Stimmung? Gab es viel zu erzählen?\nBen: Absolut! Besonders die Kinder hatten einen Riesenspaß zusammen. Sie haben im Garten gespielt und ein kleines Theaterstück aufgeführt. Meine Nichte, die kleine Lena, ist wirklich talentiert. Wir haben viel gelacht.\nAnna: Das ist toll, wenn die Familie zusammenkommt. Ich finde es wichtig, solche Momente zu dokumentieren. Habt ihr Fotos gemacht?\nBen: Ja, natürlich! Meine Schwester hat eine ganze Galerie auf ihrem Handy. Wir haben auch ein Video vom Theaterstück. Ich schicke es dir später mal.\nAnna: Super! Manchmal vergisst man im Alltag, wie wichtig die Familie ist.\nBen: Genau. Es ist auch eine gute Gelegenheit, sich über die Pläne der anderen auszutauschen. Mein Cousin zieht bald um, und meine Tante plant eine Reise. Da gibt es immer Neuigkeiten.\nAnna: Das stimmt. Meine Eltern wollen auch bald eine größere Reise machen. Ich muss mal schauen, ob ich ihnen bei der Planung helfen kann.\nBen: Ja, das ist eine gute Idee. Familie ist eben das Wichtigste, oder? Manchmal gibt es kleine Streitigkeiten, aber am Ende hält man doch zusammen.\nAnna: Absolut. Ich freue mich schon auf unser nächstes Treffen.\nBen: Ja, das wäre ein guter Plan für den Sommer! Ich sage meinen Eltern Bescheid.",
+          "matchCount": 2,
+          "matches": [
+            {
+              "ruleId": "AUSLASSUNGSPUNKTE_LEERZEICHEN",
+              "category": "TYPOGRAPHY",
+              "issueType": "typographical",
+              "message": "Vor Auslassungspunkten sollte in der Regel ein geschütztes Leerzeichen stehen, außer wenn es sich um eine Auslassung im Wortinneren handelt.",
+              "shortMessage": "Vor Auslassungspunkten sollte meist ein geschütztes Leerzeichen stehen.",
+              "offset": 366,
+              "length": 1,
+              "context": "...insgesamt? Ben: Puh, lass mich überlegen… Mit den Kindern waren wir bestimmt zwan...",
+              "contextOffset": 43,
+              "replacements": [
+                " …"
+              ]
+            },
+            {
+              "ruleId": "DE_CASE",
+              "category": "CASING",
+              "issueType": "uncategorized",
+              "message": "Außer am Satzanfang werden nur Nomen und Eigennamen großgeschrieben.",
+              "shortMessage": null,
+              "offset": 368,
+              "length": 3,
+              "context": "...sgesamt? Ben: Puh, lass mich überlegen… Mit den Kindern waren wir bestimmt zwanzig ...",
+              "contextOffset": 43,
+              "replacements": [
+                "mit"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "horen-t3-gemini-004.json",
+      "matchCount": 2,
+      "passages": [
+        {
+          "passageIndex": 0,
+          "textLength": 2016,
+          "text": "Lena: Markus, hast du eigentlich die Nachrichten heute Morgen gesehen? Ich finde, die Berichterstattung über die neue App war ziemlich einseitig und hat wichtige Details ausgelassen.\nMarkus: Ach, Lena. Ich schaue schon lange keine traditionellen Nachrichten mehr im Fernsehen. Ich informiere mich lieber online, über Blogs und Podcasts. Das ist persönlicher und oft auch tiefergehend, finde ich.\nLena: Ja, das stimmt schon. Aber man muss auch wirklich vorsichtig sein, oder? Es gibt so viele sogenannte „Fake News“. Manchmal weiß ich gar nicht mehr, was ich glauben soll.\nMarkus: Da hast du absolut recht. Man muss schon genau hinschauen, welche Quellen man nutzt. Ich folge nur Journalisten, die ich für seriös halte und die ihre Informationen gut recherchieren.\nLena: Und wie ist das mit Social Media? Viele meiner Freunde besitzen gar keinen Fernseher mehr und bekommen ihre Infos nur noch von Plattformen wie Instagram oder TikTok.\nMarkus: Das ist tatsächlich ein großes Problem, finde ich. Diese Plattformen sind oft nicht objektiv. Die Algorithmen zeigen dir nur, was du schon magst, und das kann schnell zu einer Informationsblase führen.\nLena: Genau! Ich habe letztens einen Artikel darüber gelesen, wie das unsere Gesellschaft spaltet. Verlässliche Informationen scheinen immer knapper zu werden, oder?\nMarkus: Ja, das ist wirklich besorgniserregend. Aber es gibt auch gute Seiten. Durch Podcasts bin ich zum Beispiel auf viele neue Themen gekommen, die ich sonst nie entdeckt hätte.\nLena: Das stimmt. Ich höre auch ab und zu Podcasts, besonders wenn ich unterwegs bin. Aber für mich persönlich ist eine gute gedruckte Zeitung immer noch wichtig, um einen umfassenden Überblick zu bekommen.\nMarkus: Na ja, jeder hat da seine ganz persönlichen Präferenzen. Hauptsache, man bleibt kritisch und hinterfragt immer, was man liest oder hört. Das ist das Wichtigste, egal welches Medium man nutzt.\nLena: Absolut. Ein kritischer Blick und die Fähigkeit, Informationen zu bewerten, sind heutzutage wichtiger denn je.",
+          "matchCount": 2,
+          "matches": [
+            {
+              "ruleId": "FEHLERHAFTES_KOMMA_ALLG",
+              "category": "HILFESTELLUNG_KOMMASETZUNG",
+              "issueType": "uncategorized",
+              "message": "Wenn es sich hier um keinen Haupt- und Nebensatz handelt, wird in der Regel kein Komma gesetzt.",
+              "shortMessage": null,
+              "offset": 12,
+              "length": 6,
+              "context": "Lena: Markus, hast du eigentlich die Nachrichten heute Mor...",
+              "contextOffset": 12,
+              "replacements": [
+                " hast"
+              ]
+            },
+            {
+              "ruleId": "MATHE",
+              "category": "COLLOQUIALISMS",
+              "issueType": "style",
+              "message": "‚Infos‘ ist umgangssprachlich.",
+              "shortMessage": null,
+              "offset": 878,
+              "length": 5,
+              "context": "...keinen Fernseher mehr und bekommen ihre Infos nur noch von Plattformen wie Instagram ...",
+              "contextOffset": 43,
+              "replacements": [
+                "Informationen"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "lesen-t4-gemini-001.json",
+      "matchCount": 0,
+      "passages": [
+        {
+          "passageIndex": 0,
+          "textLength": 428,
+          "text": "In vielen Firmen wird über neue Arbeitsmodelle gesprochen. Ein Vorschlag, der oft diskutiert wird, ist die Einführung einer Vier-Tage-Woche. Das bedeutet, dass alle Kollegen nur vier Tage pro Woche im Büro arbeiten müssen. Dies soll die Entspannung fördern und die Organisation der Arbeit verbessern. Wir haben einige Meinungen dazu gesammelt. Lesen Sie die Beiträge und entscheiden Sie, ob die Person den Vorschlag unterstützt.",
+          "matchCount": 0,
+          "matches": []
+        }
+      ]
+    },
+    {
+      "file": "lesen-t4-gemini-002.json",
+      "matchCount": 0,
+      "passages": [
+        {
+          "passageIndex": 0,
+          "textLength": 417,
+          "text": "In unserer Stadt gibt es einen neuen Vorschlag: Die Stadt soll mehr kostenlose Hobby-Kurse am Wochenende anbieten. Viele Bewohner finden, dass das die Freizeit-Angebote für Familien und Kinder verbessern könnte. Es gibt verschiedene Meinungen zu diesem Plan. Einige sehen viele Vorteile, andere haben Bedenken oder sehen Probleme. Lesen Sie die Kommentare und entscheiden Sie, ob die Person den Vorschlag unterstützt.",
+          "matchCount": 0,
+          "matches": []
+        }
+      ]
+    },
+    {
+      "file": "lesen-t4-gemini-003.json",
+      "matchCount": 0,
+      "passages": [
+        {
+          "passageIndex": 0,
+          "textLength": 417,
+          "text": "Die Stadtverwaltung diskutiert einen neuen Vorschlag: In den Stadtparks sollen kostenlose Fitnessgeräte für Training und Sport aufgestellt werden. Viele Bewohner und Besucher haben dazu eine Meinung. Es geht um die Nutzung öffentlicher Räume und die Förderung von Bewegung. Ist das eine gute Idee für unsere Gemeinde? Lesen Sie die verschiedenen Ansichten und entscheiden Sie, ob die Person den Vorschlag unterstützt.",
+          "matchCount": 0,
+          "matches": []
+        }
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-001.json",
+      "matchCount": 0,
+      "passages": [
+        {
+          "passageIndex": 0,
+          "textLength": 1703,
+          "text": "Liebe Mitarbeiterinnen und Mitarbeiter,\n\nUm einen angenehmen und reibungslosen Ablauf in unserer Mensa zu gewährleisten, bitten wir Sie, die folgenden Regeln zu beachten:\n\nÖffnungszeiten: Die Mensa ist montags bis freitags von 11:30 Uhr bis 14:00 Uhr für das Mittagessen geöffnet. Für Kaffee und kleine Snacks steht der Bereich von 8:00 Uhr bis 16:00 Uhr zur Verfügung.\n\nEssensausgabe: Das warme Mittagessen wird nur bis 13:45 Uhr ausgegeben. Bitte beachten Sie dies bei Ihrer Planung.\n\nVorbestellung: Für das Mittagessen ist eine Vorbestellung bis spätestens 9:00 Uhr am jeweiligen Tag über das Intranet-Portal notwendig. Ohne Vorbestellung kann die Verfügbarkeit nicht garantiert werden.\n\nBezahlung: Die Bezahlung erfolgt bargeldlos mit dem Firmenausweis. Ein Aufladen des Ausweises ist an der Kasse oder online möglich. Ein Guthaben von mindestens 5 Euro ist für die Nutzung erforderlich.\n\nGäste: Externe Gäste sind in unserer Mensa herzlich willkommen. Sie müssen sich jedoch am Empfang anmelden und erhalten dort einen temporären Gästeausweis. Die Kosten für Gäste sind 2 Euro höher pro Mahlzeit als für Mitarbeiter.\n\nHygiene und Ordnung: Bitte halten Sie Ihren Platz sauber. Tabletts und Geschirr müssen nach dem Essen sofort an die dafür vorgesehenen Rückgabestellen gebracht werden. Essensreste gehören in die dafür bereitgestellten Mülleimer.\n\nRuhebereich: Der hintere Bereich der Mensa ist als Ruhezone gedacht. Bitte vermeiden Sie dort laute Gespräche und Telefonate, um die Erholung der Kollegen nicht zu stören.\n\nSonderwünsche: Allergien oder spezielle Ernährungsbedürfnisse können bei der Vorbestellung vermerkt werden. Bitte informieren Sie das Küchenteam mindestens 24 Stunden im Voraus.",
+          "matchCount": 0,
+          "matches": []
+        }
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-002.json",
+      "matchCount": 0,
+      "passages": [
+        {
+          "passageIndex": 0,
+          "textLength": 1624,
+          "text": "Willkommen in der Wohnanlage 'Grüne Oase'. Um ein angenehmes Zusammenleben zu sichern, bitten wir alle Bewohner, folgende Regeln zu beachten:\n\n1. Ruhezeiten: Zwischen 22:00 Uhr abends und 7:00 Uhr morgens sowie an Sonn- und Feiertagen ganztägig ist Zimmerlautstärke einzuhalten. Laute Musik oder Partys sind in dieser Zeit nicht erlaubt.\n2. Mülltrennung: Der Müll muss korrekt getrennt werden (Papier, Plastik, Bio, Restmüll) und in die dafür vorgesehenen Behälter im Hof gebracht werden. Sperrmüll kann nur nach vorheriger Anmeldung bei der Hausverwaltung (Montag bis Freitag, 9:00 bis 12:00 Uhr) entsorgt werden. Die Kosten für Sperrmüll trägt der Verursacher.\n3. Waschküche: Die Waschküche kann von 8:00 Uhr bis 20:00 Uhr genutzt werden. Eine Reservierung ist über die Liste an der Tür des Waschraums möglich. Jeder Haushalt darf maximal drei Termine pro Woche buchen. Nach der Nutzung ist der Raum sauber zu verlassen.\n4. Fahrräder: Fahrräder müssen im Fahrradkeller abgestellt werden. Das Abstellen im Hausflur oder vor den Wohnungstüren ist aus Sicherheitsgründen nicht erlaubt.\n5. Parkplätze: Die privaten Parkplätze sind nur für Bewohner mit gültigem Parkausweis vorgesehen. Besucher können die öffentlichen Parkplätze an der Straße nutzen. Kurzzeitparken für Besucher (maximal 2 Stunden) ist auf ausgewiesenen Flächen erlaubt, aber nur zwischen 8:00 und 18:00 Uhr.\n6. Haustiere: Kleine Haustiere wie Katzen oder Hamster sind erlaubt, müssen aber bei der Hausverwaltung angemeldet werden. Hunde sind nur mit schriftlicher Genehmigung der Verwaltung gestattet und müssen außerhalb der Wohnanlage Gassi geführt werden.",
+          "matchCount": 0,
+          "matches": []
+        }
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-003.json",
+      "matchCount": 2,
+      "passages": [
+        {
+          "passageIndex": 0,
+          "textLength": 1409,
+          "text": "1. Öffnungszeiten: Die Mensa ist montags bis freitags geöffnet. Das Mittagessen wird von 11:30 Uhr bis 14:00 Uhr ausgegeben. Für Kaffee, Getränke und kleine Snacks gibt es einen separaten Bereich, der von 8:00 Uhr bis 16:00 Uhr zugänglich ist. Am Wochenende bleibt die Mensa geschlossen.\n\n2. Essensbestellung und Bezahlung: Hauptgerichte müssen bis spätestens 10:00 Uhr am Vortag über das Online-Portal vorbestellt werden. Eine spontane Bestellung ist nur für vegetarische Gerichte möglich, solange der Vorrat reicht. Die Bezahlung ist nur bargeldlos mit MensaCard oder EC-Karte möglich. Studierende erhalten 20% Rabatt. Externe Gäste zahlen den vollen Preis und melden sich an der Kasse an.\n\n3. Ordnung und Sauberkeit: Tabletts und Geschirr müssen nach dem Essen umgehend zu den dafür vorgesehenen Rückgabestellen gebracht werden. Eigene Speisen und Getränke dürfen im Essbereich nicht verzehrt werden. Bitte nutzen Sie die Mülltrennung korrekt; Behälter für Restmüll, Bioabfälle und Wertstoffe stehen bereit.\n\n4. Ruhe: Im Essbereich ist eine ruhige Atmosphäre wichtig, besonders während der Prüfungszeiten. Laute Gespräche oder Musik sind nicht erlaubt.\n\n5. Besondere Anfragen: Für Gruppenreservierungen ab zehn Personen oder spezielle Ernährungsbedürfnisse (z.B. Allergien) ist eine frühzeitige Kontaktaufnahme mit der Mensa-Organisation notwendig. Bitte melden Sie sich mindestens drei Werktage im Voraus.",
+          "matchCount": 2,
+          "matches": [
+            {
+              "ruleId": "GERMAN_SPELLER_RULE",
+              "category": "TYPOS",
+              "issueType": "misspelling",
+              "message": "Möglicher Tippfehler gefunden.",
+              "shortMessage": "Rechtschreibfehler",
+              "offset": 555,
+              "length": 9,
+              "context": "...t. Die Bezahlung ist nur bargeldlos mit MensaCard oder EC-Karte möglich. Studierende erha...",
+              "contextOffset": 43,
+              "replacements": [
+                "Mensakarte"
+              ]
+            },
+            {
+              "ruleId": "EINHEIT_LEERZEICHEN",
+              "category": "PUNCTUATION",
+              "issueType": "typographical",
+              "message": "Vor Einheitenzeichen sollte ein Leerzeichen gesetzt werden.",
+              "shortMessage": null,
+              "offset": 609,
+              "length": 3,
+              "context": "... EC-Karte möglich. Studierende erhalten 20% Rabatt. Externe Gäste zahlen den vollen...",
+              "contextOffset": 43,
+              "replacements": [
+                "20 %"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

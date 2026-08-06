@@ -13,7 +13,129 @@
 const VocabBatching = (() => {
   // How many target words fit naturally into one part of each module.
   const MODULE_CAPACITY = { lesen: 10, horen: 6, schreiben: 8, sprechen: 5 };
+  /** Per minigame session caps (Feature 1). Personalized Lesen/Hören uses {@link capacityFor}. */
+  const ACTIVITY_CAPACITY = Object.freeze({
+    vocab_quiz: 10,
+    listening_game: 6,
+    vocab_phrases: 7,
+  });
   const GAME_THRESHOLD = 4; // below this, a full exam doesn't make sense → game
+
+  function activityStatsKey(activityKey, skills) {
+    if (activityKey === 'personal') {
+      const sk = (skills && skills.length ? skills : ['lesen']).slice().sort().join(',');
+      return `personal:${sk}`;
+    }
+    return String(activityKey || 'vocab_quiz');
+  }
+
+  function capacityForActivity(activityKey, skills) {
+    if (activityKey === 'personal') return capacityFor(skills);
+    return ACTIVITY_CAPACITY[activityKey] || 10;
+  }
+
+  function migrateVocabPlanToActivity(goal, skills) {
+    if (!goal?.vocabPlan || typeof goal.vocabPlan !== 'object') return;
+    if (!goal.vocabActivityStats) goal.vocabActivityStats = {};
+    const key = activityStatsKey('personal', skills);
+    if (goal.vocabActivityStats[key]?.plan) return;
+    goal.vocabActivityStats[key] = { v: 1, plan: goal.vocabPlan };
+  }
+
+  function buildActivityPlan(orderedWords, cap, skills) {
+    const batches = [];
+    for (let i = 0; i < orderedWords.length; i += cap) batches.push(orderedWords.slice(i, i + cap));
+    const fp = `${orderedWords.length}:${orderedWords[0] || ''}:${orderedWords[orderedWords.length - 1] || ''}:${cap}`;
+    return {
+      v: 2,
+      skills: skills && skills.length ? skills : ['lesen'],
+      total: orderedWords.length,
+      batchSize: cap,
+      batches,
+      covered: [],
+      cursor: 0,
+      fingerprint: fp,
+      createdAt: Date.now(),
+    };
+  }
+
+  function getActivityPlan(goal, activityKey, skills) {
+    if (!goal?.vocabActivityStats) return null;
+    const key = activityStatsKey(activityKey, skills);
+    return goal.vocabActivityStats[key]?.plan || null;
+  }
+
+  function syncPersonalVocabPlan(goal, skills) {
+    if (!goal) return null;
+    migrateVocabPlanToActivity(goal, skills);
+    const plan = getActivityPlan(goal, 'personal', skills);
+    if (plan) goal.vocabPlan = plan;
+    return plan;
+  }
+
+  /**
+   * Pick the next word batch for a vocab activity (quiz, listening, phrases, personal exam).
+   * Persists rotation state on goal.vocabActivityStats[activityKey].
+   */
+  function selectForActivity(words, activityKey, goal, opts = {}) {
+    const skills = opts.skills;
+    const cap = capacityForActivity(activityKey, skills);
+    const list = [...new Set((words || []).map((w) => String(w || '').trim()).filter(Boolean))];
+    if (!list.length) return { words: [], plan: null, cap, statsKey: null };
+    if (!goal) return { words: list.slice(0, cap), plan: null, cap, statsKey: null };
+
+    if (!goal.vocabActivityStats) goal.vocabActivityStats = {};
+    const statsKey = activityStatsKey(activityKey, skills);
+    if (!goal.vocabActivityStats[statsKey]) goal.vocabActivityStats[statsKey] = { v: 1 };
+
+    const ordered = prioritise(list, goal);
+    let plan = goal.vocabActivityStats[statsKey].plan;
+    const fp = `${ordered.length}:${ordered[0] || ''}:${ordered[ordered.length - 1] || ''}:${cap}`;
+    if (!plan || plan.fingerprint !== fp || plan.batchSize !== cap) {
+      plan = buildActivityPlan(ordered, cap, skills);
+      goal.vocabActivityStats[statsKey].plan = plan;
+    }
+    if (plan.cursor >= plan.batches.length && plan.batches.length > 0) {
+      plan.cursor = 0;
+      plan.covered = [];
+    }
+    let batch = nextBatch(plan);
+    if (!batch) batch = ordered.slice(0, cap);
+    if (activityKey === 'personal') goal.vocabPlan = plan;
+    return { words: batch, plan, cap, statsKey };
+  }
+
+  function ensureCoveredPlan(goal, statsKey) {
+    if (!goal.vocabActivityStats) goal.vocabActivityStats = {};
+    if (!goal.vocabActivityStats[statsKey]) goal.vocabActivityStats[statsKey] = { v: 1 };
+    let plan = goal.vocabActivityStats[statsKey].plan;
+    if (!plan) {
+      plan = {
+        v: 1,
+        covered: [],
+        cursor: 0,
+        batches: [],
+        total: 0,
+        batchSize: 0,
+      };
+      goal.vocabActivityStats[statsKey].plan = plan;
+    }
+    if (!Array.isArray(plan.covered)) plan.covered = [];
+    return plan;
+  }
+
+  function recordActivityUsage(goal, activityKey, wordsUsed, opts = {}) {
+    if (!goal) return;
+    const skills = opts.skills;
+    const statsKey = activityStatsKey(activityKey, skills);
+    let plan = goal.vocabActivityStats?.[statsKey]?.plan;
+    if (!plan && wordsUsed && wordsUsed.length) {
+      plan = ensureCoveredPlan(goal, statsKey);
+    }
+    if (plan) advance(plan, wordsUsed);
+    if (activityKey === 'personal') goal.vocabPlan = plan || goal.vocabPlan;
+    if (typeof saveGoals === 'function') saveGoals();
+  }
 
   function capacityFor(skills) {
     const arr = (skills && skills.length ? skills : ['lesen', 'horen']).map((s) => MODULE_CAPACITY[s] || 6);
@@ -113,8 +235,16 @@ const VocabBatching = (() => {
 
   return {
     MODULE_CAPACITY,
+    ACTIVITY_CAPACITY,
     GAME_THRESHOLD,
     capacityFor,
+    capacityForActivity,
+    activityStatsKey,
+    migrateVocabPlanToActivity,
+    getActivityPlan,
+    syncPersonalVocabPlan,
+    selectForActivity,
+    recordActivityUsage,
     shouldUseGame,
     planBatches,
     nextBatch,

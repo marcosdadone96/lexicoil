@@ -81,6 +81,10 @@ const ExamRenumber = (() => {
     return !!(part.ads?.length && (part.items || []).some((it) => it.signText || it.text));
   }
 
+  function horenUsesSegmentQuestions(part) {
+    return !!(part?.segments?.length && part.segments.some((seg) => (seg.questions || []).length));
+  }
+
   function countScorableInPart(part, mod) {
     if (!part) return 0;
     let n = 0;
@@ -88,8 +92,11 @@ const ExamRenumber = (() => {
       n += (part.questions || []).length;
       n += (part.items || []).filter((it) => it.signText || it.text || it.question || it.correct != null).length;
     } else if (mod === 'horen') {
-      n += (part.questions || []).length;
-      for (const seg of part.segments || []) n += (seg.questions || []).length;
+      if (horenUsesSegmentQuestions(part)) {
+        for (const seg of part.segments) n += (seg.questions || []).length;
+      } else {
+        n += (part.questions || []).length;
+      }
     }
     return n;
   }
@@ -101,10 +108,11 @@ const ExamRenumber = (() => {
       if (items.length) out.push(...items);
       if (part.questions?.length) out.push(...part.questions);
     } else if (mod === 'horen') {
-      if (part.segments?.length) {
+      if (horenUsesSegmentQuestions(part)) {
         for (const seg of part.segments) out.push(...(seg.questions || []));
+      } else if (part.questions?.length) {
+        out.push(...part.questions);
       }
-      if (part.questions?.length) out.push(...part.questions);
     }
     return out;
   }
@@ -181,8 +189,9 @@ const ExamRenumber = (() => {
       for (const seg of part.segments) {
         cursor = renumberList(seg.questions || [], cursor);
       }
+    } else if (part.questions?.length) {
+      cursor = renumberList(part.questions, cursor);
     }
-    if (part.questions?.length) cursor = renumberList(part.questions, cursor);
     const count = countScorableInPart(part, 'horen');
     if (part.instruction && count > 0) {
       part.instruction = patchInstructionRange(part.instruction, start, count);

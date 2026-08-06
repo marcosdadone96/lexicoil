@@ -1,0 +1,157 @@
+review-bundle-2026-07-09 — INDEX
+Generated: 2026-07-09T11:05:41.211Z
+Purpose: External review of error patterns in Lesen tanda 2026-07-09T09:30:00Z
+
+================================================================================
+§1 PROMPTS / TEMPLATES GEMINI — Lesen Teil 1–5
+================================================================================
+Core prompt builder (all Teile):
+  scripts/lib/lesenTemplatePrompt.mjs          buildLesenPrompt, few-shot block, length rules
+  scripts/generate-lesen-part-gemini.mjs       buildLesenPromptBundle, topic/mold injection, fix retries
+  scripts/build-lesen-prompt.mjs               CLI: dump full prompt per Teil
+  scripts/lib/loadEnv.mjs                      ROOT path helper (import dependency)
+  scripts/lib/userVocabPrompt.mjs              PALABRAS OBJETIVO / vocab preference block
+
+Per-Teil markdown templates (loaded by lesenTemplatePrompt):
+  plantillas-lesen-b1/lesen-teil1.md           T1 richtig/falsch blog
+  plantillas-lesen-b1/lesen-teil2.md           T2 dual MCQ press texts
+  plantillas-lesen-b1/lesen-teil3.md           T3 matching (Gemini path; factory uses make-t3)
+  plantillas-lesen-b1/lesen-teil4.md           T4 forum Ja/Nein — includes [Vorname] pattern (no static name pool)
+  plantillas-lesen-b1/lesen-teil5.md           T5 MCQ signs/ordnung
+
+T4/T5 mold & debate injection:
+  scripts/lib/lesenSubtypeRotation.mjs           injectT4PromptVariants, injectT5PromptVariants, subtype prefs
+  scripts/lib/t4DebateSeeds.mjs                T4_DEBATE_SEEDS per topicTag
+  scripts/lib/poolFillSessionExclude.mjs         session-level exclude molds for prompts
+  library/reusable-seed/de_B1.json               bank seed records → exclude-molds block in T4/T5 prompts
+
+Topic / word selection:
+  js/data/b1Topics.js                            B1_TOPICS closed list (16 topics)
+  scripts/lib/b1Topics.mjs                       ESM re-export
+  js/engine/partTopicDetect.js                   TOPIC_KEYWORDS, detectTopic
+  scripts/lib/topicRotation.mjs                  pickNextTopic, injectTopicIntoPrompt
+  scripts/lib/resolveGenerationInput.mjs         resolveGenerationTopic, SAFE_B1_BY_TOPIC
+  library/vocab/de/B1.json                       lemma bank for pickTargetWords
+  data/coverage/weak-de_B1.json                weak-lemma generation pool
+  scripts/lib/lexicalCheck.mjs + scripts/blacklist.mjs   B2/C1 blacklist filter
+  scripts/lib/excludedPremises.mjs + data/excluded-premises.json   T1/T2 premise exclusions
+
+Fix-retry prompt builders (secondary, during generation):
+  scripts/lib/wordMatchRepair.mjs
+  scripts/lib/l2McqDistinctRepair.mjs
+  scripts/lib/explanationRepair.mjs
+
+T3 — deterministic generator (0 API calls in factory; NOT Gemini):
+  scripts/make-t3.mjs                            buildValidatedT3Part from blueprints
+  scripts/t3-blueprints/*.json                   20 ad-template skeletons (20 files)
+  scripts/lib/t3GroupFingerprint.mjs             blueprint rotation / ready-pool stats
+  scripts/lib/batchPaths.mjs                     READY_LESEN_DIR path constant
+
+NOTE: Few-shot examples are runtime data (from generated JSON), not static files.
+NOTE: T4 speaker names are LLM-generated per lesen-teil4.md pattern; NO separate Vorname pool file exists.
+
+================================================================================
+§2 germanCapsNormalize — full source stack
+================================================================================
+  scripts/lib/germanCapsNormalize.mjs            orchestrator (decap → cap nouns → MCQ caps)
+  scripts/lib/capitalizeNouns.mjs                decapitalizeMidSentence, capitalizeNounsInText + inline word lists
+  scripts/lib/normalizeMcq.mjs                   normalizeBatchMcqOptionCapitalization
+  scripts/lib/GERMAN-CAPS-NORMALIZE.md           design doc / version tag
+
+All exception word lists (PURE_ADVERBS, HOMOGRAPH_RISK, NEVER_NOUN_WORDS, etc.) live inline in capitalizeNouns.mjs.
+No external dictionary files.
+
+================================================================================
+§3 Quality gates (Q3-A, Q1a + dedup support)
+================================================================================
+  scripts/lib/qualityGates/passageCoherenceGate.mjs   Q3-A markdown / sentence-case lint
+  scripts/lib/qualityGates/duplicateContentGate.mjs   Q1a exact + near duplicate
+  scripts/lib/qualityGates/dedupIndex.mjs
+  scripts/lib/qualityGates/dedupCorpus.mjs
+  scripts/lib/qualityGates/dedupNormalize.mjs
+  scripts/lib/qualityGates/qualityGateCommon.mjs
+
+================================================================================
+§4 Schema + T3 ad templates
+================================================================================
+  scripts/lib/qualityGates/schema/lesen-fields.json   Q4 metadata schema (lesen-fields)
+  scripts/t3-blueprints/*.json                        T3 anuncio skeletons (see §1)
+
+T4 name pools: NOT a separate config — see plantillas-lesen-b1/lesen-teil4.md + lesenSubtypeRotation.mjs
+
+================================================================================
+§5 Frontend passage.text rendering (markdown?)
+================================================================================
+  js/ui/exam/examRunner.js                     renderLesenPart → wrapW(part.text)
+  js/ui/exam/examGeneration.js                 sanitizeExamText()
+  js/ui/vocabulary/tooltip.js                  wrapW, wrapLineW, formatReadableText
+  NOTES.md                                     summary for reviewer
+
+================================================================================
+FILES COPIED: 65
+  scripts/lib/lesenTemplatePrompt.mjs
+  scripts/generate-lesen-part-gemini.mjs
+  scripts/build-lesen-prompt.mjs
+  plantillas-lesen-b1/lesen-teil1.md
+  plantillas-lesen-b1/lesen-teil2.md
+  plantillas-lesen-b1/lesen-teil3.md
+  plantillas-lesen-b1/lesen-teil4.md
+  plantillas-lesen-b1/lesen-teil5.md
+  scripts/lib/lesenSubtypeRotation.mjs
+  scripts/lib/t4DebateSeeds.mjs
+  scripts/lib/userVocabPrompt.mjs
+  scripts/lib/resolveGenerationInput.mjs
+  scripts/lib/topicRotation.mjs
+  scripts/lib/lexicalCheck.mjs
+  scripts/blacklist.mjs
+  scripts/lib/excludedPremises.mjs
+  data/excluded-premises.json
+  js/data/b1Topics.js
+  scripts/lib/b1Topics.mjs
+  js/engine/partTopicDetect.js
+  library/vocab/de/B1.json
+  data/coverage/weak-de_B1.json
+  scripts/lib/wordMatchRepair.mjs
+  scripts/lib/l2McqDistinctRepair.mjs
+  scripts/lib/explanationRepair.mjs
+  scripts/lib/poolFillSessionExclude.mjs
+  library/reusable-seed/de_B1.json
+  scripts/lib/loadEnv.mjs
+  scripts/lib/batchPaths.mjs
+  scripts/make-t3.mjs
+  scripts/lib/t3GroupFingerprint.mjs
+  scripts/lib/germanCapsNormalize.mjs
+  scripts/lib/capitalizeNouns.mjs
+  scripts/lib/normalizeMcq.mjs
+  scripts/lib/GERMAN-CAPS-NORMALIZE.md
+  scripts/lib/qualityGates/passageCoherenceGate.mjs
+  scripts/lib/qualityGates/duplicateContentGate.mjs
+  scripts/lib/qualityGates/dedupIndex.mjs
+  scripts/lib/qualityGates/dedupCorpus.mjs
+  scripts/lib/qualityGates/dedupNormalize.mjs
+  scripts/lib/qualityGates/qualityGateCommon.mjs
+  scripts/lib/qualityGates/schema/lesen-fields.json
+  js/ui/exam/examRunner.js
+  js/ui/exam/examGeneration.js
+  js/ui/vocabulary/tooltip.js
+  scripts/t3-blueprints/bp-audio-foto.json
+  scripts/t3-blueprints/bp-buero.json
+  scripts/t3-blueprints/bp-dienstleistungen.json
+  scripts/t3-blueprints/bp-elektronik.json
+  scripts/t3-blueprints/bp-fahrzeugteile.json
+  scripts/t3-blueprints/bp-familie.json
+  scripts/t3-blueprints/bp-freizeit-garten.json
+  scripts/t3-blueprints/bp-garten.json
+  scripts/t3-blueprints/bp-haus-bau.json
+  scripts/t3-blueprints/bp-haushalt-technik.json
+  scripts/t3-blueprints/bp-haushalt2.json
+  scripts/t3-blueprints/bp-klima-tanz.json
+  scripts/t3-blueprints/bp-koffer-brille.json
+  scripts/t3-blueprints/bp-mobilitaet-reisen.json
+  scripts/t3-blueprints/bp-moebel-it.json
+  scripts/t3-blueprints/bp-musik.json
+  scripts/t3-blueprints/bp-reparatur-kurse.json
+  scripts/t3-blueprints/bp-schuhe-mode.json
+  scripts/t3-blueprints/bp-sport.json
+  scripts/t3-blueprints/bp-sprachen2.json
+

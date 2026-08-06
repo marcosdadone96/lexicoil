@@ -1,0 +1,15 @@
+{
+  "mode": "advisory",
+  "thresholds": {
+    "failBlocksPromotion": false,
+    "warningRequiresReview": true
+  },
+  "gates": {
+    "json_integrity": "hard",
+    "goethe_structure": "hard",
+    "cefr": "warning",
+    "language_quality": "warning",
+    "metadata_quality": "warning"
+  },
+  "notes": "PASO 10 — default advisory (never blocks production). Set mode to review|enforced only after measuring."
+}

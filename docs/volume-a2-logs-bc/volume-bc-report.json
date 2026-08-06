@@ -1,0 +1,188 @@
+{
+  "startedAt": "2026-07-23T08:46:20.756Z",
+  "attempts": 6,
+  "cells": {
+    "horen-t2": {
+      "results": [
+        {
+          "attempt": 1,
+          "status": "pool-reject",
+          "file": "horen-t2-gemini-075.json",
+          "exitCode": 0,
+          "log": "horen-t2-bc-attempt-01.log"
+        },
+        {
+          "attempt": 2,
+          "status": "pool-reject",
+          "file": "horen-t2-gemini-076.json",
+          "exitCode": 0,
+          "log": "horen-t2-bc-attempt-02.log"
+        },
+        {
+          "attempt": 3,
+          "status": "discarded",
+          "exitCode": 1,
+          "log": "horen-t2-bc-attempt-03.log"
+        },
+        {
+          "attempt": 4,
+          "status": "pool-verified",
+          "file": "horen-t2-gemini-077.json",
+          "exitCode": 0,
+          "log": "horen-t2-bc-attempt-04.log"
+        },
+        {
+          "attempt": 5,
+          "status": "discarded",
+          "exitCode": 1,
+          "log": "horen-t2-bc-attempt-05.log"
+        },
+        {
+          "attempt": 6,
+          "status": "pool-verified",
+          "file": "horen-t2-gemini-078.json",
+          "exitCode": 0,
+          "log": "horen-t2-bc-attempt-06.log"
+        }
+      ],
+      "successRate": "2/6",
+      "analysis": {
+        "pairs": [
+          {
+            "a": "horen-t2-gemini-077.json",
+            "b": "horen-t2-gemini-078.json",
+            "sharedFiveGrams": 10,
+            "keySigA": "h-i-a-b-e",
+            "keySigB": "h-i-a-g-e",
+            "sameKeys": false
+          }
+        ],
+        "uniqueKeySchedules": 2,
+        "namePairs": [
+          "Lukas+Sarah",
+          "Tom+Katja"
+        ],
+        "uniqueNames": 2
+      }
+    },
+    "horen-t3": {
+      "results": [
+        {
+          "attempt": 1,
+          "status": "pool-verified",
+          "file": "horen-t3-gemini-045.json",
+          "exitCode": 0,
+          "log": "horen-t3-bc-attempt-01.log"
+        },
+        {
+          "attempt": 2,
+          "status": "pool-verified",
+          "file": "horen-t3-gemini-046.json",
+          "exitCode": 0,
+          "log": "horen-t3-bc-attempt-02.log"
+        },
+        {
+          "attempt": 3,
+          "status": "pool-verified",
+          "file": "horen-t3-gemini-047.json",
+          "exitCode": 0,
+          "log": "horen-t3-bc-attempt-03.log"
+        },
+        {
+          "attempt": 4,
+          "status": "pool-verified",
+          "file": "horen-t3-gemini-048.json",
+          "exitCode": 0,
+          "log": "horen-t3-bc-attempt-04.log"
+        },
+        {
+          "attempt": 5,
+          "status": "pool-verified",
+          "file": "horen-t3-gemini-049.json",
+          "exitCode": 0,
+          "log": "horen-t3-bc-attempt-05.log"
+        },
+        {
+          "attempt": 6,
+          "status": "pool-verified",
+          "file": "horen-t3-gemini-050.json",
+          "exitCode": 0,
+          "log": "horen-t3-bc-attempt-06.log"
+        }
+      ],
+      "successRate": "6/6",
+      "analysis": {
+        "casts": [
+          {
+            "file": "horen-t3-gemini-045.json",
+            "cast": "Emma+Jonas|Jana+Moritz|Laura+Niklas|Philipp+Sara|Sophie+Tim",
+            "pairs": [
+              "Moritz+Jana",
+              "Philipp+Sara",
+              "Jonas+Emma",
+              "Tim+Sophie",
+              "Niklas+Laura"
+            ]
+          },
+          {
+            "file": "horen-t3-gemini-046.json",
+            "cast": "Emma+Jonas|Jana+Moritz|Katja+Tom|Philipp+Sara|Sophie+Tim",
+            "pairs": [
+              "Tom+Katja",
+              "Moritz+Jana",
+              "Philipp+Sara",
+              "Jonas+Emma",
+              "Tim+Sophie"
+            ]
+          },
+          {
+            "file": "horen-t3-gemini-047.json",
+            "cast": "Felix+Mia|Finn+Paula|Lea+Noah|Lukas+Sarah|Omar+Yasmin",
+            "pairs": [
+              "Finn+Paula",
+              "Omar+Yasmin",
+              "Felix+Mia",
+              "Lukas+Sarah",
+              "Noah+Lea"
+            ]
+          },
+          {
+            "file": "horen-t3-gemini-048.json",
+            "cast": "Clara+Tobias|David+Julia|Laura+Niklas|Lisa+Simon|Nina+Paul",
+            "pairs": [
+              "Niklas+Laura",
+              "Paul+Nina",
+              "Tobias+Clara",
+              "David+Julia",
+              "Simon+Lisa"
+            ]
+          },
+          {
+            "file": "horen-t3-gemini-049.json",
+            "cast": "Erik+Hannah|Felix+Mia|Finn+Paula|Greta+Leon|Omar+Yasmin",
+            "pairs": [
+              "Erik+Hannah",
+              "Leon+Greta",
+              "Finn+Paula",
+              "Omar+Yasmin",
+              "Felix+Mia"
+            ]
+          },
+          {
+            "file": "horen-t3-gemini-050.json",
+            "cast": "Clara+Tobias|David+Julia|Jan+Marie|Lisa+Simon|Nina+Paul",
+            "pairs": [
+              "Paul+Nina",
+              "Tobias+Clara",
+              "David+Julia",
+              "Simon+Lisa",
+              "Jan+Marie"
+            ]
+          }
+        ],
+        "uniqueCasts": 6
+      }
+    }
+  },
+  "finishedAt": "2026-07-23T08:58:56.522Z"
+}

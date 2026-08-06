@@ -1,0 +1,140 @@
+
+> lexicoil@1.0.0 generate:lesen:gemini
+> node --use-system-ca scripts/generate-lesen-part-gemini.mjs --teil 5 --from-coverage --count 1 --lang de --level B1 --fix-retries 3 --keep-failed
+
+
+Generador Lesen (de/B1) · gemini · gemini-2.5-flash · Teile: 5 × 1
+Palabras objetivo por parte: 5 (--word-count)
+Umbral cobertura CEFR (cefr_gate): 55% (default 0.55)
+Cuota Gemini: max 200 llamadas · pausa ≥6000ms · fix-retries=3 · api-retries=1
+Salida: batches/generated/
+Palabra excluida (registro B2+): diskriminierung
+Tema: Ernährung (rotación)
+T5 subtipo: Bibliotheksordnung (preferred) · celda Ernährung×T5: 2 en pool · excluye subtipos: schule, kantine
+
+── Lesen T5 · lesen-t5-gemini-075.json ──
+Proveedor: gemini · Palabras (5): entscheidungen, spaziergaenge, übersetzer, situation, hobby
+Modelo: gemini-2.5-flash · max_output_tokens=8192
+Llamada API 1/200 · gemini-2.5-flash
+Validando formato…
+Comprobando calidad pedagógica…
+Calidad pedagógica OK ✅ (estimación ~98%)
+Avisos (1):
+  · POS caps gate skipped: Python was not found; run without arguments to install from the Microsoft Store, or disable this shortcut from Settings > Apps > Advanced app settings > App execution aliases.
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 3 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 9 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 6 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+Audit-pass-2 BLOQUEADO: [IMPORTANT][CHK-14] Sustantivo en minúscula: "vielen" (tras artículo/conjunción). En alemán los sustantivos van en mayúscula. Contexto: "... Nutzungsdauer kann sich bei vielen Besuchern ändern...."
+  Triaje CUBO A: reparado (CHK-14) — re-validando sin LLM…
+Calidad pedagógica OK ✅ (estimación ~98%)
+Avisos (1):
+  · POS caps gate skipped: Python was not found; run without arguments to install from the Microsoft Store, or disable this shortcut from Settings > Apps > Advanced app settings > App execution aliases.
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 3 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 9 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 6 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+Audit-pass-2 BLOQUEADO: [IMPORTANT][CHK-14] Sustantivo en minúscula: "vielen" (tras artículo/conjunción). En alemán los sustantivos van en mayúscula. Contexto: "... Nutzungsdauer kann sich bei vielen Besuchern ändern...."
+
+Reintento 1/3 · Sustantivo en minúscula: "vielen" (tras artículo/conjunción). En alemán los sustantivos van en mayúscula. Contexto: "... Nutzungsdauer kann sich bei vielen Besuchern ändern...."…
+Llamada API 2/200 · gemini-2.5-flash
+Validando formato…
+Calidad pedagógica OK ✅ (estimación ~98%)
+Avisos (1):
+  · POS caps gate skipped: Python was not found; run without arguments to install from the Microsoft Store, or disable this shortcut from Settings > Apps > Advanced app settings > App execution aliases.
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 3 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 9 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 6 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+Audit-pass-2 BLOQUEADO: [IMPORTANT][CHK-14] Sustantivo en minúscula: "vielen" (tras artículo/conjunción). En alemán los sustantivos van en mayúscula. Contexto: "... Nutzungsdauer kann sich bei vielen Besuchern ändern...."
+  Triaje CUBO A: reparado (CHK-14) — re-validando sin LLM…
+Calidad pedagógica OK ✅ (estimación ~98%)
+Avisos (1):
+  · POS caps gate skipped: Python was not found; run without arguments to install from the Microsoft Store, or disable this shortcut from Settings > Apps > Advanced app settings > App execution aliases.
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 3 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 9 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 6 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+Audit-pass-2 BLOQUEADO: [IMPORTANT][CHK-14] Sustantivo en minúscula: "vielen" (tras artículo/conjunción). En alemán los sustantivos van en mayúscula. Contexto: "... Nutzungsdauer kann sich bei vielen Besuchern ändern...."
+
+Reintento 2/3 · Sustantivo en minúscula: "vielen" (tras artículo/conjunción). En alemán los sustantivos van en mayúscula. Contexto: "... Nutzungsdauer kann sich bei vielen Besuchern ändern...."…
+Llamada API 3/200 · gemini-2.5-flash
+Validando formato…
+Calidad pedagógica OK ✅ (estimación ~98%)
+Avisos (1):
+  · POS caps gate skipped: Python was not found; run without arguments to install from the Microsoft Store, or disable this shortcut from Settings > Apps > Advanced app settings > App execution aliases.
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 3 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 9 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 6 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 2 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+  [normalizeNouns] 1 adjetivo(s)/adverbio(s) en mayúscula errónea corregido(s)
+Guardado: batches/generated/lesen-t5-gemini-075.json (4 preguntas, 1 passages)
+Validación técnica OK ✅
+Calidad pedagógica OK ✅
+Comprobando pre-ingest (CEFR + staging)…
+Ingest pre-check OK ✅
+  T5: OK
+Siguiente: node scripts/ingest-to-staging.mjs --lang de --level B1 --file batches/generated/lesen-t5-gemini-075.json --auto-approve
+
+══ Resumen generador Lesen ══
+Proveedor: gemini · Modelo: gemini-2.5-flash
+Intentos totales: 3
+Partes guardadas (formato + calidad OK): 1
+Partes descartadas: 0
+Llamadas API Gemini: 3/200
+Por Teil (guardadas / descartadas · intentos):
+  T5: 1 guardadas, 0 descartadas, 3 intentos

@@ -1,0 +1,1409 @@
+{
+  "generatedAt": "2026-07-12T14:29:58.988Z",
+  "poolDir": "batches/ready/pool-verified",
+  "method": {
+    "rareDefinition": "content lemma (len≥4, not STOP, not proper-name heuristic) NOT in library/vocab/de A1∪A2 after surface/lemma/umlaut/light-ending expansion (guards lemmatizer noise: bereit→bereien, klein→klei)",
+    "cueingDefinition": "∃ rare passage lemma that appears in (question stem ∪ correct option) and in NO distractor",
+    "cueingOptionOnlyDefinition": "same but rare lemma must appear in the correct option (stem-only cues excluded)",
+    "lemmatizer": "js/engine/validation/lemmatizer.js normalizeLemma",
+    "a1a2LemmaCount": 1200,
+    "nullModel": "Among rare lemmas in passage ∩ exactly one option, P(exclusive option = correct) = 1/3 under random keys"
+  },
+  "scope": {
+    "included": [
+      "lesen-t2",
+      "lesen-t5",
+      "horen-t2"
+    ],
+    "excludedNote": "Same as answer-position/length bias: Hören T4 / Lesen T3 matching / Lesen T4 Ja-Nein / RF excluded."
+  },
+  "filesScanned": {
+    "lesen_t2": 10,
+    "lesen_t5": 28,
+    "horen_t2": 19,
+    "skipped": 95
+  },
+  "poolJsonCount": 152,
+  "byPart": {
+    "lesen-t2": {
+      "counts": {
+        "n": 60,
+        "cueing": 32,
+        "cueingOptionOnly": 21,
+        "exclusiveOptionHits": 24,
+        "exclusiveOptionTrials": 39
+      },
+      "summary": {
+        "nMcq": 60,
+        "cueingCount": 32,
+        "cueingPct": 53.3,
+        "cueingOptionOnlyCount": 21,
+        "cueingOptionOnlyPct": 35,
+        "nullModel": {
+          "exclusiveRareInExactlyOneOption": {
+            "trials": 39,
+            "hitsWhereExclusiveIsCorrect": 24,
+            "observedPct": 61.5,
+            "expectedPct": 33.3,
+            "deviationPp": 28.2
+          }
+        }
+      }
+    },
+    "lesen-t5": {
+      "counts": {
+        "n": 112,
+        "cueing": 56,
+        "cueingOptionOnly": 34,
+        "exclusiveOptionHits": 37,
+        "exclusiveOptionTrials": 94
+      },
+      "summary": {
+        "nMcq": 112,
+        "cueingCount": 56,
+        "cueingPct": 50,
+        "cueingOptionOnlyCount": 34,
+        "cueingOptionOnlyPct": 30.4,
+        "nullModel": {
+          "exclusiveRareInExactlyOneOption": {
+            "trials": 94,
+            "hitsWhereExclusiveIsCorrect": 37,
+            "observedPct": 39.4,
+            "expectedPct": 33.3,
+            "deviationPp": 6.1
+          }
+        }
+      }
+    },
+    "horen-t2": {
+      "counts": {
+        "n": 95,
+        "cueing": 50,
+        "cueingOptionOnly": 41,
+        "exclusiveOptionHits": 47,
+        "exclusiveOptionTrials": 84
+      },
+      "summary": {
+        "nMcq": 95,
+        "cueingCount": 50,
+        "cueingPct": 52.6,
+        "cueingOptionOnlyCount": 41,
+        "cueingOptionOnlyPct": 43.2,
+        "nullModel": {
+          "exclusiveRareInExactlyOneOption": {
+            "trials": 84,
+            "hitsWhereExclusiveIsCorrect": 47,
+            "observedPct": 56,
+            "expectedPct": 33.3,
+            "deviationPp": 22.7
+          }
+        }
+      }
+    }
+  },
+  "combined": {
+    "counts": {
+      "n": 267,
+      "cueing": 138,
+      "cueingOptionOnly": 96,
+      "exclusiveOptionHits": 108,
+      "exclusiveOptionTrials": 217
+    },
+    "summary": {
+      "nMcq": 267,
+      "cueingCount": 138,
+      "cueingPct": 51.7,
+      "cueingOptionOnlyCount": 96,
+      "cueingOptionOnlyPct": 36,
+      "nullModel": {
+        "exclusiveRareInExactlyOneOption": {
+          "trials": 217,
+          "hitsWhereExclusiveIsCorrect": 108,
+          "observedPct": 49.8,
+          "expectedPct": 33.3,
+          "deviationPp": 16.5
+        }
+      }
+    }
+  },
+  "hitCount": 138,
+  "allHitIds": [
+    {
+      "file": "horen-t2-gemini-001.json",
+      "part": "horen-t2",
+      "qid": "gen-q-h2-d5028372-q3",
+      "correct": "b",
+      "cueWords": [
+        "konzentrieren"
+      ]
+    },
+    {
+      "file": "horen-t2-gemini-001.json",
+      "part": "horen-t2",
+      "qid": "gen-q-h2-d5028372-q5",
+      "correct": "b",
+      "cueWords": [
+        "klaren"
+      ]
+    },
+    {
+      "file": "horen-t2-gemini-003.json",
+      "part": "horen-t2",
+      "qid": "gen-q-h2-5e785889-q3",
+      "correct": "c",
+      "cueWords": [
+        "aufmerksam",
+        "starten"
+      ]
+    },
+    {
+      "file": "horen-t2-gemini-003.json",
+      "part": "horen-t2",
+      "qid": "gen-q-h2-5e785889-q4",
+      "correct": "c",
+      "cueWords": [
+        "bewusst"
+      ]
+    },
+    {
+      "file": "horen-t2-gemini-005.json",
+      "part": "horen-t2",
+      "qid": "gen-q-h2-e0b897d8-q2",
+      "correct": "c",
+      "cueWords": [
+        "koerperlich"
+      ]
+    },
+    {
+      "file": "horen-t2-gemini-005.json",
+      "part": "horen-t2",
+      "qid": "gen-q-h2-e0b897d8-q3",
+      "correct": "a",
+      "cueWords": [
+        "realistisch",
+        "setzen"
+      ]
+    },
+    {
+      "file": "horen-t2-gemini-006.json",
+      "part": "horen-t2",
+      "qid": "gen-q-h2-34538a4d-q3",
+      "correct": "a",
+      "cueWords": [
+        "gemeinsam"
+      ]
+    },
+    {
+      "file": "horen-t2-gemini-007.json",
+      "part": "horen-t2",
+      "qid": "gen-q-h2-41c1f630-q1",
+      "correct": "b",
+      "cueWords": [
+        "bewusst"
+      ]
+    },
+    {
+      "file": "horen-t2-gemini-008.json",
+      "part": "horen-t2",
+      "qid": "gen-q-h2-45959318-q1",
+      "correct": "c",
+      "cueWords": [
+        "bewusst"
+      ]
+    },
+    {
+      "file": "horen-t2-gemini-008.json",
+      "part": "horen-t2",
+      "qid": "gen-q-h2-45959318-q2",
+      "correct": "c",
+      "cueWords": [
+        "belieben"
+      ]
+    },
+    {
+      "file": "horen-t2-gemini-008.json",
+      "part": "horen-t2",
+      "qid": "gen-q-h2-45959318-q3",
+      "correct": "b",
+      "cueWords": [
+        "selben"
+      ]
+    },
+    {
+      "file": "horen-t2-gemini-008.json",
+      "part": "horen-t2",
+      "qid": "gen-q-h2-45959318-q4",
+      "correct": "b",
+      "cueWords": [
+        "hilfen"
+      ]
+    },
+    {
+      "file": "horen-t2-gemini-008.json",
+      "part": "horen-t2",
+      "qid": "gen-q-h2-45959318-q5",
+      "correct": "a",
+      "cueWords": [
+        "ausgewogenen"
+      ]
+    },
+    {
+      "file": "horen-t2-gemini-009.json",
+      "part": "horen-t2",
+      "qid": "gen-q-h2-cb37a553-q2",
+      "correct": "c",
+      "cueWords": [
+        "eigenen",
+        "erweitern"
+      ]
+    },
+    {
+      "file": "horen-t2-gemini-009.json",
+      "part": "horen-t2",
+      "qid": "gen-q-h2-cb37a553-q3",
+      "correct": "c",
+      "cueWords": [
+        "produktiv"
+      ]
+    },
+    {
+      "file": "horen-t2-gemini-009.json",
+      "part": "horen-t2",
+      "qid": "gen-q-h2-cb37a553-q4",
+      "correct": "b",
+      "cueWords": [
+        "staendig"
+      ]
+    },
+    {
+      "file": "horen-t2-gemini-009.json",
+      "part": "horen-t2",
+      "qid": "gen-q-h2-cb37a553-q5",
+      "correct": "a",
+      "cueWords": [
+        "aktiv"
+      ]
+    },
+    {
+      "file": "horen-t2-gemini-010.json",
+      "part": "horen-t2",
+      "qid": "gen-q-h2-857be1ea-q2",
+      "correct": "c",
+      "cueWords": [
+        "laerm"
+      ]
+    },
+    {
+      "file": "horen-t2-gemini-010.json",
+      "part": "horen-t2",
+      "qid": "gen-q-h2-857be1ea-q3",
+      "correct": "b",
+      "cueWords": [
+        "bieten"
+      ]
+    },
+    {
+      "file": "horen-t2-gemini-010.json",
+      "part": "horen-t2",
+      "qid": "gen-q-h2-857be1ea-q4",
+      "correct": "c",
+      "cueWords": [
+        "gemeinsam"
+      ]
+    },
+    {
+      "file": "horen-t2-gemini-010.json",
+      "part": "horen-t2",
+      "qid": "gen-q-h2-857be1ea-q5",
+      "correct": "b",
+      "cueWords": [
+        "bewusst"
+      ]
+    },
+    {
+      "file": "horen-t2-gemini-011.json",
+      "part": "horen-t2",
+      "qid": "gen-q-h2-5b8f9f1e-fzt-q1",
+      "correct": "b",
+      "cueWords": [
+        "gestressen"
+      ]
+    },
+    {
+      "file": "horen-t2-gemini-011.json",
+      "part": "horen-t2",
+      "qid": "gen-q-h2-5b8f9f1e-fzt-q4",
+      "correct": "a",
+      "cueWords": [
+        "bereiten"
+      ]
+    },
+    {
+      "file": "horen-t2-gemini-012.json",
+      "part": "horen-t2",
+      "qid": "gen-q-h2-d7e1a2b3-q2",
+      "correct": "a",
+      "cueWords": [
+        "koerperlich",
+        "regelmaessig"
+      ]
+    },
+    {
+      "file": "horen-t2-gemini-012.json",
+      "part": "horen-t2",
+      "qid": "gen-q-h2-d7e1a2b3-q3",
+      "correct": "b",
+      "cueWords": [
+        "aktiv",
+        "integrieren"
+      ]
+    },
+    {
+      "file": "horen-t2-gemini-012.json",
+      "part": "horen-t2",
+      "qid": "gen-q-h2-d7e1a2b3-q4",
+      "correct": "c",
+      "cueWords": [
+        "moderaten"
+      ]
+    },
+    {
+      "file": "horen-t2-gemini-012.json",
+      "part": "horen-t2",
+      "qid": "gen-q-h2-d7e1a2b3-q5",
+      "correct": "c",
+      "cueWords": [
+        "langfristig"
+      ]
+    },
+    {
+      "file": "horen-t2-gemini-013.json",
+      "part": "horen-t2",
+      "qid": "gen-q-h2-62f5bf71-q2",
+      "correct": "c",
+      "cueWords": [
+        "nutzen"
+      ]
+    },
+    {
+      "file": "horen-t2-gemini-013.json",
+      "part": "horen-t2",
+      "qid": "gen-q-h2-62f5bf71-q4",
+      "correct": "a",
+      "cueWords": [
+        "entspannt"
+      ]
+    },
+    {
+      "file": "horen-t2-gemini-013.json",
+      "part": "horen-t2",
+      "qid": "gen-q-h2-62f5bf71-q5",
+      "correct": "b",
+      "cueWords": [
+        "bewusst"
+      ]
+    },
+    {
+      "file": "horen-t2-gemini-015.json",
+      "part": "horen-t2",
+      "qid": "gen-q-h2-3afcaed7-q2",
+      "correct": "a",
+      "cueWords": [
+        "bieten"
+      ]
+    },
+    {
+      "file": "horen-t2-gemini-015.json",
+      "part": "horen-t2",
+      "qid": "gen-q-h2-3afcaed7-q4",
+      "correct": "b",
+      "cueWords": [
+        "entscheidend",
+        "gemeinsam"
+      ]
+    },
+    {
+      "file": "horen-t2-gemini-015.json",
+      "part": "horen-t2",
+      "qid": "gen-q-h2-3afcaed7-q5",
+      "correct": "c",
+      "cueWords": [
+        "angepassen",
+        "lokal"
+      ]
+    },
+    {
+      "file": "horen-t2-gemini-016.json",
+      "part": "horen-t2",
+      "qid": "gen-q-h2-1ed9a47a-q2",
+      "correct": "c",
+      "cueWords": [
+        "bedeuten"
+      ]
+    },
+    {
+      "file": "horen-t2-gemini-016.json",
+      "part": "horen-t2",
+      "qid": "gen-q-h2-1ed9a47a-q4",
+      "correct": "a",
+      "cueWords": [
+        "bewusst"
+      ]
+    },
+    {
+      "file": "horen-t2-gemini-016.json",
+      "part": "horen-t2",
+      "qid": "gen-q-h2-1ed9a47a-q5",
+      "correct": "b",
+      "cueWords": [
+        "bewusst",
+        "meisten",
+        "sollten"
+      ]
+    },
+    {
+      "file": "horen-t2-gemini-017.json",
+      "part": "horen-t2",
+      "qid": "gen-q-h2-a5acd2d8-q2",
+      "correct": "b",
+      "cueWords": [
+        "kreativ"
+      ]
+    },
+    {
+      "file": "horen-t2-gemini-017.json",
+      "part": "horen-t2",
+      "qid": "gen-q-h2-a5acd2d8-q4",
+      "correct": "a",
+      "cueWords": [
+        "erweiteren"
+      ]
+    },
+    {
+      "file": "horen-t2-gemini-018.json",
+      "part": "horen-t2",
+      "qid": "gen-q-h2-4a57e42c-q1",
+      "correct": "a",
+      "cueWords": [
+        "ganzheitlich"
+      ]
+    },
+    {
+      "file": "horen-t2-gemini-018.json",
+      "part": "horen-t2",
+      "qid": "gen-q-h2-4a57e42c-q4",
+      "correct": "b",
+      "cueWords": [
+        "gönnen"
+      ]
+    },
+    {
+      "file": "horen-t2-gemini-019.json",
+      "part": "horen-t2",
+      "qid": "gen-q-h2-af4f9d1d-q2",
+      "correct": "b",
+      "cueWords": [
+        "teilzuhaben"
+      ]
+    },
+    {
+      "file": "horen-t2-gemini-019.json",
+      "part": "horen-t2",
+      "qid": "gen-q-h2-af4f9d1d-q4",
+      "correct": "c",
+      "cueWords": [
+        "unerlaess"
+      ]
+    },
+    {
+      "file": "horen-t2-gemini-019.json",
+      "part": "horen-t2",
+      "qid": "gen-q-h2-af4f9d1d-q5",
+      "correct": "b",
+      "cueWords": [
+        "bewusst"
+      ]
+    },
+    {
+      "file": "horen-t2-gemini-020.json",
+      "part": "horen-t2",
+      "qid": "gen-q-h2-a3a4f080-q2",
+      "correct": "c",
+      "cueWords": [
+        "anfang"
+      ]
+    },
+    {
+      "file": "horen-t2-gemini-020.json",
+      "part": "horen-t2",
+      "qid": "gen-q-h2-a3a4f080-q3",
+      "correct": "a",
+      "cueWords": [
+        "anzupassen"
+      ]
+    },
+    {
+      "file": "horen-t2-gemini-020.json",
+      "part": "horen-t2",
+      "qid": "gen-q-h2-a3a4f080-q4",
+      "correct": "b",
+      "cueWords": [
+        "schmiden"
+      ]
+    },
+    {
+      "file": "horen-t2-gemini-020.json",
+      "part": "horen-t2",
+      "qid": "gen-q-h2-a3a4f080-q5",
+      "correct": "b",
+      "cueWords": [
+        "langfristig",
+        "persoenlich"
+      ]
+    },
+    {
+      "file": "horen-t2-gemini-021.json",
+      "part": "horen-t2",
+      "qid": "gen-q-h2-88828b35-q3",
+      "correct": "a",
+      "cueWords": [
+        "leis",
+        "stark"
+      ]
+    },
+    {
+      "file": "horen-t2-gemini-021.json",
+      "part": "horen-t2",
+      "qid": "gen-q-h2-88828b35-q4",
+      "correct": "b",
+      "cueWords": [
+        "durchgehenden",
+        "fehlen"
+      ]
+    },
+    {
+      "file": "horen-t2-gemini-023.json",
+      "part": "horen-t2",
+      "qid": "gen-q-h2-84bf51f4-q5",
+      "correct": "a",
+      "cueWords": [
+        "abgelegenen"
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-055.json",
+      "part": "lesen-t2",
+      "qid": "gen-q-2-759e7c8f-1",
+      "correct": "b",
+      "cueWords": [
+        "selben"
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-055.json",
+      "part": "lesen-t2",
+      "qid": "gen-q-2-759e7c8f-2",
+      "correct": "b",
+      "cueWords": [
+        "bieten"
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-055.json",
+      "part": "lesen-t2",
+      "qid": "gen-q-2-759e7c8f-3",
+      "correct": "a",
+      "cueWords": [
+        "älteren"
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-057.json",
+      "part": "lesen-t2",
+      "qid": "gen-q-2-0a946252-3",
+      "correct": "b",
+      "cueWords": [
+        "weiteren"
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-057.json",
+      "part": "lesen-t2",
+      "qid": "gen-q-2-0a946252-5",
+      "correct": "c",
+      "cueWords": [
+        "einig"
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-093.json",
+      "part": "lesen-t2",
+      "qid": "gen-q-2-10c0f9b9-2",
+      "correct": "b",
+      "cueWords": [
+        "gemeinsam",
+        "sportlichen"
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-093.json",
+      "part": "lesen-t2",
+      "qid": "gen-q-2-10c0f9b9-3",
+      "correct": "a",
+      "cueWords": [
+        "zufrieden"
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-093.json",
+      "part": "lesen-t2",
+      "qid": "gen-q-2-10c0f9b9-4",
+      "correct": "a",
+      "cueWords": [
+        "aktuell",
+        "letzten"
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-093.json",
+      "part": "lesen-t2",
+      "qid": "gen-q-2-10c0f9b9-5",
+      "correct": "c",
+      "cueWords": [
+        "nächsten",
+        "weiteren"
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-094.json",
+      "part": "lesen-t2",
+      "qid": "gen-q-2-698a2191-1",
+      "correct": "b",
+      "cueWords": [
+        "gedruckten"
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-094.json",
+      "part": "lesen-t2",
+      "qid": "gen-q-2-698a2191-2",
+      "correct": "a",
+      "cueWords": [
+        "lokal"
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-094.json",
+      "part": "lesen-t2",
+      "qid": "gen-q-2-698a2191-3",
+      "correct": "a",
+      "cueWords": [
+        "bereien",
+        "zahlen"
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-094.json",
+      "part": "lesen-t2",
+      "qid": "gen-q-2-698a2191-4",
+      "correct": "c",
+      "cueWords": [
+        "bieten"
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-094.json",
+      "part": "lesen-t2",
+      "qid": "gen-q-2-698a2191-5",
+      "correct": "c",
+      "cueWords": [
+        "klaren"
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-096.json",
+      "part": "lesen-t2",
+      "qid": "gen-q-2-632a83e2-6",
+      "correct": "b",
+      "cueWords": [
+        "eigenen"
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-097.json",
+      "part": "lesen-t2",
+      "qid": "gen-q-2-ab60fe4b-1",
+      "correct": "b",
+      "cueWords": [
+        "verbringen"
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-097.json",
+      "part": "lesen-t2",
+      "qid": "gen-q-2-ab60fe4b-4",
+      "correct": "b",
+      "cueWords": [
+        "belieben"
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-097.json",
+      "part": "lesen-t2",
+      "qid": "gen-q-2-ab60fe4b-6",
+      "correct": "c",
+      "cueWords": [
+        "bewusst"
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-103.json",
+      "part": "lesen-t2",
+      "qid": "gen-q-2-05fc623e-2",
+      "correct": "b",
+      "cueWords": [
+        "schätzen"
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-103.json",
+      "part": "lesen-t2",
+      "qid": "gen-q-2-05fc623e-4",
+      "correct": "c",
+      "cueWords": [
+        "begrenzten",
+        "bieten"
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-104.json",
+      "part": "lesen-t2",
+      "qid": "gen-q-2-f76d3112-5",
+      "correct": "a",
+      "cueWords": [
+        "ausserhalb",
+        "ermöglichen"
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-104.json",
+      "part": "lesen-t2",
+      "qid": "gen-q-2-f76d3112-6",
+      "correct": "c",
+      "cueWords": [
+        "betonten"
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-105.json",
+      "part": "lesen-t2",
+      "qid": "gen-q-2-84432190-1",
+      "correct": "a",
+      "cueWords": [
+        "bieten"
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-105.json",
+      "part": "lesen-t2",
+      "qid": "gen-q-2-84432190-2",
+      "correct": "b",
+      "cueWords": [
+        "unterstuetzt"
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-105.json",
+      "part": "lesen-t2",
+      "qid": "gen-q-2-84432190-4",
+      "correct": "b",
+      "cueWords": [
+        "entspannen"
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-105.json",
+      "part": "lesen-t2",
+      "qid": "gen-q-2-84432190-5",
+      "correct": "c",
+      "cueWords": [
+        "ruhig"
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-105.json",
+      "part": "lesen-t2",
+      "qid": "gen-q-2-84432190-6",
+      "correct": "c",
+      "cueWords": [
+        "bieten",
+        "einig",
+        "gemeinsam"
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-106.json",
+      "part": "lesen-t2",
+      "qid": "gen-q-2-e7ae4d43-1",
+      "correct": "a",
+      "cueWords": [
+        "flexiblen",
+        "profitieren"
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-106.json",
+      "part": "lesen-t2",
+      "qid": "gen-q-2-e7ae4d43-2",
+      "correct": "b",
+      "cueWords": [
+        "flexiblen"
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-106.json",
+      "part": "lesen-t2",
+      "qid": "gen-q-2-e7ae4d43-3",
+      "correct": "c",
+      "cueWords": [
+        "gleichzeitig"
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-106.json",
+      "part": "lesen-t2",
+      "qid": "gen-q-2-e7ae4d43-5",
+      "correct": "c",
+      "cueWords": [
+        "staendig"
+      ]
+    },
+    {
+      "file": "lesen-t2-gemini-106.json",
+      "part": "lesen-t2",
+      "qid": "gen-q-2-e7ae4d43-6",
+      "correct": "a",
+      "cueWords": [
+        "neuen",
+        "weiterzubilden"
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-009.json",
+      "part": "lesen-t5",
+      "qid": "gen-q-5-64b1360b-2",
+      "correct": "b",
+      "cueWords": [
+        "gilen"
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-009.json",
+      "part": "lesen-t5",
+      "qid": "gen-q-5-64b1360b-3",
+      "correct": "b",
+      "cueWords": [
+        "untersagen"
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-014.json",
+      "part": "lesen-t5",
+      "qid": "gen-q-5-a994fb06-1",
+      "correct": "a",
+      "cueWords": [
+        "nutzen"
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-014.json",
+      "part": "lesen-t5",
+      "qid": "gen-q-5-a994fb06-3",
+      "correct": "a",
+      "cueWords": [
+        "maximal"
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-014.json",
+      "part": "lesen-t5",
+      "qid": "gen-q-5-a994fb06-4",
+      "correct": "c",
+      "cueWords": [
+        "beachten"
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-015.json",
+      "part": "lesen-t5",
+      "qid": "gen-q-5-cc5b0d7b-2",
+      "correct": "b",
+      "cueWords": [
+        "gilen"
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-015.json",
+      "part": "lesen-t5",
+      "qid": "gen-q-5-cc5b0d7b-3",
+      "correct": "a",
+      "cueWords": [
+        "beachten"
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-022.json",
+      "part": "lesen-t5",
+      "qid": "gen-q-5-efc96246-1",
+      "correct": "b",
+      "cueWords": [
+        "speziell"
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-022.json",
+      "part": "lesen-t5",
+      "qid": "gen-q-5-efc96246-2",
+      "correct": "a",
+      "cueWords": [
+        "eingestellen"
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-023.json",
+      "part": "lesen-t5",
+      "qid": "gen-q-5-7cd9cc8e-1",
+      "correct": "a",
+      "cueWords": [
+        "beachten",
+        "beim",
+        "kompostierbar"
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-023.json",
+      "part": "lesen-t5",
+      "qid": "gen-q-5-7cd9cc8e-3",
+      "correct": "a",
+      "cueWords": [
+        "ausserhalb",
+        "entsorgen"
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-023.json",
+      "part": "lesen-t5",
+      "qid": "gen-q-5-7cd9cc8e-4",
+      "correct": "c",
+      "cueWords": [
+        "brachen",
+        "speziellen"
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-024.json",
+      "part": "lesen-t5",
+      "qid": "gen-q-5-7c35a128-1",
+      "correct": "b",
+      "cueWords": [
+        "beachten",
+        "selben"
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-024.json",
+      "part": "lesen-t5",
+      "qid": "gen-q-5-7c35a128-2",
+      "correct": "c",
+      "cueWords": [
+        "duschen"
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-024.json",
+      "part": "lesen-t5",
+      "qid": "gen-q-5-7c35a128-3",
+      "correct": "a",
+      "cueWords": [
+        "nutzen"
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-024.json",
+      "part": "lesen-t5",
+      "qid": "gen-q-5-7c35a128-4",
+      "correct": "b",
+      "cueWords": [
+        "gehören"
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-027.json",
+      "part": "lesen-t5",
+      "qid": "gen-q-5-bea130ae-2",
+      "correct": "a",
+      "cueWords": [
+        "nutzen"
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-027.json",
+      "part": "lesen-t5",
+      "qid": "gen-q-5-bea130ae-4",
+      "correct": "a",
+      "cueWords": [
+        "werktag"
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-028.json",
+      "part": "lesen-t5",
+      "qid": "gen-q-5-6046b479-2",
+      "correct": "b",
+      "cueWords": [
+        "laenger"
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-029.json",
+      "part": "lesen-t5",
+      "qid": "gen-q-5-0d9a36a9-4",
+      "correct": "c",
+      "cueWords": [
+        "einmalig"
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-030.json",
+      "part": "lesen-t5",
+      "qid": "gen-q-5-b2260853-4",
+      "correct": "b",
+      "cueWords": [
+        "gilen"
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-033.json",
+      "part": "lesen-t5",
+      "qid": "gen-q-5-21c7dc2c-1",
+      "correct": "a",
+      "cueWords": [
+        "einmal",
+        "entsorgen"
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-033.json",
+      "part": "lesen-t5",
+      "qid": "gen-q-5-21c7dc2c-2",
+      "correct": "b",
+      "cueWords": [
+        "laeng"
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-034.json",
+      "part": "lesen-t5",
+      "qid": "gen-q-5-2df0ca3f-1",
+      "correct": "a",
+      "cueWords": [
+        "gehören",
+        "speziell"
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-034.json",
+      "part": "lesen-t5",
+      "qid": "gen-q-5-2df0ca3f-2",
+      "correct": "b",
+      "cueWords": [
+        "sollten"
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-035.json",
+      "part": "lesen-t5",
+      "qid": "gen-q-5-5d8ee76e-1",
+      "correct": "b",
+      "cueWords": [
+        "ausserhalb"
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-036.json",
+      "part": "lesen-t5",
+      "qid": "gen-q-5-d299f084-2",
+      "correct": "b",
+      "cueWords": [
+        "melden"
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-036.json",
+      "part": "lesen-t5",
+      "qid": "gen-q-5-d299f084-3",
+      "correct": "a",
+      "cueWords": [
+        "beachten"
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-036.json",
+      "part": "lesen-t5",
+      "qid": "gen-q-5-d299f084-4",
+      "correct": "a",
+      "cueWords": [
+        "zweimal"
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-037.json",
+      "part": "lesen-t5",
+      "qid": "gen-q-5-c30f2ab4-1",
+      "correct": "c",
+      "cueWords": [
+        "sammelen"
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-037.json",
+      "part": "lesen-t5",
+      "qid": "gen-q-5-c30f2ab4-2",
+      "correct": "b",
+      "cueWords": [
+        "eingestellen"
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-037.json",
+      "part": "lesen-t5",
+      "qid": "gen-q-5-c30f2ab4-3",
+      "correct": "b",
+      "cueWords": [
+        "beachten",
+        "entsorgen",
+        "mindestens"
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-037.json",
+      "part": "lesen-t5",
+      "qid": "gen-q-5-c30f2ab4-4",
+      "correct": "a",
+      "cueWords": [
+        "nutzen"
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-053.json",
+      "part": "lesen-t5",
+      "qid": "gen-q-5-49b206d4-1",
+      "correct": "a",
+      "cueWords": [
+        "geoeffnet"
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-057.json",
+      "part": "lesen-t5",
+      "qid": "gen-q-5-e415661a-2",
+      "correct": "a",
+      "cueWords": [
+        "erwerben",
+        "speziell"
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-057.json",
+      "part": "lesen-t5",
+      "qid": "gen-q-5-e415661a-3",
+      "correct": "c",
+      "cueWords": [
+        "beachten"
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-063.json",
+      "part": "lesen-t5",
+      "qid": "gen-q-5-11d79a5d-3",
+      "correct": "c",
+      "cueWords": [
+        "mindestens"
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-063.json",
+      "part": "lesen-t5",
+      "qid": "gen-q-5-11d79a5d-4",
+      "correct": "a",
+      "cueWords": [
+        "nutzen"
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-064.json",
+      "part": "lesen-t5",
+      "qid": "gen-q-5-ee0e5f1b-1",
+      "correct": "a",
+      "cueWords": [
+        "ausleihen",
+        "zweimal"
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-064.json",
+      "part": "lesen-t5",
+      "qid": "gen-q-5-ee0e5f1b-2",
+      "correct": "a",
+      "cueWords": [
+        "zurückgegeben"
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-064.json",
+      "part": "lesen-t5",
+      "qid": "gen-q-5-ee0e5f1b-3",
+      "correct": "b",
+      "cueWords": [
+        "verschließbaren"
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-065.json",
+      "part": "lesen-t5",
+      "qid": "gen-q-5-4a873a4f-2",
+      "correct": "b",
+      "cueWords": [
+        "genutzt"
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-065.json",
+      "part": "lesen-t5",
+      "qid": "gen-q-5-4a873a4f-4",
+      "correct": "b",
+      "cueWords": [
+        "persoenlich"
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-070.json",
+      "part": "lesen-t5",
+      "qid": "gen-q-5-e8c95797-2",
+      "correct": "a",
+      "cueWords": [
+        "zahlen"
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-070.json",
+      "part": "lesen-t5",
+      "qid": "gen-q-5-e8c95797-4",
+      "correct": "b",
+      "cueWords": [
+        "selben"
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-071.json",
+      "part": "lesen-t5",
+      "qid": "gen-q-5-66cdeb73-1",
+      "correct": "c",
+      "cueWords": [
+        "danach",
+        "gilen"
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-071.json",
+      "part": "lesen-t5",
+      "qid": "gen-q-5-66cdeb73-3",
+      "correct": "b",
+      "cueWords": [
+        "nutzen"
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-071.json",
+      "part": "lesen-t5",
+      "qid": "gen-q-5-66cdeb73-4",
+      "correct": "a",
+      "cueWords": [
+        "speziell"
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-073.json",
+      "part": "lesen-t5",
+      "qid": "gen-q-5-5a4d06b3-2",
+      "correct": "c",
+      "cueWords": [
+        "ausgeliehen"
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-073.json",
+      "part": "lesen-t5",
+      "qid": "gen-q-5-5a4d06b3-3",
+      "correct": "b",
+      "cueWords": [
+        "verwenden"
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-076.json",
+      "part": "lesen-t5",
+      "qid": "gen-q-5-a764778f-1",
+      "correct": "c",
+      "cueWords": [
+        "spätestens"
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-076.json",
+      "part": "lesen-t5",
+      "qid": "gen-q-5-a764778f-2",
+      "correct": "c",
+      "cueWords": [
+        "beachten"
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-076.json",
+      "part": "lesen-t5",
+      "qid": "gen-q-5-a764778f-3",
+      "correct": "b",
+      "cueWords": [
+        "mindestens"
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-077.json",
+      "part": "lesen-t5",
+      "qid": "gen-q-5-3f265ed6-2",
+      "correct": "b",
+      "cueWords": [
+        "entsorgen"
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-077.json",
+      "part": "lesen-t5",
+      "qid": "gen-q-5-3f265ed6-4",
+      "correct": "c",
+      "cueWords": [
+        "kurzzeitparken",
+        "maximal"
+      ]
+    },
+    {
+      "file": "lesen-t5-gemini-078.json",
+      "part": "lesen-t5",
+      "qid": "gen-q-5-716912b4-3",
+      "correct": "a",
+      "cueWords": [
+        "extern"
+      ]
+    }
+  ]
+}

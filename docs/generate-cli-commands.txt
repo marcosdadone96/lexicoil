@@ -1,0 +1,95 @@
+LexiCoil — generate-cli: comandos para el operador
+====================================================
+Herramienta: scripts/generate-cli.mjs
+Requisitos: .env con GEMINI_API_KEY (excepto Lesen T3 vía make-t3).
+Banco vocab: library/vocab/de/B1.json (682 lemas, whitelist cerrada).
+Registro cobertura: data/coverage/registry-de_B1.json (se actualiza tras cada parte OK).
+
+── Antes de la primera corrida ───────────────────────────────────────────────
+
+  cd C:\Users\marco\Desktop\MDR\lexiloop
+
+  REM Medir cobertura actual (solo lectura, sin API):
+  node scripts/vocab-coverage-report.mjs --lang de --level B1
+
+  REM O vía generate-cli (muestra huecos de una celda):
+  node scripts/generate-cli.mjs --cell lesen-t1 --status
+
+── Modo PRUEBA (smoke): 1 parte por cada celda (15 en total) ───────────────
+
+  REM Ver plan de rotación sin gastar API:
+  node scripts/generate-cli.mjs --smoke --dry-run
+
+  REM Generar 1 parte validada por celda (sin publicar al pool):
+  node scripts/generate-cli.mjs --smoke
+
+  REM Generar + publicar al pool local (library/reusable-seed/de_B1.json):
+  node scripts/generate-cli.mjs --smoke --publish
+
+  REM Publicar y subir a Netlify Blobs (requiere NETLIFY_SITE_ID + token en .env):
+  node scripts/generate-cli.mjs --smoke --publish --sync-pool
+
+  Celdas smoke (1 parte cada una):
+    lesen-t1, lesen-t2, lesen-t3, lesen-t4, lesen-t5
+    horen-t1, horen-t2, horen-t3, horen-t4
+    schreiben-t1, schreiben-t2, schreiben-t3
+    sprechen-t1, sprechen-t2, sprechen-t3
+
+── Modo VOLUMEN: N partes de una celda ─────────────────────────────────────
+
+  REM 10 partes de Lesen Teil 1:
+  node scripts/generate-cli.mjs --cell lesen-t1 --count 10 --publish
+
+  REM 5 partes de Hören Teil 2 con 7 palabras sugeridas:
+  node scripts/generate-cli.mjs --cell horen-t2 --count 5 --word-count 7 --publish
+
+  REM Schreiben Teil 1, rotar tema cada 2 partes OK:
+  node scripts/generate-cli.mjs --cell schreiben-t1 --count 6 --rotate-every 2 --publish
+
+  REM Equivalente con --module y --teil:
+  node scripts/generate-cli.mjs --module lesen --teil 4 --count 3 --publish
+
+── Opciones útiles ─────────────────────────────────────────────────────────
+
+  --word-count 5..8     Lemas sugeridos por parte (default 6, no obligatorios)
+  --rotate-every N      Nuevo tema + vocab cada N partes OK (default 1)
+  --fix-retries 2       Reintentos de corrección IA ante fallo de gate (default 2)
+  --max-api-calls 80    Tope de llamadas API por celda (default 80)
+  --pause-ms 5000       Pausa entre intentos (default 5000 ms)
+  --tag gemini          Etiqueta en nombres de archivo generados
+  --reset               Borra checkpoint y empieza de cero
+  --no-resume           No reanuda checkpoint previo
+
+── Estado y logs ───────────────────────────────────────────────────────────
+
+  Cobertura vocab (registro):
+    data/coverage/registry-de_B1.json
+    data/coverage/weak-de_B1.json
+
+  Log generación (pedido vs real vocabularyTags):
+    batches/logs/coverage-generation.jsonl
+
+  Coste API por corrida:
+    batches/logs/generation-cost.jsonl
+
+  Checkpoint reanudable (por celda):
+    batches/.pool-fill-checkpoint.json
+
+  Borradores validados:
+    batches/generated/
+
+  Pool publicado:
+    library/reusable-seed/de_B1.json
+
+── Gates aplicados (sin atajos) ────────────────────────────────────────────
+
+  validate-batch, calidad pedagógica, lexico B1, mayúsculas v3.15,
+  ANTI-ATAJO / word-matching, cuarentena POOL-2, LanguageTool advisory,
+  fecha/día-semana, separables, resync metadata (enrichBatchMetadata).
+
+── Comandos relacionados (legacy, mismo motor) ─────────────────────────────
+
+  node scripts/pool-fill-teil.mjs --module lesen --teil 1 --target 10 --publish
+  node scripts/vocab-coverage-report.mjs --lang de --level B1
+
+Última actualización: 2026-07-13

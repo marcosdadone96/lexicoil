@@ -1,0 +1,646 @@
+{
+  "generatedAt": "2026-07-10T12:06:23.076Z",
+  "audit5bFiles": 47,
+  "note": "Audit 5b included question+explanation+ALL options in Jaccard. Shared T3/Hören option banks inflate similarity. Triage uses question text only.",
+  "recheckAudit47": {
+    "stillHitWithInflatedMetric": 47,
+    "hitWithQuestionOnly": 0,
+    "countsQuestionOnly": {
+      "structural_t3": 0,
+      "real_near_duplicate": 0,
+      "ambiguous": 0
+    }
+  },
+  "fullPoolQuestionOnly": {
+    "files": 0,
+    "counts": {
+      "structural_t3": 0,
+      "real_near_duplicate": 0,
+      "ambiguous": 0
+    }
+  },
+  "examples": {
+    "structural_t3": [],
+    "real_near_duplicate": [],
+    "ambiguous": [],
+    "structuralFromOriginal47": []
+  },
+  "structuralIllustrations": [
+    {
+      "file": "lesen-t3-auto-we7l2c.json",
+      "isT3": true,
+      "jacQuestionOnly": 0.176,
+      "class": "structural_t3",
+      "reason": "mismo marco, entidades distintas (contentJ=0.10)",
+      "jacFull": 0.17647058823529413,
+      "jacContent": 0.1,
+      "a": "Der Schüler Jan möchte die Sprache Russlands von Grund auf lernen.",
+      "b": "Herr Sami möchte die arabische Schrift und Sprache erlernen."
+    },
+    {
+      "file": "lesen-t3-auto-x4k027.json",
+      "isT3": true,
+      "jacQuestionOnly": 0.211,
+      "class": "structural_t3",
+      "reason": "mismo marco, entidades distintas (contentJ=0.13)",
+      "jacFull": 0.21052631578947367,
+      "jacContent": 0.125,
+      "a": "Bei Herrn lang ist ein Bügel der Sehhilfe abgebrochen; sie soll gerichtet werden.",
+      "b": "An Saras Reisegepäck ist eine Rolle abgebrochen, die ersetzt werden soll."
+    },
+    {
+      "file": "lesen-t3-auto-yii0su.json",
+      "isT3": true,
+      "jacQuestionOnly": 0.294,
+      "class": "structural_t3",
+      "reason": "mismo marco, entidades distintas (contentJ=0.18)",
+      "jacFull": 0.29411764705882354,
+      "jacContent": 0.18181818181818182,
+      "a": "Lena möchte lernen, eigene Kleidung selbst anzufertigen, und sucht einen Einsteigerkurs.",
+      "b": "Frau Held will warme Mützen selbst herstellen und sucht einen Einsteigerkurs."
+    },
+    {
+      "file": "lesen-t3-auto-yu9vyl.json",
+      "isT3": true,
+      "jacQuestionOnly": 0.111,
+      "class": "structural_t3",
+      "reason": "mismo marco, entidades distintas (contentJ=0.00)",
+      "jacFull": 0.1111111111111111,
+      "jacContent": 0,
+      "a": "Die Studentin Mia kommt mit den Grundlagen der Betriebswirtschaft nicht klar.",
+      "b": "Der Erstsemester Tom braucht Hilfe bei den ersten Rechtsthemen."
+    },
+    {
+      "file": "lesen-t3-auto-zspq8n.json",
+      "isT3": true,
+      "jacQuestionOnly": 0.19,
+      "class": "structural_t3",
+      "reason": "mismo marco, entidades distintas (contentJ=0.17)",
+      "jacFull": 0.19047619047619047,
+      "jacContent": 0.16666666666666666,
+      "a": "An Lenas Holzstuhl für die kleine ist ein Bein locker; es soll gerichtet werden.",
+      "b": "Das kleine Laufrad von Bens Sohn hat ein kaputtes Rad, das ersetzt werden soll."
+    },
+    {
+      "file": "lesen-t3-auto-0oquml.json",
+      "isT3": true,
+      "jacQuestionOnly": 0.211,
+      "class": "structural_t3",
+      "reason": "mismo marco, entidades distintas (contentJ=0.13)",
+      "jacFull": 0.21052631578947367,
+      "jacContent": 0.125,
+      "a": "Bei Herrn lang ist ein Bügel der Sehhilfe abgebrochen; sie soll gerichtet werden.",
+      "b": "An Saras Reisegepäck ist eine Rolle abgebrochen, die ersetzt werden soll."
+    },
+    {
+      "file": "lesen-t3-auto-0ouon0.json",
+      "isT3": true,
+      "jacQuestionOnly": 0.176,
+      "class": "structural_t3",
+      "reason": "mismo marco, entidades distintas (contentJ=0.10)",
+      "jacFull": 0.17647058823529413,
+      "jacContent": 0.1,
+      "a": "Der Schüler Jan möchte die Sprache Russlands von Grund auf lernen.",
+      "b": "Herr Sami möchte die arabische Schrift und Sprache erlernen."
+    },
+    {
+      "file": "lesen-t3-auto-1g1gfz.json",
+      "isT3": true,
+      "jacQuestionOnly": 0.176,
+      "class": "structural_t3",
+      "reason": "mismo marco, entidades distintas (contentJ=0.10)",
+      "jacFull": 0.17647058823529413,
+      "jacContent": 0.1,
+      "a": "Der Schüler Jan möchte die Sprache Russlands von Grund auf lernen.",
+      "b": "Herr Sami möchte die arabische Schrift und Sprache erlernen."
+    },
+    {
+      "file": "lesen-t3-auto-1ticrt.json",
+      "isT3": true,
+      "jacQuestionOnly": 0.19,
+      "class": "structural_t3",
+      "reason": "mismo marco, entidades distintas (contentJ=0.17)",
+      "jacFull": 0.19047619047619047,
+      "jacContent": 0.16666666666666666,
+      "a": "An Lenas Holzstuhl für die kleine ist ein Bein locker; es soll gerichtet werden.",
+      "b": "Das kleine Laufrad von Bens Sohn hat ein kaputtes Rad, das ersetzt werden soll."
+    },
+    {
+      "file": "lesen-t3-auto-1u2l8c.json",
+      "isT3": true,
+      "jacQuestionOnly": 0.19,
+      "class": "structural_t3",
+      "reason": "mismo marco, entidades distintas (contentJ=0.17)",
+      "jacFull": 0.19047619047619047,
+      "jacContent": 0.16666666666666666,
+      "a": "An Lenas Holzstuhl für die kleine ist ein Bein locker; es soll gerichtet werden.",
+      "b": "Das kleine Laufrad von Bens Sohn hat ein kaputtes Rad, das ersetzt werden soll."
+    },
+    {
+      "file": "lesen-t3-auto-1vcafu.json",
+      "isT3": true,
+      "jacQuestionOnly": 0.211,
+      "class": "structural_t3",
+      "reason": "mismo marco, entidades distintas (contentJ=0.13)",
+      "jacFull": 0.21052631578947367,
+      "jacContent": 0.125,
+      "a": "Bei Herrn lang ist ein Bügel der Sehhilfe abgebrochen; sie soll gerichtet werden.",
+      "b": "An Saras Reisegepäck ist eine Rolle abgebrochen, die ersetzt werden soll."
+    },
+    {
+      "file": "lesen-t3-auto-2cm279.json",
+      "isT3": true,
+      "jacQuestionOnly": 0.19,
+      "class": "structural_t3",
+      "reason": "mismo marco, entidades distintas (contentJ=0.17)",
+      "jacFull": 0.19047619047619047,
+      "jacContent": 0.16666666666666666,
+      "a": "An Lenas Holzstuhl für die kleine ist ein Bein locker; es soll gerichtet werden.",
+      "b": "Das kleine Laufrad von Bens Sohn hat ein kaputtes Rad, das ersetzt werden soll."
+    },
+    {
+      "file": "lesen-t3-auto-2u81ll.json",
+      "isT3": true,
+      "jacQuestionOnly": 0.111,
+      "class": "structural_t3",
+      "reason": "mismo marco, entidades distintas (contentJ=0.00)",
+      "jacFull": 0.1111111111111111,
+      "jacContent": 0,
+      "a": "Die Studentin Mia kommt mit den Grundlagen der Betriebswirtschaft nicht klar.",
+      "b": "Der Erstsemester Tom braucht Hilfe bei den ersten Rechtsthemen."
+    },
+    {
+      "file": "lesen-t3-auto-33srkf.json",
+      "isT3": true,
+      "jacQuestionOnly": 0.111,
+      "class": "structural_t3",
+      "reason": "mismo marco, entidades distintas (contentJ=0.00)",
+      "jacFull": 0.1111111111111111,
+      "jacContent": 0,
+      "a": "Die Studentin Mia kommt mit den Grundlagen der Betriebswirtschaft nicht klar.",
+      "b": "Der Erstsemester Tom braucht Hilfe bei den ersten Rechtsthemen."
+    },
+    {
+      "file": "lesen-t3-auto-4v8o7g.json",
+      "isT3": true,
+      "jacQuestionOnly": 0.294,
+      "class": "structural_t3",
+      "reason": "mismo marco, entidades distintas (contentJ=0.18)",
+      "jacFull": 0.29411764705882354,
+      "jacContent": 0.18181818181818182,
+      "a": "Lena möchte lernen, eigene Kleidung selbst anzufertigen, und sucht einen Einsteigerkurs.",
+      "b": "Frau Held will warme Mützen selbst herstellen und sucht einen Einsteigerkurs."
+    },
+    {
+      "file": "lesen-t3-auto-5au6un.json",
+      "isT3": true,
+      "jacQuestionOnly": 0.176,
+      "class": "structural_t3",
+      "reason": "mismo marco, entidades distintas (contentJ=0.10)",
+      "jacFull": 0.17647058823529413,
+      "jacContent": 0.1,
+      "a": "Der Schüler Jan möchte die Sprache Russlands von Grund auf lernen.",
+      "b": "Herr Sami möchte die arabische Schrift und Sprache erlernen."
+    },
+    {
+      "file": "lesen-t3-auto-5hhflb.json",
+      "isT3": true,
+      "jacQuestionOnly": 0.19,
+      "class": "structural_t3",
+      "reason": "mismo marco, entidades distintas (contentJ=0.17)",
+      "jacFull": 0.19047619047619047,
+      "jacContent": 0.16666666666666666,
+      "a": "An Lenas Holzstuhl für die kleine ist ein Bein locker; es soll gerichtet werden.",
+      "b": "Das kleine Laufrad von Bens Sohn hat ein kaputtes Rad, das ersetzt werden soll."
+    },
+    {
+      "file": "lesen-t3-auto-64r4mz.json",
+      "isT3": true,
+      "jacQuestionOnly": 0.111,
+      "class": "structural_t3",
+      "reason": "mismo marco, entidades distintas (contentJ=0.00)",
+      "jacFull": 0.1111111111111111,
+      "jacContent": 0,
+      "a": "Die Studentin Mia kommt mit den Grundlagen der Betriebswirtschaft nicht klar.",
+      "b": "Der Erstsemester Tom braucht Hilfe bei den ersten Rechtsthemen."
+    },
+    {
+      "file": "lesen-t3-auto-650cms.json",
+      "isT3": true,
+      "jacQuestionOnly": 0.211,
+      "class": "structural_t3",
+      "reason": "mismo marco, entidades distintas (contentJ=0.13)",
+      "jacFull": 0.21052631578947367,
+      "jacContent": 0.125,
+      "a": "Bei Herrn lang ist ein Bügel der Sehhilfe abgebrochen; sie soll gerichtet werden.",
+      "b": "An Saras Reisegepäck ist eine Rolle abgebrochen, die ersetzt werden soll."
+    },
+    {
+      "file": "lesen-t3-auto-7f3sof.json",
+      "isT3": true,
+      "jacQuestionOnly": 0.176,
+      "class": "structural_t3",
+      "reason": "mismo marco, entidades distintas (contentJ=0.10)",
+      "jacFull": 0.17647058823529413,
+      "jacContent": 0.1,
+      "a": "Der Schüler Jan möchte die Sprache Russlands von Grund auf lernen.",
+      "b": "Herr Sami möchte die arabische Schrift und Sprache erlernen."
+    },
+    {
+      "file": "lesen-t3-auto-7ke4ej.json",
+      "isT3": true,
+      "jacQuestionOnly": 0.211,
+      "class": "structural_t3",
+      "reason": "mismo marco, entidades distintas (contentJ=0.13)",
+      "jacFull": 0.21052631578947367,
+      "jacContent": 0.125,
+      "a": "Bei Herrn lang ist ein Bügel der Sehhilfe abgebrochen; sie soll gerichtet werden.",
+      "b": "An Saras Reisegepäck ist eine Rolle abgebrochen, die ersetzt werden soll."
+    },
+    {
+      "file": "lesen-t3-auto-8nyjl4.json",
+      "isT3": true,
+      "jacQuestionOnly": 0.176,
+      "class": "structural_t3",
+      "reason": "mismo marco, entidades distintas (contentJ=0.10)",
+      "jacFull": 0.17647058823529413,
+      "jacContent": 0.1,
+      "a": "Der Schüler Jan möchte die Sprache Russlands von Grund auf lernen.",
+      "b": "Herr Sami möchte die arabische Schrift und Sprache erlernen."
+    },
+    {
+      "file": "lesen-t3-auto-8tv5wv.json",
+      "isT3": true,
+      "jacQuestionOnly": 0.211,
+      "class": "structural_t3",
+      "reason": "mismo marco, entidades distintas (contentJ=0.13)",
+      "jacFull": 0.21052631578947367,
+      "jacContent": 0.125,
+      "a": "Bei Herrn lang ist ein Bügel der Sehhilfe abgebrochen; sie soll gerichtet werden.",
+      "b": "An Saras Reisegepäck ist eine Rolle abgebrochen, die ersetzt werden soll."
+    },
+    {
+      "file": "lesen-t3-auto-95u8xx.json",
+      "isT3": true,
+      "jacQuestionOnly": 0.19,
+      "class": "structural_t3",
+      "reason": "mismo marco, entidades distintas (contentJ=0.17)",
+      "jacFull": 0.19047619047619047,
+      "jacContent": 0.16666666666666666,
+      "a": "An Lenas Holzstuhl für die kleine ist ein Bein locker; es soll gerichtet werden.",
+      "b": "Das kleine Laufrad von Bens Sohn hat ein kaputtes Rad, das ersetzt werden soll."
+    },
+    {
+      "file": "lesen-t3-auto-9ypb8f.json",
+      "isT3": true,
+      "jacQuestionOnly": 0.111,
+      "class": "structural_t3",
+      "reason": "mismo marco, entidades distintas (contentJ=0.00)",
+      "jacFull": 0.1111111111111111,
+      "jacContent": 0,
+      "a": "Die Studentin Mia kommt mit den Grundlagen der Betriebswirtschaft nicht klar.",
+      "b": "Der Erstsemester Tom braucht Hilfe bei den ersten Rechtsthemen."
+    },
+    {
+      "file": "lesen-t3-auto-ayfpm6.json",
+      "isT3": true,
+      "jacQuestionOnly": 0.211,
+      "class": "structural_t3",
+      "reason": "mismo marco, entidades distintas (contentJ=0.13)",
+      "jacFull": 0.21052631578947367,
+      "jacContent": 0.125,
+      "a": "Bei Herrn lang ist ein Bügel der Sehhilfe abgebrochen; sie soll gerichtet werden.",
+      "b": "An Saras Reisegepäck ist eine Rolle abgebrochen, die ersetzt werden soll."
+    },
+    {
+      "file": "lesen-t3-auto-cf704m.json",
+      "isT3": true,
+      "jacQuestionOnly": 0.176,
+      "class": "structural_t3",
+      "reason": "mismo marco, entidades distintas (contentJ=0.10)",
+      "jacFull": 0.17647058823529413,
+      "jacContent": 0.1,
+      "a": "Der Schüler Jan möchte die Sprache Russlands von Grund auf lernen.",
+      "b": "Herr Sami möchte die arabische Schrift und Sprache erlernen."
+    },
+    {
+      "file": "lesen-t3-auto-dnwjh5.json",
+      "isT3": true,
+      "jacQuestionOnly": 0.176,
+      "class": "structural_t3",
+      "reason": "mismo marco, entidades distintas (contentJ=0.10)",
+      "jacFull": 0.17647058823529413,
+      "jacContent": 0.1,
+      "a": "Der Schüler Jan möchte die Sprache Russlands von Grund auf lernen.",
+      "b": "Herr Sami möchte die arabische Schrift und Sprache erlernen."
+    },
+    {
+      "file": "lesen-t3-auto-euvmz3.json",
+      "isT3": true,
+      "jacQuestionOnly": 0.111,
+      "class": "structural_t3",
+      "reason": "mismo marco, entidades distintas (contentJ=0.00)",
+      "jacFull": 0.1111111111111111,
+      "jacContent": 0,
+      "a": "Die Studentin Mia kommt mit den Grundlagen der Betriebswirtschaft nicht klar.",
+      "b": "Der Erstsemester Tom braucht Hilfe bei den ersten Rechtsthemen."
+    },
+    {
+      "file": "lesen-t3-auto-fotjw3.json",
+      "isT3": true,
+      "jacQuestionOnly": 0.211,
+      "class": "structural_t3",
+      "reason": "mismo marco, entidades distintas (contentJ=0.13)",
+      "jacFull": 0.21052631578947367,
+      "jacContent": 0.125,
+      "a": "Bei Herrn lang ist ein Bügel der Sehhilfe abgebrochen; sie soll gerichtet werden.",
+      "b": "An Saras Reisegepäck ist eine Rolle abgebrochen, die ersetzt werden soll."
+    },
+    {
+      "file": "lesen-t3-auto-i4khxb.json",
+      "isT3": true,
+      "jacQuestionOnly": 0.111,
+      "class": "structural_t3",
+      "reason": "mismo marco, entidades distintas (contentJ=0.00)",
+      "jacFull": 0.1111111111111111,
+      "jacContent": 0,
+      "a": "Die Studentin Mia kommt mit den Grundlagen der Betriebswirtschaft nicht klar.",
+      "b": "Der Erstsemester Tom braucht Hilfe bei den ersten Rechtsthemen."
+    },
+    {
+      "file": "lesen-t3-auto-jae7ue.json",
+      "isT3": true,
+      "jacQuestionOnly": 0.211,
+      "class": "structural_t3",
+      "reason": "mismo marco, entidades distintas (contentJ=0.13)",
+      "jacFull": 0.21052631578947367,
+      "jacContent": 0.125,
+      "a": "Bei Herrn lang ist ein Bügel der Sehhilfe abgebrochen; sie soll gerichtet werden.",
+      "b": "An Saras Reisegepäck ist eine Rolle abgebrochen, die ersetzt werden soll."
+    },
+    {
+      "file": "lesen-t3-auto-juqpjs.json",
+      "isT3": true,
+      "jacQuestionOnly": 0.176,
+      "class": "structural_t3",
+      "reason": "mismo marco, entidades distintas (contentJ=0.10)",
+      "jacFull": 0.17647058823529413,
+      "jacContent": 0.1,
+      "a": "Der Schüler Jan möchte die Sprache Russlands von Grund auf lernen.",
+      "b": "Herr Sami möchte die arabische Schrift und Sprache erlernen."
+    },
+    {
+      "file": "lesen-t3-auto-jx5dzs.json",
+      "isT3": true,
+      "jacQuestionOnly": 0.176,
+      "class": "structural_t3",
+      "reason": "mismo marco, entidades distintas (contentJ=0.10)",
+      "jacFull": 0.17647058823529413,
+      "jacContent": 0.1,
+      "a": "Der Schüler Jan möchte die Sprache Russlands von Grund auf lernen.",
+      "b": "Herr Sami möchte die arabische Schrift und Sprache erlernen."
+    },
+    {
+      "file": "lesen-t3-auto-jzhmvx.json",
+      "isT3": true,
+      "jacQuestionOnly": 0.111,
+      "class": "structural_t3",
+      "reason": "mismo marco, entidades distintas (contentJ=0.00)",
+      "jacFull": 0.1111111111111111,
+      "jacContent": 0,
+      "a": "Die Studentin Mia kommt mit den Grundlagen der Betriebswirtschaft nicht klar.",
+      "b": "Der Erstsemester Tom braucht Hilfe bei den ersten Rechtsthemen."
+    },
+    {
+      "file": "lesen-t3-auto-n0lt9z.json",
+      "isT3": true,
+      "jacQuestionOnly": 0.19,
+      "class": "structural_t3",
+      "reason": "mismo marco, entidades distintas (contentJ=0.17)",
+      "jacFull": 0.19047619047619047,
+      "jacContent": 0.16666666666666666,
+      "a": "An Lenas Holzstuhl für die kleine ist ein Bein locker; es soll gerichtet werden.",
+      "b": "Das kleine Laufrad von Bens Sohn hat ein kaputtes Rad, das ersetzt werden soll."
+    },
+    {
+      "file": "lesen-t3-auto-ni5zr2.json",
+      "isT3": true,
+      "jacQuestionOnly": 0.211,
+      "class": "structural_t3",
+      "reason": "mismo marco, entidades distintas (contentJ=0.13)",
+      "jacFull": 0.21052631578947367,
+      "jacContent": 0.125,
+      "a": "Bei Herrn lang ist ein Bügel der Sehhilfe abgebrochen; sie soll gerichtet werden.",
+      "b": "An Saras Reisegepäck ist eine Rolle abgebrochen, die ersetzt werden soll."
+    },
+    {
+      "file": "lesen-t3-auto-onfx6s.json",
+      "isT3": true,
+      "jacQuestionOnly": 0.111,
+      "class": "structural_t3",
+      "reason": "mismo marco, entidades distintas (contentJ=0.00)",
+      "jacFull": 0.1111111111111111,
+      "jacContent": 0,
+      "a": "Die Studentin Mia kommt mit den Grundlagen der Betriebswirtschaft nicht klar.",
+      "b": "Der Erstsemester Tom braucht Hilfe bei den ersten Rechtsthemen."
+    },
+    {
+      "file": "lesen-t3-auto-pnkvg3.json",
+      "isT3": true,
+      "jacQuestionOnly": 0.19,
+      "class": "structural_t3",
+      "reason": "mismo marco, entidades distintas (contentJ=0.17)",
+      "jacFull": 0.19047619047619047,
+      "jacContent": 0.16666666666666666,
+      "a": "An Lenas Holzstuhl für die kleine ist ein Bein locker; es soll gerichtet werden.",
+      "b": "Das kleine Laufrad von Bens Sohn hat ein kaputtes Rad, das ersetzt werden soll."
+    },
+    {
+      "file": "lesen-t3-auto-qc9cvz.json",
+      "isT3": true,
+      "jacQuestionOnly": 0.211,
+      "class": "structural_t3",
+      "reason": "mismo marco, entidades distintas (contentJ=0.13)",
+      "jacFull": 0.21052631578947367,
+      "jacContent": 0.125,
+      "a": "Bei Herrn lang ist ein Bügel der Sehhilfe abgebrochen; sie soll gerichtet werden.",
+      "b": "An Saras Reisegepäck ist eine Rolle abgebrochen, die ersetzt werden soll."
+    },
+    {
+      "file": "lesen-t3-auto-qghdg5.json",
+      "isT3": true,
+      "jacQuestionOnly": 0.211,
+      "class": "structural_t3",
+      "reason": "mismo marco, entidades distintas (contentJ=0.13)",
+      "jacFull": 0.21052631578947367,
+      "jacContent": 0.125,
+      "a": "Bei Herrn lang ist ein Bügel der Sehhilfe abgebrochen; sie soll gerichtet werden.",
+      "b": "An Saras Reisegepäck ist eine Rolle abgebrochen, die ersetzt werden soll."
+    },
+    {
+      "file": "lesen-t3-auto-qk6x1k.json",
+      "isT3": true,
+      "jacQuestionOnly": 0.111,
+      "class": "structural_t3",
+      "reason": "mismo marco, entidades distintas (contentJ=0.00)",
+      "jacFull": 0.1111111111111111,
+      "jacContent": 0,
+      "a": "Die Studentin Mia kommt mit den Grundlagen der Betriebswirtschaft nicht klar.",
+      "b": "Der Erstsemester Tom braucht Hilfe bei den ersten Rechtsthemen."
+    },
+    {
+      "file": "lesen-t3-auto-t81jfr.json",
+      "isT3": true,
+      "jacQuestionOnly": 0.211,
+      "class": "structural_t3",
+      "reason": "mismo marco, entidades distintas (contentJ=0.13)",
+      "jacFull": 0.21052631578947367,
+      "jacContent": 0.125,
+      "a": "Bei Herrn lang ist ein Bügel der Sehhilfe abgebrochen; sie soll gerichtet werden.",
+      "b": "An Saras Reisegepäck ist eine Rolle abgebrochen, die ersetzt werden soll."
+    },
+    {
+      "file": "lesen-t3-auto-u7x6w8.json",
+      "isT3": true,
+      "jacQuestionOnly": 0.176,
+      "class": "structural_t3",
+      "reason": "mismo marco, entidades distintas (contentJ=0.10)",
+      "jacFull": 0.17647058823529413,
+      "jacContent": 0.1,
+      "a": "Der Schüler Jan möchte die Sprache Russlands von Grund auf lernen.",
+      "b": "Herr Sami möchte die arabische Schrift und Sprache erlernen."
+    },
+    {
+      "file": "lesen-t3-auto-vtrmc6.json",
+      "isT3": true,
+      "jacQuestionOnly": 0.211,
+      "class": "structural_t3",
+      "reason": "mismo marco, entidades distintas (contentJ=0.13)",
+      "jacFull": 0.21052631578947367,
+      "jacContent": 0.125,
+      "a": "Bei Herrn lang ist ein Bügel der Sehhilfe abgebrochen; sie soll gerichtet werden.",
+      "b": "An Saras Reisegepäck ist eine Rolle abgebrochen, die ersetzt werden soll."
+    },
+    {
+      "file": "lesen-t3-auto-w474fi.json",
+      "isT3": true,
+      "jacQuestionOnly": 0.211,
+      "class": "structural_t3",
+      "reason": "mismo marco, entidades distintas (contentJ=0.13)",
+      "jacFull": 0.21052631578947367,
+      "jacContent": 0.125,
+      "a": "Bei Herrn lang ist ein Bügel der Sehhilfe abgebrochen; sie soll gerichtet werden.",
+      "b": "An Saras Reisegepäck ist eine Rolle abgebrochen, die ersetzt werden soll."
+    },
+    {
+      "file": "lesen-t3-auto-x8ixj4.json",
+      "isT3": true,
+      "jacQuestionOnly": 0.294,
+      "class": "structural_t3",
+      "reason": "mismo marco, entidades distintas (contentJ=0.18)",
+      "jacFull": 0.29411764705882354,
+      "jacContent": 0.18181818181818182,
+      "a": "Lena möchte lernen, eigene Kleidung selbst anzufertigen, und sucht einen Einsteigerkurs.",
+      "b": "Frau Held will warme Mützen selbst herstellen und sucht einen Einsteigerkurs."
+    }
+  ],
+  "illustrationCounts": {
+    "structural_t3": 47,
+    "real_near_duplicate": 0,
+    "ambiguous": 0
+  },
+  "illustrations": {
+    "structural_t3": [
+      {
+        "file": "lesen-t3-auto-we7l2c.json",
+        "isT3": true,
+        "jacQuestionOnly": 0.176,
+        "class": "structural_t3",
+        "reason": "mismo marco, entidades distintas (contentJ=0.10)",
+        "jacFull": 0.17647058823529413,
+        "jacContent": 0.1,
+        "a": "Der Schüler Jan möchte die Sprache Russlands von Grund auf lernen.",
+        "b": "Herr Sami möchte die arabische Schrift und Sprache erlernen."
+      },
+      {
+        "file": "lesen-t3-auto-x4k027.json",
+        "isT3": true,
+        "jacQuestionOnly": 0.211,
+        "class": "structural_t3",
+        "reason": "mismo marco, entidades distintas (contentJ=0.13)",
+        "jacFull": 0.21052631578947367,
+        "jacContent": 0.125,
+        "a": "Bei Herrn lang ist ein Bügel der Sehhilfe abgebrochen; sie soll gerichtet werden.",
+        "b": "An Saras Reisegepäck ist eine Rolle abgebrochen, die ersetzt werden soll."
+      },
+      {
+        "file": "lesen-t3-auto-yii0su.json",
+        "isT3": true,
+        "jacQuestionOnly": 0.294,
+        "class": "structural_t3",
+        "reason": "mismo marco, entidades distintas (contentJ=0.18)",
+        "jacFull": 0.29411764705882354,
+        "jacContent": 0.18181818181818182,
+        "a": "Lena möchte lernen, eigene Kleidung selbst anzufertigen, und sucht einen Einsteigerkurs.",
+        "b": "Frau Held will warme Mützen selbst herstellen und sucht einen Einsteigerkurs."
+      },
+      {
+        "file": "lesen-t3-auto-yu9vyl.json",
+        "isT3": true,
+        "jacQuestionOnly": 0.111,
+        "class": "structural_t3",
+        "reason": "mismo marco, entidades distintas (contentJ=0.00)",
+        "jacFull": 0.1111111111111111,
+        "jacContent": 0,
+        "a": "Die Studentin Mia kommt mit den Grundlagen der Betriebswirtschaft nicht klar.",
+        "b": "Der Erstsemester Tom braucht Hilfe bei den ersten Rechtsthemen."
+      },
+      {
+        "file": "lesen-t3-auto-zspq8n.json",
+        "isT3": true,
+        "jacQuestionOnly": 0.19,
+        "class": "structural_t3",
+        "reason": "mismo marco, entidades distintas (contentJ=0.17)",
+        "jacFull": 0.19047619047619047,
+        "jacContent": 0.16666666666666666,
+        "a": "An Lenas Holzstuhl für die kleine ist ein Bein locker; es soll gerichtet werden.",
+        "b": "Das kleine Laufrad von Bens Sohn hat ein kaputtes Rad, das ersetzt werden soll."
+      },
+      {
+        "file": "lesen-t3-auto-0oquml.json",
+        "isT3": true,
+        "jacQuestionOnly": 0.211,
+        "class": "structural_t3",
+        "reason": "mismo marco, entidades distintas (contentJ=0.13)",
+        "jacFull": 0.21052631578947367,
+        "jacContent": 0.125,
+        "a": "Bei Herrn lang ist ein Bügel der Sehhilfe abgebrochen; sie soll gerichtet werden.",
+        "b": "An Saras Reisegepäck ist eine Rolle abgebrochen, die ersetzt werden soll."
+      },
+      {
+        "file": "lesen-t3-auto-0ouon0.json",
+        "isT3": true,
+        "jacQuestionOnly": 0.176,
+        "class": "structural_t3",
+        "reason": "mismo marco, entidades distintas (contentJ=0.10)",
+        "jacFull": 0.17647058823529413,
+        "jacContent": 0.1,
+        "a": "Der Schüler Jan möchte die Sprache Russlands von Grund auf lernen.",
+        "b": "Herr Sami möchte die arabische Schrift und Sprache erlernen."
+      },
+      {
+        "file": "lesen-t3-auto-1g1gfz.json",
+        "isT3": true,
+        "jacQuestionOnly": 0.176,
+        "class": "structural_t3",
+        "reason": "mismo marco, entidades distintas (contentJ=0.10)",
+        "jacFull": 0.17647058823529413,
+        "jacContent": 0.1,
+        "a": "Der Schüler Jan möchte die Sprache Russlands von Grund auf lernen.",
+        "b": "Herr Sami möchte die arabische Schrift und Sprache erlernen."
+      }
+    ],
+    "real_near_duplicate": [],
+    "ambiguous": []
+  }
+}

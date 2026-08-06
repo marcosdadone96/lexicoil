@@ -11,6 +11,7 @@ const {
   creditsForPack,
 } = require('./creditPacksLib.js');
 const { resolvePlan } = require('./quotaLib.js');
+const PersonalPoolQuota = require('../../../js/library/personalPoolQuota.js');
 const {
   aiMaxForPlan,
   isFreeAiTrialActive,
@@ -28,13 +29,18 @@ const {
 } = require('./aiQuotaState.js');
 
 const AI_COSTS = {
-  personal_exam: 3,
+  personal_exam: 4,
+  personal_lesen: 0,
+  personal_horen: 0,
+  personal_schreiben: 2,
+  personal_sprechen_gen: 2,
   vocab_quiz: 2,
   writing_correction: 1,
   grammar_coaching: 1,
   speaking: 2,
   speaking_realtime: 4,
-  listening_game: 1,
+  listening_game: 2,
+  vocab_phrases: 1,
   tts: 1,
 };
 
@@ -63,9 +69,10 @@ async function readNormalizedQuota(state) {
   return rec;
 }
 
-function creditsResponse(rec) {
+function creditsResponse(rec, plan) {
   const remaining = computeAiRemaining(rec);
   const totalPool = computeAiTotalPool(rec);
+  const p = plan || 'free';
   return {
     used: rec.aiUsed,
     max: rec.aiMax,
@@ -76,6 +83,16 @@ function creditsResponse(rec) {
     overdraft: rec.overdraft,
     month: rec.month,
     autoRecharge: rec.autoRecharge,
+    personalLesenUsed: Math.max(0, Number(rec.personalLesenUsed) || 0),
+    personalHorenUsed: Math.max(0, Number(rec.personalHorenUsed) || 0),
+    personalLesenMax: PersonalPoolQuota.maxFor(p, 'lesen'),
+    personalHorenMax: PersonalPoolQuota.maxFor(p, 'horen'),
+    bgGenCountMonth: Math.max(0, Number(rec.bgGenCountMonth) || 0),
+    bgGenLesenCount: Math.max(0, Number(rec.bgGenLesenCount) || 0),
+    bgGenHorenCount: Math.max(0, Number(rec.bgGenHorenCount) || 0),
+    bgVocabPendingCount: Math.max(0, Number(rec.bgVocabPendingCount) || 0),
+    bgVocabIneligibleCount: Math.max(0, (rec.bgVocabIneligible || []).length),
+    bgVocabDroppedCount: Math.max(0, Number(rec.bgVocabDroppedCount) || 0),
   };
 }
 
@@ -97,7 +114,7 @@ async function getAiCredits(event) {
   }
   const rec = await readNormalizedQuota(state);
   return {
-    ...creditsResponse(rec),
+    ...creditsResponse(rec, state.plan),
     plan: state.plan,
     email: state.email,
     trialActive: state.plan === 'free' && isFreeAiTrialActive(state.user),
@@ -105,10 +122,15 @@ async function getAiCredits(event) {
   };
 }
 
+function resolveAiCost(action) {
+  if (!Object.prototype.hasOwnProperty.call(AI_COSTS, action)) return null;
+  return AI_COSTS[action];
+}
+
 /** Pre-flight: enough balance (or courtesy buffer). Does NOT deduct. */
 async function checkAiCredits(event, action) {
-  const cost = AI_COSTS[action];
-  if (!cost) return { ok: false, error: 'unknown_action', remaining: 0 };
+  const cost = resolveAiCost(action);
+  if (cost === null) return { ok: false, error: 'unknown_action', remaining: 0 };
   const state = await getQuotaState(event);
   if (!state.ok) {
     if (state.error === 'token_revoked') {
@@ -131,6 +153,18 @@ async function checkAiCredits(event, action) {
   }
 
   const rec = await readNormalizedQuota(state);
+  if (cost === 0) {
+    const remaining = computeAiRemaining(rec);
+    return {
+      ok: true,
+      remaining,
+      max: rec.aiMax,
+      used: rec.aiUsed,
+      cost: 0,
+      email: state.email,
+      totalPool: computeAiTotalPool(rec),
+    };
+  }
   const afford = canAffordAiCost(rec, cost);
   if (!afford.ok) {
     const auto = isPaidPlan(state.plan)
@@ -187,8 +221,8 @@ async function checkAiCredits(event, action) {
 
 /** Deduct credits before or after a successful AI response (atomic CAS + optional idempotency). */
 async function confirmAiCreditConsumption(event, action, opts = {}) {
-  const cost = AI_COSTS[action];
-  if (!cost) return null;
+  const cost = resolveAiCost(action);
+  if (cost === null) return null;
   const state = await getQuotaState(event);
   if (!state.ok || !state.authenticated) return null;
   if (!checkActionAccess(state.plan, action).ok) return null;
@@ -213,6 +247,21 @@ async function confirmAiCreditConsumption(event, action, opts = {}) {
         creditTopups: rec.creditTopups,
         overdraft: rec.overdraft,
       };
+      if (cost === 0) {
+        const remaining = computeAiRemaining(rec);
+        return {
+          payload: buildQuotaPayload(rec),
+          result: {
+            aiUsed: rec.aiUsed,
+            aiMax: rec.aiMax,
+            aiRemaining: remaining,
+            remaining,
+            cost: 0,
+            noCharge: true,
+            before,
+          },
+        };
+      }
       const afford = canAffordAiCost(rec, cost);
       if (!afford.ok) {
         return {
@@ -274,8 +323,9 @@ async function confirmAiCreditConsumption(event, action, opts = {}) {
 
 /** Refund AI credits after a failed call that already charged (CAS + idempotent by requestId). */
 async function releaseAiCreditConsumption(event, action, opts = {}) {
-  const cost = AI_COSTS[action];
-  if (!cost) return null;
+  const cost = resolveAiCost(action);
+  if (cost === null) return null;
+  if (cost === 0) return { skipped: true, reason: 'zero_cost' };
   const requestId = opts.requestId || null;
   if (!requestId) return { skipped: true, reason: 'no_request_id' };
 
@@ -521,6 +571,7 @@ async function attemptAutoRecharge(event, state, rec) {
 
 module.exports = {
   AI_COSTS,
+  resolveAiCost,
   CREDIT_PACKS,
   checkActionAccess,
   aiMaxForPlan,

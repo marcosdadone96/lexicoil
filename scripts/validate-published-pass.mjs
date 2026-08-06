@@ -136,7 +136,7 @@ const ManualVocab = loadVocab();
 
 console.log('\n=== Catalog ===');
 const catalog = JSON.parse(fs.readFileSync(path.join(DIR, '_catalog.json'), 'utf8'));
-ok(catalog.exams?.length === 5, 'catalog has 5 exams');
+ok(catalog.exams?.length === 1, 'catalog has 1 exam');
 ok(catalog.exams.every((e) => e.status === 'live'), 'all exams status=live');
 
 console.log('\n=== Vocab POS (inferPos) ===');
@@ -153,7 +153,7 @@ for (const [word, expect] of posCases) {
 }
 
 console.log('\n=== Per-exam pipeline ===');
-for (let n = 1; n <= 5; n++) {
+for (let n = 1; n <= 1; n++) {
   const examId = `official-de-B1-e${n}`;
   console.log(`\n--- E${n} ---`);
   const doc = JSON.parse(fs.readFileSync(path.join(DIR, `${examId}.json`), 'utf8'));
@@ -232,4 +232,4 @@ if (failures) {
   console.error(`\n❌ ${failures} check(s) failed`);
   process.exit(1);
 }
-console.log('\n✅ Validation pass complete — E1–E5 OK locally');
+console.log('\n✅ Validation pass complete — E1 OK locally');

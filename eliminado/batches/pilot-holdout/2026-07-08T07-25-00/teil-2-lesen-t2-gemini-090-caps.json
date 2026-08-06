@@ -1,0 +1,80 @@
+{
+  "gateVersion": "v6.1-B-G2 (frozen)",
+  "file": "lesen-t2-gemini-090.json",
+  "teil": 2,
+  "textFields": 32,
+  "findings": {
+    "blocking": 1,
+    "observations": 0,
+    "byReason": {
+      "verb_census_no_finite": 1
+    },
+    "byRegime": {
+      "PROSE": 1
+    },
+    "byField": {
+      "questions.options": 1
+    },
+    "list": [
+      {
+        "type": "wrong_capitalized",
+        "word": "Experten",
+        "pos": "NOUN",
+        "tag": "NN",
+        "confidence": "high",
+        "reason": "verb_census_no_finite",
+        "context": "b) Nur Experten, die Pflanzen studieren",
+        "prevWord": "Nur",
+        "prevPos": "ADV",
+        "prevTag": "ADV",
+        "textIndex": 0,
+        "regime": "PROSE",
+        "field": "questions.options",
+        "id": "lesen-t2-gemini-090.json::questions.options::10",
+        "file": "lesen-t2-gemini-090.json",
+        "textPreview": "b) Nur Experten, die Pflanzen studieren."
+      }
+    ]
+  },
+  "observations": [],
+  "expected": {
+    "dominantRegime": "PROSE",
+    "telegraphicFpExpected": 0,
+    "notes": "Dos textos largos; homógrafos verbales frecuentes en generación IA."
+  },
+  "comparison": {
+    "calibrationPoolFindingsThisTeil": 36,
+    "calibrationAvgPerFile": 3.3,
+    "pilotFindings": 1,
+    "deltaVsCalAvg": -2.3,
+    "telegraphicFindings": 0,
+    "telegraphicFpExpected": 0,
+    "telegraphicOk": true
+  },
+  "qualityGate": {
+    "errors": [],
+    "warnings": [
+      "Mayúsculas alemanas: wrong_capitalized: «Experten» (NN) [high] en questions.options — …b) Nur Experten, die Pflanzen studieren…"
+    ]
+  },
+  "qualitative": {
+    "textFieldCount": 32,
+    "gateFindings": 1,
+    "gateObservations": 0,
+    "issues": {
+      "educationalPhrases": [],
+      "suspiciousCapsInText": [
+        {
+          "kind": "passage",
+          "snippet": "Immer mehr Firmen erkennen, wie wichtig die Gesundheit ihrer Mitarbeiter ist. Eine neue Umfrage zeigt, dass gesunde Ernä"
+        }
+      ],
+      "veryLongSentences": [],
+      "b1Notes": [
+        "Longitud media coherente con B1"
+      ],
+      "newPatterns": []
+    },
+    "samplePassage": "Ein Spaziergang im Park oder ein Ausflug in den Wald kann Wunder wirken. Viele Menschen entdecken neu, wie wichtig die Natur für ihre Gesundheit ist. Eine aktuelle Studie zeigt, dass regelmäßige Zeit im Grünen Stress reduziert und die Stimmung verbessert. Besonders Bewohner großer Städte suchen oft nach Möglichkeiten, dem Alltag zu entfliehen und frische Luft zu atmen. Ein Programm der Stadt biete"
+  }
+}

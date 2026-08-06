@@ -1,0 +1,43 @@
+{
+  "generatedAt": "2026-07-12T21:55:31.257Z",
+  "lab": true,
+  "uiWired": false,
+  "url": "http://127.0.0.1:8787/lab/speaking-live-mic.html",
+  "checks": {
+    "health": {
+      "ok": true,
+      "lab": true,
+      "uiWired": false,
+      "implementationStatus": "lab_internal",
+      "geminiKeyPresent": true,
+      "htmlExists": true
+    },
+    "html": {
+      "status": 200,
+      "hasLabBanner": true,
+      "hasPttButton": true,
+      "hasTimer": true,
+      "hasPersonas": true,
+      "notProductionUi": true
+    },
+    "mint": {
+      "status": 200,
+      "ok": true,
+      "lab": true,
+      "implementationStatus": "lab_internal",
+      "tokenPrefix": "auth_tokens/0b7eaa0b25cd",
+      "ptt": true,
+      "activityHandling": "NO_INTERRUPTION",
+      "displayName": "Alex"
+    },
+    "ws": {
+      "setupComplete": true,
+      "closeAfterSetup": true,
+      "ok": true
+    }
+  },
+  "errors": [],
+  "ok": true,
+  "operatorUrl": "http://127.0.0.1:8787/lab/speaking-live-mic.html",
+  "howToRun": "node scripts/lab-speaking-live-mic-server.mjs"
+}

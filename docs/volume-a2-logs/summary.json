@@ -1,0 +1,167 @@
+[
+  {
+    "cell": "lesen-t1",
+    "label": "Lesen A2 T1",
+    "attempts": 6,
+    "verified": 2,
+    "results": [
+      {
+        "attempt": 1,
+        "log": "lesen-t1-attempt-01.log",
+        "status": "pool-reject",
+        "file": "lesen-t1-gemini-198.json",
+        "reasons": "REJECT → needs-regeneration/A2/lesen-t1-gemini-198.json (content_topic_mismatch) REJECT → needs-regeneration/A2/lesen-t1-gemini-198.json (content_topic_mismatch) REJECT → needs-regeneration/A2/lesen-t1-gemini-198.json (content_topic_mismatch)",
+        "exitCode": 1,
+        "apiCalls": "6"
+      },
+      {
+        "attempt": 2,
+        "log": "lesen-t1-attempt-02.log",
+        "status": "pool-verified",
+        "file": "lesen-t1-gemini-199.json",
+        "exitCode": 0,
+        "apiCalls": "5"
+      },
+      {
+        "attempt": 3,
+        "log": "lesen-t1-attempt-03.log",
+        "status": "discarded",
+        "exitCode": 1,
+        "apiCalls": "8"
+      },
+      {
+        "attempt": 4,
+        "log": "lesen-t1-attempt-04.log",
+        "status": "discarded",
+        "exitCode": 1,
+        "apiCalls": "8"
+      },
+      {
+        "attempt": 5,
+        "log": "lesen-t1-attempt-05.log",
+        "status": "pool-verified",
+        "file": "lesen-t1-gemini-200.json",
+        "exitCode": 0,
+        "apiCalls": "1"
+      },
+      {
+        "attempt": 6,
+        "log": "lesen-t1-attempt-06.log",
+        "status": "discarded",
+        "exitCode": 1,
+        "apiCalls": "8"
+      }
+    ]
+  },
+  {
+    "cell": "horen-t2",
+    "label": "Hören A2 T2",
+    "attempts": 6,
+    "verified": 6,
+    "results": [
+      {
+        "attempt": 1,
+        "log": "horen-t2-attempt-01.log",
+        "status": "pool-verified",
+        "file": "horen-t2-gemini-069.json",
+        "exitCode": 0,
+        "apiCalls": "1"
+      },
+      {
+        "attempt": 2,
+        "log": "horen-t2-attempt-02.log",
+        "status": "pool-verified",
+        "file": "horen-t2-gemini-070.json",
+        "exitCode": 0,
+        "apiCalls": "1"
+      },
+      {
+        "attempt": 3,
+        "log": "horen-t2-attempt-03.log",
+        "status": "pool-verified",
+        "file": "horen-t2-gemini-071.json",
+        "exitCode": 0,
+        "apiCalls": "1"
+      },
+      {
+        "attempt": 4,
+        "log": "horen-t2-attempt-04.log",
+        "status": "pool-verified",
+        "file": "horen-t2-gemini-072.json",
+        "exitCode": 0,
+        "apiCalls": "2"
+      },
+      {
+        "attempt": 5,
+        "log": "horen-t2-attempt-05.log",
+        "status": "pool-verified",
+        "file": "horen-t2-gemini-073.json",
+        "exitCode": 0,
+        "apiCalls": "3"
+      },
+      {
+        "attempt": 6,
+        "log": "horen-t2-attempt-06.log",
+        "status": "pool-verified",
+        "file": "horen-t2-gemini-074.json",
+        "exitCode": 0,
+        "apiCalls": "1"
+      }
+    ]
+  },
+  {
+    "cell": "horen-t3",
+    "label": "Hören A2 T3",
+    "attempts": 6,
+    "verified": 5,
+    "results": [
+      {
+        "attempt": 1,
+        "log": "horen-t3-attempt-01.log",
+        "status": "pool-verified",
+        "file": "horen-t3-gemini-040.json",
+        "exitCode": 0,
+        "apiCalls": "2"
+      },
+      {
+        "attempt": 2,
+        "log": "horen-t3-attempt-02.log",
+        "status": "pool-verified",
+        "file": "horen-t3-gemini-041.json",
+        "exitCode": 0,
+        "apiCalls": "2"
+      },
+      {
+        "attempt": 3,
+        "log": "horen-t3-attempt-03.log",
+        "status": "pool-verified",
+        "file": "horen-t3-gemini-042.json",
+        "exitCode": 0,
+        "apiCalls": "2"
+      },
+      {
+        "attempt": 4,
+        "log": "horen-t3-attempt-04.log",
+        "status": "discarded",
+        "exitCode": 1,
+        "apiCalls": "10"
+      },
+      {
+        "attempt": 5,
+        "log": "horen-t3-attempt-05.log",
+        "status": "pool-verified",
+        "file": "horen-t3-gemini-043.json",
+        "exitCode": 0,
+        "apiCalls": "3"
+      },
+      {
+        "attempt": 6,
+        "log": "horen-t3-attempt-06.log",
+        "status": "pool-verified",
+        "file": "horen-t3-gemini-044.json",
+        "exitCode": 0,
+        "apiCalls": "2"
+      }
+    ]
+  }
+]

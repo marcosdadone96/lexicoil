@@ -1,0 +1,233 @@
+{
+  "generatedAt": "2026-07-13T20:50:48.556Z",
+  "note": "Greedy union of top-N scored parts per Teil via pickReusablePartByVocab (production scorer).",
+  "strategies": [
+    {
+      "partsPerTeil": 1,
+      "avgCoveragePct": 7.7,
+      "maxCoveragePct": 13.6,
+      "cases": [
+        {
+          "caseId": 1,
+          "module": "lesen",
+          "topic": "Umwelt",
+          "requested": 5,
+          "covered": 0,
+          "pct": 0
+        },
+        {
+          "caseId": 2,
+          "module": "lesen",
+          "topic": "Umwelt",
+          "requested": 15,
+          "covered": 1,
+          "pct": 6.7
+        },
+        {
+          "caseId": 4,
+          "module": "lesen",
+          "topic": "Arbeit",
+          "requested": 20,
+          "covered": 1,
+          "pct": 5
+        },
+        {
+          "caseId": 8,
+          "module": "horen",
+          "topic": "Arbeit",
+          "requested": 15,
+          "covered": 1,
+          "pct": 6.7
+        },
+        {
+          "caseId": 11,
+          "module": "lesen",
+          "topic": "Bildung",
+          "requested": 25,
+          "covered": 3,
+          "pct": 12
+        },
+        {
+          "caseId": 12,
+          "module": "horen",
+          "topic": "Umwelt",
+          "requested": 18,
+          "covered": 2,
+          "pct": 11.1
+        },
+        {
+          "caseId": 14,
+          "module": "horen",
+          "topic": "Technik",
+          "requested": 22,
+          "covered": 3,
+          "pct": 13.6
+        },
+        {
+          "caseId": 15,
+          "module": "lesen",
+          "topic": "Gesundheit",
+          "requested": 15,
+          "covered": 1,
+          "pct": 6.7
+        }
+      ]
+    },
+    {
+      "partsPerTeil": 2,
+      "avgCoveragePct": 9,
+      "maxCoveragePct": 16.7,
+      "cases": [
+        {
+          "caseId": 1,
+          "module": "lesen",
+          "topic": "Umwelt",
+          "requested": 5,
+          "covered": 0,
+          "pct": 0
+        },
+        {
+          "caseId": 2,
+          "module": "lesen",
+          "topic": "Umwelt",
+          "requested": 15,
+          "covered": 1,
+          "pct": 6.7
+        },
+        {
+          "caseId": 4,
+          "module": "lesen",
+          "topic": "Arbeit",
+          "requested": 20,
+          "covered": 2,
+          "pct": 10
+        },
+        {
+          "caseId": 8,
+          "module": "horen",
+          "topic": "Arbeit",
+          "requested": 15,
+          "covered": 1,
+          "pct": 6.7
+        },
+        {
+          "caseId": 11,
+          "module": "lesen",
+          "topic": "Bildung",
+          "requested": 25,
+          "covered": 3,
+          "pct": 12
+        },
+        {
+          "caseId": 12,
+          "module": "horen",
+          "topic": "Umwelt",
+          "requested": 18,
+          "covered": 3,
+          "pct": 16.7
+        },
+        {
+          "caseId": 14,
+          "module": "horen",
+          "topic": "Technik",
+          "requested": 22,
+          "covered": 3,
+          "pct": 13.6
+        },
+        {
+          "caseId": 15,
+          "module": "lesen",
+          "topic": "Gesundheit",
+          "requested": 15,
+          "covered": 1,
+          "pct": 6.7
+        }
+      ]
+    },
+    {
+      "partsPerTeil": 3,
+      "avgCoveragePct": 9.7,
+      "maxCoveragePct": 16.7,
+      "cases": [
+        {
+          "caseId": 1,
+          "module": "lesen",
+          "topic": "Umwelt",
+          "requested": 5,
+          "covered": 0,
+          "pct": 0
+        },
+        {
+          "caseId": 2,
+          "module": "lesen",
+          "topic": "Umwelt",
+          "requested": 15,
+          "covered": 1,
+          "pct": 6.7
+        },
+        {
+          "caseId": 4,
+          "module": "lesen",
+          "topic": "Arbeit",
+          "requested": 20,
+          "covered": 3,
+          "pct": 15
+        },
+        {
+          "caseId": 8,
+          "module": "horen",
+          "topic": "Arbeit",
+          "requested": 15,
+          "covered": 1,
+          "pct": 6.7
+        },
+        {
+          "caseId": 11,
+          "module": "lesen",
+          "topic": "Bildung",
+          "requested": 25,
+          "covered": 3,
+          "pct": 12
+        },
+        {
+          "caseId": 12,
+          "module": "horen",
+          "topic": "Umwelt",
+          "requested": 18,
+          "covered": 3,
+          "pct": 16.7
+        },
+        {
+          "caseId": 14,
+          "module": "horen",
+          "topic": "Technik",
+          "requested": 22,
+          "covered": 3,
+          "pct": 13.6
+        },
+        {
+          "caseId": 15,
+          "module": "lesen",
+          "topic": "Gesundheit",
+          "requested": 15,
+          "covered": 1,
+          "pct": 6.7
+        }
+      ]
+    }
+  ],
+  "designContext": {
+    "currentProduction": "1 part per Teil, greedy on remaining lemmas (assembleModuleFromPool, examGeneration.js)",
+    "consciousDesign": true,
+    "rationale": [
+      "Matches Goethe B1 blueprint: one passage block per Teil slot",
+      "Simple assembly, predictable exam length, single topic per Teil",
+      "O(parts) pick cost; multi-part multiplies passages or requires composite UI"
+    ],
+    "implementationIfMultiPart": {
+      "algorithmEffort": "Low — loop pickReusablePartByVocab N times per Teil with excludeIds",
+      "productEffort": "Medium–High — PDF/UI must render N passages per Teil; renumbering; user expects 1 text per Teil",
+      "blueprintConflict": "Official format has fixed Teil structure; extra parts = non-standard exam unless merged into one composite passage"
+    }
+  }
+}

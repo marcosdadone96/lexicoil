@@ -1,0 +1,448 @@
+/**
+ * semanticValidator.mjs — SEM-1: Truth enforcement layer para ingestión al pool.
+ *
+ * Valida una parte curada con una llamada LLM acotada (una vez por parte).
+ * Resultado cacheado por hash de contenido: la segunda llamada sobre la misma
+ * parte reutiliza el cache sin tocar el LLM.
+ *
+ * Solo aplica a módulos con MCQ (lesen, horen). Schreiben/Sprechen → ok:true directo.
+ *
+ * Checks (en una sola llamada LLM):
+ *   1. correctness — ¿la clave marcada es la única correcta según el texto?
+ *   2. ambiguity   — ¿hay ≥2 opciones defendibles como correctas?
+ *   3. distractor  — ¿algún distractor es absurdo/imposible o demasiado obvio?
+ *   4. template    — ¿el pasaje repite un molde temático ya visto en esta sesión?
+ *   (explanation eliminado: CHK-18 cubre longitud/trivialidad estructuralmente)
+ *
+ * Umbral de confianza: CONFIDENCE_THRESHOLD = 0.85.
+ * Solo issues con conf ≥ 0.85 bloquean. El ruido (conf ≤ 0.60) queda descartado.
+ *
+ * Exporta:
+ *   validatePartSemantics(part, opts?)   → Promise<{ ok, issues }>
+ *   clearSemanticCache()                 → void
+ *   clearTemplateRegistry()              → void
+ *   getTemplateRegistry()                → Map<string,string>  (para tests)
+ *   _setLlmFn(fn)                        → void  (inyección para tests)
+ */
+
+import crypto from 'node:crypto';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
+
+// Issues below this confidence are discarded (calibration shows clean separation at 0.85).
+const CONFIDENCE_THRESHOLD = 0.85;
+
+// ─── LLM backend (swappable for tests) ─────────────────────────────────────
+let _llmFn = null; // set by tests; null → use real geminiClient
+
+async function callSemanticLlm(prompt) {
+  if (_llmFn) return _llmFn(prompt);
+
+  // Provider selection: Claude-first (consistent with project convention).
+  // Set SEMANTIC_USE_GEMINI=1 to prefer Gemini instead.
+  const useGemini =
+    !!process.env.SEMANTIC_USE_GEMINI &&
+    !!(process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY);
+
+  if (useGemini) {
+    const { generateContent } = await import('./geminiClient.mjs');
+    return generateContent({ prompt, jsonMode: true, maxRetries: 2, maxTokens: 1024, temperature: 0.1 });
+  }
+
+  const { generateContent } = await import('./claudeClient.mjs');
+  return generateContent({ prompt, maxRetries: 2, maxTokens: 1024 });
+}
+
+export function _setLlmFn(fn) {
+  _llmFn = fn;
+}
+
+// ─── In-memory caches ────────────────────────────────────────────────────────
+/** contentHash → { ok, issues } */
+const _resultCache = new Map();
+
+/** Jaccard fingerprint string → partId (template registry, per session) */
+const _templateRegistry = new Map();
+
+export function clearSemanticCache() {
+  _resultCache.clear();
+}
+
+export function clearTemplateRegistry() {
+  _templateRegistry.clear();
+}
+
+export function getTemplateRegistry() {
+  return _templateRegistry;
+}
+
+// ─── Content hash ───────────────────────────────────────────────────────────
+function contentHash(part) {
+  const h = crypto.createHash('sha256');
+  h.update(String(part.module || ''));
+  h.update(String(part.teil || ''));
+  h.update(JSON.stringify(part.passage || {}));
+  h.update(JSON.stringify(part.segments || []));
+  h.update(JSON.stringify(part.questions || []));
+  return h.digest('hex').slice(0, 32);
+}
+
+// ─── Part context extraction ─────────────────────────────────────────────────
+/**
+ * Extract the passage text + MCQ questions from a seed record.
+ * Returns null if the part has no auditable MCQ content (e.g. Schreiben).
+ */
+function extractPartContext(part) {
+  const module = String(part.module || '').toLowerCase();
+
+  // Schreiben / Sprechen: no MCQ → skip semantic validation
+  if (module === 'schreiben' || module === 'sprechen') return null;
+
+  // Collect passage text
+  const passageText = collectPassageText(part);
+
+  // Collect MCQ questions (type must be MCQ/RF/matching)
+  const MCQ_TYPES = new Set(['multiple_choice', 'multiple', 'richtig_falsch', 'true_false', 'matching', 'ja_nein']);
+  const allQs = collectQuestions(part);
+  const mcqs = allQs.filter((q) => MCQ_TYPES.has(String(q.type || '').toLowerCase()));
+
+  if (!mcqs.length) return null; // nothing to validate semantically
+
+  return { module, teil: part.teil, passageText, questions: mcqs };
+}
+
+function collectPassageText(part) {
+  const chunks = [];
+  const seen = new Set();
+  const add = (t) => { const s = String(t || '').trim(); if (s && !seen.has(s)) { seen.add(s); chunks.push(s); } };
+
+  // Single passage (Lesen T1/T3/T5, Hören T4 batch)
+  const p = part.passage;
+  if (p) {
+    add(p.text);
+    if (p.title && p.title !== p.text) add(p.title);
+    if (Array.isArray(p.passages)) p.passages.forEach((pp) => { if (pp?.text) add(pp.text); });
+    // p.transcript: skip if same content as p.text (H4 records store it in both)
+    if (p.transcript && p.transcript !== p.text) add(p.transcript);
+  }
+  // Multi-passage parts (Lesen T2 batch/record: part.passages[] instead of part.passage)
+  for (const pp of (part.passages || [])) {
+    if (pp?.text) add(pp.text);
+    if (pp?.title && pp.title !== pp.text) add(pp.title);
+  }
+  for (const seg of part.segments || []) {
+    if (seg.transcript) add(seg.transcript);
+    else if (seg.text) add(seg.text);
+  }
+  for (const ad of part.ads || []) {
+    if (ad.text) add(ad.text);
+    if (ad.title) add(ad.title);
+  }
+  return chunks.join('\n\n').trim();
+}
+
+function collectQuestions(part) {
+  const qs = [];
+  // Direct questions
+  for (const q of part.questions || []) qs.push(q);
+  // Items (L3/L4)
+  for (const it of part.items || []) qs.push(it);
+  // Segment questions (H1)
+  for (const seg of part.segments || []) {
+    for (const q of seg.questions || []) qs.push(q);
+  }
+  return qs;
+}
+
+// ─── Prompt builder ─────────────────────────────────────────────────────────
+function optionText(o) {
+  // Options may be plain strings OR {key, text} / {value, label} objects
+  if (typeof o === 'string') return o.trim();
+  if (o && typeof o === 'object') return String(o.text ?? o.label ?? o.value ?? o.key ?? '').trim();
+  return String(o ?? '').trim();
+}
+
+function formatOptions(q) {
+  const opts = q.options || [];
+  if (!opts.length) return '  (sin opciones — pregunta Richtig/Falsch o Ja/Nein)';
+  return opts.map((o, i) => {
+    const letter = String.fromCharCode(97 + i);
+    const text = optionText(o);
+    // Avoid "a) a) Lena" when option text already starts with "a)"
+    const alreadyPrefixed = /^[a-e]\)\s*/i.test(text);
+    return `  ${letter}) ${alreadyPrefixed ? text.replace(/^[a-e]\)\s*/i, '') : text}`;
+  }).join('\n');
+}
+
+function buildPrompt(ctx) {
+  const { passageText, questions, module, teil } = ctx;
+
+  const qBlocks = questions
+    .slice(0, 8) // cap at 8 to keep prompt bounded
+    .map((q) => {
+      const correctLetter = String(q.correct ?? q.correctAnswer ?? '');
+      const opts = q.options || [];
+      const correctText =
+        correctLetter.length === 1
+          ? opts[correctLetter.charCodeAt(0) - 97] || ''
+          : correctLetter;
+      const lines = [
+        `PREGUNTA [${q.id || '?'}]: ${q.question || ''}`,
+      ];
+      // L4 (ja_nein / opinion): include the full opinion text so the LLM can
+      // verify if the marked Ja/Nein answer matches the stated stance.
+      if (q.signText && String(q.signText).trim()) {
+        lines.push(`Texto de la persona:\n${q.signText.trim()}`);
+      }
+      if (opts.length) lines.push(formatOptions(q));
+      lines.push(`Clave: ${correctLetter}${correctText ? ` → "${correctText}"` : ''}`);
+      lines.push(q.explanation ? `Explicación: ${q.explanation}` : '(sin explicación)');
+      return lines.join('\n');
+    })
+    .join('\n\n');
+
+  // For L4 (ja_nein opinion format): the "TEXTO" above is the shared intro.
+  // Each question has its own "Texto de la persona" (signText) that must be
+  // topically relevant to the question and justify the Ja/Nein answer.
+  const isOpinionFormat = questions.some((q) => q.signText);
+
+  return `Eres un evaluador experto de exámenes de alemán nivel Goethe B1.
+Módulo: ${module.toUpperCase()}, Teil ${teil}.${isOpinionFormat ? `
+Formato: OPINIONES (Ja/Nein). Cada pregunta incluye el texto donde la persona expresa su postura.` : ''}
+
+TEXTO / TRANSCRIPT:
+${passageText || '(sin texto — validar solo opciones)'}
+
+PREGUNTAS:
+${qBlocks}
+
+TAREA: Valida CADA pregunta y el pasaje globalmente. Devuelve SOLO JSON (sin markdown).
+
+REGLA FUNDAMENTAL: No juzgues de memoria ni por sentido común general.
+Todo issue de "correctness" o "ambiguity" DEBE apoyarse en una frase literal
+del texto/transcript. Si no puedes citar evidencia textual, NO generes el issue.
+
+Checks a realizar:
+
+1. "correctness" (CRITICAL) — Evidencia textual obligatoria.
+   ${isOpinionFormat
+     ? `PARA FORMATO OPINIONES (Ja/Nein):
+   Paso 1: ¿El "Texto de la persona" menciona explícitamente el mismo tema que la
+   pregunta? Si el texto trata de un tema DISTINTO, es error: el texto no puede
+   justificar la respuesta. Cita las palabras clave del texto y de la pregunta para
+   demostrar la discrepancia.
+   Paso 2: Si el tema es el mismo, localiza la frase exacta del texto que indica la
+   postura. ¿Esa postura coincide con la clave (Ja/Nein)? Si contradice, genera issue
+   y cita la frase.`
+     : `Localiza la frase o fragmento EXACTO del texto/transcript que justifica la clave.
+   Copia esa frase en "evidence" (campo interno; no en "detail"). Si no encuentras
+   evidencia textual directa, genera issue: la clave no está soportada.`}
+   Si es incorrecta o no está justificada por el texto, genera issue.
+
+2. "ambiguity" (CRITICAL) — Evalúa CADA opción no-clave por separado.
+   Para cada opción incorrecta: ¿existe alguna frase en el texto que la haga
+   defendible? Cita esa frase si existe. Solo genera issue si hay UNA opción concreta
+   que puedes defender textualmente (no en abstracto).
+   Formato del detail: "Opción X también defendible: '<cita literal del texto>'."
+
+3. "distractor" (IMPORTANT) — ¿Alguna opción incorrecta es absurda o imposible?
+   Solo distractores claramente defectuosos (afirmación imposible, tema ajeno, trampa
+   obvia que nadie elegiría). No marques si es simplemente incorrecto pero plausible.
+
+4. "template" (IMPORTANT) — ¿El pasaje sigue un molde narrativo genérico/repetitivo?
+   Devuelve también "themeTags": array de 3-5 palabras clave temáticas del pasaje.
+
+Formato de respuesta EXACTO (devuelve SOLO este JSON, sin markdown):
+{
+  "themeTags": ["palabra1", "palabra2", "palabra3"],
+  "issues": [
+    {
+      "kind": "correctness"|"ambiguity"|"distractor"|"template",
+      "itemId": "<id de la pregunta, o 'passage'>",
+      "detail": "explicación breve en español (≤50 palabras)",
+      "confidence": <0.0–1.0 — tu certeza de que esto es un error real, NO una duda>
+    }
+  ]
+}
+Si todo es correcto, devuelve: {"themeTags": [...], "issues": []}
+NO generes issues sin evidencia textual concreta. NO inventes problemas.
+Solo incluye issues con confidence ≥ 0.85 (baja confianza = no es issue real).`;
+}
+
+// ─── LLM response parser ────────────────────────────────────────────────────
+function parseSemanticResponse(raw) {
+  // raw may be a string (Claude) or an object with .text / .candidates (Gemini)
+  let text = raw;
+  if (typeof raw === 'object' && raw !== null) {
+    // Gemini response shape
+    text =
+      raw.candidates?.[0]?.content?.parts?.[0]?.text ??
+      raw.text ??
+      raw.content ??
+      JSON.stringify(raw);
+  }
+  text = String(text || '').trim();
+
+  // Strip markdown fences if present
+  text = text.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '').trim();
+
+  let parsed;
+  try {
+    parsed = JSON.parse(text);
+  } catch {
+    // Try to find a JSON object in the response
+    const m = text.match(/\{[\s\S]*\}/);
+    if (m) {
+      try { parsed = JSON.parse(m[0]); } catch { parsed = null; }
+    }
+  }
+
+  if (!parsed || typeof parsed !== 'object') {
+    return { themeTags: [], issues: [] }; // fail-open: if we can't parse, don't block
+  }
+
+  const issues = Array.isArray(parsed.issues)
+    ? parsed.issues
+        .filter(
+          (i) =>
+            i &&
+            typeof i.kind === 'string' &&
+            typeof i.detail === 'string' &&
+            ['correctness', 'ambiguity', 'distractor', 'template'].includes(i.kind),
+        )
+        .map((i) => {
+          // Normalize confidence to [0, 1]; default 1.0 if absent (conservative)
+          const raw = Number(i.confidence);
+          const confidence = Number.isFinite(raw) ? Math.min(1, Math.max(0, raw)) : 1.0;
+          return { kind: i.kind, itemId: i.itemId || 'part', detail: i.detail, confidence };
+        })
+    : [];
+
+  const themeTags = Array.isArray(parsed.themeTags)
+    ? parsed.themeTags.map((t) => String(t).toLowerCase().trim()).filter(Boolean).slice(0, 8)
+    : [];
+
+  return { themeTags, issues };
+}
+
+// ─── Template fingerprint (Jaccard on theme tags) ────────────────────────────
+const JACCARD_THRESHOLD = 0.5; // ≥50% tag overlap = same template
+
+function jaccardSimilarity(a, b) {
+  if (!a.length || !b.length) return 0;
+  const sa = new Set(a);
+  const sb = new Set(b);
+  let inter = 0;
+  for (const x of sa) if (sb.has(x)) inter++;
+  return inter / (sa.size + sb.size - inter);
+}
+
+/**
+ * Check if themeTags overlap too much with an already-seen fingerprint.
+ * If so, return the itemId of the prior part.
+ */
+function findTemplateMatch(themeTags) {
+  for (const [fingerprint, priorId] of _templateRegistry) {
+    const priorTags = fingerprint.split('|');
+    if (jaccardSimilarity(themeTags, priorTags) >= JACCARD_THRESHOLD) {
+      return priorId;
+    }
+  }
+  return null;
+}
+
+function registerTemplate(themeTags, partId) {
+  const fingerprint = [...new Set(themeTags)].sort().join('|');
+  if (fingerprint) _templateRegistry.set(fingerprint, partId);
+}
+
+// ─── Disk cache (optional, gated by SEMANTIC_DISK_CACHE env var) ─────────────
+const DISK_CACHE_DIR = path.join(ROOT, '.semantic-cache');
+
+function diskCacheRead(hash) {
+  if (!process.env.SEMANTIC_DISK_CACHE) return null;
+  const file = path.join(DISK_CACHE_DIR, `${hash}.json`);
+  try {
+    return JSON.parse(fs.readFileSync(file, 'utf8'));
+  } catch {
+    return null;
+  }
+}
+
+function diskCacheWrite(hash, result) {
+  if (!process.env.SEMANTIC_DISK_CACHE) return;
+  try {
+    fs.mkdirSync(DISK_CACHE_DIR, { recursive: true });
+    fs.writeFileSync(path.join(DISK_CACHE_DIR, `${hash}.json`), JSON.stringify(result, null, 2));
+  } catch {
+    // non-critical
+  }
+}
+
+// ─── Public API ─────────────────────────────────────────────────────────────
+/**
+ * Validate a seed record semantically.
+ *
+ * @param {object} part - Seed record (same shape as isPartPoolReady input)
+ * @param {object} [opts]
+ * @param {boolean} [opts.skipTemplate=false] - Skip template check (useful in tests)
+ * @returns {Promise<{ ok: boolean, issues: Array<{kind, itemId, detail}> }>}
+ */
+export async function validatePartSemantics(part, { skipTemplate = false } = {}) {
+  const ctx = extractPartContext(part);
+
+  // Schreiben / Sprechen / no MCQ → always OK (no semantic check needed)
+  if (!ctx) return { ok: true, issues: [] };
+
+  const hash = contentHash(part);
+
+  // In-memory cache hit
+  if (_resultCache.has(hash)) return _resultCache.get(hash);
+
+  // Disk cache hit (optional)
+  const diskHit = diskCacheRead(hash);
+  if (diskHit) {
+    _resultCache.set(hash, diskHit);
+    return diskHit;
+  }
+
+  // Build prompt + call LLM
+  const prompt = buildPrompt(ctx);
+  let raw;
+  try {
+    raw = await callSemanticLlm(prompt);
+  } catch (err) {
+    // Fail-open: if the LLM call fails, don't block the part
+    const result = { ok: true, issues: [], _llmError: String(err?.message || err) };
+    _resultCache.set(hash, result);
+    return result;
+  }
+
+  const { themeTags, issues: rawIssues } = parseSemanticResponse(raw);
+
+  // Apply confidence threshold — discard low-confidence noise before acting on issues.
+  // Template issues injected in-process always pass (they have no LLM confidence field).
+  const issues = rawIssues.filter((i) => (i.confidence ?? 1.0) >= CONFIDENCE_THRESHOLD);
+
+  // Template check (runs in-process, no extra LLM call)
+  if (!skipTemplate && themeTags.length) {
+    const priorId = findTemplateMatch(themeTags);
+    if (priorId) {
+      issues.push({
+        kind: 'template',
+        itemId: 'passage',
+        detail: `Pasaje con molde temático similar a "${priorId}" (tags: ${themeTags.join(', ')})`,
+        confidence: 1.0,
+      });
+    }
+    registerTemplate(themeTags, part.id || hash.slice(0, 12));
+  }
+
+  const result = { ok: issues.length === 0, issues };
+  _resultCache.set(hash, result);
+  diskCacheWrite(hash, result);
+  return result;
+}

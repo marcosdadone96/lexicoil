@@ -1,0 +1,126 @@
+{
+  "generatedAt": "2026-07-20T13:07:16.034Z",
+  "dryRun": false,
+  "causes": [
+    {
+      "topic": "Verkehr",
+      "ok": 2,
+      "fail": 28,
+      "rate": 0.06666666666666667,
+      "causes": {
+        "length_bias": 15,
+        "other": 5,
+        "audit2_quality": 2,
+        "structural_mold": 4,
+        "vocab_integration": 2
+      },
+      "dominantCause": "length_bias",
+      "sameCauseAsKonsum": false,
+      "recommendedTreatment": "none_konsum_package"
+    },
+    {
+      "topic": "Reisen",
+      "ok": 2,
+      "fail": 16,
+      "rate": 0.1111111111111111,
+      "causes": {
+        "structural_mold": 1,
+        "other": 15
+      },
+      "dominantCause": "other",
+      "sameCauseAsKonsum": false,
+      "recommendedTreatment": "none_konsum_package"
+    },
+    {
+      "topic": "Stadtleben",
+      "ok": 3,
+      "fail": 23,
+      "rate": 0.11538461538461539,
+      "causes": {
+        "audit2_quality": 2,
+        "other": 12,
+        "length_bias": 9
+      },
+      "dominantCause": "other",
+      "sameCauseAsKonsum": false,
+      "recommendedTreatment": "none_konsum_package"
+    },
+    {
+      "topic": "Ernährung",
+      "ok": 3,
+      "fail": 18,
+      "rate": 0.14285714285714285,
+      "causes": {
+        "length_bias": 3,
+        "other": 13,
+        "vocab_integration": 2
+      },
+      "dominantCause": "other",
+      "sameCauseAsKonsum": false,
+      "recommendedTreatment": "none_konsum_package"
+    }
+  ],
+  "inventory": {
+    "Verkehr": [],
+    "Reisen": [
+      {
+        "file": "lesen-t5-gemini-079.json",
+        "quarantine": false,
+        "topic": "Reisen"
+      }
+    ],
+    "Stadtleben": [
+      {
+        "file": "lesen-t5-gemini-014.json",
+        "quarantine": true,
+        "topic": "Stadtleben"
+      }
+    ],
+    "Ernährung": [
+      {
+        "file": "lesen-t5-gemini-064.json",
+        "quarantine": true,
+        "topic": "Ernährung"
+      },
+      {
+        "file": "lesen-t5-gemini-082.json",
+        "quarantine": false,
+        "topic": "Ernährung"
+      }
+    ]
+  },
+  "actions": [
+    {
+      "topic": "Verkehr",
+      "treatment": "length_bias_llm",
+      "note": "no quarantined Verkehr T5 in pool-verified — run pool-fill lesen t5 --topic Verkehr"
+    },
+    {
+      "topic": "Verkehr",
+      "treatment": "pool-fill Verkehr T5",
+      "ok": false,
+      "tail": "  length-bias: regenerando pregunta completa gen-q-5-c3d4e5f6-2 (+39% → regen, pasaje fijo)…\n  Reparación mcq_length_bias: sin cambios en batch — re-validando estado actual…\n  Re-validando tras mcq_length_bias…\nRechazado guardado en: batches/generated/.rejected/lesen-t5-gemini-100-2026-07-20T13-22-01-450Z.json\n\n── batches/generated/B1/lesen-t5-gemini-100.json · DESCARTADO · 4 llamadas · $0.044 total ──\n\n── Intento 6 · OK 0/1 ──\nTema: Verkehr (elegido)\nT5 subtipo: Wohnanlage-Hausordnung (saturated) · perfil standard · celda Verkehr×T5: 2 en pool · moldes usados: wohnanlage\n\n── Lesen T5 · lesen-t5-gemini-100.json ──\nProveedor: gemini · Palabras (10): aufgabe, situation, aktuell, direkt, betreffen, zukunft, erwachsen, schritt, wohnung, urlaub\nModelo: gemini-2.5-flash · max_output_tokens=8192\n"
+    },
+    {
+      "topic": "Reisen",
+      "treatment": "pool-fill_regen_not_konsum_package",
+      "dominantCause": "other",
+      "ok": false,
+      "tail": "mprobando calidad pedagógica…\n  Triaje CUBO C (MCQ length bias (B1)) → reparación localizada (1 llamada LLM)…\nlesen T5: reparando sesgo longitud MCQ en 2 pregunta(s) (1 llamada LLM, fuente fija)…\nLlamada API 25/25 · $0.014 acumulado · gemini-2.5-flash\n  length-bias: gen-q-5-266e4646-1 OK (+143%→+18%)\n  length-bias: gen-q-5-266e4646-2 OK (+54%→+0%)\n  Re-validando tras mcq_length_bias…\n  CHK-29 → excluir molde y regenerar T5 con subtipo/debate distinto…\nT5 subtipo: Wohnanlage-Hausordnung (saturated) · perfil standard · celda Verkehr×T5: 3 en pool · moldes usados: wohnanlage, wohnanlage:standard\n"
+    },
+    {
+      "topic": "Stadtleben",
+      "treatment": "pool-fill_regen_not_konsum_package",
+      "dominantCause": "other",
+      "ok": true,
+      "tail": ": level not uniform B1 (infer=A2)\n  skip schreiben-gemini-004.json schreiben_2: gate fail\n  skip schreiben-gemini-020.json schreiben_3: gate fail\n  skip sprechen-cur-education.json: level not uniform B1 (infer=A2)\n  skip sprechen-cur-health.json: level not uniform B1 (infer=A2)\n  skip sprechen-cur-society.json: level not uniform B1 (infer=A2)\n  skip sprechen-cur-work.json: level not uniform B1 (infer=A2)\n  schreiben sets 20\n  sprechen sets  16\n\n══ Capacidad ══\n  min stock = 12 examen(es) completo(s)\n  cuello de botella: horen_2 = 12\n  a ensamblar ahora: 12\n\n--dry-run: no se escriben archivos.\n"
+    },
+    {
+      "topic": "Ernährung",
+      "treatment": "pool-fill_regen_not_konsum_package",
+      "dominantCause": "other",
+      "ok": false,
+      "tail": "2-2026-07-20T13-53-08-974Z.json\n\n── batches/generated/B1/lesen-t5-gemini-102.json · DESCARTADO · 5 llamadas · $0.047 total ──\n\n── Intento 6 · OK 0/1 ──\nTema: Kultur (elegido)\nT5 subtipo: Sportverein / Fitnessstudio (other) · perfil standard · celda Kultur×T5: 4 en pool · moldes usados: wohnanlage, kantine, bibliothek, freizeitzentrum, freizeitzentrum:veranstaltungen\n\n── Lesen T5 · lesen-t5-gemini-102.json ──\nProveedor: gemini · Palabras (10): aufgabe, situation, aktuell, direkt, zukunft, betreffen, schritt, erwachsen, nachhaltigkeit, anmeldung\nModelo: gemini-2.5-flash · max_output_tokens=8192\n"
+    }
+  ]
+}
