@@ -1,9 +1,9 @@
 # Respuesta a vuestra revisión del handoff EN B1
 
-**De:** Danilo · **Para:** Marcos · **Fecha:** 26 de julio de 2026
+**De:** Danilo · **Para:** Marcos · **Fecha:** 26 de julio de 2026 · **actualizado el 5 de agosto de 2026** (ver nota al inicio)
 **Responde a:** `REVISION-HANDOFF-EN-B1-2026-07-26.md` (vuestra revisión de `docs/handoff-en-b1-para-marcos.md`)
-**Rama:** `feat/en-b1` → remoto `danilo`, commit **`ffcc287`** (vuestra revisión midió `1e8a50f`)
-**Medido contra `main` = `a50a89a`** · base común `4e5efac`
+**Rama:** `feat/en-b1` → remoto `danilo`. Cuerpo §1–§6 escrito en `ffcc287`; tip actual **`e082d86`**
+**Medido contra `main` = `a50a89a`** en §1–§6, **= `0f99b5c`** en la actualización · base común `4e5efac`
 
 > **Nota para quien lea esto con un agente de IA:** cada cifra de este documento lleva al lado el
 > comando con el que se midió. Contrasta contra el repo antes de asumir que tengo razón — es lo
@@ -11,6 +11,106 @@
 
 Relacionado: [`handoff-en-b1-para-marcos.md`](handoff-en-b1-para-marcos.md) ·
 [`CONTENT_LIVE_POLICY.md`](CONTENT_LIVE_POLICY.md)
+
+---
+
+## Actualización — 5 de agosto de 2026 (v2 de esta respuesta)
+
+**Añadido diez días después.** El cuerpo del documento (§1–§6) se queda **tal cual**: nada de lo que
+escribí el 26 de julio ha dejado de ser cierto. Esta nota solo re-mide contra el estado de hoy y
+recoge lo que ha cambiado en vuestro lado.
+
+**Estado de las ramas hoy:**
+
+| | 26 jul (lo que medisteis) | 5 ago |
+|---|---|---|
+| Vuestro `main` | `a50a89a` | **`0f99b5c`** (+9 commits, 28–29 jul) |
+| Mi `feat/en-b1` | `1e8a50f` / `56eb9be` | **`e082d86`** (24 commits sobre `4e5efac`) |
+
+Mi rama **ya está subida** al fork, así que podéis medir el tip real:
+
+```powershell
+git fetch danilo
+git log --oneline 4e5efac..danilo/feat/en-b1
+```
+
+### 1. Vuestra revisión v2: re-verificada entera, sigue cuadrando
+
+Volví a pasar todos los comandos de vuestro `REVISION-HANDOFF-EN-B1-2026-07-26.md` contra el repo.
+**No falla ninguna cifra**: 19 commits sobre la base, 1198 ficheros en el diff, 101 compartidos,
+`dist/` 528 · `landing/` 306 (195 `.next` + 55 `out`) · `.bak` 16, los 73 + 71 ficheros de build en
+`a50a89a`, 2675 bajo `eliminado/` en `52b670e`, 50 en `eliminado/docs/audit/`, los numstat de §2.6 y
+§2.7 (`audit-pass-2.mjs` +179/−1376, `capitalizeNouns.mjs` +369/−1310, `partGate.mjs` +1/−105) y la
+tabla de `availability.json` de §3. También los **6** docs EN de §4.3, que son exactamente:
+`build-en_B1.json`, `cambridge-b1-blueprint-verification.md`, `etapa1-cierre-en-b1.md`,
+`gates-en-applicability.md`, `residual-gaps.en_B1.json`, `validate-exam-fidelity.en_B1.json`.
+
+Las cuatro decisiones (A/B/C/4.3) las doy por **aceptadas tal como las planteáis**, sin matices
+nuevos más allá del de §4(C) que ya está abajo. Por mi parte no queda nada abierto.
+
+### 2. (A) sigue sin hacerse — y es lo único que bloquea
+
+En vuestro `main` de hoy (`0f99b5c`), medido:
+
+```powershell
+(git ls-tree -r --name-only origin/main -- dist/).Count       # 528
+(git ls-tree -r --name-only origin/main -- landing/).Count    # 306
+git ls-tree -r --name-only origin/main | Select-String '\.bak$' | Measure-Object   # 16
+```
+
+Idéntico a `a50a89a`. No hay ningún `git rm --cached`. Como el orden que acordamos en (B) empieza
+por (A) y ese paso es vuestro, **todo está parado en el paso 1**.
+
+De paso comprobé que (A) es seguro: `netlify.toml` tiene `command = "npm run build:site"` y
+`publish = "dist"` en `[build]`; el `publish = "."` que aparece en el fichero es solo `[dev]`. `dist`
+se regenera en cada deploy, no se pierde nada al desindexarlo.
+
+### 3. Vuestros 9 commits nuevos: poco daño, pero más solape
+
+Los he medido antes de opinar. Contra `origin/main` de hoy:
+
+```powershell
+git merge-tree --write-tree origin/main danilo/feat/en-b1 2>&1 | Select-String "CONFLICT" | Measure-Object
+```
+
+| Métrica | 26 jul | 5 ago |
+|---|---|---|
+| Conflictos totales | 236 | **237** |
+| modify/delete (build) | 162 | **162** |
+| add/add | 22 | **22** |
+
+Es decir: nueve commits vuestros añadieron **un solo conflicto nuevo**. La divergencia no se ha
+disparado y vuestra medición sigue siendo esencialmente válida.
+
+Lo que sí ha crecido es el solape en el pipeline compartido. De los 71 ficheros que tocáis en esos
+commits, **diez ya estaban en la lista de conflictos**: `js/ui/exam/examRunner.js`,
+`js/ui/exam/examConfig.js`, `js/ui/exam/examGeneration.js`, `js/engine/personalExamCoverage.js`,
+`js/engine/partTopicDetect.js`, `js/data/personalLesenTopicStock.js`, `js/services/claudeClient.js`,
+`netlify.toml`, `netlify/functions/exam-part.js` y `netlify/functions/lib/reusablePartsStore.js`.
+
+En `examRunner.js` el diff entre vuestra versión y la mía va ya por **+83/−187**, y el gate
+`d.goetheFormat&&(!isQ)` sigue ahí sin tocar pese a que habéis editado el fichero. El opt-in de
+`beta` tampoco está: `index.html` mantiene `/* staging: window.LEXICOIL_SHOW_BETA_LEVELS=true */`
+comentado y `lc_show_beta` no existe en vuestro lado. Nada de esto es urgente por sí solo; lo digo
+porque **cada semana sin (A) encarece el merge que luego resuelvo yo**.
+
+### 4. Dos cosas menores de vuestro documento
+
+- **§2.9** (`test-vocab-personalization.mjs`) podéis retirarlo: está respondido y medido en el §3 de
+  este mismo documento desde el 26 de julio. El test lee `library/de/B1/questions.json` — banco
+  alemán — y está rojo desde antes de la base común (586/586 en `4e5efac`, y ya fallaba el 10 de
+  junio). No es un rojo nuevo del inglés.
+- **`REVISION-HANDOFF-EN-B1-2026-07-26.md` no existe en ninguna rama del repo**, solo como fichero
+  suelto. Si queréis que quede trazable junto al handoff y esta respuesta, metedlo en `docs/`.
+
+### 5. Qué necesito (sin cambios respecto a §6)
+
+1. **(A)** en `main`. Es lo único que bloquea.
+2. El estado de `en/B1` para la tabla de §4(C): `hidden` hasta QA vuestro, o `beta`.
+3. Si el arreglo de `test:engine` (§3.1) lo lleváis aparte o lo queréis dentro del PR.
+
+En cuanto (A) esté arriba, mergeo vuestro `main`, resuelvo tomando vuestro lado en pipeline y
+contenido DE, reaplico mis deltas EN y abro el PR el mismo día.
 
 ---
 
