@@ -1,7 +1,7 @@
 # CLAUDE.md
 
 Contexto para agentes de IA que trabajan en este repo. **Todo lo de aquí está verificado contra el
-código el 7 de agosto de 2026** (`main` en `0f99b5c`). Si algo no cuadra, contrasta contra el repo
+código el 7 de agosto de 2026** (`main` en `e5fed38`). Si algo no cuadra, contrasta contra el repo
 antes de asumir que este fichero tiene razón, y actualízalo.
 
 ---
@@ -43,10 +43,24 @@ Danilo **no tiene push** al repo de Marcos (`origin`); trabaja en su fork (`mio`
 `package.json` declara 6 dependencias; `package-lock.json` solo tiene 3. Faltan `@google/genai`,
 `@sparticuz/chromium` y `puppeteer-core`. Entró en `52b670e` (21 jul 2026).
 
-**Consecuencia: el CI lleva rojo desde el 21 de julio y nunca llega a validar nada** — muere en el
-paso `Install dependencies`, y `ci:content`, `test:engine` y el job `pre-build-guard` se saltan.
+**Consecuencia: el CI llevaba rojo desde el 21 de julio sin llegar a validar nada** — moría en el
+paso `Install dependencies`, y `ci:content`, `test:engine` y el job `pre-build-guard` se saltaban.
 
-Arreglo: `npm install --package-lock-only`.
+Arreglado en `7c41be1` con `npm install --package-lock-only`. Ojo a lo que eso destapa: el CI ya
+arranca, y ahora muere más adelante, en `ci:content`. `validate:fidelity:all` corre con
+`--live-only` y falla por los niveles **live** de alemán:
+
+```
+node scripts/validate-exam-fidelity.mjs --all --strict --live-only
+e5fed38 → exit 1 · 29 exámenes, 0 pasan, 784 errores
+```
+
+Son 210 errores estructurales en `de/B1` y `de/A2` — `passages_per_part_mismatch` 65,
+`sprechen_topic_missing` 51, `schreiben_max_words` 48, `items_total_mismatch` 19. Preexistente,
+solo que llevaba tapado desde julio. Los niveles `beta` se reportan pero no tumban el build
+(`enforceStrict`, `validate-exam-fidelity.mjs:179`).
+
+El job no tiene `continue-on-error`, así que **muere en `ci:content` y `test:engine` ni se ejecuta**.
 
 ### 2. `npm run test:engine` aborta en el paso 6 de 70
 
@@ -54,6 +68,8 @@ La cadena son 70 comandos unidos con `&&`. El sexto es `test-vocab-personalizati
 `vocabularyTags.length >= 3` en todas las preguntas de `library/de/B1/questions.json` y falla desde
 antes de junio de 2026. **Los 64 restantes no llegan a ejecutarse.** Si necesitas verificar algo,
 corre los scripts uno a uno; no confíes en que `test:engine` verde signifique nada.
+
+En el CI esto ni se ve todavía: el job muere antes, en `ci:content` (trampa #1).
 
 ### 3. Las heurísticas de forma no distinguen Goethe de Cambridge
 
@@ -122,7 +138,11 @@ node scripts/test-exam-merge-pipeline.mjs
 
 **Regresión del alemán:** corre `audit-pass-2.mjs` sobre `batches/generated` con y sin tu cambio y
 compara las cifras. Deben ser idénticas si tu cambio es de inglés. Baseline actual del corpus:
-**397 IMPORTANTES / 237 MENORES, 146 archivos, 820 preguntas.**
+**12 CRÍTICOS / 371 IMPORTANTES / 242 MENORES, 146 archivos, 820 preguntas.**
+
+El baseline se mueve cuando entra contenido o checks nuevos, así que mídelo antes de tu cambio en
+vez de fiarte de la cifra de aquí. Si comparas contra otra rama, hazlo sobre **el mismo corpus**
+—el mismo `batches/generated`— o estarás comparando dos conjuntos de ficheros distintos.
 
 ---
 
