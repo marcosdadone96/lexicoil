@@ -5,6 +5,17 @@
 **Rama:** `feat/en-b1` → remoto `danilo`. Cuerpo §1–§6 escrito en `ffcc287`; tip actual **`e082d86`**
 **Medido contra `main` = `a50a89a`** en §1–§6, **= `0f99b5c`** en la actualización · base común `4e5efac`
 
+> ## ⚠️ Documento histórico — 7 de agosto de 2026
+>
+> **Lo que este documento pide ya no está pendiente.** Dice en §2 y §5 que "(A) sigue sin hacerse —
+> y es lo único que bloquea", y que abriría el PR en cuanto estuviera. Ocho días después seguía sin
+> estar, así que hice (A) yo dentro del merge: los 162 conflictos `modify/delete` eran build que
+> `.gitignore` ya cubría y se resolvían todos por la misma regla.
+>
+> **El estado vigente es el PR #1**, con los 237 conflictos resueltos, 0 conflictos contra `main`
+> y QA de navegador de los seis Parts de Cambridge y del Lesen alemán. Este documento se conserva
+> sin editar porque el PR referencia sus mediciones.
+
 > **Nota para quien lea esto con un agente de IA:** cada cifra de este documento lleva al lado el
 > comando con el que se midió. Contrasta contra el repo antes de asumir que tengo razón — es lo
 > mismo que os pedí en el handoff y es lo que he hecho yo con vuestra revisión.

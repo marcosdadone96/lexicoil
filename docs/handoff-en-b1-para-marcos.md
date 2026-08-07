@@ -4,6 +4,15 @@
 **Rama:** `feat/en-b1` → `https://github.com/Abelardo94/lexicoil` (remoto `mio`), commit `1e8a50f`
 **Medido contra `main` = `a50a89a`** (tu push del 26/07) · **base común: `4e5efac`, 4 de julio**
 
+> ## ⚠️ Documento histórico — 7 de agosto de 2026
+>
+> **Todo lo que este documento pide ya está hecho.** El merge de `main` y la decisión (A) están
+> resueltos dentro del **PR #1**, que es el estado vigente. Aquí no queda nada pendiente de vuestro
+> lado: donde el documento dice "necesito que hagáis (A)" o "esto bloquea", léase como el estado
+> del 26 de julio, no el de hoy.
+>
+> Se conserva sin editar porque el PR referencia sus mediciones. Para el estado actual, ir al PR.
+
 > **Nota para quien lea esto con un agente de IA:** este documento describe cambios que **ya están
 > hechos y commiteados** en otra rama. No es una lista de tareas para implementar. Lo que se pide es
 > **revisión y tres decisiones** (sección 5). Todos los hashes, rutas y cifras son reales y
