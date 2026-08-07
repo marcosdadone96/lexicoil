@@ -102,7 +102,7 @@ for (const spec of REPLACEMENTS) {
 }
 
 console.log('\nPublishing e13 + e16…');
-const pub = publishVerifiedExamSlots({ slots: [13, 16], lang: 'de', level: 'B1', dryRun: false, syncServed: true });
+const pub = await publishVerifiedExamSlots({ slots: [13, 16], lang: 'de', level: 'B1', dryRun: false, syncServed: true });
 console.log(JSON.stringify(pub, null, 2));
 
 fs.writeFileSync(

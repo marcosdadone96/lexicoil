@@ -9,7 +9,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
-import { detectTopic, tagBatchWithTopic } from './topicRotation.mjs';
+import { detectTopic, tagBatchWithTopic, alignQuestionTopicTagsToRequestedTopic } from './topicRotation.mjs';
 import { LEGACY_TOPIC_SLUGS } from './qualityGates/topicFamilies.mjs';
 import { normalizeB1Topic, isValidB1Topic } from './b1Topics.mjs';
 import { checkPassageContentTopic } from './qualityGates/contentTopicCheck.mjs';
@@ -49,6 +49,8 @@ const STOP = new Set([
   'vorgesehen', 'vorgesehene', 'vorgesehenen', 'vorgesehenes', 'vorgesehener',
   'darauf', 'dafür', 'davon', 'dazu', 'dabei', 'darum', 'worauf', 'wofür',
   'bitte', 'mal', 'gar',
+  // Exam rubric imperatives / possessives (Schreiben «Schreib zu drei Punkten», «deinen Chef»)
+  'schreiben', 'schreibt', 'deinen', 'deinem', 'deiner', 'deines',
   // v2.3.1 — ranking leaks (light-verb demote fillers)
   'vielleicht',
   'musst', 'musste', 'mussten', 'müssten', // müssen already STOP; finite/past/subj. forms
@@ -75,16 +77,31 @@ const LEMMA_GROUND_TRUTH = {
   zukunfen: 'Zukunft',
   zeitschrifen: 'Zeitschrift',
   informationsflün: 'Informationsflut',
+  möcht: 'möchten',
+  moecht: 'möchten',
+  unternehm: 'unternehmen',
 };
 
-const VALID_GRAMMAR_TAG_RE = /^g-de-b1-[a-z]+$/;
+const VALID_GRAMMAR_TAG_RE = /^g-de-(b1|b2|a2)-[a-z0-9-]+$/;
 
-export function isValidGrammarTag(tag) {
-  return VALID_GRAMMAR_TAG_RE.test(String(tag || '').trim());
+/** @param {string} tag @param {string} [level] B1|B2|A2 — when set, tag prefix must match level */
+export function isValidGrammarTag(tag, level = null) {
+  const s = String(tag || '').trim();
+  if (!VALID_GRAMMAR_TAG_RE.test(s)) return false;
+  if (!level) return true;
+  const lv = String(level).trim().toUpperCase();
+  const prefix = `g-de-${lv.toLowerCase()}-`;
+  return s.startsWith(prefix);
 }
 
-export function sanitizeGrammarTags(tags) {
-  return (tags || []).filter(isValidGrammarTag);
+export function sanitizeGrammarTags(tags, level = null) {
+  const lv = level ? String(level).trim().toUpperCase() : null;
+  const allowed = lv ? new Set(grammarIdsForLevel(lv)) : null;
+  return (tags || []).filter((t) => {
+    if (!isValidGrammarTag(t, level)) return false;
+    if (allowed && !allowed.has(String(t).trim())) return false;
+    return true;
+  });
 }
 
 const FINITE_TO_INF = {
@@ -165,12 +182,16 @@ const COMPARATIVE_TO_BASE = {
   größer: 'groß', groesser: 'groß', größte: 'groß', groesste: 'groß',
   kleiner: 'klein', kleinste: 'klein',
   mehr: 'viel', weniger: 'wenig',
+  hohen: 'hoch', hohe: 'hoch', hohem: 'hoch', hohes: 'hoch',
+  besonderen: 'besonders', besondere: 'besonders', besonderem: 'besonders', besonderes: 'besonders',
+  persönlichen: 'persönlich', persönliche: 'persönlich', persönlichem: 'persönlich', persönliches: 'persönlich',
 };
 
 /** Lemmas that are nouns for display/search (capitalize). */
 const NOUN_LEMMAS = new Set([
   'alltag', 'urlaub', 'umzug', 'arbeit', 'familie', 'freund', 'schule', 'stadt', 'land', 'haus',
   'auto', 'zug', 'bus', 'bahn', 'geld', 'zeit', 'mensch', 'kind', 'frau', 'mann', 'problem',
+  'punkt', 'thema', 'firma', 'eltern', 'frage',
   'angebot', 'termin', 'arzt', 'krankenhaus', 'umwelt', 'verkehr', 'freizeit', 'gesundheit',
   'bildung', 'wohnen', 'lebensstil', 'engagement', 'organisation', 'nachbar', 'erfahrung',
   'entscheidung', 'umstellung', 'bewegung', 'luft', 'lärm', 'laerm', 'radweg', 'innenstadt',
@@ -228,7 +249,7 @@ const ADVERB_CANON = new Map([
   ['fruehestens', 'frühestens'],
 ]);
 
-export const VOCAB_TAGS_NORMALIZE_VERSION = 'v2.3.16-b1-validated-verb-adj-lemma-2026-07-24';
+export const VOCAB_TAGS_NORMALIZE_VERSION = 'v2.3.18-paso3-vocab-plural-rubric-strip-2026-08-02';
 
 /** Spurious «-eren» / «-chen» style artifacts from blind -t→-en heuristics. */
 export function isVocabLemmaCorruption(original, lemma, b1Set) {
@@ -254,6 +275,7 @@ export const LIGHT_VERBS = new Set(['machen', 'gehen', 'nehmen', 'geben', 'tun']
 export const SEPARABLE_PREFIXES = [
   'mit', 'auf', 'an', 'aus', 'ein', 'zu', 'vor', 'nach', 'bei', 'los', 'weg',
   'zurück', 'weiter', 'fest', 'teil', 'statt', 'heran', 'herum', 'hin', 'her',
+  'herunter', 'fort',
   'ab', 'durch', 'über', 'um', 'unter', 'zusammen',
 ];
 
@@ -283,11 +305,23 @@ export const VOCAB_COLLOCATIONS = [
  */
 export const EXAM_STEM_STRIP = [
   /\bworum\s+geht(?:[''\u2019]s|\s+es)\b[^?]{0,160}\?/gi,
+  // Schreiben rubric boilerplate (Punkten / Schreiben imperative — never learning tags)
+  /\bschreib(?:en|t)\s+(?:sie\s+)?zu\s+drei\s+punkten\s*:?\b/gi,
   // Sprechen T3 boilerplate header (never a learning tag)
   /\bbeispielfragen\s*:/gi,
   // Examiner feedback checklist embedded in Sprechen T3 prompts
   /\b(?:nicht\s+nur\s+auf\s+den\s+inhalt,?\s+sondern\s+auch\s+auf\s+)?die\s+struktur,?\s+die\s+grammatik,?\s+den\s+wortschatz(?:\s+und\s+die\s+prosodie)?\b/gi,
 ];
+
+/** Keep in sync with js/engine/separableResolve.js */
+export const INSEPARABLE_INFINITIVES = new Set([
+  // Prefix looks separable but verb is consistently untrennbar (exam/register B1–B2).
+  'durchführen', 'unterschreiben', 'übernehmen', 'überweisen',
+  // Other common false positives (morph scan / DWDS heuristic noise).
+  'übersetzen', 'unterhalten', 'unternehmen', 'unterstützen', 'untersuchen', 'beistehen',
+  'übersteigen', 'überleben', 'überzeugen', 'verstehen', 'bekommen', 'besuchen', 'verreisen',
+  'versuchen', 'beschweren', 'erreichen', 'erklären', 'erzählen', 'empfehlen', 'entdecken',
+]);
 
 /** Known separable infinitives (keep full form). Keep in sync with js/engine/separableResolve.js. */
 export const SEPARABLE_INFINITIVES = new Set([
@@ -317,7 +351,7 @@ export const SEPARABLE_INFINITIVES = new Set([
   'aushelfen', 'auskennen', 'ausladen', 'auslaufen', 'auslegen', 'ausleihen',
   'auslösen', 'ausmachen', 'ausnutzen', 'auspacken', 'ausprobieren', 'ausreden',
   'ausreichen', 'ausruhen', 'ausschalten', 'ausschließen', 'ausschneiden', 'aussehen',
-  'aussprechen', 'aussteigen', 'aussuchen', 'austauschen', 'austreten', 'ausüben',
+  'aussprechen', 'aussteigen', 'aussuchen', 'austauschen', 'austragen', 'austreten', 'ausüben',
   'auswählen', 'auswandern', 'ausweichen', 'ausziehen',
   // ein-
   'einatmen', 'einbauen', 'einbilden', 'einbrechen', 'einbringen', 'einchecken',
@@ -339,10 +373,12 @@ export const SEPARABLE_INFINITIVES = new Set([
   'beibringen', 'beitragen',
   // los-
   'losfahren', 'losgehen',
+  // fort-
+  'fortsetzen',
   // weg-
   'wegfahren', 'weggehen',
   // zurück-
-  'zurückgeben', 'zurückkommen', 'zurückrufen',
+  'zurückfahren', 'zurückgeben', 'zurückgehen', 'zurückkommen', 'zurücklaufen', 'zurückrufen',
   // weiter-
   'weitergeben', 'weitergehen', 'weitermachen',
   // fest-
@@ -357,19 +393,15 @@ export const SEPARABLE_INFINITIVES = new Set([
   'abhängen', 'abheben', 'abholen', 'abkühlen', 'ablegen', 'ablehnen',
   'abmelden', 'abnehmen', 'abraten', 'abreisen', 'abrufen', 'absagen',
   'abschließen', 'abschneiden', 'absehen', 'absteigen', 'abstellen', 'abstimmen',
-  'abwenden', 'abziehen',
+  'abwarten', 'abwickeln', 'abwenden', 'abziehen',
   // her-
-  'herkommen', 'herstellen',
+  'herkommen', 'herunterladen', 'herstellen',
   // um-
   'umsetzen', 'umsteigen', 'umziehen',
-  // durch-
-  'durchführen',
-  // über-
-  'übernehmen', 'überweisen',
   // unter-
-  'untergehen', 'unterschreiben',
+  'untergehen',
   // zusammen-
-  'zusammenfassen',
+  'zusammenarbeiten', 'zusammenfassen',
   // aner-
   'anerkennen',
   // other-
@@ -465,6 +497,54 @@ const DEFAULT_GRAMMAR_BY_TEIL = {
   5: ['g-de-b1-passiv', 'g-de-b1-nebensatz'],
 };
 
+/** Goethe A2 — contract aligned with batches/GEMINI_API_COMPACT_de_A2.md */
+export const A2_GRAMMAR_IDS = [
+  'g-de-a2-praesens',
+  'g-de-a2-perfekt',
+  'g-de-a2-modal',
+  'g-de-a2-trennbar',
+  'g-de-a2-dat-akk',
+  'g-de-a2-nebensatz',
+  'g-de-a2-komparativ',
+];
+
+/** Goethe B2 — contract aligned with batches/GEMINI_API_COMPACT_de_B2.md */
+export const B2_GRAMMAR_IDS = [
+  'g-de-b2-konj1',
+  'g-de-b2-konj2',
+  'g-de-b2-nominal',
+  'g-de-b2-passiv',
+  'g-de-b2-modus',
+  'g-de-b2-relativ',
+];
+
+const DEFAULT_GRAMMAR_BY_TEIL_B2 = {
+  1: ['g-de-b2-nominal', 'g-de-b2-konj1'],
+  2: ['g-de-b2-modus', 'g-de-b2-konj2'],
+};
+
+const DEFAULT_GRAMMAR_BY_TEIL_A2 = {
+  1: ['g-de-a2-praesens', 'g-de-a2-modal'],
+  2: ['g-de-a2-perfekt', 'g-de-a2-nebensatz'],
+  3: ['g-de-a2-modal', 'g-de-a2-nebensatz'],
+  4: ['g-de-a2-praesens', 'g-de-a2-dat-akk'],
+};
+
+export function grammarIdsForLevel(level = 'B1') {
+  const lv = String(level || 'B1').trim().toUpperCase();
+  if (lv === 'B2') return B2_GRAMMAR_IDS;
+  if (lv === 'A2') return A2_GRAMMAR_IDS;
+  return B1_GRAMMAR_IDS;
+}
+
+export function defaultGrammarTagsForTeil(teil, level = 'B1') {
+  const t = Number(teil) || 1;
+  const lv = String(level || 'B1').trim().toUpperCase();
+  if (lv === 'B2') return [...(DEFAULT_GRAMMAR_BY_TEIL_B2[t] || DEFAULT_GRAMMAR_BY_TEIL_B2[1])];
+  if (lv === 'A2') return [...(DEFAULT_GRAMMAR_BY_TEIL_A2[t] || DEFAULT_GRAMMAR_BY_TEIL_A2[1])];
+  return [...(DEFAULT_GRAMMAR_BY_TEIL[t] || DEFAULT_GRAMMAR_BY_TEIL[1])];
+}
+
 /**
  * Grammar-tag relevance v2.0 — GRAMMAR-FOCUS + flexible cupo.
  *
@@ -474,12 +554,49 @@ const DEFAULT_GRAMMAR_BY_TEIL = {
  * (soft max GRAMMAR_TAG_SOFT_MAX). Empty arrays are allowed when the item
  * has no relevant grammar.
  */
-export const GRAMMAR_TAGS_NORMALIZE_VERSION = 'v2.0-focus-flexible-2026-07-10';
+export const GRAMMAR_TAGS_NORMALIZE_VERSION = 'v2.2-a2-b2-level-tags-2026-07-27';
 
 /** Soft safety cap (not a target cupo). Ranked by priority when truncating. */
 export const GRAMMAR_TAG_SOFT_MAX = 4;
 
 /** Higher = preferred when soft-max truncates. */
+export const GRAMMAR_TAG_PRIORITY_B2 = {
+  'g-de-b2-passiv': 100,
+  'g-de-b2-konj2': 95,
+  'g-de-b2-konj1': 90,
+  'g-de-b2-modus': 85,
+  'g-de-b2-relativ': 80,
+  'g-de-b2-nominal': 70,
+};
+
+export const GRAMMAR_TAG_MIN_COUNT_B2 = {
+  'g-de-b2-konj1': 1,
+  'g-de-b2-konj2': 1,
+  'g-de-b2-nominal': 2,
+  'g-de-b2-passiv': 1,
+  'g-de-b2-modus': 1,
+  'g-de-b2-relativ': 1,
+};
+
+function grammarPriority(id, level) {
+  const lv = String(level || 'B1').trim().toUpperCase();
+  if (lv === 'B2') return GRAMMAR_TAG_PRIORITY_B2[id] ?? 0;
+  if (lv === 'A2') return GRAMMAR_TAG_PRIORITY_A2[id] ?? 0;
+  return GRAMMAR_TAG_PRIORITY[id] ?? 0;
+}
+
+function grammarMinCountForLevel(tagId, level, opts = {}) {
+  const lv = String(level || 'B1').trim().toUpperCase();
+  if (lv === 'B2') return GRAMMAR_TAG_MIN_COUNT_B2[tagId] ?? 1;
+  if (lv === 'A2') {
+    if (opts.a2Matching && GRAMMAR_TAG_MIN_COUNT_A2_MATCHING[tagId] != null) {
+      return GRAMMAR_TAG_MIN_COUNT_A2_MATCHING[tagId];
+    }
+    return GRAMMAR_TAG_MIN_COUNT_A2[tagId] ?? 1;
+  }
+  return grammarMinCount(tagId, opts);
+}
+
 export const GRAMMAR_TAG_PRIORITY = {
   'g-de-b1-passiv': 100,
   'g-de-b1-konjunktiv': 95,
@@ -512,13 +629,33 @@ export const GRAMMAR_TAG_MIN_COUNT = {
   'g-de-b1-adjektivdeklination': 3, // single article+adj is noise
 };
 
+export const GRAMMAR_TAG_PRIORITY_A2 = {
+  'g-de-a2-nebensatz': 90,
+  'g-de-a2-modal': 85,
+  'g-de-a2-perfekt': 80,
+  'g-de-a2-trennbar': 75,
+  'g-de-a2-dat-akk': 70,
+  'g-de-a2-komparativ': 65,
+  'g-de-a2-praesens': 50,
+};
+
+export const GRAMMAR_TAG_MIN_COUNT_A2 = {
+  'g-de-a2-nebensatz': 1,
+  'g-de-a2-modal': 1,
+  'g-de-a2-perfekt': 1,
+  'g-de-a2-trennbar': 1,
+  'g-de-a2-dat-akk': 1,
+  'g-de-a2-komparativ': 1,
+  'g-de-a2-praesens': 2,
+};
+
 /** Hören A2 T2 matching — single-sentence explanations (Cause E gap). */
 export const GRAMMAR_TAG_MIN_COUNT_A2_MATCHING = {
-  'g-de-b1-nebensatz': 1,
-  'g-de-b1-relativ': 1,
-  'g-de-b1-modalverben': 1,
-  'g-de-b1-dativ': 1,
-  'g-de-b1-adjektivdeklination': 2,
+  'g-de-a2-nebensatz': 1,
+  'g-de-a2-modal': 1,
+  'g-de-a2-dat-akk': 1,
+  'g-de-a2-perfekt': 1,
+  'g-de-a2-praesens': 1,
 };
 
 export function isA2MatchingQuestion(q, batchLevel = 'B1') {
@@ -534,9 +671,6 @@ export function isA2MatchingQuestion(q, batchLevel = 'B1') {
 }
 
 function grammarMinCount(tagId, opts = {}) {
-  if (opts.a2Matching && GRAMMAR_TAG_MIN_COUNT_A2_MATCHING[tagId] != null) {
-    return GRAMMAR_TAG_MIN_COUNT_A2_MATCHING[tagId];
-  }
   return GRAMMAR_TAG_MIN_COUNT[tagId] ?? 1;
 }
 
@@ -566,18 +700,57 @@ function tokenize(text) {
     .filter(Boolean);
 }
 
+/** Weak plural / dative -en (Punkten, Kindern, Themen…) → singular for tag repair. */
+const PLURAL_TO_SINGULAR = {
+  punkten: 'punkt',
+  themen: 'thema',
+  kindern: 'kind',
+  firmen: 'firma',
+};
+
+function resolvePluralNounLemma(w) {
+  const low = String(w || '').toLowerCase();
+  if (PLURAL_TO_SINGULAR[low]) return PLURAL_TO_SINGULAR[low];
+  const sing = lightSingularizeNoun(low);
+  if (sing !== low && (NOUN_LEMMAS.has(sing) || STOP.has(sing))) return sing;
+  return null;
+}
+
+function looksLikePluralNounLemma(w) {
+  const low = String(w || '').toLowerCase();
+  return (
+    Boolean(PLURAL_TO_SINGULAR[low]) ||
+    /(?:ungen|heiten|keiten|schaften|ionen|täten|schriften|nahmen|fristen|werte|stellen|leute|firmen|mittel|stunden|methoden|punkten|themen|kindern|eltern)$/i.test(
+      low,
+    ) ||
+    (low.length >= 9 && /(?:unternehmen|entscheidungen)$/i.test(low))
+  );
+}
+
 function looksLikeInfinitive(w) {
   if (!/(?:en|eln|ern)$/.test(w) || w.length < 4) return false;
   // Adjective weak endings mistaken for infinitives (lokalen, aktuellen, wichtigen).
   // Do NOT bare-match /igen$/ — that false-negatives zeigen/neigen/steigen (len 6–7).
   if (/(?:isch|lich|iv|al|är|ell|sam|bar|os)en$/i.test(w)) return false;
   if (w.length >= 9 && /igen$/i.test(w)) return false; // wichtigen, bisherigen, …
-  // Common plural nouns
-  if (/(?:ungen|heiten|keiten|schaften|ionen|täten)$/i.test(w)) return false;
+  // Common plural nouns (incl. -en plurals mistaken for infinitives: Maßnahmen, Vorschriften, …)
+  if (
+    /(?:ungen|heiten|keiten|schaften|ionen|täten|schriften|nahmen|fristen|werte|stellen|leute|firmen|mittel|stunden|methoden|punkten|themen|kindern|eltern)$/i.test(
+      w,
+    )
+  ) {
+    return false;
+  }
+  if (PLURAL_TO_SINGULAR[w]) return false;
+  // Nominal -en (Unternehmen, Ereignissen…) — not separable infinitives
+  if (w.length >= 9 && /(?:men|nen|den|gen|ten|sen|len|ren)$/i.test(w) && !SEPARABLE_INFINITIVES.has(w)) {
+    if (/(?:unternehmen|ereignissen|entscheidungen)$/i.test(w)) return false;
+  }
   // Past participles / weak adj participles ending in -en (vorgesehenen, abgestellt is -t)
   // Exception: lexical ge- stems (gewährleisten, genießen) are true infinitives.
   if (/^(?:ge).+(?:en)$/i.test(w) && !SEPARABLE_INFINITIVES.has(w) && !LEXICAL_GE_VERBS.has(w)) return false;
-  if (/(?:sehen|geben|nehmen|kommen|halten|lassen|rufen)en$/i.test(w)) return false; // vorgesehenen
+  if (/(?:sehen|geben|kommen|halten|lassen|rufen)en$/i.test(w)) return false; // vorgesehenen
+  if (/nehmen$/i.test(w) && !/nahmen$/i.test(w) && !/unternehmen$/i.test(w)) return false;
   // zu-infinitive of separable (auszuschalten) — normalize elsewhere, not a lemma
   if (isZuSeparableInfinitive(w)) return false;
   return true;
@@ -605,6 +778,7 @@ export function normalizeZuSeparable(w) {
 /** Light plural → singular for common compound heads. */
 function lightSingularizeNoun(n) {
   let w = n;
+  if (PLURAL_TO_SINGULAR[w]) return PLURAL_TO_SINGULAR[w];
   const rules = [
     [/pflanzen$/, 'pflanze'],
     [/ständer(?:n)?$/, 'ständer'],
@@ -776,6 +950,9 @@ function lemmaOf(token, b1Set, nounHints) {
     return STOP.has(canon) ? null : canon;
   }
 
+  const pluralSing = resolvePluralNounLemma(low);
+  if (pluralSing) return STOP.has(pluralSing) ? null : pluralSing;
+
   // Finite forms listed in B1 must still map to infinitive for vocab tags (findet→finden).
   if (FINITE_TO_INF[low]) {
     const inf = FINITE_TO_INF[low];
@@ -943,6 +1120,9 @@ export function formatVocabTag(lemma, nounHints = null) {
   if (NEVER_NOUN_WORDS.has(w) || w === 'paar') return w;
   // Verbs / separables before noun heuristic (…en nouns like Gartenpflanzen handled via hints)
   if (SEPARABLE_INFINITIVES.has(w) || looksLikeInfinitive(w)) return w;
+  if (looksLikePluralNounLemma(w)) {
+    return w.charAt(0).toUpperCase() + w.slice(1);
+  }
   const hintHit =
     nounHints &&
     (nounHints.has(w) ||
@@ -1052,6 +1232,11 @@ function particleLooksFinal(tokens, j) {
  * Window ±8 (was ±6): catches «schlägt … vor» / «findet … statt» with short
  * mid-field arguments while article/zu/clause guards still block prep FPs.
  */
+/** @param {string} text */
+export function findSplitSeparablesInText(text) {
+  return [...findSplitSeparables(tokenizeKeepingSentenceBreaks(text))];
+}
+
 function findSplitSeparables(tokens) {
   const found = new Set();
   const roots = separableRootsFromAllowlist();
@@ -1244,10 +1429,29 @@ function repairQuestionVocabularyTags(q, b1Set, nounHints) {
   let changed = false;
   for (const tag of q.vocabularyTags) {
     const low = String(tag || '').toLowerCase();
-    const repaired = repairCorruptVocabTagSurface(tag) || (LEMMA_GROUND_TRUTH[low] ? LEMMA_GROUND_TRUTH[low] : null);
-    const out = repaired || tag;
+    const repaired =
+      repairCorruptVocabTagSurface(tag) ||
+      (LEMMA_GROUND_TRUTH[low] ? LEMMA_GROUND_TRUTH[low] : null);
+    const reLemma = lemmaOf(low, b1Set, nounHints);
+    let out = repaired || reLemma;
+    if (!out) {
+      const pluralSing = resolvePluralNounLemma(low);
+      if (pluralSing && STOP.has(pluralSing)) {
+        changed = true;
+        continue;
+      }
+      out = tag;
+    }
+    if (!out || STOP.has(String(out).toLowerCase())) {
+      changed = true;
+      continue;
+    }
     const formatted = formatVocabTag(out, nounHints);
-    if (formatted.toLowerCase() !== low) changed = true;
+    if (!formatted || STOP.has(formatted.toLowerCase())) {
+      changed = true;
+      continue;
+    }
+    if (formatted !== String(tag || '').trim()) changed = true;
     if (!next.some((t) => t.toLowerCase() === formatted.toLowerCase())) next.push(formatted);
   }
   if (!next.length) return false;
@@ -1354,6 +1558,95 @@ export function countGrammarSignals(text) {
 }
 
 /**
+ * B2 grammar detectors (Goethe B2 Modellsatz — más allá de B1).
+ * IDs: konj1 (würde/könnte), konj2 (hätte/wäre), nominal, passiv+Modal, modus, Relativ+Präp.
+ */
+export function countGrammarSignalsB2(text) {
+  const t = String(text || '');
+  const counts = Object.fromEntries(B2_GRAMMAR_IDS.map((id) => [id, 0]));
+
+  counts['g-de-b2-konj1'] = countRe(
+    /\b(würde|würden|würdest|würdet|könnte|könnten|könntest|sollte|sollten|müsste|müssten|dürfte|dürften)\b/gi,
+    t,
+  );
+
+  counts['g-de-b2-konj2'] = countRe(
+    /\b(hätte|hätten|hättest|hättet|wäre|wären|wärest|ginge|gingen|käme|kämen|ließe|ließen|wüsste|wüssten)\b/gi,
+    t,
+  );
+
+  counts['g-de-b2-nominal'] =
+    countRe(/\b\w+(ung|heit|keit|schaft|tion|ismus|ment|ität|taet)\b/gi, t) +
+    countRe(/\b(die|das|der)\s+[A-ZÄÖÜ][a-zäöüß]+(?:ung|heit|keit)\b/g, t);
+
+  {
+    let n = 0;
+    for (const m of t.matchAll(/\b(wird|werden|wurde|wurden|worden)\b([\s\S]{0,50})/gi)) {
+      const tail = m[2] || '';
+      if (/\b\w+(?:iert|t|en)\b/i.test(tail)) n += 1;
+    }
+    n += countRe(
+      /\b(muss|müssen|kann|können|soll|sollen|darf|dürfen|wird)\s+\w+\s+(?:werden|worden)\b/gi,
+      t,
+    );
+    counts['g-de-b2-passiv'] = n;
+  }
+
+  counts['g-de-b2-modus'] = countRe(
+    /\b(muss|müssen|musst|musste|mussten|kann|können|kannst|soll|sollen|sollst|darf|dürfen|will|wollen|möchte|möchten)\b[\s\S]{0,45}?\b[a-zäöüß]+(?:en|eln|ern)\b/gi,
+    t,
+  );
+
+  counts['g-de-b2-relativ'] =
+    countRe(/\b(worauf|womit|wovon|wofür|worüber|wobei|wodurch)\b/gi, t) +
+    countRe(/\b(dessen|deren|denen)\s+\w+/gi, t) +
+    countRe(/\b(mit|an|in|von|zu|bei|nach|über|unter)\s+(?:dem|der|den)\s*,?\s*(?:der|die|das|den|dem)\b/gi, t);
+
+  return counts;
+}
+
+/** A2 grammar detectors — mapped from A2 compact taxonomy (GEMINI_API_COMPACT_de_A2.md). */
+export function countGrammarSignalsA2(text) {
+  const t = String(text || '');
+  const b1 = countGrammarSignals(text);
+  const counts = Object.fromEntries(A2_GRAMMAR_IDS.map((id) => [id, 0]));
+
+  counts['g-de-a2-nebensatz'] =
+    countRe(/\b(dass|weil|wenn|ob)\b/gi, t) + Math.min(b1['g-de-b1-nebensatz'] || 0, 4);
+  counts['g-de-a2-modal'] = b1['g-de-b1-modalverben'] || 0;
+  counts['g-de-a2-perfekt'] = b1['g-de-b1-perfekt'] || 0;
+  counts['g-de-a2-komparativ'] = b1['g-de-b1-komparativ'] || 0;
+  counts['g-de-a2-dat-akk'] =
+    (b1['g-de-b1-dativ'] || 0) +
+    countRe(/\b(den|die|das|einen|eine|ein|dem|der)\s+[A-ZÄÖÜ]/g, t);
+
+  let trenn = 0;
+  for (const p of SEPARABLE_PREFIXES) {
+    const escP = p.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    trenn += countRe(new RegExp(`\\b${escP}\\w+(?:t|en|st|e)\\b`, 'gi'), t);
+    trenn += countRe(new RegExp(`\\b\\w+\\s+${escP}\\w+(?:t|en)?\\b`, 'gi'), t);
+  }
+  counts['g-de-a2-trennbar'] = Math.min(trenn, 6);
+
+  const praesensHits = countRe(
+    /\b(ich|du|er|sie|es|wir|ihr|man|Sie)\s+\w+(?:e|st|t)\b/gi,
+    t,
+  );
+  counts['g-de-a2-praesens'] =
+    counts['g-de-a2-perfekt'] > 0 ? Math.max(0, praesensHits - 1) : praesensHits;
+
+  return counts;
+}
+
+/** @param {string} text @param {string} [level] */
+export function countGrammarSignalsForLevel(text, level = 'B1') {
+  const lv = String(level || 'B1').trim().toUpperCase();
+  if (lv === 'B2') return countGrammarSignalsB2(text);
+  if (lv === 'A2') return countGrammarSignalsA2(text);
+  return countGrammarSignals(text);
+}
+
+/**
  * Item-specific grammar blob (PRIMARY): question + explanation + correct option.
  * Does NOT include the shared passage.
  */
@@ -1378,22 +1671,23 @@ export function passageGrammarBlob(passage) {
  * @returns {string[]} 0…GRAMMAR_TAG_SOFT_MAX tags (empty allowed)
  */
 export function inferGrammarTagsFromText(primaryText, teil = 1, opts = {}) {
-  const primaryCounts = countGrammarSignals(primaryText);
+  const level = String(opts.level || 'B1').trim().toUpperCase();
+  const ids = grammarIdsForLevel(level);
+  const primaryCounts = countGrammarSignalsForLevel(primaryText, level);
   const secondaryText = opts.secondaryText || opts.passageText || '';
-  const secondaryCounts = secondaryText ? countGrammarSignals(secondaryText) : null;
+  const secondaryCounts = secondaryText ? countGrammarSignalsForLevel(secondaryText, level) : null;
 
   const eligible = [];
-  for (const id of B1_GRAMMAR_IDS) {
+  for (const id of ids) {
     const p = primaryCounts[id] || 0;
-    const min = grammarMinCount(id, opts);
-    // Passage-only signals never qualify
+    const min = grammarMinCountForLevel(id, level, { ...opts, level });
     if (p < min) continue;
     const s = secondaryCounts ? secondaryCounts[id] || 0 : 0;
     eligible.push({
       id,
       count: p,
       reinforced: s > 0,
-      priority: GRAMMAR_TAG_PRIORITY[id] ?? 0,
+      priority: grammarPriority(id, level),
     });
   }
 
@@ -1429,6 +1723,7 @@ export function ensureBatchGrammarRetrievalMinimum(batch) {
   const passage = batch.passages?.[0];
   const passageTags = inferGrammarTagsFromText(passageGrammarBlob(passage), 2, {
     a2Matching: true,
+    level: 'A2',
   });
   if (passageTags.length) {
     qs[0].grammarTags = passageTags.slice(0, GRAMMAR_TAG_SOFT_MAX);
@@ -1495,6 +1790,35 @@ export function questionSpecificVocabBlob(q, passage, opts = {}) {
     blob = `${passage.title} ${blob}`.trim();
   }
   return blob;
+}
+
+function tagAppearsInVocabBlob(tag, blob) {
+  const t = String(tag).toLowerCase();
+  const b = String(blob).toLowerCase();
+  if (b.includes(t)) return true;
+  if (t.length >= 5 && b.split(/\s+/).some((w) => w.startsWith(t.slice(0, 5)))) return true;
+  return false;
+}
+
+/** Keep vocabularyTags ⊆ content extractable from questionSpecificVocabBlob (audit A2-D). */
+export function sanitizeVocabularyTagsToBlob(q, passage) {
+  const blob = questionSpecificVocabBlob(q, passage);
+  let tags = (q.vocabularyTags || []).filter((t) => tagAppearsInVocabBlob(t, blob));
+  if (tags.length < 1) {
+    tags = extractVocabularyFromText(blob, 6);
+  }
+  if (tags.length < 1 && q.explanation) {
+    tags = extractVocabularyFromText(String(q.explanation), 4);
+  }
+  const uniq = [];
+  for (const t of tags) {
+    const s = String(t).trim();
+    if (!s) continue;
+    if (uniq.some((u) => u.toLowerCase() === s.toLowerCase())) continue;
+    uniq.push(s);
+  }
+  q.vocabularyTags = uniq.slice(0, 6);
+  if (!q.vocabularyTags.length) q.vocabularyTags = ['Alltag'];
 }
 
 function vocabSignature(tags) {
@@ -1663,13 +1987,17 @@ export function enrichBatchMetadata(batch, opts = {}) {
 
   const passagesById = new Map((current.passages || []).map((p) => [p.id, p]));
   const b1Set = loadB1LemmaSet();
-  const nounHints = null;
+
+  function nounHintsForQuestion(q) {
+    const passage = passagesById.get(q.passageId);
+    return collectCapitalizedHints(questionSpecificVocabBlob(q, passage));
+  }
 
   /** Pool artifact repair: fix tags in place — no re-extract / ensureDistinct (avoids new lemma stubs). */
   if (opts.vocabRepairOnly) {
     for (const q of current.questions || []) {
       if (opts.vocab !== false && Array.isArray(q.vocabularyTags) && q.vocabularyTags.length) {
-        if (repairQuestionVocabularyTags(q, b1Set, nounHints)) stats.vocab++;
+        if (repairQuestionVocabularyTags(q, b1Set, nounHintsForQuestion(q))) stats.vocab++;
       }
     }
     current._metadataEnrichedAt = new Date().toISOString();
@@ -1680,7 +2008,7 @@ export function enrichBatchMetadata(batch, opts = {}) {
 
   for (const q of current.questions || []) {
     if (opts.vocab !== false && Array.isArray(q.vocabularyTags) && q.vocabularyTags.length) {
-      if (repairQuestionVocabularyTags(q, b1Set, nounHints)) stats.vocab++;
+      if (repairQuestionVocabularyTags(q, b1Set, nounHintsForQuestion(q))) stats.vocab++;
     }
   }
 
@@ -1695,16 +2023,13 @@ export function enrichBatchMetadata(batch, opts = {}) {
     ) {
       let words = extractVocabularyFromText(vocabBlob, 6);
       if (words.length < 3) {
-        // Prefer local content fields over whole-batch (never explanation — R7)
+        const matched = matchingOptionText(q, passage);
         words = extractVocabularyFromText(
-          [q.question, q.signText, q.transcript, q.statement, passage?.title]
+          [q.question, q.signText, q.transcript, q.statement, passage?.title, matched]
             .filter(Boolean)
             .join(' '),
           6,
         );
-      }
-      if (words.length < 2 && passage?.text) {
-        words = extractVocabularyFromText(`${vocabBlob} ${passage.text}`, 6);
       }
       if (words.length >= 1) {
         q.vocabularyTags = words.slice(0, 6);
@@ -1712,16 +2037,20 @@ export function enrichBatchMetadata(batch, opts = {}) {
       }
     }
 
-    const existingGrammar = sanitizeGrammarTags(q.grammarTags);
-    const batchLevel = String(q.level || current.level || passage?.level || 'A2').toUpperCase();
+    const batchLevel = String(q.level || current.level || passage?.level || 'B1').toUpperCase();
+    const rawGrammar = Array.isArray(q.grammarTags) ? q.grammarTags : [];
+    const existingGrammar = sanitizeGrammarTags(rawGrammar, batchLevel);
+    const strippedInvalidGrammar =
+      rawGrammar.length > 0 && existingGrammar.length < rawGrammar.length;
     const a2Matching = isA2MatchingQuestion(q, batchLevel);
     const grammarInferOpts = {
       secondaryText: passageGrammarBlob(passage),
       a2Matching,
+      level: batchLevel,
     };
     if (
       opts.grammar !== false &&
-      (opts.forceGrammar || !existingGrammar.length)
+      (opts.forceGrammar || !existingGrammar.length || strippedInvalidGrammar)
     ) {
       const primary = questionSpecificGrammarBlob(q);
       q.grammarTags = inferGrammarTagsFromText(primary, teil, grammarInferOpts);
@@ -1758,7 +2087,8 @@ export function enrichBatchMetadata(batch, opts = {}) {
     // Optional legacy fill only when explicitly requested.
     if (!(q.grammarTags || []).length && opts.fillGrammarDefaults) {
       const teil = Number(q.teil ?? current.teil ?? 1);
-      q.grammarTags = [...(DEFAULT_GRAMMAR_BY_TEIL[teil] || DEFAULT_GRAMMAR_BY_TEIL[1])];
+      const lv = String(q.level || current.level || 'B1').trim().toUpperCase();
+      q.grammarTags = defaultGrammarTagsForTeil(teil, lv);
       stats.grammar++;
     } else if (!Array.isArray(q.grammarTags)) {
       q.grammarTags = [];
@@ -1770,6 +2100,9 @@ export function enrichBatchMetadata(batch, opts = {}) {
     ensureDistinctQuestionVocabTags(current.questions || [], (q) =>
       questionSpecificVocabBlob(q, passagesById.get(q.passageId)),
     );
+    for (const q of current.questions || []) {
+      sanitizeVocabularyTagsToBlob(q, passagesById.get(q.passageId));
+    }
   }
 
   // Hören A2 T2: requested topic may not match week-plan content (Sport/Freizeit mix) — prefer detected topic
@@ -1793,6 +2126,8 @@ export function enrichBatchMetadata(batch, opts = {}) {
   if (mod === 'horen' && teilN === 2) {
     ensureBatchGrammarRetrievalMinimum(current);
   }
+
+  current = alignQuestionTopicTagsToRequestedTopic(current);
 
   current._metadataEnrichedAt = new Date().toISOString();
   current._metadataEnrichNote =

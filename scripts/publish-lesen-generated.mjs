@@ -288,8 +288,6 @@ async function publishOneFile(relFile, args, { label } = {}) {
 
     }
 
-    ingestAndPromote(args, norm);
-
     poolWrite = await publishLesenBatchToPool(batch, {
       lang: args.lang,
       level: args.level,
@@ -312,6 +310,8 @@ async function publishOneFile(relFile, args, { label } = {}) {
         regenerate: poolWrite.regenerate === true,
       };
     }
+
+    ingestAndPromote(args, norm);
   }
 
   return { ok: true, label, teil: check.teil, relFile: norm, errors: [], rejected: false, poolId: poolWrite?.id };

@@ -181,3 +181,81 @@ export function findKeyExplanationMismatches(batch) {
   }
   return hits;
 }
+
+/** Narrative MCQ (T1–T3, T2) vs Regeltext (T5). */
+export function lesenExplanationTextKind(batch = {}) {
+  const teil = Number(batch.teil ?? batch.questions?.[0]?.teil);
+  if (teil === 5) return 'regeltext';
+  const passageBlob = (batch.passages || [])
+    .map((p) => `${p.title || ''}\n${p.text || ''}`)
+    .join('\n');
+  if (/§\s*\d|Hausordnung|Regeltext|Unterrichtsordnung/i.test(passageBlob)) return 'regeltext';
+  return 'narrative';
+}
+
+/** Move finite «ist/sind/war…» toward clause end for weil-Nebensatz (B1-safe heuristic). */
+export function weilClauseBodyFromOption(correctBody) {
+  let body = String(correctBody || '').trim().replace(/\.$/, '');
+  const m = body.match(/^([Ee]s|[Dd]as|[Dd]er|[Dd]ie)\s+(ist|sind|war|waren|wird|werden)\s+(.+)$/);
+  if (m) return `${m[1]} ${m[3]} ${m[2]}`;
+  return body.charAt(0).toLowerCase() + body.slice(1);
+}
+
+/**
+ * B1 explanation anchored to the declared correct option (0 API calls).
+ * @returns {string|null}
+ */
+export function buildDeterministicExplanationForCorrectKey(question, batch = {}) {
+  const hit = analyzeExplanationMismatch(question, batch);
+  if (!hit) return null;
+
+  const letter = hit.correct;
+  const opts = question.options || [];
+  const correctOpt = opts.find((o) =>
+    optionStr(o).toLowerCase().trim().startsWith(`${letter})`),
+  );
+  const correctBody = correctOpt ? stripOptionLetter(correctOpt) : '';
+  if (!correctBody) return null;
+
+  const forbidden = new Set(
+    (hit.overlapTokens || []).map((t) => String(t).toLowerCase()).filter(Boolean),
+  );
+
+  const kind = lesenExplanationTextKind(batch);
+  const weilBody = weilClauseBodyFromOption(correctBody);
+  const candidates =
+    kind === 'regeltext'
+      ? [
+          `Laut dem Text ist Antwort ${letter}) richtig, weil ${weilBody}. Das steht so in den Regeln.`,
+          `Die richtige Antwort ist ${letter}), denn im Text heißt es: ${correctBody}.`,
+          `Option ${letter}) ist korrekt, weil die Regeln festlegen, dass ${weilBody}.`,
+        ]
+      : [
+          `Die richtige Antwort ist ${letter}), denn im Text heißt es: ${correctBody}.`,
+          `Laut dem Text passt Antwort ${letter}), weil ${weilBody}.`,
+          `Option ${letter}) ist korrekt, denn der Text sagt: ${correctBody}.`,
+        ];
+
+  for (const expl of candidates) {
+    const words = expl.split(/\s+/).filter(Boolean);
+    if (words.length < 10) continue;
+    if (forbidden.size && [...forbidden].some((t) => expl.toLowerCase().includes(t))) continue;
+    if (kind === 'narrative' && /steht so in den regeln|die regeln festlegen/i.test(expl)) continue;
+    const trial = { ...question, explanation: expl };
+    if (!analyzeExplanationMismatch(trial, batch)) return expl;
+  }
+  return null;
+}
+
+/** @returns {{ batch: object, fixed: number }} */
+export function applyDeterministicExplanationFixes(batch) {
+  if (!batch?.questions?.length) return { batch, fixed: 0 };
+  let fixed = 0;
+  const questions = batch.questions.map((q) => {
+    const expl = buildDeterministicExplanationForCorrectKey(q, batch);
+    if (!expl) return q;
+    fixed += 1;
+    return { ...q, explanation: expl };
+  });
+  return { batch: fixed ? { ...batch, questions } : batch, fixed };
+}

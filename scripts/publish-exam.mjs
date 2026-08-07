@@ -1,34 +1,29 @@
 #!/usr/bin/env node
 /**
- * publish-exam.mjs — Create a published official exam from an assembled file.
+ * publish-exam.mjs — CLI for official publish (thin wrapper).
  *
- * Reads _meta.partIds from assembled-exam-b1-eN.json, captures contentHash + snapshot
- * per part from pool (blob) or local reusable-seed fallback.
+ * **Do not use --apply on this script directly.** It delegates to
+ * publish-verified-exams-local.mjs → publishVerifiedExamSlots (freshness gate + overlay + sync).
  *
- * Usage:
- *   node scripts/publish-exam.mjs --from assembled-exam-b1-e4.json --dry-run
- *   node scripts/publish-exam.mjs --from assembled-exam-b1-e4.json --apply --yes
- *   node scripts/publish-exam.mjs --from ... --exam-id official-de-B1-e4 --slot 4 --apply
+ * Dry-run preview (single file, with freshness check):
+ *   node scripts/publish-exam.mjs --from batches/ready/assembled-from-verified/assembled-exam-b1-verified-e4.json
+ *
+ * Apply (supported path):
+ *   node scripts/publish-verified-exams-local.mjs --slots 4 --level B1
+ *
+ * Internal: publishVerifiedExamSlots → applyPublishExamFromAssembled (in-process, after freshness).
+ *
+ * Known exception (not assembled-exam-*): re-publish-official-exam.mjs — see that script’s header
+ * (seed↔pool + assembled STALE gates on --apply; not a substitute for publish-verified-exams-local).
  */
-import fs from 'node:fs';
 import path from 'node:path';
-import readline from 'node:readline';
 import { loadEnvFile, ROOT } from './lib/loadEnv.mjs';
+import { assertAssembledFreshBeforePublish } from './lib/assembledExamFreshness.mjs';
 import {
-  buildPublishedExamDoc,
-  capturePublishedParts,
-  defaultExamId,
-  getBlobStore,
-  loadSeedRecords,
-  mergeSeedOverlay,
-  parseAssembledExamFile,
-  summarizePublishedExam,
-  upsertPublishedCatalog,
-  writePublishedExam,
-  OFFICIAL_CELLS,
-  officialCellsForLevel,
-} from './lib/publishedExamLib.mjs';
-import { isExamPublishable } from './audit-pass-2.mjs';
+  applyPublishExamFromAssembled,
+  classifyAssembledSourcePath,
+} from './lib/applyPublishExamFromAssembled.mjs';
+import { parseAssembledExamFile } from './lib/publishedExamLib.mjs';
 
 loadEnvFile();
 
@@ -45,6 +40,7 @@ function parseArgs(argv) {
     yes: false,
     localOnly: false,
     seedOverlay: null,
+    noSyncServed: false,
   };
   for (let i = 2; i < argv.length; i++) {
     const a = argv[i];
@@ -55,198 +51,111 @@ function parseArgs(argv) {
     else if (a === '--lang') out.lang = String(argv[++i]).toLowerCase();
     else if (a === '--level') out.level = String(argv[++i]).toUpperCase();
     else if (a === '--seed-overlay') out.seedOverlay = path.resolve(ROOT, argv[++i]);
-    else if (a === '--dry-run') { out.dryRun = true; out.apply = false; }
-    else if (a === '--apply') { out.apply = true; out.dryRun = false; }
-    else if (a === '--yes') out.yes = true;
+    else if (a === '--dry-run') {
+      out.dryRun = true;
+      out.apply = false;
+    } else if (a === '--apply') {
+      out.apply = true;
+      out.dryRun = false;
+    } else if (a === '--yes') out.yes = true;
     else if (a === '--local-only') out.localOnly = true;
+    else if (a === '--no-sync-served') out.noSyncServed = true;
     else if (a === '--help' || a === '-h') out.help = true;
   }
   if (!out.apply) out.dryRun = true;
   return out;
 }
 
-async function confirm(msg) {
-  const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
-  const answer = await new Promise((resolve) => rl.question(`${msg} [y/N] `, resolve));
-  rl.close();
-  return /^y(es)?$/i.test(String(answer).trim());
-}
+function printUsage() {
+  console.log(`Usage:
+  Preview:  node scripts/publish-exam.mjs --from <assembled-exam-*-verified-eN.json>
+  Publish:  node scripts/publish-verified-exams-local.mjs --slots N [--level B1|A2]
 
-function printCapturePreview({ doc, sources, missing }) {
-  console.log('\n=== published_exam shape (preview) ===\n');
-  const preview = summarizePublishedExam(doc);
-  console.log(JSON.stringify(preview, null, 2));
+Options (preview only):
+  --from --dry-run (default)  Freshness gate + capture preview
+  --seed-overlay <path>       Merge seed overlay before preview (internal publish uses pool overlay)
 
-  console.log('\n--- parts: partId + contentHash (full hash in doc) ---\n');
-  for (const p of doc.parts) {
-    const src = sources[p.cell] || '?';
-    console.log(
-      `  ${p.cell.padEnd(14)}  ${p.partId}\n` +
-      `  ${''.padEnd(14)}  hash=${p.contentHash}  (${src})`,
-    );
-  }
-
-  if (missing.length) {
-    console.log('\n⚠  Missing parts:');
-    for (const m of missing) console.log(`    · ${m}`);
-  }
-
-  console.log('\n--- example part entry (lesen_3 only, snapshot truncated) ---\n');
-  const l3 = doc.parts.find((p) => p.cell === 'lesen_3');
-  if (l3) {
-    const snapPreview = {
-      cell: l3.cell,
-      partId: l3.partId,
-      contentHash: l3.contentHash,
-      snapshot: {
-        ...l3.snapshot,
-        questions: `[${(l3.snapshot.questions || []).length} questions]`,
-        ads: l3.snapshot.ads ? `[${l3.snapshot.ads.length} ads]` : undefined,
-      },
-    };
-    console.log(JSON.stringify(snapPreview, null, 2));
-  }
+Direct --apply on official assembled files delegates to publishVerifiedExamSlots.
+Other paths: use publish-verified-exams-local.mjs only.`);
 }
 
 async function main() {
   const args = parseArgs(process.argv);
   if (args.help || !args.from) {
-    console.log(`Usage: node scripts/publish-exam.mjs --from assembled-exam-b1-e4.json [--dry-run|--apply]
-
-Options:
-  --from <path>     Assembled exam JSON (requires _meta.partIds)
-  --exam-id <id>    Default: official-{lang}-{level}-e{slot}
-  --slot <n>        Override slot (default: _meta.examNumber)
-  --title <text>    Default: Official {level} Exam {slot}
-  --lang --level    Default from assembled / de B1
-  --dry-run         Preview only (default)
-  --apply           Write published_exam (+ catalog); requires --yes or prompt
-  --local-only      Write library/published-exams/ only (no Netlify blob)
-  --seed-overlay    Merge local seed records (overlay wins) before capture
-  --yes             Skip confirmation on --apply`);
+    printUsage();
     process.exit(args.help ? 0 : 2);
   }
 
-  if (!fs.existsSync(args.from)) {
-    console.error(`File not found: ${args.from}`);
-    process.exit(1);
-  }
+  const kind = classifyAssembledSourcePath(args.from);
+  const parsed = parseAssembledExamFile(args.from);
+  const slot = args.slot ?? parsed.slot;
+  const level = args.level || parsed.level;
+  const lang = args.lang || parsed.lang;
 
-  const assembled = parseAssembledExamFile(args.from);
-  const lang = args.lang || assembled.lang;
-  const level = args.level || assembled.level;
-  const slot = args.slot ?? assembled.slot;
-  const examId = args.examId || defaultExamId(lang, level, slot);
-  const title = args.title || `Official ${level} Exam ${slot}`;
-
-  const rawAssembled = JSON.parse(fs.readFileSync(args.from, 'utf8'));
-  const gate1 = isExamPublishable(
-    { exam: rawAssembled.exam, level },
-    { expectedLevel: level },
-  );
-  if (!gate1.ok) {
-    console.error(`\n✗ GATE-1 BLOCK — publish aborted (${path.relative(ROOT, args.from)})`);
-    console.error(`  gate1.ok=false — ${(gate1.blocking || []).length} blocking finding(s):`);
-    for (const b of (gate1.blocking || []).slice(0, 12)) {
-      console.error(`    [${b.id}] ${String(b.message || '').slice(0, 140)}`);
+  if (args.apply) {
+    if (kind === 'quarantine') {
+      console.error(
+        '\n✗ Refusing --apply on quarantine assembled JSON.\n' +
+          '  Restore to batches/ready/assembled-from-verified/, reassemble, then:\n' +
+          '  node scripts/publish-verified-exams-local.mjs --slots ' +
+          slot +
+          ' --level ' +
+          level,
+      );
+      process.exit(1);
     }
-    process.exit(1);
-  }
-
-  const { byId: seedById, source: seedFile } = loadSeedRecords(lang, level);
-  let overlayInfo = { merged: 0, source: null };
-  if (args.seedOverlay) {
-    overlayInfo = mergeSeedOverlay(seedById, args.seedOverlay);
-  }
-  const store = args.localOnly ? null : await getBlobStore();
-
-  console.log(`\n=== publish-exam ${args.dryRun ? 'DRY-RUN' : 'APPLY'} ===`);
-  console.log(`  from:    ${path.relative(ROOT, args.from)}`);
-  console.log(`  examId:  ${examId}  slot=${slot}`);
-  console.log(`  seed:    ${seedFile ? path.relative(ROOT, seedFile) : '(none)'}`);
-  if (overlayInfo.source) {
-    console.log(`  overlay: ${path.relative(ROOT, overlayInfo.source)} (${overlayInfo.merged} records)`);
-  }
-  console.log(`  store:   ${store ? 'netlify-blobs' : 'local-seed-only'}`);
-
-  const { parts, missing, sources } = await capturePublishedParts(store, {
-    lang,
-    level,
-    partIdMap: assembled.partIds,
-    seedById,
-  });
-
-  if (missing.length) {
-    console.error(`\n✗ Cannot publish — missing ${missing.length} part(s):`);
-    for (const m of missing) console.error(`    · ${m}`);
-    process.exit(1);
-  }
-
-  const expectedCells = officialCellsForLevel(level);
-  if (parts.length !== expectedCells.length) {
-    console.error(`\n✗ Expected ${expectedCells.length} parts, got ${parts.length}`);
-    process.exit(1);
-  }
-
-  const doc = buildPublishedExamDoc({
-    examId,
-    lang,
-    level,
-    title,
-    slot,
-    parts,
-    status: 'live',
-    manifestVersion: 1,
-    gate1: { ok: gate1.ok, blocking: (gate1.blocking || []).slice(0, 8) },
-    sourceAssembled: path.relative(ROOT, args.from),
-  });
-
-  printCapturePreview({ doc, sources, missing: [] });
-
-  if (args.dryRun) {
-    console.log('\n[DRY-RUN] No files or blobs written. Re-run with --apply to publish.');
-    process.exit(0);
-  }
-
-  if (!args.yes) {
-    const ok = await confirm('\nWrite published_exam?');
-    if (!ok) {
-      console.log('Aborted.');
-      process.exit(0);
+    if (kind !== 'official') {
+      console.error(
+        '\n✗ Direct publish-exam --apply is disabled for non-official paths.\n' +
+          '  Use: node scripts/publish-verified-exams-local.mjs --slots ' +
+          slot +
+          ' --level ' +
+          level,
+      );
+      process.exit(1);
     }
+    const { publishVerifiedExamSlots } = await import('./lib/verifiedExamPublishLib.mjs');
+    await publishVerifiedExamSlots({
+      slots: [slot],
+      lang,
+      level,
+      dryRun: false,
+      syncServed: !args.noSyncServed,
+    });
+    console.log('\n(via publishVerifiedExamSlots — freshness gate + overlay + catalog + served sync)');
+    return;
   }
 
-  await writePublishedExam({
-    store,
-    lang,
-    level,
-    doc,
-    applyLocal: true,
-    applyBlob: !!store,
-  });
+  assertAssembledFreshBeforePublish({ slots: [slot], level });
 
-  await upsertPublishedCatalog({
-    store,
-    lang,
-    level,
-    examEntry: {
-      examId,
-      slot,
-      title,
-      status: doc.status,
-      manifestVersion: doc.manifestVersion,
-      publishedAt: doc.publishedAt,
-    },
-    applyLocal: true,
-    applyBlob: !!store,
-  });
+  if (args.dryRun && kind === 'official') {
+    const { publishVerifiedExamSlots } = await import('./lib/verifiedExamPublishLib.mjs');
+    const preview = await publishVerifiedExamSlots({
+      slots: [slot],
+      lang,
+      level,
+      dryRun: true,
+      syncServed: false,
+    });
+    console.log('\n[DRY-RUN via publishVerifiedExamSlots]', JSON.stringify(preview, null, 2));
+    return;
+  }
 
-  console.log(`\n✅ Published ${examId} (manifest v${doc.manifestVersion})`);
-  if (store) console.log(`   blob: published_exam:${lang}:${level}:${examId}`);
-  console.log(`   local: library/published-exams/${lang}/${level}/${examId}.json`);
+  await applyPublishExamFromAssembled({
+    from: args.from,
+    examId: args.examId,
+    slot: args.slot,
+    title: args.title,
+    lang: args.lang,
+    level: args.level,
+    dryRun: true,
+    yes: false,
+    localOnly: args.localOnly,
+    seedOverlay: args.seedOverlay,
+  });
 }
 
 main().catch((err) => {
-  console.error(err);
+  console.error(err?.message || err);
   process.exit(1);
 });

@@ -44,6 +44,9 @@ export const MIN_T5_VOCAB_INTEGRATED = 2;
 /** Konsum×T5: retail lemmas clash with Regeltext — gate relaxed (0 required). */
 export const MIN_KONSUM_T5_VOCAB_INTEGRATED = 0;
 
+/** Max target words in T5 prompts (Hausordnung cannot integrate 10 weak lemmas). */
+export const T5_PROMPT_WORD_CAP = 6;
+
 function subtypeDef(textSubtype) {
   return LESEN_T5_SUBTYPES.find((s) => s.id === textSubtype) || null;
 }
@@ -115,9 +118,50 @@ export function adaptT5WordsForSubtype(words, topicTag, textSubtype) {
  * @param {number} [count=6]
  */
 export function resolveKonsumT5PromptWords(textSubtype, count = 6) {
-  const pool = T5_SUBTYPE_VOCAB_POOL[textSubtype] || T5_SUBTYPE_VOCAB_POOL.markthalle;
-  const n = Math.min(Math.max(1, count), pool.length);
-  return pool.slice(0, n);
+  return resolveT5PromptWords(textSubtype, { count, userWords: [], topic: 'Konsum' });
+}
+
+/**
+ * Subtype-safe prompt list for Lesen T5 (Regeltext / Hausordnung).
+ * Replaces debate-fill coverage words (urlaub, spaziergang…) that fail integration gates.
+ *
+ * @param {string} textSubtype
+ * @param {{ count?: number, userWords?: string[], topic?: string, cursor?: number }} [opts]
+ */
+export function resolveT5PromptWords(textSubtype, opts = {}) {
+  const count = Math.min(
+    T5_PROMPT_WORD_CAP,
+    Math.max(MIN_T5_VOCAB_INTEGRATED, Number(opts.count) || T5_PROMPT_WORD_CAP),
+  );
+  const pool = T5_SUBTYPE_VOCAB_POOL[textSubtype] || T5_SUBTYPE_VOCAB_POOL.freizeitzentrum;
+  const userWords = (opts.userWords || []).map(String).filter(Boolean);
+  const used = new Set();
+  const out = [];
+
+  for (const w of userWords) {
+    if (out.length >= count) break;
+    const f = foldLemma(w);
+    if (used.has(f)) continue;
+    const inPool = pool.some((p) => foldLemma(p) === f);
+    if (inPool || wordMatchesSubtype(w, textSubtype)) {
+      out.push(w);
+      used.add(f);
+    }
+  }
+
+  let idx = Math.max(0, Number(opts.cursor) || 0) % Math.max(1, pool.length);
+  let guard = 0;
+  while (out.length < count && pool.length && guard < pool.length * 3) {
+    guard += 1;
+    const pick = pool[idx % pool.length];
+    idx += 1;
+    const f = foldLemma(pick);
+    if (used.has(f)) continue;
+    out.push(pick);
+    used.add(f);
+  }
+
+  return out.slice(0, count);
 }
 
 /**

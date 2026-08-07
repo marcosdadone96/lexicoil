@@ -92,7 +92,7 @@ export async function maybeAutoPublishExams({
     return result;
   }
 
-  const pub = publishVerifiedExamSlots({
+  const pub = await publishVerifiedExamSlots({
     slots: slotsToPublish,
     lang,
     level,

@@ -14,6 +14,7 @@ import { createRequire } from 'node:module';
 import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { smokeLogin } from './lib/smokeAuthLogin.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
@@ -233,11 +234,13 @@ if (!fixtureGate.valid) {
 }
 
 async function login(email, password) {
-  const res = await api('auth-login', { method: 'POST', body: { email, password } });
-  if (res.status !== 200 || !res.data?.token) {
-    throw new Error(`login failed (${res.status}): ${res.data?.error || 'no token'}`);
-  }
-  return res.data.token;
+  const { token, via } = await smokeLogin(BASE_URL, {
+    email,
+    password,
+    origin: originHeader(),
+  });
+  log(`login via ${via}`);
+  return token;
 }
 
 async function ensureUser(email, password, name) {

@@ -12,7 +12,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { createRequire } from 'node:module';
-import { B1_TOPICS, isValidB1Topic } from './b1Topics.mjs';
+import { B1_TOPICS, isValidB1Topic, normalizeB1Topic } from './b1Topics.mjs';
+import { topicsForLevel, normalizeTopicForLevel } from './levelPlanner.mjs';
 
 const require = createRequire(import.meta.url);
 const { detectTopic } = require('../../js/engine/partTopicDetect.js');
@@ -21,12 +22,19 @@ const { detectTopic } = require('../../js/engine/partTopicDetect.js');
 export const TOPICS = B1_TOPICS;
 export { B1_TOPICS, isValidB1Topic, detectTopic };
 
+function topicListForLevel(level = 'B1') {
+  const lv = String(level || 'B1').trim().toUpperCase();
+  return topicsForLevel(lv, { scope: lv === 'A2' ? 'gap' : 'pool' });
+}
+
 /**
  * Lee todos los archivos generados y cuenta cuántas veces aparece cada topic.
  * Filtra por module y teil si se proporcionan.
  */
-export function getTopicStats(generatedDir, { module = null, teil = null } = {}) {
-  const counts = Object.fromEntries(TOPICS.map(t => [t, 0]));
+export function getTopicStats(generatedDir, { module = null, teil = null, level = 'B1' } = {}) {
+  const lv = String(level || 'B1').trim().toUpperCase();
+  const topicList = topicListForLevel(lv);
+  const counts = Object.fromEntries(topicList.map((t) => [t, 0]));
   if (!fs.existsSync(generatedDir)) return counts;
 
   for (const filename of fs.readdirSync(generatedDir)) {
@@ -43,7 +51,8 @@ export function getTopicStats(generatedDir, { module = null, teil = null } = {})
       const batch = JSON.parse(fs.readFileSync(path.join(generatedDir, filename), 'utf8'));
       let counted = false;
       for (const p of batch.passages || []) {
-        const tag = p.topicTag || detectTopic(p.text || p.title || '');
+        const raw = p.topicTag || detectTopic(p.text || p.title || '');
+        const tag = normalizeTopicForLevel(lv, raw);
         if (tag && counts[tag] !== undefined) {
           counts[tag]++;
           counted = true;
@@ -53,7 +62,7 @@ export function getTopicStats(generatedDir, { module = null, teil = null } = {})
       if (!counted) {
         const root = batch.topicTag || batch._requestedTopic;
         const qTag = batch.questions?.[0]?.topicTags?.[0] || batch.questions?.[0]?.topicTag;
-        const tag = root || qTag;
+        const tag = normalizeTopicForLevel(lv, root || qTag);
         if (tag && counts[tag] !== undefined) counts[tag]++;
       }
     } catch (_) { /* skip corrupt files */ }
@@ -65,10 +74,12 @@ export function getTopicStats(generatedDir, { module = null, teil = null } = {})
  * Devuelve el tema menos usado en el banco para el módulo/teil dado.
  * En caso de empate, escoge aleatoriamente entre los menos usados.
  */
-export function pickNextTopic(generatedDir, { module = null, teil = null } = {}) {
-  const stats = getTopicStats(generatedDir, { module, teil });
+export function pickNextTopic(generatedDir, { module = null, teil = null, level = 'B1' } = {}) {
+  const lv = String(level || 'B1').trim().toUpperCase();
+  const topicList = topicListForLevel(lv);
+  const stats = getTopicStats(generatedDir, { module, teil, level: lv });
   const minCount = Math.min(...Object.values(stats));
-  const candidates = TOPICS.filter(t => stats[t] === minCount);
+  const candidates = topicList.filter((t) => stats[t] === minCount);
   return candidates[Math.floor(Math.random() * candidates.length)];
 }
 
@@ -103,23 +114,126 @@ export function injectTopicIntoPrompt(prompt, topic) {
 }
 
 /**
- * Añade topicTag al batch, a cada passage y a questions[].topicTags.
- * Fuerza el tema pedido (ignora topicTag del LLM / detectTopic).
- * Crítico para Sprechen/Schreiben (passages: []): sin esto las questions
- * quedan con fallback daily_life / sin tema.
+ * Goethe Sprechen T1 A2: fixed personal intro cards (Geburtstag/Wohnort/Beruf/Hobby).
+ * _requestedTopic is pool-fill axis only — content never paints the assigned theme.
+ * Same policy as Hören T1 content_topic: audit-only, not a publish blocker.
  */
-export function tagBatchWithTopic(batch, topic) {
+export function isSprechenT1PersonalFixedFormat(batch) {
+  if (!batch) return false;
+  const mod = String(
+    batch.module || batch.questions?.[0]?.module || batch.passages?.[0]?.module || '',
+  ).toLowerCase();
+  const teil = Number(batch.teil ?? batch.questions?.[0]?.teil ?? batch.passages?.[0]?.teil);
+  if (mod !== 'sprechen' || teil !== 1) return false;
+  return (batch.questions || []).some((q) => q?.type === 'personal_questions');
+}
+
+/**
+ * Tema de stock por pregunta (Schreiben/Sprechen sin passage).
+ * No usar solo el tema del batch: cada Aufgabe puede ser distinta (p. ej. T2 «Ihr Chef…» → Arbeit).
+ */
+export function detectQuestionTopicTag(q, batchFallbackTopic = null) {
+  if (!q) return batchFallbackTopic || 'Freizeit';
+  const mod = String(q.module || '').toLowerCase();
+  const teil = Number(q.teil);
+  if (mod === 'sprechen' && teil === 1 && q.type === 'personal_questions') {
+    return 'Freizeit';
+  }
+  const text = [q.question, q.signText, q.transcript, q.statement].filter(Boolean).join(' ');
+  const fromText = text ? detectTopic(text) : null;
+  if (fromText && isValidB1Topic(fromText)) return fromText;
+  const existing = q.topicTags?.[0] || q.topicTag;
+  if (existing && isValidB1Topic(String(existing))) return String(existing);
+  if (batchFallbackTopic && isValidB1Topic(batchFallbackTopic)) return batchFallbackTopic;
+  return 'Freizeit';
+}
+
+export function inferLesenT5DominantTopic(batch, fallbackTopic) {
+  const seed = String(batch._t5InstitutionSeed || batch.passages?.[0]?.title || '');
+  const seedLc = seed.toLowerCase();
+  const subtype = String(batch._t5TextSubtype || batch._t5Subtype || '').toLowerCase();
+  if (subtype === 'wohnanlage' || /wohnanlage|mehrfamilienhaus|wohnhaus|mietshaus|wohnheim|siedlung/i.test(seedLc)) {
+    return 'Wohnen';
+  }
+  if (/fitnessstudio|sportverein|schwimmbad|turnhalle|vitalpark/i.test(seedLc)) return 'Sport';
+  if (/bibliothek|bücherei|schule|gymnasium|berufsschule/i.test(seedLc)) return 'Bildung';
+  if (/kantine|mensa|markthalle|cafeteria|betriebskantine/i.test(seedLc)) return 'Ernährung';
+  if (/einkaufszentrum|shopping|markthalle|wochenmarkt/i.test(seedLc)) return 'Einkaufen';
+  if (/bürgerzentrum|freizeitzentrum|jugendtreff|stadthalle|computerraum|workhub/i.test(seedLc)) {
+    return 'Freizeit';
+  }
+  const p = batch.passages?.[0];
+  const blob = [p?.title, p?.text].filter(Boolean).join('\n');
+  const fromPassage = blob ? detectTopic(blob) : null;
+  if (fromPassage && isValidB1Topic(fromPassage)) return fromPassage;
+  if (fallbackTopic && isValidB1Topic(fallbackTopic)) return fallbackTopic;
+  return 'Freizeit';
+}
+
+/**
+ * Root/batch topic = tema pedido (pool-fill); cada question usa detectQuestionTopicTag (contenido real)
+ * salvo Lesen T5 / forceUniformTopic / _requestedTopic explícito (celda de generación).
+ * Sprechen T1 personal_questions: batch.topicTag = _requestedTopic; question tags = Freizeit (formato fijo).
+ */
+export function alignQuestionTopicTagsToRequestedTopic(batch) {
+  if (!batch) return batch;
+  const mod = String(
+    batch.module || batch.questions?.[0]?.module || batch.passages?.[0]?.module || '',
+  ).toLowerCase();
+  const teil = Number(batch.teil ?? batch.questions?.[0]?.teil ?? batch.passages?.[0]?.teil);
+  const isLesenT5 = mod === 'lesen' && teil === 5;
+  const sprechenT1Personal = isSprechenT1PersonalFixedFormat(batch);
+  // Prefer batch.topicTag over stale _requestedTopic (pool retags update topicTag first).
+  const root = normalizeB1Topic(
+    isLesenT5 ? batch.topicTag : batch.topicTag || batch._requestedTopic,
+  );
+  if (!root || !isValidB1Topic(root)) return batch;
+  batch.topicTag = root;
+  if (batch._requestedTopic != null && normalizeB1Topic(batch._requestedTopic) !== root) {
+    batch._requestedTopic = root;
+  }
+  if (batch.passages) {
+    batch.passages = batch.passages.map((p) => ({ ...p, topicTag: root }));
+  }
+  if (batch.questions) {
+    batch.questions = batch.questions.map((q) => {
+      const perQ = sprechenT1Personal ? detectQuestionTopicTag(q, root) : root;
+      return {
+        ...q,
+        topicTags: [perQ],
+        ...(q.topicTag != null ? { topicTag: perQ } : {}),
+      };
+    });
+  }
+  return batch;
+}
+
+export function tagBatchWithTopic(batch, topic, opts = {}) {
   if (!batch || !topic) return batch;
+  const teil = Number(batch.teil ?? batch.questions?.[0]?.teil ?? batch.passages?.[0]?.teil);
+  const mod = String(batch.module || batch.questions?.[0]?.module || batch.passages?.[0]?.module || '')
+    .toLowerCase();
+  const isLesenT5 = mod === 'lesen' && teil === 5;
+  const sprechenT1Personal = isSprechenT1PersonalFixedFormat(batch);
+  const effectiveTopic = isLesenT5 ? inferLesenT5DominantTopic(batch, topic) : topic;
+  const requestedRoot = normalizeB1Topic(batch._requestedTopic);
+  const forceUniform =
+    opts.forceUniformTopic === true ||
+    isLesenT5 ||
+    (requestedRoot && isValidB1Topic(requestedRoot) && !sprechenT1Personal);
   const tagged = {
     ...batch,
-    topicTag: topic,
+    topicTag: effectiveTopic,
     _requestedTopic: batch._requestedTopic || topic,
   };
-  tagged.passages = (batch.passages || []).map((p) => ({ ...p, topicTag: topic }));
-  tagged.questions = (batch.questions || []).map((q) => ({
-    ...q,
-    topicTags: [topic],
-    ...(q.topicTag != null ? { topicTag: topic } : {}),
-  }));
+  tagged.passages = (batch.passages || []).map((p) => ({ ...p, topicTag: effectiveTopic }));
+  tagged.questions = (batch.questions || []).map((q) => {
+    const perQ = forceUniform ? effectiveTopic : detectQuestionTopicTag(q, effectiveTopic);
+    return {
+      ...q,
+      topicTags: [perQ],
+      ...(q.topicTag != null ? { topicTag: perQ } : {}),
+    };
+  });
   return tagged;
 }

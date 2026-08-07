@@ -189,7 +189,9 @@ async function gateBatch(batch, opts = {}) {
     lang: opts.lang || batch.lang || 'de',
     level: opts.level || batch.level || 'B1',
   });
-  const poolReady = gate.ok ? isPartPoolReady(batch, { semantic: opts.semantic !== false }) : false;
+  const poolReady = gate.ok
+    ? (await isPartPoolReady(batch, { semantic: opts.semantic !== false })).ok
+    : false;
   return { gate, poolReady };
 }
 

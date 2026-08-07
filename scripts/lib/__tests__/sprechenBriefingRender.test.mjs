@@ -33,7 +33,7 @@ function esc(s) {
 }
 
 const batch = JSON.parse(
-  fs.readFileSync(path.join(ROOT, 'batches/ready/pool-verified/sprechen-gemini-010.json'), 'utf8'),
+  fs.readFileSync(path.join(ROOT, 'batches/ready/pool-verified/B1/sprechen-gemini-010.json'), 'utf8'),
 );
 
 const g = {
@@ -71,13 +71,13 @@ for (const teil of [1, 2, 3]) {
   };
   const html = SpeakingFlow.renderGoetheSprechenPart(part, ui);
 
-  test(`T${teil}: exactly one off-instr block`, () => {
-    assert.equal((html.match(/class="off-instr"/g) || []).length, 1);
+  test(`T${teil}: exactly one sprechen-briefing block`, () => {
+    assert.equal((html.match(/class="sprechen-briefing"/g) || []).length, 1);
   });
 
-  test(`T${teil}: intro in off-instr, not repeated as speak-point`, () => {
+  test(`T${teil}: intro in briefing, not repeated as speak-point`, () => {
     const introSnippet = briefing.intro.slice(0, 40);
-    assert.ok(html.includes(esc(introSnippet)), 'intro missing from off-instr');
+    assert.ok(html.includes(esc(introSnippet)), 'intro missing from briefing');
     const speakPoints = [...html.matchAll(/class="speak-point"[^>]*>([^<]+)/g)].map((m) => m[1]);
     for (const sp of speakPoints) {
       assert.ok(
@@ -101,16 +101,16 @@ for (const teil of [1, 2, 3]) {
       assert.doesNotMatch(html, /speak-points-list/);
     });
   } else {
-    test(`T${teil}: bullets as labeled list (${briefing.bullets.length} items)`, () => {
+    test(`T${teil}: bullets as labeled cards (${briefing.bullets.length} items)`, () => {
       assert.match(html, /Punkte zum Besprechen/);
-      assert.match(html, /speak-points-list/);
-      const liCount = (html.match(/<li class="speak-point"/g) || []).length;
-      assert.equal(liCount, briefing.bullets.length);
+      assert.match(html, /speak-brief-bullets/);
+      const cardCount = (html.match(/class="speak-brief-item speak-point"/g) || []).length;
+      assert.equal(cardCount, briefing.bullets.length);
     });
   }
 
   console.log(
-    `     T${teil} visual: [off-instr] ${briefing.intro.length} chars → ` +
+    `     T${teil} visual: [sprechen-briefing] ${briefing.intro.length} chars → ` +
       (teil === 2 && part.slides.length
         ? `${part.slides.length} slide boxes`
         : `${briefing.bullets.length} bullet list items`),

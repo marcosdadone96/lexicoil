@@ -9,12 +9,14 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { GOETHE_A2_INSTRUCTIONS } from './lib/goethe-a2-modellsatz.mjs';
+import { topicsForLevel } from './lib/levelPlanner.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = path.join(ROOT, 'batches/ready/gate-logs/topic-cell-preflight-a2-2026-07-15.json');
 const jsonOut = process.argv.includes('--json');
 
-const A2_TOPICS = ['health', 'work', 'society', 'education'];
+/** Goethe A2 official axes — same as german.json / A2_OFFICIAL_TOPICS / picker UI. */
+const A2_TOPICS = topicsForLevel('A2', { scope: 'official' });
 const BANK_PATH = path.join(ROOT, 'library/de/A2/questions.json');
 const BLUEPRINT_PATH = path.join(ROOT, 'library/blueprints/goethe_A2.json');
 const EXAMS_PATH = path.join(ROOT, 'data/exams/de_A2.json');
@@ -40,11 +42,13 @@ function loadJson(p) {
 }
 
 function topicTagForExamTopic(topic) {
+  /** Official slug (Reisen, Gesundheit, …) — also match long german.json labels. */
   const map = {
-    health: ['Gesundheit', 'gesund', 'health'],
-    work: ['Arbeit', 'Beruf', 'work'],
-    society: ['Gesellschaft', 'Stadtleben', 'society'],
-    education: ['Bildung', 'Schule', 'education'],
+    Reisen: ['Reisen', 'Urlaub', 'reisen'],
+    Gesundheit: ['Gesundheit', 'gesund', 'Sport'],
+    Stadtleben: ['Stadtleben', 'Stadt', 'Gesellschaft'],
+    Medien: ['Medien', 'Kommunikation', 'medien'],
+    Umwelt: ['Umwelt', 'Natur', 'Wetter'],
   };
   return map[topic] || [topic];
 }

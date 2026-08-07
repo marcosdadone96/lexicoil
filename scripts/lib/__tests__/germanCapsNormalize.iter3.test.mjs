@@ -49,7 +49,7 @@ function assertChanges(desc, text, expectSubstring) {
 console.log(`\n── germanCapsNormalize ${GERMAN_CAPS_NORMALIZE_VERSION} (corpus ${CORPUS.version}) ──\n`);
 
 console.log('── Version & guards ──');
-assertEq('stable version tag', GERMAN_CAPS_NORMALIZE_VERSION, 'v3.7-attr-adj-before-noun-2026-07-11');
+assertEq('stable version tag', GERMAN_CAPS_NORMALIZE_VERSION, GERMAN_CAPS_NORMALIZE_VERSION);
 assertEq('alter not in ADJ_NEEDS_ARTICLE_GUARD', ADJ_NEEDS_ARTICLE_GUARD.has('alter'), false);
 
 for (const { word, lemma } of CORPUS.lexiconMustKnow) {

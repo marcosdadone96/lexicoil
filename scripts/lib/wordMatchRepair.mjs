@@ -213,7 +213,8 @@ export async function repairT1WordMatchBatch(batch, qualityIssues, callLlm, opts
  */
 export async function repairT2McqWordCopyBatch(batch, findings, callLlm, opts = {}) {
   if (!batch?.questions?.length || !findings?.length) return null;
-  const minWords = 4;
+  const teilForCheck = Number(opts.teil) || 2;
+  const minWords = Number(opts.minWords) || (teilForCheck === 5 ? 5 : 4);
 
   const byItem = new Map();
   for (const f of findings) {
@@ -255,7 +256,7 @@ export async function repairT2McqWordCopyBatch(batch, findings, callLlm, opts = 
   });
 
   console.log(
-    `T2: reparando ${items.length} pregunta(s) word-copy en 1 llamada LLM (pasaje(s) fijo(s))…`,
+    `T${teilForCheck}: reparando ${items.length} pregunta(s) word-copy en 1 llamada LLM (pasaje(s) fijo(s))…`,
   );
 
   let raw;
@@ -278,8 +279,6 @@ export async function repairT2McqWordCopyBatch(batch, findings, callLlm, opts = 
   const patchById = new Map(patches.map((p) => [p.id, p]).filter(([id]) => id));
   let questions = [...batch.questions];
   let repairedAny = false;
-
-  const teilForCheck = Number(opts.teil) || 2;
 
   for (const { question, passage } of items) {
     const patch = patchById.get(question.id);
@@ -304,8 +303,16 @@ export async function repairT2McqWordCopyBatch(batch, findings, callLlm, opts = 
  */
 export async function repairMcqWordCopyBatch(batch, teil, findings, callLlm, opts = {}) {
   const t = Number(teil);
-  if (t === 2) {
-    return repairT2McqWordCopyBatch(batch, findings, callLlm, opts);
+  if (t === 2 || t === 5) {
+    return repairT2McqWordCopyBatch(batch, findings, callLlm, {
+      ...opts,
+      teil: t,
+      minWords: t === 5 ? 5 : 4,
+      examLabel:
+        t === 5
+          ? 'Goethe B1 Lesen Teil 5 (Regeltext/Hausordnung)'
+          : opts.examLabel,
+    });
   }
 
   if (!batch?.questions?.length || !findings?.length) return null;

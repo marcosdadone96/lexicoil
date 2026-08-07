@@ -9,11 +9,21 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import SeparableResolve from '../js/engine/separableResolve.js';
+import { classifyDwdsHtml } from './lib/dwdsSeparableClassify.mjs';
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
-const OUT = path.join(ROOT, 'batches/ready/gate-logs/separable-dwds-verify-2026-07-12.json');
+const stamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+const OUT = path.join(ROOT, 'batches/ready/gate-logs', `separable-dwds-verify-${stamp}.json`);
 
-const LIST = [
+const ONLY = (() => {
+  const i = process.argv.indexOf('--only');
+  if (i >= 0 && process.argv[i + 1]) {
+    return process.argv[i + 1].split(/[\s,]+/).map((s) => s.trim().toLowerCase()).filter(Boolean);
+  }
+  return null;
+})();
+
+const LIST = ONLY || [
   // ab-
   ...'abbiegen abbrechen abbringen abdanken abfahren abfallen abfertigen abfliegen abgeben abgleichen abgreifen abhalten abhängen abheben abholen abkühlen ablegen abmelden abnehmen abraten abreisen abrufen absagen abschließen abschneiden absehen absteigen abstimmen abwenden abziehen'.split(' '),
   // an-
@@ -28,75 +38,10 @@ const LIST = [
 
 const allow = SeparableResolve.SEPARABLE_INFINITIVES;
 const unique = [...new Set(LIST)];
-const missing = unique.filter((w) => !allow.has(w));
+const missing = ONLY ? unique : unique.filter((w) => !allow.has(w));
 
 function isObviousNonVerb(w) {
   return /bar$|sam$|lich$|ig$|isch$|keit$|heit$/.test(w) || !/(?:en|eln|ern|üben)$/i.test(w);
-}
-
-function classifyDwdsHtml(lemma, html) {
-  const h = String(html || '');
-  const low = lemma.toLowerCase();
-  const reasons = [];
-
-  if (/Seite nicht gefunden|kein Eintrag|nicht gefunden/i.test(h) && h.length < 5000) {
-    return { status: 'not_found', reasons: ['DWDS 404/empty'], separable: false };
-  }
-
-  // Adjective / non-verb grammar line
-  if (/Grammatik\s*Adjektiv/i.test(h) || /class="[^"]*dwdswb-ft-wortart[^"]*"[^>]*>\s*Adjektiv/i.test(h)) {
-    reasons.push('DWDS Wortart Adjektiv');
-    return { status: 'discard', reasons, separable: false };
-  }
-
-  // Explicit inseparable
-  if (/untrennbar/i.test(h) && !/trennbar/i.test(h.replace(/untrennbar/gi, ''))) {
-    reasons.push('DWDS mentions untrennbar without trennbar');
-  }
-
-  // Separable conjugation patterns: "kennt sich aus", "erkannte an", "fährt ab"
-  const prefixes = ['ab', 'an', 'auf', 'aus', 'ein', 'mit', 'vor', 'zu', 'nach', 'bei', 'weg', 'los'];
-  let pref = prefixes.find((p) => low.startsWith(p) && low.length > p.length + 2);
-  // anerkennen special: particle is an
-  if (low === 'anerkennen') pref = 'an';
-
-  const root = pref ? low.slice(pref.length) : '';
-  let sepHit = /trennbar/i.test(h) && !/untrennbar/i.test(h);
-
-  // DWDS often shows: "kennt sich aus" / "erkannte an" / "hat … abgegeben"
-  if (pref) {
-    const particleAtEnd = new RegExp(
-      `\\b[a-zäöüß]+(?:t|te|ten|st)?\\s+(?:sich\\s+)?${pref}\\b`,
-      'i',
-    );
-    const partizipGe = new RegExp(`\\b${pref}ge[a-zäöüß]+\\b`, 'i');
-    const anzuerkennen = /anzuerkennen/i.test(h);
-    if (particleAtEnd.test(h) || partizipGe.test(h) || anzuerkennen) {
-      sepHit = true;
-      reasons.push('split finite / ge-participle / zu-infinitive pattern');
-    }
-  }
-
-  // Known dual: abhängen — both exist; accept as separable (B1 "hängt … ab")
-  if (low === 'abhängen') {
-    sepHit = true;
-    reasons.push('dual accent; B1 separable sense accepted (hängt … ab)');
-  }
-
-  // anerkennen is separable (erkennt … an) per DWDS/grammars
-  if (low === 'anerkennen') {
-    sepHit = true;
-    reasons.push('anerkennen: erkennt … an (trennbar)');
-  }
-
-  if (sepHit) return { status: 'accept', reasons, separable: true };
-
-  // If page exists as Verb but no clear split evidence → review
-  if (/Grammatik\s*Verb/i.test(h) || />Verb</i.test(h)) {
-    return { status: 'review', reasons: reasons.length ? reasons : ['verb page but weak split evidence'], separable: false };
-  }
-
-  return { status: 'review', reasons: reasons.length ? reasons : ['unclear'], separable: false };
 }
 
 async function fetchDwds(lemma) {

@@ -109,6 +109,9 @@ export const ADJ_NEEDS_ARTICLE_GUARD = new Set([
 ]);
 
 /** Predicative comparatives after «das/es/etwas» («wird das teurer») — not substantivized nouns. */
+const COMPARATIVE_QUANTIFIER_LEMMAS = new Set([
+  'weniger', 'mehr', 'wenige', 'viele', 'wenigen', 'vielen', 'vieles', 'vielem', 'weniges', 'wenigem',
+]);
 const PREDICATE_ADJ_AFTER_DAS_DENY = new Set([
   'teurer', 'teurere', 'teureres', 'teurerem',
   'wichtiger', 'wichtigere', 'wichtigeres', 'wichtigerem',
@@ -121,9 +124,16 @@ const PREDICATE_COMPARATIVE_NEXT = new Set(['als', 'wie']);
 
 /** «das teurer», «die Schöner als ein Flug» — comparative, not «die Kleinen». */
 function isPredicativeComparativeNotSubstantivized(prevLc, lc, nextWord) {
+  const nextLc = tokenLemma(stripTokenPunct(nextWord || ''));
+  if (
+    COMPARATIVE_QUANTIFIER_LEMMAS.has(lc) &&
+    PREDICATE_COMPARATIVE_TRIGGERS.has(prevLc) &&
+    PREDICATE_COMPARATIVE_NEXT.has(nextLc)
+  ) {
+    return true;
+  }
   if (!PREDICATE_ADJ_AFTER_DAS_DENY.has(lc)) return false;
   if (!PREDICATE_COMPARATIVE_TRIGGERS.has(prevLc)) return false;
-  const nextLc = tokenLemma(stripTokenPunct(nextWord || ''));
   if (!nextLc) return ['das', 'es', 'etwas', 'nichts'].includes(prevLc);
   return PREDICATE_COMPARATIVE_NEXT.has(nextLc);
 }
@@ -184,7 +194,28 @@ const HOMOGRAPH_NOMINAL_AFTER_ADJ = new Set([
  * even when next token is not modal («für kleine unternehmen»).
  * Broader adj+lower-noun scan of 148 files found only this real miss.
  */
-const NOUN_FORCE_AFTER_ATTR_ADJ = new Set(['unternehmen', 'kunde', 'kunden']);
+const NOUN_FORCE_AFTER_ATTR_ADJ = new Set([
+  'unternehmen', 'kunde', 'kunden',
+  'angebot', 'angebote', 'angeboten',
+  'diskussion', 'diskussionen',
+]);
+
+/** Sustantivos deverbales que el guardián de adj/participio confunde con verbos. */
+const DEVERBAL_NOUN_LEMMAS = new Set([
+  'angebot', 'angebote', 'angeboten',
+  'diskussion', 'diskussionen',
+  'abbrüchen', 'abbruch', 'abbrüche',
+  'medikament', 'medikamenten',
+  'zugreise', 'zugreisen',
+]);
+
+/** Predicative adjectives after copula — never capitalize mid-sentence. */
+const PREDICATIVE_ADJ_AFTER_COPULA = new Set([
+  'billig', 'billige', 'billigen', 'billiger', 'billiges',
+  'gleich', 'gleiche', 'gleichen', 'gleicher', 'gleiches',
+]);
+
+const PREP_NOMINAL_OBJECT = new Set(['von', 'mit', 'für', 'über', 'an', 'in', 'auf', 'aus', 'bei', 'nach', 'vor', 'zu']);
 
 export const SUBSTANTIVISING_ARTICLES = new Set([
   'der', 'die', 'das', 'dem', 'den', 'des',
@@ -321,6 +352,7 @@ export const ZU_PREP_NOUN_WHITELIST = new Set([
   'umweltfragen', 'umweltfrage',
   // -en noun plurals that must win over infinitive-morphology block (v3.12)
   'kunden', 'kunde', 'medien', 'medium', 'problemen', 'problem', 'themen', 'thema',
+  'diskussion', 'diskussionen', 'angebot', 'angebote', 'angeboten',
 ]);
 
 /**
@@ -421,6 +453,12 @@ function tokenLemma(w) {
   return stripTokenPunct(w).toLowerCase();
 }
 
+/** Single letter A–F in «(A–F) passt» — not a nominal head (Goethe Lesen matching). */
+function isExamOptionKeyToken(word) {
+  const t = stripTokenPunct(word || '');
+  return /^[A-F]$/i.test(t);
+}
+
 function isCapitalizedWord(token) {
   const fc = token[0];
   return (fc >= 'A' && fc <= 'Z') || fc === 'Ä' || fc === 'Ö' || fc === 'Ü';
@@ -507,6 +545,26 @@ export function looksLikeAttributiveAdjective(word) {
   return false;
 }
 
+/** Attributive adjective before deverbal noun (angeboten/diskussionen), not full POS. */
+function isLikelyAttributiveBeforeDeverbalNoun(prevWord) {
+  const prevLc = tokenLemma(prevWord);
+  if (!prevLc) return false;
+  if (looksLikeAttributiveAdjective(prevWord)) return true;
+  if (ADJ_NEEDS_ARTICLE_GUARD.has(prevLc)) return true;
+  if (!/(?:en|em|er|es|e)$/i.test(prevLc) || prevLc.length < 5) return false;
+  if (/(?:ionen|ationen|heiten|keiten|ungen|chen|lein|tum)$/i.test(prevLc)) return false;
+  if (isCertainNounLemma(prevLc)) return false;
+  if (/(?:isch|lich|bar|sam|haft|ig|end)(?:en|em|er|es|e)$/i.test(prevLc)) return true;
+  if (
+    /^(?:gesund|frisch|neu|gut|groß|gross|klein|wichtig|lang|offen|frei|aktuell|digital|ausgewogen|vielfältig|nachhaltig|öffentlich|technisch|täglich|ähnlich|verschieden|moderat|lecker|frisch)(?:en|em|er|es|e)?$/i.test(
+      prevLc,
+    )
+  ) {
+    return true;
+  }
+  return false;
+}
+
 /**
  * Article/prep/poss + CapAdj + CapNoun → lowercase the adjective.
  * @returns {string|null} lowercased fix or null
@@ -520,6 +578,8 @@ export function shouldDecapitalizeAttributiveAdjBeforeNoun(token, lastWord, next
 
   const lc = tokenLemma(token);
   const nextLc = tokenLemma(nextTok);
+  // «über Freiwillige. Sie helfen» — next capital is pronoun, not noun head
+  if (nextTok === 'Sie' || (nextLc === 'sie' && isCapitalizedWord(nextTok))) return null;
   if (ATTR_ADJ_BEFORE_NOUN_PROPER_BIGRAMS.has(`${lc}|${nextLc}`)) return null;
 
   const prevLc = tokenLemma(lastWord);
@@ -530,6 +590,7 @@ export function shouldDecapitalizeAttributiveAdjBeforeNoun(token, lastWord, next
     return null;
   }
   if (!looksLikeAttributiveAdjective(token)) return null;
+  if (isKnownGermanNoun(token) && !looksLikeAttributiveAdjective(token)) return null;
 
   return token.toLowerCase();
 }
@@ -646,16 +707,31 @@ const ANGEBOTEN_NOUN_PREV = new Set([
   'solchen', 'solche', 'solchem', 'solches', 'solcher',
   'diesen', 'diese', 'diesem', 'dieses',
   'jenen', 'jene', 'jenem', 'jenes',
+  'regional', 'regionalen', 'regionaler', 'regionales', 'regionale',
+  'neue', 'neuen', 'neuer', 'neues',
 ]);
 const ANGEBOTEN_PARTICIPLE_NEXT = new Set([
-  'werden', 'worden', 'wurde', 'wurden', 'wird', 'werde', 'würden', 'würde',
+  'werden', 'worden', 'wurde', 'wurden',
 ]);
+
+function isDeverbalNounLemma(lc) {
+  return DEVERBAL_NOUN_LEMMAS.has(lc);
+}
+
+function prevIsAttributiveOrDemonstrative(prevWord) {
+  const prevLc = tokenLemma(prevWord);
+  if (!prevLc) return false;
+  if (ANGEBOTEN_NOUN_PREV.has(prevLc)) return true;
+  if (isLikelyAttributiveBeforeDeverbalNoun(prevWord)) return true;
+  if (ADJ_NEEDS_ARTICLE_GUARD.has(prevLc) && prevLc !== 'angeboten' && prevLc !== 'angebotene') return true;
+  return false;
+}
 
 function shouldCapitalizeAngebotenAsNoun(token, prevWord, nextWord) {
   const lc = tokenLemma(token);
-  if (lc !== 'angeboten') return false;
+  if (!isDeverbalNounLemma(lc)) return false;
   if (isCapitalizedWord(token)) return false;
-  if (!ANGEBOTEN_NOUN_PREV.has(tokenLemma(prevWord))) return false;
+  if (!prevIsAttributiveOrDemonstrative(prevWord)) return false;
   const nextLc = tokenLemma(stripTokenPunct(nextWord || ''));
   if (ANGEBOTEN_PARTICIPLE_NEXT.has(nextLc)) return false;
   return true;
@@ -663,10 +739,22 @@ function shouldCapitalizeAngebotenAsNoun(token, prevWord, nextWord) {
 
 function shouldKeepAngebotenAsNounCapitalized(token, prevWord, nextWord) {
   const lc = tokenLemma(token);
-  if (lc !== 'angeboten' || !isCapitalizedWord(token)) return false;
-  if (!ANGEBOTEN_NOUN_PREV.has(tokenLemma(prevWord))) return false;
+  if (!isDeverbalNounLemma(lc) || !isCapitalizedWord(token)) return false;
+  if (!prevIsAttributiveOrDemonstrative(prevWord)) return false;
   const nextLc = tokenLemma(stripTokenPunct(nextWord || ''));
   return !ANGEBOTEN_PARTICIPLE_NEXT.has(nextLc);
+}
+
+function shouldCapitalizeDeverbalNounAfterPrep(token, prevWord, nextWord) {
+  const lc = tokenLemma(token);
+  if (!isDeverbalNounLemma(lc) || isCapitalizedWord(token)) return false;
+  const prevLc = tokenLemma(prevWord);
+  if (!PREP_NOMINAL_OBJECT.has(prevLc)) return false;
+  const nextLc = tokenLemma(stripTokenPunct(nextWord || ''));
+  if (ANGEBOTEN_PARTICIPLE_NEXT.has(nextLc)) return false;
+  if (prevLc === 'von' && (lc === 'arbeiten' || lc === 'medikamenten' || lc === 'medikament')) return true;
+  if (prevLc === 'zu' && (lc === 'abbrüchen' || lc === 'abbruch' || lc === 'abbrüche')) return true;
+  return true;
 }
 
 function shouldDecapitalizeLexiconOverrideVerb(token, lastWord) {
@@ -700,7 +788,8 @@ const V2_SUBJECT_PLURAL_NOUNS = new Set([
   'kinder', 'gemüse', 'obst', 'jahre',
 ]);
 
-const V2_ADV_VERB_TRIGGERS = new Set(['frisch', 'bitte', 'zusammen', 'was']);
+const V2_ADV_VERB_TRIGGERS = new Set(['was']);
+/** «zusammen/frisch/bitte» decap fixes verb_census FP but v6.1 POS adds lexicon_after_adj — Phase 4 addedFindings guard. */
 
 /**
  * Coordinating «und» + capitalized finite verb («und Brauchen einen…»).
@@ -730,6 +819,7 @@ function shouldDecapitalizeV2SubjectFiniteVerb(token, lastWord, nextWord) {
   if (!isCapitalizedWord(token)) return null;
   if (!V2_FINITE_VERB_LEMMAS.has(lc)) return null;
   const prevLc = tokenLemma(lastWord);
+  if (prevLc === 'bitte') return null;
   if (V2_NOUN_OBJECT_PREV_BLOCK.has(prevLc)) return null;
   const nextLc = tokenLemma(stripTokenPunct(nextWord || ''));
   if (V2_INVERTED_PRONOUN_NEXT.has(nextLc)) return lc;
@@ -770,7 +860,8 @@ function shouldCapitalizeNounAfterAttributiveAdj(token, prevWord) {
   if (!lc || isCapitalizedWord(token)) return false;
   if (!NOUN_FORCE_AFTER_ATTR_ADJ.has(lc)) return false;
   const prevLc = tokenLemma(prevWord);
-  return ADJ_NEEDS_ARTICLE_GUARD.has(prevLc) || looksLikeAttributiveAdjective(prevWord);
+  if (ADJ_NEEDS_ARTICLE_GUARD.has(prevLc) || looksLikeAttributiveAdjective(prevWord)) return true;
+  return isLikelyAttributiveBeforeDeverbalNoun(prevWord);
 }
 
 /**
@@ -878,6 +969,7 @@ function shouldCapitalizeLowerNoun(token, prevWord, nextWord, atClauseStart) {
   if (shouldCapitalizeSubstantivizedAdjNoNounHead(token, prevWord, nextWord)) return true;
   if (shouldCapitalizeJungeAsNoun(token, prevWord, nextWord)) return true;
   if (shouldCapitalizeAngebotenAsNoun(token, prevWord, nextWord)) return true;
+  if (shouldCapitalizeDeverbalNounAfterPrep(token, prevWord, nextWord)) return true;
   if (shouldCapitalizeNounAfterAttributiveAdj(token, prevWord)) return true;
   if (ADJ_NEEDS_ARTICLE_GUARD.has(lc)) return false;
   // «Dem stimme ich zu» — V2 finite verb, not noun after article/dative
@@ -915,10 +1007,13 @@ function shouldCapitalizeLowerNoun(token, prevWord, nextWord, atClauseStart) {
   if (!isCertainNounLemma(lc)) return false;
 
   if (SUBSTANTIVISING_ARTICLES.has(prevLc)) {
+    const nextTok = stripTokenPunct(nextWord || '');
+    if (isExamOptionKeyToken(nextTok) && (isKnownGermanNoun(token) || getSafeNouns().has(lc))) {
+      return true;
+    }
     if (nextWordIsCapitalizedNoun(nextWord)) return false;
     // Prevent re-cap of attributive adj after decap («unserem jährlichen Familienfest»)
     // when the noun head is capitalized but not in the safe-noun lexicon.
-    const nextTok = stripTokenPunct(nextWord || '');
     if (nextTok && isCapitalizedWord(nextTok) && looksLikeAttributiveAdjective(token)) {
       return false;
     }
@@ -1145,17 +1240,21 @@ export function decapitalizeMidSentence(text) {
           const nextTok = stripTokenPunct(nextWord || '');
           const nextLc = tokenLemma(nextTok);
           const nextIsAttrHead =
-            isCapitalizedWord(nextTok) ||
+            !isExamOptionKeyToken(nextTok) &&
+            (isCapitalizedWord(nextTok) ||
             CARDINALS_NEEDS_ARTICLE_GUARD.has(nextLc) ||
             looksLikeAttributiveAdjective(nextTok) ||
             (nextLc.length >= 5 &&
               /(?:e|en|er|es|em)$/i.test(nextLc) &&
               !isInfinitiveShape(nextLc) &&
-              !isCertainNounLemma(nextLc));
+              !isCertainNounLemma(nextLc)));
           // Attributive adj when a noun/cardinal/adj-stack follows («das zentrale Thema»,
           // «den letzten fünf Jahren», «der Neue deutsche Film»).
           // Otherwise keep capital: noun («der Zentrale»), substantivized («die Kleinen», «das Richtige»).
           if (nextIsAttrHead) {
+            fix = token.toLowerCase();
+          } else if (PREDICATE_COMPARATIVE_NEXT.has(tokenLemma(stripTokenPunct(nextWord || '')))) {
+            // «die Weniger als …», «der Mehr als …» — comparative, not substantivized NP
             fix = token.toLowerCase();
           } else if (isPredicativeComparativeNotSubstantivized(tokenLemma(lastWord), tokenLemma(token), nextWord)) {
             fix = token.toLowerCase();
@@ -1227,6 +1326,7 @@ export function isModalInfinitiveOvercapitalized(word, prevWord = '', nextWord =
   const prevLc = tokenLemma(prevWord);
   const nextLc = tokenLemma(nextWord);
   if (prevLc === 'zu' || SUBSTANTIVISING_ARTICLES.has(prevLc)) return false;
+  if (V2_NOUN_OBJECT_PREV_BLOCK.has(prevLc)) return false;
   if (isKnownGermanNoun(word) && MODAL_NOUN_OBJECT_PREPS.has(nextLc)) return false;
   return MODAL_VERBS.has(nextLc) || MODAL_VERBS.has(prevLc);
 }
@@ -1236,6 +1336,7 @@ export function isHeuristicAdjAdvOvercapitalized(word, prevWord = '', nextWord =
   const isCardinal = CARDINALS_NEEDS_ARTICLE_GUARD.has(lc);
   if (!PURE_ADVERBS.has(lc) && !ADJ_NEEDS_ARTICLE_GUARD.has(lc) && !isCardinal) return false;
   const prevLc = tokenLemma(prevWord);
+  const nextLc = tokenLemma(stripTokenPunct(nextWord || ''));
   // «über Ihr Leben» — possessive + Leben = noun (Goethe A2 Sprechen T2)
   if (lc === 'leben' && /^(ihr|ihre|mein|meine|dein|deine|sein|seine)$/i.test(prevLc)) {
     return false;
@@ -1254,6 +1355,12 @@ export function isHeuristicAdjAdvOvercapitalized(word, prevWord = '', nextWord =
   }
   // «solchen Angeboten» — noun, not participle (ADJ guard would otherwise force decap)
   if (shouldKeepAngebotenAsNounCapitalized(word, prevWord, nextWord)) return false;
+  if (
+    PREDICATIVE_ADJ_AFTER_COPULA.has(lc) &&
+    ['ist', 'sind', 'war', 'waren', 'wird', 'werden', 'bleibt', 'bleiben', 'blieb', 'blieben'].includes(prevLc)
+  ) {
+    return true;
+  }
   // «des heutigen Abends» — capitalized time noun after attributive adj, not adverb
   if (
     (lc === 'abends' || lc === 'morgens') &&
@@ -1264,6 +1371,17 @@ export function isHeuristicAdjAdvOvercapitalized(word, prevWord = '', nextWord =
     return false;
   }
   if (SUBSTANTIVISING_ARTICLES.has(prevLc)) {
+    // «die Weniger als zwei Stunden bleiben» — comparative in relative clause, not «die Wenigen»
+    if (prevLc === 'die' && PURE_ADVERBS.has(lc) && (nextLc === 'als' || nextLc === 'wie')) return true;
+    // «die Vielen …» — attributive quantifier after article
+    if (
+      prevLc === 'die' &&
+      (lc === 'vielen' || lc === 'wenigen' || lc === 'viele' || lc === 'wenige') &&
+      nextLc &&
+      /^[a-zäöüß]/.test(stripTokenPunct(nextWord || ''))
+    ) {
+      return true;
+    }
     // «die drei Monate» — attributive cardinal after article/possessive
     if (isCardinal) {
       const nextTok = stripTokenPunct(nextWord || '');

@@ -98,9 +98,21 @@ export function validateCandidate(candidate, blueprint) {
     // Cambridge B1 Reading Part 2 (person_text_matching): eight independent short
     // descriptions — sentences are naturally short/simple, prose complexity gates no aplican.
     const isPersonTextMatching = bpPart?.slotType === 'person_text_matching';
+    const isSentenceInsertion =
+      bpPart?.taskFormat === 'sentence_insertion' || bpPart?.slotType === 'sentence_gap_fill';
+    const isB2OpinionHeadline =
+      bpPart?.taskFormat === 'opinion_headline_matching' || bpPart?.slotType === 'opinion_headline_matching';
+    const isB2RulesMatching =
+      bpPart?.taskFormat === 'paragraph_heading_matching' || bpPart?.slotType === 'rules_matching';
     cefr.reasons.forEach((r) => {
       if ((isLesenT5 || isLesenT4 || isPersonTextMatching) && (r.startsWith('complexity_too_simple') || r.startsWith('subordinate_too_few'))) {
         warnings.push(`cefr_gate:${r} [exento ${isPersonTextMatching ? 'T2-matching' : isLesenT4 ? 'T4-Leserbriefe' : 'T5-Anzeigen'}]`);
+      } else if (isSentenceInsertion && r.startsWith('inference_below_min')) {
+        warnings.push(`cefr_gate:${r} [exento T2-Sätze einfügen]`);
+      } else if (isB2OpinionHeadline && r.startsWith('inference_below_min')) {
+        warnings.push(`cefr_gate:${r} [exento B2-T4-Meinung↔Überschrift]`);
+      } else if (isB2RulesMatching && r.startsWith('inference_below_min')) {
+        warnings.push(`cefr_gate:${r} [exento B2-T5-Studienordnung↔Überschriften]`);
       } else {
         errors.push(`cefr_gate:${r}`);
       }

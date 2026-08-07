@@ -70,6 +70,10 @@ async function testRoleMatrix() {
   assert(!roles.canManageAssemblyCorrections('content_corrector'), 'corrector cannot assembly');
   assert(roles.canManageAssemblyCorrections('admin'), 'admin can assembly');
   assert(roles.canApproveContentCorrections('content_corrector'), 'corrector can approve');
+  assert(roles.canEditContent('content_corrector'), 'canEditContent');
+  const caps = roles.adminCapabilitiesFromRole('content_corrector');
+  assert(!caps.isAdmin, 'editor caps isAdmin false');
+  assert(caps.canEditContent, 'editor caps canEditContent');
 }
 
 async function testCorrectorCanCreateContentNotAssembly() {

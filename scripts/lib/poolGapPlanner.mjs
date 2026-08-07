@@ -24,6 +24,8 @@ export function loadPoolRecords(lang = 'de', level = 'B1') {
       if (String(r.level || level).toUpperCase() !== level) continue;
       if (r.disabled) continue;
       if (!r.complete || !r.verified) continue;
+      // Same servability bar as build-pool-stock-manifest / exam-part pool pick.
+      if (!(r.sem1VerifiedAt || r.sem1Skipped)) continue;
       records.push(r);
     }
   }
@@ -36,11 +38,17 @@ export function moduleTeils(module, blueprintTeils, level = 'B1') {
   return moduleTeilsForLevel(m, level);
 }
 
+function topicScopeForGap(level, opts = {}) {
+  if (opts.topicScope) return opts.topicScope;
+  return 'gap';
+}
+
 /** Count verified parts per canonical topic for one module+teil cell. */
-export function countTopicStock(records, module, teil, level = 'B1') {
+export function countTopicStock(records, module, teil, level = 'B1', opts = {}) {
   const mod = String(module).toLowerCase();
   const tN = Number(teil);
-  const topicList = topicsForLevel(level);
+  const scope = topicScopeForGap(level, opts);
+  const topicList = topicsForLevel(level, { scope });
   const counts = Object.fromEntries(topicList.map((t) => [t, 0]));
   let untagged = 0;
 
@@ -56,9 +64,10 @@ export function countTopicStock(records, module, teil, level = 'B1') {
 }
 
 /** Rank topics for a cell: highest deficit first, then lowest count. */
-export function rankTopicGaps(records, module, teil, targetPerCell = 3, level = 'B1') {
-  const { counts } = countTopicStock(records, module, teil, level);
-  const topicList = topicsForLevel(level);
+export function rankTopicGaps(records, module, teil, targetPerCell = 3, level = 'B1', opts = {}) {
+  const { counts } = countTopicStock(records, module, teil, level, opts);
+  const scope = topicScopeForGap(level, opts);
+  const topicList = topicsForLevel(level, { scope });
   return topicList.map((topic) => {
     const count = counts[topic] || 0;
     const deficit = Math.max(0, targetPerCell - count);
@@ -73,11 +82,12 @@ export function pickScarcestTopic(records, module, teil, opts = {}) {
     excludeSet = null,
     level = 'B1',
   } = opts;
-  const topicList = topicsForLevel(level);
+  const gapOpts = { topicScope: topicScopeForGap(level, opts) };
+  const topicList = topicsForLevel(level, { scope: gapOpts.topicScope });
   const exclude = excludeSet || new Set(
     (excludeTopics || []).map((t) => normalizeTopicForLevel(level, t)).filter(Boolean),
   );
-  const ranked = rankTopicGaps(records, module, teil, targetPerCell, level);
+  const ranked = rankTopicGaps(records, module, teil, targetPerCell, level, gapOpts);
   const candidates = ranked.filter((r) => !exclude.has(r.topic));
   if (!candidates.length) {
     if (opts.noFallback) return null;
@@ -141,8 +151,9 @@ export function pickRotatingWords(lang, level, opts = {}) {
 
 export function buildCellGapReport(lang, level, module, teil, targetPerCell = 3) {
   const records = loadPoolRecords(lang, level);
-  const ranked = rankTopicGaps(records, module, teil, targetPerCell, level);
-  const { untagged, total } = countTopicStock(records, module, teil, level);
+  const gapOpts = { topicScope: topicScopeForGap(level) };
+  const ranked = rankTopicGaps(records, module, teil, targetPerCell, level, gapOpts);
+  const { untagged, total } = countTopicStock(records, module, teil, level, gapOpts);
   const missing = ranked.filter((r) => r.deficit > 0);
   return { module, teil, targetPerCell, ranked, untagged, total, missing };
 }

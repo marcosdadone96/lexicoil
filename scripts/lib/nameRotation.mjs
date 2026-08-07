@@ -137,7 +137,7 @@ export function extractLesenT4ForumNames(batch) {
  * @param {string[]} dirs
  * @param {number} maxFiles
  */
-export function getRecentLesenT4ForumNames(dirs, maxFiles = 12) {
+export function getRecentLesenT4ForumNames(dirs, maxFiles = 35) {
   const files = [];
   for (const dir of dirs || []) {
     if (!dir || !fs.existsSync(dir)) continue;
@@ -171,12 +171,15 @@ export function getRecentLesenT4ForumNames(dirs, maxFiles = 12) {
   return names;
 }
 
-/**
- * Lesen T4 — pick 7 forum names avoiding session + recent pool files.
- */
+/** All forum names appearing in Lesen T4 files under dirs (stronger session rotation). */
+export function getAllLesenT4ForumNamesInDirs(dirs, maxFiles = 80) {
+  return getRecentLesenT4ForumNames(dirs, maxFiles);
+}
+
 export function pickLesenT4ForumNames(generatedDir, opts = {}) {
   const extraDirs = opts.extraDirs || [];
-  const recent = getRecentLesenT4ForumNames([generatedDir, ...extraDirs], opts.recentMaxFiles ?? 12);
+  const scanDirs = [generatedDir, ...extraDirs].filter(Boolean);
+  const recent = getAllLesenT4ForumNamesInDirs(scanDirs, opts.recentMaxFiles ?? 80);
   const sessionExclude = [
     ...(opts.sessionExclude || []),
     ...recent,

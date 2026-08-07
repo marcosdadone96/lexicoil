@@ -16,6 +16,7 @@ import {
   pickScarcestTopic,
   loadPoolRecords,
   rankTopicGaps,
+  countTopicStock,
 } from './poolGapPlanner.mjs';
 import { topicsForLevel } from './levelPlanner.mjs';
 import {
@@ -38,6 +39,10 @@ import {
   preflightLesenT4Topic,
   shouldSkipLesenT4Topic,
 } from './lesenT4SeedStock.mjs';
+import {
+  a2LesenGeminiStockStub,
+  skipB1LesenT3BlueprintStock,
+} from './a2LesenGeneration.mjs';
 
 export { preflightLesenT4Topic, shouldSkipLesenT4Topic };
 
@@ -81,7 +86,7 @@ export function planRotation(ctx) {
 
   const wordCount = Math.min(8, Math.max(5, Number(ctx.wordCount) || 6));
   const vocabSkip = new Set(hardSkip);
-  const maxTopicTries = topicsForLevel(ctx.level).length + 2;
+  const maxTopicTries = topicsForLevel(ctx.level, { scope: 'gap' }).length + 2;
 
   for (let tryN = 0; tryN < maxTopicTries; tryN++) {
     const topic =
@@ -160,15 +165,19 @@ export function planRotation(ctx) {
 }
 
 /** Lesen T3: ¿saltar tema por catálogo agotado (sin stock tras dedup/exclusión)? */
-export function shouldSkipLesenT3Topic(module, teil, topic, reason, sessionLesen) {
+export function shouldSkipLesenT3Topic(module, teil, topic, reason, sessionLesen, levelFallback = null) {
   if (String(module).toLowerCase() !== 'lesen' || Number(teil) !== 3 || !topic) return false;
+  const level = sessionLesen?.args?.level || levelFallback || 'B1';
+  if (skipB1LesenT3BlueprintStock(level, teil)) return false;
   if (isT3BlueprintExhaustedReason(reason)) return true;
   const exclude = sessionLesen?.args?._t3ExcludeSlugs;
   const stock = listT3BlueprintStockForTopic(topic, exclude instanceof Set ? exclude : new Set(exclude || []));
   return !stock.generatable;
 }
 
-export function preflightLesenT3Topic(topic, sessionLesen) {
+export function preflightLesenT3Topic(topic, sessionLesen, levelFallback = null) {
+  const level = sessionLesen?.args?.level || levelFallback || 'B1';
+  if (skipB1LesenT3BlueprintStock(level, 3)) return a2LesenGeminiStockStub();
   const exclude = sessionLesen?.args?._t3ExcludeSlugs;
   return listT3BlueprintStockForTopic(
     topic,
@@ -245,6 +254,7 @@ export async function generatePoolPart(ctx) {
       vocabBgStrictAnchor: ctx.vocabBgStrictAnchor || null,
       skipQuality: ctx.skipQuality === true,
       testMode: ctx.testMode === true,
+      skipQ1: Number(teil) === 4,
     });
     if (result.ok && result.batch) {
       pushSessionMoldExclude(session.args, result.batch);
@@ -368,6 +378,20 @@ export async function runPoolFillCycle(ctx) {
   const batch = gen.batch || loadBatchFromRelFile(relFile);
 
   if (!ctx.publish) {
+    const normPath = relFile.replace(/\\/g, '/');
+    if (normPath.includes('pool-content-ok-lesen')) {
+      console.warn(
+        `${MARK_FAIL} Solo pool-content-ok (Q1) — no cuenta para stock; reintenta o usa skipQ1 en T4 pool-fill`,
+      );
+      return {
+        ok: false,
+        stage: 'poolReady',
+        reason: 'q1_only_content_ok',
+        file: relFile,
+        sessionLesen: gen.sessionLesen,
+        sessionExam: gen.sessionExam,
+      };
+    }
     console.log(`${MARK_OK} Validada en ${relFile} (sin --publish)`);
     if (batch) {
       recordGenerationOutcome({
@@ -430,27 +454,22 @@ function loadBatchFromRelFile(relFile) {
 }
 
 export function printGapStatus(lang, level, module, teil, targetPerCell) {
-  const records = loadPoolRecords(lang, level);
-  const { untagged, total } = (() => {
-    const mod = String(module).toLowerCase();
-    let u = 0;
-    let t = 0;
-    for (const r of records) {
-      if (String(r.module).toLowerCase() !== mod) continue;
-      if (Number(r.teil) !== Number(teil)) continue;
-      t++;
-      if (!normalizeB1Topic(r.topicTag)) u++;
-    }
-    return { untagged: u, total: t };
-  })();
-  const ranked = rankTopicGaps(records, module, teil, targetPerCell);
-  console.log(`\nCelda ${module} T${teil} · ${total} partes verificadas (${untagged} sin topicTag B1)`);
-  console.log(`Objetivo por tema: ${targetPerCell} partes limpias\n`);
+  const lv = String(level || 'B1').toUpperCase();
+  const records = loadPoolRecords(lang, lv);
+  const officialTopics = topicsForLevel(lv, { scope: 'gap' });
+  const { untagged, total } = countTopicStock(records, module, teil, lv);
+  const ranked = rankTopicGaps(records, module, teil, targetPerCell, lv);
+  const scopeLabel = lv === 'A2' ? 'ejes oficiales A2' : 'temas B1';
+  console.log(
+    `\nCelda ${module} T${teil} · ${total} partes verificadas ` +
+      `(${untagged} sin eje ${scopeLabel})`,
+  );
+  console.log(`Objetivo por tema: ${targetPerCell} partes limpias · ${officialTopics.length} ejes\n`);
   console.log(`${'Tema'.padEnd(14)} ${'Stock'.padStart(5)} ${'Faltan'.padStart(6)}`);
-  for (const row of ranked.slice(0, 10)) {
+  for (const row of ranked) {
     if (row.deficit <= 0 && row.count >= targetPerCell) continue;
     console.log(`${row.topic.padEnd(14)} ${String(row.count).padStart(5)} ${String(row.deficit).padStart(6)}`);
   }
-  const next = pickScarcestTopic(records, module, teil, { targetPerCell });
+  const next = pickScarcestTopic(records, module, teil, { targetPerCell, level: lv });
   console.log(`\nSiguiente tema sugerido: ${next}`);
 }

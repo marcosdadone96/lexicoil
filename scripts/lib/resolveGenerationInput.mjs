@@ -2,6 +2,7 @@ import path from 'node:path';
 import { createRequire } from 'node:module';
 import { ROOT } from './loadEnv.mjs';
 import { isValidB1Topic, normalizeB1Topic, B1_TOPICS } from './b1Topics.mjs';
+import { topicsForLevel, normalizeTopicForLevel } from './levelPlanner.mjs';
 import { classifyUserVocab } from './vocabPrefilter.mjs';
 import { pickTargetWords } from './lesenTemplatePrompt.mjs';
 import { pickNextTopic } from './topicRotation.mjs';
@@ -83,16 +84,18 @@ export function sanitizePromptTargetWords(words, topicTag, targetCount = 8, opts
  * Resolve closed B1 topic: explicit --topic or rotation fallback.
  */
 export function resolveGenerationTopic(args, { module = 'lesen', teil = 1 } = {}) {
+  const level = String(args.level || 'B1').toUpperCase();
   if (args.topic) {
-    const t = normalizeB1Topic(args.topic);
-    if (!t) {
+    const t = normalizeTopicForLevel(level, args.topic);
+    const allowed = topicsForLevel(level, { scope: 'gap' });
+    if (!t || !allowed.includes(t)) {
       throw new Error(
-        `Tema inválido: "${args.topic}". Usa uno de: ${B1_TOPICS.join(', ')}`,
+        `Tema inválido para ${level}: "${args.topic}". Usa uno de: ${allowed.join(', ')}`,
       );
     }
     return t;
   }
-  return pickNextTopic(GENERATED_DIR, { module, teil });
+  return pickNextTopic(GENERATED_DIR, { module, teil, level });
 }
 
 /**
@@ -135,6 +138,7 @@ export function resolveGenerationVocab(args, topicCtx = {}) {
       topic,
       count: args.wordCount,
       cursor: args.coverageCursor ?? 0,
+      context: vocabPickContext(topicCtx.module || args.module || 'lesen', topicCtx.teil ?? args.teil ?? 1),
     });
     words = pick.words;
     args._coverageCursor = pick.nextCursor;
@@ -154,10 +158,14 @@ export function resolveTargetWordsForArgs(args, topicCtx = {}) {
   const resolved = resolveGenerationVocab(args, topicCtx);
   args._resolvedTopic = resolved.topic;
   args._userVocab = resolved.userVocab;
-  const targetCount = Math.max(1, Number(args.wordCount) || 10);
+  const teilNum = Number(topicCtx.teil ?? args.teil ?? 1);
+  let targetCount = Math.max(1, Number(args.wordCount) || 10);
+  if (teilNum === 5) {
+    targetCount = Math.min(6, targetCount);
+  }
   const context =
     args.vocabContext ||
-    vocabPickContext(topicCtx.module || args.module || 'lesen', topicCtx.teil ?? args.teil ?? 1);
+    vocabPickContext(topicCtx.module || args.module || 'lesen', teilNum);
   return sanitizePromptTargetWords(resolved.words, resolved.topic, targetCount, {
     lang: args.lang || 'de',
     level: args.level || 'B1',

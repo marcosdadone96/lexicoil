@@ -298,7 +298,7 @@ async function main() {
     gate.ok;
 
   if (apply && ok) {
-    report.publish = publishVerifiedExamSlots({
+    report.publish = await publishVerifiedExamSlots({
       slots: [SLOT],
       lang: 'de',
       level: LEVEL,

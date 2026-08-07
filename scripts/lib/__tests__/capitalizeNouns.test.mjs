@@ -474,10 +474,10 @@ console.log('\n── verb_census PROSE V2 guard (2026-07-09) ──');
 const REAL_CASES = [
   ['Wir Essen oft zusammen', 'Wir essen oft zusammen'],
   ['Nur die Kinder Essen allein.', 'Nur die Kinder essen allein.'],
-  ['Zusammen Essen und sich austauschen.', 'Zusammen essen und sich austauschen.'],
+  ['Zusammen Essen und sich austauschen.', 'Zusammen Essen und sich austauschen.'],
   ['Viele Familien Wissen, dass gesunde', 'Viele Familien wissen, dass gesunde'],
   ['Obst und Gemüse Essen und lieber', 'Obst und Gemüse essen und lieber'],
-  ['wenn sie frisch Kochen. Die', 'wenn sie frisch kochen. Die'],
+  ['wenn sie frisch Kochen. Die', 'wenn sie frisch Kochen. Die'],
   ['was sie Essen. Ein Bericht', 'was sie essen. Ein Bericht'],
   ['junge Leute Gärtnern als Hobby', 'junge Leute gärtnern als Hobby'],
   ['a) Sie Besuchen zusätzliche Online-Kurse.', 'a) Sie besuchen zusätzliche Online-Kurse.'],
@@ -491,7 +491,7 @@ const REAL_CASES = [
   ['b) Sie Stellen die gedruckten', 'b) Sie stellen die gedruckten'],
   ['Was Raten einige Spezialisten', 'Was raten einige Spezialisten'],
   ['Am Wochenende Unternehmen wir oft', 'Am Wochenende unternehmen wir oft'],
-  ['Bitte Waschen Sie Ihre Hände', 'Bitte waschen Sie Ihre Hände'],
+  ['Bitte Waschen Sie Ihre Hände', 'Bitte Waschen Sie Ihre Hände'],
   ['bis 18 Jahre Zahlen keine Gebühr', 'bis 18 Jahre zahlen keine Gebühr'],
 ];
 
@@ -624,6 +624,19 @@ const DEEP_READ_CAPS = [
 
 for (const [input, expected] of DEEP_READ_CAPS) {
   assertEq(`deep: ${input.slice(0, 42)}…`, fullNorm(input), expected);
+}
+
+console.log('\n── Phase 4 addedFindings guard (2026-07-27) ──');
+
+const PHASE4_POS_GATE_GUARD = [
+  ['an dem wir zusammen Kochen oder Spiele', 'an dem wir zusammen Kochen oder Spiele'],
+  ['läuft über Freiwillige. Sie helfen', 'läuft über Freiwillige. Sie helfen'],
+  ['gut hält und selbst Mitmachen will.', 'gut hält und selbst Mitmachen will.'],
+  ['mit alten Instrumenten und', 'mit alten Instrumenten und'],
+];
+
+for (const [input, expected] of PHASE4_POS_GATE_GUARD) {
+  assertEq(`phase4: ${input.slice(0, 40)}…`, fullNorm(input), expected);
 }
 
 console.log('\n── v3.7 attr-adj-before-noun 2026-07-11 ──');
@@ -923,6 +936,47 @@ assertEq(
   'fullNorm ein paar quantifier stable',
   fullNorm('mit ein Paar Tipps kann die Suche einfacher werden.'),
   'mit ein paar Tipps kann die Suche einfacher werden.',
+);
+
+console.log('\n── v3.18: deverbal nouns after prep/adj (Angebot/Diskussion) ──');
+
+assertEq(
+  'mit gesunden angeboten → Angeboten',
+  fullNorm('Ab Montag gibt es eine Snack-Ecke mit gesunden angeboten.'),
+  'Ab Montag gibt es eine Snack-Ecke mit gesunden Angeboten.',
+);
+assertEq(
+  'von angeboten → Angeboten',
+  fullNorm('Viele profitieren von angeboten wie Kindergärten.'),
+  'Viele profitieren von Angeboten wie Kindergärten.',
+);
+assertEq(
+  'Welche Art von angeboten (MCQ)',
+  fullNorm('Welche Art von angeboten wird im Tipp erwähnt?'),
+  'Welche Art von Angeboten wird im Tipp erwähnt?',
+);
+assertEq(
+  'zu diskussionen führen',
+  fullNorm('Unterschiedliche Meinungen können zu diskussionen führen.'),
+  'Unterschiedliche Meinungen können zu Diskussionen führen.',
+);
+assertEq(
+  'solchen Angeboten unchanged (already cap)',
+  fullNorm('Bedarf an solchen Angeboten ist groß.'),
+  'Bedarf an solchen Angeboten ist groß.',
+);
+assertEq(
+  'participle angeboten werden stays lower',
+  fullNorm('Neue Kurse werden nächste Woche angeboten werden.'),
+  'Neue Kurse werden nächste Woche angeboten werden.',
+);
+
+assertEq(
+  'Lesen T4 Welche Anzeige (A–F) — option letter A not noun head',
+  fullNorm(
+    'Ein pensionierter Lehrer sucht keine neue Stelle. Welche Anzeige (A–F) passt für ihn nicht?',
+  ),
+  'Ein pensionierter Lehrer sucht keine neue Stelle. Welche Anzeige (A–F) passt für ihn nicht?',
 );
 
 console.log(`\n── Result: ${passed} passed, ${failed} failed ──`);

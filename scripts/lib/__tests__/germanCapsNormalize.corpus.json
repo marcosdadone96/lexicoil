@@ -88,7 +88,14 @@
       "note": "Spät (ADV) tras zu — fixZuInfinitiveCapitals / heuristic"
     },
     {
-      "id": "iter3-wissen-wollen",
+      "id": "t5-weniger-als-relative",
+      "source": "lesen-t5-gemini-106.json",
+      "field": "questions.options",
+      "text": "a) Besucher, die Weniger als zwei Stunden bleiben, zahlen keinen Eintritt.",
+      "expectSubstring": "weniger als",
+      "note": "Weniger (ADV comparativo) tras die + als — no sustantivo"
+    },
+    {
       "source": "lesen-t1-gemini-167.json",
       "field": "passages.text",
       "text": "Manchmal organisiere ich auch kleine Kurse für Bewohner, die mehr über Gartenarbeit Wissen wollen.",

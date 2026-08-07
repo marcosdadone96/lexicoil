@@ -10,6 +10,8 @@
  */
 
 import { BLACKLIST, B2_QUESTION_BLACKLIST, questionBlacklistForLevel, questionBlacklistLabel, questionBlacklistTargetLevel } from '../blacklist.mjs';
+import { anglicismIssuesForText } from './anglicismPolicy.mjs';
+import { resolveQuestionStem } from './questionStemAliases.mjs';
 import { isVocabBankLemma, loadVocabBankLemmaSet, foldLemma } from './vocabBank.mjs';
 
 /**
@@ -80,6 +82,31 @@ const LEXICAL_RULES = [
     message: '«authentisch» ist für B1 zu komplex. Verwende «echt» oder «wirklich».',
   },
 ];
+
+/** Finite auxiliaries / common conjugated verbs in Hören A2/B1 dialogue. */
+const FINITE_VERB_RE =
+  /\b(bin|bist|ist|sind|seid|war|waren|wird|werden|wurde|wurden|habe|hast|hat|haben|hatte|hatten|kann|könnt|könnte|muss|musst|müssen|musste|soll|sollt|sollen|will|wollt|wollen|möchte|mag|darf|durfte|komme|kommst|kommt|kommen|gehe|gehst|geht|gehen|drücken|drück|drückt|machen|macht|rufe|rufst|ruft|rufen|heißt|gibt|geben|mache|kannst|können)\b/i;
+
+/**
+ * Heuristic: Hören-style sentence ends in Partizip II without auxiliary (e.g. «… bestätigt.»).
+ * Not applied to Lesen informationstafel bullet lists.
+ */
+export function findParticipleWithoutAuxiliaryIssues(text) {
+  const issues = [];
+  for (const sent of String(text || '').split(/(?<=[.!?])\s+/)) {
+    const s = sent.trim();
+    if (s.length < 12 || s.length > 160) continue;
+    if (/^[A-ZÄÖÜ0-9][^:]{0,40}:/.test(s)) continue;
+    if (FINITE_VERB_RE.test(s)) continue;
+    if (!/\b(?:ge)?[a-zäöüß]{4,}(?:t|et|en)\s*[.!?]\s*$/i.test(s)) continue;
+    if (/\b(?:bestätigt|abgesagt|geplant|reserviert|organisiert|empfohlen|geöffnet|geschlossen)\b/i.test(s)) {
+      issues.push(
+        `oración sin auxiliar + Partizip II (¿falta «ist/hat/wird»?): «${s.length > 72 ? `${s.slice(0, 72)}…` : s}»`,
+      );
+    }
+  }
+  return issues;
+}
 
 function pushBlacklistIssues(issues, field, text, entries, label, targetLevel = 'B1') {
   for (const entry of entries) {
@@ -156,7 +183,8 @@ export function extractPassageLexicalTexts(batch) {
 export function extractQuestionLexicalTexts(batch) {
   const texts = [];
   for (const q of batch.questions || []) {
-    if (q.question) texts.push({ field: `question ${q.id}`, text: q.question });
+    const stem = resolveQuestionStem(q);
+    if (stem) texts.push({ field: `question ${q.id}`, text: stem });
     if (q.explanation) texts.push({ field: `question ${q.id} explanation`, text: q.explanation });
     if (q.signText) texts.push({ field: `question ${q.id} signText`, text: q.signText });
     for (const opt of q.options || []) {
@@ -202,14 +230,35 @@ export function checkLexical(batch, opts = {}) {
   const qLabel = questionBlacklistLabel(level);
   const qTarget = questionBlacklistTargetLevel(level);
 
+  const mod = String(
+    batch?.module || batch?.questions?.[0]?.module || batch?.passages?.[0]?.module || '',
+  ).toLowerCase();
+
   runLexicalRules([...passageTexts, ...questionTexts], issues, warnings);
 
   for (const { field, text } of extractAllLexicalTexts(batch)) {
+    if (level === 'B2' && /^passage/i.test(field)) continue;
     pushBlacklistIssues(issues, field, text, BLACKLIST, 'vocabulario C1/C2', 'B1');
+  }
+
+  for (const { field, text } of passageTexts) {
+    if (level === 'A2' || level === 'B1') {
+      for (const msg of anglicismIssuesForText(level, text)) {
+        issues.push(`${field}: ${msg}`);
+      }
+    }
+    if (/^passage/i.test(field) && mod === 'horen') {
+      for (const msg of findParticipleWithoutAuxiliaryIssues(text)) {
+        issues.push(`${field}: ${msg}`);
+      }
+    }
   }
 
   for (const { field, text } of questionTexts) {
     pushBlacklistIssues(issues, field, text, qBlacklist, qLabel, qTarget);
+    for (const msg of anglicismIssuesForText(level, text)) {
+      issues.push(`${field}: ${msg}`);
+    }
   }
 
   return { ok: issues.length === 0, issues, warnings, level };

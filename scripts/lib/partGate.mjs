@@ -16,7 +16,7 @@ import { normalizeBatch } from './normalizeBatch.mjs';
 import { buildCorpus, buildCorpusFromDirSync, checkDuplicate } from './semanticDedup.mjs';
 import { checkStructuralMoldDuplicate } from './structuralMoldDedup.mjs';
 import { checkLesenBatchQuality } from './lesenBatchQuality.mjs';
-import { READY_LESEN_DIR } from './batchPaths.mjs';
+import { inferBatchLevel, normalizeLevel, readyLesenDir } from './batchPaths.mjs';
 import {
   auditExam,
   isPartPoolReady,
@@ -111,11 +111,13 @@ function qualityFinding(message) {
  */
 export async function loadCleanStructuralCorpusFromDir(dir, opts = {}) {
   const { lang = 'de', level = 'B1' } = opts;
+  const targetLevel = normalizeLevel(level);
   const batches = [];
+  const levelReadyDir = readyLesenDir(targetLevel);
   const useReady =
-    fs.existsSync(READY_LESEN_DIR) &&
-    fs.readdirSync(READY_LESEN_DIR).some((n) => /^lesen-t[45]-.*\.json$/i.test(n));
-  const scanDir = useReady ? READY_LESEN_DIR : dir;
+    fs.existsSync(levelReadyDir) &&
+    fs.readdirSync(levelReadyDir).some((n) => /^lesen-t[45]-.*\.json$/i.test(n));
+  const scanDir = useReady ? levelReadyDir : dir;
   if (!scanDir || !fs.existsSync(scanDir)) return batches;
 
   for (const name of fs.readdirSync(scanDir)) {
@@ -123,6 +125,7 @@ export async function loadCleanStructuralCorpusFromDir(dir, opts = {}) {
     if (!/^lesen-t[45]-/i.test(name)) continue;
     try {
       const raw = JSON.parse(fs.readFileSync(path.join(scanDir, name), 'utf8'));
+      if (normalizeLevel(inferBatchLevel(raw)) !== targetLevel) continue;
       const teil = Number(raw.teil ?? raw.questions?.[0]?.teil);
       if (![4, 5].includes(teil)) continue;
       const batch = normalizeBatch(raw, { module: 'lesen', teil, lang, level });
@@ -209,7 +212,7 @@ export async function validatePart(partObject, opts = {}) {
     : normalizeBatch(batchIn, { module, teil, lang, level });
 
   if (module === 'lesen' && !opts.skipQuality) {
-    const quality = checkLesenBatchQuality(batch, teil);
+    const quality = checkLesenBatchQuality(batch, teil, { level });
     if (!quality.ok && !allowFailures) {
       return {
         ok: false,
@@ -245,7 +248,7 @@ export async function validatePart(partObject, opts = {}) {
       }
     }
     if (moldCorpus.length) {
-      const mold = checkStructuralMoldDuplicate(batch, moldCorpus, { teil });
+      const mold = checkStructuralMoldDuplicate(batch, moldCorpus, { teil, level });
       if (!mold.ok) {
         return {
           ok: false,

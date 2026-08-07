@@ -1,9 +1,9 @@
 /**
- * Post-generation gate: vocab background parts must integrate ≥2 user anchor words.
+ * Post-generation gate: vocab background parts must integrate ≥3 user anchor words (Phase C).
  */
 import { computeVocabFeedback } from './generationFeedback.mjs';
 
-export const MIN_BG_ANCHOR_INTEGRATED = 2;
+export const MIN_BG_ANCHOR_INTEGRATED = 3;
 
 /**
  * @param {object} batch — generated exam batch (with passages/questions)

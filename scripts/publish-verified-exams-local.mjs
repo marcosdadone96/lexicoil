@@ -41,7 +41,7 @@ if (!slots.length) {
   process.exit(1);
 }
 
-const result = publishVerifiedExamSlots({
+const result = await publishVerifiedExamSlots({
   slots,
   lang: args.lang,
   level: args.level,

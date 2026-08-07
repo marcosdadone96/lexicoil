@@ -39,7 +39,9 @@ import { printCoverageSummary, refreshCoverageRegistry } from './lib/coverageReg
 import { DailyQuotaError } from './lib/geminiClient.mjs';
 import {
   formatCostUsd,
+  filterGenerationCostSince,
   readGenerationCostLog,
+  summarizeGenerationCost,
   sumCellCostSince,
 } from './lib/generationCostLog.mjs';
 import { setupConsoleUtf8, boxTop, boxLine, boxBottom, hrDouble } from './lib/consoleSafe.mjs';
@@ -188,6 +190,22 @@ Opciones:
 `);
 }
 
+function resolveCellGenerationLimits(cell, args) {
+  const base = {
+    maxAttemptsPerFile: args.maxAttemptsPerFile,
+    maxCostPerFileUsd: args.maxCostPerFileUsd,
+    fixRetries: args.fixRetries,
+  };
+  if (cell.module === 'lesen' && cell.teil === 5) {
+    return {
+      maxAttemptsPerFile: Math.max(base.maxAttemptsPerFile, 18),
+      maxCostPerFileUsd: Math.max(base.maxCostPerFileUsd, 0.38),
+      fixRetries: Math.max(base.fixRetries, 3),
+    };
+  }
+  return base;
+}
+
 async function fillOneCell(args, cell) {
   const key = checkpointKey(args.lang, args.level, cell.module, cell.teil);
   if (args.reset) clearPoolFillCheckpoint();
@@ -239,12 +257,13 @@ async function fillOneCell(args, cell) {
   }
 
   const target = cell.target;
+  const cellLimits = resolveCellGenerationLimits(cell, args);
 
   console.log(`\n${boxTop(`${cell.module} T${cell.teil}`)}`);
   console.log(boxLine(`Objetivo: ${saved}/${target} · vocab: ${args.wordCount} · publish=${args.publish}`));
   console.log(
     boxLine(
-      `Freno/archivo: ≤${args.maxAttemptsPerFile} llamadas · ≤$${args.maxCostPerFileUsd} · API sesión max ${args.maxApiCalls}`,
+      `Freno/archivo: ≤${cellLimits.maxAttemptsPerFile} llamadas · ≤$${cellLimits.maxCostPerFileUsd} · API sesión max ${args.maxApiCalls}`,
     ),
   );
   console.log(boxBottom());
@@ -321,7 +340,7 @@ async function fillOneCell(args, cell) {
     }
 
     if (cell.module === 'lesen' && cell.teil === 3 && currentTopic) {
-      const stock = preflightLesenT3Topic(currentTopic, sessionLesen);
+      const stock = preflightLesenT3Topic(currentTopic, sessionLesen, args.level);
       const pf = lesenForcedTopicPreflightAction(args.topic, currentTopic, stock, 3);
       if (pf.action === 'abort') {
         console.error(`\n${pf.message}`);
@@ -342,7 +361,7 @@ async function fillOneCell(args, cell) {
     }
 
     if (cell.module === 'lesen' && cell.teil === 4 && currentTopic) {
-      const stock = preflightLesenT4Topic(currentTopic, sessionLesen);
+      const stock = preflightLesenT4Topic(currentTopic, sessionLesen, args.level);
       const pf = lesenForcedTopicPreflightAction(args.topic, currentTopic, stock, 4);
       if (pf.action === 'abort') {
         console.error(`\n${pf.message}`);
@@ -377,9 +396,9 @@ async function fillOneCell(args, cell) {
       publish: args.publish,
       syncPool: args.syncPool,
       maxApiCalls: args.maxApiCalls,
-      fixRetries: args.fixRetries,
-      maxAttemptsPerFile: args.maxAttemptsPerFile,
-      maxCostPerFileUsd: args.maxCostPerFileUsd,
+      fixRetries: cellLimits.fixRetries,
+      maxAttemptsPerFile: cellLimits.maxAttemptsPerFile,
+      maxCostPerFileUsd: cellLimits.maxCostPerFileUsd,
       sessionLesen,
       sessionExam,
     });
@@ -413,8 +432,8 @@ async function fillOneCell(args, cell) {
       const moldBlock = isTopicMoldSessionBlockReason({ reason: cycle.reason, gate: cycle.gate });
       const skipTopic =
         moldBlock ||
-        shouldSkipLesenT3Topic(cell.module, cell.teil, currentTopic, cycle.reason, sessionLesen) ||
-        shouldSkipLesenT4Topic(cell.module, cell.teil, currentTopic, cycle.reason, sessionLesen);
+        shouldSkipLesenT3Topic(cell.module, cell.teil, currentTopic, cycle.reason, sessionLesen, args.level) ||
+        shouldSkipLesenT4Topic(cell.module, cell.teil, currentTopic, cycle.reason, sessionLesen, args.level);
       if (skipTopic && currentTopic && !exhaustedTopics.includes(currentTopic)) {
         exhaustedTopics.push(currentTopic);
         const label = cell.teil === 3 ? 'Lesen T3' : cell.teil === 4 ? 'Lesen T4' : cell.module;
@@ -510,6 +529,7 @@ async function main() {
 
   const cells = resolveCells(args);
   const results = [];
+  const sessionStartedAt = new Date().toISOString();
 
   for (const cell of cells) {
     const r = await fillOneCell(args, cell);
@@ -555,6 +575,47 @@ async function main() {
   console.log(
     `  ${'TOTAL'.padEnd(colCell)}${''.padEnd(colResult)}${formatCostUsd(totalCostUsd)}`,
   );
+
+  const sessionEntries = filterGenerationCostSince(
+    readGenerationCostLog(),
+    sessionStartedAt,
+  );
+  if (sessionEntries.length) {
+    const m = summarizeGenerationCost(sessionEntries);
+    console.log(`\n${hrDouble()}`);
+    console.log('Métricas sesión (generation-cost.jsonl)');
+    console.log(hrDouble());
+    console.log(
+      `  Llamadas API: ${m.calls} · publicadas (ok): ${m.okCalls} · descartadas (fail): ${m.failCalls} · ` +
+        `tasa ok ${Math.round(m.successRate * 100)}%`,
+    );
+    console.log(
+      `  Coste sesión: ${formatCostUsd(m.totalCostUsd)} ` +
+        `(ok ${formatCostUsd(m.okCostUsd)} · fail ${formatCostUsd(m.failCostUsd)})`,
+    );
+    console.log(
+      `  Tokens: prompt ${m.promptTokens} · output ${m.candidatesTokens + m.thoughtsTokens}`,
+    );
+    const byCell = Object.entries(m.byModuleTeil || {}).sort((a, b) => b[1].costUsd - a[1].costUsd);
+    if (byCell.length) {
+      console.log('  Por celda:');
+      for (const [key, b] of byCell.slice(0, 8)) {
+        console.log(
+          `    ${key.padEnd(12)} ${b.calls} llamadas · ${formatCostUsd(b.costUsd)} · ok ${b.ok}/${b.calls}`,
+        );
+      }
+    }
+    const failedFiles = (m.files || []).filter((f) => !f.ok).slice(0, 5);
+    if (failedFiles.length) {
+      console.log('  Archivos sin publish (muestra):');
+      for (const f of failedFiles) {
+        console.log(`    ${f.file} · ${f.calls} llamadas · ${formatCostUsd(f.costUsd)}`);
+      }
+    }
+  } else if (!args.dryRun) {
+    console.log('\nMétricas sesión: sin entradas nuevas en generation-cost.jsonl (¿solo dry-run o sin API?).');
+  }
+
   printCoverageSummary(args.lang, args.level);
 
   const skipped = results.filter((r) => r.skipped);

@@ -38,7 +38,7 @@ function load(name) {
 
 console.log(`\n── grammar ${GRAMMAR_TAGS_NORMALIZE_VERSION} ──`);
 
-assert('stamp v2.0', String(GRAMMAR_TAGS_NORMALIZE_VERSION).startsWith('v2.0'));
+assert('stamp v2.x', /^v2\.\d+/.test(String(GRAMMAR_TAGS_NORMALIZE_VERSION)));
 assert('soft max is 4–5 range', GRAMMAR_TAG_SOFT_MAX >= 4 && GRAMMAR_TAG_SOFT_MAX <= 5);
 assert('modal min ≥ 2', GRAMMAR_TAG_MIN_COUNT['g-de-b1-modalverben'] >= 2);
 assert('adj min ≥ 3', GRAMMAR_TAG_MIN_COUNT['g-de-b1-adjektivdeklination'] >= 3);

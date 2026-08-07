@@ -58,6 +58,7 @@ export async function repairL2McqDistinctBatch(batch, findings, callLlm) {
       passage,
       question,
       findings: itemFindings,
+      level: batch.level || question.level,
     });
 
     let raw;

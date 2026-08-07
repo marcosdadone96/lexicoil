@@ -250,5 +250,5 @@ fs.writeFileSync(outPath, `${JSON.stringify(b1e5, null, 2)}\n`);
 console.log('Wrote', path.relative(ROOT, outPath), 'gate1=', b1e5._meta.gate1.ok);
 moveQuarantine('assembled-exam-a2-verified-e5.json', 'converted to B1-e5');
 
-const pub = publishVerifiedExamSlots({ slots: [5], lang: 'de', level: 'B1', dryRun: false, syncServed: true });
+const pub = await publishVerifiedExamSlots({ slots: [5], lang: 'de', level: 'B1', dryRun: false, syncServed: true });
 console.log('Published B1 slot 5:', pub);

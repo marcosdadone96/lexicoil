@@ -92,7 +92,7 @@ function pickPoolFields(obj, keep = []) {
 function renameQuestionIds(batch, filename) {
   const slug = filename.replace(/\.json$/, '');
   const questions = (batch.questions || []).map((q, i) => {
-    const num = String(q.id ?? i + 1).replace(/-.*$/, '');
+    const num = i + 1;
     return { ...q, id: `de-a2-cur-${slug}-q${num}` };
   });
   return { ...batch, questions };

@@ -230,7 +230,7 @@ async function main() {
     }
 
     if (args.module === 'lesen' && args.teil === 3 && currentTopic) {
-      const stock = preflightLesenT3Topic(currentTopic, sessionLesen);
+      const stock = preflightLesenT3Topic(currentTopic, sessionLesen, args.level);
       const pf = lesenForcedTopicPreflightAction(null, currentTopic, stock, 3);
       if (pf.action === 'skip') {
         if (!exhaustedTopics.includes(currentTopic)) {
@@ -246,7 +246,7 @@ async function main() {
     }
 
     if (args.module === 'lesen' && args.teil === 4 && currentTopic) {
-      const stock = preflightLesenT4Topic(currentTopic, sessionLesen);
+      const stock = preflightLesenT4Topic(currentTopic, sessionLesen, args.level);
       const pf = lesenForcedTopicPreflightAction(null, currentTopic, stock, 4);
       if (pf.action === 'skip') {
         if (!exhaustedTopics.includes(currentTopic)) {
@@ -310,8 +310,8 @@ async function main() {
       const moldBlock = isTopicMoldSessionBlockReason({ reason: cycle.reason, gate: cycle.gate });
       const skipTopic =
         moldBlock ||
-        shouldSkipLesenT3Topic(args.module, args.teil, currentTopic, cycle.reason, sessionLesen) ||
-        shouldSkipLesenT4Topic(args.module, args.teil, currentTopic, cycle.reason, sessionLesen);
+        shouldSkipLesenT3Topic(args.module, args.teil, currentTopic, cycle.reason, sessionLesen, args.level) ||
+        shouldSkipLesenT4Topic(args.module, args.teil, currentTopic, cycle.reason, sessionLesen, args.level);
       if (skipTopic && currentTopic && !exhaustedTopics.includes(currentTopic)) {
         exhaustedTopics.push(currentTopic);
         const label = args.teil === 3 ? 'Lesen T3' : args.teil === 4 ? 'Lesen T4' : args.module;

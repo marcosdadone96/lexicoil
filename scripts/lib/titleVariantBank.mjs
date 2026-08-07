@@ -6,13 +6,50 @@ import crypto from 'node:crypto';
 import { normTitle } from './structuralMoldDedup.mjs';
 import { listT5VariantProfiles } from './lesenT5InstitutionSeeds.mjs';
 
+export function inferInstitutionGender(institutionName, textSubtype = '') {
+  const head = String(institutionName || '').split(/\s+/)[0] || '';
+  const h = head.toLowerCase();
+  if (/verein$/i.test(h) || /^sportverein|^turnverein/i.test(head)) return 'masculine';
+  if (
+    /zentrum$|studio$|haus$|bad$|park$|treff$|institut$|loft$|hub$|center$|galerie$|passage$/i.test(h) ||
+    /^(bürgerzentrum|freizeitzentrum|fitnessstudio|stadthalle|vitalpark|einkaufszentrum|computerraum|schwimmbad|workhub|desklab)/i.test(
+      head,
+    ) ||
+    ['freizeitzentrum', 'sportverein', 'einkaufszentrum', 'coworking', 'computerraum'].includes(textSubtype)
+  ) {
+    return 'neuter';
+  }
+  if (
+    /bibliothek$|bücherei$|mensa$|kantine$|schule$|markt$|halle$|anlage$|cafeteria$|siedlung$/i.test(h) ||
+    ['bibliothek', 'kantine', 'schule', 'markthalle', 'wohnanlage'].includes(textSubtype)
+  ) {
+    return 'feminine';
+  }
+  return 'feminine';
+}
+
+export function genitiveInstitutionPhrase(institutionName) {
+  const parts = String(institutionName || '').trim().split(/\s+/);
+  if (!parts.length) return institutionName;
+  let head = parts[0];
+  if (/zentrum$/i.test(head)) head = head.replace(/zentrum$/i, 'zentrums');
+  else if (/studio$/i.test(head)) head = head.replace(/studio$/i, 'studios');
+  else if (/haus$/i.test(head)) head = head.replace(/haus$/i, 'hauses');
+  else if (/verein$/i.test(head)) head = head.replace(/verein$/i, 'vereins');
+  return [head, ...parts.slice(1)].join(' ');
+}
+
 const T5_DEFAULT_TEMPLATES = Object.freeze([
   'Hausordnung der {institution}',
   'Benutzungsordnung der {institution}',
   'Nutzungsordnung der {institution}',
+  'Nutzungsordnung des {genitiveInstitution}',
   'Ordnung in der {institution}',
+  'Ordnung im {institution}',
   'Regeln der {institution}',
+  'Regeln des {genitiveInstitution}',
   'Richtlinien der {institution}',
+  'Richtlinien des {genitiveInstitution}',
 ]);
 
 /** Plantillas extra por subtipo (además de las genéricas). */
@@ -45,11 +82,11 @@ const T5_PROFILE_TEMPLATES = Object.freeze({
 
 const T4_TITLE_TEMPLATES = Object.freeze([
   'Forum: {phrase} — ja oder nein?',
-  'Diskussion: {phrase}',
-  'Meinungsforum: {phrase}',
-  'Stadtforum: {phrase}',
-  'Forum zur Frage: {phrase}',
-  'Debatte: {phrase}',
+  'Diskussion: {phrase} — ja oder nein?',
+  'Meinungsforum: {phrase} — ja oder nein?',
+  'Stadtforum: {phrase} — ja oder nein?',
+  'Forum zur Frage: {phrase} — ja oder nein?',
+  'Debatte: {phrase} — ja oder nein?',
 ]);
 
 function hashPick(key, mod) {
@@ -110,6 +147,7 @@ function seedToTitlePhrase(seed) {
  */
 export function buildT5TitleCandidates(textSubtype, institutionName, variantProfile = 'standard') {
   const institution = String(institutionName || '').trim();
+  const genitiveInstitution = genitiveInstitutionPhrase(institution);
   const subtype = String(textSubtype || 'park');
   const templates = [
     ...(T5_PROFILE_TEMPLATES[variantProfile] || []),
@@ -119,7 +157,7 @@ export function buildT5TitleCandidates(textSubtype, institutionName, variantProf
   const seen = new Set();
   const out = [];
   for (const tpl of templates) {
-    const title = fillTemplate(tpl, { institution }).replace(/\s+/g, ' ').trim();
+    const title = fillTemplate(tpl, { institution, genitiveInstitution }).replace(/\s+/g, ' ').trim();
     const nt = normTitle(title);
     if (!title || nt.length < 8 || seen.has(nt)) continue;
     seen.add(nt);
@@ -179,7 +217,7 @@ export function pickMandatedTitle(opts = {}) {
     const fallback =
       teil === 5
         ? `Ordnung ${opts.institutionName || 'Institution'} (${hashPick(entropy, 999) + 1})`
-        : `Forum: ${seedToTitlePhrase(opts.debateSeed)} (${hashPick(entropy, 999) + 1})`;
+        : `Forum: ${seedToTitlePhrase(opts.debateSeed)} — ja oder nein? (${hashPick(entropy, 999) + 1})`;
     return fallback;
   }
 

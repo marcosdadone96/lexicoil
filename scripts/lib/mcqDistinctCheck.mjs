@@ -141,7 +141,42 @@ export function scoreOptionPair(textA, textB) {
   return { jaccard, overlapCoef, shared, literal };
 }
 
+/** A2 Lesen T2 short floor options — tokenize strips digits so «im N. Stock» collapses to «stock». */
+const A2_FLOOR_NUM_RE = /^im\s+(\d+)\.\s*stock\s*$/i;
+const A2_FLOOR_NAMED_RE = /^im\s+(erdgeschoss|untergeschoss|obergeschoss|parterre)\s*$/i;
+const A2_ANDERER_STOCK_RE =
+  /^(in\s+einem\s+)?ander(er|es)\s+stock(work)?\s*$|^in\s+einem\s+anderen\s+stock(work)?\s*$/i;
+
+/** @returns {{ type: 'floor', key: string } | { type: 'other' } | null} */
+export function parseA2StockFloorLabel(text) {
+  const s = stripOptionPrefix(text).trim();
+  const num = s.match(A2_FLOOR_NUM_RE);
+  if (num) return { type: 'floor', key: `num:${num[1]}` };
+  const named = s.match(A2_FLOOR_NAMED_RE);
+  if (named) return { type: 'floor', key: `name:${named[1].toLowerCase()}` };
+  if (A2_ANDERER_STOCK_RE.test(s)) return { type: 'other' };
+  return null;
+}
+
+/** @returns {'distinct' | 'duplicate' | null} null = not A2 short floor pair — use generic scorer */
+export function a2StockOptionPairVerdict(textA, textB) {
+  const a = parseA2StockFloorLabel(textA);
+  const b = parseA2StockFloorLabel(textB);
+  if (!a || !b) return null;
+  if (a.type === 'other' || b.type === 'other') return 'distinct';
+  if (a.type === 'floor' && b.type === 'floor') return a.key === b.key ? 'duplicate' : 'distinct';
+  return null;
+}
+
 export function isNonExclusiveOptionPair(textA, textB, thresholds = MCQ_DISTINCT_THRESHOLDS) {
+  const a2Verdict = a2StockOptionPairVerdict(textA, textB);
+  if (a2Verdict === 'distinct') {
+    return { hit: false, jaccard: 0, overlapCoef: 0, shared: [] };
+  }
+  if (a2Verdict === 'duplicate') {
+    return { hit: true, reason: 'mismo piso (A2 Stock)', jaccard: 1, overlapCoef: 1, shared: ['stock'] };
+  }
+
   const { jaccard, overlapCoef, literal, shared } = scoreOptionPair(textA, textB);
   if (literal) return { hit: true, reason: `literal≥${thresholds.literalMinWords}w («${literal}»)`, jaccard, overlapCoef, shared };
   if (jaccard >= thresholds.jaccard) {

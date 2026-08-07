@@ -24,6 +24,8 @@ export function pushSessionMoldExclude(sessionArgs, batch) {
   if (teil === 5) {
     const st = batch._textSubtype || detectT5Subtype(batch);
     uniqPush(sessionArgs._excludeSubtypes, st);
+    const profile = batch._t5VariantProfile || batch._variantProfile;
+    if (st && profile) uniqPush(sessionArgs._excludeSubtypes, `${st}:${profile}`);
   }
 
   if (teil === 4) {

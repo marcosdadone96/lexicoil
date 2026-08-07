@@ -54,6 +54,7 @@ export const BLACKLIST = [
   { term: /\bcleaning day\b/i, suggestion: 'Putztag / Reinigungstag' },
   { term: /\bopen space\b/i, suggestion: 'Freifläche / offener Bereich' },
   { term: /\bworkshop\b/i,   suggestion: 'Workshop → Kurs / Seminar / Werkstatt' },
+  { term: /\blatecoming\b/i, suggestion: 'Verspätung / zu spät kommen / kein Einlass nach Filmstart' },
   // ── Vocabulario C1+ inapropiado para B1 ──────────────────────────────────
   { term: /\bkontextualisier\w*/i, suggestion: 'erklären / einordnen (B1-Niveau)', grammar: false },
   { term: /\bPolyphonie\b/i,       suggestion: 'Klang / Musik (B1-Niveau)',          grammar: false },
@@ -89,7 +90,7 @@ export const B2_QUESTION_BLACKLIST = [
   { term: /\bKommunikationskanal\w*\b/i,    suggestion: 'Telefon / E-Mail / Chat' },
   { term: /\beigene\s+Marke\b/i,             suggestion: 'bekannter werden / mehr Kunden' },
   { term: /\bMarke\s+stärken\b/i,            suggestion: 'bekannter werden' },
-  { term: /\bHerausforderung\w*\b/i,         suggestion: 'Problem / Schwierigkeit' },
+  { term: /\bHerausforderung\w*\b/i,         suggestion: 'Probleme / Schwierigkeiten' },
   { term: /\bPerspektiv\w*\b/i,               suggestion: 'Sicht / Meinung' },
   { term: /\bReflexion\w*\b/i,               suggestion: 'Nachdenken / Überlegung' },
   { term: /\bReflektion\w*\b/i,              suggestion: 'Nachdenken / Überlegung' },
@@ -113,7 +114,7 @@ export const B2_QUESTION_BLACKLIST = [
  * Checked by checkLexical (A2 pipeline) and CHK-6c (audit-pass-2).
  */
 export const B1_QUESTION_BLACKLIST = [
-  { term: /\bHerausforderung\w*\b/i,         suggestion: 'Problem / Schwierigkeit' },
+  { term: /\bHerausforderung\w*\b/i,         suggestion: 'Probleme / Schwierigkeiten' },
   { term: /\bPerspektiv\w*\b/i,               suggestion: 'Sicht / Meinung' },
   { term: /\bDiskriminierung\b/i,            suggestion: 'Ungerechtigkeit / Unterschied' },
   { term: /\bPotenzial\b/i,                  suggestion: 'Möglichkeit / Chance' },

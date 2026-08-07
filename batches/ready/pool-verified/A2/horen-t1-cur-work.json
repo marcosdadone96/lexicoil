@@ -19,7 +19,7 @@
       "topicTag": "Gesundheit"
     },
     {
-      "id": "de-a2-p-horen-t1-gesundheit-arzt-02-s3",
+      "id": "gen-p-horen-t1-cur-work-s3",
       "module": "horen",
       "teil": 1,
       "level": "A2",
@@ -54,17 +54,17 @@
       "correct": "a",
       "correctAnswer": "a",
       "explanation": "Die Praxis ist Montag bis Freitag von 8 bis 12 Uhr und von 14 bis 18 Uhr geöffnet, samstags von 9 bis 13 Uhr.",
-      "grammarTags": [],
+      "grammarTags": [
+        "g-de-a2-dat-akk"
+      ],
       "topicTags": [
         "Gesundheit"
       ],
       "vocabularyTags": [
-        "öffnen",
         "Zahnarztpraxis",
-        "Freitag",
-        "Samstag",
         "Müller",
-        "Praxis"
+        "offen",
+        "mo-fr"
       ],
       "difficulty": 2,
       "options": [
@@ -94,7 +94,9 @@
       "correctAnswer": "c",
       "explanation": "Der Apotheker sagt: 'Nehmen Sie dreimal täglich einen Löffel.'",
       "grammarTags": [
-        "g-de-b1-relativ"
+        "g-de-a2-modal",
+        "g-de-a2-trennbar",
+        "g-de-a2-dat-akk"
       ],
       "topicTags": [
         "Gesundheit"
@@ -102,10 +104,9 @@
       "vocabularyTags": [
         "täglich",
         "Hustensaft",
-        "Apotheker",
         "Dreimal",
         "Person",
-        "Löffel"
+        "nehmen"
       ],
       "difficulty": 2,
       "options": [
@@ -135,16 +136,15 @@
       "correctAnswer": "b",
       "explanation": "Der Arzt sagt: 'Ich brauche zwei Tage Ruhe.'",
       "grammarTags": [
-        "g-de-b1-relativ"
+        "g-de-a2-modal",
+        "g-de-a2-trennbar",
+        "g-de-a2-dat-akk"
       ],
       "topicTags": [
         "Gesundheit"
       ],
       "vocabularyTags": [
-        "brauchen",
         "Arbeit",
-        "sagen",
-        "Arzt",
         "machen"
       ],
       "difficulty": 2,
@@ -153,7 +153,7 @@
         "b) Zwei Tage",
         "c) Eine Woche"
       ],
-      "passageId": "de-a2-p-horen-t1-gesundheit-arzt-02-s3",
+      "passageId": "gen-p-horen-t1-cur-work-s3",
       "number": 3,
       "nr": 3,
       "nummer": 3,
@@ -175,8 +175,10 @@
       "correctAnswer": "c",
       "explanation": "Die Anweisung besagt, dass man zwei Tabletten alle vier Stunden nehmen soll.",
       "grammarTags": [
-        "g-de-b1-konjunktiv",
-        "g-de-b1-relativ"
+        "g-de-a2-nebensatz",
+        "g-de-a2-modal",
+        "g-de-a2-trennbar",
+        "g-de-a2-dat-akk"
       ],
       "topicTags": [
         "Gesundheit"
@@ -184,10 +186,9 @@
       "vocabularyTags": [
         "tabletten",
         "stunden",
-        "Apotheker",
         "Person",
-        "Wasser",
-        "sagen"
+        "sollt",
+        "nehmen"
       ],
       "difficulty": 2,
       "options": [
@@ -213,25 +214,25 @@
       "id": "5-3bd63911",
       "type": "multiple_choice",
       "question": "Warum braucht die Person die Krankmeldung?",
-      "correct": "a",
-      "correctAnswer": "a",
+      "correct": "b",
+      "correctAnswer": "b",
       "explanation": "Im Gespräch heißt es: 'Du brauchst sie für deinen Chef.'",
-      "grammarTags": [],
+      "grammarTags": [
+        "g-de-a2-dat-akk"
+      ],
       "topicTags": [
         "Gesundheit"
       ],
       "vocabularyTags": [
-        "Gespräch",
         "brauchen",
         "Krankmeldung",
-        "deinen",
         "Person"
       ],
       "difficulty": 2,
       "options": [
-        "a) Für den Chef",
-        "b) Für den Arzt",
-        "c) Für die Apotheke"
+        "a) Für die Apotheke",
+        "b) Für den Chef",
+        "c) Für den Arzt"
       ],
       "passageId": "de-a2-p-horen-t1-gesundheit-arzt-01-s5",
       "number": 5,
@@ -249,7 +250,21 @@
     }
   ],
   "_germanCapsNormalizeVersion": "v3.17-mcq-dedupe-universal-2026-07-14",
-  "_germanCapsNormalizedAt": "2026-07-25T08:53:53.057Z",
+  "_germanCapsNormalizedAt": "2026-07-26T20:50:05.978Z",
   "_balanceMcqVersion": "v1.2-no-rf-chrono-shuffle-2026-07-11",
-  "_balanceMcqNormalizedAt": "2026-07-25T08:53:53.057Z"
+  "_balanceMcqNormalizedAt": "2026-07-26T20:50:05.973Z",
+  "topicTag": "Gesundheit",
+  "_requestedTopic": "Gesundheit",
+  "_topicTagInferred": true,
+  "_topicTagInferredAt": "2026-07-26T20:50:20.593Z",
+  "_metadataEnrichedAt": "2026-07-27T06:41:16.327Z",
+  "_metadataEnrichNote": "deterministic: detectTopic + per-question lemma vocab + grammar heuristics",
+  "_vocabTagsNormalizeVersion": "v2.3.16-b1-validated-verb-adj-lemma-2026-07-24",
+  "_grammarTagsNormalizeVersion": "v2.2-a2-b2-level-tags-2026-07-27",
+  "_metadataBackfillAt": "2026-07-26T20:50:20.598Z",
+  "_metadataBackfillNote": "A2 root-cause audit D+E",
+  "_a2GrammarRetagAt": "2026-07-27T06:41:16.327Z",
+  "_a2GrammarRetagNote": "re-enrich-a2-pool-grammar.mjs",
+  "_a2GlobalIdRepairAt": "2026-08-02T14:40:05.976Z",
+  "_a2GlobalIdRepairNote": "renamed q=0 p=1 (deterministic, $0)"
 }

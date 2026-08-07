@@ -17,6 +17,7 @@ import {
   needsRegenerationDir,
   ensureLevelStagingDirs,
 } from './batchPaths.mjs';
+import { logAssembledStaleAfterPoolTouch } from './assembledExamFreshness.mjs';
 
 /** @deprecated use poolVerifiedDir(level) */
 export const POOL_VERIFIED_DIR = path.join(ROOT, 'batches/ready/pool-verified');
@@ -53,7 +54,17 @@ export function writePoolVerified(file, batch, level = 'B1') {
   if (clean._poolRejectReason) {
     throw new Error(`refusing to write pool-verified/${lv}/${file}: still has _poolRejectReason`);
   }
+  if (clean._poolRetiredReason) {
+    throw new Error(
+      `refusing to write pool-verified/${lv}/${file}: _poolRetiredReason=${clean._poolRetiredReason} (use sucesor regenerado, no copia de retirado)`,
+    );
+  }
   fs.writeFileSync(dest, `${JSON.stringify(clean, null, 2)}\n`);
+  try {
+    logAssembledStaleAfterPoolTouch({ level: lv, file, trigger: 'writePoolVerified' });
+  } catch {
+    /* optional in minimal envs */
+  }
   return dest;
 }
 

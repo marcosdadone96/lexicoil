@@ -32,6 +32,7 @@ for (let i = 0; i < 6; i += 1) {
   }
 }
 assert(`≥4 schedules distintos en 6 picks (${schedules.size})`, schedules.size >= 4);
+assert(`≥6 schedules distintos en 6 picks con catálogo 16 (${schedules.size})`, schedules.size >= 6);
 
 console.log('\n── C: dialogue name cast rotation (n=6, T3) ──');
 const casts = new Set();
@@ -54,11 +55,16 @@ assert(`6 elencos distintos en 6 picks (${casts.size})`, casts.size === 6);
 
 console.log('\n── A: vocab coherence gate rejects 199-pattern ──');
 const badBatch = {
+  level: 'A2',
+  module: 'lesen',
+  teil: 1,
   passages: [{
     text:
       'Die Firma Müller in Köln hat neue Arbeitszeiten. Mitarbeiter arbeiten flexibler. ' +
       'Das Krankenhaus in der Nähe hat auch Interesse gezeigt. Sie erhielt ein Stipendium.',
+    level: 'A2',
   }],
+  questions: [{ teil: 1, level: 'A2', module: 'lesen' }],
   userVocabFeedback: { used: ['krankenhaus', 'stipendium'] },
 };
 const gate = vocabNarrativeCoherenceGate(badBatch);

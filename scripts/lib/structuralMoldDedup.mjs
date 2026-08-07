@@ -6,6 +6,7 @@ import path from 'node:path';
 import { createRequire } from 'node:module';
 import { ROOT } from './loadEnv.mjs';
 import { detectT4DebateTopic, detectT5Subtype } from './lesenSubtypeRotation.mjs';
+import { inferBatchLevel, normalizeLevel } from './batchPaths.mjs';
 
 const require = createRequire(import.meta.url);
 const { normalizeB1Topic } = require(path.join(ROOT, 'js/data/b1Topics.js'));
@@ -19,15 +20,28 @@ export function normTitle(t) {
     .trim();
 }
 
-export function extractStructuralMold(batch, teil) {
+function a2LesenT4MoldKey(batch) {
+  const titles = (batch.passages || [])
+    .map((p) => normTitle(p.title))
+    .filter((t) => t.length >= 3)
+    .sort();
+  if (titles.length < 6) return 'a2_anzeigen:incomplete';
+  return `a2_anzeigen:${titles.join('|')}`;
+}
+
+export function extractStructuralMold(batch, teil, opts = {}) {
   const t = Number(teil ?? batch.teil ?? batch.questions?.[0]?.teil);
   const title = normTitle(batch.passages?.[0]?.title || batch.passage?.title || '');
+  const level = String(opts.level || inferBatchLevel(batch)).toUpperCase();
   if (t === 5) {
     const subtype = batch._textSubtype || detectT5Subtype(batch);
     const profile = batch._t5VariantProfile || null;
     return { kind: 't5_subtype', key: subtype || null, profile, title };
   }
   if (t === 4) {
+    if (level === 'A2') {
+      return { kind: 'a2_anzeigen', key: a2LesenT4MoldKey(batch), profile: null, title };
+    }
     const debate = batch._debateSeed || batch._debateTopic || detectT4DebateTopic(batch);
     return { kind: 't4_debate', key: debate || null, profile: null, title };
   }
@@ -54,7 +68,8 @@ function batchTopicTag(batch) {
 export function checkStructuralMoldDuplicate(batch, corpus, opts = {}) {
   const teil = Number(opts.teil ?? batch.teil ?? batch.questions?.[0]?.teil);
   const topicTag = batchTopicTag(batch);
-  const mold = extractStructuralMold(batch, teil);
+  const batchLevel = normalizeLevel(opts.level || inferBatchLevel(batch));
+  const mold = extractStructuralMold(batch, teil, { level: batchLevel });
 
   if (![4, 5].includes(teil) || !topicTag) {
     return { ok: true, skipped: 'not_t4_t5' };
@@ -65,8 +80,9 @@ export function checkStructuralMoldDuplicate(batch, corpus, opts = {}) {
     const oTeil = Number(other.teil ?? other.questions?.[0]?.teil);
     if (oTeil !== teil) continue;
     if (batchTopicTag(other) !== topicTag) continue;
+    if (normalizeLevel(inferBatchLevel(other)) !== batchLevel) continue;
 
-    const oMold = extractStructuralMold(other, teil);
+    const oMold = extractStructuralMold(other, oTeil, { level: batchLevel });
     const ref = other.id || other.file || oMold.title?.slice(0, 40) || 'corpus';
 
     const moldKey = structuralMoldKey(mold);

@@ -12,13 +12,14 @@
  */
 
 /** Stable implementation tag — bump when guards change so poolReadyCheck restamps. */
-export const GERMAN_CAPS_NORMALIZE_VERSION = 'v3.17-mcq-dedupe-universal-2026-07-14';
+export const GERMAN_CAPS_NORMALIZE_VERSION = 'v3.23-lesen-t2-angebote-corpus-2026-07-28';
 import {
   decapitalizeBatchMidSentence,
   capitalizeBatchNouns,
 } from './capitalizeNouns.mjs';
 import { normalizeBatchMcqOptionCapitalization, dedupeBatchMcqOptionLetterPrefixes } from './normalizeMcq.mjs';
 import { stripMarkdownLeakInBatch } from './stripMarkdownLeak.mjs';
+import { collectDocumentProperNames, restoreProperNamesInBatch } from './institutionProperNameGuard.mjs';
 
 const TOKEN_RE = /([A-Za-zÄÖÜäöüß]+(?:-[A-Za-zÄÖÜäöüß]+)*)|([^A-Za-zÄÖÜäöüß]+)/g;
 
@@ -116,6 +117,7 @@ export function applyGermanCapsNormalize(batch, opts = {}) {
 
   const beforeMap = new Map();
   walkBatchStrings(batch, (path, value) => beforeMap.set(path, value));
+  const documentProperNames = collectDocumentProperNames(batch);
 
   const { batch: stripped, totalFixed: markdownFixed } = stripMarkdownLeakInBatch(batch);
   const { batch: decapped, totalFixed: decapFixed } = decapitalizeBatchMidSentence(stripped);
@@ -127,7 +129,8 @@ export function applyGermanCapsNormalize(batch, opts = {}) {
     capFixed = capped.totalFixed;
   }
   const normalized = opts.decapOnly ? current : normalizeBatchMcqOptionCapitalization(current);
-  const { batch: deduped, fixed: dedupeFixed } = dedupeBatchMcqOptionLetterPrefixes(normalized);
+  const { batch: dedupedRaw, fixed: dedupeFixed } = dedupeBatchMcqOptionLetterPrefixes(normalized);
+  const deduped = restoreProperNamesInBatch(dedupedRaw, documentProperNames);
 
   const changes = [];
   walkBatchStrings(deduped, (path, after) => {

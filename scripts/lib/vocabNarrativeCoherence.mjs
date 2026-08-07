@@ -10,6 +10,57 @@ const STOP = new Set([
   'nicht', 'nur', 'sich', 'sein', 'sind', 'war', 'waren', 'wurde', 'wurden', 'gibt', 'gab',
 ]);
 
+/** B1 Lesen T1 — blog/diary: vocab should share ≥2 content tokens with rest of passage. */
+export const VOCAB_NARRATIVE_THRESHOLDS_B1 = Object.freeze({
+  minShared: 2,
+  maxJaccard: 0.07,
+  minSentences: 2,
+});
+
+/**
+ * A2 Lesen T1 — Medientext/informativo: oraciones más cortas y temas en bloque;
+ * exige desconexión más extrema (0 tokens compartidos, jaccard muy bajo).
+ */
+export const VOCAB_NARRATIVE_THRESHOLDS_A2_LESEN_T1 = Object.freeze({
+  minShared: 1,
+  maxJaccard: 0.05,
+  minSentences: 3,
+});
+
+function inferBatchLevel(batch) {
+  const levels = new Set();
+  for (const q of batch?.questions || []) {
+    if (q?.level) levels.add(String(q.level).toUpperCase());
+  }
+  for (const p of batch?.passages || []) {
+    if (p?.level) levels.add(String(p.level).toUpperCase());
+  }
+  if (batch?.level) levels.add(String(batch.level).toUpperCase());
+  if (levels.size === 1) return [...levels][0];
+  return 'B1';
+}
+
+function inferLesenTeil(batch) {
+  const t = batch?.teil ?? batch?.questions?.[0]?.teil ?? batch?.passages?.[0]?.teil;
+  return Number(t) || 1;
+}
+
+/**
+ * @param {object} [batch]
+ * @returns {{ minShared: number, maxJaccard: number, minSentences: number, profile: string }}
+ */
+export function resolveVocabNarrativeThresholds(batch = null) {
+  const level = inferBatchLevel(batch || {});
+  const teil = inferLesenTeil(batch || {});
+  const mod = String(
+    batch?.module || batch?.questions?.[0]?.module || batch?.passages?.[0]?.module || 'lesen',
+  ).toLowerCase();
+  if (level === 'A2' && mod === 'lesen' && teil === 1) {
+    return { ...VOCAB_NARRATIVE_THRESHOLDS_A2_LESEN_T1, profile: 'A2-lesen-t1-medientext' };
+  }
+  return { ...VOCAB_NARRATIVE_THRESHOLDS_B1, profile: 'B1-lesen-t1-narrative' };
+}
+
 function contentTokens(text) {
   return String(text || '')
     .toLowerCase()
@@ -55,8 +106,9 @@ function sentenceForWord(sentences, word) {
 export function detectDisconnectedVocabSentences(passageText, targetWords, opts = {}) {
   const minShared = opts.minShared ?? 2;
   const maxJaccard = opts.maxJaccard ?? 0.07;
+  const minSentences = opts.minSentences ?? 2;
   const sentences = splitSentences(passageText);
-  if (sentences.length < 2) return [];
+  if (sentences.length < minSentences) return [];
 
   const flags = [];
   for (const word of targetWords || []) {
@@ -95,13 +147,15 @@ export function vocabNarrativeCoherenceGate(batch) {
     '';
   if (!text.trim()) return { ok: true, flags: [] };
 
-  const flags = detectDisconnectedVocabSentences(text, fb.used);
-  if (!flags.length) return { ok: true, flags: [] };
+  const thresholds = resolveVocabNarrativeThresholds(batch);
+  const flags = detectDisconnectedVocabSentences(text, fb.used, thresholds);
+  if (!flags.length) return { ok: true, flags: [], profile: thresholds.profile };
   return {
     ok: false,
     flags,
+    profile: thresholds.profile,
     reason:
       `vocab_narrative_incoherence: ${flags.map((f) => f.word).join(', ')} ` +
-      `(baja coherencia léxica con el párrafo)`,
+      `(baja coherencia léxica con el párrafo; ${thresholds.profile})`,
   };
 }

@@ -64,10 +64,62 @@ function contentFingerprint(batch, teil) {
 
 function buildLesenT1Record(batch, { lang, level, topicTag, idPrefix }) {
   const teil = 1;
-  const passage = batch.passages?.[0] || {};
+  const lv = String(level || batch?.level || 'B1').toUpperCase();
   const qs = batch.questions || [];
   const hash = shortHash(contentFingerprint(batch, teil));
-  const isA2Mcq = String(level).toUpperCase() === 'A2' || Number(batch.teil) === 3;
+  const isA2Mcq = lv === 'A2' || Number(batch.teil) === 3;
+
+  if (isForumMatchingLesenBatch(batch, lv)) {
+    const passages = (batch.passages || []).map((p, i) => ({
+      id: p.id || `gen-l1-${hash}-${String.fromCharCode(97 + i)}`,
+      module: 'lesen',
+      teil: 1,
+      level: lv,
+      title: p.title || '',
+      text: p.text || '',
+      personKey: p.personKey,
+    }));
+    const first = passages[0] || {};
+    return {
+      id: `${idPrefix}-${lang}-${lv}-lesen-t1-${hash}`,
+      lang,
+      level: lv,
+      module: 'lesen',
+      teil: 1,
+      instruction: batch.instruction || '',
+      passages,
+      passage: {
+        title: first.title || '',
+        text: first.text || '',
+        passages: passages.map((p) => ({
+          passageId: p.id,
+          textTitle: p.title || '',
+          text: p.text || '',
+        })),
+      },
+      questions: qs.map((q) => {
+        const passageIds = new Set(passages.map((p) => p.id));
+        const pid = q.passageId && passageIds.has(q.passageId) ? q.passageId : undefined;
+        return {
+          id: q.id,
+          module: 'lesen',
+          teil: 1,
+          level: lv,
+          type: q.type || 'matching',
+          question: q.question || '',
+          ...(q.options?.length ? { options: q.options } : {}),
+          correct: q.correct ?? q.correctAnswer ?? '',
+          correctAnswer: q.correctAnswer ?? q.correct ?? '',
+          explanation: q.explanation || '',
+          ...(pid ? { passageId: pid } : {}),
+        };
+      }),
+      itemCount: qs.length,
+      targetCount: qs.length,
+    };
+  }
+
+  const passage = batch.passages?.[0] || {};
   return {
     id: `${idPrefix}-${lang}-${level}-lesen-t${Number(batch.teil) || teil}-${hash}`,
     lang,
@@ -143,12 +195,17 @@ function buildLesenT2Record(batch, { lang, level, topicTag, idPrefix }) {
   };
 }
 
-function isA2LesenMatchingBatch(batch, level) {
+function isForumMatchingLesenBatch(batch, level) {
   const lv = String(level || batch?.level || 'B1').toUpperCase();
-  if (lv !== 'A2') return false;
+  if (lv !== 'A2' && lv !== 'B2') return false;
   const qs = batch?.questions || [];
   if (qs.some((q) => q?.type === 'matching')) return true;
   return (batch?.passages?.length || 0) > 1;
+}
+
+/** @deprecated use isForumMatchingLesenBatch */
+function isA2LesenMatchingBatch(batch, level) {
+  return isForumMatchingLesenBatch(batch, level);
 }
 
 function buildLesenT4Record(batch, { lang, level, topicTag, idPrefix }) {
@@ -157,7 +214,7 @@ function buildLesenT4Record(batch, { lang, level, topicTag, idPrefix }) {
   const hash = shortHash(contentFingerprint(batch, teil));
   const lv = String(level || 'B1').toUpperCase();
 
-  if (isA2LesenMatchingBatch(batch, lv)) {
+  if (isForumMatchingLesenBatch(batch, lv)) {
     const passages = (batch.passages || []).map((p, i) => ({
       id: p.id || `ad-${String.fromCharCode(97 + i)}`,
       module: 'lesen',
@@ -280,8 +337,8 @@ export function buildLesenSeedRecordFromBatch(batch, opts = {}) {
   const idPrefix = opts.idPrefix || 'pub';
 
   let base;
-  if (teil === 3 && level === 'A2') {
-    // A2 T3 = single email + 5 MCQ (not B1 ads matching A–J).
+  if (teil === 3 && (level === 'A2' || level === 'B2')) {
+    // A2/B2 T3 = passage + MCQ (not B1 ads matching A–J).
     base = buildLesenT1Record({ ...batch, teil: 3 }, { lang, level, topicTag, idPrefix });
   } else if (teil === 3) {
     base = buildLesenT3SeedRecord(batch, {
@@ -451,6 +508,7 @@ export function appendRecordToPoolUnlocked(record, opts = {}) {
     teil: stamped.teil,
     topicTag: stamped.topicTag,
     threshold: opts.dedupThreshold,
+    excludeId: stamped.id,
   });
   if (!dedup.ok) {
     return {
@@ -515,7 +573,7 @@ export function checkPoolCellDedup(record, poolRecords, opts = {}) {
   const module = String(record.module || opts.module || 'lesen').toLowerCase();
   const teil = Number(record.teil ?? opts.teil);
   const topicTag = normalizeB1Topic(record.topicTag || opts.topicTag);
-  const excludeId = opts.excludeId || record.id;
+  const excludeId = opts.excludeId !== undefined ? opts.excludeId : null;
 
   if (!topicTag || !Number.isFinite(teil)) {
     return { ok: true, skipped: 'missing_cell' };
@@ -612,6 +670,19 @@ export async function publishExamBatchToPool(batch, opts = {}) {
     idPrefix: opts.idPrefix || 'pub',
     id: opts.recordId,
   });
+
+  const { verifyPartVocabIndexForPool } = await import('./personalPoolPublishVocabGate.mjs');
+  const vocabIndexCheck = verifyPartVocabIndexForPool(record.part || batch, {
+    module: mod,
+    minKeys: opts.minVocabKeys,
+  });
+  if (!vocabIndexCheck.ok && !vocabIndexCheck.skipped && opts.skipVocabIndexGate !== true) {
+    return {
+      ok: false,
+      error: vocabIndexCheck.reason || 'pool_vocab_index_sparse',
+      vocabIndex: vocabIndexCheck,
+    };
+  }
 
   if (opts.sourceFile) record.sourceFile = opts.sourceFile;
   if (opts.contributor) record.contributor = opts.contributor;

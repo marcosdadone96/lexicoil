@@ -17,17 +17,23 @@ const VOLATILE_KEYS = new Set([
 ]);
 
 /**
- * Strip volatile fields and keep content-bearing payload (blob or seed shape).
- * @param {object} raw
- * @returns {object}
+ * Strip volatile fields and `undefined` at all depths (matches JSON round-trip on assembled exams).
+ * @param {unknown} raw
+ * @returns {unknown}
  */
 export function normalizePartSnapshot(raw) {
-  if (!raw || typeof raw !== 'object') return {};
+  if (raw === undefined) return undefined;
+  if (raw === null || typeof raw !== 'object') return raw;
+  if (Array.isArray(raw)) {
+    return raw.map((item) => normalizePartSnapshot(item)).filter((item) => item !== undefined);
+  }
   const out = {};
   for (const [k, v] of Object.entries(raw)) {
     if (VOLATILE_KEYS.has(k)) continue;
     if (v === undefined) continue;
-    out[k] = v;
+    const nested = normalizePartSnapshot(v);
+    if (nested === undefined) continue;
+    out[k] = nested;
   }
   return out;
 }

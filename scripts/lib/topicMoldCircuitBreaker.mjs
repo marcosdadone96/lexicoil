@@ -5,6 +5,7 @@
  */
 import { normalizeB1Topic } from './b1Topics.mjs';
 import { countRemainingMolds } from './topicMoldCompatibility.mjs';
+import { checkT5VocabIntegration } from './lesenT5SubtypeVocab.mjs';
 
 export const VOCAB_FIT_TRIP_THRESHOLD = 0.4;
 export const REMAINING_MOLDS_EXHAUSTED = 1;
@@ -101,9 +102,16 @@ export function assertTopicMoldCircuitClosed(session, topic, teil, opts = {}) {
   });
 }
 
-export function vocabRatioFromBatch(batch) {
+export function vocabRatioFromBatch(batch, opts = {}) {
   const fb = batch?.userVocabFeedback;
   if (!fb?.requested?.length) return null;
+  const teil = Number(opts.teil ?? batch?.teil ?? batch?.passages?.[0]?.teil);
+  if (teil === 5) {
+    const gate = checkT5VocabIntegration(batch);
+    if (gate.ok) return Math.max(VOCAB_FIT_TRIP_THRESHOLD, typeof fb.ratio === 'number' ? fb.ratio : 1);
+    if (typeof fb.ratio === 'number') return fb.ratio;
+    return gate.requested ? gate.count / gate.requested : 0;
+  }
   if (typeof fb.ratio === 'number') return fb.ratio;
   return (fb.used?.length || 0) / fb.requested.length;
 }

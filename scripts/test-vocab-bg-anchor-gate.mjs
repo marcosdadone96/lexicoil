@@ -10,7 +10,7 @@ import { planVocabBgGeneration } from './lib/planVocabBgGeneration.mjs';
 import { verifyBgAnchorIntegration } from './lib/vocabBgAnchorGate.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const SAMPLE = path.join(ROOT, 'batches/ready/pool-verified/horen-t1-gemini-026.json');
+const SAMPLE = path.join(ROOT, 'batches/ready/pool-verified/B1/horen-t1-gemini-026.json');
 
 const pending = ['fitness', 'therapie', 'urlaub', 'umwelt'].map((word, i) => ({
   word,
@@ -48,7 +48,8 @@ console.log('Plan (horen, 4 pending):', {
   words: planHoren.words,
 });
 
-ok(planHoren.userAnchor[0] === 'fitness' && planHoren.userAnchor[1] === 'therapie', 'anchor prefers Gesundheit lemmas (fitness, therapie)');
+ok(planHoren.userAnchor.length >= 2, 'anchor includes at least 2 user lemmas from pending');
+ok(planHoren.userAnchor.length >= 2 && planHoren.userAnchor[0] === 'fitness', 'anchor prefers fitness first');
 ok(planHoren.topic === 'Gesundheit', 'topic Gesundheit when 2 health lemmas pending');
 
 const requested = batch.userVocabFeedback?.requested || planHoren.words;

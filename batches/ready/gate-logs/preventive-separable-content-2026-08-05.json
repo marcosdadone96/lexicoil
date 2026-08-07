@@ -1,0 +1,85 @@
+{
+  "at": "2026-08-05T04:43:04.569Z",
+  "engine": "findSplitSeparablesInText",
+  "levels": {
+    "B1": {
+      "sampled": 6,
+      "splitSeparablesFound": 5,
+      "ok": 2,
+      "tag_gap": 3,
+      "rows": [
+        {
+          "file": "horen-t2-gemini-033.json",
+          "infinitive": "stattfinden",
+          "inAllowlist": true,
+          "inVocabularyTags": true,
+          "status": "ok"
+        },
+        {
+          "file": "horen-t4-gemini-034.json",
+          "infinitive": "ankommen",
+          "inAllowlist": true,
+          "inVocabularyTags": false,
+          "status": "tag_gap"
+        },
+        {
+          "file": "lesen-t2-gemini-113.json",
+          "infinitive": "beitragen",
+          "inAllowlist": true,
+          "inVocabularyTags": true,
+          "status": "ok"
+        },
+        {
+          "file": "lesen-t2-gemini-165.json",
+          "infinitive": "anbieten",
+          "inAllowlist": true,
+          "inVocabularyTags": false,
+          "status": "tag_gap"
+        },
+        {
+          "file": "lesen-t2-gemini-165.json",
+          "infinitive": "zunehmen",
+          "inAllowlist": true,
+          "inVocabularyTags": false,
+          "status": "tag_gap"
+        }
+      ]
+    },
+    "B2": {
+      "sampled": 4,
+      "splitSeparablesFound": 4,
+      "ok": 0,
+      "tag_gap": 4,
+      "rows": [
+        {
+          "file": "horen-t2-gemini-113.json",
+          "infinitive": "ansprechen",
+          "inAllowlist": true,
+          "inVocabularyTags": false,
+          "status": "tag_gap"
+        },
+        {
+          "file": "horen-t2-gemini-113.json",
+          "infinitive": "vorschlagen",
+          "inAllowlist": true,
+          "inVocabularyTags": false,
+          "status": "tag_gap"
+        },
+        {
+          "file": "lesen-t2-gemini-167.json",
+          "infinitive": "beitragen",
+          "inAllowlist": true,
+          "inVocabularyTags": false,
+          "status": "tag_gap"
+        },
+        {
+          "file": "lesen-t5-gemini-109.json",
+          "infinitive": "beitragen",
+          "inAllowlist": true,
+          "inVocabularyTags": false,
+          "status": "tag_gap"
+        }
+      ]
+    }
+  }
+}

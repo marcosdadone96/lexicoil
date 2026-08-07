@@ -18,6 +18,11 @@ import {
 } from './normalizeSchreibenRubric.mjs';
 import { canonicalSchreibenExplanation } from './schreibenDisplayRubric.mjs';
 import { canonicalSprechenExplanation } from './sprechenDisplayRubric.mjs';
+import { backfillCanonicalQuestion } from './questionStemAliases.mjs';
+import {
+  backfillLesenA2T4PassageTitles,
+  isLesenA2T4PassageContext,
+} from './lesenA2T4Passages.mjs';
 import {
   canonicalSprechenType,
   normalizeSprechenTopicTags,
@@ -67,15 +72,26 @@ function moduleDefaultSkill(module) {
   return 'reading';
 }
 
-function normalizeDifficulty(value, module) {
-  if (typeof value === 'number' && value >= 1 && value <= 10) return value;
+function normalizeDifficulty(value, module, level = 'B1') {
+  const lv = String(level || 'B1').trim().toUpperCase();
+  if (typeof value === 'number' && value >= 1 && value <= 10) {
+    if (module === 'horen' && lv === 'A2' && value >= 2 && value <= 4) return value;
+    if (!(module === 'horen' && lv === 'A2')) return value;
+  }
   if (typeof value === 'string') {
     const lower = value.toLowerCase().trim();
-    if (DIFFICULTY_WORDS[lower] != null) return DIFFICULTY_WORDS[lower];
+    if (DIFFICULTY_WORDS[lower] != null) {
+      const w = DIFFICULTY_WORDS[lower];
+      if (module === 'horen' && lv === 'A2') return Math.min(4, Math.max(2, w <= 4 ? w : 3));
+      return w;
+    }
     const n = parseInt(value, 10);
-    if (!Number.isNaN(n) && n >= 1 && n <= 10) return n;
+    if (!Number.isNaN(n) && n >= 1 && n <= 10) {
+      if (module === 'horen' && lv === 'A2') return n >= 2 && n <= 4 ? n : 3;
+      return n;
+    }
   }
-  if (module === 'horen') return 5;
+  if (module === 'horen') return lv === 'A2' ? 3 : 5;
   if (module === 'sprechen') return 5; // SP-2: fixed B1 Sprechen difficulty
   if (module === 'schreiben') return 6;
   return 4;
@@ -140,8 +156,16 @@ export function stripPoolLegacyQuestionFields(q, ctx = {}) {
   return out;
 }
 
+function isPoolStripLegacyQuestionFields(ctx) {
+  if (ctx?.stripPoolLegacy === false) return false;
+  const mod = String(ctx?.module || '').toLowerCase();
+  const lv = String(ctx?.level || 'B1').trim().toUpperCase();
+  return mod === 'lesen' || (mod === 'horen' && lv === 'A2');
+}
+
+/** @deprecated use isPoolStripLegacyQuestionFields */
 function isLesenPoolNormalize(ctx) {
-  return String(ctx?.module || '').toLowerCase() === 'lesen' && ctx?.stripPoolLegacy !== false;
+  return isPoolStripLegacyQuestionFields(ctx);
 }
 
 function defaultExplanation(q) {
@@ -187,7 +211,7 @@ function normalizeQuestionType(raw) {
 
 function normalizeQuestion(q, ctx = {}) {
   const out = { ...q };
-  const poolLesen = isLesenPoolNormalize(ctx);
+  const poolStripLegacy = isPoolStripLegacyQuestionFields(ctx);
   const rootTopicTag = ctx.rootTopicTag || ctx.topicTag || null;
   const lang = ctx.lang || 'de';
   if (typeof out.teil === 'string') out.teil = Number(out.teil);
@@ -199,6 +223,7 @@ function normalizeQuestion(q, ctx = {}) {
   }
   if (out.type) out.type = normalizeQuestionType(out.type);
   if (out.questionType) out.questionType = normalizeQuestionType(out.questionType);
+  backfillCanonicalQuestion(out);
   // `correct` is canonical. Backfill from correctAnswer only when correct is absent.
   if (out.correct == null && out.correctAnswer != null) {
     out.correct = out.correctAnswer;
@@ -236,10 +261,10 @@ function normalizeQuestion(q, ctx = {}) {
       if (normalizedRubric) out.rubric = normalizedRubric;
       else delete out.rubric;
     }
-    const canonExpl = canonicalSchreibenExplanation(out.teil);
+    const canonExpl = canonicalSchreibenExplanation(out.teil, ctx.level || out.level || 'B1');
     if (canonExpl) out.explanation = canonExpl;
   }
-  if (poolLesen) {
+  if (poolStripLegacy) {
     // Opción B (2026-07-10): no persistir difficulty — ver stripPoolLegacyQuestionFields.
     delete out.difficulty;
     delete out.skills;
@@ -248,12 +273,13 @@ function normalizeQuestion(q, ctx = {}) {
     if (out.language === lang || !out.language) delete out.language;
     if (out.topicTag && rootTopicTag && out.topicTag === rootTopicTag) delete out.topicTag;
   } else {
+    const qLevel = ctx.level || out.level || 'B1';
     out.difficulty =
       out.module === 'sprechen'
-        ? String(ctx.level || out.level || 'B1').trim().toUpperCase() === 'A2'
+        ? String(qLevel).trim().toUpperCase() === 'A2'
           ? 3
           : 5
-        : normalizeDifficulty(out.difficulty, out.module);
+        : normalizeDifficulty(out.difficulty, out.module, qLevel);
     out.skills = normalizeSkills(out.skills, out.module);
     if (out.module === 'sprechen') {
       const mapped = normalizeSprechenTopicTags(out.topicTags, rootTopicTag);
@@ -332,7 +358,10 @@ export function enrichBatchMetadata(batch, ctx = {}) {
   const teilNum = ctx.teil != null && Number.isFinite(Number(ctx.teil)) ? Number(ctx.teil) : null;
   const lang = ctx.lang || 'de';
   const level = ctx.level || 'B1';
-  const multiTeilSet = mod === 'schreiben' || (mod === 'sprechen' && level !== 'A2');
+  const lv = String(level).trim().toUpperCase();
+  const multiTeilSet =
+    (mod === 'schreiben' && lv !== 'A2' && lv !== 'B2') ||
+    (mod === 'sprechen' && lv !== 'A2');
 
   const passages = (batch.passages || []).map((p) => {
     const out = { ...p };
@@ -539,6 +568,10 @@ export function normalizeBatch(batch, ctx) {
     return out;
   });
 
+  if (isLesenA2T4PassageContext({ module: mod, level: batchLevel, teil })) {
+    passages = backfillLesenA2T4PassageTitles(passages);
+  }
+
   // Balance MCQ letter distribution and break consecutive runs (all MCQ teils:
   // lesen T2/T5, horen T1/T2).  richtig_falsch, ja_nein and matching untouched.
   const rawQuestions = (base.questions || []).map((q) =>
@@ -590,7 +623,7 @@ export function normalizeBatch(batch, ctx) {
     console.log(`  [normalizeNouns] ${capsStats.capFixed} sustantivo(s) capitalizados automáticamente`);
   }
 
-  if (isLesenPoolNormalize(ctx)) {
+  if (isPoolStripLegacyQuestionFields(ctx)) {
     withMcqCaps = {
       ...withMcqCaps,
       questions: (withMcqCaps.questions || []).map((q) => stripPoolLegacyQuestionFields(q, ctx)),
@@ -620,6 +653,15 @@ const TEIL_QUESTION_TYPE_A2 = {
   4: 'matching',
 };
 
+/** Goethe B2 Lesen — alineado a library/blueprints/goethe_B2.json */
+const TEIL_QUESTION_TYPE_B2 = {
+  1: 'matching',
+  2: 'matching',
+  3: 'multiple_choice',
+  4: 'matching',
+  5: 'matching',
+};
+
 // Cambridge B1 Preliminary Reading: Teil->questionType (see library/blueprints/cambridge_B1.json)
 // T1 signs/notices MCQ, T2 person-text matching, T3 long-text MCQ, T4 gapped text (matching),
 // T5 4-option cloze MCQ, T6 open cloze (gap_fill).
@@ -637,14 +679,15 @@ export function lesenSlotQuestionType(teil, level = 'B1', lang = 'de') {
   const t = Number(teil);
   if (!Number.isFinite(t)) return null;
   const lv = String(level || 'B1').trim().toUpperCase();
-  // The maps above are Goethe's. The Teil->type mapping differs per exam board, so anything
-  // that is not German must not be forced through them — an unknown lang returns null and
-  // leaves the generated/blueprint type untouched.
+  // The A2/B1/B2 maps above are Goethe's. The Teil->type mapping differs per exam board, so
+  // anything that is not German must not be forced through them — an unknown lang returns null
+  // and leaves the generated/blueprint type untouched.
   // See docs/audit/gates-en-applicability.md (riesgo activo #2).
   const lg = String(lang || 'de').trim().toLowerCase();
   if (lg === 'en') return TEIL_QUESTION_TYPE_CAMBRIDGE_B1[t] ?? null;
   if (lg !== 'de') return null;
-  const map = lv === 'A2' ? TEIL_QUESTION_TYPE_A2 : TEIL_QUESTION_TYPE_B1;
+  const map =
+    lv === 'A2' ? TEIL_QUESTION_TYPE_A2 : lv === 'B2' ? TEIL_QUESTION_TYPE_B2 : TEIL_QUESTION_TYPE_B1;
   return map[t] ?? null;
 }
 
@@ -687,15 +730,15 @@ export function coerceGeneratedLesenPart(batch, ctx = {}) {
   const passageIds = (normalized.passages || []).map((p) => p.id).filter(Boolean);
   const solePassageId = passageIds.length === 1 ? passageIds[0] : null;
 
-  return {
-    passages: (normalized.passages || []).map((p) => ({
+  const passages = (normalized.passages || []).map((p) => ({
       ...p,
       module: 'lesen',
       ...(teilNum != null ? { teil: teilNum } : {}),
       lang: p.lang || lang,
       level: p.level || level,
-    })),
-    questions: (normalized.questions || []).map((q, qIdx) => {
+    }));
+
+  const questions = (normalized.questions || []).map((q, qIdx) => {
       let out = {
         ...q,
         module: 'lesen',
@@ -713,12 +756,79 @@ export function coerceGeneratedLesenPart(batch, ctx = {}) {
           out = { ...out, ...normalizeJaNeinAnswer(out) };
         } else if (slotType === 'multiple_choice') {
           out.options = normalizeOptions(out.options, slotType);
+        } else if (slotType === 'matching' && String(level).toUpperCase() === 'B2' && teilNum === 1) {
+          const ans = String(out.correctAnswer ?? out.correct ?? '')
+            .trim()
+            .replace(/^([abcd])[).:\s].*$/i, '$1')
+            .toUpperCase();
+          if (/^[ABCD]$/.test(ans)) {
+            out.correct = ans;
+            out.correctAnswer = ans;
+          }
+          out.options = ['A', 'B', 'C', 'D'];
+        } else if (slotType === 'matching' && String(level).toUpperCase() === 'B2' && teilNum === 2) {
+          const ans = String(out.correctAnswer ?? out.correct ?? '')
+            .trim()
+            .replace(/^([a-h])[).:\s].*$/i, '$1')
+            .toUpperCase();
+          if (/^[A-H]$/.test(ans)) {
+            out.correct = ans;
+            out.correctAnswer = ans;
+          }
+          if (Array.isArray(out.options) && out.options.length >= 8) {
+            out.options = out.options.slice(0, 8).map((o, i) => {
+              const letter = String.fromCharCode(65 + i);
+              const s = String(o || '').trim();
+              if (/^[A-H][).:\s]/i.test(s)) return s.replace(/^[A-H]/i, letter);
+              return `${letter}) ${s.replace(/^[a-h][).:\s]\s*/i, '')}`;
+            });
+          }
+        } else if (slotType === 'matching' && String(level).toUpperCase() === 'B2' && teilNum === 4) {
+          const ans = String(out.correctAnswer ?? out.correct ?? '')
+            .trim()
+            .replace(/^([a-h])[).:\s].*$/i, '$1')
+            .toUpperCase();
+          if (/^[A-H]$/.test(ans)) {
+            out.correct = ans;
+            out.correctAnswer = ans;
+          }
+          if (Array.isArray(out.options) && out.options.length >= 8) {
+            out.options = out.options.slice(0, 8).map((o, i) => {
+              const letter = String.fromCharCode(65 + i);
+              const s = String(o || '').trim();
+              if (/^[A-H][).:\s]/i.test(s)) return s.replace(/^[A-H]/i, letter);
+              return `${letter}) ${s.replace(/^[a-h][).:\s]\s*/i, '')}`;
+            });
+          }
+        } else if (slotType === 'matching' && String(level).toUpperCase() === 'B2' && teilNum === 5) {
+          const ans = String(out.correctAnswer ?? out.correct ?? '')
+            .trim()
+            .replace(/^([a-g])[).:\s].*$/i, '$1')
+            .toUpperCase();
+          if (/^[A-G]$/.test(ans)) {
+            out.correct = ans;
+            out.correctAnswer = ans;
+          }
+          if (Array.isArray(out.options) && out.options.length >= 7) {
+            out.options = out.options.slice(0, 7).map((o, i) => {
+              const letter = String.fromCharCode(65 + i);
+              const s = String(o || '').trim();
+              if (/^[A-G][).:\s]/i.test(s)) return s.replace(/^[A-G]/i, letter);
+              return `${letter}) ${s.replace(/^[a-g][).:\s]\s*/i, '')}`;
+            });
+          }
         }
       }
       if ((out.module === 'lesen' || !out.passageId) && solePassageId && !out.passageId) {
         out.passageId = solePassageId;
       }
       return out;
-    }),
+    });
+
+  // Preserve normalizeBatch stamps/metadata (_balanceMcqVersion, caps, enrich, …).
+  return {
+    ...normalized,
+    passages,
+    questions,
   };
 }

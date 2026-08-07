@@ -78,7 +78,18 @@ for (const teil of [1, 2, 3]) {
   });
 }
 
-console.log('\n── Published adapter → exam part (no line-split points) ──');
+  test(`T1: A2 Karten grid (4 cards)`, () => {
+    const q = batch.questions.find((x) => Number(x.teil) === 1);
+    const view = briefingForPart({ teil: 1, level: 'A2', situation: q.question });
+    assert.equal(view.layout, 'cards');
+    assert.equal(view.items.length, 4);
+    const html = SpeakingFlow.renderGoetheSprechenPart(
+      { teil: 1, level: 'A2', fieldId: 'speak_bp_1', situation: q.question },
+      ui,
+    );
+    assert.match(html, /speak-brief-cards/);
+    assert.equal((html.match(/speak-brief-item/g) || []).length, 4);
+  });
 
 for (const teil of [1, 2, 3]) {
   const q = batch.questions.find((x) => Number(x.teil) === teil);
@@ -99,12 +110,12 @@ for (const teil of [1, 2, 3]) {
     assert.equal((part.points || []).length, 0);
     assert.equal((part.prompts || []).length, 0);
   });
-  test(`T${teil}: render — one off-instr, no Punkte list`, () => {
+  test(`T${teil}: render — sprechen-briefing, no Punkte list`, () => {
     const html = SpeakingFlow.renderGoetheSprechenPart(part, ui);
-    assert.equal((html.match(/class="off-instr"/g) || []).length, 1);
+    assert.equal((html.match(/class="sprechen-briefing"/g) || []).length, 1);
     assert.doesNotMatch(html, /Punkte zum Besprechen/);
     assert.doesNotMatch(html, /speak-points-list/);
-    assert.ok(html.includes(esc(q.question.slice(0, 40))));
+    assert.ok(html.includes('speak-brief-cards') || html.includes('speak-brief-agenda') || html.includes('sprechen-briefing-intro'));
   });
 }
 

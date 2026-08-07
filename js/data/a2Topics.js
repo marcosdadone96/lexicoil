@@ -20,18 +20,28 @@ const A2_TOPIC_ALIASES = Object.freeze({
   'natur und klima': 'Umwelt',
 });
 
-// The bindings are prefixed on purpose. index.html loads b1Topics.js as a classic script
-// immediately before this file, so its top-level `function foldTopicKey` / `const B1_TOPICS`
-// / `function normalizeB1Topic` are already globals. Destructuring into those same names
-// redeclared them in the same scope, which is a SyntaxError — and it is thrown at parse
-// time, so the whole of a2Topics.js never ran and A2_OFFICIAL_TOPICS / normalizeA2Topic
-// were undefined for examConfig.js and personalTopicStockFactory.js.
-const { foldTopicKey: a2FoldTopicKey, B1_TOPICS: A2_B1_TOPICS, normalizeB1Topic: a2NormalizeB1Topic } = (() => {
+// Keep every binding below under its own name. index.html loads b1Topics.js as a classic
+// script immediately before this file, so its top-level `function foldTopicKey` / `const
+// B1_TOPICS` / `function normalizeB1Topic` are already globals. Redeclaring any of those
+// names here is a SyntaxError thrown at parse time, so the whole of a2Topics.js would never
+// run and A2_OFFICIAL_TOPICS / normalizeA2Topic would be undefined for examConfig.js and
+// personalTopicStockFactory.js.
+const b1Helpers = (() => {
+  if (typeof window !== 'undefined' && typeof window.B1Topics !== 'undefined') {
+    return {
+      foldTopicKey:
+        typeof foldTopicKey === 'function'
+          ? foldTopicKey
+          : (s) => String(s || '').trim().toLowerCase(),
+      normalizeB1Topic: window.B1Topics.normalizeB1Topic,
+      B1_TOPICS: window.B1Topics.B1_TOPICS,
+    };
+  }
   try {
     // eslint-disable-next-line global-require
     return require('./b1Topics.js');
   } catch {
-    // Browser: reuse b1Topics' globals when present, fall back only if it did not load.
+    // Last resort: reuse b1Topics' globals when present, fall back only if it did not load.
     return {
       foldTopicKey: typeof foldTopicKey === 'function'
         ? foldTopicKey
@@ -41,6 +51,10 @@ const { foldTopicKey: a2FoldTopicKey, B1_TOPICS: A2_B1_TOPICS, normalizeB1Topic:
     };
   }
 })();
+
+const b1FoldTopicKey = b1Helpers.foldTopicKey;
+const b1NormalizeTopic = b1Helpers.normalizeB1Topic;
+const b1TopicsList = b1Helpers.B1_TOPICS;
 
 function isOfficialA2Topic(topic) {
   return A2_OFFICIAL_TOPICS.includes(String(topic || '').trim());
@@ -55,14 +69,14 @@ function normalizeA2Topic(topic) {
   if (!t) return null;
   if (isOfficialA2Topic(t)) return t;
 
-  const key = a2FoldTopicKey(t);
+  const key = b1FoldTopicKey(t);
   if (A2_TOPIC_ALIASES[key]) return A2_TOPIC_ALIASES[key];
 
-  const fromB1 = a2NormalizeB1Topic(t);
+  const fromB1 = b1NormalizeTopic(t);
   if (fromB1 && isOfficialA2Topic(fromB1)) return fromB1;
 
   for (const canonical of A2_OFFICIAL_TOPICS) {
-    const cKey = a2FoldTopicKey(canonical);
+    const cKey = b1FoldTopicKey(canonical);
     if (key === cKey || key.startsWith(`${cKey} und `)) return canonical;
   }
 
@@ -94,6 +108,6 @@ if (typeof module !== 'undefined') {
     A2_OFFICIAL_AXIS_TO_SLUG,
     isOfficialA2Topic,
     normalizeA2Topic,
-    B1_TOPICS: A2_B1_TOPICS,
+    B1_TOPICS: b1TopicsList,
   });
 }

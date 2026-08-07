@@ -37,7 +37,7 @@ export const TOPIC_SUBTYPE_HARD_EXCLUDE = Object.freeze({
 
 /** Preferred subtypes when topic is fixed (first picks in rotation). */
 export const TOPIC_SUBTYPE_PREFERENCE = Object.freeze({
-  Verkehr: ['park'],
+  Verkehr: ['park', 'wohnanlage'],
   Familie: ['wohnanlage', 'freizeitzentrum', 'park'],
   Wohnen: ['wohnanlage', 'park', 'freizeitzentrum'],
   Konsum: ['kantine', 'markthalle', 'einkaufszentrum', 'park', 'freizeitzentrum'],
@@ -75,6 +75,23 @@ export function filterT5SubtypeOrder(order, topicTag) {
  * @returns {{ ok: true } | { ok: false, issue: string, rule?: string }}
  */
 export function checkLesenT5BatchTopic(batch) {
+  const level = String(batch?.level || batch?.questions?.[0]?.level || '').toUpperCase();
+  if (level === 'B2') {
+    const rulesMatching = (batch?.questions || []).some(
+      (q) => Number(q.teil) === 5 && String(q.type || '').toLowerCase() === 'matching',
+    );
+    if (rulesMatching) {
+      const topic = normalizeB1Topic(batch?.topicTag || batch?._requestedTopic);
+      for (const p of batch?.passages || []) {
+        const tagged = { ...p, topicTag: batch.topicTag || p.topicTag || topic };
+        const ct = checkPassageContentTopic(tagged);
+        if (ct.mismatch) {
+          return { ok: false, rule: 'content_topic_mismatch', issue: ct.detail || ct.reason };
+        }
+      }
+      return { ok: true };
+    }
+  }
   const topic = normalizeB1Topic(batch?.topicTag || batch?._requestedTopic);
   const subtype = batch?._textSubtype;
   if (topic && subtype && isSubtypeHardExcludedForTopic(topic, subtype)) {
@@ -86,6 +103,13 @@ export function checkLesenT5BatchTopic(batch) {
   }
   for (const p of batch?.passages || []) {
     const tagged = { ...p, topicTag: batch.topicTag || p.topicTag || topic };
+    const subtypeAllowed =
+      topic &&
+      subtype &&
+      !isSubtypeHardExcludedForTopic(topic, subtype) &&
+      ((TOPIC_SUBTYPE_PREFERENCE[topic] || []).includes(subtype) ||
+        (TOPIC_SUBTYPE_ONLY[subtype] || []).includes(topic));
+    if (subtypeAllowed) continue;
     const ct = checkPassageContentTopic(tagged);
     if (ct.mismatch) {
       return { ok: false, rule: 'content_topic_mismatch', issue: ct.detail || ct.reason };

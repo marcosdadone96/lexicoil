@@ -105,6 +105,15 @@ function collectT4Texts(batch) {
   return { t4qs, title, intro, signTexts, fullText: [title, intro, ...signTexts].join('\n') };
 }
 
+/** Goethe A2 Lesen T4 = six short ads (Anzeigen), not B1 Stadtforum debate. */
+function isGoetheA2AnzeigenLesenT4(batch) {
+  const level = String(batch?.level || batch?.questions?.[0]?.level || '').toUpperCase();
+  if (level !== 'A2') return false;
+  const ps = batch?.passages || [];
+  if (ps.length < 4) return false;
+  return ps.every((p) => /^(ad-|gen-l4-)/i.test(String(p.id || '')));
+}
+
 /**
  * @returns {{ ok: boolean, skip?: boolean, reason?: string, expected?: string, debateId?: string|null, debateLabel?: string, affinity?: string[], detected?: string|null, introDetected?: string|null, expectedHits?: number, detectedHits?: number }}
  */
@@ -114,6 +123,16 @@ export function assessT4TopicAlignment(batch) {
 
   const { t4qs, title, intro, signTexts, fullText } = collectT4Texts(batch);
   if (!t4qs.length) return { ok: true, skip: true };
+
+  if (isGoetheA2AnzeigenLesenT4(batch)) {
+    return { ok: true, skip: true, reason: 'a2_anzeigen_t4' };
+  }
+
+  const level = String(batch?.level || batch?.questions?.[0]?.level || '').toUpperCase();
+  const b2Matching = level === 'B2' && t4qs.some((q) => String(q.type || '').toLowerCase() === 'matching');
+  if (b2Matching) {
+    return { ok: true, skip: true, reason: 'b2_opinion_headline_t4' };
+  }
 
   const fixedSeed = batch._debateSeed || batch.debateSeed || null;
   const debateId = fixedSeed

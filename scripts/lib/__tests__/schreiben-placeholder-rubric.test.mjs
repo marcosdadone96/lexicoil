@@ -38,6 +38,11 @@ assert.ok(qual.issues.some((i) => /placeholder/i.test(i)));
 
 assert.ok(canonicalSchreibenExplanation(2).includes('Goethe-offiziell'));
 assert.ok(canonicalSchreibenExplanation(2).includes('Vor- und Nachteile'));
+assert.ok(canonicalSchreibenExplanation(1, 'A2').includes('A2-Niveau'));
+assert.ok(canonicalSchreibenExplanation(1, 'A2').includes('20–30 Wörter'));
+assert.ok(canonicalSchreibenExplanation(2, 'A2').includes('Grammatik A2'));
+assert.ok(canonicalSchreibenExplanation(2, 'A2').includes('30–40 Wörter'));
+assert.ok(!canonicalSchreibenExplanation(2, 'A2').includes('B1'));
 
 const t3Borrow =
   'Sie haben von Ihrem Nachbarn ein Buch ausgeliehen. Sie wollten es heute zurückgeben, aber das geht leider nicht.';

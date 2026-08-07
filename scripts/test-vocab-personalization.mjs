@@ -6,6 +6,10 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createRequire } from 'node:module';
+import {
+  PASSAGE_VOCAB_ENRICH_BACKLOG,
+  bankPassagesExcludingEnrichBacklog,
+} from './lib/bankPassageEnrichBacklog.mjs';
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
 const require = createRequire(import.meta.url);
@@ -30,9 +34,20 @@ function ok(label, cond) {
 
 const qs = bank.questions || [];
 const ps = bank.passages || [];
+const psIndexed = bankPassagesExcludingEnrichBacklog(ps);
 ok('all questions have vocabularyTags', qs.every((q) => (q.vocabularyTags || []).length >= 3));
-ok('all passages have passageVocab', ps.every((p) => (p.passageVocab || []).length >= 10));
-ok('passages.json synced', (passagesFile.passages || []).length === ps.length);
+ok(
+  'all passages have passageVocab (excl. enrich backlog)',
+  psIndexed.every((p) => (p.passageVocab || []).length >= 10),
+);
+ok(
+  'passages.json synced with bank (excl. enrich backlog)',
+  (passagesFile.passages || []).length === psIndexed.length,
+);
+ok(
+  'enrich backlog ids exist in bank',
+  [...PASSAGE_VOCAB_ENRICH_BACKLOG].every((id) => ps.some((p) => p.id === id)),
+);
 
 const servedPath = path.join(ROOT, 'data/exams/de_B1.json');
 if (fs.existsSync(servedPath)) {

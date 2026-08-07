@@ -9,6 +9,7 @@
  */
 import fs from 'node:fs';
 import path from 'node:path';
+import { createRequire } from 'node:module';
 import { ROOT } from './loadEnv.mjs';
 import {
   applyGermanCapsNormalize,
@@ -17,6 +18,7 @@ import {
 import { stripMarkdownLeakInBatch } from './stripMarkdownLeak.mjs';
 import { collapseIdenticalPassages } from './normalizeBatch.mjs';
 import { checkPassageContentTopic } from './qualityGates/contentTopicCheck.mjs';
+import { checkLesenT5BatchTopic } from './lesenT5TopicFilter.mjs';
 import { runMetadataSchemaGate } from './qualityGates/metadataSchemaGate.mjs';
 import { runDuplicateContentGate } from './qualityGates/duplicateContentGate.mjs';
 import { buildDedupCorpus, corpusExcludingSource } from './qualityGates/dedupCorpus.mjs';
@@ -40,6 +42,13 @@ import {
 import { assertSchreibenNoPlaceholders } from './schreibenPlaceholderGate.mjs';
 import { runGermanContentLanguageGate } from './qualityGates/germanContentLanguageGate.mjs';
 import { checkT3PoolDedup } from './t3PoolDedupGate.mjs';
+import { checkT4PoolDedup } from './lesenT4PoolDedupGate.mjs';
+import { stripCorruptedVocabularyTags } from './chk31VocabLemma.mjs';
+import { isSprechenT1PersonalFixedFormat } from './topicRotation.mjs';
+import { enrichBatchMetadata } from './enrichBatchMetadata.mjs';
+
+const require = createRequire(import.meta.url);
+const { isOfficialA2Topic } = require(path.join(ROOT, 'js/data/a2Topics.js'));
 
 export { GERMAN_CAPS_NORMALIZE_VERSION };
 
@@ -54,6 +63,8 @@ const REPAIRABLE_RULES = new Set([
   CAPS_VERSION_STALE,
   'markdown_leak',
   'identical_passages',
+  'missing_grammarTags',
+  'missing_vocabularyTags',
 ]);
 
 /** @type {{ blockedIds: Set<string>, sources: Map<string, string[]> } | null} */
@@ -240,6 +251,29 @@ export function applyPoolRepairs(batch) {
     applied.push(`caps:version=${GERMAN_CAPS_NORMALIZE_VERSION}`);
   }
 
+  const chk31 = stripCorruptedVocabularyTags(current);
+  if (chk31.stripped) {
+    current = chk31.batch;
+    applied.push(`chk31:strip=${chk31.stripped}`);
+    ({ batch: current } = enrichBatchMetadata(clone(current), {
+      vocab: true,
+      grammar: false,
+      topic: false,
+    }));
+    applied.push('chk31:re-enrich-vocab');
+  }
+
+  const metaGap = checkRetrievalMetadata(current);
+  if (metaGap.includes('missing_grammarTags') || metaGap.includes('missing_vocabularyTags')) {
+    ({ batch: current } = enrichBatchMetadata(clone(current), {
+      vocab: true,
+      grammar: true,
+      topic: true,
+      fillGrammarDefaults: metaGap.includes('missing_grammarTags'),
+    }));
+    applied.push('meta:enrich-retrieval-tags');
+  }
+
   return { batch: current, applied };
 }
 
@@ -336,6 +370,19 @@ export async function poolReadyCheck(batch, opts = {}) {
     }
   }
 
+  const isLesenT4 =
+    (modEarly === 'lesen' || String(batch.module || '').toLowerCase() === 'lesen') &&
+    (teil === 4 || Number(batch.passages?.[0]?.teil) === 4 || Number(batch.questions?.[0]?.teil) === 4);
+  if (isLesenT4) {
+    const t4dedup = checkT4PoolDedup(batch, { file, level: opts.level });
+    for (const r of t4dedup.reasons || []) {
+      reasons.push(r);
+    }
+    for (const d of t4dedup.details || []) {
+      details.push({ ...d, severity: 'reject' });
+    }
+  }
+
   // ——— 5 discard lists ———
   const discard = opts.discard || getDiscardCache();
   if (isAssembleBlocked(file, discard.blockedIds) || isAssembleBlocked(batch.id, discard.blockedIds)) {
@@ -351,6 +398,12 @@ export async function poolReadyCheck(batch, opts = {}) {
   const batchLevelForTopic = normalizeLevel(opts.level || inferBatchLevel(batch));
   const horenMultiSegmentContentTopicAuditOnly =
     mod === 'horen' && (teil === 1 || (teil === 3 && batchLevelForTopic === 'A2'));
+  // A2 pool batches with an official axis tag: passage-level content_topic is audit-only
+  // (Lesen T4 multi-anzeige, Hören segments, keyword-sparse texts — batch tag is source of truth).
+  const a2OfficialBatchTopicPassageAuditOnly =
+    batchLevelForTopic === 'A2' && isOfficialA2Topic(batch.topicTag || batch._requestedTopic);
+  const passageContentTopicAuditOnly =
+    horenMultiSegmentContentTopicAuditOnly || a2OfficialBatchTopicPassageAuditOnly;
   if (mod === 'lesen' || mod === 'horen') {
     const q4 = runMetadataSchemaGate(batch, {
       file,
@@ -364,7 +417,7 @@ export async function poolReadyCheck(batch, opts = {}) {
         const isContentTopicFinding =
           f.rule === 'content_topic_mismatch' ||
           (typeof f.detail === 'string' && /^passage:/i.test(f.detail));
-        if (horenMultiSegmentContentTopicAuditOnly && isContentTopicFinding) {
+        if (passageContentTopicAuditOnly && isContentTopicFinding) {
           // Direct loop below audits once with root topicTag (avoid double details).
           continue;
         }
@@ -372,29 +425,59 @@ export async function poolReadyCheck(batch, opts = {}) {
         details.push({ rule: f.rule, severity: 'reject', detail: f.detail });
       }
     }
-    // Prefer root topicTag (enrichment source of truth) over a stale passage tag
-    for (const p of batch.passages || []) {
-      if (!p?.topicTag && !batch.topicTag) continue;
-      const tagged = { ...p, topicTag: batch.topicTag || p.topicTag };
-      const ct = checkPassageContentTopic(tagged);
-      if (ct.mismatch) {
-        if (horenMultiSegmentContentTopicAuditOnly) {
+    const isLesenT5 =
+      mod === 'lesen' &&
+      (teil === 5 || Number(batch.questions?.[0]?.teil) === 5 || Number(batch.teil) === 5);
+    if (isLesenT5) {
+      const t5Topic = checkLesenT5BatchTopic(batch);
+      if (!t5Topic.ok) {
+        const rule = t5Topic.rule || 'content_topic_mismatch';
+        if (!reasons.includes(rule)) reasons.push(rule);
+        details.push({ rule, severity: 'reject', detail: t5Topic.issue });
+      }
+    } else {
+      // Prefer root topicTag (enrichment source of truth) over a stale passage tag
+      for (const p of batch.passages || []) {
+        if (!p?.topicTag && !batch.topicTag) continue;
+        const tagged = { ...p, topicTag: batch.topicTag || p.topicTag };
+        const ct = checkPassageContentTopic(tagged, {
+          level: batchLevelForTopic,
+          teil,
+          module: mod,
+        });
+        if (ct.mismatch) {
+          if (passageContentTopicAuditOnly) {
+            details.push({
+              rule: 'content_topic_mismatch',
+              severity: 'audit',
+              detail: ct.detail || ct.reason,
+              passageId: p.id,
+            });
+            continue;
+          }
+          if (!reasons.includes('content_topic_mismatch')) reasons.push('content_topic_mismatch');
           details.push({
             rule: 'content_topic_mismatch',
-            severity: 'audit',
+            severity: 'reject',
             detail: ct.detail || ct.reason,
             passageId: p.id,
           });
-          continue;
         }
-        if (!reasons.includes('content_topic_mismatch')) reasons.push('content_topic_mismatch');
-        details.push({
-          rule: 'content_topic_mismatch',
-          severity: 'reject',
-          detail: ct.detail || ct.reason,
-          passageId: p.id,
-        });
       }
+    }
+  }
+
+  // Sprechen T1 personal_questions (A2): _requestedTopic is pool-fill only — topic_mismatch audit-only
+  // (same policy as Hören T1 content_topic; fixed Goethe intro cards never paint the assigned theme).
+  if (mod === 'sprechen' && teil === 1 && isSprechenT1PersonalFixedFormat(batch)) {
+    const q4sp = runMetadataSchemaGate(batch, {
+      file,
+      profile: 'generated',
+      module: 'sprechen',
+    });
+    for (const f of q4sp.findings || []) {
+      if (f.rule !== 'topic_mismatch') continue;
+      details.push({ rule: f.rule, severity: 'audit', detail: f.detail });
     }
   }
 
