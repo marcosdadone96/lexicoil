@@ -76,6 +76,10 @@ const OVERRIDES = {
   größe: 'f', länge: 'f', breite: 'f', höhe: 'f', gewicht: 'n', meter: 'm',
   kilogramm: 'n', liter: 'm', stück: 'n', paar: 'n', doppelzimmer: 'n', einzelzimmer: 'n',
   balkon: 'm', integration: 'f', nachbarschaft: 'f',
+  /** DWDS-verified fixes (GT 2026-08-09) — prevent inferGender regressions */
+  diskussion: 'f', erlaubnis: 'f', interesse: 'n', kommunikation: 'f', konsum: 'm',
+  organisation: 'f', präsentation: 'f', produktion: 'f', region: 'f', situation: 'f',
+  station: 'f', talent: 'n', verein: 'm',
 };
 
 function norm(s) {

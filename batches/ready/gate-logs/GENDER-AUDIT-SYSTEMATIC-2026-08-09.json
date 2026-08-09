@@ -1,5 +1,5 @@
 {
-  "runAt": "2026-08-09T16:52:39.868Z",
+  "runAt": "2026-08-09T17:02:32.632Z",
   "groundTruth": {
     "totalEntries": 400,
     "expandedFile": "data/gender-ground-truth/dwds-verified.json",
@@ -19,10 +19,10 @@
     "withGroundTruth": 367,
     "coveragePct": 18.5,
     "deterministicAssignment": {
-      "withArticle": 1337,
-      "nullArticle": 643,
-      "misclassifiedNonNoun": 38,
-      "assignmentCoveragePct": 67.5
+      "withArticle": 1412,
+      "nullArticle": 568,
+      "misclassifiedNonNoun": 36,
+      "assignmentCoveragePct": 71.3
     },
     "schaftHaftBugScan": {
       "poolLemmaCount": 21,
@@ -34,20 +34,8 @@
     "poolVocabularyTags": {
       "label": "pool-vocabularyTags",
       "verified": 367,
-      "ok": 259,
+      "ok": 301,
       "errors": [
-        {
-          "lemma": "Donnerstag",
-          "normLemma": "donnerstag",
-          "assignedArticle": null,
-          "assignedGender": null,
-          "correctArticle": "der",
-          "correctGender": "m",
-          "ok": false,
-          "truthSource": "dwds-goethe-A1",
-          "systemSource": "none",
-          "context": "pool (A2/B1, 29×)"
-        },
         {
           "lemma": "Praxis",
           "normLemma": "praxis",
@@ -61,18 +49,6 @@
           "context": "pool (A2/B1, 4×)"
         },
         {
-          "lemma": "Freitag",
-          "normLemma": "freitag",
-          "assignedArticle": null,
-          "assignedGender": null,
-          "correctArticle": "der",
-          "correctGender": "m",
-          "ok": false,
-          "truthSource": "dwds-goethe-A1",
-          "systemSource": "none",
-          "context": "pool (A2/B1, 33×)"
-        },
-        {
           "lemma": "Geschäft",
           "normLemma": "geschäft",
           "assignedArticle": null,
@@ -83,66 +59,6 @@
           "truthSource": "dwds-goethe-A1",
           "systemSource": "none",
           "context": "pool (A2/B1, 3×)"
-        },
-        {
-          "lemma": "Samstag",
-          "normLemma": "samstag",
-          "assignedArticle": null,
-          "assignedGender": null,
-          "correctArticle": "der",
-          "correctGender": "m",
-          "ok": false,
-          "truthSource": "dwds-goethe-A1",
-          "systemSource": "none",
-          "context": "pool (A2/B1, 18×)"
-        },
-        {
-          "lemma": "Mittwoch",
-          "normLemma": "mittwoch",
-          "assignedArticle": null,
-          "assignedGender": null,
-          "correctArticle": "der",
-          "correctGender": "m",
-          "ok": false,
-          "truthSource": "dwds-goethe-A1",
-          "systemSource": "none",
-          "context": "pool (A2/B1, 29×)"
-        },
-        {
-          "lemma": "Sonntag",
-          "normLemma": "sonntag",
-          "assignedArticle": null,
-          "assignedGender": null,
-          "correctArticle": "der",
-          "correctGender": "m",
-          "ok": false,
-          "truthSource": "dwds-goethe-A1",
-          "systemSource": "none",
-          "context": "pool (A2/B1, 6×)"
-        },
-        {
-          "lemma": "Tipp",
-          "normLemma": "tipp",
-          "assignedArticle": null,
-          "assignedGender": null,
-          "correctArticle": "der",
-          "correctGender": "m",
-          "ok": false,
-          "truthSource": "dwds-goethe-A2",
-          "systemSource": "none",
-          "context": "pool (A2/B1, 17×)"
-        },
-        {
-          "lemma": "Station",
-          "normLemma": "station",
-          "assignedArticle": "das",
-          "assignedGender": "n",
-          "correctArticle": "die",
-          "correctGender": "f",
-          "ok": false,
-          "truthSource": "dwds-goethe-B1",
-          "systemSource": "lexicon/heuristic",
-          "context": "pool (A2/B1, 2×)"
         },
         {
           "lemma": "Handtuch",
@@ -181,18 +97,6 @@
           "context": "pool (A2/B1, 32×)"
         },
         {
-          "lemma": "Erdgeschoss",
-          "normLemma": "erdgeschoss",
-          "assignedArticle": null,
-          "assignedGender": null,
-          "correctArticle": "das",
-          "correctGender": "n",
-          "ok": false,
-          "truthSource": "dwds-goethe-A2",
-          "systemSource": "none",
-          "context": "pool (A2/B1, 13×)"
-        },
-        {
           "lemma": "Auskunft",
           "normLemma": "auskunft",
           "assignedArticle": null,
@@ -203,42 +107,6 @@
           "truthSource": "dwds-goethe-A1",
           "systemSource": "none",
           "context": "pool (A2, 1×)"
-        },
-        {
-          "lemma": "Montag",
-          "normLemma": "montag",
-          "assignedArticle": null,
-          "assignedGender": null,
-          "correctArticle": "der",
-          "correctGender": "m",
-          "ok": false,
-          "truthSource": "dwds-goethe-A1",
-          "systemSource": "none",
-          "context": "pool (A2/B1, 28×)"
-        },
-        {
-          "lemma": "Verein",
-          "normLemma": "verein",
-          "assignedArticle": "die",
-          "assignedGender": "f",
-          "correctArticle": "der",
-          "correctGender": "m",
-          "ok": false,
-          "truthSource": "dwds-goethe-A1",
-          "systemSource": "lexicon/heuristic",
-          "context": "pool (A2/B1, 23×)"
-        },
-        {
-          "lemma": "Lebensmittel",
-          "normLemma": "lebensmittel",
-          "assignedArticle": null,
-          "assignedGender": null,
-          "correctArticle": "das",
-          "correctGender": "n",
-          "ok": false,
-          "truthSource": "dwds-goethe-A1",
-          "systemSource": "none",
-          "context": "pool (A2/B1, 15×)"
         },
         {
           "lemma": "Kühlschrank",
@@ -253,30 +121,6 @@
           "context": "pool (A2, 5×)"
         },
         {
-          "lemma": "Supermarkt",
-          "normLemma": "supermarkt",
-          "assignedArticle": null,
-          "assignedGender": null,
-          "correctArticle": "der",
-          "correctGender": "m",
-          "ok": false,
-          "truthSource": "content-vocab/en/A2.json,dwds-goethe-A2",
-          "systemSource": "none",
-          "context": "pool (A2/B1, 14×)"
-        },
-        {
-          "lemma": "Aufgabe",
-          "normLemma": "aufgabe",
-          "assignedArticle": null,
-          "assignedGender": null,
-          "correctArticle": "die",
-          "correctGender": "f",
-          "ok": false,
-          "truthSource": "dwds-goethe-A1",
-          "systemSource": "none",
-          "context": "pool (A2/B1/B2, 38×)"
-        },
-        {
           "lemma": "Möbel",
           "normLemma": "möbel",
           "assignedArticle": null,
@@ -287,18 +131,6 @@
           "truthSource": "dwds-goethe-A1",
           "systemSource": "none",
           "context": "pool (A2/B1, 3×)"
-        },
-        {
-          "lemma": "Umzug",
-          "normLemma": "umzug",
-          "assignedArticle": null,
-          "assignedGender": null,
-          "correctArticle": "der",
-          "correctGender": "m",
-          "ok": false,
-          "truthSource": "dwds-goethe-A2",
-          "systemSource": "none",
-          "context": "pool (A2/B1, 8×)"
         },
         {
           "lemma": "Gitarre",
@@ -385,18 +217,6 @@
           "context": "pool (A2, 1×)"
         },
         {
-          "lemma": "Verkehrsmittel",
-          "normLemma": "verkehrsmittel",
-          "assignedArticle": null,
-          "assignedGender": null,
-          "correctArticle": "das",
-          "correctGender": "n",
-          "ok": false,
-          "truthSource": "dwds-goethe-A2",
-          "systemSource": "none",
-          "context": "pool (A2/B1/B2, 25×)"
-        },
-        {
           "lemma": "Zertifikat",
           "normLemma": "zertifikat",
           "assignedArticle": null,
@@ -421,18 +241,6 @@
           "context": "pool (A2/B1, 2×)"
         },
         {
-          "lemma": "Eintritt",
-          "normLemma": "eintritt",
-          "assignedArticle": null,
-          "assignedGender": null,
-          "correctArticle": "der",
-          "correctGender": "m",
-          "ok": false,
-          "truthSource": "dwds-goethe-A1",
-          "systemSource": "none",
-          "context": "pool (A2/B1, 9×)"
-        },
-        {
           "lemma": "Krankenkasse",
           "normLemma": "krankenkasse",
           "assignedArticle": null,
@@ -443,18 +251,6 @@
           "truthSource": "content-vocab/en/B1.json,dwds-goethe-A2",
           "systemSource": "none",
           "context": "pool (A2/B1, 2×)"
-        },
-        {
-          "lemma": "Stock",
-          "normLemma": "stock",
-          "assignedArticle": null,
-          "assignedGender": null,
-          "correctArticle": "der",
-          "correctGender": "m",
-          "ok": false,
-          "truthSource": "dwds-goethe-A1",
-          "systemSource": "none",
-          "context": "pool (A2/B1, 7×)"
         },
         {
           "lemma": "Reisebüro",
@@ -481,54 +277,6 @@
           "context": "pool (A2/B1, 4×)"
         },
         {
-          "lemma": "Durchsage",
-          "normLemma": "durchsage",
-          "assignedArticle": null,
-          "assignedGender": null,
-          "correctArticle": "die",
-          "correctGender": "f",
-          "ok": false,
-          "truthSource": "dwds-goethe-A1",
-          "systemSource": "none",
-          "context": "pool (B1, 9×)"
-        },
-        {
-          "lemma": "Präsentation",
-          "normLemma": "präsentation",
-          "assignedArticle": "das",
-          "assignedGender": "n",
-          "correctArticle": "die",
-          "correctGender": "f",
-          "ok": false,
-          "truthSource": "dwds-goethe-B1",
-          "systemSource": "lexicon/heuristic",
-          "context": "pool (B1/B2, 29×)"
-        },
-        {
-          "lemma": "Fortschritt",
-          "normLemma": "fortschritt",
-          "assignedArticle": null,
-          "assignedGender": null,
-          "correctArticle": "der",
-          "correctGender": "m",
-          "ok": false,
-          "truthSource": "dwds-goethe-B1",
-          "systemSource": "none",
-          "context": "pool (B1/B2, 7×)"
-        },
-        {
-          "lemma": "Gebühr",
-          "normLemma": "gebühr",
-          "assignedArticle": null,
-          "assignedGender": null,
-          "correctArticle": "die",
-          "correctGender": "f",
-          "ok": false,
-          "truthSource": "dwds-goethe-B1",
-          "systemSource": "none",
-          "context": "pool (B1, 5×)"
-        },
-        {
           "lemma": "Produkt",
           "normLemma": "produkt",
           "assignedArticle": null,
@@ -539,18 +287,6 @@
           "truthSource": "dwds-goethe-A2",
           "systemSource": "none",
           "context": "pool (B1, 2×)"
-        },
-        {
-          "lemma": "Hinweis",
-          "normLemma": "hinweis",
-          "assignedArticle": null,
-          "assignedGender": null,
-          "correctArticle": "der",
-          "correctGender": "m",
-          "ok": false,
-          "truthSource": "dwds-goethe-B1",
-          "systemSource": "none",
-          "context": "pool (B1, 6×)"
         },
         {
           "lemma": "Hand",
@@ -574,18 +310,6 @@
           "ok": false,
           "truthSource": "dwds-goethe-B1",
           "systemSource": "none",
-          "context": "pool (B1, 3×)"
-        },
-        {
-          "lemma": "Interesse",
-          "normLemma": "interesse",
-          "assignedArticle": "die",
-          "assignedGender": "f",
-          "correctArticle": "das",
-          "correctGender": "n",
-          "ok": false,
-          "truthSource": "dwds-goethe-A2",
-          "systemSource": "lexicon/heuristic",
           "context": "pool (B1, 3×)"
         },
         {
@@ -623,18 +347,6 @@
           "truthSource": "dwds-goethe-A1",
           "systemSource": "none",
           "context": "pool (B1, 4×)"
-        },
-        {
-          "lemma": "Region",
-          "normLemma": "region",
-          "assignedArticle": "das",
-          "assignedGender": "n",
-          "correctArticle": "die",
-          "correctGender": "f",
-          "ok": false,
-          "truthSource": "dwds-goethe-B1",
-          "systemSource": "lexicon/heuristic",
-          "context": "pool (B1, 13×)"
         },
         {
           "lemma": "Wochentag",
@@ -697,30 +409,6 @@
           "context": "pool (B1, 5×)"
         },
         {
-          "lemma": "Geschichte",
-          "normLemma": "geschichte",
-          "assignedArticle": null,
-          "assignedGender": null,
-          "correctArticle": "die",
-          "correctGender": "f",
-          "ok": false,
-          "truthSource": "dwds-goethe-A2",
-          "systemSource": "none",
-          "context": "pool (B1, 5×)"
-        },
-        {
-          "lemma": "Schritt",
-          "normLemma": "schritt",
-          "assignedArticle": null,
-          "assignedGender": null,
-          "correctArticle": "der",
-          "correctGender": "m",
-          "ok": false,
-          "truthSource": "dwds-goethe-B1",
-          "systemSource": "none",
-          "context": "pool (B1, 20×)"
-        },
-        {
           "lemma": "August",
           "normLemma": "august",
           "assignedArticle": null,
@@ -743,18 +431,6 @@
           "truthSource": "dwds-goethe-B1",
           "systemSource": "none",
           "context": "pool (B1/B2, 2×)"
-        },
-        {
-          "lemma": "Organisation",
-          "normLemma": "organisation",
-          "assignedArticle": "das",
-          "assignedGender": "n",
-          "correctArticle": "die",
-          "correctGender": "f",
-          "ok": false,
-          "truthSource": "dwds-goethe-B1",
-          "systemSource": "lexicon/heuristic",
-          "context": "pool (B1, 47×)"
         },
         {
           "lemma": "Abfall",
@@ -781,18 +457,6 @@
           "context": "pool (B1, 1×)"
         },
         {
-          "lemma": "Situation",
-          "normLemma": "situation",
-          "assignedArticle": "das",
-          "assignedGender": "n",
-          "correctArticle": "die",
-          "correctGender": "f",
-          "ok": false,
-          "truthSource": "dwds-goethe-A2",
-          "systemSource": "lexicon/heuristic",
-          "context": "pool (B1/B2, 60×)"
-        },
-        {
           "lemma": "April",
           "normLemma": "april",
           "assignedArticle": null,
@@ -803,18 +467,6 @@
           "truthSource": "dwds-goethe-A1",
           "systemSource": "none",
           "context": "pool (B1, 1×)"
-        },
-        {
-          "lemma": "Gespräch",
-          "normLemma": "gespräch",
-          "assignedArticle": null,
-          "assignedGender": null,
-          "correctArticle": "das",
-          "correctGender": "n",
-          "ok": false,
-          "truthSource": "dwds-goethe-A1",
-          "systemSource": "none",
-          "context": "pool (B1/B2, 8×)"
         },
         {
           "lemma": "Ratschlag",
@@ -841,30 +493,6 @@
           "context": "pool (B1, 2×)"
         },
         {
-          "lemma": "Kommunikation",
-          "normLemma": "kommunikation",
-          "assignedArticle": "das",
-          "assignedGender": "n",
-          "correctArticle": "die",
-          "correctGender": "f",
-          "ok": false,
-          "truthSource": "dwds-goethe-B1",
-          "systemSource": "lexicon/heuristic",
-          "context": "pool (B1, 10×)"
-        },
-        {
-          "lemma": "Smartphone",
-          "normLemma": "smartphone",
-          "assignedArticle": null,
-          "assignedGender": null,
-          "correctArticle": "das",
-          "correctGender": "n",
-          "ok": false,
-          "truthSource": "dwds-benchmark",
-          "systemSource": "none",
-          "context": "pool (B1, 10×)"
-        },
-        {
           "lemma": "Zusammenhang",
           "normLemma": "zusammenhang",
           "assignedArticle": null,
@@ -875,18 +503,6 @@
           "truthSource": "dwds-goethe-B1",
           "systemSource": "none",
           "context": "pool (B1, 4×)"
-        },
-        {
-          "lemma": "Konsum",
-          "normLemma": "konsum",
-          "assignedArticle": "das",
-          "assignedGender": "n",
-          "correctArticle": "der",
-          "correctGender": "m",
-          "ok": false,
-          "truthSource": "dwds-goethe-B1",
-          "systemSource": "lexicon/heuristic",
-          "context": "pool (B1, 12×)"
         },
         {
           "lemma": "Schluss",
@@ -901,30 +517,6 @@
           "context": "pool (B1, 3×)"
         },
         {
-          "lemma": "Kraft",
-          "normLemma": "kraft",
-          "assignedArticle": null,
-          "assignedGender": null,
-          "correctArticle": "die",
-          "correctGender": "f",
-          "ok": false,
-          "truthSource": "dwds-goethe-B1",
-          "systemSource": "none",
-          "context": "pool (B1/B2, 5×)"
-        },
-        {
-          "lemma": "Gefühl",
-          "normLemma": "gefühl",
-          "assignedArticle": null,
-          "assignedGender": null,
-          "correctArticle": "das",
-          "correctGender": "n",
-          "ok": false,
-          "truthSource": "dwds-goethe-B1",
-          "systemSource": "none",
-          "context": "pool (B1/B2, 5×)"
-        },
-        {
           "lemma": "Kopf",
           "normLemma": "kopf",
           "assignedArticle": null,
@@ -935,30 +527,6 @@
           "truthSource": "dwds-goethe-A1",
           "systemSource": "none",
           "context": "pool (B1, 4×)"
-        },
-        {
-          "lemma": "Talent",
-          "normLemma": "talent",
-          "assignedArticle": "der",
-          "assignedGender": "m",
-          "correctArticle": "das",
-          "correctGender": "n",
-          "ok": false,
-          "truthSource": "dwds-goethe-B1",
-          "systemSource": "lexicon/heuristic",
-          "context": "pool (B1/B2, 4×)"
-        },
-        {
-          "lemma": "Unterkunft",
-          "normLemma": "unterkunft",
-          "assignedArticle": null,
-          "assignedGender": null,
-          "correctArticle": "die",
-          "correctGender": "f",
-          "ok": false,
-          "truthSource": "content-vocab/en/B1.json,dwds-goethe-A2",
-          "systemSource": "none",
-          "context": "pool (B1, 11×)"
         },
         {
           "lemma": "Anschluss",
@@ -983,18 +551,6 @@
           "truthSource": "dwds-goethe-B1",
           "systemSource": "none",
           "context": "pool (B1, 2×)"
-        },
-        {
-          "lemma": "Inhalt",
-          "normLemma": "inhalt",
-          "assignedArticle": null,
-          "assignedGender": null,
-          "correctArticle": "der",
-          "correctGender": "m",
-          "ok": false,
-          "truthSource": "dwds-goethe-B1",
-          "systemSource": "none",
-          "context": "pool (B1, 6×)"
         },
         {
           "lemma": "Fahrzeug",
@@ -1081,18 +637,6 @@
           "context": "pool (B1, 5×)"
         },
         {
-          "lemma": "Diskussion",
-          "normLemma": "diskussion",
-          "assignedArticle": "das",
-          "assignedGender": "n",
-          "correctArticle": "die",
-          "correctGender": "f",
-          "ok": false,
-          "truthSource": "dwds-goethe-B1",
-          "systemSource": "lexicon/heuristic",
-          "context": "pool (B1, 17×)"
-        },
-        {
           "lemma": "Ausnahme",
           "normLemma": "ausnahme",
           "assignedArticle": null,
@@ -1103,18 +647,6 @@
           "truthSource": "dwds-goethe-B1",
           "systemSource": "none",
           "context": "pool (B1, 1×)"
-        },
-        {
-          "lemma": "Produktion",
-          "normLemma": "produktion",
-          "assignedArticle": "das",
-          "assignedGender": "n",
-          "correctArticle": "die",
-          "correctGender": "f",
-          "ok": false,
-          "truthSource": "dwds-goethe-B1",
-          "systemSource": "lexicon/heuristic",
-          "context": "pool (B1, 4×)"
         },
         {
           "lemma": "Druck",
@@ -1225,18 +757,6 @@
           "context": "pool (B1, 2×)"
         },
         {
-          "lemma": "Werkstatt",
-          "normLemma": "werkstatt",
-          "assignedArticle": null,
-          "assignedGender": null,
-          "correctArticle": "die",
-          "correctGender": "f",
-          "ok": false,
-          "truthSource": "dwds-goethe-A2",
-          "systemSource": "none",
-          "context": "pool (B1, 6×)"
-        },
-        {
           "lemma": "Frist",
           "normLemma": "frist",
           "assignedArticle": null,
@@ -1259,18 +779,6 @@
           "truthSource": "dwds-goethe-B1",
           "systemSource": "none",
           "context": "pool (B1, 1×)"
-        },
-        {
-          "lemma": "Erlaubnis",
-          "normLemma": "erlaubnis",
-          "assignedArticle": "das",
-          "assignedGender": "n",
-          "correctArticle": "die",
-          "correctGender": "f",
-          "ok": false,
-          "truthSource": "dwds-goethe-A2",
-          "systemSource": "lexicon/heuristic",
-          "context": "pool (B1, 4×)"
         },
         {
           "lemma": "Ausweis",
@@ -1309,18 +817,6 @@
           "context": "pool (B1, 2×)"
         },
         {
-          "lemma": "Aufnahme",
-          "normLemma": "aufnahme",
-          "assignedArticle": null,
-          "assignedGender": null,
-          "correctArticle": "die",
-          "correctGender": "f",
-          "ok": false,
-          "truthSource": "dwds-goethe-B1",
-          "systemSource": "none",
-          "context": "pool (B2, 8×)"
-        },
-        {
           "lemma": "Anspruch",
           "normLemma": "anspruch",
           "assignedArticle": null,
@@ -1333,12 +829,12 @@
           "context": "pool (B2, 1×)"
         }
       ],
-      "accuracyPct": 70.6
+      "accuracyPct": 82
     },
     "dwdsBenchmark": {
       "label": "dwds-benchmark",
       "verified": 22,
-      "ok": 19,
+      "ok": 20,
       "errors": [
         {
           "lemma": "haustür",
@@ -1363,39 +859,15 @@
           "truthSource": "dwds-benchmark",
           "systemSource": "none",
           "context": "dwds-benchmark"
-        },
-        {
-          "lemma": "smartphone",
-          "normLemma": "smartphone",
-          "assignedArticle": null,
-          "assignedGender": null,
-          "correctArticle": "das",
-          "correctGender": "n",
-          "ok": false,
-          "truthSource": "dwds-benchmark",
-          "systemSource": "none",
-          "context": "dwds-benchmark"
         }
       ],
-      "accuracyPct": 86.4
+      "accuracyPct": 90.9
     },
     "unionVerified": {
       "label": "union-pool+benchmark",
       "verified": 378,
-      "ok": 268,
+      "ok": 310,
       "errors": [
-        {
-          "lemma": "Donnerstag",
-          "normLemma": "donnerstag",
-          "assignedArticle": null,
-          "assignedGender": null,
-          "correctArticle": "der",
-          "correctGender": "m",
-          "ok": false,
-          "truthSource": "dwds-goethe-A1",
-          "systemSource": "none",
-          "context": "pool (A2/B1, 29×)"
-        },
         {
           "lemma": "Praxis",
           "normLemma": "praxis",
@@ -1409,18 +881,6 @@
           "context": "pool (A2/B1, 4×)"
         },
         {
-          "lemma": "Freitag",
-          "normLemma": "freitag",
-          "assignedArticle": null,
-          "assignedGender": null,
-          "correctArticle": "der",
-          "correctGender": "m",
-          "ok": false,
-          "truthSource": "dwds-goethe-A1",
-          "systemSource": "none",
-          "context": "pool (A2/B1, 33×)"
-        },
-        {
           "lemma": "Geschäft",
           "normLemma": "geschäft",
           "assignedArticle": null,
@@ -1431,66 +891,6 @@
           "truthSource": "dwds-goethe-A1",
           "systemSource": "none",
           "context": "pool (A2/B1, 3×)"
-        },
-        {
-          "lemma": "Samstag",
-          "normLemma": "samstag",
-          "assignedArticle": null,
-          "assignedGender": null,
-          "correctArticle": "der",
-          "correctGender": "m",
-          "ok": false,
-          "truthSource": "dwds-goethe-A1",
-          "systemSource": "none",
-          "context": "pool (A2/B1, 18×)"
-        },
-        {
-          "lemma": "Mittwoch",
-          "normLemma": "mittwoch",
-          "assignedArticle": null,
-          "assignedGender": null,
-          "correctArticle": "der",
-          "correctGender": "m",
-          "ok": false,
-          "truthSource": "dwds-goethe-A1",
-          "systemSource": "none",
-          "context": "pool (A2/B1, 29×)"
-        },
-        {
-          "lemma": "Sonntag",
-          "normLemma": "sonntag",
-          "assignedArticle": null,
-          "assignedGender": null,
-          "correctArticle": "der",
-          "correctGender": "m",
-          "ok": false,
-          "truthSource": "dwds-goethe-A1",
-          "systemSource": "none",
-          "context": "pool (A2/B1, 6×)"
-        },
-        {
-          "lemma": "Tipp",
-          "normLemma": "tipp",
-          "assignedArticle": null,
-          "assignedGender": null,
-          "correctArticle": "der",
-          "correctGender": "m",
-          "ok": false,
-          "truthSource": "dwds-goethe-A2",
-          "systemSource": "none",
-          "context": "pool (A2/B1, 17×)"
-        },
-        {
-          "lemma": "Station",
-          "normLemma": "station",
-          "assignedArticle": "das",
-          "assignedGender": "n",
-          "correctArticle": "die",
-          "correctGender": "f",
-          "ok": false,
-          "truthSource": "dwds-goethe-B1",
-          "systemSource": "lexicon/heuristic",
-          "context": "pool (A2/B1, 2×)"
         },
         {
           "lemma": "Handtuch",
@@ -1529,18 +929,6 @@
           "context": "pool (A2/B1, 32×)"
         },
         {
-          "lemma": "Erdgeschoss",
-          "normLemma": "erdgeschoss",
-          "assignedArticle": null,
-          "assignedGender": null,
-          "correctArticle": "das",
-          "correctGender": "n",
-          "ok": false,
-          "truthSource": "dwds-goethe-A2",
-          "systemSource": "none",
-          "context": "pool (A2/B1, 13×)"
-        },
-        {
           "lemma": "Auskunft",
           "normLemma": "auskunft",
           "assignedArticle": null,
@@ -1551,42 +939,6 @@
           "truthSource": "dwds-goethe-A1",
           "systemSource": "none",
           "context": "pool (A2, 1×)"
-        },
-        {
-          "lemma": "Montag",
-          "normLemma": "montag",
-          "assignedArticle": null,
-          "assignedGender": null,
-          "correctArticle": "der",
-          "correctGender": "m",
-          "ok": false,
-          "truthSource": "dwds-goethe-A1",
-          "systemSource": "none",
-          "context": "pool (A2/B1, 28×)"
-        },
-        {
-          "lemma": "Verein",
-          "normLemma": "verein",
-          "assignedArticle": "die",
-          "assignedGender": "f",
-          "correctArticle": "der",
-          "correctGender": "m",
-          "ok": false,
-          "truthSource": "dwds-goethe-A1",
-          "systemSource": "lexicon/heuristic",
-          "context": "pool (A2/B1, 23×)"
-        },
-        {
-          "lemma": "Lebensmittel",
-          "normLemma": "lebensmittel",
-          "assignedArticle": null,
-          "assignedGender": null,
-          "correctArticle": "das",
-          "correctGender": "n",
-          "ok": false,
-          "truthSource": "dwds-goethe-A1",
-          "systemSource": "none",
-          "context": "pool (A2/B1, 15×)"
         },
         {
           "lemma": "Kühlschrank",
@@ -1601,30 +953,6 @@
           "context": "pool (A2, 5×)"
         },
         {
-          "lemma": "Supermarkt",
-          "normLemma": "supermarkt",
-          "assignedArticle": null,
-          "assignedGender": null,
-          "correctArticle": "der",
-          "correctGender": "m",
-          "ok": false,
-          "truthSource": "content-vocab/en/A2.json,dwds-goethe-A2",
-          "systemSource": "none",
-          "context": "pool (A2/B1, 14×)"
-        },
-        {
-          "lemma": "Aufgabe",
-          "normLemma": "aufgabe",
-          "assignedArticle": null,
-          "assignedGender": null,
-          "correctArticle": "die",
-          "correctGender": "f",
-          "ok": false,
-          "truthSource": "dwds-goethe-A1",
-          "systemSource": "none",
-          "context": "pool (A2/B1/B2, 38×)"
-        },
-        {
           "lemma": "Möbel",
           "normLemma": "möbel",
           "assignedArticle": null,
@@ -1635,18 +963,6 @@
           "truthSource": "dwds-goethe-A1",
           "systemSource": "none",
           "context": "pool (A2/B1, 3×)"
-        },
-        {
-          "lemma": "Umzug",
-          "normLemma": "umzug",
-          "assignedArticle": null,
-          "assignedGender": null,
-          "correctArticle": "der",
-          "correctGender": "m",
-          "ok": false,
-          "truthSource": "dwds-goethe-A2",
-          "systemSource": "none",
-          "context": "pool (A2/B1, 8×)"
         },
         {
           "lemma": "Gitarre",
@@ -1733,18 +1049,6 @@
           "context": "pool (A2, 1×)"
         },
         {
-          "lemma": "Verkehrsmittel",
-          "normLemma": "verkehrsmittel",
-          "assignedArticle": null,
-          "assignedGender": null,
-          "correctArticle": "das",
-          "correctGender": "n",
-          "ok": false,
-          "truthSource": "dwds-goethe-A2",
-          "systemSource": "none",
-          "context": "pool (A2/B1/B2, 25×)"
-        },
-        {
           "lemma": "Zertifikat",
           "normLemma": "zertifikat",
           "assignedArticle": null,
@@ -1769,18 +1073,6 @@
           "context": "pool (A2/B1, 2×)"
         },
         {
-          "lemma": "Eintritt",
-          "normLemma": "eintritt",
-          "assignedArticle": null,
-          "assignedGender": null,
-          "correctArticle": "der",
-          "correctGender": "m",
-          "ok": false,
-          "truthSource": "dwds-goethe-A1",
-          "systemSource": "none",
-          "context": "pool (A2/B1, 9×)"
-        },
-        {
           "lemma": "Krankenkasse",
           "normLemma": "krankenkasse",
           "assignedArticle": null,
@@ -1791,18 +1083,6 @@
           "truthSource": "content-vocab/en/B1.json,dwds-goethe-A2",
           "systemSource": "none",
           "context": "pool (A2/B1, 2×)"
-        },
-        {
-          "lemma": "Stock",
-          "normLemma": "stock",
-          "assignedArticle": null,
-          "assignedGender": null,
-          "correctArticle": "der",
-          "correctGender": "m",
-          "ok": false,
-          "truthSource": "dwds-goethe-A1",
-          "systemSource": "none",
-          "context": "pool (A2/B1, 7×)"
         },
         {
           "lemma": "Reisebüro",
@@ -1829,54 +1109,6 @@
           "context": "pool (A2/B1, 4×)"
         },
         {
-          "lemma": "Durchsage",
-          "normLemma": "durchsage",
-          "assignedArticle": null,
-          "assignedGender": null,
-          "correctArticle": "die",
-          "correctGender": "f",
-          "ok": false,
-          "truthSource": "dwds-goethe-A1",
-          "systemSource": "none",
-          "context": "pool (B1, 9×)"
-        },
-        {
-          "lemma": "Präsentation",
-          "normLemma": "präsentation",
-          "assignedArticle": "das",
-          "assignedGender": "n",
-          "correctArticle": "die",
-          "correctGender": "f",
-          "ok": false,
-          "truthSource": "dwds-goethe-B1",
-          "systemSource": "lexicon/heuristic",
-          "context": "pool (B1/B2, 29×)"
-        },
-        {
-          "lemma": "Fortschritt",
-          "normLemma": "fortschritt",
-          "assignedArticle": null,
-          "assignedGender": null,
-          "correctArticle": "der",
-          "correctGender": "m",
-          "ok": false,
-          "truthSource": "dwds-goethe-B1",
-          "systemSource": "none",
-          "context": "pool (B1/B2, 7×)"
-        },
-        {
-          "lemma": "Gebühr",
-          "normLemma": "gebühr",
-          "assignedArticle": null,
-          "assignedGender": null,
-          "correctArticle": "die",
-          "correctGender": "f",
-          "ok": false,
-          "truthSource": "dwds-goethe-B1",
-          "systemSource": "none",
-          "context": "pool (B1, 5×)"
-        },
-        {
           "lemma": "Produkt",
           "normLemma": "produkt",
           "assignedArticle": null,
@@ -1887,18 +1119,6 @@
           "truthSource": "dwds-goethe-A2",
           "systemSource": "none",
           "context": "pool (B1, 2×)"
-        },
-        {
-          "lemma": "Hinweis",
-          "normLemma": "hinweis",
-          "assignedArticle": null,
-          "assignedGender": null,
-          "correctArticle": "der",
-          "correctGender": "m",
-          "ok": false,
-          "truthSource": "dwds-goethe-B1",
-          "systemSource": "none",
-          "context": "pool (B1, 6×)"
         },
         {
           "lemma": "Hand",
@@ -1922,18 +1142,6 @@
           "ok": false,
           "truthSource": "dwds-goethe-B1",
           "systemSource": "none",
-          "context": "pool (B1, 3×)"
-        },
-        {
-          "lemma": "Interesse",
-          "normLemma": "interesse",
-          "assignedArticle": "die",
-          "assignedGender": "f",
-          "correctArticle": "das",
-          "correctGender": "n",
-          "ok": false,
-          "truthSource": "dwds-goethe-A2",
-          "systemSource": "lexicon/heuristic",
           "context": "pool (B1, 3×)"
         },
         {
@@ -1971,18 +1179,6 @@
           "truthSource": "dwds-goethe-A1",
           "systemSource": "none",
           "context": "pool (B1, 4×)"
-        },
-        {
-          "lemma": "Region",
-          "normLemma": "region",
-          "assignedArticle": "das",
-          "assignedGender": "n",
-          "correctArticle": "die",
-          "correctGender": "f",
-          "ok": false,
-          "truthSource": "dwds-goethe-B1",
-          "systemSource": "lexicon/heuristic",
-          "context": "pool (B1, 13×)"
         },
         {
           "lemma": "Wochentag",
@@ -2045,30 +1241,6 @@
           "context": "pool (B1, 5×)"
         },
         {
-          "lemma": "Geschichte",
-          "normLemma": "geschichte",
-          "assignedArticle": null,
-          "assignedGender": null,
-          "correctArticle": "die",
-          "correctGender": "f",
-          "ok": false,
-          "truthSource": "dwds-goethe-A2",
-          "systemSource": "none",
-          "context": "pool (B1, 5×)"
-        },
-        {
-          "lemma": "Schritt",
-          "normLemma": "schritt",
-          "assignedArticle": null,
-          "assignedGender": null,
-          "correctArticle": "der",
-          "correctGender": "m",
-          "ok": false,
-          "truthSource": "dwds-goethe-B1",
-          "systemSource": "none",
-          "context": "pool (B1, 20×)"
-        },
-        {
           "lemma": "August",
           "normLemma": "august",
           "assignedArticle": null,
@@ -2091,18 +1263,6 @@
           "truthSource": "dwds-goethe-B1",
           "systemSource": "none",
           "context": "pool (B1/B2, 2×)"
-        },
-        {
-          "lemma": "Organisation",
-          "normLemma": "organisation",
-          "assignedArticle": "das",
-          "assignedGender": "n",
-          "correctArticle": "die",
-          "correctGender": "f",
-          "ok": false,
-          "truthSource": "dwds-goethe-B1",
-          "systemSource": "lexicon/heuristic",
-          "context": "pool (B1, 47×)"
         },
         {
           "lemma": "Abfall",
@@ -2129,18 +1289,6 @@
           "context": "pool (B1, 1×)"
         },
         {
-          "lemma": "Situation",
-          "normLemma": "situation",
-          "assignedArticle": "das",
-          "assignedGender": "n",
-          "correctArticle": "die",
-          "correctGender": "f",
-          "ok": false,
-          "truthSource": "dwds-goethe-A2",
-          "systemSource": "lexicon/heuristic",
-          "context": "pool (B1/B2, 60×)"
-        },
-        {
           "lemma": "April",
           "normLemma": "april",
           "assignedArticle": null,
@@ -2151,18 +1299,6 @@
           "truthSource": "dwds-goethe-A1",
           "systemSource": "none",
           "context": "pool (B1, 1×)"
-        },
-        {
-          "lemma": "Gespräch",
-          "normLemma": "gespräch",
-          "assignedArticle": null,
-          "assignedGender": null,
-          "correctArticle": "das",
-          "correctGender": "n",
-          "ok": false,
-          "truthSource": "dwds-goethe-A1",
-          "systemSource": "none",
-          "context": "pool (B1/B2, 8×)"
         },
         {
           "lemma": "Ratschlag",
@@ -2189,30 +1325,6 @@
           "context": "pool (B1, 2×)"
         },
         {
-          "lemma": "Kommunikation",
-          "normLemma": "kommunikation",
-          "assignedArticle": "das",
-          "assignedGender": "n",
-          "correctArticle": "die",
-          "correctGender": "f",
-          "ok": false,
-          "truthSource": "dwds-goethe-B1",
-          "systemSource": "lexicon/heuristic",
-          "context": "pool (B1, 10×)"
-        },
-        {
-          "lemma": "smartphone",
-          "normLemma": "smartphone",
-          "assignedArticle": null,
-          "assignedGender": null,
-          "correctArticle": "das",
-          "correctGender": "n",
-          "ok": false,
-          "truthSource": "dwds-benchmark",
-          "systemSource": "none",
-          "context": "dwds-benchmark"
-        },
-        {
           "lemma": "Zusammenhang",
           "normLemma": "zusammenhang",
           "assignedArticle": null,
@@ -2223,18 +1335,6 @@
           "truthSource": "dwds-goethe-B1",
           "systemSource": "none",
           "context": "pool (B1, 4×)"
-        },
-        {
-          "lemma": "Konsum",
-          "normLemma": "konsum",
-          "assignedArticle": "das",
-          "assignedGender": "n",
-          "correctArticle": "der",
-          "correctGender": "m",
-          "ok": false,
-          "truthSource": "dwds-goethe-B1",
-          "systemSource": "lexicon/heuristic",
-          "context": "pool (B1, 12×)"
         },
         {
           "lemma": "Schluss",
@@ -2249,30 +1349,6 @@
           "context": "pool (B1, 3×)"
         },
         {
-          "lemma": "Kraft",
-          "normLemma": "kraft",
-          "assignedArticle": null,
-          "assignedGender": null,
-          "correctArticle": "die",
-          "correctGender": "f",
-          "ok": false,
-          "truthSource": "dwds-goethe-B1",
-          "systemSource": "none",
-          "context": "pool (B1/B2, 5×)"
-        },
-        {
-          "lemma": "Gefühl",
-          "normLemma": "gefühl",
-          "assignedArticle": null,
-          "assignedGender": null,
-          "correctArticle": "das",
-          "correctGender": "n",
-          "ok": false,
-          "truthSource": "dwds-goethe-B1",
-          "systemSource": "none",
-          "context": "pool (B1/B2, 5×)"
-        },
-        {
           "lemma": "Kopf",
           "normLemma": "kopf",
           "assignedArticle": null,
@@ -2283,30 +1359,6 @@
           "truthSource": "dwds-goethe-A1",
           "systemSource": "none",
           "context": "pool (B1, 4×)"
-        },
-        {
-          "lemma": "Talent",
-          "normLemma": "talent",
-          "assignedArticle": "der",
-          "assignedGender": "m",
-          "correctArticle": "das",
-          "correctGender": "n",
-          "ok": false,
-          "truthSource": "dwds-goethe-B1",
-          "systemSource": "lexicon/heuristic",
-          "context": "pool (B1/B2, 4×)"
-        },
-        {
-          "lemma": "Unterkunft",
-          "normLemma": "unterkunft",
-          "assignedArticle": null,
-          "assignedGender": null,
-          "correctArticle": "die",
-          "correctGender": "f",
-          "ok": false,
-          "truthSource": "content-vocab/en/B1.json,dwds-goethe-A2",
-          "systemSource": "none",
-          "context": "pool (B1, 11×)"
         },
         {
           "lemma": "Anschluss",
@@ -2331,18 +1383,6 @@
           "truthSource": "dwds-goethe-B1",
           "systemSource": "none",
           "context": "pool (B1, 2×)"
-        },
-        {
-          "lemma": "Inhalt",
-          "normLemma": "inhalt",
-          "assignedArticle": null,
-          "assignedGender": null,
-          "correctArticle": "der",
-          "correctGender": "m",
-          "ok": false,
-          "truthSource": "dwds-goethe-B1",
-          "systemSource": "none",
-          "context": "pool (B1, 6×)"
         },
         {
           "lemma": "Fahrzeug",
@@ -2429,18 +1469,6 @@
           "context": "pool (B1, 5×)"
         },
         {
-          "lemma": "Diskussion",
-          "normLemma": "diskussion",
-          "assignedArticle": "das",
-          "assignedGender": "n",
-          "correctArticle": "die",
-          "correctGender": "f",
-          "ok": false,
-          "truthSource": "dwds-goethe-B1",
-          "systemSource": "lexicon/heuristic",
-          "context": "pool (B1, 17×)"
-        },
-        {
           "lemma": "Ausnahme",
           "normLemma": "ausnahme",
           "assignedArticle": null,
@@ -2451,18 +1479,6 @@
           "truthSource": "dwds-goethe-B1",
           "systemSource": "none",
           "context": "pool (B1, 1×)"
-        },
-        {
-          "lemma": "Produktion",
-          "normLemma": "produktion",
-          "assignedArticle": "das",
-          "assignedGender": "n",
-          "correctArticle": "die",
-          "correctGender": "f",
-          "ok": false,
-          "truthSource": "dwds-goethe-B1",
-          "systemSource": "lexicon/heuristic",
-          "context": "pool (B1, 4×)"
         },
         {
           "lemma": "Druck",
@@ -2573,18 +1589,6 @@
           "context": "pool (B1, 2×)"
         },
         {
-          "lemma": "Werkstatt",
-          "normLemma": "werkstatt",
-          "assignedArticle": null,
-          "assignedGender": null,
-          "correctArticle": "die",
-          "correctGender": "f",
-          "ok": false,
-          "truthSource": "dwds-goethe-A2",
-          "systemSource": "none",
-          "context": "pool (B1, 6×)"
-        },
-        {
           "lemma": "Frist",
           "normLemma": "frist",
           "assignedArticle": null,
@@ -2607,18 +1611,6 @@
           "truthSource": "dwds-goethe-B1",
           "systemSource": "none",
           "context": "pool (B1, 1×)"
-        },
-        {
-          "lemma": "Erlaubnis",
-          "normLemma": "erlaubnis",
-          "assignedArticle": "das",
-          "assignedGender": "n",
-          "correctArticle": "die",
-          "correctGender": "f",
-          "ok": false,
-          "truthSource": "dwds-goethe-A2",
-          "systemSource": "lexicon/heuristic",
-          "context": "pool (B1, 4×)"
         },
         {
           "lemma": "Ausweis",
@@ -2657,18 +1649,6 @@
           "context": "pool (B1, 2×)"
         },
         {
-          "lemma": "Aufnahme",
-          "normLemma": "aufnahme",
-          "assignedArticle": null,
-          "assignedGender": null,
-          "correctArticle": "die",
-          "correctGender": "f",
-          "ok": false,
-          "truthSource": "dwds-goethe-B1",
-          "systemSource": "none",
-          "context": "pool (B2, 8×)"
-        },
-        {
           "lemma": "Anspruch",
           "normLemma": "anspruch",
           "assignedArticle": null,
@@ -2705,134 +1685,17 @@
           "context": "dwds-benchmark"
         }
       ],
-      "accuracyPct": 70.9
+      "accuracyPct": 82
     },
     "userBlobs": null
   },
   "lexiconFileVsTruth": {
-    "compared": 225,
-    "errors": 13,
-    "accuracyPct": 94.2,
-    "errorList": [
-      {
-        "lemma": "diskussion",
-        "lexiconGender": "n",
-        "lexiconArticle": "das",
-        "correctGender": "f",
-        "correctArticle": "die",
-        "truthSource": "dwds-goethe-B1"
-      },
-      {
-        "lemma": "erlaubnis",
-        "lexiconGender": "n",
-        "lexiconArticle": "das",
-        "correctGender": "f",
-        "correctArticle": "die",
-        "truthSource": "dwds-goethe-A2"
-      },
-      {
-        "lemma": "interesse",
-        "lexiconGender": "f",
-        "lexiconArticle": "die",
-        "correctGender": "n",
-        "correctArticle": "das",
-        "truthSource": "dwds-goethe-A2"
-      },
-      {
-        "lemma": "kommunikation",
-        "lexiconGender": "n",
-        "lexiconArticle": "das",
-        "correctGender": "f",
-        "correctArticle": "die",
-        "truthSource": "dwds-goethe-B1"
-      },
-      {
-        "lemma": "konsum",
-        "lexiconGender": "n",
-        "lexiconArticle": "das",
-        "correctGender": "m",
-        "correctArticle": "der",
-        "truthSource": "dwds-goethe-B1"
-      },
-      {
-        "lemma": "organisation",
-        "lexiconGender": "n",
-        "lexiconArticle": "das",
-        "correctGender": "f",
-        "correctArticle": "die",
-        "truthSource": "dwds-goethe-B1"
-      },
-      {
-        "lemma": "präsentation",
-        "lexiconGender": "n",
-        "lexiconArticle": "das",
-        "correctGender": "f",
-        "correctArticle": "die",
-        "truthSource": "dwds-goethe-B1"
-      },
-      {
-        "lemma": "produktion",
-        "lexiconGender": "n",
-        "lexiconArticle": "das",
-        "correctGender": "f",
-        "correctArticle": "die",
-        "truthSource": "dwds-goethe-B1"
-      },
-      {
-        "lemma": "region",
-        "lexiconGender": "n",
-        "lexiconArticle": "das",
-        "correctGender": "f",
-        "correctArticle": "die",
-        "truthSource": "dwds-goethe-B1"
-      },
-      {
-        "lemma": "situation",
-        "lexiconGender": "n",
-        "lexiconArticle": "das",
-        "correctGender": "f",
-        "correctArticle": "die",
-        "truthSource": "dwds-goethe-A2"
-      },
-      {
-        "lemma": "station",
-        "lexiconGender": "n",
-        "lexiconArticle": "das",
-        "correctGender": "f",
-        "correctArticle": "die",
-        "truthSource": "dwds-goethe-B1"
-      },
-      {
-        "lemma": "talent",
-        "lexiconGender": "m",
-        "lexiconArticle": "der",
-        "correctGender": "n",
-        "correctArticle": "das",
-        "truthSource": "dwds-goethe-B1"
-      },
-      {
-        "lemma": "verein",
-        "lexiconGender": "f",
-        "lexiconArticle": "die",
-        "correctGender": "m",
-        "correctArticle": "der",
-        "truthSource": "dwds-goethe-A1"
-      }
-    ]
+    "compared": 254,
+    "errors": 0,
+    "accuracyPct": 100,
+    "errorList": []
   },
   "runtimeErrors": [
-    {
-      "lemma": "Donnerstag",
-      "normLemma": "donnerstag",
-      "assignedArticle": null,
-      "assignedGender": null,
-      "correctArticle": "der",
-      "correctGender": "m",
-      "ok": false,
-      "truthSource": "dwds-goethe-A1",
-      "systemSource": "none",
-      "context": "pool (A2/B1, 29×)"
-    },
     {
       "lemma": "Praxis",
       "normLemma": "praxis",
@@ -2846,18 +1709,6 @@
       "context": "pool (A2/B1, 4×)"
     },
     {
-      "lemma": "Freitag",
-      "normLemma": "freitag",
-      "assignedArticle": null,
-      "assignedGender": null,
-      "correctArticle": "der",
-      "correctGender": "m",
-      "ok": false,
-      "truthSource": "dwds-goethe-A1",
-      "systemSource": "none",
-      "context": "pool (A2/B1, 33×)"
-    },
-    {
       "lemma": "Geschäft",
       "normLemma": "geschäft",
       "assignedArticle": null,
@@ -2868,66 +1719,6 @@
       "truthSource": "dwds-goethe-A1",
       "systemSource": "none",
       "context": "pool (A2/B1, 3×)"
-    },
-    {
-      "lemma": "Samstag",
-      "normLemma": "samstag",
-      "assignedArticle": null,
-      "assignedGender": null,
-      "correctArticle": "der",
-      "correctGender": "m",
-      "ok": false,
-      "truthSource": "dwds-goethe-A1",
-      "systemSource": "none",
-      "context": "pool (A2/B1, 18×)"
-    },
-    {
-      "lemma": "Mittwoch",
-      "normLemma": "mittwoch",
-      "assignedArticle": null,
-      "assignedGender": null,
-      "correctArticle": "der",
-      "correctGender": "m",
-      "ok": false,
-      "truthSource": "dwds-goethe-A1",
-      "systemSource": "none",
-      "context": "pool (A2/B1, 29×)"
-    },
-    {
-      "lemma": "Sonntag",
-      "normLemma": "sonntag",
-      "assignedArticle": null,
-      "assignedGender": null,
-      "correctArticle": "der",
-      "correctGender": "m",
-      "ok": false,
-      "truthSource": "dwds-goethe-A1",
-      "systemSource": "none",
-      "context": "pool (A2/B1, 6×)"
-    },
-    {
-      "lemma": "Tipp",
-      "normLemma": "tipp",
-      "assignedArticle": null,
-      "assignedGender": null,
-      "correctArticle": "der",
-      "correctGender": "m",
-      "ok": false,
-      "truthSource": "dwds-goethe-A2",
-      "systemSource": "none",
-      "context": "pool (A2/B1, 17×)"
-    },
-    {
-      "lemma": "Station",
-      "normLemma": "station",
-      "assignedArticle": "das",
-      "assignedGender": "n",
-      "correctArticle": "die",
-      "correctGender": "f",
-      "ok": false,
-      "truthSource": "dwds-goethe-B1",
-      "systemSource": "lexicon/heuristic",
-      "context": "pool (A2/B1, 2×)"
     },
     {
       "lemma": "Handtuch",
@@ -2966,18 +1757,6 @@
       "context": "pool (A2/B1, 32×)"
     },
     {
-      "lemma": "Erdgeschoss",
-      "normLemma": "erdgeschoss",
-      "assignedArticle": null,
-      "assignedGender": null,
-      "correctArticle": "das",
-      "correctGender": "n",
-      "ok": false,
-      "truthSource": "dwds-goethe-A2",
-      "systemSource": "none",
-      "context": "pool (A2/B1, 13×)"
-    },
-    {
       "lemma": "Auskunft",
       "normLemma": "auskunft",
       "assignedArticle": null,
@@ -2988,42 +1767,6 @@
       "truthSource": "dwds-goethe-A1",
       "systemSource": "none",
       "context": "pool (A2, 1×)"
-    },
-    {
-      "lemma": "Montag",
-      "normLemma": "montag",
-      "assignedArticle": null,
-      "assignedGender": null,
-      "correctArticle": "der",
-      "correctGender": "m",
-      "ok": false,
-      "truthSource": "dwds-goethe-A1",
-      "systemSource": "none",
-      "context": "pool (A2/B1, 28×)"
-    },
-    {
-      "lemma": "Verein",
-      "normLemma": "verein",
-      "assignedArticle": "die",
-      "assignedGender": "f",
-      "correctArticle": "der",
-      "correctGender": "m",
-      "ok": false,
-      "truthSource": "dwds-goethe-A1",
-      "systemSource": "lexicon/heuristic",
-      "context": "pool (A2/B1, 23×)"
-    },
-    {
-      "lemma": "Lebensmittel",
-      "normLemma": "lebensmittel",
-      "assignedArticle": null,
-      "assignedGender": null,
-      "correctArticle": "das",
-      "correctGender": "n",
-      "ok": false,
-      "truthSource": "dwds-goethe-A1",
-      "systemSource": "none",
-      "context": "pool (A2/B1, 15×)"
     },
     {
       "lemma": "Kühlschrank",
@@ -3038,30 +1781,6 @@
       "context": "pool (A2, 5×)"
     },
     {
-      "lemma": "Supermarkt",
-      "normLemma": "supermarkt",
-      "assignedArticle": null,
-      "assignedGender": null,
-      "correctArticle": "der",
-      "correctGender": "m",
-      "ok": false,
-      "truthSource": "content-vocab/en/A2.json,dwds-goethe-A2",
-      "systemSource": "none",
-      "context": "pool (A2/B1, 14×)"
-    },
-    {
-      "lemma": "Aufgabe",
-      "normLemma": "aufgabe",
-      "assignedArticle": null,
-      "assignedGender": null,
-      "correctArticle": "die",
-      "correctGender": "f",
-      "ok": false,
-      "truthSource": "dwds-goethe-A1",
-      "systemSource": "none",
-      "context": "pool (A2/B1/B2, 38×)"
-    },
-    {
       "lemma": "Möbel",
       "normLemma": "möbel",
       "assignedArticle": null,
@@ -3072,18 +1791,6 @@
       "truthSource": "dwds-goethe-A1",
       "systemSource": "none",
       "context": "pool (A2/B1, 3×)"
-    },
-    {
-      "lemma": "Umzug",
-      "normLemma": "umzug",
-      "assignedArticle": null,
-      "assignedGender": null,
-      "correctArticle": "der",
-      "correctGender": "m",
-      "ok": false,
-      "truthSource": "dwds-goethe-A2",
-      "systemSource": "none",
-      "context": "pool (A2/B1, 8×)"
     },
     {
       "lemma": "Gitarre",
@@ -3170,18 +1877,6 @@
       "context": "pool (A2, 1×)"
     },
     {
-      "lemma": "Verkehrsmittel",
-      "normLemma": "verkehrsmittel",
-      "assignedArticle": null,
-      "assignedGender": null,
-      "correctArticle": "das",
-      "correctGender": "n",
-      "ok": false,
-      "truthSource": "dwds-goethe-A2",
-      "systemSource": "none",
-      "context": "pool (A2/B1/B2, 25×)"
-    },
-    {
       "lemma": "Zertifikat",
       "normLemma": "zertifikat",
       "assignedArticle": null,
@@ -3206,18 +1901,6 @@
       "context": "pool (A2/B1, 2×)"
     },
     {
-      "lemma": "Eintritt",
-      "normLemma": "eintritt",
-      "assignedArticle": null,
-      "assignedGender": null,
-      "correctArticle": "der",
-      "correctGender": "m",
-      "ok": false,
-      "truthSource": "dwds-goethe-A1",
-      "systemSource": "none",
-      "context": "pool (A2/B1, 9×)"
-    },
-    {
       "lemma": "Krankenkasse",
       "normLemma": "krankenkasse",
       "assignedArticle": null,
@@ -3228,18 +1911,6 @@
       "truthSource": "content-vocab/en/B1.json,dwds-goethe-A2",
       "systemSource": "none",
       "context": "pool (A2/B1, 2×)"
-    },
-    {
-      "lemma": "Stock",
-      "normLemma": "stock",
-      "assignedArticle": null,
-      "assignedGender": null,
-      "correctArticle": "der",
-      "correctGender": "m",
-      "ok": false,
-      "truthSource": "dwds-goethe-A1",
-      "systemSource": "none",
-      "context": "pool (A2/B1, 7×)"
     },
     {
       "lemma": "Reisebüro",
@@ -3266,54 +1937,6 @@
       "context": "pool (A2/B1, 4×)"
     },
     {
-      "lemma": "Durchsage",
-      "normLemma": "durchsage",
-      "assignedArticle": null,
-      "assignedGender": null,
-      "correctArticle": "die",
-      "correctGender": "f",
-      "ok": false,
-      "truthSource": "dwds-goethe-A1",
-      "systemSource": "none",
-      "context": "pool (B1, 9×)"
-    },
-    {
-      "lemma": "Präsentation",
-      "normLemma": "präsentation",
-      "assignedArticle": "das",
-      "assignedGender": "n",
-      "correctArticle": "die",
-      "correctGender": "f",
-      "ok": false,
-      "truthSource": "dwds-goethe-B1",
-      "systemSource": "lexicon/heuristic",
-      "context": "pool (B1/B2, 29×)"
-    },
-    {
-      "lemma": "Fortschritt",
-      "normLemma": "fortschritt",
-      "assignedArticle": null,
-      "assignedGender": null,
-      "correctArticle": "der",
-      "correctGender": "m",
-      "ok": false,
-      "truthSource": "dwds-goethe-B1",
-      "systemSource": "none",
-      "context": "pool (B1/B2, 7×)"
-    },
-    {
-      "lemma": "Gebühr",
-      "normLemma": "gebühr",
-      "assignedArticle": null,
-      "assignedGender": null,
-      "correctArticle": "die",
-      "correctGender": "f",
-      "ok": false,
-      "truthSource": "dwds-goethe-B1",
-      "systemSource": "none",
-      "context": "pool (B1, 5×)"
-    },
-    {
       "lemma": "Produkt",
       "normLemma": "produkt",
       "assignedArticle": null,
@@ -3324,18 +1947,6 @@
       "truthSource": "dwds-goethe-A2",
       "systemSource": "none",
       "context": "pool (B1, 2×)"
-    },
-    {
-      "lemma": "Hinweis",
-      "normLemma": "hinweis",
-      "assignedArticle": null,
-      "assignedGender": null,
-      "correctArticle": "der",
-      "correctGender": "m",
-      "ok": false,
-      "truthSource": "dwds-goethe-B1",
-      "systemSource": "none",
-      "context": "pool (B1, 6×)"
     },
     {
       "lemma": "Hand",
@@ -3359,18 +1970,6 @@
       "ok": false,
       "truthSource": "dwds-goethe-B1",
       "systemSource": "none",
-      "context": "pool (B1, 3×)"
-    },
-    {
-      "lemma": "Interesse",
-      "normLemma": "interesse",
-      "assignedArticle": "die",
-      "assignedGender": "f",
-      "correctArticle": "das",
-      "correctGender": "n",
-      "ok": false,
-      "truthSource": "dwds-goethe-A2",
-      "systemSource": "lexicon/heuristic",
       "context": "pool (B1, 3×)"
     },
     {
@@ -3408,18 +2007,6 @@
       "truthSource": "dwds-goethe-A1",
       "systemSource": "none",
       "context": "pool (B1, 4×)"
-    },
-    {
-      "lemma": "Region",
-      "normLemma": "region",
-      "assignedArticle": "das",
-      "assignedGender": "n",
-      "correctArticle": "die",
-      "correctGender": "f",
-      "ok": false,
-      "truthSource": "dwds-goethe-B1",
-      "systemSource": "lexicon/heuristic",
-      "context": "pool (B1, 13×)"
     },
     {
       "lemma": "Wochentag",
@@ -3482,30 +2069,6 @@
       "context": "pool (B1, 5×)"
     },
     {
-      "lemma": "Geschichte",
-      "normLemma": "geschichte",
-      "assignedArticle": null,
-      "assignedGender": null,
-      "correctArticle": "die",
-      "correctGender": "f",
-      "ok": false,
-      "truthSource": "dwds-goethe-A2",
-      "systemSource": "none",
-      "context": "pool (B1, 5×)"
-    },
-    {
-      "lemma": "Schritt",
-      "normLemma": "schritt",
-      "assignedArticle": null,
-      "assignedGender": null,
-      "correctArticle": "der",
-      "correctGender": "m",
-      "ok": false,
-      "truthSource": "dwds-goethe-B1",
-      "systemSource": "none",
-      "context": "pool (B1, 20×)"
-    },
-    {
       "lemma": "August",
       "normLemma": "august",
       "assignedArticle": null,
@@ -3528,18 +2091,6 @@
       "truthSource": "dwds-goethe-B1",
       "systemSource": "none",
       "context": "pool (B1/B2, 2×)"
-    },
-    {
-      "lemma": "Organisation",
-      "normLemma": "organisation",
-      "assignedArticle": "das",
-      "assignedGender": "n",
-      "correctArticle": "die",
-      "correctGender": "f",
-      "ok": false,
-      "truthSource": "dwds-goethe-B1",
-      "systemSource": "lexicon/heuristic",
-      "context": "pool (B1, 47×)"
     },
     {
       "lemma": "Abfall",
@@ -3566,18 +2117,6 @@
       "context": "pool (B1, 1×)"
     },
     {
-      "lemma": "Situation",
-      "normLemma": "situation",
-      "assignedArticle": "das",
-      "assignedGender": "n",
-      "correctArticle": "die",
-      "correctGender": "f",
-      "ok": false,
-      "truthSource": "dwds-goethe-A2",
-      "systemSource": "lexicon/heuristic",
-      "context": "pool (B1/B2, 60×)"
-    },
-    {
       "lemma": "April",
       "normLemma": "april",
       "assignedArticle": null,
@@ -3588,18 +2127,6 @@
       "truthSource": "dwds-goethe-A1",
       "systemSource": "none",
       "context": "pool (B1, 1×)"
-    },
-    {
-      "lemma": "Gespräch",
-      "normLemma": "gespräch",
-      "assignedArticle": null,
-      "assignedGender": null,
-      "correctArticle": "das",
-      "correctGender": "n",
-      "ok": false,
-      "truthSource": "dwds-goethe-A1",
-      "systemSource": "none",
-      "context": "pool (B1/B2, 8×)"
     },
     {
       "lemma": "Ratschlag",
@@ -3626,30 +2153,6 @@
       "context": "pool (B1, 2×)"
     },
     {
-      "lemma": "Kommunikation",
-      "normLemma": "kommunikation",
-      "assignedArticle": "das",
-      "assignedGender": "n",
-      "correctArticle": "die",
-      "correctGender": "f",
-      "ok": false,
-      "truthSource": "dwds-goethe-B1",
-      "systemSource": "lexicon/heuristic",
-      "context": "pool (B1, 10×)"
-    },
-    {
-      "lemma": "smartphone",
-      "normLemma": "smartphone",
-      "assignedArticle": null,
-      "assignedGender": null,
-      "correctArticle": "das",
-      "correctGender": "n",
-      "ok": false,
-      "truthSource": "dwds-benchmark",
-      "systemSource": "none",
-      "context": "dwds-benchmark"
-    },
-    {
       "lemma": "Zusammenhang",
       "normLemma": "zusammenhang",
       "assignedArticle": null,
@@ -3660,18 +2163,6 @@
       "truthSource": "dwds-goethe-B1",
       "systemSource": "none",
       "context": "pool (B1, 4×)"
-    },
-    {
-      "lemma": "Konsum",
-      "normLemma": "konsum",
-      "assignedArticle": "das",
-      "assignedGender": "n",
-      "correctArticle": "der",
-      "correctGender": "m",
-      "ok": false,
-      "truthSource": "dwds-goethe-B1",
-      "systemSource": "lexicon/heuristic",
-      "context": "pool (B1, 12×)"
     },
     {
       "lemma": "Schluss",
@@ -3686,30 +2177,6 @@
       "context": "pool (B1, 3×)"
     },
     {
-      "lemma": "Kraft",
-      "normLemma": "kraft",
-      "assignedArticle": null,
-      "assignedGender": null,
-      "correctArticle": "die",
-      "correctGender": "f",
-      "ok": false,
-      "truthSource": "dwds-goethe-B1",
-      "systemSource": "none",
-      "context": "pool (B1/B2, 5×)"
-    },
-    {
-      "lemma": "Gefühl",
-      "normLemma": "gefühl",
-      "assignedArticle": null,
-      "assignedGender": null,
-      "correctArticle": "das",
-      "correctGender": "n",
-      "ok": false,
-      "truthSource": "dwds-goethe-B1",
-      "systemSource": "none",
-      "context": "pool (B1/B2, 5×)"
-    },
-    {
       "lemma": "Kopf",
       "normLemma": "kopf",
       "assignedArticle": null,
@@ -3720,30 +2187,6 @@
       "truthSource": "dwds-goethe-A1",
       "systemSource": "none",
       "context": "pool (B1, 4×)"
-    },
-    {
-      "lemma": "Talent",
-      "normLemma": "talent",
-      "assignedArticle": "der",
-      "assignedGender": "m",
-      "correctArticle": "das",
-      "correctGender": "n",
-      "ok": false,
-      "truthSource": "dwds-goethe-B1",
-      "systemSource": "lexicon/heuristic",
-      "context": "pool (B1/B2, 4×)"
-    },
-    {
-      "lemma": "Unterkunft",
-      "normLemma": "unterkunft",
-      "assignedArticle": null,
-      "assignedGender": null,
-      "correctArticle": "die",
-      "correctGender": "f",
-      "ok": false,
-      "truthSource": "content-vocab/en/B1.json,dwds-goethe-A2",
-      "systemSource": "none",
-      "context": "pool (B1, 11×)"
     },
     {
       "lemma": "Anschluss",
@@ -3768,18 +2211,6 @@
       "truthSource": "dwds-goethe-B1",
       "systemSource": "none",
       "context": "pool (B1, 2×)"
-    },
-    {
-      "lemma": "Inhalt",
-      "normLemma": "inhalt",
-      "assignedArticle": null,
-      "assignedGender": null,
-      "correctArticle": "der",
-      "correctGender": "m",
-      "ok": false,
-      "truthSource": "dwds-goethe-B1",
-      "systemSource": "none",
-      "context": "pool (B1, 6×)"
     },
     {
       "lemma": "Fahrzeug",
@@ -3866,18 +2297,6 @@
       "context": "pool (B1, 5×)"
     },
     {
-      "lemma": "Diskussion",
-      "normLemma": "diskussion",
-      "assignedArticle": "das",
-      "assignedGender": "n",
-      "correctArticle": "die",
-      "correctGender": "f",
-      "ok": false,
-      "truthSource": "dwds-goethe-B1",
-      "systemSource": "lexicon/heuristic",
-      "context": "pool (B1, 17×)"
-    },
-    {
       "lemma": "Ausnahme",
       "normLemma": "ausnahme",
       "assignedArticle": null,
@@ -3888,18 +2307,6 @@
       "truthSource": "dwds-goethe-B1",
       "systemSource": "none",
       "context": "pool (B1, 1×)"
-    },
-    {
-      "lemma": "Produktion",
-      "normLemma": "produktion",
-      "assignedArticle": "das",
-      "assignedGender": "n",
-      "correctArticle": "die",
-      "correctGender": "f",
-      "ok": false,
-      "truthSource": "dwds-goethe-B1",
-      "systemSource": "lexicon/heuristic",
-      "context": "pool (B1, 4×)"
     },
     {
       "lemma": "Druck",
@@ -4010,18 +2417,6 @@
       "context": "pool (B1, 2×)"
     },
     {
-      "lemma": "Werkstatt",
-      "normLemma": "werkstatt",
-      "assignedArticle": null,
-      "assignedGender": null,
-      "correctArticle": "die",
-      "correctGender": "f",
-      "ok": false,
-      "truthSource": "dwds-goethe-A2",
-      "systemSource": "none",
-      "context": "pool (B1, 6×)"
-    },
-    {
       "lemma": "Frist",
       "normLemma": "frist",
       "assignedArticle": null,
@@ -4044,18 +2439,6 @@
       "truthSource": "dwds-goethe-B1",
       "systemSource": "none",
       "context": "pool (B1, 1×)"
-    },
-    {
-      "lemma": "Erlaubnis",
-      "normLemma": "erlaubnis",
-      "assignedArticle": "das",
-      "assignedGender": "n",
-      "correctArticle": "die",
-      "correctGender": "f",
-      "ok": false,
-      "truthSource": "dwds-goethe-A2",
-      "systemSource": "lexicon/heuristic",
-      "context": "pool (B1, 4×)"
     },
     {
       "lemma": "Ausweis",
@@ -4092,18 +2475,6 @@
       "truthSource": "dwds-goethe-B1",
       "systemSource": "none",
       "context": "pool (B1, 2×)"
-    },
-    {
-      "lemma": "Aufnahme",
-      "normLemma": "aufnahme",
-      "assignedArticle": null,
-      "assignedGender": null,
-      "correctArticle": "die",
-      "correctGender": "f",
-      "ok": false,
-      "truthSource": "dwds-goethe-B1",
-      "systemSource": "none",
-      "context": "pool (B2, 8×)"
     },
     {
       "lemma": "Anspruch",
@@ -4144,80 +2515,48 @@
   ],
   "errorPatterns": {
     "null→m (none)": {
-      "count": 48,
+      "count": 33,
       "samples": [
-        "Donnerstag",
-        "Freitag",
-        "Samstag",
-        "Mittwoch",
-        "Sonntag",
-        "Tipp",
         "Anruf",
-        "Montag"
+        "Kühlschrank",
+        "Spaziergang",
+        "Besuch",
+        "Apparat",
+        "Bedarf",
+        "Nachbar",
+        "Eingang"
       ]
     },
     "null→f (none)": {
-      "count": 26,
+      "count": 18,
       "samples": [
         "Praxis",
         "Auskunft",
-        "Aufgabe",
         "Gitarre",
         "Aussage",
         "Krankenkasse",
-        "Durchsage",
-        "Gebühr"
+        "Hand",
+        "Ansage",
+        "Bahn"
       ]
     },
     "null→n (none)": {
-      "count": 22,
+      "count": 16,
       "samples": [
         "Geschäft",
         "Handtuch",
-        "Erdgeschoss",
-        "Lebensmittel",
         "Möbel",
         "Picknick",
         "Schwimmbad",
-        "Fleisch"
-      ]
-    },
-    "n→f (lexicon/heuristic)": {
-      "count": 9,
-      "samples": [
-        "Station",
-        "Präsentation",
-        "Region",
-        "Organisation",
-        "Situation",
-        "Kommunikation",
-        "Diskussion",
-        "Produktion"
+        "Fleisch",
+        "Zertifikat",
+        "Reisebüro"
       ]
     },
     "f→m (lexicon/heuristic)": {
-      "count": 2,
-      "samples": [
-        "Dienstag",
-        "Verein"
-      ]
-    },
-    "f→n (lexicon/heuristic)": {
       "count": 1,
       "samples": [
-        "Interesse"
-      ]
-    },
-    "n→m (lexicon/heuristic)": {
-      "count": 1,
-      "samples": [
-        "Konsum"
-      ]
-    },
-    "m→n (lexicon/heuristic)": {
-      "count": 1,
-      "samples": [
-        "Talent"
+        "Dienstag"
       ]
     }
   },
