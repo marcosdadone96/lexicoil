@@ -37,7 +37,7 @@ export function genderFromGoetheRow(row) {
 
 /** Parse gender from DWDS /wb/ HTML Grammatik block. */
 export function parseGenderFromDwdsHtml(html, lemma) {
-  if (!html || html.length < 200) {
+  if (!html || html.length < 40) {
     return { status: 'not_found', gender: null, pos: null, reasons: ['empty html'] };
   }
   if (/404 – Seite nicht gefunden|Seite nicht gefunden/i.test(html)) {
@@ -52,8 +52,24 @@ export function parseGenderFromDwdsHtml(html, lemma) {
   }
 
   const gramBlock =
-    html.match(/Grammatik[\s\S]{0,400}?dwdswb-ft-blocktext[\s\S]{0,250}?<\/span>/i)?.[0] || '';
+    html.match(/Grammatik[\s\S]{0,400}?dwdswb-ft-blocktext[\s\S]{0,250}?<\/span>/i)?.[0] ||
+    html.match(/Grammatik[\s\S]{0,120}?Substantiv\s*\([^)]+\)/i)?.[0] ||
+    '';
   const gramText = gramBlock.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+
+  const directGenus = html.match(/Substantiv\s*\((Maskulinum|Femininum|Neutrum)\)/i);
+  if (directGenus) {
+    const inner = directGenus[1].toLowerCase();
+    if (/maskulinum/.test(inner)) {
+      return { status: 'ok', gender: 'm', pos: 'Substantiv', reasons: [`Grammatik: ${inner}`] };
+    }
+    if (/femininum/.test(inner)) {
+      return { status: 'ok', gender: 'f', pos: 'Substantiv', reasons: [`Grammatik: ${inner}`] };
+    }
+    if (/neutrum/.test(inner)) {
+      return { status: 'ok', gender: 'n', pos: 'Substantiv', reasons: [`Grammatik: ${inner}`] };
+    }
+  }
 
   if (/Substantiv\s*\(([^)]+)\)/i.test(gramText)) {
     const inner = gramText.match(/Substantiv\s*\(([^)]+)\)/i)[1].toLowerCase();
