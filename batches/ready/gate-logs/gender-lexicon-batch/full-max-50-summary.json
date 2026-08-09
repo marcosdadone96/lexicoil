@@ -1,10 +1,10 @@
 {
-  "runAt": "2026-08-09T17:10:22.411Z",
+  "runAt": "2026-08-09T17:19:05.911Z",
   "mode": "full-max-50",
   "limit": 50,
-  "poolNullTotal": 471,
-  "eligible": 50,
-  "skipped": 93,
+  "poolNullTotal": 233,
+  "eligible": 11,
+  "skipped": 222,
   "skippedSamples": [
     {
       "lemma": "Vorteile",
@@ -46,12 +46,6 @@
       "lemma": "Erwachsene",
       "norm": "erwachsene",
       "poolCount": 14,
-      "reason": "plural-surface-blocklist"
-    },
-    {
-      "lemma": "Parks",
-      "norm": "parks",
-      "poolCount": 13,
       "reason": "plural-surface-blocklist"
     },
     {
@@ -113,12 +107,6 @@
       "norm": "thomas",
       "poolCount": 7,
       "reason": "proper-name-blocklist"
-    },
-    {
-      "lemma": "Vorkenntnisse",
-      "norm": "vorkenntnisse",
-      "poolCount": 7,
-      "reason": "plural-surface-blocklist"
     },
     {
       "lemma": "Braun",
@@ -185,385 +173,28 @@
       "norm": "nachteile",
       "poolCount": 4,
       "reason": "plural-surface-blocklist"
+    },
+    {
+      "lemma": "Obergeschoss",
+      "norm": "obergeschoss",
+      "poolCount": 4,
+      "reason": "plural-s"
+    },
+    {
+      "lemma": "Ratschläge",
+      "norm": "ratschläge",
+      "poolCount": 4,
+      "reason": "plural-surface-blocklist"
     }
   ],
-  "processed": 50,
-  "added": 46,
-  "failed": 4,
-  "goetheHits": 24,
-  "htmlHits": 22,
-  "cleanPct": 92,
+  "processed": 11,
+  "added": 0,
+  "failed": 11,
+  "goetheHits": 0,
+  "htmlHits": 0,
+  "cleanPct": 0,
   "apply": true,
-  "additions": {
-    "gebrauchtwarenmarkt": {
-      "lemma": "Gebrauchtwarenmarkt",
-      "gender": "m",
-      "source": "dwds-html",
-      "method": "html",
-      "poolCount": 2,
-      "url": "https://www.dwds.de/wb/Gebrauchtwarenmarkt"
-    },
-    "gegend": {
-      "lemma": "Gegend",
-      "gender": "f",
-      "source": "dwds-goethe-B1",
-      "method": "goethe",
-      "poolCount": 2,
-      "url": "https://www.dwds.de/wb/Gegend"
-    },
-    "gemeinschaftsbeete": {
-      "lemma": "Gemeinschaftsbeete",
-      "gender": "f",
-      "source": "dwds-html",
-      "method": "html",
-      "poolCount": 2,
-      "url": "https://www.dwds.de/wb/Gemeinschaftsbeete"
-    },
-    "geschmack": {
-      "lemma": "Geschmack",
-      "gender": "m",
-      "source": "dwds-goethe-B1",
-      "method": "goethe",
-      "poolCount": 2,
-      "url": "https://www.dwds.de/wb/Geschmack"
-    },
-    "gesundheitsprogramm": {
-      "lemma": "Gesundheitsprogramm",
-      "gender": "n",
-      "source": "dwds-html",
-      "method": "html",
-      "poolCount": 2,
-      "url": "https://www.dwds.de/wb/Gesundheitsprogramm"
-    },
-    "gitarre": {
-      "lemma": "Gitarre",
-      "gender": "f",
-      "source": "dwds-goethe-A2",
-      "method": "goethe",
-      "poolCount": 2,
-      "url": "https://www.dwds.de/wb/Gitarre"
-    },
-    "hand": {
-      "lemma": "Hand",
-      "gender": "f",
-      "source": "dwds-goethe-A1",
-      "method": "goethe",
-      "poolCount": 2,
-      "url": "https://www.dwds.de/wb/Hand"
-    },
-    "handtuch": {
-      "lemma": "Handtuch",
-      "gender": "n",
-      "source": "dwds-goethe-A2",
-      "method": "goethe",
-      "poolCount": 2,
-      "url": "https://www.dwds.de/wb/Handtuch"
-    },
-    "hustenmittel": {
-      "lemma": "Hustenmittel",
-      "gender": "n",
-      "source": "dwds-html",
-      "method": "html",
-      "poolCount": 2,
-      "url": "https://www.dwds.de/wb/Hustenmittel"
-    },
-    "informationsflut": {
-      "lemma": "Informationsflut",
-      "gender": "f",
-      "source": "dwds-html",
-      "method": "html",
-      "poolCount": 2,
-      "url": "https://www.dwds.de/wb/Informationsflut"
-    },
-    "informationszugang": {
-      "lemma": "Informationszugang",
-      "gender": "m",
-      "source": "dwds-html",
-      "method": "html",
-      "poolCount": 2,
-      "url": "https://www.dwds.de/wb/Informationszugang"
-    },
-    "jugendtreff": {
-      "lemma": "Jugendtreff",
-      "gender": "m",
-      "source": "dwds-html",
-      "method": "html",
-      "poolCount": 2,
-      "url": "https://www.dwds.de/wb/Jugendtreff"
-    },
-    "krankenkasse": {
-      "lemma": "Krankenkasse",
-      "gender": "f",
-      "source": "dwds-goethe-A2",
-      "method": "goethe",
-      "poolCount": 2,
-      "url": "https://www.dwds.de/wb/Krankenkasse"
-    },
-    "lebensweise": {
-      "lemma": "Lebensweise",
-      "gender": "f",
-      "source": "dwds-html",
-      "method": "html",
-      "poolCount": 2,
-      "url": "https://www.dwds.de/wb/Lebensweise"
-    },
-    "mitglied": {
-      "lemma": "Mitglied",
-      "gender": "n",
-      "source": "dwds-goethe-B1",
-      "method": "goethe",
-      "poolCount": 2,
-      "url": "https://www.dwds.de/wb/Mitglied"
-    },
-    "museumsbesuch": {
-      "lemma": "Museumsbesuch",
-      "gender": "m",
-      "source": "dwds-html",
-      "method": "html",
-      "poolCount": 2,
-      "url": "https://www.dwds.de/wb/Museumsbesuch"
-    },
-    "nachricht": {
-      "lemma": "Nachricht",
-      "gender": "f",
-      "source": "dwds-goethe-A2",
-      "method": "goethe",
-      "poolCount": 2,
-      "url": "https://www.dwds.de/wb/Nachricht"
-    },
-    "picknick": {
-      "lemma": "Picknick",
-      "gender": "n",
-      "source": "dwds-goethe-B1",
-      "method": "goethe",
-      "poolCount": 2,
-      "url": "https://www.dwds.de/wb/Picknick"
-    },
-    "produkt": {
-      "lemma": "Produkt",
-      "gender": "n",
-      "source": "dwds-goethe-A2",
-      "method": "goethe",
-      "poolCount": 2,
-      "url": "https://www.dwds.de/wb/Produkt"
-    },
-    "programm": {
-      "lemma": "Programm",
-      "gender": "n",
-      "source": "dwds-goethe-A2",
-      "method": "goethe",
-      "poolCount": 2,
-      "url": "https://www.dwds.de/wb/Programm"
-    },
-    "prozess": {
-      "lemma": "Prozess",
-      "gender": "m",
-      "source": "dwds-goethe-B1",
-      "method": "goethe",
-      "poolCount": 2,
-      "url": "https://www.dwds.de/wb/Prozess"
-    },
-    "seminar": {
-      "lemma": "Seminar",
-      "gender": "n",
-      "source": "dwds-goethe-B1",
-      "method": "goethe",
-      "poolCount": 2,
-      "url": "https://www.dwds.de/wb/Seminar"
-    },
-    "sportart": {
-      "lemma": "Sportart",
-      "gender": "f",
-      "source": "dwds-goethe-B1",
-      "method": "goethe",
-      "poolCount": 2,
-      "url": "https://www.dwds.de/wb/Sportart"
-    },
-    "stadtlauf": {
-      "lemma": "Stadtlauf",
-      "gender": "m",
-      "source": "dwds-html",
-      "method": "html",
-      "poolCount": 2,
-      "url": "https://www.dwds.de/wb/Stadtlauf"
-    },
-    "stadtrundgang": {
-      "lemma": "Stadtrundgang",
-      "gender": "m",
-      "source": "dwds-html",
-      "method": "html",
-      "poolCount": 2,
-      "url": "https://www.dwds.de/wb/Stadtrundgang"
-    },
-    "start": {
-      "lemma": "Start",
-      "gender": "m",
-      "source": "dwds-goethe-B1",
-      "method": "goethe",
-      "poolCount": 2,
-      "url": "https://www.dwds.de/wb/Start"
-    },
-    "umfrage": {
-      "lemma": "Umfrage",
-      "gender": "f",
-      "source": "dwds-goethe-B1",
-      "method": "goethe",
-      "poolCount": 2,
-      "url": "https://www.dwds.de/wb/Umfrage"
-    },
-    "wohngegend": {
-      "lemma": "Wohngegend",
-      "gender": "f",
-      "source": "dwds-html",
-      "method": "html",
-      "poolCount": 2,
-      "url": "https://www.dwds.de/wb/Wohngegend"
-    },
-    "zertifikat": {
-      "lemma": "Zertifikat",
-      "gender": "n",
-      "source": "dwds-goethe-B1",
-      "method": "goethe",
-      "poolCount": 2,
-      "url": "https://www.dwds.de/wb/Zertifikat"
-    },
-    "abendkurse": {
-      "lemma": "Abendkurse",
-      "gender": "m",
-      "source": "dwds-html",
-      "method": "html",
-      "poolCount": 1,
-      "url": "https://www.dwds.de/wb/Abendkurse"
-    },
-    "abenteuerpark": {
-      "lemma": "Abenteuerpark",
-      "gender": "m",
-      "source": "dwds-html",
-      "method": "html",
-      "poolCount": 1,
-      "url": "https://www.dwds.de/wb/Abenteuerpark"
-    },
-    "abfall": {
-      "lemma": "Abfall",
-      "gender": "m",
-      "source": "dwds-goethe-B1",
-      "method": "goethe",
-      "poolCount": 1,
-      "url": "https://www.dwds.de/wb/Abfall"
-    },
-    "abschluss": {
-      "lemma": "Abschluss",
-      "gender": "m",
-      "source": "dwds-goethe-B1",
-      "method": "goethe",
-      "poolCount": 1,
-      "url": "https://www.dwds.de/wb/Abschluss"
-    },
-    "allerwichtigste": {
-      "lemma": "Allerwichtigste",
-      "gender": "m",
-      "source": "dwds-html",
-      "method": "html",
-      "poolCount": 1,
-      "url": "https://www.dwds.de/wb/Allerwichtigste"
-    },
-    "anfängerniveau": {
-      "lemma": "Anfängerniveau",
-      "gender": "n",
-      "source": "dwds-html",
-      "method": "html",
-      "poolCount": 1,
-      "url": "https://www.dwds.de/wb/Anf%C3%A4ngerniveau"
-    },
-    "angerufene": {
-      "lemma": "Angerufene",
-      "gender": "m",
-      "source": "dwds-html",
-      "method": "html",
-      "poolCount": 1,
-      "url": "https://www.dwds.de/wb/Angerufene"
-    },
-    "ankunft": {
-      "lemma": "Ankunft",
-      "gender": "f",
-      "source": "dwds-goethe-A1",
-      "method": "goethe",
-      "poolCount": 1,
-      "url": "https://www.dwds.de/wb/Ankunft"
-    },
-    "anruf": {
-      "lemma": "Anruf",
-      "gender": "m",
-      "source": "dwds-goethe-A1",
-      "method": "goethe",
-      "poolCount": 1,
-      "url": "https://www.dwds.de/wb/Anruf"
-    },
-    "anschlusszüge": {
-      "lemma": "Anschlusszüge",
-      "gender": "m",
-      "source": "dwds-html",
-      "method": "html",
-      "poolCount": 1,
-      "url": "https://www.dwds.de/wb/Anschlussz%C3%BCge"
-    },
-    "anspruch": {
-      "lemma": "Anspruch",
-      "gender": "m",
-      "source": "dwds-goethe-B1",
-      "method": "goethe",
-      "poolCount": 1,
-      "url": "https://www.dwds.de/wb/Anspruch"
-    },
-    "apparat": {
-      "lemma": "Apparat",
-      "gender": "m",
-      "source": "dwds-goethe-A2",
-      "method": "goethe",
-      "poolCount": 1,
-      "url": "https://www.dwds.de/wb/Apparat"
-    },
-    "april": {
-      "lemma": "April",
-      "gender": "m",
-      "source": "dwds-goethe-A1",
-      "method": "goethe",
-      "poolCount": 1,
-      "url": "https://www.dwds.de/wb/April"
-    },
-    "arbeitsmodell": {
-      "lemma": "Arbeitsmodell",
-      "gender": "n",
-      "source": "dwds-html",
-      "method": "html",
-      "poolCount": 1,
-      "url": "https://www.dwds.de/wb/Arbeitsmodell"
-    },
-    "arbeitsumfeld": {
-      "lemma": "Arbeitsumfeld",
-      "gender": "n",
-      "source": "dwds-html",
-      "method": "html",
-      "poolCount": 1,
-      "url": "https://www.dwds.de/wb/Arbeitsumfeld"
-    },
-    "arztbesuch": {
-      "lemma": "Arztbesuch",
-      "gender": "m",
-      "source": "dwds-html",
-      "method": "html",
-      "poolCount": 1,
-      "url": "https://www.dwds.de/wb/Arztbesuch"
-    },
-    "arztbesuche": {
-      "lemma": "Arztbesuche",
-      "gender": "m",
-      "source": "dwds-html",
-      "method": "html",
-      "poolCount": 1,
-      "url": "https://www.dwds.de/wb/Arztbesuche"
-    }
-  },
+  "additions": {},
   "failures": [
     {
       "lemma": "Insgesamt",
@@ -595,6 +226,69 @@
     {
       "lemma": "Anmeldesystem",
       "norm": "anmeldesystem",
+      "poolCount": 1,
+      "status": "unknown",
+      "reasons": [
+        "no genus in Grammatik block"
+      ]
+    },
+    {
+      "lemma": "Dreimal",
+      "norm": "dreimal",
+      "poolCount": 1,
+      "status": "unknown",
+      "reasons": [
+        "no genus in Grammatik block"
+      ]
+    },
+    {
+      "lemma": "Franziska",
+      "norm": "franziska",
+      "poolCount": 1,
+      "status": "unknown",
+      "reasons": [
+        "no genus in Grammatik block"
+      ]
+    },
+    {
+      "lemma": "Gewaschen",
+      "norm": "gewaschen",
+      "poolCount": 1,
+      "status": "unknown",
+      "reasons": [
+        "no genus in Grammatik block"
+      ]
+    },
+    {
+      "lemma": "Manchmal",
+      "norm": "manchmal",
+      "poolCount": 1,
+      "status": "unknown",
+      "reasons": [
+        "no genus in Grammatik block"
+      ]
+    },
+    {
+      "lemma": "Motiviert",
+      "norm": "motiviert",
+      "poolCount": 1,
+      "status": "unknown",
+      "reasons": [
+        "no genus in Grammatik block"
+      ]
+    },
+    {
+      "lemma": "Valentina",
+      "norm": "valentina",
+      "poolCount": 1,
+      "status": "unknown",
+      "reasons": [
+        "no genus in Grammatik block"
+      ]
+    },
+    {
+      "lemma": "Zweimal",
+      "norm": "zweimal",
       "poolCount": 1,
       "status": "unknown",
       "reasons": [
