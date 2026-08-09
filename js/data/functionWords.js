@@ -8,6 +8,7 @@ const NEVER_INDEX = new Set([
   'und', 'oder', 'aber', 'nicht', 'auch', 'mit', 'von', 'zu', 'auf', 'in', 'an', 'für',
   'bei', 'nach', 'vor', 'über', 'unter', 'durch', 'als', 'wenn', 'weil', 'dass', 'ob',
   'so', 'noch', 'nur', 'schon', 'sehr', 'mehr', 'man', 'ich', 'du', 'er', 'sie', 'es', 'wir',
+  'alle', 'ohne', 'dich', 'sich', 'wie', 'zum', 'zur', 'nie',
   'jedem', 'jeden', 'jede', 'jeder', 'dieses', 'dieser', 'diese',
 ]);
 

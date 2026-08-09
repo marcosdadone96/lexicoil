@@ -6,9 +6,12 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { createRequire } from 'node:module';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, '..');
+const require = createRequire(import.meta.url);
+const { NEVER_INDEX } = require(path.join(ROOT, 'js/data/functionWords.js'));
 
 /** High-confidence B1–C1 nouns (frequency + exam vocabulary). */
 const OVERRIDES = {
@@ -72,6 +75,7 @@ const OVERRIDES = {
   farbe: 'f', rot: 'n', blau: 'n', grün: 'n', gelb: 'n', schwarz: 'n', weiß: 'n',
   größe: 'f', länge: 'f', breite: 'f', höhe: 'f', gewicht: 'n', meter: 'm',
   kilogramm: 'n', liter: 'm', stück: 'n', paar: 'n', doppelzimmer: 'n', einzelzimmer: 'n',
+  balkon: 'm', integration: 'f', nachbarschaft: 'f',
 };
 
 function norm(s) {
@@ -81,8 +85,9 @@ function norm(s) {
 function inferGender(low) {
   const neut = new Set(['feuer', 'wasser', 'messer', 'kreuz', 'herz', 'interieur', 'genie', 'mädchen']);
   if (neut.has(low)) return 'n';
-  if (/(chen|lein|tum|ment|nis|ett|on|um)$/i.test(low) && !/(ung|heit|keit)$/i.test(low)) return 'n';
+  if (NEVER_INDEX.has(low)) return null;
   if (/(ung|heit|keit|schaft|tion|sion|tät|ität|ik|ur|ie|ei|anz|enz)$/i.test(low)) return 'f';
+  if (/(chen|lein|tum|ment|nis|ett|um)$/i.test(low) && !/(ung|heit|keit)$/i.test(low)) return 'n';
   if (low.endsWith('in') && low.length > 3) return 'f';
   if (/(ling|ismus|or|ant|ent|ich)$/i.test(low)) return 'm';
   if (low.endsWith('er') && low.length >= 4) return 'm';
@@ -121,7 +126,7 @@ function collectBankVocab() {
 
 const lex = { ...OVERRIDES };
 for (const w of [...collectLemmaFiles(), ...collectBankVocab()]) {
-  if (!w || lex[w]) continue;
+  if (!w || lex[w] || NEVER_INDEX.has(w)) continue;
   const g = inferGender(w);
   if (g) lex[w] = g;
 }

@@ -202,6 +202,12 @@ const ManualVocab = (() => {
     return data;
   }
 
+  /** Noun suffixes checked before adjective heuristics (-haft must not match inside -schaft). */
+  const DE_NOUN_SUFFIX_POS =
+    /(ung|heit|keit|schaft|tion|sion|tät|ität|ismus|ment|chen|lein|tum|nis|sal|mal|ion)$/i;
+  const DE_ADJECTIVE_SUFFIX =
+    /(?:liche|licher|liches|lichem|lichen|lich|ig|isch|bar|sam|(?<![s])haft|los|voll|frei|mäßig|artig)$/i;
+
   function inferPos(fc, subject) {
     const sub = subject || fc?.sourceLang || '';
     const parsed = parseLeadingArticle(fc?.word, sub);
@@ -213,9 +219,8 @@ const ManualVocab = (() => {
 
     if (sub === 'de' && low) {
       if (/^[A-ZÄÖÜ]/.test(raw)) {
-        if (/(liche|licher|liches|lichem|lichen|lich|ig|isch|bar|sam|haft|los|voll|frei|mäßig|artig)$/i.test(low)) {
-          return 'adjective';
-        }
+        if (DE_NOUN_SUFFIX_POS.test(low)) return 'noun';
+        if (DE_ADJECTIVE_SUFFIX.test(low)) return 'adjective';
         if (/ieren$/i.test(low)) return 'verb';
         if (/(ionen|ungen|heiten|keiten|schaften|tionen|eln)$/i.test(low)) return 'noun';
         if (/en$/i.test(low) && low.length > 3 && !/(ung|heit|keit|schaft|tion|ismus|ment|chen|lein|tum|nis|sal|mal|ion)$/i.test(low)) {
@@ -226,9 +231,8 @@ const ManualVocab = (() => {
       }
       if (DE_COMMON_ADVERBS.has(low)) return 'adverb';
       if (/weise$/.test(low)) return 'adverb';
-      if (/(liche|licher|liches|lichem|lichen|lich|ig|isch|bar|sam|haft|los|voll|frei|mäßig|artig)$/i.test(low)) {
-        return 'adjective';
-      }
+      if (DE_NOUN_SUFFIX_POS.test(low)) return 'noun';
+      if (DE_ADJECTIVE_SUFFIX.test(low)) return 'adjective';
       if (/^ge[a-zäöüß]{3,}(t|en)$/i.test(low)) return 'verb';
       const conjPos = inferPosFromConjugation(raw, sub);
       if (conjPos) return conjPos;
@@ -272,7 +276,10 @@ const ManualVocab = (() => {
         typeof ArticleLexicon !== 'undefined' && ArticleLexicon.lookupLemma
           ? ArticleLexicon.lookupLemma(low, 'de')
           : null;
-      if (/(chen|lein|tum|ment|nis|ett|on|um)$/i.test(low) && !/(ung|heit|keit)$/i.test(low)) {
+      if (/(ung|heit|keit|schaft|tion|sion|tät|ität|ik|ur|ie|ei|anz|enz)$/i.test(low)) {
+        return { gender: 'f', article: 'die' };
+      }
+      if (/(chen|lein|tum|ment|nis|ett|um)$/i.test(low) && !/(ung|heit|keit)$/i.test(low)) {
         if (lexNeut === 'n') return { gender: 'n', article: 'das' };
         if (low.endsWith('chen') || low.endsWith('lein')) {
           const stem = low.slice(0, -2);
@@ -286,9 +293,11 @@ const ManualVocab = (() => {
         }
         return { gender: 'n', article: 'das' };
       }
-      if (/(ung|heit|keit|schaft|tion|sion|tät|ität|ik|ur|ie|ei|anz|enz)$/i.test(low)) {
-        return { gender: 'f', article: 'die' };
-      }
+      const pluralHit =
+        typeof ArticleLexicon !== 'undefined' && ArticleLexicon.pluralGenderDe
+          ? ArticleLexicon.pluralGenderDe(low)
+          : null;
+      if (pluralHit === 'p') return { gender: 'f', article: 'die', plural: true };
       if (low.endsWith('in') && low.length > 3) return { gender: 'f', article: 'die' };
       if (/(ling|ismus|or|ant|ent|ich)$/i.test(low)) return { gender: 'm', article: 'der' };
       if (low.endsWith('er') && low.length >= 4) return { gender: 'm', article: 'der' };

@@ -1,0 +1,427 @@
+{
+  "runAt": "2026-08-09T16:41:17.928Z",
+  "groundTruth": {
+    "totalEntries": 104,
+    "sources": {
+      "contentVocabulary": 55,
+      "dwdsBenchmark": 22,
+      "dwdsPoolExpansion": 30
+    }
+  },
+  "poolScan": {
+    "files": 689,
+    "uniqueNounCandidates": 1980,
+    "withGroundTruth": 71,
+    "coveragePct": 3.6,
+    "deterministicAssignment": {
+      "withArticle": 1337,
+      "nullArticle": 643,
+      "misclassifiedNonNoun": 38,
+      "assignmentCoveragePct": 67.5
+    },
+    "schaftHaftBugScan": {
+      "poolLemmaCount": 21,
+      "withoutArticle": 0,
+      "samples": []
+    }
+  },
+  "systemAccuracy": {
+    "poolVocabularyTags": {
+      "label": "pool-vocabularyTags",
+      "verified": 71,
+      "ok": 64,
+      "errors": [
+        {
+          "lemma": "Supermarkt",
+          "normLemma": "supermarkt",
+          "assignedArticle": null,
+          "assignedGender": null,
+          "correctArticle": "der",
+          "correctGender": "m",
+          "ok": false,
+          "truthSource": "content-vocab/en/A2.json,content-vocab/es/A2.json",
+          "systemSource": "none",
+          "context": "pool (A2/B1, 14×)"
+        },
+        {
+          "lemma": "Schwimmbad",
+          "normLemma": "schwimmbad",
+          "assignedArticle": null,
+          "assignedGender": null,
+          "correctArticle": "das",
+          "correctGender": "n",
+          "ok": false,
+          "truthSource": "content-vocab/en/A2.json,content-vocab/es/A2.json",
+          "systemSource": "none",
+          "context": "pool (A2/B1, 5×)"
+        },
+        {
+          "lemma": "Krankenkasse",
+          "normLemma": "krankenkasse",
+          "assignedArticle": null,
+          "assignedGender": null,
+          "correctArticle": "die",
+          "correctGender": "f",
+          "ok": false,
+          "truthSource": "content-vocab/en/B1.json,content-vocab/es/B1.json",
+          "systemSource": "none",
+          "context": "pool (A2/B1, 2×)"
+        },
+        {
+          "lemma": "Nachricht",
+          "normLemma": "nachricht",
+          "assignedArticle": null,
+          "assignedGender": null,
+          "correctArticle": "die",
+          "correctGender": "f",
+          "ok": false,
+          "truthSource": "content-vocab/en/B1.json,content-vocab/es/B1.json",
+          "systemSource": "none",
+          "context": "pool (B1, 2×)"
+        },
+        {
+          "lemma": "Smartphone",
+          "normLemma": "smartphone",
+          "assignedArticle": null,
+          "assignedGender": null,
+          "correctArticle": "das",
+          "correctGender": "n",
+          "ok": false,
+          "truthSource": "dwds-benchmark",
+          "systemSource": "none",
+          "context": "pool (B1, 10×)"
+        },
+        {
+          "lemma": "Unterkunft",
+          "normLemma": "unterkunft",
+          "assignedArticle": null,
+          "assignedGender": null,
+          "correctArticle": "die",
+          "correctGender": "f",
+          "ok": false,
+          "truthSource": "content-vocab/en/B1.json,content-vocab/es/B1.json",
+          "systemSource": "none",
+          "context": "pool (B1, 11×)"
+        },
+        {
+          "lemma": "Ehrenamt",
+          "normLemma": "ehrenamt",
+          "assignedArticle": null,
+          "assignedGender": null,
+          "correctArticle": "das",
+          "correctGender": "n",
+          "ok": false,
+          "truthSource": "content-vocab/en/B1.json,content-vocab/es/B1.json",
+          "systemSource": "none",
+          "context": "pool (B1, 1×)"
+        }
+      ],
+      "accuracyPct": 90.1
+    },
+    "dwdsBenchmark": {
+      "label": "dwds-benchmark",
+      "verified": 22,
+      "ok": 19,
+      "errors": [
+        {
+          "lemma": "haustür",
+          "normLemma": "haustür",
+          "assignedArticle": null,
+          "assignedGender": null,
+          "correctArticle": "die",
+          "correctGender": "f",
+          "ok": false,
+          "truthSource": "dwds-benchmark",
+          "systemSource": "none",
+          "context": "dwds-benchmark"
+        },
+        {
+          "lemma": "e-mail",
+          "normLemma": "e-mail",
+          "assignedArticle": null,
+          "assignedGender": null,
+          "correctArticle": "die",
+          "correctGender": "f",
+          "ok": false,
+          "truthSource": "dwds-benchmark",
+          "systemSource": "none",
+          "context": "dwds-benchmark"
+        },
+        {
+          "lemma": "smartphone",
+          "normLemma": "smartphone",
+          "assignedArticle": null,
+          "assignedGender": null,
+          "correctArticle": "das",
+          "correctGender": "n",
+          "ok": false,
+          "truthSource": "dwds-benchmark",
+          "systemSource": "none",
+          "context": "dwds-benchmark"
+        }
+      ],
+      "accuracyPct": 86.4
+    },
+    "unionVerified": {
+      "label": "union-pool+benchmark",
+      "verified": 82,
+      "ok": 73,
+      "errors": [
+        {
+          "lemma": "Supermarkt",
+          "normLemma": "supermarkt",
+          "assignedArticle": null,
+          "assignedGender": null,
+          "correctArticle": "der",
+          "correctGender": "m",
+          "ok": false,
+          "truthSource": "content-vocab/en/A2.json,content-vocab/es/A2.json",
+          "systemSource": "none",
+          "context": "pool (A2/B1, 14×)"
+        },
+        {
+          "lemma": "Schwimmbad",
+          "normLemma": "schwimmbad",
+          "assignedArticle": null,
+          "assignedGender": null,
+          "correctArticle": "das",
+          "correctGender": "n",
+          "ok": false,
+          "truthSource": "content-vocab/en/A2.json,content-vocab/es/A2.json",
+          "systemSource": "none",
+          "context": "pool (A2/B1, 5×)"
+        },
+        {
+          "lemma": "Krankenkasse",
+          "normLemma": "krankenkasse",
+          "assignedArticle": null,
+          "assignedGender": null,
+          "correctArticle": "die",
+          "correctGender": "f",
+          "ok": false,
+          "truthSource": "content-vocab/en/B1.json,content-vocab/es/B1.json",
+          "systemSource": "none",
+          "context": "pool (A2/B1, 2×)"
+        },
+        {
+          "lemma": "Nachricht",
+          "normLemma": "nachricht",
+          "assignedArticle": null,
+          "assignedGender": null,
+          "correctArticle": "die",
+          "correctGender": "f",
+          "ok": false,
+          "truthSource": "content-vocab/en/B1.json,content-vocab/es/B1.json",
+          "systemSource": "none",
+          "context": "pool (B1, 2×)"
+        },
+        {
+          "lemma": "smartphone",
+          "normLemma": "smartphone",
+          "assignedArticle": null,
+          "assignedGender": null,
+          "correctArticle": "das",
+          "correctGender": "n",
+          "ok": false,
+          "truthSource": "dwds-benchmark",
+          "systemSource": "none",
+          "context": "dwds-benchmark"
+        },
+        {
+          "lemma": "Unterkunft",
+          "normLemma": "unterkunft",
+          "assignedArticle": null,
+          "assignedGender": null,
+          "correctArticle": "die",
+          "correctGender": "f",
+          "ok": false,
+          "truthSource": "content-vocab/en/B1.json,content-vocab/es/B1.json",
+          "systemSource": "none",
+          "context": "pool (B1, 11×)"
+        },
+        {
+          "lemma": "Ehrenamt",
+          "normLemma": "ehrenamt",
+          "assignedArticle": null,
+          "assignedGender": null,
+          "correctArticle": "das",
+          "correctGender": "n",
+          "ok": false,
+          "truthSource": "content-vocab/en/B1.json,content-vocab/es/B1.json",
+          "systemSource": "none",
+          "context": "pool (B1, 1×)"
+        },
+        {
+          "lemma": "haustür",
+          "normLemma": "haustür",
+          "assignedArticle": null,
+          "assignedGender": null,
+          "correctArticle": "die",
+          "correctGender": "f",
+          "ok": false,
+          "truthSource": "dwds-benchmark",
+          "systemSource": "none",
+          "context": "dwds-benchmark"
+        },
+        {
+          "lemma": "e-mail",
+          "normLemma": "e-mail",
+          "assignedArticle": null,
+          "assignedGender": null,
+          "correctArticle": "die",
+          "correctGender": "f",
+          "ok": false,
+          "truthSource": "dwds-benchmark",
+          "systemSource": "none",
+          "context": "dwds-benchmark"
+        }
+      ],
+      "accuracyPct": 89
+    },
+    "userBlobs": null
+  },
+  "lexiconFileVsTruth": {
+    "compared": 74,
+    "errors": 0,
+    "accuracyPct": 100,
+    "errorList": []
+  },
+  "runtimeErrors": [
+    {
+      "lemma": "Supermarkt",
+      "normLemma": "supermarkt",
+      "assignedArticle": null,
+      "assignedGender": null,
+      "correctArticle": "der",
+      "correctGender": "m",
+      "ok": false,
+      "truthSource": "content-vocab/en/A2.json,content-vocab/es/A2.json",
+      "systemSource": "none",
+      "context": "pool (A2/B1, 14×)"
+    },
+    {
+      "lemma": "Schwimmbad",
+      "normLemma": "schwimmbad",
+      "assignedArticle": null,
+      "assignedGender": null,
+      "correctArticle": "das",
+      "correctGender": "n",
+      "ok": false,
+      "truthSource": "content-vocab/en/A2.json,content-vocab/es/A2.json",
+      "systemSource": "none",
+      "context": "pool (A2/B1, 5×)"
+    },
+    {
+      "lemma": "Krankenkasse",
+      "normLemma": "krankenkasse",
+      "assignedArticle": null,
+      "assignedGender": null,
+      "correctArticle": "die",
+      "correctGender": "f",
+      "ok": false,
+      "truthSource": "content-vocab/en/B1.json,content-vocab/es/B1.json",
+      "systemSource": "none",
+      "context": "pool (A2/B1, 2×)"
+    },
+    {
+      "lemma": "Nachricht",
+      "normLemma": "nachricht",
+      "assignedArticle": null,
+      "assignedGender": null,
+      "correctArticle": "die",
+      "correctGender": "f",
+      "ok": false,
+      "truthSource": "content-vocab/en/B1.json,content-vocab/es/B1.json",
+      "systemSource": "none",
+      "context": "pool (B1, 2×)"
+    },
+    {
+      "lemma": "smartphone",
+      "normLemma": "smartphone",
+      "assignedArticle": null,
+      "assignedGender": null,
+      "correctArticle": "das",
+      "correctGender": "n",
+      "ok": false,
+      "truthSource": "dwds-benchmark",
+      "systemSource": "none",
+      "context": "dwds-benchmark"
+    },
+    {
+      "lemma": "Unterkunft",
+      "normLemma": "unterkunft",
+      "assignedArticle": null,
+      "assignedGender": null,
+      "correctArticle": "die",
+      "correctGender": "f",
+      "ok": false,
+      "truthSource": "content-vocab/en/B1.json,content-vocab/es/B1.json",
+      "systemSource": "none",
+      "context": "pool (B1, 11×)"
+    },
+    {
+      "lemma": "Ehrenamt",
+      "normLemma": "ehrenamt",
+      "assignedArticle": null,
+      "assignedGender": null,
+      "correctArticle": "das",
+      "correctGender": "n",
+      "ok": false,
+      "truthSource": "content-vocab/en/B1.json,content-vocab/es/B1.json",
+      "systemSource": "none",
+      "context": "pool (B1, 1×)"
+    },
+    {
+      "lemma": "haustür",
+      "normLemma": "haustür",
+      "assignedArticle": null,
+      "assignedGender": null,
+      "correctArticle": "die",
+      "correctGender": "f",
+      "ok": false,
+      "truthSource": "dwds-benchmark",
+      "systemSource": "none",
+      "context": "dwds-benchmark"
+    },
+    {
+      "lemma": "e-mail",
+      "normLemma": "e-mail",
+      "assignedArticle": null,
+      "assignedGender": null,
+      "correctArticle": "die",
+      "correctGender": "f",
+      "ok": false,
+      "truthSource": "dwds-benchmark",
+      "systemSource": "none",
+      "context": "dwds-benchmark"
+    }
+  ],
+  "errorPatterns": {
+    "null→f (none)": {
+      "count": 5,
+      "samples": [
+        "Krankenkasse",
+        "Nachricht",
+        "Unterkunft",
+        "haustür",
+        "e-mail"
+      ]
+    },
+    "null→n (none)": {
+      "count": 3,
+      "samples": [
+        "Schwimmbad",
+        "smartphone",
+        "Ehrenamt"
+      ]
+    },
+    "null→m (none)": {
+      "count": 1,
+      "samples": [
+        "Supermarkt"
+      ]
+    }
+  },
+  "lexiconPollutionSamples": [],
+  "userNounCount": 0
+}
