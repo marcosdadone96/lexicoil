@@ -3,8 +3,8 @@
  * Systematic German noun gender audit.
  *
  * Ground truth (external to runtime heuristics):
- *   - content/vocabulary/de/ (all level JSON files) — explicit der/die/das in word field
- *   - DWDS-verified sets (benchmark sample + pool expansion 2026-07-13)
+ *   - data/gender-ground-truth/dwds-verified.json (expanded DWDS GT, 300–500 lemmas)
+ *   - fallback: content/vocabulary/de/ + legacy DWDS benchmark/pool sets
  *
  * System under test (deterministic, no Gemini):
  *   ArticleLexicon + ManualVocab.enrichFlashcard (same as save path minus AI)
@@ -83,8 +83,20 @@ function systemAssign(word, MV) {
   };
 }
 
+function loadExpandedGroundTruth() {
+  const gtPath = path.join(ROOT, 'data/gender-ground-truth/dwds-verified.json');
+  if (!fs.existsSync(gtPath)) return null;
+  try {
+    const data = JSON.parse(fs.readFileSync(gtPath, 'utf8'));
+    return data.entries || data;
+  } catch (_) {
+    return null;
+  }
+}
+
 function buildGroundTruth() {
   const truth = new Map();
+  const expanded = loadExpandedGroundTruth();
 
   function add(lemma, gender, source) {
     const key = norm(lemma);
@@ -93,6 +105,14 @@ function buildGroundTruth() {
     if (!['m', 'f', 'n'].includes(g)) return;
     if (!truth.has(key)) truth.set(key, { gender: g, article: GENDER_TO_ARTICLE[g], sources: new Set([source]) });
     else truth.get(key).sources.add(source);
+  }
+
+  if (expanded) {
+    for (const [key, row] of Object.entries(expanded)) {
+      const sources = row.sources || [row.source || 'dwds-verified'];
+      for (const s of sources) add(row.lemma || key, row.gender, s);
+    }
+    return truth;
   }
 
   for (const [k, v] of Object.entries(DWDS_BENCHMARK)) add(k, v, 'dwds-benchmark');
@@ -269,6 +289,7 @@ async function main() {
   const includeUsers = process.argv.includes('--include-users');
   const { ManualVocab: MV, lex } = loadGenderStack();
   const truth = buildGroundTruth();
+  const expandedGt = loadExpandedGroundTruth();
 
   const { freq: poolFreq, files: poolFiles } = collectPoolNouns();
   const poolEntries = [...poolFreq.values()].map((r) => ({
@@ -331,11 +352,20 @@ async function main() {
     runAt: new Date().toISOString(),
     groundTruth: {
       totalEntries: truth.size,
-      sources: {
-        contentVocabulary: [...truth.values()].filter((v) => [...v.sources].some((s) => s.startsWith('content-vocab'))).length,
-        dwdsBenchmark: Object.keys(DWDS_BENCHMARK).length,
-        dwdsPoolExpansion: Object.keys(DWDS_POOL).length,
-      },
+      expandedFile: expandedGt ? 'data/gender-ground-truth/dwds-verified.json' : null,
+      sources: expandedGt
+        ? (() => {
+            const counts = {};
+            for (const row of Object.values(expandedGt)) {
+              for (const s of row.sources || []) counts[s] = (counts[s] || 0) + 1;
+            }
+            return counts;
+          })()
+        : {
+            contentVocabulary: [...truth.values()].filter((v) => [...v.sources].some((s) => s.startsWith('content-vocab'))).length,
+            dwdsBenchmark: Object.keys(DWDS_BENCHMARK).length,
+            dwdsPoolExpansion: Object.keys(DWDS_POOL).length,
+          },
     },
     poolScan: {
       files: poolFiles,
@@ -387,7 +417,7 @@ async function main() {
   fs.writeFileSync(outPath, JSON.stringify(report, null, 2));
 
   console.log('\n── Systematic gender audit ──\n');
-  console.log(`Ground truth entries: ${truth.size}`);
+  console.log(`Ground truth entries: ${truth.size}${expandedGt ? ' (expanded DWDS file)' : ' (legacy inline)'}`);
   console.log(`Pool files scanned: ${poolFiles} | unique noun tags: ${poolUnique} | with GT: ${poolWithTruth} (${report.poolScan.coveragePct}%)`);
   console.log(`Deterministic assignment: ${poolWithArticle}/${poolUnique} (${assignmentCoveragePct}%) with article | null: ${poolNullArticle} | misclassified: ${poolMisclassified}`);
   console.log(`-schaft lemmas: ${report.poolScan.schaftHaftBugScan.poolLemmaCount} | without article (haft-bug proxy): ${schaftBlocked.length}`);
