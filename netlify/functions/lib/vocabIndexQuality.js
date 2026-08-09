@@ -17,18 +17,7 @@ const VOCAB_INDEX_VERSION = 'v3-quality';
 
 const MAX_VOCAB_INDEX = 45;
 
-/** Functional / pronoun / generic adverb noise — never index. */
-const NEVER_INDEX = new Set([
-  'ihren', 'ihre', 'ihr', 'ihrem', 'ihrer', 'seinen', 'seine', 'sein', 'seinem', 'seiner',
-  'anderen', 'andere', 'anderem', 'anderer', 'unseren', 'unsere', 'euren', 'eure',
-  'viele', 'viel', 'meisten', 'meist', 'einfach', 'manchmal', 'oft', 'selten',
-  'etwas', 'nichts', 'alles', 'jeder', 'jede', 'jedes', 'dieser', 'diese', 'dieses',
-  'der', 'die', 'das', 'den', 'dem', 'des', 'ein', 'eine', 'einer', 'eines', 'einem',
-  'und', 'oder', 'aber', 'nicht', 'auch', 'mit', 'von', 'zu', 'auf', 'in', 'an', 'für',
-  'bei', 'nach', 'vor', 'über', 'unter', 'durch', 'als', 'wenn', 'weil', 'dass', 'ob',
-  'so', 'noch', 'nur', 'schon', 'sehr', 'mehr', 'man', 'ich', 'du', 'er', 'sie', 'es', 'wir',
-  'jedem', 'jeden', 'jede', 'jeder', 'dieses', 'dieser', 'diese',
-]);
+const { NEVER_INDEX } = require('../../../js/data/functionWords.js');
 
 /** Bare light verbs — never index alone (prefix verbs like mitmachen OK). */
 const BARE_LIGHT_VERBS = new Set([

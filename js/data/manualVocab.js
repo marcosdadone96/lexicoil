@@ -2,6 +2,20 @@
 const ManualVocab = (() => {
   const indexCache = {};
 
+  function functionWordsLib() {
+    if (typeof FunctionWords !== 'undefined') return FunctionWords;
+    try {
+      return require('./functionWords.js');
+    } catch (_) {
+      return null;
+    }
+  }
+
+  function isFunctionWord(word) {
+    const fw = functionWordsLib();
+    return fw ? fw.isFunctionWord(word) : false;
+  }
+
   /** High-confidence typos seen in learner decks → canonical form */
   const KNOWN_SPELLING_OVERRIDES = {
     unterschid: 'Unterschied',
@@ -171,12 +185,31 @@ const ManualVocab = (() => {
     return g === 'm' || g === 'f' || g === 'n' || g === 'p';
   }
 
+  function applyInferredPos(data, word, subject) {
+    if (!data) return data;
+    const sub = subject || data.sourceLang || 'de';
+    const probe = {
+      word: data.word || word,
+      type: data.type,
+      pos: data.pos,
+      gender: data.gender,
+      article: data.article,
+      sourceLang: sub,
+    };
+    const pos = inferPos(probe, sub);
+    data.type = pos;
+    data.pos = pos;
+    return data;
+  }
+
   function inferPos(fc, subject) {
     const sub = subject || fc?.sourceLang || '';
     const parsed = parseLeadingArticle(fc?.word, sub);
     const raw = String(fc?.word || parsed.word || '').trim();
     const low = normToken(parsed.word || raw);
     const stored = typeof normWordType === 'function' ? normWordType(fc?.type || fc?.pos) : '';
+
+    if (sub === 'de' && low && isFunctionWord(low)) return 'other';
 
     if (sub === 'de' && low) {
       if (/^[A-ZÄÖÜ]/.test(raw)) {
@@ -419,6 +452,9 @@ const ManualVocab = (() => {
     if (trimmed.length < 2) return { ok: false, reason: 'too_short' };
     const parsed = parseLeadingArticle(trimmed, subject);
     const core = parsed.word;
+    if ((subject || 'de') === 'de' && (isFunctionWord(core) || isFunctionWord(trimmed))) {
+      return { ok: false, reason: 'function_word' };
+    }
     const lookupForms = [...new Set([trimmed, core].filter(Boolean))];
 
     if (typeof PracticeDictionary !== 'undefined') {
@@ -614,12 +650,24 @@ const ManualVocab = (() => {
   function reclassifyStoredFlashcards() {
     if (typeof S === 'undefined' || !Array.isArray(S.flashcards) || !S.flashcards.length) return false;
     let dirty = false;
+    const kept = [];
     S.flashcards.forEach((fc) => {
+      const sub = fc?.sourceLang || 'de';
+      const low = normToken(fc?.word);
+      if (sub === 'de' && isFunctionWord(low)) {
+        dirty = true;
+        return;
+      }
       const before = `${fc.type || fc.pos}|${fc.gender || ''}|${fc.article || ''}|${fc.plural ? 1 : 0}`;
-      enrichFlashcard(fc, fc.sourceLang);
+      enrichFlashcard(fc, sub);
       const after = `${fc.type || fc.pos}|${fc.gender || ''}|${fc.article || ''}|${fc.plural ? 1 : 0}`;
       if (before !== after) dirty = true;
+      kept.push(fc);
     });
+    if (kept.length !== S.flashcards.length) {
+      S.flashcards = kept;
+      dirty = true;
+    }
     return dirty;
   }
 
@@ -680,6 +728,8 @@ const ManualVocab = (() => {
     aiSpellingHint,
     spellingSuggestionForAsync,
     applySpellingFixToFlashcard,
+    isFunctionWord,
+    applyInferredPos,
   };
 })();
 

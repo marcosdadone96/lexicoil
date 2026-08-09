@@ -268,6 +268,10 @@ function removeSavedWordFromDeck(word){
 function saveToFCData(data){
   const word=data.word||'';
   if(!word)return false;
+  if(typeof ManualVocab!=='undefined'&&ManualVocab.isFunctionWord){
+    if(ManualVocab.isFunctionWord(word))return false;
+    if(data.surface&&ManualVocab.isFunctionWord(data.surface))return false;
+  }
   const goal=typeof getActiveGoal==='function'?getActiveGoal():null;
   const sourceExam=S.examData?{id:S.examData._savedId||S.examData.id||Date.now(),topic:S.examData.topic,level:S.examData.level,lang:S.examData.lang}:null;
   const sourceLang=goal?.subject||S.subject;
