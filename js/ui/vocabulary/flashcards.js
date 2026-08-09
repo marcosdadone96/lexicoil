@@ -326,14 +326,21 @@ function saveToFCData(data){
   if(data.lemmaUncertain)fc.lemmaUncertain=true;
   if(data.pairId)fc.pairId=data.pairId;
   if(typeof ManualVocab!=='undefined'&&ManualVocab.enrichFlashcard)ManualVocab.enrichFlashcard(fc,S.subject);
+  if(typeof VerbConjugation!=='undefined'&&VerbConjugation.canonicalizeForDeck)VerbConjugation.canonicalizeForDeck(fc,sourceLang);
   if(typeof ExamProfile!=='undefined')ExamProfile.tagItem(fc);
   S.flashcards.push(fc);
   if(!S.examSavedWords)S.examSavedWords=[];
-  if(!S.examSavedWords.includes(word))S.examSavedWords.push(word);
+  if(!S.examSavedWords.includes(fc.word))S.examSavedWords.push(fc.word);
   if(typeof sortFlashcardsByType==='function')S.flashcards=sortFlashcardsByType(S.flashcards);
-  clearFcTombstone();
+  const tombKey=`${String(fc.word).toLowerCase().trim()}|${sourceLang}`;
+  if(!Array.isArray(S.deletedFlashcards))S.deletedFlashcards=[];
+  const nextDel=S.deletedFlashcards.filter((t)=>t?.key!==tombKey);
+  if(nextDel.length!==S.deletedFlashcards.length){
+    S.deletedFlashcards=nextDel;
+    try{localStorage.setItem('lc_fc_del',JSON.stringify(S.deletedFlashcards));}catch(_){}
+  }
   saveFC();
-  markVocabSaved(data.surface||word,fc.type||fc.pos||wtype,data.pairId);
+  markVocabSaved(data.surface||fc.word,fc.type||fc.pos||wtype,data.pairId);
   const b=document.getElementById('vtSave');
   if(b){b.textContent='\u2713 In your deck';b.classList.add('saved');}
   const dc=document.getElementById('dkCnt');

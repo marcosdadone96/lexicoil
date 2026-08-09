@@ -395,17 +395,27 @@ const SeparableResolve = (() => {
       }
     }
 
-    const looksFinite = !!FINITE_TO_INF[low] || /(?:t|st|e)$/.test(low) && !/(?:en|eln|ern)$/.test(low);
-    const looksLikeNoun = /^[A-ZÄÖÜ]/.test(surface);
-    const lemma = !looksLikeNoun && typeof Lemmatizer !== 'undefined' && Lemmatizer.normalizeLemma
-      ? Lemmatizer.normalizeLemma(surface, 'de')
-      : low;
-    const useLemma = !looksLikeNoun && lemma && lemma !== low && /(?:en|eln|ern)$/.test(lemma) && lemma.length >= 5;
+    const looksFinite =
+      !!FINITE_TO_INF[low] || (/(?:t|st|e)$/.test(low) && !/(?:en|eln|ern)$/.test(low));
+
+    if (typeof VerbConjugation !== 'undefined' && VerbConjugation.toLemma) {
+      const lemma = VerbConjugation.toLemma(surface, 'de');
+      if (lemma && /(?:en|eln|ern)$/i.test(lemma) && lemma.length >= 5) {
+        const reunified = lemma !== low;
+        return {
+          word: lemma,
+          surface,
+          reunified,
+          lemmaUncertain: false,
+        };
+      }
+    }
+
     return {
-      word: useLemma ? lemma : surface,
+      word: surface,
       surface,
       reunified: false,
-      lemmaUncertain: looksFinite && !useLemma && !looksLikeNoun,
+      lemmaUncertain: looksFinite,
     };
   }
 

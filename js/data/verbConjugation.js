@@ -702,6 +702,16 @@ const VerbConjugation = (() => {
     if (pos !== 'verb') return fc;
     const conj = getPresent(fc.word, lg);
     if (!conj) return fc;
+    enrichVerbConjugation(fc, lg);
+    canonicalizeForDeck(fc, lg);
+    return fc;
+  }
+
+  function enrichVerbConjugation(fc, lang) {
+    if (!fc) return fc;
+    const lg = normLang(lang || fc.sourceLang);
+    const conj = getPresent(fc.word, lg);
+    if (!conj) return fc;
     fc.verbLemma = conj.lemma;
     fc.conjugation = { present: conj.forms };
     if (lg === 'de') {
@@ -713,6 +723,76 @@ const VerbConjugation = (() => {
       if (imp?.forms) fc.conjugation.imperativ = imp.forms;
     }
     return fc;
+  }
+
+  function looksLikeDeAdjectiveForm(low) {
+    return /(liche|licher|liches|lichem|lichen|lich|ig|isch|bar|sam|haft|los|voll|frei|bare|bere|bares|barer|erer|eres|ere|iger|ige|iges|igem|igen|isches|ischen|ischem|ischer|ische)$/i.test(
+      low,
+    );
+  }
+
+  function isLikelyInflectedAdjective(low) {
+    if (looksLikeDeAdjectiveForm(low)) return true;
+    if (typeof SeparableResolve !== 'undefined' && SeparableResolve.FINITE_TO_INF?.[low]) return false;
+    if (DE_PRESENT[low]) return false;
+    if (/[^aeiouäöü]er$/i.test(low) && low.length > 6) return true;
+    if (/[^aeiouäöü](es|em|en)$/i.test(low) && low.length > 6 && !isDeInfinitive(low)) return true;
+    return false;
+  }
+
+  /** Skip P0/P1 when capitalized surface is likely a mis-tagged noun (§2b noise). */
+  function looksLikeMisclassifiedNoun(raw, low) {
+    if (!/^[A-ZÄÖÜ]/.test(raw)) return false;
+    if (DE_PRESENT[low] || splitSeparableInfinitive(low)) return false;
+    if (
+      /(gruppen|firmen|unternehmen|geschichten|altersgruppen|energieunternehmen|fantasiegeschichten|experten|mahlzeiten|hauptfilmen|experten|dienste|keiten|heiten|ungen|chaften|tionen|sionen)$/i.test(
+        low,
+      )
+    ) {
+      return true;
+    }
+    if (/(ung|heit|keit|schaft|tion|sion|tät|ität|ismus|ment|nis)$/i.test(low) && !isDeInfinitive(low)) {
+      return true;
+    }
+    return false;
+  }
+
+  /** P0+P1 migration eligibility (high confidence only). */
+  function migrationEligible(fc, lang) {
+    const lg = normLang(lang || fc.sourceLang);
+    if (lg !== 'de') return null;
+    const stored = typeof normWordType === 'function' ? normWordType(fc.type || fc.pos) : '';
+    if (stored !== 'verb') return null;
+    const word = String(fc.word || '').trim();
+    if (!word) return null;
+    const low = normWord(word);
+    if (isLikelyInflectedAdjective(low) || looksLikeMisclassifiedNoun(word, low)) return null;
+
+    const conj = getPresent(word, lg);
+    if (!conj?.lemma) return null;
+    const lemma = conj.lemma.toLowerCase();
+    if (!isDeInfinitive(lemma)) return null;
+
+    const verbLemma = fc.verbLemma ? String(fc.verbLemma).toLowerCase() : null;
+    if (!verbLemma || verbLemma !== lemma) return null;
+
+    // P0: finite / wrong surface, verbLemma already correct
+    if (low !== lemma) return { target: lemma, reason: 'p0' };
+    // P1: capitalized infinitive
+    if (word !== lemma) return { target: lemma, reason: 'p1' };
+    return null;
+  }
+
+  /** Normalize deck word to lowercase infinitive; preserve clicked surface when renamed. */
+  function canonicalizeForDeck(fc, lang) {
+    const hit = migrationEligible(fc, lang);
+    if (!hit) return false;
+    const before = String(fc.word || '').trim();
+    if (!fc.surface && before !== hit.target) fc.surface = before;
+    fc.word = hit.target;
+    fc.verbLemma = hit.target;
+    fc.lemmaNormalized = true;
+    return before !== fc.word;
   }
 
   function pronounRows(lang, tense) {
@@ -810,6 +890,9 @@ const VerbConjugation = (() => {
     getImperativ,
     getConjugation,
     enrichFlashcard,
+    enrichVerbConjugation,
+    canonicalizeForDeck,
+    migrationEligible,
     conjugationSelectHtml,
     switchConjTense,
     pronounRows,
