@@ -757,6 +757,96 @@ const VerbConjugation = (() => {
     return false;
   }
 
+  /** Lemma exists only via presentRegularDe, not curated tables. */
+  function isSyntheticLemma(lem) {
+    if (DE_PRESENT[lem] || splitSeparableInfinitive(lem)) return false;
+    if (typeof SeparableResolve !== 'undefined') {
+      const vals = Object.values(SeparableResolve.FINITE_TO_INF || {});
+      if (vals.includes(lem)) return false;
+    }
+    return !!presentRegularDe(lem);
+  }
+
+  /** Partizip II / passive adjective ending in -t mis-parsed as finite verb. */
+  function looksLikePartizipIiMisparse(low) {
+    if (typeof SeparableResolve !== 'undefined' && SeparableResolve.FINITE_TO_INF?.[low]) return false;
+    if (DE_PRESENT[low]) return false;
+    return /(?:iert|igt|ocht|acht|umpt|enkt|etzt|ört|ält)$/i.test(low);
+  }
+
+  /** Naive stem+en yields lemma+en from a -t surface (ermöglicht→ermöglichten). */
+  function isFakeParticipleEnLemma(low, lemma) {
+    if (typeof SeparableResolve !== 'undefined' && SeparableResolve.FINITE_TO_INF?.[low]) return false;
+    if (!/(?:t|et)$/i.test(low)) return false;
+    if (lemma === `${low}en`) return true;
+    if (low.endsWith('et') && lemma === `${low.slice(0, -1)}en`) return true;
+    return false;
+  }
+
+  /** P0: surface must be an attested finite form of lemma (not a fake stem+en invention). */
+  function isAttestedFiniteForm(surface, lemma) {
+    const low = normWord(surface);
+    const lem = normWord(lemma);
+    if (!low || !lem) return false;
+    if (low === lem) return true;
+    if (looksLikePartizipIiMisparse(low) || isFakeParticipleEnLemma(low, lem)) return false;
+
+    if (typeof SeparableResolve !== 'undefined') {
+      const knownInf = SeparableResolve.FINITE_TO_INF?.[low];
+      if (knownInf && knownInf !== lem) return false;
+    }
+
+    if (typeof SeparableResolve !== 'undefined') {
+      const ft = SeparableResolve.FINITE_TO_INF;
+      if (ft?.[low] === lem) return true;
+      const sepFin = SeparableResolve.resolveSeparableFiniteToInfinitive?.(low);
+      if (sepFin === lem) return true;
+    }
+
+    if (DE_PRESENT[lem]) {
+      for (const form of Object.values(DE_PRESENT[lem])) {
+        if (normWord(form) === low) return true;
+      }
+    }
+
+    const sepInf = splitSeparableInfinitive(lem);
+    const root = sepInf ? sepInf.root : lem;
+    if (DE_PRESENT[root]) {
+      for (const form of Object.values(DE_PRESENT[root])) {
+        if (normWord(form) === low) return true;
+      }
+    }
+
+    const synthetic = isSyntheticLemma(lem);
+    for (const tense of ['present', 'praeteritum']) {
+      const conj = conjugateDeLemma(lem, tense);
+      if (!conj?.forms) continue;
+      for (const [pron, form] of Object.entries(conj.forms)) {
+        const nf = normWord(form);
+        if (nf !== low) continue;
+        if (synthetic && tense === 'present' && /^(ich|wir|sie)$/i.test(pron)) continue;
+        return true;
+      }
+      for (const form of Object.values(conj.forms)) {
+        const nf = normWord(form);
+        if (nf === low) continue;
+        for (const part of nf.split(/\s+/)) {
+          if (part === low) return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  /** P1: capitalized spelling equals lemma but row has noun metadata (das Laufen, …). */
+  function looksLikeNominalizedInfinitiveNoun(fc, raw, lemma) {
+    if (!/^[A-ZÄÖÜ]/.test(raw)) return false;
+    if (normWord(raw) !== normWord(lemma)) return false;
+    if (fc?.article || fc?.gender) return true;
+    return false;
+  }
+
   /** P0+P1 migration eligibility (high confidence only). */
   function migrationEligible(fc, lang) {
     const lg = normLang(lang || fc.sourceLang);
@@ -777,9 +867,15 @@ const VerbConjugation = (() => {
     if (!verbLemma || verbLemma !== lemma) return null;
 
     // P0: finite / wrong surface, verbLemma already correct
-    if (low !== lemma) return { target: lemma, reason: 'p0' };
+    if (low !== lemma) {
+      if (!isAttestedFiniteForm(word, lemma)) return null;
+      return { target: lemma, reason: 'p0' };
+    }
     // P1: capitalized infinitive
-    if (word !== lemma) return { target: lemma, reason: 'p1' };
+    if (word !== lemma) {
+      if (looksLikeNominalizedInfinitiveNoun(fc, word, lemma)) return null;
+      return { target: lemma, reason: 'p1' };
+    }
     return null;
   }
 

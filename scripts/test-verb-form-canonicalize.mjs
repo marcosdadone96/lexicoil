@@ -88,11 +88,39 @@ console.log('\n=== test-verb-form-canonicalize ===\n');
   assert.notEqual(fc.word, 'gruppen');
 }
 
+function migrationHit(word, extra = {}) {
+  const fc = { word, type: 'verb', pos: 'verb', sourceLang: 'de', ...extra };
+  VC.enrichVerbConjugation(fc, 'de');
+  return VC.migrationEligible(fc, 'de');
+}
+
 // 5) konzentrierter (adj mis-tag) must NOT canonicalize — §2b noise
 {
   const fc = saveVerb('konzentrierter');
   console.log('OK  konzentrierter not canonicalized:', { word: fc.word });
   assert.equal(fc.word, 'konzentrierter');
+}
+
+// 6) §2b guards — migrationEligible must reject POS noise / fake lemmas
+{
+  assert.equal(migrationHit('ermöglicht'), null, 'Partizip II: fake ermöglichten lemma');
+  assert.equal(migrationHit('alle'), null, 'determiner alle→allen');
+  assert.equal(migrationHit('ohne'), null, 'preposition ohne→ohnen');
+  assert.equal(migrationHit('kompliziert'), null, 'Partizip II kompliziert→kompliziern');
+  assert.equal(migrationHit('schnelle'), null, 'adjective schnelle→schnellen');
+  assert.equal(migrationHit('Laufen', { article: 'das', gender: 'n' }), null, 'nominalized das Laufen');
+  assert.equal(migrationHit('bietet')?.target, 'bieten', 'real finite bietet→bieten');
+  assert.equal(migrationHit('passt'), null, 'passt maps to passen not pasen');
+  assert.equal(migrationHit('Bezahlen')?.target, 'bezahlen', 'P1 Bezahlen→bezahlen');
+  assert.equal(migrationHit('abnimmt')?.target, 'abnehmen', 'P0 abnimmt→abnehmen');
+  console.log('OK  §2b migrationEligible guards');
+}
+
+// 7) das Laufen must NOT canonicalize on save
+{
+  const fc = saveVerb('Laufen', { article: 'das', gender: 'n' });
+  assert.equal(fc.word, 'Laufen');
+  console.log('OK  Laufen (das) not canonicalized on save');
 }
 
 // B) resolveForSave uses toLemma — no abnimmen

@@ -5,6 +5,7 @@
  * Usage:
  *   node scripts/dev/scan-user-vocab-verb-forms.mjs --all
  *   node scripts/dev/scan-user-vocab-verb-forms.mjs --all --migrate
+ *   node scripts/dev/scan-user-vocab-verb-forms.mjs --email user@example.com [--migrate]
  */
 import fs from 'node:fs';
 import path from 'node:path';
@@ -53,10 +54,17 @@ function normWordType(pos) {
   return p || 'other';
 }
 
+function prepareForEligibility(fc, sub = 'de') {
+  const copy = { ...fc };
+  VerbConjugation.enrichVerbConjugation(copy, sub);
+  return copy;
+}
+
 function listP0P1(flashcards) {
   const hits = [];
   for (const raw of flashcards || []) {
-    const hit = VerbConjugation.migrationEligible({ ...raw }, raw.sourceLang || raw.lang || 'de');
+    const fc = prepareForEligibility(raw, raw.sourceLang || raw.lang || 'de');
+    const hit = VerbConjugation.migrationEligible(fc, fc.sourceLang || fc.lang || 'de');
     if (hit) {
       hits.push({
         before: raw.word,
@@ -74,10 +82,10 @@ function migrateFlashcards(flashcards) {
   const kept = [];
   for (const raw of flashcards || []) {
     const fc = { ...raw };
+    VerbConjugation.enrichVerbConjugation(fc, fc.sourceLang || fc.lang || 'de');
     const hit = VerbConjugation.migrationEligible(fc, fc.sourceLang || fc.lang || 'de');
     if (hit) {
       const before = fc.word;
-      VerbConjugation.enrichVerbConjugation(fc, fc.sourceLang || fc.lang || 'de');
       VerbConjugation.canonicalizeForDeck(fc, fc.sourceLang || fc.lang || 'de');
       migrated.push({
         before,
@@ -115,9 +123,8 @@ async function listSyncEmails(store) {
   return emails.filter(Boolean).sort();
 }
 
-async function scanAll(migrate) {
+async function scanEmails(emails, migrate) {
   const store = await getBlobStore();
-  const emails = await listSyncEmails(store);
   const accounts = [];
   let totalP0P1 = 0;
   let totalMigrated = 0;
@@ -156,11 +163,23 @@ async function scanAll(migrate) {
   };
 }
 
+async function scanAll(migrate, emailFilter) {
+  const store = await getBlobStore();
+  let emails = await listSyncEmails(store);
+  if (emailFilter) {
+    const want = normalizeEmail(emailFilter);
+    emails = emails.filter((e) => normalizeEmail(e) === want);
+    if (!emails.length) throw new Error(`No sync blob for ${emailFilter}`);
+  }
+  return scanEmails(emails, migrate);
+}
+
 function parseArgs(argv) {
-  const out = { all: false, migrate: false, file: '' };
+  const out = { all: false, migrate: false, file: '', email: '' };
   for (let i = 2; i < argv.length; i++) {
     if (argv[i] === '--all') out.all = true;
     else if (argv[i] === '--migrate') out.migrate = true;
+    else if (argv[i] === '--email' && argv[i + 1]) out.email = String(argv[++i]).trim();
     else if (argv[i] === '--file' && argv[i + 1]) out.file = argv[++i];
   }
   return out;
@@ -168,8 +187,8 @@ function parseArgs(argv) {
 
 async function main() {
   const args = parseArgs(process.argv);
-  if (args.all) {
-    const report = await scanAll(args.migrate);
+  if (args.all || args.email) {
+    const report = await scanAll(args.migrate, args.email || '');
     console.log(JSON.stringify(report, null, 2));
     if (report.totalP0P1Eligible > 0 && !args.migrate) process.exit(1);
     return;
@@ -180,7 +199,7 @@ async function main() {
     console.log(JSON.stringify({ p0p1: hits.length, hits }, null, 2));
     return;
   }
-  console.error('Usage: --all [--migrate] | --file sync.json');
+  console.error('Usage: --all [--migrate] | --email user@example.com [--migrate] | --file sync.json');
   process.exit(2);
 }
 
