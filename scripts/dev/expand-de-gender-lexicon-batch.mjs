@@ -3,16 +3,13 @@
  * Expand data/lexicon/de-gender.json from pool gaps using DWDS (Goethe + HTML).
  *
  * Modes:
- *   --calibrate 60     smoke batch (default 60 lemmas, no full commit unless --apply)
+ *   --calibrate 60     smoke batch (process 60 eligible gaps)
+ *   --full               all eligible pool null lemmas
+ *   --max 50             cap eligible lemmas this run (tandas)
  *   --batch-size 50      lemmas per checkpoint file
  *   --apply              merge additions into de-gender.json
- *   --full               process all pool null lemmas (use after calibrate OK)
  *
  * Checkpoints: batches/ready/gate-logs/gender-lexicon-batch/checkpoint-NNN.json
- *
- * Usage:
- *   node scripts/dev/expand-de-gender-lexicon-batch.mjs --calibrate 60 --apply
- *   node scripts/dev/expand-de-gender-lexicon-batch.mjs --full --apply --batch-size 50
  */
 import fs from 'node:fs';
 import path from 'node:path';
@@ -24,6 +21,7 @@ import {
   lookupDwdsGender,
   sleep,
 } from '../lib/dwdsGenderLookup.mjs';
+import { shouldSkipLemma } from '../lib/genderLexiconBatchFilters.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, '../..');
@@ -38,7 +36,9 @@ const argv = process.argv.slice(2);
 const APPLY = argv.includes('--apply');
 const FULL = argv.includes('--full');
 const calIdx = argv.indexOf('--calibrate');
-const CALIBRATE = calIdx >= 0 ? Number(argv[calIdx + 1] || 60) : FULL ? null : 60;
+const CALIBRATE = calIdx >= 0 ? Number(argv[calIdx + 1] || 60) : null;
+const maxIdx = argv.indexOf('--max');
+const MAX = maxIdx >= 0 ? Number(argv[maxIdx + 1] || 50) : FULL ? Infinity : CALIBRATE || 60;
 const batchSizeIdx = argv.indexOf('--batch-size');
 const BATCH_SIZE = batchSizeIdx >= 0 ? Number(argv[batchSizeIdx + 1] || 50) : 50;
 
@@ -56,7 +56,7 @@ function loadGenderStack() {
   vm.runInContext(fs.readFileSync(path.join(ROOT, 'js/data/manualVocab.js'), 'utf8'), ctx);
   const lex = JSON.parse(fs.readFileSync(LEX_PATH, 'utf8'));
   ctx.ArticleLexicon.loadSync(lex);
-  return { ManualVocab: ctx.ManualVocab, lex };
+  return { ManualVocab: ctx.ManualVocab, ArticleLexicon: ctx.ArticleLexicon, lex };
 }
 
 function isPoolNounCandidate(tag) {
@@ -110,6 +110,23 @@ function collectPoolGaps(MV) {
   return gaps.sort((a, b) => b.count - a.count || a.lemma.localeCompare(b.lemma));
 }
 
+function buildTargets(allGaps, lex, goetheIndex, ArticleLexicon, limit) {
+  const targets = [];
+  const skipped = [];
+  for (const row of allGaps) {
+    if (targets.length >= limit) break;
+    if (lex[row.norm]) continue;
+    const pluralCheck = (low) => ArticleLexicon?.pluralGenderDe?.(low) || null;
+    const { skip, reason } = shouldSkipLemma(row.lemma, goetheIndex, pluralCheck);
+    if (skip) {
+      skipped.push({ lemma: row.lemma, norm: row.norm, poolCount: row.count, reason });
+      continue;
+    }
+    targets.push(row);
+  }
+  return { targets, skipped };
+}
+
 async function loadGoetheIndex() {
   const index = new Map();
   const cacheDir = path.join(ROOT, 'scripts/cache');
@@ -140,15 +157,17 @@ async function resolveGender(lemma, goetheIndex) {
 }
 
 async function main() {
-  const { ManualVocab: MV, lex } = loadGenderStack();
+  const { ManualVocab: MV, ArticleLexicon, lex } = loadGenderStack();
   const goetheIndex = await loadGoetheIndex();
   const allGaps = collectPoolGaps(MV);
-  const limit = FULL ? allGaps.length : CALIBRATE;
-  const targets = allGaps.slice(0, limit);
+  const limit = FULL ? (Number.isFinite(MAX) ? MAX : allGaps.length) : CALIBRATE || 60;
+  const { targets, skipped } = buildTargets(allGaps, lex, goetheIndex, ArticleLexicon, limit);
+
+  const modeLabel = FULL ? (Number.isFinite(MAX) ? `full-max-${MAX}` : 'full') : `calibrate-${limit}`;
 
   console.log(`\n── Gender lexicon batch expand ──`);
-  console.log(`Mode: ${FULL ? 'full' : `calibrate (${limit})`} | apply: ${APPLY} | batch-size: ${BATCH_SIZE}`);
-  console.log(`Pool null-article nouns: ${allGaps.length} | this run: ${targets.length}`);
+  console.log(`Mode: ${modeLabel} | apply: ${APPLY} | batch-size: ${BATCH_SIZE}`);
+  console.log(`Pool null-article: ${allGaps.length} | eligible: ${targets.length} | skipped: ${skipped.length}`);
 
   fs.mkdirSync(CHECKPOINT_DIR, { recursive: true });
   const additions = {};
@@ -158,8 +177,6 @@ async function main() {
 
   for (let i = 0; i < targets.length; i += 1) {
     const row = targets[i];
-    if (lex[row.norm]) continue;
-
     const hit = await resolveGender(row.lemma, goetheIndex);
     if (hit.gender) {
       additions[row.norm] = {
@@ -190,6 +207,7 @@ async function main() {
       const batchNum = Math.ceil((i + 1) / BATCH_SIZE);
       const ckpt = {
         batchNum,
+        mode: modeLabel,
         processed: i + 1,
         total: targets.length,
         addedSoFar: Object.keys(additions).length,
@@ -198,41 +216,49 @@ async function main() {
         failures: [...failures],
         at: new Date().toISOString(),
       };
-      fs.writeFileSync(path.join(CHECKPOINT_DIR, `checkpoint-${String(batchNum).padStart(3, '0')}.json`), JSON.stringify(ckpt, null, 2));
+      fs.writeFileSync(
+        path.join(CHECKPOINT_DIR, `${modeLabel}-checkpoint-${String(batchNum).padStart(3, '0')}.json`),
+        JSON.stringify(ckpt, null, 2),
+      );
     }
   }
 
+  const addedCount = Object.keys(additions).length;
+  const processedCount = targets.length;
+  const cleanPct = processedCount ? ((addedCount / processedCount) * 100).toFixed(1) : '0';
+
   const summary = {
     runAt: new Date().toISOString(),
-    mode: FULL ? 'full' : 'calibrate',
+    mode: modeLabel,
     limit,
     poolNullTotal: allGaps.length,
-    processed: targets.length,
-    added: Object.keys(additions).length,
+    eligible: processedCount,
+    skipped: skipped.length,
+    skippedSamples: skipped.slice(0, 30),
+    processed: processedCount,
+    added: addedCount,
     failed: failures.length,
     goetheHits,
     htmlHits,
+    cleanPct: Number(cleanPct),
     apply: APPLY,
     additions,
     failures,
   };
 
-  const summaryPath = path.join(
-    CHECKPOINT_DIR,
-    FULL ? 'FULL-RUN-summary.json' : `CALIBRATE-${limit}-summary.json`,
-  );
+  const summaryPath = path.join(CHECKPOINT_DIR, `${modeLabel}-summary.json`);
   fs.writeFileSync(summaryPath, JSON.stringify(summary, null, 2));
 
-  if (APPLY && Object.keys(additions).length) {
+  if (APPLY && addedCount) {
     for (const [k, row] of Object.entries(additions)) lex[k] = row.gender;
     const sorted = Object.fromEntries(Object.keys(lex).sort().map((k) => [k, lex[k]]));
     fs.writeFileSync(LEX_PATH, JSON.stringify(sorted));
-    console.log(`\nApplied ${Object.keys(additions).length} entries → ${LEX_PATH}`);
+    console.log(`\nApplied ${addedCount} entries → ${LEX_PATH}`);
   }
 
   console.log(`\n── Summary ──`);
-  console.log(`Added: ${summary.added}/${summary.processed} (${((summary.added / summary.processed) * 100).toFixed(1)}%)`);
-  console.log(`  Goethe: ${goetheHits} | HTML: ${htmlHits} | Failed: ${failures.length}`);
+  console.log(`Added: ${addedCount}/${processedCount} (${cleanPct}%)`);
+  console.log(`  Goethe: ${goetheHits} | HTML: ${htmlHits} | Failed: ${failures.length} | Skipped: ${skipped.length}`);
   console.log(`Report: ${path.relative(ROOT, summaryPath)}`);
 }
 
