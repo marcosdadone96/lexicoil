@@ -21,6 +21,7 @@ const ArticleLexicon = (() => {
     salat: 'm', kuchen: 'm', teig: 'm', zutat: 'f', rezept: 'n', gericht: 'n',
     gerät: 'n', unterschied: 'm', vorschlag: 'm', wochenende: 'n', pizza: 'f',
     küche: 'f', museum: 'n', waschen: 'n', balkon: 'm', nachbar: 'm', integration: 'f',
+    montag: 'm', dienstag: 'm', mittwoch: 'm', donnerstag: 'm', freitag: 'm', samstag: 'm', sonntag: 'm',
   };
 
   let _compoundSuffixes = null;

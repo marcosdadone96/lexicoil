@@ -78,6 +78,10 @@ assertEq('Nachbarn plural flag', enrich('Nachbarn').plural, true);
 assertEq('Integration → die (not das from -on in -tion)', enrich('Integration').article, 'die');
 assertEq('alle → other (not in lexicon as noun)', enrich('alle').type, 'other');
 assertEq('ohne → other', enrich('ohne').type, 'other');
+assertEq('Dienstag word preserved', enrich('Dienstag').word, 'Dienstag');
+assertEq('Dienstag → der/m', enrich('Dienstag').article, 'der');
+assertEq('dieFrau glued article', ManualVocab.parseLeadingArticle('dieFrau', 'de').article, 'die');
+assertEq('dieFrau glued word', ManualVocab.parseLeadingArticle('dieFrau', 'de').word, 'Frau');
 
 console.log(`\n── Result: ${passed} passed, ${failed} failed ──`);
 if (failed > 0) process.exit(1);

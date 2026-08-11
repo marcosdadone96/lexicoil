@@ -80,6 +80,8 @@ const OVERRIDES = {
   diskussion: 'f', erlaubnis: 'f', interesse: 'n', kommunikation: 'f', konsum: 'm',
   organisation: 'f', präsentation: 'f', produktion: 'f', region: 'f', situation: 'f',
   station: 'f', talent: 'n', verein: 'm',
+  /** Weekdays (der Tag) */
+  montag: 'm', dienstag: 'm', mittwoch: 'm', donnerstag: 'm', freitag: 'm', samstag: 'm', sonntag: 'm',
 };
 
 function norm(s) {

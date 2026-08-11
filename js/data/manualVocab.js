@@ -139,7 +139,8 @@ const ManualVocab = (() => {
         const gender = art === 'der' ? 'm' : art === 'die' ? 'f' : 'n';
         return { word: m[2].trim(), article: art, gender, pos: 'noun' };
       }
-      const glued = raw.match(/^(der|die|das)([A-ZÄÖÜ][\wäöüßÄÖÜ-]+)$/i);
+      // Glued article+noun (dieFrau): article case-insensitive; noun must start uppercase (no /i on word — avoids Dienstag → die+nstag).
+      const glued = raw.match(/^([Dd]er|[Dd]ie|[Dd]as)([A-ZÄÖÜ][\wäöüß-]+)$/);
       if (glued) {
         const art = glued[1].toLowerCase();
         const gender = art === 'der' ? 'm' : art === 'die' ? 'f' : 'n';
