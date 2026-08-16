@@ -14,6 +14,47 @@
 
 ---
 
+## Calendario de graduation / umbrales programados
+
+Escaneo repo 2026-08-16: **un solo mecanismo automático** de severidad que sube sola en una fecha (`today <= until ? warn : block`).
+
+| ID | Mecanismo | Fecha límite | Efecto tras la fecha | Fuente | Estado |
+|----|-----------|--------------|----------------------|--------|--------|
+| **GRAD-CHK-34-MISSING-QUOTE** | `EXPL_OPTION_TEXT_ALIGN_WARN_ONLY_UNTIL` | **2026-08-10** (inclusive warn) | Desde **2026-08-11**: paraphrase MCQ con keyword Option/Antwort sin cita literal de la opción correcta → **CRITICAL** (antes MINOR/warn) | `scripts/lib/explanationOptionTextAlign.mjs` · commit `1e47122` (01/08) | **VENCIDO** — vigente en prod |
+
+**No automáticos (manual / metadata):**
+
+| Referencia | Tipo | Notas |
+|------------|------|-------|
+| `GATE_BLOCK_PENDING` en `audit-pass-2.mjs` | Promoción **manual** a `GATE_BLOCK_CHECKS` | Comentario sugiere mover CHK-34 missing-quote tras 2026-08-10 si 0 FP — **no hay timer en código** |
+| `QUALITY_GATE_OBSERVATION_START = 2026-07-09` | Solo logging/metadata en pipeline Q1/Q3/Q4 | No cambia severidad por fecha |
+| Q1 shadow «until 2026-07-23» | Nota histórica en `finalizePoolReady.mjs` | Sin comparador `today` activo |
+
+**Acción ops:** antes de fijar nuevas fechas `warnOnlyUntil`, registrar aquí + alerta en gate-log de cierre de auditoría.
+
+---
+
+## Deuda editorial CHK-34 (post-graduation)
+
+| ID | Item | Prioridad | Alcance |
+|----|------|-----------|---------|
+| **CHK-34-B1-PARAPHRASE-6** | 6 explicaciones Hören B1 published: paraphrase + «Option» sin cita literal (CRITICAL post-graduation) | **Media** | Batch editorial futuro — **no bloqueante para cierre de ronda 16/08** |
+
+Ítems (published B1, scan 2026-08-16):
+
+| Examen | question id | partId |
+|--------|-------------|--------|
+| `official-de-B1-e12.json` | `gen-q-h1-d1f1089a-s1-q2` | `horen-t1-gemini-033` |
+| `official-de-B1-e19.json` | `gen-q-h2-37412cba-q1` | `horen-t2-gemini-095` |
+| `official-de-B1-e2.json` | `gen-q-h4-w9k2-7` | `horen-t4-gemini-007` |
+| `official-de-B1-e4.json` | `gen-q-h4-2ee3bd66-5` | `horen-t4-gemini-006` |
+| `official-de-B1-e6.json` | `gen-q-h1-e837d5cb-s4-q2` | `horen-t1-gemini-024` |
+| `official-de-B1-e9.json` | `gen-q-h2-0f6daecc-q1` | `horen-t2-gemini-033` |
+
+Fix pattern: reescritura determinista con `Die richtige Antwort lautet: '…'` (comillas simples ASCII — el parser CHK-34 no reconoce `«»`). Ver commit `379523b`.
+
+---
+
 ### Schreiben / Sprechen — `userVocabFeedback.ratio === 0`
 
 | Campo | Valor |
