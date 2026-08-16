@@ -38,7 +38,7 @@ Escaneo repo 2026-08-16: **un solo mecanismo automático** de severidad que sube
 
 | ID | Item | Prioridad | Alcance |
 |----|------|-----------|---------|
-| **CHK-34-B1-PARAPHRASE-6** | 6 explicaciones Hören B1 published: paraphrase + «Option» sin cita literal (CRITICAL post-graduation) | **Media** | Batch editorial futuro — **no bloqueante para cierre de ronda 16/08** |
+| **CHK-34-B1-PARAPHRASE-6** | ~~6 explicaciones Hören B1 published~~ **CERRADO 2026-08-16** — citas literales en e2/e4/e6/e9/e12/e19 | — | Resuelto en commit paraphrase-6 |
 
 Ítems (published B1, scan 2026-08-16):
 
