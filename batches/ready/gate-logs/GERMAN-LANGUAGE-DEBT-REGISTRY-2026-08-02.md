@@ -6,7 +6,13 @@
 
 ---
 
-## Comportamiento esperado (no bug — no re-investigar)
+## Deuda técnica — tests / tooling
+
+| ID | Item | Prioridad | Notas |
+|----|------|-----------|-------|
+| **TEST-VOCAB-OPEN-STALE** | `scripts/test-vocab-open.mjs` exige `source: open-frequency+manual` en todos los niveles | Baja | A2 usa `goethe-wortliste-dwds-verified-2026-07-15` (reconstrucción DWDS 2026-07-15); B1 también tiene source compuesto. **No es bug de runtime** — `CefrVocabLoader` ignora `source`. Actualizar test cuando toque vocab bank. |
+
+---
 
 ### Schreiben / Sprechen — `userVocabFeedback.ratio === 0`
 
