@@ -1,8 +1,14 @@
 // ═══════════════════════════════════════════
 // SUBMIT EXAM + CORRECTION
 // ═══════════════════════════════════════════
-const OPTION_LETTER_TYPES = new Set(['multiple', 'match', 'matching', 'abcd', 'gap_fill']);
+const OPTION_LETTER_TYPES = new Set(['multiple', 'match', 'matching', 'abcd']);
 const RF_TYPES = new Set(['rf', 'tf', 'richtig_falsch', 'true_false']);
+/** Free-text answers: shown verbatim. gap_fill covers Cambridge open cloze and
+ *  sentence completion, whose answer is a word or phrase ("swimming pool"), not
+ *  an option letter — it carries options:[] in all 36 en/B1 items and none in
+ *  de/*. Listing it as an option-letter type sent it down the letter branch,
+ *  which found no option to label and fell back to .toUpperCase(). */
+const FREE_TEXT_TYPES = new Set(['gap_fill', 'gap']);
 
 function optionLetter(opt) {
   if (typeof IsAnswerKeyRenderable !== 'undefined' && IsAnswerKeyRenderable.optKey) {
@@ -82,6 +88,9 @@ function ansLabel(q, val, isDE) {
     try { const a = JSON.parse(val); if (Array.isArray(a)) return a.join(', '); } catch (_) {}
     return val;
   }
+  // Before the R/T/F fallbacks below: a one-word cloze answer like "for" or "t"
+  // must not be relabelled "True"/"False".
+  if (FREE_TEXT_TYPES.has(q.type)) return String(val);
   if (OPTION_LETTER_TYPES.has(q.type)) {
     const opt = findOptionByVal(q, val);
     if (opt != null) return formatLetterOptionLabel(opt, val, isDE);
