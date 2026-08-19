@@ -442,6 +442,11 @@ async function postClaudeFeature(body, timeoutMs = 35000) {
       e.code = "pro_only";
       throw e;
     }
+    if (res.status === 502 || res.status === 503) {
+      const e = new Error("ai_unavailable");
+      e.code = "ai_unavailable";
+      throw e;
+    }
     throw new Error(data.error || `AI service error (${res.status})`);
   }
   return data;
@@ -517,6 +522,25 @@ async function consumeAiAction(action, requestId) {
   }
 }
 
+async function releaseAiCreditsForAction(action, requestId) {
+  if (!action || !requestId) return false;
+  try {
+    const data = await postClaudeFeature(
+      {
+        releaseAiAction: true,
+        action,
+        requestId,
+      },
+      15000,
+    );
+    applyAiCreditsFromResponse(data);
+    return data.ok === true;
+  } catch (err) {
+    lcDebug.warn('[ai-credits] release failed:', err.message);
+    return false;
+  }
+}
+
 async function generateVocabQuizWithAI(words, opts = {}) {
   const list = [...new Set((words || []).map((w) => String(w || '').trim()).filter(Boolean))];
   if (list.length < 4) {
@@ -528,33 +552,60 @@ async function generateVocabQuizWithAI(words, opts = {}) {
   const requestId =
     opts.requestId ||
     `vq_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 9)}`;
-  const data = await postClaudeFeature(
-    {
-      generateVocabQuiz: true,
-      aiAction: 'vocab_quiz',
-      lang: opts.lang || 'de',
-      level: opts.level || 'B1',
-      hintLang: opts.hintLang || 'en',
-      hintLanguageMode: opts.hintLanguageMode || 'interface',
-      words: list,
-      wordMeta: opts.wordMeta || [],
-      preferTargets: opts.preferTargets || [],
-      count,
-      requestId,
-    },
-    opts.timeoutMs || 45000,
-  );
-  applyAiCreditsFromResponse(data);
+  const quizOpts = { ...opts, count, requestId };
+  const tryLocalFallback = () => {
+    if (opts.fallback === false || typeof VocabQuizUtils === 'undefined' || !VocabQuizUtils.buildFallbackVocabQuiz) {
+      return null;
+    }
+    const qs = VocabQuizUtils.buildFallbackVocabQuiz(list, quizOpts);
+    return qs && qs.length >= 4 ? qs : qs && qs.length ? qs : null;
+  };
+  const finishWithFallback = async (toastMsg) => {
+    await releaseAiCreditsForAction('vocab_quiz', requestId);
+    const fb = tryLocalFallback();
+    if (!fb) return null;
+    if (typeof lcToast === 'function' && toastMsg) {
+      lcToast(toastMsg, 'warn', 6500);
+    }
+    return { questions: fb, usedAi: false, requestId };
+  };
+  let data;
+  try {
+    data = await postClaudeFeature(
+      {
+        generateVocabQuiz: true,
+        aiAction: 'vocab_quiz',
+        lang: opts.lang || 'de',
+        level: opts.level || 'B1',
+        hintLang: opts.hintLang || 'en',
+        hintLanguageMode: opts.hintLanguageMode || 'interface',
+        words: list,
+        wordMeta: opts.wordMeta || [],
+        preferTargets: opts.preferTargets || [],
+        count,
+        requestId,
+      },
+      opts.timeoutMs || 45000,
+    );
+  } catch (err) {
+    const fbOut = await finishWithFallback('AI unavailable — offline quiz (no credits used).');
+    if (fbOut) return fbOut;
+    if (!err.code && String(err.message || '').includes('ai_unavailable')) err.code = 'ai_unavailable';
+    throw err;
+  }
   if (!data.ok || !Array.isArray(data.questions) || !data.questions.length) {
+    const fbOut = await finishWithFallback('AI quiz failed — offline quiz (no credits used).');
+    if (fbOut) return fbOut;
     const e = new Error(data.error || 'vocab_quiz_failed');
     e.code = data.error || 'vocab_quiz_failed';
     throw e;
   }
-  return data.questions;
+  if (data.billed === true) applyAiCreditsFromResponse(data);
+  return { questions: data.questions, usedAi: true, requestId, billed: data.billed === true };
 }
 
 async function generateListeningGameWithAI(words, opts = {}) {
-  const list = [...new Set((words || []).map((w) => String(w || '').trim()).filter(Boolean))];
+  const list = [...new Set((words || []).map((w) => String(w || '').trim()).filter(Boolean))].slice(0, 6);
   if (list.length < 3) {
     const e = new Error('need_at_least_3_words');
     e.code = 'need_at_least_3_words';
@@ -563,25 +614,62 @@ async function generateListeningGameWithAI(words, opts = {}) {
   const requestId =
     opts.requestId ||
     `lg_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 9)}`;
-  const data = await postClaudeFeature(
-    {
-      generateListeningGame: true,
-      aiAction: 'listening_game',
-      lang: opts.lang || 'de',
-      level: opts.level || 'B1',
-      topic: opts.topic || '',
-      words: list,
-      requestId,
-    },
-    opts.timeoutMs || 60000,
-  );
-  applyAiCreditsFromResponse(data);
-  if (!data.ok || !data.passage) {
-    const e = new Error(data.error || 'listening_game_failed');
+  let data;
+  try {
+    data = await postClaudeFeature(
+      {
+        generateListeningGame: true,
+        aiAction: 'listening_game',
+        lang: opts.lang || 'de',
+        level: opts.level || 'B1',
+        topic: opts.topic || '',
+        words: list,
+        requestId,
+      },
+      opts.timeoutMs || 120000,
+    );
+  } catch (err) {
+    await releaseAiCreditsForAction('listening_game', requestId);
+    const e = new Error(
+      'Listening game is temporarily unavailable. No credits were used.',
+    );
+    e.code = err.code || 'listening_unavailable';
+    throw e;
+  }
+  const hasRounds = Array.isArray(data.rounds) && data.rounds.length > 0;
+  const hasLegacy = data.passage && data.ok;
+  if (!data.ok || (!hasRounds && !hasLegacy)) {
+    await releaseAiCreditsForAction('listening_game', requestId);
+    const e = new Error(
+      data.userMessage ||
+        'We could not prepare the listening game. No credits were used.',
+    );
     e.code = data.error || 'listening_game_failed';
     throw e;
   }
-  return data;
+  if (data.billed === true) applyAiCreditsFromResponse(data);
+  if (data.partial && data.userMessage && typeof lcToast === 'function') {
+    lcToast(data.userMessage, 'warn', 8000);
+  }
+  return {
+    ...data,
+    usedAi: data.billed === true,
+    requestId,
+    rounds: hasRounds ? data.rounds : data.passage ? [legacyRoundFromData(data)] : [],
+  };
+}
+
+function legacyRoundFromData(data) {
+  return {
+    roundIndex: 1,
+    passage: data.passage,
+    displayWords: data.displayWords,
+    appeared: data.appeared,
+    absent: data.absent,
+    audioBase64: data.audioBase64,
+    audioMime: data.audioMime || 'audio/mpeg',
+    valid: true,
+  };
 }
 
 async function generateVocabPhrasesWithAI(words, opts = {}) {
@@ -594,6 +682,13 @@ async function generateVocabPhrasesWithAI(words, opts = {}) {
   const requestId =
     opts.requestId ||
     `vp_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 9)}`;
+  const uiLang =
+    opts.uiLang ||
+    (typeof resolveActiveVocabUiLang === 'function'
+      ? resolveActiveVocabUiLang()
+      : typeof resolveVocabUiLang === 'function'
+        ? resolveVocabUiLang()
+        : 'en');
   const data = await postClaudeFeature(
     {
       generateVocabPhrases: true,
@@ -602,6 +697,7 @@ async function generateVocabPhrasesWithAI(words, opts = {}) {
       level: opts.level || 'B1',
       words: list,
       count: Math.min(5, Math.max(3, Number(opts.count) || 4)),
+      uiLang,
       requestId,
     },
     opts.timeoutMs || 50000,
@@ -613,6 +709,31 @@ async function generateVocabPhrasesWithAI(words, opts = {}) {
     throw e;
   }
   return data.phrases;
+}
+
+async function generateGrammarDrillWithAI(opts = {}) {
+  const requestId =
+    opts.requestId ||
+    `gd_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 9)}`;
+  const data = await postClaudeFeature(
+    {
+      generateGrammarDrill: true,
+      aiAction: 'grammar_drill',
+      lang: opts.lang || 'de',
+      level: opts.level || 'B1',
+      category: opts.category || 'other',
+      examples: opts.examples || [],
+      requestId,
+    },
+    opts.timeoutMs || 55000,
+  );
+  applyAiCreditsFromResponse(data);
+  if (!data.ok || !Array.isArray(data.exercises) || !data.exercises.length) {
+    const e = new Error(data.error || 'grammar_drill_failed');
+    e.code = data.error || 'grammar_drill_failed';
+    throw e;
+  }
+  return data.exercises;
 }
 
 async function confirmStripePurchase(sessionId) {
@@ -706,14 +827,30 @@ async function commitExamQuota() {
   if (typeof window.refreshUserDropdown === 'function') window.refreshUserDropdown();
 }
 
-async function commitPersonalPoolQuota(module) {
+async function reportPersonalPoolCoverageFailure(payload) {
+  if (!payload || typeof payload !== 'object') return;
+  try {
+    await lcFetch(CLAUDE_ENDPOINT, {
+      method: 'POST',
+      headers: aiAuthHeaders(),
+      body: JSON.stringify({ personalPoolCoverageEvent: payload }),
+    });
+  } catch (_) {
+    /* non-blocking telemetry */
+  }
+}
+
+async function commitPersonalPoolQuota(module, requestIdOverride = null) {
   const mod = String(module || '').toLowerCase();
   if (mod !== 'lesen' && mod !== 'horen') throw new Error('invalid_personal_pool_module');
   if (!commitPersonalPoolQuota._pendingIds) commitPersonalPoolQuota._pendingIds = {};
-  if (!commitPersonalPoolQuota._pendingIds[mod] && typeof crypto !== 'undefined' && crypto.randomUUID) {
-    commitPersonalPoolQuota._pendingIds[mod] = crypto.randomUUID();
+  let requestId = requestIdOverride;
+  if (!requestId) {
+    if (!commitPersonalPoolQuota._pendingIds[mod] && typeof crypto !== 'undefined' && crypto.randomUUID) {
+      commitPersonalPoolQuota._pendingIds[mod] = crypto.randomUUID();
+    }
+    requestId = commitPersonalPoolQuota._pendingIds[mod] || null;
   }
-  const requestId = commitPersonalPoolQuota._pendingIds[mod] || null;
   const res = await lcFetch(CLAUDE_ENDPOINT, {
     method: "POST",
     headers: aiAuthHeaders(),
@@ -739,6 +876,72 @@ async function commitPersonalPoolQuota(module) {
   return data;
 }
 
+async function fetchExamPartById(lang, level, module, partId, opts = {}) {
+  if (!partId) return null;
+  const params = {
+    lang,
+    level,
+    module,
+    id: String(partId),
+    assembleMode: opts.assembleMode || resolveAssembleModeForPool(),
+  };
+  const q = new URLSearchParams(params);
+  try {
+    const res = await lcFetch(`/.netlify/functions/exam-part?${q}`);
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok || !data.part) return null;
+    return {
+      part: data.part,
+      id: data.id || partId,
+    };
+  } catch (_) {
+    return null;
+  }
+}
+
+/**
+ * Module-wide vocab plan (Phase B) — no personal pool quota charge.
+ */
+async function fetchExamModulePlan(lang, level, module, opts = {}) {
+  const {
+    words = [],
+    excludeIds = [],
+    topicTag = null,
+  } = opts;
+  const params = {
+    lang,
+    level,
+    module,
+    planModule: '1',
+    assembleMode: opts.assembleMode || resolveAssembleModeForPool(),
+  };
+  if (excludeIds.length) params.exclude = excludeIds.slice(0, 40).join(',');
+  if (words.length) params.words = words.slice(0, 40).join(',');
+  if (topicTag) params.topicTag = String(topicTag);
+  const q = new URLSearchParams(params);
+  try {
+    const res = await lcFetch(`/.netlify/functions/exam-part?${q}`);
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      if (res.status === 401) {
+        const e = new Error(data.error || 'login_required');
+        e.code = 'login_required';
+        throw e;
+      }
+      if (res.status === 429 && data.error === 'rate_limited') {
+        const e = new Error('rate_limited');
+        e.code = 'rate_limited';
+        throw e;
+      }
+      return { ok: false, reason: data.reason || data.error || 'plan_failed' };
+    }
+    return data;
+  } catch (err) {
+    if (err?.code === 'login_required' || err?.code === 'rate_limited') throw err;
+    return { ok: false, reason: 'plan_failed' };
+  }
+}
+
 const VOCAB_CACHE_ENDPOINT = "/.netlify/functions/vocab-cache";
 
 async function fetchExamFromPool(lang, level, excludeIds) {
@@ -761,6 +964,38 @@ function resolveAssembleModeForPool() {
     return m === 'official' || m === 'real' ? 'official' : 'practice';
   }
   return 'practice';
+}
+
+/**
+ * Textos — read-only Lesen passage by B1 topic (purpose=textos).
+ * @returns {Promise<object>}
+ */
+async function fetchTextosReading(lang, level, opts = {}) {
+  const { topicTag, teil = null, excludeIds = [] } = opts;
+  if (!topicTag) {
+    const e = new Error('topic_required');
+    e.code = 'topic_required';
+    throw e;
+  }
+  const params = {
+    lang,
+    level,
+    module: 'lesen',
+    purpose: 'textos',
+    topicTag: String(topicTag),
+  };
+  if (teil != null && Number.isFinite(Number(teil))) params.teil = String(Number(teil));
+  if (excludeIds.length) params.exclude = excludeIds.slice(0, 40).join(',');
+  const q = new URLSearchParams(params);
+  const res = await lcFetch(`/.netlify/functions/exam-part?${q}`);
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok || !data.ok) {
+    const e = new Error(data.error || 'textos_fetch_failed');
+    e.code = data.error || 'textos_fetch_failed';
+    e.status = res.status;
+    throw e;
+  }
+  return data;
 }
 
 /**
@@ -1179,6 +1414,10 @@ if (typeof window !== "undefined") {
   window.executeHybridLesenExam = executeHybridLesenExam;
   window.fetchExamPart = fetchExamPart;
   window.fetchExamPartVocab = fetchExamPartVocab;
+  window.fetchExamPartById = fetchExamPartById;
+  window.fetchTextosReading = fetchTextosReading;
+  window.fetchExamModulePlan = fetchExamModulePlan;
+  window.reportPersonalPoolCoverageFailure = reportPersonalPoolCoverageFailure;
   window.startOfficialExamTimer = startOfficialExamTimer;
   window.finishOfficialExamTimer = finishOfficialExamTimer;
 }

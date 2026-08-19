@@ -122,6 +122,10 @@ function assessCombo(lang, level, cap) {
   if (!allPass && publishedLive > 0 && entries.length > 0 && publishedLive === entries.length) {
     status = 'live';
   }
+  if (publishedLive > entries.length) {
+    status = 'live';
+  }
+  const exams = Math.max(entries.length, publishedLive);
   if (
     cap?.capStatus &&
     cap.capLang === lang &&
@@ -132,7 +136,7 @@ function assessCombo(lang, level, cap) {
   }
   return {
     status,
-    exams: entries.length,
+    exams,
   };
 }
 

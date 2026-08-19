@@ -3,10 +3,7 @@
 const { getJwtSecret } = require('./lib/authLib.js');
 const { getSiteUrl } = require('./lib/siteConfig.js');
 const { corsHeaders, jsonResponse } = require('./lib/http.js');
-
-function trimEnv(v) {
-  return String(v || '').trim();
-}
+const { readSupabaseEnv, supabaseClientEnabled } = require('./lib/supabaseAuthRest.js');
 
 exports.handler = async function handler(event) {
   const cors = corsHeaders(event, 'GET, OPTIONS');
@@ -15,15 +12,16 @@ exports.handler = async function handler(event) {
     return jsonResponse(405, cors, { error: 'method_not_allowed' });
   }
 
-  const supabaseUrl = trimEnv(process.env.SUPABASE_URL);
-  const supabaseAnonKey = trimEnv(process.env.SUPABASE_ANON_KEY);
+  const { supabaseUrl, supabaseAnonKey, configured: hasSupabase } = readSupabaseEnv();
+  const clientSupabase = hasSupabase ? await supabaseClientEnabled() : false;
 
   return jsonResponse(200, cors, {
     enabled: Boolean(getJwtSecret()),
     siteUrl: getSiteUrl(),
-    supabase: Boolean(supabaseUrl && supabaseAnonKey),
-    supabaseUrl: supabaseUrl || '',
-    supabaseAnonKey: supabaseAnonKey || '',
+    // Client SDK (OAuth / signup) only when Supabase responds; password login uses auth-login server-side.
+    supabase: clientSupabase,
+    supabaseUrl: clientSupabase ? supabaseUrl : '',
+    supabaseAnonKey: clientSupabase ? supabaseAnonKey : '',
     emailRedirectTo: `${getSiteUrl()}/confirmacion`,
     oauthRedirectTo: `${getSiteUrl()}/app.html`,
   });

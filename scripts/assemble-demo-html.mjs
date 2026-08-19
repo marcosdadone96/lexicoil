@@ -5,6 +5,15 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const demoAppCandidates = [
+  path.join(ROOT, 'scripts/demo-offline-app.js'),
+  path.join(ROOT, 'eliminado/demo-offline-app.js'),
+];
+const demoAppPath = demoAppCandidates.find((p) => fs.existsSync(p));
+if (!demoAppPath) {
+  console.error('demo-offline-app.js not found');
+  process.exit(1);
+}
 const examJson = JSON.stringify(JSON.parse(fs.readFileSync(path.join(ROOT, 'data/demo/de_B1.json'), 'utf8')));
 
 const html = `<!DOCTYPE html>
@@ -31,7 +40,7 @@ const html = `<!DOCTYPE html>
 </main>
 <script type="application/json" id="demo-embedded-exam">${examJson}</script>
 <script>
-${fs.readFileSync(path.join(ROOT, 'scripts/demo-offline-app.js'), 'utf8')}
+${fs.readFileSync(demoAppPath, 'utf8')}
 </script>
 <link rel="stylesheet" href="/assets/css/app.css">
 <script src="/js/i18n/consentLocale.js"></script>

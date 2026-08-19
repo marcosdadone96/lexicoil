@@ -96,6 +96,7 @@
       writing_correction: Number(window.AI_COST_WRITING || 1),
       listening_game: Number(window.AI_COST_LISTENING_GAME || 2),
       vocab_phrases: Number(window.AI_COST_VOCAB_PHRASES || 1),
+      grammar_drill: Number(window.AI_COST_GRAMMAR_DRILL || 2),
       grammar_coaching: Number(window.AI_COST_GRAMMAR_COACHING || 1),
       tts: 1,
     };
@@ -339,11 +340,23 @@
     const avatar = (user.name || user.email || '?')[0].toUpperCase();
     // Preserve isAdmin when the payload omits it (quota/stripe/sync responses).
     const prevAdmin = !!(typeof S !== 'undefined' && S.user && S.user.isAdmin);
+    const prevCanEdit =
+      typeof S !== 'undefined' && S.user && S.user.canEditContent === true;
+    const prevRole = typeof S !== 'undefined' && S.user ? S.user.adminRole : null;
     const isAdmin = user.guest
       ? false
       : user.isAdmin === undefined || user.isAdmin === null
         ? prevAdmin
         : user.isAdmin === true || user.isAdmin === 'true' || user.isAdmin === 1;
+    const canEditContent = user.guest
+      ? false
+      : user.canEditContent === undefined || user.canEditContent === null
+        ? prevCanEdit || isAdmin
+        : user.canEditContent === true || user.canEditContent === 'true' || user.canEditContent === 1;
+    const adminRole =
+      user.adminRole !== undefined && user.adminRole !== null
+        ? user.adminRole
+        : prevRole || (isAdmin ? 'admin' : null);
     if (typeof saveUser === 'function') {
       saveUser({
         name: user.name || 'User',
@@ -352,11 +365,15 @@
         plan: plan === 'guest' ? 'free' : plan,
         memberSince: user.memberSince || null,
         isAdmin,
+        adminRole,
+        canEditContent,
         hasBillingAccount: !!user.hasBillingAccount,
         billingSource: user.billingSource || null,
       });
     } else if (typeof S !== 'undefined' && S.user) {
       S.user.isAdmin = isAdmin;
+      S.user.adminRole = adminRole;
+      S.user.canEditContent = canEditContent;
       if (user.hasBillingAccount !== undefined) S.user.hasBillingAccount = !!user.hasBillingAccount;
       if (user.billingSource !== undefined) S.user.billingSource = user.billingSource || null;
     }

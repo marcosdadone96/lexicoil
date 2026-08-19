@@ -367,6 +367,47 @@ const CefrGate = (() => {
           }
         }
 
+        // Lesen T2 (Sätze einfügen) — wordsPerPassage applies to the Zeitschrift article only, not the 8 option sentences (ads).
+        if (slotType === 'sentence_gap_fill' || taskFormat === 'sentence_insertion') {
+          const article =
+            String(part.text || '').trim() ||
+            (Array.isArray(part.passages) && part.passages.length === 1
+              ? String(
+                  typeof part.passages[0] === 'string' ? part.passages[0] : part.passages[0]?.text || '',
+                ).trim()
+              : '');
+          if (article) {
+            checks.push({
+              text: article,
+              passageLengthExempt: bpPart?.passageLengthExempt === true,
+              lengthBounds: lengthBounds || undefined,
+              lengthMinExempt: bounds.minExempt,
+              source: `${examKey}:teil=${teilLabel}:article`,
+            });
+            return;
+          }
+        }
+
+        if (slotType === 'rules_matching' || taskFormat === 'paragraph_heading_matching') {
+          const rulesText =
+            String(part.text || '').trim() ||
+            (Array.isArray(part.passages) && part.passages.length === 1
+              ? String(
+                  typeof part.passages[0] === 'string' ? part.passages[0] : part.passages[0]?.text || '',
+                ).trim()
+              : '');
+          if (rulesText) {
+            checks.push({
+              text: rulesText,
+              passageLengthExempt: bpPart?.passageLengthExempt === true,
+              lengthBounds: lengthBounds || undefined,
+              lengthMinExempt: bounds.minExempt,
+              source: `${examKey}:teil=${teilLabel}:studienordnung`,
+            });
+            return;
+          }
+        }
+
         // Lesen T4 — intro forum (60–90) + short signText posts (~25–40 w); never sum all snippets.
         if (slotType === 'forum_opinions' || taskFormat === 'opinion_yes_no') {
           const intro = partForumIntroText(part);

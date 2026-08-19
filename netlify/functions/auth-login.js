@@ -12,6 +12,15 @@ const {
 } = require('./lib/authLib.js');
 const { corsHeaders, parseJsonBody, authSessionResponse, jsonResponse } = require('./lib/http.js');
 const { isEmailVerified } = require('./lib/emailVerify.js');
+const { completeSupabaseSession } = require('./lib/completeSupabaseSession.js');
+const { readSupabaseEnv, supabasePasswordGrant } = require('./lib/supabaseAuthRest.js');
+
+async function recordLoginFailure(store, rl, rateLimitKey) {
+  await store.setJSON(rateLimitKey, {
+    count: (rl?.count || 0) + 1,
+    resetAt: Date.now() + 15 * 60 * 1000,
+  });
+}
 
 exports.handler = async (event) => {
   const cors = corsHeaders(event);
@@ -67,38 +76,49 @@ exports.handler = async (event) => {
     user = null;
   }
 
-  if (!user || !user.passwordHash) {
-    await store.setJSON(rateLimitKey, {
-      count: (rl?.count || 0) + 1,
-      resetAt: Date.now() + 15 * 60 * 1000,
-    });
-    return jsonResponse(401, cors, { error: 'bad_credentials' });
+  if (user?.passwordHash && bcrypt.compareSync(password, user.passwordHash)) {
+    if (!isEmailVerified(user)) {
+      return jsonResponse(403, cors, { error: 'email_not_confirmed' });
+    }
+    try {
+      await store.delete(rateLimitKey);
+    } catch (_) {}
+
+    const session = signAuthToken(email, user.name, getTokenVersion(user));
+    return authSessionResponse(
+      200,
+      cors,
+      {
+        expiresAt: session.expiresAt,
+        user: {
+          name: user.name,
+          email,
+          plan: user.plan === 'pro_max' ? 'pro_max' : user.pro ? 'pro' : user.plan || 'free',
+          pro: Boolean(user.pro || user.plan === 'pro' || user.plan === 'pro_max'),
+        },
+      },
+      session.token,
+      event,
+    );
   }
 
-  if (!bcrypt.compareSync(password, user.passwordHash)) {
-    await store.setJSON(rateLimitKey, {
-      count: (rl?.count || 0) + 1,
-      resetAt: Date.now() + 15 * 60 * 1000,
-    });
-    return jsonResponse(401, cors, { error: 'bad_credentials' });
+  const { supabaseUrl, supabaseAnonKey, configured } = readSupabaseEnv();
+  if (configured) {
+    const grant = await supabasePasswordGrant(supabaseUrl, supabaseAnonKey, email, password);
+    if (grant.accessToken) {
+      try {
+        await store.delete(rateLimitKey);
+      } catch (_) {}
+      return completeSupabaseSession(event, cors, grant.accessToken, body);
+    }
+    if (grant.error === 'email_not_confirmed') {
+      return jsonResponse(403, cors, { error: 'email_not_confirmed' });
+    }
+    if (grant.error === 'supabase_unreachable') {
+      return jsonResponse(503, cors, { error: 'auth_service_unavailable' });
+    }
   }
 
-  if (!isEmailVerified(user)) {
-    return jsonResponse(403, cors, { error: 'email_not_confirmed' });
-  }
-
-  try {
-    await store.delete(rateLimitKey);
-  } catch (_) {}
-
-  const session = signAuthToken(email, user.name, getTokenVersion(user));
-  return authSessionResponse(200, cors, {
-    expiresAt: session.expiresAt,
-    user: {
-      name: user.name,
-      email,
-      plan: user.plan === 'pro_max' ? 'pro_max' : user.pro ? 'pro' : user.plan || 'free',
-      pro: Boolean(user.pro || user.plan === 'pro' || user.plan === 'pro_max'),
-    },
-  }, session.token, event);
+  await recordLoginFailure(store, rl, rateLimitKey);
+  return jsonResponse(401, cors, { error: 'bad_credentials' });
 };

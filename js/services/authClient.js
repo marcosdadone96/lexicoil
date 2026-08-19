@@ -608,19 +608,9 @@ const Auth = (() => {
     await loadAuthConfig();
     const em = String(email || '').trim().toLowerCase();
 
-    if (supabaseEnabled) {
-      if (!(await ensureSupabaseReady())) {
-        throw new Error('Supabase auth is unavailable. Refresh the page and try again.');
-      }
-      const sb = SupabaseAuth.getClient();
-      const { data, error } = await sb.auth.signInWithPassword({ email: em, password });
-      if (error) throw new Error(mapSupabaseError(error));
-      if (!data.session) throw new Error('Authentication failed.');
-      return exchangeSupabaseSession(data.session.access_token);
-    }
-
     if (localMode) return localLogin(email, password);
 
+    // Server-side auth-login handles Netlify Blobs + Supabase (no browser → Supabase fetch).
     const { res, data } = await api('auth-login', {
       method: 'POST',
       headers: authHeaders(),
@@ -862,6 +852,7 @@ const Auth = (() => {
       too_many_attempts: 'Too many attempts — wait 15 minutes.',
       invalid_fields: 'Fill all fields correctly.',
       auth_not_configured: 'Accounts are not configured on the server yet.',
+      auth_service_unavailable: 'Sign-in service is temporarily unavailable. Try again in a few minutes.',
       supabase_not_configured: 'Supabase is not configured on the server yet.',
       invalid_supabase_session: 'Session expired. Please sign in again.',
       token_revoked: 'Session expired. Please sign in again.',

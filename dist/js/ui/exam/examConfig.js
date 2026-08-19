@@ -40,14 +40,8 @@ function openExamConfigurator(goalId,preselectedIds){
     preselectedIds.forEach(id=>{if(deck.some(f=>fcId(f)===id))_examConfig.selectedIds.add(id);});
     _examConfig.seedCount=_examConfig.selectedIds.size;
   }
-  if(_examConfig.selectedIds.size<4){
-    deck.forEach(f=>{if(isDue(f))_examConfig.selectedIds.add(fcId(f));});
-    if(_examConfig.selectedIds.size<4)deck.forEach(f=>_examConfig.selectedIds.add(fcId(f)));
-  }
-  if(goal.subject==='de'&&goal.level==='B1'&&typeof PersonalLesenTopicStock!=='undefined'){
-    const words=deck.filter(f=>_examConfig.selectedIds.has(fcId(f))).map(f=>f.word);
-    _examConfig.topicChoice=PersonalLesenTopicStock.pickDefaultTopicForWords(words);
-    _examConfig.topicTouched=false;
+  if(goal.subject==='de'&&typeof PersonalTopicStock!=='undefined'&&_examConfig.selectedIds.size){
+    PersonalTopicStock.applySuggestedTopicFromSelection(_examConfig,goal);
   }
   hideAll();
   show('examConfigScreen');
@@ -63,14 +57,25 @@ function openExamConfigurator(goalId,preselectedIds){
   window.scrollTo({top:0,behavior:'smooth'});
 }
 function examConfigFootAction(){submitExamConfig();}
+function examConfigVocabCap(){
+  const skills=[..._examConfig.skills];
+  if(skills.includes('schreiben')||skills.includes('sprechen'))return null;
+  return typeof VocabBatching!=='undefined'?VocabBatching.capacityFor(skills):10;
+}
+function examConfigVocabDisabled(){
+  const skills=[..._examConfig.skills];
+  return skills.includes('schreiben')||skills.includes('sprechen');
+}
 function toggleConfigWord(id){
+  if(examConfigVocabDisabled())return;
+  const cap=examConfigVocabCap();
+  if(!_examConfig.selectedIds.has(id)&&cap!=null&&_examConfig.selectedIds.size>=cap)return;
   if(_examConfig.selectedIds.has(id))_examConfig.selectedIds.delete(id);
   else _examConfig.selectedIds.add(id);
   if(!_examConfig.topicTouched){
     const goal=S.goals.find(g=>g.id===_examConfig.goalId);
-    if(goal&&goal.subject==='de'&&goal.level==='B1'&&typeof PersonalLesenTopicStock!=='undefined'){
-      const words=deckForGoal(goal).filter(f=>_examConfig.selectedIds.has(fcId(f))).map(f=>f.word);
-      if(words.length)_examConfig.topicChoice=PersonalLesenTopicStock.pickDefaultTopicForWords(words);
+    if(goal&&goal.subject==='de'&&typeof PersonalTopicStock!=='undefined'){
+      PersonalTopicStock.applySuggestedTopicFromSelection(_examConfig,goal);
     }
   }
   renderExamConfigurator();
@@ -78,7 +83,14 @@ function toggleConfigWord(id){
 function selectAllDueConfig(){
   const goal=S.goals.find(g=>g.id===_examConfig.goalId);
   if(!goal)return;
-  deckForGoal(goal).forEach(f=>{if(isDue(f))_examConfig.selectedIds.add(fcId(f));});
+  if(examConfigVocabDisabled())return;
+  const cap=examConfigVocabCap();
+  deckForGoal(goal).forEach(f=>{
+    if(!isDue(f))return;
+    if(cap!=null&&_examConfig.selectedIds.size>=cap&&!_examConfig.selectedIds.has(fcId(f)))return;
+    _examConfig.selectedIds.add(fcId(f));
+  });
+  if(typeof PersonalTopicStock!=='undefined')PersonalTopicStock.applySuggestedTopicFromSelection(_examConfig,goal);
   renderExamConfigurator();
 }
 function setConfigTeilChoice(value){
@@ -86,12 +98,27 @@ function setConfigTeilChoice(value){
   renderExamConfigurator();
 }
 function setConfigTopicChoice(value){
-  const Stock=typeof PersonalLesenTopicStock!=='undefined'?PersonalLesenTopicStock:null;
-  const canon=typeof B1Topics!=='undefined'&&B1Topics.normalizeB1Topic?B1Topics.normalizeB1Topic(value):String(value||'').trim();
+  const goal=S.goals.find(g=>g.id===_examConfig.goalId);
+  const Stock=typeof PersonalTopicStock!=='undefined'?PersonalTopicStock.stockForConfig(goal,configActiveSkillKey(_examConfig.skills)):null;
+  const lv=String(goal?.level||'B1').toUpperCase();
+  let canon=String(value||'').trim();
+  if(lv==='A2'&&typeof A2Topics!=='undefined'&&A2Topics.normalizeA2Topic){
+    canon=A2Topics.normalizeA2Topic(value)||canon;
+  }else if(typeof B1Topics!=='undefined'&&B1Topics.normalizeB1Topic){
+    canon=B1Topics.normalizeB1Topic(value)||canon;
+  }
   _examConfig.topicChoice=canon||value||null;
   _examConfig.topicTouched=true;
   renderExamConfigurator();
 }
+function resetConfigTopicToSuggestion(){
+  const goal=S.goals.find(g=>g.id===_examConfig.goalId);
+  if(!goal)return;
+  _examConfig.topicTouched=false;
+  if(typeof PersonalTopicStock!=='undefined')PersonalTopicStock.applySuggestedTopicFromSelection(_examConfig,goal);
+  renderExamConfigurator();
+}
+window.resetConfigTopicToSuggestion=resetConfigTopicToSuggestion;
 window.setConfigTeilChoice=setConfigTeilChoice;
 window.setConfigTopicChoice=setConfigTopicChoice;
 function configPartBadge(status){
@@ -131,12 +158,31 @@ function toggleConfigSkill(skill){
   }
   _examConfig.skills=new Set([skill]);
   _examConfig.teilChoice='all';
+  if(skill==='lesen'||skill==='horen'||skill==='schreiben'||skill==='sprechen'){
+    _examConfig.selectedIds.clear();
+    if(!_examConfig.topicTouched)_examConfig.topicChoice=null;
+  }
+  if(goal&&goal.subject==='de'&&(skill==='lesen'||skill==='horen')&&typeof PersonalTopicStock!=='undefined'){
+    PersonalTopicStock.applySuggestedTopicFromSelection(_examConfig,goal);
+  }
+  renderExamConfigurator();
+}
+function examConfigDeselectSection(type){
+  const goal=S.goals.find(g=>g.id===_examConfig.goalId);
+  if(!goal)return;
+  (examConfigGroupDeck(goal)[type]||[]).forEach(f=>_examConfig.selectedIds.delete(fcId(f)));
   renderExamConfigurator();
 }
 function selectAllConfigWords(){
   const goal=S.goals.find(g=>g.id===_examConfig.goalId);
   if(!goal)return;
-  deckForGoal(goal).forEach(f=>_examConfig.selectedIds.add(fcId(f)));
+  if(examConfigVocabDisabled())return;
+  const cap=examConfigVocabCap();
+  deckForGoal(goal).forEach(f=>{
+    if(cap!=null&&_examConfig.selectedIds.size>=cap&&!_examConfig.selectedIds.has(fcId(f)))return;
+    _examConfig.selectedIds.add(fcId(f));
+  });
+  if(typeof PersonalTopicStock!=='undefined')PersonalTopicStock.applySuggestedTopicFromSelection(_examConfig,goal);
   renderExamConfigurator();
 }
 function deselectAllConfigWords(){
@@ -146,12 +192,18 @@ function deselectAllConfigWords(){
 function examConfigSelectSection(type){
   const goal=S.goals.find(g=>g.id===_examConfig.goalId);
   if(!goal)return;
-  examConfigGroupDeck(goal)[type].forEach(f=>_examConfig.selectedIds.add(fcId(f)));
+  if(examConfigVocabDisabled())return;
+  const cap=examConfigVocabCap();
+  examConfigGroupDeck(goal)[type].forEach(f=>{
+    if(cap!=null&&_examConfig.selectedIds.size>=cap&&!_examConfig.selectedIds.has(fcId(f)))return;
+    _examConfig.selectedIds.add(fcId(f));
+  });
   renderExamConfigurator();
 }
 window.selectAllConfigWords=selectAllConfigWords;
 window.deselectAllConfigWords=deselectAllConfigWords;
 window.examConfigSelectSection=examConfigSelectSection;
+window.examConfigDeselectSection=examConfigDeselectSection;
 const EC_POS_ORDER=['noun','verb','adjective','adverb','other'];
 function examConfigResolveType(fc,subject){
   if(typeof vocabHubResolveType==='function')return vocabHubResolveType(fc,subject);
@@ -198,20 +250,28 @@ window.examConfigSkillSoon=examConfigSkillSoon;
 function examConfigRowHtml(f,goal){
   const id=fcId(f);
   const on=_examConfig.selectedIds.has(id);
+  const disabled=examConfigVocabDisabled();
+  const cap=examConfigVocabCap();
+  const lock=!disabled&&cap!=null&&!on&&_examConfig.selectedIds.size>=cap;
   const due=isDue(f);
   if(typeof ManualVocab!=='undefined'&&ManualVocab.enrichFlashcard)ManualVocab.enrichFlashcard(f,goal.subject);
   const art=typeof fcGenderArticle==='function'?fcGenderArticle(f,goal.subject):null;
   const word=typeof vocabHubDisplayWord==='function'?vocabHubDisplayWord(f,goal.subject):f.word;
   const artHtml=art?`<span class="vv-art ${art.cls}">${esc(art.article)}</span>`:'<span class="vv-art vv-art--empty"></span>';
   const dueHtml=due?'<span class="due-dot" title="Due today"></span>':'';
-  return`<div class="vv-row ec-vocab-row"><label class="vv-row-main"><input type="checkbox"${on?' checked':''} onchange="toggleConfigWord('${esc(id)}')" aria-label="${esc(word)}"><span class="vv-word-cell">${artHtml}<span class="vv-row-word">${esc(word)}</span></span>${dueHtml}</label></div>`;
+  const usedMark=typeof vocabHubUsedBadgeHtml==='function'?vocabHubUsedBadgeHtml(goal,f):'';
+  const chkDisabled=disabled||lock?' disabled':'';
+  const rowLock=lock?' vv-row--cap-lock':'';
+  const change=disabled?'':` onchange="toggleConfigWord('${esc(id)}')"`;
+  return`<div class="vv-row ec-vocab-row${rowLock}"><label class="vv-row-main${disabled?' vv-row-main--disabled':''}"><input type="checkbox"${on?' checked':''}${chkDisabled}${change} aria-label="${esc(word)}"><span class="vv-word-cell">${artHtml}<span class="vv-row-word">${esc(word)}</span>${usedMark}</span>${dueHtml}</label></div>`;
 }
 function examConfigVocabSectionHtml(type,items,goal){
   if(!items.length)return'';
   const isDE=goal.subject==='de';
   const lbl=typeof fcTypeSectionLabel==='function'?fcTypeSectionLabel(type):type;
   const rows=items.map(f=>examConfigRowHtml(f,goal)).join('');
-  return`<div class="vv-grp ec-vocab-col"><div class="vv-ghead"><span class="vv-gh">${esc(lbl)} · ${items.length}</span><button type="button" class="vv-selall" onclick="examConfigSelectSection('${type}')">${isDE?'Alle':'All'}</button></div><div class="vv-rows">${rows}</div></div>`;
+  const desLbl=isDE?'Abwählen':'Deselect';
+  return`<div class="vv-grp ec-vocab-col"><div class="vv-ghead"><span class="vv-gh">${esc(lbl)} · ${items.length}</span><span class="vv-ghead-actions"><button type="button" class="vv-selall" onclick="examConfigSelectSection('${type}')">${isDE?'Alle':'All'}</button><button type="button" class="vv-selall vv-selnone" onclick="examConfigDeselectSection('${type}')">${desLbl}</button></span></div><div class="vv-rows">${rows}</div></div>`;
 }
 function examConfigVocabPanelHtml(goal,activeSkill){
   const isDE=goal.subject==='de';
@@ -219,58 +279,87 @@ function examConfigVocabPanelHtml(goal,activeSkill){
   const selN=_examConfig.selectedIds.size;
   const dueN=dueForGoal(goal).length;
   const isGenModule=activeSkill==='schreiben'||activeSkill==='sprechen';
+  const cap=examConfigVocabCap();
   if(!deck.length){
     return`<div class="ec-vocab-card"><p class="exam-config-hint">${isDE?'Noch keine Wörter in diesem Deck. Speichere Wörter während einer Übung.':'No words in this deck yet. Save words during a practice exam.'}</p></div>`;
   }
   const groups=examConfigGroupDeck(goal);
   const cols=EC_POS_ORDER.map(t=>examConfigVocabSectionHtml(t,groups[t],goal)).filter(Boolean).join('');
   const title=isDE?'Deine Wörter':'Your words';
+  const countLabel=isGenModule
+    ?`${selN} ${isDE?'im Deck':'in deck'}`
+    :cap!=null
+      ?`${selN} / ${cap} ${isDE?'ausgewählt':'selected'}`
+      :`${selN} ${isDE?'ausgewählt':'selected'}`;
   const sub=isGenModule
     ?(isDE
-      ?'Die KI kann diese Wörter einbauen, wenn sie natürlich passen — keine Pflicht, alle zu verwenden.'
-      :'The AI may include these words if they fit naturally — not required to use all of them.')
-    :(isDE
-      ?'Aus deinem Deck. Tippe an, um ein Wort ein- oder auszuschließen (Pool-Filter).'
-      :'From your deck. Tap to include or exclude a word (pool filter).');
-  return`<div class="ec-vocab-card">
-    <div class="ec-vocab-head"><span class="ec-vocab-title">${title}</span><span class="ec-vocab-count">${selN} ${isDE?'ausgewählt':'selected'}</span></div>
+      ?'Schreiben und Sprechen nutzen kein Wort-Picking — nur das Thema zählt. Die Liste ist hier nur zur Info.'
+      :'Writing and speaking do not use word selection — only the topic matters. This list is shown for reference only.')
+    :cap!=null
+      ?(isDE
+        ?`Wähle ${cap} Wörter (max.) für ${activeSkill==='horen'?'Hören':'Lesen'}. Liste startet leer — tippe die Wörter an, die du üben willst.`
+        :`Pick up to ${cap} words for ${activeSkill==='horen'?'Listening':'Reading'}. The list starts empty — tick the words you want to practice.`)
+      :(isDE
+        ?'Aus deinem Deck. Tippe an, um ein Wort ein- oder auszuschließen (Pool-Filter).'
+        :'From your deck. Tap to include or exclude a word (pool filter).');
+  const actionsDisabled=isGenModule?' style="display:none"':'';
+  return`<div class="ec-vocab-card${isGenModule?' ec-vocab-card--disabled':''}">
+    <div class="ec-vocab-head"><span class="ec-vocab-title">${title}</span><span class="ec-vocab-count">${countLabel}</span></div>
     <p class="ec-vocab-sub">${sub}</p>
-    <div class="ec-vocab-actions">
+    <div class="ec-vocab-actions"${actionsDisabled}>
       <button type="button" onclick="selectAllConfigWords()">${isDE?'Alle auswählen':'Select all'}</button>
       <button type="button" onclick="deselectAllConfigWords()">${isDE?'Alle abwählen':'Deselect all'}</button>
       ${dueN>0?`<button type="button" onclick="selectAllDueConfig()">${isDE?`Nur fällige (${dueN})`:`Due only (${dueN})`}</button>`:''}
     </div>
-    <div class="vv-cols ec-vocab-cols">${cols}</div>
-    ${dueN>0?`<p class="ec-vocab-legend"><span class="due-dot"></span> ${isDE?'heute fällig':'due today'}</p>`:''}
+    <div class="vv-cols ec-vocab-cols ec-vocab-cols${isGenModule?'--readonly':''}">${cols}</div>
+    ${!isGenModule&&typeof vocabHubUsedLegendSnippet==='function'?`<p class="ec-vocab-legend vv-legend">${vocabHubUsedLegendSnippet()}</p>`:''}
+    ${dueN>0&&!isGenModule?`<p class="ec-vocab-legend"><span class="due-dot"></span> ${isDE?'heute fällig':'due today'}</p>`:''}
   </div>`;
 }
-function configTopicSelectHtml(goal){
-  if(goal.subject!=='de'||goal.level!=='B1')return'';
-  if(!_examConfig.skills.has('lesen'))return'';
-  const Stock=typeof PersonalLesenTopicStock!=='undefined'?PersonalLesenTopicStock:null;
+function configTopicSelectHtml(goal,activeSkill){
+  if(goal.subject!=='de')return'';
+  const skill=activeSkill||configActiveSkillKey(_examConfig.skills);
+  if(typeof PersonalTopicStock!=='undefined'&&!PersonalTopicStock.supportsTopicPicker(goal,skill))return'';
+  const Stock=typeof PersonalTopicStock!=='undefined'
+    ?PersonalTopicStock.stockForConfig(goal,skill)
+    :(typeof PersonalLesenTopicStock!=='undefined'&&skill==='lesen'?PersonalLesenTopicStock:null);
   if(!Stock)return'';
   const isDE=goal.subject==='de';
+  const teilN=Stock.getManifest?.()?.teils?.length||(skill==='horen'?4:5);
   const rows=Stock.sortTopicsForSelect();
   const full=rows.filter(r=>r.full);
   const partial=rows.filter(r=>!r.full);
+  const words=deckForGoal(goal).filter(f=>_examConfig.selectedIds.has(fcId(f))).map(f=>f.word);
   if(!_examConfig.topicChoice){
-    const deck=deckForGoal(goal);
-    const words=deck.filter(f=>_examConfig.selectedIds.has(fcId(f))).map(f=>f.word);
     _examConfig.topicChoice=Stock.pickDefaultTopicForWords(words);
   }
-  const cur=_examConfig.topicChoice||Stock.pickDefaultTopicForWords([]);
+  const cur=_examConfig.topicChoice||Stock.pickDefaultTopicForWords(words);
+  const suggested=Stock.pickDefaultTopicForWords(words);
   const fullTopic=Stock.isTopicFull(cur);
   const opt=(row)=>{
     const badge=Stock.badgeLabel(row.topic,isDE?'de':'en');
     const sel=cur===row.topic?' selected':'';
     return`<option value="${esc(row.topic)}"${sel} title="${esc(Stock.badgeHint(row.topic,isDE?'de':'en'))}">${esc(row.topic)} ${esc(badge)}</option>`;
   };
+  const suggestHint=Stock.suggestTopicHint?Stock.suggestTopicHint(words,isDE?'de':'en'):'';
+  const manifest=Stock.getManifest?.();
+  const fallbackNote=manifest?.fallback
+    ?(isDE?`<p class="exam-config-topic-hint exam-config-topic-hint--warn">Pool ${goal.level} — stock en actualización; temas pueden tener poco contenido.</p>`
+      :`<p class="exam-config-topic-hint exam-config-topic-hint--warn">Pool ${goal.level} — stock updating; topics may have limited content.</p>`)
+    :'';
+  const resetBtn=_examConfig.topicTouched&&suggested&&suggested!==cur
+    ?`<button type="button" class="exam-config-topic-reset" onclick="resetConfigTopicToSuggestion()">${isDE?`Vorschlag: ${esc(suggested)}`:`Suggested: ${esc(suggested)}`}</button>`
+    :'';
+  const fullLabel=isDE?`✓ Alle ${teilN} Teile verfügbar`:`✓ All ${teilN} parts available`;
   return`${examConfigStepLabel(2,isDE?'Thema wählen':'Choose topic')}
-    <select class="exam-config-topic-select" aria-label="${isDE?'B1-Thema wählen':'Choose B1 topic'}" onchange="setConfigTopicChoice(this.value)">
-      <optgroup label="${isDE?'✓ Alle 5 Teile verfügbar':'✓ All 5 parts available'}">${full.map(opt).join('')}</optgroup>
+    <select class="exam-config-topic-select" aria-label="${isDE?'Thema wählen':'Choose topic'}" onchange="setConfigTopicChoice(this.value)">
+      <optgroup label="${fullLabel}">${full.map(opt).join('')}</optgroup>
       <optgroup label="${isDE?'Mit wenig Inhalt':'Limited content'}">${partial.map(opt).join('')}</optgroup>
     </select>
-    <p class="exam-config-topic-hint${fullTopic?' exam-config-topic-hint--ok':''}">${fullTopic?'<span class="ec-hint-dot"></span> ':''}${esc(Stock.badgeHint(cur,isDE?'de':'en'))}</p>`;
+    <p class="exam-config-topic-hint${fullTopic?' exam-config-topic-hint--ok':''}">${esc(Stock.badgeHint(cur,isDE?'de':'en'))}</p>
+    <p class="exam-config-topic-suggest">${esc(suggestHint)}</p>
+    ${resetBtn}
+    ${fallbackNote}`;
 }
 function configSectionMeta(skill,goal){
   const parts=_examConfig.blueprintParts?.[skill];
@@ -309,8 +398,8 @@ function renderExamConfigurator(){
   const selN=_examConfig.selectedIds.size;
   const activeSkill=configActiveSkillKey(_examConfig.skills);
   const skillLbl=configActiveSkillLabel(_examConfig.skills,goal.subject);
-  const topicHtml=activeSkill!=='lesen'?'':configTopicSelectHtml(goal);
-  const stepVocab=topicHtml?4:(goal.subject==='de'&&goal.level==='B1'&&activeSkill==='lesen'?4:3);
+  const topicHtml=configTopicSelectHtml(goal,activeSkill);
+  const stepVocab=topicHtml?3:2;
   const h1=isDE?'Übungssatz erstellen':'Section practice';
   const lede=isDE
     ?`Übe einen <b>${esc(goal.level)}</b>-Prüfungsteil mit deinem eigenen Wortschatz.`
@@ -331,7 +420,7 @@ function renderExamConfigurator(){
   const genBtn=document.getElementById('examConfigGenerateBtn');
   const qEst=estimateConfigQuestions(selN,_examConfig.skills);
   const remAi=typeof getAiCreditsRemaining==='function'?getAiCreditsRemaining():null;
-  const topicLbl=_examConfig.topicChoice&&_examConfig.skills.has('lesen')?esc(_examConfig.topicChoice):null;
+  const topicLbl=_examConfig.topicChoice&&typeof PersonalTopicStock!=='undefined'&&PersonalTopicStock.supportsTopicPicker(goal,activeSkill)?esc(_examConfig.topicChoice):(_examConfig.topicChoice&&activeSkill==='lesen'?esc(_examConfig.topicChoice):null);
   const footNote=configFootNote(activeSkill,goal);
   if(summary){
     let txt='<b>'+esc(skillLbl);
@@ -357,8 +446,10 @@ function renderExamConfigurator(){
   if(genBtn){
     const poolOnly=typeof isExamPoolOnly==='function'?isExamPoolOnly():(typeof window!=='undefined'&&(window.EXAM_POOL_ONLY??true));
     const poolModule=typeof isPersonalModulePoolFirst==='function'&&isPersonalModulePoolFirst([activeSkill],goal.subject,goal.level);
+    const poolVocabModule=typeof PersonalTopicStock!=='undefined'&&PersonalTopicStock.skillUsesTopicPicker(activeSkill);
+    const minSel=poolVocabModule&&typeof PersonalTopicStock!=='undefined'?PersonalTopicStock.PERSONAL_VOCAB_MIN_SELECT:2;
     const aiOk=poolOnly||poolModule||(typeof canUsePersonalModuleGen==='function'?canUsePersonalModuleGen([activeSkill],goal.subject,goal.level):(typeof canUseAiGeneration==='function'&&canUseAiGeneration()));
-    genBtn.disabled=selN<2||_examConfig.skills.size<1||!aiOk;
+    genBtn.disabled=selN<minSel||_examConfig.skills.size<1||!aiOk;
     if(!aiOk){
       if(typeof getAiCreditsRemaining==='function'&&getAiCreditsRemaining()===0)genBtn.textContent=isDE?'Keine Credits — Pro upgraden':'No credits left — upgrade to Pro';
       else if(typeof isPaidPlan==='function'&&!isPaidPlan())genBtn.textContent=isDE?'Personalisiert nur mit Pro':'Personalized exams require Pro';
@@ -380,7 +471,19 @@ function submitExamConfig(){
   }
   const words=deckForGoal(goal).filter(f=>_examConfig.selectedIds.has(fcId(f))).map(f=>f.word);
   const skills=[..._examConfig.skills].slice(0,1);
-  if(words.length<2){lcToast('Select at least 2 words.','warn');return;}
+  const activeSkill=skills[0]||'lesen';
+  const poolVocabModule=typeof PersonalTopicStock!=='undefined'&&PersonalTopicStock.skillUsesTopicPicker(activeSkill);
+  const minWords=poolVocabModule&&typeof PersonalTopicStock!=='undefined'?PersonalTopicStock.PERSONAL_VOCAB_MIN_SELECT:2;
+  if(words.length<minWords){
+    const isDE=goal.subject==='de';
+    lcToast(
+      poolVocabModule&&minWords>=4
+        ?(isDE?`Wähle mindestens ${minWords} Wörter (Ziel: min. 3 im Text).`:`Select at least ${minWords} words (goal: 3+ in the text).`)
+        :'Select at least 2 words.',
+      'warn',
+    );
+    return;
+  }
   if(skills.length<1){lcToast('Select one exam part.','warn');return;}
   const poolOnly=typeof isExamPoolOnly==='function'?isExamPoolOnly():(typeof window!=='undefined'&&(window.EXAM_POOL_ONLY??true));
   const poolModule=typeof isPersonalModulePoolFirst==='function'&&isPersonalModulePoolFirst(skills,goal.subject,goal.level);

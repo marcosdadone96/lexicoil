@@ -19,9 +19,12 @@ function isJunkVocabTranslation(raw){
 }
 function vocabTranslationOf(data,lang){
   if(!data)return'';
-  const isEnDef=S.subject==='en'&&lang==='en';
-  const tk=isEnDef?'definition_en':'translation_'+lang;
-  return String(data[tk]||data.translation_en||data.translation_es||data.definition_en||data.translation||'').trim();
+  const code=String(lang||'en').toLowerCase().slice(0,2);
+  const isEnDef=S.subject==='en'&&code==='en';
+  const tk=isEnDef?'definition_en':'translation_'+code;
+  let v=String(data[tk]||'').trim();
+  if(!v&&code==='en')v=String(data.translation_en||data.definition_en||data.translation||'').trim();
+  return v;
 }
 function purgeJunkVocabCacheEntry(ck){
   const data=S.vocabCache?.[ck];
@@ -452,6 +455,9 @@ async function fetchVocab(word,ck,showSave=true,autoSave=false,context='',saveMe
   const markPair=saveMeta?.pairId||'';
   const finishHit=async(data)=>{
     await applyGenderToVocabDataAsync(data,word,S.subject);
+    if(typeof ManualVocab!=='undefined'&&ManualVocab.applyInferredPos){
+      ManualVocab.applyInferredPos(data,word,S.subject);
+    }
     // Keep reunified lemma as display/save word (do not let enrich rename it)
     if(saveMeta?.word)data.word=saveMeta.word;
     else if(data.word&&String(data.word).toLowerCase()!==String(word).toLowerCase()&&saveMeta?.reunified){
@@ -460,7 +466,9 @@ async function fetchVocab(word,ck,showSave=true,autoSave=false,context='',saveMe
     S.vocabCache[ck]=data;
     if(reqCk!==_vocabActiveCk)return;
     renderTT(data,word,showSave);
-    if(autoSave){saveToFCData(withMeta(data));markVocabSaved(markSurface,data.type||data.pos,markPair);}
+    if(autoSave){
+      if(typeof ManualVocab!=='undefined'&&ManualVocab.isFunctionWord&&ManualVocab.isFunctionWord(data.word||word))return;
+      saveToFCData(withMeta(data));markVocabSaved(markSurface,data.type||data.pos,markPair);}
   };
   // Same cache key already in flight (hover + click save): reuse, do not abort
   if(_vocabFetchCk===reqCk&&_vocabFetchPromise){
@@ -500,7 +508,6 @@ async function fetchVocab(word,ck,showSave=true,autoSave=false,context='',saveMe
         if(dictHit&&!isJunkVocabTranslation(vocabTranslationOf(dictHit,_trLang())))data=dictHit;
       }
       if(data){
-        data.type=data.type||data.pos||'verb';
         await finishHit(data);
         return;
       }
@@ -512,7 +519,7 @@ async function fetchVocab(word,ck,showSave=true,autoSave=false,context='',saveMe
       if(cacheHit?.reason==='aborted')return;
       if(cacheHit?.translation&&!isJunkVocabTranslation(cacheHit.translation)){
         const isEnDef=S.subject==='en'&&_trLang()==='en';
-        data={word,type:'verb',pos:'verb',source:cacheHit.source||'cache'};
+        data={word,type:'',pos:'',source:cacheHit.source||'cache'};
         if(isEnDef)data.definition_en=cacheHit.translation;
         else data[`translation_${_trLang()}`]=cacheHit.translation;
         await finishHit(data);
@@ -527,6 +534,8 @@ async function fetchVocab(word,ck,showSave=true,autoSave=false,context='',saveMe
       if(autoSave&&!isWordSaved(word)&&!(saveMeta?.surface&&isWordSaved(saveMeta.surface))){
         const meta=await applyGenderToVocabDataAsync(withMeta({word,type:'',pos:''})||{word,type:'',pos:''},word,S.subject);
         if(saveMeta?.word)meta.word=saveMeta.word;
+        if(typeof ManualVocab!=='undefined'&&ManualVocab.applyInferredPos)ManualVocab.applyInferredPos(meta,word,S.subject);
+        if(typeof ManualVocab!=='undefined'&&ManualVocab.isFunctionWord&&ManualVocab.isFunctionWord(meta.word||word))return;
         saveToFCData(meta);
         markVocabSaved(markSurface,meta.type||meta.pos,markPair);
         renderTT(meta,word,showSave);

@@ -397,8 +397,9 @@ function renderHorenPictureBank(pictures,pi,isPrac,ui){
   let h=`<aside class="horen-picture-bank" aria-label="${esc(hdr)}"><div class="horen-picture-header">${esc(hdr)}</div><div class="horen-picture-grid">`;
   pics.forEach(p=>{
     const key=String(p.key||'').toLowerCase();
-    h+=`<div class="horen-picture-item"><span class="pt-letter-pill horen-picture-key">${esc(key)}</span>`;
-    if(p.icon)h+=`<span class="horen-picture-icon">${esc(p.icon)}</span>`;
+    const lbl=p.label?String(p.label):'';
+    h+=`<div class="horen-picture-item" data-activity-key="${esc(key)}" aria-label="${esc(key + (lbl ? ': ' + lbl : ''))}"><span class="pt-letter-pill horen-picture-key" aria-hidden="true">${esc(key)}</span>`;
+    if(p.icon)h+=`<span class="horen-picture-icon" aria-hidden="true">${esc(p.icon)}</span>`;
     if(p.label)h+=`<span class="horen-picture-label">${wrapW(p.label,'horen_'+pi+'_pic_'+key,isPrac)}</span>`;
     h+=`</div>`;
   });
@@ -427,8 +428,11 @@ function renderGoetheLesenPart(part,pi,isPrac,ui){
   }
   const modLabel=ui.reading;
   const teilLabel=ui.teil;
-  const altNote=part._topicRelaxed&&typeof PersonalLesenTopicStock!=='undefined'&&PersonalLesenTopicStock.formatRelaxedTeilNote
-    ?`<div class="personal-teil-alt-note">${esc(PersonalLesenTopicStock.formatRelaxedTeilNote(part,ui.lang))}</div>`:'';
+  const lesenStock=typeof PersonalTopicStock!=='undefined'
+    ?PersonalTopicStock.forModule(S.subject||'de',S.level||'B1','lesen')
+    :(typeof PersonalLesenTopicStock!=='undefined'?PersonalLesenTopicStock:null);
+  const altNote=part._topicRelaxed&&lesenStock?.formatRelaxedTeilNote
+    ?`<div class="personal-teil-alt-note">${esc(lesenStock.formatRelaxedTeilNote(part,ui.lang))}</div>`:'';
   let h=`<section class="module-wrap"><div class="module-tag tag-lesen">${modLabel} — ${teilLabel} ${part.teil}${part.arbeitszeit?' · '+part.arbeitszeit:''}</div>${altNote}<div class="off-instr">${esc(part.instruction)}</div>`;
   const mod='lesen_'+pi;
   const adsMatching=isLesenAdsMatchingRender(part);
@@ -634,9 +638,9 @@ function renderGoetheSprechenPart(part,ui){
   const bullets=briefing.bullets||[];
   const slides=briefing.slides?.length?briefing.slides:part.slides||[];
   const modLabel=ui.speaking;
-  const teilLabel=ui.teil;
+  const tagLine=typeof SpeakingFlow!=='undefined'&&SpeakingFlow.sprechenPartModuleTag?SpeakingFlow.sprechenPartModuleTag(part,ui):`${modLabel} — ${ui.teil} ${part.teil}${part.title&&!/^(teil|sprechen|speaking|part)\s*\d+$/i.test(String(part.title).trim())?': '+part.title:''}${part.dauer?' · '+part.dauer:''}`;
   const de=ui?.lang==='de';
-  let h=`<section class="module-wrap"><div class="module-tag tag-sprechen">${modLabel} — ${teilLabel} ${part.teil}: ${part.title}${part.dauer?' · '+part.dauer:''}</div><div class="off-instr">${esc(displayIntro)}</div>`;
+  let h=`<section class="module-wrap"><div class="module-tag tag-sprechen">${esc(tagLine)}</div><div class="off-instr">${esc(displayIntro)}</div>`;
   if(part.cardText)h+=`<div class="off-card-scene"><b>${ui.card}</b> ${esc(part.cardText)}</div>`;
   if(part.photoDescriptions?.length){
     h+=`<div class="off-photos">${part.photoDescriptions.map(p=>`<div class="off-ad">${esc(p)}</div>`).join('')}</div>`;
@@ -926,12 +930,19 @@ function renderExam(){
   const personalVerified=(d._coverageOverall?.found??d.targetUsageVerified?.length??0);
   const personalTotal=(d._coverageOverall?.total??d.vocabWords?.length)||0;
   const examLang=resolveExamLang(d,S.subject);
-  const topicHonest=typeof PersonalLesenTopicStock!=='undefined'&&d._poolTopicRelaxed&&PersonalLesenTopicStock.topicHonestyBanner
-    ?PersonalLesenTopicStock.topicHonestyBanner(d,examLang):'';
+  const personalTopicStock=typeof PersonalTopicStock!=='undefined'
+    ?PersonalTopicStock.stockForPersonalExam(d,examLang)
+    :(typeof PersonalLesenTopicStock!=='undefined'?PersonalLesenTopicStock:null);
+  const topicHonest=d._poolTopicRelaxed&&personalTopicStock?.topicHonestyBanner
+    ?personalTopicStock.topicHonestyBanner(d,examLang):'';
+  const minVisGate=d._personalVocabMinVisible??3;
+  const partialWarn=(d._personalCoveragePartial||d._personalTextDecision==='serve_partial')&&typeof PersonalExamCoverage!=='undefined'&&PersonalExamCoverage.formatPersonalPartialWarning&&personalTotal
+    ?PersonalExamCoverage.formatPersonalPartialWarning(d._coverageOverall||{found:personalVerified,total:personalTotal,words:d._coverageOverall?.words||[]},minVisGate,examLang)
+    :'';
   const covSummary=typeof PersonalExamCoverage!=='undefined'&&PersonalExamCoverage.formatPersonalCoverageSummary&&personalTotal
     ?PersonalExamCoverage.formatPersonalCoverageSummary(d._coverageOverall||{found:personalVerified,total:personalTotal},examLang)
     :(isDE?`Dein personalisiertes Examen${personalTotal?` — ${personalVerified} von ${personalTotal} Wörtern`:''}`:`Your personalized exam${personalTotal?` — ${personalVerified} of ${personalTotal} words`:''}`);
-  const personalBanner=isPersonal&&!d._hybridLoading?`<div class="card note-card personal-exam-banner" style="margin-bottom:16px"><b>${esc(covSummary)}</b>${topicHonest?`<span style="display:block;margin-top:6px;font-size:12px;color:var(--orange)">${esc(topicHonest)}</span>`:''}${personalVerified>0?`<span style="display:block;margin-top:6px;font-size:12px;color:var(--text-secondary)">${isDE?'Deine Wörter sind im Text hervorgehoben.':'Your words are highlighted in the text.'}</span>`:''}${personalVerified<personalTotal&&personalTotal>0?`<span style="display:block;margin-top:6px;font-size:12px;color:var(--text-secondary)">${isDE?'Erneut generieren, um mehr Wörter einzubauen.':'Generate again to integrate more words.'}</span>`:''}</div>`:'';
+  const personalBanner=isPersonal&&!d._hybridLoading?`<div class="card note-card personal-exam-banner${partialWarn?' personal-exam-banner--partial':''}" style="margin-bottom:16px"><b>${esc(covSummary)}</b>${partialWarn?`<span style="display:block;margin-top:8px;font-size:12px;color:var(--orange)">${esc(partialWarn)}</span>`:''}${topicHonest?`<span style="display:block;margin-top:6px;font-size:12px;color:var(--orange)">${esc(topicHonest)}</span>`:''}${personalVerified>0?`<span style="display:block;margin-top:6px;font-size:12px;color:var(--text-secondary)">${isDE?'Deine Wörter sind im Text hervorgehoben.':'Your words are highlighted in the text.'}</span>`:''}${personalVerified<personalTotal&&personalTotal>0&&!partialWarn?`<span style="display:block;margin-top:6px;font-size:12px;color:var(--text-secondary)">${isDE?'Erneut generieren, um mehr Wörter einzubauen.':'Generate again to integrate more words.'}</span>`:''}</div>`:'';
   const poolBanner=isPool?`<div style="background:var(--blue-bg);border:.5px solid rgba(93,184,232,.3);border-radius:var(--radius-lg);padding:10px 16px;margin-bottom:16px;font-size:12px;color:var(--text-secondary)">📚 Curated exam (counts toward monthly quota). Retake saved exams anytime without quota.</div>`:'';
   const bgVocabBanner=(()=>{if(!isPersonal||d._hybridLoading)return'';const parts=[...(d.lesenParts||[]),...(d.horenParts||[])];const bg=parts.filter(p=>p.bgGenerated&&p._fromPool);if(!bg.length)return'';const vocabSet=new Set((d.vocabWords||[]).map(w=>String(w).toLowerCase()));const words=[];bg.forEach(p=>(p.bgVocabLemmas||[]).forEach(w=>{if(vocabSet.has(String(w).toLowerCase())&&!words.some(x=>String(x).toLowerCase()===String(w).toLowerCase()))words.push(w);}));if(!words.length)return'';const shown=words.slice(0,3).map(w=>esc(w)).join(', ');const more=words.length>3?` (+${words.length-3} more)`:'';const lead=isDE?'✨ Automatisch aus deinem kürzlichen Vokabular generiert · auch im Pool':'✨ Auto-generated from your recent vocabulary · also in pool';const wl=isDE?`Wörter: ${shown}${more}`:`Words used: ${shown}${more}`;return`<div style="background:var(--blue-bg);border:.5px solid rgba(93,184,232,.3);border-radius:var(--radius-lg);padding:10px 16px;margin-bottom:16px;font-size:12px;color:var(--text-secondary)">${lead} — ${wl}</div>`;})();
   const saveExitH=!isQ?`<button class="btn-sm accent" onclick="saveAndExitExam()">Save &amp; exit</button>`:'';

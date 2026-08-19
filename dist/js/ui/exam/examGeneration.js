@@ -731,14 +731,19 @@ function _recordSeenPartsFromExam(exam) {
 }
 
 /**
- * Ensambla un módulo completo desde el pool, escogiendo por vocabulario (greedy),
- * sin repetir partes ya vistas por el usuario y variando tema.
- * Devuelve { exam, coverage, missingTeile, relaxedTeile, topicTag } o null si 0 partes.
+ * Ensambla un módulo completo desde el pool (Phase B: planificador ≥3 palabras).
+ * Cuota personal solo tras ensamblado verificado (commitPersonalPoolQuota).
  */
 async function assembleModuleFromPool(module, words, lang, level, opts = {}) {
   const { topicTag = null } = opts;
   const PF = getPoolFallbackHelpers();
-  if (!PF || typeof fetchExamPartVocab !== 'function') return null;
+  const minVisible =
+    typeof PersonalPoolVocabGate !== 'undefined'
+      ? PersonalPoolVocabGate.PERSONAL_VOCAB_MIN_VISIBLE
+      : 3;
+  if (!PF || typeof fetchExamModulePlan !== 'function' || typeof fetchExamPartById !== 'function') {
+    return null;
+  }
   const H = _modulePoolHelpers(PF, module);
   if (!H) return null;
 
@@ -746,6 +751,75 @@ async function assembleModuleFromPool(module, words, lang, level, opts = {}) {
   try { blueprint = await ExamBlueprint.load(lang, level); } catch (_) {}
   const teils = (H.teils ? H.teils(blueprint) : null) || [];
   if (!teils.length) return null;
+
+  const requested = (words || []).map((w) => String(w).toLowerCase()).filter(Boolean);
+  const poolRequestId = (typeof crypto !== 'undefined' && crypto.randomUUID)
+    ? crypto.randomUUID()
+    : `pool-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+
+  let plan;
+  try {
+    plan = await fetchExamModulePlan(lang, level, module, {
+      words: requested,
+      topicTag,
+      excludeIds: seenPartIds(lang, level, module),
+    });
+  } catch (e) {
+    if (e.code === 'personal_pool_quota_exceeded' || e.code === 'login_required' || e.code === 'rate_limited') {
+      throw e;
+    }
+    plan = { ok: false, reason: 'plan_failed' };
+  }
+
+  const logPlan = {
+    event: 'personal_module_vocab_plan',
+    ok: plan?.ok,
+    reason: plan?.reason,
+    coveredCount: plan?.coveredCount,
+    requestedTopic: topicTag,
+    words: requested,
+    module,
+    lang,
+    level,
+    topicPass: plan?.topicPass,
+    missingTeile: plan?.missingTeile,
+    relaxedTeile: plan?.relaxedTeile,
+  };
+  if (typeof lcDebug !== 'undefined' && lcDebug.log) lcDebug.log('[personal]', logPlan);
+  else console.log('[personal]', logPlan);
+
+  if (!plan?.ok || !plan.picks?.length) {
+    let emptyReason = plan?.reason || 'topic_empty';
+    if (emptyReason === 'vocab_insufficient_coverage' || (plan?.coveredCount != null && plan.coveredCount < minVisible)) {
+      emptyReason = 'vocab_insufficient_coverage';
+    }
+    return {
+      exam: null,
+      emptyReason,
+      coverage: plan?.coveredCount != null ? { covered: plan.coveredCount, requested: requested.length } : null,
+      coveredWords: plan?.coveredWords || [],
+      missingTeile: plan?.missingTeile || teils,
+      relaxedTeile: plan?.relaxedTeile || [],
+      topicTag,
+      planTelemetry: logPlan,
+    };
+  }
+
+  if (plan.textVerified && plan.decision === 'reject') {
+    return {
+      exam: null,
+      emptyReason: 'vocab_insufficient_coverage',
+      coverage: {
+        covered: plan.textCoveredCount ?? 0,
+        requested: requested.length,
+      },
+      coveredWords: plan.textCoveredWords || [],
+      missingTeile: plan.missingTeile || teils,
+      relaxedTeile: plan.relaxedTeile || [],
+      topicTag,
+      planTelemetry: { ...logPlan, decision: 'reject', textCoveredCount: plan.textCoveredCount },
+    };
+  }
 
   const exam = {
     lang,
@@ -760,70 +834,109 @@ async function assembleModuleFromPool(module, words, lang, level, opts = {}) {
     exam.topicTag = topicTag;
   }
 
-  const requested = (words || []).map((w) => String(w).toLowerCase()).filter(Boolean);
-  let remaining = null;
-  const coveredLemmas = new Set();
-  const usedTopics = new Set();
-  const missingTeile = [];
-  const relaxedTeile = [];
-  const poolRequestId = (typeof crypto !== 'undefined' && crypto.randomUUID)
-    ? crypto.randomUUID()
-    : `pool-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+  const coveredLemmas = new Set((plan.coveredWords || []).map((w) => String(w).toLowerCase()));
+  const missingTeile = [...(plan.missingTeile || [])];
+  const relaxedTeile = [...(plan.relaxedTeile || [])];
 
-  for (const teil of teils) {
-    const exclude = seenPartIds(lang, level, module);
-    const data = await fetchExamPartVocab(lang, level, module, {
-      excludeIds: exclude,
-      teil,
-      words: remaining != null ? [...remaining] : requested,
-      excludeTopics: [...usedTopics],
-      topicTag,
-      poolRequestId,
-    });
-    if (!data || !data.part) { missingTeile.push(teil); continue; }
+  for (const pick of plan.picks) {
+    if (!pick?.id) continue;
+    const data = await fetchExamPartById(lang, level, module, pick.id);
+    if (!data?.part) {
+      missingTeile.push(pick.teil);
+      continue;
+    }
 
-    const servedTopic = resolveCanonicalB1Topic(data.topicTag || data.topic) || null;
-    const isRelaxed = !!data.topicRelaxed;
-    if (isRelaxed) relaxedTeile.push({ teil, actualTopic: servedTopic });
-
-    if (remaining == null) remaining = new Set(data.requestedLemmas || requested);
-
+    const servedTopic = resolveCanonicalB1Topic(pick.topicTag || data.part.topicTag) || null;
     let part = H.toPart(data.part, blueprint);
-    if (!part) { missingTeile.push(teil); continue; }
+    if (!part) {
+      missingTeile.push(pick.teil);
+      continue;
+    }
     part._poolTopicTag = servedTopic;
-    part._topicRelaxed = isRelaxed;
+    part._topicRelaxed = !!pick.topicRelaxed;
+    part._partId = data.id || pick.id;
     const shell = { lang, level, goetheFormat: true, vocabPersonal: true, [H.key]: [part] };
     if (typeof repairPersonalExamAnswerability === 'function') repairPersonalExamAnswerability(shell);
     part = shell[H.key][0];
-    if (!H.valid({ [H.key]: [part] }, teil, blueprint)) { missingTeile.push(teil); continue; }
-
-    H.insert(exam, part, teil);
-    _recordSeenPart(lang, level, module, data.id);
-
-    for (const w of data.coveredWords || []) {
-      const lw = String(w).toLowerCase();
-      coveredLemmas.add(lw);
-      if (remaining) remaining.delete(lw);
+    if (!H.valid({ [H.key]: [part] }, pick.teil, blueprint)) {
+      missingTeile.push(pick.teil);
+      continue;
     }
-    if (data.topic) usedTopics.add(String(data.topic).toLowerCase());
+
+    H.insert(exam, part, pick.teil);
+    for (const w of pick.covered || []) coveredLemmas.add(String(w).toLowerCase());
 
     if (typeof ExamRenumber !== 'undefined' && ExamRenumber.renumberExam) {
       ExamRenumber.renumberExam(exam, blueprint || null);
     }
   }
 
-  if (!(exam[H.key] || []).length) return null;
+  if (!(exam[H.key] || []).length) {
+    return {
+      exam: null,
+      emptyReason: 'vocab_insufficient_coverage',
+      coverage: { covered: coveredLemmas.size, requested: requested.length },
+      coveredWords: [...coveredLemmas],
+      missingTeile,
+      relaxedTeile,
+      topicTag,
+      planTelemetry: logPlan,
+    };
+  }
 
-  const requestedCount = (remaining != null)
-    ? coveredLemmas.size + remaining.size
-    : requested.length;
+  applyPersonalTargetUsage(exam, words);
+
+  const serverTextCount = plan.textVerified ? (plan.textCoveredCount ?? 0) : null;
+  const serverDecision = plan.textVerified ? plan.decision : null;
+  const verified = lcVocabCoverage(exam, words);
+  const textFound = serverTextCount != null ? serverTextCount : verified.found;
+  const decision =
+    serverDecision ||
+    (textFound <= 0 ? 'reject' : textFound >= minVisible ? 'serve_now' : 'serve_partial');
+
+  if (decision === 'reject' || textFound < 1) {
+    return {
+      exam: null,
+      emptyReason: 'vocab_insufficient_coverage',
+      coverage: { covered: textFound, requested: verified.total },
+      coveredWords: plan.textCoveredWords || exam.targetUsageVerified || [],
+      missingTeile,
+      relaxedTeile,
+      topicTag,
+      planTelemetry: { ...logPlan, verifyFound: textFound, minVisible, decision },
+    };
+  }
+
+  exam._personalTextDecision = decision;
+  exam._personalTextVerifiedCount = textFound;
+  exam._personalVocabMinVisible = minVisible;
+  if (decision === 'serve_partial') exam._personalCoveragePartial = true;
+
+  const poolMod = String(module).toLowerCase();
+  if (
+    (poolMod === 'lesen' || poolMod === 'horen') &&
+    typeof commitPersonalPoolQuota === 'function'
+  ) {
+    try {
+      await commitPersonalPoolQuota(poolMod, poolRequestId);
+    } catch (err) {
+      if (err?.code === 'personal_pool_quota_exceeded') throw err;
+      lcDebug.warn('[personal] pool quota commit failed:', err);
+    }
+  }
+
+  for (const pick of plan.picks) {
+    if (pick?.id) _recordSeenPart(lang, level, module, pick.id);
+  }
+
   return {
     exam,
-    coverage: { covered: coveredLemmas.size, requested: requestedCount },
-    coveredWords: [...coveredLemmas],
-    missingTeile,
+    coverage: { covered: verified.found, requested: verified.total },
+    coveredWords: exam.targetUsageVerified || [...coveredLemmas],
+    missingTeile: [...new Set(missingTeile)],
     relaxedTeile,
     topicTag,
+    planTelemetry: logPlan,
   };
 }
 
@@ -2859,59 +2972,99 @@ async function runWeaknessExam(goal){
 }
 async function launchHorenGame(words, lang, level, opts = {}){
   const creditCost=typeof listeningGameCreditCost==='function'?listeningGameCreditCost():2;
-  if(typeof requireAiCredits==='function'&&!requireAiCredits('listening_game',{message:'The listening game uses '+creditCost+' credits (script + audio).'}))return;
   hideAll();
   show('loadingScreen');
   const lt=document.getElementById('loaderTitle');
   const ls=document.getElementById('loaderSub');
   if(lt)lt.textContent=typeof vocabT==='function'?vocabT().preparingListening:'Preparing listening game…';
-  if(ls)ls.textContent=typeof vocabT==='function'?vocabT().preparingListeningSub(creditCost):'AI is writing a short monologue ('+creditCost+' credits)';
-  let round;
-  try{
-    if(typeof generateListeningGameWithAI!=='function')throw new Error('Listening game unavailable');
-    round=await generateListeningGameWithAI(words,{lang,level,topic:opts.topic||''});
-  }catch(e){
-    hideAll();
-    if(typeof backToWorkspace==='function')backToWorkspace('vocabulary');
-    else if(typeof goHome==='function')goHome();
-    if(e.code==='ai_credits_exhausted'){
-      if(typeof showAiCreditsExhausted==='function')showAiCreditsExhausted();
-    }else{
-      lcToast('Could not start listening game: '+(e.message||'error'),'error',7000);
+  if(ls)ls.textContent=typeof vocabT==='function'?vocabT().preparingListeningSub(creditCost):'AI is preparing short listening clips ('+creditCost+' credits)';
+  let round=null;
+  let usedAi=false;
+  const canTryAi=typeof canUseListeningGame==='function'?canUseListeningGame():true;
+  if(canTryAi&&typeof requireAiCredits==='function'&&requireAiCredits('listening_game',{message:'The listening game uses '+creditCost+' credits when AI audio is generated.'})){
+    try{
+      if(typeof generateListeningGameWithAI!=='function')throw new Error('Listening game unavailable');
+      round=await generateListeningGameWithAI(words,{lang,level,topic:opts.topic||''});
+      usedAi=round&&round.billed===true&&((round.rounds&&round.rounds.length)||round.passage);
+    }catch(e){
+      round=null;
+      if(e.code==='ai_credits_exhausted'){
+        if(typeof showAiCreditsExhausted==='function')showAiCreditsExhausted();
+      }else if(typeof lcToast==='function'){
+        lcToast(e.message||'Listening game unavailable. No credits were used.','warn',7000);
+      }
     }
-    return;
   }
   hide('loadingScreen');
   show('horenGameScreen');
   if(typeof applyHorenGameChrome==='function')applyHorenGameChrome();
   const el=document.getElementById('horenGameMount');
   if(!el||typeof HorenGame==='undefined'){lcToast('Listening game unavailable.','warn');return;}
-  const uiLang=typeof resolveVocabUiLang==='function'?resolveVocabUiLang():'en';
+  const uiLang=typeof resolveActiveVocabUiLang==='function'?resolveActiveVocabUiLang():(typeof resolveVocabUiLang==='function'?resolveVocabUiLang():'en');
   const pool=Array.isArray(opts.pool)?opts.pool:[];
-  const hgConfig={
-    passage:round.passage,
-    displayWords:round.displayWords,
-    appeared:round.appeared,
-    absent:round.absent,
-    topic:round.topic,
-    audioBase64:round.audioBase64,
-    audioMime:round.audioMime,
-    lang,
-    level,
-    pool,
-    uiLang,
-  };
   const hgHandlers={
     onComplete(result){
       if(typeof AnalyticsStore!=='undefined'&&typeof AnalyticsStore.recordWordResults==='function'){
         try{AnalyticsStore.recordWordResults((typeof getActiveGoal==='function')?getActiveGoal():null, result.detail);}catch(_){}
       }
+      const g=(typeof getActiveGoal==='function')?getActiveGoal():null;
+      const rot=S._hgActivityWords||[];
+      if(g&&rot.length&&typeof VocabBatching!=='undefined'&&VocabBatching.recordActivityUsage){
+        VocabBatching.recordActivityUsage(g,'listening_game',rot);
+        S._hgActivityWords=null;
+      }
     },
     onExit(){exitHorenGame();},
   };
-  S._hgLastConfig=hgConfig;
+  function legacyRoundFromClient(r){
+    return{
+      roundIndex:1,
+      passage:r.passage,
+      displayWords:r.displayWords,
+      appeared:r.appeared,
+      absent:r.absent,
+      audioBase64:r.audioBase64,
+      audioMime:r.audioMime,
+      valid:true,
+    };
+  }
+  if(round&&(round.rounds?.length||round.passage)){
+    const aiRounds=round.rounds?.length?round.rounds:[legacyRoundFromClient(round)];
+    const hgConfig={
+      rounds:aiRounds,
+      aiSession:true,
+      mode:'ai',
+      topic:round.topic,
+      lang,
+      level,
+      pool,
+      uiLang,
+    };
+    S._hgLastConfig=hgConfig;
+    S._hgLastHandlers=hgHandlers;
+    HorenGame.mountAiSession(el, hgConfig, hgHandlers);
+    const goal=(typeof getActiveGoal==='function')?getActiveGoal():null;
+    if(usedAi&&typeof SavedListeningGames!=='undefined'&&SavedListeningGames.persistAfterGeneration){
+      SavedListeningGames.persistAfterGeneration({
+        goal,
+        lang,
+        level,
+        topic:round.topic||opts.topic||'',
+        rounds:aiRounds,
+        words,
+        pool,
+        uiLang,
+      });
+    }
+    return;
+  }
+  if(typeof lcToast==='function'){
+    lcToast('Free listening: 3 word rounds (browser TTS). AI mode needs netlify dev + API keys.','warn',7000);
+  }
+  const sessionConfig={words,lang,level,pool,uiLang,sessionRounds:3,sessionMode:true};
+  S._hgLastConfig=sessionConfig;
   S._hgLastHandlers=hgHandlers;
-  HorenGame.mount(el, hgConfig, hgHandlers);
+  HorenGame.mountSession(el, sessionConfig, hgHandlers);
 }
 function exitHorenGame(){
   if(typeof backToWorkspace==='function')backToWorkspace('vocabulary');
@@ -2929,8 +3082,14 @@ function startHorenGameFromHub(){
   if(!words.length&&goal&&Array.isArray(S.flashcards)){
     words=S.flashcards.filter(f=>f.sourceLang===goal.subject).map(f=>f.word);
   }
-  words=[...new Set(words.map(w=>String(w||'').trim()).filter(Boolean))].slice(0,16);
+  words=[...new Set(words.map(w=>String(w||'').trim()).filter(Boolean))];
   if(words.length<3){lcToast('Select at least 3 words for the listening game.','warn');return;}
+  if(typeof VocabBatching!=='undefined'&&VocabBatching.selectForActivity){
+    const sel=VocabBatching.selectForActivity(words,'listening_game',goal);
+    words=sel.words;
+    S._hgActivityWords=words.slice();
+    if(goal&&typeof saveGoals==='function')saveGoals();
+  }
   const topic=typeof _vocabHub!=='undefined'&&_vocabHub.listenTopic?String(_vocabHub.listenTopic).trim():'';
   launchHorenGame(words, goal?goal.subject:(S.subject||'de'), goal?goal.level:(S.level||'B1'), {topic,pool});
 }
@@ -3204,12 +3363,15 @@ async function finalizePersonalExam(configWords,configSkills,configGoalId,goalRe
   }else if(lcExamPassesQualityGate(S.examData,configWords,POOL_CONTRIBUTE_COVERAGE)){
     void contributeExamToPool(S.subject,S.level,genericPoolTopic(S.subject,S.level),S.examData,{words:configWords,minCoverage:POOL_CONTRIBUTE_COVERAGE});
   }
-  if(typeof VocabBatching!=='undefined'&&goalRef?.vocabPlan){
-    VocabBatching.advance(goalRef.vocabPlan,configWords);
-    saveGoals();
-    const cov=VocabBatching.coverage(goalRef.vocabPlan);
-    if(!cov.finished){
-      lcToast(VocabBatching.summary(goalRef.vocabPlan,S.subject)+'. Use “Next batch” on results when ready.','info',8000);
+  if(typeof VocabBatching!=='undefined'&&goalRef){
+    const rotWords=S.lastPersonalConfig?.personalRotationWords||configWords;
+    VocabBatching.recordActivityUsage(goalRef,'personal',rotWords,{skills:configSkills});
+    const plan=VocabBatching.getActivityPlan(goalRef,'personal',configSkills);
+    if(plan){
+      const cov=VocabBatching.coverage(plan);
+      if(!cov.finished){
+        lcToast(VocabBatching.summary(plan,S.subject)+'. Use “Next batch” on results when ready.','info',8000);
+      }
     }
   }
   if(source==='ai'){
@@ -3346,6 +3508,29 @@ function personalPoolEmptyMessage(topic, lang, module) {
     return `Für „${topic}“ ist im Pool noch kein Lesen-Inhalt verfügbar. Probiere ein anderes Thema (z. B. Bildung oder Technik).`;
   }
   return `No reading content in the pool for "${topic}" yet. Try another topic (e.g. Bildung or Technik).`;
+}
+function personalPoolVocabNoMatchMessage(lang) {
+  const uiLang = typeof resolveVocabUiLang === 'function' ? resolveVocabUiLang() : '';
+  if (uiLang === 'es') {
+    return 'No pudimos generar contenido con exactamente estas palabras — probá con menos palabras, otras palabras, o dejanos elegir automáticamente.';
+  }
+  const isDE = String(lang || '').toLowerCase() === 'de';
+  if (isDE) {
+    return 'Wir konnten keinen Inhalt finden, der genau diese Wörter enthält — probier weniger oder andere Wörter, oder lass uns automatisch wählen.';
+  }
+  return 'We could not assemble content that uses exactly these words — try fewer or different words, or let us pick automatically.';
+}
+function personalPoolVocabInsufficientMessage(lang, found, minVisible) {
+  const need = minVisible != null ? minVisible : 3;
+  const uiLang = typeof resolveVocabUiLang === 'function' ? resolveVocabUiLang() : '';
+  if (uiLang === 'es') {
+    return `No hay suficiente contenido en el pool para incluir al menos ${need} de tus palabras (${found ?? 0} encontradas). Probá otro tema o más tarde — no se consumió tu cuota.`;
+  }
+  const isDE = String(lang || '').toLowerCase() === 'de';
+  if (isDE) {
+    return `Im Pool fehlt passender Inhalt für mindestens ${need} deiner Wörter (${found ?? 0} gefunden). Probiere ein anderes Thema oder später — deine Kontingent wurde nicht verbraucht.`;
+  }
+  return `Not enough pool content to include at least ${need} of your words (${found ?? 0} found). Try another topic or later — your quota was not used.`;
 }
 function personalPoolMissingTeileMessage(missingTeile, topic, lang) {
   const isDE = String(lang || '').toLowerCase() === 'de';
@@ -3747,11 +3932,14 @@ async function generatePersonalExam(words,skills,goalId,opts){
     lcToast(typeof LevelAvailability!=='undefined'?LevelAvailability.personalizedUnavailableMessage(checkLang,checkLevel):'Personalized practice is not available for this level yet.','warn',7000);
     return;
   }
-  if(skipBatching&&goalRef?.vocabPlan&&typeof VocabBatching!=='undefined'){
-    const batch=VocabBatching.nextBatch(goalRef.vocabPlan);
+  if(skipBatching&&goalRef&&typeof VocabBatching!=='undefined'){
+    const skills=orderedPersonalSkills(configSkills||goalRef.vocabPlan?.skills||['lesen']);
+    VocabBatching.migrateVocabPlanToActivity(goalRef,skills);
+    const plan=VocabBatching.getActivityPlan(goalRef,'personal',skills)||goalRef.vocabPlan;
+    const batch=plan?VocabBatching.nextBatch(plan):null;
     if(!batch){lcToast('All vocabulary batches completed.','success');return;}
     configWords=batch;
-    configSkills=goalRef.vocabPlan.skills||configSkills||['lesen'];
+    configSkills=skills;
     S.subject=goalRef.subject;S.level=goalRef.level;S.activeGoalId=goalRef.id;syncGoalToProfile(goalRef);
   }else   if(!configWords){
     const cards=getSelectedFC();
@@ -3800,6 +3988,7 @@ async function generatePersonalExam(words,skills,goalId,opts){
     }
   }
   let libraryMatchCount;
+  let personalRotationWords=null;
   if(typeof VocabBatching!=='undefined'&&!skipBatching){
     if(typeof QuestionLibrary!=='undefined'&&QuestionLibrary.hasLibrary(S.subject,S.level)){
       try{
@@ -3807,18 +3996,20 @@ async function generatePersonalExam(words,skills,goalId,opts){
         libraryMatchCount=(bank.questions||[]).filter(q=>ExamBuilder.questionContainsWords(q,bank,configWords)).length;
       }catch(_){libraryMatchCount=undefined;}
     }
-    if(goalRef&&configWords.length>VocabBatching.capacityFor(configSkills)){
-      goalRef.vocabPlan=VocabBatching.planBatches(configWords,configSkills,goalRef);
+    if(goalRef){
+      const fullDeck=[...new Set((configWords||[]).map(w=>String(w||'').trim()).filter(Boolean))];
+      VocabBatching.migrateVocabPlanToActivity(goalRef,configSkills);
+      const sel=VocabBatching.selectForActivity(fullDeck,'personal',goalRef,{skills:configSkills});
+      if(sel.words?.length){
+        personalRotationWords=sel.words.slice();
+        configWords=sel.words;
+      }
       saveGoals();
-    }
-    if(goalRef?.vocabPlan&&!VocabBatching.coverage(goalRef.vocabPlan).finished){
-      const batch=VocabBatching.nextBatch(goalRef.vocabPlan);
-      if(batch)configWords=batch;
     }
   }
   S.mode='practice';S.isDemo=false;S.answers={};S.gapAnswers={};S.quickMod=null;
   initExamSession('practice');
-  S.lastPersonalConfig={words:configWords,skills:configSkills,goalId:configGoalId||S.activeGoalId,teilFilter:opts?.teilFilter??_examConfig.teilChoice??'all',topic:opts?.topic??_examConfig.topicChoice??null};
+  S.lastPersonalConfig={words:configWords,skills:configSkills,goalId:configGoalId||S.activeGoalId,teilFilter:opts?.teilFilter??_examConfig.teilChoice??'all',topic:opts?.topic??_examConfig.topicChoice??null,personalRotationWords};
   if(typeof VocabBatching!=='undefined'&&typeof HorenGame!=='undefined'&&VocabBatching.shouldUseGame(configWords,configSkills,libraryMatchCount)){
     launchHorenGame(configWords,S.subject,S.level);return;
   }
@@ -3875,6 +4066,8 @@ async function generatePersonalExam(words,skills,goalId,opts){
       const missingAll = [];
       const relaxedAll = [];
       let anyParts = false;
+      let poolEmptyReason = null;
+      let anyPartialCoverage = false;
 
       for (const module of configSkills) {
         let res;
@@ -3903,9 +4096,16 @@ async function generatePersonalExam(words,skills,goalId,opts){
           throw e;
         }
         const key = _MODULE_PART_KEY[module] || `${module}Parts`;
-        if (!res?.exam?.[key]?.length) continue;
+        if (!res?.exam?.[key]?.length) {
+          if (res?.emptyReason === 'vocab_insufficient_coverage') poolEmptyReason = 'vocab_insufficient_coverage';
+          else if (res?.emptyReason === 'vocab_no_match') poolEmptyReason = 'vocab_no_match';
+          continue;
+        }
         anyParts = true;
         combined[key] = res.exam[key];
+        if (res.exam._personalCoveragePartial || res.exam._personalTextDecision === 'serve_partial') {
+          anyPartialCoverage = true;
+        }
         (res.coveredWords || []).forEach((w) => coveredAll.add(String(w).toLowerCase()));
         if (res.coverage) requestedTotal = Math.max(requestedTotal, res.coverage.requested || configWords.length);
         (res.missingTeile || []).forEach((t) => missingAll.push({ module, teil: t }));
@@ -3919,7 +4119,29 @@ async function generatePersonalExam(words,skills,goalId,opts){
       if (!anyParts) {
         hideAll();
         const emptyMod = configSkills[0] || 'lesen';
-        lcToast(personalPoolEmptyMessage(personalTopic, S.subject, emptyMod), 'warn', 8000);
+        const minVis =
+          typeof PersonalPoolVocabGate !== 'undefined'
+            ? PersonalPoolVocabGate.PERSONAL_VOCAB_MIN_VISIBLE
+            : 3;
+        const toastMsg =
+          poolEmptyReason === 'vocab_insufficient_coverage'
+            ? personalPoolVocabInsufficientMessage(S.subject, null, minVis)
+            : poolEmptyReason === 'vocab_no_match' && configWords?.length
+              ? personalPoolVocabNoMatchMessage(S.subject)
+              : personalPoolEmptyMessage(personalTopic, S.subject, emptyMod);
+        lcToast(toastMsg, 'warn', 8000);
+        if (
+          poolEmptyReason === 'vocab_insufficient_coverage' &&
+          typeof reportPersonalPoolCoverageFailure === 'function'
+        ) {
+          reportPersonalPoolCoverageFailure({
+            requestedTopic: personalTopic,
+            module: emptyMod,
+            reason: 'vocab_insufficient_coverage',
+            words: configWords,
+            teils: emptyMod === 'horen' ? [1, 2, 3, 4] : [1, 2, 3, 4, 5],
+          });
+        }
         if (_examConfig.goalId) {
           show('examConfigScreen');
           showExamConfigFootbar(true);
@@ -3935,6 +4157,14 @@ async function generatePersonalExam(words,skills,goalId,opts){
         missing: configWords.filter((w) => !coveredAll.has(String(w).toLowerCase())),
         ratio: configWords.length ? coveredAll.size / configWords.length : 0,
       };
+      if (anyPartialCoverage) {
+        combined._personalCoveragePartial = true;
+        combined._personalTextDecision = 'serve_partial';
+        combined._personalVocabMinVisible =
+          typeof PersonalPoolVocabGate !== 'undefined'
+            ? PersonalPoolVocabGate.PERSONAL_VOCAB_MIN_VISIBLE
+            : 3;
+      }
       if (missingAll.length) {
         combined._partialGen = true;
         combined._missingTeile = missingAll.map((m) => `${m.module} T${m.teil}`);
@@ -3946,8 +4176,14 @@ async function generatePersonalExam(words,skills,goalId,opts){
       }
       combined._poolRequestedTopic = personalTopic;
       combined.topicTag = personalTopic;
-      if (typeof PersonalLesenTopicStock !== 'undefined' && PersonalLesenTopicStock.formatPersonalExamDisplayTitle) {
-        combined._displayTopic = PersonalLesenTopicStock.formatPersonalExamDisplayTitle(combined, S.subject);
+      const topicStock =
+        typeof PersonalTopicStock !== 'undefined'
+          ? PersonalTopicStock.stockForPersonalExam(combined, S.subject)
+          : typeof PersonalLesenTopicStock !== 'undefined'
+            ? PersonalLesenTopicStock
+            : null;
+      if (topicStock?.formatPersonalExamDisplayTitle) {
+        combined._displayTopic = topicStock.formatPersonalExamDisplayTitle(combined, S.subject);
       } else {
         combined._displayTopic = personalTopic;
       }
@@ -3962,8 +4198,8 @@ async function generatePersonalExam(words,skills,goalId,opts){
           7000,
         );
       } else if (relaxedAll.length && typeof lcToast === 'function') {
-        const honest = typeof PersonalLesenTopicStock !== 'undefined' && PersonalLesenTopicStock.topicHonestyBanner
-          ? PersonalLesenTopicStock.topicHonestyBanner(combined, S.subject)
+        const honest = topicStock?.topicHonestyBanner
+          ? topicStock.topicHonestyBanner(combined, S.subject)
           : personalPoolTopicRelaxedMessage(personalTopic, S.subject);
         lcToast(honest, 'warn', 8000);
       }

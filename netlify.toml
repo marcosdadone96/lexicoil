@@ -39,7 +39,7 @@
   # planModule + Lesen text verify can exceed platform default (~10–30s); Hören often ~12–15s
   timeout = 60
   # Same runtime FS bundle as admin-api plan/pick paths (+ POST quality gate via js/engine; local seed)
-  included_files = ["library/vocab/**", "library/blueprints/**", "library/reusable-seed/**", "js/engine/**", "js/data/**", "js/library/**", "data/lexicon/**", "data/excluded-premises.json", "data/lesen-t2-openings-bank.json", "data/lesen-t3-names-bank.json", "knowledge/**", "scripts/lib/**", "scripts/blacklist.mjs", "scripts/audit-pass-2.mjs", "plantillas-lesen-b1/**", "plantillas-horen-b1/**"]
+  included_files = ["library/vocab/**", "library/blueprints/**", "library/reusable-seed/**", "library/official-index/**", "data/exams/availability.json", "js/engine/**", "js/data/**", "js/library/**", "data/lexicon/**", "data/excluded-premises.json", "data/lesen-t2-openings-bank.json", "data/lesen-t3-names-bank.json", "knowledge/**", "scripts/lib/**", "scripts/blacklist.mjs", "scripts/audit-pass-2.mjs", "plantillas-lesen-b1/**", "plantillas-horen-b1/**"]
 
 [functions."exam-plan"]
   # hybrid decision: external hybridExamPlan.mjs + pool index CJS bridge

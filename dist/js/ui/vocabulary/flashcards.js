@@ -9,34 +9,51 @@ function normalizeFlashcard(fc){
   if(!fc.sourceLang&&fc.lang)fc.sourceLang=fc.lang;
   if(!fc.sourceLevel&&fc.sourceExam?.level)fc.sourceLevel=String(fc.sourceExam.level).toUpperCase();
   if(!fc.translations||typeof fc.translations!=='object')fc.translations={};
-  const lang=S?.fcLang||'en';
+  const lang=(typeof translationLang==='function'?translationLang():S?.fcLang)||'en';
   if(typeof fc.translation==='string'&&fc.translation.trim()){
-    if(!fc.translations[lang])fc.translations[lang]=fc.translation.trim();
     if(!fc.translations.en)fc.translations.en=fc.translation.trim();
+    if(lang==='en'&&!fc.translations.en)fc.translations.en=fc.translation.trim();
   }
-  if(typeof fc.meaning==='string'&&fc.meaning.trim()&&!fc.translations[lang]){
-    fc.translations[lang]=fc.meaning.trim();
+  if(lang==='en'&&typeof fc.meaning==='string'&&fc.meaning.trim()&&!fc.translations.en){
+    fc.translations.en=fc.meaning.trim();
   }
+  ['es','fr','it'].forEach((code)=>{
+    const en=fc.translations?.en||fc.translation;
+    const v=fc.translations?.[code];
+    if(v&&en&&String(v).trim().toLowerCase()===String(en).trim().toLowerCase())delete fc.translations[code];
+  });
   if(!fc.examples||typeof fc.examples!=='object')fc.examples={};
   if(typeof fc.context==='string'&&fc.context.trim()&&!Object.values(fc.examples).some(Boolean)){
     fc.examples[lang]=fc.context.trim();
   }
   return fc;
 }
+function fcUiTranslationLang(){
+  if(typeof resolveActiveVocabUiLang==='function')return resolveActiveVocabUiLang();
+  if(typeof translationLang==='function')return translationLang();
+  return S.fcLang||'en';
+}
 function fcCardTranslation(fc,langCode){
   if(!fc)return'—';
   normalizeFlashcard(fc);
-  const code=langCode||(typeof translationLang==='function'?translationLang():S.fcLang)||'en';
+  const code=(langCode||fcUiTranslationLang()||'en').toLowerCase().slice(0,2);
   const tr=fc.translations;
-  let val=tr?.[code]||tr?.en||tr?.es||tr?.de||Object.values(tr||{}).find(v=>v!=null&&String(v).trim());
+  let val=tr?.[code];
+  if(val==null||!String(val).trim()){
+    val=undefined;
+  }
   if(val!=null&&String(val).trim())return String(val).trim();
-  if(typeof fc.translation==='string'&&fc.translation.trim())return fc.translation.trim();
-  if(typeof fc.meaning==='string'&&fc.meaning.trim())return fc.meaning.trim();
+  if(code==='en'){
+    if(typeof fc.translation==='string'&&fc.translation.trim())return fc.translation.trim();
+    if(typeof fc.meaning==='string'&&fc.meaning.trim())return fc.meaning.trim();
+    val=tr?.en;
+    if(val!=null&&String(val).trim())return String(val).trim();
+  }
   const subject=fc.sourceLang||fc.lang||S.subject||'de';
   const ck=`${fc.word}_${subject}_${code}`;
   const cached=S.vocabCache?.[ck];
   if(cached){
-    const t=cached[`translation_${code}`]||cached.definition_en||cached[`translation_en`];
+    const t=cached[`translation_${code}`]||(code==='en'?cached.definition_en||cached.translation_en:null);
     if(t&&String(t).trim())return String(t).trim();
   }
   return '—';
@@ -44,35 +61,39 @@ function fcCardTranslation(fc,langCode){
 function applyLookupDataToFc(fc,data,lang,subject){
   if(!fc||!data)return;
   normalizeFlashcard(fc);
-  const code=lang||S.fcLang||'en';
+  const code=lang||fcUiTranslationLang();
   const isEnDef=subject==='en'&&code==='en';
   const t=isEnDef
     ?(data.definition_en||data.translation_en||data.translation)
-    :(data[`translation_${code}`]||data.translation_en||data.translation_es||data.translation);
+    :(data[`translation_${code}`]||(code==='en'?(data.translation_en||data.translation):null)||(code==='es'?data.translation_es:null)||(code==='fr'?data.translation_fr:null)||(code==='it'?data.translation_it:null));
   if(t&&String(t).trim())fc.translations[code]=String(t).trim();
   if(data.definition_en&&!fc.translations.en)fc.translations.en=String(data.definition_en).trim();
   if(data.translation_en&&!fc.translations.en)fc.translations.en=String(data.translation_en).trim();
   if(data.translation_es&&!fc.translations.es)fc.translations.es=String(data.translation_es).trim();
 }
 async function enrichFlashcardTranslations(fc){
-  if(!fc)return fcCardTranslation(fc)!=='—';
+  if(!fc)return false;
   normalizeFlashcard(fc);
-  if(fcCardTranslation(fc)!=='—')return true;
   const goal=typeof getActiveGoal==='function'?getActiveGoal():null;
   const subject=fc.sourceLang||goal?.subject||S.deckGoalFilter||S.subject||'de';
   const level=goal?.level||S.level||'B1';
-  const lang=S.fcLang||'en';
+  const lang=fcUiTranslationLang();
   const word=String(fc.word||'').trim();
   if(!word)return false;
   const ck=`${word}_${subject}_${lang}`;
+  const hasForLang=()=>{
+    const t=fc.translations?.[lang];
+    return t!=null&&String(t).trim();
+  };
+  if(hasForLang())return true;
   if(S.vocabCache?.[ck]){
     applyLookupDataToFc(fc,S.vocabCache[ck],lang,subject);
-    if(fcCardTranslation(fc)!=='—')return true;
+    if(hasForLang())return true;
   }
   if(typeof PracticeDictionary!=='undefined'){
     try{
       const dict=await PracticeDictionary.lookup(word,subject,level,lang);
-      if(dict){applyLookupDataToFc(fc,dict,lang,subject);if(fcCardTranslation(fc)!=='—')return true;}
+      if(dict){applyLookupDataToFc(fc,dict,lang,subject);if(hasForLang())return true;}
     }catch(_){}
   }
   if(typeof ManualVocab!=='undefined'){
@@ -80,7 +101,7 @@ async function enrichFlashcardTranslations(fc){
       const r=await ManualVocab.validate(word,subject,level,lang);
       if(r?.ok&&r.entry&&ManualVocab.buildTranslations){
         Object.assign(fc.translations,ManualVocab.buildTranslations(r.entry,subject,lang));
-        if(fcCardTranslation(fc)!=='—')return true;
+        if(hasForLang())return true;
       }
     }catch(_){}
   }
@@ -90,13 +111,14 @@ async function enrichFlashcardTranslations(fc){
       const hit=await fetchVocabCache(subject,lang,word,example);
       if(hit?.translation){
         fc.translations[lang]=String(hit.translation).trim();
-        if(!fc.translations.en)fc.translations.en=String(hit.translation).trim();
-        S.vocabCache[ck]={...(S.vocabCache[ck]||{}),[`translation_${lang}`]:hit.translation,definition_en:hit.translation};
-        if(fcCardTranslation(fc)!=='—')return true;
+        const cachePatch={...(S.vocabCache[ck]||{}),[`translation_${lang}`]:hit.translation};
+        if(lang==='en')cachePatch.definition_en=hit.translation;
+        S.vocabCache[ck]=cachePatch;
+        if(hasForLang())return true;
       }
     }catch(_){}
   }
-  return fcCardTranslation(fc)!=='—';
+  return hasForLang();
 }
 async function enrichFlashcardsForQuiz(cards){
   await Promise.all((cards||[]).map(fc=>enrichFlashcardTranslations(fc)));
@@ -132,10 +154,9 @@ function countUniqueFcTranslations(cards){
 function fcIsReverse(){return!!S.fcReverse;}
 function fcDirectionLabels(subject){
   const sub=subject||S.subject||'de';
-  if(sub==='de')return{forward:'DE→EN',reverse:'EN→DE'};
-  if(sub==='es')return{forward:'ES→EN',reverse:'EN→ES'};
-  if(sub==='en')return{forward:'EN→DE',reverse:'DE→EN'};
-  return{forward:'A→B',reverse:'B→A'};
+  const tgt=(fcUiTranslationLang()||'en').toUpperCase();
+  const src=sub==='de'?'DE':sub==='es'?'ES':sub==='en'?'EN':'A';
+  return{forward:src+'→'+tgt,reverse:tgt+'→'+src};
 }
 function fcTtsLangForCode(code){
   const c=String(code||'en').toLowerCase();
@@ -151,7 +172,7 @@ function fcCardFaces(fc,subject){
   const tb=typeof typeBadge==='function'?typeBadge(normWordType(fc.type||fc.pos)):'';
   const wordHtml=typeof fcWordDisplayHtml==='function'?fcWordDisplayHtml(fc,sub):_fcEsc(fc.word);
   const speakWord=typeof fcSpeakPhrase==='function'?fcSpeakPhrase(fc,sub):String(fc.word||'');
-  const trLang=(typeof resolveVocabUiLang==='function'?resolveVocabUiLang():S.fcLang)||'en';
+  const trLang=fcUiTranslationLang();
   const sourceFace={html:wordHtml,speak:speakWord,ttsLang:fcTtsLangForCode(sub),typeBadge:tb,isWord:true};
   const transFace={html:_fcEsc(tr),speak:tr,ttsLang:fcTtsLangForCode(trLang),typeBadge:'',isWord:false};
   const rev=fcIsReverse();
@@ -247,6 +268,10 @@ function removeSavedWordFromDeck(word){
 function saveToFCData(data){
   const word=data.word||'';
   if(!word)return false;
+  if(typeof ManualVocab!=='undefined'&&ManualVocab.isFunctionWord){
+    if(ManualVocab.isFunctionWord(word))return false;
+    if(data.surface&&ManualVocab.isFunctionWord(data.surface))return false;
+  }
   const goal=typeof getActiveGoal==='function'?getActiveGoal():null;
   const sourceExam=S.examData?{id:S.examData._savedId||S.examData.id||Date.now(),topic:S.examData.topic,level:S.examData.level,lang:S.examData.lang}:null;
   const sourceLang=goal?.subject||S.subject;
@@ -271,12 +296,27 @@ function saveToFCData(data){
     return false;
   }
   const tr={},ex={};
-  LANGS.forEach(l=>{const ck=`${word}_${S.subject}_${l.code}`;if(S.vocabCache[ck]){tr[l.code]=S.vocabCache[ck][`translation_${l.code}`]||S.vocabCache[ck].definition_en||'';ex[l.code]=S.vocabCache[ck][`example_${l.code}`]||'';}});
-  tr[typeof translationLang==='function'?translationLang():S.vocabLang]=data[`translation_${typeof translationLang==='function'?translationLang():S.vocabLang}`]||data.definition_en||data.translation||'';
+  const uiLang=typeof resolveActiveVocabUiLang==='function'?resolveActiveVocabUiLang():(typeof translationLang==='function'?translationLang():S.vocabLang);
+  LANGS.forEach(l=>{
+    const ck=`${word}_${sourceLang}_${l.code}`;
+    const c=S.vocabCache?.[ck];
+    if(!c)return;
+    if(l.code==='en'){
+      const en=c.definition_en||c.translation_en||c.translation;
+      if(en&&String(en).trim())tr.en=String(en).trim();
+    }else{
+      const specific=c[`translation_${l.code}`]||(l.code==='es'?c.translation_es:null)||(l.code==='fr'?c.translation_fr:null)||(l.code==='it'?c.translation_it:null);
+      if(specific&&String(specific).trim())tr[l.code]=String(specific).trim();
+    }
+    ex[l.code]=c[`example_${l.code}`]||'';
+  });
+  tr[uiLang]=data[`translation_${uiLang}`]||data.translation||'';
   if(data.translation_en)tr.en=data.translation_en;
   if(data.translation_es)tr.es=data.translation_es;
+  if(data.translation_fr)tr.fr=data.translation_fr;
+  if(data.translation_it)tr.it=data.translation_it;
   if(data.definition_en&&!tr.en)tr.en=data.definition_en;
-  ex[S.vocabLang]=data[`example_${S.vocabLang}`]||'';
+  ex[uiLang]=data[`example_${uiLang}`]||'';
   const wtype=typeof normWordType==='function'?normWordType(data.type||data.pos):'';
   const fc={id:'fc_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,9),word,phonetic:data.phonetic||'',pos:data.pos||data.type||'',type:wtype,translations:tr,examples:ex,sourceLang,sourceLevel,sourceExam,savedAt:Date.now(),interval:1,ef:2.5,nextReview:null,missCount:1};
   if(data.gender)fc.gender=data.gender;
@@ -286,14 +326,21 @@ function saveToFCData(data){
   if(data.lemmaUncertain)fc.lemmaUncertain=true;
   if(data.pairId)fc.pairId=data.pairId;
   if(typeof ManualVocab!=='undefined'&&ManualVocab.enrichFlashcard)ManualVocab.enrichFlashcard(fc,S.subject);
+  if(typeof VerbConjugation!=='undefined'&&VerbConjugation.canonicalizeForDeck)VerbConjugation.canonicalizeForDeck(fc,sourceLang);
   if(typeof ExamProfile!=='undefined')ExamProfile.tagItem(fc);
   S.flashcards.push(fc);
   if(!S.examSavedWords)S.examSavedWords=[];
-  if(!S.examSavedWords.includes(word))S.examSavedWords.push(word);
+  if(!S.examSavedWords.includes(fc.word))S.examSavedWords.push(fc.word);
   if(typeof sortFlashcardsByType==='function')S.flashcards=sortFlashcardsByType(S.flashcards);
-  clearFcTombstone();
+  const tombKey=`${String(fc.word).toLowerCase().trim()}|${sourceLang}`;
+  if(!Array.isArray(S.deletedFlashcards))S.deletedFlashcards=[];
+  const nextDel=S.deletedFlashcards.filter((t)=>t?.key!==tombKey);
+  if(nextDel.length!==S.deletedFlashcards.length){
+    S.deletedFlashcards=nextDel;
+    try{localStorage.setItem('lc_fc_del',JSON.stringify(S.deletedFlashcards));}catch(_){}
+  }
   saveFC();
-  markVocabSaved(data.surface||word,fc.type||fc.pos||wtype,data.pairId);
+  markVocabSaved(data.surface||fc.word,fc.type||fc.pos||wtype,data.pairId);
   const b=document.getElementById('vtSave');
   if(b){b.textContent='\u2713 In your deck';b.classList.add('saved');}
   const dc=document.getElementById('dkCnt');
@@ -401,6 +448,7 @@ function setFcTab(tab){S.fcTab=tab;S.fcSingleIdx=0;S.fcSingleFlipped=false;['all
 function fcSingleCards(){
   let cards;
   const inVocab=typeof _vocabHub!=='undefined'&&_vocabHub.activity==='flashcards';
+  const hubPick=inVocab&&S.fcSelected&&S.fcSelected.size>0;
   if(inVocab||(typeof _vocabHub!=='undefined'&&_vocabHub.flashcardMode&&S.fcSelected.size)){
     const goal=(typeof _vocabHub!=='undefined'&&_vocabHub.goalId?S.goals.find(g=>g.id===_vocabHub.goalId):null)||getActiveGoal();
     cards=goal?deckForGoal(goal):getDeckViewCards();
@@ -408,14 +456,23 @@ function fcSingleCards(){
   }else{
     cards=getDeckViewCards();
   }
-  if(S.fcTab==='due')cards=cards.filter(f=>isDue(f));
-  else if(S.fcTab==='study'){
+  if(hubPick){
+    if(typeof VocabQuizUtils!=='undefined'&&VocabQuizUtils.sortCardsByWeakness){
+      cards=VocabQuizUtils.sortCardsByWeakness(cards);
+    }else{
+      const due=cards.filter(f=>isDue(f));
+      const rest=cards.filter(f=>!isDue(f));
+      cards=[...due,...rest];
+    }
+  }else if(S.fcTab==='due'){
+    cards=cards.filter(f=>isDue(f));
+  }else if(S.fcTab==='study'){
     const dueCards=cards.filter(f=>isDue(f));
     cards=dueCards.length?dueCards:cards;
   }
-  if((S.fcTab==='study'||S.fcTab==='due')&&typeof VocabQuizUtils!=='undefined'&&VocabQuizUtils.sortCardsByWeakness){
+  if(!hubPick&&(S.fcTab==='study'||S.fcTab==='due')&&typeof VocabQuizUtils!=='undefined'&&VocabQuizUtils.sortCardsByWeakness){
     cards=VocabQuizUtils.sortCardsByWeakness(cards);
-  }else if(typeof sortFlashcardsByType==='function'&&(!S.fcTypeFilter||S.fcTypeFilter==='all')){
+  }else if(!hubPick&&typeof sortFlashcardsByType==='function'&&(!S.fcTypeFilter||S.fcTypeFilter==='all')){
     cards=sortFlashcardsByType(cards);
   }
   if(typeof filterCardsByType==='function')cards=filterCardsByType(cards);
@@ -425,6 +482,39 @@ function toggleFcSingleFlip(){
   const el=document.getElementById('fcSingleInner');
   if(el)el.classList.toggle('flipped');
   S.fcSingleFlipped=!!(el&&el.classList.contains('flipped'));
+  if(S.fcSingleFlipped&&typeof enrichFlashcardTranslationsForUiLang==='function'){
+    void enrichFlashcardTranslationsForUiLang();
+  }
+}
+function enrichFlashcardTranslationsForUiLang(){
+  const inHubFc=typeof _vocabHub!=='undefined'&&_vocabHub.activity==='flashcards';
+  let cards;
+  if(inHubFc&&typeof fcSingleCards==='function'){
+    cards=fcSingleCards();
+  }else if(typeof getDeckViewCards==='function'){
+    cards=getDeckViewCards();
+  }else{
+    cards=S.flashcards||[];
+  }
+  const lang=fcUiTranslationLang();
+  const idx=S.fcSingleIdx;
+  const focused=typeof idx==='number'&&cards[idx]?[cards[idx]]:(cards||[]).filter((fc)=>{
+    normalizeFlashcard(fc);
+    const t=fc.translations?.[lang];
+    return !t||!String(t).trim();
+  });
+  if(!focused.length){
+    if(typeof renderFC==='function'&&document.getElementById('flashcardScreen')?.style.display!=='none')renderFC(false);
+    return Promise.resolve();
+  }
+  return Promise.all(focused.map((fc)=>enrichFlashcardTranslations(fc))).then((results)=>{
+    if(results.some(Boolean)&&typeof saveFC==='function')saveFC();
+    if(typeof renderFcSingleView==='function'&&(S.deckGoalFilter||inHubFc))renderFcSingleView();
+    else if(typeof renderFC==='function')renderFC(false);
+  });
+}
+async function refreshFlashcardTranslationsForUiLang(){
+  await enrichFlashcardTranslationsForUiLang();
 }
 function fcSinglePrev(){
   if((S.fcSingleIdx||0)>0){S.fcSingleIdx--;S.fcSingleFlipped=false;renderFcSingleView();}
@@ -440,7 +530,14 @@ function fcSingleSrs(fci){
   S.fcSingleFlipped=false;
   renderFcSingleView();
   if(S.deckGoalFilter){const goal=getActiveGoal();if(goal){const ta=document.getElementById('fcTabAll');const td=document.getElementById('fcTabDue');const deck=deckForGoal(goal);const dueN=dueForGoal(goal).length;if(ta)ta.textContent='All · '+deck.length;if(td)td.textContent='Due · '+dueN;}}
-  if(typeof _vocabHub!=='undefined'&&_vocabHub.activity==='flashcards'&&typeof refreshVocabHubPanel==='function')refreshVocabHubPanel();
+  if(typeof _vocabHub!=='undefined'&&_vocabHub.activity==='flashcards'&&typeof refreshVocabHubPanel==='function'){
+    const g=(typeof getActiveGoal==='function'?getActiveGoal():null);
+    const fc=S.flashcards[fci];
+    if(g&&fc&&fc.word&&typeof VocabBatching!=='undefined'&&VocabBatching.recordActivityUsage){
+      VocabBatching.recordActivityUsage(g,'flashcards',[String(fc.word).trim()]);
+    }
+    refreshVocabHubPanel();
+  }
 }
 function renderFcSingleView(){
   const inVocab=typeof _vocabHub!=='undefined'&&_vocabHub.activity==='flashcards';
@@ -465,7 +562,7 @@ function renderFcSingleView(){
         sc.innerHTML='<div class="deck-empty-state"><div class="ic">✅</div><h3>No cards due</h3><p>Nothing due in your selection right now. Review all selected words instead.</p><button type="button" class="btn-start" style="max-width:260px;margin:0 auto" onclick="setVocabHubFcTabAll()">Review all selected</button></div>';
         return;
       }
-      sc.innerHTML='<div class="deck-empty-state"><div class="ic">📭</div><h3>No words selected</h3><p>Go back and pick at least '+VV_MIN_FLASH+' word.</p><button type="button" class="btn-start" style="max-width:260px;margin:0 auto" onclick="navBack()">← Vocabulary</button></div>';
+      sc.innerHTML='<div class="deck-empty-state"><div class="ic">📭</div><h3>No words selected</h3><p>Go back and pick at least 3 words.</p><button type="button" class="btn-start" style="max-width:260px;margin:0 auto" onclick="navBack()">← Vocabulary</button></div>';
       return;
     }
     const goal=getActiveGoal();
@@ -500,6 +597,14 @@ function renderFcSingleView(){
   const srsHtml='<div class="srs-row" style="margin-top:16px"><button class="srs-btn srs-a" onclick="event.stopPropagation();fcSingleSrs('+fci+',0)">'+(vt?vt.again:'Again')+'</button><button class="srs-btn srs-h" onclick="event.stopPropagation();fcSingleSrs('+fci+',1)">'+(vt?vt.hard:'Hard')+'</button><button class="srs-btn srs-g" onclick="event.stopPropagation();fcSingleSrs('+fci+',2)">'+(vt?vt.good:'Good')+'</button><button class="srs-btn srs-e" onclick="event.stopPropagation();fcSingleSrs('+fci+',3)">'+(vt?vt.easy:'Easy')+'</button></div>';
   const modeLbl=S.fcTab==='study'?'Due first':'';
   mountFcDirectionBar(subject);
+  const trMissing=!faces.translation||faces.translation==='—';
+  if(trMissing&&fc&&typeof enrichFlashcardTranslations==='function'&&!S._fcEnrichPending){
+    S._fcEnrichPending=true;
+    void enrichFlashcardTranslations(fc).then((ok)=>{
+      S._fcEnrichPending=false;
+      if(ok&&typeof renderFcSingleView==='function')renderFcSingleView();
+    }).catch(()=>{S._fcEnrichPending=false;});
+  }
   sc.innerHTML='<div class="fc-single-wrap"><div class="progress-wrap" style="margin-bottom:16px"><div class="progress-row"><span>'+(vt?vt.cardOf(S.fcSingleIdx+1,cards.length)+(groupLbl?' · '+esc(groupLbl):'')+(modeLbl?' · '+modeLbl:''):'Card '+(S.fcSingleIdx+1)+' of '+cards.length+(groupLbl?' · '+esc(groupLbl):'')+(modeLbl?' · '+modeLbl:''))+'</span><span>'+Math.round(((S.fcSingleIdx+1)/cards.length)*100)+'%</span></div><div class="progress-track"><div class="progress-fill" style="width:'+Math.round(((S.fcSingleIdx+1)/cards.length)*100)+'%"></div></div></div><div class="fc-single-card"><div class="fc-single-inner'+flipped+'" id="fcSingleInner" onclick="toggleFcSingleFlip()" role="button" tabindex="0" aria-label="Flashcard, tap to flip"><div class="fc-single-face fc-single-front">'+frontFace+'</div><div class="fc-single-face fc-single-back">'+backFace+srsHtml+'</div></div></div><div class="fc-single-nav"><button type="button" class="btn-sm" onclick="fcSinglePrev()"'+((S.fcSingleIdx||0)<=0?' disabled':'')+'>'+(vt?vt.prev:'← Prev')+'</button><button type="button" class="btn-sm accent" onclick="fcSingleNext('+cards.length+')"'+((S.fcSingleIdx||0)>=cards.length-1?' disabled':'')+'>'+(vt?vt.next:'Next →')+'</button></div></div>';
   if(typeof bindFlashcardKeyboard==='function')bindFlashcardKeyboard();
 }
@@ -525,7 +630,7 @@ function renderFC(reinit=true){
   const trLbl=document.querySelector('#flashcardScreen .fc-lang-label');
   if(trLbl){const vt=typeof vocabT==='function'?vocabT():null;trLbl.textContent=(vt?vt.interfaceLang:'Interface')+':';}
   const lb=document.getElementById('fcLangBtns');
-  if(lb)lb.innerHTML=vocabUiLangs().map(l=>`<button class="vt-lb${uiLang===l.code?' active':''}" onclick="setFcLang('${l.code}',this)">${l.l}</button>`).join('');
+  if(lb)lb.innerHTML=vocabUiLangs().map(l=>`<button type="button" class="vt-lb${uiLang===l.code?' active':''}" data-lang="${l.code}" onclick="setFcLang('${l.code}',this)">${l.l}</button>`).join('');
   const cb=document.getElementById('fcClearBtn'),es=document.getElementById('fcExamSec'),ps=document.getElementById('fcPersonalSec'),sb=document.getElementById('fcSelectBar');
   const profileCards=getDeckViewCards();
   const inHub=!!S.deckGoalFilter;
@@ -639,7 +744,18 @@ mountFcDirectionBar(subject);
 sc.innerHTML=`<div style="text-align:center;font-size:12px;color:var(--text-muted);margin-bottom:12px">${S.studyIdx+1} / ${cards.length}</div><div class="progress-track" style="margin-bottom:22px"><div class="progress-fill" style="width:${(S.studyIdx/cards.length)*100}%"></div></div><div class="fc-exam-sec" style="text-align:center"><div class="${topCls}" style="${topStyle}">${faces.front.html}</div>${faces.front.isWord&&tb?`<div style="margin-bottom:8px">${tb}</div>`:''}${faces.front.isWord&&safePhonetic?`<div style="font-size:12px;color:var(--text-muted);font-family:'DM Mono',monospace;margin-bottom:8px">${safePhonetic}</div>`:''}<button class="btn-sm blue" onclick="speakBtn('${encodeURIComponent(faces.front.speak)}','${faces.front.ttsLang}',this)">🔊 Pronounce</button><hr class="section-div" style="margin:16px 0"><div style="${botStyle}">${faces.back.html}</div>${faces.back.isWord&&safePhonetic?`<div style="font-size:12px;color:var(--text-muted);font-family:'DM Mono',monospace;margin-bottom:8px">${safePhonetic}</div>`:''}${safeEx?`<div style="font-size:12px;color:var(--text-secondary);font-style:italic">${safeEx}</div>`:''}<div class="srs-row" style="margin-top:18px"><button class="srs-btn srs-a" onclick="srsRate(${fci},0);S.studyIdx++;renderStudyCard(cards)">Again</button><button class="srs-btn srs-h" onclick="srsRate(${fci},1);S.studyIdx++;renderStudyCard(cards)">Hard</button><button class="srs-btn srs-g" onclick="srsRate(${fci},2);S.studyIdx++;renderStudyCard(cards)">Good</button><button class="srs-btn srs-e" onclick="srsRate(${fci},3);S.studyIdx++;renderStudyCard(cards)">Easy</button></div></div>`;}
 function fcIndexById(id){return S.flashcards.findIndex(f=>fcId(f)===id);}
 function srsRateById(id,q){const i=fcIndexById(id);if(i>=0)srsRate(i,q);}
-function flipCard(id){document.getElementById('fc_'+id)?.classList.toggle('flipped');}
+function flipCard(id){
+  const el=document.getElementById('fc_'+id);
+  if(!el)return;
+  el.classList.toggle('flipped');
+  if(el.classList.contains('flipped')){
+    const i=fcIndexById(id);
+    const fc=i>=0?S.flashcards[i]:null;
+    if(fc&&typeof enrichFlashcardTranslations==='function'){
+      void enrichFlashcardTranslations(fc).then((ok)=>{if(ok){if(typeof saveFC==='function')saveFC();renderFC(false);}});
+    }
+  }
+}
 function delFCById(id){
   const i=fcIndexById(id);
   if(i<0)return;
@@ -660,7 +776,12 @@ function delFCById(id){
   if(typeof refreshVocabHubPanel==='function'&&document.getElementById('goalWorkspaceScreen')?.style.display==='block')refreshVocabHubPanel();
   renderFC(false);
 }
-function setFcLang(lang,btn){if(typeof setVocabUiLang==='function'){setVocabUiLang(lang,btn);}else{S.fcLang=typeof clampVocabUiLang==='function'?clampVocabUiLang(lang,'en'):lang;try{localStorage.setItem('lc_pref_xlat',S.fcLang);}catch(_){}document.querySelectorAll('#fcLangBtns .vt-lb').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');}renderFC(false);if(typeof Auth!=='undefined'&&typeof Auth.pushSync==='function')Auth.pushSync();}
+function setFcLang(lang,btn){
+  if(typeof setVocabUiLang==='function'){setVocabUiLang(lang,btn);}
+  else{S.fcLang=typeof clampVocabUiLang==='function'?clampVocabUiLang(lang,'en'):lang;try{localStorage.setItem('lc_pref_xlat',S.fcLang);}catch(_){}document.querySelectorAll('#fcLangBtns .vt-lb').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');renderFC(false);}
+  void refreshFlashcardTranslationsForUiLang();
+  if(typeof Auth!=='undefined'&&typeof Auth.pushSync==='function')Auth.pushSync();
+}
 function clearFC(){if(confirm('Remove all words?')){S.flashcards=[];S.fcSelected.clear();saveFC();renderFC();}}
 
 // ═══════════════════════════════════════════
@@ -691,6 +812,10 @@ function veBackFromQuiz(){
   else if(S.deckGoalFilter&&typeof openDeckHub==='function'){const g=getActiveGoal();if(g)openDeckHub(g.id);}
   else if(typeof goFlashcards==='function')goFlashcards(true);
 }
+function veNormalizeQuestions(questions,hintLang,hintLanguageMode,subject){
+  const hl=hintLanguageMode==='immersion'?String(subject||'de').slice(0,2):String(hintLang||'en').slice(0,2);
+  return(questions||[]).map((q)=>({...q,hintLanguage:hl}));
+}
 async function startVE(){
   if(typeof requireAiCredits==='function'&&!requireAiCredits('vocab_quiz',{message:'AI vocabulary quiz uses 2 credits from your monthly allowance.'}))return;
   const creditCost=typeof vocabQuizCreditCost==='function'?vocabQuizCreditCost():2;
@@ -703,11 +828,15 @@ async function startVE(){
   ensureFcIds();
   const pool=getSelectedFC();
   if(pool.length<4){lcToast('Select at least 4 flashcards for the quiz.','warn');return;}
-  const words=pool.map(f=>String(f.word||'').trim()).filter(Boolean);
+  const veGoal=getActiveGoal();
+  let words=pool.map(f=>String(f.word||'').trim()).filter(Boolean);
   if(words.length<4){lcToast('Select at least 4 words for the quiz.','warn');return;}
-  const wordMeta=typeof VocabQuizUtils!=='undefined'&&VocabQuizUtils.buildWordMeta
-    ?VocabQuizUtils.buildWordMeta(pool)
-    :words.map(w=>({word:w,type:'other',translation:'',missCount:0}));
+  if(typeof VocabBatching!=='undefined'&&VocabBatching.selectForActivity){
+    const sel=VocabBatching.selectForActivity(words,'vocab_quiz',veGoal);
+    words=sel.words;
+    S.veActivityWords=words.slice();
+    if(veGoal&&typeof saveGoals==='function')saveGoals();
+  }
   const qCount=Math.min(10,words.length);
   const preferTargets=typeof VocabQuizUtils!=='undefined'&&VocabQuizUtils.weightedPickQuizTargets
     ?VocabQuizUtils.weightedPickQuizTargets(pool,qCount)
@@ -718,15 +847,18 @@ async function startVE(){
   const ls=document.getElementById('loaderSub');
   if(lt)lt.textContent=(typeof vocabT==='function'?vocabT().generatingQuiz:'Generating quiz…');
   if(ls)ls.textContent=(typeof vocabT==='function'?vocabT().generatingQuizSub(creditCost):'AI is writing hints from your vocabulary ('+creditCost+' credits)');
-  const veGoal=getActiveGoal();
   const subject=veGoal?.subject||S.deckGoalFilter||S.subject||'de';
   const level=veGoal?.level||S.level||'B1';
-  const hintLang=typeof resolveVocabUiLang==='function'?resolveVocabUiLang():(S.fcLang||S.vocabLang||'en');
+  const hintLang=typeof resolveActiveVocabUiLang==='function'?resolveActiveVocabUiLang():(typeof resolveVocabUiLang==='function'?resolveVocabUiLang():(S.fcLang||S.vocabLang||'en'));
   const hintLanguageMode=veHintLangMode();
-  let questions=[];
+  if(typeof enrichFlashcardsForQuiz==='function')await enrichFlashcardsForQuiz(pool);
+  const wordMeta=typeof VocabQuizUtils!=='undefined'&&VocabQuizUtils.buildWordMeta
+    ?VocabQuizUtils.buildWordMeta(pool,(fc)=>fcCardTranslation(fc,hintLang))
+    :words.map(w=>({word:w,type:'other',translation:'',missCount:0}));
+  let quizGen=null;
   try{
     if(typeof generateVocabQuizWithAI!=='function')throw new Error('AI quiz unavailable');
-    questions=await generateVocabQuizWithAI(words,{lang:subject,level,hintLang,hintLanguageMode,count:qCount,wordMeta,preferTargets});
+    quizGen=await generateVocabQuizWithAI(words,{lang:subject,level,hintLang,hintLanguageMode,count:qCount,wordMeta,preferTargets});
   }catch(e){
     hideAll();
     veBackFromQuiz();
@@ -739,16 +871,19 @@ async function startVE(){
     }
     return;
   }
+  const usedAi=quizGen&&quizGen.usedAi!==false;
+  let questions=veNormalizeQuestions(quizGen?.questions||[],hintLang,hintLanguageMode,subject);
   S.veScore=0;S.veIndex=0;
   S.vePool=pool;
   S.veQuestions=questions;
   S.veRetakeQuizId=null;
   S.veSavedQuizId=null;
+  S.veQuizUsedAi=usedAi;
   if(typeof SavedVocabQuizzes!=='undefined'&&SavedVocabQuizzes.persistAfterGeneration){
     S.veSavedQuizId=SavedVocabQuizzes.persistAfterGeneration({goal:veGoal,subject,level,hintLang,hintLanguageMode,questions,pool,questionCount:qCount});
   }
   hide('loadingScreen');
-  if(typeof ActivityTrack!=='undefined')ActivityTrack.beginSession('vocab_quiz',veGoal?.id,'Vocabulary quiz');
+  if(typeof ActivityTrack!=='undefined')ActivityTrack.beginSession('vocab_quiz',veGoal?.id,usedAi?'Vocabulary quiz':'Vocabulary quiz (offline)');
   show('vocabExamScreen');
   if(typeof applyVocabExamChrome==='function')applyVocabExamChrome();
   const vt=typeof vocabT==='function'?vocabT():null;
@@ -756,7 +891,9 @@ async function startVE(){
   const lede=document.getElementById('veLede');
   if(lede){
     const gl=veGoal?goalLabel(veGoal):(vt?vt.yourDeck:'Your deck');
-    lede.textContent=vt?vt.quizLede(gl,words.length,creditCost):gl+' · '+words.length+' words · AI hints · '+creditCost+' credits';
+    lede.textContent=usedAi
+      ?(vt?vt.quizLede(gl,words.length,creditCost):gl+' · '+words.length+' words · AI hints · '+creditCost+' credits')
+      :gl+' · '+words.length+' words · offline hints (no credits used)';
   }
   renderVEQ();window.scrollTo({top:0,behavior:'smooth'});
 }
@@ -786,6 +923,13 @@ function renderVEQ(){
     S.veRetakeQuizId=null;
     S.veSavedQuizId=null;
     flushOpenStudySession({type:'vocab_quiz',score:pct,label:'Vocabulary quiz · '+pct+'%'});
+    const rotWords=S.veActivityWords||[];
+    const g=getActiveGoal();
+    if(g&&rotWords.length&&typeof VocabBatching!=='undefined'&&VocabBatching.recordActivityUsage){
+      VocabBatching.recordActivityUsage(g,'vocab_quiz',rotWords);
+      S.veActivityWords=null;
+      if(typeof _vocabHub!=='undefined'&&_vocabHub.veFromVocab&&typeof refreshVocabHubPanel==='function')refreshVocabHubPanel();
+    }
     const veDoneBtn='navBack()';
     const veDoneLbl=vt?(typeof _vocabHub!=='undefined'&&_vocabHub.veFromVocab?vt.backToVocab:vt.backToDeck):('← Back to '+(_vocabHub.veFromVocab?'vocabulary':'deck'));
     vc.innerHTML=`<div class="ws-panel ve-results-panel"><div class="ve-big ${pct>=70?'pass':pct>=50?'mid':'fail'}">${pct}%</div><p class="exam-config-lede">${vt?vt.correctCount(S.veScore,S.veQuestions.length):S.veScore+'/'+S.veQuestions.length+' correct'}</p><button class="btn-start" onclick="${veDoneBtn}" style="max-width:220px;margin:16px auto 0">${veDoneLbl}</button></div>`;

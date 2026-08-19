@@ -8,6 +8,10 @@ const { loadSeedRecords, clearLocalSeedCache: _clearSeedCache } = require('./reu
 const { useLocalSeedInRuntime } = require('./poolSourceMode.js');
 const { partPassesPublishGate } = require('./partPublishGate.js');
 const { partPassesAssembleMode } = require('./officialQuarantine.js');
+const {
+  loadOfficialReservedIndex,
+  applyOfficialReservedFlags,
+} = require('./officialReservedIndex.js');
 
 const MODULE_CACHE = new Map();
 const INDEX_READ_BATCH = 25;
@@ -127,6 +131,8 @@ async function loadModuleSearchRows(store, lang, level, module) {
   }
 
   const rows = [...byId.values()];
+  const officialIndex = loadOfficialReservedIndex({ lang: normLang, level: normLevel });
+  applyOfficialReservedFlags(rows, officialIndex);
   const byTeil = new Map();
   for (const row of rows) {
     const t = Number(row.teil);
@@ -140,7 +146,12 @@ async function loadModuleSearchRows(store, lang, level, module) {
   return entry;
 }
 
-function filterRows(rows, { teil = null, excludeIds = [], assembleMode = 'practice' } = {}) {
+function filterRows(rows, {
+  teil = null,
+  excludeIds = [],
+  assembleMode = 'practice',
+  excludeOfficialReserved = false,
+} = {}) {
   const exclude = new Set(excludeIds || []);
   let out = rows.filter((r) => !r.disabled && r.complete && r.verified && !exclude.has(r.id));
   if (teil != null && Number.isFinite(Number(teil))) {
@@ -149,6 +160,9 @@ function filterRows(rows, { teil = null, excludeIds = [], assembleMode = 'practi
   }
   if (assembleMode === 'official') {
     out = out.filter((r) => partPassesAssembleMode(r.part, assembleMode));
+  }
+  if (excludeOfficialReserved) {
+    out = out.filter((r) => !r.officialReserved);
   }
   return out;
 }
@@ -224,6 +238,8 @@ function clearPoolSearchCache(lang, level, module) {
 function clearAllPoolCaches() {
   MODULE_CACHE.clear();
   _clearSeedCache();
+  const { clearOfficialReservedIndexCache } = require('./officialReservedIndex.js');
+  clearOfficialReservedIndexCache();
 }
 
 module.exports = {

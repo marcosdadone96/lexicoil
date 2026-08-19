@@ -469,6 +469,7 @@
       forbidden: 'Not an admin account.',
       too_many_attempts: 'Too many attempts — wait 15 minutes.',
       auth_not_configured: 'Auth not configured on server.',
+      auth_service_unavailable: 'Sign-in service unavailable — try again shortly.',
       supabase_not_configured: 'Supabase not configured.',
       internal_error: 'Server error during login — try again in a minute.',
       invalid_supabase_session: 'Session expired — sign in again.',
@@ -495,23 +496,6 @@
   async function obtainSessionToken(email, password) {
     const { res: cfgRes, data: cfg } = await fetchJson('/.netlify/functions/auth-config');
     if (!cfgRes.ok || !cfg.enabled) throw new Error(mapAuthError('auth_not_configured'));
-
-    if (cfg.supabase && cfg.supabaseUrl && cfg.supabaseAnonKey) {
-      const { createClient } = await import('https://esm.sh/@supabase/supabase-js@2');
-      const sb = createClient(cfg.supabaseUrl, cfg.supabaseAnonKey, {
-        auth: { persistSession: false, autoRefreshToken: false },
-      });
-      const { data, error } = await sb.auth.signInWithPassword({ email, password });
-      if (error) throw new Error(error.message || 'Login failed');
-      if (!data.session?.access_token) throw new Error('Authentication failed.');
-      const { res: sessRes, data: sess } = await fetchJson('/.netlify/functions/auth-supabase-session', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ access_token: data.session.access_token }),
-      });
-      if (!sessRes.ok || !sess.token) throw new Error(mapAuthError(sess.error));
-      return sess.token;
-    }
 
     const { res, data } = await fetchJson('/.netlify/functions/auth-login', {
       method: 'POST',

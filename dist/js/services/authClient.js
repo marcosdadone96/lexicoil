@@ -126,11 +126,23 @@ const Auth = (() => {
           : user.plan || 'free';
     const avatar = (user.name || user.email || '?')[0].toUpperCase();
     const prevAdmin = !!(typeof S !== 'undefined' && S.user && S.user.isAdmin);
+    const prevCanEdit =
+      typeof S !== 'undefined' && S.user && S.user.canEditContent === true;
+    const prevRole = typeof S !== 'undefined' && S.user ? S.user.adminRole : null;
     const isAdmin = user.guest
       ? false
       : user.isAdmin === undefined || user.isAdmin === null
         ? prevAdmin
         : user.isAdmin === true || user.isAdmin === 'true' || user.isAdmin === 1;
+    const canEditContent = user.guest
+      ? false
+      : user.canEditContent === undefined || user.canEditContent === null
+        ? prevCanEdit || isAdmin
+        : user.canEditContent === true || user.canEditContent === 'true' || user.canEditContent === 1;
+    const adminRole =
+      user.adminRole !== undefined && user.adminRole !== null
+        ? user.adminRole
+        : prevRole || (isAdmin ? 'admin' : null);
     saveUser({
       name: user.name || 'User',
       email: user.email,
@@ -138,6 +150,8 @@ const Auth = (() => {
       plan: user.guest ? 'free' : plan,
       memberSince: user.memberSince || null,
       isAdmin,
+      adminRole,
+      canEditContent,
     });
     if (typeof S !== 'undefined') S.plan = plan;
     if (typeof applyServerQuota === 'function') {
@@ -594,19 +608,9 @@ const Auth = (() => {
     await loadAuthConfig();
     const em = String(email || '').trim().toLowerCase();
 
-    if (supabaseEnabled) {
-      if (!(await ensureSupabaseReady())) {
-        throw new Error('Supabase auth is unavailable. Refresh the page and try again.');
-      }
-      const sb = SupabaseAuth.getClient();
-      const { data, error } = await sb.auth.signInWithPassword({ email: em, password });
-      if (error) throw new Error(mapSupabaseError(error));
-      if (!data.session) throw new Error('Authentication failed.');
-      return exchangeSupabaseSession(data.session.access_token);
-    }
-
     if (localMode) return localLogin(email, password);
 
+    // Server-side auth-login handles Netlify Blobs + Supabase (no browser → Supabase fetch).
     const { res, data } = await api('auth-login', {
       method: 'POST',
       headers: authHeaders(),
@@ -848,6 +852,7 @@ const Auth = (() => {
       too_many_attempts: 'Too many attempts — wait 15 minutes.',
       invalid_fields: 'Fill all fields correctly.',
       auth_not_configured: 'Accounts are not configured on the server yet.',
+      auth_service_unavailable: 'Sign-in service is temporarily unavailable. Try again in a few minutes.',
       supabase_not_configured: 'Supabase is not configured on the server yet.',
       invalid_supabase_session: 'Session expired. Please sign in again.',
       token_revoked: 'Session expired. Please sign in again.',
@@ -914,6 +919,25 @@ const Auth = (() => {
       if (typeof S === 'undefined' || !S.user) return false;
       const v = S.user.isAdmin;
       return v === true || v === 'true' || v === 1;
+    },
+    canEditContent: () => {
+      if (typeof AdminAccess !== 'undefined' && AdminAccess.canEditContentFromUser) {
+        return AdminAccess.canEditContentFromUser(typeof S !== 'undefined' ? S.user : null);
+      }
+      if (isGuest()) return false;
+      if (typeof S === 'undefined' || !S.user) return false;
+      if (S.user.canEditContent === true) return true;
+      return Auth.isAdmin();
+    },
+    isFullAdmin: () => {
+      if (typeof AdminAccess !== 'undefined' && AdminAccess.isFullAdminFromUser) {
+        return AdminAccess.isFullAdminFromUser(typeof S !== 'undefined' ? S.user : null);
+      }
+      return Auth.isAdmin();
+    },
+    adminRole: () => {
+      if (typeof S === 'undefined' || !S.user) return null;
+      return S.user.adminRole || null;
     },
     authHeaders,
     apiFetch,
