@@ -14,18 +14,35 @@ const ListeningScript = (() => {
     return VOICES[lang] || VOICES.en;
   }
 
+  /** A speaker label only counts at a boundary: string start, newline, segment
+   *  marker, or the end of the previous sentence. Without the boundary the old
+   *  pattern started mid-sentence and swallowed the tail of the previous turn
+   *  ("...keep going. Interviewer"), producing a >30 char speaker that
+   *  segmentsLookBroken then collapsed to a single narrator voice. Periods stay
+   *  out of the name for the same reason. */
+  const INLINE_SPEAKER_RE =
+    /(?:^|[\n\r]|[■●▲►◆•]\s*|[.!?…]["'”»]?\s+)["'«„“‹]?\s*([A-Za-zÀ-ÿ][A-Za-zÀ-ÿ0-9 '-]{0,24}?):\s+/g;
+  const SPEAKER_MAX_WORDS = 3;
+
   function parseSegmentsInline(text) {
     const src = String(text || '').trim();
-    const re = /([A-Za-zÀ-ÿ][A-Za-zÀ-ÿ0-9 .'-]{0,40}):\s*/g;
-    const matches = [...src.matchAll(re)];
+    const re = new RegExp(INLINE_SPEAKER_RE.source, 'g');
+    const matches = [];
+    let m;
+    while ((m = re.exec(src)) !== null) {
+      const speaker = m[1].trim();
+      // Reject prose that merely contains a colon ("...erfüllen muss: Brauchen Sie").
+      if (!speaker || speaker.split(/\s+/).length > SPEAKER_MAX_WORDS) continue;
+      matches.push({ speaker, labelAt: m.index, textAt: m.index + m[0].length });
+      re.lastIndex = m.index + m[0].length;
+    }
     if (matches.length < 2) return null;
     const segments = [];
     for (let i = 0; i < matches.length; i++) {
-      const start = matches[i].index + matches[i][0].length;
-      const end = i + 1 < matches.length ? matches[i + 1].index : src.length;
+      const end = i + 1 < matches.length ? matches[i + 1].labelAt : src.length;
       segments.push({
-        speaker: matches[i][1].trim(),
-        text: src.slice(start, end).trim(),
+        speaker: matches[i].speaker,
+        text: src.slice(matches[i].textAt, end).trim(),
       });
     }
     return segments.filter((s) => s.text);
