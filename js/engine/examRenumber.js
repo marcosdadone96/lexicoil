@@ -19,6 +19,38 @@ const ExamRenumber = (() => {
     },
   };
 
+  /** DEFAULT_RANGES is the Goethe layout. Cambridge B1 Preliminary numbers
+   *  Reading 1–32 over six parts and Listening 1–25 over four, so falling back
+   *  to the Goethe table left gaps (Reading jumped 5→7→13→20→27), a duplicate
+   *  (Listening reused 16) and — since Goethe has no Teil 6 — restarted Reading
+   *  Part 6 at 1, colliding with Part 1. Same numbers buildModuleRanges() derives
+   *  from library/blueprints/cambridge_B1.json, kept here because the normalize
+   *  path renumbers synchronously and has no blueprint loaded. */
+  const CAMBRIDGE_RANGES = {
+    lesen: {
+      1: { start: 1, end: 5, expected: 5 },
+      2: { start: 6, end: 10, expected: 5 },
+      3: { start: 11, end: 15, expected: 5 },
+      4: { start: 16, end: 20, expected: 5 },
+      5: { start: 21, end: 26, expected: 6 },
+      6: { start: 27, end: 32, expected: 6 },
+    },
+    horen: {
+      1: { start: 1, end: 7, expected: 7 },
+      2: { start: 8, end: 13, expected: 6 },
+      3: { start: 14, end: 19, expected: 6 },
+      4: { start: 20, end: 25, expected: 6 },
+    },
+  };
+
+  /** Goethe stays on DEFAULT_RANGES exactly as before; only Cambridge opts in. */
+  function rangeTableFor(exam) {
+    const bpId = String(exam?.blueprintId || '').toLowerCase();
+    const lang = String(exam?.lang || '').toLowerCase();
+    if (bpId.startsWith('cambridge') || (!bpId && lang === 'en')) return CAMBRIDGE_RANGES;
+    return DEFAULT_RANGES;
+  }
+
   function parseRangeFromInstruction(instruction) {
     const m = String(instruction || '').match(/(\d+)\s*(?:bis|–|-|to)\s*(\d+)/i);
     if (!m) return null;
@@ -55,15 +87,17 @@ const ExamRenumber = (() => {
     return ranges;
   }
 
-  function teilRange(blueprint, modId, teil, part) {
-    const ranges = blueprint ? buildModuleRanges(blueprint, modId) : DEFAULT_RANGES[modId] || {};
+  function teilRange(blueprint, modId, teil, part, table) {
+    const fallback = table || DEFAULT_RANGES;
+    const ranges = blueprint ? buildModuleRanges(blueprint, modId) : fallback[modId] || {};
     const t = Number(teil) || 1;
     if (ranges[t]) return ranges[t];
-    if (modId === 'lesen') {
+    // Goethe-shaped heuristics: only meaningful against the Goethe table.
+    if (modId === 'lesen' && fallback === DEFAULT_RANGES) {
       if (isForumOpinionsPart(part) || (t === 4 && (part?.items || []).length)) return DEFAULT_RANGES.lesen[4];
       if (isAdsMatchingPart(part) || t === 3) return DEFAULT_RANGES.lesen[3];
     }
-    return DEFAULT_RANGES[modId]?.[t] || { start: 1, end: 99, expected: countScorableInPart(part, modId) };
+    return fallback[modId]?.[t] || { start: 1, end: 99, expected: countScorableInPart(part, modId) };
   }
 
   function isForumOpinionsPart(part) {
@@ -160,9 +194,9 @@ const ExamRenumber = (() => {
     return s;
   }
 
-  function renumberLesenPart(part, blueprint) {
+  function renumberLesenPart(part, blueprint, table) {
     if (!part) return;
-    const range = teilRange(blueprint, 'lesen', part.teil, part);
+    const range = teilRange(blueprint, 'lesen', part.teil, part, table);
     const start = range.start;
     let cursor = start;
     if (part.items?.length) {
@@ -180,9 +214,9 @@ const ExamRenumber = (() => {
     part._numberRange = { start, end: start + count - 1, officialEnd: range.end };
   }
 
-  function renumberHorenPart(part, blueprint) {
+  function renumberHorenPart(part, blueprint, table) {
     if (!part) return;
-    const range = teilRange(blueprint, 'horen', part.teil, part);
+    const range = teilRange(blueprint, 'horen', part.teil, part, table);
     const start = range.start;
     let cursor = start;
     if (part.segments?.length) {
@@ -262,10 +296,11 @@ const ExamRenumber = (() => {
 
   function renumberExam(exam, blueprint) {
     if (!exam || typeof exam !== 'object') return exam;
-    for (const part of exam.lesenParts || []) renumberLesenPart(part, blueprint);
-    for (const part of exam.horenParts || []) renumberHorenPart(part, blueprint);
-    for (const part of exam.readingParts || []) renumberLesenPart(part, blueprint);
-    for (const part of exam.listeningParts || []) renumberHorenPart(part, blueprint);
+    const table = rangeTableFor(exam);
+    for (const part of exam.lesenParts || []) renumberLesenPart(part, blueprint, table);
+    for (const part of exam.horenParts || []) renumberHorenPart(part, blueprint, table);
+    for (const part of exam.readingParts || []) renumberLesenPart(part, blueprint, table);
+    for (const part of exam.listeningParts || []) renumberHorenPart(part, blueprint, table);
     assertUniqueModuleNumbers(exam, 'lesen');
     assertUniqueModuleNumbers(exam, 'horen');
     if (blueprint) exam._itemDeficits = collectDeficits(exam, blueprint);

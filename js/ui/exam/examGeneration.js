@@ -1592,7 +1592,11 @@ function horenOptionHasSubstance(opt){
 function horenQuestionHasSubstance(q){
   if(!q||typeof q!=='object')return false;
   const type=String(q.type||'multiple').toLowerCase();
-  if(['rf','tf','richtig_falsch','true_false','yn','ja_nein','rfn','r_f_n'].includes(type)){
+  // gap_fill/gap answer with a word, so they carry options:[] and are judged by
+  // the key alone — same as rf/yn. Without them here they fell through to the
+  // MCQ rule below (>=2 substantial options) and every Cambridge Listening
+  // Part 3 sentence-completion item was filtered out of the exam.
+  if(['rf','tf','richtig_falsch','true_false','yn','ja_nein','rfn','r_f_n','gap_fill','gap'].includes(type)){
     return q.correct!=null&&q.correct!=='';
   }
   const opts=q.options||q.choices||[];
