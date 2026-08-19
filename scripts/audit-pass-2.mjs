@@ -63,6 +63,18 @@ const CANONICAL_TYPES = new Set([
   'personal_questions', 'about_self', 'plan_together',
 ]);
 
+/** Types canonical for one language only. Cambridge B1 Reading Parts 5 and 6
+ *  (mcq_gap_fill, open_cloze) both grade as gap_fill, which has no Goethe
+ *  equivalent — keep it out of the shared set so German still rejects it. */
+const CANONICAL_TYPES_BY_LANG = {
+  en: new Set(['gap_fill']),
+};
+
+function isCanonicalType(type, lang) {
+  if (CANONICAL_TYPES.has(type)) return true;
+  return !!CANONICAL_TYPES_BY_LANG[lang]?.has(type);
+}
+
 /** Blueprint: expected item count per (module, teil). null = variable. */
 const BLUEPRINT = {
   'lesen-1':   { count: 6,  types: ['richtig_falsch'] },
@@ -211,8 +223,9 @@ function passageText(p) {
 
 function chk1(batch, file) {
   const findings = [];
+  const lang = inferAuditLang(batch);
   for (const q of batch.questions || []) {
-    if (!CANONICAL_TYPES.has(q.type)) {
+    if (!isCanonicalType(q.type, lang)) {
       const hint = q.type === 'multiple' ? ' (usar multiple_choice)' : '';
       findings.push(finding('CHK-1', 'CRITICAL', file, q.id,
         `type:"${q.type}" no es canónico${hint}`));
