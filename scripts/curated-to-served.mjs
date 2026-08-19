@@ -89,11 +89,29 @@ function guardPart(container, allowedIds) {
   });
 }
 
+/** Stable catalog id for a served exam.
+ *
+ *  saveExams.getExamContentKey() needs examId | poolId | published id to build
+ *  a contentKey; without one every attempt at the same exam is stored as a new
+ *  history entry instead of matching the previous one. The published pipeline
+ *  (de/*) assigns official-<lang>-<level>-eN, but exams promoted through this
+ *  script carried no id at all.
+ *
+ *  Derived from the curated filename hash (curated_en_B1_<hash>.json) so it
+ *  survives reordering — a positional eN would shift when a file is added. */
+function catalogIdFor(fileName) {
+  const m = /^curated_[^_]+_[^_]+_([0-9a-f]+)\.json$/i.exec(fileName);
+  const suffix = m ? m[1] : path.basename(fileName, '.json');
+  return `official-${LANG}-${LEVEL}-${suffix}`;
+}
+
 const served = [];
 let gateBlocked = 0;
 for (const f of files) {
   const x = JSON.parse(fs.readFileSync(path.join(curatedPath, f), 'utf8'));
   const exam = x.exam || x;
+  if (!exam.examId) exam.examId = catalogIdFor(f);
+  if (!exam.id) exam.id = exam.examId;
 
   // ── GATE-1 segunda barrera ───────────────────────────────────────────────
   const gate = isExamPublishable(exam, { allowFailures: ALLOW_AUDIT_FAILURES });
