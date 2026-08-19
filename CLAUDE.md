@@ -138,7 +138,15 @@ node scripts/test-exam-merge-pipeline.mjs
 
 **Regresión del alemán:** corre `audit-pass-2.mjs` sobre `batches/generated` con y sin tu cambio y
 compara las cifras. Deben ser idénticas si tu cambio es de inglés. Baseline actual del corpus:
-**12 CRÍTICOS / 371 IMPORTANTES / 242 MENORES, 146 archivos, 820 preguntas.**
+**17 CRÍTICOS / 371 IMPORTANTES / 237 MENORES, 146 archivos, 820 preguntas.**
+
+```bash
+node scripts/audit-pass-2.mjs batches/generated   # 17 / 371 / 237 · 146 archivos · 820 preguntas
+```
+
+La cifra anterior de este fichero (12 / 371 / 242) no reproducía: medida el 18 ago 2026 sobre el
+mismo corpus (`batches/generated` sin tocar desde `307bf94`) da 17 críticos y 237 menores. Si
+comparas contra 12/242 verás cinco críticos fantasma que no has introducido tú.
 
 El baseline se mueve cuando entra contenido o checks nuevos, así que mídelo antes de tu cambio en
 vez de fiarte de la cifra de aquí. Si comparas contra otra rama, hazlo sobre **el mismo corpus**
