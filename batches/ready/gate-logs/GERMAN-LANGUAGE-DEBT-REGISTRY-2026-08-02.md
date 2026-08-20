@@ -6,7 +6,54 @@
 
 ---
 
-## Comportamiento esperado (no bug — no re-investigar)
+## Deuda técnica — tests / tooling
+
+| ID | Item | Prioridad | Notas |
+|----|------|-----------|-------|
+| **TEST-VOCAB-OPEN-STALE** | `scripts/test-vocab-open.mjs` exige `source: open-frequency+manual` en todos los niveles | Baja | A2 usa `goethe-wortliste-dwds-verified-2026-07-15` (reconstrucción DWDS 2026-07-15); B1 también tiene source compuesto. **No es bug de runtime** — `CefrVocabLoader` ignora `source`. Actualizar test cuando toque vocab bank. |
+
+---
+
+## Calendario de graduation / umbrales programados
+
+Escaneo repo 2026-08-16: **un solo mecanismo automático** de severidad que sube sola en una fecha (`today <= until ? warn : block`).
+
+| ID | Mecanismo | Fecha límite | Efecto tras la fecha | Fuente | Estado |
+|----|-----------|--------------|----------------------|--------|--------|
+| **GRAD-CHK-34-MISSING-QUOTE** | `EXPL_OPTION_TEXT_ALIGN_WARN_ONLY_UNTIL` | **2026-08-10** (inclusive warn) | Desde **2026-08-11**: paraphrase MCQ con keyword Option/Antwort sin cita literal de la opción correcta → **CRITICAL** (antes MINOR/warn) | `scripts/lib/explanationOptionTextAlign.mjs` · commit `1e47122` (01/08) | **VENCIDO** — vigente en prod |
+
+**No automáticos (manual / metadata):**
+
+| Referencia | Tipo | Notas |
+|------------|------|-------|
+| `GATE_BLOCK_PENDING` en `audit-pass-2.mjs` | Promoción **manual** a `GATE_BLOCK_CHECKS` | Comentario sugiere mover CHK-34 missing-quote tras 2026-08-10 si 0 FP — **no hay timer en código** |
+| `QUALITY_GATE_OBSERVATION_START = 2026-07-09` | Solo logging/metadata en pipeline Q1/Q3/Q4 | No cambia severidad por fecha |
+| Q1 shadow «until 2026-07-23» | Nota histórica en `finalizePoolReady.mjs` | Sin comparador `today` activo |
+
+**Acción ops:** antes de fijar nuevas fechas `warnOnlyUntil`, registrar aquí + alerta en gate-log de cierre de auditoría.
+
+---
+
+## Deuda editorial CHK-34 (post-graduation)
+
+| ID | Item | Prioridad | Alcance |
+|----|------|-----------|---------|
+| **CHK-34-B1-PARAPHRASE-6** | ~~6 explicaciones Hören B1 published~~ **CERRADO 2026-08-16** — citas literales en e2/e4/e6/e9/e12/e19 | — | Resuelto en commit paraphrase-6 |
+
+Ítems (published B1, scan 2026-08-16):
+
+| Examen | question id | partId |
+|--------|-------------|--------|
+| `official-de-B1-e12.json` | `gen-q-h1-d1f1089a-s1-q2` | `horen-t1-gemini-033` |
+| `official-de-B1-e19.json` | `gen-q-h2-37412cba-q1` | `horen-t2-gemini-095` |
+| `official-de-B1-e2.json` | `gen-q-h4-w9k2-7` | `horen-t4-gemini-007` |
+| `official-de-B1-e4.json` | `gen-q-h4-2ee3bd66-5` | `horen-t4-gemini-006` |
+| `official-de-B1-e6.json` | `gen-q-h1-e837d5cb-s4-q2` | `horen-t1-gemini-024` |
+| `official-de-B1-e9.json` | `gen-q-h2-0f6daecc-q1` | `horen-t2-gemini-033` |
+
+Fix pattern: reescritura determinista con `Die richtige Antwort lautet: '…'` (comillas simples ASCII — el parser CHK-34 no reconoce `«»`). Ver commit `379523b`.
+
+---
 
 ### Schreiben / Sprechen — `userVocabFeedback.ratio === 0`
 
@@ -43,12 +90,15 @@
 | **SEP-VOCAB-TAG-GAP** | `vocabularyTags` sin infinitivo completo cuando el texto usa separable partido (`beitragen`, `vorschlagen`…) | Muestra preventiva B1/B2 2026-08-05: 7/9 tag_gap, contenido OK | `preventive-separable-content-2026-08-05.json` · `findSplitSeparablesInText` | **Pendiente — baja** — enrich retroactivo opcional vía `enrichBatchMetadata`; no bloquea examen |
 | **LT-FULL-TRIAGE-B1** | 222× A candidatos LT en `questions.content` (explanations/options) — escaneo `--scope full` 2026-08-05 | `preventive-lt-full-B1-2026-08-05.json` | **Pendiente — tanda 3** — triage determinista; no bloquea examen |
 | **LT-DOCKER-LOAD** | LanguageTool Docker cae con concurrency >1 en auditorías bulk | Parte 4 2026-08-05 | **Operativo** — usar `--concurrency 1` |
+| **CHK-H2-POOL-A2** | Hören A2 T2 picture_matching: claves vs diálogo/fichas a–i | **Resuelto 2026-08-08** — checker `validatePictureMatchingAlign` (2 pasadas: preámbulos genéricos, Sporttag/Sportliches, verbo antes del día, flexiones `treff*`, `Super!` sin coma, `Lernpartner`); 106 Q5 Katja; `074` Q3 CHK-34 explicación literal opción c. Re-scan **pool A2 completo: 0 CRITICAL CHK-H2** sin cambiar claves. Evidencia: `chk-h2-pool-a2-close-2026-08-08.json`, `scripts/test-h2-align-gemini-regression.mjs`. **Ya no bloquea Personalizado A2.** |
 | **SEP-GLOSS-FR** | Glosario verbos separables FR vacío (0/125); EN/ES/IT curados | `separableResolve.js` | **Pendiente — prioridad media** |
 | **JS-FOLD-TOPIC-KEY** | Redeclaración global aborta `a2Topics.js` → A2 UI usa fallback B1 (16 temas) | `verify-a2topics-browser-collision.mjs` post-fix 2026-08-02 | Auditoría B1 2026-08-02 | **Resuelto en código** — alias `b1Helpers` / `b1FoldTopicKey` en `a2Topics.js`; deploy pendiente cuota Netlify |
 | **HOREN-A2-REGISTER-GAP** | `checkHorenBatchIngest` PASS con Relativsatz + zu-Infinitiv B1 (047) | `horen-a2-ingest-check.test.mjs` + 047 FAIL aislado | Revisor externo 2026-08-02 | **Resuelto en código** — max 1 relativa simple de sujeto T4, 0 complejas/densas; zu-Inf max 1; `Es ist…zu VERB`; 047/048 retirados; deploy pendiente |
 | **TOPIC-CONTENT-MISMATCH-SCH** | Schreiben tema vs contenido desalineado | `schreiben-gemini-064` (fiesta empresa / Umwelt) | Revisor externo 2026-08-02 | Pendiente — baja |
 | **TERM-INCONSIST-L2** | Terminología mixta en opciones MCQ | `lesen-t2-gemini-178` Stock/Obergeschoss | Revisor externo 2026-08-02 | Pendiente — baja |
 | **CAPS-ADJ-S2** | Adj. en mayúscula en pregunta Sprechen | `sprechen-t2-gemini-022` «Wichtig» | Revisor externo 2026-08-02 | Pendiente — baja |
+| **INC-VERB-MIGRATE-2026-08-09** | Migración §2 `--migrate` fuera de P0+P1 en Netlify Blobs (16 filas `elverabel@yahoo.com.ar`, 13 `marcosdadra@gmail.com`) | `INCIDENT-VERB-MIGRATE-2026-08-09.md` | Incidente prod 2026-08-09 | **Baja** — cuentas de prueba (confirmado operador); revert verificado; re-migrate P0+P1 solo marcosdadra |
+| **§2b POS-noise** | Sust/adj/adv/partizip mal tagueados como verbo en decks usuario | `alle→allen`, `Experten→experten`, etc. | §2 diagnosis | **Guard reforzado 2026-08-09** — `isAttestedFiniteForm`, `looksLikeNominalizedInfinitiveNoun`, `FINITE_TO_INF` mismatch |
 
 ### JS-FOLD-TOPIC-KEY — redeclusión global aborta A2 en browser
 

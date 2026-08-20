@@ -119,7 +119,7 @@ function formatScoreAge(dateStr){
   if(weeks<5)return weeks+' wks ago';
   return d.toLocaleDateString();
 }
-const _vocabHub={goalId:null,filter:'all',selectedIds:new Set(),collapsed:new Set(),expanded:new Set(),flashcardMode:false,activity:null,veFromVocab:false,manualAddOpen:false,pickActivity:null};
+const _vocabHub={goalId:null,filter:'all',selectedIds:new Set(),collapsed:new Set(),expanded:new Set(),flashcardMode:false,activity:null,veFromVocab:false,manualAddOpen:false,pickActivity:null,textosTopic:null,textosTeil:null,textosExcludeIds:[],textosPayload:null,textosLoading:false,textosError:null};
 const VV_PICK={
   flashcards:{min:()=>VV_MIN_FLASH,label:'Flashcards',cap:()=>VV_MAX_FLASH},
   vocab_quiz:{min:()=>VV_MIN_DRILL,label:'AI quiz',cap:(c)=>c.quiz},
@@ -266,6 +266,10 @@ function ensureVocabHubState(goal){
     _vocabHub.activity=null;
     _vocabHub.flashcardMode=false;
     _vocabHub.pickActivity=null;
+    _vocabHub.textosTopic=null;
+    _vocabHub.textosTeil=null;
+    _vocabHub.textosPayload=null;
+    _vocabHub.textosExcludeIds=[];
   }
   normalizeVocabDeckPos(goal);
 }
@@ -563,12 +567,24 @@ function vocabHubActionsHtml(selN){
   const phrasesCard=aiAllowed
     ?'<button'+vocabHubCardAttrs('ws-exam-card ws-exam-card--oral','vocab_phrases',noDeck)+'><span class="ws-exam-card-ic">💬</span><span class="ws-exam-card-title">Phrases'+phrasesBadge+'</span><span class="ws-exam-card-desc">Select '+VV_MIN_PHRASES+'–'+caps.phrases+' words · gap + order</span></button>'
     :'';
-  return'<div class="ws-exam-grid ws-exam-grid--vocab">'+
-      customCard+
-      '<button'+vocabHubCardAttrs('ws-exam-card ws-exam-card--practice','flashcards',noDeck)+'><span class="ws-exam-card-ic">▭</span><span class="ws-exam-card-title">Flashcards</span><span class="ws-exam-card-desc">Select '+VV_MIN_FLASH+'–'+VV_MAX_FLASH+' words · spaced review</span></button>'+
-      quizCard+
-    '</div>'+
-    (aiAllowed?'<div class="ws-exam-grid ws-exam-grid--vocab ws-exam-grid--vocab-second">'+listenCard+phrasesCard+'</div>':'');
+  const textosCard=(goal&&typeof textosSupportedForGoal==='function'&&textosSupportedForGoal(goal))
+    ?'<button type="button" class="ws-exam-card ws-exam-card--practice" onclick="launchVocabHubTextos()"><span class="ws-exam-card-ic">📖</span><span class="ws-exam-card-title">Textos</span><span class="ws-exam-card-desc">Pick a topic · read-only · tap words to translate</span></button>'
+    :'';
+  let grid='';
+  if(customCard){
+    grid+='<div class="ws-exam-grid ws-exam-grid--vocab" style="grid-template-columns:1fr">'+customCard+'</div>';
+  }
+  grid+='<div class="ws-exam-grid ws-exam-grid--vocab" style="grid-template-columns:1fr 1fr">'+
+    '<button'+vocabHubCardAttrs('ws-exam-card ws-exam-card--practice','flashcards',noDeck)+'><span class="ws-exam-card-ic">▭</span><span class="ws-exam-card-title">Flashcards</span><span class="ws-exam-card-desc">Select '+VV_MIN_FLASH+'–'+VV_MAX_FLASH+' words · spaced review</span></button>'+
+    textosCard+
+    '</div>';
+  if(quizCard||listenCard){
+    grid+='<div class="ws-exam-grid ws-exam-grid--vocab ws-exam-grid--vocab-second" style="grid-template-columns:1fr 1fr">'+(quizCard||'')+(listenCard||'')+'</div>';
+  }
+  if(phrasesCard){
+    grid+='<div class="ws-exam-grid ws-exam-grid--vocab ws-exam-grid--vocab-second" style="grid-template-columns:1fr">'+phrasesCard+'</div>';
+  }
+  return grid;
 }
 function renderWsVocabFilterChipsHtml(goal){
   const deck=deckForGoal(goal);
@@ -677,6 +693,7 @@ function renderVocabHubFlashcardsHtml(goal){
 }
 function renderWsVocabularyHtml(goal){
   if(_vocabHub.activity==='flashcards')return renderVocabHubFlashcardsHtml(goal);
+  if(_vocabHub.activity==='textos_read'&&typeof renderTextosHubHtml==='function')return renderTextosHubHtml(goal);
   const deck=deckForGoal(goal);
   const selN=vocabHubSelectedIds(goal).length;
   const actionsBlock=vocabHubActionsHtml(selN)+vocabHubSelNoteHtml(selN,deck.length);

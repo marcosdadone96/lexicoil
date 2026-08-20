@@ -2,6 +2,20 @@
 const ManualVocab = (() => {
   const indexCache = {};
 
+  function functionWordsLib() {
+    if (typeof FunctionWords !== 'undefined') return FunctionWords;
+    try {
+      return require('./functionWords.js');
+    } catch (_) {
+      return null;
+    }
+  }
+
+  function isFunctionWord(word) {
+    const fw = functionWordsLib();
+    return fw ? fw.isFunctionWord(word) : false;
+  }
+
   /** High-confidence typos seen in learner decks → canonical form */
   const KNOWN_SPELLING_OVERRIDES = {
     unterschid: 'Unterschied',
@@ -125,7 +139,8 @@ const ManualVocab = (() => {
         const gender = art === 'der' ? 'm' : art === 'die' ? 'f' : 'n';
         return { word: m[2].trim(), article: art, gender, pos: 'noun' };
       }
-      const glued = raw.match(/^(der|die|das)([A-ZÄÖÜ][\wäöüßÄÖÜ-]+)$/i);
+      // Glued article+noun (dieFrau): article case-insensitive; noun must start uppercase (no /i on word — avoids Dienstag → die+nstag).
+      const glued = raw.match(/^([Dd]er|[Dd]ie|[Dd]as)([A-ZÄÖÜ][\wäöüß-]+)$/);
       if (glued) {
         const art = glued[1].toLowerCase();
         const gender = art === 'der' ? 'm' : art === 'die' ? 'f' : 'n';
@@ -171,6 +186,29 @@ const ManualVocab = (() => {
     return g === 'm' || g === 'f' || g === 'n' || g === 'p';
   }
 
+  function applyInferredPos(data, word, subject) {
+    if (!data) return data;
+    const sub = subject || data.sourceLang || 'de';
+    const probe = {
+      word: data.word || word,
+      type: data.type,
+      pos: data.pos,
+      gender: data.gender,
+      article: data.article,
+      sourceLang: sub,
+    };
+    const pos = inferPos(probe, sub);
+    data.type = pos;
+    data.pos = pos;
+    return data;
+  }
+
+  /** Noun suffixes checked before adjective heuristics (-haft must not match inside -schaft). */
+  const DE_NOUN_SUFFIX_POS =
+    /(ung|heit|keit|schaft|tion|sion|tät|ität|ismus|ment|chen|lein|tum|nis|sal|mal|ion)$/i;
+  const DE_ADJECTIVE_SUFFIX =
+    /(?:liche|licher|liches|lichem|lichen|lich|ig|isch|bar|sam|(?<![s])haft|los|voll|frei|mäßig|artig)$/i;
+
   function inferPos(fc, subject) {
     const sub = subject || fc?.sourceLang || '';
     const parsed = parseLeadingArticle(fc?.word, sub);
@@ -178,11 +216,12 @@ const ManualVocab = (() => {
     const low = normToken(parsed.word || raw);
     const stored = typeof normWordType === 'function' ? normWordType(fc?.type || fc?.pos) : '';
 
+    if (sub === 'de' && low && isFunctionWord(low)) return 'other';
+
     if (sub === 'de' && low) {
       if (/^[A-ZÄÖÜ]/.test(raw)) {
-        if (/(liche|licher|liches|lichem|lichen|lich|ig|isch|bar|sam|haft|los|voll|frei|mäßig|artig)$/i.test(low)) {
-          return 'adjective';
-        }
+        if (DE_NOUN_SUFFIX_POS.test(low)) return 'noun';
+        if (DE_ADJECTIVE_SUFFIX.test(low)) return 'adjective';
         if (/ieren$/i.test(low)) return 'verb';
         if (/(ionen|ungen|heiten|keiten|schaften|tionen|eln)$/i.test(low)) return 'noun';
         if (/en$/i.test(low) && low.length > 3 && !/(ung|heit|keit|schaft|tion|ismus|ment|chen|lein|tum|nis|sal|mal|ion)$/i.test(low)) {
@@ -193,9 +232,8 @@ const ManualVocab = (() => {
       }
       if (DE_COMMON_ADVERBS.has(low)) return 'adverb';
       if (/weise$/.test(low)) return 'adverb';
-      if (/(liche|licher|liches|lichem|lichen|lich|ig|isch|bar|sam|haft|los|voll|frei|mäßig|artig)$/i.test(low)) {
-        return 'adjective';
-      }
+      if (DE_NOUN_SUFFIX_POS.test(low)) return 'noun';
+      if (DE_ADJECTIVE_SUFFIX.test(low)) return 'adjective';
       if (/^ge[a-zäöüß]{3,}(t|en)$/i.test(low)) return 'verb';
       const conjPos = inferPosFromConjugation(raw, sub);
       if (conjPos) return conjPos;
@@ -239,7 +277,10 @@ const ManualVocab = (() => {
         typeof ArticleLexicon !== 'undefined' && ArticleLexicon.lookupLemma
           ? ArticleLexicon.lookupLemma(low, 'de')
           : null;
-      if (/(chen|lein|tum|ment|nis|ett|on|um)$/i.test(low) && !/(ung|heit|keit)$/i.test(low)) {
+      if (/(ung|heit|keit|schaft|tion|sion|tät|ität|ik|ur|ie|ei|anz|enz)$/i.test(low)) {
+        return { gender: 'f', article: 'die' };
+      }
+      if (/(chen|lein|tum|ment|nis|ett|um)$/i.test(low) && !/(ung|heit|keit)$/i.test(low)) {
         if (lexNeut === 'n') return { gender: 'n', article: 'das' };
         if (low.endsWith('chen') || low.endsWith('lein')) {
           const stem = low.slice(0, -2);
@@ -253,9 +294,11 @@ const ManualVocab = (() => {
         }
         return { gender: 'n', article: 'das' };
       }
-      if (/(ung|heit|keit|schaft|tion|sion|tät|ität|ik|ur|ie|ei|anz|enz)$/i.test(low)) {
-        return { gender: 'f', article: 'die' };
-      }
+      const pluralHit =
+        typeof ArticleLexicon !== 'undefined' && ArticleLexicon.pluralGenderDe
+          ? ArticleLexicon.pluralGenderDe(low)
+          : null;
+      if (pluralHit === 'p') return { gender: 'f', article: 'die', plural: true };
       if (low.endsWith('in') && low.length > 3) return { gender: 'f', article: 'die' };
       if (/(ling|ismus|or|ant|ent|ich)$/i.test(low)) return { gender: 'm', article: 'der' };
       if (low.endsWith('er') && low.length >= 4) return { gender: 'm', article: 'der' };
@@ -419,6 +462,9 @@ const ManualVocab = (() => {
     if (trimmed.length < 2) return { ok: false, reason: 'too_short' };
     const parsed = parseLeadingArticle(trimmed, subject);
     const core = parsed.word;
+    if ((subject || 'de') === 'de' && (isFunctionWord(core) || isFunctionWord(trimmed))) {
+      return { ok: false, reason: 'function_word' };
+    }
     const lookupForms = [...new Set([trimmed, core].filter(Boolean))];
 
     if (typeof PracticeDictionary !== 'undefined') {
@@ -614,12 +660,24 @@ const ManualVocab = (() => {
   function reclassifyStoredFlashcards() {
     if (typeof S === 'undefined' || !Array.isArray(S.flashcards) || !S.flashcards.length) return false;
     let dirty = false;
+    const kept = [];
     S.flashcards.forEach((fc) => {
+      const sub = fc?.sourceLang || 'de';
+      const low = normToken(fc?.word);
+      if (sub === 'de' && isFunctionWord(low)) {
+        dirty = true;
+        return;
+      }
       const before = `${fc.type || fc.pos}|${fc.gender || ''}|${fc.article || ''}|${fc.plural ? 1 : 0}`;
-      enrichFlashcard(fc, fc.sourceLang);
+      enrichFlashcard(fc, sub);
       const after = `${fc.type || fc.pos}|${fc.gender || ''}|${fc.article || ''}|${fc.plural ? 1 : 0}`;
       if (before !== after) dirty = true;
+      kept.push(fc);
     });
+    if (kept.length !== S.flashcards.length) {
+      S.flashcards = kept;
+      dirty = true;
+    }
     return dirty;
   }
 
@@ -680,6 +738,8 @@ const ManualVocab = (() => {
     aiSpellingHint,
     spellingSuggestionForAsync,
     applySpellingFixToFlashcard,
+    isFunctionWord,
+    applyInferredPos,
   };
 })();
 

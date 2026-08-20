@@ -702,6 +702,16 @@ const VerbConjugation = (() => {
     if (pos !== 'verb') return fc;
     const conj = getPresent(fc.word, lg);
     if (!conj) return fc;
+    enrichVerbConjugation(fc, lg);
+    canonicalizeForDeck(fc, lg);
+    return fc;
+  }
+
+  function enrichVerbConjugation(fc, lang) {
+    if (!fc) return fc;
+    const lg = normLang(lang || fc.sourceLang);
+    const conj = getPresent(fc.word, lg);
+    if (!conj) return fc;
     fc.verbLemma = conj.lemma;
     fc.conjugation = { present: conj.forms };
     if (lg === 'de') {
@@ -713,6 +723,172 @@ const VerbConjugation = (() => {
       if (imp?.forms) fc.conjugation.imperativ = imp.forms;
     }
     return fc;
+  }
+
+  function looksLikeDeAdjectiveForm(low) {
+    return /(liche|licher|liches|lichem|lichen|lich|ig|isch|bar|sam|haft|los|voll|frei|bare|bere|bares|barer|erer|eres|ere|iger|ige|iges|igem|igen|isches|ischen|ischem|ischer|ische)$/i.test(
+      low,
+    );
+  }
+
+  function isLikelyInflectedAdjective(low) {
+    if (looksLikeDeAdjectiveForm(low)) return true;
+    if (typeof SeparableResolve !== 'undefined' && SeparableResolve.FINITE_TO_INF?.[low]) return false;
+    if (DE_PRESENT[low]) return false;
+    if (/[^aeiouäöü]er$/i.test(low) && low.length > 6) return true;
+    if (/[^aeiouäöü](es|em|en)$/i.test(low) && low.length > 6 && !isDeInfinitive(low)) return true;
+    return false;
+  }
+
+  /** Skip P0/P1 when capitalized surface is likely a mis-tagged noun (§2b noise). */
+  function looksLikeMisclassifiedNoun(raw, low) {
+    if (!/^[A-ZÄÖÜ]/.test(raw)) return false;
+    if (DE_PRESENT[low] || splitSeparableInfinitive(low)) return false;
+    if (
+      /(gruppen|firmen|unternehmen|geschichten|altersgruppen|energieunternehmen|fantasiegeschichten|experten|mahlzeiten|hauptfilmen|experten|dienste|keiten|heiten|ungen|chaften|tionen|sionen)$/i.test(
+        low,
+      )
+    ) {
+      return true;
+    }
+    if (/(ung|heit|keit|schaft|tion|sion|tät|ität|ismus|ment|nis)$/i.test(low) && !isDeInfinitive(low)) {
+      return true;
+    }
+    return false;
+  }
+
+  /** Lemma exists only via presentRegularDe, not curated tables. */
+  function isSyntheticLemma(lem) {
+    if (DE_PRESENT[lem] || splitSeparableInfinitive(lem)) return false;
+    if (typeof SeparableResolve !== 'undefined') {
+      const vals = Object.values(SeparableResolve.FINITE_TO_INF || {});
+      if (vals.includes(lem)) return false;
+    }
+    return !!presentRegularDe(lem);
+  }
+
+  /** Partizip II / passive adjective ending in -t mis-parsed as finite verb. */
+  function looksLikePartizipIiMisparse(low) {
+    if (typeof SeparableResolve !== 'undefined' && SeparableResolve.FINITE_TO_INF?.[low]) return false;
+    if (DE_PRESENT[low]) return false;
+    return /(?:iert|igt|ocht|acht|umpt|enkt|etzt|ört|ält)$/i.test(low);
+  }
+
+  /** Naive stem+en yields lemma+en from a -t surface (ermöglicht→ermöglichten). */
+  function isFakeParticipleEnLemma(low, lemma) {
+    if (typeof SeparableResolve !== 'undefined' && SeparableResolve.FINITE_TO_INF?.[low]) return false;
+    if (!/(?:t|et)$/i.test(low)) return false;
+    if (lemma === `${low}en`) return true;
+    if (low.endsWith('et') && lemma === `${low.slice(0, -1)}en`) return true;
+    return false;
+  }
+
+  /** P0: surface must be an attested finite form of lemma (not a fake stem+en invention). */
+  function isAttestedFiniteForm(surface, lemma) {
+    const low = normWord(surface);
+    const lem = normWord(lemma);
+    if (!low || !lem) return false;
+    if (low === lem) return true;
+    if (looksLikePartizipIiMisparse(low) || isFakeParticipleEnLemma(low, lem)) return false;
+
+    if (typeof SeparableResolve !== 'undefined') {
+      const knownInf = SeparableResolve.FINITE_TO_INF?.[low];
+      if (knownInf && knownInf !== lem) return false;
+    }
+
+    if (typeof SeparableResolve !== 'undefined') {
+      const ft = SeparableResolve.FINITE_TO_INF;
+      if (ft?.[low] === lem) return true;
+      const sepFin = SeparableResolve.resolveSeparableFiniteToInfinitive?.(low);
+      if (sepFin === lem) return true;
+    }
+
+    if (DE_PRESENT[lem]) {
+      for (const form of Object.values(DE_PRESENT[lem])) {
+        if (normWord(form) === low) return true;
+      }
+    }
+
+    const sepInf = splitSeparableInfinitive(lem);
+    const root = sepInf ? sepInf.root : lem;
+    if (DE_PRESENT[root]) {
+      for (const form of Object.values(DE_PRESENT[root])) {
+        if (normWord(form) === low) return true;
+      }
+    }
+
+    const synthetic = isSyntheticLemma(lem);
+    for (const tense of ['present', 'praeteritum']) {
+      const conj = conjugateDeLemma(lem, tense);
+      if (!conj?.forms) continue;
+      for (const [pron, form] of Object.entries(conj.forms)) {
+        const nf = normWord(form);
+        if (nf !== low) continue;
+        if (synthetic && tense === 'present' && /^(ich|wir|sie)$/i.test(pron)) continue;
+        return true;
+      }
+      for (const form of Object.values(conj.forms)) {
+        const nf = normWord(form);
+        if (nf === low) continue;
+        for (const part of nf.split(/\s+/)) {
+          if (part === low) return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  /** P1: capitalized spelling equals lemma but row has noun metadata (das Laufen, …). */
+  function looksLikeNominalizedInfinitiveNoun(fc, raw, lemma) {
+    if (!/^[A-ZÄÖÜ]/.test(raw)) return false;
+    if (normWord(raw) !== normWord(lemma)) return false;
+    if (fc?.article || fc?.gender) return true;
+    return false;
+  }
+
+  /** P0+P1 migration eligibility (high confidence only). */
+  function migrationEligible(fc, lang) {
+    const lg = normLang(lang || fc.sourceLang);
+    if (lg !== 'de') return null;
+    const stored = typeof normWordType === 'function' ? normWordType(fc.type || fc.pos) : '';
+    if (stored !== 'verb') return null;
+    const word = String(fc.word || '').trim();
+    if (!word) return null;
+    const low = normWord(word);
+    if (isLikelyInflectedAdjective(low) || looksLikeMisclassifiedNoun(word, low)) return null;
+
+    const conj = getPresent(word, lg);
+    if (!conj?.lemma) return null;
+    const lemma = conj.lemma.toLowerCase();
+    if (!isDeInfinitive(lemma)) return null;
+
+    const verbLemma = fc.verbLemma ? String(fc.verbLemma).toLowerCase() : null;
+    if (!verbLemma || verbLemma !== lemma) return null;
+
+    // P0: finite / wrong surface, verbLemma already correct
+    if (low !== lemma) {
+      if (!isAttestedFiniteForm(word, lemma)) return null;
+      return { target: lemma, reason: 'p0' };
+    }
+    // P1: capitalized infinitive
+    if (word !== lemma) {
+      if (looksLikeNominalizedInfinitiveNoun(fc, word, lemma)) return null;
+      return { target: lemma, reason: 'p1' };
+    }
+    return null;
+  }
+
+  /** Normalize deck word to lowercase infinitive; preserve clicked surface when renamed. */
+  function canonicalizeForDeck(fc, lang) {
+    const hit = migrationEligible(fc, lang);
+    if (!hit) return false;
+    const before = String(fc.word || '').trim();
+    if (!fc.surface && before !== hit.target) fc.surface = before;
+    fc.word = hit.target;
+    fc.verbLemma = hit.target;
+    fc.lemmaNormalized = true;
+    return before !== fc.word;
   }
 
   function pronounRows(lang, tense) {
@@ -810,6 +986,9 @@ const VerbConjugation = (() => {
     getImperativ,
     getConjugation,
     enrichFlashcard,
+    enrichVerbConjugation,
+    canonicalizeForDeck,
+    migrationEligible,
     conjugationSelectHtml,
     switchConjTense,
     pronounRows,

@@ -1,33 +1,102 @@
 # Revisión del handoff EN B1 (Danilo → Marcos)
 
-**Fecha:** 26 jul 2026 · **estado al 7 ago 2026** (ver abajo)  
-**Fuente canónica:** [`docs/handoff-en-b1-para-marcos.md`](handoff-en-b1-para-marcos.md) en `danilo/feat/en-b1` — handoff v2 **`56eb9be`**  
-**Respuesta de Danilo:** [`docs/respuesta-revision-en-b1-2026-07-26.md`](respuesta-revision-en-b1-2026-07-26.md) (PR #1, merge hecho en su rama)  
-**Medido originalmente contra:** `main` = `a50a89a` · base común = `4e5efac`  
-**Remoto:** `git remote add danilo https://github.com/Abelardo94/lexicoil.git`
+**Fecha:** 26 jul 2026 · **último checkpoint:** 20 ago 2026  
+**PR #1 (EN B1):** https://github.com/marcosdadone96/lexicoil/pull/1 — tip **`234a4fa`**  
+**PR #2 (audio DE+EN):** https://github.com/marcosdadone96/lexicoil/pull/2 — tip **`3d4f7c9`**  
+**`main`:** **`a16d033`** — decisión **(A)** aplicada (`git rm --cached` build, 20 ago)  
+**Respuesta de Danilo:** [`docs/respuesta-revision-en-b1-2026-07-26.md`](respuesta-revision-en-b1-2026-07-26.md)
 
-Documento de **lectura y decisiones** — no es lista de implementación.
+Documento de **lectura, decisiones y checkpoint**. No entra en PR #1; se mantiene solo en `main`.
 
-Relacionado: [`docs/CONTENT_LIVE_POLICY.md`](CONTENT_LIVE_POLICY.md)
-
-### Estado al 7 de agosto de 2026
-
-Danilo marcó su respuesta como **histórica** (nota del 7 ago): hizo **(A)** él dentro del merge `307bf94` (contra tu `main` de entonces `0f99b5c`) y abrió **PR #1** con 237 conflictos resueltos. En **tu `main` actual** (`1b67960`) **(A) sigue sin aplicarse** — `dist/` 528, `landing/` 306, `.bak` 16 trackeados.
-
-Merge-tree **hoy** (`main` vs `danilo/feat/en-b1` tip `7c41be1`): **4 conflictos** de contenido (no build):
-
-```powershell
-git fetch danilo
-git merge-tree --write-tree main danilo/feat/en-b1 2>&1 | Select-String "CONFLICT"
-# js/data/a2Topics.js
-# scripts/audit-pass-2.mjs
-# scripts/lib/normalizeBatch.mjs
-# scripts/pipeline/lib/validateCandidate.mjs
-```
-
-Pendiente de producto (sin cambiar): **estado de `en/B1`** (`hidden` vs `beta`) y si **`test:engine`** (§3.1 de la respuesta) se arregla aparte o en el PR.
+Relacionado: [`docs/CONTENT_LIVE_POLICY.md`](CONTENT_LIVE_POLICY.md) · **`CLAUDE.md`** (PR #1; baseline audit corregido allí)
 
 ---
+
+### Checkpoint — 20 de agosto de 2026
+
+#### Estado de ramas y PRs
+
+| | Tip | Notas |
+|---|-----|-------|
+| `main` | `a16d033` | `(A)` build destrackeado · Textos v1 (`03c9549`) |
+| PR #1 `feat/en-b1` | `234a4fa` | 5 commits QA EN sobre `1eef031` (sin audio) |
+| PR #2 audio | `3d4f7c9` | Solo `listeningScript.js` + test + `?v=2` |
+
+Danilo debe **mergear `main` (`a16d033`) en `feat/en-b1`**. Tras `(A)`, conflictos esperados:
+
+- **`index.html`:** `examRunner.js?v=28` + `textosReader.js?v=1` (ambas líneas)
+- Cualquier `rename/delete` bajo `dist/` → **stay deleted**
+
+```powershell
+git fetch danilo origin
+git merge-tree --write-tree origin/main danilo/feat/en-b1 2>&1 | Select-String "CONFLICT"
+```
+
+#### QA Danilo (fix/en-b1-qa-preview) — resumen
+
+| # | Ámbito | Estado |
+|---|--------|--------|
+| 1 | Audio `parseSegmentsInline` — de/A2 T4 + en Listening P4 | **PR #2** |
+| 2 | Numeración **de/A2** rota (preexistente) | **Marcos** post-merge |
+| 3 | Baseline audit **17 / 371 / 237** (no 12/242) | Corregido en `CLAUDE.md` (PR #1) |
+| 4–8 | EN: L3 vacío, numeración Cambridge, examId, CHK-1 gap_fill, results | **PR #1** (`234a4fa`) |
+
+#### Baseline regresión DE (`batches/generated`, 146 arch., 820 preg.)
+
+```powershell
+node scripts/audit-pass-2.mjs batches/generated
+# 17 CRÍTICOS / 371 IMPORTANTES / 237 MENORES
+```
+
+#### TTS post-merge PR #2 — decisiones (Marcos, 20 ago)
+
+Tras merge **#2**, cambian **53 transcripts** → **546 clips** (~73k chars con `eleven_multilingual_v2`).
+
+| Decisión | Valor |
+|----------|-------|
+| **Canal entrega** | **(a)** commitear mp3 servidos en repo (~53 MB) — evita calentar Blobs con créditos Pro |
+| **Modelo prod** | Revisar `ELEVENLABS_MODEL` en Netlify; si no está, **poner `eleven_flash_v2_5`** (mitad de coste vs default v2) |
+| **Quién genera** | Danilo: **en/B1 + de/A2** (115 clips) + manifest · Marcos: **de/B1** (431 clips) con key de prod |
+| **Cuándo** | Tras merge **#2**; `--dry-run` antes: `npm run pregenerate:tts:served -- --dry-run` |
+
+Implementación (a): habrá que **exceptuar** `library/tts-cache/` servido del `.gitignore` o usar subcarpeta trackeada — post-merge, tarea aparte.
+
+#### Orden de merge acordado
+
+1. Merge **PR #2** (audio)  
+2. Danilo mergea **`main` → `feat/en-b1`**, resuelve `index.html`, empuja PR #1  
+3. Regeneración TTS (Danilo en+de/A2; Marcos de/B1)  
+4. QA preview PR #1 (examen EN entero + quick DE)  
+5. Merge **PR #1**
+
+#### Deuda post-merge
+
+CI live fidelity · `build:availability` · pool P2 (~20 stubs) · CHK-29/35 · CHK-LEVEL/served · **de/A2 numeración** · `test:engine`
+
+---
+
+### Checkpoint PR #1 — 8 de agosto de 2026 (histórico)
+
+**Tip inicial del PR:** `1eef031`. Supersedido por `234a4fa` + fixes QA.
+
+| Hito | Commit |
+|------|--------|
+| Merge `main` en su rama | `0969fdc` |
+| Fix Reading Part 4 | `2e139a1` |
+| Docs / baseline (obsoleto 12/242) | `1eef031` → corregido a **17/371/237** en rama QA |
+
+**Acuerdos cerrados (siguen vigentes):**
+
+| Tema | Decisión |
+|------|----------|
+| (A) build untrack | Hecho en **ambos lados**: PR #1 (`e270f94`) + **`main` `a16d033`** |
+| (C) catálogo | `de/A2` + `de/B1` live; `en/B1` beta (3); `lc_show_beta` en consola |
+| `test:engine` | Fuera del PR |
+| Preview vs Actions | Netlify ≠ Actions; CI rojo por fidelity `de/*` live preexistente |
+
+```powershell
+npm run validate:fidelity -- --lang en --level B1 --strict   # 3/3 en 234a4fa
+```
 
 ### Handoff v2 — qué respondió Danilo a esta revisión
 
@@ -59,12 +128,12 @@ Mensajes centrales que cuadran con el repo:
 - La mayoría de los **236 conflictos** de merge son **output de build** ya cubierto por `.gitignore` (162 modify/delete).
 - En el pipeline compartido, **tu `main` es más grande** que su rama en varios ficheros; sus deltas de idioma son pequeños encima.
 
-En **tu `main` hoy** siguen los dos bugs que él ya corrigió en su rama:
+En **`main` antes del merge** siguen los dos bugs que el PR corrige:
 
-| Bug | Estado en `main` | Fix en rama Danilo |
-|-----|------------------|-------------------|
-| Quick + exámenes library → pantalla en blanco (`goetheFormat && !isQ`) | Presente en `js/ui/exam/examRunner.js` ~L880 | `130c22a` |
-| Niveles `beta` → “Coming soon” sin flag global (afecta **beta**, no `live`) | Sin `lc_show_beta`; `LEXICOIL_SHOW_BETA_LEVELS` comentado en `index.html` | `1e8a50f` |
+| Bug | Estado en `main` pre-merge | Fix en PR |
+|-----|---------------------------|-----------|
+| Quick + library → pantalla en blanco (`goetheFormat && !isQ`) | `js/ui/exam/examRunner.js` ~L884 | `130c22a` |
+| Niveles `beta` → “Coming soon” (afecta **beta**, no `live`) | Sin `lc_show_beta` | `1e8a50f` |
 
 ---
 
@@ -202,15 +271,13 @@ node scripts/audit-stored-exams.mjs --strict
 
 ---
 
-## 3. Catálogo y docs (ya alineado en handoff v2)
+## 3. Catálogo en el PR (post-merge manual en `0969fdc`)
 
-Referencia útil para **(C)** y para el merge de `availability.json`:
-
-| Nivel | Tu `main` | `danilo/feat/en-b1` |
-|-------|-----------|---------------------|
+| Nivel | `main` (`e5fed38`) | PR #1 (`1eef031`) |
+|-------|-------------------|-------------------|
 | `de/A2` | `live` | `live` |
-| `de/B1` | **`live` (16 exámenes)** | `beta` (2) |
-| `en/B1` | **`hidden`** | **`beta` (3 exámenes)** |
+| `de/B1` | **`live` (16 exámenes)** | **`live` (16)** — lado Marcos |
+| `en/B1` | `hidden` | **`beta` (3 exámenes)** — acordado para QA con `lc_show_beta` |
 
 ```powershell
 git show main:data/exams/availability.json
@@ -227,61 +294,36 @@ git ls-tree -r --name-only danilo/feat/en-b1 -- docs/audit | Select-String en_b1
 
 ---
 
-## 4. Decisiones (sección 5 del handoff) — propuesta
+## 4. Decisiones — **cerradas** (26 jul – 8 ago 2026)
 
-Para confirmar por escrito a Danilo antes de merge.
+### (A) Untrack build — **hecho en `main` (`a16d033`, 20 ago)**
 
-### (A) Untrack build (`dist/`, `landing/out/`, `landing/.next/`, `.bak`)
+794 ficheros desindexados (`dist/`, `landing/out/`, `landing/.next/`, `.bak`). También en PR #1 desde `e270f94`.
 
-**Propuesta: SÍ**, un commit en `main`. Criterio ya compartido vía `.gitignore`; solo falta sacar del índice.
+### (B) PR #1 — **hecho por Danilo**
 
-```powershell
-git rm -r --cached dist landing/out landing/.next
-git ls-files '*.bak' | ForEach-Object { git rm --cached $_ }
-git commit -m "chore(git): untrack build output already covered by .gitignore"
-```
+Merge `0969fdc` contra `e5fed38`; conflictos resueltos; tip `1eef031`. Review + QA preview pendientes.
 
-`--cached` no borra disco. Netlify genera `dist` en deploy.
+### (C) Catálogo — **acordado**
 
-### (B) Orden merge / PR
+`de/A2` + `de/B1` live; `en/B1` **beta** (3); sin descomentar `LEXICOIL_SHOW_BETA_LEVELS` global.
 
-**Propuesta: flujo del handoff**
+### (4.3) `eliminado/` — **cuarentena**
 
-1. Tú aplicas **(A)** en `main`.
-2. Danilo mergea tu `main` en `feat/en-b1`, resuelve tomando **tu lado** en pipeline/contenido DE y reaplica deltas EN pequeños.
-3. PR limpio contra tu `main` (él no tiene push a tu remoto).
+Docs EN viven en `docs/audit/` de la rama PR; nada que recuperar de `eliminado/`.
 
-Evita merge crudo local con 236 conflictos.
+### Fuera del PR
 
-### (C) Qué niveles pasan a `live`
-
-Handoff v2: **referencia = tu catálogo** (`de/A2` + `de/B1` live; resto `de/*` beta; `en/*` hidden). La decisión se reduce a **`en/B1`** tras el PR (QA explícito antes de `live`).
-
-Danilo asume por defecto la **opción conservadora** (prod igual, fixes de código, `en/B1` después) salvo que digas lo contrario. No descomenta `LEXICOIL_SHOW_BETA_LEVELS`.
-
-**Merge:** `availability.json` es `UU` — fusionar a mano (`de/*` tuyos + `en/B1` acordado). Él se compromete a hacerlo en el paso (B).2.
-
-Ver [`docs/CONTENT_LIVE_POLICY.md`](CONTENT_LIVE_POLICY.md).
-
-### (4.3) `eliminado/` — cuarta decisión menor
-
-Handoff v2: pregunta sin acusación — ¿cuarentena o canónico? Si cuarentena, sus seis docs EN van a `docs/audit/` al resolver conflictos. **Propuesta sin cambio:** tratar `eliminado/` como archivo muerto.
+`test:engine` — vuestra pista, aparte.
 
 ---
 
-## 5. Respuestas listas para copiar a Danilo (borrador)
-
-Ajusta lo que no encaje con tu criterio de producto.
+## 5. Mensaje enviado a Danilo (referencia)
 
 ```
-(A) Sí: haré el commit git rm --cached de dist/ landing/out landing/.next y .bak en main.
-
-(B) De acuerdo con el orden: (A) → tú mergeas main en feat/en-b1 → PR.
-
-(C) De acuerdo conservador: prod = de/A2 + de/B1 live; en/B1 hidden hasta QA post-PR [ o: live / beta staging ].
-     availability.json: merge manual (de/* míos + en/B1 según lo de arriba).
-
-(4.3) eliminado/ = cuarentena; tus 6 docs EN a docs/audit/ al mergear.
+PR #1, review + QA en preview. en/B1 beta, de/A2/de/B1 live, test:engine fuera.
+(A) no duplicamos en main; CI rojo preexistente no bloquea merge.
+Part 4: QA completo tras 2e139a1. Deuda post-merge: CI live, build:availability, pool P2, CHK-29/35, test:engine.
 ```
 
 ---
@@ -299,4 +341,4 @@ git checkout -b en-b1-review danilo/feat/en-b1   # solo para revisión local
 
 ## 7. Resumen en una línea
 
-Handoff **v2** alinea producto y §4.3 con lo que medimos; lo mecánico sigue cuadrando. Pendiente en tu `main`: fixes compartidos (quick render, beta opt-in para niveles **beta**, guards de idioma). Arranque acordado: **(A)** en `main` → Danilo mergea y PR → **(C)** solo decide cuándo/cómo publicar `en/B1`.
+PR **#1** (`234a4fa`) + **#2** (`3d4f7c9`) listos. **`main` `a16d033`**. Pendiente: merge #2 → Danilo merge main en #1 → TTS → QA → merge #1.

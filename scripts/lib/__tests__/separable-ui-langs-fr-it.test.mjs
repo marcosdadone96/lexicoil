@@ -42,7 +42,7 @@ console.log('\n── 1) Local gloss coverage by UI lang ──');
 console.log(`  entries=${keys.length}  en=${withEn}  es=${withEs}  fr=${withFr}  it=${withIt}`);
 assertEq('has EN for all gloss entries', withEn, keys.length);
 assertEq('has ES for all gloss entries', withEs, keys.length);
-assertEq('FR curated count is 0 (incomplete)', withFr, 0);
+assertEq('FR curated count matches EN', withFr, keys.length);
 assertEq('IT curated count matches EN', withIt, keys.length);
 
 const enHit = SeparableResolve.localGloss('anbieten', 'en', 'de');
@@ -51,7 +51,7 @@ const frHit = SeparableResolve.localGloss('anbieten', 'fr', 'de');
 const itHit = SeparableResolve.localGloss('anbieten', 'it', 'de');
 assertEq('EN gloss', enHit?.translation_en, 'to offer');
 assertEq('ES gloss', esHit?.translation_es, 'ofrecer');
-assertEq('FR gloss misses → null (fall through)', frHit, null);
+assertEq('FR gloss', frHit?.translation_fr, 'offrir');
 assertEq('IT gloss', itHit?.translation_it, 'offrire');
 
 console.log('\n── 2) Reunify is language-independent ──');

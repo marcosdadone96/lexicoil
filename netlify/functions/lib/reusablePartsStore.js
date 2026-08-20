@@ -451,7 +451,13 @@ async function pickReusablePart(store, lang, level, module, {
  * Pick a verified part for (topicTag × teil), lowest servedCount first.
  */
 async function pickReusablePartByTopic(store, lang, level, module, opts = {}) {
-  const { excludeIds = [], teil = null, topicTag = null, assembleMode = 'practice' } = opts;
+  const {
+    excludeIds = [],
+    teil = null,
+    topicTag = null,
+    assembleMode = 'practice',
+    excludeOfficialReserved = false,
+  } = opts;
   const want = normalizeB1Topic(topicTag);
   if (!want) return null;
 
@@ -460,7 +466,7 @@ async function pickReusablePartByTopic(store, lang, level, module, opts = {}) {
   const normModule = String(module).toLowerCase();
 
   const { rows } = await loadModuleSearchRows(store, normLang, normLevel, normModule);
-  let available = filterRows(rows, { teil, excludeIds, assembleMode });
+  let available = filterRows(rows, { teil, excludeIds, assembleMode, excludeOfficialReserved });
   available = filterRowsByTopicTag(available, want, { normalizeB1Topic });
   if (!available.length) return null;
 

@@ -26,6 +26,9 @@ function getRateLimitStore() {
 }
 
 async function acquire() {
+  if (process.env.GEMINI_RATE_LIMIT_SKIP === '1' || process.env.GEMINI_RATE_LIMIT_SKIP === 'true') {
+    return { skipped: true };
+  }
   const store = getRateLimitStore();
   if (!store) {
     throw new Error('gemini_ratelimit_requires_blob_store');

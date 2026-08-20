@@ -41,42 +41,7 @@ export async function smokeLogin(baseUrl, creds) {
     throw new Error(`auth-config failed (${cfgRes.status})`);
   }
 
-  if (cfg.supabase && cfg.supabaseUrl && cfg.supabaseAnonKey) {
-    const sbBase = String(cfg.supabaseUrl).replace(/\/$/, '');
-    const tokenUrl = `${sbBase}/auth/v1/token?grant_type=password`;
-    const sbRes = await fetch(tokenUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        apikey: cfg.supabaseAnonKey,
-        Authorization: `Bearer ${cfg.supabaseAnonKey}`,
-      },
-      body: JSON.stringify({ email, password }),
-    });
-    const sbData = await sbRes.json().catch(() => ({}));
-    if (!sbRes.ok) {
-      const msg = sbData.error_description || sbData.msg || sbData.error || `supabase ${sbRes.status}`;
-      throw new Error(`supabase signInWithPassword failed: ${msg}`);
-    }
-    const accessToken = sbData.access_token;
-    if (!accessToken) {
-      throw new Error('supabase signInWithPassword: missing access_token');
-    }
-
-    const sessRes = await fn('auth-supabase-session', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ access_token: accessToken }),
-    });
-    const sessData = await sessRes.json().catch(() => ({}));
-    if (!sessRes.ok || !sessData.token) {
-      throw new Error(
-        `auth-supabase-session failed (${sessRes.status}): ${sessData.error || 'no token'}`,
-      );
-    }
-    return { token: sessData.token, user: sessData.user, via: 'supabase' };
-  }
-
+  // Web + smoke: password login via auth-login (server handles Blobs + Supabase).
   const legRes = await fn('auth-login', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -86,7 +51,7 @@ export async function smokeLogin(baseUrl, creds) {
   if (!legRes.ok || !legData.token) {
     throw new Error(`auth-login failed (${legRes.status}): ${legData.error || 'no token'}`);
   }
-  return { token: legData.token, user: legData.user, via: 'legacy' };
+  return { token: legData.token, user: legData.user, via: 'server-login' };
 }
 
 /**
@@ -120,9 +85,7 @@ export async function diagnoseLoginMismatch(baseUrl, email) {
       note:
         'Supabase users have no passwordHash in Blobs; invalid password and missing blob both return bad_credentials',
     },
-    webLoginPath: cfg.supabase
-      ? 'Supabase POST /auth/v1/token?grant_type=password → POST auth-supabase-session'
-      : 'POST auth-login',
-    scriptBugBeforeFix: 'post-deploy/smoke called auth-login only while production has supabase:true',
+    webLoginPath: 'POST auth-login (server-side Blobs + Supabase fallback)',
+    supabaseClientEnabled: cfg.supabase,
   };
 }

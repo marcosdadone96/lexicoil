@@ -66,5 +66,22 @@ const tap = enrich('Gerät');
 assertEq('manual Schüler noun', manual.type, 'noun');
 assertEq('tap Gerät noun', tap.type, 'noun');
 
+console.log('\n── P4: systematic gender bug fixes (2026-08-09) ──');
+assertEq('Nachbarschaft → noun (not adjective)', enrich('Nachbarschaft').type, 'noun');
+assertEq('Nachbarschaft → die', enrich('Nachbarschaft').article, 'die');
+assertEq('Freundschaft → die', enrich('Freundschaft').article, 'die');
+assertEq('Wissenschaft → die', enrich('Wissenschaft').article, 'die');
+assertEq('Mannschaft → die', enrich('Mannschaft').article, 'die');
+assertEq('Balkon → der (not das from -on)', enrich('Balkon').article, 'der');
+assertEq('Nachbarn → die (plural)', enrich('Nachbarn').article, 'die');
+assertEq('Nachbarn plural flag', enrich('Nachbarn').plural, true);
+assertEq('Integration → die (not das from -on in -tion)', enrich('Integration').article, 'die');
+assertEq('alle → other (not in lexicon as noun)', enrich('alle').type, 'other');
+assertEq('ohne → other', enrich('ohne').type, 'other');
+assertEq('Dienstag word preserved', enrich('Dienstag').word, 'Dienstag');
+assertEq('Dienstag → der/m', enrich('Dienstag').article, 'der');
+assertEq('dieFrau glued article', ManualVocab.parseLeadingArticle('dieFrau', 'de').article, 'die');
+assertEq('dieFrau glued word', ManualVocab.parseLeadingArticle('dieFrau', 'de').word, 'Frau');
+
 console.log(`\n── Result: ${passed} passed, ${failed} failed ──`);
 if (failed > 0) process.exit(1);

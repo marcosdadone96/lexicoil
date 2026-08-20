@@ -20,7 +20,8 @@ const ArticleLexicon = (() => {
     gemüse: 'n', auflauf: 'm', ernährung: 'f', mischung: 'f', süßigkeit: 'f',
     salat: 'm', kuchen: 'm', teig: 'm', zutat: 'f', rezept: 'n', gericht: 'n',
     gerät: 'n', unterschied: 'm', vorschlag: 'm', wochenende: 'n', pizza: 'f',
-    küche: 'f', museum: 'n', waschen: 'n',
+    küche: 'f', museum: 'n', waschen: 'n', balkon: 'm', nachbar: 'm', integration: 'f',
+    montag: 'm', dienstag: 'm', mittwoch: 'm', donnerstag: 'm', freitag: 'm', samstag: 'm', sonntag: 'm',
   };
 
   let _compoundSuffixes = null;
@@ -112,6 +113,11 @@ const ArticleLexicon = (() => {
       if (/(chen|ken|den|ten)$/i.test(low) && !stemHit) return null;
     }
     if (low.endsWith('n') && low.length > 5 && /ion|ierung|schaft|heit|keit/.test(low)) return 'p';
+    // Weak masculine plural: Nachbar → Nachbarn (singular stem in -r + n)
+    if (low.endsWith('n') && low.length > 5) {
+      const stem = low.slice(0, -1);
+      if (stem.endsWith('r') && lookupLemma(stem, 'de') === 'm') return 'p';
+    }
     return null;
   }
 
@@ -181,7 +187,14 @@ const ArticleLexicon = (() => {
     if (sub === 'de') {
       for (const cand of singularCandidatesDe(low)) {
         g = lookupLemma(cand, sub);
-        if (g && g !== 'p') break;
+        if (g && g !== 'p') {
+          // Nachbar + n = Nachbarn — weak masc plural, not singular lookup
+          if (g === 'm' && cand.endsWith('r') && low === `${cand}n`) {
+            g = null;
+            continue;
+          }
+          break;
+        }
       }
     }
 

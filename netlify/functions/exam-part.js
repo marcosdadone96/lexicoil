@@ -5,6 +5,7 @@
  *
  * GET  ?lang=&level=&module=[&teil=][&exclude=id,id,...]
  *   → { part } or { part: null }
+ *   ?purpose=textos&topicTag=… — Textos read-only passage (B1 Lesen v1); no questions.
  *   Public when no ?words= (generic pool pick).
  *   With ?words= (personal pool): requires auth + personal_lesen/horen quota
  *   (checkPersonalPoolQuota + CAS via poolRequestId) before serving.
@@ -38,6 +39,7 @@ const { checkExamPartVocabRateLimit } = require('./lib/examPartVocabRateLimit.js
 const { checkPersonalModuleIntentRateLimit } = require('./lib/personalModuleIntentRateLimit.js');
 const { gatePersonalExamPartGet } = require('./lib/examPartPersonalQuota.js');
 const { normalizeAssembleMode, partPassesAssembleMode } = require('./lib/officialQuarantine.js');
+const { pickTextosReading } = require('./lib/textosPick.js');
 const { planPersonalModuleAssembly } = require('./lib/personalModuleVocabPlan.js');
 const { requireAuth: requireAuthUser } = require('./lib/authLib.js');
 
@@ -163,6 +165,38 @@ exports.handler = async (event) => {
       teilRaw != null && String(teilRaw).trim() !== '' && Number.isFinite(Number(teilRaw))
         ? Number(teilRaw)
         : null;
+
+    const purpose = String(params.purpose || '').trim().toLowerCase();
+    if (purpose === 'textos') {
+      try {
+        const rl = await checkExamPartVocabRateLimit(store, event);
+        if (!rl.ok) {
+          return jsonResponse(429, {
+            ...noCache,
+            'Retry-After': String(Math.max(1, Math.ceil((rl.resetAt - Date.now()) / 1000))),
+          }, {
+            error: 'rate_limited',
+            limit: rl.limit,
+            remaining: 0,
+            resetAt: rl.resetAt,
+          });
+        }
+
+        const topicRaw = String(params.topicTag || params.topic || '').trim();
+        const picked = await pickTextosReading(store, {
+          lang,
+          level,
+          module,
+          topicTag: topicRaw,
+          teil,
+          excludeIds,
+        });
+        return jsonResponse(picked.status, noCache, picked.body);
+      } catch (err) {
+        console.error('[exam-part] purpose=textos error:', err.message, err.stack);
+        return jsonResponse(500, noCache, { error: 'internal_error', ok: false });
+      }
+    }
 
     try {
       // Selección por vocabulario (A.2). Sin words → comportamiento clásico.

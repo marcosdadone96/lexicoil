@@ -30,6 +30,16 @@ function navBackLabel(){
 }
 function navBack(){
   const screen=getActiveScreenId();
+  if(screen==='goalWorkspaceScreen'&&typeof _vocabHub!=='undefined'&&_vocabHub.activity==='textos_read'){
+    if(typeof exitTextosHub==='function')exitTextosHub();
+    else if(typeof clearVocabHubTextosMode==='function')clearVocabHubTextosMode();
+    if(typeof refreshVocabHubPanel==='function')refreshVocabHubPanel();
+    if(typeof LcRouter!=='undefined'){
+      const goal=getActiveGoal();
+      if(goal)LcRouter.navigate(LcRouter.goalPath(goal,'vocab'),{label:'Vocabulary',replace:true});
+    }
+    return;
+  }
   if(screen==='goalWorkspaceScreen'&&typeof _vocabHub!=='undefined'&&_vocabHub.activity==='flashcards'){
     _navExitVocabFlashcards();
     if(typeof LcRouter!=='undefined'){

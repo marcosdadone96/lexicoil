@@ -967,6 +967,38 @@ function resolveAssembleModeForPool() {
 }
 
 /**
+ * Textos — read-only Lesen passage by B1 topic (purpose=textos).
+ * @returns {Promise<object>}
+ */
+async function fetchTextosReading(lang, level, opts = {}) {
+  const { topicTag, teil = null, excludeIds = [] } = opts;
+  if (!topicTag) {
+    const e = new Error('topic_required');
+    e.code = 'topic_required';
+    throw e;
+  }
+  const params = {
+    lang,
+    level,
+    module: 'lesen',
+    purpose: 'textos',
+    topicTag: String(topicTag),
+  };
+  if (teil != null && Number.isFinite(Number(teil))) params.teil = String(Number(teil));
+  if (excludeIds.length) params.exclude = excludeIds.slice(0, 40).join(',');
+  const q = new URLSearchParams(params);
+  const res = await lcFetch(`/.netlify/functions/exam-part?${q}`);
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok || !data.ok) {
+    const e = new Error(data.error || 'textos_fetch_failed');
+    e.code = data.error || 'textos_fetch_failed';
+    e.status = res.status;
+    throw e;
+  }
+  return data;
+}
+
+/**
  * Fetch a reusable exam section (part) from the parts store.
  * Returns the part payload or null if nothing is available.
  * Never throws — callers treat null as "no cached part, fall back to AI".
@@ -1383,6 +1415,7 @@ if (typeof window !== "undefined") {
   window.fetchExamPart = fetchExamPart;
   window.fetchExamPartVocab = fetchExamPartVocab;
   window.fetchExamPartById = fetchExamPartById;
+  window.fetchTextosReading = fetchTextosReading;
   window.fetchExamModulePlan = fetchExamModulePlan;
   window.reportPersonalPoolCoverageFailure = reportPersonalPoolCoverageFailure;
   window.startOfficialExamTimer = startOfficialExamTimer;

@@ -39,7 +39,17 @@ const { resolveVoiceId } = require('./lib/ttsVoices.js');
 const {
   detectAppearedWords,
   pickWordsForPassage,
+  validateListeningPassage,
+  shouldBillListeningAiSession,
+  pickWeaveForRound,
+  listeningE2ePassageForRound,
+  LISTENING_AI_ROUND_COUNT,
 } = require('./lib/listeningGameUtils.js');
+const {
+  callGeminiProductJson,
+  rejectMissingGeminiKey,
+  productGeminiModel,
+} = require('./lib/geminiProductJson.js');
 const { getJwtSecret, emailToUserId } = require('./lib/authLib.js');
 const {
   createGenTicket,
@@ -626,10 +636,20 @@ exports.handler = async function handler(event) {
     return jsonResponse(200, cors, renewed);
   }
 
-  // ── Common API key check ─────────────────────────────────────────────────
-  const apiKey = readAnthropicKey();
-  const badKey = rejectBadAnthropicKey(apiKey, jsonResponse, cors);
-  if (badKey) return badKey;
+  // ── Common API key check (Gemini product games skip Anthropic) ───────────
+  const isGeminiProductRoute =
+    body.generateVocabQuiz === true ||
+    body.generateListeningGame === true ||
+    body.generateVocabPhrases === true;
+  let apiKey = null;
+  if (isGeminiProductRoute) {
+    const geminiBad = rejectMissingGeminiKey(jsonResponse, cors);
+    if (geminiBad) return geminiBad;
+  } else {
+    apiKey = readAnthropicKey();
+    const badKey = rejectBadAnthropicKey(apiKey, jsonResponse, cors);
+    if (badKey) return badKey;
+  }
 
   // ── Pro AI modes (correctWriting, grammarCoaching) ───────────────────────
   if (body.correctWriting === true || body.grammarCoaching === true) {
@@ -839,23 +859,13 @@ Max 4 topics, concise. Language: ${lang === 'de' ? 'German' : lang === 'es' ? 'S
         : [];
       const targetPool = weightedPickQuizTargets(wordMeta, count, preferTargets);
       const requestId = body.requestId || null;
-      const aiMeta = await confirmAiCreditConsumption(event, 'vocab_quiz', { requestId });
-      if (aiMeta?.error) {
-        return jsonResponse(402, cors, {
-          error: aiMeta.error,
-          aiUsed: aiMeta.aiUsed,
-          aiMax: aiMeta.aiMax,
-          remaining: aiMeta.remaining,
-          plan: access.plan,
-        });
-      }
 
       const sourceLangName = lang === 'de' ? 'German' : lang === 'es' ? 'Spanish' : 'English';
       const UI_LANG_NAMES = { en: 'English', es: 'Spanish', fr: 'French', it: 'Italian', de: 'German' };
       const hintLangName = UI_LANG_NAMES[hintLang] || UI_LANG_NAMES.en;
       const hintMode = body.hintLanguageMode === 'immersion' ? 'immersion' : 'interface';
       const allHintsLangName = hintMode === 'immersion' ? sourceLangName : hintLangName;
-      const quizModel = cleanModel(process.env.CLAUDE_CORRECTION_MODEL || 'claude-haiku-4-5');
+      const quizModel = productGeminiModel();
       const system = `You create vocabulary recall quizzes for ${level} ${sourceLangName} learners.
 Return ONLY valid JSON (no markdown):
 {"questions":[{"word":"TARGET","hintType":"synonym|antonym|explanation","hintLanguage":"${hintMode === 'immersion' ? lang : hintLang}","hint":"...","options":["w1","w2","w3","w4"]}]}
@@ -883,14 +893,13 @@ Rules:
       const t0 = Date.now();
       let text;
       try {
-        ({ text } = await callAnthropicJson(apiKey, {
+        ({ text } = await callGeminiProductJson({
           model: quizModel,
           maxTokens: Math.min(Number(body.maxTokens) || 2500, 2500),
           system,
           userContent,
         }));
       } catch (err) {
-        await refundAiCredits(event, 'vocab_quiz', requestId);
         throw err;
       }
 
@@ -951,12 +960,24 @@ Rules:
       });
 
       if (!questions.length) {
-        await refundAiCredits(event, 'vocab_quiz', requestId);
-        return jsonResponse(200, cors, { ok: false, error: 'parse_failed' });
+        return jsonResponse(200, cors, { ok: false, error: 'parse_failed', billed: false });
+      }
+
+      const aiMeta = await confirmAiCreditConsumption(event, 'vocab_quiz', { requestId });
+      if (aiMeta?.error) {
+        return jsonResponse(402, cors, {
+          error: aiMeta.error,
+          aiUsed: aiMeta.aiUsed,
+          aiMax: aiMeta.aiMax,
+          remaining: aiMeta.remaining,
+          plan: access.plan,
+          billed: false,
+        });
       }
 
       return jsonResponse(200, cors, {
         ok: true,
+        billed: true,
         questions,
         plan: access.plan,
         aiUsed: aiMeta?.aiUsed,
@@ -969,7 +990,7 @@ Rules:
     }
   }
 
-  // ── generateListeningGame (2 AI credits — script + bundled passage TTS) ───
+  // ── generateListeningGame (2 AI credits — 3 rounds, deferred billing) ───────
   if (body.generateListeningGame === true) {
     try {
       const access = await requireActionAccess(event, 'listening_game');
@@ -995,86 +1016,157 @@ Rules:
         return jsonResponse(400, cors, { error: 'need_at_least_3_words' });
       }
       const requestId = body.requestId || null;
-      const aiMeta = await confirmAiCreditConsumption(event, 'listening_game', { requestId });
-      if (aiMeta?.error) {
-        return jsonResponse(402, cors, {
-          error: aiMeta.error,
-          aiUsed: aiMeta.aiUsed,
-          aiMax: aiMeta.aiMax,
-          remaining: aiMeta.remaining,
-          plan: access.plan,
-        });
-      }
+      const roundCount = LISTENING_AI_ROUND_COUNT;
+      const useE2eFixture =
+        process.env.ALLOW_LISTENING_E2E === '1' &&
+        (process.env.LISTENING_E2E_FIXTURE === '1' || process.env.LISTENING_E2E_FIXTURE === 'true');
+      const e2eFailAfter =
+        process.env.ALLOW_LISTENING_E2E === '1' && process.env.LISTENING_E2E_FAIL_AFTER
+          ? Number(process.env.LISTENING_E2E_FAIL_AFTER)
+          : null;
       const sourceLangName = lang === 'de' ? 'German' : lang === 'es' ? 'Spanish' : 'English';
-      const weaveWords = pickWordsForPassage(words, { ratio: 0.65 });
-      const quizModel = cleanModel(process.env.CLAUDE_CORRECTION_MODEL || 'claude-haiku-4-5');
       const topicLine = topic ? `Topic: ${topic}.` : 'Topic: everyday life (work, home, errands, plans).';
-      const system = `You write short listening passages for ${level} ${sourceLangName} learners.
+      const listenModel = productGeminiModel();
+      const voice = lang === 'es' ? 'es-ES' : lang === 'en' ? 'en-GB' : 'de-DE';
+      const generatedRounds = [];
+      const t0 = Date.now();
+
+      for (let roundIndex = 0; roundIndex < roundCount; roundIndex++) {
+        if (e2eFailAfter != null && !Number.isNaN(e2eFailAfter) && roundIndex >= e2eFailAfter) {
+          break;
+        }
+
+        let passage = '';
+        let validation = { ok: false };
+        const maxPassageAttempts = useE2eFixture ? 1 : 3;
+        for (let attempt = 1; attempt <= maxPassageAttempts; attempt++) {
+          if (useE2eFixture) {
+            passage = listeningE2ePassageForRound(words, roundIndex);
+          } else {
+            const weaveWords = pickWeaveForRound(words, roundIndex, roundCount);
+            const extraHints = [];
+            if (attempt > 1) extraHints.push('Keep under 120 words and under 480 characters.');
+            if (attempt > 2 || level === 'A2') {
+              extraHints.push('Use simple A2 sentence structures; avoid long compound sentences.');
+            }
+            const system = `You write short listening passages for ${level} ${sourceLangName} learners.
 Return ONLY valid JSON: {"passage":"..."}
 
 Rules:
 - ${topicLine}
-- 80–140 words (~30–60 seconds spoken). Natural, conversational monologue (first person or casual narration).
+- ${level === 'A2' ? '60–100 words' : '80–130 words'} MAX (~30–50 seconds spoken). Natural, conversational monologue.
 - MUST naturally include these vocabulary items (use inflected/separable forms when natural): ${weaveWords.join(', ')}.
 - For separable verbs, you may split them in a clause (e.g. "schlägt … vor" for vorschlagen).
-- Do NOT list words; write flowing prose. No bullet points.`;
-      const userContent = `Full vocabulary pool (only some need to appear — prioritize weave list):\n${words.map((w, i) => `${i + 1}. ${w}`).join('\n')}`;
-      const t0 = Date.now();
-      let text;
-      try {
-        ({ text } = await callAnthropicJson(apiKey, {
-          model: quizModel,
-          maxTokens: 900,
-          system,
-          userContent,
-        }));
-      } catch (err) {
-        await refundAiCredits(event, 'listening_game', requestId);
-        throw err;
+- Do NOT list words; write flowing prose. No bullet points.
+${extraHints.length ? `- ${extraHints.join(' ')}` : ''}`;
+            const userContent = `Round ${roundIndex + 1} of ${roundCount}. Vocabulary pool:\n${words.map((w, i) => `${i + 1}. ${w}`).join('\n')}`;
+            let text;
+            try {
+              ({ text } = await callGeminiProductJson({
+                model: listenModel,
+                maxTokens: 900,
+                system,
+                userContent,
+              }));
+            } catch (err) {
+              console.warn('[claude-chat] generateListeningGame round Gemini fail:', err.message);
+              passage = '';
+              break;
+            }
+            const parsed = extractJsonObject(text);
+            passage = String(parsed?.passage || '').trim();
+          }
+          validation = validateListeningPassage(passage, words, lang, level);
+          if (validation.ok) break;
+          if (attempt < maxPassageAttempts) {
+            console.warn('[claude-chat] generateListeningGame round retry:', validation.reason);
+          }
+        }
+
+        if (!validation.ok) {
+          console.warn('[claude-chat] generateListeningGame round invalid:', validation.reason);
+          break;
+        }
+        const detected = validation.detected || detectAppearedWords(words, passage, lang);
+        let audioBase64 = null;
+        try {
+          const audioBuf = await synthesize(passage, voice, lang);
+          if (audioBuf && audioBuf.length) audioBase64 = audioBuf.toString('base64');
+        } catch (ttsErr) {
+          console.warn('[claude-chat] listening game TTS fail:', ttsErr.message);
+        }
+        const roundValid = validation.ok && !!audioBase64;
+        generatedRounds.push({
+          passage,
+          topic: topic || null,
+          displayWords: detected.all,
+          appeared: detected.appeared,
+          absent: detected.absent,
+          audioBase64,
+          audioMime: 'audio/mpeg',
+          valid: roundValid,
+        });
+        if (!roundValid) break;
       }
-      const parsed = extractJsonObject(text);
-      const passage = String(parsed?.passage || '').trim();
-      if (!passage || passage.length < 40) {
-        await refundAiCredits(event, 'listening_game', requestId);
-        return jsonResponse(200, cors, { ok: false, error: 'parse_failed' });
+
+      const roundsGenerated = generatedRounds.length;
+      const validRounds = generatedRounds.filter((r) => r.valid);
+      const rounds = validRounds.map(({ valid, ...r }) => r);
+      const billed = shouldBillListeningAiSession(generatedRounds, roundCount);
+      const partial = validRounds.length > 0 && validRounds.length < roundCount;
+
+      if (!validRounds.length) {
+        return jsonResponse(200, cors, {
+          ok: false,
+          error: 'listening_unavailable',
+          billed: false,
+          userMessage: 'We could not prepare the listening game. No credits were used.',
+        });
       }
-      const detected = detectAppearedWords(words, passage, lang);
-      if (detected.appeared.length < 2) {
-        await refundAiCredits(event, 'listening_game', requestId);
-        return jsonResponse(200, cors, { ok: false, error: 'passage_missing_words' });
+
+      let aiMeta = null;
+      if (billed) {
+        aiMeta = await confirmAiCreditConsumption(event, 'listening_game', { requestId });
+        if (aiMeta?.error) {
+          return jsonResponse(402, cors, {
+            error: aiMeta.error,
+            aiUsed: aiMeta.aiUsed,
+            aiMax: aiMeta.aiMax,
+            remaining: aiMeta.remaining,
+            plan: access.plan,
+            billed: false,
+            partial,
+            roundsGenerated,
+            rounds,
+          });
+        }
       }
-      let audioBase64 = null;
-      const voice = lang === 'es' ? 'es-ES' : lang === 'en' ? 'en-GB' : 'de-DE';
-      try {
-        const audioBuf = await synthesize(passage, voice, lang);
-        if (audioBuf && audioBuf.length) audioBase64 = audioBuf.toString('base64');
-      } catch (ttsErr) {
-        console.warn('[claude-chat] listening game TTS optional fail:', ttsErr.message);
-      }
+
       console.log('[claude-chat] generateListeningGame', {
         ok: true,
-        words: words.length,
-        appeared: detected.appeared.length,
-        hasAudio: !!audioBase64,
+        roundsGenerated,
+        billed,
+        partial,
         ms: Date.now() - t0,
       });
+
       return jsonResponse(200, cors, {
         ok: true,
-        passage,
-        topic: topic || null,
-        displayWords: detected.all,
-        appeared: detected.appeared,
-        absent: detected.absent,
-        audioBase64,
-        audioMime: 'audio/mpeg',
+        billed,
+        partial,
+        roundsGenerated: validRounds.length,
+        rounds,
         plan: access.plan,
-        aiUsed: aiMeta?.aiUsed,
-        aiMax: aiMeta?.aiMax,
-        aiRemaining: aiMeta?.aiRemaining ?? aiMeta?.remaining,
+        aiUsed: billed ? aiMeta?.aiUsed : creditCheck.used,
+        aiMax: billed ? aiMeta?.aiMax : creditCheck.max,
+        aiRemaining: billed ? (aiMeta?.aiRemaining ?? aiMeta?.remaining) : creditCheck.remaining,
+        userMessage: partial
+          ? 'Only part of the listening session could be generated. No credits were used.'
+          : undefined,
       });
     } catch (err) {
       console.error('[claude-chat] generateListeningGame failed:', err.message);
-      return jsonResponse(502, cors, { error: 'ai_unavailable' });
+      return jsonResponse(502, cors, { error: 'ai_unavailable', billed: false });
     }
   }
 
@@ -1102,16 +1194,8 @@ Rules:
       }
       const count = Math.min(Math.max(Number(body.count) || 4, 3), 5, words.length);
       const requestId = body.requestId || null;
-      const aiMeta = await confirmAiCreditConsumption(event, 'vocab_phrases', { requestId });
-      if (aiMeta?.error) {
-        return jsonResponse(402, cors, {
-          error: aiMeta.error,
-          remaining: aiMeta.remaining,
-          plan: access.plan,
-        });
-      }
       const sourceLangName = lang === 'de' ? 'German' : lang === 'es' ? 'Spanish' : 'English';
-      const quizModel = cleanModel(process.env.CLAUDE_CORRECTION_MODEL || 'claude-haiku-4-5');
+      const phrasesModel = productGeminiModel();
       const separableRules = buildSeparablePromptRules(words);
       const baseSystem = `You create short everyday ${sourceLangName} phrases for ${level} learners using their vocabulary.
 Return ONLY valid JSON:
@@ -1179,15 +1263,14 @@ Rules:
         const userContent = `Vocabulary (${sourceLangName}):\n${words.map((w, i) => `${i + 1}. ${w}`).join('\n')}`;
         let text;
         try {
-          ({ text } = await callAnthropicJson(apiKey, {
-            model: quizModel,
+          ({ text } = await callGeminiProductJson({
+            model: phrasesModel,
             maxTokens: 1800,
             system,
             userContent,
           }));
         } catch (err) {
           if (attempt === maxAttempts) {
-            await refundAiCredits(event, 'vocab_phrases', requestId);
             throw err;
           }
           continue;
@@ -1208,11 +1291,22 @@ Rules:
         }
       }
       if (phrases.length < 3) {
-        await refundAiCredits(event, 'vocab_phrases', requestId);
-        return jsonResponse(200, cors, { ok: false, error: 'parse_failed', rejected });
+        return jsonResponse(200, cors, { ok: false, error: 'parse_failed', rejected, billed: false });
       }
+
+      const aiMeta = await confirmAiCreditConsumption(event, 'vocab_phrases', { requestId });
+      if (aiMeta?.error) {
+        return jsonResponse(402, cors, {
+          error: aiMeta.error,
+          remaining: aiMeta.remaining,
+          plan: access.plan,
+          billed: false,
+        });
+      }
+
       return jsonResponse(200, cors, {
         ok: true,
+        billed: true,
         phrases: phrases.slice(0, count),
         plan: access.plan,
         aiUsed: aiMeta?.aiUsed,

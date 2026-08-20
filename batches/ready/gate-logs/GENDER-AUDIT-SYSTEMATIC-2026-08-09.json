@@ -1,0 +1,272 @@
+{
+  "runAt": "2026-08-11T19:00:22.284Z",
+  "groundTruth": {
+    "totalEntries": 400,
+    "expandedFile": "data/gender-ground-truth/dwds-verified.json",
+    "sources": {
+      "dwds-goethe-A1": 126,
+      "dwds-goethe-B1": 149,
+      "dwds-pool-expansion": 30,
+      "content-vocab/en/A2.json": 26,
+      "dwds-goethe-A2": 68,
+      "dwds-benchmark": 22,
+      "content-vocab/en/B1.json": 29
+    }
+  },
+  "poolScan": {
+    "files": 689,
+    "uniqueNounCandidates": 1980,
+    "withGroundTruth": 367,
+    "coveragePct": 18.5,
+    "deterministicAssignment": {
+      "withArticle": 1712,
+      "nullArticle": 268,
+      "misclassifiedNonNoun": 34,
+      "assignmentCoveragePct": 86.5
+    },
+    "schaftHaftBugScan": {
+      "poolLemmaCount": 21,
+      "withoutArticle": 0,
+      "samples": []
+    }
+  },
+  "systemAccuracy": {
+    "poolVocabularyTags": {
+      "label": "pool-vocabularyTags",
+      "verified": 367,
+      "ok": 364,
+      "errors": [
+        {
+          "lemma": "Fleisch",
+          "normLemma": "fleisch",
+          "assignedArticle": null,
+          "assignedGender": null,
+          "correctArticle": "das",
+          "correctGender": "n",
+          "ok": false,
+          "truthSource": "dwds-goethe-A1",
+          "systemSource": "none",
+          "context": "pool (A2/B1, 3×)"
+        },
+        {
+          "lemma": "Nachbar",
+          "normLemma": "nachbar",
+          "assignedArticle": null,
+          "assignedGender": null,
+          "correctArticle": "der",
+          "correctGender": "m",
+          "ok": false,
+          "truthSource": "dwds-goethe-A2",
+          "systemSource": "none",
+          "context": "pool (B1, 27×)"
+        },
+        {
+          "lemma": "Ehrenamt",
+          "normLemma": "ehrenamt",
+          "assignedArticle": null,
+          "assignedGender": null,
+          "correctArticle": "das",
+          "correctGender": "n",
+          "ok": false,
+          "truthSource": "content-vocab/en/B1.json",
+          "systemSource": "none",
+          "context": "pool (B1, 1×)"
+        }
+      ],
+      "accuracyPct": 99.2
+    },
+    "dwdsBenchmark": {
+      "label": "dwds-benchmark",
+      "verified": 22,
+      "ok": 20,
+      "errors": [
+        {
+          "lemma": "haustür",
+          "normLemma": "haustür",
+          "assignedArticle": null,
+          "assignedGender": null,
+          "correctArticle": "die",
+          "correctGender": "f",
+          "ok": false,
+          "truthSource": "dwds-benchmark",
+          "systemSource": "none",
+          "context": "dwds-benchmark"
+        },
+        {
+          "lemma": "e-mail",
+          "normLemma": "e-mail",
+          "assignedArticle": null,
+          "assignedGender": null,
+          "correctArticle": "die",
+          "correctGender": "f",
+          "ok": false,
+          "truthSource": "dwds-benchmark",
+          "systemSource": "none",
+          "context": "dwds-benchmark"
+        }
+      ],
+      "accuracyPct": 90.9
+    },
+    "unionVerified": {
+      "label": "union-pool+benchmark",
+      "verified": 378,
+      "ok": 373,
+      "errors": [
+        {
+          "lemma": "Fleisch",
+          "normLemma": "fleisch",
+          "assignedArticle": null,
+          "assignedGender": null,
+          "correctArticle": "das",
+          "correctGender": "n",
+          "ok": false,
+          "truthSource": "dwds-goethe-A1",
+          "systemSource": "none",
+          "context": "pool (A2/B1, 3×)"
+        },
+        {
+          "lemma": "Nachbar",
+          "normLemma": "nachbar",
+          "assignedArticle": null,
+          "assignedGender": null,
+          "correctArticle": "der",
+          "correctGender": "m",
+          "ok": false,
+          "truthSource": "dwds-goethe-A2",
+          "systemSource": "none",
+          "context": "pool (B1, 27×)"
+        },
+        {
+          "lemma": "Ehrenamt",
+          "normLemma": "ehrenamt",
+          "assignedArticle": null,
+          "assignedGender": null,
+          "correctArticle": "das",
+          "correctGender": "n",
+          "ok": false,
+          "truthSource": "content-vocab/en/B1.json",
+          "systemSource": "none",
+          "context": "pool (B1, 1×)"
+        },
+        {
+          "lemma": "haustür",
+          "normLemma": "haustür",
+          "assignedArticle": null,
+          "assignedGender": null,
+          "correctArticle": "die",
+          "correctGender": "f",
+          "ok": false,
+          "truthSource": "dwds-benchmark",
+          "systemSource": "none",
+          "context": "dwds-benchmark"
+        },
+        {
+          "lemma": "e-mail",
+          "normLemma": "e-mail",
+          "assignedArticle": null,
+          "assignedGender": null,
+          "correctArticle": "die",
+          "correctGender": "f",
+          "ok": false,
+          "truthSource": "dwds-benchmark",
+          "systemSource": "none",
+          "context": "dwds-benchmark"
+        }
+      ],
+      "accuracyPct": 98.7
+    },
+    "userBlobs": null
+  },
+  "lexiconFileVsTruth": {
+    "compared": 317,
+    "errors": 0,
+    "accuracyPct": 100,
+    "errorList": []
+  },
+  "runtimeErrors": [
+    {
+      "lemma": "Fleisch",
+      "normLemma": "fleisch",
+      "assignedArticle": null,
+      "assignedGender": null,
+      "correctArticle": "das",
+      "correctGender": "n",
+      "ok": false,
+      "truthSource": "dwds-goethe-A1",
+      "systemSource": "none",
+      "context": "pool (A2/B1, 3×)"
+    },
+    {
+      "lemma": "Nachbar",
+      "normLemma": "nachbar",
+      "assignedArticle": null,
+      "assignedGender": null,
+      "correctArticle": "der",
+      "correctGender": "m",
+      "ok": false,
+      "truthSource": "dwds-goethe-A2",
+      "systemSource": "none",
+      "context": "pool (B1, 27×)"
+    },
+    {
+      "lemma": "Ehrenamt",
+      "normLemma": "ehrenamt",
+      "assignedArticle": null,
+      "assignedGender": null,
+      "correctArticle": "das",
+      "correctGender": "n",
+      "ok": false,
+      "truthSource": "content-vocab/en/B1.json",
+      "systemSource": "none",
+      "context": "pool (B1, 1×)"
+    },
+    {
+      "lemma": "haustür",
+      "normLemma": "haustür",
+      "assignedArticle": null,
+      "assignedGender": null,
+      "correctArticle": "die",
+      "correctGender": "f",
+      "ok": false,
+      "truthSource": "dwds-benchmark",
+      "systemSource": "none",
+      "context": "dwds-benchmark"
+    },
+    {
+      "lemma": "e-mail",
+      "normLemma": "e-mail",
+      "assignedArticle": null,
+      "assignedGender": null,
+      "correctArticle": "die",
+      "correctGender": "f",
+      "ok": false,
+      "truthSource": "dwds-benchmark",
+      "systemSource": "none",
+      "context": "dwds-benchmark"
+    }
+  ],
+  "errorPatterns": {
+    "null→n (none)": {
+      "count": 2,
+      "samples": [
+        "Fleisch",
+        "Ehrenamt"
+      ]
+    },
+    "null→f (none)": {
+      "count": 2,
+      "samples": [
+        "haustür",
+        "e-mail"
+      ]
+    },
+    "null→m (none)": {
+      "count": 1,
+      "samples": [
+        "Nachbar"
+      ]
+    }
+  },
+  "lexiconPollutionSamples": [],
+  "userNounCount": 0
+}
