@@ -1,76 +1,102 @@
 # Revisión del handoff EN B1 (Danilo → Marcos)
 
-**Fecha:** 26 jul 2026 · **checkpoint PR #1:** 8 ago 2026 (tip **`1eef031`**)  
-**PR:** https://github.com/marcosdadone96/lexicoil/pull/1  
-**Fuente canónica:** [`docs/handoff-en-b1-para-marcos.md`](handoff-en-b1-para-marcos.md) en `danilo/feat/en-b1` — handoff v2 **`56eb9be`**  
-**Respuesta de Danilo:** [`docs/respuesta-revision-en-b1-2026-07-26.md`](respuesta-revision-en-b1-2026-07-26.md)  
-**Medido originalmente contra:** `main` = `a50a89a` · merge del PR contra **`e5fed38`** · base común = `4e5efac`  
-**Remoto:** `git remote add danilo https://github.com/Abelardo94/lexicoil.git`
+**Fecha:** 26 jul 2026 · **último checkpoint:** 20 ago 2026  
+**PR #1 (EN B1):** https://github.com/marcosdadone96/lexicoil/pull/1 — tip **`234a4fa`**  
+**PR #2 (audio DE+EN):** https://github.com/marcosdadone96/lexicoil/pull/2 — tip **`3d4f7c9`**  
+**`main`:** **`a16d033`** — decisión **(A)** aplicada (`git rm --cached` build, 20 ago)  
+**Respuesta de Danilo:** [`docs/respuesta-revision-en-b1-2026-07-26.md`](respuesta-revision-en-b1-2026-07-26.md)
 
-Documento de **lectura, decisiones y checkpoint del merge EN B1**. Este fichero **no entra en PR #1** (`git log origin/main..feat/en-b1 -- docs/REVISION-HANDOFF-EN-B1-2026-07-26.md` vacío); se actualiza solo en `main`.
+Documento de **lectura, decisiones y checkpoint**. No entra en PR #1; se mantiene solo en `main`.
 
-Relacionado: [`docs/CONTENT_LIVE_POLICY.md`](CONTENT_LIVE_POLICY.md) · **`CLAUDE.md`** (añadido en el PR, baseline audit DE)
+Relacionado: [`docs/CONTENT_LIVE_POLICY.md`](CONTENT_LIVE_POLICY.md) · **`CLAUDE.md`** (PR #1; baseline audit corregido allí)
 
 ---
 
-### Checkpoint PR #1 — 8 de agosto de 2026
+### Checkpoint — 20 de agosto de 2026
 
-**Tip del PR:** `1eef031` (`2e139a1` fix Part 4 + docs `CLAUDE.md`).  
-**Estado:** mergeable, **0 conflictos** contra `main` (`e5fed38`). Danilo cerró su parte; **pendiente QA preview + merge**.
+#### Estado de ramas y PRs
+
+| | Tip | Notas |
+|---|-----|-------|
+| `main` | `a16d033` | `(A)` build destrackeado · Textos v1 (`03c9549`) |
+| PR #1 `feat/en-b1` | `234a4fa` | 5 commits QA EN sobre `1eef031` (sin audio) |
+| PR #2 audio | `3d4f7c9` | Solo `listeningScript.js` + test + `?v=2` |
+
+Danilo debe **mergear `main` (`a16d033`) en `feat/en-b1`**. Tras `(A)`, conflictos esperados:
+
+- **`index.html`:** `examRunner.js?v=28` + `textosReader.js?v=1` (ambas líneas)
+- Cualquier `rename/delete` bajo `dist/` → **stay deleted**
 
 ```powershell
 git fetch danilo origin
-git log -1 --oneline danilo/feat/en-b1          # 1eef031
-git log --oneline e5fed38..danilo/feat/en-b1 | Measure-Object   # 32 commits
-git merge-tree --write-tree origin/main danilo/feat/en-b1 2>&1 | Select-String "CONFLICT"   # vacío
+git merge-tree --write-tree origin/main danilo/feat/en-b1 2>&1 | Select-String "CONFLICT"
 ```
 
-| Hito | Commit / dato |
-|------|----------------|
-| Merge de `main` (`e5fed38`) en su rama | `0969fdc` — 4 conflictos de contenido resueltos (a2Topics, audit-pass-2, normalizeBatch, validateCandidate) |
-| Fix Reading Part 4 (food-market-02, -03) | `2e139a1` — 7 ficheros, +497/−400; `scripts/repair-en-b1-lesen-t4-gapped-options.mjs` (idempotente, 0 en 2ª pasada) |
-| Docs agente / baseline regresión DE | `1eef031` — `CLAUDE.md` (+195); baseline **12 CRÍTICOS / 371 IMPORTANTES / 242 MENORES** (146 arch., 820 preg.) |
-| Lockfile CI | `7c41be1` — `npm ci` ya arranca (antes moría desde `52b670e`, 21 jul) |
+#### QA Danilo (fix/en-b1-qa-preview) — resumen
 
-**Acuerdos cerrados:**
+| # | Ámbito | Estado |
+|---|--------|--------|
+| 1 | Audio `parseSegmentsInline` — de/A2 T4 + en Listening P4 | **PR #2** |
+| 2 | Numeración **de/A2** rota (preexistente) | **Marcos** post-merge |
+| 3 | Baseline audit **17 / 371 / 237** (no 12/242) | Corregido en `CLAUDE.md` (PR #1) |
+| 4–8 | EN: L3 vacío, numeración Cambridge, examId, CHK-1 gap_fill, results | **PR #1** (`234a4fa`) |
 
-| Tema | Decisión |
-|------|----------|
-| (A) build untrack | Entra con el PR (Danilo lo aplicó en su rama); no duplicar en `main` aparte |
-| (B) flujo | PR #1 contra `main`; Danilo mergeó y resolvió |
-| (C) catálogo | `de/A2` + `de/B1` **live** (16); `en/B1` **beta** (3 exámenes); QA con `localStorage.setItem('lc_show_beta','1')` |
-| `test:engine` | Fuera del PR — deuda vuestra |
-| Preview vs Actions | **Netlify preview** ≠ **GitHub Actions**; preview puede ir verde con Actions rojo |
-
-**Verificación EN (rama PR):**
-
-```powershell
-npm run validate:fidelity -- --lang en --level B1 --strict   # 3/3, exit 0
-node scripts/repair-en-b1-lesen-t4-gapped-options.mjs        # 0 ocurrencias (2ª pasada)
-```
-
-**Regresión DE (comparar identidad con baseline):**
+#### Baseline regresión DE (`batches/generated`, 146 arch., 820 preg.)
 
 ```powershell
 node scripts/audit-pass-2.mjs batches/generated
-# esperado: 12 CRÍTICOS / 371 IMPORTANTES / 242 MENORES · 146 archivos · 820 preguntas
+# 17 CRÍTICOS / 371 IMPORTANTES / 237 MENORES
 ```
 
-**CI rojo preexistente (no atribuir al inglés):**
+#### TTS post-merge PR #2 — decisiones (Marcos, 20 ago)
 
-```powershell
-node scripts/validate-exam-fidelity.mjs --all --strict --live-only
-# main e5fed38: 29 exámenes, 0 pasan, 784 errores (solo de/A2 + de/B1 live)
-# ci:content = build:availability + validate:fidelity:all; sin continue-on-error → test:engine no corre
-```
+Tras merge **#2**, cambian **53 transcripts** → **546 clips** (~73k chars con `eleven_multilingual_v2`).
 
-**Deuda post-merge (orden acordado):** CI live fidelity → `build:availability` → pool P2 (~20 stubs `ads:0`) → CHK-29/35 (`inferAuditLang`) → `test:engine`.
+| Decisión | Valor |
+|----------|-------|
+| **Canal entrega** | **(a)** commitear mp3 servidos en repo (~53 MB) — evita calentar Blobs con créditos Pro |
+| **Modelo prod** | Revisar `ELEVENLABS_MODEL` en Netlify; si no está, **poner `eleven_flash_v2_5`** (mitad de coste vs default v2) |
+| **Quién genera** | Danilo: **en/B1 + de/A2** (115 clips) + manifest · Marcos: **de/B1** (431 clips) con key de prod |
+| **Cuándo** | Tras merge **#2**; `--dry-run` antes: `npm run pregenerate:tts:served -- --dry-run` |
 
-**QA preview:** los 3 exámenes en/B1, Part 4 incluido tras `2e139a1`. Si algo falla en Part 4, Danilo mira sobre `1eef031`.
+Implementación (a): habrá que **exceptuar** `library/tts-cache/` servido del `.gitignore` o usar subcarpeta trackeada — post-merge, tarea aparte.
 
-> ~~Estado al 7 ago~~ — obsoleto: tip `7c41be1` y “4 conflictos vs main local” ya no aplican tras `0969fdc`.
+#### Orden de merge acordado
+
+1. Merge **PR #2** (audio)  
+2. Danilo mergea **`main` → `feat/en-b1`**, resuelve `index.html`, empuja PR #1  
+3. Regeneración TTS (Danilo en+de/A2; Marcos de/B1)  
+4. QA preview PR #1 (examen EN entero + quick DE)  
+5. Merge **PR #1**
+
+#### Deuda post-merge
+
+CI live fidelity · `build:availability` · pool P2 (~20 stubs) · CHK-29/35 · CHK-LEVEL/served · **de/A2 numeración** · `test:engine`
 
 ---
+
+### Checkpoint PR #1 — 8 de agosto de 2026 (histórico)
+
+**Tip inicial del PR:** `1eef031`. Supersedido por `234a4fa` + fixes QA.
+
+| Hito | Commit |
+|------|--------|
+| Merge `main` en su rama | `0969fdc` |
+| Fix Reading Part 4 | `2e139a1` |
+| Docs / baseline (obsoleto 12/242) | `1eef031` → corregido a **17/371/237** en rama QA |
+
+**Acuerdos cerrados (siguen vigentes):**
+
+| Tema | Decisión |
+|------|----------|
+| (A) build untrack | Hecho en **ambos lados**: PR #1 (`e270f94`) + **`main` `a16d033`** |
+| (C) catálogo | `de/A2` + `de/B1` live; `en/B1` beta (3); `lc_show_beta` en consola |
+| `test:engine` | Fuera del PR |
+| Preview vs Actions | Netlify ≠ Actions; CI rojo por fidelity `de/*` live preexistente |
+
+```powershell
+npm run validate:fidelity -- --lang en --level B1 --strict   # 3/3 en 234a4fa
+```
 
 ### Handoff v2 — qué respondió Danilo a esta revisión
 
@@ -270,9 +296,9 @@ git ls-tree -r --name-only danilo/feat/en-b1 -- docs/audit | Select-String en_b1
 
 ## 4. Decisiones — **cerradas** (26 jul – 8 ago 2026)
 
-### (A) Untrack build — **entra con PR #1**
+### (A) Untrack build — **hecho en `main` (`a16d033`, 20 ago)**
 
-Danilo lo aplicó en `feat/en-b1` (`e270f94` / merge). No hace falta commit aparte en `main` antes del merge.
+794 ficheros desindexados (`dist/`, `landing/out/`, `landing/.next/`, `.bak`). También en PR #1 desde `e270f94`.
 
 ### (B) PR #1 — **hecho por Danilo**
 
@@ -315,4 +341,4 @@ git checkout -b en-b1-review danilo/feat/en-b1   # solo para revisión local
 
 ## 7. Resumen en una línea
 
-PR **#1** en **`1eef031`**: merge hecho, EN B1 **3/3 fidelity**, regresión DE **idéntica** al baseline, Part 4 reparado. **Pendiente:** QA preview y merge. **Después:** deuda CI/`build:availability`/pool P2/CHK/test:engine en `main`.
+PR **#1** (`234a4fa`) + **#2** (`3d4f7c9`) listos. **`main` `a16d033`**. Pendiente: merge #2 → Danilo merge main en #1 → TTS → QA → merge #1.
