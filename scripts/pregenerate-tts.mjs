@@ -1,6 +1,11 @@
 #!/usr/bin/env node
 /**
- * Pre-generate TTS MP3s for served exam Hören (data/exams/*.json).
+ * Pre-generate TTS MP3s for the Hören the app actually serves.
+ *
+ * The source is resolved exactly like the browser does (scripts/lib/servedExams.mjs): levels
+ * served published come from library/published-exams/, the rest from data/exams/<lang>_<level>.json.
+ * Reading the legacy file unconditionally used to skip published-only exams — de/B1 serves 19
+ * but the legacy file lists 16, so e17–e19 were never pregenerated.
  *
  * Uses the same textHash/cache file naming as netlify/functions/tts.js (ttsCacheLib.js).
  * Re-run after any Hören transcript edit — hash changes => cache miss => silence in prod.
@@ -11,6 +16,7 @@
  *   node scripts/pregenerate-tts.mjs --all-served
  *   node scripts/pregenerate-tts.mjs --lang de --level B1 --dry-run
  *   node scripts/pregenerate-tts.mjs --lang de --level B1 --verify
+ *   node scripts/pregenerate-tts.mjs --lang de --level B1 --source legacy   # override
  *
  * Env: TTS_PROVIDER=elevenlabs, ELEVENLABS_API_KEY=...
  */
@@ -25,10 +31,10 @@ import {
   examManifestPath,
   readCache,
   writeCache,
-  loadServedExams,
   normalizeTtsText,
   ttsTextHash,
 } from './lib/ttsCache.mjs';
+import { resolveServedExams } from './lib/servedExams.mjs';
 
 loadEnvFile();
 
@@ -57,6 +63,7 @@ function parseArgs(argv) {
     dryRun: false,
     force: false,
     verify: false,
+    source: 'auto',
   };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
@@ -66,6 +73,7 @@ function parseArgs(argv) {
     else if (a === '--dry-run') out.dryRun = true;
     else if (a === '--force') out.force = true;
     else if (a === '--verify') out.verify = true;
+    else if (a === '--source') out.source = String(argv[++i] || 'auto').toLowerCase();
     else if (a === '--help' || a === '-h') out.help = true;
   }
   return out;
@@ -75,8 +83,10 @@ function usage() {
   console.log(`Usage:
   node scripts/pregenerate-tts.mjs --lang de --level B1 [--dry-run|--verify|--force]
   node scripts/pregenerate-tts.mjs --all-served
+  node scripts/pregenerate-tts.mjs --lang de --level B1 --source legacy|published
 
-Re-run after editing Hören transcripts in data/exams/*.json.`);
+Source defaults to whatever the app serves (published for de/*, legacy otherwise).
+Re-run after editing Hören transcripts in the source the level is served from.`);
 }
 
 function sanitizeTtsText(text) {
@@ -173,7 +183,8 @@ async function synthJob(job, stats) {
 }
 
 async function pregenerateLevel(lang, level, opts) {
-  const exams = loadServedExams(lang, level);
+  const served = await resolveServedExams(lang, level, { source: opts.source });
+  const exams = served.exams;
   const stats = {
     generated: 0,
     skipped: 0,
@@ -187,7 +198,8 @@ async function pregenerateLevel(lang, level, opts) {
   const manifest = {
     lang,
     level,
-    source: 'data/exams',
+    source: served.origin,
+    sourceKind: served.source,
     provider: process.env.TTS_PROVIDER || 'none',
     generatedAt: new Date().toISOString(),
     exams: [],
@@ -248,7 +260,7 @@ async function pregenerateLevel(lang, level, opts) {
   }
 
   console.log(
-    `${lang}/${level}: ${exams.length} exam(s), ${stats.jobs} clip(s) — +${stats.generated} new, ${stats.skipped} cached, ${stats.failed} failed` +
+    `${lang}/${level} [${served.source}: ${served.origin}]: ${exams.length} exam(s), ${stats.jobs} clip(s) — +${stats.generated} new, ${stats.skipped} cached, ${stats.failed} failed` +
       (opts.dryRun ? `, ${stats.missing} would generate` : '') +
       (stats.bytes ? `, ${Math.round(stats.bytes / 1024)} KB written` : ''),
   );

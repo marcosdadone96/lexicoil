@@ -74,6 +74,10 @@ export function loadBank(lang, level, root = ROOT) {
   return JSON.parse(fs.readFileSync(file, 'utf8'));
 }
 
+/**
+ * Legacy static file only. Levels served from library/published-exams/ are NOT in here —
+ * use resolveServedExams() from ./servedExams.mjs to get what the app actually serves.
+ */
 export function loadServedExams(lang, level, root = ROOT) {
   const file = path.join(root, 'data', 'exams', `${lang}_${level}.json`);
   if (!fs.existsSync(file)) throw new Error(`Missing served exams: ${file}`);
