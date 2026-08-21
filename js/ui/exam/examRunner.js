@@ -142,6 +142,15 @@ function esc(s) {
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;');
 }
+/**
+ * Escape, then put back <b> alone. The UI locale strings mark the literal prefixes the
+ * candidate has to type — "Format <b>Ich:</b> / <b>Prüfer:</b>" — and the speaking hint
+ * renders them through esc(), so students were reading the tags out loud instead of the
+ * bold. Only <b> comes back, so nothing else in the string can turn into markup.
+ */
+function escKeepBold(s) {
+  return esc(s).replace(/&lt;(\/?)b&gt;/g, '<$1b>');
+}
 /** Safe JS string literal for inline handlers (onclick, etc.). */
 function jsLit(v) {
   return JSON.stringify(String(v ?? ''));

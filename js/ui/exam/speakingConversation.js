@@ -106,7 +106,7 @@ const SpeakingConversation = (() => {
     const soloPath = `
       <div class="speak-path speak-path--solo" id="speakSoloPath_${esc(k)}">
         <div class="speak-path-head">${de ? 'Nur Aufnahme' : 'Record only'}</div>
-        <p class="speak-path-hint">${esc(ui.speakFmt || (de ? 'Sprich ins Mikrofon — dein Text erscheint unten.' : 'Speak into the mic — your words appear below.'))}</p>
+        <p class="speak-path-hint">${(typeof escKeepBold==='function'?escKeepBold:esc)(ui.speakFmt || (de ? 'Sprich ins Mikrofon — dein Text erscheint unten.' : 'Speak into the mic — your words appear below.'))}</p>
         ${typeof renderSpeakingMicHtml === 'function' ? renderSpeakingMicHtml(k, typeof S !== 'undefined' ? S.subject : ui?.lang || 'de') : `<textarea class="write-field" id="${esc(k)}" style="min-height:160px"></textarea>`}
       </div>`;
 
