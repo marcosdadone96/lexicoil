@@ -159,7 +159,17 @@ const SpeakingFlow = (() => {
     const t = String(title || '').trim();
     const n = String(teilNum ?? '').trim();
     if (!t || !n) return false;
-    return new RegExp(`^(teil|sprechen|speaking|part)\\s*${n}\\s*$`, 'i').test(t);
+    // Goethe content titles its parts "Teil 3", which the tag already says, so it is dropped.
+    // Cambridge content titles them "Part 1 — Speaking", which the old pattern did not catch:
+    // the English tag came out as "Speaking — Part 1: Part 1 — Speaking". Accept the module
+    // word on either side of the number, with or without a dash.
+    // Drop the module words and separators: whatever is left must be just the part number.
+    const rest = t
+      .replace(/teil|sprechen|speaking|part/gi, ' ')
+      .replace(/[—–-]/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+    return rest === n;
   }
 
   /** Shared module-tag line for all Sprechen Teile / levels (A2, B1, B2, …). */
