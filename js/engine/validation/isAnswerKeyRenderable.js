@@ -72,6 +72,13 @@ function isAnswerKeyRenderable(q, part) {
   const keys = getRenderableAnswerKeys(q, part);
   if (!keys.length) {
     const type = String(q?.type || '').toLowerCase();
+    // A gap_fill with no option pool is free text by design — Cambridge Reading Part 6 is
+    // open cloze and Listening Part 3 is sentence completion, and in both the candidate
+    // writes the word instead of picking one. The key IS that word, so it is perfectly
+    // renderable. Reading "no pool" as "unscorable" silently dropped those 12 items from
+    // every English exam: a fully correct paper came back as 45 of 45 with a data-error
+    // notice, and the two open parts never counted.
+    if (type === 'gap_fill' || type === 'gap') return String(correct).trim() !== '';
     return ['yn', 'ja_nein', 'rfn', 'r_f_n', 'rf', 'tf', 'richtig_falsch', 'true_false'].includes(type);
   }
   const ck = normalizeGradingToken(correct);

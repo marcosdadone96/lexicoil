@@ -204,6 +204,7 @@
     "pregenerate:tts:a2": "node scripts/pregenerate-tts.mjs --lang de --level A2",
     "pregenerate:tts:served": "node scripts/pregenerate-tts.mjs --all-served",
     "verify:tts:served": "node scripts/pregenerate-tts.mjs --all-served --verify",
+    "test:cambridge-scoring": "node scripts/lib/__tests__/cambridgeScoring.test.mjs",
     "test:sprechen-tag": "node scripts/lib/__tests__/sprechenPartTag.test.mjs",
     "test:listening-gap-fill": "node scripts/lib/__tests__/listeningGapFill.render.test.mjs",
     "test:tts": "node scripts/test-tts.mjs",

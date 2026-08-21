@@ -848,6 +848,16 @@ function globalResultLabel(summary, isDE) {
   }
   if (summary.gradingScope === 'cambridge-scale') {
     if (summary.globalPassed) return isDE ? 'Bestanden ✓' : 'Pass ✓';
+    // globalPassed also needs every skill evaluated, and Writing/Speaking need AI scoring.
+    // Without it the verdict read "Fail - 170/140" on a perfect Reading and Listening
+    // paper — a fail whose own number is above the pass mark. Say what actually happened,
+    // the way the modular scope already does ("2/4 Module bestanden").
+    if ((summary.modulesEvaluated ?? 0) < (summary.totalModules ?? 0)) {
+      const seen = `${summary.modulesEvaluated ?? 0}/${summary.totalModules ?? 0}`;
+      return isDE
+        ? `${seen} Module bewertet - ${summary.overallScale ?? '—'}/${summary.passScale} (Cambridge Scale)`
+        : `${seen} skills scored - ${summary.overallScale ?? '—'}/${summary.passScale} (Cambridge Scale)`;
+    }
     return isDE
       ? `Nicht bestanden - ${summary.overallScale ?? '—'}/${summary.passScale} (Cambridge Scale)`
       : `Fail - ${summary.overallScale ?? '—'}/${summary.passScale} (Cambridge Scale)`;
