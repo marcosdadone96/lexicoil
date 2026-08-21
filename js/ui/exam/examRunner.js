@@ -1212,7 +1212,21 @@ function renderQ(q,num,mod,rfT,rfF,trK,isOff,part){
     }
   }
   const opts=q.options||[];
-  if(!opts.length)return `<div class="question-block"><div class="q-number">${head}</div>${sub}<div style="color:var(--text-muted);font-size:12px">${isOff?'Keine Optionen':'No options'}</div>${review}</div>`;
+  if(!opts.length){
+    // Sentence completion (Cambridge Listening Part 3) is gap_fill with an empty option
+    // pool: the candidate types the missing word. renderGoetheHorenPart sends every
+    // question straight here, so these six items used to end in the dead "no options"
+    // line and could not be answered at all. The Lesen renderer already routes gap_fill
+    // to renderGapFillQ, but that one drops q.question, and here the sentence IS the item.
+    if(q.type==='gap_fill'){
+      const saved=esc(S.answers?.[ak]||'');
+      return `<div class="question-block"><div class="q-number">${head}</div>${sub}<input type="text" class="gap-input" autocomplete="off" spellcheck="false" value="${saved}" oninput='S.answers[${jsLit(ak)}]=this.value.trim();updProg()'>${review}</div>`;
+    }
+    // isOff means "official exam", not "German" — every caller below passes a hardcoded
+    // true, so an English exam printed the German string. Key off the exam language.
+    const noOpts=S.examData?.lang==='de'?'Keine Optionen':'No options';
+    return `<div class="question-block"><div class="q-number">${head}</div>${sub}<div style="color:var(--text-muted);font-size:12px">${noOpts}</div>${review}</div>`;
+  }
   return `<div class="question-block"><div class="q-number">${head}</div>${sub}<div class="options">${opts.map(opt=>{const val=optKey(opt);const label=optLabel(opt);return `<label class="opt"><input type="radio" name="${esc(ak)}" value="${esc(val)}" onchange='S.answers[${jsLit(ak)}]=this.value;this.closest(".options").querySelectorAll(".opt").forEach(o=>o.classList.remove("selected"));this.closest(".opt").classList.add("selected");updProg()'><span>${esc(label)}</span></label>`;}).join('')}</div>${review}</div>`;
 }
 function ptSetMatch(k,v,btn){S.answers[k]=v;btn.closest('.pt-match-pills').querySelectorAll('.pt-letter-pill').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected');updProg();}
