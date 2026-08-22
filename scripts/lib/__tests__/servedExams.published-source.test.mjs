@@ -3,15 +3,22 @@
  *
  * Regression: scripts/pregenerate-tts.mjs read data/exams/<lang>_<level>.json unconditionally,
  * but index.html sets LEXICOIL_EXAM_SOURCE='published', so de/* is served from
- * library/published-exams/ through PublishedExamAdapter. The legacy de/B1 file lists 16 exams
- * and the published catalog has 19 (e17–e19 added in 4bb9d28), so those three never got their
- * Hören pregenerated — silence in prod for whoever opens them.
+ * library/published-exams/ through PublishedExamAdapter. The legacy de/B1 file listed 16 exams
+ * while the published catalog had 19 (e17–e19 added in 4bb9d28), so those three never got their
+ * Hören pregenerated — silence in prod for whoever opened them.
  *
- * Guards three things:
- *   a) the source is resolved the way the browser resolves it (published for de, legacy for en);
- *   b) every live catalog entry reaches the resolver — no exam silently dropped;
+ * 4b62864 (sync-published-to-served --apply de/B1) closed that gap: both sources now list the
+ * same 19 exams. A count mismatch therefore no longer proves which source was read, so this
+ * test pins the mechanism rather than the symptom.
+ *
+ * Guards:
+ *   a) the source is resolved the way the browser resolves it (published for de, legacy for en),
+ *      and de/B1 really comes off library/published-exams/de/B1;
+ *   b) every live catalog entry reaches the resolver, and the legacy file stays in sync — and if
+ *      it drifts again, the resolver still serves whatever the legacy file misses;
  *   c) for the exams that exist in BOTH sources the Hören text is identical, i.e. switching the
- *      source does not change a single cache hash for e1–e16 (no wasted credits, no re-record).
+ *      source does not change a single cache hash (no wasted credits, no re-record);
+ *   d) every served exam carries Hören, or pregenerating it is pointless.
  *
  * Run:  node scripts/lib/__tests__/servedExams.published-source.test.mjs
  */
@@ -57,6 +64,8 @@ assert("index.html still declares LEXICOIL_EXAM_SOURCE='published'", readExamSou
 
 const deB1 = await resolveServedExams('de', 'B1', { root: ROOT });
 assert('de/B1 resolves to the published catalog', deB1.source === 'published');
+// With both sources in sync, this is what actually proves the published dir was read.
+assert('de/B1 reads library/published-exams/de/B1', deB1.origin === 'library/published-exams/de/B1');
 
 const deA2 = await resolveServedExams('de', 'A2', { root: ROOT });
 assert('de/A2 resolves to the published catalog', deA2.source === 'published');
@@ -91,17 +100,24 @@ assert(
 const legacyB1 = await resolveServedExams('de', 'B1', { root: ROOT, source: 'legacy' });
 const legacyIds = legacyB1.exams.map((e) => String(e.examId || e.id));
 const missedByLegacy = live.filter((id) => !legacyIds.includes(id));
-// This is the bug itself: it must stay visible, or the test is measuring nothing.
+// 4b62864 brought the legacy file up to the 19 live exams; this keeps it there.
 assert(
-  `the legacy file still misses ${missedByLegacy.length} live exam(s) — the regression this guards`,
-  missedByLegacy.length > 0 && missedByLegacy.every((id) => resolvedIds.includes(id)),
+  `the legacy file lists every live exam (missing ${missedByLegacy.length})`,
+  missedByLegacy.length === 0,
+);
+if (missedByLegacy.length) console.error('       missing from legacy:', missedByLegacy.join(', '));
+// And when it drifts again, the served source must absorb the difference — that is the whole
+// point of resolving through PublishedExamAdapter instead of reading the file.
+assert(
+  'any exam the legacy file misses is still served from the published catalog',
+  missedByLegacy.every((id) => resolvedIds.includes(id)),
 );
 
 // ── c) shared exams are byte-identical, so no hash churn ───────────────────
 const pub = horenTextsById(deB1.exams);
 const leg = horenTextsById(legacyB1.exams);
 const shared = [...leg.keys()].filter((id) => pub.has(id));
-assert(`e1–e16 present in both sources (${shared.length} exams)`, shared.length === legacyIds.length);
+assert(`every legacy exam exists in the published catalog (${shared.length} shared)`, shared.length === legacyIds.length);
 
 const drifted = shared.filter((id) => {
   const a = pub.get(id);
@@ -114,12 +130,13 @@ assert(
 );
 if (drifted.length) console.error('       drifted:', drifted.join(', '));
 
-// The published-only exams must actually carry Hören, or generating them is pointless.
-const extraWithHoren = missedByLegacy.filter((id) => (pub.get(id) || []).some((t) => t.trim()));
+// ── d) every served exam is worth sending to TTS ───────────────────────────
+const withoutHoren = resolvedIds.filter((id) => !(pub.get(id) || []).some((t) => t.trim()));
 assert(
-  `published-only exams carry Hören transcripts (${extraWithHoren.length}/${missedByLegacy.length})`,
-  extraWithHoren.length === missedByLegacy.length,
+  `every served exam carries Hören transcripts (${resolvedIds.length - withoutHoren.length}/${resolvedIds.length})`,
+  withoutHoren.length === 0,
 );
+if (withoutHoren.length) console.error('       without Hören:', withoutHoren.join(', '));
 
 console.log(`\nserved exam source: ${passed} passed, ${failed} failed\n`);
 process.exit(failed ? 1 : 0);
