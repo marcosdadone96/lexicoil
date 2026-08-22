@@ -39,7 +39,7 @@ import { resolveServedExams } from './lib/servedExams.mjs';
 loadEnvFile();
 
 const require = createRequire(import.meta.url);
-const { synthesize, isProviderConfigured } = require(path.join(ROOT, 'netlify/functions/lib/ttsProvider.js'));
+const { synthesize, isProviderConfigured, resolveTtsModel } = require(path.join(ROOT, 'netlify/functions/lib/ttsProvider.js'));
 const { resolveVoiceId, defaultVoiceForLang } = require(path.join(ROOT, 'netlify/functions/lib/ttsVoices.js'));
 const ListeningScript = require(path.join(ROOT, 'js/bootstrap/listeningScript.js'));
 
@@ -202,6 +202,7 @@ async function pregenerateLevel(lang, level, opts) {
     source: served.origin,
     sourceKind: served.source,
     provider: process.env.TTS_PROVIDER || 'none',
+    model: resolveTtsModel(),
     generatedAt: new Date().toISOString(),
     exams: [],
   };

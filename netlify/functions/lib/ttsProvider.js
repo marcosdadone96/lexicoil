@@ -10,6 +10,17 @@
  */
 const { resolveVoiceId } = require('./ttsVoices.js');
 
+const ELEVENLABS_DEFAULT_MODEL = 'eleven_multilingual_v2';
+
+/**
+ * The model every ElevenLabs call uses. Exported because the cache key is voice+textHash only
+ * (ttsCacheLib.cacheKey), so a cached MP3 carries no record of the model that produced it —
+ * the pregenerate manifest is the only place that can say.
+ */
+function resolveTtsModel() {
+  return process.env.ELEVENLABS_MODEL || ELEVENLABS_DEFAULT_MODEL;
+}
+
 const STUB_MP3 = Buffer.from(
   'SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2YzU4LjI5LjEwMAAAAAAAAAAAAAAAAAJAAAAAAAAAAAA4T/kAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
   'base64',
@@ -30,7 +41,7 @@ async function synthesizeElevenLabs(text, voice, lang) {
   const voiceId = resolveVoiceId(voice, lang);
   if (!voiceId) return null;
 
-  const model = process.env.ELEVENLABS_MODEL || 'eleven_multilingual_v2';
+  const model = resolveTtsModel();
   const url = `https://api.elevenlabs.io/v1/text-to-speech/${encodeURIComponent(voiceId)}`;
 
   const res = await fetch(url, {
@@ -86,4 +97,4 @@ function isProviderConfigured() {
   return p !== 'none' && p !== '';
 }
 
-module.exports = { synthesize, isProviderConfigured, synthesizeElevenLabs };
+module.exports = { synthesize, isProviderConfigured, synthesizeElevenLabs, resolveTtsModel };
