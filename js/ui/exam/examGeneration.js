@@ -342,7 +342,7 @@ function repairPersonalExamAnswerability(exam){
   (exam.lesenParts||[]).forEach(part=>{
     normalizeLesenT2Part(part);
     coalesceLesenForumOpinions(part);
-    coalesceLesenAdsMatching(part);
+    coalesceLesenAdsMatching(part,exam.lang);
     coalesceLesenPartQuestions(part);
     part.questions=(part.questions||[]).filter(q=>keepQ(q,part));
     part.items=(part.items||[]).filter(it=>{
@@ -1327,6 +1327,13 @@ function coalesceLesenForumOpinions(part){
 function coalesceLesenPartQuestions(part){
   if(!part)return;
   const slot=String(part.blueprintSlot||part.slotType||'').toLowerCase();
+  // Same blueprint guard as isLesenAdsMatchingPart. This function promotes items[] into
+  // questions[] and, for anything with a passage, types them rf — the Goethe Lesen T1 shape.
+  // Cambridge Reading P1 (signs_notices_mcq) has neither R/F nor Ja/Nein keys, so its items
+  // fell through to that last `part.text||part.textTitle` branch and were appended as True/
+  // False copies while items[] stayed put: the part rendered twice, once correctly as 3-option
+  // MCQ and once as ten phantom True/False questions.
+  if(/mcq|multiple_choice|long_text|open_cloze/.test(slot)&&!/matching|ads/.test(slot))return;
   const existing=part.questions||[];
   const promoted=[];
   (part.items||[]).forEach((item,i)=>{
@@ -1377,6 +1384,13 @@ function isLesenAdsMatchingPart(part){
   }
   const slot=String(part.blueprintSlot||part.slotType||'').toLowerCase();
   if(slot.includes('ads')||(slot.includes('matching')&&Number(part.teil)===3))return true;
+  // The blueprint knows the task; trust it over the shape heuristic below. Cambridge marks
+  // every answer with a letter, so `correct:"A"` on an item that carries a sign or a passage
+  // is NOT evidence of a matching task the way it is in Goethe Lesen T3 — without this,
+  // Reading P1 (signs MCQ), P3 (long text MCQ) and P5 (MCQ cloze) all classify as ads
+  // matching, get a shared ad pool built from one item, and lose their own options. Slots
+  // that really are matching (person_text_matching, gapped_text) keep the letter route.
+  if(/mcq|multiple_choice|long_text|open_cloze/.test(slot)&&!/matching|ads/.test(slot))return false;
   if(part.ads?.length)return true;
   const items=part.items||[];
   if(!items.length)return false;
@@ -1440,16 +1454,26 @@ function ensureLesenPartInstruction(part,lang){
   const synth=synthesizeLesenInstruction(part,lang);
   if(synth)part.instruction=synth;
 }
-function rebuildLesenAdsMatchingInstruction(part){
+function rebuildLesenAdsMatchingInstruction(part,lang){
   if(!part?.items?.length||!part.ads?.length)return;
+  const de=lang!=='en'&&lang!=='es';
+  // Outside German, only FILL a missing instruction — never replace an authored one.
+  // The Goethe wording ("eine Anzeige passt nicht", "schreiben Sie 0") describes Lesen T3
+  // specifically: Cambridge Part 2 leaves three texts unused and offers no "0" option. On
+  // top of that, isLesenAdsMatchingPart() also matches Cambridge parts that are not
+  // matching tasks at all (signs/notices, long text, gapped text), so overwriting their
+  // blueprint instruction told the candidate to do a task that was not on screen.
+  if(!de&&String(part.instruction||'').trim())return;
   const start=part.items[0].id;
   const end=part.items[part.items.length-1].id;
   const adLo=String(part.ads[0].key).toLowerCase();
   const adHi=String(part.ads[part.ads.length-1].key).toLowerCase();
-  part.instruction=
-    `Lesen Sie die Situationen ${start} bis ${end} und die Anzeigen ${adLo} bis ${adHi}. `+
-    'Welche Anzeige passt zu welcher Situation? Eine Anzeige passt nicht. '+
-    'Wenn es keine passende Anzeige gibt, schreiben Sie 0.';
+  part.instruction=de
+    ?`Lesen Sie die Situationen ${start} bis ${end} und die Anzeigen ${adLo} bis ${adHi}. `+
+     'Welche Anzeige passt zu welcher Situation? Eine Anzeige passt nicht. '+
+     'Wenn es keine passende Anzeige gibt, schreiben Sie 0.'
+    :`Read questions ${start} to ${end} and texts ${adLo.toUpperCase()} to ${adHi.toUpperCase()}. `+
+     'Decide which text is the most suitable for each person.';
 }
 function promoteLesenAdsMatchingQuestions(part){
   if(part.items?.length||!part.ads?.length||!part.questions?.length)return false;
@@ -1476,7 +1500,7 @@ function inferLesenT3HasNoMatchPart(part){
   const pool=[...(part.items||[]),...(part.questions||[])];
   if(pool.some(it=>String(it?.correct??it?.correctAnswer??'').trim()==='0'))part._t3HasNoMatch=true;
 }
-function coalesceLesenAdsMatching(part){
+function coalesceLesenAdsMatching(part,lang){
   if(!isLesenAdsMatchingPart(part))return;
   const ADS='ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   part.blueprintSlot=part.blueprintSlot||'ads_matching';
@@ -1526,7 +1550,7 @@ function coalesceLesenAdsMatching(part){
     });
   }
   if(part.items?.length&&part.ads?.length){
-    rebuildLesenAdsMatchingInstruction(part);
+    rebuildLesenAdsMatchingInstruction(part,lang);
   }
   inferLesenT3HasNoMatchPart(part);
   (part.items||[]).forEach(item=>normalizeGoetheQuestion(item,part));
@@ -1568,7 +1592,11 @@ function horenOptionHasSubstance(opt){
 function horenQuestionHasSubstance(q){
   if(!q||typeof q!=='object')return false;
   const type=String(q.type||'multiple').toLowerCase();
-  if(['rf','tf','richtig_falsch','true_false','yn','ja_nein','rfn','r_f_n'].includes(type)){
+  // gap_fill/gap answer with a word, so they carry options:[] and are judged by
+  // the key alone — same as rf/yn. Without them here they fell through to the
+  // MCQ rule below (>=2 substantial options) and every Cambridge Listening
+  // Part 3 sentence-completion item was filtered out of the exam.
+  if(['rf','tf','richtig_falsch','true_false','yn','ja_nein','rfn','r_f_n','gap_fill','gap'].includes(type)){
     return q.correct!=null&&q.correct!=='';
   }
   const opts=q.options||q.choices||[];
@@ -1817,7 +1845,7 @@ function sanitizeGoetheParts(d){
     if(part.textWithGaps)part.textWithGaps=part.textWithGaps.map(fixT);
     part.teil=part.teil??pi+1;
     coalesceLesenForumOpinions(part);
-    coalesceLesenAdsMatching(part);
+    coalesceLesenAdsMatching(part,d.lang||'de');
     const PF=getPoolFallbackHelpers();
     if(PF?.coalesceLesenAdsMatchingPart)PF.coalesceLesenAdsMatchingPart(part);
     else if(PF?.ensureLesenT3Example)PF.ensureLesenT3Example(part);

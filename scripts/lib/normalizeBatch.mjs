@@ -662,11 +662,30 @@ const TEIL_QUESTION_TYPE_B2 = {
   5: 'matching',
 };
 
+// Cambridge B1 Preliminary Reading: Teil->questionType (see library/blueprints/cambridge_B1.json)
+// T1 signs/notices MCQ, T2 person-text matching, T3 long-text MCQ, T4 gapped text (matching),
+// T5 4-option cloze MCQ, T6 open cloze (gap_fill).
+const TEIL_QUESTION_TYPE_CAMBRIDGE_B1 = {
+  1: 'multiple_choice',
+  2: 'matching',
+  3: 'multiple_choice',
+  4: 'matching',
+  5: 'multiple_choice',
+  6: 'gap_fill',
+};
+
 /** @returns {string|null} canonical question type for post-gen coerce */
-export function lesenSlotQuestionType(teil, level = 'B1') {
+export function lesenSlotQuestionType(teil, level = 'B1', lang = 'de') {
   const t = Number(teil);
   if (!Number.isFinite(t)) return null;
   const lv = String(level || 'B1').trim().toUpperCase();
+  // The A2/B1/B2 maps above are Goethe's. The Teil->type mapping differs per exam board, so
+  // anything that is not German must not be forced through them — an unknown lang returns null
+  // and leaves the generated/blueprint type untouched.
+  // See docs/audit/gates-en-applicability.md (riesgo activo #2).
+  const lg = String(lang || 'de').trim().toLowerCase();
+  if (lg === 'en') return TEIL_QUESTION_TYPE_CAMBRIDGE_B1[t] ?? null;
+  if (lg !== 'de') return null;
   const map =
     lv === 'A2' ? TEIL_QUESTION_TYPE_A2 : lv === 'B2' ? TEIL_QUESTION_TYPE_B2 : TEIL_QUESTION_TYPE_B1;
   return map[t] ?? null;
@@ -707,7 +726,7 @@ export function coerceGeneratedLesenPart(batch, ctx = {}) {
     stripPoolLegacy: ctx.stripPoolLegacy !== false,
   });
   const teilNum = Number.isFinite(teil) ? teil : null;
-  const slotType = teilNum != null ? lesenSlotQuestionType(teilNum, level) : null;
+  const slotType = teilNum != null ? lesenSlotQuestionType(teilNum, level, lang) : null;
   const passageIds = (normalized.passages || []).map((p) => p.id).filter(Boolean);
   const solePassageId = passageIds.length === 1 ? passageIds[0] : null;
 

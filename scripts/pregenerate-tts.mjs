@@ -46,6 +46,7 @@ const ListeningScript = require(path.join(ROOT, 'js/bootstrap/listeningScript.js
 const SERVED_TARGETS = [
   ['de', 'B1'],
   ['de', 'A2'],
+  ['en', 'B1'],
 ];
 
 function ttsVoiceForLang(lang) {

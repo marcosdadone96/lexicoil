@@ -49,7 +49,30 @@ function sig(selected) {
 // GATE_BLOCK_CHECKS y la lógica de bloqueo viven allí; aquí solo se invoca.
 
 // ─── FIX-3: blueprintComplete honesto ────────────────────────────────────
-function verifyBlueprintComplete(exam) {
+/**
+ * Expected per-slot counts derived from the actual blueprint JSON. The hardcoded
+ * BLUEPRINT map in audit-pass-2 is Goethe-B1-specific; for other langs/levels
+ * (e.g. Cambridge EN) the slot layout differs, so derive it from the source of truth.
+ * schreiben/sprechen stay count:null (rubric tasks, not slot-counted) as in Goethe.
+ */
+function expectedSlotsFromBlueprint(bp) {
+  const out = {};
+  for (const mod of bp?.modules || []) {
+    const id = String(mod.id || '').toLowerCase();
+    if (id === 'schreiben' || id === 'sprechen' || id === 'writing' || id === 'speaking') {
+      out[id] = { count: null };
+      continue;
+    }
+    for (const part of mod.parts || []) {
+      out[`${id}-${Number(part.teil)}`] = {
+        count: part.itemsTotal || part.questionsTotal?.min || null,
+      };
+    }
+  }
+  return out;
+}
+
+function verifyBlueprintComplete(exam, expected = BLUEPRINT) {
   const flat = flattenExam(exam.exam || exam);
   const groups = {};
   for (const q of flat.questions) {
@@ -61,7 +84,7 @@ function verifyBlueprintComplete(exam) {
     const key = `${mod}-${Number(q.teil)}`;
     groups[key] = (groups[key] || 0) + 1;
   }
-  for (const [key, spec] of Object.entries(BLUEPRINT)) {
+  for (const [key, spec] of Object.entries(expected)) {
     if (spec.count === null) continue;
     if ((groups[key] || 0) !== spec.count) {
       return { ok: false, slot: key, filled: groups[key] || 0, target: spec.count };
@@ -103,9 +126,13 @@ function main() {
   // Pre-filtrar banco: quitar preguntas con contenido bloqueante (flojos, C1 vocab)
   // antes de entrar al inner loop para reducir la tasa de rechazo del gate
   const beforeCount = (rawBank.questions || []).length;
+  // BLACKLIST = anglicismos C1/C2 vetados en contenido ALEMAN ("hiking", "swimming"...).
+  // En ingles son vocabulario B1 normal — el filtro solo aplica a lang de.
   const bank = {
     ...rawBank,
-    questions: (rawBank.questions || []).filter(isQuestionClean),
+    questions: o.lang === 'de'
+      ? (rawBank.questions || []).filter(isQuestionClean)
+      : (rawBank.questions || []),
   };
   const filteredCount = beforeCount - bank.questions.length;
   if (filteredCount > 0) {
@@ -197,7 +224,7 @@ function main() {
     }
 
     // FIX-3: blueprintComplete honesto — contar preguntas reales del aplanado
-    const bpCheck = verifyBlueprintComplete(exam);
+    const bpCheck = verifyBlueprintComplete(exam, o.lang === 'de' ? BLUEPRINT : expectedSlotsFromBlueprint(blueprint));
     if (!bpCheck.ok) {
       stats.blueprint++;
       rejectedLog.push({ id, reason: `blueprintIncomplete slot=${bpCheck.slot} filled=${bpCheck.filled} target=${bpCheck.target}` });

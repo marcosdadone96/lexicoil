@@ -126,7 +126,10 @@ const beforePassage = (bank.questions || []).filter(
   (q) => ['lesen', 'horen'].includes(q.module) && q.passageId && !validPids.has(q.passageId),
 ).length;
 
-const normalized = normalizeBatch({ passages: bank.passages || [], questions: bank.questions || [] });
+const normalized = normalizeBatch(
+  { passages: bank.passages || [], questions: bank.questions || [] },
+  { lang: args.lang, level: args.level },
+);
 const repaired = repairPassageIds(normalized.questions, validPids, blueprint);
 bank.passages = normalized.passages;
 bank.questions = repaired.questions;

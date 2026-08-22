@@ -89,6 +89,13 @@ function loadExamsFromPath(absPath, relLabel) {
   return [];
 }
 
+/** `rel` is a label only (the real path is `file`), and it lands in the
+ *  committed audit JSON — keep it POSIX so Windows runs don't rewrite every
+ *  separator and churn the artifact. */
+function toPosixRel(p) {
+  return String(p).split(path.sep).join('/');
+}
+
 function discoverTargets(opts) {
   const targets = [];
   if (opts.all) {
@@ -101,7 +108,7 @@ function discoverTargets(opts) {
         lang: m[1],
         level: m[2].toUpperCase(),
         file: path.join(dir, f),
-        rel: path.join('data/exams', f),
+        rel: toPosixRel(path.join('data/exams', f)),
       });
     }
     return targets;
@@ -114,7 +121,7 @@ function discoverTargets(opts) {
   const abs = path.isAbsolute(opts.source)
     ? path.join(opts.source, `${comboKey(opts.lang, opts.level)}.json`)
     : path.join(PIPE_ROOT || ROOT, rel);
-  targets.push({ lang: opts.lang, level: opts.level, file: abs, rel });
+  targets.push({ lang: opts.lang, level: opts.level, file: abs, rel: toPosixRel(rel) });
   return targets;
 }
 

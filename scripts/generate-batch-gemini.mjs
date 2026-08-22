@@ -229,7 +229,12 @@ async function generateOne(args, pools, client) {
           );
         }
 
-        const batch = normalizeBatch(extractJson(text));
+        // Pass language so normalizeBatch skips German-only noun capitalization on EN/ES.
+        // German path stays byte-identical (ctx undefined, as before).
+        const nbCtx = args.lang === 'de'
+          ? undefined
+          : { lang: args.lang, level: params.level, module: params.module, teil: params.teil };
+        const batch = normalizeBatch(extractJson(text), nbCtx);
         if (!batch || typeof batch !== 'object') throw new Error('JSON raíz inválido');
         if (!Array.isArray(batch.questions)) throw new Error('Falta array questions');
 

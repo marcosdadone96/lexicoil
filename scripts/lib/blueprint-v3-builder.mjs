@@ -129,8 +129,10 @@ function goetheSprechenPart(teil, items, level) {
 }
 
 const CAMBRIDGE_LESEN_SLOTS = [
-  { slotType: 'mcq_gap_fill', taskFormat: 'multiple_choice_cloze', layout: 'questions', questionTypes: ['multiple_choice'] },
-  { slotType: 'open_cloze', taskFormat: 'open_cloze', layout: 'questions', questionTypes: ['gap_fill', 'open_cloze'] },
+  // Cloze parts: all gaps come from ONE passage — layout passage_questions makes
+  // ExamBlueprint.pickPassageAligned select a single coherent passage group.
+  { slotType: 'mcq_gap_fill', taskFormat: 'multiple_choice_cloze', layout: 'passage_questions', questionTypes: ['multiple_choice'] },
+  { slotType: 'open_cloze', taskFormat: 'open_cloze', layout: 'passage_questions', questionTypes: ['gap_fill', 'open_cloze'] },
   { slotType: 'word_formation', taskFormat: 'word_formation', layout: 'questions', questionTypes: ['gap_fill', 'word_formation'] },
   { slotType: 'sentence_transformation', taskFormat: 'key_word_transformation', layout: 'questions', questionTypes: ['gap_fill', 'sentence_transformation'] },
   { slotType: 'long_text', taskFormat: 'long_text_mcq', layout: 'passage_questions', questionTypes: ['multiple_choice'] },
@@ -139,9 +141,25 @@ const CAMBRIDGE_LESEN_SLOTS = [
   { slotType: 'cross_text_matching', taskFormat: 'cross_text_matching', layout: 'items', questionTypes: ['matching'] },
 ];
 
+// B1 Preliminary Reading -- official 2020 format (verified vs cambridgeenglish.org, 2026-07-09).
+// Task set and order differ from B2+/higher: NO word_formation / key_word_transformation in B1P.
+// P1 signs/notices MCQ, P2 person-text matching, P3 long-text MCQ, P4 gapped text,
+// P5 multiple-choice cloze, P6 open cloze.
+const CAMBRIDGE_B1_LESEN_SLOTS = [
+  { slotType: 'signs_notices_mcq', taskFormat: 'short_text_mcq', layout: 'items', questionTypes: ['multiple_choice'], passageLengthExempt: true },
+  { slotType: 'person_text_matching', taskFormat: 'multiple_matching', layout: 'items', questionTypes: ['matching'], passageLengthExempt: true },
+  { slotType: 'long_text', taskFormat: 'long_text_mcq', layout: 'passage_questions', questionTypes: ['multiple_choice'] },
+  { slotType: 'gapped_text', taskFormat: 'gapped_text', layout: 'passage_questions', questionTypes: ['matching'] },
+  // Cloze parts: all gaps come from ONE passage — layout passage_questions makes
+  // ExamBlueprint.pickPassageAligned select a single coherent passage group.
+  { slotType: 'mcq_gap_fill', taskFormat: 'multiple_choice_cloze', layout: 'passage_questions', questionTypes: ['multiple_choice'] },
+  { slotType: 'open_cloze', taskFormat: 'open_cloze', layout: 'passage_questions', questionTypes: ['gap_fill', 'open_cloze'] },
+];
+
 function cambridgeLesenPart(teil, items, level) {
-  const idx = Math.min(teil - 1, CAMBRIDGE_LESEN_SLOTS.length - 1);
-  const slot = CAMBRIDGE_LESEN_SLOTS[idx];
+  const slots = level === 'B1' ? CAMBRIDGE_B1_LESEN_SLOTS : CAMBRIDGE_LESEN_SLOTS;
+  const idx = Math.min(teil - 1, slots.length - 1);
+  const slot = slots[idx];
   const partLabel = level === 'A1' ? `Part ${teil}` : `Part ${teil}`;
   return {
     teil,
@@ -162,8 +180,21 @@ const CAMBRIDGE_HOREN_SLOTS = [
   { slotType: 'dialogue_matching', taskFormat: 'dialogue_matching', layout: 'segments', questionTypes: ['matching'] },
 ];
 
-function cambridgeHorenPart(teil, items) {
-  const slot = CAMBRIDGE_HOREN_SLOTS[Math.min(teil - 1, CAMBRIDGE_HOREN_SLOTS.length - 1)];
+// B1 Preliminary Listening -- official 2020 format (verified vs cambridgeenglish.org, 2026-07-09).
+// P1 picture MCQ (7), P2 short-dialogue gist MCQ (6), P3 monologue gap fill (6), P4 interview MCQ (6).
+// No speaker-matching task in B1P Listening. Each recording is played twice.
+const CAMBRIDGE_B1_HOREN_SLOTS = [
+  // segmentsTotal: P1 = 7 independent recordings (1 Q each); P2 = 6 short dialogues (1 Q each);
+  // P3 = 1 monologue (6 gaps); P4 = 1 interview (6 Q). Required by ExamBlueprint.pickSegmentsAligned.
+  { slotType: 'picture_mcq', taskFormat: 'picture_multiple_choice', layout: 'segments', segmentsTotal: 7, questionTypes: ['multiple_choice'] },
+  { slotType: 'short_dialogue_mcq', taskFormat: 'short_dialogue_mcq', layout: 'segments', segmentsTotal: 6, questionTypes: ['multiple_choice'] },
+  { slotType: 'sentence_completion', taskFormat: 'sentence_completion', layout: 'segments', segmentsTotal: 1, questionTypes: ['gap_fill'] },
+  { slotType: 'interview_mcq', taskFormat: 'interview_mcq', layout: 'segments', segmentsTotal: 1, questionTypes: ['multiple_choice'] },
+];
+
+function cambridgeHorenPart(teil, items, level) {
+  const slots = level === 'B1' ? CAMBRIDGE_B1_HOREN_SLOTS : CAMBRIDGE_HOREN_SLOTS;
+  const slot = slots[Math.min(teil - 1, slots.length - 1)];
   return {
     teil,
     label: `Part ${teil} — Listening`,
@@ -183,10 +214,17 @@ function cambridgeSchreibenPart(teil, items, level) {
         ? [{ min: 100, max: 120 }, { min: 100, max: 120 }]
         : [{ min: 140, max: 190 }, { min: 140, max: 190 }];
   const w = words[teil - 1] || words[0];
+  // B1 Preliminary Writing -- official: P1 email (compulsory, answer email + notes),
+  // P2 choice between an article or a story. Other Cambridge levels keep essay/choice.
+  const isB1 = level === 'B1';
+  const slot = teil === 1 ? (isB1 ? 'email' : 'essay') : 'choice_writing';
+  const taskTypes = isB1
+    ? (teil === 1 ? ['email'] : ['article', 'story'])
+    : (teil === 1 ? ['essay'] : ['email', 'review', 'article']);
   return {
     teil,
-    slotType: teil === 1 ? 'essay' : 'choice_writing',
-    taskFormat: teil === 1 ? 'essay' : 'choice_writing',
+    slotType: slot,
+    taskFormat: slot,
     label: `Part ${teil} — Writing`,
     instruction: teil === 1 ? 'Write the compulsory task.' : 'Write one of the tasks given.',
     layout: 'writing',
@@ -196,24 +234,35 @@ function cambridgeSchreibenPart(teil, items, level) {
     questionTypes: ['short_answer'],
     wordsTarget: w,
     wordsPerPassage: w,
-    taskTypes: teil === 1 ? ['essay'] : ['email', 'review', 'article'],
+    taskTypes,
     mandatory: teil === 1,
   };
 }
 
-function cambridgeSprechenPart(teil) {
+// B1 Preliminary Speaking -- official 2020 format (verified vs cambridgeenglish.org, 2026-07-09).
+// P1 interview (2min), P2 extended turn: describe one colour photo (3min),
+// P3 collaborative discussion (4min), P4 general conversation (3min).
+const CAMBRIDGE_B1_SPRECHEN = {
+  1: { taskTypes: ['interview'], instruction: 'Part 1 (Interview): answer the examiner questions, giving factual or personal information.' },
+  2: { taskTypes: ['photo_description'], instruction: 'Part 2 (Extended turn): describe one colour photograph, talking for about 1 minute.' },
+  3: { taskTypes: ['collaborative_task'], instruction: 'Part 3 (Discussion): make and respond to suggestions, discuss alternatives and negotiate agreement.' },
+  4: { taskTypes: ['general_conversation'], instruction: 'Part 4 (General conversation): discuss likes, dislikes, experiences, opinions and habits.' },
+};
+
+function cambridgeSprechenPart(teil, level) {
+  const b1 = level === 'B1' ? CAMBRIDGE_B1_SPRECHEN[teil] : null;
   return {
     teil,
     slotType: 'speaking_task',
     taskFormat: 'speaking_prompt',
     label: `Part ${teil} — Speaking`,
-    instruction: 'Take part in the speaking test as instructed by the examiner.',
+    instruction: b1?.instruction || 'Take part in the speaking test as instructed by the examiner.',
     layout: 'speaking',
     taskCount: 1,
     itemsTotal: 1,
     questionsTotal: questionsTotalFor(1),
     questionTypes: ['short_answer'],
-    taskTypes: ['interaction', 'discussion'],
+    taskTypes: b1?.taskTypes || ['interaction', 'discussion'],
   };
 }
 
@@ -305,9 +354,9 @@ function buildModule(spec, moduleId, modSpec) {
       else built = goetheSprechenPart(teil, items, spec.level);
     } else if (spec.examType === 'cambridge') {
       if (moduleId === 'lesen') built = cambridgeLesenPart(teil, items, spec.level);
-      else if (moduleId === 'horen') built = cambridgeHorenPart(teil, items);
+      else if (moduleId === 'horen') built = cambridgeHorenPart(teil, items, spec.level);
       else if (moduleId === 'schreiben') built = cambridgeSchreibenPart(teil, items, spec.level);
-      else built = cambridgeSprechenPart(teil);
+      else built = cambridgeSprechenPart(teil, spec.level);
     } else {
       if (moduleId === 'lesen') built = deleLesenPart(teil, items);
       else if (moduleId === 'horen') built = deleHorenPart(teil, items);

@@ -20,6 +20,12 @@ const A2_TOPIC_ALIASES = Object.freeze({
   'natur und klima': 'Umwelt',
 });
 
+// Keep every binding below under its own name. index.html loads b1Topics.js as a classic
+// script immediately before this file, so its top-level `function foldTopicKey` / `const
+// B1_TOPICS` / `function normalizeB1Topic` are already globals. Redeclaring any of those
+// names here is a SyntaxError thrown at parse time, so the whole of a2Topics.js would never
+// run and A2_OFFICIAL_TOPICS / normalizeA2Topic would be undefined for examConfig.js and
+// personalTopicStockFactory.js.
 const b1Helpers = (() => {
   if (typeof window !== 'undefined' && typeof window.B1Topics !== 'undefined') {
     return {
@@ -35,10 +41,13 @@ const b1Helpers = (() => {
     // eslint-disable-next-line global-require
     return require('./b1Topics.js');
   } catch {
+    // Last resort: reuse b1Topics' globals when present, fall back only if it did not load.
     return {
-      foldTopicKey: (s) => String(s || '').trim().toLowerCase(),
-      B1_TOPICS: [],
-      normalizeB1Topic: (t) => t,
+      foldTopicKey: typeof foldTopicKey === 'function'
+        ? foldTopicKey
+        : (s) => String(s || '').trim().toLowerCase(),
+      B1_TOPICS: typeof B1_TOPICS !== 'undefined' ? B1_TOPICS : [],
+      normalizeB1Topic: typeof normalizeB1Topic === 'function' ? normalizeB1Topic : (t) => t,
     };
   }
 })();

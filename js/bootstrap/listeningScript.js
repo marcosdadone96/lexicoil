@@ -6,7 +6,7 @@ const ListeningScript = (() => {
 
   const VOICES = {
     de: ['pNInz6obpgDQGcFmaJgB', 'JBFqnCBsd6RMkjVDRZzb', 'onwK4e9ZLuTAKqWW03F9'],
-    en: ['GBv7mTt0atIp3Br8iCZE', 'JBFqnCBsd6RMkjVDRZzb', 'pNInz6obpgDQGcFmaJgB'],
+    en: ['Xb7hH8MSUJpSbSDYk0k2', 'JBFqnCBsd6RMkjVDRZzb', 'pNInz6obpgDQGcFmaJgB'],
     es: ['ErXwobaYiN019PkySvjV', 'JBFqnCBsd6RMkjVDRZzb', 'pNInz6obpgDQGcFmaJgB'],
   };
 

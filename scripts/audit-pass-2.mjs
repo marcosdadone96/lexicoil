@@ -63,6 +63,18 @@ const CANONICAL_TYPES = new Set([
   'personal_questions', 'about_self', 'plan_together',
 ]);
 
+/** Types canonical for one language only. Cambridge B1 Reading Parts 5 and 6
+ *  (mcq_gap_fill, open_cloze) both grade as gap_fill, which has no Goethe
+ *  equivalent — keep it out of the shared set so German still rejects it. */
+const CANONICAL_TYPES_BY_LANG = {
+  en: new Set(['gap_fill']),
+};
+
+function isCanonicalType(type, lang) {
+  if (CANONICAL_TYPES.has(type)) return true;
+  return !!CANONICAL_TYPES_BY_LANG[lang]?.has(type);
+}
+
 /** Blueprint: expected item count per (module, teil). null = variable. */
 const BLUEPRINT = {
   'lesen-1':   { count: 6,  types: ['richtig_falsch'] },
@@ -92,6 +104,22 @@ const BLUEPRINT_A2 = {
   'sprechen':  { count: null, types: ['personal_questions', 'about_self', 'plan_together', 'short_answer'] },
 };
 
+/** Cambridge B1 Preliminary: expected item count per (module, teil). Used when exam lang is 'en'. */
+const CAMBRIDGE_B1_BLUEPRINT = {
+  'lesen-1':   { count: 5 },
+  'lesen-2':   { count: 5 },
+  'lesen-3':   { count: 5 },
+  'lesen-4':   { count: 5 },
+  'lesen-5':   { count: 6 },
+  'lesen-6':   { count: 6 },
+  'horen-1':   { count: 7 },
+  'horen-2':   { count: 6 },
+  'horen-3':   { count: 6 },
+  'horen-4':   { count: 6 },
+  'schreiben': { count: null },
+  'sprechen':  { count: null },
+};
+
 /** Goethe B2 Modellsatz Erwachsene — Lesen/Hören item counts. */
 const BLUEPRINT_B2 = {
   'lesen-1':   { count: 9, types: ['matching'] },
@@ -107,7 +135,11 @@ const BLUEPRINT_B2 = {
   'sprechen':  { count: null, types: ['short_answer'] },
 };
 
-function blueprintForLevel(level) {
+// BLUEPRINT/BLUEPRINT_A2/BLUEPRINT_B2 are Goethe's. Cambridge puts different tasks at the same
+// Teil positions, so the count map has to be selected by lang before level.
+// See docs/audit/gates-en-applicability.md.
+function blueprintForLevel(level, lang = 'de') {
+  if (String(lang || 'de').trim().toLowerCase() === 'en') return CAMBRIDGE_B1_BLUEPRINT;
   const lv = String(level || 'B1').toUpperCase();
   if (lv === 'A2') return BLUEPRINT_A2;
   if (lv === 'B2') return BLUEPRINT_B2;
@@ -120,6 +152,13 @@ function inferAuditLevel(batch) {
     if (q?.level) return String(q.level).toUpperCase();
   }
   return 'B1';
+}
+
+function inferAuditLang(batch) {
+  const raw = batch?.lang || batch?.language
+    || batch?.questions?.find(q => q?.lang || q?.language)?.lang
+    || batch?.questions?.find(q => q?.lang || q?.language)?.language;
+  return String(raw || 'de').trim().toLowerCase();
 }
 
 /** C1/C2 vocabulary blacklist (case-insensitive). Add here to extend. */
@@ -184,8 +223,9 @@ function passageText(p) {
 
 function chk1(batch, file) {
   const findings = [];
+  const lang = inferAuditLang(batch);
   for (const q of batch.questions || []) {
-    if (!CANONICAL_TYPES.has(q.type)) {
+    if (!isCanonicalType(q.type, lang)) {
       const hint = q.type === 'multiple' ? ' (usar multiple_choice)' : '';
       findings.push(finding('CHK-1', 'CRITICAL', file, q.id,
         `type:"${q.type}" no es canónico${hint}`));
@@ -272,7 +312,7 @@ function chk2(batch, file) {
 
 function chk3(batch, file) {
   const findings = [];
-  const blueprint = blueprintForLevel(inferAuditLevel(batch));
+  const blueprint = blueprintForLevel(inferAuditLevel(batch), inferAuditLang(batch));
   // Group by module+teil
   const groups = {};
   for (const q of batch.questions || []) {
@@ -296,7 +336,7 @@ function chk3(batch, file) {
 // Solo se llama desde auditExam — nunca en auditorías de batch/parte suelta.
 function chk3Absent(flat, file) {
   const findings = [];
-  const blueprint = blueprintForLevel(inferAuditLevel(flat));
+  const blueprint = blueprintForLevel(inferAuditLevel(flat), inferAuditLang(flat));
   const presentKeys = new Set();
   for (const q of flat.questions || []) {
     const key = bpKey(q);
@@ -2711,7 +2751,15 @@ function flattenExam(examObj) {
     || (questions[0]?.level)
     || (passages[0]?.level)
     || undefined;
-  return { passages, questions, ads, ...(level ? { level } : {}) };
+  // lang travels with level: auditExam gates the Goethe-specific checks on it, and
+  // blueprintForLevel picks the Cambridge count map from it. Dropping it here silently
+  // audited every English exam as German.
+  const lang = examObj.lang
+    || examObj.language
+    || (questions[0]?.lang) || (questions[0]?.language)
+    || (passages[0]?.lang) || (passages[0]?.language)
+    || undefined;
+  return { passages, questions, ads, ...(level ? { level } : {}), ...(lang ? { lang } : {}) };
 }
 
 // ─── auditExam: audita un examen ensamblado en memoria ────────────────────
@@ -2720,6 +2768,11 @@ export function auditExam(examWrapper, label = 'exam') {
   const exam = examWrapper.exam || examWrapper;
   const flat = flattenExam(exam);
   const globalIds = new Set(); // dedup local al examen
+  // Lang-aware audit (docs/audit/gates-en-applicability.md): CHK-6/7/11/16/17/20/21
+  // validan formatos de tarea GOETHE en posiciones de Teil que en Cambridge son otras
+  // tareas — se omiten para lang!=='de' hasta escribir sus equivalentes Cambridge.
+  // CHK-3 usa el mapa de conteos del blueprint correspondiente (vía blueprintForLevel).
+  const isDe = inferAuditLang(flat) === 'de';
   const findings = [
     ...chk1(flat, label),
     ...chk2(flat, label),
@@ -2727,17 +2780,17 @@ export function auditExam(examWrapper, label = 'exam') {
     ...chk3Absent(flat, label), // solo en examen completo — detecta Teile con 0 ítems
     ...chk4(flat, label),
     ...chk5([{ batch: flat, file: label }]),
-    ...chk6(flat, label),
-    ...chk6c(flat, label),
-    ...chk7(flat, label),
+    ...(isDe ? chk6(flat, label) : []), // blacklist de anglicismos: solo aplica a aleman
+    ...(isDe ? chk6c(flat, label) : []),
+    ...(isDe ? chk7(flat, label) : []),
     ...chk8(flat, label, globalIds),
     ...chk10(flat, label),
-    ...chk11(flat, label),
+    ...(isDe ? chk11(flat, label) : []),
     ...chk29(flat, label),
     ...chk35HorenT3RfChrono(flat, label),
     ...chk30PoolMeta(flat, label),
     ...chk30bLesenT4Title(flat, label),
-    ...chkQ5GermanContent(flat, label),
+    ...(isDe ? chkQ5GermanContent(flat, label) : []), // gate de idioma aleman: marcaria todo EN
     ...chk31VocabLemma(flat, label),
     ...chk33McqLengthBias(flat, label),
     ...chk12(flat, label),
@@ -2746,15 +2799,15 @@ export function auditExam(examWrapper, label = 'exam') {
     ...chk14b(flat, label),
     ...chk14c(flat, label),
     ...chk15(flat, label),
-    ...chk16(flat, label),
+    ...(isDe ? chk16(flat, label) : []),
     ...chkH2Align(flat, label),
-    ...chk17(flat, label),
+    ...(isDe ? chk17(flat, label) : []),
     ...chk18(flat, label),
     ...chk18b(flat, label),
     ...chk34(flat, label),
     ...chk19(flat, label),
-    ...chk20(flat, label),
-    ...chk21(flat, label),
+    ...(isDe ? chk20(flat, label) : []),
+    ...(isDe ? chk21(flat, label) : []),
     ...chk22(flat, label),
     ...chk24(flat, label),
     ...chk28(flat, label),

@@ -348,6 +348,13 @@ function normalizeLesenT3Part(part){
   const firstOpts=part.items[0]?.options;
   if(!Array.isArray(firstOpts)||firstOpts.length<2||typeof firstOpts[0]!=='string')return;
   if(!/^[A-Z]\)/i.test(firstOpts[0]))return;
+  // A matching task draws every item from ONE shared pool (Goethe Lesen T3 ads, Cambridge
+  // Reading P2 texts / P4 sentences). Plain multiple choice gives each item its own options
+  // and is structurally identical at this point — "A) …" strings with a letter answer — so
+  // without this check the pool is built from item[0] alone and every other item silently
+  // loses its own options. Cambridge P1/P3/P5 are exactly that shape.
+  const pool=JSON.stringify(firstOpts);
+  if(!part.items.every(it=>JSON.stringify(it.options||[])===pool))return;
   const hasCorrect=part.items.some(it=>String(it.type||'').toLowerCase()==='matching'||(it.correct!=null&&typeof it.correct==='string'&&/^[A-Za-z0]/i.test(it.correct)));
   if(!hasCorrect)return;
   const ads=[];
@@ -367,6 +374,12 @@ function normalizeLesenT3Part(part){
 }
 function isLesenAdsMatchingRender(part){
   if(isLesenForumOpinionsPart(part))return false;
+  // Mirror of the blueprint guard in examGeneration.isLesenAdsMatchingPart: a part whose slot
+  // is declared multiple choice or cloze is never an ads/matching layout, however its ads
+  // array got populated upstream. Without this, Cambridge Reading P3 (long_text) still
+  // rendered as "match the situation to a letter" because it arrived carrying stale ads.
+  const slot=String(part?.blueprintSlot||part?.slotType||'').toLowerCase();
+  if(/mcq|multiple_choice|long_text|open_cloze/.test(slot)&&!/matching|ads/.test(slot))return false;
   normalizeLesenT3Part(part);
   if(!(part?.ads?.length>=2))return false;
   // Items format (pool): items array with matching situations
@@ -448,6 +461,16 @@ function renderGoetheLesenPart(part,pi,isPrac,ui){
   if(adsMatching){
     const sitHdr=ui.lang==='de'?'Situationen':'Situations';
     h+=`<div class="pt-t3-layout"><div class="pt-t3-main">`;
+    // Gapped-text matching (Cambridge Reading P4) carries the passage the gaps belong to in
+    // part.text. This branch returns before the generic part.text block below, so without
+    // this the candidate matches sentences to gaps they cannot see. Only rendered when the
+    // text actually has gap markers: in P2 part.text is a copy of the lettered pool itself,
+    // and Goethe T3 has no passage, so neither renders it twice.
+    if(part.text&&/\(\d+\)|_{3,}/.test(part.text)){
+      const gapBlockId='lesen_'+pi+'_gapped';
+      stashPassageMeta(gapBlockId,part.text,part.translations);
+      h+=`<div class="text-display"><h3>${esc(part.textTitle||'')}</h3><div class="readable-text">${wrapW(part.text,gapBlockId,isPrac)}</div>${passageToolbarHtml(gapBlockId,isPrac,ui)}</div>`;
+    }
     const ex=part.example||part.solvedExample;
     if(ex&&(ex.situation||ex.question||ex.text)){
       const exLbl=ex.label||(ui.lang==='de'?'Beispiel':'Example');
@@ -890,7 +913,13 @@ function renderExam(){
   const uiLang=typeof resolveVocabUiLang==='function'?resolveVocabUiLang():'en';
   const langH=isPrac&&!isQ?`<div class="exam-lang-toolbar"><span class="exam-lang-label">${isDE?'Übersetzen:':'Translate to:'}</span>${vocabUiLangs().map(l=>`<button type="button" class="vt-lb ex-lb${uiLang===l.code?' active':''}" data-lang="${l.code}" onclick="setVocabUiLang('${l.code}',this)">${l.l}</button>`).join('')}</div>`:'';
   let secs='';
-  if(d.goetheFormat&&(!isQ)){
+  // Quick modules run through here too: the branches below only understand the legacy
+  // singular shapes (d.lesen/d.horen/…), which library-built exams do not have — they carry
+  // lesenParts/horenParts/… instead. Gating this on !isQ left those exams with no renderer
+  // at all and produced a silent blank body. stripExamToSkills() has already emptied the
+  // parts of the modules not requested, and renderGoetheExam skips empty ones, so the quick
+  // module still renders exactly one module.
+  if(d.goetheFormat){
     secs=renderGoetheExam(d,isPrac,isQ);
     if(!secs.trim()&&!isExamRenderable(d)){
       backToWorkspace('exams');
@@ -1145,7 +1174,15 @@ function togglePersonMatch(key,val,el){
 function renderGapFillQ(q,num,mod,part,isDE){
   const opts=part.options||[];
   const head=isDE?`Lücke ${q.gap||num}`:`Gap ${q.gap||num}`;
-  return `<div class="question-block"><div class="q-number">${head}</div><div class="q-text">${isDE?'Wählen Sie die passende Option:':'Choose the matching option:'}</div><select class="gap-select" onchange='S.answers[${jsLit(mod+'_'+q.id)}]=this.value;updProg()'><option value="">${isDE?'— wählen —':'— select —'}</option>${opts.map(o=>`<option value="${esc(o.key)}">${esc(o.key)}) ${esc(o.text)}</option>`).join('')}</select>${adminQuestionReviewHtml(q,part)}</div>`;
+  const ak=mod+'_'+q.id;
+  // Open cloze (Cambridge Reading P6): the candidate writes one word, there is no option
+  // pool. Rendering the usual <select> here produced a dropdown whose only entry was the
+  // "— select —" placeholder, so the gap simply could not be answered.
+  if(!opts.length){
+    const saved=esc(S.answers?.[ak]||'');
+    return `<div class="question-block"><div class="q-number">${head}</div><div class="q-text">${isDE?'Schreiben Sie EIN Wort:':'Write ONE word:'}</div><input type="text" class="gap-input" autocomplete="off" spellcheck="false" value="${saved}" oninput='S.answers[${jsLit(ak)}]=this.value.trim();updProg()'>${adminQuestionReviewHtml(q,part)}</div>`;
+  }
+  return `<div class="question-block"><div class="q-number">${head}</div><div class="q-text">${isDE?'Wählen Sie die passende Option:':'Choose the matching option:'}</div><select class="gap-select" onchange='S.answers[${jsLit(ak)}]=this.value;updProg()'><option value="">${isDE?'— wählen —':'— select —'}</option>${opts.map(o=>`<option value="${esc(o.key)}"${(S.answers?.[ak]===o.key)?' selected':''}>${esc(o.key)}) ${esc(o.text)}</option>`).join('')}</select>${adminQuestionReviewHtml(q,part)}</div>`;
 }
 function renderQ(q,num,mod,rfT,rfF,trK,isOff,part){
   const ak=`${mod}_${q.id}`;
@@ -1184,7 +1221,21 @@ function renderQ(q,num,mod,rfT,rfF,trK,isOff,part){
     }
   }
   const opts=q.options||[];
-  if(!opts.length)return `<div class="question-block"><div class="q-number">${head}</div>${sub}<div style="color:var(--text-muted);font-size:12px">${isOff?'Keine Optionen':'No options'}</div>${review}</div>`;
+  if(!opts.length){
+    // Sentence completion (Cambridge Listening Part 3) is gap_fill with an empty option
+    // pool: the candidate types the missing word. renderGoetheHorenPart sends every
+    // question straight here, so these six items used to end in the dead "no options"
+    // line and could not be answered at all. The Lesen renderer already routes gap_fill
+    // to renderGapFillQ, but that one drops q.question, and here the sentence IS the item.
+    if(q.type==='gap_fill'){
+      const saved=esc(S.answers?.[ak]||'');
+      return `<div class="question-block"><div class="q-number">${head}</div>${sub}<input type="text" class="gap-input" autocomplete="off" spellcheck="false" value="${saved}" oninput='S.answers[${jsLit(ak)}]=this.value.trim();updProg()'>${review}</div>`;
+    }
+    // isOff means "official exam", not "German" — every caller below passes a hardcoded
+    // true, so an English exam printed the German string. Key off the exam language.
+    const noOpts=S.examData?.lang==='de'?'Keine Optionen':'No options';
+    return `<div class="question-block"><div class="q-number">${head}</div>${sub}<div style="color:var(--text-muted);font-size:12px">${noOpts}</div>${review}</div>`;
+  }
   return `<div class="question-block"><div class="q-number">${head}</div>${sub}<div class="options">${opts.map(opt=>{const val=optKey(opt);const label=optLabel(opt);return `<label class="opt"><input type="radio" name="${esc(ak)}" value="${esc(val)}" onchange='S.answers[${jsLit(ak)}]=this.value;this.closest(".options").querySelectorAll(".opt").forEach(o=>o.classList.remove("selected"));this.closest(".opt").classList.add("selected");updProg()'><span>${esc(label)}</span></label>`;}).join('')}</div>${review}</div>`;
 }
 function ptSetMatch(k,v,btn){S.answers[k]=v;btn.closest('.pt-match-pills').querySelectorAll('.pt-letter-pill').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected');updProg();}

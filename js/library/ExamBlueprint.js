@@ -320,10 +320,31 @@ const ExamBlueprint = (() => {
       // If still empty: leave as [] → coverage.complete = false → exam rejected
     }
 
+    // ── Coherent multiple-matching set (Cambridge Reading P2) ────────────────
+    // INVARIANT: the 5 people and the 8 texts must come from ONE source batch;
+    // mixing sets breaks the A-H option mapping. Group by question-id prefix
+    // (…-qN) and pick a complete group only.
+    if (!picked?.length && partSpec.slotType === 'person_text_matching') {
+      const bySet = new Map();
+      for (const q of candidates) {
+        const m = String(q.id || '').match(/^(.*?)-q\d+$/i);
+        if (!m) continue;
+        if (!bySet.has(m[1])) bySet.set(m[1], []);
+        bySet.get(m[1]).push(q);
+      }
+      const complete = [...bySet.values()].filter((qs) => qs.length >= target);
+      if (complete.length) picked = shuffle(complete)[0].slice(0, target);
+    }
+
     if (!picked?.length) {
       if (modId === 'lesen' && (teil === 3 || teil === 4)) {
         // Never fall through to individual-item shuffle for T3/T4 — coherence cannot be
         // guaranteed. Leave picked empty so coverage.complete = false signals the gap.
+        picked = [];
+      } else if (['mcq_gap_fill', 'open_cloze', 'person_text_matching', 'sentence_completion', 'interview_mcq'].includes(partSpec.slotType || '')) {
+        // Cambridge set-coherent slots: a cloze must come whole from one passage and
+        // a multiple-matching set from one batch. Random shuffle would Frankenstein
+        // them — leave empty so coverage fails loudly instead.
         picked = [];
       } else if (modId === 'horen' && teil === 1) {
         // H1 requires segment-aligned picking (5 passages × 1RF+1MC each).
@@ -342,8 +363,38 @@ const ExamBlueprint = (() => {
         picked = shuffle(candidates).slice(0, target);
       }
     }
+    picked = orderGapQuestions(picked, partSpec);
     picked.forEach((q) => used.add(q.id));
     return picked;
+  }
+
+  /**
+   * Gap-bound tasks must follow the passage, not the pick order. The picker shuffles, which
+   * is right for independent items but not for "choose the option for gap N": Cambridge
+   * Reading P4/P5/P6 were arriving as gaps 3,5,1,2,4 while the text numbered them 1..5, so
+   * the candidate had to hunt for each gap. Goethe B2/C1/C2 and DELE have gap slots too and
+   * want the same order.
+   *
+   * Deliberately a no-op unless the intent is unambiguous: every question must yield a gap
+   * number and they must all be distinct, otherwise the original order is kept.
+   */
+  function gapNumberOf(q) {
+    const text = String(q?.question || q?.statement || q?.text || '');
+    const m = text.match(/\bgap\s*(\d+)/i) || text.match(/\((\d+)\)/) || text.match(/\bhueco\s*(\d+)/i)
+      || text.match(/\bL(?:ü|ue)cke\s*(\d+)/i);
+    if (m) return Number(m[1]);
+    const byId = String(q?.id || '').match(/-q(\d+)$/i);
+    return byId ? Number(byId[1]) : null;
+  }
+
+  function orderGapQuestions(questions, partSpec) {
+    if (!Array.isArray(questions) || questions.length < 2) return questions;
+    const slot = `${partSpec?.slotType || ''} ${partSpec?.taskFormat || ''}`.toLowerCase();
+    if (!/gap|cloze/.test(slot)) return questions;
+    const numbered = questions.map((q) => ({ q, n: gapNumberOf(q) }));
+    if (numbered.some((x) => x.n == null)) return questions;
+    if (new Set(numbered.map((x) => x.n)).size !== numbered.length) return questions;
+    return numbered.sort((a, b) => a.n - b.n).map((x) => x.q);
   }
 
   function inferModuleFromPool(pool) {

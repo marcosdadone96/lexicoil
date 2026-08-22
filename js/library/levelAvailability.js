@@ -15,11 +15,21 @@ const LevelAvailability = (() => {
 
   let examAvailCache = null;
 
+  /** Mirrors ExamLibrary.betaLevelsOptIn — see there for why localStorage is used. */
+  function betaLevelsOptIn() {
+    try {
+      return typeof localStorage !== 'undefined' && localStorage.getItem('lc_show_beta') === '1';
+    } catch (_) {
+      return false;
+    }
+  }
+
   function showBetaExamLevels() {
     if (typeof ExamLibrary !== 'undefined' && ExamLibrary.showBetaLevels) {
       return ExamLibrary.showBetaLevels();
     }
     if (typeof window !== 'undefined' && window.LEXICOIL_SHOW_BETA_LEVELS === true) return true;
+    if (betaLevelsOptIn()) return true;
     if (typeof process !== 'undefined' && process.env && process.env.LEXICOIL_SHOW_BETA_LEVELS === '1') {
       return true;
     }

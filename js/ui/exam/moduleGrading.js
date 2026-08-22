@@ -25,6 +25,7 @@ const MODULE_LABELS = {
 function getGradingScope(blueprint, exam) {
   const rule = blueprint?.passRule;
   if (rule?.scope === 'whole-exam-total') return 'whole-exam-total';
+  if (rule?.scope === 'cambridge-scale') return 'cambridge-scale';
   if (rule?.scope === 'dele-c2-three-tests') return 'dele-c2-three-tests';
   if (rule?.scope === 'dele-groups') return 'dele-groups';
   if (rule?.scope === 'whole-exam') return 'whole-exam';
@@ -108,6 +109,68 @@ function aiEvaluatedModuleResultWithPoints(scorePct, passPercent, blueprint, mod
     ...base,
     maxPoints,
     points: pointsFromScorePct(scorePct, maxPoints),
+  };
+}
+
+// --- Cambridge English Scale grading (aggregate; each skill 25%, pass from 140). ---
+// Raw%->scale mapping is piecewise-linear, anchored so passRawPct (60%) => passScale (140).
+// Official per-session raw->scale tables are not public; this is a documented adaptation.
+function scorePctToScale(scorePct, rule = {}) {
+  if (scorePct == null) return null;
+  const floor = Number(rule.scaleFloor ?? 120);
+  const ceil = Number(rule.scaleCeil ?? 170);
+  const passScale = Number(rule.passScale ?? 140);
+  const passRawPct = Number(rule.passRawPct ?? 60);
+  const p = Math.max(0, Math.min(100, Number(scorePct)));
+  let scale;
+  if (p <= passRawPct) {
+    scale = floor + (p / passRawPct) * (passScale - floor);
+  } else {
+    scale = passScale + ((p - passRawPct) / (100 - passRawPct)) * (ceil - passScale);
+  }
+  return Math.round(Math.max(floor, Math.min(ceil, scale)));
+}
+
+function summarizeCambridgeScale(moduleResults, blueprint) {
+  const rule = blueprint?.passRule || {};
+  const passScale = Number(rule.passScale ?? 140);
+  const moduleIds = Object.keys(moduleResults || {});
+  const perModuleScale = {};
+  const scales = [];
+  const pcts = [];
+  let modulesEvaluated = 0;
+  for (const id of moduleIds) {
+    const mod = moduleResults[id];
+    if (!mod?.evaluated || mod.scorePct == null) { perModuleScale[id] = null; continue; }
+    const scale = scorePctToScale(mod.scorePct, rule);
+    perModuleScale[id] = scale;
+    scales.push(scale);
+    pcts.push(mod.scorePct);
+    modulesEvaluated += 1;
+  }
+  const allEvaluated = modulesEvaluated === moduleIds.length && moduleIds.length > 0;
+  const overallScale = scales.length
+    ? Math.round(scales.reduce((s, v) => s + v, 0) / scales.length)
+    : null;
+  const globalPassed = allEvaluated && overallScale != null && overallScale >= passScale;
+  const informativeScorePct = pcts.length
+    ? Math.round(pcts.reduce((s, v) => s + v, 0) / pcts.length)
+    : null;
+  return {
+    gradingScope: 'cambridge-scale',
+    modular: false,
+    passPercent: null,
+    totalModules: moduleIds.length,
+    modulesEvaluated,
+    modulesPassed: globalPassed ? moduleIds.length : 0,
+    globalPassed,
+    perModuleScale,
+    overallScale,
+    passScale,
+    scaleFloor: Number(rule.scaleFloor ?? 120),
+    scaleCeil: Number(rule.scaleCeil ?? 170),
+    informativeScorePct,
+    legacyScore: informativeScorePct ?? 0,
   };
 }
 
@@ -407,6 +470,9 @@ function computeDisplayScore(summary, moduleResults) {
   if (scope === 'whole-exam' || scope === 'whole-exam-total') {
     return summary.informativeScorePct ?? summary.legacyScore ?? 0;
   }
+  if (scope === 'cambridge-scale') {
+    return summary.informativeScorePct ?? summary.legacyScore ?? 0;
+  }
   if (scope === 'modular' || summary.modular) {
     return summary.informativeScorePct ?? 0;
   }
@@ -431,6 +497,17 @@ function getDisplayScoreInfo(moduleResults, summary, passPercent, isDE) {
         ? 'Teilprüfung — nur beantwortete Fragen zählen'
         : 'Partial — score from answered questions only',
       partial: true,
+    };
+  }
+
+  if (summary?.gradingScope === 'cambridge-scale') {
+    return {
+      score,
+      heroScore: `${summary.overallScale ?? score}`,
+      heroSub: isDE
+        ? `Cambridge English Scale - Bestehen ab ${summary.passScale}`
+        : `Cambridge English Scale - pass from ${summary.passScale}`,
+      partial: false,
     };
   }
 
@@ -628,6 +705,9 @@ function summarizeExam(moduleResults, opts = {}) {
   if (scope === 'whole-exam-total' && blueprint) {
     return summarizeWholeExamTotal(moduleResults, blueprint);
   }
+  if (scope === 'cambridge-scale' && blueprint) {
+    return summarizeCambridgeScale(moduleResults, blueprint);
+  }
   if (scope === 'dele-c2-three-tests' && blueprint) {
     return summarizeDeleC2ThreeTests(moduleResults, blueprint);
   }
@@ -712,6 +792,11 @@ function globalResultClass(summary) {
     if (summary.grupo1?.passed || summary.grupo2?.passed) return 'mid';
     return 'fail';
   }
+  if (summary.gradingScope === 'cambridge-scale') {
+    if (summary.globalPassed) return 'pass';
+    if ((summary.overallScale ?? 0) >= (summary.passScale ?? 140) - 6) return 'mid';
+    return 'fail';
+  }
   if (summary.gradingScope === 'whole-exam-total') {
     if (summary.globalPassed) return 'pass';
     if ((summary.totalPoints ?? 0) >= (summary.minTotalPoints ?? 60) * 0.85) return 'mid';
@@ -760,6 +845,22 @@ function globalResultLabel(summary, isDE) {
     }
     if (parts.length) return isDE ? `No apto — ${parts.join('; ')}` : `Fail — ${parts.join('; ')}`;
     return isDE ? 'No apto' : 'Fail';
+  }
+  if (summary.gradingScope === 'cambridge-scale') {
+    if (summary.globalPassed) return isDE ? 'Bestanden ✓' : 'Pass ✓';
+    // globalPassed also needs every skill evaluated, and Writing/Speaking need AI scoring.
+    // Without it the verdict read "Fail - 170/140" on a perfect Reading and Listening
+    // paper — a fail whose own number is above the pass mark. Say what actually happened,
+    // the way the modular scope already does ("2/4 Module bestanden").
+    if ((summary.modulesEvaluated ?? 0) < (summary.totalModules ?? 0)) {
+      const seen = `${summary.modulesEvaluated ?? 0}/${summary.totalModules ?? 0}`;
+      return isDE
+        ? `${seen} Module bewertet - ${summary.overallScale ?? '—'}/${summary.passScale} (Cambridge Scale)`
+        : `${seen} skills scored - ${summary.overallScale ?? '—'}/${summary.passScale} (Cambridge Scale)`;
+    }
+    return isDE
+      ? `Nicht bestanden - ${summary.overallScale ?? '—'}/${summary.passScale} (Cambridge Scale)`
+      : `Fail - ${summary.overallScale ?? '—'}/${summary.passScale} (Cambridge Scale)`;
   }
   if (summary.gradingScope === 'whole-exam-total') {
     if (summary.globalPassed) return isDE ? 'Bestanden ✓' : 'Pass ✓';
@@ -857,6 +958,8 @@ const moduleGradingExports = {
   aiEvaluatedModuleResultWithPoints,
   summarizeWholeExam,
   summarizeWholeExamTotal,
+  summarizeCambridgeScale,
+  scorePctToScale,
   summarizeDeleGroups,
   summarizeDeleC2ThreeTests,
   isDeleGroupGrading,

@@ -54,4 +54,114 @@ const check = new ExamValidator().validate(
 );
 assert(check.valid, 'personal lesen-only exam validates after normalize');
 
+// ── Teil 3 is ads-matching in Goethe, not in Cambridge ────────────────────────
+// coalesceLesenAdsMatchingPart used to treat `teil === 3` as proof of an ads-matching
+// task. For Cambridge Reading Part 3 (long_text MCQ) that copied the questions into
+// items, retyped them as matching and deleted their options, while the originals stayed
+// in questions[] — so the part rendered twice, once as stemless A-D/0 radios. Loading the
+// fallback module is what makes normalizeExam reach that code path, exactly as the browser
+// does through sanitizeGoetheParts.
+globalThis.PersonalLesenPoolFallback = require(
+  path.join(ROOT, 'js/engine/personalLesenPoolFallback.js'),
+);
+assert(
+  typeof globalThis.PersonalLesenPoolFallback.coalesceLesenAdsMatchingPart === 'function',
+  'pool fallback helper is reachable from normalizeExam',
+);
+
+const cambridgeP3 = normalizeExam({
+  level: 'B1',
+  lang: 'en',
+  lesenParts: [
+    {
+      teil: 3,
+      blueprintSlot: 'long_text',
+      instruction: 'Read the text and answer the questions.',
+      text: 'A long article about moving to a new city, with enough words to read.',
+      questions: Array.from({ length: 5 }, (_, i) => ({
+        id: `q${i + 1}`,
+        type: 'multiple_choice',
+        question: `What does the writer say about point ${i + 1}?`,
+        options: ['A) first', 'B) second', 'C) third', 'D) fourth'],
+        correct: 'A',
+      })),
+    },
+  ],
+}).lesenParts[0];
+
+assert(cambridgeP3.questions?.length === 5, 'Cambridge P3 keeps its 5 questions');
+assert(!cambridgeP3.items?.length, 'Cambridge P3 grows no matching items');
+assert(!cambridgeP3.ads?.length, 'Cambridge P3 grows no ad pool');
+assert(
+  cambridgeP3.questions.every((q) => (q.options || []).length === 4),
+  'Cambridge P3 questions keep their four options',
+);
+assert(
+  cambridgeP3.questions.every((q) => String(q.type).toLowerCase() !== 'matching'),
+  'Cambridge P3 questions stay multiple choice',
+);
+
+// Cambridge Reading Part 1: five signs, each with its own 3-option MCQ. The Goethe Lesen T1
+// shape is True/False over one shared passage, and coalesceLesenPartQuestions used to promote
+// these items into rf questions without clearing items[], so the part rendered twice.
+const cambridgeP1 = normalizeExam({
+  level: 'B1',
+  lang: 'en',
+  lesenParts: [
+    {
+      teil: 1,
+      blueprintSlot: 'signs_notices_mcq',
+      instruction: 'Read the signs and answer the questions.',
+      textTitle: 'Airport Sign',
+      items: Array.from({ length: 5 }, (_, i) => ({
+        id: `s${i + 1}`,
+        signText: `NOTICE ${i + 1}: Please keep your belongings with you at all times.`,
+        question: `What does notice ${i + 1} tell you?`,
+        options: ['a) first', 'b) second', 'c) third'],
+        correct: 'a',
+      })),
+    },
+  ],
+}).lesenParts[0];
+
+assert(cambridgeP1.items?.length === 5, 'Cambridge P1 keeps its 5 sign items');
+assert(!cambridgeP1.questions?.length, 'Cambridge P1 grows no duplicate question set');
+assert(
+  cambridgeP1.items.every((it) => (it.options || []).length === 3),
+  'Cambridge P1 items keep their three options',
+);
+assert(
+  cambridgeP1.items.every((it) => String(it.type || '').toLowerCase() !== 'rf'),
+  'Cambridge P1 items are not retyped as True/False',
+);
+
+// The German side of the same guard: no slot declared, so Teil 3 still coalesces.
+const goetheT3 = normalizeExam({
+  level: 'B1',
+  lang: 'de',
+  lesenParts: [
+    {
+      teil: 3,
+      ads: [
+        { key: 'A', title: 'Sprachschule', text: 'Deutschkurse fuer Anfaenger am Abend.' },
+        { key: 'B', title: 'Fahrschule', text: 'Fuehrerschein in vier Wochen, guenstig.' },
+        { key: 'C', title: 'Fitnessstudio', text: 'Trainieren Sie taeglich bis 22 Uhr.' },
+      ],
+      questions: Array.from({ length: 3 }, (_, i) => ({
+        id: `s${i + 1}`,
+        type: 'matching',
+        question: `Situation ${i + 1}: Jemand sucht etwas Passendes.`,
+        correct: ['A', 'B', 'C'][i],
+      })),
+    },
+  ],
+}).lesenParts[0];
+
+assert(goetheT3.items?.length === 3, 'Goethe T3 still coalesces its situations into items');
+assert(goetheT3.ads?.length === 3, 'Goethe T3 keeps its ad pool');
+assert(
+  goetheT3.items.every((it) => String(it.type).toLowerCase() === 'matching'),
+  'Goethe T3 items stay matching',
+);
+
 console.log('\nAll lesen-coalesce tests passed.');

@@ -19,7 +19,7 @@ export const LANG_META = {
     apiPrompt: 'batches/GEMINI_API_COMPACT_de_B1.md',
     idPrefix: 'de',
   },
-  en: { examType: 'cambridge', masterPrompt: 'batches/MASTER_PROMPT_en.md', idPrefix: 'en' },
+  en: { examType: 'cambridge', masterPrompt: 'batches/MASTER_PROMPT_en.md', apiPrompt: 'batches/GEMINI_API_COMPACT_en_B1.md', idPrefix: 'en' },
   es: { examType: 'dele', masterPrompt: 'batches/MASTER_PROMPT_es.md', idPrefix: 'es' },
 };
 
@@ -204,7 +204,10 @@ export function buildBatchParams(pools, lang, opts = {}) {
   if (module === 'schreiben') {
     params.topicT1 = topicEntry.topicT1;
     params.topicT2 = topicEntry.topicT2;
-    if (level === 'A2' || level === 'B2') {
+    if (lang === 'en') {
+      // Cambridge B1 Writing has 2 parts: email (T1) + article/story (T2).
+      params.topic = `(Part 1) ${topicEntry.topicT1} — (Part 2) ${topicEntry.topicT2}`;
+    } else if (level === 'A2' || level === 'B2') {
       params.topic = `(T1) ${topicEntry.topicT1} — (T2) ${topicEntry.topicT2}`;
     } else {
       params.topicT3 = topicEntry.topicT3;
@@ -217,7 +220,12 @@ export function buildBatchParams(pools, lang, opts = {}) {
   } else if (module === 'sprechen') {
     params.topicT1 = topicEntry.topicT1;
     params.topicT2 = topicEntry.topicT2;
-    if (level === 'B2') {
+    if (lang === 'en') {
+      // Cambridge B1 Speaking has 4 parts.
+      params.topicT3 = topicEntry.topicT3;
+      params.topicT4 = topicEntry.topicT4;
+      params.topic = `${topicEntry.topicT1} / ${topicEntry.topicT2} / ${topicEntry.topicT3} / ${topicEntry.topicT4}`;
+    } else if (level === 'B2') {
       params.topic = `${topicEntry.topicT1} / ${topicEntry.topicT2}`;
     } else {
       params.topicT3 = topicEntry.topicT3 || topicEntry.topicT2;

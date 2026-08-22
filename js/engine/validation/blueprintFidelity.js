@@ -522,6 +522,46 @@ function validateHorenMcqThreeOptions(items, partLabel) {
   return errors;
 }
 
+/** Body of a lettered option, or '' when the option is just its own key. */
+function letteredOptionBody(opt) {
+  if (opt && typeof opt === 'object') {
+    const key = String(opt.key ?? opt.id ?? '').trim();
+    const text = String(opt.text ?? opt.label ?? opt.title ?? '').trim();
+    if (!text) return '';
+    return text.toUpperCase() === key.toUpperCase() ? '' : text;
+  }
+  const raw = String(opt ?? '').trim();
+  const m = raw.match(/^([a-jA-J0])\)\s*(.*)$/s);
+  const body = (m ? m[2] : raw).trim();
+  if (!body) return '';
+  if (m && body.toUpperCase() === m[1].toUpperCase()) return '';
+  return body;
+}
+
+/**
+ * A matching or gapped task must give the candidate something to choose between. Two Part 4
+ * passages reached a published en/B1 exam with options ["a) A", ..., "h) H"]: the eight
+ * candidate sentences were never generated, so the task could not be answered at all, and
+ * every count-based check passed it because there were exactly eight options.
+ *
+ * The pool legitimately lives in ads[] for some shapes (Goethe Lesen T3, Cambridge Reading
+ * P2) and the per-item options are then just key stubs — so a real ads[] clears the part.
+ */
+function validateLetteredPoolHasText(part, items, partLabel) {
+  const errors = [];
+  const adsWithText = (part?.ads || []).filter((a) => letteredOptionBody(a)).length;
+  if (adsWithText >= 2) return errors;
+  for (const item of items) {
+    const opts = item?.options || [];
+    if (opts.length < 2) continue;
+    if (opts.some((o) => letteredOptionBody(o))) continue;
+    errors.push(
+      `options_without_text:${partLabel},id=${item.id || item.number || '?'},options=${opts.length}`,
+    );
+  }
+  return errors;
+}
+
 function validateSprechenTaskContent(part, bpPart, partLabel) {
   const errors = [];
   const taskType = part?.taskType || bpPart?.taskTypes?.[0];
@@ -600,6 +640,8 @@ function validatePartSemanticRules(part, bpPart, modId, teil, blueprintLevel) {
   if (String(modId).toLowerCase() === 'sprechen') {
     errors.push(...validateSprechenTaskContent(part, bpPart, partLabel));
   }
+
+  errors.push(...validateLetteredPoolHasText(part, items, partLabel));
 
   warnings.push(...validateAnswerDistribution(items, bpPart, partLabel));
 

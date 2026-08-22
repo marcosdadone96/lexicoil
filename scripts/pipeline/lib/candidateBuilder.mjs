@@ -357,6 +357,20 @@ export function batchToCandidates(batch, { lang, level, blueprint, batchId, sour
         title: p.title || '',
         text: p.text,
       }));
+    // Multiple matching (Cambridge Reading P2): the set has 8 texts but only 5 are
+    // answers — the 3 distractor texts are NOT referenced by any question.passageId.
+    // Without them the task is unrenderable, so include every batch passage of this
+    // module/teil. Scoped to person_text_matching: other slots keep linked-only.
+    if (bpPart?.slotType === 'person_text_matching') {
+      const seen = new Set(linkedPassages.map((p) => p.id));
+      for (const p of batch.passages || []) {
+        if (!p?.id || seen.has(p.id)) continue;
+        if (String(p.module || g.module) !== String(g.module)) continue;
+        if (p.teil != null && Number(p.teil) !== Number(g.teil)) continue;
+        linkedPassages.push({ id: p.id, module: p.module || g.module, title: p.title || '', text: p.text });
+        seen.add(p.id);
+      }
+    }
 
     const candidate = {
       id: newCandidateId(lang, level, g.module, g.teil, batchId?.slice(-8) || ''),

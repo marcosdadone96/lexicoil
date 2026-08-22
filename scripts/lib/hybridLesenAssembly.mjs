@@ -44,7 +44,7 @@ async function pickGatedSeedPart(records, { lang, level, teil, topicTag }) {
   candidates.sort((a, b) => (a.servedCount || 0) - (b.servedCount || 0));
   for (const part of candidates) {
     const batch = partToBatch(part, { module: 'lesen', teil });
-    const { gate } = await gateBatch(batch, { semantic: false });
+    const { gate } = await gateBatch(batch, { semantic: false, lang, level });
     if (gate.ok) return part;
   }
   return null;
@@ -186,6 +186,8 @@ async function gateBatch(batch, opts = {}) {
     teil: batch.teil,
     semantic: opts.semantic !== false,
     skipNormalize: false,
+    lang: opts.lang || batch.lang || 'de',
+    level: opts.level || batch.level || 'B1',
   });
   const poolReady = gate.ok
     ? (await isPartPoolReady(batch, { semantic: opts.semantic !== false })).ok
@@ -213,7 +215,7 @@ async function simulateLivePart(store, records, { teil, topicTag, words, lang, l
   const source = hits[0].part;
   const batch = partToBatch(source, { module: 'lesen', teil });
   batch.topicTag = topicTag;
-  const { gate, poolReady } = await gateBatch(batch, { semantic: false });
+  const { gate, poolReady } = await gateBatch(batch, { semantic: false, lang, level });
   if (!gate.ok) return { ok: false, reason: 'gate_failed', gate };
 
   const poolRecord = batchToPoolRecord(batch, { lang, level, topicTag, id: `hybrid-sim-${teil}-${randomUUID().slice(0, 8)}` });
