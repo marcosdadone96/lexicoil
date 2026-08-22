@@ -150,7 +150,7 @@ const SpeakingFlow = (() => {
     return `
       <div class="speak-path speak-path--solo speak-path--only">
         <div class="speak-path-head">${de ? 'Nur Aufnahme' : 'Record only'}</div>
-        <p class="speak-path-hint">${esc(hint)}</p>
+        <p class="speak-path-hint">${typeof escKeepBold==='function'?escKeepBold(hint):esc(hint)}</p>
         ${renderTranscriptInput(part, ui)}
       </div>`;
   }
