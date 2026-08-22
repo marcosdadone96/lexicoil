@@ -16,7 +16,7 @@
 function vocabModuleStrings(lang) {
   const L = {
     en: {
-      interfaceLang: 'Interface',
+      interfaceLang: 'Translate to',
       home: 'Home',
       vocabulary: 'Vocabulary',
       deck: 'deck',
@@ -444,8 +444,9 @@ function refreshTranslationLangChrome() {
   if (typeof refreshOpenVocabTooltip === 'function') refreshOpenVocabTooltip();
 }
 
+/** App shell labels (hub, saved practice, drill chrome) — always English. Use translationLang() for word/flashcard backs. */
 function vocabT() {
-  return vocabModuleStrings(resolveVocabUiLang());
+  return vocabModuleStrings('en');
 }
 
 function vocabHintLangName(code) {

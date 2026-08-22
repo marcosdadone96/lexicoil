@@ -568,7 +568,7 @@ function vocabHubActionsHtml(selN){
     ?'<button'+vocabHubCardAttrs('ws-exam-card ws-exam-card--oral','vocab_phrases',noDeck)+'><span class="ws-exam-card-ic">💬</span><span class="ws-exam-card-title">Phrases'+phrasesBadge+'</span><span class="ws-exam-card-desc">Select '+VV_MIN_PHRASES+'–'+caps.phrases+' words · gap + order</span></button>'
     :'';
   const textosCard=(goal&&typeof textosSupportedForGoal==='function'&&textosSupportedForGoal(goal))
-    ?'<button type="button" class="ws-exam-card ws-exam-card--practice" onclick="launchVocabHubTextos()"><span class="ws-exam-card-ic">📖</span><span class="ws-exam-card-title">Textos</span><span class="ws-exam-card-desc">Pick a topic · read-only · tap words to translate</span></button>'
+    ?'<button type="button" class="ws-exam-card ws-exam-card--practice" onclick="launchVocabHubTextos()"><span class="ws-exam-card-ic">📖</span><span class="ws-exam-card-title">Texts</span><span class="ws-exam-card-desc">Pick a topic · read-only · tap words to translate</span></button>'
     :'';
   let grid='';
   if(customCard){

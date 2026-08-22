@@ -20,7 +20,7 @@ function launchVocabHubTextos() {
   const goal = typeof getActiveGoal === 'function' ? getActiveGoal() : null;
   if (!goal) return;
   if (!textosSupportedForGoal(goal)) {
-    lcToast('Textos is available for German B1 only (v1).', 'warn');
+    lcToast('Texts is available for German B1 only (v1).', 'warn');
     return;
   }
   if (typeof _vocabHub === 'undefined') return;
@@ -93,7 +93,7 @@ async function loadTextosPassage() {
     _vocabHub.textosError = err?.code || err?.message || 'textos_no_match';
     refreshVocabHubPanel();
     if (_vocabHub.textosError === 'rate_limited') lcToast('Too many requests — wait a moment.', 'warn');
-    else if (_vocabHub.textosError === 'official_index_stale') lcToast('Textos temporarily unavailable.', 'error');
+    else if (_vocabHub.textosError === 'official_index_stale') lcToast('Texts temporarily unavailable.', 'error');
     else if (_vocabHub.textosError === 'textos_no_match') lcToast('No texts for this topic yet.', 'warn');
   }
 }
@@ -130,7 +130,7 @@ function textosReaderBodyHtml(data) {
 
 function renderTextosHubHtml(goal) {
   const back = typeof renderNavBackBtn === 'function' ? renderNavBackBtn('Vocabulary') : '';
-  const header = '<h1 class="exam-config-h1">Textos</h1><p class="exam-config-lede">Pick a topic · read-only · tap words to translate</p>';
+  const header = '<h1 class="exam-config-h1">Texts</h1><p class="exam-config-lede">Pick a topic · read-only · tap words to translate</p>';
   let body = textosTopicPickerHtml();
   if (_vocabHub.textosLoading) {
     body += '<p class="note" style="margin-top:16px">Loading passage…</p>';
