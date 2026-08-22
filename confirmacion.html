@@ -67,16 +67,17 @@
       async function exchangeAndRedirect(accessToken) {
         var exRes = await fetch('/.netlify/functions/auth-supabase-session', {
           method: 'POST',
+          credentials: 'include',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ access_token: accessToken }),
         });
         var exData = await exRes.json().catch(function () { return {}; });
-        if (!exRes.ok || !exData.token) {
+        if (!exRes.ok || !exData.user) {
           showError(T.saveFail + (exData.error ? ' (' + exData.error + ')' : ''));
           return;
         }
         localStorage.removeItem('lc_guest');
-        localStorage.setItem('lc_token', exData.token);
+        localStorage.removeItem('lc_token');
         if (exData.user) {
           var avatar = (exData.user.name || exData.user.email || '?').charAt(0).toUpperCase();
           localStorage.setItem('lc_user', JSON.stringify({
@@ -89,7 +90,7 @@
         }
         try { history.replaceState({}, document.title, location.pathname); } catch (_) {}
         showSuccess(T.redirect);
-        setTimeout(function () { location.replace(homeUrl); }, 700);
+        setTimeout(function () { location.replace(HOME + '/app.html'); }, 700);
       }
 
       async function waitForSession(sb, maxMs) {

@@ -806,7 +806,7 @@ const Auth = (() => {
     if (!res.ok) {
       const err = new Error(
         data.error === 'confirm_phrase_required'
-          ? 'Type ELIMINAR exactly to confirm.'
+          ? 'Type DELETE exactly to confirm.'
           : data.error === 'admin_account_protected'
             ? 'Admin accounts cannot be self-deleted.'
             : data.error || 'delete_failed',

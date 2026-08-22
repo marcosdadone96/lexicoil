@@ -30,7 +30,7 @@ exports.handler = async (event) => {
   }
 
   if (!verifyDeleteConfirmation(body.confirmPhrase)) {
-    return jsonResponse(400, cors, { error: 'confirm_phrase_required', expected: 'ELIMINAR' });
+    return jsonResponse(400, cors, { error: 'confirm_phrase_required', expected: 'DELETE' });
   }
 
   const result = await deleteAccountFully({

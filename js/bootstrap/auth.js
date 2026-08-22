@@ -79,7 +79,7 @@ async function doLogin(){
     Auth.clearGuest();
     updUserBtn();
     setAMsg('Welcome back!',true);
-    setTimeout(()=>{closeAuth();},600);
+    setTimeout(()=>{if(typeof restoreAppShellAfterAuth==='function')restoreAppShellAfterAuth();else closeAuth();},600);
   }catch(e){setAMsg(e.message);}
   finally{setAuthLoading(false,'btnLogin','Signing in…','Sign In →');}
 }
@@ -300,8 +300,8 @@ async function doDeleteAccount(){
   const msg=document.getElementById('deleteAccountMsg');
   const btn=document.getElementById('btnDeleteAccountConfirm');
   const phrase=(inp?.value||'').trim();
-  if(phrase.toUpperCase()!=='ELIMINAR'){
-    if(msg){msg.textContent='Type ELIMINAR exactly to confirm.';msg.className='auth-msg';}
+  if(phrase.toUpperCase()!=='DELETE'){
+    if(msg){msg.textContent='Type DELETE exactly to confirm.';msg.className='auth-msg';}
     return;
   }
   if(btn){btn.disabled=true;btn.textContent='Deleting…';}

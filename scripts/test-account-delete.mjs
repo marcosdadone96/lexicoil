@@ -65,9 +65,9 @@ store.set(`speaking_session:${USER_ID}:abc123`, JSON.stringify({ turns: [] }));
 store.set(`speaking_live:${USER_ID}:def456`, JSON.stringify({ turns: [] }));
 store.set(`exam_timer:${USER_ID}:exam1`, JSON.stringify({ startedAt: Date.now() }));
 
-ok(verifyDeleteConfirmation('ELIMINAR'), 'confirm phrase ELIMINAR accepted');
-ok(verifyDeleteConfirmation('eliminar'), 'confirm phrase case-insensitive');
-ok(!verifyDeleteConfirmation('DELETE'), 'wrong phrase rejected');
+ok(verifyDeleteConfirmation('DELETE'), 'confirm phrase DELETE accepted');
+ok(verifyDeleteConfirmation('delete'), 'confirm phrase case-insensitive');
+ok(!verifyDeleteConfirmation('ELIMINAR'), 'wrong phrase rejected');
 
 const blobResult = await deleteUserBlobs(ms, EMAIL, USER_ID);
 ok(blobResult.direct >= 3, `direct keys deleted (${blobResult.direct})`);

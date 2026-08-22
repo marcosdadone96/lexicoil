@@ -1,11 +1,6 @@
 /** Cookie consent UI strings (EU/CH). */
 function resolveConsentLang() {
-  try {
-    const stored = localStorage.getItem('lc_ui_lang');
-    if (stored && consentStrings(stored)) return stored;
-  } catch (_) {}
-  const nav = String(navigator.language || 'en').slice(0, 2).toLowerCase();
-  if (nav === 'de' || nav === 'es' || nav === 'fr') return nav;
+  // Main app shell is English-only; do not follow browser locale for the consent banner.
   return 'en';
 }
 

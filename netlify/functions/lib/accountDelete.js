@@ -8,7 +8,7 @@
 const crypto = require('crypto');
 const { userKey, syncKey, normalizeEmail } = require('./authLib.js');
 
-const CONFIRM_PHRASE = 'ELIMINAR';
+const CONFIRM_PHRASE = 'DELETE';
 
 async function listAndDeletePrefix(store, prefix) {
   if (!store?.list) return 0;

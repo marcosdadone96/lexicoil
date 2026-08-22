@@ -50,9 +50,11 @@ async function isSupabaseReachable(supabaseUrl, timeoutMs = 2500) {
 /** Whether the browser may use the Supabase JS SDK (OAuth, signup). */
 async function supabaseClientEnabled() {
   if (clientAuthDisabled()) return false;
-  const { configured, supabaseUrl } = readSupabaseEnv();
+  const { configured } = readSupabaseEnv();
   if (!configured) return false;
-  return isSupabaseReachable(supabaseUrl);
+  // Do not gate client auth on /auth/v1/health — Netlify cold starts and transient
+  // network blips were disabling Google OAuth + signup in auth-config (supabase: false).
+  return true;
 }
 
 async function supabasePasswordGrant(supabaseUrl, anonKey, email, password) {

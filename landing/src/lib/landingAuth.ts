@@ -355,17 +355,9 @@ export async function logoutSession() {
 
 export async function loginWithEmail(email: string, password: string) {
   const em = email.trim().toLowerCase();
-  const cfg = await getAuthConfig();
 
-  if (cfg.supabase) {
-    const sb = await getSupabase();
-    if (!sb) throw new Error('Could not connect to authentication service.');
-    const { data, error } = await sb.auth.signInWithPassword({ email: em, password });
-    if (error) throw new Error(mapSupabaseError(error));
-    if (!data.session?.access_token) throw new Error('Authentication failed.');
-    return exchangeSupabaseSession(data.session.access_token);
-  }
-
+  // Server-side login (Netlify Blobs + Supabase grant) — same path as the app shell.
+  // Avoids direct browser → Supabase calls that fail on some mobile networks / ITP.
   const res = await apiFetch('/.netlify/functions/auth-login', {
     method: 'POST',
     body: JSON.stringify({ email: em, password }),
