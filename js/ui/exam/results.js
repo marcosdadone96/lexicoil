@@ -502,7 +502,12 @@ function renderCorrectionHtml(corr, d, isDE, passPercent = 60) {
   }
   if (corr.speakingParts?.length) {
     corr.speakingParts.forEach((sp) => {
-      html += `<div class="corr-mod"><h3>${isDE ? 'Sprechen' : 'Speaking'} — Teil ${sp.part.teil} · ${sp.score}%</h3><div class="corr-row ${passOk(sp.score) ? 'ok' : 'bad'}"><div class="corr-ans">${esc(sp.note)}</div></div>`;
+      // Speaking that the AI did not evaluate carries no score: buildOrientativeSpeakingHint()
+      // returns note/words/min only. Printing `· ${sp.score}%` gave "undefined%", and
+      // passOk(undefined) is false, so an unscored part was painted as a failure. Same guard the
+      // writing branch above already uses.
+      const spScored = sp.score != null && !sp.orientative;
+      html += `<div class="corr-mod"><h3>${isDE ? 'Sprechen' : 'Speaking'} — ${isDE ? 'Teil' : 'Part'} ${sp.part.teil}${spScored ? ` · ${sp.score}%` : ''}</h3><div class="corr-row ${spScored ? (passOk(sp.score) ? 'ok' : 'bad') : 'mid'}"><div class="corr-ans">${esc(sp.note)}</div></div>`;
       if (sp.part.feedback?.length) {
         html += `<ul style="font-size:12px;color:var(--text-secondary);line-height:1.7;padding-left:18px;margin:10px 0">${sp.part.feedback.map((f) => `<li>${esc(f)}</li>`).join('')}</ul>`;
       }
@@ -819,7 +824,7 @@ function renderResults(score,moduleResults,d,isDE,writeAns,speakAns,entryId,corr
   let answerHtml='';
   if(d.goetheFormat){
     answerHtml=(d.schreibenParts||[]).map(p=>{const v=document.getElementById(p.fieldId)?.value.trim();return v?`<div class="text-display"><h3>${isDE?'Schreiben':'Writing'} — Aufgabe ${p.aufgabe}</h3><div class="readable-text" style="white-space:pre-wrap">${esc(v)}</div></div>`:'';}).join('');
-    answerHtml+=(d.sprechenParts||[]).map(p=>{const v=document.getElementById(p.fieldId)?.value.trim();return v?`<div class="text-display"><h3>${isDE?'Sprechen':'Speaking'} — Teil ${p.teil}</h3><div class="readable-text" style="white-space:pre-wrap">${esc(v)}</div></div>`:'';}).join('');
+    answerHtml+=(d.sprechenParts||[]).map(p=>{const v=document.getElementById(p.fieldId)?.value.trim();return v?`<div class="text-display"><h3>${isDE?'Sprechen':'Speaking'} — ${isDE?'Teil':'Part'} ${p.teil}</h3><div class="readable-text" style="white-space:pre-wrap">${esc(v)}</div></div>`:'';}).join('');
   }else{
     if(writeAns)answerHtml+=`<div class="text-display"><h3>${isDE?'Deine Antwort — Schreiben':'Your Writing Response'}</h3><div class="readable-text" style="white-space:pre-wrap">${esc(writeAns)}</div></div>`;
     if(speakAns)answerHtml+=`<div class="text-display"><h3>${isDE?'Deine Antwort — Sprechen':'Your Speaking Notes'}</h3><div class="readable-text" style="white-space:pre-wrap">${esc(speakAns)}</div></div>`;
