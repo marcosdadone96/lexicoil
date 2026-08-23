@@ -8,7 +8,7 @@
     "dev": "node scripts/netlify-dev.mjs",
     "dev:hybrid": "node scripts/netlify-dev-hybrid.mjs",
     "build:landing": "node scripts/sync-design-system.mjs && cd landing && npm install && npm run build",
-    "build:availability": "node scripts/build-availability.mjs",
+    "build:availability": "node scripts/build-availability.mjs --cap-status beta --cap-lang en --cap-level B1",
     "build:level": "node scripts/build-level.mjs",
     "snapshot:served": "node scripts/snapshot-served.mjs",
     "validate:fidelity": "node scripts/validate-exam-fidelity.mjs --strict",
