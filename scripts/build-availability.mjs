@@ -26,15 +26,23 @@ const LEVEL_OVERRIDES = {
   de: {
     A2: {
       personalized: true,
-      quickModules: false,
-      aiFeatures: false,
-      poolPreview: 4,
+      quickModules: true,
+      aiFeatures: true,
     },
     B1: {
       personalized: true,
+      quickModules: true,
+      aiFeatures: true,
     },
     B2: {
       personalized: true,
+    },
+  },
+  en: {
+    B1: {
+      personalized: true,
+      quickModules: true,
+      aiFeatures: true,
     },
   },
 };

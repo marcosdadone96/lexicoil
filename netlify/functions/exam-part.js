@@ -5,7 +5,7 @@
  *
  * GET  ?lang=&level=&module=[&teil=][&exclude=id,id,...]
  *   → { part } or { part: null }
- *   ?purpose=textos&topicTag=… — Textos read-only passage (B1 Lesen v1); no questions.
+ *   ?purpose=textos&topicTag=… — Textos read-only passage (de A2/B1 Lesen); no questions.
  *   Public when no ?words= (generic pool pick).
  *   With ?words= (personal pool): requires auth + personal_lesen/horen quota
  *   (checkPersonalPoolQuota + CAS via poolRequestId) before serving.

@@ -568,7 +568,7 @@ function vocabHubActionsHtml(selN){
     ?'<button'+vocabHubCardAttrs('ws-exam-card ws-exam-card--oral','vocab_phrases',noDeck)+'><span class="ws-exam-card-ic">💬</span><span class="ws-exam-card-title">Phrases'+phrasesBadge+'</span><span class="ws-exam-card-desc">Select '+VV_MIN_PHRASES+'–'+caps.phrases+' words · gap + order</span></button>'
     :'';
   const textosCard=(goal&&typeof textosSupportedForGoal==='function'&&textosSupportedForGoal(goal))
-    ?'<button type="button" class="ws-exam-card ws-exam-card--practice" onclick="launchVocabHubTextos()"><span class="ws-exam-card-ic">📖</span><span class="ws-exam-card-title">Texts</span><span class="ws-exam-card-desc">Pick a topic · read-only · tap words to translate</span></button>'
+    ?(()=>{const vt=typeof vocabT==='function'?vocabT():null;return '<button type="button" class="ws-exam-card ws-exam-card--practice" onclick="launchVocabHubTextos()"><span class="ws-exam-card-ic">📖</span><span class="ws-exam-card-title">'+(vt?vt.textosTitle:'Texts')+'</span><span class="ws-exam-card-desc">'+(vt?vt.textosDesc:'Pick a topic · read-only · tap words to translate')+'</span></button>';})()
     :'';
   let grid='';
   if(customCard){
@@ -594,14 +594,16 @@ function renderWsVocabFilterChipsHtml(goal){
   const mastN=countMasteredWords(goal);
   const diffN=countDifficultWords(goal);
   const filt=_vocabHub.filter||'all';
+  const vt=typeof vocabT==='function'?vocabT():null;
   const filterChip=(key,lbl,n)=>'<button type="button" class="vv-filter'+(filt===key?' on':'')+'" onclick="setVocabHubFilter(\''+key+'\')">'+lbl+' · '+n+'</button>';
-  return'<div class="vv-filters vv-filters--merged">'+filterChip('all','All',deck.length)+filterChip('new','New',newN)+filterChip('due','To review',dueN)+filterChip('mastered','Mastered',mastN)+filterChip('struggling','Struggling',strugN)+(diffN?filterChip('difficult','Difficult',diffN):'')+'</div>';
+  return'<div class="vv-filters vv-filters--merged">'+filterChip('all',vt?vt.filterAll:'All',deck.length)+filterChip('new',vt?vt.filterNew:'New',newN)+filterChip('due',vt?vt.filterDue:'To review',dueN)+filterChip('mastered',vt?vt.filterMastered:'Mastered',mastN)+filterChip('struggling',vt?vt.filterStruggling:'Struggling',strugN)+(diffN?filterChip('difficult',vt?vt.filterDifficult:'Difficult',diffN):'')+'</div>';
 }
 function refreshVocabHubPanel(){
   const goal=getActiveGoal();
   const el=document.getElementById('wsPanelVocabulary');
   if(!goal||!el)return;
   el.innerHTML=renderWsVocabularyHtml(goal);
+  if(_vocabHub.activity!=='flashcards'&&typeof mountVocabUiLangBar==='function')mountVocabUiLangBar('vvHubUiLangMount');
   if(_vocabHub.activity==='flashcards')renderFcSingleView();
   if(typeof syncNavBackLabels==='function')syncNavBackLabels();
   vocabHubEnsureGenderAi(goal);
@@ -698,7 +700,8 @@ function renderWsVocabularyHtml(goal){
   const selN=vocabHubSelectedIds(goal).length;
   const actionsBlock=vocabHubActionsHtml(selN)+vocabHubSelNoteHtml(selN,deck.length);
   const brk=vocabOverviewBreakdown(goal);
-  const header='<h1 class="exam-config-h1">Your vocabulary</h1><p class="exam-config-lede"><b>'+esc(goalLabel(goal))+'</b> · '+brk.total+' word'+(brk.total===1?'':'s')+' saved'+(brk.due>0?' · <b>'+brk.due+' due today</b>':'')+'.</p>';
+  const vt=typeof vocabT==='function'?vocabT():null;
+  const header='<h1 class="exam-config-h1">'+(vt?vt.hubYourVocabulary:'Your vocabulary')+'</h1><p class="exam-config-lede">'+(vt?vt.hubWordsSaved(esc(goalLabel(goal)),brk.total,brk.due):('<b>'+esc(goalLabel(goal))+'</b> · '+brk.total+' word'+(brk.total===1?'':'s')+' saved'+(brk.due>0?' · <b>'+brk.due+' due today</b>':'')+'.'))+'</p><div id="vvHubUiLangMount" class="vocab-ui-lang-mount"></div>';
   let bodyHtml='';
   if(!deck.length){
     bodyHtml='<p style="font-size:13px;color:var(--text-muted);margin:0">No words saved yet — add one below or save words during practice exams.</p>';

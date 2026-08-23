@@ -12,6 +12,13 @@ import { fileURLToPath } from 'node:url';
 import { partRecordToExamPart } from './audit-pass-2.mjs';
 import { servedExamPath, comboKey, ROOT } from './lib/examPipeline.mjs';
 import { localPublishedDir, readPublishedCatalog, readPublishedExam } from './lib/publishedExamLib.mjs';
+import { createRequire } from 'node:module';
+
+const require = createRequire(import.meta.url);
+const { normalizeExamStructure } = require(path.join(
+  ROOT,
+  'js/engine/validation/normalizeExamStructure.js',
+));
 
 function parseArgs(argv) {
   const out = { lang: 'de', level: 'B1', apply: false };
@@ -94,7 +101,7 @@ async function main() {
       console.error(`Missing published file: ${row.examId}`);
       process.exit(1);
     }
-    exams.push(publishedDocToServedExam(doc));
+    exams.push(normalizeExamStructure(publishedDocToServedExam(doc), { level: opts.level }));
     console.log(`  + ${row.examId} (${doc.parts?.length || 0} parts)`);
   }
 

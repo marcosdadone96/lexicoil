@@ -252,7 +252,7 @@ const LevelAvailability = (() => {
     if (status === 'live') {
       return '<span class="exam-config-badge exam-config-badge--ready">AI</span>';
     }
-    const label = es ? 'Listo' : 'Ready';
+    const label = 'Ready';
     return `<span class="exam-config-badge exam-config-badge--ready">${label}</span>`;
   }
 

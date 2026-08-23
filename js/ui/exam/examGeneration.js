@@ -2038,6 +2038,9 @@ function normalizeGoetheExam(d){
     d.lang=d.lang||'de';
     sanitizeGoetheParts(d);
     attachContentProvenance(d);
+    if(typeof normalizeExamStructure==='function'){
+      d=normalizeExamStructure(d,{level:d.level||S.level});
+    }
     if(!d.modules){
       const lv=d.level||'B1';
       d.modules={
@@ -3449,8 +3452,9 @@ function isExamPoolOnly(){
   }
   return true;
 }
-/** Personal B1 DE — Lesen/Hören pool-first (Vía A); Schreiben/Sprechen use live gen (Vía B). */
 const PERSONAL_POOL_FIRST_SKILLS=new Set(['lesen','reading','horen','listening']);
+/** Goethe de levels with Lesen/Hören pool-first (A2 parity with B1). */
+const PERSONAL_POOL_FIRST_LEVELS=new Set(['A2','B1']);
 /** Credit action for a personal module when live generation is required. */
 function personalGenCreditAction(skills){
   const ordered=orderedPersonalSkills(skills||['lesen']);
@@ -3479,7 +3483,7 @@ if(typeof window!=='undefined'){
 }
 function isPersonalModulePoolFirst(skills,lang,level){
   if(String(lang||'').toLowerCase()!=='de')return false;
-  if(String(level||'').toUpperCase()!=='B1')return false;
+  if(!PERSONAL_POOL_FIRST_LEVELS.has(String(level||'').toUpperCase()))return false;
   const ordered=orderedPersonalSkills(skills||['lesen']);
   if(ordered.length!==1)return false;
   return PERSONAL_POOL_FIRST_SKILLS.has(ordered[0]);
@@ -3514,7 +3518,7 @@ function isPersonalLesenHybridEnabled(skills,lang,level){
   if(isExamPoolOnly()||!isAllowLiveGenEnabled())return false;
   if(typeof window!=='undefined'&&window.EXAM_HYBRID===false)return false;
   if(String(lang||'').toLowerCase()!=='de')return false;
-  if(String(level||'').toUpperCase()!=='B1')return false;
+  if(!PERSONAL_POOL_FIRST_LEVELS.has(String(level||'').toUpperCase()))return false;
   if(typeof fetchHybridExamPlan!=='function'||typeof executeHybridLesenExam!=='function')return false;
   const ordered=orderedPersonalSkills(skills||['lesen']);
   if(ordered.length!==1)return false;

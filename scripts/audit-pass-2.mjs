@@ -3028,6 +3028,7 @@ function partRecordToExamPart(record) {
       }
     }
   } else if (module === 'horen') {
+    const passage = record.passage || {};
     if (Array.isArray(record.segments) && record.segments.length) {
       part.segments = record.segments.map((seg) => ({
         ...seg,
@@ -3038,15 +3039,20 @@ function partRecordToExamPart(record) {
         part.blueprintSlot = 'picture_matching';
         part.plays = 1;
       }
-    }
-    const passage = record.passage || {};
-    part.transcript = passage.transcript || passage.text || '';
-    part.questions = (record.questions || []).map((q) => normPartQuestion(q, module, teil, defaultLevel));
-    // When no segments, propagate the passageId from questions so flattenExam can
-    // build the flat passages[] with the correct id and CHK-8 can resolve it.
-    if (!part.segments?.length) {
+      // Derived flat index — segments remain authority for render/scoring/validation.
+      part.questions = part.segments.flatMap((seg) => seg.questions || []);
+    } else {
+      part.transcript = passage.transcript || passage.text || '';
+      part.questions = (record.questions || []).map((q) => normPartQuestion(q, module, teil, defaultLevel));
       const firstPid = (record.questions || []).find((q) => q.passageId)?.passageId;
       if (firstPid) part.passageId = firstPid;
+    }
+    if (!part.transcript) {
+      part.transcript =
+        passage.transcript ||
+        passage.text ||
+        (part.segments || []).map((s) => s.transcript).filter(Boolean).join('\n\n') ||
+        '';
     }
   } else if (module === 'schreiben') {
     const q0 = (record.questions || [])[0];
@@ -3057,8 +3063,15 @@ function partRecordToExamPart(record) {
       passage.text ||
       (q0 && q0.question) ||
       '';
-    part.minWords = record.minWords ?? (Number(teil) === 3 ? 40 : 80);
-    part.maxWords = record.maxWords ?? part.minWords;
+    const lv = String(defaultLevel || record.level || '').toUpperCase();
+    const wordsMap =
+      lv === 'A2'
+        ? { 1: { min: 20, max: 30 }, 2: { min: 30, max: 40 }, 3: { min: 40, max: 40 } }
+        : { 1: { min: 80, max: 80 }, 2: { min: 80, max: 80 }, 3: { min: 40, max: 40 } };
+    const wordSpec = wordsMap[Number(teil)] || wordsMap[1];
+    part.minWords = record.minWords ?? wordSpec.min;
+    part.maxWords = record.maxWords ?? wordSpec.max;
+    part.targetWords = record.targetWords ?? wordSpec.max;
     part.fieldId = record.fieldId;
     part.taskFormat = record.taskFormat || passage.title || record.taskFormat;
     const task = part.task;
@@ -3073,6 +3086,7 @@ function partRecordToExamPart(record) {
     part.level = defaultLevel || record.level;
     part.questions = (record.questions || []).map((q) => normPartQuestion(q, module, teil, defaultLevel));
     SprechenBriefing.enrichSprechenExamPart(part, record);
+    if (!part.topic && record.topicTag) part.topic = record.topicTag;
   } else {
     return null;
   }

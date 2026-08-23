@@ -222,8 +222,16 @@ function examConfigStepLabel(num,text){
   return`<p class="ec-step-label"><span class="ec-step-num">${num}</span> ${esc(text)}</p>`;
 }
 function examConfigSkillPoolReady(skill,goal){
-  if(goal.subject!=='de'||goal.level!=='B1')return skill!=='sprechen';
-  return true;
+  const sub=goal?.subject||'de';
+  const lv=String(goal.level||'').toUpperCase();
+  if(sub==='de'){
+    if(lv==='A2'||lv==='B1')return true;
+    return skill!=='sprechen';
+  }
+  if(sub==='en'&&lv==='B1'){
+    return typeof QuestionLibrary!=='undefined'&&QuestionLibrary.hasLibrary('en','B1');
+  }
+  return skill!=='sprechen';
 }
 function examConfigSkillGridHtml(ui,goal){
   const isDE=goal.subject==='de';

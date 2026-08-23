@@ -102,6 +102,29 @@ function vocabModuleStrings(lang) {
       savedPhrasesLbl: 'Phrases',
       savedListeningLbl: 'Listening',
       savedFlashcardsLbl: 'Flashcards',
+      hubYourVocabulary: 'Your vocabulary',
+      hubWordsSaved: (goalLabel, total, due) => {
+        const w = total === 1 ? 'word' : 'words';
+        const duePart = due > 0 ? ` · <b>${due} due today</b>` : '';
+        return `<b>${goalLabel}</b> · ${total} ${w} saved${duePart}.`;
+      },
+      filterAll: 'All',
+      filterNew: 'New',
+      filterDue: 'To review',
+      filterMastered: 'Mastered',
+      filterStruggling: 'Struggling',
+      filterDifficult: 'Difficult',
+      textosTitle: 'Texts',
+      textosDesc: 'Pick a topic · read-only · tap words to translate',
+      textosLoading: 'Loading passage…',
+      textosNoMatch: 'No texts for this topic yet.',
+      textosSelectTopic: 'Select a topic above to load a passage.',
+      textosAnotherText: 'Another text',
+      textosB1Only: 'Texts is available for German A2 and B1 only.',
+      textosTempUnavailable: 'Texts temporarily unavailable.',
+      textosLoadError: 'Could not load a text. Try again in a moment.',
+      textosNoMatchRetry: 'No texts for this topic yet — try another.',
+      textosChooseTopic: 'Choose a topic to start reading.',
     },
     es: {
       interfaceLang: 'Interfaz',
@@ -190,6 +213,29 @@ function vocabModuleStrings(lang) {
       savedPhrasesLbl: 'Frases',
       savedListeningLbl: 'Listening',
       savedFlashcardsLbl: 'Tarjetas',
+      hubYourVocabulary: 'Vocabulario',
+      hubWordsSaved: (goalLabel, total, due) => {
+        const w = total === 1 ? 'palabra' : 'palabras';
+        const duePart = due > 0 ? ` · <b>${due} pendientes hoy</b>` : '';
+        return `<b>${goalLabel}</b> · ${total} ${w} guardada${total === 1 ? '' : 's'}${duePart}.`;
+      },
+      filterAll: 'Todas',
+      filterNew: 'Nuevas',
+      filterDue: 'Pendientes',
+      filterMastered: 'Dominadas',
+      filterStruggling: 'Difíciles',
+      filterDifficult: 'Problemáticas',
+      textosTitle: 'Textos',
+      textosDesc: 'Elige un tema · solo lectura · toca palabras para traducir',
+      textosLoading: 'Cargando texto…',
+      textosNoMatch: 'Aún no hay textos para este tema.',
+      textosSelectTopic: 'Elige un tema arriba para cargar un texto.',
+      textosAnotherText: 'Otro texto',
+      textosB1Only: 'Textos solo está disponible para alemán A2 y B1.',
+      textosTempUnavailable: 'Textos no disponible temporalmente.',
+      textosLoadError: 'No se pudo cargar un texto. Inténtalo de nuevo en un momento.',
+      textosNoMatchRetry: 'Aún no hay textos para este tema — prueba otro.',
+      textosChooseTopic: 'Elige un tema para empezar a leer.',
     },
     fr: {
       interfaceLang: 'Interface',
@@ -278,6 +324,29 @@ function vocabModuleStrings(lang) {
       savedPhrasesLbl: 'Phrases',
       savedListeningLbl: 'Écoute',
       savedFlashcardsLbl: 'Cartes',
+      hubYourVocabulary: 'Vocabulaire',
+      hubWordsSaved: (goalLabel, total, due) => {
+        const w = total === 1 ? 'mot' : 'mots';
+        const duePart = due > 0 ? ` · <b>${due} à réviser aujourd’hui</b>` : '';
+        return `<b>${goalLabel}</b> · ${total} ${w} enregistré${total === 1 ? '' : 's'}${duePart}.`;
+      },
+      filterAll: 'Tous',
+      filterNew: 'Nouveaux',
+      filterDue: 'À réviser',
+      filterMastered: 'Maîtrisés',
+      filterStruggling: 'Difficiles',
+      filterDifficult: 'Problématiques',
+      textosTitle: 'Textes',
+      textosDesc: 'Choisissez un thème · lecture seule · touchez les mots pour traduire',
+      textosLoading: 'Chargement du texte…',
+      textosNoMatch: 'Pas encore de textes pour ce thème.',
+      textosSelectTopic: 'Choisissez un thème ci-dessus pour charger un texte.',
+      textosAnotherText: 'Autre texte',
+      textosB1Only: 'Textes est disponible pour l’allemand A2 et B1 uniquement.',
+      textosTempUnavailable: 'Textes temporairement indisponible.',
+      textosLoadError: 'Impossible de charger un texte. Réessayez dans un instant.',
+      textosNoMatchRetry: 'Pas encore de textes pour ce thème — essayez-en un autre.',
+      textosChooseTopic: 'Choisissez un thème pour commencer à lire.',
     },
     it: {
       interfaceLang: 'Interfaccia',
@@ -366,6 +435,29 @@ function vocabModuleStrings(lang) {
       savedPhrasesLbl: 'Frasi',
       savedListeningLbl: 'Ascolto',
       savedFlashcardsLbl: 'Flashcard',
+      hubYourVocabulary: 'Vocabolario',
+      hubWordsSaved: (goalLabel, total, due) => {
+        const w = total === 1 ? 'parola' : 'parole';
+        const duePart = due > 0 ? ` · <b>${due} in scadenza oggi</b>` : '';
+        return `<b>${goalLabel}</b> · ${total} ${w} salvata${total === 1 ? '' : 'e'}${duePart}.`;
+      },
+      filterAll: 'Tutte',
+      filterNew: 'Nuove',
+      filterDue: 'Da ripassare',
+      filterMastered: 'Padroneggiate',
+      filterStruggling: 'Difficili',
+      filterDifficult: 'Problematiche',
+      textosTitle: 'Testi',
+      textosDesc: 'Scegli un tema · sola lettura · tocca le parole per tradurre',
+      textosLoading: 'Caricamento testo…',
+      textosNoMatch: 'Nessun testo per questo tema.',
+      textosSelectTopic: 'Scegli un tema sopra per caricare un brano.',
+      textosAnotherText: 'Altro testo',
+      textosB1Only: 'I testi sono disponibili solo per tedesco A2 e B1.',
+      textosTempUnavailable: 'Testi temporaneamente non disponibili.',
+      textosLoadError: 'Impossibile caricare un testo. Riprova tra un momento.',
+      textosNoMatchRetry: 'Nessun testo per questo tema — provane un altro.',
+      textosChooseTopic: 'Scegli un tema per iniziare a leggere.',
     },
   };
   return L[lang] || L.en;

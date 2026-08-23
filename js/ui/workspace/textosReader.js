@@ -1,9 +1,24 @@
 // ═══════════════════════════════════════════
-// TEXTOS — read-only Lesen passages by B1 topic (v1)
+// TEXTOS — read-only Lesen passages by topic (de A2 + B1)
 // ═══════════════════════════════════════════
 
+function textosUi() {
+  return typeof vocabT === 'function' ? vocabT() : null;
+}
+
 function textosSupportedForGoal(goal) {
-  return goal && String(goal.subject || '').toLowerCase() === 'de' && String(goal.level || '').toUpperCase() === 'B1';
+  if (!goal || String(goal.subject || '').toLowerCase() !== 'de') return false;
+  const lv = String(goal.level || '').toUpperCase();
+  return lv === 'B1' || lv === 'A2';
+}
+
+function textosTopicList(goal) {
+  const lv = String(goal?.level || '').toUpperCase();
+  if (lv === 'A2' && typeof A2Topics !== 'undefined' && A2Topics.A2_OFFICIAL_TOPICS?.length) {
+    return A2Topics.A2_OFFICIAL_TOPICS;
+  }
+  if (typeof B1Topics !== 'undefined' && B1Topics.B1_TOPICS?.length) return B1Topics.B1_TOPICS;
+  return [];
 }
 
 function clearVocabHubTextosMode() {
@@ -18,9 +33,10 @@ function clearVocabHubTextosMode() {
 
 function launchVocabHubTextos() {
   const goal = typeof getActiveGoal === 'function' ? getActiveGoal() : null;
+  const vt = textosUi();
   if (!goal) return;
   if (!textosSupportedForGoal(goal)) {
-    lcToast('Texts is available for German B1 only (v1).', 'warn');
+    lcToast(vt?.textosB1Only || 'Texts is available for German A2 and B1 only.', 'warn');
     return;
   }
   if (typeof _vocabHub === 'undefined') return;
@@ -38,13 +54,8 @@ function launchVocabHubTextos() {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function textosTopicList() {
-  if (typeof B1Topics !== 'undefined' && B1Topics.B1_TOPICS?.length) return B1Topics.B1_TOPICS;
-  return [];
-}
-
-function textosTopicPickerHtml() {
-  const topics = textosTopicList();
+function textosTopicPickerHtml(goal) {
+  const topics = textosTopicList(goal);
   const chips = topics.map((t) => {
     const on = _vocabHub.textosTopic === t ? ' on' : '';
     return `<button type="button" class="vv-filter${on}" onclick='selectTextosTopic(${JSON.stringify(t)})'>${esc(t)}</button>`;
@@ -60,6 +71,7 @@ function selectTextosTopic(topic) {
 
 async function loadTextosPassage() {
   const goal = typeof getActiveGoal === 'function' ? getActiveGoal() : null;
+  const vt = textosUi();
   if (!goal || !_vocabHub.textosTopic) return;
   if (typeof fetchTextosReading !== 'function') {
     _vocabHub.textosError = 'textos_unavailable';
@@ -93,8 +105,8 @@ async function loadTextosPassage() {
     _vocabHub.textosError = err?.code || err?.message || 'textos_no_match';
     refreshVocabHubPanel();
     if (_vocabHub.textosError === 'rate_limited') lcToast('Too many requests — wait a moment.', 'warn');
-    else if (_vocabHub.textosError === 'official_index_stale') lcToast('Texts temporarily unavailable.', 'error');
-    else if (_vocabHub.textosError === 'textos_no_match') lcToast('No texts for this topic yet.', 'warn');
+    else if (_vocabHub.textosError === 'official_index_stale') lcToast(vt?.textosTempUnavailable || 'Texts temporarily unavailable.', 'error');
+    else if (_vocabHub.textosError === 'textos_no_match') lcToast(vt?.textosNoMatch || 'No texts for this topic yet.', 'warn');
   }
 }
 
@@ -105,13 +117,14 @@ function bindTextosPassageMeta(data) {
 }
 
 function textosReaderToolbarHtml(blockId) {
+  const vt = textosUi();
   const ui = typeof examUiStrings === 'function'
     ? examUiStrings(typeof resolveExamLang === 'function' ? resolveExamLang(null, S.subject) : S.subject)
     : { translatePassage: 'Translate passage' };
   const trLabel = ui.translatePassage || 'Translate passage';
   return `<div class="textos-toolbar">` +
     `<button type="button" class="btn-sm" id="passBtn_${blockId}" onclick="translatePassage('${blockId}')">${esc(trLabel)}</button>` +
-    `<button type="button" class="btn-sm" onclick="loadTextosPassage()">Another text</button>` +
+    `<button type="button" class="btn-sm" onclick="loadTextosPassage()">${esc(vt?.textosAnotherText || 'Another text')}</button>` +
     `</div>` +
     `<div class="passage-translation" id="passTrans_${blockId}" style="display:none;margin-top:10px;padding:12px;background:var(--surface2,rgba(127,127,127,.08));border-radius:8px;font-size:14px;line-height:1.65"></div>`;
 }
@@ -129,22 +142,23 @@ function textosReaderBodyHtml(data) {
 }
 
 function renderTextosHubHtml(goal) {
-  const back = typeof renderNavBackBtn === 'function' ? renderNavBackBtn('Vocabulary') : '';
-  const header = '<h1 class="exam-config-h1">Texts</h1><p class="exam-config-lede">Pick a topic · read-only · tap words to translate</p>';
-  let body = textosTopicPickerHtml();
+  const vt = textosUi();
+  const back = typeof renderNavBackBtn === 'function' ? renderNavBackBtn(vt?.vocabulary || 'Vocabulary') : '';
+  const header = `<h1 class="exam-config-h1">${esc(vt?.textosTitle || 'Texts')}</h1><p class="exam-config-lede">${esc(vt?.textosDesc || 'Pick a topic · read-only · tap words to translate')}</p>`;
+  let body = textosTopicPickerHtml(goal);
   if (_vocabHub.textosLoading) {
-    body += '<p class="note" style="margin-top:16px">Loading passage…</p>';
+    body += `<p class="note" style="margin-top:16px">${esc(vt?.textosLoading || 'Loading passage…')}</p>`;
   } else if (_vocabHub.textosError && !_vocabHub.textosPayload) {
     const msg = _vocabHub.textosError === 'textos_no_match'
-      ? 'No texts for this topic yet — try another.'
-      : 'Could not load a text. Try again in a moment.';
+      ? (vt?.textosNoMatchRetry || 'No texts for this topic yet — try another.')
+      : (vt?.textosLoadError || 'Could not load a text. Try again in a moment.');
     body += `<p class="note" style="margin-top:16px;color:var(--text-muted)">${esc(msg)}</p>`;
   } else if (_vocabHub.textosPayload?.reading) {
     body += `<div class="ws-panel textos-reader-panel">${textosReaderBodyHtml(_vocabHub.textosPayload)}</div>`;
   } else if (_vocabHub.textosTopic) {
-    body += '<p class="note" style="margin-top:16px">Select a topic above to load a passage.</p>';
+    body += `<p class="note" style="margin-top:16px">${esc(vt?.textosSelectTopic || 'Select a topic above to load a passage.')}</p>`;
   } else {
-    body += '<p class="note" style="margin-top:16px">Choose a B1 topic to start reading.</p>';
+    body += `<p class="note" style="margin-top:16px">${esc(vt?.textosChooseTopic || 'Choose a topic to start reading.')}</p>`;
   }
   return `<div class="vv-panel vv-panel--textos">${back}${header}<div class="ws-panel">${body}</div></div>`;
 }

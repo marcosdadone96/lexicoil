@@ -164,7 +164,13 @@ function countPassagesInPart(part, bpPart) {
   const layout = String(bpPart?.layout || '');
 
   if (slot.includes('forum') || slot.includes('opinion')) {
-    return (part.items || []).filter((it) => (it.signText || it.text || '').trim()).length;
+    const fromItems = (part.items || []).filter((it) => (it.signText || it.text || '').trim()).length;
+    if (fromItems) return fromItems;
+    const fromQuestions = (part.questions || []).filter((q) =>
+      String(q.signText || q.text || '').trim(),
+    ).length;
+    if (fromQuestions) return fromQuestions;
+    return part.text?.trim() ? 1 : 0;
   }
   if (slot.includes('ads_matching') || slot === 'ads_matching') {
     const expPassages = Number(bpPart?.passagesPerPart || 0);
@@ -239,6 +245,7 @@ function countPassagesInPart(part, bpPart) {
     if (t.trim()) texts.add(String(pid || t.trim().slice(0, 240)));
   });
   if (texts.size) return texts.size;
+  if (part.transcript?.trim()) return 1;
   return part.text?.trim() ? 1 : 0;
 }
 
@@ -268,16 +275,21 @@ function expectedPassageCount(bpPart) {
 
 function collectPartQuestions(part) {
   const qs = [];
+  // Mirror flattenExam / ExamValidator._walk: segments[] wins when present.
+  if (Array.isArray(part?.segments) && part.segments.length > 0) {
+    for (const seg of part.segments) {
+      if (Array.isArray(seg?.questions)) qs.push(...seg.questions);
+      for (const it of seg.items || []) {
+        if (it?.correct != null || it?.question || it?.type) qs.push(it);
+      }
+    }
+    return qs;
+  }
   if (Array.isArray(part?.questions)) qs.push(...part.questions);
   if (Array.isArray(part?.items)) {
     for (const it of part.items) {
       if (Array.isArray(it?.questions)) qs.push(...it.questions);
       else if (it?.correct != null || it?.question || it?.text) qs.push(it);
-    }
-  }
-  if (Array.isArray(part?.segments)) {
-    for (const seg of part.segments) {
-      if (Array.isArray(seg?.questions)) qs.push(...seg.questions);
     }
   }
   return qs;

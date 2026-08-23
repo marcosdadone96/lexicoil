@@ -351,9 +351,14 @@ class ExamValidator {
           }
           this._dispatchQuestion(it, `${base}.items[${ii}]`, part, fn);
         });
-        (part.questions || []).forEach((q, qi) =>
-          this._dispatchQuestion(q, `${base}.questions[${qi}]`, part, fn),
-        );
+        // Eje-2 Fase B: when segments[] exist they are the scorable authority (flattenExam,
+        // examRunner, seed flattenHorenQuestions). part.questions[] is a derived index only.
+        const segmentsAuthority = (part.segments || []).length > 0;
+        if (!segmentsAuthority) {
+          (part.questions || []).forEach((q, qi) =>
+            this._dispatchQuestion(q, `${base}.questions[${qi}]`, part, fn),
+          );
+        }
         (part.segments || []).forEach((seg, si) => {
           const segPath = `${base}.segments[${si}]`;
           if (seg.options || this._itemHasCorrect(seg)) fn(seg, segPath, 'mcq', part);

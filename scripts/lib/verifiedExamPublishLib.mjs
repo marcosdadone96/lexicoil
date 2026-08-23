@@ -92,8 +92,8 @@ function oralPartRecord(batch, file, module, teil, level = 'B1') {
   const schreibenWords =
     lv === 'A2'
       ? { 1: { min: 20, max: 30 }, 2: { min: 30, max: 40 } }
-      : { 1: { min: 80, max: 120 }, 2: { min: 80, max: 120 }, 3: { min: 40, max: 60 } };
-  const words = schreibenWords[teil] || { min: 80, max: 120 };
+      : { 1: { min: 80, max: 80 }, 2: { min: 80, max: 80 }, 3: { min: 40, max: 40 } };
+  const words = schreibenWords[teil] || { min: 80, max: 80 };
   return {
     id: `${base}-t${teil}`,
     module,

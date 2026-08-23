@@ -68,16 +68,16 @@ const MATRIX_LANGS = ['de', 'en'];
 assert.equal(LevelAvailability.showBetaExamLevels(), false, 'LEXICOIL_SHOW_BETA_LEVELS off by default');
 assert.equal(availability.de?.B1?.status, 'live', 'manifest: de B1 is live');
 assert.equal(availability.de?.A2?.status, 'live', 'manifest: de A2 is live');
-assert.equal(availability.de?.A2?.personalized, false, 'manifest: de A2 personalized off');
+assert.equal(availability.de?.A2?.personalized, true, 'manifest: de A2 personalized on');
 assert.equal(availability.de?.B1?.personalized, true, 'manifest: de B1 personalized on');
 assert.equal(LevelAvailability.getLevelUiStatus('de', 'B1'), 'ready', 'getLevelUiStatus(de,B1) ready');
 assert.equal(LevelAvailability.getLevelUiStatus('de', 'A2'), 'ready', 'getLevelUiStatus(de,A2) ready');
 assert.equal(LevelAvailability.isPersonalizedAllowed('de', 'B1'), true, 'de B1 personalized allowed');
-assert.equal(LevelAvailability.isPersonalizedAllowed('de', 'A2'), false, 'de A2 personalized blocked');
-assert.equal(LevelAvailability.isQuickModuleAllowed('de', 'A2'), false, 'de A2 quick modules blocked');
-assert.equal(LevelAvailability.isAiFeatureAllowed('de', 'A2'), false, 'de A2 AI features blocked');
-assert.equal(LevelAvailability.isCuratedOnlyLevel('de', 'A2'), true, 'de A2 curated library only');
-assert.equal(LevelAvailability.poolPreviewLimitFor('de', 'A2'), 4, 'de A2 pool preview = 4 exams');
+assert.equal(LevelAvailability.isPersonalizedAllowed('de', 'A2'), true, 'de A2 personalized allowed');
+assert.equal(LevelAvailability.isQuickModuleAllowed('de', 'A2'), true, 'de A2 quick modules allowed');
+assert.equal(LevelAvailability.isAiFeatureAllowed('de', 'A2'), true, 'de A2 AI features allowed');
+assert.equal(LevelAvailability.isCuratedOnlyLevel('de', 'A2'), false, 'de A2 not curated-only');
+assert.equal(LevelAvailability.poolPreviewLimitFor('de', 'A2'), null, 'de A2 no pool preview cap');
 assert.equal(LevelAvailability.isQuickModuleAllowed('de', 'B1'), true, 'de B1 quick modules allowed');
 for (const betaLevel of ['A1', 'B2', 'C1', 'C2']) {
   assert.equal(availability.de?.[betaLevel]?.status, 'beta', `manifest: de ${betaLevel} stays beta`);
@@ -87,6 +87,14 @@ for (const betaLevel of ['A1', 'B2', 'C1', 'C2']) {
 assert.equal(LevelAvailability.isExamLevelOffered('de', 'B1'), true, 'de B1 offered');
 assert.equal(LevelAvailability.isExamLevelOffered('de', 'A2'), true, 'de A2 offered');
 assert.equal(LevelAvailability.selectableLevels('de').sort().join(','), 'A2,B1', 'A2 and B1 selectable for de');
+assert.equal(availability.en?.B1?.status, 'live', 'manifest: en B1 is live');
+assert.equal(availability.en?.B1?.personalized, true, 'manifest: en B1 personalized on');
+assert.equal(LevelAvailability.getLevelUiStatus('en', 'B1'), 'ready', 'getLevelUiStatus(en,B1) ready');
+assert.equal(LevelAvailability.isPersonalizedAllowed('en', 'B1'), true, 'en B1 personalized allowed');
+assert.equal(LevelAvailability.isQuickModuleAllowed('en', 'B1'), true, 'en B1 quick modules allowed');
+assert.equal(LevelAvailability.isAiFeatureAllowed('en', 'B1'), true, 'en B1 AI features allowed');
+assert.equal(LevelAvailability.isExamLevelOffered('en', 'B1'), true, 'en B1 offered');
+assert.equal(LevelAvailability.selectableLevels('en').sort().join(','), 'B1', 'B1 selectable for en');
 
 function manifestUiStatus(lang, level) {
   const st = availability[lang]?.[level]?.status || 'hidden';
@@ -152,6 +160,7 @@ const liveCombos = listLiveCombos(availability);
 assert.ok(liveCombos.length >= 2, `live combos include de/B1 and de/A2 (got: ${liveCombos.join(', ')})`);
 assert.ok(liveCombos.includes('de/B1'), 'de/B1 live');
 assert.ok(liveCombos.includes('de/A2'), 'de/A2 live');
+assert.ok(liveCombos.includes('en/B1'), 'en/B1 live');
 assert.ok(readyCount >= liveCombos.length, 'ready count matches live combos');
 assert.ok(soonCount >= 1, 'non-servable combos marked soon');
 

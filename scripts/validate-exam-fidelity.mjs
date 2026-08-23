@@ -25,6 +25,10 @@ import {
 const require = createRequire(import.meta.url);
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const { validateExamAgainstBlueprint } = require(path.join(ROOT, 'js/engine/validation/blueprintFidelity.js'));
+const { normalizeExamStructure } = require(path.join(
+  ROOT,
+  'js/engine/validation/normalizeExamStructure.js',
+));
 
 function parseArgs(argv) {
   const opts = {
@@ -224,7 +228,12 @@ function main() {
         : '';
     console.log(`\n=== ${target.lang.toUpperCase()} ${target.level}${statusTag} — ${target.rel} (${exams.length} exam(s)) ===`);
 
-    for (const { id, exam } of exams) {
+    const normalizedExams = exams.map(({ id, exam }) => ({
+      id,
+      exam: normalizeExamStructure(exam, { level: target.level }),
+    }));
+
+    for (const { id, exam } of normalizedExams) {
       const examLabel = `${target.rel} :: ${id}`;
       const result = validateExamAgainstBlueprint(exam, blueprint, { examLabel });
       const row = {
@@ -251,7 +260,7 @@ function main() {
     }
 
     const dedupe = validateCrossExamPassageUniqueness(
-      exams.map(({ id, exam }) => ({
+      normalizedExams.map(({ id, exam }) => ({
         id,
         exam,
         label: `${target.rel} :: ${id}`,

@@ -28,6 +28,22 @@ function normalizeGradingToken(val) {
   return s.toLowerCase();
 }
 
+function pictureBankKeys(part) {
+  const segs = part?.segments || [];
+  const pics = segs[0]?.pictures || part?.pictures || [];
+  if (!Array.isArray(pics) || !pics.length) return [];
+  return pics.map((p, i) => {
+    if (p && typeof p === 'object' && p.key != null) {
+      return String(p.key).trim().toLowerCase();
+    }
+    if (typeof p === 'string') {
+      const m = p.match(/^([a-i])\)/i);
+      if (m) return m[1].toLowerCase();
+    }
+    return String.fromCharCode(97 + i);
+  });
+}
+
 function getRenderableAnswerKeys(q, part) {
   const type = String(q?.type || q?.questionType || '').toLowerCase();
   if (type === 'yn' || type === 'ja_nein') return ['J', 'N'];
@@ -39,6 +55,11 @@ function getRenderableAnswerKeys(q, part) {
   if (type === 'person_multi') return (q.options || []).map((o) => String(o));
   if (type === 'matching' || type === 'match') {
     let opts = q.options || [];
+    const picKeys = pictureBankKeys(part);
+    if (q._keyOnlyMatch || (!opts.length && picKeys.length >= 2)) {
+      if (opts.length) return opts.map((o) => optKey(o)).filter(Boolean);
+      return picKeys;
+    }
     if (part?.ads?.length >= 2 && !opts.length) {
       opts = part.ads.map((a, i) => ({
         key: String(a.key || String.fromCharCode(65 + i)).toUpperCase(),

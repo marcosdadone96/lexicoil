@@ -22,6 +22,18 @@ import {
   officialCellsForLevel,
 } from './publishedExamLib.mjs';
 import { isExamPublishable } from '../audit-pass-2.mjs';
+import { resolveBlueprintForLangLevel } from './examPipeline.mjs';
+import { createRequire } from 'node:module';
+
+const require = createRequire(import.meta.url);
+const { validateExamAgainstBlueprint } = require(path.join(
+  ROOT,
+  'js/engine/validation/blueprintFidelity.js',
+));
+const { normalizeExamStructure } = require(path.join(
+  ROOT,
+  'js/engine/validation/normalizeExamStructure.js',
+));
 
 const ASM_DIR = path.join(ROOT, 'batches/ready/assembled-from-verified');
 const OFFICIAL_ASM_RE = /^assembled-exam-[a-z0-9]+-verified-e\d+\.json$/i;
@@ -120,6 +132,20 @@ export async function applyPublishExamFromAssembled(opts) {
     throw new Error(
       `GATE-1 BLOCK — ${path.basename(from)}: ${(gate1.blocking || []).length} finding(s) — ${sample}`,
     );
+  }
+
+  const blueprint = resolveBlueprintForLangLevel(lang, level);
+  if (blueprint && rawAssembled.exam) {
+    const normalized = normalizeExamStructure(rawAssembled.exam, { level });
+    const fidelity = validateExamAgainstBlueprint(normalized, blueprint, {
+      examLabel: `${examId} (pre-publish)`,
+    });
+    if (!fidelity.ok) {
+      const sample = (fidelity.errors || []).slice(0, 4).join('; ');
+      throw new Error(
+        `GATE-2 FIDELITY — ${path.basename(from)}: ${fidelity.errors.length} issue(s) — ${sample}`,
+      );
+    }
   }
 
   const { byId: seedById, source: seedFile } = loadSeedRecords(lang, level);

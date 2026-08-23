@@ -353,8 +353,32 @@
             : 4;
     part.points = [];
     part.prompts = [];
+    const topic =
+      record?.topic ||
+      record?.topicTag ||
+      record?.topicTags?.[0] ||
+      q0?.topicTags?.[0] ||
+      part.topic ||
+      part.topicTags?.[0] ||
+      '';
+    if (topic) {
+      part.topic = topic;
+      if (!Array.isArray(part.topicTags) || !part.topicTags.length) {
+        part.topicTags = record?.topicTags?.length ? [...record.topicTags] : [topic];
+      }
+    }
     if (Number(teil) === 2 && Array.isArray(record?.slides) && record.slides.length) {
       part.slides = record.slides;
+    } else if (level === 'B1' && Number(teil) === 2 && (!part.slides || !part.slides.length)) {
+      const slides =
+        global.GoetheB1Constants?.GOETHE_B1_PRESENTATION_SLIDES || [
+          { n: 1, title: 'Thema vorstellen + Struktur' },
+          { n: 2, title: 'Persönliche Erfahrung' },
+          { n: 3, title: 'Situation im Heimatland' },
+          { n: 4, title: 'Vor- und Nachteile + Meinung' },
+          { n: 5, title: 'Abschluss + Dank' },
+        ];
+      part.slides = slides.map((s) => ({ ...s }));
     }
     return part;
   }

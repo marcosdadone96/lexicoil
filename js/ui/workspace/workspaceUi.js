@@ -164,6 +164,14 @@ function wsGoalSubline(goal){
   if(due>0)parts.push('<b>'+due+' due for review</b>');
   return parts.join(' · ');
 }
+function wsQuickModuleLabels(goal){
+  const sub=goal?.subject||'de';
+  const ui=typeof examUiStrings==='function'?examUiStrings(sub==='de'?'de':sub==='es'?'es':'en'):null;
+  if(sub==='de'&&ui){
+    return{reading:ui.reading,listening:ui.listening,writing:ui.writing,speaking:'Sprechvorbereitung'};
+  }
+  return{reading:'Reading',listening:'Listening',writing:'Writing',speaking:'Speaking prep'};
+}
 function renderWsExamsHtml(goal){
   const gid=esc(goal.id);
   const level=goal.level;
@@ -185,13 +193,14 @@ function renderWsExamsHtml(goal){
     ?MasteryView.renderRecommendedExamCardHtml(goal,{variant:'workspace',compact:true,showArt:false})
     :renderWsCoachBannerHtml(goal,act,true);
   const quickAllowed=typeof isQuickModuleAllowed!=='function'||isQuickModuleAllowed(goal.subject,level);
+  const qLbl=wsQuickModuleLabels(goal);
   const quickHtml=quickAllowed
-    ?`<p class="ws-seclbl">Quick modules</p>
+    ?`<p class="ws-seclbl">${goal.subject==='de'?'Schnellmodule':'Quick modules'}</p>
     <div class="quick-btns" style="margin-bottom:18px">
-      <button class="quick-btn" onclick="startQuickForGoal('${gid}','reading')">Reading</button>
-      <button class="quick-btn" onclick="startQuickForGoal('${gid}','listening')">Listening</button>
-      <button class="quick-btn" onclick="startQuickForGoal('${gid}','writing')">Writing</button>
-      <button class="quick-btn" onclick="startQuickForGoal('${gid}','gapfill')">Speaking prep</button>
+      <button class="quick-btn" onclick="startQuickForGoal('${gid}','reading')">${esc(qLbl.reading)}</button>
+      <button class="quick-btn" onclick="startQuickForGoal('${gid}','listening')">${esc(qLbl.listening)}</button>
+      <button class="quick-btn" onclick="startQuickForGoal('${gid}','writing')">${esc(qLbl.writing)}</button>
+      <button class="quick-btn" onclick="startQuickForGoal('${gid}','gapfill')">${esc(qLbl.speaking)}</button>
     </div>`
     :'';
   return`${resumeHtml}
