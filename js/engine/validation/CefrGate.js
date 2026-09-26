@@ -146,6 +146,42 @@ const CefrGate = (() => {
     return Math.round((total / sentences.length) * 10) / 10;
   }
 
+  // English markers are ambiguous in a way German ones are not: before/after/since/until are
+  // mostly prepositions ("until Thursday", "after lunch"), "that" is often a demonstrative
+  // ("that night"), and when/who/which open questions. Counting the bare word made B1 prose
+  // fail subordinate_too_many; a sentence now counts only when the marker introduces a clause.
+  const EN_ALWAYS_CLAUSE = new Set(['because', 'although', 'though', 'if', 'unless', 'whereas', 'whenever', 'while']);
+  const EN_WH_CLAUSE = new Set(['when', 'who', 'whom', 'whose', 'which']);
+  const EN_PREP_OR_CLAUSE = new Set(['before', 'after', 'since', 'until']);
+  const EN_SUBJECT = new Set(['i', 'you', 'he', 'she', 'it', 'we', 'they', 'there', 'everyone', 'someone', 'nobody', 'people']);
+  const EN_THAT_DEMONSTRATIVE_NOUN = new Set([
+    'night', 'day', 'morning', 'afternoon', 'evening', 'week', 'weekend', 'month', 'year', 'time', 'moment',
+    'summer', 'winter', 'spring', 'autumn', 'point', 'way', 'kind', 'one',
+  ]);
+  const EN_PREPOSITION = new Set(['at', 'in', 'on', 'by', 'for', 'of', 'with', 'from', 'like', 'about', 'after', 'before']);
+  // Capitalised but not a subject: "until Thursday", "after Christmas", "since May".
+  const EN_CALENDAR = new Set([
+    'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday', 'january', 'february', 'march',
+    'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december', 'christmas', 'easter',
+  ]);
+
+  function enSentenceHasClause(sentence) {
+    const words = sentence.split(/\s+/).filter(Boolean);
+    const bare = words.map((w) => w.toLowerCase().replace(/^[^a-z']+|[^a-z']+$/g, ''));
+    const isQuestion = /\?\s*["'’”)]*$/.test(sentence);
+    for (let i = 0; i < bare.length; i++) {
+      const w = bare[i];
+      const next = bare[i + 1] || '';
+      if (EN_ALWAYS_CLAUSE.has(w)) return true;
+      if (EN_WH_CLAUSE.has(w) && !isQuestion) return true;
+      if (EN_PREP_OR_CLAUSE.has(w) && (EN_SUBJECT.has(next) || (/^[A-Z]/.test(words[i + 1] || '') && !EN_CALENDAR.has(next)))) {
+        return true;
+      }
+      if (w === 'that' && i > 0 && !EN_THAT_DEMONSTRATIVE_NOUN.has(next) && !EN_PREPOSITION.has(bare[i - 1])) return true;
+    }
+    return false;
+  }
+
   function subordinatePct(text, lang) {
     const lg = normLang(lang);
     const markers = SUBORDINATE_MARKERS[lg] || SUBORDINATE_MARKERS.en;
@@ -153,6 +189,10 @@ const CefrGate = (() => {
     if (!sentences.length) return 0;
     let sub = 0;
     sentences.forEach((s) => {
+      if (lg === 'en') {
+        if (enSentenceHasClause(s)) sub++;
+        return;
+      }
       const lower = ` ${s.toLowerCase()} `;
       if (markers.some((m) => lower.includes(` ${m} `))) sub++;
     });
