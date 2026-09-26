@@ -98,6 +98,9 @@ export function validateCandidate(candidate, blueprint) {
     // Cambridge B1 Reading Part 2 (person_text_matching): eight independent short
     // descriptions — sentences are naturally short/simple, prose complexity gates no aplican.
     const isPersonTextMatching = bpPart?.slotType === 'person_text_matching';
+    // Cambridge B1 Reading Part 1 (signs_notices_mcq): five notices/messages of 10-60 words.
+    // Short sentences are the format, so the prose minimum average does not apply.
+    const isSignsNotices = bpPart?.slotType === 'signs_notices_mcq';
     const isSentenceInsertion =
       bpPart?.taskFormat === 'sentence_insertion' || bpPart?.slotType === 'sentence_gap_fill';
     const isB2OpinionHeadline =
@@ -105,8 +108,8 @@ export function validateCandidate(candidate, blueprint) {
     const isB2RulesMatching =
       bpPart?.taskFormat === 'paragraph_heading_matching' || bpPart?.slotType === 'rules_matching';
     cefr.reasons.forEach((r) => {
-      if ((isLesenT5 || isLesenT4 || isPersonTextMatching) && (r.startsWith('complexity_too_simple') || r.startsWith('subordinate_too_few'))) {
-        warnings.push(`cefr_gate:${r} [exento ${isPersonTextMatching ? 'T2-matching' : isLesenT4 ? 'T4-Leserbriefe' : 'T5-Anzeigen'}]`);
+      if ((isLesenT5 || isLesenT4 || isPersonTextMatching || isSignsNotices) && (r.startsWith('complexity_too_simple') || r.startsWith('subordinate_too_few'))) {
+        warnings.push(`cefr_gate:${r} [exento ${isSignsNotices ? 'P1-notices' : isPersonTextMatching ? 'T2-matching' : isLesenT4 ? 'T4-Leserbriefe' : 'T5-Anzeigen'}]`);
       } else if (isSentenceInsertion && r.startsWith('inference_below_min')) {
         warnings.push(`cefr_gate:${r} [exento T2-Sätze einfügen]`);
       } else if (isB2OpinionHeadline && r.startsWith('inference_below_min')) {
