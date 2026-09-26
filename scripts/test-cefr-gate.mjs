@@ -179,6 +179,24 @@ const samples = [
   },
 ];
 
+// English subordinate detection: prepositions, demonstrative "that" and questions are not clauses
+const enSub = (t) => CefrGate.validatePassage(t, { level: 'B1', lang: 'en' }).metrics.subordinatePct;
+assert(enSub('The shop is open until Thursday.') === 0, 'en: "until Thursday" is a preposition, not a clause');
+assert(enSub('We had coffee after lunch.') === 0, 'en: "after lunch" is a preposition');
+assert(enSub('I will wait until you arrive.') === 100, 'en: "until you arrive" is a clause');
+assert(enSub('Call me before Maya leaves.') === 100, 'en: "before Maya leaves" is a clause');
+assert(enSub('That night we slept outside.') === 0, 'en: sentence-initial demonstrative "That night"');
+assert(enSub('We met at that time every week.') === 0, 'en: "at that time" is not a clause');
+assert(enSub('She said that the museum was closed.') === 100, 'en: complementiser "that the"');
+assert(enSub('When does the class start?') === 0, 'en: question word "When" is not a clause');
+assert(enSub('I stayed at home because it was raining.') === 100, 'en: "because" always introduces a clause');
+assert(enSub('The man who works here is kind.') === 100, 'en: relative "who works"');
+assert(
+  CefrGate.validatePassage('Ich bleibe zu Hause, weil es regnet. Wir gehen morgen ins Kino.', { level: 'B1', lang: 'de' }).metrics
+    .subordinatePct === 50,
+  'de: marker list unchanged (weil → 1 of 2 sentences)',
+);
+
 console.log('\nSample metrics:');
 for (const s of samples) {
   const r = CefrGate.validatePassage(s.text, { level: s.level, lang: s.lang });
