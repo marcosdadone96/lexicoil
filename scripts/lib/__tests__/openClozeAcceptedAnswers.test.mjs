@@ -77,6 +77,9 @@ const files = [
   ...fs.readdirSync(path.join(ROOT, 'library/curated/en/B1')).filter((f) => f.endsWith('.json')).map((f) => `library/curated/en/B1/${f}`),
   'library/pool-seed/en_B1.json',
   'library/en/B1/questions.json',
+  // The file the app actually serves for en/B1. It is kept ahead of the curated exams by hand,
+  // so a fix made only upstream never reaches learners — it was missing here at first.
+  'data/exams/en_B1.json',
 ];
 test('served en/B1 data: acceptedAnswers only on gap items, non-empty, never the key', () => {
   let n = 0;
@@ -94,7 +97,7 @@ test('served en/B1 data: acceptedAnswers only on gap items, non-empty, never the
       Object.values(o).forEach(walk); } };
     walk(JSON.parse(fs.readFileSync(path.join(ROOT, f), 'utf8')));
   }
-  assert.equal(n, 27, 'nine gaps × three copies (curated, pool-seed, bank)');
+  assert.equal(n, 36, 'nine gaps × four copies (curated, pool-seed, bank, served)');
 });
 
 console.log(`\n${passed} passed`);
